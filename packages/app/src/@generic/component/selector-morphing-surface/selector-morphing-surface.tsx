@@ -1,0 +1,30 @@
+import { View } from 'react-native';
+
+import { isDefined } from '@rnw-community/shared';
+
+import { AnchoredMorphPanel } from '../anchored-morph-panel/anchored-morph-panel';
+import { SingleStepMorphingSheet } from '../single-step-morphing-sheet/single-step-morphing-sheet';
+
+import type { AnchoredMorphPanelHeightEnum } from '../../enum/anchored-morph-panel-height.enum';
+import type { AnchoredMorphOriginInterface } from '../../interface/anchored-morph-origin.interface';
+import type { ReactNode } from 'react';
+import type { StyleProp, ViewStyle } from 'react-native';
+
+interface Props {
+    readonly origin: AnchoredMorphOriginInterface | undefined;
+    readonly onDismissed: () => void;
+    readonly sheetStyle?: StyleProp<ViewStyle>;
+    readonly panelHeight?: AnchoredMorphPanelHeightEnum;
+    readonly children: ReactNode;
+}
+
+export const SelectorMorphingSurface = ({ origin, onDismissed, sheetStyle, panelHeight, children }: Props) =>
+    isDefined(origin) ? (
+        <AnchoredMorphPanel origin={origin} onDismissed={onDismissed} height={panelHeight}>
+            {children}
+        </AnchoredMorphPanel>
+    ) : (
+        <SingleStepMorphingSheet onDismiss={onDismissed}>
+            <View style={sheetStyle}>{children}</View>
+        </SingleStepMorphingSheet>
+    );

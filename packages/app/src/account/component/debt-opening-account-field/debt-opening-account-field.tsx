@@ -1,17 +1,15 @@
-import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
-import { Trans, useLingui } from '@lingui/react/macro';
-import { type GestureResponderEvent, Text, View } from 'react-native';
+import { AccountTypeEnum } from '@budgie/contracts';
+import { type GestureResponderEvent } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
-import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { Icon } from '../../../@generic/component/icon/icon';
+import { AnchoredMorphTrigger } from '../../../@generic/component/anchored-morph-trigger/anchored-morph-trigger';
+import { RoundedEdgeEnum } from '../../../@generic/enum/rounded-edge.enum';
 import { useAccountSelectorModal } from '../../context/account-selector-modal.context';
 import { useAccountSelector } from '../../hooks/use-account-selector.hook';
-import { AccountInactiveIcon } from '../account-inactive-icon/account-inactive-icon';
-import { CreateAccountScreenSelector } from '../create-account-screen/create-account-screen.selector';
+import { DebtOpeningAccountRow } from '../debt-opening-account-row/debt-opening-account-row';
 
+import type { AnchoredMorphOriginInterface } from '../../../@generic/interface/anchored-morph-origin.interface';
 import type { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 
 interface Props {
@@ -22,19 +20,19 @@ interface Props {
 }
 
 export const DebtOpeningAccountField = ({ accountId, label, variant, onChange }: Props) => {
-    const { t } = useLingui();
     const [openAccountSelector] = useAccountSelectorModal();
-    const { icon, selectedAccount, formattedBalance } = useAccountSelector({
+    const { selectedAccount, formattedBalance } = useAccountSelector({
         accountId,
         excludeAccountTypes: [AccountTypeEnum.DEBT]
     });
 
-    const handlePress = () => {
+    const handleSelect = (origin: AnchoredMorphOriginInterface) => {
         openAccountSelector(
             {
                 initialAccountId: accountId,
                 excludeAccountTypes: [AccountTypeEnum.DEBT],
-                onlyActive: false
+                onlyActive: false,
+                origin
             },
             selectedAccountId => {
                 if (isDefined(selectedAccountId)) {
@@ -49,59 +47,23 @@ export const DebtOpeningAccountField = ({ accountId, label, variant, onChange }:
         onChange(null);
     };
 
-    const selectedAccountTitle = selectedAccount?.title ?? t`Select account`;
-    const isInactiveAccount = isDefined(selectedAccount) && !selectedAccount.isActive;
-
     return (
-        <HapticPressable
-            className="flex-row items-center px-lg py-md gap-md bg-secondary-background rounded-2xl"
-            onPress={handlePress}
-            accessibilityLabel={`${label}: ${selectedAccountTitle}`}
-            accessibilityRole="button"
-            testID={CreateAccountScreenSelector.OpeningAccountSelector}
+        <AnchoredMorphTrigger
+            edge={RoundedEdgeEnum.ALL}
+            radiusClassName="rounded-2xl"
+            colorClassName="bg-secondary-background"
+            onPress={handleSelect}
         >
-            <AccountInactiveIcon isInactive={isInactiveAccount} size={36}>
-                <CircleIcon icon={icon} variant={variant} size={36} iconSize={18} radius={12} />
-            </AccountInactiveIcon>
-
-            <View className="flex-1">
-                <Text className="text-xs text-secondary-foreground uppercase">{label}</Text>
-                <Text
-                    className="text-md font-medium text-primary"
-                    numberOfLines={1}
-                    {...(isDefined(selectedAccount) && {
-                        testID: CreateAccountScreenSelector.SelectedOpeningAccount(selectedAccount.title)
-                    })}
-                >
-                    {selectedAccountTitle}
-                </Text>
-                {isDefined(selectedAccount) ? (
-                    <Text className="text-xs text-secondary-foreground" numberOfLines={1}>
-                        {formattedBalance}
-                    </Text>
-                ) : (
-                    <Text
-                        className="text-xs text-secondary-foreground"
-                        numberOfLines={1}
-                        testID={CreateAccountScreenSelector.ManualOpeningHint}
-                    >
-                        <Trans>Optional — without it the amount stays manual</Trans>
-                    </Text>
-                )}
-            </View>
-
-            {isDefined(selectedAccount) ? (
-                <HapticPressable
-                    onPress={handleClearPress}
-                    accessibilityLabel={t`Remove`}
-                    accessibilityRole="button"
-                    testID={CreateAccountScreenSelector.ClearOpeningAccount}
-                >
-                    <CircleIcon icon={UserIconNameEnum.X} variant="ghost" size={28} iconSize={14} />
-                </HapticPressable>
-            ) : (
-                <Icon icon={UserIconNameEnum.ChevronDown} size={16} className="text-secondary-foreground" />
+            {handlePress => (
+                <DebtOpeningAccountRow
+                    account={selectedAccount}
+                    label={label}
+                    variant={variant}
+                    formattedBalance={formattedBalance}
+                    onPress={handlePress}
+                    onClear={handleClearPress}
+                />
             )}
-        </HapticPressable>
+        </AnchoredMorphTrigger>
     );
 };

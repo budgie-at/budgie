@@ -4,6 +4,7 @@ import * as Effect from 'effect/Effect';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { RoundedEdgeEnum } from '../../../@generic/enum/rounded-edge.enum';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
@@ -13,8 +14,10 @@ import { useLanguageSelectorModal } from '../../../i18n/context/language-selecto
 import { i18nEnsureLanguageActivated } from '../../../i18n/utils/i18n.util';
 import { useSetting } from '../../hook/use-setting.hook';
 import { updateSettingsMutation } from '../../mutation/update-settings.mutation';
+import { AnchoredSettingsRow } from '../anchored-settings-row/anchored-settings-row';
 import { SettingsRowAccessory } from '../settings-row-accessory/settings-row-accessory';
-import { SettingsRow } from '../settings-row/settings-row';
+
+import type { AnchoredMorphOriginInterface } from '../../../@generic/interface/anchored-morph-origin.interface';
 
 export const LanguageSelector = () => {
     const language = useSetting('language');
@@ -23,8 +26,8 @@ export const LanguageSelector = () => {
 
     const selectedLanguage = LANGUAGES.find(({ code }) => code === language);
 
-    const handleOpen = () => {
-        openLanguageSelector({ selectedLanguage: language }, result => {
+    const handleOpen = (origin: AnchoredMorphOriginInterface) => {
+        openLanguageSelector({ selectedLanguage: language, origin }, result => {
             if (isDefined(result) && result !== language) {
                 appRuntime.runFork(
                     logAndContinue(
@@ -43,13 +46,13 @@ export const LanguageSelector = () => {
     }
 
     return (
-        <SettingsRow
+        <AnchoredSettingsRow
+            edge={RoundedEdgeEnum.TOP}
             icon={UserIconNameEnum.Globe}
-            variant="ghost"
             title={t`Language`}
-            onPress={handleOpen}
-            testID={SettingsPageSelector.LanguageCard(selectedLanguage.code)}
             right={<SettingsRowAccessory value={t(selectedLanguage.name)} />}
+            testID={SettingsPageSelector.LanguageCard(selectedLanguage.code)}
+            onPress={handleOpen}
         />
     );
 };

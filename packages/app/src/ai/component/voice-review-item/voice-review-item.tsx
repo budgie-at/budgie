@@ -26,7 +26,6 @@ export const VoiceReviewItem = ({ row, index, currencySymbol, canDelete, disable
                 index={index}
                 entry={row}
                 currencySymbol={currencySymbol}
-                autoFocus={false}
                 disabled={disabled}
                 onAmountChange={handleAmountChange}
                 onCategoryPress={handleCategoryPress}

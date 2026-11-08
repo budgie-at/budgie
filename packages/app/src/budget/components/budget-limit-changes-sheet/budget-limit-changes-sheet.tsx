@@ -8,6 +8,8 @@ import { isDefined, isEmptyArray } from '@rnw-community/shared';
 import { FormsheetHeader } from '../../../@generic/component/formsheet-header/formsheet-header';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
+import { ScrollableSheetCard } from '../../../@generic/component/scrollable-sheet-card/scrollable-sheet-card';
+import { MORPHING_SHEET_DESTINATION_HEIGHT_RATIO } from '../../../@generic/constant/morphing-sheet-height-ratio.constant';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
@@ -15,7 +17,6 @@ import { BudgetSelector } from '../../budget.selector';
 import { useGetBudgetLimitChangesQuery } from '../../query/use-get-budget-limit-changes.query';
 import { BudgetAutoTuneSwitchRow } from '../budget-auto-tune-switch-row/budget-auto-tune-switch-row';
 import { BudgetLimitChangeRow } from '../budget-limit-change-row/budget-limit-change-row';
-import { BudgetScrollableSheet } from '../budget-scrollable-sheet/budget-scrollable-sheet';
 import { BudgetSheetState } from '../budget-sheet-state/budget-sheet-state';
 
 import type { BudgetEntityInterface } from '@budgie/contracts';
@@ -49,9 +50,13 @@ export const BudgetLimitChangesSheet = ({ budget }: Props) => {
     }
 
     return (
-        <BudgetScrollableSheet testID={BudgetSelector.LimitChangesSheet}>
-            <FormsheetHeader size="md" title={t`Limit changes`} />
-            <LoadingContent isLoading={isLoading} className="gap-y-3xl" containerClassName="px-5xl pt-md pb-3xl">
+        <ScrollableSheetCard
+            header={<FormsheetHeader size="md" title={t`Limit changes`} />}
+            ratio={MORPHING_SHEET_DESTINATION_HEIGHT_RATIO}
+            contentClassName="px-5xl pt-md gap-y-3xl pb-3xl"
+            testID={BudgetSelector.LimitChangesSheet}
+        >
+            <LoadingContent isLoading={isLoading} className="gap-y-3xl">
                 {isEmptyArray(limitChanges) ? (
                     emptyHint
                 ) : (
@@ -67,6 +72,6 @@ export const BudgetLimitChangesSheet = ({ budget }: Props) => {
                     testID={BudgetSelector.LimitChangesAutoTuneSwitch}
                 />
             </LoadingContent>
-        </BudgetScrollableSheet>
+        </ScrollableSheetCard>
     );
 };

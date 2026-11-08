@@ -4,7 +4,9 @@ import { ActivityIndicator, Text, View } from 'react-native';
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
+import { ScrollableSheetCard } from '../../../@generic/component/scrollable-sheet-card/scrollable-sheet-card';
 import { SectionHeader } from '../../../@generic/component/section-header/section-header';
+import { MORPHING_SHEET_DESTINATION_HEIGHT_RATIO } from '../../../@generic/constant/morphing-sheet-height-ratio.constant';
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
 import { BudgetSelector } from '../../budget.selector';
 import { useGetBudgetProjectionQuery } from '../../query/use-get-budget-projection.query';
@@ -12,7 +14,6 @@ import { buildBudgetDayStripCells } from '../../utils/build-budget-day-strip-cel
 import { BudgetDayStripKey } from '../budget-day-strip-key/budget-day-strip-key';
 import { BudgetSafeToSpendHeader } from '../budget-safe-to-spend-header/budget-safe-to-spend-header';
 import { BudgetSafeToSpendSummary } from '../budget-safe-to-spend-summary/budget-safe-to-spend-summary';
-import { BudgetScrollableSheet } from '../budget-scrollable-sheet/budget-scrollable-sheet';
 import { BudgetSheetState } from '../budget-sheet-state/budget-sheet-state';
 import { BudgetUpcomingChargeRow } from '../budget-upcoming-charge-row/budget-upcoming-charge-row';
 
@@ -45,17 +46,19 @@ export const BudgetSafeToSpendSheet = ({ budget }: Props) => {
     ) : null;
 
     if (isError) {
-        return <BudgetSheetState title={t`Safe to spend`} isLoading={false} isError />;
+        return <BudgetSheetState title={t`Safe to spend`} isLoading={false} isError header={<BudgetSafeToSpendHeader />} />;
     }
 
     return (
-        <BudgetScrollableSheet testID={BudgetSelector.SafeToSpendSheet}>
-            <BudgetSafeToSpendHeader budget={budget} />
-
+        <ScrollableSheetCard
+            header={<BudgetSafeToSpendHeader budget={budget} />}
+            ratio={MORPHING_SHEET_DESTINATION_HEIGHT_RATIO}
+            contentClassName="px-5xl pt-md gap-y-3xl pb-3xl"
+            testID={BudgetSelector.SafeToSpendSheet}
+        >
             <LoadingContent
                 isLoading={isLoading}
                 className="gap-y-3xl"
-                containerClassName="px-5xl pt-md pb-3xl"
                 loadingIndicator={<ActivityIndicator size="small" className="absolute inset-x-0 top-[24px]" />}
             >
                 <BudgetSafeToSpendSummary projection={projection} currencySymbol={currencySymbol} />
@@ -74,6 +77,6 @@ export const BudgetSafeToSpendSheet = ({ budget }: Props) => {
                     <Trans>Recalculates every day. Spend less today and tomorrow&apos;s amount grows.</Trans>
                 </Text>
             </LoadingContent>
-        </BudgetScrollableSheet>
+        </ScrollableSheetCard>
     );
 };

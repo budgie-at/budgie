@@ -1,20 +1,19 @@
 import { RecurringService } from '@budgie/recurring';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
-import { router } from 'expo-router';
-import { ScrollView, View, useWindowDimensions } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { View } from 'react-native';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
-import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
+import { ScrollableSheetCard } from '../../../@generic/component/scrollable-sheet-card/scrollable-sheet-card';
 import { SheetTitleRow } from '../../../@generic/component/sheet-title-row/sheet-title-row';
-import { GroupedSurfacePaletteEnum } from '../../../@generic/enum/grouped-surface-palette.enum';
+import { MORPHING_SHEET_SELECTOR_HEIGHT_RATIO } from '../../../@generic/constant/morphing-sheet-height-ratio.constant';
+import { useMorphingSheetCommit } from '../../../@generic/hook/use-morphing-sheet-commit.hook';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
-import { showActionToast } from '../../../@generic/utils/show-action-toast/show-action-toast';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
+import { MakeRecurringResultKindEnum } from '../../enum/make-recurring-result-kind.enum';
 import { RecurringRefreshModeEnum } from '../../enum/recurring-refresh-mode.enum';
 import { useRecurringFittingSeries } from '../../hook/use-recurring-fitting-series.hook';
 import { scheduleRecurringRefresh } from '../../utils/schedule-recurring-refresh.util';
@@ -24,21 +23,21 @@ import { MakeRecurringSourceRow } from '../make-recurring-source-row/make-recurr
 
 import { MakeRecurringSheetSelector } from './make-recurring-sheet.selector';
 
+import type { MakeRecurringResultType } from '../../interface/make-recurring-result.type';
 import type { RecurringSeriesListItemInterface } from '@budgie/recurring';
 
 interface Props {
     readonly transactionId: number;
+    readonly onCommit: (result: MakeRecurringResultType) => void;
 }
 
-export const MakeRecurringSheet = ({ transactionId }: Props) => {
+export const MakeRecurringSheet = ({ transactionId, onCommit }: Props) => {
     const { t } = useLingui();
-    const { height } = useWindowDimensions();
-    const { top } = useSafeAreaInsets();
-    const scrollStyle = { flexGrow: 0, maxHeight: height - top };
     const { now, fittingSeries, isLoading } = useRecurringFittingSeries(transactionId);
     const addFlight = useSingleFlight();
+    const commit = useMorphingSheetCommit(onCommit);
 
-    const handleCreate = () => void router.replace({ pathname: '/recurring/create', params: { transactionId: String(transactionId) } });
+    const handleCreate = () => void commit({ kind: MakeRecurringResultKindEnum.CREATE });
 
     const handleSelect = ({ id, title }: RecurringSeriesListItemInterface) =>
         void addFlight.run(
@@ -47,13 +46,7 @@ export const MakeRecurringSheet = ({ transactionId }: Props) => {
 
                 yield* recurringService.addTransaction(id, transactionId);
                 yield* scheduleRecurringRefresh(RecurringRefreshModeEnum.RECENT);
-                yield* Effect.sync(() => {
-                    router.back();
-                    showActionToast(t`Added to ${title}`, {
-                        label: t`View`,
-                        onPress: () => void router.push({ pathname: '/recurring/[id]', params: { id: String(id) } })
-                    });
-                });
+                yield* Effect.sync(() => void commit({ kind: MakeRecurringResultKindEnum.ADDED, seriesId: id, seriesTitle: title }));
             }).pipe(toastOnFailure(t`Could not add to recurring payment.`))
         );
 
@@ -67,19 +60,22 @@ export const MakeRecurringSheet = ({ transactionId }: Props) => {
     ) : null;
 
     return (
-        <GroupedSurface palette={GroupedSurfacePaletteEnum.SHEET} className="flex-none" testID={MakeRecurringSheetSelector.Page}>
-            <ScrollView style={scrollStyle} bounces={false} showsVerticalScrollIndicator={false}>
-                <View className="px-3xl pt-7xl pb-md">
+        <ScrollableSheetCard
+            header={
+                <View className="px-xl">
                     <SheetTitleRow title={t`Make recurring`} />
                 </View>
-                <LoadingContent isLoading={isBusy} containerClassName="min-h-[120px]" className="gap-y-5xl px-3xl pt-xl pb-7xl">
-                    <MakeRecurringSourceRow transactionId={transactionId} />
-                    {existingSection}
-                    <GroupedListSection>
-                        <MakeRecurringCreateRow onPress={handleCreate} />
-                    </GroupedListSection>
-                </LoadingContent>
-            </ScrollView>
-        </GroupedSurface>
+            }
+            ratio={MORPHING_SHEET_SELECTOR_HEIGHT_RATIO}
+            testID={MakeRecurringSheetSelector.Page}
+        >
+            <LoadingContent isLoading={isBusy} containerClassName="min-h-[120px]" className="gap-y-5xl px-3xl pt-xl pb-[16px]">
+                <MakeRecurringSourceRow transactionId={transactionId} />
+                {existingSection}
+                <GroupedListSection>
+                    <MakeRecurringCreateRow onPress={handleCreate} />
+                </GroupedListSection>
+            </LoadingContent>
+        </ScrollableSheetCard>
     );
 };

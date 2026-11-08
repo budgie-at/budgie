@@ -1,8 +1,11 @@
 import { useEffect } from 'react';
 import { View } from 'react-native';
+import Animated from 'react-native-reanimated';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
+import { MOTION_FADE_IN } from '../../constant/motion.constant';
+import { useSurfaceSettled } from '../../context/surface-settled.context';
 import { SelectorRowKindEnum } from '../../enum/selector-row-kind.enum';
 import { useFormsheetListContentStyle } from '../../hook/use-formsheet-list-content-style/use-formsheet-list-content-style.hook';
 import { useSectionIndex } from '../../hook/use-section-index/use-section-index.hook';
@@ -26,6 +29,7 @@ interface Props<T> {
     readonly renderItem: (item: T) => ReactElement;
     readonly emptyState: ReactElement;
     readonly query: string;
+    readonly className?: string;
 }
 
 const ESTIMATED_ROW_HEIGHT = 60;
@@ -36,8 +40,9 @@ const rowKeyExtractor = <T,>(row: SelectorListRowInterface<T>) => row.key;
 
 const getRowType = <T,>(row: SelectorListRowInterface<T>) => (isDefined(row.item) ? SelectorRowKindEnum.ITEM : SelectorRowKindEnum.TITLE);
 
-export const SearchableSelectorList = <T,>({ header, sections, keyExtractor, renderItem, emptyState, query }: Props<T>) => {
+export const SearchableSelectorList = <T,>({ header, sections, keyExtractor, renderItem, emptyState, query, className }: Props<T>) => {
     const contentContainerStyle = useFormsheetListContentStyle();
+    const isSettled = useSurfaceSettled();
     const rows = flattenSelectorSections(sections, keyExtractor);
     const { listRef, sectionLetters, visibleLetter, handleSectionLetter, handleViewableItemsChanged } = useSectionIndex(rows);
     const hasRail = isNotEmptyArray(sectionLetters);
@@ -69,17 +74,31 @@ export const SearchableSelectorList = <T,>({ header, sections, keyExtractor, ren
     }, [query, listRef]);
 
     return (
-        <SheetSurface>
+        <SheetSurface className={className}>
             {header}
 
             <View className="flex-1">
-                <SelectorList listRef={listRef} data={rows} keyExtractor={rowKeyExtractor} renderItem={renderRow} options={listOptions}>
-                    {hasRail ? (
-                        <View className="absolute z-30 justify-center pt-md" style={RAIL_POSITION_STYLE}>
-                            <SectionIndexRail letters={sectionLetters} activeLetter={visibleLetter} onSelect={handleSectionLetter} />
-                        </View>
-                    ) : null}
-                </SelectorList>
+                {isSettled ? (
+                    <Animated.View className="flex-1" entering={MOTION_FADE_IN}>
+                        <SelectorList
+                            listRef={listRef}
+                            data={rows}
+                            keyExtractor={rowKeyExtractor}
+                            renderItem={renderRow}
+                            options={listOptions}
+                        >
+                            {hasRail ? (
+                                <View className="absolute z-30 justify-center pt-md" style={RAIL_POSITION_STYLE}>
+                                    <SectionIndexRail
+                                        letters={sectionLetters}
+                                        activeLetter={visibleLetter}
+                                        onSelect={handleSectionLetter}
+                                    />
+                                </View>
+                            ) : null}
+                        </SelectorList>
+                    </Animated.View>
+                ) : null}
             </View>
 
             <SheetBottomFade />

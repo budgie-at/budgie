@@ -19,6 +19,7 @@ for (const dismissKeyboard of [false, true]) {
             await b.tapId(ctx, 'UncategorizedTransactionsPill.Button');
             await b.tapId(ctx, COFFEE);
             await b.tapText(ctx, 'More categories');
+            await b.expectSettledId(ctx, 'CategoryPickerBottomSheet.Input');
             await b.fillId(ctx, 'CategoryPickerBottomSheet.Input', 'Grocer');
             if (dismissKeyboard) {
                 await b.done(ctx);
@@ -30,7 +31,7 @@ for (const dismissKeyboard of [false, true]) {
             await b.tapId(ctx, 'PageHeader.BackButton');
             await b.tapId(ctx, 'TransactionCard.Label.E2E_Confident_Coffee');
             await b.expectId(ctx, 'TransactionInfo.Page');
-            await b.expectText(ctx, 'Groceries');
+            await expect(b.byId(ctx.screen, 'TransactionInfo.Row.Category')).toHaveAccessibleName(/Groceries/u);
         }
     );
 }
@@ -42,6 +43,7 @@ test('48 searched category applies to transaction form', { tags: ['picker'] }, a
     await t.openTransactionForm(ctx, 'ActionItem.Expense', 'New Expense');
     await t.selectAccount(ctx, 'Rules Test Account');
     await b.tapId(ctx, 'TransactionForm.CategorySelector');
+    await b.expectSettledId(ctx, 'CategoryPickerBottomSheet.Input');
     await b.fillId(ctx, 'CategoryPickerBottomSheet.Input', 'Grocer');
     await b.tapId(ctx, 'CategoryPickerBottomSheet.Card.Groceries');
     await b.expectNoId(ctx, 'CategoryPickerBottomSheet.Input', 5_000);
@@ -54,6 +56,7 @@ test('48 searched category applies to rule action', { tags: ['picker', 'rules'] 
     await r.navigateToRules(ctx);
     await r.openCreateRuleForm(ctx);
     await b.tapId(ctx, 'RuleForm.Action.0.CategorySelector');
+    await b.expectSettledId(ctx, 'CategoryPickerBottomSheet.Input');
     await b.fillId(ctx, 'CategoryPickerBottomSheet.Input', 'Grocer');
     await b.tapId(ctx, 'CategoryPickerBottomSheet.Card.Groceries');
     await b.expectNoId(ctx, 'CategoryPickerBottomSheet.Input', 5_000);
@@ -67,6 +70,7 @@ test('48 searched category applies to budget limit', { tags: ['picker', 'budget'
     await bu.chooseEmptyCanvas(ctx);
     await b.scrollTo(ctx, 'BudgetSetup.CategoryLimitAddButton');
     await b.tapId(ctx, 'BudgetSetup.CategoryLimitAddButton');
+    await b.expectSettledId(ctx, 'CategoryPickerBottomSheet.Input');
     await b.fillId(ctx, 'CategoryPickerBottomSheet.Input', 'Grocer');
     await b.tapId(ctx, 'CategoryPickerBottomSheet.Card.Groceries');
     await b.expectNoId(ctx, 'CategoryPickerBottomSheet.Input', 5_000);
@@ -80,11 +84,13 @@ test('48 shared account and tag pickers apply selections', { tags: ['picker'] },
     await t.navigateToTransactions(ctx);
     await t.openTransactionForm(ctx, 'ActionItem.Expense', 'New Expense');
     await b.tapId(ctx, 'TransactionForm.AccountSelector');
+    await b.expectSettledId(ctx, 'AccountPickerBottomSheet.Input');
     await b.fillId(ctx, 'AccountPickerBottomSheet.Input', 'Rules Test');
     await b.tapId(ctx, 'AccountPickerBottomSheet.Option.Rules Test Account');
     await b.expectNoId(ctx, 'AccountPickerBottomSheet.Input', 5_000);
     await expect(b.byId(ctx.screen, 'TransactionForm.SelectedAccount.Rules_Test_Account')).toHaveText('Rules Test Account');
     await b.tapId(ctx, 'TransactionForm.TagsSelector');
+    await b.expectSettledId(ctx, 'TagPickerBottomSheet.Input');
     await b.fillId(ctx, 'TagPickerBottomSheet.Input', 'Rules Test Tag');
     await b.tapId(ctx, 'TagPickerBottomSheet.Card.Rules Test Tag');
     await b.tapId(ctx, 'tags-selector-modal-done-button');

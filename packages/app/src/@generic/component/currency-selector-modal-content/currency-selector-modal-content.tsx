@@ -6,6 +6,7 @@ import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { CurrencySelectorModalSelector } from '../../../app/currency-selector-modal.selector';
 import { useGetInstrumentsByTypeQuery } from '../../../instrument/query/use-get-instruments-by-type.query';
+import { useMorphingSheetCommit } from '../../hook/use-morphing-sheet-commit.hook';
 import { groupByInitial } from '../../utils/group-by-initial.util';
 import { partitionInstruments } from '../../utils/partition-instruments.util';
 import { rankInstrumentSearch } from '../../utils/rank-instrument-search.util';
@@ -21,12 +22,14 @@ const keyExtractor = (item: InstrumentEntityInterface) => String(item.id);
 interface Props {
     readonly instrumentType: InstrumentTypeEnum;
     readonly selectedInstrumentId?: number;
-    readonly onSelect: (instrumentId: number) => void;
+    readonly onCommit: (instrumentId: number) => void;
+    readonly isSearchAutoFocused: boolean;
 }
 
-export const CurrencySelectorModalContent = ({ instrumentType, selectedInstrumentId, onSelect }: Props) => {
+export const CurrencySelectorModalContent = ({ instrumentType, selectedInstrumentId, onCommit, isSearchAutoFocused }: Props) => {
     const { t } = useLingui();
     const [search, setSearch] = useState('');
+    const commit = useMorphingSheetCommit(onCommit);
     const { instruments, isLoading } = useGetInstrumentsByTypeQuery(instrumentType);
 
     const query = search.trim();
@@ -49,7 +52,7 @@ export const CurrencySelectorModalContent = ({ instrumentType, selectedInstrumen
     ).filter(({ data }) => isNotEmptyArray(data));
 
     const renderItem = (item: InstrumentEntityInterface) => (
-        <CurrencySelectorCard instrument={item} isSelected={item.id === selectedInstrumentId} onSelect={onSelect} highlight={query} />
+        <CurrencySelectorCard instrument={item} isSelected={item.id === selectedInstrumentId} onSelect={commit} highlight={query} />
     );
 
     const emptyState = isNotEmptyString(query) ? (
@@ -60,6 +63,7 @@ export const CurrencySelectorModalContent = ({ instrumentType, selectedInstrumen
 
     return (
         <SearchableSelectorList
+            className="pt-lg"
             query={query}
             header={
                 <SelectorModalSearchHeader
@@ -68,6 +72,7 @@ export const CurrencySelectorModalContent = ({ instrumentType, selectedInstrumen
                     onSearchChange={setSearch}
                     placeholder={searchPlaceholder}
                     testID={CurrencySelectorModalSelector.SearchInput}
+                    isAutoFocused={isSearchAutoFocused}
                 />
             }
             sections={sections}

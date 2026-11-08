@@ -1,73 +1,23 @@
-import { TransactionTypeEnum } from '@budgie/contracts';
-import { plural } from '@lingui/core/macro';
-import { useLingui } from '@lingui/react/macro';
-import { View } from 'react-native';
-
-import { FilterSheetApply } from '../@generic/component/filter-sheet/filter-sheet-apply/filter-sheet-apply';
-import { FilterSheetDrawer } from '../@generic/component/filter-sheet/filter-sheet-drawer/filter-sheet-drawer';
-import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet/filter-sheet';
+import { SingleStepMorphingSheet } from '../@generic/component/single-step-morphing-sheet/single-step-morphing-sheet';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
-import { useStateRef } from '../@generic/hook/use-state-ref/use-state-ref.hook';
-import { TransactionFiltersSelector } from '../transaction/components/transaction-filters/transaction-filters.selector';
-import { TransactionTypeFilterItem } from '../transaction/components/transaction-type-filter/transaction-type-filter-item';
+import { useMorphingSheetResult } from '../@generic/hook/use-morphing-sheet-result.hook';
+import { TransactionTypeFilterContent } from '../transaction/components/transaction-type-filter-content/transaction-type-filter-content';
 import {
     useTransactionTypeFilterModal,
     useTransactionTypeFilterModalParams
 } from '../transaction/context/transaction-type-filter-modal.context';
-import { toggleFilterSelection } from '../transaction/utils/toggle-filter-selection.util';
 
-const TRANSACTION_TYPE_ROWS = [
-    [TransactionTypeEnum.EXPENSE, TransactionTypeEnum.INCOME],
-    [TransactionTypeEnum.TRANSFER, TransactionTypeEnum.DEBT]
-];
+import type { TransactionTypeFilterResult } from '../transaction/context/transaction-type-filter-modal.context';
 
 export default function TransactionTypeFilterModal() {
-    const { t } = useLingui();
     const [, resolveTransactionTypeFilter, dismissTransactionTypeFilter] = useTransactionTypeFilterModal();
     useModalDismiss(dismissTransactionTypeFilter);
     const currentParams = useTransactionTypeFilterModalParams();
-
-    const [localValue, setLocalValue, localValueRef] = useStateRef<TransactionTypeEnum[] | null>(() => currentParams?.value ?? null);
-
-    const localSelectedCount = localValue?.length ?? 0;
-
-    const handleSelect = (selected: TransactionTypeEnum) => {
-        setLocalValue(prev => toggleFilterSelection(prev, [selected]));
-    };
-
-    const handleApply = () => {
-        resolveTransactionTypeFilter({ value: localValueRef.current });
-    };
-
-    const applyLabel = t({
-        message: plural(localSelectedCount, {
-            0: 'Show all types',
-            one: 'Show # type',
-            other: 'Show # types'
-        })
-    });
+    const { handleCommit, handleDismissed } = useMorphingSheetResult<TransactionTypeFilterResult>(resolveTransactionTypeFilter);
 
     return (
-        <FilterSheet>
-            <View className="flex-1 justify-end gap-y-sm px-xl pt-lg pb-lg">
-                {TRANSACTION_TYPE_ROWS.map(row => (
-                    <View className="h-[96px] flex-row gap-x-sm" key={row.join('-')}>
-                        {row.map(type => (
-                            <View className="flex-1" key={type}>
-                                <TransactionTypeFilterItem
-                                    type={type}
-                                    onSelect={handleSelect}
-                                    isSelected={localValue?.includes(type) ?? false}
-                                />
-                            </View>
-                        ))}
-                    </View>
-                ))}
-            </View>
-
-            <FilterSheetDrawer>
-                <FilterSheetApply onApply={handleApply} label={applyLabel} testID={TransactionFiltersSelector.TypeApplyButton} />
-            </FilterSheetDrawer>
-        </FilterSheet>
+        <SingleStepMorphingSheet onDismiss={handleDismissed}>
+            <TransactionTypeFilterContent value={currentParams?.value ?? null} onCommit={handleCommit} />
+        </SingleStepMorphingSheet>
     );
 }

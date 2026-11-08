@@ -104,10 +104,34 @@ export async function openLink(ctx: Ctx, url: string): Promise<void> {
     await acceptOpenInPrompt(ctx);
 }
 
+/** Waits until `testId` is visible and its frame holds still for one poll, so a sheet still springing in cannot slide another control under the next tap. */
+export async function expectSettledId(ctx: Ctx, testId: string): Promise<void> {
+    const locator = byId(ctx.screen, testId);
+    await expect(locator).toBeVisible();
+    const deadline = Date.now() + 5_000;
+    let previous = await locator.boundingBox();
+    while (Date.now() < deadline) {
+        await sleep(100);
+        const current = await locator.boundingBox();
+        if (
+            current !== null &&
+            previous !== null &&
+            current.x === previous.x &&
+            current.y === previous.y &&
+            current.width === previous.width &&
+            current.height === previous.height
+        ) {
+            return;
+        }
+        previous = current;
+    }
+    throw new Error(`${testId} kept moving for 5s`);
+}
+
 /** subflows/shared/select-category-by-search */
 export async function selectCategoryBySearch(ctx: Ctx, name: string): Promise<void> {
     const input = byId(ctx.screen, 'CategoryPickerBottomSheet.Input');
-    await expect(input).toBeVisible();
+    await expectSettledId(ctx, 'CategoryPickerBottomSheet.Input');
     await input.fill(name);
     await done(ctx);
     const card = byId(ctx.screen, `CategoryPickerBottomSheet.Card.${name}.Label`);

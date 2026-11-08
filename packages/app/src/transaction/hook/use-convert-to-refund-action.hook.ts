@@ -4,19 +4,20 @@ import * as Effect from 'effect/Effect';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { useMorphingSheetCommit } from '../../@generic/hook/use-morphing-sheet-commit.hook';
 import { useSingleFlight } from '../../@generic/hook/use-single-flight.hook';
 import { runConfirmedTransactionAction } from '../utils/run-confirmed-transaction-action.util';
 
-import type { ConvertToRefundModalResolveType } from '../interface/convert-to-refund-modal-resolve.type';
 import type { TransactionPickerItemInterface } from '../interface/transaction-picker-item.interface';
 
 export const useConvertToRefundAction = (
     refundIncomeTransactionId: number,
     selectedCandidate: TransactionPickerItemInterface | null,
-    resolveConvertToRefund: ConvertToRefundModalResolveType
+    onCommit: (canonicalId: number) => void
 ) => {
     const { t } = useLingui();
     const { run, isLoading } = useSingleFlight();
+    const commit = useMorphingSheetCommit(onCommit);
 
     const convert = () => {
         if (!isDefined(selectedCandidate)) {
@@ -42,7 +43,7 @@ export const useConvertToRefundAction = (
                     ).pipe(
                         Effect.tap(canonicalId =>
                             Effect.sync(() => {
-                                resolveConvertToRefund(canonicalId);
+                                commit(canonicalId);
                             })
                         )
                     )

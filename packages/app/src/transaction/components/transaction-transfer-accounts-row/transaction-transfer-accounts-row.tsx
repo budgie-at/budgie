@@ -2,10 +2,13 @@ import { useLingui } from '@lingui/react/macro';
 import { ReactNode, RefObject, useImperativeHandle, useState } from 'react';
 import { useFormState } from 'react-hook-form';
 import { LayoutChangeEvent, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { AnchoredMorphTrigger } from '../../../@generic/component/anchored-morph-trigger/anchored-morph-trigger';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
+import { RoundedEdgeEnum } from '../../../@generic/enum/rounded-edge.enum';
 import { useShakeAnimation } from '../../../@generic/hook/use-shake-animation.hook';
 import { TransactionFormRowPlaceholderToneEnum } from '../../enum/transaction-form-row-placeholder-tone.enum';
 import { useTransferAccountSelection } from '../../hook/use-transfer-account-selection.hook';
@@ -30,7 +33,7 @@ export const TransactionTransferAccountsRow = ({ ref, children }: Props) => {
     const { errors } = useFormState();
     const { shake: shakeFrom, animatedStyle: fromAnimatedStyle } = useShakeAnimation();
     const { shake: shakeTo, animatedStyle: toAnimatedStyle } = useShakeAnimation();
-    const { fromAccount, toAccount, handleFromPress, handleToPress, handleSwap, canSwap, hasAnyAccount } = useTransferAccountSelection();
+    const { fromAccount, toAccount, handleFromPress, handleToPress, handleSwap, canSwap, isSwapShown } = useTransferAccountSelection();
 
     useImperativeHandle(ref, () => ({ shakeFrom, shakeTo }));
 
@@ -42,34 +45,43 @@ export const TransactionTransferAccountsRow = ({ ref, children }: Props) => {
         <TransactionFormRowPlaceholder tone={TransactionFormRowPlaceholderToneEnum.DESTRUCTIVE}>{t`Choose`}</TransactionFormRowPlaceholder>
     );
     const fromPlaceholder = isDefined(errors.root?.['fromAccountId']) ? missingPlaceholder : t`Choose`;
+    const toEdge = isDefined(children) ? RoundedEdgeEnum.NONE : RoundedEdgeEnum.BOTTOM;
     const toPlaceholder = isDefined(errors.root?.['toAccountId']) ? missingPlaceholder : t`Choose`;
 
     return (
         <View>
             <GroupedListSection>
-                <View onLayout={handleFromLayout}>
-                    <TransferAccountPicker
-                        label={t({ message: 'From', context: 'transfer account' })}
-                        account={fromAccount}
-                        placeholder={fromPlaceholder}
-                        animatedStyle={fromAnimatedStyle}
-                        testID={TransferQuickFormSelector.FromAccount}
-                        selectedTestID={fromAccountSelectedTestID}
-                        onPress={handleFromPress}
-                    />
-                </View>
-                <TransferAccountPicker
-                    label={t({ message: 'To', context: 'transfer account' })}
-                    account={toAccount}
-                    placeholder={toPlaceholder}
-                    animatedStyle={toAnimatedStyle}
-                    testID={TransferQuickFormSelector.ToAccount}
-                    selectedTestID={toAccountSelectedTestID}
-                    onPress={handleToPress}
-                />
+                <Animated.View style={fromAnimatedStyle} onLayout={handleFromLayout}>
+                    <AnchoredMorphTrigger edge={RoundedEdgeEnum.TOP} onPress={handleFromPress}>
+                        {handlePress => (
+                            <TransferAccountPicker
+                                label={t({ message: 'From', context: 'transfer account' })}
+                                account={fromAccount}
+                                placeholder={fromPlaceholder}
+                                testID={TransferQuickFormSelector.FromAccount}
+                                selectedTestID={fromAccountSelectedTestID}
+                                onPress={handlePress}
+                            />
+                        )}
+                    </AnchoredMorphTrigger>
+                </Animated.View>
+                <Animated.View style={toAnimatedStyle}>
+                    <AnchoredMorphTrigger edge={toEdge} onPress={handleToPress}>
+                        {handlePress => (
+                            <TransferAccountPicker
+                                label={t({ message: 'To', context: 'transfer account' })}
+                                account={toAccount}
+                                placeholder={toPlaceholder}
+                                testID={TransferQuickFormSelector.ToAccount}
+                                selectedTestID={toAccountSelectedTestID}
+                                onPress={handlePress}
+                            />
+                        )}
+                    </AnchoredMorphTrigger>
+                </Animated.View>
                 {children}
             </GroupedListSection>
-            {hasAnyAccount ? <TransferSwapButton dividerOffset={fromRowHeight} isEnabled={canSwap} onPress={handleSwap} /> : null}
+            {isSwapShown ? <TransferSwapButton dividerOffset={fromRowHeight} isEnabled={canSwap} onPress={handleSwap} /> : null}
         </View>
     );
 };

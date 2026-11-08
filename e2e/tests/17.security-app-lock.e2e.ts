@@ -44,6 +44,7 @@ test('17 security app lock', { tags: ['security'] }, async ({ budgie }) => {
         await b.scrollTo(ctx, 'AccountForm.CurrencySelector');
         await b.tapId(ctx, 'AccountForm.CurrencySelector');
         await b.expectId(ctx, 'CurrencySelector.SearchInput', 3_000);
+        await b.expectSettledId(ctx, 'CurrencySelector.SearchInput');
         await b.fillId(ctx, 'CurrencySelector.SearchInput', 'EUR');
         await sec.resumeAfterPinUnlock(ctx, 'CurrencySelector.SearchInput');
         await typed('EUR');

@@ -1,4 +1,3 @@
-// eslint-disable max-lines -- Root layout owns every root stack screen; approved by Vitalii
 /* eslint-disable react/jsx-max-depth */
 import { BudgetPeriodCloseService } from '@budgie/budget';
 import { I18nProvider as LinguiProvider } from '@lingui/react';
@@ -28,14 +27,12 @@ import { DatabaseMigrationStatusEnum } from '../@generic/drizzle/enum/database-m
 import { useDatabaseMigration } from '../@generic/drizzle/hook/use-database-migration.hook';
 import { useAppInitialization } from '../@generic/hook/use-app-initialization.hook';
 import { useAppState } from '../@generic/hook/use-app-state.hook';
-import { useIsAccessibilityTextSize } from '../@generic/hook/use-is-accessibility-text-size.hook';
 import { CreateActionProvider } from '../@generic/provider/create-action.provider';
 import { ModalProvider } from '../@generic/provider/modal.provider';
 import { ScreenChromeThemeProvider } from '../@generic/provider/screen-chrome-theme.provider';
 import { appRuntime } from '../@generic/runtime/app.runtime';
 import { Workload } from '../@generic/service/workload.service';
 import { fitToContentsSheetOptions } from '../@generic/utils/fit-to-contents-sheet-options.util';
-import { formSheetOptions } from '../@generic/utils/form-sheet-options.util';
 import { logAndContinue } from '../@generic/utils/log-and-continue.util';
 import { AiProvider } from '../ai/provider/ai.provider';
 import { VoiceInputProvider } from '../ai/provider/voice-input.provider';
@@ -50,23 +47,7 @@ import { ReceiptLaunchHandler } from '../receipt/components/receipt-launch-handl
 import { AppDataSyncService } from '../sync/service/app-data-sync.service';
 import { ThemeProvider } from '../theme/provider/theme.provider';
 
-const DETENT_95 = 0.95;
-const DETENT_90 = 0.9;
-const DETENT_70 = 0.7;
-const DETENT_40 = 0.4;
-const DETENT_55 = 0.55;
-const DETENT_62 = 0.62;
-const DETENT_85 = 0.85;
-const DETENT_82 = 0.82;
-const DETENT_96 = 0.96;
-
 const MODAL_OPTIONS: NativeStackNavigationOptions = { presentation: 'modal', headerShown: false };
-
-const STACKED_FILTER_OPTIONS: NativeStackNavigationOptions = {
-    presentation: 'pageSheet',
-    headerShown: false,
-    contentStyle: { backgroundColor: 'transparent' }
-};
 
 const ENTITY_FORM_OPTIONS: NativeStackNavigationOptions = { presentation: 'fullScreenModal', headerShown: false };
 
@@ -76,11 +57,12 @@ const LOCK_SCREEN_OPTIONS: NativeStackNavigationOptions = { presentation: 'fullS
 
 const FADE_OPTIONS: NativeStackNavigationOptions = { animation: 'fade' };
 
-const SELECTOR_OPTIONS = formSheetOptions([DETENT_70, DETENT_90], 0);
-const CURRENCY_SELECTOR_OPTIONS = formSheetOptions([DETENT_62, DETENT_90], 0);
-const COMPACT_SELECTOR_OPTIONS = formSheetOptions([DETENT_70, DETENT_90], 0);
-
-const DESTINATION_OPTIONS = formSheetOptions([DETENT_90]);
+const MORPHING_SHEET_OPTIONS: NativeStackNavigationOptions = {
+    presentation: 'transparentModal',
+    animation: 'none',
+    headerShown: false,
+    contentStyle: { backgroundColor: 'transparent' }
+};
 
 enableScreens();
 enableFreeze();
@@ -128,15 +110,8 @@ const handleAppStateChange = (isActive: boolean): void => {
 // eslint-disable-next-line max-lines-per-function -- Layout component requires many lines
 export const RootLayoutContent = () => {
     const databaseMigrationStatus = useDatabaseMigration();
-    const [sheetSurface, groupedSheetSurface, sheetGroupedSurface] = useCSSVariable([
-        '--color-sheet-surface',
-        '--color-grouped-surface',
-        '--color-sheet-grouped-surface'
-    ]);
+    const [sheetSurface] = useCSSVariable(['--color-sheet-surface']);
     const sheetOptions = fitToContentsSheetOptions(sheetSurface);
-    const budgetSheetOptions = { ...sheetOptions, sheetAllowedDetents: [DETENT_95] };
-    const isAccessibilityTextSize = useIsAccessibilityTextSize();
-    const contactSelectorOptions = formSheetOptions([DETENT_55, DETENT_90], isAccessibilityTextSize ? 1 : 0);
     useAppInitialization(databaseMigrationStatus === DatabaseMigrationStatusEnum.MIGRATED);
     useAppState(handleAppStateChange);
 
@@ -190,110 +165,110 @@ export const RootLayoutContent = () => {
                                                                     <Stack.Screen name="(main)/transactions/[id]/transfer" />
                                                                     <Stack.Screen name="(main)/analytics/transactions" />
                                                                     <Stack.Screen name="(main)/categorize" />
-                                                                    <Stack.Screen name="category-selector" options={SELECTOR_OPTIONS} />
+                                                                    <Stack.Screen
+                                                                        name="category-selector"
+                                                                        options={MORPHING_SHEET_OPTIONS}
+                                                                    />
                                                                     <Stack.Screen
                                                                         name="account-selector"
-                                                                        options={COMPACT_SELECTOR_OPTIONS}
+                                                                        options={MORPHING_SHEET_OPTIONS}
                                                                     />
                                                                     <Stack.Screen
                                                                         name="currency-selector"
-                                                                        options={CURRENCY_SELECTOR_OPTIONS}
+                                                                        options={MORPHING_SHEET_OPTIONS}
                                                                     />
                                                                     <Stack.Screen
                                                                         name="language-selector"
-                                                                        options={COMPACT_SELECTOR_OPTIONS}
+                                                                        options={MORPHING_SHEET_OPTIONS}
                                                                     />
-                                                                    <Stack.Screen name="resync-window-picker" options={sheetOptions} />
+                                                                    <Stack.Screen
+                                                                        name="resync-window-picker"
+                                                                        options={MORPHING_SHEET_OPTIONS}
+                                                                    />
                                                                     <Stack.Screen
                                                                         name="contact-selector"
-                                                                        options={contactSelectorOptions}
+                                                                        options={MORPHING_SHEET_OPTIONS}
                                                                     />
-                                                                    <Stack.Screen name="tags-selector" options={SELECTOR_OPTIONS} />
+                                                                    <Stack.Screen name="tags-selector" options={MORPHING_SHEET_OPTIONS} />
                                                                     <Stack.Screen
                                                                         name="category-destination"
-                                                                        options={DESTINATION_OPTIONS}
+                                                                        options={MORPHING_SHEET_OPTIONS}
                                                                     />
-                                                                    <Stack.Screen name="tag-destination" options={DESTINATION_OPTIONS} />
-                                                                    <Stack.Screen
-                                                                        name="voice-review"
-                                                                        options={formSheetOptions([0.65, DETENT_95], 0)}
-                                                                    />
+                                                                    <Stack.Screen name="tag-destination" options={MORPHING_SHEET_OPTIONS} />
+                                                                    <Stack.Screen name="voice-review" options={MORPHING_SHEET_OPTIONS} />
                                                                     <Stack.Screen
                                                                         name="budget-safe-to-spend"
-                                                                        options={budgetSheetOptions}
+                                                                        options={MORPHING_SHEET_OPTIONS}
                                                                     />
                                                                     <Stack.Screen
                                                                         name="budget-limit-changes"
-                                                                        options={budgetSheetOptions}
+                                                                        options={MORPHING_SHEET_OPTIONS}
                                                                     />
                                                                     <Stack.Screen name="category-form" options={ENTITY_FORM_OPTIONS} />
                                                                     <Stack.Screen name="tag-form" options={ENTITY_FORM_OPTIONS} />
+                                                                    <Stack.Screen name="date-picker" options={MORPHING_SHEET_OPTIONS} />
                                                                     <Stack.Screen
-                                                                        name="date-picker"
-                                                                        options={fitToContentsSheetOptions(groupedSheetSurface)}
+                                                                        name="bank-integration-key"
+                                                                        options={MORPHING_SHEET_OPTIONS}
                                                                     />
-                                                                    <Stack.Screen name="bank-integration-key" options={sheetOptions} />
                                                                     <Stack.Screen
                                                                         name="convert-to-transfer"
-                                                                        options={fitToContentsSheetOptions(groupedSheetSurface)}
+                                                                        options={MORPHING_SHEET_OPTIONS}
                                                                     />
-                                                                    <Stack.Screen name="convert-to-installment" options={sheetOptions} />
+                                                                    <Stack.Screen
+                                                                        name="convert-to-installment"
+                                                                        options={MORPHING_SHEET_OPTIONS}
+                                                                    />
                                                                     <Stack.Screen
                                                                         name="convert-to-refund"
-                                                                        options={formSheetOptions([DETENT_90, 1], 0)}
+                                                                        options={MORPHING_SHEET_OPTIONS}
                                                                     />
-                                                                    <Stack.Screen
-                                                                        name="icon-selector"
-                                                                        options={formSheetOptions([0.6, DETENT_90])}
-                                                                    />
-                                                                    <Stack.Screen name="split-entries" options={sheetOptions} />
-                                                                    <Stack.Screen name="transaction-fee" options={sheetOptions} />
+                                                                    <Stack.Screen name="icon-selector" options={MORPHING_SHEET_OPTIONS} />
+                                                                    <Stack.Screen name="split-entries" options={MORPHING_SHEET_OPTIONS} />
+                                                                    <Stack.Screen name="transaction-fee" options={MORPHING_SHEET_OPTIONS} />
                                                                     <Stack.Screen
                                                                         name="consolidation-source"
-                                                                        options={fitToContentsSheetOptions(groupedSheetSurface)}
+                                                                        options={MORPHING_SHEET_OPTIONS}
                                                                     />
-                                                                    <Stack.Screen
-                                                                        name="make-recurring"
-                                                                        options={fitToContentsSheetOptions(groupedSheetSurface)}
-                                                                    />
+                                                                    <Stack.Screen name="make-recurring" options={MORPHING_SHEET_OPTIONS} />
                                                                     <Stack.Screen
                                                                         name="import-column-mapper"
-                                                                        options={formSheetOptions([0.75, DETENT_95])}
+                                                                        options={MORPHING_SHEET_OPTIONS}
                                                                     />
                                                                     <Stack.Screen name="import-backup-pin" options={PIN_OPTIONS} />
                                                                     <Stack.Screen name="pin-setup" />
                                                                     <Stack.Screen name="add-pin" options={sheetOptions} />
                                                                     <Stack.Screen
                                                                         name="transaction-type-filter"
-                                                                        options={formSheetOptions([DETENT_40])}
+                                                                        options={MORPHING_SHEET_OPTIONS}
                                                                     />
-                                                                    <Stack.Screen
-                                                                        name="date-filter"
-                                                                        options={formSheetOptions([DETENT_55, DETENT_85])}
-                                                                    />
+                                                                    <Stack.Screen name="date-filter" options={MORPHING_SHEET_OPTIONS} />
                                                                     <Stack.Screen
                                                                         name="transaction-amount-filter"
-                                                                        options={formSheetOptions([DETENT_82, DETENT_96])}
+                                                                        options={MORPHING_SHEET_OPTIONS}
                                                                     />
                                                                     <Stack.Screen
                                                                         name="transaction-category-filter"
-                                                                        options={STACKED_FILTER_OPTIONS}
+                                                                        options={MORPHING_SHEET_OPTIONS}
                                                                     />
                                                                     <Stack.Screen
                                                                         name="transaction-account-filter"
-                                                                        options={STACKED_FILTER_OPTIONS}
+                                                                        options={MORPHING_SHEET_OPTIONS}
                                                                     />
                                                                     <Stack.Screen
                                                                         name="transaction-tag-filter"
-                                                                        options={STACKED_FILTER_OPTIONS}
+                                                                        options={MORPHING_SHEET_OPTIONS}
                                                                     />
-                                                                    <Stack.Screen name="budget-period-summary" options={sheetOptions} />
-                                                                    <Stack.Screen name="rule-form" />
                                                                     <Stack.Screen
-                                                                        name="rule-selector"
-                                                                        options={fitToContentsSheetOptions(sheetGroupedSurface)}
+                                                                        name="budget-period-summary"
+                                                                        options={MORPHING_SHEET_OPTIONS}
                                                                     />
-                                                                    <Stack.Screen name="rule-mcc-selector" options={SELECTOR_OPTIONS} />
+                                                                    <Stack.Screen name="rule-form" />
+                                                                    <Stack.Screen name="rule-selector" options={MORPHING_SHEET_OPTIONS} />
+                                                                    <Stack.Screen
+                                                                        name="rule-mcc-selector"
+                                                                        options={MORPHING_SHEET_OPTIONS}
+                                                                    />
                                                                 </Stack>
                                                             </VoiceInputProvider>
                                                         </ModalProvider>

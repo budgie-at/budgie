@@ -1,6 +1,8 @@
 import { useWindowDimensions } from 'react-native';
 import { useSharedValue } from 'react-native-reanimated';
 
+import { isPositiveNumber } from '@rnw-community/shared';
+
 import { LEGEND_LIST_STYLE } from '../../constant/legend-list.constant';
 import { BudgieLegendList } from '../budgie-legend-list/budgie-legend-list';
 import { LoadingContent } from '../loading-content/loading-content';
@@ -56,7 +58,7 @@ export const SelectorList = <Item,>({
         <LoadingContent isLoading={isLoading} containerClassName="flex-1" className="flex-1">
             <BudgieLegendList
                 {...options}
-                initialScrollIndex={initialScrollIndex}
+                {...(isPositiveNumber(initialScrollIndex) && { initialScrollIndex })}
                 estimatedItemSize={estimatedItemSize}
                 ref={listRef}
                 data={data}

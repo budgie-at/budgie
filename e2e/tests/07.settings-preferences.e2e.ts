@@ -37,12 +37,14 @@ test('07 settings preferences', { tags: ['settings'] }, async ({ budgie }) => {
 
     await b.phase('main currency and default account', async () => {
         await a.openSettingsCard(ctx, /^SettingsPage\.MainCurrencyCard\..+$/, 'CurrencySelector.SearchInput');
+        await b.expectSettledId(ctx, 'CurrencySelector.SearchInput');
         await b.fillId(ctx, 'CurrencySelector.SearchInput', 'GBP');
         await b.tapId(ctx, 'AccountForm.CurrencyOption.GBP');
         await b.expectNoId(ctx, 'CurrencySelector.SearchInput', 3_000);
         await b.expectId(ctx, 'SettingsPage.MainCurrencyCard.GBP', 3_000);
 
         await a.openSettingsCard(ctx, /^SettingsPage\.DefaultAccountCard\..+$/, 'AccountPickerBottomSheet.Input');
+        await b.expectSettledId(ctx, 'AccountPickerBottomSheet.Input');
         await b.fillId(ctx, 'AccountPickerBottomSheet.Input', 'E2E Settings Cash');
         await b.done(ctx);
         await b.tapId(ctx, 'AccountPickerBottomSheet.Option.E2E Settings Cash');

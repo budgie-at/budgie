@@ -2,9 +2,11 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { Text, useWindowDimensions } from 'react-native';
+import Animated from 'react-native-reanimated';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { MOTION_FADE_IN, MOTION_FADE_OUT } from '../../../@generic/constant/motion.constant';
 import { HapticPressFeedbackEnum } from '../../../@generic/enum/haptic-press-feedback.enum';
 import { TRANSACTION_LARGE_TEXT_SCALE } from '../../constant/transaction-large-text-scale.constant';
 import { TransferQuickFormSelector } from '../transfer-quick-form/transfer-quick-form.selector';
@@ -18,6 +20,15 @@ interface Props {
 const SWAP_SIZE = 28;
 const SWAP_HIT_SLOP = 8;
 const DISABLED_OPACITY = 0.4;
+
+const wrapperVariants = cva('', {
+    variants: {
+        isLargeText: {
+            true: '',
+            false: 'absolute inset-0'
+        }
+    }
+});
 
 const swapVariants = cva('items-center justify-center rounded-full bg-surface-disc', {
     variants: {
@@ -40,29 +51,36 @@ export const TransferSwapButton = ({ dividerOffset, isEnabled, onPress }: Props)
     const iconSize = isLargeText ? 20 : 14;
 
     return (
-        <HapticPressable
-            className={swapVariants({ isLargeText })}
-            style={style}
-            hitSlop={SWAP_HIT_SLOP}
-            onPress={onPress}
-            pressFeedback={HapticPressFeedbackEnum.SELECTION}
-            disabled={!isEnabled}
-            accessibilityState={accessibilityState}
-            testID={TransferQuickFormSelector.SwapAccounts}
-            accessibilityLabel={t`Swap accounts`}
-            accessibilityRole="button"
+        <Animated.View
+            className={wrapperVariants({ isLargeText })}
+            entering={MOTION_FADE_IN}
+            exiting={MOTION_FADE_OUT}
+            pointerEvents="box-none"
         >
-            <Icon icon={UserIconNameEnum.ArrowUpDown} size={iconSize} className="text-primary" />
-            {isLargeText ? (
-                <Text
-                    className="min-w-0 shrink text-[17px] text-primary"
-                    maxFontSizeMultiplier={1.35}
-                    numberOfLines={1}
-                    adjustsFontSizeToFit
-                >
-                    <Trans>Swap accounts</Trans>
-                </Text>
-            ) : null}
-        </HapticPressable>
+            <HapticPressable
+                className={swapVariants({ isLargeText })}
+                style={style}
+                hitSlop={SWAP_HIT_SLOP}
+                onPress={onPress}
+                pressFeedback={HapticPressFeedbackEnum.SELECTION}
+                disabled={!isEnabled}
+                accessibilityState={accessibilityState}
+                testID={TransferQuickFormSelector.SwapAccounts}
+                accessibilityLabel={t`Swap accounts`}
+                accessibilityRole="button"
+            >
+                <Icon icon={UserIconNameEnum.ArrowUpDown} size={iconSize} className="text-primary" />
+                {isLargeText ? (
+                    <Text
+                        className="min-w-0 shrink text-[17px] text-primary"
+                        maxFontSizeMultiplier={1.35}
+                        numberOfLines={1}
+                        adjustsFontSizeToFit
+                    >
+                        <Trans>Swap accounts</Trans>
+                    </Text>
+                ) : null}
+            </HapticPressable>
+        </Animated.View>
     );
 };

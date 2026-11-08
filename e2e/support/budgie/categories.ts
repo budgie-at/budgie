@@ -1,6 +1,6 @@
 import { expect } from 'e2e';
 
-import { byId, done, expectId, expectNoId, settledBounds, sleep, tapId, tapUntil, type Ctx } from './core.ts';
+import { byId, done, expectId, expectNoId, expectSettledId, settledBounds, sleep, tapId, tapUntil, type Ctx } from './core.ts';
 
 /**
  * subflows/shared/create-entity-from-transaction: open a picker from the
@@ -54,6 +54,7 @@ export async function selectCategory(ctx: Ctx, name: string): Promise<void> {
 
 /** The category picker is open: search `name` and tap its card until the picker closes. */
 export async function pickCategoryCard(ctx: Ctx, name: string): Promise<void> {
+    await expectSettledId(ctx, 'CategoryPickerBottomSheet.Input');
     await byId(ctx.screen, 'CategoryPickerBottomSheet.Input').fill(name);
     await done(ctx);
     const card = byId(ctx.screen, `CategoryPickerBottomSheet.Card.${name}.Label`);
@@ -103,9 +104,14 @@ export async function swipeRowToDelete(ctx: Ctx, rowId: string): Promise<void> {
     await action.tap();
 }
 
-/** The category/tag form's icon picker: search `query`, pick `iconId`. */
-export async function pickIcon(ctx: Ctx, query: string, iconId: string): Promise<void> {
+/** The category/tag form's icon trigger: open the icon picker and wait until it holds still. */
+export async function openIconPicker(ctx: Ctx): Promise<void> {
     await tapId(ctx, 'CategoryForm.IconTrigger');
+    await expectSettledId(ctx, 'IconSelector.SearchInput');
+}
+
+/** The icon picker is open: search `query`, pick `iconId`. */
+export async function pickIconFromOpenPicker(ctx: Ctx, query: string, iconId: string): Promise<void> {
     await byId(ctx.screen, 'IconSelector.SearchInput').fill(query);
     await tapId(ctx, `IconSelector.Icon.${iconId}`);
 }

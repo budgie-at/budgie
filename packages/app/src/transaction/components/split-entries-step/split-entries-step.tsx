@@ -1,0 +1,110 @@
+import { TransactionEntryCreateInputInterface, TransactionEntryTypeEnum } from '@budgie/contracts';
+import { t } from '@lingui/core/macro';
+import { Trans } from '@lingui/react/macro';
+import { Text, View } from 'react-native';
+
+import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
+import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { PillButton } from '../../../@generic/component/pill-button/pill-button';
+import { ScrollableSheetCard } from '../../../@generic/component/scrollable-sheet-card/scrollable-sheet-card';
+import { SheetTitleRow } from '../../../@generic/component/sheet-title-row/sheet-title-row';
+import { MORPHING_SHEET_DESTINATION_HEIGHT_RATIO } from '../../../@generic/constant/morphing-sheet-height-ratio.constant';
+import { useSplitEntriesEditor } from '../../hook/use-split-entries-editor.hook';
+import { useSplitEntriesSubmit } from '../../hook/use-split-entries-submit.hook';
+import { EntryWithLocalIdInterface } from '../../utils/entry-with-local-id.util';
+import { SplitEntriesAddItemFooter } from '../split-entries-add-item-footer/split-entries-add-item-footer';
+import { SplitEntriesItem } from '../split-entries-item/split-entries-item';
+import { SplitEntriesModalContentSelector } from '../split-entries-modal-content/split-entries-modal-content.selector';
+import { SplitEntriesRemainder } from '../split-entries-remainder/split-entries-remainder';
+
+import type { Dispatch, SetStateAction } from 'react';
+
+interface Props {
+    readonly entries: EntryWithLocalIdInterface[];
+    readonly isInitiallySplit: boolean;
+    readonly entryType: TransactionEntryTypeEnum;
+    readonly currencySymbol: string;
+    readonly totalAmount: number;
+    readonly onEntriesChange: Dispatch<SetStateAction<EntryWithLocalIdInterface[]>>;
+    readonly onCategoryPress: (index: number) => void;
+    readonly onConfirm: (entries: TransactionEntryCreateInputInterface[]) => void;
+}
+
+export const SplitEntriesStep = (props: Props) => {
+    const { entries, isInitiallySplit, entryType, currencySymbol, totalAmount, onEntriesChange, onCategoryPress, onConfirm } = props;
+    const {
+        autoFocusId,
+        canAddEntry,
+        canRemoveSplit,
+        remainingAmount,
+        isFullySplit,
+        isOverBudget,
+        hasMissingCategories,
+        canConfirm,
+        handleAmountChange,
+        handleAddEntry,
+        handleRemoveEntry
+    } = useSplitEntriesEditor({ entries, isInitiallySplit, entryType, totalAmount, onEntriesChange });
+    const { handleConfirm, handleRemoveSplit } = useSplitEntriesSubmit(entries, totalAmount, onConfirm);
+
+    return (
+        <ScrollableSheetCard
+            header={
+                <View className="px-xl">
+                    <SheetTitleRow title={t`Split`} trailing={<View />} />
+                </View>
+            }
+            ratio={MORPHING_SHEET_DESTINATION_HEIGHT_RATIO}
+            contentClassName="px-3xl pb-xl"
+        >
+            <GroupedListSection>
+                {entries.map((entry, index) => (
+                    <SplitEntriesItem
+                        key={entry.localId}
+                        entry={entry}
+                        index={index}
+                        currencySymbol={currencySymbol}
+                        autoFocus={entry.localId === autoFocusId}
+                        entryCount={entries.length}
+                        onAmountChange={handleAmountChange}
+                        onCategoryPress={onCategoryPress}
+                        onDelete={handleRemoveEntry}
+                    />
+                ))}
+            </GroupedListSection>
+            <SplitEntriesAddItemFooter canAddEntry={canAddEntry} onAddEntry={handleAddEntry} />
+            <SplitEntriesRemainder
+                canConfirm={canConfirm}
+                remainingAmount={remainingAmount}
+                currencySymbol={currencySymbol}
+                isFullySplit={isFullySplit}
+                isOverBudget={isOverBudget}
+                hasMissingCategories={hasMissingCategories}
+            />
+            {canRemoveSplit ? (
+                <View className="pt-xl">
+                    <GroupedListSection>
+                        <HapticPressable
+                            onPress={handleRemoveSplit}
+                            accessibilityRole="button"
+                            className="min-h-[44px] justify-center px-3xl py-md"
+                            testID={SplitEntriesModalContentSelector.RemoveSplitButton}
+                        >
+                            <Text className="text-md text-destructive-strong">
+                                <Trans>Remove split</Trans>
+                            </Text>
+                        </HapticPressable>
+                    </GroupedListSection>
+                </View>
+            ) : null}
+            <View className="pt-3xl pb-[16px]">
+                <PillButton
+                    label={t`Done`}
+                    isDisabled={!canConfirm}
+                    onPress={handleConfirm}
+                    testID={SplitEntriesModalContentSelector.ConfirmButton}
+                />
+            </View>
+        </ScrollableSheetCard>
+    );
+};

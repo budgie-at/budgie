@@ -4,11 +4,14 @@ import { useFormContext, useWatch } from 'react-hook-form';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { AnchoredMorphTrigger } from '../../../@generic/component/anchored-morph-trigger/anchored-morph-trigger';
 import { GroupedListValueRow } from '../../../@generic/component/grouped-list-value-row/grouped-list-value-row';
+import { RoundedEdgeEnum } from '../../../@generic/enum/rounded-edge.enum';
 import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
 import { RecurringSeriesFormSelector } from '../recurring-series-form-screen/recurring-series-form.selector';
 
+import type { AnchoredMorphOriginInterface } from '../../../@generic/interface/anchored-morph-origin.interface';
 import type { RecurringSeriesFormValues } from '../../constant/recurring-series-form-schema.constant';
 
 export const RecurringFormAccountField = () => {
@@ -19,8 +22,8 @@ export const RecurringFormAccountField = () => {
     const { account } = useGetAccountByIdQuery(accountId ?? 0);
     const hasAccount = isDefined(accountId);
 
-    const handlePress = () => {
-        openAccountSelector({ initialAccountId: accountId, onlyActive: false }, selectedAccountId => {
+    const handleSelect = (origin: AnchoredMorphOriginInterface) => {
+        openAccountSelector({ initialAccountId: accountId, onlyActive: false, origin }, selectedAccountId => {
             if (isDefined(selectedAccountId)) {
                 setValue('accountId', selectedAccountId);
             }
@@ -31,14 +34,21 @@ export const RecurringFormAccountField = () => {
         setValue('accountId', null);
     };
 
+    const icon = account?.icon ?? UserIconNameEnum.Wallet;
+    const value = account?.title ?? t`Any account`;
+
     return (
-        <GroupedListValueRow
-            icon={account?.icon ?? UserIconNameEnum.Wallet}
-            title={t`Account`}
-            value={account?.title ?? t`Any account`}
-            testID={RecurringSeriesFormSelector.Account}
-            onPress={handlePress}
-            {...(hasAccount && { onClear: handleClear })}
-        />
+        <AnchoredMorphTrigger edge={RoundedEdgeEnum.BOTTOM} onPress={handleSelect}>
+            {handlePress => (
+                <GroupedListValueRow
+                    icon={icon}
+                    title={t`Account`}
+                    value={value}
+                    testID={RecurringSeriesFormSelector.Account}
+                    {...(hasAccount && { onClear: handleClear })}
+                    onPress={handlePress}
+                />
+            )}
+        </AnchoredMorphTrigger>
     );
 };

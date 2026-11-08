@@ -1,10 +1,14 @@
 import { isString } from '@rnw-community/shared';
 
-import { formSheetOptions } from './form-sheet-options.util';
-
 import type { NativeStackNavigationOptions } from 'expo-router';
 
+const SHEET_CORNER_RADIUS = 24;
+
 export const fitToContentsSheetOptions = (surfaceColor: string | number | undefined): NativeStackNavigationOptions => ({
-    ...formSheetOptions('fitToContents'),
-    ...(isString(surfaceColor) && { contentStyle: { backgroundColor: surfaceColor } })
+    presentation: 'formSheet',
+    headerShown: false,
+    sheetGrabberVisible: true,
+    sheetAllowedDetents: 'fitToContents',
+    sheetCornerRadius: SHEET_CORNER_RADIUS,
+    contentStyle: isString(surfaceColor) ? { backgroundColor: surfaceColor } : { backgroundColor: 'transparent' }
 });

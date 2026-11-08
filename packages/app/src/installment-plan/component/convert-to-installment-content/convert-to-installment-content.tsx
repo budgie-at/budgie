@@ -9,6 +9,7 @@ import { isNotEmptyString } from '@rnw-community/shared';
 
 import { ENTRANCE_DURATION, ENTRANCE_REDUCED_DURATION } from '../../../@generic/constant/entrance-motion.constant';
 import { EASE_OUT } from '../../../@generic/constant/motion.constant';
+import { useMorphingSheetCommit } from '../../../@generic/hook/use-morphing-sheet-commit.hook';
 import { ConvertToInstallmentFormSchema } from '../../constant/convert-to-installment-form-schema.constant';
 import { useInstallmentAmountLabel } from '../../hook/use-installment-amount-label.hook';
 import { useInstallmentSplit } from '../../hook/use-installment-split.hook';
@@ -25,7 +26,7 @@ import type { ConvertToInstallmentModalParamsInterface } from '../../interface/c
 
 interface Props {
     readonly params: ConvertToInstallmentModalParamsInterface;
-    readonly onResolve: (accountId: number) => void;
+    readonly onCommit: (accountId: number) => void;
 }
 
 const DEFAULT_INSTALLMENT_COUNT = 3;
@@ -34,8 +35,9 @@ const ENTERING = FadeIn.duration(ENTRANCE_DURATION).easing(EASE_OUT);
 const EXITING = FadeOut.duration(ENTRANCE_REDUCED_DURATION).easing(EASE_OUT);
 const FEE_LAYOUT = LinearTransition.duration(ENTRANCE_DURATION).easing(EASE_OUT);
 
-export const ConvertToInstallmentContent = ({ params, onResolve }: Props) => {
+export const ConvertToInstallmentContent = ({ params, onCommit }: Props) => {
     const { t } = useLingui();
+    const commit = useMorphingSheetCommit(onCommit);
     const strippedTitle = params.title.replace(FIRST_PART_TITLE_PREFIX, '').trim();
     const form = useForm<ConvertToInstallmentFormValues>({
         mode: 'onChange',
@@ -61,6 +63,13 @@ export const ConvertToInstallmentContent = ({ params, onResolve }: Props) => {
         <FormProvider {...form}>
             <LayoutAnimationConfig skipEntering>
                 <View style={sheetStyle}>
+                    <ConvertToInstallmentHeader params={params} />
+                    {isScrolled ? (
+                        <View
+                            className="z-10 -mb-[40px] h-[40px] bg-linear-to-b from-sheet-surface via-sheet-surface to-sheet-surface/0"
+                            pointerEvents="none"
+                        />
+                    ) : null}
                     <ScrollView
                         {...scrollViewProps}
                         className="shrink"
@@ -69,14 +78,8 @@ export const ConvertToInstallmentContent = ({ params, onResolve }: Props) => {
                         showsHorizontalScrollIndicator={false}
                         bounces={false}
                     >
-                        <View className="gap-y-3xl px-3xl pt-2xl pb-7xl">
-                            <ConvertToInstallmentHeader params={params} />
-                            <ConvertToInstallmentParts
-                                params={params}
-                                split={split}
-                                recoveryNote={recoveryNote}
-                                onLayout={scrollHandlers.handleHeroLayout}
-                            />
+                        <View className="gap-y-3xl px-3xl pt-3xl pb-7xl">
+                            <ConvertToInstallmentParts params={params} split={split} recoveryNote={recoveryNote} />
                             <View className="gap-y-lg">
                                 <InstallmentCountPicker selectedCount={split.installmentCount} onSelect={handleSelectCount} />
                                 {split.isSplittable ? (
@@ -100,19 +103,13 @@ export const ConvertToInstallmentContent = ({ params, onResolve }: Props) => {
                             ) : null}
                         </View>
                     </ScrollView>
-                    {isScrolled ? (
-                        <View
-                            className="absolute inset-x-0 top-0 h-[40px] bg-linear-to-b from-sheet-surface via-sheet-surface to-sheet-surface/0"
-                            pointerEvents="none"
-                        />
-                    ) : null}
                     {isKeyboardVisible ? (
                         <View
                             className="absolute inset-x-0 bottom-0 h-[24px] bg-linear-to-b from-sheet-surface/0 to-sheet-surface"
                             pointerEvents="none"
                         />
                     ) : (
-                        <ConvertToInstallmentCreateButton params={params} split={split} recoveryNote={recoveryNote} onResolve={onResolve} />
+                        <ConvertToInstallmentCreateButton params={params} split={split} recoveryNote={recoveryNote} onResolve={commit} />
                     )}
                 </View>
             </LayoutAnimationConfig>

@@ -2,7 +2,20 @@ import { expect } from 'e2e';
 
 import { selectAccountBySearch } from './accounts.ts';
 import { pickCategoryCard } from './categories.ts';
-import { byId, byText, expectId, expectNoId, openLink, retry, scrollTo, selectCategoryBySearch, sleep, tapId, type Ctx } from './core.ts';
+import {
+    byId,
+    byText,
+    expectId,
+    expectNoId,
+    expectSettledId,
+    openLink,
+    retry,
+    scrollTo,
+    selectCategoryBySearch,
+    sleep,
+    tapId,
+    type Ctx
+} from './core.ts';
 
 import type { Locator } from 'e2e';
 
@@ -214,6 +227,7 @@ export async function selectSplitCategory(ctx: Ctx, entryIndex: number, category
 /** subflows/transactions/select-existing-tag */
 export async function selectExistingTag(ctx: Ctx, tag: string): Promise<void> {
     await tapUntilId(ctx, 'TransactionForm.TagsSelector', 'TagPickerBottomSheet.Input', 1, 5_000);
+    await expectSettledId(ctx, 'TagPickerBottomSheet.Input');
     await byId(ctx.screen, 'TagPickerBottomSheet.Input').fill(tag);
     await expectId(ctx, `TagPickerBottomSheet.Card.${tag}`, 15_000);
     await tapId(ctx, `TagPickerBottomSheet.Card.${tag}`);
@@ -246,65 +260,25 @@ export async function createExpense(
 
 /**
  * The fee-sheet round trip the 08/09/10 flows share on a transaction's edit form:
- * see the sheet's first entry and save button, drag it down, back on `formTitle`.
+ * see the sheet's first entry and save button, close it by its scrim, back on `formTitle`.
  */
 export async function openAndDismissFeeSheet(ctx: Ctx, formTitle: string): Promise<void> {
     const { screen } = ctx;
     await expectId(ctx, 'SplitEntryRow.Amount.0');
     await expectId(ctx, 'TransactionFeeModal.SaveButton');
-    await dismissSheetByDrag(ctx, 'SplitEntryRow.Amount.0');
+    await tapSheetScrim(ctx);
+    await expectNoId(ctx, 'SplitEntryRow.Amount.0');
     await expect(byText(screen, formTitle)).toBeVisible();
 }
 
 /**
- * Drags the open bottom sheet down by its grabber until `contentId` leaves the screen.
- * With the keyboard up, agent-device rejects any drag long enough to dismiss the sheet ("does not fit inside
- * the viewport"), and a decimal pad has no dismiss key; then the sheet's backdrop (`PopoverDismissRegion`),
- * the other way a user closes it, is tapped instead. The sheet may stop at its collapsed detent on the way,
- * so this tries up to three times.
+ * Taps the open morphing sheet's scrim (`MorphScrim`, read as "Back" or "Close") behind the card, in the top-left corner
+ * above the sheet frame, which starts 24pt below the safe area: it closes the sheet, or steps back when the
+ * active step is a sub-step.
  */
-async function dismissSheetByDrag(ctx: Ctx, contentId: string): Promise<void> {
-    const { screen } = ctx;
-    const grabber = screen.getByRole('button', { name: 'Sheet Grabber' }).first();
-    let keyboardUp = false;
-    try {
-        await ctx.device.dismissKeyboard();
-    } catch (cause) {
-        keyboardUp = true;
-        console.log(`[sheet] keyboard stayed up: ${(cause as Error).message.split('\n')[0]}`);
-    }
-    for (let attempt = 1; ; attempt++) {
-        await sleep(400);
-        if (keyboardUp) {
-            await byId(screen, 'PopoverDismissRegion').tap({ position: { x: 200, y: 120 } });
-        } else {
-            const box = await grabber.boundingBox();
-            if (box === null) {
-                throw new Error('the sheet grabber has no bounds');
-            }
-            const x = box.x + box.width / 2;
-            const y = box.y + box.height / 2;
-            try {
-                await screen.swipe({ from: { x, y }, to: { x, y: Math.min(y + 400, 860) }, duration: 250 });
-            } catch (cause) {
-                if (attempt === 3) {
-                    throw cause;
-                }
-                console.log(`[retry] sheet drag ${attempt} rejected: ${(cause as Error).message.split('\n')[0]}`);
-                keyboardUp = true;
-                continue;
-            }
-        }
-        try {
-            await expectNoId(ctx, contentId, 3_000);
-            return;
-        } catch (cause) {
-            if (attempt === 3) {
-                throw cause;
-            }
-            console.log(`[retry] sheet dismissal ${attempt} left ${contentId} on screen`);
-        }
-    }
+export async function tapSheetScrim(ctx: Ctx): Promise<void> {
+    const scrim = byId(ctx.screen, 'MorphScrim');
+    await scrim.tap({ position: await relativePoint(scrim, 0.1, 0.07) });
 }
 
 /** The transfer form's account fields: tap `selectorId` (`TransferForm.FromAccount` / `.ToAccount`), search and pick `name`. */

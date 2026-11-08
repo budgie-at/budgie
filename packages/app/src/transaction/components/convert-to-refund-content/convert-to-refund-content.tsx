@@ -7,6 +7,7 @@ import { isDefined, isEmptyArray, isNotEmptyString } from '@rnw-community/shared
 
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { SearchInput } from '../../../@generic/component/search-input/search-input';
+import { useMorphingSheetDismiss } from '../../../@generic/context/morphing-sheet.context';
 import { ConvertToRefundModalSelector } from '../../../app/convert-to-refund-modal.selector';
 import { useConvertToRefundAction } from '../../hook/use-convert-to-refund-action.hook';
 import { useRevertConsolidation } from '../../hook/use-revert-consolidation.hook';
@@ -21,16 +22,16 @@ import { TransactionPickerFailure } from '../transaction-picker-failure/transact
 import { TransactionPickerRow } from '../transaction-picker-row/transaction-picker-row';
 import { TransactionPickerSheet } from '../transaction-picker-sheet/transaction-picker-sheet';
 
-import type { ConvertToRefundModalResolveType } from '../../interface/convert-to-refund-modal-resolve.type';
 import type { TransactionPickerItemInterface } from '../../interface/transaction-picker-item.interface';
 
 interface Props {
     readonly refundIncomeTransactionId: number;
-    readonly resolveConvertToRefund: ConvertToRefundModalResolveType;
+    readonly onCommit: (result: number) => void;
 }
 
-export const ConvertToRefundContent = ({ refundIncomeTransactionId, resolveConvertToRefund }: Props) => {
+export const ConvertToRefundContent = ({ refundIncomeTransactionId, onCommit }: Props) => {
     const { t } = useLingui();
+    const dismiss = useMorphingSheetDismiss();
     const [search, setSearch] = useState('');
     const [selectedCandidate, setSelectedCandidate] = useState<TransactionPickerItemInterface | null>(null);
     const { transaction } = useGetTransactionByIdQuery(refundIncomeTransactionId);
@@ -40,28 +41,20 @@ export const ConvertToRefundContent = ({ refundIncomeTransactionId, resolveConve
         transaction?.consolidationType === TransactionConsolidationTypeEnum.REFUND ||
         isDefined(transaction?.consolidationParentTransactionId);
 
-    const handleResolve = () => void resolveConvertToRefund(null);
-
     const handleSearchChange = (value: string) => {
         setSearch(value);
         setSelectedCandidate(null);
     };
 
-    const revertRefund = useRevertConsolidation(canonicalTransactionId, handleResolve, true);
-    const { convert, isLoading: isConverting } = useConvertToRefundAction(
-        refundIncomeTransactionId,
-        selectedCandidate,
-        resolveConvertToRefund
-    );
-    const handleDone = showRevert ? handleResolve : convert;
+    const revertRefund = useRevertConsolidation(canonicalTransactionId, dismiss, true);
+    const { convert, isLoading: isConverting } = useConvertToRefundAction(refundIncomeTransactionId, selectedCandidate, onCommit);
+    const handleDone = showRevert ? dismiss : convert;
     const isDoneDisabled = isConverting || (!showRevert && !isDefined(selectedCandidate));
     const showEmpty = isEmptyArray(candidates) && !isNotEmptyString(errorMessage);
 
     return (
         <TransactionPickerSheet
-            header={
-                <ConvertToRefundHeader onClose={handleResolve} onConfirm={handleDone} disabled={isDoneDisabled} isLoading={isConverting} />
-            }
+            header={<ConvertToRefundHeader onClose={dismiss} onConfirm={handleDone} disabled={isDoneDisabled} isLoading={isConverting} />}
             testID={ConvertToRefundModalSelector.Picker}
             pinnedFooter={
                 <ConvertToRefundFooter

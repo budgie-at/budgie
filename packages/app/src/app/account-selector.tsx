@@ -1,92 +1,27 @@
-import { useLingui } from '@lingui/react/macro';
-import * as Effect from 'effect/Effect';
-import { Stack } from 'expo-router';
-import { useState } from 'react';
+import { isDefined } from '@rnw-community/shared';
 
-import { getErrorMessage, isDefined } from '@rnw-community/shared';
-
-import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
-import { SheetSurface } from '../@generic/component/sheet-surface/sheet-surface';
+import { SelectorMorphingSurface } from '../@generic/component/selector-morphing-surface/selector-morphing-surface';
+import { MORPHING_SHEET_SELECTOR_HEIGHT_RATIO } from '../@generic/constant/morphing-sheet-height-ratio.constant';
 import { useModalRouteState } from '../@generic/hook/use-modal-route-state/use-modal-route-state.hook';
-import { appRuntime } from '../@generic/runtime/app.runtime';
-import { logAndContinue } from '../@generic/utils/log-and-continue.util';
-import { toastOnFailure } from '../@generic/utils/toast-on-failure.util';
-import { AccountSelectContent } from '../account/component/account-select-content/account-select-content';
+import { useMorphingSheetListHeight } from '../@generic/hook/use-morphing-sheet-list-height.hook';
+import { useMorphingSheetResult } from '../@generic/hook/use-morphing-sheet-result.hook';
+import { AccountSelectorModalContent } from '../account/component/account-selector-modal-content/account-selector-modal-content';
 import { useAccountSelectorModal, useAccountSelectorModalParams } from '../account/context/account-selector-modal.context';
-import { useSearchAccountsSortedQuery } from '../account/query/use-search-accounts-sorted.query';
-import { isUntrackedOwnAccount } from '../account/utils/is-untracked-own-account.util';
-
-import { AccountSelectorModalSelector } from './account-selector-modal.selector';
 
 export default function AccountSelectorModal() {
-    const { t } = useLingui();
     const [, resolveAccountSelector, dismissAccountSelector] = useAccountSelectorModal();
     const currentParams = useAccountSelectorModalParams();
-    const screenOptions = useModalRouteState(currentParams, dismissAccountSelector);
-
-    const [search, setSearch] = useState('');
-
-    const createAction = currentParams?.createAction;
-
-    const { accounts } = useSearchAccountsSortedQuery(search, {
-        debtType: currentParams?.debtType,
-        excludeAccountId: currentParams?.excludeAccountId,
-        excludeTypes: currentParams?.excludeAccountTypes,
-        includeTypes: currentParams?.includeAccountTypes,
-        onlyActive: currentParams?.onlyActive ?? true
-    });
-    const selectableAccounts = accounts.filter(
-        account => !isUntrackedOwnAccount(account) || account.id === currentParams?.initialAccountId
-    );
-
-    const handleCreateAction = () => {
-        if (!isDefined(createAction)) {
-            return;
-        }
-
-        appRuntime.runFork(
-            logAndContinue(
-                Effect.tryPromise({ try: () => createAction.onCreate(), catch: getErrorMessage }).pipe(
-                    Effect.tap(createdAccountId => Effect.sync(() => void resolveAccountSelector(createdAccountId))),
-                    toastOnFailure(createAction.errorMessage)
-                )
-            )
-        );
-    };
-    const contentCreateAction = isDefined(createAction)
-        ? {
-              title: createAction.title,
-              subtitle: createAction.subtitle,
-              errorMessage: createAction.errorMessage,
-              onCreate: handleCreateAction
-          }
-        : void 0;
+    useModalRouteState(currentParams, dismissAccountSelector);
+    const listStyle = useMorphingSheetListHeight(MORPHING_SHEET_SELECTOR_HEIGHT_RATIO);
+    const { handleCommit, handleDismissed } = useMorphingSheetResult<number>(resolveAccountSelector);
 
     if (!isDefined(currentParams)) {
         return null;
     }
 
     return (
-        <SheetSurface>
-            <Stack.Screen options={screenOptions} />
-
-            <SelectorModalSearchHeader
-                title={t`Account`}
-                placeholder={t`Search accounts…`}
-                search={search}
-                onSearchChange={setSearch}
-                testID={AccountSelectorModalSelector.Input}
-            />
-
-            <AccountSelectContent
-                data={selectableAccounts}
-                initialAccountId={currentParams.initialAccountId ?? null}
-                search={search}
-                onSelect={resolveAccountSelector}
-                emptyStateDescription={currentParams.emptyStateDescription}
-                showDebtTotal={currentParams.showDebtTotal ?? false}
-                createAction={contentCreateAction}
-            />
-        </SheetSurface>
+        <SelectorMorphingSurface origin={currentParams.origin} onDismissed={handleDismissed} sheetStyle={listStyle}>
+            <AccountSelectorModalContent params={currentParams} onCommit={handleCommit} />
+        </SelectorMorphingSurface>
     );
 }

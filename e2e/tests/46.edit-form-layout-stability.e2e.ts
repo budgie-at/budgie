@@ -37,6 +37,7 @@ test('46 edit form layout stability', { tags: ['transactions'] }, async ({ budgi
 
     const toggleTag = async (): Promise<void> => {
         await b.tapUntil(ctx, 'TransactionForm.TagsSelector', () => b.expectId(ctx, 'TagPickerBottomSheet.Input', 5_000));
+        await b.expectSettledId(ctx, 'TagPickerBottomSheet.Input');
         await b.byId(screen, 'TagPickerBottomSheet.Input').fill(TAG);
         await b.done(ctx);
         await b.expectId(ctx, `TagPickerBottomSheet.Card.${TAG}`, 15_000);

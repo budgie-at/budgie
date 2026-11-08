@@ -1,6 +1,6 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { ComponentProps } from 'react';
+import { ComponentProps, Ref } from 'react';
 import { Pressable, TextInput, View } from 'react-native';
 import Animated, { Keyframe } from 'react-native-reanimated';
 
@@ -16,6 +16,7 @@ interface Props extends ComponentProps<typeof TextInput> {
     readonly containerClassName?: string;
     readonly inputClassName?: string;
     readonly clearButtonClassName?: string;
+    readonly ref?: Ref<TextInput>;
 }
 
 const CLEAR_ENTER_SCALE = 0.9;

@@ -8,6 +8,7 @@ import { TITLE_MAX_FONT_SIZE_MULTIPLIER } from '../../constant/title-max-font-si
 import { FormsheetHeaderAlign } from '../../type/formsheet-header-align.type';
 import { cn } from '../../utils/cn.util';
 import { Icon } from '../icon/icon';
+import { MorphingSheetDragZone } from '../morphing-sheet-drag-zone/morphing-sheet-drag-zone';
 
 import type { ReactElement } from 'react';
 
@@ -68,12 +69,14 @@ export const FormsheetHeader = (props: Props) => {
     );
 
     return (
-        <View className={cn(headerVariant({ align }), className)}>
-            {isNotEmptyString(icon) ? <Icon icon={icon} /> : null}
-            <Text maxFontSizeMultiplier={TITLE_MAX_FONT_SIZE_MULTIPLIER} className={cn(titleVariants({ size, align }), titleClassName)}>
-                {title}
-            </Text>
-            {descriptionContent}
-        </View>
+        <MorphingSheetDragZone>
+            <View className={cn(headerVariant({ align }), className)}>
+                {isNotEmptyString(icon) ? <Icon icon={icon} /> : null}
+                <Text maxFontSizeMultiplier={TITLE_MAX_FONT_SIZE_MULTIPLIER} className={cn(titleVariants({ size, align }), titleClassName)}>
+                    {title}
+                </Text>
+                {descriptionContent}
+            </View>
+        </MorphingSheetDragZone>
     );
 };

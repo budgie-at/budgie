@@ -9,16 +9,14 @@ import { ConvertToInstallmentTotal } from '../convert-to-installment-total/conve
 
 import type { ConvertToInstallmentModalParamsInterface } from '../../interface/convert-to-installment-modal-params.interface';
 import type { InstallmentSplitInterface } from '../../interface/installment-split.interface';
-import type { LayoutChangeEvent } from 'react-native';
 
 interface Props {
     readonly params: Pick<ConvertToInstallmentModalParamsInterface, 'amount' | 'instrumentSymbol'>;
     readonly split: InstallmentSplitInterface;
     readonly recoveryNote: string;
-    readonly onLayout: (event: LayoutChangeEvent) => void;
 }
 
-export const ConvertToInstallmentParts = ({ params, split, recoveryNote, onLayout }: Props) => {
+export const ConvertToInstallmentParts = ({ params, split, recoveryNote }: Props) => {
     const { t } = useLingui();
     const formatAmount = useInstallmentAmountLabel();
     const { installmentCount, planTotal, regularAmount, lastAmount, isSinglePaymentLeft, hasEqualParts, isSplittable } = split;
@@ -89,7 +87,7 @@ export const ConvertToInstallmentParts = ({ params, split, recoveryNote, onLayou
     );
 
     return (
-        <View className="items-center gap-y-xxs" onLayout={onLayout}>
+        <View className="items-center gap-y-xxs">
             {hero}
             <ConvertToInstallmentTotal instrumentSymbol={params.instrumentSymbol} split={split} />
             <Text

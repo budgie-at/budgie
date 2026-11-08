@@ -20,6 +20,12 @@ export const PRESS_RELEASE_TIMING = { duration: 150, easing: EASE_OUT };
 
 export const BUTTON_PRESSED_SCALE = 0.94;
 
+export const SHEET_PRESENT_SPRING = { mass: 1, stiffness: 865, damping: 52 };
+
+export const PREPARE_DELAY_MS = 34;
+
+export const SHEET_RESIZE_SPRING = { mass: 1, stiffness: 600, damping: 44.6 };
+
 export const SPRING_SETTLE = { dampingRatio: 1, duration: 400 };
 
 export const MOTION_FADE_IN = FadeIn.duration(MOTION_BASE_DURATION).easing(EASE_OUT);

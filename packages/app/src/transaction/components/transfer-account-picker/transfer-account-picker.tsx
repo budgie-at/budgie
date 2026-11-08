@@ -1,8 +1,6 @@
 import { AccountWithInstrumentEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import { ReactElement } from 'react';
-import { ViewStyle } from 'react-native';
-import Animated, { AnimatedStyle } from 'react-native-reanimated';
 
 import { isDefined, isString } from '@rnw-community/shared';
 
@@ -16,13 +14,12 @@ interface Props {
     readonly label: string;
     readonly placeholder: string | ReactElement;
     readonly account: AccountWithInstrumentEntityInterface | null | undefined;
-    readonly animatedStyle?: AnimatedStyle<ViewStyle>;
     readonly testID?: string;
     readonly selectedTestID?: string;
     readonly onPress: () => void;
 }
 
-export const TransferAccountPicker = ({ label, placeholder, account, animatedStyle, testID, selectedTestID, onPress }: Props) => {
+export const TransferAccountPicker = ({ label, placeholder, account, testID, selectedTestID, onPress }: Props) => {
     const hasAccount = isDefined(account);
     const displayTitle = hasAccount ? getAccountDisplayTitle(account) : null;
     const accessibilityPlaceholder = isString(placeholder) ? placeholder : t`Choose`;
@@ -31,20 +28,18 @@ export const TransferAccountPicker = ({ label, placeholder, account, animatedSty
     const isInactiveAccount = hasAccount && !account.isActive;
 
     return (
-        <Animated.View style={animatedStyle}>
-            <TransactionFormRow
-                left={
-                    <AccountInactiveIcon isInactive={isInactiveAccount} size={30}>
-                        <TransactionFormIcon icon={icon} />
-                    </AccountInactiveIcon>
-                }
-                label={label}
-                {...(isDefined(displayTitle) && { value: displayTitle })}
-                placeholder={placeholder}
-                valueProps={testIDProps(hasAccount && selectedTestID)}
-                testID={testID}
-                pressableProps={pressableProps}
-            />
-        </Animated.View>
+        <TransactionFormRow
+            left={
+                <AccountInactiveIcon isInactive={isInactiveAccount} size={30}>
+                    <TransactionFormIcon icon={icon} />
+                </AccountInactiveIcon>
+            }
+            label={label}
+            {...(isDefined(displayTitle) && { value: displayTitle })}
+            placeholder={placeholder}
+            valueProps={testIDProps(hasAccount && selectedTestID)}
+            testID={testID}
+            pressableProps={pressableProps}
+        />
     );
 };

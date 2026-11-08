@@ -1,26 +1,26 @@
+import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
 
-const LEADING_EMOJI_PATTERN =
-    /^(?:\p{Extended_Pictographic}|\p{Regional_Indicator})(?:\p{Extended_Pictographic}|\p{Regional_Indicator}|\p{Emoji_Modifier}|️|‍|⃣)*/u;
+import { TagMonogramSizeEnum } from '../../enum/tag-monogram-size.enum';
+import { getTagMonogram } from '../../utils/get-tag-monogram.util';
 
 interface Props {
     readonly title: string;
+    readonly size?: TagMonogramSizeEnum;
 }
 
-export const TagMonogram = ({ title }: Props) => {
-    const trimmedTitle = title.trim();
-    const leadingEmoji = LEADING_EMOJI_PATTERN.exec(trimmedTitle)?.[0];
-    const monogram = leadingEmoji ?? Array.from(trimmedTitle).at(0)?.toLocaleUpperCase() ?? '#';
+const discVariants = cva('items-center justify-center rounded-full bg-surface-disc', {
+    variants: { size: { [TagMonogramSizeEnum.MEDIUM]: 'size-[36px]', [TagMonogramSizeEnum.LARGE]: 'size-[88px]' } }
+});
 
-    return (
-        <View
-            className="size-[36px] items-center justify-center rounded-full bg-surface-disc"
-            accessibilityElementsHidden
-            importantForAccessibility="no-hide-descendants"
-        >
-            <Text className="text-secondary-foreground text-[16px] font-semibold" maxFontSizeMultiplier={1.3}>
-                {monogram}
-            </Text>
-        </View>
-    );
-};
+const letterVariants = cva('text-secondary-foreground font-semibold', {
+    variants: { size: { [TagMonogramSizeEnum.MEDIUM]: 'text-[16px]', [TagMonogramSizeEnum.LARGE]: 'text-[38px]' } }
+});
+
+export const TagMonogram = ({ title, size = TagMonogramSizeEnum.MEDIUM }: Props) => (
+    <View className={discVariants({ size })} accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+        <Text className={letterVariants({ size })} maxFontSizeMultiplier={1.3}>
+            {getTagMonogram(title)}
+        </Text>
+    </View>
+);
