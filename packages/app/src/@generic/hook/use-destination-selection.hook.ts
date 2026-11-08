@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Keyboard } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
@@ -13,7 +14,15 @@ export const useDestinationSelection = <T extends IdInterface>(
     onCommit: (id: number) => void
 ) => {
     const commit = useMorphingSheetCommit(onCommit);
-    const selected = destinations?.find(item => item.id === selection.selectedId) ?? null;
+    const [latched, setLatched] = useState<T | null>(null);
+    const found = destinations?.find(item => item.id === selection.selectedId);
+
+    if (isDefined(found) && found.id !== latched?.id) {
+        setLatched(found);
+    }
+
+    const latchedSelection = latched?.id === selection.selectedId ? latched : null;
+    const selected = found ?? latchedSelection;
 
     const handleRowSelect = (id: number) => {
         if (isDefined(destinations?.find(item => item.id === id))) {

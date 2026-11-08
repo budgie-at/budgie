@@ -60,7 +60,6 @@ export const ConvertToTransferModalContent = ({ isSubmitting, onSubmit, onDismis
         entry: getTransactionFeeEntries(entries).at(0) ?? null,
         variant: 'default',
         isFeeActive: step === ConvertToTransferStepEnum.FEE,
-        shouldFocusOnMount: false,
         onConfirm: handleFeeConfirm,
         onShowFee: handleShowFee,
         onShowCategory: handleShowFeeCategory,

@@ -1,5 +1,4 @@
 import { useLingui } from '@lingui/react/macro';
-import { useState } from 'react';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -33,7 +32,7 @@ interface Props {
 export const TagDestinationSheet = (props: Props) => {
     const { title, description, excludeTagIds, commitLabel, getCommitCopy, selection, onCommit, onCreate } = props;
     const { t } = useLingui();
-    const [search, setSearch] = useState('');
+    const { search, onSearchChange } = selection;
     const formatUsage = useFormatEntityUsage();
     const { tags, usage, isUsageFailure, retryUsage, isFailure, retry } = useTagsWithUsageQuery(search);
 
@@ -42,7 +41,7 @@ export const TagDestinationSheet = (props: Props) => {
     const sections = isDefined(destinations) ? [{ title: t`Your tags`, data: destinations }] : null;
     const commitCopy = isDefined(selected) ? getCommitCopy(selected.title) : null;
 
-    const handleClearSearch = () => void setSearch('');
+    const handleClearSearch = () => void onSearchChange('');
 
     const handleCreateFromSearch = () => void onCreate(search.trim());
 
@@ -64,7 +63,7 @@ export const TagDestinationSheet = (props: Props) => {
             title={title}
             description={description}
             search={search}
-            onSearchChange={setSearch}
+            onSearchChange={onSearchChange}
             placeholder={t`Search tags…`}
             searchTestID={TagsSelectorModalSelector.Input}
             action={

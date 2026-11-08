@@ -35,6 +35,7 @@ export const TagsSelectorModalContent = ({ params, onCommit, onDismiss }: Props)
 
     const handleTagAdded = (tagId: number) => {
         dispatch({ type: TagsSelectorActionTypeEnum.TAG_ADDED, tagId });
+        setSearch('');
         setStep(TagsSelectorStepEnum.TAGS);
     };
 

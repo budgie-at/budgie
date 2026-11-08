@@ -25,23 +25,11 @@ const createFeeEntry = (entry: TransactionEntryCreateInputInterface | null, acco
     };
 
 export const useTransactionFeeSteps = (config: TransactionFeeStepsConfigInterface) => {
-    const {
-        accountId,
-        currencySymbol,
-        entry,
-        variant,
-        isFeeActive,
-        shouldFocusOnMount,
-        onConfirm,
-        onShowFee,
-        onShowCategory,
-        onShowCreate,
-        onDone
-    } = config;
+    const { accountId, currencySymbol, entry, variant, isFeeActive, onConfirm, onShowFee, onShowCategory, onShowCreate, onDone } = config;
     const [feeEntry, setFeeEntry] = useState(() => createFeeEntry(entry, accountId));
     const { account } = useGetAccountByIdQuery(accountId);
     const isExisting = isDefined(entry);
-    const { amountRef, markReturning } = useTransactionFeeAmountFocus(isFeeActive, !isExisting && shouldFocusOnMount);
+    const { amountRef, markReturning } = useTransactionFeeAmountFocus(isFeeActive, !isExisting);
 
     const handleAmountChange = (amount: number) => {
         setFeeEntry(previous => ({ ...previous, amount }));

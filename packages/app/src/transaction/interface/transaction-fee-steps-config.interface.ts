@@ -8,7 +8,6 @@ export interface TransactionFeeStepsConfigInterface {
     readonly entry: TransactionEntryCreateInputInterface | null;
     readonly variant: ColorPaletteVariant;
     readonly isFeeActive: boolean;
-    readonly shouldFocusOnMount: boolean;
     readonly onConfirm: (result: TransactionFeeModalResult) => void;
     readonly onShowFee: () => void;
     readonly onShowCategory: () => void;

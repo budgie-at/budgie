@@ -1,9 +1,9 @@
-import { useState } from 'react';
 import { View } from 'react-native';
 
 import { MorphingSheet } from '../../../@generic/component/morphing-sheet/morphing-sheet';
 import { MORPHING_SHEET_DESTINATION_HEIGHT_RATIO } from '../../../@generic/constant/morphing-sheet-height-ratio.constant';
 import { MorphingSheetPresentationEnum } from '../../../@generic/enum/morphing-sheet-presentation.enum';
+import { useDestinationFlow } from '../../../@generic/hook/use-destination-flow.hook';
 import { useMorphingSheetListHeight } from '../../../@generic/hook/use-morphing-sheet-list-height.hook';
 import { TagsSelectorStepEnum } from '../../enum/tags-selector-step.enum';
 import { TagDestinationSheet } from '../tag-destination-sheet/tag-destination-sheet';
@@ -25,25 +25,12 @@ interface Props {
 export const TagDestinationModalContent = (props: Props) => {
     const { title, description, excludeTagIds, commitLabel, getCommitCopy, onCommit, onDismiss } = props;
     const listStyle = useMorphingSheetListHeight(MORPHING_SHEET_DESTINATION_HEIGHT_RATIO);
-    const [step, setStep] = useState(TagsSelectorStepEnum.TAGS);
-    const [createTitle, setCreateTitle] = useState('');
-    const [selectedId, setSelectedId] = useState<number | null>(null);
+    const { step, createTitle, selection, handleCreatePress, handleCreated, handleCreateCancel } = useDestinationFlow(
+        TagsSelectorStepEnum.TAGS,
+        TagsSelectorStepEnum.CREATE_TAG
+    );
 
-    const handleCreatePress = (defaultTitle: string) => {
-        setCreateTitle(defaultTitle);
-        setStep(TagsSelectorStepEnum.CREATE_TAG);
-    };
-
-    const handleCreated = ({ tag }: TagFormResultInterface) => {
-        setSelectedId(tag.id);
-        setStep(TagsSelectorStepEnum.TAGS);
-    };
-
-    const handleCreateCancel = () => {
-        setStep(TagsSelectorStepEnum.TAGS);
-    };
-
-    const selection = { selectedId, onSelect: setSelectedId };
+    const handleTagCreated = ({ tag }: TagFormResultInterface) => void handleCreated(tag.id);
 
     const steps = {
         [TagsSelectorStepEnum.TAGS]: {
@@ -66,7 +53,7 @@ export const TagDestinationModalContent = (props: Props) => {
         [TagsSelectorStepEnum.CREATE_TAG]: {
             presentation: MorphingSheetPresentationEnum.PAGE,
             onBack: handleCreateCancel,
-            content: <TagForm defaultTitle={createTitle} onSuccess={handleCreated} onCancel={handleCreateCancel} />
+            content: <TagForm defaultTitle={createTitle} onSuccess={handleTagCreated} onCancel={handleCreateCancel} />
         }
     };
 

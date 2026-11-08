@@ -68,7 +68,7 @@ export const useSplitEntriesEditor = (config: SplitEntriesEditorConfigInterface)
                 Effect.promise(() => KeyboardController.dismiss()).pipe(
                     Effect.andThen(
                         Effect.sync(() => {
-                            onEntriesChange([...entries, newEntry]);
+                            onEntriesChange(previous => [...previous, newEntry]);
                             setAutoFocusId(newEntry.localId);
                             setIsAddingEntry(false);
                         })

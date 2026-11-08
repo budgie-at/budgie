@@ -1,5 +1,4 @@
 import { useLingui } from '@lingui/react/macro';
-import { useState } from 'react';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -29,7 +28,7 @@ export const CategoryDestinationSheet = (props: Props) => {
     const { params, selection, onCommit, onCreate } = props;
     const { title, description, excludeCategoryIds, syncZone, commitLabel, getCommitCopy } = params;
     const { t } = useLingui();
-    const [search, setSearch] = useState('');
+    const { search, onSearchChange } = selection;
     const formatUsage = useFormatEntityUsage();
     const { categories, usage, isUsageFailure, retryUsage, isFailure, retry } = useCategoriesWithUsageQuery(search, true, syncZone);
 
@@ -45,7 +44,7 @@ export const CategoryDestinationSheet = (props: Props) => {
 
     const handleCreateFromSearch = () => void onCreate(search.trim());
 
-    const handleClearSearch = () => void setSearch('');
+    const handleClearSearch = () => void onSearchChange('');
 
     const renderRow = (category: CategoryEntityInterface) => (
         <CategoryDestinationRow
@@ -62,7 +61,7 @@ export const CategoryDestinationSheet = (props: Props) => {
             title={title}
             description={description}
             search={search}
-            onSearchChange={setSearch}
+            onSearchChange={onSearchChange}
             placeholder={t`Search categories…`}
             searchTestID={CategorySelectorModalSelector.Input}
             action={

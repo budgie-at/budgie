@@ -38,7 +38,6 @@ export const TransactionFeeModalContent = ({ accountId, currencySymbol, entry, v
         entry,
         variant,
         isFeeActive: step === TransactionFeeStepEnum.FEE,
-        shouldFocusOnMount: true,
         onConfirm,
         onShowFee: handleShowFee,
         onShowCategory: handleShowCategory,

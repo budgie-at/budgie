@@ -17,6 +17,8 @@ import { SplitEntriesItem } from '../split-entries-item/split-entries-item';
 import { SplitEntriesModalContentSelector } from '../split-entries-modal-content/split-entries-modal-content.selector';
 import { SplitEntriesRemainder } from '../split-entries-remainder/split-entries-remainder';
 
+import type { Dispatch, SetStateAction } from 'react';
+
 const CONTENT_CONTAINER_STYLE = { paddingHorizontal: 16, paddingBottom: 12 };
 
 interface Props {
@@ -25,7 +27,7 @@ interface Props {
     readonly entryType: TransactionEntryTypeEnum;
     readonly currencySymbol: string;
     readonly totalAmount: number;
-    readonly onEntriesChange: (entries: EntryWithLocalIdInterface[]) => void;
+    readonly onEntriesChange: Dispatch<SetStateAction<EntryWithLocalIdInterface[]>>;
     readonly onCategoryPress: (index: number) => void;
     readonly onConfirm: (entries: TransactionEntryCreateInputInterface[]) => void;
 }
