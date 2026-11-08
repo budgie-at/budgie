@@ -17,9 +17,6 @@ interface Props {
     readonly testIDPrefix: string;
 }
 
-const ANIMATION_DURATION = 200;
-const STAGGER_DELAY = 60;
-
 export const IconTitleSuggestionRow = ({ items, status, enabled, testIDPrefix }: Props) => {
     const { showLoading, showContent } = useSuggestionLoadingState({
         status,
@@ -30,14 +27,7 @@ export const IconTitleSuggestionRow = ({ items, status, enabled, testIDPrefix }:
     return (
         <SuggestionRowLayout showContent={showContent} showLoading={showLoading}>
             {[...items].reverse().map((item, index) => (
-                <SuggestionPill
-                    key={item.key}
-                    index={index}
-                    animationDuration={ANIMATION_DURATION}
-                    staggerDelay={STAGGER_DELAY}
-                    onPress={item.onSelect}
-                    {...testIDProps(testIDPrefix, index)}
-                >
+                <SuggestionPill key={item.key} index={index} onPress={item.onSelect} {...testIDProps(testIDPrefix, index)}>
                     <SuggestionPillContent icon={item.icon} title={item.title} />
                 </SuggestionPill>
             ))}

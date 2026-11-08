@@ -8,6 +8,7 @@ import { emptyFn, isDefined } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { PillButton } from '../../../@generic/component/pill-button/pill-button';
+import { HapticPressFeedbackEnum } from '../../../@generic/enum/haptic-press-feedback.enum';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { getRuleFormIssue } from '../../utils/get-rule-form-issue.util';
 import { RuleFormSelector } from '../rule-form-layout/rule-form-layout.selector';
@@ -56,12 +57,13 @@ export const RuleFormSubmitBar = ({ submitLabel, isSubmitting, onSubmit }: Props
             <View>
                 {isDefined(issue) ? (
                     <HapticPressable
+                        pressedScale={1}
+                        pressFeedback={HapticPressFeedbackEnum.NONE}
                         onPress={handleRevealIssue}
                         accessibilityRole="button"
                         accessibilityLabel={buttonLabel}
                         accessibilityState={DISABLED_STATE}
                         accessibilityHint={t`Shows what is missing`}
-                        className="active:scale-100"
                     >
                         <View pointerEvents="none">{button}</View>
                     </HapticPressable>

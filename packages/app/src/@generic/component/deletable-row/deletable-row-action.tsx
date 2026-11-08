@@ -1,8 +1,12 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
+import { ImpactFeedbackStyle } from 'expo-haptics';
 import { View } from 'react-native';
 import Reanimated, { SharedValue, useAnimatedReaction, useAnimatedStyle } from 'react-native-reanimated';
+import { scheduleOnRN } from 'react-native-worklets';
 
+import { HapticPressFeedbackEnum } from '../../enum/haptic-press-feedback.enum';
+import { useVibration } from '../../hook/use-vibration.hook';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Icon } from '../icon/icon';
 
@@ -10,6 +14,7 @@ import { DeletableRowSelector } from './deletable-row.selector';
 
 import type { DeletableRowVariant } from '../../type/deletable-row-variant.type';
 
+const REVEAL_THRESHOLD = -70;
 const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 
 interface Props {
@@ -28,6 +33,19 @@ const fillVariants = cva('flex-1 items-center justify-center bg-destructive-acti
 });
 
 export const DeletableRowAction = ({ drag, translation, isOpen, label, variant, onPress }: Props) => {
+    const [, hapticImpact] = useVibration();
+
+    const handleRevealed = () => void hapticImpact(ImpactFeedbackStyle.Rigid);
+
+    useAnimatedReaction(
+        () => drag.get() <= REVEAL_THRESHOLD,
+        (isRevealed, wasRevealed) => {
+            if (isRevealed && wasRevealed === false) {
+                scheduleOnRN(handleRevealed);
+            }
+        }
+    );
+
     useAnimatedReaction(
         () => drag.value,
         value => {
@@ -47,6 +65,7 @@ export const DeletableRowAction = ({ drag, translation, isOpen, label, variant, 
             <HapticPressable
                 testID={DeletableRowSelector.DeleteButton}
                 onPress={onPress}
+                pressFeedback={HapticPressFeedbackEnum.DESTRUCTIVE}
                 accessibilityRole="button"
                 accessibilityLabel={label}
                 className={pressableVariants({ variant })}

@@ -11,11 +11,13 @@ import { useLingui } from '@lingui/react/macro';
 import * as Cause from 'effect/Cause';
 import * as Effect from 'effect/Effect';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
+import { NotificationFeedbackType } from 'expo-haptics';
 import { useCallback, useState } from 'react';
 
 import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
+import { useVibration } from '../../@generic/hook/use-vibration.hook';
 import { appAtomRuntime, appRuntime } from '../../@generic/runtime/app.runtime';
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
 import { databaseQueryAtom } from '../../@generic/utils/database-query-atom.util';
@@ -49,11 +51,11 @@ export const useWalletCaptureSettings = () => {
     const { t } = useLingui();
     const result = useLiveAtomValue(walletCaptureSettingsAtom);
     const refreshAtom = useAtomRefresh(walletCaptureSettingsAtom);
+    const [hapticNotification] = useVibration();
     const [mutationError, setMutationError] = useState<string | null>(null);
     const [mutatingCaptureIds, setMutatingCaptureIds] = useState<Record<string, boolean>>({});
     const reviewItems = AsyncResult.isSuccess(result) ? result.value.reviewItems : [];
     const accountDetails = AsyncResult.isSuccess(result) ? result.value.accountDetails : [];
-    const errorMessage = mutationError ?? (AsyncResult.isFailure(result) ? result.cause.pipe(Cause.squash, getErrorMessage) : null);
 
     const refresh = useCallback(() => {
         appRuntime.runFork(
@@ -74,7 +76,10 @@ export const useWalletCaptureSettings = () => {
             mutation.pipe(
                 Effect.tapCause(Effect.logError),
                 Effect.matchCause({
-                    onFailure: cause => void setMutationError(cause.pipe(Cause.squash, getErrorMessage)),
+                    onFailure: cause => {
+                        hapticNotification(NotificationFeedbackType.Error);
+                        setMutationError(cause.pipe(Cause.squash, getErrorMessage));
+                    },
                     onSuccess: refreshAtom
                 }),
                 Effect.ensuring(Effect.sync(() => void setMutatingCaptureIds(previous => ({ ...previous, [captureId]: false }))))
@@ -116,7 +121,7 @@ export const useWalletCaptureSettings = () => {
     return {
         reviewItems,
         isLoading: result.waiting,
-        errorMessage,
+        errorMessage: mutationError ?? (AsyncResult.isFailure(result) ? result.cause.pipe(Cause.squash, getErrorMessage) : null),
         mutatingCaptureIds,
         hasReviewItems: isNotEmptyArray(reviewItems),
         refresh,

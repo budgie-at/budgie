@@ -1,6 +1,6 @@
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
-import * as Haptics from 'expo-haptics';
+import { ImpactFeedbackStyle, NotificationFeedbackType } from 'expo-haptics';
 import { ReactNode } from 'react';
 import { Alert, Pressable, Text } from 'react-native';
 import Animated, { SharedValue, useAnimatedStyle } from 'react-native-reanimated';
@@ -8,7 +8,9 @@ import Animated, { SharedValue, useAnimatedStyle } from 'react-native-reanimated
 import { emptyFn, getErrorMessage } from '@rnw-community/shared';
 
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
+import { useProcessingHaptic } from '../../../@generic/hook/use-processing-haptic.hook';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
+import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { AiSubsystemCardStateEnum } from '../../enum/ai-subsystem-card-state.enum';
 import { useLongPressHold } from '../../hook/use-long-press-hold.hook';
 import { AiSubsystemStatusSnapshotInterface } from '../../interface/ai-subsystem-status-snapshot.interface';
@@ -30,16 +32,27 @@ export const AiSubsystemStatusCardLayout = (props: Props) => {
     const { snapshot, title, renderLeftIcon, rebuildAlertTitle, rebuildAlertMessage, rebuildLogKey, onRebuild } = props;
     const { t } = useLingui();
     const { isLoading: isRebuilding, run } = useSingleFlight();
+    const [hapticNotification, hapticImpact] = useVibration();
+
+    useProcessingHaptic(isRebuilding);
 
     const isHidden = snapshot.state === AiSubsystemCardStateEnum.HIDDEN;
 
     const handleRebuildConfirm = (): void => {
-        void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-        void run(onRebuild.pipe(Effect.catch(error => Effect.logError(rebuildLogKey, { errorMessage: getErrorMessage(error) }))));
+        hapticImpact(ImpactFeedbackStyle.Heavy);
+        void run(
+            onRebuild.pipe(
+                Effect.tap(() => Effect.sync(() => void hapticNotification(NotificationFeedbackType.Success))),
+                Effect.catch(error =>
+                    Effect.sync(() => void hapticNotification(NotificationFeedbackType.Error)).pipe(
+                        Effect.andThen(Effect.logError(rebuildLogKey, { errorMessage: getErrorMessage(error) }))
+                    )
+                )
+            )
+        );
     };
 
     const handleLongPressComplete = () => {
-        void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
         Alert.alert(rebuildAlertTitle, rebuildAlertMessage, [
             { text: t`Cancel`, style: 'cancel' },
             { text: t`Rebuild`, style: 'destructive', onPress: handleRebuildConfirm }
@@ -59,8 +72,7 @@ export const AiSubsystemStatusCardLayout = (props: Props) => {
     }
 
     const leftContent = renderLeftIcon(holdProgress, 'text-secondary-foreground');
-    const percentText = `${snapshot.percent}%`;
-    const rightContent = <Text className="text-[17px] text-secondary-foreground">{percentText}</Text>;
+    const rightContent = <Text className="text-[17px] text-secondary-foreground">{snapshot.percent}%</Text>;
 
     return (
         <Pressable onPressIn={handlePressIn} onPressOut={handlePressOut}>

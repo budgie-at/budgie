@@ -1,5 +1,7 @@
 import { ReactNode, useEffect, useRef } from 'react';
-import Animated, { useAnimatedStyle, useSharedValue, withSequence, withTiming } from 'react-native-reanimated';
+import Animated from 'react-native-reanimated';
+
+import { useShakeAnimation } from '../../hook/use-shake-animation.hook';
 
 interface Props {
     readonly children: ReactNode;
@@ -7,30 +9,17 @@ interface Props {
 }
 
 export const Shake = ({ children, isEnabled }: Props) => {
-    const translateX = useSharedValue(0);
+    const { shake, animatedStyle } = useShakeAnimation();
     const prevTriggerRef = useRef<boolean>(null);
 
     useEffect(() => {
         if (isEnabled && isEnabled !== prevTriggerRef.current) {
             prevTriggerRef.current = isEnabled;
-
-            translateX.set(
-                withSequence(
-                    withTiming(10, { duration: 50 }),
-                    withTiming(-10, { duration: 50 }),
-                    withTiming(10, { duration: 50 }),
-                    withTiming(-10, { duration: 50 }),
-                    withTiming(0, { duration: 50 })
-                )
-            );
+            shake();
         } else if (!isEnabled) {
             prevTriggerRef.current = null;
         }
-    }, [isEnabled, translateX]);
-
-    const animatedStyle = useAnimatedStyle(() => ({
-        transform: [{ translateX: translateX.value }]
-    }));
+    }, [isEnabled, shake]);
 
     return <Animated.View style={animatedStyle}>{children}</Animated.View>;
 };

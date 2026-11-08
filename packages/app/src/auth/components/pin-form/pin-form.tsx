@@ -7,6 +7,7 @@ import { EmptyFn, isNotEmptyString } from '@rnw-community/shared';
 
 import { Shake } from '../../../@generic/component/shake/shake';
 import { MAX_CHROME_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/max-chrome-font-size-multiplier.constant';
+import { EASE_OUT } from '../../../@generic/constant/motion.constant';
 import { useIsLargeTextSize } from '../../../@generic/hook/use-is-large-text-size.hook';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { cn } from '../../../@generic/utils/cn.util';
@@ -39,6 +40,8 @@ const DIGIT_ROWS = [
 ] as const;
 
 const CONTENT_CONTAINER_STYLE = { flexGrow: 1, paddingBottom: 16 };
+
+const ERROR_ENTERING = FadeIn.duration(PIN_ERROR_FADE_DURATION_MS).easing(EASE_OUT);
 
 export const PinForm = ({
     header,
@@ -102,7 +105,7 @@ export const PinForm = ({
                     {hasError && !isBusy ? (
                         <Animated.Text
                             maxFontSizeMultiplier={MAX_CHROME_FONT_SIZE_MULTIPLIER}
-                            entering={FadeIn.duration(PIN_ERROR_FADE_DURATION_MS)}
+                            entering={ERROR_ENTERING}
                             className="text-sm font-medium text-destructive-strong text-center"
                             testID={PinFormSelector.Error}
                             accessibilityLiveRegion="assertive"

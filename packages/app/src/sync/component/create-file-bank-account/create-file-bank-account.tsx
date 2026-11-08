@@ -2,6 +2,7 @@ import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as DocumentPicker from 'expo-document-picker';
+import { NotificationFeedbackType } from 'expo-haptics';
 import { router } from 'expo-router';
 import { ReactElement, useState } from 'react';
 
@@ -9,6 +10,7 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { BankLogo } from '../../../@generic/component/bank-logo/bank-logo';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
+import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useOnboardingRedirect } from '../../../onboarding/hook/use-onboarding-redirect.hook';
@@ -35,6 +37,7 @@ const goBackHome = () => void goBackOrReplace('/');
 export const CreateFileBankAccount = ({ config }: CreateFileBankAccountProps) => {
     const { t } = useLingui();
     const [step, setStep] = useState(FileImportStepEnum.FILE);
+    const [hapticNotification] = useVibration();
     const { isLoading, run } = useSingleFlight();
     const [selectedFile, setSelectedFile] = useState<Pick<DocumentPicker.DocumentPickerAsset, 'name' | 'uri'> | null>(null);
     const [review, setReview] = useState<FileBankSyncImportReviewInterface | null>(null);
@@ -75,6 +78,7 @@ export const CreateFileBankAccount = ({ config }: CreateFileBankAccountProps) =>
             Effect.gen(function* () {
                 if (isDefined(selectedFile)) {
                     yield* config.executeImportForSelectedAccounts(selectedFile.uri, [...selectedAccounts]);
+                    yield* Effect.sync(() => void hapticNotification(NotificationFeedbackType.Success));
                     router.dismissTo(onboardingHref ?? '/');
                 }
             }).pipe(toastOnFailure(t`Import failed`))
@@ -82,7 +86,6 @@ export const CreateFileBankAccount = ({ config }: CreateFileBankAccountProps) =>
 
     const newTransactionCount = isDefined(review) ? review.parsedTransactionCount - review.duplicateTransactionCount : 0;
     const importLabel = t({ message: plural(newTransactionCount, { one: 'Import # transaction', other: 'Import # transactions' }) });
-    const fileName = selectedFile?.name ?? '';
     const hasSelectedAccounts = selectedAccounts.size > 0;
     const stepContent: Record<FileImportStepEnum, ReactElement | null> = {
         [FileImportStepEnum.FILE]: (
@@ -98,26 +101,25 @@ export const CreateFileBankAccount = ({ config }: CreateFileBankAccountProps) =>
         [FileImportStepEnum.ACCOUNTS]: (
             <SyncAccountsStep {...accountSelection} logo={<BankLogo bankProvider={config.provider} size={36} />} />
         ),
-        [FileImportStepEnum.REVIEW]: isDefined(review) ? <FileImportReviewStep review={review} fileName={fileName} /> : null
+        [FileImportStepEnum.REVIEW]: isDefined(review) ? <FileImportReviewStep review={review} fileName={selectedFile?.name ?? ''} /> : null
     };
-    const footer = (
-        <CreateFileBankAccountFooter
-            step={step}
-            isLoading={isLoading}
-            hasSelectedAccounts={hasSelectedAccounts}
-            importLabel={importLabel}
-            onSelectFile={handleSelectFile}
-            onReview={handleReview}
-            onImport={handleImport}
-        />
-    );
 
     return (
         <SyncSetupPage
             title={config.title}
             description={config.description}
             onGoBack={goBackHome}
-            footerButton={footer}
+            footerButton={
+                <CreateFileBankAccountFooter
+                    step={step}
+                    isLoading={isLoading}
+                    hasSelectedAccounts={hasSelectedAccounts}
+                    importLabel={importLabel}
+                    onSelectFile={handleSelectFile}
+                    onReview={handleReview}
+                    onImport={handleImport}
+                />
+            }
             testID={CreateFileBankAccountSelector.ScrollView}
         >
             {stepContent[step]}

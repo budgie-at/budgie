@@ -57,6 +57,7 @@ export const RuleListRow = ({ rule, index, isLast, hasOverlap, onOpen, onToggle 
 
             <View className="flex-row items-center">
                 <HapticPressable
+                    pressedScale={1}
                     testID={RulesPageSelector.RuleCard(index)}
                     onPress={handleOpen}
                     accessibilityRole="button"

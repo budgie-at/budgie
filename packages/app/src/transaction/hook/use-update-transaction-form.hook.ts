@@ -4,9 +4,11 @@ import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
+import { NotificationFeedbackType } from 'expo-haptics';
 import { useForm } from 'react-hook-form';
 
 import { useSingleFlight } from '../../@generic/hook/use-single-flight.hook';
+import { useVibration } from '../../@generic/hook/use-vibration.hook';
 import { dismissAllOrReplace } from '../../@generic/utils/dismiss-all-or-replace.util';
 import { goBackOrReplace } from '../../@generic/utils/go-back-or-replace.util';
 import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
@@ -36,6 +38,7 @@ export const useUpdateTransactionForm = ({
     const { t } = useLingui();
     const deleteTransaction = useDeleteTransaction();
     const { run } = useSingleFlight();
+    const [hapticNotification] = useVibration();
 
     const form = useForm({
         mode: 'onSubmit',
@@ -57,6 +60,7 @@ export const useUpdateTransactionForm = ({
                 yield* Db.transaction(Effect.andThen(transactionService.updateById(id, data), attachReceipt(receipt, id)));
                 yield* scheduleRecurringRefresh(RecurringRefreshModeEnum.RECENT);
                 onAfterSubmit?.(data);
+                hapticNotification(NotificationFeedbackType.Success);
                 goBackOrReplace('/');
             }).pipe(toastOnFailure(t`Could not update transaction.`))
         );

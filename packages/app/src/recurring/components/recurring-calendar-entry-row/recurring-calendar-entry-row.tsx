@@ -30,7 +30,8 @@ export const RecurringCalendarEntryRow = ({ entry, position, dayLabel }: Props) 
     return (
         <TransactionRowSurface position={position}>
             <HapticPressable
-                className="px-3xl py-xl active:scale-100 active:opacity-70"
+                pressedScale={1}
+                className="px-3xl py-xl active:opacity-70"
                 testID={RecurringCalendarSelector.Row(entry.title)}
                 {...(hasTransaction && { onPress: handlePress, accessibilityRole: 'button' as const })}
             >

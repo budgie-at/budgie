@@ -3,11 +3,12 @@ import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
 import { View } from 'react-native';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import Animated from 'react-native-reanimated';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { MOTION_FADE_IN, MOTION_FADE_OUT } from '../../../@generic/constant/motion.constant';
 import { useRuleFormModal } from '../../context/rule-form-modal.context';
 import { RuleIndicatorPill } from '../rule-indicator-pill/rule-indicator-pill';
 
@@ -45,7 +46,7 @@ export const MatchingRulesPill = ({ matchingRulesCount, matchingRuleIds }: Props
 
     return (
         <View className="items-center">
-            <Animated.View entering={FadeIn.duration(200)} exiting={FadeOut.duration(200)}>
+            <Animated.View entering={MOTION_FADE_IN} exiting={MOTION_FADE_OUT}>
                 <HapticPressable
                     testID={MatchingRulesPillSelector.Pill}
                     onPress={handlePress}

@@ -5,6 +5,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { HapticPressFeedbackEnum } from '../../../@generic/enum/haptic-press-feedback.enum';
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
 import { SplitEntryRowSelector } from '../split-entry-row/split-entry-row.selector';
 
@@ -27,6 +28,7 @@ export const SplitEntryDeleteButton = ({ index, categoryId, onPress, disabled = 
     return (
         <HapticPressable
             onPress={onPress}
+            pressFeedback={HapticPressFeedbackEnum.DESTRUCTIVE}
             disabled={disabled}
             className="h-[44px] w-[44px] shrink-0 items-center justify-center"
             hitSlop={0}

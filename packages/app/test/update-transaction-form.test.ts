@@ -19,6 +19,9 @@ import type { TransactionCreateInputInterface } from '@budgie/contracts';
 
 const save = vi.hoisted(() => vi.fn(() => Promise.resolve()));
 
+vi.mock('expo-haptics', () => ({ NotificationFeedbackType: { Success: 'success' } }));
+vi.mock('../src/@generic/hook/use-vibration.hook', () => ({ useVibration: () => [vi.fn(), vi.fn(), vi.fn()] }));
+
 vi.mock('@lingui/core/macro', () => ({ msg: (message: unknown) => message, t: (parts: TemplateStringsArray) => parts.join('') }));
 vi.mock('@lingui/react/macro', () => ({ useLingui: () => ({ t: (parts: TemplateStringsArray) => parts.join('') }) }));
 vi.mock('../src/@generic/hook/use-single-flight.hook', () => ({ useSingleFlight: () => ({ run: save }) }));

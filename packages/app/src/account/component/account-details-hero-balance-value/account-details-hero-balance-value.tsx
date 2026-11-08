@@ -43,7 +43,6 @@ export const AccountDetailsHeroBalanceValue = ({ balance, account }: Props) => {
     if (isUnitAccount) {
         return (
             <Ticker
-                hasAnimation
                 number={balanceLabel}
                 textClassName="font-semibold tracking-[-1px] text-primary"
                 minFontSize={24}

@@ -6,6 +6,8 @@ import Animated, { LinearTransition } from 'react-native-reanimated';
 import { isDefined } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { ENTRANCE_DURATION } from '../../../@generic/constant/entrance-motion.constant';
+import { EASE_IN_OUT } from '../../../@generic/constant/motion.constant';
 import { TITLE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/title-max-font-size-multiplier.constant';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { useIsAmountProtected } from '../../../@generic/hook/use-is-amount-protected.hook';
@@ -22,8 +24,7 @@ interface Props {
     readonly onOtherPress: () => void;
 }
 
-const SEGMENT_TRANSITION_DURATION = 240;
-const SEGMENT_TRANSITION = LinearTransition.duration(SEGMENT_TRANSITION_DURATION);
+const SEGMENT_TRANSITION = LinearTransition.duration(ENTRANCE_DURATION).easing(EASE_IN_OUT);
 
 export const StatisticsShareBar = ({ segments, other, onOtherPress }: Props) => {
     const { t } = useLingui();
@@ -48,30 +49,33 @@ export const StatisticsShareBar = ({ segments, other, onOtherPress }: Props) => 
                 <View className="h-[12px] rounded-full bg-surface-fill" />
             ) : (
                 <View
-                    className="h-[12px] flex-row gap-x-[2px] overflow-hidden rounded-full"
+                    className="h-[12px] overflow-hidden rounded-full"
                     accessibilityElementsHidden
                     importantForAccessibility="no-hide-descendants"
                 >
-                    {barSegments.map(segment => {
-                        const segmentStyle = { flexGrow: segment.amount, flexBasis: 0 };
+                    <View className="h-full flex-row gap-x-[2px]">
+                        {barSegments.map(segment => {
+                            const segmentStyle = { flexGrow: segment.amount, flexBasis: 0 };
 
-                        return (
-                            <Animated.View
-                                key={segment.key}
-                                layout={SEGMENT_TRANSITION}
-                                className={cn('h-full min-w-[3px]', segment.swatchClassName)}
-                                style={segmentStyle}
-                            />
-                        );
-                    })}
+                            return (
+                                <Animated.View
+                                    key={segment.key}
+                                    layout={SEGMENT_TRANSITION}
+                                    className={cn('h-full min-w-[3px]', segment.swatchClassName)}
+                                    style={segmentStyle}
+                                />
+                            );
+                        })}
+                    </View>
                 </View>
             )}
 
             {isAccessibilityTextSize ? (
                 <HapticPressable
+                    pressedScale={1}
                     accessibilityRole="button"
                     accessibilityState={breakdownState}
-                    className="min-h-[44px] justify-center active:scale-100 active:opacity-60"
+                    className="min-h-[44px] justify-center active:opacity-60"
                     hitSlop={0}
                     onPress={handleToggleBreakdown}
                 >
@@ -94,9 +98,10 @@ export const StatisticsShareBar = ({ segments, other, onOtherPress }: Props) => 
 
                     {isDefined(other) ? (
                         <HapticPressable
+                            pressedScale={1}
                             accessibilityRole="button"
                             accessibilityHint={t`Shows every category`}
-                            className="max-w-full active:scale-100 active:opacity-60"
+                            className="max-w-full active:opacity-60"
                             hitSlop={8}
                             onPress={onOtherPress}
                         >

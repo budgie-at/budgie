@@ -1,7 +1,6 @@
 import { cva } from 'class-variance-authority';
 import { ClassValue } from 'cn';
 import { Text, View } from 'react-native';
-import Animated, { FadeIn } from 'react-native-reanimated';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -21,7 +20,6 @@ interface Props {
 }
 
 const PILL_ICON_SIZE = 12;
-const ENTER_DURATION_MS = 200;
 const containerVariants = cva<{ variant: Record<MetaPillVariant, ClassValue> }>(
     'flex-row max-w-full items-center gap-x-xs rounded-full border px-sm py-[2px]',
     {
@@ -68,20 +66,16 @@ export const MetaPill = ({ label, icon, onPress, testID, variant = 'default', ma
     if (!isDefined(onPress)) {
         return (
             <View className="flex-row">
-                <Animated.View entering={FadeIn.duration(ENTER_DURATION_MS)} testID={testID}>
-                    {body}
-                </Animated.View>
+                <View testID={testID}>{body}</View>
             </View>
         );
     }
 
     return (
         <View className="flex-row">
-            <Animated.View entering={FadeIn.duration(ENTER_DURATION_MS)}>
-                <HapticPressable accessibilityLabel={label} accessibilityRole="button" accessible onPress={onPress} testID={testID}>
-                    {body}
-                </HapticPressable>
-            </Animated.View>
+            <HapticPressable accessibilityLabel={label} accessibilityRole="button" accessible onPress={onPress} testID={testID}>
+                {body}
+            </HapticPressable>
         </View>
     );
 };

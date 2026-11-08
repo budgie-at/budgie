@@ -14,6 +14,10 @@ import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook
 import { useI18nContext } from '../../../i18n/context/i18n.context';
 import { OnboardingSealedMomentSelector } from '../onboarding-sealed-moment/onboarding-sealed-moment.selector';
 
+const SEAL_ZOOM_DURATION = 500;
+const SEAL_ZOOM_DAMPING_RATIO = 0.75;
+const SEAL_ZOOM_START_SCALE = 0.85;
+
 interface Props {
     readonly onContinue: EmptyFn;
 }
@@ -33,7 +37,12 @@ export const OnboardingSealedBody = ({ onContinue }: Props) => {
         minute: '2-digit',
         ...(isDefined(uses24hourClock) && { hour12: !uses24hourClock })
     });
-    const lockEntering = reducedMotion ? FadeIn : ZoomIn.springify();
+    const lockEntering = reducedMotion
+        ? FadeIn
+        : ZoomIn.springify()
+              .duration(SEAL_ZOOM_DURATION)
+              .dampingRatio(SEAL_ZOOM_DAMPING_RATIO)
+              .withInitialValues({ transform: [{ scale: SEAL_ZOOM_START_SCALE }] });
 
     const contentStyle = { paddingBottom: inset };
 

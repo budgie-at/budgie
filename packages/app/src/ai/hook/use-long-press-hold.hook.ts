@@ -2,10 +2,12 @@ import * as Effect from 'effect/Effect';
 import * as Schedule from 'effect/Schedule';
 import { ImpactFeedbackStyle, NotificationFeedbackType } from 'expo-haptics';
 import { useRef } from 'react';
-import { Easing, SharedValue, runOnJS, useAnimatedReaction, useSharedValue, withTiming } from 'react-native-reanimated';
+import { Easing, SharedValue, useAnimatedReaction, useSharedValue, withTiming } from 'react-native-reanimated';
+import { scheduleOnRN } from 'react-native-worklets';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { EASE_OUT } from '../../@generic/constant/motion.constant';
 import { useVibration } from '../../@generic/hook/use-vibration.hook';
 import { appRuntime } from '../../@generic/runtime/app.runtime';
 import {
@@ -13,6 +15,7 @@ import {
     LONG_PRESS_HAPTIC_INTERVAL,
     LONG_PRESS_RING_SNAP_BACK_DURATION,
     LONG_PRESS_SCALE_ON_PRESS,
+    LONG_PRESS_SCALE_PRESS_DURATION,
     LONG_PRESS_SCALE_RESTORE_DURATION
 } from '../constant/long-press-brain.constant';
 
@@ -65,7 +68,7 @@ export const useLongPressHold = ({ onPress, onLongPressComplete, disabled = fals
         completedRef.current = true;
         stopHapticInterval();
         holdProgress.set(withTiming(0, { duration: LONG_PRESS_RING_SNAP_BACK_DURATION }));
-        pressScale.set(withTiming(1, { duration: LONG_PRESS_SCALE_RESTORE_DURATION }));
+        pressScale.set(withTiming(1, { duration: LONG_PRESS_SCALE_RESTORE_DURATION, easing: EASE_OUT }));
         hapticNotification(NotificationFeedbackType.Success);
         onLongPressComplete();
     };
@@ -74,7 +77,7 @@ export const useLongPressHold = ({ onPress, onLongPressComplete, disabled = fals
         () => holdProgress.get(),
         currentValue => {
             if (currentValue >= COMPLETION_THRESHOLD) {
-                runOnJS(handleComplete)();
+                scheduleOnRN(handleComplete);
             }
         }
     );
@@ -86,7 +89,7 @@ export const useLongPressHold = ({ onPress, onLongPressComplete, disabled = fals
 
         completedRef.current = false;
         holdProgress.set(withTiming(1, { duration: LONG_PRESS_DURATION, easing: Easing.linear }));
-        pressScale.set(withTiming(LONG_PRESS_SCALE_ON_PRESS, { duration: LONG_PRESS_SCALE_RESTORE_DURATION }));
+        pressScale.set(withTiming(LONG_PRESS_SCALE_ON_PRESS, { duration: LONG_PRESS_SCALE_PRESS_DURATION, easing: EASE_OUT }));
         startHapticInterval();
     };
 
@@ -102,7 +105,7 @@ export const useLongPressHold = ({ onPress, onLongPressComplete, disabled = fals
         }
 
         holdProgress.set(withTiming(0, { duration: LONG_PRESS_RING_SNAP_BACK_DURATION }));
-        pressScale.set(withTiming(1, { duration: LONG_PRESS_SCALE_RESTORE_DURATION }));
+        pressScale.set(withTiming(1, { duration: LONG_PRESS_SCALE_RESTORE_DURATION, easing: EASE_OUT }));
     };
 
     return { holdProgress, pressScale, handlePressIn, handlePressOut };

@@ -28,9 +28,10 @@ export const RecurringDetailMenu = ({ series }: Props) => {
     return (
         <View ref={frameRef} collapsable={false}>
             <HapticPressable
+                pressedScale={1}
                 accessibilityRole="button"
                 accessibilityLabel={t`More actions`}
-                className="min-h-[44px] min-w-[44px] items-center justify-center active:scale-100 active:opacity-70"
+                className="min-h-[44px] min-w-[44px] items-center justify-center active:opacity-70"
                 onPress={handleToggleMenu}
                 testID={RecurringDetailSelector.MenuButton}
             >

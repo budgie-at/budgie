@@ -1,11 +1,13 @@
 import { InstrumentTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Text, useWindowDimensions } from 'react-native';
-import Animated, { FadeInUp, ReduceMotion } from 'react-native-reanimated';
+import Animated, { FadeInUp } from 'react-native-reanimated';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
+import { ENTRANCE_DURATION } from '../../../@generic/constant/entrance-motion.constant';
 import { MICRO_UNIT_DECIMAL_PLACES } from '../../../@generic/constant/micro-unit-decimal-places.constant';
+import { EASE_OUT } from '../../../@generic/constant/motion.constant';
 import { PROTECTED_AMOUNT_PLACEHOLDER } from '../../../@generic/constant/protected-amount-placeholder.constant';
 import { useIsAmountProtected } from '../../../@generic/hook/use-is-amount-protected.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
@@ -26,9 +28,7 @@ interface Props {
     readonly onPress: () => void;
 }
 
-const ANIMATION_DELAY = 100;
-const ANIMATION_DURATION = 200;
-const ENTERING_ANIMATION = FadeInUp.delay(ANIMATION_DELAY).duration(ANIMATION_DURATION).reduceMotion(ReduceMotion.System);
+const ENTERING_ANIMATION = FadeInUp.duration(ENTRANCE_DURATION).easing(EASE_OUT);
 
 export const ConversionRow = (props: Props) => {
     const {

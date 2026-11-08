@@ -1,8 +1,10 @@
 import { parseISO } from 'date-fns/parseISO';
-import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
+import { useState } from 'react';
+import Animated, { useAnimatedReaction, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
+import { EASE_OUT, MOTION_FAST_DURATION } from '../../../@generic/constant/motion.constant';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 
 import type { LayoutChangeEvent } from 'react-native';
@@ -22,17 +24,39 @@ const HALF = 0.5;
 export const CurrencyMarketChartDateChip = ({ activeIndex, xs, chartWidth, priceDate }: Props) => {
     const { formatMonthAndDayAndOptionalYear } = useFormatDate();
     const chipWidth = useSharedValue(INITIAL_WIDTH);
+    const chipOpacity = useSharedValue(0);
+    const lastIndex = useSharedValue(0);
+
+    const [lastPriceDate, setLastPriceDate] = useState(priceDate);
+
+    useAnimatedReaction(
+        () => activeIndex.get(),
+        (index, previousIndex) => {
+            const isActive = index >= 0;
+            const wasActive = (previousIndex ?? -1) >= 0;
+
+            if (isActive) {
+                lastIndex.set(index);
+            }
+            if (isActive !== wasActive) {
+                chipOpacity.set(withTiming(isActive ? 1 : 0, { duration: MOTION_FAST_DURATION, easing: EASE_OUT }));
+            }
+        }
+    );
 
     const style = useAnimatedStyle(() => {
-        const index = activeIndex.get();
+        const index = lastIndex.get();
         const width = chipWidth.get();
         const centred = (xs[index] ?? 0) - width * HALF;
         const maxLeft = Math.max(chartWidth - width - EDGE_CLEARANCE, EDGE_CLEARANCE);
 
-        return { opacity: index < 0 ? 0 : 1, transform: [{ translateX: Math.min(Math.max(centred, EDGE_CLEARANCE), maxLeft) }] };
+        return { opacity: chipOpacity.get(), transform: [{ translateX: Math.min(Math.max(centred, EDGE_CLEARANCE), maxLeft) }] };
     });
 
-    const label = isNotEmptyString(priceDate) ? formatMonthAndDayAndOptionalYear(parseISO(priceDate)) : '';
+    if (isNotEmptyString(priceDate) && priceDate !== lastPriceDate) {
+        setLastPriceDate(priceDate);
+    }
+    const label = isNotEmptyString(lastPriceDate) ? formatMonthAndDayAndOptionalYear(parseISO(lastPriceDate)) : '';
 
     const handleLayout = (event: LayoutChangeEvent) => void chipWidth.set(event.nativeEvent.layout.width);
 

@@ -10,7 +10,7 @@ interface Props {
     readonly onPress: () => void;
 }
 
-const rowVariants = cva('min-h-[44px] justify-center py-md pr-xl active:scale-100 active:bg-surface-fill', {
+const rowVariants = cva('min-h-[44px] justify-center py-md pr-xl active:bg-surface-fill', {
     variants: { isStacked: { true: 'pl-3xl', false: 'pl-[60px]' } }
 });
 
@@ -18,7 +18,14 @@ export const StatsSectionToggleRow = ({ label, testID, onPress }: Props) => {
     const isStacked = useIsAccessibilityTextSize();
 
     return (
-        <HapticPressable accessibilityRole="button" className={rowVariants({ isStacked })} hitSlop={0} testID={testID} onPress={onPress}>
+        <HapticPressable
+            pressedScale={1}
+            accessibilityRole="button"
+            className={rowVariants({ isStacked })}
+            hitSlop={0}
+            testID={testID}
+            onPress={onPress}
+        >
             <Text className="text-[15px] text-default-foreground">{label}</Text>
         </HapticPressable>
     );

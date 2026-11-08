@@ -1,8 +1,9 @@
-import Animated, { Extrapolation, interpolate, useAnimatedStyle, useReducedMotion } from 'react-native-reanimated';
+import Animated, { Extrapolation, interpolate, useAnimatedStyle } from 'react-native-reanimated';
 
 import { useScreenChrome, useScreenChromeScrollY } from '@rnw-community/react-native-screen-chrome';
 
 import { BankLogo } from '../../../@generic/component/bank-logo/bank-logo';
+import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
 import { BankIntegrationSelector } from '../../../app/(main)/bank-integration/bank-integration.selector';
 import { useBankIntegration } from '../../context/bank-integration.context';
 import { useBankIntegrationSyncsQuery } from '../../query/use-bank-integration-syncs.query';

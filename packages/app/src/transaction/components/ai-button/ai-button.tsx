@@ -1,10 +1,9 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { ImpactFeedbackStyle } from 'expo-haptics';
 import { View } from 'react-native';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
-import { useVibration } from '../../../@generic/hook/use-vibration.hook';
+import { HapticPressFeedbackEnum } from '../../../@generic/enum/haptic-press-feedback.enum';
 
 interface Props {
     readonly onPress: () => void;
@@ -17,24 +16,16 @@ const CONTAINER_SIZE = 88;
 const CONTAINER_STYLE = { height: CONTAINER_SIZE, width: CONTAINER_SIZE };
 const BUTTON_STYLE = { width: BUTTON_SIZE, height: BUTTON_SIZE };
 
-export const AiButton = ({ onPress, testID }: Props) => {
-    const [, hapticImpact] = useVibration();
-
-    const handlePress = () => {
-        hapticImpact(ImpactFeedbackStyle.Medium);
-        onPress();
-    };
-
-    return (
-        <View className="items-center justify-center" style={CONTAINER_STYLE}>
-            <HapticPressable
-                className="bg-primary rounded-full items-center justify-center shadow-lg shadow-black/30"
-                style={BUTTON_STYLE}
-                onPress={handlePress}
-                testID={testID}
-            >
-                <Icon className="text-primary-reverse" icon={UserIconNameEnum.Mic} size={ICON_SIZE} />
-            </HapticPressable>
-        </View>
-    );
-};
+export const AiButton = ({ onPress, testID }: Props) => (
+    <View className="items-center justify-center" style={CONTAINER_STYLE}>
+        <HapticPressable
+            className="bg-primary rounded-full items-center justify-center shadow-lg shadow-black/30"
+            style={BUTTON_STYLE}
+            onPress={onPress}
+            pressFeedback={HapticPressFeedbackEnum.COMMIT}
+            testID={testID}
+        >
+            <Icon className="text-primary-reverse" icon={UserIconNameEnum.Mic} size={ICON_SIZE} />
+        </HapticPressable>
+    </View>
+);

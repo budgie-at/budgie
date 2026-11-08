@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useEffectEvent, useRef } from 'react';
 import { LayoutChangeEvent, ScrollView, ViewStyle } from 'react-native';
 import {
     AnimatedStyle,
@@ -12,11 +12,13 @@ import {
 
 import { isDefined } from '@rnw-community/shared';
 
+import { EASE_OUT } from '../../@generic/constant/motion.constant';
+import { useReducedMotion } from '../../@generic/hook/use-reduced-motion.hook';
+
 const FADE_IN_MS = 200;
 const HOLD_MS = 600;
-const FADE_OUT_MS = 400;
+const FADE_OUT_MS = 300;
 const HIGHLIGHT_BORDER_RADIUS = 16;
-const HIGHLIGHT_PADDING = 8;
 const HIGHLIGHT_OPACITY = 0.08;
 const HIGHLIGHT_COLOR_TRANSPARENT = 'rgba(120, 170, 255, 0)';
 const HIGHLIGHT_COLOR_ACTIVE = `rgba(120, 170, 255, ${HIGHLIGHT_OPACITY})`;
@@ -27,6 +29,7 @@ interface LayoutPositionInterface {
 }
 
 export const useScrollToAnchor = (activeAnchor: string | null | undefined) => {
+    const reducedMotion = useReducedMotion();
     const scrollViewInstance = useRef<ScrollView | null>(null);
     const scrollViewHeight = useRef(0);
     const positions = useRef<Map<string, LayoutPositionInterface>>(new Map());
@@ -35,14 +38,8 @@ export const useScrollToAnchor = (activeAnchor: string | null | undefined) => {
 
     const highlightStyle = useAnimatedStyle(() => ({
         borderRadius: HIGHLIGHT_BORDER_RADIUS,
-        padding: HIGHLIGHT_PADDING,
-        backgroundColor: interpolateColor(highlightProgress.value, [0, 1], [HIGHLIGHT_COLOR_TRANSPARENT, HIGHLIGHT_COLOR_ACTIVE])
+        backgroundColor: interpolateColor(highlightProgress.get(), [0, 1], [HIGHLIGHT_COLOR_TRANSPARENT, HIGHLIGHT_COLOR_ACTIVE])
     }));
-    const emptyStyle = useAnimatedStyle(() => ({}));
-
-    useEffect(() => {
-        scrolledAnchor.current = null;
-    }, [activeAnchor]);
 
     const scrollToActive = (): void => {
         if (!isDefined(activeAnchor) || scrolledAnchor.current === activeAnchor) {
@@ -59,12 +56,24 @@ export const useScrollToAnchor = (activeAnchor: string | null | undefined) => {
 
         const centeredY = position.y + position.height / 2 - viewportHeight / 2;
 
-        scrollView.scrollTo({ y: Math.max(0, centeredY), animated: true });
+        scrollView.scrollTo({ y: Math.max(0, centeredY), animated: !reducedMotion });
         scrolledAnchor.current = activeAnchor;
         highlightProgress.set(
-            withSequence(withTiming(1, { duration: FADE_IN_MS }), withDelay(HOLD_MS, withTiming(0, { duration: FADE_OUT_MS })))
+            withSequence(
+                withTiming(1, { duration: FADE_IN_MS, easing: EASE_OUT }),
+                withDelay(HOLD_MS, withTiming(0, { duration: FADE_OUT_MS, easing: EASE_OUT }))
+            )
         );
     };
+
+    const scrollToChangedAnchor = useEffectEvent(() => {
+        scrolledAnchor.current = null;
+        scrollToActive();
+    });
+
+    useEffect(() => {
+        scrollToChangedAnchor();
+    }, [activeAnchor]);
 
     const scrollViewRef = (node: ScrollView | null): void => {
         scrollViewInstance.current = node;
@@ -87,7 +96,7 @@ export const useScrollToAnchor = (activeAnchor: string | null | undefined) => {
     });
 
     const anchorHighlight = (name: string): { readonly style: AnimatedStyle<ViewStyle> } => ({
-        style: name === activeAnchor ? highlightStyle : emptyStyle
+        style: name === activeAnchor ? highlightStyle : {}
     });
 
     return { scrollViewRef, onScrollViewLayout: handleScrollViewLayout, anchorLayout, anchorHighlight };

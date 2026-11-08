@@ -1,10 +1,12 @@
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as DocumentPicker from 'expo-document-picker';
+import { useState } from 'react';
 import Toast from 'react-native-toast-message';
 
 import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
+import { useProcessingHaptic } from '../../@generic/hook/use-processing-haptic.hook';
 import { useSingleFlight } from '../../@generic/hook/use-single-flight.hook';
 import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
 import { QuickImportConfigInterface } from '../interface/quick-import-config.interface';
@@ -20,6 +22,9 @@ export const useQuickImport = (config: QuickImportConfigInterface | null): Quick
     const { t } = useLingui();
 
     const { isLoading, run } = useSingleFlight();
+    const [isImporting, setIsImporting] = useState(false);
+
+    useProcessingHaptic(isImporting);
 
     const showImportDoneToast = (importResult: FileBankSyncImportResultInterface) => {
         const hasAccounts = isPositiveNumber(importResult.accountCount);
@@ -61,7 +66,8 @@ export const useQuickImport = (config: QuickImportConfigInterface | null): Quick
                 }
 
                 Toast.show({ type: 'info', text1: t`Import started`, text2: t`Budgie will notify you when it finishes` });
-                const importResult = yield* config.importHandler(uri);
+                setIsImporting(true);
+                const importResult = yield* config.importHandler(uri).pipe(Effect.ensuring(Effect.sync(() => void setIsImporting(false))));
                 showImportDoneToast(importResult);
             }).pipe(toastOnFailure(t`Import failed`))
         );

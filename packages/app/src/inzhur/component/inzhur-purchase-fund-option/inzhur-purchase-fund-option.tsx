@@ -5,6 +5,7 @@ import { Text, View } from 'react-native';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { NeutralIconTile } from '../../../@generic/component/neutral-icon-tile/neutral-icon-tile';
+import { HapticPressFeedbackEnum } from '../../../@generic/enum/haptic-press-feedback.enum';
 import { InzhurSelector } from '../../selector/inzhur.selector';
 
 import type { InzhurPurchaseFormValues } from '../../constant/inzhur-purchase-form-schema.constant';
@@ -22,10 +23,12 @@ export const InzhurPurchaseFundOption = ({ fund }: Props) => {
 
     return (
         <HapticPressable
+            pressedScale={1}
             className="min-h-[50px] flex-row items-center gap-x-xl px-3xl py-lg active:opacity-70"
             accessibilityRole="button"
             accessibilityState={accessibilityState}
             onPress={handlePress}
+            pressFeedback={HapticPressFeedbackEnum.SELECTION}
             testID={InzhurSelector.PurchaseFund(fund.name)}
         >
             <NeutralIconTile icon={fund.icon} />

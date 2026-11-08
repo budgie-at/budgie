@@ -1,5 +1,4 @@
 import { cva } from 'class-variance-authority';
-import { ImpactFeedbackStyle } from 'expo-haptics';
 import { Pressable, Text } from 'react-native';
 
 import { MAX_CHROME_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/max-chrome-font-size-multiplier.constant';
@@ -13,17 +12,14 @@ interface Props {
     readonly onPress: (digit: string) => void;
 }
 
-const keyVariants = cva(
-    'rounded-full justify-center items-center bg-secondary-foreground/25 active:bg-secondary-foreground/55 active:scale-s',
-    {
-        variants: {
-            isCompact: {
-                true: 'size-[64px]',
-                false: 'size-[76px]'
-            }
+const keyVariants = cva('rounded-full justify-center items-center bg-secondary-foreground/25 active:bg-secondary-foreground/55', {
+    variants: {
+        isCompact: {
+            true: 'size-[64px]',
+            false: 'size-[76px]'
         }
     }
-);
+});
 
 const digitVariants = cva('font-light text-primary', {
     variants: {
@@ -36,10 +32,10 @@ const digitVariants = cva('font-light text-primary', {
 
 export const PinFormButton = ({ digit, onPress, disabled = false }: Props) => {
     const isCompact = useIsCompactPinLayout();
-    const [, hapticImpact] = useVibration();
+    const [, , hapticSelection] = useVibration();
     const accessibilityState = { disabled };
 
-    const handlePressIn = () => void hapticImpact(ImpactFeedbackStyle.Light);
+    const handlePressIn = () => void hapticSelection();
     const handlePress = () => void onPress(digit);
 
     return (

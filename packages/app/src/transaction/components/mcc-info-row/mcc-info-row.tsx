@@ -1,9 +1,10 @@
 import { Text, useWindowDimensions, View } from 'react-native';
-import Animated, { LinearTransition, ReduceMotion } from 'react-native-reanimated';
+import Animated from 'react-native-reanimated';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/max-font-size-multiplier.constant';
+import { MOTION_LAYOUT } from '../../../@generic/constant/motion.constant';
 import { useGetMccCategoryByIdQuery } from '../../../mcc-category/query/use-get-mcc-category-by-id.query';
 import { isCompactTransactionForm } from '../../utils/is-compact-transaction-form.util';
 import { QuickFormContext } from '../quick-form-context/quick-form-context';
@@ -20,7 +21,6 @@ interface Props {
 }
 
 const MERCHANT_MAX_FONT_SCALE = 1.35;
-const LAYOUT = LinearTransition.duration(200).reduceMotion(ReduceMotion.System);
 
 export const MccInfoRow = ({ transactionTitle, mccCategoryId, children, suggestions }: Props) => {
     const { mccCategory } = useGetMccCategoryByIdQuery(mccCategoryId);
@@ -35,7 +35,7 @@ export const MccInfoRow = ({ transactionTitle, mccCategoryId, children, suggesti
 
     return (
         <QuickFormContext>
-            <Animated.View layout={LAYOUT} className="items-center self-stretch">
+            <Animated.View layout={MOTION_LAYOUT} className="items-center self-stretch">
                 <View className={merchantClassName}>
                     {isNotEmptyString(transactionTitle) ? (
                         <Text
@@ -52,13 +52,14 @@ export const MccInfoRow = ({ transactionTitle, mccCategoryId, children, suggesti
                 <View className={accessoryClassName} testID={SimpleQuickFormSelector.Accessory}>
                     <QuickFormValidationSlot>
                         {isDefined(mccCategory) ? (
-                            <Text
+                            <Animated.Text
+                                layout={MOTION_LAYOUT}
                                 className="shrink text-[13px] leading-[18px] text-secondary-foreground"
                                 maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
                                 numberOfLines={1}
                             >
                                 {mccCategory.shortDescription}
-                            </Text>
+                            </Animated.Text>
                         ) : null}
                         {children}
                         {suggestions}

@@ -5,7 +5,6 @@ import { AccessibilityInfo } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { useReducedMotion } from '../../@generic/hook/use-reduced-motion.hook';
 import { useVibration } from '../../@generic/hook/use-vibration.hook';
 
 import type { QuickFormValidationCheckInterface } from '../interface/quick-form-validation-check.interface';
@@ -17,7 +16,6 @@ interface UseQuickFormValidationResult {
 export const useQuickFormValidation = (): UseQuickFormValidationResult => {
     const { setError } = useFormContext<TransactionCreateInputInterface>();
     const [hapticNotification] = useVibration();
-    const isReducedMotion = useReducedMotion();
 
     const validateAndShake = (checks: QuickFormValidationCheckInterface[]): boolean => {
         const failedChecks = checks.filter(check => !check.isValid);
@@ -33,9 +31,7 @@ export const useQuickFormValidation = (): UseQuickFormValidationResult => {
         });
         AccessibilityInfo.announceForAccessibility(firstFailedCheck.message);
 
-        if (!isReducedMotion) {
-            failedChecks.forEach(check => check.shake?.());
-        }
+        failedChecks.forEach(check => check.shake?.());
 
         return false;
     };

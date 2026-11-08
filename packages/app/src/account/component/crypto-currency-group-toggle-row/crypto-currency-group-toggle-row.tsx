@@ -7,6 +7,7 @@ import { Text } from 'react-native';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { ScaledIcon } from '../../../@generic/component/scaled-icon/scaled-icon';
 import { FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/footnote-max-font-size-multiplier.constant';
+import { HapticPressFeedbackEnum } from '../../../@generic/enum/haptic-press-feedback.enum';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { CryptoCurrencyGroupCardSelector } from '../crypto-currency-group-card/crypto-currency-group-card.selector';
 
@@ -19,7 +20,7 @@ interface Props {
     readonly onPress: EmptyFn;
 }
 
-const toggleVariants = cva('min-h-[32px] flex-row items-center gap-x-xs self-start pt-xxs pb-md pr-xl active:scale-100 active:opacity-60', {
+const toggleVariants = cva('min-h-[32px] flex-row items-center gap-x-xs self-start pt-xxs pb-md pr-xl active:opacity-60', {
     variants: { isStacked: { true: 'pl-3xl', false: 'pl-[64px]' } }
 });
 
@@ -38,6 +39,8 @@ export const CryptoCurrencyGroupToggleRow = ({ accountsCount, instrumentCode, is
 
     return (
         <HapticPressable
+            pressFeedback={HapticPressFeedbackEnum.SELECTION}
+            pressedScale={1}
             accessible
             accessibilityRole="button"
             accessibilityState={toggleAccessibilityState}

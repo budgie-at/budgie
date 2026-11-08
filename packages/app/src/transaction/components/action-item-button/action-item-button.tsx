@@ -1,7 +1,4 @@
-import { ImpactFeedbackStyle } from 'expo-haptics';
-import { Pressable } from 'react-native';
-
-import { useVibration } from '../../../@generic/hook/use-vibration.hook';
+import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { ActionItemLabel } from '../action-item-label/action-item-label';
 
 import type { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
@@ -15,17 +12,8 @@ interface Props {
     readonly onPress: () => void;
 }
 
-export const ActionItemButton = ({ icon, label, testID, variant, onPress }: Props) => {
-    const [, hapticImpact] = useVibration();
-
-    const handlePress = () => {
-        hapticImpact(ImpactFeedbackStyle.Medium);
-        onPress();
-    };
-
-    return (
-        <Pressable hitSlop={10} onPress={handlePress} testID={testID} collapsable={false}>
-            <ActionItemLabel icon={icon} label={label} testID={testID} variant={variant} />
-        </Pressable>
-    );
-};
+export const ActionItemButton = ({ icon, label, testID, variant, onPress }: Props) => (
+    <HapticPressable onPress={onPress} testID={testID} collapsable={false}>
+        <ActionItemLabel icon={icon} label={label} testID={testID} variant={variant} />
+    </HapticPressable>
+);

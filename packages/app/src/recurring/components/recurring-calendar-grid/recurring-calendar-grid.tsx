@@ -1,5 +1,7 @@
 import { View } from 'react-native';
+import Animated from 'react-native-reanimated';
 
+import { MOTION_FADE_IN } from '../../../@generic/constant/motion.constant';
 import { useToday } from '../../../@generic/hook/use-today.hook';
 import { buildRecurringCalendarDays } from '../../utils/build-recurring-calendar-days.util';
 import { RecurringCalendarDay } from '../recurring-calendar-day/recurring-calendar-day';
@@ -29,7 +31,7 @@ export const RecurringCalendarGrid = (props: Props) => {
 
     return (
         <RecurringCalendarNavigation displayMonth={displayMonth} displayYear={displayYear} onChangeMonth={onChangeMonth}>
-            <View>
+            <Animated.View key={`${displayYear}-${displayMonth}`} entering={MOTION_FADE_IN}>
                 <View className="flex-row">
                     {days.slice(0, 7).map(day => (
                         <RecurringCalendarWeekday key={day.number} date={day.date} />
@@ -47,7 +49,7 @@ export const RecurringCalendarGrid = (props: Props) => {
                         />
                     ))}
                 </View>
-            </View>
+            </Animated.View>
             <RecurringCalendarLegend hasRecordedEntries={hasRecordedEntries} hasExpectedEntries={hasExpectedEntries} />
         </RecurringCalendarNavigation>
     );

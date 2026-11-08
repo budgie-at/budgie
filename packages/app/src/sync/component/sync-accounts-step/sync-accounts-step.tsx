@@ -9,6 +9,7 @@ import { GroupedListSectionTitle } from '../../../@generic/component/grouped-lis
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { SearchablePageEmptyState } from '../../../@generic/component/searchable-page-empty-state/searchable-page-empty-state';
+import { HapticPressFeedbackEnum } from '../../../@generic/enum/haptic-press-feedback.enum';
 import { SyncAccountRow } from '../sync-account-row/sync-account-row';
 
 import { SyncAccountsStepSelector } from './sync-accounts-step.selector';
@@ -63,6 +64,7 @@ export const SyncAccountsStep = ({
                 <View className="flex-row items-end justify-between">
                     <GroupedListSectionTitle title={t`Accounts · ${accountsCount}`} />
                     <HapticPressable
+                        pressFeedback={HapticPressFeedbackEnum.SELECTION}
                         onPress={handleToggleAll}
                         accessibilityRole="button"
                         className="-mt-[16px] min-h-[44px] justify-end px-3xl pb-md active:opacity-70"

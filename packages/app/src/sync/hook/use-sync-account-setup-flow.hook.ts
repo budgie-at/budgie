@@ -1,11 +1,14 @@
 import { resolveSyncErrorCode } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
+import { NotificationFeedbackType } from 'expo-haptics';
 import { router } from 'expo-router';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { useProcessingHaptic } from '../../@generic/hook/use-processing-haptic.hook';
 import { useSingleFlight } from '../../@generic/hook/use-single-flight.hook';
+import { useVibration } from '../../@generic/hook/use-vibration.hook';
 import { goBackOrReplace } from '../../@generic/utils/go-back-or-replace.util';
 import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
 import { useOnboardingRedirect } from '../../onboarding/hook/use-onboarding-redirect.hook';
@@ -23,11 +26,14 @@ export const useSyncAccountSetupFlow = <Identifier extends AppServices, Shape>(
     setupSync: (syncService: Shape, selectedAccountIds: string[]) => Effect.Effect<unknown, Cause.YieldableError, AppServices>
 ) => {
     const { t } = useLingui();
+    const [hapticNotification] = useVibration();
     const { isLoading, run } = useSingleFlight();
     const accountSelection = useAccountSelection();
     const onboardingHref = useOnboardingRedirect();
 
     const exitHref = onboardingHref ?? '/';
+
+    useProcessingHaptic(isLoading);
 
     const explainError = <E>(error: E) => {
         const errorCode = resolveSyncErrorCode(error);
@@ -42,6 +48,7 @@ export const useSyncAccountSetupFlow = <Identifier extends AppServices, Shape>(
             Effect.gen(function* () {
                 const syncService = yield* service;
                 yield* setupSync(syncService, [...accountSelection.selectedAccounts]);
+                hapticNotification(NotificationFeedbackType.Success);
                 router.dismissTo(exitHref);
             }).pipe(Effect.mapError(explainError), toastOnFailure(t`Could not set up sync`))
         );

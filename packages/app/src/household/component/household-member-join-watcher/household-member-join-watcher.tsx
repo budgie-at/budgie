@@ -3,14 +3,12 @@ import * as Duration from 'effect/Duration';
 import * as Effect from 'effect/Effect';
 import * as Fiber from 'effect/Fiber';
 import * as Schedule from 'effect/Schedule';
-import { NotificationFeedbackType } from 'expo-haptics';
 import { useFocusEffect } from 'expo-router';
 import { useEffect, useEffectEvent, useRef } from 'react';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { appAtomRegistry } from '../../../@generic/constant/app-atom-registry.constant';
-import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { showSuccessToast } from '../../../@generic/utils/show-success-toast/show-success-toast';
 import { householdRefreshAtom } from '../../constant/household-refresh-atom.constant';
@@ -25,7 +23,6 @@ const pollParticipants = Effect.sync(() => {
 export const HouseholdMemberJoinWatcher = () => {
     const { t } = useLingui();
     const { joinedMembers, isKnown } = useHouseholdParticipants();
-    const [hapticNotification] = useVibration();
     const joinedCountRef = useRef<number | null>(null);
 
     const joinedCount = joinedMembers.length;
@@ -34,7 +31,6 @@ export const HouseholdMemberJoinWatcher = () => {
     const announceJoin = useEffectEvent(() => {
         const name = isNotEmptyString(latestName) ? latestName : t`A family member`;
 
-        hapticNotification(NotificationFeedbackType.Success);
         showSuccessToast(t`${name} joined your family`);
     });
 
