@@ -4,6 +4,7 @@ import Animated from 'react-native-reanimated';
 import { AnchoredMorphPanelSettledContext } from '../../context/anchored-morph-panel-settled.context';
 import { AnchoredMorphPanelContext } from '../../context/anchored-morph-panel.context';
 import { MorphingSheetDismissContext } from '../../context/morphing-sheet.context';
+import { AnchoredMorphPanelHeightEnum } from '../../enum/anchored-morph-panel-height.enum';
 import { useAnchoredMorphPanelMotion } from '../../hook/use-anchored-morph-panel-motion.hook';
 
 import type { AnchoredMorphOriginInterface } from '../../interface/anchored-morph-origin.interface';
@@ -12,11 +13,18 @@ import type { ReactNode } from 'react';
 interface Props {
     readonly origin: AnchoredMorphOriginInterface;
     readonly onDismissed: () => void;
+    readonly height?: AnchoredMorphPanelHeightEnum;
     readonly children: ReactNode;
 }
 
-export const AnchoredMorphPanel = ({ origin, onDismissed, children }: Props) => {
-    const { panelStyle, ghostStyle, contentStyle, scrimStyle, handleClose, isSettled } = useAnchoredMorphPanelMotion(origin, onDismissed);
+export const AnchoredMorphPanel = ({ origin, onDismissed, height = AnchoredMorphPanelHeightEnum.FILL, children }: Props) => {
+    const fitsContent = height === AnchoredMorphPanelHeightEnum.CONTENT;
+    const { panelStyle, ghostStyle, contentStyle, scrimStyle, handleClose, handleContentLayout, isSettled } = useAnchoredMorphPanelMotion(
+        origin,
+        fitsContent,
+        onDismissed
+    );
+    const contentLayoutHandler = fitsContent ? handleContentLayout : void 0;
 
     return (
         <AnchoredMorphPanelContext value={handleClose}>
@@ -36,7 +44,7 @@ export const AnchoredMorphPanel = ({ origin, onDismissed, children }: Props) => 
                         {origin.content}
                     </Animated.View>
 
-                    <Animated.View className="absolute top-0 left-0" style={contentStyle}>
+                    <Animated.View className="absolute top-0 left-0" style={contentStyle} onLayout={contentLayoutHandler}>
                         <AnchoredMorphPanelSettledContext value={isSettled}>
                             <MorphingSheetDismissContext value={handleClose}>{children}</MorphingSheetDismissContext>
                         </AnchoredMorphPanelSettledContext>

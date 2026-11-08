@@ -4,7 +4,7 @@ import { Extrapolation, interpolate, interpolateColor, useAnimatedStyle } from '
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useResolveClassNames, useUniwind } from 'uniwind';
 
-import { isString } from '@rnw-community/shared';
+import { isDefined, isString } from '@rnw-community/shared';
 
 import { useReducedMotion } from './use-reduced-motion.hook';
 
@@ -16,7 +16,6 @@ const PANEL_TOP_GAP = 8;
 const PANEL_BOTTOM_GAP = 8;
 const PANEL_RADIUS = 32;
 const GHOST_FADE_END = 0.35;
-const PANEL_FADE_END = 0.15;
 const CONTENT_FADE_START = 0.15;
 const CONTENT_FADE_END = 0.6;
 const SCRIM_OPACITY_LIGHT = 0.5;
@@ -24,13 +23,14 @@ const SCRIM_OPACITY_DARK = 0.8;
 const PROGRESS_RANGE = [0, 1];
 const GHOST_FADE_RANGE = [0, GHOST_FADE_END];
 const CONTENT_FADE_RANGE = [CONTENT_FADE_START, CONTENT_FADE_END];
-const PANEL_FADE_RANGE = [0, PANEL_FADE_END];
 
 export const useAnchoredMorphPanelStyle = (
     progress: SharedValue<number>,
     settledKeyboardHeight: SharedValue<number>,
+    contentHeight: SharedValue<number> | null,
     origin: AnchoredMorphOriginInterface
 ) => {
+    const fitsContent = isDefined(contentHeight);
     const { width: windowWidth, height: windowHeight } = useWindowDimensions();
     const { top, bottom } = useSafeAreaInsets();
     const { theme } = useUniwind();
@@ -41,17 +41,20 @@ export const useAnchoredMorphPanelStyle = (
     const panelWidth = windowWidth - PANEL_MARGIN * 2;
     const topInset = top + PANEL_TOP_GAP;
     const sheetColor = isString(backgroundColor) ? backgroundColor : origin.color;
-    const scrimOpacity = theme === 'dark' ? SCRIM_OPACITY_DARK : SCRIM_OPACITY_LIGHT;
 
     const panelStyle = useAnimatedStyle(() => {
         const current = progress.get();
         const keyboardInset = Math.max(Math.abs(keyboardHeight.get()), bottom);
-        const targetHeight = windowHeight - topInset - keyboardInset - PANEL_BOTTOM_GAP;
+        const panelBottom = windowHeight - keyboardInset - PANEL_BOTTOM_GAP;
+        const measuredHeight = contentHeight?.get() ?? 0;
+        const isMeasured = measuredHeight > 0;
+        const targetHeight = isMeasured ? Math.min(measuredHeight, panelBottom - topInset) : panelBottom - topInset;
+        const targetTop = isMeasured ? Math.max(topInset, Math.min(origin.rect.y, panelBottom - targetHeight)) : topInset;
 
         if (isReducedMotion) {
             return {
                 left: PANEL_MARGIN,
-                top: topInset,
+                top: targetTop,
                 width: panelWidth,
                 height: targetHeight,
                 borderRadius: PANEL_RADIUS,
@@ -63,7 +66,7 @@ export const useAnchoredMorphPanelStyle = (
 
         return {
             left: interpolate(current, PROGRESS_RANGE, [origin.rect.x, PANEL_MARGIN], Extrapolation.CLAMP),
-            top: interpolate(current, PROGRESS_RANGE, [origin.rect.y, topInset], Extrapolation.CLAMP),
+            top: interpolate(current, PROGRESS_RANGE, [origin.rect.y, targetTop], Extrapolation.CLAMP),
             width: interpolate(current, PROGRESS_RANGE, [origin.rect.width, panelWidth], Extrapolation.CLAMP),
             height: interpolate(current, PROGRESS_RANGE, [origin.rect.height, targetHeight], Extrapolation.CLAMP),
             borderTopLeftRadius: interpolate(current, PROGRESS_RANGE, [origin.radii.topLeft, PANEL_RADIUS], Extrapolation.CLAMP),
@@ -71,7 +74,6 @@ export const useAnchoredMorphPanelStyle = (
             borderBottomLeftRadius: interpolate(current, PROGRESS_RANGE, [origin.radii.bottomLeft, PANEL_RADIUS], Extrapolation.CLAMP),
             borderBottomRightRadius: interpolate(current, PROGRESS_RANGE, [origin.radii.bottomRight, PANEL_RADIUS], Extrapolation.CLAMP),
             borderCurve: 'continuous',
-            opacity: interpolate(current, PANEL_FADE_RANGE, PROGRESS_RANGE, Extrapolation.CLAMP),
             backgroundColor: interpolateColor(current, PROGRESS_RANGE, [origin.color, sheetColor])
         };
     });
@@ -87,13 +89,18 @@ export const useAnchoredMorphPanelStyle = (
 
         return {
             width: panelWidth,
-            height: windowHeight - topInset - keyboardInset - PANEL_BOTTOM_GAP,
+            height: fitsContent ? void 0 : windowHeight - topInset - keyboardInset - PANEL_BOTTOM_GAP,
             opacity: interpolate(progress.get(), CONTENT_FADE_RANGE, PROGRESS_RANGE, Extrapolation.CLAMP)
         };
     });
 
     const scrimStyle = useAnimatedStyle(() => ({
-        opacity: interpolate(progress.get(), PROGRESS_RANGE, [0, scrimOpacity], Extrapolation.CLAMP)
+        opacity: interpolate(
+            progress.get(),
+            PROGRESS_RANGE,
+            [0, theme === 'dark' ? SCRIM_OPACITY_DARK : SCRIM_OPACITY_LIGHT],
+            Extrapolation.CLAMP
+        )
     }));
 
     return { panelStyle, ghostStyle, contentStyle, scrimStyle };

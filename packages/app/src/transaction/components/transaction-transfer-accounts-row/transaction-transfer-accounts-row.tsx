@@ -31,7 +31,7 @@ export const TransactionTransferAccountsRow = ({ ref, children }: Props) => {
     const { errors } = useFormState();
     const { shake: shakeFrom, animatedStyle: fromAnimatedStyle } = useShakeAnimation();
     const { shake: shakeTo, animatedStyle: toAnimatedStyle } = useShakeAnimation();
-    const { fromAccount, toAccount, handleFromPress, handleToPress, handleSwap, canSwap, hasAnyAccount } = useTransferAccountSelection();
+    const { fromAccount, toAccount, handleFromPress, handleToPress, handleSwap, canSwap, isSwapShown } = useTransferAccountSelection();
 
     useImperativeHandle(ref, () => ({ shakeFrom, shakeTo }));
 
@@ -73,7 +73,7 @@ export const TransactionTransferAccountsRow = ({ ref, children }: Props) => {
                 />
                 {children}
             </GroupedListSection>
-            {hasAnyAccount ? <TransferSwapButton dividerOffset={fromRowHeight} isEnabled={canSwap} onPress={handleSwap} /> : null}
+            {isSwapShown ? <TransferSwapButton dividerOffset={fromRowHeight} isEnabled={canSwap} onPress={handleSwap} /> : null}
         </View>
     );
 };

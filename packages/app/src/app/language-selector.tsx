@@ -1,4 +1,5 @@
 import { SelectorMorphingSurface } from '../@generic/component/selector-morphing-surface/selector-morphing-surface';
+import { AnchoredMorphPanelHeightEnum } from '../@generic/enum/anchored-morph-panel-height.enum';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { useMorphingSheetResult } from '../@generic/hook/use-morphing-sheet-result.hook';
 import { LanguageSelectorModalContent } from '../i18n/components/language-selector-modal-content/language-selector-modal-content';
@@ -13,7 +14,11 @@ export default function LanguageSelectorModal() {
     const { handleCommit, handleDismissed } = useMorphingSheetResult<LanguageEnum>(resolveLanguageSelector);
 
     return (
-        <SelectorMorphingSurface origin={currentParams?.origin} onDismissed={handleDismissed}>
+        <SelectorMorphingSurface
+            origin={currentParams?.origin}
+            onDismissed={handleDismissed}
+            panelHeight={AnchoredMorphPanelHeightEnum.CONTENT}
+        >
             <LanguageSelectorModalContent selectedLanguage={currentParams?.selectedLanguage} onCommit={handleCommit} />
         </SelectorMorphingSurface>
     );

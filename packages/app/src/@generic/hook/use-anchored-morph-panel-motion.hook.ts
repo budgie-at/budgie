@@ -10,17 +10,19 @@ import { useAnchoredMorphPanelStyle } from './use-anchored-morph-panel-style.hoo
 import { useReducedMotion } from './use-reduced-motion.hook';
 
 import type { AnchoredMorphOriginInterface } from '../interface/anchored-morph-origin.interface';
+import type { LayoutChangeEvent } from 'react-native';
 
 const OPEN_SPRING = { mass: 1, stiffness: 480, damping: 44, overshootClamping: true };
 const CLOSE_SPRING = { mass: 1, stiffness: 900, damping: 60, overshootClamping: true };
 const REDUCED_TIMING = { duration: MOTION_BASE_DURATION, easing: EASE_OUT };
 
-export const useAnchoredMorphPanelMotion = (origin: AnchoredMorphOriginInterface, onDismissed: () => void) => {
+export const useAnchoredMorphPanelMotion = (origin: AnchoredMorphOriginInterface, fitsContent: boolean, onDismissed: () => void) => {
     const isReducedMotion = useReducedMotion();
     const progress = useSharedValue(0);
     const [isSettled, setIsSettled] = useState(false);
     const isClosing = useSharedValue(false);
     const settledKeyboardHeight = useSharedValue(0);
+    const contentHeight = useSharedValue(0);
 
     useKeyboardHandler({
         onStart: event => {
@@ -68,5 +70,12 @@ export const useAnchoredMorphPanelMotion = (origin: AnchoredMorphOriginInterface
         progress.set(isReducedMotion ? withTiming(0, REDUCED_TIMING, handleFinished) : withSpring(0, CLOSE_SPRING, handleFinished));
     };
 
-    return { ...useAnchoredMorphPanelStyle(progress, settledKeyboardHeight, origin), handleClose, isSettled };
+    const handleContentLayout = (event: LayoutChangeEvent) => void contentHeight.set(event.nativeEvent.layout.height);
+
+    return {
+        ...useAnchoredMorphPanelStyle(progress, settledKeyboardHeight, fitsContent ? contentHeight : null, origin),
+        handleClose,
+        handleContentLayout,
+        isSettled
+    };
 };

@@ -1,4 +1,5 @@
 import { AccountTypeEnum, TransactionCreateInputInterface } from '@budgie/contracts';
+import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 import { isDefined } from '@rnw-community/shared';
@@ -14,6 +15,7 @@ export const useTransferAccountSelection = () => {
     const { setValue } = useFormContext<TransactionCreateInputInterface>();
     const [openAccountSelector] = useAccountSelectorModal();
     const accounts = useTransferAccounts();
+    const [isPickerOpen, setIsPickerOpen] = useState(false);
     const { fromAccountId, toAccountId } = accounts;
 
     const handleAccountPress = (
@@ -22,9 +24,12 @@ export const useTransferAccountSelection = () => {
         excludeAccountId: number | null,
         origin: AnchoredMorphOriginInterface
     ) => {
+        setIsPickerOpen(true);
         openAccountSelector(
             { initialAccountId, excludeAccountId, excludeAccountTypes: [AccountTypeEnum.DEBT], onlyActive: false, origin },
             selectedAccountId => {
+                setIsPickerOpen(false);
+
                 if (isDefined(selectedAccountId)) {
                     setValue(field, selectedAccountId, { shouldDirty: true });
                 }
@@ -48,6 +53,6 @@ export const useTransferAccountSelection = () => {
         handleToPress,
         handleSwap,
         canSwap: isDefined(fromAccountId) && isDefined(toAccountId),
-        hasAnyAccount: isDefined(fromAccountId) || isDefined(toAccountId)
+        isSwapShown: !isPickerOpen && (isDefined(fromAccountId) || isDefined(toAccountId))
     };
 };
