@@ -13,7 +13,6 @@ import { RecurringSeriesFormSelector } from '../recurring-series-form-screen/rec
 
 import type { AnchoredMorphOriginInterface } from '../../../@generic/interface/anchored-morph-origin.interface';
 import type { RecurringSeriesFormValues } from '../../constant/recurring-series-form-schema.constant';
-import type { ComponentProps } from 'react';
 
 export const RecurringFormAccountField = () => {
     const { t } = useLingui();
@@ -35,17 +34,21 @@ export const RecurringFormAccountField = () => {
         setValue('accountId', null);
     };
 
-    const rowProps: Omit<ComponentProps<typeof GroupedListValueRow>, 'onPress'> = {
-        icon: account?.icon ?? UserIconNameEnum.Wallet,
-        title: t`Account`,
-        value: account?.title ?? t`Any account`,
-        testID: RecurringSeriesFormSelector.Account,
-        ...(hasAccount && { onClear: handleClear })
-    };
+    const icon = account?.icon ?? UserIconNameEnum.Wallet;
+    const value = account?.title ?? t`Any account`;
 
     return (
         <AnchoredMorphTrigger edge={RoundedEdgeEnum.BOTTOM} onPress={handleSelect}>
-            {handlePress => <GroupedListValueRow {...rowProps} onPress={handlePress} />}
+            {handlePress => (
+                <GroupedListValueRow
+                    icon={icon}
+                    title={t`Account`}
+                    value={value}
+                    testID={RecurringSeriesFormSelector.Account}
+                    {...(hasAccount && { onClear: handleClear })}
+                    onPress={handlePress}
+                />
+            )}
         </AnchoredMorphTrigger>
     );
 };

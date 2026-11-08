@@ -12,7 +12,6 @@ import { RuleValueGlyph } from '../rule-value-glyph/rule-value-glyph';
 import { RuleValuePickerButton } from '../rule-value-picker-button/rule-value-picker-button';
 
 import type { AnchoredMorphOriginInterface } from '../../../@generic/interface/anchored-morph-origin.interface';
-import type { ComponentProps } from 'react';
 
 interface Props {
     readonly index: number;
@@ -38,14 +37,7 @@ export const RuleConditionAccountSelector = ({ index, testID }: Props) => {
         );
     };
 
-    const pickerProps: Omit<ComponentProps<typeof RuleValuePickerButton>, 'onPress'> = {
-        value: account?.title ?? null,
-        isMissing,
-        leading: <RuleValueGlyph icon={UserIconNameEnum.Wallet} variant="ghost" />,
-        placeholder: t`Choose an account`,
-        name: t`Account`,
-        testID
-    };
+    const accountTitle = account?.title ?? null;
 
     return (
         <AnchoredMorphTrigger
@@ -54,7 +46,17 @@ export const RuleConditionAccountSelector = ({ index, testID }: Props) => {
             colorClassName="bg-surface-fill"
             onPress={handleSelect}
         >
-            {handlePress => <RuleValuePickerButton {...pickerProps} onPress={handlePress} />}
+            {handlePress => (
+                <RuleValuePickerButton
+                    value={accountTitle}
+                    isMissing={isMissing}
+                    leading={<RuleValueGlyph icon={UserIconNameEnum.Wallet} variant="ghost" />}
+                    placeholder={t`Choose an account`}
+                    name={t`Account`}
+                    testID={testID}
+                    onPress={handlePress}
+                />
+            )}
         </AnchoredMorphTrigger>
     );
 };

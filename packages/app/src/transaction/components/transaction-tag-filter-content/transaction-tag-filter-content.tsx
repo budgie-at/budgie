@@ -10,11 +10,11 @@ import { useFilterSheetSelection } from '../../hook/use-filter-sheet-selection.h
 import { TransactionFilterSelectionSheet } from '../transaction-filter-selection-sheet/transaction-filter-selection-sheet';
 import { TransactionFiltersSelector } from '../transaction-filters/transaction-filters.selector';
 
-import type { TransactionTagFilterResult } from '../../context/transaction-tag-filter-modal.context';
+import type { TransactionIdsFilterResultInterface } from '../../interface/transaction-ids-filter-result.interface';
 
 interface Props {
     readonly value: number[] | null;
-    readonly onCommit: (result: TransactionTagFilterResult) => void;
+    readonly onCommit: (result: TransactionIdsFilterResultInterface) => void;
 }
 
 export const TransactionTagFilterContent = ({ value, onCommit }: Props) => {

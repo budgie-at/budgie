@@ -17,12 +17,18 @@ interface Props {
     readonly onPress: (origin: AnchoredMorphOriginInterface) => void;
 }
 
-export const AnchoredSettingsRow = ({ edge, icon, title, subtitle, right, testID, onPress }: Props) => {
-    const rowProps = { icon, title, subtitle, right, testID, variant: 'ghost' } as const;
-
-    return (
-        <AnchoredMorphTrigger edge={edge} onPress={onPress}>
-            {handlePress => <SettingsRow {...rowProps} onPress={handlePress} />}
-        </AnchoredMorphTrigger>
-    );
-};
+export const AnchoredSettingsRow = ({ edge, icon, title, subtitle, right, testID, onPress }: Props) => (
+    <AnchoredMorphTrigger edge={edge} onPress={onPress}>
+        {handlePress => (
+            <SettingsRow
+                icon={icon}
+                title={title}
+                subtitle={subtitle}
+                right={right}
+                testID={testID}
+                variant="ghost"
+                onPress={handlePress}
+            />
+        )}
+    </AnchoredMorphTrigger>
+);

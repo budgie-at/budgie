@@ -2,7 +2,9 @@ import { useMorphingSheetCommit } from '../../@generic/hook/use-morphing-sheet-c
 import { useSearchableFilterState } from '../../@generic/hook/use-searchable-filter-state/use-searchable-filter-state.hook';
 import { toggleFilterSelection } from '../utils/toggle-filter-selection.util';
 
-export const useFilterSheetSelection = (initialValue: number[] | null, onCommit: (result: { readonly value: number[] | null }) => void) => {
+import type { TransactionIdsFilterResultInterface } from '../interface/transaction-ids-filter-result.interface';
+
+export const useFilterSheetSelection = (initialValue: number[] | null, onCommit: (result: TransactionIdsFilterResultInterface) => void) => {
     const { localValue, setLocalValue, search, setSearch, selectedCount, handleDeselectAll } = useSearchableFilterState(initialValue);
     const commit = useMorphingSheetCommit(onCommit);
 

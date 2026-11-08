@@ -11,7 +11,6 @@ import { DebtOpeningAccountRow } from '../debt-opening-account-row/debt-opening-
 
 import type { AnchoredMorphOriginInterface } from '../../../@generic/interface/anchored-morph-origin.interface';
 import type { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
-import type { ComponentProps } from 'react';
 
 interface Props {
     readonly accountId: number | null;
@@ -48,13 +47,6 @@ export const DebtOpeningAccountField = ({ accountId, label, variant, onChange }:
         onChange(null);
     };
 
-    const rowProps: Omit<ComponentProps<typeof DebtOpeningAccountRow>, 'onPress' | 'onClear'> = {
-        account: selectedAccount,
-        label,
-        variant,
-        formattedBalance
-    };
-
     return (
         <AnchoredMorphTrigger
             edge={RoundedEdgeEnum.ALL}
@@ -62,7 +54,16 @@ export const DebtOpeningAccountField = ({ accountId, label, variant, onChange }:
             colorClassName="bg-secondary-background"
             onPress={handleSelect}
         >
-            {handlePress => <DebtOpeningAccountRow {...rowProps} onPress={handlePress} onClear={handleClearPress} />}
+            {handlePress => (
+                <DebtOpeningAccountRow
+                    account={selectedAccount}
+                    label={label}
+                    variant={variant}
+                    formattedBalance={formattedBalance}
+                    onPress={handlePress}
+                    onClear={handleClearPress}
+                />
+            )}
         </AnchoredMorphTrigger>
     );
 };

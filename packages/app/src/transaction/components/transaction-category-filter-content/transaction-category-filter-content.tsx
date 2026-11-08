@@ -10,11 +10,11 @@ import { prepareTransactionFilterGridData } from '../../utils/prepare-transactio
 import { TransactionFilterSelectionSheet } from '../transaction-filter-selection-sheet/transaction-filter-selection-sheet';
 import { TransactionFiltersSelector } from '../transaction-filters/transaction-filters.selector';
 
-import type { TransactionCategoryFilterResult } from '../../context/transaction-category-filter-modal.context';
+import type { TransactionIdsFilterResultInterface } from '../../interface/transaction-ids-filter-result.interface';
 
 interface Props {
     readonly value: number[] | null;
-    readonly onCommit: (result: TransactionCategoryFilterResult) => void;
+    readonly onCommit: (result: TransactionIdsFilterResultInterface) => void;
 }
 
 export const TransactionCategoryFilterContent = ({ value, onCommit }: Props) => {

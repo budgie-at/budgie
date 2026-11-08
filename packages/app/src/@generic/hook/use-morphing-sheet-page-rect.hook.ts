@@ -1,5 +1,5 @@
 import { useWindowDimensions } from 'react-native';
-import { Extrapolation, interpolate, useDerivedValue } from 'react-native-reanimated';
+import { useDerivedValue } from 'react-native-reanimated';
 
 import { useMorphingSheetFrame } from './use-morphing-sheet-frame.hook';
 import { useReducedMotion } from './use-reduced-motion.hook';
@@ -13,7 +13,7 @@ export const useMorphingSheetPageRect = (
     pageProgress: SharedValue<number>,
     visibleHeight: SharedValue<number>,
     frozenLift: SharedValue<number>,
-    translateY: SharedValue<number>
+    presence: SharedValue<number>
 ) => {
     const { height: windowHeight } = useWindowDimensions();
     const { baseBottom, frameInset } = useMorphingSheetFrame();
@@ -23,14 +23,13 @@ export const useMorphingSheetPageRect = (
         const progress = pageProgress.get();
         const remaining = isReducedMotion ? 0 : 1 - progress;
         const cardBottom = baseBottom + frozenLift.get();
-        const presence = interpolate(translateY.get(), [0, Math.max(visibleHeight.get() + baseBottom, 1)], [1, 0], Extrapolation.CLAMP);
 
         return {
             left: frameInset * remaining,
             right: frameInset * remaining,
             top: (windowHeight - cardBottom - visibleHeight.get()) * remaining,
             bottom: cardBottom * remaining,
-            opacity: presence * (isReducedMotion ? progress : Math.min(progress * BACKDROP_FADE_IN_RATE, 1))
+            opacity: presence.get() * (isReducedMotion ? progress : Math.min(progress * BACKDROP_FADE_IN_RATE, 1))
         };
     });
 };

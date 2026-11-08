@@ -35,7 +35,7 @@ export const MorphingSheet = ({ steps, activeStep, onDismiss, testID }: Props) =
     const keyboardLift = useMorphingSheetKeyboardLift(motion.frame.baseBottom);
     const { frameStyle, cardStyle, presence } = useMorphingSheetStyle(motion, keyboardLift);
     const page = useMorphingSheetPage(pageStep, pageProgress, keyboardLift);
-    const pageRect = useMorphingSheetPageRect(pageProgress, visibleHeight, page.frozenLift, translateY);
+    const pageRect = useMorphingSheetPageRect(pageProgress, visibleHeight, page.frozenLift, presence);
     const isCovered = useAccessibilityLayer();
     const back = useMorphingSheetBack(steps[activeStep]?.onBack, motion);
     const isPageActive = isDefined(pageStep);

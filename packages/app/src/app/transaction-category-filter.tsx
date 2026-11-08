@@ -7,13 +7,13 @@ import {
     useTransactionCategoryFilterModalParams
 } from '../transaction/context/transaction-category-filter-modal.context';
 
-import type { TransactionCategoryFilterResult } from '../transaction/context/transaction-category-filter-modal.context';
+import type { TransactionIdsFilterResultInterface } from '../transaction/interface/transaction-ids-filter-result.interface';
 
 export default function TransactionCategoryFilterModal() {
     const [, resolveTransactionCategoryFilter, dismissTransactionCategoryFilter] = useTransactionCategoryFilterModal();
     useModalDismiss(dismissTransactionCategoryFilter);
     const currentParams = useTransactionCategoryFilterModalParams();
-    const { handleCommit, handleDismissed } = useMorphingSheetResult<TransactionCategoryFilterResult>(resolveTransactionCategoryFilter);
+    const { handleCommit, handleDismissed } = useMorphingSheetResult<TransactionIdsFilterResultInterface>(resolveTransactionCategoryFilter);
 
     return (
         <SingleStepMorphingSheet onDismiss={handleDismissed}>
