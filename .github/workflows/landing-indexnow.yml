@@ -1,10 +1,11 @@
 name: Landing IndexNow
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'packages/landing/**'
+  # Daily, changed URLs only: a full submit after every deploy made crawlers refetch every page
+  # right after the deploy emptied the ISR cache. Manual dispatch submits the full sitemap.
+  schedule:
+    - cron: '30 6 * * *'
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -16,17 +17,19 @@ concurrency:
 jobs:
   submit:
     name: Submit IndexNow
-    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
     runs-on: [self-hosted, linux-portable-2x4]
     timeout-minutes: 10
     steps:
-      - name: Wait for Vercel deploy to propagate
-        run: sleep 300
       - name: Submit canonical URLs to IndexNow
         run: |
+          url=https://budgie.at/api/indexnow
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            url="$url?since=$(date -u -d '7 days ago' +%Y-%m-%dT%H:%M:%SZ)"
+          fi
+          echo "POST $url"
           for attempt in 1 2 3; do
             echo "Attempt $attempt"
-            if curl --fail --silent --show-error --max-time 30 -o /tmp/out.json -X POST https://budgie.at/api/indexnow \
+            if curl --fail --silent --show-error --max-time 30 -o /tmp/out.json -X POST "$url" \
               -H "Authorization: Bearer ${{ secrets.ADMIN_SECRET }}"; then
               cat /tmp/out.json
               exit 0
