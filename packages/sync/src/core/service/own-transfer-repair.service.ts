@@ -103,17 +103,19 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
 
         return {
             repair: Effect.fn('OwnTransferRepairService.repair')(function* (scope: ConsolidationScanScopeInterface | null = null) {
-                yield* Db.transaction(
-                    Effect.gen(function* () {
-                        const reservedAccounts = yield* accountRepository.findByExternalIds([UNTRACKED_OWN_ACCOUNT_EXTERNAL_ID]);
-                        for (const account of reservedAccounts) {
-                            if (account.isActive || account.includeInNetWorth) {
+                const reservedAccounts = (yield* accountRepository.findByExternalIds([UNTRACKED_OWN_ACCOUNT_EXTERNAL_ID])).filter(
+                    account => account.isActive || account.includeInNetWorth
+                );
+                if (isNotEmptyArray(reservedAccounts)) {
+                    yield* Db.transaction(
+                        Effect.gen(function* () {
+                            for (const account of reservedAccounts) {
                                 yield* accountRepository.updateById(account.id, { isActive: false, includeInNetWorth: false });
                                 yield* balances.updateBalancesByAccountIds([account.id]);
                             }
-                        }
-                    })
-                );
+                        })
+                    );
+                }
                 const accounts = yield* repository.findAccounts;
                 const cardMatches = (transaction: TransactionWithEntriesEntityInterface) =>
                     accounts.filter(
