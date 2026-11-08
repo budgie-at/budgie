@@ -8,6 +8,6 @@ interface Props {
 
 export const FilterSheetHeader = ({ title }: Props) => (
     <View className="px-xl">
-        <SheetTitleRow title={title} trailing={null} />
+        <SheetTitleRow title={title} trailing={<View />} />
     </View>
 );

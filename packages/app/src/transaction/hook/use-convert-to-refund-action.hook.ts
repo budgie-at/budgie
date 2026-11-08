@@ -4,6 +4,7 @@ import * as Effect from 'effect/Effect';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { useMorphingSheetCommit } from '../../@generic/hook/use-morphing-sheet-commit.hook';
 import { useSingleFlight } from '../../@generic/hook/use-single-flight.hook';
 import { runConfirmedTransactionAction } from '../utils/run-confirmed-transaction-action.util';
 
@@ -16,6 +17,7 @@ export const useConvertToRefundAction = (
 ) => {
     const { t } = useLingui();
     const { run, isLoading } = useSingleFlight();
+    const commit = useMorphingSheetCommit(onCommit);
 
     const convert = () => {
         if (!isDefined(selectedCandidate)) {
@@ -41,7 +43,7 @@ export const useConvertToRefundAction = (
                     ).pipe(
                         Effect.tap(canonicalId =>
                             Effect.sync(() => {
-                                onCommit(canonicalId);
+                                commit(canonicalId);
                             })
                         )
                     )
