@@ -18,13 +18,17 @@ export default function UpdateAdjustmentTransactionPage() {
     const transactionId = Number(id);
     const { transaction, isLoading } = useGetTransactionByIdQuery(transactionId);
 
-    const { sync, isLoading: isSyncLoading } = useGetAccountSync(transaction?.toAccountId ?? transaction?.fromAccountId ?? 0);
+    const {
+        sync,
+        isLoading: isSyncLoading,
+        isUnavailable: isSyncUnavailable
+    } = useGetAccountSync(transaction?.toAccountId ?? transaction?.fromAccountId ?? 0);
 
     if (isLoading || isSyncLoading) {
         return null;
     }
 
-    if (!isDefined(transaction)) {
+    if (!isDefined(transaction) || isSyncUnavailable) {
         return <Redirect href="/" />;
     }
 

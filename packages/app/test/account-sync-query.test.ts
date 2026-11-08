@@ -11,12 +11,12 @@ vi.mock('../src/@generic/utils/database-query-family.util', () => ({ databaseQue
 
 it('only blocks the adjustment screen during the initial sync read', () => {
     read.mockReturnValue(AsyncResult.initial());
-    expect(useGetAccountSync(1)).toEqual({ sync: null, isLoading: true });
+    expect(useGetAccountSync(1)).toEqual({ sync: null, isLoading: true, isUnavailable: false });
     read.mockReturnValue(AsyncResult.success(null));
-    expect(useGetAccountSync(1)).toEqual({ sync: null, isLoading: false });
+    expect(useGetAccountSync(1)).toEqual({ sync: null, isLoading: false, isUnavailable: false });
 });
 
-it('allows the adjustment screen to render when the sync read fails', () => {
+it('marks the sync state unavailable when the read fails without a previous result', () => {
     read.mockReturnValue(AsyncResult.fail('Sync read failed'));
-    expect(useGetAccountSync(1)).toEqual({ sync: null, isLoading: false });
+    expect(useGetAccountSync(1)).toEqual({ sync: null, isLoading: false, isUnavailable: true });
 });
