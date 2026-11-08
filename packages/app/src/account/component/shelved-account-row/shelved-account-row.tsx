@@ -1,5 +1,8 @@
 import { AccountEntityInterface, isEmojiIcon } from '@budgie/contracts';
+import { Children } from 'react';
 import { Text, View } from 'react-native';
+
+import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
@@ -22,7 +25,7 @@ interface Props {
     readonly accessibilityActions: ShelvedAccountAccessibilityActionInterface[];
     readonly testID: string;
     readonly onPress?: () => void;
-    readonly children: ReactNode;
+    readonly children?: ReactNode;
 }
 
 export const ShelvedAccountRow = ({
@@ -38,11 +41,12 @@ export const ShelvedAccountRow = ({
     const { anchor, frameRef, closeMenu, handleCloseComplete, handleToggleMenu, isMenuOpen } = usePopoverMenuAnchor();
 
     const iconSize = isEmojiIcon(account.icon) ? 22 : 18;
-    const handlePress = onPress ?? handleToggleMenu;
+    const hasMenu = isNotEmptyArray(Children.toArray(children));
+    const handlePress = hasMenu ? (onPress ?? handleToggleMenu) : onPress;
     const handleAccessibilityAction = ({ nativeEvent }: AccessibilityActionEvent) =>
         void accessibilityActions.find(action => action.name === nativeEvent.actionName)?.onPress();
     const pressableProps = {
-        onLongPress: handleToggleMenu,
+        ...(hasMenu && { onLongPress: handleToggleMenu }),
         accessibilityLabel,
         accessibilityActions: accessibilityActions.map(({ name, label }) => ({ name, label })),
         onAccessibilityAction: handleAccessibilityAction
@@ -79,11 +83,13 @@ export const ShelvedAccountRow = ({
                 pressableProps={pressableProps}
                 onPress={handlePress}
             />
-            <PopoverMenu isOpen={isMenuOpen} onClose={closeMenu} onCloseComplete={handleCloseComplete} anchor={anchor} align="start">
-                <ActionsMenuContext value={closeMenu}>
-                    <View className="py-sm">{children}</View>
-                </ActionsMenuContext>
-            </PopoverMenu>
+            {hasMenu ? (
+                <PopoverMenu isOpen={isMenuOpen} onClose={closeMenu} onCloseComplete={handleCloseComplete} anchor={anchor} align="start">
+                    <ActionsMenuContext value={closeMenu}>
+                        <View className="py-sm">{children}</View>
+                    </ActionsMenuContext>
+                </PopoverMenu>
+            ) : null}
         </View>
     );
 };

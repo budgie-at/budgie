@@ -28,6 +28,7 @@ import { useAccountBalanceQuery } from '../../../../account/query/use-account-ba
 import { useDebtAccountProgressSummaryQuery } from '../../../../account/query/use-debt-account-progress-summary.query';
 import { useGetAccountByIdQuery } from '../../../../account/query/use-get-account-by-id.query';
 import { getAccountDisplayTitle } from '../../../../account/utils/get-account-display-title.util';
+import { isUntrackedOwnAccount } from '../../../../account/utils/is-untracked-own-account.util';
 import { InstallmentPlanScheduleSummary } from '../../../../installment-plan/component/installment-plan-schedule-summary/installment-plan-schedule-summary';
 import { isInzhurFundAccount } from '../../../../inzhur/utils/is-inzhur-fund-account.util';
 import { CollapsibleChromeTransactionList } from '../../../../transaction/components/collapsible-chrome-transaction-list/collapsible-chrome-transaction-list';
@@ -53,7 +54,9 @@ export default function AccountDetails() {
     }
 
     const instrumentSymbol = account.instrument.symbol;
-    const headerTrailing = <AccountActionsMenu account={account} balance={balance} instrumentSymbol={instrumentSymbol} />;
+    const headerTrailing = isUntrackedOwnAccount(account) ? null : (
+        <AccountActionsMenu account={account} balance={balance} instrumentSymbol={instrumentSymbol} />
+    );
 
     const accountSummary =
         account.type === AccountTypeEnum.DEBT ? (

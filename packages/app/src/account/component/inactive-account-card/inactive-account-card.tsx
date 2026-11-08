@@ -57,9 +57,13 @@ export const InactiveAccountCard = ({ account, isFirst, isLast }: Props) => {
                 testID={InactiveAccountCardSelector.Card(account.title)}
                 onPress={handleOpen}
             >
-                {isAutomatic ? null : <ActionsMenuItem icon={UserIconNameEnum.Eye} label={t`Unhide`} onPress={unhide} />}
-                {isAutomatic ? null : <ActionsMenuItem icon={UserIconNameEnum.Pencil} label={t`Edit account`} onPress={handleEdit} />}
-                {canArchive ? <ActionsMenuItem icon={UserIconNameEnum.Archive} label={t`Archive`} onPress={handleArchive} /> : null}
+                {isAutomatic ? null : (
+                    <>
+                        <ActionsMenuItem icon={UserIconNameEnum.Eye} label={t`Unhide`} onPress={unhide} />
+                        <ActionsMenuItem icon={UserIconNameEnum.Pencil} label={t`Edit account`} onPress={handleEdit} />
+                        {canArchive ? <ActionsMenuItem icon={UserIconNameEnum.Archive} label={t`Archive`} onPress={handleArchive} /> : null}
+                    </>
+                )}
             </ShelvedAccountRow>
         </GroupedListItem>
     );

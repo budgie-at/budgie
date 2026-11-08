@@ -2325,8 +2325,8 @@ msgid "Budgie rebuilds your cash, buys and dividends from it"
 msgstr "Budgie rebuilds your cash, buys and dividends from it"
 
 #: src/account/component/account-details-automatic-notice/account-details-automatic-notice.tsx
-msgid "Budgie records transfers to your accounts at banks it doesn't track here. Connect that bank and they'll be paired automatically."
-msgstr "Budgie records transfers to your accounts at banks it doesn't track here. Connect that bank and they'll be paired automatically."
+msgid "Budgie records transfers to your accounts at banks it doesn't track here. Connect that bank or import its statement, and they'll be paired automatically."
+msgstr "Budgie records transfers to your accounts at banks it doesn't track here. Connect that bank or import its statement, and they'll be paired automatically."
 
 #: src/app/(tabs)/settings/sync-repairs.tsx
 msgid "Budgie removes repeated bank imports and fixes transfers that landed on inactive accounts. Manual transactions are never changed."
