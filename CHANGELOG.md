@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.171.2](https://github.com/budgie-at/budgie/compare/v6.171.1...v6.171.2) (2026-11-08)
+
+### Bug Fixes
+
+* **landing:** submit only changed URLs to IndexNow once a day ([#2059](https://github.com/budgie-at/budgie/issues/2059)) ([771116c](https://github.com/budgie-at/budgie/commit/771116cffa9e47a0e78f58d63d61a22f22652c3f))
+
+
 ## [6.171.1](https://github.com/budgie-at/budgie/compare/v6.171.0...v6.171.1) (2026-11-08)
 
 ### Bug Fixes
