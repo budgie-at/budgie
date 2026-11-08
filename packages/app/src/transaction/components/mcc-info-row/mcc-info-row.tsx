@@ -52,13 +52,14 @@ export const MccInfoRow = ({ transactionTitle, mccCategoryId, children, suggesti
                 <View className={accessoryClassName} testID={SimpleQuickFormSelector.Accessory}>
                     <QuickFormValidationSlot>
                         {isDefined(mccCategory) ? (
-                            <Text
+                            <Animated.Text
+                                layout={MOTION_LAYOUT}
                                 className="shrink text-[13px] leading-[18px] text-secondary-foreground"
                                 maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
                                 numberOfLines={1}
                             >
                                 {mccCategory.shortDescription}
-                            </Text>
+                            </Animated.Text>
                         ) : null}
                         {children}
                         {suggestions}

@@ -5,7 +5,15 @@ import { ImpactFeedbackStyle, NotificationFeedbackType } from 'expo-haptics';
 import { ReactNode, useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import Animated, { ReduceMotion, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
+import Animated, {
+    Extrapolation,
+    interpolate,
+    ReduceMotion,
+    useAnimatedStyle,
+    useSharedValue,
+    withSpring,
+    withTiming
+} from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
@@ -28,6 +36,7 @@ import type * as Fiber from 'effect/Fiber';
 const ENTRY_FADE_CONFIG = { duration: 150, easing: EASE_OUT, reduceMotion: ReduceMotion.System };
 const SNAP_BACK_SPRING = { dampingRatio: 0.8, duration: 400 };
 const SWIPE_THRESHOLD = 80;
+const DRAGGED_MIN_OPACITY = 0.35;
 const VELOCITY_DISMISS = 800;
 const MAX_RUBBER_BAND = 24;
 const RUBBER_BAND_FACTOR = 2;
@@ -83,7 +92,7 @@ export const SwipeableRuleCard = (props: Props) => {
 
     const panGesture = Gesture.Pan()
         .enabled(isInteractive)
-        .activeOffsetX(10)
+        .activeOffsetX([-10, 10])
         .onUpdate(event => {
             const isRightward = event.translationX > 0;
             const rubberBand = -Math.min(MAX_RUBBER_BAND, Math.sqrt(-event.translationX) * RUBBER_BAND_FACTOR);
@@ -100,14 +109,24 @@ export const SwipeableRuleCard = (props: Props) => {
             }
         })
         .onEnd(event => {
+            const didTickThreshold = didTriggerThresholdHaptic.get();
             didTriggerThresholdHaptic.set(false);
 
             const isDismissed = event.translationX > 0 && (event.translationX >= SWIPE_THRESHOLD || event.velocityX > VELOCITY_DISMISS);
 
             if (isDismissed) {
+                if (!didTickThreshold) {
+                    scheduleOnRN(handleSwipeThresholdReached);
+                }
+
                 translateX.set(withSpring(SLIDE_OUT_DISTANCE, { ...SPRING_SETTLE, velocity: event.velocityX }));
-                opacity.set(withTiming(0, { duration: MOTION_FAST_DURATION, easing: EASE_OUT }));
-                scheduleOnRN(onDismiss);
+                opacity.set(
+                    withTiming(0, { duration: MOTION_FAST_DURATION, easing: EASE_OUT }, isFinished => {
+                        if (isFinished) {
+                            scheduleOnRN(onDismiss);
+                        }
+                    })
+                );
             } else {
                 translateX.set(withSpring(0, { ...SNAP_BACK_SPRING, velocity: event.velocityX }));
             }
@@ -115,7 +134,7 @@ export const SwipeableRuleCard = (props: Props) => {
 
     const animatedStyle = useAnimatedStyle(() => ({
         transform: [{ translateX: translateX.get() }],
-        opacity: opacity.get()
+        opacity: opacity.get() * interpolate(translateX.get(), [0, SWIPE_THRESHOLD], [1, DRAGGED_MIN_OPACITY], Extrapolation.CLAMP)
     }));
 
     const handleYesButtonPress = () => {
