@@ -1,7 +1,6 @@
 import { ExternalSourceEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
-import * as Logger from 'effect/Logger';
 
 import { OwnTransferRepository } from '../../../../../packages/sync/src/core/repository/own-transfer.repository';
 import { explainQueryPlan, seed, TestLayer } from '../../harness';
@@ -48,18 +47,12 @@ describe('account/own-transfer-prefilter', () => {
                     externalSource: ExternalSourceEnum.MONOBANK
                 });
             }
-            const [unfilteredDuration, unfiltered] = yield* Effect.timed(repository.findTransactions(null));
-            const [filteredDuration, filtered] = yield* Effect.timed(repository.findCandidates(null, identities));
+            const unfiltered = yield* repository.findTransactions(null);
+            const filtered = yield* repository.findCandidates(null, identities);
             expect(unfiltered).toHaveLength(200);
             expect(filtered).toHaveLength(1);
             expect((yield* explainQueryPlan(repository.findCandidates(null, identities))).some(step => step.includes('SEARCH'))).toBe(true);
             expect(filtered[0].id).toBe(unfiltered.find(transaction => transaction.title === 'own account')?.id);
-            yield* Effect.logInfo('Own-transfer title prefilter fixture', {
-                unfilteredDuration,
-                filteredDuration,
-                unfilteredTransactions: unfiltered.length,
-                filteredTransactions: filtered.length
-            }).pipe(Effect.provide(Logger.layer([Logger.consolePretty()])));
         }).pipe(Effect.provide([OwnTransferRepository.layer, TestLayer]))
     );
 

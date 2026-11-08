@@ -3,8 +3,14 @@ import { ExternalSourceEnum, InstrumentTypeEnum, TransactionTypeEnum } from '@bu
 import type { TransactionEntityInterface } from '@budgie/contracts';
 
 class BinanceOwnTransferDetector {
+    readonly titlePrefix = 'Binance ';
+
     matches(transaction: Pick<TransactionEntityInterface, 'externalSource' | 'title'>): boolean {
-        return transaction.externalSource === ExternalSourceEnum.BINANCE && /^Binance \S+ (deposit|withdrawal)$/u.test(transaction.title);
+        return (
+            transaction.externalSource === ExternalSourceEnum.BINANCE &&
+            transaction.title.startsWith(this.titlePrefix) &&
+            /^\S+ (?:deposit|withdrawal)$/u.test(transaction.title.slice(this.titlePrefix.length))
+        );
     }
 
     allowsFallback(

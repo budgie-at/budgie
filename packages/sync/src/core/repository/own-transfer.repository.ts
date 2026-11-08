@@ -22,6 +22,7 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { binanceOwnTransferDetector } from '../../binance/detector/binance-own-transfer.detector';
 import { ownTransferDetector } from '../detector/own-transfer.detector';
 
 import type { ConsolidationScanScopeInterface, DB } from '@budgie/contracts';
@@ -101,7 +102,7 @@ export class OwnTransferRepository extends Context.Service<OwnTransferRepository
                         sql`${TransactionEntityTable.title} GLOB '*[^ -~]*'`,
                         like(TransactionEntityTable.title, '%*%'),
                         like(TransactionEntityTable.title, '%xx%'),
-                        like(TransactionEntityTable.title, 'Binance %'),
+                        like(TransactionEntityTable.title, `${binanceOwnTransferDetector.titlePrefix}%`),
                         ...ownTransferDetector
                             .getTitleSearchTokens(identities)
                             .map(token => like(TransactionEntityTable.title, `%${token}%`))
