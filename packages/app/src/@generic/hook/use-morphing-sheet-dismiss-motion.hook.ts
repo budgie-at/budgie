@@ -21,6 +21,7 @@ export const useMorphingSheetDismissMotion = (
     const { height: keyboardHeight } = useReanimatedKeyboardAnimation();
     const isReducedMotion = useReducedMotion();
     const isDismissing = useSharedValue(false);
+    const isDragging = useSharedValue(false);
 
     const dismissWithVelocity = (velocity: number) => {
         if (isDismissing.get()) {
@@ -49,8 +50,9 @@ export const useMorphingSheetDismissMotion = (
     };
 
     const handleSettle = (velocity: number) => {
+        isDragging.set(false);
         translateY.set(isReducedMotion ? 0 : withSpring(0, { ...SHEET_PRESENT_SPRING, velocity }));
     };
 
-    return { isDismissing, handleDismiss, handleSettle, handleSwipeDismiss: dismissWithVelocity };
+    return { isDismissing, isDragging, handleDismiss, handleSettle, handleSwipeDismiss: dismissWithVelocity };
 };

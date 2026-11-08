@@ -52,10 +52,13 @@ export const useMorphingSheetGesture = (drag: MorphingSheetDragInterface) => {
             if (isDismissed) {
                 scheduleOnRN(onSwipeDismiss, event.velocityY);
             } else {
+                isDragging.set(false);
                 translateY.set(isReducedMotion ? 0 : withSpring(0, { ...SHEET_PRESENT_SPRING, velocity: event.velocityY }));
             }
         })
-        .onFinalize(() => {
-            isDragging.set(false);
+        .onFinalize((_event, isSuccessful) => {
+            if (!isSuccessful) {
+                isDragging.set(false);
+            }
         });
 };

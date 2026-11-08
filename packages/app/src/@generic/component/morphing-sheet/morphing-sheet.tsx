@@ -30,14 +30,21 @@ interface Props {
 export const MorphingSheet = ({ steps, activeStep, onDismiss, testID }: Props) => {
     const { cardStep, pageStep, mountedSteps, hasPresented, handlePresented } = useMorphingSheetSteps(steps, activeStep);
     const motion = useMorphingSheetMotion(cardStep, onDismiss, handlePresented);
-    const { translateY, visibleHeight, pageProgress } = motion;
+    const { translateY, visibleHeight, pageProgress, isDragging } = motion;
     const keyboardLift = useMorphingSheetKeyboardLift(motion.frame.baseBottom);
-    const { frameStyle, cardStyle, presence, isDragging } = useMorphingSheetStyle(motion, keyboardLift);
+    const { frameStyle, cardStyle, presence } = useMorphingSheetStyle(motion, keyboardLift);
     const page = useMorphingSheetPage(pageStep, pageProgress, keyboardLift);
     const pageRect = useMorphingSheetPageRect(pageProgress, visibleHeight, page.frozenLift, translateY);
     useHideHostFromAccessibility();
     const stepBack = steps[activeStep]?.onBack;
-    const handleBack = stepBack ?? motion.handleDismiss;
+
+    const handleBack = () => {
+        if (isDefined(stepBack) && !motion.isDismissing.get()) {
+            stepBack();
+        } else {
+            motion.handleDismiss();
+        }
+    };
 
     const handleSwipeBack = (velocity: number) => {
         if (isDefined(stepBack)) {

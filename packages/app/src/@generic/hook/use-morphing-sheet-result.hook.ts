@@ -7,6 +7,10 @@ export const useMorphingSheetResult = <TResult>(resolve: (result: TResult) => vo
     const resolveCommittedRef = useRef<(() => void) | null>(null);
 
     const handleCommit = (result: TResult) => {
+        if (isDefined(resolveCommittedRef.current)) {
+            return;
+        }
+
         resolveCommittedRef.current = () => {
             resolve(result);
         };

@@ -41,8 +41,9 @@ export const useMorphingSheetMotion = (activeStep: string, onDismiss: () => void
             visibleHeight.set(nextHeight);
             translateY.set(nextHeight + baseBottom);
 
+            const { isDismissing } = dismissMotion;
             const handlePresentFinished = (isFinished?: boolean) => {
-                if (isFinished) {
+                if (isFinished === true || !isDismissing.get()) {
                     scheduleOnRN(onPresented);
                 }
             };
