@@ -50,7 +50,7 @@ export const SplitEntriesStep = (props: Props) => {
     return (
         <ScrollableSheetCard
             header={
-                <View className="px-3xl">
+                <View className="px-xl">
                     <SheetTitleRow title={t`Split`} trailing={<View />} />
                 </View>
             }
@@ -97,7 +97,7 @@ export const SplitEntriesStep = (props: Props) => {
                     </GroupedListSection>
                 </View>
             ) : null}
-            <View className="bg-sheet-surface pt-3xl pb-[16px]">
+            <View className="pt-3xl pb-[16px]">
                 <PillButton
                     label={t`Done`}
                     isDisabled={!canConfirm}
