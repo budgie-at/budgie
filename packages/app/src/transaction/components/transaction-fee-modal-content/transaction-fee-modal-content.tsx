@@ -1,16 +1,17 @@
 import { BANK_FEE_CATEGORY_ID, CategorySourceEnum, TransactionEntryTypeEnum } from '@budgie/contracts';
 import { useState } from 'react';
-import { View, useWindowDimensions } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { MorphingSheet } from '../../../@generic/component/morphing-sheet/morphing-sheet';
 import { SheetSurface } from '../../../@generic/component/sheet-surface/sheet-surface';
+import { MORPHING_SHEET_SELECTOR_HEIGHT_RATIO } from '../../../@generic/constant/morphing-sheet-height-ratio.constant';
 import { MorphingSheetPresentationEnum } from '../../../@generic/enum/morphing-sheet-presentation.enum';
+import { useMorphingSheetListHeight } from '../../../@generic/hook/use-morphing-sheet-list-height.hook';
+import { CategoryCreatePage } from '../../../category/components/category-create-page/category-create-page';
 import { CategoryPickerPanel } from '../../../category/components/category-picker-panel/category-picker-panel';
 import { TransactionFeeStepEnum } from '../../enum/transaction-fee-step.enum';
-import { TransactionFeeCreateCategoryPage } from '../transaction-fee-create-category-page/transaction-fee-create-category-page';
 import { TransactionFeeStep } from '../transaction-fee-step/transaction-fee-step';
 
 import type { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
@@ -26,12 +27,8 @@ interface Props {
     readonly onDismiss: () => void;
 }
 
-const CATEGORY_STEP_HEIGHT_RATIO = 0.7;
-const SHEET_TOP_MARGIN = 24;
-
 export const TransactionFeeModalContent = ({ accountId, currencySymbol, entry, variant, onConfirm, onDismiss }: Props) => {
-    const { height: windowHeight } = useWindowDimensions();
-    const { top } = useSafeAreaInsets();
+    const categoryStepStyle = useMorphingSheetListHeight(MORPHING_SHEET_SELECTOR_HEIGHT_RATIO);
     const [step, setStep] = useState(TransactionFeeStepEnum.FEE);
     const [createTitle, setCreateTitle] = useState('');
     const [feeEntry, setFeeEntry] = useState<TransactionEntryCreateInputInterface>(
@@ -75,7 +72,6 @@ export const TransactionFeeModalContent = ({ accountId, currencySymbol, entry, v
     };
 
     const isFeeStep = step === TransactionFeeStepEnum.FEE;
-    const categoryStepStyle = { height: Math.min(windowHeight * CATEGORY_STEP_HEIGHT_RATIO, windowHeight - top - SHEET_TOP_MARGIN) };
 
     const steps = {
         [TransactionFeeStepEnum.FEE]: {
@@ -109,13 +105,7 @@ export const TransactionFeeModalContent = ({ accountId, currencySymbol, entry, v
         },
         [TransactionFeeStepEnum.CREATE_CATEGORY]: {
             presentation: MorphingSheetPresentationEnum.PAGE,
-            content: (
-                <TransactionFeeCreateCategoryPage
-                    defaultTitle={createTitle}
-                    onSelect={handleCategorySelect}
-                    onCancel={handleCreateCancel}
-                />
-            )
+            content: <CategoryCreatePage defaultTitle={createTitle} onSelect={handleCategorySelect} onCancel={handleCreateCancel} />
         }
     };
 

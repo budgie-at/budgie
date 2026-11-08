@@ -11,12 +11,12 @@ import Animated, {
     withTiming
 } from 'react-native-reanimated';
 
-import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
-import { BUTTON_PRESSED_SCALE, EASE_OUT, MOTION_BASE_DURATION, MOTION_FAST_DURATION } from '../../../@generic/constant/motion.constant';
-import { HapticPressFeedbackEnum } from '../../../@generic/enum/haptic-press-feedback.enum';
-import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
-import { useVibration } from '../../../@generic/hook/use-vibration.hook';
+import { BUTTON_PRESSED_SCALE, EASE_OUT, MOTION_BASE_DURATION, MOTION_FAST_DURATION } from '../../constant/motion.constant';
+import { HapticPressFeedbackEnum } from '../../enum/haptic-press-feedback.enum';
+import { useReducedMotion } from '../../hook/use-reduced-motion.hook';
+import { useVibration } from '../../hook/use-vibration.hook';
+import { HapticPressable } from '../haptic-pressable/haptic-pressable';
+import { LoadingContent } from '../loading-content/loading-content';
 
 interface Props {
     readonly label: string;
@@ -32,7 +32,7 @@ const LABEL_EXITING = FadeOut.duration(MOTION_FAST_DURATION).easing(EASE_OUT);
 const POP_START_SCALE = 0.97;
 const POP_SPRING = { dampingRatio: 0.6, duration: 350 };
 
-export const CategoryFormSubmitButton = ({ label, isReady, isLoading, isDisabled, onPress, testID }: Props) => {
+export const EntityFormSubmitButton = ({ label, isReady, isLoading, isDisabled, onPress, testID }: Props) => {
     const [, , hapticSelection] = useVibration();
     const isReducedMotion = useReducedMotion();
     const previousReadyRef = useRef(isReady);

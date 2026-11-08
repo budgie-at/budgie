@@ -14,6 +14,8 @@ import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/sh
 
 import { AiTranslationFields } from '../../../@generic/component/ai-translation-fields/ai-translation-fields';
 import { EntityEditSections } from '../../../@generic/component/entity-edit-sections/entity-edit-sections';
+import { EntityFormHero } from '../../../@generic/component/entity-form-hero/entity-form-hero';
+import { EntityHeroFormPage } from '../../../@generic/component/entity-hero-form-page/entity-hero-form-page';
 import { FormTitleInput } from '../../../@generic/component/form-title-input/form-title-input';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { IconTitleField } from '../../../@generic/component/icon-title-field/icon-title-field';
@@ -37,9 +39,7 @@ import { getCategoryDeleteCopy } from '../../utils/get-category-delete-copy.util
 import { getCategoryDisplayIcon } from '../../utils/get-category-display-icon.util';
 import { suggestCategoryIcon } from '../../utils/suggest-category-icon.util';
 import { updateCategory } from '../../utils/update-category.util';
-import { CategoryFormHero } from '../category-form-hero/category-form-hero';
-import { CategoryFormPage } from '../category-form-page/category-form-page';
-import { CategoryFormSubmitButton } from '../category-form-submit-button/category-form-submit-button';
+import { CategoryFormHeroIcon } from '../category-form-hero-icon/category-form-hero-icon';
 
 import { CategoryFormSelector } from './category-form.selector';
 
@@ -159,25 +159,20 @@ export const CategoryForm = (props: Props) => {
     const handleFormSubmit = handleSubmit(values => saveFlight.run(submitCategory(values, resolvedIcon)));
 
     return (
-        <CategoryFormPage
+        <EntityHeroFormPage
             onCancel={onCancel}
-            footer={
-                <CategoryFormSubmitButton
-                    label={saveLabel}
-                    isReady={hasTitle}
-                    isLoading={saveFlight.isLoading}
-                    isDisabled={isSaveDisabled}
-                    onPress={handleFormSubmit}
-                    testID={CategoryFormSelector.Submit}
-                />
-            }
+            submitLabel={saveLabel}
+            isReady={hasTitle}
+            isLoading={saveFlight.isLoading}
+            isDisabled={isSaveDisabled}
+            onSubmit={handleFormSubmit}
+            submitTestID={CategoryFormSelector.Submit}
         >
-            <CategoryFormHero
-                icon={triggerIcon}
+            <EntityFormHero
+                icon={<CategoryFormHeroIcon icon={triggerIcon} onPress={handleIconPress} />}
                 title={title}
                 fallbackTitle={heroFallbackTitle}
                 subtitle={heroSubtitle}
-                onIconPress={handleIconPress}
             />
 
             <GroupedListSection title={t`Details`} footer={keywordsFooter}>
@@ -196,6 +191,6 @@ export const CategoryForm = (props: Props) => {
             </GroupedListSection>
 
             {isDefined(category) ? usageActions : null}
-        </CategoryFormPage>
+        </EntityHeroFormPage>
     );
 };

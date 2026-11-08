@@ -14,7 +14,7 @@ const STICKY_FOOTER_STYLE = { position: 'absolute', right: 0, bottom: 0, left: 0
 const MINIMUM_BOTTOM_PADDING = 16;
 const KEYBOARD_GAP = 12;
 
-export const CategoryFormFooter = ({ children, onLayout }: Props) => {
+export const EntityFormFooter = ({ children, onLayout }: Props) => {
     const { bottom } = useSafeAreaInsets();
     const bottomPadding = Math.max(bottom, MINIMUM_BOTTOM_PADDING);
     const keyboardOffset = { closed: 0, opened: bottomPadding - KEYBOARD_GAP };

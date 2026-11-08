@@ -1,15 +1,15 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
-import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { Icon } from '../../../@generic/component/icon/icon';
-import { PageHeaderSelector } from '../../../@generic/component/page-header/page-header.selector';
+import { HapticPressable } from '../haptic-pressable/haptic-pressable';
+import { Icon } from '../icon/icon';
+import { PageHeaderSelector } from '../page-header/page-header.selector';
 
 interface Props {
     readonly onPress: () => void;
 }
 
-export const CategoryFormBackButton = ({ onPress }: Props) => {
+export const EntityFormBackButton = ({ onPress }: Props) => {
     const { t } = useLingui();
 
     return (

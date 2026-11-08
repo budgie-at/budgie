@@ -357,7 +357,7 @@ msgstr "{count, plural, one {# Zahlung verwenden} other {# Zahlungen verwenden}}
 msgid "{count} of {rowCount} selected"
 msgstr "{count} von {rowCount} ausgewählt"
 
-#: src/app/tags-selector.tsx
+#: src/tag/components/tags-selector-step/tags-selector-step.tsx
 msgid "{count} selected"
 msgstr "{count} ausgewählt"
 
@@ -1920,8 +1920,8 @@ msgstr "Ø {averageCost} pro {instrumentCode}"
 msgid "Avg {averageCost} per {instrumentCode} · known for {coveredAmount} of {totalAmount}"
 msgstr "Ø {averageCost} pro {instrumentCode} · Kaufpreis bekannt für {coveredAmount} von {totalAmount}"
 
+#: src/@generic/component/entity-form-back-button/entity-form-back-button.tsx
 #: src/@generic/component/selector-modal-search-header/selector-modal-search-header.tsx
-#: src/category/components/category-form-back-button/category-form-back-button.tsx
 msgid "Back"
 msgstr "Zurück"
 
@@ -2498,8 +2498,8 @@ msgstr "Prüfe die Einstellungen für Wiederholung und Ende."
 msgid "Check the spelling or create it as a new category."
 msgstr "Prüfe die Schreibweise oder lege sie als neue Kategorie an."
 
-#: src/app/tags-selector.tsx
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx
+#: src/tag/components/tags-selector-step/tags-selector-step.tsx
 msgid "Check the spelling or create it as a new tag."
 msgstr "Prüfe die Schreibweise oder lege ihn als neuen Tag an."
 
@@ -3532,10 +3532,6 @@ msgstr "Regel erstellen"
 msgid "Create tag"
 msgstr "Tag erstellen"
 
-#: src/tag/components/tag-form/tag-form.tsx
-msgid "Create Tag"
-msgstr "Tag erstellen"
-
 #: src/budget/components/budget-empty-state/budget-empty-state.tsx
 msgid "Create your budget"
 msgstr "Erstelle dein Budget"
@@ -3937,10 +3933,10 @@ msgstr "Enthält nicht"
 #: src/@generic/component/keyboard-done-accessory/keyboard-done-accessory.tsx
 #: src/@generic/component/sheet-title-row/sheet-title-row.tsx
 #: src/app/date-picker.tsx
-#: src/app/tags-selector.tsx
 #: src/categorize-inbox/components/categorize-inbox-done-button/categorize-inbox-done-button.tsx
 #: src/inzhur/component/inzhur-import-summary-footer/inzhur-import-summary-footer.tsx
 #: src/onboarding/component/onboarding-keyboard-controls/onboarding-keyboard-controls.tsx
+#: src/tag/components/tags-selector-step/tags-selector-step.tsx
 #: src/transaction/components/convert-to-refund-header/convert-to-refund-header.tsx
 #: src/transaction/components/convert-to-transfer-header/convert-to-transfer-header.tsx
 #: src/transaction/components/convert-transfer-form/convert-transfer-form.tsx
@@ -4188,7 +4184,7 @@ msgid "Edit set aside"
 msgstr "Rücklage bearbeiten"
 
 #: src/tag/components/tag-form/tag-form.tsx
-msgid "Edit Tag"
+msgid "Edit tag"
 msgstr "Tag bearbeiten"
 
 #: src/transaction/components/conversion-row/conversion-row.tsx
@@ -5968,6 +5964,10 @@ msgstr "Name"
 msgid "Name it and pick an icon"
 msgstr "Gib ihr einen Namen und wähle ein Symbol"
 
+#: src/tag/components/tag-form/tag-form.tsx
+msgid "Name it to group transactions"
+msgstr "Gib ihm einen Namen, um Transaktionen zu gruppieren"
+
 #: src/categorize-inbox/components/categorize-inbox-transfer-accounts/categorize-inbox-transfer-accounts.tsx
 msgid "Name matches"
 msgstr "Namen stimmen überein"
@@ -6043,6 +6043,7 @@ msgid "New set aside"
 msgstr "Neue Rücklage"
 
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx
+#: src/tag/components/tag-form/tag-form.tsx
 msgid "New tag"
 msgstr "Neuer Tag"
 
@@ -7598,6 +7599,10 @@ msgstr "Aus dieser Serie entfernt"
 msgid "Rename it or change its icon"
 msgstr "Benenne sie um oder ändere ihr Symbol"
 
+#: src/tag/components/tag-form/tag-form.tsx
+msgid "Rename it or merge it into another"
+msgstr "Benenne ihn um oder führe ihn mit einem anderen zusammen"
+
 #: src/installment-plan/component/convert-to-installment-header/convert-to-installment-header.tsx
 msgid "Rename plan, {value}"
 msgstr "Plan umbenennen, {value}"
@@ -8000,8 +8005,8 @@ msgid "Search tags..."
 msgstr "Tags durchsuchen..."
 
 #: src/app/(tabs)/settings/tags.tsx
-#: src/app/tags-selector.tsx
 #: src/tag/components/tag-destination-sheet/tag-destination-sheet.tsx
+#: src/tag/components/tags-selector-step/tags-selector-step.tsx
 msgid "Search tags…"
 msgstr "Tags suchen…"
 
@@ -8645,8 +8650,8 @@ msgstr "Getaggte Ausgaben zählen auch in deinem Hauptbudget."
 #: src/@generic/component/analytics-segmented-control/analytics-segmented-control.tsx
 #: src/app/(tabs)/analytics.tsx
 #: src/app/(tabs)/settings/tags.tsx
-#: src/app/tags-selector.tsx
 #: src/settings/components/organize-settings-rows/organize-settings-rows.tsx
+#: src/tag/components/tags-selector-step/tags-selector-step.tsx
 #: src/transaction/components/statistics-filters-menu/statistics-filters-menu.tsx
 #: src/transaction/components/transaction-date-tags-row/transaction-date-tags-row.tsx
 #: src/transaction/components/transaction-filters/transaction-filters.tsx

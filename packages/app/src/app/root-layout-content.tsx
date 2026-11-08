@@ -84,8 +84,6 @@ const SELECTOR_OPTIONS = formSheetOptions([DETENT_70, DETENT_90], 0);
 const CURRENCY_SELECTOR_OPTIONS = formSheetOptions([DETENT_62, DETENT_90], 0);
 const COMPACT_SELECTOR_OPTIONS = formSheetOptions([DETENT_70, DETENT_90], 0);
 
-const DESTINATION_OPTIONS = formSheetOptions([DETENT_90]);
-
 enableScreens();
 enableFreeze();
 
@@ -193,7 +191,10 @@ export const RootLayoutContent = () => {
                                                                     <Stack.Screen name="(main)/transactions/[id]/transfer" />
                                                                     <Stack.Screen name="(main)/analytics/transactions" />
                                                                     <Stack.Screen name="(main)/categorize" />
-                                                                    <Stack.Screen name="category-selector" options={SELECTOR_OPTIONS} />
+                                                                    <Stack.Screen
+                                                                        name="category-selector"
+                                                                        options={MORPHING_SHEET_OPTIONS}
+                                                                    />
                                                                     <Stack.Screen
                                                                         name="account-selector"
                                                                         options={COMPACT_SELECTOR_OPTIONS}
@@ -211,12 +212,12 @@ export const RootLayoutContent = () => {
                                                                         name="contact-selector"
                                                                         options={contactSelectorOptions}
                                                                     />
-                                                                    <Stack.Screen name="tags-selector" options={SELECTOR_OPTIONS} />
+                                                                    <Stack.Screen name="tags-selector" options={MORPHING_SHEET_OPTIONS} />
                                                                     <Stack.Screen
                                                                         name="category-destination"
-                                                                        options={DESTINATION_OPTIONS}
+                                                                        options={MORPHING_SHEET_OPTIONS}
                                                                     />
-                                                                    <Stack.Screen name="tag-destination" options={DESTINATION_OPTIONS} />
+                                                                    <Stack.Screen name="tag-destination" options={MORPHING_SHEET_OPTIONS} />
                                                                     <Stack.Screen
                                                                         name="voice-review"
                                                                         options={formSheetOptions([0.65, DETENT_95], 0)}

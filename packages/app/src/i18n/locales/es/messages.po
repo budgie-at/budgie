@@ -357,7 +357,7 @@ msgstr "{count, plural, one {Usar # pago} other {Usar # pagos}}"
 msgid "{count} of {rowCount} selected"
 msgstr "{count} de {rowCount} seleccionados"
 
-#: src/app/tags-selector.tsx
+#: src/tag/components/tags-selector-step/tags-selector-step.tsx
 msgid "{count} selected"
 msgstr "{count} seleccionados"
 
@@ -1920,8 +1920,8 @@ msgstr "Prom. {averageCost} por {instrumentCode}"
 msgid "Avg {averageCost} per {instrumentCode} · known for {coveredAmount} of {totalAmount}"
 msgstr "Prom. {averageCost} por {instrumentCode} · coste conocido de {coveredAmount} de {totalAmount}"
 
+#: src/@generic/component/entity-form-back-button/entity-form-back-button.tsx
 #: src/@generic/component/selector-modal-search-header/selector-modal-search-header.tsx
-#: src/category/components/category-form-back-button/category-form-back-button.tsx
 msgid "Back"
 msgstr "Atrás"
 
@@ -2498,8 +2498,8 @@ msgstr "Revisa los ajustes de repetición y finalización."
 msgid "Check the spelling or create it as a new category."
 msgstr "Revisa la ortografía o créala como nueva categoría."
 
-#: src/app/tags-selector.tsx
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx
+#: src/tag/components/tags-selector-step/tags-selector-step.tsx
 msgid "Check the spelling or create it as a new tag."
 msgstr "Revisa la ortografía o créala como nueva etiqueta."
 
@@ -3532,10 +3532,6 @@ msgstr "Crear regla"
 msgid "Create tag"
 msgstr "Crear etiqueta"
 
-#: src/tag/components/tag-form/tag-form.tsx
-msgid "Create Tag"
-msgstr "Crear etiqueta"
-
 #: src/budget/components/budget-empty-state/budget-empty-state.tsx
 msgid "Create your budget"
 msgstr "Crea tu presupuesto"
@@ -3937,10 +3933,10 @@ msgstr "No contiene"
 #: src/@generic/component/keyboard-done-accessory/keyboard-done-accessory.tsx
 #: src/@generic/component/sheet-title-row/sheet-title-row.tsx
 #: src/app/date-picker.tsx
-#: src/app/tags-selector.tsx
 #: src/categorize-inbox/components/categorize-inbox-done-button/categorize-inbox-done-button.tsx
 #: src/inzhur/component/inzhur-import-summary-footer/inzhur-import-summary-footer.tsx
 #: src/onboarding/component/onboarding-keyboard-controls/onboarding-keyboard-controls.tsx
+#: src/tag/components/tags-selector-step/tags-selector-step.tsx
 #: src/transaction/components/convert-to-refund-header/convert-to-refund-header.tsx
 #: src/transaction/components/convert-to-transfer-header/convert-to-transfer-header.tsx
 #: src/transaction/components/convert-transfer-form/convert-transfer-form.tsx
@@ -4188,7 +4184,7 @@ msgid "Edit set aside"
 msgstr "Editar reserva"
 
 #: src/tag/components/tag-form/tag-form.tsx
-msgid "Edit Tag"
+msgid "Edit tag"
 msgstr "Editar etiqueta"
 
 #: src/transaction/components/conversion-row/conversion-row.tsx
@@ -5968,6 +5964,10 @@ msgstr "Nombre"
 msgid "Name it and pick an icon"
 msgstr "Ponle nombre y elige un icono"
 
+#: src/tag/components/tag-form/tag-form.tsx
+msgid "Name it to group transactions"
+msgstr "Ponle un nombre para agrupar transacciones"
+
 #: src/categorize-inbox/components/categorize-inbox-transfer-accounts/categorize-inbox-transfer-accounts.tsx
 msgid "Name matches"
 msgstr "Coinciden los nombres"
@@ -6043,6 +6043,7 @@ msgid "New set aside"
 msgstr "Nueva reserva"
 
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx
+#: src/tag/components/tag-form/tag-form.tsx
 msgid "New tag"
 msgstr "Nueva etiqueta"
 
@@ -7598,6 +7599,10 @@ msgstr "Eliminado de esta serie"
 msgid "Rename it or change its icon"
 msgstr "Cámbiale el nombre o el icono"
 
+#: src/tag/components/tag-form/tag-form.tsx
+msgid "Rename it or merge it into another"
+msgstr "Cámbiale el nombre o fusiónala con otra"
+
 #: src/installment-plan/component/convert-to-installment-header/convert-to-installment-header.tsx
 msgid "Rename plan, {value}"
 msgstr "Renombrar plan, {value}"
@@ -8000,8 +8005,8 @@ msgid "Search tags..."
 msgstr "Buscar etiquetas..."
 
 #: src/app/(tabs)/settings/tags.tsx
-#: src/app/tags-selector.tsx
 #: src/tag/components/tag-destination-sheet/tag-destination-sheet.tsx
+#: src/tag/components/tags-selector-step/tags-selector-step.tsx
 msgid "Search tags…"
 msgstr "Buscar etiquetas…"
 
@@ -8645,8 +8650,8 @@ msgstr "Los gastos con etiqueta también cuentan en tu presupuesto principal."
 #: src/@generic/component/analytics-segmented-control/analytics-segmented-control.tsx
 #: src/app/(tabs)/analytics.tsx
 #: src/app/(tabs)/settings/tags.tsx
-#: src/app/tags-selector.tsx
 #: src/settings/components/organize-settings-rows/organize-settings-rows.tsx
+#: src/tag/components/tags-selector-step/tags-selector-step.tsx
 #: src/transaction/components/statistics-filters-menu/statistics-filters-menu.tsx
 #: src/transaction/components/transaction-date-tags-row/transaction-date-tags-row.tsx
 #: src/transaction/components/transaction-filters/transaction-filters.tsx
