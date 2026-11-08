@@ -2,7 +2,6 @@ import { CloudSyncHouseholdService } from '@budgie/cloud-sync';
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
-import { NotificationFeedbackType } from 'expo-haptics';
 
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
@@ -29,7 +28,7 @@ export const HouseholdStopSharingRow = () => {
                 ? Effect.flatMap(CloudSyncHouseholdService, householdService => householdService.stopHouseholdSharing()).pipe(
                       Effect.tap(() =>
                           Effect.sync(() => {
-                              hapticNotification(NotificationFeedbackType.Success);
+                              hapticNotification();
                           })
                       )
                   )

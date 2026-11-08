@@ -18,14 +18,14 @@ export const HouseholdOwnerContent = () => {
     const isEmptyGroup = isEmptyArray(otherParticipants) && (isKnown || !isAvailable);
     const isStopSharingShown = isAvailable || isEmptyGroup;
 
+    const stopSharingRow = isEmptyGroup ? <HouseholdRemoveGroupRow /> : <HouseholdStopSharingRow />;
+
     return (
         <View className="gap-y-5xl">
             <HouseholdMemberJoinWatcher />
             <HouseholdPeopleSection />
             <HouseholdShareSection />
-            {isStopSharingShown ? (
-                <GroupedListSection>{isEmptyGroup ? <HouseholdRemoveGroupRow /> : <HouseholdStopSharingRow />}</GroupedListSection>
-            ) : null}
+            {isStopSharingShown ? <GroupedListSection>{stopSharingRow}</GroupedListSection> : null}
         </View>
     );
 };
