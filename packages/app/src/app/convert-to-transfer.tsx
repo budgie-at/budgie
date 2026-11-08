@@ -7,6 +7,8 @@ import * as Schema from 'effect/Schema';
 import { router } from 'expo-router';
 import { FormProvider, useForm } from 'react-hook-form';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { useModalRouteState } from '../@generic/hook/use-modal-route-state/use-modal-route-state.hook';
 import { useMorphingSheetResult } from '../@generic/hook/use-morphing-sheet-result.hook';
 import { useSingleFlight } from '../@generic/hook/use-single-flight.hook';
@@ -94,7 +96,7 @@ export default function ConvertToTransferModal() {
             }).pipe(toastOnFailure(t`Conversion failed`, t`Please try again`))
         );
 
-    if (!currentParams) {
+    if (!isDefined(currentParams)) {
         return null;
     }
 

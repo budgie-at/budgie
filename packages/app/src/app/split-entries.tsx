@@ -1,3 +1,5 @@
+import { isDefined } from '@rnw-community/shared';
+
 import { useModalRouteState } from '../@generic/hook/use-modal-route-state/use-modal-route-state.hook';
 import { useMorphingSheetResult } from '../@generic/hook/use-morphing-sheet-result.hook';
 import { SplitEntriesModalContent } from '../transaction/components/split-entries-modal-content/split-entries-modal-content';
@@ -11,7 +13,7 @@ export default function SplitEntriesModal() {
     useModalRouteState(currentParams, dismissSplitEntries);
     const { handleCommit, handleDismissed } = useMorphingSheetResult<TransactionEntryCreateInputInterface[]>(resolveSplitEntries);
 
-    if (!currentParams) {
+    if (!isDefined(currentParams)) {
         return null;
     }
 

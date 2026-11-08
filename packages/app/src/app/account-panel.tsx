@@ -1,7 +1,7 @@
 import { isDefined } from '@rnw-community/shared';
 
 import { AnchoredMorphPanel } from '../@generic/component/anchored-morph-panel/anchored-morph-panel';
-import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
+import { useModalRouteState } from '../@generic/hook/use-modal-route-state/use-modal-route-state.hook';
 import { useMorphingSheetResult } from '../@generic/hook/use-morphing-sheet-result.hook';
 import { AccountPanelContent } from '../account/component/account-panel-content/account-panel-content';
 import {
@@ -12,8 +12,8 @@ import {
 
 export default function AccountPanelModal() {
     const [, resolveAccountSelector, dismissAccountSelector] = useAccountSelectorModal();
-    useModalDismiss(dismissAccountSelector);
     const currentParams = useAccountSelectorModalParams();
+    useModalRouteState(currentParams?.origin, dismissAccountSelector);
     const { handleCommit, handleDismissed } = useMorphingSheetResult<AccountSelectorResult>(resolveAccountSelector);
 
     if (!isDefined(currentParams?.origin)) {

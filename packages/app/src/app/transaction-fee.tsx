@@ -1,3 +1,5 @@
+import { isDefined } from '@rnw-community/shared';
+
 import { useModalRouteState } from '../@generic/hook/use-modal-route-state/use-modal-route-state.hook';
 import { useMorphingSheetResult } from '../@generic/hook/use-morphing-sheet-result.hook';
 import { TransactionFeeModalContent } from '../transaction/components/transaction-fee-modal-content/transaction-fee-modal-content';
@@ -11,7 +13,7 @@ export default function TransactionFeeModal() {
     useModalRouteState(currentParams, dismissTransactionFee);
     const { handleCommit, handleDismissed } = useMorphingSheetResult<TransactionFeeModalResult>(resolveTransactionFee);
 
-    if (!currentParams) {
+    if (!isDefined(currentParams)) {
         return null;
     }
 
