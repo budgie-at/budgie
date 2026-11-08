@@ -1,8 +1,10 @@
 import { useEffect } from 'react';
 import { View } from 'react-native';
+import Animated from 'react-native-reanimated';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
+import { MOTION_FADE_IN } from '../../constant/motion.constant';
 import { useSurfaceSettled } from '../../context/surface-settled.context';
 import { SelectorRowKindEnum } from '../../enum/selector-row-kind.enum';
 import { useFormsheetListContentStyle } from '../../hook/use-formsheet-list-content-style/use-formsheet-list-content-style.hook';
@@ -77,13 +79,25 @@ export const SearchableSelectorList = <T,>({ header, sections, keyExtractor, ren
 
             <View className="flex-1">
                 {isSettled ? (
-                    <SelectorList listRef={listRef} data={rows} keyExtractor={rowKeyExtractor} renderItem={renderRow} options={listOptions}>
-                        {hasRail ? (
-                            <View className="absolute z-30 justify-center pt-md" style={RAIL_POSITION_STYLE}>
-                                <SectionIndexRail letters={sectionLetters} activeLetter={visibleLetter} onSelect={handleSectionLetter} />
-                            </View>
-                        ) : null}
-                    </SelectorList>
+                    <Animated.View className="flex-1" entering={MOTION_FADE_IN}>
+                        <SelectorList
+                            listRef={listRef}
+                            data={rows}
+                            keyExtractor={rowKeyExtractor}
+                            renderItem={renderRow}
+                            options={listOptions}
+                        >
+                            {hasRail ? (
+                                <View className="absolute z-30 justify-center pt-md" style={RAIL_POSITION_STYLE}>
+                                    <SectionIndexRail
+                                        letters={sectionLetters}
+                                        activeLetter={visibleLetter}
+                                        onSelect={handleSectionLetter}
+                                    />
+                                </View>
+                            ) : null}
+                        </SelectorList>
+                    </Animated.View>
                 ) : null}
             </View>
 

@@ -1,11 +1,13 @@
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { useState } from 'react';
+import Animated from 'react-native-reanimated';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { SelectorModalSearchHeader } from '../../../@generic/component/selector-modal-search-header/selector-modal-search-header';
 import { SheetSurface } from '../../../@generic/component/sheet-surface/sheet-surface';
+import { MOTION_FADE_IN } from '../../../@generic/constant/motion.constant';
 import { useSurfaceSettled } from '../../../@generic/context/surface-settled.context';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
@@ -77,15 +79,17 @@ export const AccountSelectorSheetContent = ({ params, onSelect, onBack, classNam
             />
 
             {isSettled ? (
-                <AccountSelectContent
-                    data={selectableAccounts}
-                    initialAccountId={params.initialAccountId ?? null}
-                    search={search}
-                    onSelect={onSelect}
-                    emptyStateDescription={params.emptyStateDescription}
-                    showDebtTotal={params.showDebtTotal ?? false}
-                    createAction={contentCreateAction}
-                />
+                <Animated.View className="flex-1" entering={MOTION_FADE_IN}>
+                    <AccountSelectContent
+                        data={selectableAccounts}
+                        initialAccountId={params.initialAccountId ?? null}
+                        search={search}
+                        onSelect={onSelect}
+                        emptyStateDescription={params.emptyStateDescription}
+                        showDebtTotal={params.showDebtTotal ?? false}
+                        createAction={contentCreateAction}
+                    />
+                </Animated.View>
             ) : null}
         </SheetSurface>
     );

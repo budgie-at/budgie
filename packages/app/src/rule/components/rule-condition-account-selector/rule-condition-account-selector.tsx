@@ -48,7 +48,12 @@ export const RuleConditionAccountSelector = ({ index, testID }: Props) => {
     };
 
     return (
-        <AnchoredMorphTrigger edge={RoundedEdgeEnum.ALL} onPress={handleSelect}>
+        <AnchoredMorphTrigger
+            edge={RoundedEdgeEnum.ALL}
+            radiusClassName="rounded-xl"
+            colorClassName="bg-surface-fill"
+            onPress={handleSelect}
+        >
             {handlePress => <RuleValuePickerButton {...pickerProps} onPress={handlePress} />}
         </AnchoredMorphTrigger>
     );

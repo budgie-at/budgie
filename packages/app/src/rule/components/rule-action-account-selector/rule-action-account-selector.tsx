@@ -92,7 +92,12 @@ export const RuleActionAccountSelector = ({ index, testID }: Props) => {
 
     return (
         <View className="flex-1 pb-md">
-            <AnchoredMorphTrigger edge={RoundedEdgeEnum.ALL} onPress={handleSelect}>
+            <AnchoredMorphTrigger
+                edge={RoundedEdgeEnum.ALL}
+                radiusClassName="rounded-xl"
+                colorClassName="bg-surface-fill"
+                onPress={handleSelect}
+            >
                 {handlePress => <RuleValuePickerButton {...pickerProps} onPress={handlePress} />}
             </AnchoredMorphTrigger>
             <Text className="text-[13px] leading-[18px] text-secondary-foreground">{t(hint)}</Text>
