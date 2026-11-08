@@ -219,10 +219,7 @@ export const RootLayoutContent = () => {
                                                                         options={MORPHING_SHEET_OPTIONS}
                                                                     />
                                                                     <Stack.Screen name="tag-destination" options={MORPHING_SHEET_OPTIONS} />
-                                                                    <Stack.Screen
-                                                                        name="voice-review"
-                                                                        options={formSheetOptions([0.65, DETENT_95], 0)}
-                                                                    />
+                                                                    <Stack.Screen name="voice-review" options={MORPHING_SHEET_OPTIONS} />
                                                                     <Stack.Screen name="budget-safe-to-spend" options={sheetOptions} />
                                                                     <Stack.Screen name="budget-limit-changes" options={sheetOptions} />
                                                                     <Stack.Screen name="category-form" options={ENTITY_FORM_OPTIONS} />
