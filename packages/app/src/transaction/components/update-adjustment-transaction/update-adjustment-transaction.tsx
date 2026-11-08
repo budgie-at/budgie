@@ -25,7 +25,6 @@ import { QuickFormSecondaryLine } from '../quick-form-secondary-line/quick-form-
 import { SimpleQuickFormSelector } from '../simple-quick-form/simple-quick-form.selector';
 import { TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
 import { TransactionFormActions } from '../transaction-form-actions/transaction-form-actions';
-import { TransactionKeypadDismissButton } from '../transaction-keypad-dismiss-button/transaction-keypad-dismiss-button';
 import { TransactionKeypad } from '../transaction-keypad/transaction-keypad';
 
 import type { SyncEntityInterface } from '@budgie/contracts';
@@ -50,9 +49,7 @@ export const UpdateAdjustmentTransaction = ({ transaction, transactionId, sync }
     }
 
     const isDisabled = isSubmitting || !isPositiveNumber(input.numericValue) || input.isUnchanged;
-    const keypad = editing.isEditingAmount ? (
-        <TransactionKeypad keypad={input.handlers} dismissButton={<TransactionKeypadDismissButton />} />
-    ) : null;
+    const keypad = editing.isEditingAmount ? <TransactionKeypad keypad={input.handlers} /> : null;
 
     const handleConfirm = () => {
         if (isDisabled) {

@@ -5197,7 +5197,7 @@ msgstr "Masqué de l’accueil, des totaux et des budgets jusqu’à sa restaura
 msgid "Hide breakdown"
 msgstr "Masquer la répartition"
 
-#: src/transaction/components/transaction-keypad-dismiss-button/transaction-keypad-dismiss-button.tsx
+#: src/transaction/components/transaction-keypad/transaction-keypad.tsx
 msgid "Hide keypad"
 msgstr "Masquer le pavé numérique"
 

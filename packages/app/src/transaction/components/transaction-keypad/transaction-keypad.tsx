@@ -1,9 +1,10 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { ReactNode } from 'react';
+import { use } from 'react';
 import { useWindowDimensions, View } from 'react-native';
 
 import { useLocaleInfo } from '../../../i18n/hook/use-locale-info.hook';
+import { TransactionKeypadContext } from '../../context/transaction-keypad.context';
 import { getTransactionKeypadLayout } from '../../utils/get-transaction-keypad-layout.util';
 import { KeypadDigitButton } from '../keypad-digit-button/keypad-digit-button';
 import { TransactionKeypadButton } from '../transaction-keypad-button/transaction-keypad-button';
@@ -20,11 +21,11 @@ const DIGIT_ROWS = [
 
 interface Props {
     readonly keypad: KeypadHandlersInterface;
-    readonly dismissButton?: ReactNode;
 }
 
 export const TransactionKeypad = (props: Props) => {
-    const { keypad, dismissButton } = props;
+    const { keypad } = props;
+    const { dismiss } = use(TransactionKeypadContext);
     const { t } = useLingui();
     const { fontScale, height } = useWindowDimensions();
     const { decimalSeparator } = useLocaleInfo();
@@ -42,7 +43,12 @@ export const TransactionKeypad = (props: Props) => {
             <View className="flex-1 flex-row gap-md" style={rowStyle}>
                 <TransactionKeypadButton value={decimalSeparator} onPress={keypad.onDecimal} testID={TransactionKeypadSelector.Decimal} />
                 <KeypadDigitButton digit="0" onDigit={keypad.onDigit} />
-                {dismissButton}
+                <TransactionKeypadButton
+                    icon={UserIconNameEnum.ChevronDown}
+                    accessibilityLabel={t`Hide keypad`}
+                    onPress={dismiss}
+                    testID={TransactionKeypadSelector.Dismiss}
+                />
                 <TransactionKeypadButton
                     icon={UserIconNameEnum.Delete}
                     variant="action"

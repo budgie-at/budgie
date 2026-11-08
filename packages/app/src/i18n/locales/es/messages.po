@@ -5197,7 +5197,7 @@ msgstr "Oculta de Inicio, totales y presupuestos hasta que la restaures."
 msgid "Hide breakdown"
 msgstr "Ocultar desglose"
 
-#: src/transaction/components/transaction-keypad-dismiss-button/transaction-keypad-dismiss-button.tsx
+#: src/transaction/components/transaction-keypad/transaction-keypad.tsx
 msgid "Hide keypad"
 msgstr "Ocultar teclado numérico"
 

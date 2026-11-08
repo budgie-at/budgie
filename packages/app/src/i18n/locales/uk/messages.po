@@ -5197,7 +5197,7 @@ msgstr "Приховано з головної, підсумків і бюдже
 msgid "Hide breakdown"
 msgstr "Сховати розподіл"
 
-#: src/transaction/components/transaction-keypad-dismiss-button/transaction-keypad-dismiss-button.tsx
+#: src/transaction/components/transaction-keypad/transaction-keypad.tsx
 msgid "Hide keypad"
 msgstr "Сховати цифрову клавіатуру"
 

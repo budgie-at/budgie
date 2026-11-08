@@ -5198,7 +5198,7 @@ msgstr "Hidden from Home, totals and budgets until restored."
 msgid "Hide breakdown"
 msgstr "Hide breakdown"
 
-#: src/transaction/components/transaction-keypad-dismiss-button/transaction-keypad-dismiss-button.tsx
+#: src/transaction/components/transaction-keypad/transaction-keypad.tsx
 msgid "Hide keypad"
 msgstr "Hide keypad"
 

@@ -5197,7 +5197,7 @@ msgstr "Von Home, Summen und Budgets ausgeblendet, bis du es wiederherstellst."
 msgid "Hide breakdown"
 msgstr "Aufschlüsselung ausblenden"
 
-#: src/transaction/components/transaction-keypad-dismiss-button/transaction-keypad-dismiss-button.tsx
+#: src/transaction/components/transaction-keypad/transaction-keypad.tsx
 msgid "Hide keypad"
 msgstr "Ziffernblock ausblenden"
 
