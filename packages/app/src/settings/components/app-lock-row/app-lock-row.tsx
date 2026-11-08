@@ -32,7 +32,7 @@ export const AppLockRow = () => {
                 right={
                     <SettingsRowAccessory
                         value={t`On`}
-                        kind={SettingsRowAccessoryKindEnum.ACTION}
+                        kind={SettingsRowAccessoryKindEnum.VALUE}
                         testID={SettingsPageSelector.DataEncryptionStateOn}
                     />
                 }

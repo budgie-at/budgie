@@ -150,6 +150,8 @@ export { TAXES_CATEGORY_ID } from './category/constant/taxes-category-id.constan
 export { INVESTMENTS_CATEGORY_ID } from './category/constant/investments-category-id.constant';
 export { LENDING_CATEGORY_ID } from './category/constant/lending-category-id.constant';
 export { BORROWING_CATEGORY_ID } from './category/constant/borrowing-category-id.constant';
+export { LENDING_CATEGORY_SEED_KEY } from './category/constant/lending-category-seed-key.constant';
+export { BORROWING_CATEGORY_SEED_KEY } from './category/constant/borrowing-category-seed-key.constant';
 export { ACCOUNT_DELETED_TRANSFER_CATEGORY_ID } from './category/constant/account-deleted-transfer-category-id.constant';
 export { CASH_WITHDRAWAL_TRACKED_CATEGORY_ID } from './category/constant/cash-withdrawal-tracked-category-id.constant';
 export { CATEGORY_TITLE_MAX_LENGTH } from './category/constant/category-title-max-length.constant';
@@ -409,3 +411,49 @@ export { LIQUID_ACCOUNT_TYPES } from './account/constant/liquid-account-types.co
 export { getExchangeRateWithHistoricalFallbackSql } from './@generic/utils/get-exchange-rate-sql.util';
 export { BANK_AUTHORITATIVE_ACCOUNT_TYPES } from './account/constant/bank-authoritative-account-types.constant';
 export { CRYPTO_ACCOUNT_TYPES } from './account/constant/crypto-account-types.constant';
+
+export { PERSONAL_SYNC_ZONE } from './cloud-sync/constant/personal-sync-zone.constant';
+export { HOUSEHOLD_SYNC_ZONE } from './cloud-sync/constant/household-sync-zone.constant';
+export { RANDOM_SYNC_ID_SQL } from './cloud-sync/constant/random-sync-id-sql.constant';
+export { SYNC_IDENTITY_TABLES } from './cloud-sync/constant/sync-identity-tables.constant';
+
+export { SyncOutboxOperationEnum } from './cloud-sync/enum/sync-outbox-operation.enum';
+export { SyncDatabaseScopeEnum } from './cloud-sync/enum/sync-database-scope.enum';
+export { SyncZoneRoleEnum } from './cloud-sync/enum/sync-zone-role.enum';
+
+export { generateSyncId } from './cloud-sync/utils/generate-sync-id.util';
+export { deriveSyncId } from './cloud-sync/utils/derive-sync-id.util';
+export { deriveSeedSyncId } from './cloud-sync/utils/derive-seed-sync-id.util';
+export { deriveBankTransactionSyncId } from './cloud-sync/utils/derive-bank-transaction-sync-id.util';
+export { deriveConsolidationSyncId } from './cloud-sync/utils/derive-consolidation-sync-id.util';
+
+export { SyncRecordEntityTable } from './cloud-sync/table/sync-record-entity.table';
+export { SyncOutboxEntityTable } from './cloud-sync/table/sync-outbox-entity.table';
+export { SyncPendingEntityTable } from './cloud-sync/table/sync-pending-entity.table';
+export { SyncApplyStateEntityTable } from './cloud-sync/table/sync-apply-state-entity.table';
+export { SyncZoneRegistryEntityTable } from './cloud-sync/table/sync-zone-registry-entity.table';
+
+export type { SyncRecordEntityInterface } from './cloud-sync/entity/sync-record-entity.interface';
+export type { SyncRecordCreateEntityInterface } from './cloud-sync/entity/sync-record-create-entity.interface';
+export type { SyncOutboxEntityInterface } from './cloud-sync/entity/sync-outbox-entity.interface';
+export type { SyncOutboxCreateEntityInterface } from './cloud-sync/entity/sync-outbox-create-entity.interface';
+export type { SyncPendingEntityInterface } from './cloud-sync/entity/sync-pending-entity.interface';
+export type { SyncPendingCreateEntityInterface } from './cloud-sync/entity/sync-pending-create-entity.interface';
+export type { SyncApplyStateEntityInterface } from './cloud-sync/entity/sync-apply-state-entity.interface';
+export type { SyncZoneRegistryEntityInterface } from './cloud-sync/entity/sync-zone-registry-entity.interface';
+export type { SyncZoneRegistryCreateEntityInterface } from './cloud-sync/entity/sync-zone-registry-create-entity.interface';
+
+export { SyncRecordRepository } from './cloud-sync/repository/sync-record.repository';
+export { SyncApplyStateRepository } from './cloud-sync/repository/sync-apply-state.repository';
+export { SyncZoneRegistryRepository } from './cloud-sync/repository/sync-zone-registry.repository';
+export { SyncIdentityRepository } from './cloud-sync/repository/sync-identity.repository';
+
+export { SyncRecordTypeEnum } from './cloud-sync/enum/sync-record-type.enum';
+
+export { buildSharedByOtherSql } from './cloud-sync/utils/build-shared-by-other-sql.util';
+export { SyncResetRepository } from './cloud-sync/repository/sync-reset.repository';
+export { BankSyncInstallId } from './cloud-sync/constant/bank-sync-install-id.constant';
+
+export { MOVED_TO_TOMBSTONE_SQL, MOVED_TO_TOMBSTONE_PARAMETERS } from './cloud-sync/constant/moved-to-tombstone-sql.constant';
+
+export { SYNC_MOVED_TO_MARKER_PREFIX, SYNC_MOVED_FROM_MARKER_PREFIX } from './cloud-sync/constant/sync-move-markers.constant';

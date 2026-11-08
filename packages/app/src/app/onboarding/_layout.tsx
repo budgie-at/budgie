@@ -38,6 +38,7 @@ export default function OnboardingLayout() {
                 <Stack.Screen name="accounts" />
                 <Stack.Screen name="balances" />
                 <Stack.Screen name="ai" />
+                <Stack.Screen name="icloud" />
             </Stack>
         </OnboardingPinContext.Provider>
     );

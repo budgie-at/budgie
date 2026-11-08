@@ -52,6 +52,7 @@ const TRANSFER_PAIR_RANKED_CANDIDATE_BASE_SQL = `
                     expense_tx.external_id as expenseTransactionExternalId,
                     expense_tx.operated_at as expenseOperatedAt,
                     expense_account.title as expenseAccountTitle,
+                    expense_account.sync_zone as expenseAccountSyncZone,
                     expense_account.type as expenseAccountType,
                     expense_account.instrument_id as expenseInstrumentId,
                     expense_instrument.type as expenseInstrumentType,
@@ -116,6 +117,7 @@ const TRANSFER_PAIR_RANKED_CANDIDATE_BASE_SQL = `
                     income_tx.external_id as incomeTransactionExternalId,
                     income_tx.operated_at as incomeOperatedAt,
                     income_account.title as incomeAccountTitle,
+                    income_account.sync_zone as incomeAccountSyncZone,
                     income_account.type as incomeAccountType,
                     income_account.instrument_id as incomeInstrumentId,
                     income_instrument.type as incomeInstrumentType,
@@ -180,6 +182,11 @@ const TRANSFER_PAIR_RANKED_CANDIDATE_BASE_SQL = `
                         THEN 1
                         ELSE 0
                     END as ibanMatch,
+                    CASE
+                        WHEN expense_entries.expenseAccountSyncZone != income_entries.incomeAccountSyncZone
+                        THEN 1
+                        ELSE 0
+                    END as isCrossZonePair,
                     CASE
                         WHEN expense_entries.expenseMccGroupId = ${TRANSFER_MCC_GROUP_ID}
                             OR income_entries.incomeMccGroupId = ${TRANSFER_MCC_GROUP_ID}

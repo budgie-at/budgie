@@ -1,14 +1,17 @@
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
+import { NotificationFeedbackType } from 'expo-haptics';
 import Toast from 'react-native-toast-message';
 
 import { useSingleFlight } from '../../@generic/hook/use-single-flight.hook';
+import { useVibration } from '../../@generic/hook/use-vibration.hook';
 import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
 import { DatabaseExportService } from '../service/database-export.service';
 
 export const useBackupActions = () => {
     const { t } = useLingui();
     const { isLoading, run } = useSingleFlight();
+    const [hapticNotification] = useVibration();
 
     const handleBackup = () =>
         void run(
@@ -17,14 +20,14 @@ export const useBackupActions = () => {
                 const saved = yield* databaseExportService.saveBackup();
 
                 if (saved) {
-                    yield* Effect.sync(
-                        () =>
-                            void Toast.show({
-                                type: 'success',
-                                text1: t`Backup saved`,
-                                text2: t`Saved to your chosen folder.`
-                            })
-                    );
+                    yield* Effect.sync(() => {
+                        hapticNotification(NotificationFeedbackType.Success);
+                        Toast.show({
+                            type: 'success',
+                            text1: t`Backup saved`,
+                            text2: t`Saved to your chosen folder.`
+                        });
+                    });
                 }
             }).pipe(toastOnFailure(t`Could not create a backup`))
         );

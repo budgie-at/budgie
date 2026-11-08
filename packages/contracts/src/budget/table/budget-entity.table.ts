@@ -2,6 +2,8 @@ import { int, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 import { convertEnumToDrizzleEnum } from '../../@generic/utils/convert-enum-to-drizzle-enum.util';
 import { withBaseEntityTableColumns } from '../../@generic/utils/with-base-entity-table-columns.util';
+import { syncIdentityUniqueIndex } from '../../cloud-sync/utils/sync-identity-unique-index.util';
+import { withSyncIdentityColumns } from '../../cloud-sync/utils/with-sync-identity-columns.util';
 import { InstrumentEntityTable } from '../../instrument/table/instrument-entity.table';
 import { TagEntityTable } from '../../tag/table/tag-entity.table';
 import { BudgetKindEnum } from '../enum/budget-kind.enum';
@@ -12,6 +14,7 @@ import { BudgetRolloverModeEnum } from '../enum/budget-rollover-mode.enum';
 export const BudgetEntityTable = sqliteTable(
     'budgets',
     withBaseEntityTableColumns({
+        ...withSyncIdentityColumns(),
         name: text('name').notNull(),
         kind: text('kind', { enum: convertEnumToDrizzleEnum(BudgetKindEnum) })
             .$type<BudgetKindEnum>()
@@ -41,5 +44,6 @@ export const BudgetEntityTable = sqliteTable(
         instrumentId: int('instrument_id')
             .notNull()
             .references(() => InstrumentEntityTable.id)
-    })
+    }),
+    table => [syncIdentityUniqueIndex('budgets', table)]
 );

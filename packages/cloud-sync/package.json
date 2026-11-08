@@ -1,0 +1,40 @@
+{
+    "name": "@budgie/cloud-sync",
+    "version": "6.168.0",
+    "private": true,
+    "description": "Cloud sync package: record mapping, upload, apply, household sharing and the sync engine",
+    "sideEffects": false,
+    "exports": {
+        ".": {
+            "types": "./dist/esm/index.d.ts",
+            "default": "./dist/esm/index.js"
+        },
+        "./package.json": "./package.json"
+    },
+    "main": "./dist/esm/index.js",
+    "types": "./dist/esm/index.d.ts",
+    "scripts": {
+        "build": "node ../../node_modules/@typescript/native/bin/tsc -p tsconfig.json",
+        "build:watch": "pnpm build --watch",
+        "clear": "rimraf dist node_modules/.cache .turbo",
+        "format": "oxfmt --write src",
+        "lint": "oxlint --type-aware src",
+        "lint:fix": "oxlint --type-aware --fix src",
+        "ts": "node ../../scripts/typecheck.cjs --noEmit -p tsconfig.json",
+        "ts:native": "node ../../scripts/typecheck.cjs --native --noEmit -p tsconfig.json"
+    },
+    "dependencies": {
+        "@budgie/ai": "workspace:*",
+        "@budgie/categorization": "workspace:*",
+        "@budgie/consolidation": "workspace:*",
+        "@budgie/contracts": "workspace:^",
+        "@budgie/ledger": "workspace:*",
+        "@budgie/recurring": "workspace:*",
+        "@budgie/rules": "workspace:*",
+        "@budgie/sync": "workspace:*",
+        "@noble/hashes": "^2.4.0",
+        "@rnw-community/shared": "^3.0.5",
+        "drizzle-orm": "1.0.0-rc.4",
+        "effect": "4.1.2"
+    }
+}

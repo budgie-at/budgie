@@ -1,6 +1,6 @@
 {
     "name": "@budgie-at/app",
-    "version": "6.167.9",
+    "version": "6.168.0",
     "private": true,
     "scripts": {
         "android": "expo run:android",
@@ -30,6 +30,7 @@
         "@budgie/amount-input": "workspace:*",
         "@budgie/budget": "workspace:*",
         "@budgie/categorization": "workspace:*",
+        "@budgie/cloud-sync": "workspace:*",
         "@budgie/consolidation": "workspace:*",
         "@budgie/contracts": "workspace:^",
         "@budgie/import-export": "workspace:*",

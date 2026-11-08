@@ -36,6 +36,12 @@ import type { AiFeatureSettingsInterface } from '@app/ai/interface/ai-feature-se
 
 const native = { context: { stopCompletion: vi.fn(() => void 0), release: vi.fn(() => Promise.resolve()) } };
 
+vi.mock('react-native', async importOriginal => ({
+    ...(await importOriginal<object>()),
+    AppState: (await import('../../harness/native/native-module.stub')).appStateStub,
+    Platform: { OS: 'android' }
+}));
+
 beforeEach(() => {
     llamaStub.initLlama.mockResolvedValue(native.context);
 });

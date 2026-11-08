@@ -9,12 +9,19 @@ import * as Effect from 'effect/Effect';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
-import { seed, seedBankPair, testDb, TestLayer, DEBT_OPENING_MESSAGES } from '../../harness';
+import { restoreSyncTriggers, seed, seedBankPair, suspendSyncTriggers, testDb, TestLayer, DEBT_OPENING_MESSAGES } from '../../harness';
 
 const COMPACT_MIGRATION = '20261104170422_compact_rates_and_embeddings';
 const RECURRING_SMART_MIGRATION = '20261105192451_recurring_smart_series';
 
 const PRE_MIGRATION_SCHEMA: Readonly<Record<string, readonly string[]>> = {
+    '20261105193657_cloud_sync_identity': [
+        'DROP TABLE sync_apply_state',
+        'DROP TABLE sync_outbox',
+        'DROP TABLE sync_pending',
+        'DROP TABLE sync_record',
+        'DROP TABLE sync_zone_registry'
+    ],
     '20261106125437_inzhur_fund_instruments': ['DROP INDEX transactions_fund_account_idx'],
     [COMPACT_MIGRATION]: [
         'DROP TABLE historical_exchange_rates',
@@ -47,15 +54,27 @@ const restorePreMigrationSchema = (migrationName: string) =>
 
 const replayMigration = (migrationName: string) => {
     const migrationSql = readFileSync(resolve(process.cwd(), '../../packages/app/drizzle', migrationName, 'migration.sql'), 'utf8');
+    const dropIndexes = Array.from(
+        migrationSql.matchAll(/CREATE (?:UNIQUE )?INDEX `(\w+)`/gu),
+        ([, index]) => `DROP INDEX IF EXISTS ${index}`
+    );
     const dropAddedColumns = Array.from(
         migrationSql.matchAll(/ALTER TABLE `(\w+)` ADD `(\w+)`/gu),
         ([, table, column]) => `ALTER TABLE ${table} DROP COLUMN ${column}`
     );
 
-    return Effect.forEach(
-        [...dropAddedColumns, ...migrationSql.split('--> statement-breakpoint')],
-        statement => testDb.$client.unsafe(statement).raw,
-        { discard: true }
+    return Effect.scoped(
+        Effect.acquireRelease(suspendSyncTriggers, triggers => restoreSyncTriggers(triggers).pipe(Effect.orDie)).pipe(
+            Effect.flatMap(() =>
+                Effect.forEach(
+                    [...dropIndexes, ...dropAddedColumns, ...migrationSql.split('--> statement-breakpoint')],
+                    statement => testDb.$client.unsafe(statement).raw,
+                    {
+                        discard: true
+                    }
+                )
+            )
+        )
     );
 };
 

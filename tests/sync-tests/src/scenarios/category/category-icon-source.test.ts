@@ -12,7 +12,7 @@ import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
-import { testDb, TestLayer } from '../../harness';
+import { restoreSyncTriggers, suspendSyncTriggers, testDb, TestLayer } from '../../harness';
 
 const MIGRATION_NAME = '20261031231028_category_icon_source';
 const MIGRATION_SQL = readFileSync(resolve(process.cwd(), '../../packages/app/drizzle', MIGRATION_NAME, 'migration.sql'), 'utf8');
@@ -46,6 +46,7 @@ describe('category/icon-source', () => {
             yield* insertLegacyCategory('Side project', UserIconNameEnum.Home, false);
             yield* insertLegacyCategory('Apartment', UserIconNameEnum.Home, true);
             yield* insertLegacyCategory('Coffee runs', UserIconNameEnum.Coffee, false);
+            yield* Effect.acquireRelease(suspendSyncTriggers, triggers => restoreSyncTriggers(triggers).pipe(Effect.orDie));
             yield* testDb.$client.unsafe('ALTER TABLE categories DROP COLUMN icon_source').raw;
 
             yield* Effect.forEach(MIGRATION_SQL.split('--> statement-breakpoint'), statement => testDb.$client.unsafe(statement).raw, {
@@ -61,7 +62,7 @@ describe('category/icon-source', () => {
                     .from(CategoryEntityTable)
                     .where(eq(CategoryEntityTable.isDefault, true))
             ).not.toContainEqual({ iconSource: CategoryIconSourceEnum.AUTO });
-        }).pipe(Effect.provide(TestLayer))
+        }).pipe(Effect.scoped, Effect.provide(TestLayer))
     );
 
     it.effect('keeps a user-chosen Home and backfills a confident automatic Home', () =>

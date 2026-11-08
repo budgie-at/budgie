@@ -9,7 +9,7 @@ export const SECURITY_PILLAR_HUB_METADATA: PillarHubMetadataInterface = {
     pillar: PillarEnum.PRIVACY,
     title: msg`Encrypted Budget App — Lock Down Your Financial Data`,
     metaTitle: msg`Encrypted Budget App — Biometric Lock — Budgie`,
-    metaDescription: msg`Budgie protects your finances with on-device encryption once you set a PIN, biometric and PIN lock, screenshot blur, and backup files you keep yourself. No server ever sees your data.`,
+    metaDescription: msg`Budgie protects your finances with on-device encryption once you set a PIN, biometric and PIN lock, screenshot blur, and encrypted iCloud sync and backups on iOS. No Budgie server sees your data.`,
     seoKeywords: [
         msg`encrypted budget app`,
         msg`secure expense tracker`,

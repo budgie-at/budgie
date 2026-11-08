@@ -105,7 +105,8 @@ export default function VoiceReviewModal() {
             {
                 initialCategoryId: currentCategoryId,
                 excludeCategoryIds,
-                variant: 'destructive'
+                variant: 'destructive',
+                ...(isDefined(accountWithInstrument) && { syncZone: accountWithInstrument.syncZone })
             },
             selectedCategoryId => {
                 if (isDefined(selectedCategoryId)) {

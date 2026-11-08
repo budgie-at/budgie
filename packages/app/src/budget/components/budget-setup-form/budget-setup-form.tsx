@@ -25,6 +25,7 @@ import { BudgetPageState } from '../budget-page-state/budget-page-state';
 import { BudgetPeriodField } from '../budget-period-field/budget-period-field';
 import { BudgetSetupProgressContent } from '../budget-setup-progress-content/budget-setup-progress-content';
 import { BudgetSetupProgress } from '../budget-setup-progress/budget-setup-progress';
+import { BudgetShareField } from '../budget-share-field/budget-share-field';
 import { BudgetStartsOnField } from '../budget-starts-on-field/budget-starts-on-field';
 
 import type { KeyboardAwareScrollViewRef } from 'react-native-keyboard-controller';
@@ -106,6 +107,7 @@ export const BudgetSetupForm = ({ defaultInstrumentId, editingId, templateKind }
                     <BudgetLimitSourceField currencySymbol={currencySymbol} />
                     <BudgetAutoTuneField />
                     <BudgetInlineCategoryLimits currencySymbol={currencySymbol} onCategoryAdded={handleCategoryAdded} />
+                    {isDefined(editingId) ? <BudgetShareField budgetId={editingId} /> : null}
                     {isEditing ? (
                         <BudgetDeleteRow
                             title={t`Delete budget`}

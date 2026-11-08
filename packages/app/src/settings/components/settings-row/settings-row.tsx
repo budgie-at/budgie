@@ -1,10 +1,9 @@
 import { UserIconType } from '@budgie/contracts';
 import { Text } from 'react-native';
 
-import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
-import { TONAL_DISC_BACKGROUND } from '../../../@generic/constant/tonal-disc-background.constant';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
+import { SettingsRowIcon } from '../settings-row-icon/settings-row-icon';
 
 import type { ReactNode } from 'react';
 
@@ -24,17 +23,7 @@ export const SettingsRow = ({ icon, variant, title, subtitle, right, onPress, te
 
     return (
         <GroupedListRow
-            left={
-                <CircleIcon
-                    icon={icon}
-                    variant={variant}
-                    size={36}
-                    iconSize={18}
-                    radius={18}
-                    border={false}
-                    className={TONAL_DISC_BACKGROUND[variant]}
-                />
-            }
+            left={<SettingsRowIcon icon={icon} variant={variant} />}
             title={
                 <Text className={titleClassName} numberOfLines={2} testID={titleTestID}>
                     {title}

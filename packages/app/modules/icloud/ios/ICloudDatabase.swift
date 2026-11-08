@@ -1,0 +1,129 @@
+import CloudKit
+import ExpoModulesCore
+import Foundation
+
+enum ICloudSyncScope: String {
+  case privateScope = "PRIVATE"
+  case shared = "SHARED"
+}
+
+enum ICloudDatabase {
+  static let defaultOwnerName = CKCurrentUserDefaultName
+
+  static var container: CKContainer {
+    CKContainer(identifier: "iCloud.\(Bundle.main.bundleIdentifier ?? "")")
+  }
+
+  static var database: CKDatabase {
+    container.privateCloudDatabase
+  }
+
+  static var sharedDatabase: CKDatabase {
+    container.sharedCloudDatabase
+  }
+
+  static func database(for scope: ICloudSyncScope) -> CKDatabase {
+    switch scope {
+    case .privateScope: return database
+    case .shared: return sharedDatabase
+    }
+  }
+
+  static func scope(_ rawValue: String) throws -> ICloudSyncScope {
+    guard let scope = ICloudSyncScope(rawValue: rawValue) else {
+      throw error("UNKNOWN", "Unknown sync scope \(rawValue)")
+    }
+    return scope
+  }
+
+  static func zoneID(zoneName: String, ownerName: String) -> CKRecordZone.ID {
+    CKRecordZone.ID(zoneName: zoneName, ownerName: ownerName.isEmpty ? defaultOwnerName : ownerName)
+  }
+
+  static func accountStatusName(_ status: CKAccountStatus) -> String {
+    switch status {
+    case .available: return "available"
+    case .noAccount: return "noAccount"
+    case .restricted: return "restricted"
+    case .temporarilyUnavailable: return "temporarilyUnavailable"
+    case .couldNotDetermine: return "couldNotDetermine"
+    @unknown default: return "couldNotDetermine"
+    }
+  }
+
+  static func date(from value: Any) -> Date? {
+    if let milliseconds = value as? Double {
+      return Date(timeIntervalSince1970: milliseconds / 1000)
+    }
+    guard let text = value as? String else { return nil }
+    let fractional = ISO8601DateFormatter()
+    fractional.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+    return fractional.date(from: text) ?? ISO8601DateFormatter().date(from: text)
+  }
+
+  static func error(_ code: String, _ message: String) -> Exception {
+    Exception(name: "ICloudError", description: message, code: code)
+  }
+
+  static func message(_ error: Error) -> String {
+    (error as? Exception)?.reason ?? error.localizedDescription
+  }
+
+  static func modify(_ operation: CKModifyRecordsOperation, record: CKRecord) async throws -> String {
+    try await withCheckedThrowingContinuation { continuation in
+      operation.modifyRecordsResultBlock = { result in
+        switch result {
+        case .success: continuation.resume(returning: record.recordID.recordName)
+        case let .failure(error): continuation.resume(throwing: Self.syncError(error, backup: true))
+        }
+      }
+      database.add(operation)
+    }
+  }
+
+  static func itemError(_ error: Error) -> Error {
+    guard let cloudError = error as? CKError, cloudError.code == .partialFailure, let first = cloudError.partialErrorsByItemID?.values.first else {
+      return error
+    }
+    return first
+  }
+
+  static func syncErrorCode(_ error: Error) -> String {
+    let itemError = itemError(error)
+    if let exception = itemError as? Exception { return exception.code }
+    let cloudError = itemError as NSError
+    guard cloudError.domain == CKErrorDomain else { return "UNKNOWN" }
+    switch CKError.Code(rawValue: cloudError.code) {
+    case .some(.serverRecordChanged): return "SERVER_RECORD_CHANGED"
+    case .some(.zoneNotFound): return "ZONE_NOT_FOUND"
+    case .some(.userDeletedZone): return "USER_DELETED_ZONE"
+    case .some(.participantMayNeedVerification): return "PARTICIPANT_NEEDS_VERIFICATION"
+    case .some(.permissionFailure): return "PERMISSION_FAILURE"
+    case .some(.unknownItem): return "UNKNOWN_ITEM"
+    case .some(.limitExceeded): return "LIMIT_EXCEEDED"
+    case .some(.constraintViolation): return "CONSTRAINT_VIOLATION"
+    case .some(.zoneBusy), .some(.requestRateLimited), .some(.serviceUnavailable), .some(.operationCancelled): return "SERVICE_BUSY"
+    case .some(.notAuthenticated), .some(.accountTemporarilyUnavailable), .some(.managedAccountRestricted): return "ACCOUNT_UNAVAILABLE"
+    case .some(.quotaExceeded): return "QUOTA_EXCEEDED"
+    case .some(.networkUnavailable), .some(.networkFailure): return "NETWORK_UNAVAILABLE"
+    default: return "UNKNOWN"
+    }
+  }
+
+  static func isRetriedByEngine(_ error: Error) -> Bool {
+    guard (error as NSError).domain == CKErrorDomain else { return false }
+    switch CKError.Code(rawValue: (error as NSError).code) {
+    case .some(.networkFailure), .some(.networkUnavailable), .some(.zoneBusy), .some(.serviceUnavailable), .some(.notAuthenticated), .some(.operationCancelled), .some(.requestRateLimited): return true
+    default: return false
+    }
+  }
+
+  static func failure(_ error: Error) -> [String: Any] {
+    ["code": syncErrorCode(error), "message": message(itemError(error)), "isRetried": isRetriedByEngine(itemError(error))]
+  }
+
+  static func syncError(_ error: Error, backup: Bool = false) -> Exception {
+    let code = syncErrorCode(error)
+    return self.error(backup && code == "ZONE_NOT_FOUND" ? "ENCRYPTED_DATA_RESET" : code, message(itemError(error)))
+  }
+}

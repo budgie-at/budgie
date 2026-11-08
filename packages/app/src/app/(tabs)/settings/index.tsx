@@ -1,10 +1,7 @@
-import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { router, useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import { View } from 'react-native';
 import Animated from 'react-native-reanimated';
-
-import { isDefined } from '@rnw-community/shared';
 
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
@@ -22,45 +19,26 @@ import { LanguageSelector } from '../../../settings/components/language-selector
 import { OrganizeSettingsRows } from '../../../settings/components/organize-settings-rows/organize-settings-rows';
 import { SecurityCard } from '../../../settings/components/security-card/security-card';
 import { SettingsAboutFooter } from '../../../settings/components/settings-about-footer/settings-about-footer';
-import { SettingsRow } from '../../../settings/components/settings-row/settings-row';
 import { ShowCentsRow } from '../../../settings/components/show-cents-row/show-cents-row';
 import { SupportSettingsRows } from '../../../settings/components/support-settings-rows/support-settings-rows';
 import { ThemeSwitch } from '../../../settings/components/theme-switch/theme-switch';
 import { YourDataCard } from '../../../settings/components/your-data-card/your-data-card';
 import { useScrollToAnchor } from '../../../settings/hook/use-scroll-to-anchor.hook';
-import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { ApplePayCaptureSettingsCard } from '../../../wallet-capture/component/apple-pay-capture-settings-card/apple-pay-capture-settings-card';
 
 import { SettingsPageSelector } from './settings-page.selector';
 
-const handleNavigateToData = () => void router.push('/settings/data');
-
-// eslint-disable-next-line max-lines-per-function
 export default function SettingsPage() {
     const { t } = useLingui();
     const { anchor } = useLocalSearchParams<{ anchor?: string }>();
     const { scrollViewRef, onScrollViewLayout, anchorLayout, anchorHighlight } = useScrollToAnchor(anchor);
 
-    const lastBackupAt = useSetting('lastBackupAt');
-    const dataFooter = isDefined(lastBackupAt)
-        ? t`Back up regularly and after imports.`
-        : t`Without a backup, lost data can't be recovered.`;
     const scrollViewProps = { ref: scrollViewRef, onLayout: onScrollViewLayout };
 
     return (
         <CollapsibleChromePage title={t`Settings`} testID={SettingsPageSelector.Container} scrollViewProps={scrollViewProps}>
             <View className="gap-y-5xl pb-5xl">
-                <GroupedListSection title={t`Your data`} footer={dataFooter}>
-                    <YourDataCard />
-                    <SettingsRow
-                        onPress={handleNavigateToData}
-                        title={t`Data tools`}
-                        subtitle={t`Import, export, repair and reset`}
-                        icon={UserIconNameEnum.SlidersHorizontal}
-                        variant="ghost"
-                        testID={SettingsPageSelector.DataCard}
-                    />
-                </GroupedListSection>
+                <YourDataCard />
 
                 <View {...anchorLayout('security')}>
                     <Animated.View {...anchorHighlight('security')}>

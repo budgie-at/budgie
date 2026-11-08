@@ -1,10 +1,11 @@
 import { sql } from 'drizzle-orm';
-import { int, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { int, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core';
 
 import { convertEnumToDrizzleEnum } from '../../@generic/utils/convert-enum-to-drizzle-enum.util';
 import { withBaseEntityTableColumns } from '../../@generic/utils/with-base-entity-table-columns.util';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
+import { withSyncIdentityColumns } from '../../cloud-sync/utils/with-sync-identity-columns.util';
 import { InstrumentEntityTable } from '../../instrument/table/instrument-entity.table';
 import { RecurringCadenceUnitEnum } from '../enum/recurring-cadence-unit.enum';
 import { RecurringSeriesKindEnum } from '../enum/recurring-series-kind.enum';
@@ -15,6 +16,7 @@ import { RecurringSeriesUserStateEnum } from '../enum/recurring-series-user-stat
 export const RecurringSeriesEntityTable = sqliteTable(
     'recurring_series',
     withBaseEntityTableColumns({
+        ...withSyncIdentityColumns(),
         merchantKey: text('merchant_key').notNull(),
         kind: text('kind', { enum: convertEnumToDrizzleEnum(RecurringSeriesKindEnum) })
             .$type<RecurringSeriesKindEnum>()
@@ -47,5 +49,6 @@ export const RecurringSeriesEntityTable = sqliteTable(
         endsAt: int('ends_at', { mode: 'timestamp' }),
         reminderDaysBefore: int('reminder_days_before'),
         confidence: int('confidence').notNull().default(0)
-    })
+    }),
+    table => [uniqueIndex('recurring_series_sync_identity_unq').on(table.syncZone, table.syncId)]
 );

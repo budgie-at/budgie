@@ -6,6 +6,7 @@ export type TransactionEntryCreateEntityInterface = PartialByKeysType<
     Omit<TransactionEntryEntityInterface, BaseEntityKeyType>,
     | 'categorySource'
     | 'kind'
+    | 'sequence'
     | 'externalId'
     | 'exchangeRate'
     | 'baseInstrumentId'

@@ -2,7 +2,7 @@ import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { MAX_CHROME_FONT_SIZE_MULTIPLIER } from '../../constant/max-chrome-font-size-multiplier.constant';
-import { openContactsSettings } from '../../utils/open-contacts-settings.util';
+import { openAppSettings } from '../../utils/open-app-settings.util';
 import { Button } from '../button/button';
 import { ContactSelectorSelector } from '../contact-selector/contact-selector.selector';
 import { SearchInput } from '../search-input/search-input';
@@ -49,7 +49,7 @@ export const ContactSelectorHeader = ({ search, onSearchChange, isLimited, canSe
                                 {t`Limited access · Manage in Settings`}
                             </Text>
                         }
-                        onPress={openContactsSettings}
+                        onPress={openAppSettings}
                         variant="ghost"
                         className="min-h-[44px]"
                         testID={ContactSelectorSelector.Settings}

@@ -1,8 +1,9 @@
 import {
+    PERSONAL_SYNC_ZONE,
     AccountDebtTypeEnum,
     AccountRepository,
     AccountTypeEnum,
-    BORROWING_CATEGORY_ID,
+    BORROWING_CATEGORY_SEED_KEY,
     CategoryRepository,
     CategorySourceEnum,
     Db,
@@ -10,7 +11,7 @@ import {
     DebtEventRepository,
     DebtEventSourceEnum,
     InstallmentPlanRepository,
-    LENDING_CATEGORY_ID,
+    LENDING_CATEGORY_SEED_KEY,
     MccCategoryRepository,
     SettingsRepository,
     TransactionEntryKindEnum,
@@ -233,15 +234,18 @@ export class TransactionDebtSettlementService extends Context.Service<Transactio
                     return false;
                 }
 
-                const categoryId = debtAccount.debtType === AccountDebtTypeEnum.LENT ? LENDING_CATEGORY_ID : BORROWING_CATEGORY_ID;
-                const category = yield* categoryRepository.findActiveById(categoryId);
+                const seedKey = debtAccount.debtType === AccountDebtTypeEnum.LENT ? LENDING_CATEGORY_SEED_KEY : BORROWING_CATEGORY_SEED_KEY;
+                const entryAccount = yield* accountRepository.findById(primaryEntry.accountId);
+                const category =
+                    (yield* categoryRepository.findActiveBySeedKey(seedKey, entryAccount?.syncZone ?? primaryEntry.syncZone)) ??
+                    (yield* categoryRepository.findActiveBySeedKey(seedKey, PERSONAL_SYNC_ZONE));
 
                 if (!isDefined(category)) {
                     return false;
                 }
 
                 yield* transactionEntryRepository.updateById(primaryEntry.id, {
-                    categoryId,
+                    categoryId: category.id,
                     categorySource: CategorySourceEnum.DEBT_SETTLEMENT
                 });
 
@@ -356,8 +360,8 @@ export class TransactionDebtSettlementService extends Context.Service<Transactio
                 inheritInstallmentCategory,
                 repairDebtPaymentCategories: Effect.fn('TransactionDebtSettlementService.repairDebtPaymentCategories')(function* () {
                     yield* debtEventRepository.relinkAttachmentEntries;
-                    yield* transactionEntryRepository.assignDebtPaymentCategory(BORROWING_CATEGORY_ID, AccountDebtTypeEnum.BORROW);
-                    yield* transactionEntryRepository.assignDebtPaymentCategory(LENDING_CATEGORY_ID, AccountDebtTypeEnum.LENT);
+                    yield* transactionEntryRepository.assignDebtPaymentCategory(BORROWING_CATEGORY_SEED_KEY, AccountDebtTypeEnum.BORROW);
+                    yield* transactionEntryRepository.assignDebtPaymentCategory(LENDING_CATEGORY_SEED_KEY, AccountDebtTypeEnum.LENT);
                 }),
                 resyncInTransaction,
                 resyncTransactions: Effect.fn('TransactionDebtSettlementService.resyncTransactions')(function* (transactionIds: number[]) {

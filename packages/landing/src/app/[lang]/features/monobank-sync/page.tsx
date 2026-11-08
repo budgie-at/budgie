@@ -86,7 +86,7 @@ export default async function MonobankSyncFeaturePage(props: PageLangParam) {
 
             <FeatureSpecTiles heading={<Trans>Everything Monobank knows, nothing extra in the loop</Trans>}>
                 <FeatureSpecTiles.Tile title={<Trans>companies between you and your bank</Trans>} value="0">
-                    <Trans>Budgie asks Monobank directly from your phone. Nobody else sees a single transaction.</Trans>
+                    <Trans>Budgie asks Monobank directly from your phone. No middleman sees a single transaction.</Trans>
                 </FeatureSpecTiles.Tile>
                 <FeatureSpecTiles.Tile title={<Trans>token for everything</Trans>} value="1">
                     <Trans>All cards and jars on one connection.</Trans>
@@ -135,9 +135,7 @@ export default async function MonobankSyncFeaturePage(props: PageLangParam) {
             <FeatureProof
                 crop={
                     <FeatureProof.Crop
-                        alt={t(
-                            i18n
-                        )`Budgie Settings screen with the 100% Offline & Private card saying all your data is stored on the device`}
+                        alt={t(i18n)`Budgie Settings screen scrolled to the Automation section`}
                         locale={lang}
                         scene="ai-auto-categorization-2"
                         slug="ai-auto-categorization"

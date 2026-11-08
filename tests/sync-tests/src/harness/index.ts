@@ -112,6 +112,7 @@ export * as Clock from 'effect/Clock';
 export * as Fiber from 'effect/Fiber';
 export { DEBT_OPENING_MESSAGES } from './debt/debt-opening-messages';
 export { aiModelDownloadStub } from './ai/ai-model-download-stub';
+export { suspendSyncTriggers, restoreSyncTriggers } from './db/suspend-sync-triggers';
 export { buildInzhurOperationsWorkbook } from './inzhur/build-inzhur-operations-workbook';
 export { consolidateInzhur } from './inzhur/consolidate-inzhur';
 export { fetchBankTransactions } from './inzhur/fetch-bank-transactions';
@@ -119,3 +120,115 @@ export { fetchInzhurOperationsLedger } from './inzhur/fetch-inzhur-operations-le
 export { importInzhurBankFlow } from './inzhur/import-inzhur-bank-flow';
 export { importInzhurBankTransaction } from './inzhur/import-inzhur-bank-transaction';
 export { importInzhurOperations } from './inzhur/import-inzhur-operations';
+export { FakeCloudTransport } from './cloud/fake-cloud-transport';
+
+export { TestSeedService, makeTestDbLayer, resetTestDb, assertStoredBalancesMatchLedger } from '@budgie-at/test-kit';
+export { Db } from '@budgie/contracts';
+
+export { deviceLayer, onDevice, pullDevice, pushDevice, readOutboxRows, refreshAllBalances, uploadDevice } from './cloud/apply-harness';
+export {
+    DEVICE_A,
+    DEVICE_B,
+    applyRuleCategory,
+    categoryIds,
+    mergeBothWays,
+    pullSeededExpense,
+    pushSeededExpense
+} from './cloud/apply-shared-harness';
+export { OPERATED_AT, makeShareClouds } from './cloud/cloud-fixtures';
+export {
+    encodeAllRecords,
+    hydratedSnapshot,
+    loadSyncState,
+    materializeRecords,
+    prepareTarget,
+    seedCrossZoneTransfer,
+    seedFullLedger,
+    seedTransferRefundAndConsolidation,
+    throughTransport
+} from './cloud/record-mapping-harness';
+export {
+    bootstrapDevices,
+    bootstrapMonoDevices,
+    detectRecurring,
+    dismissSeries,
+    embeddingBoostProbe,
+    expectBalancesConverged,
+    expectOutboxesEmpty,
+    expectSettled,
+    firstAccountIdOf,
+    pullWithAutomation,
+    reapplyAutomation,
+    reapplyOnBoth,
+    refreshAndSettle,
+    settleDevices,
+    syncIdsOf
+} from './cloud/automation-harness';
+export {
+    GROCERIES_ID,
+    acceptShareThen,
+    deliverHouseholdToMember,
+    discoverHouseholdEntry,
+    seedGroceriesJoint
+} from './cloud/household-tests-shared';
+export { countRows, onShareDevice, prepareHousehold, pullZones, queryRows, reconcileDevice } from './cloud/share-harness';
+export {
+    HOUSEHOLD_CLOUD_ZONE,
+    MEMBER_ACCOUNT,
+    MEMBER_DEVICE,
+    OWNER_RECORD_NAME,
+    accessLostEvent,
+    joinMember,
+    participantsFor,
+    pushHouseholdZone,
+    readPersonalBalances,
+    readSyncIds,
+    seedHouseholdLedger
+} from './cloud/household-harness';
+export {
+    INSTALL_ID,
+    type SyncServiceType,
+    failedSaveOf,
+    fetchedEvent,
+    flattenBatches,
+    makeSyncServiceContext,
+    matchZoneLineage,
+    metaWith,
+    readAccountCount,
+    readOutboxCount,
+    reconfigureAndAcknowledgeMeta,
+    runSyncService,
+    savedFrom,
+    sentEvent,
+    syncService
+} from './cloud/sync-service-harness';
+export {
+    ALICE_IBAN,
+    BOB_IBAN,
+    EXPENSE_AT,
+    INCOME_AT,
+    MANUAL_BOB_ACCOUNT,
+    PRIVATE_ACCOUNT_TITLE,
+    PRIVATE_BOTH_CARDS,
+    PRIVATE_COMMENT,
+    PRIVATE_TITLE,
+    SHARED_BOTH_CARDS,
+    TRANSFER_AMOUNT,
+    balanceOf,
+    settleMembers,
+    unconsolidateOn,
+    visibleTransactions,
+    withMemberHousehold
+} from './cloud/member-transfer-harness';
+export type { MemberCloudsInterface } from './cloud/member-transfer-harness';
+export {
+    expectLedgers,
+    expectNoRejections,
+    expectTitleZones,
+    pullHousehold,
+    shareAccount,
+    shareAndUpload,
+    shareDevices,
+    startHousehold
+} from './cloud/share-tests-shared';
+export type { ShareCloudsInterface } from './cloud/share-harness';

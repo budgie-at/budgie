@@ -1161,7 +1161,7 @@
         },
         {
             "files": [
-                "packages/{contracts,sync,consolidation,budget,market,ledger,rules,recurring,categorization,import-export,ai}/src/**/*.ts",
+                "packages/{contracts,sync,cloud-sync,consolidation,budget,market,ledger,rules,recurring,categorization,import-export,ai}/src/**/*.ts",
                 "packages/app/src/**/service/**/*.ts",
                 "packages/app/src/**/*.task.ts"
             ],
@@ -1262,7 +1262,7 @@
         },
         {
             "files": [
-                "packages/{app,ai,contracts,sync,consolidation,budget,market,ledger,rules,recurring,categorization,import-export,logger}/src/**/*.{ts,tsx}"
+                "packages/{app,ai,contracts,sync,cloud-sync,consolidation,budget,market,ledger,rules,recurring,categorization,import-export,logger}/src/**/*.{ts,tsx}"
             ],
             "rules": {
                 "no-restricted-properties": [

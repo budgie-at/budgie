@@ -683,8 +683,8 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
                     <BlogArticleProse>
                         <Trans>
                             Financial management is inherently personal. Unlike collaborative documents or team projects, most people do not
-                            need to share their expense tracking with others in real-time. The single-user optimization of local-first is a
-                            feature, not a limitation.
+                            need to share their expense tracking with others in real-time. The personal-first optimization of local-first is
+                            a feature, not a limitation.
                         </Trans>
                     </BlogArticleProse>
 

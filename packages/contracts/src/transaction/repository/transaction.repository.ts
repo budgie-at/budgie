@@ -1,4 +1,6 @@
 import * as DateTime from 'effect/DateTime';
+
+import { SyncRecordTypeEnum } from '../../cloud-sync/enum/sync-record-type.enum';
 /* eslint-disable max-lines -- Transaction repository is the kitchen sink for tx queries + filter builders + bank-sync helpers */
 import { SQL, and, count, eq, gte, inArray, isNotNull, isNull, lte, ne, notExists, or, sql } from 'drizzle-orm';
 import * as Context from 'effect/Context';
@@ -10,6 +12,7 @@ import { isDefined, isEmptyArray, isNotEmptyArray, isPositiveNumber } from '@rnw
 import { transactionFilters } from '../../@generic/repository/base-transaction-filter.repository';
 import { Db } from '../../@generic/service/db.service';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
+import { PERSONAL_SYNC_ZONE } from '../../cloud-sync/constant/personal-sync-zone.constant';
 import { TransactionEntryAssociationEnum } from '../../transaction-entry/enum/transaction-entry-association.enum';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
@@ -109,7 +112,55 @@ export class TransactionRepository extends Context.Service<TransactionRepository
         });
 
         return {
+            findLiveIdsBySyncIds: Effect.fn('TransactionRepository.findLiveIdsBySyncIds')(function* (syncIds: readonly string[]) {
+                const rows = [];
+                for (let start = 0; start < syncIds.length; start += 500) {
+                    rows.push(
+                        ...(yield* Db.query(db =>
+                            db
+                                .select({ id: TransactionEntityTable.id, operatedAt: TransactionEntityTable.operatedAt })
+                                .from(TransactionEntityTable)
+                                .where(
+                                    and(
+                                        inArray(TransactionEntityTable.syncId, syncIds.slice(start, start + 500)),
+                                        isNull(TransactionEntityTable.deletedAt)
+                                    )
+                                )
+                        ))
+                    );
+                }
+
+                return rows;
+            }),
+            isForeignTransferLeg: (id: number) =>
+                Db.query(db =>
+                    db.$client.unsafe<{ readonly id: number }>(
+                        `SELECT t.id FROM transactions t INNER JOIN sync_record r ON r.sync_zone = t.sync_zone AND r.sync_id = t.sync_id WHERE t.id = ? AND r.record_type = ? LIMIT 1`,
+                        [id, SyncRecordTypeEnum.TRANSACTION_LEG]
+                    )
+                ).pipe(Effect.map(isNotEmptyArray)),
             bulkCreate,
+            findClaimedPersonalSyncIds: Effect.fn('TransactionRepository.findClaimedPersonalSyncIds')(function* (
+                syncIds: readonly string[]
+            ) {
+                if (isEmptyArray(syncIds)) {
+                    return new Set<string>();
+                }
+
+                const rows = yield* Db.query(db =>
+                    db
+                        .select({ syncId: TransactionEntityTable.syncId })
+                        .from(TransactionEntityTable)
+                        .where(
+                            and(
+                                eq(TransactionEntityTable.syncZone, PERSONAL_SYNC_ZONE),
+                                inArray(TransactionEntityTable.syncId, [...syncIds])
+                            )
+                        )
+                );
+
+                return new Set(rows.map(row => row.syncId).filter(isDefined));
+            }),
             findPotentialExpenseDuplicate: Effect.fn('TransactionRepository.findPotentialExpenseDuplicate')(function* (
                 input: PotentialExpenseDuplicateInputInterface
             ) {

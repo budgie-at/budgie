@@ -84,7 +84,10 @@ export default async function AiCategoryTranslationFeaturePage(props: PageLangPa
             </FeatureStory>
 
             <FeatureSpecTiles heading={<Trans>Your names, readable everywhere</Trans>}>
-                <FeatureSpecTiles.Tile title={<Trans>of your category names leave your phone</Trans>} value={<Trans>None</Trans>}>
+                <FeatureSpecTiles.Tile
+                    title={<Trans>of your category names sent to a translation service</Trans>}
+                    value={<Trans>None</Trans>}
+                >
                     <Trans>The English form is made on your device.</Trans>
                 </FeatureSpecTiles.Tile>
                 <FeatureSpecTiles.Tile title={<Trans>names searchable, original and English</Trans>} value={<Trans>Both</Trans>}>
@@ -152,8 +155,8 @@ export default async function AiCategoryTranslationFeaturePage(props: PageLangPa
                     <p>
                         <Trans>
                             The original name stays exactly as you wrote it; the English form is what your search queries also match
-                            against. No data ever leaves your device. Renaming a category clears its English form and keywords, and Budgie
-                            generates them again for the new name.
+                            against. No data is sent to a translation service. Renaming a category clears its English form and keywords, and
+                            Budgie generates them again for the new name.
                         </Trans>
                     </p>
                 </FeatureDetails.Item>

@@ -5,6 +5,8 @@ import {
     BudgetPeriodSnapshotEntityTable,
     BudgetSinkingFundEntityTable,
     ExchangeRateEntityTable,
+    SyncRecordEntityTable,
+    SyncOutboxEntityTable,
     HistoricalExchangeRateEntityTable,
     InstrumentDailyMarketPriceEntityTable,
     RecurringSeriesEntityTable,
@@ -16,6 +18,8 @@ import { TRANSACTION_LIST_TABLES } from '../../transaction/constant/transaction-
 
 export const BUDGET_PROJECTION_TABLES = [
     ...TRANSACTION_LIST_TABLES,
+    SyncRecordEntityTable,
+    SyncOutboxEntityTable,
     BudgetEntityTable,
     BudgetCategoryLimitEntityTable,
     BudgetPeriodSnapshotEntityTable,

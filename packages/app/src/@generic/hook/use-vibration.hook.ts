@@ -3,7 +3,7 @@ import { ImpactFeedbackStyle, NotificationFeedbackType, impactAsync, notificatio
 import { useSetting } from '../../settings/hook/use-setting.hook';
 
 export const useVibration = (): [
-    notification: (type: NotificationFeedbackType) => void,
+    notification: (type?: NotificationFeedbackType) => void,
     impact: (style: ImpactFeedbackStyle) => void,
     selection: () => void
 ] => {

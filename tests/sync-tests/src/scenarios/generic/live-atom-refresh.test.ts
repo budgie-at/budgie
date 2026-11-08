@@ -78,6 +78,7 @@ import {
     InstrumentEntityTable,
     InstrumentTypeEnum,
     LanguageEnum,
+    PERSONAL_SYNC_ZONE,
     RunwayDriverDimensionEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
@@ -114,6 +115,7 @@ const BUDGET_KEY = {
     overallLimit: 100_000_000,
     otherLimit: 0,
     tagId: null,
+    syncZone: PERSONAL_SYNC_ZONE,
     periodAnchorMs: null,
     startsAtMs: null,
     endsAtMs: null,
@@ -177,8 +179,8 @@ const liveAtoms = ({
     tagEvidence: tagEvidenceAtom,
     atmCashWithdrawalTransactionIds: atmCashWithdrawalTransactionIdsAtom([expense.id]),
     categoryById: categoryByIdAtom([category.id, EN]),
-    nonSystemCategories: nonSystemCategoriesAtom(EN),
-    searchCategories: searchCategoriesAtom(['', true, EN]),
+    nonSystemCategories: nonSystemCategoriesAtom([EN, PERSONAL_SYNC_ZONE]),
+    searchCategories: searchCategoriesAtom(['', true, EN, PERSONAL_SYNC_ZONE]),
     categoryUsage: categoryUsageAtom,
     exchangeRatesUpdatedAt: exchangeRatesUpdatedAtAtom,
     rateByBaseAndQuoteIds: rateByBaseAndQuoteIdsAtom([BASE_INSTRUMENT_ID, 2]),

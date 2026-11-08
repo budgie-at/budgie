@@ -7,7 +7,8 @@ import { TITLE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/title
 import { StatisticsShareBar } from '../../../transaction/components/statistics-share-bar/statistics-share-bar';
 import { ACCOUNT_TYPE_SWATCH } from '../../constant/account-type-swatch.constant';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
-import { isDebtSection } from '../../type-guard/is-debt-section.type-guard';
+import { isAccountTypeSection } from '../../type-guard/is-account-type-section.type-guard';
+import { isCashSection } from '../../type-guard/is-cash-section.type-guard';
 
 import { NetWorthCompositionSelector } from './net-worth-composition.selector';
 
@@ -20,7 +21,9 @@ interface Props {
 export const NetWorthComposition = ({ sections }: Props) => {
     const { t } = useLingui();
 
-    const groups = sections.flatMap(section => (isDebtSection(section) ? [] : [{ type: section.type, total: section.total }]));
+    const groups = sections.flatMap(section =>
+        isAccountTypeSection(section) || isCashSection(section) ? [{ type: section.type, total: section.total }] : []
+    );
     const segments = groups
         .filter(group => isPositiveNumber(group.total))
         .sort((left, right) => right.total - left.total)

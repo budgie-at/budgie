@@ -9,6 +9,8 @@ import {
     CategoryEntityTable,
     CategoryRepository,
     ExchangeRateEntityTable,
+    SyncRecordEntityTable,
+    SyncOutboxEntityTable,
     TransactionEntityTable,
     TransactionEntryEntityTable
 } from '@budgie/contracts';
@@ -52,7 +54,14 @@ export const suggestedBudgetTemplateAtom = Atom.family((key: { readonly nowTimes
     const now = new Date(key.nowTimestamp);
 
     return databaseQueryAtom(
-        [TransactionEntryEntityTable, TransactionEntityTable, AccountEntityTable, ExchangeRateEntityTable],
+        [
+            TransactionEntryEntityTable,
+            TransactionEntityTable,
+            AccountEntityTable,
+            ExchangeRateEntityTable,
+            SyncRecordEntityTable,
+            SyncOutboxEntityTable
+        ],
         Effect.gen(function* () {
             const budgetRepository = yield* BudgetRepository;
             const window = computeTrailingMonthsWindow(now, MAX_WINDOW_MONTHS);

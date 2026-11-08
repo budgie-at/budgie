@@ -1,0 +1,1 @@
+export const SYNC_RECORD_SCHEMA_VERSION = 1;
