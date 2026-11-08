@@ -6,7 +6,6 @@ import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { SheetSurface } from '../../../@generic/component/sheet-surface/sheet-surface';
-import { RoundedEdgeEnum } from '../../../@generic/enum/rounded-edge.enum';
 import { TRANSFER_ACCOUNT_FIELDS } from '../../constant/transfer-account-fields.constant';
 import { TransactionKeypadContext } from '../../context/transaction-keypad.context';
 import { useConvertTransferForm } from '../../hook/use-convert-transfer-form.hook';
@@ -62,8 +61,6 @@ export const ConvertTransferForm = ({ isSubmitting, onSubmit, onCancel }: Props)
     const scrollStyle = { maxHeight: height * (form.isEditing ? KEYPAD_CONTENT_HEIGHT_RATIO : 0.6), flexGrow: 0 };
     const keypadContext = { dismiss: form.handleConfirm };
 
-    const accountsEdge = form.conversion.isCrossCurrency ? RoundedEdgeEnum.TOP : RoundedEdgeEnum.ALL;
-
     return (
         <TransactionKeypadContext value={keypadContext}>
             <SheetSurface
@@ -86,7 +83,7 @@ export const ConvertTransferForm = ({ isSubmitting, onSubmit, onCancel }: Props)
                 <ScrollView style={scrollStyle} contentContainerClassName="px-xl pt-sm pb-[48px]" showsVerticalScrollIndicator={false}>
                     {amount}
                     <GroupedListSection footer={<QuickFormFieldError fields={TRANSFER_ACCOUNT_FIELDS} />}>
-                        <ConvertTransferAccounts edge={accountsEdge} />
+                        <ConvertTransferAccounts />
                         {form.conversion.isCrossCurrency ? (
                             <LoadingContent isLoading={form.conversion.isPending}>
                                 <ConversionRow

@@ -5,20 +5,13 @@ import { Text } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { RoundedEdgeEnum } from '../../../@generic/enum/rounded-edge.enum';
 import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
 import { useConvertToTransferModalParams } from '../../hook/use-convert-to-transfer-modal-params.hook';
 import { useTransferAccounts } from '../../hook/use-transfer-accounts.hook';
-import { MeasuredTransferAccountPicker } from '../measured-transfer-account-picker/measured-transfer-account-picker';
+import { TransferAccountPicker } from '../transfer-account-picker/transfer-account-picker';
 import { TransferQuickFormSelector } from '../transfer-quick-form/transfer-quick-form.selector';
 
-import type { AnchoredMorphOriginInterface } from '../../../@generic/interface/anchored-morph-origin.interface';
-
-interface Props {
-    readonly edge: RoundedEdgeEnum;
-}
-
-export const ConvertTransferAccounts = ({ edge }: Props) => {
+export const ConvertTransferAccounts = () => {
     const { t } = useLingui();
     const params = useConvertToTransferModalParams();
     const { setValue, clearErrors } = useFormContext<TransactionCreateInputInterface>();
@@ -32,14 +25,13 @@ export const ConvertTransferAccounts = ({ edge }: Props) => {
         ? TransferQuickFormSelector.SelectedToAccount(account?.title ?? '')
         : TransferQuickFormSelector.SelectedFromAccount(account?.title ?? '');
 
-    const handlePress = (origin: AnchoredMorphOriginInterface) => {
+    const handlePress = () => {
         openAccountSelector(
             {
                 initialAccountId: account?.id,
                 excludeAccountId: params?.excludeAccountId,
                 excludeAccountTypes: [AccountTypeEnum.DEBT],
-                onlyActive: false,
-                origin
+                onlyActive: false
             },
             selectedAccountId => {
                 if (isDefined(selectedAccountId)) {
@@ -51,7 +43,7 @@ export const ConvertTransferAccounts = ({ edge }: Props) => {
     };
 
     return (
-        <MeasuredTransferAccountPicker
+        <TransferAccountPicker
             label={label}
             account={account}
             placeholder={
@@ -61,7 +53,6 @@ export const ConvertTransferAccounts = ({ edge }: Props) => {
             }
             testID={testID}
             selectedTestID={selectedTestID}
-            edge={edge}
             onPress={handlePress}
         />
     );
