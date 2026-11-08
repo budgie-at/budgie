@@ -30,7 +30,8 @@ export const TransactionTransferAccountsRow = ({ ref, children }: Props) => {
     const { errors } = useFormState();
     const { shake: shakeFrom, animatedStyle: fromAnimatedStyle } = useShakeAnimation();
     const { shake: shakeTo, animatedStyle: toAnimatedStyle } = useShakeAnimation();
-    const { fromAccount, toAccount, handleFromPress, handleToPress, handleSwap, canSwap, hasAnyAccount } = useTransferAccountSelection();
+    const { fromAccount, toAccount, fromRowRef, toRowRef, handleFromPress, handleToPress, handleSwap, canSwap, hasAnyAccount } =
+        useTransferAccountSelection();
 
     useImperativeHandle(ref, () => ({ shakeFrom, shakeTo }));
 
@@ -47,7 +48,7 @@ export const TransactionTransferAccountsRow = ({ ref, children }: Props) => {
     return (
         <View>
             <GroupedListSection>
-                <View onLayout={handleFromLayout}>
+                <View ref={fromRowRef} collapsable={false} onLayout={handleFromLayout}>
                     <TransferAccountPicker
                         label={t({ message: 'From', context: 'transfer account' })}
                         account={fromAccount}
@@ -58,15 +59,17 @@ export const TransactionTransferAccountsRow = ({ ref, children }: Props) => {
                         onPress={handleFromPress}
                     />
                 </View>
-                <TransferAccountPicker
-                    label={t({ message: 'To', context: 'transfer account' })}
-                    account={toAccount}
-                    placeholder={toPlaceholder}
-                    animatedStyle={toAnimatedStyle}
-                    testID={TransferQuickFormSelector.ToAccount}
-                    selectedTestID={toAccountSelectedTestID}
-                    onPress={handleToPress}
-                />
+                <View ref={toRowRef} collapsable={false}>
+                    <TransferAccountPicker
+                        label={t({ message: 'To', context: 'transfer account' })}
+                        account={toAccount}
+                        placeholder={toPlaceholder}
+                        animatedStyle={toAnimatedStyle}
+                        testID={TransferQuickFormSelector.ToAccount}
+                        selectedTestID={toAccountSelectedTestID}
+                        onPress={handleToPress}
+                    />
+                </View>
                 {children}
             </GroupedListSection>
             {hasAnyAccount ? <TransferSwapButton dividerOffset={fromRowHeight} isEnabled={canSwap} onPress={handleSwap} /> : null}

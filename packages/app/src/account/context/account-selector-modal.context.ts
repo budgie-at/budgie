@@ -2,6 +2,7 @@ import { AccountDebtTypeEnum, AccountTypeEnum } from '@budgie/contracts';
 
 import { createModalContext } from '../../@generic/utils/create-modal-context/create-modal-context.util';
 
+import type { WindowRectInterface } from '../../@generic/interface/window-rect.interface';
 import type { AccountSelectorCreateActionInterface } from '../interface/account-selector-create-action.interface';
 
 export interface AccountSelectorModalParams {
@@ -14,6 +15,7 @@ export interface AccountSelectorModalParams {
     readonly onlyActive?: boolean;
     readonly showDebtTotal?: boolean;
     readonly createAction?: AccountSelectorCreateActionInterface;
+    readonly originRect?: WindowRectInterface;
 }
 
 export type AccountSelectorResult = number | null;

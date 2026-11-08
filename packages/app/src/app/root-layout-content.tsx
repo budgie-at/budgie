@@ -199,6 +199,7 @@ export const RootLayoutContent = () => {
                                                                         name="account-selector"
                                                                         options={COMPACT_SELECTOR_OPTIONS}
                                                                     />
+                                                                    <Stack.Screen name="account-panel" options={MORPHING_SHEET_OPTIONS} />
                                                                     <Stack.Screen
                                                                         name="currency-selector"
                                                                         options={CURRENCY_SELECTOR_OPTIONS}

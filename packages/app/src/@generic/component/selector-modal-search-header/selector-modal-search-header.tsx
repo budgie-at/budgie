@@ -4,6 +4,7 @@ import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { useAnchoredMorphPanelClose } from '../../context/anchored-morph-panel.context';
 import { SelectorSearchRow } from '../selector-search-row/selector-search-row';
 import { SheetTitleRow } from '../sheet-title-row/sheet-title-row';
 
@@ -22,6 +23,7 @@ interface Props {
 export const SelectorModalSearchHeader = (props: Props) => {
     const { search, onSearchChange, title, placeholder, trailing, testID, onBack } = props;
     const { t } = useLingui();
+    const closePanel = useAnchoredMorphPanelClose();
 
     const resolvedPlaceholder = placeholder ?? t`Search…`;
     const isBackMode = isDefined(onBack);
@@ -32,9 +34,21 @@ export const SelectorModalSearchHeader = (props: Props) => {
     return (
         <View collapsable={false} className="px-3xl pb-md pt-md bg-surface">
             <View className="pb-[10px]">
-                <SheetTitleRow title={title} trailing={resolvedTrailing} onClose={onBack} closeIcon={closeIcon} closeLabel={closeLabel} />
+                <SheetTitleRow
+                    title={title}
+                    trailing={resolvedTrailing}
+                    onClose={onBack ?? closePanel ?? void 0}
+                    closeIcon={closeIcon}
+                    closeLabel={closeLabel}
+                />
             </View>
-            <SelectorSearchRow search={search} onSearchChange={onSearchChange} placeholder={resolvedPlaceholder} testID={testID} />
+            <SelectorSearchRow
+                search={search}
+                onSearchChange={onSearchChange}
+                placeholder={resolvedPlaceholder}
+                testID={testID}
+                autoFocus={isDefined(closePanel)}
+            />
         </View>
     );
 };

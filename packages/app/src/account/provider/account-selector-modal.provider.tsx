@@ -1,3 +1,5 @@
+import { isDefined } from '@rnw-community/shared';
+
 import { createModalProvider } from '../../@generic/utils/create-modal-provider/create-modal-provider.util';
 import { AccountSelectorModalContext } from '../context/account-selector-modal.context';
 
@@ -5,5 +7,6 @@ import type { AccountSelectorModalParams, AccountSelectorResult } from '../conte
 
 export const AccountSelectorModalProvider = createModalProvider<AccountSelectorModalParams, AccountSelectorResult>(
     AccountSelectorModalContext,
-    '/account-selector'
+    '/account-selector',
+    params => (isDefined(params?.originRect) ? '/account-panel' : '/account-selector')
 );

@@ -9,9 +9,10 @@ interface Props {
     readonly placeholder: string;
     readonly children?: ReactNode;
     readonly testID?: string;
+    readonly autoFocus?: boolean;
 }
 
-export const SelectorSearchRow = ({ search, onSearchChange, placeholder, children, testID }: Props) => (
+export const SelectorSearchRow = ({ search, onSearchChange, placeholder, children, testID, autoFocus }: Props) => (
     <View className="flex-row items-center gap-x-md">
         <SearchInput
             containerClassName="h-auto min-h-[44px] flex-1 rounded-3xl border-0 bg-surface-fill px-md"
@@ -22,6 +23,7 @@ export const SelectorSearchRow = ({ search, onSearchChange, placeholder, childre
             value={search}
             onChangeText={onSearchChange}
             testID={testID}
+            autoFocus={autoFocus}
         />
         {children}
     </View>
