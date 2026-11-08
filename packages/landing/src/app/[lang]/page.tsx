@@ -75,7 +75,7 @@ export default async function LandingPage(props: PageLangParam) {
                 >
                     <Trans>
                         No account, no vendor cloud, no tracking. The database lives on your phone, syncs between your own devices through
-                        your iCloud, and the app never needs a connection to open, search or calculate anything.
+                        your iCloud on iOS, and the app never needs a connection to open, search or calculate anything.
                     </Trans>
                 </CapabilityBento.Anchor>
 

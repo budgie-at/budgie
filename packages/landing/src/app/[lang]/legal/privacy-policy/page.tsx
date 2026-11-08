@@ -175,7 +175,7 @@ export default async function PrivacyPolicyPage(props: PageLangParam) {
                     <Trans>iCloud backup and sync (Apple, only while they are on)</Trans>
                 </li>
                 <li>
-                    <Trans>Family sharing through iCloud (Apple, for accounts you choose to share)</Trans>
+                    <Trans>Family sharing through iCloud (Apple, for accounts and budgets you choose to share)</Trans>
                 </li>
                 <li>
                     <Trans>Market data providers for investment pricing</Trans>
@@ -213,7 +213,8 @@ export default async function PrivacyPolicyPage(props: PageLangParam) {
                 </li>
                 <li>
                     <Trans>
-                        With family members you invite through Apple&apos;s iCloud sharing, only for the accounts you choose to share
+                        With family members you invite through Apple&apos;s iCloud sharing, only for the accounts and budgets you choose to
+                        share, with the categories, tags and limits they use
                     </Trans>
                 </li>
                 <li>
@@ -278,8 +279,8 @@ export default async function PrivacyPolicyPage(props: PageLangParam) {
             <p>
                 <Trans>
                     Your financial data is stored on your device. If you leave iCloud backup or sync on, your encrypted data is stored and
-                    synced in your own iCloud account under Apple&apos;s terms. If you share accounts with family, the members you invite
-                    can access those accounts through iCloud. If you use other optional cloud features, your data may be processed in
+                    synced in your own iCloud account under Apple&apos;s terms. If you share accounts or budgets with family, the members
+                    you invite can access them through iCloud. If you use other optional cloud features, your data may be processed in
                     countries where our service providers operate. We ensure appropriate safeguards are in place to protect your data in
                     compliance with applicable data protection laws including GDPR and CCPA.
                 </Trans>

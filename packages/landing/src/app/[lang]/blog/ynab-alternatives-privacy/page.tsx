@@ -350,7 +350,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                     <BlogArticleList>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Data Storage</strong>: Your device + your own iCloud
+                                <strong>Data Storage</strong>: Your device + your own iCloud (iOS)
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -644,8 +644,8 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                     <BlogArticleList>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>True offline-first architecture.</strong> Your data lives on your phone and in your own iCloud, with
-                                encrypted sync and backup you control. There are no Budgie servers storing your transactions.
+                                <strong>True offline-first architecture.</strong> Your data lives on your phone and, on iOS, in your own
+                                iCloud, with encrypted sync and backup you control. There are no Budgie servers storing your transactions.
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>

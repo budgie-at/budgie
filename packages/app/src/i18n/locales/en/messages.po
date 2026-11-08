@@ -3336,7 +3336,7 @@ msgstr "Could not rebuild balances"
 msgid "Could not remove {name}"
 msgstr "Could not remove {name}"
 
-#: src/household/component/household-stop-sharing-row/household-stop-sharing-row.tsx
+#: src/household/component/household-remove-group-row/household-remove-group-row.tsx
 msgid "Could not remove the family group"
 msgstr "Could not remove the family group"
 
@@ -4768,7 +4768,7 @@ msgstr "Family can edit every account"
 msgid "Family can edit it"
 msgstr "Family can edit it"
 
-#: src/household/component/household-stop-sharing-row/household-stop-sharing-row.tsx
+#: src/household/component/household-remove-group-row/household-remove-group-row.tsx
 msgid "Family group removed"
 msgstr "Family group removed"
 
@@ -6386,8 +6386,8 @@ msgid "No account needed · Takes about a minute"
 msgstr "No account needed · Takes about a minute"
 
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
-msgid "No account to sign up for. Backed up and synced only to your own iCloud. Works with no connection at all."
-msgstr "No account to sign up for. Backed up and synced only to your own iCloud. Works with no connection at all."
+msgid "No account to sign up for. Backed up and synced to your own iCloud. Works with no connection at all."
+msgstr "No account to sign up for. Backed up and synced to your own iCloud. Works with no connection at all."
 
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
 msgid "No account to sign up for. Never synced or uploaded. Works with no connection at all."
@@ -7935,7 +7935,7 @@ msgstr "Remove duplicate bank imports"
 msgid "Remove entry"
 msgstr "Remove entry"
 
-#: src/household/component/household-stop-sharing-row/household-stop-sharing-row.tsx
+#: src/household/component/household-remove-group-row/household-remove-group-row.tsx
 msgid "Remove family group"
 msgstr "Remove family group"
 
@@ -10023,7 +10023,7 @@ msgstr "Turning off app lock"
 msgid "Turns a voice note into an expense"
 msgstr "Turns a voice note into an expense"
 
-#: src/household/component/household-stop-sharing-row/household-stop-sharing-row.tsx
+#: src/household/component/household-remove-group-row/household-remove-group-row.tsx
 msgid "Turns off sharing. You keep your data."
 msgstr "Turns off sharing. You keep your data."
 

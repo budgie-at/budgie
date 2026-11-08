@@ -181,7 +181,7 @@ export default async function OfflineFirstPillarHubPage(props: PageLangParam) {
                         Most budgeting apps push every swipe and balance to a remote server. That makes them fragile when the internet
                         drops, and risky when those servers leak. Budgie inverts the model: your database lives on your phone, encrypted
                         with your PIN once you set one, and the copies that leave it go to your own iCloud, and to your family&apos;s only
-                        for accounts you choose to share. There is no backend reading your statements.
+                        for accounts and budgets you choose to share. There is no backend reading your statements.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>

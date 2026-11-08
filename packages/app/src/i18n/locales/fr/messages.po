@@ -3335,7 +3335,7 @@ msgstr "Impossible de recalculer les soldes"
 msgid "Could not remove {name}"
 msgstr "Impossible de retirer {name}"
 
-#: src/household/component/household-stop-sharing-row/household-stop-sharing-row.tsx
+#: src/household/component/household-remove-group-row/household-remove-group-row.tsx
 msgid "Could not remove the family group"
 msgstr "Impossible de supprimer le groupe familial"
 
@@ -4767,7 +4767,7 @@ msgstr "La famille peut modifier tous les comptes"
 msgid "Family can edit it"
 msgstr "La famille peut le modifier"
 
-#: src/household/component/household-stop-sharing-row/household-stop-sharing-row.tsx
+#: src/household/component/household-remove-group-row/household-remove-group-row.tsx
 msgid "Family group removed"
 msgstr "Groupe familial supprimé"
 
@@ -6385,8 +6385,8 @@ msgid "No account needed · Takes about a minute"
 msgstr "Aucun compte requis · Environ une minute"
 
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
-msgid "No account to sign up for. Backed up and synced only to your own iCloud. Works with no connection at all."
-msgstr "Aucun compte à créer. Sauvegarde et synchronisation uniquement dans votre propre iCloud. Fonctionne sans aucune connexion."
+msgid "No account to sign up for. Backed up and synced to your own iCloud. Works with no connection at all."
+msgstr "Sauvegardées et synchronisées dans votre propre iCloud."
 
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
 msgid "No account to sign up for. Never synced or uploaded. Works with no connection at all."
@@ -7934,7 +7934,7 @@ msgstr "Supprimer les imports bancaires en double"
 msgid "Remove entry"
 msgstr "Supprimer l’entrée"
 
-#: src/household/component/household-stop-sharing-row/household-stop-sharing-row.tsx
+#: src/household/component/household-remove-group-row/household-remove-group-row.tsx
 msgid "Remove family group"
 msgstr "Supprimer le groupe familial"
 
@@ -10022,7 +10022,7 @@ msgstr "Désactivation du verrouillage"
 msgid "Turns a voice note into an expense"
 msgstr "Transforme une note vocale en dépense"
 
-#: src/household/component/household-stop-sharing-row/household-stop-sharing-row.tsx
+#: src/household/component/household-remove-group-row/household-remove-group-row.tsx
 msgid "Turns off sharing. You keep your data."
 msgstr "Arrête le partage. Vous gardez vos données."
 

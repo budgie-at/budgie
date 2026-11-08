@@ -32,7 +32,7 @@ export const buildLandingJsonLd = (i18n: I18n, locale: string): Record<string, u
     applicationSubCategory: 'PersonalFinance',
     operatingSystem: 'iOS, Android',
     softwareVersion: version,
-    description: i18n._(msg`Privacy-first expense tracker that keeps your financial data on your device and out of vendor clouds.`),
+    description: i18n._(msg`Privacy-first expense tracker that keeps your financial data on your device.`),
     url: `${BASE_URL}/${locale}`,
     inLanguage: locale,
     image: `${BASE_URL}/images/design-mode/ai-budgeting-app-4x.jpg`,

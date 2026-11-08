@@ -3335,7 +3335,7 @@ msgstr "No se pudieron recalcular los saldos"
 msgid "Could not remove {name}"
 msgstr "No se pudo quitar a {name}"
 
-#: src/household/component/household-stop-sharing-row/household-stop-sharing-row.tsx
+#: src/household/component/household-remove-group-row/household-remove-group-row.tsx
 msgid "Could not remove the family group"
 msgstr "No se pudo eliminar el grupo familiar"
 
@@ -4767,7 +4767,7 @@ msgstr "La familia puede editar todas las cuentas"
 msgid "Family can edit it"
 msgstr "La familia puede editarla"
 
-#: src/household/component/household-stop-sharing-row/household-stop-sharing-row.tsx
+#: src/household/component/household-remove-group-row/household-remove-group-row.tsx
 msgid "Family group removed"
 msgstr "Grupo familiar eliminado"
 
@@ -6385,8 +6385,8 @@ msgid "No account needed · Takes about a minute"
 msgstr "Sin cuenta · Lleva un minuto"
 
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
-msgid "No account to sign up for. Backed up and synced only to your own iCloud. Works with no connection at all."
-msgstr "Sin necesidad de registrarte. Las copias y la sincronización se realizan solo en tu propio iCloud. Funciona sin conexión."
+msgid "No account to sign up for. Backed up and synced to your own iCloud. Works with no connection at all."
+msgstr "Con copias de seguridad y sincronización en tu propio iCloud."
 
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
 msgid "No account to sign up for. Never synced or uploaded. Works with no connection at all."
@@ -7934,7 +7934,7 @@ msgstr "Elimina importaciones bancarias duplicadas"
 msgid "Remove entry"
 msgstr "Eliminar entrada"
 
-#: src/household/component/household-stop-sharing-row/household-stop-sharing-row.tsx
+#: src/household/component/household-remove-group-row/household-remove-group-row.tsx
 msgid "Remove family group"
 msgstr "Eliminar grupo familiar"
 
@@ -10022,7 +10022,7 @@ msgstr "Desactivando el bloqueo de la app"
 msgid "Turns a voice note into an expense"
 msgstr "Convierte una nota de voz en un gasto"
 
-#: src/household/component/household-stop-sharing-row/household-stop-sharing-row.tsx
+#: src/household/component/household-remove-group-row/household-remove-group-row.tsx
 msgid "Turns off sharing. You keep your data."
 msgstr "Deja de compartir. Tú conservas tus datos."
 

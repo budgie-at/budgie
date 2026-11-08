@@ -119,8 +119,8 @@ export default async function PrivacyPillarHubPage(props: PageLangParam) {
                 <FeaturePageProse>
                     <Trans>
                         Cloud-based personal finance apps mirror every transaction to their servers. Budgie keeps your ledger on your device
-                        and syncs and copies it to your own iCloud and, for accounts you share, to your family&apos;s shared iCloud space.
-                        No account, no aggregator, no copy on a vendor&apos;s server.
+                        and syncs and copies it to your own iCloud and, for accounts and budgets you share, to your family&apos;s shared
+                        iCloud space. No account, no aggregator, no copy on a vendor&apos;s server.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageCategoryComparison categoryLabel={<Trans>Cloud-based PFM apps</Trans>}>
@@ -272,8 +272,9 @@ export default async function PrivacyPillarHubPage(props: PageLangParam) {
                         <Trans>
                             On iOS Budgie backs up and syncs to your own iCloud automatically, encrypted in iCloud and end-to-end encrypted
                             when you turn on Apple&apos;s Advanced Data Protection. You can turn that off in Settings and export a file to
-                            iCloud Drive, Google Drive or Dropbox instead. Chosen accounts can be shared with family through iCloud; the
-                            rest stay private to you. On Android, export stays manual. Budgie never receives a copy; you own every byte.
+                            iCloud Drive, Google Drive or Dropbox instead. Chosen accounts and budgets can be shared with family through
+                            iCloud; the rest stay private to you. On Android, export stays manual. Budgie never receives a copy; you own
+                            every byte.
                         </Trans>
                     }
                     question={<Trans>Where are my backups stored?</Trans>}
@@ -321,10 +322,10 @@ export default async function PrivacyPillarHubPage(props: PageLangParam) {
                     question={<Trans>How does multi-device sync work?</Trans>}
                     answer={
                         <Trans>
-                            On iOS your iPhone and iPad sync automatically through your own iCloud, and you can share chosen accounts with
-                            family members through iCloud. Everything stays encrypted in iCloud, end-to-end with Advanced Data Protection.
-                            Budgie runs no sync server. On Android there is no sync; use Export Database to move a backup file through
-                            storage you control.
+                            On iOS your iPhone and iPad sync automatically through your own iCloud, and you can share chosen accounts and
+                            budgets with family members through iCloud. Everything stays encrypted in iCloud, end-to-end with Advanced Data
+                            Protection. Budgie runs no sync server. On Android there is no sync; use Export Database to move a backup file
+                            through storage you control.
                         </Trans>
                     }
                 />

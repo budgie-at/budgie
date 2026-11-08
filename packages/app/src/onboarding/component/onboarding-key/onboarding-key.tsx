@@ -28,7 +28,7 @@ export const OnboardingKey = () => {
     const handlePinPress = () => void goToStep(OnboardingStepEnum.PIN);
     const handlePhoneLockPress = () => void goToStep(OnboardingStepEnum.PHONE_LOCK);
     const privacyFooter = IS_CLOUD_BACKUP_SUPPORTED
-        ? t`No account to sign up for. Backed up and synced only to your own iCloud. Works with no connection at all.`
+        ? t`No account to sign up for. Backed up and synced to your own iCloud. Works with no connection at all.`
         : t`No account to sign up for. Never synced or uploaded. Works with no connection at all.`;
     const restoreAccessory = (
         <LoadingContent isLoading={isLoading}>

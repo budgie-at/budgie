@@ -950,8 +950,8 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Shared budgets</strong>: You can share chosen accounts with family through iCloud; there is no
-                                vendor collaboration server
+                                <strong>Shared budgets</strong>: You can share chosen accounts and budgets with family through iCloud; there
+                                is no vendor collaboration server
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>

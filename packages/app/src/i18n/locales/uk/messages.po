@@ -3335,7 +3335,7 @@ msgstr "Не вдалося перерахувати баланси"
 msgid "Could not remove {name}"
 msgstr "Не вдалося видалити {name}"
 
-#: src/household/component/household-stop-sharing-row/household-stop-sharing-row.tsx
+#: src/household/component/household-remove-group-row/household-remove-group-row.tsx
 msgid "Could not remove the family group"
 msgstr "Не вдалося видалити родинну групу"
 
@@ -4767,7 +4767,7 @@ msgstr "Родина може редагувати всі рахунки"
 msgid "Family can edit it"
 msgstr "Родина може його редагувати"
 
-#: src/household/component/household-stop-sharing-row/household-stop-sharing-row.tsx
+#: src/household/component/household-remove-group-row/household-remove-group-row.tsx
 msgid "Family group removed"
 msgstr "Родинну групу видалено"
 
@@ -6385,8 +6385,8 @@ msgid "No account needed · Takes about a minute"
 msgstr "Без акаунта · Близько хвилини"
 
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
-msgid "No account to sign up for. Backed up and synced only to your own iCloud. Works with no connection at all."
-msgstr "Не потрібно реєструватися. Резервні копії та синхронізація лише у вашому iCloud. Працює повністю без з’єднання."
+msgid "No account to sign up for. Backed up and synced to your own iCloud. Works with no connection at all."
+msgstr "Резервні копії та синхронізація у вашому власному iCloud."
 
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
 msgid "No account to sign up for. Never synced or uploaded. Works with no connection at all."
@@ -7934,7 +7934,7 @@ msgstr "Прибрати дублікати банківського імпор�
 msgid "Remove entry"
 msgstr "Видалити запис"
 
-#: src/household/component/household-stop-sharing-row/household-stop-sharing-row.tsx
+#: src/household/component/household-remove-group-row/household-remove-group-row.tsx
 msgid "Remove family group"
 msgstr "Видалити родинну групу"
 
@@ -10022,7 +10022,7 @@ msgstr "Вимикаємо блокування застосунку"
 msgid "Turns a voice note into an expense"
 msgstr "Перетворює голосову нотатку на витрату"
 
-#: src/household/component/household-stop-sharing-row/household-stop-sharing-row.tsx
+#: src/household/component/household-remove-group-row/household-remove-group-row.tsx
 msgid "Turns off sharing. You keep your data."
 msgstr "Вимикає спільний доступ. Ваші дані залишаються у вас."
 
