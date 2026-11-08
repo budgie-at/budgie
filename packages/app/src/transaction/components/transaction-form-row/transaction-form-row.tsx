@@ -20,7 +20,7 @@ interface Props {
     readonly label: string;
     readonly value?: string;
     readonly placeholder?: string | ReactElement;
-    readonly valueTestID?: string;
+    readonly valueProps?: Pick<ComponentProps<typeof TransactionFormRowValue>, 'testID' | 'numberOfLines'>;
     readonly right?: ReactNode;
     readonly testID?: string;
     readonly pressableProps?: ComponentProps<typeof GroupedListRow>['pressableProps'] &
@@ -39,7 +39,7 @@ const labelVariants = cva('shrink-0 text-[17px] leading-[22px]', {
 });
 
 export const TransactionFormRow = (props: Props) => {
-    const { left, label, value, placeholder, valueTestID, right, testID, pressableProps } = props;
+    const { left, label, value, placeholder, valueProps, right, testID, pressableProps } = props;
     const onPress = pressableProps?.onPress;
     const { fontScale, height } = useWindowDimensions();
     const isLargeText = fontScale >= TRANSACTION_LARGE_TEXT_SCALE;
@@ -80,7 +80,7 @@ export const TransactionFormRow = (props: Props) => {
                         placeholder={placeholder}
                         isStacked={isLargeText}
                         isLargeText={isLargeText}
-                        testID={valueTestID}
+                        {...valueProps}
                     />
                 </View>
             }

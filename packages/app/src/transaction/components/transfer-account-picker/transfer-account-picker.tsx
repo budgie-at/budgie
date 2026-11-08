@@ -39,7 +39,7 @@ export const TransferAccountPicker = ({ label, placeholder, account, animatedSty
                 label={label}
                 value={account?.title}
                 placeholder={placeholder}
-                valueTestID={testIDProps(hasAccount && selectedTestID).testID}
+                valueProps={testIDProps(hasAccount && selectedTestID)}
                 testID={testID}
                 pressableProps={pressableProps}
             />

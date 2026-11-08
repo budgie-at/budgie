@@ -71,7 +71,7 @@ export const TransactionAccountRow = ({ ref, fieldName, label, testID }: Props) 
                 label={displayLabel}
                 value={account?.title}
                 placeholder={t`Choose`}
-                valueTestID={testIDProps(selectedAccountTestID).testID}
+                valueProps={testIDProps(selectedAccountTestID)}
                 testID={testID}
                 pressableProps={pressableProps}
             />

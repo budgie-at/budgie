@@ -407,4 +407,5 @@ export type { RunwayDriverSeriesRowInterface } from './runway/interface/runway-d
 
 export { LIQUID_ACCOUNT_TYPES } from './account/constant/liquid-account-types.constant';
 export { getExchangeRateWithHistoricalFallbackSql } from './@generic/utils/get-exchange-rate-sql.util';
+export { BANK_AUTHORITATIVE_ACCOUNT_TYPES } from './account/constant/bank-authoritative-account-types.constant';
 export { CRYPTO_ACCOUNT_TYPES } from './account/constant/crypto-account-types.constant';

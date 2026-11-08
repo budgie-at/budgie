@@ -1472,6 +1472,10 @@ msgstr "Ajustement"
 msgid "Adjustment · {quantity}"
 msgstr "Ajustement · {quantity}"
 
+#: src/transaction/components/adjustment-balance-summary/adjustment-balance-summary.tsx
+msgid "Adjustment included"
+msgstr "Ajustement inclus"
+
 #: src/budget/components/budget-auto-tune-switch-row/budget-auto-tune-switch-row.tsx
 msgid "Adjusts category limits after 3 periods of steady over or under spending"
 msgstr "Ajuste les limites par catégorie après 3 périodes de dépenses constamment au-dessus ou en dessous"
@@ -1945,8 +1949,8 @@ msgid "Balance"
 msgstr "Solde"
 
 #: src/transaction/hook/use-adjustment-balance.hook.ts
-msgid "Balance {current} → {next}"
-msgstr "Solde {current} → {next}"
+msgid "Balance {current} → {next} ({change})"
+msgstr "Solde {current} → {next} ({change})"
 
 #: src/app/(main)/transactions/[id]/adjustment.tsx
 #: src/transaction/components/transaction-card-content/transaction-card-content.tsx
@@ -3610,10 +3614,6 @@ msgstr "devise"
 #: src/import/utils/get-import-match-description.util.ts
 msgid "Currency"
 msgstr "Devise"
-
-#: src/transaction/components/adjustment-balance-summary/adjustment-balance-summary.tsx
-msgid "Current adjustment"
-msgstr "Ajustement actuel"
 
 #: src/account/component/account-balance-field/account-balance-field.tsx
 #: src/transaction/components/adjustment-balance-summary/adjustment-balance-summary.tsx
@@ -6442,7 +6442,6 @@ msgstr "non défini"
 #: src/settings/components/budget-management-card/budget-management-card.tsx
 #: src/transaction/components/adjustment-balance-preview/adjustment-balance-preview.tsx
 #: src/transaction/components/adjustment-balance-row/adjustment-balance-row.tsx
-#: src/transaction/components/adjustment-balance-summary/adjustment-balance-summary.tsx
 #: src/transaction/hook/use-adjustment-balance.hook.ts
 msgid "Not set"
 msgstr "Non défini"
@@ -8569,6 +8568,11 @@ msgstr "Synchronisation"
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Sync {title}"
 msgstr "Synchroniser {title}"
+
+#: src/transaction/components/adjustment-amount-display/adjustment-amount-display.tsx
+#: src/transaction/components/adjustment-direction/adjustment-direction.tsx
+msgid "Sync controls this adjustment. Only the note can be edited."
+msgstr "La synchronisation gère cet ajustement. Seule la note est modifiable."
 
 #: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx

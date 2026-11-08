@@ -1473,6 +1473,10 @@ msgstr "Adjustment"
 msgid "Adjustment · {quantity}"
 msgstr "Adjustment · {quantity}"
 
+#: src/transaction/components/adjustment-balance-summary/adjustment-balance-summary.tsx
+msgid "Adjustment included"
+msgstr "Adjustment included"
+
 #: src/budget/components/budget-auto-tune-switch-row/budget-auto-tune-switch-row.tsx
 msgid "Adjusts category limits after 3 periods of steady over or under spending"
 msgstr "Adjusts category limits after 3 periods of steady over or under spending"
@@ -1946,8 +1950,8 @@ msgid "Balance"
 msgstr "Balance"
 
 #: src/transaction/hook/use-adjustment-balance.hook.ts
-msgid "Balance {current} → {next}"
-msgstr "Balance {current} → {next}"
+msgid "Balance {current} → {next} ({change})"
+msgstr "Balance {current} → {next} ({change})"
 
 #: src/app/(main)/transactions/[id]/adjustment.tsx
 #: src/transaction/components/transaction-card-content/transaction-card-content.tsx
@@ -3611,10 +3615,6 @@ msgstr "currency"
 #: src/import/utils/get-import-match-description.util.ts
 msgid "Currency"
 msgstr "Currency"
-
-#: src/transaction/components/adjustment-balance-summary/adjustment-balance-summary.tsx
-msgid "Current adjustment"
-msgstr "Current adjustment"
 
 #: src/account/component/account-balance-field/account-balance-field.tsx
 #: src/transaction/components/adjustment-balance-summary/adjustment-balance-summary.tsx
@@ -6443,7 +6443,6 @@ msgstr "not set"
 #: src/settings/components/budget-management-card/budget-management-card.tsx
 #: src/transaction/components/adjustment-balance-preview/adjustment-balance-preview.tsx
 #: src/transaction/components/adjustment-balance-row/adjustment-balance-row.tsx
-#: src/transaction/components/adjustment-balance-summary/adjustment-balance-summary.tsx
 #: src/transaction/hook/use-adjustment-balance.hook.ts
 msgid "Not set"
 msgstr "Not set"
@@ -8570,6 +8569,11 @@ msgstr "Sync"
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Sync {title}"
 msgstr "Sync {title}"
+
+#: src/transaction/components/adjustment-amount-display/adjustment-amount-display.tsx
+#: src/transaction/components/adjustment-direction/adjustment-direction.tsx
+msgid "Sync controls this adjustment. Only the note can be edited."
+msgstr "Sync controls this adjustment. Only the note can be edited."
 
 #: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx

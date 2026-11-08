@@ -51,7 +51,7 @@ export const TransactionFieldIcon = (props: Props) => {
                 label={label}
                 value={value}
                 placeholder={placeholder}
-                valueTestID={testIDProps(testID, TestIDPartEnum.TITLE).testID}
+                valueProps={testIDProps(testID, TestIDPartEnum.TITLE)}
                 testID={testID}
                 pressableProps={pressableProps}
             />

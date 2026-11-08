@@ -1472,6 +1472,10 @@ msgstr "Коригування"
 msgid "Adjustment · {quantity}"
 msgstr "Коригування · {quantity}"
 
+#: src/transaction/components/adjustment-balance-summary/adjustment-balance-summary.tsx
+msgid "Adjustment included"
+msgstr "Враховане коригування"
+
 #: src/budget/components/budget-auto-tune-switch-row/budget-auto-tune-switch-row.tsx
 msgid "Adjusts category limits after 3 periods of steady over or under spending"
 msgstr "Коригує ліміти категорій після 3 періодів стабільного перевищення або недовитрачання"
@@ -1945,8 +1949,8 @@ msgid "Balance"
 msgstr "Баланс"
 
 #: src/transaction/hook/use-adjustment-balance.hook.ts
-msgid "Balance {current} → {next}"
-msgstr "Баланс {current} → {next}"
+msgid "Balance {current} → {next} ({change})"
+msgstr "Баланс {current} → {next} ({change})"
 
 #: src/app/(main)/transactions/[id]/adjustment.tsx
 #: src/transaction/components/transaction-card-content/transaction-card-content.tsx
@@ -3610,10 +3614,6 @@ msgstr "валюта"
 #: src/import/utils/get-import-match-description.util.ts
 msgid "Currency"
 msgstr "Валюта"
-
-#: src/transaction/components/adjustment-balance-summary/adjustment-balance-summary.tsx
-msgid "Current adjustment"
-msgstr "Поточне коригування"
 
 #: src/account/component/account-balance-field/account-balance-field.tsx
 #: src/transaction/components/adjustment-balance-summary/adjustment-balance-summary.tsx
@@ -6442,7 +6442,6 @@ msgstr "не встановлено"
 #: src/settings/components/budget-management-card/budget-management-card.tsx
 #: src/transaction/components/adjustment-balance-preview/adjustment-balance-preview.tsx
 #: src/transaction/components/adjustment-balance-row/adjustment-balance-row.tsx
-#: src/transaction/components/adjustment-balance-summary/adjustment-balance-summary.tsx
 #: src/transaction/hook/use-adjustment-balance.hook.ts
 msgid "Not set"
 msgstr "Не задано"
@@ -8569,6 +8568,11 @@ msgstr "Синхронізація"
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Sync {title}"
 msgstr "Синхронізувати {title}"
+
+#: src/transaction/components/adjustment-amount-display/adjustment-amount-display.tsx
+#: src/transaction/components/adjustment-direction/adjustment-direction.tsx
+msgid "Sync controls this adjustment. Only the note can be edited."
+msgstr "Це коригування керується синхронізацією. Можна змінити лише нотатку."
 
 #: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx

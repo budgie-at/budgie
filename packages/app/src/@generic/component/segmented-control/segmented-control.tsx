@@ -19,6 +19,7 @@ interface Props<T extends string> {
 }
 
 const TRACK_PADDING = 2;
+const THUMB_INSET = 2;
 const THUMB_SPRING = { damping: 30, stiffness: 420, mass: 0.8 };
 const continuousCorners = { borderCurve: 'continuous' as const };
 
@@ -33,7 +34,10 @@ export const SegmentedControl = <T extends string>(props: Props<T>) => {
         return reducedMotion ? target : withSpring(target, THUMB_SPRING);
     });
 
-    const thumbAnimatedStyle = useAnimatedStyle(() => ({ width: segmentWidth.get(), transform: [{ translateX: thumbOffset.get() }] }));
+    const thumbAnimatedStyle = useAnimatedStyle(() => ({
+        width: Math.max(0, segmentWidth.get() - THUMB_INSET * 2),
+        transform: [{ translateX: thumbOffset.get() + THUMB_INSET }]
+    }));
 
     const handleLayout = (event: LayoutChangeEvent) =>
         void segmentWidth.set((event.nativeEvent.layout.width - TRACK_PADDING * 2) / segments.length);

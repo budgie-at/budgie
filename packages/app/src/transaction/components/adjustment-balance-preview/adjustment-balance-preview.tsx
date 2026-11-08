@@ -4,6 +4,8 @@ import * as Fiber from 'effect/Fiber';
 import { useEffect, useRef } from 'react';
 import { AccessibilityInfo, Platform, Text } from 'react-native';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { useAdjustmentBalance } from '../../hook/use-adjustment-balance.hook';
 import { AdjustmentSelector } from '../adjustment-account-summary/adjustment-account-summary.selector';
@@ -20,11 +22,11 @@ const PREVIEW_STYLE = { height: 24 };
 
 export const AdjustmentBalancePreview = ({ details, amount, isIncrease }: Props) => {
     const { t } = useLingui();
-    const { preview, announcement, after } = useAdjustmentBalance(details, amount, isIncrease);
+    const { preview, announcement, resultingBalance } = useAdjustmentBalance(details, amount, isIncrease);
 
     const previousPreview = useRef(announcement);
-    const accessibilityLabel = after === t`Not set` ? t`Balance after saving` : announcement;
-    const accessibilityValue = after === t`Not set` ? { text: t`Not set` } : void 0;
+    const accessibilityLabel = isDefined(resultingBalance) ? announcement : t`Balance after saving`;
+    const accessibilityValue = isDefined(resultingBalance) ? void 0 : { text: t`Not set` };
 
     useEffect(() => {
         const hasChanged = previousPreview.current !== announcement;

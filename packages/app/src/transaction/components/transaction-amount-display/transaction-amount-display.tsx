@@ -74,7 +74,7 @@ export const TransactionAmountDisplay = ({
     const formattedAmount = Number(amount) === 0 && !isEditing ? '0' : formatKeypadAmount(amount, decimalSeparator, digitGroupingSeparator);
     const fullDisplay = isAmountProtected ? PROTECTED_AMOUNT_PLACEHOLDER : `${displaySymbol}${formattedAmount}`;
 
-    const amountFontSize = isEditing ? 36 : 40;
+    const displayState = { fontSize: isEditing ? 36 : 40, accessibilityRole: isDefined(onPress) ? 'button' : 'text' } as const;
     const caretHeight = textLayout.height * CARET_HEIGHT_RATIO;
     const accessoryStyle = {
         left: (textLayout.containerWidth + textLayout.width) / 2 + CARET_GAP,
@@ -87,13 +87,13 @@ export const TransactionAmountDisplay = ({
             style={amountContainerStyle}
             onPress={onPress}
             disabled={!isDefined(onPress)}
-            accessibilityRole="button"
+            accessibilityRole={displayState.accessibilityRole}
             accessibilityLabel={fullDisplay}
             accessibilityHint={accessibilityHint}
             testID={testID}
         >
             <Animated.View style={shakeStyle} onLayout={handleContainerLayout}>
-                <AmountField fontSize={amountFontSize}>
+                <AmountField fontSize={displayState.fontSize}>
                     <AmountFieldText
                         prefix={displaySymbol}
                         prefixStyle={PREFIX_STYLE}
@@ -104,13 +104,15 @@ export const TransactionAmountDisplay = ({
                         {fullDisplay}
                     </AmountFieldText>
                 </AmountField>
-                <View pointerEvents="none" className="absolute top-0 bottom-0 justify-center" style={accessoryStyle}>
-                    {isEditing ? (
-                        <AmountCaret height={caretHeight} />
-                    ) : (
-                        <Icon icon={UserIconNameEnum.ChevronDown} size={18} className="text-secondary-foreground" />
-                    )}
-                </View>
+                {isDefined(onPress) ? (
+                    <View pointerEvents="none" className="absolute top-0 bottom-0 justify-center" style={accessoryStyle}>
+                        {isEditing ? (
+                            <AmountCaret height={caretHeight} />
+                        ) : (
+                            <Icon icon={UserIconNameEnum.ChevronDown} size={18} className="text-secondary-foreground" />
+                        )}
+                    </View>
+                ) : null}
             </Animated.View>
         </Pressable>
     );

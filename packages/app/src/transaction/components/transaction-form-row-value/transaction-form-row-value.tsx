@@ -12,6 +12,7 @@ interface Props {
     readonly isStacked: boolean;
     readonly isLargeText: boolean;
     readonly testID?: string;
+    readonly numberOfLines?: number;
 }
 
 const MAX_FONT_SCALE = 2;
@@ -19,10 +20,10 @@ const INLINE_LINES = 1;
 const STACKED_LINES = 3;
 const LARGE_TEXT_LINES = 0;
 
-export const TransactionFormRowValue = ({ value, placeholder, isStacked, isLargeText, testID }: Props) => {
+export const TransactionFormRowValue = ({ value, placeholder, isStacked, isLargeText, testID, numberOfLines }: Props) => {
     const alignmentClassName = isStacked ? '' : 'text-right';
     const stackedLineCount = isLargeText ? LARGE_TEXT_LINES : STACKED_LINES;
-    const lineCount = isStacked ? stackedLineCount : INLINE_LINES;
+    const lineCount = numberOfLines ?? (isStacked ? stackedLineCount : INLINE_LINES);
 
     if (!isNotEmptyString(value)) {
         return isString(placeholder) ? (
@@ -43,6 +44,7 @@ export const TransactionFormRowValue = ({ value, placeholder, isStacked, isLarge
             className={cn('text-[17px] leading-[22px] text-primary', alignmentClassName)}
             maxFontSizeMultiplier={MAX_FONT_SCALE}
             numberOfLines={lineCount}
+            ellipsizeMode="tail"
             testID={testID}
         >
             {value}
