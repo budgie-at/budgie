@@ -5139,7 +5139,11 @@ msgstr "Ausgeblendete Konten erscheinen nicht auf der Startseite. Ihre Einstellu
 msgid "Hidden from Home"
 msgstr "Auf der Startseite ausgeblendet"
 
-#: src/account/component/personal-account-sections/personal-account-sections.tsx
+#: src/account/component/update-account-page/update-account-page.tsx
+msgid "Hidden from Home, totals and budgets for everyone in your family until restored."
+msgstr "Von Home, Summen und Budgets für alle in deiner Familie ausgeblendet, bis du es wiederherstellst."
+
+#: src/account/component/update-account-page/update-account-page.tsx
 msgid "Hidden from Home, totals and budgets until restored."
 msgstr "Von Home, Summen und Budgets ausgeblendet, bis du es wiederherstellst."
 
@@ -7330,6 +7334,7 @@ msgstr "Pausiert: Ein anderer Apple Account ist angemeldet"
 msgid "Paused: no Wi-Fi"
 msgstr "Pausiert: kein WLAN"
 
+#: src/account/component/family-section-header/family-section-header.tsx
 #: src/household/component/family-row/family-row.tsx
 #: src/household/utils/get-household-summary-labels.util.ts
 msgid "Paused: sign in to iCloud"
@@ -10241,10 +10246,6 @@ msgstr "Heute aktualisiert"
 #: src/market-data/component/currency-market-stats-footer/currency-market-stats-footer.tsx
 msgid "Updated yesterday"
 msgstr "Gestern aktualisiert"
-
-#: src/account/component/family-section-header/family-section-header.tsx
-msgid "Updates paused — sign in to iCloud"
-msgstr "Aktualisierung pausiert – melde dich bei iCloud an"
 
 #: src/auth/components/pin-sealing-state/pin-sealing-state.tsx
 msgid "Updating your PIN"

@@ -9,10 +9,11 @@ import { HouseholdShareAccountSection } from '../household-share-account-section
 
 interface Props {
     readonly accountId: number;
+    readonly archiveFooter: string;
     readonly fields: Pick<AccountFormBindingsInterface, 'isActive' | 'includeInNetWorth'>;
 }
 
-export const PersonalAccountSections = ({ accountId, fields }: Props) => {
+export const PersonalAccountSections = ({ accountId, archiveFooter, fields }: Props) => {
     const { t } = useLingui();
 
     return (
@@ -32,7 +33,7 @@ export const PersonalAccountSections = ({ accountId, fields }: Props) => {
 
             <HouseholdShareAccountSection accountId={accountId} />
 
-            <GroupedListSection footer={t`Hidden from Home, totals and budgets until restored.`}>
+            <GroupedListSection footer={archiveFooter}>
                 <ArchiveAccount accountId={accountId} />
             </GroupedListSection>
         </>

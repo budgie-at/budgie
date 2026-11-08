@@ -5139,7 +5139,11 @@ msgstr "Приховані рахунки не показуються на го�
 msgid "Hidden from Home"
 msgstr "Приховано з Головної"
 
-#: src/account/component/personal-account-sections/personal-account-sections.tsx
+#: src/account/component/update-account-page/update-account-page.tsx
+msgid "Hidden from Home, totals and budgets for everyone in your family until restored."
+msgstr "Приховано з головної, підсумків і бюджетів для всієї вашої родини до відновлення."
+
+#: src/account/component/update-account-page/update-account-page.tsx
 msgid "Hidden from Home, totals and budgets until restored."
 msgstr "Приховано з головної, підсумків і бюджетів до відновлення."
 
@@ -7330,6 +7334,7 @@ msgstr "Призупинено: увійшли в інший обліковий 
 msgid "Paused: no Wi-Fi"
 msgstr "Призупинено: немає Wi-Fi"
 
+#: src/account/component/family-section-header/family-section-header.tsx
 #: src/household/component/family-row/family-row.tsx
 #: src/household/utils/get-household-summary-labels.util.ts
 msgid "Paused: sign in to iCloud"
@@ -10241,10 +10246,6 @@ msgstr "Оновлено сьогодні"
 #: src/market-data/component/currency-market-stats-footer/currency-market-stats-footer.tsx
 msgid "Updated yesterday"
 msgstr "Оновлено вчора"
-
-#: src/account/component/family-section-header/family-section-header.tsx
-msgid "Updates paused — sign in to iCloud"
-msgstr "Оновлення призупинено — увійдіть в iCloud"
 
 #: src/auth/components/pin-sealing-state/pin-sealing-state.tsx
 msgid "Updating your PIN"

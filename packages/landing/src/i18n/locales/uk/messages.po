@@ -4460,8 +4460,8 @@ msgid "Budgie is a privacy-first, offline-first mobile application designed to h
 msgstr "Budgie — це мобільний застосунок, орієнтований на приватність і принцип offline-first, який допомагає відстежувати витрати, керувати бюджетами, синхронізувати банківські рахунки (за бажанням), стежити за інвестиціями (акції та криптовалюти), обліковувати борги й позики, ставити фінансові цілі та отримувати фінансові інсайти за допомогою ШІ. Сервіс працює переважно на вашому пристрої, із зашифрованими копіями у вашому власному iCloud на iOS, які можна вимкнути в налаштуваннях, і додатковими хмарними функціями, що потребують вашої явної згоди."
 
 #: src/app/[lang]/privacy/metadata.ts
-msgid "Budgie is a private expense tracker by architecture: encrypted on-device storage, no account, no aggregator, biometric lock, screenshot protection, and encrypted iCloud sync and backups."
-msgstr "Budgie — приватний трекер витрат за своєю архітектурою: зашифроване сховище на пристрої, без облікового запису, без агрегатора, біометричне блокування, захист від скриншотів і зашифровані синхронізація та копії в iCloud."
+msgid "Budgie is a private expense tracker by architecture: encrypted on-device storage, no account, no aggregator, biometric lock, screenshot protection, and encrypted iCloud sync and backups on iOS."
+msgstr "Budgie — приватний трекер витрат за своєю архітектурою: зашифроване сховище на пристрої, без облікового запису, без агрегатора, біометричне блокування, захист від скриншотів і зашифровані синхронізація та копії в iCloud на iOS."
 
 #: src/app/[lang]/open-source/metadata.ts
 msgid "Budgie is a source-available personal finance app. Read the source, audit privacy claims, contribute features, and trust your expense tracker because you can verify it."
@@ -7998,8 +7998,8 @@ msgid "Every bank sync or statement import brings in dozens of transactions, and
 msgstr "Кожна синхронізація з банком чи імпорт виписки приносить десятки транзакцій, і ті самі магазини повертаються щоразу з трохи іншим описом: тут номер платежу, там номер картки чи дата. Розносити їх за категоріями по одному рядку — саме та рутина, через яку люди кидають вести бюджет."
 
 #: src/app/[lang]/features/hub-metadata.ts
-msgid "Every Budgie feature in one place: bank sync, on-device AI, voice entry, multi-currency, recurring detection, and encrypted iCloud sync and backups — all offline-first."
-msgstr "Усі функції Budgie в одному місці: синхронізація з банками, ШІ на пристрої, голосове введення, кілька валют, виявлення регулярних платежів і зашифровані синхронізація та копії в iCloud — усе за принципом offline-first."
+msgid "Every Budgie feature in one place: bank sync, on-device AI, voice entry, multi-currency, recurring detection, and encrypted iCloud sync and backups on iOS — all offline-first."
+msgstr "Усі функції Budgie в одному місці: синхронізація з банками, ШІ на пристрої, голосове введення, кілька валют, виявлення регулярних платежів і зашифровані синхронізація та копії в iCloud на iOS — усе за принципом offline-first."
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Every built-in price comes in both euro and dollar."

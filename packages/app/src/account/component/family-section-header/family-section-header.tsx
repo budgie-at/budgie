@@ -18,7 +18,7 @@ export const FamilySectionHeader = () => {
     const title = isMember && isNotEmptyString(organizerName) ? t`${organizerName}'s family` : t`Family`;
     const pausedStatus = isAvailable ? null : (
         <Text maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER} className="text-[13px] text-warning-strong">
-            <Trans>Updates paused — sign in to iCloud</Trans>
+            <Trans>Paused: sign in to iCloud</Trans>
         </Text>
     );
 

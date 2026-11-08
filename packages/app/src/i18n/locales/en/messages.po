@@ -5140,7 +5140,11 @@ msgstr "Hidden accounts stay off Home. Their totals and net worth settings don�
 msgid "Hidden from Home"
 msgstr "Hidden from Home"
 
-#: src/account/component/personal-account-sections/personal-account-sections.tsx
+#: src/account/component/update-account-page/update-account-page.tsx
+msgid "Hidden from Home, totals and budgets for everyone in your family until restored."
+msgstr "Hidden from Home, totals and budgets for everyone in your family until restored."
+
+#: src/account/component/update-account-page/update-account-page.tsx
 msgid "Hidden from Home, totals and budgets until restored."
 msgstr "Hidden from Home, totals and budgets until restored."
 
@@ -7331,6 +7335,7 @@ msgstr "Paused: a different Apple Account is signed in"
 msgid "Paused: no Wi-Fi"
 msgstr "Paused: no Wi-Fi"
 
+#: src/account/component/family-section-header/family-section-header.tsx
 #: src/household/component/family-row/family-row.tsx
 #: src/household/utils/get-household-summary-labels.util.ts
 msgid "Paused: sign in to iCloud"
@@ -10242,10 +10247,6 @@ msgstr "Updated today"
 #: src/market-data/component/currency-market-stats-footer/currency-market-stats-footer.tsx
 msgid "Updated yesterday"
 msgstr "Updated yesterday"
-
-#: src/account/component/family-section-header/family-section-header.tsx
-msgid "Updates paused — sign in to iCloud"
-msgstr "Updates paused — sign in to iCloud"
 
 #: src/auth/components/pin-sealing-state/pin-sealing-state.tsx
 msgid "Updating your PIN"

@@ -24,7 +24,7 @@ export const SettingsDisabledRow = ({ icon, title, subtitle, testID }: Props) =>
                 </View>
             }
             title={
-                <Text className={cn('text-secondary-foreground', GROUPED_LIST_TITLE_CLASS_NAME)} numberOfLines={2}>
+                <Text className={cn('text-primary opacity-50', GROUPED_LIST_TITLE_CLASS_NAME)} numberOfLines={2}>
                     {title}
                 </Text>
             }

@@ -43,14 +43,17 @@ export const UpdateAccountPage = ({ account, fields, hero, detailsFooter, childr
     const { instrument } = useGetInstrumentByIdQuery(account.instrumentId);
     const defaultInstrumentId = useAtomValue(defaultInstrumentIdAtom);
     const shareStatusResult = useLiveAtomValue(householdAccountShareAtom(account.id));
-    const isShareStatusLoading = AsyncResult.isInitial(shareStatusResult);
-    const isSharedByOther = AsyncResult.getOrElse(shareStatusResult, () => null)?.state === HouseholdShareStateEnum.SHARED_BY_OTHER;
+    const shareState = AsyncResult.getOrElse(shareStatusResult, () => null)?.state;
+    const isSharedByOther = shareState === HouseholdShareStateEnum.SHARED_BY_OTHER;
+    const archiveFooter =
+        shareState === HouseholdShareStateEnum.SHARED_BY_ME
+            ? t`Hidden from Home, totals and budgets for everyone in your family until restored.`
+            : t`Hidden from Home, totals and budgets until restored.`;
 
     const providerTitle = isDefined(account.externalSource) ? BANK_PROVIDER_TITLE[account.externalSource] : null;
     const kindLabel = isDefined(providerTitle) ? t(providerTitle) : t(ACCOUNT_KIND_TITLE[account.type]);
-    const currencyLabel = isDefined(instrument) && instrument.id !== defaultInstrumentId ? instrument.name : null;
     const accountTitle = account.title;
-    const kindFooter = [kindLabel, currencyLabel]
+    const kindFooter = [kindLabel, isDefined(instrument) && instrument.id !== defaultInstrumentId ? instrument.name : null]
         .filter(isDefined)
         .filter(label => !accountTitle.toLocaleLowerCase().includes(label.toLocaleLowerCase()))
         .join(' · ');
@@ -59,7 +62,7 @@ export const UpdateAccountPage = ({ account, fields, hero, detailsFooter, childr
     const accountSections = isSharedByOther ? (
         <SharedByOtherAccountOptions isActive={fields.isActive} />
     ) : (
-        <PersonalAccountSections accountId={account.id} fields={fields} />
+        <PersonalAccountSections accountId={account.id} archiveFooter={archiveFooter} fields={fields} />
     );
 
     return (
@@ -79,7 +82,7 @@ export const UpdateAccountPage = ({ account, fields, hero, detailsFooter, childr
             >
                 {hero}
 
-                <LoadingContent isLoading={isShareStatusLoading}>
+                <LoadingContent isLoading={AsyncResult.isInitial(shareStatusResult)}>
                     <FormLayoutGroup>
                         {isSharedByOther ? <HouseholdSharedByOtherAccountSection isBankSynced={isDefined(account.integrationId)} /> : null}
 

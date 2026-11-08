@@ -4460,8 +4460,8 @@ msgid "Budgie is a privacy-first, offline-first mobile application designed to h
 msgstr "Budgie est une application mobile axée sur la confidentialité et offline-first, conçue pour suivre les dépenses, gérer les budgets, synchroniser des comptes bancaires (facultatif), suivre des investissements (actions et cryptomonnaies), suivre des dettes et des prêts, définir des objectifs financiers et accéder à des analyses financières par IA. Le Service fonctionne principalement sur votre appareil, avec des sauvegardes chiffrées dans votre propre iCloud sur iOS, que vous pouvez désactiver dans les réglages, et des fonctions cloud optionnelles qui nécessitent votre consentement explicite."
 
 #: src/app/[lang]/privacy/metadata.ts
-msgid "Budgie is a private expense tracker by architecture: encrypted on-device storage, no account, no aggregator, biometric lock, screenshot protection, and encrypted iCloud sync and backups."
-msgstr "Budgie est un suivi de dépenses privé par conception : stockage chiffré sur l’appareil, aucun compte, aucun agrégateur, verrouillage biométrique, protection des captures d’écran et synchronisation et sauvegardes iCloud chiffrées."
+msgid "Budgie is a private expense tracker by architecture: encrypted on-device storage, no account, no aggregator, biometric lock, screenshot protection, and encrypted iCloud sync and backups on iOS."
+msgstr "Budgie est un suivi de dépenses privé par conception : stockage chiffré sur l’appareil, aucun compte, aucun agrégateur, verrouillage biométrique, protection des captures d’écran et synchronisation et sauvegardes iCloud chiffrées sur iOS."
 
 #: src/app/[lang]/open-source/metadata.ts
 msgid "Budgie is a source-available personal finance app. Read the source, audit privacy claims, contribute features, and trust your expense tracker because you can verify it."
@@ -7998,8 +7998,8 @@ msgid "Every bank sync or statement import brings in dozens of transactions, and
 msgstr "Chaque synchronisation bancaire ou import de relevé apporte des dizaines de transactions, et les mêmes enseignes reviennent sans cesse avec un libellé légèrement différent : une référence ici, un numéro de carte ou une date là. Les catégoriser ligne par ligne, c’est la corvée qui fait abandonner un budget."
 
 #: src/app/[lang]/features/hub-metadata.ts
-msgid "Every Budgie feature in one place: bank sync, on-device AI, voice entry, multi-currency, recurring detection, and encrypted iCloud sync and backups — all offline-first."
-msgstr "Toutes les fonctions Budgie au même endroit : synchronisation bancaire, IA sur l’appareil, saisie vocale, multidevises, détection des dépenses récurrentes et synchronisation et sauvegardes iCloud chiffrées — tout en offline-first."
+msgid "Every Budgie feature in one place: bank sync, on-device AI, voice entry, multi-currency, recurring detection, and encrypted iCloud sync and backups on iOS — all offline-first."
+msgstr "Toutes les fonctions Budgie au même endroit : synchronisation bancaire, IA sur l’appareil, saisie vocale, multidevises, détection des dépenses récurrentes et synchronisation et sauvegardes iCloud chiffrées sur iOS — tout en offline-first."
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Every built-in price comes in both euro and dollar."
