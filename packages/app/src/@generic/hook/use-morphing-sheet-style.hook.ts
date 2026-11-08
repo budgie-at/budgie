@@ -1,12 +1,13 @@
 import { Extrapolation, interpolate, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 
+import { MORPHING_SHEET_KEYBOARD_TOP_CLEARANCE } from '../constant/morphing-sheet-keyboard.constant';
+
 import { useMorphingSheetKeyboardLift } from './use-morphing-sheet-keyboard-lift.hook';
 import { useReducedMotion } from './use-reduced-motion.hook';
 
 import type { SharedValue } from 'react-native-reanimated';
 
 const CARD_RADIUS = 36;
-const KEYBOARD_TOP_CLEARANCE = 16;
 
 export const useMorphingSheetStyle = (
     translateY: SharedValue<number>,
@@ -30,7 +31,7 @@ export const useMorphingSheetStyle = (
     const frameAnimatedStyle = useAnimatedStyle(() => {
         const presence = interpolate(translateY.get(), [0, Math.max(visibleHeight.get() + baseBottom, 1)], [1, 0], Extrapolation.CLAMP);
         const progress = pageProgress.get();
-        const maxLift = Math.max(0, frameHeight + KEYBOARD_TOP_CLEARANCE - baseBottom - visibleHeight.get());
+        const maxLift = Math.max(0, frameHeight + MORPHING_SHEET_KEYBOARD_TOP_CLEARANCE - baseBottom - visibleHeight.get());
         const isOffsetFollowed = !isReducedMotion || isDragging.get();
 
         return {

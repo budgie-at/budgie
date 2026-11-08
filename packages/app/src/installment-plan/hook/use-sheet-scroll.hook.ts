@@ -12,7 +12,7 @@ const FEE_REVEAL_GAP = 40;
 
 export const useSheetScroll = () => {
     const isKeyboardVisible = useKeyboardState(state => state.isVisible);
-    const maxHeight = useMorphingSheetListHeight(MORPHING_SHEET_DESTINATION_HEIGHT_RATIO).height - useKeyboardState(state => state.height);
+    const { height: maxHeight } = useMorphingSheetListHeight(MORPHING_SHEET_DESTINATION_HEIGHT_RATIO);
     const scrollRef = useRef<ScrollView>(null);
     const revealRef = useRef({ feeBottom: 0, viewportHeight: 0 });
     const [heroTop, setHeroTop] = useState(0);

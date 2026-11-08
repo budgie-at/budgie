@@ -1,15 +1,14 @@
 import { TransactionEntryCreateInputInterface, TransactionEntryTypeEnum } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { ScrollView, Text, View, useWindowDimensions } from 'react-native';
-import { useReanimatedKeyboardAnimation } from 'react-native-keyboard-controller';
-import Animated, { useAnimatedStyle } from 'react-native-reanimated';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { ScrollView, Text, View } from 'react-native';
 
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { PillButton } from '../../../@generic/component/pill-button/pill-button';
 import { SheetTitleRow } from '../../../@generic/component/sheet-title-row/sheet-title-row';
+import { MORPHING_SHEET_DESTINATION_HEIGHT_RATIO } from '../../../@generic/constant/morphing-sheet-height-ratio.constant';
+import { useMorphingSheetListHeight } from '../../../@generic/hook/use-morphing-sheet-list-height.hook';
 import { useSplitEntriesEditor } from '../../hook/use-split-entries-editor.hook';
 import { useSplitEntriesSubmit } from '../../hook/use-split-entries-submit.hook';
 import { EntryWithLocalIdInterface } from '../../utils/entry-with-local-id.util';
@@ -33,10 +32,8 @@ interface Props {
 
 export const SplitEntriesStep = (props: Props) => {
     const { entries, isInitiallySplit, entryType, currencySymbol, totalAmount, onEntriesChange, onCategoryPress, onConfirm } = props;
-    const { height: windowHeight } = useWindowDimensions();
-    const { top } = useSafeAreaInsets();
-    const { height } = useReanimatedKeyboardAnimation();
-    const sheetStyle = useAnimatedStyle(() => ({ maxHeight: windowHeight - top - Math.abs(height.value) - 24 }));
+    const { height: maxHeight } = useMorphingSheetListHeight(MORPHING_SHEET_DESTINATION_HEIGHT_RATIO);
+    const sheetStyle = { maxHeight };
     const {
         autoFocusId,
         canAddEntry,
@@ -53,7 +50,7 @@ export const SplitEntriesStep = (props: Props) => {
     const { handleConfirm, handleRemoveSplit } = useSplitEntriesSubmit(entries, totalAmount, onConfirm);
 
     return (
-        <Animated.View className="bg-sheet-surface" style={sheetStyle}>
+        <View className="bg-sheet-surface grow-0" style={sheetStyle}>
             <ScrollView contentContainerStyle={CONTENT_CONTAINER_STYLE} keyboardShouldPersistTaps="handled">
                 <SheetTitleRow title={t`Split`} trailing={<View />} />
                 <GroupedListSection>
@@ -105,6 +102,6 @@ export const SplitEntriesStep = (props: Props) => {
                     />
                 </View>
             </ScrollView>
-        </Animated.View>
+        </View>
     );
 };
