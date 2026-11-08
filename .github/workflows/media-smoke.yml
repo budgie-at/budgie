@@ -13,8 +13,19 @@ on:
             - 'tests/app-tests/scripts/capture-store-screenshots.sh'
             - '.github/landing-media.config.json'
             - '.github/workflows/media-smoke.yml'
-    schedule:
-        - cron: '0 3 * * *'
+    push:
+        branches: [main]
+        paths:
+            - 'e2e/media/**'
+            - 'e2e/media.config.ts'
+            - 'e2e/support/config.ts'
+            - 'e2e/support/media/**'
+            - 'e2e/package-lock.json'
+            - 'tests/app-tests/fixtures/screenshots/**'
+            - 'tests/app-tests/scripts/seed-screenshot-scene.sh'
+            - 'tests/app-tests/scripts/capture-store-screenshots.sh'
+            - '.github/landing-media.config.json'
+            - '.github/workflows/media-smoke.yml'
 
 concurrency:
     group: media-smoke-${{ github.event.pull_request.number || github.ref }}

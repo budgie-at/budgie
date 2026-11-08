@@ -1,10 +1,9 @@
 name: Landing IndexNow
 
 on:
-  # Daily, changed URLs only: a full submit after every deploy made crawlers refetch every page
-  # right after the deploy emptied the ISR cache. Manual dispatch submits the full sitemap.
-  schedule:
-    - cron: '30 6 * * *'
+  # After each production deploy, changed URLs only: a full submit per deploy made crawlers refetch
+  # every page right after the deploy emptied the ISR cache. Manual dispatch submits the full sitemap.
+  deployment_status:
   workflow_dispatch:
 
 permissions:
@@ -17,14 +16,21 @@ concurrency:
 jobs:
   submit:
     name: Submit IndexNow
+    if: github.event_name == 'workflow_dispatch' || (github.event.deployment_status.state == 'success' && github.event.deployment.environment == 'Production')
     runs-on: [self-hosted, linux-portable-2x4]
     timeout-minutes: 10
     steps:
+      - uses: actions/checkout@v6
+        if: github.event_name == 'deployment_status'
+        with:
+          ref: ${{ github.event.deployment.sha }}
+          fetch-depth: 2
+          sparse-checkout: .github
       - name: Submit canonical URLs to IndexNow
         run: |
           url=https://budgie.at/api/indexnow
-          if [ "${{ github.event_name }}" = "schedule" ]; then
-            url="$url?since=$(date -u -d '7 days ago' +%Y-%m-%dT%H:%M:%SZ)"
+          if [ "${{ github.event_name }}" = "deployment_status" ]; then
+            url="$url?since=$(TZ=UTC git log -1 --date=format-local:%Y-%m-%d --format=%cd HEAD^)T00:00:00Z"
           fi
           echo "POST $url"
           for attempt in 1 2 3; do

@@ -24,8 +24,6 @@ on:
             - 'pnpm-workspace.yaml'
             - 'patches/**'
             - '.github/workflows/ios-native-cache.yml'
-    schedule:
-        - cron: '0 3 * * *'
 
 concurrency:
     group: ios-native-cache-main
