@@ -40,6 +40,7 @@ export const useMorphingSheetStyle = (
         borderTopLeftRadius: CARD_RADIUS,
         borderTopRightRadius: CARD_RADIUS,
         borderCurve: 'continuous',
+        overflow: 'hidden',
         transform: [{ translateY: frameHeight - visibleHeight.get() }]
     }));
 
