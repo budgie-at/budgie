@@ -4,7 +4,7 @@ import { useLingui } from '@lingui/react/macro';
 import { isDefined } from '@rnw-community/shared';
 
 import { getAccountDisplayTitle } from '../../../account/utils/get-account-display-title.util';
-import { getAccountIbanSuffix } from '../../utils/get-account-iban-suffix.util';
+import { getAccountInfoDescription } from '../../utils/get-account-info-description.util';
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
 import { TransactionInfoRow } from '../transaction-info-row/transaction-info-row';
 import { TransactionPrivateAccountRow } from '../transaction-private-account-row/transaction-private-account-row';
@@ -34,7 +34,7 @@ export const TransactionInfoAccountRows = ({ transaction }: Props) => {
                     icon={UserIconNameEnum.Wallet}
                     label={t`From account`}
                     value={getAccountDisplayTitle(transaction.fromAccount)}
-                    description={getAccountIbanSuffix(transaction.fromAccount)}
+                    description={getAccountInfoDescription(transaction.fromAccount)}
                     testID={TransactionInfoPageSelector.Row.FromAccount}
                 />
             ) : null}
@@ -44,7 +44,7 @@ export const TransactionInfoAccountRows = ({ transaction }: Props) => {
                     icon={UserIconNameEnum.CreditCard}
                     label={t`To account`}
                     value={getAccountDisplayTitle(transaction.toAccount)}
-                    description={getAccountIbanSuffix(transaction.toAccount)}
+                    description={getAccountInfoDescription(transaction.toAccount)}
                     testID={TransactionInfoPageSelector.Row.ToAccount}
                 />
             ) : null}
@@ -72,7 +72,7 @@ export const TransactionInfoAccountRows = ({ transaction }: Props) => {
                     icon={UserIconNameEnum.Wallet}
                     label={t`Account`}
                     value={getAccountDisplayTitle(account)}
-                    description={getAccountIbanSuffix(account)}
+                    description={getAccountInfoDescription(account)}
                     testID={TransactionInfoPageSelector.Row.Account}
                 />
             ) : null}

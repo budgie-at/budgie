@@ -52,8 +52,8 @@ msgstr "« {title} » supprimé"
 msgid "(pick one)"
 msgstr "(à choisir)"
 
-#. placeholder {0}: filteredAccounts?.length ?? 0
 #. placeholder {0}: parts.length
+#. placeholder {0}: shelvedList.shelvedCount
 #: src/account/component/shelved-accounts-page/shelved-accounts-page.tsx
 #: src/rule/hooks/use-rule-condition-formatter.hook.ts
 msgid "{0, plural, one {# account} other {# accounts}}"
@@ -1598,6 +1598,10 @@ msgstr "Toutes les colonnes sont déjà associées"
 msgid "All conditions"
 msgstr "Toutes les conditions"
 
+#: src/account/component/automatic-account-card/automatic-account-card.tsx
+msgid "All matched"
+msgstr "Tout est rapproché"
+
 #: src/money-data/component/money-data-upgrade-status-card/money-data-upgrade-status-card.tsx
 msgid "All past amounts are converted"
 msgstr "Tous les montants passés sont convertis"
@@ -1938,6 +1942,19 @@ msgstr "Autorisation bancaire"
 #: src/settings/components/theme-switch/theme-switch.tsx
 msgid "Automatic"
 msgstr "Automatique"
+
+#: src/account/component/automatic-account-card/automatic-account-card.tsx
+msgid "Automatic · {currencyCode}"
+msgstr "Automatique · {currencyCode}"
+
+#: src/account/component/automatic-account-card/automatic-account-card.tsx
+#: src/transaction/utils/get-account-info-description.util.ts
+msgid "Automatic account"
+msgstr "Compte automatique"
+
+#: src/account/component/automatic-account-card/automatic-account-card.tsx
+msgid "Automatic accounts"
+msgstr "Comptes automatiques"
 
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
 msgid "Automatic sync"
@@ -2322,10 +2339,6 @@ msgstr "Budgie lit votre export des opérations Inzhur et enregistre liquidités
 #: src/inzhur/component/import-inzhur-statement/import-inzhur-statement.tsx
 msgid "Budgie rebuilds your cash, buys and dividends from it"
 msgstr "Budgie reconstruit à partir de celui-ci vos liquidités, achats et dividendes"
-
-#: src/account/component/account-details-automatic-notice/account-details-automatic-notice.tsx
-msgid "Budgie records transfers to your accounts at banks it doesn't track here. Connect that bank or import its statement, and they'll be paired automatically."
-msgstr "Budgie enregistre ici les virements vers tes comptes dans les banques qu’il ne suit pas. Connecte cette banque ou importe son relevé, et ils seront associés automatiquement."
 
 #: src/app/(tabs)/settings/sync-repairs.tsx
 msgid "Budgie removes repeated bank imports and fixes transfers that landed on inactive accounts. Manual transactions are never changed."
@@ -6698,6 +6711,7 @@ msgstr "Pas encore sauvegardé dans iCloud"
 msgid "Not counted as spending"
 msgstr "Non compté comme dépense"
 
+#: src/account/component/automatic-account-card/automatic-account-card.tsx
 #: src/account/component/inactive-account-card/inactive-account-card.tsx
 msgid "Not counted in net worth"
 msgstr "Non compté dans le patrimoine net"
@@ -9958,6 +9972,10 @@ msgstr "Virement vers la cagnotte"
 msgid "Transfers and refunds merged"
 msgstr "Virements et remboursements fusionnés"
 
+#: src/account/component/account-details-automatic-notice/account-details-automatic-notice.tsx
+msgid "Transfers to your accounts at banks Budgie doesn't track wait here until they're matched, and aren't counted in net worth. Connect the bank or import its statement and Budgie will match them automatically."
+msgstr "Les virements vers vos comptes dans des banques que Budgie ne suit pas attendent ici d’être rapprochés et ne comptent pas dans le patrimoine net. Connectez la banque ou importez son relevé, et Budgie les rapprochera automatiquement."
+
 #: src/ai/component/ai-settings-section/ai-settings-section.tsx
 msgid "Translate categories and tags"
 msgstr "Traduire les catégories et les étiquettes"
@@ -10171,12 +10189,11 @@ msgstr "Annuler le remboursement ?"
 
 #: src/account/component/account-details-hidden-pill/account-details-hidden-pill.tsx
 #: src/account/component/inactive-account-card/inactive-account-card.tsx
-#: src/account/component/inactive-account-trailing/inactive-account-trailing.tsx
 msgid "Unhide"
 msgstr "Afficher"
 
 #: src/account/component/account-details-hidden-pill/account-details-hidden-pill.tsx
-#: src/account/component/inactive-account-trailing/inactive-account-trailing.tsx
+#: src/account/component/inactive-account-card/inactive-account-card.tsx
 msgid "Unhide {accountTitle}"
 msgstr "Afficher {accountTitle}"
 

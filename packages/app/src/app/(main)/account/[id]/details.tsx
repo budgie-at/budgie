@@ -130,7 +130,9 @@ export default function AccountDetails() {
                 </ScreenChromeThemeProvider>
             </RevealGate>
 
-            {isInzhurFundAccount(account) ? null : <AccountDetailsMenuControls accountId={id} accountType={account.type} />}
+            {isInzhurFundAccount(account) || isUntrackedOwnAccount(account) ? null : (
+                <AccountDetailsMenuControls accountId={id} accountType={account.type} />
+            )}
         </GroupedSurface>
     );
 }

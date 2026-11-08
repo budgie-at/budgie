@@ -8,8 +8,8 @@ export const AccountDetailsAutomaticNotice = () => (
         <AccountAutomaticPill />
         <Text className="text-sm text-secondary-foreground text-center">
             <Trans>
-                Budgie records transfers to your accounts at banks it doesn&apos;t track here. Connect that bank or import its statement,
-                and they&apos;ll be paired automatically.
+                Transfers to your accounts at banks Budgie doesn&apos;t track wait here until they&apos;re matched, and aren&apos;t counted
+                in net worth. Connect the bank or import its statement and Budgie will match them automatically.
             </Trans>
         </Text>
     </View>
