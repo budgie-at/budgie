@@ -108,7 +108,7 @@ export async function openLink(ctx: Ctx, url: string): Promise<void> {
 export async function expectSettledId(ctx: Ctx, testId: string): Promise<void> {
     const locator = byId(ctx.screen, testId);
     await expect(locator).toBeVisible();
-    const deadline = Date.now() + 2_000;
+    const deadline = Date.now() + 5_000;
     let previous = await locator.boundingBox();
     while (Date.now() < deadline) {
         await sleep(100);
@@ -118,13 +118,14 @@ export async function expectSettledId(ctx: Ctx, testId: string): Promise<void> {
             previous !== null &&
             current.x === previous.x &&
             current.y === previous.y &&
+            current.width === previous.width &&
             current.height === previous.height
         ) {
             return;
         }
         previous = current;
     }
-    throw new Error(`${testId} kept moving for 2s`);
+    throw new Error(`${testId} kept moving for 5s`);
 }
 
 /** subflows/shared/select-category-by-search */

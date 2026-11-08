@@ -133,7 +133,7 @@ test('25 rules CRUD', { tags: ['rules'] }, async ({ budgie }) => {
         await r.pick(ctx, 'RuleForm.Condition.0.FieldSelector.Value', 'ACCOUNT_ID');
         await expect(id('RuleForm.Condition.0.ValueInput')).toBeVisible();
         await b.tapId(ctx, 'RuleForm.Condition.0.ValueInput');
-        await expect(id('AccountPickerBottomSheet.Input')).toBeVisible();
+        await b.expectSettledId(ctx, 'AccountPickerBottomSheet.Input');
         await b.fillId(ctx, 'AccountPickerBottomSheet.Input', ACCOUNT);
         await expect(id(`AccountPickerBottomSheet.Option.${ACCOUNT}`)).toBeVisible();
         await b.tapId(ctx, `AccountPickerBottomSheet.Option.${ACCOUNT}`);
@@ -219,6 +219,7 @@ test('25 rules CRUD', { tags: ['rules'] }, async ({ budgie }) => {
         await r.openCreateRuleForm(ctx);
         await r.pick(ctx, 'RuleForm.Condition.0.FieldSelector.Value', 'MCC_CODE');
         await b.tapId(ctx, 'RuleForm.Condition.0.ValueInput');
+        await b.expectSettledId(ctx, 'RuleMccSelector.SearchInput');
         await b.fillId(ctx, 'RuleMccSelector.SearchInput', '0742');
         await b.done(ctx);
         await expect(id('RuleMccSelector.Card.0742')).toBeVisible({ timeout: 10_000 });

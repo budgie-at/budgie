@@ -25,7 +25,8 @@ test('05 category', { tags: ['categories'] }, async ({ budgie }) => {
     const newCategory = async (query: string, icon: string, name: string) => {
         await b.tapId(ctx, 'ActionButton');
         await b.tapText(ctx, 'Category');
-        await c.pickIcon(ctx, query, icon);
+        await c.openIconPicker(ctx);
+        await c.pickIconFromOpenPicker(ctx, query, icon);
         await nameAndSubmit(name);
         await b.expectId(ctx, `CategoryCard.${name}`);
         await b.expectId(ctx, `CategoryCard.Icon.${name}.${icon}`);
@@ -57,11 +58,9 @@ test('05 category', { tags: ['categories'] }, async ({ budgie }) => {
 
     await b.phase('edit primary category text + icon', async () => {
         await b.tapId(ctx, 'CategoryCard.E2E Category Primary');
-        await b.tapId(ctx, 'CategoryForm.IconTrigger');
-        await b.expectId(ctx, 'IconSelector.SearchInput');
+        await c.openIconPicker(ctx);
         await b.expectNoId(ctx, 'CategoryForm.Input');
-        await b.fillId(ctx, 'IconSelector.SearchInput', 'heart');
-        await b.tapId(ctx, 'IconSelector.Icon.reicon:Heart');
+        await c.pickIconFromOpenPicker(ctx, 'heart', 'reicon:Heart');
         await b.expectId(ctx, 'CategoryForm.Input');
         await nameAndSubmit('E2E Category Updated', true);
         await b.expectId(ctx, 'CategoryCard.E2E Category Updated');

@@ -55,6 +55,7 @@ test('31 debt settlement attachments', { tags: ['debt'] }, async ({ budgie }) =>
         await b.expectId(ctx, 'AccountPickerBottomSheet.Input', 10_000);
     };
     const pickDebtWithTotal = async (account: string, total: string) => {
+        await b.expectSettledId(ctx, 'AccountPickerBottomSheet.Input');
         await b.fillId(ctx, 'AccountPickerBottomSheet.Input', account);
         await b.expectId(ctx, `AccountPickerBottomSheet.Option.${account}`);
         await b.expectId(ctx, `AccountPickerBottomSheet.DebtTotal.${account}.${total}`);

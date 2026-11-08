@@ -1,10 +1,10 @@
 import { expect } from 'e2e';
 
-import { byId, done, expectId, expectNoId, tapId, tapUntil, type Ctx } from './core.ts';
+import { byId, done, expectId, expectNoId, expectSettledId, tapId, tapUntil, type Ctx } from './core.ts';
 
 /** subflows/shared/select-tag-by-search */
 export async function selectTagBySearch(ctx: Ctx, name: string): Promise<void> {
-    await expectId(ctx, 'TagPickerBottomSheet.Input');
+    await expectSettledId(ctx, 'TagPickerBottomSheet.Input');
     await byId(ctx.screen, 'TagPickerBottomSheet.Input').fill(name);
     await done(ctx);
     const card = byId(ctx.screen, `TagPickerBottomSheet.Card.${name}`);

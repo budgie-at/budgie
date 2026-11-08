@@ -2,7 +2,20 @@ import { expect } from 'e2e';
 
 import { selectAccountBySearch } from './accounts.ts';
 import { pickCategoryCard } from './categories.ts';
-import { byId, byText, expectId, expectNoId, openLink, retry, scrollTo, selectCategoryBySearch, sleep, tapId, type Ctx } from './core.ts';
+import {
+    byId,
+    byText,
+    expectId,
+    expectNoId,
+    expectSettledId,
+    openLink,
+    retry,
+    scrollTo,
+    selectCategoryBySearch,
+    sleep,
+    tapId,
+    type Ctx
+} from './core.ts';
 
 import type { Locator } from 'e2e';
 
@@ -214,6 +227,7 @@ export async function selectSplitCategory(ctx: Ctx, entryIndex: number, category
 /** subflows/transactions/select-existing-tag */
 export async function selectExistingTag(ctx: Ctx, tag: string): Promise<void> {
     await tapUntilId(ctx, 'TransactionForm.TagsSelector', 'TagPickerBottomSheet.Input', 1, 5_000);
+    await expectSettledId(ctx, 'TagPickerBottomSheet.Input');
     await byId(ctx.screen, 'TagPickerBottomSheet.Input').fill(tag);
     await expectId(ctx, `TagPickerBottomSheet.Card.${tag}`, 15_000);
     await tapId(ctx, `TagPickerBottomSheet.Card.${tag}`);
