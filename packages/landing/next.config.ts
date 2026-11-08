@@ -12,6 +12,7 @@ const nextConfig: NextConfig = {
         minimumCacheTTL: 2_678_400
     },
     experimental: {
+        cpus: 4,
         inlineCss: true,
         memoryBasedWorkersCount: true,
         preloadEntriesOnStart: false,
