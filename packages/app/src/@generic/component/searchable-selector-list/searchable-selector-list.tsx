@@ -3,6 +3,7 @@ import { View } from 'react-native';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
+import { useAnchoredMorphPanelSettled } from '../../context/anchored-morph-panel-settled.context';
 import { SelectorRowKindEnum } from '../../enum/selector-row-kind.enum';
 import { useFormsheetListContentStyle } from '../../hook/use-formsheet-list-content-style/use-formsheet-list-content-style.hook';
 import { useSectionIndex } from '../../hook/use-section-index/use-section-index.hook';
@@ -39,6 +40,7 @@ const getRowType = <T,>(row: SelectorListRowInterface<T>) => (isDefined(row.item
 
 export const SearchableSelectorList = <T,>({ header, sections, keyExtractor, renderItem, emptyState, query, className }: Props<T>) => {
     const contentContainerStyle = useFormsheetListContentStyle();
+    const isPanelSettled = useAnchoredMorphPanelSettled();
     const rows = flattenSelectorSections(sections, keyExtractor);
     const { listRef, sectionLetters, visibleLetter, handleSectionLetter, handleViewableItemsChanged } = useSectionIndex(rows);
     const hasRail = isNotEmptyArray(sectionLetters);
@@ -74,13 +76,15 @@ export const SearchableSelectorList = <T,>({ header, sections, keyExtractor, ren
             {header}
 
             <View className="flex-1">
-                <SelectorList listRef={listRef} data={rows} keyExtractor={rowKeyExtractor} renderItem={renderRow} options={listOptions}>
-                    {hasRail ? (
-                        <View className="absolute z-30 justify-center pt-md" style={RAIL_POSITION_STYLE}>
-                            <SectionIndexRail letters={sectionLetters} activeLetter={visibleLetter} onSelect={handleSectionLetter} />
-                        </View>
-                    ) : null}
-                </SelectorList>
+                {isPanelSettled ? (
+                    <SelectorList listRef={listRef} data={rows} keyExtractor={rowKeyExtractor} renderItem={renderRow} options={listOptions}>
+                        {hasRail ? (
+                            <View className="absolute z-30 justify-center pt-md" style={RAIL_POSITION_STYLE}>
+                                <SectionIndexRail letters={sectionLetters} activeLetter={visibleLetter} onSelect={handleSectionLetter} />
+                            </View>
+                        ) : null}
+                    </SelectorList>
+                ) : null}
             </View>
 
             <SheetBottomFade />

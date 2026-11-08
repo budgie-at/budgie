@@ -1,11 +1,10 @@
 import { useWindowDimensions } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-const SHEET_TOP_MARGIN = 24;
+import { useMorphingSheetFrame } from './use-morphing-sheet-frame.hook';
 
 export const useMorphingSheetListHeight = (ratio: number) => {
     const { height: windowHeight } = useWindowDimensions();
-    const { top } = useSafeAreaInsets();
+    const { baseBottom, frameHeight } = useMorphingSheetFrame();
 
-    return { height: Math.min(windowHeight * ratio, windowHeight - top - SHEET_TOP_MARGIN) };
+    return { height: Math.min(windowHeight * ratio, frameHeight - baseBottom) };
 };

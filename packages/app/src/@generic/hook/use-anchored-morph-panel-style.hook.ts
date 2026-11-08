@@ -16,6 +16,7 @@ const PANEL_TOP_GAP = 8;
 const PANEL_BOTTOM_GAP = 8;
 const PANEL_RADIUS = 32;
 const GHOST_FADE_END = 0.35;
+const PANEL_FADE_END = 0.15;
 const CONTENT_FADE_START = 0.15;
 const CONTENT_FADE_END = 0.6;
 const SCRIM_OPACITY_LIGHT = 0.5;
@@ -23,6 +24,7 @@ const SCRIM_OPACITY_DARK = 0.8;
 const PROGRESS_RANGE = [0, 1];
 const GHOST_FADE_RANGE = [0, GHOST_FADE_END];
 const CONTENT_FADE_RANGE = [CONTENT_FADE_START, CONTENT_FADE_END];
+const PANEL_FADE_RANGE = [0, PANEL_FADE_END];
 
 export const useAnchoredMorphPanelStyle = (
     progress: SharedValue<number>,
@@ -69,6 +71,7 @@ export const useAnchoredMorphPanelStyle = (
             borderBottomLeftRadius: interpolate(current, PROGRESS_RANGE, [origin.radii.bottomLeft, PANEL_RADIUS], Extrapolation.CLAMP),
             borderBottomRightRadius: interpolate(current, PROGRESS_RANGE, [origin.radii.bottomRight, PANEL_RADIUS], Extrapolation.CLAMP),
             borderCurve: 'continuous',
+            opacity: interpolate(current, PANEL_FADE_RANGE, PROGRESS_RANGE, Extrapolation.CLAMP),
             backgroundColor: interpolateColor(current, PROGRESS_RANGE, [origin.color, sheetColor])
         };
     });

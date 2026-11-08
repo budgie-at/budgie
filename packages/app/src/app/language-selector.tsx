@@ -1,4 +1,4 @@
-import { SingleStepMorphingSheet } from '../@generic/component/single-step-morphing-sheet/single-step-morphing-sheet';
+import { SelectorMorphingSurface } from '../@generic/component/selector-morphing-surface/selector-morphing-surface';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { useMorphingSheetResult } from '../@generic/hook/use-morphing-sheet-result.hook';
 import { LanguageSelectorModalContent } from '../i18n/components/language-selector-modal-content/language-selector-modal-content';
@@ -9,12 +9,12 @@ import type { LanguageEnum } from '@budgie/contracts';
 export default function LanguageSelectorModal() {
     const [, resolveLanguageSelector, dismissLanguageSelector] = useLanguageSelectorModal();
     useModalDismiss(dismissLanguageSelector);
-    const selectedLanguage = useLanguageSelectorModalParams()?.selectedLanguage;
+    const currentParams = useLanguageSelectorModalParams();
     const { handleCommit, handleDismissed } = useMorphingSheetResult<LanguageEnum>(resolveLanguageSelector);
 
     return (
-        <SingleStepMorphingSheet onDismiss={handleDismissed} isContentDraggable={false}>
-            <LanguageSelectorModalContent selectedLanguage={selectedLanguage} onCommit={handleCommit} />
-        </SingleStepMorphingSheet>
+        <SelectorMorphingSurface origin={currentParams?.origin} onDismissed={handleDismissed}>
+            <LanguageSelectorModalContent selectedLanguage={currentParams?.selectedLanguage} onCommit={handleCommit} />
+        </SelectorMorphingSurface>
     );
 }
