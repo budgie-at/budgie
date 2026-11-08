@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
-import { useWindowDimensions } from 'react-native';
 import { KeyboardEvents, useKeyboardState } from 'react-native-keyboard-controller';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { isPositiveNumber } from '@rnw-community/shared';
+
+import { MORPHING_SHEET_DESTINATION_HEIGHT_RATIO } from '../../@generic/constant/morphing-sheet-height-ratio.constant';
+import { useMorphingSheetListHeight } from '../../@generic/hook/use-morphing-sheet-list-height.hook';
 
 import type { LayoutChangeEvent, NativeScrollEvent, NativeSyntheticEvent, ScrollView } from 'react-native';
 
@@ -11,7 +12,7 @@ const FEE_REVEAL_GAP = 40;
 
 export const useSheetScroll = () => {
     const isKeyboardVisible = useKeyboardState(state => state.isVisible);
-    const maxHeight = useWindowDimensions().height - useSafeAreaInsets().top - useKeyboardState(state => state.height);
+    const maxHeight = useMorphingSheetListHeight(MORPHING_SHEET_DESTINATION_HEIGHT_RATIO).height - useKeyboardState(state => state.height);
     const scrollRef = useRef<ScrollView>(null);
     const revealRef = useRef({ feeBottom: 0, viewportHeight: 0 });
     const [heroTop, setHeroTop] = useState(0);

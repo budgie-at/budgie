@@ -225,7 +225,7 @@ msgstr "{assignedLabel} attribués · {incomeLabel} prévus"
 msgid "{assignedLabel} assigned · {incomeLabel} received"
 msgstr "{assignedLabel} attribués · {incomeLabel} reçus"
 
-#: src/app/import-column-mapper.tsx
+#: src/import/components/import-column-mapper-modal-content/import-column-mapper-modal-content.tsx
 msgid "{availableCount, plural, one {# column available} other {# columns available}}"
 msgstr "{availableCount, plural, one {# colonne disponible} other {# colonnes disponibles}}"
 
@@ -544,11 +544,11 @@ msgstr "{formattedDifference} au-dessus de la limite"
 msgid "{formattedDifference} under limit"
 msgstr "{formattedDifference} sous la limite"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
+#: src/transaction/components/split-entries-step/split-entries-step.tsx
 msgid "{formattedRemaining} left to assign"
 msgstr "{formattedRemaining} à attribuer"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
+#: src/transaction/components/split-entries-step/split-entries-step.tsx
 msgid "{formattedRemaining} over budget"
 msgstr "{formattedRemaining} au-dessus du budget"
 
@@ -1224,7 +1224,7 @@ msgstr "Au-dessus de ce montant"
 msgid "account"
 msgstr "compte"
 
-#: src/app/account-selector.tsx
+#: src/account/component/account-selector-sheet-content/account-selector-sheet-content.tsx
 #: src/recurring/components/recurring-form-account-field/recurring-form-account-field.tsx
 #: src/rule/components/rule-condition-account-selector/rule-condition-account-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
@@ -1452,7 +1452,7 @@ msgstr "Ajoutez votre première transaction pour voir où va votre argent."
 msgid "Add your key"
 msgstr "Ajoutez votre clé"
 
-#: src/recurring/components/make-recurring-sheet/make-recurring-sheet.tsx
+#: src/app/make-recurring.tsx
 msgid "Added to {title}"
 msgstr "Ajouté à {title}"
 
@@ -1536,7 +1536,7 @@ msgstr "Toutes les catégories ont des icônes"
 msgid "All caught up"
 msgstr "Tout est à jour"
 
-#: src/app/import-column-mapper.tsx
+#: src/import/components/import-column-mapper-modal-content/import-column-mapper-modal-content.tsx
 msgid "All columns are already matched"
 msgstr "Toutes les colonnes sont déjà associées"
 
@@ -2011,7 +2011,7 @@ msgstr "Relevé bancaire"
 msgid "Bank sync"
 msgstr "Synchronisation bancaire"
 
-#: src/app/resync-window-picker.tsx
+#: src/sync/component/resync-window-picker-modal-content/resync-window-picker-modal-content.tsx
 msgid "Bank sync reset"
 msgstr "Synchronisation bancaire réinitialisée"
 
@@ -2318,7 +2318,7 @@ msgstr "Ne pourra pas être modifiée"
 #: src/tag/hooks/use-delete-tag.hook.ts
 #: src/transaction/components/convert-to-refund-header/convert-to-refund-header.tsx
 #: src/transaction/components/convert-to-transfer-header/convert-to-transfer-header.tsx
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
+#: src/transaction/components/split-entries-step/split-entries-step.tsx
 #: src/transaction/components/transaction-fee-step/transaction-fee-step.tsx
 #: src/transaction/components/transaction-form-actions/transaction-form-actions.tsx
 #: src/transaction/hook/use-convert-to-refund-action.hook.ts
@@ -2507,7 +2507,7 @@ msgstr "Vérifiez l’orthographe ou créez-la comme nouvelle étiquette."
 msgid "Check the spelling or search by another name."
 msgstr "Vérifiez l’orthographe ou cherchez un autre nom."
 
-#: src/app/rule-mcc-selector.tsx
+#: src/rule/components/rule-mcc-selector-modal-content/rule-mcc-selector-modal-content.tsx
 msgid "Check the spelling or try a code like 5812."
 msgstr "Vérifiez l’orthographe ou essayez un code comme 5812."
 
@@ -2581,7 +2581,7 @@ msgstr "Choisis un nouveau code PIN"
 msgid "Choose a period"
 msgstr "Choisir une période"
 
-#: src/app/resync-window-picker.tsx
+#: src/sync/component/resync-window-picker-modal-content/resync-window-picker-modal-content.tsx
 msgid "Choose a period to re-sync past transactions."
 msgstr "Choisissez une période pour synchroniser à nouveau les transactions passées."
 
@@ -3232,7 +3232,7 @@ msgstr "Impossible de supprimer les téléchargements inutilisés"
 msgid "Could not repair sync data"
 msgstr "Impossible de réparer les données de synchronisation"
 
-#: src/app/resync-window-picker.tsx
+#: src/sync/component/resync-window-picker-modal-content/resync-window-picker-modal-content.tsx
 msgid "Could not reset bank sync"
 msgstr "Impossible de réinitialiser la synchronisation bancaire"
 
@@ -3334,7 +3334,7 @@ msgstr "Impossible de mettre à jour la fonctionnalité d’IA"
 msgid "Could not update category icon"
 msgstr "Impossible de mettre à jour l'icône de la catégorie"
 
-#: src/app/bank-integration-key.tsx
+#: src/sync/component/bank-integration-key-modal-content/bank-integration-key-modal-content.tsx
 msgid "Could not update key"
 msgstr "Impossible de mettre à jour la clé"
 
@@ -3387,7 +3387,7 @@ msgstr "Impossible de mettre à jour le réglage de téléchargement"
 msgid "Could not update the key"
 msgstr "Impossible de mettre à jour la clé"
 
-#: src/app/bank-integration-key.tsx
+#: src/sync/component/bank-integration-key-modal-content/bank-integration-key-modal-content.tsx
 msgid "Could not update the key. Try again."
 msgstr "Impossible de mettre à jour la clé. Réessayez."
 
@@ -3624,8 +3624,8 @@ msgid "date"
 msgstr "date"
 
 #: src/@generic/component/date-filter/date-filter.tsx
+#: src/@generic/component/date-picker-sheet-content/date-picker-sheet-content.tsx
 #: src/app/(main)/import-csv.tsx
-#: src/app/date-picker.tsx
 #: src/import/utils/get-import-match-description.util.ts
 #: src/inzhur/component/inzhur-purchase-date-field/inzhur-purchase-date-field.tsx
 #: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
@@ -3930,9 +3930,9 @@ msgstr "ne contient pas"
 msgid "Does not contain"
 msgstr "Ne contient pas"
 
+#: src/@generic/component/date-picker-sheet-content/date-picker-sheet-content.tsx
 #: src/@generic/component/keyboard-done-accessory/keyboard-done-accessory.tsx
 #: src/@generic/component/sheet-title-row/sheet-title-row.tsx
-#: src/app/date-picker.tsx
 #: src/categorize-inbox/components/categorize-inbox-done-button/categorize-inbox-done-button.tsx
 #: src/inzhur/component/inzhur-import-summary-footer/inzhur-import-summary-footer.tsx
 #: src/onboarding/component/onboarding-keyboard-controls/onboarding-keyboard-controls.tsx
@@ -3940,7 +3940,7 @@ msgstr "Ne contient pas"
 #: src/transaction/components/convert-to-refund-header/convert-to-refund-header.tsx
 #: src/transaction/components/convert-to-transfer-header/convert-to-transfer-header.tsx
 #: src/transaction/components/convert-transfer-form/convert-transfer-form.tsx
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
+#: src/transaction/components/split-entries-step/split-entries-step.tsx
 #: src/transaction/components/transaction-note-field-icon/transaction-note-field-icon.tsx
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
 #: src/transaction/hook/use-transaction-keypad-editing.hook.ts
@@ -4043,7 +4043,7 @@ msgstr "Date d'échéance"
 msgid "Duplicate rule"
 msgstr "Dupliquer la règle"
 
-#: src/app/resync-window-picker.tsx
+#: src/sync/component/resync-window-picker-modal-content/resync-window-picker-modal-content.tsx
 msgid "Duplicates are merged automatically. Your categories, tags and notes stay."
 msgstr "Les doublons sont fusionnés automatiquement. Vos catégories, étiquettes et notes sont conservées."
 
@@ -4349,7 +4349,7 @@ msgstr "Saisis ton code PIN pour le désactiver. Toute personne capable de déve
 msgid "Entire available history"
 msgstr "Tout l’historique disponible"
 
-#: src/app/resync-window-picker.tsx
+#: src/sync/component/resync-window-picker-modal-content/resync-window-picker-modal-content.tsx
 msgid "Entire history will be re-synced on next sync."
 msgstr "L'historique complet sera resynchronisé lors de la prochaine synchronisation."
 
@@ -4795,7 +4795,7 @@ msgstr "De vos paiements récurrents : {name}, {amountLabel} par cycle"
 msgid "Full history. Cash now matches your Inzhur account."
 msgstr "Historique complet. Les liquidités correspondent maintenant à votre compte Inzhur."
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
+#: src/transaction/components/split-entries-step/split-entries-step.tsx
 msgid "Fully assigned"
 msgstr "Entièrement réparti"
 
@@ -4847,7 +4847,7 @@ msgstr "Générez automatiquement des noms anglais et des mots-clés de recherch
 msgid "German"
 msgstr "Allemand"
 
-#: src/app/bank-integration-key.tsx
+#: src/sync/component/bank-integration-key-modal-content/bank-integration-key-modal-content.tsx
 msgid "Get a new key"
 msgstr "Obtenir une nouvelle clé"
 
@@ -4918,7 +4918,7 @@ msgstr "Masqué de l’accueil, des totaux et des budgets jusqu’à sa restaura
 msgid "Hide breakdown"
 msgstr "Masquer la répartition"
 
-#: src/transaction/components/transaction-keypad/transaction-keypad.tsx
+#: src/transaction/components/transaction-keypad-dismiss-button/transaction-keypad-dismiss-button.tsx
 msgid "Hide keypad"
 msgstr "Masquer le pavé numérique"
 
@@ -5339,7 +5339,7 @@ msgstr "Clé refusée"
 msgid "Key rejected — sync is paused"
 msgstr "Clé refusée — synchronisation en pause"
 
-#: src/app/bank-integration-key.tsx
+#: src/sync/component/bank-integration-key-modal-content/bank-integration-key-modal-content.tsx
 #: src/sync/component/enable-banking-choose-key-row/enable-banking-choose-key-row.tsx
 msgid "Key updated"
 msgstr "Clé mise à jour"
@@ -5352,7 +5352,7 @@ msgstr "Sachez ce que vous pouvez dépenser"
 msgid "Label matching payments with a tag"
 msgstr "Étiqueter les paiements correspondants"
 
-#: src/app/language-selector.tsx
+#: src/i18n/components/language-selector-modal-content/language-selector-modal-content.tsx
 #: src/settings/components/language-selector/language-selector.tsx
 msgid "Language"
 msgstr "Langue"
@@ -5715,11 +5715,11 @@ msgstr "Peut prendre quelques minutes"
 msgid "MCC"
 msgstr "MCC"
 
-#: src/app/rule-mcc-selector.tsx
+#: src/rule/components/rule-mcc-selector-modal-content/rule-mcc-selector-modal-content.tsx
 msgid "MCC categories are not loaded"
 msgstr "Les catégories MCC ne sont pas chargées"
 
-#: src/app/rule-mcc-selector.tsx
+#: src/rule/components/rule-mcc-selector-modal-content/rule-mcc-selector-modal-content.tsx
 msgid "MCC codes"
 msgstr "Codes MCC"
 
@@ -5809,7 +5809,7 @@ msgstr "Argent prêté ou emprunté"
 msgid "Monobank"
 msgstr "Monobank"
 
-#: src/app/bank-integration-key.tsx
+#: src/sync/component/bank-integration-key-modal-content/bank-integration-key-modal-content.tsx
 msgid "Monobank API key"
 msgstr "Clé API Monobank"
 
@@ -5825,11 +5825,11 @@ msgstr "Monobank te fournit un jeton personnel. Budgie l'utilise pour parler dir
 msgid "Monobank key updated"
 msgstr "Clé Monobank mise à jour"
 
-#: src/app/bank-integration-key.tsx
+#: src/sync/component/bank-integration-key-modal-content/bank-integration-key-modal-content.tsx
 msgid "Monobank limits how often keys can be checked. Try again in a minute."
 msgstr "Monobank limite la fréquence de vérification des clés. Réessayez dans une minute."
 
-#: src/app/bank-integration-key.tsx
+#: src/sync/component/bank-integration-key-modal-content/bank-integration-key-modal-content.tsx
 msgid "Monobank rejected this key. Check it and try again."
 msgstr "Monobank a refusé cette clé. Vérifiez-la et réessayez."
 
@@ -6175,7 +6175,7 @@ msgstr "Aucune icône trouvée"
 msgid "No income in this view"
 msgstr "Aucun revenu dans cette vue"
 
-#: src/app/voice-review.tsx
+#: src/ai/component/voice-review-step/voice-review-step.tsx
 msgid "No items to save"
 msgstr "Aucun élément à enregistrer"
 
@@ -6203,7 +6203,7 @@ msgstr "Aucune dépense correspondante"
 msgid "No matching transactions"
 msgstr "Aucune transaction correspondante"
 
-#: src/app/rule-mcc-selector.tsx
+#: src/rule/components/rule-mcc-selector-modal-content/rule-mcc-selector-modal-content.tsx
 msgid "No MCC codes available"
 msgstr "Aucun code MCC disponible"
 
@@ -6329,8 +6329,8 @@ msgstr "Aucun paiement à venir"
 msgid "Non-monthly bills are averaged per month."
 msgstr "Les factures non mensuelles sont lissées par mois."
 
-#: src/app/import-column-mapper.tsx
 #: src/import/components/import-column-map-field/import-column-map-field.tsx
+#: src/import/components/import-column-mapper-modal-content/import-column-mapper-modal-content.tsx
 #: src/recurring/components/recurring-form-category-field/recurring-form-category-field.tsx
 #: src/settings/components/default-account-selector/default-account-selector.tsx
 #: src/sync/component/file-import-review-step/file-import-review-step.tsx
@@ -6719,7 +6719,7 @@ msgstr "Opérations importées"
 msgid "Optional"
 msgstr "Facultatif"
 
-#: src/account/component/debt-opening-account-field/debt-opening-account-field.tsx
+#: src/account/component/debt-opening-account-row/debt-opening-account-row.tsx
 msgid "Optional — without it the amount stays manual"
 msgstr "Facultatif — sans lui, le montant reste manuel"
 
@@ -6962,7 +6962,7 @@ msgstr "Années passées"
 msgid "Paste API key"
 msgstr "Coller la clé API"
 
-#: src/app/bank-integration-key.tsx
+#: src/sync/component/bank-integration-key-modal-content/bank-integration-key-modal-content.tsx
 msgid "Paste the key from api.monobank.ua."
 msgstr "Collez la clé provenant de api.monobank.ua."
 
@@ -7338,15 +7338,15 @@ msgstr "Rechiffrement de tes données. Garde Budgie ouvert, l'app redémarre une
 msgid "Re-record"
 msgstr "Réenregistrer"
 
-#: src/app/resync-window-picker.tsx
+#: src/sync/component/resync-window-picker-modal-content/resync-window-picker-modal-content.tsx
 msgid "Re-sync of last 30 days will start on next sync."
 msgstr "La resynchronisation des 30 derniers jours commencera à la prochaine synchronisation."
 
-#: src/app/resync-window-picker.tsx
+#: src/sync/component/resync-window-picker-modal-content/resync-window-picker-modal-content.tsx
 msgid "Re-sync of last 7 days will start on next sync."
 msgstr "La resynchronisation des 7 derniers jours commencera à la prochaine synchronisation."
 
-#: src/app/resync-window-picker.tsx
+#: src/sync/component/resync-window-picker-modal-content/resync-window-picker-modal-content.tsx
 msgid "Re-sync of last 90 days will start on next sync."
 msgstr "La resynchronisation des 90 derniers jours commencera à la prochaine synchronisation."
 
@@ -7537,7 +7537,7 @@ msgstr "Restant"
 msgid "Reminder"
 msgstr "Rappel"
 
-#: src/account/component/debt-opening-account-field/debt-opening-account-field.tsx
+#: src/account/component/debt-opening-account-row/debt-opening-account-row.tsx
 #: src/app/(tabs)/settings/sync-repairs.tsx
 #: src/budget/components/budget-category-limit-deletable-row/budget-category-limit-deletable-row.tsx
 msgid "Remove"
@@ -7579,11 +7579,11 @@ msgstr "Supprimer les frais"
 msgid "Remove fee?"
 msgstr "Supprimer les frais ?"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
+#: src/transaction/components/split-entries-step/split-entries-step.tsx
 msgid "Remove split"
 msgstr "Supprimer la répartition"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
+#: src/transaction/components/split-entries-step/split-entries-step.tsx
 msgid "Remove split?"
 msgstr "Supprimer la répartition ?"
 
@@ -7939,7 +7939,7 @@ msgstr "Scellé. Seul ton code PIN ouvre ce fichier."
 msgid "Search accounts..."
 msgstr "Rechercher des comptes..."
 
-#: src/app/account-selector.tsx
+#: src/account/component/account-selector-sheet-content/account-selector-sheet-content.tsx
 msgid "Search accounts…"
 msgstr "Rechercher des comptes…"
 
@@ -7947,7 +7947,7 @@ msgstr "Rechercher des comptes…"
 msgid "Search archived accounts…"
 msgstr "Rechercher des comptes archivés…"
 
-#: src/app/rule-mcc-selector.tsx
+#: src/rule/components/rule-mcc-selector-modal-content/rule-mcc-selector-modal-content.tsx
 msgid "Search by code or description…"
 msgstr "Rechercher par code ou description..."
 
@@ -8050,7 +8050,7 @@ msgstr "Sélectionner un contact"
 msgid "Select a valid column"
 msgstr "Sélectionnez une colonne valide"
 
-#: src/account/component/debt-opening-account-field/debt-opening-account-field.tsx
+#: src/account/component/debt-opening-account-row/debt-opening-account-row.tsx
 msgid "Select account"
 msgstr "Sélectionner un compte"
 
@@ -8060,7 +8060,7 @@ msgid "Select all"
 msgstr "Tout sélectionner"
 
 #: src/ai/component/voice-review-save-button/voice-review-save-button.tsx
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
+#: src/transaction/components/split-entries-step/split-entries-step.tsx
 msgid "Select all categories"
 msgstr "Sélectionner toutes les catégories"
 
@@ -8373,7 +8373,7 @@ msgstr "Dépenses <0>{formattedExpense}</0> · Revenus <1>{formattedIncome}</1>"
 msgid "Spent so far"
 msgstr "Dépensé jusqu'ici"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
+#: src/transaction/components/split-entries-step/split-entries-step.tsx
 #: src/transaction/components/transaction-split-field-icon/transaction-split-field-icon.tsx
 msgid "Split"
 msgstr "Diviser"
@@ -8556,8 +8556,8 @@ msgstr "Synchronisation désactivée"
 msgid "Sync or import"
 msgstr "Synchroniser ou importer"
 
-#: src/app/resync-window-picker.tsx
 #: src/sync/component/resync-account/resync-account.tsx
+#: src/sync/component/resync-window-picker-modal-content/resync-window-picker-modal-content.tsx
 msgid "Sync past transactions"
 msgstr "Synchroniser les transactions passées"
 
@@ -8696,7 +8696,7 @@ msgstr "Touchez une suggestion pour l’utiliser pour cette catégorie."
 msgid "Tap a value to copy it."
 msgstr "Touchez une valeur pour la copier."
 
-#: src/app/voice-review.tsx
+#: src/ai/component/voice-review-step/voice-review-step.tsx
 msgid "Tap re-record to try again"
 msgstr "Appuyez sur réenregistrer pour réessayer"
 
@@ -8965,11 +8965,11 @@ msgstr "Voici où vivent vos données et qui peut les lire. Vous retrouverez ces
 msgid "This isn’t available in Budgie yet."
 msgstr "Ce n’est pas encore disponible dans Budgie."
 
-#: src/app/bank-integration-key.tsx
+#: src/sync/component/bank-integration-key-modal-content/bank-integration-key-modal-content.tsx
 msgid "This key already syncs another of your Monobank sections."
 msgstr "Cette clé synchronise déjà une autre de vos sections Monobank."
 
-#: src/app/bank-integration-key.tsx
+#: src/sync/component/bank-integration-key-modal-content/bank-integration-key-modal-content.tsx
 msgid "This key is for a different Monobank client."
 msgstr "Cette clé appartient à un autre client Monobank."
 
@@ -9062,7 +9062,7 @@ msgstr "Cette semaine"
 msgid "This will clear all cached account balances and recalculate them from your transactions. This may take a moment."
 msgstr "Cela effacera tous les soldes de compte mis en cache et les recalculera à partir de vos transactions. Cela peut prendre un moment."
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
+#: src/transaction/components/split-entries-step/split-entries-step.tsx
 msgid "This will keep one entry with the full transaction amount."
 msgstr "Cela conservera une seule écriture avec le montant total de la transaction."
 
@@ -9755,7 +9755,7 @@ msgstr "valeur indisponible"
 msgid "Value unavailable"
 msgstr "Valeur indisponible"
 
-#: src/recurring/components/make-recurring-sheet/make-recurring-sheet.tsx
+#: src/app/make-recurring.tsx
 msgid "View"
 msgstr "Voir"
 
@@ -9776,7 +9776,7 @@ msgid "View your payments in another month."
 msgstr "Consultez vos paiements d’un autre mois."
 
 #: src/ai/component/ai-settings-section/ai-settings-section.tsx
-#: src/app/voice-review.tsx
+#: src/ai/component/voice-review-step/voice-review-step.tsx
 msgid "Voice notes"
 msgstr "Notes vocales"
 

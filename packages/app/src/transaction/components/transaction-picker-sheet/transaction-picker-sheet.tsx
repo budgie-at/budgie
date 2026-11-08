@@ -19,10 +19,10 @@ export const TransactionPickerSheet = ({ header, pinnedFooter, scrollFooter, chi
     const largeText = useIsAccessibilityTextSize();
     const frameClassName = largeText ? 'flex-1 pt-sm' : 'flex-1 pt-xl';
     const headerClassName = largeText ? 'shrink-0 px-xl' : 'shrink-0 px-xl pb-md';
-    const contentClassName = largeText ? 'grow px-xl pb-safe-or-[16px]' : 'grow px-xl pb-xl';
+    const contentClassName = largeText ? 'grow px-xl pb-[16px]' : 'grow px-xl pb-xl';
 
     return (
-        <SheetSurface>
+        <SheetSurface className="pt-lg">
             <View className={frameClassName} collapsable={false}>
                 <View className={headerClassName} collapsable={false}>
                     {header}
@@ -40,7 +40,7 @@ export const TransactionPickerSheet = ({ header, pinnedFooter, scrollFooter, chi
                     </ScrollView>
                 </View>
                 {isDefined(pinnedFooter) ? (
-                    <View className="shrink-0 border-t border-surface-separator px-xl pt-md pb-safe-or-[16px]" collapsable={false}>
+                    <View className="shrink-0 border-t border-surface-separator px-xl pt-md pb-[16px]" collapsable={false}>
                         {pinnedFooter}
                     </View>
                 ) : null}

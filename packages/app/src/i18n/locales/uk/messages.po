@@ -225,7 +225,7 @@ msgstr "{assignedLabel} розподілено · {incomeLabel} очікуєть
 msgid "{assignedLabel} assigned · {incomeLabel} received"
 msgstr "{assignedLabel} розподілено · {incomeLabel} отримано"
 
-#: src/app/import-column-mapper.tsx
+#: src/import/components/import-column-mapper-modal-content/import-column-mapper-modal-content.tsx
 msgid "{availableCount, plural, one {# column available} other {# columns available}}"
 msgstr "{availableCount, plural, one {# стовпець доступний} few {# стовпці доступні} many {# стовпців доступні} other {# стовпця доступні}}"
 
@@ -544,11 +544,11 @@ msgstr "{formattedDifference} понад ліміт"
 msgid "{formattedDifference} under limit"
 msgstr "{formattedDifference} у межах ліміту"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
+#: src/transaction/components/split-entries-step/split-entries-step.tsx
 msgid "{formattedRemaining} left to assign"
 msgstr "{formattedRemaining} залишилось розподілити"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
+#: src/transaction/components/split-entries-step/split-entries-step.tsx
 msgid "{formattedRemaining} over budget"
 msgstr "{formattedRemaining} понад бюджет"
 
@@ -1224,7 +1224,7 @@ msgstr "Більше за цю суму"
 msgid "account"
 msgstr "рахунок"
 
-#: src/app/account-selector.tsx
+#: src/account/component/account-selector-sheet-content/account-selector-sheet-content.tsx
 #: src/recurring/components/recurring-form-account-field/recurring-form-account-field.tsx
 #: src/rule/components/rule-condition-account-selector/rule-condition-account-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
@@ -1452,7 +1452,7 @@ msgstr "Додайте першу транзакцію, щоб побачити,
 msgid "Add your key"
 msgstr "Додайте свій ключ"
 
-#: src/recurring/components/make-recurring-sheet/make-recurring-sheet.tsx
+#: src/app/make-recurring.tsx
 msgid "Added to {title}"
 msgstr "Додано до {title}"
 
@@ -1536,7 +1536,7 @@ msgstr "Усі категорії мають іконки"
 msgid "All caught up"
 msgstr "Усе оброблено"
 
-#: src/app/import-column-mapper.tsx
+#: src/import/components/import-column-mapper-modal-content/import-column-mapper-modal-content.tsx
 msgid "All columns are already matched"
 msgstr "Усі стовпці вже зіставлено"
 
@@ -2011,7 +2011,7 @@ msgstr "Банківська виписка"
 msgid "Bank sync"
 msgstr "Синхронізація банку"
 
-#: src/app/resync-window-picker.tsx
+#: src/sync/component/resync-window-picker-modal-content/resync-window-picker-modal-content.tsx
 msgid "Bank sync reset"
 msgstr "Синхронізацію з банком скинуто"
 
@@ -2318,7 +2318,7 @@ msgstr "Змінити пізніше не можна"
 #: src/tag/hooks/use-delete-tag.hook.ts
 #: src/transaction/components/convert-to-refund-header/convert-to-refund-header.tsx
 #: src/transaction/components/convert-to-transfer-header/convert-to-transfer-header.tsx
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
+#: src/transaction/components/split-entries-step/split-entries-step.tsx
 #: src/transaction/components/transaction-fee-step/transaction-fee-step.tsx
 #: src/transaction/components/transaction-form-actions/transaction-form-actions.tsx
 #: src/transaction/hook/use-convert-to-refund-action.hook.ts
@@ -2507,7 +2507,7 @@ msgstr "Перевірте написання або створіть його �
 msgid "Check the spelling or search by another name."
 msgstr "Перевірте написання або пошукайте за іншою назвою."
 
-#: src/app/rule-mcc-selector.tsx
+#: src/rule/components/rule-mcc-selector-modal-content/rule-mcc-selector-modal-content.tsx
 msgid "Check the spelling or try a code like 5812."
 msgstr "Перевірте написання або спробуйте код, наприклад 5812."
 
@@ -2581,7 +2581,7 @@ msgstr "Виберіть новий PIN-код"
 msgid "Choose a period"
 msgstr "Вибрати період"
 
-#: src/app/resync-window-picker.tsx
+#: src/sync/component/resync-window-picker-modal-content/resync-window-picker-modal-content.tsx
 msgid "Choose a period to re-sync past transactions."
 msgstr "Виберіть період для повторної синхронізації минулих транзакцій."
 
@@ -3232,7 +3232,7 @@ msgstr "Не вдалося видалити невикористані зава
 msgid "Could not repair sync data"
 msgstr "Не вдалося виправити дані синхронізації"
 
-#: src/app/resync-window-picker.tsx
+#: src/sync/component/resync-window-picker-modal-content/resync-window-picker-modal-content.tsx
 msgid "Could not reset bank sync"
 msgstr "Не вдалося скинути синхронізацію з банком"
 
@@ -3334,7 +3334,7 @@ msgstr "Не вдалося оновити функцію ШІ"
 msgid "Could not update category icon"
 msgstr "Не вдалося оновити іконку категорії"
 
-#: src/app/bank-integration-key.tsx
+#: src/sync/component/bank-integration-key-modal-content/bank-integration-key-modal-content.tsx
 msgid "Could not update key"
 msgstr "Не вдалося оновити ключ"
 
@@ -3387,7 +3387,7 @@ msgstr "Не вдалося оновити налаштування завант
 msgid "Could not update the key"
 msgstr "Не вдалося оновити ключ"
 
-#: src/app/bank-integration-key.tsx
+#: src/sync/component/bank-integration-key-modal-content/bank-integration-key-modal-content.tsx
 msgid "Could not update the key. Try again."
 msgstr "Не вдалося оновити ключ. Спробуйте ще раз."
 
@@ -3624,8 +3624,8 @@ msgid "date"
 msgstr "дата"
 
 #: src/@generic/component/date-filter/date-filter.tsx
+#: src/@generic/component/date-picker-sheet-content/date-picker-sheet-content.tsx
 #: src/app/(main)/import-csv.tsx
-#: src/app/date-picker.tsx
 #: src/import/utils/get-import-match-description.util.ts
 #: src/inzhur/component/inzhur-purchase-date-field/inzhur-purchase-date-field.tsx
 #: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
@@ -3930,9 +3930,9 @@ msgstr "не містить"
 msgid "Does not contain"
 msgstr "Не містить"
 
+#: src/@generic/component/date-picker-sheet-content/date-picker-sheet-content.tsx
 #: src/@generic/component/keyboard-done-accessory/keyboard-done-accessory.tsx
 #: src/@generic/component/sheet-title-row/sheet-title-row.tsx
-#: src/app/date-picker.tsx
 #: src/categorize-inbox/components/categorize-inbox-done-button/categorize-inbox-done-button.tsx
 #: src/inzhur/component/inzhur-import-summary-footer/inzhur-import-summary-footer.tsx
 #: src/onboarding/component/onboarding-keyboard-controls/onboarding-keyboard-controls.tsx
@@ -3940,7 +3940,7 @@ msgstr "Не містить"
 #: src/transaction/components/convert-to-refund-header/convert-to-refund-header.tsx
 #: src/transaction/components/convert-to-transfer-header/convert-to-transfer-header.tsx
 #: src/transaction/components/convert-transfer-form/convert-transfer-form.tsx
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
+#: src/transaction/components/split-entries-step/split-entries-step.tsx
 #: src/transaction/components/transaction-note-field-icon/transaction-note-field-icon.tsx
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
 #: src/transaction/hook/use-transaction-keypad-editing.hook.ts
@@ -4043,7 +4043,7 @@ msgstr "Дата платежу"
 msgid "Duplicate rule"
 msgstr "Дублювати правило"
 
-#: src/app/resync-window-picker.tsx
+#: src/sync/component/resync-window-picker-modal-content/resync-window-picker-modal-content.tsx
 msgid "Duplicates are merged automatically. Your categories, tags and notes stay."
 msgstr "Дублікати об’єднуються автоматично. Ваші категорії, теги та нотатки зберігаються."
 
@@ -4349,7 +4349,7 @@ msgstr "Введіть PIN-код, щоб вимкнути блокування.
 msgid "Entire available history"
 msgstr "Уся доступна історія"
 
-#: src/app/resync-window-picker.tsx
+#: src/sync/component/resync-window-picker-modal-content/resync-window-picker-modal-content.tsx
 msgid "Entire history will be re-synced on next sync."
 msgstr "Уся історія буде повторно синхронізована під час наступної синхронізації."
 
@@ -4795,7 +4795,7 @@ msgstr "З ваших регулярних платежів: {name}, {amountLabe
 msgid "Full history. Cash now matches your Inzhur account."
 msgstr "Повна історія. Тепер кошти збігаються з вашим рахунком Inzhur."
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
+#: src/transaction/components/split-entries-step/split-entries-step.tsx
 msgid "Fully assigned"
 msgstr "Повністю розподілено"
 
@@ -4847,7 +4847,7 @@ msgstr "Автоматично створювати англійські наз�
 msgid "German"
 msgstr "Німецька"
 
-#: src/app/bank-integration-key.tsx
+#: src/sync/component/bank-integration-key-modal-content/bank-integration-key-modal-content.tsx
 msgid "Get a new key"
 msgstr "Отримати новий ключ"
 
@@ -4918,7 +4918,7 @@ msgstr "Приховано з головної, підсумків і бюдже
 msgid "Hide breakdown"
 msgstr "Сховати розподіл"
 
-#: src/transaction/components/transaction-keypad/transaction-keypad.tsx
+#: src/transaction/components/transaction-keypad-dismiss-button/transaction-keypad-dismiss-button.tsx
 msgid "Hide keypad"
 msgstr "Сховати цифрову клавіатуру"
 
@@ -5339,7 +5339,7 @@ msgstr "Ключ відхилено"
 msgid "Key rejected — sync is paused"
 msgstr "Ключ відхилено — синхронізацію призупинено"
 
-#: src/app/bank-integration-key.tsx
+#: src/sync/component/bank-integration-key-modal-content/bank-integration-key-modal-content.tsx
 #: src/sync/component/enable-banking-choose-key-row/enable-banking-choose-key-row.tsx
 msgid "Key updated"
 msgstr "Ключ оновлено"
@@ -5352,7 +5352,7 @@ msgstr "Знайте, скільки можна витратити"
 msgid "Label matching payments with a tag"
 msgstr "Позначати відповідні платежі тегом"
 
-#: src/app/language-selector.tsx
+#: src/i18n/components/language-selector-modal-content/language-selector-modal-content.tsx
 #: src/settings/components/language-selector/language-selector.tsx
 msgid "Language"
 msgstr "Мова"
@@ -5715,11 +5715,11 @@ msgstr "Може тривати кілька хвилин"
 msgid "MCC"
 msgstr "MCC"
 
-#: src/app/rule-mcc-selector.tsx
+#: src/rule/components/rule-mcc-selector-modal-content/rule-mcc-selector-modal-content.tsx
 msgid "MCC categories are not loaded"
 msgstr "Категорії MCC не завантажено"
 
-#: src/app/rule-mcc-selector.tsx
+#: src/rule/components/rule-mcc-selector-modal-content/rule-mcc-selector-modal-content.tsx
 msgid "MCC codes"
 msgstr "Коди MCC"
 
@@ -5809,7 +5809,7 @@ msgstr "Гроші, які ви позичили або взяли в борг"
 msgid "Monobank"
 msgstr "Монобанк"
 
-#: src/app/bank-integration-key.tsx
+#: src/sync/component/bank-integration-key-modal-content/bank-integration-key-modal-content.tsx
 msgid "Monobank API key"
 msgstr "API-ключ Monobank"
 
@@ -5825,11 +5825,11 @@ msgstr "Monobank видає вам особистий токен. Budgie вик�
 msgid "Monobank key updated"
 msgstr "Ключ Monobank оновлено"
 
-#: src/app/bank-integration-key.tsx
+#: src/sync/component/bank-integration-key-modal-content/bank-integration-key-modal-content.tsx
 msgid "Monobank limits how often keys can be checked. Try again in a minute."
 msgstr "Monobank обмежує, як часто можна перевіряти ключі. Спробуйте за хвилину."
 
-#: src/app/bank-integration-key.tsx
+#: src/sync/component/bank-integration-key-modal-content/bank-integration-key-modal-content.tsx
 msgid "Monobank rejected this key. Check it and try again."
 msgstr "Monobank відхилив цей ключ. Перевірте його та спробуйте ще раз."
 
@@ -6175,7 +6175,7 @@ msgstr "Іконки не знайдено"
 msgid "No income in this view"
 msgstr "У цьому поданні немає доходів"
 
-#: src/app/voice-review.tsx
+#: src/ai/component/voice-review-step/voice-review-step.tsx
 msgid "No items to save"
 msgstr "Немає елементів для збереження"
 
@@ -6203,7 +6203,7 @@ msgstr "Немає відповідних витрат"
 msgid "No matching transactions"
 msgstr "Немає відповідних транзакцій"
 
-#: src/app/rule-mcc-selector.tsx
+#: src/rule/components/rule-mcc-selector-modal-content/rule-mcc-selector-modal-content.tsx
 msgid "No MCC codes available"
 msgstr "Немає доступних MCC-кодів"
 
@@ -6329,8 +6329,8 @@ msgstr "Немає майбутніх платежів"
 msgid "Non-monthly bills are averaged per month."
 msgstr "Немісячні рахунки враховано як середнє за місяць."
 
-#: src/app/import-column-mapper.tsx
 #: src/import/components/import-column-map-field/import-column-map-field.tsx
+#: src/import/components/import-column-mapper-modal-content/import-column-mapper-modal-content.tsx
 #: src/recurring/components/recurring-form-category-field/recurring-form-category-field.tsx
 #: src/settings/components/default-account-selector/default-account-selector.tsx
 #: src/sync/component/file-import-review-step/file-import-review-step.tsx
@@ -6719,7 +6719,7 @@ msgstr "Операції імпортовано"
 msgid "Optional"
 msgstr "Необов’язково"
 
-#: src/account/component/debt-opening-account-field/debt-opening-account-field.tsx
+#: src/account/component/debt-opening-account-row/debt-opening-account-row.tsx
 msgid "Optional — without it the amount stays manual"
 msgstr "Необов’язково — без нього сума залишається ручною"
 
@@ -6962,7 +6962,7 @@ msgstr "Минулі роки"
 msgid "Paste API key"
 msgstr "Вставте ключ API"
 
-#: src/app/bank-integration-key.tsx
+#: src/sync/component/bank-integration-key-modal-content/bank-integration-key-modal-content.tsx
 msgid "Paste the key from api.monobank.ua."
 msgstr "Вставте ключ із api.monobank.ua."
 
@@ -7338,15 +7338,15 @@ msgstr "Повторно шифруємо ваші дані. Не закрива
 msgid "Re-record"
 msgstr "Записати знову"
 
-#: src/app/resync-window-picker.tsx
+#: src/sync/component/resync-window-picker-modal-content/resync-window-picker-modal-content.tsx
 msgid "Re-sync of last 30 days will start on next sync."
 msgstr "Повторна синхронізація останніх 30 днів розпочнеться під час наступної синхронізації."
 
-#: src/app/resync-window-picker.tsx
+#: src/sync/component/resync-window-picker-modal-content/resync-window-picker-modal-content.tsx
 msgid "Re-sync of last 7 days will start on next sync."
 msgstr "Повторна синхронізація останніх 7 днів розпочнеться під час наступної синхронізації."
 
-#: src/app/resync-window-picker.tsx
+#: src/sync/component/resync-window-picker-modal-content/resync-window-picker-modal-content.tsx
 msgid "Re-sync of last 90 days will start on next sync."
 msgstr "Повторна синхронізація останніх 90 днів розпочнеться під час наступної синхронізації."
 
@@ -7537,7 +7537,7 @@ msgstr "Залишок"
 msgid "Reminder"
 msgstr "Нагадування"
 
-#: src/account/component/debt-opening-account-field/debt-opening-account-field.tsx
+#: src/account/component/debt-opening-account-row/debt-opening-account-row.tsx
 #: src/app/(tabs)/settings/sync-repairs.tsx
 #: src/budget/components/budget-category-limit-deletable-row/budget-category-limit-deletable-row.tsx
 msgid "Remove"
@@ -7579,11 +7579,11 @@ msgstr "Видалити комісію"
 msgid "Remove fee?"
 msgstr "Видалити комісію?"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
+#: src/transaction/components/split-entries-step/split-entries-step.tsx
 msgid "Remove split"
 msgstr "Прибрати розділення"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
+#: src/transaction/components/split-entries-step/split-entries-step.tsx
 msgid "Remove split?"
 msgstr "Прибрати розділення?"
 
@@ -7939,7 +7939,7 @@ msgstr "Запечатано. Лише ваш PIN-код відкриває це
 msgid "Search accounts..."
 msgstr "Пошук рахунків..."
 
-#: src/app/account-selector.tsx
+#: src/account/component/account-selector-sheet-content/account-selector-sheet-content.tsx
 msgid "Search accounts…"
 msgstr "Пошук рахунків…"
 
@@ -7947,7 +7947,7 @@ msgstr "Пошук рахунків…"
 msgid "Search archived accounts…"
 msgstr "Пошук архівних рахунків…"
 
-#: src/app/rule-mcc-selector.tsx
+#: src/rule/components/rule-mcc-selector-modal-content/rule-mcc-selector-modal-content.tsx
 msgid "Search by code or description…"
 msgstr "Пошук за кодом або описом..."
 
@@ -8050,7 +8050,7 @@ msgstr "Виберіть контакт"
 msgid "Select a valid column"
 msgstr "Виберіть дійсний стовпець"
 
-#: src/account/component/debt-opening-account-field/debt-opening-account-field.tsx
+#: src/account/component/debt-opening-account-row/debt-opening-account-row.tsx
 msgid "Select account"
 msgstr "Виберіть рахунок"
 
@@ -8060,7 +8060,7 @@ msgid "Select all"
 msgstr "Вибрати всі"
 
 #: src/ai/component/voice-review-save-button/voice-review-save-button.tsx
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
+#: src/transaction/components/split-entries-step/split-entries-step.tsx
 msgid "Select all categories"
 msgstr "Оберіть усі категорії"
 
@@ -8373,7 +8373,7 @@ msgstr "Витрати <0>{formattedExpense}</0> · Дохід <1>{formattedInco
 msgid "Spent so far"
 msgstr "Витрачено досі"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
+#: src/transaction/components/split-entries-step/split-entries-step.tsx
 #: src/transaction/components/transaction-split-field-icon/transaction-split-field-icon.tsx
 msgid "Split"
 msgstr "Розділити"
@@ -8556,8 +8556,8 @@ msgstr "Синхронізацію вимкнено"
 msgid "Sync or import"
 msgstr "Синхронізація або імпорт"
 
-#: src/app/resync-window-picker.tsx
 #: src/sync/component/resync-account/resync-account.tsx
+#: src/sync/component/resync-window-picker-modal-content/resync-window-picker-modal-content.tsx
 msgid "Sync past transactions"
 msgstr "Синхронізувати минулі транзакції"
 
@@ -8696,7 +8696,7 @@ msgstr "Торкніться пропозиції, щоб використати
 msgid "Tap a value to copy it."
 msgstr "Торкніться значення, щоб скопіювати його."
 
-#: src/app/voice-review.tsx
+#: src/ai/component/voice-review-step/voice-review-step.tsx
 msgid "Tap re-record to try again"
 msgstr "Торкніться «Записати знову», щоб спробувати ще раз"
 
@@ -8965,11 +8965,11 @@ msgstr "Тут зберігаються ваші дані й видно, хто 
 msgid "This isn’t available in Budgie yet."
 msgstr "Це поки недоступно в Budgie."
 
-#: src/app/bank-integration-key.tsx
+#: src/sync/component/bank-integration-key-modal-content/bank-integration-key-modal-content.tsx
 msgid "This key already syncs another of your Monobank sections."
 msgstr "Цей ключ уже синхронізує інший ваш розділ Monobank."
 
-#: src/app/bank-integration-key.tsx
+#: src/sync/component/bank-integration-key-modal-content/bank-integration-key-modal-content.tsx
 msgid "This key is for a different Monobank client."
 msgstr "Цей ключ належить іншому клієнту Monobank."
 
@@ -9062,7 +9062,7 @@ msgstr "Цього тижня"
 msgid "This will clear all cached account balances and recalculate them from your transactions. This may take a moment."
 msgstr "Це очистить всі кешовані баланси рахунків і перерахує їх на основі ваших транзакцій. Це може зайняти деякий час."
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
+#: src/transaction/components/split-entries-step/split-entries-step.tsx
 msgid "This will keep one entry with the full transaction amount."
 msgstr "Це залишить один запис із повною сумою транзакції."
 
@@ -9755,7 +9755,7 @@ msgstr "вартість недоступна"
 msgid "Value unavailable"
 msgstr "Вартість недоступна"
 
-#: src/recurring/components/make-recurring-sheet/make-recurring-sheet.tsx
+#: src/app/make-recurring.tsx
 msgid "View"
 msgstr "Переглянути"
 
@@ -9776,7 +9776,7 @@ msgid "View your payments in another month."
 msgstr "Перегляньте платежі в іншому місяці."
 
 #: src/ai/component/ai-settings-section/ai-settings-section.tsx
-#: src/app/voice-review.tsx
+#: src/ai/component/voice-review-step/voice-review-step.tsx
 msgid "Voice notes"
 msgstr "Голосові нотатки"
 

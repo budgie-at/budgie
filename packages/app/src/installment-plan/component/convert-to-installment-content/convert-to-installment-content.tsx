@@ -9,6 +9,7 @@ import { isNotEmptyString } from '@rnw-community/shared';
 
 import { ENTRANCE_DURATION, ENTRANCE_REDUCED_DURATION } from '../../../@generic/constant/entrance-motion.constant';
 import { EASE_OUT } from '../../../@generic/constant/motion.constant';
+import { useMorphingSheetCommit } from '../../../@generic/hook/use-morphing-sheet-commit.hook';
 import { ConvertToInstallmentFormSchema } from '../../constant/convert-to-installment-form-schema.constant';
 import { useInstallmentAmountLabel } from '../../hook/use-installment-amount-label.hook';
 import { useInstallmentSplit } from '../../hook/use-installment-split.hook';
@@ -25,7 +26,7 @@ import type { ConvertToInstallmentModalParamsInterface } from '../../interface/c
 
 interface Props {
     readonly params: ConvertToInstallmentModalParamsInterface;
-    readonly onResolve: (accountId: number) => void;
+    readonly onCommit: (accountId: number) => void;
 }
 
 const DEFAULT_INSTALLMENT_COUNT = 3;
@@ -34,8 +35,9 @@ const ENTERING = FadeIn.duration(ENTRANCE_DURATION).easing(EASE_OUT);
 const EXITING = FadeOut.duration(ENTRANCE_REDUCED_DURATION).easing(EASE_OUT);
 const FEE_LAYOUT = LinearTransition.duration(ENTRANCE_DURATION).easing(EASE_OUT);
 
-export const ConvertToInstallmentContent = ({ params, onResolve }: Props) => {
+export const ConvertToInstallmentContent = ({ params, onCommit }: Props) => {
     const { t } = useLingui();
+    const commit = useMorphingSheetCommit(onCommit);
     const strippedTitle = params.title.replace(FIRST_PART_TITLE_PREFIX, '').trim();
     const form = useForm<ConvertToInstallmentFormValues>({
         mode: 'onChange',
@@ -112,7 +114,7 @@ export const ConvertToInstallmentContent = ({ params, onResolve }: Props) => {
                             pointerEvents="none"
                         />
                     ) : (
-                        <ConvertToInstallmentCreateButton params={params} split={split} recoveryNote={recoveryNote} onResolve={onResolve} />
+                        <ConvertToInstallmentCreateButton params={params} split={split} recoveryNote={recoveryNote} onResolve={commit} />
                     )}
                 </View>
             </LayoutAnimationConfig>

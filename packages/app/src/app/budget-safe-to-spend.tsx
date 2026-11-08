@@ -3,6 +3,8 @@ import { useLocalSearchParams } from 'expo-router';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { SingleStepMorphingSheet } from '../@generic/component/single-step-morphing-sheet/single-step-morphing-sheet';
+import { goBackOrReplace } from '../@generic/utils/go-back-or-replace.util';
 import { BudgetSafeToSpendSheet } from '../budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet';
 import { BudgetSheetState } from '../budget/components/budget-sheet-state/budget-sheet-state';
 import { useGetActiveBudgetQuery } from '../budget/query/use-get-active-budget.query';
@@ -14,10 +16,16 @@ export default function BudgetSafeToSpendRoute() {
     const activeBudget = useGetActiveBudgetQuery();
     const eventBudget = useGetEventBudgetQuery(Number(eventId ?? 0));
     const { budget, isLoading, isError } = isDefined(eventId) ? eventBudget : activeBudget;
+    const handleDismissed = () => void goBackOrReplace('/');
+    const content = isDefined(budget) ? (
+        <BudgetSafeToSpendSheet budget={budget} />
+    ) : (
+        <BudgetSheetState title={t`Safe to spend`} isLoading={isLoading} isError={isError} />
+    );
 
-    if (!isDefined(budget)) {
-        return <BudgetSheetState title={t`Safe to spend`} isLoading={isLoading} isError={isError} />;
-    }
-
-    return <BudgetSafeToSpendSheet budget={budget} />;
+    return (
+        <SingleStepMorphingSheet onDismiss={handleDismissed} isContentDraggable={false}>
+            {content}
+        </SingleStepMorphingSheet>
+    );
 }

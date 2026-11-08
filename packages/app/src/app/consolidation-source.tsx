@@ -1,41 +1,31 @@
-import { Stack } from 'expo-router';
 import { View } from 'react-native';
 
-import { useIsAccessibilityTextSize } from '../@generic/hook/use-is-accessibility-text-size.hook';
-import { useModalRouteState } from '../@generic/hook/use-modal-route-state/use-modal-route-state.hook';
+import { isDefined } from '@rnw-community/shared';
+
+import { SingleStepMorphingSheet } from '../@generic/component/single-step-morphing-sheet/single-step-morphing-sheet';
+import { MORPHING_SHEET_SELECTOR_HEIGHT_RATIO } from '../@generic/constant/morphing-sheet-height-ratio.constant';
+import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
+import { useMorphingSheetListHeight } from '../@generic/hook/use-morphing-sheet-list-height.hook';
+import { useMorphingSheetResult } from '../@generic/hook/use-morphing-sheet-result.hook';
 import { ConsolidationSourceModalContent } from '../transaction/components/consolidation-source-modal-content/consolidation-source-modal-content';
 import { useConsolidationSourceModal, useConsolidationSourceModalParams } from '../transaction/context/consolidation-source-modal.context';
 
-const COMPACT_DETENT = 0.7;
-const EXPANDED_DETENT = 0.9;
-const ACCESSIBILITY_DETENT = 1;
-
 export default function ConsolidationSourceModal() {
     const [, resolveConsolidationSource, dismissConsolidationSource] = useConsolidationSourceModal();
-    const isAccessibilityTextSize = useIsAccessibilityTextSize();
+    useModalDismiss(dismissConsolidationSource);
     const currentParams = useConsolidationSourceModalParams();
-    const screenOptions = {
-        ...useModalRouteState(currentParams, dismissConsolidationSource),
-        sheetAllowedDetents: isAccessibilityTextSize ? [ACCESSIBILITY_DETENT] : [COMPACT_DETENT, EXPANDED_DETENT],
-        sheetInitialDetentIndex: 0
-    };
+    const listStyle = useMorphingSheetListHeight(MORPHING_SHEET_SELECTOR_HEIGHT_RATIO);
+    const { handleDismissed } = useMorphingSheetResult(resolveConsolidationSource);
 
-    const handleClose = () => {
-        resolveConsolidationSource(null);
-    };
-
-    if (!currentParams) {
+    if (!isDefined(currentParams)) {
         return null;
     }
 
     return (
-        <View className="flex-1 bg-grouped-surface" collapsable={false}>
-            <Stack.Screen options={screenOptions} />
-            <ConsolidationSourceModalContent
-                transactionId={currentParams.transactionId}
-                onClose={handleClose}
-                onRevertSuccess={handleClose}
-            />
-        </View>
+        <SingleStepMorphingSheet onDismiss={handleDismissed} isContentDraggable={false}>
+            <View style={listStyle}>
+                <ConsolidationSourceModalContent transactionId={currentParams.transactionId} />
+            </View>
+        </SingleStepMorphingSheet>
     );
 }

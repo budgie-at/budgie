@@ -2,10 +2,11 @@ import { TransactionConsolidationTypeEnum, UserIconNameEnum } from '@budgie/cont
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Text } from 'react-native';
 
-import { EmptyFn, isDefined, isEmptyArray } from '@rnw-community/shared';
+import { isDefined, isEmptyArray } from '@rnw-community/shared';
 
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { SheetTitleRow } from '../../../@generic/component/sheet-title-row/sheet-title-row';
+import { useMorphingSheetDismiss } from '../../../@generic/context/morphing-sheet.context';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { useRevertConsolidation } from '../../hook/use-revert-consolidation.hook';
 import { useGetConsolidationSourcesQuery } from '../../query/use-get-consolidation-sources.query';
@@ -21,15 +22,14 @@ import { ConsolidationSourceModalSelector } from './consolidation-source-modal-c
 
 interface Props {
     readonly transactionId: number;
-    readonly onClose: EmptyFn;
-    readonly onRevertSuccess: EmptyFn;
 }
 
-export const ConsolidationSourceModalContent = ({ transactionId, onClose, onRevertSuccess }: Props) => {
+export const ConsolidationSourceModalContent = ({ transactionId }: Props) => {
     const { t } = useLingui();
     const largeText = useIsAccessibilityTextSize();
+    const dismiss = useMorphingSheetDismiss();
     const { sources, consolidationType, hasError, isLoading, retry } = useGetConsolidationSourcesQuery(transactionId);
-    const revertConsolidation = useRevertConsolidation(transactionId, onRevertSuccess);
+    const revertConsolidation = useRevertConsolidation(transactionId, dismiss);
     const sourceTitle = consolidationType === TransactionConsolidationTypeEnum.REFUND ? t`Refunds` : t`Sources`;
     const contextLabel = consolidationType === TransactionConsolidationTypeEnum.REFUND ? t`Original expense` : t`Original transaction`;
     const showEmptyState = isEmptyArray(sources) && !hasError;
@@ -49,7 +49,7 @@ export const ConsolidationSourceModalContent = ({ transactionId, onClose, onReve
     return (
         <TransactionPickerSheet
             testID={ConsolidationSourceModalSelector.Picker}
-            header={<SheetTitleRow title={sourceTitle} onClose={onClose} doneTestID={ConsolidationSourceModalSelector.DoneButton} />}
+            header={<SheetTitleRow title={sourceTitle} doneTestID={ConsolidationSourceModalSelector.DoneButton} />}
             pinnedFooter={pinnedFooter}
             scrollFooter={scrollFooter}
         >

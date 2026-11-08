@@ -2,6 +2,8 @@ import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { SingleStepMorphingSheet } from '../@generic/component/single-step-morphing-sheet/single-step-morphing-sheet';
+import { goBackOrReplace } from '../@generic/utils/go-back-or-replace.util';
 import { BudgetLimitChangesSheet } from '../budget/components/budget-limit-changes-sheet/budget-limit-changes-sheet';
 import { BudgetSheetState } from '../budget/components/budget-sheet-state/budget-sheet-state';
 import { useGetActiveBudgetQuery } from '../budget/query/use-get-active-budget.query';
@@ -9,10 +11,16 @@ import { useGetActiveBudgetQuery } from '../budget/query/use-get-active-budget.q
 export default function BudgetLimitChangesRoute() {
     const { t } = useLingui();
     const { budget, isLoading, isError } = useGetActiveBudgetQuery();
+    const handleDismissed = () => void goBackOrReplace('/');
+    const content = isDefined(budget) ? (
+        <BudgetLimitChangesSheet budget={budget} />
+    ) : (
+        <BudgetSheetState title={t`Limit changes`} isLoading={isLoading} isError={isError} />
+    );
 
-    if (!isDefined(budget)) {
-        return <BudgetSheetState title={t`Limit changes`} isLoading={isLoading} isError={isError} />;
-    }
-
-    return <BudgetLimitChangesSheet budget={budget} />;
+    return (
+        <SingleStepMorphingSheet onDismiss={handleDismissed} isContentDraggable={false}>
+            {content}
+        </SingleStepMorphingSheet>
+    );
 }
