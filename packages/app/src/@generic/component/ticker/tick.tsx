@@ -16,7 +16,6 @@ interface Props {
 }
 
 const TICK_DURATION = 320;
-const TICK_MOUNT_DURATION = 900;
 const TICK_STAGGER = 24;
 const TICK_MAX_STAGGER_STEPS = 6;
 const NUM_FROM_ZERO_TO_NINE = [...Array(10).keys()];
@@ -43,7 +42,7 @@ export const Tick = (props: Props) => {
             translateY.set(
                 withDelay(
                     delay * Math.min(index, TICK_MAX_STAGGER_STEPS),
-                    withTiming(target, { duration: TICK_MOUNT_DURATION, easing: EASE_OUT })
+                    withTiming(target, { duration: TICK_DURATION, easing: EASE_OUT })
                 )
             );
 

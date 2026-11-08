@@ -11,7 +11,7 @@ export const AiDownloadHomeStatus = () => {
 
     if (status === AiModelDownloadStatusEnum.WAITING_FOR_WIFI && !isNoticeDismissed) {
         return (
-            <EntranceReveal step={2}>
+            <EntranceReveal step={1}>
                 <AiDownloadWifiBanner />
             </EntranceReveal>
         );
@@ -19,7 +19,7 @@ export const AiDownloadHomeStatus = () => {
 
     if (status === AiModelDownloadStatusEnum.DOWNLOADING) {
         return (
-            <EntranceReveal step={2}>
+            <EntranceReveal step={1}>
                 <AiDownloadHomeRow />
             </EntranceReveal>
         );

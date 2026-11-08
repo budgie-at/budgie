@@ -58,6 +58,9 @@ const textVariants = cva<{
 });
 
 const PRESS_FEEDBACK: Partial<Record<ColorPaletteVariant, HapticPressFeedbackEnum>> = {
+    primary: HapticPressFeedbackEnum.COMMIT,
+    cta: HapticPressFeedbackEnum.COMMIT,
+    positive: HapticPressFeedbackEnum.COMMIT,
     destructive: HapticPressFeedbackEnum.DESTRUCTIVE
 };
 
@@ -88,7 +91,7 @@ export const Button = (props: Props) => {
         <HapticPressable
             pressedScale={BUTTON_PRESSED_SCALE}
             onPress={onPress}
-            pressFeedback={PRESS_FEEDBACK[variant] ?? HapticPressFeedbackEnum.COMMIT}
+            pressFeedback={PRESS_FEEDBACK[variant] ?? HapticPressFeedbackEnum.IMPACT}
             disabled={isDisabled}
             className={cn(buttonVariants({ disabled: isDisabled, size, variant }), className)}
             testID={testID}

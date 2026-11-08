@@ -41,6 +41,8 @@ const DIGIT_ROWS = [
 
 const CONTENT_CONTAINER_STYLE = { flexGrow: 1, paddingBottom: 16 };
 
+const ERROR_ENTERING = FadeIn.duration(PIN_ERROR_FADE_DURATION_MS).easing(EASE_OUT);
+
 export const PinForm = ({
     header,
     currentInput,
@@ -103,7 +105,7 @@ export const PinForm = ({
                     {hasError && !isBusy ? (
                         <Animated.Text
                             maxFontSizeMultiplier={MAX_CHROME_FONT_SIZE_MULTIPLIER}
-                            entering={FadeIn.duration(PIN_ERROR_FADE_DURATION_MS).easing(EASE_OUT)}
+                            entering={ERROR_ENTERING}
                             className="text-sm font-medium text-destructive-strong text-center"
                             testID={PinFormSelector.Error}
                             accessibilityLiveRegion="assertive"

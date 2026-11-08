@@ -2647,7 +2647,7 @@ msgid "Choose a destination account"
 msgstr "Choisir un compte destinataire"
 
 #: src/auth/components/pin-restart-button/pin-restart-button.tsx
-#: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
+#: src/onboarding/component/onboarding-seal-footer/onboarding-seal-footer.tsx
 msgid "Choose a different PIN"
 msgstr "Choisir un autre code PIN"
 
@@ -5171,7 +5171,7 @@ msgstr "L’importation de l’historique nécessite votre attention"
 msgid "History import paused"
 msgstr "Importation de l’historique en pause"
 
-#: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
+#: src/onboarding/component/onboarding-seal-footer/onboarding-seal-footer.tsx
 msgid "Hold to seal with this PIN"
 msgstr "Maintiens pour sceller avec ce code PIN"
 

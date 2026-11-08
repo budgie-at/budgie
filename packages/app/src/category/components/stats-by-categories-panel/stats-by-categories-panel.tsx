@@ -58,11 +58,9 @@ export const StatsByCategoriesPanel = ({ filters, incomeByCategory, expenseByCat
 
     return (
         <View className="gap-y-6xl">
-            <EntranceReveal step={1}>
-                <StatisticsSpendingHero filters={filters}>
-                    {hasExpenseStats ? <StatisticsShareBar segments={segments} other={other} onOtherPress={handleShowAllSpending} /> : null}
-                </StatisticsSpendingHero>
-            </EntranceReveal>
+            <StatisticsSpendingHero filters={filters}>
+                {hasExpenseStats ? <StatisticsShareBar segments={segments} other={other} onOtherPress={handleShowAllSpending} /> : null}
+            </StatisticsSpendingHero>
 
             {hasExpenseStats ? (
                 <EntranceReveal step={2}>

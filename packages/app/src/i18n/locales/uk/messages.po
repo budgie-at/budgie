@@ -2647,7 +2647,7 @@ msgid "Choose a destination account"
 msgstr "Виберіть рахунок отримувача"
 
 #: src/auth/components/pin-restart-button/pin-restart-button.tsx
-#: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
+#: src/onboarding/component/onboarding-seal-footer/onboarding-seal-footer.tsx
 msgid "Choose a different PIN"
 msgstr "Вибрати інший PIN‑код"
 
@@ -5171,7 +5171,7 @@ msgstr "Імпорт історії потребує уваги"
 msgid "History import paused"
 msgstr "Імпорт історії призупинено"
 
-#: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
+#: src/onboarding/component/onboarding-seal-footer/onboarding-seal-footer.tsx
 msgid "Hold to seal with this PIN"
 msgstr "Утримуйте, щоб запечатати цим PIN‑кодом"
 

@@ -102,6 +102,7 @@ export const useRuleForm = (options: UseRuleFormOptionsInterface = {}) => {
     const { t } = useLingui();
     const { ruleId, defaultValues: providedDefaultValues, prefillData, onSuccess } = options;
 
+    const defaultValues: RuleCreateInputInterface = resolveDefaultValues(providedDefaultValues, prefillData);
     const isEditing = isDefined(ruleId);
     const { isLoading: isSaving, run: runSubmit } = useSingleFlight();
     const { isLoading: isDeleting, run: runDelete } = useSingleFlight();
@@ -109,12 +110,13 @@ export const useRuleForm = (options: UseRuleFormOptionsInterface = {}) => {
 
     const form = useForm<RuleCreateInputInterface>({
         resolver: standardSchemaResolver(Schema.toStandardSchemaV1(RuleCreateInputSchema)),
-        defaultValues: resolveDefaultValues(providedDefaultValues, prefillData),
+        defaultValues,
         mode: 'onSubmit'
     });
 
     const confirmApplyToExisting = Effect.fn('useRuleForm.confirmApplyToExisting')(function* (values: RuleCreateInputInterface) {
-        if (!values.conditions.some(condition => isNotEmptyString(condition.value))) {
+        const hasConditions = values.conditions.some(condition => isNotEmptyString(condition.value));
+        if (!hasConditions) {
             return false;
         }
 
@@ -142,10 +144,12 @@ export const useRuleForm = (options: UseRuleFormOptionsInterface = {}) => {
     });
 
     const enqueueApplyToExisting = Effect.fn('useRuleForm.enqueueApplyToExisting')(function* (targetRuleId: number, shouldApply: boolean) {
-        if (shouldApply) {
-            const ruleApplicationDrainerService = yield* RuleApplicationDrainerService;
-            yield* ruleApplicationDrainerService.enqueueRuleApplication(targetRuleId, showRuleApplicationToast);
+        if (!shouldApply) {
+            return;
         }
+
+        const ruleApplicationDrainerService = yield* RuleApplicationDrainerService;
+        yield* ruleApplicationDrainerService.enqueueRuleApplication(targetRuleId, showRuleApplicationToast);
     });
 
     const submitRule = Effect.fn('useRuleForm.submitRule')(function* (values: RuleCreateInputInterface) {
@@ -159,8 +163,6 @@ export const useRuleForm = (options: UseRuleFormOptionsInterface = {}) => {
             const rule = yield* ruleService.create(values);
             yield* enqueueApplyToExisting(rule.id, shouldApply);
         }
-
-        return shouldApply;
     });
 
     const isBusy = isSaving || isDeleting;
@@ -172,11 +174,9 @@ export const useRuleForm = (options: UseRuleFormOptionsInterface = {}) => {
 
         void runSubmit(
             submitRule(values).pipe(
-                Effect.tap(shouldApply =>
+                Effect.tap(() =>
                     Effect.sync(() => {
-                        if (!shouldApply) {
-                            hapticNotification(NotificationFeedbackType.Success);
-                        }
+                        hapticNotification(NotificationFeedbackType.Success);
                         onSuccess?.(isEditing ? 'updated' : 'created');
                     })
                 ),

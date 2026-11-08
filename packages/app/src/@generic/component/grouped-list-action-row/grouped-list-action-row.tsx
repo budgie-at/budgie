@@ -27,6 +27,7 @@ export const GroupedListActionRow = ({ label, icon, onPress, isDisabled, isLoadi
 
     return (
         <HapticPressable
+            pressedScale={1}
             onPress={onPress}
             disabled={isInactive}
             accessibilityRole="button"
