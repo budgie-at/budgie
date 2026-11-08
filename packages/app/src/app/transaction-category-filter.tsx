@@ -1,83 +1,23 @@
-import { plural } from '@lingui/core/macro';
-import { useLingui } from '@lingui/react/macro';
-
-import { FilterSheetBulkToggle } from '../@generic/component/filter-sheet/filter-sheet-bulk-toggle/filter-sheet-bulk-toggle';
-import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet/filter-sheet';
+import { SingleStepMorphingSheet } from '../@generic/component/single-step-morphing-sheet/single-step-morphing-sheet';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
-import { useSearchableFilterState } from '../@generic/hook/use-searchable-filter-state/use-searchable-filter-state.hook';
-import { CategorySelectContent } from '../category/components/category-select-content/category-select-content';
-import { useSearchCategoriesQuery } from '../category/query/use-search-categories.query';
-import { TransactionFilterSelectorFooter } from '../transaction/components/transaction-filter-selector-footer/transaction-filter-selector-footer';
-import { TransactionFilterSelectorHeader } from '../transaction/components/transaction-filter-selector-header/transaction-filter-selector-header';
-import { TransactionFiltersSelector } from '../transaction/components/transaction-filters/transaction-filters.selector';
+import { useMorphingSheetResult } from '../@generic/hook/use-morphing-sheet-result.hook';
+import { TransactionCategoryFilterContent } from '../transaction/components/transaction-category-filter-content/transaction-category-filter-content';
 import {
     useTransactionCategoryFilterModal,
     useTransactionCategoryFilterModalParams
 } from '../transaction/context/transaction-category-filter-modal.context';
-import { prepareTransactionFilterGridData } from '../transaction/utils/prepare-transaction-filter-grid-data.util';
-import { toggleFilterSelection } from '../transaction/utils/toggle-filter-selection.util';
 
-const FOOTER_BOTTOM_SPACE = 132;
+import type { TransactionCategoryFilterResult } from '../transaction/context/transaction-category-filter-modal.context';
 
 export default function TransactionCategoryFilterModal() {
-    const { t } = useLingui();
     const [, resolveTransactionCategoryFilter, dismissTransactionCategoryFilter] = useTransactionCategoryFilterModal();
     useModalDismiss(dismissTransactionCategoryFilter);
     const currentParams = useTransactionCategoryFilterModalParams();
-
-    const state = useSearchableFilterState(currentParams?.value ?? null);
-    const { localValue, setLocalValue, localValueRef, search, setSearch, selectedCount, handleDeselectAll } = state;
-
-    const { categories, isLoading } = useSearchCategoriesQuery(search, true);
-
-    const selectedCategoryIds = localValue ?? [];
-    const data = prepareTransactionFilterGridData(categories, selectedCategoryIds);
-
-    const handleSelect = (selected: number) => void setLocalValue(previous => toggleFilterSelection(previous, [selected]));
-    const handleSelectAll = () => void setLocalValue(() => (categories ?? []).map(category => category.id));
-    const handleApply = () => void resolveTransactionCategoryFilter({ value: localValueRef.current });
-    const handleClose = () => void resolveTransactionCategoryFilter(null);
-
-    const applyLabel = t({
-        message: plural(selectedCount, {
-            0: 'Show all categories',
-            one: 'Show # category',
-            other: 'Show # categories'
-        })
-    });
+    const { handleCommit, handleDismissed } = useMorphingSheetResult<TransactionCategoryFilterResult>(resolveTransactionCategoryFilter);
 
     return (
-        <FilterSheet>
-            <TransactionFilterSelectorHeader title={t`Filter categories`} onClose={handleClose} />
-
-            <CategorySelectContent
-                data={data}
-                variant="cta"
-                selectedCategoryIds={selectedCategoryIds}
-                additionalBottomPadding={FOOTER_BOTTOM_SPACE}
-                isLoading={isLoading}
-                onSelect={handleSelect}
-                cardTestID={TransactionFiltersSelector.CategoryOption}
-            />
-
-            <TransactionFilterSelectorFooter
-                searchValue={search}
-                searchPlaceholder={t`Search categories...`}
-                onSearchChange={setSearch}
-                searchTestID={TransactionFiltersSelector.CategorySearchInput}
-                applyLabel={applyLabel}
-                onApply={handleApply}
-                applyTestID={TransactionFiltersSelector.CategoryApplyButton}
-            >
-                <FilterSheetBulkToggle
-                    isLoading={isLoading}
-                    selectedCount={selectedCount}
-                    onSelectAll={handleSelectAll}
-                    onDeselectAll={handleDeselectAll}
-                    selectAllTestID={TransactionFiltersSelector.CategorySelectAllButton}
-                    deselectAllTestID={TransactionFiltersSelector.CategoryDeselectAllButton}
-                />
-            </TransactionFilterSelectorFooter>
-        </FilterSheet>
+        <SingleStepMorphingSheet onDismiss={handleDismissed} isContentDraggable={false}>
+            <TransactionCategoryFilterContent value={currentParams?.value ?? null} onCommit={handleCommit} />
+        </SingleStepMorphingSheet>
     );
 }

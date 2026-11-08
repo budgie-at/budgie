@@ -1,73 +1,23 @@
-import { plural } from '@lingui/core/macro';
-import { useLingui } from '@lingui/react/macro';
-
-import { FilterSheetBulkToggle } from '../@generic/component/filter-sheet/filter-sheet-bulk-toggle/filter-sheet-bulk-toggle';
-import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet/filter-sheet';
+import { SingleStepMorphingSheet } from '../@generic/component/single-step-morphing-sheet/single-step-morphing-sheet';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
-import { useSearchableFilterState } from '../@generic/hook/use-searchable-filter-state/use-searchable-filter-state.hook';
-import { sortSelectedFirst } from '../@generic/utils/sort-selected-first.util';
-import { TagsSelectContent } from '../tag/components/tags-select-content/tags-select-content';
-import { useSearchTagsQuery } from '../tag/query/use-search-tags.query';
-import { TransactionFilterSelectorFooter } from '../transaction/components/transaction-filter-selector-footer/transaction-filter-selector-footer';
-import { TransactionFilterSelectorHeader } from '../transaction/components/transaction-filter-selector-header/transaction-filter-selector-header';
-import { TransactionFiltersSelector } from '../transaction/components/transaction-filters/transaction-filters.selector';
+import { useMorphingSheetResult } from '../@generic/hook/use-morphing-sheet-result.hook';
+import { TransactionTagFilterContent } from '../transaction/components/transaction-tag-filter-content/transaction-tag-filter-content';
 import {
     useTransactionTagFilterModal,
     useTransactionTagFilterModalParams
 } from '../transaction/context/transaction-tag-filter-modal.context';
-import { toggleFilterSelection } from '../transaction/utils/toggle-filter-selection.util';
+
+import type { TransactionTagFilterResult } from '../transaction/context/transaction-tag-filter-modal.context';
 
 export default function TransactionTagFilterModal() {
-    const { t } = useLingui();
     const [, resolveTransactionTagFilter, dismissTransactionTagFilter] = useTransactionTagFilterModal();
     useModalDismiss(dismissTransactionTagFilter);
     const currentParams = useTransactionTagFilterModalParams();
-
-    const state = useSearchableFilterState(currentParams?.value ?? null);
-    const { localValue, setLocalValue, localValueRef, search, setSearch, selectedCount, handleDeselectAll } = state;
-
-    const { tags, isLoading } = useSearchTagsQuery(search);
-
-    const selectedTagIds = localValue ?? [];
-    const data = sortSelectedFirst(tags ?? [], selectedTagIds);
-
-    const handleSelect = (selected: number) => void setLocalValue(previous => toggleFilterSelection(previous, [selected]));
-    const handleSelectAll = () => void setLocalValue(() => (tags ?? []).map(tag => tag.id));
-    const handleApply = () => void resolveTransactionTagFilter({ value: localValueRef.current });
-    const handleClose = () => void resolveTransactionTagFilter(null);
-
-    const applyLabel = t({
-        message: plural(selectedCount, {
-            0: 'Show all tags',
-            one: 'Show # tag',
-            other: 'Show # tags'
-        })
-    });
+    const { handleCommit, handleDismissed } = useMorphingSheetResult<TransactionTagFilterResult>(resolveTransactionTagFilter);
 
     return (
-        <FilterSheet>
-            <TransactionFilterSelectorHeader title={t`Filter tags`} onClose={handleClose} />
-
-            <TagsSelectContent data={data} selectedTagIds={selectedTagIds} isLoading={isLoading} onSelect={handleSelect} />
-
-            <TransactionFilterSelectorFooter
-                searchValue={search}
-                searchPlaceholder={t`Search tags...`}
-                onSearchChange={setSearch}
-                searchTestID={TransactionFiltersSelector.TagSearchInput}
-                applyLabel={applyLabel}
-                onApply={handleApply}
-                applyTestID={TransactionFiltersSelector.TagApplyButton}
-            >
-                <FilterSheetBulkToggle
-                    isLoading={isLoading}
-                    selectedCount={selectedCount}
-                    onSelectAll={handleSelectAll}
-                    onDeselectAll={handleDeselectAll}
-                    selectAllTestID={TransactionFiltersSelector.TagSelectAllButton}
-                    deselectAllTestID={TransactionFiltersSelector.TagDeselectAllButton}
-                />
-            </TransactionFilterSelectorFooter>
-        </FilterSheet>
+        <SingleStepMorphingSheet onDismiss={handleDismissed} isContentDraggable={false}>
+            <TransactionTagFilterContent value={currentParams?.value ?? null} onCommit={handleCommit} />
+        </SingleStepMorphingSheet>
     );
 }

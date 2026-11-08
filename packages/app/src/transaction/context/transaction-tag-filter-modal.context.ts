@@ -5,7 +5,7 @@ interface TransactionTagFilterModalParams {
     readonly value: number[] | null;
 }
 
-type TransactionTagFilterResult = { readonly value: number[] | null };
+export type TransactionTagFilterResult = { readonly value: number[] | null };
 
 const [TransactionTagFilterModalContext, useTransactionTagFilterModal, useTransactionTagFilterModalParams] = createModalContext<
     TransactionTagFilterModalParams,

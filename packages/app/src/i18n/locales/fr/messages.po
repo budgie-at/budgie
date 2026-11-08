@@ -637,7 +637,7 @@ msgstr "{label} : {formattedSpent} dépensés, {formattedOver} au-dessus de la l
 msgid "{loadedDays} of {totalDays} days"
 msgstr "{loadedDays} jours sur {totalDays}"
 
-#: src/app/transaction-type-filter.tsx
+#: src/transaction/components/transaction-type-filter-content/transaction-type-filter-content.tsx
 msgid "{localSelectedCount, plural, =0 {Show all types} one {Show # type} other {Show # types}}"
 msgstr "{localSelectedCount, plural, =0 {Afficher tous les types} one {Afficher # type} other {Afficher # types}}"
 
@@ -877,15 +877,15 @@ msgstr "{rulesCountLabel} · {enabledCount} actives"
 msgid "{selectedAccountCount, plural, one {Add # account} other {Add # accounts}}"
 msgstr "{selectedAccountCount, plural, one {Ajouter # compte} other {Ajouter # comptes}}"
 
-#: src/app/transaction-account-filter.tsx
+#: src/transaction/components/transaction-account-filter-content/transaction-account-filter-content.tsx
 msgid "{selectedCount, plural, =0 {Show all accounts} one {Show # account} other {Show # accounts}}"
 msgstr "{selectedCount, plural, =0 {Afficher tous les comptes} one {Afficher # compte} other {Afficher # comptes}}"
 
-#: src/app/transaction-category-filter.tsx
+#: src/transaction/components/transaction-category-filter-content/transaction-category-filter-content.tsx
 msgid "{selectedCount, plural, =0 {Show all categories} one {Show # category} other {Show # categories}}"
 msgstr "{selectedCount, plural, =0 {Afficher toutes les catégories} one {Afficher # catégorie} other {Afficher # catégories}}"
 
-#: src/app/transaction-tag-filter.tsx
+#: src/transaction/components/transaction-tag-filter-content/transaction-tag-filter-content.tsx
 msgid "{selectedCount, plural, =0 {Show all tags} one {Show # tag} other {Show # tags}}"
 msgstr "{selectedCount, plural, =0 {Afficher tous les tags} one {Afficher # tag} other {Afficher # tags}}"
 
@@ -3477,7 +3477,7 @@ msgstr "Créer une règle"
 msgid "Create account"
 msgstr "Créer le compte"
 
-#: src/app/transaction-account-filter.tsx
+#: src/transaction/components/transaction-account-filter-content/transaction-account-filter-content.tsx
 msgid "Create Accounts"
 msgstr "Créer des comptes"
 
@@ -3536,7 +3536,7 @@ msgstr "Créer l’étiquette"
 msgid "Create your budget"
 msgstr "Créez votre budget"
 
-#: src/app/transaction-account-filter.tsx
+#: src/transaction/components/transaction-account-filter-content/transaction-account-filter-content.tsx
 msgid "Create your first account to start tracking your finances"
 msgstr "Créez votre premier compte pour commencer à suivre vos finances"
 
@@ -4633,19 +4633,19 @@ msgstr "Compléter les conversions de devises manquantes"
 msgid "Filled in from the key file name"
 msgstr "Renseigné à partir du nom du fichier de clé"
 
-#: src/app/transaction-account-filter.tsx
+#: src/transaction/components/transaction-account-filter-content/transaction-account-filter-content.tsx
 msgid "Filter accounts"
 msgstr "Filtrer les comptes"
 
-#: src/app/transaction-amount-filter.tsx
+#: src/transaction/components/transaction-amount-filter-content/transaction-amount-filter-content.tsx
 msgid "Filter by amount"
 msgstr "Filtrer par montant"
 
-#: src/app/transaction-category-filter.tsx
+#: src/transaction/components/transaction-category-filter-content/transaction-category-filter-content.tsx
 msgid "Filter categories"
 msgstr "Filtrer les catégories"
 
-#: src/app/transaction-tag-filter.tsx
+#: src/transaction/components/transaction-tag-filter-content/transaction-tag-filter-content.tsx
 msgid "Filter tags"
 msgstr "Filtrer les tags"
 
@@ -4726,7 +4726,7 @@ msgstr "Trouvés"
 msgid "French"
 msgstr "Français"
 
-#: src/app/transaction-amount-filter.tsx
+#: src/transaction/components/transaction-amount-filter-content/transaction-amount-filter-content.tsx
 msgid "From"
 msgstr "De"
 
@@ -5702,7 +5702,7 @@ msgstr "Date d'échéance"
 msgid "Maturity Date (Optional)"
 msgstr "Date d'échéance (Facultatif)"
 
-#: src/app/transaction-amount-filter.tsx
+#: src/transaction/components/transaction-amount-filter-content/transaction-amount-filter-content.tsx
 msgid "Maximum amount"
 msgstr "Montant maximum"
 
@@ -5770,7 +5770,7 @@ msgstr "Fusionner les virements ?"
 msgid "Merged {consolidated} of {foundPairsText}."
 msgstr "{consolidated} sur {foundPairsText} fusionnées."
 
-#: src/app/transaction-amount-filter.tsx
+#: src/transaction/components/transaction-amount-filter-content/transaction-amount-filter-content.tsx
 msgid "Minimum amount"
 msgstr "Montant minimum"
 
@@ -6096,7 +6096,7 @@ msgstr "Aucun compte requis · Environ une minute"
 msgid "No account to sign up for. Never synced or uploaded. Works with no connection at all."
 msgstr "Aucun compte à créer. Jamais synchronisé ni envoyé. Fonctionne sans aucune connexion."
 
-#: src/app/transaction-account-filter.tsx
+#: src/transaction/components/transaction-account-filter-content/transaction-account-filter-content.tsx
 msgid "No accounts found"
 msgstr "Aucun compte trouvé"
 
@@ -6111,7 +6111,7 @@ msgstr "Aucun compte à connecter"
 msgid "No accounts yet"
 msgstr "Aucun compte pour le moment"
 
-#: src/app/transaction-account-filter.tsx
+#: src/transaction/components/transaction-account-filter-content/transaction-account-filter-content.tsx
 msgid "No Accounts Yet"
 msgstr "Aucun compte pour le moment"
 
@@ -7934,8 +7934,8 @@ msgstr "Scellé. Seul ton code PIN l'ouvre."
 msgid "Sealed. Only your PIN opens this file."
 msgstr "Scellé. Seul ton code PIN ouvre ce fichier."
 
-#: src/app/transaction-account-filter.tsx
 #: src/categorize-inbox/components/categorize-inbox-transfer-screen/categorize-inbox-transfer-screen.tsx
+#: src/transaction/components/transaction-account-filter-content/transaction-account-filter-content.tsx
 msgid "Search accounts..."
 msgstr "Rechercher des comptes..."
 
@@ -7951,7 +7951,7 @@ msgstr "Rechercher des comptes archivés…"
 msgid "Search by code or description…"
 msgstr "Rechercher par code ou description..."
 
-#: src/app/transaction-category-filter.tsx
+#: src/transaction/components/transaction-category-filter-content/transaction-category-filter-content.tsx
 msgid "Search categories..."
 msgstr "Rechercher des catégories..."
 
@@ -8000,7 +8000,7 @@ msgstr "Mots-clés de recherche : {keywords}"
 msgid "Search rules"
 msgstr "Rechercher des règles"
 
-#: src/app/transaction-tag-filter.tsx
+#: src/transaction/components/transaction-tag-filter-content/transaction-tag-filter-content.tsx
 msgid "Search tags..."
 msgstr "Rechercher des étiquettes..."
 
@@ -8193,11 +8193,11 @@ msgstr "Shortcuts n’est pas disponible sur cet appareil."
 msgid "Show all {accountsCount} accounts"
 msgstr "Afficher les {accountsCount} comptes"
 
-#: src/app/transaction-amount-filter.tsx
+#: src/transaction/components/transaction-amount-filter-content/transaction-amount-filter-content.tsx
 msgid "Show all amounts"
 msgstr "Afficher tous les montants"
 
-#: src/app/date-filter.tsx
+#: src/@generic/component/date-filter-sheet-content/date-filter-sheet-content.tsx
 msgid "Show all dates"
 msgstr "Afficher toutes les dates"
 
@@ -8237,12 +8237,12 @@ msgstr "Afficher l’autonomie"
 msgid "Show runway on Home screen"
 msgstr "Afficher l’autonomie sur l’écran d’accueil"
 
-#: src/app/date-filter.tsx
-#: src/app/transaction-amount-filter.tsx
+#: src/@generic/component/date-filter-sheet-content/date-filter-sheet-content.tsx
+#: src/transaction/components/transaction-amount-filter-content/transaction-amount-filter-content.tsx
 msgid "Show selected range"
 msgstr "Afficher la plage sélectionnée"
 
-#: src/app/transaction-amount-filter.tsx
+#: src/transaction/components/transaction-amount-filter-content/transaction-amount-filter-content.tsx
 msgid "Show transactions when any main amount is inside this range, regardless of currency."
 msgstr "Afficher les transactions lorsqu’un montant principal se situe dans cette plage, quelle que soit la devise."
 
@@ -9110,7 +9110,7 @@ msgstr "titre"
 msgid "Title"
 msgstr "Titre"
 
-#: src/app/transaction-amount-filter.tsx
+#: src/transaction/components/transaction-amount-filter-content/transaction-amount-filter-content.tsx
 msgid "To"
 msgstr "Vers"
 

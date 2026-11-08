@@ -7,7 +7,7 @@ interface TransactionAmountFilterModalParams {
     readonly value: AmountRangeInterface | null;
 }
 
-type TransactionAmountFilterResult = { readonly value: AmountRangeInterface | null };
+export type TransactionAmountFilterResult = { readonly value: AmountRangeInterface | null };
 
 const [TransactionAmountFilterModalContext, useTransactionAmountFilterModal, useTransactionAmountFilterModalParams] = createModalContext<
     TransactionAmountFilterModalParams,

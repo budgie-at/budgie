@@ -637,7 +637,7 @@ msgstr "{label}: витрачено {formattedSpent}, на {formattedOver} бі�
 msgid "{loadedDays} of {totalDays} days"
 msgstr "{loadedDays} з {totalDays} днів"
 
-#: src/app/transaction-type-filter.tsx
+#: src/transaction/components/transaction-type-filter-content/transaction-type-filter-content.tsx
 msgid "{localSelectedCount, plural, =0 {Show all types} one {Show # type} other {Show # types}}"
 msgstr "{localSelectedCount, plural, =0 {Показати всі типи} one {Показати # тип} few {Показати # типи} many {Показати # типів} other {Показати # типу}}"
 
@@ -877,15 +877,15 @@ msgstr "{rulesCountLabel} · {enabledCount} увімкнено"
 msgid "{selectedAccountCount, plural, one {Add # account} other {Add # accounts}}"
 msgstr "{selectedAccountCount, plural, one {Додати # рахунок} few {Додати # рахунки} many {Додати # рахунків} other {Додати # рахунку}}"
 
-#: src/app/transaction-account-filter.tsx
+#: src/transaction/components/transaction-account-filter-content/transaction-account-filter-content.tsx
 msgid "{selectedCount, plural, =0 {Show all accounts} one {Show # account} other {Show # accounts}}"
 msgstr "{selectedCount, plural, =0 {Показати всі рахунки} one {Показати # рахунок} few {Показати # рахунки} many {Показати # рахунків} other {Показати # рахунка}}"
 
-#: src/app/transaction-category-filter.tsx
+#: src/transaction/components/transaction-category-filter-content/transaction-category-filter-content.tsx
 msgid "{selectedCount, plural, =0 {Show all categories} one {Show # category} other {Show # categories}}"
 msgstr "{selectedCount, plural, =0 {Показати всі категорії} one {Показати # категорію} few {Показати # категорії} many {Показати # категорій} other {Показати # категорії}}"
 
-#: src/app/transaction-tag-filter.tsx
+#: src/transaction/components/transaction-tag-filter-content/transaction-tag-filter-content.tsx
 msgid "{selectedCount, plural, =0 {Show all tags} one {Show # tag} other {Show # tags}}"
 msgstr "{selectedCount, plural, =0 {Показати всі теги} one {Показати # тег} few {Показати # теги} many {Показати # тегів} other {Показати # тега}}"
 
@@ -3477,7 +3477,7 @@ msgstr "Створити правило"
 msgid "Create account"
 msgstr "Створити рахунок"
 
-#: src/app/transaction-account-filter.tsx
+#: src/transaction/components/transaction-account-filter-content/transaction-account-filter-content.tsx
 msgid "Create Accounts"
 msgstr "Створити рахунки"
 
@@ -3536,7 +3536,7 @@ msgstr "Створити тег"
 msgid "Create your budget"
 msgstr "Створіть свій бюджет"
 
-#: src/app/transaction-account-filter.tsx
+#: src/transaction/components/transaction-account-filter-content/transaction-account-filter-content.tsx
 msgid "Create your first account to start tracking your finances"
 msgstr "Створіть свій перший рахунок, щоб почати відстежувати свої фінанси"
 
@@ -4633,19 +4633,19 @@ msgstr "Заповнити відсутні конвертації валют"
 msgid "Filled in from the key file name"
 msgstr "Заповнюється з назви файлу ключа"
 
-#: src/app/transaction-account-filter.tsx
+#: src/transaction/components/transaction-account-filter-content/transaction-account-filter-content.tsx
 msgid "Filter accounts"
 msgstr "Фільтрувати рахунки"
 
-#: src/app/transaction-amount-filter.tsx
+#: src/transaction/components/transaction-amount-filter-content/transaction-amount-filter-content.tsx
 msgid "Filter by amount"
 msgstr "Фільтрувати за сумою"
 
-#: src/app/transaction-category-filter.tsx
+#: src/transaction/components/transaction-category-filter-content/transaction-category-filter-content.tsx
 msgid "Filter categories"
 msgstr "Фільтрувати категорії"
 
-#: src/app/transaction-tag-filter.tsx
+#: src/transaction/components/transaction-tag-filter-content/transaction-tag-filter-content.tsx
 msgid "Filter tags"
 msgstr "Фільтрувати теги"
 
@@ -4726,7 +4726,7 @@ msgstr "Знайдено"
 msgid "French"
 msgstr "Французька"
 
-#: src/app/transaction-amount-filter.tsx
+#: src/transaction/components/transaction-amount-filter-content/transaction-amount-filter-content.tsx
 msgid "From"
 msgstr "З"
 
@@ -5702,7 +5702,7 @@ msgstr "Дата погашення"
 msgid "Maturity Date (Optional)"
 msgstr "Дата погашення (необов'язково)"
 
-#: src/app/transaction-amount-filter.tsx
+#: src/transaction/components/transaction-amount-filter-content/transaction-amount-filter-content.tsx
 msgid "Maximum amount"
 msgstr "Максимальна сума"
 
@@ -5770,7 +5770,7 @@ msgstr "Об’єднати перекази?"
 msgid "Merged {consolidated} of {foundPairsText}."
 msgstr "Об'єднано {consolidated} з {foundPairsText}."
 
-#: src/app/transaction-amount-filter.tsx
+#: src/transaction/components/transaction-amount-filter-content/transaction-amount-filter-content.tsx
 msgid "Minimum amount"
 msgstr "Мінімальна сума"
 
@@ -6096,7 +6096,7 @@ msgstr "Без акаунта · Близько хвилини"
 msgid "No account to sign up for. Never synced or uploaded. Works with no connection at all."
 msgstr "Реєструвати акаунт не потрібно. Нічого не синхронізується й не вивантажується. Працює без жодного з'єднання."
 
-#: src/app/transaction-account-filter.tsx
+#: src/transaction/components/transaction-account-filter-content/transaction-account-filter-content.tsx
 msgid "No accounts found"
 msgstr "Рахунків не знайдено"
 
@@ -6111,7 +6111,7 @@ msgstr "Немає рахунків для підключення"
 msgid "No accounts yet"
 msgstr "Ще немає рахунків"
 
-#: src/app/transaction-account-filter.tsx
+#: src/transaction/components/transaction-account-filter-content/transaction-account-filter-content.tsx
 msgid "No Accounts Yet"
 msgstr "Ще немає рахунків"
 
@@ -7934,8 +7934,8 @@ msgstr "Запечатано. Лише ваш PIN-код його відкрив
 msgid "Sealed. Only your PIN opens this file."
 msgstr "Запечатано. Лише ваш PIN-код відкриває цей файл."
 
-#: src/app/transaction-account-filter.tsx
 #: src/categorize-inbox/components/categorize-inbox-transfer-screen/categorize-inbox-transfer-screen.tsx
+#: src/transaction/components/transaction-account-filter-content/transaction-account-filter-content.tsx
 msgid "Search accounts..."
 msgstr "Пошук рахунків..."
 
@@ -7951,7 +7951,7 @@ msgstr "Пошук архівних рахунків…"
 msgid "Search by code or description…"
 msgstr "Пошук за кодом або описом..."
 
-#: src/app/transaction-category-filter.tsx
+#: src/transaction/components/transaction-category-filter-content/transaction-category-filter-content.tsx
 msgid "Search categories..."
 msgstr "Пошук категорій..."
 
@@ -8000,7 +8000,7 @@ msgstr "Ключові слова для пошуку: {keywords}"
 msgid "Search rules"
 msgstr "Пошук правил"
 
-#: src/app/transaction-tag-filter.tsx
+#: src/transaction/components/transaction-tag-filter-content/transaction-tag-filter-content.tsx
 msgid "Search tags..."
 msgstr "Пошук тегів..."
 
@@ -8193,11 +8193,11 @@ msgstr "Shortcuts недоступний на цьому пристрої."
 msgid "Show all {accountsCount} accounts"
 msgstr "Показати всі рахунки ({accountsCount})"
 
-#: src/app/transaction-amount-filter.tsx
+#: src/transaction/components/transaction-amount-filter-content/transaction-amount-filter-content.tsx
 msgid "Show all amounts"
 msgstr "Показати всі суми"
 
-#: src/app/date-filter.tsx
+#: src/@generic/component/date-filter-sheet-content/date-filter-sheet-content.tsx
 msgid "Show all dates"
 msgstr "Показати всі дати"
 
@@ -8237,12 +8237,12 @@ msgstr "Показувати запас"
 msgid "Show runway on Home screen"
 msgstr "Показувати запас на головному екрані"
 
-#: src/app/date-filter.tsx
-#: src/app/transaction-amount-filter.tsx
+#: src/@generic/component/date-filter-sheet-content/date-filter-sheet-content.tsx
+#: src/transaction/components/transaction-amount-filter-content/transaction-amount-filter-content.tsx
 msgid "Show selected range"
 msgstr "Показати вибраний діапазон"
 
-#: src/app/transaction-amount-filter.tsx
+#: src/transaction/components/transaction-amount-filter-content/transaction-amount-filter-content.tsx
 msgid "Show transactions when any main amount is inside this range, regardless of currency."
 msgstr "Показувати транзакції, коли будь-яка основна сума потрапляє в цей діапазон, незалежно від валюти."
 
@@ -9110,7 +9110,7 @@ msgstr "назва"
 msgid "Title"
 msgstr "Назва"
 
-#: src/app/transaction-amount-filter.tsx
+#: src/transaction/components/transaction-amount-filter-content/transaction-amount-filter-content.tsx
 msgid "To"
 msgstr "На"
 

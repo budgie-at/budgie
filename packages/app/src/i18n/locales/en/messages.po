@@ -638,7 +638,7 @@ msgstr "{label}: {formattedSpent} spent, {formattedOver} over the {formattedLimi
 msgid "{loadedDays} of {totalDays} days"
 msgstr "{loadedDays} of {totalDays} days"
 
-#: src/app/transaction-type-filter.tsx
+#: src/transaction/components/transaction-type-filter-content/transaction-type-filter-content.tsx
 msgid "{localSelectedCount, plural, =0 {Show all types} one {Show # type} other {Show # types}}"
 msgstr "{localSelectedCount, plural, =0 {Show all types} one {Show # type} other {Show # types}}"
 
@@ -878,15 +878,15 @@ msgstr "{rulesCountLabel} · {enabledCount} on"
 msgid "{selectedAccountCount, plural, one {Add # account} other {Add # accounts}}"
 msgstr "{selectedAccountCount, plural, one {Add # account} other {Add # accounts}}"
 
-#: src/app/transaction-account-filter.tsx
+#: src/transaction/components/transaction-account-filter-content/transaction-account-filter-content.tsx
 msgid "{selectedCount, plural, =0 {Show all accounts} one {Show # account} other {Show # accounts}}"
 msgstr "{selectedCount, plural, =0 {Show all accounts} one {Show # account} other {Show # accounts}}"
 
-#: src/app/transaction-category-filter.tsx
+#: src/transaction/components/transaction-category-filter-content/transaction-category-filter-content.tsx
 msgid "{selectedCount, plural, =0 {Show all categories} one {Show # category} other {Show # categories}}"
 msgstr "{selectedCount, plural, =0 {Show all categories} one {Show # category} other {Show # categories}}"
 
-#: src/app/transaction-tag-filter.tsx
+#: src/transaction/components/transaction-tag-filter-content/transaction-tag-filter-content.tsx
 msgid "{selectedCount, plural, =0 {Show all tags} one {Show # tag} other {Show # tags}}"
 msgstr "{selectedCount, plural, =0 {Show all tags} one {Show # tag} other {Show # tags}}"
 
@@ -3478,7 +3478,7 @@ msgstr "Create a rule"
 msgid "Create account"
 msgstr "Create account"
 
-#: src/app/transaction-account-filter.tsx
+#: src/transaction/components/transaction-account-filter-content/transaction-account-filter-content.tsx
 msgid "Create Accounts"
 msgstr "Create Accounts"
 
@@ -3537,7 +3537,7 @@ msgstr "Create tag"
 msgid "Create your budget"
 msgstr "Create your budget"
 
-#: src/app/transaction-account-filter.tsx
+#: src/transaction/components/transaction-account-filter-content/transaction-account-filter-content.tsx
 msgid "Create your first account to start tracking your finances"
 msgstr "Create your first account to start tracking your finances"
 
@@ -4634,19 +4634,19 @@ msgstr "Fill missing currency conversions"
 msgid "Filled in from the key file name"
 msgstr "Filled in from the key file name"
 
-#: src/app/transaction-account-filter.tsx
+#: src/transaction/components/transaction-account-filter-content/transaction-account-filter-content.tsx
 msgid "Filter accounts"
 msgstr "Filter accounts"
 
-#: src/app/transaction-amount-filter.tsx
+#: src/transaction/components/transaction-amount-filter-content/transaction-amount-filter-content.tsx
 msgid "Filter by amount"
 msgstr "Filter by amount"
 
-#: src/app/transaction-category-filter.tsx
+#: src/transaction/components/transaction-category-filter-content/transaction-category-filter-content.tsx
 msgid "Filter categories"
 msgstr "Filter categories"
 
-#: src/app/transaction-tag-filter.tsx
+#: src/transaction/components/transaction-tag-filter-content/transaction-tag-filter-content.tsx
 msgid "Filter tags"
 msgstr "Filter tags"
 
@@ -4727,7 +4727,7 @@ msgstr "Found"
 msgid "French"
 msgstr "French"
 
-#: src/app/transaction-amount-filter.tsx
+#: src/transaction/components/transaction-amount-filter-content/transaction-amount-filter-content.tsx
 msgid "From"
 msgstr "From"
 
@@ -5703,7 +5703,7 @@ msgstr "Maturity Date"
 msgid "Maturity Date (Optional)"
 msgstr "Maturity Date (Optional)"
 
-#: src/app/transaction-amount-filter.tsx
+#: src/transaction/components/transaction-amount-filter-content/transaction-amount-filter-content.tsx
 msgid "Maximum amount"
 msgstr "Maximum amount"
 
@@ -5771,7 +5771,7 @@ msgstr "Merge transfers?"
 msgid "Merged {consolidated} of {foundPairsText}."
 msgstr "Merged {consolidated} of {foundPairsText}."
 
-#: src/app/transaction-amount-filter.tsx
+#: src/transaction/components/transaction-amount-filter-content/transaction-amount-filter-content.tsx
 msgid "Minimum amount"
 msgstr "Minimum amount"
 
@@ -6097,7 +6097,7 @@ msgstr "No account needed · Takes about a minute"
 msgid "No account to sign up for. Never synced or uploaded. Works with no connection at all."
 msgstr "No account to sign up for. Never synced or uploaded. Works with no connection at all."
 
-#: src/app/transaction-account-filter.tsx
+#: src/transaction/components/transaction-account-filter-content/transaction-account-filter-content.tsx
 msgid "No accounts found"
 msgstr "No accounts found"
 
@@ -6112,7 +6112,7 @@ msgstr "No accounts to connect"
 msgid "No accounts yet"
 msgstr "No accounts yet"
 
-#: src/app/transaction-account-filter.tsx
+#: src/transaction/components/transaction-account-filter-content/transaction-account-filter-content.tsx
 msgid "No Accounts Yet"
 msgstr "No Accounts Yet"
 
@@ -7935,8 +7935,8 @@ msgstr "Sealed. Only your PIN opens it."
 msgid "Sealed. Only your PIN opens this file."
 msgstr "Sealed. Only your PIN opens this file."
 
-#: src/app/transaction-account-filter.tsx
 #: src/categorize-inbox/components/categorize-inbox-transfer-screen/categorize-inbox-transfer-screen.tsx
+#: src/transaction/components/transaction-account-filter-content/transaction-account-filter-content.tsx
 msgid "Search accounts..."
 msgstr "Search accounts..."
 
@@ -7952,7 +7952,7 @@ msgstr "Search archived accounts…"
 msgid "Search by code or description…"
 msgstr "Search by code or description…"
 
-#: src/app/transaction-category-filter.tsx
+#: src/transaction/components/transaction-category-filter-content/transaction-category-filter-content.tsx
 msgid "Search categories..."
 msgstr "Search categories..."
 
@@ -8001,7 +8001,7 @@ msgstr "Search keywords: {keywords}"
 msgid "Search rules"
 msgstr "Search rules"
 
-#: src/app/transaction-tag-filter.tsx
+#: src/transaction/components/transaction-tag-filter-content/transaction-tag-filter-content.tsx
 msgid "Search tags..."
 msgstr "Search tags..."
 
@@ -8194,11 +8194,11 @@ msgstr "Shortcuts is not available on this device."
 msgid "Show all {accountsCount} accounts"
 msgstr "Show all {accountsCount} accounts"
 
-#: src/app/transaction-amount-filter.tsx
+#: src/transaction/components/transaction-amount-filter-content/transaction-amount-filter-content.tsx
 msgid "Show all amounts"
 msgstr "Show all amounts"
 
-#: src/app/date-filter.tsx
+#: src/@generic/component/date-filter-sheet-content/date-filter-sheet-content.tsx
 msgid "Show all dates"
 msgstr "Show all dates"
 
@@ -8238,12 +8238,12 @@ msgstr "Show runway"
 msgid "Show runway on Home screen"
 msgstr "Show runway on Home screen"
 
-#: src/app/date-filter.tsx
-#: src/app/transaction-amount-filter.tsx
+#: src/@generic/component/date-filter-sheet-content/date-filter-sheet-content.tsx
+#: src/transaction/components/transaction-amount-filter-content/transaction-amount-filter-content.tsx
 msgid "Show selected range"
 msgstr "Show selected range"
 
-#: src/app/transaction-amount-filter.tsx
+#: src/transaction/components/transaction-amount-filter-content/transaction-amount-filter-content.tsx
 msgid "Show transactions when any main amount is inside this range, regardless of currency."
 msgstr "Show transactions when any main amount is inside this range, regardless of currency."
 
@@ -9111,7 +9111,7 @@ msgstr "title"
 msgid "Title"
 msgstr "Title"
 
-#: src/app/transaction-amount-filter.tsx
+#: src/transaction/components/transaction-amount-filter-content/transaction-amount-filter-content.tsx
 msgid "To"
 msgstr "To"
 

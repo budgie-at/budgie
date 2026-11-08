@@ -1,4 +1,3 @@
-// eslint-disable max-lines -- Root layout owns every root stack screen; approved by Vitalii
 /* eslint-disable react/jsx-max-depth */
 import { BudgetPeriodCloseService } from '@budgie/budget';
 import { I18nProvider as LinguiProvider } from '@lingui/react';
@@ -48,19 +47,8 @@ import { ThemeProvider } from '../theme/provider/theme.provider';
 
 const DETENT_90 = 0.9;
 const DETENT_70 = 0.7;
-const DETENT_40 = 0.4;
-const DETENT_55 = 0.55;
-const DETENT_85 = 0.85;
-const DETENT_82 = 0.82;
-const DETENT_96 = 0.96;
 
 const MODAL_OPTIONS: NativeStackNavigationOptions = { presentation: 'modal', headerShown: false };
-
-const STACKED_FILTER_OPTIONS: NativeStackNavigationOptions = {
-    presentation: 'pageSheet',
-    headerShown: false,
-    contentStyle: { backgroundColor: 'transparent' }
-};
 
 const ENTITY_FORM_OPTIONS: NativeStackNavigationOptions = { presentation: 'fullScreenModal', headerShown: false };
 
@@ -256,27 +244,24 @@ export const RootLayoutContent = () => {
                                                                     <Stack.Screen name="add-pin" options={sheetOptions} />
                                                                     <Stack.Screen
                                                                         name="transaction-type-filter"
-                                                                        options={formSheetOptions([DETENT_40])}
+                                                                        options={MORPHING_SHEET_OPTIONS}
                                                                     />
-                                                                    <Stack.Screen
-                                                                        name="date-filter"
-                                                                        options={formSheetOptions([DETENT_55, DETENT_85])}
-                                                                    />
+                                                                    <Stack.Screen name="date-filter" options={MORPHING_SHEET_OPTIONS} />
                                                                     <Stack.Screen
                                                                         name="transaction-amount-filter"
-                                                                        options={formSheetOptions([DETENT_82, DETENT_96])}
+                                                                        options={MORPHING_SHEET_OPTIONS}
                                                                     />
                                                                     <Stack.Screen
                                                                         name="transaction-category-filter"
-                                                                        options={STACKED_FILTER_OPTIONS}
+                                                                        options={MORPHING_SHEET_OPTIONS}
                                                                     />
                                                                     <Stack.Screen
                                                                         name="transaction-account-filter"
-                                                                        options={STACKED_FILTER_OPTIONS}
+                                                                        options={MORPHING_SHEET_OPTIONS}
                                                                     />
                                                                     <Stack.Screen
                                                                         name="transaction-tag-filter"
-                                                                        options={STACKED_FILTER_OPTIONS}
+                                                                        options={MORPHING_SHEET_OPTIONS}
                                                                     />
                                                                     <Stack.Screen
                                                                         name="budget-period-summary"
