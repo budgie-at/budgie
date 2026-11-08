@@ -12,6 +12,7 @@ import { SuggestionsContainer } from '../suggestions-container/suggestions-conta
 import { TransactionAmountDisplay } from '../transaction-amount-display/transaction-amount-display';
 import { TransactionFeeFieldIcon } from '../transaction-fee-field-icon/transaction-fee-field-icon';
 import { TransactionFormActions } from '../transaction-form-actions/transaction-form-actions';
+import { TransactionKeypadDismissButton } from '../transaction-keypad-dismiss-button/transaction-keypad-dismiss-button';
 import { TransactionKeypad } from '../transaction-keypad/transaction-keypad';
 import { TransactionMerchantInput } from '../transaction-merchant-input/transaction-merchant-input';
 
@@ -35,7 +36,9 @@ export const SimpleQuickForm = (props: Props) => {
     const { isEditingAmount, toggleKeypad, dismissKeypad, amountAccessibilityHint } = useTransactionKeypadEditing(isNewTransaction);
     const displayAmount = isEditingAmount ? form.displayValue : formatKeypadAmount(form.displayValue, '.', '', 2);
     const isConfirmDisabled = formState.isSubmitting;
-    const keypad = isEditingAmount ? <TransactionKeypad keypad={form.keypadHandlers} /> : null;
+    const keypad = isEditingAmount ? (
+        <TransactionKeypad keypad={form.keypadHandlers} dismissButton={<TransactionKeypadDismissButton />} />
+    ) : null;
 
     const merchant = isNewTransaction ? <TransactionMerchantInput /> : formState.title;
     const suggestions = (

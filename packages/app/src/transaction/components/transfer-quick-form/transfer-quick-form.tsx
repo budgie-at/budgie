@@ -2,7 +2,7 @@ import { TransactionCreateInputInterface, TransactionEntryTypeEnum, TransactionT
 import { buildTransferEntries, getTransactionFeeEntries } from '@budgie/ledger';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
-import { Ref, useEffect, useEffectEvent, useImperativeHandle, useRef, useState } from 'react';
+import { Ref, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { useFormContext, useFormState, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
 
@@ -15,11 +15,9 @@ import { useKeypadInput } from '../../hook/use-keypad-input.hook';
 import { useQuickFormFee } from '../../hook/use-quick-form-fee.hook';
 import { useQuickFormModals } from '../../hook/use-quick-form-modals.hook';
 import { useQuickFormValidation } from '../../hook/use-quick-form-validation.hook';
-import { useTransactionKeypadEditing } from '../../hook/use-transaction-keypad-editing.hook';
 import { useTransferAccounts } from '../../hook/use-transfer-accounts.hook';
 import { applyTransferDestinationAmount } from '../../utils/apply-transfer-destination-amount.util';
 import { computeTransferDisplay } from '../../utils/compute-transfer-display.util';
-import { formatKeypadAmount } from '../../utils/format-keypad-amount.util';
 import { ConversionRow } from '../conversion-row/conversion-row';
 import { CreateTransferSecondaryLine } from '../create-transfer-secondary-line/create-transfer-secondary-line';
 import { QuickFormLayout } from '../quick-form-layout/quick-form-layout';
@@ -57,8 +55,6 @@ export const TransferQuickForm = (props: Props) => {
     const { validateAndShake } = useQuickFormValidation();
     const { handleDatePress } = useQuickFormModals();
     const { fromAccountId, toAccountId, fromAccount, toAccount } = useTransferAccounts();
-    const { isEditingAmount, toggleKeypad, startEditingAmount, dismissKeypad, amountAccessibilityHint } =
-        useTransactionKeypadEditing(isNewTransaction);
 
     const [isEditingDestination, setIsEditingDestination] = useState(false);
     const fromInstrumentId = fromAccount?.instrumentId ?? 0;
@@ -143,8 +139,6 @@ export const TransferQuickForm = (props: Props) => {
         receivingLabel: t`Receiving ${toCode}`
     });
 
-    const displayAmount = isEditingAmount ? display.displayAmount : formatKeypadAmount(display.displayAmount, '.', '', 2);
-
     const finishDestinationEditing = () => {
         const destinationAmount = destinationKeypad.numericValue;
 
@@ -156,34 +150,13 @@ export const TransferQuickForm = (props: Props) => {
         setIsEditingDestination(false);
     };
 
-    const handleDismissKeypad = () => {
-        if (isEditingDestination) {
-            finishDestinationEditing();
-        }
-
-        dismissKeypad();
-    };
-    const handleKeypadCollapsed = useEffectEvent(() => {
-        if (isEditingDestination) {
-            finishDestinationEditing();
-        }
-    });
-
-    useEffect(() => {
-        if (!isEditingAmount) {
-            handleKeypadCollapsed();
-        }
-    }, [isEditingAmount]);
-
     const handleAmountPress = () => {
-        if (isEditingAmount && isEditingDestination) {
+        if (isEditingDestination) {
             finishDestinationEditing();
         }
-        toggleKeypad();
     };
 
     const handleConversionRowPress = () => {
-        startEditingAmount();
         if (isEditingDestination) {
             finishDestinationEditing();
         } else {
@@ -193,6 +166,7 @@ export const TransferQuickForm = (props: Props) => {
     };
 
     useImperativeHandle(props.ref, () => ({ openFee: handleFeePress }));
+    const amountAccessibilityHint = isEditingDestination ? t`Done` : t`Enter an amount`;
     const confirmLabel = isEditingDestination ? t`Done` : t`Save`;
 
     const handleConfirm = () => {
@@ -238,8 +212,6 @@ export const TransferQuickForm = (props: Props) => {
         props.onSubmit();
     };
 
-    const keypad = isEditingAmount ? <TransactionKeypad keypad={activeKeypad.handlers} /> : null;
-
     const secondaryLabel = isEditingDestination ? t`Receiving · ${toCode}` : null;
     const context = isNewTransaction ? (
         <CreateTransferSecondaryLine label={secondaryLabel} />
@@ -249,21 +221,21 @@ export const TransferQuickForm = (props: Props) => {
 
     return (
         <QuickFormLayout
-            onDismissKeypad={handleDismissKeypad}
+            onDismissKeypad={handleAmountPress}
             amount={
                 <TransactionAmountDisplay
                     ref={amountDisplayRef}
-                    amount={displayAmount}
+                    amount={display.displayAmount}
                     currencySymbol={display.displaySymbol}
                     variant="primary"
                     onPress={handleAmountPress}
-                    isEditing={isEditingAmount}
+                    isEditing
                     accessibilityHint={amountAccessibilityHint}
                     testID={SimpleQuickFormSelector.AmountInput}
                 />
             }
             context={context}
-            keypad={keypad}
+            keypad={<TransactionKeypad keypad={activeKeypad.handlers} />}
             actions={
                 <TransactionFormActions
                     label={confirmLabel}

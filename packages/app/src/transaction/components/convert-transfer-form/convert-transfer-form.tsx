@@ -17,6 +17,7 @@ import { ConvertTransferFooter } from '../convert-transfer-footer/convert-transf
 import { ConvertTransferSummary } from '../convert-transfer-summary/convert-transfer-summary';
 import { QuickFormFieldError } from '../quick-form-field-error/quick-form-field-error';
 import { TransactionAmountDisplay } from '../transaction-amount-display/transaction-amount-display';
+import { TransactionKeypadDismissButton } from '../transaction-keypad-dismiss-button/transaction-keypad-dismiss-button';
 import { TransactionKeypad } from '../transaction-keypad/transaction-keypad';
 
 interface Props {
@@ -43,7 +44,9 @@ export const ConvertTransferForm = ({ isSubmitting, onSubmit, onCancel }: Props)
         destinationCode: form.counterAccount?.instrument.code ?? '',
         exchangeRate: displayExchangeRate
     };
-    const keypad = form.isEditing ? <TransactionKeypad keypad={form.keypad.handlers} /> : null;
+    const keypad = form.isEditing ? (
+        <TransactionKeypad keypad={form.keypad.handlers} dismissButton={<TransactionKeypadDismissButton />} />
+    ) : null;
     const amount = form.isEditing ? (
         <TransactionAmountDisplay
             amount={form.keypad.displayValue}

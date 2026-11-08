@@ -30,6 +30,7 @@ import { QuickFormSecondaryLine } from '../quick-form-secondary-line/quick-form-
 import { SimpleQuickFormSelector } from '../simple-quick-form/simple-quick-form.selector';
 import { TransactionAmountDisplay, TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
 import { TransactionFormActions } from '../transaction-form-actions/transaction-form-actions';
+import { TransactionKeypadDismissButton } from '../transaction-keypad-dismiss-button/transaction-keypad-dismiss-button';
 import { TransactionKeypad } from '../transaction-keypad/transaction-keypad';
 
 import type { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
@@ -119,7 +120,7 @@ export const UpdateAdjustmentTransaction = ({ transaction, transactionId }: Prop
         isDisabled: isSubmitting || !isPositiveNumber(numericValue)
     };
 
-    const keypad = isEditingAmount ? <TransactionKeypad keypad={handlers} /> : null;
+    const keypad = isEditingAmount ? <TransactionKeypad keypad={handlers} dismissButton={<TransactionKeypadDismissButton />} /> : null;
 
     const handleConfirm = () => {
         if (!isPositiveNumber(numericValue)) {
