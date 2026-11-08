@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.171.0](https://github.com/budgie-at/budgie/compare/v6.170.0...v6.171.0) (2026-11-08)
+
+### Features
+
+* **sync:** file untracked own-account movements and re-pair them when the real leg arrives ([#2050](https://github.com/budgie-at/budgie/issues/2050)) ([6042f5f](https://github.com/budgie-at/budgie/commit/6042f5f7c6371f427aa77c513c046ea81a1d1053))
+
+### Performance Improvements
+
+* **landing:** cap Next.js build workers at 4 ([#2056](https://github.com/budgie-at/budgie/issues/2056)) ([3fe2acb](https://github.com/budgie-at/budgie/commit/3fe2acba81c1f4b13b2db66311421b85ded26806))
+
+
 # [6.170.0](https://github.com/budgie-at/budgie/compare/v6.169.0...v6.170.0) (2026-11-08)
 
 ### Features

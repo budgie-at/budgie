@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.171.0](https://github.com/budgie-at/budgie/compare/v6.170.0...v6.171.0) (2026-11-08)
+
+### Performance Improvements
+
+* **landing:** cap Next.js build workers at 4 ([#2056](https://github.com/budgie-at/budgie/issues/2056)) ([3fe2acb](https://github.com/budgie-at/budgie/commit/3fe2acba81c1f4b13b2db66311421b85ded26806))
+
+
 # [6.168.0](https://github.com/budgie-at/budgie/compare/v6.167.9...v6.168.0) (2026-11-08)
 
 ### Features
