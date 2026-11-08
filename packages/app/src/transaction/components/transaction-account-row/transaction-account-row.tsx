@@ -1,16 +1,18 @@
-import { AccountTypeEnum, TransactionCreateInputInterface, TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { RefObject, useImperativeHandle } from 'react';
-import { useFormContext, useWatch } from 'react-hook-form';
+import { View } from 'react-native';
 import Animated from 'react-native-reanimated';
 
-import { isDefined } from '@rnw-community/shared';
+import { emptyFn, isDefined } from '@rnw-community/shared';
 
+import { RoundedEdgeEnum } from '../../../@generic/enum/rounded-edge.enum';
+import { useAnchoredMorphOriginPress } from '../../../@generic/hook/use-anchored-morph-origin-press.hook';
 import { useShakeAnimation } from '../../../@generic/hook/use-shake-animation.hook';
 import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
 import { AccountInactiveIcon } from '../../../account/component/account-inactive-icon/account-inactive-icon';
-import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
+import { useTransactionAccountSelector } from '../../hook/use-transaction-account-selector.hook';
 import { SimpleQuickFormSelector } from '../simple-quick-form/simple-quick-form.selector';
 import { TransactionFormIcon } from '../transaction-form-icon/transaction-form-icon';
 import { TransactionFormRow } from '../transaction-form-row/transaction-form-row';
@@ -24,58 +26,48 @@ interface Props {
     readonly fieldName: 'fromAccountId' | 'toAccountId';
     readonly label?: string;
     readonly testID?: string;
+    readonly edge?: RoundedEdgeEnum;
 }
 
-export const TransactionAccountRow = ({ ref, fieldName, label, testID }: Props) => {
+export const TransactionAccountRow = ({ ref, fieldName, label, testID, edge = RoundedEdgeEnum.TOP }: Props) => {
     const { t } = useLingui();
-    const { control, setValue } = useFormContext<TransactionCreateInputInterface>();
-    const [openAccountSelector] = useAccountSelectorModal();
+    const { accountId, handleOpenAccountSelector } = useTransactionAccountSelector(fieldName);
     const { shake, animatedStyle: shakeStyle } = useShakeAnimation();
 
     useImperativeHandle(ref, () => ({ shake }));
 
-    const accountId = useWatch({ control, name: fieldName });
-    const transactionType = useWatch({ control, name: 'type' });
     const { account } = useGetAccountByIdQuery(accountId ?? 0);
-
-    const handlePress = () => {
-        const isExpenseSourceAccount = transactionType === TransactionTypeEnum.EXPENSE && fieldName === 'fromAccountId';
-        openAccountSelector(
-            {
-                initialAccountId: accountId,
-                onlyActive: false,
-                ...(isExpenseSourceAccount && { excludeAccountTypes: [AccountTypeEnum.DEPOSIT] })
-            },
-            selectedAccountId => {
-                if (isDefined(selectedAccountId)) {
-                    setValue(fieldName, selectedAccountId, { shouldDirty: true });
-                }
-            }
-        );
-    };
 
     const displayLabel = label ?? t`Account`;
     const accessibilityLabel = `${displayLabel}: ${account?.title ?? t`Choose`}`;
     const isInactiveAccount = isDefined(account) && !account.isActive;
     const selectedAccountTestID = isDefined(account?.title) ? SimpleQuickFormSelector.SelectedAccount(account.title) : null;
     const pressableProps = { accessibilityLabel };
+    const accountIcon = (
+        <AccountInactiveIcon isInactive={isInactiveAccount} size={30}>
+            <TransactionFormIcon icon={account?.icon ?? UserIconNameEnum.Wallet} />
+        </AccountInactiveIcon>
+    );
+
+    const ghost = (
+        <TransactionFormRow left={accountIcon} label={displayLabel} value={account?.title} placeholder={t`Choose`} onPress={emptyFn} />
+    );
+    const { ref: measureRef, handlePress } = useAnchoredMorphOriginPress(edge, ghost, handleOpenAccountSelector);
 
     return (
         <Animated.View style={shakeStyle}>
-            <TransactionFormRow
-                left={
-                    <AccountInactiveIcon isInactive={isInactiveAccount} size={30}>
-                        <TransactionFormIcon icon={account?.icon ?? UserIconNameEnum.Wallet} />
-                    </AccountInactiveIcon>
-                }
-                label={displayLabel}
-                value={account?.title}
-                placeholder={t`Choose`}
-                valueTestID={testIDProps(selectedAccountTestID).testID}
-                onPress={handlePress}
-                testID={testID}
-                pressableProps={pressableProps}
-            />
+            <View ref={measureRef} collapsable={false}>
+                <TransactionFormRow
+                    left={accountIcon}
+                    label={displayLabel}
+                    value={account?.title}
+                    placeholder={t`Choose`}
+                    valueTestID={testIDProps(selectedAccountTestID).testID}
+                    onPress={handlePress}
+                    testID={testID}
+                    pressableProps={pressableProps}
+                />
+            </View>
         </Animated.View>
     );
 };

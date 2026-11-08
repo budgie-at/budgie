@@ -1,12 +1,11 @@
 import { View } from 'react-native';
-import { useResolveClassNames } from 'uniwind';
 
-import { emptyFn, isNumber, isString } from '@rnw-community/shared';
+import { emptyFn } from '@rnw-community/shared';
 
-import { RoundedEdgeEnum } from '../../../@generic/enum/rounded-edge.enum';
-import { useMeasureInWindowPress } from '../../../@generic/hook/use-measure-in-window-press.hook';
+import { useAnchoredMorphOriginPress } from '../../../@generic/hook/use-anchored-morph-origin-press.hook';
 import { TransferAccountPicker } from '../transfer-account-picker/transfer-account-picker';
 
+import type { RoundedEdgeEnum } from '../../../@generic/enum/rounded-edge.enum';
 import type { AnchoredMorphOriginInterface } from '../../../@generic/interface/anchored-morph-origin.interface';
 import type { ComponentProps } from 'react';
 
@@ -18,23 +17,9 @@ interface Props extends PickerProps {
 }
 
 export const MeasuredTransferAccountPicker = ({ edge, onPress, ...pickerProps }: Props) => {
-    const { borderRadius: resolvedRadius } = useResolveClassNames('rounded-3xl');
-    const { backgroundColor } = useResolveClassNames('bg-surface-row');
-
-    const borderRadius = isNumber(resolvedRadius) ? resolvedRadius : 0;
-    const topRadius = edge === RoundedEdgeEnum.TOP ? borderRadius : 0;
-    const bottomRadius = edge === RoundedEdgeEnum.BOTTOM ? borderRadius : 0;
-    const color = isString(backgroundColor) ? backgroundColor : 'transparent';
     const ghost = <TransferAccountPicker {...pickerProps} animatedStyle={void 0} onPress={emptyFn} />;
 
-    const { ref, handlePress } = useMeasureInWindowPress(rect => {
-        onPress({
-            rect,
-            color,
-            content: ghost,
-            radii: { topLeft: topRadius, topRight: topRadius, bottomLeft: bottomRadius, bottomRight: bottomRadius }
-        });
-    });
+    const { ref, handlePress } = useAnchoredMorphOriginPress(edge, ghost, onPress);
 
     return (
         <View ref={ref} collapsable={false}>
