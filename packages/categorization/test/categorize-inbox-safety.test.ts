@@ -128,6 +128,8 @@ describe('categorization/inbox-safety', () => {
         ['Kartenüberweisung Hans', 'Kartenüberweisung Olga'],
         ['Virement carte Jean', 'Virement carte Pierre'],
         ['Virement SEPA émis vers Martin', 'Virement SEPA émis vers Dupont'],
+        ['VIR SEPA EMIS VERS Martin', 'VIR SEPA EMIS VERS Dupont'],
+        ['Transf. a favor de Pedro', 'Transf. a favor de Juan'],
         ['Transferencia emitida a favor de Pedro', 'Transferencia emitida a favor de Juan'],
         ['Überweisung an Hans Müller', 'Überweisung an Olga Schmidt'],
         ['Transferencia a tarjeta 1234 Juan', 'Transferencia a tarjeta 5678 Pedro'],

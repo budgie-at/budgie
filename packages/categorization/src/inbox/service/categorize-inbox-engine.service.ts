@@ -89,7 +89,8 @@ class CategorizeInboxEngineService {
             'virement reçu',
             'virement instantané',
             'virement de',
-            'virement à'
+            'virement à',
+            'vir'
         ],
         [LanguageEnum.ES]: [
             'transferencia a tarjeta',
@@ -97,7 +98,8 @@ class CategorizeInboxEngineService {
             'transferencia recibida',
             'transferencia inmediata',
             'transferencia a favor',
-            'transferencia de'
+            'transferencia de',
+            'transf'
         ]
     };
 
