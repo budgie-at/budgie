@@ -23,7 +23,7 @@ export const PREPARE_DELAY_MS = 34;
 
 export const SHEET_RESIZE_SPRING = { mass: 1, stiffness: 600, damping: 44.6 };
 
-export const LOCKSTEP_PUSH_SPRING = { mass: 1, stiffness: 620, damping: 46 };
+export const LOCKSTEP_PUSH_SPRING = { mass: 1, stiffness: 545, damping: 42 };
 
 export const SPRING_SETTLE = { dampingRatio: 1, duration: 400 };
 

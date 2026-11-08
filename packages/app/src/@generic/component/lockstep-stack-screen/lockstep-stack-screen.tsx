@@ -1,7 +1,5 @@
-import { useEffect } from 'react';
-import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 
-import { EASE_OUT } from '../../constant/motion.constant';
 import { LockstepScreenSettledProvider } from '../../context/lockstep-stack.context';
 
 import type { ReactNode } from 'react';
@@ -17,17 +15,9 @@ interface Props {
     readonly children: ReactNode;
 }
 
-const FADE_IN_TIMING = { duration: 160, easing: EASE_OUT };
-
 export const LockstepStackScreen = ({ index, position, width, isTop, isSettled, onScreenLayout, children }: Props) => {
-    const opacity = useSharedValue(index === 0 ? 1 : 0);
-
-    useEffect(() => {
-        opacity.set(withTiming(1, FADE_IN_TIMING));
-    }, [opacity]);
-
     const screenStyle = useAnimatedStyle(() => ({
-        opacity: opacity.get(),
+        opacity: Math.max(0, 1 - Math.abs(index - position.get())),
         transform: [{ translateX: (index - position.get()) * width }]
     }));
 
