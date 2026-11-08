@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Keyboard } from 'react-native';
 import { useReanimatedKeyboardAnimation } from 'react-native-keyboard-controller';
 import { useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
@@ -22,6 +23,7 @@ export const useMorphingSheetDismissMotion = (
     const isReducedMotion = useReducedMotion();
     const isDismissing = useSharedValue(false);
     const isDragging = useSharedValue(false);
+    const [isClosing, setIsClosing] = useState(false);
 
     const dismissWithVelocity = (velocity: number) => {
         if (isDismissing.get()) {
@@ -29,6 +31,7 @@ export const useMorphingSheetDismissMotion = (
         }
 
         isDismissing.set(true);
+        setIsClosing(true);
         Keyboard.dismiss();
 
         const target = visibleHeight.get() + baseBottom + Math.abs(keyboardHeight.get());
@@ -54,5 +57,5 @@ export const useMorphingSheetDismissMotion = (
         translateY.set(isReducedMotion ? 0 : withSpring(0, { ...SHEET_PRESENT_SPRING, velocity }));
     };
 
-    return { isDismissing, isDragging, handleDismiss, handleSettle, handleSwipeDismiss: dismissWithVelocity };
+    return { isDismissing, isDragging, isClosing, handleDismiss, handleSettle, handleSwipeDismiss: dismissWithVelocity };
 };

@@ -20,7 +20,8 @@ export const useAnchoredMorphPanelMotion = (origin: AnchoredMorphOriginInterface
     const isReducedMotion = useReducedMotion();
     const progress = useSharedValue(0);
     const [isSettled, setIsSettled] = useState(false);
-    const isClosing = useSharedValue(false);
+    const isCloseRequested = useSharedValue(false);
+    const [isClosing, setIsClosing] = useState(false);
     const settledKeyboardHeight = useSharedValue(0);
     const contentHeight = useSharedValue(0);
 
@@ -28,7 +29,7 @@ export const useAnchoredMorphPanelMotion = (origin: AnchoredMorphOriginInterface
         onStart: event => {
             'worklet';
 
-            if (!isClosing.get()) {
+            if (!isCloseRequested.get()) {
                 settledKeyboardHeight.set(Math.abs(event.height));
             }
         }
@@ -54,11 +55,12 @@ export const useAnchoredMorphPanelMotion = (origin: AnchoredMorphOriginInterface
     }, []);
 
     const handleClose = () => {
-        if (isClosing.get()) {
+        if (isCloseRequested.get()) {
             return;
         }
 
-        isClosing.set(true);
+        isCloseRequested.set(true);
+        setIsClosing(true);
         Keyboard.dismiss();
 
         const handleFinished = (isFinished?: boolean) => {
@@ -77,6 +79,7 @@ export const useAnchoredMorphPanelMotion = (origin: AnchoredMorphOriginInterface
         progress,
         handleClose,
         handleContentLayout,
-        isSettled
+        isSettled,
+        isClosing
     };
 };

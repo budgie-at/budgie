@@ -19,6 +19,10 @@ export const useMorphingSheetBack = (
     };
 
     const handleSwipeBack = (velocity: number) => {
+        if (motion.isDismissing.get()) {
+            return;
+        }
+
         if (isDefined(stepBack)) {
             motion.handleSettle(velocity);
             stepBack();

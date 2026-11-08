@@ -22,17 +22,16 @@ interface Props {
 export const AnchoredMorphPanel = ({ origin, onDismissed, height = AnchoredMorphPanelHeightEnum.FILL, children }: Props) => {
     const { t } = useLingui();
     const fitsContent = height === AnchoredMorphPanelHeightEnum.CONTENT;
-    const { panelStyle, ghostStyle, contentStyle, progress, handleClose, handleContentLayout, isSettled } = useAnchoredMorphPanelMotion(
-        origin,
-        fitsContent,
-        onDismissed
-    );
+    const { panelStyle, ghostStyle, contentStyle, progress, handleClose, handleContentLayout, isSettled, isClosing } =
+        useAnchoredMorphPanelMotion(origin, fitsContent, onDismissed);
     const isCovered = useAccessibilityLayer();
     const contentLayoutHandler = fitsContent ? handleContentLayout : void 0;
+    const rootPointerEvents = isClosing ? 'none' : 'auto';
 
     return (
         <View
             className="absolute inset-0"
+            pointerEvents={rootPointerEvents}
             collapsable={false}
             accessibilityElementsHidden={isCovered}
             accessibilityViewIsModal

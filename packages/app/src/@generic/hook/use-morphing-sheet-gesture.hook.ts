@@ -42,23 +42,19 @@ export const useMorphingSheetGesture = (drag: MorphingSheetDragInterface) => {
 
             translateY.set(next >= 0 ? next : rubberBand);
         })
-        .onEnd(event => {
+        .onEnd((event, isSuccessful) => {
             if (isDismissing.get()) {
                 return;
             }
 
-            const isDismissed = event.translationY > visibleHeight.get() * DISMISS_DISTANCE_RATIO || event.velocityY > DISMISS_VELOCITY;
+            const isDismissed =
+                isSuccessful && (event.translationY > visibleHeight.get() * DISMISS_DISTANCE_RATIO || event.velocityY > DISMISS_VELOCITY);
 
             if (isDismissed) {
                 scheduleOnRN(onSwipeDismiss, event.velocityY);
             } else {
                 isDragging.set(false);
                 translateY.set(isReducedMotion ? 0 : withSpring(0, { ...SHEET_PRESENT_SPRING, velocity: event.velocityY }));
-            }
-        })
-        .onFinalize((_event, isSuccessful) => {
-            if (!isSuccessful) {
-                isDragging.set(false);
             }
         });
 };

@@ -48,13 +48,14 @@ export const MorphingSheet = ({ steps, activeStep, onDismiss, testID }: Props) =
         onSwipeDismiss: back.handleSwipeBack
     };
     const pageContent = isDefined(page.renderedPageStep) ? steps[page.renderedPageStep]?.content : null;
+    const rootPointerEvents = motion.isClosing ? 'none' : 'box-none';
 
     return (
         <MorphingSheetDismissContext value={motion.handleDismiss}>
             <MorphingSheetDragContext value={drag}>
                 <View
                     className="absolute inset-0"
-                    pointerEvents="box-none"
+                    pointerEvents={rootPointerEvents}
                     collapsable={false}
                     accessibilityElementsHidden={isCovered}
                     accessibilityViewIsModal
