@@ -13,6 +13,7 @@ import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
 import { useDeleteArchivedAccount } from '../../hooks/use-delete-archived-account.hook';
 import { useRestoreArchivedAccount } from '../../hooks/use-restore-archived-account.hook';
 import { useArchivedAccountBalanceQuery } from '../../query/use-archived-account-balance.query';
+import { getAccountDisplayTitle } from '../../utils/get-account-display-title.util';
 import { ArchivedAccountClosedMenuNote } from '../archived-account-closed-menu-note/archived-account-closed-menu-note';
 import { ArchivedAccountTrailing } from '../archived-account-trailing/archived-account-trailing';
 import { ShelvedAccountRow } from '../shelved-account-row/shelved-account-row';
@@ -53,7 +54,7 @@ export const ArchivedAccountCard = ({ account, isFirst, isLast }: Props) => {
                     account={account}
                     subtitle={<ShelvedAccountSubtitle formattedBalance={formattedBalance} metadata={accountType} notice={notice} />}
                     trailing={<ArchivedAccountTrailing account={account} isLoading={isLoading} onRestore={restore} />}
-                    accessibilityLabel={`${account.title}, ${formattedBalance}, ${accountType}, ${notice}${closedLabel}`}
+                    accessibilityLabel={`${getAccountDisplayTitle(account)}, ${formattedBalance}, ${accountType}, ${notice}${closedLabel}`}
                     accessibilityActions={accessibilityActions}
                     testID={ArchivedAccountCardSelector.Card(account.title)}
                 >

@@ -3,7 +3,8 @@ import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { getAccountIbanSuffix } from '../../utils/get-account-iban-suffix.util';
+import { getAccountDisplayTitle } from '../../../account/utils/get-account-display-title.util';
+import { getAccountInfoDescription } from '../../utils/get-account-info-description.util';
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
 import { TransactionInfoRow } from '../transaction-info-row/transaction-info-row';
 import { TransactionPrivateAccountRow } from '../transaction-private-account-row/transaction-private-account-row';
@@ -32,8 +33,8 @@ export const TransactionInfoAccountRows = ({ transaction }: Props) => {
                 <TransactionInfoRow
                     icon={UserIconNameEnum.Wallet}
                     label={t`From account`}
-                    value={transaction.fromAccount.title}
-                    description={getAccountIbanSuffix(transaction.fromAccount)}
+                    value={getAccountDisplayTitle(transaction.fromAccount)}
+                    description={getAccountInfoDescription(transaction.fromAccount)}
                     testID={TransactionInfoPageSelector.Row.FromAccount}
                 />
             ) : null}
@@ -42,8 +43,8 @@ export const TransactionInfoAccountRows = ({ transaction }: Props) => {
                 <TransactionInfoRow
                     icon={UserIconNameEnum.CreditCard}
                     label={t`To account`}
-                    value={transaction.toAccount.title}
-                    description={getAccountIbanSuffix(transaction.toAccount)}
+                    value={getAccountDisplayTitle(transaction.toAccount)}
+                    description={getAccountInfoDescription(transaction.toAccount)}
                     testID={TransactionInfoPageSelector.Row.ToAccount}
                 />
             ) : null}
@@ -70,8 +71,8 @@ export const TransactionInfoAccountRows = ({ transaction }: Props) => {
                 <TransactionInfoRow
                     icon={UserIconNameEnum.Wallet}
                     label={t`Account`}
-                    value={account.title}
-                    description={getAccountIbanSuffix(account)}
+                    value={getAccountDisplayTitle(account)}
+                    description={getAccountInfoDescription(account)}
                     testID={TransactionInfoPageSelector.Row.Account}
                 />
             ) : null}

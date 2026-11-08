@@ -8,6 +8,8 @@ import { InzhurFundReturns } from '../../../inzhur/component/inzhur-fund-returns
 import { isInzhurFundAccount } from '../../../inzhur/utils/is-inzhur-fund-account.util';
 import { ACCOUNT_DETAILS_HERO_BALANCE_HEIGHT } from '../../constant/account-details-hero-balance-height.constant';
 import { isCryptoAccountType } from '../../utils/is-crypto-account-type.util';
+import { isUntrackedOwnAccount } from '../../utils/is-untracked-own-account.util';
+import { AccountDetailsAutomaticNotice } from '../account-details-automatic-notice/account-details-automatic-notice';
 import { AccountDetailsConvertedValue } from '../account-details-converted-value/account-details-converted-value';
 import { AccountDetailsHiddenPill } from '../account-details-hidden-pill/account-details-hidden-pill';
 import { AccountDetailsMarketLink } from '../account-details-market-link/account-details-market-link';
@@ -17,43 +19,49 @@ import { AccountDetailsStatusLine } from '../account-details-status-line/account
 interface Props {
     readonly account: Pick<
         AccountWithInstrumentEntityInterface,
-        'id' | 'iban' | 'isActive' | 'title' | 'type' | 'instrumentId' | 'externalSource' | AccountAssociationEnum.INSTRUMENT
+        'id' | 'iban' | 'isActive' | 'externalId' | 'title' | 'type' | 'instrumentId' | 'externalSource' | AccountAssociationEnum.INSTRUMENT
     >;
     readonly balance: number;
 }
 
 const BALANCE_SLOT_STYLE = { height: ACCOUNT_DETAILS_HERO_BALANCE_HEIGHT };
 
-export const AccountDetailsHero = ({ account, balance }: Props) => (
-    <View className="items-center gap-y-lg pb-md">
-        <View style={BALANCE_SLOT_STYLE} />
+export const AccountDetailsHero = ({ account, balance }: Props) => {
+    const isAutomatic = isUntrackedOwnAccount(account);
 
-        {isCryptoAccountType(account.type) ? (
-            <>
-                <CollapsibleChromeScrollFade>
-                    <AccountDetailsConvertedValue balance={balance} instrument={account.instrument} />
-                </CollapsibleChromeScrollFade>
+    return (
+        <View className="items-center gap-y-lg pb-md">
+            <View style={BALANCE_SLOT_STYLE} />
 
-                <AccountDetailsMarketLink instrument={account.instrument} />
-            </>
-        ) : null}
+            {isCryptoAccountType(account.type) ? (
+                <>
+                    <CollapsibleChromeScrollFade>
+                        <AccountDetailsConvertedValue balance={balance} instrument={account.instrument} />
+                    </CollapsibleChromeScrollFade>
 
-        {isInzhurFundAccount(account) ? (
-            <InzhurFundReturns account={account} balance={balance} />
-        ) : (
-            <AccountDetailsStatusLine account={account} />
-        )}
+                    <AccountDetailsMarketLink instrument={account.instrument} />
+                </>
+            ) : null}
 
-        {account.isActive ? null : (
-            <Animated.View entering={MOTION_FADE_IN} exiting={MOTION_FADE_OUT}>
-                <AccountDetailsHiddenPill account={account} />
-            </Animated.View>
-        )}
+            {isInzhurFundAccount(account) ? (
+                <InzhurFundReturns account={account} balance={balance} />
+            ) : (
+                <AccountDetailsStatusLine account={account} />
+            )}
 
-        {isInzhurFundAccount(account) ? null : (
-            <Animated.View layout={MOTION_LAYOUT}>
-                <AccountDetailsMonthChips accountId={account.id} />
-            </Animated.View>
-        )}
-    </View>
-);
+            {isAutomatic ? <AccountDetailsAutomaticNotice /> : null}
+
+            {account.isActive || isAutomatic ? null : (
+                <Animated.View entering={MOTION_FADE_IN} exiting={MOTION_FADE_OUT}>
+                    <AccountDetailsHiddenPill account={account} />
+                </Animated.View>
+            )}
+
+            {isInzhurFundAccount(account) ? null : (
+                <Animated.View layout={MOTION_LAYOUT}>
+                    <AccountDetailsMonthChips accountId={account.id} />
+                </Animated.View>
+            )}
+        </View>
+    );
+};

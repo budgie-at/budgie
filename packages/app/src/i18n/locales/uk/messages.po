@@ -52,8 +52,8 @@ msgstr "«{title}» видалено"
 msgid "(pick one)"
 msgstr "(виберіть)"
 
-#. placeholder {0}: filteredAccounts?.length ?? 0
 #. placeholder {0}: parts.length
+#. placeholder {0}: shelvedList.shelvedCount
 #: src/account/component/shelved-accounts-page/shelved-accounts-page.tsx
 #: src/rule/hooks/use-rule-condition-formatter.hook.ts
 msgid "{0, plural, one {# account} other {# accounts}}"
@@ -1598,6 +1598,10 @@ msgstr "Усі стовпці вже зіставлено"
 msgid "All conditions"
 msgstr "Усі умови"
 
+#: src/account/component/automatic-account-card/automatic-account-card.tsx
+msgid "All matched"
+msgstr "Усе зіставлено"
+
 #: src/money-data/component/money-data-upgrade-status-card/money-data-upgrade-status-card.tsx
 msgid "All past amounts are converted"
 msgstr "Усі минулі суми конвертовано"
@@ -1934,9 +1938,23 @@ msgstr "Авторизувати знову"
 msgid "Authorize at your bank"
 msgstr "Авторизуйтеся в банку"
 
+#: src/account/component/account-automatic-pill/account-automatic-pill.tsx
 #: src/settings/components/theme-switch/theme-switch.tsx
 msgid "Automatic"
 msgstr "Автоматично"
+
+#: src/account/component/automatic-account-card/automatic-account-card.tsx
+msgid "Automatic · {currencyCode}"
+msgstr "Автоматично · {currencyCode}"
+
+#: src/account/component/automatic-account-card/automatic-account-card.tsx
+#: src/transaction/utils/get-account-info-description.util.ts
+msgid "Automatic account"
+msgstr "Автоматичний рахунок"
+
+#: src/account/component/automatic-account-card/automatic-account-card.tsx
+msgid "Automatic accounts"
+msgstr "Автоматичні рахунки"
 
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
 msgid "Automatic sync"
@@ -6693,6 +6711,7 @@ msgstr "Ще не збережено в iCloud"
 msgid "Not counted as spending"
 msgstr "Не враховується у витратах"
 
+#: src/account/component/automatic-account-card/automatic-account-card.tsx
 #: src/account/component/inactive-account-card/inactive-account-card.tsx
 msgid "Not counted in net worth"
 msgstr "Не враховується в чистих активах"
@@ -7201,6 +7220,10 @@ msgstr "Інші валюти"
 #: src/categorize-inbox/components/categorize-inbox-group-options/categorize-inbox-group-options.tsx
 msgid "Other options"
 msgstr "Інші варіанти"
+
+#: src/account/utils/get-account-display-title.util.ts
+msgid "Other own accounts"
+msgstr "Інші власні рахунки"
 
 #: src/transaction/components/transaction-info-debt-progress/transaction-info-debt-progress.tsx
 msgid "Outstanding"
@@ -9948,6 +9971,10 @@ msgstr "Переказ у банку"
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
 msgid "Transfers and refunds merged"
 msgstr "Перекази й повернення об’єднано"
+
+#: src/account/component/account-details-automatic-notice/account-details-automatic-notice.tsx
+msgid "Transfers to your accounts at banks Budgie doesn't track wait here until they're matched, and aren't counted in net worth. Connect the bank or import its statement and Budgie will match them automatically."
+msgstr "Тут чекають перекази на твої рахунки в банках, яких Budgie не відстежує, доки їх не зіставлено. Вони не враховуються в статках. Підключи банк або імпортуй виписку — і Budgie зіставить їх автоматично."
 
 #: src/ai/component/ai-settings-section/ai-settings-section.tsx
 msgid "Translate categories and tags"

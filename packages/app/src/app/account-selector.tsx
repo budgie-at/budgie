@@ -14,6 +14,7 @@ import { toastOnFailure } from '../@generic/utils/toast-on-failure.util';
 import { AccountSelectContent } from '../account/component/account-select-content/account-select-content';
 import { useAccountSelectorModal, useAccountSelectorModalParams } from '../account/context/account-selector-modal.context';
 import { useSearchAccountsSortedQuery } from '../account/query/use-search-accounts-sorted.query';
+import { isUntrackedOwnAccount } from '../account/utils/is-untracked-own-account.util';
 
 import { AccountSelectorModalSelector } from './account-selector-modal.selector';
 
@@ -34,6 +35,9 @@ export default function AccountSelectorModal() {
         includeTypes: currentParams?.includeAccountTypes,
         onlyActive: currentParams?.onlyActive ?? true
     });
+    const selectableAccounts = accounts.filter(
+        account => !isUntrackedOwnAccount(account) || account.id === currentParams?.initialAccountId
+    );
 
     const handleCreateAction = () => {
         if (!isDefined(createAction)) {
@@ -75,7 +79,7 @@ export default function AccountSelectorModal() {
             />
 
             <AccountSelectContent
-                data={accounts}
+                data={selectableAccounts}
                 initialAccountId={currentParams.initialAccountId ?? null}
                 search={search}
                 onSelect={resolveAccountSelector}

@@ -11,6 +11,7 @@ import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
 import { AccountInactiveIcon } from '../../../account/component/account-inactive-icon/account-inactive-icon';
 import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
+import { getAccountDisplayTitle } from '../../../account/utils/get-account-display-title.util';
 import { SimpleQuickFormSelector } from '../simple-quick-form/simple-quick-form.selector';
 import { TransactionFormIcon } from '../transaction-form-icon/transaction-form-icon';
 import { TransactionFormRow } from '../transaction-form-row/transaction-form-row';
@@ -55,7 +56,7 @@ export const TransactionAccountRow = ({ ref, fieldName, label, testID }: Props) 
     };
 
     const displayLabel = label ?? t`Account`;
-    const accessibilityLabel = `${displayLabel}: ${account?.title ?? t`Choose`}`;
+    const accessibilityLabel = `${displayLabel}: ${isDefined(account) ? getAccountDisplayTitle(account) : t`Choose`}`;
     const isInactiveAccount = isDefined(account) && !account.isActive;
     const selectedAccountTestID = isDefined(account?.title) ? SimpleQuickFormSelector.SelectedAccount(account.title) : null;
     const pressableProps = { onPress: handlePress, accessibilityLabel };
@@ -69,7 +70,7 @@ export const TransactionAccountRow = ({ ref, fieldName, label, testID }: Props) 
                     </AccountInactiveIcon>
                 }
                 label={displayLabel}
-                value={account?.title}
+                {...(isDefined(account) && { value: getAccountDisplayTitle(account) })}
                 placeholder={t`Choose`}
                 valueProps={testIDProps(selectedAccountTestID)}
                 testID={testID}

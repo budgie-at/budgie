@@ -12,6 +12,7 @@ import { useContext } from 'react';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
+import { getAccountDisplayTitle } from '../../account/utils/get-account-display-title.util';
 import { StatisticsCategoryIdsContext } from '../context/statistics-category-ids.context';
 import { TransactionAccountTitlePrefixContext } from '../context/transaction-account-title-prefix.context';
 import { getTransactionDisplayTitle } from '../utils/get-transaction-display-title.util';
@@ -41,11 +42,13 @@ const getTransactionCounterparty = (
     const debtAccount = transaction.debtEvents.at(0)?.[DebtEventAssociationEnum.DEBT_ACCOUNT];
     const moneyAccount = transaction.fromAccount ?? transaction.toAccount;
     const displayTitle = getTransactionDisplayTitle(transaction);
-    const getVisibleTitle = (account: Pick<AccountEntityInterface, 'id' | 'title'>) =>
-        account.id === accountId || displayTitle.toLowerCase().includes(account.title.toLowerCase()) ? null : account.title;
+    const getVisibleTitle = (account: Pick<AccountEntityInterface, 'id' | 'title' | 'externalId'>) =>
+        account.id === accountId || displayTitle.toLowerCase().includes(account.title.toLowerCase())
+            ? null
+            : getAccountDisplayTitle(account);
     const toCounterparty = (
-        source: Pick<AccountEntityInterface, 'id' | 'title'>,
-        destination: Pick<AccountEntityInterface, 'id' | 'title'>
+        source: Pick<AccountEntityInterface, 'id' | 'title' | 'externalId'>,
+        destination: Pick<AccountEntityInterface, 'id' | 'title' | 'externalId'>
     ): TransactionCounterpartyInterface | null => {
         const sourceTitle = getVisibleTitle(source);
         const destinationTitle = getVisibleTitle(destination);
@@ -83,8 +86,8 @@ const getAccountContext = (
 
     return {
         repaidDebtAccount,
-        repaidDebtTitle: isRepaidDebtTitleVisible ? repaidDebtAccount.title : null,
-        moneyAccountTitle: !isDefined(moneyAccount) || moneyAccount.id === accountId ? null : moneyAccount.title
+        repaidDebtTitle: isRepaidDebtTitleVisible ? getAccountDisplayTitle(repaidDebtAccount) : null,
+        moneyAccountTitle: !isDefined(moneyAccount) || moneyAccount.id === accountId ? null : getAccountDisplayTitle(moneyAccount)
     };
 };
 
