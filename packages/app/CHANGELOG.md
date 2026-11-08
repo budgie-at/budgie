@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.169.0](https://github.com/budgie-at/budgie/compare/v6.168.0...v6.169.0) (2026-11-08)
+
+### Bug Fixes
+
+* **app:** align adjustment rows and balance states ([fea2f2b](https://github.com/budgie-at/budgie/commit/fea2f2b556a6ff7cdd80688db0c77115eda54f7d))
+* **app:** avoid clipped adjustment rows while typing ([9455d73](https://github.com/budgie-at/budgie/commit/9455d73aec166b5493eadb94b7a1aeed8f27317f))
+* **app:** clarify adjustment balance comparisons ([dea952a](https://github.com/budgie-at/budgie/commit/dea952a7943b34ca68e409dd7ec2f5cd63836e08))
+* **app:** honor synced adjustment balances and finish alignment ([684aad4](https://github.com/budgie-at/budgie/commit/684aad49fcdb5ae551e790ac8914b0f5737e5edc))
+* **app:** keep balance adjustment previews visible ([c3fbf34](https://github.com/budgie-at/budgie/commit/c3fbf341b8e3171c45bf74247349901409148ab7))
+* **app:** leave the adjustment editor when the sync state cannot be read ([1a1cca7](https://github.com/budgie-at/budgie/commit/1a1cca74b982729fa27b871e1c4094f1656b6db2))
+* **app:** refine adjustment saves, notes and balance rows ([fe1a650](https://github.com/budgie-at/budgie/commit/fe1a6506ee7e99d9a8a9f3c7dd888eff3605fc1c))
+* preserve reconciliation notes and synced edit safeguards ([3758481](https://github.com/budgie-at/budgie/commit/3758481c0ea763ed71a8052600f26c9d10a80ec3))
+
+### Features
+
+* **app:** polish the balance adjustment screen ([4977991](https://github.com/budgie-at/budgie/commit/497799107f36300e8b242dc8c7f719a77eaf50b4))
+
+
 # [6.168.0](https://github.com/budgie-at/budgie/compare/v6.167.9...v6.168.0) (2026-11-08)
 
 ### Features

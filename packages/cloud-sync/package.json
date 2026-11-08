@@ -1,6 +1,6 @@
 {
     "name": "@budgie/cloud-sync",
-    "version": "6.168.0",
+    "version": "6.169.0",
     "private": true,
     "description": "Cloud sync package: record mapping, upload, apply, household sharing and the sync engine",
     "sideEffects": false,

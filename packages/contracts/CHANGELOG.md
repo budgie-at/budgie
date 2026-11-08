@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.169.0](https://github.com/budgie-at/budgie/compare/v6.168.0...v6.169.0) (2026-11-08)
+
+### Bug Fixes
+
+* **app:** honor synced adjustment balances and finish alignment ([684aad4](https://github.com/budgie-at/budgie/commit/684aad49fcdb5ae551e790ac8914b0f5737e5edc))
+
+
 # [6.168.0](https://github.com/budgie-at/budgie/compare/v6.167.9...v6.168.0) (2026-11-08)
 
 ### Features
