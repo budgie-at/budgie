@@ -97,6 +97,8 @@ curl -X POST https://budgie.at/api/indexnow \
   -H "Authorization: Bearer $ADMIN_SECRET"
 ```
 
+An optional `?since=<ISO date-time>` submits only sitemap entries whose `lastModified` is at or after it; when nothing matches, IndexNow is not called and the route returns `{ "status": 200, "count": 0 }`. An unparseable `since` returns `400`. `.github/workflows/landing-indexnow.yml` runs daily with `since` set to 7 days ago (not on every deploy, which would make crawlers refetch every page right after the ISR cache is emptied); a manual `workflow_dispatch` submits the full sitemap.
+
 Acceptable responses: `200 OK`, `202 Accepted`. A `403` means the key file is unreachable or body is wrong. A `400` means the payload is malformed (check `host`, `keyLocation`, and URL ownership).
 
 ---
