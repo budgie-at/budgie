@@ -6,16 +6,14 @@ import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
 import { router } from 'expo-router';
 import { FormProvider, useForm } from 'react-hook-form';
-import { View } from 'react-native';
 
-import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
+import { useModalRouteState } from '../@generic/hook/use-modal-route-state/use-modal-route-state.hook';
+import { useMorphingSheetResult } from '../@generic/hook/use-morphing-sheet-result.hook';
 import { useSingleFlight } from '../@generic/hook/use-single-flight.hook';
 import { toastOnFailure } from '../@generic/utils/toast-on-failure.util';
-import { ConvertTransferForm } from '../transaction/components/convert-transfer-form/convert-transfer-form';
+import { ConvertToTransferModalContent } from '../transaction/components/convert-to-transfer-modal-content/convert-to-transfer-modal-content';
 import { useConvertToTransferModal } from '../transaction/context/convert-to-transfer-modal.context';
 import { useConvertToTransferModalParams } from '../transaction/hook/use-convert-to-transfer-modal-params.hook';
-
-import { ConvertToTransferModalSelector } from './convert-to-transfer-modal.selector';
 
 import type { TransactionCreateInputInterface } from '@budgie/contracts';
 
@@ -23,8 +21,8 @@ import type { TransactionCreateInputInterface } from '@budgie/contracts';
 export default function ConvertToTransferModal() {
     const { t } = useLingui();
     const [, resolveConvertToTransfer, dismissConvertToTransfer] = useConvertToTransferModal();
-    useModalDismiss(dismissConvertToTransfer);
     const currentParams = useConvertToTransferModalParams();
+    useModalRouteState(currentParams, dismissConvertToTransfer);
     const { isLoading, run } = useSingleFlight();
 
     const transactionId = currentParams?.transactionId ?? 0;
@@ -55,11 +53,27 @@ export default function ConvertToTransferModal() {
         })
     });
 
-    const handleCancel = () => {
-        resolveConvertToTransfer(false);
+    const handleConverted = (shouldSkipPostConvertNavigation: boolean) => {
+        if (shouldSkipPostConvertNavigation) {
+            resolveConvertToTransfer(true);
+
+            return;
+        }
+
+        resolveConvertToTransfer(true, { skipBack: true });
+        if (router.canDismiss()) {
+            router.dismiss();
+        }
+        if (router.canGoBack()) {
+            router.back();
+        }
+
+        router.push({ pathname: '/transactions/[id]/transfer', params: { id: String(transactionId) } });
     };
 
-    const handleSubmit = () =>
+    const { handleCommit, handleDismissed } = useMorphingSheetResult<boolean>(handleConverted);
+
+    const handleSubmit = (onConverted: () => void) =>
         run(
             Effect.gen(function* () {
                 const formValues = form.getValues();
@@ -75,27 +89,18 @@ export default function ConvertToTransferModal() {
                     ? transactionTransferService.convertExpenseToTransfer(convertParams)
                     : transactionTransferService.convertIncomeToTransfer(convertParams);
 
-                if (skipPostConvertNavigation) {
-                    resolveConvertToTransfer(true);
-                } else {
-                    resolveConvertToTransfer(true, { skipBack: true });
-                    if (router.canDismiss()) {
-                        router.dismiss();
-                    }
-                    if (router.canGoBack()) {
-                        router.back();
-                    }
-
-                    router.push({ pathname: '/transactions/[id]/transfer', params: { id: String(transactionId) } });
-                }
+                handleCommit(skipPostConvertNavigation);
+                onConverted();
             }).pipe(toastOnFailure(t`Conversion failed`, t`Please try again`))
         );
 
+    if (!currentParams) {
+        return null;
+    }
+
     return (
         <FormProvider {...form}>
-            <View collapsable={false} testID={ConvertToTransferModalSelector.Page}>
-                <ConvertTransferForm isSubmitting={isLoading} onSubmit={handleSubmit} onCancel={handleCancel} />
-            </View>
+            <ConvertToTransferModalContent isSubmitting={isLoading} onSubmit={handleSubmit} onDismiss={handleDismissed} />
         </FormProvider>
     );
 }

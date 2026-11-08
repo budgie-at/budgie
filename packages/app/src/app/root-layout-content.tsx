@@ -234,7 +234,7 @@ export const RootLayoutContent = () => {
                                                                     <Stack.Screen name="bank-integration-key" options={sheetOptions} />
                                                                     <Stack.Screen
                                                                         name="convert-to-transfer"
-                                                                        options={fitToContentsSheetOptions(groupedSheetSurface)}
+                                                                        options={MORPHING_SHEET_OPTIONS}
                                                                     />
                                                                     <Stack.Screen name="convert-to-installment" options={sheetOptions} />
                                                                     <Stack.Screen

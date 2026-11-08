@@ -6,6 +6,7 @@ import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { SheetSurface } from '../../../@generic/component/sheet-surface/sheet-surface';
+import { useMorphingSheetDismiss } from '../../../@generic/context/morphing-sheet.context';
 import { TRANSFER_ACCOUNT_FIELDS } from '../../constant/transfer-account-fields.constant';
 import { TransactionKeypadContext } from '../../context/transaction-keypad.context';
 import { useConvertTransferForm } from '../../hook/use-convert-transfer-form.hook';
@@ -22,16 +23,22 @@ import { TransactionKeypad } from '../transaction-keypad/transaction-keypad';
 
 interface Props {
     readonly isSubmitting: boolean;
-    readonly onSubmit: () => void;
-    readonly onCancel: () => void;
+    readonly onSubmit: (onConverted: () => void) => void;
+    readonly onAccountPress: () => void;
 }
 
 const KEYPAD_CONTENT_HEIGHT_RATIO = 0.4;
 
-export const ConvertTransferForm = ({ isSubmitting, onSubmit, onCancel }: Props) => {
+export const ConvertTransferForm = ({ isSubmitting, onSubmit, onAccountPress }: Props) => {
     const { height } = useWindowDimensions();
     const { t } = useLingui();
-    const form = useConvertTransferForm(onSubmit);
+    const dismiss = useMorphingSheetDismiss();
+
+    const handleSubmit = () => {
+        onSubmit(dismiss);
+    };
+
+    const form = useConvertTransferForm(handleSubmit);
     const confirmLabel = form.isEditing ? t`Done` : t`Convert to Transfer`;
     const isDisabled =
         isSubmitting ||
@@ -69,7 +76,7 @@ export const ConvertTransferForm = ({ isSubmitting, onSubmit, onCancel }: Props)
                 header={
                     <ConvertToTransferHeader
                         isLoading={isSubmitting}
-                        onCancel={onCancel}
+                        onCancel={dismiss}
                         onConfirm={form.handleConfirm}
                         disabled={isDisabled}
                     />
@@ -83,7 +90,7 @@ export const ConvertTransferForm = ({ isSubmitting, onSubmit, onCancel }: Props)
                 <ScrollView style={scrollStyle} contentContainerClassName="px-xl pt-sm pb-[48px]" showsVerticalScrollIndicator={false}>
                     {amount}
                     <GroupedListSection footer={<QuickFormFieldError fields={TRANSFER_ACCOUNT_FIELDS} />}>
-                        <ConvertTransferAccounts />
+                        <ConvertTransferAccounts onPress={onAccountPress} />
                         {form.conversion.isCrossCurrency ? (
                             <LoadingContent isLoading={form.conversion.isPending}>
                                 <ConversionRow

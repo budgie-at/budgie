@@ -1,21 +1,19 @@
-import { AccountTypeEnum, TransactionCreateInputInterface, TransactionTypeEnum } from '@budgie/contracts';
+import { TransactionTypeEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { useFormContext } from 'react-hook-form';
 import { Text } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
-
-import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
 import { useConvertToTransferModalParams } from '../../hook/use-convert-to-transfer-modal-params.hook';
 import { useTransferAccounts } from '../../hook/use-transfer-accounts.hook';
 import { TransferAccountPicker } from '../transfer-account-picker/transfer-account-picker';
 import { TransferQuickFormSelector } from '../transfer-quick-form/transfer-quick-form.selector';
 
-export const ConvertTransferAccounts = () => {
+interface Props {
+    readonly onPress: () => void;
+}
+
+export const ConvertTransferAccounts = ({ onPress }: Props) => {
     const { t } = useLingui();
     const params = useConvertToTransferModalParams();
-    const { setValue, clearErrors } = useFormContext<TransactionCreateInputInterface>();
-    const [openAccountSelector] = useAccountSelectorModal();
     const { fromAccount, toAccount } = useTransferAccounts();
     const isExpense = params?.transactionType === TransactionTypeEnum.EXPENSE;
     const account = isExpense ? toAccount : fromAccount;
@@ -24,23 +22,6 @@ export const ConvertTransferAccounts = () => {
     const selectedTestID = isExpense
         ? TransferQuickFormSelector.SelectedToAccount(account?.title ?? '')
         : TransferQuickFormSelector.SelectedFromAccount(account?.title ?? '');
-
-    const handlePress = () => {
-        openAccountSelector(
-            {
-                initialAccountId: account?.id,
-                excludeAccountId: params?.excludeAccountId,
-                excludeAccountTypes: [AccountTypeEnum.DEBT],
-                onlyActive: false
-            },
-            selectedAccountId => {
-                if (isDefined(selectedAccountId)) {
-                    setValue(isExpense ? 'toAccountId' : 'fromAccountId', selectedAccountId);
-                    clearErrors('root');
-                }
-            }
-        );
-    };
 
     return (
         <TransferAccountPicker
@@ -53,7 +34,7 @@ export const ConvertTransferAccounts = () => {
             }
             testID={testID}
             selectedTestID={selectedTestID}
-            onPress={handlePress}
+            onPress={onPress}
         />
     );
 };

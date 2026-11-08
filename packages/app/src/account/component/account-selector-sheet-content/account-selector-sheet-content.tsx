@@ -19,9 +19,10 @@ import type { AccountSelectorModalParams, AccountSelectorResult } from '../../co
 interface Props {
     readonly params: AccountSelectorModalParams;
     readonly onSelect: (accountId: AccountSelectorResult) => void;
+    readonly onBack?: () => void;
 }
 
-export const AccountSelectorSheetContent = ({ params, onSelect }: Props) => {
+export const AccountSelectorSheetContent = ({ params, onSelect, onBack }: Props) => {
     const { t } = useLingui();
     const [search, setSearch] = useState('');
     const isPanelSettled = useAnchoredMorphPanelSettled();
@@ -67,6 +68,7 @@ export const AccountSelectorSheetContent = ({ params, onSelect }: Props) => {
                 search={search}
                 onSearchChange={setSearch}
                 testID={AccountSelectorModalSelector.Input}
+                onBack={onBack}
             />
 
             {isPanelSettled ? (
