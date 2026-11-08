@@ -18,8 +18,10 @@ export const useAnchoredMorphOriginPress = (
     const { backgroundColor } = useResolveClassNames('bg-surface-row');
 
     const borderRadius = isNumber(resolvedRadius) ? resolvedRadius : 0;
-    const topRadius = edge === RoundedEdgeEnum.TOP ? borderRadius : 0;
-    const bottomRadius = edge === RoundedEdgeEnum.BOTTOM ? borderRadius : 0;
+    const isTopRounded = edge === RoundedEdgeEnum.TOP || edge === RoundedEdgeEnum.ALL;
+    const isBottomRounded = edge === RoundedEdgeEnum.BOTTOM || edge === RoundedEdgeEnum.ALL;
+    const topRadius = isTopRounded ? borderRadius : 0;
+    const bottomRadius = isBottomRounded ? borderRadius : 0;
     const color = isString(backgroundColor) ? backgroundColor : 'transparent';
 
     const { ref, handlePress } = useMeasureInWindowPress(rect => {

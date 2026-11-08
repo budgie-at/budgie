@@ -1,15 +1,20 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useFormContext, useWatch } from 'react-hook-form';
+import { View } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
+import { emptyFn, isDefined } from '@rnw-community/shared';
 
 import { GroupedListValueRow } from '../../../@generic/component/grouped-list-value-row/grouped-list-value-row';
+import { RoundedEdgeEnum } from '../../../@generic/enum/rounded-edge.enum';
+import { useAnchoredMorphOriginPress } from '../../../@generic/hook/use-anchored-morph-origin-press.hook';
 import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
 import { RecurringSeriesFormSelector } from '../recurring-series-form-screen/recurring-series-form.selector';
 
+import type { AnchoredMorphOriginInterface } from '../../../@generic/interface/anchored-morph-origin.interface';
 import type { RecurringSeriesFormValues } from '../../constant/recurring-series-form-schema.constant';
+import type { ComponentProps } from 'react';
 
 export const RecurringFormAccountField = () => {
     const { t } = useLingui();
@@ -19,8 +24,8 @@ export const RecurringFormAccountField = () => {
     const { account } = useGetAccountByIdQuery(accountId ?? 0);
     const hasAccount = isDefined(accountId);
 
-    const handlePress = () => {
-        openAccountSelector({ initialAccountId: accountId, onlyActive: false }, selectedAccountId => {
+    const handleSelect = (origin: AnchoredMorphOriginInterface) => {
+        openAccountSelector({ initialAccountId: accountId, onlyActive: false, origin }, selectedAccountId => {
             if (isDefined(selectedAccountId)) {
                 setValue('accountId', selectedAccountId);
             }
@@ -31,14 +36,19 @@ export const RecurringFormAccountField = () => {
         setValue('accountId', null);
     };
 
+    const rowProps: Omit<ComponentProps<typeof GroupedListValueRow>, 'onPress'> = {
+        icon: account?.icon ?? UserIconNameEnum.Wallet,
+        title: t`Account`,
+        value: account?.title ?? t`Any account`,
+        testID: RecurringSeriesFormSelector.Account,
+        ...(hasAccount && { onClear: handleClear })
+    };
+    const ghost = <GroupedListValueRow {...rowProps} onPress={emptyFn} />;
+    const { ref, handlePress } = useAnchoredMorphOriginPress(RoundedEdgeEnum.BOTTOM, ghost, handleSelect);
+
     return (
-        <GroupedListValueRow
-            icon={account?.icon ?? UserIconNameEnum.Wallet}
-            title={t`Account`}
-            value={account?.title ?? t`Any account`}
-            testID={RecurringSeriesFormSelector.Account}
-            onPress={handlePress}
-            {...(hasAccount && { onClear: handleClear })}
-        />
+        <View ref={ref} collapsable={false}>
+            <GroupedListValueRow {...rowProps} onPress={handlePress} />
+        </View>
     );
 };

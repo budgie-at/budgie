@@ -12,13 +12,18 @@ import { useLingui } from '@lingui/react/macro';
 import { useController, useFormContext, useWatch } from 'react-hook-form';
 import { Text, View } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
+import { emptyFn, isDefined } from '@rnw-community/shared';
 
+import { RoundedEdgeEnum } from '../../../@generic/enum/rounded-edge.enum';
+import { useAnchoredMorphOriginPress } from '../../../@generic/hook/use-anchored-morph-origin-press.hook';
 import { isEnumValue } from '../../../@generic/type-guard/is-enum-value.type-guard';
 import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
 import { RuleValueGlyph } from '../rule-value-glyph/rule-value-glyph';
 import { RuleValuePickerButton } from '../rule-value-picker-button/rule-value-picker-button';
+
+import type { AnchoredMorphOriginInterface } from '../../../@generic/interface/anchored-morph-origin.interface';
+import type { ComponentProps } from 'react';
 
 interface Props {
     readonly index: number;
@@ -65,9 +70,9 @@ export const RuleActionAccountSelector = ({ index, testID }: Props) => {
 
     const isMissing = !isDefined(accountId) && (formState.isDirty || formState.submitCount > 0);
 
-    const handleOpen = () => {
+    const handleSelect = (origin: AnchoredMorphOriginInterface) => {
         openAccountSelector(
-            { initialAccountId: accountId ?? null, excludeAccountTypes: [AccountTypeEnum.DEBT], onlyActive: false },
+            { initialAccountId: accountId ?? null, excludeAccountTypes: [AccountTypeEnum.DEBT], onlyActive: false, origin },
             selectedAccountId => {
                 if (isDefined(selectedAccountId)) {
                     onChange(selectedAccountId);
@@ -76,17 +81,22 @@ export const RuleActionAccountSelector = ({ index, testID }: Props) => {
         );
     };
 
+    const pickerProps: Omit<ComponentProps<typeof RuleValuePickerButton>, 'onPress'> = {
+        value: account?.title ?? null,
+        isMissing,
+        leading: <RuleValueGlyph icon={UserIconNameEnum.Wallet} variant="cyan" />,
+        placeholder: t(label),
+        name: t`Transfer account`,
+        testID
+    };
+    const ghost = <RuleValuePickerButton {...pickerProps} onPress={emptyFn} />;
+    const { ref, handlePress } = useAnchoredMorphOriginPress(RoundedEdgeEnum.ALL, ghost, handleSelect);
+
     return (
         <View className="flex-1 pb-md">
-            <RuleValuePickerButton
-                value={account?.title ?? null}
-                isMissing={isMissing}
-                leading={<RuleValueGlyph icon={UserIconNameEnum.Wallet} variant="cyan" />}
-                placeholder={t(label)}
-                name={t`Transfer account`}
-                onPress={handleOpen}
-                testID={testID}
-            />
+            <View ref={ref} collapsable={false}>
+                <RuleValuePickerButton {...pickerProps} onPress={handlePress} />
+            </View>
             <Text className="text-[13px] leading-[18px] text-secondary-foreground">{t(hint)}</Text>
         </View>
     );
