@@ -17,14 +17,12 @@ import { householdAccountShareAtom } from '../../constant/household-account-shar
 import { householdAccountShareDraftAtom } from '../../constant/household-account-share-draft-atom.constant';
 import { getHouseholdAccountFooter } from '../../utils/get-household-account-footer.util';
 import { HouseholdShareAccountRow } from '../household-share-account-row/household-share-account-row';
-import { HouseholdSharedByOtherAccountRow } from '../household-shared-by-other-account-row/household-shared-by-other-account-row';
 
 interface Props {
     readonly accountId: number;
-    readonly isBankSynced: boolean;
 }
 
-export const HouseholdShareAccountSection = ({ accountId, isBankSynced }: Props) => {
+export const HouseholdShareAccountSection = ({ accountId }: Props) => {
     const { t } = useLingui();
     const status = AsyncResult.getOrElse(useLiveAtomValue(householdAccountShareAtom(accountId)), () => null);
     const everything = AsyncResult.getOrElse(useLiveAtomValue(householdShareEverythingAtom), () => null);
@@ -35,21 +33,16 @@ export const HouseholdShareAccountSection = ({ accountId, isBankSynced }: Props)
         return null;
     }
 
-    const isSharedByOther = status.state === HouseholdShareStateEnum.SHARED_BY_OTHER;
-    const isSharedByEverything = !isSharedByOther && isDefined(everything) && everything.isEnabled;
+    const isSharedByEverything = isDefined(everything) && everything.isEnabled;
     const isShared = draft ?? status.state === HouseholdShareStateEnum.SHARED_BY_ME;
-    const isToggleable = !isSharedByOther && !isSharedByEverything;
-    const isSyncedByOther = isBankSynced && isSharedByOther;
     const { footer, sharedByEverythingReason } = getHouseholdAccountFooter(t, {
         isShared,
         isAvailable,
-        isToggleable,
-        isSyncedByOther
+        isToggleable: !isSharedByEverything
     });
 
     return (
         <GroupedListSection title={t`Family`} footer={footer}>
-            {isSharedByOther ? <HouseholdSharedByOtherAccountRow /> : null}
             {isSharedByEverything ? (
                 <GroupedListSwitchRow
                     left={<GroupedListIcon icon={UserIconNameEnum.Users} />}
@@ -61,7 +54,7 @@ export const HouseholdShareAccountSection = ({ accountId, isBankSynced }: Props)
                     switchTestID={HouseholdShareSelector.AccountSwitch}
                 />
             ) : null}
-            {isToggleable ? <HouseholdShareAccountRow value={isShared} onChange={setDraft} /> : null}
+            {isSharedByEverything ? null : <HouseholdShareAccountRow value={isShared} onChange={setDraft} />}
         </GroupedListSection>
     );
 };

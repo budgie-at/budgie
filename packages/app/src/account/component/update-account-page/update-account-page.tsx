@@ -1,6 +1,8 @@
+import { HouseholdShareStateEnum } from '@budgie/cloud-sync';
 import { AccountEntityInterface, ExternalSourceEnum } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
+import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import { ReactNode } from 'react';
 
 import { EmptyFn, isDefined, isNotEmptyString } from '@rnw-community/shared';
@@ -12,18 +14,18 @@ import { GroupedListSection } from '../../../@generic/component/grouped-list-sec
 import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
 import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
 import { PillButtonFooter } from '../../../@generic/component/pill-button-footer/pill-button-footer';
+import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hook';
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
 import { defaultInstrumentIdAtom } from '../../../settings/constants/settings-atoms.constant';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { ACCOUNT_KIND_TITLE } from '../../constant/account-kind-title.constant';
 import { BANK_PROVIDER_TITLE } from '../../constant/bank-provider-title.constant';
-import { AccountSwitchFieldKindEnum } from '../../enum/account-switch-field-kind.enum';
+import { householdAccountShareAtom } from '../../constant/household-account-share-atom.constant';
 import { AccountFormBindingsInterface } from '../../interface/account-form-bindings.interface';
-import { AccountNetWorthField } from '../account-net-worth-field/account-net-worth-field';
-import { AccountSwitchField } from '../account-switch-field/account-switch-field';
-import { ArchiveAccount } from '../archive-account/archive-account';
 import { CreateAccountScreenSelector } from '../create-account-screen/create-account-screen.selector';
-import { HouseholdShareAccountSection } from '../household-share-account-section/household-share-account-section';
+import { HouseholdSharedByOtherAccountSection } from '../household-shared-by-other-account-section/household-shared-by-other-account-section';
+import { PersonalAccountSections } from '../personal-account-sections/personal-account-sections';
+import { SharedByOtherAccountOptions } from '../shared-by-other-account-options/shared-by-other-account-options';
 
 interface Props {
     readonly account: AccountEntityInterface;
@@ -39,6 +41,9 @@ export const UpdateAccountPage = ({ account, fields, hero, detailsFooter, childr
     const { t } = useLingui();
     const { instrument } = useGetInstrumentByIdQuery(account.instrumentId);
     const defaultInstrumentId = useAtomValue(defaultInstrumentIdAtom);
+    const isSharedByOther =
+        AsyncResult.getOrElse(useLiveAtomValue(householdAccountShareAtom(account.id)), () => null)?.state ===
+        HouseholdShareStateEnum.SHARED_BY_OTHER;
 
     const providerTitle = isDefined(account.externalSource) ? BANK_PROVIDER_TITLE[account.externalSource] : null;
     const kindLabel = isDefined(providerTitle) ? t(providerTitle) : t(ACCOUNT_KIND_TITLE[account.type]);
@@ -51,6 +56,14 @@ export const UpdateAccountPage = ({ account, fields, hero, detailsFooter, childr
         .join(' · ');
     const detailsIconVariant = account.externalSource === ExternalSourceEnum.INZHUR ? 'secondary' : ACCOUNT_COLOR[account.type];
     const detailsSectionFooter = detailsFooter ?? (isNotEmptyString(kindFooter) ? kindFooter : null);
+    const sharedByOtherSection = isSharedByOther ? (
+        <HouseholdSharedByOtherAccountSection isBankSynced={isDefined(account.integrationId)} />
+    ) : null;
+    const accountSections = isSharedByOther ? (
+        <SharedByOtherAccountOptions isActive={fields.isActive} />
+    ) : (
+        <PersonalAccountSections accountId={account.id} fields={fields} />
+    );
 
     return (
         <GroupedSurface>
@@ -70,6 +83,8 @@ export const UpdateAccountPage = ({ account, fields, hero, detailsFooter, childr
                 {hero}
 
                 <FormLayoutGroup>
+                    {sharedByOtherSection}
+
                     <GroupedListSection title={t`Details`} footer={detailsSectionFooter}>
                         <AccountDetailsField
                             titleBinding={fields.title}
@@ -83,24 +98,7 @@ export const UpdateAccountPage = ({ account, fields, hero, detailsFooter, childr
 
                     {children}
 
-                    <GroupedListSection title={t`Options`}>
-                        <AccountNetWorthField
-                            accountId={account.id}
-                            value={fields.includeInNetWorth.field.value}
-                            onChange={fields.includeInNetWorth.field.onChange}
-                        />
-                        <AccountSwitchField
-                            kind={AccountSwitchFieldKindEnum.SHOW_ON_HOME}
-                            value={fields.isActive.field.value}
-                            onChange={fields.isActive.field.onChange}
-                        />
-                    </GroupedListSection>
-
-                    <HouseholdShareAccountSection accountId={account.id} isBankSynced={isDefined(account.integrationId)} />
-
-                    <GroupedListSection footer={t`Hidden from Home, totals and budgets until restored.`}>
-                        <ArchiveAccount accountId={account.id} />
-                    </GroupedListSection>
+                    {accountSections}
                 </FormLayoutGroup>
             </FixedChromePage>
         </GroupedSurface>
