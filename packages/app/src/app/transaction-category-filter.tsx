@@ -16,7 +16,7 @@ export default function TransactionCategoryFilterModal() {
     const { handleCommit, handleDismissed } = useMorphingSheetResult<TransactionCategoryFilterResult>(resolveTransactionCategoryFilter);
 
     return (
-        <SingleStepMorphingSheet onDismiss={handleDismissed} isContentDraggable={false}>
+        <SingleStepMorphingSheet onDismiss={handleDismissed}>
             <TransactionCategoryFilterContent value={currentParams?.value ?? null} onCommit={handleCommit} />
         </SingleStepMorphingSheet>
     );

@@ -18,9 +18,5 @@ export default function BudgetLimitChangesRoute() {
         <BudgetSheetState title={t`Limit changes`} isLoading={isLoading} isError={isError} />
     );
 
-    return (
-        <SingleStepMorphingSheet onDismiss={handleDismissed} isContentDraggable={false}>
-            {content}
-        </SingleStepMorphingSheet>
-    );
+    return <SingleStepMorphingSheet onDismiss={handleDismissed}>{content}</SingleStepMorphingSheet>;
 }

@@ -16,7 +16,7 @@ export default function TransactionTagFilterModal() {
     const { handleCommit, handleDismissed } = useMorphingSheetResult<TransactionTagFilterResult>(resolveTransactionTagFilter);
 
     return (
-        <SingleStepMorphingSheet onDismiss={handleDismissed} isContentDraggable={false}>
+        <SingleStepMorphingSheet onDismiss={handleDismissed}>
             <TransactionTagFilterContent value={currentParams?.value ?? null} onCommit={handleCommit} />
         </SingleStepMorphingSheet>
     );

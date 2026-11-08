@@ -24,7 +24,7 @@ export default function ConvertToInstallmentModal() {
     }
 
     return (
-        <SingleStepMorphingSheet onDismiss={handleDismissed} isContentDraggable={false}>
+        <SingleStepMorphingSheet onDismiss={handleDismissed}>
             <View testID={ConvertToInstallmentModalSelector.Page}>
                 <ConvertToInstallmentContent params={currentParams} onCommit={handleCommit} />
             </View>

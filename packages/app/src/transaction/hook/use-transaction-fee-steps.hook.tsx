@@ -35,7 +35,8 @@ export const useTransactionFeeSteps = (config: TransactionFeeStepsConfigInterfac
         onConfirm,
         onShowFee,
         onShowCategory,
-        onShowCreate
+        onShowCreate,
+        onDone
     } = config;
     const [feeEntry, setFeeEntry] = useState(() => createFeeEntry(entry, accountId));
     const { account } = useGetAccountByIdQuery(accountId);
@@ -77,6 +78,7 @@ export const useTransactionFeeSteps = (config: TransactionFeeStepsConfigInterfac
         ...categorySteps,
         fee: {
             presentation: MorphingSheetPresentationEnum.CARD,
+            ...(isDefined(onDone) && { onBack: onDone }),
             content: (
                 <TransactionFeeStep
                     feeEntry={feeEntry}
@@ -86,6 +88,7 @@ export const useTransactionFeeSteps = (config: TransactionFeeStepsConfigInterfac
                     onAmountChange={handleAmountChange}
                     onCategoryPress={onShowCategory}
                     onConfirm={onConfirm}
+                    onDone={onDone}
                 />
             )
         }

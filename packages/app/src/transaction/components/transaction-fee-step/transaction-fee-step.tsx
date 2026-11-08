@@ -1,10 +1,11 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import { TextInput, View } from 'react-native';
 
-import { isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
-import { SheetTitle } from '../../../@generic/component/sheet-title/sheet-title';
+import { SheetTitleRow } from '../../../@generic/component/sheet-title-row/sheet-title-row';
 import { useMorphingSheetDismiss } from '../../../@generic/context/morphing-sheet.context';
 import { SplitEntryRow } from '../split-entry-row/split-entry-row';
 import { TransactionFeeRemoveButton } from '../transaction-fee-remove-button/transaction-fee-remove-button';
@@ -22,29 +23,32 @@ interface Props {
     readonly onAmountChange: (amount: number) => void;
     readonly onCategoryPress: () => void;
     readonly onConfirm: (result: TransactionFeeModalResult) => void;
+    readonly onDone?: () => void;
 }
 
 const ROW_INDEX = 0;
 
 export const TransactionFeeStep = (props: Props) => {
-    const { feeEntry, currencySymbol, isExisting, amountRef, onAmountChange, onCategoryPress, onConfirm } = props;
+    const { feeEntry, currencySymbol, isExisting, amountRef, onAmountChange, onCategoryPress, onConfirm, onDone } = props;
     const dismiss = useMorphingSheetDismiss();
+    const handleDone = onDone ?? dismiss;
+    const closeIcon = isDefined(onDone) ? UserIconNameEnum.ChevronLeft : UserIconNameEnum.X;
 
     const canSave = isPositiveNumber(feeEntry.categoryId) && isPositiveNumber(feeEntry.amount);
 
     const handleConfirm = () => {
         onConfirm([feeEntry]);
-        dismiss();
+        handleDone();
     };
 
     const handleRemoveConfirmed = () => {
         onConfirm([]);
-        dismiss();
+        handleDone();
     };
 
     return (
         <View className="px-xl gap-lg pb-xl">
-            <SheetTitle title={t`Fee`} />
+            <SheetTitleRow title={t`Fee`} closeIcon={closeIcon} trailing={<View />} onClose={handleDone} />
 
             <GroupedListSection>
                 <SplitEntryRow

@@ -48,5 +48,9 @@ export const useMorphingSheetDismissMotion = (
         dismissWithVelocity(0);
     };
 
-    return { isDismissing, handleDismiss, handleSwipeDismiss: dismissWithVelocity };
+    const handleSettle = (velocity: number) => {
+        translateY.set(isReducedMotion ? 0 : withSpring(0, { ...SHEET_PRESENT_SPRING, velocity }));
+    };
+
+    return { isDismissing, handleDismiss, handleSettle, handleSwipeDismiss: dismissWithVelocity };
 };

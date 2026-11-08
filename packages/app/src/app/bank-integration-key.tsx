@@ -11,7 +11,7 @@ export default function BankIntegrationKeyModal() {
     const { handleDismissed } = useMorphingSheetResult(resolveKeyModal);
 
     return (
-        <SingleStepMorphingSheet onDismiss={handleDismissed} isContentDraggable={false}>
+        <SingleStepMorphingSheet onDismiss={handleDismissed}>
             <BankIntegrationKeyModalContent integrationId={integrationId} />
         </SingleStepMorphingSheet>
     );

@@ -51,5 +51,5 @@ export const TransactionFeeModalContent = ({ accountId, currencySymbol, entry, v
         [TransactionFeeStepEnum.CREATE_CATEGORY]: feeSteps.createCategory
     };
 
-    return <MorphingSheet steps={steps} activeStep={step} onDismiss={onDismiss} isContentDraggable={step === TransactionFeeStepEnum.FEE} />;
+    return <MorphingSheet steps={steps} activeStep={step} onDismiss={onDismiss} />;
 };

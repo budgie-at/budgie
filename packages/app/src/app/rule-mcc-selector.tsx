@@ -12,7 +12,7 @@ export default function RuleMccSelectorModal() {
     const { handleCommit, handleDismissed } = useMorphingSheetResult<string>(resolveRuleMccSelector);
 
     return (
-        <SingleStepMorphingSheet onDismiss={handleDismissed} isContentDraggable={false}>
+        <SingleStepMorphingSheet onDismiss={handleDismissed}>
             <RuleMccSelectorModalContent selectedMcc={selectedMcc} onCommit={handleCommit} />
         </SingleStepMorphingSheet>
     );

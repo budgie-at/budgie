@@ -4,4 +4,5 @@ import type { ReactNode } from 'react';
 export interface MorphingSheetStepInterface {
     readonly content: ReactNode;
     readonly presentation: MorphingSheetPresentationEnum;
+    readonly onBack?: () => void;
 }

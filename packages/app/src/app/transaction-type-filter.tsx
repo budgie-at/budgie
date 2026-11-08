@@ -16,7 +16,7 @@ export default function TransactionTypeFilterModal() {
     const { handleCommit, handleDismissed } = useMorphingSheetResult<TransactionTypeFilterResult>(resolveTransactionTypeFilter);
 
     return (
-        <SingleStepMorphingSheet onDismiss={handleDismissed} isContentDraggable={false}>
+        <SingleStepMorphingSheet onDismiss={handleDismissed}>
             <TransactionTypeFilterContent value={currentParams?.value ?? null} onCommit={handleCommit} />
         </SingleStepMorphingSheet>
     );

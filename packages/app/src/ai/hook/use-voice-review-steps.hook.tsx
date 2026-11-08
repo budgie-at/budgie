@@ -55,5 +55,5 @@ export const useVoiceReviewSteps = (config: VoiceReviewStepsConfigInterface) => 
         [VoiceReviewStepEnum.CREATE_CATEGORY]: categorySteps.createCategory
     };
 
-    return { step: navigation.step, steps, isReviewStep: navigation.step === VoiceReviewStepEnum.REVIEW };
+    return { step: navigation.step, steps };
 };

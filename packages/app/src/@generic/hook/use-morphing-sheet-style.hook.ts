@@ -1,4 +1,4 @@
-import { Extrapolation, interpolate, useAnimatedStyle } from 'react-native-reanimated';
+import { Extrapolation, interpolate, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 
 import { useMorphingSheetKeyboardLift } from './use-morphing-sheet-keyboard-lift.hook';
 import { useReducedMotion } from './use-reduced-motion.hook';
@@ -17,6 +17,7 @@ export const useMorphingSheetStyle = (
     const { baseBottom, frameHeight } = frame;
     const keyboardLift = useMorphingSheetKeyboardLift(baseBottom);
     const isReducedMotion = useReducedMotion();
+    const isDragging = useSharedValue(false);
 
     const frameStaticStyle = {
         bottom: baseBottom,
@@ -30,10 +31,11 @@ export const useMorphingSheetStyle = (
         const presence = interpolate(translateY.get(), [0, Math.max(visibleHeight.get() + baseBottom, 1)], [1, 0], Extrapolation.CLAMP);
         const progress = pageProgress.get();
         const maxLift = Math.max(0, frameHeight + KEYBOARD_TOP_CLEARANCE - baseBottom - visibleHeight.get());
+        const isOffsetFollowed = !isReducedMotion || isDragging.get();
 
         return {
             opacity: (isReducedMotion ? presence : 1) * (1 - progress * progress * (3 - 2 * progress)),
-            transform: [{ translateY: (isReducedMotion ? 0 : translateY.get()) - Math.min(keyboardLift.get(), maxLift) }]
+            transform: [{ translateY: (isOffsetFollowed ? translateY.get() : 0) - Math.min(keyboardLift.get(), maxLift) }]
         };
     });
 
@@ -46,5 +48,5 @@ export const useMorphingSheetStyle = (
         transform: [{ translateY: frameHeight - visibleHeight.get() }]
     }));
 
-    return { frameStyle: [frameStaticStyle, frameAnimatedStyle], cardStyle };
+    return { frameStyle: [frameStaticStyle, frameAnimatedStyle], cardStyle, isDragging };
 };

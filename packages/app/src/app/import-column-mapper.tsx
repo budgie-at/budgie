@@ -15,7 +15,7 @@ export default function ImportColumnMapperModal() {
     const { samples = {}, headers = [], selectedHeaders = [], currentValue, fieldLabel = '', isRequired = false } = currentParams ?? {};
 
     return (
-        <SingleStepMorphingSheet onDismiss={handleDismissed} isContentDraggable={false}>
+        <SingleStepMorphingSheet onDismiss={handleDismissed}>
             <ImportColumnMapperModalContent
                 samples={samples}
                 headers={headers}

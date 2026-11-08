@@ -9,7 +9,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { PillButton } from '../../../@generic/component/pill-button/pill-button';
-import { SheetTitle } from '../../../@generic/component/sheet-title/sheet-title';
+import { SheetTitleRow } from '../../../@generic/component/sheet-title-row/sheet-title-row';
 import { useSplitEntriesEditor } from '../../hook/use-split-entries-editor.hook';
 import { useSplitEntriesSubmit } from '../../hook/use-split-entries-submit.hook';
 import { EntryWithLocalIdInterface } from '../../utils/entry-with-local-id.util';
@@ -55,7 +55,7 @@ export const SplitEntriesStep = (props: Props) => {
     return (
         <Animated.View className="bg-sheet-surface" style={sheetStyle}>
             <ScrollView contentContainerStyle={CONTENT_CONTAINER_STYLE} keyboardShouldPersistTaps="handled">
-                <SheetTitle title={t`Split`} />
+                <SheetTitleRow title={t`Split`} trailing={<View />} />
                 <GroupedListSection>
                     {entries.map((entry, index) => (
                         <SplitEntriesItem

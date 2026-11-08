@@ -40,7 +40,7 @@ export default function MakeRecurringScreen() {
     }
 
     return (
-        <SingleStepMorphingSheet onDismiss={handleDismissed} isContentDraggable={false}>
+        <SingleStepMorphingSheet onDismiss={handleDismissed}>
             <MakeRecurringSheet transactionId={parsedTransactionId} onCommit={handleCommit} />
         </SingleStepMorphingSheet>
     );

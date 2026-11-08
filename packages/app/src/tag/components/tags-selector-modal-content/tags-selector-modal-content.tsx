@@ -55,6 +55,7 @@ export const TagsSelectorModalContent = ({ params, onCommit, onDismiss }: Props)
         },
         [TagsSelectorStepEnum.CREATE_TAG]: {
             presentation: MorphingSheetPresentationEnum.PAGE,
+            onBack: handleCreateCancel,
             content: (
                 <TagsSelectorCreateStep
                     defaultTitle={search.trim()}
@@ -67,5 +68,5 @@ export const TagsSelectorModalContent = ({ params, onCommit, onDismiss }: Props)
         }
     };
 
-    return <MorphingSheet steps={steps} activeStep={step} onDismiss={onDismiss} isContentDraggable={false} />;
+    return <MorphingSheet steps={steps} activeStep={step} onDismiss={onDismiss} />;
 };

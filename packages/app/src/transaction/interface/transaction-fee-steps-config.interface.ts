@@ -13,4 +13,5 @@ export interface TransactionFeeStepsConfigInterface {
     readonly onShowFee: () => void;
     readonly onShowCategory: () => void;
     readonly onShowCreate: () => void;
+    readonly onDone?: () => void;
 }

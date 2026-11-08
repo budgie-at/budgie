@@ -9,7 +9,7 @@ export default function BudgetPeriodSummaryModal() {
     const handleDismissed = () => void goBackOrReplace('/');
 
     return (
-        <SingleStepMorphingSheet onDismiss={handleDismissed} isContentDraggable={false}>
+        <SingleStepMorphingSheet onDismiss={handleDismissed}>
             <BudgetPeriodSummary snapshotId={Number(snapshotId)} />
         </SingleStepMorphingSheet>
     );

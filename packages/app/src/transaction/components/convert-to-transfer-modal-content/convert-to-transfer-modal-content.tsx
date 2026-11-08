@@ -5,7 +5,6 @@ import { useFormContext, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
 
 import { MorphingSheet } from '../../../@generic/component/morphing-sheet/morphing-sheet';
-import { MorphingSheetDismissContext } from '../../../@generic/context/morphing-sheet.context';
 import { MorphingSheetPresentationEnum } from '../../../@generic/enum/morphing-sheet-presentation.enum';
 import { ConvertToTransferModalSelector } from '../../../app/convert-to-transfer-modal.selector';
 import { ConvertToTransferStepEnum } from '../../enum/convert-to-transfer-step.enum';
@@ -65,7 +64,8 @@ export const ConvertToTransferModalContent = ({ isSubmitting, onSubmit, onDismis
         onConfirm: handleFeeConfirm,
         onShowFee: handleShowFee,
         onShowCategory: handleShowFeeCategory,
-        onShowCreate: handleShowFeeCreate
+        onShowCreate: handleShowFeeCreate,
+        onDone: handleShowConvert
     });
 
     const steps = {
@@ -84,17 +84,13 @@ export const ConvertToTransferModalContent = ({ isSubmitting, onSubmit, onDismis
         },
         [ConvertToTransferStepEnum.ACCOUNT]: {
             presentation: MorphingSheetPresentationEnum.CARD,
+            onBack: handleShowConvert,
             content: <ConvertTransferAccountStep onBack={handleShowConvert} />
         },
-        [ConvertToTransferStepEnum.FEE]: {
-            presentation: feeSteps.fee.presentation,
-            content: <MorphingSheetDismissContext value={handleShowConvert}>{feeSteps.fee.content}</MorphingSheetDismissContext>
-        },
+        [ConvertToTransferStepEnum.FEE]: feeSteps.fee,
         [ConvertToTransferStepEnum.FEE_CATEGORY]: feeSteps.category,
         [ConvertToTransferStepEnum.FEE_CREATE_CATEGORY]: feeSteps.createCategory
     };
 
-    const isDraggable = step === ConvertToTransferStepEnum.CONVERT || step === ConvertToTransferStepEnum.FEE;
-
-    return <MorphingSheet steps={steps} activeStep={step} onDismiss={onDismiss} isContentDraggable={isDraggable} />;
+    return <MorphingSheet steps={steps} activeStep={step} onDismiss={onDismiss} />;
 };

@@ -6,6 +6,7 @@ import { View } from 'react-native';
 
 import { FilterSheetApply } from '../../../@generic/component/filter-sheet/filter-sheet-apply/filter-sheet-apply';
 import { FilterSheetFooter } from '../../../@generic/component/filter-sheet/filter-sheet-footer/filter-sheet-footer';
+import { FilterSheetHeader } from '../../../@generic/component/filter-sheet/filter-sheet-header/filter-sheet-header';
 import { SheetSurface } from '../../../@generic/component/sheet-surface/sheet-surface';
 import { useMorphingSheetCommit } from '../../../@generic/hook/use-morphing-sheet-commit.hook';
 import { toggleFilterSelection } from '../../utils/toggle-filter-selection.util';
@@ -42,7 +43,7 @@ export const TransactionTypeFilterContent = ({ value, onCommit }: Props) => {
     });
 
     return (
-        <SheetSurface className="flex-none pt-lg" contentClassName="flex-none">
+        <SheetSurface className="flex-none pt-lg" contentClassName="flex-none" header={<FilterSheetHeader title={t`Type`} />}>
             <View className="gap-y-sm px-xl pt-md pb-[16px]">
                 {TRANSACTION_TYPE_ROWS.map(row => (
                     <View className="h-[96px] flex-row gap-x-sm" key={row.join('-')}>

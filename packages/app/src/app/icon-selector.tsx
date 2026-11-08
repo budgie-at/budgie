@@ -13,7 +13,7 @@ export default function IconSelectorModal() {
     const { handleCommit, handleDismissed } = useMorphingSheetResult<UserIconType>(resolveIconSelector);
 
     return (
-        <SingleStepMorphingSheet onDismiss={handleDismissed} isContentDraggable={false}>
+        <SingleStepMorphingSheet onDismiss={handleDismissed}>
             <IconSelectorModalContent
                 selectedIcon={selectedIcon}
                 keywords={keywords}

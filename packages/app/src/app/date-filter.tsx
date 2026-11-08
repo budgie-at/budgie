@@ -14,7 +14,7 @@ export default function DateFilterModal() {
     const { handleCommit, handleDismissed } = useMorphingSheetResult<DateFilterResult>(resolveDateFilter);
 
     return (
-        <SingleStepMorphingSheet onDismiss={handleDismissed} isContentDraggable={false}>
+        <SingleStepMorphingSheet onDismiss={handleDismissed}>
             <DateFilterSheetContent
                 range={currentParams?.value ?? null}
                 onCommit={handleCommit}

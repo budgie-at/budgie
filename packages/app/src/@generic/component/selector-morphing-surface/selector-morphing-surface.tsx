@@ -24,7 +24,7 @@ export const SelectorMorphingSurface = ({ origin, onDismissed, sheetStyle, panel
             {children}
         </AnchoredMorphPanel>
     ) : (
-        <SingleStepMorphingSheet onDismiss={onDismissed} isContentDraggable={false}>
+        <SingleStepMorphingSheet onDismiss={onDismissed}>
             <View style={sheetStyle}>{children}</View>
         </SingleStepMorphingSheet>
     );

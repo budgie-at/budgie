@@ -16,6 +16,7 @@ import { DateFilterItem } from '../date-filter/date-filter-item';
 import { RangeDatePicker } from '../date-picker/range-date-picker';
 import { FilterSheetApply } from '../filter-sheet/filter-sheet-apply/filter-sheet-apply';
 import { FilterSheetFooter } from '../filter-sheet/filter-sheet-footer/filter-sheet-footer';
+import { FilterSheetHeader } from '../filter-sheet/filter-sheet-header/filter-sheet-header';
 import { SheetSurface } from '../sheet-surface/sheet-surface';
 
 import type { DateFilterResult } from '../../context/date-filter-modal.context';
@@ -64,7 +65,7 @@ export const DateFilterSheetContent = ({ range, onCommit, datePeriodTestID, appl
     const applyLabel = hasSelected ? t`Show selected range` : t`Show all dates`;
 
     return (
-        <SheetSurface className="flex-none pt-lg" contentClassName="flex-none">
+        <SheetSurface className="flex-none pt-lg" contentClassName="flex-none" header={<FilterSheetHeader title={t`Date`} />}>
             <ScrollView
                 style={scrollStyle}
                 contentContainerClassName="px-md pt-sm pb-[16px]"

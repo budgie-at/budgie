@@ -24,9 +24,5 @@ export default function BudgetSafeToSpendRoute() {
         <BudgetSheetState title={t`Safe to spend`} isLoading={isLoading} isError={isError} header={<BudgetSafeToSpendHeader />} />
     );
 
-    return (
-        <SingleStepMorphingSheet onDismiss={handleDismissed} isContentDraggable={false}>
-            {content}
-        </SingleStepMorphingSheet>
-    );
+    return <SingleStepMorphingSheet onDismiss={handleDismissed}>{content}</SingleStepMorphingSheet>;
 }

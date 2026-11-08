@@ -22,7 +22,7 @@ export default function ConsolidationSourceModal() {
     }
 
     return (
-        <SingleStepMorphingSheet onDismiss={handleDismissed} isContentDraggable={false}>
+        <SingleStepMorphingSheet onDismiss={handleDismissed}>
             <View style={listStyle}>
                 <ConsolidationSourceModalContent transactionId={currentParams.transactionId} />
             </View>

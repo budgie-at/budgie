@@ -64,11 +64,12 @@ export const CategoryDestinationModalContent = (props: Props) => {
         },
         [CategorySelectorStepEnum.CREATE_CATEGORY]: {
             presentation: MorphingSheetPresentationEnum.PAGE,
+            onBack: handleCreateCancel,
             content: (
                 <CategoryCreatePage defaultTitle={createTitle} syncZone={syncZone} onSelect={handleCreated} onCancel={handleCreateCancel} />
             )
         }
     };
 
-    return <MorphingSheet steps={steps} activeStep={step} onDismiss={onDismiss} isContentDraggable={false} />;
+    return <MorphingSheet steps={steps} activeStep={step} onDismiss={onDismiss} />;
 };

@@ -13,7 +13,7 @@ export default function RuleSelectorModal() {
     const selectedValue = currentParams?.selectedValue ?? null;
 
     return (
-        <SingleStepMorphingSheet onDismiss={handleDismissed} isContentDraggable={false}>
+        <SingleStepMorphingSheet onDismiss={handleDismissed}>
             <RuleSelectorModalContent
                 title={currentParams?.title ?? ''}
                 options={options}

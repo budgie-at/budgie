@@ -34,6 +34,7 @@ export const CategorySelectorModalContent = ({ params, onCommit, onDismiss }: Pr
         },
         [CategorySelectorStepEnum.CREATE_CATEGORY]: {
             presentation: MorphingSheetPresentationEnum.PAGE,
+            onBack: handleCreateCancel,
             content: (
                 <CategorySelectorCreateStep
                     defaultTitle={createTitle}
@@ -45,5 +46,5 @@ export const CategorySelectorModalContent = ({ params, onCommit, onDismiss }: Pr
         }
     };
 
-    return <MorphingSheet steps={steps} activeStep={step} onDismiss={onDismiss} isContentDraggable={false} />;
+    return <MorphingSheet steps={steps} activeStep={step} onDismiss={onDismiss} />;
 };

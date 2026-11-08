@@ -4,7 +4,9 @@ import { scheduleOnRN } from 'react-native-worklets';
 
 import { SHEET_PRESENT_SPRING } from '../constant/motion.constant';
 
-import type { UseMorphingSheetGestureParamsInterface } from '../interface/use-morphing-sheet-gesture-params.interface';
+import { useReducedMotion } from './use-reduced-motion.hook';
+
+import type { MorphingSheetDragInterface } from '../interface/morphing-sheet-drag.interface';
 
 const DISMISS_DISTANCE_RATIO = 0.3;
 const DISMISS_VELOCITY = 800;
@@ -12,13 +14,9 @@ const MAX_RUBBER_BAND = 24;
 const RUBBER_BAND_FACTOR = 2;
 const ACTIVE_OFFSET_Y = 8;
 
-export const useMorphingSheetGesture = ({
-    translateY,
-    visibleHeight,
-    isDismissing,
-    isEnabled,
-    onDismiss
-}: UseMorphingSheetGestureParamsInterface) => {
+export const useMorphingSheetGesture = (drag: MorphingSheetDragInterface) => {
+    const { translateY, visibleHeight, isDismissing, isDragging, isEnabled, onSwipeDismiss } = drag;
+    const isReducedMotion = useReducedMotion();
     const dragStart = useSharedValue(0);
 
     return Gesture.Pan()
@@ -32,6 +30,7 @@ export const useMorphingSheetGesture = ({
         .onStart(() => {
             cancelAnimation(translateY);
             dragStart.set(translateY.get());
+            isDragging.set(true);
         })
         .onUpdate(event => {
             if (isDismissing.get()) {
@@ -51,9 +50,12 @@ export const useMorphingSheetGesture = ({
             const isDismissed = event.translationY > visibleHeight.get() * DISMISS_DISTANCE_RATIO || event.velocityY > DISMISS_VELOCITY;
 
             if (isDismissed) {
-                scheduleOnRN(onDismiss, event.velocityY);
+                scheduleOnRN(onSwipeDismiss, event.velocityY);
             } else {
-                translateY.set(withSpring(0, { ...SHEET_PRESENT_SPRING, velocity: event.velocityY }));
+                translateY.set(isReducedMotion ? 0 : withSpring(0, { ...SHEET_PRESENT_SPRING, velocity: event.velocityY }));
             }
+        })
+        .onFinalize(() => {
+            isDragging.set(false);
         });
 };

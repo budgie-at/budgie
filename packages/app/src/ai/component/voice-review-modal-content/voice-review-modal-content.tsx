@@ -15,7 +15,7 @@ interface Props {
 export const VoiceReviewModalContent = (props: Props) => {
     const { initialRows, originalText, onCommit, onDismiss } = props;
     const review = useVoiceReview(initialRows);
-    const { step, steps, isReviewStep } = useVoiceReviewSteps({ review, originalText, onCommit });
+    const { step, steps } = useVoiceReviewSteps({ review, originalText, onCommit });
 
-    return <MorphingSheet steps={steps} activeStep={step} onDismiss={onDismiss} isContentDraggable={isReviewStep} />;
+    return <MorphingSheet steps={steps} activeStep={step} onDismiss={onDismiss} />;
 };

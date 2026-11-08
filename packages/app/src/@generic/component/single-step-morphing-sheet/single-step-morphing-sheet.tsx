@@ -7,12 +7,11 @@ const MAIN_STEP = 'MAIN';
 
 interface Props {
     readonly onDismiss: () => void;
-    readonly isContentDraggable?: boolean;
     readonly children: ReactNode;
 }
 
-export const SingleStepMorphingSheet = ({ onDismiss, isContentDraggable = true, children }: Props) => {
+export const SingleStepMorphingSheet = ({ onDismiss, children }: Props) => {
     const steps = { [MAIN_STEP]: { presentation: MorphingSheetPresentationEnum.CARD, content: children } };
 
-    return <MorphingSheet steps={steps} activeStep={MAIN_STEP} onDismiss={onDismiss} isContentDraggable={isContentDraggable} />;
+    return <MorphingSheet steps={steps} activeStep={MAIN_STEP} onDismiss={onDismiss} />;
 };

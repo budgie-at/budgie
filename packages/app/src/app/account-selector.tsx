@@ -17,7 +17,7 @@ export default function AccountSelectorModal() {
     }
 
     return (
-        <SingleStepMorphingSheet onDismiss={handleDismissed} isContentDraggable={false}>
+        <SingleStepMorphingSheet onDismiss={handleDismissed}>
             <AccountSelectorCardContent params={currentParams} onCommit={handleCommit} />
         </SingleStepMorphingSheet>
     );

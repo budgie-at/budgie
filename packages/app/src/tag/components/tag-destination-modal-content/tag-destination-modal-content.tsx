@@ -65,9 +65,10 @@ export const TagDestinationModalContent = (props: Props) => {
         },
         [TagsSelectorStepEnum.CREATE_TAG]: {
             presentation: MorphingSheetPresentationEnum.PAGE,
+            onBack: handleCreateCancel,
             content: <TagForm defaultTitle={createTitle} onSuccess={handleCreated} onCancel={handleCreateCancel} />
         }
     };
 
-    return <MorphingSheet steps={steps} activeStep={step} onDismiss={onDismiss} isContentDraggable={false} />;
+    return <MorphingSheet steps={steps} activeStep={step} onDismiss={onDismiss} />;
 };

@@ -2914,6 +2914,8 @@ msgstr "Clipboard doesn't contain a valid Monobank token"
 msgid "Clipboard is empty"
 msgstr "Clipboard is empty"
 
+#: src/@generic/component/anchored-morph-panel/anchored-morph-panel.tsx
+#: src/@generic/component/morphing-sheet-scrim/morphing-sheet-scrim.tsx
 #: src/@generic/component/selector-modal-search-header/selector-modal-search-header.tsx
 #: src/@generic/component/sheet-title-row/sheet-title-row.tsx
 #: src/budget/components/budget-sheet-state/budget-sheet-state.tsx
@@ -3827,6 +3829,7 @@ msgstr "Data tools"
 msgid "date"
 msgstr "date"
 
+#: src/@generic/component/date-filter-sheet-content/date-filter-sheet-content.tsx
 #: src/@generic/component/date-filter/date-filter.tsx
 #: src/@generic/component/date-picker-sheet-content/date-picker-sheet-content.tsx
 #: src/app/(main)/import-csv.tsx
@@ -10132,6 +10135,7 @@ msgid "type"
 msgstr "type"
 
 #: src/rule/constant/rule-condition-field.constant.ts
+#: src/transaction/components/transaction-type-filter-content/transaction-type-filter-content.tsx
 #: src/transaction/components/transaction-type-filter/transaction-type-filter.tsx
 msgid "Type"
 msgstr "Type"

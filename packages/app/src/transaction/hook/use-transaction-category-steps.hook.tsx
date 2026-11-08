@@ -23,6 +23,7 @@ export const useTransactionCategorySteps = (config: TransactionCategoryStepsConf
     return {
         category: {
             presentation: MorphingSheetPresentationEnum.CARD,
+            onBack,
             content: (
                 <View style={categoryStepStyle}>
                     <SheetSurface className="pt-lg">
@@ -33,6 +34,7 @@ export const useTransactionCategorySteps = (config: TransactionCategoryStepsConf
         },
         createCategory: {
             presentation: MorphingSheetPresentationEnum.PAGE,
+            onBack: onShowCategory,
             content: <CategoryCreatePage defaultTitle={createTitle} syncZone={syncZone} onSelect={onSelect} onCancel={onShowCategory} />
         }
     };

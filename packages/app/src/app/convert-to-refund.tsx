@@ -25,7 +25,7 @@ export default function ConvertToRefundModal() {
     }
 
     return (
-        <SingleStepMorphingSheet onDismiss={handleDismissed} isContentDraggable={false}>
+        <SingleStepMorphingSheet onDismiss={handleDismissed}>
             <View style={listStyle} testID={ConvertToRefundModalSelector.Page}>
                 <ConvertToRefundContent refundIncomeTransactionId={refundIncomeTransactionId} onCommit={handleCommit} />
             </View>

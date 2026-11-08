@@ -56,7 +56,6 @@ export const SplitEntriesModalContent = (props: Props) => {
     };
 
     const isInitiallySplit = initialEntries.length > 1;
-    const isSplitStep = step === SplitEntriesStepEnum.SPLIT;
 
     const categorySteps = useTransactionCategorySteps({
         variant,
@@ -92,5 +91,5 @@ export const SplitEntriesModalContent = (props: Props) => {
         [SplitEntriesStepEnum.CREATE_CATEGORY]: categorySteps.createCategory
     };
 
-    return <MorphingSheet steps={steps} activeStep={step} onDismiss={onDismiss} isContentDraggable={isSplitStep} />;
+    return <MorphingSheet steps={steps} activeStep={step} onDismiss={onDismiss} />;
 };

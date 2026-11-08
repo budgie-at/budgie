@@ -39,7 +39,7 @@ export default function TransactionAccountFilterModal() {
     };
 
     return (
-        <SingleStepMorphingSheet onDismiss={handleDismissed} isContentDraggable={false}>
+        <SingleStepMorphingSheet onDismiss={handleDismissed}>
             <TransactionAccountFilterContent
                 value={currentParams?.value ?? null}
                 onCommit={handleCommit}

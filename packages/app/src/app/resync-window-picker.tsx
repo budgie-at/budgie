@@ -11,7 +11,7 @@ export default function ResyncWindowPickerModal() {
     const { handleDismissed } = useMorphingSheetResult<null>(resolveResyncWindowPicker);
 
     return (
-        <SingleStepMorphingSheet onDismiss={handleDismissed} isContentDraggable={false}>
+        <SingleStepMorphingSheet onDismiss={handleDismissed}>
             <ResyncWindowPickerModalContent accountId={accountId} />
         </SingleStepMorphingSheet>
     );

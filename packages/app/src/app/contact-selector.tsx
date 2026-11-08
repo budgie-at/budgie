@@ -13,7 +13,7 @@ export default function ContactSelectorModal() {
     const { handleCommit, handleDismissed } = useMorphingSheetResult<Contact>(resolveContactSelector);
 
     return (
-        <SingleStepMorphingSheet onDismiss={handleDismissed} isContentDraggable={false}>
+        <SingleStepMorphingSheet onDismiss={handleDismissed}>
             <ContactSelectorModalContent selectedContactId={selectedContactId} onCommit={handleCommit} />
         </SingleStepMorphingSheet>
     );
