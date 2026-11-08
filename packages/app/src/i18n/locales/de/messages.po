@@ -1949,6 +1949,15 @@ msgstr "Guthaben"
 msgid "Balance Adjustment"
 msgstr "Saldoanpassung"
 
+#: src/transaction/components/adjustment-balance-preview/adjustment-balance-preview.tsx
+#: src/transaction/components/adjustment-balance-summary/adjustment-balance-summary.tsx
+msgid "Balance after saving"
+msgstr "Saldo nach dem Speichern"
+
+#: src/transaction/hook/use-adjustment-balance.hook.ts
+msgid "Balance after saving {spokenAfter}"
+msgstr "Saldo nach dem Speichern {spokenAfter}"
+
 #: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
 msgid "Balance forecast"
 msgstr "Kontostandprognose"
@@ -1964,6 +1973,10 @@ msgstr "Saldo aus der Synchronisation"
 #: src/@generic/component/amount-sign-capsule/amount-sign-capsule.tsx
 msgid "Balance sign"
 msgstr "Vorzeichen des Saldos"
+
+#: src/transaction/hook/use-adjustment-balance.hook.ts
+msgid "Balance unchanged"
+msgstr "Saldo unverändert"
 
 #: src/account/component/account-details-hero-balance/account-details-hero-balance.tsx
 msgid "Balance: {formattedBalance}"
@@ -6147,7 +6160,6 @@ msgstr "Keine Kategorien gefunden"
 msgid "No categories match “{trimmedSearch}”"
 msgstr "Keine Kategorien passen zu „{trimmedSearch}“"
 
-#: src/transaction/components/adjustment-balance-summary/adjustment-balance-summary.tsx
 #: src/transaction/hook/use-adjustment-balance.hook.ts
 msgid "No change"
 msgstr "Keine Änderung"
@@ -6424,6 +6436,9 @@ msgid "not set"
 msgstr "nicht gesetzt"
 
 #: src/settings/components/budget-management-card/budget-management-card.tsx
+#: src/transaction/components/adjustment-balance-preview/adjustment-balance-preview.tsx
+#: src/transaction/components/adjustment-balance-row/adjustment-balance-row.tsx
+#: src/transaction/hook/use-adjustment-balance.hook.ts
 msgid "Not set"
 msgstr "Nicht festgelegt"
 

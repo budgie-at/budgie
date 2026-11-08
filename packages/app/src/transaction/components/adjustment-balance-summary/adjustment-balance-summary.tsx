@@ -12,31 +12,31 @@ import { AdjustmentSelector } from '../adjustment-account-summary/adjustment-acc
 import { AdjustmentBalanceRow } from '../adjustment-balance-row/adjustment-balance-row';
 
 import type { AdjustmentTransactionDetailsInterface } from '../../interface/adjustment-transaction-details.interface';
+import type { ReactNode } from 'react';
 
 interface Props {
     readonly details: AdjustmentTransactionDetailsInterface;
     readonly amount: number;
     readonly isIncrease: boolean;
+    readonly children: ReactNode;
 }
 
-export const AdjustmentBalanceSummary = ({ details, amount, isIncrease }: Props) => {
+const COMPACT_VIEWPORT_MAX_HEIGHT = 667;
+
+export const AdjustmentBalanceSummary = ({ details, amount, isIncrease, children }: Props) => {
     const { t } = useLingui();
     const { isExpanded } = use(TransactionKeypadContext);
-    const { fontScale } = useWindowDimensions();
+    const { fontScale, height } = useWindowDimensions();
     const balance = useAdjustmentBalance(details, amount, isIncrease);
 
-    if (isExpanded && fontScale >= ADJUSTMENT_COMPACT_FONT_SCALE) {
+    if (isExpanded && (fontScale >= ADJUSTMENT_COMPACT_FONT_SCALE || height <= COMPACT_VIEWPORT_MAX_HEIGHT)) {
         return null;
     }
 
-    const changeClassName = balance.change < 0 ? 'text-[13px] text-destructive-strong' : 'text-[13px] text-positive-strong';
-    const detailClassName = balance.change === 0 ? 'text-[13px] text-secondary-foreground' : changeClassName;
-    const detail = balance.change === 0 || balance.after === '—' ? null : balance.difference;
-    const afterValue = balance.change === 0 ? t`No change` : balance.after;
     const afterContent =
-        balance.after === '—' || balance.change === 0 ? (
+        balance.after === '—' ? (
             <Text className="text-[17px] font-semibold text-primary" maxFontSizeMultiplier={1.35}>
-                {afterValue}
+                {balance.after}
             </Text>
         ) : (
             <MoneyText
@@ -50,34 +50,31 @@ export const AdjustmentBalanceSummary = ({ details, amount, isIncrease }: Props)
         );
 
     return (
-        <GroupedListSection>
-            <AdjustmentBalanceRow label={t`Current adjustment`} value={balance.currentAdjustment} testID={AdjustmentSelector.Original}>
-                <Text className="text-[17px] text-secondary-foreground" maxFontSizeMultiplier={1.35}>
-                    {balance.currentAdjustment}
-                </Text>
-            </AdjustmentBalanceRow>
-            <View className="mx-lg h-hairline bg-surface-separator" />
-            <AdjustmentBalanceRow label={t`Current balance`} value={balance.current} testID={AdjustmentSelector.Current}>
-                <MoneyText
-                    amount={balance.balance}
-                    instrumentSymbol={details.instrumentSymbol}
-                    variant={MoneyTextVariantEnum.BALANCE}
-                    maxFontSizeMultiplier={1.35}
-                    decimalPlaces={2}
-                    tone="secondary"
-                />
-            </AdjustmentBalanceRow>
-            <View className="mx-lg h-hairline bg-surface-separator" />
-            <AdjustmentBalanceRow
-                label={t`After saving`}
-                labelClassName="text-[17px] font-semibold text-primary"
-                value={afterValue}
-                detail={detail}
-                detailClassName={detailClassName}
-                testID={AdjustmentSelector.After}
-            >
-                {afterContent}
-            </AdjustmentBalanceRow>
-        </GroupedListSection>
+        <>
+            <GroupedListSection>
+                <AdjustmentBalanceRow label={t`Current adjustment`} value={balance.currentAdjustment} testID={AdjustmentSelector.Original}>
+                    <Text className="text-[17px] text-secondary-foreground" maxFontSizeMultiplier={1.35}>
+                        {balance.currentAdjustment}
+                    </Text>
+                </AdjustmentBalanceRow>
+                <View className="mx-lg h-hairline bg-surface-separator" />
+                <AdjustmentBalanceRow label={t`Current balance`} value={balance.current} testID={AdjustmentSelector.Current}>
+                    <Text className="text-[17px] text-secondary-foreground" maxFontSizeMultiplier={1.35}>
+                        {balance.current}
+                    </Text>
+                </AdjustmentBalanceRow>
+                <View className="mx-lg h-hairline bg-surface-separator" />
+                <AdjustmentBalanceRow
+                    label={t`After saving`}
+                    accessibilityLabel={t`Balance after saving`}
+                    labelClassName="text-[17px] font-semibold text-primary"
+                    value={balance.after}
+                    testID={AdjustmentSelector.After}
+                >
+                    {afterContent}
+                </AdjustmentBalanceRow>
+            </GroupedListSection>
+            {children}
+        </>
     );
 };

@@ -1,3 +1,4 @@
+import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as Fiber from 'effect/Fiber';
 import { useEffect, useRef } from 'react';
@@ -18,13 +19,16 @@ interface Props {
 const PREVIEW_STYLE = { height: 24 };
 
 export const AdjustmentBalancePreview = ({ details, amount, isIncrease }: Props) => {
-    const { preview } = useAdjustmentBalance(details, amount, isIncrease);
+    const { t } = useLingui();
+    const { preview, announcement, after } = useAdjustmentBalance(details, amount, isIncrease);
 
-    const previousPreview = useRef(preview);
+    const previousPreview = useRef(announcement);
+    const accessibilityLabel = after === '—' ? t`Balance after saving` : announcement;
+    const accessibilityValue = after === '—' ? { text: t`Not set` } : void 0;
 
     useEffect(() => {
-        const hasChanged = previousPreview.current !== preview;
-        previousPreview.current = preview;
+        const hasChanged = previousPreview.current !== announcement;
+        previousPreview.current = announcement;
 
         if (!hasChanged || Platform.OS !== 'ios') {
             return;
@@ -32,17 +36,19 @@ export const AdjustmentBalancePreview = ({ details, amount, isIncrease }: Props)
 
         const fiber = appRuntime.runFork(
             Effect.sleep(600).pipe(
-                Effect.andThen(Effect.sync(() => void AccessibilityInfo.announceForAccessibilityWithOptions(preview, { queue: true })))
+                Effect.andThen(Effect.sync(() => void AccessibilityInfo.announceForAccessibilityWithOptions(announcement, { queue: true })))
             )
         );
 
         return () => void appRuntime.runFork(Fiber.interrupt(fiber));
-    }, [preview]);
+    }, [announcement]);
 
     return (
         <Text
             accessible
             accessibilityLiveRegion="polite"
+            accessibilityLabel={accessibilityLabel}
+            accessibilityValue={accessibilityValue}
             className="min-w-0 flex-1 text-center text-[13px] text-secondary-foreground"
             style={PREVIEW_STYLE}
             maxFontSizeMultiplier={1.3}

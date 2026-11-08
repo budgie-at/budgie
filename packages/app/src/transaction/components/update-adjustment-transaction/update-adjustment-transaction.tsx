@@ -11,7 +11,8 @@ import {
 import { TransactionService } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
-import { useReducer, useRef } from 'react';
+import { useRef } from 'react';
+import { FormProvider } from 'react-hook-form';
 import { View } from 'react-native';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
@@ -21,7 +22,7 @@ import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useEmbeddingGenerator } from '../../../ai/hook/use-embedding-generator.hook';
-import { useKeypadInput } from '../../hook/use-keypad-input.hook';
+import { useAdjustmentInput } from '../../hook/use-adjustment-input.hook';
 import { useTransactionKeypadEditing } from '../../hook/use-transaction-keypad-editing.hook';
 import { formatKeypadAmount } from '../../utils/format-keypad-amount.util';
 import { AdjustmentAccountSummary } from '../adjustment-account-summary/adjustment-account-summary';
@@ -104,10 +105,11 @@ export const UpdateAdjustmentTransaction = ({ transaction, transactionId }: Prop
     const { isEditingAmount, toggleKeypad, dismissKeypad, amountAccessibilityHint } = useTransactionKeypadEditing(false);
     const details = getAdjustmentDetails(transaction);
     const { isLoading: isSubmitting, run } = useSingleFlight();
-    const [isIncrease, toggleIsIncrease] = useReducer((current: boolean) => !current, details?.initialIsIncrease ?? true);
-    const { displayValue, numericValue, handlers } = useKeypadInput({
-        initialValue: details?.initialAmount ?? 0
-    });
+    const { form, comment, isIncrease, toggleIsIncrease, displayValue, numericValue, handlers, isUnchanged } = useAdjustmentInput(
+        details?.initialAmount ?? 0,
+        details?.initialIsIncrease ?? true,
+        transaction.comment
+    );
 
     if (!isDefined(details)) {
         return null;
@@ -120,13 +122,13 @@ export const UpdateAdjustmentTransaction = ({ transaction, transactionId }: Prop
             ? `${isIncrease ? '+' : '\u2212'}\u2060${details.instrumentSymbol}`
             : details.instrumentSymbol,
         amount: isEditingAmount ? displayValue : formatKeypadAmount(displayValue, '.', '', 2),
-        isDisabled: isSubmitting || !isPositiveNumber(numericValue)
+        isDisabled: isSubmitting || !isPositiveNumber(numericValue) || isUnchanged
     };
 
     const keypad = isEditingAmount ? <TransactionKeypad keypad={handlers} /> : null;
 
     const handleConfirm = () => {
-        if (!isPositiveNumber(numericValue)) {
+        if (display.isDisabled) {
             amountDisplayRef.current?.shake();
 
             return;
@@ -138,7 +140,7 @@ export const UpdateAdjustmentTransaction = ({ transaction, transactionId }: Prop
 
                 yield* transactionService.updateById(
                     transactionId,
-                    buildAdjustmentUpdateInput(transaction, details, numericValue, isIncrease)
+                    buildAdjustmentUpdateInput({ ...transaction, comment }, details, numericValue, isIncrease)
                 );
                 markForEmbedding(transactionId);
                 goBackOrReplace('/');
@@ -147,43 +149,41 @@ export const UpdateAdjustmentTransaction = ({ transaction, transactionId }: Prop
     };
 
     return (
-        <QuickFormLayout
-            onDismissKeypad={dismissKeypad}
-            amount={
-                <TransactionAmountDisplay
-                    ref={amountDisplayRef}
-                    amount={display.amount}
-                    currencySymbol={display.symbol}
-                    variant={display.variant}
-                    onPress={toggleKeypad}
-                    isEditing={isEditingAmount}
-                    accessibilityHint={amountAccessibilityHint}
-                    testID={SimpleQuickFormSelector.AmountInput}
-                />
-            }
-            context={
-                <View className="gap-y-[4px]">
-                    <QuickFormSecondaryLine>
-                        <AdjustmentBalancePreview details={details} amount={numericValue} isIncrease={isIncrease} />
-                    </QuickFormSecondaryLine>
-                    <QuickFormSecondaryLine>
+        <FormProvider {...form}>
+            <QuickFormLayout
+                onDismissKeypad={dismissKeypad}
+                amount={
+                    <TransactionAmountDisplay
+                        ref={amountDisplayRef}
+                        amount={display.amount}
+                        currencySymbol={display.symbol}
+                        variant={display.variant}
+                        onPress={toggleKeypad}
+                        isEditing={isEditingAmount}
+                        accessibilityHint={amountAccessibilityHint}
+                        testID={SimpleQuickFormSelector.AmountInput}
+                    />
+                }
+                context={
+                    <View className="gap-y-[4px]">
+                        <QuickFormSecondaryLine>
+                            <AdjustmentBalancePreview details={details} amount={numericValue} isIncrease={isIncrease} />
+                        </QuickFormSecondaryLine>
                         <AmountSignPill isIncrease={isIncrease} onToggle={toggleIsIncrease} />
-                    </QuickFormSecondaryLine>
-                </View>
-            }
-            keypad={keypad}
-            actions={
-                <TransactionFormActions
-                    label={t`Save`}
-                    isDisabled={display.isDisabled}
-                    onConfirm={handleConfirm}
-                    testID={SimpleQuickFormSelector.SubmitButton}
-                />
-            }
-        >
-            <View className="gap-y-[20px] pt-[12px]">
+                    </View>
+                }
+                keypad={keypad}
+                actions={
+                    <TransactionFormActions
+                        label={t`Save`}
+                        isDisabled={display.isDisabled}
+                        onConfirm={handleConfirm}
+                        testID={SimpleQuickFormSelector.SubmitButton}
+                    />
+                }
+            >
                 <AdjustmentAccountSummary details={details} amount={numericValue} isIncrease={isIncrease} />
-            </View>
-        </QuickFormLayout>
+            </QuickFormLayout>
+        </FormProvider>
     );
 };

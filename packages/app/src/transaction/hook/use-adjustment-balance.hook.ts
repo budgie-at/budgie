@@ -33,14 +33,14 @@ export const useAdjustmentBalance = (details: AdjustmentTransactionDetailsInterf
     const after = isPositiveNumber(amount) ? formatted.after : '—';
     const difference = change === 0 ? t`No change` : formatted.change;
 
+    const spokenAfter = isPositiveNumber(amount) ? formatted.after : t`Not set`;
+    const announcement = change === 0 && isPositiveNumber(amount) ? t`Balance unchanged` : t`Balance after saving ${spokenAfter}`;
     const preview = change === 0 ? t`No change` : `${difference} → ${formatted.after}`;
 
     return {
-        balance,
         resultingBalance,
-        change,
+        announcement,
         after,
-        difference,
         current: formatted.current,
         currentAdjustment: formatted.original,
         preview: isPositiveNumber(amount) ? preview : t`Enter an amount`

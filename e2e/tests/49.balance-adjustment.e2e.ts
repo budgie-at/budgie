@@ -3,7 +3,7 @@ import { expect } from 'e2e';
 import * as accounts from '../support/budgie/accounts.ts';
 import * as b from '../support/budgie/core.ts';
 import { test } from '../support/budgie/test.ts';
-import { clearAmount, typeDigits } from '../support/budgie/transactions.ts';
+import { clearAmount, enterComment, typeDigits } from '../support/budgie/transactions.ts';
 
 const ACCOUNT = 'E2E Adjustment Account';
 
@@ -20,20 +20,24 @@ test('49 balance adjustment saves increase and decrease', { tags: ['accounts', '
         await accounts.openAccountDetails(ctx, ACCOUNT);
         await b.tapId(ctx, `TransactionCard.AdjustmentAmount.${adjustment.previous}`);
         await b.expectId(ctx, 'TransactionForm.AmountInput');
-        await expect(b.byId(ctx.screen, 'Adjustment.Preview')).toHaveText('No change');
+        await expect(b.byId(ctx.screen, 'TransactionForm.SubmitButton')).toBeDisabled();
+        await expect(b.byId(ctx.screen, 'Adjustment.Preview')).toHaveAccessibleName('Balance unchanged');
+        await expect(b.byId(ctx.screen, 'Adjustment.After')).toHaveText(`Balance after saving, C$${adjustment.previous}.00`);
         await b.tapId(ctx, `Adjustment.${adjustment.direction}`);
         await clearAmount(ctx);
         await expect(b.byId(ctx.screen, 'TransactionForm.SubmitButton')).toBeDisabled();
-        await expect(b.byId(ctx.screen, 'Adjustment.Preview')).toHaveText('Enter an amount');
+        await expect(b.byId(ctx.screen, 'Adjustment.Preview')).toHaveAccessibleName('Balance after saving');
         await expect(b.byId(ctx.screen, 'Adjustment.Current')).toHaveText(`Current balance, C$${adjustment.previous}.00`);
-        await expect(b.byId(ctx.screen, 'Adjustment.After')).toHaveText('After saving, —');
+        await expect(b.byId(ctx.screen, 'Adjustment.After')).toHaveAccessibleName('Balance after saving');
+        await expect(b.byId(ctx.screen, 'Adjustment.After')).toHaveValue('Not set');
         await expect(b.byId(ctx.screen, 'TransactionForm.AmountInput')).toHaveText('C$0');
         await typeDigits(ctx, '0');
         await expect(b.byId(ctx.screen, 'TransactionForm.SubmitButton')).toBeDisabled();
-        await expect(b.byId(ctx.screen, 'Adjustment.Preview')).toHaveText('Enter an amount');
+        await expect(b.byId(ctx.screen, 'Adjustment.Preview')).toHaveAccessibleName('Balance after saving');
         await typeDigits(ctx, adjustment.amount);
-        const expectedPreview = adjustment.direction === 'Decrease' ? '−\u2060C$350.00 → −C$50.00' : '+\u2060C$50.00 → C$300.00';
-        await expect(b.byId(ctx.screen, 'Adjustment.Preview')).toHaveText(expectedPreview);
+        const expectedBalance = adjustment.direction === 'Decrease' ? '−C$50.00' : 'C$300.00';
+        await expect(b.byId(ctx.screen, 'Adjustment.Preview')).toHaveAccessibleName(`Balance after saving ${expectedBalance}`);
+        await expect(b.byId(ctx.screen, 'Adjustment.After')).toHaveText(`Balance after saving, ${expectedBalance}`);
         await b.tapId(ctx, 'TransactionForm.SubmitButton');
         await b.expectNoId(ctx, 'TransactionForm.SubmitButton');
         await b.openLink(ctx, 'budgie://');
@@ -45,4 +49,18 @@ test('49 balance adjustment saves increase and decrease', { tags: ['accounts', '
         await b.tapId(ctx, 'PageHeader.BackButton');
         await accounts.exitAccountDetailsToHome(ctx);
     }
+
+    await accounts.openAccountDetails(ctx, ACCOUNT);
+    await b.tapId(ctx, 'TransactionCard.AdjustmentAmount.50');
+    await expect(b.byId(ctx.screen, 'TransactionForm.SubmitButton')).toBeDisabled();
+    await enterComment(ctx, 'E2E adjustment note');
+    await expect(b.byId(ctx.screen, 'TransactionForm.SubmitButton')).toBeEnabled();
+    await b.tapId(ctx, 'TransactionForm.SubmitButton');
+    await b.expectNoId(ctx, 'TransactionForm.SubmitButton');
+    await b.openLink(ctx, 'budgie://');
+    await accounts.openAccountDetails(ctx, ACCOUNT);
+    await b.tapId(ctx, 'TransactionCard.AdjustmentAmount.50');
+    await expect(b.byId(ctx.screen, 'TransactionForm.CommentInput')).toHaveText(/E2E adjustment note/);
+    await expect(b.byId(ctx.screen, 'Adjustment.After')).toHaveText('Balance after saving, −C$50.00');
+    await expect(b.byId(ctx.screen, 'TransactionForm.SubmitButton')).toBeDisabled();
 });
