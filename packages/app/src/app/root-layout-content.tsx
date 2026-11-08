@@ -76,16 +76,11 @@ const LOCK_SCREEN_OPTIONS: NativeStackNavigationOptions = { presentation: 'fullS
 
 const FADE_OPTIONS: NativeStackNavigationOptions = { animation: 'fade' };
 
-const MORPHING_SHEET_OPTIONS: NativeStackNavigationOptions = {
-    presentation: 'transparentModal',
-    animation: 'none',
-    headerShown: false,
-    contentStyle: { backgroundColor: 'transparent' }
-};
-
 const SELECTOR_OPTIONS = formSheetOptions([DETENT_70, DETENT_90], 0);
 const CURRENCY_SELECTOR_OPTIONS = formSheetOptions([DETENT_62, DETENT_90], 0);
 const COMPACT_SELECTOR_OPTIONS = formSheetOptions([DETENT_70, DETENT_90], 0);
+
+const DESTINATION_OPTIONS = formSheetOptions([DETENT_90]);
 
 enableScreens();
 enableFreeze();
@@ -195,10 +190,7 @@ export const RootLayoutContent = () => {
                                                                     <Stack.Screen name="(main)/transactions/[id]/transfer" />
                                                                     <Stack.Screen name="(main)/analytics/transactions" />
                                                                     <Stack.Screen name="(main)/categorize" />
-                                                                    <Stack.Screen
-                                                                        name="category-selector"
-                                                                        options={MORPHING_SHEET_OPTIONS}
-                                                                    />
+                                                                    <Stack.Screen name="category-selector" options={SELECTOR_OPTIONS} />
                                                                     <Stack.Screen
                                                                         name="account-selector"
                                                                         options={COMPACT_SELECTOR_OPTIONS}
@@ -216,12 +208,12 @@ export const RootLayoutContent = () => {
                                                                         name="contact-selector"
                                                                         options={contactSelectorOptions}
                                                                     />
-                                                                    <Stack.Screen name="tags-selector" options={MORPHING_SHEET_OPTIONS} />
+                                                                    <Stack.Screen name="tags-selector" options={SELECTOR_OPTIONS} />
                                                                     <Stack.Screen
                                                                         name="category-destination"
-                                                                        options={MORPHING_SHEET_OPTIONS}
+                                                                        options={DESTINATION_OPTIONS}
                                                                     />
-                                                                    <Stack.Screen name="tag-destination" options={MORPHING_SHEET_OPTIONS} />
+                                                                    <Stack.Screen name="tag-destination" options={DESTINATION_OPTIONS} />
                                                                     <Stack.Screen
                                                                         name="voice-review"
                                                                         options={formSheetOptions([0.65, DETENT_95], 0)}
@@ -255,7 +247,7 @@ export const RootLayoutContent = () => {
                                                                         options={formSheetOptions([0.6, DETENT_90])}
                                                                     />
                                                                     <Stack.Screen name="split-entries" options={sheetOptions} />
-                                                                    <Stack.Screen name="transaction-fee" options={MORPHING_SHEET_OPTIONS} />
+                                                                    <Stack.Screen name="transaction-fee" options={sheetOptions} />
                                                                     <Stack.Screen
                                                                         name="consolidation-source"
                                                                         options={fitToContentsSheetOptions(groupedSheetSurface)}

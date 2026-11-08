@@ -1,19 +1,20 @@
 import { BANK_FEE_CATEGORY_ID, CategorySourceEnum, TransactionEntryTypeEnum } from '@budgie/contracts';
+import { t } from '@lingui/core/macro';
 import { useState } from 'react';
-import { View } from 'react-native';
+import { ScrollView, View, useWindowDimensions } from 'react-native';
+import { useReanimatedKeyboardAnimation } from 'react-native-keyboard-controller';
+import Animated, { interpolate, useAnimatedStyle } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { MorphingSheet } from '../../../@generic/component/morphing-sheet/morphing-sheet';
-import { SheetSurface } from '../../../@generic/component/sheet-surface/sheet-surface';
-import { MORPHING_SHEET_SELECTOR_HEIGHT_RATIO } from '../../../@generic/constant/morphing-sheet-height-ratio.constant';
-import { MorphingSheetPresentationEnum } from '../../../@generic/enum/morphing-sheet-presentation.enum';
-import { useMorphingSheetListHeight } from '../../../@generic/hook/use-morphing-sheet-list-height.hook';
+import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
+import { SheetTitle } from '../../../@generic/component/sheet-title/sheet-title';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
-import { CategoryCreatePage } from '../../../category/components/category-create-page/category-create-page';
-import { CategoryPickerPanel } from '../../../category/components/category-picker-panel/category-picker-panel';
-import { TransactionFeeStepEnum } from '../../enum/transaction-fee-step.enum';
-import { TransactionFeeStep } from '../transaction-fee-step/transaction-fee-step';
+import { useCategorySelectorModal } from '../../../category/context/category-selector-modal.context';
+import { SplitEntryRow } from '../split-entry-row/split-entry-row';
+import { TransactionFeeRemoveButton } from '../transaction-fee-remove-button/transaction-fee-remove-button';
+import { TransactionFeeSaveButton } from '../transaction-fee-save-button/transaction-fee-save-button';
 
 import type { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import type { TransactionFeeModalResult } from '../../context/transaction-fee-modal.context';
@@ -25,14 +26,19 @@ interface Props {
     readonly entry: TransactionEntryCreateInputInterface | null;
     readonly variant: ColorPaletteVariant;
     readonly onConfirm: (result: TransactionFeeModalResult) => void;
-    readonly onDismiss: () => void;
 }
 
-export const TransactionFeeModalContent = ({ accountId, currencySymbol, entry, variant, onConfirm, onDismiss }: Props) => {
+const ROW_INDEX = 0;
+const CONTENT_CONTAINER_STYLE = { flexGrow: 1 };
+
+export const TransactionFeeModalContent = ({ accountId, currencySymbol, entry, variant, onConfirm }: Props) => {
+    const { bottom, top } = useSafeAreaInsets();
+    const { height: windowHeight } = useWindowDimensions();
+    const { progress, height } = useReanimatedKeyboardAnimation();
+    const sheetStyle = useAnimatedStyle(() => ({ maxHeight: windowHeight - top - Math.abs(height.value) - 24 }));
+    const bottomPaddingStyle = useAnimatedStyle(() => ({ paddingBottom: interpolate(progress.value, [0, 1], [Math.max(bottom, 16), 16]) }));
+    const [openCategorySelector] = useCategorySelectorModal();
     const { account } = useGetAccountByIdQuery(accountId);
-    const categoryStepStyle = useMorphingSheetListHeight(MORPHING_SHEET_SELECTOR_HEIGHT_RATIO);
-    const [step, setStep] = useState(TransactionFeeStepEnum.FEE);
-    const [createTitle, setCreateTitle] = useState('');
     const [feeEntry, setFeeEntry] = useState<TransactionEntryCreateInputInterface>(
         entry ?? {
             accountId,
@@ -45,78 +51,57 @@ export const TransactionFeeModalContent = ({ accountId, currencySymbol, entry, v
         }
     );
 
+    const canSave = isPositiveNumber(feeEntry.categoryId) && isPositiveNumber(feeEntry.amount);
+
     const handleAmountChange = (amount: number) => {
         setFeeEntry(previous => ({ ...previous, amount }));
     };
 
     const handleCategoryPress = () => {
-        setStep(TransactionFeeStepEnum.CATEGORY);
+        openCategorySelector(
+            { initialCategoryId: feeEntry.categoryId, variant, ...(isDefined(account) && { syncZone: account.syncZone }) },
+            selectedCategoryId => {
+                if (isDefined(selectedCategoryId)) {
+                    const categorySource = selectedCategoryId === BANK_FEE_CATEGORY_ID ? CategorySourceEnum.FEE : CategorySourceEnum.USER;
+
+                    setFeeEntry(previous => ({ ...previous, categoryId: selectedCategoryId, categorySource }));
+                }
+            }
+        );
     };
 
-    const handleBack = () => {
-        setStep(TransactionFeeStepEnum.FEE);
+    const handleConfirm = () => {
+        onConfirm([feeEntry]);
     };
 
-    const handleCategorySelect = (selectedCategoryId: number) => {
-        const categorySource = selectedCategoryId === BANK_FEE_CATEGORY_ID ? CategorySourceEnum.FEE : CategorySourceEnum.USER;
+    const handleRemoveConfirmed = () => void onConfirm([]);
 
-        setFeeEntry(previous => ({ ...previous, categoryId: selectedCategoryId, categorySource }));
-        setStep(TransactionFeeStepEnum.FEE);
-    };
+    return (
+        <Animated.View className="bg-sheet-surface" style={sheetStyle}>
+            <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={CONTENT_CONTAINER_STYLE}>
+                <Animated.View className="px-xl gap-lg" style={bottomPaddingStyle}>
+                    <SheetTitle title={t`Fee`} />
 
-    const handleCreatePress = (defaultTitle: string) => {
-        setCreateTitle(defaultTitle);
-        setStep(TransactionFeeStepEnum.CREATE_CATEGORY);
-    };
-
-    const handleCreateCancel = () => {
-        setStep(TransactionFeeStepEnum.CATEGORY);
-    };
-
-    const categoryParams = { variant, initialCategoryId: feeEntry.categoryId, syncZone: account?.syncZone };
-    const isFeeStep = step === TransactionFeeStepEnum.FEE;
-
-    const steps = {
-        [TransactionFeeStepEnum.FEE]: {
-            presentation: MorphingSheetPresentationEnum.CARD,
-            content: (
-                <TransactionFeeStep
-                    feeEntry={feeEntry}
-                    currencySymbol={currencySymbol}
-                    isExisting={isDefined(entry)}
-                    onAmountChange={handleAmountChange}
-                    onCategoryPress={handleCategoryPress}
-                    onConfirm={onConfirm}
-                />
-            )
-        },
-        [TransactionFeeStepEnum.CATEGORY]: {
-            presentation: MorphingSheetPresentationEnum.CARD,
-            content: (
-                <View style={categoryStepStyle}>
-                    <SheetSurface className="pt-lg">
-                        <CategoryPickerPanel
-                            params={categoryParams}
-                            onSelect={handleCategorySelect}
-                            onBack={handleBack}
-                            onCreate={handleCreatePress}
+                    <GroupedListSection>
+                        <SplitEntryRow
+                            index={ROW_INDEX}
+                            entry={feeEntry}
+                            currencySymbol={currencySymbol}
+                            autoFocus={!isDefined(entry)}
+                            onAmountChange={handleAmountChange}
+                            onCategoryPress={handleCategoryPress}
                         />
-                    </SheetSurface>
-                </View>
-            )
-        },
-        [TransactionFeeStepEnum.CREATE_CATEGORY]: {
-            presentation: MorphingSheetPresentationEnum.PAGE,
-            content: (
-                <CategoryCreatePage
-                    defaultTitle={createTitle}
-                    syncZone={account?.syncZone}
-                    onSelect={handleCategorySelect}
-                    onCancel={handleCreateCancel}
-                />
-            )
-        }
-    };
+                    </GroupedListSection>
 
-    return <MorphingSheet steps={steps} activeStep={step} onDismiss={onDismiss} isContentDraggable={isFeeStep} />;
+                    <View className="flex-row items-center gap-x-md">
+                        {isDefined(entry) ? <TransactionFeeRemoveButton onRemove={handleRemoveConfirmed} /> : null}
+
+                        <View className="flex-1">
+                            <TransactionFeeSaveButton isDisabled={!canSave} onPress={handleConfirm} />
+                        </View>
+                    </View>
+                </Animated.View>
+            </ScrollView>
+        </Animated.View>
+    );
 };

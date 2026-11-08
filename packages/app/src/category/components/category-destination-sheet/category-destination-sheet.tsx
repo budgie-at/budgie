@@ -10,36 +10,34 @@ import { SelectorCreateButton } from '../../../@generic/component/selector-creat
 import { useDestinationSelection } from '../../../@generic/hook/use-destination-selection.hook';
 import { useFormatEntityUsage } from '../../../@generic/hook/use-format-entity-usage.hook';
 import { CategorySelectorModalSelector } from '../../../app/category-selector-modal.selector';
-import { useCategorySelectorModalParams } from '../../context/category-selector-modal.context';
+import { useCategoryFormModal } from '../../context/category-form-modal.context';
 import { useCategoriesWithUsageQuery } from '../../query/use-categories-with-usage.query';
 import { CategoryDestinationRow } from '../category-destination-row/category-destination-row';
 import { CategoryEmptyState } from '../category-empty-state/category-empty-state';
 
 import type { DestinationCommitCopyInterface } from '../../../@generic/interface/destination-commit-copy.interface';
-import type { DestinationSelectionInterface } from '../../../@generic/interface/destination-selection.interface';
 import type { CategoryEntityInterface } from '@budgie/contracts';
 
 interface Props {
     readonly title: string;
     readonly description: string | undefined;
     readonly excludeCategoryIds: readonly number[];
+    readonly syncZone: string | undefined;
     readonly commitLabel: string;
     readonly getCommitCopy: (destinationTitle: string) => DestinationCommitCopyInterface;
-    readonly selection: DestinationSelectionInterface;
-    readonly onCommit: (categoryId: number) => void;
-    readonly onCreate: (defaultTitle: string) => void;
+    readonly onSelect: (categoryId: number) => void;
 }
 
 export const CategoryDestinationSheet = (props: Props) => {
-    const { title, description, excludeCategoryIds, commitLabel, getCommitCopy, selection, onCommit, onCreate } = props;
+    const { title, description, excludeCategoryIds, syncZone, commitLabel, getCommitCopy, onSelect } = props;
     const { t } = useLingui();
+    const [openCategoryForm] = useCategoryFormModal();
     const [search, setSearch] = useState('');
-    const syncZone = useCategorySelectorModalParams()?.syncZone;
     const formatUsage = useFormatEntityUsage();
     const { categories, usage, isUsageFailure, retryUsage, isFailure, retry } = useCategoriesWithUsageQuery(search, true, syncZone);
 
     const destinations = categories?.filter(category => !excludeCategoryIds.includes(category.id));
-    const { selected, isPending, handleRowSelect, handleCommit } = useDestinationSelection(destinations, selection, onCommit);
+    const { selected, setSelected, isPending, handleRowSelect, handleCommit } = useDestinationSelection(destinations, onSelect);
     const sections = isDefined(destinations)
         ? [
               { title: t`Custom categories`, data: destinations.filter(category => !category.isDefault) },
@@ -48,7 +46,15 @@ export const CategoryDestinationSheet = (props: Props) => {
         : null;
     const commitCopy = isDefined(selected) ? getCommitCopy(selected.title) : null;
 
-    const handleCreateFromSearch = () => void onCreate(search.trim());
+    const handleCreatePress = (defaultTitle: string) => {
+        openCategoryForm({ defaultTitle }, result => {
+            if (isDefined(result)) {
+                setSelected(result.category);
+            }
+        });
+    };
+
+    const handleCreateFromSearch = () => void handleCreatePress(search.trim());
 
     const handleClearSearch = () => void setSearch('');
 
@@ -85,7 +91,7 @@ export const CategoryDestinationSheet = (props: Props) => {
                 isUsageFailure={isUsageFailure}
                 onRetryUsage={retryUsage}
                 renderRow={renderRow}
-                emptyState={<CategoryEmptyState search={search} onClearSearch={handleClearSearch} onCreate={onCreate} />}
+                emptyState={<CategoryEmptyState search={search} onClearSearch={handleClearSearch} onCreate={handleCreatePress} />}
             />
             <DestinationSheetFooter
                 commitCopy={commitCopy}

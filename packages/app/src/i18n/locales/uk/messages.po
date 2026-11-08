@@ -372,7 +372,7 @@ msgstr "{count, plural, one {Використати # платіж} few {Вик�
 msgid "{count} of {rowCount} selected"
 msgstr "Вибрано {count} з {rowCount}"
 
-#: src/tag/components/tags-selector-step/tags-selector-step.tsx
+#: src/app/tags-selector.tsx
 msgid "{count} selected"
 msgstr "Вибрано: {count}"
 
@@ -1978,11 +1978,6 @@ msgstr "Серед. {averageCost} за {instrumentCode}"
 msgid "Avg {averageCost} per {instrumentCode} · known for {coveredAmount} of {totalAmount}"
 msgstr "Сер. {averageCost} за {instrumentCode} · вартість відома для {coveredAmount} з {totalAmount}"
 
-#: src/@generic/component/entity-form-back-button/entity-form-back-button.tsx
-#: src/@generic/component/selector-modal-search-header/selector-modal-search-header.tsx
-msgid "Back"
-msgstr "Назад"
-
 #: src/settings/components/backup-row/backup-row.tsx
 msgid "Back up"
 msgstr "Створити"
@@ -2515,9 +2510,9 @@ msgstr "Категоризувати"
 
 #: src/app/(main)/import-csv.tsx
 #: src/app/(tabs)/settings/categories.tsx
+#: src/app/category-selector.tsx
 #: src/budget/components/budget-fund-category-field/budget-fund-category-field.tsx
 #: src/budget/service/budget-alert-monitor.service.ts
-#: src/category/components/category-picker-panel/category-picker-panel.tsx
 #: src/recurring/components/recurring-form-category-field/recurring-form-category-field.tsx
 #: src/rule/components/rule-action-category-selector/rule-action-category-selector.tsx
 #: src/transaction/components/transaction-category-field-icon/transaction-category-field-icon.tsx
@@ -2552,7 +2547,7 @@ msgstr "Змінити"
 msgid "Change icon"
 msgstr "Змінити іконку"
 
-#: src/category/components/category-form-hero-icon/category-form-hero-icon.tsx
+#: src/@generic/component/icon-title-field-trigger/icon-title-field-trigger.tsx
 msgid "Change icon, current: {iconName}"
 msgstr "Змінити іконку, поточна: {iconName}"
 
@@ -2576,13 +2571,13 @@ msgstr "Перевірте ключ і секрет та спробуйте ще
 msgid "Check the repeat and end settings."
 msgstr "Перевірте налаштування повторення та завершення."
 
+#: src/app/category-selector.tsx
 #: src/category/components/category-empty-state/category-empty-state.tsx
-#: src/category/components/category-picker-panel/category-picker-panel.tsx
 msgid "Check the spelling or create it as a new category."
 msgstr "Перевірте написання або створіть її як нову категорію."
 
+#: src/app/tags-selector.tsx
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx
-#: src/tag/components/tags-selector-step/tags-selector-step.tsx
 msgid "Check the spelling or create it as a new tag."
 msgstr "Перевірте написання або створіть його як новий тег."
 
@@ -2870,7 +2865,6 @@ msgstr "Буфер обміну не містить дійсного токен�
 msgid "Clipboard is empty"
 msgstr "Буфер обміну порожній"
 
-#: src/@generic/component/selector-modal-search-header/selector-modal-search-header.tsx
 #: src/@generic/component/sheet-title-row/sheet-title-row.tsx
 #: src/budget/components/budget-sheet-state/budget-sheet-state.tsx
 #: src/sync/component/get-token-card/get-token-card.tsx
@@ -3663,6 +3657,10 @@ msgstr "Створити бюджет"
 msgid "Create category"
 msgstr "Створити категорію"
 
+#: src/category/components/category-form/category-form.tsx
+msgid "Create Category"
+msgstr "Створити категорію"
+
 #: src/budget/components/budget-event-form/budget-event-form.tsx
 msgid "Create event"
 msgstr "Створити подію"
@@ -3689,6 +3687,10 @@ msgstr "Створити правило"
 #: src/tag/components/tag-destination-sheet/tag-destination-sheet.tsx
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Create tag"
+msgstr "Створити тег"
+
+#: src/tag/components/tag-form/tag-form.tsx
+msgid "Create Tag"
 msgstr "Створити тег"
 
 #: src/budget/components/budget-empty-state/budget-empty-state.tsx
@@ -4096,10 +4098,10 @@ msgstr "Не містить"
 #: src/@generic/component/keyboard-done-accessory/keyboard-done-accessory.tsx
 #: src/@generic/component/sheet-title-row/sheet-title-row.tsx
 #: src/app/date-picker.tsx
+#: src/app/tags-selector.tsx
 #: src/categorize-inbox/components/categorize-inbox-done-button/categorize-inbox-done-button.tsx
 #: src/inzhur/component/inzhur-import-summary-footer/inzhur-import-summary-footer.tsx
 #: src/onboarding/component/onboarding-keyboard-controls/onboarding-keyboard-controls.tsx
-#: src/tag/components/tags-selector-step/tags-selector-step.tsx
 #: src/transaction/components/convert-to-refund-header/convert-to-refund-header.tsx
 #: src/transaction/components/convert-to-transfer-header/convert-to-transfer-header.tsx
 #: src/transaction/components/convert-transfer-form/convert-transfer-form.tsx
@@ -4314,7 +4316,7 @@ msgid "Edit budget"
 msgstr "Редагувати бюджет"
 
 #: src/category/components/category-form/category-form.tsx
-msgid "Edit category"
+msgid "Edit Category"
 msgstr "Редагувати категорію"
 
 #: src/rule/components/rule-condition-row/rule-condition-row.tsx
@@ -4356,7 +4358,7 @@ msgid "Edit set aside"
 msgstr "Редагувати відкладене"
 
 #: src/tag/components/tag-form/tag-form.tsx
-msgid "Edit tag"
+msgid "Edit Tag"
 msgstr "Редагувати тег"
 
 #: src/transaction/components/conversion-row/conversion-row.tsx
@@ -4375,7 +4377,7 @@ msgstr "Редагувати переказ"
 msgid "Edits the total of the plan"
 msgstr "Змінює загальну суму плану"
 
-#: src/@generic/component/icon-picker-panel/icon-picker-panel.tsx
+#: src/app/icon-selector.tsx
 msgid "Emoji"
 msgstr "Емодзі"
 
@@ -4794,7 +4796,7 @@ msgstr "Функції"
 
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
 #: src/transaction/components/transaction-fee-field-icon/transaction-fee-field-icon.tsx
-#: src/transaction/components/transaction-fee-step/transaction-fee-step.tsx
+#: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
 #: src/transaction/components/transaction-info-money-rows/transaction-info-money-rows.tsx
 msgid "Fee"
 msgstr "Комісія"
@@ -5220,7 +5222,7 @@ msgstr "Сховище iCloud заповнене"
 msgid "iCloud unavailable"
 msgstr "iCloud недоступний"
 
-#: src/@generic/component/icon-picker-panel/icon-picker-panel.tsx
+#: src/app/icon-selector.tsx
 msgid "Icon"
 msgstr "Іконка"
 
@@ -5228,7 +5230,7 @@ msgstr "Іконка"
 msgid "Icon updated for {categoryTitle}"
 msgstr "Іконку оновлено для «{categoryTitle}»"
 
-#: src/@generic/component/icon-picker-panel/icon-picker-panel.tsx
+#: src/app/icon-selector.tsx
 msgid "Icons"
 msgstr "Іконки"
 
@@ -6260,14 +6262,6 @@ msgstr "Перенесено в готівку"
 msgid "Name"
 msgstr "Назва"
 
-#: src/category/components/category-form/category-form.tsx
-msgid "Name it and pick an icon"
-msgstr "Дайте їй назву й оберіть іконку"
-
-#: src/tag/components/tag-form/tag-form.tsx
-msgid "Name it to group transactions"
-msgstr "Дайте йому назву, щоб групувати транзакції"
-
 #: src/categorize-inbox/components/categorize-inbox-transfer-accounts/categorize-inbox-transfer-accounts.tsx
 msgid "Name matches"
 msgstr "Збігаються назви"
@@ -6318,7 +6312,6 @@ msgid "New categories get an icon from their name automatically."
 msgstr "Нові категорії автоматично отримують іконку за назвою."
 
 #: src/category/components/category-empty-state/category-empty-state.tsx
-#: src/category/components/category-form/category-form.tsx
 msgid "New category"
 msgstr "Нова категорія"
 
@@ -6347,7 +6340,6 @@ msgid "New set aside"
 msgstr "Нове відкладення"
 
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx
-#: src/tag/components/tag-form/tag-form.tsx
 msgid "New tag"
 msgstr "Новий тег"
 
@@ -7034,7 +7026,7 @@ msgstr "Відкрийте застосунок Inzhur"
 msgid "Open the Settings app and sign in to your Apple Account. Backups from your iPhone and iPad appear here."
 msgstr "Відкрийте «Налаштування» та ввійдіть в обліковий запис Apple. Копії з вашого iPhone та iPad з’являться тут."
 
-#: src/category/components/category-form-hero-icon/category-form-hero-icon.tsx
+#: src/@generic/component/icon-title-field-trigger/icon-title-field-trigger.tsx
 msgid "Opens the icon picker"
 msgstr "Відкриває вибір іконки"
 
@@ -7557,7 +7549,7 @@ msgstr "Будь ласка, спробуйте ще раз"
 msgid "Please try again later"
 msgstr "Будь ласка, спробуйте пізніше"
 
-#: src/@generic/component/icon-picker-panel/icon-picker-panel.tsx
+#: src/app/icon-selector.tsx
 msgid "Popular"
 msgstr "Популярні"
 
@@ -7984,14 +7976,6 @@ msgstr "Вилучено з цієї серії"
 msgid "Removes everyone from your family group"
 msgstr "Видаляє всіх з вашої родинної групи"
 
-#: src/category/components/category-form/category-form.tsx
-msgid "Rename it or change its icon"
-msgstr "Перейменуйте її або змініть іконку"
-
-#: src/tag/components/tag-form/tag-form.tsx
-msgid "Rename it or merge it into another"
-msgstr "Перейменуйте його або об’єднайте з іншим"
-
 #: src/installment-plan/component/convert-to-installment-header/convert-to-installment-header.tsx
 msgid "Rename plan, {value}"
 msgstr "Перейменувати план, {value}"
@@ -8389,8 +8373,8 @@ msgstr "Пошук за кодом або описом..."
 msgid "Search categories..."
 msgstr "Пошук категорій..."
 
+#: src/app/category-selector.tsx
 #: src/category/components/category-destination-sheet/category-destination-sheet.tsx
-#: src/category/components/category-picker-panel/category-picker-panel.tsx
 msgid "Search categories…"
 msgstr "Пошук категорій…"
 
@@ -8422,7 +8406,7 @@ msgstr "Пошук витрат"
 msgid "Search hidden accounts…"
 msgstr "Пошук прихованих рахунків…"
 
-#: src/@generic/component/icon-picker-panel/icon-picker-panel.tsx
+#: src/app/icon-selector.tsx
 msgid "Search icons"
 msgstr "Пошук іконок"
 
@@ -8439,8 +8423,8 @@ msgid "Search tags..."
 msgstr "Пошук тегів..."
 
 #: src/app/(tabs)/settings/tags.tsx
+#: src/app/tags-selector.tsx
 #: src/tag/components/tag-destination-sheet/tag-destination-sheet.tsx
-#: src/tag/components/tags-selector-step/tags-selector-step.tsx
 msgid "Search tags…"
 msgstr "Пошук тегів…"
 
@@ -9177,8 +9161,8 @@ msgstr "Витрати з тегом також враховуються в ос
 #: src/@generic/component/analytics-segmented-control/analytics-segmented-control.tsx
 #: src/app/(tabs)/analytics.tsx
 #: src/app/(tabs)/settings/tags.tsx
+#: src/app/tags-selector.tsx
 #: src/settings/components/organize-settings-rows/organize-settings-rows.tsx
-#: src/tag/components/tags-selector-step/tags-selector-step.tsx
 #: src/transaction/components/statistics-filters-menu/statistics-filters-menu.tsx
 #: src/transaction/components/transaction-date-tags-row/transaction-date-tags-row.tsx
 #: src/transaction/components/transaction-filters/transaction-filters.tsx

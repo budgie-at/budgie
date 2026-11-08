@@ -372,7 +372,7 @@ msgstr "{count, plural, one {Usar # pago} other {Usar # pagos}}"
 msgid "{count} of {rowCount} selected"
 msgstr "{count} de {rowCount} seleccionados"
 
-#: src/tag/components/tags-selector-step/tags-selector-step.tsx
+#: src/app/tags-selector.tsx
 msgid "{count} selected"
 msgstr "{count} seleccionados"
 
@@ -1978,11 +1978,6 @@ msgstr "Prom. {averageCost} por {instrumentCode}"
 msgid "Avg {averageCost} per {instrumentCode} · known for {coveredAmount} of {totalAmount}"
 msgstr "Prom. {averageCost} por {instrumentCode} · coste conocido de {coveredAmount} de {totalAmount}"
 
-#: src/@generic/component/entity-form-back-button/entity-form-back-button.tsx
-#: src/@generic/component/selector-modal-search-header/selector-modal-search-header.tsx
-msgid "Back"
-msgstr "Atrás"
-
 #: src/settings/components/backup-row/backup-row.tsx
 msgid "Back up"
 msgstr "Crear copia"
@@ -2515,9 +2510,9 @@ msgstr "Categorizar"
 
 #: src/app/(main)/import-csv.tsx
 #: src/app/(tabs)/settings/categories.tsx
+#: src/app/category-selector.tsx
 #: src/budget/components/budget-fund-category-field/budget-fund-category-field.tsx
 #: src/budget/service/budget-alert-monitor.service.ts
-#: src/category/components/category-picker-panel/category-picker-panel.tsx
 #: src/recurring/components/recurring-form-category-field/recurring-form-category-field.tsx
 #: src/rule/components/rule-action-category-selector/rule-action-category-selector.tsx
 #: src/transaction/components/transaction-category-field-icon/transaction-category-field-icon.tsx
@@ -2552,7 +2547,7 @@ msgstr "Cambiar"
 msgid "Change icon"
 msgstr "Cambiar icono"
 
-#: src/category/components/category-form-hero-icon/category-form-hero-icon.tsx
+#: src/@generic/component/icon-title-field-trigger/icon-title-field-trigger.tsx
 msgid "Change icon, current: {iconName}"
 msgstr "Cambiar icono, actual: {iconName}"
 
@@ -2576,13 +2571,13 @@ msgstr "Comprueba la clave y el secreto e inténtalo de nuevo."
 msgid "Check the repeat and end settings."
 msgstr "Revisa los ajustes de repetición y finalización."
 
+#: src/app/category-selector.tsx
 #: src/category/components/category-empty-state/category-empty-state.tsx
-#: src/category/components/category-picker-panel/category-picker-panel.tsx
 msgid "Check the spelling or create it as a new category."
 msgstr "Revisa la ortografía o créala como nueva categoría."
 
+#: src/app/tags-selector.tsx
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx
-#: src/tag/components/tags-selector-step/tags-selector-step.tsx
 msgid "Check the spelling or create it as a new tag."
 msgstr "Revisa la ortografía o créala como nueva etiqueta."
 
@@ -2870,7 +2865,6 @@ msgstr "El portapapeles no contiene un token de Monobank válido"
 msgid "Clipboard is empty"
 msgstr "El portapapeles está vacío"
 
-#: src/@generic/component/selector-modal-search-header/selector-modal-search-header.tsx
 #: src/@generic/component/sheet-title-row/sheet-title-row.tsx
 #: src/budget/components/budget-sheet-state/budget-sheet-state.tsx
 #: src/sync/component/get-token-card/get-token-card.tsx
@@ -3663,6 +3657,10 @@ msgstr "Crear presupuesto"
 msgid "Create category"
 msgstr "Crear categoría"
 
+#: src/category/components/category-form/category-form.tsx
+msgid "Create Category"
+msgstr "Crear categoría"
+
 #: src/budget/components/budget-event-form/budget-event-form.tsx
 msgid "Create event"
 msgstr "Crear evento"
@@ -3689,6 +3687,10 @@ msgstr "Crear regla"
 #: src/tag/components/tag-destination-sheet/tag-destination-sheet.tsx
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Create tag"
+msgstr "Crear etiqueta"
+
+#: src/tag/components/tag-form/tag-form.tsx
+msgid "Create Tag"
 msgstr "Crear etiqueta"
 
 #: src/budget/components/budget-empty-state/budget-empty-state.tsx
@@ -4096,10 +4098,10 @@ msgstr "No contiene"
 #: src/@generic/component/keyboard-done-accessory/keyboard-done-accessory.tsx
 #: src/@generic/component/sheet-title-row/sheet-title-row.tsx
 #: src/app/date-picker.tsx
+#: src/app/tags-selector.tsx
 #: src/categorize-inbox/components/categorize-inbox-done-button/categorize-inbox-done-button.tsx
 #: src/inzhur/component/inzhur-import-summary-footer/inzhur-import-summary-footer.tsx
 #: src/onboarding/component/onboarding-keyboard-controls/onboarding-keyboard-controls.tsx
-#: src/tag/components/tags-selector-step/tags-selector-step.tsx
 #: src/transaction/components/convert-to-refund-header/convert-to-refund-header.tsx
 #: src/transaction/components/convert-to-transfer-header/convert-to-transfer-header.tsx
 #: src/transaction/components/convert-transfer-form/convert-transfer-form.tsx
@@ -4314,7 +4316,7 @@ msgid "Edit budget"
 msgstr "Editar presupuesto"
 
 #: src/category/components/category-form/category-form.tsx
-msgid "Edit category"
+msgid "Edit Category"
 msgstr "Editar categoría"
 
 #: src/rule/components/rule-condition-row/rule-condition-row.tsx
@@ -4356,7 +4358,7 @@ msgid "Edit set aside"
 msgstr "Editar reserva"
 
 #: src/tag/components/tag-form/tag-form.tsx
-msgid "Edit tag"
+msgid "Edit Tag"
 msgstr "Editar etiqueta"
 
 #: src/transaction/components/conversion-row/conversion-row.tsx
@@ -4375,7 +4377,7 @@ msgstr "Editar transferencia"
 msgid "Edits the total of the plan"
 msgstr "Edita el importe total del plan"
 
-#: src/@generic/component/icon-picker-panel/icon-picker-panel.tsx
+#: src/app/icon-selector.tsx
 msgid "Emoji"
 msgstr "Emoji"
 
@@ -4794,7 +4796,7 @@ msgstr "Funciones"
 
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
 #: src/transaction/components/transaction-fee-field-icon/transaction-fee-field-icon.tsx
-#: src/transaction/components/transaction-fee-step/transaction-fee-step.tsx
+#: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
 #: src/transaction/components/transaction-info-money-rows/transaction-info-money-rows.tsx
 msgid "Fee"
 msgstr "Comisión"
@@ -5220,7 +5222,7 @@ msgstr "Almacenamiento de iCloud lleno"
 msgid "iCloud unavailable"
 msgstr "iCloud no disponible"
 
-#: src/@generic/component/icon-picker-panel/icon-picker-panel.tsx
+#: src/app/icon-selector.tsx
 msgid "Icon"
 msgstr "Icono"
 
@@ -5228,7 +5230,7 @@ msgstr "Icono"
 msgid "Icon updated for {categoryTitle}"
 msgstr "Icono actualizado para {categoryTitle}"
 
-#: src/@generic/component/icon-picker-panel/icon-picker-panel.tsx
+#: src/app/icon-selector.tsx
 msgid "Icons"
 msgstr "Iconos"
 
@@ -6260,14 +6262,6 @@ msgstr "Movido a efectivo"
 msgid "Name"
 msgstr "Nombre"
 
-#: src/category/components/category-form/category-form.tsx
-msgid "Name it and pick an icon"
-msgstr "Ponle nombre y elige un icono"
-
-#: src/tag/components/tag-form/tag-form.tsx
-msgid "Name it to group transactions"
-msgstr "Ponle un nombre para agrupar transacciones"
-
 #: src/categorize-inbox/components/categorize-inbox-transfer-accounts/categorize-inbox-transfer-accounts.tsx
 msgid "Name matches"
 msgstr "Coinciden los nombres"
@@ -6318,7 +6312,6 @@ msgid "New categories get an icon from their name automatically."
 msgstr "Las categorías nuevas reciben un icono según su nombre automáticamente."
 
 #: src/category/components/category-empty-state/category-empty-state.tsx
-#: src/category/components/category-form/category-form.tsx
 msgid "New category"
 msgstr "Nueva categoría"
 
@@ -6347,7 +6340,6 @@ msgid "New set aside"
 msgstr "Nueva reserva"
 
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx
-#: src/tag/components/tag-form/tag-form.tsx
 msgid "New tag"
 msgstr "Nueva etiqueta"
 
@@ -7034,7 +7026,7 @@ msgstr "Abre la app de Inzhur"
 msgid "Open the Settings app and sign in to your Apple Account. Backups from your iPhone and iPad appear here."
 msgstr "Abre la app Ajustes e inicia sesión con tu cuenta de Apple. Las copias de tu iPhone y iPad aparecerán aquí."
 
-#: src/category/components/category-form-hero-icon/category-form-hero-icon.tsx
+#: src/@generic/component/icon-title-field-trigger/icon-title-field-trigger.tsx
 msgid "Opens the icon picker"
 msgstr "Abre el selector de iconos"
 
@@ -7557,7 +7549,7 @@ msgstr "Por favor, inténtelo de nuevo"
 msgid "Please try again later"
 msgstr "Por favor, inténtalo de nuevo más tarde"
 
-#: src/@generic/component/icon-picker-panel/icon-picker-panel.tsx
+#: src/app/icon-selector.tsx
 msgid "Popular"
 msgstr "Populares"
 
@@ -7984,14 +7976,6 @@ msgstr "Eliminado de esta serie"
 msgid "Removes everyone from your family group"
 msgstr "Saca a todos de tu grupo familiar"
 
-#: src/category/components/category-form/category-form.tsx
-msgid "Rename it or change its icon"
-msgstr "Cámbiale el nombre o el icono"
-
-#: src/tag/components/tag-form/tag-form.tsx
-msgid "Rename it or merge it into another"
-msgstr "Cámbiale el nombre o fusiónala con otra"
-
 #: src/installment-plan/component/convert-to-installment-header/convert-to-installment-header.tsx
 msgid "Rename plan, {value}"
 msgstr "Renombrar plan, {value}"
@@ -8389,8 +8373,8 @@ msgstr "Buscar por código o descripción..."
 msgid "Search categories..."
 msgstr "Buscar categorías..."
 
+#: src/app/category-selector.tsx
 #: src/category/components/category-destination-sheet/category-destination-sheet.tsx
-#: src/category/components/category-picker-panel/category-picker-panel.tsx
 msgid "Search categories…"
 msgstr "Buscar categorías…"
 
@@ -8422,7 +8406,7 @@ msgstr "Buscar gastos"
 msgid "Search hidden accounts…"
 msgstr "Buscar cuentas ocultas…"
 
-#: src/@generic/component/icon-picker-panel/icon-picker-panel.tsx
+#: src/app/icon-selector.tsx
 msgid "Search icons"
 msgstr "Buscar iconos"
 
@@ -8439,8 +8423,8 @@ msgid "Search tags..."
 msgstr "Buscar etiquetas..."
 
 #: src/app/(tabs)/settings/tags.tsx
+#: src/app/tags-selector.tsx
 #: src/tag/components/tag-destination-sheet/tag-destination-sheet.tsx
-#: src/tag/components/tags-selector-step/tags-selector-step.tsx
 msgid "Search tags…"
 msgstr "Buscar etiquetas…"
 
@@ -9177,8 +9161,8 @@ msgstr "Los gastos con etiqueta también cuentan en tu presupuesto principal."
 #: src/@generic/component/analytics-segmented-control/analytics-segmented-control.tsx
 #: src/app/(tabs)/analytics.tsx
 #: src/app/(tabs)/settings/tags.tsx
+#: src/app/tags-selector.tsx
 #: src/settings/components/organize-settings-rows/organize-settings-rows.tsx
-#: src/tag/components/tags-selector-step/tags-selector-step.tsx
 #: src/transaction/components/statistics-filters-menu/statistics-filters-menu.tsx
 #: src/transaction/components/transaction-date-tags-row/transaction-date-tags-row.tsx
 #: src/transaction/components/transaction-filters/transaction-filters.tsx

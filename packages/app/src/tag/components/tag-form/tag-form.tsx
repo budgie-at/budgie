@@ -7,8 +7,7 @@ import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/sh
 
 import { AiTranslationFields } from '../../../@generic/component/ai-translation-fields/ai-translation-fields';
 import { EntityEditSections } from '../../../@generic/component/entity-edit-sections/entity-edit-sections';
-import { EntityFormHero } from '../../../@generic/component/entity-form-hero/entity-form-hero';
-import { EntityHeroFormPage } from '../../../@generic/component/entity-hero-form-page/entity-hero-form-page';
+import { EntityFormPage } from '../../../@generic/component/entity-form-page/entity-form-page';
 import { FormTitleInput } from '../../../@generic/component/form-title-input/form-title-input';
 import { GroupedListActionRow } from '../../../@generic/component/grouped-list-action-row/grouped-list-action-row';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
@@ -26,7 +25,7 @@ import { useMergeTag } from '../../hooks/use-merge-tag.hook';
 import { useTagForm } from '../../hooks/use-tag-form.hook';
 import { tagUsageAtom } from '../../query/use-tags-with-usage.query';
 import { TagService } from '../../service/tag.service';
-import { TagFormHeroIcon } from '../tag-form-hero-icon/tag-form-hero-icon';
+import { TagMonogram } from '../tag-monogram/tag-monogram';
 
 import { TagFormSelector } from './tag-form.selector';
 
@@ -56,11 +55,10 @@ export const TagForm = (props: Props) => {
     const isChanged = !isDefined(tag) || title !== tag.title;
     const hasTitle = isNotEmptyString(title.trim());
     const isSaveDisabled = !hasTitle || isBusy;
+    const headerTitle = isEditing ? t`Edit Tag` : t`Create Tag`;
     const createLabel = hasTitle ? t`Create tag` : t`Add a name to continue`;
     const titleError = isDefined(formState.errors.title) ? t`Use 1 to ${TAG_TITLE_MAX_LENGTH} characters` : void 0;
     const saveLabel = isEditing ? t`Save changes` : createLabel;
-    const heroFallbackTitle = isEditing ? t`Edit tag` : t`New tag`;
-    const heroSubtitle = isEditing ? t`Rename it or merge it into another` : t`Name it to group transactions`;
     const transactionCount = usage?.find(entry => entry.id === tag?.id)?.transactionCount ?? 0;
     const deleteFooter = isPositiveNumber(transactionCount)
         ? t({
@@ -155,38 +153,31 @@ export const TagForm = (props: Props) => {
     const handleFormSubmit = handleSubmit(values => saveFlight.run(submitTag(values)));
 
     return (
-        <EntityHeroFormPage
+        <EntityFormPage
+            title={headerTitle}
             onCancel={onCancel}
-            submitLabel={saveLabel}
-            isReady={hasTitle}
-            isLoading={saveFlight.isLoading}
-            isDisabled={isSaveDisabled}
-            onSubmit={handleFormSubmit}
-            submitTestID={TagFormSelector.Submit}
+            saveLabel={saveLabel}
+            onSave={handleFormSubmit}
+            isSaving={saveFlight.isLoading}
+            isSaveDisabled={isSaveDisabled}
+            saveTestID={TagFormSelector.Submit}
         >
-            <EntityFormHero
-                title={title}
-                subtitle={heroSubtitle}
-                fallbackTitle={heroFallbackTitle}
-                icon={<TagFormHeroIcon title={title} />}
-            />
-
             <GroupedListSection title={t`Details`} footer={keywordsFooter}>
-                <IconTitleField label={t`Name`} error={titleError}>
+                <IconTitleField tile={<TagMonogram title={title} />} label={t`Name`} error={titleError}>
                     <FormTitleInput
-                        placeholder={t`e.g. Business, Personal, Vacation`}
-                        accessibilityLabel={t`Tag name`}
-                        testID={TagFormSelector.Input}
-                        maxLength={TAG_TITLE_MAX_LENGTH}
                         autoFocus={!isEditing}
                         editable={!isBusy}
                         value={title}
                         onChangeText={handleTitleChange}
+                        maxLength={TAG_TITLE_MAX_LENGTH}
+                        placeholder={t`e.g. Business, Personal, Vacation`}
+                        accessibilityLabel={t`Tag name`}
+                        testID={TagFormSelector.Input}
                     />
                 </IconTitleField>
             </GroupedListSection>
 
             {isDefined(tag) ? usageActions : null}
-        </EntityHeroFormPage>
+        </EntityFormPage>
     );
 };

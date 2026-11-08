@@ -8,7 +8,7 @@ import { testID as testIDProps } from '../../utils/test-id.util';
 import type { ReactNode } from 'react';
 
 interface Props {
-    readonly tile?: ReactNode;
+    readonly tile: ReactNode;
     readonly label: string;
     readonly error?: string;
     readonly testID?: string;
