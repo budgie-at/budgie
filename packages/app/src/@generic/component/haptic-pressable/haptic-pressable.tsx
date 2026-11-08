@@ -7,6 +7,7 @@ import { emptyFn, isDefined } from '@rnw-community/shared';
 
 import { EASE_OUT, PRESSED_SCALE, PRESS_RELEASE_TIMING } from '../../constant/motion.constant';
 import { HapticPressFeedbackEnum } from '../../enum/haptic-press-feedback.enum';
+import { useReducedMotion } from '../../hook/use-reduced-motion.hook';
 import { useVibration } from '../../hook/use-vibration.hook';
 import { AnimatedPressable } from '../animated-pressable/animated-pressable';
 
@@ -36,7 +37,8 @@ export const HapticPressable = ({
     const [, hapticImpact, hapticSelection] = useVibration();
     const isLongPressActiveRef = useRef(false);
     const scale = useSharedValue(1);
-    const isScaleEnabled = pressedScale !== 1;
+    const reducedMotion = useReducedMotion();
+    const isScaleEnabled = pressedScale !== 1 && !reducedMotion;
 
     const animatedStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.get() }] }));
 
