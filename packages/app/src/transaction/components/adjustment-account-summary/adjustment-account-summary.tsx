@@ -2,11 +2,8 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, useWindowDimensions, View } from 'react-native';
 
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
-import { MoneyText } from '../../../@generic/component/money-text/money-text';
-import { MoneyTextVariantEnum } from '../../../@generic/enum/money-text-variant.enum';
 import { ADJUSTMENT_COMPACT_FONT_SCALE } from '../../constant/adjustment-compact-font-scale.constant';
-import { useAdjustmentBalance } from '../../hook/use-adjustment-balance.hook';
-import { AdjustmentBalanceRow } from '../adjustment-balance-row/adjustment-balance-row';
+import { AdjustmentBalanceSummary } from '../adjustment-balance-summary/adjustment-balance-summary';
 import { TransactionFormIcon } from '../transaction-form-icon/transaction-form-icon';
 
 import { AdjustmentSelector } from './adjustment-account-summary.selector';
@@ -21,28 +18,8 @@ interface Props {
 
 export const AdjustmentAccountSummary = ({ details, amount, isIncrease }: Props) => {
     const { t } = useLingui();
-    const balance = useAdjustmentBalance(details, amount, isIncrease);
     const isCompact = useWindowDimensions().fontScale >= ADJUSTMENT_COMPACT_FONT_SCALE;
     const sectionClassName = isCompact ? 'gap-y-[8px]' : 'gap-y-[16px]';
-    const changeClassName = balance.change < 0 ? 'text-[13px] text-destructive-strong' : 'text-[13px] text-positive-strong';
-    const detailClassName = balance.change === 0 ? 'text-[13px] text-secondary-foreground' : changeClassName;
-    const detail = balance.change === 0 || balance.after === '—' ? null : balance.difference;
-    const afterValue = balance.change === 0 ? t`No change` : balance.after;
-    const afterContent =
-        balance.after === '—' || balance.change === 0 ? (
-            <Text className="text-[17px] font-semibold text-primary" maxFontSizeMultiplier={1.35}>
-                {afterValue}
-            </Text>
-        ) : (
-            <MoneyText
-                amount={balance.resultingBalance}
-                instrumentSymbol={details.instrumentSymbol}
-                variant={MoneyTextVariantEnum.BALANCE}
-                maxFontSizeMultiplier={1.35}
-                decimalPlaces={2}
-                tone="primary"
-            />
-        );
     const accountAccessibilityLabel = `${t`Account`}, ${details.accountTitle}, ${details.instrumentCode}`;
 
     return (
@@ -71,35 +48,7 @@ export const AdjustmentAccountSummary = ({ details, amount, isIncrease }: Props)
                     </Text>
                 </View>
             </GroupedListSection>
-            <GroupedListSection>
-                <AdjustmentBalanceRow label={t`Current adjustment`} value={balance.currentAdjustment} testID={AdjustmentSelector.Original}>
-                    <Text className="text-[17px] text-secondary-foreground" maxFontSizeMultiplier={1.35}>
-                        {balance.currentAdjustment}
-                    </Text>
-                </AdjustmentBalanceRow>
-                <View className="mx-lg h-hairline bg-surface-separator" />
-                <AdjustmentBalanceRow label={t`Current balance`} value={balance.current} testID={AdjustmentSelector.Current}>
-                    <MoneyText
-                        amount={balance.balance}
-                        instrumentSymbol={details.instrumentSymbol}
-                        variant={MoneyTextVariantEnum.BALANCE}
-                        maxFontSizeMultiplier={1.35}
-                        decimalPlaces={2}
-                        tone="secondary"
-                    />
-                </AdjustmentBalanceRow>
-                <View className="mx-lg h-hairline bg-surface-separator" />
-                <AdjustmentBalanceRow
-                    label={t`After saving`}
-                    labelClassName="text-[17px] font-semibold text-primary"
-                    value={afterValue}
-                    detail={detail}
-                    detailClassName={detailClassName}
-                    testID={AdjustmentSelector.After}
-                >
-                    {afterContent}
-                </AdjustmentBalanceRow>
-            </GroupedListSection>
+            <AdjustmentBalanceSummary details={details} amount={amount} isIncrease={isIncrease} />
         </View>
     );
 };

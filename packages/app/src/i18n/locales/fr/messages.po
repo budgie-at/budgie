@@ -1500,7 +1500,7 @@ msgstr "Après {upcomingAmount} pour les factures à venir"
 msgid "After 5 wrong tries, Budgie waits a little longer between attempts."
 msgstr "Après 5 essais erronés, Budgie attend un peu plus longtemps entre les tentatives."
 
-#: src/transaction/components/adjustment-account-summary/adjustment-account-summary.tsx
+#: src/transaction/components/adjustment-balance-summary/adjustment-balance-summary.tsx
 msgid "After saving"
 msgstr "Après enregistrement"
 
@@ -3594,12 +3594,12 @@ msgstr "devise"
 msgid "Currency"
 msgstr "Devise"
 
-#: src/transaction/components/adjustment-account-summary/adjustment-account-summary.tsx
+#: src/transaction/components/adjustment-balance-summary/adjustment-balance-summary.tsx
 msgid "Current adjustment"
 msgstr "Ajustement actuel"
 
 #: src/account/component/account-balance-field/account-balance-field.tsx
-#: src/transaction/components/adjustment-account-summary/adjustment-account-summary.tsx
+#: src/transaction/components/adjustment-balance-summary/adjustment-balance-summary.tsx
 msgid "Current balance"
 msgstr "Solde actuel"
 
@@ -6147,7 +6147,7 @@ msgstr "Aucune catégorie trouvée"
 msgid "No categories match “{trimmedSearch}”"
 msgstr "Aucune catégorie ne correspond à « {trimmedSearch} »"
 
-#: src/transaction/components/adjustment-account-summary/adjustment-account-summary.tsx
+#: src/transaction/components/adjustment-balance-summary/adjustment-balance-summary.tsx
 #: src/transaction/hook/use-adjustment-balance.hook.ts
 msgid "No change"
 msgstr "Aucun changement"
