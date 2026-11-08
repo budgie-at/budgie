@@ -33,6 +33,7 @@ export const TransactionFeeStep = (props: Props) => {
     const dismiss = useMorphingSheetDismiss();
     const handleDone = onDone ?? dismiss;
     const closeIcon = isDefined(onDone) ? UserIconNameEnum.ChevronLeft : UserIconNameEnum.X;
+    const closeLabel = isDefined(onDone) ? t`Back` : t`Close`;
 
     const canSave = isPositiveNumber(feeEntry.categoryId) && isPositiveNumber(feeEntry.amount);
 
@@ -48,7 +49,7 @@ export const TransactionFeeStep = (props: Props) => {
 
     return (
         <View className="px-xl gap-lg pb-xl">
-            <SheetTitleRow title={t`Fee`} closeIcon={closeIcon} trailing={<View />} onClose={handleDone} />
+            <SheetTitleRow title={t`Fee`} closeIcon={closeIcon} closeLabel={closeLabel} trailing={<View />} onClose={handleDone} />
 
             <GroupedListSection>
                 <SplitEntryRow
