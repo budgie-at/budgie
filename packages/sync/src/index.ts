@@ -157,3 +157,5 @@ export { isLiveSync } from './core/utils/is-live-sync.util';
 export type { SyncAccountContinuationChoicesInterface } from './core/interface/sync-account-continuation-choices.interface';
 
 export { toKyivDay } from './inzhur/utils/to-kyiv-day.util';
+
+export { OwnTransferRepairService } from './core/service/own-transfer-repair.service';

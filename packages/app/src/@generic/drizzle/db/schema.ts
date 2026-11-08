@@ -34,5 +34,10 @@ export {
     BudgetSinkingFundEntityTable,
     BudgetLimitChangeEntityTable,
     RecurringSeriesEntityTable,
+    SyncRecordEntityTable,
+    SyncOutboxEntityTable,
+    SyncPendingEntityTable,
+    SyncApplyStateEntityTable,
+    SyncZoneRegistryEntityTable,
     RecurringSeriesTransactionEntityTable
 } from '@budgie/contracts/schema';

@@ -1,5 +1,6 @@
 import { sql } from 'drizzle-orm';
 
+import { RANDOM_SYNC_ID_SQL } from '../../cloud-sync/constant/random-sync-id-sql.constant';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { TRANSACTION_TAGS_PREFER_USER_SOURCE_CONFLICT } from '../constant/transaction-tags-prefer-user-source-conflict.constant';
 import { TransactionTagsEntityTable } from '../table/transaction-tags-entity.table';
@@ -20,7 +21,8 @@ export const insertTransactionTag = (runner: DB, tagId: number, where: SQL | und
                         SELECT 1 FROM ${TransactionTagsEntityTable}
                         WHERE ${TransactionTagsEntityTable.transactionId} = ${TransactionEntityTable.id}
                     )`.as('is_primary'),
-                    source: sql<TagSourceEnum>`${source}`.as('source')
+                    source: sql<TagSourceEnum>`${source}`.as('source'),
+                    syncId: sql<string>`${RANDOM_SYNC_ID_SQL}`.as('sync_id')
                 })
                 .from(TransactionEntityTable)
                 .where(where)

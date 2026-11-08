@@ -13,6 +13,7 @@ import type { DestinationCommitCopyInterface } from '../../../@generic/interface
 
 interface Props {
     readonly title: string;
+    readonly syncZone: string | undefined;
     readonly description: string | undefined;
     readonly excludeCategoryIds: readonly number[];
     readonly commitLabel: string;
@@ -22,7 +23,7 @@ interface Props {
 }
 
 export const CategoryDestinationModalContent = (props: Props) => {
-    const { title, description, excludeCategoryIds, commitLabel, getCommitCopy, onCommit, onDismiss } = props;
+    const { title, description, excludeCategoryIds, syncZone, commitLabel, getCommitCopy, onCommit, onDismiss } = props;
     const listStyle = useMorphingSheetListHeight(MORPHING_SHEET_DESTINATION_HEIGHT_RATIO);
     const [step, setStep] = useState(CategorySelectorStepEnum.CATEGORY);
     const [createTitle, setCreateTitle] = useState('');
@@ -64,7 +65,9 @@ export const CategoryDestinationModalContent = (props: Props) => {
         },
         [CategorySelectorStepEnum.CREATE_CATEGORY]: {
             presentation: MorphingSheetPresentationEnum.PAGE,
-            content: <CategoryCreatePage defaultTitle={createTitle} onSelect={handleCreated} onCancel={handleCreateCancel} />
+            content: (
+                <CategoryCreatePage defaultTitle={createTitle} syncZone={syncZone} onSelect={handleCreated} onCancel={handleCreateCancel} />
+            )
         }
     };
 

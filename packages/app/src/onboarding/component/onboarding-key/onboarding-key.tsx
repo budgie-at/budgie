@@ -1,15 +1,20 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
+import { Text } from 'react-native';
 
 import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
+import { IS_CLOUD_BACKUP_SUPPORTED } from '../../../cloud-backup/constant/is-cloud-backup-supported.constant';
+import { CloudSyncInitialFetchRow } from '../../../cloud-sync/component/cloud-sync-initial-fetch-row/cloud-sync-initial-fetch-row';
+import { useCloudSyncInitialFetch } from '../../../cloud-sync/hook/use-cloud-sync-initial-fetch.hook';
 import { useRestoreBackup } from '../../../import/hook/use-restore-backup.hook';
 import { OnboardingFileLockEnum } from '../../enum/onboarding-file-lock.enum';
 import { OnboardingStepEnum } from '../../enum/onboarding-step.enum';
 import { useOnboardingNavigation } from '../../hook/use-onboarding-navigation.hook';
+import { OnboardingICloudRestoreRow } from '../onboarding-icloud-restore-row/onboarding-icloud-restore-row';
 import { OnboardingStepIntro } from '../onboarding-step-intro/onboarding-step-intro';
 import { OnboardingStepLayout } from '../onboarding-step-layout/onboarding-step-layout';
 
@@ -19,15 +24,18 @@ export const OnboardingKey = () => {
     const { t } = useLingui();
     const { goToStep } = useOnboardingNavigation();
     const { selectAndRestore, isLoading } = useRestoreBackup();
-
+    const { isFetching } = useCloudSyncInitialFetch();
     const handlePinPress = () => void goToStep(OnboardingStepEnum.PIN);
     const handlePhoneLockPress = () => void goToStep(OnboardingStepEnum.PHONE_LOCK);
-
+    const privacyFooter = IS_CLOUD_BACKUP_SUPPORTED
+        ? t`No account to sign up for. Backed up and synced to your own iCloud. Works with no connection at all.`
+        : t`No account to sign up for. Never synced or uploaded. Works with no connection at all.`;
     const restoreAccessory = (
         <LoadingContent isLoading={isLoading}>
             <Icon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" />
         </LoadingContent>
     );
+
     const restorePressableProps = { disabled: isLoading, accessibilityState: { disabled: isLoading, busy: isLoading } };
 
     return (
@@ -37,28 +45,50 @@ export const OnboardingKey = () => {
                 description={t`Your money will live in one file on this phone. Choose who can open it.`}
             />
 
-            <GroupedListSection footer={t`No account to sign up for. Never synced or uploaded. Works with no connection at all.`}>
+            <GroupedListSection footer={privacyFooter}>
                 <GroupedListRow
                     testID={OnboardingKeySelector.PinOption}
                     left={<GroupedListIcon icon={UserIconNameEnum.KeyRound} />}
-                    title={t`Only me, with a PIN`}
-                    subtitle={t`The PIN becomes the encryption key`}
+                    title={
+                        <Text className="text-primary text-[17px]">
+                            <Trans>Only me, with a PIN</Trans>
+                        </Text>
+                    }
+                    subtitle={
+                        <Text className="text-secondary-foreground text-[13px] leading-[18px]">
+                            <Trans>The PIN becomes the encryption key</Trans>
+                        </Text>
+                    }
                     onPress={handlePinPress}
                 />
                 <GroupedListRow
                     testID={OnboardingKeySelector.PhoneLockOption}
                     left={<GroupedListIcon icon={UserIconNameEnum.Smartphone} />}
-                    title={t`Anyone who can unlock this phone`}
-                    subtitle={t`Add a PIN any time later`}
+                    title={
+                        <Text className="text-primary text-[17px]">
+                            <Trans>Anyone who can unlock this phone</Trans>
+                        </Text>
+                    }
+                    subtitle={
+                        <Text className="text-secondary-foreground text-[13px] leading-[18px]">
+                            <Trans>Add a PIN any time later</Trans>
+                        </Text>
+                    }
                     onPress={handlePhoneLockPress}
                 />
             </GroupedListSection>
 
             <GroupedListSection title={t`Already use Budgie?`}>
+                {isFetching ? <CloudSyncInitialFetchRow /> : null}
+                <OnboardingICloudRestoreRow />
                 <GroupedListRow
                     testID={OnboardingKeySelector.RestoreButton}
                     left={<GroupedListIcon icon={UserIconNameEnum.ArchiveRestore} />}
-                    title={t`I have a Budgie backup`}
+                    title={
+                        <Text className="text-primary text-[17px]">
+                            <Trans>I have a Budgie backup</Trans>
+                        </Text>
+                    }
                     right={restoreAccessory}
                     pressableProps={restorePressableProps}
                     onPress={selectAndRestore}

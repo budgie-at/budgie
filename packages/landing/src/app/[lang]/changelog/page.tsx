@@ -47,7 +47,7 @@ export default async function ChangelogPage(props: PageLangParam) {
     const title = i18n._(CHANGELOG_METADATA.title);
 
     return (
-        <main className="flex-1">
+        <main id="main-content" tabIndex={-1} className="flex-1 focus:outline-none">
             <BreadcrumbsJsonLd locale={lang} path={path}>
                 <BreadcrumbsJsonLd.Item name={i18n._(msg`Home`)} path={`/${lang}`} />
                 <BreadcrumbsJsonLd.Item name={title} path={`/${lang}${path}`} />

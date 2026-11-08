@@ -41,6 +41,9 @@ import { AiProvider } from '../ai/provider/ai.provider';
 import { VoiceInputProvider } from '../ai/provider/voice-input.provider';
 import { AuthGuard } from '../auth/provider/auth.guard';
 import { AuthProvider } from '../auth/provider/auth.provider';
+import { IS_CLOUD_BACKUP_SUPPORTED } from '../cloud-backup/constant/is-cloud-backup-supported.constant';
+import { CloudSyncLineagePrompt } from '../cloud-sync/component/cloud-sync-lineage-prompt/cloud-sync-lineage-prompt';
+import { HouseholdJoinNavigator } from '../household/component/household-join-navigator/household-join-navigator';
 import { I18nProvider } from '../i18n/provider/i18n.provider';
 import { HistoricalMarketDataDrainerService } from '../market-data/service/historical-market-data-drainer.service';
 import { ReceiptLaunchHandler } from '../receipt/components/receipt-launch-handler/receipt-launch-handler';
@@ -136,6 +139,7 @@ export const RootLayoutContent = () => {
         '--color-sheet-grouped-surface'
     ]);
     const sheetOptions = fitToContentsSheetOptions(sheetSurface);
+    const budgetSheetOptions = { ...sheetOptions, sheetAllowedDetents: [DETENT_95] };
     const isAccessibilityTextSize = useIsAccessibilityTextSize();
     const contactSelectorOptions = formSheetOptions([DETENT_55, DETENT_90], isAccessibilityTextSize ? 1 : 0);
     useAppInitialization(databaseMigrationStatus === DatabaseMigrationStatusEnum.MIGRATED);
@@ -222,8 +226,14 @@ export const RootLayoutContent = () => {
                                                                         name="voice-review"
                                                                         options={formSheetOptions([0.65, DETENT_95], 0)}
                                                                     />
-                                                                    <Stack.Screen name="budget-safe-to-spend" options={sheetOptions} />
-                                                                    <Stack.Screen name="budget-limit-changes" options={sheetOptions} />
+                                                                    <Stack.Screen
+                                                                        name="budget-safe-to-spend"
+                                                                        options={budgetSheetOptions}
+                                                                    />
+                                                                    <Stack.Screen
+                                                                        name="budget-limit-changes"
+                                                                        options={budgetSheetOptions}
+                                                                    />
                                                                     <Stack.Screen name="category-form" options={ENTITY_FORM_OPTIONS} />
                                                                     <Stack.Screen name="tag-form" options={ENTITY_FORM_OPTIONS} />
                                                                     <Stack.Screen
@@ -298,6 +308,8 @@ export const RootLayoutContent = () => {
                                                         <AppToastHost />
                                                         <ReceiptLaunchHandler />
                                                         <NotificationLaunchHandler />
+                                                        {IS_CLOUD_BACKUP_SUPPORTED ? <CloudSyncLineagePrompt /> : null}
+                                                        {IS_CLOUD_BACKUP_SUPPORTED ? <HouseholdJoinNavigator /> : null}
                                                     </AiProvider>
                                                 </CreateActionProvider>
                                             </AuthGuard>

@@ -136,16 +136,7 @@ export class BudgetProjectionService extends Context.Service<BudgetProjectionSer
             window: BudgetPeriodWindowInterface
         ) {
             if (budget.kind === BudgetKindEnum.EVENT) {
-                if (!isDefined(budget.tagId)) {
-                    return { entries: [], grossEntries: [] };
-                }
-
-                const eventEntries = yield* budgetRepository.findEventSpentEntries(
-                    window.periodStart,
-                    window.nextPeriodStart,
-                    budget.instrumentId,
-                    budget.tagId
-                );
+                const eventEntries = yield* budgetRepository.findEventSpentEntries(window.periodStart, window.nextPeriodStart, budget);
 
                 return { entries: toBudgetCurrencyEntries(eventEntries, budget.instrumentId), grossEntries: [] };
             }
@@ -185,7 +176,8 @@ export class BudgetProjectionService extends Context.Service<BudgetProjectionSer
             const receivedEntries = yield* budgetRepository.findIncomeReceivedEntries(
                 window.periodStart,
                 window.nextPeriodStart,
-                budget.instrumentId
+                budget.instrumentId,
+                budget.syncZone
             );
             const received = computeIncomeReceived(receivedEntries, budget.instrumentId);
 
@@ -212,7 +204,7 @@ export class BudgetProjectionService extends Context.Service<BudgetProjectionSer
             const { entries: spentEntries, grossEntries } = yield* loadSpentEntries(budget, window);
             const installmentPayments = isEvent
                 ? []
-                : yield* budgetRepository.findInstallmentPayments(window.periodStart, window.nextPeriodStart);
+                : yield* budgetRepository.findInstallmentPayments(window.periodStart, window.nextPeriodStart, budget.syncZone);
             const installmentAccountIdByTransactionId = new Map(
                 installmentPayments.map(payment => [payment.transactionId, payment.installmentAccountId] as const)
             );

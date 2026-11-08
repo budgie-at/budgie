@@ -12,6 +12,7 @@ import { JsonLd } from '../../generic/component/json-ld/json-ld';
 import { ProofBand } from '../../generic/component/proof-band/proof-band';
 import { TestimonialsSection } from '../../generic/component/testimonials-section/testimonials-section';
 import { TrustBanner } from '../../generic/component/trust-banner/trust-banner';
+import { BASE_URL, OG_LOCALE_MAP } from '../../generic/constant/seo.constant';
 import { buildLandingJsonLd } from '../../generic/utils/build-landing-json-ld.util';
 import { getI18nInstance } from '../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../i18n/init-lingui';
@@ -32,6 +33,9 @@ export async function generateMetadata(props: PageLangParam): Promise<Metadata> 
         openGraph: {
             title: i18n._(HOME_PAGE_METADATA.openGraphTitle),
             description: i18n._(HOME_PAGE_METADATA.metaDescription),
+            type: 'website',
+            url: `${BASE_URL}/${lang}`,
+            locale: OG_LOCALE_MAP[lang] ?? 'en_US',
             // oxlint-disable-next-line lingui/no-unlocalized-strings
             siteName: 'Budgie'
         }
@@ -48,7 +52,7 @@ export default async function LandingPage(props: PageLangParam) {
     const softwareApplication = buildLandingJsonLd(i18n, lang);
 
     return (
-        <main className="flex-1">
+        <main id="main-content" tabIndex={-1} className="flex-1 focus:outline-none">
             <JsonLd data={softwareApplication} />
 
             <HeroSection locale={lang} />
@@ -70,8 +74,8 @@ export default async function LandingPage(props: PageLangParam) {
                     title={<Trans>Offline-first expense tracker</Trans>}
                 >
                     <Trans>
-                        No account, no cloud sync, no tracking. The database lives on your phone and the app never needs a connection to
-                        open, search or calculate anything.
+                        No account, no vendor cloud, no tracking. The database lives on your phone, syncs between your own devices through
+                        your iCloud on iOS, and the app never needs a connection to open, search or calculate anything.
                     </Trans>
                 </CapabilityBento.Anchor>
 
@@ -149,7 +153,7 @@ export default async function LandingPage(props: PageLangParam) {
                     slug="private-budget-app-alternative"
                     title={<Trans>A private budget app alternative</Trans>}
                 >
-                    <Trans>Your finances stay on your device, with app lock and screenshot protection built in.</Trans>
+                    <Trans>Your finances stay in storage you control, with app lock, screenshot protection and encrypted sync.</Trans>
                 </CapabilityBento.Cell>
 
                 <CapabilityBento.Cell
@@ -160,7 +164,7 @@ export default async function LandingPage(props: PageLangParam) {
                     slug="ai-auto-categorization"
                     title={<Trans>Categorization that runs on your phone</Trans>}
                 >
-                    <Trans>Category suggestions are computed on-device, so your transactions are never sent to a server.</Trans>
+                    <Trans>Category suggestions are computed on-device, so no transaction is sent to an AI service.</Trans>
                 </CapabilityBento.Cell>
             </CapabilityBento>
 

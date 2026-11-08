@@ -1,6 +1,9 @@
 import { BudgetPeriodCloseService } from '@budgie/budget';
+import { CloudSyncService } from '@budgie/cloud-sync';
+import { SyncIdentityRepository } from '@budgie/contracts';
 import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
+import * as Option from 'effect/Option';
 import * as BackgroundTask from 'expo-background-task';
 import * as SplashScreen from 'expo-splash-screen';
 import * as TaskManager from 'expo-task-manager';
@@ -12,6 +15,7 @@ import { ACCOUNT_BALANCE_INCREMENTAL_TASK } from '../../account/constant/account
 import { AuthService } from '../../auth/service/auth.service';
 import { BudgetAlertMonitorService } from '../../budget/service/budget-alert-monitor.service';
 import { CategoryIconBackfillService } from '../../category/service/category-icon-backfill.service';
+import { CloudBackupTriggerService } from '../../cloud-backup/service/cloud-backup-trigger.service';
 import { ExchangeRateBackgroundService } from '../../exchange-rate/service/exchange-rate-background.service';
 import { InzhurPendingTopUpService } from '../../inzhur/service/inzhur-pending-top-up.service';
 import { InzhurStatementReminderService } from '../../inzhur/service/inzhur-statement-reminder.service';
@@ -78,18 +82,35 @@ const registerBackgroundTasks = Effect.gen(function* () {
     );
 });
 
+const startCloudServices = Effect.gen(function* () {
+    const cloudBackupTriggerService = yield* Effect.serviceOption(CloudBackupTriggerService);
+
+    if (Option.isSome(cloudBackupTriggerService)) {
+        yield* logAndContinue(cloudBackupTriggerService.value.start());
+    }
+
+    yield* logAndContinue((yield* Workload).run((yield* SyncIdentityRepository).backfill()));
+
+    const cloudSyncService = yield* Effect.serviceOption(CloudSyncService);
+
+    if (Option.isSome(cloudSyncService)) {
+        yield* logAndContinue(cloudSyncService.value.start());
+    }
+});
+
 const initializeAppServices = Effect.gen(function* () {
     const widgetSnapshotService = yield* WidgetSnapshotService;
     const workload = yield* Workload;
     const appDataSyncService = yield* AppDataSyncService;
     const onboardingService = yield* OnboardingService;
-    const historicalMarketDataDrainerService = yield* HistoricalMarketDataDrainerService;
     const backgroundSyncSessionService = yield* BackgroundSyncSessionService;
 
     yield* Effect.forkDetach(appDataSyncService.drainWalletCapturesOnInvocation);
     yield* registerBackgroundTasks;
     yield* widgetSnapshotService.start();
     yield* backgroundSyncSessionService.start();
+    yield* startCloudServices;
+
     yield* logAndContinue(workload.run(appDataSyncService.sync()));
     yield* logAndContinue(
         Effect.flatMap(BudgetPeriodCloseService, service =>
@@ -97,7 +118,7 @@ const initializeAppServices = Effect.gen(function* () {
         )
     );
     yield* logAndContinue(onboardingService.initializeLocale());
-    yield* logAndContinue(historicalMarketDataDrainerService.enqueueActiveAccounts());
+    yield* logAndContinue(Effect.flatMap(HistoricalMarketDataDrainerService, service => service.enqueueActiveAccounts()));
     yield* logAndContinue((yield* CategoryIconBackfillService).applyConfidentIcons());
 });
 

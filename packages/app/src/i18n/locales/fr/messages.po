@@ -74,6 +74,11 @@ msgstr "{0, plural, one {# écriture enregistrée} other {# écritures enregistr
 msgid "{0, plural, one {# fund} other {# funds}}"
 msgstr "{0, plural, one {# fonds} other {# fonds}}"
 
+#. placeholder {0}: participants.length
+#: src/household/component/household-pending-invites-row/household-pending-invites-row.tsx
+msgid "{0, plural, one {# invitation waiting to be opened} other {# invitations waiting to be opened}}"
+msgstr "{0, plural, one {# invitation en attente d'ouverture} other {# invitations en attente d'ouverture}}"
+
 #. placeholder {0}: installmentCount - 1
 #: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
 msgid "{0, plural, one {# more payment of {formattedLast}} other {# more payments of {formattedLast}}}"
@@ -147,6 +152,11 @@ msgstr "{0, plural, one {mois} other {mois}}"
 msgid "{0, plural, one {Other · # category} other {Other · # categories}}"
 msgstr "{0, plural, one {Autres · # catégorie} other {Autres · # catégories}}"
 
+#. placeholder {0}: joinedMembers.length
+#: src/household/utils/get-family-labels.util.ts
+msgid "{0, plural, one {Shared with # person} other {Shared with # people}}"
+msgstr "{0, plural, one {Partagé avec # personne} other {Partagé avec # personnes}}"
+
 #. placeholder {0}: oneOffs.length
 #: src/categorize-inbox/components/categorize-inbox-one-offs-link/categorize-inbox-one-offs-link.tsx
 msgid "{0, plural, one {Show # more group} other {Show # more groups}}"
@@ -162,6 +172,11 @@ msgstr "{0, plural, one {Relevé d’il y a # jour} other {Relevé d’il y a # 
 #: src/sync/component/bank-integration-status-line/bank-integration-status-line.tsx
 msgid "{0, plural, one {Sync failed for # account} other {Sync failed for # accounts}}"
 msgstr "{0, plural, one {Échec de synchronisation pour # compte} other {Échec de synchronisation pour # comptes}}"
+
+#. placeholder {0}: otherParticipants.length - joinedMembers.length
+#: src/household/utils/get-family-labels.util.ts
+msgid "{0, plural, one {Waiting for # person to join} other {Waiting for # people to join}}"
+msgstr "{0, plural, one {En attente de # personne pour rejoindre} other {En attente de # personnes pour rejoindre}}"
 
 #: src/i18n/hook/use-format-fund-quantity.hook.ts
 msgid "{absoluteQuantity, plural, one {{count} certificate} other {{count} certificates}}"
@@ -440,6 +455,11 @@ msgstr "{entryStatusLabel}. {formattedAmount} {caption}. {formattedSpentLabel}, 
 msgid "{entryStatusLabel}. {formattedAmount} {caption}. {reservedPrefix}{formattedPerDay}, {formattedDaysLeft}."
 msgstr "{entryStatusLabel}. {formattedAmount} {caption}. {reservedPrefix}{formattedPerDay}, {formattedDaysLeft}."
 
+#: src/account/component/accounts-downloading-state/accounts-downloading-state.tsx
+#: src/cloud-sync/component/cloud-sync-initial-fetch-row/cloud-sync-initial-fetch-row.tsx
+msgid "{fetchedRecordCount, plural, one {# item} other {# items}}"
+msgstr "{fetchedRecordCount, plural, one {# élément} other {# éléments}}"
+
 #: src/rule/hooks/use-rule-text-value-meta.hook.ts
 msgid "{fieldLabel} {operatorLabel}, value"
 msgstr "{fieldLabel} {operatorLabel}, valeur"
@@ -488,9 +508,13 @@ msgstr "{fieldLabel} n’est pas {value}"
 msgid "{fieldLabel} matches {value}"
 msgstr "{fieldLabel} correspond à {value}"
 
-#: src/settings/components/your-data-card/your-data-card.tsx
-msgid "{fileSize} · Stored only on this device"
-msgstr "{fileSize} · Stocké uniquement sur cet appareil"
+#: src/settings/components/device-data-section/device-data-section.tsx
+msgid "{fileSize} · Also in iCloud"
+msgstr "{fileSize} · Aussi dans iCloud"
+
+#: src/settings/components/device-data-section/device-data-section.tsx
+msgid "{fileSize} · Not in iCloud"
+msgstr "{fileSize} · Pas dans iCloud"
 
 #: src/import/utils/get-import-match-description.util.ts
 msgid "{first} and {second} matched from sample values."
@@ -699,6 +723,10 @@ msgstr "{monthsUsed} sur {RUNWAY_MINIMUM_MONTHS} mois complets"
 msgid "{moreCount, plural, one {+# more} other {+# more}}"
 msgstr "{moreCount, plural, one {+# autre} other {+# autres}}"
 
+#: src/household/component/household-member-join-watcher/household-member-join-watcher.tsx
+msgid "{name} joined your family"
+msgstr "{name} a rejoint votre famille"
+
 #: src/budget/components/budget-limit-changes-row/budget-limit-changes-row.tsx
 msgid "{name} lowered to {amountLabel}"
 msgstr "{name} abaissé à {amountLabel}"
@@ -718,6 +746,12 @@ msgstr "{newTransactionCount, plural, one {Importer # transaction} other {Import
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "{newTransactionCount} new, {existingTransactionCount} already imported, {parsedTransactionCount} checked"
 msgstr "{newTransactionCount} nouvelles, {existingTransactionCount} déjà importées, {parsedTransactionCount} vérifiées"
+
+#: src/account/component/family-section-header/family-section-header.tsx
+#: src/household/utils/get-family-labels.util.ts
+#: src/household/utils/get-household-summary-labels.util.ts
+msgid "{organizerName}'s family"
+msgstr "Famille de {organizerName}"
 
 #: src/budget/components/budget-category-forecast/budget-category-forecast.tsx
 msgid "{overAmount} over budget"
@@ -799,10 +833,6 @@ msgstr "{quantityLabel} · mis à jour depuis les imports"
 #: src/account/component/fund-account-card/fund-account-card.tsx
 msgid "{quantityLabel}, worth {valueLabel}"
 msgstr "{quantityLabel}, valeur {valueLabel}"
-
-#: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
-msgid "{rate, plural, =1 {about once a day} =2 {about twice a day} other {about # a day}}"
-msgstr "{rate, plural, =1 {environ une fois par jour} =2 {environ deux fois par jour} other {environ # par jour}}"
 
 #: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
 msgid "{rate, plural, =1 {about once a week} =2 {about twice a week} other {about # a week}}"
@@ -896,6 +926,10 @@ msgstr "{selectedInGroupCount} sur {accountsCount} sélectionnés"
 #: src/budget/components/budget-fund-row-status/budget-fund-row-status.tsx
 msgid "{setAsideLabel} to set aside {thisPeriod}"
 msgstr "{setAsideLabel} à mettre de côté {thisPeriod}"
+
+#: src/household/utils/get-household-summary-labels.util.ts
+msgid "{sharedCount, plural, one {# shared account} other {# shared accounts}}"
+msgstr "{sharedCount, plural, one {# compte partagé} other {# comptes partagés}}"
 
 #: src/transaction/components/statistics-drill-down-caption/statistics-drill-down-caption.tsx
 msgid "{shareLabel} of income"
@@ -1147,6 +1181,10 @@ msgstr "une catégorie"
 msgid "A deposit in the funding account currency must receive the full funding amount"
 msgstr "Un dépôt dans la devise du compte de financement doit recevoir le montant total"
 
+#: src/household/component/household-member-join-watcher/household-member-join-watcher.tsx
+msgid "A family member"
+msgstr "Un membre de la famille"
+
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
 #: src/auth/components/pin-forgotten-warning/pin-forgotten-warning.tsx
 msgid "A forgotten PIN can't be reset."
@@ -1212,6 +1250,10 @@ msgstr "Environ 6 minutes"
 msgid "About a minute"
 msgstr "Environ une minute"
 
+#: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
+msgid "about once a day"
+msgstr "environ une fois par jour"
+
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "above {formattedLimit} limit"
 msgstr "au-dessus de la limite de {formattedLimit}"
@@ -1219,6 +1261,10 @@ msgstr "au-dessus de la limite de {formattedLimit}"
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "Above this amount"
 msgstr "Au-dessus de ce montant"
+
+#: src/household/utils/get-household-summary-labels.util.ts
+msgid "Accepting the invitation"
+msgstr "Acceptation de l'invitation"
 
 #: src/rule/constant/rule-condition-field.constant.ts
 msgid "account"
@@ -1496,7 +1542,7 @@ msgstr "Après {reservedAmount} prévus pour les réserves"
 msgid "After {upcomingAmount} for upcoming bills"
 msgstr "Après {upcomingAmount} pour les factures à venir"
 
-#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+#: src/auth/components/forgot-pin-footer/forgot-pin-footer.tsx
 msgid "After 5 wrong tries, Budgie waits a little longer between attempts."
 msgstr "Après 5 essais erronés, Budgie attend un peu plus longtemps entre les tentatives."
 
@@ -1564,7 +1610,7 @@ msgstr "Tout le temps"
 msgid "Allocated"
 msgstr "Alloué"
 
-#: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
+#: src/@generic/component/contact-selector-denied/contact-selector-denied.tsx
 msgid "Allow contacts access in Settings."
 msgstr "Autorisez l’accès aux contacts dans les réglages."
 
@@ -1728,6 +1774,14 @@ msgstr "Verrouillage de l’app"
 msgid "Appearance"
 msgstr "Apparence"
 
+#: src/settings/components/icloud-sign-in-row/icloud-sign-in-row.tsx
+msgid "Apple Account"
+msgstr "Compte Apple"
+
+#: src/settings/components/icloud-sign-in-row/icloud-sign-in-row.tsx
+msgid "Apple Account, not signed in"
+msgstr "Compte Apple, non connecté"
+
 #: src/rule/constant/external-source.constant.ts
 msgid "Apple Pay automation"
 msgstr "Automatisation Apple Pay"
@@ -1749,6 +1803,10 @@ msgstr "ID de l'application"
 #: src/sync/component/enable-banking-setup-guide/enable-banking-setup-guide.tsx
 msgid "Application name"
 msgstr "Nom de l'application"
+
+#: src/account/component/shared-by-other-account-options/shared-by-other-account-options.tsx
+msgid "Applies to everyone in your family."
+msgstr "S’applique à toute votre famille."
 
 #: src/rule/components/rule-actions-section/rule-actions-section.tsx
 msgid "Applies to new payments as they arrive from your bank or an import."
@@ -1929,17 +1987,21 @@ msgstr "Retour"
 msgid "Back up"
 msgstr "Sauvegarder"
 
-#: src/app/(tabs)/settings/index.tsx
-msgid "Back up regularly and after imports."
-msgstr "Sauvegardez régulièrement et après chaque import."
-
 #: src/settings/components/backup-row/backup-row.tsx
-msgid "Backup"
-msgstr "Sauvegarde"
+msgid "Backup file"
+msgstr "Fichier de sauvegarde"
 
 #: src/export/hook/use-backup-actions.hook.ts
 msgid "Backup saved"
 msgstr "Sauvegarde enregistrée"
+
+#: src/onboarding/component/onboarding-icloud-restore-row/onboarding-icloud-restore-row.tsx
+msgid "Backups from your devices on this Apple Account"
+msgstr "Sauvegardes de vos appareils sur ce compte Apple"
+
+#: src/cloud-backup/component/cloud-backup-list/cloud-backup-list.tsx
+msgid "Backups made before your iCloud encrypted data was reset can't be read."
+msgstr "Les sauvegardes créées avant la réinitialisation de vos données iCloud chiffrées ne peuvent pas être lues."
 
 #: src/market-data/component/currency-market-position/currency-market-position.tsx
 msgid "Balance"
@@ -2115,6 +2177,14 @@ msgstr "Compte de dette empruntée attendu"
 msgid "Bought {boughtLabel}"
 msgstr "{boughtLabel} achetés"
 
+#: src/onboarding/component/onboarding-icloud-restore/onboarding-icloud-restore.tsx
+msgid "Bring back your Budgie data from a backup on any of your devices."
+msgstr "Récupérez vos données Budgie depuis une sauvegarde de l’un de vos appareils."
+
+#: src/cloud-sync/component/cloud-sync-initial-fetch-row/cloud-sync-initial-fetch-row.tsx
+msgid "Bringing your data from iCloud…"
+msgstr "Récupération de vos données depuis iCloud…"
+
 #: src/category/components/category-icon-fix-row/category-icon-fix-row.tsx
 msgid "Browse icons"
 msgstr "Parcourir les icônes"
@@ -2152,13 +2222,14 @@ msgstr "Budget indisponible"
 
 #: src/import/components/import-preset-options/import-preset-options.tsx
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
-#: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
+#: src/onboarding/component/onboarding-welcome-hero/onboarding-welcome-hero.tsx
 #: src/siri/service/siri-catalog.service.ts
 #: src/sync/component/enable-banking-setup-guide/enable-banking-setup-guide.tsx
 #: src/wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero.tsx
 msgid "Budgie"
 msgstr "Budgie"
 
+#: src/cloud-backup/component/cloud-backup-row/cloud-backup-row.tsx
 #: src/settings/components/settings-about-footer/settings-about-footer.tsx
 msgid "Budgie {appVersion}"
 msgstr "Budgie {appVersion}"
@@ -2166,6 +2237,10 @@ msgstr "Budgie {appVersion}"
 #: src/wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card.tsx
 msgid "Budgie action is missing"
 msgstr "L’action Budgie est manquante"
+
+#: src/cloud-backup/component/cloud-backup-list/cloud-backup-list.tsx
+msgid "Budgie backs up to iCloud automatically. Your first backup appears here."
+msgstr "Budgie sauvegarde automatiquement dans iCloud. Votre première sauvegarde apparaîtra ici."
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Budgie brings in the last month of history, then asks Monobank for new transactions when you open the app."
@@ -2291,6 +2366,10 @@ msgstr "Peut prendre des heures"
 msgid "Can't be changed later"
 msgstr "Ne pourra pas être modifiée"
 
+#: src/cloud-backup/constant/cloud-restore-failure-message.constant.ts
+msgid "Can't be read: your iCloud encrypted data was reset after this backup was made"
+msgstr "Illisible : vos données iCloud chiffrées ont été réinitialisées après cette sauvegarde"
+
 #: src/@generic/component/deletable-row/deletable-row.tsx
 #: src/@generic/component/modal-form-cancel-button/modal-form-cancel-button.tsx
 #: src/account/component/account-actions-menu/use-deposit-close-action.hook.ts
@@ -2302,6 +2381,10 @@ msgstr "Ne pourra pas être modifiée"
 #: src/budget/hooks/use-budget-form.hook.ts
 #: src/budget/hooks/use-budget-fund-form.hook.ts
 #: src/category/hooks/use-delete-category.hook.ts
+#: src/cloud-backup/hook/use-restore-cloud-backup.hook.ts
+#: src/household/component/household-leave-row/household-leave-row.tsx
+#: src/household/component/household-remove-button/household-remove-button.tsx
+#: src/household/component/household-stop-sharing-row/household-stop-sharing-row.tsx
 #: src/import/hook/use-restore-backup.hook.ts
 #: src/installment-plan/hook/use-revert-installment-plan.hook.ts
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
@@ -2319,7 +2402,7 @@ msgstr "Ne pourra pas être modifiée"
 #: src/transaction/components/convert-to-refund-header/convert-to-refund-header.tsx
 #: src/transaction/components/convert-to-transfer-header/convert-to-transfer-header.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
-#: src/transaction/components/transaction-fee-step/transaction-fee-step.tsx
+#: src/transaction/components/transaction-fee-remove-button/transaction-fee-remove-button.tsx
 #: src/transaction/components/transaction-form-actions/transaction-form-actions.tsx
 #: src/transaction/hook/use-convert-to-refund-action.hook.ts
 #: src/transaction/hook/use-delete-transaction.hook.ts
@@ -2523,6 +2606,10 @@ msgstr "Vérifiez l’orthographe ou essayez un symbole comme BTC."
 msgid "Check the spelling or try another account name."
 msgstr "Vérifiez l’orthographe ou essayez un autre nom de compte."
 
+#: src/cloud-backup/component/cloud-backup-list/cloud-backup-list.tsx
+msgid "Check your connection and try again."
+msgstr "Vérifiez votre connexion et réessayez."
+
 #: src/account/constant/account-kind-title.constant.ts
 #: src/app/(tabs)/settings/sync-repairs.tsx
 msgid "Checking"
@@ -2724,6 +2811,10 @@ msgstr "Choisir l’autre compte"
 msgid "Choose what goes inside"
 msgstr "Choisir ce qu'il contient"
 
+#: src/household/utils/get-household-share-labels.util.ts
+msgid "Choose what to share"
+msgstr "Choisir ce qu'il faut partager"
+
 #: src/sync/component/create-binance-account/create-binance-account.tsx
 msgid "Choose what to track. Balances and history come straight from Binance."
 msgstr "Choisissez ce que vous souhaitez suivre. Les soldes et l’historique proviennent directement de Binance."
@@ -2731,6 +2822,14 @@ msgstr "Choisissez ce que vous souhaitez suivre. Les soldes et l’historique pr
 #: src/sync/component/sync-accounts-step/sync-accounts-step.tsx
 msgid "Choose what to track. Balances and history come straight from the bank."
 msgstr "Choisis ce que tu veux suivre. Les soldes et l'historique viennent directement de la banque."
+
+#: src/household/component/household-empty-content/household-empty-content.tsx
+msgid "Choose which accounts and budgets to share. Family members can see and edit what you share. Everything else stays private."
+msgstr "Choisissez les comptes et budgets à partager. Les membres de la famille peuvent voir et modifier ce que vous partagez. Le reste reste privé."
+
+#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
+msgid "Choose which data to keep"
+msgstr "Choisissez les données à conserver"
 
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "Choose your accounts. Rename them later."
@@ -2904,12 +3003,13 @@ msgstr "Consolidation"
 msgid "Contact (optional)"
 msgstr "Contact (optionnel)"
 
+#: src/@generic/component/contact-selector-denied/contact-selector-denied.tsx
 #: src/@generic/component/contact-selector-header/contact-selector-header.tsx
 #: src/@generic/component/contact-selector-state/contact-selector-state.tsx
 msgid "Contacts"
 msgstr "Contacts"
 
-#: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
+#: src/@generic/component/contact-selector-denied/contact-selector-denied.tsx
 msgid "Contacts access is off"
 msgstr "Accès aux contacts désactivé"
 
@@ -3152,6 +3252,15 @@ msgstr "Impossible de récupérer les comptes"
 msgid "Could not import CSV file"
 msgstr "Impossible d'importer le fichier CSV"
 
+#: src/cloud-sync/layer/cloud-sync-host.layer.ts
+#: src/household/utils/get-household-summary-labels.util.ts
+msgid "Could not join the family"
+msgstr "Impossible de rejoindre la famille"
+
+#: src/household/component/household-leave-row/household-leave-row.tsx
+msgid "Could not leave the family"
+msgstr "Impossible de quitter la famille"
+
 #: src/ai/component/ai-model-storage/ai-model-storage.tsx
 msgid "Could not load"
 msgstr "Chargement impossible"
@@ -3224,6 +3333,14 @@ msgstr "Impossible de lire les captures Wallet"
 msgid "Could not rebuild balances"
 msgstr "Impossible de recalculer les soldes"
 
+#: src/household/component/household-remove-button/household-remove-button.tsx
+msgid "Could not remove {name}"
+msgstr "Impossible de retirer {name}"
+
+#: src/household/component/household-remove-group-row/household-remove-group-row.tsx
+msgid "Could not remove the family group"
+msgstr "Impossible de supprimer le groupe familial"
+
 #: src/ai/component/ai-model-storage/ai-model-storage.tsx
 msgid "Could not remove unused downloads"
 msgstr "Impossible de supprimer les téléchargements inutilisés"
@@ -3236,9 +3353,17 @@ msgstr "Impossible de réparer les données de synchronisation"
 msgid "Could not reset bank sync"
 msgstr "Impossible de réinitialiser la synchronisation bancaire"
 
+#: src/cloud-sync/component/cloud-sync-lineage-prompt/cloud-sync-lineage-prompt.tsx
+msgid "Could not resolve the iCloud conflict"
+msgstr "Impossible de résoudre le conflit iCloud"
+
 #: src/account/hooks/use-restore-archived-account.hook.ts
 msgid "Could not restore account."
 msgstr "Impossible de restaurer le compte."
+
+#: src/cloud-backup/hook/use-restore-cloud-backup.hook.ts
+msgid "Could not restore from iCloud"
+msgstr "Impossible de restaurer depuis iCloud"
 
 #: src/recurring/hook/use-remove-recurring-series.hook.ts
 msgid "Could not restore recurring payment."
@@ -3308,6 +3433,14 @@ msgstr "Impossible de lancer la synchronisation"
 msgid "Could not start the authorization"
 msgstr "Impossible de démarrer l'autorisation"
 
+#: src/household/component/household-invite-row/household-invite-row.tsx
+msgid "Could not start the invitation"
+msgstr "Impossible de lancer l’invitation"
+
+#: src/household/component/household-stop-sharing-row/household-stop-sharing-row.tsx
+msgid "Could not stop sharing"
+msgstr "Impossible d’arrêter le partage"
+
 #: src/categorize-inbox/components/categorize-inbox-tag-provider/categorize-inbox-tag-provider.tsx
 #: src/categorize-inbox/hook/use-categorize-inbox-last-write.hook.ts
 msgid "Could not tag transactions"
@@ -3333,6 +3466,14 @@ msgstr "Impossible de mettre à jour la fonctionnalité d’IA"
 #: src/category/components/category-icon-fix-row/category-icon-fix-row.tsx
 msgid "Could not update category icon"
 msgstr "Impossible de mettre à jour l'icône de la catégorie"
+
+#: src/settings/components/icloud-backup-row/icloud-backup-row.tsx
+msgid "Could not update iCloud backup"
+msgstr "Impossible de mettre à jour la sauvegarde iCloud"
+
+#: src/cloud-sync/component/cloud-sync-row/cloud-sync-row.tsx
+msgid "Could not update iCloud sync"
+msgstr "Impossible de mettre à jour la synchronisation iCloud"
 
 #: src/app/bank-integration-key.tsx
 msgid "Could not update key"
@@ -3375,6 +3516,12 @@ msgstr "Impossible de mettre à jour le paramètre"
 msgid "Could not update settings"
 msgstr "Impossible de mettre à jour les paramètres"
 
+#: src/budget/components/budget-share-field/budget-share-field.tsx
+#: src/household/component/household-account-share-row/household-account-share-row.tsx
+#: src/household/component/household-share-section/household-share-section.tsx
+msgid "Could not update sharing"
+msgstr "Impossible de mettre à jour le partage"
+
 #: src/ai/hook/use-ai-model-download-actions.hook.ts
 msgid "Could not update the AI model download"
 msgstr "Impossible de mettre à jour le téléchargement des modèles d'IA"
@@ -3409,6 +3556,10 @@ msgstr "Impossible de vérifier les autorisations de la clé API"
 msgid "Could not verify the application"
 msgstr "Impossible de vérifier l'application"
 
+#: src/onboarding/component/onboarding-icloud-restore-row/onboarding-icloud-restore-row.tsx
+msgid "Couldn't check iCloud backups"
+msgstr "Impossible de vérifier les sauvegardes iCloud"
+
 #: src/sync/component/bank-integration-new-accounts/bank-integration-new-accounts.tsx
 msgid "Couldn’t check Monobank for new accounts"
 msgstr "Impossible de vérifier les nouveaux comptes chez Monobank"
@@ -3416,6 +3567,10 @@ msgstr "Impossible de vérifier les nouveaux comptes chez Monobank"
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Couldn't finish. Try again."
 msgstr "Opération inachevée. Réessayez."
+
+#: src/cloud-backup/component/cloud-backup-list/cloud-backup-list.tsx
+msgid "Couldn't load iCloud backups"
+msgstr "Impossible de charger les sauvegardes iCloud"
 
 #: src/@generic/component/searchable-page-error-state/searchable-page-error-state.tsx
 #: src/transaction/components/transaction-picker-failure/transaction-picker-failure.tsx
@@ -3433,6 +3588,10 @@ msgstr "Impossible d'enregistrer ton code PIN. Saisis-le à nouveau pour réessa
 #: src/auth/hook/use-pin-setup.hook.ts
 msgid "Couldn't save your PIN. Try again."
 msgstr "Impossible d'enregistrer ton code PIN. Réessaie."
+
+#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
+msgid "Couldn't sync. Budgie will try again."
+msgstr "Synchronisation impossible. Budgie réessaiera."
 
 #: src/auth/hook/use-pin-setup.hook.ts
 msgid "Couldn't turn off app lock. Try again."
@@ -3615,7 +3774,7 @@ msgid "Dark"
 msgstr "Sombre"
 
 #: src/app/(tabs)/settings/data.tsx
-#: src/app/(tabs)/settings/index.tsx
+#: src/settings/components/device-data-section/device-data-section.tsx
 msgid "Data tools"
 msgstr "Outils de données"
 
@@ -3878,6 +4037,10 @@ msgstr "Autre compte Binance"
 msgid "Different currency from this account"
 msgstr "Devise différente de ce compte"
 
+#: src/cloud-sync/component/cloud-sync-lineage-prompt/cloud-sync-lineage-prompt.tsx
+msgid "Different data on this device and iCloud"
+msgstr "Données différentes sur cet appareil et dans iCloud"
+
 #: src/sync/component/enable-banking-connect-account-row/enable-banking-connect-account-row.tsx
 msgid "Different IBAN from this account"
 msgstr "IBAN différent de ce compte"
@@ -4027,6 +4190,10 @@ msgstr "Téléchargement des modèles d'IA…"
 msgid "Downloading models to this phone."
 msgstr "Téléchargement des modèles sur ce téléphone."
 
+#: src/account/component/accounts-downloading-state/accounts-downloading-state.tsx
+msgid "Downloading your data from iCloud…"
+msgstr "Téléchargement de vos données depuis iCloud…"
+
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
 msgid "Due {date}"
 msgstr "Échéance le {date}"
@@ -4056,6 +4223,7 @@ msgid "e.g. 12-month deposit"
 msgstr "ex. dépôt à 12 mois"
 
 #: src/budget/components/budget-editable-amount-input/budget-editable-amount-input.tsx
+#: src/budget/components/budget-overall-limit-input/budget-overall-limit-input.tsx
 msgid "e.g. 200"
 msgstr "ex. 200"
 
@@ -4110,6 +4278,10 @@ msgstr "ex. Netflix, Loyer"
 #: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
 msgid "Each bar compares one day's spending with your daily plan."
 msgstr "Chaque barre compare les dépenses d’une journée à votre plan quotidien."
+
+#: src/household/component/household-pending-invites-row/household-pending-invites-row.tsx
+msgid "Each link works for one person"
+msgstr "Chaque lien ne fonctionne que pour une personne"
 
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 msgid "Each source becomes a separate transaction."
@@ -4394,6 +4566,10 @@ msgstr "Estimé à partir de tes transactions passées avec tes limites actuelle
 msgid "EU banks"
 msgstr "Banques de l'UE"
 
+#: src/app/(main)/budget/event/[id]/index.tsx
+msgid "Event budget"
+msgstr "Budget de l’événement"
+
 #: src/budget/components/budget-event-form/budget-event-form.tsx
 msgid "Event limit"
 msgstr "Limite de l’événement"
@@ -4453,6 +4629,18 @@ msgstr "Chaque année"
 #: src/recurring/hook/use-recurring-schedule-description.hook.ts
 msgid "Every year on {monthAndDay}"
 msgstr "Chaque année le {monthAndDay}"
+
+#: src/account/component/household-shared-by-other-account-section/household-shared-by-other-account-section.tsx
+msgid "Everyone in your family can see and edit it. It isn't counted in your total."
+msgstr "Tous les membres de votre famille peuvent le voir et le modifier. Il n’est pas compté dans votre total."
+
+#: src/budget/components/budget-share-field/budget-share-field.tsx
+msgid "Everyone in your family sees this budget. It counts spending from shared accounts only."
+msgstr "Toute votre famille voit ce budget. Seules les dépenses des comptes partagés sont prises en compte."
+
+#: src/household/component/household-stop-sharing-row/household-stop-sharing-row.tsx
+msgid "Everyone is removed from your family group. Their shared data is deleted from their devices the next time they sync, so a device that is offline may keep it until then. You keep your data."
+msgstr "Tout le monde est retiré de votre groupe familial. Leurs données partagées sont supprimées de leurs appareils à la prochaine synchronisation ; un appareil hors ligne peut les garder jusque-là. Vous gardez vos données."
 
 #: src/sync/component/sync-history-step/sync-history-step.tsx
 msgid "Everything from the last 3 months"
@@ -4565,6 +4753,41 @@ msgstr "Reconnaissance faciale"
 msgid "Faded bars are estimated from your past transactions using your current limits."
 msgstr "Les barres estompées sont estimées à partir de tes transactions passées avec tes limites actuelles."
 
+#: src/account/component/family-section-header/family-section-header.tsx
+#: src/account/component/household-share-account-section/household-share-account-section.tsx
+#: src/account/component/household-shared-by-other-account-section/household-shared-by-other-account-section.tsx
+#: src/app/(tabs)/settings/family.tsx
+#: src/budget/components/budget-share-field/budget-share-field.tsx
+#: src/household/component/family-row/family-row.tsx
+msgid "Family"
+msgstr "Famille"
+
+#: src/account/component/household-share-account-row/household-share-account-row.tsx
+msgid "Family can edit it"
+msgstr "La famille peut le modifier"
+
+#: src/household/component/household-share-section/household-share-section.tsx
+msgid "Family can see and edit them"
+msgstr "Votre famille peut les voir et les modifier"
+
+#: src/household/component/household-remove-group-row/household-remove-group-row.tsx
+msgid "Family group removed"
+msgstr "Groupe familial supprimé"
+
+#: src/household/component/household-participant-row/household-participant-row.tsx
+#: src/household/component/household-participants-group/household-participants-group.tsx
+#: src/household/component/household-pending-invites-row/household-pending-invites-row.tsx
+msgid "Family member"
+msgstr "Membre de la famille"
+
+#: src/household/component/household-people-section/household-people-section.tsx
+msgid "Family members can see and edit what you share."
+msgstr "Les membres de la famille peuvent voir et modifier ce que vous partagez."
+
+#: src/account/component/household-share-account-row/household-share-account-row.tsx
+msgid "Family you invite can edit it"
+msgstr "La famille invitée peut le modifier"
+
 #: src/ai/component/ai-settings-section/ai-settings-section.tsx
 msgid "Features"
 msgstr "Fonctionnalités"
@@ -4669,6 +4892,10 @@ msgstr "Empreinte digitale"
 #: src/sync/component/analytics-sync-account-progress/analytics-sync-account-progress.tsx
 msgid "Finish importing this account’s history to include it in analytics."
 msgstr "Terminez l’importation de l’historique de ce compte pour l’inclure dans les analyses."
+
+#: src/cloud-backup/constant/cloud-restore-failure-message.constant.ts
+msgid "Finish setting up iCloud Keychain, then try again"
+msgstr "Terminez la configuration du trousseau iCloud, puis réessayez"
 
 #: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
 msgid "first {formattedPaid} already paid"
@@ -4863,7 +5090,7 @@ msgstr "Obtenir le jeton API"
 msgid "Get category, tag, and note suggestions from your history."
 msgstr "Recevez des suggestions de catégories, d’étiquettes et de notes à partir de votre historique."
 
-#: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
+#: src/onboarding/component/onboarding-welcome-actions/onboarding-welcome-actions.tsx
 msgid "Get started"
 msgstr "Commencer"
 
@@ -4909,6 +5136,10 @@ msgstr "Les comptes masqués n’apparaissent pas sur l’accueil. Leurs réglag
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Hidden from Home"
 msgstr "Masqué de l'Accueil"
+
+#: src/account/component/update-account-page/update-account-page.tsx
+msgid "Hidden from Home, totals and budgets for everyone in your family until restored."
+msgstr "Masqué de l’accueil, des totaux et des budgets pour toute votre famille jusqu’à sa restauration."
 
 #: src/account/component/update-account-page/update-account-page.tsx
 msgid "Hidden from Home, totals and budgets until restored."
@@ -4966,6 +5197,28 @@ msgstr "J'ai une sauvegarde Budgie"
 #: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
 msgid "I have my key file"
 msgstr "J'ai mon fichier de clé"
+
+#: src/settings/components/icloud-data-section/icloud-data-section.tsx
+msgid "iCloud"
+msgstr "iCloud"
+
+#: src/settings/components/icloud-backup-row/icloud-backup-row.tsx
+msgid "iCloud backup"
+msgstr "Sauvegarde iCloud"
+
+#: src/settings/components/icloud-data-section/icloud-data-section.tsx
+msgid "iCloud backup, sync and family sharing need an Apple Account. Sign in from the Settings app."
+msgstr "La sauvegarde iCloud, la synchronisation et le partage familial nécessitent un compte Apple. Connectez-vous depuis l’app Réglages."
+
+#: src/cloud-backup/constant/cloud-backup-status-message.constant.ts
+#: src/cloud-backup/hook/use-restore-cloud-backup.hook.ts
+#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
+msgid "iCloud storage full"
+msgstr "Stockage iCloud plein"
+
+#: src/cloud-backup/hook/use-restore-cloud-backup.hook.ts
+msgid "iCloud unavailable"
+msgstr "iCloud indisponible"
 
 #: src/@generic/component/icon-picker-panel/icon-picker-panel.tsx
 msgid "Icon"
@@ -5076,7 +5329,7 @@ msgstr "Importation démarrée"
 msgid "Import statement"
 msgstr "Importer un relevé"
 
-#: src/app/(tabs)/settings/index.tsx
+#: src/settings/components/device-data-section/device-data-section.tsx
 msgid "Import, export, repair and reset"
 msgstr "Importer, exporter, réparer et réinitialiser"
 
@@ -5156,6 +5409,14 @@ msgstr "Inclure dans le patrimoine net"
 msgid "Include one‑offs"
 msgstr "Inclure les dépenses ponctuelles"
 
+#: src/household/utils/get-household-share-labels.util.ts
+msgid "Includes accounts you add later."
+msgstr "Inclut les comptes ajoutés plus tard."
+
+#: src/household/utils/get-household-share-labels.util.ts
+msgid "Includes accounts you add later. Starts when you sign in to iCloud."
+msgstr "Inclut les comptes ajoutés plus tard. Démarre quand vous vous connectez à iCloud."
+
 #: src/runway/component/runway-verdict-outlook/runway-verdict-outlook.tsx
 msgid "Includes crypto"
 msgstr "Inclut les cryptos"
@@ -5218,6 +5479,10 @@ msgstr "Fichier invalide"
 #: src/account/constant/account-type.constant.ts
 msgid "Investments"
 msgstr "Investissements"
+
+#: src/household/component/household-invite-row/household-invite-row.tsx
+msgid "Invite family"
+msgstr "Inviter la famille"
 
 #: src/account/constant/bank-provider-title.constant.ts
 #: src/app/(main)/create-account/index.tsx
@@ -5295,6 +5560,20 @@ msgstr "Ses transactions sont supprimées aussi. Les virements restent dans l’
 msgid "Jars"
 msgstr "Cagnottes"
 
+#: src/household/component/household-participant-row/household-participant-row.tsx
+msgid "Joined"
+msgstr "A rejoint"
+
+#: src/household/component/family-row/family-row.tsx
+#: src/household/utils/get-household-summary-labels.util.ts
+msgid "Joining {ownerDisplayName}'s family…"
+msgstr "Vous rejoignez la famille de {ownerDisplayName}…"
+
+#: src/household/component/family-row/family-row.tsx
+#: src/household/utils/get-household-summary-labels.util.ts
+msgid "Joining the family…"
+msgstr "Vous rejoignez la famille…"
+
 #: src/ai/hook/use-ai-model-download-actions.hook.ts
 msgid "Keep"
 msgstr "Conserver"
@@ -5310,6 +5589,10 @@ msgstr "Restez sous <0>{perDayAmount}/jour</0>"
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Keep only \"Enable Reading\" on — never allow trading or withdrawals"
 msgstr "Activez uniquement \"Activer la lecture\" — n'autorisez jamais le trading ni les retraits"
+
+#: src/cloud-sync/component/cloud-sync-lineage-prompt/cloud-sync-lineage-prompt.tsx
+msgid "Keep this device's data"
+msgstr "Conserver les données de cet appareil"
 
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "Keep your PIN safe"
@@ -5389,6 +5672,10 @@ msgstr "90 derniers jours"
 msgid "Last day of each month"
 msgstr "Dernier jour de chaque mois"
 
+#: src/settings/utils/get-cloud-backup-labels.util.ts
+msgid "Last iCloud backup: {lastBackupDate}"
+msgstr "Dernière sauvegarde iCloud : {lastBackupDate}"
+
 #: src/sync/component/bank-integration-import-status/bank-integration-import-status.tsx
 msgid "Last import {importDate}"
 msgstr "Dernier import {importDate}"
@@ -5404,10 +5691,6 @@ msgstr "Dernier le {statementDate}"
 #: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
 msgid "last payment {formattedLast}"
 msgstr "dernier paiement {formattedLast}"
-
-#: src/settings/components/backup-row/backup-row.tsx
-msgid "Last saved {lastBackupDate}"
-msgstr "Dernière sauvegarde : {lastBackupDate}"
 
 #: src/account/component/institution-connection-row/institution-connection-row.tsx
 msgid "Last successful sync · {lastSyncedTime}"
@@ -5449,9 +5732,21 @@ msgstr "Apprentissage des transactions"
 msgid "Learning up to date"
 msgstr "Apprentissage à jour"
 
+#: src/household/component/household-leave-row/household-leave-row.tsx
+msgid "Leave"
+msgstr "Quitter"
+
+#: src/household/component/household-leave-row/household-leave-row.tsx
+msgid "Leave family"
+msgstr "Quitter la famille"
+
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "Leave it empty for now"
 msgstr "Le laisser vide pour l'instant"
+
+#: src/household/component/household-leave-row/household-leave-row.tsx
+msgid "Leave this family?"
+msgstr "Quitter cette famille ?"
 
 #: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
 msgid "Leaves your income"
@@ -5722,6 +6017,11 @@ msgstr "Les catégories MCC ne sont pas chargées"
 #: src/app/rule-mcc-selector.tsx
 msgid "MCC codes"
 msgstr "Codes MCC"
+
+#: src/household/component/household-participants-group/household-participants-group.tsx
+#: src/household/component/household-people-section/household-people-section.tsx
+msgid "Member"
+msgstr "Membre"
 
 #: src/rule/constant/rule-condition-field.constant.ts
 msgid "merchant category"
@@ -6001,6 +6301,10 @@ msgstr "Patrimoine net"
 msgid "Never"
 msgstr "Jamais"
 
+#: src/settings/components/backup-row/backup-row.tsx
+msgid "Never saved"
+msgstr "Jamais enregistrée"
+
 #: src/app/(main)/create-account/index.tsx
 msgid "New Account"
 msgstr "Nouveau compte"
@@ -6088,9 +6392,13 @@ msgstr "Prochain paiement {nextPaymentLabel}"
 msgid "Next period"
 msgstr "Période suivante"
 
-#: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
+#: src/onboarding/component/onboarding-welcome-actions/onboarding-welcome-actions.tsx
 msgid "No account needed · Takes about a minute"
 msgstr "Aucun compte requis · Environ une minute"
+
+#: src/onboarding/component/onboarding-key/onboarding-key.tsx
+msgid "No account to sign up for. Backed up and synced to your own iCloud. Works with no connection at all."
+msgstr "Aucun compte à créer. Sauvegarde et synchronisation dans votre propre iCloud. Fonctionne sans aucune connexion."
 
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
 msgid "No account to sign up for. Never synced or uploaded. Works with no connection at all."
@@ -6126,6 +6434,10 @@ msgstr "Aucun compte archivé"
 #: src/app/(tabs)/settings/archived.tsx
 msgid "No archived accounts match “{search}”"
 msgstr "Aucun compte archivé ne correspond à « {search} »"
+
+#: src/cloud-backup/component/cloud-backup-list/cloud-backup-list.tsx
+msgid "No backups yet"
+msgstr "Aucune sauvegarde pour l’instant"
 
 #: src/sync/component/enable-banking-bank-step/enable-banking-bank-step.tsx
 msgid "No banks found"
@@ -6175,7 +6487,7 @@ msgstr "Aucune icône trouvée"
 msgid "No income in this view"
 msgstr "Aucun revenu dans cette vue"
 
-#: src/app/voice-review.tsx
+#: src/ai/component/voice-review-empty-state/voice-review-empty-state.tsx
 msgid "No items to save"
 msgstr "Aucun élément à enregistrer"
 
@@ -6350,6 +6662,10 @@ msgstr "Ce n’est pas un export Inzhur"
 msgid "Not available in this version"
 msgstr "Indisponible dans cette version"
 
+#: src/settings/utils/get-cloud-backup-labels.util.ts
+msgid "Not backed up to iCloud yet"
+msgstr "Pas encore sauvegardé dans iCloud"
+
 #: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
 msgid "Not counted as spending"
 msgstr "Non compté comme dépense"
@@ -6362,6 +6678,11 @@ msgstr "Non compté dans le patrimoine net"
 msgid "Not counted in totals yet"
 msgstr "Pas encore compté dans les totaux"
 
+#: src/account/component/family-section-header/family-section-header.tsx
+msgid "Not counted in your total"
+msgstr "Non compté dans votre total"
+
+#: src/onboarding/component/onboarding-icloud-restore/onboarding-icloud-restore.tsx
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
 msgid "Not created yet"
 msgstr "Pas encore créé"
@@ -6376,7 +6697,7 @@ msgstr "Espace de stockage libre insuffisant pour le téléchargement."
 
 #: src/@generic/component/database-restore-screen/database-restore-screen.tsx
 #: src/import/component/import-backup-pin/import-backup-pin.tsx
-#: src/import/hook/use-restore-backup.hook.ts
+#: src/import/hook/use-import-error-handlers.hook.ts
 msgid "Not enough free storage to extract this backup."
 msgstr "Espace de stockage libre insuffisant pour extraire cette sauvegarde."
 
@@ -6402,10 +6723,6 @@ msgstr "Ne fait pas partie de cette série"
 msgid "Not recurring"
 msgstr "Non récurrent"
 
-#: src/settings/components/backup-row/backup-row.tsx
-msgid "Not saved yet"
-msgstr "Pas encore enregistrée"
-
 #: src/transaction/components/transaction-field-icon/transaction-field-icon.tsx
 msgid "not set"
 msgstr "non défini"
@@ -6414,6 +6731,15 @@ msgstr "non défini"
 msgid "Not set"
 msgstr "Non défini"
 
+#: src/household/component/family-row/family-row.tsx
+msgid "Not shared yet"
+msgstr "Pas encore partagé"
+
+#: src/settings/components/icloud-sign-in-row/icloud-sign-in-row.tsx
+msgid "Not signed in"
+msgstr "Non connecté"
+
+#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
 #: src/sync/component/bank-integration-status-line/bank-integration-status-line.tsx
 msgid "Not synced yet"
 msgstr "Pas encore synchronisé"
@@ -6494,6 +6820,15 @@ msgstr "Hors ligne"
 #: src/ai/component/ai-download-wifi-banner/ai-download-wifi-banner.tsx
 msgid "OK"
 msgstr "OK"
+
+#: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
+msgid "Older"
+msgstr "Anciens"
+
+#: src/categorize-inbox/components/categorize-inbox-section-chip/categorize-inbox-section-chip.tsx
+msgctxt "Categorize inbox section chip"
+msgid "Older"
+msgstr "Plus anciens"
 
 #: src/rule/hooks/use-rule-row-summary.hook.ts
 #: src/settings/components/app-lock-row/app-lock-row.tsx
@@ -6615,7 +6950,7 @@ msgstr "Seuls les revenus à écriture unique peuvent être convertis"
 msgid "Only when a category is missing"
 msgstr "Seulement si la catégorie manque"
 
-#: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
+#: src/onboarding/component/onboarding-welcome-hero/onboarding-welcome-hero.tsx
 msgid "Only you hold the key."
 msgstr "Vous seul en avez la clé."
 
@@ -6687,9 +7022,17 @@ msgstr "Ouvrir les réglages"
 msgid "Open Shortcuts"
 msgstr "Ouvrir Shortcuts"
 
+#: src/household/utils/get-household-summary-labels.util.ts
+msgid "Open the invitation link again to retry."
+msgstr "Rouvrez le lien d'invitation pour réessayer."
+
 #: src/inzhur/component/import-inzhur-statement/import-inzhur-statement.tsx
 msgid "Open the Inzhur app"
 msgstr "Ouvrez l'app Inzhur"
+
+#: src/cloud-backup/component/cloud-backup-list/cloud-backup-list.tsx
+msgid "Open the Settings app and sign in to your Apple Account. Backups from your iPhone and iPad appear here."
+msgstr "Ouvrez l’app Réglages et connectez-vous à votre compte Apple. Les sauvegardes de votre iPhone et iPad apparaîtront ici."
 
 #: src/category/components/category-form-hero-icon/category-form-hero-icon.tsx
 msgid "Opens the icon picker"
@@ -6736,7 +7079,8 @@ msgid "Optionally turn on {biometricLabel}"
 msgstr "Active {biometricLabel} si tu le souhaites"
 
 #: src/account/component/create-account-options-section/create-account-options-section.tsx
-#: src/account/component/update-account-page/update-account-page.tsx
+#: src/account/component/personal-account-sections/personal-account-sections.tsx
+#: src/account/component/shared-by-other-account-options/shared-by-other-account-options.tsx
 msgid "Options"
 msgstr "Options"
 
@@ -6771,6 +7115,11 @@ msgstr "Ou déverrouille avec Touch ID."
 #: src/app/(tabs)/settings/index.tsx
 msgid "Organize"
 msgstr "Organiser"
+
+#: src/household/component/household-participant-row/household-participant-row.tsx
+#: src/household/component/household-people-section/household-people-section.tsx
+msgid "Organizer"
+msgstr "Organisateur"
 
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 #: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
@@ -6985,9 +7334,19 @@ msgstr "Pause"
 msgid "Paused"
 msgstr "En pause"
 
+#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
+msgid "Paused: a different Apple Account is signed in"
+msgstr "En pause : un autre compte Apple est connecté"
+
 #: src/ai/constant/ai-download-card-visuals.constant.ts
 msgid "Paused: no Wi-Fi"
 msgstr "En pause : pas de Wi-Fi"
+
+#: src/account/component/family-section-header/family-section-header.tsx
+#: src/household/component/family-row/family-row.tsx
+#: src/household/utils/get-household-summary-labels.util.ts
+msgid "Paused: sign in to iCloud"
+msgstr "En pause : connectez-vous à iCloud"
 
 #: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
 msgid "Paused. {downloaded} of {total} GB is kept."
@@ -7041,6 +7400,10 @@ msgstr "PDF ou feuille de calcul de {bank}"
 msgid "PDF statement"
 msgstr "Relevé PDF"
 
+#: src/household/component/household-people-section/household-people-section.tsx
+msgid "People"
+msgstr "Personnes"
+
 #: src/runway/component/runway-verdict-figure/runway-verdict-figure.tsx
 msgid "per month"
 msgstr "par mois"
@@ -7049,6 +7412,7 @@ msgstr "par mois"
 msgid "Percent of the plan total before the fee"
 msgstr "Pourcentage du total du plan hors frais"
 
+#: src/budget/components/budget-period-field/budget-period-field.tsx
 #: src/budget/components/budget-setup-form/budget-setup-form.tsx
 msgid "Period"
 msgstr "Période"
@@ -7076,6 +7440,10 @@ msgstr "Verrouillage du téléphone · {contents}"
 #: src/auth/components/security-lock-button/security-lock-button.tsx
 msgid "Phone lock only. Make a PIN to encrypt your data."
 msgstr "Verrouillage du téléphone uniquement. Crée un code PIN pour chiffrer tes données."
+
+#: src/settings/components/icloud-restore-row/icloud-restore-row.tsx
+msgid "Pick a backup from any of your devices"
+msgstr "Choisissez une sauvegarde de l’un de vos appareils"
 
 #: src/category/components/category-destination-sheet/category-destination-sheet.tsx
 msgid "Pick a category to continue"
@@ -7281,6 +7649,14 @@ msgstr "PrivatBank"
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Privatbank (XLSX)"
 msgstr "Privatbank (XLSX)"
+
+#: src/transaction/components/transaction-private-account-row/transaction-private-account-row.tsx
+msgid "Private account"
+msgstr "Compte privé"
+
+#: src/transaction/components/transaction-private-account-row/transaction-private-account-row.tsx
+msgid "Private account of {ownerName}"
+msgstr "Compte privé de {ownerName}"
 
 #: src/settings/components/settings-about-footer/settings-about-footer.tsx
 msgid "Private by design"
@@ -7540,12 +7916,17 @@ msgstr "Rappel"
 #: src/account/component/debt-opening-account-field/debt-opening-account-field.tsx
 #: src/app/(tabs)/settings/sync-repairs.tsx
 #: src/budget/components/budget-category-limit-deletable-row/budget-category-limit-deletable-row.tsx
+#: src/household/component/household-remove-button/household-remove-button.tsx
 msgid "Remove"
 msgstr "Supprimer"
 
 #: src/transaction/components/split-entry-delete-button/split-entry-delete-button.tsx
 msgid "Remove {categoryTitle} entry"
 msgstr "Supprimer l’entrée {categoryTitle}"
+
+#: src/household/component/household-remove-button/household-remove-button.tsx
+msgid "Remove {name}?"
+msgstr "Retirer {name} ?"
 
 #: src/rule/components/rule-action-row/rule-action-row.tsx
 msgid "Remove action {position}"
@@ -7571,11 +7952,15 @@ msgstr "Supprimer les imports bancaires en double"
 msgid "Remove entry"
 msgstr "Supprimer l’entrée"
 
-#: src/transaction/components/transaction-fee-step/transaction-fee-step.tsx
+#: src/household/component/household-remove-group-row/household-remove-group-row.tsx
+msgid "Remove family group"
+msgstr "Supprimer le groupe familial"
+
+#: src/transaction/components/transaction-fee-remove-button/transaction-fee-remove-button.tsx
 msgid "Remove fee"
 msgstr "Supprimer les frais"
 
-#: src/transaction/components/transaction-fee-step/transaction-fee-step.tsx
+#: src/transaction/components/transaction-fee-remove-button/transaction-fee-remove-button.tsx
 msgid "Remove fee?"
 msgstr "Supprimer les frais ?"
 
@@ -7594,6 +7979,10 @@ msgstr "Supprimer les téléchargements inutilisés"
 #: src/recurring/components/recurring-detail-history-row/recurring-detail-history-row.tsx
 msgid "Removed from this series"
 msgstr "Retiré de cette série"
+
+#: src/household/component/household-stop-sharing-row/household-stop-sharing-row.tsx
+msgid "Removes everyone from your family group"
+msgstr "Retire tout le monde de votre groupe familial"
 
 #: src/category/components/category-form/category-form.tsx
 msgid "Rename it or change its icon"
@@ -7664,6 +8053,7 @@ msgstr "Redémarrer l’application"
 
 #: src/account/component/archived-account-card/archived-account-card.tsx
 #: src/account/component/archived-account-trailing/archived-account-trailing.tsx
+#: src/cloud-backup/hook/use-restore-cloud-backup.hook.ts
 #: src/import/hook/use-restore-backup.hook.ts
 msgid "Restore"
 msgstr "Restaurer"
@@ -7676,17 +8066,32 @@ msgstr "Restaurer {accountTitle}"
 msgid "Restore a backup"
 msgstr "Restaurer une sauvegarde"
 
-#: src/import/components/import-database/import-database.tsx
-msgid "Restore backup"
-msgstr "Restaurer une sauvegarde"
-
 #: src/import/hook/use-restore-backup.hook.ts
 msgid "Restore backup?"
 msgstr "Restaurer la sauvegarde ?"
 
+#: src/cloud-backup/component/cloud-backup-restore-file-link/cloud-backup-restore-file-link.tsx
+msgid "Restore from a file instead"
+msgstr "Restaurer plutôt depuis un fichier"
+
 #: src/@generic/component/database-restore-screen/database-restore-screen.tsx
 msgid "Restore from Backup"
 msgstr "Restaurer depuis une sauvegarde"
+
+#: src/import/components/import-database/import-database.tsx
+msgid "Restore from file"
+msgstr "Restaurer depuis un fichier"
+
+#: src/app/(tabs)/settings/icloud-backups.tsx
+#: src/onboarding/component/onboarding-icloud-restore-row/onboarding-icloud-restore-row.tsx
+#: src/onboarding/component/onboarding-icloud-restore/onboarding-icloud-restore.tsx
+#: src/settings/components/icloud-restore-row/icloud-restore-row.tsx
+msgid "Restore from iCloud"
+msgstr "Restaurer depuis iCloud"
+
+#: src/cloud-backup/hook/use-restore-cloud-backup.hook.ts
+msgid "Restore from iCloud?"
+msgstr "Restaurer depuis iCloud ?"
 
 #: src/import/hook/use-restore-backup.hook.ts
 msgid "Restoring a backup replaces all current Budgie data. The app restarts afterwards. This can't be undone."
@@ -7695,6 +8100,14 @@ msgstr "Restaurer une sauvegarde remplace toutes les données Budgie actuelles. 
 #: src/import/hook/use-restore-backup.hook.ts
 msgid "Restoring a backup replaces all current Budgie data. This backup is protected by a PIN, which becomes your app PIN. The app restarts afterwards. This can't be undone."
 msgstr "Restaurer une sauvegarde remplace toutes les données Budgie actuelles. Cette sauvegarde est protégée par un PIN, qui devient le PIN de l’app. L’app redémarre ensuite. Action irréversible."
+
+#: src/cloud-backup/hook/use-restore-cloud-backup.hook.ts
+msgid "Restoring replaces all current Budgie data. A copy of your current data is kept for 7 days. The app restarts afterwards."
+msgstr "La restauration remplace toutes les données Budgie actuelles. Une copie de vos données actuelles est conservée 7 jours. L’app redémarre ensuite."
+
+#: src/cloud-backup/component/cloud-backup-list/cloud-backup-list.tsx
+msgid "Restoring replaces all data on this iPhone. Your current data is kept for 7 days."
+msgstr "La restauration remplace toutes les données de cet iPhone. Vos données actuelles sont conservées 7 jours."
 
 #: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 msgid "Results"
@@ -7809,6 +8222,7 @@ msgid "Runway needs 3 complete months of transactions to forecast your balance."
 msgstr "L'autonomie a besoin de 3 mois complets de transactions pour prévoir votre solde."
 
 #: src/app/budget-safe-to-spend.tsx
+#: src/budget/components/budget-safe-to-spend-header/budget-safe-to-spend-header.tsx
 #: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
 msgid "Safe to spend"
 msgstr "Sûr à dépenser"
@@ -7839,6 +8253,10 @@ msgstr "Enregistrer"
 msgid "Save {count}"
 msgstr "Enregistrer {count}"
 
+#: src/settings/components/device-data-section/device-data-section.tsx
+msgid "Save a backup file to protect your data."
+msgstr "Enregistrez un fichier de sauvegarde pour protéger vos données."
+
 #: src/inzhur/component/inzhur-purchase-footer/inzhur-purchase-footer.tsx
 msgid "Save and add another"
 msgstr "Enregistrer et en ajouter un autre"
@@ -7864,6 +8282,10 @@ msgstr "Enregistrer les frais"
 msgid "Save it"
 msgstr "Enregistrez-la"
 
+#: src/settings/components/backup-row/backup-row.tsx
+msgid "Save it to Files or send it"
+msgstr "Enregistrez-le dans Fichiers ou envoyez-le"
+
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
 msgid "Save rule"
 msgstr "Enregistrer la règle"
@@ -7880,9 +8302,17 @@ msgstr "Enregistrez l’automatisation. Budgie associe les noms de carte aux com
 msgid "Save up for yearly bills a little each period so they never surprise you"
 msgstr "Mettez un peu de côté à chaque période pour les factures annuelles afin qu'elles ne vous surprennent jamais"
 
+#: src/settings/components/backup-row/backup-row.tsx
+msgid "Saved {savedAgo}"
+msgstr "Enregistrée {savedAgo}"
+
 #: src/export/hook/use-backup-actions.hook.ts
 msgid "Saved to your chosen folder."
 msgstr "Enregistrée dans le dossier choisi."
+
+#: src/account/component/household-share-account-row/household-share-account-row.tsx
+msgid "Saved when you tap Save changes"
+msgstr "Enregistré quand vous touchez Enregistrer"
 
 #: src/account/constant/account-kind-title.constant.ts
 #: src/account/constant/account-type.constant.ts
@@ -7917,6 +8347,10 @@ msgstr "Sceller"
 #: src/onboarding/component/onboarding-hold-to-seal-button/onboarding-hold-to-seal-button.tsx
 msgid "Seal with this PIN"
 msgstr "Sceller avec ce code PIN"
+
+#: src/onboarding/component/onboarding-hold-to-seal-button/onboarding-hold-to-seal-button.tsx
+msgid "Seal with this PIN?"
+msgstr "Sceller avec ce code PIN ?"
 
 #: src/onboarding/hook/use-onboarding-file-state.hook.ts
 msgid "Sealed · {contents}"
@@ -8084,9 +8518,9 @@ msgstr "Sélectionnez le fichier XLSX exporté"
 msgid "Selected"
 msgstr "Sélectionné"
 
-#: src/settings/components/backup-row/backup-row.tsx
-msgid "Send a copy"
-msgstr "Envoyer une copie"
+#: src/household/component/household-invite-row/household-invite-row.tsx
+msgid "Send an invitation with Messages"
+msgstr "Envoyer une invitation avec Messages"
 
 #: src/transaction/hook/use-convert-transfer-form.hook.ts
 msgid "Sending"
@@ -8181,6 +8615,60 @@ msgstr "Configuration"
 msgid "Shading shows how much your months usually vary."
 msgstr "La zone ombrée montre la variation habituelle de vos mois."
 
+#: src/settings/components/backup-row/backup-row.tsx
+msgid "Share a backup file"
+msgstr "Partager un fichier de sauvegarde"
+
+#: src/household/component/family-row/family-row.tsx
+msgid "Share accounts with family"
+msgstr "Partager des comptes avec la famille"
+
+#: src/household/component/household-share-section/household-share-section.tsx
+msgid "Share all your accounts"
+msgstr "Partager tous vos comptes"
+
+#: src/account/component/household-share-account-row/household-share-account-row.tsx
+#: src/account/component/household-share-account-section/household-share-account-section.tsx
+msgid "Share this account"
+msgstr "Partager ce compte"
+
+#: src/budget/components/budget-share-field/budget-share-field.tsx
+msgid "Share with family"
+msgstr "Partager avec la famille"
+
+#: src/household/utils/get-household-share-labels.util.ts
+msgid "Share your accounts"
+msgstr "Partagez vos comptes"
+
+#: src/household/utils/get-household-share-labels.util.ts
+msgid "Share your accounts with {organizerName}"
+msgstr "Partagez vos comptes avec {organizerName}"
+
+#: src/household/utils/get-household-summary-labels.util.ts
+msgid "Shared accounts stay in sync"
+msgstr "Les comptes partagés restent synchronisés"
+
+#: src/account/utils/get-household-account-footer.util.ts
+msgid "Shared because you share all your accounts"
+msgstr "Partagé car vous partagez tous vos comptes"
+
+#: src/account/component/household-shared-by-other-account-section/household-shared-by-other-account-section.tsx
+#: src/budget/components/budget-share-field/budget-share-field.tsx
+msgid "Shared by a family member"
+msgstr "Partagé par un membre de la famille"
+
+#: src/category/components/category-family-section/category-family-section.tsx
+msgid "Shared with family"
+msgstr "Partagé avec la famille"
+
+#: src/household/utils/get-family-labels.util.ts
+msgid "Shared with your family"
+msgstr "Partagé avec votre famille"
+
+#: src/household/utils/get-household-share-labels.util.ts
+msgid "Sharing"
+msgstr "Partage"
+
 #: src/wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero.tsx
 msgid "Shortcuts"
 msgstr "Raccourcis"
@@ -8257,6 +8745,21 @@ msgstr "Montre comment c’est calculé"
 #: src/rule/components/rule-form-submit-bar/rule-form-submit-bar.tsx
 msgid "Shows what is missing"
 msgstr "Indique ce qui manque"
+
+#: src/household/component/household-invite-row/household-invite-row.tsx
+msgid "Sign in to iCloud to invite"
+msgstr "Connectez-vous à iCloud pour inviter"
+
+#: src/cloud-backup/constant/cloud-backup-status-message.constant.ts
+#: src/cloud-sync/component/cloud-sync-row/cloud-sync-row.tsx
+#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
+#: src/settings/utils/get-cloud-backup-labels.util.ts
+msgid "Sign in to iCloud to turn on"
+msgstr "Connectez-vous à iCloud pour activer"
+
+#: src/cloud-backup/component/cloud-backup-list/cloud-backup-list.tsx
+msgid "Sign in to see iCloud backups"
+msgstr "Connectez-vous pour voir les sauvegardes iCloud"
 
 #: src/inzhur/component/import-inzhur-statement/import-inzhur-statement.tsx
 msgid "Sign in to your account"
@@ -8435,6 +8938,10 @@ msgstr "Commence à {startLabel}. Termine à {endLabel}. S'épuise vers {runOutL
 msgid "Starts on"
 msgstr "Commence le"
 
+#: src/account/utils/get-household-account-footer.util.ts
+msgid "Starts when you sign in to iCloud."
+msgstr "Démarre quand vous vous connectez à iCloud."
+
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Statement imported"
 msgstr "Relevé importé"
@@ -8480,7 +8987,16 @@ msgstr "Reste à payer"
 msgid "Stocks"
 msgstr "Actions"
 
+#: src/household/component/household-stop-sharing-row/household-stop-sharing-row.tsx
+msgid "Stop sharing"
+msgstr "Arrêter le partage"
+
+#: src/household/component/household-stop-sharing-row/household-stop-sharing-row.tsx
+msgid "Stop sharing with your family?"
+msgstr "Arrêter le partage avec votre famille ?"
+
 #: src/ai/component/ai-model-storage/ai-model-storage.tsx
+#: src/settings/components/device-data-section/device-data-section.tsx
 msgid "Storage"
 msgstr "Stockage"
 
@@ -8529,6 +9045,10 @@ msgstr "Synchronisation"
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Sync {title}"
 msgstr "Synchroniser {title}"
+
+#: src/cloud-sync/component/cloud-sync-row/cloud-sync-row.tsx
+msgid "Sync across devices"
+msgstr "Synchroniser entre appareils"
 
 #: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
@@ -8581,9 +9101,14 @@ msgstr "Synchroniser avec une clé API en lecture seule"
 msgid "Sync your Binance balances and transactions"
 msgstr "Synchronisez vos soldes et transactions Binance"
 
+#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
 #: src/sync/component/bank-integration-status-line/bank-integration-status-line.tsx
 msgid "Synced {relative}"
 msgstr "Synchronisé {relative}"
+
+#: src/account/component/household-shared-by-other-account-section/household-shared-by-other-account-section.tsx
+msgid "Synced by a family member"
+msgstr "Synchronisé par un membre de la famille"
 
 #: src/app/(tabs)/settings/sync-repairs.tsx
 msgid "Synced data"
@@ -8622,6 +9147,8 @@ msgstr "La synchronisation reprend automatiquement."
 msgid "Syncing resumes for all accounts once you update the key."
 msgstr "La synchronisation reprend pour tous les comptes dès que vous mettez la clé à jour."
 
+#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
+#: src/household/utils/get-household-summary-labels.util.ts
 #: src/sync/component/bank-integration-status-line/bank-integration-status-line.tsx
 #: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
@@ -8696,7 +9223,7 @@ msgstr "Touchez une suggestion pour l’utiliser pour cette catégorie."
 msgid "Tap a value to copy it."
 msgstr "Touchez une valeur pour la copier."
 
-#: src/app/voice-review.tsx
+#: src/ai/component/voice-review-empty-state/voice-review-empty-state.tsx
 msgid "Tap re-record to try again"
 msgstr "Appuyez sur réenregistrer pour réessayer"
 
@@ -8792,6 +9319,10 @@ msgstr "Les données des modèles d'IA téléchargées sont supprimées de ce t�
 msgid "The exact amount you will pay, fee included"
 msgstr "Le montant exact que vous paierez, frais inclus"
 
+#: src/cloud-sync/layer/cloud-sync-host.layer.ts
+msgid "The invitation could not be accepted. Open the invitation link again to retry."
+msgstr "L’invitation n’a pas pu être acceptée. Ouvrez à nouveau le lien d’invitation pour réessayer."
+
 #: src/sync/component/enable-banking-choose-key-row/enable-banking-choose-key-row.tsx
 msgid "The key is missing or was rejected."
 msgstr "La clé est absente ou a été rejetée."
@@ -8869,6 +9400,10 @@ msgstr "Il n’y a pas de « code PIN oublié »."
 msgid "These accounts already exist in Budgie or use a currency Budgie does not support. To continue an existing account, open it and tap Connect to bank."
 msgstr "Ces comptes existent déjà dans Budgie ou utilisent une devise non prise en charge. Pour poursuivre un compte existant, ouvrez-le et touchez Connecter à la banque."
 
+#: src/household/component/household-remove-button/household-remove-button.tsx
+msgid "these invitations"
+msgstr "ces invitations"
+
 #: src/budget/constant/budget-period-this-label.constant.ts
 msgid "these two weeks"
 msgstr "ces deux semaines"
@@ -8876,6 +9411,10 @@ msgstr "ces deux semaines"
 #: src/recurring/components/recurring-list-empty-state/recurring-list-empty-state.tsx
 msgid "They are detected from your transactions, or add one with +."
 msgstr "Ils sont détectés à partir de vos transactions, ou ajoutez-en un avec +."
+
+#: src/household/component/household-remove-button/household-remove-button.tsx
+msgid "They lose access to your family group. Their shared data is deleted from their device the next time it syncs, so it may stay there until they are online."
+msgstr "Cette personne perd l’accès à votre groupe familial. Ses données partagées sont supprimées de son appareil à la prochaine synchronisation et peuvent y rester jusqu’à ce qu’elle soit en ligne."
 
 #: src/sync/component/enable-banking-connect-account-row/enable-banking-connect-account-row.tsx
 msgid "This account already syncs"
@@ -8912,7 +9451,7 @@ msgstr "Cette application n'est pas encore active. Ouvrez-la dans Enable Banking
 
 #: src/@generic/component/database-restore-screen/database-restore-screen.tsx
 #: src/import/component/import-backup-pin/import-backup-pin.tsx
-#: src/import/hook/use-restore-backup.hook.ts
+#: src/import/hook/use-import-error-handlers.hook.ts
 msgid "This backup archive does not contain a Budgie database."
 msgstr "Cette archive de sauvegarde ne contient pas de base de données Budgie."
 
@@ -8921,7 +9460,7 @@ msgid "This backup could not be opened with your current PIN."
 msgstr "Cette sauvegarde n'a pas pu être ouverte avec votre code PIN actuel."
 
 #: src/import/component/import-backup-pin/import-backup-pin.tsx
-#: src/import/hook/use-restore-backup.hook.ts
+#: src/import/hook/use-import-error-handlers.hook.ts
 msgid "This backup was made by an older Budgie version and cannot be imported."
 msgstr "Cette sauvegarde a été créée avec une ancienne version de Budgie et ne peut pas être importée."
 
@@ -8937,6 +9476,10 @@ msgstr "Ce budget a peut-être été supprimé."
 msgid "This budget may have been deleted. Go back to see your current budget."
 msgstr "Ce budget a peut-être été supprimé. Revenez en arrière pour voir votre budget actuel."
 
+#: src/account/component/accounts-downloading-state/accounts-downloading-state.tsx
+msgid "This can take a moment"
+msgstr "Cela peut prendre un instant"
+
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "This capture looks similar to an existing transaction."
 msgstr "Cette capture ressemble à une transaction existante."
@@ -8948,6 +9491,10 @@ msgstr "Cette connexion n’a renvoyé aucun compte que Budgie puisse ajouter."
 #: src/auth/components/forgot-pin-recovery-options/forgot-pin-recovery-options.tsx
 msgid "This deletes {DB_NAME} and everything in it from this phone. It can't be undone."
 msgstr "Cela supprime {DB_NAME} et tout son contenu de ce téléphone. C'est irréversible."
+
+#: src/cloud-sync/component/cloud-sync-lineage-prompt/cloud-sync-lineage-prompt.tsx
+msgid "This device and iCloud hold different Budgie data. Choose which one to continue with. A safety copy of this device's data is kept either way."
+msgstr "Cet appareil et iCloud contiennent des données Budgie différentes. Choisissez celles à conserver. Une copie de sécurité des données de cet appareil est gardée dans tous les cas."
 
 #: src/sync/component/token-input-step/token-input-step.tsx
 msgid "This doesn't look like a Monobank token yet"
@@ -8997,6 +9544,10 @@ msgstr "Ce mois-ci : dépensé {formattedExpense}, revenus {formattedIncome}"
 #: src/rule/hooks/use-rule-text-value-meta.hook.ts
 msgid "This pattern isn't valid yet"
 msgstr "Ce motif n’est pas encore valide"
+
+#: src/household/component/household-remove-button/household-remove-button.tsx
+msgid "this person"
+msgstr "cette personne"
 
 #: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
 msgid "This phone"
@@ -9070,7 +9621,7 @@ msgstr "Cela conservera une seule écriture avec le montant total de la transact
 msgid "This will link the selected expense to this refund income. You can revert it from the refund sources sheet."
 msgstr "Cela associera la dépense sélectionnée à ce revenu de remboursement. Vous pouvez l’annuler depuis la feuille des sources de remboursement."
 
-#: src/transaction/components/transaction-fee-step/transaction-fee-step.tsx
+#: src/transaction/components/transaction-fee-remove-button/transaction-fee-remove-button.tsx
 msgid "This will remove the fee entry from this transaction."
 msgstr "Cela supprimera l’écriture de frais de cette transaction."
 
@@ -9415,7 +9966,10 @@ msgstr "Essayez d'ajuster vos filtres pour voir plus de résultats"
 #: src/@generic/component/searchable-page-error-state/searchable-page-error-state.tsx
 #: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
 #: src/ai/component/ai-download-stopped-card/ai-download-stopped-card.tsx
-#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+#: src/auth/components/forgot-pin-footer/forgot-pin-footer.tsx
+#: src/cloud-backup/component/cloud-backup-list/cloud-backup-list.tsx
+#: src/cloud-backup/component/cloud-backup-row/cloud-backup-row.tsx
+#: src/onboarding/component/onboarding-icloud-restore-row/onboarding-icloud-restore-row.tsx
 #: src/settings/components/sync-repairs-error-card/sync-repairs-error-card.tsx
 #: src/sync/component/analytics-history-boundary/analytics-history-boundary.tsx
 #: src/transaction/components/transaction-picker-failure/transaction-picker-failure.tsx
@@ -9456,6 +10010,22 @@ msgstr "Désactiver le verrouillage"
 msgid "Turn off Show on Home in an account’s edit screen to tuck it away here."
 msgstr "Désactivez « Afficher sur l’accueil » dans l’écran de modification d’un compte pour le ranger ici."
 
+#: src/account/utils/get-household-account-footer.util.ts
+msgid "Turn off to remove it from family devices."
+msgstr "Désactivez pour le retirer des appareils de la famille."
+
+#: src/household/component/household-sync-required-notice/household-sync-required-notice.tsx
+msgid "Turn on \"Sync across devices\" to share with family."
+msgstr "Activez « Synchroniser entre appareils » pour partager avec la famille."
+
+#: src/cloud-backup/component/cloud-backup-list/cloud-backup-list.tsx
+msgid "Turn on iCloud backup in Settings. Your first backup appears here."
+msgstr "Activez la sauvegarde iCloud dans les paramètres. Votre première sauvegarde apparaîtra ici."
+
+#: src/settings/components/device-data-section/device-data-section.tsx
+msgid "Turn on iCloud backup or save a backup file to protect your data."
+msgstr "Activez la sauvegarde iCloud ou enregistrez un fichier de sauvegarde pour protéger vos données."
+
 #: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
 msgid "Turn on on-device AI to download the models."
 msgstr "Activez l'IA sur l'appareil pour télécharger les modèles."
@@ -9464,6 +10034,11 @@ msgstr "Activez l'IA sur l'appareil pour télécharger les modèles."
 msgid "Turn payments into transfers"
 msgstr "Transformer les paiements en virements"
 
+#: src/cloud-sync/component/cloud-sync-row/cloud-sync-row.tsx
+#: src/settings/utils/get-cloud-backup-labels.util.ts
+msgid "Turned off"
+msgstr "Désactivé"
+
 #: src/auth/components/pin-sealing-state/pin-sealing-state.tsx
 msgid "Turning off app lock"
 msgstr "Désactivation du verrouillage"
@@ -9471,6 +10046,10 @@ msgstr "Désactivation du verrouillage"
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "Turns a voice note into an expense"
 msgstr "Transforme une note vocale en dépense"
+
+#: src/household/component/household-remove-group-row/household-remove-group-row.tsx
+msgid "Turns off sharing. You keep your data."
+msgstr "Arrête le partage. Vous gardez vos données."
 
 #: src/budget/components/budget-period-field/budget-period-field.tsx
 msgid "Two weeks"
@@ -9618,7 +10197,7 @@ msgstr "Les paiements non sélectionnés restent dans votre boîte de réception
 msgid "Untagged"
 msgstr "Sans étiquette"
 
-#: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
+#: src/budget/components/budget-safe-to-spend-header/budget-safe-to-spend-header.tsx
 msgid "Until {periodEndLabel}"
 msgstr "Jusqu'au {periodEndLabel}"
 
@@ -9659,6 +10238,10 @@ msgstr "À venir sur cette période"
 #: src/account/component/institution-connection-row/institution-connection-row.tsx
 msgid "Update access key"
 msgstr "Mettre à jour la clé d’accès"
+
+#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
+msgid "Update Budgie to keep syncing"
+msgstr "Mettez Budgie à jour pour continuer à synchroniser"
 
 #: src/rule/components/rule-update-card/rule-update-card.tsx
 msgid "Update rule?"
@@ -9712,6 +10295,10 @@ msgstr "Utiliser Face ID"
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "Use fingerprint"
 msgstr "Utiliser l'empreinte digitale"
+
+#: src/cloud-sync/component/cloud-sync-lineage-prompt/cloud-sync-lineage-prompt.tsx
+msgid "Use iCloud data"
+msgstr "Utiliser les données iCloud"
 
 #: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
 #: src/ai/component/ai-download-wifi-banner/ai-download-wifi-banner.tsx
@@ -9797,9 +10384,19 @@ msgstr "En attente de connexion"
 msgid "Waiting for a key"
 msgstr "En attente d'une clé"
 
+#: src/cloud-backup/constant/cloud-backup-status-message.constant.ts
+#: src/cloud-backup/hook/use-restore-cloud-backup.hook.ts
+msgid "Waiting for network"
+msgstr "En attente du réseau"
+
 #: src/market-data/component/currency-market-price-hero/currency-market-price-hero.tsx
 msgid "Waiting for the first market quote"
 msgstr "En attente de la première cotation du marché"
+
+#: src/household/component/household-participant-row/household-participant-row.tsx
+#: src/household/component/household-pending-invites-row/household-pending-invites-row.tsx
+msgid "Waiting for them to open the invite"
+msgstr "En attente de l'ouverture de l'invitation"
 
 #: src/inzhur/component/inzhur-operations-details/inzhur-operations-details.tsx
 msgid "Waiting for your bank"
@@ -9936,10 +10533,6 @@ msgstr "Retraits"
 msgid "Within plan"
 msgstr "Dans le plan"
 
-#: src/app/(tabs)/settings/index.tsx
-msgid "Without a backup, lost data can't be recovered."
-msgstr "Sans sauvegarde, les données perdues ne peuvent pas être récupérées."
-
 #: src/ai/component/ai-download-eta/ai-download-eta.tsx
 msgid "Working out the time left…"
 msgstr "Calcul du temps restant…"
@@ -9978,6 +10571,11 @@ msgstr "Ans"
 msgid "Yesterday"
 msgstr "Hier"
 
+#: src/household/component/household-participant-row/household-participant-row.tsx
+#: src/household/component/household-people-section/household-people-section.tsx
+msgid "You"
+msgstr "Vous"
+
 #: src/onboarding/component/onboarding-phone-lock/onboarding-phone-lock.tsx
 msgid "You can add a PIN any time in Settings. Budgie then encrypts the file with it."
 msgstr "Tu peux ajouter un code PIN à tout moment dans les Paramètres. Budgie chiffrera alors le fichier avec."
@@ -10001,6 +10599,14 @@ msgstr "Vous avez utilisé {threshold} % de la limite pour {categoryName} {thisP
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "You have used {threshold}% of your budget for spending outside category limits {thisPeriod}."
 msgstr "Vous avez utilisé {threshold} % de votre budget pour les dépenses hors limites de catégorie {thisPeriod}."
+
+#: src/household/component/household-leave-row/household-leave-row.tsx
+msgid "You keep a copy of the shared data"
+msgstr "Vous gardez une copie des données partagées"
+
+#: src/household/component/household-leave-row/household-leave-row.tsx
+msgid "You keep a copy of the shared data in your own accounts on this device. Later changes by your family no longer reach you."
+msgstr "Vous gardez une copie des données partagées dans vos propres comptes sur cet appareil. Les modifications ultérieures de votre famille ne vous parviendront plus."
 
 #: src/account/component/debt-account-contact-field/debt-account-contact-field.tsx
 #: src/account/component/debt-section-header/debt-section-header.tsx
@@ -10092,7 +10698,7 @@ msgstr "Vos contacts apparaîtront ici."
 msgid "Your current key was rejected. Paste a new one to resume syncing."
 msgstr "Votre clé actuelle a été rejetée. Collez-en une nouvelle pour reprendre la synchronisation."
 
-#: src/app/(tabs)/settings/index.tsx
+#: src/settings/components/your-data-card/your-data-card.tsx
 msgid "Your data"
 msgstr "Vos données"
 
@@ -10124,6 +10730,14 @@ msgstr "Tes données : {state}"
 msgid "Your device clock is out of sync. Enable automatic date and time, then try again."
 msgstr "L'horloge de votre appareil est désynchronisée. Activez la date et l'heure automatiques, puis réessayez."
 
+#: src/household/utils/get-household-summary-labels.util.ts
+msgid "Your family"
+msgstr "Ta famille"
+
+#: src/household/utils/get-household-share-labels.util.ts
+msgid "Your family can see and edit the accounts you share. Sharing all includes accounts you add later."
+msgstr "Votre famille peut voir et modifier les comptes que vous partagez. Tout partager inclut les comptes ajoutés plus tard."
+
 #: src/onboarding/component/onboarding-receipt/onboarding-receipt.tsx
 msgid "Your file. Your PIN."
 msgstr "Ton fichier. Ton code PIN."
@@ -10136,7 +10750,7 @@ msgstr "Votre clé reste dans le stockage sécurisé de ce téléphone."
 msgid "Your limit grows as income arrives this period"
 msgstr "Votre limite augmente à mesure que les revenus arrivent sur cette période"
 
-#: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
+#: src/onboarding/component/onboarding-welcome-hero/onboarding-welcome-hero.tsx
 msgid "Your money in one file."
 msgstr "Votre argent dans un seul fichier."
 

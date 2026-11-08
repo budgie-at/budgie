@@ -20,7 +20,7 @@ export const useMoveAndDeleteCategory = () => {
     const [openCategorySelector] = useCategorySelectorModal();
 
     return Effect.fn('useMoveAndDeleteCategory.moveAndDelete')(function* (
-        source: Pick<CategoryEntityInterface, 'id' | 'title'>,
+        source: Pick<CategoryEntityInterface, 'id' | 'title' | 'syncZone'>,
         count: number,
         trackMutation: MutationTracker
     ) {
@@ -31,6 +31,7 @@ export const useMoveAndDeleteCategory = () => {
             openCategorySelector(
                 {
                     excludeCategoryIds: [source.id],
+                    syncZone: source.syncZone,
                     title: t`Move “${sourceTitle}” transactions to…`,
                     description: t({
                         message: plural(count, {

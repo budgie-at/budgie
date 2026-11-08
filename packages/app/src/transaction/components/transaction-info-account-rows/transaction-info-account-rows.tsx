@@ -1,4 +1,4 @@
-import { TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { HOUSEHOLD_SYNC_ZONE, TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
@@ -6,6 +6,7 @@ import { isDefined } from '@rnw-community/shared';
 import { getAccountIbanSuffix } from '../../utils/get-account-iban-suffix.util';
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
 import { TransactionInfoRow } from '../transaction-info-row/transaction-info-row';
+import { TransactionPrivateAccountRow } from '../transaction-private-account-row/transaction-private-account-row';
 
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 
@@ -20,6 +21,10 @@ export const TransactionInfoAccountRows = ({ transaction }: Props) => {
     const showFromAccount = isTransfer && isDefined(transaction.fromAccount);
     const showToAccount = isTransfer && isDefined(transaction.toAccount);
     const showAccount = !isTransfer && isDefined(account);
+    const { syncId, syncZone } = transaction;
+    const hasPrivateSide = isTransfer && syncZone === HOUSEHOLD_SYNC_ZONE && isDefined(syncId);
+    const showPrivateFrom = hasPrivateSide && !isDefined(transaction.fromAccount);
+    const showPrivateTo = hasPrivateSide && !isDefined(transaction.toAccount);
 
     return (
         <>
@@ -39,6 +44,24 @@ export const TransactionInfoAccountRows = ({ transaction }: Props) => {
                     label={t`To account`}
                     value={transaction.toAccount.title}
                     description={getAccountIbanSuffix(transaction.toAccount)}
+                    testID={TransactionInfoPageSelector.Row.ToAccount}
+                />
+            ) : null}
+
+            {showPrivateFrom && isDefined(syncId) ? (
+                <TransactionPrivateAccountRow
+                    label={t`From account`}
+                    syncZone={syncZone}
+                    syncId={syncId}
+                    testID={TransactionInfoPageSelector.Row.FromAccount}
+                />
+            ) : null}
+
+            {showPrivateTo && isDefined(syncId) ? (
+                <TransactionPrivateAccountRow
+                    label={t`To account`}
+                    syncZone={syncZone}
+                    syncId={syncId}
                     testID={TransactionInfoPageSelector.Row.ToAccount}
                 />
             ) : null}

@@ -48,13 +48,14 @@ import type { CategoryFormResultInterface } from '../../interface/category-form-
 interface Props {
     readonly category?: CategoryEntityInterface;
     readonly defaultTitle?: string;
+    readonly syncZone?: string;
     readonly onSuccess: (result: CategoryFormResultInterface) => void;
     readonly onCancel: () => void;
 }
 
 // eslint-disable-next-line max-lines-per-function, max-statements -- Form orchestration component with multiple hooks and handlers
 export const CategoryForm = (props: Props) => {
-    const { category, defaultTitle, onSuccess, onCancel } = props;
+    const { category, defaultTitle, syncZone, onSuccess, onCancel } = props;
     const { t } = useLingui();
     const language = useSetting('language');
     const saveFlight = useSingleFlight();
@@ -123,7 +124,7 @@ export const CategoryForm = (props: Props) => {
                 const updatedCategory = yield* updateCategory(category.id, input, translation, language);
                 onSuccess({ category: updatedCategory });
             } else {
-                const createdCategory = yield* createCategory(input, { titleEn: null, titleTags: null });
+                const createdCategory = yield* createCategory({ ...input, syncZone }, { titleEn: null, titleTags: null });
                 onSuccess({ category: createdCategory });
             }
         }).pipe(toastOnFailure(isEditing ? t`Could not save category` : t`Could not create category`, t`Please try again later`));

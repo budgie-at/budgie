@@ -1,12 +1,13 @@
 import { BlogCover } from '../../../generic/component/blog-cover/blog-cover';
 import { Motion } from '../../../generic/component/motion/motion';
+import { UpdatedDate } from '../../../generic/component/updated-date/updated-date';
 import { resolveArticleShot } from '../../utils/resolve-article-shot.util';
 
 import type { ArticleRegistryEntryInterface } from '../../interface/article-registry-entry.interface';
 import type { ReactNode } from 'react';
 
 interface Props {
-    article: Pick<ArticleRegistryEntryInterface, 'slug' | 'tags' | 'relatedFeatureSlugs'>;
+    article: Pick<ArticleRegistryEntryInterface, 'slug' | 'tags' | 'relatedFeatureSlugs' | 'date' | 'dateModified'>;
     locale: string;
     children: ReactNode;
 }
@@ -15,6 +16,13 @@ export const BlogArticleHero = ({ article, locale, children }: Props) => (
     <article className="w-full py-20 md:py-32">
         <div className="container px-4 md:px-6 max-w-4xl">
             <Motion>{children}</Motion>
+
+            <UpdatedDate
+                className="mt-4 text-sm text-muted-foreground"
+                date={article.dateModified ?? article.date}
+                locale={locale}
+                publishedDate={article.date}
+            />
 
             <div className="aspect-3/1 overflow-hidden rounded-xl border mt-10">
                 <BlogCover

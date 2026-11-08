@@ -39,9 +39,11 @@ export const CategorizeInboxList = ({ items, filterSection, onSectionPress }: Pr
         isNotEmptyArray(hiddenOneOffs) && isInFilter(CategorizeInboxSectionEnum.ONE_OFFS)
             ? [{ key: 'one-offs-link', oneOffs: hiddenOneOffs }]
             : [];
+    const visibleItems = items.filter(item => isInFilter(item.section) && !hiddenOneOffs.some(cluster => cluster.key === item.key));
     const data = [
-        ...items.filter(item => isInFilter(item.section) && !hiddenOneOffs.some(cluster => cluster.key === item.key)),
-        ...oneOffsLink
+        ...visibleItems.filter(item => item.section !== CategorizeInboxSectionEnum.OLDER),
+        ...oneOffsLink,
+        ...visibleItems.filter(item => item.section === CategorizeInboxSectionEnum.OLDER)
     ];
     const isCardItem = (index: number): boolean => {
         const item = data.at(index);

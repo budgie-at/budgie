@@ -41,6 +41,7 @@ export default async function OfflineFirstPillarHubPage(props: PageLangParam) {
                         anywhere.
                     </Trans>
                 }
+                updatedAt={OFFLINE_FIRST_PILLAR_HUB_METADATA.updatedAt}
             >
                 <PillarHubHeroBulletList>
                     <PillarHubHeroBulletItem>
@@ -56,7 +57,7 @@ export default async function OfflineFirstPillarHubPage(props: PageLangParam) {
                         <Trans>Analytics, charts, and reports work entirely on-device</Trans>
                     </PillarHubHeroBulletItem>
                     <PillarHubHeroBulletItem>
-                        <Trans>Local backup files you can restore without a server — encrypted whenever your PIN is set</Trans>
+                        <Trans>Backup files you can restore without a server, plus encrypted iCloud backup and sync on iOS</Trans>
                     </PillarHubHeroBulletItem>
                 </PillarHubHeroBulletList>
             </PillarHubHero>
@@ -163,7 +164,7 @@ export default async function OfflineFirstPillarHubPage(props: PageLangParam) {
                     slug="offline-first-expense-tracker"
                 >
                     <FeatureStory.Callout y={0.17}>
-                        <Trans>No cloud sync, no tracking</Trans>
+                        <Trans>No vendor cloud, no tracking</Trans>
                     </FeatureStory.Callout>
                     <FeatureStory.Callout y={0.3}>
                         <Trans>A PIN, not a login</Trans>
@@ -179,7 +180,8 @@ export default async function OfflineFirstPillarHubPage(props: PageLangParam) {
                     <Trans>
                         Most budgeting apps push every swipe and balance to a remote server. That makes them fragile when the internet
                         drops, and risky when those servers leak. Budgie inverts the model: your database lives on your phone, encrypted
-                        with your PIN once you set one, and that&apos;s the whole story. There is no backend reading your statements.
+                        with your PIN once you set one, and the copies that leave it go to your own iCloud, and to your family&apos;s only
+                        for accounts and budgets you choose to share. There is no backend reading your statements.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
@@ -208,7 +210,7 @@ export default async function OfflineFirstPillarHubPage(props: PageLangParam) {
                         <Trans>Your database is encrypted on the device once you set a PIN — that PIN is the key</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
-                        <Trans>No backend means no breach surface — there is nothing to leak</Trans>
+                        <Trans>No Budgie backend — no vendor database to leak, and the iCloud copies are encrypted</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={4}>
                         <Trans>Optional bank sync uses your own API tokens — never a third-party aggregator</Trans>
@@ -222,7 +224,7 @@ export default async function OfflineFirstPillarHubPage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageComparisonTable rivalLabel={<Trans>Cloud app</Trans>}>
                     <FeaturePageComparisonTable.Row
-                        budgie={<Trans>Your device only</Trans>}
+                        budgie={<Trans>Your device and your own iCloud on iOS</Trans>}
                         concern={<Trans>Data location</Trans>}
                         rival={<Trans>Vendor servers + Plaid</Trans>}
                     />
@@ -237,7 +239,7 @@ export default async function OfflineFirstPillarHubPage(props: PageLangParam) {
                         rival={<Trans>Yes</Trans>}
                     />
                     <FeaturePageComparisonTable.Row
-                        budgie={<Trans>None — no servers</Trans>}
+                        budgie={<Trans>No Budgie servers to compel</Trans>}
                         concern={<Trans>Subpoena risk</Trans>}
                         rival={<Trans>Vendor can be compelled</Trans>}
                     />
@@ -295,7 +297,8 @@ export default async function OfflineFirstPillarHubPage(props: PageLangParam) {
                     answer={
                         <Trans>
                             Yes, fully. Every core feature — logging expenses, viewing analytics, managing categories — runs entirely on
-                            your device. Internet is only used when you opt in to bank sync, AI model downloads, or exchange-rate updates.
+                            your device. Internet is used only for bank sync, AI model downloads, exchange-rate updates, and iCloud backup
+                            or sync on iOS.
                         </Trans>
                     }
                 />
@@ -303,7 +306,8 @@ export default async function OfflineFirstPillarHubPage(props: PageLangParam) {
                     question={<Trans>What happens if I lose my phone?</Trans>}
                     answer={
                         <Trans>
-                            Without a backup file, your data is gone — that&apos;s the privacy trade-off. Budgie exports a copy of the
+                            On iOS your data is in your own iCloud, so a lost phone does not lose the ledger. Everywhere else, without a
+                            backup file the data on that phone is gone — that&apos;s the privacy trade-off. Budgie exports a copy of the
                             database file — encrypted if your PIN was set — that you can save to iCloud Drive, Google Drive, or anywhere
                             else. Restoring it on a new device takes a few steps: pick the file, confirm the replace, enter that
                             backup&apos;s PIN, and let the app restart.
@@ -314,8 +318,8 @@ export default async function OfflineFirstPillarHubPage(props: PageLangParam) {
                     question={<Trans>What&apos;s the catch with offline-first?</Trans>}
                     answer={
                         <Trans>
-                            The trade-off is multi-device sync — there&apos;s no automatic sync via our servers because we don&apos;t have
-                            any. Use a backup file copied through your own cloud storage if you need to move between devices.
+                            The trade-off is sync through our servers — there is none, because we don&apos;t have any. On iOS your devices
+                            sync through your own iCloud; on Android move a backup file through storage you control.
                         </Trans>
                     }
                 />

@@ -41,7 +41,9 @@ export const OnboardingStepIntro = ({ title, description, icon, iconVariant }: P
             {accentIcon}
             {neutralIcon}
 
-            <Text className="text-primary text-(length:--text-4xl) font-semibold tracking-tight text-left">{title}</Text>
+            <Text maxFontSizeMultiplier={1.4} className="text-primary text-(length:--text-4xl) font-semibold tracking-tight text-left">
+                {title}
+            </Text>
 
             {isNotEmptyString(description) ? (
                 <Text className="text-secondary-foreground text-[15px] leading-[21px] mt-md text-left">{description}</Text>

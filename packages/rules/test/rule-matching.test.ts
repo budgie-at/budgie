@@ -1,4 +1,10 @@
-import { RuleConditionFieldEnum, RuleConditionMatchTypeEnum, RuleConditionOperatorEnum, TransactionTypeEnum } from '@budgie/contracts';
+import {
+    PERSONAL_SYNC_ZONE,
+    RuleConditionFieldEnum,
+    RuleConditionMatchTypeEnum,
+    RuleConditionOperatorEnum,
+    TransactionTypeEnum
+} from '@budgie/contracts';
 import { RuleMatcherService } from '@budgie/rules';
 import { expect, layer } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
@@ -33,6 +39,8 @@ const buildRule = (
     createdAt: new Date(),
     updatedAt: new Date(),
     deletedAt: null,
+    syncId: null,
+    syncZone: PERSONAL_SYNC_ZONE,
     conditions: conditions.map(([field, operator, value, secondaryValue], index) => ({
         id: index + 1,
         ruleId: 1,
@@ -42,7 +50,9 @@ const buildRule = (
         secondaryValue,
         createdAt: new Date(),
         updatedAt: new Date(),
-        deletedAt: null
+        deletedAt: null,
+        syncId: null,
+        syncZone: PERSONAL_SYNC_ZONE
     })),
     actions: []
 });

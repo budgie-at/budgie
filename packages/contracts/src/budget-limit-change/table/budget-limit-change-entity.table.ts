@@ -4,11 +4,14 @@ import { convertEnumToDrizzleEnum } from '../../@generic/utils/convert-enum-to-d
 import { withBaseEntityTableColumns } from '../../@generic/utils/with-base-entity-table-columns.util';
 import { BudgetEntityTable } from '../../budget/table/budget-entity.table';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
+import { syncIdentityUniqueIndex } from '../../cloud-sync/utils/sync-identity-unique-index.util';
+import { withSyncIdentityColumns } from '../../cloud-sync/utils/with-sync-identity-columns.util';
 import { BudgetLimitChangeReasonEnum } from '../enum/budget-limit-change-reason.enum';
 
 export const BudgetLimitChangeEntityTable = sqliteTable(
     'budget_limit_changes',
     withBaseEntityTableColumns({
+        ...withSyncIdentityColumns(),
         budgetId: int('budget_id', { mode: 'number' })
             .notNull()
             .references(() => BudgetEntityTable.id, { onDelete: 'cascade' }),
@@ -20,5 +23,6 @@ export const BudgetLimitChangeEntityTable = sqliteTable(
             .notNull(),
         periodsObserved: int('periods_observed').notNull(),
         periodStart: int('period_start', { mode: 'timestamp' }).notNull()
-    })
+    }),
+    table => [syncIdentityUniqueIndex('budget_limit_changes', table)]
 );

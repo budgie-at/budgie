@@ -119,4 +119,22 @@ describe('categorization/inbox-evidence', () => {
             expect(evidence.filter(row => row.labelId === category.id).map(row => row.title)).toEqual(['Evidence User Market']);
         }).pipe(Effect.provide(TestLayer))
     );
+    it.effect('allowlists human category decisions and excludes automated sources', () =>
+        Effect.gen(function* () {
+            const repository = yield* TransactionCategorizeInboxRepository;
+            const account = yield* testSeedService.account();
+            const category = yield* testSeedService.category('Synthetic evidence');
+            for (const source of Object.values(CategorySourceEnum)) {
+                const expense = yield* seedTitledExpense(account.id, source);
+                yield* repository.updateUncategorizedCategoryByTransactionIds([expense.id], category.id, source);
+            }
+            const evidence = yield* repository.findCategoryEvidence;
+            expect(
+                evidence
+                    .filter(item => item.labelId === category.id)
+                    .map(item => item.title)
+                    .sort()
+            ).toEqual([CategorySourceEnum.USER, CategorySourceEnum.RULE, CategorySourceEnum.MANUAL_EXPENSE_DUPLICATE].sort());
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

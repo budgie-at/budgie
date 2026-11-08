@@ -10,6 +10,7 @@ import { SelectorCreateButton } from '../../../@generic/component/selector-creat
 import { useDestinationSelection } from '../../../@generic/hook/use-destination-selection.hook';
 import { useFormatEntityUsage } from '../../../@generic/hook/use-format-entity-usage.hook';
 import { CategorySelectorModalSelector } from '../../../app/category-selector-modal.selector';
+import { useCategorySelectorModalParams } from '../../context/category-selector-modal.context';
 import { useCategoriesWithUsageQuery } from '../../query/use-categories-with-usage.query';
 import { CategoryDestinationRow } from '../category-destination-row/category-destination-row';
 import { CategoryEmptyState } from '../category-empty-state/category-empty-state';
@@ -33,8 +34,9 @@ export const CategoryDestinationSheet = (props: Props) => {
     const { title, description, excludeCategoryIds, commitLabel, getCommitCopy, selection, onCommit, onCreate } = props;
     const { t } = useLingui();
     const [search, setSearch] = useState('');
+    const syncZone = useCategorySelectorModalParams()?.syncZone;
     const formatUsage = useFormatEntityUsage();
-    const { categories, usage, isUsageFailure, retryUsage, isFailure, retry } = useCategoriesWithUsageQuery(search, true);
+    const { categories, usage, isUsageFailure, retryUsage, isFailure, retry } = useCategoriesWithUsageQuery(search, true, syncZone);
 
     const destinations = categories?.filter(category => !excludeCategoryIds.includes(category.id));
     const { selected, isPending, handleRowSelect, handleCommit } = useDestinationSelection(destinations, selection, onCommit);

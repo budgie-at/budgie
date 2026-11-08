@@ -23,6 +23,7 @@ interface Props {
     readonly entry: Pick<TransactionEntryCreateInputInterface, 'categoryId' | 'amount'>;
     readonly currencySymbol: string;
     readonly autoFocus: boolean;
+    readonly disabled?: boolean;
     readonly onAmountChange: (amount: number) => void;
     readonly onCategoryPress: () => void;
     readonly children?: ReactNode;
@@ -32,7 +33,7 @@ const ACCEPTED_DECIMAL_SEPARATORS = ['.', ','];
 const amountInputStyle = { textAlign: 'right' as const, fontSize: 17, fontWeight: '600' as const, fontVariant: ['tabular-nums' as const] };
 
 export const SplitEntryRow = (props: Props) => {
-    const { index, entry, currencySymbol, autoFocus, onAmountChange, onCategoryPress, children } = props;
+    const { index, entry, currencySymbol, autoFocus, disabled = false, onAmountChange, onCategoryPress, children } = props;
     const { fontScale } = useWindowDimensions();
     const formatDigits = useFormatDigits(DEFAULT_DECIMAL_PLACES);
     const [isAmountFocused, setIsAmountFocused] = useState(false);
@@ -55,6 +56,7 @@ export const SplitEntryRow = (props: Props) => {
             <View className="flex-row flex-wrap items-center gap-x-md gap-y-md px-xl py-xl">
                 <HapticPressable
                     onPress={onCategoryPress}
+                    disabled={disabled}
                     accessibilityRole="button"
                     accessibilityLabel={categoryTitle}
                     className={cn('flex-row items-center gap-x-md min-h-[44px] min-w-[88px]', categoryLayoutClassName)}
@@ -84,6 +86,7 @@ export const SplitEntryRow = (props: Props) => {
                     <Text className="text-primary text-[17px] font-semibold tabular-nums">{currencySymbol}</Text>
                     <AmountInput
                         value={entry.amount}
+                        editable={!disabled}
                         keyboardType="decimal-pad"
                         acceptedDecimalSeparators={ACCEPTED_DECIMAL_SEPARATORS}
                         onChangeValue={onAmountChange}

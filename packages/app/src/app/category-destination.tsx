@@ -20,6 +20,7 @@ export default function CategoryDestinationModal() {
             title={currentParams.title}
             description={currentParams.description}
             excludeCategoryIds={currentParams.excludeCategoryIds ?? []}
+            syncZone={currentParams.syncZone}
             commitLabel={currentParams.commitLabel}
             getCommitCopy={currentParams.getCommitCopy}
             onCommit={handleCommit}

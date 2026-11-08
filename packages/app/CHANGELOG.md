@@ -3,6 +3,55 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.168.0](https://github.com/budgie-at/budgie/compare/v6.167.9...v6.168.0) (2026-11-08)
+
+### Features
+
+* iCloud backup, own-device sync and family sharing ([#1978](https://github.com/budgie-at/budgie/issues/1978)) ([47191a1](https://github.com/budgie-at/budgie/commit/47191a118eb34571d5aee2e969dfd53c91f77caa)), closes [#1790](https://github.com/budgie-at/budgie/issues/1790) [#1796](https://github.com/budgie-at/budgie/issues/1796) [#1791](https://github.com/budgie-at/budgie/issues/1791) [#1797](https://github.com/budgie-at/budgie/issues/1797) [#1969](https://github.com/budgie-at/budgie/issues/1969) [#1790](https://github.com/budgie-at/budgie/issues/1790) [#1792](https://github.com/budgie-at/budgie/issues/1792) [#1793](https://github.com/budgie-at/budgie/issues/1793) [#1794](https://github.com/budgie-at/budgie/issues/1794) [#1798](https://github.com/budgie-at/budgie/issues/1798) [#1797](https://github.com/budgie-at/budgie/issues/1797) [#1799](https://github.com/budgie-at/budgie/issues/1799) [#1800](https://github.com/budgie-at/budgie/issues/1800) [#1801](https://github.com/budgie-at/budgie/issues/1801) [#1804](https://github.com/budgie-at/budgie/issues/1804) [#1801](https://github.com/budgie-at/budgie/issues/1801) [#1800](https://github.com/budgie-at/budgie/issues/1800) [#1971](https://github.com/budgie-at/budgie/issues/1971) [#1802](https://github.com/budgie-at/budgie/issues/1802) [#1801](https://github.com/budgie-at/budgie/issues/1801) [#1801](https://github.com/budgie-at/budgie/issues/1801) [#1802](https://github.com/budgie-at/budgie/issues/1802) [#1969](https://github.com/budgie-at/budgie/issues/1969) [#1804](https://github.com/budgie-at/budgie/issues/1804) [#1807](https://github.com/budgie-at/budgie/issues/1807) [#1805](https://github.com/budgie-at/budgie/issues/1805) [#1806](https://github.com/budgie-at/budgie/issues/1806) [#1805](https://github.com/budgie-at/budgie/issues/1805) [#1807](https://github.com/budgie-at/budgie/issues/1807)
+
+
+## [6.167.9](https://github.com/budgie-at/budgie/compare/v6.167.8...v6.167.9) (2026-11-07)
+
+### Bug Fixes
+
+* detect own-account transfers and harden categorize inbox suggestions ([#2032](https://github.com/budgie-at/budgie/issues/2032)) ([bf66581](https://github.com/budgie-at/budgie/commit/bf66581e175859f07662d0ebdcd980389383e3f4))
+
+
+## [6.167.8](https://github.com/budgie-at/budgie/compare/v6.167.7...v6.167.8) (2026-11-07)
+
+### Bug Fixes
+
+* **app:** fade screen edges only where content scrolls under them ([#2030](https://github.com/budgie-at/budgie/issues/2030)) ([74a3097](https://github.com/budgie-at/budgie/commit/74a3097c6142afa88b388668f1923d884ffcc08c))
+
+
+## [6.167.7](https://github.com/budgie-at/budgie/compare/v6.167.6...v6.167.7) (2026-11-07)
+
+### Bug Fixes
+
+* **app:** apply categories picked from the category sheet ([#2031](https://github.com/budgie-at/budgie/issues/2031)) ([0eb8e74](https://github.com/budgie-at/budgie/commit/0eb8e741effe128c454843087cc51293e9ab6d15))
+
+
+## [6.167.5](https://github.com/budgie-at/budgie/compare/v6.167.4...v6.167.5) (2026-11-07)
+
+### Bug Fixes
+
+* **app:** polish remaining screens and large-text layouts ([#2017](https://github.com/budgie-at/budgie/issues/2017)) ([5920610](https://github.com/budgie-at/budgie/commit/592061005888e0b5de4f2ec0a31e59b84ed36a44))
+
+
+## [6.167.4](https://github.com/budgie-at/budgie/compare/v6.167.3...v6.167.4) (2026-11-07)
+
+### Bug Fixes
+
+* **app:** shorten the shared header and tab bar fades ([#2024](https://github.com/budgie-at/budgie/issues/2024)) ([996ffaf](https://github.com/budgie-at/budgie/commit/996ffaf36e5ddecdd32689c371fd8d73bf466d48))
+
+
+## [6.167.2](https://github.com/budgie-at/budgie/compare/v6.167.1...v6.167.2) (2026-11-07)
+
+### Bug Fixes
+
+* close reachable illegal states in implicit state machines ([#2020](https://github.com/budgie-at/budgie/issues/2020)) ([c1d1ee6](https://github.com/budgie-at/budgie/commit/c1d1ee6f8d0a1182aaab013bddd626163696d094))
+
+
 ## [6.167.1](https://github.com/budgie-at/budgie/compare/v6.167.0...v6.167.1) (2026-11-07)
 
 ### Bug Fixes

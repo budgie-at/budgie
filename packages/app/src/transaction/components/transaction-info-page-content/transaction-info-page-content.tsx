@@ -1,14 +1,17 @@
 import { TransactionConsolidationTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 import { getTransactionFeeEntries } from '@budgie/ledger';
 import { doesRuleMatchTransaction } from '@budgie/rules';
-import { useRouter } from 'expo-router';
+import * as AsyncResult from 'effect/reactivity/AsyncResult';
+import { router } from 'expo-router';
 import { View } from 'react-native';
 
 import { ScreenChromeFrame } from '@rnw-community/react-native-screen-chrome';
-import { isNotEmptyArray } from '@rnw-community/shared';
+import { isNotEmptyArray, emptyFn } from '@rnw-community/shared';
 
+import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hook';
 import { dismissAllOrReplace } from '../../../@generic/utils/dismiss-all-or-replace.util';
 import { useGetEnabledRulesQuery } from '../../../rule/query/use-get-enabled-rules.query';
+import { foreignTransferLegAtom } from '../../constant/foreign-transfer-leg-atom.constant';
 import { useRevertConsolidation } from '../../hook/use-revert-consolidation.hook';
 import { useTransactionInfoHandoff } from '../../hook/use-transaction-info-handoff.hook';
 import { convertTransactionToInput } from '../../utils/convert-transaction-to-input.util';
@@ -43,7 +46,9 @@ interface Props {
 }
 
 export const TransactionInfoPageContent = ({ transaction, editHref, actionItems, onDelete, onFeePress, onOpenSources }: Props) => {
-    const router = useRouter();
+    const isReadOnly = AsyncResult.getOrElse(useLiveAtomValue(foreignTransferLegAtom(transaction.id)), () => true);
+    const editableHref = isReadOnly ? null : editHref;
+    const handleFeePress = isReadOnly ? emptyFn : onFeePress;
     const { minimumHeight, handoff, onAmountLayout, onTitleLayout, onBodyLayout, onContentLayout, scrollRef, handleScrollEnd } =
         useTransactionInfoHandoff();
     const undoRefund = useRevertConsolidation(transaction.id, () => void dismissAllOrReplace('/'), true);
@@ -83,7 +88,7 @@ export const TransactionInfoPageContent = ({ transaction, editHref, actionItems,
                     <View className="gap-y-5xl" onLayout={onBodyLayout}>
                         <TransactionInfoGroup>
                             <TransactionInfoAccountRows transaction={transaction} />
-                            <TransactionInfoMoneyRows transaction={transaction} onFeePress={onFeePress} />
+                            <TransactionInfoMoneyRows transaction={transaction} onFeePress={handleFeePress} />
                             {isRefundPurchase ? <TransactionInfoRefundSummary transaction={transaction} /> : null}
                             <TransactionInfoCategoryRows transaction={transaction} />
                             <TransactionInfoTagsSection transaction={transaction} />
@@ -93,12 +98,18 @@ export const TransactionInfoPageContent = ({ transaction, editHref, actionItems,
 
                         <TransactionInfoSimilarCard transaction={transaction} />
 
-                        <TransactionInfoActionsGroup transaction={transaction} items={pageActionItems} onDelete={handleDestructiveAction} />
+                        {isReadOnly ? null : (
+                            <TransactionInfoActionsGroup
+                                transaction={transaction}
+                                items={pageActionItems}
+                                onDelete={handleDestructiveAction}
+                            />
+                        )}
                     </View>
                 </View>
             </TransactionInfoScrollView>
 
-            <TransactionInfoHeader transaction={transaction} editHref={editHref} handoff={handoff} onGoBack={handleGoBack} />
+            <TransactionInfoHeader transaction={transaction} editHref={editableHref} handoff={handoff} onGoBack={handleGoBack} />
         </ScreenChromeFrame>
     );
 };

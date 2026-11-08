@@ -13,12 +13,13 @@ interface Props {
     readonly index: number;
     readonly categoryId: number | null;
     readonly onPress: () => void;
+    readonly disabled?: boolean;
 }
 
 const DELETE_ICON_SIZE = 28;
 const DELETE_ICON_INNER_SIZE = 14;
 
-export const SplitEntryDeleteButton = ({ index, categoryId, onPress }: Props) => {
+export const SplitEntryDeleteButton = ({ index, categoryId, onPress, disabled = false }: Props) => {
     const { t } = useLingui();
     const { category } = useGetCategoryByIdQuery(categoryId ?? 0);
     const categoryTitle = category?.title;
@@ -28,6 +29,7 @@ export const SplitEntryDeleteButton = ({ index, categoryId, onPress }: Props) =>
         <HapticPressable
             onPress={onPress}
             pressFeedback={HapticPressFeedbackEnum.DESTRUCTIVE}
+            disabled={disabled}
             className="h-[44px] w-[44px] shrink-0 items-center justify-center"
             hitSlop={0}
             accessibilityRole="button"

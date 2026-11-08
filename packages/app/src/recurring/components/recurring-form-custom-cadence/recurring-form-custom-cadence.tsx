@@ -38,7 +38,7 @@ export const RecurringFormCustomCadence = () => {
         <>
             <RecurringFormNumberRow name="customInterval" label={t`Every`} testID={RecurringSeriesFormSelector.CustomInterval} />
             <View className="p-md">
-                <SegmentedControl segments={segments} value={value} onChange={onChange} className="min-h-[44px]" />
+                <SegmentedControl segments={segments} value={value} onChange={onChange} />
             </View>
         </>
     );

@@ -17,11 +17,11 @@ export const BlogArticlePageShell = ({ article, children, lang }: Props) => {
     const i18n = getI18nInstance(lang);
 
     return (
-        <main className="flex-1">
+        <main id="main-content" tabIndex={-1} className="flex-1 focus:outline-none">
             <BlogPostingJsonLd
                 date={article.date}
                 dateModified={article.dateModified}
-                description={i18n._(article.description)}
+                description={i18n._(article.seoDescription)}
                 image={`/${lang}/blog/${article.slug}/opengraph-image`}
                 keywords={article.seoKeywords.join(', ')}
                 locale={lang}

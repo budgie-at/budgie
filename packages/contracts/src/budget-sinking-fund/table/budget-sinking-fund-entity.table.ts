@@ -3,11 +3,14 @@ import { int, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 import { withBaseEntityTableColumns } from '../../@generic/utils/with-base-entity-table-columns.util';
 import { BudgetEntityTable } from '../../budget/table/budget-entity.table';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
+import { syncIdentityUniqueIndex } from '../../cloud-sync/utils/sync-identity-unique-index.util';
+import { withSyncIdentityColumns } from '../../cloud-sync/utils/with-sync-identity-columns.util';
 import { RecurringSeriesEntityTable } from '../../recurring-series/table/recurring-series-entity.table';
 
 export const BudgetSinkingFundEntityTable = sqliteTable(
     'budget_sinking_funds',
     withBaseEntityTableColumns({
+        ...withSyncIdentityColumns(),
         budgetId: int('budget_id', { mode: 'number' })
             .notNull()
             .references(() => BudgetEntityTable.id, { onDelete: 'cascade' }),
@@ -23,5 +26,6 @@ export const BudgetSinkingFundEntityTable = sqliteTable(
         }),
         fundedAmount: int('funded_amount').notNull().default(0),
         lastFundedPeriodStart: int('last_funded_period_start', { mode: 'timestamp' })
-    })
+    }),
+    table => [syncIdentityUniqueIndex('budget_sinking_funds', table)]
 );

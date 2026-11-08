@@ -19,6 +19,7 @@ export const BudgetStartsOnRow = ({ value, onPress }: Props) => {
             icon={UserIconNameEnum.CalendarClock}
             title={t`Starts on`}
             value={value}
+            valueNumberOfLines={0}
             {...(isDefined(onPress) && { testID: BudgetSelector.SetupStartsOnRow, onPress })}
         />
     );

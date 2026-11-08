@@ -8,7 +8,7 @@ import { ImpactFeedbackStyle } from 'expo-haptics';
 import { router } from 'expo-router';
 import * as ReactHookForm from 'react-hook-form';
 
-import { isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { useSingleFlight } from '../../@generic/hook/use-single-flight.hook';
 import { useToday } from '../../@generic/hook/use-today.hook';
@@ -161,7 +161,10 @@ export const useBudgetForm = ({ defaultInstrumentId, editingId, templateKind = n
     });
     const watchedFormValues = ReactHookForm.useWatch({ control: form.control, compute: values => values });
     const isFormSyncing =
-        (isEditing || hasAsyncTemplate) && !form.formState.isDirty && !areBudgetFormValuesEqual(watchedFormValues, formValues);
+        (isEditing || hasAsyncTemplate) &&
+        !form.formState.isDirty &&
+        isEmptyArray(Object.keys(form.getValues(void 0, { dirtyFields: true }))) &&
+        !areBudgetFormValuesEqual(watchedFormValues, formValues);
 
     const handlePeriodChange = (period: BudgetPeriodEnum) => {
         const anchor = defaultPeriodAnchorDate(period, today);

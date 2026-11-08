@@ -36,7 +36,7 @@ export const SettingsPillButton = (props: Props) => {
         size = 'md',
         className
     } = props;
-    const backgroundClassName = variant === 'cta' ? 'bg-cta-background' : 'bg-surface-fill';
+    const backgroundClassName = variant === 'cta' ? 'bg-cta-background' : 'bg-surface-disc dark:bg-secondary-foreground/30';
     const pressFeedback = variant === 'cta' ? HapticPressFeedbackEnum.COMMIT : HapticPressFeedbackEnum.IMPACT;
     const labelClassName = variant === 'cta' ? 'text-cta-foreground' : 'text-primary';
     const disabled = isDisabled || isLoading;
@@ -45,7 +45,7 @@ export const SettingsPillButton = (props: Props) => {
     const labelSizeClassName = size === 'sm' ? 'text-[14px]' : 'text-[15px]';
     const content = (
         <LoadingContent isLoading={isLoading}>
-            <Text className={cn('font-semibold', labelSizeClassName, labelClassName)} numberOfLines={1}>
+            <Text className={cn('text-center font-semibold', labelSizeClassName, labelClassName)} numberOfLines={2}>
                 {label}
             </Text>
         </LoadingContent>

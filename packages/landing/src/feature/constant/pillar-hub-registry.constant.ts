@@ -5,9 +5,9 @@ import { OPEN_SOURCE_PILLAR_HUB_METADATA } from '../../app/[lang]/open-source/me
 import { PRIVACY_PILLAR_HUB_METADATA } from '../../app/[lang]/privacy/metadata';
 import { SECURITY_PILLAR_HUB_METADATA } from '../../app/[lang]/security/metadata';
 
-import type { PillarHubEntryInterface } from '../interface/pillar-hub-entry.interface';
+import type { PillarHubMetadataInterface } from '../interface/pillar-hub-metadata.interface';
 
-export const PILLAR_HUB_REGISTRY: readonly PillarHubEntryInterface[] = [
+export const PILLAR_HUB_REGISTRY: readonly PillarHubMetadataInterface[] = [
     PRIVACY_PILLAR_HUB_METADATA,
     OFFLINE_FIRST_PILLAR_HUB_METADATA,
     AI_FEATURES_PILLAR_HUB_METADATA,

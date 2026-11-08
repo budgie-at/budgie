@@ -32,7 +32,7 @@ export const ArchivedAccountCard = ({ account, isFirst, isLast }: Props) => {
     const { formatMonthAndDay, formatMonthAndYear } = useFormatDate();
     const { balance } = useArchivedAccountBalanceQuery(account.id);
     const { isLoading, restore } = useRestoreArchivedAccount(account);
-    const { deleteAccount } = useDeleteArchivedAccount(account);
+    const { deleteAccount, isDeletable } = useDeleteArchivedAccount(account);
     const archivedDate = isDefined(account.deletedAt)
         ? (isThisYear(account.deletedAt) ? formatMonthAndDay : formatMonthAndYear)(account.deletedAt)
         : null;
@@ -43,12 +43,12 @@ export const ArchivedAccountCard = ({ account, isFirst, isLast }: Props) => {
     const closedLabel = account.isExternal ? t`, closed at the provider` : '';
     const accessibilityActions = [
         ...(account.isExternal ? [] : [{ name: 'restore', label: t`Restore`, onPress: restore }]),
-        { name: 'delete', label: t`Delete permanently`, onPress: deleteAccount }
+        ...(isDeletable ? [{ name: 'delete', label: t`Delete permanently`, onPress: deleteAccount }] : [])
     ];
 
     return (
         <GroupedListItem isFirst={isFirst} isLast={isLast}>
-            <DeletableRow id={account.id} onDelete={deleteAccount} label={t`Delete permanently`} variant="fill">
+            <DeletableRow id={account.id} onDelete={deleteAccount} label={t`Delete permanently`} variant="fill" isDisabled={!isDeletable}>
                 <ShelvedAccountRow
                     account={account}
                     subtitle={<ShelvedAccountSubtitle formattedBalance={formattedBalance} metadata={accountType} notice={notice} />}
@@ -61,13 +61,15 @@ export const ArchivedAccountCard = ({ account, isFirst, isLast }: Props) => {
                     {account.isExternal ? null : (
                         <ActionsMenuItem icon={UserIconNameEnum.ArchiveRestore} label={t`Restore`} onPress={restore} />
                     )}
-                    <ActionsMenuItem
-                        icon={UserIconNameEnum.Trash2}
-                        label={t`Delete permanently`}
-                        onPress={deleteAccount}
-                        variant="destructive"
-                        testID={ArchivedAccountCardSelector.DeleteButton(account.title)}
-                    />
+                    {isDeletable ? (
+                        <ActionsMenuItem
+                            icon={UserIconNameEnum.Trash2}
+                            label={t`Delete permanently`}
+                            onPress={deleteAccount}
+                            variant="destructive"
+                            testID={ArchivedAccountCardSelector.DeleteButton(account.title)}
+                        />
+                    ) : null}
                 </ShelvedAccountRow>
             </DeletableRow>
         </GroupedListItem>

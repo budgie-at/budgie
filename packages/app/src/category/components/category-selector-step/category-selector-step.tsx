@@ -15,22 +15,13 @@ interface Props {
 }
 
 export const CategorySelectorStep = ({ params, onCommit, onCreate }: Props) => {
-    const { variant = 'primary', initialCategoryId = null, excludeCategoryIds, title, description } = params;
     const listStyle = useMorphingSheetListHeight(MORPHING_SHEET_SELECTOR_HEIGHT_RATIO);
     const handleSelect = useMorphingSheetCommit(onCommit);
 
     return (
         <View style={listStyle}>
             <SheetSurface className="pt-lg">
-                <CategoryPickerPanel
-                    variant={variant}
-                    initialCategoryId={initialCategoryId}
-                    excludeCategoryIds={excludeCategoryIds}
-                    title={title}
-                    description={description}
-                    onSelect={handleSelect}
-                    onCreate={onCreate}
-                />
+                <CategoryPickerPanel params={params} onSelect={handleSelect} onCreate={onCreate} />
             </SheetSurface>
         </View>
     );

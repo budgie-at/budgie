@@ -105,8 +105,12 @@ const buildHomePageSections = (
     integrationLabels: ReadonlyMap<number, string | null>,
     balanceSummary: Pick<HomeAccountBalanceSummaryInterface, 'balancesByAccountId' | 'debtSectionTotals'>
 ): HomeSectionInterface[] => {
-    const debtAccounts = activeAccounts.filter(account => account.type === AccountTypeEnum.DEBT);
-    const otherAccounts = activeAccounts.filter(account => account.type !== AccountTypeEnum.DEBT);
+    const isSharedByOther = (account: AccountWithSyncEntityInterface) =>
+        balanceSummary.balancesByAccountId.get(account.id)?.isSharedByOther === true;
+    const familyAccounts = activeAccounts.filter(isSharedByOther).sort((left, right) => left.title.localeCompare(right.title));
+    const ownAccounts = activeAccounts.filter(account => !isSharedByOther(account));
+    const debtAccounts = ownAccounts.filter(account => account.type === AccountTypeEnum.DEBT);
+    const otherAccounts = ownAccounts.filter(account => account.type !== AccountTypeEnum.DEBT);
     const isProviderAccount = (account: AccountWithSyncEntityInterface) =>
         isDefined(resolveBankProviderGroup(account.integrationId, integrationProviders));
     const cashAccounts = otherAccounts.filter(account => account.type === AccountTypeEnum.CASH && !isProviderAccount(account));
@@ -157,6 +161,9 @@ const buildHomePageSections = (
         return isNotEmptyArray(data) ? [{ kind, data, total: balanceSummary.debtSectionTotals.get(kind) ?? 0 }] : [];
     });
 
+    const familySections = isNotEmptyArray(familyAccounts)
+        ? [{ kind: HomeSectionKindEnum.FAMILY as const, data: familyAccounts, total: 0 }]
+        : [];
     const cashSection = isNotEmptyArray(cashAccounts)
         ? [
               {
@@ -168,7 +175,7 @@ const buildHomePageSections = (
           ]
         : [];
 
-    return [...cashSection, ...typeSections.sort((left, right) => right.total - left.total), ...debtSections];
+    return [...cashSection, ...typeSections.sort((left, right) => right.total - left.total), ...debtSections, ...familySections];
 };
 
 const addTotal = <Key>(totals: Map<Key, number>, key: Key, amount: number): void => {
@@ -184,7 +191,7 @@ const addBankProviderTotal = (totals: Map<number, number>, integrationId: number
 const addDebtSectionTotal = (totals: Map<DebtSectionInterface['kind'], number>, homeAccountBalance: HomeAccountBalanceInterface): void => {
     const { accountType, convertedDebtProgressSummary, debtType, isActive } = homeAccountBalance;
 
-    if (isActive && accountType === AccountTypeEnum.DEBT) {
+    if (isActive && !homeAccountBalance.isSharedByOther && accountType === AccountTypeEnum.DEBT) {
         addTotal(totals, getDebtSectionKind(debtType), convertedDebtProgressSummary.outstandingAmount);
     }
 };
@@ -193,7 +200,7 @@ const addNetWorth = (
     summary: ReturnType<typeof createHomeAccountBalanceSummary>,
     homeAccountBalance: HomeAccountBalanceInterface
 ): void => {
-    if (homeAccountBalance.includeInNetWorth) {
+    if (homeAccountBalance.includeInNetWorth && !homeAccountBalance.isSharedByOther) {
         summary.netWorth += homeAccountBalance.convertedBalance;
     }
 };
@@ -258,13 +265,19 @@ export const useHomePageDataQuery = () => {
             debtType: row.account.debtType,
             includeInNetWorth: row.account.includeInNetWorth,
             isActive: row.account.isActive,
+            isSharedByOther: row.isSharedByOther === 1,
             isValued: row.isValued,
             hasLedgerHistory: row.hasLedgerHistory === 1
         };
         const { accountId, convertedBalance, isActive } = homeAccountBalance;
 
         summary.balancesByAccountId.set(accountId, homeAccountBalance);
-        addBankProviderTotal(summary.bankProviderTotals, bankProviderGroup?.integrationId ?? null, convertedBalance, isActive);
+        addBankProviderTotal(
+            summary.bankProviderTotals,
+            bankProviderGroup?.integrationId ?? null,
+            convertedBalance,
+            isActive && !homeAccountBalance.isSharedByOther
+        );
         addDebtSectionTotal(summary.debtSectionTotals, homeAccountBalance);
         addNetWorth(summary, homeAccountBalance);
 

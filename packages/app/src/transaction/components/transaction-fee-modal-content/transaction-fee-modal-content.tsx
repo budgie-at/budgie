@@ -9,6 +9,7 @@ import { SheetSurface } from '../../../@generic/component/sheet-surface/sheet-su
 import { MORPHING_SHEET_SELECTOR_HEIGHT_RATIO } from '../../../@generic/constant/morphing-sheet-height-ratio.constant';
 import { MorphingSheetPresentationEnum } from '../../../@generic/enum/morphing-sheet-presentation.enum';
 import { useMorphingSheetListHeight } from '../../../@generic/hook/use-morphing-sheet-list-height.hook';
+import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
 import { CategoryCreatePage } from '../../../category/components/category-create-page/category-create-page';
 import { CategoryPickerPanel } from '../../../category/components/category-picker-panel/category-picker-panel';
 import { TransactionFeeStepEnum } from '../../enum/transaction-fee-step.enum';
@@ -28,6 +29,7 @@ interface Props {
 }
 
 export const TransactionFeeModalContent = ({ accountId, currencySymbol, entry, variant, onConfirm, onDismiss }: Props) => {
+    const { account } = useGetAccountByIdQuery(accountId);
     const categoryStepStyle = useMorphingSheetListHeight(MORPHING_SHEET_SELECTOR_HEIGHT_RATIO);
     const [step, setStep] = useState(TransactionFeeStepEnum.FEE);
     const [createTitle, setCreateTitle] = useState('');
@@ -71,6 +73,7 @@ export const TransactionFeeModalContent = ({ accountId, currencySymbol, entry, v
         setStep(TransactionFeeStepEnum.CATEGORY);
     };
 
+    const categoryParams = { variant, initialCategoryId: feeEntry.categoryId, syncZone: account?.syncZone };
     const isFeeStep = step === TransactionFeeStepEnum.FEE;
 
     const steps = {
@@ -93,8 +96,7 @@ export const TransactionFeeModalContent = ({ accountId, currencySymbol, entry, v
                 <View style={categoryStepStyle}>
                     <SheetSurface className="pt-lg">
                         <CategoryPickerPanel
-                            variant={variant}
-                            initialCategoryId={feeEntry.categoryId}
+                            params={categoryParams}
                             onSelect={handleCategorySelect}
                             onBack={handleBack}
                             onCreate={handleCreatePress}
@@ -105,7 +107,14 @@ export const TransactionFeeModalContent = ({ accountId, currencySymbol, entry, v
         },
         [TransactionFeeStepEnum.CREATE_CATEGORY]: {
             presentation: MorphingSheetPresentationEnum.PAGE,
-            content: <CategoryCreatePage defaultTitle={createTitle} onSelect={handleCategorySelect} onCancel={handleCreateCancel} />
+            content: (
+                <CategoryCreatePage
+                    defaultTitle={createTitle}
+                    syncZone={account?.syncZone}
+                    onSelect={handleCategorySelect}
+                    onCancel={handleCreateCancel}
+                />
+            )
         }
     };
 

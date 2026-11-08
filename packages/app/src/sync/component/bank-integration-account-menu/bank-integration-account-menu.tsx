@@ -27,7 +27,7 @@ interface Props {
 export const BankIntegrationAccountMenu = ({ accountId, rowTestID, title, children }: Props) => {
     const { t } = useLingui();
     const router = useRouter();
-    const { handleArchive, isLoading } = useArchiveAccount(accountId, emptyFn);
+    const { handleArchive, isLoading, isArchivable } = useArchiveAccount(accountId, emptyFn);
     const { isLoading: isMarkingExternal, run: runMarkExternal } = useSingleFlight();
 
     const handleDetails = () => void router.navigate({ pathname: '/account/[id]/details', params: { id: String(accountId) } });
@@ -78,19 +78,23 @@ export const BankIntegrationAccountMenu = ({ accountId, rowTestID, title, childr
                 onPress={handleEdit}
                 {...testID(rowTestID, TestIDPartEnum.MENU, TestIDPartEnum.EDIT)}
             />
-            <ActionsMenuItem
-                icon={UserIconNameEnum.ArrowUpRight}
-                label={t`External account`}
-                onPress={handleMarkExternal}
-                {...testID(rowTestID, TestIDPartEnum.MENU, TestIDPartEnum.EXTERNAL)}
-            />
-            <ActionsMenuItem
-                icon={UserIconNameEnum.Archive}
-                label={t`Archive`}
-                onPress={handleArchive}
-                variant="destructive"
-                {...testID(rowTestID, TestIDPartEnum.MENU, TestIDPartEnum.ARCHIVE)}
-            />
+            {isArchivable ? (
+                <>
+                    <ActionsMenuItem
+                        icon={UserIconNameEnum.ArrowUpRight}
+                        label={t`External account`}
+                        onPress={handleMarkExternal}
+                        {...testID(rowTestID, TestIDPartEnum.MENU, TestIDPartEnum.EXTERNAL)}
+                    />
+                    <ActionsMenuItem
+                        icon={UserIconNameEnum.Archive}
+                        label={t`Archive`}
+                        onPress={handleArchive}
+                        variant="destructive"
+                        {...testID(rowTestID, TestIDPartEnum.MENU, TestIDPartEnum.ARCHIVE)}
+                    />
+                </>
+            ) : null}
         </ActionsMenu>
     );
 };

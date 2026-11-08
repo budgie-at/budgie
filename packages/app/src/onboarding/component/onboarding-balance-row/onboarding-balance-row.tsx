@@ -1,15 +1,9 @@
-import { useAtomValue } from '@effect/atom-react/Hooks';
-import { useState } from 'react';
-import { Text, View } from 'react-native';
-import { useResolveClassNames } from 'uniwind';
+import { Text, View, useWindowDimensions } from 'react-native';
 
-import { AmountInput } from '../../../@generic/component/amount-input/amount-input';
 import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
-import { cn } from '../../../@generic/utils/cn.util';
-import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
-
-import { OnboardingBalanceRowSelector } from './onboarding-balance-row.selector';
+import { MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/max-font-size-multiplier.constant';
+import { OnboardingBalanceField } from '../onboarding-balance-field/onboarding-balance-field';
 
 import type { AccountEntityInterface } from '@budgie/contracts';
 
@@ -20,49 +14,19 @@ interface Props {
 }
 
 export const OnboardingBalanceRow = ({ account, value, onChangeValue }: Props) => {
-    const [isFocused, setIsFocused] = useState(false);
-
-    const { color } = useResolveClassNames('text-primary');
-    const currencySymbol = useAtomValue(defaultInstrumentAtom).symbol;
-
-    const handleChangeValue = (nextValue: number) => void onChangeValue(account.id, nextValue);
-    const handleFocus = () => void setIsFocused(true);
-    const handleBlur = () => void setIsFocused(false);
-
-    const focusClassName = isFocused ? 'border-primary' : 'border-transparent';
-
-    return (
-        <GroupedListRow
-            left={<GroupedListIcon icon={account.icon} />}
-            title={
-                <Text className="text-primary text-[17px]" numberOfLines={2}>
-                    {account.title}
-                </Text>
-            }
-            right={
-                <View
-                    className={cn(
-                        'min-h-[44px] min-w-[112px] max-w-[50%] shrink justify-center rounded-[10px] border-[1.5px] bg-surface px-md dark:bg-surface-fill',
-                        focusClassName
-                    )}
-                >
-                    <AmountInput
-                        accessibilityLabel={account.title}
-                        testID={OnboardingBalanceRowSelector.Amount(account.id)}
-                        value={value}
-                        onChangeValue={handleChangeValue}
-                        onFocus={handleFocus}
-                        onBlur={handleBlur}
-                        inputClassName="min-h-[44px] px-0 py-0 text-primary text-[19px] text-right border-0 h-auto"
-                        selectionColor={color}
-                        cursorColor={color}
-                        borderless
-                        selectTextOnFocus
-                        valuePrefix={currencySymbol}
-                        placeholder={`${currencySymbol}0`}
-                    />
-                </View>
-            }
-        />
+    const { fontScale } = useWindowDimensions();
+    const isStacked = fontScale > MAX_FONT_SIZE_MULTIPLIER;
+    const title = <Text className="text-primary text-[17px]">{account.title}</Text>;
+    const amountField = <OnboardingBalanceField account={account} value={value} onChangeValue={onChangeValue} />;
+    const titleContent = isStacked ? (
+        <View className="gap-y-md self-stretch">
+            {title}
+            {amountField}
+        </View>
+    ) : (
+        title
     );
+    const accessory = isStacked ? null : amountField;
+
+    return <GroupedListRow left={<GroupedListIcon icon={account.icon} />} title={titleContent} right={accessory} />;
 };

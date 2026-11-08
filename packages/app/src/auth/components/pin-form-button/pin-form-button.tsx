@@ -1,6 +1,7 @@
 import { cva } from 'class-variance-authority';
 import { Pressable, Text } from 'react-native';
 
+import { MAX_CHROME_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/max-chrome-font-size-multiplier.constant';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { useIsCompactPinLayout } from '../../hook/use-is-compact-pin-layout.hook';
 import { PinFormSelector } from '../pin-form/pin-form.selector';
@@ -48,7 +49,9 @@ export const PinFormButton = ({ digit, onPress, disabled = false }: Props) => {
             testID={PinFormSelector.Digit(digit)}
             className={keyVariants({ isCompact })}
         >
-            <Text className={digitVariants({ isCompact })}>{digit}</Text>
+            <Text maxFontSizeMultiplier={MAX_CHROME_FONT_SIZE_MULTIPLIER} className={digitVariants({ isCompact })}>
+                {digit}
+            </Text>
         </Pressable>
     );
 };

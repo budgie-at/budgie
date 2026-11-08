@@ -6,11 +6,12 @@ import type { CategoryFormResultInterface } from '../../interface/category-form-
 
 interface Props {
     readonly defaultTitle: string;
+    readonly syncZone?: string;
     readonly onSelect: (categoryId: number) => void;
     readonly onCancel: () => void;
 }
 
-export const CategoryCreatePage = ({ defaultTitle, onSelect, onCancel }: Props) => {
+export const CategoryCreatePage = ({ defaultTitle, syncZone, onSelect, onCancel }: Props) => {
     const handleSuccess = (result: CategoryFormResultInterface) => {
         onSelect(result.category.id);
     };
@@ -19,7 +20,7 @@ export const CategoryCreatePage = ({ defaultTitle, onSelect, onCancel }: Props) 
         <LockstepStack
             root={
                 <LockstepIconSelectorProvider>
-                    <CategoryForm defaultTitle={defaultTitle} onSuccess={handleSuccess} onCancel={onCancel} />
+                    <CategoryForm defaultTitle={defaultTitle} syncZone={syncZone} onSuccess={handleSuccess} onCancel={onCancel} />
                 </LockstepIconSelectorProvider>
             }
         />

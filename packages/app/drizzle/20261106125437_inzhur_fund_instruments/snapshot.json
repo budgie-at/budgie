@@ -3,7 +3,7 @@
   "dialect": "sqlite",
   "id": "3289747c-5441-4872-bc64-8f9181511a38",
   "prevIds": [
-    "67116fdc-4a61-4afa-b1c7-05bfe4f76310"
+    "6cb7725d-21e8-41bb-8657-fb9d48d9c9a1"
   ],
   "ddl": [
     {
@@ -107,10 +107,6 @@
       "entityType": "tables"
     },
     {
-      "name": "recurring_series_transaction",
-      "entityType": "tables"
-    },
-    {
       "name": "rule_actions",
       "entityType": "tables"
     },
@@ -127,7 +123,27 @@
       "entityType": "tables"
     },
     {
+      "name": "sync_apply_state",
+      "entityType": "tables"
+    },
+    {
       "name": "bank_syncs",
+      "entityType": "tables"
+    },
+    {
+      "name": "sync_outbox",
+      "entityType": "tables"
+    },
+    {
+      "name": "sync_pending",
+      "entityType": "tables"
+    },
+    {
+      "name": "sync_record",
+      "entityType": "tables"
+    },
+    {
+      "name": "sync_zone_registry",
       "entityType": "tables"
     },
     {
@@ -247,6 +263,26 @@
       "default": null,
       "generated": null,
       "name": "deleted_at",
+      "entityType": "columns",
+      "table": "accounts"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "sync_id",
+      "entityType": "columns",
+      "table": "accounts"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "'personal'",
+      "generated": null,
+      "name": "sync_zone",
       "entityType": "columns",
       "table": "accounts"
     },
@@ -496,6 +532,26 @@
       "autoincrement": false,
       "default": null,
       "generated": null,
+      "name": "sync_id",
+      "entityType": "columns",
+      "table": "account_external_ids"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "'personal'",
+      "generated": null,
+      "name": "sync_zone",
+      "entityType": "columns",
+      "table": "account_external_ids"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
       "name": "external_id",
       "entityType": "columns",
       "table": "account_external_ids"
@@ -552,6 +608,26 @@
     },
     {
       "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "sync_id",
+      "entityType": "columns",
+      "table": "bank_integrations"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "'personal'",
+      "generated": null,
+      "name": "sync_zone",
+      "entityType": "columns",
+      "table": "bank_integrations"
+    },
+    {
+      "type": "text",
       "notNull": true,
       "autoincrement": false,
       "default": null,
@@ -601,6 +677,16 @@
       "table": "bank_integrations"
     },
     {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "owner_install_id",
+      "entityType": "columns",
+      "table": "bank_integrations"
+    },
+    {
       "type": "integer",
       "notNull": false,
       "autoincrement": true,
@@ -637,6 +723,26 @@
       "default": null,
       "generated": null,
       "name": "deleted_at",
+      "entityType": "columns",
+      "table": "budget_category_limits"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "sync_id",
+      "entityType": "columns",
+      "table": "budget_category_limits"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "'personal'",
+      "generated": null,
+      "name": "sync_zone",
       "entityType": "columns",
       "table": "budget_category_limits"
     },
@@ -727,6 +833,26 @@
       "default": null,
       "generated": null,
       "name": "deleted_at",
+      "entityType": "columns",
+      "table": "budgets"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "sync_id",
+      "entityType": "columns",
+      "table": "budgets"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "'personal'",
+      "generated": null,
+      "name": "sync_zone",
       "entityType": "columns",
       "table": "budgets"
     },
@@ -927,6 +1053,26 @@
       "default": null,
       "generated": null,
       "name": "deleted_at",
+      "entityType": "columns",
+      "table": "budget_limit_changes"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "sync_id",
+      "entityType": "columns",
+      "table": "budget_limit_changes"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "'personal'",
+      "generated": null,
+      "name": "sync_zone",
       "entityType": "columns",
       "table": "budget_limit_changes"
     },
@@ -1311,6 +1457,26 @@
       "table": "budget_sinking_funds"
     },
     {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "sync_id",
+      "entityType": "columns",
+      "table": "budget_sinking_funds"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "'personal'",
+      "generated": null,
+      "name": "sync_zone",
+      "entityType": "columns",
+      "table": "budget_sinking_funds"
+    },
+    {
       "type": "integer",
       "notNull": true,
       "autoincrement": false,
@@ -1437,6 +1603,26 @@
       "default": null,
       "generated": null,
       "name": "deleted_at",
+      "entityType": "columns",
+      "table": "categories"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "sync_id",
+      "entityType": "columns",
+      "table": "categories"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "'personal'",
+      "generated": null,
+      "name": "sync_zone",
       "entityType": "columns",
       "table": "categories"
     },
@@ -1657,6 +1843,26 @@
       "default": null,
       "generated": null,
       "name": "deleted_at",
+      "entityType": "columns",
+      "table": "debt_events"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "sync_id",
+      "entityType": "columns",
+      "table": "debt_events"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "'personal'",
+      "generated": null,
+      "name": "sync_zone",
       "entityType": "columns",
       "table": "debt_events"
     },
@@ -2602,6 +2808,26 @@
     },
     {
       "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "sync_id",
+      "entityType": "columns",
+      "table": "recurring_series"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "'personal'",
+      "generated": null,
+      "name": "sync_zone",
+      "entityType": "columns",
+      "table": "recurring_series"
+    },
+    {
+      "type": "text",
       "notNull": true,
       "autoincrement": false,
       "default": null,
@@ -2691,186 +2917,6 @@
       "table": "recurring_series"
     },
     {
-      "type": "text",
-      "notNull": true,
-      "autoincrement": false,
-      "default": "'DETECTED'",
-      "generated": null,
-      "name": "source",
-      "entityType": "columns",
-      "table": "recurring_series"
-    },
-    {
-      "type": "integer",
-      "notNull": false,
-      "autoincrement": false,
-      "default": null,
-      "generated": null,
-      "name": "account_id",
-      "entityType": "columns",
-      "table": "recurring_series"
-    },
-    {
-      "type": "text",
-      "notNull": true,
-      "autoincrement": false,
-      "default": "'MONTH'",
-      "generated": null,
-      "name": "cadence_unit",
-      "entityType": "columns",
-      "table": "recurring_series"
-    },
-    {
-      "type": "integer",
-      "notNull": true,
-      "autoincrement": false,
-      "default": "1",
-      "generated": null,
-      "name": "cadence_interval",
-      "entityType": "columns",
-      "table": "recurring_series"
-    },
-    {
-      "type": "integer",
-      "notNull": true,
-      "autoincrement": false,
-      "default": "0",
-      "generated": null,
-      "name": "anchor_date",
-      "entityType": "columns",
-      "table": "recurring_series"
-    },
-    {
-      "type": "integer",
-      "notNull": false,
-      "autoincrement": false,
-      "default": null,
-      "generated": null,
-      "name": "instrument_id",
-      "entityType": "columns",
-      "table": "recurring_series"
-    },
-    {
-      "type": "integer",
-      "notNull": false,
-      "autoincrement": false,
-      "default": null,
-      "generated": null,
-      "name": "ends_at",
-      "entityType": "columns",
-      "table": "recurring_series"
-    },
-    {
-      "type": "integer",
-      "notNull": false,
-      "autoincrement": false,
-      "default": null,
-      "generated": null,
-      "name": "reminder_days_before",
-      "entityType": "columns",
-      "table": "recurring_series"
-    },
-    {
-      "type": "integer",
-      "notNull": true,
-      "autoincrement": false,
-      "default": "0",
-      "generated": null,
-      "name": "confidence",
-      "entityType": "columns",
-      "table": "recurring_series"
-    },
-    {
-      "type": "integer",
-      "notNull": false,
-      "autoincrement": true,
-      "default": null,
-      "generated": null,
-      "name": "id",
-      "entityType": "columns",
-      "table": "recurring_series_transaction"
-    },
-    {
-      "type": "integer",
-      "notNull": true,
-      "autoincrement": false,
-      "default": "(unixepoch())",
-      "generated": null,
-      "name": "created_at",
-      "entityType": "columns",
-      "table": "recurring_series_transaction"
-    },
-    {
-      "type": "integer",
-      "notNull": true,
-      "autoincrement": false,
-      "default": "(unixepoch())",
-      "generated": null,
-      "name": "updated_at",
-      "entityType": "columns",
-      "table": "recurring_series_transaction"
-    },
-    {
-      "type": "integer",
-      "notNull": false,
-      "autoincrement": false,
-      "default": null,
-      "generated": null,
-      "name": "deleted_at",
-      "entityType": "columns",
-      "table": "recurring_series_transaction"
-    },
-    {
-      "type": "integer",
-      "notNull": true,
-      "autoincrement": false,
-      "default": null,
-      "generated": null,
-      "name": "series_id",
-      "entityType": "columns",
-      "table": "recurring_series_transaction"
-    },
-    {
-      "type": "integer",
-      "notNull": true,
-      "autoincrement": false,
-      "default": null,
-      "generated": null,
-      "name": "transaction_id",
-      "entityType": "columns",
-      "table": "recurring_series_transaction"
-    },
-    {
-      "type": "integer",
-      "notNull": true,
-      "autoincrement": false,
-      "default": null,
-      "generated": null,
-      "name": "cycle_date",
-      "entityType": "columns",
-      "table": "recurring_series_transaction"
-    },
-    {
-      "type": "text",
-      "notNull": true,
-      "autoincrement": false,
-      "default": null,
-      "generated": null,
-      "name": "matched_by",
-      "entityType": "columns",
-      "table": "recurring_series_transaction"
-    },
-    {
-      "type": "integer",
-      "notNull": true,
-      "autoincrement": false,
-      "default": "false",
-      "generated": null,
-      "name": "is_excluded",
-      "entityType": "columns",
-      "table": "recurring_series_transaction"
-    },
-    {
       "type": "integer",
       "notNull": false,
       "autoincrement": true,
@@ -2907,6 +2953,26 @@
       "default": null,
       "generated": null,
       "name": "deleted_at",
+      "entityType": "columns",
+      "table": "rule_actions"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "sync_id",
+      "entityType": "columns",
+      "table": "rule_actions"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "'personal'",
+      "generated": null,
+      "name": "sync_zone",
       "entityType": "columns",
       "table": "rule_actions"
     },
@@ -3001,6 +3067,26 @@
       "table": "rule_conditions"
     },
     {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "sync_id",
+      "entityType": "columns",
+      "table": "rule_conditions"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "'personal'",
+      "generated": null,
+      "name": "sync_zone",
+      "entityType": "columns",
+      "table": "rule_conditions"
+    },
+    {
       "type": "integer",
       "notNull": true,
       "autoincrement": false,
@@ -3087,6 +3173,26 @@
       "default": null,
       "generated": null,
       "name": "deleted_at",
+      "entityType": "columns",
+      "table": "rules"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "sync_id",
+      "entityType": "columns",
+      "table": "rules"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "'personal'",
+      "generated": null,
+      "name": "sync_zone",
       "entityType": "columns",
       "table": "rules"
     },
@@ -3382,6 +3488,76 @@
     },
     {
       "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "true",
+      "generated": null,
+      "name": "cloud_backup_enabled",
+      "entityType": "columns",
+      "table": "settings"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "last_cloud_backup_at",
+      "entityType": "columns",
+      "table": "settings"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "true",
+      "generated": null,
+      "name": "cloud_sync_enabled",
+      "entityType": "columns",
+      "table": "settings"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "lineage_id",
+      "entityType": "columns",
+      "table": "settings"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "false",
+      "generated": null,
+      "name": "household_share_everything",
+      "entityType": "columns",
+      "table": "settings"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "sync_apply_state"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "false",
+      "generated": null,
+      "name": "is_applying",
+      "entityType": "columns",
+      "table": "sync_apply_state"
+    },
+    {
+      "type": "integer",
       "notNull": false,
       "autoincrement": true,
       "default": null,
@@ -3658,6 +3834,336 @@
       "generated": null,
       "name": "id",
       "entityType": "columns",
+      "table": "sync_outbox"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "record_type",
+      "entityType": "columns",
+      "table": "sync_outbox"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "sync_zone",
+      "entityType": "columns",
+      "table": "sync_outbox"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "sync_id",
+      "entityType": "columns",
+      "table": "sync_outbox"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "'SAVE'",
+      "generated": null,
+      "name": "operation",
+      "entityType": "columns",
+      "table": "sync_outbox"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "'[]'",
+      "generated": null,
+      "name": "changed_columns",
+      "entityType": "columns",
+      "table": "sync_outbox"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "1",
+      "generated": null,
+      "name": "sync_revision",
+      "entityType": "columns",
+      "table": "sync_outbox"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "table": "sync_outbox"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "sync_pending"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "sync_zone",
+      "entityType": "columns",
+      "table": "sync_pending"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "sync_id",
+      "entityType": "columns",
+      "table": "sync_pending"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "record_type",
+      "entityType": "columns",
+      "table": "sync_pending"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "missing_record_type",
+      "entityType": "columns",
+      "table": "sync_pending"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "missing_sync_id",
+      "entityType": "columns",
+      "table": "sync_pending"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "system_fields",
+      "entityType": "columns",
+      "table": "sync_pending"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "payload",
+      "entityType": "columns",
+      "table": "sync_pending"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "table": "sync_pending"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "sync_zone",
+      "entityType": "columns",
+      "table": "sync_record"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "sync_id",
+      "entityType": "columns",
+      "table": "sync_record"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "record_type",
+      "entityType": "columns",
+      "table": "sync_record"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "system_fields",
+      "entityType": "columns",
+      "table": "sync_record"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "payload",
+      "entityType": "columns",
+      "table": "sync_record"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "1",
+      "generated": null,
+      "name": "schema_version",
+      "entityType": "columns",
+      "table": "sync_record"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "table": "sync_record"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "sync_zone_registry"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "zone_label",
+      "entityType": "columns",
+      "table": "sync_zone_registry"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "zone_name",
+      "entityType": "columns",
+      "table": "sync_zone_registry"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "owner_name",
+      "entityType": "columns",
+      "table": "sync_zone_registry"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "database_scope",
+      "entityType": "columns",
+      "table": "sync_zone_registry"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "role",
+      "entityType": "columns",
+      "table": "sync_zone_registry"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "share_record_name",
+      "entityType": "columns",
+      "table": "sync_zone_registry"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "table": "sync_zone_registry"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "table": "sync_zone_registry"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
       "table": "tags"
     },
     {
@@ -3687,6 +4193,26 @@
       "default": null,
       "generated": null,
       "name": "deleted_at",
+      "entityType": "columns",
+      "table": "tags"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "sync_id",
+      "entityType": "columns",
+      "table": "tags"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "'personal'",
+      "generated": null,
+      "name": "sync_zone",
       "entityType": "columns",
       "table": "tags"
     },
@@ -3777,6 +4303,26 @@
       "default": null,
       "generated": null,
       "name": "deleted_at",
+      "entityType": "columns",
+      "table": "transactions"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "sync_id",
+      "entityType": "columns",
+      "table": "transactions"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "'personal'",
+      "generated": null,
+      "name": "sync_zone",
       "entityType": "columns",
       "table": "transactions"
     },
@@ -3998,6 +4544,26 @@
     },
     {
       "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "sync_id",
+      "entityType": "columns",
+      "table": "transaction_entries"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "'personal'",
+      "generated": null,
+      "name": "sync_zone",
+      "entityType": "columns",
+      "table": "transaction_entries"
+    },
+    {
+      "type": "text",
       "notNull": true,
       "autoincrement": false,
       "default": null,
@@ -4053,6 +4619,16 @@
       "default": null,
       "generated": null,
       "name": "mcc_category_id",
+      "entityType": "columns",
+      "table": "transaction_entries"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "0",
+      "generated": null,
+      "name": "sequence",
       "entityType": "columns",
       "table": "transaction_entries"
     },
@@ -4207,6 +4783,26 @@
       "table": "transaction_entries"
     },
     {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "sync_id",
+      "entityType": "columns",
+      "table": "transaction_receipts"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "'personal'",
+      "generated": null,
+      "name": "sync_zone",
+      "entityType": "columns",
+      "table": "transaction_receipts"
+    },
+    {
       "type": "integer",
       "notNull": false,
       "autoincrement": false,
@@ -4265,6 +4861,26 @@
       "name": "scanned_at",
       "entityType": "columns",
       "table": "transaction_receipts"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "sync_id",
+      "entityType": "columns",
+      "table": "transaction_tags"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "'personal'",
+      "generated": null,
+      "name": "sync_zone",
+      "entityType": "columns",
+      "table": "transaction_tags"
     },
     {
       "type": "integer",
@@ -4848,66 +5464,6 @@
     },
     {
       "columns": [
-        "account_id"
-      ],
-      "tableTo": "accounts",
-      "columnsTo": [
-        "id"
-      ],
-      "onUpdate": "NO ACTION",
-      "onDelete": "SET NULL",
-      "nameExplicit": false,
-      "name": "fk_recurring_series_account_id_accounts_id_fk",
-      "entityType": "fks",
-      "table": "recurring_series"
-    },
-    {
-      "columns": [
-        "instrument_id"
-      ],
-      "tableTo": "instruments",
-      "columnsTo": [
-        "id"
-      ],
-      "onUpdate": "NO ACTION",
-      "onDelete": "NO ACTION",
-      "nameExplicit": false,
-      "name": "fk_recurring_series_instrument_id_instruments_id_fk",
-      "entityType": "fks",
-      "table": "recurring_series"
-    },
-    {
-      "columns": [
-        "series_id"
-      ],
-      "tableTo": "recurring_series",
-      "columnsTo": [
-        "id"
-      ],
-      "onUpdate": "NO ACTION",
-      "onDelete": "CASCADE",
-      "nameExplicit": false,
-      "name": "fk_recurring_series_transaction_series_id_recurring_series_id_fk",
-      "entityType": "fks",
-      "table": "recurring_series_transaction"
-    },
-    {
-      "columns": [
-        "transaction_id"
-      ],
-      "tableTo": "transactions",
-      "columnsTo": [
-        "id"
-      ],
-      "onUpdate": "NO ACTION",
-      "onDelete": "CASCADE",
-      "nameExplicit": false,
-      "name": "fk_recurring_series_transaction_transaction_id_transactions_id_fk",
-      "entityType": "fks",
-      "table": "recurring_series_transaction"
-    },
-    {
-      "columns": [
         "rule_id"
       ],
       "tableTo": "rules",
@@ -5253,6 +5809,16 @@
     },
     {
       "columns": [
+        "sync_zone",
+        "external_id"
+      ],
+      "nameExplicit": false,
+      "name": "account_external_ids_pk",
+      "entityType": "pks",
+      "table": "account_external_ids"
+    },
+    {
+      "columns": [
         "comment_embedding_id",
         "tag_id"
       ],
@@ -5284,6 +5850,16 @@
     },
     {
       "columns": [
+        "sync_zone",
+        "sync_id"
+      ],
+      "nameExplicit": false,
+      "name": "sync_record_pk",
+      "entityType": "pks",
+      "table": "sync_record"
+    },
+    {
+      "columns": [
         "transaction_id",
         "tag_id"
       ],
@@ -5308,15 +5884,6 @@
       "nameExplicit": false,
       "name": "accounts_pk",
       "table": "accounts",
-      "entityType": "pks"
-    },
-    {
-      "columns": [
-        "external_id"
-      ],
-      "nameExplicit": false,
-      "name": "account_external_ids_pk",
-      "table": "account_external_ids",
       "entityType": "pks"
     },
     {
@@ -5495,15 +6062,6 @@
         "id"
       ],
       "nameExplicit": false,
-      "name": "recurring_series_transaction_pk",
-      "table": "recurring_series_transaction",
-      "entityType": "pks"
-    },
-    {
-      "columns": [
-        "id"
-      ],
-      "nameExplicit": false,
       "name": "rule_actions_pk",
       "table": "rule_actions",
       "entityType": "pks"
@@ -5540,8 +6098,44 @@
         "id"
       ],
       "nameExplicit": false,
+      "name": "sync_apply_state_pk",
+      "table": "sync_apply_state",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
       "name": "bank_syncs_pk",
       "table": "bank_syncs",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "sync_outbox_pk",
+      "table": "sync_outbox",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "sync_pending_pk",
+      "table": "sync_pending",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "sync_zone_registry_pk",
+      "table": "sync_zone_registry",
       "entityType": "pks"
     },
     {
@@ -5579,6 +6173,24 @@
       "name": "transaction_receipts_pk",
       "table": "transaction_receipts",
       "entityType": "pks"
+    },
+    {
+      "columns": [
+        {
+          "value": "sync_zone",
+          "isExpression": false
+        },
+        {
+          "value": "sync_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": true,
+      "where": null,
+      "origin": "manual",
+      "name": "accounts_sync_identity_unq",
+      "entityType": "indexes",
+      "table": "accounts"
     },
     {
       "columns": [
@@ -5623,6 +6235,24 @@
     {
       "columns": [
         {
+          "value": "sync_zone",
+          "isExpression": false
+        },
+        {
+          "value": "sync_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": true,
+      "where": null,
+      "origin": "manual",
+      "name": "account_external_ids_sync_identity_unq",
+      "entityType": "indexes",
+      "table": "account_external_ids"
+    },
+    {
+      "columns": [
+        {
           "value": "account_id",
           "isExpression": false
         }
@@ -5633,6 +6263,24 @@
       "name": "account_external_ids_account_idx",
       "entityType": "indexes",
       "table": "account_external_ids"
+    },
+    {
+      "columns": [
+        {
+          "value": "sync_zone",
+          "isExpression": false
+        },
+        {
+          "value": "sync_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": true,
+      "where": null,
+      "origin": "manual",
+      "name": "bank_integrations_sync_identity_unq",
+      "entityType": "indexes",
+      "table": "bank_integrations"
     },
     {
       "columns": [
@@ -5669,6 +6317,24 @@
     {
       "columns": [
         {
+          "value": "sync_zone",
+          "isExpression": false
+        },
+        {
+          "value": "sync_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": true,
+      "where": null,
+      "origin": "manual",
+      "name": "budget_category_limits_sync_identity_unq",
+      "entityType": "indexes",
+      "table": "budget_category_limits"
+    },
+    {
+      "columns": [
+        {
           "value": "budget_id",
           "isExpression": false
         },
@@ -5683,6 +6349,42 @@
       "name": "budget_category_limit_budget_category_unq",
       "entityType": "indexes",
       "table": "budget_category_limits"
+    },
+    {
+      "columns": [
+        {
+          "value": "sync_zone",
+          "isExpression": false
+        },
+        {
+          "value": "sync_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": true,
+      "where": null,
+      "origin": "manual",
+      "name": "budgets_sync_identity_unq",
+      "entityType": "indexes",
+      "table": "budgets"
+    },
+    {
+      "columns": [
+        {
+          "value": "sync_zone",
+          "isExpression": false
+        },
+        {
+          "value": "sync_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": true,
+      "where": null,
+      "origin": "manual",
+      "name": "budget_limit_changes_sync_identity_unq",
+      "entityType": "indexes",
+      "table": "budget_limit_changes"
     },
     {
       "columns": [
@@ -5719,6 +6421,60 @@
       "name": "budget_period_snapshot_budget_period_start_unq",
       "entityType": "indexes",
       "table": "budget_period_snapshots"
+    },
+    {
+      "columns": [
+        {
+          "value": "sync_zone",
+          "isExpression": false
+        },
+        {
+          "value": "sync_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": true,
+      "where": null,
+      "origin": "manual",
+      "name": "budget_sinking_funds_sync_identity_unq",
+      "entityType": "indexes",
+      "table": "budget_sinking_funds"
+    },
+    {
+      "columns": [
+        {
+          "value": "sync_zone",
+          "isExpression": false
+        },
+        {
+          "value": "sync_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": true,
+      "where": null,
+      "origin": "manual",
+      "name": "categories_sync_identity_unq",
+      "entityType": "indexes",
+      "table": "categories"
+    },
+    {
+      "columns": [
+        {
+          "value": "sync_zone",
+          "isExpression": false
+        },
+        {
+          "value": "sync_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": true,
+      "where": null,
+      "origin": "manual",
+      "name": "debt_events_sync_identity_unq",
+      "entityType": "indexes",
+      "table": "debt_events"
     },
     {
       "columns": [
@@ -5907,34 +6663,164 @@
     {
       "columns": [
         {
-          "value": "series_id",
+          "value": "sync_zone",
           "isExpression": false
         },
         {
-          "value": "transaction_id",
+          "value": "sync_id",
           "isExpression": false
         }
       ],
       "isUnique": true,
       "where": null,
       "origin": "manual",
-      "name": "recurring_series_transaction_series_transaction_unq",
+      "name": "recurring_series_sync_identity_unq",
       "entityType": "indexes",
-      "table": "recurring_series_transaction"
+      "table": "recurring_series"
     },
     {
       "columns": [
         {
-          "value": "transaction_id",
+          "value": "sync_zone",
+          "isExpression": false
+        },
+        {
+          "value": "sync_id",
           "isExpression": false
         }
       ],
       "isUnique": true,
-      "where": "\"recurring_series_transaction\".\"is_excluded\" = 0 AND \"recurring_series_transaction\".\"deleted_at\" IS NULL",
+      "where": null,
       "origin": "manual",
-      "name": "recurring_series_transaction_live_transaction_unq",
+      "name": "rule_actions_sync_identity_unq",
       "entityType": "indexes",
-      "table": "recurring_series_transaction"
+      "table": "rule_actions"
+    },
+    {
+      "columns": [
+        {
+          "value": "sync_zone",
+          "isExpression": false
+        },
+        {
+          "value": "sync_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": true,
+      "where": null,
+      "origin": "manual",
+      "name": "rule_conditions_sync_identity_unq",
+      "entityType": "indexes",
+      "table": "rule_conditions"
+    },
+    {
+      "columns": [
+        {
+          "value": "sync_zone",
+          "isExpression": false
+        },
+        {
+          "value": "sync_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": true,
+      "where": null,
+      "origin": "manual",
+      "name": "rules_sync_identity_unq",
+      "entityType": "indexes",
+      "table": "rules"
+    },
+    {
+      "columns": [
+        {
+          "value": "sync_zone",
+          "isExpression": false
+        },
+        {
+          "value": "sync_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": true,
+      "where": null,
+      "origin": "manual",
+      "name": "sync_outbox_record_unq",
+      "entityType": "indexes",
+      "table": "sync_outbox"
+    },
+    {
+      "columns": [
+        {
+          "value": "sync_zone",
+          "isExpression": false
+        },
+        {
+          "value": "sync_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": true,
+      "where": null,
+      "origin": "manual",
+      "name": "sync_pending_record_unq",
+      "entityType": "indexes",
+      "table": "sync_pending"
+    },
+    {
+      "columns": [
+        {
+          "value": "sync_zone",
+          "isExpression": false
+        },
+        {
+          "value": "missing_sync_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "origin": "manual",
+      "name": "sync_pending_missing_idx",
+      "entityType": "indexes",
+      "table": "sync_pending"
+    },
+    {
+      "columns": [
+        {
+          "value": "sync_zone",
+          "isExpression": false
+        },
+        {
+          "value": "sync_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": true,
+      "where": null,
+      "origin": "manual",
+      "name": "tags_sync_identity_unq",
+      "entityType": "indexes",
+      "table": "tags"
+    },
+    {
+      "columns": [
+        {
+          "value": "sync_zone",
+          "isExpression": false
+        },
+        {
+          "value": "sync_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": true,
+      "where": null,
+      "origin": "manual",
+      "name": "transactions_sync_identity_unq",
+      "entityType": "indexes",
+      "table": "transactions"
     },
     {
       "columns": [
@@ -6191,6 +7077,24 @@
     {
       "columns": [
         {
+          "value": "sync_zone",
+          "isExpression": false
+        },
+        {
+          "value": "sync_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": true,
+      "where": null,
+      "origin": "manual",
+      "name": "transaction_entries_sync_identity_unq",
+      "entityType": "indexes",
+      "table": "transaction_entries"
+    },
+    {
+      "columns": [
+        {
           "value": "transaction_id",
           "isExpression": false
         }
@@ -6409,6 +7313,28 @@
     {
       "columns": [
         {
+          "value": "sync_zone",
+          "isExpression": false
+        },
+        {
+          "value": "sync_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": true,
+      "where": null,
+      "origin": "manual",
+      "name": "transaction_receipts_sync_identity_unq",
+      "entityType": "indexes",
+      "table": "transaction_receipts"
+    },
+    {
+      "columns": [
+        {
+          "value": "sync_zone",
+          "isExpression": false
+        },
+        {
           "value": "fingerprint",
           "isExpression": false
         }
@@ -6416,9 +7342,27 @@
       "isUnique": true,
       "where": null,
       "origin": "manual",
-      "name": "transaction_receipts_fingerprint_idx",
+      "name": "transaction_receipts_zone_fingerprint_idx",
       "entityType": "indexes",
       "table": "transaction_receipts"
+    },
+    {
+      "columns": [
+        {
+          "value": "sync_zone",
+          "isExpression": false
+        },
+        {
+          "value": "sync_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": true,
+      "where": null,
+      "origin": "manual",
+      "name": "transaction_tags_sync_identity_unq",
+      "entityType": "indexes",
+      "table": "transaction_tags"
     },
     {
       "columns": [
@@ -6539,6 +7483,15 @@
       "table": "bank_syncs"
     },
     {
+      "columns": [
+        "zone_label"
+      ],
+      "nameExplicit": false,
+      "name": "sync_zone_registry_zone_label_unique",
+      "entityType": "uniques",
+      "table": "sync_zone_registry"
+    },
+    {
       "value": "type != 'SET_CATEGORY' OR category_id IS NOT NULL",
       "name": "rule_action_set_category_requires_category_id",
       "entityType": "checks",
@@ -6561,6 +7514,297 @@
       "name": "rule_condition_between_requires_secondary_value",
       "entityType": "checks",
       "table": "rule_conditions"
+    },
+    {
+      "value": "\"id\" = 1",
+      "name": "sync_apply_state_single_row",
+      "entityType": "checks",
+      "table": "sync_apply_state"
+    },
+    {
+      "name": "recurring_series_transaction",
+      "entityType": "tables"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "'DETECTED'",
+      "generated": null,
+      "name": "source",
+      "entityType": "columns",
+      "table": "recurring_series"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "account_id",
+      "entityType": "columns",
+      "table": "recurring_series"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "'MONTH'",
+      "generated": null,
+      "name": "cadence_unit",
+      "entityType": "columns",
+      "table": "recurring_series"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "1",
+      "generated": null,
+      "name": "cadence_interval",
+      "entityType": "columns",
+      "table": "recurring_series"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "0",
+      "generated": null,
+      "name": "anchor_date",
+      "entityType": "columns",
+      "table": "recurring_series"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "instrument_id",
+      "entityType": "columns",
+      "table": "recurring_series"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "ends_at",
+      "entityType": "columns",
+      "table": "recurring_series"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "reminder_days_before",
+      "entityType": "columns",
+      "table": "recurring_series"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "0",
+      "generated": null,
+      "name": "confidence",
+      "entityType": "columns",
+      "table": "recurring_series"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "recurring_series_transaction"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "table": "recurring_series_transaction"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "table": "recurring_series_transaction"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "deleted_at",
+      "entityType": "columns",
+      "table": "recurring_series_transaction"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "series_id",
+      "entityType": "columns",
+      "table": "recurring_series_transaction"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "transaction_id",
+      "entityType": "columns",
+      "table": "recurring_series_transaction"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "cycle_date",
+      "entityType": "columns",
+      "table": "recurring_series_transaction"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "matched_by",
+      "entityType": "columns",
+      "table": "recurring_series_transaction"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "false",
+      "generated": null,
+      "name": "is_excluded",
+      "entityType": "columns",
+      "table": "recurring_series_transaction"
+    },
+    {
+      "columns": [
+        "account_id"
+      ],
+      "tableTo": "accounts",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "SET NULL",
+      "nameExplicit": false,
+      "name": "fk_recurring_series_account_id_accounts_id_fk",
+      "entityType": "fks",
+      "table": "recurring_series"
+    },
+    {
+      "columns": [
+        "instrument_id"
+      ],
+      "tableTo": "instruments",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "nameExplicit": false,
+      "name": "fk_recurring_series_instrument_id_instruments_id_fk",
+      "entityType": "fks",
+      "table": "recurring_series"
+    },
+    {
+      "columns": [
+        "series_id"
+      ],
+      "tableTo": "recurring_series",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "nameExplicit": false,
+      "name": "fk_recurring_series_transaction_series_id_recurring_series_id_fk",
+      "entityType": "fks",
+      "table": "recurring_series_transaction"
+    },
+    {
+      "columns": [
+        "transaction_id"
+      ],
+      "tableTo": "transactions",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "nameExplicit": false,
+      "name": "fk_recurring_series_transaction_transaction_id_transactions_id_fk",
+      "entityType": "fks",
+      "table": "recurring_series_transaction"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "recurring_series_transaction_pk",
+      "table": "recurring_series_transaction",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        {
+          "value": "series_id",
+          "isExpression": false
+        },
+        {
+          "value": "transaction_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": true,
+      "where": null,
+      "origin": "manual",
+      "name": "recurring_series_transaction_series_transaction_unq",
+      "entityType": "indexes",
+      "table": "recurring_series_transaction"
+    },
+    {
+      "columns": [
+        {
+          "value": "transaction_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": true,
+      "where": "\"recurring_series_transaction\".\"is_excluded\" = 0 AND \"recurring_series_transaction\".\"deleted_at\" IS NULL",
+      "origin": "manual",
+      "name": "recurring_series_transaction_live_transaction_unq",
+      "entityType": "indexes",
+      "table": "recurring_series_transaction"
     }
   ],
   "renames": []

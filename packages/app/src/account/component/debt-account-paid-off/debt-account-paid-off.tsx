@@ -5,6 +5,7 @@ import { Text, View } from 'react-native';
 
 import { Button } from '../../../@generic/component/button/button';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { ProgressTrack } from '../../../@generic/component/progress-track/progress-track';
 import { ProtectedMoney } from '../../../@generic/component/protected-money/protected-money';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
@@ -30,7 +31,7 @@ export const DebtAccountPaidOff = ({ accountId, debtType, instrumentSymbol, summ
     const { t } = useLingui();
     const protectAmount = useProtectedAmountLabel();
     const decimalPlaces = useAtomValue(decimalPlacesAtom);
-    const { handleArchive, isLoading } = useArchiveAccount(accountId, () => void dismissAllOrReplace('/'));
+    const { handleArchive, isLoading, isArchivable, isShareLoading } = useArchiveAccount(accountId, () => void dismissAllOrReplace('/'));
 
     const { overpaidAmount, paidAmount, totalAmount } = summary;
     const { isOverpaid } = getDebtProgressDisplayState(summary, decimalPlaces);
@@ -76,15 +77,19 @@ export const DebtAccountPaidOff = ({ accountId, debtType, instrumentSymbol, summ
                 ) : null}
             </View>
 
-            <Button
-                variant="ghost"
-                size="sm"
-                leftIcon={UserIconNameEnum.Archive}
-                content={t`Archive`}
-                onPress={handleArchive}
-                isLoading={isLoading}
-                testID={DebtAccountPaidOffSelector.ArchiveButton}
-            />
+            {isArchivable || isShareLoading ? (
+                <LoadingContent isLoading={isShareLoading}>
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        leftIcon={UserIconNameEnum.Archive}
+                        content={t`Archive`}
+                        onPress={handleArchive}
+                        isLoading={isLoading}
+                        testID={DebtAccountPaidOffSelector.ArchiveButton}
+                    />
+                </LoadingContent>
+            ) : null}
         </View>
     );
 };

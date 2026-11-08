@@ -16,6 +16,7 @@ interface Props {
     readonly onPress?: () => void;
     readonly testID?: string;
     readonly variant?: MetaPillVariant;
+    readonly maxFontSizeMultiplier?: number;
 }
 
 const PILL_ICON_SIZE = 12;
@@ -46,12 +47,17 @@ const labelVariants = cva<{ variant: Record<MetaPillVariant, ClassValue> }>('tex
 });
 const continuousBorder = { borderCurve: 'continuous' as const };
 
-export const MetaPill = ({ label, icon, onPress, testID, variant = 'default' }: Props) => {
+export const MetaPill = ({ label, icon, onPress, testID, variant = 'default', maxFontSizeMultiplier }: Props) => {
     const labelClassName = labelVariants({ variant });
     const body = (
         <View className={containerVariants({ variant })} style={continuousBorder}>
             {isDefined(icon) && <Icon icon={icon} size={PILL_ICON_SIZE} className={labelClassName} />}
-            <Text className={`${labelClassName} shrink`} numberOfLines={1} ellipsizeMode="tail">
+            <Text
+                className={`${labelClassName} shrink`}
+                numberOfLines={1}
+                ellipsizeMode="tail"
+                maxFontSizeMultiplier={maxFontSizeMultiplier}
+            >
                 {label}
             </Text>
         </View>

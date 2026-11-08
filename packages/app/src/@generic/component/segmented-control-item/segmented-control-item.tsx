@@ -15,7 +15,7 @@ interface Props<T extends string> {
     readonly onPress: (value: T) => void;
 }
 
-const SEGMENT_HIT_SLOP = { top: 6, bottom: 6 } as const;
+const MINIMUM_LABEL_SCALE = 13 / 15;
 
 const labelVariants = cva('text-[15px]', {
     variants: {
@@ -37,8 +37,8 @@ export const SegmentedControlItem = <T extends string>(props: Props<T>) => {
             pressFeedback={HapticPressFeedbackEnum.SELECTION}
             accessibilityRole="tab"
             accessibilityState={accessibilityState}
-            className="flex-1 items-center justify-center px-md py-sm"
-            hitSlop={SEGMENT_HIT_SLOP}
+            className="min-h-[44px] flex-1 items-center justify-center px-md py-sm"
+            hitSlop={0}
             disabled={disabled}
             testID={segment.testID}
             onPress={handlePress}
@@ -46,7 +46,7 @@ export const SegmentedControlItem = <T extends string>(props: Props<T>) => {
             <Text
                 numberOfLines={1}
                 adjustsFontSizeToFit
-                minimumFontScale={0.6}
+                minimumFontScale={MINIMUM_LABEL_SCALE}
                 maxFontSizeMultiplier={maxFontSizeMultiplier}
                 className={labelVariants({ isActive: isSelected, disabled })}
             >

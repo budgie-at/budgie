@@ -1,5 +1,5 @@
 import { BudgetPeriodCloseService, BudgetPeriodSnapshotRepository, BudgetRepository, computeSpent } from '@budgie/budget';
-import { AccountTypeEnum, BudgetKindEnum } from '@budgie/contracts';
+import { PERSONAL_SYNC_ZONE, AccountTypeEnum, BudgetKindEnum } from '@budgie/contracts';
 import { expect, layer } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
@@ -43,7 +43,11 @@ layer(TestLayer)('event budgets', it => {
         Effect.gen(function* () {
             const budgetRepository = yield* BudgetRepository;
             const { tag } = yield* seedTripExpenses();
-            const entries = yield* budgetRepository.findEventSpentEntries(EVENT_STARTS_AT, EVENT_WINDOW_END, 1, tag.id);
+            const entries = yield* budgetRepository.findEventSpentEntries(EVENT_STARTS_AT, EVENT_WINDOW_END, {
+                instrumentId: 1,
+                tagId: tag.id,
+                syncZone: PERSONAL_SYNC_ZONE
+            });
 
             expect(computeSpent(entries, 1).spentOverall).toBe(units(140));
         })
@@ -55,7 +59,13 @@ layer(TestLayer)('event budgets', it => {
 
             yield* seedTripExpenses();
 
-            expect(yield* budgetRepository.findEventSpentEntries(EVENT_STARTS_AT, EVENT_WINDOW_END, 1, null)).toEqual([]);
+            expect(
+                yield* budgetRepository.findEventSpentEntries(EVENT_STARTS_AT, EVENT_WINDOW_END, {
+                    instrumentId: 1,
+                    tagId: null,
+                    syncZone: PERSONAL_SYNC_ZONE
+                })
+            ).toEqual([]);
         })
     );
 

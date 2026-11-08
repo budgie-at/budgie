@@ -1,7 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
-import { useLingui } from '@lingui/react/macro';
-import { View } from 'react-native';
+import { Trans, useLingui } from '@lingui/react/macro';
+import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -38,8 +38,12 @@ export const OnboardingCurrencyRow = () => {
                 <GroupedListRow
                     testID={OnboardingCurrencyRowSelector.ChangeButton}
                     left={<GroupedListIcon icon={UserIconNameEnum.Coins} />}
-                    title={t`Main currency`}
-                    subtitle={regionSubtitle}
+                    title={
+                        <Text className="text-primary text-[17px]">
+                            <Trans>Main currency</Trans>
+                        </Text>
+                    }
+                    subtitle={<Text className="text-secondary-foreground text-[13px] leading-[18px]">{regionSubtitle}</Text>}
                     onPress={handleChangePress}
                 />
             </GroupedListSection>

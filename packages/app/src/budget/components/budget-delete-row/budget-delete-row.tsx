@@ -7,10 +7,12 @@ interface Props {
     readonly title: string;
     readonly testID: string;
     readonly onDelete: () => unknown;
+    readonly isDisabled?: boolean;
 }
 
-export const BudgetDeleteRow = ({ title, testID, onDelete }: Props) => {
+export const BudgetDeleteRow = ({ title, testID, onDelete, isDisabled = false }: Props) => {
     const handlePress = () => void onDelete();
+    const pressableProps = { disabled: isDisabled, accessibilityState: { disabled: isDisabled } };
 
     return (
         <GroupedListSection>
@@ -22,6 +24,7 @@ export const BudgetDeleteRow = ({ title, testID, onDelete }: Props) => {
                 }
                 testID={testID}
                 onPress={handlePress}
+                pressableProps={pressableProps}
             />
         </GroupedListSection>
     );

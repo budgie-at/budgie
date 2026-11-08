@@ -12,24 +12,21 @@ import { useSearchCategoriesQuery } from '../../query/use-search-categories.quer
 import { CategoryCreateRow } from '../category-create-row/category-create-row';
 import { CategorySelectContent } from '../category-select-content/category-select-content';
 
-import type { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
+import type { CategorySelectorModalParams } from '../../context/category-selector-modal.context';
 
 interface Props {
-    readonly variant: ColorPaletteVariant;
-    readonly initialCategoryId: number | null;
-    readonly excludeCategoryIds?: number[];
-    readonly title?: string;
-    readonly description?: string;
+    readonly params: CategorySelectorModalParams;
     readonly onSelect: (categoryId: number) => void;
     readonly onBack?: () => void;
     readonly onCreate: (defaultTitle: string) => void;
 }
 
 export const CategoryPickerPanel = (props: Props) => {
-    const { variant, initialCategoryId, excludeCategoryIds = [], title, description, onSelect, onBack, onCreate } = props;
+    const { params, onSelect, onBack, onCreate } = props;
+    const { variant = 'primary', initialCategoryId = null, excludeCategoryIds = [], title, description, syncZone } = params;
     const { t } = useLingui();
     const [search, setSearch] = useState('');
-    const { categories, isLoading } = useSearchCategoriesQuery(search, true);
+    const { categories, isLoading } = useSearchCategoriesQuery(search, true, syncZone);
 
     const selectedCategoryIds = isDefined(initialCategoryId) ? [initialCategoryId] : [];
     const data = prepareSelectorGridData(categories, excludeCategoryIds);

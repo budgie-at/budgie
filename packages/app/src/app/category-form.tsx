@@ -15,6 +15,7 @@ export default function CategoryFormModal() {
         <CategoryForm
             category={currentParams?.category}
             defaultTitle={currentParams?.defaultTitle}
+            syncZone={currentParams?.syncZone}
             onSuccess={resolveCategoryForm}
             onCancel={handleCancel}
         />

@@ -1,0 +1,6 @@
+export enum ICloudZoneChangeReason {
+    DELETED = 'DELETED',
+    PURGED = 'PURGED',
+    ENCRYPTED_DATA_RESET = 'ENCRYPTED_DATA_RESET',
+    ACCESS_LOST = 'ACCESS_LOST'
+}

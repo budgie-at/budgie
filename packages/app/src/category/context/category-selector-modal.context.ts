@@ -6,6 +6,7 @@ import type { DestinationCommitCopyInterface } from '../../@generic/interface/de
 export interface CategorySelectorModalParams {
     readonly initialCategoryId?: number | null;
     readonly excludeCategoryIds?: number[];
+    readonly syncZone?: string;
     readonly variant?: ColorPaletteVariant;
     readonly title?: string;
     readonly description?: string;

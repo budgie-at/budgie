@@ -3,6 +3,7 @@ import { Text, View } from 'react-native';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { MAX_CHROME_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/max-chrome-font-size-multiplier.constant';
 import { TONAL_DISC_BACKGROUND } from '../../../@generic/constant/tonal-disc-background.constant';
 
 interface Props {
@@ -30,6 +31,8 @@ export const RuleFormAddRow = ({ label, onPress, testID }: Props) => (
             border={false}
             className={TONAL_DISC_BACKGROUND.primary}
         />
-        <Text className="text-[17px] text-primary">{label}</Text>
+        <Text className="min-w-0 shrink text-[15px] font-medium text-primary" maxFontSizeMultiplier={MAX_CHROME_FONT_SIZE_MULTIPLIER}>
+            {label}
+        </Text>
     </HapticPressable>
 );

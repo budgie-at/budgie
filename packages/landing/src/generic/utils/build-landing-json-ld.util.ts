@@ -4,7 +4,7 @@ import { msg } from '@lingui/core/macro';
 import { isDefined } from '@rnw-community/shared';
 
 import { version } from '../../../package.json';
-import { BASE_URL } from '../constant/seo.constant';
+import { BASE_URL, ORGANIZATION_ID } from '../constant/seo.constant';
 
 import { resolveMediaAssetPath } from './resolve-media-asset-path.util';
 import { resolveMediaAsset } from './resolve-media-asset.util';
@@ -33,7 +33,8 @@ export const buildLandingJsonLd = (i18n: I18n, locale: string): Record<string, u
     operatingSystem: 'iOS, Android',
     softwareVersion: version,
     description: i18n._(msg`Privacy-first expense tracker that keeps your financial data on your device.`),
-    url: BASE_URL,
+    url: `${BASE_URL}/${locale}`,
+    inLanguage: locale,
     image: `${BASE_URL}/images/design-mode/ai-budgeting-app-4x.jpg`,
     screenshot: buildScreenshotUrls(locale),
     featureList: [
@@ -49,12 +50,12 @@ export const buildLandingJsonLd = (i18n: I18n, locale: string): Record<string, u
         i18n._(msg`Screenshot protection`),
         i18n._(msg`Database backup and restore`)
     ],
-    author: { '@type': 'Organization', name: 'Budgie', url: BASE_URL },
+    author: { '@id': ORGANIZATION_ID },
     offers: {
         '@type': 'Offer',
         price: '0',
         priceCurrency: 'USD',
         availability: 'https://schema.org/PreOrder',
-        url: `${BASE_URL}/en`
+        url: `${BASE_URL}/${locale}`
     }
 });
