@@ -195,7 +195,7 @@ export default async function AiFeaturesPillarHubPage(props: PageLangParam) {
                     slug="ai-auto-categorization"
                 >
                     <FeatureStory.Callout y={0.23}>
-                        <Trans>No cloud sync, no tracking</Trans>
+                        <Trans>No AI cloud, no tracking</Trans>
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
             </FeatureStory>
@@ -302,7 +302,7 @@ export default async function AiFeaturesPillarHubPage(props: PageLangParam) {
                     answer={
                         <Trans>
                             Category suggestions, tag suggestions, category and tag translation, and voice entry all run on your phone, on
-                            both iOS and Android — nothing leaves the device.
+                            both iOS and Android — nothing is sent to an AI service.
                         </Trans>
                     }
                 />

@@ -5,6 +5,8 @@ import { UserIconNameEnum } from '../../@generic/enum/user-icon-name.enum';
 import { convertEnumToDrizzleEnum } from '../../@generic/utils/convert-enum-to-drizzle-enum.util';
 import { withBaseEntityTableColumns } from '../../@generic/utils/with-base-entity-table-columns.util';
 import { BankIntegrationEntityTable } from '../../bank-integration/table/bank-integration-entity.table';
+import { syncIdentityUniqueIndex } from '../../cloud-sync/utils/sync-identity-unique-index.util';
+import { withSyncIdentityColumns } from '../../cloud-sync/utils/with-sync-identity-columns.util';
 import { InstrumentEntityTable } from '../../instrument/table/instrument-entity.table';
 import { AccountDebtTypeEnum } from '../enum/account-debt-type.enum';
 import { AccountNatureEnum } from '../enum/account-nature.enum';
@@ -16,6 +18,7 @@ import type { UserIconType } from '../../@generic/type/user-icon.type';
 export const AccountEntityTable = sqliteTable(
     'accounts',
     withBaseEntityTableColumns({
+        ...withSyncIdentityColumns(),
         icon: text().$type<UserIconType>().default(UserIconNameEnum.Home).notNull(),
         parentId: int('parent_id', { mode: 'number' }),
         order: int({ mode: 'number' }).default(0).notNull(),
@@ -55,6 +58,7 @@ export const AccountEntityTable = sqliteTable(
         isExternal: int('is_external', { mode: 'boolean' }).default(false).notNull()
     }),
     table => [
+        syncIdentityUniqueIndex('accounts', table),
         index('accounts_iban_active_idx')
             .on(table.iban, table.isActive)
             .where(sql`${table.deletedAt} IS NULL AND ${table.iban} IS NOT NULL`),

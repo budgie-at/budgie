@@ -36,7 +36,7 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
                 tagline={
                     <Trans>
                         Capture the whole Budgie database as one compressed file, locked with your PIN when you set one, and put it back on
-                        another device. No account, no upload.
+                        another device. No Budgie account, no Budgie server.
                     </Trans>
                 }
             >
@@ -128,7 +128,10 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
                     <Trans>Set a PIN and the backup is locked with it — no vendor format, no conversion step</Trans>
                 </FeatureBenefits.Benefit>
                 <FeatureBenefits.Benefit icon={Mobile} title={<Trans>Move to a new phone</Trans>}>
-                    <Trans>Move to a new phone by exporting on the old one and importing on the new one — no account on either side</Trans>
+                    <Trans>
+                        Move to a new phone by signing in to the same Apple ID on iOS, or by exporting on the old one and importing on the
+                        new one — no Budgie account on either side
+                    </Trans>
                 </FeatureBenefits.Benefit>
                 <FeatureBenefits.Included>
                     <FeatureBenefits.Item>
@@ -146,8 +149,8 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
                 <FeatureDetails.Item index={0} title={<Trans>Why a backup file beats a vendor backup</Trans>}>
                     <p>
                         <Trans>
-                            Cloud apps do &ldquo;backups&rdquo; by holding all your data on their servers. Budgie does backups by handing
-                            you the database file. Where you put it is your business.
+                            Cloud apps do &ldquo;backups&rdquo; by holding all your data on their servers. Budgie hands you the database
+                            file itself, and on iOS also copies it encrypted into your own iCloud. Where you put the file is your business.
                         </Trans>
                     </p>
                     <p>
@@ -166,9 +169,10 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
                     question={<Trans>How do I restore on another device?</Trans>}
                     answer={
                         <Trans>
-                            Install Budgie, open Settings and tap Import Database in the Data Management list. Pick the backup file and
-                            confirm the warning. If the backup is PIN-locked, Budgie asks for the PIN it was made with and keeps it as the
-                            lock on the restored data; a backup made without a PIN restores with no PIN set. Backups made by an older
+                            On iOS, sign in to the same Apple ID and your data syncs to the new device automatically. To restore from a file
+                            instead, install Budgie, open Settings and tap Import Database in the Data Management list. Pick the backup file
+                            and confirm the warning. If the backup is PIN-locked, Budgie asks for the PIN it was made with and keeps it as
+                            the lock on the restored data; a backup made without a PIN restores with no PIN set. Backups made by an older
                             version of Budgie cannot be restored.
                         </Trans>
                     }
@@ -198,8 +202,9 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
                     question={<Trans>Does Budgie auto-backup?</Trans>}
                     answer={
                         <Trans>
-                            No. Exports are manual only — Budgie never writes a backup file on its own, and there is no scheduler and no
-                            reminder to turn on. Nothing is written until you tap Export Database.
+                            On iOS, yes — Budgie backs up and syncs to your own iCloud automatically, encrypted in iCloud and end-to-end
+                            encrypted when you turn on Apple&apos;s Advanced Data Protection. Turn it off in Settings whenever you like. On
+                            Android, export stays manual.
                         </Trans>
                     }
                 />

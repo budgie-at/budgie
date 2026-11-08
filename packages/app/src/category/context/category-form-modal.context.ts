@@ -6,6 +6,7 @@ import { CategoryFormResultInterface } from '../interface/category-form-result.i
 export interface CategoryFormModalParams {
     readonly category?: CategoryEntityInterface;
     readonly defaultTitle?: string;
+    readonly syncZone?: string;
 }
 
 export type CategoryFormModalResult = CategoryFormResultInterface | null;

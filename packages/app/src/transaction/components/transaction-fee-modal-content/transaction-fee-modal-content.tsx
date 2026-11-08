@@ -1,6 +1,5 @@
-import { BANK_FEE_CATEGORY_ID, CategorySourceEnum, TransactionEntryTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { BANK_FEE_CATEGORY_ID, CategorySourceEnum, TransactionEntryTypeEnum } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
-import * as Effect from 'effect/Effect';
 import { useState } from 'react';
 import { ScrollView, View, useWindowDimensions } from 'react-native';
 import { useReanimatedKeyboardAnimation } from 'react-native-keyboard-controller';
@@ -9,17 +8,13 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { Button } from '../../../@generic/component/button/button';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { SheetTitle } from '../../../@generic/component/sheet-title/sheet-title';
-import { appRuntime } from '../../../@generic/runtime/app.runtime';
-import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
-import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
+import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
 import { useCategorySelectorModal } from '../../../category/context/category-selector-modal.context';
 import { SplitEntryRow } from '../split-entry-row/split-entry-row';
+import { TransactionFeeRemoveButton } from '../transaction-fee-remove-button/transaction-fee-remove-button';
 import { TransactionFeeSaveButton } from '../transaction-fee-save-button/transaction-fee-save-button';
-
-import { TransactionFeeModalContentSelector } from './transaction-fee-modal-content.selector';
 
 import type { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import type { TransactionFeeModalResult } from '../../context/transaction-fee-modal.context';
@@ -43,6 +38,7 @@ export const TransactionFeeModalContent = ({ accountId, currencySymbol, entry, v
     const sheetStyle = useAnimatedStyle(() => ({ maxHeight: windowHeight - top - Math.abs(height.value) - 24 }));
     const bottomPaddingStyle = useAnimatedStyle(() => ({ paddingBottom: interpolate(progress.value, [0, 1], [Math.max(bottom, 16), 16]) }));
     const [openCategorySelector] = useCategorySelectorModal();
+    const { account } = useGetAccountByIdQuery(accountId);
     const [feeEntry, setFeeEntry] = useState<TransactionEntryCreateInputInterface>(
         entry ?? {
             accountId,
@@ -62,37 +58,23 @@ export const TransactionFeeModalContent = ({ accountId, currencySymbol, entry, v
     };
 
     const handleCategoryPress = () => {
-        openCategorySelector({ initialCategoryId: feeEntry.categoryId, variant }, selectedCategoryId => {
-            if (isDefined(selectedCategoryId)) {
-                const categorySource = selectedCategoryId === BANK_FEE_CATEGORY_ID ? CategorySourceEnum.FEE : CategorySourceEnum.USER;
+        openCategorySelector(
+            { initialCategoryId: feeEntry.categoryId, variant, ...(isDefined(account) && { syncZone: account.syncZone }) },
+            selectedCategoryId => {
+                if (isDefined(selectedCategoryId)) {
+                    const categorySource = selectedCategoryId === BANK_FEE_CATEGORY_ID ? CategorySourceEnum.FEE : CategorySourceEnum.USER;
 
-                setFeeEntry(previous => ({ ...previous, categoryId: selectedCategoryId, categorySource }));
+                    setFeeEntry(previous => ({ ...previous, categoryId: selectedCategoryId, categorySource }));
+                }
             }
-        });
+        );
     };
 
     const handleConfirm = () => {
         onConfirm([feeEntry]);
     };
 
-    const handleRemove = () =>
-        appRuntime.runFork(
-            logAndContinue(
-                Effect.gen(function* () {
-                    const confirmed = yield* confirmAlert({
-                        title: t`Remove fee?`,
-                        message: t`This will remove the fee entry from this transaction.`,
-                        confirmText: t`Remove fee`,
-                        cancelText: t`Cancel`,
-                        isDestructive: true
-                    });
-
-                    if (confirmed) {
-                        onConfirm([]);
-                    }
-                })
-            )
-        );
+    const handleRemoveConfirmed = () => void onConfirm([]);
 
     return (
         <Animated.View className="bg-sheet-surface" style={sheetStyle}>
@@ -112,16 +94,7 @@ export const TransactionFeeModalContent = ({ accountId, currencySymbol, entry, v
                     </GroupedListSection>
 
                     <View className="flex-row items-center gap-x-md">
-                        {isDefined(entry) ? (
-                            <Button
-                                leftIcon={UserIconNameEnum.X}
-                                variant="destructive"
-                                size="md"
-                                className="aspect-square"
-                                onPress={handleRemove}
-                                testID={TransactionFeeModalContentSelector.RemoveButton}
-                            />
-                        ) : null}
+                        {isDefined(entry) ? <TransactionFeeRemoveButton onRemove={handleRemoveConfirmed} /> : null}
 
                         <View className="flex-1">
                             <TransactionFeeSaveButton isDisabled={!canSave} onPress={handleConfirm} />

@@ -18,6 +18,8 @@ import { AccountDebtTypeEnum } from '../../account/enum/account-debt-type.enum';
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { BankIntegrationEntityTable } from '../../bank-integration/table/bank-integration-entity.table';
+import { SyncRecordTypeEnum } from '../../cloud-sync/enum/sync-record-type.enum';
+import { buildSharedByOtherSql } from '../../cloud-sync/utils/build-shared-by-other-sql.util';
 import { DebtEventDirectionEnum } from '../../debt-event/enum/debt-event-direction.enum';
 import { DebtEventEntityTable } from '../../debt-event/table/debt-event-entity.table';
 import { InstrumentTypeEnum } from '../../instrument/enum/instrument-type.enum';
@@ -48,6 +50,8 @@ const buildNetWorthExchangeRateConversionSql = (defaultInstrumentId: number) =>
     sql`CASE WHEN ${isUnitAccountSql} THEN ${buildStrictExchangeRateConversionSql(defaultInstrumentId)} ELSE ${buildFiatExchangeRateConversionSql(defaultInstrumentId)} END`;
 
 const getConvertedBalanceSql = (balanceSql: SQL, exchangeRateSql: SQL) => roundToMinorUnitSql(sql`(${balanceSql}) * ${exchangeRateSql}`);
+
+const getOwnNetWorthAccountSql = () => sql`NOT ${buildSharedByOtherSql(SyncRecordTypeEnum.ACCOUNT)}`;
 
 const getActiveAccountWhereSql = (...conditions: SQL[]) =>
     and(...conditions, eq(AccountEntityTable.isActive, true), isNull(AccountEntityTable.deletedAt));
@@ -196,7 +200,13 @@ export class AccountBalanceRepository extends Context.Service<AccountBalanceRepo
                         cryptoCount: sql<number>`COALESCE(SUM(CASE WHEN ${inArray(AccountEntityTable.type, CRYPTO_ACCOUNT_TYPES)} THEN 1 ELSE 0 END), 0)`
                     })
                     .from(AccountEntityTable)
-                    .where(and(eq(AccountEntityTable.includeInNetWorth, true), isNull(AccountEntityTable.deletedAt)))
+                    .where(
+                        and(
+                            eq(AccountEntityTable.includeInNetWorth, true),
+                            isNull(AccountEntityTable.deletedAt),
+                            getOwnNetWorthAccountSql()
+                        )
+                    )
             );
         },
         getTotalByCryptoInstrument: (instrumentId: number) =>
@@ -238,6 +248,7 @@ export class AccountBalanceRepository extends Context.Service<AccountBalanceRepo
                         debtProgressPercentage: debtProgressSql.percentage,
                         debtTotalAmount: debtProgressSql.totalAmount,
                         hasLedgerHistory: sql<number>`EXISTS (SELECT 1 FROM ${TransactionEntryEntityTable} WHERE ${TransactionEntryEntityTable.accountId} = ${AccountEntityTable.id} AND ${TransactionEntryEntityTable.deletedAt} IS NULL)`,
+                        isSharedByOther: sql<number>`CASE WHEN ${buildSharedByOtherSql(SyncRecordTypeEnum.ACCOUNT)} THEN 1 ELSE 0 END`,
                         instrument: InstrumentEntityTable,
                         integrationLabel: BankIntegrationEntityTable.label
                     })
@@ -301,7 +312,13 @@ export class AccountBalanceRepository extends Context.Service<AccountBalanceRepo
                         netWorth: sql<number>`COALESCE(SUM(${getConvertedBalanceSql(getAccountBalanceWithTransactionsSql(), exchangeRateSql)}), 0)`
                     })
                     .from(AccountEntityTable)
-                    .where(and(eq(AccountEntityTable.includeInNetWorth, true), isNull(AccountEntityTable.deletedAt)))
+                    .where(
+                        and(
+                            eq(AccountEntityTable.includeInNetWorth, true),
+                            isNull(AccountEntityTable.deletedAt),
+                            getOwnNetWorthAccountSql()
+                        )
+                    )
             );
         },
         getTotalByAccountType: (defaultInstrumentId: number, accountType: AccountTypeEnum) => {
@@ -326,7 +343,7 @@ export class AccountBalanceRepository extends Context.Service<AccountBalanceRepo
                         total: sql<number>`COALESCE(SUM(${getConvertedBalanceSql(getAccountBalanceWithTransactionsSql(), exchangeRateSql)}), 0)`
                     })
                     .from(AccountEntityTable)
-                    .where(getActiveAccountWhereSql(inArray(AccountEntityTable.type, accountTypes)))
+                    .where(getActiveAccountWhereSql(inArray(AccountEntityTable.type, accountTypes), getOwnNetWorthAccountSql()))
             );
         },
         getTotalRemainingDebtByType: (defaultInstrumentId: number, debtType: AccountDebtTypeEnum) => {

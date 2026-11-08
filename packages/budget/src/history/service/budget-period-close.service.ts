@@ -60,7 +60,7 @@ export class BudgetPeriodCloseService extends Context.Service<BudgetPeriodCloseS
         });
 
         const resolveOverallLimit = Effect.fnUntraced(function* (
-            budget: Pick<BudgetEntityInterface, 'instrumentId' | 'overallLimit' | 'limitSource'>,
+            budget: Pick<BudgetEntityInterface, 'instrumentId' | 'overallLimit' | 'limitSource' | 'syncZone'>,
             window: BudgetPeriodWindowInterface
         ) {
             if (budget.limitSource === BudgetLimitSourceEnum.FIXED) {
@@ -70,7 +70,8 @@ export class BudgetPeriodCloseService extends Context.Service<BudgetPeriodCloseS
             const entries = yield* budgetRepository.findIncomeReceivedEntries(
                 window.periodStart,
                 window.nextPeriodStart,
-                budget.instrumentId
+                budget.instrumentId,
+                budget.syncZone
             );
             const incomeReceived = computeIncomeReceived(entries, budget.instrumentId);
 
@@ -78,7 +79,7 @@ export class BudgetPeriodCloseService extends Context.Service<BudgetPeriodCloseS
         });
 
         const loadClosedSpend = (
-            budget: Pick<BudgetEntityInterface, 'id' | 'instrumentId'>,
+            budget: Pick<BudgetEntityInterface, 'id' | 'instrumentId' | 'syncZone'>,
             limitedCategoryIds: ReadonlySet<number>,
             isReconstructed: boolean
         ) =>
@@ -87,7 +88,8 @@ export class BudgetPeriodCloseService extends Context.Service<BudgetPeriodCloseS
                     const rows = yield* budgetRepository.findBudgetSpentEntries(
                         window.periodStart,
                         window.nextPeriodStart,
-                        budget.instrumentId
+                        budget.instrumentId,
+                        budget.syncZone
                     );
 
                     return { spent: computeSpent(rows, budget.instrumentId), fundCovered: NO_FUND_COVERED, draws: [] };
@@ -110,7 +112,7 @@ export class BudgetPeriodCloseService extends Context.Service<BudgetPeriodCloseS
         const makeSnapshotPeriod = (
             budget: Pick<
                 BudgetEntityInterface,
-                'id' | 'instrumentId' | 'overallLimit' | 'otherLimit' | 'otherRolloverMode' | 'limitSource'
+                'id' | 'instrumentId' | 'overallLimit' | 'otherLimit' | 'otherRolloverMode' | 'limitSource' | 'syncZone'
             >,
             categoryLimits: readonly BudgetCategoryLimitEntityInterface[],
             isReconstructed: boolean
@@ -149,14 +151,15 @@ export class BudgetPeriodCloseService extends Context.Service<BudgetPeriodCloseS
         };
 
         const refreshPeriod = Effect.fnUntraced(function* (
-            budget: Pick<BudgetEntityInterface, 'instrumentId'>,
+            budget: Pick<BudgetEntityInterface, 'instrumentId' | 'syncZone'>,
             snapshot: BudgetPeriodSnapshotWithCategoriesEntityInterface,
             carryIn: BudgetCarryOutsInterface
         ) {
             const entries = yield* budgetRepository.findBudgetSpentEntries(
                 snapshot.periodStart,
                 addMilliseconds(snapshot.periodEnd, 1),
-                budget.instrumentId
+                budget.instrumentId,
+                budget.syncZone
             );
             const spent = computeSpent(entries, budget.instrumentId);
             const storedFundCovered = {
@@ -200,7 +203,7 @@ export class BudgetPeriodCloseService extends Context.Service<BudgetPeriodCloseS
             });
         });
 
-        const refreshRecentPeriods = Effect.fnUntraced(function* (budget: Pick<BudgetEntityInterface, 'id' | 'instrumentId'>) {
+        const refreshRecentPeriods = Effect.fnUntraced(function* (budget: Pick<BudgetEntityInterface, 'id' | 'instrumentId' | 'syncZone'>) {
             const recentSnapshots = yield* budgetPeriodSnapshotRepository.findRecent(budget.id, REFRESH_PERIOD_COUNT);
             const refreshable = recentSnapshots.filter(snapshot => !snapshot.isReconstructed).reverse();
 
@@ -214,7 +217,7 @@ export class BudgetPeriodCloseService extends Context.Service<BudgetPeriodCloseS
         });
 
         const loadPriorConsumption = Effect.fnUntraced(function* (
-            budget: Pick<BudgetEntityInterface, 'instrumentId'>,
+            budget: Pick<BudgetEntityInterface, 'instrumentId' | 'syncZone'>,
             fund: BudgetSinkingFundEntityInterface,
             firstWindow: BudgetPeriodWindowInterface
         ) {
@@ -227,7 +230,8 @@ export class BudgetPeriodCloseService extends Context.Service<BudgetPeriodCloseS
             const rows = yield* budgetRepository.findBudgetSpentEntries(
                 dueWindow.periodStart,
                 min([dueWindow.nextPeriodStart, firstWindow.periodStart]),
-                budget.instrumentId
+                budget.instrumentId,
+                budget.syncZone
             );
 
             return matchFundSpend(toBudgetCurrencyEntries(rows, budget.instrumentId), [fund]).reduce(

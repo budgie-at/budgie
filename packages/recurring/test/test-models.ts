@@ -1,4 +1,5 @@
 import {
+    PERSONAL_SYNC_ZONE,
     RecurringMatchSourceEnum,
     RecurringSeriesSourceEnum,
     RecurringSeriesStatusEnum,
@@ -27,6 +28,8 @@ export const buildReadModels = (
             createdAt: EPOCH,
             updatedAt: EPOCH,
             deletedAt: null,
+            syncId: null,
+            syncZone: PERSONAL_SYNC_ZONE,
             merchantKey: series.merchantKey,
             kind: series.kind,
             periodDays: Math.round(series.periodDays),

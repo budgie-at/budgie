@@ -28,7 +28,7 @@ export const InactiveAccountCard = ({ account, isFirst, isLast }: Props) => {
     const formatInstrumentAmount = useFormatInstrumentAmount();
     const { balance } = useAccountBalanceQuery(account.id);
     const { isLoading, unhide } = useUnhideAccount(account);
-    const { handleArchive } = useArchiveAccount(account.id, emptyFn);
+    const { handleArchive, isArchivable } = useArchiveAccount(account.id, emptyFn);
 
     const accountTitle = account.title;
     const formattedBalance = formatInstrumentAmount(balance, account.instrument.symbol, account.instrument.type);
@@ -40,7 +40,7 @@ export const InactiveAccountCard = ({ account, isFirst, isLast }: Props) => {
     const handleEdit = () => void router.push({ pathname: '/account/[id]/update', params: { id: String(account.id) } });
     const accessibilityActions = [
         { name: 'unhide', label: t`Unhide`, onPress: unhide },
-        { name: 'archive', label: t`Archive`, onPress: handleArchive }
+        ...(isArchivable ? [{ name: 'archive', label: t`Archive`, onPress: handleArchive }] : [])
     ];
 
     return (
@@ -66,7 +66,7 @@ export const InactiveAccountCard = ({ account, isFirst, isLast }: Props) => {
             >
                 <ActionsMenuItem icon={UserIconNameEnum.Eye} label={t`Unhide`} onPress={unhide} />
                 <ActionsMenuItem icon={UserIconNameEnum.Pencil} label={t`Edit account`} onPress={handleEdit} />
-                <ActionsMenuItem icon={UserIconNameEnum.Archive} label={t`Archive`} onPress={handleArchive} />
+                {isArchivable ? <ActionsMenuItem icon={UserIconNameEnum.Archive} label={t`Archive`} onPress={handleArchive} /> : null}
             </ShelvedAccountRow>
         </GroupedListItem>
     );

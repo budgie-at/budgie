@@ -8,12 +8,16 @@ import {
     BudgetKindEnum,
     Db,
     ExchangeRateEntityTable,
+    HOUSEHOLD_SYNC_ZONE,
+    PERSONAL_SYNC_ZONE,
     TransactionConsolidationTypeEnum,
     TransactionEntityTable,
     TransactionEntryEntityTable,
     TransactionEntryTypeEnum,
     TransactionTagsEntityTable,
     TransactionTypeEnum,
+    buildSharedByOtherSql,
+    SyncRecordTypeEnum,
     buildSpendingEntryCondition
 } from '@budgie/contracts';
 import { startOfDay } from 'date-fns/startOfDay';
@@ -24,7 +28,7 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined } from '@rnw-community/shared';
 
-import type { BudgetCreateEntityInterface, BudgetUpdateEntityInterface } from '@budgie/contracts';
+import type { BudgetEntityInterface, BudgetCreateEntityInterface, BudgetUpdateEntityInterface } from '@budgie/contracts';
 import type { SQL } from 'drizzle-orm';
 
 export class BudgetRepository extends Context.Service<BudgetRepository>()('@budgie/budget/BudgetRepository', {
@@ -85,7 +89,17 @@ export class BudgetRepository extends Context.Service<BudgetRepository>()('@budg
                 sql`${TransactionEntityTable.id} IN (SELECT ${TransactionTagsEntityTable.transactionId} FROM ${TransactionTagsEntityTable} WHERE ${TransactionTagsEntityTable.tagId} = ${tagId})`
             );
 
-        const findEntries = (amountSql: SQL<number>, where: SQL | undefined, baseInstrumentId: number) =>
+        const buildBudgetScopeConditions = (budgetSyncZone: string) =>
+            budgetSyncZone === HOUSEHOLD_SYNC_ZONE
+                ? [eq(AccountEntityTable.syncZone, HOUSEHOLD_SYNC_ZONE)]
+                : [sql`NOT ${buildSharedByOtherSql(SyncRecordTypeEnum.ACCOUNT)}`];
+
+        const findEntries = (
+            amountSql: SQL<number>,
+            where: SQL | undefined,
+            baseInstrumentId: number,
+            budgetSyncZone = PERSONAL_SYNC_ZONE
+        ) =>
             Db.query(db =>
                 db
                     .select({
@@ -108,7 +122,7 @@ export class BudgetRepository extends Context.Service<BudgetRepository>()('@budg
                             isNull(ExchangeRateEntityTable.deletedAt)
                         )
                     )
-                    .where(where)
+                    .where(and(where, ...buildBudgetScopeConditions(budgetSyncZone)))
             );
 
         return {
@@ -128,6 +142,12 @@ export class BudgetRepository extends Context.Service<BudgetRepository>()('@budg
                 ),
             findMain: Db.query(db =>
                 db.query.BudgetEntityTable.findFirst({
+                    where: { deletedAt: { isNull: true }, kind: BudgetKindEnum.MAIN },
+                    orderBy: { updatedAt: 'desc' }
+                })
+            ),
+            findAllMain: Db.query(db =>
+                db.query.BudgetEntityTable.findMany({
                     where: { deletedAt: { isNull: true }, kind: BudgetKindEnum.MAIN },
                     orderBy: { updatedAt: 'desc' }
                 })
@@ -158,19 +178,44 @@ export class BudgetRepository extends Context.Service<BudgetRepository>()('@budg
                     .from(TransactionEntityTable)
                     .where(isNull(TransactionEntityTable.deletedAt))
             ).pipe(Effect.map(([row]) => row.earliest ?? null)),
-            findBudgetSpentEntries: (periodStart: Date, nextPeriodStart: Date, baseInstrumentId: number) =>
-                findEntries(buildRefundAdjustedAmountSql(), buildSpentWhere(periodStart, nextPeriodStart), baseInstrumentId),
-            findIncomeReceivedEntries: (periodStart: Date, nextPeriodStart: Date, baseInstrumentId: number) =>
+            findBudgetSpentEntries: (
+                periodStart: Date,
+                nextPeriodStart: Date,
+                baseInstrumentId: number,
+                budgetSyncZone = PERSONAL_SYNC_ZONE
+            ) =>
+                findEntries(
+                    buildRefundAdjustedAmountSql(),
+                    buildSpentWhere(periodStart, nextPeriodStart),
+                    baseInstrumentId,
+                    budgetSyncZone
+                ),
+            findIncomeReceivedEntries: (
+                periodStart: Date,
+                nextPeriodStart: Date,
+                baseInstrumentId: number,
+                budgetSyncZone = PERSONAL_SYNC_ZONE
+            ) =>
                 findEntries(
                     sql<number>`${TransactionEntryEntityTable.amount}`,
                     buildIncomeWhere(periodStart, nextPeriodStart),
-                    baseInstrumentId
+                    baseInstrumentId,
+                    budgetSyncZone
                 ),
-            findEventSpentEntries: (periodStart: Date, nextPeriodStart: Date, baseInstrumentId: number, tagId: number | null) =>
-                isDefined(tagId)
-                    ? findEntries(buildRefundAdjustedAmountSql(), buildEventWhere(periodStart, nextPeriodStart, tagId), baseInstrumentId)
+            findEventSpentEntries: (
+                periodStart: Date,
+                nextPeriodStart: Date,
+                budget: Pick<BudgetEntityInterface, 'instrumentId' | 'tagId' | 'syncZone'>
+            ) =>
+                isDefined(budget.tagId)
+                    ? findEntries(
+                          buildRefundAdjustedAmountSql(),
+                          buildEventWhere(periodStart, nextPeriodStart, budget.tagId),
+                          budget.instrumentId,
+                          budget.syncZone
+                      )
                     : Effect.succeed([]),
-            findInstallmentPayments: (periodStart: Date, nextPeriodStart: Date) =>
+            findInstallmentPayments: (periodStart: Date, nextPeriodStart: Date, budgetSyncZone = PERSONAL_SYNC_ZONE) =>
                 Db.query(db =>
                     db
                         .select({ transactionId: TransactionEntityTable.id, installmentAccountId: DebtEventEntityTable.debtAccountId })
@@ -182,7 +227,8 @@ export class BudgetRepository extends Context.Service<BudgetRepository>()('@budg
                                 eq(DebtEventEntityTable.direction, DebtEventDirectionEnum.CLOSE),
                                 eq(AccountEntityTable.debtType, AccountDebtTypeEnum.INSTALLMENT),
                                 isNull(DebtEventEntityTable.deletedAt),
-                                between(TransactionEntityTable.operatedAt, periodStart, new Date(nextPeriodStart.getTime() - 1))
+                                between(TransactionEntityTable.operatedAt, periodStart, new Date(nextPeriodStart.getTime() - 1)),
+                                ...buildBudgetScopeConditions(budgetSyncZone)
                             )
                         )
                 )

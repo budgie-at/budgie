@@ -188,14 +188,16 @@ export class AiModelDownloadService extends Context.Service<AiModelDownloadServi
         const makeProgressHandler =
             (name: AiSubsystemNameEnum) =>
             (progress: DownloadProgress): void => {
-                if (isPositiveNumber(progress.totalBytes) && !reportedTotals.has(name)) {
-                    reportedTotals.set(name, progress.totalBytes);
+                const reportedTotal = Number(String(progress.totalBytes));
+                const bytesWritten = Number(String(progress.bytesWritten));
+                if (isPositiveNumber(reportedTotal) && !reportedTotals.has(name)) {
+                    reportedTotals.set(name, reportedTotal);
                 }
                 const current = getSnapshot().models[name];
                 const totalBytes = reportedTotals.get(name) ?? current.totalBytes;
-                const isStepReached = Math.abs(progress.bytesWritten - current.bytesWritten) >= progressPatchStepBytes;
-                if (isStepReached || progress.bytesWritten >= totalBytes || totalBytes !== current.totalBytes) {
-                    patchModel(name, { bytesWritten: progress.bytesWritten, totalBytes });
+                const isStepReached = Math.abs(bytesWritten - current.bytesWritten) >= progressPatchStepBytes;
+                if (isStepReached || bytesWritten >= totalBytes || totalBytes !== current.totalBytes) {
+                    patchModel(name, { bytesWritten, totalBytes });
                 }
             };
 

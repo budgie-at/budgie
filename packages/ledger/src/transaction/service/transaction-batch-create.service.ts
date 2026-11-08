@@ -21,6 +21,7 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
+import { resolveBankTransactionSyncIds } from '../utils/resolve-bank-transaction-sync-ids.util';
 import { transactionMapEntryInputToCreateEntity } from '../utils/transaction-map-entry-input-to-create-entity.util';
 import { transactionMapTagIdsToCreateEntities } from '../utils/transaction-map-tag-ids-to-create-entities.util';
 
@@ -98,10 +99,21 @@ export class TransactionBatchCreateService extends Context.Service<TransactionBa
                 );
             });
 
+            const withBankTransactionSyncIds = Effect.fnUntraced(function* (batch: readonly TransactionCreateInputInterface[]) {
+                const resolvedSyncIds = yield* resolveBankTransactionSyncIds(batch, accountRepository, transactionRepository);
+
+                return batch.map((input, index) => {
+                    const syncId = resolvedSyncIds[index];
+
+                    return isDefined(syncId) ? { ...input, syncId } : input;
+                });
+            });
+
             return {
                 create: Effect.fn('TransactionBatchCreateService.create')(function* (batch: readonly TransactionCreateInputInterface[]) {
                     const valuations = yield* entryBaseValuationService.valueTransactionsEntries(batch);
-                    const transactions = yield* transactionRepository.bulkCreate([...batch]);
+                    const syncIdInputs = yield* withBankTransactionSyncIds(batch);
+                    const transactions = yield* transactionRepository.bulkCreate([...syncIdInputs]);
                     const batchEntries = transactions.flatMap((transaction, index) =>
                         batch[index].entries.map(entry =>
                             transactionMapEntryInputToCreateEntity(entry, transaction.id, valuations[index].get(entry))

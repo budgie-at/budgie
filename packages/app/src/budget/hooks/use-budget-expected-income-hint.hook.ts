@@ -1,4 +1,4 @@
-import { BudgetKindEnum, BudgetLimitSourceEnum, convertFromMicroUnits } from '@budgie/contracts';
+import { BudgetKindEnum, BudgetLimitSourceEnum, PERSONAL_SYNC_ZONE, convertFromMicroUnits } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useFormContext, useWatch } from 'react-hook-form';
 
@@ -33,7 +33,8 @@ export const useBudgetExpectedIncomeHint = (): string => {
             instrumentId,
             overallLimit: 0,
             otherLimit: 0,
-            tagId: null
+            tagId: null,
+            syncZone: PERSONAL_SYNC_ZONE
         },
         0
     );

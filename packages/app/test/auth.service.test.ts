@@ -25,7 +25,7 @@ vi.mock('expo-local-authentication', () => ({
     authenticateAsync: () => (biometrics.isNativeFailing ? Promise.reject(new Error('native')) : Promise.resolve(biometrics.result))
 }));
 vi.mock('expo-secure-store', () => ({ AFTER_FIRST_UNLOCK_THIS_DEVICE_ONLY: 0 }));
-vi.mock('expo-file-system', () => ({ File: vi.fn(), Directory: vi.fn(), Paths: { document: '' } }));
+vi.mock('expo-file-system', () => import('./fixture/expo-file-system-fake'));
 vi.mock('../src/@generic/drizzle/service/database-lifecycle.service', async () => {
     const Context = await import('effect/Context');
 

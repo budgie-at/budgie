@@ -197,6 +197,7 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
 
                 return projectRecurringMonth(models, year, month, now, RecurringSeriesKindEnum.EXPENSE);
             }),
+            detect: (now: Date) => refreshService.detect(now),
             incomeCalendar: Effect.fn('RecurringService.incomeCalendar')(function* (year: number, month: number, now: Date) {
                 const { models } = yield* loadReadyModels(now);
 

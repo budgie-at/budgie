@@ -30,6 +30,7 @@
         "@budgie/amount-input": "workspace:*",
         "@budgie/budget": "workspace:*",
         "@budgie/categorization": "workspace:*",
+        "@budgie/cloud-sync": "workspace:*",
         "@budgie/consolidation": "workspace:*",
         "@budgie/contracts": "workspace:^",
         "@budgie/import-export": "workspace:*",

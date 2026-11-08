@@ -1,1 +1,1 @@
-export type BaseEntityKeyType = 'id' | 'createdAt' | 'updatedAt' | 'deletedAt';
+export type BaseEntityKeyType = 'id' | 'createdAt' | 'updatedAt' | 'deletedAt' | 'syncId' | 'syncZone';

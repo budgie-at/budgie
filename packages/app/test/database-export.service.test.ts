@@ -17,14 +17,14 @@ import * as Statement from 'effect/sql/Statement';
 import * as Stream from 'effect/Stream';
 import { beforeEach, vi } from 'vitest';
 
-import { isString } from '@rnw-community/shared';
-
 import { toastOnFailure } from '../src/@generic/utils/toast-on-failure.util';
 import { DatabaseExportService } from '../src/export/service/database-export.service';
 import { DEFAULT_SETTINGS } from '../src/settings/constants/default-settings.constant';
 
+import { File as FakeFile, Directory as FakeDirectory, Paths } from './fixture/expo-file-system-fake';
+
 import type { SettingsEntityInterface } from '@budgie/contracts';
-import type { Directory, File } from 'expo-file-system';
+import type { Directory } from 'expo-file-system';
 import type { SharingOptions } from 'expo-sharing';
 
 const events = vi.hoisted(() => new Array<string>());
@@ -37,29 +37,7 @@ const native = vi.hoisted(() => ({
     toast: vi.fn<(options: unknown) => void>()
 }));
 
-vi.mock('expo-file-system', () => {
-    class FileSystemEntryMock {
-        static readonly pickDirectoryAsync = native.picker;
-        readonly uri: string;
-        readonly name: string;
-        readonly exists = true;
-
-        constructor(parent: string | Pick<File, 'uri'>, name: string) {
-            this.uri = `${isString(parent) ? parent : parent.uri}/${name}`;
-            this.name = name;
-        }
-
-        copy(destination: Pick<File, 'uri'>) {
-            return native.copy(destination.uri);
-        }
-
-        delete() {
-            events.push('cleanup');
-        }
-    }
-
-    return { Directory: FileSystemEntryMock, File: FileSystemEntryMock, Paths: { cache: 'file:///cache', document: 'file:///documents' } };
-});
+vi.mock('expo-file-system', () => import('./fixture/expo-file-system-fake'));
 vi.mock('react-native-zip-archive', () => ({ zip: native.zip }));
 vi.mock('expo-sharing', () => ({ isAvailableAsync: () => Promise.resolve(true), shareAsync: native.share }));
 vi.mock('react-native-toast-message', () => ({ default: { show: native.toast } }));
@@ -143,6 +121,14 @@ const expectFailedBackup = Effect.fnUntraced(function* (failure: Error) {
 describe('DatabaseExportService', () => {
     beforeEach(() => {
         events.splice(0);
+        Paths.document = 'file:///documents';
+        Paths.cache.uri = 'file:///cache';
+        vi.spyOn(FakeFile.prototype, 'copy').mockImplementation((destination: Pick<FakeFile, 'uri'>) => native.copy(destination.uri));
+        vi.spyOn(FakeFile.prototype, 'delete').mockImplementation(() => {
+            events.push('cleanup');
+        });
+        vi.spyOn(FakeFile.prototype, 'exists', 'get').mockReturnValue(true);
+        FakeDirectory.pickDirectoryAsync.mockImplementation(native.picker);
         Object.assign(checkpointResult, { busy: 0, log: 1, checkpointed: 1 });
         native.afterCheckpoint.mockReset().mockReturnValue(Effect.void);
         native.toast.mockClear();

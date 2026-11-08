@@ -6,6 +6,8 @@ import { convertEnumToDrizzleEnum } from '../../@generic/utils/convert-enum-to-d
 import { withBaseEntityTableColumns } from '../../@generic/utils/with-base-entity-table-columns.util';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
+import { syncIdentityUniqueIndex } from '../../cloud-sync/utils/sync-identity-unique-index.util';
+import { withSyncIdentityColumns } from '../../cloud-sync/utils/with-sync-identity-columns.util';
 import { TransactionConsolidationTypeEnum } from '../enum/transaction-consolidation-type.enum';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
 import { TransactionUpdatedByEnum } from '../enum/transaction-updated-by.enum';
@@ -15,6 +17,7 @@ import type { AnySQLiteColumn } from 'drizzle-orm/sqlite-core';
 export const TransactionEntityTable = sqliteTable(
     'transactions',
     withBaseEntityTableColumns({
+        ...withSyncIdentityColumns(),
         type: text('type', { enum: convertEnumToDrizzleEnum(TransactionTypeEnum) })
             .$type<TransactionTypeEnum>()
             .notNull(),
@@ -48,6 +51,7 @@ export const TransactionEntityTable = sqliteTable(
             .notNull()
     }),
     table => [
+        syncIdentityUniqueIndex('transactions', table),
         index('transactions_operated_at_idx')
             .on(table.operatedAt)
             .where(sql`${table.deletedAt} IS NULL`),

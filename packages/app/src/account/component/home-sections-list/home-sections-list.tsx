@@ -15,8 +15,8 @@ import { HomeAccountBalanceInterface } from '../../interface/home-account-balanc
 import { HomeSectionInterface } from '../../interface/home-section.interface';
 import { isInstitutionGroup } from '../../type-guard/is-institution-group.type-guard';
 import { getHomeSectionItemPosition } from '../../utils/get-home-section-item-position.util';
-import { AccountsEmptyState } from '../accounts-empty-state/accounts-empty-state';
 import { CollapsibleNetWorthHeaderScrollSpacer } from '../collapsible-net-worth-header-scroll-spacer/collapsible-net-worth-header-scroll-spacer';
+import { HomeEmptyState } from '../home-empty-state/home-empty-state';
 import { HomeSectionFooter } from '../home-section-footer/home-section-footer';
 import { HomeSectionHeader } from '../home-section-header/home-section-header';
 import { HomeSectionItem } from '../home-section-item/home-section-item';
@@ -78,7 +78,7 @@ export const HomeSectionsList = ({
             <CollapsibleNetWorthHeaderScrollSpacer />
         ) : null;
 
-    const listEmptyComponent = isLoading || activeAccountCount > 0 ? null : AccountsEmptyState;
+    const listEmptyComponent = isLoading || activeAccountCount > 0 ? null : HomeEmptyState;
 
     const headers = sections.map((section, index) => ({
         index: sections.slice(0, index).reduce((count, previous) => count + previous.data.length + 2, 0),

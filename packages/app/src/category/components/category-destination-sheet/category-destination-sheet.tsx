@@ -22,18 +22,19 @@ interface Props {
     readonly title: string;
     readonly description: string | undefined;
     readonly excludeCategoryIds: readonly number[];
+    readonly syncZone: string | undefined;
     readonly commitLabel: string;
     readonly getCommitCopy: (destinationTitle: string) => DestinationCommitCopyInterface;
     readonly onSelect: (categoryId: number) => void;
 }
 
 export const CategoryDestinationSheet = (props: Props) => {
-    const { title, description, excludeCategoryIds, commitLabel, getCommitCopy, onSelect } = props;
+    const { title, description, excludeCategoryIds, syncZone, commitLabel, getCommitCopy, onSelect } = props;
     const { t } = useLingui();
     const [openCategoryForm] = useCategoryFormModal();
     const [search, setSearch] = useState('');
     const formatUsage = useFormatEntityUsage();
-    const { categories, usage, isUsageFailure, retryUsage, isFailure, retry } = useCategoriesWithUsageQuery(search, true);
+    const { categories, usage, isUsageFailure, retryUsage, isFailure, retry } = useCategoriesWithUsageQuery(search, true, syncZone);
 
     const destinations = categories?.filter(category => !excludeCategoryIds.includes(category.id));
     const { selected, setSelected, isPending, handleRowSelect, handleCommit } = useDestinationSelection(destinations, onSelect);

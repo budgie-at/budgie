@@ -12,10 +12,12 @@ import { Db } from '../../@generic/service/db.service';
 import { buildCategoryTranslationJoinCondition } from '../../@generic/utils/build-category-translation-join-condition.util';
 import { makeTranslatableRepository } from '../../@generic/utils/make-translatable-repository.util';
 import { DefaultCategoryTranslationEntityTable } from '../../category-translation/table/default-category-translation-entity.table';
+import { PERSONAL_SYNC_ZONE } from '../../cloud-sync/constant/personal-sync-zone.constant';
+import { deriveSeedSyncId } from '../../cloud-sync/utils/derive-seed-sync-id.util';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
-import { BORROWING_CATEGORY_ID } from '../constant/borrowing-category-id.constant';
-import { LENDING_CATEGORY_ID } from '../constant/lending-category-id.constant';
+import { BORROWING_CATEGORY_SEED_KEY } from '../constant/borrowing-category-seed-key.constant';
+import { LENDING_CATEGORY_SEED_KEY } from '../constant/lending-category-seed-key.constant';
 import { CategoryCreateEntityInterface } from '../entity/category-create-entity.interface';
 import { CategoryUpdateEntityInterface } from '../entity/category-update-entity.interface';
 import { CategoryEntityTable } from '../table/category-entity.table';
@@ -84,6 +86,20 @@ export class CategoryRepository extends Context.Service<CategoryRepository>()('@
                         .where(and(eq(CategoryEntityTable.id, id), isNull(CategoryEntityTable.deletedAt)))
                         .limit(1)
                 ).pipe(Effect.map(categories => categories.at(0))),
+            findActiveBySeedKey: (seedKey: string, syncZone: string) =>
+                Db.query(db =>
+                    db
+                        .select()
+                        .from(CategoryEntityTable)
+                        .where(
+                            and(
+                                eq(CategoryEntityTable.syncZone, syncZone),
+                                eq(CategoryEntityTable.syncId, deriveSeedSyncId(seedKey)),
+                                isNull(CategoryEntityTable.deletedAt)
+                            )
+                        )
+                        .limit(1)
+                ).pipe(Effect.map(categories => categories.at(0))),
             deleteById: (id: number) => Db.query(db => db.delete(CategoryEntityTable).where(eq(CategoryEntityTable.id, id))),
             countTransactionEntries: (categoryId: number) =>
                 Db.query(db =>
@@ -123,15 +139,23 @@ export class CategoryRepository extends Context.Service<CategoryRepository>()('@
                         .delete(CategoryEntityTable)
                         .where(includeDefault ? eq(CategoryEntityTable.isSystemCategory, false) : eq(CategoryEntityTable.isDefault, false))
                 ),
-            findAllNonSystemLocalized: (language: LanguageEnum) =>
-                Db.query(db => buildLocalizedCategoryBaseQuery(db, language).where(eq(CategoryEntityTable.isSystemCategory, false))),
-            findBySearchQuery: (search: string, includeDefault: boolean, language: LanguageEnum) => {
+            findAllNonSystemLocalized: (language: LanguageEnum, syncZone: string = PERSONAL_SYNC_ZONE) =>
+                Db.query(db =>
+                    buildLocalizedCategoryBaseQuery(db, language).where(
+                        and(eq(CategoryEntityTable.isSystemCategory, false), eq(CategoryEntityTable.syncZone, syncZone))
+                    )
+                ),
+            findBySearchQuery: (search: string, includeDefault: boolean, language: LanguageEnum, syncZone: string = PERSONAL_SYNC_ZONE) => {
                 const trimmed = search.trim();
                 const selectableFilter = or(
                     eq(CategoryEntityTable.isSystemCategory, false),
-                    inArray(CategoryEntityTable.id, [LENDING_CATEGORY_ID, BORROWING_CATEGORY_ID])
+                    inArray(CategoryEntityTable.syncId, [
+                        deriveSeedSyncId(LENDING_CATEGORY_SEED_KEY),
+                        deriveSeedSyncId(BORROWING_CATEGORY_SEED_KEY)
+                    ])
                 );
-                const baseFilter = includeDefault ? selectableFilter : and(eq(CategoryEntityTable.isDefault, false), selectableFilter);
+                const zoneFilter = and(eq(CategoryEntityTable.syncZone, syncZone), selectableFilter);
+                const baseFilter = includeDefault ? zoneFilter : and(eq(CategoryEntityTable.isDefault, false), zoneFilter);
                 const pattern = `%${trimmed.toLowerCase()}%`;
                 const searchFilter = isNotEmptyString(trimmed)
                     ? and(

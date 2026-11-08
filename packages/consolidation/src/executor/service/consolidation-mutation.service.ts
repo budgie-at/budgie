@@ -6,7 +6,8 @@ import {
     TransactionRepository,
     TransactionConsolidationRepository,
     TransactionTagsRepository,
-    TransactionTypeEnum
+    TransactionTypeEnum,
+    deriveConsolidationSyncId
 } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as DateTime from 'effect/DateTime';
@@ -87,11 +88,28 @@ export class ConsolidationMutationService extends Context.Service<ConsolidationM
                 );
             });
 
+            const deriveCanonicalSyncId = Effect.fnUntraced(function* (sourceTransactionIds: readonly number[]) {
+                const sources = yield* transactionRepository.findByIds([...sourceTransactionIds]);
+                const sourceSyncIds = sources.map(source => source.syncId).filter(isDefined);
+
+                if (sourceSyncIds.length !== sourceTransactionIds.length) {
+                    return null;
+                }
+
+                const syncId = deriveConsolidationSyncId(sourceSyncIds);
+                const claimed = yield* transactionRepository.findClaimedPersonalSyncIds([syncId]);
+
+                return claimed.has(syncId) ? null : syncId;
+            });
+
             return {
                 createCanonicalTransfer: Effect.fn('ConsolidationMutationService.createCanonicalTransfer')(function* (
-                    input: CanonicalTransferInputInterface
+                    input: CanonicalTransferInputInterface,
+                    sourceTransactionIds: readonly number[]
                 ) {
+                    const syncId = yield* deriveCanonicalSyncId(sourceTransactionIds);
                     const canonicalTransaction = yield* transactionRepository.create({
+                        ...(isDefined(syncId) && { syncId }),
                         type: TransactionTypeEnum.TRANSFER,
                         title: input.title,
                         externalId: null,

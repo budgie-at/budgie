@@ -4,6 +4,7 @@ import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
 import { APPLE_PAY_CAPTURE_DUPLICATE_CANDIDATES_SQL } from './sql-factory/apple-pay-capture-duplicate-candidate-sql.factory';
+import { buildHouseholdManualAccountTransferCandidatesSql } from './sql-factory/household-manual-account-transfer-candidate-sql.factory';
 import { MANUAL_EXPENSE_DUPLICATE_CANDIDATES_SQL } from './sql-factory/manual-expense-duplicate-candidate-sql.factory';
 import { buildP2pFiatAtomicCandidateSql } from './sql-factory/p2p-fiat-atomic-candidate-sql.factory';
 import { buildP2pFiatAuthoritativeCandidateSql } from './sql-factory/p2p-fiat-authoritative-candidate-sql.factory';
@@ -26,6 +27,7 @@ import { IBAN_BRIDGE_END_LEG_CANDIDATES_SQL } from './sql-factory/transfer-pair-
 import { IBAN_BRIDGE_TRANSFER_CANDIDATES_SQL } from './sql-factory/transfer-pair-iban-bridge-transfer-sql.factory';
 
 import type { FeeEntrySourceInterface } from '../interface/fee-entry-source.interface';
+import type { HouseholdManualAccountTransferCandidateInterface } from '../interface/household-manual-account-transfer-candidate.interface';
 import type { IbanBridgeDuplicatePairCandidateInterface } from '../interface/iban-bridge-duplicate-pair-candidate.interface';
 import type { IbanBridgeEndLegCandidateInterface } from '../interface/iban-bridge-end-leg-candidate.interface';
 import type { ManualExpenseDuplicateCandidateInterface } from '../interface/manual-expense-duplicate-candidate.interface';
@@ -53,6 +55,8 @@ export class ConsolidationCandidateRepository extends Context.Service<Consolidat
             const find = <T extends object>(candidateSql: string) => Db.query(db => db.$client.unsafe<T>(candidateSql));
 
             return {
+                findHouseholdManualAccountTransferCandidates: (scope: ConsolidationScanScopeInterface | null) =>
+                    find<HouseholdManualAccountTransferCandidateInterface>(buildHouseholdManualAccountTransferCandidatesSql(scope)),
                 findAtmCashWithdrawalCandidates: (scope: ConsolidationScanScopeInterface | null) =>
                     find<AtmCashWithdrawalCandidateInterface>(buildAtmCashWithdrawalCandidatesSql(scope)),
                 findAutoAtmCashWithdrawalCandidates: (scope: ConsolidationScanScopeInterface | null) =>

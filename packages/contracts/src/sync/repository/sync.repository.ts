@@ -1,4 +1,4 @@
-import { and, asc, eq, getTableColumns, inArray, isNotNull, isNull, lt, or } from 'drizzle-orm';
+import { and, asc, eq, getTableColumns, inArray, isNotNull, isNull, lt, or, sql } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as DateTime from 'effect/DateTime';
 import * as Duration from 'effect/Duration';
@@ -10,6 +10,8 @@ import { isDefined } from '@rnw-community/shared';
 import { Db } from '../../@generic/service/db.service';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
+import { BankIntegrationEntityTable } from '../../bank-integration/table/bank-integration-entity.table';
+import { BankSyncInstallId } from '../../cloud-sync/constant/bank-sync-install-id.constant';
 import { SyncModeEnum } from '../enum/sync-mode.enum';
 import { SyncStatusEnum } from '../enum/sync-status.enum';
 import { SyncEntityTable } from '../table/sync-entity.table';
@@ -29,6 +31,20 @@ export class SyncRepository extends Context.Service<SyncRepository>()('@budgie/c
             eq(SyncEntityTable.provider, provider),
             ...enabledConditions
         ];
+
+        const buildOwnershipCondition = Effect.fnUntraced(function* () {
+            const installId = yield* yield* BankSyncInstallId;
+
+            return isDefined(installId)
+                ? sql`NOT EXISTS (
+                    SELECT 1 FROM ${BankIntegrationEntityTable}
+                    WHERE ${BankIntegrationEntityTable.id} = ${AccountEntityTable.integrationId}
+                        AND ${BankIntegrationEntityTable.token} <> ''
+                        AND ${BankIntegrationEntityTable.ownerInstallId} IS NOT NULL
+                        AND ${BankIntegrationEntityTable.ownerInstallId} <> ${installId}
+                )`
+                : sql`1 = 1`;
+        });
 
         const selectWithActiveAccount = (db: DB) =>
             db
@@ -52,6 +68,7 @@ export class SyncRepository extends Context.Service<SyncRepository>()('@budgie/c
             ) {
                 const now = yield* DateTime.now;
                 const staleTime = DateTime.toDateUtc(DateTime.subtractDuration(now, Duration.millis(staleThresholdMs)));
+                const ownership = yield* buildOwnershipCondition();
 
                 return yield* Db.query(db =>
                     selectWithActiveAccount(db)
@@ -62,6 +79,7 @@ export class SyncRepository extends Context.Service<SyncRepository>()('@budgie/c
                                 eq(SyncEntityTable.mode, SyncModeEnum.FORWARD),
                                 isNull(SyncEntityTable.deletedAt),
                                 isNull(AccountEntityTable.deletedAt),
+                                ownership,
                                 or(isNull(SyncEntityTable.forwardSyncedAt), lt(SyncEntityTable.forwardSyncedAt, staleTime))
                             )
                         )
@@ -163,17 +181,29 @@ export class SyncRepository extends Context.Service<SyncRepository>()('@budgie/c
                             )
                         )
                 ),
-            getEnabledByProvider: (provider: ExternalSourceEnum) =>
-                Db.query(db => selectWithActiveAccount(db).where(and(...buildEnabledProviderConditions(provider)))),
-            getPendingBackwardSync: (provider: ExternalSourceEnum) =>
-                Db.query(db =>
+            getEnabledByProvider: Effect.fn('SyncRepository.getEnabledByProvider')(function* (provider: ExternalSourceEnum) {
+                const ownership = yield* buildOwnershipCondition();
+
+                return yield* Db.query(db =>
+                    selectWithActiveAccount(db).where(and(...buildEnabledProviderConditions(provider), ownership))
+                );
+            }),
+            getPendingBackwardSync: Effect.fn('SyncRepository.getPendingBackwardSync')(function* (provider: ExternalSourceEnum) {
+                const ownership = yield* buildOwnershipCondition();
+
+                return yield* Db.query(db =>
                     selectWithActiveAccount(db)
-                        .where(and(...buildEnabledProviderConditions(provider), eq(SyncEntityTable.mode, SyncModeEnum.BACKWARD)))
+                        .where(and(...buildEnabledProviderConditions(provider), ownership, eq(SyncEntityTable.mode, SyncModeEnum.BACKWARD)))
                         .orderBy(asc(SyncEntityTable.backwardBatchAt), asc(SyncEntityTable.id))
-                ),
-            getAllPendingBackwardSyncs: Db.query(db =>
-                selectWithActiveAccount(db).where(and(...enabledConditions, eq(SyncEntityTable.mode, SyncModeEnum.BACKWARD)))
-            ),
+                );
+            }),
+            getAllPendingBackwardSyncs: Effect.gen(function* () {
+                const ownership = yield* buildOwnershipCondition();
+
+                return yield* Db.query(db =>
+                    selectWithActiveAccount(db).where(and(...enabledConditions, ownership, eq(SyncEntityTable.mode, SyncModeEnum.BACKWARD)))
+                );
+            }),
             getHistorySyncs: Db.query(db =>
                 db
                     .select({
