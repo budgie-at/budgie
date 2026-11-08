@@ -20,13 +20,7 @@ export const IconSelectorModalContent = ({ selectedIcon, keywords, excludedIcons
 
     return (
         <View style={listStyle}>
-            <IconPickerPanel
-                selectedIcon={selectedIcon}
-                keywords={keywords}
-                excludedIcons={excludedIcons}
-                onSelect={commit}
-                className="pt-lg"
-            />
+            <IconPickerPanel selectedIcon={selectedIcon} keywords={keywords} excludedIcons={excludedIcons} onSelect={commit} />
         </View>
     );
 };

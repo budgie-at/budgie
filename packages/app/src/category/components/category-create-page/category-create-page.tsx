@@ -1,5 +1,3 @@
-import { LockstepIconSelectorProvider } from '../../../@generic/component/lockstep-icon-selector-provider/lockstep-icon-selector-provider';
-import { LockstepStack } from '../../../@generic/component/lockstep-stack/lockstep-stack';
 import { CategoryForm } from '../category-form/category-form';
 
 import type { CategoryFormResultInterface } from '../../interface/category-form-result.interface';
@@ -16,13 +14,5 @@ export const CategoryCreatePage = ({ defaultTitle, syncZone, onSelect, onCancel 
         onSelect(result.category.id);
     };
 
-    return (
-        <LockstepStack
-            root={
-                <LockstepIconSelectorProvider>
-                    <CategoryForm defaultTitle={defaultTitle} syncZone={syncZone} onSuccess={handleSuccess} onCancel={onCancel} />
-                </LockstepIconSelectorProvider>
-            }
-        />
-    );
+    return <CategoryForm defaultTitle={defaultTitle} syncZone={syncZone} onSuccess={handleSuccess} onCancel={onCancel} />;
 };
