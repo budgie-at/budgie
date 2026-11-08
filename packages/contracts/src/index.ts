@@ -36,6 +36,7 @@ export { DbError } from './@generic/error/db.error';
 
 export { ACCOUNT_TITLE_MAX_LENGTH } from './account/constant/account-title-max-length.constant';
 export { ACCOUNT_TITLE_MIN_LENGTH } from './account/constant/account-title-min-length.constant';
+export { UNTRACKED_OWN_ACCOUNT_EXTERNAL_ID } from './account/constant/untracked-own-account-external-id.constant';
 
 export { AccountNotFoundError } from './account/error/account-not-found.error';
 export { AccountTypeEnum } from './account/enum/account-type.enum';

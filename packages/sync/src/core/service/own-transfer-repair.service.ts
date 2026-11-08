@@ -11,6 +11,7 @@ import {
     TransactionConsolidationTypeEnum,
     TransactionEntryTypeEnum,
     TransactionTypeEnum,
+    UNTRACKED_OWN_ACCOUNT_EXTERNAL_ID,
     UserIconNameEnum
 } from '@budgie/contracts';
 import { AccountBalanceIncrementalService, TransactionTransferService } from '@budgie/ledger';
@@ -50,7 +51,7 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
             transaction.entries.filter(entry => entry.type !== TransactionEntryTypeEnum.FEE).length === 1;
 
         const getUntrackedOwnAccount = Effect.fnUntraced(function* (instrumentId: number) {
-            const externalId = 'untracked-own-account';
+            const externalId = UNTRACKED_OWN_ACCOUNT_EXTERNAL_ID;
             const existing = (yield* accountRepository.findByExternalIds([externalId])).find(
                 account => account.instrumentId === instrumentId
             );
