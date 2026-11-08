@@ -1,0 +1,1 @@
+ALTER TABLE `settings` ADD `last_cloud_backup_row_count` integer;

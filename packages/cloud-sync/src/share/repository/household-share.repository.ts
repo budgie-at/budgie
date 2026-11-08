@@ -1,5 +1,5 @@
 import {
-    buildAccountSharedByOtherSql,
+    buildSharedByOtherSql,
     AccountEntityTable,
     BudgetEntityTable,
     Db,
@@ -252,19 +252,14 @@ export class HouseholdShareRepository extends Context.Service<HouseholdShareRepo
                     db
                         .select({ id: AccountEntityTable.id })
                         .from(AccountEntityTable)
-                        .where(and(eq(AccountEntityTable.syncZone, householdZone), not(buildAccountSharedByOtherSql())))
+                        .where(and(eq(AccountEntityTable.syncZone, householdZone), not(buildSharedByOtherSql(SyncRecordTypeEnum.ACCOUNT))))
                 ).pipe(Effect.map(rows => rows.map(({ id }) => id))),
             findBudgetIdsSharedByThisUser: (householdZone: string) =>
                 Db.query(db =>
                     db
                         .select({ id: BudgetEntityTable.id })
                         .from(BudgetEntityTable)
-                        .where(
-                            and(
-                                eq(BudgetEntityTable.syncZone, householdZone),
-                                not(buildAccountSharedByOtherSql(BudgetEntityTable, SyncRecordTypeEnum.BUDGET))
-                            )
-                        )
+                        .where(and(eq(BudgetEntityTable.syncZone, householdZone), not(buildSharedByOtherSql(SyncRecordTypeEnum.BUDGET))))
                 ).pipe(Effect.map(rows => rows.map(({ id }) => id)))
         };
     })

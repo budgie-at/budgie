@@ -53,8 +53,7 @@ export class SyncUploadService extends Context.Service<SyncUploadService>()('@bu
         const readSyncMoveMarker = (changedColumns: readonly string[], prefix: string): string | null =>
             changedColumns.find(column => column.startsWith(prefix))?.slice(prefix.length) ?? null;
         const transactionLegRecordType: string = SyncRecordTypeEnum.TRANSACTION_LEG;
-        const TRANSACTION_RECORD_TYPE: string = SyncRecordTypeEnum.TRANSACTION;
-        const SPLIT_FIELDS: ReadonlySet<string> = new Set(['linkId', 'legCount', 'legEntryPrivate']);
+        const transactionRecordType: string = SyncRecordTypeEnum.TRANSACTION;
         const syncOutboxRepository = yield* SyncOutboxRepository;
         const syncRecordRepository = yield* SyncRecordRepository;
         const linkedRecordSchema = Schema.fromJsonString(Schema.Struct({ encryptedFields: Schema.Struct({ linkId: Schema.String }) }));
@@ -266,7 +265,9 @@ export class SyncUploadService extends Context.Service<SyncUploadService>()('@bu
                 return null;
             }
 
-            const fields = Object.fromEntries(Object.entries(target.encryptedFields).filter(([field]) => !SPLIT_FIELDS.has(field)));
+            const fields = Object.fromEntries(
+                Object.entries(target.encryptedFields).filter(([field]) => !['linkId', 'legCount', 'legEntryPrivate'].includes(field))
+            );
             const deletedAt = yield* Clock.currentTimeMillis;
 
             return {
@@ -281,7 +282,7 @@ export class SyncUploadService extends Context.Service<SyncUploadService>()('@bu
         const buildDeletion = Effect.fnUntraced(function* (row: SyncOutboxEntityInterface) {
             const homeTarget: SyncRecordTargetInterface = { recordName: row.syncId, zone: row.syncZone };
 
-            if (row.recordType !== TRANSACTION_RECORD_TYPE) {
+            if (row.recordType !== transactionRecordType) {
                 return { syncZone: row.syncZone, syncId: row.syncId, syncRevision: row.syncRevision, targets: [homeTarget] };
             }
 

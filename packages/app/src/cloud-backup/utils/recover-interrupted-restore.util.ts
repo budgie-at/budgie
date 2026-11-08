@@ -6,6 +6,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { DATABASE_DIRECTORY } from '../../@generic/drizzle/constant/database-directory.constant';
 import { DB_NAME } from '../../@generic/drizzle/constant/db-name.constant';
+import { DatabaseOpenError } from '../../@generic/drizzle/error/database-open.error';
 import { deleteIfExists } from '../../@generic/utils/delete-if-exists.util';
 import { RESTORE_SAFETY_COPY_LIFETIME_MILLISECONDS } from '../constant/restore-safety-copy-lifetime.constant';
 import { RESTORE_SAFETY_FILES } from '../constant/restore-safety-files.constant';
@@ -23,8 +24,8 @@ export const recoverInterruptedRestore = Effect.gen(function* () {
             deleteIfExists(recovering);
             deleteIfExists(new File(DATABASE_DIRECTORY, `${DB_NAME}-wal`));
             deleteIfExists(new File(DATABASE_DIRECTORY, `${DB_NAME}-shm`));
-            yield* Effect.promise(() => safetyCopy.copy(recovering));
-            yield* Effect.promise(() => recovering.move(database));
+            yield* Effect.tryPromise({ try: () => safetyCopy.copy(recovering), catch: cause => DatabaseOpenError.make({ cause }) });
+            yield* Effect.tryPromise({ try: () => recovering.move(database), catch: cause => DatabaseOpenError.make({ cause }) });
         }
 
         deleteIfExists(pending);

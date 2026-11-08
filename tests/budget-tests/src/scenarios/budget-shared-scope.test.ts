@@ -17,7 +17,7 @@ layer(TestLayer)('shared budget spending scope', it => {
             const { bankAccount, counterpartAccount } = yield* seedParityAccounts();
             const budgetRepository = yield* BudgetRepository;
             const foreignAccount = yield* new TestSeedService(testDb).account({ title: 'Other member card' });
-            yield* testDb.$client.unsafe("UPDATE accounts SET sync_zone = 'household' WHERE id = ?", [foreignAccount.id]);
+            yield* testDb.$client.unsafe('UPDATE accounts SET sync_zone = ? WHERE id = ?', [HOUSEHOLD_SYNC_ZONE, foreignAccount.id]);
             yield* testDb.$client.unsafe('DELETE FROM sync_outbox WHERE sync_id = (SELECT sync_id FROM accounts WHERE id = ?)', [
                 foreignAccount.id
             ]);

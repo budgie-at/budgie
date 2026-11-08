@@ -8,10 +8,10 @@ import { SyncRecordTypeEnum } from '../enum/sync-record-type.enum';
 import { SyncOutboxEntityTable } from '../table/sync-outbox-entity.table';
 import { SyncRecordEntityTable } from '../table/sync-record-entity.table';
 
-export const buildAccountSharedByOtherSql = (
-    table: typeof AccountEntityTable | typeof BudgetEntityTable = AccountEntityTable,
-    recordType = SyncRecordTypeEnum.ACCOUNT
-) => sql`(
+export const buildSharedByOtherSql = (recordType: SyncRecordTypeEnum.ACCOUNT | SyncRecordTypeEnum.BUDGET) => {
+    const table = recordType === SyncRecordTypeEnum.ACCOUNT ? AccountEntityTable : BudgetEntityTable;
+
+    return sql`(
     ${table.syncZone} = ${HOUSEHOLD_SYNC_ZONE}
     AND NOT EXISTS (
         SELECT 1 FROM ${SyncRecordEntityTable}
@@ -26,3 +26,4 @@ export const buildAccountSharedByOtherSql = (
           AND ${SyncOutboxEntityTable.recordType} = ${recordType}
     )
 )`;
+};

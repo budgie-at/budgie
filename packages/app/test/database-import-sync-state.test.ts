@@ -14,7 +14,7 @@ import { AuthService } from '../src/auth/service/auth.service';
 import { cloudSyncStateStoreLayer } from '../src/cloud-sync/layer/cloud-sync-state-store.layer';
 import { DatabaseImportService } from '../src/import/service/database-import.service';
 
-import { storage } from './fixture/expo-file-system-fake';
+import { resetStorage, storage } from './fixture/expo-file-system-fake';
 import { inertDbLayer } from './fixture/inert-db-layer';
 
 import type { CloudSyncStateInterface } from '@budgie/cloud-sync';
@@ -62,16 +62,16 @@ const previous: CloudSyncStateInterface = {
 
 describe('database import sync state', () => {
     beforeEach(() => {
-        storage.files.clear();
+        resetStorage();
         storage.files.set('documents/SQLite/budgie.db', 'database');
         storage.files.set('backup', 'backup');
         storage.failCopy = false;
-        storage.failMove = false;
+        storage.failMoveFrom = null;
     });
     it.effect.each(['close', 'copy', 'move', 'success'])('preserves recoverable sync state on %s failure', failure =>
         Effect.gen(function* () {
             storage.failCopy = failure === 'copy';
-            storage.failMove = failure === 'move';
+            storage.failMoveFrom = failure === 'move' ? 'cache/import-temp.db' : null;
             const holder = { state: previous, pin: 'previous-pin' };
             const layer = Layer.effect(DatabaseImportService, DatabaseImportService.make).pipe(
                 Layer.provide([

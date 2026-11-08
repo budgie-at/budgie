@@ -18,7 +18,8 @@ import { AccountDebtTypeEnum } from '../../account/enum/account-debt-type.enum';
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { BankIntegrationEntityTable } from '../../bank-integration/table/bank-integration-entity.table';
-import { buildAccountSharedByOtherSql } from '../../cloud-sync/utils/build-account-shared-by-other-sql.util';
+import { SyncRecordTypeEnum } from '../../cloud-sync/enum/sync-record-type.enum';
+import { buildSharedByOtherSql } from '../../cloud-sync/utils/build-shared-by-other-sql.util';
 import { DebtEventDirectionEnum } from '../../debt-event/enum/debt-event-direction.enum';
 import { DebtEventEntityTable } from '../../debt-event/table/debt-event-entity.table';
 import { InstrumentTypeEnum } from '../../instrument/enum/instrument-type.enum';
@@ -50,7 +51,7 @@ const buildNetWorthExchangeRateConversionSql = (defaultInstrumentId: number) =>
 
 const getConvertedBalanceSql = (balanceSql: SQL, exchangeRateSql: SQL) => roundToMinorUnitSql(sql`(${balanceSql}) * ${exchangeRateSql}`);
 
-const getOwnNetWorthAccountSql = () => sql`NOT ${buildAccountSharedByOtherSql()}`;
+const getOwnNetWorthAccountSql = () => sql`NOT ${buildSharedByOtherSql(SyncRecordTypeEnum.ACCOUNT)}`;
 
 const getActiveAccountWhereSql = (...conditions: SQL[]) =>
     and(...conditions, eq(AccountEntityTable.isActive, true), isNull(AccountEntityTable.deletedAt));
@@ -247,7 +248,7 @@ export class AccountBalanceRepository extends Context.Service<AccountBalanceRepo
                         debtProgressPercentage: debtProgressSql.percentage,
                         debtTotalAmount: debtProgressSql.totalAmount,
                         hasLedgerHistory: sql<number>`EXISTS (SELECT 1 FROM ${TransactionEntryEntityTable} WHERE ${TransactionEntryEntityTable.accountId} = ${AccountEntityTable.id} AND ${TransactionEntryEntityTable.deletedAt} IS NULL)`,
-                        isSharedByOther: sql<number>`CASE WHEN ${buildAccountSharedByOtherSql()} THEN 1 ELSE 0 END`,
+                        isSharedByOther: sql<number>`CASE WHEN ${buildSharedByOtherSql(SyncRecordTypeEnum.ACCOUNT)} THEN 1 ELSE 0 END`,
                         instrument: InstrumentEntityTable,
                         integrationLabel: BankIntegrationEntityTable.label
                     })

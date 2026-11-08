@@ -2,12 +2,12 @@ import { expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 import { beforeEach } from 'vitest';
 
-import { File, storage } from './fixture/expo-file-system-fake';
+import { File, resetStorage, storage } from './fixture/expo-file-system-fake';
 
 beforeEach(() => {
-    storage.files.clear();
+    resetStorage();
     storage.crashAfterRemove = false;
-    storage.failMove = false;
+    storage.failMoveFrom = null;
 });
 
 it.effect('mirrors Expo file creation, missing reads and mutable move URIs', () =>
@@ -45,5 +45,29 @@ it.effect('updates the URI after the asynchronous move', () =>
         yield* Effect.promise(() => source.move(new File('documents', 'destination')));
         expect(source.uri).toBe('documents/destination');
         expect(source.textSync()).toBe('contents');
+    })
+);
+
+it.effect('removes deleted mtimes and carries them through moves', () =>
+    Effect.sync(() => {
+        const source = new File('documents', 'source');
+        source.create();
+        storage.modified.set(source.uri, 123);
+        source.moveSync(new File('documents', 'destination'));
+        expect(storage.modified.has('documents/source')).toBe(false);
+        expect(source.lastModified).toBe(123);
+        source.delete();
+        expect(storage.modified.has(source.uri)).toBe(false);
+    })
+);
+
+it.effect('deletes the destination before checking a missing copy source', () =>
+    Effect.sync(() => {
+        const destination = new File('documents', 'destination');
+        destination.create();
+        storage.modified.set(destination.uri, 123);
+        expect(() => new File('documents', 'missing').copy(destination, { overwrite: true })).toThrow('ENOENT');
+        expect(destination.exists).toBe(false);
+        expect(destination.lastModified).toBeNull();
     })
 );

@@ -29,6 +29,7 @@ export const DEFAULT_SETTINGS = {
     lastBackupAt: null,
     isAiNoteHintShown: false,
     cloudBackupEnabled: true,
+    lastCloudBackupRowCount: null,
     lastCloudBackupAt: null,
     cloudSyncEnabled: true,
     lineageId: null,

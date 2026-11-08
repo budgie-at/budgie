@@ -50,6 +50,8 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isNumber, isString } from '@rnw-community/shared';
 
+import { OPERATED_AT } from './cloud-fixtures';
+
 import type {
     SyncAggregateInterface,
     SyncIdentityInterface,
@@ -287,8 +289,6 @@ export const hydratedSnapshot = (database: DB) =>
 
         return snapshot;
     });
-
-const OPERATED_AT = new Date('2026-10-02T10:00:00Z');
 
 export const seedFullLedger = (database: DB) =>
     Effect.gen(function* () {

@@ -48,7 +48,7 @@ export class CloudSyncSessionState extends Context.Service<CloudSyncSessionState
             fetchedRecordCount: 0,
             isInitialFetchComplete: false
         });
-        const ownerTransferRetries = new Map<string, Map<string, string>>();
+        const ownerTransferRetries = new Map<string, Set<string>>();
         const privateOwnerName = yield* Ref.make<string | null>(null);
         const isBatchFailed = yield* Ref.make(false);
         const zones = new Map<string, Pick<SyncZoneRegistryEntityInterface, 'databaseScope' | 'ownerName' | 'role' | 'zoneName'>>();
@@ -90,9 +90,9 @@ export class CloudSyncSessionState extends Context.Service<CloudSyncSessionState
             trackOwnerTransferRetries: Effect.fn('CloudSyncSessionState.trackOwnerTransferRetries')(
                 (retries: readonly SyncOwnerTransferRetryInterface[]) =>
                     Effect.sync(() => {
-                        for (const { linkId, zone, recordName } of retries) {
-                            const targets = ownerTransferRetries.get(linkId) ?? new Map<string, string>();
-                            targets.set(zone, recordName);
+                        for (const { linkId, zone } of retries) {
+                            const targets = ownerTransferRetries.get(linkId) ?? new Set<string>();
+                            targets.add(zone);
                             ownerTransferRetries.set(linkId, targets);
                         }
                     })

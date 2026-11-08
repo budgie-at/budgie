@@ -154,7 +154,7 @@ describe('cloud-sync/share-split-transfer', () => {
                 );
             })
         );
-        it.effect.each(['fetch', 'resume'])('replays an owner leg deletion after a kill before did-fetch through %s', source =>
+        it.effect('replays a fetched owner leg deletion after a kill before did-fetch', () =>
             Effect.gen(function* () {
                 const { deviceB, clouds } = yield* startSharedTransfer(SyncZoneRoleEnum.PARTICIPANT);
                 const [leg] = yield* queryRows<{ readonly syncId: string }>(
@@ -182,17 +182,9 @@ describe('cloud-sync/share-split-transfer', () => {
                     Effect.gen(function* () {
                         const service = yield* syncService;
                         yield* matchZoneLineage(context);
-                        if (source === 'resume') {
-                            yield* testDb.$client.unsafe(
-                                'INSERT INTO sync_pending(sync_zone, sync_id, record_type, missing_record_type, missing_sync_id, payload) VALUES (?, ?, ?, ?, ?, ?)',
-                                [HOUSEHOLD_SYNC_ZONE, leg.syncId, 'TransactionLeg', 'SchemaVersion', '', '{"deletion":true}']
-                            );
-                        }
                         yield* service.reconfigure;
                         yield* uploadDevice(testDb, clouds);
-                        if (source === 'fetch') {
-                            yield* service.handleFetchedChanges(deletion);
-                        }
+                        yield* service.handleFetchedChanges(deletion);
                         yield* service.handleStateSerialization({ scope: ICloudSyncScope.SHARED, stateSerialization: 'after-deletion' });
                         expect(context.store.holder.state.sharedStateSerialization).toBe('before-deletion');
                     })

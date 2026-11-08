@@ -173,21 +173,22 @@ export class CloudSyncEngineService extends Context.Service<CloudSyncEngineServi
             }
 
             yield* Ref.set(state.isBatchFailed, false);
-            yield* transport
-                .startSync(scope, stateSerialization)
-                .pipe(
-                    Effect.catchTag('CloudSyncTransportError', error =>
-                        error.code === ICloudErrorCode.INVALID_STATE
-                            ? stateStore.update({ stateSerialization: null }).pipe(Effect.andThen(transport.startSync(scope, null)))
-                            : Effect.fail(error)
-                    )
-                );
+            const startedFrom = yield* transport.startSync(scope, stateSerialization).pipe(
+                Effect.as(stateSerialization),
+                Effect.catchTag('CloudSyncTransportError', error =>
+                    error.code === ICloudErrorCode.INVALID_STATE
+                        ? stateStore
+                              .update({ stateSerialization: null })
+                              .pipe(Effect.andThen(transport.startSync(scope, null)), Effect.as(null))
+                        : Effect.fail(error)
+                )
+            );
             yield* patch({
                 isEngineRunning: true,
                 isAwaitingMeta: decision === CloudSyncLineageDecisionEnum.WRITE_META,
                 isReconciling,
                 blocked: null,
-                isInitialFetchComplete: isDefined(stateSerialization)
+                isInitialFetchComplete: isDefined(startedFrom)
             });
 
             if (decision === CloudSyncLineageDecisionEnum.WRITE_META) {

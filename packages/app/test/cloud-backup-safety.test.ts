@@ -4,7 +4,8 @@ import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 import * as Exit from 'effect/Exit';
 import * as Layer from 'effect/Layer';
-import { vi } from 'vitest';
+import * as TestClock from 'effect/testing/TestClock';
+import { beforeEach, vi } from 'vitest';
 
 import { appAtomRegistry } from '../src/@generic/constant/app-atom-registry.constant';
 import { DatabaseRekeyService } from '../src/@generic/drizzle/service/database-rekey.service';
@@ -15,10 +16,12 @@ import { CloudTransport } from '../src/cloud-backup/service/cloud-transport.serv
 import { InstallIdService } from '../src/cloud-backup/service/install-id.service';
 import { DEFAULT_SETTINGS } from '../src/settings/constants/default-settings.constant';
 
-import { storage } from './fixture/expo-file-system-fake';
+import { resetStorage, storage } from './fixture/expo-file-system-fake';
 import { inertDbLayer } from './fixture/inert-db-layer';
 
-const behavior = vi.hoisted(() => ({ retentionFails: false, backupEnabled: true }));
+const snapshot = { lastCloudBackupAt: DEFAULT_SETTINGS.lastCloudBackupAt, lastCloudBackupRowCount: -1 };
+
+const behavior = vi.hoisted(() => ({ retentionFails: false, backupEnabled: true, uploads: 0 }));
 
 vi.mock('@lingui/core/macro', () => ({ msg: (message: unknown) => message, t: (parts: TemplateStringsArray) => parts.join('') }));
 vi.mock('expo-constants', () => ({ default: {} }));
@@ -48,13 +51,29 @@ vi.mock('expo-file-system', () => import('./fixture/expo-file-system-fake'));
 const backupLayer = Layer.effect(CloudBackupService, CloudBackupService.make).pipe(
     Layer.provide([
         Layer.mock(SettingsRepository)({
-            getSettings: () => Effect.succeed({ ...DEFAULT_SETTINGS, cloudBackupEnabled: behavior.backupEnabled, lastCloudBackupAt: null }),
-            update: () => Effect.succeed(DEFAULT_SETTINGS)
+            getSettings: () =>
+                Effect.succeed({
+                    ...DEFAULT_SETTINGS,
+                    cloudBackupEnabled: behavior.backupEnabled,
+                    lastCloudBackupAt: snapshot.lastCloudBackupAt,
+                    lastCloudBackupRowCount: snapshot.lastCloudBackupRowCount
+                }),
+            update: input =>
+                Effect.sync(() => {
+                    Object.assign(snapshot, input);
+
+                    return DEFAULT_SETTINGS;
+                })
         }),
         Layer.mock(SyncZoneRegistryRepository)({ findByLabel: () => Effect.undefined }),
         Layer.mock(CloudTransport)({
             getAccountStatus: Effect.succeed({ status: ICloudAccountStatusEnum.AVAILABLE, userRecordName: 'owner' }),
-            saveBackup: () => Effect.succeed('saved'),
+            saveBackup: () =>
+                Effect.sync(() => {
+                    behavior.uploads += 1;
+
+                    return 'saved';
+                }),
             listBackups: Effect.suspend(() =>
                 behavior.retentionFails
                     ? Effect.fail(CloudSyncTransportError.make({ code: ICloudErrorCode.NETWORK_UNAVAILABLE, message: 'retention failed' }))
@@ -70,6 +89,30 @@ const backupLayer = Layer.effect(CloudBackupService, CloudBackupService.make).pi
 );
 
 describe('cloud backup safety copy', () => {
+    beforeEach(() => {
+        resetStorage();
+        behavior.uploads = 0;
+        snapshot.lastCloudBackupAt = null;
+        snapshot.lastCloudBackupRowCount = -1;
+    });
+    it.effect('backs up hard deletes and skips an unchanged fingerprint', () =>
+        Effect.gen(function* () {
+            yield* TestClock.setTime(10_000);
+            const query = vi.spyOn(Db, 'query').mockReturnValue(Effect.succeed([{ lastChangedAt: 1, rowCount: 10 }]));
+            const service = yield* CloudBackupService;
+            expect(yield* service.backup(0)).toBe(true);
+            expect(snapshot.lastCloudBackupRowCount).toBe(10);
+            expect(behavior.uploads).toBe(1);
+            yield* TestClock.adjust('1 hour');
+            query.mockReturnValue(Effect.succeed([{ lastChangedAt: 1, rowCount: 10 }]));
+            expect(yield* service.backup(0)).toBe(false);
+            expect(behavior.uploads).toBe(1);
+            query.mockReturnValue(Effect.succeed([{ lastChangedAt: 1, rowCount: 9 }]));
+            expect(yield* service.backup(0)).toBe(true);
+            expect(snapshot.lastCloudBackupRowCount).toBe(9);
+            expect(behavior.uploads).toBe(2);
+        }).pipe(Effect.provide([backupLayer, inertDbLayer]))
+    );
     it.effect('clears waiting status when there is nothing to upload', () =>
         Effect.gen(function* () {
             behavior.backupEnabled = false;
@@ -89,7 +132,7 @@ describe('cloud backup safety copy', () => {
     it.effect('keeps READY after a successful upload when retention fails', () =>
         Effect.gen(function* () {
             behavior.retentionFails = true;
-            const query = vi.spyOn(Db, 'query').mockReturnValue(Effect.succeed([{ lastChangedAt: 1 }]));
+            const query = vi.spyOn(Db, 'query').mockReturnValue(Effect.succeed([{ lastChangedAt: 1, rowCount: 10 }]));
             yield* Effect.gen(function* () {
                 expect(Exit.isFailure(yield* Effect.exit(Effect.flatMap(CloudBackupService, service => service.backup(0))))).toBe(true);
                 expect(appAtomRegistry.get(cloudBackupStatusAtom)).toBe(CloudBackupStatusEnum.READY);
@@ -106,7 +149,7 @@ describe('cloud backup safety copy', () => {
     it.effect('keeps the pre-restore copy when a new backup completes successfully', () =>
         Effect.gen(function* () {
             storage.deleted.splice(0);
-            const query = vi.spyOn(Db, 'query').mockReturnValue(Effect.succeed([{ lastChangedAt: 1 }]));
+            const query = vi.spyOn(Db, 'query').mockReturnValue(Effect.succeed([{ lastChangedAt: 1, rowCount: 10 }]));
             yield* Effect.gen(function* () {
                 expect(yield* Effect.flatMap(CloudBackupService, service => service.backup(0))).toBe(true);
                 expect(storage.deleted.length).toBeGreaterThan(0);

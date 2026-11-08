@@ -16,7 +16,8 @@ import {
     TransactionEntryTypeEnum,
     TransactionTagsEntityTable,
     TransactionTypeEnum,
-    buildAccountSharedByOtherSql,
+    buildSharedByOtherSql,
+    SyncRecordTypeEnum,
     buildSpendingEntryCondition
 } from '@budgie/contracts';
 import { startOfDay } from 'date-fns/startOfDay';
@@ -91,7 +92,7 @@ export class BudgetRepository extends Context.Service<BudgetRepository>()('@budg
         const buildBudgetScopeConditions = (budgetSyncZone: string) =>
             budgetSyncZone === HOUSEHOLD_SYNC_ZONE
                 ? [eq(AccountEntityTable.syncZone, HOUSEHOLD_SYNC_ZONE)]
-                : [sql`NOT ${buildAccountSharedByOtherSql()}`];
+                : [sql`NOT ${buildSharedByOtherSql(SyncRecordTypeEnum.ACCOUNT)}`];
 
         const findEntries = (
             amountSql: SQL<number>,

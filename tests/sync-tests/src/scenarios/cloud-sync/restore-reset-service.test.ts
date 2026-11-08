@@ -2,6 +2,8 @@ import { appAtomRegistry } from '@app/@generic/constant/app-atom-registry.consta
 import { cloudSyncStatusAtom } from '@app/cloud-sync/constant/cloud-sync-status-atom.constant';
 import { SyncOutboxRepository, CloudSyncRestorePhaseEnum, ICloudErrorCode, ICloudSyncScope } from '@budgie/cloud-sync';
 import {
+    SYNC_MOVED_TO_MARKER_PREFIX,
+    HOUSEHOLD_SYNC_ZONE,
     PERSONAL_SYNC_ZONE,
     SyncOutboxOperationEnum,
     SyncResetRepository,
@@ -216,7 +218,7 @@ describe('cloud-sync/restore-reset service', () => {
                     syncZone: PERSONAL_SYNC_ZONE,
                     syncId: 'own-shared-account',
                     recordType,
-                    payload: '{"encryptedFields":{"movedTo":"household"}}',
+                    payload: `{"encryptedFields":{"movedTo":"${HOUSEHOLD_SYNC_ZONE}"}}`,
                     systemFields: 'stale-tag'
                 });
                 yield* (yield* SyncOutboxRepository).enqueue({
@@ -224,17 +226,17 @@ describe('cloud-sync/restore-reset service', () => {
                     syncZone: PERSONAL_SYNC_ZONE,
                     syncId: 'pending-move',
                     operation: SyncOutboxOperationEnum.DELETE,
-                    changedColumns: '["@movedTo:household"]'
+                    changedColumns: `["${SYNC_MOVED_TO_MARKER_PREFIX}${HOUSEHOLD_SYNC_ZONE}"]`
                 });
                 yield* (yield* SyncResetRepository).clearSyncState();
                 expect(yield* testDb.$client.unsafe("SELECT changed_columns FROM sync_outbox WHERE sync_id = 'pending-move'")).toEqual([
-                    { changed_columns: '["@movedTo:household"]' }
+                    { changed_columns: `["${SYNC_MOVED_TO_MARKER_PREFIX}${HOUSEHOLD_SYNC_ZONE}"]` }
                 ]);
                 yield* (yield* SyncOutboxRepository).enqueueAll(PERSONAL_SYNC_ZONE);
                 expect((yield* records.find(PERSONAL_SYNC_ZONE, 'own-shared-account'))?.systemFields).toBeNull();
                 expect(
                     yield* testDb.$client.unsafe("SELECT operation, changed_columns FROM sync_outbox WHERE sync_id = 'own-shared-account'")
-                ).toEqual([{ operation: 'DELETE', changed_columns: '["@movedTo:household"]' }]);
+                ).toEqual([{ operation: 'DELETE', changed_columns: `["${SYNC_MOVED_TO_MARKER_PREFIX}${HOUSEHOLD_SYNC_ZONE}"]` }]);
             }).pipe(Effect.provide(SyncResetRepository.layer))
         )
     );

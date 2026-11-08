@@ -6,7 +6,7 @@ import { beforeEach, vi } from 'vitest';
 
 import { cloudSyncStateStoreLayer } from '../src/cloud-sync/layer/cloud-sync-state-store.layer';
 
-import { storage } from './fixture/expo-file-system-fake';
+import { resetStorage, storage } from './fixture/expo-file-system-fake';
 
 vi.mock('expo-file-system', () => import('./fixture/expo-file-system-fake'));
 
@@ -27,7 +27,7 @@ const encodedState = JSON.stringify(state);
 
 describe('cloud sync state file', () => {
     beforeEach(() => {
-        storage.files.clear();
+        resetStorage();
         storage.events.splice(0);
         storage.failWrite = false;
         storage.crashAfterRemove = false;

@@ -95,7 +95,7 @@ Resetting Development (`xcrun cktool reset-schema --team-id "$CK_TEAM" --contain
 ### C1 Encrypted field round trip
 
 1. On A1 create one account, one category and three transactions with a distinctive title such as `zz-cloudkit-canary`.
-2. Wait for the 10-minute change debounce, then background the app. The first backup on a fresh install uploads immediately; later uploads need the previous one to be at least 1 hour old.
+2. The first backup on a fresh install uploads immediately. Later backups run 1 h after a change, 6 h on background.
 3. Open the console → Private Database → `_defaultZone` → record type `Backup`, newest record.
 4. Read the same record from the CLI:
 

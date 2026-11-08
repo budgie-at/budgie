@@ -1,19 +1,11 @@
 import { Directory } from './expo-directory-fake';
+import { FileSystemStorage } from './file-system-storage';
 
 export { Directory };
 
 import { isDefined, isString } from '@rnw-community/shared';
 
-export const storage = {
-    files: new Map<string, string>(),
-    modified: new Map<string, number>(),
-    events: new Array<string>(),
-    deleted: new Array<string>(),
-    failWrite: false,
-    failCopy: false,
-    failMove: false,
-    crashAfterRemove: false
-};
+export const storage = new FileSystemStorage();
 
 export class File {
     uri: string;
@@ -60,22 +52,21 @@ export class File {
     }
 
     moveSync(destination: File | Directory, options?: { overwrite?: boolean }) {
-        const target = destination instanceof Directory ? new File(destination, this.name) : destination;
-        if (storage.failMove && this.uri.endsWith('import-temp.db')) {
+        if (storage.failMoveFrom === this.uri) {
             throw new Error('move failed');
         }
-        if (target.exists && options?.overwrite !== true) {
-            throw new Error('EEXIST');
-        }
-        if (options?.overwrite === true) {
-            storage.files.delete(target.uri);
-        }
+        const target = this.prepareDestination(destination, options);
         if (storage.crashAfterRemove) {
             throw new Error('crash');
         }
         const contents = this.textSync();
         storage.events.push('move');
         storage.files.set(target.uri, contents);
+        const modified = storage.modified.get(this.uri);
+        storage.modified.delete(this.uri);
+        if (isDefined(modified)) {
+            storage.modified.set(target.uri, modified);
+        }
         storage.files.delete(this.uri);
         this.uri = target.uri;
     }
@@ -90,10 +81,7 @@ export class File {
         if (storage.failCopy) {
             throw new Error('copy failed');
         }
-        const target = destination instanceof Directory ? new File(destination, this.name) : destination;
-        if (target.exists && options?.overwrite !== true) {
-            throw new Error('EEXIST');
-        }
+        const target = this.prepareDestination(destination, options);
         storage.files.set(target.uri, this.textSync());
 
         return Promise.resolve();
@@ -103,9 +91,34 @@ export class File {
         if (!this.exists) {
             throw new Error('ENOENT');
         }
+        storage.modified.delete(this.uri);
         storage.deleted.push(this.uri);
         storage.files.delete(this.uri);
+    }
+
+    private prepareDestination(destination: File | Directory, options?: { overwrite?: boolean }) {
+        const target = destination instanceof Directory ? new File(destination, this.name) : destination;
+        if (target.exists && options?.overwrite !== true) {
+            throw new Error('EEXIST');
+        }
+        if (options?.overwrite === true) {
+            storage.files.delete(target.uri);
+            storage.modified.delete(target.uri);
+        }
+
+        return target;
     }
 }
 
 export const Paths = { document: 'documents', cache: { uri: 'cache' } };
+
+export const resetStorage = () => {
+    storage.files.clear();
+    storage.modified.clear();
+    storage.events.splice(0);
+    storage.deleted.splice(0);
+    storage.failWrite = false;
+    storage.failCopy = false;
+    storage.failMoveFrom = null;
+    storage.crashAfterRemove = false;
+};

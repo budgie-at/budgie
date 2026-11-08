@@ -7,6 +7,7 @@ import { useICloudAccount } from '../../../cloud-backup/hook/use-icloud-account.
 import { useHouseholdParticipants } from '../../hook/use-household-participants.hook';
 import { HouseholdMemberJoinWatcher } from '../household-member-join-watcher/household-member-join-watcher';
 import { HouseholdPeopleSection } from '../household-people-section/household-people-section';
+import { HouseholdRemoveGroupRow } from '../household-remove-group-row/household-remove-group-row';
 import { HouseholdShareSection } from '../household-share-section/household-share-section';
 import { HouseholdStopSharingRow } from '../household-stop-sharing-row/household-stop-sharing-row';
 
@@ -23,9 +24,7 @@ export const HouseholdOwnerContent = () => {
             <HouseholdPeopleSection />
             <HouseholdShareSection />
             {isStopSharingShown ? (
-                <GroupedListSection>
-                    <HouseholdStopSharingRow isEmptyGroup={isEmptyGroup} />
-                </GroupedListSection>
+                <GroupedListSection>{isEmptyGroup ? <HouseholdRemoveGroupRow /> : <HouseholdStopSharingRow />}</GroupedListSection>
             ) : null}
         </View>
     );

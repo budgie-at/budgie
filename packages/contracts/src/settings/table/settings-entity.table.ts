@@ -40,6 +40,7 @@ export const SettingsEntityTable = sqliteTable(
         lastBackupAt: int('last_backup_at', { mode: 'timestamp' }),
         isAiNoteHintShown: int('is_ai_note_hint_shown', { mode: 'boolean' }).notNull().default(false),
         cloudBackupEnabled: int('cloud_backup_enabled', { mode: 'boolean' }).notNull().default(true),
+        lastCloudBackupRowCount: int('last_cloud_backup_row_count'),
         lastCloudBackupAt: int('last_cloud_backup_at', { mode: 'timestamp' }),
         cloudSyncEnabled: int('cloud_sync_enabled', { mode: 'boolean' }).notNull().default(true),
         lineageId: text('lineage_id'),

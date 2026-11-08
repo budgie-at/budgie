@@ -74,6 +74,9 @@ describe('cloud-sync/sync-service drain', () => {
                 yield* service.stopEngine;
                 yield* service.reconfigure;
                 const started = scope === ICloudSyncScope.PRIVATE ? context.transport.calls.started : context.transport.calls.sharedStarted;
+                if (scope === ICloudSyncScope.PRIVATE) {
+                    expect(appAtomRegistry.get(cloudSyncStatusAtom).isInitialFetchComplete).toBe(false);
+                }
                 expect(started.slice(-2)).toEqual(['corrupt', null]);
                 expect(context.store.holder.state[stateKey]).toBeNull();
                 expect(appAtomRegistry.get(cloudSyncStatusAtom).status).not.toBe(CloudSyncStatusEnum.ERROR);

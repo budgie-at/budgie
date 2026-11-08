@@ -449,7 +449,7 @@ export { SyncIdentityRepository } from './cloud-sync/repository/sync-identity.re
 
 export { SyncRecordTypeEnum } from './cloud-sync/enum/sync-record-type.enum';
 
-export { buildAccountSharedByOtherSql } from './cloud-sync/utils/build-account-shared-by-other-sql.util';
+export { buildSharedByOtherSql } from './cloud-sync/utils/build-shared-by-other-sql.util';
 export { SyncResetRepository } from './cloud-sync/repository/sync-reset.repository';
 export { BankSyncInstallId } from './cloud-sync/constant/bank-sync-install-id.constant';
 

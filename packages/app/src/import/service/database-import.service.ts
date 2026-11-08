@@ -44,12 +44,6 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
             deleteFileIfExists(`${probePath}-shm`);
         };
 
-        const deleteDestinationFiles = (destinationPath: string): void => {
-            deleteFileIfExists(destinationPath);
-            deleteFileIfExists(`${destinationPath}-wal`);
-            deleteFileIfExists(`${destinationPath}-shm`);
-        };
-
         const readProbeDatabase = Effect.fn('DatabaseImportService.readProbeDatabase')(function* (backupPin: string | null) {
             const probeClient = yield* openSqliteClient(probeDatabaseName, backupPin);
 
@@ -99,7 +93,7 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
             deleteFileIfExists(tempPath);
             yield* Effect.promise(() => new File(sourceUri).copy(new File(tempPath)));
             yield* databaseLifecycleService.close();
-            deleteDestinationFiles(destinationPath);
+            deleteProbeFiles(destinationPath);
             yield* Effect.promise(() => new File(tempPath).move(new File(destinationPath)));
             yield* copyDatabaseSidecars(sourceUri, destinationPath);
         });

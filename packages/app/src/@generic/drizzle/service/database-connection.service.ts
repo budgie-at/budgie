@@ -40,7 +40,7 @@ export class DatabaseConnectionService extends Context.Service<DatabaseConnectio
                 { discard: true }
             ).pipe(Effect.mapError(cause => DatabaseOpenError.make({ cause })));
 
-        yield* recoverInterruptedRestore.pipe(Effect.catchCause(cause => Effect.logError(cause)));
+        yield* recoverInterruptedRestore.pipe(Effect.catchDefect(defect => Effect.logError(defect)));
 
         const databaseKey = yield* readDatabaseKey;
         const openConnection = openSqliteClient(DB_NAME, databaseKey).pipe(Scope.provide(scope));

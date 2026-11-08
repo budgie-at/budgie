@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import type { TestInlineShimPluginInterface } from './interface/test-inline-shim-plugin.interface';
 
@@ -162,7 +163,7 @@ export const createTestVitestConfig = (rootDir: string, setupFile: string) => {
         resolve: {
             alias: [
                 { find: /^@app\/(.*)$/u, replacement: here('../../packages/app/src/$1') },
-                { find: /^react-native-toast-message$/u, replacement: resolve(import.meta.dirname, 'toast-message.shim.ts') }
+                { find: /^react-native-toast-message$/u, replacement: fileURLToPath(import.meta.resolve('./toast-message.shim.ts')) }
             ]
         },
         test: {

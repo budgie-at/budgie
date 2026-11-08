@@ -54,14 +54,22 @@ export class CloudBackupService extends Context.Service<CloudBackupService>()('@
         const deviceModel = Platform.OS === 'ios' ? Platform.constants.interfaceIdiom : Platform.OS;
         const userDataTableNames = new Set(SYNC_IDENTITY_TABLES.map(table => table.name));
         const timestampColumnNames = new Set(['created_at', 'updated_at', 'deleted_at']);
-        const LastChangedRowsSchema = Schema.NonEmptyArray(Schema.Struct({ lastChangedAt: Schema.NullOr(Schema.Finite) }));
-        const lastChangedAtSql = String.raw`SELECT MAX(lastChangedAt) AS lastChangedAt FROM (${Object.values(schema)
+        const LastChangedRowsSchema = Schema.NonEmptyArray(
+            Schema.Struct({ lastChangedAt: Schema.NullOr(Schema.Finite), rowCount: Schema.Finite })
+        );
+        const lastChangedAtSql = String.raw`SELECT MAX(lastChangedAt) AS lastChangedAt, SUM(rowCount) AS rowCount FROM (${Object.values(
+            schema
+        )
             .map(table => getTableConfig(table))
-            .filter(config => userDataTableNames.has(config.name))
             .flatMap(config =>
-                config.columns
-                    .filter(column => timestampColumnNames.has(column.name))
-                    .map(column => String.raw`SELECT MAX(${column.name}) AS lastChangedAt FROM ${config.name}`)
+                userDataTableNames.has(config.name)
+                    ? [
+                          String.raw`SELECT NULL AS lastChangedAt, COUNT(*) AS rowCount FROM ${config.name}`,
+                          ...config.columns
+                              .filter(column => timestampColumnNames.has(column.name))
+                              .map(column => String.raw`SELECT MAX(${column.name}) AS lastChangedAt, 0 AS rowCount FROM ${config.name}`)
+                      ]
+                    : []
             )
             .join(String.raw` UNION ALL `)})`;
 
@@ -94,13 +102,6 @@ export class CloudBackupService extends Context.Service<CloudBackupService>()('@
                 )
             ].map(backup => backup.recordName);
         };
-
-        const hasUserDataChangedSince = Effect.fn('CloudBackupService.hasUserDataChangedSince')(function* (lastBackupAt: Date | null) {
-            const rows = yield* Db.query(db => db.$client.unsafe(lastChangedAtSql));
-            const [{ lastChangedAt }] = yield* Schema.decodeUnknownEffect(LastChangedRowsSchema)(rows);
-
-            return isDefined(lastChangedAt) && lastChangedAt >= Math.floor((lastBackupAt?.getTime() ?? 0) / 1000);
-        });
 
         const applyRetention = Effect.fn('CloudBackupService.applyRetention')(function* (installId: string) {
             const backups = yield* cloudTransport.listBackups;
@@ -161,7 +162,12 @@ export class CloudBackupService extends Context.Service<CloudBackupService>()('@
                 return null;
             }
 
-            if (!(yield* hasUserDataChangedSince(settings.lastCloudBackupAt))) {
+            const rows = yield* Db.query(db => db.$client.unsafe(lastChangedAtSql));
+            const [{ lastChangedAt, rowCount }] = yield* Schema.decodeUnknownEffect(LastChangedRowsSchema)(rows);
+            const hasTimestampChanged =
+                isDefined(lastChangedAt) && lastChangedAt >= Math.floor((settings.lastCloudBackupAt?.getTime() ?? 0) / 1000);
+
+            if (!hasTimestampChanged && rowCount === settings.lastCloudBackupRowCount) {
                 return null;
             }
 
@@ -171,7 +177,7 @@ export class CloudBackupService extends Context.Service<CloudBackupService>()('@
 
             const installId = yield* uploadBackup(startedAt);
 
-            yield* settingsRepository.update({ lastCloudBackupAt: startedAt });
+            yield* settingsRepository.update({ lastCloudBackupAt: startedAt, lastCloudBackupRowCount: rowCount });
 
             return installId;
         });

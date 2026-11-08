@@ -17,7 +17,7 @@ import { recoverInterruptedRestore } from '../src/cloud-backup/utils/recover-int
 import { writeRestoreSafetyCopy } from '../src/cloud-backup/utils/write-restore-safety-copy.util';
 import { cloudSyncSafetyCopyLayer } from '../src/cloud-sync/layer/cloud-sync-safety-copy.layer';
 
-import { storage } from './fixture/expo-file-system-fake';
+import { resetStorage, storage } from './fixture/expo-file-system-fake';
 import { inertDbLayer } from './fixture/inert-db-layer';
 
 vi.mock('../src/@generic/drizzle/service/database-rekey.service', async () => {
@@ -45,13 +45,14 @@ vi.mock('expo-file-system', () => import('./fixture/expo-file-system-fake'));
 const safetyPath = `documents/SQLite/${RESTORE_SAFETY_FILES.copy}`;
 
 describe('restore safety copy expiry', () => {
-    beforeEach(() => void storage.files.clear());
+    beforeEach(resetStorage);
     it.effect('keeps the previous safety copy when sync export fails', () =>
         Effect.gen(function* () {
             storage.files.set(safetyPath, 'previous-copy');
             storage.modified.set(safetyPath, 123);
             const safety = yield* CloudSyncSafetyCopy;
             expect(Exit.isFailure(yield* Effect.exit(safety.create))).toBe(true);
+            expect(storage.files.get(safetyPath)).toBe('previous-copy');
             expect(storage.modified.get(safetyPath)).toBe(123);
         }).pipe(
             Effect.provide(cloudSyncSafetyCopyLayer),
@@ -77,8 +78,27 @@ describe('restore safety copy expiry', () => {
                     )
                 )
             ).toBe(true);
+            expect(storage.files.get(safetyPath)).toBe('previous-copy');
             expect(storage.modified.get(safetyPath)).toBe(123);
         }).pipe(Effect.provide(inertDbLayer))
+    );
+    it.effect.each(['copy', 'move'])('retries interrupted recovery after a failed %s', failure =>
+        Effect.gen(function* () {
+            storage.files.set(safetyPath, 'original');
+            storage.files.set('documents/SQLite/pre-restore.pending', '');
+            storage.failCopy = failure === 'copy';
+            storage.failMoveFrom = failure === 'move' ? 'documents/SQLite/pre-restore.db.recovering' : null;
+            const error = yield* Effect.flip(recoverInterruptedRestore);
+            expect(error._tag).toBe('DatabaseOpenError');
+            expect(storage.files.has('documents/SQLite/pre-restore.pending')).toBe(true);
+            expect(storage.files.has('documents/SQLite/budgie.db')).toBe(false);
+            storage.failCopy = false;
+            storage.failMoveFrom = null;
+            yield* recoverInterruptedRestore;
+            expect(storage.files.get('documents/SQLite/budgie.db')).toBe('original');
+            expect(storage.files.has('documents/SQLite/pre-restore.pending')).toBe(false);
+            expect(storage.files.get(safetyPath)).toBe('original');
+        })
     );
     it.effect('keeps the shared safety copy for seven days and removes it only after expiry', () =>
         Effect.gen(function* () {

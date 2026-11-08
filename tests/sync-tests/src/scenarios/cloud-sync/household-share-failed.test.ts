@@ -4,31 +4,31 @@ import { HouseholdJoinStatusEnum, ICloudShareOutcome } from '@budgie/cloud-sync'
 import { HOUSEHOLD_SYNC_ZONE, SyncZoneRegistryRepository } from '@budgie/contracts';
 import { describe, expect, it, vi } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
+import Toast from 'react-native-toast-message';
 
-import Toast from '../../../../test-kit/src/vitest/toast-message.shim';
+import { emptyFn } from '@rnw-community/shared';
+
 import { HOUSEHOLD_CLOUD_ZONE, OWNER_RECORD_NAME, makeSyncServiceContext, syncService } from '../../harness';
 
 describe('cloud-sync/household share failed', () => {
     it.effect('tells the user when accepting a family invitation fails', () => {
-        const show = vi.spyOn(Toast, 'show').mockImplementation(() => undefined);
+        const show = vi.spyOn(Toast, 'show').mockImplementation(emptyFn);
         const context = makeSyncServiceContext();
 
-        return context
-            .run(
-                Effect.gen(function* () {
-                    const service = yield* syncService;
+        return context.run(
+            Effect.gen(function* () {
+                const service = yield* syncService;
 
-                    yield* service.handleShareAccepted({
-                        zoneName: HOUSEHOLD_CLOUD_ZONE,
-                        ownerName: OWNER_RECORD_NAME,
-                        outcome: ICloudShareOutcome.FAILED
-                    });
+                yield* service.handleShareAccepted({
+                    zoneName: HOUSEHOLD_CLOUD_ZONE,
+                    ownerName: OWNER_RECORD_NAME,
+                    outcome: ICloudShareOutcome.FAILED
+                });
 
-                    expect(show).toHaveBeenCalledTimes(1);
-                    expect(show).toHaveBeenCalledWith(expect.objectContaining({ type: 'error', text1: 'Could not join the family' }));
-                })
-            )
-            .pipe(Effect.ensuring(Effect.sync(() => void show.mockRestore())));
+                expect(show).toHaveBeenCalledTimes(1);
+                expect(show).toHaveBeenCalledWith(expect.objectContaining({ type: 'error', text1: 'Could not join the family' }));
+            })
+        );
     });
 
     it.effect('shows a joining state without registering the household zone', () => {

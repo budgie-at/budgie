@@ -325,12 +325,12 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
             return item;
         });
 
-        const enqueueOwnerTransfer = Effect.fnUntraced(function* (linkId: string, zone: string, recordName: string) {
+        const enqueueOwnerTransfer = Effect.fnUntraced(function* (linkId: string, zone: string) {
             for (const home of yield* repository.findFamilyRecords(linkId)) {
                 const homeRow = yield* repository.findRow('transactions', home.syncZone, home.syncId);
                 if (
                     home.syncZone !== zone &&
-                    home.syncId !== recordName &&
+                    home.syncId !== linkId &&
                     isDefined(homeRow) &&
                     (yield* repository.hasEntryInZone(homeRow.localRowId, zone))
                 ) {
@@ -368,7 +368,7 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
                 const row = yield* repository.findRow(tableName, zone, recordName);
 
                 if (!isDefined(row) && definition.recordType === SyncRecordTypeEnum.TRANSACTION_LEG) {
-                    tracker.ownerTransferRetries.push({ linkId: recordName, zone, recordName });
+                    tracker.ownerTransferRetries.push({ linkId: recordName, zone });
                 }
 
                 if (isDefined(row)) {
@@ -478,8 +478,8 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
             enqueueOwnerTransfers: Effect.fn('SyncApplyService.enqueueOwnerTransfers')(function* (
                 retries: readonly SyncOwnerTransferRetryInterface[]
             ) {
-                for (const { linkId, zone, recordName } of retries) {
-                    yield* enqueueOwnerTransfer(linkId, zone, recordName);
+                for (const { linkId, zone } of retries) {
+                    yield* enqueueOwnerTransfer(linkId, zone);
                 }
             }),
             apply,
