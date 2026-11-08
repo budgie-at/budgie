@@ -2914,8 +2914,7 @@ msgstr "Clipboard doesn't contain a valid Monobank token"
 msgid "Clipboard is empty"
 msgstr "Clipboard is empty"
 
-#: src/@generic/component/anchored-morph-panel/anchored-morph-panel.tsx
-#: src/@generic/component/morphing-sheet-scrim/morphing-sheet-scrim.tsx
+#: src/@generic/component/morph-scrim/morph-scrim.tsx
 #: src/@generic/component/selector-modal-search-header/selector-modal-search-header.tsx
 #: src/@generic/component/sheet-title-row/sheet-title-row.tsx
 #: src/budget/components/budget-sheet-state/budget-sheet-state.tsx

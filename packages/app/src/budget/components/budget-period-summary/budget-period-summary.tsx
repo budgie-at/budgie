@@ -1,12 +1,12 @@
 import { BudgetPeriodEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { ScrollView, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { FormsheetHeader } from '../../../@generic/component/formsheet-header/formsheet-header';
-import { SheetSurface } from '../../../@generic/component/sheet-surface/sheet-surface';
-import { useMorphingSheetScrollCap } from '../../../@generic/hook/use-morphing-sheet-scroll-cap.hook';
+import { ScrollableSheetCard } from '../../../@generic/component/scrollable-sheet-card/scrollable-sheet-card';
+import { MORPHING_SHEET_DESTINATION_HEIGHT_RATIO } from '../../../@generic/constant/morphing-sheet-height-ratio.constant';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
 import { BudgetSelector } from '../../budget.selector';
@@ -29,7 +29,6 @@ export const BudgetPeriodSummary = ({ snapshotId }: Props) => {
     const { instrument } = useGetInstrumentByIdQuery(isDefined(budget) ? budget.instrumentId : 0);
     const { formatMonthAndDay } = useFormatDate();
     const { formatFullPeriod } = useFormatBudgetPeriod();
-    const scrollStyle = useMorphingSheetScrollCap();
     const { t } = useLingui();
 
     const missingDescription = isError ? t`Your data could not be loaded. Close this screen and try again.` : '';
@@ -57,60 +56,52 @@ export const BudgetPeriodSummary = ({ snapshotId }: Props) => {
     ) : null;
 
     return (
-        <View>
-            <SheetSurface
-                className="flex-none pt-lg"
-                contentClassName="flex-none"
-                header={
-                    <FormsheetHeader
-                        size="md"
-                        title={formatFullPeriod(period, snapshot.periodStart, snapshot.periodEnd)}
-                        description={`${formatMonthAndDay(snapshot.periodStart)} – ${formatMonthAndDay(snapshot.periodEnd)}`}
-                    />
-                }
-            >
-                <ScrollView
-                    style={scrollStyle}
-                    contentContainerClassName="px-5xl pt-md gap-y-7xl pb-3xl"
-                    showsVerticalScrollIndicator={false}
-                >
-                    <BudgetPeriodSummaryTotal
-                        title={t(BUDGET_PERIOD_TITLE_LABEL[period])}
-                        spent={snapshot.overallSpent}
-                        limit={totalLimit}
+        <ScrollableSheetCard
+            header={
+                <FormsheetHeader
+                    size="md"
+                    title={formatFullPeriod(period, snapshot.periodStart, snapshot.periodEnd)}
+                    description={`${formatMonthAndDay(snapshot.periodStart)} – ${formatMonthAndDay(snapshot.periodEnd)}`}
+                />
+            }
+            ratio={MORPHING_SHEET_DESTINATION_HEIGHT_RATIO}
+            contentClassName="px-5xl pt-md gap-y-7xl pb-3xl"
+        >
+            <BudgetPeriodSummaryTotal
+                title={t(BUDGET_PERIOD_TITLE_LABEL[period])}
+                spent={snapshot.overallSpent}
+                limit={totalLimit}
+                currencySymbol={currencySymbol}
+                footnote={estimateNote}
+            />
+
+            <View className="gap-y-xl">
+                <Text className="text-md font-semibold text-primary" accessibilityRole="header">
+                    {t`Categories`}
+                </Text>
+
+                {snapshot.categories.map(category => (
+                    <BudgetPeriodSummaryCategoryRow
+                        key={category.id}
+                        categoryId={category.categoryId}
+                        limitAmount={category.limitAmount}
+                        carriedAmount={category.carriedIn}
+                        spent={category.spent}
                         currencySymbol={currencySymbol}
-                        footnote={estimateNote}
                     />
+                ))}
 
-                    <View className="gap-y-xl">
-                        <Text className="text-md font-semibold text-primary" accessibilityRole="header">
-                            {t`Categories`}
-                        </Text>
-
-                        {snapshot.categories.map(category => (
-                            <BudgetPeriodSummaryCategoryRow
-                                key={category.id}
-                                categoryId={category.categoryId}
-                                limitAmount={category.limitAmount}
-                                carriedAmount={category.carriedIn}
-                                spent={category.spent}
-                                currencySymbol={currencySymbol}
-                            />
-                        ))}
-
-                        <BudgetPeriodSummaryLimitRow
-                            title={t`Other`}
-                            carriedAmount={snapshot.otherCarriedIn}
-                            spent={snapshot.otherSpent}
-                            baseLimit={snapshot.otherLimit}
-                            currencySymbol={currencySymbol}
-                            testID={BudgetSelector.PeriodSummaryOther}
-                            spentTestID={BudgetSelector.PeriodSummaryOtherSpentLabel}
-                            icon={UserIconNameEnum.CircleEllipsis}
-                        />
-                    </View>
-                </ScrollView>
-            </SheetSurface>
-        </View>
+                <BudgetPeriodSummaryLimitRow
+                    title={t`Other`}
+                    carriedAmount={snapshot.otherCarriedIn}
+                    spent={snapshot.otherSpent}
+                    baseLimit={snapshot.otherLimit}
+                    currencySymbol={currencySymbol}
+                    testID={BudgetSelector.PeriodSummaryOther}
+                    spentTestID={BudgetSelector.PeriodSummaryOtherSpentLabel}
+                    icon={UserIconNameEnum.CircleEllipsis}
+                />
+            </View>
+        </ScrollableSheetCard>
     );
 };

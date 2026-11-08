@@ -6,16 +6,16 @@ import { MorphingSheetDragContext } from '../../context/morphing-sheet-drag.cont
 import { MorphingSheetDismissContext } from '../../context/morphing-sheet.context';
 import { SurfaceSettledContext } from '../../context/surface-settled.context';
 import { useHideHostFromAccessibility } from '../../hook/use-hide-host-from-accessibility.hook';
+import { useMorphingSheetKeyboardLift } from '../../hook/use-morphing-sheet-keyboard-lift.hook';
 import { useMorphingSheetMotion } from '../../hook/use-morphing-sheet-motion.hook';
-import { useMorphingSheetMountedSteps } from '../../hook/use-morphing-sheet-mounted-steps.hook';
 import { useMorphingSheetPageRect } from '../../hook/use-morphing-sheet-page-rect.hook';
 import { useMorphingSheetPage } from '../../hook/use-morphing-sheet-page.hook';
+import { useMorphingSheetSteps } from '../../hook/use-morphing-sheet-steps.hook';
 import { useMorphingSheetStyle } from '../../hook/use-morphing-sheet-style.hook';
-import { useMorphingSheetTargets } from '../../hook/use-morphing-sheet-targets.hook';
+import { MorphScrim } from '../morph-scrim/morph-scrim';
 import { MorphingSheetCard } from '../morphing-sheet-card/morphing-sheet-card';
 import { MorphingSheetPageBackdrop } from '../morphing-sheet-page-backdrop/morphing-sheet-page-backdrop';
 import { MorphingSheetPageLayer } from '../morphing-sheet-page-layer/morphing-sheet-page-layer';
-import { MorphingSheetScrim } from '../morphing-sheet-scrim/morphing-sheet-scrim';
 import { MorphingSheetStep } from '../morphing-sheet-step/morphing-sheet-step';
 
 import type { MorphingSheetStepInterface } from '../../interface/morphing-sheet-step.interface';
@@ -28,12 +28,12 @@ interface Props {
 }
 
 export const MorphingSheet = ({ steps, activeStep, onDismiss, testID }: Props) => {
-    const { cardStep, pageStep } = useMorphingSheetTargets(steps, activeStep);
-    const { mountedSteps, hasPresented, handlePresented } = useMorphingSheetMountedSteps(steps, cardStep);
+    const { cardStep, pageStep, mountedSteps, hasPresented, handlePresented } = useMorphingSheetSteps(steps, activeStep);
     const motion = useMorphingSheetMotion(cardStep, onDismiss, handlePresented);
-    const { frame, translateY, visibleHeight, pageProgress } = motion;
-    const { frameStyle, cardStyle, isDragging } = useMorphingSheetStyle(translateY, visibleHeight, pageProgress, frame);
-    const page = useMorphingSheetPage(pageStep, pageProgress, frame.baseBottom);
+    const { translateY, visibleHeight, pageProgress } = motion;
+    const keyboardLift = useMorphingSheetKeyboardLift(motion.frame.baseBottom);
+    const { frameStyle, cardStyle, presence, isDragging } = useMorphingSheetStyle(motion, keyboardLift);
+    const page = useMorphingSheetPage(pageStep, pageProgress, keyboardLift);
     const pageRect = useMorphingSheetPageRect(pageProgress, visibleHeight, page.frozenLift, translateY);
     useHideHostFromAccessibility();
     const stepBack = steps[activeStep]?.onBack;
@@ -69,12 +69,7 @@ export const MorphingSheet = ({ steps, activeStep, onDismiss, testID }: Props) =
                     accessibilityViewIsModal
                     onAccessibilityEscape={handleBack}
                 >
-                    <MorphingSheetScrim
-                        translateY={translateY}
-                        visibleHeight={visibleHeight}
-                        hiddenInset={frame.baseBottom}
-                        onPress={handleBack}
-                    />
+                    <MorphScrim presence={presence} onPress={handleBack} />
 
                     {isDefined(page.renderedPageStep) ? <MorphingSheetPageBackdrop rect={pageRect} /> : null}
 

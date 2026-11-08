@@ -1,15 +1,15 @@
 import { BudgetService } from '@budgie/budget';
 import { Trans, useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
-import { ScrollView, Text, View } from 'react-native';
+import { Text } from 'react-native';
 
 import { isDefined, isEmptyArray } from '@rnw-community/shared';
 
 import { FormsheetHeader } from '../../../@generic/component/formsheet-header/formsheet-header';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
-import { SheetSurface } from '../../../@generic/component/sheet-surface/sheet-surface';
-import { useMorphingSheetScrollCap } from '../../../@generic/hook/use-morphing-sheet-scroll-cap.hook';
+import { ScrollableSheetCard } from '../../../@generic/component/scrollable-sheet-card/scrollable-sheet-card';
+import { MORPHING_SHEET_DESTINATION_HEIGHT_RATIO } from '../../../@generic/constant/morphing-sheet-height-ratio.constant';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
@@ -28,7 +28,6 @@ interface Props {
 export const BudgetLimitChangesSheet = ({ budget }: Props) => {
     const { t } = useLingui();
     const { run } = useSingleFlight();
-    const scrollStyle = useMorphingSheetScrollCap();
     const { limitChanges, isLoading, isError } = useGetBudgetLimitChangesQuery(budget.id);
     const { instrument } = useGetInstrumentByIdQuery(budget.instrumentId);
     const currencySymbol = isDefined(instrument) ? instrument.symbol : '';
@@ -51,35 +50,28 @@ export const BudgetLimitChangesSheet = ({ budget }: Props) => {
     }
 
     return (
-        <View testID={BudgetSelector.LimitChangesSheet}>
-            <SheetSurface
-                className="flex-none pt-lg"
-                contentClassName="flex-none"
-                header={<FormsheetHeader size="md" title={t`Limit changes`} />}
-            >
-                <ScrollView
-                    style={scrollStyle}
-                    contentContainerClassName="px-5xl pt-md gap-y-3xl pb-3xl"
-                    showsVerticalScrollIndicator={false}
-                >
-                    <LoadingContent isLoading={isLoading} className="gap-y-3xl">
-                        {isEmptyArray(limitChanges) ? (
-                            emptyHint
-                        ) : (
-                            <GroupedListSection>
-                                {limitChanges.map(change => (
-                                    <BudgetLimitChangeRow key={change.id} change={change} currencySymbol={currencySymbol} />
-                                ))}
-                            </GroupedListSection>
-                        )}
-                        <BudgetAutoTuneSwitchRow
-                            value={budget.isAutoTuneEnabled}
-                            onValueChange={handleAutoTuneChange}
-                            testID={BudgetSelector.LimitChangesAutoTuneSwitch}
-                        />
-                    </LoadingContent>
-                </ScrollView>
-            </SheetSurface>
-        </View>
+        <ScrollableSheetCard
+            header={<FormsheetHeader size="md" title={t`Limit changes`} />}
+            ratio={MORPHING_SHEET_DESTINATION_HEIGHT_RATIO}
+            contentClassName="px-5xl pt-md gap-y-3xl pb-3xl"
+            testID={BudgetSelector.LimitChangesSheet}
+        >
+            <LoadingContent isLoading={isLoading} className="gap-y-3xl">
+                {isEmptyArray(limitChanges) ? (
+                    emptyHint
+                ) : (
+                    <GroupedListSection>
+                        {limitChanges.map(change => (
+                            <BudgetLimitChangeRow key={change.id} change={change} currencySymbol={currencySymbol} />
+                        ))}
+                    </GroupedListSection>
+                )}
+                <BudgetAutoTuneSwitchRow
+                    value={budget.isAutoTuneEnabled}
+                    onValueChange={handleAutoTuneChange}
+                    testID={BudgetSelector.LimitChangesAutoTuneSwitch}
+                />
+            </LoadingContent>
+        </ScrollableSheetCard>
     );
 };

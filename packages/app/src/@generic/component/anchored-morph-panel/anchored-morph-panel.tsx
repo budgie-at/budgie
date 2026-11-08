@@ -1,5 +1,4 @@
-import { useLingui } from '@lingui/react/macro';
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 import Animated from 'react-native-reanimated';
 
 import { MorphingSheetDismissContext } from '../../context/morphing-sheet.context';
@@ -7,6 +6,7 @@ import { SurfaceSettledContext } from '../../context/surface-settled.context';
 import { AnchoredMorphPanelHeightEnum } from '../../enum/anchored-morph-panel-height.enum';
 import { useAnchoredMorphPanelMotion } from '../../hook/use-anchored-morph-panel-motion.hook';
 import { useHideHostFromAccessibility } from '../../hook/use-hide-host-from-accessibility.hook';
+import { MorphScrim } from '../morph-scrim/morph-scrim';
 
 import type { AnchoredMorphOriginInterface } from '../../interface/anchored-morph-origin.interface';
 import type { ReactNode } from 'react';
@@ -19,9 +19,8 @@ interface Props {
 }
 
 export const AnchoredMorphPanel = ({ origin, onDismissed, height = AnchoredMorphPanelHeightEnum.FILL, children }: Props) => {
-    const { t } = useLingui();
     const fitsContent = height === AnchoredMorphPanelHeightEnum.CONTENT;
-    const { panelStyle, ghostStyle, contentStyle, scrimStyle, handleClose, handleContentLayout, isSettled } = useAnchoredMorphPanelMotion(
+    const { panelStyle, ghostStyle, contentStyle, progress, handleClose, handleContentLayout, isSettled } = useAnchoredMorphPanelMotion(
         origin,
         fitsContent,
         onDismissed
@@ -31,9 +30,7 @@ export const AnchoredMorphPanel = ({ origin, onDismissed, height = AnchoredMorph
 
     return (
         <View className="absolute inset-0" collapsable={false} accessibilityViewIsModal onAccessibilityEscape={handleClose}>
-            <Pressable className="absolute inset-0" accessibilityRole="button" accessibilityLabel={t`Close`} onPress={handleClose}>
-                <Animated.View className="flex-1 bg-black" style={scrimStyle} />
-            </Pressable>
+            <MorphScrim presence={progress} onPress={handleClose} />
 
             <Animated.View className="absolute overflow-hidden" style={panelStyle}>
                 <Animated.View

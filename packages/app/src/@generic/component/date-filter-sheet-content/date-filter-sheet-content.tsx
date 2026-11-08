@@ -5,9 +5,10 @@ import { ScrollView } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { MORPHING_SHEET_SELECTOR_HEIGHT_RATIO } from '../../constant/morphing-sheet-height-ratio.constant';
 import { DateFilterActionTypeEnum } from '../../enum/date-filter-action-type.enum';
 import { useMorphingSheetCommit } from '../../hook/use-morphing-sheet-commit.hook';
-import { useMorphingSheetScrollCap } from '../../hook/use-morphing-sheet-scroll-cap.hook';
+import { useMorphingSheetListHeight } from '../../hook/use-morphing-sheet-list-height.hook';
 import { dateFilterReducer } from '../../utils/date-filter-reducer.util';
 import { getCalendarVisibleDate } from '../../utils/date/get-calendar-visible-date.util';
 import { getDateFilterByPeriod } from '../../utils/date/get-date-filter-by-period.util';
@@ -40,7 +41,7 @@ interface Props {
 
 export const DateFilterSheetContent = ({ range, onCommit, datePeriodTestID, applyTestID }: Props) => {
     const { t } = useLingui();
-    const scrollStyle = useMorphingSheetScrollCap();
+    const { height } = useMorphingSheetListHeight(MORPHING_SHEET_SELECTOR_HEIGHT_RATIO);
     const commit = useMorphingSheetCommit(onCommit);
 
     const [{ value: localValue, visibleDate, calendarResetKey }, dispatch] = useReducer(dateFilterReducer, range, initialValue => ({
@@ -62,6 +63,7 @@ export const DateFilterSheetContent = ({ range, onCommit, datePeriodTestID, appl
 
     const handleApply = () => void commit({ value: localValue });
 
+    const scrollStyle = { flexGrow: 0, maxHeight: height };
     const applyLabel = hasSelected ? t`Show selected range` : t`Show all dates`;
 
     return (

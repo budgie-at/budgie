@@ -2,7 +2,7 @@ import { useWindowDimensions } from 'react-native';
 import { useReanimatedKeyboardAnimation } from 'react-native-keyboard-controller';
 import { Extrapolation, interpolate, interpolateColor, useAnimatedStyle } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useResolveClassNames, useUniwind } from 'uniwind';
+import { useResolveClassNames } from 'uniwind';
 
 import { isDefined, isString } from '@rnw-community/shared';
 
@@ -20,8 +20,6 @@ const PANEL_RADIUS = 32;
 const GHOST_FADE_END = 0.35;
 const CONTENT_FADE_START = 0.15;
 const CONTENT_FADE_END = 0.6;
-const SCRIM_OPACITY_LIGHT = 0.5;
-const SCRIM_OPACITY_DARK = 0.8;
 const PROGRESS_RANGE = [0, 1];
 const GHOST_FADE_RANGE = [0, GHOST_FADE_END];
 const CONTENT_FADE_RANGE = [CONTENT_FADE_START, CONTENT_FADE_END];
@@ -35,7 +33,6 @@ export const useAnchoredMorphPanelStyle = (
     const fitsContent = isDefined(contentHeight);
     const { width: windowWidth, height: windowHeight } = useWindowDimensions();
     const { top, bottom } = useSafeAreaInsets();
-    const { theme } = useUniwind();
     const isReducedMotion = useReducedMotion();
     const { height: keyboardHeight } = useReanimatedKeyboardAnimation();
     const { backgroundColor } = useResolveClassNames('bg-sheet-surface');
@@ -97,14 +94,5 @@ export const useAnchoredMorphPanelStyle = (
         };
     });
 
-    const scrimStyle = useAnimatedStyle(() => ({
-        opacity: interpolate(
-            progress.get(),
-            PROGRESS_RANGE,
-            [0, theme === 'dark' ? SCRIM_OPACITY_DARK : SCRIM_OPACITY_LIGHT],
-            Extrapolation.CLAMP
-        )
-    }));
-
-    return { panelStyle, ghostStyle, contentStyle, scrimStyle };
+    return { panelStyle, ghostStyle, contentStyle };
 };

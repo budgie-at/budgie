@@ -1,17 +1,16 @@
 import { RecurringService } from '@budgie/recurring';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
-import { ScrollView, View } from 'react-native';
+import { View } from 'react-native';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
-import { SheetSurface } from '../../../@generic/component/sheet-surface/sheet-surface';
+import { ScrollableSheetCard } from '../../../@generic/component/scrollable-sheet-card/scrollable-sheet-card';
 import { SheetTitleRow } from '../../../@generic/component/sheet-title-row/sheet-title-row';
 import { MORPHING_SHEET_SELECTOR_HEIGHT_RATIO } from '../../../@generic/constant/morphing-sheet-height-ratio.constant';
 import { useMorphingSheetCommit } from '../../../@generic/hook/use-morphing-sheet-commit.hook';
-import { useMorphingSheetListHeight } from '../../../@generic/hook/use-morphing-sheet-list-height.hook';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { MakeRecurringResultKindEnum } from '../../enum/make-recurring-result-kind.enum';
@@ -34,8 +33,6 @@ interface Props {
 
 export const MakeRecurringSheet = ({ transactionId, onCommit }: Props) => {
     const { t } = useLingui();
-    const { height } = useMorphingSheetListHeight(MORPHING_SHEET_SELECTOR_HEIGHT_RATIO);
-    const scrollStyle = { flexGrow: 0, maxHeight: height };
     const { now, fittingSeries, isLoading } = useRecurringFittingSeries(transactionId);
     const addFlight = useSingleFlight();
     const commit = useMorphingSheetCommit(onCommit);
@@ -63,26 +60,22 @@ export const MakeRecurringSheet = ({ transactionId, onCommit }: Props) => {
     ) : null;
 
     return (
-        <View className="flex-none" testID={MakeRecurringSheetSelector.Page}>
-            <SheetSurface
-                className="flex-none pt-lg"
-                contentClassName="flex-none"
-                header={
-                    <View className="px-xl">
-                        <SheetTitleRow title={t`Make recurring`} />
-                    </View>
-                }
-            >
-                <ScrollView style={scrollStyle} bounces={false} showsVerticalScrollIndicator={false}>
-                    <LoadingContent isLoading={isBusy} containerClassName="min-h-[120px]" className="gap-y-5xl px-3xl pt-xl pb-[16px]">
-                        <MakeRecurringSourceRow transactionId={transactionId} />
-                        {existingSection}
-                        <GroupedListSection>
-                            <MakeRecurringCreateRow onPress={handleCreate} />
-                        </GroupedListSection>
-                    </LoadingContent>
-                </ScrollView>
-            </SheetSurface>
-        </View>
+        <ScrollableSheetCard
+            header={
+                <View className="px-xl">
+                    <SheetTitleRow title={t`Make recurring`} />
+                </View>
+            }
+            ratio={MORPHING_SHEET_SELECTOR_HEIGHT_RATIO}
+            testID={MakeRecurringSheetSelector.Page}
+        >
+            <LoadingContent isLoading={isBusy} containerClassName="min-h-[120px]" className="gap-y-5xl px-3xl pt-xl pb-[16px]">
+                <MakeRecurringSourceRow transactionId={transactionId} />
+                {existingSection}
+                <GroupedListSection>
+                    <MakeRecurringCreateRow onPress={handleCreate} />
+                </GroupedListSection>
+            </LoadingContent>
+        </ScrollableSheetCard>
     );
 };

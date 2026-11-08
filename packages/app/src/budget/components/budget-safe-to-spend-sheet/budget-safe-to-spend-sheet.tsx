@@ -1,12 +1,12 @@
 import { Trans, useLingui } from '@lingui/react/macro';
-import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
+import { ActivityIndicator, Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
+import { ScrollableSheetCard } from '../../../@generic/component/scrollable-sheet-card/scrollable-sheet-card';
 import { SectionHeader } from '../../../@generic/component/section-header/section-header';
-import { SheetSurface } from '../../../@generic/component/sheet-surface/sheet-surface';
-import { useMorphingSheetScrollCap } from '../../../@generic/hook/use-morphing-sheet-scroll-cap.hook';
+import { MORPHING_SHEET_DESTINATION_HEIGHT_RATIO } from '../../../@generic/constant/morphing-sheet-height-ratio.constant';
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
 import { BudgetSelector } from '../../budget.selector';
 import { useGetBudgetProjectionQuery } from '../../query/use-get-budget-projection.query';
@@ -25,7 +25,6 @@ interface Props {
 
 export const BudgetSafeToSpendSheet = ({ budget }: Props) => {
     const { t } = useLingui();
-    const scrollStyle = useMorphingSheetScrollCap();
     const { projection, isLoading, isError } = useGetBudgetProjectionQuery(budget);
     const { instrument } = useGetInstrumentByIdQuery(budget.instrumentId);
     const { upcomingCharges } = projection;
@@ -51,36 +50,33 @@ export const BudgetSafeToSpendSheet = ({ budget }: Props) => {
     }
 
     return (
-        <View testID={BudgetSelector.SafeToSpendSheet}>
-            <SheetSurface className="flex-none pt-lg" contentClassName="flex-none" header={<BudgetSafeToSpendHeader budget={budget} />}>
-                <ScrollView
-                    style={scrollStyle}
-                    contentContainerClassName="px-5xl pt-md gap-y-3xl pb-3xl"
-                    showsVerticalScrollIndicator={false}
-                >
-                    <LoadingContent
-                        isLoading={isLoading}
-                        className="gap-y-3xl"
-                        loadingIndicator={<ActivityIndicator size="small" className="absolute inset-x-0 top-[24px]" />}
-                    >
-                        <BudgetSafeToSpendSummary projection={projection} currencySymbol={currencySymbol} />
+        <ScrollableSheetCard
+            header={<BudgetSafeToSpendHeader budget={budget} />}
+            ratio={MORPHING_SHEET_DESTINATION_HEIGHT_RATIO}
+            contentClassName="px-5xl pt-md gap-y-3xl pb-3xl"
+            testID={BudgetSelector.SafeToSpendSheet}
+        >
+            <LoadingContent
+                isLoading={isLoading}
+                className="gap-y-3xl"
+                loadingIndicator={<ActivityIndicator size="small" className="absolute inset-x-0 top-[24px]" />}
+            >
+                <BudgetSafeToSpendSummary projection={projection} currencySymbol={currencySymbol} />
 
-                        {upcomingSection}
+                {upcomingSection}
 
-                        <View className="gap-y-md">
-                            <SectionHeader label={t`Reading the day strip`} />
-                            <Text className="text-sm text-secondary-foreground">
-                                <Trans>Each bar compares one day&apos;s spending with your daily plan.</Trans>
-                            </Text>
-                            <BudgetDayStripKey dayStates={presentDayStates} />
-                        </View>
+                <View className="gap-y-md">
+                    <SectionHeader label={t`Reading the day strip`} />
+                    <Text className="text-sm text-secondary-foreground">
+                        <Trans>Each bar compares one day&apos;s spending with your daily plan.</Trans>
+                    </Text>
+                    <BudgetDayStripKey dayStates={presentDayStates} />
+                </View>
 
-                        <Text className="text-xxs text-secondary-foreground">
-                            <Trans>Recalculates every day. Spend less today and tomorrow&apos;s amount grows.</Trans>
-                        </Text>
-                    </LoadingContent>
-                </ScrollView>
-            </SheetSurface>
-        </View>
+                <Text className="text-xxs text-secondary-foreground">
+                    <Trans>Recalculates every day. Spend less today and tomorrow&apos;s amount grows.</Trans>
+                </Text>
+            </LoadingContent>
+        </ScrollableSheetCard>
     );
 };

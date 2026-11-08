@@ -4,13 +4,11 @@ import { useSharedValue } from 'react-native-reanimated';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { useMorphingSheetKeyboardLift } from './use-morphing-sheet-keyboard-lift.hook';
 import { useMorphingSheetPageMotion } from './use-morphing-sheet-page-motion.hook';
 
 import type { SharedValue } from 'react-native-reanimated';
 
-export const useMorphingSheetPage = (pageStep: string | null, pageProgress: SharedValue<number>, baseBottom: number) => {
-    const keyboardLift = useMorphingSheetKeyboardLift(baseBottom);
+export const useMorphingSheetPage = (pageStep: string | null, pageProgress: SharedValue<number>, keyboardLift: SharedValue<number>) => {
     const frozenLift = useSharedValue(0);
     const [renderedPageStep, setRenderedPageStep] = useState<string | null>(null);
     const [isPageSettled, setIsPageSettled] = useState(false);

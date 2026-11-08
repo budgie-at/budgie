@@ -74,6 +74,7 @@ export const useAnchoredMorphPanelMotion = (origin: AnchoredMorphOriginInterface
 
     return {
         ...useAnchoredMorphPanelStyle(progress, settledKeyboardHeight, fitsContent ? contentHeight : null, origin),
+        progress,
         handleClose,
         handleContentLayout,
         isSettled

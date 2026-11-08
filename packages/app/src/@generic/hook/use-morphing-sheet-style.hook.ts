@@ -1,22 +1,20 @@
-import { Extrapolation, interpolate, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
+import { Extrapolation, interpolate, useAnimatedStyle, useDerivedValue, useSharedValue } from 'react-native-reanimated';
 
 import { MORPHING_SHEET_KEYBOARD_TOP_CLEARANCE } from '../constant/morphing-sheet-keyboard.constant';
 
-import { useMorphingSheetKeyboardLift } from './use-morphing-sheet-keyboard-lift.hook';
 import { useReducedMotion } from './use-reduced-motion.hook';
 
+import type { useMorphingSheetMotion } from './use-morphing-sheet-motion.hook';
 import type { SharedValue } from 'react-native-reanimated';
 
 const CARD_RADIUS = 36;
 
 export const useMorphingSheetStyle = (
-    translateY: SharedValue<number>,
-    visibleHeight: SharedValue<number>,
-    pageProgress: SharedValue<number>,
-    frame: { readonly baseBottom: number; readonly frameHeight: number; readonly frameInset: number }
+    motion: Pick<ReturnType<typeof useMorphingSheetMotion>, 'translateY' | 'visibleHeight' | 'pageProgress' | 'frame'>,
+    keyboardLift: SharedValue<number>
 ) => {
+    const { translateY, visibleHeight, pageProgress, frame } = motion;
     const { baseBottom, frameHeight, frameInset } = frame;
-    const keyboardLift = useMorphingSheetKeyboardLift(baseBottom);
     const isReducedMotion = useReducedMotion();
     const isDragging = useSharedValue(false);
 
@@ -30,14 +28,17 @@ export const useMorphingSheetStyle = (
         borderCurve: 'continuous'
     } as const;
 
+    const presence = useDerivedValue(() =>
+        interpolate(translateY.get(), [0, Math.max(visibleHeight.get() + baseBottom, 1)], [1, 0], Extrapolation.CLAMP)
+    );
+
     const frameAnimatedStyle = useAnimatedStyle(() => {
-        const presence = interpolate(translateY.get(), [0, Math.max(visibleHeight.get() + baseBottom, 1)], [1, 0], Extrapolation.CLAMP);
         const progress = pageProgress.get();
         const maxLift = Math.max(0, frameHeight + MORPHING_SHEET_KEYBOARD_TOP_CLEARANCE - baseBottom - visibleHeight.get());
         const isOffsetFollowed = !isReducedMotion || isDragging.get();
 
         return {
-            opacity: (isReducedMotion ? presence : 1) * (1 - progress * progress * (3 - 2 * progress)),
+            opacity: (isReducedMotion ? presence.get() : 1) * (1 - progress * progress * (3 - 2 * progress)),
             transform: [{ translateY: (isOffsetFollowed ? translateY.get() : 0) - Math.min(keyboardLift.get(), maxLift) }]
         };
     });
@@ -51,5 +52,5 @@ export const useMorphingSheetStyle = (
         transform: [{ translateY: frameHeight - visibleHeight.get() }]
     }));
 
-    return { frameStyle: [frameStaticStyle, frameAnimatedStyle], cardStyle, isDragging };
+    return { frameStyle: [frameStaticStyle, frameAnimatedStyle], cardStyle, presence, isDragging };
 };
