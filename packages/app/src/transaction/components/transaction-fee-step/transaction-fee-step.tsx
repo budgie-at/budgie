@@ -1,7 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import * as Effect from 'effect/Effect';
-import { View } from 'react-native';
+import { TextInput, View } from 'react-native';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
@@ -18,11 +18,13 @@ import { TransactionFeeSaveButton } from '../transaction-fee-save-button/transac
 
 import type { TransactionFeeModalResult } from '../../context/transaction-fee-modal.context';
 import type { TransactionEntryCreateInputInterface } from '@budgie/contracts';
+import type { Ref } from 'react';
 
 interface Props {
     readonly feeEntry: TransactionEntryCreateInputInterface;
     readonly currencySymbol: string;
     readonly isExisting: boolean;
+    readonly amountRef: Ref<TextInput>;
     readonly onAmountChange: (amount: number) => void;
     readonly onCategoryPress: () => void;
     readonly onConfirm: (result: TransactionFeeModalResult) => void;
@@ -30,7 +32,8 @@ interface Props {
 
 const ROW_INDEX = 0;
 
-export const TransactionFeeStep = ({ feeEntry, currencySymbol, isExisting, onAmountChange, onCategoryPress, onConfirm }: Props) => {
+export const TransactionFeeStep = (props: Props) => {
+    const { feeEntry, currencySymbol, isExisting, amountRef, onAmountChange, onCategoryPress, onConfirm } = props;
     const dismiss = useMorphingSheetDismiss();
 
     const canSave = isPositiveNumber(feeEntry.categoryId) && isPositiveNumber(feeEntry.amount);
@@ -70,6 +73,7 @@ export const TransactionFeeStep = ({ feeEntry, currencySymbol, isExisting, onAmo
                     entry={feeEntry}
                     currencySymbol={currencySymbol}
                     autoFocus={!isExisting}
+                    amountRef={amountRef}
                     onAmountChange={onAmountChange}
                     onCategoryPress={onCategoryPress}
                 />

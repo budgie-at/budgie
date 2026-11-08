@@ -1,7 +1,7 @@
 import { TransactionEntryCreateInputInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { ReactNode, useState } from 'react';
-import { Text, View, useWindowDimensions } from 'react-native';
+import { ReactNode, Ref, useState } from 'react';
+import { Text, TextInput, View, useWindowDimensions } from 'react-native';
 import Animated from 'react-native-reanimated';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
@@ -23,6 +23,7 @@ interface Props {
     readonly entry: Pick<TransactionEntryCreateInputInterface, 'categoryId' | 'amount'>;
     readonly currencySymbol: string;
     readonly autoFocus: boolean;
+    readonly amountRef?: Ref<TextInput>;
     readonly onAmountChange: (amount: number) => void;
     readonly onCategoryPress: () => void;
     readonly children?: ReactNode;
@@ -32,7 +33,7 @@ const ACCEPTED_DECIMAL_SEPARATORS = ['.', ','];
 const amountInputStyle = { textAlign: 'right' as const, fontSize: 17, fontWeight: '600' as const, fontVariant: ['tabular-nums' as const] };
 
 export const SplitEntryRow = (props: Props) => {
-    const { index, entry, currencySymbol, autoFocus, onAmountChange, onCategoryPress, children } = props;
+    const { index, entry, currencySymbol, autoFocus, amountRef, onAmountChange, onCategoryPress, children } = props;
     const { fontScale } = useWindowDimensions();
     const formatDigits = useFormatDigits(DEFAULT_DECIMAL_PLACES);
     const [isAmountFocused, setIsAmountFocused] = useState(false);
@@ -83,6 +84,7 @@ export const SplitEntryRow = (props: Props) => {
                 >
                     <Text className="text-primary text-[17px] font-semibold tabular-nums">{currencySymbol}</Text>
                     <AmountInput
+                        ref={amountRef}
                         value={entry.amount}
                         keyboardType="decimal-pad"
                         acceptedDecimalSeparators={ACCEPTED_DECIMAL_SEPARATORS}
