@@ -6,6 +6,7 @@ import { MorphingSheetDragContext } from '../../context/morphing-sheet-drag.cont
 import { MorphingSheetDismissContext } from '../../context/morphing-sheet.context';
 import { SurfaceSettledContext } from '../../context/surface-settled.context';
 import { useHideHostFromAccessibility } from '../../hook/use-hide-host-from-accessibility.hook';
+import { useMorphingSheetBack } from '../../hook/use-morphing-sheet-back.hook';
 import { useMorphingSheetKeyboardLift } from '../../hook/use-morphing-sheet-keyboard-lift.hook';
 import { useMorphingSheetMotion } from '../../hook/use-morphing-sheet-motion.hook';
 import { useMorphingSheetPageRect } from '../../hook/use-morphing-sheet-page-rect.hook';
@@ -36,25 +37,7 @@ export const MorphingSheet = ({ steps, activeStep, onDismiss, testID }: Props) =
     const page = useMorphingSheetPage(pageStep, pageProgress, keyboardLift);
     const pageRect = useMorphingSheetPageRect(pageProgress, visibleHeight, page.frozenLift, translateY);
     useHideHostFromAccessibility();
-    const stepBack = steps[activeStep]?.onBack;
-
-    const handleBack = () => {
-        if (isDefined(stepBack) && !motion.isDismissing.get()) {
-            stepBack();
-        } else {
-            motion.handleDismiss();
-        }
-    };
-
-    const handleSwipeBack = (velocity: number) => {
-        if (isDefined(stepBack)) {
-            motion.handleSettle(velocity);
-            stepBack();
-        } else {
-            motion.handleSwipeDismiss(velocity);
-        }
-    };
-
+    const back = useMorphingSheetBack(steps[activeStep]?.onBack, motion);
     const isPageActive = isDefined(pageStep);
     const drag = {
         translateY,
@@ -62,7 +45,7 @@ export const MorphingSheet = ({ steps, activeStep, onDismiss, testID }: Props) =
         isDragging,
         isDismissing: motion.isDismissing,
         isEnabled: !isPageActive,
-        onSwipeDismiss: handleSwipeBack
+        onSwipeDismiss: back.handleSwipeBack
     };
     const pageContent = isDefined(page.renderedPageStep) ? steps[page.renderedPageStep]?.content : null;
 
@@ -74,9 +57,9 @@ export const MorphingSheet = ({ steps, activeStep, onDismiss, testID }: Props) =
                     pointerEvents="box-none"
                     collapsable={false}
                     accessibilityViewIsModal
-                    onAccessibilityEscape={handleBack}
+                    onAccessibilityEscape={back.handleBack}
                 >
-                    <MorphScrim presence={presence} onPress={handleBack} />
+                    <MorphScrim presence={presence} label={back.label} onPress={back.handleBack} />
 
                     {isDefined(page.renderedPageStep) ? <MorphingSheetPageBackdrop rect={pageRect} /> : null}
 

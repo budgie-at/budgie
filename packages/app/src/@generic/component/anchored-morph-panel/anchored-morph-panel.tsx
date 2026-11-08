@@ -1,3 +1,4 @@
+import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 import Animated from 'react-native-reanimated';
 
@@ -19,6 +20,7 @@ interface Props {
 }
 
 export const AnchoredMorphPanel = ({ origin, onDismissed, height = AnchoredMorphPanelHeightEnum.FILL, children }: Props) => {
+    const { t } = useLingui();
     const fitsContent = height === AnchoredMorphPanelHeightEnum.CONTENT;
     const { panelStyle, ghostStyle, contentStyle, progress, handleClose, handleContentLayout, isSettled } = useAnchoredMorphPanelMotion(
         origin,
@@ -30,7 +32,7 @@ export const AnchoredMorphPanel = ({ origin, onDismissed, height = AnchoredMorph
 
     return (
         <View className="absolute inset-0" collapsable={false} accessibilityViewIsModal onAccessibilityEscape={handleClose}>
-            <MorphScrim presence={progress} onPress={handleClose} />
+            <MorphScrim presence={progress} label={t`Close`} onPress={handleClose} />
 
             <Animated.View className="absolute overflow-hidden" style={panelStyle}>
                 <Animated.View
