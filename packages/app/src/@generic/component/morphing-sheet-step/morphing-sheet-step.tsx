@@ -15,6 +15,7 @@ interface Props {
 
 const STEP_FADE_TIMING = { duration: 130, easing: Easing.inOut(Easing.quad) };
 const TALLER_STEP_MIN_SCALE = 0.9;
+const PAGE_SHIFT = 16;
 
 export const MorphingSheetStep = ({ step, isActive, morph, onStepLayout, children }: Props) => {
     const opacity = useSharedValue(isActive ? 1 : 0);
@@ -24,21 +25,26 @@ export const MorphingSheetStep = ({ step, isActive, morph, onStepLayout, childre
     }, [isActive, opacity]);
 
     const stepStyle = useAnimatedStyle(() => {
+        const translateY = -PAGE_SHIFT * morph.pageProgress.get();
+
         if (!morph.isProgressDriven.get()) {
-            return { opacity: opacity.get(), transform: [{ scale: 1 }] };
+            return { opacity: opacity.get(), transform: [{ translateY }, { scale: 1 }] };
         }
 
         if (step !== morph.fromStep.get() && step !== morph.toStep.get()) {
-            return { opacity: 0, transform: [{ scale: 1 }] };
+            return { opacity: 0, transform: [{ translateY }, { scale: 1 }] };
         }
 
         const progress = morph.progress.get();
 
         if (step === morph.tallerStep.get()) {
-            return { opacity: progress, transform: [{ scale: TALLER_STEP_MIN_SCALE + (1 - TALLER_STEP_MIN_SCALE) * progress }] };
+            return {
+                opacity: progress,
+                transform: [{ translateY }, { scale: TALLER_STEP_MIN_SCALE + (1 - TALLER_STEP_MIN_SCALE) * progress }]
+            };
         }
 
-        return { opacity: 1 - progress * progress * (3 - 2 * progress), transform: [{ scale: 1 }] };
+        return { opacity: 1 - progress * progress * (3 - 2 * progress), transform: [{ translateY }, { scale: 1 }] };
     });
 
     const handleLayout = (event: LayoutChangeEvent) => {

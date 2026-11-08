@@ -1,4 +1,5 @@
 export enum TransactionFeeStepEnum {
     FEE = 'FEE',
-    CATEGORY = 'CATEGORY'
+    CATEGORY = 'CATEGORY',
+    CREATE_CATEGORY = 'CREATE_CATEGORY'
 }

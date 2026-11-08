@@ -6,7 +6,7 @@ import type { SharedValue } from 'react-native-reanimated';
 
 const MIN_PROGRESS_DELTA = 8;
 
-export const useMorphingSheetMorph = (visibleHeight: SharedValue<number>) => {
+export const useMorphingSheetMorph = (visibleHeight: SharedValue<number>, pageProgress: SharedValue<number>) => {
     const isReducedMotion = useReducedMotion();
     const smallHeight = useSharedValue(0);
     const largeHeight = useSharedValue(0);
@@ -31,5 +31,5 @@ export const useMorphingSheetMorph = (visibleHeight: SharedValue<number>) => {
         isProgressDriven.set(!isReducedMotion && Math.abs(toHeight - fromHeight) >= MIN_PROGRESS_DELTA);
     };
 
-    return { morph: { progress, fromStep, toStep, tallerStep, isProgressDriven }, beginMorph };
+    return { morph: { pageProgress, progress, fromStep, toStep, tallerStep, isProgressDriven }, beginMorph };
 };

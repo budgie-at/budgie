@@ -5,7 +5,7 @@ import { scheduleOnRN } from 'react-native-worklets';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { EASE_OUT, MOTION_BASE_DURATION, SHEET_PRESENT_SPRING } from '../constant/motion.constant';
+import { EASE_OUT, MOTION_BASE_DURATION, SHEET_PRESENT_SPRING, SHEET_RESIZE_SPRING } from '../constant/motion.constant';
 
 import { useMorphingSheetDismissMotion } from './use-morphing-sheet-dismiss-motion.hook';
 import { useMorphingSheetFrame } from './use-morphing-sheet-frame.hook';
@@ -14,17 +14,18 @@ import { useReducedMotion } from './use-reduced-motion.hook';
 
 import type { LayoutChangeEvent } from 'react-native';
 
-const SHEET_RESIZE_SPRING = { mass: 1, stiffness: 600, damping: 44.6 };
 const PRESENT_FADE_TIMING = { duration: MOTION_BASE_DURATION, easing: EASE_OUT };
 
 export const useMorphingSheetMotion = (activeStep: string, onDismiss: () => void, onPresented: () => void) => {
-    const { baseBottom, frameHeight } = useMorphingSheetFrame();
+    const frame = useMorphingSheetFrame();
+    const { baseBottom, frameHeight } = frame;
     const isReducedMotion = useReducedMotion();
     const tracker = useRef({ latest: activeStep, previous: activeStep, isStepChangePending: false, heights: new Map<string, number>() });
     const translateY = useSharedValue(frameHeight + baseBottom);
     const visibleHeight = useSharedValue(0);
+    const pageProgress = useSharedValue(0);
     const isMeasured = useSharedValue(false);
-    const { morph, beginMorph } = useMorphingSheetMorph(visibleHeight);
+    const { morph, beginMorph } = useMorphingSheetMorph(visibleHeight, pageProgress);
     const { handleDismiss, handleSwipeDismiss } = useMorphingSheetDismissMotion(translateY, visibleHeight, baseBottom, onDismiss);
 
     const applyHeight = (height: number, isStepChange: boolean) => {
@@ -92,5 +93,5 @@ export const useMorphingSheetMotion = (activeStep: string, onDismiss: () => void
         }
     };
 
-    return { baseBottom, frameHeight, translateY, visibleHeight, morph, handleDismiss, handleSwipeDismiss, handleStepLayout };
+    return { frame, translateY, visibleHeight, pageProgress, morph, handleDismiss, handleSwipeDismiss, handleStepLayout };
 };

@@ -1,16 +1,21 @@
 import { useState } from 'react';
 
-import type { ReactNode } from 'react';
+import { MorphingSheetPresentationEnum } from '../enum/morphing-sheet-presentation.enum';
 
-export const useMorphingSheetMountedSteps = (steps: Readonly<Record<string, ReactNode>>, activeStep: string) => {
-    const [visitedSteps, setVisitedSteps] = useState([activeStep]);
+import type { MorphingSheetStepInterface } from '../interface/morphing-sheet-step.interface';
+
+export const useMorphingSheetMountedSteps = (steps: Readonly<Record<string, MorphingSheetStepInterface>>, cardStep: string) => {
+    const [visitedSteps, setVisitedSteps] = useState([cardStep]);
     const [hasPresented, setHasPresented] = useState(false);
 
-    if (!visitedSteps.includes(activeStep)) {
-        setVisitedSteps([...visitedSteps, activeStep]);
+    if (!visitedSteps.includes(cardStep)) {
+        setVisitedSteps([...visitedSteps, cardStep]);
     }
 
-    const mountedSteps = hasPresented ? Object.keys(steps) : visitedSteps;
+    const cardSteps = Object.entries(steps)
+        .filter(([, step]) => step.presentation === MorphingSheetPresentationEnum.CARD)
+        .map(([key]) => key);
+    const mountedSteps = hasPresented ? cardSteps : visitedSteps;
 
     const handlePresented = () => {
         setHasPresented(true);

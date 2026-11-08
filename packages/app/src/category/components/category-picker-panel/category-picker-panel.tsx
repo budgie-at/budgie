@@ -23,10 +23,11 @@ interface Props {
     readonly description?: string;
     readonly onSelect: (categoryId: number) => void;
     readonly onBack?: () => void;
+    readonly onCreate?: (defaultTitle: string) => void;
 }
 
 export const CategoryPickerPanel = (props: Props) => {
-    const { variant, initialCategoryId, excludeCategoryIds = [], title, description, onSelect, onBack } = props;
+    const { variant, initialCategoryId, excludeCategoryIds = [], title, description, onSelect, onBack, onCreate } = props;
     const { t } = useLingui();
     const [openCategoryForm] = useCategoryFormModal();
     const [search, setSearch] = useState('');
@@ -37,6 +38,12 @@ export const CategoryPickerPanel = (props: Props) => {
     const query = search.trim();
 
     const handleCreatePress = () => {
+        if (isDefined(onCreate)) {
+            onCreate(query);
+
+            return;
+        }
+
         openCategoryForm({ defaultTitle: query }, result => {
             if (isDefined(result)) {
                 onSelect(result.category.id);
