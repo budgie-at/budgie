@@ -14,22 +14,26 @@ import { RESTORE_SAFETY_FILES } from '../constant/restore-safety-files.constant'
 import { discardRestoreSafetyCopy } from './discard-restore-safety-copy.util';
 
 export const recoverInterruptedRestore = Effect.gen(function* () {
-    const database = new File(DATABASE_DIRECTORY, DB_NAME);
-    const safetyCopy = new File(DATABASE_DIRECTORY, RESTORE_SAFETY_FILES.copy);
-    const recovering = new File(DATABASE_DIRECTORY, RESTORE_SAFETY_FILES.recovering);
-    const pending = new File(DATABASE_DIRECTORY, RESTORE_SAFETY_FILES.pending);
+    const safetyCopy = yield* Effect.gen(function* () {
+        const database = new File(DATABASE_DIRECTORY, DB_NAME);
+        const safetyCopy = new File(DATABASE_DIRECTORY, RESTORE_SAFETY_FILES.copy);
+        const recovering = new File(DATABASE_DIRECTORY, RESTORE_SAFETY_FILES.recovering);
+        const pending = new File(DATABASE_DIRECTORY, RESTORE_SAFETY_FILES.pending);
 
-    if (pending.exists) {
-        if (!database.exists && safetyCopy.exists) {
-            deleteIfExists(recovering);
-            deleteIfExists(new File(DATABASE_DIRECTORY, `${DB_NAME}-wal`));
-            deleteIfExists(new File(DATABASE_DIRECTORY, `${DB_NAME}-shm`));
-            yield* Effect.tryPromise({ try: () => safetyCopy.copy(recovering), catch: cause => DatabaseOpenError.make({ cause }) });
-            yield* Effect.tryPromise({ try: () => recovering.move(database), catch: cause => DatabaseOpenError.make({ cause }) });
+        if (pending.exists) {
+            if (!database.exists && safetyCopy.exists) {
+                [recovering, new File(DATABASE_DIRECTORY, `${DB_NAME}-wal`), new File(DATABASE_DIRECTORY, `${DB_NAME}-shm`)].forEach(
+                    deleteIfExists
+                );
+                yield* Effect.tryPromise({ try: () => safetyCopy.copy(recovering), catch: cause => DatabaseOpenError.make({ cause }) });
+                yield* Effect.tryPromise({ try: () => recovering.move(database), catch: cause => DatabaseOpenError.make({ cause }) });
+            }
+
+            deleteIfExists(pending);
         }
 
-        deleteIfExists(pending);
-    }
+        return safetyCopy;
+    }).pipe(Effect.catchDefect(cause => Effect.fail(DatabaseOpenError.make({ cause }))));
 
     deleteIfExists(new File(DATABASE_DIRECTORY, RESTORE_SAFETY_FILES.source));
     deleteIfExists(new File(DATABASE_DIRECTORY, RESTORE_SAFETY_FILES.target));

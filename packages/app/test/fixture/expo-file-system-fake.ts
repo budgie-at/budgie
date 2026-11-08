@@ -88,6 +88,9 @@ export class File {
     }
 
     delete() {
+        if (storage.failDelete === this.uri) {
+            throw new Error('delete failed');
+        }
         if (!this.exists) {
             throw new Error('ENOENT');
         }
@@ -117,6 +120,7 @@ export const resetStorage = () => {
     storage.modified.clear();
     storage.events.splice(0);
     storage.deleted.splice(0);
+    storage.failDelete = null;
     storage.failWrite = false;
     storage.failCopy = false;
     storage.failMoveFrom = null;
