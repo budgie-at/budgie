@@ -4,10 +4,10 @@ import { Text, View } from 'react-native';
 
 import { isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
 
-import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { StateCard } from '../../../@generic/component/state-card/state-card';
+import { SettingsPillButton } from '../../../settings/components/settings-pill-button/settings-pill-button';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { CloudRestoreContext } from '../../context/cloud-restore.context';
 import { CloudBackupListingStatusEnum } from '../../enum/cloud-backup-listing-status.enum';
@@ -29,7 +29,7 @@ export const CloudBackupList = () => {
     const isBusy = isAccountLoading || isLoading || isRestoring;
     const contextValue = { restore, isLoading: isRestoring };
     const isUnreadable = status === CloudBackupListingStatusEnum.UNREADABLE;
-    const hasFailed = status === CloudBackupListingStatusEnum.FAILED;
+    const hasFailed = isAvailable && status === CloudBackupListingStatusEnum.FAILED;
     const isEmpty = isAvailable && isEmptyArray(groups) && !isUnreadable && !hasFailed;
     const noBackupsBody = isBackupEnabled
         ? t`Budgie backs up to iCloud automatically. Your first backup appears here.`
@@ -75,7 +75,21 @@ export const CloudBackupList = () => {
                             </Text>
                         </View>
                     ) : null}
-                    {hasFailed ? <GroupedListRow title={t`iCloud unavailable`} subtitle={t`Try again`} onPress={refresh} /> : null}
+                    {hasFailed ? (
+                        <StateCard
+                            icon={UserIconNameEnum.CloudOff}
+                            title={t`Couldn't load iCloud backups`}
+                            description={t`Check your connection and try again.`}
+                            testID={CloudBackupListSelector.FailedState}
+                        >
+                            <SettingsPillButton
+                                label={t`Try again`}
+                                variant="secondary"
+                                onPress={refresh}
+                                testID={CloudBackupListSelector.RetryButton}
+                            />
+                        </StateCard>
+                    ) : null}
                     {isUnreadable ? (
                         <Text className="text-secondary-foreground px-3xl text-[13px] leading-[18px]">
                             <Trans>Backups made before your iCloud encrypted data was reset can&apos;t be read.</Trans>

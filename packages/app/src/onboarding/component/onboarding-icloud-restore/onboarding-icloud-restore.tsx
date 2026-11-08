@@ -1,4 +1,3 @@
-import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { CloudBackupList } from '../../../cloud-backup/component/cloud-backup-list/cloud-backup-list';
@@ -13,9 +12,8 @@ export const OnboardingICloudRestore = () => {
     return (
         <OnboardingStepLayout step={OnboardingStepEnum.KEY} fileState={t`Not created yet`} fileLock={OnboardingFileLockEnum.OPEN}>
             <OnboardingStepIntro
-                icon={UserIconNameEnum.CloudDownload}
                 title={t`Restore from iCloud`}
-                description={t`Choose a backup from any device signed in to this Apple Account. Pick the most recent one to continue where you left off.`}
+                description={t`Bring back your Budgie data from a backup on any of your devices.`}
             />
 
             <CloudBackupList />
