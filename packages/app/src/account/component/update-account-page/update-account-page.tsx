@@ -13,6 +13,7 @@ import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/f
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
 import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
+import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { PillButtonFooter } from '../../../@generic/component/pill-button-footer/pill-button-footer';
 import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hook';
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
@@ -41,24 +42,20 @@ export const UpdateAccountPage = ({ account, fields, hero, detailsFooter, childr
     const { t } = useLingui();
     const { instrument } = useGetInstrumentByIdQuery(account.instrumentId);
     const defaultInstrumentId = useAtomValue(defaultInstrumentIdAtom);
-    const isSharedByOther =
-        AsyncResult.getOrElse(useLiveAtomValue(householdAccountShareAtom(account.id)), () => null)?.state ===
-        HouseholdShareStateEnum.SHARED_BY_OTHER;
+    const shareStatusResult = useLiveAtomValue(householdAccountShareAtom(account.id));
+    const isShareStatusLoading = AsyncResult.isInitial(shareStatusResult);
+    const isSharedByOther = AsyncResult.getOrElse(shareStatusResult, () => null)?.state === HouseholdShareStateEnum.SHARED_BY_OTHER;
 
     const providerTitle = isDefined(account.externalSource) ? BANK_PROVIDER_TITLE[account.externalSource] : null;
     const kindLabel = isDefined(providerTitle) ? t(providerTitle) : t(ACCOUNT_KIND_TITLE[account.type]);
     const currencyLabel = isDefined(instrument) && instrument.id !== defaultInstrumentId ? instrument.name : null;
     const accountTitle = account.title;
-    const lowerCaseTitle = accountTitle.toLocaleLowerCase();
     const kindFooter = [kindLabel, currencyLabel]
         .filter(isDefined)
-        .filter(label => !lowerCaseTitle.includes(label.toLocaleLowerCase()))
+        .filter(label => !accountTitle.toLocaleLowerCase().includes(label.toLocaleLowerCase()))
         .join(' · ');
     const detailsIconVariant = account.externalSource === ExternalSourceEnum.INZHUR ? 'secondary' : ACCOUNT_COLOR[account.type];
     const detailsSectionFooter = detailsFooter ?? (isNotEmptyString(kindFooter) ? kindFooter : null);
-    const sharedByOtherSection = isSharedByOther ? (
-        <HouseholdSharedByOtherAccountSection isBankSynced={isDefined(account.integrationId)} />
-    ) : null;
     const accountSections = isSharedByOther ? (
         <SharedByOtherAccountOptions isActive={fields.isActive} />
     ) : (
@@ -82,24 +79,26 @@ export const UpdateAccountPage = ({ account, fields, hero, detailsFooter, childr
             >
                 {hero}
 
-                <FormLayoutGroup>
-                    {sharedByOtherSection}
+                <LoadingContent isLoading={isShareStatusLoading}>
+                    <FormLayoutGroup>
+                        {isSharedByOther ? <HouseholdSharedByOtherAccountSection isBankSynced={isDefined(account.integrationId)} /> : null}
 
-                    <GroupedListSection title={t`Details`} footer={detailsSectionFooter}>
-                        <AccountDetailsField
-                            titleBinding={fields.title}
-                            iconBinding={fields.icon}
-                            variant={detailsIconVariant}
-                            placeholder={t`Account name`}
-                            nameInputTestID={CreateAccountScreenSelector.NameInput}
-                            selectNameOnFocus
-                        />
-                    </GroupedListSection>
+                        <GroupedListSection title={t`Details`} footer={detailsSectionFooter}>
+                            <AccountDetailsField
+                                titleBinding={fields.title}
+                                iconBinding={fields.icon}
+                                variant={detailsIconVariant}
+                                placeholder={t`Account name`}
+                                nameInputTestID={CreateAccountScreenSelector.NameInput}
+                                selectNameOnFocus
+                            />
+                        </GroupedListSection>
 
-                    {children}
+                        {children}
 
-                    {accountSections}
-                </FormLayoutGroup>
+                        {accountSections}
+                    </FormLayoutGroup>
+                </LoadingContent>
             </FixedChromePage>
         </GroupedSurface>
     );
