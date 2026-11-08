@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.172.0](https://github.com/budgie-at/budgie/compare/v6.171.3...v6.172.0) (2026-11-08)
+
+### Features
+
+* **app:** morphing sheets across the app ([#2058](https://github.com/budgie-at/budgie/issues/2058)) ([53be9f9](https://github.com/budgie-at/budgie/commit/53be9f9614c5b44b289b99709700102cc26af7e6)), closes [high-frequency](https://github.com/hi/issues/frequency)
+
+
 ## [6.171.3](https://github.com/budgie-at/budgie/compare/v6.171.2...v6.171.3) (2026-11-08)
 
 **Note:** Version bump only for package @budgie-at/root
