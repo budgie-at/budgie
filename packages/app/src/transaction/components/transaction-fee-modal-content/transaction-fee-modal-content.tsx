@@ -17,7 +17,8 @@ interface Props {
     readonly onDismiss: () => void;
 }
 
-export const TransactionFeeModalContent = ({ accountId, currencySymbol, entry, variant, onConfirm, onDismiss }: Props) => {
+export const TransactionFeeModalContent = (props: Props) => {
+    const { accountId, currencySymbol, entry, variant, onConfirm, onDismiss } = props;
     const [step, setStep] = useState(TransactionFeeStepEnum.FEE);
 
     const handleShowFee = () => {

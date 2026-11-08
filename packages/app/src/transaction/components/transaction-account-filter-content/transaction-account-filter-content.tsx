@@ -3,20 +3,22 @@ import { plural } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { ScrollView, View } from 'react-native';
 
-import { EmptyFn, isEmptyArray, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { isEmptyArray, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { FeatureIntro } from '../../../@generic/component/feature-intro/feature-intro';
 import { FilterSheetApply } from '../../../@generic/component/filter-sheet/filter-sheet-apply/filter-sheet-apply';
 import { FilterSheetBulkToggle } from '../../../@generic/component/filter-sheet/filter-sheet-bulk-toggle/filter-sheet-bulk-toggle';
 import { FilterSheetSkeleton } from '../../../@generic/component/filter-sheet/filter-sheet-skeleton/filter-sheet-skeleton';
+import { useMorphingSheetCommit } from '../../../@generic/hook/use-morphing-sheet-commit.hook';
 import { AccountsGroup } from '../../../account/component/accounts-group/accounts-group';
 import { useSearchAccountsGroupedQuery } from '../../../account/query/use-search-accounts-grouped.query';
+import { TransactionAccountFilterCommitKindEnum } from '../../enum/transaction-account-filter-commit-kind.enum';
 import { useFilterSheetSelection } from '../../hook/use-filter-sheet-selection.hook';
 import { SearchableFilterEmptyResult } from '../searchable-filter-empty-result/searchable-filter-empty-result';
 import { TransactionFilterSelectionSheet } from '../transaction-filter-selection-sheet/transaction-filter-selection-sheet';
 import { TransactionFiltersSelector } from '../transaction-filters/transaction-filters.selector';
 
-import type { TransactionAccountFilterResult } from '../../context/transaction-account-filter-modal.context';
+import type { TransactionAccountFilterCommitType } from '../../interface/transaction-account-filter-commit.type';
 
 const ANALYTICS_ACCOUNT_FILTER_TYPES = [
     AccountTypeEnum.BANK,
@@ -30,14 +32,17 @@ const ANALYTICS_ACCOUNT_FILTER_TYPES = [
 
 interface Props {
     readonly value: number[] | null;
-    readonly onCommit: (result: TransactionAccountFilterResult) => void;
-    readonly onCreateAccount: EmptyFn;
+    readonly onCommit: (commit: TransactionAccountFilterCommitType) => void;
 }
 
-export const TransactionAccountFilterContent = ({ value, onCommit, onCreateAccount }: Props) => {
+export const TransactionAccountFilterContent = ({ value, onCommit }: Props) => {
     const { t } = useLingui();
     const { localValue, search, setSearch, selectedCount, handleDeselectAll, handleSelect, handleSelectAll, handleApply } =
-        useFilterSheetSelection(value, onCommit);
+        useFilterSheetSelection(
+            value,
+            result => void onCommit({ kind: TransactionAccountFilterCommitKindEnum.APPLY, value: result.value })
+        );
+    const commit = useMorphingSheetCommit(onCommit);
     const { accountsGrouped, total, isLoading } = useSearchAccountsGroupedQuery(search);
 
     const showEmptySearch = isNotEmptyString(search) && isPositiveNumber(total) && !isLoading;
@@ -49,10 +54,7 @@ export const TransactionAccountFilterContent = ({ value, onCommit, onCreateAccou
 
     const handleSelectAllAccounts = () => void handleSelectAll(accountIds);
 
-    const handleCreateAccount = () => {
-        onCreateAccount();
-        handleApply();
-    };
+    const handleCreateAccount = () => void commit({ kind: TransactionAccountFilterCommitKindEnum.CREATE_ACCOUNT });
 
     const applyLabel = t({
         message: plural(selectedCount, {

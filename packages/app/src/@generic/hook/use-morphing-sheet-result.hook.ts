@@ -4,15 +4,17 @@ import { useRef } from 'react';
 import { isDefined } from '@rnw-community/shared';
 
 export const useMorphingSheetResult = <TResult>(resolve: (result: TResult) => void) => {
-    const pendingResultRef = useRef<TResult | null>(null);
+    const resolveCommittedRef = useRef<(() => void) | null>(null);
 
     const handleCommit = (result: TResult) => {
-        pendingResultRef.current = result;
+        resolveCommittedRef.current = () => {
+            resolve(result);
+        };
     };
 
     const handleDismissed = () => {
-        if (isDefined(pendingResultRef.current)) {
-            resolve(pendingResultRef.current);
+        if (isDefined(resolveCommittedRef.current)) {
+            resolveCommittedRef.current();
 
             return;
         }

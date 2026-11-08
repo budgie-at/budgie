@@ -4,8 +4,8 @@ import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { MorphingSheetPresentationEnum } from '../../@generic/enum/morphing-sheet-presentation.enum';
 import { useGetAccountByIdQuery } from '../../account/query/use-get-account-by-id.query';
+import { useCategoryPickerSteps } from '../../category/hooks/use-category-picker-steps.hook';
 import { defaultAccountAtom } from '../../settings/constants/settings-atoms.constant';
-import { useTransactionCategorySteps } from '../../transaction/hook/use-transaction-category-steps.hook';
 import { VoiceReviewStep } from '../component/voice-review-step/voice-review-step';
 import { VoiceReviewStepEnum } from '../enum/voice-review-step.enum';
 
@@ -23,7 +23,7 @@ export const useVoiceReviewSteps = (config: VoiceReviewStepsConfigInterface) => 
     const currencySymbol = accountWithInstrument?.instrument.symbol ?? '';
     const editingRow = rows.find(row => row.id === navigation.editingRowId);
 
-    const categorySteps = useTransactionCategorySteps({
+    const categorySteps = useCategoryPickerSteps({
         variant: 'destructive',
         initialCategoryId: editingRow?.categoryId ?? null,
         excludeCategoryIds: rows

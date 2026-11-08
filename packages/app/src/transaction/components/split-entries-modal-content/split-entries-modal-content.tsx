@@ -7,8 +7,8 @@ import { MorphingSheet } from '../../../@generic/component/morphing-sheet/morphi
 import { MorphingSheetPresentationEnum } from '../../../@generic/enum/morphing-sheet-presentation.enum';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
+import { useCategoryPickerSteps } from '../../../category/hooks/use-category-picker-steps.hook';
 import { SplitEntriesStepEnum } from '../../enum/split-entries-step.enum';
-import { useTransactionCategorySteps } from '../../hook/use-transaction-category-steps.hook';
 import { EntryWithLocalIdInterface, addLocalId } from '../../utils/entry-with-local-id.util';
 import { SplitEntriesStep } from '../split-entries-step/split-entries-step';
 
@@ -57,7 +57,7 @@ export const SplitEntriesModalContent = (props: Props) => {
 
     const isInitiallySplit = initialEntries.length > 1;
 
-    const categorySteps = useTransactionCategorySteps({
+    const categorySteps = useCategoryPickerSteps({
         variant,
         initialCategoryId: entries[editingIndex]?.categoryId ?? null,
         excludeCategoryIds: entries

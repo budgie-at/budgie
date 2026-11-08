@@ -5,9 +5,9 @@ import { isDefined } from '@rnw-community/shared';
 
 import { MorphingSheetPresentationEnum } from '../../@generic/enum/morphing-sheet-presentation.enum';
 import { useGetAccountByIdQuery } from '../../account/query/use-get-account-by-id.query';
+import { useCategoryPickerSteps } from '../../category/hooks/use-category-picker-steps.hook';
 import { TransactionFeeStep } from '../components/transaction-fee-step/transaction-fee-step';
 
-import { useTransactionCategorySteps } from './use-transaction-category-steps.hook';
 import { useTransactionFeeAmountFocus } from './use-transaction-fee-amount-focus.hook';
 
 import type { TransactionFeeStepsConfigInterface } from '../interface/transaction-fee-steps-config.interface';
@@ -52,7 +52,7 @@ export const useTransactionFeeSteps = (config: TransactionFeeStepsConfigInterfac
         handleReturnToFee();
     };
 
-    const categorySteps = useTransactionCategorySteps({
+    const categorySteps = useCategoryPickerSteps({
         variant,
         initialCategoryId: feeEntry.categoryId,
         ...(isDefined(account) && { syncZone: account.syncZone }),

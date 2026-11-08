@@ -1,5 +1,4 @@
 import { useRouter } from 'expo-router';
-import { useRef } from 'react';
 
 import { SingleStepMorphingSheet } from '../@generic/component/single-step-morphing-sheet/single-step-morphing-sheet';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
@@ -9,19 +8,18 @@ import {
     useTransactionAccountFilterModal,
     useTransactionAccountFilterModalParams
 } from '../transaction/context/transaction-account-filter-modal.context';
+import { TransactionAccountFilterCommitKindEnum } from '../transaction/enum/transaction-account-filter-commit-kind.enum';
 
-import type { TransactionAccountFilterResult } from '../transaction/context/transaction-account-filter-modal.context';
+import type { TransactionAccountFilterCommitType } from '../transaction/interface/transaction-account-filter-commit.type';
 
 export default function TransactionAccountFilterModal() {
     const router = useRouter();
     const [, resolveTransactionAccountFilter, dismissTransactionAccountFilter] = useTransactionAccountFilterModal();
     useModalDismiss(dismissTransactionAccountFilter);
     const currentParams = useTransactionAccountFilterModalParams();
-    const isCreateAccountPendingRef = useRef(false);
 
-    const handleResolved = (result: TransactionAccountFilterResult) => {
-        if (isCreateAccountPendingRef.current) {
-            isCreateAccountPendingRef.current = false;
+    const handleResolved = (commit: TransactionAccountFilterCommitType) => {
+        if (commit.kind === TransactionAccountFilterCommitKindEnum.CREATE_ACCOUNT) {
             resolveTransactionAccountFilter(null, { skipBack: true });
             router.dismiss();
             void router.push('/create-account');
@@ -29,22 +27,14 @@ export default function TransactionAccountFilterModal() {
             return;
         }
 
-        resolveTransactionAccountFilter(result);
+        resolveTransactionAccountFilter({ value: commit.value });
     };
 
-    const { handleCommit, handleDismissed } = useMorphingSheetResult<TransactionAccountFilterResult>(handleResolved);
-
-    const handleCreateAccount = () => {
-        isCreateAccountPendingRef.current = true;
-    };
+    const { handleCommit, handleDismissed } = useMorphingSheetResult<TransactionAccountFilterCommitType>(handleResolved);
 
     return (
         <SingleStepMorphingSheet onDismiss={handleDismissed}>
-            <TransactionAccountFilterContent
-                value={currentParams?.value ?? null}
-                onCommit={handleCommit}
-                onCreateAccount={handleCreateAccount}
-            />
+            <TransactionAccountFilterContent value={currentParams?.value ?? null} onCommit={handleCommit} />
         </SingleStepMorphingSheet>
     );
 }

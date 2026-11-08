@@ -9,6 +9,7 @@ import { MAX_CHROME_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/max-
 import { MORPHING_SHEET_DESTINATION_HEIGHT_RATIO } from '../../../@generic/constant/morphing-sheet-height-ratio.constant';
 import { useMorphingSheetListHeight } from '../../../@generic/hook/use-morphing-sheet-list-height.hook';
 import { VoiceReviewSelector } from '../../../app/voice-review.selector';
+import { sumEntryAmounts } from '../../../transaction/utils/sum-entry-amounts.util';
 import { VOICE_REVIEW_ACCESSIBILITY_FONT_SCALE } from '../../constant/voice-review-accessibility-font-scale.constant';
 import { useVoiceReviewActions } from '../../hook/use-voice-review-actions.hook';
 import { VoiceReviewFooter } from '../voice-review-footer/voice-review-footer';
@@ -17,8 +18,6 @@ import { VoiceReviewSaveButton } from '../voice-review-save-button/voice-review-
 
 import type { VoiceReviewModalResult } from '../../context/voice-review-modal.context';
 import type { UseVoiceReviewReturnInterface } from '../../interface/use-voice-review-return.interface';
-
-const sumAmounts = (rows: { readonly amount: number }[]): number => rows.reduce((accumulator, row) => accumulator + row.amount, 0);
 
 interface Props {
     readonly review: UseVoiceReviewReturnInterface;
@@ -53,7 +52,7 @@ export const VoiceReviewStep = (props: Props) => {
                     <VoiceReviewFooter
                         count={rows.length}
                         isSaving={isSaving}
-                        totalAmount={sumAmounts(rows)}
+                        totalAmount={sumEntryAmounts(rows)}
                         currencySymbol={currencySymbol}
                         onCancel={handleCancel}
                         onReRecord={handleReRecord}

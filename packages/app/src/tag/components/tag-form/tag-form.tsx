@@ -21,12 +21,13 @@ import { useEntityOperation } from '../../../@generic/hook/use-entity-operation.
 import { useEntityUsage } from '../../../@generic/hook/use-entity-usage.hook';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
+import { TagMonogramSizeEnum } from '../../enum/tag-monogram-size.enum';
 import { useDeleteTag } from '../../hooks/use-delete-tag.hook';
 import { useMergeTag } from '../../hooks/use-merge-tag.hook';
 import { useTagForm } from '../../hooks/use-tag-form.hook';
 import { tagUsageAtom } from '../../query/use-tags-with-usage.query';
 import { TagService } from '../../service/tag.service';
-import { TagFormHeroIcon } from '../tag-form-hero-icon/tag-form-hero-icon';
+import { TagMonogram } from '../tag-monogram/tag-monogram';
 
 import { TagFormSelector } from './tag-form.selector';
 
@@ -168,7 +169,7 @@ export const TagForm = (props: Props) => {
                 title={title}
                 subtitle={heroSubtitle}
                 fallbackTitle={heroFallbackTitle}
-                icon={<TagFormHeroIcon title={title} />}
+                icon={<TagMonogram title={title} size={TagMonogramSizeEnum.LARGE} />}
             />
 
             <GroupedListSection title={t`Details`} footer={keywordsFooter}>
