@@ -1518,6 +1518,10 @@ msgstr "Коригування"
 msgid "Adjustment · {quantity}"
 msgstr "Коригування · {quantity}"
 
+#: src/transaction/components/adjustment-balance-summary/adjustment-balance-summary.tsx
+msgid "Adjustment included"
+msgstr "Враховане коригування"
+
 #: src/budget/components/budget-auto-tune-switch-row/budget-auto-tune-switch-row.tsx
 msgid "Adjusts category limits after 3 periods of steady over or under spending"
 msgstr "Коригує ліміти категорій після 3 періодів стабільного перевищення або недовитрачання"
@@ -1545,6 +1549,10 @@ msgstr "Після {upcomingAmount} на майбутні рахунки"
 #: src/auth/components/forgot-pin-footer/forgot-pin-footer.tsx
 msgid "After 5 wrong tries, Budgie waits a little longer between attempts."
 msgstr "Після 5 невдалих спроб Budgie трохи довше чекає між спробами."
+
+#: src/transaction/components/adjustment-balance-summary/adjustment-balance-summary.tsx
+msgid "After saving"
+msgstr "Після збереження"
 
 #: src/budget/constant/budget-pace-status-label.constant.ts
 msgid "Ahead of pace"
@@ -2003,10 +2011,23 @@ msgstr "Резервні копії, створені до скидання за
 msgid "Balance"
 msgstr "Баланс"
 
+#: src/transaction/hook/use-adjustment-balance.hook.ts
+msgid "Balance {current} → {next} ({change})"
+msgstr "Баланс {current} → {next} ({change})"
+
 #: src/app/(main)/transactions/[id]/adjustment.tsx
 #: src/transaction/components/transaction-card-content/transaction-card-content.tsx
 msgid "Balance Adjustment"
 msgstr "Коригування балансу"
+
+#: src/transaction/components/adjustment-balance-preview/adjustment-balance-preview.tsx
+#: src/transaction/components/adjustment-balance-summary/adjustment-balance-summary.tsx
+msgid "Balance after saving"
+msgstr "Баланс після збереження"
+
+#: src/transaction/hook/use-adjustment-balance.hook.ts
+msgid "Balance after saving {spokenAfter}"
+msgstr "Баланс після збереження {spokenAfter}"
 
 #: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
 msgid "Balance forecast"
@@ -2023,6 +2044,10 @@ msgstr "Баланс із синхронізації"
 #: src/@generic/component/amount-sign-capsule/amount-sign-capsule.tsx
 msgid "Balance sign"
 msgstr "Знак балансу"
+
+#: src/transaction/hook/use-adjustment-balance.hook.ts
+msgid "Balance unchanged"
+msgstr "Баланс без змін"
 
 #: src/account/component/account-details-hero-balance/account-details-hero-balance.tsx
 msgid "Balance: {formattedBalance}"
@@ -3754,6 +3779,7 @@ msgid "Currency"
 msgstr "Валюта"
 
 #: src/account/component/account-balance-field/account-balance-field.tsx
+#: src/transaction/components/adjustment-balance-summary/adjustment-balance-summary.tsx
 msgid "Current balance"
 msgstr "Поточний баланс"
 
@@ -3843,7 +3869,7 @@ msgstr "Боргові рахунки не можуть брати участь 
 msgid "Debts and loans"
 msgstr "Борги та позики"
 
-#: src/@generic/component/amount-sign-pill/amount-sign-pill.tsx
+#: src/transaction/components/adjustment-direction/adjustment-direction.tsx
 msgid "Decrease"
 msgstr "Зменшити"
 
@@ -4471,6 +4497,7 @@ msgid "Enter all amounts"
 msgstr "Введіть усі суми"
 
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
+#: src/transaction/hook/use-adjustment-balance.hook.ts
 #: src/transaction/hook/use-quick-form-submit.hook.ts
 #: src/transaction/hook/use-transaction-keypad-editing.hook.ts
 msgid "Enter an amount"
@@ -5456,7 +5483,7 @@ msgstr "Отриманий дохід"
 msgid "Incorrect PIN"
 msgstr "Неправильний PIN‑код"
 
-#: src/@generic/component/amount-sign-pill/amount-sign-pill.tsx
+#: src/transaction/components/adjustment-direction/adjustment-direction.tsx
 msgid "Increase"
 msgstr "Збільшити"
 
@@ -6448,6 +6475,10 @@ msgstr "Категорій не знайдено"
 msgid "No categories match “{trimmedSearch}”"
 msgstr "Немає категорій, що відповідають «{trimmedSearch}»"
 
+#: src/transaction/hook/use-adjustment-balance.hook.ts
+msgid "No change"
+msgstr "Без змін"
+
 #: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
 msgid "No contacts on this device"
 msgstr "На цьому пристрої немає контактів"
@@ -6725,6 +6756,9 @@ msgid "not set"
 msgstr "не встановлено"
 
 #: src/settings/components/budget-management-card/budget-management-card.tsx
+#: src/transaction/components/adjustment-balance-preview/adjustment-balance-preview.tsx
+#: src/transaction/components/adjustment-balance-row/adjustment-balance-row.tsx
+#: src/transaction/hook/use-adjustment-balance.hook.ts
 msgid "Not set"
 msgstr "Не задано"
 
@@ -9042,6 +9076,11 @@ msgstr "Синхронізувати {title}"
 #: src/cloud-sync/component/cloud-sync-row/cloud-sync-row.tsx
 msgid "Sync across devices"
 msgstr "Синхронізація між пристроями"
+
+#: src/transaction/components/adjustment-amount-display/adjustment-amount-display.tsx
+#: src/transaction/components/adjustment-direction/adjustment-direction.tsx
+msgid "Sync controls this adjustment. Only the note can be edited."
+msgstr "Це коригування керується синхронізацією. Можна змінити лише нотатку."
 
 #: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx

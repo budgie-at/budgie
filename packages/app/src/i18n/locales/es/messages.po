@@ -1518,6 +1518,10 @@ msgstr "Ajuste"
 msgid "Adjustment · {quantity}"
 msgstr "Ajuste · {quantity}"
 
+#: src/transaction/components/adjustment-balance-summary/adjustment-balance-summary.tsx
+msgid "Adjustment included"
+msgstr "Ajuste incluido"
+
 #: src/budget/components/budget-auto-tune-switch-row/budget-auto-tune-switch-row.tsx
 msgid "Adjusts category limits after 3 periods of steady over or under spending"
 msgstr "Ajusta los límites por categoría tras 3 periodos de gasto constantemente alto o bajo"
@@ -1545,6 +1549,10 @@ msgstr "Tras {upcomingAmount} para próximas facturas"
 #: src/auth/components/forgot-pin-footer/forgot-pin-footer.tsx
 msgid "After 5 wrong tries, Budgie waits a little longer between attempts."
 msgstr "Tras 5 intentos fallidos, Budgie espera un poco más entre intentos."
+
+#: src/transaction/components/adjustment-balance-summary/adjustment-balance-summary.tsx
+msgid "After saving"
+msgstr "Después de guardar"
 
 #: src/budget/constant/budget-pace-status-label.constant.ts
 msgid "Ahead of pace"
@@ -2003,10 +2011,23 @@ msgstr "Las copias hechas antes de restablecer tus datos cifrados de iCloud no s
 msgid "Balance"
 msgstr "Saldo"
 
+#: src/transaction/hook/use-adjustment-balance.hook.ts
+msgid "Balance {current} → {next} ({change})"
+msgstr "Saldo {current} → {next} ({change})"
+
 #: src/app/(main)/transactions/[id]/adjustment.tsx
 #: src/transaction/components/transaction-card-content/transaction-card-content.tsx
 msgid "Balance Adjustment"
 msgstr "Ajuste de saldo"
+
+#: src/transaction/components/adjustment-balance-preview/adjustment-balance-preview.tsx
+#: src/transaction/components/adjustment-balance-summary/adjustment-balance-summary.tsx
+msgid "Balance after saving"
+msgstr "Saldo después de guardar"
+
+#: src/transaction/hook/use-adjustment-balance.hook.ts
+msgid "Balance after saving {spokenAfter}"
+msgstr "Saldo después de guardar {spokenAfter}"
 
 #: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
 msgid "Balance forecast"
@@ -2023,6 +2044,10 @@ msgstr "Saldo de la sincronización"
 #: src/@generic/component/amount-sign-capsule/amount-sign-capsule.tsx
 msgid "Balance sign"
 msgstr "Signo del saldo"
+
+#: src/transaction/hook/use-adjustment-balance.hook.ts
+msgid "Balance unchanged"
+msgstr "Saldo sin cambios"
 
 #: src/account/component/account-details-hero-balance/account-details-hero-balance.tsx
 msgid "Balance: {formattedBalance}"
@@ -3754,6 +3779,7 @@ msgid "Currency"
 msgstr "Moneda"
 
 #: src/account/component/account-balance-field/account-balance-field.tsx
+#: src/transaction/components/adjustment-balance-summary/adjustment-balance-summary.tsx
 msgid "Current balance"
 msgstr "Saldo actual"
 
@@ -3843,7 +3869,7 @@ msgstr "Las cuentas de deuda no pueden participar en transferencias"
 msgid "Debts and loans"
 msgstr "Deudas y préstamos"
 
-#: src/@generic/component/amount-sign-pill/amount-sign-pill.tsx
+#: src/transaction/components/adjustment-direction/adjustment-direction.tsx
 msgid "Decrease"
 msgstr "Disminuir"
 
@@ -4471,6 +4497,7 @@ msgid "Enter all amounts"
 msgstr "Introduce todos los importes"
 
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
+#: src/transaction/hook/use-adjustment-balance.hook.ts
 #: src/transaction/hook/use-quick-form-submit.hook.ts
 #: src/transaction/hook/use-transaction-keypad-editing.hook.ts
 msgid "Enter an amount"
@@ -5456,7 +5483,7 @@ msgstr "Ingresos recibidos"
 msgid "Incorrect PIN"
 msgstr "PIN incorrecto"
 
-#: src/@generic/component/amount-sign-pill/amount-sign-pill.tsx
+#: src/transaction/components/adjustment-direction/adjustment-direction.tsx
 msgid "Increase"
 msgstr "Aumentar"
 
@@ -6448,6 +6475,10 @@ msgstr "No se encontraron categorías"
 msgid "No categories match “{trimmedSearch}”"
 msgstr "Ninguna categoría coincide con «{trimmedSearch}»"
 
+#: src/transaction/hook/use-adjustment-balance.hook.ts
+msgid "No change"
+msgstr "Sin cambios"
+
 #: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
 msgid "No contacts on this device"
 msgstr "No hay contactos en este dispositivo"
@@ -6725,6 +6756,9 @@ msgid "not set"
 msgstr "no establecido"
 
 #: src/settings/components/budget-management-card/budget-management-card.tsx
+#: src/transaction/components/adjustment-balance-preview/adjustment-balance-preview.tsx
+#: src/transaction/components/adjustment-balance-row/adjustment-balance-row.tsx
+#: src/transaction/hook/use-adjustment-balance.hook.ts
 msgid "Not set"
 msgstr "Sin configurar"
 
@@ -9042,6 +9076,11 @@ msgstr "Sincronizar {title}"
 #: src/cloud-sync/component/cloud-sync-row/cloud-sync-row.tsx
 msgid "Sync across devices"
 msgstr "Sincronizar entre dispositivos"
+
+#: src/transaction/components/adjustment-amount-display/adjustment-amount-display.tsx
+#: src/transaction/components/adjustment-direction/adjustment-direction.tsx
+msgid "Sync controls this adjustment. Only the note can be edited."
+msgstr "La sincronización controla este ajuste. Solo puedes editar la nota."
 
 #: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx

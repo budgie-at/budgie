@@ -26,7 +26,7 @@ export const TransferAccountPicker = ({ label, placeholder, account, animatedSty
     const hasAccount = isDefined(account);
     const displayTitle = hasAccount ? getAccountDisplayTitle(account) : null;
     const accessibilityPlaceholder = isString(placeholder) ? placeholder : t`Choose`;
-    const pressableProps = { accessibilityLabel: `${label}: ${displayTitle ?? accessibilityPlaceholder}` };
+    const pressableProps = { onPress, accessibilityLabel: `${label}: ${displayTitle ?? accessibilityPlaceholder}` };
     const icon = hasAccount ? account.icon : UserIconNameEnum.Wallet;
     const isInactiveAccount = hasAccount && !account.isActive;
 
@@ -41,8 +41,7 @@ export const TransferAccountPicker = ({ label, placeholder, account, animatedSty
                 label={label}
                 {...(isDefined(displayTitle) && { value: displayTitle })}
                 placeholder={placeholder}
-                valueTestID={testIDProps(hasAccount && selectedTestID).testID}
-                onPress={onPress}
+                valueProps={testIDProps(hasAccount && selectedTestID)}
                 testID={testID}
                 pressableProps={pressableProps}
             />
