@@ -6,11 +6,12 @@ import { isPositiveNumber } from '@rnw-community/shared';
 import { HostAccessibilityContext } from '../context/host-accessibility.context';
 
 export const HostAccessibilityProvider = ({ children }: PropsWithChildren) => {
-    const [overlayCount, setOverlayCount] = useState(0);
+    const [openCount, setOpenCount] = useState(0);
+    const layers = { openCount, setOpenCount };
 
     return (
-        <HostAccessibilityContext value={setOverlayCount}>
-            <View className="flex-1" accessibilityElementsHidden={isPositiveNumber(overlayCount)}>
+        <HostAccessibilityContext value={layers}>
+            <View className="flex-1" accessibilityElementsHidden={isPositiveNumber(openCount)}>
                 {children}
             </View>
         </HostAccessibilityContext>

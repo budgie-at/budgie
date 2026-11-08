@@ -5,7 +5,7 @@ import { isDefined } from '@rnw-community/shared';
 import { MorphingSheetDragContext } from '../../context/morphing-sheet-drag.context';
 import { MorphingSheetDismissContext } from '../../context/morphing-sheet.context';
 import { SurfaceSettledContext } from '../../context/surface-settled.context';
-import { useHideHostFromAccessibility } from '../../hook/use-hide-host-from-accessibility.hook';
+import { useAccessibilityLayer } from '../../hook/use-accessibility-layer.hook';
 import { useMorphingSheetBack } from '../../hook/use-morphing-sheet-back.hook';
 import { useMorphingSheetKeyboardLift } from '../../hook/use-morphing-sheet-keyboard-lift.hook';
 import { useMorphingSheetMotion } from '../../hook/use-morphing-sheet-motion.hook';
@@ -36,7 +36,7 @@ export const MorphingSheet = ({ steps, activeStep, onDismiss, testID }: Props) =
     const { frameStyle, cardStyle, presence } = useMorphingSheetStyle(motion, keyboardLift);
     const page = useMorphingSheetPage(pageStep, pageProgress, keyboardLift);
     const pageRect = useMorphingSheetPageRect(pageProgress, visibleHeight, page.frozenLift, translateY);
-    useHideHostFromAccessibility();
+    const isCovered = useAccessibilityLayer();
     const back = useMorphingSheetBack(steps[activeStep]?.onBack, motion);
     const isPageActive = isDefined(pageStep);
     const drag = {
@@ -56,6 +56,7 @@ export const MorphingSheet = ({ steps, activeStep, onDismiss, testID }: Props) =
                     className="absolute inset-0"
                     pointerEvents="box-none"
                     collapsable={false}
+                    accessibilityElementsHidden={isCovered}
                     accessibilityViewIsModal
                     onAccessibilityEscape={back.handleBack}
                 >

@@ -57,7 +57,12 @@ test('05 category', { tags: ['categories'] }, async ({ budgie }) => {
 
     await b.phase('edit primary category text + icon', async () => {
         await b.tapId(ctx, 'CategoryCard.E2E Category Primary');
-        await c.pickIcon(ctx, 'heart', 'reicon:Heart');
+        await b.tapId(ctx, 'CategoryForm.IconTrigger');
+        await b.expectId(ctx, 'IconSelector.SearchInput');
+        await b.expectNoId(ctx, 'CategoryForm.Input');
+        await b.fillId(ctx, 'IconSelector.SearchInput', 'heart');
+        await b.tapId(ctx, 'IconSelector.Icon.reicon:Heart');
+        await b.expectId(ctx, 'CategoryForm.Input');
         await nameAndSubmit('E2E Category Updated', true);
         await b.expectId(ctx, 'CategoryCard.E2E Category Updated');
         await b.expectId(ctx, 'CategoryCard.Icon.E2E Category Updated.reicon:Heart');
