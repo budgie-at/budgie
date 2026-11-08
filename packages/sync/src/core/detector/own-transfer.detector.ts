@@ -6,15 +6,7 @@ class OwnTransferDetector {
     private static readonly PHRASES: Record<LanguageEnum, readonly string[]> = {
         [LanguageEnum.EN]: ['own card', 'own account', 'deposit opening', 'deposit closing'],
         [LanguageEnum.FR]: ['propre compte', 'ouverture de dépôt', 'clôture de dépôt'],
-        [LanguageEnum.UK]: [
-            'своєї картки',
-            'свою картку',
-            'мою картку',
-            'свого рахунку',
-            'свій рахунок',
-            'відкриття депозиту',
-            'закриття депозиту'
-        ],
+        [LanguageEnum.UK]: ['своєї картки', 'свою картку', 'свого рахунку', 'свій рахунок', 'відкриття депозиту', 'закриття депозиту'],
         [LanguageEnum.DE]: ['eigene karte', 'eigenes konto', 'eigenen konto', 'festgeld eröffnung', 'festgeld auflösung'],
         [LanguageEnum.ES]: ['cuenta propia', 'apertura de depósito', 'cierre de depósito']
     };
@@ -58,6 +50,15 @@ class OwnTransferDetector {
     private readonly normalizedPhrases = Object.values(OwnTransferDetector.PHRASES)
         .flat()
         .map(phrase => this.normalize(phrase));
+
+    getTitleSearchTokens(names: readonly string[]): string[] {
+        return [
+            ...new Set([
+                ...this.normalizedPhrases.map(phrase => phrase.split(' ')[0]),
+                ...names.flatMap(name => this.normalize(name).split(' ')).filter(Boolean)
+            ])
+        ];
+    }
 
     matchesAccount(title: string, account: Pick<AccountEntityInterface, 'externalId' | 'title'>): boolean {
         return this.cardSuffixes(title).some(
