@@ -1,4 +1,6 @@
 {
-    "NSCameraUsageDescription": "Budgie usa la cámara para escanear recibos. Los recibos se leen en este dispositivo y nunca se suben.",
-    "Scan receipt": "Escanear recibo"
+    "ios": {
+        "NSCameraUsageDescription": "Budgie usa la cámara para escanear recibos. Los recibos se leen en este dispositivo y nunca se suben.",
+        "Scan receipt": "Escanear recibo"
+    }
 }
