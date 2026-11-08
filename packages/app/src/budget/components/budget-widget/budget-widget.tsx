@@ -17,14 +17,14 @@ export const BudgetWidget = () => {
 
     if (!isDefined(budget)) {
         return (
-            <EntranceReveal step={1}>
+            <EntranceReveal step={2}>
                 <BudgetEmptyState testID={BudgetSelector.WidgetEmptyState} />
             </EntranceReveal>
         );
     }
 
     return (
-        <EntranceReveal step={1}>
+        <EntranceReveal step={2}>
             <BudgetWidgetCard budget={budget} />
         </EntranceReveal>
     );

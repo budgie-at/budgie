@@ -475,7 +475,7 @@ export const LEGACY_REICON_ICONS = {
     CloudLightning: ReiconIconNameEnum.CLOUD_LIGHTNING,
     CloudMoon: ReiconIconNameEnum.MOON_CLOUD,
     CloudMoonRain: ReiconIconNameEnum.CLOUD_RAIN,
-    CloudOff: ReiconIconNameEnum.CLOUD,
+    CloudOff: ReiconIconNameEnum.CLOUD_X,
     CloudRain: ReiconIconNameEnum.CLOUD_RAIN,
     CloudRainWind: ReiconIconNameEnum.CLOUD_RAIN,
     CloudSnow: ReiconIconNameEnum.CLOUD_SNOW,

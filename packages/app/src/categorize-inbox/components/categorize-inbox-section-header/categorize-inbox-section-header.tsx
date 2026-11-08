@@ -29,6 +29,7 @@ export const CategorizeInboxSectionHeader = ({ section, rowCount }: Props) => {
         [CategorizeInboxSectionEnum.CASH_WITHDRAWALS]: t`Cash withdrawals`,
         [CategorizeInboxSectionEnum.CONFIDENT]: t`Ready to file`,
         [CategorizeInboxSectionEnum.REVIEW]: t`Your call`,
+        [CategorizeInboxSectionEnum.OLDER]: t`Older`,
         [CategorizeInboxSectionEnum.ONE_OFFS]: t`Smaller groups`
     };
     const totalAmount = getCategorizeInboxDefaultAmount(

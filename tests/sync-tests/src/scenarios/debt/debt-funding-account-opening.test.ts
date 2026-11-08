@@ -1,5 +1,8 @@
 import {
+    HOUSEHOLD_SYNC_ZONE,
     AccountDebtTypeEnum,
+    AccountEntityTable,
+    transactionFilters,
     AccountTypeEnum,
     BORROWING_CATEGORY_ID,
     CategorySourceEnum,
@@ -16,7 +19,7 @@ import {
 } from '@budgie/contracts';
 import { AccountDebtOpeningService, AccountBalanceIncrementalService } from '@budgie/ledger';
 import { describe, expect, it } from '@effect/vitest';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
 import { fetchAccountBalance, TestLayer, upsertCurrencyRate, DEBT_OPENING_MESSAGES } from '../../harness';
@@ -59,6 +62,23 @@ const readDebtEvents = (debtAccountId: number) =>
     testDb.select().from(DebtEventEntityTable).where(eq(DebtEventEntityTable.debtAccountId, debtAccountId));
 
 describe('opening a debt from a funding account', () => {
+    it.effect('categorizes the first debt funded from a household account', () =>
+        Effect.gen(function* () {
+            const funding = yield* seed.account({ title: 'Household funding' });
+            yield* testDb.$client.unsafe('UPDATE accounts SET sync_zone = ? WHERE id = ?', [HOUSEHOLD_SYNC_ZONE, funding.id]);
+            yield* openDebt(AccountDebtTypeEnum.LENT, funding);
+            const [entry] = yield* readEntries(funding.id);
+            expect(entry.categoryId).toBe(LENDING_CATEGORY_ID);
+            expect(
+                yield* testDb
+                    .select({ id: TransactionEntryEntityTable.id })
+                    .from(TransactionEntryEntityTable)
+                    .innerJoin(TransactionEntityTable, eq(TransactionEntityTable.id, TransactionEntryEntityTable.transactionId))
+                    .innerJoin(AccountEntityTable, eq(AccountEntityTable.id, TransactionEntryEntityTable.accountId))
+                    .where(and(eq(TransactionEntryEntityTable.id, entry.id), transactionFilters.buildUncategorizedEntryCondition()))
+            ).toEqual([]);
+        }).pipe(Effect.provide(TestLayer))
+    );
     it.effect.each([
         {
             debtType: AccountDebtTypeEnum.LENT,

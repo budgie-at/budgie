@@ -350,7 +350,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                     <BlogArticleList>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Data Storage</strong>: Device only
+                                <strong>Data Storage</strong>: Your device + your own iCloud (iOS)
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -626,8 +626,8 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                     <BlogArticleProse>
                         <Trans>
                             Budgie takes a fundamentally different approach to budgeting software. Built from the ground up as an
-                            offline-first application, your financial data never leaves your device unless you explicitly choose to export
-                            it.
+                            offline-first application, your financial data stays in storage you control, with encrypted sync and backup
+                            rather than a company database.
                         </Trans>
                     </BlogArticleProse>
 
@@ -644,8 +644,8 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                     <BlogArticleList>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>True offline-first architecture.</strong> Your data lives on your phone, period. There are no Budgie
-                                servers storing your transactions.
+                                <strong>True offline-first architecture.</strong> Your data lives on your phone and, on iOS, in your own
+                                iCloud, with encrypted sync and backup you control. There are no Budgie servers storing your transactions.
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -965,7 +965,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>iCloud sync.</strong> Data syncs through your own iCloud account.
+                                <strong>iCloud sync.</strong> Data syncs through your own iCloud account on iOS.
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -996,7 +996,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                             <Trans>Beautiful, native Apple design</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
-                            <Trans>Data stays in your iCloud</Trans>
+                            <Trans>Data stays in your iCloud on iOS</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>Excellent user experience</Trans>
@@ -1395,7 +1395,8 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                     <BlogArticleList>
                         <BlogArticleListItem>
                             <Trans>
-                                Your bank access details are stored only on your device, in a database that is encrypted once you set a PIN
+                                Your bank access details are stored in the app&apos;s database on your device, encrypted once you set a PIN,
+                                and copied only to storage you control
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -1920,8 +1921,9 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
 
                     <BlogArticleProse>
                         <Trans>
-                            If privacy matters to you, we built Budgie for exactly that reason. No servers storing your transactions. No
-                            third parties with access to your spending habits. Just you and your budget, on your device.
+                            If privacy matters to you, we built Budgie for exactly that reason. No Budgie servers storing your transactions.
+                            No third parties with access to your spending habits. Just you, your budget, and the encrypted backup you
+                            control.
                         </Trans>
                     </BlogArticleProse>
 

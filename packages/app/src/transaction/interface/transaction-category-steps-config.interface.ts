@@ -1,9 +1,6 @@
-import type { ColorPaletteVariant } from '../../@generic/type/color-palette-variant.type';
+import type { CategoryPickerParamsInterface } from '../../category/interface/category-picker-params.interface';
 
-export interface TransactionCategoryStepsConfigInterface {
-    readonly variant: ColorPaletteVariant;
-    readonly initialCategoryId: number | null;
-    readonly excludeCategoryIds?: number[];
+export interface TransactionCategoryStepsConfigInterface extends CategoryPickerParamsInterface {
     readonly onSelect: (categoryId: number) => void;
     readonly onBack: () => void;
     readonly onShowCategory: () => void;

@@ -27,5 +27,11 @@ export const DEFAULT_SETTINGS = {
     isRunwayPillEnabled: true,
     isRunwayCryptoIncluded: false,
     lastBackupAt: null,
-    isAiNoteHintShown: false
+    isAiNoteHintShown: false,
+    cloudBackupEnabled: true,
+    lastCloudBackupRowCount: null,
+    lastCloudBackupAt: null,
+    cloudSyncEnabled: true,
+    lineageId: null,
+    householdShareEverything: false
 } satisfies SettingsEntityInterface;

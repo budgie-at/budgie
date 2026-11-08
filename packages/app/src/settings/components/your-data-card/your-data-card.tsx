@@ -1,33 +1,27 @@
-import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Platform } from 'react-native';
+import Animated from 'react-native-reanimated';
 
-import { useDatabaseFileSize } from '../../../@generic/drizzle/hook/use-database-file-size.hook';
-import { useFormatFileSize } from '../../../@generic/hook/use-format-file-size.hook';
-import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
-import { ImportDatabase } from '../../../import/components/import-database/import-database';
-import { BackupRow } from '../backup-row/backup-row';
-import { SettingsRow } from '../settings-row/settings-row';
+import { PRESENCE_LAYOUT } from '../../../@generic/constant/presence-motion.constant';
+import { IS_CLOUD_BACKUP_SUPPORTED } from '../../../cloud-backup/constant/is-cloud-backup-supported.constant';
+import { DeviceDataSection } from '../device-data-section/device-data-section';
+import { ICloudDataSection } from '../icloud-data-section/icloud-data-section';
 
 export const YourDataCard = () => {
     const { t } = useLingui();
-    const databaseFileSize = useDatabaseFileSize();
-    const formatFileSize = useFormatFileSize();
 
-    const fileSize = formatFileSize(databaseFileSize);
-    const title = Platform.OS === 'ios' ? t`On this iPhone` : t`On this phone`;
+    const deviceTitle = Platform.OS === 'ios' ? t`On this iPhone` : t`On this phone`;
+
+    if (!IS_CLOUD_BACKUP_SUPPORTED) {
+        return <DeviceDataSection title={t`Your data`} />;
+    }
 
     return (
         <>
-            <SettingsRow
-                icon={UserIconNameEnum.Smartphone}
-                variant="ghost"
-                title={title}
-                testID={SettingsPageSelector.YourDataCard}
-                subtitle={t`${fileSize} · Stored only on this device`}
-            />
-            <BackupRow />
-            <ImportDatabase />
+            <ICloudDataSection />
+            <Animated.View layout={PRESENCE_LAYOUT}>
+                <DeviceDataSection title={deviceTitle} />
+            </Animated.View>
         </>
     );
 };

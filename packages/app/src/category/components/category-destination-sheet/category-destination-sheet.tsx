@@ -14,27 +14,24 @@ import { useCategoriesWithUsageQuery } from '../../query/use-categories-with-usa
 import { CategoryDestinationRow } from '../category-destination-row/category-destination-row';
 import { CategoryEmptyState } from '../category-empty-state/category-empty-state';
 
-import type { DestinationCommitCopyInterface } from '../../../@generic/interface/destination-commit-copy.interface';
 import type { DestinationSelectionInterface } from '../../../@generic/interface/destination-selection.interface';
+import type { CategoryDestinationParamsInterface } from '../../interface/category-destination-params.interface';
 import type { CategoryEntityInterface } from '@budgie/contracts';
 
 interface Props {
-    readonly title: string;
-    readonly description: string | undefined;
-    readonly excludeCategoryIds: readonly number[];
-    readonly commitLabel: string;
-    readonly getCommitCopy: (destinationTitle: string) => DestinationCommitCopyInterface;
+    readonly params: CategoryDestinationParamsInterface;
     readonly selection: DestinationSelectionInterface;
     readonly onCommit: (categoryId: number) => void;
     readonly onCreate: (defaultTitle: string) => void;
 }
 
 export const CategoryDestinationSheet = (props: Props) => {
-    const { title, description, excludeCategoryIds, commitLabel, getCommitCopy, selection, onCommit, onCreate } = props;
+    const { params, selection, onCommit, onCreate } = props;
+    const { title, description, excludeCategoryIds, syncZone, commitLabel, getCommitCopy } = params;
     const { t } = useLingui();
     const [search, setSearch] = useState('');
     const formatUsage = useFormatEntityUsage();
-    const { categories, usage, isUsageFailure, retryUsage, isFailure, retry } = useCategoriesWithUsageQuery(search, true);
+    const { categories, usage, isUsageFailure, retryUsage, isFailure, retry } = useCategoriesWithUsageQuery(search, true, syncZone);
 
     const destinations = categories?.filter(category => !excludeCategoryIds.includes(category.id));
     const { selected, isPending, handleRowSelect, handleCommit } = useDestinationSelection(destinations, selection, onCommit);

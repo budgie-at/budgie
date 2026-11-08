@@ -1,6 +1,7 @@
 import { cva } from 'class-variance-authority';
 import { Text } from 'react-native';
 
+import { MAX_CHROME_FONT_SIZE_MULTIPLIER } from '../../constant/max-chrome-font-size-multiplier.constant';
 import { BUTTON_PRESSED_SCALE } from '../../constant/motion.constant';
 import { HapticPressFeedbackEnum } from '../../enum/haptic-press-feedback.enum';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
@@ -78,7 +79,9 @@ export const PillButton = ({
             testID={testID}
         >
             <LoadingContent isLoading={isLoading}>
-                <Text className={labelVariants({ variant, isDisabled })}>{label}</Text>
+                <Text maxFontSizeMultiplier={MAX_CHROME_FONT_SIZE_MULTIPLIER} className={labelVariants({ variant, isDisabled })}>
+                    {label}
+                </Text>
             </LoadingContent>
         </HapticPressable>
     );

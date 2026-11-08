@@ -15,7 +15,7 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import type { SyncEntityInterface, TransactionWithEntriesEntityInterface } from '@budgie/contracts';
+import type { SyncEntityInterface, TransactionCreateEntityInterface, TransactionWithEntriesEntityInterface } from '@budgie/contracts';
 
 export class BalanceAdjustmentService extends Context.Service<BalanceAdjustmentService>()('@budgie/ledger/BalanceAdjustmentService', {
     make: Effect.gen(function* () {
@@ -30,7 +30,7 @@ export class BalanceAdjustmentService extends Context.Service<BalanceAdjustmentS
             accountId: number,
             delta: number,
             operatedAt: Date,
-            title: string = ''
+            metadata: Pick<TransactionCreateEntityInterface, 'title' | 'comment'>
         ) {
             const isIncome = isPositiveNumber(delta);
             const amount = Math.abs(delta);
@@ -38,8 +38,7 @@ export class BalanceAdjustmentService extends Context.Service<BalanceAdjustmentS
 
             const transaction = yield* transactionRepository.create({
                 type: TransactionTypeEnum.ADJUSTMENT,
-                title,
-                comment: '',
+                ...metadata,
                 externalId: null,
                 externalSource: null,
                 operatedAt,
@@ -99,13 +98,20 @@ export class BalanceAdjustmentService extends Context.Service<BalanceAdjustmentS
 
             const oldestAt = yield* transactionRepository.getTransactionTimeByAccountId(accountId, 'earliest');
             const operatedAt = min([reconciledAt, subMilliseconds(oldestAt ?? reconciledAt, millisecondsBeforeOldestEntry)]);
-            const nextTransactionId = targetAmount === 0 ? null : yield* create(accountId, targetAmount, operatedAt);
+            const nextTransactionId =
+                targetAmount === 0
+                    ? null
+                    : yield* create(accountId, targetAmount, operatedAt, {
+                          title: adjustment?.title ?? '',
+                          comment: adjustment?.comment ?? ''
+                      });
 
             yield* syncRepository.update(sync.id, { reconciliationTransactionId: nextTransactionId });
         });
 
         return {
-            create,
+            create: (accountId: number, delta: number, operatedAt: Date, title: string = '') =>
+                create(accountId, delta, operatedAt, { title, comment: '' }),
             rebaseReconciliations: Effect.fn('BalanceAdjustmentService.rebaseReconciliations')(function* (accountIds: number[]) {
                 const reconciledSyncs = yield* syncRepository.findReconciledByAccountIds(accountIds);
                 yield* Effect.forEach(reconciledSyncs, rebase, { discard: true });

@@ -17,14 +17,13 @@ export const useBackupActions = () => {
                 const saved = yield* databaseExportService.saveBackup();
 
                 if (saved) {
-                    yield* Effect.sync(
-                        () =>
-                            void Toast.show({
-                                type: 'success',
-                                text1: t`Backup saved`,
-                                text2: t`Saved to your chosen folder.`
-                            })
-                    );
+                    yield* Effect.sync(() => {
+                        Toast.show({
+                            type: 'success',
+                            text1: t`Backup saved`,
+                            text2: t`Saved to your chosen folder.`
+                        });
+                    });
                 }
             }).pipe(toastOnFailure(t`Could not create a backup`))
         );

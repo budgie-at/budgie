@@ -20,6 +20,7 @@ interface Props<T extends string> {
 }
 
 const TRACK_PADDING = 2;
+const THUMB_INSET = 2;
 const continuousCorners = { borderCurve: 'continuous' as const };
 
 export const SegmentedControl = <T extends string>(props: Props<T>) => {
@@ -33,7 +34,10 @@ export const SegmentedControl = <T extends string>(props: Props<T>) => {
         return reducedMotion ? target : withSpring(target, SPRING_SETTLE);
     });
 
-    const thumbAnimatedStyle = useAnimatedStyle(() => ({ width: segmentWidth.get(), transform: [{ translateX: thumbOffset.get() }] }));
+    const thumbAnimatedStyle = useAnimatedStyle(() => ({
+        width: Math.max(0, segmentWidth.get() - THUMB_INSET * 2),
+        transform: [{ translateX: thumbOffset.get() + THUMB_INSET }]
+    }));
 
     const handleLayout = (event: LayoutChangeEvent) =>
         void segmentWidth.set((event.nativeEvent.layout.width - TRACK_PADDING * 2) / segments.length);
@@ -45,13 +49,19 @@ export const SegmentedControl = <T extends string>(props: Props<T>) => {
         <View
             accessibilityRole="tablist"
             accessibilityState={accessibilityState}
-            className={cn('min-h-[36px] flex-row rounded-[10px] bg-segmented-track p-[2px]', className)}
+            className={cn('min-h-[44px] flex-row rounded-[10px] px-[2px]', className)}
             style={continuousCorners}
             onLayout={handleLayout}
         >
+            <View
+                pointerEvents="none"
+                className="absolute inset-x-0 top-[4px] bottom-[4px] rounded-[10px] bg-segmented-track"
+                style={continuousCorners}
+            />
             {disabled || activeIndex < 0 ? null : (
                 <Animated.View
-                    className="absolute top-[2px] bottom-[2px] left-[2px] rounded-[8px] border-[0.5px] border-black/[0.06] bg-white shadow-md dark:border-transparent dark:bg-white/20"
+                    pointerEvents="none"
+                    className="absolute top-[6px] bottom-[6px] left-[2px] rounded-[8px] border-[0.5px] border-black/[0.06] bg-white dark:border-transparent dark:bg-white/20"
                     style={thumbStyle}
                 />
             )}

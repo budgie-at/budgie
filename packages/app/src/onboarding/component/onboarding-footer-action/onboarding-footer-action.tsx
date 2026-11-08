@@ -4,6 +4,7 @@ import { useKeyboardState } from 'react-native-keyboard-controller';
 import { EmptyFn } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { MAX_CHROME_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/max-chrome-font-size-multiplier.constant';
 import { cn } from '../../../@generic/utils/cn.util';
 
 interface Props {
@@ -31,7 +32,9 @@ export const OnboardingFooterAction = ({ label, testID, onPress, isDisabled = fa
             accessibilityState={accessibilityState}
             className={cn('min-h-[44px] items-center justify-center active:opacity-60', isDisabled && 'opacity-40')}
         >
-            <Text className="text-primary/80 text-center text-[15px] font-semibold">{label}</Text>
+            <Text maxFontSizeMultiplier={MAX_CHROME_FONT_SIZE_MULTIPLIER} className="text-primary/80 text-center text-[15px] font-semibold">
+                {label}
+            </Text>
         </HapticPressable>
     );
 };

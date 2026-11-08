@@ -23,6 +23,7 @@ export const InzhurPurchaseFundOption = ({ fund }: Props) => {
 
     return (
         <HapticPressable
+            pressedScale={1}
             className="min-h-[50px] flex-row items-center gap-x-xl px-3xl py-lg active:opacity-70"
             accessibilityRole="button"
             accessibilityState={accessibilityState}

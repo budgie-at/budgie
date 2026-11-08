@@ -13,6 +13,7 @@ import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
 import { useDeleteArchivedAccount } from '../../hooks/use-delete-archived-account.hook';
 import { useRestoreArchivedAccount } from '../../hooks/use-restore-archived-account.hook';
 import { useArchivedAccountBalanceQuery } from '../../query/use-archived-account-balance.query';
+import { getAccountDisplayTitle } from '../../utils/get-account-display-title.util';
 import { ArchivedAccountClosedMenuNote } from '../archived-account-closed-menu-note/archived-account-closed-menu-note';
 import { ArchivedAccountTrailing } from '../archived-account-trailing/archived-account-trailing';
 import { ShelvedAccountRow } from '../shelved-account-row/shelved-account-row';
@@ -32,7 +33,7 @@ export const ArchivedAccountCard = ({ account, isFirst, isLast }: Props) => {
     const { formatMonthAndDay, formatMonthAndYear } = useFormatDate();
     const { balance } = useArchivedAccountBalanceQuery(account.id);
     const { isLoading, restore } = useRestoreArchivedAccount(account);
-    const { deleteAccount } = useDeleteArchivedAccount(account);
+    const { deleteAccount, isDeletable } = useDeleteArchivedAccount(account);
     const archivedDate = isDefined(account.deletedAt)
         ? (isThisYear(account.deletedAt) ? formatMonthAndDay : formatMonthAndYear)(account.deletedAt)
         : null;
@@ -43,17 +44,17 @@ export const ArchivedAccountCard = ({ account, isFirst, isLast }: Props) => {
     const closedLabel = account.isExternal ? t`, closed at the provider` : '';
     const accessibilityActions = [
         ...(account.isExternal ? [] : [{ name: 'restore', label: t`Restore`, onPress: restore }]),
-        { name: 'delete', label: t`Delete permanently`, onPress: deleteAccount }
+        ...(isDeletable ? [{ name: 'delete', label: t`Delete permanently`, onPress: deleteAccount }] : [])
     ];
 
     return (
         <GroupedListItem isFirst={isFirst} isLast={isLast}>
-            <DeletableRow id={account.id} onDelete={deleteAccount} label={t`Delete permanently`} variant="fill">
+            <DeletableRow id={account.id} onDelete={deleteAccount} label={t`Delete permanently`} variant="fill" isDisabled={!isDeletable}>
                 <ShelvedAccountRow
                     account={account}
                     subtitle={<ShelvedAccountSubtitle formattedBalance={formattedBalance} metadata={accountType} notice={notice} />}
                     trailing={<ArchivedAccountTrailing account={account} isLoading={isLoading} onRestore={restore} />}
-                    accessibilityLabel={`${account.title}, ${formattedBalance}, ${accountType}, ${notice}${closedLabel}`}
+                    accessibilityLabel={`${getAccountDisplayTitle(account)}, ${formattedBalance}, ${accountType}, ${notice}${closedLabel}`}
                     accessibilityActions={accessibilityActions}
                     testID={ArchivedAccountCardSelector.Card(account.title)}
                 >
@@ -61,13 +62,15 @@ export const ArchivedAccountCard = ({ account, isFirst, isLast }: Props) => {
                     {account.isExternal ? null : (
                         <ActionsMenuItem icon={UserIconNameEnum.ArchiveRestore} label={t`Restore`} onPress={restore} />
                     )}
-                    <ActionsMenuItem
-                        icon={UserIconNameEnum.Trash2}
-                        label={t`Delete permanently`}
-                        onPress={deleteAccount}
-                        variant="destructive"
-                        testID={ArchivedAccountCardSelector.DeleteButton(account.title)}
-                    />
+                    {isDeletable ? (
+                        <ActionsMenuItem
+                            icon={UserIconNameEnum.Trash2}
+                            label={t`Delete permanently`}
+                            onPress={deleteAccount}
+                            variant="destructive"
+                            testID={ArchivedAccountCardSelector.DeleteButton(account.title)}
+                        />
+                    ) : null}
                 </ShelvedAccountRow>
             </DeletableRow>
         </GroupedListItem>

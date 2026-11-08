@@ -315,7 +315,8 @@ export class ConsolidationRepairExecutorService extends Context.Service<Consolid
                                 toAmount: candidate.targetAmount,
                                 exchangeRate: candidate.exchangeRate,
                                 fromEntryToIban: candidate.targetAccountIban
-                            })
+                            }),
+                            [candidate.bridgeIncomeTransactionId, candidate.bridgeExpenseTransactionId, candidate.existingTransferId]
                         );
 
                         yield* consolidationMutationService.moveSourcesToCanonical(
@@ -339,7 +340,8 @@ export class ConsolidationRepairExecutorService extends Context.Service<Consolid
                         }
 
                         const canonicalTransaction = yield* consolidationMutationService.createCanonicalTransfer(
-                            buildIncomeDuplicateCanonicalInput(candidate, existingTransfer)
+                            buildIncomeDuplicateCanonicalInput(candidate, existingTransfer),
+                            [candidate.existingTransferId, candidate.duplicateTransactionId]
                         );
 
                         yield* consolidationMutationService.moveSourcesToCanonical(

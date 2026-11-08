@@ -39,8 +39,10 @@ const iconVariants = cva<{ variant: Record<ColorPaletteVariant, ClassValue> }>('
 
 export const ActionItemLabel = ({ icon, label, testID, variant }: Props) => (
     <View className="flex-row-reverse items-center p-sm">
-        <View className={containerVariants({ variant })}>
-            <Icon className={iconVariants({ variant })} icon={icon} size={ICON_SIZE} />
+        <View className="rounded-full bg-black">
+            <View className={containerVariants({ variant })}>
+                <Icon className={iconVariants({ variant })} icon={icon} size={ICON_SIZE} />
+            </View>
         </View>
         <Text className="text-white text-sm font-medium mr-lg" {...testIDProps(testID, TestIDPartEnum.LABEL)}>
             {label}

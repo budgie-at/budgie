@@ -12,6 +12,7 @@ import { useShakeAnimation } from '../../../@generic/hook/use-shake-animation.ho
 import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
 import { AccountInactiveIcon } from '../../../account/component/account-inactive-icon/account-inactive-icon';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
+import { getAccountDisplayTitle } from '../../../account/utils/get-account-display-title.util';
 import { useTransactionAccountSelector } from '../../hook/use-transaction-account-selector.hook';
 import { SimpleQuickFormSelector } from '../simple-quick-form/simple-quick-form.selector';
 import { TransactionFormIcon } from '../transaction-form-icon/transaction-form-icon';
@@ -39,10 +40,10 @@ export const TransactionAccountRow = ({ ref, fieldName, label, testID, edge = Ro
     const { account } = useGetAccountByIdQuery(accountId ?? 0);
 
     const displayLabel = label ?? t`Account`;
-    const accessibilityLabel = `${displayLabel}: ${account?.title ?? t`Choose`}`;
     const isInactiveAccount = isDefined(account) && !account.isActive;
     const selectedAccountTestID = isDefined(account?.title) ? SimpleQuickFormSelector.SelectedAccount(account.title) : null;
-    const pressableProps = { accessibilityLabel };
+    const ghostPressableProps = { onPress: emptyFn };
+    const accountTitle = isDefined(account) ? getAccountDisplayTitle(account) : void 0;
     const accountIcon = (
         <AccountInactiveIcon isInactive={isInactiveAccount} size={30}>
             <TransactionFormIcon icon={account?.icon ?? UserIconNameEnum.Wallet} />
@@ -50,9 +51,19 @@ export const TransactionAccountRow = ({ ref, fieldName, label, testID, edge = Ro
     );
 
     const ghost = (
-        <TransactionFormRow left={accountIcon} label={displayLabel} value={account?.title} placeholder={t`Choose`} onPress={emptyFn} />
+        <TransactionFormRow
+            left={accountIcon}
+            label={displayLabel}
+            value={accountTitle}
+            placeholder={t`Choose`}
+            pressableProps={ghostPressableProps}
+        />
     );
     const { ref: measureRef, handlePress } = useAnchoredMorphOriginPress(edge, ghost, handleOpenAccountSelector);
+    const pressableProps = {
+        onPress: handlePress,
+        accessibilityLabel: `${displayLabel}: ${isDefined(account) ? getAccountDisplayTitle(account) : t`Choose`}`
+    };
 
     return (
         <Animated.View style={shakeStyle}>
@@ -60,10 +71,9 @@ export const TransactionAccountRow = ({ ref, fieldName, label, testID, edge = Ro
                 <TransactionFormRow
                     left={accountIcon}
                     label={displayLabel}
-                    value={account?.title}
+                    value={accountTitle}
                     placeholder={t`Choose`}
-                    valueTestID={testIDProps(selectedAccountTestID).testID}
-                    onPress={handlePress}
+                    valueProps={testIDProps(selectedAccountTestID)}
                     testID={testID}
                     pressableProps={pressableProps}
                 />

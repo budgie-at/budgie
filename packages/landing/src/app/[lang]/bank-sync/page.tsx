@@ -34,6 +34,7 @@ export default async function BankSyncPillarHubPage(props: PageLangParam) {
                         imports, pairs up transfers on its own, and lets you fix a bad sync without starting over.
                     </Trans>
                 }
+                updatedAt={BANK_SYNC_PILLAR_HUB_METADATA.updatedAt}
             >
                 <PillarHubHeroBulletList>
                     <PillarHubHeroBulletItem>

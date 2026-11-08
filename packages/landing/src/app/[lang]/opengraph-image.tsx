@@ -24,7 +24,7 @@ export async function generateStaticParams() {
 const OgImage = async ({ params }: PageLangParam) => {
     const { lang } = await params;
     const i18n = getI18nInstance(lang);
-    const tags = [t(i18n)`100% Offline`, t(i18n)`Encrypted`, t(i18n)`Source-Available`];
+    const tags = [t(i18n)`Offline-First`, t(i18n)`Encrypted`, t(i18n)`Source-Available`];
 
     return new ImageResponse(
         <OgCard

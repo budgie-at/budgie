@@ -3,6 +3,34 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.171.0](https://github.com/budgie-at/budgie/compare/v6.170.0...v6.171.0) (2026-11-08)
+
+### Performance Improvements
+
+* **landing:** cap Next.js build workers at 4 ([#2056](https://github.com/budgie-at/budgie/issues/2056)) ([3fe2acb](https://github.com/budgie-at/budgie/commit/3fe2acba81c1f4b13b2db66311421b85ded26806))
+
+
+# [6.168.0](https://github.com/budgie-at/budgie/compare/v6.167.9...v6.168.0) (2026-11-08)
+
+### Features
+
+* iCloud backup, own-device sync and family sharing ([#1978](https://github.com/budgie-at/budgie/issues/1978)) ([47191a1](https://github.com/budgie-at/budgie/commit/47191a118eb34571d5aee2e969dfd53c91f77caa)), closes [#1790](https://github.com/budgie-at/budgie/issues/1790) [#1796](https://github.com/budgie-at/budgie/issues/1796) [#1791](https://github.com/budgie-at/budgie/issues/1791) [#1797](https://github.com/budgie-at/budgie/issues/1797) [#1969](https://github.com/budgie-at/budgie/issues/1969) [#1790](https://github.com/budgie-at/budgie/issues/1790) [#1792](https://github.com/budgie-at/budgie/issues/1792) [#1793](https://github.com/budgie-at/budgie/issues/1793) [#1794](https://github.com/budgie-at/budgie/issues/1794) [#1798](https://github.com/budgie-at/budgie/issues/1798) [#1797](https://github.com/budgie-at/budgie/issues/1797) [#1799](https://github.com/budgie-at/budgie/issues/1799) [#1800](https://github.com/budgie-at/budgie/issues/1800) [#1801](https://github.com/budgie-at/budgie/issues/1801) [#1804](https://github.com/budgie-at/budgie/issues/1804) [#1801](https://github.com/budgie-at/budgie/issues/1801) [#1800](https://github.com/budgie-at/budgie/issues/1800) [#1971](https://github.com/budgie-at/budgie/issues/1971) [#1802](https://github.com/budgie-at/budgie/issues/1802) [#1801](https://github.com/budgie-at/budgie/issues/1801) [#1801](https://github.com/budgie-at/budgie/issues/1801) [#1802](https://github.com/budgie-at/budgie/issues/1802) [#1969](https://github.com/budgie-at/budgie/issues/1969) [#1804](https://github.com/budgie-at/budgie/issues/1804) [#1807](https://github.com/budgie-at/budgie/issues/1807) [#1805](https://github.com/budgie-at/budgie/issues/1805) [#1806](https://github.com/budgie-at/budgie/issues/1806) [#1805](https://github.com/budgie-at/budgie/issues/1805) [#1807](https://github.com/budgie-at/budgie/issues/1807)
+
+
+## [6.167.6](https://github.com/budgie-at/budgie/compare/v6.167.5...v6.167.6) (2026-11-07)
+
+### Performance Improvements
+
+* **landing:** council round 1 for mobile LCP, client JS and GEO ([#2029](https://github.com/budgie-at/budgie/issues/2029)) ([53499b0](https://github.com/budgie-at/budgie/commit/53499b01ce7d6dd877141254445faccf0a5b9ffb)), closes [#2025](https://github.com/budgie-at/budgie/issues/2025) [#2027](https://github.com/budgie-at/budgie/issues/2027)
+
+
+## [6.167.3](https://github.com/budgie-at/budgie/compare/v6.167.2...v6.167.3) (2026-11-07)
+
+### Performance Improvements
+
+* **landing:** lighter fonts, dark-mode CTA contrast and heading order ([#2023](https://github.com/budgie-at/budgie/issues/2023)) ([173f3cf](https://github.com/budgie-at/budgie/commit/173f3cfdd7a2ccbd47b077d31e844b9c75237344)), closes [#2022](https://github.com/budgie-at/budgie/issues/2022)
+
+
 ## [6.165.5](https://github.com/budgie-at/budgie/compare/v6.165.4...v6.165.5) (2026-11-06)
 
 **Note:** Version bump only for package @budgie-at/landing

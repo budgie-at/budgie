@@ -32,11 +32,10 @@ export async function chooseEmptyCanvas(ctx: Ctx): Promise<void> {
 
 /** Types `value` into a budget amount input and waits for the field to show it. */
 export async function fillAmount(ctx: Ctx, testId: string, value: string): Promise<void> {
-    // A fill right after the form opens can tap the field mid-transition and find nothing focused: retried once it settles.
-    await retry(1, async attempt => {
-        if (attempt > 1) {
-            await sleep(800);
-        }
+    await tapId(ctx, testId);
+    await expectId(ctx, 'inputView');
+    await retry(1, async () => {
+        await expect(byId(ctx.screen, testId)).toBeFocused();
         await fillId(ctx, testId, value);
     });
     await expect(byId(ctx.screen, testId)).toHaveValue(value, { timeout: 3_000 });

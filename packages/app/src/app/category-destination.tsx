@@ -11,19 +11,9 @@ export default function CategoryDestinationModal() {
     const currentParams = useCategorySelectorModalParams();
     const { handleCommit, handleDismissed } = useMorphingSheetResult<number>(resolveCategorySelector);
 
-    if (!isDefined(currentParams?.title) || !isDefined(currentParams.commitLabel) || !isDefined(currentParams.getCommitCopy)) {
+    if (!isDefined(currentParams)) {
         return null;
     }
 
-    return (
-        <CategoryDestinationModalContent
-            title={currentParams.title}
-            description={currentParams.description}
-            excludeCategoryIds={currentParams.excludeCategoryIds ?? []}
-            commitLabel={currentParams.commitLabel}
-            getCommitCopy={currentParams.getCommitCopy}
-            onCommit={handleCommit}
-            onDismiss={handleDismissed}
-        />
-    );
+    return <CategoryDestinationModalContent params={currentParams} onCommit={handleCommit} onDismiss={handleDismissed} />;
 }

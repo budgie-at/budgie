@@ -3,6 +3,37 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.171.0](https://github.com/budgie-at/budgie/compare/v6.170.0...v6.171.0) (2026-11-08)
+
+**Note:** Version bump only for package @budgie/market
+
+
+
+
+
+# [6.169.0](https://github.com/budgie-at/budgie/compare/v6.168.0...v6.169.0) (2026-11-08)
+
+**Note:** Version bump only for package @budgie/market
+
+
+
+
+
+# [6.168.0](https://github.com/budgie-at/budgie/compare/v6.167.9...v6.168.0) (2026-11-08)
+
+**Note:** Version bump only for package @budgie/market
+
+
+
+
+
+## [6.167.2](https://github.com/budgie-at/budgie/compare/v6.167.1...v6.167.2) (2026-11-07)
+
+### Bug Fixes
+
+* close reachable illegal states in implicit state machines ([#2020](https://github.com/budgie-at/budgie/issues/2020)) ([c1d1ee6](https://github.com/budgie-at/budgie/commit/c1d1ee6f8d0a1182aaab013bddd626163696d094))
+
+
 ## [6.167.1](https://github.com/budgie-at/budgie/compare/v6.167.0...v6.167.1) (2026-11-07)
 
 **Note:** Version bump only for package @budgie/market

@@ -8,12 +8,14 @@ import { isDefined, isEmptyArray, isNotEmptyString, isPositiveNumber } from '@rn
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { SheetSurface } from '../../../@generic/component/sheet-surface/sheet-surface';
 import { SheetTitle } from '../../../@generic/component/sheet-title/sheet-title';
+import { MAX_CHROME_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/max-chrome-font-size-multiplier.constant';
 import { MORPHING_SHEET_DESTINATION_HEIGHT_RATIO } from '../../../@generic/constant/morphing-sheet-height-ratio.constant';
 import { useMorphingSheetCommit } from '../../../@generic/hook/use-morphing-sheet-commit.hook';
 import { useMorphingSheetListHeight } from '../../../@generic/hook/use-morphing-sheet-list-height.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { VoiceReviewSelector } from '../../../app/voice-review.selector';
 import { VOICE_REVIEW_ACCESSIBILITY_FONT_SCALE } from '../../constant/voice-review-accessibility-font-scale.constant';
+import { VoiceReviewEmptyState } from '../voice-review-empty-state/voice-review-empty-state';
 import { VoiceReviewFooter } from '../voice-review-footer/voice-review-footer';
 import { VoiceReviewItem } from '../voice-review-item/voice-review-item';
 import { VoiceReviewSaveButton } from '../voice-review-save-button/voice-review-save-button';
@@ -47,6 +49,13 @@ export const VoiceReviewStep = (props: Props) => {
     const titleClassName = fontScale >= VOICE_REVIEW_ACCESSIBILITY_FONT_SCALE ? 'text-[15px] leading-[20px]' : '';
     const canDelete = rows.length > 1;
     const canSaveToAccount = canSave && isPositiveNumber(accountId);
+    const transcript = isNotEmptyString(originalText) ? (
+        <View className="mt-xl px-xl py-lg">
+            <Text className="text-md leading-relaxed text-secondary-foreground" selectable>
+                {originalText}
+            </Text>
+        </View>
+    ) : null;
 
     const handleCancel = () => void commit({ kind: 'cancelled' });
     const handleReRecord = () => void commit({ kind: 're-record' });
@@ -77,20 +86,17 @@ export const VoiceReviewStep = (props: Props) => {
         <View style={sheetStyle}>
             <SheetSurface className="pt-lg">
                 <View className="flex-1" testID={VoiceReviewSelector.Page} collapsable={false}>
-                    <SheetTitle title={t`Voice notes`} className={titleClassName} />
-                    <KeyboardAwareScrollView
-                        className="flex-1"
-                        contentContainerStyle={SCROLL_CONTENT_STYLE}
-                        keyboardShouldPersistTaps="handled"
-                        keyboardDismissMode="on-drag"
-                        bottomOffset={24}
-                    >
-                        {isEmptyArray(rows) ? (
-                            <View className="flex-1 justify-center items-center gap-y-md px-xl py-3xl">
-                                <Text className="text-xl leading-[24px] font-semibold text-primary text-center">{t`No items to save`}</Text>
-                                <Text className="text-md text-secondary-foreground text-center">{t`Tap re-record to try again`}</Text>
-                            </View>
-                        ) : (
+                    <SheetTitle title={t`Voice notes`} className={titleClassName} maxFontSizeMultiplier={MAX_CHROME_FONT_SIZE_MULTIPLIER} />
+                    {isEmptyArray(rows) ? (
+                        <VoiceReviewEmptyState>{transcript}</VoiceReviewEmptyState>
+                    ) : (
+                        <KeyboardAwareScrollView
+                            className="flex-1"
+                            contentContainerStyle={SCROLL_CONTENT_STYLE}
+                            keyboardShouldPersistTaps="handled"
+                            keyboardDismissMode="on-drag"
+                            bottomOffset={24}
+                        >
                             <GroupedListSection>
                                 {rows.map((row, index) => (
                                     <VoiceReviewItem
@@ -99,21 +105,16 @@ export const VoiceReviewStep = (props: Props) => {
                                         index={index}
                                         currencySymbol={currencySymbol}
                                         canDelete={canDelete}
+                                        disabled={isSaving}
                                         onAmountChange={editAmount}
                                         onCategoryPress={onCategoryPress}
                                         onDelete={deleteRow}
                                     />
                                 ))}
                             </GroupedListSection>
-                        )}
-                        {isNotEmptyString(originalText) ? (
-                            <View className="mt-xl px-xl py-lg">
-                                <Text className="text-md leading-relaxed text-secondary-foreground" selectable>
-                                    {originalText}
-                                </Text>
-                            </View>
-                        ) : null}
-                    </KeyboardAwareScrollView>
+                            {transcript}
+                        </KeyboardAwareScrollView>
+                    )}
 
                     <VoiceReviewFooter
                         count={rows.length}

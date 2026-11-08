@@ -25,7 +25,8 @@ const CHIP_SECTIONS = [
     CategorizeInboxSectionEnum.CONFIDENT,
     CategorizeInboxSectionEnum.CASH_WITHDRAWALS,
     CategorizeInboxSectionEnum.REVIEW,
-    CategorizeInboxSectionEnum.ONE_OFFS
+    CategorizeInboxSectionEnum.ONE_OFFS,
+    CategorizeInboxSectionEnum.OLDER
 ] as const;
 
 export const CategorizeInboxHero = ({ activeSection, onSectionPress }: Props) => {

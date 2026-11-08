@@ -65,6 +65,7 @@ export const VoiceReviewModalContent = (props: Props) => {
             .filter(row => row.id !== editingRowId)
             .map(row => row.categoryId)
             .filter(isPositiveNumber),
+        ...(isDefined(accountWithInstrument) && { syncZone: accountWithInstrument.syncZone }),
         onSelect: handleCategorySelect,
         onBack: handleShowReview,
         onShowCategory: handleShowCategory,

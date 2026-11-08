@@ -15,6 +15,7 @@ import { useAnalyticsHistorySyncsQuery } from '../../../sync/query/use-analytics
 import { getHistoryImportStatusMessage } from '../../../sync/utils/get-history-import-status-message.util';
 import { TransactionFiltersSelector } from '../../../transaction/components/transaction-filters/transaction-filters.selector';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
+import { getAccountDisplayTitle } from '../../utils/get-account-display-title.util';
 
 interface Props {
     readonly isSelected: boolean;
@@ -60,7 +61,7 @@ export const AccountFilterCard = ({ isSelected, account, onSelect }: Props) => {
 
             <View className="flex-1 gap-y-xxs">
                 <Text className="text-md font-semibold text-primary" numberOfLines={1}>
-                    {account.title}
+                    {getAccountDisplayTitle(account)}
                 </Text>
 
                 <ProtectedText className="text-xs text-secondary-foreground" numberOfLines={1}>

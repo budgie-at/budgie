@@ -8,16 +8,19 @@ import { useMorphingSheetDismiss } from '../../../@generic/context/morphing-shee
 import { BudgetSelector } from '../../budget.selector';
 import { BudgetDataState } from '../budget-data-state/budget-data-state';
 
+import type { ReactNode } from 'react';
+
 interface Props {
     readonly title: string;
     readonly isLoading: boolean;
     readonly isError?: boolean;
     readonly description?: string;
     readonly unavailableTitle?: string;
+    readonly header?: ReactNode;
 }
 
 export const BudgetSheetState = (props: Props) => {
-    const { title, isLoading, isError, description, unavailableTitle } = props;
+    const { title, isLoading, isError, description, unavailableTitle, header } = props;
     const { t } = useLingui();
     const dismiss = useMorphingSheetDismiss();
     const stateDescription =
@@ -28,7 +31,7 @@ export const BudgetSheetState = (props: Props) => {
         <SheetSurface
             className="flex-none pt-lg"
             contentClassName="flex-none"
-            header={<FormsheetHeader size="sm" title={title} titleClassName="leading-tight" />}
+            header={header ?? <FormsheetHeader size="sm" title={title} titleClassName="leading-tight" />}
         >
             <View className="px-5xl pt-md pb-3xl gap-y-xl">
                 <BudgetDataState isLoading={isLoading} isError={isError} description={stateDescription} title={unavailableTitle} />

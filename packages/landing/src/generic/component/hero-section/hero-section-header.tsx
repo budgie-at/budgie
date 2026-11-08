@@ -11,11 +11,11 @@ export const HeroSectionHeader = () => (
         </Badge>
 
         <h1 className="hero-enter hero-title text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-balance">
-            <Trans>Your money. Your phone. Nobody else&apos;s server.</Trans>
+            <Trans>Your money. Your phone. Not our server.</Trans>
         </h1>
 
         <p className="hero-enter hero-lede text-base md:text-xl text-muted-foreground text-balance">
-            <Trans>Offline expense tracking that never phones home.</Trans>
+            <Trans>Offline expense tracking with backups that never touch our servers.</Trans>
         </p>
 
         <div className="hero-enter hero-action">

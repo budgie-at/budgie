@@ -12,6 +12,7 @@ export interface BudgetProjectionKeyInterface extends Pick<
     | 'overallLimit'
     | 'otherLimit'
     | 'tagId'
+    | 'syncZone'
 > {
     readonly periodAnchorMs: number | null;
     readonly startsAtMs: number | null;

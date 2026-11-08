@@ -9,6 +9,11 @@ import type { ReactNode } from 'react';
 const readIndex = (element: Element) => Number(element.getAttribute('data-index') ?? 0);
 
 const createActivator = (grid: HTMLElement) => {
+    const updateAttribute = (element: HTMLElement, name: string, value: boolean) => {
+        if (element.hasAttribute(name) !== value) {
+            element.toggleAttribute(name, value);
+        }
+    };
     const steps = [...grid.querySelectorAll<HTMLElement>('[data-story-step]')];
     const stages = [...grid.querySelectorAll<HTMLElement>('[data-story-stage]')];
     const callouts = [...grid.querySelectorAll<HTMLElement>('[data-story-callout]')].map(callout => {
@@ -24,15 +29,15 @@ const createActivator = (grid: HTMLElement) => {
         const activeStageIndex = Math.max(0, ...stages.map(readIndex).filter(stageIndex => stageIndex <= index));
 
         steps.forEach(step => {
-            step.toggleAttribute('data-active', readIndex(step) === index);
-            step.toggleAttribute('data-passed', readIndex(step) <= index);
+            updateAttribute(step, 'data-active', readIndex(step) === index);
+            updateAttribute(step, 'data-passed', readIndex(step) <= index);
         });
         stages.forEach(stage => {
-            stage.toggleAttribute('data-active', readIndex(stage) === activeStageIndex);
+            updateAttribute(stage, 'data-active', readIndex(stage) === activeStageIndex);
         });
         callouts.forEach(({ callout, index: calloutIndex, slot, slots }) => {
-            callout.toggleAttribute('data-shown', calloutIndex <= index);
-            callout.toggleAttribute('data-focus', calloutIndex === index && slot === Math.min(slots - 1, Math.floor(progress * slots)));
+            updateAttribute(callout, 'data-shown', calloutIndex <= index);
+            updateAttribute(callout, 'data-focus', calloutIndex === index && slot === Math.min(slots - 1, Math.floor(progress * slots)));
         });
     };
 };
@@ -45,6 +50,7 @@ interface Props {
 export const FeatureStoryStage = ({ count, children }: Props) => {
     const gridRef = useRef<HTMLDivElement>(null);
     const panelRef = useRef<HTMLDivElement>(null);
+    const animationFrameRef = useRef<number | null>(null);
     const positions = Array.from({ length: count }, (_, position) => position);
     const gridStyle = { '--story-steps': count };
 
@@ -58,6 +64,7 @@ export const FeatureStoryStage = ({ count, children }: Props) => {
 
         const activate = createActivator(grid);
         const update = () => {
+            animationFrameRef.current = null;
             const gridBox = grid.getBoundingClientRect();
             const panelBox = panel.getBoundingClientRect();
             const position = ((panelBox.top - gridBox.top) / (gridBox.height - panelBox.height)) * count;
@@ -66,14 +73,24 @@ export const FeatureStoryStage = ({ count, children }: Props) => {
             activate(index, position - index);
         };
 
+        const scheduleUpdate = () => {
+            if (!isDefined(animationFrameRef.current)) {
+                animationFrameRef.current = window.requestAnimationFrame(update);
+            }
+        };
+
         grid.dataset.ready = '';
-        window.addEventListener('scroll', update, { passive: true });
-        window.addEventListener('resize', update);
+        window.addEventListener('scroll', scheduleUpdate, { passive: true });
+        window.addEventListener('resize', scheduleUpdate);
         update();
 
         return () => {
-            window.removeEventListener('scroll', update);
-            window.removeEventListener('resize', update);
+            window.removeEventListener('scroll', scheduleUpdate);
+            window.removeEventListener('resize', scheduleUpdate);
+            if (isDefined(animationFrameRef.current)) {
+                window.cancelAnimationFrame(animationFrameRef.current);
+                animationFrameRef.current = null;
+            }
             grid.removeAttribute('data-ready');
         };
     }, [count]);

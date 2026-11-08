@@ -58,6 +58,7 @@ export const CategorizeInboxPaymentsMonthHeader = ({ group }: Props) => {
 
     return (
         <HapticPressable
+            pressedScale={1}
             onPress={handleTogglePress}
             pressFeedback={HapticPressFeedbackEnum.SELECTION}
             className="min-h-[44px] flex-row items-center gap-x-xl px-3xl pb-xs pt-xl active:opacity-70"

@@ -80,7 +80,7 @@ export default async function AiTagSuggestionsFeaturePage(props: PageLangParam) 
                 <FeatureSpecTiles.Tile title={<Trans>tags, picked from similar past entries</Trans>} value={<Trans>Your own</Trans>}>
                     <Trans>Pills come from tags you gave similar transactions before.</Trans>
                 </FeatureSpecTiles.Tile>
-                <FeatureSpecTiles.Tile title={<Trans>tags uploaded anywhere</Trans>} value={<Trans>None</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>tags uploaded for suggestions</Trans>} value={<Trans>None</Trans>}>
                     <Trans>Every suggestion is made on your phone.</Trans>
                 </FeatureSpecTiles.Tile>
             </FeatureSpecTiles>
@@ -158,8 +158,8 @@ export default async function AiTagSuggestionsFeaturePage(props: PageLangParam) 
                     </p>
                     <p>
                         <Trans>
-                            Everything runs on your device. No network call, no vendor profiling. Nothing about your tags is ever uploaded —
-                            every suggestion comes from the tags you already use in Budgie.
+                            Everything runs on your device. No network call, no vendor profiling. Nothing about your tags is sent anywhere
+                            to make them — every suggestion comes from the tags you already use in Budgie.
                         </Trans>
                     </p>
                 </FeatureDetails.Item>

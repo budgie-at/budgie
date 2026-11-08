@@ -6,7 +6,7 @@ import { ScopedTheme } from 'uniwind';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
-import { MOTION_FAST_DURATION, EASE_OUT } from '../../../@generic/constant/motion.constant';
+import { MOTION_BASE_DURATION, MOTION_FAST_DURATION, EASE_OUT } from '../../../@generic/constant/motion.constant';
 import { HapticPressFeedbackEnum } from '../../../@generic/enum/haptic-press-feedback.enum';
 import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
 import { cn } from '../../../@generic/utils/cn.util';
@@ -31,7 +31,6 @@ const AUDIO_THRESHOLD = 0.05;
 const SCALE_MULTIPLIER = 0.1;
 const CONFIRM_PULSE_DURATION = 1200;
 const CONFIRM_PULSE_MAX_SCALE = 1.05;
-const SETTLE_DURATION = 200;
 
 const iconEntering = FadeIn.duration(MOTION_FAST_DURATION).easing(EASE_OUT);
 
@@ -80,14 +79,14 @@ export const AnimatedRecordButton = (props: Props) => {
         if (state === 'recording' && audioLevel > AUDIO_THRESHOLD) {
             buttonScale.set(withTiming(1 + audioLevel * SCALE_MULTIPLIER, { duration: AUDIO_LEVEL_TRACK_DURATION, easing: EASE_OUT }));
         } else if (state === 'confirm') {
-            buttonScale.set(withTiming(1, { duration: SETTLE_DURATION, easing: EASE_OUT }));
+            buttonScale.set(withTiming(1, { duration: MOTION_BASE_DURATION, easing: EASE_OUT }));
             confirmPulse.set(
                 reducedMotion
                     ? 0
                     : withRepeat(withTiming(1, { duration: CONFIRM_PULSE_DURATION, easing: Easing.inOut(Easing.sin) }), -1, true)
             );
         } else {
-            buttonScale.set(withTiming(1, { duration: SETTLE_DURATION, easing: EASE_OUT }));
+            buttonScale.set(withTiming(1, { duration: MOTION_BASE_DURATION, easing: EASE_OUT }));
             confirmPulse.set(0);
         }
     }, [audioLevel, buttonScale, confirmPulse, reducedMotion, state]);

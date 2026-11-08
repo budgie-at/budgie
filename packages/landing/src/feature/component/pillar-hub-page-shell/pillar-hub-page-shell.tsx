@@ -19,7 +19,7 @@ export const PillarHubPageShell = ({ lang, meta, children }: Props) => {
     const title = i18n._(meta.title);
 
     return (
-        <main className={`flex-1 ${PILLAR_CLASS_NAME[meta.pillar]}`}>
+        <main id="main-content" tabIndex={-1} className={`flex-1 focus:outline-none ${PILLAR_CLASS_NAME[meta.pillar]}`}>
             <BreadcrumbsJsonLd locale={lang} path={`/${meta.slug}`}>
                 <BreadcrumbsJsonLd.Item name={i18n._(msg`Home`)} path={`/${lang}`} />
                 <BreadcrumbsJsonLd.Item name={title} path={`/${lang}/${meta.slug}`} />

@@ -1,5 +1,6 @@
 import { TransactionEntryCreateInputInterface } from '@budgie/contracts';
-import { View } from 'react-native';
+import { useEffect, useRef } from 'react';
+import { TextInput, View } from 'react-native';
 
 import { SplitEntryDeleteButton } from '../split-entry-delete-button/split-entry-delete-button';
 import { SplitEntryRow } from '../split-entry-row/split-entry-row';
@@ -25,9 +26,16 @@ export const SplitEntriesItem = ({
     onCategoryPress,
     onDelete
 }: Props) => {
+    const amountRef = useRef<TextInput>(null);
     const handleCategoryPress = () => void onCategoryPress(index);
     const handleDelete = () => void onDelete(index);
     const handleAmountChange = (amount: number) => void onAmountChange(index, amount);
+
+    useEffect(() => {
+        if (autoFocus) {
+            amountRef.current?.focus();
+        }
+    }, [autoFocus]);
 
     return (
         <View>
@@ -36,7 +44,7 @@ export const SplitEntriesItem = ({
                 index={index}
                 entry={entry}
                 currencySymbol={currencySymbol}
-                autoFocus={autoFocus}
+                amountRef={amountRef}
                 onAmountChange={handleAmountChange}
                 onCategoryPress={handleCategoryPress}
             >

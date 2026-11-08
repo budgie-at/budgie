@@ -1,11 +1,11 @@
 import { ImpactFeedbackStyle } from 'expo-haptics';
 import { useRef } from 'react';
 import { GestureResponderEvent, Keyboard, Pressable } from 'react-native';
-import { useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
+import { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 import { emptyFn, isDefined } from '@rnw-community/shared';
 
-import { EASE_OUT } from '../../constant/motion.constant';
+import { EASE_OUT, PRESSED_SCALE, PRESS_RELEASE_TIMING } from '../../constant/motion.constant';
 import { HapticPressFeedbackEnum } from '../../enum/haptic-press-feedback.enum';
 import { useReducedMotion } from '../../hook/use-reduced-motion.hook';
 import { useVibration } from '../../hook/use-vibration.hook';
@@ -14,10 +14,7 @@ import { AnimatedPressable } from '../animated-pressable/animated-pressable';
 import type { Ref } from 'react';
 import type { PressableProps, StyleProp, View, ViewStyle } from 'react-native';
 
-const PRESSED_SCALE = 0.96;
 const MOTION_PRESS_IN_DURATION = 100;
-const PRESS_OUT_DURATION = 150;
-const RELEASE_SPRING = { dampingRatio: 0.55, duration: 450 };
 
 interface Props extends Omit<PressableProps, 'style'> {
     readonly style?: StyleProp<ViewStyle>;
@@ -37,17 +34,17 @@ export const HapticPressable = ({
     pressFeedback = HapticPressFeedbackEnum.IMPACT,
     ...rest
 }: Props) => {
-    const [, hapticImpact] = useVibration();
-    const isReducedMotion = useReducedMotion();
+    const [, hapticImpact, hapticSelection] = useVibration();
     const isLongPressActiveRef = useRef(false);
     const scale = useSharedValue(1);
-    const isScaleEnabled = pressedScale !== 1;
+    const reducedMotion = useReducedMotion();
+    const isScaleEnabled = pressedScale !== 1 && !reducedMotion;
 
     const animatedStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.get() }] }));
 
     const feedbackHandlers: Record<HapticPressFeedbackEnum, () => void> = {
         [HapticPressFeedbackEnum.IMPACT]: () => void hapticImpact(ImpactFeedbackStyle.Light),
-        [HapticPressFeedbackEnum.SELECTION]: () => void hapticImpact(ImpactFeedbackStyle.Rigid),
+        [HapticPressFeedbackEnum.SELECTION]: () => void hapticSelection(),
         [HapticPressFeedbackEnum.COMMIT]: () => void hapticImpact(ImpactFeedbackStyle.Medium),
         [HapticPressFeedbackEnum.DESTRUCTIVE]: () => void hapticImpact(ImpactFeedbackStyle.Heavy),
         [HapticPressFeedbackEnum.NONE]: emptyFn
@@ -90,7 +87,7 @@ export const HapticPressable = ({
         onPressOut?.(event);
 
         if (isScaleEnabled) {
-            scale.set(isReducedMotion ? withTiming(1, { duration: PRESS_OUT_DURATION, easing: EASE_OUT }) : withSpring(1, RELEASE_SPRING));
+            scale.set(withTiming(1, PRESS_RELEASE_TIMING));
         }
 
         if (isLongPressActiveRef.current) {

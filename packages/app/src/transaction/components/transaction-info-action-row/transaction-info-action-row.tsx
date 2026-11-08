@@ -1,5 +1,3 @@
-import { isDefined } from '@rnw-community/shared';
-
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { HapticPressFeedbackEnum } from '../../../@generic/enum/haptic-press-feedback.enum';
 import { TransactionInfoActionLabel } from '../transaction-info-action-label/transaction-info-action-label';
@@ -22,7 +20,7 @@ export const TransactionInfoActionRow = ({ icon, label, onPress, testID, colorCl
         accessibilityRole="button"
         accessibilityLabel={label}
         onPress={onPress}
-        {...(isDefined(pressFeedback) && { pressFeedback })}
+        pressFeedback={pressFeedback}
         testID={testID}
     >
         <TransactionInfoActionLabel icon={icon} label={label} colorClassName={colorClassName} />

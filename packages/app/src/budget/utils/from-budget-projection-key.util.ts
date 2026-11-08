@@ -16,6 +16,7 @@ export const fromBudgetProjectionKey = (key: BudgetProjectionKeyInterface): Budg
     overallLimit: key.overallLimit,
     otherLimit: key.otherLimit,
     tagId: key.tagId,
+    syncZone: key.syncZone,
     periodAnchorDate: toDate(key.periodAnchorMs),
     startsAt: toDate(key.startsAtMs),
     endsAt: toDate(key.endsAtMs)

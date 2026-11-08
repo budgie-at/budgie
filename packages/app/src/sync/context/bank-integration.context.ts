@@ -1,4 +1,4 @@
-import { ExternalSourceEnum } from '@budgie/contracts';
+import { ExternalSourceEnum, PERSONAL_SYNC_ZONE } from '@budgie/contracts';
 import { createContext, use } from 'react';
 
 import type { BankIntegrationContextValueInterface } from '../interface/bank-integration-context-value.interface';
@@ -13,7 +13,10 @@ export const BankIntegrationContext = createContext<BankIntegrationContextValueI
         token: '',
         label: null,
         externalClientId: null,
-        historyProgress: null
+        historyProgress: null,
+        ownerInstallId: null,
+        syncId: null,
+        syncZone: PERSONAL_SYNC_ZONE
     },
     capabilities: {
         supportsLiveSync: false,

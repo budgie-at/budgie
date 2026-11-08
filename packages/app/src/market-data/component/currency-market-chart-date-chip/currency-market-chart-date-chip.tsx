@@ -1,4 +1,5 @@
 import { parseISO } from 'date-fns/parseISO';
+import { useState } from 'react';
 import Animated, { useAnimatedReaction, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 import { isNotEmptyString } from '@rnw-community/shared';
@@ -26,20 +27,19 @@ export const CurrencyMarketChartDateChip = ({ activeIndex, xs, chartWidth, price
     const chipOpacity = useSharedValue(0);
     const lastIndex = useSharedValue(0);
 
-    useAnimatedReaction(
-        () => activeIndex.get() >= 0,
-        (isActive, wasActive) => {
-            if (isActive !== wasActive) {
-                chipOpacity.set(withTiming(isActive ? 1 : 0, { duration: MOTION_FAST_DURATION, easing: EASE_OUT }));
-            }
-        }
-    );
+    const [lastPriceDate, setLastPriceDate] = useState(priceDate);
 
     useAnimatedReaction(
         () => activeIndex.get(),
-        index => {
-            if (index >= 0) {
+        (index, previousIndex) => {
+            const isActive = index >= 0;
+            const wasActive = (previousIndex ?? -1) >= 0;
+
+            if (isActive) {
                 lastIndex.set(index);
+            }
+            if (isActive !== wasActive) {
+                chipOpacity.set(withTiming(isActive ? 1 : 0, { duration: MOTION_FAST_DURATION, easing: EASE_OUT }));
             }
         }
     );
@@ -53,7 +53,10 @@ export const CurrencyMarketChartDateChip = ({ activeIndex, xs, chartWidth, price
         return { opacity: chipOpacity.get(), transform: [{ translateX: Math.min(Math.max(centred, EDGE_CLEARANCE), maxLeft) }] };
     });
 
-    const label = isNotEmptyString(priceDate) ? formatMonthAndDayAndOptionalYear(parseISO(priceDate)) : '';
+    if (isNotEmptyString(priceDate) && priceDate !== lastPriceDate) {
+        setLastPriceDate(priceDate);
+    }
+    const label = isNotEmptyString(lastPriceDate) ? formatMonthAndDayAndOptionalYear(parseISO(lastPriceDate)) : '';
 
     const handleLayout = (event: LayoutChangeEvent) => void chipWidth.set(event.nativeEvent.layout.width);
 

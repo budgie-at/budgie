@@ -108,15 +108,22 @@ const getExpoConfig = ({ config }) => ({
         },
         infoPlist: {
             BGTaskSchedulerPermittedIdentifiers: ['$(PRODUCT_BUNDLE_IDENTIFIER).sync.*'],
-            UIBackgroundModes: ['processing'],
+            UIBackgroundModes: IS_E2E ? ['processing'] : ['processing', 'remote-notification'],
             NSCameraUsageDescription: CAMERA_USAGE,
-            LSApplicationQueriesSchemes: ['shortcuts']
+            LSApplicationQueriesSchemes: ['shortcuts'],
+            ...(!IS_E2E && { CKSharingSupported: true })
         },
         associatedDomains: ['applinks:budgie.at'],
         entitlements: {
             'com.apple.developer.kernel.extended-virtual-addressing': true,
             'com.apple.developer.kernel.increased-memory-limit': true,
-            'com.apple.security.application-groups': [getAppGroup()]
+            'com.apple.security.application-groups': [getAppGroup()],
+            ...(!IS_E2E && {
+                'com.apple.developer.icloud-services': ['CloudKit'],
+                'com.apple.developer.icloud-container-identifiers': [`iCloud.${getUniqueIdentifier(false)}`],
+                'com.apple.developer.icloud-extended-share-access': ['InProcessOneTimeLinks'],
+                'aps-environment': IS_PRODUCTION ? 'production' : 'development'
+            })
         },
         icon: {
             dark: './assets/icons/ios-dark.png',
@@ -189,11 +196,13 @@ const getExpoConfig = ({ config }) => ({
                 },
                 ios: {
                     ccacheEnabled: true,
-                    usePrecompiledModules: true
+                    usePrecompiledModules: true,
+                    deploymentTarget: '17.0'
                 }
             }
         ],
         'expo-app-intents',
+        ...(!IS_E2E ? ['./plugins/with-icloud-share-acceptance'] : []),
         [
             'expo-widgets',
             {

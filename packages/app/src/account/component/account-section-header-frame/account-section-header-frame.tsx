@@ -16,9 +16,10 @@ interface Props {
     readonly title: string;
     readonly total: number | null;
     readonly leading?: ReactNode;
+    readonly children?: ReactNode;
 }
 
-export const AccountSectionHeaderFrame = ({ title, total, leading }: Props) => {
+export const AccountSectionHeaderFrame = ({ title, total, leading, children }: Props) => {
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const formatDigits = useDisplayFormatDigits();
 
@@ -47,6 +48,7 @@ export const AccountSectionHeaderFrame = ({ title, total, leading }: Props) => {
                     </ProtectedText>
                 ) : null}
             </View>
+            {children}
         </View>
     );
 };

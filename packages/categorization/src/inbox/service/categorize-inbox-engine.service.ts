@@ -22,8 +22,23 @@ import type { LabelEvidenceRowInterface } from '../interface/label-evidence-row.
 import type { CategorizeInboxListItemType } from '../type/categorize-inbox-list-item.type';
 
 class CategorizeInboxEngineService {
+    private static readonly NON_DESCRIPTIVE_MCC: ReadonlySet<string> = new Set([
+        '4829',
+        '6010',
+        ATM_CASH_WITHDRAWAL_MCC,
+        '6012',
+        '6051',
+        '6538',
+        '6540',
+        '5999',
+        '8999',
+        '7299',
+        '7399'
+    ]);
+
     private static readonly LIMITS = {
         chipCount: 2,
+        fallbackCount: 3,
         confidentShare: 0.85,
         confidentCount: 2,
         merchantTokenCount: 3,
@@ -46,6 +61,32 @@ class CategorizeInboxEngineService {
         [LanguageEnum.ES]: ['pago\\s+con\\s+tarjeta', 'transferencia', 'compra']
     };
 
+    private static readonly GENERIC_TRANSFER_TITLES: Record<LanguageEnum, readonly string[]> = {
+        [LanguageEnum.EN]: ['transfer', 'card transfer', 'transfer to card', 'to card'],
+        [LanguageEnum.UK]: [
+            'переказ',
+            'переказ на картку',
+            'на картку',
+            'переказ коштів',
+            'переказ власних коштів',
+            'перевод',
+            'перевод на карту',
+            'на карту'
+        ],
+        [LanguageEnum.DE]: ['überweisung', 'kartenüberweisung'],
+        [LanguageEnum.FR]: ['virement', 'virement carte'],
+        [LanguageEnum.ES]: ['transferencia', 'transferencia a tarjeta']
+    };
+
+    private static readonly TRANSFER_TITLE_PREFIX_PATTERN = new RegExp(
+        `^(?:${Object.values(CategorizeInboxEngineService.GENERIC_TRANSFER_TITLES).flat().join('|')})(?:\\s|$)`,
+        'u'
+    );
+
+    private static readonly GENERIC_TRANSFER_TITLE_SET = new Set(
+        Object.values(CategorizeInboxEngineService.GENERIC_TRANSFER_TITLES).flat()
+    );
+
     private static readonly REFUND_PREFIXES = REFUND_TITLE_PREFIXES.review.map(prefix => prefix.toUpperCase());
 
     private static readonly LEGAL_FORMS = new Set(Object.values(CategorizeInboxEngineService.LEGAL_FORM_TOKENS).flat());
@@ -66,7 +107,8 @@ class CategorizeInboxEngineService {
         CategorizeInboxSectionEnum.CONFIDENT,
         CategorizeInboxSectionEnum.CASH_WITHDRAWALS,
         CategorizeInboxSectionEnum.REVIEW,
-        CategorizeInboxSectionEnum.ONE_OFFS
+        CategorizeInboxSectionEnum.ONE_OFFS,
+        CategorizeInboxSectionEnum.OLDER
     ];
 
     buildContext(
@@ -75,12 +117,13 @@ class CategorizeInboxEngineService {
         labelKind: CategorizeInboxLabelKindEnum
     ): CategorizeInboxBuildContextInterface {
         const titledEvidence = evidence.filter(row => isNotEmptyString(row.title.trim()));
-        const brandEvidence = titledEvidence.filter(row => isDefined(this.brandKey(row.title)));
-        const mccEvidence = evidence.filter(row => isDefined(row.mccCategoryId));
+        const merchantEvidence = titledEvidence.filter(row => !this.isTransferLike(row.title));
+        const brandEvidence = merchantEvidence.filter(row => isDefined(this.brandKey(row.title)));
+        const mccEvidence = evidence.filter(row => isDefined(row.mccCategoryId) && !this.isTransferLike(row.title));
 
         return {
-            exact: this.groupBy(titledEvidence, row => `${row.type}|${row.title.toLowerCase()}`),
-            merchant: this.groupBy(titledEvidence, row => `${row.type}|${this.merchantKey(row.title)}`),
+            exact: this.groupBy(titledEvidence, row => `${row.type}|${this.normalizeTitle(row.title)}`),
+            merchant: this.groupBy(merchantEvidence, row => `${row.type}|${this.merchantKey(row.title)}`),
             brand: this.groupBy(brandEvidence, row => `${row.type}|${this.brandKey(row.title)}`),
             mcc: this.groupBy(mccEvidence, row => `${row.type}|${row.mccCategoryId}`),
             defaultInstrumentId,
@@ -88,9 +131,15 @@ class CategorizeInboxEngineService {
         };
     }
 
-    buildClusters(rows: CategorizeInboxRowInterface[], context: CategorizeInboxBuildContextInterface): CategorizeInboxClusterInterface[] {
+    buildClusters(
+        rows: CategorizeInboxRowInterface[],
+        context: CategorizeInboxBuildContextInterface,
+        now: Date
+    ): CategorizeInboxClusterInterface[] {
+        const cutoff = new Date(now);
+        cutoff.setUTCFullYear(cutoff.getUTCFullYear() - 1);
         const uniqueRows = [...new Map(rows.map(row => [row.transactionId, row])).values()];
-        const clusterGroups = this.groupBy(uniqueRows, row => this.clusterKey(row));
+        const clusterGroups = this.groupBy(uniqueRows, row => this.clusterKey(row, cutoff));
 
         return [...clusterGroups]
             .map(([key, groupRows]) => this.buildCluster(key, groupRows, context))
@@ -142,13 +191,17 @@ class CategorizeInboxEngineService {
             totalBaseAmount: this.sumBaseAmounts(rows, context.defaultInstrumentId),
             candidateLabelIds,
             ruleConditionValue: mostFrequentTitle,
-            section: this.resolveSection(isConfident, rows)
+            section: this.resolveSection(key, isConfident, rows)
         };
     }
 
-    private clusterKey(row: CategorizeInboxRowInterface): string {
-        const normalizedTitle = row.title.trim().replaceAll(/\s+/gu, ' ').toLowerCase();
+    private clusterKey(row: CategorizeInboxRowInterface, cutoff: Date): string {
+        const normalizedTitle = this.normalizeTitle(row.title);
         const exactKey = `${row.type}|${normalizedTitle}|${row.mcc ?? ''}|${row.toIban ?? ''}`;
+
+        if (row.operatedAt < cutoff) {
+            return `${CategorizeInboxSectionEnum.OLDER}|${exactKey}`;
+        }
 
         return this.isCashWithdrawal(row) ? `${CategorizeInboxSectionEnum.CASH_WITHDRAWALS}|${exactKey}` : exactKey;
     }
@@ -252,23 +305,18 @@ class CategorizeInboxEngineService {
         const { LIMITS } = CategorizeInboxEngineService;
         const [{ type }] = rows;
 
-        if (context.labelKind === CategorizeInboxLabelKindEnum.TAG && rows.some(row => this.isRefund(row))) {
+        if (
+            rows.some(row => this.isGenericTransfer(row.title)) ||
+            (context.labelKind === CategorizeInboxLabelKindEnum.TAG && rows.some(row => this.isRefund(row)))
+        ) {
             return { candidateLabelIds: [], isConfident: false };
         }
 
-        const exactCounts = this.countLabels(context.exact, new Set(rows.map(row => `${type}|${row.title.toLowerCase()}`)));
+        const exactCounts = this.countLabels(context.exact, new Set(rows.map(row => `${type}|${this.normalizeTitle(row.title)}`)));
         const merchantCounts = this.countLabels(context.merchant, new Set(rows.map(row => `${type}|${this.merchantKey(row.title)}`)));
-        const brandKeys = new Set(rows.map(row => `${type}|${this.brandKey(row.title) ?? ''}`).filter(key => !key.endsWith('|')));
-        const brandCounts = this.countLabels(context.brand, brandKeys);
-        const historyCounts = [exactCounts, merchantCounts].find(counts => isPositiveNumber(counts.size));
-        const counts =
-            historyCounts ??
-            (isPositiveNumber(brandCounts.size)
-                ? brandCounts
-                : this.countLabels(
-                      context.mcc,
-                      rows.map(row => `${type}|${row.mccCategoryId}`)
-                  ));
+        const transferLike = rows.some(row => this.isTransferLike(row.title));
+        const historyCounts = (transferLike ? [exactCounts] : [exactCounts, merchantCounts]).find(counts => isPositiveNumber(counts.size));
+        const counts = historyCounts ?? (transferLike ? new Map<number, number>() : this.fallbackCounts(rows, context));
         const total = this.sumValues(counts.values());
         const topCount = Math.max(0, ...counts.values());
 
@@ -280,6 +328,56 @@ class CategorizeInboxEngineService {
                 topCount >= LIMITS.confidentCount &&
                 topCount / total >= LIMITS.confidentShare
         };
+    }
+
+    private fallbackCounts(
+        rows: Omit<CategorizeInboxRowInterface, 'toIban'>[],
+        context: CategorizeInboxBuildContextInterface
+    ): Map<number, number> {
+        const [{ type }] = rows;
+        const brandCounts = this.countLabels(
+            context.brand,
+            new Set(rows.map(row => `${type}|${this.brandKey(row.title) ?? ''}`).filter(key => !key.endsWith('|')))
+        );
+        const mccCounts = this.countLabels(
+            context.mcc,
+            new Set(
+                rows
+                    .filter(row => isDefined(row.mcc) && !CategorizeInboxEngineService.NON_DESCRIPTIVE_MCC.has(row.mcc))
+                    .map(row => `${type}|${row.mccCategoryId}`)
+            )
+        );
+
+        return (
+            [brandCounts, mccCounts].find(candidate => {
+                const topCount = Math.max(0, ...candidate.values());
+
+                return (
+                    topCount >= CategorizeInboxEngineService.LIMITS.fallbackCount &&
+                    topCount / this.sumValues(candidate.values()) >= CategorizeInboxEngineService.LIMITS.confidentShare
+                );
+            }) ?? new Map<number, number>()
+        );
+    }
+
+    private normalizeTitle(title: string): string {
+        return title.trim().replaceAll(/\s+/gu, ' ').toLowerCase();
+    }
+
+    private isGenericTransfer(title: string): boolean {
+        return CategorizeInboxEngineService.GENERIC_TRANSFER_TITLE_SET.has(this.normalizeTransferTitle(title));
+    }
+
+    private isTransferLike(title: string): boolean {
+        return CategorizeInboxEngineService.TRANSFER_TITLE_PREFIX_PATTERN.test(this.normalizeTransferTitle(title));
+    }
+
+    private normalizeTransferTitle(title: string): string {
+        return title
+            .normalize('NFC')
+            .toLowerCase()
+            .replaceAll(/[^\p{L}]+/gu, ' ')
+            .trim();
     }
 
     private countLabels(level: ReadonlyMap<string, LabelEvidenceRowInterface[]>, keys: Iterable<string>): Map<number, number> {
@@ -307,7 +405,11 @@ class CategorizeInboxEngineService {
         return firstToken.length >= 3 ? firstToken : null;
     }
 
-    private resolveSection(isConfident: boolean, rows: readonly CategorizeInboxRowInterface[]): CategorizeInboxSectionEnum {
+    private resolveSection(key: string, isConfident: boolean, rows: readonly CategorizeInboxRowInterface[]): CategorizeInboxSectionEnum {
+        if (key.startsWith(`${CategorizeInboxSectionEnum.OLDER}|`)) {
+            return CategorizeInboxSectionEnum.OLDER;
+        }
+
         if (this.isCashWithdrawal(rows[0])) {
             return CategorizeInboxSectionEnum.CASH_WITHDRAWALS;
         }
@@ -338,6 +440,7 @@ class CategorizeInboxEngineService {
         const absoluteAmount = Math.abs((cluster.totalBaseAmount ?? cluster.rows[0].amount) / PRECISION);
 
         switch (cluster.section) {
+            case CategorizeInboxSectionEnum.OLDER:
             case CategorizeInboxSectionEnum.ONE_OFFS:
                 return absoluteAmount;
             case CategorizeInboxSectionEnum.REVIEW:

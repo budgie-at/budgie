@@ -31,7 +31,7 @@ export const useMarketChartScrub = (width: number, count: number, onScrub: (inde
     const [, , hapticSelection] = useVibration();
     const activeIndex = useSharedValue(NO_INDEX);
     const lastTickIndex = useSharedValue(NO_INDEX);
-    const tickStep = Math.max(1, Math.floor(count / MAX_SCRUB_TICKS));
+    const tickStep = Math.max(1, Math.ceil(count / MAX_SCRUB_TICKS));
 
     const selectIndex = (index: number) => {
         'worklet';

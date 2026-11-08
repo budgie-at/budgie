@@ -11,7 +11,6 @@ import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/g
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { GroupedListSwitchRow } from '../../../@generic/component/grouped-list-switch-row/grouped-list-switch-row';
-import { useProcessingHaptic } from '../../../@generic/hook/use-processing-haptic.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
@@ -23,21 +22,17 @@ import { useOnboardingPinContext } from '../../context/onboarding-pin.context';
 import { OnboardingFileLockEnum } from '../../enum/onboarding-file-lock.enum';
 import { OnboardingStepEnum } from '../../enum/onboarding-step.enum';
 import { useOnboardingNavigation } from '../../hook/use-onboarding-navigation.hook';
-import { OnboardingFooterAction } from '../onboarding-footer-action/onboarding-footer-action';
-import { OnboardingHoldToSealButton } from '../onboarding-hold-to-seal-button/onboarding-hold-to-seal-button';
+import { OnboardingSealFooter } from '../onboarding-seal-footer/onboarding-seal-footer';
 import { OnboardingStepIntro } from '../onboarding-step-intro/onboarding-step-intro';
 import { OnboardingStepLayout } from '../onboarding-step-layout/onboarding-step-layout';
 
 import { OnboardingSealSelector } from './onboarding-seal.selector';
 
-// eslint-disable-next-line max-lines-per-function, max-statements -- Layout/form component requires many lines
 export const OnboardingSeal = () => {
     const { t } = useLingui();
 
     const [isBiometricEnabled, setIsBiometricEnabled] = useState(false);
     const [isSealing, setIsSealing] = useState(false);
-
-    useProcessingHaptic(isSealing);
 
     const { pin } = useOnboardingPinContext();
     const { goBack } = useOnboardingNavigation();
@@ -95,23 +90,7 @@ export const OnboardingSeal = () => {
             step={OnboardingStepEnum.SEAL}
             fileState={t`PINs match`}
             fileLock={OnboardingFileLockEnum.OPEN}
-            footer={
-                <>
-                    <OnboardingHoldToSealButton
-                        testID={OnboardingSealSelector.HoldButton}
-                        label={t`Hold to seal with this PIN`}
-                        confirmMessage={noResetSentence}
-                        isDisabled={isSealing}
-                        onComplete={handleSeal}
-                    />
-                    <OnboardingFooterAction
-                        testID={OnboardingSealSelector.DifferentPinButton}
-                        label={t`Choose a different PIN`}
-                        isDisabled={isSealing}
-                        onPress={goBack}
-                    />
-                </>
-            }
+            footer={<OnboardingSealFooter isSealing={isSealing} onSeal={handleSeal} onBack={goBack} />}
         >
             <OnboardingStepIntro
                 icon={UserIconNameEnum.KeyRound}

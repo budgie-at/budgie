@@ -49,6 +49,7 @@ export const AccountsGroup = ({ type, accounts, selectedAccountIds, onSelect }: 
     return (
         <View className="rounded-5xl border border-secondary-corner bg-secondary-background overflow-hidden">
             <HapticPressable
+                pressedScale={1}
                 pressFeedback={HapticPressFeedbackEnum.SELECTION}
                 onPress={handleSelectGroup}
                 className="flex-row items-center gap-x-xl px-xl py-lg"

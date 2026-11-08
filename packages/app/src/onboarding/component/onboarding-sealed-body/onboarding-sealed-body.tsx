@@ -9,6 +9,7 @@ import { useBottomChromeInset } from '@rnw-community/react-native-screen-chrome'
 import { EmptyFn, isDefined } from '@rnw-community/shared';
 
 import { Icon } from '../../../@generic/component/icon/icon';
+import { MAX_CHROME_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/max-chrome-font-size-multiplier.constant';
 import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
 import { useI18nContext } from '../../../i18n/context/i18n.context';
 import { OnboardingSealedMomentSelector } from '../onboarding-sealed-moment/onboarding-sealed-moment.selector';
@@ -62,11 +63,20 @@ export const OnboardingSealedBody = ({ onContinue }: Props) => {
                 </View>
 
                 <View className="items-center gap-y-lg">
-                    <Text className="text-primary text-(length:--text-8xl) leading-none font-semibold tracking-[-0.035em]">
+                    <Text
+                        numberOfLines={1}
+                        adjustsFontSizeToFit
+                        minimumFontScale={0.5}
+                        maxFontSizeMultiplier={1.4}
+                        className="text-primary text-(length:--text-8xl) leading-none font-semibold tracking-[-0.035em] text-center"
+                    >
                         <Trans>Sealed.</Trans>
                     </Text>
 
-                    <Text className="text-secondary-foreground text-[15px] font-medium">
+                    <Text
+                        maxFontSizeMultiplier={MAX_CHROME_FONT_SIZE_MULTIPLIER}
+                        className="text-secondary-foreground text-[15px] font-medium text-center"
+                    >
                         {sealedDate} · {sealedTime}
                     </Text>
                 </View>

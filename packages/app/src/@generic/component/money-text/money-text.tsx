@@ -22,6 +22,8 @@ interface Props {
     readonly prefix?: string;
     readonly tone?: ColorPaletteVariant;
     readonly testID?: string;
+    readonly maxFontSizeMultiplier?: number;
+    readonly decimalPlaces?: number;
 }
 
 const wholeVariants = cva('tabular-nums', {
@@ -29,23 +31,35 @@ const wholeVariants = cva('tabular-nums', {
         variant: {
             [MoneyTextVariantEnum.FIELD]: 'text-[40px] font-semibold tracking-[-1px]',
             [MoneyTextVariantEnum.ROW]: 'text-[17px] font-semibold tracking-tight',
+            [MoneyTextVariantEnum.BALANCE]: 'text-[17px] font-semibold tracking-tight',
             [MoneyTextVariantEnum.CAPTION]: 'text-[13px] text-secondary-foreground'
         }
     }
 });
 
-const fractionVariants = cva('text-secondary-foreground', {
+const fractionVariants = cva('', {
     variants: {
         variant: {
-            [MoneyTextVariantEnum.FIELD]: 'text-[24px] font-semibold',
-            [MoneyTextVariantEnum.ROW]: 'text-[13px] font-medium',
-            [MoneyTextVariantEnum.CAPTION]: 'text-[11px]'
+            [MoneyTextVariantEnum.FIELD]: 'text-[24px] font-semibold text-secondary-foreground',
+            [MoneyTextVariantEnum.ROW]: 'text-[13px] font-medium text-secondary-foreground',
+            [MoneyTextVariantEnum.BALANCE]: 'text-[17px] font-semibold',
+            [MoneyTextVariantEnum.CAPTION]: 'text-[11px] text-secondary-foreground'
         }
     }
 });
 
-export const MoneyText = ({ amount, instrumentSymbol, variant, prefix = '', tone, testID }: Props) => {
-    const decimalPlaces = useAtomValue(decimalPlacesAtom);
+export const MoneyText = ({
+    amount,
+    instrumentSymbol,
+    variant,
+    prefix = '',
+    tone,
+    testID,
+    maxFontSizeMultiplier = ROW_MAX_FONT_SIZE_MULTIPLIER,
+    decimalPlaces: decimalPlacesOverride
+}: Props) => {
+    const settingsDecimalPlaces = useAtomValue(decimalPlacesAtom);
+    const decimalPlaces = decimalPlacesOverride ?? settingsDecimalPlaces;
     const formatDigits = useFormatDigits(decimalPlaces);
     const protectAmount = useProtectedAmountLabel();
 
@@ -67,7 +81,7 @@ export const MoneyText = ({ amount, instrumentSymbol, variant, prefix = '', tone
             accessibilityLabel={accessibilityLabel}
             numberOfLines={1}
             adjustsFontSizeToFit
-            maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
+            maxFontSizeMultiplier={maxFontSizeMultiplier}
             minimumFontScale={0.6}
             className={cn(wholeVariants({ variant }), toneClassName)}
         >

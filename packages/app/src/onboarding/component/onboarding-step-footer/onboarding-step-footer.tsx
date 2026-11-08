@@ -11,7 +11,6 @@ interface Props {
     readonly children: ReactNode;
 }
 
-const HIDDEN_EDGE_FADE_PROPS = { style: { display: 'none' } } as const;
 const IN_FLOW_STYLE = { position: 'relative' } as const;
 
 export const OnboardingStepFooter = ({ children }: Props) => {
@@ -23,9 +22,8 @@ export const OnboardingStepFooter = ({ children }: Props) => {
 
     return (
         <Animated.View className="absolute inset-x-0 bottom-0" style={keyboardStyle} pointerEvents="box-none">
-            <ScreenChromeFooter includeBottomSafeArea={false} edgeFadeProps={HIDDEN_EDGE_FADE_PROPS} style={IN_FLOW_STYLE}>
+            <ScreenChromeFooter includeBottomSafeArea={false} style={IN_FLOW_STYLE}>
                 <View className="bg-surface">
-                    <View className="h-hairline bg-surface-separator" />
                     <View className={cn('gap-y-xs px-5xl', paddingClassName)}>{children}</View>
                 </View>
             </ScreenChromeFooter>

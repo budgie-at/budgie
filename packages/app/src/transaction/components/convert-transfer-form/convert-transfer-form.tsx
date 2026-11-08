@@ -67,7 +67,7 @@ export const ConvertTransferForm = ({ isSubmitting, onSubmit, onAccountPress, on
     );
 
     const scrollStyle = { maxHeight: height * (form.isEditing ? KEYPAD_CONTENT_HEIGHT_RATIO : 0.6), flexGrow: 0 };
-    const keypadContext = { dismiss: form.handleConfirm };
+    const keypadContext = { dismiss: form.handleConfirm, isExpanded: form.isEditing };
 
     return (
         <TransactionKeypadContext value={keypadContext}>

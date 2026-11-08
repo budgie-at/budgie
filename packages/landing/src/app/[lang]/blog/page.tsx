@@ -10,6 +10,8 @@ import { buildPageMetadata } from '../../../generic/utils/build-page-metadata.ut
 import { getI18nInstance } from '../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../i18n/init-lingui';
 
+import { BLOG_INDEX_METADATA } from './metadata';
+
 import type { Metadata } from 'next';
 
 // eslint-disable-next-line func-style
@@ -18,12 +20,10 @@ export async function generateMetadata(props: PageLangParam): Promise<Metadata> 
     const i18n = getI18nInstance(lang);
 
     return buildPageMetadata({
-        description: i18n._(
-            msg`Articles about financial privacy, security best practices, offline-first architecture, and tips for better expense tracking.`
-        ),
+        description: i18n._(BLOG_INDEX_METADATA.description),
         locale: lang,
         path: '/blog',
-        title: i18n._(msg`Financial Privacy Blog & Insights`)
+        title: i18n._(BLOG_INDEX_METADATA.title)
     });
 }
 
@@ -45,7 +45,7 @@ export default async function BlogPage(props: PageLangParam) {
     })).sort((article1, article2) => new Date(article2.date).getTime() - new Date(article1.date).getTime());
 
     return (
-        <main className="flex-1">
+        <main id="main-content" tabIndex={-1} className="flex-1 focus:outline-none">
             <BreadcrumbsJsonLd locale={lang} path="/blog">
                 <BreadcrumbsJsonLd.Item name={i18n._(msg`Home`)} path={`/${lang}`} />
                 <BreadcrumbsJsonLd.Item name={i18n._(msg`Blog`)} path={`/${lang}/blog`} />

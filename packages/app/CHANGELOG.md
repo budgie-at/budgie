@@ -3,6 +3,87 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.171.0](https://github.com/budgie-at/budgie/compare/v6.170.0...v6.171.0) (2026-11-08)
+
+### Features
+
+* **sync:** file untracked own-account movements and re-pair them when the real leg arrives ([#2050](https://github.com/budgie-at/budgie/issues/2050)) ([6042f5f](https://github.com/budgie-at/budgie/commit/6042f5f7c6371f427aa77c513c046ea81a1d1053))
+
+
+# [6.170.0](https://github.com/budgie-at/budgie/compare/v6.169.0...v6.170.0) (2026-11-08)
+
+### Features
+
+* **app:** polish motion and haptics across the app ([#2026](https://github.com/budgie-at/budgie/issues/2026)) ([9375585](https://github.com/budgie-at/budgie/commit/93755858ad5495587a22c45bf0ea0765ff0b0d0b)), closes [high-frequency](https://github.com/hi/issues/frequency)
+
+
+# [6.169.0](https://github.com/budgie-at/budgie/compare/v6.168.0...v6.169.0) (2026-11-08)
+
+### Bug Fixes
+
+* **app:** align adjustment rows and balance states ([fea2f2b](https://github.com/budgie-at/budgie/commit/fea2f2b556a6ff7cdd80688db0c77115eda54f7d))
+* **app:** avoid clipped adjustment rows while typing ([9455d73](https://github.com/budgie-at/budgie/commit/9455d73aec166b5493eadb94b7a1aeed8f27317f))
+* **app:** clarify adjustment balance comparisons ([dea952a](https://github.com/budgie-at/budgie/commit/dea952a7943b34ca68e409dd7ec2f5cd63836e08))
+* **app:** honor synced adjustment balances and finish alignment ([684aad4](https://github.com/budgie-at/budgie/commit/684aad49fcdb5ae551e790ac8914b0f5737e5edc))
+* **app:** keep balance adjustment previews visible ([c3fbf34](https://github.com/budgie-at/budgie/commit/c3fbf341b8e3171c45bf74247349901409148ab7))
+* **app:** leave the adjustment editor when the sync state cannot be read ([1a1cca7](https://github.com/budgie-at/budgie/commit/1a1cca74b982729fa27b871e1c4094f1656b6db2))
+* **app:** refine adjustment saves, notes and balance rows ([fe1a650](https://github.com/budgie-at/budgie/commit/fe1a6506ee7e99d9a8a9f3c7dd888eff3605fc1c))
+* preserve reconciliation notes and synced edit safeguards ([3758481](https://github.com/budgie-at/budgie/commit/3758481c0ea763ed71a8052600f26c9d10a80ec3))
+
+### Features
+
+* **app:** polish the balance adjustment screen ([4977991](https://github.com/budgie-at/budgie/commit/497799107f36300e8b242dc8c7f719a77eaf50b4))
+
+
+# [6.168.0](https://github.com/budgie-at/budgie/compare/v6.167.9...v6.168.0) (2026-11-08)
+
+### Features
+
+* iCloud backup, own-device sync and family sharing ([#1978](https://github.com/budgie-at/budgie/issues/1978)) ([47191a1](https://github.com/budgie-at/budgie/commit/47191a118eb34571d5aee2e969dfd53c91f77caa)), closes [#1790](https://github.com/budgie-at/budgie/issues/1790) [#1796](https://github.com/budgie-at/budgie/issues/1796) [#1791](https://github.com/budgie-at/budgie/issues/1791) [#1797](https://github.com/budgie-at/budgie/issues/1797) [#1969](https://github.com/budgie-at/budgie/issues/1969) [#1790](https://github.com/budgie-at/budgie/issues/1790) [#1792](https://github.com/budgie-at/budgie/issues/1792) [#1793](https://github.com/budgie-at/budgie/issues/1793) [#1794](https://github.com/budgie-at/budgie/issues/1794) [#1798](https://github.com/budgie-at/budgie/issues/1798) [#1797](https://github.com/budgie-at/budgie/issues/1797) [#1799](https://github.com/budgie-at/budgie/issues/1799) [#1800](https://github.com/budgie-at/budgie/issues/1800) [#1801](https://github.com/budgie-at/budgie/issues/1801) [#1804](https://github.com/budgie-at/budgie/issues/1804) [#1801](https://github.com/budgie-at/budgie/issues/1801) [#1800](https://github.com/budgie-at/budgie/issues/1800) [#1971](https://github.com/budgie-at/budgie/issues/1971) [#1802](https://github.com/budgie-at/budgie/issues/1802) [#1801](https://github.com/budgie-at/budgie/issues/1801) [#1801](https://github.com/budgie-at/budgie/issues/1801) [#1802](https://github.com/budgie-at/budgie/issues/1802) [#1969](https://github.com/budgie-at/budgie/issues/1969) [#1804](https://github.com/budgie-at/budgie/issues/1804) [#1807](https://github.com/budgie-at/budgie/issues/1807) [#1805](https://github.com/budgie-at/budgie/issues/1805) [#1806](https://github.com/budgie-at/budgie/issues/1806) [#1805](https://github.com/budgie-at/budgie/issues/1805) [#1807](https://github.com/budgie-at/budgie/issues/1807)
+
+
+## [6.167.9](https://github.com/budgie-at/budgie/compare/v6.167.8...v6.167.9) (2026-11-07)
+
+### Bug Fixes
+
+* detect own-account transfers and harden categorize inbox suggestions ([#2032](https://github.com/budgie-at/budgie/issues/2032)) ([bf66581](https://github.com/budgie-at/budgie/commit/bf66581e175859f07662d0ebdcd980389383e3f4))
+
+
+## [6.167.8](https://github.com/budgie-at/budgie/compare/v6.167.7...v6.167.8) (2026-11-07)
+
+### Bug Fixes
+
+* **app:** fade screen edges only where content scrolls under them ([#2030](https://github.com/budgie-at/budgie/issues/2030)) ([74a3097](https://github.com/budgie-at/budgie/commit/74a3097c6142afa88b388668f1923d884ffcc08c))
+
+
+## [6.167.7](https://github.com/budgie-at/budgie/compare/v6.167.6...v6.167.7) (2026-11-07)
+
+### Bug Fixes
+
+* **app:** apply categories picked from the category sheet ([#2031](https://github.com/budgie-at/budgie/issues/2031)) ([0eb8e74](https://github.com/budgie-at/budgie/commit/0eb8e741effe128c454843087cc51293e9ab6d15))
+
+
+## [6.167.5](https://github.com/budgie-at/budgie/compare/v6.167.4...v6.167.5) (2026-11-07)
+
+### Bug Fixes
+
+* **app:** polish remaining screens and large-text layouts ([#2017](https://github.com/budgie-at/budgie/issues/2017)) ([5920610](https://github.com/budgie-at/budgie/commit/592061005888e0b5de4f2ec0a31e59b84ed36a44))
+
+
+## [6.167.4](https://github.com/budgie-at/budgie/compare/v6.167.3...v6.167.4) (2026-11-07)
+
+### Bug Fixes
+
+* **app:** shorten the shared header and tab bar fades ([#2024](https://github.com/budgie-at/budgie/issues/2024)) ([996ffaf](https://github.com/budgie-at/budgie/commit/996ffaf36e5ddecdd32689c371fd8d73bf466d48))
+
+
+## [6.167.2](https://github.com/budgie-at/budgie/compare/v6.167.1...v6.167.2) (2026-11-07)
+
+### Bug Fixes
+
+* close reachable illegal states in implicit state machines ([#2020](https://github.com/budgie-at/budgie/issues/2020)) ([c1d1ee6](https://github.com/budgie-at/budgie/commit/c1d1ee6f8d0a1182aaab013bddd626163696d094))
+
+
 ## [6.167.1](https://github.com/budgie-at/budgie/compare/v6.167.0...v6.167.1) (2026-11-07)
 
 ### Bug Fixes

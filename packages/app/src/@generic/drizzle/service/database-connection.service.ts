@@ -10,6 +10,7 @@ import * as Scope from 'effect/Scope';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
+import { recoverInterruptedRestore } from '../../../cloud-backup/utils/recover-interrupted-restore.util';
 import { DB_NAME } from '../constant/db-name.constant';
 import { DatabaseOpenError } from '../error/database-open.error';
 import { openSqliteClient } from '../utils/open-sqlite-client.util';
@@ -38,6 +39,9 @@ export class DatabaseConnectionService extends Context.Service<DatabaseConnectio
                 ],
                 { discard: true }
             ).pipe(Effect.mapError(cause => DatabaseOpenError.make({ cause })));
+
+        yield* recoverInterruptedRestore.pipe(Effect.catchDefect(defect => Effect.logError(defect)));
+
         const databaseKey = yield* readDatabaseKey;
         const openConnection = openSqliteClient(DB_NAME, databaseKey).pipe(Scope.provide(scope));
         const [writer, reader] = yield* Effect.all([openConnection, openConnection], { concurrency: 'unbounded' });

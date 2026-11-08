@@ -5,6 +5,7 @@ import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { FileChip } from '../../../@generic/component/file-chip/file-chip';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/max-font-size-multiplier.constant';
 import { EASE_OUT } from '../../../@generic/constant/motion.constant';
 import { DB_NAME } from '../../../@generic/drizzle/constant/db-name.constant';
 import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
@@ -56,13 +57,13 @@ export const OnboardingFileStrip = ({ state, lock }: Props) => {
                 key={state}
                 entering={stateEntering}
                 exiting={stateExiting}
-                className="min-w-0 flex-1 flex-row items-center justify-end gap-x-xs"
+                className="min-w-0 flex-1 flex-row items-center justify-end gap-x-xs flex-wrap gap-y-xs"
             >
                 <Icon icon={stateIcon} size={14} className={stateColorClassName} />
                 <Text
+                    maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
                     testID={OnboardingFileStripSelector.State}
-                    numberOfLines={1}
-                    className={cn('shrink text-[13px]', stateColorClassName)}
+                    className={cn('shrink text-right text-[13px]', stateColorClassName)}
                 >
                     {state}
                 </Text>

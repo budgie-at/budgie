@@ -22,7 +22,7 @@ export const ThinkingRing = () => {
 
     useEffect(() => {
         progress.set(withRepeat(withTiming(1, { duration: PULSE_DURATION, easing: Easing.inOut(Easing.sin) }), -1, true));
-    }, [progress, reducedMotion]);
+    }, [progress]);
 
     const animatedStyle = useAnimatedStyle(() => ({
         height: RING_SIZE,

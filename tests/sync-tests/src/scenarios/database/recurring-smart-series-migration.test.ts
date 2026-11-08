@@ -4,7 +4,7 @@ import { resolve } from 'node:path';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { testDb, TestLayer } from '../../harness';
+import { testDb, TestLayer, suspendSyncTriggers, restoreSyncTriggers } from '../../harness';
 
 const MIGRATION_SQL = readFileSync(
     resolve(process.cwd(), '../../packages/app/drizzle/20261105192451_recurring_smart_series/migration.sql'),
@@ -50,6 +50,7 @@ const insertSeries = (periodDays: number, title: string) =>
     ).raw;
 
 const preMigrationState = Effect.gen(function* () {
+    yield* Effect.acquireRelease(suspendSyncTriggers, triggers => restoreSyncTriggers(triggers).pipe(Effect.orDie));
     yield* testDb.$client.unsafe('DROP TABLE recurring_series_transaction').raw;
     yield* Effect.forEach(ADDED_COLUMNS, column => testDb.$client.unsafe(`ALTER TABLE recurring_series DROP COLUMN ${column}`).raw, {
         discard: true
@@ -110,6 +111,6 @@ describe('database/recurring-smart-series-migration', () => {
             expect(rows.every(row => row.source === 'DETECTED')).toBe(true);
             expect(fundsAfter).toEqual(fundsBefore);
             expect(fundsAfter).toHaveLength(1);
-        }).pipe(Effect.provide(TestLayer))
+        }).pipe(Effect.scoped, Effect.provide(TestLayer))
     );
 });

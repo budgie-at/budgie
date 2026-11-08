@@ -1,3 +1,4 @@
+import { NotificationFeedbackType } from 'expo-haptics';
 import { Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
@@ -7,12 +8,13 @@ import { RECEIPT_SCAN_TOAST_TYPE } from '../../../receipt/constant/receipt-scan-
 import { ACTION_TOAST_TYPE } from '../../constant/action-toast-type.constant';
 import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from '../../constant/floating-tab-bar.constant';
 import { SCREEN_CHROME_CONTENT_INSET_TOP } from '../../constant/screen-chrome-content-inset.constant';
+import { useVibration } from '../../hook/use-vibration.hook';
 import { AppToast } from '../app-toast/app-toast';
 import { SEARCH_LIST_BOTTOM_CLEARANCE } from '../searchable-page/searchable-page.constant';
 
 import type { ReceiptScanToastStatusEnum } from '../../../receipt/enum/receipt-scan-toast-status.enum';
 import type { ToastActionInterface } from '../../interface/toast-action.interface';
-import type { ToastConfig, ToastConfigParams } from 'react-native-toast-message';
+import type { ToastConfig, ToastConfigParams, ToastShowParams } from 'react-native-toast-message';
 
 const renderAppToast = (params: ToastConfigParams<unknown>) => (
     <View className="w-[92%]" pointerEvents="none">
@@ -42,9 +44,18 @@ const APP_TOAST_CONFIG: ToastConfig = {
 
 export const AppToastHost = () => {
     const insets = useSafeAreaInsets();
+    const [hapticNotification] = useVibration();
+
+    const handleShow = (params: ToastShowParams) => {
+        if (params.type === 'success') {
+            hapticNotification(NotificationFeedbackType.Success);
+        } else if (params.type === 'error') {
+            hapticNotification(NotificationFeedbackType.Error);
+        }
+    };
 
     const topOffset = insets.top + SCREEN_CHROME_CONTENT_INSET_TOP;
     const bottomOffset = insets.bottom + FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + SEARCH_LIST_BOTTOM_CLEARANCE;
 
-    return <Toast config={APP_TOAST_CONFIG} topOffset={topOffset} bottomOffset={bottomOffset} />;
+    return <Toast onShow={handleShow} config={APP_TOAST_CONFIG} topOffset={topOffset} bottomOffset={bottomOffset} />;
 };

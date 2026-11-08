@@ -6,7 +6,9 @@ import Animated, { FadeIn } from 'react-native-reanimated';
 import { EmptyFn, isNotEmptyString } from '@rnw-community/shared';
 
 import { Shake } from '../../../@generic/component/shake/shake';
+import { MAX_CHROME_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/max-chrome-font-size-multiplier.constant';
 import { EASE_OUT } from '../../../@generic/constant/motion.constant';
+import { useIsLargeTextSize } from '../../../@generic/hook/use-is-large-text-size.hook';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { cn } from '../../../@generic/utils/cn.util';
 import { PIN_LENGTH } from '../../constant/pin-length.constant';
@@ -37,7 +39,9 @@ const DIGIT_ROWS = [
     ['7', '8', '9']
 ] as const;
 
-const CONTENT_CONTAINER_STYLE = { flexGrow: 1 };
+const CONTENT_CONTAINER_STYLE = { flexGrow: 1, paddingBottom: 16 };
+
+const ERROR_ENTERING = FadeIn.duration(PIN_ERROR_FADE_DURATION_MS).easing(EASE_OUT);
 
 export const PinForm = ({
     header,
@@ -58,10 +62,13 @@ export const PinForm = ({
     const isDisabled = status !== PinFormStatusEnum.READY;
     const hasError = isNotEmptyString(error);
     const canDelete = isNotEmptyString(currentInput) && !isDisabled;
-    const isErrorVisible = hasError && !isBusy;
     const filledDotsCount = hasError || isAccepted ? PIN_LENGTH : currentInput.length;
-    const keypadRowGapClassName = isCompact ? 'gap-y-xl' : 'gap-y-3xl';
-    const footerClassName = isCompact ? 'min-h-[48px] mb-md' : 'min-h-[56px] mb-3xl';
+    const classNames = {
+        keypadRowGapClassName: isCompact ? 'gap-y-xl' : 'gap-y-3xl',
+        footerClassName: isCompact ? 'min-h-[48px] mb-md' : 'min-h-[56px] mb-3xl'
+    };
+    const isFooterAboveKeypad = useIsLargeTextSize() && isCompact;
+    const footerContent = <View className={cn('justify-center', classNames.footerClassName)}>{footer}</View>;
 
     const signalRejection = useEffectEvent(() => {
         hapticNotification(NotificationFeedbackType.Error);
@@ -95,9 +102,10 @@ export const PinForm = ({
                 <View className="min-h-[40px] mt-lg">
                     {isBusy ? <ActivityIndicator size="small" colorClassName="accent-secondary-foreground" /> : null}
 
-                    {isErrorVisible ? (
+                    {hasError && !isBusy ? (
                         <Animated.Text
-                            entering={FadeIn.duration(PIN_ERROR_FADE_DURATION_MS).easing(EASE_OUT)}
+                            maxFontSizeMultiplier={MAX_CHROME_FONT_SIZE_MULTIPLIER}
+                            entering={ERROR_ENTERING}
                             className="text-sm font-medium text-destructive-strong text-center"
                             testID={PinFormSelector.Error}
                             accessibilityLiveRegion="assertive"
@@ -108,7 +116,9 @@ export const PinForm = ({
                 </View>
             </View>
 
-            <View className={cn('items-center', keypadRowGapClassName)}>
+            {isFooterAboveKeypad ? footerContent : null}
+
+            <View className={cn('items-center', classNames.keypadRowGapClassName)}>
                 {DIGIT_ROWS.map(row => (
                     <View key={row.join('')} className="flex-row gap-x-7xl">
                         {row.map(digit => (
@@ -126,7 +136,7 @@ export const PinForm = ({
                 </View>
             </View>
 
-            <View className={cn('justify-center', footerClassName)}>{footer}</View>
+            {isFooterAboveKeypad ? null : footerContent}
         </ScrollView>
     );
 };

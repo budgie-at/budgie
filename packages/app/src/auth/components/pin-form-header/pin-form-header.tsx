@@ -25,6 +25,8 @@ const REGULAR_TILE_SIZE = 56;
 const COMPACT_GLYPH_SIZE = 22;
 const REGULAR_GLYPH_SIZE = 26;
 
+const STEP_ENTERING = FadeIn.duration(PIN_STEP_FADE_DURATION_MS).easing(EASE_OUT);
+
 export const PinFormHeader = ({ title, description, icon = UserIconNameEnum.LockKeyhole, iconVariant = 'secondary' }: Props) => {
     const isCompact = useIsCompactPinLayout();
     const previousTitleRef = useRef(title);
@@ -44,11 +46,7 @@ export const PinFormHeader = ({ title, description, icon = UserIconNameEnum.Lock
 
     return (
         <LayoutAnimationConfig skipEntering>
-            <Animated.View
-                key={title}
-                entering={FadeIn.duration(PIN_STEP_FADE_DURATION_MS).easing(EASE_OUT)}
-                className={cn('items-center', gapClassName)}
-            >
+            <Animated.View key={title} entering={STEP_ENTERING} className={cn('items-center', gapClassName)}>
                 {isDefined(icon) ? (
                     <CircleIcon icon={icon} variant={iconVariant} size={tileSize} iconSize={glyphSize} className="rounded-3xl" />
                 ) : null}

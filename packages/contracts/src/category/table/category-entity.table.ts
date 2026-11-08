@@ -2,6 +2,8 @@ import { int, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 import { convertEnumToDrizzleEnum } from '../../@generic/utils/convert-enum-to-drizzle-enum.util';
 import { withBaseEntityTableColumns } from '../../@generic/utils/with-base-entity-table-columns.util';
+import { syncIdentityUniqueIndex } from '../../cloud-sync/utils/sync-identity-unique-index.util';
+import { withSyncIdentityColumns } from '../../cloud-sync/utils/with-sync-identity-columns.util';
 import { CategoryIconSourceEnum } from '../enum/category-icon-source.enum';
 
 import type { UserIconType } from '../../@generic/type/user-icon.type';
@@ -9,6 +11,7 @@ import type { UserIconType } from '../../@generic/type/user-icon.type';
 export const CategoryEntityTable = sqliteTable(
     'categories',
     withBaseEntityTableColumns({
+        ...withSyncIdentityColumns(),
         title: text().default('').notNull(),
         titleSearch: text('title_search').default('').notNull(),
         titleEn: text('title_en'),
@@ -22,5 +25,6 @@ export const CategoryEntityTable = sqliteTable(
         parentId: int('parent_id', { mode: 'number' }),
         isDefault: int('is_default', { mode: 'boolean' }).default(false).notNull(),
         isSystemCategory: int('is_system_category', { mode: 'boolean' }).default(false).notNull()
-    })
+    }),
+    table => [syncIdentityUniqueIndex('categories', table)]
 );

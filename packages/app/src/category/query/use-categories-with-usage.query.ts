@@ -1,4 +1,4 @@
-import { CategoryRepository, TransactionEntityTable, TransactionEntryEntityTable } from '@budgie/contracts';
+import { CategoryRepository, PERSONAL_SYNC_ZONE, TransactionEntityTable, TransactionEntryEntityTable } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 
 import { useEntityUsage } from '../../@generic/hook/use-entity-usage.hook';
@@ -11,8 +11,8 @@ export const categoryUsageAtom = databaseQueryAtom(
     Effect.flatMap(CategoryRepository, categoryRepository => categoryRepository.findUsage)
 );
 
-export const useCategoriesWithUsageQuery = (search: string, includeDefault: boolean) => {
-    const { categories, isSearchPending, isFailure, retry } = useSearchCategoriesQuery(search, includeDefault);
+export const useCategoriesWithUsageQuery = (search: string, includeDefault: boolean, syncZone: string = PERSONAL_SYNC_ZONE) => {
+    const { categories, isSearchPending, isFailure, retry } = useSearchCategoriesQuery(search, includeDefault, syncZone);
     const { isUsagePending, ...usage } = useEntityUsage(categoryUsageAtom);
 
     return {

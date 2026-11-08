@@ -59,6 +59,7 @@ export const PopoverMenuItem = (props: Props) => {
 
     return (
         <HapticPressable
+            pressedScale={1}
             onPress={onPress}
             className={containerClassName({ isAdaptive: true })}
             accessibilityRole="menuitem"

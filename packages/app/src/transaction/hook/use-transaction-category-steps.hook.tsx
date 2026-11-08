@@ -11,7 +11,7 @@ import { CategoryPickerPanel } from '../../category/components/category-picker-p
 import type { TransactionCategoryStepsConfigInterface } from '../interface/transaction-category-steps-config.interface';
 
 export const useTransactionCategorySteps = (config: TransactionCategoryStepsConfigInterface) => {
-    const { variant, initialCategoryId, excludeCategoryIds, onSelect, onBack, onShowCategory, onShowCreate } = config;
+    const { syncZone, onSelect, onBack, onShowCategory, onShowCreate } = config;
     const categoryStepStyle = useMorphingSheetListHeight(MORPHING_SHEET_SELECTOR_HEIGHT_RATIO);
     const [createTitle, setCreateTitle] = useState('');
 
@@ -26,21 +26,14 @@ export const useTransactionCategorySteps = (config: TransactionCategoryStepsConf
             content: (
                 <View style={categoryStepStyle}>
                     <SheetSurface className="pt-lg">
-                        <CategoryPickerPanel
-                            variant={variant}
-                            initialCategoryId={initialCategoryId}
-                            excludeCategoryIds={excludeCategoryIds}
-                            onSelect={onSelect}
-                            onBack={onBack}
-                            onCreate={handleCreatePress}
-                        />
+                        <CategoryPickerPanel params={config} onSelect={onSelect} onBack={onBack} onCreate={handleCreatePress} />
                     </SheetSurface>
                 </View>
             )
         },
         createCategory: {
             presentation: MorphingSheetPresentationEnum.PAGE,
-            content: <CategoryCreatePage defaultTitle={createTitle} onSelect={onSelect} onCancel={onShowCategory} />
+            content: <CategoryCreatePage defaultTitle={createTitle} syncZone={syncZone} onSelect={onSelect} onCancel={onShowCategory} />
         }
     };
 };

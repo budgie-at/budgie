@@ -1,5 +1,8 @@
 import { AccountEntityInterface, isEmojiIcon } from '@budgie/contracts';
+import { Children } from 'react';
 import { Text, View } from 'react-native';
+
+import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
@@ -8,20 +11,21 @@ import { TONAL_DISC_BACKGROUND } from '../../../@generic/constant/tonal-disc-bac
 import { ActionsMenuContext } from '../../../@generic/context/actions-menu.context';
 import { usePopoverMenuAnchor } from '../../../@generic/hook/use-popover-menu-anchor.hook';
 import { cn } from '../../../@generic/utils/cn.util';
+import { getAccountDisplayTitle } from '../../utils/get-account-display-title.util';
 
 import type { ShelvedAccountAccessibilityActionInterface } from '../../interface/shelved-account-accessibility-action.interface';
 import type { ReactNode } from 'react';
 import type { AccessibilityActionEvent } from 'react-native';
 
 interface Props {
-    readonly account: Pick<AccountEntityInterface, 'icon' | 'title'>;
+    readonly account: Pick<AccountEntityInterface, 'icon' | 'title' | 'externalId'>;
     readonly subtitle: ReactNode;
     readonly trailing: ReactNode;
     readonly accessibilityLabel: string;
     readonly accessibilityActions: ShelvedAccountAccessibilityActionInterface[];
     readonly testID: string;
     readonly onPress?: () => void;
-    readonly children: ReactNode;
+    readonly children?: ReactNode;
 }
 
 export const ShelvedAccountRow = ({
@@ -37,11 +41,12 @@ export const ShelvedAccountRow = ({
     const { anchor, frameRef, closeMenu, handleCloseComplete, handleToggleMenu, isMenuOpen } = usePopoverMenuAnchor();
 
     const iconSize = isEmojiIcon(account.icon) ? 22 : 18;
-    const handlePress = onPress ?? handleToggleMenu;
+    const hasMenu = isNotEmptyArray(Children.toArray(children));
+    const handlePress = hasMenu ? (onPress ?? handleToggleMenu) : onPress;
     const handleAccessibilityAction = ({ nativeEvent }: AccessibilityActionEvent) =>
         void accessibilityActions.find(action => action.name === nativeEvent.actionName)?.onPress();
     const pressableProps = {
-        onLongPress: handleToggleMenu,
+        ...(hasMenu && { onLongPress: handleToggleMenu }),
         accessibilityLabel,
         accessibilityActions: accessibilityActions.map(({ name, label }) => ({ name, label })),
         onAccessibilityAction: handleAccessibilityAction
@@ -70,7 +75,7 @@ export const ShelvedAccountRow = ({
                 }
                 title={
                     <Text className="text-primary text-[17px]" numberOfLines={2}>
-                        {account.title}
+                        {getAccountDisplayTitle(account)}
                     </Text>
                 }
                 subtitle={subtitle}
@@ -78,11 +83,13 @@ export const ShelvedAccountRow = ({
                 pressableProps={pressableProps}
                 onPress={handlePress}
             />
-            <PopoverMenu isOpen={isMenuOpen} onClose={closeMenu} onCloseComplete={handleCloseComplete} anchor={anchor} align="start">
-                <ActionsMenuContext value={closeMenu}>
-                    <View className="py-sm">{children}</View>
-                </ActionsMenuContext>
-            </PopoverMenu>
+            {hasMenu ? (
+                <PopoverMenu isOpen={isMenuOpen} onClose={closeMenu} onCloseComplete={handleCloseComplete} anchor={anchor} align="start">
+                    <ActionsMenuContext value={closeMenu}>
+                        <View className="py-sm">{children}</View>
+                    </ActionsMenuContext>
+                </PopoverMenu>
+            ) : null}
         </View>
     );
 };

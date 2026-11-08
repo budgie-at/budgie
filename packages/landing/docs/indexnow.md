@@ -124,7 +124,7 @@ The `api` pattern keeps `/api/indexnow` reachable as a Next.js route instead of 
 The `[^/]+\\.txt` pattern matches any `.txt` file directly at the root path (one path segment, no slash). This covers:
 
 - `/<indexnow-key>.txt` — IndexNow key verification file
-- `/llms.txt` — AI crawler instructions (if added in future)
+- `/llms.txt` — generated from the sitemap enumeration by `src/app/llms.txt/route.ts`
 - Any other future root plaintext files
 
 Do not use `.*\\.txt` (that would bypass locale routing for all `.txt` paths including nested ones like `/en/some-doc.txt`).

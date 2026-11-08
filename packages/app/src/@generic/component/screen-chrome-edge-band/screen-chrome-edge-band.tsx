@@ -1,14 +1,13 @@
-import { use, useId } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { use } from 'react';
+import { StyleSheet } from 'react-native';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
 
-import { useScreenChrome } from '@rnw-community/react-native-screen-chrome';
+import { useBottomChromeInset, useScreenChrome, useScreenChromeScrollY } from '@rnw-community/react-native-screen-chrome';
 
-import { FLOATING_TAB_BAR_HEIGHT } from '../../constant/floating-tab-bar.constant';
-import { SCREEN_CHROME_TITLE_CLEARANCE } from '../../constant/screen-chrome-config.constant';
+import { SCREEN_CHROME_EDGE_RAMP_LENGTH, SCREEN_CHROME_TITLE_CLEARANCE } from '../../constant/screen-chrome-config.constant';
 import { ScreenChromeStickyHeadersContext } from '../../context/screen-chrome-sticky-headers.context';
+import { ScreenChromeEdgeGradient } from '../screen-chrome-edge-gradient/screen-chrome-edge-gradient';
 
 import type { EdgeFadeBandRenderPropsInterface } from '@rnw-community/react-native-screen-chrome';
 
@@ -16,16 +15,15 @@ type Props = Pick<EdgeFadeBandRenderPropsInterface, 'blur' | 'position' | 'heigh
 
 export const ScreenChromeEdgeBand = ({ blur, position, height, colorScheme }: Props) => {
     const { config } = useScreenChrome();
-    const gradientID = useId();
-    const gradientFill = `url(#${gradientID})`;
+    const scrollY = useScreenChromeScrollY();
+    const { chromeHeight, inset } = useBottomChromeInset();
     const { top, bottom } = useSafeAreaInsets();
+    const bandHeight = position === 'bottom' && chromeHeight > 0 && height > bottom ? inset + SCREEN_CHROME_EDGE_RAMP_LENGTH : height;
     const protectedHeight =
         position === 'top'
             ? top + (config.collapsedHeaderHeight ?? config.headerHeight) + SCREEN_CHROME_TITLE_CLEARANCE
-            : bottom + FLOATING_TAB_BAR_HEIGHT;
-    const plateau = Math.min(1, protectedHeight / height);
-    const gradientEnd = position === 'top' ? 1 : 0;
-    const gradientStart = position === 'top' ? 0 : 1;
+            : Math.max(0, bandHeight - SCREEN_CHROME_EDGE_RAMP_LENGTH);
+    const plateau = Math.min(1, protectedHeight / Math.max(1, bandHeight));
     const { solid } = config.colors[colorScheme];
     const { anchor, state: stickyState } = use(ScreenChromeStickyHeadersContext) ?? {};
     const offsetStyle = useAnimatedStyle(() => ({
@@ -47,24 +45,23 @@ export const ScreenChromeEdgeBand = ({ blur, position, height, colorScheme }: Pr
             position === 'top' ? Math.max(0, (anchor?.get() ?? protectedHeight) - protectedHeight) + (stickyState?.get().height ?? 0) : 0,
         backgroundColor: solid
     }));
+    const containerStyle = useAnimatedStyle(() => ({
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        [position]: 0,
+        height: bandHeight,
+        opacity: position === 'top' ? Math.min(1, Math.max(0, scrollY.get()) / SCREEN_CHROME_EDGE_RAMP_LENGTH) : 1
+    }));
+
     const bandStyle = [StyleSheet.absoluteFill, offsetStyle];
 
     return (
-        <View style={StyleSheet.absoluteFill}>
+        <Animated.View style={containerStyle}>
             <Animated.View style={fillStyle} />
             <Animated.View style={bandStyle}>
-                {blur}
-                <Svg width="100%" height="100%" style={StyleSheet.absoluteFill}>
-                    <Defs>
-                        <LinearGradient id={gradientID} x1="0" y1={gradientStart} x2="0" y2={gradientEnd}>
-                            <Stop offset="0" stopColor={solid} />
-                            <Stop offset={plateau} stopColor={solid} />
-                            <Stop offset="1" stopColor={solid} stopOpacity={0} />
-                        </LinearGradient>
-                    </Defs>
-                    <Rect width="100%" height="100%" fill={gradientFill} />
-                </Svg>
+                <ScreenChromeEdgeGradient position={position} height={bandHeight} plateau={plateau} solid={solid} blur={blur} />
             </Animated.View>
-        </View>
+        </Animated.View>
     );
 };

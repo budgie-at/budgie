@@ -389,6 +389,7 @@ export class RecurringRefreshService extends Context.Service<RecurringRefreshSer
         });
 
         return {
+            detect: (now: Date) => permit.withPermits(1)(matchRecentUnlocked(now).pipe(Effect.andThen(detectUnlocked(now)))),
             matchRecent: (now: Date) => permit.withPermits(1)(matchRecentUnlocked(now)),
             refresh: (now: Date) =>
                 permit.withPermits(1)(

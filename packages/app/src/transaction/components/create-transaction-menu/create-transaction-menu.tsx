@@ -27,7 +27,6 @@ import { AiButton } from '../ai-button/ai-button';
 import { CreateTransactionMenuSelector } from './create-transaction-menu.selector';
 
 const BUTTON_ROTATION_ACTIVE = 45;
-const ROTATION_SPRING = { dampingRatio: 0.6, duration: 400 };
 const HIDDEN_SCALE = 0.95;
 
 interface Props {
@@ -54,10 +53,6 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
     if (isOpen && !isVisible) {
         setIsVisible(true);
     }
-
-    const handleClose = () => {
-        onClose();
-    };
 
     const handleCreateExpense = () => {
         onClose();
@@ -151,11 +146,11 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
     useEffect(() => {
         if (isOpen) {
             Toast.hide();
-            rotation.set(withSpring(BUTTON_ROTATION_ACTIVE, ROTATION_SPRING));
+            rotation.set(withSpring(BUTTON_ROTATION_ACTIVE, SPRING_SETTLE));
             menuScale.set(withSpring(1, SPRING_SETTLE));
             menuOpacity.set(withTiming(1, { duration: MOTION_BASE_DURATION, easing: EASE_OUT }));
         } else if (isVisible) {
-            rotation.set(withSpring(0, ROTATION_SPRING));
+            rotation.set(withSpring(0, SPRING_SETTLE));
             menuScale.set(withTiming(HIDDEN_SCALE, { duration: MOTION_FAST_DURATION, easing: EASE_OUT }));
             menuOpacity.set(
                 withTiming(0, { duration: MOTION_FAST_DURATION, easing: EASE_OUT }, finished => {
@@ -187,14 +182,14 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
             <View className="absolute inset-x-0 bottom-0 items-end px-lg pb-safe" pointerEvents="box-none">
                 <View className="self-stretch items-end" pointerEvents="box-none">
                     {actionRows.map((row, index) => (
-                        <ActionItem key={row.key} index={index} totalItems={actionRows.length} isOpen={isOpen}>
+                        <ActionItem key={row.key} index={index} isOpen={isOpen}>
                             {row}
                         </ActionItem>
                     ))}
 
                     <CircularActionButton
                         icon={UserIconNameEnum.Plus}
-                        onPress={handleClose}
+                        onPress={onClose}
                         animatedStyle={buttonStyle}
                         testID={CreateTransactionMenuSelector.Close}
                     />

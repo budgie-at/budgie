@@ -39,7 +39,7 @@ export const ForgotPinRecoveryOptions = () => {
                         return;
                     }
 
-                    hapticImpact(ImpactFeedbackStyle.Heavy);
+                    yield* Effect.sync(() => void hapticImpact(ImpactFeedbackStyle.Heavy));
                     setIsErasing(true);
                     const appResetService = yield* AppResetService;
                     yield* appResetService.clearAllDataAndRestart().pipe(

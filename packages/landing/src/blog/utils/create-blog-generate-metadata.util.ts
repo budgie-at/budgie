@@ -18,6 +18,7 @@ export const createBlogGenerateMetadata =
             locale: lang,
             path: `/blog/${article.slug}`,
             publishedAt: article.date,
-            title: i18n._(article.title)
+            title: i18n._(article.title),
+            updatedAt: article.dateModified ?? article.date
         });
     };

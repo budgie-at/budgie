@@ -1,11 +1,12 @@
 import '../../../styles/globals.css';
 import { msg } from '@lingui/core/macro';
+import { Trans } from '@lingui/react/macro';
 import localFont from 'next/font/local';
 
 import { Footer } from '../../generic/component/footer/footer';
 import { Header } from '../../generic/component/header/header';
 import { JsonLd } from '../../generic/component/json-ld/json-ld';
-import { BASE_URL, OG_LOCALE_MAP } from '../../generic/constant/seo.constant';
+import { BASE_URL, OG_LOCALE_MAP, ORGANIZATION_ID, WEBSITE_ID } from '../../generic/constant/seo.constant';
 import { buildAlternates } from '../../generic/utils/build-alternates.util';
 import { clientMessages, getI18nInstance } from '../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../i18n/init-lingui';
@@ -39,7 +40,8 @@ const fixelDisplay = localFont({
             style: 'normal'
         }
     ],
-    display: 'swap'
+    display: 'swap',
+    preload: false
 });
 
 interface Props extends PageLangParam {
@@ -79,7 +81,7 @@ export async function generateMetadata(props: Props) {
             template: '%s | Budgie'
         },
         description: i18n._(
-            msg`Track expenses, sync banks, and manage crypto with full privacy. Multi-currency, debt tracking, and on-device AI insights — stored on your device.`
+            msg`Track expenses, sync banks, and manage crypto with full privacy. Multi-currency, debt tracking, and on-device AI insights — stored on your device and, on iOS, synced through your own iCloud.`
         ),
         keywords: i18n._(
             msg`expense tracker, budget app, bank sync, crypto tracking, privacy, offline-first, multi-currency, debt tracking, financial management`
@@ -128,6 +130,7 @@ export default async function RootLayout({ params, children }: Props) {
     /* oxlint-disable lingui/no-unlocalized-strings */
     const organizationData = {
         '@context': 'https://schema.org',
+        '@id': ORGANIZATION_ID,
         '@type': 'Organization',
         name: 'Budgie',
         url: BASE_URL,
@@ -138,6 +141,7 @@ export default async function RootLayout({ params, children }: Props) {
 
     const websiteData = {
         '@context': 'https://schema.org',
+        '@id': WEBSITE_ID,
         '@type': 'WebSite',
         name: 'Budgie',
         url: BASE_URL,
@@ -148,6 +152,12 @@ export default async function RootLayout({ params, children }: Props) {
     return (
         <html lang={lang} suppressHydrationWarning>
             <body className={fixelDisplay.className}>
+                <a
+                    className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[1000] focus:rounded-md focus:bg-background focus:px-4 focus:py-2 focus:text-foreground focus:shadow-lg focus:ring-2 focus:ring-ring"
+                    href="#main-content"
+                >
+                    <Trans>Skip to content</Trans>
+                </a>
                 <JsonLd data={organizationData} />
                 <JsonLd data={websiteData} />
 

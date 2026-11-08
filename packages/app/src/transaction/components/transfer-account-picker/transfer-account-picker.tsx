@@ -8,6 +8,7 @@ import { isDefined, isString } from '@rnw-community/shared';
 
 import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
 import { AccountInactiveIcon } from '../../../account/component/account-inactive-icon/account-inactive-icon';
+import { getAccountDisplayTitle } from '../../../account/utils/get-account-display-title.util';
 import { TransactionFormIcon } from '../transaction-form-icon/transaction-form-icon';
 import { TransactionFormRow } from '../transaction-form-row/transaction-form-row';
 
@@ -23,8 +24,9 @@ interface Props {
 
 export const TransferAccountPicker = ({ label, placeholder, account, animatedStyle, testID, selectedTestID, onPress }: Props) => {
     const hasAccount = isDefined(account);
+    const displayTitle = hasAccount ? getAccountDisplayTitle(account) : null;
     const accessibilityPlaceholder = isString(placeholder) ? placeholder : t`Choose`;
-    const pressableProps = { accessibilityLabel: `${label}: ${account?.title ?? accessibilityPlaceholder}` };
+    const pressableProps = { onPress, accessibilityLabel: `${label}: ${displayTitle ?? accessibilityPlaceholder}` };
     const icon = hasAccount ? account.icon : UserIconNameEnum.Wallet;
     const isInactiveAccount = hasAccount && !account.isActive;
 
@@ -37,10 +39,9 @@ export const TransferAccountPicker = ({ label, placeholder, account, animatedSty
                     </AccountInactiveIcon>
                 }
                 label={label}
-                value={account?.title}
+                {...(isDefined(displayTitle) && { value: displayTitle })}
                 placeholder={placeholder}
-                valueTestID={testIDProps(hasAccount && selectedTestID).testID}
-                onPress={onPress}
+                valueProps={testIDProps(hasAccount && selectedTestID)}
                 testID={testID}
                 pressableProps={pressableProps}
             />

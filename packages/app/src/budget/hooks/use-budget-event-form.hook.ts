@@ -44,10 +44,14 @@ const buildEventFormValues = (
 
 export const useBudgetEventForm = ({ defaultInstrumentId, editingId }: UseBudgetEventFormOptionsInterface) => {
     const { t } = useLingui();
-    const { run } = useSingleFlight();
+    const { run, isLoading: isSubmitting } = useSingleFlight();
     const isEditing = isPositiveNumber(editingId);
-    const { budget: event, isLoading: isEventLoading } = useGetEventBudgetQuery(isEditing ? editingId : 0);
-    const { categoryLimits, isLoading: isCategoryLimitsLoading } = useGetBudgetCategoryLimitsQuery(isEditing ? editingId : null);
+    const { budget: event, isLoading: isEventLoading, isError: isEventError } = useGetEventBudgetQuery(isEditing ? editingId : 0);
+    const {
+        categoryLimits,
+        isLoading: isCategoryLimitsLoading,
+        isError: isCategoryLimitsError
+    } = useGetBudgetCategoryLimitsQuery(isEditing ? editingId : null);
     const defaultValues = useBudgetEventDefaultValues(defaultInstrumentId);
 
     const form = useForm<BudgetEventFormValues>({
@@ -59,6 +63,10 @@ export const useBudgetEventForm = ({ defaultInstrumentId, editingId }: UseBudget
     });
 
     const handleSubmit = () => {
+        if (isEditing && (!isDefined(event) || isEventLoading || isCategoryLimitsLoading || isEventError || isCategoryLimitsError)) {
+            return;
+        }
+
         void form.handleSubmit(values =>
             run(
                 Effect.gen(function* () {
@@ -109,6 +117,9 @@ export const useBudgetEventForm = ({ defaultInstrumentId, editingId }: UseBudget
         handleDelete,
         handleCancel,
         isEditing,
-        isLoading: isEditing && (isEventLoading || isCategoryLimitsLoading || !isDefined(event))
+        isLoading: isEditing && (isEventLoading || isCategoryLimitsLoading),
+        isError: isEventError || isCategoryLimitsError,
+        isUnavailable: isEditing && !isSubmitting && (isEventError || isCategoryLimitsError || (!isEventLoading && !isDefined(event))),
+        isSubmitting
     };
 };

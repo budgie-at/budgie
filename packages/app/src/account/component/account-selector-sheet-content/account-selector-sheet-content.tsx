@@ -12,6 +12,7 @@ import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { AccountSelectorModalSelector } from '../../../app/account-selector-modal.selector';
 import { useSearchAccountsSortedQuery } from '../../query/use-search-accounts-sorted.query';
+import { isUntrackedOwnAccount } from '../../utils/is-untracked-own-account.util';
 import { AccountSelectContent } from '../account-select-content/account-select-content';
 
 import type { AccountSelectorModalParams, AccountSelectorResult } from '../../context/account-selector-modal.context';
@@ -37,6 +38,7 @@ export const AccountSelectorSheetContent = ({ params, onSelect, onBack, classNam
         includeTypes: params.includeAccountTypes,
         onlyActive: params.onlyActive ?? true
     });
+    const selectableAccounts = accounts.filter(account => !isUntrackedOwnAccount(account) || account.id === params.initialAccountId);
 
     const handleCreateAction = () => {
         if (!isDefined(createAction)) {
@@ -74,7 +76,7 @@ export const AccountSelectorSheetContent = ({ params, onSelect, onBack, classNam
 
             {isPanelSettled ? (
                 <AccountSelectContent
-                    data={accounts}
+                    data={selectableAccounts}
                     initialAccountId={params.initialAccountId ?? null}
                     search={search}
                     onSelect={onSelect}

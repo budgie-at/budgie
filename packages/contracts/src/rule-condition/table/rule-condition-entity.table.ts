@@ -3,6 +3,8 @@ import { check, int, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 import { convertEnumToDrizzleEnum } from '../../@generic/utils/convert-enum-to-drizzle-enum.util';
 import { withBaseEntityTableColumns } from '../../@generic/utils/with-base-entity-table-columns.util';
+import { syncIdentityUniqueIndex } from '../../cloud-sync/utils/sync-identity-unique-index.util';
+import { withSyncIdentityColumns } from '../../cloud-sync/utils/with-sync-identity-columns.util';
 import { RuleConditionFieldEnum } from '../../rule/enum/rule-condition-field.enum';
 import { RuleConditionOperatorEnum } from '../../rule/enum/rule-condition-operator.enum';
 import { RuleEntityTable } from '../../rule/table/rule-entity.table';
@@ -10,6 +12,7 @@ import { RuleEntityTable } from '../../rule/table/rule-entity.table';
 export const RuleConditionEntityTable = sqliteTable(
     'rule_conditions',
     withBaseEntityTableColumns({
+        ...withSyncIdentityColumns(),
         ruleId: int('rule_id', { mode: 'number' })
             .notNull()
             .references(() => RuleEntityTable.id, { onDelete: 'cascade' }),
@@ -22,5 +25,8 @@ export const RuleConditionEntityTable = sqliteTable(
         value: text('value').notNull(),
         secondaryValue: text('secondary_value')
     }),
-    () => [check('rule_condition_between_requires_secondary_value', sql`operator != 'BETWEEN' OR secondary_value IS NOT NULL`)]
+    table => [
+        syncIdentityUniqueIndex('rule_conditions', table),
+        check('rule_condition_between_requires_secondary_value', sql`operator != 'BETWEEN' OR secondary_value IS NOT NULL`)
+    ]
 );

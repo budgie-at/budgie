@@ -1,11 +1,12 @@
 import { CategorySourceEnum, TransactionEntryCreateInputInterface, TransactionEntryTypeEnum } from '@budgie/contracts';
 import { useState } from 'react';
 
-import { isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { MorphingSheet } from '../../../@generic/component/morphing-sheet/morphing-sheet';
 import { MorphingSheetPresentationEnum } from '../../../@generic/enum/morphing-sheet-presentation.enum';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
+import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
 import { SplitEntriesStepEnum } from '../../enum/split-entries-step.enum';
 import { useTransactionCategorySteps } from '../../hook/use-transaction-category-steps.hook';
 import { EntryWithLocalIdInterface, addLocalId } from '../../utils/entry-with-local-id.util';
@@ -26,6 +27,7 @@ export const SplitEntriesModalContent = (props: Props) => {
     const [step, setStep] = useState(SplitEntriesStepEnum.SPLIT);
     const [entries, setEntries] = useState<EntryWithLocalIdInterface[]>(() => initialEntries.map(addLocalId));
     const [editingIndex, setEditingIndex] = useState(0);
+    const { account } = useGetAccountByIdQuery(entries[0]?.accountId ?? 0);
 
     const handleShowSplit = () => {
         setStep(SplitEntriesStepEnum.SPLIT);
@@ -63,6 +65,7 @@ export const SplitEntriesModalContent = (props: Props) => {
             .filter((_, entryIndex) => entryIndex !== editingIndex)
             .map(entry => entry.categoryId)
             .filter(isPositiveNumber),
+        ...(isDefined(account) && { syncZone: account.syncZone }),
         onSelect: handleCategorySelect,
         onBack: handleShowSplit,
         onShowCategory: handleShowCategory,

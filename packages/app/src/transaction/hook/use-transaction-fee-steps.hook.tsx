@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { isDefined } from '@rnw-community/shared';
 
 import { MorphingSheetPresentationEnum } from '../../@generic/enum/morphing-sheet-presentation.enum';
+import { useGetAccountByIdQuery } from '../../account/query/use-get-account-by-id.query';
 import { TransactionFeeStep } from '../components/transaction-fee-step/transaction-fee-step';
 
 import { useTransactionCategorySteps } from './use-transaction-category-steps.hook';
@@ -37,8 +38,9 @@ export const useTransactionFeeSteps = (config: TransactionFeeStepsConfigInterfac
         onShowCreate
     } = config;
     const [feeEntry, setFeeEntry] = useState(() => createFeeEntry(entry, accountId));
+    const { account } = useGetAccountByIdQuery(accountId);
     const isExisting = isDefined(entry);
-    const { amountRef, markReturning } = useTransactionFeeAmountFocus(isFeeActive, !isExisting && !shouldFocusOnMount);
+    const { amountRef, markReturning } = useTransactionFeeAmountFocus(isFeeActive, !isExisting && shouldFocusOnMount);
 
     const handleAmountChange = (amount: number) => {
         setFeeEntry(previous => ({ ...previous, amount }));
@@ -64,6 +66,7 @@ export const useTransactionFeeSteps = (config: TransactionFeeStepsConfigInterfac
     const categorySteps = useTransactionCategorySteps({
         variant,
         initialCategoryId: feeEntry.categoryId,
+        ...(isDefined(account) && { syncZone: account.syncZone }),
         onSelect: handleCategorySelect,
         onBack: handleReturnToFee,
         onShowCategory,
@@ -79,7 +82,6 @@ export const useTransactionFeeSteps = (config: TransactionFeeStepsConfigInterfac
                     feeEntry={feeEntry}
                     currencySymbol={currencySymbol}
                     isExisting={isExisting}
-                    shouldAutoFocus={shouldFocusOnMount}
                     amountRef={amountRef}
                     onAmountChange={handleAmountChange}
                     onCategoryPress={onShowCategory}

@@ -34,7 +34,14 @@ export const CategorySelectorModalContent = ({ params, onCommit, onDismiss }: Pr
         },
         [CategorySelectorStepEnum.CREATE_CATEGORY]: {
             presentation: MorphingSheetPresentationEnum.PAGE,
-            content: <CategorySelectorCreateStep defaultTitle={createTitle} onCommit={onCommit} onCancel={handleCreateCancel} />
+            content: (
+                <CategorySelectorCreateStep
+                    defaultTitle={createTitle}
+                    syncZone={params.syncZone}
+                    onCommit={onCommit}
+                    onCancel={handleCreateCancel}
+                />
+            )
         }
     };
 

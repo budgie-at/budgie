@@ -7,7 +7,7 @@ import { ScreenChromeEdgeBand } from '../component/screen-chrome-edge-band/scree
 import {
     SCREEN_CHROME_CONFIG,
     SCREEN_CHROME_TITLE_CLEARANCE,
-    SCREEN_CHROME_TOP_FADE_LENGTH
+    SCREEN_CHROME_EDGE_RAMP_LENGTH
 } from '../constant/screen-chrome-config.constant';
 
 import type { EdgeFadeBandRenderPropsInterface, ScreenChromeConfigOverridesInterface } from '@rnw-community/react-native-screen-chrome';
@@ -34,7 +34,7 @@ export const ScreenChromeThemeProvider = ({ children, syncNativeScrollOffset, co
     const headerBandHeight =
         (config.collapsedHeaderHeight ?? config.headerHeight ?? SCREEN_CHROME_DEFAULT_CONFIG.headerHeight) +
         SCREEN_CHROME_TITLE_CLEARANCE +
-        SCREEN_CHROME_TOP_FADE_LENGTH;
+        SCREEN_CHROME_EDGE_RAMP_LENGTH;
     const surfaceConfig = {
         ...config,
         topFadeHeight: headerBandHeight,

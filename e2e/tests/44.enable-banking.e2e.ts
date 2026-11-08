@@ -55,7 +55,7 @@ test('44 enable banking', { tags: ['sync'] }, async ({ budgie }) => {
         await b.expectId(ctx, 'EnableBankingBankRow.E2E Synthetic Bank', 15_000);
         await b.tapId(ctx, 'EnableBankingBankRow.E2E Synthetic Bank');
         await b.expectText(ctx, 'Choose accounts', 30_000);
-        const account = screen.getByRole('button', { name: /^E2E Synthetic Bank E2E Current, EUR/ }).first();
+        const account = screen.getByRole('switch', { name: /^E2E Synthetic Bank E2E Current, EUR/ }).first();
         await expect(account).toBeVisible();
         await expect(id('CreateEnableBankingAccount.ContinueButton')).toBeEnabled();
         await b.tapId(ctx, 'CreateEnableBankingAccount.ContinueButton');

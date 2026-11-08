@@ -64,6 +64,7 @@ export const TransactionKeypadButton = (props: Props) => {
             className={buttonVariants({ buttonVariant: variant })}
             onLongPress={onLongPress}
             onPress={onPress}
+            pressedScale={1}
             pressFeedback={pressFeedback}
             testID={testID}
         >
