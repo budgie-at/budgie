@@ -1926,6 +1926,7 @@ msgstr "Erneut autorisieren"
 msgid "Authorize at your bank"
 msgstr "Bei deiner Bank autorisieren"
 
+#: src/account/component/account-automatic-pill/account-automatic-pill.tsx
 #: src/settings/components/theme-switch/theme-switch.tsx
 msgid "Automatic"
 msgstr "Automatisch"
@@ -2264,6 +2265,10 @@ msgstr "Budgie hat den beschädigten Teil gelöscht. Der Download startet erst w
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
 msgid "Budgie encrypts your data on this phone. It takes a few seconds."
 msgstr "Budgie verschlüsselt deine Daten auf diesem Telefon. Das dauert ein paar Sekunden."
+
+#: src/account/component/account-details-automatic-notice/account-details-automatic-notice.tsx
+msgid "Budgie files transfers to your accounts at banks it doesn't track here. Connect that bank and they'll be paired automatically."
+msgstr "Budgie erfasst Überweisungen auf Ihre Konten bei Banken, die hier nicht verfolgt werden. Verbinden Sie diese Bank, dann werden sie automatisch zugeordnet."
 
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "Budgie has no exchange rate for this payment currency yet."
@@ -7167,6 +7172,10 @@ msgstr "Weitere Währungen"
 #: src/categorize-inbox/components/categorize-inbox-group-options/categorize-inbox-group-options.tsx
 msgid "Other options"
 msgstr "Weitere Optionen"
+
+#: src/account/hook/use-account-display-title.hook.ts
+msgid "Other own accounts"
+msgstr "Weitere eigene Konten"
 
 #: src/transaction/components/transaction-info-debt-progress/transaction-info-debt-progress.tsx
 msgid "Outstanding"

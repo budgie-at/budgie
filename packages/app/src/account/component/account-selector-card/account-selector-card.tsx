@@ -10,13 +10,14 @@ import { AccountSelectorModalSelector } from '../../../app/account-selector-moda
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
+import { getAccountDisplayTitle } from '../../utils/get-account-display-title.util';
 import { AccountInactiveIcon } from '../account-inactive-icon/account-inactive-icon';
 import { AccountSelectorCardDebtTotalSubtitle } from '../account-selector-card-debt-total-subtitle/account-selector-card-debt-total-subtitle';
 
 interface Props {
     readonly account: Pick<
         AccountWithInstrumentEntityInterface,
-        'id' | 'icon' | 'type' | 'title' | 'isActive' | 'debtType' | 'targetBalance' | AccountAssociationEnum.INSTRUMENT
+        'id' | 'icon' | 'type' | 'title' | 'externalId' | 'isActive' | 'debtType' | 'targetBalance' | AccountAssociationEnum.INSTRUMENT
     >;
     readonly onSelect: (id: number) => void;
     readonly isSelected: boolean;
@@ -28,6 +29,7 @@ export const AccountSelectorCard = (props: Props) => {
     const { title, id, icon, type, instrument, isActive, debtType, targetBalance } = account;
 
     const { t } = useLingui();
+    const displayTitle = getAccountDisplayTitle(account);
     const { balance } = useAccountBalanceQuery(id);
     const formatDigits = useDisplayFormatDigits();
     const handleSelect = () => void onSelect(id);
@@ -69,7 +71,7 @@ export const AccountSelectorCard = (props: Props) => {
                     maxFontSizeMultiplier={1.75}
                     testID={AccountSelectorModalSelector.Option(title)}
                 >
-                    {title}
+                    {displayTitle}
                 </Text>
             }
             subtitle={subtitle}

@@ -27,6 +27,7 @@ import { useIsStaticAccountDetailsHeader } from '../../../../account/hook/use-is
 import { useAccountBalanceQuery } from '../../../../account/query/use-account-balance.query';
 import { useDebtAccountProgressSummaryQuery } from '../../../../account/query/use-debt-account-progress-summary.query';
 import { useGetAccountByIdQuery } from '../../../../account/query/use-get-account-by-id.query';
+import { getAccountDisplayTitle } from '../../../../account/utils/get-account-display-title.util';
 import { InstallmentPlanScheduleSummary } from '../../../../installment-plan/component/installment-plan-schedule-summary/installment-plan-schedule-summary';
 import { isInzhurFundAccount } from '../../../../inzhur/utils/is-inzhur-fund-account.util';
 import { CollapsibleChromeTransactionList } from '../../../../transaction/components/collapsible-chrome-transaction-list/collapsible-chrome-transaction-list';
@@ -90,13 +91,13 @@ export default function AccountDetails() {
     const isDebt = account.type === AccountTypeEnum.DEBT;
     const animatedTitle = (
         <>
-            <AccountDetailsTitle title={account.title} />
+            <AccountDetailsTitle title={getAccountDisplayTitle(account)} />
 
             {isDebt ? <AccountDetailsNavBalance balance={balance} instrumentSymbol={instrumentSymbol} /> : null}
         </>
     );
     const headerTitle = isStaticHeader ? (
-        <AccountDetailsStaticTitle title={account.title} balance={balance} account={account} />
+        <AccountDetailsStaticTitle title={getAccountDisplayTitle(account)} balance={balance} account={account} />
     ) : (
         animatedTitle
     );

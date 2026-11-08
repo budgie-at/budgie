@@ -8,13 +8,14 @@ import { TONAL_DISC_BACKGROUND } from '../../../@generic/constant/tonal-disc-bac
 import { ActionsMenuContext } from '../../../@generic/context/actions-menu.context';
 import { usePopoverMenuAnchor } from '../../../@generic/hook/use-popover-menu-anchor.hook';
 import { cn } from '../../../@generic/utils/cn.util';
+import { getAccountDisplayTitle } from '../../utils/get-account-display-title.util';
 
 import type { ShelvedAccountAccessibilityActionInterface } from '../../interface/shelved-account-accessibility-action.interface';
 import type { ReactNode } from 'react';
 import type { AccessibilityActionEvent } from 'react-native';
 
 interface Props {
-    readonly account: Pick<AccountEntityInterface, 'icon' | 'title'>;
+    readonly account: Pick<AccountEntityInterface, 'icon' | 'title' | 'externalId'>;
     readonly subtitle: ReactNode;
     readonly trailing: ReactNode;
     readonly accessibilityLabel: string;
@@ -70,7 +71,7 @@ export const ShelvedAccountRow = ({
                 }
                 title={
                     <Text className="text-primary text-[17px]" numberOfLines={2}>
-                        {account.title}
+                        {getAccountDisplayTitle(account)}
                     </Text>
                 }
                 subtitle={subtitle}

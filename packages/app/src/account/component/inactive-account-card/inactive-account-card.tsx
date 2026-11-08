@@ -7,11 +7,12 @@ import { emptyFn, isNotEmptyString } from '@rnw-community/shared';
 import { ActionsMenuItem } from '../../../@generic/component/actions-menu-item/actions-menu-item';
 import { GroupedListItem } from '../../../@generic/component/grouped-list-item/grouped-list-item';
 import { useFormatInstrumentAmount } from '../../../i18n/hook/use-format-instrument-amount.hook';
-import { SettingsPillButton } from '../../../settings/components/settings-pill-button/settings-pill-button';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
 import { useArchiveAccount } from '../../hooks/use-archive-account.hook';
 import { useUnhideAccount } from '../../hooks/use-unhide-account.hook';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
+import { getAccountDisplayTitle } from '../../utils/get-account-display-title.util';
+import { InactiveAccountTrailing } from '../inactive-account-trailing/inactive-account-trailing';
 import { ShelvedAccountRow } from '../shelved-account-row/shelved-account-row';
 import { ShelvedAccountSubtitle } from '../shelved-account-subtitle/shelved-account-subtitle';
 
@@ -34,7 +35,7 @@ export const InactiveAccountCard = ({ account, isFirst, isLast }: Props) => {
     const formattedBalance = formatInstrumentAmount(balance, account.instrument.symbol, account.instrument.type);
     const accountType = t(ACCOUNT_TYPE[account.type]);
     const notice = account.includeInNetWorth ? null : t`Not counted in net worth`;
-    const accessibilityLabel = [accountTitle, formattedBalance, accountType, notice].filter(isNotEmptyString).join(', ');
+    const accessibilityLabel = [getAccountDisplayTitle(account), formattedBalance, accountType, notice].filter(isNotEmptyString).join(', ');
 
     const handleOpen = () => void router.push({ pathname: '/account/[id]/details', params: { id: String(account.id) } });
     const handleEdit = () => void router.push({ pathname: '/account/[id]/update', params: { id: String(account.id) } });
@@ -48,17 +49,7 @@ export const InactiveAccountCard = ({ account, isFirst, isLast }: Props) => {
             <ShelvedAccountRow
                 account={account}
                 subtitle={<ShelvedAccountSubtitle formattedBalance={formattedBalance} metadata={accountType} notice={notice} />}
-                trailing={
-                    <SettingsPillButton
-                        label={t`Unhide`}
-                        accessibilityLabel={t`Unhide ${accountTitle}`}
-                        variant="secondary"
-                        size="sm"
-                        isLoading={isLoading}
-                        onPress={unhide}
-                        testID={InactiveAccountCardSelector.ActivateButton(accountTitle)}
-                    />
-                }
+                trailing={<InactiveAccountTrailing account={account} isLoading={isLoading} onUnhide={unhide} />}
                 accessibilityLabel={accessibilityLabel}
                 accessibilityActions={accessibilityActions}
                 testID={InactiveAccountCardSelector.Card(accountTitle)}

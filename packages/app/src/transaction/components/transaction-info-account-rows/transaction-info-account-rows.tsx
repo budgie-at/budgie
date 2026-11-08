@@ -3,6 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { getAccountDisplayTitle } from '../../../account/utils/get-account-display-title.util';
 import { getAccountIbanSuffix } from '../../utils/get-account-iban-suffix.util';
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
 import { TransactionInfoRow } from '../transaction-info-row/transaction-info-row';
@@ -32,7 +33,7 @@ export const TransactionInfoAccountRows = ({ transaction }: Props) => {
                 <TransactionInfoRow
                     icon={UserIconNameEnum.Wallet}
                     label={t`From account`}
-                    value={transaction.fromAccount.title}
+                    value={getAccountDisplayTitle(transaction.fromAccount)}
                     description={getAccountIbanSuffix(transaction.fromAccount)}
                     testID={TransactionInfoPageSelector.Row.FromAccount}
                 />
@@ -42,7 +43,7 @@ export const TransactionInfoAccountRows = ({ transaction }: Props) => {
                 <TransactionInfoRow
                     icon={UserIconNameEnum.CreditCard}
                     label={t`To account`}
-                    value={transaction.toAccount.title}
+                    value={getAccountDisplayTitle(transaction.toAccount)}
                     description={getAccountIbanSuffix(transaction.toAccount)}
                     testID={TransactionInfoPageSelector.Row.ToAccount}
                 />
@@ -70,7 +71,7 @@ export const TransactionInfoAccountRows = ({ transaction }: Props) => {
                 <TransactionInfoRow
                     icon={UserIconNameEnum.Wallet}
                     label={t`Account`}
-                    value={account.title}
+                    value={getAccountDisplayTitle(account)}
                     description={getAccountIbanSuffix(account)}
                     testID={TransactionInfoPageSelector.Row.Account}
                 />

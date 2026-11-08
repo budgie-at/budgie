@@ -7,6 +7,8 @@ import { InzhurFundReturns } from '../../../inzhur/component/inzhur-fund-returns
 import { isInzhurFundAccount } from '../../../inzhur/utils/is-inzhur-fund-account.util';
 import { ACCOUNT_DETAILS_HERO_BALANCE_HEIGHT } from '../../constant/account-details-hero-balance-height.constant';
 import { isCryptoAccountType } from '../../utils/is-crypto-account-type.util';
+import { isUntrackedOwnAccount } from '../../utils/is-untracked-own-account.util';
+import { AccountDetailsAutomaticNotice } from '../account-details-automatic-notice/account-details-automatic-notice';
 import { AccountDetailsConvertedValue } from '../account-details-converted-value/account-details-converted-value';
 import { AccountDetailsHiddenPill } from '../account-details-hidden-pill/account-details-hidden-pill';
 import { AccountDetailsMarketLink } from '../account-details-market-link/account-details-market-link';
@@ -16,7 +18,7 @@ import { AccountDetailsStatusLine } from '../account-details-status-line/account
 interface Props {
     readonly account: Pick<
         AccountWithInstrumentEntityInterface,
-        'id' | 'iban' | 'isActive' | 'title' | 'type' | 'instrumentId' | 'externalSource' | AccountAssociationEnum.INSTRUMENT
+        'id' | 'iban' | 'isActive' | 'externalId' | 'title' | 'type' | 'instrumentId' | 'externalSource' | AccountAssociationEnum.INSTRUMENT
     >;
     readonly balance: number;
 }
@@ -43,7 +45,9 @@ export const AccountDetailsHero = ({ account, balance }: Props) => (
             <AccountDetailsStatusLine account={account} />
         )}
 
-        {account.isActive ? null : (
+        {isUntrackedOwnAccount(account) ? <AccountDetailsAutomaticNotice /> : null}
+
+        {account.isActive || isUntrackedOwnAccount(account) ? null : (
             <Animated.View entering={FadeIn} exiting={FadeOut}>
                 <AccountDetailsHiddenPill account={account} />
             </Animated.View>
