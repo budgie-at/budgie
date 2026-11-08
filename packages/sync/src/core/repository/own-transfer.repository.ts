@@ -36,6 +36,7 @@ export class OwnTransferRepository extends Context.Service<OwnTransferRepository
                 .where(
                     and(
                         transactionFilters.buildVisibleTransactionCondition(),
+                        isNull(AccountEntityTable.deletedAt),
                         transactionFilters.buildCategorizableEntryCondition(),
                         entryCondition
                     )
@@ -97,16 +98,24 @@ export class OwnTransferRepository extends Context.Service<OwnTransferRepository
                         with: {
                             entries: {
                                 where: {
-                                    ...transactionFilters.ledgerEntryFilter,
-                                    account: {
-                                        OR: [{ externalId: { isNull: true } }, { externalId: { ne: UNTRACKED_OWN_ACCOUNT_EXTERNAL_ID } }]
-                                    }
-                                }
+                                    ...transactionFilters.ledgerEntryFilter
+                                },
+                                with: { account: { columns: { externalId: true } } }
                             }
                         }
                     })
+                ).pipe(
+                    Effect.map(transfers =>
+                        transfers.map(transfer => ({
+                            ...transfer,
+                            untrackedAccountId: transfer.entries.find(
+                                entry => entry.account.externalId === UNTRACKED_OWN_ACCOUNT_EXTERNAL_ID
+                            )?.accountId,
+                            entries: transfer.entries.filter(entry => entry.account.externalId !== UNTRACKED_OWN_ACCOUNT_EXTERNAL_ID)
+                        }))
+                    )
                 ),
-            findOpposites: (transactionIds: number[], isExact = true) =>
+            findOpposites: (transactionIds: number[]) =>
                 Db.query(db => {
                     const source = alias(TransactionEntityTable, 'source');
                     const sourceEntry = alias(TransactionEntryEntityTable, 'source_entry');
@@ -147,16 +156,21 @@ export class OwnTransferRepository extends Context.Service<OwnTransferRepository
                                 transactionFilters.buildCategorizableEntryCondition(),
                                 ne(TransactionEntryEntityTable.type, sourceEntry.type),
                                 ne(TransactionEntryEntityTable.accountId, sourceEntry.accountId),
-                                ...(isExact
-                                    ? [sql`abs(${TransactionEntryEntityTable.amount} - ${sourceEntry.amount}) <= ${PRECISION / 100}`]
-                                    : [])
+                                or(
+                                    ne(AccountEntityTable.instrumentId, sourceAccount.instrumentId),
+                                    and(
+                                        eq(AccountEntityTable.instrumentId, sourceAccount.instrumentId),
+                                        sql`CASE WHEN ${sourceEntry.type} = ${TransactionEntryTypeEnum.CREDIT}
+                                            THEN ${TransactionEntryEntityTable.amount} BETWEEN ${sourceEntry.amount} * 0.98 AND ${sourceEntry.amount} + ${PRECISION / 100}
+                                            ELSE ${sourceEntry.amount} BETWEEN ${TransactionEntryEntityTable.amount} * 0.98 AND ${TransactionEntryEntityTable.amount} + ${PRECISION / 100} END`
+                                    )
+                                )
                             )
                         )
                         .innerJoin(
                             AccountEntityTable,
                             and(
                                 eq(AccountEntityTable.id, TransactionEntryEntityTable.accountId),
-                                ...(isExact ? [eq(AccountEntityTable.instrumentId, sourceAccount.instrumentId)] : []),
                                 eq(AccountEntityTable.isExternal, false),
                                 isNull(AccountEntityTable.deletedAt),
                                 transactionFilters.buildNonDebtAccountCondition()

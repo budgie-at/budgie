@@ -252,6 +252,75 @@ describe('account/own-transfer-repair', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
+    it.effect.each([
+        { title: 'fee-deducted', currency: 'UAH', received: 9_900_000, sent: 10_000_000 },
+        { title: 'foreign-currency', currency: 'USD', received: 9_900_000, sent: 400_000_000 }
+    ])('re-pairs a late $title bank expense with a converted Binance deposit', ({ currency, received, sent }) =>
+        Effect.gen(function* () {
+            const repair = yield* OwnTransferRepairService;
+            const balances = yield* AccountBalanceRepository;
+            const binance = yield* seed.account();
+            const deposit = yield* seed.bankPairIncome({ operatedAt, externalId: 'deposit' }, { accountId: binance.id, amount: received });
+            yield* seed.updateTransaction(deposit.id, { title: 'Binance UAH deposit', externalSource: ExternalSourceEnum.BINANCE });
+            expect(yield* repair.repair()).toBe(1);
+            const [untracked] = yield* findUntrackedAccounts;
+            const instrument = yield* seed.instrument({ code: currency });
+            const bank = yield* seed.account({ instrumentId: currency === 'UAH' ? binance.instrumentId : instrument.id });
+            const expense = yield* seed.bankPairExpense({ operatedAt, externalId: 'late-expense' }, { accountId: bank.id, amount: sent });
+            yield* seed.updateTransaction(expense.id, { title: 'На свою картку', externalSource: ExternalSourceEnum.MONOBANK });
+            const before = yield* balances.getLedgerBalances([binance.id, bank.id]);
+            expect(yield* repair.repair()).toBe(1);
+            yield* expectPair(expense.id, deposit.id, bank.id, binance.id);
+            const [canonical] = yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
+            const entries = (yield* testQueryService.fetchEntriesByTransactionId(canonical.id)).filter(
+                entry => !isDefined(entry.originalTransactionId)
+            );
+            expect(entries.find(entry => entry.accountId === bank.id && entry.type === TransactionEntryTypeEnum.CREDIT)?.amount).toBe(sent);
+            expect(entries.find(entry => entry.accountId === binance.id && entry.type === TransactionEntryTypeEnum.DEBIT)?.amount).toBe(
+                received
+            );
+            expect(canonical.exchangeRate).toBe(sent / received);
+            expect(yield* balances.getLedgerBalances([binance.id, bank.id])).toEqual(before);
+            expect((yield* balances.getByAccountIds([untracked.id])).map(balance => balance.amount)).toEqual([0]);
+            expect((yield* balances.getLedgerBalances([untracked.id])).get(untracked.id) ?? 0).toBe(0);
+            expect(yield* findUntrackedAccounts).toHaveLength(1);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('restores reserved account flags when reusing it for a fallback', () =>
+        Effect.gen(function* () {
+            const { repair, expense, source } = yield* fixture;
+            yield* seed.updateTransaction(expense.id, { title: 'На свою картку' });
+            expect(yield* repair.repair()).toBe(1);
+            const [untracked] = yield* findUntrackedAccounts;
+            yield* testDb
+                .update(AccountEntityTable)
+                .set({ isActive: true, includeInNetWorth: true })
+                .where(eq(AccountEntityTable.id, untracked.id));
+            const next = yield* seed.bankPairExpense(
+                { operatedAt: new Date(operatedAt.getTime() + 86_400_000), externalId: 'next' },
+                { accountId: source.id, amount: 60_000_000 }
+            );
+            yield* seed.updateTransaction(next.id, { title: 'На свою картку', externalSource: ExternalSourceEnum.MONOBANK });
+            expect(yield* repair.repair()).toBe(1);
+            expect(yield* findUntrackedAccounts).toEqual([
+                expect.objectContaining({ id: untracked.id, isActive: false, includeInNetWorth: false })
+            ]);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('ignores an unrelated purchase when converting an own deposit', () =>
+        Effect.gen(function* () {
+            const { repair, expense, target } = yield* fixture;
+            yield* seed.updateTransaction(expense.id, { title: 'Groceries' });
+            const deposit = yield* seed.bankPairIncome({ operatedAt, externalId: 'deposit' }, { accountId: target.id, amount: 9_900_000 });
+            yield* seed.updateTransaction(deposit.id, { title: 'Binance UAH deposit', externalSource: ExternalSourceEnum.BINANCE });
+            expect(yield* repair.repair()).toBe(1);
+            yield* expectUntrackedTransfer(deposit.id, target.id);
+            yield* expectExpense(expense.id);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
     it.effect('preserves a phrase with two matching card targets', () =>
         Effect.gen(function* () {
             const { repair, expense } = yield* fixture;
@@ -396,7 +465,7 @@ describe('account/own-transfer-repair', () => {
                 { operatedAt, externalId: 'dollar-income' },
                 { accountId: dollarAccount.id, amount: 1_200_000 }
             );
-            yield* seed.updateTransaction(income.id, { externalSource: ExternalSourceEnum.MONOBANK });
+            yield* seed.updateTransaction(income.id, { title: 'На свою картку', externalSource: ExternalSourceEnum.MONOBANK });
             yield* expectUnpaired(expense.id, income.id);
             expect(yield* findUntrackedAccounts).toEqual([]);
         }).pipe(Effect.provide(TestLayer))
