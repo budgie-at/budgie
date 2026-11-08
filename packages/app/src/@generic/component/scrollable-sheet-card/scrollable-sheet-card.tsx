@@ -9,11 +9,12 @@ interface Props {
     readonly header: ReactNode;
     readonly ratio: number;
     readonly contentClassName?: string;
+    readonly footer?: ReactNode;
     readonly testID?: string;
     readonly children: ReactNode;
 }
 
-export const ScrollableSheetCard = ({ header, ratio, contentClassName, testID, children }: Props) => {
+export const ScrollableSheetCard = ({ header, ratio, contentClassName, footer, testID, children }: Props) => {
     const { height } = useMorphingSheetListHeight(ratio);
     const capStyle = { maxHeight: height };
 
@@ -29,6 +30,8 @@ export const ScrollableSheetCard = ({ header, ratio, contentClassName, testID, c
                 >
                     {children}
                 </ScrollView>
+
+                {footer}
             </SheetSurface>
         </View>
     );

@@ -1,18 +1,18 @@
-import { use, useEffect, useState } from 'react';
+import { use, useEffect, useId } from 'react';
 
 import { HostAccessibilityContext } from '../context/host-accessibility.context';
 
 export const useAccessibilityLayer = () => {
-    const { openCount, setOpenCount } = use(HostAccessibilityContext);
-    const [ownDepth] = useState(openCount + 1);
+    const { layers, setLayers } = use(HostAccessibilityContext);
+    const id = useId();
 
     useEffect(() => {
-        setOpenCount(count => count + 1);
+        setLayers(current => [...current, id]);
 
         return () => {
-            setOpenCount(count => count - 1);
+            setLayers(current => current.filter(layer => layer !== id));
         };
-    }, [setOpenCount]);
+    }, [id, setLayers]);
 
-    return openCount > ownDepth;
+    return layers.includes(id) && layers.at(-1) !== id;
 };

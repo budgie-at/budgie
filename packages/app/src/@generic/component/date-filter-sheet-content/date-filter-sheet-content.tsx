@@ -1,14 +1,13 @@
 import { DatePeriodEnum, DateRangeInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useReducer } from 'react';
-import { ScrollView, View } from 'react-native';
+import { ScrollView } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { MORPHING_SHEET_SELECTOR_HEIGHT_RATIO } from '../../constant/morphing-sheet-height-ratio.constant';
 import { DateFilterActionTypeEnum } from '../../enum/date-filter-action-type.enum';
 import { useMorphingSheetCommit } from '../../hook/use-morphing-sheet-commit.hook';
-import { useMorphingSheetListHeight } from '../../hook/use-morphing-sheet-list-height.hook';
 import { dateFilterReducer } from '../../utils/date-filter-reducer.util';
 import { getCalendarVisibleDate } from '../../utils/date/get-calendar-visible-date.util';
 import { getDateFilterByPeriod } from '../../utils/date/get-date-filter-by-period.util';
@@ -18,7 +17,7 @@ import { RangeDatePicker } from '../date-picker/range-date-picker';
 import { FilterSheetApply } from '../filter-sheet/filter-sheet-apply/filter-sheet-apply';
 import { FilterSheetFooter } from '../filter-sheet/filter-sheet-footer/filter-sheet-footer';
 import { FilterSheetHeader } from '../filter-sheet/filter-sheet-header/filter-sheet-header';
-import { SheetSurface } from '../sheet-surface/sheet-surface';
+import { ScrollableSheetCard } from '../scrollable-sheet-card/scrollable-sheet-card';
 
 import type { DateFilterResult } from '../../context/date-filter-modal.context';
 
@@ -41,7 +40,6 @@ interface Props {
 
 export const DateFilterSheetContent = ({ range, onCommit, datePeriodTestID, applyTestID }: Props) => {
     const { t } = useLingui();
-    const { height } = useMorphingSheetListHeight(MORPHING_SHEET_SELECTOR_HEIGHT_RATIO);
     const commit = useMorphingSheetCommit(onCommit);
 
     const [{ value: localValue, visibleDate, calendarResetKey }, dispatch] = useReducer(dateFilterReducer, range, initialValue => ({
@@ -63,26 +61,14 @@ export const DateFilterSheetContent = ({ range, onCommit, datePeriodTestID, appl
 
     const handleApply = () => void commit({ value: localValue });
 
-    const capStyle = { maxHeight: height };
     const applyLabel = hasSelected ? t`Show selected range` : t`Show all dates`;
 
     return (
-        <View style={capStyle}>
-            <SheetSurface className="flex-initial pt-lg" contentClassName="flex-initial" header={<FilterSheetHeader title={t`Date`} />}>
-                <ScrollView
-                    className="flex-initial"
-                    contentContainerClassName="px-md pt-sm pb-[16px]"
-                    keyboardShouldPersistTaps="handled"
-                    showsVerticalScrollIndicator={false}
-                >
-                    <RangeDatePicker
-                        range={localValue}
-                        calendarResetKey={calendarResetKey}
-                        visibleDate={visibleDate}
-                        onChange={handleRangeChange}
-                    />
-                </ScrollView>
-
+        <ScrollableSheetCard
+            header={<FilterSheetHeader title={t`Date`} />}
+            ratio={MORPHING_SHEET_SELECTOR_HEIGHT_RATIO}
+            contentClassName="px-md pt-sm pb-[16px]"
+            footer={
                 <FilterSheetFooter>
                     <ScrollView contentContainerClassName="gap-x-sm" showsHorizontalScrollIndicator={false} horizontal>
                         {DATE_FILTER_PERIODS.map(period => (
@@ -97,7 +83,14 @@ export const DateFilterSheetContent = ({ range, onCommit, datePeriodTestID, appl
                     </ScrollView>
                     <FilterSheetApply onApply={handleApply} label={applyLabel} testID={applyTestID} />
                 </FilterSheetFooter>
-            </SheetSurface>
-        </View>
+            }
+        >
+            <RangeDatePicker
+                range={localValue}
+                calendarResetKey={calendarResetKey}
+                visibleDate={visibleDate}
+                onChange={handleRangeChange}
+            />
+        </ScrollableSheetCard>
     );
 };
