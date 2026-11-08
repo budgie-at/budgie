@@ -73,8 +73,6 @@ const LOCK_SCREEN_OPTIONS: NativeStackNavigationOptions = { presentation: 'fullS
 
 const FADE_OPTIONS: NativeStackNavigationOptions = { animation: 'fade' };
 
-const PUSH_OPTIONS: NativeStackNavigationOptions = { animation: 'simple_push', animationDuration: 280 };
-
 const MORPHING_SHEET_OPTIONS: NativeStackNavigationOptions = {
     presentation: 'transparentModal',
     animation: 'none',
@@ -180,50 +178,21 @@ export const RootLayoutContent = () => {
                                                                     <Stack.Screen name="(tabs)" options={FADE_OPTIONS} />
                                                                     <Stack.Screen name="onboarding" options={FADE_OPTIONS} />
                                                                     <Stack.Screen name="(main)/pin" options={LOCK_SCREEN_OPTIONS} />
-                                                                    <Stack.Screen name="(main)/create-account" options={PUSH_OPTIONS} />
-                                                                    <Stack.Screen
-                                                                        name="(main)/account/[id]/details"
-                                                                        options={PUSH_OPTIONS}
-                                                                    />
-                                                                    <Stack.Screen name="(main)/institution/[id]" options={PUSH_OPTIONS} />
-                                                                    <Stack.Screen name="(main)/inzhur/purchase" options={PUSH_OPTIONS} />
-                                                                    <Stack.Screen
-                                                                        name="(main)/account/[id]/update"
-                                                                        options={PUSH_OPTIONS}
-                                                                    />
-                                                                    <Stack.Screen name="(main)/currency/[id]" options={PUSH_OPTIONS} />
-                                                                    <Stack.Screen
-                                                                        name="(main)/create-transaction/expense"
-                                                                        options={PUSH_OPTIONS}
-                                                                    />
-                                                                    <Stack.Screen
-                                                                        name="(main)/create-transaction/income"
-                                                                        options={PUSH_OPTIONS}
-                                                                    />
-                                                                    <Stack.Screen
-                                                                        name="(main)/create-transaction/transfer"
-                                                                        options={PUSH_OPTIONS}
-                                                                    />
-                                                                    <Stack.Screen name="(main)/matching-rules" options={PUSH_OPTIONS} />
-                                                                    <Stack.Screen
-                                                                        name="(main)/transactions/[id]/expense"
-                                                                        options={PUSH_OPTIONS}
-                                                                    />
-                                                                    <Stack.Screen
-                                                                        name="(main)/transactions/[id]/income"
-                                                                        options={PUSH_OPTIONS}
-                                                                    />
-                                                                    <Stack.Screen
-                                                                        name="(main)/transactions/[id]/transfer"
-                                                                        options={PUSH_OPTIONS}
-                                                                    />
-                                                                    <Stack.Screen
-                                                                        name="(main)/analytics/transactions"
-                                                                        options={PUSH_OPTIONS}
-                                                                    />
-                                                                    <Stack.Screen name="(main)/categorize" options={PUSH_OPTIONS} />
-                                                                    <Stack.Screen name="(main)/budget" options={PUSH_OPTIONS} />
-                                                                    <Stack.Screen name="(main)/recurring" options={PUSH_OPTIONS} />
+                                                                    <Stack.Screen name="(main)/create-account" />
+                                                                    <Stack.Screen name="(main)/account/[id]/details" />
+                                                                    <Stack.Screen name="(main)/institution/[id]" />
+                                                                    <Stack.Screen name="(main)/inzhur/purchase" />
+                                                                    <Stack.Screen name="(main)/account/[id]/update" />
+                                                                    <Stack.Screen name="(main)/currency/[id]" />
+                                                                    <Stack.Screen name="(main)/create-transaction/expense" />
+                                                                    <Stack.Screen name="(main)/create-transaction/income" />
+                                                                    <Stack.Screen name="(main)/create-transaction/transfer" />
+                                                                    <Stack.Screen name="(main)/matching-rules" />
+                                                                    <Stack.Screen name="(main)/transactions/[id]/expense" />
+                                                                    <Stack.Screen name="(main)/transactions/[id]/income" />
+                                                                    <Stack.Screen name="(main)/transactions/[id]/transfer" />
+                                                                    <Stack.Screen name="(main)/analytics/transactions" />
+                                                                    <Stack.Screen name="(main)/categorize" />
                                                                     <Stack.Screen name="category-selector" options={SELECTOR_OPTIONS} />
                                                                     <Stack.Screen
                                                                         name="account-selector"
@@ -289,7 +258,7 @@ export const RootLayoutContent = () => {
                                                                         options={formSheetOptions([0.75, DETENT_95])}
                                                                     />
                                                                     <Stack.Screen name="import-backup-pin" options={PIN_OPTIONS} />
-                                                                    <Stack.Screen name="pin-setup" options={PUSH_OPTIONS} />
+                                                                    <Stack.Screen name="pin-setup" />
                                                                     <Stack.Screen name="add-pin" options={sheetOptions} />
                                                                     <Stack.Screen
                                                                         name="transaction-type-filter"
@@ -316,7 +285,7 @@ export const RootLayoutContent = () => {
                                                                         options={STACKED_FILTER_OPTIONS}
                                                                     />
                                                                     <Stack.Screen name="budget-period-summary" options={sheetOptions} />
-                                                                    <Stack.Screen name="rule-form" options={PUSH_OPTIONS} />
+                                                                    <Stack.Screen name="rule-form" />
                                                                     <Stack.Screen
                                                                         name="rule-selector"
                                                                         options={fitToContentsSheetOptions(sheetGroupedSurface)}
