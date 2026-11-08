@@ -51,7 +51,7 @@ export const MorphingSheet = ({ steps, activeStep, onDismiss, isContentDraggable
 
                 <Animated.View className="absolute right-[16px] left-[16px] overflow-hidden" style={frameStyle} pointerEvents="box-none">
                     <GestureDetector gesture={bodyGesture}>
-                        <Animated.View className="bg-sheet-surface absolute inset-x-0 top-0" style={cardStyle} testID={testID}>
+                        <Animated.View className="bg-sheet-surface absolute inset-x-0 top-0 overflow-hidden" style={cardStyle} testID={testID}>
                             {mountedSteps.map(step => (
                                 <MorphingSheetStep
                                     key={step}
