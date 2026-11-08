@@ -16,6 +16,7 @@ import {
 } from '@budgie/contracts';
 import { AccountBalanceIncrementalService, TransactionTransferService } from '@budgie/ledger';
 import * as Context from 'effect/Context';
+import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
@@ -55,10 +56,6 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
             );
 
             if (isDefined(existing)) {
-                if (existing.isActive || existing.includeInNetWorth) {
-                    yield* accountRepository.updateById(existing.id, { isActive: false, includeInNetWorth: false });
-                }
-
                 return existing;
             }
 
@@ -106,6 +103,17 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
 
         return {
             repair: Effect.fn('OwnTransferRepairService.repair')(function* (scope: ConsolidationScanScopeInterface | null = null) {
+                yield* Db.transaction(
+                    Effect.gen(function* () {
+                        const reservedAccounts = yield* accountRepository.findByExternalIds([UNTRACKED_OWN_ACCOUNT_EXTERNAL_ID]);
+                        for (const account of reservedAccounts) {
+                            if (account.isActive || account.includeInNetWorth) {
+                                yield* accountRepository.updateById(account.id, { isActive: false, includeInNetWorth: false });
+                                yield* balances.updateBalancesByAccountIds([account.id]);
+                            }
+                        }
+                    })
+                );
                 const accounts = yield* repository.findAccounts;
                 const cardMatches = (transaction: TransactionWithEntriesEntityInterface) =>
                     accounts.filter(
@@ -143,22 +151,15 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
                     return 0;
                 }
 
-                const candidateIds = candidates.map(candidate => candidate.transaction.id);
-                const untrackedTransferIds = untrackedTransfers.map(transfer => transfer.id);
-                const findPlausibleOpposites = Effect.fnUntraced(function* (transactionIds: number[]) {
-                    const links = yield* repository.findOpposites(transactionIds);
+                const findPlausibleOpposites = Effect.fnUntraced(function* (sources: TransactionWithEntriesEntityInterface[]) {
+                    const links = yield* repository.findOpposites(sources.map(transaction => transaction.id));
                     const eligible = (yield* repository.findTransactions(
                         null,
                         links.map(link => link.oppositeId)
                     )).filter(isSingleEntry);
-                    const sources = [
-                        ...transactions,
-                        ...untrackedTransfers,
-                        ...(yield* repository.findTransactions(null, transactionIds)).filter(isSingleEntry)
-                    ];
 
                     return {
-                        rawLinks: links,
+                        eligible,
                         links: links.filter(link => {
                             const opposite = eligible.find(transaction => transaction.id === link.oppositeId);
                             const source = sources.find(transaction => transaction.id === link.transactionId);
@@ -173,13 +174,25 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
                         })
                     };
                 });
-                const foundOpposites = yield* findPlausibleOpposites([...candidateIds, ...untrackedTransferIds]);
+                const foundOpposites = yield* findPlausibleOpposites([
+                    ...candidates.map(candidate => candidate.transaction),
+                    ...untrackedTransfers
+                ]);
                 const opposites = foundOpposites.links;
-                const eligibleOpposites = (yield* repository.findTransactions(
-                    null,
-                    opposites.map(link => link.oppositeId)
-                )).filter(isSingleEntry);
-                const reverseOpposites = (yield* findPlausibleOpposites(opposites.map(link => link.oppositeId))).links;
+                const eligibleOpposites = foundOpposites.eligible;
+                const reverseOpposites = (yield* findPlausibleOpposites(eligibleOpposites)).links;
+                const competingUntrackedTransfers = isEmptyArray(eligibleOpposites)
+                    ? []
+                    : (yield* repository.findUntrackedTransfers({
+                          operatedAtFrom: DateTime.toDateUtc(
+                              DateTime.makeUnsafe(Math.min(...eligibleOpposites.map(transaction => transaction.operatedAt.getTime())))
+                          ),
+                          operatedAtTo: DateTime.toDateUtc(
+                              DateTime.makeUnsafe(Math.max(...eligibleOpposites.map(transaction => transaction.operatedAt.getTime())))
+                          ),
+                          transactionIds: []
+                      })).filter(isSingleEntry);
+                const untrackedOpposites = (yield* findPlausibleOpposites(competingUntrackedTransfers)).links;
                 const decisions = [
                     ...untrackedTransfers.flatMap(transaction => {
                         const account = accounts.find(candidate => candidate.id === candidateEntries(transaction)[0].accountId);
@@ -193,14 +206,13 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
                         const counterpart = eligibleOpposites.find(candidate => candidate.id === links[0]?.oppositeId);
                         const competitors = new Set([
                             ...reverseOpposites.filter(link => link.transactionId === counterpart?.id).map(link => link.oppositeId),
-                            ...opposites
-                                .filter(link => link.oppositeId === counterpart?.id && untrackedTransferIds.includes(link.transactionId))
-                                .map(link => link.transactionId)
+                            ...untrackedOpposites.filter(link => link.oppositeId === counterpart?.id).map(link => link.transactionId)
                         ]);
 
                         if (
                             links.length === 1 &&
                             isDefined(counterpart) &&
+                            isDefined(counterpart.externalSource) &&
                             competitors.size === 1 &&
                             (transaction.type === TransactionTypeEnum.TRANSFER ||
                                 (account.instrumentId ===
@@ -218,7 +230,6 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
                         if (
                             isEmptyArray(links) &&
                             matches.length === 1 &&
-                            !foundOpposites.rawLinks.some(link => link.transactionId === transaction.id) &&
                             !isDefined(matches[0].integrationId) &&
                             !isDefined(matches[0].externalSource) &&
                             matches[0].instrumentId === account.instrumentId

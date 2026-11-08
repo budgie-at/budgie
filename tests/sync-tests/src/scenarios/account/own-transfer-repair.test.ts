@@ -2,6 +2,7 @@ import {
     AccountBalanceRepository,
     AccountEntityTable,
     TransactionEntryTypeEnum,
+    TRANSFER_PAIR_TIME_WINDOW_SECONDS,
     ExternalSourceEnum,
     InstrumentTypeEnum,
     TransactionConsolidationTypeEnum,
@@ -9,6 +10,7 @@ import {
     TransactionTypeEnum,
     TransactionUpdatedByEnum
 } from '@budgie/contracts';
+import { AccountBalanceIncrementalService } from '@budgie/ledger';
 import { OwnTransferRepairService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
@@ -30,7 +32,7 @@ const fixture = Effect.gen(function* () {
     const expense = yield* seed.bankPairExpense({ operatedAt, externalId: 'outgoing' }, { accountId: source.id, amount: 50_000_000 });
     yield* seed.updateTransaction(expense.id, { title: 'Зі своєї картки *2468', externalSource: ExternalSourceEnum.MONOBANK });
 
-    return { repair, source, target, expense };
+    return { repair, source, target, expense, integration };
 });
 const addIncome = (accountId: number) =>
     Effect.gen(function* () {
@@ -197,6 +199,26 @@ describe('account/own-transfer-repair', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
+    it.effect('converts a manual card target despite an unrelated foreign-currency income', () =>
+        Effect.gen(function* () {
+            const { repair, source, target, expense } = yield* fixture;
+            yield* testDb
+                .update(AccountEntityTable)
+                .set({ integrationId: null, externalSource: null })
+                .where(eq(AccountEntityTable.id, target.id));
+            const instrument = yield* seed.instrument({ code: 'USD' });
+            const unrelated = yield* seed.account({ instrumentId: instrument.id });
+            const income = yield* addIncome(unrelated.id);
+            yield* seed.updateTransaction(income.id, { title: 'Salary' });
+            expect(yield* repair.repair()).toBe(1);
+            const transaction = yield* testQueryService.findTransactionById(expense.id);
+            expect(transaction.type).toBe(TransactionTypeEnum.TRANSFER);
+            expect(transaction.fromAccountId).toBe(source.id);
+            expect(transaction.toAccountId).toBe(target.id);
+            expect((yield* testQueryService.findTransactionById(income.id)).type).toBe(TransactionTypeEnum.INCOME);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
     it.effect('does not convert a manual target in another instrument', () =>
         Effect.gen(function* () {
             const { repair, target, expense } = yield* fixture;
@@ -219,10 +241,18 @@ describe('account/own-transfer-repair', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('re-pairs an untracked fallback when the other synced leg arrives in a later scoped repair', () =>
+    it.effect('pairs two Monobank cards when their legs arrive in separate scoped repairs', () =>
         Effect.gen(function* () {
-            const { repair, source, target, expense } = yield* fixture;
+            const { repair, source, target, expense, integration } = yield* fixture;
             const balances = yield* AccountBalanceRepository;
+            yield* testDb
+                .update(AccountEntityTable)
+                .set({ integrationId: integration.id, externalSource: ExternalSourceEnum.MONOBANK, externalId: 'source-mono-id' })
+                .where(eq(AccountEntityTable.id, source.id));
+            yield* testDb
+                .update(AccountEntityTable)
+                .set({ externalSource: ExternalSourceEnum.MONOBANK })
+                .where(eq(AccountEntityTable.id, target.id));
             yield* seed.updateTransaction(expense.id, { title: 'На свою картку' });
             expect(yield* repair.repair({ operatedAtFrom: operatedAt, operatedAtTo: operatedAt, transactionIds: [expense.id] })).toBe(1);
             yield* expectUntrackedTransfer(expense.id, source.id);
@@ -249,6 +279,37 @@ describe('account/own-transfer-repair', () => {
             expect((yield* balances.getByAccountIds([untracked.id])).map(balance => balance.amount)).toEqual([0]);
             expect((yield* balances.getLedgerBalances([untracked.id])).get(untracked.id) ?? 0).toBe(0);
             expect(yield* repair.repair()).toBe(0);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect.each(['untracked', 'fresh'])('does not re-pair with a competing %s movement outside the scope', competitorKind =>
+        Effect.gen(function* () {
+            const { repair, source, target, expense } = yield* fixture;
+            const firstDate = new Date(operatedAt.getTime() - TRANSFER_PAIR_TIME_WINDOW_SECONDS * 1000);
+            const competitorDate = new Date(operatedAt.getTime() + TRANSFER_PAIR_TIME_WINDOW_SECONDS * 1000);
+            yield* seed.updateTransaction(expense.id, { title: 'На свою картку' });
+            yield* testDb.update(TransactionEntityTable).set({ operatedAt: firstDate }).where(eq(TransactionEntityTable.id, expense.id));
+            expect(yield* repair.repair()).toBe(1);
+            const competitor = yield* seed.bankPairExpense(
+                { operatedAt: competitorDate, externalId: 'competitor' },
+                { accountId: source.id, amount: 50_000_000 }
+            );
+            yield* seed.updateTransaction(competitor.id, { title: 'На свою картку', externalSource: ExternalSourceEnum.MONOBANK });
+            if (competitorKind === 'untracked') {
+                expect(yield* repair.repair()).toBe(1);
+            }
+            const income = yield* addIncome(target.id);
+            const balances = yield* AccountBalanceIncrementalService;
+            yield* balances.updateBalancesByAccountIds([source.id, target.id]);
+            expect(yield* repair.repair({ operatedAtFrom: firstDate, operatedAtTo: firstDate, transactionIds: [expense.id] })).toBe(0);
+            yield* expectUntrackedTransfer(expense.id, source.id);
+            expect((yield* testQueryService.findTransactionById(income.id)).type).toBe(TransactionTypeEnum.INCOME);
+            expect(yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toEqual([]);
+            if (competitorKind === 'untracked') {
+                yield* expectUntrackedTransfer(competitor.id, source.id);
+            } else {
+                yield* expectExpense(competitor.id);
+            }
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -287,9 +348,9 @@ describe('account/own-transfer-repair', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('restores reserved account flags when reusing it for a fallback', () =>
+    it.effect('restores reserved account flags even with no scoped candidates', () =>
         Effect.gen(function* () {
-            const { repair, expense, source } = yield* fixture;
+            const { repair, expense } = yield* fixture;
             yield* seed.updateTransaction(expense.id, { title: 'На свою картку' });
             expect(yield* repair.repair()).toBe(1);
             const [untracked] = yield* findUntrackedAccounts;
@@ -297,12 +358,8 @@ describe('account/own-transfer-repair', () => {
                 .update(AccountEntityTable)
                 .set({ isActive: true, includeInNetWorth: true })
                 .where(eq(AccountEntityTable.id, untracked.id));
-            const next = yield* seed.bankPairExpense(
-                { operatedAt: new Date(operatedAt.getTime() + 86_400_000), externalId: 'next' },
-                { accountId: source.id, amount: 60_000_000 }
-            );
-            yield* seed.updateTransaction(next.id, { title: 'На свою картку', externalSource: ExternalSourceEnum.MONOBANK });
-            expect(yield* repair.repair()).toBe(1);
+            const emptyDate = new Date(operatedAt.getTime() + 86_400_000);
+            expect(yield* repair.repair({ operatedAtFrom: emptyDate, operatedAtTo: emptyDate, transactionIds: [] })).toBe(0);
             expect(yield* findUntrackedAccounts).toEqual([
                 expect.objectContaining({ id: untracked.id, isActive: false, includeInNetWorth: false })
             ]);

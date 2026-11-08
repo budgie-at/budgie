@@ -77,7 +77,7 @@ export class OwnTransferRepository extends Context.Service<OwnTransferRepository
                                 ),
                             ...buildUnconsolidatedScopeFilter(scope),
                             ...(isDefined(transactionIds) && { id: { in: transactionIds } }),
-                            externalSource: { isNotNull: true },
+                            ...(!isDefined(transactionIds) && { externalSource: { isNotNull: true } }),
                             type: { in: [TransactionTypeEnum.EXPENSE, TransactionTypeEnum.INCOME] }
                         },
                         with: { entries: { where: transactionFilters.ledgerEntryFilter } }
@@ -155,16 +155,7 @@ export class OwnTransferRepository extends Context.Service<OwnTransferRepository
                                 eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id),
                                 transactionFilters.buildCategorizableEntryCondition(),
                                 ne(TransactionEntryEntityTable.type, sourceEntry.type),
-                                ne(TransactionEntryEntityTable.accountId, sourceEntry.accountId),
-                                or(
-                                    ne(AccountEntityTable.instrumentId, sourceAccount.instrumentId),
-                                    and(
-                                        eq(AccountEntityTable.instrumentId, sourceAccount.instrumentId),
-                                        sql`CASE WHEN ${sourceEntry.type} = ${TransactionEntryTypeEnum.CREDIT}
-                                            THEN ${TransactionEntryEntityTable.amount} BETWEEN ${sourceEntry.amount} * 0.98 AND ${sourceEntry.amount} + ${PRECISION / 100}
-                                            ELSE ${sourceEntry.amount} BETWEEN ${TransactionEntryEntityTable.amount} * 0.98 AND ${TransactionEntryEntityTable.amount} + ${PRECISION / 100} END`
-                                    )
-                                )
+                                ne(TransactionEntryEntityTable.accountId, sourceEntry.accountId)
                             )
                         )
                         .innerJoin(
@@ -178,6 +169,15 @@ export class OwnTransferRepository extends Context.Service<OwnTransferRepository
                         )
                         .where(
                             and(
+                                or(
+                                    ne(AccountEntityTable.instrumentId, sourceAccount.instrumentId),
+                                    and(
+                                        eq(AccountEntityTable.instrumentId, sourceAccount.instrumentId),
+                                        sql`CASE WHEN ${sourceEntry.type} = ${TransactionEntryTypeEnum.CREDIT}
+                                            THEN ${TransactionEntryEntityTable.amount} BETWEEN ${sourceEntry.amount} * 0.98 AND ${sourceEntry.amount} + ${PRECISION / 100}
+                                            ELSE ${sourceEntry.amount} BETWEEN ${TransactionEntryEntityTable.amount} * 0.98 AND ${TransactionEntryEntityTable.amount} + ${PRECISION / 100} END`
+                                    )
+                                ),
                                 inArray(source.id, transactionIds),
                                 transactionFilters.buildVisibleTransactionCondition(),
                                 isNull(TransactionEntityTable.consolidationType)
