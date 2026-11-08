@@ -79,12 +79,7 @@ export const ConvertToInstallmentContent = ({ params, onCommit }: Props) => {
                         bounces={false}
                     >
                         <View className="gap-y-3xl px-3xl pt-3xl pb-7xl">
-                            <ConvertToInstallmentParts
-                                params={params}
-                                split={split}
-                                recoveryNote={recoveryNote}
-                                onLayout={scrollHandlers.handleHeroLayout}
-                            />
+                            <ConvertToInstallmentParts params={params} split={split} recoveryNote={recoveryNote} />
                             <View className="gap-y-lg">
                                 <InstallmentCountPicker selectedCount={split.installmentCount} onSelect={handleSelectCount} />
                                 {split.isSplittable ? (

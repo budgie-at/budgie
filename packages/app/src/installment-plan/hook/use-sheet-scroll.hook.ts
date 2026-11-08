@@ -15,7 +15,6 @@ export const useSheetScroll = () => {
     const { height: maxHeight } = useMorphingSheetListHeight(MORPHING_SHEET_DESTINATION_HEIGHT_RATIO);
     const scrollRef = useRef<ScrollView>(null);
     const revealRef = useRef({ feeBottom: 0, viewportHeight: 0 });
-    const [heroTop, setHeroTop] = useState(0);
     const [isScrolled, setIsScrolled] = useState(false);
     const [isFeeEditing, setIsFeeEditing] = useState(false);
     const [isFeePinned, setIsFeePinned] = useState(false);
@@ -33,17 +32,13 @@ export const useSheetScroll = () => {
     const revealFee = () => {
         const revealOffset = revealRef.current.feeBottom + FEE_REVEAL_GAP - revealRef.current.viewportHeight;
         if (isFeeEditing && isPositiveNumber(revealOffset)) {
-            scrollRef.current?.scrollTo({ y: Math.max(revealOffset, heroTop - FEE_REVEAL_GAP), animated: false });
+            scrollRef.current?.scrollTo({ y: revealOffset, animated: false });
         }
     };
 
     const handleFeeLayout = (event: LayoutChangeEvent) => {
         revealRef.current.feeBottom = event.nativeEvent.layout.y + event.nativeEvent.layout.height;
         revealFee();
-    };
-
-    const handleHeroLayout = (event: LayoutChangeEvent) => {
-        setHeroTop(event.nativeEvent.layout.y);
     };
 
     const handleScrollLayout = (event: LayoutChangeEvent) => {
@@ -58,7 +53,7 @@ export const useSheetScroll = () => {
     return {
         scrollViewProps: {
             ref: scrollRef,
-            contentContainerStyle: { paddingBottom: isFeeEditing ? heroTop : 0 },
+            contentContainerStyle: { paddingBottom: isFeeEditing ? FEE_REVEAL_GAP : 0 },
             onLayout: handleScrollLayout,
             onScroll: handleScroll,
             scrollEventThrottle: 16
@@ -71,7 +66,6 @@ export const useSheetScroll = () => {
             setIsFeeEditing(isEditing);
             setIsFeePinned(previous => previous || isEditing);
         },
-        handleFeeLayout,
-        handleHeroLayout
+        handleFeeLayout
     };
 };
