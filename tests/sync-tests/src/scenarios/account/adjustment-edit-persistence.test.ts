@@ -29,7 +29,7 @@ const readAdjustment = (id: number) =>
     );
 
 describe('account/adjustment-edit-persistence', () => {
-    it.effect('rebases a reconciliation amount edit but preserves a note-only save on its canonical adjustment', () =>
+    it.effect('rebases a reconciliation amount edit without losing its note and preserves a canonical note-only save', () =>
         Effect.gen(function* () {
             const balances = yield* AccountBalanceIncrementalService;
             const syncRepository = yield* SyncRepository;
@@ -55,7 +55,7 @@ describe('account/adjustment-edit-persistence', () => {
             const canonicalId = (yield* syncRepository.getByAccountId(account.id))?.reconciliationTransactionId ?? 0;
             const canonical = yield* transactions.getByIdWithEntries(canonicalId);
             expect(canonicalId).not.toBe(originalId);
-            expect(canonical?.comment).toBe('');
+            expect(canonical?.comment).toBe('Amount edit note');
             expect(canonical?.entries).toMatchObject([{ type: TransactionEntryTypeEnum.DEBIT, amount: convertToMicroUnits(100) }]);
             expect(yield* fetchAccountBalance(account.id)).toBe(convertToMicroUnits(100));
             const editable = yield* readAdjustment(canonicalId);
@@ -63,7 +63,7 @@ describe('account/adjustment-edit-persistence', () => {
             if (!isDefined(details)) {
                 return yield* Effect.die('Fixture adjustment details missing');
             }
-            expect(details.isReconciliation).toBe(true);
+            expect(details.isAmountReadOnly).toBe(true);
             expect(getAdjustmentBalanceChange(details, 250, false)).toBe(0);
             yield* transactionService.updateById(
                 canonicalId,
@@ -89,17 +89,106 @@ describe('account/adjustment-edit-persistence', () => {
             if (!isDefined(details)) {
                 return yield* Effect.die('Fixture adjustment details missing');
             }
-            expect(details.isReconciliation).toBe(false);
+            expect(details.isAmountReadOnly).toBe(true);
             expect(getAdjustmentBalanceChange(details, 2, true)).toBe(0);
             yield* transactionService.updateById(
                 adjustmentId,
                 buildAdjustmentUpdateInput({ ...editable, comment: 'Authoritative account note' }, details, 2, true)
             );
             expect((yield* transactions.getByIdWithEntries(adjustmentId))?.entries).toMatchObject([
-                { type: TransactionEntryTypeEnum.DEBIT, amount: convertToMicroUnits(2) }
+                { type: TransactionEntryTypeEnum.DEBIT, amount: convertToMicroUnits(1) }
             ]);
             expect((yield* transactions.getByIdWithEntries(adjustmentId))?.comment).toBe('Authoritative account note');
             expect(yield* fetchAccountBalance(account.id)).toBe(convertToMicroUnits(10));
         }).pipe(Effect.provide(TestLayer))
     );
+
+    for (const scenario of [
+        { accountType: AccountTypeEnum.BANK_SYNC, historicalAmount: 40, adjustmentAmount: 60, entryType: TransactionEntryTypeEnum.DEBIT },
+        { accountType: AccountTypeEnum.BANK_SYNC, historicalAmount: 120, adjustmentAmount: 20, entryType: TransactionEntryTypeEnum.CREDIT },
+        {
+            accountType: AccountTypeEnum.BANK_SYNC,
+            historicalAmount: 100,
+            adjustmentAmount: null,
+            entryType: TransactionEntryTypeEnum.CREDIT
+        },
+        { accountType: AccountTypeEnum.CRYPTO_SYNC, historicalAmount: 40, adjustmentAmount: 60, entryType: TransactionEntryTypeEnum.DEBIT }
+    ]) {
+        it.effect(`rebases ${scenario.accountType} after a historical edit to ${scenario.historicalAmount}`, () =>
+            Effect.gen(function* () {
+                const transactionService = yield* TransactionService;
+                const syncRepository = yield* SyncRepository;
+                const accountBalances = yield* AccountBalanceRepository;
+                const adjustmentService = yield* BalanceAdjustmentService;
+                const balances = yield* AccountBalanceIncrementalService;
+                const transactions = yield* TransactionRepository;
+                const account = yield* seed.account({ type: scenario.accountType });
+                yield* accountBalances.bulkUpsert([{ accountId: account.id, amount: convertToMicroUnits(100) }]);
+                const sync = yield* seed.sync({ accountId: account.id, mode: SyncModeEnum.FORWARD });
+                yield* syncRepository.update(sync.id, { reconciledAt: SNAPSHOT_AT, reconciledBalance: convertToMicroUnits(100) });
+                const historical = yield* seed.bankPairIncome(
+                    { externalId: 'noted-reconciliation-history', operatedAt: new Date('2026-09-30T12:00:00Z') },
+                    { accountId: account.id, amount: convertToMicroUnits(20) }
+                );
+                yield* balances.updateBalancesByAccountIds([account.id]);
+                yield* adjustmentService.rebaseReconciliations([account.id]);
+                const originalId = (yield* syncRepository.getByAccountId(account.id))?.reconciliationTransactionId;
+                if (!isDefined(originalId)) {
+                    return yield* Effect.die('Fixture reconciliation missing');
+                }
+                const original = yield* transactions.getByIdWithEntries(originalId);
+                yield* transactionService.updateById(originalId, {
+                    type: TransactionTypeEnum.ADJUSTMENT,
+                    comment: 'Opening balance explanation',
+                    title: 'Reconciliation title',
+                    operatedAt: original?.operatedAt ?? SNAPSHOT_AT,
+                    fromAccountId: null,
+                    toAccountId: account.id,
+                    tagIds: [],
+                    entries: [
+                        {
+                            accountId: account.id,
+                            type: TransactionEntryTypeEnum.DEBIT,
+                            amount: 80,
+                            categoryId: null,
+                            mccCategoryId: null
+                        }
+                    ]
+                });
+                expect((yield* transactions.getByIdWithEntries(originalId))?.comment).toBe('Opening balance explanation');
+                yield* transactionService.updateById(historical.id, {
+                    type: TransactionTypeEnum.INCOME,
+                    operatedAt: historical.operatedAt,
+                    fromAccountId: null,
+                    toAccountId: account.id,
+                    tagIds: [],
+                    entries: [
+                        {
+                            accountId: account.id,
+                            type: TransactionEntryTypeEnum.DEBIT,
+                            amount: scenario.historicalAmount,
+                            categoryId: null,
+                            mccCategoryId: null
+                        }
+                    ]
+                });
+                yield* adjustmentService.rebaseReconciliations([account.id]);
+                const replacementId = (yield* syncRepository.getByAccountId(account.id))?.reconciliationTransactionId;
+                expect(yield* transactions.getByIdWithEntries(originalId)).toBeUndefined();
+                if (isDefined(scenario.adjustmentAmount)) {
+                    expect(replacementId).not.toBe(originalId);
+                    expect(yield* transactions.getByIdWithEntries(replacementId ?? 0)).toMatchObject({
+                        comment: 'Opening balance explanation',
+                        title: 'Reconciliation title',
+                        entries: [{ amount: convertToMicroUnits(scenario.adjustmentAmount), type: scenario.entryType }]
+                    });
+                } else {
+                    expect(replacementId).toBeNull();
+                }
+                const ledgerBalance = (yield* accountBalances.getLedgerBalances([account.id])).get(account.id);
+                expect(ledgerBalance).toBe(convertToMicroUnits(100));
+                expect(yield* fetchAccountBalance(account.id)).toBe(ledgerBalance);
+            }).pipe(Effect.provide(TestLayer))
+        );
+    }
 });

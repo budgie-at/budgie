@@ -3,7 +3,7 @@ import { use } from 'react';
 import { Text, useWindowDimensions, View } from 'react-native';
 
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
-import { ADJUSTMENT_COMPACT_FONT_SCALE } from '../../constant/adjustment-compact-font-scale.constant';
+import { TRANSACTION_LARGE_TEXT_SCALE } from '../../constant/transaction-large-text-scale.constant';
 import { TransactionKeypadContext } from '../../context/transaction-keypad.context';
 import { AdjustmentBalanceSummary } from '../adjustment-balance-summary/adjustment-balance-summary';
 import { TransactionFormIcon } from '../transaction-form-icon/transaction-form-icon';
@@ -25,7 +25,7 @@ const COMPACT_ACCOUNT_STYLE = { paddingVertical: 4 };
 export const AdjustmentAccountSummary = ({ details, amount, isIncrease }: Props) => {
     const { t } = useLingui();
     const { isExpanded } = use(TransactionKeypadContext);
-    const isCompact = useWindowDimensions().fontScale >= ADJUSTMENT_COMPACT_FONT_SCALE;
+    const isCompact = useWindowDimensions().fontScale >= TRANSACTION_LARGE_TEXT_SCALE;
     const isCompactExpanded = isExpanded && isCompact;
     const valueProps = { testID: AdjustmentSelector.AccountValue, ...(isCompactExpanded && { numberOfLines: 1 }) };
     const trailingCurrency = isCompact ? (

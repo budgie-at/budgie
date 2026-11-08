@@ -9,8 +9,8 @@ export const buildAdjustmentUpdateInput = (
     amount: number,
     isIncrease: boolean
 ): TransactionUpdateServiceInputInterface => {
-    const resolvedIsIncrease = details.isReconciliation ? details.initialIsIncrease : isIncrease;
-    const resolvedAmount = details.isReconciliation ? details.initialAmount : amount;
+    const resolvedIsIncrease = details.isAmountReadOnly ? details.initialIsIncrease : isIncrease;
+    const resolvedAmount = details.isAmountReadOnly ? details.initialAmount : amount;
 
     return {
         title: transaction.title,

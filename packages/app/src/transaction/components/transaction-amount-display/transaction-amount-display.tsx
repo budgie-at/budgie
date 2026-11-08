@@ -104,7 +104,7 @@ export const TransactionAmountDisplay = ({
                         {fullDisplay}
                     </AmountFieldText>
                 </AmountField>
-                {isDefined(onPress) ? (
+                {isEditing || isDefined(onPress) ? (
                     <View pointerEvents="none" className="absolute top-0 bottom-0 justify-center" style={accessoryStyle}>
                         {isEditing ? (
                             <AmountCaret height={caretHeight} />

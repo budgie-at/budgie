@@ -7,7 +7,7 @@ import { isDefined } from '@rnw-community/shared';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { MoneyText } from '../../../@generic/component/money-text/money-text';
 import { MoneyTextVariantEnum } from '../../../@generic/enum/money-text-variant.enum';
-import { ADJUSTMENT_COMPACT_FONT_SCALE } from '../../constant/adjustment-compact-font-scale.constant';
+import { TRANSACTION_LARGE_TEXT_SCALE } from '../../constant/transaction-large-text-scale.constant';
 import { TransactionKeypadContext } from '../../context/transaction-keypad.context';
 import { useAdjustmentBalance } from '../../hook/use-adjustment-balance.hook';
 import { AdjustmentSelector } from '../adjustment-account-summary/adjustment-account-summary.selector';
@@ -29,7 +29,7 @@ export const AdjustmentBalanceSummary = ({ details, amount, isIncrease, children
     const { fontScale } = useWindowDimensions();
     const balance = useAdjustmentBalance(details, amount, isIncrease);
 
-    if (isExpanded && fontScale >= ADJUSTMENT_COMPACT_FONT_SCALE) {
+    if (isExpanded && fontScale >= TRANSACTION_LARGE_TEXT_SCALE) {
         return null;
     }
 

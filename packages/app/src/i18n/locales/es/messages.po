@@ -3864,7 +3864,7 @@ msgstr "Las cuentas de deuda no pueden participar en transferencias"
 msgid "Debts and loans"
 msgstr "Deudas y préstamos"
 
-#: src/@generic/component/amount-sign-pill/amount-sign-pill.tsx
+#: src/transaction/components/adjustment-direction/adjustment-direction.tsx
 msgid "Decrease"
 msgstr "Disminuir"
 
@@ -5478,7 +5478,7 @@ msgstr "Ingresos recibidos"
 msgid "Incorrect PIN"
 msgstr "PIN incorrecto"
 
-#: src/@generic/component/amount-sign-pill/amount-sign-pill.tsx
+#: src/transaction/components/adjustment-direction/adjustment-direction.tsx
 msgid "Increase"
 msgstr "Aumentar"
 

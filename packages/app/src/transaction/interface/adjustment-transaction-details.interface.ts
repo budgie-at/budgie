@@ -1,7 +1,7 @@
 import type { TransactionEntryCreateInputInterface, UserIconType } from '@budgie/contracts';
 
 export interface AdjustmentTransactionDetailsInterface {
-    readonly isReconciliation: boolean;
+    readonly isAmountReadOnly: boolean;
     readonly isBalanceFixed: boolean;
     readonly accountId: number;
     readonly accountTitle: string;

@@ -3864,7 +3864,7 @@ msgstr "Les comptes de dette ne peuvent pas participer aux virements"
 msgid "Debts and loans"
 msgstr "Dettes et prêts"
 
-#: src/@generic/component/amount-sign-pill/amount-sign-pill.tsx
+#: src/transaction/components/adjustment-direction/adjustment-direction.tsx
 msgid "Decrease"
 msgstr "Diminuer"
 
@@ -5478,7 +5478,7 @@ msgstr "Revenus reçus"
 msgid "Incorrect PIN"
 msgstr "Code PIN incorrect"
 
-#: src/@generic/component/amount-sign-pill/amount-sign-pill.tsx
+#: src/transaction/components/adjustment-direction/adjustment-direction.tsx
 msgid "Increase"
 msgstr "Augmenter"
 

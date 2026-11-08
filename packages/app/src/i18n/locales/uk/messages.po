@@ -3864,7 +3864,7 @@ msgstr "Боргові рахунки не можуть брати участь 
 msgid "Debts and loans"
 msgstr "Борги та позики"
 
-#: src/@generic/component/amount-sign-pill/amount-sign-pill.tsx
+#: src/transaction/components/adjustment-direction/adjustment-direction.tsx
 msgid "Decrease"
 msgstr "Зменшити"
 
@@ -5478,7 +5478,7 @@ msgstr "Отриманий дохід"
 msgid "Incorrect PIN"
 msgstr "Неправильний PIN‑код"
 
-#: src/@generic/component/amount-sign-pill/amount-sign-pill.tsx
+#: src/transaction/components/adjustment-direction/adjustment-direction.tsx
 msgid "Increase"
 msgstr "Збільшити"
 

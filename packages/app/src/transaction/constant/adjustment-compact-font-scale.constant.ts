@@ -1,1 +1,0 @@
-export const ADJUSTMENT_COMPACT_FONT_SCALE = 1.35;

@@ -27,7 +27,7 @@ export const getAdjustmentDetails = (
     const reconciledAt = sync?.mode === SyncModeEnum.FORWARD && isDefined(sync.reconciledBalance) ? sync.reconciledAt : null;
 
     return {
-        isReconciliation: !isBankAuthoritative && isDefined(reconciledAt) && sync?.reconciliationTransactionId === transaction.id,
+        isAmountReadOnly: isBankAuthoritative || (isDefined(reconciledAt) && sync?.reconciliationTransactionId === transaction.id),
         isBalanceFixed: isBankAuthoritative || (isDefined(reconciledAt) && transaction.operatedAt <= reconciledAt),
         accountId: entry.accountId,
         accountTitle: entry.account.title,

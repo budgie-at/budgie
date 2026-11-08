@@ -3864,7 +3864,7 @@ msgstr "Schuldenkonten können nicht an Überweisungen teilnehmen"
 msgid "Debts and loans"
 msgstr "Schulden und Kredite"
 
-#: src/@generic/component/amount-sign-pill/amount-sign-pill.tsx
+#: src/transaction/components/adjustment-direction/adjustment-direction.tsx
 msgid "Decrease"
 msgstr "Verringern"
 
@@ -5478,7 +5478,7 @@ msgstr "Erhaltenes Einkommen"
 msgid "Incorrect PIN"
 msgstr "Falsche PIN"
 
-#: src/@generic/component/amount-sign-pill/amount-sign-pill.tsx
+#: src/transaction/components/adjustment-direction/adjustment-direction.tsx
 msgid "Increase"
 msgstr "Erhöhen"
 

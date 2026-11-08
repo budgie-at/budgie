@@ -4,7 +4,7 @@ import { Text, useWindowDimensions, View } from 'react-native';
 import { isDefined } from '@rnw-community/shared';
 
 import { cn } from '../../../@generic/utils/cn.util';
-import { ADJUSTMENT_COMPACT_FONT_SCALE } from '../../constant/adjustment-compact-font-scale.constant';
+import { TRANSACTION_LARGE_TEXT_SCALE } from '../../constant/transaction-large-text-scale.constant';
 
 import type { ReactNode } from 'react';
 
@@ -26,7 +26,7 @@ export const AdjustmentBalanceRow = ({
     labelClassName = 'text-[17px] text-secondary-foreground'
 }: Props) => {
     const { t } = useLingui();
-    const isStacked = useWindowDimensions().fontScale >= ADJUSTMENT_COMPACT_FONT_SCALE;
+    const isStacked = useWindowDimensions().fontScale >= TRANSACTION_LARGE_TEXT_SCALE;
     const rowClassName = isStacked ? 'items-start' : 'flex-row items-center justify-between';
     const spokenLabel = isDefined(value) ? `${accessibilityLabel}, ${value}` : accessibilityLabel;
     const accessibilityValue = isDefined(value) ? void 0 : { text: t`Not set` };

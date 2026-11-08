@@ -3865,7 +3865,7 @@ msgstr "Debt accounts cannot take part in transfers"
 msgid "Debts and loans"
 msgstr "Debts and loans"
 
-#: src/@generic/component/amount-sign-pill/amount-sign-pill.tsx
+#: src/transaction/components/adjustment-direction/adjustment-direction.tsx
 msgid "Decrease"
 msgstr "Decrease"
 
@@ -5479,7 +5479,7 @@ msgstr "Income received"
 msgid "Incorrect PIN"
 msgstr "Incorrect PIN"
 
-#: src/@generic/component/amount-sign-pill/amount-sign-pill.tsx
+#: src/transaction/components/adjustment-direction/adjustment-direction.tsx
 msgid "Increase"
 msgstr "Increase"
 

@@ -73,8 +73,8 @@ test('49 balance adjustment saves increase and decrease', { tags: ['accounts', '
 });
 
 for (const fixture of [
-    { accountType: 'BANK_SYNC', original: '100', balance: '100', note: 'Reconciliation note persists', isReconciliation: true },
-    { accountType: 'CRYPTO_SYNC', original: '1', balance: '10', note: 'Authoritative note persists', isReconciliation: false }
+    { accountType: 'BANK_SYNC', original: '100', balance: '100', note: 'Reconciliation note persists' },
+    { accountType: 'CRYPTO_SYNC', original: '1', balance: '10', note: 'Authoritative note persists' }
 ]) {
     test(
         `49 synced adjustment ${fixture.accountType} preserves its balance contract`,
@@ -103,17 +103,10 @@ for (const fixture of [
                 await expect(b.byId(ctx.screen, 'Adjustment.Preview')).toHaveAccessibleName('Balance unchanged');
                 await expect(b.byId(ctx.screen, 'Adjustment.After')).toHaveText(new RegExp(`${fixture.balance}\\.00`));
 
-                if (fixture.isReconciliation) {
-                    await expect(b.byId(ctx.screen, 'TransactionForm.AmountInput')).toBeDisabled();
-                    await b.expectNoId(ctx, 'Adjustment.Decrease');
-                    await b.expectNoId(ctx, 'Adjustment.Increase');
-                    await b.expectText(ctx, 'Sync controls this adjustment. Only the note can be edited.');
-                } else {
-                    await clearAmount(ctx);
-                    await typeDigits(ctx, '2');
-                    await expect(b.byId(ctx.screen, 'Adjustment.Preview')).toHaveAccessibleName('Balance unchanged');
-                    await expect(b.byId(ctx.screen, 'Adjustment.After')).toHaveText(/10\.00/);
-                }
+                await expect(b.byId(ctx.screen, 'TransactionForm.AmountInput')).toBeDisabled();
+                await b.expectNoId(ctx, 'Adjustment.Decrease');
+                await b.expectNoId(ctx, 'Adjustment.Increase');
+                await b.expectText(ctx, 'Sync controls this adjustment. Only the note can be edited.');
 
                 await enterComment(ctx, fixture.note);
                 await expect(b.byId(ctx.screen, 'TransactionForm.SubmitButton')).toBeEnabled();
@@ -124,9 +117,7 @@ for (const fixture of [
                 await expect(b.byId(ctx.screen, 'Adjustment.Preview')).toHaveAccessibleName('Balance unchanged');
                 await expect(b.byId(ctx.screen, 'Adjustment.After')).toHaveText(new RegExp(`${fixture.balance}\\.00`));
                 await expect(b.byId(ctx.screen, 'TransactionForm.CommentInput')).toHaveText(new RegExp(fixture.note));
-                await expect(b.byId(ctx.screen, 'TransactionForm.AmountInput')).toHaveText(
-                    new RegExp(`${fixture.isReconciliation ? fixture.original : '2'}\\.00`)
-                );
+                await expect(b.byId(ctx.screen, 'TransactionForm.AmountInput')).toHaveText(new RegExp(`${fixture.original}\\.00`));
                 await expect(b.byId(ctx.screen, 'TransactionForm.SubmitButton')).toBeDisabled();
             } finally {
                 rmSync(directory, { recursive: true, force: true });

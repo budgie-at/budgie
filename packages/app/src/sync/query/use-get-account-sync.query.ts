@@ -11,5 +11,5 @@ const accountSyncAtom = databaseQueryFamily([SyncEntityTable], SyncRepository, (
 export const useGetAccountSync = (accountId: number) => {
     const result = useLiveAtomValue(accountSyncAtom(accountId));
 
-    return { sync: AsyncResult.getOrElse(result, () => null) ?? null, isLoading: !AsyncResult.isSuccess(result) };
+    return { sync: AsyncResult.getOrElse(result, () => null) ?? null, isLoading: AsyncResult.isInitial(result) };
 };

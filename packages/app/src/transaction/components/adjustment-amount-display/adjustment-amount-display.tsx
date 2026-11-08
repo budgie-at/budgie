@@ -15,7 +15,7 @@ import type { RefObject } from 'react';
 
 interface Props {
     readonly ref?: RefObject<TransactionAmountDisplayRef | null>;
-    readonly details: Pick<AdjustmentTransactionDetailsInterface, 'instrumentSymbol' | 'isReconciliation'>;
+    readonly details: Pick<AdjustmentTransactionDetailsInterface, 'instrumentSymbol' | 'isAmountReadOnly'>;
     readonly input: Pick<ReturnType<typeof useAdjustmentInput>, 'numericValue' | 'displayValue' | 'isIncrease'>;
     readonly editing: ReturnType<typeof useTransactionKeypadEditing>;
 }
@@ -30,7 +30,7 @@ export const AdjustmentAmountDisplay = ({ ref, details, input, editing }: Props)
             : details.instrumentSymbol,
         amount: editing.isEditingAmount ? input.displayValue : formatKeypadAmount(input.displayValue, '.', '', 2)
     };
-    const interaction = details.isReconciliation
+    const interaction = details.isAmountReadOnly
         ? { accessibilityHint: t`Sync controls this adjustment. Only the note can be edited.` }
         : { onPress: editing.toggleKeypad, accessibilityHint: editing.amountAccessibilityHint };
 
