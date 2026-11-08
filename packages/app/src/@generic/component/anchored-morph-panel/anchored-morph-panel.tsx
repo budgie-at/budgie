@@ -6,6 +6,7 @@ import { MorphingSheetDismissContext } from '../../context/morphing-sheet.contex
 import { SurfaceSettledContext } from '../../context/surface-settled.context';
 import { AnchoredMorphPanelHeightEnum } from '../../enum/anchored-morph-panel-height.enum';
 import { useAnchoredMorphPanelMotion } from '../../hook/use-anchored-morph-panel-motion.hook';
+import { useHideHostFromAccessibility } from '../../hook/use-hide-host-from-accessibility.hook';
 
 import type { AnchoredMorphOriginInterface } from '../../interface/anchored-morph-origin.interface';
 import type { ReactNode } from 'react';
@@ -25,6 +26,7 @@ export const AnchoredMorphPanel = ({ origin, onDismissed, height = AnchoredMorph
         fitsContent,
         onDismissed
     );
+    useHideHostFromAccessibility();
     const contentLayoutHandler = fitsContent ? handleContentLayout : void 0;
 
     return (

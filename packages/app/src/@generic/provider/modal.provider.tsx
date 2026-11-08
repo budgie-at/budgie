@@ -31,6 +31,7 @@ import { TransactionTypeFilterModalProvider } from '../../transaction/context/tr
 import { ContactSelectorModalProvider } from './contact-selector-modal.provider';
 import { CurrencySelectorModalProvider } from './currency-selector-modal.provider';
 import { DateFilterModalProvider } from './date-filter-modal.provider';
+import { HostAccessibilityProvider } from './host-accessibility.provider';
 import { IconSelectorModalProvider } from './icon-selector-modal.provider';
 
 export const ModalProvider = ({ children }: PropsWithChildren) => (
@@ -64,7 +65,9 @@ export const ModalProvider = ({ children }: PropsWithChildren) => (
                                                                                                                 <RuleMccSelectorModalProvider>
                                                                                                                     <ConvertToInstallmentModalProvider>
                                                                                                                         <BankIntegrationKeyModalProvider>
-                                                                                                                            {children}
+                                                                                                                            <HostAccessibilityProvider>
+                                                                                                                                {children}
+                                                                                                                            </HostAccessibilityProvider>
                                                                                                                         </BankIntegrationKeyModalProvider>
                                                                                                                     </ConvertToInstallmentModalProvider>
                                                                                                                 </RuleMccSelectorModalProvider>

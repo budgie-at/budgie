@@ -5,6 +5,7 @@ import { isDefined } from '@rnw-community/shared';
 import { MorphingSheetDragContext } from '../../context/morphing-sheet-drag.context';
 import { MorphingSheetDismissContext } from '../../context/morphing-sheet.context';
 import { SurfaceSettledContext } from '../../context/surface-settled.context';
+import { useHideHostFromAccessibility } from '../../hook/use-hide-host-from-accessibility.hook';
 import { useMorphingSheetMotion } from '../../hook/use-morphing-sheet-motion.hook';
 import { useMorphingSheetMountedSteps } from '../../hook/use-morphing-sheet-mounted-steps.hook';
 import { useMorphingSheetPageRect } from '../../hook/use-morphing-sheet-page-rect.hook';
@@ -34,6 +35,7 @@ export const MorphingSheet = ({ steps, activeStep, onDismiss, testID }: Props) =
     const { frameStyle, cardStyle, isDragging } = useMorphingSheetStyle(translateY, visibleHeight, pageProgress, frame);
     const page = useMorphingSheetPage(pageStep, pageProgress, frame.baseBottom);
     const pageRect = useMorphingSheetPageRect(pageProgress, visibleHeight, page.frozenLift, translateY);
+    useHideHostFromAccessibility();
     const stepBack = steps[activeStep]?.onBack;
     const handleBack = stepBack ?? motion.handleDismiss;
 
