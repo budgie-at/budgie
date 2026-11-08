@@ -27,9 +27,10 @@ interface Props {
     readonly excludedIcons?: readonly UserIconNameEnum[];
     readonly onSelect: (icon: UserIconType) => void;
     readonly onBack?: () => void;
+    readonly className?: string;
 }
 
-export const IconPickerPanel = ({ selectedIcon, keywords = [], excludedIcons, onSelect, onBack }: Props) => {
+export const IconPickerPanel = ({ selectedIcon, keywords = [], excludedIcons, onSelect, onBack, className }: Props) => {
     const { t } = useLingui();
     const isSettled = useLockstepScreenSettled();
     const [isDeferred] = useState(!isSettled);
@@ -69,7 +70,7 @@ export const IconPickerPanel = ({ selectedIcon, keywords = [], excludedIcons, on
     const listContent = isDeferred ? <FadeInOnMount>{list}</FadeInOnMount> : list;
 
     return (
-        <SheetSurface>
+        <SheetSurface className={className}>
             <SelectorModalSearchHeader
                 search={search}
                 onSearchChange={handleSearchChange}

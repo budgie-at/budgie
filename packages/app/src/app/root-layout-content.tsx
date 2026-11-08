@@ -28,7 +28,6 @@ import { DatabaseMigrationStatusEnum } from '../@generic/drizzle/enum/database-m
 import { useDatabaseMigration } from '../@generic/drizzle/hook/use-database-migration.hook';
 import { useAppInitialization } from '../@generic/hook/use-app-initialization.hook';
 import { useAppState } from '../@generic/hook/use-app-state.hook';
-import { useIsAccessibilityTextSize } from '../@generic/hook/use-is-accessibility-text-size.hook';
 import { CreateActionProvider } from '../@generic/provider/create-action.provider';
 import { ModalProvider } from '../@generic/provider/modal.provider';
 import { ScreenChromeThemeProvider } from '../@generic/provider/screen-chrome-theme.provider';
@@ -52,7 +51,6 @@ const DETENT_90 = 0.9;
 const DETENT_70 = 0.7;
 const DETENT_40 = 0.4;
 const DETENT_55 = 0.55;
-const DETENT_62 = 0.62;
 const DETENT_85 = 0.85;
 const DETENT_82 = 0.82;
 const DETENT_96 = 0.96;
@@ -80,8 +78,6 @@ const MORPHING_SHEET_OPTIONS: NativeStackNavigationOptions = {
     contentStyle: { backgroundColor: 'transparent' }
 };
 
-const SELECTOR_OPTIONS = formSheetOptions([DETENT_70, DETENT_90], 0);
-const CURRENCY_SELECTOR_OPTIONS = formSheetOptions([DETENT_62, DETENT_90], 0);
 const COMPACT_SELECTOR_OPTIONS = formSheetOptions([DETENT_70, DETENT_90], 0);
 
 enableScreens();
@@ -136,8 +132,6 @@ export const RootLayoutContent = () => {
         '--color-sheet-grouped-surface'
     ]);
     const sheetOptions = fitToContentsSheetOptions(sheetSurface);
-    const isAccessibilityTextSize = useIsAccessibilityTextSize();
-    const contactSelectorOptions = formSheetOptions([DETENT_55, DETENT_90], isAccessibilityTextSize ? 1 : 0);
     useAppInitialization(databaseMigrationStatus === DatabaseMigrationStatusEnum.MIGRATED);
     useAppState(handleAppStateChange);
 
@@ -202,16 +196,16 @@ export const RootLayoutContent = () => {
                                                                     <Stack.Screen name="account-panel" options={MORPHING_SHEET_OPTIONS} />
                                                                     <Stack.Screen
                                                                         name="currency-selector"
-                                                                        options={CURRENCY_SELECTOR_OPTIONS}
+                                                                        options={MORPHING_SHEET_OPTIONS}
                                                                     />
                                                                     <Stack.Screen
                                                                         name="language-selector"
-                                                                        options={COMPACT_SELECTOR_OPTIONS}
+                                                                        options={MORPHING_SHEET_OPTIONS}
                                                                     />
                                                                     <Stack.Screen name="resync-window-picker" options={sheetOptions} />
                                                                     <Stack.Screen
                                                                         name="contact-selector"
-                                                                        options={contactSelectorOptions}
+                                                                        options={MORPHING_SHEET_OPTIONS}
                                                                     />
                                                                     <Stack.Screen name="tags-selector" options={MORPHING_SHEET_OPTIONS} />
                                                                     <Stack.Screen
@@ -235,10 +229,7 @@ export const RootLayoutContent = () => {
                                                                         name="convert-to-refund"
                                                                         options={formSheetOptions([DETENT_90, 1], 0)}
                                                                     />
-                                                                    <Stack.Screen
-                                                                        name="icon-selector"
-                                                                        options={formSheetOptions([0.6, DETENT_90])}
-                                                                    />
+                                                                    <Stack.Screen name="icon-selector" options={MORPHING_SHEET_OPTIONS} />
                                                                     <Stack.Screen name="split-entries" options={MORPHING_SHEET_OPTIONS} />
                                                                     <Stack.Screen name="transaction-fee" options={MORPHING_SHEET_OPTIONS} />
                                                                     <Stack.Screen
@@ -286,7 +277,10 @@ export const RootLayoutContent = () => {
                                                                         name="rule-selector"
                                                                         options={fitToContentsSheetOptions(sheetGroupedSurface)}
                                                                     />
-                                                                    <Stack.Screen name="rule-mcc-selector" options={SELECTOR_OPTIONS} />
+                                                                    <Stack.Screen
+                                                                        name="rule-mcc-selector"
+                                                                        options={MORPHING_SHEET_OPTIONS}
+                                                                    />
                                                                 </Stack>
                                                             </VoiceInputProvider>
                                                         </ModalProvider>

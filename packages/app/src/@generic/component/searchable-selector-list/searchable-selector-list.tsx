@@ -26,6 +26,7 @@ interface Props<T> {
     readonly renderItem: (item: T) => ReactElement;
     readonly emptyState: ReactElement;
     readonly query: string;
+    readonly className?: string;
 }
 
 const ESTIMATED_ROW_HEIGHT = 60;
@@ -36,7 +37,7 @@ const rowKeyExtractor = <T,>(row: SelectorListRowInterface<T>) => row.key;
 
 const getRowType = <T,>(row: SelectorListRowInterface<T>) => (isDefined(row.item) ? SelectorRowKindEnum.ITEM : SelectorRowKindEnum.TITLE);
 
-export const SearchableSelectorList = <T,>({ header, sections, keyExtractor, renderItem, emptyState, query }: Props<T>) => {
+export const SearchableSelectorList = <T,>({ header, sections, keyExtractor, renderItem, emptyState, query, className }: Props<T>) => {
     const contentContainerStyle = useFormsheetListContentStyle();
     const rows = flattenSelectorSections(sections, keyExtractor);
     const { listRef, sectionLetters, visibleLetter, handleSectionLetter, handleViewableItemsChanged } = useSectionIndex(rows);
@@ -69,7 +70,7 @@ export const SearchableSelectorList = <T,>({ header, sections, keyExtractor, ren
     }, [query, listRef]);
 
     return (
-        <SheetSurface>
+        <SheetSurface className={className}>
             {header}
 
             <View className="flex-1">

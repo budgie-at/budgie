@@ -1,11 +1,15 @@
 import { InstrumentEntityInterface, InstrumentTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
+import { View } from 'react-native';
 
 import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { CurrencySelectorModalSelector } from '../../../app/currency-selector-modal.selector';
 import { useGetInstrumentsByTypeQuery } from '../../../instrument/query/use-get-instruments-by-type.query';
+import { MORPHING_SHEET_SELECTOR_HEIGHT_RATIO } from '../../constant/morphing-sheet-height-ratio.constant';
+import { useMorphingSheetCommit } from '../../hook/use-morphing-sheet-commit.hook';
+import { useMorphingSheetListHeight } from '../../hook/use-morphing-sheet-list-height.hook';
 import { groupByInitial } from '../../utils/group-by-initial.util';
 import { partitionInstruments } from '../../utils/partition-instruments.util';
 import { rankInstrumentSearch } from '../../utils/rank-instrument-search.util';
@@ -21,12 +25,14 @@ const keyExtractor = (item: InstrumentEntityInterface) => String(item.id);
 interface Props {
     readonly instrumentType: InstrumentTypeEnum;
     readonly selectedInstrumentId?: number;
-    readonly onSelect: (instrumentId: number) => void;
+    readonly onCommit: (instrumentId: number) => void;
 }
 
-export const CurrencySelectorModalContent = ({ instrumentType, selectedInstrumentId, onSelect }: Props) => {
+export const CurrencySelectorModalContent = ({ instrumentType, selectedInstrumentId, onCommit }: Props) => {
     const { t } = useLingui();
     const [search, setSearch] = useState('');
+    const listStyle = useMorphingSheetListHeight(MORPHING_SHEET_SELECTOR_HEIGHT_RATIO);
+    const commit = useMorphingSheetCommit(onCommit);
     const { instruments, isLoading } = useGetInstrumentsByTypeQuery(instrumentType);
 
     const query = search.trim();
@@ -49,7 +55,7 @@ export const CurrencySelectorModalContent = ({ instrumentType, selectedInstrumen
     ).filter(({ data }) => isNotEmptyArray(data));
 
     const renderItem = (item: InstrumentEntityInterface) => (
-        <CurrencySelectorCard instrument={item} isSelected={item.id === selectedInstrumentId} onSelect={onSelect} highlight={query} />
+        <CurrencySelectorCard instrument={item} isSelected={item.id === selectedInstrumentId} onSelect={commit} highlight={query} />
     );
 
     const emptyState = isNotEmptyString(query) ? (
@@ -59,21 +65,24 @@ export const CurrencySelectorModalContent = ({ instrumentType, selectedInstrumen
     );
 
     return (
-        <SearchableSelectorList
-            query={query}
-            header={
-                <SelectorModalSearchHeader
-                    title={title}
-                    search={search}
-                    onSearchChange={setSearch}
-                    placeholder={searchPlaceholder}
-                    testID={CurrencySelectorModalSelector.SearchInput}
-                />
-            }
-            sections={sections}
-            keyExtractor={keyExtractor}
-            renderItem={renderItem}
-            emptyState={<LoadingContent isLoading={isLoading}>{emptyState}</LoadingContent>}
-        />
+        <View style={listStyle}>
+            <SearchableSelectorList
+                className="pt-lg"
+                query={query}
+                header={
+                    <SelectorModalSearchHeader
+                        title={title}
+                        search={search}
+                        onSearchChange={setSearch}
+                        placeholder={searchPlaceholder}
+                        testID={CurrencySelectorModalSelector.SearchInput}
+                    />
+                }
+                sections={sections}
+                keyExtractor={keyExtractor}
+                renderItem={renderItem}
+                emptyState={<LoadingContent isLoading={isLoading}>{emptyState}</LoadingContent>}
+            />
+        </View>
     );
 };
