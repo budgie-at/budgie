@@ -1920,6 +1920,10 @@ msgstr "Серед. {averageCost} за {instrumentCode}"
 msgid "Avg {averageCost} per {instrumentCode} · known for {coveredAmount} of {totalAmount}"
 msgstr "Сер. {averageCost} за {instrumentCode} · вартість відома для {coveredAmount} з {totalAmount}"
 
+#: src/@generic/component/selector-modal-search-header/selector-modal-search-header.tsx
+msgid "Back"
+msgstr "Назад"
+
 #: src/settings/components/backup-row/backup-row.tsx
 msgid "Back up"
 msgstr "Створити"
@@ -2314,7 +2318,7 @@ msgstr "Змінити пізніше не можна"
 #: src/transaction/components/convert-to-refund-header/convert-to-refund-header.tsx
 #: src/transaction/components/convert-to-transfer-header/convert-to-transfer-header.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
-#: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
+#: src/transaction/components/transaction-fee-step/transaction-fee-step.tsx
 #: src/transaction/components/transaction-form-actions/transaction-form-actions.tsx
 #: src/transaction/hook/use-convert-to-refund-action.hook.ts
 #: src/transaction/hook/use-delete-transaction.hook.ts
@@ -2427,9 +2431,9 @@ msgstr "Категоризувати"
 
 #: src/app/(main)/import-csv.tsx
 #: src/app/(tabs)/settings/categories.tsx
-#: src/app/category-selector.tsx
 #: src/budget/components/budget-fund-category-field/budget-fund-category-field.tsx
 #: src/budget/service/budget-alert-monitor.service.ts
+#: src/category/components/category-picker-panel/category-picker-panel.tsx
 #: src/recurring/components/recurring-form-category-field/recurring-form-category-field.tsx
 #: src/rule/components/rule-action-category-selector/rule-action-category-selector.tsx
 #: src/transaction/components/transaction-category-field-icon/transaction-category-field-icon.tsx
@@ -2488,8 +2492,8 @@ msgstr "Перевірте ключ і секрет та спробуйте ще
 msgid "Check the repeat and end settings."
 msgstr "Перевірте налаштування повторення та завершення."
 
-#: src/app/category-selector.tsx
 #: src/category/components/category-empty-state/category-empty-state.tsx
+#: src/category/components/category-picker-panel/category-picker-panel.tsx
 msgid "Check the spelling or create it as a new category."
 msgstr "Перевірте написання або створіть її як нову категорію."
 
@@ -2766,6 +2770,7 @@ msgstr "Буфер обміну не містить дійсного токен�
 msgid "Clipboard is empty"
 msgstr "Буфер обміну порожній"
 
+#: src/@generic/component/selector-modal-search-header/selector-modal-search-header.tsx
 #: src/@generic/component/sheet-title-row/sheet-title-row.tsx
 #: src/budget/components/budget-sheet-state/budget-sheet-state.tsx
 #: src/sync/component/get-token-card/get-token-card.tsx
@@ -4573,7 +4578,7 @@ msgstr "Функції"
 
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
 #: src/transaction/components/transaction-fee-field-icon/transaction-fee-field-icon.tsx
-#: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
+#: src/transaction/components/transaction-fee-step/transaction-fee-step.tsx
 #: src/transaction/components/transaction-info-money-rows/transaction-info-money-rows.tsx
 msgid "Fee"
 msgstr "Комісія"
@@ -7563,11 +7568,11 @@ msgstr "Прибрати дублікати банківського імпор�
 msgid "Remove entry"
 msgstr "Видалити запис"
 
-#: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
+#: src/transaction/components/transaction-fee-step/transaction-fee-step.tsx
 msgid "Remove fee"
 msgstr "Видалити комісію"
 
-#: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
+#: src/transaction/components/transaction-fee-step/transaction-fee-step.tsx
 msgid "Remove fee?"
 msgstr "Видалити комісію?"
 
@@ -7939,8 +7944,8 @@ msgstr "Пошук за кодом або описом..."
 msgid "Search categories..."
 msgstr "Пошук категорій..."
 
-#: src/app/category-selector.tsx
 #: src/category/components/category-destination-sheet/category-destination-sheet.tsx
+#: src/category/components/category-picker-panel/category-picker-panel.tsx
 msgid "Search categories…"
 msgstr "Пошук категорій…"
 
@@ -9054,7 +9059,7 @@ msgstr "Це залишить один запис із повною сумою �
 msgid "This will link the selected expense to this refund income. You can revert it from the refund sources sheet."
 msgstr "Це прив’яже вибрану витрату до цього доходу-повернення. Ви можете скасувати це на аркуші джерел повернення."
 
-#: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
+#: src/transaction/components/transaction-fee-step/transaction-fee-step.tsx
 msgid "This will remove the fee entry from this transaction."
 msgstr "Це видалить запис комісії з цієї транзакції."
 

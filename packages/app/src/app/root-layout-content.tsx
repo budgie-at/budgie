@@ -73,6 +73,13 @@ const LOCK_SCREEN_OPTIONS: NativeStackNavigationOptions = { presentation: 'fullS
 
 const FADE_OPTIONS: NativeStackNavigationOptions = { animation: 'fade' };
 
+const MORPHING_SHEET_OPTIONS: NativeStackNavigationOptions = {
+    presentation: 'transparentModal',
+    animation: 'none',
+    headerShown: false,
+    contentStyle: { backgroundColor: 'transparent' }
+};
+
 const SELECTOR_OPTIONS = formSheetOptions([DETENT_70, DETENT_90], 0);
 const CURRENCY_SELECTOR_OPTIONS = formSheetOptions([DETENT_62, DETENT_90], 0);
 const COMPACT_SELECTOR_OPTIONS = formSheetOptions([DETENT_70, DETENT_90], 0);
@@ -237,7 +244,7 @@ export const RootLayoutContent = () => {
                                                                         options={formSheetOptions([0.6, DETENT_90])}
                                                                     />
                                                                     <Stack.Screen name="split-entries" options={sheetOptions} />
-                                                                    <Stack.Screen name="transaction-fee" options={sheetOptions} />
+                                                                    <Stack.Screen name="transaction-fee" options={MORPHING_SHEET_OPTIONS} />
                                                                     <Stack.Screen
                                                                         name="consolidation-source"
                                                                         options={fitToContentsSheetOptions(groupedSheetSurface)}

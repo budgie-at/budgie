@@ -12,7 +12,7 @@ import type { ReactNode } from 'react';
 interface Props {
     readonly title: string;
     readonly maxFontSizeMultiplier?: number;
-    readonly closeButtonSize?: number;
+    readonly closeIcon?: UserIconNameEnum;
     readonly trailing?: ReactNode;
     readonly onClose?: () => void;
     readonly closeLabel?: string;
@@ -29,6 +29,7 @@ export const SheetTitleRow = ({
     closeLabel,
     disabled,
     doneTestID,
+    closeIcon = UserIconNameEnum.X,
     maxFontSizeMultiplier = MAX_HEADER_FONT_SCALE
 }: Props) => {
     const { t } = useLingui();
@@ -44,7 +45,7 @@ export const SheetTitleRow = ({
                 accessibilityLabel={closeLabel ?? t`Close`}
                 className="h-[44px] w-[44px] shrink-0 items-center justify-center rounded-full bg-surface-fill active:opacity-70"
             >
-                <Icon icon={UserIconNameEnum.X} size={20} className="text-primary" />
+                <Icon icon={closeIcon} size={20} className="text-primary" />
             </HapticPressable>
             <View pointerEvents="none" className="min-w-0 flex-1 items-center justify-center">
                 <Text

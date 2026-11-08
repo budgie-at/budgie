@@ -1920,6 +1920,10 @@ msgstr "Moy. {averageCost} par {instrumentCode}"
 msgid "Avg {averageCost} per {instrumentCode} · known for {coveredAmount} of {totalAmount}"
 msgstr "Moy. {averageCost} par {instrumentCode} · coût connu pour {coveredAmount} sur {totalAmount}"
 
+#: src/@generic/component/selector-modal-search-header/selector-modal-search-header.tsx
+msgid "Back"
+msgstr "Retour"
+
 #: src/settings/components/backup-row/backup-row.tsx
 msgid "Back up"
 msgstr "Sauvegarder"
@@ -2314,7 +2318,7 @@ msgstr "Ne pourra pas être modifiée"
 #: src/transaction/components/convert-to-refund-header/convert-to-refund-header.tsx
 #: src/transaction/components/convert-to-transfer-header/convert-to-transfer-header.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
-#: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
+#: src/transaction/components/transaction-fee-step/transaction-fee-step.tsx
 #: src/transaction/components/transaction-form-actions/transaction-form-actions.tsx
 #: src/transaction/hook/use-convert-to-refund-action.hook.ts
 #: src/transaction/hook/use-delete-transaction.hook.ts
@@ -2427,9 +2431,9 @@ msgstr "Catégoriser"
 
 #: src/app/(main)/import-csv.tsx
 #: src/app/(tabs)/settings/categories.tsx
-#: src/app/category-selector.tsx
 #: src/budget/components/budget-fund-category-field/budget-fund-category-field.tsx
 #: src/budget/service/budget-alert-monitor.service.ts
+#: src/category/components/category-picker-panel/category-picker-panel.tsx
 #: src/recurring/components/recurring-form-category-field/recurring-form-category-field.tsx
 #: src/rule/components/rule-action-category-selector/rule-action-category-selector.tsx
 #: src/transaction/components/transaction-category-field-icon/transaction-category-field-icon.tsx
@@ -2488,8 +2492,8 @@ msgstr "Vérifiez la clé et le secret, puis réessayez."
 msgid "Check the repeat and end settings."
 msgstr "Vérifiez les paramètres de répétition et de fin."
 
-#: src/app/category-selector.tsx
 #: src/category/components/category-empty-state/category-empty-state.tsx
+#: src/category/components/category-picker-panel/category-picker-panel.tsx
 msgid "Check the spelling or create it as a new category."
 msgstr "Vérifiez l’orthographe ou créez-la comme nouvelle catégorie."
 
@@ -2766,6 +2770,7 @@ msgstr "Le presse-papiers ne contient pas de jeton Monobank valide"
 msgid "Clipboard is empty"
 msgstr "Le presse-papiers est vide"
 
+#: src/@generic/component/selector-modal-search-header/selector-modal-search-header.tsx
 #: src/@generic/component/sheet-title-row/sheet-title-row.tsx
 #: src/budget/components/budget-sheet-state/budget-sheet-state.tsx
 #: src/sync/component/get-token-card/get-token-card.tsx
@@ -4573,7 +4578,7 @@ msgstr "Fonctionnalités"
 
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
 #: src/transaction/components/transaction-fee-field-icon/transaction-fee-field-icon.tsx
-#: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
+#: src/transaction/components/transaction-fee-step/transaction-fee-step.tsx
 #: src/transaction/components/transaction-info-money-rows/transaction-info-money-rows.tsx
 msgid "Fee"
 msgstr "Frais"
@@ -7563,11 +7568,11 @@ msgstr "Supprimer les imports bancaires en double"
 msgid "Remove entry"
 msgstr "Supprimer l’entrée"
 
-#: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
+#: src/transaction/components/transaction-fee-step/transaction-fee-step.tsx
 msgid "Remove fee"
 msgstr "Supprimer les frais"
 
-#: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
+#: src/transaction/components/transaction-fee-step/transaction-fee-step.tsx
 msgid "Remove fee?"
 msgstr "Supprimer les frais ?"
 
@@ -7939,8 +7944,8 @@ msgstr "Rechercher par code ou description..."
 msgid "Search categories..."
 msgstr "Rechercher des catégories..."
 
-#: src/app/category-selector.tsx
 #: src/category/components/category-destination-sheet/category-destination-sheet.tsx
+#: src/category/components/category-picker-panel/category-picker-panel.tsx
 msgid "Search categories…"
 msgstr "Rechercher des catégories…"
 
@@ -9054,7 +9059,7 @@ msgstr "Cela conservera une seule écriture avec le montant total de la transact
 msgid "This will link the selected expense to this refund income. You can revert it from the refund sources sheet."
 msgstr "Cela associera la dépense sélectionnée à ce revenu de remboursement. Vous pouvez l’annuler depuis la feuille des sources de remboursement."
 
-#: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
+#: src/transaction/components/transaction-fee-step/transaction-fee-step.tsx
 msgid "This will remove the fee entry from this transaction."
 msgstr "Cela supprimera l’écriture de frais de cette transaction."
 
