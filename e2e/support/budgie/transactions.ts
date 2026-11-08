@@ -246,65 +246,24 @@ export async function createExpense(
 
 /**
  * The fee-sheet round trip the 08/09/10 flows share on a transaction's edit form:
- * see the sheet's first entry and save button, drag it down, back on `formTitle`.
+ * see the sheet's first entry and save button, close it by its scrim, back on `formTitle`.
  */
 export async function openAndDismissFeeSheet(ctx: Ctx, formTitle: string): Promise<void> {
     const { screen } = ctx;
     await expectId(ctx, 'SplitEntryRow.Amount.0');
     await expectId(ctx, 'TransactionFeeModal.SaveButton');
-    await dismissSheetByDrag(ctx, 'SplitEntryRow.Amount.0');
+    await tapSheetScrim(ctx);
+    await expectNoId(ctx, 'SplitEntryRow.Amount.0');
     await expect(byText(screen, formTitle)).toBeVisible();
 }
 
 /**
- * Drags the open bottom sheet down by its grabber until `contentId` leaves the screen.
- * With the keyboard up, agent-device rejects any drag long enough to dismiss the sheet ("does not fit inside
- * the viewport"), and a decimal pad has no dismiss key; then the sheet's backdrop (`PopoverDismissRegion`),
- * the other way a user closes it, is tapped instead. The sheet may stop at its collapsed detent on the way,
- * so this tries up to three times.
+ * Taps the open morphing sheet's scrim, the accessible "Close" button behind the card, near the top of the screen
+ * where no card reaches: it closes the sheet, or steps back when the active step is a sub-step.
  */
-async function dismissSheetByDrag(ctx: Ctx, contentId: string): Promise<void> {
-    const { screen } = ctx;
-    const grabber = screen.getByRole('button', { name: 'Sheet Grabber' }).first();
-    let keyboardUp = false;
-    try {
-        await ctx.device.dismissKeyboard();
-    } catch (cause) {
-        keyboardUp = true;
-        console.log(`[sheet] keyboard stayed up: ${(cause as Error).message.split('\n')[0]}`);
-    }
-    for (let attempt = 1; ; attempt++) {
-        await sleep(400);
-        if (keyboardUp) {
-            await byId(screen, 'PopoverDismissRegion').tap({ position: { x: 200, y: 120 } });
-        } else {
-            const box = await grabber.boundingBox();
-            if (box === null) {
-                throw new Error('the sheet grabber has no bounds');
-            }
-            const x = box.x + box.width / 2;
-            const y = box.y + box.height / 2;
-            try {
-                await screen.swipe({ from: { x, y }, to: { x, y: Math.min(y + 400, 860) }, duration: 250 });
-            } catch (cause) {
-                if (attempt === 3) {
-                    throw cause;
-                }
-                console.log(`[retry] sheet drag ${attempt} rejected: ${(cause as Error).message.split('\n')[0]}`);
-                keyboardUp = true;
-                continue;
-            }
-        }
-        try {
-            await expectNoId(ctx, contentId, 3_000);
-            return;
-        } catch (cause) {
-            if (attempt === 3) {
-                throw cause;
-            }
-            console.log(`[retry] sheet dismissal ${attempt} left ${contentId} on screen`);
-        }
-    }
+export async function tapSheetScrim(ctx: Ctx): Promise<void> {
+    const scrim = ctx.screen.getByRole('button', { name: 'Close', exact: true }).first();
+    await scrim.tap({ position: await relativePoint(scrim, 0.5, 0.1) });
 }
 
 /** The transfer form's account fields: tap `selectorId` (`TransferForm.FromAccount` / `.ToAccount`), search and pick `name`. */

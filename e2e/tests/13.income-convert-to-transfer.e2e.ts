@@ -41,6 +41,11 @@ test('13 income convert to transfer', { tags: ['transactions'] }, async ({ budgi
         await b.tapId(ctx, 'TransferForm.FromAccount');
         await b.expectId(ctx, 'AccountPickerBottomSheet.Input');
         await a.selectAccountFromNativePicker(ctx, 'AccountPickerBottomSheet.Option.E2E Income Source');
+        await b.tapId(ctx, 'TransactionFeePill');
+        await b.expectId(ctx, 'TransactionFeeModal.SaveButton');
+        await t.tapSheetScrim(ctx);
+        await b.expectNoId(ctx, 'TransactionFeeModal.SaveButton');
+        await b.expectId(ctx, 'ConvertToTransfer.Page');
         await b.tapId(ctx, 'TransactionForm.SubmitButton');
         await b.expectNoId(ctx, 'ConvertToTransfer.Page', 15_000);
         await b.expectId(ctx, 'TransactionInfo.Page', 15_000);
