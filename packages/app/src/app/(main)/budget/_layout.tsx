@@ -1,8 +1,10 @@
-import { Stack } from 'expo-router';
+import { Stack } from 'expo-router/js-stack';
 
 import { ScreenLayout } from '../../../@generic/component/screen-layout/screen-layout';
-import { DEFAULT_STACK_OPTIONS } from '../../../@generic/constant/default-stack-options.constant';
+import { useLockstepStackOptions } from '../../../@generic/hook/use-lockstep-stack-options.hook';
 
 export default function BudgetLayout() {
-    return <Stack screenOptions={DEFAULT_STACK_OPTIONS} screenLayout={ScreenLayout} />;
+    const screenOptions = useLockstepStackOptions();
+
+    return <Stack screenOptions={screenOptions} screenLayout={ScreenLayout} />;
 }

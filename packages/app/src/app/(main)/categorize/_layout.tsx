@@ -1,8 +1,9 @@
-import { Stack, useGlobalSearchParams } from 'expo-router';
+import { useGlobalSearchParams } from 'expo-router';
+import { Stack } from 'expo-router/js-stack';
 import { useState } from 'react';
 
 import { ScreenLayout } from '../../../@generic/component/screen-layout/screen-layout';
-import { DEFAULT_STACK_OPTIONS } from '../../../@generic/constant/default-stack-options.constant';
+import { useLockstepStackOptions } from '../../../@generic/hook/use-lockstep-stack-options.hook';
 import { normalizeRouteParam } from '../../../@generic/utils/normalize-route-param.util';
 import { CategorizeInboxCategoryProvider } from '../../../categorize-inbox/components/categorize-inbox-category-provider/categorize-inbox-category-provider';
 import { CategorizeInboxTagProvider } from '../../../categorize-inbox/components/categorize-inbox-tag-provider/categorize-inbox-tag-provider';
@@ -16,7 +17,9 @@ export default function CategorizeLayout() {
     const [params] = useState(() => parseAnalyticsTransactionsRouteParams(searchParams));
     const [kind] = useState(() => normalizeRouteParam(searchParams.kind));
 
-    const stack = <Stack screenOptions={DEFAULT_STACK_OPTIONS} screenLayout={ScreenLayout} />;
+    const screenOptions = useLockstepStackOptions();
+
+    const stack = <Stack screenOptions={screenOptions} screenLayout={ScreenLayout} />;
 
     if (kind === CategorizeInboxKindEnum.TAG) {
         return <CategorizeInboxTagProvider params={params}>{stack}</CategorizeInboxTagProvider>;
