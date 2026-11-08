@@ -747,10 +747,6 @@ msgstr "{newTransactionCount, plural, one {# Buchung importieren} other {# Buchu
 msgid "{newTransactionCount} new, {existingTransactionCount} already imported, {parsedTransactionCount} checked"
 msgstr "{newTransactionCount} neu, {existingTransactionCount} bereits importiert, {parsedTransactionCount} geprüft"
 
-#: src/household/utils/get-household-share-labels.util.ts
-msgid "{organizerName} sees shared accounts and their payments. Money moved between shared accounts shows as a transfer."
-msgstr "{organizerName} sieht geteilte Konten und deren Zahlungen. Geld, das zwischen geteilten Konten bewegt wird, erscheint als Überweisung."
-
 #: src/account/component/family-section-header/family-section-header.tsx
 #: src/household/utils/get-family-labels.util.ts
 #: src/household/utils/get-household-summary-labels.util.ts
@@ -1807,6 +1803,10 @@ msgstr "Anwendungs-ID"
 #: src/sync/component/enable-banking-setup-guide/enable-banking-setup-guide.tsx
 msgid "Application name"
 msgstr "Name der Anwendung"
+
+#: src/account/component/shared-by-other-account-options/shared-by-other-account-options.tsx
+msgid "Applies to everyone in your family."
+msgstr "Gilt für alle in deiner Familie."
 
 #: src/rule/components/rule-actions-section/rule-actions-section.tsx
 msgid "Applies to new payments as they arrive from your bank or an import."
@@ -4632,7 +4632,7 @@ msgstr "Jedes Jahr"
 msgid "Every year on {monthAndDay}"
 msgstr "Jedes Jahr am {monthAndDay}"
 
-#: src/account/component/household-shared-by-other-account-row/household-shared-by-other-account-row.tsx
+#: src/account/component/household-shared-by-other-account-section/household-shared-by-other-account-section.tsx
 msgid "Everyone in your family can see and edit it. It isn't counted in your total."
 msgstr "Alle in deiner Familie können es sehen und bearbeiten. Es zählt nicht zu deinem Gesamtbetrag."
 
@@ -4757,19 +4757,20 @@ msgstr "Blasse Balken sind aus deinen früheren Transaktionen mit deinen aktuell
 
 #: src/account/component/family-section-header/family-section-header.tsx
 #: src/account/component/household-share-account-section/household-share-account-section.tsx
+#: src/account/component/household-shared-by-other-account-section/household-shared-by-other-account-section.tsx
 #: src/app/(tabs)/settings/family.tsx
 #: src/budget/components/budget-share-field/budget-share-field.tsx
 #: src/household/component/family-row/family-row.tsx
 msgid "Family"
 msgstr "Familie"
 
-#: src/household/component/household-share-section/household-share-section.tsx
-msgid "Family can edit every account"
-msgstr "Familie kann jedes Konto bearbeiten"
-
 #: src/account/component/household-share-account-row/household-share-account-row.tsx
 msgid "Family can edit it"
 msgstr "Familie kann es bearbeiten"
+
+#: src/household/component/household-share-section/household-share-section.tsx
+msgid "Family can see and edit them"
+msgstr "Die Familie kann sie sehen und bearbeiten"
 
 #: src/household/component/household-remove-group-row/household-remove-group-row.tsx
 msgid "Family group removed"
@@ -5138,7 +5139,7 @@ msgstr "Ausgeblendete Konten erscheinen nicht auf der Startseite. Ihre Einstellu
 msgid "Hidden from Home"
 msgstr "Auf der Startseite ausgeblendet"
 
-#: src/account/component/update-account-page/update-account-page.tsx
+#: src/account/component/personal-account-sections/personal-account-sections.tsx
 msgid "Hidden from Home, totals and budgets until restored."
 msgstr "Von Home, Summen und Budgets ausgeblendet, bis du es wiederherstellst."
 
@@ -7066,7 +7067,8 @@ msgid "Optionally turn on {biometricLabel}"
 msgstr "Optional {biometricLabel} einschalten"
 
 #: src/account/component/create-account-options-section/create-account-options-section.tsx
-#: src/account/component/update-account-page/update-account-page.tsx
+#: src/account/component/personal-account-sections/personal-account-sections.tsx
+#: src/account/component/shared-by-other-account-options/shared-by-other-account-options.tsx
 msgid "Options"
 msgstr "Optionen"
 
@@ -8601,8 +8603,8 @@ msgid "Share accounts with family"
 msgstr "Konten mit Familie teilen"
 
 #: src/household/component/household-share-section/household-share-section.tsx
-msgid "Share everything"
-msgstr "Alles teilen"
+msgid "Share all your accounts"
+msgstr "Alle deine Konten teilen"
 
 #: src/account/component/household-share-account-row/household-share-account-row.tsx
 #: src/account/component/household-share-account-section/household-share-account-section.tsx
@@ -8626,10 +8628,10 @@ msgid "Shared accounts stay in sync"
 msgstr "Geteilte Konten bleiben synchron"
 
 #: src/account/utils/get-household-account-footer.util.ts
-msgid "Shared because you share everything"
-msgstr "Geteilt, weil du alles teilst"
+msgid "Shared because you share all your accounts"
+msgstr "Geteilt, weil du alle deine Konten teilst"
 
-#: src/account/component/household-shared-by-other-account-row/household-shared-by-other-account-row.tsx
+#: src/account/component/household-shared-by-other-account-section/household-shared-by-other-account-section.tsx
 #: src/budget/components/budget-share-field/budget-share-field.tsx
 msgid "Shared by a family member"
 msgstr "Von einem Familienmitglied geteilt"
@@ -8916,7 +8918,6 @@ msgid "Starts on"
 msgstr "Beginnt am"
 
 #: src/account/utils/get-household-account-footer.util.ts
-#: src/household/utils/get-household-share-labels.util.ts
 msgid "Starts when you sign in to iCloud."
 msgstr "Startet, wenn du dich bei iCloud anmeldest."
 
@@ -9084,7 +9085,7 @@ msgstr "Synchronisieren Sie Ihre Binance-Salden und -Transaktionen"
 msgid "Synced {relative}"
 msgstr "Synchronisiert: {relative}"
 
-#: src/account/utils/get-household-account-footer.util.ts
+#: src/account/component/household-shared-by-other-account-section/household-shared-by-other-account-section.tsx
 msgid "Synced by a family member"
 msgstr "Von einem Familienmitglied synchronisiert"
 
@@ -9313,10 +9314,6 @@ msgstr "Die zusammengeführten Transaktionen werden wieder zu einzelnen Einträg
 #: src/rule/constant/rule-condition-field.constant.ts
 msgid "The note on a payment"
 msgstr "Die Notiz zu einer Zahlung"
-
-#: src/household/utils/get-household-share-labels.util.ts
-msgid "The organizer sees shared accounts and their payments. Money moved between shared accounts shows as a transfer."
-msgstr "Der Organisator sieht geteilte Konten und deren Zahlungen. Geld, das zwischen geteilten Konten bewegt wird, erscheint als Überweisung."
 
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
 msgid "The PIN becomes the encryption key"
@@ -10245,6 +10242,10 @@ msgstr "Heute aktualisiert"
 msgid "Updated yesterday"
 msgstr "Gestern aktualisiert"
 
+#: src/account/component/family-section-header/family-section-header.tsx
+msgid "Updates paused — sign in to iCloud"
+msgstr "Aktualisierung pausiert – melde dich bei iCloud an"
+
 #: src/auth/components/pin-sealing-state/pin-sealing-state.tsx
 msgid "Updating your PIN"
 msgstr "Deine PIN wird aktualisiert"
@@ -10717,8 +10718,8 @@ msgid "Your family"
 msgstr "Deine Familie"
 
 #: src/household/utils/get-household-share-labels.util.ts
-msgid "Your family sees shared accounts and their payments. Money moved between shared accounts shows as a transfer."
-msgstr "Deine Familie sieht geteilte Konten und deren Zahlungen. Geld, das zwischen geteilten Konten bewegt wird, erscheint als Überweisung."
+msgid "Your family can see and edit the accounts you share. Sharing all includes accounts you add later."
+msgstr "Deine Familie kann die Konten, die du teilst, sehen und bearbeiten. „Alle teilen“ umfasst auch später hinzugefügte Konten."
 
 #: src/onboarding/component/onboarding-receipt/onboarding-receipt.tsx
 msgid "Your file. Your PIN."

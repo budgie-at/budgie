@@ -88,6 +88,7 @@ export const CloudBackupList = () => {
                                 onPress={refresh}
                                 testID={CloudBackupListSelector.RetryButton}
                             />
+                            <CloudBackupRestoreFileLink />
                         </StateCard>
                     ) : null}
                     {isUnreadable ? (
