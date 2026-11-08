@@ -27,6 +27,7 @@ export default function CurrencySelectorModal() {
                 instrumentType={instrumentType}
                 selectedInstrumentId={selectedInstrumentId}
                 onCommit={handleCommit}
+                isSearchAutoFocused={isDefined(currentParams?.origin)}
             />
         </SelectorMorphingSurface>
     );

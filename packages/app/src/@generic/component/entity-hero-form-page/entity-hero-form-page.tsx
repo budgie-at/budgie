@@ -5,10 +5,10 @@ import { useResolveClassNames } from 'uniwind';
 import { ScreenChromeFrame, ScreenChromeHeader } from '@rnw-community/react-native-screen-chrome';
 
 import { ScreenChromeThemeProvider } from '../../provider/screen-chrome-theme.provider';
-import { EntityFormBackButton } from '../entity-form-back-button/entity-form-back-button';
 import { EntityFormFooter } from '../entity-form-footer/entity-form-footer';
 import { EntityFormSubmitButton } from '../entity-form-submit-button/entity-form-submit-button';
 import { FixedChromeScroll } from '../fixed-chrome-scroll/fixed-chrome-scroll';
+import { GoBackButton } from '../go-back-button/go-back-button';
 
 import type { ReactNode } from 'react';
 import type { LayoutChangeEvent } from 'react-native';
@@ -38,7 +38,7 @@ export const EntityHeroFormPage = (props: Props) => {
                 <ScreenChromeFrame>
                     <FixedChromeScroll footerHeight={footerHeight}>{children}</FixedChromeScroll>
                     <ScreenChromeHeader style={headerStyle}>
-                        <EntityFormBackButton onPress={onCancel} />
+                        <GoBackButton onPress={onCancel} />
                     </ScreenChromeHeader>
                     <EntityFormFooter onLayout={handleFooterLayout}>
                         <EntityFormSubmitButton

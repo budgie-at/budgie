@@ -23,9 +23,10 @@ interface Props {
     readonly instrumentType: InstrumentTypeEnum;
     readonly selectedInstrumentId?: number;
     readonly onCommit: (instrumentId: number) => void;
+    readonly isSearchAutoFocused: boolean;
 }
 
-export const CurrencySelectorModalContent = ({ instrumentType, selectedInstrumentId, onCommit }: Props) => {
+export const CurrencySelectorModalContent = ({ instrumentType, selectedInstrumentId, onCommit, isSearchAutoFocused }: Props) => {
     const { t } = useLingui();
     const [search, setSearch] = useState('');
     const commit = useMorphingSheetCommit(onCommit);
@@ -71,6 +72,7 @@ export const CurrencySelectorModalContent = ({ instrumentType, selectedInstrumen
                     onSearchChange={setSearch}
                     placeholder={searchPlaceholder}
                     testID={CurrencySelectorModalSelector.SearchInput}
+                    isAutoFocused={isSearchAutoFocused}
                 />
             }
             sections={sections}

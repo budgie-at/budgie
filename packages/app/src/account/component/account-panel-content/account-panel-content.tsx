@@ -1,4 +1,4 @@
-import { useAnchoredMorphPanelClose } from '../../../@generic/context/anchored-morph-panel.context';
+import { useMorphingSheetCommit } from '../../../@generic/hook/use-morphing-sheet-commit.hook';
 import { AccountSelectorSheetContent } from '../account-selector-sheet-content/account-selector-sheet-content';
 
 import type { AccountSelectorModalParams, AccountSelectorResult } from '../../context/account-selector-modal.context';
@@ -9,12 +9,7 @@ interface Props {
 }
 
 export const AccountPanelContent = ({ params, onCommit }: Props) => {
-    const close = useAnchoredMorphPanelClose();
+    const commit = useMorphingSheetCommit(onCommit);
 
-    const handleSelect = (accountId: AccountSelectorResult) => {
-        onCommit(accountId);
-        close?.();
-    };
-
-    return <AccountSelectorSheetContent params={params} onSelect={handleSelect} />;
+    return <AccountSelectorSheetContent params={params} onSelect={commit} isSearchAutoFocused />;
 };

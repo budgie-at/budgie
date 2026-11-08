@@ -6,7 +6,7 @@ import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { SelectorModalSearchHeader } from '../../../@generic/component/selector-modal-search-header/selector-modal-search-header';
 import { SheetSurface } from '../../../@generic/component/sheet-surface/sheet-surface';
-import { useAnchoredMorphPanelSettled } from '../../../@generic/context/anchored-morph-panel-settled.context';
+import { useSurfaceSettled } from '../../../@generic/context/surface-settled.context';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
@@ -22,12 +22,13 @@ interface Props {
     readonly onSelect: (accountId: AccountSelectorResult) => void;
     readonly onBack?: () => void;
     readonly className?: string;
+    readonly isSearchAutoFocused?: boolean;
 }
 
-export const AccountSelectorSheetContent = ({ params, onSelect, onBack, className }: Props) => {
+export const AccountSelectorSheetContent = ({ params, onSelect, onBack, className, isSearchAutoFocused }: Props) => {
     const { t } = useLingui();
     const [search, setSearch] = useState('');
-    const isPanelSettled = useAnchoredMorphPanelSettled();
+    const isSettled = useSurfaceSettled();
 
     const { createAction } = params;
 
@@ -72,9 +73,10 @@ export const AccountSelectorSheetContent = ({ params, onSelect, onBack, classNam
                 onSearchChange={setSearch}
                 testID={AccountSelectorModalSelector.Input}
                 onBack={onBack}
+                isAutoFocused={isSearchAutoFocused}
             />
 
-            {isPanelSettled ? (
+            {isSettled ? (
                 <AccountSelectContent
                     data={selectableAccounts}
                     initialAccountId={params.initialAccountId ?? null}

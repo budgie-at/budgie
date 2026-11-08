@@ -2004,7 +2004,6 @@ msgstr "Prom. {averageCost} por {instrumentCode}"
 msgid "Avg {averageCost} per {instrumentCode} · known for {coveredAmount} of {totalAmount}"
 msgstr "Prom. {averageCost} por {instrumentCode} · coste conocido de {coveredAmount} de {totalAmount}"
 
-#: src/@generic/component/entity-form-back-button/entity-form-back-button.tsx
 #: src/@generic/component/selector-modal-search-header/selector-modal-search-header.tsx
 #: src/transaction/components/transaction-fee-step/transaction-fee-step.tsx
 msgid "Back"

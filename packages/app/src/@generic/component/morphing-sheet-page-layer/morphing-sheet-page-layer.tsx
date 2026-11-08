@@ -1,7 +1,7 @@
 import { useWindowDimensions } from 'react-native';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 
-import { MorphingSheetPageSettledProvider } from '../../context/morphing-sheet-page-settled.context';
+import { SurfaceSettledContext } from '../../context/surface-settled.context';
 import { useMorphingSheetPageRectStyle } from '../../hook/use-morphing-sheet-page-rect-style.hook';
 import { useReducedMotion } from '../../hook/use-reduced-motion.hook';
 
@@ -50,7 +50,7 @@ export const MorphingSheetPageLayer = ({ rect, pageProgress, isActive, isSettled
             importantForAccessibility={importantForAccessibility}
         >
             <Animated.View className="absolute top-0 left-0" style={contentStyle} onLayout={onLayout}>
-                <MorphingSheetPageSettledProvider value={isSettled}>{children}</MorphingSheetPageSettledProvider>
+                <SurfaceSettledContext value={isSettled}>{children}</SurfaceSettledContext>
             </Animated.View>
         </Animated.View>
     );

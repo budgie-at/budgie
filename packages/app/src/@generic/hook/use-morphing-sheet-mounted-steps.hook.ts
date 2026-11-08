@@ -21,5 +21,5 @@ export const useMorphingSheetMountedSteps = (steps: Readonly<Record<string, Morp
         setHasPresented(true);
     };
 
-    return { mountedSteps, handlePresented };
+    return { mountedSteps, hasPresented, handlePresented };
 };

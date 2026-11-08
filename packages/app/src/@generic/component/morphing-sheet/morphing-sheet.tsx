@@ -4,6 +4,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { MorphingSheetDragContext } from '../../context/morphing-sheet-drag.context';
 import { MorphingSheetDismissContext } from '../../context/morphing-sheet.context';
+import { SurfaceSettledContext } from '../../context/surface-settled.context';
 import { useMorphingSheetMotion } from '../../hook/use-morphing-sheet-motion.hook';
 import { useMorphingSheetMountedSteps } from '../../hook/use-morphing-sheet-mounted-steps.hook';
 import { useMorphingSheetPageRect } from '../../hook/use-morphing-sheet-page-rect.hook';
@@ -27,7 +28,7 @@ interface Props {
 
 export const MorphingSheet = ({ steps, activeStep, onDismiss, testID }: Props) => {
     const { cardStep, pageStep } = useMorphingSheetTargets(steps, activeStep);
-    const { mountedSteps, handlePresented } = useMorphingSheetMountedSteps(steps, cardStep);
+    const { mountedSteps, hasPresented, handlePresented } = useMorphingSheetMountedSteps(steps, cardStep);
     const motion = useMorphingSheetMotion(cardStep, onDismiss, handlePresented);
     const { frame, translateY, visibleHeight, pageProgress } = motion;
     const { frameStyle, cardStyle, isDragging } = useMorphingSheetStyle(translateY, visibleHeight, pageProgress, frame);
@@ -76,17 +77,19 @@ export const MorphingSheet = ({ steps, activeStep, onDismiss, testID }: Props) =
                     {isDefined(page.renderedPageStep) ? <MorphingSheetPageBackdrop rect={pageRect} /> : null}
 
                     <MorphingSheetCard frameStyle={frameStyle} cardStyle={cardStyle} isPageActive={isPageActive} testID={testID}>
-                        {mountedSteps.map(step => (
-                            <MorphingSheetStep
-                                key={step}
-                                step={step}
-                                isActive={step === cardStep}
-                                morph={motion.morph}
-                                onStepLayout={motion.handleStepLayout}
-                            >
-                                {steps[step]?.content}
-                            </MorphingSheetStep>
-                        ))}
+                        <SurfaceSettledContext value={hasPresented}>
+                            {mountedSteps.map(step => (
+                                <MorphingSheetStep
+                                    key={step}
+                                    step={step}
+                                    isActive={step === cardStep}
+                                    morph={motion.morph}
+                                    onStepLayout={motion.handleStepLayout}
+                                >
+                                    {steps[step]?.content}
+                                </MorphingSheetStep>
+                            ))}
+                        </SurfaceSettledContext>
                     </MorphingSheetCard>
 
                     {isDefined(page.renderedPageStep) ? (
