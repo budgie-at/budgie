@@ -21,21 +21,19 @@ interface Props {
     readonly children: ReactNode;
 }
 
-const COMPACT_VIEWPORT_MAX_HEIGHT = 667;
-
 export const AdjustmentBalanceSummary = ({ details, amount, isIncrease, children }: Props) => {
     const { t } = useLingui();
     const { isExpanded } = use(TransactionKeypadContext);
-    const { fontScale, height } = useWindowDimensions();
+    const { fontScale } = useWindowDimensions();
     const balance = useAdjustmentBalance(details, amount, isIncrease);
 
-    if (isExpanded && (fontScale >= ADJUSTMENT_COMPACT_FONT_SCALE || height <= COMPACT_VIEWPORT_MAX_HEIGHT)) {
+    if (isExpanded && fontScale >= ADJUSTMENT_COMPACT_FONT_SCALE) {
         return null;
     }
 
     const afterContent =
-        balance.after === '—' ? (
-            <Text className="text-[17px] font-semibold text-primary" maxFontSizeMultiplier={1.35}>
+        balance.after === t`Not set` ? (
+            <Text className="text-[17px] text-secondary-foreground" maxFontSizeMultiplier={1.35}>
                 {balance.after}
             </Text>
         ) : (

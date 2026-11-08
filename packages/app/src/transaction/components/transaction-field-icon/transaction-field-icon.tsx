@@ -37,6 +37,7 @@ export const TransactionFieldIcon = (props: Props) => {
     const isDisabled = isNotEmptyString(disabledHint);
     const accessibilityPlaceholder = isString(placeholder) ? placeholder : t`not set`;
     const pressableProps = {
+        onPress,
         disabled: isDisabled,
         accessibilityLabel: `${label}: ${value ?? accessibilityPlaceholder}`,
         accessibilityHint: disabledHint,
@@ -51,7 +52,6 @@ export const TransactionFieldIcon = (props: Props) => {
                 value={value}
                 placeholder={placeholder}
                 valueTestID={testIDProps(testID, TestIDPartEnum.TITLE).testID}
-                onPress={onPress}
                 testID={testID}
                 pressableProps={pressableProps}
             />

@@ -58,7 +58,7 @@ export const TransactionAccountRow = ({ ref, fieldName, label, testID }: Props) 
     const accessibilityLabel = `${displayLabel}: ${account?.title ?? t`Choose`}`;
     const isInactiveAccount = isDefined(account) && !account.isActive;
     const selectedAccountTestID = isDefined(account?.title) ? SimpleQuickFormSelector.SelectedAccount(account.title) : null;
-    const pressableProps = { accessibilityLabel };
+    const pressableProps = { onPress: handlePress, accessibilityLabel };
 
     return (
         <Animated.View style={shakeStyle}>
@@ -72,7 +72,6 @@ export const TransactionAccountRow = ({ ref, fieldName, label, testID }: Props) 
                 value={account?.title}
                 placeholder={t`Choose`}
                 valueTestID={testIDProps(selectedAccountTestID).testID}
-                onPress={handlePress}
                 testID={testID}
                 pressableProps={pressableProps}
             />

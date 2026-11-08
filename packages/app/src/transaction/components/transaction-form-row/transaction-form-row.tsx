@@ -21,42 +21,47 @@ interface Props {
     readonly value?: string;
     readonly placeholder?: string | ReactElement;
     readonly valueTestID?: string;
-    readonly onPress: () => void;
+    readonly right?: ReactNode;
     readonly testID?: string;
-    readonly pressableProps?: ComponentProps<typeof GroupedListRow>['pressableProps'];
+    readonly pressableProps?: ComponentProps<typeof GroupedListRow>['pressableProps'] &
+        Pick<ComponentProps<typeof GroupedListRow>, 'onPress'>;
 }
 
-const COMPACT_ROW_STYLE = { minHeight: 44, paddingVertical: 7 };
+const COMPACT_ROW_STYLE = { minHeight: 48, paddingVertical: 7 };
 const LABEL_MAX_FONT_SCALE = 2;
 const STACKED_LABEL_MAX_FONT_SCALE = 1.6;
 const CHEVRON_MAX_SCALE = 1.5;
 
-const labelVariants = cva('shrink-0', {
+const labelVariants = cva('shrink-0 text-[17px] leading-[22px]', {
     variants: {
-        isStacked: { true: 'text-[15px] leading-[20px]', false: 'text-[17px] leading-[22px]' },
         isAction: { true: 'text-primary', false: 'text-secondary-foreground' }
     }
 });
 
 export const TransactionFormRow = (props: Props) => {
-    const { left, label, value, placeholder, valueTestID, onPress, testID, pressableProps } = props;
+    const { left, label, value, placeholder, valueTestID, right, testID, pressableProps } = props;
+    const onPress = pressableProps?.onPress;
     const { fontScale, height } = useWindowDimensions();
-    const isCompact = isCompactTransactionForm(fontScale, height);
     const isLargeText = fontScale >= TRANSACTION_LARGE_TEXT_SCALE;
-    const isStacked = isLargeText;
     const isAction = !isNotEmptyString(value) && !isDefined(placeholder);
     const labelMaxFontScale = isLargeText && !isAction ? STACKED_LABEL_MAX_FONT_SCALE : LABEL_MAX_FONT_SCALE;
-    const stackedLeading = isLargeText ? null : <View className="self-start pt-[17px]">{left}</View>;
-    const leading = isStacked ? stackedLeading : left;
-    const chevronSize = 16 * Math.min(fontScale, CHEVRON_MAX_SCALE);
-    const titleClassName = isStacked ? 'min-w-0 items-start gap-y-xxs' : 'min-w-0 flex-row items-center gap-x-lg';
+    const leading = isLargeText ? null : left;
+    const titleClassName = isLargeText ? 'min-w-0 items-start gap-y-xxs' : 'min-w-0 flex-row items-center gap-x-lg';
 
     const rowStyle = pressableProps?.style;
     const handleRowStyle = (state: PressableStateCallbackType) => [
         COMPACT_ROW_STYLE,
         typeof rowStyle === 'function' ? rowStyle(state) : rowStyle
     ];
-    const rowPressableProps = isCompact ? { ...pressableProps, style: handleRowStyle } : pressableProps;
+    const rowPressableProps = isCompactTransactionForm(fontScale, height)
+        ? { ...pressableProps, style: isDefined(onPress) ? handleRowStyle : COMPACT_ROW_STYLE }
+        : pressableProps;
+    const chevronSize = 16 * Math.min(fontScale, CHEVRON_MAX_SCALE);
+    const accessory =
+        right ??
+        (isDefined(onPress) ? (
+            <Icon icon={UserIconNameEnum.ChevronRight} size={chevronSize} className="text-secondary-foreground" />
+        ) : null);
 
     return (
         <GroupedListRow
@@ -64,7 +69,7 @@ export const TransactionFormRow = (props: Props) => {
             title={
                 <View className={titleClassName}>
                     <Text
-                        className={labelVariants({ isStacked: isStacked && !isAction, isAction })}
+                        className={labelVariants({ isAction })}
                         maxFontSizeMultiplier={labelMaxFontScale}
                         {...createTestIDProps(testID, TestIDPartEnum.LABEL)}
                     >
@@ -73,13 +78,13 @@ export const TransactionFormRow = (props: Props) => {
                     <TransactionFormRowValue
                         value={value}
                         placeholder={placeholder}
-                        isStacked={isStacked}
+                        isStacked={isLargeText}
                         isLargeText={isLargeText}
                         testID={valueTestID}
                     />
                 </View>
             }
-            right={<Icon icon={UserIconNameEnum.ChevronRight} size={chevronSize} className="text-secondary-foreground" />}
+            right={accessory}
             onPress={onPress}
             testID={testID}
             pressableProps={rowPressableProps}

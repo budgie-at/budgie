@@ -16,6 +16,7 @@ interface Props {
 }
 
 const SCROLL_STYLE = { flex: 1 };
+const FOOTER_FADE_CLEARANCE = 44;
 const CONTENT_STYLE = { paddingHorizontal: 20, paddingBottom: 12 };
 
 export const QuickFormScroll = ({ children, topInset }: Props) => {
@@ -23,7 +24,7 @@ export const QuickFormScroll = ({ children, topInset }: Props) => {
     const { dismiss } = use(TransactionKeypadContext);
 
     const includeTopSafeArea = isPositiveNumber(topInset);
-    const bottomInset = chromeHeight + 12;
+    const bottomInset = chromeHeight + FOOTER_FADE_CLEARANCE;
     const keyboardOffset = inset + TRANSACTION_NOTE_INPUT_MIN_HEIGHT;
 
     return (

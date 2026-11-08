@@ -1944,6 +1944,10 @@ msgstr "Sicherung gespeichert"
 msgid "Balance"
 msgstr "Guthaben"
 
+#: src/transaction/hook/use-adjustment-balance.hook.ts
+msgid "Balance {current} → {next}"
+msgstr "Saldo {current} → {next}"
+
 #: src/app/(main)/transactions/[id]/adjustment.tsx
 #: src/transaction/components/transaction-card-content/transaction-card-content.tsx
 msgid "Balance Adjustment"
@@ -6438,6 +6442,7 @@ msgstr "nicht gesetzt"
 #: src/settings/components/budget-management-card/budget-management-card.tsx
 #: src/transaction/components/adjustment-balance-preview/adjustment-balance-preview.tsx
 #: src/transaction/components/adjustment-balance-row/adjustment-balance-row.tsx
+#: src/transaction/components/adjustment-balance-summary/adjustment-balance-summary.tsx
 #: src/transaction/hook/use-adjustment-balance.hook.ts
 msgid "Not set"
 msgstr "Nicht festgelegt"

@@ -57,7 +57,7 @@ export const SegmentedControl = <T extends string>(props: Props<T>) => {
             {disabled || activeIndex < 0 ? null : (
                 <Animated.View
                     pointerEvents="none"
-                    className="absolute top-[6px] bottom-[6px] left-[2px] rounded-[8px] border-[0.5px] border-black/[0.06] bg-white shadow-md dark:border-transparent dark:bg-white/20"
+                    className="absolute top-[6px] bottom-[6px] left-[2px] rounded-[8px] border-[0.5px] border-black/[0.06] bg-white dark:border-transparent dark:bg-white/20"
                     style={thumbStyle}
                 />
             )}

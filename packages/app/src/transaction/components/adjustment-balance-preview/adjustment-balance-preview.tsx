@@ -23,8 +23,8 @@ export const AdjustmentBalancePreview = ({ details, amount, isIncrease }: Props)
     const { preview, announcement, after } = useAdjustmentBalance(details, amount, isIncrease);
 
     const previousPreview = useRef(announcement);
-    const accessibilityLabel = after === '—' ? t`Balance after saving` : announcement;
-    const accessibilityValue = after === '—' ? { text: t`Not set` } : void 0;
+    const accessibilityLabel = after === t`Not set` ? t`Balance after saving` : announcement;
+    const accessibilityValue = after === t`Not set` ? { text: t`Not set` } : void 0;
 
     useEffect(() => {
         const hasChanged = previousPreview.current !== announcement;

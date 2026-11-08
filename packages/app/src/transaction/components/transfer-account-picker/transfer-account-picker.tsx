@@ -24,7 +24,7 @@ interface Props {
 export const TransferAccountPicker = ({ label, placeholder, account, animatedStyle, testID, selectedTestID, onPress }: Props) => {
     const hasAccount = isDefined(account);
     const accessibilityPlaceholder = isString(placeholder) ? placeholder : t`Choose`;
-    const pressableProps = { accessibilityLabel: `${label}: ${account?.title ?? accessibilityPlaceholder}` };
+    const pressableProps = { onPress, accessibilityLabel: `${label}: ${account?.title ?? accessibilityPlaceholder}` };
     const icon = hasAccount ? account.icon : UserIconNameEnum.Wallet;
     const isInactiveAccount = hasAccount && !account.isActive;
 
@@ -40,7 +40,6 @@ export const TransferAccountPicker = ({ label, placeholder, account, animatedSty
                 value={account?.title}
                 placeholder={placeholder}
                 valueTestID={testIDProps(hasAccount && selectedTestID).testID}
-                onPress={onPress}
                 testID={testID}
                 pressableProps={pressableProps}
             />
