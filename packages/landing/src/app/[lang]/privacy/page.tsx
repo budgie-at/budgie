@@ -125,7 +125,7 @@ export default async function PrivacyPillarHubPage(props: PageLangParam) {
                 </FeaturePageProse>
                 <FeaturePageCategoryComparison categoryLabel={<Trans>Cloud-based PFM apps</Trans>}>
                     <FeaturePageCategoryComparison.Row
-                        budgieValue={<Trans>On your phone and in your own iCloud</Trans>}
+                        budgieValue={<Trans>On your phone and in your own iCloud on iOS</Trans>}
                         competitorValue={<Trans>Vendor&apos;s cloud + aggregator</Trans>}
                         label={<Trans>Where transactions live</Trans>}
                     />

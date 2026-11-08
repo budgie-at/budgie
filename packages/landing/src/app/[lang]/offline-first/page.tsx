@@ -224,7 +224,7 @@ export default async function OfflineFirstPillarHubPage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageComparisonTable rivalLabel={<Trans>Cloud app</Trans>}>
                     <FeaturePageComparisonTable.Row
-                        budgie={<Trans>Your device and your own iCloud</Trans>}
+                        budgie={<Trans>Your device and your own iCloud on iOS</Trans>}
                         concern={<Trans>Data location</Trans>}
                         rival={<Trans>Vendor servers + Plaid</Trans>}
                     />

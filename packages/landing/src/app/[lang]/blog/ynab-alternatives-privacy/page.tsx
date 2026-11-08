@@ -965,7 +965,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>iCloud sync.</strong> Data syncs through your own iCloud account.
+                                <strong>iCloud sync.</strong> Data syncs through your own iCloud account on iOS.
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -996,7 +996,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                             <Trans>Beautiful, native Apple design</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
-                            <Trans>Data stays in your iCloud</Trans>
+                            <Trans>Data stays in your iCloud on iOS</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>Excellent user experience</Trans>

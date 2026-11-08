@@ -536,8 +536,8 @@ msgid "<0>IBAN</0>: stored on the account, so the next statement lands in the sa
 msgstr "<0>IBAN</0>: se guarda en la cuenta, así el siguiente extracto llega al mismo sitio."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
-msgid "<0>iCloud sync.</0> Data syncs through your own iCloud account."
-msgstr "<0>Sincronización iCloud.</0> Los datos se sincronizan a través de tu propia cuenta de iCloud."
+msgid "<0>iCloud sync.</0> Data syncs through your own iCloud account on iOS."
+msgstr "<0>Sincronización con iCloud.</0> En iOS, los datos se sincronizan a través de tu propia cuenta de iCloud."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "<0>Identify your actual needs</0>: Most users need expense tracking and budgeting, not the full feature set of complex apps"
@@ -6968,8 +6968,8 @@ msgid "Data Retention After Disconnection"
 msgstr "Retencion de datos despues de la desconexion"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
-msgid "Data stays in your iCloud"
-msgstr "Los datos permanecen en tu iCloud"
+msgid "Data stays in your iCloud on iOS"
+msgstr "Los datos permanecen en tu iCloud en iOS"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Data Storage Location"
@@ -9096,8 +9096,8 @@ msgid "Get the app when it opens"
 msgstr "Consigue la app en cuanto abra"
 
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/metadata.ts
-msgid "Get the privacy of self-hosted finance apps without running a server. Budgie's data lives on your phone and syncs and backs up encrypted to your own iCloud; you can also keep the backup file wherever you like. Zero ops, full ownership."
-msgstr "Ten la privacidad de una app financiera autoalojada sin gestionar un servidor. Los datos de Budgie viven en tu teléfono y se sincronizan y copian cifrados en tu propio iCloud; además puedes guardar el archivo de copia donde quieras. Cero mantenimiento, control total."
+msgid "Get the privacy of self-hosted finance apps without running a server. Budgie's data lives on your phone and syncs and backs up encrypted to your own iCloud on iOS; you can also keep the backup file wherever you like. Zero ops, full ownership."
+msgstr "Ten la privacidad de una app financiera autoalojada sin gestionar un servidor. Los datos de Budgie viven en tu teléfono y se sincronizan y copian cifrados en tu propio iCloud en iOS; además puedes guardar el archivo de copia donde quieras. Cero mantenimiento, control total."
 
 #: src/app/[lang]/blog/monobank-api-token/metadata.ts
 msgid "Get your personal Monobank API token, paste it into Budgie and choose how much history to load. Step by step, plus privacy and sync fixes."
@@ -12853,8 +12853,8 @@ msgid "On your phone — no category or tag name ever leaves it"
 msgstr "En tu teléfono: ningún nombre de categoría o etiqueta lo abandona jamás"
 
 #: src/app/[lang]/privacy/page.tsx
-msgid "On your phone and in your own iCloud"
-msgstr "En tu teléfono y en tu propio iCloud"
+msgid "On your phone and in your own iCloud on iOS"
+msgstr "En tu teléfono y en tu propio iCloud en iOS"
 
 #: src/generic/component/faq-section/faq-section.tsx
 msgid "On your phone, and in your own iCloud when backup or sync is on. Budgie has no account system and no server of its own, so there is nothing for us to read. Set a PIN and the database is encrypted on the device with that PIN; iCloud copies are encrypted there too, and end-to-end with Advanced Data Protection."
@@ -21803,8 +21803,8 @@ msgid "Your default account is filled in too, so you type the amount and save."
 msgstr "Tu cuenta predeterminada también se rellena, así que escribes el importe y guardas."
 
 #: src/app/[lang]/offline-first/page.tsx
-msgid "Your device and your own iCloud"
-msgstr "Tu dispositivo y tu propio iCloud"
+msgid "Your device and your own iCloud on iOS"
+msgstr "Tu dispositivo y tu propio iCloud en iOS"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Your Device is the Database"

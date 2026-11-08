@@ -536,8 +536,8 @@ msgid "<0>IBAN</0>: stored on the account, so the next statement lands in the sa
 msgstr "<0>IBAN</0> : il est enregistré sur le compte, pour que le relevé suivant arrive au même endroit."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
-msgid "<0>iCloud sync.</0> Data syncs through your own iCloud account."
-msgstr "<0>Synchronisation iCloud.</0> Les données se synchronisent via votre propre compte iCloud."
+msgid "<0>iCloud sync.</0> Data syncs through your own iCloud account on iOS."
+msgstr "<0>Synchronisation iCloud.</0> Sur iOS, les données sont synchronisées via votre propre compte iCloud."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "<0>Identify your actual needs</0>: Most users need expense tracking and budgeting, not the full feature set of complex apps"
@@ -6968,8 +6968,8 @@ msgid "Data Retention After Disconnection"
 msgstr "Retention des donnees apres deconnexion"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
-msgid "Data stays in your iCloud"
-msgstr "Les données restent dans votre iCloud"
+msgid "Data stays in your iCloud on iOS"
+msgstr "Les données restent dans votre iCloud sur iOS"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Data Storage Location"
@@ -9096,8 +9096,8 @@ msgid "Get the app when it opens"
 msgstr "Recevez l'app dès son ouverture"
 
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/metadata.ts
-msgid "Get the privacy of self-hosted finance apps without running a server. Budgie's data lives on your phone and syncs and backs up encrypted to your own iCloud; you can also keep the backup file wherever you like. Zero ops, full ownership."
-msgstr "Profitez de la confidentialité des applications financières auto-hébergées sans administrer de serveur. Les données de Budgie vivent sur votre téléphone et se synchronisent et se sauvegardent chiffrées dans votre propre iCloud ; vous pouvez aussi garder le fichier de sauvegarde où vous voulez. Zéro maintenance, pleine maîtrise."
+msgid "Get the privacy of self-hosted finance apps without running a server. Budgie's data lives on your phone and syncs and backs up encrypted to your own iCloud on iOS; you can also keep the backup file wherever you like. Zero ops, full ownership."
+msgstr "Profitez de la confidentialité des applications financières auto-hébergées sans administrer de serveur. Les données de Budgie vivent sur votre téléphone et se synchronisent et se sauvegardent chiffrées dans votre propre iCloud sur iOS ; vous pouvez aussi garder le fichier de sauvegarde où vous voulez. Zéro maintenance, pleine maîtrise."
 
 #: src/app/[lang]/blog/monobank-api-token/metadata.ts
 msgid "Get your personal Monobank API token, paste it into Budgie and choose how much history to load. Step by step, plus privacy and sync fixes."
@@ -12853,8 +12853,8 @@ msgid "On your phone — no category or tag name ever leaves it"
 msgstr "Sur votre téléphone — aucun nom de catégorie ou de tag ne le quitte jamais"
 
 #: src/app/[lang]/privacy/page.tsx
-msgid "On your phone and in your own iCloud"
-msgstr "Sur votre téléphone et dans votre propre iCloud"
+msgid "On your phone and in your own iCloud on iOS"
+msgstr "Sur votre téléphone et dans votre propre iCloud sur iOS"
 
 #: src/generic/component/faq-section/faq-section.tsx
 msgid "On your phone, and in your own iCloud when backup or sync is on. Budgie has no account system and no server of its own, so there is nothing for us to read. Set a PIN and the database is encrypted on the device with that PIN; iCloud copies are encrypted there too, and end-to-end with Advanced Data Protection."
@@ -21803,8 +21803,8 @@ msgid "Your default account is filled in too, so you type the amount and save."
 msgstr "Votre compte par défaut est aussi rempli : vous saisissez le montant et enregistrez."
 
 #: src/app/[lang]/offline-first/page.tsx
-msgid "Your device and your own iCloud"
-msgstr "Votre appareil et votre propre iCloud"
+msgid "Your device and your own iCloud on iOS"
+msgstr "Votre appareil et votre propre iCloud sur iOS"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Your Device is the Database"
