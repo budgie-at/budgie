@@ -7,7 +7,6 @@ import {
     Db,
     ExternalSourceEnum,
     InstrumentTypeEnum,
-    TRANSFER_PAIR_TIME_WINDOW_SECONDS,
     TransactionConsolidationTypeEnum,
     TransactionEntryTypeEnum,
     TransactionTypeEnum,
@@ -24,7 +23,6 @@ import { isDefined, isEmptyArray, isNotEmptyArray, isNotEmptyString, isPositiveN
 import { isBinanceOwnTransferTitle } from '../../binance/mapper/binance.mapper';
 import { ownTransferDetector } from '../detector/own-transfer.detector';
 import { OwnTransferRepository } from '../repository/own-transfer.repository';
-import { isInitialSyncIncomplete } from '../utils/is-initial-sync-incomplete.util';
 
 import type { AccountEntityInterface, ConsolidationScanScopeInterface, TransactionWithEntriesEntityInterface } from '@budgie/contracts';
 
@@ -76,8 +74,9 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
             transaction: TransactionWithEntriesEntityInterface,
             counterpart: TransactionWithEntriesEntityInterface
         ) {
-            const expense = transaction.type === TransactionTypeEnum.EXPENSE ? transaction : counterpart;
-            const income = transaction.type === TransactionTypeEnum.INCOME ? transaction : counterpart;
+            const isExpense = candidateEntries(transaction)[0].type === TransactionEntryTypeEnum.CREDIT;
+            const expense = isExpense ? transaction : counterpart;
+            const income = isExpense ? counterpart : transaction;
             const [credit] = candidateEntries(expense);
             const [debit] = candidateEntries(income);
 
@@ -112,14 +111,6 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
                 const isCompatible = (matches: readonly AccountEntityInterface[], accountId: number) =>
                     isEmptyArray(matches) || matches.some(match => match.id === accountId);
                 const identities = (yield* repository.findIdentities).map(identity => identity.label).filter(isNotEmptyString);
-                const syncs = yield* repository.findLiveSyncs;
-                const isSettled = (operatedAt: Date) =>
-                    syncs.every(
-                        sync =>
-                            !isInitialSyncIncomplete(sync) &&
-                            isDefined(sync.forwardSyncFromAt) &&
-                            sync.forwardSyncFromAt.getTime() >= operatedAt.getTime() + TRANSFER_PAIR_TIME_WINDOW_SECONDS * 1000
-                    );
                 const isUntrackedMovement = (transaction: TransactionWithEntriesEntityInterface, isFiat: boolean) =>
                     transaction.externalSource === ExternalSourceEnum.BINANCE
                         ? isBinanceOwnTransferTitle(transaction.title) && transaction.type === TransactionTypeEnum.INCOME && isFiat
@@ -142,16 +133,39 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
                         : [];
                 });
 
-                if (isEmptyArray(candidates)) {
+                const untrackedTransfers = (yield* repository.findUntrackedTransfers(scope)).filter(isSingleEntry);
+
+                if (isEmptyArray(candidates) && isEmptyArray(untrackedTransfers)) {
                     return 0;
                 }
 
-                const opposites = yield* repository.findOpposites(candidates.map(candidate => candidate.transaction.id));
+                const candidateIds = candidates.map(candidate => candidate.transaction.id);
+                const untrackedTransferIds = untrackedTransfers.map(transfer => transfer.id);
+                const opposites = yield* repository.findOpposites([...candidateIds, ...untrackedTransferIds]);
+                const looseOpposites = yield* repository.findOpposites(candidateIds, false);
                 const eligibleOpposites = (yield* repository.findTransactions(
                     null,
-                    opposites.map(link => link.oppositeId)
+                    [...looseOpposites, ...opposites].map(link => link.oppositeId)
                 )).filter(isSingleEntry);
                 const reverseOpposites = yield* repository.findOpposites(opposites.map(link => link.oppositeId));
+                const repairs = untrackedTransfers
+                    .map(transfer => {
+                        const links = opposites.filter(link => link.transactionId === transfer.id);
+                        const counterpart = eligibleOpposites.find(candidate => candidate.id === links[0]?.oppositeId);
+                        const account = accounts.find(candidate => candidate.id === candidateEntries(transfer)[0].accountId);
+
+                        return links.length === 1 &&
+                            isDefined(counterpart) &&
+                            isDefined(account) &&
+                            isEmptyArray(reverseOpposites.filter(link => link.transactionId === counterpart.id)) &&
+                            opposites.filter(
+                                link => link.oppositeId === counterpart.id && untrackedTransferIds.includes(link.transactionId)
+                            ).length === 1 &&
+                            isCompatible(cardMatches(counterpart), account.id)
+                            ? { transaction: transfer, counterpart, target: null, untrackedInstrumentId: account.instrumentId }
+                            : null;
+                    })
+                    .filter(isDefined);
                 const decisions = candidates
                     .map(({ transaction, account, matches }) => {
                         const links = opposites.filter(link => link.transactionId === transaction.id);
@@ -179,7 +193,11 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
                             isEmptyArray(links) &&
                             isEmptyArray(matches) &&
                             isUntrackedMovement(transaction, account.instrument.type === InstrumentTypeEnum.FIAT) &&
-                            isSettled(transaction.operatedAt)
+                            !looseOpposites.some(
+                                link =>
+                                    link.transactionId === transaction.id &&
+                                    eligibleOpposites.some(candidate => candidate.id === link.oppositeId)
+                            )
                         ) {
                             return { transaction, counterpart: null, target: null, untrackedInstrumentId: account.instrumentId };
                         }
@@ -193,7 +211,7 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
                         const consumed = new Set<number>();
                         let repaired = 0;
 
-                        for (const { transaction, counterpart, target, untrackedInstrumentId } of decisions) {
+                        for (const { transaction, counterpart, target, untrackedInstrumentId } of [...repairs, ...decisions]) {
                             if (!consumed.has(transaction.id)) {
                                 const destination = isDefined(untrackedInstrumentId)
                                     ? yield* getUntrackedOwnAccount(untrackedInstrumentId)

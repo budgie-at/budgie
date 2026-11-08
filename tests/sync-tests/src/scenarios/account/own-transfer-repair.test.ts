@@ -4,9 +4,6 @@ import {
     TransactionEntryTypeEnum,
     ExternalSourceEnum,
     InstrumentTypeEnum,
-    SyncEntityTable,
-    SyncModeEnum,
-    TRANSFER_PAIR_TIME_WINDOW_SECONDS,
     TransactionConsolidationTypeEnum,
     TransactionEntityTable,
     TransactionTypeEnum,
@@ -24,7 +21,6 @@ import { OwnTransferRepository } from '../../../../../packages/sync/src/core/rep
 import { explainQueryPlan, seed, testDb, TestLayer, testQueryService } from '../../harness';
 
 const operatedAt = new Date('2026-05-01T12:00:00Z');
-const settledAt = new Date(operatedAt.getTime() + TRANSFER_PAIR_TIME_WINDOW_SECONDS * 1000);
 const fixture = Effect.gen(function* () {
     const repair = yield* OwnTransferRepairService;
     const integration = yield* seed.bankIntegration({ provider: ExternalSourceEnum.MONOBANK, label: 'Коваленко Олена' });
@@ -33,9 +29,8 @@ const fixture = Effect.gen(function* () {
     yield* testDb.update(AccountEntityTable).set({ integrationId: integration.id }).where(eq(AccountEntityTable.id, target.id));
     const expense = yield* seed.bankPairExpense({ operatedAt, externalId: 'outgoing' }, { accountId: source.id, amount: 50_000_000 });
     yield* seed.updateTransaction(expense.id, { title: 'Зі своєї картки *2468', externalSource: ExternalSourceEnum.MONOBANK });
-    const sync = yield* seed.sync({ accountId: source.id, forwardSyncFromAt: operatedAt });
 
-    return { repair, source, target, expense, sync };
+    return { repair, source, target, expense };
 });
 const addIncome = (accountId: number) =>
     Effect.gen(function* () {
@@ -44,8 +39,6 @@ const addIncome = (accountId: number) =>
 
         return income;
     });
-const settle = (syncId: number) =>
-    testDb.update(SyncEntityTable).set({ forwardSyncFromAt: settledAt }).where(eq(SyncEntityTable.id, syncId));
 const findUntrackedAccounts = testDb.query.AccountEntityTable.findMany({ where: { externalId: 'untracked-own-account' } });
 const expectUntrackedTransfer = (transactionId: number, accountId: number) =>
     Effect.gen(function* () {
@@ -193,12 +186,12 @@ describe('account/own-transfer-repair', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('pairs an abbreviated identity only after a unique opposite arrives', () =>
+    it.effect('re-pairs an abbreviated identity fallback once a unique opposite arrives', () =>
         Effect.gen(function* () {
             const scenario = yield* fixture;
             yield* seed.updateTransaction(scenario.expense.id, { title: 'Олена К.' });
-            expect(yield* scenario.repair.repair()).toBe(0);
-            yield* expectExpense(scenario.expense.id);
+            expect(yield* scenario.repair.repair()).toBe(1);
+            yield* expectUntrackedTransfer(scenario.expense.id, scenario.source.id);
             const income = yield* addIncome(scenario.target.id);
             yield* repairAndExpectPair(scenario, income.id);
         }).pipe(Effect.provide(TestLayer))
@@ -226,16 +219,36 @@ describe('account/own-transfer-repair', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('pairs a phrase only after the other synced leg arrives in a later scoped repair', () =>
+    it.effect('re-pairs an untracked fallback when the other synced leg arrives in a later scoped repair', () =>
         Effect.gen(function* () {
             const { repair, source, target, expense } = yield* fixture;
-            const scope = { operatedAtFrom: operatedAt, operatedAtTo: operatedAt, transactionIds: [expense.id] };
+            const balances = yield* AccountBalanceRepository;
             yield* seed.updateTransaction(expense.id, { title: 'На свою картку' });
-            expect(yield* repair.repair(scope)).toBe(0);
-            yield* expectExpense(expense.id);
+            expect(yield* repair.repair({ operatedAtFrom: operatedAt, operatedAtTo: operatedAt, transactionIds: [expense.id] })).toBe(1);
+            yield* expectUntrackedTransfer(expense.id, source.id);
+            const [untracked] = yield* findUntrackedAccounts;
+            expect((yield* balances.getByAccountIds([untracked.id])).map(balance => balance.amount)).toEqual([50_000_000]);
             const income = yield* addIncome(target.id);
-            expect(yield* repair.repair(scope)).toBe(1);
+            expect(yield* repair.repair({ operatedAtFrom: operatedAt, operatedAtTo: operatedAt, transactionIds: [income.id] })).toBe(1);
             yield* expectPair(expense.id, income.id, source.id, target.id);
+            expect(yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toHaveLength(1);
+            expect(
+                yield* testDb.query.TransactionEntryEntityTable.findMany({
+                    where: { accountId: untracked.id, originalTransactionId: { isNull: true }, deletedAt: { isNull: true } }
+                })
+            ).toEqual([]);
+            expect(
+                yield* testDb.query.TransactionEntityTable.findMany({
+                    where: {
+                        OR: [{ fromAccountId: untracked.id }, { toAccountId: untracked.id }],
+                        consolidationParentTransactionId: { isNull: true },
+                        deletedAt: { isNull: true }
+                    }
+                })
+            ).toEqual([]);
+            expect((yield* balances.getByAccountIds([untracked.id])).map(balance => balance.amount)).toEqual([0]);
+            expect((yield* balances.getLedgerBalances([untracked.id])).get(untracked.id) ?? 0).toBe(0);
+            expect(yield* repair.repair()).toBe(0);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -311,54 +324,30 @@ describe('account/own-transfer-repair', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('pairs two cards synced in separate scoped runs without the untracked account', () =>
+    it.effect('converts an unmatched own movement to the untracked account exactly once', () =>
         Effect.gen(function* () {
-            const { repair, source, target, expense, sync } = yield* fixture;
-            const scope = { operatedAtFrom: operatedAt, operatedAtTo: operatedAt, transactionIds: [expense.id] };
-            const targetSync = yield* seed.sync({ accountId: target.id, forwardSyncFromAt: new Date(operatedAt.getTime() - 60_000) });
-            yield* seed.updateTransaction(expense.id, { title: 'На свою картку' });
-            yield* settle(sync.id);
-            expect(yield* repair.repair(scope)).toBe(0);
-            yield* expectExpense(expense.id);
-            const income = yield* addIncome(target.id);
-            yield* settle(targetSync.id);
-            expect(yield* repair.repair(scope)).toBe(1);
-            yield* expectPair(expense.id, income.id, source.id, target.id);
-            expect(yield* findUntrackedAccounts).toEqual([]);
-        }).pipe(Effect.provide(TestLayer))
-    );
-
-    it.effect('converts an unmatched own movement to the untracked account only after live syncs settle', () =>
-        Effect.gen(function* () {
-            const { repair, source, expense, sync } = yield* fixture;
+            const { repair, source, expense } = yield* fixture;
             yield* seed.updateTransaction(expense.id, { title: 'Олена Коваленко' });
-            expect(yield* repair.repair()).toBe(0);
-            yield* testDb
-                .update(SyncEntityTable)
-                .set({ mode: SyncModeEnum.BACKWARD, forwardSyncFromAt: settledAt })
-                .where(eq(SyncEntityTable.id, sync.id));
-            expect(yield* repair.repair()).toBe(0);
-            yield* expectExpense(expense.id);
-            expect(yield* findUntrackedAccounts).toEqual([]);
-            yield* testDb.update(SyncEntityTable).set({ mode: SyncModeEnum.FORWARD }).where(eq(SyncEntityTable.id, sync.id));
             expect(yield* repair.repair()).toBe(1);
             yield* expectUntrackedTransfer(expense.id, source.id);
             expect(yield* repair.repair()).toBe(0);
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('converts only a settled Binance fiat deposit without a counterpart', () =>
+    it.effect('converts only a Binance fiat deposit without a counterpart', () =>
         Effect.gen(function* () {
             const repair = yield* OwnTransferRepairService;
             const fiat = yield* seed.account();
             const bitcoin = yield* seed.instrument({ code: 'BTC', name: 'Bitcoin', symbol: 'BTC', type: InstrumentTypeEnum.CRYPTO });
             const crypto = yield* seed.account({ instrumentId: bitcoin.id });
+            const cryptoOperatedAt = new Date(operatedAt.getTime() + 86_400_000);
             const seedMovement = (accountId: number, type: TransactionTypeEnum, title: string, amount: number) =>
                 Effect.gen(function* () {
+                    const movementOperatedAt = accountId === crypto.id ? cryptoOperatedAt : operatedAt;
                     const transaction =
                         type === TransactionTypeEnum.INCOME
-                            ? yield* seed.bankPairIncome({ operatedAt, externalId: title }, { accountId, amount })
-                            : yield* seed.bankPairExpense({ operatedAt, externalId: title }, { accountId, amount });
+                            ? yield* seed.bankPairIncome({ operatedAt: movementOperatedAt, externalId: title }, { accountId, amount })
+                            : yield* seed.bankPairExpense({ operatedAt: movementOperatedAt, externalId: title }, { accountId, amount });
                     yield* seed.updateTransaction(transaction.id, { title, externalSource: ExternalSourceEnum.BINANCE });
 
                     return transaction;
@@ -367,14 +356,49 @@ describe('account/own-transfer-repair', () => {
             const fiatWithdrawal = yield* seedMovement(fiat.id, TransactionTypeEnum.EXPENSE, 'Binance UAH withdrawal', 20_000_000);
             const cryptoDeposit = yield* seedMovement(crypto.id, TransactionTypeEnum.INCOME, 'Binance BTC deposit', 30_000_000);
             const cryptoWithdrawal = yield* seedMovement(crypto.id, TransactionTypeEnum.EXPENSE, 'Binance BTC withdrawal', 40_000_000);
-            const sync = yield* seed.sync({ accountId: fiat.id, provider: ExternalSourceEnum.BINANCE, forwardSyncFromAt: operatedAt });
-            expect(yield* repair.repair()).toBe(0);
-            yield* settle(sync.id);
             expect(yield* repair.repair()).toBe(1);
             yield* expectUntrackedTransfer(fiatDeposit.id, fiat.id);
             yield* expectExpense(fiatWithdrawal.id);
             yield* expectExpense(cryptoWithdrawal.id);
             expect((yield* testQueryService.findTransactionById(cryptoDeposit.id)).type).toBe(TransactionTypeEnum.INCOME);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('does not convert a fee-deducted Binance fiat deposit with a bank expense in the window', () =>
+        Effect.gen(function* () {
+            const repair = yield* OwnTransferRepairService;
+            const binance = yield* seed.account();
+            const bank = yield* seed.account();
+            const deposit = yield* seed.bankPairIncome(
+                { operatedAt, externalId: 'binance-deposit' },
+                { accountId: binance.id, amount: 9_900_000 }
+            );
+            yield* seed.updateTransaction(deposit.id, { title: 'Binance UAH deposit', externalSource: ExternalSourceEnum.BINANCE });
+            const expense = yield* seed.bankPairExpense(
+                { operatedAt, externalId: 'bank-expense' },
+                { accountId: bank.id, amount: 10_000_000 }
+            );
+            yield* seed.updateTransaction(expense.id, { title: 'Binance', externalSource: ExternalSourceEnum.MONOBANK });
+            expect(yield* repair.repair()).toBe(0);
+            expect((yield* testQueryService.findTransactionById(deposit.id)).type).toBe(TransactionTypeEnum.INCOME);
+            yield* expectExpense(expense.id);
+            expect(yield* findUntrackedAccounts).toEqual([]);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('does not convert an own movement with an opposite leg in another instrument', () =>
+        Effect.gen(function* () {
+            const { expense } = yield* fixture;
+            yield* seed.updateTransaction(expense.id, { title: 'Олена Коваленко' });
+            const dollar = yield* seed.instrument({ code: 'USD' });
+            const dollarAccount = yield* seed.account({ instrumentId: dollar.id });
+            const income = yield* seed.bankPairIncome(
+                { operatedAt, externalId: 'dollar-income' },
+                { accountId: dollarAccount.id, amount: 1_200_000 }
+            );
+            yield* seed.updateTransaction(income.id, { externalSource: ExternalSourceEnum.MONOBANK });
+            yield* expectUnpaired(expense.id, income.id);
+            expect(yield* findUntrackedAccounts).toEqual([]);
         }).pipe(Effect.provide(TestLayer))
     );
 });
