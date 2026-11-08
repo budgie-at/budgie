@@ -9,18 +9,17 @@ import type { CategorizeInboxFindingInterface } from '../interface/categorize-in
 
 const DAYS_PER_WEEK = 7;
 const MONTHLY_MIN_DAYS = 4;
-const RATE_MIN_DAYS = 2;
 
 const getKind = (paymentDays: number, perDay: number, distinctMonths: number, spanMonths: number): CategorizeInboxFindingKindEnum => {
     if (paymentDays >= MONTHLY_MIN_DAYS && distinctMonths === paymentDays && spanMonths === paymentDays) {
         return CategorizeInboxFindingKindEnum.ONCE_A_MONTH;
     }
 
-    if (paymentDays >= RATE_MIN_DAYS && perDay >= 1) {
+    if (Math.round(perDay * DAYS_PER_WEEK) >= DAYS_PER_WEEK) {
         return CategorizeInboxFindingKindEnum.PER_DAY;
     }
 
-    if (paymentDays >= RATE_MIN_DAYS && perDay * DAYS_PER_WEEK >= 1) {
+    if (perDay * DAYS_PER_WEEK >= 1) {
         return CategorizeInboxFindingKindEnum.PER_WEEK;
     }
 

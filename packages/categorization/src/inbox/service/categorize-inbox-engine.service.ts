@@ -62,6 +62,14 @@ class CategorizeInboxEngineService {
     };
 
     private static readonly GENERIC_TRANSFER_TITLES: Record<LanguageEnum, readonly string[]> = {
+        [LanguageEnum.EN]: [],
+        [LanguageEnum.UK]: [],
+        [LanguageEnum.DE]: ['überweisung'],
+        [LanguageEnum.FR]: ['virement'],
+        [LanguageEnum.ES]: ['transferencia']
+    };
+
+    private static readonly TRANSFER_RECIPIENT_PREFIXES: Record<LanguageEnum, readonly string[]> = {
         [LanguageEnum.EN]: ['transfer', 'card transfer', 'transfer to card', 'to card'],
         [LanguageEnum.UK]: [
             'переказ',
@@ -73,19 +81,20 @@ class CategorizeInboxEngineService {
             'перевод на карту',
             'на карту'
         ],
-        [LanguageEnum.DE]: ['überweisung', 'kartenüberweisung'],
-        [LanguageEnum.FR]: ['virement', 'virement carte'],
-        [LanguageEnum.ES]: ['transferencia', 'transferencia a tarjeta']
+        [LanguageEnum.DE]: ['kartenüberweisung'],
+        [LanguageEnum.FR]: ['virement carte'],
+        [LanguageEnum.ES]: ['transferencia a tarjeta']
     };
 
     private static readonly TRANSFER_TITLE_PREFIX_PATTERN = new RegExp(
-        `^(?:${Object.values(CategorizeInboxEngineService.GENERIC_TRANSFER_TITLES).flat().join('|')})(?:\\s|$)`,
+        `^(?:${Object.values(CategorizeInboxEngineService.TRANSFER_RECIPIENT_PREFIXES).flat().join('|')})(?:\\s|$)`,
         'u'
     );
 
-    private static readonly GENERIC_TRANSFER_TITLE_SET = new Set(
-        Object.values(CategorizeInboxEngineService.GENERIC_TRANSFER_TITLES).flat()
-    );
+    private static readonly GENERIC_TRANSFER_TITLE_SET = new Set([
+        ...Object.values(CategorizeInboxEngineService.GENERIC_TRANSFER_TITLES).flat(),
+        ...Object.values(CategorizeInboxEngineService.TRANSFER_RECIPIENT_PREFIXES).flat()
+    ]);
 
     private static readonly REFUND_PREFIXES = REFUND_TITLE_PREFIXES.review.map(prefix => prefix.toUpperCase());
 
