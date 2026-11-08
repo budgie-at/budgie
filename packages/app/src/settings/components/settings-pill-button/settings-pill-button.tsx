@@ -35,7 +35,7 @@ export const SettingsPillButton = (props: Props) => {
         size = 'md',
         className
     } = props;
-    const backgroundClassName = variant === 'cta' ? 'bg-cta-background' : 'bg-surface-fill dark:bg-secondary-foreground/30';
+    const backgroundClassName = variant === 'cta' ? 'bg-cta-background' : 'bg-surface-disc dark:bg-secondary-foreground/30';
     const labelClassName = variant === 'cta' ? 'text-cta-foreground' : 'text-primary';
     const disabled = isDisabled || isLoading;
     const accessibilityState = { busy: isLoading, disabled };
