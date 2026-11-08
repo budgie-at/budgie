@@ -31,6 +31,21 @@ describe('connection startup recovery', () => {
         vi.mocked(openSqliteClient).mockClear();
     });
 
+    it.effect('opens an intact database when a stale restore marker cannot be deleted', () =>
+        Effect.gen(function* () {
+            storage.files.set('documents/SQLite/budgie.db', 'intact');
+            storage.files.set('documents/SQLite/pre-restore.db', 'older');
+            storage.files.set('documents/SQLite/pre-restore.pending', '');
+            storage.failDelete = 'documents/SQLite/pre-restore.pending';
+
+            yield* startup;
+
+            expect(openSqliteClient).toHaveBeenCalled();
+            expect(storage.files.get('documents/SQLite/budgie.db')).toBe('intact');
+            expect(storage.files.has('documents/SQLite/pre-restore.pending')).toBe(true);
+        })
+    );
+
     it.effect.each(['recovering', 'wal', 'shm', 'copy', 'move'])('blocks SQLite open after failed %s and retries', failure =>
         Effect.gen(function* () {
             storage.files.set('documents/SQLite/pre-restore.db', 'original');

@@ -16,25 +16,22 @@ import { discardRestoreSafetyCopy } from './discard-restore-safety-copy.util';
 export const recoverInterruptedRestore = Effect.gen(function* () {
     const safetyCopy = yield* Effect.gen(function* () {
         const database = new File(DATABASE_DIRECTORY, DB_NAME);
-        const safetyCopy = new File(DATABASE_DIRECTORY, RESTORE_SAFETY_FILES.copy);
+        const recoverySafetyCopy = new File(DATABASE_DIRECTORY, RESTORE_SAFETY_FILES.copy);
         const recovering = new File(DATABASE_DIRECTORY, RESTORE_SAFETY_FILES.recovering);
         const pending = new File(DATABASE_DIRECTORY, RESTORE_SAFETY_FILES.pending);
 
-        if (pending.exists) {
-            if (!database.exists && safetyCopy.exists) {
-                [recovering, new File(DATABASE_DIRECTORY, `${DB_NAME}-wal`), new File(DATABASE_DIRECTORY, `${DB_NAME}-shm`)].forEach(
-                    deleteIfExists
-                );
-                yield* Effect.tryPromise({ try: () => safetyCopy.copy(recovering), catch: cause => DatabaseOpenError.make({ cause }) });
-                yield* Effect.tryPromise({ try: () => recovering.move(database), catch: cause => DatabaseOpenError.make({ cause }) });
-            }
-
-            deleteIfExists(pending);
+        if (pending.exists && !database.exists && recoverySafetyCopy.exists) {
+            [recovering, new File(DATABASE_DIRECTORY, `${DB_NAME}-wal`), new File(DATABASE_DIRECTORY, `${DB_NAME}-shm`)].forEach(
+                deleteIfExists
+            );
+            yield* Effect.tryPromise({ try: () => recoverySafetyCopy.copy(recovering), catch: cause => DatabaseOpenError.make({ cause }) });
+            yield* Effect.tryPromise({ try: () => recovering.move(database), catch: cause => DatabaseOpenError.make({ cause }) });
         }
 
-        return safetyCopy;
+        return recoverySafetyCopy;
     }).pipe(Effect.catchDefect(cause => Effect.fail(DatabaseOpenError.make({ cause }))));
 
+    deleteIfExists(new File(DATABASE_DIRECTORY, RESTORE_SAFETY_FILES.pending));
     deleteIfExists(new File(DATABASE_DIRECTORY, RESTORE_SAFETY_FILES.source));
     deleteIfExists(new File(DATABASE_DIRECTORY, RESTORE_SAFETY_FILES.target));
     deleteIfExists(new File(DATABASE_DIRECTORY, RESTORE_SAFETY_FILES.partial));
