@@ -45,7 +45,10 @@ const folderId = (name: string): RegExp => new RegExp(`^${quote(name)}(, (Folder
 export async function openE2EFixturesFullPath(
     ctx: Ctx,
     row: Locator,
-    inFixtures: Locator = ctx.screen.getByTestId(/Title: E2EFixtures$/).first()
+    inFixtures: Locator = ctx.screen
+        .getByTestId(/Title: E2EFixtures$/)
+        .or(ctx.screen.getByRole('button', { name: 'E2EFixtures, Actions Menu' }))
+        .first()
 ): Promise<void> {
     const { screen } = ctx;
     const item = (name: string) => screen.getByTestId(folderId(name)).first();

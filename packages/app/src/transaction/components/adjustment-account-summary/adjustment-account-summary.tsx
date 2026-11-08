@@ -1,25 +1,60 @@
-import { Trans } from '@lingui/react/macro';
-import { Text, View } from 'react-native';
+import { useLingui } from '@lingui/react/macro';
+import { use } from 'react';
+import { Text, useWindowDimensions, View } from 'react-native';
 
-import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
+import { TRANSACTION_LARGE_TEXT_SCALE } from '../../constant/transaction-large-text-scale.constant';
+import { TransactionKeypadContext } from '../../context/transaction-keypad.context';
+import { AdjustmentBalanceSummary } from '../adjustment-balance-summary/adjustment-balance-summary';
+import { TransactionFormIcon } from '../transaction-form-icon/transaction-form-icon';
+import { TransactionFormRow } from '../transaction-form-row/transaction-form-row';
+import { TransactionNoteFieldIcon } from '../transaction-note-field-icon/transaction-note-field-icon';
+
+import { AdjustmentSelector } from './adjustment-account-summary.selector';
 
 import type { AdjustmentTransactionDetailsInterface } from '../../interface/adjustment-transaction-details.interface';
 
 interface Props {
     readonly details: AdjustmentTransactionDetailsInterface;
+    readonly amount: number;
+    readonly isIncrease: boolean;
 }
 
-export const AdjustmentAccountSummary = ({ details }: Props) => (
-    <View className="min-h-[56px] flex-row items-center gap-md rounded-2xl border-hairline border-surface-separator bg-transaction-detail-row px-lg py-md dark:border-transparent">
-        <CircleIcon icon={details.accountIcon} variant="ghost" border={false} size={34} iconSize={18} radius={10} />
-        <View className="flex-1">
-            <Text className="text-[13px] leading-[18px] text-secondary-foreground">
-                <Trans>Account</Trans>
-            </Text>
-            <Text className="text-[15px] leading-[20px] font-medium text-primary" numberOfLines={1}>
-                {details.accountTitle}
-            </Text>
+const COMPACT_ACCOUNT_STYLE = { paddingVertical: 4 };
+
+export const AdjustmentAccountSummary = ({ details, amount, isIncrease }: Props) => {
+    const { t } = useLingui();
+    const { isExpanded } = use(TransactionKeypadContext);
+    const isCompact = useWindowDimensions().fontScale >= TRANSACTION_LARGE_TEXT_SCALE;
+    const isCompactExpanded = isExpanded && isCompact;
+    const valueProps = { testID: AdjustmentSelector.AccountValue, ...(isCompactExpanded && { numberOfLines: 1 }) };
+    const trailingCurrency = isCompact ? (
+        <Text className="text-[17px] text-secondary-foreground" maxFontSizeMultiplier={1.6}>
+            {details.instrumentCode}
+        </Text>
+    ) : null;
+    const accountAccessibilityLabel = `${t`Account`}, ${details.accountTitle}, ${details.instrumentCode}`;
+
+    const pressableProps = { accessibilityLabel: accountAccessibilityLabel, ...(isCompactExpanded && { style: COMPACT_ACCOUNT_STYLE }) };
+
+    return (
+        <View className="gap-y-[12px] pt-[12px]" testID={AdjustmentSelector.Summary}>
+            <GroupedListSection>
+                <TransactionFormRow
+                    left={<TransactionFormIcon icon={details.accountIcon} />}
+                    label={t`Account`}
+                    value={details.accountTitle}
+                    valueProps={valueProps}
+                    testID={AdjustmentSelector.Account}
+                    pressableProps={pressableProps}
+                    right={trailingCurrency}
+                />
+            </GroupedListSection>
+            <AdjustmentBalanceSummary details={details} amount={amount} isIncrease={isIncrease}>
+                <GroupedListSection>
+                    <TransactionNoteFieldIcon />
+                </GroupedListSection>
+            </AdjustmentBalanceSummary>
         </View>
-        <Text className="text-sm font-medium text-secondary-foreground">{details.instrumentCode}</Text>
-    </View>
-);
+    );
+};
