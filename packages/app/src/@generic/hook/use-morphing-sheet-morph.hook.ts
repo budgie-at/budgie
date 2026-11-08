@@ -31,5 +31,9 @@ export const useMorphingSheetMorph = (visibleHeight: SharedValue<number>, pagePr
         isProgressDriven.set(!isReducedMotion && Math.abs(toHeight - fromHeight) >= MIN_PROGRESS_DELTA);
     };
 
-    return { morph: { pageProgress, progress, fromStep, toStep, tallerStep, isProgressDriven }, beginMorph };
+    const endMorph = () => {
+        isProgressDriven.set(false);
+    };
+
+    return { morph: { pageProgress, progress, fromStep, toStep, tallerStep, isProgressDriven }, beginMorph, endMorph };
 };

@@ -245,7 +245,7 @@ export const RootLayoutContent = () => {
                                                                         name="icon-selector"
                                                                         options={formSheetOptions([0.6, DETENT_90])}
                                                                     />
-                                                                    <Stack.Screen name="split-entries" options={sheetOptions} />
+                                                                    <Stack.Screen name="split-entries" options={MORPHING_SHEET_OPTIONS} />
                                                                     <Stack.Screen name="transaction-fee" options={MORPHING_SHEET_OPTIONS} />
                                                                     <Stack.Screen
                                                                         name="consolidation-source"

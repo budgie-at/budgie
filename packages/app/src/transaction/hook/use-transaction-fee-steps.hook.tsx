@@ -1,17 +1,12 @@
 import { BANK_FEE_CATEGORY_ID, CategorySourceEnum, TransactionEntryTypeEnum } from '@budgie/contracts';
 import { useState } from 'react';
-import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { SheetSurface } from '../../@generic/component/sheet-surface/sheet-surface';
-import { MORPHING_SHEET_SELECTOR_HEIGHT_RATIO } from '../../@generic/constant/morphing-sheet-height-ratio.constant';
 import { MorphingSheetPresentationEnum } from '../../@generic/enum/morphing-sheet-presentation.enum';
-import { useMorphingSheetListHeight } from '../../@generic/hook/use-morphing-sheet-list-height.hook';
-import { CategoryCreatePage } from '../../category/components/category-create-page/category-create-page';
-import { CategoryPickerPanel } from '../../category/components/category-picker-panel/category-picker-panel';
 import { TransactionFeeStep } from '../components/transaction-fee-step/transaction-fee-step';
 
+import { useTransactionCategorySteps } from './use-transaction-category-steps.hook';
 import { useTransactionFeeAmountFocus } from './use-transaction-fee-amount-focus.hook';
 
 import type { TransactionFeeStepsConfigInterface } from '../interface/transaction-fee-steps-config.interface';
@@ -41,8 +36,6 @@ export const useTransactionFeeSteps = (config: TransactionFeeStepsConfigInterfac
         onShowCategory,
         onShowCreate
     } = config;
-    const categoryStepStyle = useMorphingSheetListHeight(MORPHING_SHEET_SELECTOR_HEIGHT_RATIO);
-    const [createTitle, setCreateTitle] = useState('');
     const [feeEntry, setFeeEntry] = useState(() => createFeeEntry(entry, accountId));
     const isExisting = isDefined(entry);
     const { amountRef, markReturning } = useTransactionFeeAmountFocus(isFeeActive, !isExisting && !shouldFocusOnMount);
@@ -68,12 +61,17 @@ export const useTransactionFeeSteps = (config: TransactionFeeStepsConfigInterfac
         handleReturnToFee();
     };
 
-    const handleCreatePress = (defaultTitle: string) => {
-        setCreateTitle(defaultTitle);
-        onShowCreate();
-    };
+    const categorySteps = useTransactionCategorySteps({
+        variant,
+        initialCategoryId: feeEntry.categoryId,
+        onSelect: handleCategorySelect,
+        onBack: handleReturnToFee,
+        onShowCategory,
+        onShowCreate
+    });
 
     const steps = {
+        ...categorySteps,
         fee: {
             presentation: MorphingSheetPresentationEnum.CARD,
             content: (
@@ -88,26 +86,6 @@ export const useTransactionFeeSteps = (config: TransactionFeeStepsConfigInterfac
                     onConfirm={onConfirm}
                 />
             )
-        },
-        category: {
-            presentation: MorphingSheetPresentationEnum.CARD,
-            content: (
-                <View style={categoryStepStyle}>
-                    <SheetSurface className="pt-lg">
-                        <CategoryPickerPanel
-                            variant={variant}
-                            initialCategoryId={feeEntry.categoryId}
-                            onSelect={handleCategorySelect}
-                            onBack={handleReturnToFee}
-                            onCreate={handleCreatePress}
-                        />
-                    </SheetSurface>
-                </View>
-            )
-        },
-        createCategory: {
-            presentation: MorphingSheetPresentationEnum.PAGE,
-            content: <CategoryCreatePage defaultTitle={createTitle} onSelect={handleCategorySelect} onCancel={onShowCategory} />
         }
     };
 
