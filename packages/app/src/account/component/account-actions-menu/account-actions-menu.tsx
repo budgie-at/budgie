@@ -74,7 +74,7 @@ export const AccountActionsMenu = ({ account, balance, instrumentSymbol }: Props
                     testID={AccountDetailsSelector.RevertInstallmentPlanButton}
                 />
             ) : null}
-            {typeSpecificItem}
+            {archiveAction.isArchivable ? typeSpecificItem : null}
         </ActionsMenu>
     );
 };
