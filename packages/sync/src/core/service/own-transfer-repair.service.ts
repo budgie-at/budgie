@@ -111,7 +111,6 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
                         Effect.gen(function* () {
                             for (const account of reservedAccounts) {
                                 yield* accountRepository.updateById(account.id, { isActive: false, includeInNetWorth: false });
-                                yield* balances.updateBalancesByAccountIds([account.id]);
                             }
                         })
                     );
@@ -216,6 +215,7 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
                             isDefined(counterpart) &&
                             isDefined(counterpart.externalSource) &&
                             competitors.size === 1 &&
+                            competitors.has(transaction.id) &&
                             (transaction.type === TransactionTypeEnum.TRANSFER ||
                                 (account.instrumentId ===
                                     accounts.find(candidate => candidate.id === candidateEntries(counterpart)[0].accountId)?.instrumentId &&
