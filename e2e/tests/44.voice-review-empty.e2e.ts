@@ -2,6 +2,7 @@ import { expect } from 'e2e';
 
 import * as b from '../support/budgie/core.ts';
 import { test } from '../support/budgie/test.ts';
+import * as t from '../support/budgie/transactions.ts';
 
 test('44 voice review empty sheet', { tags: ['transactions'] }, async ({ budgie }) => {
     const ctx = budgie.ctx;
@@ -14,6 +15,6 @@ test('44 voice review empty sheet', { tags: ['transactions'] }, async ({ budgie 
     await b.expectNoId(ctx, 'VoiceReview.SaveButton');
     await b.expectId(ctx, 'VoiceReview.CancelButton');
     await b.expectId(ctx, 'VoiceReview.ReRecordButton');
-    await b.byId(ctx.screen, 'PopoverDismissRegion').tap({ position: { x: 200, y: 120 } });
+    await t.tapSheetScrim(ctx);
     await b.expectNoId(ctx, 'VoiceReview.Page');
 });
