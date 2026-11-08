@@ -48,5 +48,5 @@ export const useMorphingSheetDismissMotion = (
         dismissWithVelocity(0);
     };
 
-    return { handleDismiss, handleSwipeDismiss: dismissWithVelocity };
+    return { isDismissing, handleDismiss, handleSwipeDismiss: dismissWithVelocity };
 };

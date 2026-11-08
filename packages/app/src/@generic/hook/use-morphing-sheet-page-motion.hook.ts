@@ -26,6 +26,14 @@ export const useMorphingSheetPageMotion = (
     };
 
     const collapse = () => {
+        if (pageProgress.get() === 0) {
+            pageProgress.set(0);
+            phase.set(PageMotionPhaseEnum.IDLE);
+            onCollapsed();
+
+            return;
+        }
+
         phase.set(PageMotionPhaseEnum.COLLAPSING);
         pageProgress.set(
             withDelay(PREPARE_DELAY_MS, isReducedMotion ? withTiming(0, PAGE_FADE_TIMING) : withSpring(0, SHEET_RESIZE_SPRING))

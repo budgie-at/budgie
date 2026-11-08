@@ -26,13 +26,23 @@ export const useMorphingSheetMotion = (activeStep: string, onDismiss: () => void
     const pageProgress = useSharedValue(0);
     const isMeasured = useSharedValue(false);
     const { morph, beginMorph, endMorph } = useMorphingSheetMorph(visibleHeight, pageProgress);
-    const { handleDismiss, handleSwipeDismiss } = useMorphingSheetDismissMotion(translateY, visibleHeight, baseBottom, onDismiss);
+    const { isDismissing, handleDismiss, handleSwipeDismiss } = useMorphingSheetDismissMotion(
+        translateY,
+        visibleHeight,
+        baseBottom,
+        onDismiss
+    );
 
     const applyHeight = (height: number, isStepChange: boolean) => {
         const nextHeight = Math.min(height, frameHeight);
 
         if (!isMeasured.get()) {
             isMeasured.set(true);
+
+            if (isDismissing.get()) {
+                return;
+            }
+
             visibleHeight.set(nextHeight);
             translateY.set(nextHeight + baseBottom);
 
@@ -95,5 +105,5 @@ export const useMorphingSheetMotion = (activeStep: string, onDismiss: () => void
         }
     };
 
-    return { frame, translateY, visibleHeight, pageProgress, morph, handleDismiss, handleSwipeDismiss, handleStepLayout };
+    return { frame, translateY, visibleHeight, pageProgress, morph, isDismissing, handleDismiss, handleSwipeDismiss, handleStepLayout };
 };

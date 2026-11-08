@@ -38,9 +38,17 @@ export const MorphingSheetPageLayer = ({ rect, pageProgress, isActive, isSettled
     });
 
     const pointerEvents = isActive ? 'auto' : 'none';
+    const isHiddenFromAccessibility = !isActive;
+    const importantForAccessibility = isActive ? 'auto' : 'no-hide-descendants';
 
     return (
-        <Animated.View className="absolute overflow-hidden" style={clipStyle} pointerEvents={pointerEvents}>
+        <Animated.View
+            className="absolute overflow-hidden"
+            style={clipStyle}
+            pointerEvents={pointerEvents}
+            accessibilityElementsHidden={isHiddenFromAccessibility}
+            importantForAccessibility={importantForAccessibility}
+        >
             <Animated.View className="absolute top-0 left-0" style={contentStyle} onLayout={onLayout}>
                 <MorphingSheetPageSettledProvider value={isSettled}>{children}</MorphingSheetPageSettledProvider>
             </Animated.View>

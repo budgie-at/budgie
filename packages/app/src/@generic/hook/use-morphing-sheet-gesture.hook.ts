@@ -12,23 +12,42 @@ const MAX_RUBBER_BAND = 24;
 const RUBBER_BAND_FACTOR = 2;
 const ACTIVE_OFFSET_Y = 8;
 
-export const useMorphingSheetGesture = ({ translateY, visibleHeight, isEnabled, onDismiss }: UseMorphingSheetGestureParamsInterface) => {
+export const useMorphingSheetGesture = ({
+    translateY,
+    visibleHeight,
+    isDismissing,
+    isEnabled,
+    onDismiss
+}: UseMorphingSheetGestureParamsInterface) => {
     const dragStart = useSharedValue(0);
 
     return Gesture.Pan()
         .enabled(isEnabled)
         .activeOffsetY([-ACTIVE_OFFSET_Y, ACTIVE_OFFSET_Y])
+        .onTouchesDown((_event, manager) => {
+            if (isDismissing.get()) {
+                manager.fail();
+            }
+        })
         .onStart(() => {
             cancelAnimation(translateY);
             dragStart.set(translateY.get());
         })
         .onUpdate(event => {
+            if (isDismissing.get()) {
+                return;
+            }
+
             const next = dragStart.get() + event.translationY;
             const rubberBand = -Math.min(MAX_RUBBER_BAND, Math.sqrt(-next) * RUBBER_BAND_FACTOR);
 
             translateY.set(next >= 0 ? next : rubberBand);
         })
         .onEnd(event => {
+            if (isDismissing.get()) {
+                return;
+            }
+
             const isDismissed = event.translationY > visibleHeight.get() * DISMISS_DISTANCE_RATIO || event.velocityY > DISMISS_VELOCITY;
 
             if (isDismissed) {

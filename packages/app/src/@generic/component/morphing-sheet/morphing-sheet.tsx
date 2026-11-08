@@ -33,7 +33,7 @@ export const MorphingSheet = ({ steps, activeStep, onDismiss, isContentDraggable
     const { cardStep, pageStep } = useMorphingSheetTargets(steps, activeStep);
     const { mountedSteps, handlePresented } = useMorphingSheetMountedSteps(steps, cardStep);
 
-    const { frame, translateY, visibleHeight, pageProgress, morph, handleDismiss, handleSwipeDismiss, handleStepLayout } =
+    const { frame, translateY, visibleHeight, pageProgress, morph, isDismissing, handleDismiss, handleSwipeDismiss, handleStepLayout } =
         useMorphingSheetMotion(cardStep, onDismiss, handlePresented);
 
     const { frameStyle, cardStyle } = useMorphingSheetStyle(translateY, visibleHeight, pageProgress, frame);
@@ -46,9 +46,11 @@ export const MorphingSheet = ({ steps, activeStep, onDismiss, isContentDraggable
 
     const isPageActive = isDefined(pageStep);
     const framePointerEvents = isPageActive ? 'none' : 'box-none';
+    const frameImportantForAccessibility = isPageActive ? 'no-hide-descendants' : 'auto';
     const bodyGesture = useMorphingSheetGesture({
         translateY,
         visibleHeight,
+        isDismissing,
         isEnabled: !isReducedMotion && isContentDraggable && !isPageActive,
         onDismiss: handleSwipeDismiss
     });
@@ -58,7 +60,13 @@ export const MorphingSheet = ({ steps, activeStep, onDismiss, isContentDraggable
 
     return (
         <MorphingSheetDismissContext value={handleDismiss}>
-            <View className="absolute inset-0" pointerEvents="box-none" collapsable={false}>
+            <View
+                className="absolute inset-0"
+                pointerEvents="box-none"
+                collapsable={false}
+                accessibilityViewIsModal
+                onAccessibilityEscape={handleDismiss}
+            >
                 <MorphingSheetScrim
                     translateY={translateY}
                     visibleHeight={visibleHeight}
@@ -72,6 +80,8 @@ export const MorphingSheet = ({ steps, activeStep, onDismiss, isContentDraggable
                     className="absolute right-[16px] left-[16px] overflow-hidden"
                     style={frameStyle}
                     pointerEvents={framePointerEvents}
+                    accessibilityElementsHidden={isPageActive}
+                    importantForAccessibility={frameImportantForAccessibility}
                 >
                     <GestureDetector gesture={bodyGesture}>
                         <Animated.View className="bg-sheet-surface absolute inset-x-0 top-0" style={cardStyle} testID={testID}>
