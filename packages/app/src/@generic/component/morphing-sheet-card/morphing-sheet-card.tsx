@@ -18,7 +18,7 @@ export const MorphingSheetCard = ({ frameStyle, cardStyle, isPageActive, testID,
 
     return (
         <Animated.View
-            className="absolute right-[16px] left-[16px] overflow-hidden"
+            className="absolute overflow-hidden"
             style={frameStyle}
             pointerEvents={pointerEvents}
             accessibilityElementsHidden={isPageActive}

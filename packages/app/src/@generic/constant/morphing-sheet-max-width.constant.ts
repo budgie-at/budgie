@@ -1,0 +1,1 @@
+export const MORPHING_SHEET_MAX_WIDTH = 560;

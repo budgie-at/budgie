@@ -32,7 +32,7 @@ export const MorphingSheet = ({ steps, activeStep, onDismiss, testID }: Props) =
     const { frame, translateY, visibleHeight, pageProgress } = motion;
     const { frameStyle, cardStyle, isDragging } = useMorphingSheetStyle(translateY, visibleHeight, pageProgress, frame);
     const page = useMorphingSheetPage(pageStep, pageProgress, frame.baseBottom);
-    const pageRect = useMorphingSheetPageRect(pageProgress, visibleHeight, page.frozenLift, frame.baseBottom);
+    const pageRect = useMorphingSheetPageRect(pageProgress, visibleHeight, page.frozenLift, translateY);
     const stepBack = steps[activeStep]?.onBack;
     const handleBack = stepBack ?? motion.handleDismiss;
 

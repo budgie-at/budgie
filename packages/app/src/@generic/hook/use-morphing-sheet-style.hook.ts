@@ -13,15 +13,17 @@ export const useMorphingSheetStyle = (
     translateY: SharedValue<number>,
     visibleHeight: SharedValue<number>,
     pageProgress: SharedValue<number>,
-    frame: { readonly baseBottom: number; readonly frameHeight: number }
+    frame: { readonly baseBottom: number; readonly frameHeight: number; readonly frameInset: number }
 ) => {
-    const { baseBottom, frameHeight } = frame;
+    const { baseBottom, frameHeight, frameInset } = frame;
     const keyboardLift = useMorphingSheetKeyboardLift(baseBottom);
     const isReducedMotion = useReducedMotion();
     const isDragging = useSharedValue(false);
 
     const frameStaticStyle = {
         bottom: baseBottom,
+        left: frameInset,
+        right: frameInset,
         height: frameHeight,
         borderBottomLeftRadius: CARD_RADIUS,
         borderBottomRightRadius: CARD_RADIUS,

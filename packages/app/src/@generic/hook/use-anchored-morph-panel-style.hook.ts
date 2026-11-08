@@ -6,6 +6,8 @@ import { useResolveClassNames, useUniwind } from 'uniwind';
 
 import { isDefined, isString } from '@rnw-community/shared';
 
+import { MORPHING_SHEET_MAX_WIDTH } from '../constant/morphing-sheet-max-width.constant';
+
 import { useReducedMotion } from './use-reduced-motion.hook';
 
 import type { AnchoredMorphOriginInterface } from '../interface/anchored-morph-origin.interface';
@@ -38,12 +40,13 @@ export const useAnchoredMorphPanelStyle = (
     const { height: keyboardHeight } = useReanimatedKeyboardAnimation();
     const { backgroundColor } = useResolveClassNames('bg-sheet-surface');
 
-    const panelWidth = windowWidth - PANEL_MARGIN * 2;
+    const panelWidth = Math.min(windowWidth - PANEL_MARGIN * 2, MORPHING_SHEET_MAX_WIDTH);
     const topInset = top + PANEL_TOP_GAP;
     const sheetColor = isString(backgroundColor) ? backgroundColor : origin.color;
 
     const panelStyle = useAnimatedStyle(() => {
         const current = progress.get();
+        const panelLeft = (windowWidth - panelWidth) / 2;
         const keyboardInset = Math.max(Math.abs(keyboardHeight.get()), bottom);
         const panelBottom = windowHeight - keyboardInset - PANEL_BOTTOM_GAP;
         const measuredHeight = contentHeight?.get() ?? 0;
@@ -53,7 +56,7 @@ export const useAnchoredMorphPanelStyle = (
 
         if (isReducedMotion) {
             return {
-                left: PANEL_MARGIN,
+                left: panelLeft,
                 top: targetTop,
                 width: panelWidth,
                 height: targetHeight,
@@ -65,7 +68,7 @@ export const useAnchoredMorphPanelStyle = (
         }
 
         return {
-            left: interpolate(current, PROGRESS_RANGE, [origin.rect.x, PANEL_MARGIN], Extrapolation.CLAMP),
+            left: interpolate(current, PROGRESS_RANGE, [origin.rect.x, panelLeft], Extrapolation.CLAMP),
             top: interpolate(current, PROGRESS_RANGE, [origin.rect.y, targetTop], Extrapolation.CLAMP),
             width: interpolate(current, PROGRESS_RANGE, [origin.rect.width, panelWidth], Extrapolation.CLAMP),
             height: interpolate(current, PROGRESS_RANGE, [origin.rect.height, targetHeight], Extrapolation.CLAMP),
