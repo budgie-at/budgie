@@ -9,13 +9,14 @@ import { dismissAllOrReplace } from '../../../@generic/utils/dismiss-all-or-repl
 import { AccountDetailsSelector } from '../../../app/(main)/account/[id]/account-details.selector';
 import { useRevertInstallmentPlan } from '../../../installment-plan/hook/use-revert-installment-plan.hook';
 import { useArchiveAccount } from '../../hooks/use-archive-account.hook';
+import { isUntrackedOwnAccount } from '../../utils/is-untracked-own-account.util';
 
 import { useDepositCloseAction } from './use-deposit-close-action.hook';
 
 import type { AccountEntityInterface } from '@budgie/contracts';
 
 interface Props {
-    readonly account: Pick<AccountEntityInterface, 'id' | 'type' | 'debtType'>;
+    readonly account: Pick<AccountEntityInterface, 'id' | 'type' | 'debtType' | 'externalId'>;
     readonly balance: number;
     readonly instrumentSymbol: string;
 }
@@ -30,6 +31,8 @@ export const AccountActionsMenu = ({ account, balance, instrumentSymbol }: Props
     const handleEdit = () => void router.navigate({ pathname: '/account/[id]/update', params: { id: String(account.id) } });
     const handleRevert = () => void revertAction.revert(account.id, () => void dismissAllOrReplace('/'));
 
+    const isAutomatic = isUntrackedOwnAccount(account);
+    const canArchive = archiveAction.isArchivable && !isAutomatic;
     const isBusy = closeAction.isLoading || archiveAction.isLoading || revertAction.isLoading;
     const isInstallmentPlan = account.type === AccountTypeEnum.DEBT && account.debtType === AccountDebtTypeEnum.INSTALLMENT;
 
@@ -59,12 +62,14 @@ export const AccountActionsMenu = ({ account, balance, instrumentSymbol }: Props
             triggerClassName="ml-auto size-[44px] items-center justify-center"
             triggerTestID={AccountDetailsSelector.ActionsButton}
         >
-            <ActionsMenuItem
-                icon={UserIconNameEnum.Pencil}
-                label={t`Edit account`}
-                onPress={handleEdit}
-                testID={AccountDetailsSelector.EditButton}
-            />
+            {isAutomatic ? null : (
+                <ActionsMenuItem
+                    icon={UserIconNameEnum.Pencil}
+                    label={t`Edit account`}
+                    onPress={handleEdit}
+                    testID={AccountDetailsSelector.EditButton}
+                />
+            )}
             {isInstallmentPlan ? (
                 <ActionsMenuItem
                     icon={UserIconNameEnum.Undo2}
@@ -74,7 +79,7 @@ export const AccountActionsMenu = ({ account, balance, instrumentSymbol }: Props
                     testID={AccountDetailsSelector.RevertInstallmentPlanButton}
                 />
             ) : null}
-            {archiveAction.isArchivable ? typeSpecificItem : null}
+            {canArchive ? typeSpecificItem : null}
         </ActionsMenu>
     );
 };

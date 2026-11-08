@@ -2266,10 +2266,6 @@ msgstr "Budgie eliminó la parte dañada. Solo volverá a empezar cuando tú lo 
 msgid "Budgie encrypts your data on this phone. It takes a few seconds."
 msgstr "Budgie cifra tus datos en este teléfono. Tarda unos segundos."
 
-#: src/account/component/account-details-automatic-notice/account-details-automatic-notice.tsx
-msgid "Budgie files transfers to your accounts at banks it doesn't track here. Connect that bank and they'll be paired automatically."
-msgstr "Budgie registra las transferencias a tus cuentas en bancos que no sigue aquí. Conecta ese banco y se emparejarán automáticamente."
-
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "Budgie has no exchange rate for this payment currency yet."
 msgstr "Budgie todavía no tiene un tipo de cambio para la moneda de este pago."
@@ -2301,6 +2297,10 @@ msgstr "Budgie lee tu exportación de operaciones de Inzhur y registra efectivo,
 #: src/inzhur/component/import-inzhur-statement/import-inzhur-statement.tsx
 msgid "Budgie rebuilds your cash, buys and dividends from it"
 msgstr "Budgie reconstruye a partir de él tu efectivo, compras y dividendos"
+
+#: src/account/component/account-details-automatic-notice/account-details-automatic-notice.tsx
+msgid "Budgie records transfers to your accounts at banks it doesn't track here. Connect that bank and they'll be paired automatically."
+msgstr "Budgie guarda aquí las transferencias a tus cuentas en bancos que no registra aquí. Conecta ese banco y se emparejarán automáticamente."
 
 #: src/app/(tabs)/settings/sync-repairs.tsx
 msgid "Budgie removes repeated bank imports and fixes transfers that landed on inactive accounts. Manual transactions are never changed."
@@ -7173,7 +7173,7 @@ msgstr "Otras monedas"
 msgid "Other options"
 msgstr "Otras opciones"
 
-#: src/account/hook/use-account-display-title.hook.ts
+#: src/account/utils/get-account-display-title.util.ts
 msgid "Other own accounts"
 msgstr "Otras cuentas propias"
 
@@ -10132,11 +10132,12 @@ msgstr "¿Deshacer reembolso?"
 
 #: src/account/component/account-details-hidden-pill/account-details-hidden-pill.tsx
 #: src/account/component/inactive-account-card/inactive-account-card.tsx
+#: src/account/component/inactive-account-trailing/inactive-account-trailing.tsx
 msgid "Unhide"
 msgstr "Mostrar"
 
 #: src/account/component/account-details-hidden-pill/account-details-hidden-pill.tsx
-#: src/account/component/inactive-account-card/inactive-account-card.tsx
+#: src/account/component/inactive-account-trailing/inactive-account-trailing.tsx
 msgid "Unhide {accountTitle}"
 msgstr "Mostrar {accountTitle}"
 

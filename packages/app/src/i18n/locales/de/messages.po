@@ -2266,10 +2266,6 @@ msgstr "Budgie hat den beschädigten Teil gelöscht. Der Download startet erst w
 msgid "Budgie encrypts your data on this phone. It takes a few seconds."
 msgstr "Budgie verschlüsselt deine Daten auf diesem Telefon. Das dauert ein paar Sekunden."
 
-#: src/account/component/account-details-automatic-notice/account-details-automatic-notice.tsx
-msgid "Budgie files transfers to your accounts at banks it doesn't track here. Connect that bank and they'll be paired automatically."
-msgstr "Budgie erfasst Überweisungen auf Ihre Konten bei Banken, die hier nicht verfolgt werden. Verbinden Sie diese Bank, dann werden sie automatisch zugeordnet."
-
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "Budgie has no exchange rate for this payment currency yet."
 msgstr "Budgie hat noch keinen Wechselkurs für diese Zahlungswährung."
@@ -2301,6 +2297,10 @@ msgstr "Budgie liest deinen Inzhur-Operationsexport und erfasst Guthaben, Käufe
 #: src/inzhur/component/import-inzhur-statement/import-inzhur-statement.tsx
 msgid "Budgie rebuilds your cash, buys and dividends from it"
 msgstr "Budgie baut daraus dein Guthaben, deine Käufe und Dividenden neu auf"
+
+#: src/account/component/account-details-automatic-notice/account-details-automatic-notice.tsx
+msgid "Budgie records transfers to your accounts at banks it doesn't track here. Connect that bank and they'll be paired automatically."
+msgstr "Budgie erfasst hier Überweisungen auf deine Konten bei Banken, die es nicht verfolgt. Verbinde diese Bank, dann werden sie automatisch zugeordnet."
 
 #: src/app/(tabs)/settings/sync-repairs.tsx
 msgid "Budgie removes repeated bank imports and fixes transfers that landed on inactive accounts. Manual transactions are never changed."
@@ -7173,7 +7173,7 @@ msgstr "Weitere Währungen"
 msgid "Other options"
 msgstr "Weitere Optionen"
 
-#: src/account/hook/use-account-display-title.hook.ts
+#: src/account/utils/get-account-display-title.util.ts
 msgid "Other own accounts"
 msgstr "Weitere eigene Konten"
 
@@ -10132,11 +10132,12 @@ msgstr "Erstattung aufheben?"
 
 #: src/account/component/account-details-hidden-pill/account-details-hidden-pill.tsx
 #: src/account/component/inactive-account-card/inactive-account-card.tsx
+#: src/account/component/inactive-account-trailing/inactive-account-trailing.tsx
 msgid "Unhide"
 msgstr "Einblenden"
 
 #: src/account/component/account-details-hidden-pill/account-details-hidden-pill.tsx
-#: src/account/component/inactive-account-card/inactive-account-card.tsx
+#: src/account/component/inactive-account-trailing/inactive-account-trailing.tsx
 msgid "Unhide {accountTitle}"
 msgstr "{accountTitle} einblenden"
 

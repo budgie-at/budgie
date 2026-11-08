@@ -2267,10 +2267,6 @@ msgstr "Budgie deleted the damaged part. It starts again only when you ask."
 msgid "Budgie encrypts your data on this phone. It takes a few seconds."
 msgstr "Budgie encrypts your data on this phone. It takes a few seconds."
 
-#: src/account/component/account-details-automatic-notice/account-details-automatic-notice.tsx
-msgid "Budgie files transfers to your accounts at banks it doesn't track here. Connect that bank and they'll be paired automatically."
-msgstr "Budgie files transfers to your accounts at banks it doesn't track here. Connect that bank and they'll be paired automatically."
-
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "Budgie has no exchange rate for this payment currency yet."
 msgstr "Budgie has no exchange rate for this payment currency yet."
@@ -2302,6 +2298,10 @@ msgstr "Budgie reads your Inzhur operations export and records cash, buys and di
 #: src/inzhur/component/import-inzhur-statement/import-inzhur-statement.tsx
 msgid "Budgie rebuilds your cash, buys and dividends from it"
 msgstr "Budgie rebuilds your cash, buys and dividends from it"
+
+#: src/account/component/account-details-automatic-notice/account-details-automatic-notice.tsx
+msgid "Budgie records transfers to your accounts at banks it doesn't track here. Connect that bank and they'll be paired automatically."
+msgstr "Budgie records transfers to your accounts at banks it doesn't track here. Connect that bank and they'll be paired automatically."
 
 #: src/app/(tabs)/settings/sync-repairs.tsx
 msgid "Budgie removes repeated bank imports and fixes transfers that landed on inactive accounts. Manual transactions are never changed."
@@ -7174,7 +7174,7 @@ msgstr "Other currencies"
 msgid "Other options"
 msgstr "Other options"
 
-#: src/account/hook/use-account-display-title.hook.ts
+#: src/account/utils/get-account-display-title.util.ts
 msgid "Other own accounts"
 msgstr "Other own accounts"
 
@@ -10133,11 +10133,12 @@ msgstr "Undo refund?"
 
 #: src/account/component/account-details-hidden-pill/account-details-hidden-pill.tsx
 #: src/account/component/inactive-account-card/inactive-account-card.tsx
+#: src/account/component/inactive-account-trailing/inactive-account-trailing.tsx
 msgid "Unhide"
 msgstr "Unhide"
 
 #: src/account/component/account-details-hidden-pill/account-details-hidden-pill.tsx
-#: src/account/component/inactive-account-card/inactive-account-card.tsx
+#: src/account/component/inactive-account-trailing/inactive-account-trailing.tsx
 msgid "Unhide {accountTitle}"
 msgstr "Unhide {accountTitle}"
 

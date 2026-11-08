@@ -2266,10 +2266,6 @@ msgstr "Budgie a supprimé la partie endommagée. Le téléchargement ne reprend
 msgid "Budgie encrypts your data on this phone. It takes a few seconds."
 msgstr "Budgie chiffre tes données sur ce téléphone. Cela prend quelques secondes."
 
-#: src/account/component/account-details-automatic-notice/account-details-automatic-notice.tsx
-msgid "Budgie files transfers to your accounts at banks it doesn't track here. Connect that bank and they'll be paired automatically."
-msgstr "Budgie enregistre les virements vers vos comptes dans des banques qu'il ne suit pas ici. Connectez cette banque et ils seront associés automatiquement."
-
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "Budgie has no exchange rate for this payment currency yet."
 msgstr "Budgie n’a pas encore de taux de change pour la devise de ce paiement."
@@ -2301,6 +2297,10 @@ msgstr "Budgie lit votre export des opérations Inzhur et enregistre liquidités
 #: src/inzhur/component/import-inzhur-statement/import-inzhur-statement.tsx
 msgid "Budgie rebuilds your cash, buys and dividends from it"
 msgstr "Budgie reconstruit à partir de celui-ci vos liquidités, achats et dividendes"
+
+#: src/account/component/account-details-automatic-notice/account-details-automatic-notice.tsx
+msgid "Budgie records transfers to your accounts at banks it doesn't track here. Connect that bank and they'll be paired automatically."
+msgstr "Budgie enregistre ici les virements vers tes comptes dans les banques qu’il ne suit pas. Connecte cette banque et ils seront associés automatiquement."
 
 #: src/app/(tabs)/settings/sync-repairs.tsx
 msgid "Budgie removes repeated bank imports and fixes transfers that landed on inactive accounts. Manual transactions are never changed."
@@ -7173,7 +7173,7 @@ msgstr "Autres devises"
 msgid "Other options"
 msgstr "Autres options"
 
-#: src/account/hook/use-account-display-title.hook.ts
+#: src/account/utils/get-account-display-title.util.ts
 msgid "Other own accounts"
 msgstr "Autres comptes personnels"
 
@@ -10132,11 +10132,12 @@ msgstr "Annuler le remboursement ?"
 
 #: src/account/component/account-details-hidden-pill/account-details-hidden-pill.tsx
 #: src/account/component/inactive-account-card/inactive-account-card.tsx
+#: src/account/component/inactive-account-trailing/inactive-account-trailing.tsx
 msgid "Unhide"
 msgstr "Afficher"
 
 #: src/account/component/account-details-hidden-pill/account-details-hidden-pill.tsx
-#: src/account/component/inactive-account-card/inactive-account-card.tsx
+#: src/account/component/inactive-account-trailing/inactive-account-trailing.tsx
 msgid "Unhide {accountTitle}"
 msgstr "Afficher {accountTitle}"
 

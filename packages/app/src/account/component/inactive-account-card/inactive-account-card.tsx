@@ -12,6 +12,7 @@ import { useArchiveAccount } from '../../hooks/use-archive-account.hook';
 import { useUnhideAccount } from '../../hooks/use-unhide-account.hook';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
 import { getAccountDisplayTitle } from '../../utils/get-account-display-title.util';
+import { isUntrackedOwnAccount } from '../../utils/is-untracked-own-account.util';
 import { InactiveAccountTrailing } from '../inactive-account-trailing/inactive-account-trailing';
 import { ShelvedAccountRow } from '../shelved-account-row/shelved-account-row';
 import { ShelvedAccountSubtitle } from '../shelved-account-subtitle/shelved-account-subtitle';
@@ -31,7 +32,8 @@ export const InactiveAccountCard = ({ account, isFirst, isLast }: Props) => {
     const { isLoading, unhide } = useUnhideAccount(account);
     const { handleArchive, isArchivable } = useArchiveAccount(account.id, emptyFn);
 
-    const accountTitle = account.title;
+    const isAutomatic = isUntrackedOwnAccount(account);
+    const canArchive = isArchivable && !isAutomatic;
     const formattedBalance = formatInstrumentAmount(balance, account.instrument.symbol, account.instrument.type);
     const accountType = t(ACCOUNT_TYPE[account.type]);
     const notice = account.includeInNetWorth ? null : t`Not counted in net worth`;
@@ -40,8 +42,8 @@ export const InactiveAccountCard = ({ account, isFirst, isLast }: Props) => {
     const handleOpen = () => void router.push({ pathname: '/account/[id]/details', params: { id: String(account.id) } });
     const handleEdit = () => void router.push({ pathname: '/account/[id]/update', params: { id: String(account.id) } });
     const accessibilityActions = [
-        { name: 'unhide', label: t`Unhide`, onPress: unhide },
-        ...(isArchivable ? [{ name: 'archive', label: t`Archive`, onPress: handleArchive }] : [])
+        ...(isAutomatic ? [] : [{ name: 'unhide', label: t`Unhide`, onPress: unhide }]),
+        ...(canArchive ? [{ name: 'archive', label: t`Archive`, onPress: handleArchive }] : [])
     ];
 
     return (
@@ -52,12 +54,12 @@ export const InactiveAccountCard = ({ account, isFirst, isLast }: Props) => {
                 trailing={<InactiveAccountTrailing account={account} isLoading={isLoading} onUnhide={unhide} />}
                 accessibilityLabel={accessibilityLabel}
                 accessibilityActions={accessibilityActions}
-                testID={InactiveAccountCardSelector.Card(accountTitle)}
+                testID={InactiveAccountCardSelector.Card(account.title)}
                 onPress={handleOpen}
             >
-                <ActionsMenuItem icon={UserIconNameEnum.Eye} label={t`Unhide`} onPress={unhide} />
-                <ActionsMenuItem icon={UserIconNameEnum.Pencil} label={t`Edit account`} onPress={handleEdit} />
-                {isArchivable ? <ActionsMenuItem icon={UserIconNameEnum.Archive} label={t`Archive`} onPress={handleArchive} /> : null}
+                {isAutomatic ? null : <ActionsMenuItem icon={UserIconNameEnum.Eye} label={t`Unhide`} onPress={unhide} />}
+                {isAutomatic ? null : <ActionsMenuItem icon={UserIconNameEnum.Pencil} label={t`Edit account`} onPress={handleEdit} />}
+                {canArchive ? <ActionsMenuItem icon={UserIconNameEnum.Archive} label={t`Archive`} onPress={handleArchive} /> : null}
             </ShelvedAccountRow>
         </GroupedListItem>
     );

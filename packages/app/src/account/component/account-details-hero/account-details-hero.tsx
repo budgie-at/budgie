@@ -25,38 +25,42 @@ interface Props {
 
 const BALANCE_SLOT_STYLE = { height: ACCOUNT_DETAILS_HERO_BALANCE_HEIGHT };
 
-export const AccountDetailsHero = ({ account, balance }: Props) => (
-    <View className="items-center gap-y-lg pb-md">
-        <View style={BALANCE_SLOT_STYLE} />
+export const AccountDetailsHero = ({ account, balance }: Props) => {
+    const isAutomatic = isUntrackedOwnAccount(account);
 
-        {isCryptoAccountType(account.type) ? (
-            <>
-                <CollapsibleChromeScrollFade>
-                    <AccountDetailsConvertedValue balance={balance} instrument={account.instrument} />
-                </CollapsibleChromeScrollFade>
+    return (
+        <View className="items-center gap-y-lg pb-md">
+            <View style={BALANCE_SLOT_STYLE} />
 
-                <AccountDetailsMarketLink instrument={account.instrument} />
-            </>
-        ) : null}
+            {isCryptoAccountType(account.type) ? (
+                <>
+                    <CollapsibleChromeScrollFade>
+                        <AccountDetailsConvertedValue balance={balance} instrument={account.instrument} />
+                    </CollapsibleChromeScrollFade>
 
-        {isInzhurFundAccount(account) ? (
-            <InzhurFundReturns account={account} balance={balance} />
-        ) : (
-            <AccountDetailsStatusLine account={account} />
-        )}
+                    <AccountDetailsMarketLink instrument={account.instrument} />
+                </>
+            ) : null}
 
-        {isUntrackedOwnAccount(account) ? <AccountDetailsAutomaticNotice /> : null}
+            {isInzhurFundAccount(account) ? (
+                <InzhurFundReturns account={account} balance={balance} />
+            ) : (
+                <AccountDetailsStatusLine account={account} />
+            )}
 
-        {account.isActive || isUntrackedOwnAccount(account) ? null : (
-            <Animated.View entering={FadeIn} exiting={FadeOut}>
-                <AccountDetailsHiddenPill account={account} />
-            </Animated.View>
-        )}
+            {isAutomatic ? <AccountDetailsAutomaticNotice /> : null}
 
-        {isInzhurFundAccount(account) ? null : (
-            <Animated.View layout={LinearTransition}>
-                <AccountDetailsMonthChips accountId={account.id} />
-            </Animated.View>
-        )}
-    </View>
-);
+            {account.isActive || isAutomatic ? null : (
+                <Animated.View entering={FadeIn} exiting={FadeOut}>
+                    <AccountDetailsHiddenPill account={account} />
+                </Animated.View>
+            )}
+
+            {isInzhurFundAccount(account) ? null : (
+                <Animated.View layout={LinearTransition}>
+                    <AccountDetailsMonthChips accountId={account.id} />
+                </Animated.View>
+            )}
+        </View>
+    );
+};
