@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.171.2](https://github.com/budgie-at/budgie/compare/v6.171.1...v6.171.2) (2026-11-08)
+
+### Bug Fixes
+
+* **landing:** submit only changed URLs to IndexNow once a day ([#2059](https://github.com/budgie-at/budgie/issues/2059)) ([771116c](https://github.com/budgie-at/budgie/commit/771116cffa9e47a0e78f58d63d61a22f22652c3f))
+
+
+## [6.171.1](https://github.com/budgie-at/budgie/compare/v6.171.0...v6.171.1) (2026-11-08)
+
+### Bug Fixes
+
+* own-transfer and categorize inbox follow-ups from [#2032](https://github.com/budgie-at/budgie/issues/2032) reviews ([#2057](https://github.com/budgie-at/budgie/issues/2057)) ([68a0bb8](https://github.com/budgie-at/budgie/commit/68a0bb867670bf0a2c87e8fe9a1c42311ebc9ba5)), closes [#2055](https://github.com/budgie-at/budgie/issues/2055)
+
+
 # [6.171.0](https://github.com/budgie-at/budgie/compare/v6.170.0...v6.171.0) (2026-11-08)
 
 ### Features

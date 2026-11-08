@@ -35,16 +35,17 @@ export const CategorizeInboxList = ({ items, filterSection, onSectionPress }: Pr
         .filter(isCategorizeInboxCluster)
         .filter(cluster => cluster.section === CategorizeInboxSectionEnum.ONE_OFFS)
         .slice(INLINE_ONE_OFF_LIMIT);
-    const oneOffsLink: CategorizeInboxOneOffsLinkItemInterface[] =
-        isNotEmptyArray(hiddenOneOffs) && isInFilter(CategorizeInboxSectionEnum.ONE_OFFS)
+    const data: (CategorizeInboxListItemType | CategorizeInboxOneOffsLinkItemInterface)[] = items.filter(
+        item => isInFilter(item.section) && !hiddenOneOffs.some(cluster => cluster.key === item.key)
+    );
+    const firstOlderIndex = data.findIndex(item => 'section' in item && item.section === CategorizeInboxSectionEnum.OLDER);
+    data.splice(
+        firstOlderIndex < 0 ? data.length : firstOlderIndex,
+        0,
+        ...(isNotEmptyArray(hiddenOneOffs) && isInFilter(CategorizeInboxSectionEnum.ONE_OFFS)
             ? [{ key: 'one-offs-link', oneOffs: hiddenOneOffs }]
-            : [];
-    const visibleItems = items.filter(item => isInFilter(item.section) && !hiddenOneOffs.some(cluster => cluster.key === item.key));
-    const data = [
-        ...visibleItems.filter(item => item.section !== CategorizeInboxSectionEnum.OLDER),
-        ...oneOffsLink,
-        ...visibleItems.filter(item => item.section === CategorizeInboxSectionEnum.OLDER)
-    ];
+            : [])
+    );
     const isCardItem = (index: number): boolean => {
         const item = data.at(index);
 

@@ -550,7 +550,7 @@ describe('own transfer detector', () => {
     ])('recognizes own movement signal %s', title => {
         expect(ownTransferDetector.matches(title, ['Коваленко Олена'])).toBe(true);
     });
-    it.each(['Amy Cardenas', 'Tommy Card Shop', 'Brown Accountants', 'Top up my card Uber', 'Tax 2024'])(
+    it.each(['Amy Cardenas', 'Tommy Card Shop', 'Brown Accountants', 'Top up my card Uber', 'Поповнення на мою картку Uber', 'Tax 2024'])(
         'rejects unrelated title %s',
         title => {
             expect(ownTransferDetector.matches(title, ['Коваленко Олена'])).toBe(false);

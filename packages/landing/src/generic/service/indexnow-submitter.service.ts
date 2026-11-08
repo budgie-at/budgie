@@ -17,8 +17,15 @@ export class IndexnowSubmitter extends Context.Service<IndexnowSubmitter>()('@bu
         const httpClient = yield* HttpClient.HttpClient;
 
         return {
-            submit: Effect.fn('IndexnowSubmitter.submit')(function* () {
-                const urlList = buildSiteUrls();
+            submit: Effect.fn('IndexnowSubmitter.submit')(function* (since: Date | null = null) {
+                const urlList = buildSiteUrls(since);
+
+                if (urlList.length === 0) {
+                    const emptyResult: IndexnowSubmitResultInterface = { status: 200, count: 0 };
+
+                    return emptyResult;
+                }
+
                 const request = HttpClientRequest.post(INDEXNOW_ENDPOINT).pipe(
                     HttpClientRequest.bodyJsonUnsafe({
                         host: INDEXNOW_HOST,

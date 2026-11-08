@@ -5,8 +5,6 @@ import {
     AccountTypeEnum,
     CategorySourceEnum,
     Db,
-    ExternalSourceEnum,
-    InstrumentTypeEnum,
     PRECISION,
     TransactionConsolidationTypeEnum,
     TransactionEntryTypeEnum,
@@ -22,7 +20,7 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isEmptyArray, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-import { isBinanceOwnTransferTitle } from '../../binance/mapper/binance.mapper';
+import { binanceOwnTransferDetector } from '../../binance/detector/binance-own-transfer.detector';
 import { ownTransferDetector } from '../detector/own-transfer.detector';
 import { OwnTransferRepository } from '../repository/own-transfer.repository';
 
@@ -129,19 +127,14 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
                     isNotEmptyArray(matches) ||
                     ownTransferDetector.matches(transaction.title, identities) ||
                     ownTransferDetector.matchesAbbreviatedName(transaction.title, identities) ||
-                    (transaction.externalSource === ExternalSourceEnum.BINANCE && isBinanceOwnTransferTitle(transaction.title));
-                const transactions = (yield* repository.findTransactions(scope)).filter(isSingleEntry);
+                    binanceOwnTransferDetector.matches(transaction);
+                const transactions = (yield* repository.findCandidates(scope, identities)).filter(isSingleEntry);
                 const candidates = transactions.flatMap(transaction => {
                     const [entry] = candidateEntries(transaction);
                     const account = accounts.find(candidate => candidate.id === entry.accountId);
                     const matches = cardMatches(transaction);
                     const ownSignal = hasOwnSignal(transaction, matches);
-                    const canFallback =
-                        transaction.externalSource === ExternalSourceEnum.BINANCE
-                            ? isBinanceOwnTransferTitle(transaction.title) &&
-                              transaction.type === TransactionTypeEnum.INCOME &&
-                              account?.instrument.type === InstrumentTypeEnum.FIAT
-                            : ownSignal;
+                    const canFallback = ownSignal && binanceOwnTransferDetector.allowsFallback(transaction, account?.instrument.type);
 
                     return isDefined(account) && ownSignal ? [{ transaction, account, matches, canFallback }] : [];
                 });
@@ -264,16 +257,15 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
                                     consumed.add(transaction.id);
                                     if (isDefined(counterpart)) {
                                         consumed.add(counterpart.id);
+                                        yield* balances.updateBalancesByAccountIds([
+                                            candidateEntries(transaction)[0].accountId,
+                                            candidateEntries(counterpart)[0].accountId,
+                                            ...untrackedTransfers
+                                                .filter(transfer => transfer.id === transaction.id)
+                                                .map(transfer => transfer.untrackedAccountId)
+                                                .filter(isDefined)
+                                        ]);
                                     }
-                                    yield* balances.updateBalancesByAccountIds([
-                                        candidateEntries(transaction)[0].accountId,
-                                        ...(isDefined(counterpart) ? [candidateEntries(counterpart)[0].accountId] : []),
-                                        ...(isDefined(destination) ? [destination.id] : []),
-                                        ...untrackedTransfers
-                                            .filter(transfer => transfer.id === transaction.id)
-                                            .map(transfer => transfer.untrackedAccountId)
-                                            .filter(isDefined)
-                                    ]);
                                     repaired += 1;
                                 }
                             }

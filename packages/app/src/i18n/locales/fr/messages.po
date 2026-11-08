@@ -6876,7 +6876,7 @@ msgstr "OK"
 
 #: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
 msgid "Older"
-msgstr "Anciens"
+msgstr "Plus anciens"
 
 #: src/categorize-inbox/components/categorize-inbox-section-chip/categorize-inbox-section-chip.tsx
 msgctxt "Categorize inbox section chip"

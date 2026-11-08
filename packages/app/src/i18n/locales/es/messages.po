@@ -6881,7 +6881,7 @@ msgstr "Anteriores"
 #: src/categorize-inbox/components/categorize-inbox-section-chip/categorize-inbox-section-chip.tsx
 msgctxt "Categorize inbox section chip"
 msgid "Older"
-msgstr "Más antiguos"
+msgstr "Anteriores"
 
 #: src/rule/hooks/use-rule-row-summary.hook.ts
 #: src/settings/components/app-lock-row/app-lock-row.tsx

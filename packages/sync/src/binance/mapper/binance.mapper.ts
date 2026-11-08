@@ -287,5 +287,3 @@ export const mapBinanceUniversalTransferToTransfer = (transfer: BinanceUniversal
         source: BinanceTransferSourceEnum.UNIVERSAL_TRANSFER
     };
 };
-
-export const isBinanceOwnTransferTitle = (title: string): boolean => /^Binance \S+ (deposit|withdrawal)$/u.test(title);
