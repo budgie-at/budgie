@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.170.0](https://github.com/budgie-at/budgie/compare/v6.169.0...v6.170.0) (2026-11-08)
+
+### Features
+
+* **app:** polish motion and haptics across the app ([#2026](https://github.com/budgie-at/budgie/issues/2026)) ([9375585](https://github.com/budgie-at/budgie/commit/93755858ad5495587a22c45bf0ea0765ff0b0d0b)), closes [high-frequency](https://github.com/hi/issues/frequency)
+
+
 # [6.169.0](https://github.com/budgie-at/budgie/compare/v6.168.0...v6.169.0) (2026-11-08)
 
 ### Bug Fixes
