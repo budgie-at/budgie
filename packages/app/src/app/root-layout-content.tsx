@@ -33,7 +33,6 @@ import { ScreenChromeThemeProvider } from '../@generic/provider/screen-chrome-th
 import { appRuntime } from '../@generic/runtime/app.runtime';
 import { Workload } from '../@generic/service/workload.service';
 import { fitToContentsSheetOptions } from '../@generic/utils/fit-to-contents-sheet-options.util';
-import { formSheetOptions } from '../@generic/utils/form-sheet-options.util';
 import { logAndContinue } from '../@generic/utils/log-and-continue.util';
 import { AiProvider } from '../ai/provider/ai.provider';
 import { VoiceInputProvider } from '../ai/provider/voice-input.provider';
@@ -44,9 +43,6 @@ import { HistoricalMarketDataDrainerService } from '../market-data/service/histo
 import { ReceiptLaunchHandler } from '../receipt/components/receipt-launch-handler/receipt-launch-handler';
 import { AppDataSyncService } from '../sync/service/app-data-sync.service';
 import { ThemeProvider } from '../theme/provider/theme.provider';
-
-const DETENT_90 = 0.9;
-const DETENT_70 = 0.7;
 
 const MODAL_OPTIONS: NativeStackNavigationOptions = { presentation: 'modal', headerShown: false };
 
@@ -64,8 +60,6 @@ const MORPHING_SHEET_OPTIONS: NativeStackNavigationOptions = {
     headerShown: false,
     contentStyle: { backgroundColor: 'transparent' }
 };
-
-const COMPACT_SELECTOR_OPTIONS = formSheetOptions([DETENT_70, DETENT_90], 0);
 
 enableScreens();
 enableFreeze();
@@ -174,7 +168,7 @@ export const RootLayoutContent = () => {
                                                                     />
                                                                     <Stack.Screen
                                                                         name="account-selector"
-                                                                        options={COMPACT_SELECTOR_OPTIONS}
+                                                                        options={MORPHING_SHEET_OPTIONS}
                                                                     />
                                                                     <Stack.Screen name="account-panel" options={MORPHING_SHEET_OPTIONS} />
                                                                     <Stack.Screen

@@ -20,9 +20,10 @@ interface Props {
     readonly params: AccountSelectorModalParams;
     readonly onSelect: (accountId: AccountSelectorResult) => void;
     readonly onBack?: () => void;
+    readonly className?: string;
 }
 
-export const AccountSelectorSheetContent = ({ params, onSelect, onBack }: Props) => {
+export const AccountSelectorSheetContent = ({ params, onSelect, onBack, className }: Props) => {
     const { t } = useLingui();
     const [search, setSearch] = useState('');
     const isPanelSettled = useAnchoredMorphPanelSettled();
@@ -61,7 +62,7 @@ export const AccountSelectorSheetContent = ({ params, onSelect, onBack }: Props)
         : void 0;
 
     return (
-        <SheetSurface>
+        <SheetSurface className={className}>
             <SelectorModalSearchHeader
                 title={t`Account`}
                 placeholder={t`Search accounts…`}
