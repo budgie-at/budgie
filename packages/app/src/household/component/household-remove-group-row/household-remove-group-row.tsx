@@ -4,7 +4,6 @@ import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
-import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { showSuccessToast } from '../../../@generic/utils/show-success-toast/show-success-toast';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { SettingsDestructiveRow } from '../../../settings/components/settings-destructive-row/settings-destructive-row';
@@ -14,11 +13,9 @@ import { HouseholdRemoveGroupRowSelector } from './household-remove-group-row.se
 export const HouseholdRemoveGroupRow = () => {
     const { t } = useLingui();
     const { run, isLoading } = useSingleFlight();
-    const [hapticNotification] = useVibration();
     const removeEmptyGroup = Effect.flatMap(CloudSyncHouseholdService, householdService => householdService.removeEmptyHousehold()).pipe(
         Effect.tap(() =>
             Effect.sync(() => {
-                hapticNotification();
                 showSuccessToast(t`Family group removed`);
             })
         ),

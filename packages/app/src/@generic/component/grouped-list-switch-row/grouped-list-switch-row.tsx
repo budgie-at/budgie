@@ -32,11 +32,8 @@ export const GroupedListSwitchRow = ({
     accessibilityHint
 }: Props) => {
     const isInteractive = isDefined(onChange);
-    const handleSwitchChange = (next: boolean) => {
-        onChange?.(next);
-    };
     const handlePress = () => {
-        handleSwitchChange(!value);
+        onChange?.(!value);
     };
     const pressableProps = {
         accessible: true,
@@ -59,7 +56,7 @@ export const GroupedListSwitchRow = ({
                 <LoadingContent isLoading={isLoading}>
                     <ThemedSwitch
                         value={value}
-                        onValueChange={handleSwitchChange}
+                        onValueChange={onChange}
                         disabled={!isInteractive}
                         accessibilityLabel={title}
                         accessibilityElementsHidden
