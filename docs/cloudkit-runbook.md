@@ -115,7 +115,9 @@ Expected: `createdAt`, `installId`, `deviceName`, `deviceModel`, `appVersion`, `
 3. Rename the transaction to `conflict-from-A1` on A1 and to `conflict-from-A2` on A2.
 4. Let A1 sync, then take A2 out of airplane mode and sync.
 
-Expected: A2's save fails with `SERVER_RECORD_CHANGED` and carries the server record; the app merges the server record with A2's changed fields and resends; both devices end on `conflict-from-A2` (a user edit beats an automatic one), with one record in `personal` and no duplicate. `failedSaves` reports the code once, not on every retry.
+Expected: A2's save fails with `SERVER_RECORD_CHANGED` and carries the server record; the app merges the server record with A2's changed fields and resends; both devices end on `conflict-from-A2`, with one record in `personal` and no duplicate. `failedSaves` reports the code once, not on every retry.
+
+The merge is per field. A field changed on only one side keeps that side's value. When both sides changed the same field, the local edit wins if both edits are user-authored, so A2 (the saving device) keeps `conflict-from-A2`; the server edit wins only when it is user-authored and the local change was automatic (a rule, import or sync repair). A `deletedAt` set on either side wins over a live row.
 
 ### C3 `ZONE_NOT_FOUND` and a user-deleted zone
 
@@ -124,7 +126,12 @@ Expected: A2's save fails with `SERVER_RECORD_CHANGED` and carries the server re
 3. Sync from the app.
 4. Separately, delete the zone from the console while the app is running and wait for the next fetch.
 
-Expected, both cases: the fetch emits `onZoneChange` `deleted` with reason `DELETED` (`PURGED` after CloudKit purges it) and `syncNow`/saves report `ZONE_NOT_FOUND`. The app stops syncing that zone, keeps every local row and every balance intact, and re-creates the zone only for a deliberate re-upload. No local transaction, account or balance is deleted, and no duplicate appears after the re-upload.
+Expected, both cases: the fetch emits `onZoneChange` `deleted` with reason `DELETED` (`PURGED` after CloudKit purges it) and `syncNow`/saves report `ZONE_NOT_FOUND`.
+
+- A plain zone deletion (`DELETED`/`PURGED` reported by the fetch) stops the engine and turns `cloudSyncEnabled` off. Nothing syncs and nothing is re-created until the user enables iCloud sync again.
+- A save that fails with `ZONE_NOT_FOUND` (or `ENCRYPTED_DATA_RESET`) recovers on its own: the engine stops, clears its sync state and lineage, re-queues every personal record, restarts, re-creates the zone and re-uploads the local data.
+
+In both cases every local row and balance stays intact, no local transaction, account or balance is deleted, and no duplicate appears after the re-upload.
 
 ### C4 Encrypted data reset
 

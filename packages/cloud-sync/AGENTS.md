@@ -45,8 +45,9 @@ Tables, entities, zone constants, identity helpers and the plain repositories th
 - `CloudSyncEngineService`: engine start/stop, lineage decision and conflict resolution, reconfigure, account and zone events.
 - `CloudSyncSentService`: sent-changes events, failed saves, acknowledgement.
 - `CloudSyncFetchService`: fetched-changes events, did-fetch, restore reconciliation, automation hook.
+- `BankOwnershipService` (`bank-ownership.service.ts`): decides which install owns each active bank integration. It reads device heartbeat records (`SyncRecordRepository`) and the install id (`CloudSyncInstallId`), then claims integrations with no owner or whose owner has not synced for 14 days (`BankIntegrationRepository`). `CloudSyncFetchService` runs it after a fetch.
 
-Dependencies only point downward in that order, so there are no cycles. `*Unlocked` members assume the caller holds the lock.
+Dependencies only point downward in that order (`BankOwnershipService` sits beside the others and is only consumed by `CloudSyncFetchService`), so there are no cycles. `*Unlocked` members assume the caller holds the lock.
 
 ## Ports
 
