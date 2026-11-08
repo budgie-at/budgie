@@ -89,7 +89,7 @@ export const SplitEntryRow = (props: Props) => {
                         keyboardType="decimal-pad"
                         acceptedDecimalSeparators={ACCEPTED_DECIMAL_SEPARATORS}
                         onChangeValue={onAmountChange}
-                        inputClassName="text-primary border-0 h-auto min-h-[44px] shrink px-0"
+                        inputClassName="text-primary border-0 h-auto min-h-[44px] shrink-0 px-0"
                         placeholderTextColorClassName="accent-secondary-foreground"
                         onFocus={handleAmountFocus}
                         onBlur={handleAmountBlur}
