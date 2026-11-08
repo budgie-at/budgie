@@ -227,10 +227,7 @@ export const RootLayoutContent = () => {
                                                                     <Stack.Screen name="budget-limit-changes" options={sheetOptions} />
                                                                     <Stack.Screen name="category-form" options={ENTITY_FORM_OPTIONS} />
                                                                     <Stack.Screen name="tag-form" options={ENTITY_FORM_OPTIONS} />
-                                                                    <Stack.Screen
-                                                                        name="date-picker"
-                                                                        options={fitToContentsSheetOptions(groupedSheetSurface)}
-                                                                    />
+                                                                    <Stack.Screen name="date-picker" options={MORPHING_SHEET_OPTIONS} />
                                                                     <Stack.Screen name="bank-integration-key" options={sheetOptions} />
                                                                     <Stack.Screen
                                                                         name="convert-to-transfer"
