@@ -11,12 +11,12 @@ import { SelectorCreateButton } from '../../../@generic/component/selector-creat
 import { useDestinationSelection } from '../../../@generic/hook/use-destination-selection.hook';
 import { useFormatEntityUsage } from '../../../@generic/hook/use-format-entity-usage.hook';
 import { TagsSelectorModalSelector } from '../../../app/tags-selector-modal.selector';
-import { useTagFormModal } from '../../context/tag-form-modal.context';
 import { useTagsWithUsageQuery } from '../../query/use-tags-with-usage.query';
 import { TagEmptyState } from '../tag-empty-state/tag-empty-state';
 import { TagMonogram } from '../tag-monogram/tag-monogram';
 
 import type { DestinationCommitCopyInterface } from '../../../@generic/interface/destination-commit-copy.interface';
+import type { DestinationSelectionInterface } from '../../../@generic/interface/destination-selection.interface';
 import type { TagEntityInterface } from '@budgie/contracts';
 
 interface Props {
@@ -25,33 +25,26 @@ interface Props {
     readonly excludeTagIds: readonly number[];
     readonly commitLabel: string;
     readonly getCommitCopy: (destinationTitle: string) => DestinationCommitCopyInterface;
-    readonly onSelect: (tagId: number) => void;
+    readonly selection: DestinationSelectionInterface;
+    readonly onCommit: (tagId: number) => void;
+    readonly onCreate: (defaultTitle: string) => void;
 }
 
 export const TagDestinationSheet = (props: Props) => {
-    const { title, description, excludeTagIds, commitLabel, getCommitCopy, onSelect } = props;
+    const { title, description, excludeTagIds, commitLabel, getCommitCopy, selection, onCommit, onCreate } = props;
     const { t } = useLingui();
-    const [openTagForm] = useTagFormModal();
     const [search, setSearch] = useState('');
     const formatUsage = useFormatEntityUsage();
     const { tags, usage, isUsageFailure, retryUsage, isFailure, retry } = useTagsWithUsageQuery(search);
 
     const destinations = tags?.filter(tag => !excludeTagIds.includes(tag.id));
-    const { selected, setSelected, isPending, handleRowSelect, handleCommit } = useDestinationSelection(destinations, onSelect);
+    const { selected, isPending, handleRowSelect, handleCommit } = useDestinationSelection(destinations, selection, onCommit);
     const sections = isDefined(destinations) ? [{ title: t`Your tags`, data: destinations }] : null;
     const commitCopy = isDefined(selected) ? getCommitCopy(selected.title) : null;
 
-    const handleCreatePress = (defaultTitle: string) => {
-        openTagForm({ defaultTitle }, result => {
-            if (isDefined(result)) {
-                setSelected(result.tag);
-            }
-        });
-    };
-
-    const handleCreateFromSearch = () => void handleCreatePress(search.trim());
-
     const handleClearSearch = () => void setSearch('');
+
+    const handleCreateFromSearch = () => void onCreate(search.trim());
 
     const renderRow = (tag: TagEntityInterface) => (
         <DestinationRow
@@ -89,7 +82,7 @@ export const TagDestinationSheet = (props: Props) => {
                 isUsageFailure={isUsageFailure}
                 onRetryUsage={retryUsage}
                 renderRow={renderRow}
-                emptyState={<TagEmptyState search={search} onClearSearch={handleClearSearch} onCreate={handleCreatePress} />}
+                emptyState={<TagEmptyState search={search} onClearSearch={handleClearSearch} onCreate={onCreate} />}
             />
             <DestinationSheetFooter
                 commitCopy={commitCopy}

@@ -1,22 +1,24 @@
-import { useState } from 'react';
 import { Keyboard } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { useMorphingSheetCommit } from './use-morphing-sheet-commit.hook';
 
+import type { DestinationSelectionInterface } from '../interface/destination-selection.interface';
 import type { IdInterface } from '../interface/id.interface';
 
-export const useDestinationSelection = <T extends IdInterface>(destinations: readonly T[] | undefined, onCommit: (id: number) => void) => {
-    const [selected, setSelected] = useState<T | null>(null);
+export const useDestinationSelection = <T extends IdInterface>(
+    destinations: readonly T[] | undefined,
+    selection: DestinationSelectionInterface,
+    onCommit: (id: number) => void
+) => {
     const commit = useMorphingSheetCommit(onCommit);
+    const selected = destinations?.find(item => item.id === selection.selectedId) ?? null;
 
     const handleRowSelect = (id: number) => {
-        const destination = destinations?.find(item => item.id === id);
-
-        if (isDefined(destination)) {
+        if (isDefined(destinations?.find(item => item.id === id))) {
             Keyboard.dismiss();
-            setSelected(destination);
+            selection.onSelect(id);
         }
     };
 
@@ -26,5 +28,5 @@ export const useDestinationSelection = <T extends IdInterface>(destinations: rea
         }
     };
 
-    return { selected, setSelected, isPending: !isDefined(destinations), handleRowSelect, handleCommit };
+    return { selected, isPending: !isDefined(destinations), handleRowSelect, handleCommit };
 };
