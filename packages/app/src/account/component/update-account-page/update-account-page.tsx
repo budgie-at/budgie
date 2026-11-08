@@ -19,6 +19,7 @@ import { ACCOUNT_KIND_TITLE } from '../../constant/account-kind-title.constant';
 import { BANK_PROVIDER_TITLE } from '../../constant/bank-provider-title.constant';
 import { AccountSwitchFieldKindEnum } from '../../enum/account-switch-field-kind.enum';
 import { AccountFormBindingsInterface } from '../../interface/account-form-bindings.interface';
+import { AccountNetWorthField } from '../account-net-worth-field/account-net-worth-field';
 import { AccountSwitchField } from '../account-switch-field/account-switch-field';
 import { ArchiveAccount } from '../archive-account/archive-account';
 import { CreateAccountScreenSelector } from '../create-account-screen/create-account-screen.selector';
@@ -83,8 +84,8 @@ export const UpdateAccountPage = ({ account, fields, hero, detailsFooter, childr
                     {children}
 
                     <GroupedListSection title={t`Options`}>
-                        <AccountSwitchField
-                            kind={AccountSwitchFieldKindEnum.INCLUDE_IN_NET_WORTH}
+                        <AccountNetWorthField
+                            accountId={account.id}
                             value={fields.includeInNetWorth.field.value}
                             onChange={fields.includeInNetWorth.field.onChange}
                         />

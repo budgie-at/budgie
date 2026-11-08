@@ -1,7 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
-import { isEmptyArray } from '@rnw-community/shared';
+import { isDefined, isEmptyArray } from '@rnw-community/shared';
 
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { SettingsRow } from '../../../settings/components/settings-row/settings-row';
@@ -26,6 +26,7 @@ export const HouseholdPeopleSection = () => {
     const footer = isEmptyArray(otherParticipants) ? null : t`Family members can see and edit what you share.`;
     const youIcon = isOwner ? UserIconNameEnum.Crown : UserIconNameEnum.UserRound;
     const youSubtitle = isOwner ? t`Organizer` : t`Member`;
+    const organizerSubtitle = isDefined(organizerName) ? t`Organizer` : null;
     const youRow = (
         <SettingsRow icon={youIcon} variant="ghost" title={t`You`} subtitle={youSubtitle} testID={HouseholdYouRowSelector.Card} />
     );
@@ -50,8 +51,8 @@ export const HouseholdPeopleSection = () => {
             <SettingsRow
                 icon={UserIconNameEnum.Crown}
                 variant="ghost"
-                title={organizerName ?? t`Family organizer`}
-                subtitle={t`Organizer`}
+                title={organizerName ?? t`Organizer`}
+                subtitle={organizerSubtitle}
                 testID={HouseholdOrganizerRowSelector.Card}
             />
             {youRow}

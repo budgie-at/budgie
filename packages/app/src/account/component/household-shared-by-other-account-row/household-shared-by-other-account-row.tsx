@@ -11,8 +11,8 @@ export const HouseholdSharedByOtherAccountRow = () => {
     return (
         <GroupedListRow
             left={<GroupedListIcon icon={UserIconNameEnum.Users} />}
-            title={t`Shared with your family`}
-            subtitle={t`A family member shares this account, so everyone in the family sees it.`}
+            title={t`Shared by a family member`}
+            subtitle={t`Everyone in your family can see and edit it. It isn't counted in your total.`}
             testID={HouseholdShareSelector.AccountRow}
         />
     );

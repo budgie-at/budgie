@@ -13,9 +13,10 @@ export const getHouseholdShareLabels = (
         ? t(msg`Includes accounts you add later.`)
         : t(msg`Includes accounts you add later. Starts when you sign in to iCloud.`);
     const memberTitle = isDefined(organizerName) ? t(msg`Share your accounts with ${organizerName}`) : t(msg`Share your accounts`);
-    const memberFooter = isDefined(organizerName)
+    const memberScopeFooter = isDefined(organizerName)
         ? t(msg`${organizerName} sees shared accounts and their payments. Money moved between shared accounts shows as a transfer.`)
         : t(msg`The organizer sees shared accounts and their payments. Money moved between shared accounts shows as a transfer.`);
+    const memberFooter = isAvailable ? memberScopeFooter : `${memberScopeFooter} ${t(msg`Starts when you sign in to iCloud.`)}`;
     const ownerTitle = hasJoinedMember ? t(msg`Choose what to share`) : t(msg`Sharing`);
     const ownerFooter = hasJoinedMember
         ? t(msg`Your family sees shared accounts and their payments. Money moved between shared accounts shows as a transfer.`)

@@ -40,8 +40,8 @@ export const BudgetShareField = ({ budgetId }: Props) => {
     const row = isSharedByOther ? (
         <GroupedListRow
             left={<GroupedListIcon icon={UserIconNameEnum.Users} />}
-            title={t`Shared with your family`}
-            subtitle={t`A family member shares this budget. It counts spending from shared accounts only.`}
+            title={t`Shared by a family member`}
+            subtitle={t`Everyone in your family sees this budget. It counts spending from shared accounts only.`}
             testID={HouseholdShareSelector.BudgetRow}
         />
     ) : (

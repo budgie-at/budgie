@@ -1190,14 +1190,6 @@ msgstr "A deposit in the funding account currency must receive the full funding 
 msgid "A family member"
 msgstr "A family member"
 
-#: src/account/component/household-shared-by-other-account-row/household-shared-by-other-account-row.tsx
-msgid "A family member shares this account, so everyone in the family sees it."
-msgstr "A family member shares this account, so everyone in the family sees it."
-
-#: src/budget/components/budget-share-field/budget-share-field.tsx
-msgid "A family member shares this budget. It counts spending from shared accounts only."
-msgstr "A family member shares this budget. It counts spending from shared accounts only."
-
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
 #: src/auth/components/pin-forgotten-warning/pin-forgotten-warning.tsx
 msgid "A forgotten PIN can't be reset."
@@ -2181,6 +2173,10 @@ msgstr "Borrowed debt account expected"
 msgid "Bought {boughtLabel}"
 msgstr "Bought {boughtLabel}"
 
+#: src/onboarding/component/onboarding-icloud-restore/onboarding-icloud-restore.tsx
+msgid "Bring back your Budgie data from a backup on any of your devices."
+msgstr "Bring back your Budgie data from a backup on any of your devices."
+
 #: src/cloud-sync/component/cloud-sync-initial-fetch-row/cloud-sync-initial-fetch-row.tsx
 msgid "Bringing your data from iCloud…"
 msgstr "Bringing your data from iCloud…"
@@ -2606,6 +2602,10 @@ msgstr "Check the spelling or try a ticker like BTC."
 msgid "Check the spelling or try another account name."
 msgstr "Check the spelling or try another account name."
 
+#: src/cloud-backup/component/cloud-backup-list/cloud-backup-list.tsx
+msgid "Check your connection and try again."
+msgstr "Check your connection and try again."
+
 #: src/account/constant/account-kind-title.constant.ts
 #: src/app/(tabs)/settings/sync-repairs.tsx
 msgid "Checking"
@@ -2632,10 +2632,6 @@ msgstr "Choose"
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Choose \"Excel\" as the export format — PDF and CSV files can't be imported"
 msgstr "Choose \"Excel\" as the export format — PDF and CSV files can't be imported"
-
-#: src/onboarding/component/onboarding-icloud-restore/onboarding-icloud-restore.tsx
-msgid "Choose a backup from any device signed in to this Apple Account. Pick the most recent one to continue where you left off."
-msgstr "Choose a backup from any device signed in to this Apple Account. Pick the most recent one to continue where you left off."
 
 #: src/rule/components/rule-action-category-selector/rule-action-category-selector.tsx
 #: src/transaction/hook/use-quick-form-submit.hook.ts
@@ -3566,6 +3562,10 @@ msgstr "Couldn’t check Monobank for new accounts"
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Couldn't finish. Try again."
 msgstr "Couldn't finish. Try again."
+
+#: src/cloud-backup/component/cloud-backup-list/cloud-backup-list.tsx
+msgid "Couldn't load iCloud backups"
+msgstr "Couldn't load iCloud backups"
 
 #: src/@generic/component/searchable-page-error-state/searchable-page-error-state.tsx
 #: src/transaction/components/transaction-picker-failure/transaction-picker-failure.tsx
@@ -4633,6 +4633,10 @@ msgstr "Every year"
 msgid "Every year on {monthAndDay}"
 msgstr "Every year on {monthAndDay}"
 
+#: src/account/component/household-shared-by-other-account-row/household-shared-by-other-account-row.tsx
+msgid "Everyone in your family can see and edit it. It isn't counted in your total."
+msgstr "Everyone in your family can see and edit it. It isn't counted in your total."
+
 #: src/budget/components/budget-share-field/budget-share-field.tsx
 msgid "Everyone in your family sees this budget. It counts spending from shared accounts only."
 msgstr "Everyone in your family sees this budget. It counts spending from shared accounts only."
@@ -4781,10 +4785,6 @@ msgstr "Family member"
 #: src/household/component/household-people-section/household-people-section.tsx
 msgid "Family members can see and edit what you share."
 msgstr "Family members can see and edit what you share."
-
-#: src/household/component/household-people-section/household-people-section.tsx
-msgid "Family organizer"
-msgstr "Family organizer"
 
 #: src/account/component/household-share-account-row/household-share-account-row.tsx
 msgid "Family you invite can edit it"
@@ -5214,7 +5214,6 @@ msgstr "iCloud backup, sync and family sharing need an Apple Account. Sign in fr
 msgid "iCloud storage full"
 msgstr "iCloud storage full"
 
-#: src/cloud-backup/component/cloud-backup-list/cloud-backup-list.tsx
 #: src/cloud-backup/hook/use-restore-cloud-backup.hook.ts
 msgid "iCloud unavailable"
 msgstr "iCloud unavailable"
@@ -6666,6 +6665,10 @@ msgstr "Not counted in net worth"
 #: src/recurring/components/recurring-list-section-header/recurring-list-section-header.tsx
 msgid "Not counted in totals yet"
 msgstr "Not counted in totals yet"
+
+#: src/account/component/family-section-header/family-section-header.tsx
+msgid "Not counted in your total"
+msgstr "Not counted in your total"
 
 #: src/onboarding/component/onboarding-icloud-restore/onboarding-icloud-restore.tsx
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
@@ -8627,12 +8630,15 @@ msgstr "Shared accounts stay in sync"
 msgid "Shared because you share everything"
 msgstr "Shared because you share everything"
 
+#: src/account/component/household-shared-by-other-account-row/household-shared-by-other-account-row.tsx
+#: src/budget/components/budget-share-field/budget-share-field.tsx
+msgid "Shared by a family member"
+msgstr "Shared by a family member"
+
 #: src/category/components/category-family-section/category-family-section.tsx
 msgid "Shared with family"
 msgstr "Shared with family"
 
-#: src/account/component/household-shared-by-other-account-row/household-shared-by-other-account-row.tsx
-#: src/budget/components/budget-share-field/budget-share-field.tsx
 #: src/household/utils/get-family-labels.util.ts
 msgid "Shared with your family"
 msgstr "Shared with your family"
@@ -8911,6 +8917,7 @@ msgid "Starts on"
 msgstr "Starts on"
 
 #: src/account/utils/get-household-account-footer.util.ts
+#: src/household/utils/get-household-share-labels.util.ts
 msgid "Starts when you sign in to iCloud."
 msgstr "Starts when you sign in to iCloud."
 
