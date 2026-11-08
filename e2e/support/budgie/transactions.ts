@@ -258,12 +258,12 @@ export async function openAndDismissFeeSheet(ctx: Ctx, formTitle: string): Promi
 }
 
 /**
- * Taps the open morphing sheet's scrim, the accessible "Close" button behind the card, in the top-left corner
+ * Taps the open morphing sheet's scrim (`MorphScrim`, read as "Back" or "Close") behind the card, in the top-left corner
  * above the sheet frame, which starts 24pt below the safe area: it closes the sheet, or steps back when the
  * active step is a sub-step.
  */
 export async function tapSheetScrim(ctx: Ctx): Promise<void> {
-    const scrim = ctx.screen.getByRole('button', { name: 'Close', exact: true }).first();
+    const scrim = byId(ctx.screen, 'MorphScrim');
     await scrim.tap({ position: await relativePoint(scrim, 0.1, 0.07) });
 }
 

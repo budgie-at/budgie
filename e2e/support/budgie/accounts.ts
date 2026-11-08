@@ -7,6 +7,7 @@ import {
     done,
     expectId,
     expectNoId,
+    expectSettledId,
     openLink,
     scrollTo,
     scrollToCentered,
@@ -23,6 +24,7 @@ const loc = (ctx: Ctx, id: string | RegExp): Locator => ctx.screen.getByTestId(i
 /** subflows/shared/select-account-by-search: the account picker is open; search `name` and pick it. */
 export async function selectAccountBySearch(ctx: Ctx, name: string): Promise<void> {
     const input = byId(ctx.screen, 'AccountPickerBottomSheet.Input');
+    await expectSettledId(ctx, 'AccountPickerBottomSheet.Input');
     await input.fill(name);
     await done(ctx);
     const option = byId(ctx.screen, `AccountPickerBottomSheet.Option.${name}`);
