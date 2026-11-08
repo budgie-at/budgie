@@ -3,6 +3,7 @@ import Animated, { Easing, interpolate, useAnimatedStyle, useSharedValue, withRe
 import { Svg } from 'react-native-svg';
 
 import { StyledCircle } from '../../../@generic/component/styled-circle/styled-circle';
+import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
 import { BUTTON_SIZE, RING_SIZE, STROKE_WIDTH } from '../../constant/animated-record-button.constant';
 
 const PULSE_DURATION = 1500;
@@ -16,17 +17,18 @@ const INNER_RING_RADIUS = BUTTON_SIZE / 2 + RING_GAP;
 const INNER_RING_CENTER = RING_SIZE / 2;
 
 export const ThinkingRing = () => {
+    const reducedMotion = useReducedMotion();
     const progress = useSharedValue(0);
 
     useEffect(() => {
-        progress.set(withRepeat(withTiming(1, { duration: PULSE_DURATION, easing: Easing.inOut(Easing.ease) }), -1, true));
+        progress.set(withRepeat(withTiming(1, { duration: PULSE_DURATION, easing: Easing.inOut(Easing.sin) }), -1, true));
     }, [progress]);
 
     const animatedStyle = useAnimatedStyle(() => ({
         height: RING_SIZE,
         width: RING_SIZE,
-        opacity: interpolate(progress.value, [0, 1], [MIN_OPACITY, MAX_OPACITY]),
-        transform: [{ scale: interpolate(progress.value, [0, 1], [MIN_SCALE, MAX_SCALE]) }]
+        opacity: interpolate(progress.get(), [0, 1], [MIN_OPACITY, MAX_OPACITY]),
+        transform: [{ scale: reducedMotion ? MIN_SCALE : interpolate(progress.get(), [0, 1], [MIN_SCALE, MAX_SCALE]) }]
     }));
 
     return (

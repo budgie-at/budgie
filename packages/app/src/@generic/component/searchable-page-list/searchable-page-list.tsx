@@ -1,6 +1,5 @@
 import { AnimatedLegendList } from '@legendapp/list/reanimated';
 import * as Effect from 'effect/Effect';
-import { NotificationFeedbackType } from 'expo-haptics';
 import { ReactElement, ReactNode } from 'react';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -17,7 +16,6 @@ import {
 import { SCREEN_CHROME_CONTENT_INSET_TOP } from '../../constant/screen-chrome-content-inset.constant';
 import { useSearchInputBottom } from '../../hook/use-search-input-bottom.hook';
 import { useStickyDefinedValue } from '../../hook/use-sticky-defined-value.hook';
-import { useVibration } from '../../hook/use-vibration.hook';
 import { IdInterface } from '../../interface/id.interface';
 import { appRuntime } from '../../runtime/app.runtime';
 import { logAndContinue } from '../../utils/log-and-continue.util';
@@ -55,7 +53,6 @@ export const SearchablePageList = <T extends IdInterface>({
     listFooter,
     sizing
 }: Props<T>) => {
-    const [notify] = useVibration();
     const { scrollY } = useCollapsibleHeaderScroll();
     const insets = useSafeAreaInsets();
     const items = useStickyDefinedValue(data);
@@ -84,9 +81,7 @@ export const SearchablePageList = <T extends IdInterface>({
             return;
         }
 
-        appRuntime.runFork(
-            logAndContinue(onDelete(id).pipe(Effect.tap(() => Effect.sync(() => void notify(NotificationFeedbackType.Success)))))
-        );
+        appRuntime.runFork(logAndContinue(onDelete(id)));
     };
 
     const renderItem = ({ item, index }: { item: T; index: number }) => {

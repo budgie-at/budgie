@@ -31,7 +31,8 @@ export const TransactionInfoMoreActionsRow = ({ items }: Props) => {
     return (
         <View ref={frameRef} collapsable={false}>
             <HapticPressable
-                className="active:scale-100 active:opacity-70"
+                pressedScale={1}
+                className="active:opacity-70"
                 accessibilityRole="button"
                 accessibilityLabel={label}
                 onPress={handleToggleMenu}

@@ -7,6 +7,8 @@ import { ScreenChromeFooter } from '@rnw-community/react-native-screen-chrome';
 import { isPositiveNumber } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
+import { HapticPressFeedbackEnum } from '../../../@generic/enum/haptic-press-feedback.enum';
+import { useProcessingHaptic } from '../../../@generic/hook/use-processing-haptic.hook';
 import { ImportScreenSelector } from '../../../app/(tabs)/settings/import-screen.selector';
 
 interface Props {
@@ -21,6 +23,8 @@ interface Props {
 export const ImportScreenFooter = (props: Props) => {
     const { buttonContent, accessibilityHint, onImport, isDisabled, isLoading, missingRequiredCount } = props;
     const { t } = useLingui();
+
+    useProcessingHaptic(isLoading);
     const style = useResolveClassNames('bg-surface');
     const edgeFadeProps = { height: 0 };
     const buttonClassName = isDisabled ? 'bg-cta-background/40 border-transparent opacity-100' : '';
@@ -44,6 +48,7 @@ export const ImportScreenFooter = (props: Props) => {
                     variant="cta"
                     className={buttonClassName}
                     onPress={onImport}
+                    pressFeedback={HapticPressFeedbackEnum.COMMIT}
                     size="lg"
                     disabled={isDisabled}
                     isLoading={isLoading}

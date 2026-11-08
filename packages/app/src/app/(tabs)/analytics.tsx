@@ -13,6 +13,7 @@ import { GroupedSurface } from '../../@generic/component/grouped-surface/grouped
 import { MenuSpacer } from '../../@generic/component/menu-spacer/menu-spacer';
 import { MAX_FONT_SIZE_MULTIPLIER } from '../../@generic/constant/max-font-size-multiplier.constant';
 import { SCREEN_CHROME_CONFIG } from '../../@generic/constant/screen-chrome-config.constant';
+import { useVibration } from '../../@generic/hook/use-vibration.hook';
 import { getDateFilterByPeriod } from '../../@generic/utils/date/get-date-filter-by-period.util';
 import { tabSwipeGesture } from '../../@generic/utils/tab-swipe-gesture.util';
 import { useFormatDateRange } from '../../i18n/hook/use-format-date-range.hook';
@@ -45,7 +46,8 @@ export default function AnalyticsPage() {
         router.setParams({ tab: nextTab });
     };
 
-    const swipeGesture = tabSwipeGesture({ tabs: TABS, activeTab, onChangeTab: handleChangeTab });
+    const [, , hapticSelection] = useVibration();
+    const swipeGesture = tabSwipeGesture({ tabs: TABS, activeTab, onChangeTab: handleChangeTab, onSwipeChange: hapticSelection });
     const tabTitles = { categories: t`Categories`, tags: t`Tags`, runway: t`Runway` };
     const periodLabel = formatDateRange(filters.date, true);
     const compactTitle = activeTab === 'runway' ? tabTitles.runway : `${tabTitles[activeTab]} · ${periodLabel}`;

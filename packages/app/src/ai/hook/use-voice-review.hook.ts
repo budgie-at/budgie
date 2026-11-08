@@ -1,8 +1,10 @@
 import * as Effect from 'effect/Effect';
+import { NotificationFeedbackType } from 'expo-haptics';
 import { useReducer, useState } from 'react';
 
 import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
+import { useVibration } from '../../@generic/hook/use-vibration.hook';
 import { VoiceReviewActionTypeEnum } from '../enum/voice-review-action-type.enum';
 import { UseVoiceReviewReturnInterface } from '../interface/use-voice-review-return.interface';
 import { VoiceReviewActionInterface } from '../interface/voice-review-action.interface';
@@ -26,6 +28,7 @@ const reducer = (state: VoiceReviewRowInterface[], action: VoiceReviewActionInte
 export const useVoiceReview = (initialRows: VoiceReviewRowInterface[]): UseVoiceReviewReturnInterface => {
     const [rows, dispatch] = useReducer(reducer, initialRows);
     const [isSaving, setIsSaving] = useState(false);
+    const [hapticNotification] = useVibration();
 
     const editAmount = (id: string, amount: number) => {
         dispatch({ type: VoiceReviewActionTypeEnum.EDIT_AMOUNT, id, amount });
@@ -48,8 +51,14 @@ export const useVoiceReview = (initialRows: VoiceReviewRowInterface[]): UseVoice
                     voiceReviewBatchCreateService.create(rows, accountId)
                 )
             ),
+            Effect.tap(() => Effect.sync(() => void hapticNotification(NotificationFeedbackType.Success))),
             Effect.tapCause(Effect.logError),
-            Effect.catchCause(() => Effect.sync(() => void setIsSaving(false)).pipe(Effect.as(null)))
+            Effect.catchCause(() =>
+                Effect.sync(() => {
+                    setIsSaving(false);
+                    hapticNotification(NotificationFeedbackType.Error);
+                }).pipe(Effect.as(null))
+            )
         );
 
     return { rows, isSaving, canSave, hasInvalidAmounts, hasMissingCategories, editAmount, setCategory, deleteRow, saveAll };

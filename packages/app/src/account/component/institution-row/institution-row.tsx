@@ -28,7 +28,7 @@ interface Props {
     readonly institution: InstitutionGroupInterface;
 }
 
-const rowVariants = cva('min-h-[64px] gap-x-xl py-lg pr-lg pl-3xl active:scale-100 active:bg-surface-fill', {
+const rowVariants = cva('min-h-[64px] gap-x-xl py-lg pr-lg pl-3xl active:bg-surface-fill', {
     variants: { isStacked: { true: 'gap-y-sm', false: 'flex-row items-center' } }
 });
 
@@ -53,6 +53,7 @@ export const InstitutionRow = ({ institution }: Props) => {
 
     return (
         <HapticPressable
+            pressedScale={1}
             accessibilityRole="button"
             accessibilityLabel={accessibilityLabel}
             onPress={handlePress}

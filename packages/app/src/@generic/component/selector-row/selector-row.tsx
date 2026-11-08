@@ -3,6 +3,7 @@ import { View } from 'react-native';
 
 import { isString } from '@rnw-community/shared';
 
+import { HapticPressFeedbackEnum } from '../../enum/haptic-press-feedback.enum';
 import { GroupedListRow } from '../grouped-list-row/grouped-list-row';
 import { Icon } from '../icon/icon';
 import { SelectorRowTitle } from '../selector-row-title/selector-row-title';
@@ -26,7 +27,11 @@ export const SelectorRow = ({ title, subtitle, left, isSelected, onPress, testID
     ) : (
         <View className="w-[22px]" />
     );
-    const rowPressableProps = { ...pressableProps, accessibilityState: { selected: isSelected } };
+    const rowPressableProps = {
+        ...pressableProps,
+        pressFeedback: HapticPressFeedbackEnum.SELECTION,
+        accessibilityState: { selected: isSelected }
+    };
     const titleNode = isString(title) ? <SelectorRowTitle text={title} testID={titleTestID} isSelected={isSelected} /> : title;
 
     return (

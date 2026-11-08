@@ -2,10 +2,11 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import Animated from 'react-native-reanimated';
 
 import { Button } from '../../../@generic/component/button/button';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { MOTION_FADE_IN, MOTION_FADE_OUT } from '../../../@generic/constant/motion.constant';
 import { VoiceInputOverlaySelector } from '../voice-input-overlay/voice-input-overlay.selector';
 
 interface Props {
@@ -13,14 +14,8 @@ interface Props {
     readonly onDismiss: () => void;
 }
 
-const FADE_DURATION = 200;
-
 export const VoiceInputError = ({ message, onDismiss }: Props) => (
-    <Animated.View
-        className="absolute inset-x-4 top-1/4"
-        entering={FadeIn.duration(FADE_DURATION)}
-        exiting={FadeOut.duration(FADE_DURATION)}
-    >
+    <Animated.View className="absolute inset-x-4 top-1/4" entering={MOTION_FADE_IN} exiting={MOTION_FADE_OUT}>
         <View className="bg-primary-reverse border border-secondary-corner rounded-4xl p-6 shadow-lg">
             <View className="items-center mb-4">
                 <View className="bg-destructive-background rounded-full p-3 mb-3">

@@ -9,6 +9,7 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { FilterSheetCheckbox } from '../../../@generic/component/filter-sheet/filter-sheet-checkbox/filter-sheet-checkbox';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
+import { HapticPressFeedbackEnum } from '../../../@generic/enum/haptic-press-feedback.enum';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useAnalyticsHistorySyncsQuery } from '../../../sync/query/use-analytics-history-syncs.query';
 import { getHistoryImportStatusMessage } from '../../../sync/utils/get-history-import-status-message.util';
@@ -48,6 +49,8 @@ export const AccountFilterCard = ({ isSelected, account, onSelect }: Props) => {
 
     return (
         <HapticPressable
+            pressFeedback={HapticPressFeedbackEnum.SELECTION}
+            pressedScale={1}
             onPress={handleSelect}
             className={rowVariants({ isSelected })}
             accessibilityRole="checkbox"

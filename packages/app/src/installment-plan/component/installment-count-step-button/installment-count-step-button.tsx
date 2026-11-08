@@ -22,8 +22,7 @@ const buttonVariants = cva(
     {
         variants: {
             isDisabled: {
-                true: 'opacity-40',
-                false: 'active:scale-s'
+                true: 'opacity-40'
             }
         }
     }

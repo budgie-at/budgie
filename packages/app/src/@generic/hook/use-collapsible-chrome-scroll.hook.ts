@@ -1,9 +1,11 @@
-import { scrollTo, useAnimatedScrollHandler, useReducedMotion, useSharedValue } from 'react-native-reanimated';
+import { scrollTo, useAnimatedScrollHandler, useSharedValue } from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
 
 import { useCollapsibleHeaderScroll } from '@rnw-community/react-native-collapsible-header';
 import { useScreenChrome } from '@rnw-community/react-native-screen-chrome';
 import { emptyFn } from '@rnw-community/shared';
+
+import { useReducedMotion } from './use-reduced-motion.hook';
 
 const MAXIMUM_SNAP_RELEASE_VELOCITY = 0.1;
 

@@ -4,6 +4,7 @@ import { cva } from 'class-variance-authority';
 import { Text } from 'react-native';
 
 import { DATE_PERIOD } from '../../constant/date-period.constant';
+import { HapticPressFeedbackEnum } from '../../enum/haptic-press-feedback.enum';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 
 interface Props {
@@ -37,7 +38,12 @@ export const DateFilterItem = ({ period, isSelected, onSelect, testID }: Props) 
     const handleSelect = () => void onSelect(period);
 
     return (
-        <HapticPressable className={chipVariants({ isSelected })} onPress={handleSelect} testID={testID}>
+        <HapticPressable
+            className={chipVariants({ isSelected })}
+            onPress={handleSelect}
+            pressFeedback={HapticPressFeedbackEnum.SELECTION}
+            testID={testID}
+        >
             <Text className={chipTextVariants({ isSelected })}>{t(DATE_PERIOD[period])}</Text>
         </HapticPressable>
     );

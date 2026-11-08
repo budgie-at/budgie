@@ -7,6 +7,7 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { HapticPressFeedbackEnum } from '../../../@generic/enum/haptic-press-feedback.enum';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
@@ -26,7 +27,7 @@ interface Props {
 
 const NORMAL_TEXT_INSET = 52;
 
-const pressableVariants = cva('px-xl py-xl active:scale-100 active:opacity-70', {
+const pressableVariants = cva('px-xl py-xl active:opacity-70', {
     variants: { selected: { true: 'bg-surface-fill' } }
 });
 
@@ -66,8 +67,10 @@ export const TransactionPickerRow = ({ item, position, isSelected = false, onPre
     return (
         <TransactionRowSurface position={position} separatorInset={separatorInset} className="bg-surface-row">
             <HapticPressable
+                pressedScale={1}
                 className={pressableVariants({ selected: isSelected })}
                 onPress={handlePress}
+                pressFeedback={HapticPressFeedbackEnum.SELECTION}
                 testID={testID}
                 accessibilityRole="radio"
                 accessibilityState={accessibilityState}

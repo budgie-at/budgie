@@ -19,7 +19,7 @@ interface Props extends Pick<AccountEntityInterface, 'id' | 'title'> {
     readonly trailing: ReactNode;
 }
 
-const rowVariants = cva('min-h-[64px] py-lg pr-xl active:scale-100 active:bg-surface-fill', {
+const rowVariants = cva('min-h-[64px] py-lg pr-xl active:bg-surface-fill', {
     variants: { isStacked: { true: 'gap-y-sm pl-3xl', false: 'flex-row items-center gap-x-[7px] pl-[11px]' } }
 });
 
@@ -30,6 +30,7 @@ export const DebtAccountCardFrame = ({ id, title, accessibilityLabel, debtType, 
 
     return (
         <HapticPressable
+            pressedScale={1}
             accessibilityRole="button"
             testID={AccountCardBaseSelector.Card(title)}
             accessibilityLabel={accessibilityLabel}

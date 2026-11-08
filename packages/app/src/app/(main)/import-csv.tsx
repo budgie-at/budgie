@@ -15,6 +15,7 @@ import * as Cause from 'effect/Cause';
 import * as Effect from 'effect/Effect';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import * as Schema from 'effect/Schema';
+import { NotificationFeedbackType } from 'expo-haptics';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useRef, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
@@ -27,6 +28,7 @@ import { GoBackButton } from '../../@generic/component/go-back-button/go-back-bu
 import { GroupedListSection } from '../../@generic/component/grouped-list-section/grouped-list-section';
 import { GroupedSurface } from '../../@generic/component/grouped-surface/grouped-surface';
 import { useSingleFlight } from '../../@generic/hook/use-single-flight.hook';
+import { useVibration } from '../../@generic/hook/use-vibration.hook';
 import { ScreenChromeThemeProvider } from '../../@generic/provider/screen-chrome-theme.provider';
 import { showErrorToast } from '../../@generic/utils/show-error-toast/show-error-toast';
 import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
@@ -74,6 +76,7 @@ export default function ImportScreen() {
     const { csvText, headers, rowCount, samples } = AsyncResult.getOrElse(importCsvResult, () => EMPTY_IMPORT_CSV);
     const isReadingFile = AsyncResult.isWaiting(importCsvResult);
     const { isLoading: isImporting, run } = useSingleFlight();
+    const [hapticNotification] = useVibration();
     const isLoading = isReadingFile || isImporting;
     const processedFileUri = useRef<string | null>(null);
     const [selectedPreset, setSelectedPreset] = useState<ImportPresetEnum | undefined>();
@@ -133,6 +136,8 @@ export default function ImportScreen() {
                     const importedCount = transactionIds.length;
                     const failedCount = rowErrors.length;
                     showErrorToast(t`CSV import`, t`${importedCount} imported, ${failedCount} failed`);
+                } else {
+                    yield* Effect.sync(() => void hapticNotification(NotificationFeedbackType.Success));
                 }
                 router.back();
             }).pipe(toastOnFailure(t`Could not import CSV file`))

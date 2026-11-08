@@ -9,6 +9,7 @@ import { isNotEmptyString } from '@rnw-community/shared';
 import { Button } from '../../../@generic/component/button/button';
 import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { EASE_OUT } from '../../../@generic/constant/motion.constant';
 import { PIN_ERROR_FADE_DURATION_MS, PIN_STEP_FADE_DURATION_MS } from '../../constant/pin-motion.constant';
 import { useAuthContext } from '../../context/auth.context';
 import { PinSetupModeEnum } from '../../enum/pin-setup-mode.enum';
@@ -22,6 +23,10 @@ interface Props {
     readonly error: string | null;
     readonly onSubmit: (enableBiometrics: boolean) => void;
 }
+
+const STEP_ENTERING = FadeIn.duration(PIN_STEP_FADE_DURATION_MS).easing(EASE_OUT);
+
+const ERROR_ENTERING = FadeIn.duration(PIN_ERROR_FADE_DURATION_MS).easing(EASE_OUT);
 
 export const BiometricConfiguration = ({ isLoading, error, onSubmit }: Props) => {
     const { t } = useLingui();
@@ -59,7 +64,7 @@ export const BiometricConfiguration = ({ isLoading, error, onSubmit }: Props) =>
     const handleSkip = () => void onSubmit(false);
 
     return (
-        <Animated.View entering={FadeIn.duration(PIN_STEP_FADE_DURATION_MS)} className="flex-1">
+        <Animated.View entering={STEP_ENTERING} className="flex-1">
             <View className="flex-1 justify-center gap-y-7xl">
                 <View className="items-center gap-y-5xl">
                     <CircleIcon icon={icon} variant={iconVariant} size={88} iconSize={44} radius={28} />
@@ -84,7 +89,7 @@ export const BiometricConfiguration = ({ isLoading, error, onSubmit }: Props) =>
                 <View className="min-h-[52px] justify-end pb-md">
                     {isErrorVisible ? (
                         <Animated.Text
-                            entering={FadeIn.duration(PIN_ERROR_FADE_DURATION_MS)}
+                            entering={ERROR_ENTERING}
                             className="text-sm font-medium text-destructive-foreground text-center"
                             testID={PinFormSelector.Error}
                         >

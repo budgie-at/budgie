@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
+import { EASE_OUT } from '../../../@generic/constant/motion.constant';
 import { cn } from '../../../@generic/utils/cn.util';
 
 const ANIMATION_DURATION = 300;
@@ -15,16 +16,16 @@ export const AiProgressBar = ({ progress, trackClassName = 'h-2' }: Props) => {
     const progressValue = useSharedValue(0);
 
     useEffect(() => {
-        progressValue.set(progress);
+        progressValue.set(withTiming(progress, { duration: ANIMATION_DURATION, easing: EASE_OUT }));
     }, [progress, progressValue]);
 
     const widthStyle = useAnimatedStyle(() => ({
-        width: withTiming(`${progressValue.value}%`, { duration: ANIMATION_DURATION })
+        width: `${progressValue.get()}%`
     }));
 
     return (
         <View className={cn('rounded-5xl bg-secondary-corner', trackClassName)}>
-            <Animated.View style={widthStyle} className="h-full rounded-5xl bg-secondary-foreground" />
+            <Animated.View style={widthStyle} className="absolute inset-y-0 left-0 rounded-5xl bg-secondary-foreground" />
         </View>
     );
 };

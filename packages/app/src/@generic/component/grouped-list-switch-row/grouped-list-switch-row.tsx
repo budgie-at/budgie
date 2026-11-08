@@ -1,6 +1,6 @@
 import { isDefined } from '@rnw-community/shared';
 
-import { useVibration } from '../../hook/use-vibration.hook';
+import { HapticPressFeedbackEnum } from '../../enum/haptic-press-feedback.enum';
 import { GroupedListRow } from '../grouped-list-row/grouped-list-row';
 import { LoadingContent } from '../loading-content/loading-content';
 import { ThemedSwitch } from '../themed-switch/themed-switch';
@@ -31,18 +31,13 @@ export const GroupedListSwitchRow = ({
     onChange,
     accessibilityHint
 }: Props) => {
-    const [, , hapticSelection] = useVibration();
-
     const isInteractive = isDefined(onChange);
-    const handleSwitchChange = (next: boolean) => {
-        hapticSelection();
-        onChange?.(next);
-    };
     const handlePress = () => {
-        handleSwitchChange(!value);
+        onChange?.(!value);
     };
     const pressableProps = {
         accessible: true,
+        pressFeedback: HapticPressFeedbackEnum.SELECTION,
         accessibilityRole: 'switch' as const,
         accessibilityHint,
         accessibilityState: { checked: value, disabled: !isInteractive, busy: isLoading }
@@ -61,7 +56,7 @@ export const GroupedListSwitchRow = ({
                 <LoadingContent isLoading={isLoading}>
                     <ThemedSwitch
                         value={value}
-                        onValueChange={handleSwitchChange}
+                        onValueChange={onChange}
                         disabled={!isInteractive}
                         accessibilityLabel={title}
                         accessibilityElementsHidden

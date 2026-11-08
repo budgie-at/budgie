@@ -5,3 +5,5 @@ export const STROKE_WIDTH = 3;
 export const RING_CENTER = RING_SIZE / 2;
 export const RING_RADIUS = (RING_SIZE - STROKE_WIDTH) / 2;
 export const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
+
+export const AUDIO_LEVEL_TRACK_DURATION = 90;

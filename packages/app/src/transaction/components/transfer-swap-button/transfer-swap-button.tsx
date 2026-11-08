@@ -5,6 +5,7 @@ import { Text, useWindowDimensions } from 'react-native';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { HapticPressFeedbackEnum } from '../../../@generic/enum/haptic-press-feedback.enum';
 import { TRANSACTION_LARGE_TEXT_SCALE } from '../../constant/transaction-large-text-scale.constant';
 import { TransferQuickFormSelector } from '../transfer-quick-form/transfer-quick-form.selector';
 
@@ -44,6 +45,7 @@ export const TransferSwapButton = ({ dividerOffset, isEnabled, onPress }: Props)
             style={style}
             hitSlop={SWAP_HIT_SLOP}
             onPress={onPress}
+            pressFeedback={HapticPressFeedbackEnum.SELECTION}
             disabled={!isEnabled}
             accessibilityState={accessibilityState}
             testID={TransferQuickFormSelector.SwapAccounts}

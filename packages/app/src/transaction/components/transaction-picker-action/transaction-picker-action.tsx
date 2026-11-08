@@ -1,6 +1,7 @@
 import { Text } from 'react-native';
 
 import { Button } from '../../../@generic/component/button/button';
+import { HapticPressFeedbackEnum } from '../../../@generic/enum/haptic-press-feedback.enum';
 import { cn } from '../../../@generic/utils/cn.util';
 
 interface Props {
@@ -31,6 +32,7 @@ export const TransactionPickerAction = ({ label, onPress, disabled, isLoading, t
             }
             accessibilityLabel={label}
             onPress={onPress}
+            pressFeedback={HapticPressFeedbackEnum.COMMIT}
             disabled={disabled}
             isLoading={isLoading}
             testID={testID}

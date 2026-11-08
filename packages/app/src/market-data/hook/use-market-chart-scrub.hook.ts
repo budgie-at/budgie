@@ -10,6 +10,7 @@ const FAIL_OFFSET = 12;
 const ACTIVE_OFFSET_X: [number, number] = [-ACTIVE_OFFSET, ACTIVE_OFFSET];
 const FAIL_OFFSET_Y: [number, number] = [-FAIL_OFFSET, FAIL_OFFSET];
 const NO_INDEX = -1;
+const MAX_SCRUB_TICKS = 40;
 
 const getMarketChartIndex = (x: number, width: number, count: number): number => {
     'worklet';
@@ -29,6 +30,8 @@ const getMarketChartIndex = (x: number, width: number, count: number): number =>
 export const useMarketChartScrub = (width: number, count: number, onScrub: (index: number | null) => void) => {
     const [, , hapticSelection] = useVibration();
     const activeIndex = useSharedValue(NO_INDEX);
+    const lastTickIndex = useSharedValue(NO_INDEX);
+    const tickStep = Math.max(1, Math.ceil(count / MAX_SCRUB_TICKS));
 
     const selectIndex = (index: number) => {
         'worklet';
@@ -36,6 +39,11 @@ export const useMarketChartScrub = (width: number, count: number, onScrub: (inde
         if (activeIndex.get() !== index) {
             activeIndex.set(index);
             scheduleOnRN(onScrub, index === NO_INDEX ? null : index);
+
+            if (index !== NO_INDEX && (lastTickIndex.get() < 0 || Math.abs(index - lastTickIndex.get()) >= tickStep)) {
+                lastTickIndex.set(index);
+                scheduleOnRN(hapticSelection);
+            }
         }
     };
 
@@ -45,13 +53,14 @@ export const useMarketChartScrub = (width: number, count: number, onScrub: (inde
         .activeOffsetX(ACTIVE_OFFSET_X)
         .failOffsetY(FAIL_OFFSET_Y)
         .onStart(event => {
-            scheduleOnRN(hapticSelection);
+            lastTickIndex.set(NO_INDEX);
             selectIndex(getMarketChartIndex(event.x, width, count));
         })
         .onUpdate(event => {
             selectIndex(getMarketChartIndex(event.x, width, count));
         })
         .onFinalize(() => {
+            lastTickIndex.set(NO_INDEX);
             selectIndex(NO_INDEX);
         });
 

@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.169.0](https://github.com/budgie-at/budgie/compare/v6.168.0...v6.169.0) (2026-11-08)
+
+### Bug Fixes
+
+* preserve reconciliation notes and synced edit safeguards ([3758481](https://github.com/budgie-at/budgie/commit/3758481c0ea763ed71a8052600f26c9d10a80ec3))
+
+
 # [6.168.0](https://github.com/budgie-at/budgie/compare/v6.167.9...v6.168.0) (2026-11-08)
 
 ### Features

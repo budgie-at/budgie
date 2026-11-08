@@ -22,14 +22,12 @@ import { useOnboardingPinContext } from '../../context/onboarding-pin.context';
 import { OnboardingFileLockEnum } from '../../enum/onboarding-file-lock.enum';
 import { OnboardingStepEnum } from '../../enum/onboarding-step.enum';
 import { useOnboardingNavigation } from '../../hook/use-onboarding-navigation.hook';
-import { OnboardingFooterAction } from '../onboarding-footer-action/onboarding-footer-action';
-import { OnboardingHoldToSealButton } from '../onboarding-hold-to-seal-button/onboarding-hold-to-seal-button';
+import { OnboardingSealFooter } from '../onboarding-seal-footer/onboarding-seal-footer';
 import { OnboardingStepIntro } from '../onboarding-step-intro/onboarding-step-intro';
 import { OnboardingStepLayout } from '../onboarding-step-layout/onboarding-step-layout';
 
 import { OnboardingSealSelector } from './onboarding-seal.selector';
 
-// eslint-disable-next-line max-lines-per-function -- Layout/form component requires many lines
 export const OnboardingSeal = () => {
     const { t } = useLingui();
 
@@ -92,22 +90,7 @@ export const OnboardingSeal = () => {
             step={OnboardingStepEnum.SEAL}
             fileState={t`PINs match`}
             fileLock={OnboardingFileLockEnum.OPEN}
-            footer={
-                <>
-                    <OnboardingHoldToSealButton
-                        testID={OnboardingSealSelector.HoldButton}
-                        label={t`Hold to seal with this PIN`}
-                        isDisabled={isSealing}
-                        onComplete={handleSeal}
-                    />
-                    <OnboardingFooterAction
-                        testID={OnboardingSealSelector.DifferentPinButton}
-                        label={t`Choose a different PIN`}
-                        isDisabled={isSealing}
-                        onPress={goBack}
-                    />
-                </>
-            }
+            footer={<OnboardingSealFooter isSealing={isSealing} onSeal={handleSeal} onBack={goBack} />}
         >
             <OnboardingStepIntro
                 icon={UserIconNameEnum.KeyRound}

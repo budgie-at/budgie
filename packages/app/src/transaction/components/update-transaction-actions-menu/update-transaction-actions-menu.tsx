@@ -27,7 +27,7 @@ export const UpdateTransactionActionsMenu = ({ transaction, items, onDelete, onR
         <ActionsMenu
             trigger={<Icon icon={UserIconNameEnum.Ellipsis} size={24} className="text-primary" />}
             accessibilityLabel={t`More actions`}
-            triggerClassName="min-h-[44px] min-w-[44px] items-center justify-center active:scale-100 active:opacity-70"
+            triggerClassName="min-h-[44px] min-w-[44px] items-center justify-center active:opacity-70"
             triggerTestID={TransactionActionsMenuSelector.TriggerButton}
             hitSlop={16}
             triggerSize={44}

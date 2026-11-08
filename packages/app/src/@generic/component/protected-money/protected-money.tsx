@@ -1,6 +1,7 @@
 import { ComponentProps, ReactNode } from 'react';
 
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
+import { TickerMotionEnum } from '../../enum/ticker-motion.enum';
 import { useIsAmountProtected } from '../../hook/use-is-amount-protected.hook';
 import { cn } from '../../utils/cn.util';
 import { Ticker } from '../ticker/ticker';
@@ -21,10 +22,11 @@ export const ProtectedMoney = (props: Props) => {
     const formatDigits = useDisplayFormatDigits();
 
     const formatted = isAmountProtected ? protectedText : formatDigits(children, instrumentSymbol);
+    const tickerMotion = isAmountProtected ? TickerMotionEnum.NONE : TickerMotionEnum.ROLL;
 
     return (
         <Ticker
-            hasAnimation={!isAmountProtected}
+            motion={tickerMotion}
             number={formatted}
             className={containerClassName}
             textClassName={cn('font-extralight text-primary', className)}

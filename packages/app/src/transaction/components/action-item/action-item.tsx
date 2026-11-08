@@ -1,44 +1,47 @@
 import { useEffect } from 'react';
-import Animated, { useAnimatedStyle, useSharedValue, withDelay, withSpring } from 'react-native-reanimated';
+import Animated, { useAnimatedStyle, useSharedValue, withDelay, withSpring, withTiming } from 'react-native-reanimated';
+
+import { EASE_OUT, MOTION_FAST_DURATION, SPRING_SETTLE } from '../../../@generic/constant/motion.constant';
 
 import type { ReactNode } from 'react';
 
 interface Props {
     readonly index: number;
-    readonly totalItems: number;
     readonly isOpen: boolean;
     readonly children: ReactNode;
 }
 
 const ITEM_SPACING = 72;
-const STAGGER_DELAY = 40;
-const SPRING_CONFIG = { damping: 12, stiffness: 180, mass: 0.6 };
+const HIDDEN_SCALE = 0.9;
+const OPEN_OFFSET = 24;
+const OPEN_STAGGER = 25;
+const OPEN_SPRING = { ...SPRING_SETTLE, duration: 320 };
+const MAX_STAGGER_INDEX = 4;
+const OPEN_OPACITY_DURATION = 150;
 
-export const ActionItem = ({ index, totalItems, isOpen, children }: Props) => {
-    const translateY = useSharedValue(0);
-    const scale = useSharedValue(0);
+export const ActionItem = ({ index, isOpen, children }: Props) => {
+    const translateY = useSharedValue(OPEN_OFFSET);
+    const scale = useSharedValue(HIDDEN_SCALE);
     const opacity = useSharedValue(0);
 
-    const reverseIndex = totalItems - 1 - index;
     const targetY = -(ITEM_SPACING * (index + 1));
 
     useEffect(() => {
         if (isOpen) {
-            const delay = reverseIndex * STAGGER_DELAY;
-            translateY.set(withDelay(delay, withSpring(targetY, SPRING_CONFIG)));
-            scale.set(withDelay(delay, withSpring(1, SPRING_CONFIG)));
-            opacity.set(withDelay(delay, withSpring(1, SPRING_CONFIG)));
+            const delay = Math.min(index, MAX_STAGGER_INDEX) * OPEN_STAGGER;
+            translateY.set(withDelay(delay, withSpring(0, OPEN_SPRING)));
+            scale.set(withDelay(delay, withSpring(1, OPEN_SPRING)));
+            opacity.set(withDelay(delay, withTiming(1, { duration: OPEN_OPACITY_DURATION, easing: EASE_OUT })));
         } else {
-            const delay = index * STAGGER_DELAY;
-            translateY.set(withDelay(delay, withSpring(0, SPRING_CONFIG)));
-            scale.set(withDelay(delay, withSpring(0, SPRING_CONFIG)));
-            opacity.set(withDelay(delay, withSpring(0, SPRING_CONFIG)));
+            translateY.set(withTiming(OPEN_OFFSET, { duration: MOTION_FAST_DURATION, easing: EASE_OUT }));
+            scale.set(withTiming(HIDDEN_SCALE, { duration: MOTION_FAST_DURATION, easing: EASE_OUT }));
+            opacity.set(withTiming(0, { duration: MOTION_FAST_DURATION, easing: EASE_OUT }));
         }
-    }, [index, isOpen, opacity, reverseIndex, scale, targetY, translateY]);
+    }, [index, isOpen, opacity, scale, translateY]);
 
     const animatedStyle = useAnimatedStyle(() => ({
-        transform: [{ translateY: translateY.value }, { scale: scale.value }],
-        opacity: opacity.value
+        transform: [{ translateY: targetY + translateY.get() }, { scale: scale.get() }],
+        opacity: opacity.get()
     }));
 
     return (

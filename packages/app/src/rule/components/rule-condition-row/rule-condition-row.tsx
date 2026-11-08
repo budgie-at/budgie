@@ -2,9 +2,10 @@ import { RuleConditionMatchTypeEnum, RuleCreateInputInterface } from '@budgie/co
 import { useLingui } from '@lingui/react/macro';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { Text, View } from 'react-native';
-import Animated, { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
+import Animated from 'react-native-reanimated';
 
 import { MAX_CHROME_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/max-chrome-font-size-multiplier.constant';
+import { MOTION_FADE_IN, MOTION_FADE_OUT, MOTION_LAYOUT } from '../../../@generic/constant/motion.constant';
 import { useIsLargeTextSize } from '../../../@generic/hook/use-is-large-text-size.hook';
 import { cn } from '../../../@generic/utils/cn.util';
 import { useRuleConditionValueField } from '../../hooks/use-rule-condition-value-field.hook';
@@ -26,9 +27,6 @@ interface Props {
 }
 
 const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
-const ROW_TRANSITION = LinearTransition.duration(200);
-const CONTENT_ENTERING = FadeIn.duration(180);
-const ROW_EXITING = FadeOut.duration(200);
 
 export const RuleConditionRow = ({ index, isExpanded, canRemove, onExpand, onRemove }: Props) => {
     const { t } = useLingui();
@@ -61,7 +59,7 @@ export const RuleConditionRow = ({ index, isExpanded, canRemove, onExpand, onRem
     ) : null;
 
     return (
-        <Animated.View testID={RuleConditionRowSelector.Row(index)} layout={ROW_TRANSITION} exiting={ROW_EXITING}>
+        <Animated.View testID={RuleConditionRowSelector.Row(index)} layout={MOTION_LAYOUT} exiting={MOTION_FADE_OUT}>
             <View className="absolute top-0 right-0 left-[16px] h-hairline bg-surface-separator" pointerEvents="none" />
             {hasConnector ? (
                 <View
@@ -77,7 +75,7 @@ export const RuleConditionRow = ({ index, isExpanded, canRemove, onExpand, onRem
             ) : null}
 
             {isExpanded || !canRemove || isMissing ? (
-                <Animated.View key="open" entering={CONTENT_ENTERING}>
+                <Animated.View key="open" entering={MOTION_FADE_IN}>
                     <View className={classNames.head}>
                         <View className="min-w-0 flex-1 flex-row flex-wrap items-center gap-x-sm gap-y-sm">
                             <RuleConditionFieldSelector index={index} testID={RuleConditionRowSelector.FieldSelector(index)} />
@@ -102,7 +100,7 @@ export const RuleConditionRow = ({ index, isExpanded, canRemove, onExpand, onRem
                     </View>
                 </Animated.View>
             ) : (
-                <Animated.View key="closed" entering={CONTENT_ENTERING} className={classNames.collapsed}>
+                <Animated.View key="closed" entering={MOTION_FADE_IN} className={classNames.collapsed}>
                     <RuleConditionSummaryRow index={index} onExpand={onExpand} />
                     <RuleFormCollapseToggle isExpanded={false} accessibilityLabel={t`Edit condition ${position}`} onPress={handleExpand} />
                     {removeButton}

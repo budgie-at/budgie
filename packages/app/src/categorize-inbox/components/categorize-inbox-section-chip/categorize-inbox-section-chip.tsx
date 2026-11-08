@@ -3,6 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 import { Text } from 'react-native';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { HapticPressFeedbackEnum } from '../../../@generic/enum/haptic-press-feedback.enum';
 import { cn } from '../../../@generic/utils/cn.util';
 import { testID } from '../../../@generic/utils/test-id.util';
 
@@ -43,6 +44,7 @@ export const CategorizeInboxSectionChip = ({ section, count, isActive, onPress }
             style={continuousCorners}
             hitSlop={CHIP_HIT_SLOP}
             onPress={handlePress}
+            pressFeedback={HapticPressFeedbackEnum.SELECTION}
             accessibilityRole="button"
             accessibilityState={accessibilityState}
             accessibilityLabel={`${label} ${count}`}

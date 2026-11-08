@@ -2,6 +2,7 @@ import { View } from 'react-native';
 import Animated, { useAnimatedStyle, useDerivedValue, useSharedValue, withSpring } from 'react-native-reanimated';
 
 import { MAX_FONT_SIZE_MULTIPLIER } from '../../constant/max-font-size-multiplier.constant';
+import { SPRING_SETTLE } from '../../constant/motion.constant';
 import { useReducedMotion } from '../../hook/use-reduced-motion.hook';
 import { cn } from '../../utils/cn.util';
 import { SegmentedControlItem } from '../segmented-control-item/segmented-control-item';
@@ -20,7 +21,6 @@ interface Props<T extends string> {
 
 const TRACK_PADDING = 2;
 const THUMB_INSET = 2;
-const THUMB_SPRING = { damping: 30, stiffness: 420, mass: 0.8 };
 const continuousCorners = { borderCurve: 'continuous' as const };
 
 export const SegmentedControl = <T extends string>(props: Props<T>) => {
@@ -31,7 +31,7 @@ export const SegmentedControl = <T extends string>(props: Props<T>) => {
     const thumbOffset = useDerivedValue(() => {
         const target = Math.max(activeIndex, 0) * segmentWidth.get();
 
-        return reducedMotion ? target : withSpring(target, THUMB_SPRING);
+        return reducedMotion ? target : withSpring(target, SPRING_SETTLE);
     });
 
     const thumbAnimatedStyle = useAnimatedStyle(() => ({

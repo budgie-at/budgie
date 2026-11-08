@@ -3,6 +3,7 @@ import { LayoutChangeEvent, View, type ViewProps } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { TickerMotionEnum } from '../../enum/ticker-motion.enum';
 import { calculateOptimalTextSize } from '../../utils/calculate-optimal-text-size.util';
 import { cn } from '../../utils/cn.util';
 
@@ -16,8 +17,8 @@ interface Props extends Pick<ViewProps, 'accessible' | 'testID' | 'children'> {
     readonly maxFontSize?: number;
     readonly className?: string;
     readonly fontSize?: number;
-    readonly hasAnimation?: boolean;
     readonly availableWidth?: number;
+    readonly motion?: TickerMotionEnum;
 }
 
 export const Ticker = (props: Props) => {
@@ -28,8 +29,8 @@ export const Ticker = (props: Props) => {
         fontSize = 24,
         minFontSize = 10,
         maxFontSize = 200,
-        hasAnimation = true,
         availableWidth,
+        motion = TickerMotionEnum.SLIDE,
         accessible = false,
         testID,
         children
@@ -81,7 +82,7 @@ export const Ticker = (props: Props) => {
                 textSize={textSize}
                 textClassName={textClassName}
                 index={digitIndex}
-                {...(!hasAnimation && { duration: 0, delay: 0 })}
+                motion={motion}
             />
         );
         digitIndex += 1;

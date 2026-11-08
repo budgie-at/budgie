@@ -10,12 +10,14 @@ import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
+import { NotificationFeedbackType } from 'expo-haptics';
 import { router } from 'expo-router';
 import { useForm } from 'react-hook-form';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { useSingleFlight } from '../../@generic/hook/use-single-flight.hook';
+import { useVibration } from '../../@generic/hook/use-vibration.hook';
 import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
 import { RecurringRefreshModeEnum } from '../../recurring/enum/recurring-refresh-mode.enum';
 import { scheduleRecurringRefresh } from '../../recurring/utils/schedule-recurring-refresh.util';
@@ -53,6 +55,7 @@ export const useCreateTransactionForm = ({
 }: UseTransactionFormConfig) => {
     const { t } = useLingui();
     const { run } = useSingleFlight();
+    const [hapticNotification] = useVibration();
 
     const form = useForm({
         mode: 'onSubmit',
@@ -78,6 +81,7 @@ export const useCreateTransactionForm = ({
                 Effect.tap(() => scheduleRecurringRefresh(RecurringRefreshModeEnum.RECENT)),
                 Effect.tap(() =>
                     Effect.sync(() => {
+                        hapticNotification(NotificationFeedbackType.Success);
                         router.back();
                     })
                 ),

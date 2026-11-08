@@ -2,6 +2,7 @@ import { RecurringSeriesSourceEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
+import { HapticPressFeedbackEnum } from '../../../@generic/enum/haptic-press-feedback.enum';
 import { TransactionInfoActionRow } from '../../../transaction/components/transaction-info-action-row/transaction-info-action-row';
 import { TransactionInfoGroup } from '../../../transaction/components/transaction-info-group/transaction-info-group';
 import { RecurringDetailSelector } from '../recurring-detail-content/recurring-detail.selector';
@@ -30,6 +31,7 @@ export const RecurringDetailDestructiveRow = ({ source, onRemove }: Props) => {
                     onPress={onRemove}
                     testID={RecurringDetailSelector.RemoveButton}
                     colorClassName="text-destructive-strong"
+                    pressFeedback={HapticPressFeedbackEnum.DESTRUCTIVE}
                 />
             </TransactionInfoGroup>
             <Text className="px-3xl text-[13px] text-primary/65">{footnote}</Text>

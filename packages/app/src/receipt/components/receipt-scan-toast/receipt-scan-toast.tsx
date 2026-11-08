@@ -6,6 +6,7 @@ import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withTiming } fr
 
 import { AppToast } from '../../../@generic/component/app-toast/app-toast';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { useProcessingHaptic } from '../../../@generic/hook/use-processing-haptic.hook';
 import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
 import { ReceiptScanToastStatusEnum } from '../../enum/receipt-scan-toast-status.enum';
 
@@ -25,6 +26,7 @@ export const ReceiptScanToast = ({ text1, text2, props: status, onPress }: Props
 
     const icon = status === ReceiptScanToastStatusEnum.NOT_FOUND ? UserIconNameEnum.Info : UserIconNameEnum.Receipt;
     const isReading = status === ReceiptScanToastStatusEnum.READING;
+    useProcessingHaptic(isReading);
     const title = isReading ? t`Reading receipt` : text1;
     const isPulsing = isReading && !isReducedMotion;
     const accessibilityHint = status === ReceiptScanToastStatusEnum.DUPLICATE ? t`Opens the transaction` : void 0;

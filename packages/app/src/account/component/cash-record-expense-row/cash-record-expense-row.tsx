@@ -26,9 +26,10 @@ export const CashRecordExpenseRow = ({ accountId }: Props) => {
     return (
         <TransactionRowSurface position={TransactionListRowPositionEnum.LAST} separatorInset={16}>
             <HapticPressable
+                pressedScale={1}
                 accessibilityRole="button"
                 onPress={handleRecordExpense}
-                className="min-h-[48px] flex-row items-center gap-x-sm pr-xl pl-3xl active:scale-100 active:bg-surface-fill"
+                className="min-h-[48px] flex-row items-center gap-x-sm pr-xl pl-3xl active:bg-surface-fill"
                 testID={CashRecordExpenseRowSelector.RecordExpense}
             >
                 <ScaledIcon icon={UserIconNameEnum.Plus} size={16} className={cashSwatch.text} />

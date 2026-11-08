@@ -1,13 +1,13 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { type ClassValue } from 'cn';
-import { Text } from 'react-native';
-import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
+import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { HapticPressFeedbackEnum } from '../../../@generic/enum/haptic-press-feedback.enum';
 import { TRANSACTION_KEYPAD_MAX_FONT_SCALE } from '../../constant/transaction-keypad-max-font-scale.constant';
 
 type KeypadButtonVariant = 'digit' | 'action';
@@ -23,11 +23,6 @@ interface Props {
 }
 
 const ICON_SIZE = 24;
-const PRESSED_SCALE = 0.92;
-const PRESSED_OPACITY = 0.8;
-const SPRING_DAMPING = 15;
-const SPRING_STIFFNESS = 300;
-const OPACITY_DURATION_MS = 50;
 const COMMA_GLYPH_STYLE = { transform: [{ translateY: -6 }] };
 
 const buttonVariants = cva<{
@@ -57,27 +52,9 @@ const textVariants = cva<{
 export const TransactionKeypadButton = (props: Props) => {
     const { value, icon, variant = 'digit', accessibilityLabel, onPress, onLongPress, testID } = props;
 
-    const pressed = useSharedValue(false);
-
-    const handlePressIn = () => {
-        pressed.set(true);
-    };
-
-    const handlePressOut = () => {
-        pressed.set(false);
-    };
-
-    const animatedStyle = useAnimatedStyle(() => ({
-        transform: [
-            {
-                scale: withSpring(pressed.value ? PRESSED_SCALE : 1, { damping: SPRING_DAMPING, stiffness: SPRING_STIFFNESS })
-            }
-        ],
-        opacity: withTiming(pressed.value ? PRESSED_OPACITY : 1, { duration: OPACITY_DURATION_MS })
-    }));
-
     const resolvedAccessibilityLabel = accessibilityLabel ?? value ?? icon;
     const glyphStyle = value === ',' ? COMMA_GLYPH_STYLE : void 0;
+    const pressFeedback = variant === 'digit' ? HapticPressFeedbackEnum.SELECTION : HapticPressFeedbackEnum.IMPACT;
     const contentClassName = textVariants({ buttonVariant: variant });
 
     return (
@@ -87,11 +64,11 @@ export const TransactionKeypadButton = (props: Props) => {
             className={buttonVariants({ buttonVariant: variant })}
             onLongPress={onLongPress}
             onPress={onPress}
-            onPressIn={handlePressIn}
-            onPressOut={handlePressOut}
+            pressedScale={1}
+            pressFeedback={pressFeedback}
             testID={testID}
         >
-            <Animated.View className="items-center justify-center" collapsable={false} style={animatedStyle}>
+            <View className="items-center justify-center" collapsable={false}>
                 {isDefined(icon) ? (
                     <Icon className={contentClassName} icon={icon} size={ICON_SIZE} />
                 ) : (
@@ -99,7 +76,7 @@ export const TransactionKeypadButton = (props: Props) => {
                         {value}
                     </Text>
                 )}
-            </Animated.View>
+            </View>
         </HapticPressable>
     );
 };

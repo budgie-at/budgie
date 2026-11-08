@@ -27,6 +27,7 @@ interface Props {
         | 'accessibilityRole'
         | 'onLongPress'
         | 'disabled'
+        | 'pressFeedback'
         | 'accessibilityLabel'
         | 'accessibilityHint'
         | 'accessibilityState'
@@ -57,6 +58,7 @@ export const GroupedListRow = (props: Props) => {
             {...(isPressable && { accessibilityRole: 'button' as const })}
             {...pressableProps}
             className="min-h-[50px] flex-row items-center gap-x-xl px-3xl py-lg active:opacity-70"
+            {...(isPressable && { pressedScale: 1 })}
             testID={testID}
         >
             <View className={cn('absolute top-0 right-0 h-hairline bg-surface-separator', separatorClassName)} pointerEvents="none" />

@@ -3,6 +3,7 @@ import { View } from 'react-native';
 import { GestureDetector } from 'react-native-gesture-handler';
 
 import { TransactionsPageChrome } from '../../../@generic/component/transactions-page-chrome/transactions-page-chrome';
+import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { tabSwipeGesture } from '../../../@generic/utils/tab-swipe-gesture.util';
 import { RecurringPane } from '../../../recurring/components/recurring-pane/recurring-pane';
 import { TransactionList } from '../transaction-list/transaction-list';
@@ -16,7 +17,8 @@ interface Props {
 }
 
 export const TransactionsPageContent = ({ activeTab, tabs, onChangeTab }: Props) => {
-    const swipeGesture = tabSwipeGesture({ tabs, activeTab, onChangeTab });
+    const [, , hapticSelection] = useVibration();
+    const swipeGesture = tabSwipeGesture({ tabs, activeTab, onChangeTab, onSwipeChange: hapticSelection });
 
     const isTransactionsTab = activeTab === 'transactions';
     const transactionsActivityMode = isTransactionsTab ? 'visible' : 'hidden';

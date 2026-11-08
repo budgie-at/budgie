@@ -24,7 +24,7 @@ interface Props {
     readonly balance: number;
 }
 
-const rowVariants = cva('min-h-[60px] gap-x-xl pt-lg pb-xs pr-xl pl-3xl active:scale-100 active:bg-surface-fill', {
+const rowVariants = cva('min-h-[60px] gap-x-xl pt-lg pb-xs pr-xl pl-3xl active:bg-surface-fill', {
     variants: { isStacked: { true: 'gap-y-sm', false: 'flex-row items-center' } }
 });
 const amountVariants = cva('gap-y-xxs', {
@@ -50,6 +50,7 @@ export const CryptoCurrencyGroupMarketLink = ({ instrument, balance }: Props) =>
 
     return (
         <HapticPressable
+            pressedScale={1}
             accessible
             accessibilityRole="button"
             onPress={navigateToMarket}

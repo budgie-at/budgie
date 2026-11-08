@@ -1,6 +1,7 @@
 import { Text } from 'react-native';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { HapticPressFeedbackEnum } from '../../../@generic/enum/haptic-press-feedback.enum';
 
 interface Props {
     readonly title: string;
@@ -20,6 +21,7 @@ export const CategorizeInboxGroupRowActionButton = ({ title, label, isDisabled, 
         hitSlop={BUTTON_HIT_SLOP}
         disabled={isDisabled}
         onPress={onPress}
+        pressFeedback={HapticPressFeedbackEnum.COMMIT}
         accessibilityRole="button"
         accessibilityLabel={label}
         testID={testID}

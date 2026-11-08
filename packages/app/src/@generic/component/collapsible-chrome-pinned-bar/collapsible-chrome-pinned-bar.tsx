@@ -1,4 +1,4 @@
-import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
+import Animated, { Extrapolation, interpolate, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useCollapsibleHeaderScroll } from '@rnw-community/react-native-collapsible-header';
@@ -8,6 +8,8 @@ import { getCollapsibleChromePinDistance } from '../../utils/get-collapsible-chr
 
 import type { ReactNode } from 'react';
 import type { LayoutChangeEvent } from 'react-native';
+
+const EDGE_FADE_DISTANCE = 8;
 
 interface Props {
     readonly anchorY: number;
@@ -26,11 +28,11 @@ export const CollapsibleChromePinnedBar = ({ anchorY, onHeightChange, pinnedFoot
     const pinDistance = getCollapsibleChromePinDistance(anchorY, top);
 
     const animatedStyle = useAnimatedStyle(() => ({
-        transform: [{ translateY: pinnedTop + Math.max(pinDistance - scrollY.value, 0) }]
+        transform: [{ translateY: pinnedTop + Math.max(pinDistance - scrollY.get(), 0) }]
     }));
     const pinnedEdgeAnimatedStyle = useAnimatedStyle(() => ({
         top: height.get(),
-        opacity: scrollY.value >= pinDistance ? 1 : 0
+        opacity: interpolate(scrollY.get(), [pinDistance - EDGE_FADE_DISTANCE, pinDistance], [0, 1], Extrapolation.CLAMP)
     }));
 
     const handleLayout = (event: LayoutChangeEvent) => {

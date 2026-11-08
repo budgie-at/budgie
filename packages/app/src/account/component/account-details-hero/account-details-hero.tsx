@@ -1,8 +1,9 @@
 import { AccountAssociationEnum, AccountWithInstrumentEntityInterface } from '@budgie/contracts';
 import { View } from 'react-native';
-import Animated, { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
+import Animated from 'react-native-reanimated';
 
 import { CollapsibleChromeScrollFade } from '../../../@generic/component/collapsible-chrome-scroll-fade/collapsible-chrome-scroll-fade';
+import { MOTION_FADE_IN, MOTION_FADE_OUT, MOTION_LAYOUT } from '../../../@generic/constant/motion.constant';
 import { InzhurFundReturns } from '../../../inzhur/component/inzhur-fund-returns/inzhur-fund-returns';
 import { isInzhurFundAccount } from '../../../inzhur/utils/is-inzhur-fund-account.util';
 import { ACCOUNT_DETAILS_HERO_BALANCE_HEIGHT } from '../../constant/account-details-hero-balance-height.constant';
@@ -51,13 +52,13 @@ export const AccountDetailsHero = ({ account, balance }: Props) => {
             {isAutomatic ? <AccountDetailsAutomaticNotice /> : null}
 
             {account.isActive || isAutomatic ? null : (
-                <Animated.View entering={FadeIn} exiting={FadeOut}>
+                <Animated.View entering={MOTION_FADE_IN} exiting={MOTION_FADE_OUT}>
                     <AccountDetailsHiddenPill account={account} />
                 </Animated.View>
             )}
 
             {isInzhurFundAccount(account) ? null : (
-                <Animated.View layout={LinearTransition}>
+                <Animated.View layout={MOTION_LAYOUT}>
                     <AccountDetailsMonthChips accountId={account.id} />
                 </Animated.View>
             )}

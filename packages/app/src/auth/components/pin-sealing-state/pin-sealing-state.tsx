@@ -3,17 +3,13 @@ import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { useEffect, useEffectEvent } from 'react';
 import { AccessibilityInfo, ActivityIndicator, Text, View } from 'react-native';
-import Animated, {
-    Easing,
-    FadeIn,
-    useAnimatedStyle,
-    useReducedMotion,
-    useSharedValue,
-    withRepeat,
-    withTiming
-} from 'react-native-reanimated';
+import Animated, { Easing, FadeIn, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { EASE_OUT } from '../../../@generic/constant/motion.constant';
+import { useProcessingHaptic } from '../../../@generic/hook/use-processing-haptic.hook';
+import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
+import { PIN_STEP_FADE_DURATION_MS } from '../../constant/pin-motion.constant';
 import { PinSetupModeEnum } from '../../enum/pin-setup-mode.enum';
 import { PinFormSelector } from '../pin-form/pin-form.selector';
 
@@ -42,15 +38,18 @@ interface Props {
     readonly mode: PinSetupModeEnum;
 }
 
-const PIN_SEALING_FADE_DURATION_MS = 260;
 const BREATH_DURATION_MS = 1_100;
 const BREATH_MIN_OPACITY = 0.55;
+
+const STEP_ENTERING = FadeIn.duration(PIN_STEP_FADE_DURATION_MS).easing(EASE_OUT);
 
 export const PinSealingState = ({ mode }: Props) => {
     const { t } = useLingui();
     const { title, description, icon, iconVariant } = SEALING_COPY[mode];
     const breath = useSharedValue(1);
     const isReducedMotion = useReducedMotion();
+
+    useProcessingHaptic(true);
 
     const announceTitle = useEffectEvent(() => void AccessibilityInfo.announceForAccessibility(t(title)));
 
@@ -64,15 +63,15 @@ export const PinSealingState = ({ mode }: Props) => {
         }
 
         breath.set(
-            withRepeat(withTiming(BREATH_MIN_OPACITY, { duration: BREATH_DURATION_MS, easing: Easing.inOut(Easing.ease) }), -1, true)
+            withRepeat(withTiming(BREATH_MIN_OPACITY, { duration: BREATH_DURATION_MS, easing: Easing.inOut(Easing.sin) }), -1, true)
         );
     }, [breath, isReducedMotion]);
 
-    const iconStyle = useAnimatedStyle(() => ({ opacity: breath.value }));
+    const iconStyle = useAnimatedStyle(() => ({ opacity: breath.get() }));
 
     return (
         <Animated.View
-            entering={FadeIn.duration(PIN_SEALING_FADE_DURATION_MS)}
+            entering={STEP_ENTERING}
             className="absolute inset-0 bg-primary-reverse items-center justify-center px-5xl gap-y-5xl"
             testID={PinFormSelector.SealingState}
             accessibilityViewIsModal

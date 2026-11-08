@@ -4,6 +4,8 @@ import { useUniwind } from 'uniwind';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { useVibration } from '../../hook/use-vibration.hook';
+
 interface TabOption<T> {
     readonly value: T;
     readonly label: string;
@@ -23,6 +25,7 @@ const styles = StyleSheet.create({
 
 export const SegmentedTabs = <T,>({ options, value, onChange }: Props<T>) => {
     const { theme } = useUniwind();
+    const [, , hapticSelection] = useVibration();
     const labels = options.map(option => option.label);
     const selectedOptionIndex = options.findIndex(option => option.value === value);
     const selectedIndex = selectedOptionIndex >= 0 ? selectedOptionIndex : null;
@@ -31,6 +34,7 @@ export const SegmentedTabs = <T,>({ options, value, onChange }: Props<T>) => {
         const selectedOption = options[event.nativeEvent.selectedSegmentIndex];
 
         if (isDefined(selectedOption)) {
+            hapticSelection();
             onChange(selectedOption.value);
         }
     };

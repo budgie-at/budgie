@@ -1,10 +1,12 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
+import { ImpactFeedbackStyle } from 'expo-haptics';
 import { Fragment } from 'react';
 import { FormProvider } from 'react-hook-form';
 
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
+import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
 import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
@@ -44,6 +46,8 @@ export const RuleFormEditContent = ({ rule, onSuccess, onCancel }: Props) => {
 
     const { form, handleSubmit, handleDelete, isSubmitting } = useRuleForm({ ruleId: rule.id, defaultValues, onSuccess });
 
+    const [, hapticImpact] = useVibration();
+
     const handleDeleteConfirm = () => {
         appRuntime.runFork(
             logAndContinue(
@@ -57,6 +61,7 @@ export const RuleFormEditContent = ({ rule, onSuccess, onCancel }: Props) => {
                     });
 
                     if (confirmed) {
+                        hapticImpact(ImpactFeedbackStyle.Heavy);
                         handleDelete();
                     }
                 })
