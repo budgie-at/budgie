@@ -1,9 +1,9 @@
 import { AITransactionInterface } from '@budgie/ai';
 import { useEffect, useEffectEvent } from 'react';
 
-import { isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isPositiveNumber } from '@rnw-community/shared';
 
-import { useModalRouteState } from '../@generic/hook/use-modal-route-state/use-modal-route-state.hook';
+import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { useMorphingSheetResult } from '../@generic/hook/use-morphing-sheet-result.hook';
 import { VoiceReviewModalContent } from '../ai/component/voice-review-modal-content/voice-review-modal-content';
 import { useVoiceReviewModal, useVoiceReviewModalParams } from '../ai/context/voice-review-modal.context';
@@ -35,22 +35,21 @@ const mapExtractedToReviewRows = (transactions: AITransactionInterface[]): Voice
 
 export default function VoiceReviewModal() {
     const [, resolveVoiceReview, dismissVoiceReview] = useVoiceReviewModal();
+    useModalDismiss(dismissVoiceReview);
     const currentParams = useVoiceReviewModalParams();
-    useModalRouteState(currentParams, dismissVoiceReview);
     const { handleCommit, handleDismissed } = useMorphingSheetResult<VoiceReviewModalResult>(resolveVoiceReview);
 
     const handleUnmount = useEffectEvent(() => void resolveVoiceReview({ kind: 're-record' }, { skipBack: true }));
 
     useEffect(() => () => void handleUnmount(), []);
 
-    if (!isDefined(currentParams)) {
-        return null;
-    }
+    const initialRows = mapExtractedToReviewRows(currentParams?.transactions ?? []);
+    const originalText = currentParams?.originalText ?? '';
 
     return (
         <VoiceReviewModalContent
-            initialRows={mapExtractedToReviewRows(currentParams.transactions)}
-            originalText={currentParams.originalText}
+            initialRows={initialRows}
+            originalText={originalText}
             onCommit={handleCommit}
             onDismiss={handleDismissed}
         />
