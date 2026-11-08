@@ -10,7 +10,7 @@ interface Props {
 }
 
 const EXIT_DURATION = 80;
-const ENTERING = FadeIn.duration(MOTION_BASE_DURATION).easing(EASE_OUT);
+const ENTERING = FadeIn.delay(MOTION_BASE_DURATION).duration(MOTION_BASE_DURATION).easing(EASE_OUT);
 const EXITING = FadeOut.duration(EXIT_DURATION).easing(EASE_OUT);
 
 export const RulePillSlot = ({ ruleDetection }: Props) => (
