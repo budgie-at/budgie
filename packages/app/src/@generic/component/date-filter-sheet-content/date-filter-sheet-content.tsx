@@ -1,7 +1,7 @@
 import { DatePeriodEnum, DateRangeInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useReducer } from 'react';
-import { ScrollView } from 'react-native';
+import { ScrollView, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -63,39 +63,41 @@ export const DateFilterSheetContent = ({ range, onCommit, datePeriodTestID, appl
 
     const handleApply = () => void commit({ value: localValue });
 
-    const scrollStyle = { flexGrow: 0, maxHeight: height };
+    const capStyle = { maxHeight: height };
     const applyLabel = hasSelected ? t`Show selected range` : t`Show all dates`;
 
     return (
-        <SheetSurface className="flex-none pt-lg" contentClassName="flex-none" header={<FilterSheetHeader title={t`Date`} />}>
-            <ScrollView
-                style={scrollStyle}
-                contentContainerClassName="px-md pt-sm pb-[16px]"
-                keyboardShouldPersistTaps="handled"
-                showsVerticalScrollIndicator={false}
-            >
-                <RangeDatePicker
-                    range={localValue}
-                    calendarResetKey={calendarResetKey}
-                    visibleDate={visibleDate}
-                    onChange={handleRangeChange}
-                />
-            </ScrollView>
-
-            <FilterSheetFooter>
-                <ScrollView contentContainerClassName="gap-x-sm" showsHorizontalScrollIndicator={false} horizontal>
-                    {DATE_FILTER_PERIODS.map(period => (
-                        <DateFilterItem
-                            key={period}
-                            period={period}
-                            onSelect={handlePeriodSelect}
-                            isSelected={period === selectedPeriod}
-                            testID={datePeriodTestID(period)}
-                        />
-                    ))}
+        <View style={capStyle}>
+            <SheetSurface className="flex-initial pt-lg" contentClassName="flex-initial" header={<FilterSheetHeader title={t`Date`} />}>
+                <ScrollView
+                    className="flex-initial"
+                    contentContainerClassName="px-md pt-sm pb-[16px]"
+                    keyboardShouldPersistTaps="handled"
+                    showsVerticalScrollIndicator={false}
+                >
+                    <RangeDatePicker
+                        range={localValue}
+                        calendarResetKey={calendarResetKey}
+                        visibleDate={visibleDate}
+                        onChange={handleRangeChange}
+                    />
                 </ScrollView>
-                <FilterSheetApply onApply={handleApply} label={applyLabel} testID={applyTestID} />
-            </FilterSheetFooter>
-        </SheetSurface>
+
+                <FilterSheetFooter>
+                    <ScrollView contentContainerClassName="gap-x-sm" showsHorizontalScrollIndicator={false} horizontal>
+                        {DATE_FILTER_PERIODS.map(period => (
+                            <DateFilterItem
+                                key={period}
+                                period={period}
+                                onSelect={handlePeriodSelect}
+                                isSelected={period === selectedPeriod}
+                                testID={datePeriodTestID(period)}
+                            />
+                        ))}
+                    </ScrollView>
+                    <FilterSheetApply onApply={handleApply} label={applyLabel} testID={applyTestID} />
+                </FilterSheetFooter>
+            </SheetSurface>
+        </View>
     );
 };
