@@ -21,6 +21,8 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { LIVE_SYNC_PROVIDERS } from '../constant/live-sync-providers.constant';
+
 import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 
 export class OwnTransferRepository extends Context.Service<OwnTransferRepository>()('@budgie/sync/OwnTransferRepository', {
@@ -135,7 +137,19 @@ export class OwnTransferRepository extends Context.Service<OwnTransferRepository
             }),
         findAccounts: Db.query(db =>
             db.query.AccountEntityTable.findMany({
-                where: { deletedAt: { isNull: true }, isExternal: false, NOT: { type: AccountTypeEnum.DEBT } }
+                where: { deletedAt: { isNull: true }, isExternal: false, NOT: { type: AccountTypeEnum.DEBT } },
+                with: { instrument: { columns: { type: true } } }
+            })
+        ),
+        findLiveSyncs: Db.query(db =>
+            db.query.SyncEntityTable.findMany({
+                where: {
+                    enabled: true,
+                    deletedAt: { isNull: true },
+                    provider: { in: [...LIVE_SYNC_PROVIDERS] },
+                    account: { deletedAt: { isNull: true } }
+                },
+                columns: { mode: true, backwardSyncLimitAt: true, forwardSyncFromAt: true }
             })
         ),
         findIdentities: Db.query(db =>

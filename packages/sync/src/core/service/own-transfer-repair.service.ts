@@ -1,11 +1,17 @@
 import { ConsolidationExecutorService } from '@budgie/consolidation';
 import {
+    AccountNatureEnum,
+    AccountRepository,
+    AccountTypeEnum,
     CategorySourceEnum,
     Db,
     ExternalSourceEnum,
+    InstrumentTypeEnum,
+    TRANSFER_PAIR_TIME_WINDOW_SECONDS,
     TransactionConsolidationTypeEnum,
     TransactionEntryTypeEnum,
-    TransactionTypeEnum
+    TransactionTypeEnum,
+    UserIconNameEnum
 } from '@budgie/contracts';
 import { AccountBalanceIncrementalService, TransactionTransferService } from '@budgie/ledger';
 import * as Context from 'effect/Context';
@@ -17,6 +23,7 @@ import { isDefined, isEmptyArray, isNotEmptyArray, isNotEmptyString, isPositiveN
 import { isBinanceOwnTransferTitle } from '../../binance/mapper/binance.mapper';
 import { ownTransferDetector } from '../detector/own-transfer.detector';
 import { OwnTransferRepository } from '../repository/own-transfer.repository';
+import { isInitialSyncIncomplete } from '../utils/is-initial-sync-incomplete.util';
 
 import type { AccountEntityInterface, ConsolidationScanScopeInterface, TransactionWithEntriesEntityInterface } from '@budgie/contracts';
 
@@ -26,6 +33,7 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
         const transfers = yield* TransactionTransferService;
         const consolidation = yield* ConsolidationExecutorService;
         const balances = yield* AccountBalanceIncrementalService;
+        const accountRepository = yield* AccountRepository;
 
         const candidateEntries = (transaction: TransactionWithEntriesEntityInterface) =>
             transaction.entries.filter(
@@ -40,6 +48,28 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
         const isSingleEntry = (transaction: TransactionWithEntriesEntityInterface) =>
             candidateEntries(transaction).length === 1 &&
             transaction.entries.filter(entry => entry.type !== TransactionEntryTypeEnum.FEE).length === 1;
+
+        const getUntrackedOwnAccount = Effect.fnUntraced(function* (instrumentId: number) {
+            const externalId = 'untracked-own-account';
+            const existing = (yield* accountRepository.findByExternalIds([externalId])).find(
+                account => account.instrumentId === instrumentId
+            );
+
+            return (
+                existing ??
+                (yield* accountRepository.create({
+                    title: 'Untracked own account',
+                    externalId,
+                    instrumentId,
+                    type: AccountTypeEnum.BANK,
+                    nature: AccountNatureEnum.ASSET,
+                    icon: UserIconNameEnum.Wallet,
+                    order: 0,
+                    includeInNetWorth: false,
+                    isActive: false
+                }))
+            );
+        });
 
         const pair = Effect.fnUntraced(function* (
             transaction: TransactionWithEntriesEntityInterface,
@@ -81,6 +111,19 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
                 const isCompatible = (matches: readonly AccountEntityInterface[], accountId: number) =>
                     isEmptyArray(matches) || matches.some(match => match.id === accountId);
                 const identities = (yield* repository.findIdentities).map(identity => identity.label).filter(isNotEmptyString);
+                const syncs = yield* repository.findLiveSyncs;
+                const isSettled = (operatedAt: Date) =>
+                    syncs.every(
+                        sync =>
+                            !isInitialSyncIncomplete(sync) &&
+                            isDefined(sync.forwardSyncFromAt) &&
+                            sync.forwardSyncFromAt.getTime() >= operatedAt.getTime() + TRANSFER_PAIR_TIME_WINDOW_SECONDS * 1000
+                    );
+                const isUntrackedMovement = (transaction: TransactionWithEntriesEntityInterface, isFiat: boolean) =>
+                    transaction.externalSource === ExternalSourceEnum.BINANCE
+                        ? isBinanceOwnTransferTitle(transaction.title) && transaction.type === TransactionTypeEnum.INCOME && isFiat
+                        : ownTransferDetector.matches(transaction.title, identities) ||
+                          ownTransferDetector.matchesAbbreviatedName(transaction.title, identities);
                 const transactions = (yield* repository.findTransactions(scope)).filter(isSingleEntry);
                 const candidates = transactions.flatMap(transaction => {
                     const [entry] = candidateEntries(transaction);
@@ -120,7 +163,7 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
                             isCompatible(matches, candidateEntries(counterpart)[0].accountId) &&
                             isCompatible(cardMatches(counterpart), account.id)
                         ) {
-                            return { transaction, counterpart, target: null };
+                            return { transaction, counterpart, target: null, untrackedInstrumentId: null };
                         }
                         if (
                             isEmptyArray(links) &&
@@ -129,7 +172,15 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
                             !isDefined(matches[0].externalSource) &&
                             matches[0].instrumentId === account.instrumentId
                         ) {
-                            return { transaction, counterpart: null, target: matches[0] };
+                            return { transaction, counterpart: null, target: matches[0], untrackedInstrumentId: null };
+                        }
+                        if (
+                            isEmptyArray(links) &&
+                            isEmptyArray(matches) &&
+                            isUntrackedMovement(transaction, account.instrument.type === InstrumentTypeEnum.FIAT) &&
+                            isSettled(transaction.operatedAt)
+                        ) {
+                            return { transaction, counterpart: null, target: null, untrackedInstrumentId: account.instrumentId };
                         }
 
                         return null;
@@ -141,11 +192,14 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
                         const consumed = new Set<number>();
                         let repaired = 0;
 
-                        for (const { transaction, counterpart, target } of decisions) {
+                        for (const { transaction, counterpart, target, untrackedInstrumentId } of decisions) {
                             if (!consumed.has(transaction.id)) {
+                                const destination = isDefined(untrackedInstrumentId)
+                                    ? yield* getUntrackedOwnAccount(untrackedInstrumentId)
+                                    : target;
                                 const changed = isDefined(counterpart)
                                     ? yield* pair(transaction, counterpart)
-                                    : isDefined(target) && (yield* transfers.convertToTransferAccount(transaction.id, target.id));
+                                    : isDefined(destination) && (yield* transfers.convertToTransferAccount(transaction.id, destination.id));
 
                                 if (changed) {
                                     consumed.add(transaction.id);
@@ -155,7 +209,7 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
                                     yield* balances.updateBalancesByAccountIds([
                                         candidateEntries(transaction)[0].accountId,
                                         ...(isDefined(counterpart) ? [candidateEntries(counterpart)[0].accountId] : []),
-                                        ...(isDefined(target) ? [target.id] : [])
+                                        ...(isDefined(destination) ? [destination.id] : [])
                                     ]);
                                     repaired += 1;
                                 }
@@ -174,7 +228,8 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
             OwnTransferRepository.layer,
             TransactionTransferService.layer,
             ConsolidationExecutorService.layer,
-            AccountBalanceIncrementalService.layer
+            AccountBalanceIncrementalService.layer,
+            AccountRepository.layer
         ])
     );
 }
