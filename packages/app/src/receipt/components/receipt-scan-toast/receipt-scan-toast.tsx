@@ -1,7 +1,6 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { NotificationFeedbackType } from 'expo-haptics';
-import { useEffect, useEffectEvent } from 'react';
+import { useEffect } from 'react';
 import { Pressable, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
 
@@ -9,7 +8,6 @@ import { AppToast } from '../../../@generic/component/app-toast/app-toast';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { useProcessingHaptic } from '../../../@generic/hook/use-processing-haptic.hook';
 import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
-import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { ReceiptScanToastStatusEnum } from '../../enum/receipt-scan-toast-status.enum';
 
 import { ReceiptScanToastSelector } from './receipt-scan-toast.selector';
@@ -24,7 +22,6 @@ const PULSE_MIN_OPACITY = 0.3;
 export const ReceiptScanToast = ({ text1, text2, props: status, onPress }: Props) => {
     const { t } = useLingui();
     const isReducedMotion = useReducedMotion();
-    const [hapticNotification] = useVibration();
     const pulse = useSharedValue(1);
 
     const icon = status === ReceiptScanToastStatusEnum.NOT_FOUND ? UserIconNameEnum.Info : UserIconNameEnum.Receipt;
@@ -35,22 +32,9 @@ export const ReceiptScanToast = ({ text1, text2, props: status, onPress }: Props
     const accessibilityHint = status === ReceiptScanToastStatusEnum.DUPLICATE ? t`Opens the transaction` : void 0;
     const pulseStyle = useAnimatedStyle(() => ({ opacity: pulse.get() }));
 
-    const handleStatusHaptic = useEffectEvent((nextStatus: ReceiptScanToastStatusEnum) => {
-        if (nextStatus === ReceiptScanToastStatusEnum.DUPLICATE) {
-            hapticNotification(NotificationFeedbackType.Warning);
-        }
-        if (nextStatus === ReceiptScanToastStatusEnum.NOT_FOUND) {
-            hapticNotification(NotificationFeedbackType.Error);
-        }
-    });
-
     useEffect(() => {
         pulse.set(isPulsing ? withRepeat(withTiming(PULSE_MIN_OPACITY, { duration: PULSE_DURATION_MS }), -1, true) : 1);
     }, [isPulsing, pulse]);
-
-    useEffect(() => {
-        handleStatusHaptic(status);
-    }, [status]);
 
     return (
         <Pressable
