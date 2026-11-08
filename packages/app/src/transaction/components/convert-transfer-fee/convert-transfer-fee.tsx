@@ -1,23 +1,21 @@
-import { TransactionCreateInputInterface, TransactionTypeEnum } from '@budgie/contracts';
+import { TransactionCreateInputInterface } from '@budgie/contracts';
+import { getTransactionFeeEntries } from '@budgie/ledger';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { useQuickFormFee } from '../../hook/use-quick-form-fee.hook';
 import { useTransferAccounts } from '../../hook/use-transfer-accounts.hook';
+import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
 import { TransactionFeeFieldIcon } from '../transaction-fee-field-icon/transaction-fee-field-icon';
 
-export const ConvertTransferFee = () => {
+interface Props {
+    readonly onPress: () => void;
+}
+
+export const ConvertTransferFee = ({ onPress }: Props) => {
     const { control } = useFormContext<TransactionCreateInputInterface>();
     const entries = useWatch({ control, name: 'entries' });
     const { fromAccount } = useTransferAccounts();
-    const { feeAmount, handleFeePress } = useQuickFormFee({
-        accountFieldName: 'fromAccountId',
-        currencySymbol: fromAccount?.instrument.symbol ?? '',
-        entries,
-        transactionType: TransactionTypeEnum.TRANSFER,
-        variant: 'default'
-    });
 
     if (!isDefined(fromAccount)) {
         return null;
@@ -25,10 +23,10 @@ export const ConvertTransferFee = () => {
 
     return (
         <TransactionFeeFieldIcon
-            amount={feeAmount}
+            amount={sumEntryAmounts(getTransactionFeeEntries(entries))}
             currencySymbol={fromAccount.instrument.symbol}
             instrumentType={fromAccount.instrument.type}
-            onPress={handleFeePress}
+            onPress={onPress}
         />
     );
 };

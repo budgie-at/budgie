@@ -25,11 +25,12 @@ interface Props {
     readonly isSubmitting: boolean;
     readonly onSubmit: (onConverted: () => void) => void;
     readonly onAccountPress: () => void;
+    readonly onFeePress: () => void;
 }
 
 const KEYPAD_CONTENT_HEIGHT_RATIO = 0.4;
 
-export const ConvertTransferForm = ({ isSubmitting, onSubmit, onAccountPress }: Props) => {
+export const ConvertTransferForm = ({ isSubmitting, onSubmit, onAccountPress, onFeePress }: Props) => {
     const { height } = useWindowDimensions();
     const { t } = useLingui();
     const dismiss = useMorphingSheetDismiss();
@@ -104,7 +105,7 @@ export const ConvertTransferForm = ({ isSubmitting, onSubmit, onAccountPress }: 
                                 />
                             </LoadingContent>
                         ) : null}
-                        <ConvertTransferFee />
+                        <ConvertTransferFee onPress={onFeePress} />
                     </GroupedListSection>
                 </ScrollView>
             </SheetSurface>

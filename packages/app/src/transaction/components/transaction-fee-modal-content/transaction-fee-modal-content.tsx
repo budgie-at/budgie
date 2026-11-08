@@ -1,18 +1,8 @@
-import { BANK_FEE_CATEGORY_ID, CategorySourceEnum, TransactionEntryTypeEnum } from '@budgie/contracts';
-import { useEffect, useRef, useState } from 'react';
-import { TextInput, View } from 'react-native';
-
-import { isDefined } from '@rnw-community/shared';
+import { useState } from 'react';
 
 import { MorphingSheet } from '../../../@generic/component/morphing-sheet/morphing-sheet';
-import { SheetSurface } from '../../../@generic/component/sheet-surface/sheet-surface';
-import { MORPHING_SHEET_SELECTOR_HEIGHT_RATIO } from '../../../@generic/constant/morphing-sheet-height-ratio.constant';
-import { MorphingSheetPresentationEnum } from '../../../@generic/enum/morphing-sheet-presentation.enum';
-import { useMorphingSheetListHeight } from '../../../@generic/hook/use-morphing-sheet-list-height.hook';
-import { CategoryCreatePage } from '../../../category/components/category-create-page/category-create-page';
-import { CategoryPickerPanel } from '../../../category/components/category-picker-panel/category-picker-panel';
 import { TransactionFeeStepEnum } from '../../enum/transaction-fee-step.enum';
-import { TransactionFeeStep } from '../transaction-fee-step/transaction-fee-step';
+import { useTransactionFeeSteps } from '../../hook/use-transaction-fee-steps.hook';
 
 import type { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import type { TransactionFeeModalResult } from '../../context/transaction-fee-modal.context';
@@ -28,93 +18,38 @@ interface Props {
 }
 
 export const TransactionFeeModalContent = ({ accountId, currencySymbol, entry, variant, onConfirm, onDismiss }: Props) => {
-    const categoryStepStyle = useMorphingSheetListHeight(MORPHING_SHEET_SELECTOR_HEIGHT_RATIO);
     const [step, setStep] = useState(TransactionFeeStepEnum.FEE);
-    const amountRef = useRef<TextInput>(null);
-    const isReturningToFeeRef = useRef(false);
-    const [createTitle, setCreateTitle] = useState('');
-    const [feeEntry, setFeeEntry] = useState<TransactionEntryCreateInputInterface>(
-        entry ?? {
-            accountId,
-            categoryId: BANK_FEE_CATEGORY_ID,
-            categorySource: CategorySourceEnum.FEE,
-            amount: 0,
-            type: TransactionEntryTypeEnum.FEE,
-            mccCategoryId: null,
-            externalId: null
-        }
-    );
 
-    const handleAmountChange = (amount: number) => {
-        setFeeEntry(previous => ({ ...previous, amount }));
-    };
-
-    const handleShowCategories = () => {
-        setStep(TransactionFeeStepEnum.CATEGORY);
-    };
-
-    const handleReturnToFee = () => {
-        isReturningToFeeRef.current = true;
+    const handleShowFee = () => {
         setStep(TransactionFeeStepEnum.FEE);
     };
 
-    const handleCategorySelect = (selectedCategoryId: number) => {
-        const categorySource = selectedCategoryId === BANK_FEE_CATEGORY_ID ? CategorySourceEnum.FEE : CategorySourceEnum.USER;
-
-        setFeeEntry(previous => ({ ...previous, categoryId: selectedCategoryId, categorySource }));
-        handleReturnToFee();
+    const handleShowCategory = () => {
+        setStep(TransactionFeeStepEnum.CATEGORY);
     };
 
-    const handleCreatePress = (defaultTitle: string) => {
-        setCreateTitle(defaultTitle);
+    const handleShowCreate = () => {
         setStep(TransactionFeeStepEnum.CREATE_CATEGORY);
     };
 
-    const isFeeStep = step === TransactionFeeStepEnum.FEE;
+    const { steps: feeSteps } = useTransactionFeeSteps({
+        accountId,
+        currencySymbol,
+        entry,
+        variant,
+        isFeeActive: step === TransactionFeeStepEnum.FEE,
+        shouldFocusOnMount: true,
+        onConfirm,
+        onShowFee: handleShowFee,
+        onShowCategory: handleShowCategory,
+        onShowCreate: handleShowCreate
+    });
 
     const steps = {
-        [TransactionFeeStepEnum.FEE]: {
-            presentation: MorphingSheetPresentationEnum.CARD,
-            content: (
-                <TransactionFeeStep
-                    feeEntry={feeEntry}
-                    currencySymbol={currencySymbol}
-                    isExisting={isDefined(entry)}
-                    amountRef={amountRef}
-                    onAmountChange={handleAmountChange}
-                    onCategoryPress={handleShowCategories}
-                    onConfirm={onConfirm}
-                />
-            )
-        },
-        [TransactionFeeStepEnum.CATEGORY]: {
-            presentation: MorphingSheetPresentationEnum.CARD,
-            content: (
-                <View style={categoryStepStyle}>
-                    <SheetSurface className="pt-lg">
-                        <CategoryPickerPanel
-                            variant={variant}
-                            initialCategoryId={feeEntry.categoryId}
-                            onSelect={handleCategorySelect}
-                            onBack={handleReturnToFee}
-                            onCreate={handleCreatePress}
-                        />
-                    </SheetSurface>
-                </View>
-            )
-        },
-        [TransactionFeeStepEnum.CREATE_CATEGORY]: {
-            presentation: MorphingSheetPresentationEnum.PAGE,
-            content: <CategoryCreatePage defaultTitle={createTitle} onSelect={handleCategorySelect} onCancel={handleShowCategories} />
-        }
+        [TransactionFeeStepEnum.FEE]: feeSteps.fee,
+        [TransactionFeeStepEnum.CATEGORY]: feeSteps.category,
+        [TransactionFeeStepEnum.CREATE_CATEGORY]: feeSteps.createCategory
     };
 
-    useEffect(() => {
-        if (step === TransactionFeeStepEnum.FEE && isReturningToFeeRef.current) {
-            isReturningToFeeRef.current = false;
-            amountRef.current?.focus();
-        }
-    }, [step]);
-
-    return <MorphingSheet steps={steps} activeStep={step} onDismiss={onDismiss} isContentDraggable={isFeeStep} />;
+    return <MorphingSheet steps={steps} activeStep={step} onDismiss={onDismiss} isContentDraggable={step === TransactionFeeStepEnum.FEE} />;
 };

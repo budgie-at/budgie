@@ -24,6 +24,7 @@ interface Props {
     readonly feeEntry: TransactionEntryCreateInputInterface;
     readonly currencySymbol: string;
     readonly isExisting: boolean;
+    readonly shouldAutoFocus: boolean;
     readonly amountRef: Ref<TextInput>;
     readonly onAmountChange: (amount: number) => void;
     readonly onCategoryPress: () => void;
@@ -33,8 +34,9 @@ interface Props {
 const ROW_INDEX = 0;
 
 export const TransactionFeeStep = (props: Props) => {
-    const { feeEntry, currencySymbol, isExisting, amountRef, onAmountChange, onCategoryPress, onConfirm } = props;
+    const { feeEntry, currencySymbol, isExisting, shouldAutoFocus, amountRef, onAmountChange, onCategoryPress, onConfirm } = props;
     const dismiss = useMorphingSheetDismiss();
+    const shouldFocus = shouldAutoFocus && !isExisting;
 
     const canSave = isPositiveNumber(feeEntry.categoryId) && isPositiveNumber(feeEntry.amount);
 
@@ -72,7 +74,7 @@ export const TransactionFeeStep = (props: Props) => {
                     index={ROW_INDEX}
                     entry={feeEntry}
                     currencySymbol={currencySymbol}
-                    autoFocus={!isExisting}
+                    autoFocus={shouldFocus}
                     amountRef={amountRef}
                     onAmountChange={onAmountChange}
                     onCategoryPress={onCategoryPress}
