@@ -1,10 +1,10 @@
 import { AccountTypeEnum } from '@budgie/contracts';
-import { type GestureResponderEvent, View } from 'react-native';
+import { type GestureResponderEvent } from 'react-native';
 
-import { emptyFn, isDefined } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
+import { AnchoredMorphTrigger } from '../../../@generic/component/anchored-morph-trigger/anchored-morph-trigger';
 import { RoundedEdgeEnum } from '../../../@generic/enum/rounded-edge.enum';
-import { useAnchoredMorphOriginPress } from '../../../@generic/hook/use-anchored-morph-origin-press.hook';
 import { useAccountSelectorModal } from '../../context/account-selector-modal.context';
 import { useAccountSelector } from '../../hooks/use-account-selector.hook';
 import { DebtOpeningAccountRow } from '../debt-opening-account-row/debt-opening-account-row';
@@ -54,12 +54,15 @@ export const DebtOpeningAccountField = ({ accountId, label, variant, onChange }:
         variant,
         formattedBalance
     };
-    const ghost = <DebtOpeningAccountRow {...rowProps} onPress={emptyFn} onClear={emptyFn} />;
-    const { ref, handlePress } = useAnchoredMorphOriginPress(RoundedEdgeEnum.ALL, ghost, handleSelect);
 
     return (
-        <View ref={ref} collapsable={false}>
-            <DebtOpeningAccountRow {...rowProps} onPress={handlePress} onClear={handleClearPress} />
-        </View>
+        <AnchoredMorphTrigger
+            edge={RoundedEdgeEnum.ALL}
+            radiusClassName="rounded-2xl"
+            colorClassName="bg-secondary-background"
+            onPress={handleSelect}
+        >
+            {handlePress => <DebtOpeningAccountRow {...rowProps} onPress={handlePress} onClear={handleClearPress} />}
+        </AnchoredMorphTrigger>
     );
 };

@@ -1,9 +1,6 @@
 import { UserIconType } from '@budgie/contracts';
-import { View } from 'react-native';
 
-import { emptyFn } from '@rnw-community/shared';
-
-import { useAnchoredMorphOriginPress } from '../../../@generic/hook/use-anchored-morph-origin-press.hook';
+import { AnchoredMorphTrigger } from '../../../@generic/component/anchored-morph-trigger/anchored-morph-trigger';
 import { SettingsRow } from '../settings-row/settings-row';
 
 import type { RoundedEdgeEnum } from '../../../@generic/enum/rounded-edge.enum';
@@ -22,11 +19,10 @@ interface Props {
 
 export const AnchoredSettingsRow = ({ edge, icon, title, subtitle, right, testID, onPress }: Props) => {
     const rowProps = { icon, title, subtitle, right, testID, variant: 'ghost' } as const;
-    const { ref, handlePress } = useAnchoredMorphOriginPress(edge, <SettingsRow {...rowProps} onPress={emptyFn} />, onPress);
 
     return (
-        <View ref={ref} collapsable={false}>
-            <SettingsRow {...rowProps} onPress={handlePress} />
-        </View>
+        <AnchoredMorphTrigger edge={edge} onPress={onPress}>
+            {handlePress => <SettingsRow {...rowProps} onPress={handlePress} />}
+        </AnchoredMorphTrigger>
     );
 };

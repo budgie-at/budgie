@@ -1,13 +1,12 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { RefObject, useImperativeHandle } from 'react';
-import { View } from 'react-native';
 import Animated from 'react-native-reanimated';
 
-import { emptyFn, isDefined } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
+import { AnchoredMorphTrigger } from '../../../@generic/component/anchored-morph-trigger/anchored-morph-trigger';
 import { RoundedEdgeEnum } from '../../../@generic/enum/rounded-edge.enum';
-import { useAnchoredMorphOriginPress } from '../../../@generic/hook/use-anchored-morph-origin-press.hook';
 import { useShakeAnimation } from '../../../@generic/hook/use-shake-animation.hook';
 import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
 import { AccountInactiveIcon } from '../../../account/component/account-inactive-icon/account-inactive-icon';
@@ -42,7 +41,6 @@ export const TransactionAccountRow = ({ ref, fieldName, label, testID, edge = Ro
     const displayLabel = label ?? t`Account`;
     const isInactiveAccount = isDefined(account) && !account.isActive;
     const selectedAccountTestID = isDefined(account?.title) ? SimpleQuickFormSelector.SelectedAccount(account.title) : null;
-    const ghostPressableProps = { onPress: emptyFn };
     const accountTitle = isDefined(account) ? getAccountDisplayTitle(account) : void 0;
     const accountIcon = (
         <AccountInactiveIcon isInactive={isInactiveAccount} size={30}>
@@ -50,34 +48,27 @@ export const TransactionAccountRow = ({ ref, fieldName, label, testID, edge = Ro
         </AccountInactiveIcon>
     );
 
-    const ghost = (
-        <TransactionFormRow
-            left={accountIcon}
-            label={displayLabel}
-            value={accountTitle}
-            placeholder={t`Choose`}
-            pressableProps={ghostPressableProps}
-        />
-    );
-    const { ref: measureRef, handlePress } = useAnchoredMorphOriginPress(edge, ghost, handleOpenAccountSelector);
-    const pressableProps = {
-        onPress: handlePress,
-        accessibilityLabel: `${displayLabel}: ${isDefined(account) ? getAccountDisplayTitle(account) : t`Choose`}`
-    };
+    const accessibilityLabel = `${displayLabel}: ${accountTitle ?? t`Choose`}`;
 
     return (
         <Animated.View style={shakeStyle}>
-            <View ref={measureRef} collapsable={false}>
-                <TransactionFormRow
-                    left={accountIcon}
-                    label={displayLabel}
-                    value={accountTitle}
-                    placeholder={t`Choose`}
-                    valueProps={testIDProps(selectedAccountTestID)}
-                    testID={testID}
-                    pressableProps={pressableProps}
-                />
-            </View>
+            <AnchoredMorphTrigger edge={edge} onPress={handleOpenAccountSelector}>
+                {handlePress => {
+                    const pressableProps = { onPress: handlePress, accessibilityLabel };
+
+                    return (
+                        <TransactionFormRow
+                            left={accountIcon}
+                            label={displayLabel}
+                            value={accountTitle}
+                            placeholder={t`Choose`}
+                            valueProps={testIDProps(selectedAccountTestID)}
+                            testID={testID}
+                            pressableProps={pressableProps}
+                        />
+                    );
+                }}
+            </AnchoredMorphTrigger>
         </Animated.View>
     );
 };

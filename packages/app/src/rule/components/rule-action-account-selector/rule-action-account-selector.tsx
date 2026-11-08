@@ -12,10 +12,10 @@ import { useLingui } from '@lingui/react/macro';
 import { useController, useFormContext, useWatch } from 'react-hook-form';
 import { Text, View } from 'react-native';
 
-import { emptyFn, isDefined } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
+import { AnchoredMorphTrigger } from '../../../@generic/component/anchored-morph-trigger/anchored-morph-trigger';
 import { RoundedEdgeEnum } from '../../../@generic/enum/rounded-edge.enum';
-import { useAnchoredMorphOriginPress } from '../../../@generic/hook/use-anchored-morph-origin-press.hook';
 import { isEnumValue } from '../../../@generic/type-guard/is-enum-value.type-guard';
 import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
@@ -89,14 +89,12 @@ export const RuleActionAccountSelector = ({ index, testID }: Props) => {
         name: t`Transfer account`,
         testID
     };
-    const ghost = <RuleValuePickerButton {...pickerProps} onPress={emptyFn} />;
-    const { ref, handlePress } = useAnchoredMorphOriginPress(RoundedEdgeEnum.ALL, ghost, handleSelect);
 
     return (
         <View className="flex-1 pb-md">
-            <View ref={ref} collapsable={false}>
-                <RuleValuePickerButton {...pickerProps} onPress={handlePress} />
-            </View>
+            <AnchoredMorphTrigger edge={RoundedEdgeEnum.ALL} onPress={handleSelect}>
+                {handlePress => <RuleValuePickerButton {...pickerProps} onPress={handlePress} />}
+            </AnchoredMorphTrigger>
             <Text className="text-[13px] leading-[18px] text-secondary-foreground">{t(hint)}</Text>
         </View>
     );

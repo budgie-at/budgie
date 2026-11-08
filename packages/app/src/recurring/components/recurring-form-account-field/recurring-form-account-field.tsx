@@ -1,13 +1,12 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useFormContext, useWatch } from 'react-hook-form';
-import { View } from 'react-native';
 
-import { emptyFn, isDefined } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
+import { AnchoredMorphTrigger } from '../../../@generic/component/anchored-morph-trigger/anchored-morph-trigger';
 import { GroupedListValueRow } from '../../../@generic/component/grouped-list-value-row/grouped-list-value-row';
 import { RoundedEdgeEnum } from '../../../@generic/enum/rounded-edge.enum';
-import { useAnchoredMorphOriginPress } from '../../../@generic/hook/use-anchored-morph-origin-press.hook';
 import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
 import { RecurringSeriesFormSelector } from '../recurring-series-form-screen/recurring-series-form.selector';
@@ -43,12 +42,10 @@ export const RecurringFormAccountField = () => {
         testID: RecurringSeriesFormSelector.Account,
         ...(hasAccount && { onClear: handleClear })
     };
-    const ghost = <GroupedListValueRow {...rowProps} onPress={emptyFn} />;
-    const { ref, handlePress } = useAnchoredMorphOriginPress(RoundedEdgeEnum.BOTTOM, ghost, handleSelect);
 
     return (
-        <View ref={ref} collapsable={false}>
-            <GroupedListValueRow {...rowProps} onPress={handlePress} />
-        </View>
+        <AnchoredMorphTrigger edge={RoundedEdgeEnum.BOTTOM} onPress={handleSelect}>
+            {handlePress => <GroupedListValueRow {...rowProps} onPress={handlePress} />}
+        </AnchoredMorphTrigger>
     );
 };

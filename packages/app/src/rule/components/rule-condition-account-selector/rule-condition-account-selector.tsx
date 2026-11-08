@@ -1,11 +1,10 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { View } from 'react-native';
 
-import { emptyFn, isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
+import { AnchoredMorphTrigger } from '../../../@generic/component/anchored-morph-trigger/anchored-morph-trigger';
 import { RoundedEdgeEnum } from '../../../@generic/enum/rounded-edge.enum';
-import { useAnchoredMorphOriginPress } from '../../../@generic/hook/use-anchored-morph-origin-press.hook';
 import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
 import { useRuleConditionValueField } from '../../hooks/use-rule-condition-value-field.hook';
@@ -47,12 +46,10 @@ export const RuleConditionAccountSelector = ({ index, testID }: Props) => {
         name: t`Account`,
         testID
     };
-    const ghost = <RuleValuePickerButton {...pickerProps} onPress={emptyFn} />;
-    const { ref, handlePress } = useAnchoredMorphOriginPress(RoundedEdgeEnum.ALL, ghost, handleSelect);
 
     return (
-        <View ref={ref} collapsable={false}>
-            <RuleValuePickerButton {...pickerProps} onPress={handlePress} />
-        </View>
+        <AnchoredMorphTrigger edge={RoundedEdgeEnum.ALL} onPress={handleSelect}>
+            {handlePress => <RuleValuePickerButton {...pickerProps} onPress={handlePress} />}
+        </AnchoredMorphTrigger>
     );
 };
