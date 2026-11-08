@@ -16,12 +16,12 @@ export default function AccountPanelModal() {
     const currentParams = useAccountSelectorModalParams();
     const { handleCommit, handleDismissed } = useMorphingSheetResult<AccountSelectorResult>(resolveAccountSelector);
 
-    if (!isDefined(currentParams?.originRect)) {
+    if (!isDefined(currentParams?.origin)) {
         return null;
     }
 
     return (
-        <AnchoredMorphPanel originRect={currentParams.originRect} onDismissed={handleDismissed}>
+        <AnchoredMorphPanel origin={currentParams.origin} onDismissed={handleDismissed}>
             <AccountPanelContent params={currentParams} onCommit={handleCommit} />
         </AnchoredMorphPanel>
     );

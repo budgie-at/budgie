@@ -8,5 +8,5 @@ import type { AccountSelectorModalParams, AccountSelectorResult } from '../conte
 export const AccountSelectorModalProvider = createModalProvider<AccountSelectorModalParams, AccountSelectorResult>(
     AccountSelectorModalContext,
     '/account-selector',
-    params => (isDefined(params?.originRect) ? '/account-panel' : '/account-selector')
+    params => (isDefined(params?.origin) ? '/account-panel' : '/account-selector')
 );

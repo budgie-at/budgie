@@ -1,21 +1,21 @@
 import { Pressable, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 
+import { AnchoredMorphPanelSettledContext } from '../../context/anchored-morph-panel-settled.context';
 import { AnchoredMorphPanelContext } from '../../context/anchored-morph-panel.context';
 import { useAnchoredMorphPanelMotion } from '../../hook/use-anchored-morph-panel-motion.hook';
 
-import type { WindowRectInterface } from '../../interface/window-rect.interface';
+import type { AnchoredMorphOriginInterface } from '../../interface/anchored-morph-origin.interface';
 import type { ReactNode } from 'react';
 
 interface Props {
-    readonly originRect: WindowRectInterface;
-    readonly originRadius?: number;
+    readonly origin: AnchoredMorphOriginInterface;
     readonly onDismissed: () => void;
     readonly children: ReactNode;
 }
 
-export const AnchoredMorphPanel = ({ originRect, originRadius = 0, onDismissed, children }: Props) => {
-    const { panelStyle, contentStyle, scrimStyle, handleClose } = useAnchoredMorphPanelMotion(originRect, originRadius, onDismissed);
+export const AnchoredMorphPanel = ({ origin, onDismissed, children }: Props) => {
+    const { panelStyle, ghostStyle, contentStyle, scrimStyle, handleClose, isSettled } = useAnchoredMorphPanelMotion(origin, onDismissed);
 
     return (
         <AnchoredMorphPanelContext value={handleClose}>
@@ -24,9 +24,19 @@ export const AnchoredMorphPanel = ({ originRect, originRadius = 0, onDismissed, 
                     <Animated.View className="flex-1 bg-black" style={scrimStyle} />
                 </Pressable>
 
-                <Animated.View className="bg-sheet-surface absolute overflow-hidden" style={panelStyle}>
+                <Animated.View className="absolute overflow-hidden" style={panelStyle}>
+                    <Animated.View
+                        className="absolute top-0 left-0"
+                        style={ghostStyle}
+                        pointerEvents="none"
+                        accessibilityElementsHidden
+                        importantForAccessibility="no-hide-descendants"
+                    >
+                        {origin.content}
+                    </Animated.View>
+
                     <Animated.View className="absolute top-0 left-0" style={contentStyle}>
-                        {children}
+                        <AnchoredMorphPanelSettledContext value={isSettled}>{children}</AnchoredMorphPanelSettledContext>
                     </Animated.View>
                 </Animated.View>
             </View>

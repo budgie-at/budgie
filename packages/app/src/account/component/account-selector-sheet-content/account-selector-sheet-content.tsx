@@ -6,6 +6,7 @@ import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { SelectorModalSearchHeader } from '../../../@generic/component/selector-modal-search-header/selector-modal-search-header';
 import { SheetSurface } from '../../../@generic/component/sheet-surface/sheet-surface';
+import { useAnchoredMorphPanelSettled } from '../../../@generic/context/anchored-morph-panel-settled.context';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
@@ -23,6 +24,7 @@ interface Props {
 export const AccountSelectorSheetContent = ({ params, onSelect }: Props) => {
     const { t } = useLingui();
     const [search, setSearch] = useState('');
+    const isPanelSettled = useAnchoredMorphPanelSettled();
 
     const { createAction } = params;
 
@@ -67,15 +69,17 @@ export const AccountSelectorSheetContent = ({ params, onSelect }: Props) => {
                 testID={AccountSelectorModalSelector.Input}
             />
 
-            <AccountSelectContent
-                data={accounts}
-                initialAccountId={params.initialAccountId ?? null}
-                search={search}
-                onSelect={onSelect}
-                emptyStateDescription={params.emptyStateDescription}
-                showDebtTotal={params.showDebtTotal ?? false}
-                createAction={contentCreateAction}
-            />
+            {isPanelSettled ? (
+                <AccountSelectContent
+                    data={accounts}
+                    initialAccountId={params.initialAccountId ?? null}
+                    search={search}
+                    onSelect={onSelect}
+                    emptyStateDescription={params.emptyStateDescription}
+                    showDebtTotal={params.showDebtTotal ?? false}
+                    createAction={contentCreateAction}
+                />
+            ) : null}
         </SheetSurface>
     );
 };
