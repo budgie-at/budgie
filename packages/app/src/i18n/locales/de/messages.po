@@ -568,11 +568,11 @@ msgstr "{formattedDifference} über dem Limit"
 msgid "{formattedDifference} under limit"
 msgstr "{formattedDifference} unter dem Limit"
 
-#: src/transaction/components/split-entries-step/split-entries-step.tsx
+#: src/transaction/components/split-entries-remainder/split-entries-remainder.tsx
 msgid "{formattedRemaining} left to assign"
 msgstr "{formattedRemaining} noch zuzuweisen"
 
-#: src/transaction/components/split-entries-step/split-entries-step.tsx
+#: src/transaction/components/split-entries-remainder/split-entries-remainder.tsx
 msgid "{formattedRemaining} over budget"
 msgstr "{formattedRemaining} über Budget"
 
@@ -2444,12 +2444,12 @@ msgstr "Nicht lesbar: Deine verschlüsselten iCloud-Daten wurden nach dem Erstel
 #: src/tag/hooks/use-delete-tag.hook.ts
 #: src/transaction/components/convert-to-refund-header/convert-to-refund-header.tsx
 #: src/transaction/components/convert-to-transfer-header/convert-to-transfer-header.tsx
-#: src/transaction/components/split-entries-step/split-entries-step.tsx
 #: src/transaction/components/transaction-fee-remove-button/transaction-fee-remove-button.tsx
 #: src/transaction/components/transaction-form-actions/transaction-form-actions.tsx
 #: src/transaction/hook/use-convert-to-refund-action.hook.ts
 #: src/transaction/hook/use-delete-transaction.hook.ts
 #: src/transaction/hook/use-revert-consolidation.hook.ts
+#: src/transaction/hook/use-split-entries-submit.hook.ts
 #: src/wallet-capture/hook/use-wallet-capture-settings.hook.ts
 msgid "Cancel"
 msgstr "Abbrechen"
@@ -5067,7 +5067,7 @@ msgstr "Aus deinen wiederkehrenden Zahlungen: {name}, {amountLabel} pro Zyklus"
 msgid "Full history. Cash now matches your Inzhur account."
 msgstr "Vollständiger Verlauf. Das Guthaben entspricht jetzt deinem Inzhur-Konto."
 
-#: src/transaction/components/split-entries-step/split-entries-step.tsx
+#: src/transaction/components/split-entries-remainder/split-entries-remainder.tsx
 msgid "Fully assigned"
 msgstr "Vollständig zugewiesen"
 
@@ -8022,10 +8022,11 @@ msgid "Remove fee?"
 msgstr "Gebühr entfernen?"
 
 #: src/transaction/components/split-entries-step/split-entries-step.tsx
+#: src/transaction/hook/use-split-entries-submit.hook.ts
 msgid "Remove split"
 msgstr "Aufteilung entfernen"
 
-#: src/transaction/components/split-entries-step/split-entries-step.tsx
+#: src/transaction/hook/use-split-entries-submit.hook.ts
 msgid "Remove split?"
 msgstr "Aufteilung entfernen?"
 
@@ -8551,7 +8552,7 @@ msgid "Select all"
 msgstr "Alle auswählen"
 
 #: src/ai/component/voice-review-save-button/voice-review-save-button.tsx
-#: src/transaction/components/split-entries-step/split-entries-step.tsx
+#: src/transaction/components/split-entries-remainder/split-entries-remainder.tsx
 msgid "Select all categories"
 msgstr "Alle Kategorien auswählen"
 
@@ -9675,7 +9676,7 @@ msgstr "Diese Woche"
 msgid "This will clear all cached account balances and recalculate them from your transactions. This may take a moment."
 msgstr "Dadurch werden alle zwischengespeicherten Kontostände gelöscht und anhand Ihrer Transaktionen neu berechnet. Dies kann einen Moment dauern."
 
-#: src/transaction/components/split-entries-step/split-entries-step.tsx
+#: src/transaction/hook/use-split-entries-submit.hook.ts
 msgid "This will keep one entry with the full transaction amount."
 msgstr "Dadurch bleibt ein Eintrag mit dem vollständigen Transaktionsbetrag erhalten."
 

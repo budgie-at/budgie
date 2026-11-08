@@ -568,11 +568,11 @@ msgstr "{formattedDifference} понад ліміт"
 msgid "{formattedDifference} under limit"
 msgstr "{formattedDifference} у межах ліміту"
 
-#: src/transaction/components/split-entries-step/split-entries-step.tsx
+#: src/transaction/components/split-entries-remainder/split-entries-remainder.tsx
 msgid "{formattedRemaining} left to assign"
 msgstr "{formattedRemaining} залишилось розподілити"
 
-#: src/transaction/components/split-entries-step/split-entries-step.tsx
+#: src/transaction/components/split-entries-remainder/split-entries-remainder.tsx
 msgid "{formattedRemaining} over budget"
 msgstr "{formattedRemaining} понад бюджет"
 
@@ -2444,12 +2444,12 @@ msgstr "Не вдасться прочитати: ваші зашифрован�
 #: src/tag/hooks/use-delete-tag.hook.ts
 #: src/transaction/components/convert-to-refund-header/convert-to-refund-header.tsx
 #: src/transaction/components/convert-to-transfer-header/convert-to-transfer-header.tsx
-#: src/transaction/components/split-entries-step/split-entries-step.tsx
 #: src/transaction/components/transaction-fee-remove-button/transaction-fee-remove-button.tsx
 #: src/transaction/components/transaction-form-actions/transaction-form-actions.tsx
 #: src/transaction/hook/use-convert-to-refund-action.hook.ts
 #: src/transaction/hook/use-delete-transaction.hook.ts
 #: src/transaction/hook/use-revert-consolidation.hook.ts
+#: src/transaction/hook/use-split-entries-submit.hook.ts
 #: src/wallet-capture/hook/use-wallet-capture-settings.hook.ts
 msgid "Cancel"
 msgstr "Скасувати"
@@ -5067,7 +5067,7 @@ msgstr "З ваших регулярних платежів: {name}, {amountLabe
 msgid "Full history. Cash now matches your Inzhur account."
 msgstr "Повна історія. Тепер кошти збігаються з вашим рахунком Inzhur."
 
-#: src/transaction/components/split-entries-step/split-entries-step.tsx
+#: src/transaction/components/split-entries-remainder/split-entries-remainder.tsx
 msgid "Fully assigned"
 msgstr "Повністю розподілено"
 
@@ -8022,10 +8022,11 @@ msgid "Remove fee?"
 msgstr "Видалити комісію?"
 
 #: src/transaction/components/split-entries-step/split-entries-step.tsx
+#: src/transaction/hook/use-split-entries-submit.hook.ts
 msgid "Remove split"
 msgstr "Прибрати розділення"
 
-#: src/transaction/components/split-entries-step/split-entries-step.tsx
+#: src/transaction/hook/use-split-entries-submit.hook.ts
 msgid "Remove split?"
 msgstr "Прибрати розділення?"
 
@@ -8551,7 +8552,7 @@ msgid "Select all"
 msgstr "Вибрати всі"
 
 #: src/ai/component/voice-review-save-button/voice-review-save-button.tsx
-#: src/transaction/components/split-entries-step/split-entries-step.tsx
+#: src/transaction/components/split-entries-remainder/split-entries-remainder.tsx
 msgid "Select all categories"
 msgstr "Оберіть усі категорії"
 
@@ -9675,7 +9676,7 @@ msgstr "Цього тижня"
 msgid "This will clear all cached account balances and recalculate them from your transactions. This may take a moment."
 msgstr "Це очистить всі кешовані баланси рахунків і перерахує їх на основі ваших транзакцій. Це може зайняти деякий час."
 
-#: src/transaction/components/split-entries-step/split-entries-step.tsx
+#: src/transaction/hook/use-split-entries-submit.hook.ts
 msgid "This will keep one entry with the full transaction amount."
 msgstr "Це залишить один запис із повною сумою транзакції."
 
