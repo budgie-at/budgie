@@ -81,9 +81,24 @@ class CategorizeInboxEngineService {
             'перевод на карту',
             'на карту'
         ],
-        [LanguageEnum.DE]: ['kartenüberweisung'],
-        [LanguageEnum.FR]: ['virement carte'],
-        [LanguageEnum.ES]: ['transferencia a tarjeta']
+        [LanguageEnum.DE]: ['kartenüberweisung', 'überweisung an', 'sepa überweisung', 'echtzeitüberweisung'],
+        [LanguageEnum.FR]: [
+            'virement carte',
+            'virement sepa',
+            'virement émis',
+            'virement reçu',
+            'virement instantané',
+            'virement de',
+            'virement à'
+        ],
+        [LanguageEnum.ES]: [
+            'transferencia a tarjeta',
+            'transferencia emitida',
+            'transferencia recibida',
+            'transferencia inmediata',
+            'transferencia a favor',
+            'transferencia de'
+        ]
     };
 
     private static readonly TRANSFER_TITLE_PREFIX_PATTERN = new RegExp(

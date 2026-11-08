@@ -127,6 +127,9 @@ describe('categorization/inbox-safety', () => {
         ['Переказ на картку Петренко', 'Переказ на картку Іванов'],
         ['Kartenüberweisung Hans', 'Kartenüberweisung Olga'],
         ['Virement carte Jean', 'Virement carte Pierre'],
+        ['Virement SEPA émis vers Martin', 'Virement SEPA émis vers Dupont'],
+        ['Transferencia emitida a favor de Pedro', 'Transferencia emitida a favor de Juan'],
+        ['Überweisung an Hans Müller', 'Überweisung an Olga Schmidt'],
         ['Transferencia a tarjeta 1234 Juan', 'Transferencia a tarjeta 5678 Pedro'],
         ['Transfer to card Ivan', 'Transfer to card']
     ])('requires exact history for %s', ([title, historyTitle]) => {
