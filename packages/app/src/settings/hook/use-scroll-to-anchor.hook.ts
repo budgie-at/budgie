@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useEffectEvent, useRef } from 'react';
 import { LayoutChangeEvent, ScrollView, ViewStyle } from 'react-native';
 import {
     AnimatedStyle,
@@ -40,11 +40,6 @@ export const useScrollToAnchor = (activeAnchor: string | null | undefined) => {
         borderRadius: HIGHLIGHT_BORDER_RADIUS,
         backgroundColor: interpolateColor(highlightProgress.get(), [0, 1], [HIGHLIGHT_COLOR_TRANSPARENT, HIGHLIGHT_COLOR_ACTIVE])
     }));
-    const emptyStyle = useAnimatedStyle(() => ({}));
-
-    useEffect(() => {
-        scrolledAnchor.current = null;
-    }, [activeAnchor]);
 
     const scrollToActive = (): void => {
         if (!isDefined(activeAnchor) || scrolledAnchor.current === activeAnchor) {
@@ -71,6 +66,15 @@ export const useScrollToAnchor = (activeAnchor: string | null | undefined) => {
         );
     };
 
+    const scrollToChangedAnchor = useEffectEvent(() => {
+        scrolledAnchor.current = null;
+        scrollToActive();
+    });
+
+    useEffect(() => {
+        scrollToChangedAnchor();
+    }, [activeAnchor]);
+
     const scrollViewRef = (node: ScrollView | null): void => {
         scrollViewInstance.current = node;
     };
@@ -92,7 +96,7 @@ export const useScrollToAnchor = (activeAnchor: string | null | undefined) => {
     });
 
     const anchorHighlight = (name: string): { readonly style: AnimatedStyle<ViewStyle> } => ({
-        style: name === activeAnchor ? highlightStyle : emptyStyle
+        style: name === activeAnchor ? highlightStyle : {}
     });
 
     return { scrollViewRef, onScrollViewLayout: handleScrollViewLayout, anchorLayout, anchorHighlight };
