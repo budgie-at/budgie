@@ -1922,6 +1922,7 @@ msgid "Avg {averageCost} per {instrumentCode} · known for {coveredAmount} of {t
 msgstr "Avg {averageCost} per {instrumentCode} · known for {coveredAmount} of {totalAmount}"
 
 #: src/@generic/component/selector-modal-search-header/selector-modal-search-header.tsx
+#: src/category/components/category-form-back-button/category-form-back-button.tsx
 msgid "Back"
 msgstr "Back"
 
@@ -2469,7 +2470,7 @@ msgstr "Change"
 msgid "Change icon"
 msgstr "Change icon"
 
-#: src/@generic/component/icon-title-field-trigger/icon-title-field-trigger.tsx
+#: src/category/components/category-form-hero-icon/category-form-hero-icon.tsx
 msgid "Change icon, current: {iconName}"
 msgstr "Change icon, current: {iconName}"
 
@@ -3504,10 +3505,6 @@ msgstr "Create budget"
 msgid "Create category"
 msgstr "Create category"
 
-#: src/category/components/category-form/category-form.tsx
-msgid "Create Category"
-msgstr "Create Category"
-
 #: src/budget/components/budget-event-form/budget-event-form.tsx
 msgid "Create event"
 msgstr "Create event"
@@ -4150,8 +4147,8 @@ msgid "Edit budget"
 msgstr "Edit budget"
 
 #: src/category/components/category-form/category-form.tsx
-msgid "Edit Category"
-msgstr "Edit Category"
+msgid "Edit category"
+msgstr "Edit category"
 
 #: src/rule/components/rule-condition-row/rule-condition-row.tsx
 msgid "Edit condition {position}"
@@ -4211,7 +4208,7 @@ msgstr "Edit Transfer"
 msgid "Edits the total of the plan"
 msgstr "Edits the total of the plan"
 
-#: src/app/icon-selector.tsx
+#: src/@generic/component/icon-picker-panel/icon-picker-panel.tsx
 msgid "Emoji"
 msgstr "Emoji"
 
@@ -4975,7 +4972,7 @@ msgstr "I have a Budgie backup"
 msgid "I have my key file"
 msgstr "I have my key file"
 
-#: src/app/icon-selector.tsx
+#: src/@generic/component/icon-picker-panel/icon-picker-panel.tsx
 msgid "Icon"
 msgstr "Icon"
 
@@ -4983,7 +4980,7 @@ msgstr "Icon"
 msgid "Icon updated for {categoryTitle}"
 msgstr "Icon updated for {categoryTitle}"
 
-#: src/app/icon-selector.tsx
+#: src/@generic/component/icon-picker-panel/icon-picker-panel.tsx
 msgid "Icons"
 msgstr "Icons"
 
@@ -5968,6 +5965,10 @@ msgstr "Moved to cash"
 msgid "Name"
 msgstr "Name"
 
+#: src/category/components/category-form/category-form.tsx
+msgid "Name it and pick an icon"
+msgstr "Name it and pick an icon"
+
 #: src/categorize-inbox/components/categorize-inbox-transfer-accounts/categorize-inbox-transfer-accounts.tsx
 msgid "Name matches"
 msgstr "Name matches"
@@ -6014,6 +6015,7 @@ msgid "New categories get an icon from their name automatically."
 msgstr "New categories get an icon from their name automatically."
 
 #: src/category/components/category-empty-state/category-empty-state.tsx
+#: src/category/components/category-form/category-form.tsx
 msgid "New category"
 msgstr "New category"
 
@@ -6689,7 +6691,7 @@ msgstr "Open Shortcuts"
 msgid "Open the Inzhur app"
 msgstr "Open the Inzhur app"
 
-#: src/@generic/component/icon-title-field-trigger/icon-title-field-trigger.tsx
+#: src/category/components/category-form-hero-icon/category-form-hero-icon.tsx
 msgid "Opens the icon picker"
 msgstr "Opens the icon picker"
 
@@ -7187,7 +7189,7 @@ msgstr "Please try again"
 msgid "Please try again later"
 msgstr "Please try again later"
 
-#: src/app/icon-selector.tsx
+#: src/@generic/component/icon-picker-panel/icon-picker-panel.tsx
 msgid "Popular"
 msgstr "Popular"
 
@@ -7593,6 +7595,10 @@ msgstr "Remove unused downloads"
 msgid "Removed from this series"
 msgstr "Removed from this series"
 
+#: src/category/components/category-form/category-form.tsx
+msgid "Rename it or change its icon"
+msgstr "Rename it or change its icon"
+
 #: src/installment-plan/component/convert-to-installment-header/convert-to-installment-header.tsx
 msgid "Rename plan, {value}"
 msgstr "Rename plan, {value}"
@@ -7978,7 +7984,7 @@ msgstr "Search expenses"
 msgid "Search hidden accounts…"
 msgstr "Search hidden accounts…"
 
-#: src/app/icon-selector.tsx
+#: src/@generic/component/icon-picker-panel/icon-picker-panel.tsx
 msgid "Search icons"
 msgstr "Search icons"
 

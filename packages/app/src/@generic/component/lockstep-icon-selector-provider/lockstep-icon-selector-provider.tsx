@@ -37,7 +37,7 @@ export const LockstepIconSelectorProvider = ({ children }: Props) => {
 
         push(
             ICON_SCREEN_KEY,
-            <View className="flex-1" style={screenStyle}>
+            <View className="flex-1 bg-sheet-grouped-surface" style={screenStyle}>
                 <IconPickerPanel
                     selectedIcon={params?.selectedIcon}
                     keywords={params?.keywords}

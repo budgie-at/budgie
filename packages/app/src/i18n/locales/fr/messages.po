@@ -1921,6 +1921,7 @@ msgid "Avg {averageCost} per {instrumentCode} · known for {coveredAmount} of {t
 msgstr "Moy. {averageCost} par {instrumentCode} · coût connu pour {coveredAmount} sur {totalAmount}"
 
 #: src/@generic/component/selector-modal-search-header/selector-modal-search-header.tsx
+#: src/category/components/category-form-back-button/category-form-back-button.tsx
 msgid "Back"
 msgstr "Retour"
 
@@ -2468,7 +2469,7 @@ msgstr "Modifier"
 msgid "Change icon"
 msgstr "Changer l’icône"
 
-#: src/@generic/component/icon-title-field-trigger/icon-title-field-trigger.tsx
+#: src/category/components/category-form-hero-icon/category-form-hero-icon.tsx
 msgid "Change icon, current: {iconName}"
 msgstr "Changer l’icône, actuelle : {iconName}"
 
@@ -3503,10 +3504,6 @@ msgstr "Créer un budget"
 msgid "Create category"
 msgstr "Créer la catégorie"
 
-#: src/category/components/category-form/category-form.tsx
-msgid "Create Category"
-msgstr "Créer une catégorie"
-
 #: src/budget/components/budget-event-form/budget-event-form.tsx
 msgid "Create event"
 msgstr "Créer l’événement"
@@ -4149,7 +4146,7 @@ msgid "Edit budget"
 msgstr "Modifier le budget"
 
 #: src/category/components/category-form/category-form.tsx
-msgid "Edit Category"
+msgid "Edit category"
 msgstr "Modifier la catégorie"
 
 #: src/rule/components/rule-condition-row/rule-condition-row.tsx
@@ -4210,7 +4207,7 @@ msgstr "Modifier le transfert"
 msgid "Edits the total of the plan"
 msgstr "Modifie le montant total du plan"
 
-#: src/app/icon-selector.tsx
+#: src/@generic/component/icon-picker-panel/icon-picker-panel.tsx
 msgid "Emoji"
 msgstr "Emoji"
 
@@ -4974,7 +4971,7 @@ msgstr "J'ai une sauvegarde Budgie"
 msgid "I have my key file"
 msgstr "J'ai mon fichier de clé"
 
-#: src/app/icon-selector.tsx
+#: src/@generic/component/icon-picker-panel/icon-picker-panel.tsx
 msgid "Icon"
 msgstr "Icône"
 
@@ -4982,7 +4979,7 @@ msgstr "Icône"
 msgid "Icon updated for {categoryTitle}"
 msgstr "Icône mise à jour pour {categoryTitle}"
 
-#: src/app/icon-selector.tsx
+#: src/@generic/component/icon-picker-panel/icon-picker-panel.tsx
 msgid "Icons"
 msgstr "Icônes"
 
@@ -5967,6 +5964,10 @@ msgstr "Déplacé vers les espèces"
 msgid "Name"
 msgstr "Nom"
 
+#: src/category/components/category-form/category-form.tsx
+msgid "Name it and pick an icon"
+msgstr "Donnez-lui un nom et choisissez une icône"
+
 #: src/categorize-inbox/components/categorize-inbox-transfer-accounts/categorize-inbox-transfer-accounts.tsx
 msgid "Name matches"
 msgstr "Noms correspondants"
@@ -6013,6 +6014,7 @@ msgid "New categories get an icon from their name automatically."
 msgstr "Les nouvelles catégories reçoivent automatiquement une icône d’après leur nom."
 
 #: src/category/components/category-empty-state/category-empty-state.tsx
+#: src/category/components/category-form/category-form.tsx
 msgid "New category"
 msgstr "Nouvelle catégorie"
 
@@ -6688,7 +6690,7 @@ msgstr "Ouvrir Shortcuts"
 msgid "Open the Inzhur app"
 msgstr "Ouvrez l'app Inzhur"
 
-#: src/@generic/component/icon-title-field-trigger/icon-title-field-trigger.tsx
+#: src/category/components/category-form-hero-icon/category-form-hero-icon.tsx
 msgid "Opens the icon picker"
 msgstr "Ouvre le sélecteur d’icônes"
 
@@ -7186,7 +7188,7 @@ msgstr "Veuillez réessayer"
 msgid "Please try again later"
 msgstr "Veuillez réessayer plus tard"
 
-#: src/app/icon-selector.tsx
+#: src/@generic/component/icon-picker-panel/icon-picker-panel.tsx
 msgid "Popular"
 msgstr "Populaires"
 
@@ -7592,6 +7594,10 @@ msgstr "Supprimer les téléchargements inutilisés"
 msgid "Removed from this series"
 msgstr "Retiré de cette série"
 
+#: src/category/components/category-form/category-form.tsx
+msgid "Rename it or change its icon"
+msgstr "Renommez-la ou changez son icône"
+
 #: src/installment-plan/component/convert-to-installment-header/convert-to-installment-header.tsx
 msgid "Rename plan, {value}"
 msgstr "Renommer le plan, {value}"
@@ -7977,7 +7983,7 @@ msgstr "Rechercher des dépenses"
 msgid "Search hidden accounts…"
 msgstr "Rechercher des comptes masqués…"
 
-#: src/app/icon-selector.tsx
+#: src/@generic/component/icon-picker-panel/icon-picker-panel.tsx
 msgid "Search icons"
 msgstr "Rechercher des icônes"
 

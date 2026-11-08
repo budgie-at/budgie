@@ -1921,6 +1921,7 @@ msgid "Avg {averageCost} per {instrumentCode} · known for {coveredAmount} of {t
 msgstr "Сер. {averageCost} за {instrumentCode} · вартість відома для {coveredAmount} з {totalAmount}"
 
 #: src/@generic/component/selector-modal-search-header/selector-modal-search-header.tsx
+#: src/category/components/category-form-back-button/category-form-back-button.tsx
 msgid "Back"
 msgstr "Назад"
 
@@ -2468,7 +2469,7 @@ msgstr "Змінити"
 msgid "Change icon"
 msgstr "Змінити іконку"
 
-#: src/@generic/component/icon-title-field-trigger/icon-title-field-trigger.tsx
+#: src/category/components/category-form-hero-icon/category-form-hero-icon.tsx
 msgid "Change icon, current: {iconName}"
 msgstr "Змінити іконку, поточна: {iconName}"
 
@@ -3503,10 +3504,6 @@ msgstr "Створити бюджет"
 msgid "Create category"
 msgstr "Створити категорію"
 
-#: src/category/components/category-form/category-form.tsx
-msgid "Create Category"
-msgstr "Створити категорію"
-
 #: src/budget/components/budget-event-form/budget-event-form.tsx
 msgid "Create event"
 msgstr "Створити подію"
@@ -4149,7 +4146,7 @@ msgid "Edit budget"
 msgstr "Редагувати бюджет"
 
 #: src/category/components/category-form/category-form.tsx
-msgid "Edit Category"
+msgid "Edit category"
 msgstr "Редагувати категорію"
 
 #: src/rule/components/rule-condition-row/rule-condition-row.tsx
@@ -4210,7 +4207,7 @@ msgstr "Редагувати переказ"
 msgid "Edits the total of the plan"
 msgstr "Змінює загальну суму плану"
 
-#: src/app/icon-selector.tsx
+#: src/@generic/component/icon-picker-panel/icon-picker-panel.tsx
 msgid "Emoji"
 msgstr "Емодзі"
 
@@ -4974,7 +4971,7 @@ msgstr "У мене є резервна копія Budgie"
 msgid "I have my key file"
 msgstr "У мене є файл ключа"
 
-#: src/app/icon-selector.tsx
+#: src/@generic/component/icon-picker-panel/icon-picker-panel.tsx
 msgid "Icon"
 msgstr "Іконка"
 
@@ -4982,7 +4979,7 @@ msgstr "Іконка"
 msgid "Icon updated for {categoryTitle}"
 msgstr "Іконку оновлено для «{categoryTitle}»"
 
-#: src/app/icon-selector.tsx
+#: src/@generic/component/icon-picker-panel/icon-picker-panel.tsx
 msgid "Icons"
 msgstr "Іконки"
 
@@ -5967,6 +5964,10 @@ msgstr "Перенесено в готівку"
 msgid "Name"
 msgstr "Назва"
 
+#: src/category/components/category-form/category-form.tsx
+msgid "Name it and pick an icon"
+msgstr "Дайте їй назву й оберіть іконку"
+
 #: src/categorize-inbox/components/categorize-inbox-transfer-accounts/categorize-inbox-transfer-accounts.tsx
 msgid "Name matches"
 msgstr "Збігаються назви"
@@ -6013,6 +6014,7 @@ msgid "New categories get an icon from their name automatically."
 msgstr "Нові категорії автоматично отримують іконку за назвою."
 
 #: src/category/components/category-empty-state/category-empty-state.tsx
+#: src/category/components/category-form/category-form.tsx
 msgid "New category"
 msgstr "Нова категорія"
 
@@ -6688,7 +6690,7 @@ msgstr "Відкрити Shortcuts"
 msgid "Open the Inzhur app"
 msgstr "Відкрийте застосунок Inzhur"
 
-#: src/@generic/component/icon-title-field-trigger/icon-title-field-trigger.tsx
+#: src/category/components/category-form-hero-icon/category-form-hero-icon.tsx
 msgid "Opens the icon picker"
 msgstr "Відкриває вибір іконки"
 
@@ -7186,7 +7188,7 @@ msgstr "Будь ласка, спробуйте ще раз"
 msgid "Please try again later"
 msgstr "Будь ласка, спробуйте пізніше"
 
-#: src/app/icon-selector.tsx
+#: src/@generic/component/icon-picker-panel/icon-picker-panel.tsx
 msgid "Popular"
 msgstr "Популярні"
 
@@ -7592,6 +7594,10 @@ msgstr "Видалити невикористані завантаження"
 msgid "Removed from this series"
 msgstr "Вилучено з цієї серії"
 
+#: src/category/components/category-form/category-form.tsx
+msgid "Rename it or change its icon"
+msgstr "Перейменуйте її або змініть іконку"
+
 #: src/installment-plan/component/convert-to-installment-header/convert-to-installment-header.tsx
 msgid "Rename plan, {value}"
 msgstr "Перейменувати план, {value}"
@@ -7977,7 +7983,7 @@ msgstr "Пошук витрат"
 msgid "Search hidden accounts…"
 msgstr "Пошук прихованих рахунків…"
 
-#: src/app/icon-selector.tsx
+#: src/@generic/component/icon-picker-panel/icon-picker-panel.tsx
 msgid "Search icons"
 msgstr "Пошук іконок"
 

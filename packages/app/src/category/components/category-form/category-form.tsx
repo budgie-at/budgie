@@ -14,10 +14,8 @@ import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/sh
 
 import { AiTranslationFields } from '../../../@generic/component/ai-translation-fields/ai-translation-fields';
 import { EntityEditSections } from '../../../@generic/component/entity-edit-sections/entity-edit-sections';
-import { EntityFormPage } from '../../../@generic/component/entity-form-page/entity-form-page';
 import { FormTitleInput } from '../../../@generic/component/form-title-input/form-title-input';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
-import { IconTitleFieldTrigger } from '../../../@generic/component/icon-title-field-trigger/icon-title-field-trigger';
 import { IconTitleField } from '../../../@generic/component/icon-title-field/icon-title-field';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
@@ -39,6 +37,9 @@ import { getCategoryDeleteCopy } from '../../utils/get-category-delete-copy.util
 import { getCategoryDisplayIcon } from '../../utils/get-category-display-icon.util';
 import { suggestCategoryIcon } from '../../utils/suggest-category-icon.util';
 import { updateCategory } from '../../utils/update-category.util';
+import { CategoryFormHero } from '../category-form-hero/category-form-hero';
+import { CategoryFormPage } from '../category-form-page/category-form-page';
+import { CategoryFormSubmitButton } from '../category-form-submit-button/category-form-submit-button';
 
 import { CategoryFormSelector } from './category-form.selector';
 
@@ -81,7 +82,8 @@ export const CategoryForm = (props: Props) => {
         !isDefined(category) || title !== category.title || resolvedIcon !== category.icon || iconSource !== category.iconSource;
     const isSaveDisabled = !hasTitle || isBusy;
     const deleteCopy = getCategoryDeleteCopy(transactionCount, t);
-    const headerTitle = isEditing ? t`Edit Category` : t`Create Category`;
+    const heroFallbackTitle = isEditing ? t`Edit category` : t`New category`;
+    const heroSubtitle = isEditing ? t`Rename it or change its icon` : t`Name it and pick an icon`;
     const createLabel = hasTitle ? t`Create category` : t`Add a name to continue`;
     const titleError = isDefined(formState.errors.title) ? t`Use 1 to ${CATEGORY_TITLE_MAX_LENGTH} characters` : void 0;
     const deleteTrailing = isPositiveNumber(transactionCount) ? (
@@ -157,29 +159,29 @@ export const CategoryForm = (props: Props) => {
     const handleFormSubmit = handleSubmit(values => saveFlight.run(submitCategory(values, resolvedIcon)));
 
     return (
-        <EntityFormPage
-            title={headerTitle}
+        <CategoryFormPage
             onCancel={onCancel}
-            saveLabel={saveLabel}
-            onSave={handleFormSubmit}
-            isSaving={saveFlight.isLoading}
-            isSaveDisabled={isSaveDisabled}
-            saveTestID={CategoryFormSelector.Submit}
+            footer={
+                <CategoryFormSubmitButton
+                    label={saveLabel}
+                    isReady={hasTitle}
+                    isLoading={saveFlight.isLoading}
+                    isDisabled={isSaveDisabled}
+                    onPress={handleFormSubmit}
+                    testID={CategoryFormSelector.Submit}
+                />
+            }
         >
+            <CategoryFormHero
+                icon={triggerIcon}
+                title={title}
+                fallbackTitle={heroFallbackTitle}
+                subtitle={heroSubtitle}
+                onIconPress={handleIconPress}
+            />
+
             <GroupedListSection title={t`Details`} footer={keywordsFooter}>
-                <IconTitleField
-                    tile={
-                        <IconTitleFieldTrigger
-                            icon={triggerIcon}
-                            variant="secondary"
-                            onPress={handleIconPress}
-                            testID={CategoryFormSelector.IconTrigger}
-                            iconTestID={CategoryFormSelector.CurrentIcon(triggerIcon)}
-                        />
-                    }
-                    label={t`Name`}
-                    error={titleError}
-                >
+                <IconTitleField label={t`Name`} error={titleError}>
                     <FormTitleInput
                         autoFocus={!isEditing}
                         editable={!isBusy}
@@ -194,6 +196,6 @@ export const CategoryForm = (props: Props) => {
             </GroupedListSection>
 
             {isDefined(category) ? usageActions : null}
-        </EntityFormPage>
+        </CategoryFormPage>
     );
 };
