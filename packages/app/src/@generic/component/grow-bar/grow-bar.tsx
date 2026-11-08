@@ -2,24 +2,22 @@ import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 
 import { useGrowProgress } from '../../hook/use-grow-progress.hook';
 
-import type { ReactNode } from 'react';
-
 interface Props {
     readonly ratio: number;
     readonly className: string;
     readonly staggerIndex?: number;
-    readonly children?: ReactNode;
 }
 
 const PERCENT_MULTIPLIER = 100;
 
-export const GrowBar = ({ ratio, className, staggerIndex = 0, children }: Props) => {
+export const GrowBar = ({ ratio, className, staggerIndex = 0 }: Props) => {
     const progress = useGrowProgress(ratio, staggerIndex);
-    const fillStyle = useAnimatedStyle(() => ({ width: `${progress.get() * PERCENT_MULTIPLIER}%` }));
+    const scaleDivisor = Math.max(ratio, Number.MIN_VALUE);
+    const width: `${number}%` = `${ratio * PERCENT_MULTIPLIER}%`;
+    const sizeStyle = { width, transformOrigin: 'left' };
+    const scaleStyle = useAnimatedStyle(() => ({ transform: [{ scaleX: progress.get() / scaleDivisor }] }));
 
-    return (
-        <Animated.View className={className} style={fillStyle}>
-            {children}
-        </Animated.View>
-    );
+    const fillStyle = [sizeStyle, scaleStyle];
+
+    return <Animated.View className={className} style={fillStyle} />;
 };
