@@ -24,6 +24,7 @@ export const ScrollableSheetCard = ({ header, ratio, contentClassName, testID, c
                     className="flex-initial"
                     contentContainerClassName={contentClassName}
                     bounces={false}
+                    keyboardShouldPersistTaps="handled"
                     showsVerticalScrollIndicator={false}
                 >
                     {children}

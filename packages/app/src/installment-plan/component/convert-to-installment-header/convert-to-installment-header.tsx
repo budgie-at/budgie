@@ -7,6 +7,7 @@ import { Pressable, Text, View } from 'react-native';
 import { isNotEmptyString } from '@rnw-community/shared';
 
 import { Input } from '../../../@generic/component/input/input';
+import { MorphingSheetDragZone } from '../../../@generic/component/morphing-sheet-drag-zone/morphing-sheet-drag-zone';
 import { ScaledIcon } from '../../../@generic/component/scaled-icon/scaled-icon';
 import { ConvertToInstallmentModalSelector } from '../../../app/convert-to-installment-modal.selector';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
@@ -75,11 +76,13 @@ export const ConvertToInstallmentHeader = ({ params }: Props) => {
     const { accountTitle } = params;
 
     return (
-        <View>
-            <Controller control={control} name="title" render={render} />
-            <Text className="text-sm text-secondary-foreground" numberOfLines={2}>
-                {t`Pay in parts · ${operatedAtLabel} · ${accountTitle}`}
-            </Text>
-        </View>
+        <MorphingSheetDragZone>
+            <View className="px-3xl pt-2xl">
+                <Controller control={control} name="title" render={render} />
+                <Text className="text-sm text-secondary-foreground" numberOfLines={2}>
+                    {t`Pay in parts · ${operatedAtLabel} · ${accountTitle}`}
+                </Text>
+            </View>
+        </MorphingSheetDragZone>
     );
 };

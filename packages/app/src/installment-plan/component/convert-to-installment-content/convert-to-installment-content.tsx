@@ -63,6 +63,13 @@ export const ConvertToInstallmentContent = ({ params, onCommit }: Props) => {
         <FormProvider {...form}>
             <LayoutAnimationConfig skipEntering>
                 <View style={sheetStyle}>
+                    <ConvertToInstallmentHeader params={params} />
+                    {isScrolled ? (
+                        <View
+                            className="z-10 -mb-[40px] h-[40px] bg-linear-to-b from-sheet-surface via-sheet-surface to-sheet-surface/0"
+                            pointerEvents="none"
+                        />
+                    ) : null}
                     <ScrollView
                         {...scrollViewProps}
                         className="shrink"
@@ -71,8 +78,7 @@ export const ConvertToInstallmentContent = ({ params, onCommit }: Props) => {
                         showsHorizontalScrollIndicator={false}
                         bounces={false}
                     >
-                        <View className="gap-y-3xl px-3xl pt-2xl pb-7xl">
-                            <ConvertToInstallmentHeader params={params} />
+                        <View className="gap-y-3xl px-3xl pt-3xl pb-7xl">
                             <ConvertToInstallmentParts
                                 params={params}
                                 split={split}
@@ -102,12 +108,6 @@ export const ConvertToInstallmentContent = ({ params, onCommit }: Props) => {
                             ) : null}
                         </View>
                     </ScrollView>
-                    {isScrolled ? (
-                        <View
-                            className="absolute inset-x-0 top-0 h-[40px] bg-linear-to-b from-sheet-surface via-sheet-surface to-sheet-surface/0"
-                            pointerEvents="none"
-                        />
-                    ) : null}
                     {isKeyboardVisible ? (
                         <View
                             className="absolute inset-x-0 bottom-0 h-[24px] bg-linear-to-b from-sheet-surface/0 to-sheet-surface"
