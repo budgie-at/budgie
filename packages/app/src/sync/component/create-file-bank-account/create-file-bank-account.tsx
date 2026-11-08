@@ -33,7 +33,7 @@ interface CreateFileBankAccountProps {
 
 const goBackHome = () => void goBackOrReplace('/');
 
-// eslint-disable-next-line max-statements, max-lines-per-function -- Form orchestration component with multiple hooks and handlers
+// eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
 export const CreateFileBankAccount = ({ config }: CreateFileBankAccountProps) => {
     const { t } = useLingui();
     const [step, setStep] = useState(FileImportStepEnum.FILE);
@@ -78,7 +78,7 @@ export const CreateFileBankAccount = ({ config }: CreateFileBankAccountProps) =>
             Effect.gen(function* () {
                 if (isDefined(selectedFile)) {
                     yield* config.executeImportForSelectedAccounts(selectedFile.uri, [...selectedAccounts]);
-                    hapticNotification(NotificationFeedbackType.Success);
+                    yield* Effect.sync(() => void hapticNotification(NotificationFeedbackType.Success));
                     router.dismissTo(onboardingHref ?? '/');
                 }
             }).pipe(toastOnFailure(t`Import failed`))
@@ -86,7 +86,6 @@ export const CreateFileBankAccount = ({ config }: CreateFileBankAccountProps) =>
 
     const newTransactionCount = isDefined(review) ? review.parsedTransactionCount - review.duplicateTransactionCount : 0;
     const importLabel = t({ message: plural(newTransactionCount, { one: 'Import # transaction', other: 'Import # transactions' }) });
-    const fileName = selectedFile?.name ?? '';
     const hasSelectedAccounts = selectedAccounts.size > 0;
     const stepContent: Record<FileImportStepEnum, ReactElement | null> = {
         [FileImportStepEnum.FILE]: (
@@ -102,26 +101,25 @@ export const CreateFileBankAccount = ({ config }: CreateFileBankAccountProps) =>
         [FileImportStepEnum.ACCOUNTS]: (
             <SyncAccountsStep {...accountSelection} logo={<BankLogo bankProvider={config.provider} size={36} />} />
         ),
-        [FileImportStepEnum.REVIEW]: isDefined(review) ? <FileImportReviewStep review={review} fileName={fileName} /> : null
+        [FileImportStepEnum.REVIEW]: isDefined(review) ? <FileImportReviewStep review={review} fileName={selectedFile?.name ?? ''} /> : null
     };
-    const footer = (
-        <CreateFileBankAccountFooter
-            step={step}
-            isLoading={isLoading}
-            hasSelectedAccounts={hasSelectedAccounts}
-            importLabel={importLabel}
-            onSelectFile={handleSelectFile}
-            onReview={handleReview}
-            onImport={handleImport}
-        />
-    );
 
     return (
         <SyncSetupPage
             title={config.title}
             description={config.description}
             onGoBack={goBackHome}
-            footerButton={footer}
+            footerButton={
+                <CreateFileBankAccountFooter
+                    step={step}
+                    isLoading={isLoading}
+                    hasSelectedAccounts={hasSelectedAccounts}
+                    importLabel={importLabel}
+                    onSelectFile={handleSelectFile}
+                    onReview={handleReview}
+                    onImport={handleImport}
+                />
+            }
             testID={CreateFileBankAccountSelector.ScrollView}
         >
             {stepContent[step]}

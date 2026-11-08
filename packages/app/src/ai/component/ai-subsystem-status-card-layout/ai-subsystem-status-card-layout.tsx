@@ -28,7 +28,6 @@ interface Props {
     readonly onRebuild: Effect.Effect<void, Cause.YieldableError, AppServices>;
 }
 
-// eslint-disable-next-line max-statements -- Card layout component wires hooks, long-press handlers and rebuild confirmation
 export const AiSubsystemStatusCardLayout = (props: Props) => {
     const { snapshot, title, renderLeftIcon, rebuildAlertTitle, rebuildAlertMessage, rebuildLogKey, onRebuild } = props;
     const { t } = useLingui();
@@ -73,8 +72,7 @@ export const AiSubsystemStatusCardLayout = (props: Props) => {
     }
 
     const leftContent = renderLeftIcon(holdProgress, 'text-secondary-foreground');
-    const percentText = `${snapshot.percent}%`;
-    const rightContent = <Text className="text-[17px] text-secondary-foreground">{percentText}</Text>;
+    const rightContent = <Text className="text-[17px] text-secondary-foreground">{snapshot.percent}%</Text>;
 
     return (
         <Pressable onPressIn={handlePressIn} onPressOut={handlePressOut}>
