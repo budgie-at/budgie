@@ -14,7 +14,8 @@ interface Props {
 const ITEM_SPACING = 72;
 const HIDDEN_SCALE = 0.9;
 const OPEN_OFFSET = 24;
-const OPEN_STAGGER = 35;
+const OPEN_STAGGER = 25;
+const OPEN_SPRING = { ...SPRING_SETTLE, duration: 320 };
 const MAX_STAGGER_INDEX = 4;
 const OPEN_OPACITY_DURATION = 150;
 
@@ -28,8 +29,8 @@ export const ActionItem = ({ index, isOpen, children }: Props) => {
     useEffect(() => {
         if (isOpen) {
             const delay = Math.min(index, MAX_STAGGER_INDEX) * OPEN_STAGGER;
-            translateY.set(withDelay(delay, withSpring(0, SPRING_SETTLE)));
-            scale.set(withDelay(delay, withSpring(1, SPRING_SETTLE)));
+            translateY.set(withDelay(delay, withSpring(0, OPEN_SPRING)));
+            scale.set(withDelay(delay, withSpring(1, OPEN_SPRING)));
             opacity.set(withDelay(delay, withTiming(1, { duration: OPEN_OPACITY_DURATION, easing: EASE_OUT })));
         } else {
             translateY.set(withTiming(OPEN_OFFSET, { duration: MOTION_FAST_DURATION, easing: EASE_OUT }));

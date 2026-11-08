@@ -38,8 +38,6 @@ const SNAP_BACK_SPRING = { dampingRatio: 0.8, duration: 400 };
 const SWIPE_THRESHOLD = 80;
 const DRAGGED_MIN_OPACITY = 0.35;
 const VELOCITY_DISMISS = 800;
-const MAX_RUBBER_BAND = 24;
-const RUBBER_BAND_FACTOR = 2;
 const SLIDE_OUT_DISTANCE = 300;
 const SUCCESS_AUTO_DISMISS_MS = 2000;
 const ERROR_AUTO_DISMISS_MS = 3000;
@@ -92,14 +90,12 @@ export const SwipeableRuleCard = (props: Props) => {
 
     const panGesture = Gesture.Pan()
         .enabled(isInteractive)
-        .activeOffsetX([-10, 10])
+        .activeOffsetX(10)
+        .failOffsetX(-10)
         .onUpdate(event => {
-            const isRightward = event.translationX > 0;
-            const rubberBand = -Math.min(MAX_RUBBER_BAND, Math.sqrt(-event.translationX) * RUBBER_BAND_FACTOR);
-            const translation = isRightward ? event.translationX : rubberBand;
-            translateX.set(translation);
+            translateX.set(Math.max(0, event.translationX));
 
-            if (translation >= SWIPE_THRESHOLD) {
+            if (translateX.get() >= SWIPE_THRESHOLD) {
                 if (!didTriggerThresholdHaptic.get()) {
                     didTriggerThresholdHaptic.set(true);
                     scheduleOnRN(handleSwipeThresholdReached);
@@ -202,15 +198,17 @@ export const SwipeableRuleCard = (props: Props) => {
 
     return (
         <GestureDetector gesture={panGesture}>
-            <Animated.View style={animatedStyle}>
-                <View testID={cardTestID} className="items-center">
-                    <Animated.View layout={MOTION_LAYOUT} className="items-center">
-                        <Animated.View key={pillContentKey} entering={MOTION_FADE_IN} exiting={MOTION_FADE_OUT} layout={MOTION_LAYOUT}>
-                            {pillContent}
+            <View className="overflow-hidden rounded-full">
+                <Animated.View style={animatedStyle}>
+                    <View testID={cardTestID} className="items-center">
+                        <Animated.View layout={MOTION_LAYOUT} className="items-center">
+                            <Animated.View key={pillContentKey} entering={MOTION_FADE_IN} exiting={MOTION_FADE_OUT} layout={MOTION_LAYOUT}>
+                                {pillContent}
+                            </Animated.View>
                         </Animated.View>
-                    </Animated.View>
-                </View>
-            </Animated.View>
+                    </View>
+                </Animated.View>
+            </View>
         </GestureDetector>
     );
 };

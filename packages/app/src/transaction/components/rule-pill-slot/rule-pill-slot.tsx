@@ -9,9 +9,8 @@ interface Props {
     readonly ruleDetection?: RuleDetectionType;
 }
 
-const ENTER_DELAY = 60;
 const EXIT_DURATION = 80;
-const ENTERING = FadeIn.duration(MOTION_BASE_DURATION).easing(EASE_OUT).delay(ENTER_DELAY);
+const ENTERING = FadeIn.duration(MOTION_BASE_DURATION).easing(EASE_OUT);
 const EXITING = FadeOut.duration(EXIT_DURATION).easing(EASE_OUT);
 
 export const RulePillSlot = ({ ruleDetection }: Props) => (
