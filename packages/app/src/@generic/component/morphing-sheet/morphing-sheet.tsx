@@ -66,7 +66,7 @@ export const MorphingSheet = ({ steps, activeStep, onDismiss, isContentDraggable
                     onPress={handleDismiss}
                 />
 
-                {hasPage ? <MorphingSheetPageBackdrop rect={pageRect} pageProgress={pageProgress} /> : null}
+                {hasPage ? <MorphingSheetPageBackdrop rect={pageRect} /> : null}
 
                 <Animated.View
                     className="absolute right-[16px] left-[16px] overflow-hidden"

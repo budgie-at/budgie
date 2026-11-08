@@ -22,8 +22,11 @@ export const CategoryFormFooter = ({ children, onLayout }: Props) => {
 
     return (
         <KeyboardStickyView style={STICKY_FOOTER_STYLE} offset={keyboardOffset}>
-            <View className="bg-surface px-[16px] pt-md" style={paddingStyle} onLayout={onLayout}>
-                <View pointerEvents="none" className="absolute inset-x-0 bottom-full h-[32px] bg-linear-to-t from-surface to-surface/0" />
+            <View className="bg-sheet-surface px-[16px] pt-md" style={paddingStyle} onLayout={onLayout}>
+                <View
+                    pointerEvents="none"
+                    className="absolute inset-x-0 bottom-full h-[32px] bg-linear-to-t from-sheet-surface to-sheet-surface/0"
+                />
                 {children}
             </View>
         </KeyboardStickyView>

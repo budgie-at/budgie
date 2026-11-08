@@ -18,7 +18,7 @@ interface Props {
 }
 
 export const CategoryFormPage = ({ onCancel, footer, children }: Props) => {
-    const headerStyle = useResolveClassNames('bg-surface');
+    const headerStyle = useResolveClassNames('bg-sheet-surface');
     const [footerHeight, setFooterHeight] = useState(0);
     const handleFooterLayout = (event: LayoutChangeEvent) => {
         setFooterHeight(event.nativeEvent.layout.height);

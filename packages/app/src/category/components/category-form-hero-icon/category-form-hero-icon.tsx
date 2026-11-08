@@ -75,7 +75,7 @@ export const CategoryFormHeroIcon = ({ icon, onPress }: Props) => {
                     </LayoutAnimationConfig>
                 </Animated.View>
             </View>
-            <View className="absolute -right-[2px] -bottom-[2px] h-[30px] w-[30px] items-center justify-center rounded-full border-[3px] border-surface bg-surface-disc">
+            <View className="absolute -right-[2px] -bottom-[2px] h-[30px] w-[30px] items-center justify-center rounded-full border-[3px] border-sheet-surface bg-surface-disc">
                 <Icon icon={UserIconNameEnum.Pencil} size={14} className="text-primary" />
             </View>
         </HapticPressable>
