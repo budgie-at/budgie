@@ -43,18 +43,17 @@ export const ShelvedAccountsPage = (props: Props) => {
 
     const isFailure = AsyncResult.isFailure(result);
     const shelvedList = getShelvedAccountsList(isFailure ? [] : AsyncResult.getOrElse(result, () => null), deferredSearch);
-    const { shelvedCount } = shelvedList;
     const trimmedSearch = search.trim();
-    const countTitle = isPositiveNumber(shelvedCount)
+    const countTitle = isPositiveNumber(shelvedList.shelvedCount)
         ? t({ message: plural(shelvedList.shelvedCount, { one: '# account', other: '# accounts' }) })
         : null;
 
     const handleClearSearch = () => void setSearch('');
     const renderItem = (account: AccountWithInstrumentEntityInterface, index: number, isLast: boolean) =>
-        index < shelvedCount ? (
-            renderCard(account, index === 0, index === shelvedCount - 1)
+        index < shelvedList.shelvedCount ? (
+            renderCard(account, index === 0, index === shelvedList.shelvedCount - 1)
         ) : (
-            <AutomaticAccountCard account={account} isFirst={index === shelvedCount} isLast={isLast} />
+            <AutomaticAccountCard account={account} isFirst={index === shelvedList.shelvedCount} isLast={isLast} />
         );
 
     const noMatchesState = isNotEmptyString(trimmedSearch) ? (

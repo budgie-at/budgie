@@ -30,7 +30,6 @@ import { useGetAccountByIdQuery } from '../../../../account/query/use-get-accoun
 import { getAccountDisplayTitle } from '../../../../account/utils/get-account-display-title.util';
 import { isUntrackedOwnAccount } from '../../../../account/utils/is-untracked-own-account.util';
 import { InstallmentPlanScheduleSummary } from '../../../../installment-plan/component/installment-plan-schedule-summary/installment-plan-schedule-summary';
-import { isInzhurFundAccount } from '../../../../inzhur/utils/is-inzhur-fund-account.util';
 import { CollapsibleChromeTransactionList } from '../../../../transaction/components/collapsible-chrome-transaction-list/collapsible-chrome-transaction-list';
 
 import { AccountDetailsSelector } from './account-details.selector';
@@ -130,9 +129,7 @@ export default function AccountDetails() {
                 </ScreenChromeThemeProvider>
             </RevealGate>
 
-            {isInzhurFundAccount(account) || isUntrackedOwnAccount(account) ? null : (
-                <AccountDetailsMenuControls accountId={id} accountType={account.type} />
-            )}
+            <AccountDetailsMenuControls account={account} />
         </GroupedSurface>
     );
 }
