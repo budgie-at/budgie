@@ -1,3 +1,4 @@
+import { Keyboard } from 'react-native';
 import { useReanimatedKeyboardAnimation } from 'react-native-keyboard-controller';
 import { useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
@@ -27,6 +28,7 @@ export const useMorphingSheetDismissMotion = (
         }
 
         isDismissing.set(true);
+        Keyboard.dismiss();
 
         const target = visibleHeight.get() + baseBottom + Math.abs(keyboardHeight.get());
         const handleFinished = (isFinished?: boolean) => {
