@@ -14,13 +14,15 @@ import {
     UNTRACKED_OWN_ACCOUNT_EXTERNAL_ID,
     transactionFilters
 } from '@budgie/contracts';
-import { and, eq, gt, gte, inArray, isNull, lte, ne, or, sql } from 'drizzle-orm';
+import { and, eq, gt, gte, inArray, isNull, like, lte, ne, or, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
 import { isDefined } from '@rnw-community/shared';
+
+import { ownTransferDetector } from '../detector/own-transfer.detector';
 
 import type { ConsolidationScanScopeInterface, DB } from '@budgie/contracts';
 import type { SQL } from 'drizzle-orm';
@@ -53,35 +55,57 @@ export class OwnTransferRepository extends Context.Service<OwnTransferRepository
                 updatedBy: { isNull: true }
             }) as const;
 
-        return {
-            findTransactions: (scope: ConsolidationScanScopeInterface | null, transactionIds: number[] | null = null) =>
-                Db.query(db =>
-                    db.query.TransactionEntityTable.findMany({
-                        where: {
-                            RAW: table =>
-                                inArray(
-                                    table.id,
-                                    findVisibleTransactionIds(
-                                        db,
-                                        and(
-                                            gt(TransactionEntryEntityTable.amount, 0),
-                                            or(
-                                                isNull(TransactionEntryEntityTable.categoryId),
-                                                inArray(TransactionEntryEntityTable.categorySource, [
-                                                    CategorySourceEnum.MCC_DEFAULT,
-                                                    CategorySourceEnum.AI
-                                                ])
-                                            )
+        const findTransactions = (
+            scope: ConsolidationScanScopeInterface | null,
+            transactionIds: number[] | null,
+            titleCondition: SQL | undefined
+        ) =>
+            Db.query(db =>
+                db.query.TransactionEntityTable.findMany({
+                    where: {
+                        RAW: table =>
+                            inArray(
+                                table.id,
+                                findVisibleTransactionIds(
+                                    db,
+                                    and(
+                                        titleCondition,
+                                        gt(TransactionEntryEntityTable.amount, 0),
+                                        or(
+                                            isNull(TransactionEntryEntityTable.categoryId),
+                                            inArray(TransactionEntryEntityTable.categorySource, [
+                                                CategorySourceEnum.MCC_DEFAULT,
+                                                CategorySourceEnum.AI
+                                            ])
                                         )
                                     )
-                                ),
-                            ...buildUnconsolidatedScopeFilter(scope),
-                            ...(isDefined(transactionIds) && { id: { in: transactionIds } }),
-                            ...(!isDefined(transactionIds) && { externalSource: { isNotNull: true } }),
-                            type: { in: [TransactionTypeEnum.EXPENSE, TransactionTypeEnum.INCOME] }
-                        },
-                        with: { entries: { where: transactionFilters.ledgerEntryFilter } }
-                    })
+                                )
+                            ),
+                        ...buildUnconsolidatedScopeFilter(scope),
+                        ...(isDefined(transactionIds) && { id: { in: transactionIds } }),
+                        ...(!isDefined(transactionIds) && { externalSource: { isNotNull: true } }),
+                        type: { in: [TransactionTypeEnum.EXPENSE, TransactionTypeEnum.INCOME] }
+                    },
+                    with: { entries: { where: transactionFilters.ledgerEntryFilter } }
+                })
+            );
+
+        return {
+            findTransactions: (scope: ConsolidationScanScopeInterface | null, transactionIds: number[] | null = null) =>
+                findTransactions(scope, transactionIds, sql`1`),
+            findCandidates: (scope: ConsolidationScanScopeInterface | null, identities: readonly string[]) =>
+                findTransactions(
+                    scope,
+                    null,
+                    or(
+                        sql`${TransactionEntityTable.title} GLOB '*[^ -~]*'`,
+                        like(TransactionEntityTable.title, '%*%'),
+                        like(TransactionEntityTable.title, '%xx%'),
+                        like(TransactionEntityTable.title, 'Binance %'),
+                        ...ownTransferDetector
+                            .getTitleSearchTokens(identities)
+                            .map(token => like(TransactionEntityTable.title, `%${token}%`))
+                    )
                 ),
             findUntrackedTransfers: (scope: ConsolidationScanScopeInterface | null) =>
                 Db.query(db =>
