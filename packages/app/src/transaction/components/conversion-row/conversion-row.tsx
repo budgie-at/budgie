@@ -53,6 +53,7 @@ export const ConversionRow = (props: Props) => {
     const exchangeRateLabel = t`Exchange rate: ${rateLabel}`;
     const displayAmount = isAmountProtected ? PROTECTED_AMOUNT_PLACEHOLDER : `${prefix}${formattedAmount}`;
     const pressableProps = {
+        onPress,
         accessibilityLabel: `${label}: ${displayAmount}. ${exchangeRateLabel}`,
         accessibilityHint: t`Edit the amount`
     };
@@ -68,7 +69,6 @@ export const ConversionRow = (props: Props) => {
                 left={<TransactionFormIcon icon={UserIconNameEnum.Coins} />}
                 label={label}
                 value={displayAmount}
-                onPress={onPress}
                 testID={TransferQuickFormSelector.ConversionRow}
                 pressableProps={pressableProps}
             />

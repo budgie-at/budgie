@@ -6,6 +6,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { IdParamInterface } from '../../../../@generic/interface/id-param.interface';
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
+import { useGetAccountSync } from '../../../../sync/query/use-get-account-sync.query';
 import { TransactionFormScreen } from '../../../../transaction/components/transaction-form-screen/transaction-form-screen';
 import { UpdateAdjustmentTransaction } from '../../../../transaction/components/update-adjustment-transaction/update-adjustment-transaction';
 import { useGetTransactionByIdQuery } from '../../../../transaction/query/use-get-transaction-by-id.query';
@@ -17,11 +18,17 @@ export default function UpdateAdjustmentTransactionPage() {
     const transactionId = Number(id);
     const { transaction, isLoading } = useGetTransactionByIdQuery(transactionId);
 
-    if (isLoading) {
+    const {
+        sync,
+        isLoading: isSyncLoading,
+        isUnavailable: isSyncUnavailable
+    } = useGetAccountSync(transaction?.toAccountId ?? transaction?.fromAccountId ?? 0);
+
+    if (isLoading || isSyncLoading) {
         return null;
     }
 
-    if (!isDefined(transaction)) {
+    if (!isDefined(transaction) || isSyncUnavailable) {
         return <Redirect href="/" />;
     }
 
@@ -33,7 +40,7 @@ export default function UpdateAdjustmentTransactionPage() {
 
     return (
         <TransactionFormScreen title={t`Balance Adjustment`} onGoBack={handleGoBack}>
-            <UpdateAdjustmentTransaction transaction={transaction} transactionId={transactionId} />
+            <UpdateAdjustmentTransaction transaction={transaction} transactionId={transactionId} sync={sync} />
         </TransactionFormScreen>
     );
 }
