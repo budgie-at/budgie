@@ -182,7 +182,7 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
             <View className="absolute inset-x-0 bottom-0 items-end px-lg pb-safe" pointerEvents="box-none">
                 <View className="self-stretch items-end" pointerEvents="box-none">
                     {actionRows.map((row, index) => (
-                        <ActionItem key={row.key} index={index} totalItems={actionRows.length} isOpen={isOpen}>
+                        <ActionItem key={row.key} index={index} isOpen={isOpen}>
                             {row}
                         </ActionItem>
                     ))}

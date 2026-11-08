@@ -7,7 +7,6 @@ import type { ReactNode } from 'react';
 
 interface Props {
     readonly index: number;
-    readonly totalItems: number;
     readonly isOpen: boolean;
     readonly children: ReactNode;
 }
@@ -19,17 +18,16 @@ const OPEN_STAGGER = 35;
 const MAX_STAGGER_INDEX = 4;
 const OPEN_OPACITY_DURATION = 150;
 
-export const ActionItem = ({ index, totalItems, isOpen, children }: Props) => {
+export const ActionItem = ({ index, isOpen, children }: Props) => {
     const translateY = useSharedValue(OPEN_OFFSET);
     const scale = useSharedValue(HIDDEN_SCALE);
     const opacity = useSharedValue(0);
 
-    const reverseIndex = totalItems - 1 - index;
     const targetY = -(ITEM_SPACING * (index + 1));
 
     useEffect(() => {
         if (isOpen) {
-            const delay = Math.min(reverseIndex, MAX_STAGGER_INDEX) * OPEN_STAGGER;
+            const delay = Math.min(index, MAX_STAGGER_INDEX) * OPEN_STAGGER;
             translateY.set(withDelay(delay, withSpring(0, SPRING_SETTLE)));
             scale.set(withDelay(delay, withSpring(1, SPRING_SETTLE)));
             opacity.set(withDelay(delay, withTiming(1, { duration: OPEN_OPACITY_DURATION, easing: EASE_OUT })));
@@ -38,7 +36,7 @@ export const ActionItem = ({ index, totalItems, isOpen, children }: Props) => {
             scale.set(withTiming(HIDDEN_SCALE, { duration: MOTION_FAST_DURATION, easing: EASE_OUT }));
             opacity.set(withTiming(0, { duration: MOTION_FAST_DURATION, easing: EASE_OUT }));
         }
-    }, [isOpen, opacity, reverseIndex, scale, translateY]);
+    }, [index, isOpen, opacity, scale, translateY]);
 
     const animatedStyle = useAnimatedStyle(() => ({
         transform: [{ translateY: targetY + translateY.get() }, { scale: scale.get() }],
