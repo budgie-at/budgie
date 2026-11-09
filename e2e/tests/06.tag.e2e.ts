@@ -16,12 +16,7 @@ test('06 tag', { tags: ['tags'] }, async ({ budgie }) => {
             await input.clear();
         }
         await input.fill(name);
-        try {
-            await input.press('Enter');
-        } catch (cause) {
-            // A press the device does not acknowledge in time has usually been delivered; the form's state is checked next.
-            console.log(`[retry] Enter on the name field: ${(cause as Error).message.split('\n')[0]}`);
-        }
+        await b.done(ctx);
         await b.tapId(ctx, 'TagForm.Submit');
     };
     const newTag = async (name: string) => {

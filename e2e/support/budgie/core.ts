@@ -81,11 +81,13 @@ export async function tapUntil(ctx: Ctx, testId: string, next: () => Promise<voi
 /** Drags `testId` out of the bottom band where the floating action button and tab bar cover it, along a column clear of the settings switches. */
 export async function scrollToCentered(ctx: Ctx, testId: string): Promise<void> {
     await scrollToCenteredId(ctx, testId, { viewportHeight: VIEWPORT_HEIGHT, bottomBandPx: 314, dragX: 200 });
+    await expectSettledId(ctx, testId);
 }
 
-/** Brings `testId` near the middle, clear of the floating tab bar and header. 200 lets the last row of a list rest at 621 without its bounce reading as movement. */
+/** Brings `testId` near the middle, clear of the floating tab bar and header, and waits for the list to stop: a tap during the drag's momentum only stops the scroll. 200 lets the last row of a list rest at 621 without its bounce reading as movement. */
 export async function scrollToCentre(ctx: Ctx, testId: string, direction: 'up' | 'down' = 'down'): Promise<void> {
     await scrollToMiddle(ctx, testId, { viewportHeight: VIEWPORT_HEIGHT, direction, tolerancePx: 200, dragX: 201 });
+    await expectSettledId(ctx, testId);
 }
 
 /** Clears iOS's "Open in “budgie”?" prompt that the first custom-scheme link on a fresh simulator shows. */
