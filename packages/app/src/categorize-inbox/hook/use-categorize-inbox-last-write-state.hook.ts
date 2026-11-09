@@ -17,7 +17,7 @@ import type { CategorizeInboxLastWriteInterface } from '../interface/categorize-
 
 const NO_LAST_WRITE_STATE: CategorizeInboxLastWriteStateInterface = { isSuperseded: false, isTagged: false, isRuleCovered: false };
 
-const noFiledTransactionsAtom = Atom.make(AsyncResult.success([]));
+const noFiledTransactionsAtom = Atom.make(AsyncResult.success({ transactionIds: [], transactions: [] }));
 
 export const useCategorizeInboxLastWriteState = (
     labelKind: CategorizeInboxLabelKindEnum,
@@ -30,11 +30,20 @@ export const useCategorizeInboxLastWriteState = (
         isNotEmptyArray(transactionIds) ? filedTransactionsAtom([transactionIds, language]) : noFiledTransactionsAtom
     );
 
-    const transactionsById = new Map(AsyncResult.isSuccess(result) ? result.value.map(transaction => [transaction.id, transaction]) : []);
-
-    if (!isDefined(lastWrite) || !transactionIds.every(transactionId => transactionsById.has(transactionId))) {
+    if (!isDefined(lastWrite) || !AsyncResult.isSuccess(result)) {
         return NO_LAST_WRITE_STATE;
     }
+
+    const loadedTransactionIds: readonly number[] = result.value.transactionIds;
+
+    if (
+        loadedTransactionIds.length !== transactionIds.length ||
+        !transactionIds.every(transactionId => loadedTransactionIds.includes(transactionId))
+    ) {
+        return NO_LAST_WRITE_STATE;
+    }
+
+    const transactionsById = new Map(result.value.transactions.map(transaction => [transaction.id, transaction]));
 
     const labelIds = new Set(lastWrite.assignments.map(({ labelId }) => labelId));
     const isTagKind = labelKind === CategorizeInboxLabelKindEnum.TAG;
@@ -53,7 +62,7 @@ export const useCategorizeInboxLastWriteState = (
     return {
         isSuperseded: filed.some(({ labelId, transaction }) => {
             if (!isDefined(transaction)) {
-                return false;
+                return true;
             }
 
             return isTagKind

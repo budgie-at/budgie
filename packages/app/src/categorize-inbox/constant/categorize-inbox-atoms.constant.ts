@@ -63,5 +63,5 @@ export const filedTransactionsAtom = databaseQueryFamily(
     TRANSACTION_LIST_TABLES,
     TransactionViewRepository,
     (transactionViewRepository, [transactionIds, language]: readonly [readonly number[], LanguageEnum]) =>
-        transactionViewRepository.getByIds(transactionIds, language)
+        transactionViewRepository.getByIds(transactionIds, language).pipe(Effect.map(transactions => ({ transactionIds, transactions })))
 );
