@@ -32,7 +32,9 @@ const buildCluster = (
     totalBaseAmount: null,
     candidateLabelIds,
     ruleConditionValue: key,
-    section
+    section,
+    titlePrefix: null,
+    isCashDeposit: false
 });
 
 describe('categorization/inbox-helpers', () => {

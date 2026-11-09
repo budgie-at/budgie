@@ -1,3 +1,4 @@
+import { AccountTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
 
@@ -29,16 +30,23 @@ export const CategorizeInboxTransferAccounts = ({ cluster, search, isRuleEnabled
         router.dismissTo('/categorize');
     };
 
-    const matches = accounts.filter(account => isCategorizeInboxAccountNameMatch(account.title, cluster.displayTitle));
-    const others = accounts.filter(account => !matches.includes(account));
+    const cashAccounts = cluster.isCashDeposit ? accounts.filter(account => account.type === AccountTypeEnum.CASH) : [];
+    const matches = accounts.filter(
+        account => !cashAccounts.includes(account) && isCategorizeInboxAccountNameMatch(account.title, cluster.displayTitle)
+    );
+    const others = accounts.filter(account => !cashAccounts.includes(account) && !matches.includes(account));
     const hasMatches = isNotEmptyArray(matches);
-    const othersTitle = hasMatches ? t`Other accounts` : t`Your accounts`;
+    const othersTitle = hasMatches || isNotEmptyArray(cashAccounts) ? t`Other accounts` : t`Your accounts`;
+    const cashSection = isNotEmptyArray(cashAccounts) ? (
+        <CategorizeInboxTransferAccountSection title={t`Cash`} accounts={cashAccounts} onSelect={handleSelect} />
+    ) : null;
     const matchesSection = hasMatches ? (
         <CategorizeInboxTransferAccountSection title={t`Name matches`} accounts={matches} onSelect={handleSelect} />
     ) : null;
 
     return (
         <>
+            {cashSection}
             {matchesSection}
             <CategorizeInboxTransferAccountSection title={othersTitle} accounts={others} onSelect={handleSelect} />
         </>

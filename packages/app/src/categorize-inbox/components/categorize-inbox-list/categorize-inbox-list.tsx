@@ -7,10 +7,12 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 import { CollapsibleChromeLegendList } from '../../../@generic/component/collapsible-chrome-legend-list/collapsible-chrome-legend-list';
 import { LEGEND_LIST_STYLE } from '../../../@generic/constant/legend-list.constant';
 import { isCategorizeInboxCluster } from '../../type-guard/is-categorize-inbox-cluster.type-guard';
+import { getCategorizeInboxCardGroup } from '../../utils/get-categorize-inbox-card-group.util';
 import { getCategorizeInboxRowPosition } from '../../utils/get-categorize-inbox-row-position.util';
 import { CategorizeInboxGroupRow } from '../categorize-inbox-group-row/categorize-inbox-group-row';
 import { CategorizeInboxHero } from '../categorize-inbox-hero/categorize-inbox-hero';
 import { CategorizeInboxOneOffsLink } from '../categorize-inbox-one-offs-link/categorize-inbox-one-offs-link';
+import { CategorizeInboxPrefixHeader } from '../categorize-inbox-prefix-header/categorize-inbox-prefix-header';
 import { CategorizeInboxSectionHeader } from '../categorize-inbox-section-header/categorize-inbox-section-header';
 
 import type { CategorizeInboxOneOffsLinkItemInterface } from '../../interface/categorize-inbox-one-offs-link-item.interface';
@@ -46,17 +48,21 @@ export const CategorizeInboxList = ({ items, filterSection, onSectionPress }: Pr
             ? [{ key: 'one-offs-link', oneOffs: hiddenOneOffs }]
             : [])
     );
-    const isCardItem = (index: number): boolean => {
-        const item = data.at(index);
+    const isSameCard = (index: number, otherIndex: number): boolean => {
+        const group = index >= 0 ? getCategorizeInboxCardGroup(data.at(index)) : null;
 
-        return index >= 0 && isDefined(item) && ('rows' in item || 'oneOffs' in item);
+        return isDefined(group) && group === getCategorizeInboxCardGroup(data.at(otherIndex));
     };
-    const positions = data.map((_item, index) => getCategorizeInboxRowPosition(isCardItem(index - 1), isCardItem(index + 1)));
+    const positions = data.map((_item, index) => getCategorizeInboxRowPosition(isSameCard(index - 1, index), isSameCard(index, index + 1)));
 
     const keyExtractor = (item: (typeof data)[number]): string => item.key;
     const getItemType = (item: (typeof data)[number]): string => {
         if ('oneOffs' in item) {
             return 'one-offs-link';
+        }
+
+        if ('prefix' in item) {
+            return 'prefix-header';
         }
 
         return 'rows' in item ? 'group' : 'header';
@@ -65,6 +71,10 @@ export const CategorizeInboxList = ({ items, filterSection, onSectionPress }: Pr
     const renderItem = ({ item, index }: LegendListRenderItemProps<(typeof data)[number]>) => {
         if ('oneOffs' in item) {
             return <CategorizeInboxOneOffsLink oneOffs={item.oneOffs} position={positions[index]} />;
+        }
+
+        if ('prefix' in item) {
+            return <CategorizeInboxPrefixHeader prefix={item.prefix} rowCount={item.count} />;
         }
 
         if (!('rows' in item)) {

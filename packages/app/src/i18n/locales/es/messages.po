@@ -787,8 +787,8 @@ msgid "{paymentCount} payments become transfers and leave your expenses."
 msgstr "{paymentCount} pagos se convierten en transferencias y salen de tus gastos."
 
 #: src/categorize-inbox/components/categorize-inbox-transfer-screen/categorize-inbox-transfer-screen.tsx
-msgid "{paymentCount} payments become transfers and leave your income."
-msgstr "{paymentCount} pagos se convierten en transferencias y salen de tus ingresos."
+msgid "{paymentCount} payments become transfers from the account you pick."
+msgstr "{paymentCount} pagos se convierten en transferencias desde la cuenta que elijas."
 
 #: src/budget/hooks/use-budget-limit-accessibility.hook.ts
 msgid "{percent}% used"
@@ -2488,6 +2488,7 @@ msgid "Carry savings"
 msgstr "Trasladar ahorros"
 
 #: src/account/constant/account-type.constant.ts
+#: src/categorize-inbox/components/categorize-inbox-transfer-accounts/categorize-inbox-transfer-accounts.tsx
 #: src/inzhur/component/inzhur-operations-import-summary/inzhur-operations-import-summary.tsx
 #: src/onboarding/constant/onboarding-account-options.constant.ts
 msgid "Cash"
@@ -3635,10 +3636,6 @@ msgstr "No se pudo guardar tu PIN. Introdúcelo de nuevo para reintentarlo."
 #: src/auth/hook/use-pin-setup.hook.ts
 msgid "Couldn't save your PIN. Try again."
 msgstr "No se pudo guardar tu PIN. Inténtalo de nuevo."
-
-#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
-msgid "Couldn't sync. Budgie will try again."
-msgstr "No se pudo sincronizar. Budgie lo volverá a intentar."
 
 #: src/auth/hook/use-pin-setup.hook.ts
 msgid "Couldn't turn off app lock. Try again."
@@ -5052,6 +5049,10 @@ msgctxt "CSV import source amount column"
 msgid "From amount"
 msgstr "Importe de origen"
 
+#: src/categorize-inbox/components/categorize-inbox-group-cash-deposit-lead/categorize-inbox-group-cash-deposit-lead.tsx
+msgid "From cash"
+msgstr "Desde efectivo"
+
 #: src/app/(main)/import-csv.tsx
 msgid "From currency"
 msgstr "Moneda de origen"
@@ -5797,10 +5798,6 @@ msgstr "Dejarlo vacío por ahora"
 #: src/household/component/household-leave-row/household-leave-row.tsx
 msgid "Leave this family?"
 msgstr "¿Salir de esta familia?"
-
-#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
-msgid "Leaves your income"
-msgstr "Sale de tus ingresos"
 
 #: src/budget/components/budget-setup-progress-content/budget-setup-progress-content.tsx
 #: src/budget/components/budget-stat-row/budget-stat-row.tsx
@@ -6721,6 +6718,10 @@ msgid "Not backed up to iCloud yet"
 msgstr "Aún sin copia en iCloud"
 
 #: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
+msgid "Not counted as income"
+msgstr "No cuenta como ingreso"
+
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
 msgid "Not counted as spending"
 msgstr "No cuenta como gasto"
 
@@ -7531,6 +7532,10 @@ msgstr "Elige uno que recuerdes y que otros no adivinen."
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
 msgid "Pick the app that exported this file, or match columns yourself."
 msgstr "Elige la app que exportó este archivo o asigna las columnas tú mismo."
+
+#: src/categorize-inbox/components/categorize-inbox-group-cash-deposit-lead/categorize-inbox-group-cash-deposit-lead.tsx
+msgid "Pick the cash account"
+msgstr "Elige la cuenta de efectivo"
 
 #: src/auth/components/pin-form-dots/pin-form-dots.tsx
 msgid "PIN, {enteredCount} of {PIN_LENGTH} digits entered"
@@ -9128,6 +9133,10 @@ msgstr "Sincronización fallida"
 msgid "Sync failed for {title}"
 msgstr "Error de sincronización de {title}"
 
+#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
+msgid "Sync failed. Retrying…"
+msgstr "Error. Reintentando…"
+
 #: src/sync/component/bank-integration-status-line/bank-integration-status-line.tsx
 msgid "Sync is off for all accounts"
 msgstr "Sincronización desactivada en todas las cuentas"
@@ -9957,6 +9966,14 @@ msgstr "Transferencia"
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Transfer account"
 msgstr "Cuenta de transferencia"
+
+#: src/categorize-inbox/components/categorize-inbox-transfer-screen/categorize-inbox-transfer-screen.tsx
+msgid "Transfer from"
+msgstr "Transferir desde"
+
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
+msgid "Transfer from an account"
+msgstr "Transferir desde una cuenta"
 
 #: src/categorize-inbox/components/categorize-inbox-group-transfer-lead/categorize-inbox-group-transfer-lead.tsx
 msgid "Transfer from savings jar"

@@ -30,7 +30,7 @@ const resolveUndoBarTitle = (labels: CategorizeInboxLabelInterface[], filedLabel
 
 export const CategorizeInboxUndoBar = () => {
     const { t } = useLingui();
-    const { strategy, lastWrite, undo } = useCategorizeInboxContext();
+    const { strategy, lastWrite, lastWriteState, undo } = useCategorizeInboxContext();
     const [openRuleForm] = useRuleFormModal();
 
     if (!isDefined(lastWrite) || !isDefined(strategy)) {
@@ -72,7 +72,7 @@ export const CategorizeInboxUndoBar = () => {
         <CategorizeInboxUndoLayout title={title} description={description} onUndo={handleUndoPress}>
             {groupCount === 1 ? <CategorizeInboxFollowUpButton lastWrite={lastWrite} /> : null}
 
-            {isNotEmptyArray(labels) && isNotEmptyString(ruleConditionValue) ? (
+            {isNotEmptyArray(labels) && isNotEmptyString(ruleConditionValue) && !lastWriteState.isRuleCovered ? (
                 <HapticPressable
                     onPress={handleRulePress}
                     className="h-11 w-11 items-center justify-center"

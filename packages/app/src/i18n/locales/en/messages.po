@@ -788,8 +788,8 @@ msgid "{paymentCount} payments become transfers and leave your expenses."
 msgstr "{paymentCount} payments become transfers and leave your expenses."
 
 #: src/categorize-inbox/components/categorize-inbox-transfer-screen/categorize-inbox-transfer-screen.tsx
-msgid "{paymentCount} payments become transfers and leave your income."
-msgstr "{paymentCount} payments become transfers and leave your income."
+msgid "{paymentCount} payments become transfers from the account you pick."
+msgstr "{paymentCount} payments become transfers from the account you pick."
 
 #: src/budget/hooks/use-budget-limit-accessibility.hook.ts
 msgid "{percent}% used"
@@ -2489,6 +2489,7 @@ msgid "Carry savings"
 msgstr "Carry savings"
 
 #: src/account/constant/account-type.constant.ts
+#: src/categorize-inbox/components/categorize-inbox-transfer-accounts/categorize-inbox-transfer-accounts.tsx
 #: src/inzhur/component/inzhur-operations-import-summary/inzhur-operations-import-summary.tsx
 #: src/onboarding/constant/onboarding-account-options.constant.ts
 msgid "Cash"
@@ -3636,10 +3637,6 @@ msgstr "Couldn't save your PIN. Enter it again to retry."
 #: src/auth/hook/use-pin-setup.hook.ts
 msgid "Couldn't save your PIN. Try again."
 msgstr "Couldn't save your PIN. Try again."
-
-#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
-msgid "Couldn't sync. Budgie will try again."
-msgstr "Couldn't sync. Budgie will try again."
 
 #: src/auth/hook/use-pin-setup.hook.ts
 msgid "Couldn't turn off app lock. Try again."
@@ -5053,6 +5050,10 @@ msgctxt "CSV import source amount column"
 msgid "From amount"
 msgstr "From amount"
 
+#: src/categorize-inbox/components/categorize-inbox-group-cash-deposit-lead/categorize-inbox-group-cash-deposit-lead.tsx
+msgid "From cash"
+msgstr "From cash"
+
 #: src/app/(main)/import-csv.tsx
 msgid "From currency"
 msgstr "From currency"
@@ -5798,10 +5799,6 @@ msgstr "Leave it empty for now"
 #: src/household/component/household-leave-row/household-leave-row.tsx
 msgid "Leave this family?"
 msgstr "Leave this family?"
-
-#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
-msgid "Leaves your income"
-msgstr "Leaves your income"
 
 #: src/budget/components/budget-setup-progress-content/budget-setup-progress-content.tsx
 #: src/budget/components/budget-stat-row/budget-stat-row.tsx
@@ -6722,6 +6719,10 @@ msgid "Not backed up to iCloud yet"
 msgstr "Not backed up to iCloud yet"
 
 #: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
+msgid "Not counted as income"
+msgstr "Not counted as income"
+
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
 msgid "Not counted as spending"
 msgstr "Not counted as spending"
 
@@ -7532,6 +7533,10 @@ msgstr "Pick one you'll remember but others won't guess."
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
 msgid "Pick the app that exported this file, or match columns yourself."
 msgstr "Pick the app that exported this file, or match columns yourself."
+
+#: src/categorize-inbox/components/categorize-inbox-group-cash-deposit-lead/categorize-inbox-group-cash-deposit-lead.tsx
+msgid "Pick the cash account"
+msgstr "Pick the cash account"
 
 #: src/auth/components/pin-form-dots/pin-form-dots.tsx
 msgid "PIN, {enteredCount} of {PIN_LENGTH} digits entered"
@@ -9129,6 +9134,10 @@ msgstr "Sync failed"
 msgid "Sync failed for {title}"
 msgstr "Sync failed for {title}"
 
+#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
+msgid "Sync failed. Retrying…"
+msgstr "Sync failed. Retrying…"
+
 #: src/sync/component/bank-integration-status-line/bank-integration-status-line.tsx
 msgid "Sync is off for all accounts"
 msgstr "Sync is off for all accounts"
@@ -9958,6 +9967,14 @@ msgstr "Transfer"
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Transfer account"
 msgstr "Transfer account"
+
+#: src/categorize-inbox/components/categorize-inbox-transfer-screen/categorize-inbox-transfer-screen.tsx
+msgid "Transfer from"
+msgstr "Transfer from"
+
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
+msgid "Transfer from an account"
+msgstr "Transfer from an account"
 
 #: src/categorize-inbox/components/categorize-inbox-group-transfer-lead/categorize-inbox-group-transfer-lead.tsx
 msgid "Transfer from savings jar"

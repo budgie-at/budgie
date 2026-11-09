@@ -10,4 +10,6 @@ export interface CategorizeInboxClusterInterface {
     readonly candidateLabelIds: number[];
     readonly ruleConditionValue: string;
     readonly section: CategorizeInboxSectionEnum;
+    readonly titlePrefix: string | null;
+    readonly isCashDeposit: boolean;
 }

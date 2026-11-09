@@ -10,7 +10,7 @@ import { useCategorizeInboxIsTransfer } from '../../hook/use-categorize-inbox-is
 import type { CategorizeInboxClusterInterface } from '@budgie/categorization';
 
 interface Props {
-    readonly cluster: Pick<CategorizeInboxClusterInterface, 'section' | 'displayTitle' | 'candidateLabelIds'>;
+    readonly cluster: Pick<CategorizeInboxClusterInterface, 'section' | 'displayTitle' | 'candidateLabelIds' | 'isCashDeposit' | 'rows'>;
 }
 
 export const CategorizeInboxGroupRowSubtitle = ({ cluster }: Props) => {

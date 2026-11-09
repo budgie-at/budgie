@@ -1,6 +1,7 @@
 import {
     ATM_CASH_WITHDRAWAL_MCC,
     ATM_CASH_WITHDRAWAL_TITLE_PREFIXES,
+    CASH_DEPOSIT_TITLE_PREFIXES,
     LanguageEnum,
     PRECISION,
     REFUND_TITLE_PREFIXES,
@@ -42,7 +43,8 @@ class CategorizeInboxEngineService {
         confidentShare: 0.85,
         confidentCount: 2,
         merchantTokenCount: 3,
-        maxConfidentRowCount: 50
+        maxConfidentRowCount: 50,
+        minTitlePrefixWordCount: 2
     } as const;
 
     private static readonly LEGAL_FORM_TOKENS: Record<LanguageEnum, readonly string[]> = {
@@ -126,6 +128,11 @@ class CategorizeInboxEngineService {
         'iu'
     );
 
+    private static readonly CASH_DEPOSIT_TITLE_PATTERN = new RegExp(
+        `^(?:${Object.values(CASH_DEPOSIT_TITLE_PREFIXES).flat().join('|')})(?:\\s|$)`,
+        'iu'
+    );
+
     private static readonly NOISE_PATTERN = /(?<![\p{L}\p{N}])\p{L}{2,8}:\S+|https?:\/\/\S+|\bwww\.|\d{4,6}\*+\d{2,4}|\+?\d[\d\s-]{6,}\d/gu;
     private static readonly DIACRITIC_PATTERN = /\p{Diacritic}/gu;
     private static readonly TOKEN_SEPARATOR_PATTERN = /[^\p{L}]+/u;
@@ -184,9 +191,13 @@ class CategorizeInboxEngineService {
             .filter(isDefined);
         const placements = this.placeNewClusters(visibleClusters, session.placements);
         const placementOrder = new Map([...placements.keys()].map((key, index) => [key, index]));
-        const placedClusters = visibleClusters
-            .map(cluster => this.reusePrevious({ ...cluster, section: placements.get(cluster.key) ?? cluster.section }, clustersByKey))
+        const sectionedClusters = visibleClusters
+            .map(cluster => ({ ...cluster, section: placements.get(cluster.key) ?? cluster.section }))
             .sort((left, right) => (placementOrder.get(left.key) ?? 0) - (placementOrder.get(right.key) ?? 0));
+        const titlePrefixes = this.findTitlePrefixes(sectionedClusters);
+        const placedClusters = sectionedClusters.map(cluster =>
+            this.reusePrevious({ ...cluster, titlePrefix: titlePrefixes.get(cluster.key) ?? null }, clustersByKey)
+        );
         const isUnchanged =
             placedClusters.length === clustersByKey.size && placedClusters.every(cluster => clustersByKey.get(cluster.key) === cluster);
 
@@ -217,7 +228,11 @@ class CategorizeInboxEngineService {
             totalBaseAmount: this.sumBaseAmounts(rows, context.defaultInstrumentId),
             candidateLabelIds,
             ruleConditionValue: mostFrequentTitle,
-            section: this.resolveSection(key, isConfident, rows)
+            section: this.resolveSection(key, isConfident, rows),
+            titlePrefix: null,
+            isCashDeposit: rows.every(row =>
+                this.isCashRow(row, TransactionTypeEnum.INCOME, CategorizeInboxEngineService.CASH_DEPOSIT_TITLE_PATTERN)
+            )
         };
     }
 
@@ -233,11 +248,15 @@ class CategorizeInboxEngineService {
     }
 
     private isCashWithdrawal(row: Pick<CategorizeInboxRowInterface, 'type' | 'mcc' | 'title'>): boolean {
-        return (
-            row.type === TransactionTypeEnum.EXPENSE &&
-            (row.mcc === ATM_CASH_WITHDRAWAL_MCC ||
-                (!isDefined(row.mcc) && CategorizeInboxEngineService.CASH_WITHDRAWAL_TITLE_PATTERN.test(row.title)))
-        );
+        return this.isCashRow(row, TransactionTypeEnum.EXPENSE, CategorizeInboxEngineService.CASH_WITHDRAWAL_TITLE_PATTERN);
+    }
+
+    private isCashRow(
+        row: Pick<CategorizeInboxRowInterface, 'type' | 'mcc' | 'title'>,
+        type: TransactionTypeEnum,
+        titlePattern: RegExp
+    ): boolean {
+        return row.type === type && (row.mcc === ATM_CASH_WITHDRAWAL_MCC || (!isDefined(row.mcc) && titlePattern.test(row.title)));
     }
 
     private isRefund(row: Pick<CategorizeInboxRowInterface, 'type' | 'title'>): boolean {
@@ -305,6 +324,7 @@ class CategorizeInboxEngineService {
     private isSameCluster(previous: CategorizeInboxClusterInterface, next: CategorizeInboxClusterInterface): boolean {
         return (
             previous.section === next.section &&
+            previous.titlePrefix === next.titlePrefix &&
             previous.displayTitle === next.displayTitle &&
             previous.ruleConditionValue === next.ruleConditionValue &&
             previous.totalBaseAmount === next.totalBaseAmount &&
@@ -458,8 +478,67 @@ class CategorizeInboxEngineService {
                 totalBaseAmount: isNotEmptyArray(baseAmounts) ? this.sumValues(baseAmounts) : null
             };
 
-            return isNotEmptyArray(sectionClusters) ? [header, ...sectionClusters] : [];
+            return isNotEmptyArray(sectionClusters) ? [header, ...this.groupByTitlePrefix(sectionClusters)] : [];
         });
+    }
+
+    private groupByTitlePrefix(sectionClusters: readonly CategorizeInboxClusterInterface[]): CategorizeInboxListItemType[] {
+        const clustersByPrefix = this.groupBy(sectionClusters, cluster => cluster.titlePrefix ?? '');
+
+        return sectionClusters.flatMap((cluster): CategorizeInboxListItemType[] => {
+            if (!isDefined(cluster.titlePrefix)) {
+                return [cluster];
+            }
+
+            const members = clustersByPrefix.get(cluster.titlePrefix) ?? [];
+
+            return members[0] === cluster
+                ? [
+                      {
+                          key: `prefix-${cluster.section}-${cluster.titlePrefix.toLowerCase()}`,
+                          section: cluster.section,
+                          prefix: cluster.titlePrefix,
+                          count: this.sumValues(members.map(member => member.rows.length))
+                      },
+                      ...members
+                  ]
+                : [];
+        });
+    }
+
+    private findTitlePrefixes(clusters: readonly CategorizeInboxClusterInterface[]): ReadonlyMap<string, string> {
+        const { LIMITS } = CategorizeInboxEngineService;
+        const candidates = clusters
+            .filter(cluster => cluster.section !== CategorizeInboxSectionEnum.ONE_OFFS)
+            .map(cluster => ({
+                cluster,
+                words: cluster.displayTitle.trim().split(/\s+/u)
+            }))
+            .filter(({ words }) => words.length > LIMITS.minTitlePrefixWordCount);
+        const groups = this.groupBy(candidates, ({ cluster, words }) =>
+            [cluster.section, ...words.slice(0, LIMITS.minTitlePrefixWordCount)].join(' ').toLocaleLowerCase()
+        );
+
+        return new Map(
+            [...groups.values()]
+                .filter(members => members.length > 1)
+                .flatMap(members => {
+                    const prefixWordCount = this.countSharedPrefixWords(members.map(({ words }) => words));
+                    const prefix = members[0].words.slice(0, prefixWordCount).join(' ');
+
+                    return members.map(({ cluster }): [string, string] => [cluster.key, prefix]);
+                })
+        );
+    }
+
+    private countSharedPrefixWords(titles: readonly (readonly string[])[]): number {
+        const [first] = titles;
+        const maxCount = Math.min(...titles.map(words => words.length)) - 1;
+        const mismatchIndex = first
+            .slice(0, maxCount)
+            .findIndex((word, index) => titles.some(words => words[index].toLocaleLowerCase() !== word.toLocaleLowerCase()));
+
+        return mismatchIndex < 0 ? maxCount : mismatchIndex;
     }
 
     private computeSortScore(cluster: CategorizeInboxClusterInterface): number {

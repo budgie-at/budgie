@@ -16,11 +16,11 @@ interface Props {
 
 export const CategorizeInboxFollowUpButton = ({ lastWrite }: Props) => {
     const { t } = useLingui();
-    const { strategy, applyFollowUp } = useCategorizeInboxContext();
+    const { strategy, lastWriteState, applyFollowUp } = useCategorizeInboxContext();
 
     const handlePress = (): void => void applyFollowUp(lastWrite);
 
-    const isApplied = isNotEmptyArray(lastWrite.followUpAssignments);
+    const isApplied = isNotEmptyArray(lastWrite.followUpAssignments) || lastWriteState.isTagged;
     const accessibilityState = { disabled: isApplied };
 
     if (!isDefined(strategy?.pickFollowUpTagIds)) {

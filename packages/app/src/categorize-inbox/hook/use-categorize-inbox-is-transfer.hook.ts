@@ -8,7 +8,9 @@ import { useCategorizeInboxMatchedAccount } from './use-categorize-inbox-matched
 
 import type { CategorizeInboxClusterInterface } from '@budgie/categorization';
 
-export const useCategorizeInboxIsTransfer = (cluster: Pick<CategorizeInboxClusterInterface, 'displayTitle'>): boolean => {
+export const useCategorizeInboxIsTransfer = (
+    cluster: Pick<CategorizeInboxClusterInterface, 'displayTitle' | 'isCashDeposit' | 'rows'>
+): boolean => {
     const { learnedTransferAccountIds } = useCategorizeInboxContext();
     const matchedAccount = useCategorizeInboxMatchedAccount(cluster);
 

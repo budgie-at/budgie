@@ -42,7 +42,7 @@ export const useCategorizeInboxGroupOptions = (cluster: CategorizeInboxClusterIn
     const learnedAccountId = learnedTransferAccountIds.get(getCategorizeInboxTransferKey(cluster.displayTitle));
     const learnedAccount = accounts.find(account => account.id === learnedAccountId) ?? null;
     const isLearnedMatch = isDefined(matchedAccount) && learnedTransferAccountIds.get(jarName ?? '') === matchedAccount.id;
-    const isLeadTransfer = !isLearnedMatch && (isDefined(jarName) || isDefined(matchedAccount));
+    const isLeadTransfer = !isLearnedMatch && (cluster.isCashDeposit || isDefined(jarName) || isDefined(matchedAccount));
     const isCash = cluster.section === CategorizeInboxSectionEnum.CASH_WITHDRAWALS;
     const isConfident = cluster.section === CategorizeInboxSectionEnum.CONFIDENT;
     const labelOptions = cluster.candidateLabelIds.map(labelId => strategy?.labelsById.get(labelId)).filter(isDefined);

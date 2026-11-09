@@ -31,6 +31,8 @@ export { selectAcceptableAssignments } from './inbox/utils/select-acceptable-ass
 export { buildRulePrefillActions } from './inbox/utils/build-rule-prefill-actions.util';
 export type { CategorizeInboxAssignmentInterface } from './inbox/interface/categorize-inbox-assignment.interface';
 export type { CategorizeInboxClusterInterface } from './inbox/interface/categorize-inbox-cluster.interface';
+export type { CategorizeInboxPrefixHeaderItemInterface } from './inbox/interface/categorize-inbox-prefix-header-item.interface';
+export type { CategorizeInboxSectionHeaderItemInterface } from './inbox/interface/categorize-inbox-section-header-item.interface';
 export type { CategorizeInboxRowInterface } from './inbox/interface/categorize-inbox-row.interface';
 export type { CategorizeInboxSessionInterface } from './inbox/interface/categorize-inbox-session.interface';
 export type { LabelEvidenceRowInterface } from './inbox/interface/label-evidence-row.interface';

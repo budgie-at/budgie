@@ -10,6 +10,7 @@ import { defaultInstrumentAtom } from '../../../settings/constants/settings-atom
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
 import { useCategorizeInboxAmountLabel } from '../../hook/use-categorize-inbox-amount-label.hook';
 import { isCategorizeInboxCluster } from '../../type-guard/is-categorize-inbox-cluster.type-guard';
+import { isCategorizeInboxSectionHeader } from '../../type-guard/is-categorize-inbox-section-header.type-guard';
 import { getCategorizeInboxDefaultAmount } from '../../utils/get-categorize-inbox-default-amount.util';
 import { CategorizeInboxSectionChip } from '../categorize-inbox-section-chip/categorize-inbox-section-chip';
 import { CategorizeInboxSessionProgress } from '../categorize-inbox-session-progress/categorize-inbox-session-progress';
@@ -42,7 +43,7 @@ export const CategorizeInboxHero = ({ activeSection, onSectionPress }: Props) =>
     const countText = t({ message: plural(remainingCount, { one: 'payment to sort', other: 'payments to sort' }) });
     const subtitle = isDefined(worthAmount) ? `${countText} · ${amountLabel(worthAmount, defaultInstrument.symbol)}` : countText;
 
-    const headers = items.flatMap(item => (isCategorizeInboxCluster(item) ? [] : [item]));
+    const headers = items.filter(isCategorizeInboxSectionHeader);
     const chips = CHIP_SECTIONS.map(section => ({
         section,
         count: headers.find(header => header.section === section)?.count ?? 0

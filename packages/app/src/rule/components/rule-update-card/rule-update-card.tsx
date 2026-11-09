@@ -3,8 +3,6 @@ import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 
-import { useBottomChromeInset } from '@rnw-community/react-native-screen-chrome';
-
 import { UpdateRuleDataInterface } from '../../interface/update-rule-data.interface';
 import { RuleApplicationDrainerService } from '../../service/rule-application-drainer.service';
 import { showRuleApplicationToast } from '../../utils/show-rule-application-toast.util';
@@ -18,19 +16,13 @@ interface Props {
 
 export const RuleUpdateCard = (props: Props) => {
     const { updateRuleData, onRuleUpdated, onDismiss } = props;
-    const { inset } = useBottomChromeInset();
 
     const updateRule = Effect.gen(function* () {
         const ruleService = yield* RuleService;
         const ruleApplicationDrainerService = yield* RuleApplicationDrainerService;
 
         yield* ruleService.applySuggestedActions(updateRuleData.ruleId, updateRuleData.categoryId, updateRuleData.tagIds);
-        yield* Effect.forkDetach(
-            ruleApplicationDrainerService.enqueueRuleApplication(
-                updateRuleData.ruleId,
-                (result, error) => void showRuleApplicationToast(result, error, inset)
-            )
-        );
+        yield* Effect.forkDetach(ruleApplicationDrainerService.enqueueRuleApplication(updateRuleData.ruleId, showRuleApplicationToast));
 
         return true;
     });
