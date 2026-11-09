@@ -36,7 +36,7 @@ jobs:
           node-version: 22.22.2
 
       - name: Restore package manager cache
-        uses: rnw-community/mobile-ci/actions/node-pm-cache@156be7db9b16530281c808aa74c4b1953aaecddb # v4.11.2
+        uses: rnw-community/mobile-ci/actions/node-pm-cache@9a151735055f5ab661650523ad7c6375ae007bef # v4.12.0
         with:
           package-manager: pnpm
 
@@ -51,7 +51,7 @@ jobs:
     needs: assert-ai
     permissions:
       contents: read
-    uses: rnw-community/mobile-ci/.github/workflows/native-publish.yml@156be7db9b16530281c808aa74c4b1953aaecddb # v4.11.2
+    uses: rnw-community/mobile-ci/.github/workflows/native-publish.yml@9a151735055f5ab661650523ad7c6375ae007bef # v4.12.0
     with:
       control-runner-labels: '["self-hosted","linux-portable-2x4"]'
       lint-runner-labels: '["self-hosted","trf-linux-amd64-4x8"]'
@@ -64,6 +64,10 @@ jobs:
       asc-key-path: asc_api_key.p8
       google-key-path: google-service-account.json
       install-command: pnpm install --frozen-lockfile
+      install-cache-paths: |
+          node_modules/.pnpm/llama.rn@*/node_modules/llama.rn/android/src/main/jniLibs
+          node_modules/.pnpm/llama.rn@*/node_modules/llama.rn/ios/rnllama.xcframework
+      install-cache-key: llama.rn-0.13.0-rc.7-react-native-0.88.1
       package-manager: pnpm
       publish-env: |
         EXPO_NO_TELEMETRY=1
