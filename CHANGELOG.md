@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.172.1](https://github.com/budgie-at/budgie/compare/v6.172.0...v6.172.1) (2026-11-09)
+
+### Bug Fixes
+
+* **app:** restore the [#1683](https://github.com/budgie-at/budgie/issues/1683) iMessage fade-into-blur screen chrome ([#2081](https://github.com/budgie-at/budgie/issues/2081)) ([f29829d](https://github.com/budgie-at/budgie/commit/f29829d5cf9490b424ebdddc1cf62cdb5bf1a13a))
+
+
 # [6.172.0](https://github.com/budgie-at/budgie/compare/v6.171.3...v6.172.0) (2026-11-08)
 
 ### Features
