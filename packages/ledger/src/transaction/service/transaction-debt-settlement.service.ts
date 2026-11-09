@@ -343,14 +343,14 @@ export class TransactionDebtSettlementService extends Context.Service<Transactio
                 attach,
                 attachMany: Effect.fn('TransactionDebtSettlementService.attachMany')(
                     function* (transactionIds: readonly number[], debtAccountId: number) {
-                        yield* Effect.forEach(
-                            transactionIds,
-                            transactionId =>
-                                Effect.flatMap(debtEventRepository.findByTransactionId(transactionId), debtEvent =>
-                                    debtEvent?.debtAccountId === debtAccountId ? Effect.void : attach({ transactionId, debtAccountId })
-                                ),
-                            { discard: true }
-                        );
+                        for (const transactionId of transactionIds) {
+                            const debtEvent = yield* debtEventRepository.findByTransactionId(transactionId);
+                            const transaction = yield* getTransactionOrFail(transactionId);
+
+                            if (!isDefined(debtEvent) && getPrimaryEntries(transaction).length === 1) {
+                                yield* attach({ transactionId, debtAccountId });
+                            }
+                        }
                     },
                     effect => Db.transaction(effect)
                 ),

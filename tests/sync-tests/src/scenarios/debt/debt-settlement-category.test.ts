@@ -525,18 +525,23 @@ describe('debt settlement categorization', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('attaches several payments to one debt at once and skips one already attached to it', () =>
+    it.effect('attaches several payments to one debt at once and skips ones already attached to any debt', () =>
         Effect.gen(function* () {
             const transactionDebtSettlementService = yield* TransactionDebtSettlementService;
             const cashAccount = yield* createCashAccount();
             const debtAccount = yield* createDebtAccount(AccountDebtTypeEnum.BORROW);
+            const otherDebtAccount = yield* createDebtAccount(AccountDebtTypeEnum.BORROW);
             const repayments = yield* Effect.forEach([1, 2, 3], () =>
                 createSettlementTransaction(TransactionTypeEnum.EXPENSE, cashAccount.id, null)
             );
+            const otherRepayment = yield* createSettlementTransaction(TransactionTypeEnum.EXPENSE, cashAccount.id, null);
             const transactionIds = repayments.map(repayment => repayment.id);
 
             yield* attachAndReadEntry(transactionIds[0], debtAccount.id);
-            yield* transactionDebtSettlementService.attachMany(transactionIds, debtAccount.id);
+            yield* attachAndReadEntry(otherRepayment.id, otherDebtAccount.id);
+            yield* transactionDebtSettlementService.attachMany([...transactionIds, otherRepayment.id], debtAccount.id);
+
+            expect(yield* fetchDebtEvents(otherDebtAccount.id)).toHaveLength(2);
 
             const entries = yield* Effect.forEach(transactionIds, fetchPrimaryEntry);
             const progress = yield* fetchDebtProgress(debtAccount.id);
