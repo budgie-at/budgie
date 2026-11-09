@@ -37,7 +37,7 @@ jobs:
             install-cache-paths: |
                 node_modules/.pnpm/llama.rn@*/node_modules/llama.rn/android/src/main/jniLibs
                 node_modules/.pnpm/llama.rn@*/node_modules/llama.rn/ios/rnllama.xcframework
-            install-cache-key: llama.rn-0.13.0-rc.7
+            install-cache-key: llama.rn-0.13.0-rc.7-react-native-0.88.1
             expo-use-precompiled-modules: true
             # Not loadable from config-path (outside its allowed-keys list), and
             # byte-identical to pr.yml / media-smoke.yml / ios-native-cache.yml:
