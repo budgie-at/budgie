@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.173.1](https://github.com/budgie-at/budgie/compare/v6.173.0...v6.173.1) (2026-11-09)
+
+### Bug Fixes
+
+* categorize inbox and settings QA feedback ([#2078](https://github.com/budgie-at/budgie/issues/2078)) ([c13612e](https://github.com/budgie-at/budgie/commit/c13612e7c81d926736373ff16b3b3300d9bf85f1))
+
+
 # [6.173.0](https://github.com/budgie-at/budgie/compare/v6.172.1...v6.173.0) (2026-11-09)
 
 ### Features
