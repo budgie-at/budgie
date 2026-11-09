@@ -312,30 +312,45 @@ export class TransactionDebtSettlementService extends Context.Service<Transactio
                 }
             });
 
+            const attach = Effect.fn('TransactionDebtSettlementService.attach')(
+                function* (params: AttachDebtSettlementParamsInterface) {
+                    const transaction = yield* getTransactionOrFail(params.transactionId);
+                    const debtAccount = yield* getDebtAccountOrFail(params.debtAccountId);
+
+                    yield* assertTransactionSupportsDebtSettlement(transaction);
+                    yield* assertNoSettlement(transaction);
+                    const primaryEntry = yield* getPrimaryEntryOrFail(transaction);
+                    yield* assertDebtAccountIsNotPrimaryAccount(primaryEntry, debtAccount);
+
+                    const fields = yield* buildSettlementEventFields(transaction, debtAccount, primaryEntry);
+
+                    yield* debtEventRepository.create({
+                        debtAccountId: debtAccount.id,
+                        transactionId: transaction.id,
+                        source: DebtEventSourceEnum.INCOME_ATTACHMENT,
+                        ...fields
+                    });
+                    yield* transactionRepository.touchUpdatedAt(transaction.id);
+                    yield* assignDebtPaymentCategory(primaryEntry, debtAccount);
+                    yield* accountBalanceIncrementalService.updateBalancesByAccountIds([primaryEntry.accountId, debtAccount.id]);
+
+                    return debtAccount;
+                },
+                effect => Db.transaction(effect)
+            );
+
             return {
-                attach: Effect.fn('TransactionDebtSettlementService.attach')(
-                    function* (params: AttachDebtSettlementParamsInterface) {
-                        const transaction = yield* getTransactionOrFail(params.transactionId);
-                        const debtAccount = yield* getDebtAccountOrFail(params.debtAccountId);
+                attach,
+                attachMany: Effect.fn('TransactionDebtSettlementService.attachMany')(
+                    function* (transactionIds: readonly number[], debtAccountId: number) {
+                        for (const transactionId of transactionIds) {
+                            const debtEvent = yield* debtEventRepository.findByTransactionId(transactionId);
+                            const transaction = yield* getTransactionOrFail(transactionId);
 
-                        yield* assertTransactionSupportsDebtSettlement(transaction);
-                        yield* assertNoSettlement(transaction);
-                        const primaryEntry = yield* getPrimaryEntryOrFail(transaction);
-                        yield* assertDebtAccountIsNotPrimaryAccount(primaryEntry, debtAccount);
-
-                        const fields = yield* buildSettlementEventFields(transaction, debtAccount, primaryEntry);
-
-                        yield* debtEventRepository.create({
-                            debtAccountId: debtAccount.id,
-                            transactionId: transaction.id,
-                            source: DebtEventSourceEnum.INCOME_ATTACHMENT,
-                            ...fields
-                        });
-                        yield* transactionRepository.touchUpdatedAt(transaction.id);
-                        yield* assignDebtPaymentCategory(primaryEntry, debtAccount);
-                        yield* accountBalanceIncrementalService.updateBalancesByAccountIds([primaryEntry.accountId, debtAccount.id]);
-
-                        return debtAccount;
+                            if (!isDefined(debtEvent) && getPrimaryEntries(transaction).length === 1) {
+                                yield* attach({ transactionId, debtAccountId });
+                            }
+                        }
                     },
                     effect => Db.transaction(effect)
                 ),

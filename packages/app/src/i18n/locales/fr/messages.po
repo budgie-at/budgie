@@ -1921,6 +1921,7 @@ msgstr "Au dernier prix connu, {rateLabel} par {instrumentCode}"
 msgid "At last known price, ≈ {rateLabel} per {instrumentCode}"
 msgstr "Au dernier prix connu, ≈ {rateLabel} par {instrumentCode}"
 
+#: src/categorize-inbox/components/categorize-inbox-group-attach-debt-option/categorize-inbox-group-attach-debt-option.tsx
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Attach debt"
@@ -2209,7 +2210,7 @@ msgstr "Captures et enregistrements vides"
 
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
 #: src/account/constant/account-debt-type.constant.ts
-#: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
+#: src/account/hook/use-attach-debt-selector.hook.ts
 msgid "Borrowed"
 msgstr "Emprunté"
 
@@ -3164,6 +3165,8 @@ msgid "Could not archive account."
 msgstr "Impossible d’archiver le compte."
 
 #: ../ledger/src/transaction/service/transaction-debt-settlement.service.ts
+#: src/account/hook/use-attach-debt-selector.hook.ts
+#: src/categorize-inbox/hook/use-categorize-inbox-actions.hook.ts
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 #: src/transaction/hook/use-debt-settlement-transaction-actions.hook.ts
 msgid "Could not attach debt"
@@ -3654,7 +3657,7 @@ msgstr "Créer « {query} »"
 msgid "Create a category to get started."
 msgstr "Créez une catégorie pour commencer."
 
-#: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
+#: src/account/hook/use-attach-debt-selector.hook.ts
 #: src/transaction/hook/use-debt-settlement-transaction-actions.hook.ts
 msgid "Create a debt account first."
 msgstr "Créez d'abord un compte de dette."
@@ -6356,7 +6359,7 @@ msgstr "Jamais enregistrée"
 msgid "New Account"
 msgstr "Nouveau compte"
 
-#: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
+#: src/account/hook/use-attach-debt-selector.hook.ts
 msgid "New borrowed debt"
 msgstr "Nouvelle dette empruntée"
 
@@ -9874,7 +9877,7 @@ msgid "Total Balance"
 msgstr "Solde total"
 
 #: src/account/component/account-selector-card-debt-total-subtitle/account-selector-card-debt-total-subtitle.tsx
-#: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
+#: src/account/hook/use-attach-debt-selector.hook.ts
 msgid "Total borrowed"
 msgstr "Total emprunté"
 

@@ -31,6 +31,7 @@ export interface CategorizeInboxContextValueInterface extends CategorizeInboxVis
     ) => void;
     readonly undoTransfer: () => void;
     readonly moveToCash: (transactionIds: number[]) => void;
+    readonly attachDebt: (transactionIds: number[], debtAccountId: number) => void;
     readonly undo: (lastWrite: CategorizeInboxLastWriteInterface) => void;
     readonly applyFollowUp: (lastWrite: CategorizeInboxLastWriteInterface) => void;
     readonly undoMoveToCash: (transactionIds: number[]) => void;

@@ -7,6 +7,7 @@ import { useCategorizeInboxContext } from '../../context/categorize-inbox.contex
 import { useCategorizeInboxGroupOptions } from '../../hook/use-categorize-inbox-group-options.hook';
 import { CategorizeInboxChoiceRow } from '../categorize-inbox-choice-row/categorize-inbox-choice-row';
 import { CategorizeInboxGroupAlreadyTrackedOption } from '../categorize-inbox-group-already-tracked-option/categorize-inbox-group-already-tracked-option';
+import { CategorizeInboxGroupAttachDebtOption } from '../categorize-inbox-group-attach-debt-option/categorize-inbox-group-attach-debt-option';
 import { CategorizeInboxGroupCashDepositLead } from '../categorize-inbox-group-cash-deposit-lead/categorize-inbox-group-cash-deposit-lead';
 import { CategorizeInboxGroupLearnedTransferOption } from '../categorize-inbox-group-learned-transfer-option/categorize-inbox-group-learned-transfer-option';
 import { CategorizeInboxGroupMoreLabelsOption } from '../categorize-inbox-group-more-labels-option/categorize-inbox-group-more-labels-option';
@@ -79,6 +80,7 @@ export const CategorizeInboxGroupOptions = ({ cluster }: Props) => {
                 ))}
                 {moreLabels}
                 {trailingTransfer}
+                <CategorizeInboxGroupAttachDebtOption cluster={cluster} />
             </CategorizeInboxOptionCard>
         </View>
     );

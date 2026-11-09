@@ -1,4 +1,6 @@
 import { CategorizeInboxService } from '@budgie/categorization';
+import { TransactionDebtSettlementService } from '@budgie/ledger';
+import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { NotificationFeedbackType } from 'expo-haptics';
 import { useRouter } from 'expo-router';
@@ -25,11 +27,12 @@ export const useCategorizeInboxActions = (
     strategy: CategorizeInboxStrategyInterface,
     inbox: CategorizeInboxDataInterface
 ): Omit<CategorizeInboxContextValueInterface, 'items' | 'isLoading'> => {
+    const { t } = useLingui();
     const router = useRouter();
     const { visibility, remainingCount, categorizedCount, acceptableAssignments, cashWithdrawalTransactionIds } = inbox;
     const [hapticNotification] = useVibration();
     const [lastWrite, setLastWrite] = useState<CategorizeInboxLastWriteInterface | null>(null);
-    const lastWriteState = useCategorizeInboxLastWriteState(strategy.labelKind, lastWrite);
+    const lastWriteContext = useCategorizeInboxLastWriteState(strategy.labelKind, lastWrite);
     const enqueueWrite = useCategorizeInboxWriteQueue();
     const { resetMovedToCash, ...moveToCashActions } = useCategorizeInboxMoveToCash(visibility, enqueueWrite, setLastWrite);
     const { commitPendingTransfer, ...transferActions } = useCategorizeInboxTransfer(
@@ -81,8 +84,7 @@ export const useCategorizeInboxActions = (
         categorizedCount,
         acceptableAssignments,
         cashWithdrawalTransactionIds,
-        lastWrite: lastWriteState.isSuperseded ? null : lastWrite,
-        lastWriteState,
+        ...lastWriteContext,
         assign,
         assignCluster: (cluster, labelId) => void assignLabels({ ...cluster, rows: visibility.includedRows(cluster) }, [labelId]),
         addClusterTags: cluster => void addClusterTags(cluster, visibility.includedRows(cluster)),
@@ -92,6 +94,22 @@ export const useCategorizeInboxActions = (
         moveToCash: transactionIds => {
             commitPendingTransfer();
             moveToCashActions.moveToCash(transactionIds);
+        },
+        attachDebt: (transactionIds, debtAccountId) => {
+            commitPendingTransfer();
+            visibility.hideTransactions(transactionIds);
+            enqueueWrite(
+                Effect.gen(function* () {
+                    const transactionDebtSettlementService = yield* TransactionDebtSettlementService;
+
+                    yield* transactionDebtSettlementService.attachMany(transactionIds, debtAccountId);
+                    setLastWrite(null);
+                    resetMovedToCash();
+                    hapticNotification(NotificationFeedbackType.Success);
+                }),
+                () => void visibility.showTransactions(transactionIds),
+                t`Could not attach debt`
+            );
         },
         undo,
         applyFollowUp
