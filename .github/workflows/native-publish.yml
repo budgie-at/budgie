@@ -36,7 +36,7 @@ jobs:
           node-version: 22.22.2
 
       - name: Restore package manager cache
-        uses: rnw-community/mobile-ci/actions/node-pm-cache@465516559e576ad02185c17a03159ac097fcad41 # v4.12.0
+        uses: rnw-community/mobile-ci/actions/node-pm-cache@6c1fb14e5e2fa3a4a34cdd0c813f3d6dc6bedc39 # v4.12.0
         with:
           package-manager: pnpm
 
@@ -51,7 +51,7 @@ jobs:
     needs: assert-ai
     permissions:
       contents: read
-    uses: rnw-community/mobile-ci/.github/workflows/native-publish.yml@465516559e576ad02185c17a03159ac097fcad41 # v4.12.0
+    uses: rnw-community/mobile-ci/.github/workflows/native-publish.yml@6c1fb14e5e2fa3a4a34cdd0c813f3d6dc6bedc39 # v4.12.0
     with:
       control-runner-labels: '["self-hosted","linux-portable-2x4"]'
       lint-runner-labels: '["self-hosted","trf-linux-amd64-4x8"]'
