@@ -52,8 +52,8 @@ export default function HomePage() {
 
     return (
         <ScreenChromeThemeProvider config={HOME_SCREEN_CHROME_CONFIG}>
-            <ScreenChromeStickyHeadersProvider>
-                <GroupedSurface>
+            <GroupedSurface>
+                <ScreenChromeStickyHeadersProvider>
                     <NetWorthCollapsibleHeader netWorth={balanceSummary.netWorth} isLoading={isLoading} />
 
                     <HomeSectionsList
@@ -64,8 +64,8 @@ export default function HomePage() {
                         balancesByAccountId={balanceSummary.balancesByAccountId}
                         listHeaderComponent={listHeaderComponent}
                     />
-                </GroupedSurface>
-            </ScreenChromeStickyHeadersProvider>
+                </ScreenChromeStickyHeadersProvider>
+            </GroupedSurface>
         </ScreenChromeThemeProvider>
     );
 }

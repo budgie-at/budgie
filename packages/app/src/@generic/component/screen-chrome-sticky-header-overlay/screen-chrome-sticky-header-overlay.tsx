@@ -1,10 +1,9 @@
 import { use } from 'react';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 
-import { useScreenChrome } from '@rnw-community/react-native-screen-chrome';
-
 import { ScreenChromeStickyHeadersContext } from '../../context/screen-chrome-sticky-headers.context';
 import { ScreenChromeStickyHeaderRow } from '../screen-chrome-sticky-header-row/screen-chrome-sticky-header-row';
+import { StickySectionHeaderBackdrop } from '../sticky-section-header-backdrop/sticky-section-header-backdrop';
 
 import type { ScreenChromeStickyHeaderSourceInterface } from '../../interface/screen-chrome-sticky-header-source.interface';
 
@@ -14,8 +13,6 @@ interface Props {
 
 export const ScreenChromeStickyHeaderOverlay = ({ source }: Props) => {
     const context = use(ScreenChromeStickyHeadersContext);
-    const { config, colorScheme } = useScreenChrome();
-    const { solid } = config.colors[colorScheme];
     const state = context?.state;
     const anchor = context?.anchor;
 
@@ -26,8 +23,7 @@ export const ScreenChromeStickyHeaderOverlay = ({ source }: Props) => {
         right: 0,
         height: state?.get().height ?? 0,
         overflow: 'hidden',
-        zIndex: 4,
-        backgroundColor: solid
+        zIndex: 4
     }));
     const headers = source?.headers ?? [];
     const horizontalInset = source?.horizontalInset ?? 0;
@@ -40,6 +36,7 @@ export const ScreenChromeStickyHeaderOverlay = ({ source }: Props) => {
             accessibilityElementsHidden
             importantForAccessibility="no-hide-descendants"
         >
+            <StickySectionHeaderBackdrop />
             {headers.map((header, position) => (
                 <ScreenChromeStickyHeaderRow key={header.index} header={header} position={position} horizontalInset={horizontalInset} />
             ))}
