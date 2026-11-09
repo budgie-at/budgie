@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.173.4](https://github.com/budgie-at/budgie/compare/v6.173.3...v6.173.4) (2026-11-09)
+
+### Bug Fixes
+
+* **app:** enlarge the screen chrome fade-into-blur by 30% ([#2089](https://github.com/budgie-at/budgie/issues/2089)) ([8be3018](https://github.com/budgie-at/budgie/commit/8be3018eee139d9e7c79a9d02636cf3d1d27b9a6))
+
+
 ## [6.173.3](https://github.com/budgie-at/budgie/compare/v6.173.2...v6.173.3) (2026-11-09)
 
 **Note:** Version bump only for package @budgie-at/app
