@@ -1,4 +1,5 @@
 import { CategorizeInboxLabelKindEnum } from '@budgie/categorization';
+import { RuleActionTypeEnum } from '@budgie/contracts';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import * as Atom from 'effect/reactivity/Atom';
 
@@ -33,6 +34,16 @@ export const useCategorizeInboxLastWriteState = (
         return NO_LAST_WRITE_STATE;
     }
 
+    const labelIds = new Set(lastWrite.assignments.map(({ labelId }) => labelId));
+    const isTagKind = labelKind === CategorizeInboxLabelKindEnum.TAG;
+    const labelRules = enabledRules.filter(rule =>
+        rule.actions.some(action => {
+            const actionLabelId = isTagKind ? action.tagId : action.categoryId;
+            const actionType = isTagKind ? RuleActionTypeEnum.ADD_TAG : RuleActionTypeEnum.SET_CATEGORY;
+
+            return action.type === actionType && isDefined(actionLabelId) && labelIds.has(actionLabelId);
+        })
+    );
     const transactionsById = new Map(result.value.map(transaction => [transaction.id, transaction]));
     const filed = lastWrite.assignments.flatMap(({ labelId, rows }) =>
         rows.map(row => ({ labelId, row, transaction: transactionsById.get(row.transactionId) }))
@@ -44,13 +55,13 @@ export const useCategorizeInboxLastWriteState = (
                 return true;
             }
 
-            return labelKind === CategorizeInboxLabelKindEnum.TAG
+            return isTagKind
                 ? !transaction.transactionTags.some(({ tagId }) => tagId === labelId)
                 : !transaction.entries.some(entry => entry.categoryId === labelId);
         }),
         isTagged: filed.some(({ row, transaction }) =>
             isDefined(transaction) ? transaction.transactionTags.some(({ tagId }) => !row.tagIds.includes(tagId)) : false
         ),
-        isRuleCovered: result.value.some(transaction => isNotEmptyArray(findTransactionMatchingRuleIds(enabledRules, transaction)))
+        isRuleCovered: result.value.some(transaction => isNotEmptyArray(findTransactionMatchingRuleIds(labelRules, transaction)))
     };
 };
