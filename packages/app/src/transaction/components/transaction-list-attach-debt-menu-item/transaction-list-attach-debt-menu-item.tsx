@@ -1,27 +1,17 @@
-import {
-    AccountDebtTypeEnum,
-    AccountTypeEnum,
-    UserIconNameEnum,
-    isExpenseTransaction,
-    isIncomeTransaction,
-    convertFromMicroUnits
-} from '@budgie/contracts';
-import { AccountDebtOpeningService, TransactionDebtSettlementService, getTransactionCategoryEntries } from '@budgie/ledger';
+import { UserIconNameEnum, isExpenseTransaction, isIncomeTransaction } from '@budgie/contracts';
+import { TransactionDebtSettlementService, getTransactionCategoryEntries } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { ActionsMenuItem } from '../../../@generic/component/actions-menu-item/actions-menu-item';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
-import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
-import { getDebtOpeningMessages } from '../../../account/utils/get-debt-opening-messages.util';
-import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
+import { useAttachDebtSelector } from '../../../account/hook/use-attach-debt-selector.hook';
 import { TransactionListContextMenuSelector } from '../transaction-list-context-menu/transaction-list-context-menu.selector';
 
-import type { AccountSelectorCreateActionInterface } from '../../../account/interface/account-selector-create-action.interface';
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 
 interface Props {
@@ -30,8 +20,7 @@ interface Props {
 
 export const TransactionListAttachDebtMenuItem = ({ transaction }: Props) => {
     const { t } = useLingui();
-    const formatDigits = useDisplayFormatDigits();
-    const [openAccountSelector] = useAccountSelectorModal();
+    const openAttachDebtSelector = useAttachDebtSelector();
     const categoryEntries = getTransactionCategoryEntries(transaction.entries);
     if (
         isDefined(transaction.consolidationType) ||
@@ -44,67 +33,31 @@ export const TransactionListAttachDebtMenuItem = ({ transaction }: Props) => {
     }
 
     const [categoryEntry] = categoryEntries;
-    const debtAttachmentErrorMessage = t`Could not attach debt`;
-
-    const createBorrowedDebtAccount = () =>
-        appRuntime.runPromise(
-            Effect.flatMap(AccountDebtOpeningService, accountDebtOpeningService =>
-                accountDebtOpeningService.createBorrowedDebtFromIncome(
-                    {
-                        title: isNotEmptyString(transaction.title) ? transaction.title : t`Borrowed`,
-                        iban: null,
-                        icon: UserIconNameEnum.HandCoins,
-                        instrumentId: categoryEntry.account.instrumentId,
-                        type: AccountTypeEnum.DEBT,
-                        debtType: AccountDebtTypeEnum.BORROW,
-                        currentBalance: 0,
-                        targetBalance: convertFromMicroUnits(categoryEntry.amount),
-                        contactId: null,
-                        deadline: null
-                    },
-                    transaction.id,
-                    getDebtOpeningMessages()
-                )
-            ).pipe(Effect.as(null))
-        );
-
-    const borrowedDebtCreateAction: AccountSelectorCreateActionInterface | null = isIncomeTransaction(transaction)
+    const borrowedIncome = isIncomeTransaction(transaction)
         ? {
-              title: t`New borrowed debt`,
-              subtitle: `${t`Total borrowed`}: ${formatDigits(convertFromMicroUnits(categoryEntry.amount), categoryEntry.account.instrument.symbol)}`,
-              errorMessage: debtAttachmentErrorMessage,
-              onCreate: createBorrowedDebtAccount
+              transactionId: transaction.id,
+              title: transaction.title,
+              amount: categoryEntry.amount,
+              instrumentSymbol: categoryEntry.account.instrument.symbol
           }
         : null;
 
-    const attachDebtToTransaction = () => {
-        openAccountSelector(
-            {
-                includeAccountTypes: [AccountTypeEnum.DEBT],
-                excludeAccountId: categoryEntry.accountId,
-                emptyStateDescription: t`Create a debt account first.`,
-                showDebtTotal: true,
-                ...(isDefined(borrowedDebtCreateAction) && { createAction: borrowedDebtCreateAction })
-            },
-            debtAccountId => {
-                if (isDefined(debtAccountId)) {
-                    appRuntime.runFork(
-                        logAndContinue(
-                            Effect.flatMap(TransactionDebtSettlementService, transactionDebtSettlementService =>
-                                transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId })
-                            ).pipe(toastOnFailure(debtAttachmentErrorMessage))
-                        )
-                    );
-                }
-            }
+    const handlePress = (): void =>
+        void openAttachDebtSelector(borrowedIncome, categoryEntry.accountId, debtAccountId =>
+            appRuntime.runFork(
+                logAndContinue(
+                    Effect.flatMap(TransactionDebtSettlementService, transactionDebtSettlementService =>
+                        transactionDebtSettlementService.attachMany([transaction.id], debtAccountId)
+                    ).pipe(toastOnFailure(t`Could not attach debt`))
+                )
+            )
         );
-    };
 
     return (
         <ActionsMenuItem
             icon={UserIconNameEnum.HandCoins}
             label={t`Attach debt`}
-            onPress={attachDebtToTransaction}
+            onPress={handlePress}
             testID={TransactionListContextMenuSelector.AttachDebtSettlementButton}
         />
     );

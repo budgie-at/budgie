@@ -524,4 +524,27 @@ describe('debt settlement categorization', () => {
             expect(transactionIds).not.toContain(attached.id);
         }).pipe(Effect.provide(TestLayer))
     );
+
+    it.effect('attaches several payments to one debt at once and skips one already attached to it', () =>
+        Effect.gen(function* () {
+            const transactionDebtSettlementService = yield* TransactionDebtSettlementService;
+            const cashAccount = yield* createCashAccount();
+            const debtAccount = yield* createDebtAccount(AccountDebtTypeEnum.BORROW);
+            const repayments = yield* Effect.forEach([1, 2, 3], () =>
+                createSettlementTransaction(TransactionTypeEnum.EXPENSE, cashAccount.id, null)
+            );
+            const transactionIds = repayments.map(repayment => repayment.id);
+
+            yield* attachAndReadEntry(transactionIds[0], debtAccount.id);
+            yield* transactionDebtSettlementService.attachMany(transactionIds, debtAccount.id);
+
+            const entries = yield* Effect.forEach(transactionIds, fetchPrimaryEntry);
+            const progress = yield* fetchDebtProgress(debtAccount.id);
+
+            expect(yield* fetchDebtEvents(debtAccount.id)).toHaveLength(transactionIds.length + 1);
+            expect(entries.map(entry => entry.categoryId)).toEqual(transactionIds.map(() => BORROWING_CATEGORY_ID));
+            expect(progress.paidAmount).toBe(SETTLED_AMOUNT * transactionIds.length);
+            expect(yield* fetchAccountBalance(debtAccount.id)).toBe(SETTLED_AMOUNT * transactionIds.length - OPENED_AMOUNT);
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

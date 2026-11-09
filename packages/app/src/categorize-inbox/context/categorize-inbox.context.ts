@@ -25,6 +25,7 @@ export const CategorizeInboxContext = createContext<CategorizeInboxContextValueI
     addClusterTags: emptyFn,
     pickClusterLabels: emptyFn,
     moveToCash: emptyFn,
+    attachDebt: emptyFn,
     pendingTransfer: null,
     learnedTransferAccountIds: new Map(),
     transferCluster: emptyFn,
