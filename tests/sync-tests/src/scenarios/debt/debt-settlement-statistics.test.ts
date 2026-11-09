@@ -622,7 +622,6 @@ describe('debt settlement statistics', () => {
                     title: 'I owe Oleh',
                     iban: null,
                     icon: UserIconNameEnum.HandCoins,
-                    instrumentId: cashAccount.instrumentId,
                     type: AccountTypeEnum.DEBT,
                     debtType: AccountDebtTypeEnum.BORROW,
                     currentBalance: 0,

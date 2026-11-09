@@ -1921,6 +1921,7 @@ msgstr "За останньою відомою ціною, {rateLabel} за {ins
 msgid "At last known price, ≈ {rateLabel} per {instrumentCode}"
 msgstr "За останньою відомою ціною, ≈ {rateLabel} за {instrumentCode}"
 
+#: src/categorize-inbox/components/categorize-inbox-group-attach-debt-option/categorize-inbox-group-attach-debt-option.tsx
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Attach debt"
@@ -2209,7 +2210,7 @@ msgstr "Порожні знімки та записи екрана"
 
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
 #: src/account/constant/account-debt-type.constant.ts
-#: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
+#: src/account/hook/use-attach-debt-selector.hook.ts
 msgid "Borrowed"
 msgstr "Позичено"
 
@@ -3163,6 +3164,8 @@ msgid "Could not archive account."
 msgstr "Не вдалося архівувати рахунок."
 
 #: ../ledger/src/transaction/service/transaction-debt-settlement.service.ts
+#: src/account/hook/use-attach-debt-selector.hook.ts
+#: src/categorize-inbox/hook/use-categorize-inbox-actions.hook.ts
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 #: src/transaction/hook/use-debt-settlement-transaction-actions.hook.ts
 msgid "Could not attach debt"
@@ -3657,7 +3660,7 @@ msgstr "Створити «{query}»"
 msgid "Create a category to get started."
 msgstr "Створіть категорію, щоб почати."
 
-#: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
+#: src/account/hook/use-attach-debt-selector.hook.ts
 #: src/transaction/hook/use-debt-settlement-transaction-actions.hook.ts
 msgid "Create a debt account first."
 msgstr "Спочатку створіть борговий рахунок."
@@ -6359,7 +6362,7 @@ msgstr "Ще не збережено"
 msgid "New Account"
 msgstr "Новий рахунок"
 
-#: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
+#: src/account/hook/use-attach-debt-selector.hook.ts
 msgid "New borrowed debt"
 msgstr "Новий позичений борг"
 
@@ -9865,7 +9868,7 @@ msgid "Total Balance"
 msgstr "Загальний баланс"
 
 #: src/account/component/account-selector-card-debt-total-subtitle/account-selector-card-debt-total-subtitle.tsx
-#: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
+#: src/account/hook/use-attach-debt-selector.hook.ts
 msgid "Total borrowed"
 msgstr "Усього позичено"
 

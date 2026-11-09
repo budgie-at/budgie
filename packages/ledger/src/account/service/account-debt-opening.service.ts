@@ -225,7 +225,11 @@ export class AccountDebtOpeningService extends Context.Service<AccountDebtOpenin
                 effect => Db.transaction(effect)
             ),
             createBorrowedDebtFromIncome: Effect.fn('AccountDebtOpeningService.createBorrowedDebtFromIncome')(
-                function* (input: DebtAccountCreateInputInterface, incomeTransactionId: number, messages: DebtOpeningMessagesInterface) {
+                function* (
+                    input: Omit<DebtAccountCreateInputInterface, 'instrumentId'>,
+                    incomeTransactionId: number,
+                    messages: DebtOpeningMessagesInterface
+                ) {
                     yield* assertBorrowedDebtType(input.debtType, messages);
 
                     const transaction = yield* getOpeningIncomeTransaction(incomeTransactionId, messages);
