@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.173.2](https://github.com/budgie-at/budgie/compare/v6.173.1...v6.173.2) (2026-11-09)
+
+### Bug Fixes
+
+* root-cause the e2e 04, 06 and 47 flakes ([#2086](https://github.com/budgie-at/budgie/issues/2086)) ([2380c48](https://github.com/budgie-at/budgie/commit/2380c4888ad14a5d4c0ef079417dd290abe8f079)), closes [#2085](https://github.com/budgie-at/budgie/issues/2085)
+
+
 ## [6.173.1](https://github.com/budgie-at/budgie/compare/v6.173.0...v6.173.1) (2026-11-09)
 
 ### Bug Fixes
