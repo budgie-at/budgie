@@ -257,6 +257,21 @@ describe('cloud-sync/share-split-transfer', () => {
             })
         );
 
+        it.effect('keeps a held leg record when its owner transfer retry is flushed', () =>
+            Effect.gen(function* () {
+                yield* testDb.$client.unsafe(
+                    "INSERT INTO sync_pending (sync_zone, sync_id, record_type, missing_record_type, missing_sync_id, payload) VALUES (?1, 'held-leg', 'TransactionLeg', 'SchemaVersion', ?1, '{\"schemaVersion\":2}')",
+                    [HOUSEHOLD_SYNC_ZONE]
+                );
+                yield* makeSyncServiceContext(testDb).run(
+                    Effect.flatMap(SyncApplyService, apply =>
+                        apply.enqueueOwnerTransfers([{ linkId: 'held-leg', zone: HOUSEHOLD_SYNC_ZONE }])
+                    )
+                );
+                expect(yield* countRows(testDb, "sync_pending WHERE sync_id = 'held-leg'")).toBe(1);
+            })
+        );
+
         it.effect('never sends the private leg of a shared-to-private transfer to the member', () =>
             Effect.gen(function* () {
                 const { deviceB, clouds } = yield* startSharedTransfer(SyncZoneRoleEnum.PARTICIPANT);
