@@ -30,7 +30,9 @@ export const useCategorizeInboxLastWriteState = (
         isNotEmptyArray(transactionIds) ? filedTransactionsAtom([transactionIds, language]) : noFiledTransactionsAtom
     );
 
-    if (!isDefined(lastWrite) || !AsyncResult.isSuccess(result)) {
+    const transactionsById = new Map(AsyncResult.isSuccess(result) ? result.value.map(transaction => [transaction.id, transaction]) : []);
+
+    if (!isDefined(lastWrite) || !transactionIds.every(transactionId => transactionsById.has(transactionId))) {
         return NO_LAST_WRITE_STATE;
     }
 
@@ -44,7 +46,6 @@ export const useCategorizeInboxLastWriteState = (
             return action.type === actionType && isDefined(actionLabelId) && labelIds.has(actionLabelId);
         })
     );
-    const transactionsById = new Map(result.value.map(transaction => [transaction.id, transaction]));
     const filed = lastWrite.assignments.flatMap(({ labelId, rows }) =>
         rows.map(row => ({ labelId, row, transaction: transactionsById.get(row.transactionId) }))
     );
@@ -52,7 +53,7 @@ export const useCategorizeInboxLastWriteState = (
     return {
         isSuperseded: filed.some(({ labelId, transaction }) => {
             if (!isDefined(transaction)) {
-                return true;
+                return false;
             }
 
             return isTagKind
@@ -62,6 +63,8 @@ export const useCategorizeInboxLastWriteState = (
         isTagged: filed.some(({ row, transaction }) =>
             isDefined(transaction) ? transaction.transactionTags.some(({ tagId }) => !row.tagIds.includes(tagId)) : false
         ),
-        isRuleCovered: result.value.some(transaction => isNotEmptyArray(findTransactionMatchingRuleIds(labelRules, transaction)))
+        isRuleCovered: [...transactionsById.values()].some(transaction =>
+            isNotEmptyArray(findTransactionMatchingRuleIds(labelRules, transaction))
+        )
     };
 };
