@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.173.0](https://github.com/budgie-at/budgie/compare/v6.172.1...v6.173.0) (2026-11-09)
+
+### Features
+
+* **app:** attach inbox groups to a debt ([#2079](https://github.com/budgie-at/budgie/issues/2079)) ([0907311](https://github.com/budgie-at/budgie/commit/09073118e33d8b58f9d1e0789480665cb8f1e31e))
+
+
 ## [6.172.1](https://github.com/budgie-at/budgie/compare/v6.172.0...v6.172.1) (2026-11-09)
 
 ### Bug Fixes
