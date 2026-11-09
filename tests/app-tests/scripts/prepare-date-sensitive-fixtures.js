@@ -1439,17 +1439,17 @@ const generateCategorizeInboxFixture = () => {
         INSERT INTO accounts (id, created_at, updated_at, icon, "order", title, type, nature, instrument_id, is_active, include_in_net_worth)
         VALUES (1, ${now}, ${now}, 'Wallet', 1, 'E2E Categorize Bank', 'BANK', 'ASSET', ${usdId}, 1, 1);
 
-        INSERT INTO transactions (id, created_at, updated_at, type, title, comment, operated_at, exchange_rate, to_account_id)
+        INSERT INTO transactions (id, created_at, updated_at, type, title, comment, operated_at, exchange_rate, from_account_id, to_account_id)
         VALUES
-            (1, ${now - 20 * day}, ${now - 20 * day}, 'EXPENSE', 'E2E Confident Coffee', '', ${now - 20 * day}, 1.0, NULL),
-            (2, ${now - 15 * day}, ${now - 15 * day}, 'EXPENSE', 'E2E Confident Coffee', '', ${now - 15 * day}, 1.0, NULL),
-            (3, ${now - 2 * day},  ${now - 2 * day},  'EXPENSE', 'E2E Confident Coffee', '', ${now - 2 * day},  1.0, NULL),
-            (4, ${now - 1 * day},  ${now - 1 * day},  'EXPENSE', 'E2E Confident Coffee', '', ${now - 1 * day},  1.0, NULL),
-            (5, ${now - 3 * day},  ${now - 3 * day},  'EXPENSE', 'E2E Categorize Filler', '', ${now - 3 * day}, 1.0, NULL),
-            (6, ${now - 25 * day}, ${now - 25 * day}, 'EXPENSE', 'E2E Tagged Grocer', '', ${now - 25 * day}, 1.0, NULL),
-            (7, ${now - 22 * day}, ${now - 22 * day}, 'EXPENSE', 'E2E Tagged Grocer', '', ${now - 22 * day}, 1.0, NULL),
-            (8, ${now - 5 * day},  ${now - 5 * day},  'EXPENSE', 'E2E Tagged Grocer', '', ${now - 5 * day},  1.0, NULL),
-            (9, ${now - 4 * day},  ${now - 4 * day},  'EXPENSE', 'E2E Tagged Grocer', '', ${now - 4 * day},  1.0, NULL);
+            (1, ${now - 20 * day}, ${now - 20 * day}, 'EXPENSE', 'E2E Confident Coffee', '', ${now - 20 * day}, 1.0, 1, NULL),
+            (2, ${now - 15 * day}, ${now - 15 * day}, 'EXPENSE', 'E2E Confident Coffee', '', ${now - 15 * day}, 1.0, 1, NULL),
+            (3, ${now - 2 * day},  ${now - 2 * day},  'EXPENSE', 'E2E Confident Coffee', '', ${now - 2 * day},  1.0, 1, NULL),
+            (4, ${now - 1 * day},  ${now - 1 * day},  'EXPENSE', 'E2E Confident Coffee', '', ${now - 1 * day},  1.0, 1, NULL),
+            (5, ${now - 3 * day},  ${now - 3 * day},  'EXPENSE', 'E2E Categorize Filler', '', ${now - 3 * day}, 1.0, 1, NULL),
+            (6, ${now - 25 * day}, ${now - 25 * day}, 'EXPENSE', 'E2E Tagged Grocer', '', ${now - 25 * day}, 1.0, 1, NULL),
+            (7, ${now - 22 * day}, ${now - 22 * day}, 'EXPENSE', 'E2E Tagged Grocer', '', ${now - 22 * day}, 1.0, 1, NULL),
+            (8, ${now - 5 * day},  ${now - 5 * day},  'EXPENSE', 'E2E Tagged Grocer', '', ${now - 5 * day},  1.0, 1, NULL),
+            (9, ${now - 4 * day},  ${now - 4 * day},  'EXPENSE', 'E2E Tagged Grocer', '', ${now - 4 * day},  1.0, 1, NULL);
 
         INSERT INTO transaction_entries (transaction_id, account_id, type, category_id, amount)
         VALUES

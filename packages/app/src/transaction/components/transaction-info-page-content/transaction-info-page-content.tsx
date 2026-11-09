@@ -1,6 +1,5 @@
-import { TransactionConsolidationTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
 import { getTransactionFeeEntries } from '@budgie/ledger';
-import { doesRuleMatchTransaction } from '@budgie/rules';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import { router } from 'expo-router';
 import { View } from 'react-native';
@@ -14,8 +13,7 @@ import { useGetEnabledRulesQuery } from '../../../rule/query/use-get-enabled-rul
 import { foreignTransferLegAtom } from '../../constant/foreign-transfer-leg-atom.constant';
 import { useRevertConsolidation } from '../../hook/use-revert-consolidation.hook';
 import { useTransactionInfoHandoff } from '../../hook/use-transaction-info-handoff.hook';
-import { convertTransactionToInput } from '../../utils/convert-transaction-to-input.util';
-import { getTransactionDisplayTitle } from '../../utils/get-transaction-display-title.util';
+import { findTransactionMatchingRuleIds } from '../../utils/find-transaction-matching-rule-ids.util';
 import { TransactionActionsMenuSelector } from '../transaction-actions-menu/transaction-actions-menu.selector';
 import { TransactionInfoAccountRows } from '../transaction-info-account-rows/transaction-info-account-rows';
 import { TransactionInfoActionsGroup } from '../transaction-info-actions-group/transaction-info-actions-group';
@@ -33,7 +31,6 @@ import { TransactionInfoTagsSection } from '../transaction-info-tags-section/tra
 
 import type { TransactionActionsMenuItemInterface } from '../../interface/transaction-actions-menu-item.interface';
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
-import type { SuggestRuleDataInterface } from '@budgie/rules';
 import type { Href } from 'expo-router';
 
 interface Props {
@@ -53,19 +50,7 @@ export const TransactionInfoPageContent = ({ transaction, editHref, actionItems,
         useTransactionInfoHandoff();
     const undoRefund = useRevertConsolidation(transaction.id, () => void dismissAllOrReplace('/'), true);
     const { enabledRules } = useGetEnabledRulesQuery();
-    const firstEntry = transaction.entries.at(0);
-    const suggestRuleData: SuggestRuleDataInterface = {
-        title: getTransactionDisplayTitle(transaction),
-        comment: transaction.comment,
-        mccCode: firstEntry?.mccCategory?.mcc ?? null,
-        categoryId: firstEntry?.categoryId ?? null,
-        tagIds: transaction.transactionTags.map(({ tagId }) => tagId)
-    };
-    const transactionInput = convertTransactionToInput(transaction);
-    const matchingRuleIds =
-        transaction.type === TransactionTypeEnum.ADJUSTMENT
-            ? []
-            : enabledRules.filter(rule => doesRuleMatchTransaction(rule, transactionInput, suggestRuleData)).map(rule => rule.id);
+    const matchingRuleIds = findTransactionMatchingRuleIds(enabledRules, transaction);
 
     const pageActionItems = isNotEmptyArray(getTransactionFeeEntries(transaction.entries))
         ? actionItems.filter(item => item.testID !== TransactionActionsMenuSelector.FeeButton)

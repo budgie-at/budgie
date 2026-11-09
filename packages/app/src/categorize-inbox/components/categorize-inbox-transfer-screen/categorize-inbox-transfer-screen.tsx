@@ -36,14 +36,16 @@ export const CategorizeInboxTransferScreen = ({ clusterKey }: Props) => {
     const paymentCount = includedRows(cluster).length;
     const isIncome = cluster.rows.at(0)?.type === TransactionTypeEnum.INCOME;
     const summary = isIncome ? (
-        <Trans>{paymentCount} payments become transfers and leave your income.</Trans>
+        <Trans>{paymentCount} payments become transfers from the account you pick.</Trans>
     ) : (
         <Trans>{paymentCount} payments become transfers and leave your expenses.</Trans>
     );
 
+    const navTitle = isIncome ? t`Transfer from` : t`Transfer to`;
+
     return (
         <GroupedSurface>
-            <CategorizeInboxScreenChrome title={<CategorizeInboxNavTitle>{t`Transfer to`}</CategorizeInboxNavTitle>}>
+            <CategorizeInboxScreenChrome title={<CategorizeInboxNavTitle>{navTitle}</CategorizeInboxNavTitle>}>
                 <CategorizeInboxScreenScroll>
                     <Text className="text-secondary-foreground pb-3xl text-center text-[15px] leading-[20px]">{summary}</Text>
 

@@ -1,4 +1,4 @@
-import { useRouter } from 'expo-router';
+import { useIsFocused, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 
 import { isDefined } from '@rnw-community/shared';
@@ -10,23 +10,26 @@ import type { CategorizeInboxClusterInterface } from '@budgie/categorization';
 
 export const useCategorizeInboxCluster = (clusterKey: string): CategorizeInboxClusterInterface | null => {
     const router = useRouter();
+    const isFocused = useIsFocused();
     const { items, isLoading } = useCategorizeInboxContext();
 
-    const clusters = items.filter(isCategorizeInboxCluster);
-    const liveCluster = clusters.find(candidate => candidate.key === clusterKey) ?? null;
-    const [lastCluster, setLastCluster] = useState(liveCluster);
+    const liveCluster = items.filter(isCategorizeInboxCluster).find(candidate => candidate.key === clusterKey) ?? null;
+    const [shownCluster, setShownCluster] = useState(liveCluster);
 
-    if (isDefined(liveCluster) && liveCluster !== lastCluster) {
-        setLastCluster(liveCluster);
+    const liveTransactionIds = new Set(liveCluster?.rows.map(row => row.transactionId));
+    const isStale = isDefined(shownCluster)
+        ? !shownCluster.rows.every(row => liveTransactionIds.has(row.transactionId))
+        : !isDefined(liveCluster);
+
+    if (!isStale && isDefined(liveCluster) && liveCluster !== shownCluster) {
+        setShownCluster(liveCluster);
     }
 
-    const cluster = liveCluster ?? lastCluster;
-
     useEffect(() => {
-        if (!isLoading && !isDefined(cluster)) {
+        if (isFocused && !isLoading && isStale) {
             router.dismissTo('/categorize');
         }
-    }, [cluster, isLoading, router]);
+    }, [isFocused, isLoading, isStale, router]);
 
-    return cluster;
+    return shownCluster ?? liveCluster;
 };

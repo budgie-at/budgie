@@ -1,5 +1,6 @@
 import { CategorizeInboxAssignmentInterface, CategorizeInboxClusterInterface, CategorizeInboxListItemType } from '@budgie/categorization';
 
+import { CategorizeInboxLastWriteStateInterface } from './categorize-inbox-last-write-state.interface';
 import { CategorizeInboxLastWriteInterface } from './categorize-inbox-last-write.interface';
 import { CategorizeInboxPendingTransferInterface } from './categorize-inbox-pending-transfer.interface';
 import { CategorizeInboxStrategyInterface } from './categorize-inbox-strategy.interface';
@@ -14,6 +15,7 @@ export interface CategorizeInboxContextValueInterface extends CategorizeInboxVis
     readonly acceptableAssignments: CategorizeInboxAssignmentInterface[];
     readonly cashWithdrawalTransactionIds: ReadonlySet<number>;
     readonly lastWrite: CategorizeInboxLastWriteInterface | null;
+    readonly lastWriteState: CategorizeInboxLastWriteStateInterface;
     readonly movedToCashTransactionIds: number[];
     readonly assign: (assignments: CategorizeInboxAssignmentInterface[]) => void;
     readonly assignCluster: (cluster: CategorizeInboxClusterInterface, labelId: number) => void;

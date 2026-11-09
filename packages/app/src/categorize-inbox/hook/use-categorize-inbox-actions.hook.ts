@@ -11,6 +11,7 @@ import { isNotEmptyArray } from '@rnw-community/shared';
 import { useVibration } from '../../@generic/hook/use-vibration.hook';
 import { toCategorizeInboxTransactionIds } from '../utils/to-categorize-inbox-transaction-ids.util';
 
+import { useCategorizeInboxLastWriteState } from './use-categorize-inbox-last-write-state.hook';
 import { useCategorizeInboxLastWrite } from './use-categorize-inbox-last-write.hook';
 import { useCategorizeInboxMoveToCash } from './use-categorize-inbox-move-to-cash.hook';
 import { useCategorizeInboxTransfer } from './use-categorize-inbox-transfer.hook';
@@ -31,6 +32,7 @@ export const useCategorizeInboxActions = (
     const { visibility, remainingCount, categorizedCount, acceptableAssignments, cashWithdrawalTransactionIds } = inbox;
     const [hapticNotification] = useVibration();
     const [lastWrite, setLastWrite] = useState<CategorizeInboxLastWriteInterface | null>(null);
+    const lastWriteContext = useCategorizeInboxLastWriteState(strategy.labelKind, lastWrite);
     const enqueueWrite = useCategorizeInboxWriteQueue();
     const { resetMovedToCash, ...moveToCashActions } = useCategorizeInboxMoveToCash(visibility, enqueueWrite, setLastWrite);
     const { commitPendingTransfer, ...transferActions } = useCategorizeInboxTransfer(
@@ -82,7 +84,7 @@ export const useCategorizeInboxActions = (
         categorizedCount,
         acceptableAssignments,
         cashWithdrawalTransactionIds,
-        lastWrite,
+        ...lastWriteContext,
         assign,
         assignCluster: (cluster, labelId) => void assignLabels({ ...cluster, rows: visibility.includedRows(cluster) }, [labelId]),
         addClusterTags: cluster => void addClusterTags(cluster, visibility.includedRows(cluster)),

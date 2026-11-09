@@ -211,6 +211,14 @@ export class TransactionViewRepository extends Context.Service<TransactionViewRe
                         where: { id },
                         with: transactionFilters.buildFullTransactionRelations(language)
                     })
+                ),
+
+            getByIds: (ids: readonly number[], language: LanguageEnum) =>
+                Db.query(db =>
+                    db.query.TransactionEntityTable.findMany({
+                        where: { id: { in: [...ids] }, deletedAt: { isNull: true } },
+                        with: transactionFilters.buildFullTransactionRelations(language)
+                    })
                 )
         };
     })

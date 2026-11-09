@@ -8,14 +8,16 @@ import {
     MccCategoryEntityTable,
     TransactionEntityTable,
     TransactionEntryEntityTable,
-    TransactionTagsEntityTable
+    TransactionTagsEntityTable,
+    TransactionViewRepository
 } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 
 import { databaseQueryAtom } from '../../@generic/utils/database-query-atom.util';
 import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
+import { TRANSACTION_LIST_TABLES } from '../../transaction/constant/transaction-list-tables.constant';
 
-import type { TransactionFilterInterface } from '@budgie/contracts';
+import type { LanguageEnum, TransactionFilterInterface } from '@budgie/contracts';
 
 const INBOX_ROWS_TABLES = [
     TransactionEntityTable,
@@ -55,4 +57,11 @@ export const atmCashWithdrawalTransactionIdsAtom = databaseQueryFamily(
     ConsolidationCoordinatorService,
     (consolidationCoordinatorService, transactionIds: readonly number[]) =>
         consolidationCoordinatorService.findAtmCashWithdrawalTransactionIds(transactionIds)
+);
+
+export const filedTransactionsAtom = databaseQueryFamily(
+    TRANSACTION_LIST_TABLES,
+    TransactionViewRepository,
+    (transactionViewRepository, [transactionIds, language]: readonly [readonly number[], LanguageEnum]) =>
+        transactionViewRepository.getByIds(transactionIds, language).pipe(Effect.map(transactions => ({ transactionIds, transactions })))
 );

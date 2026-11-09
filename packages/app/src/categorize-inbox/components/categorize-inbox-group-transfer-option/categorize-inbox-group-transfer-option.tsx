@@ -16,14 +16,15 @@ export const CategorizeInboxGroupTransferOption = ({ cluster }: Props) => {
     const router = useRouter();
 
     const isIncome = cluster.rows.at(0)?.type === TransactionTypeEnum.INCOME;
-    const subtitle = isIncome ? t`Leaves your income` : t`Not counted as spending`;
+    const title = isIncome ? t`Transfer from an account` : t`Transfer to an account`;
+    const subtitle = isIncome ? t`Not counted as income` : t`Not counted as spending`;
 
     const handlePress = (): void => void router.push({ pathname: '/categorize/transfer/[key]', params: { key: cluster.key } });
 
     return (
         <CategorizeInboxOptionRow
             icon={UserIconNameEnum.ArrowLeftRight}
-            title={t`Transfer to an account`}
+            title={title}
             subtitle={subtitle}
             accessory={<CategorizeInboxOptionChevron />}
             onPress={handlePress}

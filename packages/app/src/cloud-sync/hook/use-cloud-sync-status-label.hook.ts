@@ -18,7 +18,7 @@ const CLOUD_SYNC_STATUS_MESSAGE: Record<Exclude<CloudSyncStatusEnum, CloudSyncSt
     [CloudSyncStatusEnum.PAUSED_OTHER_ACCOUNT]: msg`Paused: a different Apple Account is signed in`,
     [CloudSyncStatusEnum.UPDATE_REQUIRED]: msg`Update Budgie to keep syncing`,
     [CloudSyncStatusEnum.LINEAGE_CONFLICT]: msg`Choose which data to keep`,
-    [CloudSyncStatusEnum.ERROR]: msg`Couldn't sync. Budgie will try again.`
+    [CloudSyncStatusEnum.ERROR]: msg`Sync failed. Retrying…`
 };
 
 export const useCloudSyncStatusLabel = () => {

@@ -13,6 +13,7 @@ export const CategorizeInboxContext = createContext<CategorizeInboxContextValueI
     acceptableAssignments: [],
     cashWithdrawalTransactionIds: new Set(),
     lastWrite: null,
+    lastWriteState: { isTagged: false, isRuleCovered: false },
     movedToCashTransactionIds: [],
     excludedTransactionIds: new Set(),
     includedRows: () => [],

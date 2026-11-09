@@ -787,8 +787,8 @@ msgid "{paymentCount} payments become transfers and leave your expenses."
 msgstr "{paymentCount} paiements deviennent des virements et quittent vos dépenses."
 
 #: src/categorize-inbox/components/categorize-inbox-transfer-screen/categorize-inbox-transfer-screen.tsx
-msgid "{paymentCount} payments become transfers and leave your income."
-msgstr "{paymentCount} paiements deviennent des virements et quittent vos revenus."
+msgid "{paymentCount} payments become transfers from the account you pick."
+msgstr "{paymentCount} paiements deviennent des virements depuis le compte que vous choisissez."
 
 #: src/budget/hooks/use-budget-limit-accessibility.hook.ts
 msgid "{percent}% used"
@@ -2489,6 +2489,7 @@ msgid "Carry savings"
 msgstr "Reporter les économies"
 
 #: src/account/constant/account-type.constant.ts
+#: src/categorize-inbox/components/categorize-inbox-transfer-accounts/categorize-inbox-transfer-accounts.tsx
 #: src/inzhur/component/inzhur-operations-import-summary/inzhur-operations-import-summary.tsx
 #: src/onboarding/constant/onboarding-account-options.constant.ts
 msgid "Cash"
@@ -3638,10 +3639,6 @@ msgstr "Impossible d'enregistrer ton code PIN. Saisis-le à nouveau pour réessa
 #: src/auth/hook/use-pin-setup.hook.ts
 msgid "Couldn't save your PIN. Try again."
 msgstr "Impossible d'enregistrer ton code PIN. Réessaie."
-
-#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
-msgid "Couldn't sync. Budgie will try again."
-msgstr "Synchronisation impossible. Budgie réessaiera."
 
 #: src/auth/hook/use-pin-setup.hook.ts
 msgid "Couldn't turn off app lock. Try again."
@@ -5055,6 +5052,10 @@ msgctxt "CSV import source amount column"
 msgid "From amount"
 msgstr "Montant source"
 
+#: src/categorize-inbox/components/categorize-inbox-group-cash-deposit-lead/categorize-inbox-group-cash-deposit-lead.tsx
+msgid "From cash"
+msgstr "Depuis les espèces"
+
 #: src/app/(main)/import-csv.tsx
 msgid "From currency"
 msgstr "Devise d’origine"
@@ -5800,10 +5801,6 @@ msgstr "Le laisser vide pour l'instant"
 #: src/household/component/household-leave-row/household-leave-row.tsx
 msgid "Leave this family?"
 msgstr "Quitter cette famille ?"
-
-#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
-msgid "Leaves your income"
-msgstr "Quitte vos revenus"
 
 #: src/budget/components/budget-setup-progress-content/budget-setup-progress-content.tsx
 #: src/budget/components/budget-stat-row/budget-stat-row.tsx
@@ -6724,6 +6721,10 @@ msgid "Not backed up to iCloud yet"
 msgstr "Pas encore sauvegardé dans iCloud"
 
 #: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
+msgid "Not counted as income"
+msgstr "Non compté comme revenu"
+
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
 msgid "Not counted as spending"
 msgstr "Non compté comme dépense"
 
@@ -7534,6 +7535,10 @@ msgstr "Choisis-en un dont tu te souviendras, mais que les autres ne devineront 
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
 msgid "Pick the app that exported this file, or match columns yourself."
 msgstr "Choisissez l’app qui a exporté ce fichier, ou associez les colonnes vous-même."
+
+#: src/categorize-inbox/components/categorize-inbox-group-cash-deposit-lead/categorize-inbox-group-cash-deposit-lead.tsx
+msgid "Pick the cash account"
+msgstr "Choisissez le compte espèces"
 
 #: src/auth/components/pin-form-dots/pin-form-dots.tsx
 msgid "PIN, {enteredCount} of {PIN_LENGTH} digits entered"
@@ -9131,6 +9136,10 @@ msgstr "Échec de la synchronisation"
 msgid "Sync failed for {title}"
 msgstr "Échec de la synchronisation de {title}"
 
+#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
+msgid "Sync failed. Retrying…"
+msgstr "Échec. Nouvel essai…"
+
 #: src/sync/component/bank-integration-status-line/bank-integration-status-line.tsx
 msgid "Sync is off for all accounts"
 msgstr "Synchronisation désactivée pour tous les comptes"
@@ -9960,6 +9969,14 @@ msgstr "Virement"
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Transfer account"
 msgstr "Compte du virement"
+
+#: src/categorize-inbox/components/categorize-inbox-transfer-screen/categorize-inbox-transfer-screen.tsx
+msgid "Transfer from"
+msgstr "Virement depuis"
+
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
+msgid "Transfer from an account"
+msgstr "Virement depuis un compte"
 
 #: src/categorize-inbox/components/categorize-inbox-group-transfer-lead/categorize-inbox-group-transfer-lead.tsx
 msgid "Transfer from savings jar"

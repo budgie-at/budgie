@@ -8,6 +8,7 @@ import { useCategorizeInboxGroupOptions } from '../../hook/use-categorize-inbox-
 import { CategorizeInboxChoiceRow } from '../categorize-inbox-choice-row/categorize-inbox-choice-row';
 import { CategorizeInboxGroupAlreadyTrackedOption } from '../categorize-inbox-group-already-tracked-option/categorize-inbox-group-already-tracked-option';
 import { CategorizeInboxGroupAttachDebtOption } from '../categorize-inbox-group-attach-debt-option/categorize-inbox-group-attach-debt-option';
+import { CategorizeInboxGroupCashDepositLead } from '../categorize-inbox-group-cash-deposit-lead/categorize-inbox-group-cash-deposit-lead';
 import { CategorizeInboxGroupLearnedTransferOption } from '../categorize-inbox-group-learned-transfer-option/categorize-inbox-group-learned-transfer-option';
 import { CategorizeInboxGroupMoreLabelsOption } from '../categorize-inbox-group-more-labels-option/categorize-inbox-group-more-labels-option';
 import { CategorizeInboxGroupMoveToCashOption } from '../categorize-inbox-group-move-to-cash-option/categorize-inbox-group-move-to-cash-option';
@@ -24,7 +25,7 @@ interface Props {
 }
 
 export const CategorizeInboxGroupOptions = ({ cluster }: Props) => {
-    const { learnedAccount, isLeadTransfer, isCash, bestMatchLabel, otherLabels, cashTransactionIds } =
+    const { learnedAccount, matchedAccount, isLeadTransfer, isCash, bestMatchLabel, otherLabels, cashTransactionIds } =
         useCategorizeInboxGroupOptions(cluster);
     const { t } = useLingui();
     const { strategy } = useCategorizeInboxContext();
@@ -40,7 +41,11 @@ export const CategorizeInboxGroupOptions = ({ cluster }: Props) => {
     ) : null;
 
     const learnedTransfer = isDefined(learnedAccount) ? <CategorizeInboxGroupLearnedTransferOption account={learnedAccount} /> : null;
-    const leadTransfer = isLeadTransfer ? <CategorizeInboxGroupTransferLead cluster={cluster} /> : null;
+    const transferLead = cluster.isCashDeposit ? (
+        <CategorizeInboxGroupCashDepositLead cluster={cluster} cashAccount={matchedAccount} />
+    ) : (
+        <CategorizeInboxGroupTransferLead cluster={cluster} />
+    );
     const trailingTransfer = isLeadTransfer ? null : <CategorizeInboxGroupTransferOption cluster={cluster} />;
     const moveToCash = isNotEmptyArray(cashTransactionIds) ? <CategorizeInboxGroupMoveToCashOption /> : null;
     const moreLabels = isDefined(moreLabelsTitle) ? (
@@ -56,7 +61,7 @@ export const CategorizeInboxGroupOptions = ({ cluster }: Props) => {
 
             <View className="gap-y-md">
                 {learnedTransfer}
-                {leadTransfer}
+                {isLeadTransfer ? transferLead : null}
                 {isDefined(bestMatchLabel) ? (
                     <CategorizeInboxLeadOption
                         choice={bestMatchLabel.id}
