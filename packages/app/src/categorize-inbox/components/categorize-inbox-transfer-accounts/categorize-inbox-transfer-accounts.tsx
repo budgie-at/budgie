@@ -30,7 +30,10 @@ export const CategorizeInboxTransferAccounts = ({ cluster, search, isRuleEnabled
         router.dismissTo('/categorize');
     };
 
-    const cashAccounts = cluster.isCashDeposit ? accounts.filter(account => account.type === AccountTypeEnum.CASH) : [];
+    const depositSymbol = cluster.rows.at(0)?.instrumentSymbol;
+    const cashAccounts = cluster.isCashDeposit
+        ? accounts.filter(account => account.type === AccountTypeEnum.CASH && account.instrument.symbol === depositSymbol)
+        : [];
     const matches = accounts.filter(
         account => !cashAccounts.includes(account) && isCategorizeInboxAccountNameMatch(account.title, cluster.displayTitle)
     );
