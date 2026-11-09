@@ -5,8 +5,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useScreenChrome } from '@rnw-community/react-native-screen-chrome';
 
 import { StickySectionHeaderBackdrop } from '../component/sticky-section-header-backdrop/sticky-section-header-backdrop';
-import { SCREEN_CHROME_TITLE_CLEARANCE } from '../constant/screen-chrome-config.constant';
 import { ScreenChromeStickyHeadersContext } from '../context/screen-chrome-sticky-headers.context';
+import { getScreenChromeStickyLine } from '../utils/get-screen-chrome-sticky-line.util';
 
 import type { ScreenChromeStickyHeaderInterface } from '../interface/screen-chrome-sticky-header.interface';
 import type { LegendListMetrics, LegendListRef } from '@legendapp/list/react-native';
@@ -59,10 +59,9 @@ export const useScreenChromeStickyList = (
         onMetricsChange,
         publish,
         stickyHeaderConfig: {
-            offset: Math.max(
-                (config.collapsedHeaderHeight ?? config.headerHeight) + SCREEN_CHROME_TITLE_CLEARANCE - headerHeightAboveList,
-                0
-            ),
+            offset:
+                getScreenChromeStickyLine(headerHeightAboveList, config.collapsedHeaderHeight ?? config.headerHeight) -
+                headerHeightAboveList,
             backdropComponent: StickySectionHeaderBackdrop
         }
     };

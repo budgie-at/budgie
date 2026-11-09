@@ -7,9 +7,9 @@ import { useCollapsibleHeaderScroll } from '@rnw-community/react-native-collapsi
 import { useScreenChrome } from '@rnw-community/react-native-screen-chrome';
 
 import { ScreenChromeStickyHeaderOverlay } from '../component/screen-chrome-sticky-header-overlay/screen-chrome-sticky-header-overlay';
-import { SCREEN_CHROME_TITLE_CLEARANCE } from '../constant/screen-chrome-config.constant';
 import { ScreenChromeStickyHeadersContext } from '../context/screen-chrome-sticky-headers.context';
 import { getScreenChromeStickyHeaderState } from '../utils/get-screen-chrome-sticky-header-state.util';
+import { getScreenChromeStickyLine } from '../utils/get-screen-chrome-sticky-line.util';
 
 import type { ScreenChromeStickyHeaderMetricInterface } from '../interface/screen-chrome-sticky-header-metric.interface';
 import type { ScreenChromeStickyHeaderSourceInterface } from '../interface/screen-chrome-sticky-header-source.interface';
@@ -28,11 +28,10 @@ export const ScreenChromeStickyHeadersProvider = ({ children }: Props) => {
     const { top } = useSafeAreaInsets();
     const { config } = useScreenChrome();
     const { scrollY } = useCollapsibleHeaderScroll();
-    const defaultAnchor = top + (config.collapsedHeaderHeight ?? config.headerHeight) + SCREEN_CHROME_TITLE_CLEARANCE;
-    const anchor = useDerivedValue(() => Math.max(defaultAnchor, headerBottom.get(), protectedBottom.get()));
-    const state = useDerivedValue(() =>
-        getScreenChromeStickyHeaderState(metrics.get(), scrollY.get() + anchor.get() - Math.max(viewportTop.get(), headerBottom.get()))
-    );
+    const titleBottom = top + (config.collapsedHeaderHeight ?? config.headerHeight);
+    const listTop = useDerivedValue(() => Math.max(viewportTop.get(), headerBottom.get()));
+    const anchor = useDerivedValue(() => Math.max(getScreenChromeStickyLine(listTop.get(), titleBottom), protectedBottom.get()));
+    const state = useDerivedValue(() => getScreenChromeStickyHeaderState(metrics.get(), scrollY.get() + anchor.get() - listTop.get()));
     const context = { setSource, metrics, viewportTop, headerBottom, protectedBottom, anchor, state };
 
     return (
