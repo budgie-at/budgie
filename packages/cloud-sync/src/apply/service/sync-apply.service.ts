@@ -83,6 +83,13 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
                 payload
             });
 
+        const holdPausedDeletion = Effect.fnUntraced(function* (deletion: SyncIncomingDeletionInterface) {
+            const { zone, recordName, recordType } = deletion;
+            const payload = yield* stringifySyncJson({ deletion: true, recordType, recordName, zone });
+
+            yield* holdPaused(payload, null, deletion);
+        });
+
         const inSavepoint = <A, E, R>(effect: Effect.Effect<A, E, R>) =>
             repository.savepoint.pipe(
                 Effect.andThen(Effect.result(effect)),
@@ -352,9 +359,7 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
             const { zone, recordName, recordType } = deletion;
 
             if (pausedZones.has(zone)) {
-                const payload = yield* stringifySyncJson({ deletion: true, recordType, recordName, zone });
-
-                yield* holdPaused(payload, null, deletion);
+                yield* holdPausedDeletion(deletion);
                 tracker.skip();
 
                 return;
@@ -469,19 +474,27 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
                     yield* repository.removePending(row.syncZone, row.syncId);
                 }
 
-                return yield* apply({ records, deletions });
+                const result = yield* apply({ records, deletions });
+
+                for (const { linkId, zone } of result.ownerTransferRetries) {
+                    yield* holdPausedDeletion({ recordType: SyncRecordTypeEnum.TRANSACTION_LEG, recordName: linkId, zone });
+                }
+
+                return result;
             },
             effect => Db.transaction(effect)
         );
 
         return {
-            enqueueOwnerTransfers: Effect.fn('SyncApplyService.enqueueOwnerTransfers')(function* (
-                retries: readonly SyncOwnerTransferRetryInterface[]
-            ) {
-                for (const { linkId, zone } of retries) {
-                    yield* enqueueOwnerTransfer(linkId, zone);
-                }
-            }),
+            enqueueOwnerTransfers: Effect.fn('SyncApplyService.enqueueOwnerTransfers')(
+                function* (retries: readonly SyncOwnerTransferRetryInterface[]) {
+                    for (const { linkId, zone } of retries) {
+                        yield* enqueueOwnerTransfer(linkId, zone);
+                        yield* repository.removePausedDeletion(zone, linkId);
+                    }
+                },
+                effect => Db.transaction(effect)
+            ),
             apply,
             resume,
             findPausedZones,

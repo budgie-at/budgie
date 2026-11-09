@@ -69,6 +69,23 @@ const startSharedTransfer = (memberRole: SyncZoneRoleEnum) =>
         return { deviceB, clouds };
     });
 
+const startOwnerLegDeletion = Effect.gen(function* () {
+    const { deviceB, clouds } = yield* startSharedTransfer(SyncZoneRoleEnum.PARTICIPANT);
+    const [leg] = yield* queryRows<{ readonly syncId: string }>(
+        testDb,
+        "SELECT sync_id AS syncId FROM sync_record WHERE record_type = 'TransactionLeg'"
+    );
+
+    clouds.household.remove('TransactionLeg', HOUSEHOLD_SYNC_ZONE, leg.syncId);
+    yield* testDb.$client.unsafe('UPDATE sync_zone_registry SET role = ?, database_scope = ? WHERE zone_label = ?', [
+        SyncZoneRoleEnum.PARTICIPANT,
+        ICloudSyncScope.SHARED,
+        HOUSEHOLD_SYNC_ZONE
+    ]);
+
+    return { deviceB, clouds, leg };
+});
+
 describe('cloud-sync/share-split-transfer', () => {
     shareDevices('two devices', it => {
         it.effect('keeps another member transfer leg when deletion is requested', () =>
@@ -156,18 +173,8 @@ describe('cloud-sync/share-split-transfer', () => {
         );
         it.effect('replays a fetched owner leg deletion after a kill before did-fetch', () =>
             Effect.gen(function* () {
-                const { deviceB, clouds } = yield* startSharedTransfer(SyncZoneRoleEnum.PARTICIPANT);
-                const [leg] = yield* queryRows<{ readonly syncId: string }>(
-                    testDb,
-                    "SELECT sync_id AS syncId FROM sync_record WHERE record_type = 'TransactionLeg'"
-                );
-                clouds.household.remove('TransactionLeg', HOUSEHOLD_SYNC_ZONE, leg.syncId);
+                const { deviceB, clouds, leg } = yield* startOwnerLegDeletion;
                 expect(clouds.household.inventory(HOUSEHOLD_SYNC_ZONE).has(leg.syncId)).toBe(false);
-                yield* testDb.$client.unsafe('UPDATE sync_zone_registry SET role = ?, database_scope = ? WHERE zone_label = ?', [
-                    SyncZoneRoleEnum.PARTICIPANT,
-                    ICloudSyncScope.SHARED,
-                    HOUSEHOLD_SYNC_ZONE
-                ]);
                 const context = makeSyncServiceContext(testDb);
                 context.store.holder.state = { ...context.store.holder.state, sharedStateSerialization: 'before-deletion' };
                 const deletion = {
@@ -211,6 +218,57 @@ describe('cloud-sync/share-split-transfer', () => {
                 );
                 expectNoRejections(yield* pullHousehold(deviceB, clouds, 'member-after-resend'));
                 yield* expectLedgers(deviceB, testDb);
+            })
+        );
+
+        it.effect('flushes a resumed owner leg deletion after a kill without redelivery', () =>
+            Effect.gen(function* () {
+                const { deviceB, clouds, leg } = yield* startOwnerLegDeletion;
+                const heldDeletion = `sync_pending WHERE sync_id = '${leg.syncId}' AND missing_record_type = 'SchemaVersion'`;
+                yield* testDb.$client.unsafe(
+                    "INSERT INTO sync_pending (sync_zone, sync_id, record_type, missing_record_type, missing_sync_id, payload) VALUES (?1, ?2, 'TransactionLeg', 'SchemaVersion', ?1, json_object('deletion', json('true'), 'recordType', 'TransactionLeg', 'recordName', ?2, 'zone', ?1))",
+                    [HOUSEHOLD_SYNC_ZONE, leg.syncId]
+                );
+                const context = makeSyncServiceContext(testDb);
+                yield* context.run(
+                    Effect.gen(function* () {
+                        const service = yield* syncService;
+                        yield* matchZoneLineage(context);
+                        yield* service.reconfigure;
+                        yield* uploadDevice(testDb, clouds);
+                    })
+                );
+                expect(yield* countRows(testDb, heldDeletion)).toBe(1);
+                const restarted = makeSyncServiceContext(testDb, context.store);
+                yield* restarted.run(
+                    Effect.gen(function* () {
+                        const service = yield* syncService;
+                        yield* matchZoneLineage(restarted);
+                        yield* service.reconfigure;
+                        yield* uploadDevice(testDb, clouds);
+                        yield* service.handleDidFetch({ scope: ICloudSyncScope.PRIVATE });
+                        yield* uploadDevice(testDb, clouds);
+                    })
+                );
+                expect(clouds.household.inventory(HOUSEHOLD_SYNC_ZONE).has(leg.syncId)).toBe(true);
+                expect(yield* countRows(testDb, heldDeletion)).toBe(0);
+                expectNoRejections(yield* pullHousehold(deviceB, clouds, 'member-after-resume'));
+                yield* expectLedgers(deviceB, testDb);
+            })
+        );
+
+        it.effect('keeps a held leg record when its owner transfer retry is flushed', () =>
+            Effect.gen(function* () {
+                yield* testDb.$client.unsafe(
+                    "INSERT INTO sync_pending (sync_zone, sync_id, record_type, missing_record_type, missing_sync_id, payload) VALUES (?1, 'held-leg', 'TransactionLeg', 'SchemaVersion', ?1, '{\"schemaVersion\":2}')",
+                    [HOUSEHOLD_SYNC_ZONE]
+                );
+                yield* makeSyncServiceContext(testDb).run(
+                    Effect.flatMap(SyncApplyService, apply =>
+                        apply.enqueueOwnerTransfers([{ linkId: 'held-leg', zone: HOUSEHOLD_SYNC_ZONE }])
+                    )
+                );
+                expect(yield* countRows(testDb, "sync_pending WHERE sync_id = 'held-leg'")).toBe(1);
             })
         );
 

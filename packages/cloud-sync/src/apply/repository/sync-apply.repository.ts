@@ -1,5 +1,5 @@
 import { SyncRecordTypeEnum, Db, SyncOutboxEntityTable, SyncPendingEntityTable } from '@budgie/contracts';
-import { and, eq, inArray, ne } from 'drizzle-orm';
+import { and, eq, inArray, ne, sql } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -160,6 +160,19 @@ export class SyncApplyRepository extends Context.Service<SyncApplyRepository>()(
                 db
                     .delete(SyncPendingEntityTable)
                     .where(and(eq(SyncPendingEntityTable.syncZone, syncZone), eq(SyncPendingEntityTable.syncId, syncId)))
+            ),
+        removePausedDeletion: (syncZone: string, syncId: string) =>
+            Db.query(db =>
+                db
+                    .delete(SyncPendingEntityTable)
+                    .where(
+                        and(
+                            eq(SyncPendingEntityTable.syncZone, syncZone),
+                            eq(SyncPendingEntityTable.syncId, syncId),
+                            eq(SyncPendingEntityTable.missingRecordType, SYNC_SCHEMA_PAUSED_MISSING_RECORD_TYPE),
+                            sql`json_extract(${SyncPendingEntityTable.payload}, '$.deletion') = 1`
+                        )
+                    )
             ),
         findPending: (syncZone: string, syncId: string) =>
             Db.query(db => db.query.SyncPendingEntityTable.findFirst({ where: { syncZone, syncId } })),
