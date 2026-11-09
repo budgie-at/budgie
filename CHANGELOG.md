@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.173.3](https://github.com/budgie-at/budgie/compare/v6.173.2...v6.173.3) (2026-11-09)
+
+### Bug Fixes
+
+* **cloud-sync:** keep resumed owner-leg retries durable until flushed ([#2088](https://github.com/budgie-at/budgie/issues/2088)) ([fc26ed9](https://github.com/budgie-at/budgie/commit/fc26ed93259f6204ef43c1a258538e36024f03bf)), closes [#2042](https://github.com/budgie-at/budgie/issues/2042)
+
+
 ## [6.173.2](https://github.com/budgie-at/budgie/compare/v6.173.1...v6.173.2) (2026-11-09)
 
 ### Bug Fixes
