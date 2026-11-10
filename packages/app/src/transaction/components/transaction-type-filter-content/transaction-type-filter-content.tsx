@@ -13,7 +13,7 @@ import { toggleFilterSelection } from '../../utils/toggle-filter-selection.util'
 import { TransactionFiltersSelector } from '../transaction-filters/transaction-filters.selector';
 import { TransactionTypeFilterItem } from '../transaction-type-filter/transaction-type-filter-item';
 
-import type { TransactionTypeFilterResult } from '../../context/transaction-type-filter-modal.context';
+import type { ModalResult } from '../../../@generic/type/modal-result.type';
 
 const TRANSACTION_TYPE_ROWS = [
     [TransactionTypeEnum.EXPENSE, TransactionTypeEnum.INCOME],
@@ -22,7 +22,7 @@ const TRANSACTION_TYPE_ROWS = [
 
 interface Props {
     readonly value: TransactionTypeEnum[] | null;
-    readonly onCommit: (result: TransactionTypeFilterResult) => void;
+    readonly onCommit: (result: ModalResult<'/transaction-type-filter'>) => void;
 }
 
 export const TransactionTypeFilterContent = ({ value, onCommit }: Props) => {

@@ -4,17 +4,17 @@ import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 
 import { useCreateAction } from '../../@generic/hook/use-create-action.hook';
+import { useOpenModal } from '../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
 import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
-import { useRuleFormModal } from '../context/rule-form-modal.context';
 import { useGetAllRulesQuery } from '../query/use-get-all-rules.query';
 import { RulesPageSelector } from '../selector/rules-page.selector';
 
 export const useRulesListPageActions = () => {
     const { t } = useLingui();
     const { rules } = useGetAllRulesQuery();
-    const [openRuleForm] = useRuleFormModal();
+    const openRuleForm = useOpenModal('/rule-form');
 
     const handleDeleteRule = (id: number) =>
         Effect.flatMap(RuleService, ruleService => ruleService.archiveById(id)).pipe(toastOnFailure(t`Could not delete rule`));

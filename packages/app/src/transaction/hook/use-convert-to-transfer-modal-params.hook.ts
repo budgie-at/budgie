@@ -1,9 +1,9 @@
 import { useState } from 'react';
 
-import { useCurrentConvertToTransferModalParams } from '../context/convert-to-transfer-modal.context';
+import { useModalParams } from '../../@generic/hook/use-modal-params/use-modal-params.hook';
 
 export const useConvertToTransferModalParams = () => {
-    const currentParams = useCurrentConvertToTransferModalParams();
+    const currentParams = useModalParams('/convert-to-transfer');
     const [params] = useState(currentParams);
 
     return params;

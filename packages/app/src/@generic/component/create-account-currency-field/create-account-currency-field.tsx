@@ -8,7 +8,7 @@ import { CreateAccountScreenSelector } from '../../../account/component/create-a
 import { useGetRatesByBaseAndQuoteIdsQuery } from '../../../exchange-rate/query/use-get-rates-by-base-and-quote-ids.query';
 import { useGetInstrumentsByTypeQuery } from '../../../instrument/query/use-get-instruments-by-type.query';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
-import { useCurrencySelectorModal } from '../../context/currency-selector-modal.context';
+import { useOpenModal } from '../../hook/use-open-modal/use-open-modal.hook';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { formatExchangeRate } from '../../utils/format-exchange-rate.util';
 import { AccountCurrencyIcon } from '../account-currency-icon/account-currency-icon';
@@ -33,7 +33,7 @@ export const CreateAccountCurrencyField = ({
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const { instruments } = useGetInstrumentsByTypeQuery(instrumentType);
     const { rate } = useGetRatesByBaseAndQuoteIdsQuery(value, defaultInstrument.id);
-    const [openCurrencySelector] = useCurrencySelectorModal();
+    const openCurrencySelector = useOpenModal('/currency-selector');
 
     const handleOpen = () => {
         openCurrencySelector({ selectedInstrumentId: value, instrumentType }, selectedInstrument => {

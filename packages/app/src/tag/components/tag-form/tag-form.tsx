@@ -3,9 +3,8 @@ import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 
-import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { AiTranslationFields } from '../../../@generic/component/ai-translation-fields/ai-translation-fields';
 import { EntityEditSections } from '../../../@generic/component/entity-edit-sections/entity-edit-sections';
 import { EntityFormHero } from '../../../@generic/component/entity-form-hero/entity-form-hero';
 import { EntityHeroFormPage } from '../../../@generic/component/entity-hero-form-page/entity-hero-form-page';
@@ -14,12 +13,9 @@ import { GroupedListActionRow } from '../../../@generic/component/grouped-list-a
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { IconTitleField } from '../../../@generic/component/icon-title-field/icon-title-field';
 import { Icon } from '../../../@generic/component/icon/icon';
-import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
-import { UsageFailureRow } from '../../../@generic/component/usage-failure-row/usage-failure-row';
+import { EntityFormStatusContext } from '../../../@generic/context/entity-form-status.context';
 import { EntityOperationEnum } from '../../../@generic/enum/entity-operation.enum';
-import { useEntityOperation } from '../../../@generic/hook/use-entity-operation.hook';
-import { useEntityUsage } from '../../../@generic/hook/use-entity-usage.hook';
-import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
+import { useEntityFormState } from '../../../@generic/hook/use-entity-form-state.hook';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { TagMonogramSizeEnum } from '../../enum/tag-monogram-size.enum';
 import { useDeleteTag } from '../../hooks/use-delete-tag.hook';
@@ -44,25 +40,21 @@ interface Props {
 export const TagForm = (props: Props) => {
     const { tag, defaultTitle, onSuccess, onCancel } = props;
     const { t } = useLingui();
-    const saveFlight = useSingleFlight();
-    const operation = useEntityOperation();
     const deleteTag = useDeleteTag();
     const mergeTag = useMergeTag();
-    const { usage, isUsagePending, isUsageFailure, retryUsage } = useEntityUsage(tagUsageAtom);
 
     const { handleSubmit, setValue, formState, title } = useTagForm(tag ?? (defaultTitle ? { title: defaultTitle } : null));
+    const form = useEntityFormState(tag?.id, tagUsageAtom, title, onCancel);
+    const { transactionCount } = form;
+    const { isBusy, isReady: hasTitle } = form.status;
 
     const isEditing = isDefined(tag);
-    const isBusy = saveFlight.isLoading || operation.isPending;
     const isChanged = !isDefined(tag) || title !== tag.title;
-    const hasTitle = isNotEmptyString(title.trim());
-    const isSaveDisabled = !hasTitle || isBusy;
     const createLabel = hasTitle ? t`Create tag` : t`Add a name to continue`;
     const titleError = isDefined(formState.errors.title) ? t`Use 1 to ${TAG_TITLE_MAX_LENGTH} characters` : void 0;
     const saveLabel = isEditing ? t`Save changes` : createLabel;
     const heroFallbackTitle = isEditing ? t`Edit tag` : t`New tag`;
     const heroSubtitle = isEditing ? t`Rename it or merge it into another` : t`Name it to group transactions`;
-    const transactionCount = usage?.find(entry => entry.id === tag?.id)?.transactionCount ?? 0;
     const deleteFooter = isPositiveNumber(transactionCount)
         ? t({
               message: plural(transactionCount, {
@@ -87,7 +79,7 @@ export const TagForm = (props: Props) => {
 
     const handleMerge = () => {
         if (isDefined(tag) && !isBusy) {
-            operation.start(EntityOperationEnum.MERGE, trackMutation =>
+            form.startOperation(EntityOperationEnum.MERGE, trackMutation =>
                 mergeTag(tag.id, trackMutation).pipe(
                     Effect.tap(target => (isDefined(target) ? Effect.sync(() => void onSuccess({ tag: target })) : Effect.void))
                 )
@@ -111,83 +103,62 @@ export const TagForm = (props: Props) => {
             }
         }).pipe(toastOnFailure(isEditing ? t`Could not save tag` : t`Could not create tag`, t`Please try again later`));
 
-    const handleDelete = () => {
-        if (isDefined(tag) && !isBusy) {
-            operation.start(EntityOperationEnum.DELETE, trackMutation =>
-                deleteTag(tag.id, trackMutation).pipe(Effect.tap(isDeleted => (isDeleted ? Effect.sync(onCancel) : Effect.void)))
-            );
-        }
-    };
-
-    const keywordsFooter = isDefined(tag) ? (
-        <AiTranslationFields title={tag.title} titleEn={tag.titleEn} titleTags={tag.titleTags} />
-    ) : null;
-
-    const usageActions = isUsageFailure ? (
-        <UsageFailureRow onRetry={retryUsage} />
-    ) : (
-        <LoadingContent isLoading={isUsagePending} className="gap-7xl">
-            <EntityEditSections
-                deleteLabel={t`Delete tag`}
-                deleteFooter={deleteFooter}
-                deleteTestID={TagFormSelector.Delete}
-                onDelete={handleDelete}
-                isDisabled={isBusy}
-                mutatingOperation={operation.mutatingOperation}
-            >
-                {isPositiveNumber(transactionCount) ? (
-                    <GroupedListSection footer={mergeFooter}>
-                        <GroupedListActionRow
-                            label={t`Merge into another tag…`}
-                            icon={UserIconNameEnum.GitMerge}
-                            onPress={handleMerge}
-                            isDisabled={isBusy}
-                            isLoading={operation.mutatingOperation === EntityOperationEnum.MERGE}
-                            labelClassName="text-primary"
-                            trailing={<Icon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" />}
-                            testID={TagFormSelector.Merge}
-                        />
-                    </GroupedListSection>
-                ) : null}
-            </EntityEditSections>
-        </LoadingContent>
-    );
-
-    const handleFormSubmit = handleSubmit(values => saveFlight.run(submitTag(values)));
+    const handleDelete = () => void form.startDelete(deleteTag);
+    const handleFormSubmit = handleSubmit(values => form.runSave(submitTag(values)));
 
     return (
-        <EntityHeroFormPage
-            onCancel={onCancel}
-            submitLabel={saveLabel}
-            isReady={hasTitle}
-            isLoading={saveFlight.isLoading}
-            isDisabled={isSaveDisabled}
-            onSubmit={handleFormSubmit}
-            submitTestID={TagFormSelector.Submit}
-        >
-            <EntityFormHero
-                title={title}
-                subtitle={heroSubtitle}
-                fallbackTitle={heroFallbackTitle}
-                icon={<TagMonogram title={title} size={TagMonogramSizeEnum.LARGE} />}
-            />
-
-            <GroupedListSection title={t`Details`} footer={keywordsFooter}>
-                <IconTitleField label={t`Name`} error={titleError}>
-                    <FormTitleInput
-                        placeholder={t`e.g. Business, Personal, Vacation`}
-                        accessibilityLabel={t`Tag name`}
-                        testID={TagFormSelector.Input}
-                        maxLength={TAG_TITLE_MAX_LENGTH}
-                        autoFocus={!isEditing}
-                        editable={!isBusy}
-                        value={title}
-                        onChangeText={handleTitleChange}
+        <EntityFormStatusContext value={form.status}>
+            <EntityHeroFormPage
+                entity={tag}
+                hero={
+                    <EntityFormHero
+                        title={title}
+                        subtitle={heroSubtitle}
+                        fallbackTitle={heroFallbackTitle}
+                        icon={<TagMonogram title={title} size={TagMonogramSizeEnum.LARGE} />}
                     />
-                </IconTitleField>
-            </GroupedListSection>
-
-            {isDefined(tag) ? usageActions : null}
-        </EntityHeroFormPage>
+                }
+                titleField={
+                    <IconTitleField label={t`Name`} error={titleError}>
+                        <FormTitleInput
+                            placeholder={t`e.g. Business, Personal, Vacation`}
+                            accessibilityLabel={t`Tag name`}
+                            testID={TagFormSelector.Input}
+                            maxLength={TAG_TITLE_MAX_LENGTH}
+                            autoFocus={!isEditing}
+                            editable={!isBusy}
+                            value={title}
+                            onChangeText={handleTitleChange}
+                        />
+                    </IconTitleField>
+                }
+                submitLabel={saveLabel}
+                submitTestID={TagFormSelector.Submit}
+                onSubmit={handleFormSubmit}
+                onCancel={onCancel}
+            >
+                <EntityEditSections
+                    deleteLabel={t`Delete tag`}
+                    deleteFooter={deleteFooter}
+                    deleteTestID={TagFormSelector.Delete}
+                    onDelete={handleDelete}
+                >
+                    {isPositiveNumber(transactionCount) ? (
+                        <GroupedListSection footer={mergeFooter}>
+                            <GroupedListActionRow
+                                label={t`Merge into another tag…`}
+                                icon={UserIconNameEnum.GitMerge}
+                                onPress={handleMerge}
+                                isDisabled={isBusy}
+                                isLoading={form.status.mutatingOperation === EntityOperationEnum.MERGE}
+                                labelClassName="text-primary"
+                                trailing={<Icon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" />}
+                                testID={TagFormSelector.Merge}
+                            />
+                        </GroupedListSection>
+                    ) : null}
+                </EntityEditSections>
+            </EntityHeroFormPage>
+        </EntityFormStatusContext>
     );
 };

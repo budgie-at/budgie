@@ -4,7 +4,7 @@ import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { useRuleSelectorModal } from '../../context/rule-selector-modal.context';
+import { useOpenModal } from '../../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { useRuleConditionValueField } from '../../hooks/use-rule-condition-value-field.hook';
 import { RuleValueGlyph } from '../rule-value-glyph/rule-value-glyph';
 import { RuleValuePickerButton } from '../rule-value-picker-button/rule-value-picker-button';
@@ -27,7 +27,7 @@ interface Props {
 export const RuleConditionValueEnumSelector = ({ index, options, icon, sheetTitle, placeholder, testID }: Props) => {
     const { t } = useLingui();
     const { value, onChange, isMissing } = useRuleConditionValueField(index);
-    const [openRuleSelector] = useRuleSelectorModal();
+    const openRuleSelector = useOpenModal('/rule-selector');
     const selectedOption = options.find(option => option.value === value);
     const selectedLabel = isDefined(selectedOption) ? t(selectedOption.label) : null;
 

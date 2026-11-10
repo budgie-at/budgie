@@ -5,16 +5,17 @@ import * as Effect from 'effect/Effect';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
+import { useOpenModal } from '../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { showSuccessToast } from '../../@generic/utils/show-success-toast/show-success-toast';
 import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
-import { type TagsSelectorResult, useTagsSelectorModal } from '../context/tags-selector-modal.context';
 import { TagService } from '../service/tag.service';
 
+import type { ModalResult } from '../../@generic/type/modal-result.type';
 import type { MutationTracker } from '../../@generic/type/mutation-tracker.type';
 
 export const useMergeTag = () => {
     const { t } = useLingui();
-    const [openTagsSelector] = useTagsSelectorModal();
+    const openTagDestination = useOpenModal('/tag-destination');
 
     const pickTarget = (sourceId: number, sourceTitle: string, count: number) => {
         const title = t`Merge “${sourceTitle}” into…`;
@@ -43,13 +44,10 @@ export const useMergeTag = () => {
             })
         });
 
-        return Effect.callback<TagsSelectorResult>(resume => {
-            openTagsSelector(
-                { excludeTagIds: [sourceId], title, description, singleSelect: true, commitLabel: t`Merge`, getCommitCopy },
-                selectedTagIds => {
-                    resume(Effect.succeed(selectedTagIds));
-                }
-            );
+        return Effect.callback<ModalResult<'/tag-destination'> | null>(resume => {
+            openTagDestination({ excludeTagIds: [sourceId], title, description, commitLabel: t`Merge`, getCommitCopy }, selectedTagIds => {
+                resume(Effect.succeed(selectedTagIds));
+            });
         });
     };
 

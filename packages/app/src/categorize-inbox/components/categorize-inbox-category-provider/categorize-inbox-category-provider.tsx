@@ -6,11 +6,10 @@ import * as Effect from 'effect/Effect';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { useOpenModal } from '../../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
-import { useCategorySelectorModal } from '../../../category/context/category-selector-modal.context';
 import { useNonSystemCategoriesQuery } from '../../../category/query/use-non-system-categories.query';
 import { defaultInstrumentIdAtom } from '../../../settings/constants/settings-atoms.constant';
-import { useTagsSelectorModal } from '../../../tag/context/tags-selector-modal.context';
 import { AnalyticsTransactionsModeEnum } from '../../../transaction/enum/analytics-transactions-mode.enum';
 import { buildUncategorizedRouteParams } from '../../../transaction/utils/build-uncategorized-route-params.util';
 import { categoryEvidenceAtom, uncategorizedRowsAtom } from '../../constant/categorize-inbox-atoms.constant';
@@ -30,8 +29,8 @@ interface Props {
 export const CategorizeInboxCategoryProvider = ({ params, children }: Props) => {
     const { t } = useLingui();
     const defaultInstrumentId = useAtomValue(defaultInstrumentIdAtom);
-    const [openCategorySelector] = useCategorySelectorModal();
-    const [openTagsSelector] = useTagsSelectorModal();
+    const openCategorySelector = useOpenModal('/category-selector');
+    const openTagsSelector = useOpenModal('/tags-selector');
     const { categories } = useNonSystemCategoriesQuery();
     const labelsById = useCategorizeInboxLabels(categories);
 

@@ -4,8 +4,8 @@ import { View } from 'react-native';
 
 import { AccountFormBindingsInterface } from '../../../account/interface/account-form-bindings.interface';
 import { TONAL_DISC_BACKGROUND } from '../../constant/tonal-disc-background.constant';
-import { useIconSelectorModal } from '../../context/icon-selector-modal.context';
 import { useIconSearchEntries } from '../../hook/use-icon-search-entries.hook';
+import { useOpenModal } from '../../hook/use-open-modal/use-open-modal.hook';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { CircleIcon } from '../circle-icon/circle-icon';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
@@ -24,7 +24,7 @@ interface Props {
 export const AccountDetailsField = (props: Props) => {
     const { titleBinding, iconBinding, variant, placeholder, nameInputTestID, selectNameOnFocus = false } = props;
     const { t } = useLingui();
-    const [openIconSelector] = useIconSelectorModal();
+    const openIconSelector = useOpenModal('/icon-selector');
     const iconName = useIconSearchEntries().find(entry => entry.icon === iconBinding.field.value)?.label ?? iconBinding.field.value;
     const iconSize = isEmojiIcon(iconBinding.field.value) ? 22 : 20;
 

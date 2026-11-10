@@ -8,10 +8,10 @@ import { tagsSelectorReducer } from '../../utils/tags-selector-reducer.util';
 import { TagsSelectorCreateStep } from '../tags-selector-create-step/tags-selector-create-step';
 import { TagsSelectorStep } from '../tags-selector-step/tags-selector-step';
 
-import type { TagsSelectorModalParams } from '../../context/tags-selector-modal.context';
+import type { ModalParams } from '../../../@generic/type/modal-params.type';
 
 interface Props {
-    readonly params: TagsSelectorModalParams;
+    readonly params: ModalParams<'/tags-selector'>;
     readonly onCommit: (tagIds: number[]) => void;
     readonly onDismiss: () => void;
 }

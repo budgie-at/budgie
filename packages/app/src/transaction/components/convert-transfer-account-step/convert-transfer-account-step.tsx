@@ -10,7 +10,7 @@ import { AccountSelectorSheetContent } from '../../../account/component/account-
 import { useConvertToTransferModalParams } from '../../hook/use-convert-to-transfer-modal-params.hook';
 import { useTransferAccounts } from '../../hook/use-transfer-accounts.hook';
 
-import type { AccountSelectorResult } from '../../../account/context/account-selector-modal.context';
+import type { ModalResult } from '../../../@generic/type/modal-result.type';
 import type { TransactionCreateInputInterface } from '@budgie/contracts';
 
 interface Props {
@@ -32,7 +32,7 @@ export const ConvertTransferAccountStep = ({ onBack }: Props) => {
         onlyActive: false
     };
 
-    const handleSelect = (accountId: AccountSelectorResult) => {
+    const handleSelect = (accountId: ModalResult<'/account-selector'> | null) => {
         if (isDefined(accountId)) {
             setValue(isExpense ? 'toAccountId' : 'fromAccountId', accountId);
             clearErrors('root');

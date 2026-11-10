@@ -1,21 +1,15 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
-import { EmptyFn, isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isNotEmptyString } from '@rnw-community/shared';
 
 import { SearchablePageEmptyStateActions } from '../../../@generic/component/searchable-page-empty-state-actions/searchable-page-empty-state-actions';
 import { SearchablePageEmptyState } from '../../../@generic/component/searchable-page-empty-state/searchable-page-empty-state';
-import { useCategoryFormModal } from '../../context/category-form-modal.context';
 
-interface Props {
-    readonly search: string;
-    readonly onClearSearch: EmptyFn;
-    readonly onCreate?: (defaultTitle: string) => void;
-}
+import type { SearchableEntityEmptyStatePropsInterface } from '../../../@generic/interface/searchable-entity-empty-state-props.interface';
 
-export const CategoryEmptyState = ({ search, onClearSearch, onCreate }: Props) => {
+export const CategoryEmptyState = ({ search, onClearSearch, onCreate }: SearchableEntityEmptyStatePropsInterface) => {
     const { t } = useLingui();
-    const [openCategoryForm] = useCategoryFormModal();
     const trimmedSearch = search.trim();
     const hasSearch = isNotEmptyString(trimmedSearch);
     const icon = hasSearch ? UserIconNameEnum.Search : UserIconNameEnum.Folder;
@@ -24,7 +18,7 @@ export const CategoryEmptyState = ({ search, onClearSearch, onCreate }: Props) =
         ? t`Check the spelling or create it as a new category.`
         : t`Built-in categories are always there. Add your own to sort spending the way you think about it.`;
 
-    const handleCreate = () => void (isDefined(onCreate) ? onCreate(trimmedSearch) : openCategoryForm({ defaultTitle: trimmedSearch }));
+    const handleCreate = () => void onCreate(trimmedSearch);
 
     return (
         <SearchablePageEmptyState icon={icon} title={title} description={description}>

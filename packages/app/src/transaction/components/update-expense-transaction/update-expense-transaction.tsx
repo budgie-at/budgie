@@ -1,7 +1,7 @@
 import { TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
-import { useConsolidationSourceModal } from '../../context/consolidation-source-modal.context';
+import { useOpenModal } from '../../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { useUpdateSimpleTransaction } from '../../hook/use-update-simple-transaction.hook';
 import { DebtSettlementPill } from '../debt-settlement-pill/debt-settlement-pill';
 import { RefundedPill } from '../refunded-pill/refunded-pill';
@@ -20,7 +20,7 @@ export const UpdateExpenseTransaction = ({ transaction, openFeeOnMount }: Update
         transactionType: TransactionTypeEnum.EXPENSE,
         openFeeOnMount
     });
-    const [openConsolidationSourceModal] = useConsolidationSourceModal();
+    const openConsolidationSourceModal = useOpenModal('/consolidation-source');
     const handleOpenRefundSources = () => void openConsolidationSourceModal({ transactionId: transaction.id });
 
     return (

@@ -3,7 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
-import { useResyncWindowPickerModal } from '../../context/resync-window-picker-modal.context';
+import { useOpenModal } from '../../../@generic/hook/use-open-modal/use-open-modal.hook';
 
 interface Props {
     readonly accountId: number;
@@ -13,7 +13,7 @@ interface Props {
 
 export const ResyncAccount = ({ accountId, subtitle, testID }: Props) => {
     const { t } = useLingui();
-    const [openResyncWindowPicker] = useResyncWindowPickerModal();
+    const openResyncWindowPicker = useOpenModal('/resync-window-picker');
 
     const handleResync = () => {
         openResyncWindowPicker({ accountId });

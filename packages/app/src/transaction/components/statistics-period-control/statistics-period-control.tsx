@@ -9,7 +9,7 @@ import { isDefined } from '@rnw-community/shared';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { EASE_OUT, MOTION_FAST_DURATION } from '../../../@generic/constant/motion.constant';
 import { TITLE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/title-max-font-size-multiplier.constant';
-import { useDateFilterModal } from '../../../@generic/context/date-filter-modal.context';
+import { useOpenModal } from '../../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { normalizeToWholeDays } from '../../../@generic/utils/date/normalize-to-whole-days.util';
 import { shiftDateRange } from '../../../@generic/utils/date/shift-date-range.util';
 import { useFormatDateRange } from '../../../i18n/hook/use-format-date-range.hook';
@@ -29,7 +29,7 @@ const continuousCorners = { borderCurve: 'continuous' as const };
 
 export const StatisticsPeriodControl = ({ value, onChange }: Props) => {
     const { t } = useLingui();
-    const [openDateFilter] = useDateFilterModal();
+    const openDateFilter = useOpenModal('/date-filter');
     const formatDateRange = useFormatDateRange();
 
     const handleOpen = () => {

@@ -4,8 +4,8 @@ import { useLingui } from '@lingui/react/macro';
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { CreateAccountScreenSelector } from '../../../account/component/create-account-screen/create-account-screen.selector';
-import { useContactSelectorModal } from '../../context/contact-selector-modal.context';
 import { useContacts } from '../../hook/use-contacts.hook';
+import { useOpenModal } from '../../hook/use-open-modal/use-open-modal.hook';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { CircleIcon } from '../circle-icon/circle-icon';
 import { SimpleHorizontalCell } from '../simple-horizontal-cell/simple-horizontal-cell';
@@ -21,7 +21,7 @@ interface Props {
 
 export const ContactSelector = ({ contactId, onSelect, testID, variant, emptyDescription, selectedDescription }: Props) => {
     const { contacts } = useContacts();
-    const [openContactSelector] = useContactSelectorModal();
+    const openContactSelector = useOpenModal('/contact-selector');
     const { t } = useLingui();
 
     const handleOpen = () => {

@@ -3,13 +3,13 @@ import { useFormContext, useWatch } from 'react-hook-form';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { useAccountSelectorModal } from '../../account/context/account-selector-modal.context';
+import { useOpenModal } from '../../@generic/hook/use-open-modal/use-open-modal.hook';
 
 import type { AnchoredMorphOriginInterface } from '../../@generic/interface/anchored-morph-origin.interface';
 
 export const useTransactionAccountSelector = (fieldName: 'fromAccountId' | 'toAccountId') => {
     const { control, setValue } = useFormContext<TransactionCreateInputInterface>();
-    const [openAccountSelector] = useAccountSelectorModal();
+    const openAccountSelector = useOpenModal('/account-selector');
     const accountId = useWatch({ control, name: fieldName });
     const transactionType = useWatch({ control, name: 'type' });
 

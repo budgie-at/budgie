@@ -1,12 +1,8 @@
-import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
+import { useModalRoute } from '../@generic/hook/use-modal-route/use-modal-route.hook';
 import { ImportBackupPin } from '../import/component/import-backup-pin/import-backup-pin';
-import { useImportBackupPinModal, useImportBackupPinModalParams } from '../import/context/import-backup-pin-modal.context';
 
 export default function ImportBackupPinModal() {
-    const [, resolveImportBackupPin, dismissImportBackupPin] = useImportBackupPinModal();
-    const sourceUri = useImportBackupPinModalParams();
-
-    useModalDismiss(dismissImportBackupPin);
+    const { params: sourceUri, resolve: resolveImportBackupPin } = useModalRoute('/import-backup-pin');
 
     return <ImportBackupPin sourceUri={sourceUri} onResult={resolveImportBackupPin} />;
 }

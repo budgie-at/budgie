@@ -1,14 +1,19 @@
-import { TransactionTypeEnum, UserIconNameEnum, isExpenseTransaction, isIncomeTransaction, convertFromMicroUnits } from '@budgie/contracts';
+import {
+    TransactionTypeEnum,
+    UserIconNameEnum,
+    isExpenseTransaction,
+    isIncomeTransaction,
+    convertFromMicroUnits,
+    type TransactionWithRelationsEntityInterface
+} from '@budgie/contracts';
 import { getTransactionCategoryEntries } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { ActionsMenuItem } from '../../../@generic/component/actions-menu-item/actions-menu-item';
-import { useConvertToTransferModal } from '../../context/convert-to-transfer-modal.context';
+import { useOpenModal } from '../../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { TransactionListContextMenuSelector } from '../transaction-list-context-menu/transaction-list-context-menu.selector';
-
-import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
@@ -16,7 +21,7 @@ interface Props {
 
 export const TransactionListConvertToTransferMenuItem = ({ transaction }: Props) => {
     const { t } = useLingui();
-    const [openConvertToTransfer] = useConvertToTransferModal();
+    const openConvertToTransfer = useOpenModal('/convert-to-transfer');
 
     const isConsolidated = isDefined(transaction.consolidationType);
     const categoryEntries = getTransactionCategoryEntries(transaction.entries);

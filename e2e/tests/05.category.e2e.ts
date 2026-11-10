@@ -1,7 +1,9 @@
 import * as a from '../support/budgie/accounts.ts';
 import * as c from '../support/budgie/categories.ts';
 import * as b from '../support/budgie/core.ts';
+import * as m from '../support/budgie/misc.ts';
 import { test } from '../support/budgie/test.ts';
+import * as t from '../support/budgie/transactions.ts';
 
 test('05 category', { tags: ['categories'] }, async ({ budgie }) => {
     const ctx = budgie.ctx;
@@ -69,5 +71,34 @@ test('05 category', { tags: ['categories'] }, async ({ budgie }) => {
         await c.swipeRowToDelete(ctx, 'CategoryCard.E2E Category Updated');
         await screen.getByText('Delete').last().tap();
         await b.expectNoId(ctx, 'CategoryCard.E2E Category Updated', 10_000);
+    });
+});
+
+test('05 category move and delete', { tags: ['categories'] }, async ({ budgie }) => {
+    const ctx = budgie.ctx;
+
+    await budgie.start({ fixture: '14.db' });
+
+    await b.phase('delete a used category through move and delete', async () => {
+        await a.navigateToSettings(ctx);
+        await a.openSettingsCard(ctx, 'SettingsPage.ManageCategoriesCard', 'CategoryPage.SearchInput');
+        await b.tapId(ctx, 'CategoryCard.E2E Filter Expense Category');
+        await b.expectId(ctx, 'CategoryForm.Delete', 10_000);
+        await b.tapId(ctx, 'CategoryForm.Delete');
+        await b.expectSettledId(ctx, 'CategoryPickerBottomSheet.CommitButton');
+        await b.fillId(ctx, 'CategoryPickerBottomSheet.Input', 'Income Category');
+        await b.tapId(ctx, 'CategoryPickerBottomSheet.Card.E2E Filter Income Category');
+        await b.expectText(ctx, /moves? to “E2E Filter Income Category”\. “E2E Filter Expense Category” will be deleted\./);
+        await b.tapId(ctx, 'CategoryPickerBottomSheet.CommitButton');
+        await b.expectNoId(ctx, 'CategoryPickerBottomSheet.CommitButton', 10_000);
+        await b.expectNoId(ctx, 'CategoryCard.E2E Filter Expense Category', 10_000);
+    });
+
+    await b.phase('moved transactions carry the destination category', async () => {
+        await t.navigateToTransactions(ctx);
+        await m.revealChip(ctx, 'TransactionFilters.AmountChip', 'TransactionFilters.CategoryChip', 'right');
+        await c.applyCategoryFilter(ctx, 'E2E Filter Income Category');
+        await b.expectId(ctx, 'TransactionCard.Label.E2E_Filter_Expense');
+        await b.expectId(ctx, 'TransactionCard.Label.E2E_Filter_Income');
     });
 });

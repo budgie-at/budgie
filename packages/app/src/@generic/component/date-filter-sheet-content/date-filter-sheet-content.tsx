@@ -19,7 +19,7 @@ import { FilterSheetFooter } from '../filter-sheet/filter-sheet-footer/filter-sh
 import { FilterSheetHeader } from '../filter-sheet/filter-sheet-header/filter-sheet-header';
 import { ScrollableSheetCard } from '../scrollable-sheet-card/scrollable-sheet-card';
 
-import type { DateFilterResult } from '../../context/date-filter-modal.context';
+import type { ModalResult } from '../../type/modal-result.type';
 
 const DATE_FILTER_PERIODS: readonly DatePeriodEnum[] = [
     DatePeriodEnum.THIS_MONTH,
@@ -33,7 +33,7 @@ const DATE_FILTER_PERIODS: readonly DatePeriodEnum[] = [
 
 interface Props {
     readonly range: DateRangeInterface | null;
-    readonly onCommit: (result: DateFilterResult) => void;
+    readonly onCommit: (result: ModalResult<'/date-filter'>) => void;
     readonly datePeriodTestID: (period: DatePeriodEnum) => string;
     readonly applyTestID: string;
 }

@@ -4,7 +4,7 @@ import { useFormContext } from 'react-hook-form';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { useAccountSelectorModal } from '../../account/context/account-selector-modal.context';
+import { useOpenModal } from '../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { TRANSFER_ACCOUNT_FIELDS } from '../constant/transfer-account-fields.constant';
 
 import { useTransferAccounts } from './use-transfer-accounts.hook';
@@ -13,7 +13,7 @@ import type { AnchoredMorphOriginInterface } from '../../@generic/interface/anch
 
 export const useTransferAccountSelection = () => {
     const { setValue } = useFormContext<TransactionCreateInputInterface>();
-    const [openAccountSelector] = useAccountSelectorModal();
+    const openAccountSelector = useOpenModal('/account-selector');
     const accounts = useTransferAccounts();
     const [isPickerOpen, setIsPickerOpen] = useState(false);
     const { fromAccountId, toAccountId } = accounts;

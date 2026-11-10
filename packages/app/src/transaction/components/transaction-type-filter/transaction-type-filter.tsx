@@ -3,7 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { useTransactionTypeFilterModal } from '../../context/transaction-type-filter-modal.context';
+import { useOpenModal } from '../../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { TransactionFilterChip } from '../transaction-filter-chip/transaction-filter-chip';
 import { TransactionFiltersSelector } from '../transaction-filters/transaction-filters.selector';
 
@@ -14,7 +14,7 @@ interface Props {
 
 export const TransactionTypeFilter = ({ value, onChange }: Props) => {
     const { t } = useLingui();
-    const [openTransactionTypeFilter] = useTransactionTypeFilterModal();
+    const openTransactionTypeFilter = useOpenModal('/transaction-type-filter');
 
     const handleOpen = () => {
         openTransactionTypeFilter({ value }, result => {

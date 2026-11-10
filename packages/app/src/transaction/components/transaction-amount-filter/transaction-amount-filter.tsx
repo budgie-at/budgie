@@ -4,9 +4,9 @@ import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { useOpenModal } from '../../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
-import { useTransactionAmountFilterModal } from '../../context/transaction-amount-filter-modal.context';
 import { TransactionFilterChip } from '../transaction-filter-chip/transaction-filter-chip';
 import { TransactionFiltersSelector } from '../transaction-filters/transaction-filters.selector';
 
@@ -19,7 +19,7 @@ export const TransactionAmountFilter = ({ value, onChange }: Props) => {
     const { t } = useLingui();
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const formatDigits = useFormatDigits(0, 2);
-    const [openTransactionAmountFilter] = useTransactionAmountFilterModal();
+    const openTransactionAmountFilter = useOpenModal('/transaction-amount-filter');
 
     const handleOpen = () => {
         openTransactionAmountFilter({ value }, result => {

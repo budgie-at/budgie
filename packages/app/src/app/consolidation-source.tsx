@@ -6,14 +6,13 @@ import { isDefined } from '@rnw-community/shared';
 import { SingleStepMorphingSheet } from '../@generic/component/single-step-morphing-sheet/single-step-morphing-sheet';
 import { MORPHING_SHEET_SELECTOR_HEIGHT_RATIO } from '../@generic/constant/morphing-sheet-height-ratio.constant';
 import { useModalRouteState } from '../@generic/hook/use-modal-route-state/use-modal-route-state.hook';
+import { useModalRoute } from '../@generic/hook/use-modal-route/use-modal-route.hook';
 import { useMorphingSheetListHeight } from '../@generic/hook/use-morphing-sheet-list-height.hook';
 import { ConsolidationSourceModalContent } from '../transaction/components/consolidation-source-modal-content/consolidation-source-modal-content';
-import { useConsolidationSourceModal, useConsolidationSourceModalParams } from '../transaction/context/consolidation-source-modal.context';
 
 export default function ConsolidationSourceModal() {
-    const [, , dismissConsolidationSource] = useConsolidationSourceModal();
-    const currentParams = useConsolidationSourceModalParams();
-    useModalRouteState(currentParams, dismissConsolidationSource);
+    const { params: currentParams } = useModalRoute('/consolidation-source');
+    useModalRouteState(currentParams);
     const listStyle = useMorphingSheetListHeight(MORPHING_SHEET_SELECTOR_HEIGHT_RATIO);
 
     if (!isDefined(currentParams)) {

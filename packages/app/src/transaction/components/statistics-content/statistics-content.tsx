@@ -7,11 +7,11 @@ import { isDefined } from '@rnw-community/shared';
 import { Button } from '../../../@generic/component/button/button';
 import { EntranceReveal } from '../../../@generic/component/entrance-reveal/entrance-reveal';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
+import { useOpenModal } from '../../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { AnalyticsTabType } from '../../../@generic/type/analytics-tab.type';
 import { AnalyticsPageSelector } from '../../../app/(tabs)/analytics-page.selector';
 import { RunwayContent } from '../../../runway/component/runway-content/runway-content';
 import { AnalyticsHistoryBoundary } from '../../../sync/component/analytics-history-boundary/analytics-history-boundary';
-import { useTransactionAccountFilterModal } from '../../context/transaction-account-filter-modal.context';
 import { useHasIncomeOrExpenseQuery } from '../../query/use-has-income-or-expense.query';
 import { checkIfFiltersSelected } from '../../utils/check-if-filters-selected.util';
 import { StatisticsActivityPanels } from '../statistics-activity-panels/statistics-activity-panels';
@@ -33,7 +33,7 @@ export const StatisticsContent = ({ activeTab, filters, onChangeFilters: setFilt
     const { t } = useLingui();
     const isAccessibilityTextSize = useIsAccessibilityTextSize();
 
-    const [openAccountFilter] = useTransactionAccountFilterModal();
+    const openAccountFilter = useOpenModal('/transaction-account-filter');
     const { hasIncomeOrExpense, isLoading: isHistoryLoading } = useHasIncomeOrExpenseQuery();
 
     const handleChooseAccounts = () => {

@@ -7,12 +7,10 @@ import { isDefined } from '@rnw-community/shared';
 import { DateFilter } from '../../../@generic/component/date-filter/date-filter';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { useOpenModal } from '../../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { cn } from '../../../@generic/utils/cn.util';
 import { FILTER_CHIP_CLASS_NAME } from '../../constant/filter-chip-class-name.constant';
 import { FILTER_CHIP_HIT_SLOP } from '../../constant/filter-chip-hit-slop.constant';
-import { useTransactionAccountFilterModal } from '../../context/transaction-account-filter-modal.context';
-import { useTransactionCategoryFilterModal } from '../../context/transaction-category-filter-modal.context';
-import { useTransactionTagFilterModal } from '../../context/transaction-tag-filter-modal.context';
 import { TransactionAmountFilter } from '../transaction-amount-filter/transaction-amount-filter';
 import { TransactionIdsFilterChip } from '../transaction-ids-filter-chip/transaction-ids-filter-chip';
 import { TransactionTypeFilter } from '../transaction-type-filter/transaction-type-filter';
@@ -34,9 +32,9 @@ interface Props {
 export const TransactionFilters = (props: Props) => {
     const { filters, onChange, scopeAccountIds, showTypeFilter = true, showDateFilter = true, isClearAllVisible, leading } = props;
     const { t } = useLingui();
-    const [openTransactionAccountFilter] = useTransactionAccountFilterModal();
-    const [openTransactionCategoryFilter] = useTransactionCategoryFilterModal();
-    const [openTransactionTagFilter] = useTransactionTagFilterModal();
+    const openTransactionAccountFilter = useOpenModal('/transaction-account-filter');
+    const openTransactionCategoryFilter = useOpenModal('/transaction-category-filter');
+    const openTransactionTagFilter = useOpenModal('/transaction-tag-filter');
     const selectedAccountsCount = filters.accountIds?.length ?? 0;
     const selectedCategoriesCount = filters.categoryIds?.length ?? 0;
     const selectedTagsCount = filters.tagIds?.length ?? 0;

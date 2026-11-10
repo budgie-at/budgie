@@ -6,19 +6,19 @@ import { useState } from 'react';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
+import { useOpenModal } from '../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { useProcessingHaptic } from '../../@generic/hook/use-processing-haptic.hook';
 import { useSingleFlight } from '../../@generic/hook/use-single-flight.hook';
 import { useVibration } from '../../@generic/hook/use-vibration.hook';
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
 import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
-import { useImportBackupPinModal } from '../context/import-backup-pin-modal.context';
 import { DatabaseImportService } from '../service/database-import.service';
 
 import { useImportErrorHandlers } from './use-import-error-handlers.hook';
 
 export const useRestoreBackup = () => {
     const { t } = useLingui();
-    const [openImportBackupPin] = useImportBackupPinModal();
+    const openImportBackupPin = useOpenModal('/import-backup-pin');
     const [, hapticImpact] = useVibration();
     const { isLoading, run } = useSingleFlight();
     const [isRestoring, setIsRestoring] = useState(false);

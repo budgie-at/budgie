@@ -3556,14 +3556,8 @@ msgstr "Regel konnte nicht aktualisiert werden"
 msgid "Could not update setting"
 msgstr "Einstellung konnte nicht aktualisiert werden"
 
-#: src/settings/components/auto-assign-mcc-category/auto-assign-mcc-category.tsx
-#: src/settings/components/default-account-selector/default-account-selector.tsx
-#: src/settings/components/default-currency-selector/default-currency-selector.tsx
 #: src/settings/components/language-selector/language-selector.tsx
-#: src/settings/components/pin-management-rows/pin-management-rows.tsx
-#: src/settings/components/screenshot-protection-row/screenshot-protection-row.tsx
-#: src/settings/components/show-cents-row/show-cents-row.tsx
-#: src/settings/components/theme-switch/theme-switch.tsx
+#: src/settings/utils/run-settings-update.util.ts
 msgid "Could not update settings"
 msgstr "Einstellungen konnten nicht aktualisiert werden"
 
@@ -4054,15 +4048,14 @@ msgstr "Vom Plan lösen"
 msgid "Detaches it from “{debtTitle}”"
 msgstr "Löst sie von „{debtTitle}“"
 
+#: src/@generic/component/entity-hero-form-page/entity-hero-form-page.tsx
 #: src/account/component/create-account-details-section/create-account-details-section.tsx
 #: src/account/component/update-account-page/update-account-page.tsx
 #: src/budget/components/budget-event-form/budget-event-form.tsx
 #: src/budget/components/budget-setup-form/budget-setup-form.tsx
-#: src/category/components/category-form/category-form.tsx
 #: src/inzhur/component/inzhur-operations-details/inzhur-operations-details.tsx
 #: src/recurring/components/recurring-series-form-fields/recurring-series-form-fields.tsx
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
-#: src/tag/components/tag-form/tag-form.tsx
 msgid "Details"
 msgstr "Details"
 

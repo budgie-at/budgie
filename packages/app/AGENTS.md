@@ -603,7 +603,7 @@ Root layout has 14 nested providers in this order (settings are not a provider: 
 11. AiProviderWrapper
 12. AiEmbeddingProgressProvider
 13. AiStatusProvider
-14. ModalProvider (wraps all 20 modal providers internally)
+14. ModalProvider (one `ModalStore` keyed by the routes in `ModalRegistryInterface`)
 
 ## AI/LLM Module Patterns
 

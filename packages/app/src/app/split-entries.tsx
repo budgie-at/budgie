@@ -1,16 +1,15 @@
 import { isDefined } from '@rnw-community/shared';
 
 import { useModalRouteState } from '../@generic/hook/use-modal-route-state/use-modal-route-state.hook';
+import { useModalRoute } from '../@generic/hook/use-modal-route/use-modal-route.hook';
 import { useMorphingSheetResult } from '../@generic/hook/use-morphing-sheet-result.hook';
 import { SplitEntriesModalContent } from '../transaction/components/split-entries-modal-content/split-entries-modal-content';
-import { useSplitEntriesModal, useSplitEntriesModalParams } from '../transaction/context/split-entries-modal.context';
 
 import type { TransactionEntryCreateInputInterface } from '@budgie/contracts';
 
 export default function SplitEntriesModal() {
-    const [, resolveSplitEntries, dismissSplitEntries] = useSplitEntriesModal();
-    const currentParams = useSplitEntriesModalParams();
-    useModalRouteState(currentParams, dismissSplitEntries);
+    const { params: currentParams, resolve: resolveSplitEntries } = useModalRoute('/split-entries');
+    useModalRouteState(currentParams);
     const { handleCommit, handleDismissed } = useMorphingSheetResult<TransactionEntryCreateInputInterface[]>(resolveSplitEntries);
 
     if (!isDefined(currentParams)) {

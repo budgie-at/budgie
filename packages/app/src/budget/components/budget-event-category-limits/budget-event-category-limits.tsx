@@ -7,7 +7,7 @@ import { isEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { HeaderTextAction } from '../../../@generic/component/header-text-action/header-text-action';
-import { useCategorySelectorModal } from '../../../category/context/category-selector-modal.context';
+import { useOpenModal } from '../../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { BudgetSelector } from '../../budget.selector';
 import { BudgetEventFormValues } from '../../constant/budget-event-form-schema.constant';
 import { BudgetAddCategoryLimitRow } from '../budget-add-category-limit-row/budget-add-category-limit-row';
@@ -23,7 +23,7 @@ export const BudgetEventCategoryLimits = ({ currencySymbol }: Props) => {
     const { control } = useFormContext<BudgetEventFormValues>();
     const { fields, append, remove } = useFieldArray({ control, name: 'categoryLimits' });
     const categoryLimits = useWatch({ control, name: 'categoryLimits' });
-    const [openCategorySelector] = useCategorySelectorModal();
+    const openCategorySelector = useOpenModal('/category-selector');
     const selectedCategoryIds = categoryLimits.map(limit => limit.categoryId).filter(isPositiveNumber);
 
     const handleAddPress = () => {

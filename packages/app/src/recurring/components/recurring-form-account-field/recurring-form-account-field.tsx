@@ -7,7 +7,7 @@ import { isDefined } from '@rnw-community/shared';
 import { AnchoredMorphTrigger } from '../../../@generic/component/anchored-morph-trigger/anchored-morph-trigger';
 import { GroupedListValueRow } from '../../../@generic/component/grouped-list-value-row/grouped-list-value-row';
 import { RoundedEdgeEnum } from '../../../@generic/enum/rounded-edge.enum';
-import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
+import { useOpenModal } from '../../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
 import { RecurringSeriesFormSelector } from '../recurring-series-form-screen/recurring-series-form.selector';
 
@@ -18,7 +18,7 @@ export const RecurringFormAccountField = () => {
     const { t } = useLingui();
     const { control, setValue } = useFormContext<RecurringSeriesFormValues>();
     const accountId = useWatch({ control, name: 'accountId' });
-    const [openAccountSelector] = useAccountSelectorModal();
+    const openAccountSelector = useOpenModal('/account-selector');
     const { account } = useGetAccountByIdQuery(accountId ?? 0);
     const hasAccount = isDefined(accountId);
 

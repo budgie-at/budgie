@@ -4,7 +4,7 @@ import { useFormContext, useWatch } from 'react-hook-form';
 
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { useTagsSelectorModal } from '../../../tag/context/tags-selector-modal.context';
+import { useOpenModal } from '../../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { useGetTagByIdsQuery } from '../../../tag/query/use-get-tag-by-ids.query';
 import { useTransactionDateLabel } from '../../hook/use-transaction-date-label.hook';
 import { SimpleQuickFormSelector } from '../simple-quick-form/simple-quick-form.selector';
@@ -20,7 +20,7 @@ const NO_BREAK_SPACE = '\u00A0';
 export const TransactionDateTagsRow = ({ onDatePress }: Props) => {
     const { t } = useLingui();
     const { control, setValue } = useFormContext<TransactionCreateInputInterface>();
-    const [openTagsSelector] = useTagsSelectorModal();
+    const openTagsSelector = useOpenModal('/tags-selector');
     const tagIds = useWatch({ control, name: 'tagIds' });
     const { tags } = useGetTagByIdsQuery(tagIds);
     const dateLabel = useTransactionDateLabel();

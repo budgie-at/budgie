@@ -10,11 +10,11 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { isDefined } from '@rnw-community/shared';
 
 import { useModalRouteState } from '../@generic/hook/use-modal-route-state/use-modal-route-state.hook';
+import { useModalRoute } from '../@generic/hook/use-modal-route/use-modal-route.hook';
 import { useMorphingSheetResult } from '../@generic/hook/use-morphing-sheet-result.hook';
 import { useSingleFlight } from '../@generic/hook/use-single-flight.hook';
 import { toastOnFailure } from '../@generic/utils/toast-on-failure.util';
 import { ConvertToTransferModalContent } from '../transaction/components/convert-to-transfer-modal-content/convert-to-transfer-modal-content';
-import { useConvertToTransferModal } from '../transaction/context/convert-to-transfer-modal.context';
 import { useConvertToTransferModalParams } from '../transaction/hook/use-convert-to-transfer-modal-params.hook';
 
 import type { TransactionCreateInputInterface } from '@budgie/contracts';
@@ -22,9 +22,9 @@ import type { TransactionCreateInputInterface } from '@budgie/contracts';
 // eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
 export default function ConvertToTransferModal() {
     const { t } = useLingui();
-    const [, resolveConvertToTransfer, dismissConvertToTransfer] = useConvertToTransferModal();
+    const { resolve: resolveConvertToTransfer } = useModalRoute('/convert-to-transfer');
     const currentParams = useConvertToTransferModalParams();
-    useModalRouteState(currentParams, dismissConvertToTransfer);
+    useModalRouteState(currentParams);
     const { isLoading, run } = useSingleFlight();
 
     const transactionId = currentParams?.transactionId ?? 0;
@@ -62,7 +62,7 @@ export default function ConvertToTransferModal() {
             return;
         }
 
-        resolveConvertToTransfer(true, { skipBack: true });
+        resolveConvertToTransfer(true, true);
         if (router.canDismiss()) {
             router.dismiss();
         }

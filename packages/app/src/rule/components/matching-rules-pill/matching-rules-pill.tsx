@@ -9,7 +9,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { MOTION_FADE_IN, MOTION_FADE_OUT } from '../../../@generic/constant/motion.constant';
-import { useRuleFormModal } from '../../context/rule-form-modal.context';
+import { useOpenModal } from '../../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { RuleIndicatorPill } from '../rule-indicator-pill/rule-indicator-pill';
 
 import { MatchingRulesPillSelector } from './matching-rules-pill.selector';
@@ -22,7 +22,7 @@ interface Props {
 export const MatchingRulesPill = ({ matchingRulesCount, matchingRuleIds }: Props) => {
     const router = useRouter();
     const { t } = useLingui();
-    const [openRuleForm] = useRuleFormModal();
+    const openRuleForm = useOpenModal('/rule-form');
 
     const handlePress = () => {
         const [matchingRuleId] = matchingRuleIds;

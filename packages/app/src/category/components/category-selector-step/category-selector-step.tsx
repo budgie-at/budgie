@@ -1,10 +1,10 @@
 import { useMorphingSheetCommit } from '../../../@generic/hook/use-morphing-sheet-commit.hook';
 import { CategoryPickerPanel } from '../category-picker-panel/category-picker-panel';
 
-import type { CategorySelectorModalParams } from '../../context/category-selector-modal.context';
+import type { ModalParams } from '../../../@generic/type/modal-params.type';
 
 interface Props {
-    readonly params: CategorySelectorModalParams;
+    readonly params: ModalParams<'/category-selector'>;
     readonly onCommit: (categoryId: number) => void;
     readonly onCreate: (defaultTitle: string) => void;
 }

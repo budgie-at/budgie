@@ -7,9 +7,9 @@ import { isDefined } from '@rnw-community/shared';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { FormItem } from '../../../@generic/component/form-item/form-item';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
+import { usePickDate } from '../../../@generic/hook/use-pick-date.hook';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
-import { useDatePickerModal } from '../../../transaction/context/date-picker-modal.context';
 import { DepositAccountFormValues } from '../../interface/deposit-account-form-values.interface';
 import { CreateAccountScreenSelector } from '../create-account-screen/create-account-screen.selector';
 
@@ -21,7 +21,7 @@ interface Props {
 export const DepositMaturityDateField = ({ control, variant }: Props) => {
     const { t } = useLingui();
     const { formatDayAndFullMonthAndYear } = useFormatDate();
-    const [openDatePicker] = useDatePickerModal();
+    const pickDate = usePickDate();
 
     const render = ({ field: { value, onChange } }: UseControllerReturn<DepositAccountFormValues, 'deadline'>) => {
         const fieldVariant = isDefined(value) ? variant : 'secondary';
@@ -29,10 +29,8 @@ export const DepositMaturityDateField = ({ control, variant }: Props) => {
         const title = isDefined(value) ? formatDayAndFullMonthAndYear(value) : t`Set Maturity Date`;
 
         const handleOpen = () => {
-            openDatePicker({ initialDate: value ?? new Date() }, selectedDate => {
-                if (isDefined(selectedDate)) {
-                    onChange(selectedDate);
-                }
+            pickDate(value ?? new Date(), selectedDate => {
+                onChange(selectedDate);
             });
         };
 

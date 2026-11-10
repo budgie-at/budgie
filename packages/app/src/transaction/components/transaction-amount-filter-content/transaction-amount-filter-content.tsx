@@ -14,11 +14,11 @@ import { SheetSurface } from '../../../@generic/component/sheet-surface/sheet-su
 import { useMorphingSheetCommit } from '../../../@generic/hook/use-morphing-sheet-commit.hook';
 import { TransactionFiltersSelector } from '../transaction-filters/transaction-filters.selector';
 
-import type { TransactionAmountFilterResult } from '../../context/transaction-amount-filter-modal.context';
+import type { ModalResult } from '../../../@generic/type/modal-result.type';
 
 interface Props {
     readonly value: AmountRangeInterface | null;
-    readonly onCommit: (result: TransactionAmountFilterResult) => void;
+    readonly onCommit: (result: ModalResult<'/transaction-amount-filter'>) => void;
 }
 
 export const TransactionAmountFilterContent = ({ value, onCommit }: Props) => {

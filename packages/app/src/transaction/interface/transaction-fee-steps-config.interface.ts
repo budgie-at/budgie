@@ -1,5 +1,5 @@
 import type { ColorPaletteVariant } from '../../@generic/type/color-palette-variant.type';
-import type { TransactionFeeModalResult } from '../context/transaction-fee-modal.context';
+import type { ModalResult } from '../../@generic/type/modal-result.type';
 import type { TransactionEntryCreateInputInterface } from '@budgie/contracts';
 
 export interface TransactionFeeStepsConfigInterface {
@@ -8,7 +8,7 @@ export interface TransactionFeeStepsConfigInterface {
     readonly entry: TransactionEntryCreateInputInterface | null;
     readonly variant: ColorPaletteVariant;
     readonly isFeeActive: boolean;
-    readonly onConfirm: (result: TransactionFeeModalResult) => void;
+    readonly onConfirm: (result: ModalResult<'/transaction-fee'>) => void;
     readonly onShowFee: () => void;
     readonly onShowCategory: () => void;
     readonly onShowCreate: () => void;

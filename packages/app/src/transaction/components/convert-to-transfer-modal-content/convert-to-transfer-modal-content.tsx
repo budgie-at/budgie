@@ -14,7 +14,7 @@ import { useTransferAccounts } from '../../hook/use-transfer-accounts.hook';
 import { ConvertTransferAccountStep } from '../convert-transfer-account-step/convert-transfer-account-step';
 import { ConvertTransferForm } from '../convert-transfer-form/convert-transfer-form';
 
-import type { TransactionFeeModalResult } from '../../context/transaction-fee-modal.context';
+import type { ModalResult } from '../../../@generic/type/modal-result.type';
 import type { TransactionCreateInputInterface } from '@budgie/contracts';
 
 interface Props {
@@ -50,7 +50,7 @@ export const ConvertToTransferModalContent = ({ isSubmitting, onSubmit, onDismis
         setStep(ConvertToTransferStepEnum.FEE_CREATE_CATEGORY);
     };
 
-    const handleFeeConfirm = (result: TransactionFeeModalResult) => {
+    const handleFeeConfirm = (result: ModalResult<'/transaction-fee'>) => {
         applyFeeResult(result, fromAccountId ?? 0);
     };
 

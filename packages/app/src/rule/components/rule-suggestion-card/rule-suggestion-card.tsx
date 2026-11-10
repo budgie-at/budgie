@@ -7,7 +7,7 @@ import { Alert } from 'react-native';
 import { useBottomChromeInset } from '@rnw-community/react-native-screen-chrome';
 import { isDefined } from '@rnw-community/shared';
 
-import { useRuleFormModal } from '../../context/rule-form-modal.context';
+import { useOpenModal } from '../../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { RuleApplicationDrainerService } from '../../service/rule-application-drainer.service';
 import { showRuleApplicationToast } from '../../utils/show-rule-application-toast.util';
 import { SwipeableRuleCard } from '../swipeable-rule-card/swipeable-rule-card';
@@ -23,7 +23,7 @@ interface Props {
 
 export const RuleSuggestionCard = (props: Props) => {
     const { suggestRuleData, onRuleCreated, onDismiss, onCreatingChange } = props;
-    const [openRuleForm] = useRuleFormModal();
+    const openRuleForm = useOpenModal('/rule-form');
     const { inset } = useBottomChromeInset();
 
     const confirmDuplicate = (ruleId: number) =>

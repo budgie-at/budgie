@@ -8,7 +8,7 @@ import { isDefined } from '@rnw-community/shared';
 import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
-import { useCurrencySelectorModal } from '../../../@generic/context/currency-selector-modal.context';
+import { useOpenModal } from '../../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
@@ -19,7 +19,7 @@ import { OnboardingCurrencyRowSelector } from './onboarding-currency-row.selecto
 export const OnboardingCurrencyRow = () => {
     const { t } = useLingui();
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
-    const [openCurrencySelector] = useCurrencySelectorModal();
+    const openCurrencySelector = useOpenModal('/currency-selector');
 
     const handleChangePress = () => {
         openCurrencySelector({ selectedInstrumentId: defaultInstrument.id }, result => {

@@ -3,9 +3,9 @@ import { useLingui } from '@lingui/react/macro';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
+import { useOpenModal } from '../../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { useGetAllMccCategoriesQuery } from '../../../mcc-category/query/use-get-all-mcc-categories.query';
 import { formatMccDisplay } from '../../../mcc-category/utils/format-mcc-display.util';
-import { useRuleMccSelectorModal } from '../../context/rule-mcc-selector-modal.context';
 import { useRuleConditionValueField } from '../../hooks/use-rule-condition-value-field.hook';
 import { RuleValueGlyph } from '../rule-value-glyph/rule-value-glyph';
 import { RuleValuePickerButton } from '../rule-value-picker-button/rule-value-picker-button';
@@ -18,7 +18,7 @@ interface Props {
 export const RuleConditionMccSelector = ({ index, testID }: Props) => {
     const { t } = useLingui();
     const { value, onChange, isMissing } = useRuleConditionValueField(index);
-    const [openRuleMccSelector] = useRuleMccSelectorModal();
+    const openRuleMccSelector = useOpenModal('/rule-mcc-selector');
     const { mccCategories } = useGetAllMccCategoriesQuery();
     const selectedMcc = mccCategories.find(({ mcc }) => mcc === value);
     const fallbackLabel = isNotEmptyString(value) ? value.split(',').join(', ') : null;

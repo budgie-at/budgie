@@ -5,13 +5,13 @@ import { useFormContext } from 'react-hook-form';
 import { sumEntryAmounts } from '../utils/sum-entry-amounts.util';
 import { sumTransactionAmounts } from '../utils/sum-transaction-amounts.util';
 
-import type { TransactionFeeModalResult } from '../context/transaction-fee-modal.context';
+import type { ModalResult } from '../../@generic/type/modal-result.type';
 import type { TransactionCreateInputInterface } from '@budgie/contracts';
 
 export const useApplyTransactionFeeResult = (transactionType: TransactionTypeEnum, setFromNumeric?: (value: number) => void) => {
     const { getValues, setValue } = useFormContext<TransactionCreateInputInterface>();
 
-    return (result: TransactionFeeModalResult, accountId: number) => {
+    return (result: ModalResult<'/transaction-fee'>, accountId: number) => {
         const currentEntries = getValues('entries');
         const categoryEntries = getTransactionCategoryEntries(currentEntries);
         const nextFeeEntries = result.map(entry => ({ ...entry, accountId, type: TransactionEntryTypeEnum.FEE }));

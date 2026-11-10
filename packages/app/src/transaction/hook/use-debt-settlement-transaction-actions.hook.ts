@@ -7,10 +7,10 @@ import Toast from 'react-native-toast-message';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { useOpenModal } from '../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
 import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
-import { useAccountSelectorModal } from '../../account/context/account-selector-modal.context';
 
 import type { DebtSettlementAccountInterface } from '../interface/debt-settlement-account.interface';
 import type { DebtSettlementTransactionActionsParamsInterface } from '../interface/debt-settlement-transaction-actions-params.interface';
@@ -22,7 +22,7 @@ export const useDebtSettlementTransactionActions = ({
     debtType
 }: DebtSettlementTransactionActionsParamsInterface) => {
     const { t } = useLingui();
-    const [openAccountSelector] = useAccountSelectorModal();
+    const openAccountSelector = useOpenModal('/account-selector');
     const transactionDebtEvent = transaction.debtEvents.at(0);
     const transactionDebtSettlementAccount = transactionDebtEvent?.[DebtEventAssociationEnum.DEBT_ACCOUNT] ?? null;
     const [localDebtSettlementAccount, setLocalDebtSettlementAccount] = useState<DebtSettlementAccountInterface | null>(

@@ -5,13 +5,13 @@ import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 import { useMorphingSheetCommit } from '../../@generic/hook/use-morphing-sheet-commit.hook';
 import { appRuntime } from '../../@generic/runtime/app.runtime';
 
-import type { VoiceReviewModalResult } from '../context/voice-review-modal.context';
+import type { ModalResult } from '../../@generic/type/modal-result.type';
 import type { UseVoiceReviewReturnInterface } from '../interface/use-voice-review-return.interface';
 
 export const useVoiceReviewActions = (
     saveAll: UseVoiceReviewReturnInterface['saveAll'],
     accountId: number | null,
-    onCommit: (result: VoiceReviewModalResult) => void
+    onCommit: (result: ModalResult<'/voice-review'>) => void
 ) => {
     const commit = useMorphingSheetCommit(onCommit);
 

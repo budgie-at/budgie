@@ -5,7 +5,7 @@ import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { AnchoredMorphTrigger } from '../../../@generic/component/anchored-morph-trigger/anchored-morph-trigger';
 import { RoundedEdgeEnum } from '../../../@generic/enum/rounded-edge.enum';
-import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
+import { useOpenModal } from '../../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
 import { useRuleConditionValueField } from '../../hooks/use-rule-condition-value-field.hook';
 import { RuleValueGlyph } from '../rule-value-glyph/rule-value-glyph';
@@ -21,7 +21,7 @@ interface Props {
 export const RuleConditionAccountSelector = ({ index, testID }: Props) => {
     const { t } = useLingui();
     const { value, onChange, isMissing } = useRuleConditionValueField(index);
-    const [openAccountSelector] = useAccountSelectorModal();
+    const openAccountSelector = useOpenModal('/account-selector');
     const parsedAccountId = Number.parseInt(value, 10);
     const accountId = isPositiveNumber(parsedAccountId) ? parsedAccountId : 0;
     const { account } = useGetAccountByIdQuery(accountId);
