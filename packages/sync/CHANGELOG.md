@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.173.8](https://github.com/budgie-at/budgie/compare/v6.173.7...v6.173.8) (2026-11-10)
+
+### Bug Fixes
+
+* **sync:** keep deleted bank transactions deleted on re-sync ([#2096](https://github.com/budgie-at/budgie/issues/2096)) ([6bccd47](https://github.com/budgie-at/budgie/commit/6bccd47f38f5c51b62d8cefe7645df5f0b22d492))
+
+
 ## [6.173.7](https://github.com/budgie-at/budgie/compare/v6.173.6...v6.173.7) (2026-11-10)
 
 **Note:** Version bump only for package @budgie/sync
