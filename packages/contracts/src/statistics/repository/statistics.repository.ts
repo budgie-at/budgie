@@ -44,7 +44,8 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
             type === TransactionTypeEnum.EXPENSE && isNotEmptyArray(categoryIds)
                 ? and(
                       transactionFilters.buildExpenseAnalyticsEntryCondition(),
-                      inArray(TransactionEntryEntityTable.categoryId, categoryIds)
+                      inArray(TransactionEntryEntityTable.categoryId, categoryIds),
+                      ne(TransactionEntityTable.type, TransactionTypeEnum.ADJUSTMENT)
                   )
                 : eq(TransactionEntityTable.type, type);
 
