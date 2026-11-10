@@ -122,6 +122,27 @@ export class TransactionService extends Context.Service<TransactionService>()('@
             effect => Db.transaction(effect)
         );
 
+        const deleteTransaction = Effect.fn('TransactionService.deleteTransaction')(function* (id: number, shouldKeepTombstone: boolean) {
+            if (yield* transactionRepository.isForeignTransferLeg(id)) {
+                return;
+            }
+            const transaction = yield* transactionRepository.getByIdWithEntries(id);
+            if (isDefined(transaction?.consolidationType)) {
+                yield* unconsolidationService.unconsolidateById(id);
+                yield* accountBalanceIncrementalService.updateAllBalances(true);
+
+                return;
+            }
+            if (shouldKeepTombstone && isDefined(transaction?.externalId)) {
+                yield* transactionRepository.archiveByIds([id]);
+            } else {
+                yield* transactionRepository.deleteById(id);
+            }
+            yield* transactionTagsRepository.deleteByTransactionId(id);
+            yield* transactionEntryRepository.deleteByTransactionId(id);
+            yield* accountBalanceIncrementalService.updateBalancesByAccountIds(transaction?.entries.map(entry => entry.accountId) ?? []);
+        });
+
         return {
             bulkCreate,
             bulkUpdateImported: Effect.fn('TransactionService.bulkUpdateImported')(
@@ -130,30 +151,8 @@ export class TransactionService extends Context.Service<TransactionService>()('@
                 },
                 effect => Db.transaction(effect)
             ),
-            deleteById: Effect.fn('TransactionService.deleteById')(
-                function* (id: number) {
-                    if (yield* transactionRepository.isForeignTransferLeg(id)) {
-                        return;
-                    }
-                    const transaction = yield* transactionRepository.getByIdWithEntries(id);
-                    if (isDefined(transaction?.consolidationType)) {
-                        yield* unconsolidationService.unconsolidateById(id);
-                        yield* accountBalanceIncrementalService.updateAllBalances(true);
-                    } else {
-                        if (transaction?.externalSource === ExternalSourceEnum.ENABLE_BANKING && isDefined(transaction.externalId)) {
-                            yield* transactionRepository.archiveByIds([id]);
-                        } else {
-                            yield* transactionRepository.deleteById(id);
-                        }
-                        yield* transactionTagsRepository.deleteByTransactionId(id);
-                        yield* transactionEntryRepository.deleteByTransactionId(id);
-                        yield* accountBalanceIncrementalService.updateBalancesByAccountIds(
-                            transaction?.entries.map(entry => entry.accountId) ?? []
-                        );
-                    }
-                },
-                effect => Db.transaction(effect)
-            ),
+            deleteById: (id: number) => Db.transaction(deleteTransaction(id, true)),
+            purgeById: (id: number) => Db.transaction(deleteTransaction(id, false)),
             unconsolidateById: Effect.fn('TransactionService.unconsolidateById')(
                 function* (id: number) {
                     yield* unconsolidationService.unconsolidateById(id);
@@ -163,6 +162,8 @@ export class TransactionService extends Context.Service<TransactionService>()('@
             ),
             findIdMapByExternalSource: (externalSource: ExternalSourceEnum, accountIds?: readonly number[]) =>
                 transactionRepository.findIdMapByExternalSource(externalSource, accountIds),
+            findDeletedExternalIdsByExternalSource: (externalSource: ExternalSourceEnum) =>
+                transactionRepository.findDeletedExternalIdsByExternalSource(externalSource),
             moveExternalEntryToAccount: Effect.fn('TransactionService.moveExternalEntryToAccount')(
                 function* (transactionId: number, externalId: string, accountId: number, isIncome: boolean) {
                     const existingEntry = yield* transactionEntryRepository.findByTransactionIdAndExternalId(transactionId, externalId);

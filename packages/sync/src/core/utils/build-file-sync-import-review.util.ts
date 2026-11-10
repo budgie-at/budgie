@@ -3,6 +3,8 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 import { SyncAccountBalanceStateEnum } from '../enum/sync-account-balance-state.enum';
 import { SyncTransactionTypeEnum } from '../enum/sync-transaction-type.enum';
 
+import { isKnownSyncTransaction } from './is-known-sync-transaction.util';
+
 import type { FileBankSyncImportReviewInterface } from '../interface/file-bank-sync-import-review.interface';
 import type { FileBankSyncReviewTransactionInterface } from '../interface/file-bank-sync-review-transaction.interface';
 import type { FileBasedSyncClientInterface } from '../interface/file-based-sync-client.interface';
@@ -16,10 +18,6 @@ const toReviewTransaction = (transaction: SyncTransactionInterface, currencyCode
     signedAmount: transaction.type === SyncTransactionTypeEnum.INCOME ? Math.abs(transaction.amount) : -Math.abs(transaction.amount),
     currencyCode
 });
-
-const isKnownTransaction = (transaction: SyncTransactionInterface, existingTransactionIdMap: Map<string, number>) =>
-    existingTransactionIdMap.has(transaction.id) ||
-    (transaction.legacyExternalIds ?? []).some(legacyExternalId => existingTransactionIdMap.has(legacyExternalId));
 
 const resolveClosingBalance = (bankAccount: SyncAccountInterface, transactions: SyncTransactionInterface[]): number | null => {
     if (bankAccount.balanceState !== SyncAccountBalanceStateEnum.REPRESENTABLE) {
@@ -41,7 +39,8 @@ const resolveClosingBalance = (bankAccount: SyncAccountInterface, transactions: 
 export const buildFileSyncImportReview = (
     client: FileBasedSyncClientInterface,
     bankAccounts: SyncAccountInterface[],
-    existingTransactionIdMap: Map<string, number>
+    existingTransactionIdMap: ReadonlyMap<string, number>,
+    deletedExternalIds: ReadonlySet<string>
 ): FileBankSyncImportReviewInterface => {
     const accountTransactions = bankAccounts.flatMap(bankAccount =>
         client.getTransactions(bankAccount.id).map(transaction => ({ transaction, currencyCode: bankAccount.currencyCode }))
@@ -51,8 +50,9 @@ export const buildFileSyncImportReview = (
 
     return {
         parsedTransactionCount: accountTransactions.length,
-        duplicateTransactionCount: accountTransactions.filter(({ transaction }) =>
-            isKnownTransaction(transaction, existingTransactionIdMap)
+        duplicateTransactionCount: accountTransactions.filter(
+            ({ transaction }) =>
+                isKnownSyncTransaction(transaction, existingTransactionIdMap) || isKnownSyncTransaction(transaction, deletedExternalIds)
         ).length,
         earliestOperatedAt: isNotEmptyArray(operatedTimes) ? new Date(Math.min(...operatedTimes) * 1000) : null,
         latestOperatedAt: isNotEmptyArray(operatedTimes) ? new Date(Math.max(...operatedTimes) * 1000) : null,

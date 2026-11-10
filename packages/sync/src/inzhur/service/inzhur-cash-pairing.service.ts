@@ -38,7 +38,7 @@ export class InzhurCashPairingService extends Context.Service<InzhurCashPairingS
 
                 return isDefined(nearest) ? { id: nearest.id, externalId: nearest.externalId } : null;
             }),
-            release: (placeholderId: number) => transactionService.deleteById(placeholderId),
+            release: (placeholderId: number) => transactionService.purgeById(placeholderId),
             stamp: Effect.fn('InzhurCashPairingService.stamp')(function* (
                 transactionId: number,
                 cashAccountId: number,

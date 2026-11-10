@@ -264,7 +264,7 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
                 );
 
                 for (const superseded of replacedPurchases) {
-                    yield* transactionService.deleteById(superseded.id);
+                    yield* transactionService.purgeById(superseded.id);
                 }
 
                 const ledger = isNotEmptyArray(replacedPurchases)
@@ -375,7 +375,7 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
                     });
 
                 for (const { stored } of amendedTrades) {
-                    yield* transactionService.deleteById(stored.id);
+                    yield* transactionService.purgeById(stored.id);
                 }
 
                 const failedClaimFallbacks = yield* inzhurOperationsBankPairingService.apply(setup, pairing);

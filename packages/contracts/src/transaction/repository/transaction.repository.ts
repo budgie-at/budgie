@@ -436,7 +436,7 @@ export class TransactionRepository extends Context.Service<TransactionRepository
 
             findDeletedExternalIdsByExternalSource: Effect.fn('TransactionRepository.findDeletedExternalIdsByExternalSource')(function* (
                 externalSource: ExternalSourceEnum,
-                accountIds: readonly number[]
+                accountIds?: readonly number[]
             ) {
                 const results = yield* findExternalIdRows(externalSource, isNotNull(TransactionEntityTable.deletedAt), accountIds);
 
@@ -503,15 +503,18 @@ export class TransactionRepository extends Context.Service<TransactionRepository
 
             truncate: Db.query(db => db.delete(TransactionEntityTable)),
 
-            restoreByAccountIds: (accountIds: number[]) =>
+            restoreByAccountIds: (accountIds: number[], archivedAt: Date) =>
                 Db.query(db =>
                     db
                         .update(TransactionEntityTable)
                         .set({ deletedAt: null })
                         .where(
-                            or(
-                                inArray(TransactionEntityTable.toAccountId, accountIds),
-                                inArray(TransactionEntityTable.fromAccountId, accountIds)
+                            and(
+                                or(
+                                    inArray(TransactionEntityTable.toAccountId, accountIds),
+                                    inArray(TransactionEntityTable.fromAccountId, accountIds)
+                                ),
+                                gte(TransactionEntityTable.deletedAt, archivedAt)
                             )
                         )
                 ),

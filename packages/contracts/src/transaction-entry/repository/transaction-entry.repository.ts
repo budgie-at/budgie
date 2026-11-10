@@ -1,4 +1,4 @@
-import { and, asc, eq, exists, inArray, isNotNull, isNull, or, sql } from 'drizzle-orm';
+import { and, asc, eq, exists, gte, inArray, isNotNull, isNull, or, sql } from 'drizzle-orm';
 import { QueryBuilder } from 'drizzle-orm/sqlite-core';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -272,12 +272,17 @@ export class TransactionEntryRepository extends Context.Service<TransactionEntry
                                 )
                             )
                     ),
-                restoreByAccountIds: (accountIds: number[]) =>
+                restoreByAccountIds: (accountIds: number[], archivedAt: Date) =>
                     Db.query(db =>
                         db
                             .update(TransactionEntryEntityTable)
                             .set({ deletedAt: null })
-                            .where(inArray(TransactionEntryEntityTable.accountId, accountIds))
+                            .where(
+                                and(
+                                    inArray(TransactionEntryEntityTable.accountId, accountIds),
+                                    gte(TransactionEntryEntityTable.deletedAt, archivedAt)
+                                )
+                            )
                     ),
                 deleteByAccountId: (accountId: number) =>
                     Db.query(db => db.delete(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.accountId, accountId)))

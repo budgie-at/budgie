@@ -42,7 +42,7 @@ export class ResyncService extends Context.Service<ResyncService>()('@budgie/syn
             const reconciliationTransactionId = (yield* syncRepository.getByAccountId(accountId))?.reconciliationTransactionId;
             yield* syncRepository.resetForResync(accountId, setupBalance);
             if (isDefined(reconciliationTransactionId)) {
-                yield* transactionService.deleteById(reconciliationTransactionId);
+                yield* transactionService.purgeById(reconciliationTransactionId);
             }
         });
 

@@ -233,7 +233,7 @@ export class BinanceSourceCommitService extends Context.Service<BinanceSourceCom
                     if (isDefined(consolidationParentId)) {
                         yield* transactionService.unconsolidateById(consolidationParentId);
                     }
-                    yield* transactionService.deleteById(transactionId);
+                    yield* transactionService.purgeById(transactionId);
                 }
 
                 return removableTransactionIds.length;

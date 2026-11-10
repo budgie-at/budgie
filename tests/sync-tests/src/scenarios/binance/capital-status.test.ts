@@ -137,6 +137,12 @@ describe('binance/capital-status', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
+    it.effect('re-imports a removed rejected deposit when Binance later reports it completed', () =>
+        Effect.gen(function* () {
+            expect(yield* importedCountsAfterEachStatus(stubDeposit, HOUR_MS / 2, [1, 2, 1])).toEqual([1, 0, 1]);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
     it.effect.each([
         { label: 'deposit', stubHistory: stubDeposit, imported: 1 },
         { label: 'withdrawal', stubHistory: stubWithdrawal, imported: 6 }
