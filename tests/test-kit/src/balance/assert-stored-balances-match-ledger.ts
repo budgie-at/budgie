@@ -11,8 +11,12 @@ export const assertStoredBalancesMatchLedger = (database: DB) =>
             const accountRepository = yield* AccountRepository;
             const accountBalanceRepository = yield* AccountBalanceRepository;
             const accounts = yield* accountRepository.getAllActiveAccountsExceptBankAuthoritative;
-            const accountIds = accounts.filter(({ type }) => type !== AccountTypeEnum.DEBT).map(({ id }) => id);
-            const ledgerBalances = yield* accountBalanceRepository.getLedgerBalances(accountIds);
+            const accountIds = accounts.map(({ id }) => id);
+            const debtLedgerBalances = yield* accountBalanceRepository.getDebtLedgerBalances(
+                accounts.filter(({ type }) => type === AccountTypeEnum.DEBT)
+            );
+            const entryLedgerBalances = yield* accountBalanceRepository.getLedgerBalances(accountIds);
+            const ledgerBalances = new Map([...entryLedgerBalances, ...debtLedgerBalances]);
             const storedBalances = yield* accountBalanceRepository.getByAccountIds(accountIds);
 
             return storedBalances
