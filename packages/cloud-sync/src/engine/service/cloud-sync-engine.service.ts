@@ -4,7 +4,8 @@ import {
     SettingsRepository,
     SyncDatabaseScopeEnum,
     SyncIdentityRepository,
-    SyncResetRepository
+    SyncResetRepository,
+    logAndContinue
 } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -33,7 +34,6 @@ import { CloudSyncHost } from '../port/cloud-sync-host.port';
 import { CloudSyncSafetyCopy } from '../port/cloud-sync-safety-copy.port';
 import { CloudSyncStateStore } from '../port/cloud-sync-state-store.port';
 import { CloudSyncTransport } from '../port/cloud-sync-transport.port';
-import { logAndContinue } from '../utils/log-and-continue.util';
 
 import { CloudSyncDrainService } from './cloud-sync-drain.service';
 import { CloudSyncHouseholdService } from './cloud-sync-household.service';

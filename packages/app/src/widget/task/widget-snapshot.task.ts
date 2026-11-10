@@ -1,8 +1,8 @@
+import { logAndContinue } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 
-import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
 import { runBackgroundTask } from '../../@generic/utils/run-background-task.util';
 import { SiriCatalogService } from '../../siri/service/siri-catalog.service';
 import { WIDGET_SNAPSHOT_TASK } from '../constant/widget-snapshot-task.constant';

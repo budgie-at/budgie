@@ -1,3 +1,4 @@
+import { logAndContinue } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { NotificationFeedbackType } from 'expo-haptics';
@@ -7,7 +8,6 @@ import { isDefined } from '@rnw-community/shared';
 import { useSingleFlight } from '../../@generic/hook/use-single-flight.hook';
 import { useVibration } from '../../@generic/hook/use-vibration.hook';
 import { appRuntime } from '../../@generic/runtime/app.runtime';
-import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
 import { showActionToast } from '../../@generic/utils/show-action-toast/show-action-toast';
 import { showSuccessToast } from '../../@generic/utils/show-success-toast/show-success-toast';
 import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';

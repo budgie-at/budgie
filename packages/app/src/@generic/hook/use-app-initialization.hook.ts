@@ -1,6 +1,6 @@
 import { BudgetPeriodCloseService } from '@budgie/budget';
 import { CloudSyncService } from '@budgie/cloud-sync';
-import { SyncIdentityRepository } from '@budgie/contracts';
+import { SyncIdentityRepository, logAndContinue } from '@budgie/contracts';
 import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as Option from 'effect/Option';
@@ -30,7 +30,6 @@ import { BackgroundSyncSessionService } from '../../sync/service/background-sync
 import { WidgetSnapshotService } from '../../widget/service/widget-snapshot.service';
 import { appRuntime } from '../runtime/app.runtime';
 import { Workload } from '../service/workload.service';
-import { logAndContinue } from '../utils/log-and-continue.util';
 import { waitForIdle } from '../utils/wait-for-idle.util';
 
 const SPLASH_HIDE_DELAY_MS = 200;

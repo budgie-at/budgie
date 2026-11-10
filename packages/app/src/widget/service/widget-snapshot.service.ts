@@ -1,3 +1,4 @@
+import { logAndContinue } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as FiberSet from 'effect/FiberSet';
@@ -14,7 +15,6 @@ import { isDefined } from '@rnw-community/shared';
 
 import { DatabaseChangeService } from '../../@generic/drizzle/service/database-change.service';
 import { Workload } from '../../@generic/service/workload.service';
-import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
 import { SiriCatalogService } from '../../siri/service/siri-catalog.service';
 import { WIDGET_SNAPSHOT_TASK } from '../constant/widget-snapshot-task.constant';
 import BudgetWidget from '../widget/budget.widget';

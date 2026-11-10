@@ -1,3 +1,4 @@
+import { logAndContinue } from '@budgie/contracts';
 import { AccountBalanceIncrementalService } from '@budgie/ledger';
 import { RecurringRefreshService } from '@budgie/recurring';
 import { BinanceSyncService, EnableBankingSyncService, MonobankSyncService } from '@budgie/sync';
@@ -8,7 +9,6 @@ import * as Layer from 'effect/Layer';
 import * as Stream from 'effect/Stream';
 
 import { Workload } from '../../@generic/service/workload.service';
-import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
 import { ExchangeRateBackgroundService } from '../../exchange-rate/service/exchange-rate-background.service';
 import { RecurringRefreshModeEnum } from '../../recurring/enum/recurring-refresh-mode.enum';
 import { RecurringReminderService } from '../../recurring/service/recurring-reminder.service';

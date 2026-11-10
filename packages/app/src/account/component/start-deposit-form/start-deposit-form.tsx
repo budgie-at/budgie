@@ -1,4 +1,4 @@
-import { AccountTypeEnum, convertFromMicroUnits } from '@budgie/contracts';
+import { AccountTypeEnum, convertFromMicroUnits, logAndContinue } from '@budgie/contracts';
 import { TransactionTransferService } from '@budgie/ledger';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { Trans, useLingui } from '@lingui/react/macro';
@@ -12,7 +12,6 @@ import { isDefined } from '@rnw-community/shared';
 
 import { useShowError } from '../../../@generic/hook/use-show-error.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
-import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
 import { ACCOUNT_ICON } from '../../constant/account-icon.constant';

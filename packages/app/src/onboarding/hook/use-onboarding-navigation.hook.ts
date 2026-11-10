@@ -1,9 +1,9 @@
+import { logAndContinue } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 import { useRouter } from 'expo-router';
 
 import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { goBackOrReplace } from '../../@generic/utils/go-back-or-replace.util';
-import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
 import { ONBOARDING_STEP_ROUTE } from '../constant/onboarding-step-route.constant';
 import { OnboardingStepEnum } from '../enum/onboarding-step.enum';
 import { OnboardingService } from '../service/onboarding.service';

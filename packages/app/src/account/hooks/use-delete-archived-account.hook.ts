@@ -1,3 +1,4 @@
+import { logAndContinue } from '@budgie/contracts';
 import { AccountArchiveService } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
@@ -5,7 +6,6 @@ import * as Effect from 'effect/Effect';
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
-import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
 import { householdAccountShareAtom } from '../constant/household-account-share-atom.constant';
 import { isAccountArchivable } from '../utils/is-account-archivable.util';
 

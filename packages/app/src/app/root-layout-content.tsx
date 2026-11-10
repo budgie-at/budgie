@@ -1,3 +1,4 @@
+import { logAndContinue } from '@budgie/contracts';
 /* eslint-disable react/jsx-max-depth */
 import { BudgetPeriodCloseService } from '@budgie/budget';
 import { I18nProvider as LinguiProvider } from '@lingui/react';
@@ -33,7 +34,6 @@ import { ScreenChromeThemeProvider } from '../@generic/provider/screen-chrome-th
 import { appRuntime } from '../@generic/runtime/app.runtime';
 import { Workload } from '../@generic/service/workload.service';
 import { fitToContentsSheetOptions } from '../@generic/utils/fit-to-contents-sheet-options.util';
-import { logAndContinue } from '../@generic/utils/log-and-continue.util';
 import { AiProvider } from '../ai/provider/ai.provider';
 import { VoiceInputProvider } from '../ai/provider/voice-input.provider';
 import { AuthGuard } from '../auth/provider/auth.guard';

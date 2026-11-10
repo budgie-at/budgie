@@ -1,3 +1,4 @@
+import { logAndContinue } from '@budgie/contracts';
 import { RecurringRefreshService } from '@budgie/recurring';
 import * as Clock from 'effect/Clock';
 import * as DateTime from 'effect/DateTime';
@@ -6,7 +7,6 @@ import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 
 import { Workload } from '../../@generic/service/workload.service';
-import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
 import { runBackgroundTask } from '../../@generic/utils/run-background-task.util';
 import { RecurringReminderService } from '../../recurring/service/recurring-reminder.service';
 

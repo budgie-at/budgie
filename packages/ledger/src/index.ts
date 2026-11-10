@@ -20,13 +20,11 @@ export { CategoryService } from './category/service/category.service';
 
 export { MoneyDataUpgradeService } from './money-data/service/money-data-upgrade.service';
 
-export { ImportedBatchNormalizerService } from './transaction/service/imported-batch-normalizer.service';
 export { ImportedTransactionEntryUpdateService } from './transaction/service/imported-transaction-entry-update.service';
 export { RefreshedImportedEntriesService } from './transaction/service/refreshed-imported-entries.service';
 export { TransactionBatchCreateService } from './transaction/service/transaction-batch-create.service';
 export { TransactionDebtSettlementService } from './transaction/service/transaction-debt-settlement.service';
 export { InstallmentPlanService } from './installment/service/installment-plan.service';
-export { TransactionDepositSafetyService } from './transaction/service/transaction-deposit-safety.service';
 export { TransactionImportService } from './transaction/service/transaction-import.service';
 export { TransactionService } from './transaction/service/transaction.service';
 export { TransactionTransferService } from './transaction/service/transaction-transfer.service';

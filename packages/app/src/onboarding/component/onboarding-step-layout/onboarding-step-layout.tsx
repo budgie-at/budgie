@@ -1,3 +1,4 @@
+import { logAndContinue } from '@budgie/contracts';
 import { useFocusEffect } from 'expo-router';
 import { ReactNode } from 'react';
 
@@ -8,7 +9,6 @@ import { GroupedSurface } from '../../../@generic/component/grouped-surface/grou
 import { RevealGate } from '../../../@generic/component/reveal-gate/reveal-gate';
 import { ScreenChromeThemeProvider } from '../../../@generic/provider/screen-chrome-theme.provider';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
-import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { updateSettingsMutation } from '../../../settings/mutation/update-settings.mutation';
 import { ONBOARDING_STEP_ORDER } from '../../constant/onboarding-step-order.constant';

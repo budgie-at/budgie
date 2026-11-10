@@ -1,4 +1,4 @@
-import { RuleWithActionsRelationsEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { RuleWithActionsRelationsEntityInterface, UserIconNameEnum, logAndContinue } from '@budgie/contracts';
 import { RuleService } from '@budgie/rules';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
@@ -6,7 +6,6 @@ import * as Effect from 'effect/Effect';
 import { useCreateAction } from '../../@generic/hook/use-create-action.hook';
 import { useOpenModal } from '../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { appRuntime } from '../../@generic/runtime/app.runtime';
-import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
 import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
 import { useGetAllRulesQuery } from '../query/use-get-all-rules.query';
 import { RulesPageSelector } from '../selector/rules-page.selector';

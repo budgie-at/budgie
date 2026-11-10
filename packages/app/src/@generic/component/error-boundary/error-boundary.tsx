@@ -1,9 +1,9 @@
+import { logAndContinue } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 import { router } from 'expo-router';
 import { Component } from 'react';
 
 import { appRuntime } from '../../runtime/app.runtime';
-import { logAndContinue } from '../../utils/log-and-continue.util';
 import { openGithubIssueCreation } from '../../utils/open-github-issue-creation.util';
 import { ErrorBoundaryFallback } from '../error-boundary-fallback/error-boundary-fallback';
 

@@ -1,4 +1,5 @@
 import { AITransactionInterface } from '@budgie/ai';
+import { logAndContinue } from '@budgie/contracts';
 import * as Cause from 'effect/Cause';
 import * as Effect from 'effect/Effect';
 import { NotificationFeedbackType } from 'expo-haptics';
@@ -9,7 +10,6 @@ import { isNotEmptyString } from '@rnw-community/shared';
 import { useProcessingHaptic } from '../../@generic/hook/use-processing-haptic.hook';
 import { useVibration } from '../../@generic/hook/use-vibration.hook';
 import { appRuntime } from '../../@generic/runtime/app.runtime';
-import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
 import { VoiceInputActionTypeEnum } from '../enum/voice-input-action-type.enum';
 import { VoiceInputStateEnum } from '../enum/voice-input-state.enum';
 import { UseVoiceInputReturnInterface } from '../interface/use-voice-input-return.interface';

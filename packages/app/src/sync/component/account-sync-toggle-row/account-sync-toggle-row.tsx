@@ -1,4 +1,4 @@
-import { SyncEntityInterface, SyncModeEnum, SyncStatusEnum, UserIconNameEnum } from '@budgie/contracts';
+import { SyncEntityInterface, SyncModeEnum, SyncStatusEnum, UserIconNameEnum, logAndContinue } from '@budgie/contracts';
 import { SyncProviderRegistryService, SYNC_PROVIDER_CAPABILITIES } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
@@ -9,7 +9,6 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
-import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { hasSyncProblem } from '../../utils/has-sync-problem.util';
 import { AccountSyncCardSelector } from '../account-sync-card/account-sync-card.selector';

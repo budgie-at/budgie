@@ -1,3 +1,4 @@
+import { logAndContinue } from '@budgie/contracts';
 import { InstallmentPlanService } from '@budgie/ledger';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
@@ -13,7 +14,6 @@ import { HapticPressFeedbackEnum } from '../../../@generic/enum/haptic-press-fee
 import { useProcessingHaptic } from '../../../@generic/hook/use-processing-haptic.hook';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
-import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { ConvertToInstallmentModalSelector } from '../../../app/convert-to-installment-modal.selector';
 

@@ -1,10 +1,9 @@
-import { RecurringSeriesSourceEnum } from '@budgie/contracts';
+import { RecurringSeriesSourceEnum, logAndContinue } from '@budgie/contracts';
 import { RecurringService } from '@budgie/recurring';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 
 import { appRuntime } from '../../@generic/runtime/app.runtime';
-import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
 import { showActionToast } from '../../@generic/utils/show-action-toast/show-action-toast';
 import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
 import { RecurringRefreshModeEnum } from '../enum/recurring-refresh-mode.enum';

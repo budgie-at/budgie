@@ -1,11 +1,10 @@
-import { UserIconNameEnum } from '@budgie/contracts';
+import { UserIconNameEnum, logAndContinue } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import * as Effect from 'effect/Effect';
 
 import { Button } from '../../../@generic/component/button/button';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
-import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { TransactionFeeModalContentSelector } from '../transaction-fee-modal-content/transaction-fee-modal-content.selector';
 
 interface Props {

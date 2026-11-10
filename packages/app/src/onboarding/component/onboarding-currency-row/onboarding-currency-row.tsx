@@ -1,4 +1,4 @@
-import { UserIconNameEnum } from '@budgie/contracts';
+import { UserIconNameEnum, logAndContinue } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
@@ -10,7 +10,6 @@ import { GroupedListRow } from '../../../@generic/component/grouped-list-row/gro
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { useOpenModal } from '../../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
-import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { updateSettingsMutation } from '../../../settings/mutation/update-settings.mutation';
 
