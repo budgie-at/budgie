@@ -1,9 +1,7 @@
 import { useLingui } from '@lingui/react/macro';
 import { useFormContext, useWatch } from 'react-hook-form';
 
-import { isDefined } from '@rnw-community/shared';
-
-import { useOpenModal } from '../../../@generic/hook/use-open-modal/use-open-modal.hook';
+import { usePickDate } from '../../../@generic/hook/use-pick-date.hook';
 import { useToday } from '../../../@generic/hook/use-today.hook';
 import { BudgetFormValues } from '../../constant/budget-form-schema.constant';
 import { BudgetStartsOnRow } from '../budget-starts-on-row/budget-starts-on-row';
@@ -14,16 +12,12 @@ export const BudgetMonthDayStartField = () => {
     const { t } = useLingui();
     const today = useToday();
     const { control, setValue } = useFormContext<BudgetFormValues>();
-    const openDatePicker = useOpenModal('/date-picker');
+    const pickDate = usePickDate();
     const [periodStartDay, useLastDayOfMonth] = useWatch({ control, name: ['periodStartDay', 'useLastDayOfMonth'] });
     const value = useLastDayOfMonth ? t`Last day of each month` : t`Day ${periodStartDay} of each month`;
 
     const handlePress = () => {
-        openDatePicker({ initialDate: new Date(today.getFullYear(), today.getMonth(), periodStartDay) }, selectedDate => {
-            if (!isDefined(selectedDate)) {
-                return;
-            }
-
+        pickDate(new Date(today.getFullYear(), today.getMonth(), periodStartDay), selectedDate => {
             const dayOfMonth = selectedDate.getDate();
             const isLastDay = dayOfMonth > MAX_PLAIN_START_DAY;
 

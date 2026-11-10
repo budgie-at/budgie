@@ -4,7 +4,7 @@ import { useFormContext, useWatch } from 'react-hook-form';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { useOpenModal } from '../../../@generic/hook/use-open-modal/use-open-modal.hook';
+import { usePickDate } from '../../../@generic/hook/use-pick-date.hook';
 import { useToday } from '../../../@generic/hook/use-today.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { BudgetFormValues } from '../../constant/budget-form-schema.constant';
@@ -14,16 +14,14 @@ export const BudgetAnchorDateStartField = () => {
     const today = useToday();
     const { formatMonthAndDay, formatDayAndMonthAndYear } = useFormatDate();
     const { control, setValue } = useFormContext<BudgetFormValues>();
-    const openDatePicker = useOpenModal('/date-picker');
+    const pickDate = usePickDate();
     const [period, periodAnchorMs] = useWatch({ control, name: ['period', 'periodAnchorMs'] });
     const anchorDate = isDefined(periodAnchorMs) ? new Date(periodAnchorMs) : startOfDay(today);
     const value = period === BudgetPeriodEnum.YEARLY ? formatMonthAndDay(anchorDate) : formatDayAndMonthAndYear(anchorDate);
 
     const handlePress = () => {
-        openDatePicker({ initialDate: anchorDate }, selectedDate => {
-            if (isDefined(selectedDate)) {
-                setValue('periodAnchorMs', startOfDay(selectedDate).getTime(), { shouldDirty: true });
-            }
+        pickDate(anchorDate, selectedDate => {
+            setValue('periodAnchorMs', startOfDay(selectedDate).getTime(), { shouldDirty: true });
         });
     };
 
