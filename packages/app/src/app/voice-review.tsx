@@ -1,5 +1,4 @@
 import { AITransactionInterface } from '@budgie/ai';
-import { useEffect, useEffectEvent } from 'react';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
@@ -35,10 +34,6 @@ const mapExtractedToReviewRows = (transactions: AITransactionInterface[]): Voice
 export default function VoiceReviewModal() {
     const { params: currentParams, resolve: resolveVoiceReview } = useModalRoute('/voice-review');
     const { handleCommit, handleDismissed } = useMorphingSheetResult<ModalResult<'/voice-review'>>(resolveVoiceReview);
-
-    const handleUnmount = useEffectEvent(() => void resolveVoiceReview({ kind: 're-record' }, true));
-
-    useEffect(() => () => void handleUnmount(), []);
 
     const initialRows = mapExtractedToReviewRows(currentParams?.transactions ?? []);
     const originalText = currentParams?.originalText ?? '';
