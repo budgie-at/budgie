@@ -35,7 +35,7 @@
             "outputs": ["dist/**", ".next/**", "node_modules/.cache/tsbuildinfo.json"]
         },
         "test": {
-            "dependsOn": ["^build"]
+            "dependsOn": ["^build", "build"]
         },
         "//#cpd": {
             "outputs": ["report/jscpd/**"]

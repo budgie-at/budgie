@@ -1228,6 +1228,9 @@ importers:
       '@budgie/contracts':
         specifier: workspace:^
         version: link:../../packages/contracts
+      '@budgie/import-export':
+        specifier: workspace:*
+        version: link:../../packages/import-export
       '@budgie/ledger':
         specifier: workspace:*
         version: link:../../packages/ledger
