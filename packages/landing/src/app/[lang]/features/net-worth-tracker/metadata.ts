@@ -14,7 +14,6 @@ export const FEATURE_METADATA = {
     tagline: msg`Bank, cash, deposit, crypto, and debt in one number on your home screen.`,
     metaTitle: msg`Net Worth Tracker for Mobile — Budgie`,
     metaDescription: msg`Roll up every bank account, cash wallet, deposit, crypto holding, and liability into a single net-worth number. Multi-currency conversion baked in.`,
-    primaryKeyword: 'net worth tracker app',
     seoKeywords: [
         'net worth tracker app',
         'net worth dashboard',
@@ -25,6 +24,5 @@ export const FEATURE_METADATA = {
     relatedFeatureSlugs: ['balance-adjustment', 'account-management', 'multi-currency', 'debt-tracking', 'crypto-investment-tracking'],
     relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-shutdown-private-alternative'],
     publishedAt: '2026-01-03',
-    updatedAt: '2026-09-06',
-    ogTags: ['net worth', 'multi-currency', 'dashboard']
+    updatedAt: '2026-09-06'
 } satisfies FeatureRegistryEntryInterface;

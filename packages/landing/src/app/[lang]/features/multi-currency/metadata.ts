@@ -14,7 +14,6 @@ export const FEATURE_METADATA = {
     tagline: msg`Track in any currency. Sum in yours. Exchange rates refresh in the background.`,
     metaTitle: msg`Multi-Currency Accounts — Budgie`,
     metaDescription: msg`Hold accounts in any currency. Rates refresh in the background so every total shows in your home currency. Cross-currency transfers keep both amounts.`,
-    primaryKeyword: 'multi currency expense tracker',
     seoKeywords: [
         'multi currency expense tracker',
         'multi-currency budget app',
@@ -31,6 +30,5 @@ export const FEATURE_METADATA = {
     ],
     relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-shutdown-private-alternative', 'historical-exchange-rates-budget-analytics'],
     publishedAt: '2025-12-19',
-    updatedAt: '2026-05-03',
-    ogTags: ['multi-currency', 'fx', 'accounts']
+    updatedAt: '2026-05-03'
 } satisfies FeatureRegistryEntryInterface;

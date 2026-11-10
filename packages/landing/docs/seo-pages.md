@@ -453,13 +453,11 @@ Allowed fields:
 - `tagline`
 - `metaTitle`
 - `metaDescription`
-- `primaryKeyword`
 - `seoKeywords`
 - `relatedFeatureSlugs`
 - `relatedArticleSlugs`
 - `publishedAt`
 - `updatedAt`
-- `ogTags`
 
 Not allowed in the registry:
 
@@ -479,7 +477,6 @@ Allowed fields:
 - `tagline`
 - `metaTitle`
 - `metaDescription`
-- `primaryKeyword`
 - `seoKeywords`
 - `memberFeatureSlugs`
 - `publishedAt`

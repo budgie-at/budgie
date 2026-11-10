@@ -14,7 +14,6 @@ export const FEATURE_METADATA = {
     tagline: msg`Any bank, any column order. Map it on one screen or start from a built-in preset.`,
     metaTitle: msg`CSV Import for Bank Statements & Transactions — Budgie`,
     metaDescription: msg`Import any bank's CSV with flexible column mapping, or start from a built-in Budgie, SmartBudget or FinEye preset. Re-importing rebuilds your ledger from the file. Universal escape hatch for banks without an API.`,
-    primaryKeyword: 'import bank statement CSV',
     seoKeywords: [
         'import bank statement CSV',
         'CSV bank import app',
@@ -25,6 +24,5 @@ export const FEATURE_METADATA = {
     relatedFeatureSlugs: ['erste-bank-pdf-import', 'privatbank-import', 'monobank-sync', 'data-export', 'bank-resync-window'],
     relatedArticleSlugs: ['mint-shutdown-private-alternative', 'historical-exchange-rates-budget-analytics'],
     publishedAt: '2025-12-21',
-    updatedAt: '2026-05-03',
-    ogTags: ['csv', 'import', 'bank statement']
+    updatedAt: '2026-05-03'
 } satisfies FeatureRegistryEntryInterface;

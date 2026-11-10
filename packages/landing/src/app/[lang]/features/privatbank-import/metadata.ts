@@ -14,7 +14,6 @@ export const FEATURE_METADATA = {
     tagline: msg`One-time import from a Privat24 Excel export — long-press an account card to jump to the picker.`,
     metaTitle: msg`PrivatBank XLSX Import — Budgie`,
     metaDescription: msg`Import accounts and transactions from a Privat24 Excel export. PrivatBank's own category names are matched to Budgie categories automatically.`,
-    primaryKeyword: 'PrivatBank transaction import',
     seoKeywords: [
         'PrivatBank transaction import',
         'PrivatBank24 XLSX import',
@@ -25,6 +24,5 @@ export const FEATURE_METADATA = {
     relatedFeatureSlugs: ['csv-import', 'erste-bank-pdf-import', 'monobank-sync', 'bank-integration-management', 'mcc-auto-category'],
     relatedArticleSlugs: ['mint-shutdown-private-alternative', 'cloud-budgeting-privacy-risks'],
     publishedAt: '2026-02-02',
-    updatedAt: '2026-10-14',
-    ogTags: ['privatbank', 'xlsx', 'import']
+    updatedAt: '2026-10-14'
 } satisfies FeatureRegistryEntryInterface;

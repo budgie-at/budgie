@@ -14,7 +14,6 @@ export const FEATURE_METADATA = {
     tagline: msg`Uncategorized or untagged bank transactions grouped by merchant, with suggestions learned from your own choices. One tap per group.`,
     metaTitle: msg`Bulk Categorize and Tag Transactions — Budgie`,
     metaDescription: msg`Categorize and tag bank transactions in bulk. Budgie groups them by merchant, suggests from your own history and accepts the confident ones in one tap.`,
-    primaryKeyword: 'bulk categorize transactions',
     seoKeywords: [
         'bulk categorize transactions',
         'categorize bank transactions',
@@ -35,6 +34,5 @@ export const FEATURE_METADATA = {
     ],
     relatedArticleSlugs: ['ynab-alternatives-privacy', 'cloud-budgeting-privacy-risks'],
     publishedAt: '2026-09-25',
-    updatedAt: '2026-09-27',
-    ogTags: ['categorize', 'tags', 'bulk']
+    updatedAt: '2026-09-27'
 } satisfies FeatureRegistryEntryInterface;

@@ -14,7 +14,6 @@ export const FEATURE_METADATA = {
     tagline: msg`Turn a purchase paid in parts into a plan. Budgie attaches each monthly part and shows the next payment on Home.`,
     metaTitle: msg`Installment Tracker for Pay in Parts Purchases`,
     metaDescription: msg`Know what you still owe on things you bought in parts. Turn the purchase into a plan, and Budgie attaches each monthly part and shows the next payment.`,
-    primaryKeyword: 'installment tracker app',
     seoKeywords: [
         'installment tracker app',
         'pay in parts tracker',
@@ -25,6 +24,5 @@ export const FEATURE_METADATA = {
     relatedFeatureSlugs: ['debt-tracking', 'monobank-sync', 'privatbank-import', 'recurring-payments-calendar', 'transfer-pair-detection'],
     relatedArticleSlugs: ['ynab-alternatives-privacy'],
     publishedAt: '2026-10-06',
-    updatedAt: '2026-10-06',
-    ogTags: ['installments', 'pay in parts', 'debt']
+    updatedAt: '2026-10-06'
 } satisfies FeatureRegistryEntryInterface;

@@ -14,7 +14,6 @@ export const FEATURE_METADATA = {
     tagline: msg`English, Ukrainian, French, German, Spanish. Full UI, locale-aware formatting.`,
     metaTitle: msg`Multi-Language App — Budgie`,
     metaDescription: msg`Full UI in English, Ukrainian, French, German, and Spanish. Auto-detected from device locale, switchable in-app — no reinstall, no relaunch.`,
-    primaryKeyword: 'multilingual budget app',
     seoKeywords: [
         'multilingual budget app',
         '5 languages expense tracker',
@@ -25,6 +24,5 @@ export const FEATURE_METADATA = {
     relatedFeatureSlugs: ['ai-category-translation', 'dark-mode', 'voice-transaction-entry', 'custom-categories'],
     relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-shutdown-private-alternative'],
     publishedAt: '2025-11-17',
-    updatedAt: '2026-05-03',
-    ogTags: ['i18n', 'languages', 'multilingual']
+    updatedAt: '2026-05-03'
 } satisfies FeatureRegistryEntryInterface;

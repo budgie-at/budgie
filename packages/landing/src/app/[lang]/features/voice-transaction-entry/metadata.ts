@@ -14,7 +14,6 @@ export const FEATURE_METADATA = {
     tagline: msg`Speak it. Budgie logs it. Speech is transcribed on your phone. The audio never leaves it.`,
     metaTitle: msg`Voice-to-Expense, On-Device — Budgie`,
     metaDescription: msg`Say "twelve for coffee, forty for the taxi, and eight euros for parking" and Budgie logs all three as a reviewable batch. The audio never leaves your phone.`,
-    primaryKeyword: 'voice expense tracker',
     seoKeywords: [
         'voice expense tracker',
         'voice budget app',
@@ -26,6 +25,5 @@ export const FEATURE_METADATA = {
     relatedFeatureSlugs: ['ai-auto-categorization', 'expense-tracking', 'ai-category-translation'],
     relatedArticleSlugs: ['cloud-budgeting-privacy-risks', 'local-first-movement-developers'],
     publishedAt: '2026-01-22',
-    updatedAt: '2026-09-16',
-    ogTags: ['voice', 'on-device', 'ai']
+    updatedAt: '2026-09-16'
 } satisfies FeatureRegistryEntryInterface;

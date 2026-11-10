@@ -14,7 +14,6 @@ export const FEATURE_METADATA = {
     tagline: msg`Two taps from open to saved. A bottom-sheet quick-entry form designed for one-handed use.`,
     metaTitle: msg`Expense Tracking App, Log in Seconds — Budgie`,
     metaDescription: msg`Log expenses, income, and transfers in seconds. Each transaction opens read-only with six months of comparable spending before you edit.`,
-    primaryKeyword: 'personal expense tracker',
     seoKeywords: [
         'personal expense tracker',
         'expense tracking app',
@@ -32,6 +31,5 @@ export const FEATURE_METADATA = {
     ],
     relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-shutdown-private-alternative'],
     publishedAt: '2025-12-14',
-    updatedAt: '2026-09-02',
-    ogTags: ['expense tracking', 'transactions', 'mobile']
+    updatedAt: '2026-09-02'
 } satisfies FeatureRegistryEntryInterface;

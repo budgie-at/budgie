@@ -14,7 +14,6 @@ export const FEATURE_METADATA = {
     tagline: msg`Create, merge, reassign, and reorder until the tree matches how you actually think about money.`,
     metaTitle: msg`Custom Spending Categories — Budgie`,
     metaDescription: msg`Build, merge, and reassign your own spending categories with mass-migration. Popularity-sorted selectors and MCC pre-fill keep the right category one tap away.`,
-    primaryKeyword: 'custom budget categories',
     seoKeywords: [
         'custom budget categories',
         'custom expense categories',
@@ -32,6 +31,5 @@ export const FEATURE_METADATA = {
     ],
     relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-shutdown-private-alternative'],
     publishedAt: '2025-11-19',
-    updatedAt: '2026-05-03',
-    ogTags: ['categories', 'custom', 'organization']
+    updatedAt: '2026-05-03'
 } satisfies FeatureRegistryEntryInterface;

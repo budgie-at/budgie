@@ -14,7 +14,6 @@ export const FEATURE_METADATA = {
     tagline: msg`Months left at your current pace, or how much you add each month. Right next to your balance.`,
     metaTitle: msg`Runway: How Long Will My Money Last?`,
     metaDescription: msg`See how many months your cash and bank balance lasts at your current pace, when it runs out, and what drives your spending. Worked out on your phone.`,
-    primaryKeyword: 'how long will my money last',
     seoKeywords: [
         'how long will my money last',
         'personal cash runway',
@@ -31,6 +30,5 @@ export const FEATURE_METADATA = {
     ],
     relatedArticleSlugs: ['ynab-alternatives-privacy', 'cloud-budgeting-privacy-risks'],
     publishedAt: '2026-09-26',
-    updatedAt: '2026-09-26',
-    ogTags: ['runway', 'forecast', 'burn rate']
+    updatedAt: '2026-09-26'
 } satisfies FeatureRegistryEntryInterface;

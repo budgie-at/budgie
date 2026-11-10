@@ -14,7 +14,6 @@ export const FEATURE_METADATA = {
     tagline: msg`A black dark theme that follows your device until you switch it.`,
     metaTitle: msg`Dark Mode Budget App — Easy on the Eyes — Budgie`,
     metaDescription: msg`A black dark theme that follows your device by default. One switch in Settings turns dark mode on or off.`,
-    primaryKeyword: 'dark mode expense tracker',
     seoKeywords: [
         'dark mode expense tracker',
         'OLED budget app',
@@ -25,6 +24,5 @@ export const FEATURE_METADATA = {
     relatedFeatureSlugs: ['multi-language-app', 'expense-tracking', 'custom-categories'],
     relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-shutdown-private-alternative'],
     publishedAt: '2025-11-17',
-    updatedAt: '2026-05-03',
-    ogTags: ['dark mode', 'ui', 'theme']
+    updatedAt: '2026-05-03'
 } satisfies FeatureRegistryEntryInterface;

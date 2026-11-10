@@ -16,7 +16,6 @@ export const FEATURE_METADATA = {
     tagline: msg`Recurring monthly fees turn budgeting into another bill. Budgie is completely free: every feature, no unlock, no tier.`,
     metaTitle: msg`Budget App No Subscription — 100% Free — Budgie`,
     metaDescription: msg`Stop paying monthly to track your money. Budgie is completely free, with no unlock and no paid tier. Offline-first and private.`,
-    primaryKeyword: 'budget app no subscription',
     seoKeywords: [
         'budget app no subscription',
         'free budget app no subscription',
@@ -27,6 +26,5 @@ export const FEATURE_METADATA = {
     relatedFeatureSlugs: ['expense-tracking', 'monobank-sync', 'spending-analytics', 'self-hosted-finance-app-mobile'],
     relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-shutdown-private-alternative'],
     publishedAt: '2026-05-07',
-    updatedAt: '2026-05-07',
-    ogTags: ['pricing', 'comparison', 'subscription-free']
+    updatedAt: '2026-05-07'
 } satisfies FeatureRegistryEntryInterface;

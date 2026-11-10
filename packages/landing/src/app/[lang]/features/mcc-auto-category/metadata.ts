@@ -14,7 +14,6 @@ export const FEATURE_METADATA = {
     tagline: msg`Bank-issued codes do the work: cafes land in Restaurants & Cafes, fuel stops in Car & Fuel.`,
     metaTitle: msg`MCC Auto-Categorization for Bank Transactions — Budgie`,
     metaDescription: msg`Bank transactions carry Merchant Category Codes; Budgie maps about 1,050 of them to default categories automatically. Switch it off in Settings.`,
-    primaryKeyword: 'automatic transaction categories',
     seoKeywords: [
         'automatic transaction categories',
         'MCC auto category',
@@ -33,6 +32,5 @@ export const FEATURE_METADATA = {
     ],
     relatedArticleSlugs: ['mint-shutdown-private-alternative', 'ynab-alternatives-privacy'],
     publishedAt: '2026-01-02',
-    updatedAt: '2026-05-03',
-    ogTags: ['mcc', 'categorization', 'bank sync']
+    updatedAt: '2026-05-03'
 } satisfies FeatureRegistryEntryInterface;

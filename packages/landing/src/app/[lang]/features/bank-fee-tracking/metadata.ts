@@ -14,11 +14,9 @@ export const FEATURE_METADATA = {
     tagline: msg`Keep ATM fees, transfer fees, and card commissions visible without polluting transfers.`,
     metaTitle: msg`Bank Fee Tracking — Budgie`,
     metaDescription: msg`Track bank fees as first-class transaction entries. ATM fees, transfer fees, and card commissions stay visible in analytics even when the main movement is a transfer.`,
-    primaryKeyword: 'bank fee tracker',
     seoKeywords: ['bank fee tracker', 'ATM fee tracker', 'transfer fee analytics', 'card commission tracker', 'expense tracker bank fees'],
     relatedFeatureSlugs: ['spending-analytics', 'monobank-sync', 'transfer-pair-detection', 'split-transactions'],
     relatedArticleSlugs: ['historical-exchange-rates-budget-analytics', 'cloud-budgeting-privacy-risks'],
     publishedAt: '2026-06-04',
-    updatedAt: '2026-06-04',
-    ogTags: ['fees', 'analytics', 'bank-sync']
+    updatedAt: '2026-06-04'
 } satisfies FeatureRegistryEntryInterface;

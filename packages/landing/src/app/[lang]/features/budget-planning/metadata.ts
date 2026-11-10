@@ -14,7 +14,6 @@ export const FEATURE_METADATA = {
     tagline: msg`One overall limit, per-category limits, and a cap for everything else, with a home-screen widget and on-device alerts.`,
     metaTitle: msg`Monthly Budget Planning — Budgie`,
     metaDescription: msg`Set an overall monthly limit plus per-category limits, track the current cycle from the home-screen widget, and get on-device alerts at 80% and 100% of your limit. No server involved.`,
-    primaryKeyword: 'monthly budget app',
     seoKeywords: ['monthly budget app', 'budget planning app', 'category budget limits', 'offline budget alerts', 'monthly budget cycle'],
     relatedFeatureSlugs: [
         'spending-analytics',
@@ -26,6 +25,5 @@ export const FEATURE_METADATA = {
     ],
     relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-shutdown-private-alternative'],
     publishedAt: '2026-09-02',
-    updatedAt: '2026-09-02',
-    ogTags: ['budget', 'limits', 'alerts']
+    updatedAt: '2026-09-02'
 } satisfies FeatureRegistryEntryInterface;

@@ -14,7 +14,6 @@ export const FEATURE_METADATA = {
     tagline: msg`A filter-aware missing-category pill surfaces uncategorized transactions before they distort your budget analytics.`,
     metaTitle: msg`Uncategorized Transactions Finder`,
     metaDescription: msg`Budgie finds uncategorized transactions under your active filters. Tap the missing-category pill to clean category gaps fast, offline, and on-device.`,
-    primaryKeyword: 'uncategorized transactions',
     seoKeywords: [
         'uncategorized transactions',
         'missing category transactions',
@@ -32,6 +31,5 @@ export const FEATURE_METADATA = {
     ],
     relatedArticleSlugs: ['ynab-alternatives-privacy', 'cloud-budgeting-privacy-risks'],
     publishedAt: '2026-05-18',
-    updatedAt: '2026-09-26',
-    ogTags: ['uncategorized', 'categories', 'analytics']
+    updatedAt: '2026-09-26'
 } satisfies FeatureRegistryEntryInterface;
