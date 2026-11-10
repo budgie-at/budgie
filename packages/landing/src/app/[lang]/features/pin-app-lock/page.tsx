@@ -49,14 +49,14 @@ export default async function PinAppLockFeaturePage(props: PageLangParam) {
                     </Trans>
                 </FeatureStory.Intro>
 
-                <FeatureStory.Step index={0} title={<Trans>The app opens on the lock screen</Trans>}>
+                <FeatureStory.Step title={<Trans>The app opens on the lock screen</Trans>}>
                     <Trans>
                         With App Lock on, every route in the app redirects to this keypad until the PIN checks out — on every cold launch,
                         and again the moment the app goes to the background. There is nothing behind it to read: no balances, no transaction
                         list, no skip.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="pin-app-lock-2" slug="pin-app-lock">
+                <FeatureStory.Shot alt={firstShotAlt} locale={lang} scene="pin-app-lock-2" slug="pin-app-lock">
                     <FeatureStory.Callout x={0.72} y={0.409}>
                         <Trans>Four slots, nothing typed</Trans>
                     </FeatureStory.Callout>
@@ -65,7 +65,7 @@ export default async function PinAppLockFeaturePage(props: PageLangParam) {
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={1} title={<Trans>Four digits, and a wait after wrong tries</Trans>}>
+                <FeatureStory.Step title={<Trans>Four digits, and a wait after wrong tries</Trans>}>
                     <Trans>
                         The fourth digit submits on its own — a wrong PIN clears the dots and says so. The first four wrong tries cost
                         nothing; the fifth wrong PIN starts the first wait, which is 30 seconds, then 1 minute, 5 minutes, 15 minutes and
@@ -75,7 +75,6 @@ export default async function PinAppLockFeaturePage(props: PageLangParam) {
                 </FeatureStory.Step>
                 <FeatureStory.Shot
                     alt={t(i18n)`Budgie lock screen with two of the four PIN dots filled in while the PIN is typed`}
-                    index={1}
                     locale={lang}
                     scene="pin-app-lock-1"
                     slug="pin-app-lock"
@@ -88,7 +87,7 @@ export default async function PinAppLockFeaturePage(props: PageLangParam) {
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={2} title={<Trans>You switch it on in Settings</Trans>}>
+                <FeatureStory.Step title={<Trans>You switch it on in Settings</Trans>}>
                     <Trans>
                         App Lock sits in the Security group. Tap Enable, pick the four digits, and if your device has Face ID, Touch ID or
                         Android fingerprint or face unlock enrolled Budgie offers to unlock with it — the keypad stays as the fallback.
@@ -99,7 +98,6 @@ export default async function PinAppLockFeaturePage(props: PageLangParam) {
                     alt={t(
                         i18n
                     )`Budgie Settings screen with the Security group showing the App Lock card and the Screenshot Protection switch turned on`}
-                    index={2}
                     locale={lang}
                     scene="screenshot-protection-1"
                     slug="screenshot-protection"
@@ -171,7 +169,7 @@ export default async function PinAppLockFeaturePage(props: PageLangParam) {
             </FeatureBenefits>
 
             <FeatureDetails>
-                <FeatureDetails.Item index={0} title={<Trans>Why most app locks are decoration</Trans>}>
+                <FeatureDetails.Item title={<Trans>Why most app locks are decoration</Trans>}>
                     <p>
                         <Trans>
                             Many app locks are only a screen laid over your data. Budgie&apos;s PIN is built into how the app opens your
@@ -186,12 +184,11 @@ export default async function PinAppLockFeaturePage(props: PageLangParam) {
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>
                 <FeatureFaq.Item
-                    index={0}
                     question={<Trans>What if I forget my PIN?</Trans>}
                     answer={
                         <Trans>
@@ -201,7 +198,6 @@ export default async function PinAppLockFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={1}
                     question={<Trans>How quickly does the app re-lock?</Trans>}
                     answer={
                         <Trans>
@@ -211,7 +207,6 @@ export default async function PinAppLockFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={2}
                     question={<Trans>Is biometric the same as PIN security?</Trans>}
                     answer={
                         <Trans>
@@ -222,7 +217,6 @@ export default async function PinAppLockFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={3}
                     question={<Trans>Does the lock work if my phone is jailbroken?</Trans>}
                     answer={
                         <Trans>

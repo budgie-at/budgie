@@ -1,12 +1,12 @@
 import type { ReactNode } from 'react';
 
 interface Props {
-    readonly index: number;
+    readonly index?: number;
     readonly title: ReactNode;
     readonly children: ReactNode;
 }
 
-export const FeatureStoryStep = ({ index, title, children }: Props) => {
+export const FeatureStoryStep = ({ index = 0, title, children }: Props) => {
     const rowPlacement = { '--story-row': index + 1 };
 
     return (

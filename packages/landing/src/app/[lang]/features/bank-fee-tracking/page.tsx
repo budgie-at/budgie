@@ -48,13 +48,13 @@ export default async function BankFeeTrackingFeaturePage(props: PageLangParam) {
                     </Trans>
                 </FeatureStory.Intro>
 
-                <FeatureStory.Step index={0} title={<Trans>A fee is not a transfer</Trans>}>
+                <FeatureStory.Step title={<Trans>A fee is not a transfer</Trans>}>
                     <Trans>
                         Open the transfer and add a fee. It is filed under Bank Fees &amp; Charges and saved alongside the transfer, so the
                         $900 you moved stays $900.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="bank-fee-tracking-1" slug="bank-fee-tracking">
+                <FeatureStory.Shot alt={firstShotAlt} locale={lang} scene="bank-fee-tracking-1" slug="bank-fee-tracking">
                     <FeatureStory.Callout y={0.812}>
                         <Trans>Attached to the transfer</Trans>
                     </FeatureStory.Callout>
@@ -63,7 +63,7 @@ export default async function BankFeeTrackingFeaturePage(props: PageLangParam) {
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={1} title={<Trans>The transfer stays a transfer</Trans>}>
+                <FeatureStory.Step title={<Trans>The transfer stays a transfer</Trans>}>
                     <Trans>
                         Analytics counts only the fee as spending and leaves the movement out, so shuffling $900 between your own accounts
                         never inflates your expenses.
@@ -73,7 +73,6 @@ export default async function BankFeeTrackingFeaturePage(props: PageLangParam) {
                     alt={t(
                         i18n
                     )`Budgie analytics spending-by-category list with Housing & Utilities first and Bank Fees & Charges second at $565.75`}
-                    index={1}
                     locale={lang}
                     scene="bank-fee-tracking-2"
                     slug="bank-fee-tracking"

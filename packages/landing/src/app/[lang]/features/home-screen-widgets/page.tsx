@@ -43,14 +43,14 @@ export default async function HomeScreenWidgetsFeaturePage(props: PageLangParam)
                     <Trans>Add them to your Home Screen and your numbers are already there before you unlock your phone.</Trans>
                 </FeatureStory.Intro>
 
-                <FeatureStory.Step index={0} title={<Trans>Total balance, before you unlock</Trans>}>
+                <FeatureStory.Step title={<Trans>Total balance, before you unlock</Trans>}>
                     <Trans>
                         The net worth widget mirrors the total at the top of Home along with whether you are growing or burning, and the
                         larger size adds how much it moved this month and the total per account type. Tap it and Budgie opens straight to
                         Home.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="net-worth-tracker-1" slug="net-worth-tracker">
+                <FeatureStory.Shot alt={firstShotAlt} locale={lang} scene="net-worth-tracker-1" slug="net-worth-tracker">
                     <FeatureStory.Callout y={0.175}>
                         <Trans>Total in your base currency</Trans>
                     </FeatureStory.Callout>
@@ -59,7 +59,7 @@ export default async function HomeScreenWidgetsFeaturePage(props: PageLangParam)
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={1} title={<Trans>How much of the month is left</Trans>}>
+                <FeatureStory.Step title={<Trans>How much of the month is left</Trans>}>
                     <Trans>
                         The budget widget shows what is left, the daily amount you can spend and the days remaining, with a ring for the
                         percentage used. The larger size shows spent against your limit and adds your top categories. Tap it and Budgie
@@ -68,7 +68,6 @@ export default async function HomeScreenWidgetsFeaturePage(props: PageLangParam)
                 </FeatureStory.Step>
                 <FeatureStory.Shot
                     alt={t(i18n)`Budgie budget screen header showing spent, left and percentage that the budget widget mirrors`}
-                    index={1}
                     locale={lang}
                     scene="budget-planning-2"
                     slug="budget-planning"
@@ -81,7 +80,7 @@ export default async function HomeScreenWidgetsFeaturePage(props: PageLangParam)
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={2} title={<Trans>Start a transaction from your Home Screen</Trans>}>
+                <FeatureStory.Step title={<Trans>Start a transaction from your Home Screen</Trans>}>
                     <Trans>
                         The quick add widget carries three taps: expense, income and transfer. Each one jumps straight into the same
                         new-transaction screen you would reach from inside Budgie, already set to that type.
@@ -89,7 +88,6 @@ export default async function HomeScreenWidgetsFeaturePage(props: PageLangParam)
                 </FeatureStory.Step>
                 <FeatureStory.Shot
                     alt={t(i18n)`Budgie new expense screen that a tap on the quick add expense tile opens directly`}
-                    index={2}
                     locale={lang}
                     scene="expense-tracking-1"
                     slug="expense-tracking"
@@ -116,7 +114,7 @@ export default async function HomeScreenWidgetsFeaturePage(props: PageLangParam)
             </FeatureSpecTiles>
 
             <FeatureDetails>
-                <FeatureDetails.Item index={0} title={<Trans>Locked when you are, current when it matters</Trans>}>
+                <FeatureDetails.Item title={<Trans>Locked when you are, current when it matters</Trans>}>
                     <p>
                         <Trans>
                             Set a PIN and every amount on every widget turns into dots. The layout stays, so you still see that a budget is
@@ -136,12 +134,11 @@ export default async function HomeScreenWidgetsFeaturePage(props: PageLangParam)
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>
                 <FeatureFaq.Item
-                    index={0}
                     question={<Trans>Which widgets does Budgie offer?</Trans>}
                     answer={
                         <Trans>
@@ -151,7 +148,6 @@ export default async function HomeScreenWidgetsFeaturePage(props: PageLangParam)
                     }
                 />
                 <FeatureFaq.Item
-                    index={1}
                     question={<Trans>Do the widgets update on their own?</Trans>}
                     answer={
                         <Trans>
@@ -161,7 +157,6 @@ export default async function HomeScreenWidgetsFeaturePage(props: PageLangParam)
                     }
                 />
                 <FeatureFaq.Item
-                    index={2}
                     question={<Trans>Can anyone read my amounts by looking at my Home Screen?</Trans>}
                     answer={
                         <Trans>
@@ -171,12 +166,10 @@ export default async function HomeScreenWidgetsFeaturePage(props: PageLangParam)
                     }
                 />
                 <FeatureFaq.Item
-                    index={3}
                     question={<Trans>What does the budget widget show if I have no active budget?</Trans>}
                     answer={<Trans>A short message instead of numbers, so an empty widget never looks like a zero balance.</Trans>}
                 />
                 <FeatureFaq.Item
-                    index={4}
                     question={<Trans>Where does tapping a widget take me?</Trans>}
                     answer={
                         <Trans>

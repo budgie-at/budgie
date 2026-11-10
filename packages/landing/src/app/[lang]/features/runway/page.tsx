@@ -47,12 +47,12 @@ export default async function RunwayFeaturePage(props: PageLangParam) {
                     <Trans>From the pill under your balance to the costs behind the number.</Trans>
                 </FeatureStory.Intro>
 
-                <FeatureStory.Step index={0} title={<Trans>Months left, and the month it ends</Trans>}>
+                <FeatureStory.Step title={<Trans>Months left, and the month it ends</Trans>}>
                     <Trans>
                         When you spend more than you earn, Runway divides your balance by the gap and names the month it runs out.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="runway-1" slug="runway">
+                <FeatureStory.Shot alt={firstShotAlt} locale={lang} scene="runway-1" slug="runway">
                     <FeatureStory.Callout y={0.234}>
                         <Trans>Months left at this pace</Trans>
                     </FeatureStory.Callout>
@@ -64,7 +64,7 @@ export default async function RunwayFeaturePage(props: PageLangParam) {
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={1} title={<Trans>Growing is a verdict too</Trans>}>
+                <FeatureStory.Step title={<Trans>Growing is a verdict too</Trans>}>
                     <Trans>
                         Earn more than you spend and Runway shows what you add each month and how many months of spending you have.
                     </Trans>
@@ -73,7 +73,6 @@ export default async function RunwayFeaturePage(props: PageLangParam) {
                     alt={t(
                         i18n
                     )`Budgie Runway tab with a growing verdict showing the amount added per month and the months of expenses covered`}
-                    index={1}
                     locale={lang}
                     scene="runway-2"
                     slug="runway"
@@ -86,12 +85,11 @@ export default async function RunwayFeaturePage(props: PageLangParam) {
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={2} title={<Trans>What drives the number</Trans>}>
+                <FeatureStory.Step title={<Trans>What drives the number</Trans>}>
                     <Trans>Monthly history flags one-off months, and your biggest categories or tags are listed by monthly cost.</Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
                     alt={t(i18n)`Budgie Runway monthly history with a one-off month highlighted above the spending drivers by category`}
-                    index={2}
                     locale={lang}
                     scene="runway-3"
                     slug="runway"
@@ -107,12 +105,11 @@ export default async function RunwayFeaturePage(props: PageLangParam) {
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={3} title={<Trans>Your call in Settings</Trans>}>
+                <FeatureStory.Step title={<Trans>Your call in Settings</Trans>}>
                     <Trans>Hide the pill from Home, or let Runway count your crypto at today&apos;s market value.</Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
                     alt={t(i18n)`Budgie settings with the Runway section showing the show on home and include crypto switches`}
-                    index={3}
                     locale={lang}
                     scene="runway-4"
                     slug="runway"
@@ -169,7 +166,7 @@ export default async function RunwayFeaturePage(props: PageLangParam) {
             </FeatureCropBand>
 
             <FeatureDetails>
-                <FeatureDetails.Item index={0} title={<Trans>Built on a typical month, not a lucky one</Trans>}>
+                <FeatureDetails.Item title={<Trans>Built on a typical month, not a lucky one</Trans>}>
                     <p>
                         <Trans>
                             Runway looks at your last six complete calendar months and leaves out the month still in progress. It takes the
@@ -196,12 +193,11 @@ export default async function RunwayFeaturePage(props: PageLangParam) {
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>
                 <FeatureFaq.Item
-                    index={0}
                     question={<Trans>What does &ldquo;months left&rdquo; mean?</Trans>}
                     answer={
                         <Trans>
@@ -211,7 +207,6 @@ export default async function RunwayFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={1}
                     question={<Trans>Why does Runway need three complete months?</Trans>}
                     answer={
                         <Trans>
@@ -222,7 +217,6 @@ export default async function RunwayFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={2}
                     question={<Trans>What does Include one-offs do?</Trans>}
                     answer={
                         <Trans>
@@ -233,7 +227,6 @@ export default async function RunwayFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={3}
                     question={<Trans>Does Runway count my crypto and savings?</Trans>}
                     answer={
                         <Trans>
@@ -244,7 +237,6 @@ export default async function RunwayFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={4}
                     question={<Trans>What if I earn more than I spend?</Trans>}
                     answer={
                         <Trans>

@@ -51,13 +51,13 @@ export default async function AccountTransfersFeaturePage(props: PageLangParam) 
                     </Trans>
                 </FeatureStory.Intro>
 
-                <FeatureStory.Step index={0} title={<Trans>A transfer is its own type</Trans>}>
+                <FeatureStory.Step title={<Trans>A transfer is its own type</Trans>}>
                     <Trans>
                         You enter the amount once and pick both accounts on one row. Budgie saves a single transfer that debits one account
                         and credits the other — not an expense here and an income there that you have to remember to cancel out.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="account-transfers-1" slug="account-transfers">
+                <FeatureStory.Shot alt={firstShotAlt} locale={lang} scene="account-transfers-1" slug="account-transfers">
                     <FeatureStory.Callout y={0.292}>
                         <Trans>One amount, entered once</Trans>
                     </FeatureStory.Callout>
@@ -66,7 +66,7 @@ export default async function AccountTransfersFeaturePage(props: PageLangParam) 
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={1} title={<Trans>Two amounts, one rate</Trans>}>
+                <FeatureStory.Step title={<Trans>Two amounts, one rate</Trans>}>
                     <Trans>
                         When the accounts hold different currencies, what will land on the other side appears under the figure you typed.
                         The pill says which side you are driving — tap it to type the receiving amount instead — and the rate that produced
@@ -77,7 +77,6 @@ export default async function AccountTransfersFeaturePage(props: PageLangParam) 
                     alt={t(
                         i18n
                     )`Budgie New Transfer screen converting 250 US dollars into euros, with the sending-currency pill and the conversion rate row`}
-                    index={1}
                     locale={lang}
                     scene="account-transfers-2"
                     slug="account-transfers"
@@ -90,7 +89,7 @@ export default async function AccountTransfersFeaturePage(props: PageLangParam) 
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={2} title={<Trans>Neither side counts as spending</Trans>}>
+                <FeatureStory.Step title={<Trans>Neither side counts as spending</Trans>}>
                     <Trans>
                         Analytics reads income and expense transactions only, so a transfer never inflates either total and never turns up
                         as a category. The one part that does count is a fee you attach to the transfer, because that money really did
@@ -101,7 +100,6 @@ export default async function AccountTransfersFeaturePage(props: PageLangParam) 
                     alt={t(
                         i18n
                     )`Budgie analytics screen where the spent and income totals and the category breakdown contain no transfer entries`}
-                    index={2}
                     locale={lang}
                     scene="spending-analytics-1"
                     slug="spending-analytics"
@@ -194,7 +192,7 @@ export default async function AccountTransfersFeaturePage(props: PageLangParam) 
             </FeatureBenefits>
 
             <FeatureDetails>
-                <FeatureDetails.Item index={0} title={<Trans>Why transfers must be a first-class type</Trans>}>
+                <FeatureDetails.Item title={<Trans>Why transfers must be a first-class type</Trans>}>
                     <p>
                         <Trans>
                             Transfers between your accounts are not income or expenses — and an app that treats them as such will mis-state
@@ -208,12 +206,11 @@ export default async function AccountTransfersFeaturePage(props: PageLangParam) 
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>
                 <FeatureFaq.Item
-                    index={0}
                     question={<Trans>Why is &ldquo;transfer&rdquo; a separate type?</Trans>}
                     answer={
                         <Trans>
@@ -223,7 +220,6 @@ export default async function AccountTransfersFeaturePage(props: PageLangParam) 
                     }
                 />
                 <FeatureFaq.Item
-                    index={1}
                     question={<Trans>What about cross-currency transfers?</Trans>}
                     answer={
                         <Trans>
@@ -233,7 +229,6 @@ export default async function AccountTransfersFeaturePage(props: PageLangParam) 
                     }
                 />
                 <FeatureFaq.Item
-                    index={2}
                     question={<Trans>Can I auto-link transfers from my bank?</Trans>}
                     answer={
                         <Trans>
@@ -243,7 +238,6 @@ export default async function AccountTransfersFeaturePage(props: PageLangParam) 
                     }
                 />
                 <FeatureFaq.Item
-                    index={3}
                     question={<Trans>Can I undo a transfer?</Trans>}
                     answer={
                         <Trans>

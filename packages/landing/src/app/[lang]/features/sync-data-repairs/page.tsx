@@ -110,7 +110,7 @@ export default async function SyncDataRepairsFeaturePage(props: PageLangParam) {
             </FeatureBenefits>
 
             <FeatureDetails>
-                <FeatureDetails.Item index={0} title={<Trans>Why duplicates appear at all</Trans>}>
+                <FeatureDetails.Item title={<Trans>Why duplicates appear at all</Trans>}>
                     <p>
                         <Trans>
                             An import can bring in the same transaction twice: overlapping statement exports, a file imported again, a
@@ -128,7 +128,7 @@ export default async function SyncDataRepairsFeaturePage(props: PageLangParam) {
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Item index={1} title={<Trans>When one of your cards pays another (PrivatBank)</Trans>}>
+                <FeatureDetails.Item title={<Trans>When one of your cards pays another (PrivatBank)</Trans>}>
                     <p>
                         <Trans>
                             Sometimes a transfer between your own cards arrives as two separate rows instead of one — an expense on the card
@@ -145,12 +145,11 @@ export default async function SyncDataRepairsFeaturePage(props: PageLangParam) {
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Guides index={2} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>
                 <FeatureFaq.Item
-                    index={0}
                     question={<Trans>What does a sync data repair actually do?</Trans>}
                     answer={
                         <Trans>
@@ -162,7 +161,6 @@ export default async function SyncDataRepairsFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={1}
                     question={<Trans>Will it touch transactions I entered by hand?</Trans>}
                     answer={
                         <Trans>
@@ -172,7 +170,6 @@ export default async function SyncDataRepairsFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={2}
                     question={<Trans>What does the own-card transfer fix actually change?</Trans>}
                     answer={
                         <Trans>
@@ -183,7 +180,6 @@ export default async function SyncDataRepairsFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={3}
                     question={<Trans>Why didn&apos;t it find my own-card transfer?</Trans>}
                     answer={
                         <Trans>
@@ -194,7 +190,6 @@ export default async function SyncDataRepairsFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={4}
                     question={<Trans>Why do duplicates appear at all?</Trans>}
                     answer={
                         <Trans>

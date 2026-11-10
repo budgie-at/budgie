@@ -54,7 +54,7 @@ export default async function RecurringPaymentsCalendarFeaturePage(props: PageLa
                     </Trans>
                 </FeatureStory.Intro>
 
-                <FeatureStory.Step index={0} title={<Trans>Detected, not declared</Trans>}>
+                <FeatureStory.Step title={<Trans>Detected, not declared</Trans>}>
                     <Trans>
                         Budgie finds the pattern itself — same merchant, similar amount, regular interval — and marks the days those charges
                         fall on.
@@ -62,7 +62,6 @@ export default async function RecurringPaymentsCalendarFeaturePage(props: PageLa
                 </FeatureStory.Step>
                 <FeatureStory.Shot
                     alt={firstShotAlt}
-                    index={0}
                     locale={lang}
                     scene="recurring-payments-calendar-1"
                     slug="recurring-payments-calendar"
@@ -72,14 +71,13 @@ export default async function RecurringPaymentsCalendarFeaturePage(props: PageLa
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={1} title={<Trans>A month grid of what bills</Trans>}>
+                <FeatureStory.Step title={<Trans>A month grid of what bills</Trans>}>
                     <Trans>Every marked day is a real recurring charge. The upcoming list totals what is still to come this month.</Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
                     alt={t(
                         i18n
                     )`Budgie Recurring screen showing a September 2026 calendar with detected payment days marked and an upcoming charges list`}
-                    index={1}
                     locale={lang}
                     scene="recurring-payments-calendar-1"
                     slug="recurring-payments-calendar"
@@ -89,12 +87,11 @@ export default async function RecurringPaymentsCalendarFeaturePage(props: PageLa
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={2} title={<Trans>Bi-monthly and quarterly too</Trans>}>
+                <FeatureStory.Step title={<Trans>Bi-monthly and quarterly too</Trans>}>
                     <Trans>Tap any marked day to see exactly what bills — here Day 15 lists the gym, Netflix and Spotify.</Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
                     alt={t(i18n)`Budgie Recurring screen with Day 15 selected and a list of Gym Membership, Netflix and Spotify charges`}
-                    index={2}
                     locale={lang}
                     scene="recurring-payments-calendar-2"
                     slug="recurring-payments-calendar"
@@ -171,7 +168,7 @@ export default async function RecurringPaymentsCalendarFeaturePage(props: PageLa
             </FeatureBenefits>
 
             <FeatureDetails>
-                <FeatureDetails.Item index={0} title={<Trans>Why subscriptions need their own view</Trans>}>
+                <FeatureDetails.Item title={<Trans>Why subscriptions need their own view</Trans>}>
                     <p>
                         <Trans>
                             Subscriptions are the slow leak in every budget. Budgie scans your transaction history for amount + cadence
@@ -186,12 +183,11 @@ export default async function RecurringPaymentsCalendarFeaturePage(props: PageLa
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>
                 <FeatureFaq.Item
-                    index={0}
                     question={<Trans>How does Budgie know what&apos;s recurring?</Trans>}
                     answer={
                         <Trans>
@@ -201,7 +197,6 @@ export default async function RecurringPaymentsCalendarFeaturePage(props: PageLa
                     }
                 />
                 <FeatureFaq.Item
-                    index={1}
                     question={<Trans>What about cross-currency subscriptions?</Trans>}
                     answer={
                         <Trans>
@@ -211,7 +206,6 @@ export default async function RecurringPaymentsCalendarFeaturePage(props: PageLa
                     }
                 />
                 <FeatureFaq.Item
-                    index={2}
                     question={<Trans>Can bi-monthly or quarterly bills show up correctly?</Trans>}
                     answer={
                         <Trans>
@@ -222,7 +216,6 @@ export default async function RecurringPaymentsCalendarFeaturePage(props: PageLa
                     }
                 />
                 <FeatureFaq.Item
-                    index={3}
                     question={<Trans>How far does the forecast go?</Trans>}
                     answer={
                         <Trans>

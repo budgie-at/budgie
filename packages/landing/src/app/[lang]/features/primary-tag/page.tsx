@@ -50,11 +50,11 @@ export default async function PrimaryTagFeaturePage(props: PageLangParam) {
                     </Trans>
                 </FeatureStory.Intro>
 
-                <FeatureStory.Point index={0}>
+                <FeatureStory.Point>
                     <Trans>Tag a transaction more than once and the list still shows one chip — bordered, with a count for the rest.</Trans>
                 </FeatureStory.Point>
 
-                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="primary-tag-1" slug="primary-tag">
+                <FeatureStory.Shot alt={firstShotAlt} locale={lang} scene="primary-tag-1" slug="primary-tag">
                     <FeatureStory.Callout index={0} y={0.344}>
                         <Trans>Bordered chip, plus a count</Trans>
                     </FeatureStory.Callout>
@@ -63,13 +63,13 @@ export default async function PrimaryTagFeaturePage(props: PageLangParam) {
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Point index={1}>
+                <FeatureStory.Point>
                     <Trans>
                         The first tag you pick is the one the list shows. To change it, open the tag picker and long-press another tag — a
                         star marks the main tag there.
                     </Trans>
                 </FeatureStory.Point>
-                <FeatureStory.Point index={2}>
+                <FeatureStory.Point>
                     <Trans>
                         The choice lives on the transaction itself, so editing anything else about it never resets which tag is shown.
                     </Trans>
@@ -147,7 +147,7 @@ export default async function PrimaryTagFeaturePage(props: PageLangParam) {
             </FeatureBenefits>
 
             <FeatureDetails>
-                <FeatureDetails.Item index={0} title={<Trans>Why scanning a long list for one tag is hard</Trans>}>
+                <FeatureDetails.Item title={<Trans>Why scanning a long list for one tag is hard</Trans>}>
                     <p>
                         <Trans>
                             Scanning a long transaction list for one tag is hard. Budgie shows the main tag of each row as a chip, with a
@@ -161,12 +161,11 @@ export default async function PrimaryTagFeaturePage(props: PageLangParam) {
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>
                 <FeatureFaq.Item
-                    index={0}
                     question={<Trans>What does &quot;primary&quot; actually do?</Trans>}
                     answer={
                         <Trans>
@@ -176,7 +175,6 @@ export default async function PrimaryTagFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={1}
                     question={<Trans>How do I set a primary tag?</Trans>}
                     answer={
                         <Trans>
@@ -186,14 +184,12 @@ export default async function PrimaryTagFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={2}
                     question={<Trans>Is the primary tag preserved across edits?</Trans>}
                     answer={
                         <Trans>Yes. Editing a transaction keeps its primary tag unless you pick a different one in the tag picker.</Trans>
                     }
                 />
                 <FeatureFaq.Item
-                    index={3}
                     question={<Trans>Can a transaction have several primary tags?</Trans>}
                     answer={<Trans>No. A tagged transaction has exactly one primary tag, the first one by default.</Trans>}
                 />

@@ -47,10 +47,10 @@ export default async function MultiLanguageAppFeaturePage(props: PageLangParam) 
                     <Trans>Two screens: the language sheet that lists all five, and the Settings page it hands you back to.</Trans>
                 </FeatureStory.Intro>
 
-                <FeatureStory.Step index={0} title={<Trans>Five languages, all first-class</Trans>}>
+                <FeatureStory.Step title={<Trans>Five languages, all first-class</Trans>}>
                     <Trans>English, Ukrainian, French, German and Spanish.</Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="multi-language-app-1" slug="multi-language-app">
+                <FeatureStory.Shot alt={firstShotAlt} locale={lang} scene="multi-language-app-1" slug="multi-language-app">
                     <FeatureStory.Callout y={0.62}>
                         <Trans>Search bar above the list</Trans>
                     </FeatureStory.Callout>
@@ -59,14 +59,13 @@ export default async function MultiLanguageAppFeaturePage(props: PageLangParam) 
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={1} title={<Trans>Switches without a relaunch</Trans>}>
+                <FeatureStory.Step title={<Trans>Switches without a relaunch</Trans>}>
                     <Trans>Pick one and the whole UI re-renders in place — Settings included.</Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
                     alt={t(
                         i18n
                     )`Budgie settings screen with the General section showing the Language row set to the active language above Main Currency and Default Account`}
-                    index={1}
                     locale={lang}
                     scene="offline-first-expense-tracker-2"
                     slug="offline-first-expense-tracker"
@@ -137,7 +136,7 @@ export default async function MultiLanguageAppFeaturePage(props: PageLangParam) 
             </FeatureBenefits>
 
             <FeatureDetails>
-                <FeatureDetails.Item index={0} title={<Trans>Why privacy-first finance shouldn&apos;t be English-only</Trans>}>
+                <FeatureDetails.Item title={<Trans>Why privacy-first finance shouldn&apos;t be English-only</Trans>}>
                     <p>
                         <Trans>
                             Privacy-first finance tools are usually English-only. Budgie ships full translations across five languages so
@@ -151,27 +150,23 @@ export default async function MultiLanguageAppFeaturePage(props: PageLangParam) 
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>
                 <FeatureFaq.Item
-                    index={0}
                     question={<Trans>Which languages are supported?</Trans>}
                     answer={<Trans>English (source), Ukrainian, French, German and Spanish.</Trans>}
                 />
                 <FeatureFaq.Item
-                    index={1}
                     question={<Trans>How does language detection work?</Trans>}
                     answer={<Trans>Auto-detected from device locale on first launch. Override anytime in Settings → Language.</Trans>}
                 />
                 <FeatureFaq.Item
-                    index={2}
                     question={<Trans>Does it require a relaunch?</Trans>}
                     answer={<Trans>No. Switching language re-renders the UI in-place, no reinstall or relaunch.</Trans>}
                 />
                 <FeatureFaq.Item
-                    index={3}
                     question={<Trans>What about number / date formats?</Trans>}
                     answer={
                         <Trans>

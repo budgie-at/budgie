@@ -51,13 +51,13 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
                     </Trans>
                 </FeatureStory.Intro>
 
-                <FeatureStory.Step index={0} title={<Trans>Money you owe, money owed to you</Trans>}>
+                <FeatureStory.Step title={<Trans>Money you owe, money owed to you</Trans>}>
                     <Trans>
                         Home groups debts by direction: You owe and Owed to you, each with its own subtotal and a bar for how far the debt
                         has been settled.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="debt-tracking-1" slug="debt-tracking">
+                <FeatureStory.Shot alt={firstShotAlt} locale={lang} scene="debt-tracking-1" slug="debt-tracking">
                     <FeatureStory.Callout y={0.321}>
                         <Trans>Money you owe</Trans>
                     </FeatureStory.Callout>
@@ -66,7 +66,7 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={1} title={<Trans>A due date and a target</Trans>}>
+                <FeatureStory.Step title={<Trans>A due date and a target</Trans>}>
                     <Trans>
                         Open a debt to see what is still to receive, how much has come back and the total you lent, against the target
                         balance and return date.
@@ -76,7 +76,6 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
                     alt={t(
                         i18n
                     )`Budgie debt account screen for Lent to Daniel showing $750 still to receive at 37.5% returned, with the returned and lent totals`}
-                    index={1}
                     locale={lang}
                     scene="debt-tracking-2"
                     slug="debt-tracking"
@@ -89,7 +88,7 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={2} title={<Trans>Attach a repayment you already logged</Trans>}>
+                <FeatureStory.Step title={<Trans>Attach a repayment you already logged</Trans>}>
                     <Trans>
                         When a repayment lands as ordinary income, open the transaction and pick the debt it belongs to. Budgie files it
                         under Lending or Borrowing and moves the debt&apos;s remaining balance, instead of you recording a second
@@ -98,7 +97,6 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
                 </FeatureStory.Step>
                 <FeatureStory.Shot
                     alt={t(i18n)`Budgie income transaction detail with a debt account picker listing Lent to Daniel and Borrowed from Mom`}
-                    index={2}
                     locale={lang}
                     scene="debt-tracking-3"
                     slug="debt-tracking"
@@ -209,7 +207,7 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
             </FeatureBenefits>
 
             <FeatureDetails>
-                <FeatureDetails.Item index={0} title={<Trans>Why inter-personal debt deserves its own account type</Trans>}>
+                <FeatureDetails.Item title={<Trans>Why inter-personal debt deserves its own account type</Trans>}>
                     <p>
                         <Trans>
                             Inter-personal debt is invisible to most apps. Budgie has Debt as a real account type, with explicit &quot;I
@@ -225,12 +223,11 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>
                 <FeatureFaq.Item
-                    index={0}
                     question={<Trans>What&apos;s the difference between &quot;I owe&quot; and &quot;owes me&quot;?</Trans>}
                     answer={
                         <Trans>
@@ -240,7 +237,6 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={1}
                     question={<Trans>How do I settle a debt?</Trans>}
                     answer={
                         <Trans>
@@ -251,7 +247,6 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={2}
                     question={<Trans>My friend repaid me by bank transfer — do I have to re-enter it?</Trans>}
                     answer={
                         <Trans>
@@ -262,7 +257,6 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={3}
                     question={<Trans>What if the loan was in a different currency?</Trans>}
                     answer={
                         <Trans>
@@ -272,7 +266,6 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={4}
                     question={<Trans>Does the target return date trigger a reminder?</Trans>}
                     answer={
                         <Trans>

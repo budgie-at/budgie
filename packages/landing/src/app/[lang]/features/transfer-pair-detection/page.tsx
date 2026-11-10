@@ -51,19 +51,13 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
                     </Trans>
                 </FeatureStory.Intro>
 
-                <FeatureStory.Step index={0} title={<Trans>Both accounts report the same move</Trans>}>
+                <FeatureStory.Step title={<Trans>Both accounts report the same move</Trans>}>
                     <Trans>
                         Sync the account the money left and the account it landed in, and each one imports its own half — an expense on one
                         side, an income on the other. Left alone, one movement lands in your ledger twice.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot
-                    alt={firstShotAlt}
-                    index={0}
-                    locale={lang}
-                    scene="transfer-pair-detection-1"
-                    slug="transfer-pair-detection"
-                >
+                <FeatureStory.Shot alt={firstShotAlt} locale={lang} scene="transfer-pair-detection-1" slug="transfer-pair-detection">
                     <FeatureStory.Callout index={0} y={0.667}>
                         <Trans>One transfer row, not two</Trans>
                     </FeatureStory.Callout>
@@ -72,7 +66,7 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={1} title={<Trans>The obvious pairs merge on import</Trans>}>
+                <FeatureStory.Step title={<Trans>The obvious pairs merge on import</Trans>}>
                     <Trans>
                         An expense pairs with an income when the other account&apos;s IBAN lines up, or when the amounts match — same
                         currency, or an implied exchange rate inside a tolerance band — and both halves fall within twelve hours of each
@@ -81,7 +75,7 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
                     </Trans>
                 </FeatureStory.Step>
 
-                <FeatureStory.Step index={2} title={<Trans>See what merged, and undo it</Trans>}>
+                <FeatureStory.Step title={<Trans>See what merged, and undo it</Trans>}>
                     <Trans>
                         A merged transfer keeps a Consolidation row. &quot;View source transactions&quot; opens both originals with their
                         amounts, dates and accounts still intact. Revert puts them back and removes the merged transfer.
@@ -91,7 +85,6 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
                     alt={t(
                         i18n
                     )`Budgie merged transfer screen with the consolidation source sheet listing both original transactions above Done and Revert`}
-                    index={2}
                     locale={lang}
                     scene="transfer-pair-detection-2"
                     slug="transfer-pair-detection"
@@ -194,7 +187,7 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
             </FeatureBenefits>
 
             <FeatureDetails>
-                <FeatureDetails.Item index={0} title={<Trans>Why imported transactions need consolidation</Trans>}>
+                <FeatureDetails.Item title={<Trans>Why imported transactions need consolidation</Trans>}>
                     <p>
                         <Trans>
                             Two synced banks see the same transfer twice — once going out, once coming in. Without consolidation, your
@@ -211,12 +204,11 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>
                 <FeatureFaq.Item
-                    index={0}
                     question={<Trans>What if the algorithm misidentifies a match?</Trans>}
                     answer={
                         <Trans>
@@ -226,7 +218,6 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
                     }
                 />
                 <FeatureFaq.Item
-                    index={1}
                     question={<Trans>Does this work across two different banks?</Trans>}
                     answer={
                         <Trans>
@@ -237,7 +228,6 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
                     }
                 />
                 <FeatureFaq.Item
-                    index={2}
                     question={<Trans>What about cross-currency transfers?</Trans>}
                     answer={
                         <Trans>
@@ -248,7 +238,6 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
                     }
                 />
                 <FeatureFaq.Item
-                    index={3}
                     question={<Trans>Will old (already-imported) transactions get re-matched?</Trans>}
                     answer={
                         <Trans>
@@ -258,7 +247,6 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
                     }
                 />
                 <FeatureFaq.Item
-                    index={4}
                     question={<Trans>What if I logged an expense by hand and my bank syncs it later?</Trans>}
                     answer={
                         <Trans>
@@ -268,7 +256,6 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
                     }
                 />
                 <FeatureFaq.Item
-                    index={5}
                     question={<Trans>Do refunds in another currency match?</Trans>}
                     answer={
                         <Trans>

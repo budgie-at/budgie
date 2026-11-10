@@ -51,13 +51,13 @@ export default async function MultiCurrencyFeaturePage(props: PageLangParam) {
                     </Trans>
                 </FeatureStory.Intro>
 
-                <FeatureStory.Step index={0} title={<Trans>One total, your base currency</Trans>}>
+                <FeatureStory.Step title={<Trans>One total, your base currency</Trans>}>
                     <Trans>
                         The figure at the top adds every account together and reports it in the base currency you set in Settings. Pick a
                         different base and the same accounts produce a different number.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="multi-currency-1" slug="multi-currency">
+                <FeatureStory.Shot alt={firstShotAlt} locale={lang} scene="multi-currency-1" slug="multi-currency">
                     <FeatureStory.Callout index={0} y={0.189}>
                         <Trans>Every account, added up once</Trans>
                     </FeatureStory.Callout>
@@ -69,14 +69,14 @@ export default async function MultiCurrencyFeaturePage(props: PageLangParam) {
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={1} title={<Trans>Groups convert as they sum</Trans>}>
+                <FeatureStory.Step title={<Trans>Groups convert as they sum</Trans>}>
                     <Trans>
                         Bank and Cash each carry their own subtotal, converted the same way. A euro card can sit in the same group as a
                         dollar card and still roll into one figure.
                     </Trans>
                 </FeatureStory.Step>
 
-                <FeatureStory.Step index={2} title={<Trans>The accounts never convert</Trans>}>
+                <FeatureStory.Step title={<Trans>The accounts never convert</Trans>}>
                     <Trans>
                         Each card shows the balance in the currency that account is held in. Budgie stores the money as it is and derives
                         the converted figures on top, using the most recent rate it fetched and kept on your device.
@@ -145,7 +145,7 @@ export default async function MultiCurrencyFeaturePage(props: PageLangParam) {
             </FeatureBenefits>
 
             <FeatureDetails>
-                <FeatureDetails.Item index={0} title={<Trans>Why a single-currency app can&apos;t model real life</Trans>}>
+                <FeatureDetails.Item title={<Trans>Why a single-currency app can&apos;t model real life</Trans>}>
                     <p>
                         <Trans>
                             Single-currency apps can&apos;t model how most people actually save and spend — a UK current account, a USD
@@ -160,12 +160,11 @@ export default async function MultiCurrencyFeaturePage(props: PageLangParam) {
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>
                 <FeatureFaq.Item
-                    index={0}
                     question={<Trans>How often do exchange rates refresh?</Trans>}
                     answer={
                         <Trans>
@@ -176,7 +175,6 @@ export default async function MultiCurrencyFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={1}
                     question={<Trans>Where do the rates come from?</Trans>}
                     answer={
                         <Trans>
@@ -186,7 +184,6 @@ export default async function MultiCurrencyFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={2}
                     question={<Trans>Can I see the original currency?</Trans>}
                     answer={
                         <Trans>
@@ -196,7 +193,6 @@ export default async function MultiCurrencyFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={3}
                     question={<Trans>What happens during a cross-currency transfer?</Trans>}
                     answer={
                         <Trans>

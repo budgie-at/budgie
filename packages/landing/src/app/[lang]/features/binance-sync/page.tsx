@@ -51,14 +51,14 @@ export default async function BinanceSyncFeaturePage(props: PageLangParam) {
                     </Trans>
                 </FeatureStory.Intro>
 
-                <FeatureStory.Step index={0} title={<Trans>The key is made on Binance</Trans>}>
+                <FeatureStory.Step title={<Trans>The key is made on Binance</Trans>}>
                     <Trans>
                         The first row takes you to Binance&apos;s API management page, and the numbered list under it is the recipe: sign
                         in, then create a new System-generated API key. Budgie never creates the key for you, because it never sees your
                         Binance login.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="binance-sync-1" slug="binance-sync">
+                <FeatureStory.Shot alt={firstShotAlt} locale={lang} scene="binance-sync-1" slug="binance-sync">
                     <FeatureStory.Callout index={0} y={0.22}>
                         <Trans>Opens Binance API management</Trans>
                     </FeatureStory.Callout>
@@ -70,7 +70,7 @@ export default async function BinanceSyncFeaturePage(props: PageLangParam) {
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={1} title={<Trans>Only the reading permission</Trans>}>
+                <FeatureStory.Step title={<Trans>Only the reading permission</Trans>}>
                     <Trans>
                         Step three is the one that matters: keep only &quot;Enable Reading&quot; on, and never allow trading or withdrawals.
                         Permissions are enforced on Binance&apos;s side, and Budgie has no way to place an order or withdraw — it only
@@ -78,7 +78,7 @@ export default async function BinanceSyncFeaturePage(props: PageLangParam) {
                     </Trans>
                 </FeatureStory.Step>
 
-                <FeatureStory.Step index={2} title={<Trans>Fetch Accounts, then choose</Trans>}>
+                <FeatureStory.Step title={<Trans>Fetch Accounts, then choose</Trans>}>
                     <Trans>
                         The key and the secret go into the two fields below, masked as you type. Fetch Accounts asks Binance what you hold
                         and hands you the list: tick the assets you want as accounts, and Start Sync takes it from there.
@@ -179,7 +179,7 @@ export default async function BinanceSyncFeaturePage(props: PageLangParam) {
             </FeatureBenefits>
 
             <FeatureDetails>
-                <FeatureDetails.Item index={0} title={<Trans>A key that can only read</Trans>}>
+                <FeatureDetails.Item title={<Trans>A key that can only read</Trans>}>
                     <p>
                         <Trans>
                             Budgie asks for an API key and secret, and the setup screen tells you exactly how to create it: keep only
@@ -194,7 +194,7 @@ export default async function BinanceSyncFeaturePage(props: PageLangParam) {
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Item index={1} title={<Trans>P2P without double-counting</Trans>}>
+                <FeatureDetails.Item title={<Trans>P2P without double-counting</Trans>}>
                     <p>
                         <Trans>
                             Buying USDT with a bank card produces two records: money leaving your bank account and crypto arriving on
@@ -213,12 +213,11 @@ export default async function BinanceSyncFeaturePage(props: PageLangParam) {
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Guides index={2} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>
                 <FeatureFaq.Item
-                    index={0}
                     question={<Trans>Can Budgie trade or withdraw with my key?</Trans>}
                     answer={
                         <Trans>
@@ -229,7 +228,6 @@ export default async function BinanceSyncFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={1}
                     question={<Trans>Which balances are included?</Trans>}
                     answer={
                         <Trans>
@@ -239,7 +237,6 @@ export default async function BinanceSyncFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={2}
                     question={<Trans>How far back does the history go?</Trans>}
                     answer={
                         <Trans>
@@ -249,7 +246,6 @@ export default async function BinanceSyncFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={3}
                     question={<Trans>What if the app is closed mid-sync?</Trans>}
                     answer={
                         <Trans>
@@ -259,7 +255,6 @@ export default async function BinanceSyncFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={4}
                     question={<Trans>Do Binance holdings count towards net worth?</Trans>}
                     answer={
                         <Trans>
@@ -269,7 +264,6 @@ export default async function BinanceSyncFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={5}
                     question={<Trans>Which Binance sources are not synced?</Trans>}
                     answer={
                         <Trans>

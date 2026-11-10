@@ -47,13 +47,13 @@ export default async function ExpenseTrackingFeaturePage(props: PageLangParam) {
                     <Trans>Three screens: saving an expense, coming back to one you already saved, and the list they all land in.</Trans>
                 </FeatureStory.Intro>
 
-                <FeatureStory.Step index={0} title={<Trans>Two taps to saved</Trans>}>
+                <FeatureStory.Step title={<Trans>Two taps to saved</Trans>}>
                     <Trans>
                         Plus, amount, save. The account and today&apos;s date are already filled in, and a suggested category is one tap
                         away.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="expense-tracking-1" slug="expense-tracking">
+                <FeatureStory.Shot alt={firstShotAlt} locale={lang} scene="expense-tracking-1" slug="expense-tracking">
                     <FeatureStory.Callout y={0.335}>
                         <Trans>Type the amount</Trans>
                     </FeatureStory.Callout>
@@ -62,7 +62,7 @@ export default async function ExpenseTrackingFeaturePage(props: PageLangParam) {
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={1} title={<Trans>Every action on a long-press</Trans>}>
+                <FeatureStory.Step title={<Trans>Every action on a long-press</Trans>}>
                     <Trans>
                         Edit, convert to a transfer or refund, attach a debt or delete — whichever apply to that row. A plain tap only opens
                         the row to read, so nothing changes by accident.
@@ -72,7 +72,6 @@ export default async function ExpenseTrackingFeaturePage(props: PageLangParam) {
                     alt={t(
                         i18n
                     )`Budgie transaction list with a long-press context menu offering edit, convert to transfer, attach debt and delete`}
-                    index={1}
                     locale={lang}
                     scene="transaction-long-press-menu-1"
                     slug="transaction-long-press-menu"
@@ -82,12 +81,11 @@ export default async function ExpenseTrackingFeaturePage(props: PageLangParam) {
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={2} title={<Trans>The list stays scannable</Trans>}>
+                <FeatureStory.Step title={<Trans>The list stays scannable</Trans>}>
                     <Trans>Rows group under the month, each one carrying its category icon, its tags and the account it came from.</Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
                     alt={t(i18n)`Budgie transaction list grouped by month with the category, tag and account on every row`}
-                    index={2}
                     locale={lang}
                     scene="expense-tracking-2"
                     slug="expense-tracking"
@@ -171,7 +169,7 @@ export default async function ExpenseTrackingFeaturePage(props: PageLangParam) {
             </FeatureBenefits>
 
             <FeatureDetails>
-                <FeatureDetails.Item index={0} title={<Trans>Why entry friction kills expense trackers</Trans>}>
+                <FeatureDetails.Item title={<Trans>Why entry friction kills expense trackers</Trans>}>
                     <p>
                         <Trans>
                             An expense tracker lives or dies by entry friction. Budgie&apos;s quick-entry sheet starts with your account and
@@ -186,7 +184,7 @@ export default async function ExpenseTrackingFeaturePage(props: PageLangParam) {
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Item index={1} title={<Trans>Read first, edit on purpose</Trans>}>
+                <FeatureDetails.Item title={<Trans>Read first, edit on purpose</Trans>}>
                     <p>
                         <Trans>
                             Opening a transaction no longer drops you into a form. You get a read-only Transaction Info view — amount,
@@ -203,12 +201,11 @@ export default async function ExpenseTrackingFeaturePage(props: PageLangParam) {
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Guides index={2} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>
                 <FeatureFaq.Item
-                    index={0}
                     question={<Trans>How fast is the quick-entry form?</Trans>}
                     answer={
                         <Trans>
@@ -218,7 +215,6 @@ export default async function ExpenseTrackingFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={1}
                     question={<Trans>Can I edit a transaction after saving?</Trans>}
                     answer={
                         <Trans>
@@ -229,7 +225,6 @@ export default async function ExpenseTrackingFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={2}
                     question={<Trans>What do the monthly bars on a transaction mean?</Trans>}
                     answer={
                         <Trans>
@@ -240,7 +235,6 @@ export default async function ExpenseTrackingFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={3}
                     question={<Trans>Does Budgie distinguish transfers from expenses?</Trans>}
                     answer={
                         <Trans>
@@ -250,7 +244,6 @@ export default async function ExpenseTrackingFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={4}
                     question={<Trans>What about recurring purchases?</Trans>}
                     answer={
                         <Trans>

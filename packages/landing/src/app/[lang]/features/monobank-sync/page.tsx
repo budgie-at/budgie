@@ -47,16 +47,10 @@ export default async function MonobankSyncFeaturePage(props: PageLangParam) {
                     <Trans>Three screens: paste a personal token, pick the cards and jars you want, and watch them land on Home.</Trans>
                 </FeatureStory.Intro>
 
-                <FeatureStory.Step index={0} title={<Trans>Paste one personal token</Trans>}>
+                <FeatureStory.Step title={<Trans>Paste one personal token</Trans>}>
                     <Trans>Budgie calls the Monobank API directly with a token you generate. No aggregator, no bank password.</Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot
-                    alt={firstShotAlt}
-                    index={0}
-                    locale={lang}
-                    scene="no-bank-login-budget-app-1"
-                    slug="no-bank-login-budget-app"
-                >
+                <FeatureStory.Shot alt={firstShotAlt} locale={lang} scene="no-bank-login-budget-app-1" slug="no-bank-login-budget-app">
                     <FeatureStory.Callout y={0.22}>
                         <Trans>Generate it in Monobank</Trans>
                     </FeatureStory.Callout>
@@ -65,12 +59,11 @@ export default async function MonobankSyncFeaturePage(props: PageLangParam) {
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={1} title={<Trans>Cards and jars arrive</Trans>}>
+                <FeatureStory.Step title={<Trans>Cards and jars arrive</Trans>}>
                     <Trans>Every Monobank card and every jar comes back as its own account, with a switch to leave any of them out.</Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
                     alt={t(i18n)`Budgie Monobank screen listing two cards and a car jar, each with a balance and a switch`}
-                    index={1}
                     locale={lang}
                     scene="monobank-sync-1"
                     slug="monobank-sync"
@@ -193,7 +186,7 @@ export default async function MonobankSyncFeaturePage(props: PageLangParam) {
             </FeatureBenefits>
 
             <FeatureDetails>
-                <FeatureDetails.Item index={0} title={<Trans>Why a direct connection matters more than convenience</Trans>}>
+                <FeatureDetails.Item title={<Trans>Why a direct connection matters more than convenience</Trans>}>
                     <p>
                         <Trans>
                             Monobank offers a public API, so Budgie talks to it directly from your phone using your token — no data broker
@@ -209,7 +202,7 @@ export default async function MonobankSyncFeaturePage(props: PageLangParam) {
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Item index={1} title={<Trans>Counterparty accounts and transfer consolidation</Trans>}>
+                <FeatureDetails.Item title={<Trans>Counterparty accounts and transfer consolidation</Trans>}>
                     <p>
                         <Trans>
                             Monobank reports the counterparty&apos;s account number on payments and transfers that have one. Budgie keeps it
@@ -225,12 +218,11 @@ export default async function MonobankSyncFeaturePage(props: PageLangParam) {
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Guides index={2} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>
                 <FeatureFaq.Item
-                    index={0}
                     question={<Trans>How is this different from aggregator-based apps?</Trans>}
                     answer={
                         <Trans>
@@ -240,7 +232,6 @@ export default async function MonobankSyncFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={1}
                     question={<Trans>How often does it sync?</Trans>}
                     answer={
                         <Trans>
@@ -251,7 +242,6 @@ export default async function MonobankSyncFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={2}
                     question={<Trans>How much history can I pull?</Trans>}
                     answer={
                         <Trans>
@@ -262,19 +252,16 @@ export default async function MonobankSyncFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={3}
                     question={<Trans>Where does my Monobank token live?</Trans>}
                     answer={
                         <Trans>On your device, in Budgie&apos;s local database. It is never sent to a Budgie server — there is none.</Trans>
                     }
                 />
                 <FeatureFaq.Item
-                    index={4}
                     question={<Trans>Can I use multiple Monobank accounts?</Trans>}
                     answer={<Trans>Yes — one token grants access to all your Monobank accounts. Pick which to import per account.</Trans>}
                 />
                 <FeatureFaq.Item
-                    index={5}
                     question={<Trans>Do jars sync as well?</Trans>}
                     answer={
                         <Trans>
@@ -285,7 +272,6 @@ export default async function MonobankSyncFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={6}
                     question={<Trans>What if Monobank&apos;s API changes?</Trans>}
                     answer={
                         <Trans>Budgie is source-available, and the Monobank connection is kept current through regular releases.</Trans>

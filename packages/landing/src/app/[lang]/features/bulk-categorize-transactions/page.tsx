@@ -134,14 +134,13 @@ export default async function BulkCategorizeTransactionsFeaturePage(props: PageL
                     <Trans>The count on your list, the merchant groups behind it, and the button that clears every certain one.</Trans>
                 </FeatureStory.Intro>
 
-                <FeatureStory.Step index={0} title={<Trans>Start from the pill</Trans>}>
+                <FeatureStory.Step title={<Trans>Start from the pill</Trans>}>
                     <Trans>
                         The pill above your transactions counts what still has no category under your filters. Tap it to open the inbox.
                     </Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
                     alt={t(i18n)`Budgie transaction list with a yellow missing categories pill above the first rows`}
-                    index={0}
                     locale={lang}
                     priority
                     scene="uncategorized-transactions-1"
@@ -152,14 +151,13 @@ export default async function BulkCategorizeTransactionsFeaturePage(props: PageL
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={1} title={<Trans>Groups, not rows</Trans>}>
+                <FeatureStory.Step title={<Trans>Groups, not rows</Trans>}>
                     <Trans>
                         Rows from one merchant share a card, even with reference or card numbers added. The chip is what you chose before.
                     </Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
                     alt={t(i18n)`Budgie Categorize screen listing merchant cards, each with a suggested category chip`}
-                    index={1}
                     locale={lang}
                     scene="bulk-categorize-transactions-1"
                     slug="bulk-categorize-transactions"
@@ -172,7 +170,7 @@ export default async function BulkCategorizeTransactionsFeaturePage(props: PageL
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={2} title={<Trans>Accept everything that is certain</Trans>}>
+                <FeatureStory.Step title={<Trans>Accept everything that is certain</Trans>}>
                     <Trans>
                         Section headers stay pinned with their count and total. The bottom panel tracks progress and accepts every sure
                         group, with Undo.
@@ -180,7 +178,6 @@ export default async function BulkCategorizeTransactionsFeaturePage(props: PageL
                 </FeatureStory.Step>
                 <FeatureStory.Shot
                     alt={t(i18n)`The same Budgie Categorize screen with progress and the accept all suggestions button in the bottom panel`}
-                    index={2}
                     locale={lang}
                     scene="bulk-categorize-transactions-1"
                     slug="bulk-categorize-transactions"
@@ -193,12 +190,11 @@ export default async function BulkCategorizeTransactionsFeaturePage(props: PageL
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={3} title={<Trans>Tags get the same inbox</Trans>}>
+                <FeatureStory.Step title={<Trans>Tags get the same inbox</Trans>}>
                     <Trans>Open Tags in Analytics and tap Untagged. Transactions group by merchant, each with a suggested tag.</Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
                     alt={t(i18n)`Budgie tag inbox screen listing merchant groups, each with a suggested tag chip`}
-                    index={3}
                     locale={lang}
                     scene="bulk-categorize-transactions-2"
                     slug="bulk-categorize-transactions"
@@ -288,7 +284,7 @@ export default async function BulkCategorizeTransactionsFeaturePage(props: PageL
             </FeatureBenefits>
 
             <FeatureDetails>
-                <FeatureDetails.Item index={0} title={<Trans>Why categorizing transactions one by one never ends</Trans>}>
+                <FeatureDetails.Item title={<Trans>Why categorizing transactions one by one never ends</Trans>}>
                     <p>
                         <Trans>
                             Every bank sync or statement import brings in dozens of transactions, and the same shops keep coming back under
@@ -314,7 +310,7 @@ export default async function BulkCategorizeTransactionsFeaturePage(props: PageL
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Item index={1} title={<Trans>Tag transactions in bulk, too</Trans>}>
+                <FeatureDetails.Item title={<Trans>Tag transactions in bulk, too</Trans>}>
                     <p>
                         <Trans>
                             Tags get the same inbox. In Analytics, open the{' '}
@@ -342,7 +338,7 @@ export default async function BulkCategorizeTransactionsFeaturePage(props: PageL
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Item index={2} title={<Trans>Categorize a merchant once, never again</Trans>}>
+                <FeatureDetails.Item title={<Trans>Categorize a merchant once, never again</Trans>}>
                     <p>
                         <Trans>
                             After you categorize a single group, the bar at the bottom of the screen offers to create a rule. The rule
@@ -360,12 +356,11 @@ export default async function BulkCategorizeTransactionsFeaturePage(props: PageL
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Guides index={3} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>
                 <FeatureFaq.Item
-                    index={0}
                     question={<Trans>How do I categorize several transactions at once?</Trans>}
                     answer={
                         <Trans>
@@ -376,7 +371,6 @@ export default async function BulkCategorizeTransactionsFeaturePage(props: PageL
                     }
                 />
                 <FeatureFaq.Item
-                    index={1}
                     question={<Trans>Where do the category suggestions come from?</Trans>}
                     answer={
                         <Trans>
@@ -387,7 +381,6 @@ export default async function BulkCategorizeTransactionsFeaturePage(props: PageL
                     }
                 />
                 <FeatureFaq.Item
-                    index={2}
                     question={<Trans>Can I tag transactions in bulk too?</Trans>}
                     answer={
                         <Trans>
@@ -397,7 +390,6 @@ export default async function BulkCategorizeTransactionsFeaturePage(props: PageL
                     }
                 />
                 <FeatureFaq.Item
-                    index={3}
                     question={<Trans>Can I undo a bulk categorization?</Trans>}
                     answer={
                         <Trans>
@@ -407,7 +399,6 @@ export default async function BulkCategorizeTransactionsFeaturePage(props: PageL
                     }
                 />
                 <FeatureFaq.Item
-                    index={4}
                     question={<Trans>Will new transactions from the same merchant be categorized automatically?</Trans>}
                     answer={
                         <Trans>

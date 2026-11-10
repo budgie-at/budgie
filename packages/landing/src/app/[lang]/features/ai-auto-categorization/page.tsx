@@ -48,19 +48,13 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                     <Trans>Pill suggestions on the expense form, the privacy notice in Settings, and the On-device AI section.</Trans>
                 </FeatureStory.Intro>
 
-                <FeatureStory.Step index={0} title={<Trans>Category pills on the expense form</Trans>}>
+                <FeatureStory.Step title={<Trans>Category pills on the expense form</Trans>}>
                     <Trans>
                         Open a new expense and Budgie offers categories as pills above the action buttons, drawn from transactions you have
                         already categorized. Tapping a pill picks the category, and the Category button still opens the full list.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot
-                    alt={firstShotAlt}
-                    index={0}
-                    locale={lang}
-                    scene="ai-auto-categorization-1"
-                    slug="ai-auto-categorization"
-                >
+                <FeatureStory.Shot alt={firstShotAlt} locale={lang} scene="ai-auto-categorization-1" slug="ai-auto-categorization">
                     <FeatureStory.Callout index={0} y={0.448}>
                         <Trans>Suggested category pills</Trans>
                     </FeatureStory.Callout>
@@ -69,7 +63,7 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={1} title={<Trans>Offline, private, and card-code aware</Trans>}>
+                <FeatureStory.Step title={<Trans>Offline, private, and card-code aware</Trans>}>
                     <Trans>
                         Settings opens with a Privacy card stating that your financial data is stored locally on your device. Further down,
                         a toggle assigns default categories from the merchant category codes your bank sends with card payments.
@@ -79,7 +73,6 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                     alt={t(
                         i18n
                     )`Budgie settings screen with the offline-and-private notice above the automatic MCC category assignment toggle`}
-                    index={1}
                     locale={lang}
                     scene="ai-auto-categorization-2"
                     slug="ai-auto-categorization"
@@ -89,7 +82,7 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={2} title={<Trans>One switch for the on-device AI</Trans>}>
+                <FeatureStory.Step title={<Trans>One switch for the on-device AI</Trans>}>
                     <Trans>
                         The AI section of Settings holds the On-device AI switch, which says it categorizes transactions on this device and
                         downloads about 2.5 GB of models once. Below it, a Learning row shows whether learning is up to date.
@@ -99,7 +92,6 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                     alt={t(
                         i18n
                     )`Budgie settings AI section with the On-device AI switch, a Translation row and a Learning row reading learning up to date`}
-                    index={2}
                     locale={lang}
                     scene="on-device-ai-budget-app-1"
                     slug="on-device-ai-budget-app"
@@ -184,7 +176,7 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
             </FeatureBenefits>
 
             <FeatureDetails>
-                <FeatureDetails.Item index={0} title={<Trans>Why on-device AI is the only AI that protects your statements</Trans>}>
+                <FeatureDetails.Item title={<Trans>Why on-device AI is the only AI that protects your statements</Trans>}>
                     <p>
                         <Trans>
                             Cloud &ldquo;AI&rdquo; budgeting apps send every merchant name to a remote server, which means somebody
@@ -200,7 +192,7 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Item index={1} title={<Trans>How a suggestion is made</Trans>}>
+                <FeatureDetails.Item title={<Trans>How a suggestion is made</Trans>}>
                     <ul>
                         <li>
                             <Trans>
@@ -222,12 +214,11 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                         </li>
                     </ul>
                 </FeatureDetails.Item>
-                <FeatureDetails.Guides index={2} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>
                 <FeatureFaq.Item
-                    index={0}
                     question={<Trans>Does the AI work offline?</Trans>}
                     answer={
                         <Trans>
@@ -237,7 +228,6 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                     }
                 />
                 <FeatureFaq.Item
-                    index={1}
                     question={<Trans>How big is the download?</Trans>}
                     answer={
                         <Trans>
@@ -248,7 +238,6 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                     }
                 />
                 <FeatureFaq.Item
-                    index={2}
                     question={<Trans>Can I correct the AI&apos;s suggestions?</Trans>}
                     answer={
                         <Trans>
@@ -258,7 +247,6 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                     }
                 />
                 <FeatureFaq.Item
-                    index={3}
                     question={<Trans>Can I turn AI off?</Trans>}
                     answer={
                         <Trans>
@@ -269,7 +257,6 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                     }
                 />
                 <FeatureFaq.Item
-                    index={4}
                     question={<Trans>Does Budgie send my transactions to a cloud AI?</Trans>}
                     answer={
                         <Trans>

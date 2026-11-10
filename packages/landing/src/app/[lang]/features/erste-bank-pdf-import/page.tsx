@@ -117,7 +117,7 @@ export default async function ErsteBankPdfImportFeaturePage(props: PageLangParam
             </FeatureBenefits>
 
             <FeatureDetails>
-                <FeatureDetails.Item index={0} title={<Trans>Why a dedicated importer beats a generic CSV converter</Trans>}>
+                <FeatureDetails.Item title={<Trans>Why a dedicated importer beats a generic CSV converter</Trans>}>
                     <p>
                         <Trans>
                             Budgie imports Erste Bank statements from the PDF you download in George, the Erste online banking. It is built
@@ -144,7 +144,7 @@ export default async function ErsteBankPdfImportFeaturePage(props: PageLangParam
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Item index={1} title={<Trans>How it works</Trans>}>
+                <FeatureDetails.Item title={<Trans>How it works</Trans>}>
                     <p>
                         <Trans>
                             Start a new account and choose Erste Bank. In George, open Account → Statements and download the statement as a
@@ -153,12 +153,11 @@ export default async function ErsteBankPdfImportFeaturePage(props: PageLangParam
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Guides index={2} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>
                 <FeatureFaq.Item
-                    index={0}
                     question={<Trans>Which Erste statements are supported?</Trans>}
                     answer={
                         <Trans>
@@ -167,12 +166,10 @@ export default async function ErsteBankPdfImportFeaturePage(props: PageLangParam
                     }
                 />
                 <FeatureFaq.Item
-                    index={1}
                     question={<Trans>Will Budgie get my IBAN right?</Trans>}
                     answer={<Trans>Yes — the IBAN is read from the statement header and stored on the account.</Trans>}
                 />
                 <FeatureFaq.Item
-                    index={2}
                     question={<Trans>Can I re-import the same PDF safely?</Trans>}
                     answer={
                         <Trans>
@@ -181,7 +178,6 @@ export default async function ErsteBankPdfImportFeaturePage(props: PageLangParam
                     }
                 />
                 <FeatureFaq.Item
-                    index={3}
                     question={<Trans>Does it need an internet connection?</Trans>}
                     answer={
                         <Trans>

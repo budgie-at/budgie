@@ -48,13 +48,13 @@ export default async function TransactionTagsFeaturePage(props: PageLangParam) {
                     </Trans>
                 </FeatureStory.Intro>
 
-                <FeatureStory.Step index={0} title={<Trans>Tags are the second dimension</Trans>}>
+                <FeatureStory.Step title={<Trans>Tags are the second dimension</Trans>}>
                     <Trans>
                         A category says what you bought. A tag says which trip, which project, which person — chosen on the same form, from
                         your own flat list.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="transaction-tags-1" slug="transaction-tags">
+                <FeatureStory.Shot alt={firstShotAlt} locale={lang} scene="transaction-tags-1" slug="transaction-tags">
                     <FeatureStory.Callout y={0.49}>
                         <Trans>Tags sit next to Category</Trans>
                     </FeatureStory.Callout>
@@ -63,7 +63,7 @@ export default async function TransactionTagsFeaturePage(props: PageLangParam) {
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={1} title={<Trans>The list keeps them visible</Trans>}>
+                <FeatureStory.Step title={<Trans>The list keeps them visible</Trans>}>
                     <Trans>
                         Every tagged row carries one tag chip and a count of the rest, so a long list stays scannable without opening a
                         single transaction.
@@ -71,7 +71,6 @@ export default async function TransactionTagsFeaturePage(props: PageLangParam) {
                 </FeatureStory.Step>
                 <FeatureStory.Shot
                     alt={t(i18n)`Budgie transaction list where each row shows a tag chip beside its category and date`}
-                    index={1}
                     locale={lang}
                     scene="transaction-tags-2"
                     slug="transaction-tags"
@@ -81,14 +80,13 @@ export default async function TransactionTagsFeaturePage(props: PageLangParam) {
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={2} title={<Trans>Then the totals follow</Trans>}>
+                <FeatureStory.Step title={<Trans>Then the totals follow</Trans>}>
                     <Trans>
                         Analytics carries a Tags tab beside Categories: income and spending per tag, each with its share of the period.
                     </Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
                     alt={t(i18n)`Budgie analytics Tags tab listing income and spending totals for each tag`}
-                    index={2}
                     locale={lang}
                     scene="statistics-tags-tab-1"
                     slug="statistics-tags-tab"
@@ -159,7 +157,7 @@ export default async function TransactionTagsFeaturePage(props: PageLangParam) {
             </FeatureBenefits>
 
             <FeatureDetails>
-                <FeatureDetails.Item index={0} title={<Trans>Why categories alone are not enough</Trans>}>
+                <FeatureDetails.Item title={<Trans>Why categories alone are not enough</Trans>}>
                     <p>
                         <Trans>
                             Categories answer &ldquo;what kind of expense&rdquo;; tags answer &ldquo;for which project, person, or
@@ -175,12 +173,11 @@ export default async function TransactionTagsFeaturePage(props: PageLangParam) {
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>
                 <FeatureFaq.Item
-                    index={0}
                     question={<Trans>How are tags different from categories?</Trans>}
                     answer={
                         <Trans>
@@ -190,7 +187,6 @@ export default async function TransactionTagsFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={1}
                     question={<Trans>How many tags can I add to a transaction?</Trans>}
                     answer={
                         <Trans>
@@ -200,7 +196,6 @@ export default async function TransactionTagsFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={2}
                     question={<Trans>What does &ldquo;primary tag&rdquo; mean?</Trans>}
                     answer={
                         <Trans>
@@ -210,7 +205,6 @@ export default async function TransactionTagsFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={3}
                     question={<Trans>Can I rename or merge tags?</Trans>}
                     answer={
                         <Trans>

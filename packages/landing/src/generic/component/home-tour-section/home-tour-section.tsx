@@ -18,12 +18,11 @@ export const HomeTourSection = ({ locale }: Props) => {
                 <Trans>Five screens of the real app, in the order you actually meet them.</Trans>
             </FeatureStory.Intro>
 
-            <FeatureStory.Step index={0} title={<Trans>Add it in three taps</Trans>}>
+            <FeatureStory.Step title={<Trans>Add it in three taps</Trans>}>
                 <Trans>The keypad opens first. Type the amount, keep the account Budgie already picked, and save.</Trans>
             </FeatureStory.Step>
             <FeatureStory.Shot
                 alt={t(i18n)`Budgie New Expense screen with the amount keypad open and Main Checking preselected as the account`}
-                index={0}
                 locale={locale}
                 scene="expense-tracking-1"
                 slug="expense-tracking"
@@ -36,14 +35,13 @@ export const HomeTourSection = ({ locale }: Props) => {
                 </FeatureStory.Callout>
             </FeatureStory.Shot>
 
-            <FeatureStory.Step index={1} title={<Trans>It files itself</Trans>}>
+            <FeatureStory.Step title={<Trans>It files itself</Trans>}>
                 <Trans>
                     The merchant and its category land on the entry before you finish typing, decided by a model running on your phone.
                 </Trans>
             </FeatureStory.Step>
             <FeatureStory.Shot
                 alt={t(i18n)`Budgie Edit Expense screen showing the Silpo merchant recognised and the Groceries category already filled in`}
-                index={1}
                 locale={locale}
                 scene="mcc-auto-category-1"
                 slug="mcc-auto-category"
@@ -56,36 +54,33 @@ export const HomeTourSection = ({ locale }: Props) => {
                 </FeatureStory.Callout>
             </FeatureStory.Shot>
 
-            <FeatureStory.Step index={2} title={<Trans>Your bank, with nobody in between</Trans>}>
+            <FeatureStory.Step title={<Trans>Your bank, with nobody in between</Trans>}>
                 <Trans>Monobank cards and jars arrive through your own token, straight into the database on your phone.</Trans>
             </FeatureStory.Step>
             <FeatureStory.Shot
                 alt={t(i18n)`Budgie Monobank screen listing two cards and a car jar, each with a balance and a switch`}
-                index={2}
                 locale={locale}
                 scene="monobank-sync-1"
                 slug="monobank-sync"
             />
 
-            <FeatureStory.Step index={3} title={<Trans>See where it actually goes</Trans>}>
+            <FeatureStory.Step title={<Trans>See where it actually goes</Trans>}>
                 <Trans>Spending by category and by tag, for any period, and every slice opens the transactions underneath it.</Trans>
             </FeatureStory.Step>
             <FeatureStory.Shot
                 alt={t(i18n)`Budgie analytics screen breaking spending down by category with amounts and percentages`}
-                index={3}
                 locale={locale}
                 scene="spending-analytics-1"
                 slug="spending-analytics"
             />
 
-            <FeatureStory.Step index={4} title={<Trans>Works with the radio off</Trans>}>
+            <FeatureStory.Step title={<Trans>Works with the radio off</Trans>}>
                 <Trans>
                     Everything above runs from a database on the device. Aeroplane mode changes nothing about what you can see or do.
                 </Trans>
             </FeatureStory.Step>
             <FeatureStory.Shot
                 alt={t(i18n)`Budgie transactions list showing 81 transactions loaded with no network request in flight`}
-                index={4}
                 locale={locale}
                 scene="offline-first-expense-tracker-1"
                 slug="offline-first-expense-tracker"

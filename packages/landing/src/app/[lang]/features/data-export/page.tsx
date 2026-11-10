@@ -48,14 +48,14 @@ export default async function DataExportFeaturePage(props: PageLangParam) {
                     </Trans>
                 </FeatureStory.Intro>
 
-                <FeatureStory.Point index={0}>
+                <FeatureStory.Point>
                     <Trans>
                         Export CSV takes your transactions in a single tap. There is no range to pick. Deleted transactions and the
                         originals behind a merged transaction are left out.
                     </Trans>
                 </FeatureStory.Point>
 
-                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="database-backup-1" slug="database-backup">
+                <FeatureStory.Shot alt={firstShotAlt} locale={lang} scene="database-backup-1" slug="database-backup">
                     <FeatureStory.Callout index={0} y={0.365}>
                         <Trans>Your transactions, one file</Trans>
                     </FeatureStory.Callout>
@@ -64,13 +64,13 @@ export default async function DataExportFeaturePage(props: PageLangParam) {
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Point index={1}>
+                <FeatureStory.Point>
                     <Trans>
                         Export Database writes the whole database to one compressed file. The Import Database row directly above it restores
                         from that same file on another device.
                     </Trans>
                 </FeatureStory.Point>
-                <FeatureStory.Point index={2}>
+                <FeatureStory.Point>
                     <Trans>
                         Neither row is gated. No upgrade prompt, no vendor account, no plan — you save the file through the OS share sheet
                         to wherever you keep things.
@@ -162,7 +162,7 @@ export default async function DataExportFeaturePage(props: PageLangParam) {
             </FeatureBenefits>
 
             <FeatureDetails>
-                <FeatureDetails.Item index={0} title={<Trans>Why an expense app must respect the export</Trans>}>
+                <FeatureDetails.Item title={<Trans>Why an expense app must respect the export</Trans>}>
                     <p>
                         <Trans>
                             Your data, your call. Budgie ships two exports: a flat CSV for spreadsheets and a compressed copy of your
@@ -178,12 +178,11 @@ export default async function DataExportFeaturePage(props: PageLangParam) {
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>
                 <FeatureFaq.Item
-                    index={0}
                     question={<Trans>Why two export formats?</Trans>}
                     answer={
                         <Trans>
@@ -193,7 +192,6 @@ export default async function DataExportFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={1}
                     question={<Trans>Is the backup encrypted?</Trans>}
                     answer={
                         <Trans>
@@ -204,7 +202,6 @@ export default async function DataExportFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={2}
                     question={<Trans>Can I import the CSV back into Budgie?</Trans>}
                     answer={
                         <Trans>
@@ -214,7 +211,6 @@ export default async function DataExportFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={3}
                     question={<Trans>Does export work offline?</Trans>}
                     answer={
                         <Trans>

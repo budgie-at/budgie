@@ -41,11 +41,11 @@ export default async function DarkModeFeaturePage(props: PageLangParam) {
                     <Trans>One real screen, rendered in whichever theme this page is in right now.</Trans>
                 </FeatureStory.Intro>
 
-                <FeatureStory.Point index={0}>
+                <FeatureStory.Point>
                     <Trans>The background is solid black, not a dimmed grey panel layered over a light design.</Trans>
                 </FeatureStory.Point>
 
-                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="expense-tracking-2" slug="expense-tracking">
+                <FeatureStory.Shot alt={firstShotAlt} locale={lang} scene="expense-tracking-2" slug="expense-tracking">
                     <FeatureStory.Callout index={0} y={0.09}>
                         <Trans>Solid black surface</Trans>
                     </FeatureStory.Callout>
@@ -54,13 +54,13 @@ export default async function DarkModeFeaturePage(props: PageLangParam) {
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Point index={1}>
+                <FeatureStory.Point>
                     <Trans>
                         Expense and income amounts shift to brighter red and green in dark mode, not the muted tones carried over from light
                         mode.
                     </Trans>
                 </FeatureStory.Point>
-                <FeatureStory.Point index={2}>
+                <FeatureStory.Point>
                     <Trans>
                         Switching is one tap on the Dark Mode switch in Settings. It is a single on/off switch: once you use it, Budgie
                         stays on the theme you chose.
@@ -123,7 +123,7 @@ export default async function DarkModeFeaturePage(props: PageLangParam) {
             </FeatureBenefits>
 
             <FeatureDetails>
-                <FeatureDetails.Item index={0} title={<Trans>Why a finance app at midnight matters</Trans>}>
+                <FeatureDetails.Item title={<Trans>Why a finance app at midnight matters</Trans>}>
                     <p>
                         <Trans>
                             A finance app you check at midnight should not blast your retinas. Budgie&apos;s dark theme uses a black
@@ -137,17 +137,15 @@ export default async function DarkModeFeaturePage(props: PageLangParam) {
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>
                 <FeatureFaq.Item
-                    index={0}
                     question={<Trans>Is it true black or just dark gray?</Trans>}
                     answer={<Trans>Black for the background. Cards and surfaces are dark gray for hierarchy.</Trans>}
                 />
                 <FeatureFaq.Item
-                    index={1}
                     question={<Trans>Does it switch automatically?</Trans>}
                     answer={
                         <Trans>
@@ -157,12 +155,10 @@ export default async function DarkModeFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={2}
                     question={<Trans>What does the launch screen look like?</Trans>}
                     answer={<Trans>The launch screen is black when your device is in dark mode and white when it is in light mode.</Trans>}
                 />
                 <FeatureFaq.Item
-                    index={3}
                     question={<Trans>Do the colors change?</Trans>}
                     answer={
                         <Trans>

@@ -2,6 +2,7 @@ import { Trans } from '@lingui/react/macro';
 
 import { FaqPageJsonLd } from '../../../generic/component/faq-page-json-ld/faq-page-json-ld';
 import { getI18nInstance } from '../../../i18n/app-router-i18n';
+import { assignPositionIndex } from '../../utils/assign-position-index.util';
 import { FeatureFaqItem } from '../feature-faq-item/feature-faq-item';
 import { FeatureSplitSection } from '../feature-split-section/feature-split-section';
 
@@ -18,7 +19,7 @@ const FeatureFaqRoot = ({ children, locale }: Props) => (
             {children}
         </FaqPageJsonLd>
         <FeatureSplitSection heading={<Trans>Questions</Trans>} id="faq">
-            {children}
+            {assignPositionIndex(children, [FeatureFaqItem])}
         </FeatureSplitSection>
     </>
 );

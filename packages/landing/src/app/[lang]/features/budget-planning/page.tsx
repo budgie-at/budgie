@@ -51,14 +51,14 @@ export default async function BudgetPlanningFeaturePage(props: PageLangParam) {
                     </Trans>
                 </FeatureStory.Intro>
 
-                <FeatureStory.Step index={0} title={<Trans>One limit for the month</Trans>}>
+                <FeatureStory.Step title={<Trans>One limit for the month</Trans>}>
                     <Trans>
                         The header carries the period the budget covers, what you have spent against the overall limit, the percentage that
                         represents and what is still left. Spending recorded on accounts in other currencies is converted into the
                         budget&apos;s currency before any of it is counted.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot alt={storyAlt} index={0} locale={lang} scene="budget-planning-2" slug="budget-planning">
+                <FeatureStory.Shot alt={storyAlt} locale={lang} scene="budget-planning-2" slug="budget-planning">
                     <FeatureStory.Callout y={0.224}>
                         <Trans>95% of the limit used</Trans>
                     </FeatureStory.Callout>
@@ -67,25 +67,25 @@ export default async function BudgetPlanningFeaturePage(props: PageLangParam) {
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={1} title={<Trans>A limit per category</Trans>}>
+                <FeatureStory.Step title={<Trans>A limit per category</Trans>}>
                     <Trans>
                         Every category you gave a ceiling gets its own card under Category limits: a bar, what you have spent, what is left
                         and the limit itself. Tap one and Budgie opens the transactions behind that number for exactly this period.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot alt={storyAlt} index={1} locale={lang} scene="budget-planning-2" slug="budget-planning">
+                <FeatureStory.Shot alt={storyAlt} locale={lang} scene="budget-planning-2" slug="budget-planning">
                     <FeatureStory.Callout y={0.436}>
                         <Trans>Spent, left and limit</Trans>
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={2} title={<Trans>Going over is obvious</Trans>}>
+                <FeatureStory.Step title={<Trans>Going over is obvious</Trans>}>
                     <Trans>
                         A category that passes its ceiling turns red and swaps Left for Over budget, so the overrun is a number rather than
                         a bar that quietly stops. Refunds work the other way: a returned purchase gives the budget its money back.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot alt={storyAlt} index={2} locale={lang} scene="budget-planning-2" slug="budget-planning">
+                <FeatureStory.Shot alt={storyAlt} locale={lang} scene="budget-planning-2" slug="budget-planning">
                     <FeatureStory.Callout y={0.535}>
                         <Trans>Red once the limit breaks</Trans>
                     </FeatureStory.Callout>
@@ -195,7 +195,7 @@ export default async function BudgetPlanningFeaturePage(props: PageLangParam) {
             </FeatureBenefits>
 
             <FeatureDetails>
-                <FeatureDetails.Item index={0} title={<Trans>One limit, split the way you actually spend</Trans>}>
+                <FeatureDetails.Item title={<Trans>One limit, split the way you actually spend</Trans>}>
                     <p>
                         <Trans>
                             A Budgie budget runs on a monthly cycle, and the period it currently covers is shown on the budget detail screen
@@ -210,7 +210,7 @@ export default async function BudgetPlanningFeaturePage(props: PageLangParam) {
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Item index={1} title={<Trans>Alerts that never leave your phone</Trans>}>
+                <FeatureDetails.Item title={<Trans>Alerts that never leave your phone</Trans>}>
                     <p>
                         <Trans>
                             Budget alerts are off until you turn them on. Once enabled, a background task periodically compares what you
@@ -226,12 +226,11 @@ export default async function BudgetPlanningFeaturePage(props: PageLangParam) {
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Guides index={2} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>
                 <FeatureFaq.Item
-                    index={0}
                     question={<Trans>Which budget periods are supported?</Trans>}
                     answer={
                         <Trans>
@@ -241,7 +240,6 @@ export default async function BudgetPlanningFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={1}
                     question={<Trans>Do the alerts need an internet connection?</Trans>}
                     answer={
                         <Trans>
@@ -251,7 +249,6 @@ export default async function BudgetPlanningFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={2}
                     question={<Trans>What happens with accounts in another currency?</Trans>}
                     answer={
                         <Trans>
@@ -261,7 +258,6 @@ export default async function BudgetPlanningFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={3}
                     question={<Trans>Do I have to build the whole budget by hand?</Trans>}
                     answer={
                         <Trans>
@@ -271,7 +267,6 @@ export default async function BudgetPlanningFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={4}
                     question={<Trans>Can I see what is behind a category number?</Trans>}
                     answer={
                         <Trans>

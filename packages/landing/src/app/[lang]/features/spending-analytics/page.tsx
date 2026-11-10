@@ -48,14 +48,14 @@ export default async function SpendingAnalyticsFeaturePage(props: PageLangParam)
                     </Trans>
                 </FeatureStory.Intro>
 
-                <FeatureStory.Step index={0} title={<Trans>Set the period, read the totals</Trans>}>
+                <FeatureStory.Step title={<Trans>Set the period, read the totals</Trans>}>
                     <Trans>
                         Statistics opens on This Month. The date chip swaps in Today, This or Last Week, Last Month, This Year and All Time,
                         or any range you draw on the calendar. Amount, Category, Tag and Account chips narrow it further, and the Categories
                         and Tags tabs both read the same filter — Runway keeps its own six-month window instead.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="spending-analytics-1" slug="spending-analytics">
+                <FeatureStory.Shot alt={firstShotAlt} locale={lang} scene="spending-analytics-1" slug="spending-analytics">
                     <FeatureStory.Callout x={0.43} y={0.167}>
                         <Trans>Seven presets, or your own range</Trans>
                     </FeatureStory.Callout>
@@ -67,14 +67,14 @@ export default async function SpendingAnalyticsFeaturePage(props: PageLangParam)
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={1} title={<Trans>Every category, ranked by what it took</Trans>}>
+                <FeatureStory.Step title={<Trans>Every category, ranked by what it took</Trans>}>
                     <Trans>
                         Income by category and Spending by category list each one with its total and its share of the period, biggest first.
                         Categories with no activity drop out of the list, and anything you never filed collects in an Uncategorized row.
                     </Trans>
                 </FeatureStory.Step>
 
-                <FeatureStory.Step index={2} title={<Trans>Tap a row, get the transactions</Trans>}>
+                <FeatureStory.Step title={<Trans>Tap a row, get the transactions</Trans>}>
                     <Trans>
                         A category row opens the transactions behind it, carrying the same period across and grouping them by month — each
                         one with its account, its tags and its time. Tags drill down the same way, and the Untagged bucket shows what
@@ -85,7 +85,6 @@ export default async function SpendingAnalyticsFeaturePage(props: PageLangParam)
                     alt={t(
                         i18n
                     )`Budgie transaction list for a single spending category, showing the period date range above rows grouped by month`}
-                    index={2}
                     locale={lang}
                     scene="spending-analytics-2"
                     slug="spending-analytics"
@@ -159,7 +158,7 @@ export default async function SpendingAnalyticsFeaturePage(props: PageLangParam)
             </FeatureBenefits>
 
             <FeatureDetails>
-                <FeatureDetails.Item index={0} title={<Trans>Why most expense charts are useless</Trans>}>
+                <FeatureDetails.Item title={<Trans>Why most expense charts are useless</Trans>}>
                     <p>
                         <Trans>
                             Most apps show a pie chart and call it analytics. Budgie&apos;s analytics screen has three tabs — Categories,
@@ -175,12 +174,11 @@ export default async function SpendingAnalyticsFeaturePage(props: PageLangParam)
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>
                 <FeatureFaq.Item
-                    index={0}
                     question={<Trans>Can I drill down from the breakdown to the transactions?</Trans>}
                     answer={
                         <Trans>
@@ -189,7 +187,6 @@ export default async function SpendingAnalyticsFeaturePage(props: PageLangParam)
                     }
                 />
                 <FeatureFaq.Item
-                    index={1}
                     question={<Trans>What&apos;s an &ldquo;Untagged&rdquo; bucket?</Trans>}
                     answer={
                         <Trans>
@@ -199,7 +196,6 @@ export default async function SpendingAnalyticsFeaturePage(props: PageLangParam)
                     }
                 />
                 <FeatureFaq.Item
-                    index={2}
                     question={<Trans>Can I switch to another month?</Trans>}
                     answer={
                         <Trans>
@@ -210,12 +206,10 @@ export default async function SpendingAnalyticsFeaturePage(props: PageLangParam)
                     }
                 />
                 <FeatureFaq.Item
-                    index={3}
                     question={<Trans>Are charts rendered offline?</Trans>}
                     answer={<Trans>Yes. Analytics reads straight from your phone — every chart works without internet.</Trans>}
                 />
                 <FeatureFaq.Item
-                    index={4}
                     question={<Trans>Do transfer fees show up as expenses?</Trans>}
                     answer={
                         <Trans>Yes. A transfer stays a transfer, while its fee counts as spending in the fee category you chose.</Trans>

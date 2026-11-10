@@ -156,7 +156,7 @@ export default async function OpenSourcePillarHubPage(props: PageLangParam) {
                         <Trans>One settings screen, and a public repository where every line of it can be checked.</Trans>
                     </FeatureStory.Intro>
 
-                    <FeatureStory.Point index={0}>
+                    <FeatureStory.Point>
                         <Trans>
                             Read the code that holds your money. The repository is the product, and nothing about how Budgie stores or
                             protects your data is compiled in secret.
@@ -165,7 +165,6 @@ export default async function OpenSourcePillarHubPage(props: PageLangParam) {
 
                     <FeatureStory.Shot
                         alt={t(i18n)`Budgie settings screen listing the privacy, security and general options the app ships with`}
-                        index={0}
                         locale={lang}
                         scene="open-source-budget-app-mobile-1"
                         slug="open-source-budget-app-mobile"
@@ -178,12 +177,12 @@ export default async function OpenSourcePillarHubPage(props: PageLangParam) {
                         </FeatureStory.Callout>
                     </FeatureStory.Shot>
 
-                    <FeatureStory.Point index={1}>
+                    <FeatureStory.Point>
                         <Trans>
                             Scroll Settings end to end and there is no analytics group, because there is no telemetry to switch off.
                         </Trans>
                     </FeatureStory.Point>
-                    <FeatureStory.Point index={2}>
+                    <FeatureStory.Point>
                         <Trans>Fork it if we disappear. The database format and the app are both yours to keep.</Trans>
                     </FeatureStory.Point>
                 </FeatureStory>

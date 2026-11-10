@@ -46,14 +46,14 @@ export default async function SelfHostedFinanceAppMobilePage(props: PageLangPara
                     <Trans>One settings screen, and the two rows that stand in for everything a hosted server would do.</Trans>
                 </FeatureStory.Intro>
 
-                <FeatureStory.Point index={0}>
+                <FeatureStory.Point>
                     <Trans>
                         Every transaction, account and category lives in a database on your phone, encrypted the moment you set a PIN —
                         there is no backend to deploy.
                     </Trans>
                 </FeatureStory.Point>
 
-                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="database-backup-1" slug="database-backup">
+                <FeatureStory.Shot alt={firstShotAlt} locale={lang} scene="database-backup-1" slug="database-backup">
                     <FeatureStory.Callout index={0} y={0.458}>
                         <Trans>Restore from a backup file</Trans>
                     </FeatureStory.Callout>
@@ -62,14 +62,14 @@ export default async function SelfHostedFinanceAppMobilePage(props: PageLangPara
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Point index={1}>
+                <FeatureStory.Point>
                     <Trans>
                         Export Database writes one compressed file with everything, PIN-locked if you have a PIN set. Import Database
                         restores it on a new device after you pick the file and enter that PIN if the backup was PIN-locked. A restore
                         replaces the data on that device; on iOS your own devices also stay in sync through your iCloud.
                     </Trans>
                 </FeatureStory.Point>
-                <FeatureStory.Point index={2}>
+                <FeatureStory.Point>
                     <Trans>No server to patch, renew certificates for, or pay for — just a file in storage you control.</Trans>
                 </FeatureStory.Point>
             </FeatureStory>
@@ -143,7 +143,7 @@ export default async function SelfHostedFinanceAppMobilePage(props: PageLangPara
             </FeatureBenefits>
 
             <FeatureDetails>
-                <FeatureDetails.Item index={0} title={<Trans>Why this matters</Trans>}>
+                <FeatureDetails.Item title={<Trans>Why this matters</Trans>}>
                     <p>
                         <Trans>
                             Self-hosting promises privacy but ships a server you have to babysit. Budgie gives you the same data ownership
@@ -151,12 +151,11 @@ export default async function SelfHostedFinanceAppMobilePage(props: PageLangPara
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>
                 <FeatureFaq.Item
-                    index={0}
                     question={<Trans>Why not just self-host an existing finance app?</Trans>}
                     answer={
                         <Trans>
@@ -166,7 +165,6 @@ export default async function SelfHostedFinanceAppMobilePage(props: PageLangPara
                     }
                 />
                 <FeatureFaq.Item
-                    index={1}
                     question={<Trans>Can I use Budgie on a phone and a tablet at once?</Trans>}
                     answer={
                         <Trans>
@@ -178,12 +176,10 @@ export default async function SelfHostedFinanceAppMobilePage(props: PageLangPara
                     }
                 />
                 <FeatureFaq.Item
-                    index={2}
                     question={<Trans>What if I want to migrate to a real self-hosted app later?</Trans>}
                     answer={<Trans>Export your data as CSV anytime. Budgie doesn&apos;t lock you in.</Trans>}
                 />
                 <FeatureFaq.Item
-                    index={3}
                     question={<Trans>Can I keep my data backed up to my own server?</Trans>}
                     answer={
                         <Trans>

@@ -49,11 +49,11 @@ export default async function AiTagSuggestionsFeaturePage(props: PageLangParam) 
                     <Trans>Pick a category and Budgie proposes tags you already use, ready to tap.</Trans>
                 </FeatureStory.Intro>
 
-                <FeatureStory.Point index={0}>
+                <FeatureStory.Point>
                     <Trans>Choose a category and tag pills appear above the tag button.</Trans>
                 </FeatureStory.Point>
 
-                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="ai-tag-suggestions-1" slug="ai-tag-suggestions">
+                <FeatureStory.Shot alt={firstShotAlt} locale={lang} scene="ai-tag-suggestions-1" slug="ai-tag-suggestions">
                     <FeatureStory.Callout index={0} y={0.447}>
                         <Trans>Suggested tag pills</Trans>
                     </FeatureStory.Callout>
@@ -62,10 +62,10 @@ export default async function AiTagSuggestionsFeaturePage(props: PageLangParam) 
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Point index={1}>
+                <FeatureStory.Point>
                     <Trans>On a new entry the pills come from tags you gave similar transactions before.</Trans>
                 </FeatureStory.Point>
-                <FeatureStory.Point index={2}>
+                <FeatureStory.Point>
                     <Trans>
                         Tap a pill to add the tag instead of typing it. Editing a transaction or dictating one also uses the on-device
                         model, if you turned it on.
@@ -129,7 +129,7 @@ export default async function AiTagSuggestionsFeaturePage(props: PageLangParam) 
             </FeatureBenefits>
 
             <FeatureDetails>
-                <FeatureDetails.Item index={0} title={<Trans>Why manual tagging breaks down at scale</Trans>}>
+                <FeatureDetails.Item title={<Trans>Why manual tagging breaks down at scale</Trans>}>
                     <p>
                         <Trans>
                             Tags are the most powerful dimension in Budgie analytics — they let you slice spending by project, trip, person,
@@ -147,7 +147,7 @@ export default async function AiTagSuggestionsFeaturePage(props: PageLangParam) 
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Item index={1} title={<Trans>History for new entries, the on-device model for edits and voice</Trans>}>
+                <FeatureDetails.Item title={<Trans>History for new entries, the on-device model for edits and voice</Trans>}>
                     <p>
                         <Trans>
                             When you add a new expense by hand, the pills come from your own tagged history and appear straight away — no
@@ -163,12 +163,11 @@ export default async function AiTagSuggestionsFeaturePage(props: PageLangParam) 
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Guides index={2} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>
                 <FeatureFaq.Item
-                    index={0}
                     question={<Trans>How are tags chosen?</Trans>}
                     answer={
                         <Trans>
@@ -178,7 +177,6 @@ export default async function AiTagSuggestionsFeaturePage(props: PageLangParam) 
                     }
                 />
                 <FeatureFaq.Item
-                    index={1}
                     question={<Trans>Do I need to download anything?</Trans>}
                     answer={
                         <Trans>
@@ -188,12 +186,10 @@ export default async function AiTagSuggestionsFeaturePage(props: PageLangParam) 
                     }
                 />
                 <FeatureFaq.Item
-                    index={2}
                     question={<Trans>Can I add new tags from the suggestion strip?</Trans>}
                     answer={<Trans>Yes — typing a new tag still works in parallel; the suggestions are additive, not exclusive.</Trans>}
                 />
                 <FeatureFaq.Item
-                    index={3}
                     question={<Trans>Does this work offline?</Trans>}
                     answer={
                         <Trans>

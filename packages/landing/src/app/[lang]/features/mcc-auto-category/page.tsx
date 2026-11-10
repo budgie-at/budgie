@@ -50,26 +50,25 @@ export default async function MccAutoCategoryFeaturePage(props: PageLangParam) {
                     </Trans>
                 </FeatureStory.Intro>
 
-                <FeatureStory.Step index={0} title={<Trans>The bank already told you what it was</Trans>}>
+                <FeatureStory.Step title={<Trans>The bank already told you what it was</Trans>}>
                     <Trans>
                         Every card transaction carries a merchant category code. Silpo arrives on the expense form with its Grocery code
                         shown under the merchant name.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="mcc-auto-category-1" slug="mcc-auto-category">
+                <FeatureStory.Shot alt={firstShotAlt} locale={lang} scene="mcc-auto-category-1" slug="mcc-auto-category">
                     <FeatureStory.Callout y={0.411}>
                         <Trans>The bank&apos;s category code</Trans>
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={1} title={<Trans>Mapped to your tree</Trans>}>
+                <FeatureStory.Step title={<Trans>Mapped to your tree</Trans>}>
                     <Trans>The code resolves to one of your categories — here Groceries — before you open the form.</Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
                     alt={t(
                         i18n
                     )`Budgie expense form for a $78.4 Silpo transaction showing the Grocery merchant category code under the merchant name and Groceries set as the category`}
-                    index={1}
                     locale={lang}
                     scene="mcc-auto-category-1"
                     slug="mcc-auto-category"
@@ -79,7 +78,7 @@ export default async function MccAutoCategoryFeaturePage(props: PageLangParam) {
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={2} title={<Trans>Override once, remember forever</Trans>}>
+                <FeatureStory.Step title={<Trans>Override once, remember forever</Trans>}>
                     <Trans>
                         Change the category and a Quick rule pill appears above the amount, offering to keep the override for that merchant.
                     </Trans>
@@ -88,7 +87,6 @@ export default async function MccAutoCategoryFeaturePage(props: PageLangParam) {
                     alt={t(
                         i18n
                     )`Budgie expense form for a $78.4 Silpo transaction with a Quick rule pill above the amount and Restaurants set as the category`}
-                    index={2}
                     locale={lang}
                     scene="mcc-auto-category-2"
                     slug="mcc-auto-category"
@@ -161,7 +159,7 @@ export default async function MccAutoCategoryFeaturePage(props: PageLangParam) {
             </FeatureBenefits>
 
             <FeatureDetails>
-                <FeatureDetails.Item index={0} title={<Trans>Why MCC is the universal merchant taxonomy</Trans>}>
+                <FeatureDetails.Item title={<Trans>Why MCC is the universal merchant taxonomy</Trans>}>
                     <p>
                         <Trans>
                             MCC is the universal merchant taxonomy banks already attach to every card transaction. Budgie ships a lookup for
@@ -177,12 +175,11 @@ export default async function MccAutoCategoryFeaturePage(props: PageLangParam) {
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>
                 <FeatureFaq.Item
-                    index={0}
                     question={<Trans>What&apos;s an MCC?</Trans>}
                     answer={
                         <Trans>
@@ -192,7 +189,6 @@ export default async function MccAutoCategoryFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={1}
                     question={<Trans>What if I want my own category mapping?</Trans>}
                     answer={
                         <Trans>
@@ -203,7 +199,6 @@ export default async function MccAutoCategoryFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={2}
                     question={<Trans>What if the transaction has no MCC?</Trans>}
                     answer={
                         <Trans>
@@ -213,7 +208,6 @@ export default async function MccAutoCategoryFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={3}
                     question={<Trans>Can I see the MCC on a transaction?</Trans>}
                     answer={
                         <Trans>

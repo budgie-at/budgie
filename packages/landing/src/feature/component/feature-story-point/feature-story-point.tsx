@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react';
 
 interface Props {
-    readonly index: number;
+    readonly index?: number;
     readonly children: ReactNode;
 }
 
-export const FeatureStoryPoint = ({ index, children }: Props) => {
+export const FeatureStoryPoint = ({ index = 0, children }: Props) => {
     const rowPlacement = { '--story-row': index + 1 };
 
     return (
