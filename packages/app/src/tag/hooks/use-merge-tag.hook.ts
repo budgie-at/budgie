@@ -15,7 +15,7 @@ import type { MutationTracker } from '../../@generic/type/mutation-tracker.type'
 
 export const useMergeTag = () => {
     const { t } = useLingui();
-    const openTagsSelector = useOpenModal('/tags-selector');
+    const openTagDestination = useOpenModal('/tag-destination');
 
     const pickTarget = (sourceId: number, sourceTitle: string, count: number) => {
         const title = t`Merge “${sourceTitle}” into…`;
@@ -44,13 +44,10 @@ export const useMergeTag = () => {
             })
         });
 
-        return Effect.callback<ModalResult<'/tags-selector'> | null>(resume => {
-            openTagsSelector(
-                { excludeTagIds: [sourceId], title, description, singleSelect: true, commitLabel: t`Merge`, getCommitCopy },
-                selectedTagIds => {
-                    resume(Effect.succeed(selectedTagIds));
-                }
-            );
+        return Effect.callback<ModalResult<'/tag-destination'> | null>(resume => {
+            openTagDestination({ excludeTagIds: [sourceId], title, description, commitLabel: t`Merge`, getCommitCopy }, selectedTagIds => {
+                resume(Effect.succeed(selectedTagIds));
+            });
         });
     };
 

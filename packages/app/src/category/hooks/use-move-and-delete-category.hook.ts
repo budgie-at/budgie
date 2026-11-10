@@ -17,7 +17,7 @@ import type { CategoryEntityInterface } from '@budgie/contracts';
 export const useMoveAndDeleteCategory = () => {
     const { t } = useLingui();
     const language = useSetting('language');
-    const openCategorySelector = useOpenModal('/category-selector');
+    const openCategoryDestination = useOpenModal('/category-destination');
 
     return Effect.fn('useMoveAndDeleteCategory.moveAndDelete')(function* (
         source: Pick<CategoryEntityInterface, 'id' | 'title' | 'syncZone'>,
@@ -28,7 +28,7 @@ export const useMoveAndDeleteCategory = () => {
         const categoryService = yield* CategoryService;
         const sourceTitle = source.title;
         const targetId = yield* Effect.callback<number | null>(resume => {
-            openCategorySelector(
+            openCategoryDestination(
                 {
                     excludeCategoryIds: [source.id],
                     syncZone: source.syncZone,

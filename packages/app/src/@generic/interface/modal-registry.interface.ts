@@ -1,8 +1,10 @@
 import type { AccountSelectorCreateActionInterface } from '../../account/interface/account-selector-create-action.interface';
+import type { CategoryDestinationParamsInterface } from '../../category/interface/category-destination-params.interface';
 import type { CategoryFormResultInterface } from '../../category/interface/category-form-result.interface';
 import type { ConvertToInstallmentModalParamsInterface } from '../../installment-plan/interface/convert-to-installment-modal-params.interface';
 import type { RulePrefillDataInterface } from '../../rule/interface/rule-prefill-data.interface';
 import type { RuleSelectorOptionInterface } from '../../rule/interface/rule-selector-option.interface';
+import type { TagDestinationParamsInterface } from '../../tag/interface/tag-destination-params.interface';
 import type { TagFormResultInterface } from '../../tag/interface/tag-form-result.interface';
 import type { ConsolidationSourceModalParamsInterface } from '../../transaction/interface/consolidation-source-modal-params.interface';
 import type { ConvertToRefundModalParamsInterface } from '../../transaction/interface/convert-to-refund-modal-params.interface';
@@ -10,7 +12,6 @@ import type { TransactionIdsFilterResultInterface } from '../../transaction/inte
 import type { Contact } from '../hook/use-contacts.hook';
 import type { ColorPaletteVariant } from '../type/color-palette-variant.type';
 import type { AnchoredMorphOriginInterface } from './anchored-morph-origin.interface';
-import type { DestinationCommitCopyInterface } from './destination-commit-copy.interface';
 import type { AITransactionInterface } from '@budgie/ai';
 import type {
     AccountDebtTypeEnum,
@@ -45,7 +46,7 @@ export interface ModalRegistryInterface {
         readonly result: number;
     };
     readonly '/bank-integration-key': { readonly params: number; readonly result: null };
-    readonly '/category-destination': ModalRegistryInterface['/category-selector'];
+    readonly '/category-destination': { readonly params: CategoryDestinationParamsInterface; readonly result: number };
     readonly '/category-form': {
         readonly params: { readonly category?: CategoryEntityInterface; readonly defaultTitle?: string; readonly syncZone?: string };
         readonly result: CategoryFormResultInterface;
@@ -58,8 +59,6 @@ export interface ModalRegistryInterface {
             readonly variant?: ColorPaletteVariant;
             readonly title?: string;
             readonly description?: string;
-            readonly commitLabel?: string;
-            readonly getCommitCopy?: (destinationTitle: string) => DestinationCommitCopyInterface;
         };
         readonly result: number;
     };
@@ -140,7 +139,7 @@ export interface ModalRegistryInterface {
         };
         readonly result: TransactionEntryCreateInputInterface[];
     };
-    readonly '/tag-destination': ModalRegistryInterface['/tags-selector'];
+    readonly '/tag-destination': { readonly params: TagDestinationParamsInterface; readonly result: number[] };
     readonly '/tag-form': {
         readonly params: { readonly tag?: TagEntityInterface; readonly defaultTitle?: string };
         readonly result: TagFormResultInterface;
@@ -154,8 +153,6 @@ export interface ModalRegistryInterface {
             readonly description?: string;
             readonly singleSelect?: boolean;
             readonly enablePrimarySelection?: boolean;
-            readonly commitLabel?: string;
-            readonly getCommitCopy?: (destinationTitle: string) => DestinationCommitCopyInterface;
         };
         readonly result: number[];
     };
