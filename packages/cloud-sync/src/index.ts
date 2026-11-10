@@ -36,7 +36,6 @@ export type { SentSyncRecordInterface } from './upload/interface/sent-sync-recor
 export type { SyncUploadAcknowledgementInterface } from './upload/interface/sync-upload-acknowledgement.interface';
 export { HouseholdShareService } from './share/service/household-share.service';
 export { HouseholdShareRepository } from './share/repository/household-share.repository';
-export { HouseholdUnavailableError } from './share/error/household-unavailable.error';
 export { HouseholdShareStateEnum } from './share/enum/household-share-state.enum';
 export type { HouseholdShareStatusInterface } from './share/interface/household-share-status.interface';
 export type { HouseholdShareEverythingStateInterface } from './share/interface/household-share-everything-state.interface';
@@ -44,7 +43,6 @@ export { SyncRestoreReconciliationService } from './reconciliation/service/sync-
 export { SyncApplyService } from './apply/service/sync-apply.service';
 export { SyncAccountBalanceRefresher } from './apply/service/sync-account-balance-refresher.service';
 export { SyncApplyRepository } from './apply/repository/sync-apply.repository';
-export { SyncUpdateRequiredError } from './apply/error/sync-update-required.error';
 export { mergeSyncRow } from './apply/utils/merge-sync-row.util';
 export { SYNC_AUTHORSHIP_COLUMNS } from './apply/constant/sync-authorship-columns.constant';
 export type { SyncApplyBatchInterface } from './apply/interface/sync-apply-batch.interface';
