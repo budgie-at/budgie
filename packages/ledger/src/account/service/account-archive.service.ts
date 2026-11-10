@@ -2,6 +2,7 @@ import { UnconsolidationService } from '@budgie/consolidation';
 import {
     ACCOUNT_DELETED_TRANSFER_CATEGORY_ID,
     AccountRepository,
+    AccountTypeEnum,
     BankIntegrationRepository,
     DebtEventRepository,
     Db,
@@ -106,7 +107,8 @@ export class AccountArchiveService extends Context.Service<AccountArchiveService
 
                 yield* Db.transaction(
                     Effect.gen(function* () {
-                        const archivedAt = (yield* accountRepository.findByIdIncludingArchived(id))?.deletedAt;
+                        const account = yield* accountRepository.findByIdIncludingArchived(id);
+                        const archivedAt = account?.deletedAt;
                         const restoredAccounts = yield* accountRepository.restoreById(id);
 
                         if (!isDefined(archivedAt) || !isNotEmptyArray(restoredAccounts)) {
@@ -116,6 +118,9 @@ export class AccountArchiveService extends Context.Service<AccountArchiveService
                         yield* debtEventRepository.restoreByAccountIds([id]);
                         yield* transactionEntryRepository.restoreByAccountIds([id], archivedAt);
                         yield* transactionRepository.restoreByAccountIds([id], archivedAt);
+                        if (account?.type === AccountTypeEnum.DEBT) {
+                            yield* accountBalanceIncrementalService.updateBalancesByAccountIds([id]);
+                        }
                     })
                 );
             }),
