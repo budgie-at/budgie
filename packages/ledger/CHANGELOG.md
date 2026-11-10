@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.173.18](https://github.com/budgie-at/budgie/compare/v6.173.17...v6.173.18) (2026-11-10)
+
+### Bug Fixes
+
+* **ledger:** refresh the debt balance when a transaction with a debt event is hard-deleted ([#2108](https://github.com/budgie-at/budgie/issues/2108)) ([efc6b07](https://github.com/budgie-at/budgie/commit/efc6b078be7f3e8d37d54b8e82c8c97bc8e117c7))
+
+
 ## [6.173.14](https://github.com/budgie-at/budgie/compare/v6.173.13...v6.173.14) (2026-11-10)
 
 **Note:** Version bump only for package @budgie/ledger
