@@ -22,7 +22,6 @@ import { isDefined, isEmptyArray, isNotEmptyArray } from '@rnw-community/shared'
 import { resolveHomeZone } from '../../mapping/utils/resolve-home-zone.util';
 import { SyncOutboxRepository } from '../../outbox/repository/sync-outbox.repository';
 import { HouseholdShareStateEnum } from '../enum/household-share-state.enum';
-import { HouseholdUnavailableError } from '../error/household-unavailable.error';
 import { HouseholdShareRepository } from '../repository/household-share.repository';
 
 import type { HouseholdShareEverythingStateInterface } from '../interface/household-share-everything-state.interface';
@@ -46,7 +45,7 @@ export class HouseholdShareService extends Context.Service<HouseholdShareService
 
         const requireHousehold = Effect.fnUntraced(function* () {
             if (!(yield* isAvailable)) {
-                return yield* HouseholdUnavailableError.make({});
+                return yield* Effect.die(new Error('No household exists on this device'));
             }
         });
 
