@@ -10,24 +10,18 @@ import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { useState } from 'react';
 
-import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { AiTranslationFields } from '../../../@generic/component/ai-translation-fields/ai-translation-fields';
 import { EntityEditSections } from '../../../@generic/component/entity-edit-sections/entity-edit-sections';
 import { EntityFormHero } from '../../../@generic/component/entity-form-hero/entity-form-hero';
 import { EntityHeroFormPage } from '../../../@generic/component/entity-hero-form-page/entity-hero-form-page';
 import { FormTitleInput } from '../../../@generic/component/form-title-input/form-title-input';
-import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { IconTitleField } from '../../../@generic/component/icon-title-field/icon-title-field';
 import { Icon } from '../../../@generic/component/icon/icon';
-import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
-import { UsageFailureRow } from '../../../@generic/component/usage-failure-row/usage-failure-row';
-import { EntityOperationEnum } from '../../../@generic/enum/entity-operation.enum';
-import { useEntityOperation } from '../../../@generic/hook/use-entity-operation.hook';
-import { useEntityUsage } from '../../../@generic/hook/use-entity-usage.hook';
+import { EntityFormStatusContext } from '../../../@generic/context/entity-form-status.context';
+import { useEntityFormState } from '../../../@generic/hook/use-entity-form-state.hook';
 import { useIconSearchEntries } from '../../../@generic/hook/use-icon-search-entries.hook';
 import { useOpenModal } from '../../../@generic/hook/use-open-modal/use-open-modal.hook';
-import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { PLACEHOLDER_CATEGORY_ICONS } from '../../constant/placeholder-category-icon.constant';
@@ -58,22 +52,19 @@ export const CategoryForm = (props: Props) => {
     const { category, defaultTitle, syncZone, onSuccess, onCancel } = props;
     const { t } = useLingui();
     const language = useSetting('language');
-    const saveFlight = useSingleFlight();
-    const operation = useEntityOperation();
-    const { usage, isUsagePending, isUsageFailure, retryUsage } = useEntityUsage(categoryUsageAtom);
     const deleteCategory = useDeleteCategory();
     const openIconSelector = useOpenModal('/icon-selector');
     const iconSearchEntries = useIconSearchEntries();
 
     const { handleSubmit, setValue, formState, icon, title } = useCategoryForm(category ?? null, defaultTitle);
+    const form = useEntityFormState(category?.id, categoryUsageAtom, title, onCancel);
+    const { transactionCount } = form;
+    const { isBusy, isReady: hasTitle } = form.status;
 
     const isEditing = isDefined(category);
     const [hasPickedIcon, setHasPickedIcon] = useState(false);
     const iconSource = hasPickedIcon ? CategoryIconSourceEnum.USER : (category?.iconSource ?? CategoryIconSourceEnum.AUTO);
     const isIconChosen = iconSource === CategoryIconSourceEnum.USER;
-    const hasTitle = isNotEmptyString(title.trim());
-    const isBusy = saveFlight.isLoading || operation.isPending;
-    const transactionCount = usage?.find(entry => entry.id === category?.id)?.transactionCount ?? 0;
 
     const autoIcon = suggestCategoryIcon(iconSearchEntries, category, title);
     const resolvedIcon = isIconChosen ? icon : autoIcon.icon;
@@ -81,7 +72,6 @@ export const CategoryForm = (props: Props) => {
 
     const isChanged =
         !isDefined(category) || title !== category.title || resolvedIcon !== category.icon || iconSource !== category.iconSource;
-    const isSaveDisabled = !hasTitle || isBusy;
     const deleteCopy = getCategoryDeleteCopy(transactionCount, t);
     const heroFallbackTitle = isEditing ? t`Edit category` : t`New category`;
     const heroSubtitle = isEditing ? t`Rename it or change its icon` : t`Name it and pick an icon`;
@@ -129,69 +119,48 @@ export const CategoryForm = (props: Props) => {
             }
         }).pipe(toastOnFailure(isEditing ? t`Could not save category` : t`Could not create category`, t`Please try again later`));
 
-    const handleDelete = () => {
-        if (isDefined(category) && !isBusy) {
-            operation.start(EntityOperationEnum.DELETE, trackMutation =>
-                deleteCategory(category.id, trackMutation).pipe(Effect.tap(isDeleted => (isDeleted ? Effect.sync(onCancel) : Effect.void)))
-            );
-        }
-    };
-
-    const keywordsFooter = isDefined(category) ? (
-        <AiTranslationFields title={category.title} titleEn={category.titleEn} titleTags={category.titleTags} />
-    ) : null;
-
-    const usageActions = isUsageFailure ? (
-        <UsageFailureRow onRetry={retryUsage} />
-    ) : (
-        <LoadingContent isLoading={isUsagePending}>
-            <EntityEditSections
-                deleteLabel={deleteCopy.label}
-                deleteFooter={deleteCopy.footer}
-                deleteTestID={CategoryFormSelector.Delete}
-                deleteTrailing={deleteTrailing}
-                onDelete={handleDelete}
-                isDisabled={isBusy}
-                mutatingOperation={operation.mutatingOperation}
-            />
-        </LoadingContent>
-    );
-
-    const handleFormSubmit = handleSubmit(values => saveFlight.run(submitCategory(values, resolvedIcon)));
+    const handleDelete = () => void form.startDelete(deleteCategory);
+    const handleFormSubmit = handleSubmit(values => form.runSave(submitCategory(values, resolvedIcon)));
 
     return (
-        <EntityHeroFormPage
-            onCancel={onCancel}
-            submitLabel={saveLabel}
-            isReady={hasTitle}
-            isLoading={saveFlight.isLoading}
-            isDisabled={isSaveDisabled}
-            onSubmit={handleFormSubmit}
-            submitTestID={CategoryFormSelector.Submit}
-        >
-            <EntityFormHero
-                icon={<CategoryFormHeroIcon icon={triggerIcon} onPress={handleIconPress} />}
-                title={title}
-                fallbackTitle={heroFallbackTitle}
-                subtitle={heroSubtitle}
-            />
-
-            <GroupedListSection title={t`Details`} footer={keywordsFooter}>
-                <IconTitleField label={t`Name`} error={titleError}>
-                    <FormTitleInput
-                        autoFocus={!isEditing}
-                        editable={!isBusy}
-                        value={title}
-                        onChangeText={handleTitleChange}
-                        maxLength={CATEGORY_TITLE_MAX_LENGTH}
-                        placeholder={t`e.g. Climbing, Side project`}
-                        accessibilityLabel={t`Category name`}
-                        testID={CategoryFormSelector.Input}
+        <EntityFormStatusContext value={form.status}>
+            <EntityHeroFormPage
+                entity={category}
+                hero={
+                    <EntityFormHero
+                        icon={<CategoryFormHeroIcon icon={triggerIcon} onPress={handleIconPress} />}
+                        title={title}
+                        fallbackTitle={heroFallbackTitle}
+                        subtitle={heroSubtitle}
                     />
-                </IconTitleField>
-            </GroupedListSection>
-
-            {isDefined(category) ? usageActions : null}
-        </EntityHeroFormPage>
+                }
+                titleField={
+                    <IconTitleField label={t`Name`} error={titleError}>
+                        <FormTitleInput
+                            autoFocus={!isEditing}
+                            editable={!isBusy}
+                            value={title}
+                            onChangeText={handleTitleChange}
+                            maxLength={CATEGORY_TITLE_MAX_LENGTH}
+                            placeholder={t`e.g. Climbing, Side project`}
+                            accessibilityLabel={t`Category name`}
+                            testID={CategoryFormSelector.Input}
+                        />
+                    </IconTitleField>
+                }
+                submitLabel={saveLabel}
+                submitTestID={CategoryFormSelector.Submit}
+                onSubmit={handleFormSubmit}
+                onCancel={onCancel}
+            >
+                <EntityEditSections
+                    deleteLabel={deleteCopy.label}
+                    deleteFooter={deleteCopy.footer}
+                    deleteTestID={CategoryFormSelector.Delete}
+                    deleteTrailing={deleteTrailing}
+                    onDelete={handleDelete}
+                />
+            </EntityHeroFormPage>
+        </EntityFormStatusContext>
     );
 };

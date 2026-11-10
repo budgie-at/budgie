@@ -2,12 +2,10 @@ import { TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 
+import { EntitySearchableList } from '../../../@generic/component/entity-searchable-list/entity-searchable-list';
 import { GroupedListSectionTitle } from '../../../@generic/component/grouped-list-section-title/grouped-list-section-title';
-import { SearchablePageErrorState } from '../../../@generic/component/searchable-page-error-state/searchable-page-error-state';
-import { SearchablePageList } from '../../../@generic/component/searchable-page-list/searchable-page-list';
 import { SearchablePage } from '../../../@generic/component/searchable-page/searchable-page';
 import { UsageFailureRow } from '../../../@generic/component/usage-failure-row/usage-failure-row';
-import { GROUPED_LIST_SIZING } from '../../../@generic/constant/grouped-list-sizing.constant';
 import { useCreateAction } from '../../../@generic/hook/use-create-action.hook';
 import { useOpenModal } from '../../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { goBackToSettings } from '../../../settings/utils/go-back-to-settings.util';
@@ -16,8 +14,6 @@ import { TagEmptyState } from '../../../tag/components/tag-empty-state/tag-empty
 import { useTagsWithUsageQuery } from '../../../tag/query/use-tags-with-usage.query';
 
 import { TagPageSelector } from './tag-page.selector';
-
-const NO_TAGS: TagEntityInterface[] = [];
 
 export default function Tags() {
     const { t } = useLingui();
@@ -40,13 +36,6 @@ export default function Tags() {
     const handleClearSearch = () => void setSearch('');
     const handleCreateFromSearch = (defaultTitle: string) => void openTagForm({ defaultTitle });
 
-    const listData = isFailure ? NO_TAGS : tags;
-    const emptyState = isFailure ? (
-        <SearchablePageErrorState onRetry={retry} />
-    ) : (
-        <TagEmptyState search={search} onClearSearch={handleClearSearch} onCreate={handleCreateFromSearch} />
-    );
-
     const renderCard = (tag: TagEntityInterface, index: number, isLast: boolean) => (
         <TagCard
             key={tag.id}
@@ -67,9 +56,11 @@ export default function Tags() {
             onSearchChange={setSearch}
             searchInputTestID={TagPageSelector.SearchInput}
         >
-            <SearchablePageList
-                data={listData}
-                emptyState={emptyState}
+            <EntitySearchableList
+                data={tags}
+                isFailure={isFailure}
+                onRetry={retry}
+                emptyState={<TagEmptyState search={search} onClearSearch={handleClearSearch} onCreate={handleCreateFromSearch} />}
                 listHeader={
                     <>
                         {isUsageFailure ? <UsageFailureRow onRetry={retryUsage} /> : null}
@@ -77,7 +68,6 @@ export default function Tags() {
                     </>
                 }
                 renderCard={renderCard}
-                sizing={GROUPED_LIST_SIZING}
             />
         </SearchablePage>
     );

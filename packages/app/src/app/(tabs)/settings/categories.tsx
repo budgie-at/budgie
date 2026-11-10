@@ -4,11 +4,9 @@ import { useState } from 'react';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { SearchablePageErrorState } from '../../../@generic/component/searchable-page-error-state/searchable-page-error-state';
-import { SearchablePageList } from '../../../@generic/component/searchable-page-list/searchable-page-list';
+import { EntitySearchableList } from '../../../@generic/component/entity-searchable-list/entity-searchable-list';
 import { SearchablePage } from '../../../@generic/component/searchable-page/searchable-page';
 import { UsageFailureRow } from '../../../@generic/component/usage-failure-row/usage-failure-row';
-import { GROUPED_LIST_SIZING } from '../../../@generic/constant/grouped-list-sizing.constant';
 import { useCreateAction } from '../../../@generic/hook/use-create-action.hook';
 import { useOpenModal } from '../../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { CategoryCard } from '../../../category/components/category-card/category-card';
@@ -22,7 +20,6 @@ import { CategoryPageSelector } from './category-page.selector';
 
 import type { EntityUsageInterface } from '../../../@generic/interface/entity-usage.interface';
 
-const NO_CATEGORIES: CategoryEntityInterface[] = [];
 const UNUSED: EntityUsageInterface = { transactionCount: 0, lastUsedAt: null };
 
 export default function Categories() {
@@ -45,13 +42,6 @@ export default function Categories() {
 
     const handleClearSearch = () => void setSearch('');
     const handleCreateFromSearch = (defaultTitle: string) => void openCategoryForm({ defaultTitle });
-
-    const listData = isFailure ? NO_CATEGORIES : categories;
-    const emptyState = isFailure ? (
-        <SearchablePageErrorState onRetry={retry} />
-    ) : (
-        <CategoryEmptyState search={search} onClearSearch={handleClearSearch} onCreate={handleCreateFromSearch} />
-    );
 
     const renderCard = (category: CategoryEntityInterface, index: number, isLast: boolean) => {
         const categoryUsage = isDefined(usage) ? (usage.find(entry => entry.id === category.id) ?? UNUSED) : void 0;
@@ -77,13 +67,14 @@ export default function Categories() {
             onSearchChange={setSearch}
             searchInputTestID={CategoryPageSelector.SearchInput}
         >
-            <SearchablePageList
-                data={listData}
-                emptyState={emptyState}
+            <EntitySearchableList
+                data={categories}
+                isFailure={isFailure}
+                onRetry={retry}
+                emptyState={<CategoryEmptyState search={search} onClearSearch={handleClearSearch} onCreate={handleCreateFromSearch} />}
                 renderCard={renderCard}
                 listHeader={<CategoryListHeader>{isUsageFailure ? <UsageFailureRow onRetry={retryUsage} /> : null}</CategoryListHeader>}
                 listFooter={<CategoryFamilySection search={search} onOpen={handleOpenCategory} />}
-                sizing={GROUPED_LIST_SIZING}
             />
         </SearchablePage>
     );

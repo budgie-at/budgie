@@ -7,10 +7,8 @@ import { useDeferredValue, useState } from 'react';
 
 import { isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-import { SearchablePageErrorState } from '../../../@generic/component/searchable-page-error-state/searchable-page-error-state';
-import { SearchablePageList } from '../../../@generic/component/searchable-page-list/searchable-page-list';
+import { EntitySearchableList } from '../../../@generic/component/entity-searchable-list/entity-searchable-list';
 import { SearchablePage } from '../../../@generic/component/searchable-page/searchable-page';
-import { GROUPED_LIST_SIZING } from '../../../@generic/constant/grouped-list-sizing.constant';
 import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hook';
 import { goBackToSettings } from '../../../settings/utils/go-back-to-settings.util';
 import { getShelvedAccountsList } from '../../utils/get-shelved-accounts-list.util';
@@ -61,7 +59,6 @@ export const ShelvedAccountsPage = (props: Props) => {
     ) : (
         emptyState
     );
-    const visibleEmptyState = isFailure ? <SearchablePageErrorState onRetry={retry} /> : noMatchesState;
 
     return (
         <SearchablePage
@@ -73,12 +70,13 @@ export const ShelvedAccountsPage = (props: Props) => {
             onSearchChange={setSearch}
             searchInputTestID={selector.SearchInput}
         >
-            <SearchablePageList
+            <EntitySearchableList
                 data={shelvedList.accounts}
-                emptyState={visibleEmptyState}
+                isFailure={isFailure}
+                onRetry={retry}
+                emptyState={noMatchesState}
                 listHeader={<ShelvedAccountsListHeader description={description} title={countTitle} />}
                 renderCard={renderItem}
-                sizing={GROUPED_LIST_SIZING}
             />
         </SearchablePage>
     );
