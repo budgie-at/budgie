@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.173.20](https://github.com/budgie-at/budgie/compare/v6.173.19...v6.173.20) (2026-11-10)
+
+### Bug Fixes
+
+* **app:** treat a backward-syncing account as balance-fixed in the adjustment preview ([#2112](https://github.com/budgie-at/budgie/issues/2112)) ([fb6a844](https://github.com/budgie-at/budgie/commit/fb6a844af265a40e5ef032d504f84904f03a0783))
+
+
 ## [6.173.19](https://github.com/budgie-at/budgie/compare/v6.173.18...v6.173.19) (2026-11-10)
 
 **Note:** Version bump only for package @budgie-at/app
