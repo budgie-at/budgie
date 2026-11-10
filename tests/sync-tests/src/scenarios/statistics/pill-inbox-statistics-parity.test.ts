@@ -40,6 +40,7 @@ interface ScopeInterface {
     readonly accountIds: number[] | null;
     readonly date: { readonly from: Date; readonly to: Date } | null;
     readonly uncategorized: number;
+    readonly uncategorizedStatistics: number;
     readonly untagged: number;
 }
 
@@ -191,22 +192,65 @@ const countStatisticsTransactions = Effect.fnUntraced(function* (
     return transactions.length;
 });
 
+const rankingCount = Effect.fnUntraced(function* (scope: ScopeInterface) {
+    const statisticsRepository = yield* StatisticsRepository;
+    const filters = buildFilters(scope);
+    const rows = yield* scope.type === TransactionTypeEnum.INCOME
+        ? statisticsRepository.getIncomeByCategoryQuery(filters, 1, LanguageEnum.EN)
+        : statisticsRepository.getExpenseByCategoryQuery(filters, 1, LanguageEnum.EN);
+
+    return rows.find(row => !isDefined(row.category?.id))?.transactionCount;
+});
+
 describe('pill, inbox and statistics parity', () => {
     const arrangeScopes = Effect.gen(function* () {
         amountSequence = 0;
         const { card, savings } = yield* seedParityLedger;
 
         return [
-            { name: 'all time expense', type: TransactionTypeEnum.EXPENSE, accountIds: null, date: null, uncategorized: 4, untagged: 4 },
-            { name: 'all time income', type: TransactionTypeEnum.INCOME, accountIds: null, date: null, uncategorized: 1, untagged: 1 },
-            { name: 'january expense', type: TransactionTypeEnum.EXPENSE, accountIds: null, date: JANUARY, uncategorized: 3, untagged: 2 },
-            { name: 'card expense', type: TransactionTypeEnum.EXPENSE, accountIds: [card.id], date: null, uncategorized: 4, untagged: 3 },
+            {
+                name: 'all time expense',
+                type: TransactionTypeEnum.EXPENSE,
+                accountIds: null,
+                date: null,
+                uncategorized: 4,
+                uncategorizedStatistics: 6,
+                untagged: 4
+            },
+            {
+                name: 'all time income',
+                type: TransactionTypeEnum.INCOME,
+                accountIds: null,
+                date: null,
+                uncategorized: 1,
+                uncategorizedStatistics: 1,
+                untagged: 1
+            },
+            {
+                name: 'january expense',
+                type: TransactionTypeEnum.EXPENSE,
+                accountIds: null,
+                date: JANUARY,
+                uncategorized: 3,
+                uncategorizedStatistics: 4,
+                untagged: 2
+            },
+            {
+                name: 'card expense',
+                type: TransactionTypeEnum.EXPENSE,
+                accountIds: [card.id],
+                date: null,
+                uncategorized: 4,
+                uncategorizedStatistics: 5,
+                untagged: 3
+            },
             {
                 name: 'savings expense',
                 type: TransactionTypeEnum.EXPENSE,
                 accountIds: [savings.id],
                 date: null,
                 uncategorized: 1,
+                uncategorizedStatistics: 3,
                 untagged: 2
             }
         ] satisfies ScopeInterface[];
@@ -227,12 +271,14 @@ describe('pill, inbox and statistics parity', () => {
                     scope: scope.name,
                     pill: pill.income + pill.expense,
                     inbox: countDistinctTransactions(inboxRows),
-                    statistics: statisticsCount
+                    statistics: statisticsCount,
+                    ranking: yield* rankingCount(scope)
                 }).toEqual({
                     scope: scope.name,
                     pill: scope.uncategorized,
                     inbox: scope.uncategorized,
-                    statistics: scope.uncategorized
+                    statistics: scope.uncategorizedStatistics,
+                    ranking: scope.uncategorizedStatistics
                 });
             }
         }).pipe(Effect.provide(TestLayer))

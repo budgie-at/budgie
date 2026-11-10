@@ -5,7 +5,7 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
 
 import { LanguageEnum } from '../../@generic/enum/language.enum';
 import { transactionFilters } from '../../@generic/repository/base-transaction-filter.repository';
@@ -40,12 +40,14 @@ import type { SQLiteColumn, SelectedFields } from 'drizzle-orm/sqlite-core';
 
 export class StatisticsRepository extends Context.Service<StatisticsRepository>()('@budgie/contracts/StatisticsRepository', {
     make: Effect.sync(() => {
-        const buildTypeCondition = (type: TransactionTypeEnum, categoryIds: number[] | null) =>
-            type === TransactionTypeEnum.EXPENSE && isNotEmptyArray(categoryIds)
+        const buildTypeCondition = (type: TransactionTypeEnum, { categoryIds }: Pick<StatisticsFilterInterface, 'categoryIds'>) =>
+            type === TransactionTypeEnum.EXPENSE && isDefined(categoryIds)
                 ? and(
                       transactionFilters.buildExpenseAnalyticsEntryCondition(),
-                      inArray(TransactionEntryEntityTable.categoryId, categoryIds),
-                      ne(TransactionEntityTable.type, TransactionTypeEnum.ADJUSTMENT)
+                      ne(TransactionEntityTable.type, TransactionTypeEnum.ADJUSTMENT),
+                      isNotEmptyArray(categoryIds)
+                          ? inArray(TransactionEntryEntityTable.categoryId, categoryIds)
+                          : isNull(TransactionEntryEntityTable.categoryId)
                   )
                 : eq(TransactionEntityTable.type, type);
 
@@ -53,7 +55,7 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
             db: DB,
             baseWhere: SQL | undefined,
             type: TransactionTypeEnum | null,
-            categoryIds: number[] | null
+            scope: Pick<StatisticsFilterInterface, 'categoryIds'>
         ) =>
             db
                 .selectDistinct({ id: TransactionEntityTable.id })
@@ -66,7 +68,7 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
                         transactionFilters.buildPrimaryLedgerEntryCondition(),
                         transactionFilters.buildNonDebtAccountCondition(),
                         buildSpendingEntryCondition(),
-                        ...(isDefined(type) ? [buildTypeCondition(type, categoryIds)] : [])
+                        ...(isDefined(type) ? [buildTypeCondition(type, scope)] : [])
                     )
                 );
 
@@ -352,11 +354,12 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
         return {
             getTransactions: (filters: StatisticsFilterInterface, limit: number, language: LanguageEnum) =>
                 Db.query(db => {
+                    const isUncategorizedExpense = filters.type === TransactionTypeEnum.EXPENSE && isEmptyArray(filters.categoryIds);
                     const transactionIds = buildSpendingTransactionIdsQuery(
                         db,
-                        buildStatisticsFilterWhere(db, filters),
+                        buildStatisticsFilterWhere(db, isUncategorizedExpense ? { ...filters, categoryIds: null } : filters),
                         filters.type,
-                        filters.categoryIds
+                        filters
                     );
 
                     return db.query.TransactionEntityTable.findMany({
@@ -496,22 +499,12 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
 
             getIncomeTransactionsQuery: (filters: TransactionFilterInterface) =>
                 Db.query(db =>
-                    buildSpendingTransactionIdsQuery(
-                        db,
-                        transactionFilters.buildFilterWhere(filters),
-                        TransactionTypeEnum.INCOME,
-                        filters.categoryIds
-                    )
+                    buildSpendingTransactionIdsQuery(db, transactionFilters.buildFilterWhere(filters), TransactionTypeEnum.INCOME, filters)
                 ),
 
             getExpenseTransactionsQuery: (filters: TransactionFilterInterface) =>
                 Db.query(db =>
-                    buildSpendingTransactionIdsQuery(
-                        db,
-                        transactionFilters.buildFilterWhere(filters),
-                        TransactionTypeEnum.EXPENSE,
-                        filters.categoryIds
-                    )
+                    buildSpendingTransactionIdsQuery(db, transactionFilters.buildFilterWhere(filters), TransactionTypeEnum.EXPENSE, filters)
                 )
         };
     })
