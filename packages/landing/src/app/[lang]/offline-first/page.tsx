@@ -117,12 +117,11 @@ export default async function OfflineFirstPillarHubPage(props: PageLangParam) {
                     <Trans>Three screens with nothing behind them — the list, the entry, and a Settings page with no account on it.</Trans>
                 </FeatureStory.Intro>
 
-                <FeatureStory.Step index={0} title={<Trans>Airplane mode changes nothing</Trans>}>
+                <FeatureStory.Step title={<Trans>Airplane mode changes nothing</Trans>}>
                     <Trans>The full list renders with the radio off. No spinner, no retry.</Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
                     alt={t(i18n)`Budgie transaction list showing eighty-one transactions read straight from the on-device database`}
-                    index={0}
                     locale={lang}
                     scene="offline-first-expense-tracker-1"
                     slug="offline-first-expense-tracker"
@@ -135,12 +134,11 @@ export default async function OfflineFirstPillarHubPage(props: PageLangParam) {
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={1} title={<Trans>Saving is instant</Trans>}>
+                <FeatureStory.Step title={<Trans>Saving is instant</Trans>}>
                     <Trans>The row lands and the balance updates before a network app finishes its request.</Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
                     alt={t(i18n)`Budgie new expense screen with the amount keypad, account row and confirm button`}
-                    index={1}
                     locale={lang}
                     scene="expense-tracking-1"
                     slug="expense-tracking"
@@ -153,12 +151,11 @@ export default async function OfflineFirstPillarHubPage(props: PageLangParam) {
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={2} title={<Trans>Nothing to sign into</Trans>}>
+                <FeatureStory.Step title={<Trans>Nothing to sign into</Trans>}>
                     <Trans>No account row anywhere in Settings — because there is no account.</Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
                     alt={t(i18n)`Budgie settings screen with security, language, currency and default account rows and no sign-in row`}
-                    index={2}
                     locale={lang}
                     scene="offline-first-expense-tracker-2"
                     slug="offline-first-expense-tracker"

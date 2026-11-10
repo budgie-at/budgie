@@ -51,19 +51,13 @@ export default async function AiCategoryTranslationFeaturePage(props: PageLangPa
                     </Trans>
                 </FeatureStory.Intro>
 
-                <FeatureStory.Step index={0} title={<Trans>The name stays as you wrote it</Trans>}>
+                <FeatureStory.Step title={<Trans>The name stays as you wrote it</Trans>}>
                     <Trans>
                         The category is called Сільпо, exactly as it was created. Below the name sits a block of AI-generated metadata,
                         produced on your phone.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot
-                    alt={firstShotAlt}
-                    index={0}
-                    locale={lang}
-                    scene="ai-category-translation-1"
-                    slug="ai-category-translation"
-                >
+                <FeatureStory.Shot alt={firstShotAlt} locale={lang} scene="ai-category-translation-1" slug="ai-category-translation">
                     <FeatureStory.Callout index={0} y={0.345}>
                         <Trans>Original name, untouched</Trans>
                     </FeatureStory.Callout>
@@ -75,7 +69,7 @@ export default async function AiCategoryTranslationFeaturePage(props: PageLangPa
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={1} title={<Trans>An English form and search keywords</Trans>}>
+                <FeatureStory.Step title={<Trans>An English form and search keywords</Trans>}>
                     <Trans>
                         Budgie adds an English translation and a list of search keywords next to the original name. Both are saved with the
                         category, so search and suggestions can find it whichever form you remember.
@@ -143,7 +137,7 @@ export default async function AiCategoryTranslationFeaturePage(props: PageLangPa
             </FeatureBenefits>
 
             <FeatureDetails>
-                <FeatureDetails.Item index={0} title={<Trans>Why foreign category and tag names break expense search</Trans>}>
+                <FeatureDetails.Item title={<Trans>Why foreign category and tag names break expense search</Trans>}>
                     <p>
                         <Trans>
                             Categories and tags you create or import in Ukrainian or other non-Latin scripts are hard for search and
@@ -160,12 +154,11 @@ export default async function AiCategoryTranslationFeaturePage(props: PageLangPa
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>
                 <FeatureFaq.Item
-                    index={0}
                     question={<Trans>Which scripts are supported?</Trans>}
                     answer={
                         <Trans>
@@ -175,7 +168,6 @@ export default async function AiCategoryTranslationFeaturePage(props: PageLangPa
                     }
                 />
                 <FeatureFaq.Item
-                    index={1}
                     question={<Trans>Are my original category and tag names kept?</Trans>}
                     answer={
                         <Trans>
@@ -185,7 +177,6 @@ export default async function AiCategoryTranslationFeaturePage(props: PageLangPa
                     }
                 />
                 <FeatureFaq.Item
-                    index={2}
                     question={<Trans>What if a category or tag is translated wrongly?</Trans>}
                     answer={
                         <Trans>
@@ -195,7 +186,6 @@ export default async function AiCategoryTranslationFeaturePage(props: PageLangPa
                     }
                 />
                 <FeatureFaq.Item
-                    index={3}
                     question={<Trans>Does this run on every category and tag?</Trans>}
                     answer={
                         <Trans>

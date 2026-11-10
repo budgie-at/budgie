@@ -51,7 +51,7 @@ export default async function CategorizationRulesFeaturePage(props: PageLangPara
                     </Trans>
                 </FeatureStory.Intro>
 
-                <FeatureStory.Step index={0} title={<Trans>Some things should not be guessed</Trans>}>
+                <FeatureStory.Step title={<Trans>Some things should not be guessed</Trans>}>
                     <Trans>
                         The Rules screen shows what you decided, rule by rule: the conditions on top — Title contains &ldquo;Spotify&rdquo;
                         and Type equals EXPENSE — and under them the category and the tag the match sets. A condition can also read the
@@ -59,7 +59,7 @@ export default async function CategorizationRulesFeaturePage(props: PageLangPara
                         never means deleting it.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="categorization-rules-1" slug="categorization-rules">
+                <FeatureStory.Shot alt={firstShotAlt} locale={lang} scene="categorization-rules-1" slug="categorization-rules">
                     <FeatureStory.Callout y={0.252}>
                         <Trans>Conditions you wrote yourself</Trans>
                     </FeatureStory.Callout>
@@ -68,7 +68,7 @@ export default async function CategorizationRulesFeaturePage(props: PageLangPara
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={1} title={<Trans>The Quick rule pill writes it for you</Trans>}>
+                <FeatureStory.Step title={<Trans>The Quick rule pill writes it for you</Trans>}>
                     <Trans>
                         Change the category or the tags of an existing transaction and a Quick rule pill appears above the amount. It builds
                         the conditions from the merchant name — reference numbers, amounts, dates and company suffixes stripped out, the
@@ -80,7 +80,6 @@ export default async function CategorizationRulesFeaturePage(props: PageLangPara
                     alt={t(
                         i18n
                     )`Budgie edit expense screen with a Quick rule pill above the amount, moments after the category was changed`}
-                    index={1}
                     locale={lang}
                     scene="categorization-rules-2"
                     slug="categorization-rules"
@@ -93,7 +92,7 @@ export default async function CategorizationRulesFeaturePage(props: PageLangPara
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={2} title={<Trans>Rules run before the AI does</Trans>}>
+                <FeatureStory.Step title={<Trans>Rules run before the AI does</Trans>}>
                     <Trans>
                         Rules are evaluated on Monobank sync, on bank file sync and on file import, so most rows land already categorized.
                         What no rule covered is counted in the missing-categories pill above the list; open one of those rows and a
@@ -102,7 +101,6 @@ export default async function CategorizationRulesFeaturePage(props: PageLangPara
                 </FeatureStory.Step>
                 <FeatureStory.Shot
                     alt={t(i18n)`Budgie transaction list with a 14 missing categories pill above rows that carry no category chip`}
-                    index={2}
                     locale={lang}
                     scene="uncategorized-transactions-1"
                     slug="uncategorized-transactions"
@@ -182,7 +180,7 @@ export default async function CategorizationRulesFeaturePage(props: PageLangPara
             </FeatureBenefits>
 
             <FeatureDetails>
-                <FeatureDetails.Item index={0} title={<Trans>Some categorization should be a rule, not a suggestion</Trans>}>
+                <FeatureDetails.Item title={<Trans>Some categorization should be a rule, not a suggestion</Trans>}>
                     <p>
                         <Trans>
                             Your landlord&apos;s transfer, your gym membership, the corner shop you visit twice a week — you already know
@@ -198,7 +196,7 @@ export default async function CategorizationRulesFeaturePage(props: PageLangPara
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Item index={1} title={<Trans>The Quick rule pill writes the rule for you</Trans>}>
+                <FeatureDetails.Item title={<Trans>The Quick rule pill writes the rule for you</Trans>}>
                     <p>
                         <Trans>
                             When exactly one of your existing rules already matches the transaction, the pill turns into &ldquo;Update
@@ -209,7 +207,7 @@ export default async function CategorizationRulesFeaturePage(props: PageLangPara
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Item index={2} title={<Trans>Rules and on-device AI do different jobs</Trans>}>
+                <FeatureDetails.Item title={<Trans>Rules and on-device AI do different jobs</Trans>}>
                     <p>
                         <Trans>
                             Rules are deterministic: the same conditions produce the same category every single time, which is what you want
@@ -219,12 +217,11 @@ export default async function CategorizationRulesFeaturePage(props: PageLangPara
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Guides index={3} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>
                 <FeatureFaq.Item
-                    index={0}
                     question={<Trans>Do rules apply to transactions I type in myself?</Trans>}
                     answer={
                         <Trans>
@@ -236,7 +233,6 @@ export default async function CategorizationRulesFeaturePage(props: PageLangPara
                     }
                 />
                 <FeatureFaq.Item
-                    index={1}
                     question={<Trans>Can one rule do more than one thing?</Trans>}
                     answer={
                         <Trans>
@@ -246,7 +242,6 @@ export default async function CategorizationRulesFeaturePage(props: PageLangPara
                     }
                 />
                 <FeatureFaq.Item
-                    index={2}
                     question={<Trans>What happens when I already have a lot of rules?</Trans>}
                     answer={
                         <Trans>
@@ -256,7 +251,6 @@ export default async function CategorizationRulesFeaturePage(props: PageLangPara
                     }
                 />
                 <FeatureFaq.Item
-                    index={3}
                     question={<Trans>Is this the same as the AI categorization?</Trans>}
                     answer={
                         <Trans>
@@ -266,7 +260,6 @@ export default async function CategorizationRulesFeaturePage(props: PageLangPara
                     }
                 />
                 <FeatureFaq.Item
-                    index={4}
                     question={<Trans>Can I turn a rule off temporarily?</Trans>}
                     answer={
                         <Trans>

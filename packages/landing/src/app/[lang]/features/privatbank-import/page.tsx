@@ -100,7 +100,7 @@ export default async function PrivatbankImportFeaturePage(props: PageLangParam) 
             </FeatureBenefits>
 
             <FeatureDetails>
-                <FeatureDetails.Item index={0} title={<Trans>Categories arrive already matched</Trans>}>
+                <FeatureDetails.Item title={<Trans>Categories arrive already matched</Trans>}>
                     <p>
                         <Trans>
                             This is a one-time import from a Privat24 statement export, not a live sync — each export covers a single card
@@ -134,7 +134,7 @@ export default async function PrivatbankImportFeaturePage(props: PageLangParam) 
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Item index={1} title={<Trans>How it works</Trans>}>
+                <FeatureDetails.Item title={<Trans>How it works</Trans>}>
                     <p>
                         <Trans>
                             In the Privat24 app, select the card or account you want to import, open its statement, and choose a date range
@@ -144,12 +144,11 @@ export default async function PrivatbankImportFeaturePage(props: PageLangParam) 
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Guides index={2} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>
                 <FeatureFaq.Item
-                    index={0}
                     question={<Trans>How do I export from Privat24?</Trans>}
                     answer={
                         <Trans>
@@ -161,7 +160,6 @@ export default async function PrivatbankImportFeaturePage(props: PageLangParam) 
                     }
                 />
                 <FeatureFaq.Item
-                    index={1}
                     question={<Trans>How are PrivatBank categories handled?</Trans>}
                     answer={
                         <Trans>
@@ -171,7 +169,6 @@ export default async function PrivatbankImportFeaturePage(props: PageLangParam) 
                     }
                 />
                 <FeatureFaq.Item
-                    index={2}
                     question={<Trans>Is the long-press shortcut destructive?</Trans>}
                     answer={
                         <Trans>
@@ -181,7 +178,6 @@ export default async function PrivatbankImportFeaturePage(props: PageLangParam) 
                     }
                 />
                 <FeatureFaq.Item
-                    index={3}
                     question={<Trans>Is this a live sync?</Trans>}
                     answer={
                         <Trans>
@@ -191,7 +187,6 @@ export default async function PrivatbankImportFeaturePage(props: PageLangParam) 
                     }
                 />
                 <FeatureFaq.Item
-                    index={4}
                     question={<Trans>Does it work offline?</Trans>}
                     answer={
                         <Trans>

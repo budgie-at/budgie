@@ -49,13 +49,13 @@ export default async function BankResyncWindowFeaturePage(props: PageLangParam) 
                     </Trans>
                 </FeatureStory.Intro>
 
-                <FeatureStory.Step index={0} title={<Trans>Re-pull a slice, not everything</Trans>}>
+                <FeatureStory.Step title={<Trans>Re-pull a slice, not everything</Trans>}>
                     <Trans>
                         Open a bank-synced account and tap Re-sync. Picking a window moves that account&apos;s sync start back to the date
                         you chose, so the next sync starts from there instead of walking the whole history again.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="bank-resync-window-1" slug="bank-resync-window">
+                <FeatureStory.Shot alt={firstShotAlt} locale={lang} scene="bank-resync-window-1" slug="bank-resync-window">
                     <FeatureStory.Callout index={0} y={0.64}>
                         <Trans>The whole-history reset</Trans>
                     </FeatureStory.Callout>
@@ -67,7 +67,7 @@ export default async function BankResyncWindowFeaturePage(props: PageLangParam) 
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={1} title={<Trans>Down to the last week</Trans>}>
+                <FeatureStory.Step title={<Trans>Down to the last week</Trans>}>
                     <Trans>
                         Seven days is the tightest slice on offer. Whatever comes back is matched against what you already have and updated
                         in place, so rows are refreshed rather than duplicated. The title and date are refreshed; your own comment, category
@@ -140,7 +140,7 @@ export default async function BankResyncWindowFeaturePage(props: PageLangParam) 
             </FeatureBenefits>
 
             <FeatureDetails>
-                <FeatureDetails.Item index={0} title={<Trans>Why a full re-sync is the wrong fix</Trans>}>
+                <FeatureDetails.Item title={<Trans>Why a full re-sync is the wrong fix</Trans>}>
                     <p>
                         <Trans>
                             Sometimes a sync drifts — a transaction reconciles late, a refund posts after the fact. The blunt fix is to
@@ -156,12 +156,11 @@ export default async function BankResyncWindowFeaturePage(props: PageLangParam) 
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>
                 <FeatureFaq.Item
-                    index={0}
                     question={<Trans>Why not just full re-sync?</Trans>}
                     answer={
                         <Trans>
@@ -172,7 +171,6 @@ export default async function BankResyncWindowFeaturePage(props: PageLangParam) 
                     }
                 />
                 <FeatureFaq.Item
-                    index={1}
                     question={<Trans>What&apos;s the smallest window?</Trans>}
                     answer={
                         <Trans>
@@ -182,7 +180,6 @@ export default async function BankResyncWindowFeaturePage(props: PageLangParam) 
                     }
                 />
                 <FeatureFaq.Item
-                    index={2}
                     question={<Trans>What happens to edited transactions in the window?</Trans>}
                     answer={
                         <Trans>
@@ -193,7 +190,6 @@ export default async function BankResyncWindowFeaturePage(props: PageLangParam) 
                     }
                 />
                 <FeatureFaq.Item
-                    index={3}
                     question={<Trans>Can I re-sync transactions from before bank-sync was enabled?</Trans>}
                     answer={
                         <Trans>

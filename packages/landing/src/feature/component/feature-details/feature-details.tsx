@@ -1,5 +1,6 @@
 import { Trans } from '@lingui/react/macro';
 
+import { assignPositionIndex } from '../../utils/assign-position-index.util';
 import { FeatureDetailsGuides } from '../feature-details-guides/feature-details-guides';
 import { FeatureDetailsItem } from '../feature-details-item/feature-details-item';
 import { FeatureSplitSection } from '../feature-split-section/feature-split-section';
@@ -20,7 +21,7 @@ const FeatureDetailsRoot = ({ children }: Props) => (
             </p>
         }
     >
-        {children}
+        {assignPositionIndex(children, [FeatureDetailsItem, FeatureDetailsGuides])}
     </FeatureSplitSection>
 );
 

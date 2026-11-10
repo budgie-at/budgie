@@ -51,20 +51,20 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
                     </Trans>
                 </FeatureStory.Intro>
 
-                <FeatureStory.Step index={0} title={<Trans>One file holds the database</Trans>}>
+                <FeatureStory.Step title={<Trans>One file holds the database</Trans>}>
                     <Trans>
                         Export Database copies the whole file behind the app — every transaction, account, category, tag and setting — then
                         hands it to the system share sheet as a compressed, dated backup file. Set a PIN and that same PIN is what the file
                         is encrypted with.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot alt={storyAlt} index={0} locale={lang} scene="database-backup-1" slug="database-backup">
+                <FeatureStory.Shot alt={storyAlt} locale={lang} scene="database-backup-1" slug="database-backup">
                     <FeatureStory.Callout y={0.54}>
                         <Trans>Writes the whole database</Trans>
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={1} title={<Trans>Restore replaces what is there</Trans>}>
+                <FeatureStory.Step title={<Trans>Restore replaces what is there</Trans>}>
                     <Trans>
                         Import Database sits directly above it. Pick the file and Budgie warns you that it will replace all current data and
                         cannot be undone; confirm and it swaps everything in and restarts. A PIN-locked backup asks for the PIN it was made
@@ -72,13 +72,13 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
                         restored.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot alt={storyAlt} index={1} locale={lang} scene="database-backup-1" slug="database-backup">
+                <FeatureStory.Shot alt={storyAlt} locale={lang} scene="database-backup-1" slug="database-backup">
                     <FeatureStory.Callout y={0.461}>
                         <Trans>Restore from a backup file</Trans>
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={2} title={<Trans>Your file, your storage</Trans>}>
+                <FeatureStory.Step title={<Trans>Your file, your storage</Trans>}>
                     <Trans>
                         The share sheet is the last step Budgie takes part in. Send the file to Files, iCloud Drive, a Drive folder or a USB
                         stick, and keep as many dated copies as you want — the name carries the date and time, so exports never collide.
@@ -146,7 +146,7 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
             </FeatureBenefits>
 
             <FeatureDetails>
-                <FeatureDetails.Item index={0} title={<Trans>Why a backup file beats a vendor backup</Trans>}>
+                <FeatureDetails.Item title={<Trans>Why a backup file beats a vendor backup</Trans>}>
                     <p>
                         <Trans>
                             Cloud apps do &ldquo;backups&rdquo; by holding all your data on their servers. Budgie hands you the database
@@ -160,12 +160,11 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>
                 <FeatureFaq.Item
-                    index={0}
                     question={<Trans>How do I restore on another device?</Trans>}
                     answer={
                         <Trans>
@@ -178,7 +177,6 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={1}
                     question={<Trans>Is the backup file safe to upload to a cloud?</Trans>}
                     answer={
                         <Trans>
@@ -188,7 +186,6 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={2}
                     question={<Trans>Can I have multiple backups?</Trans>}
                     answer={
                         <Trans>
@@ -198,7 +195,6 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={3}
                     question={<Trans>Does Budgie auto-backup?</Trans>}
                     answer={
                         <Trans>

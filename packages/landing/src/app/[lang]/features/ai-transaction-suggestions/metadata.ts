@@ -14,7 +14,6 @@ export const FEATURE_METADATA = {
     tagline: msg`Open the expense form and Budgie offers tappable suggestions from your own history: category, then tags, then a comment.`,
     metaTitle: msg`Smart Expense Suggestions for Mobile — Budgie`,
     metaDescription: msg`Budgie suggests category, tags, comment and amount from your own spending history as tappable pills — faster than typing, private, offline.`,
-    primaryKeyword: 'smart expense suggestions',
     seoKeywords: [
         'smart expense suggestions',
         'auto-fill expense form',
@@ -32,6 +31,5 @@ export const FEATURE_METADATA = {
     ],
     relatedArticleSlugs: ['cloud-budgeting-privacy-risks', 'local-first-movement-developers'],
     publishedAt: '2026-05-07',
-    updatedAt: '2026-09-07',
-    ogTags: ['ai', 'suggestions', 'expense-tracking']
+    updatedAt: '2026-09-07'
 } satisfies FeatureRegistryEntryInterface;

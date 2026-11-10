@@ -54,20 +54,14 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                     </Trans>
                 </FeatureStory.Intro>
 
-                <FeatureStory.Step index={0} title={<Trans>In the same list as your bank</Trans>}>
+                <FeatureStory.Step title={<Trans>In the same list as your bank</Trans>}>
                     <Trans>
                         Crypto is not a separate tab. Holdings group by instrument under their own heading, after the bank and cash
                         accounts, on the screen you already open. The total at the top counts them like everything else, and the two chips
                         underneath split it into what you hold in cash and what you hold in coin.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot
-                    alt={firstShotAlt}
-                    index={0}
-                    locale={lang}
-                    scene="crypto-investment-tracking-1"
-                    slug="crypto-investment-tracking"
-                >
+                <FeatureStory.Shot alt={firstShotAlt} locale={lang} scene="crypto-investment-tracking-1" slug="crypto-investment-tracking">
                     <FeatureStory.Callout index={0} x={0.72} y={0.226}>
                         <Trans>Cash and coin, split apart</Trans>
                     </FeatureStory.Callout>
@@ -79,7 +73,7 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={1} title={<Trans>Every buy keeps what it cost</Trans>}>
+                <FeatureStory.Step title={<Trans>Every buy keeps what it cost</Trans>}>
                     <Trans>
                         The wallet itself reads in the coin: a balance in BTC, and under it the purchases that add up to it. Each row
                         carries the coin amount it bought, the amount you actually paid in your own currency, and the rate that implies — so
@@ -90,7 +84,6 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                     alt={t(
                         i18n
                     )`Budgie Bitcoin wallet screen with the balance in BTC above two crypto purchase rows showing the amount paid and the rate`}
-                    index={1}
                     locale={lang}
                     scene="crypto-investment-tracking-2"
                     slug="crypto-investment-tracking"
@@ -103,7 +96,7 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={2} title={<Trans>What it cost, and what it is worth</Trans>}>
+                <FeatureStory.Step title={<Trans>What it cost, and what it is worth</Trans>}>
                     <Trans>
                         Every instrument has its own market screen: the stored price with its last move, a sparkline of the history behind
                         it, and your position valued against it — quantity, converted value, average cost, cost basis and unrealized gain.
@@ -115,7 +108,6 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                     alt={t(
                         i18n
                     )`Budgie Bitcoin market screen with the price, a sparkline, and a holdings card listing average cost, cost basis and unrealized profit`}
-                    index={2}
                     locale={lang}
                     scene="crypto-investment-tracking-3"
                     slug="crypto-investment-tracking"
@@ -204,7 +196,7 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
             </FeatureBenefits>
 
             <FeatureDetails>
-                <FeatureDetails.Item index={0} title={<Trans>Why most expense apps stop at fiat</Trans>}>
+                <FeatureDetails.Item title={<Trans>Why most expense apps stop at fiat</Trans>}>
                     <p>
                         <Trans>
                             Most expense apps end at fiat. Budgie has crypto holdings as first-class instruments — each one has a quantity,
@@ -214,7 +206,7 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Item index={1} title={<Trans>Market history without a live ticker</Trans>}>
+                <FeatureDetails.Item title={<Trans>Market history without a live ticker</Trans>}>
                     <p>
                         <Trans>
                             Each crypto instrument has its own market screen: the current price, a sparkline of where it has been, metrics
@@ -232,12 +224,11 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Guides index={2} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>
                 <FeatureFaq.Item
-                    index={0}
                     question={<Trans>Do the charts work offline?</Trans>}
                     answer={
                         <Trans>
@@ -247,7 +238,6 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                     }
                 />
                 <FeatureFaq.Item
-                    index={1}
                     question={<Trans>How far back does the history go?</Trans>}
                     answer={
                         <Trans>
@@ -257,7 +247,6 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                     }
                 />
                 <FeatureFaq.Item
-                    index={2}
                     question={<Trans>How is this different from a portfolio tracker?</Trans>}
                     answer={
                         <Trans>
@@ -267,7 +256,6 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                     }
                 />
                 <FeatureFaq.Item
-                    index={3}
                     question={<Trans>Can I record buy / sell history?</Trans>}
                     answer={
                         <Trans>
@@ -277,7 +265,6 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                     }
                 />
                 <FeatureFaq.Item
-                    index={4}
                     question={<Trans>Can I connect Binance?</Trans>}
                     answer={
                         <Trans>

@@ -14,7 +14,6 @@ export const FEATURE_METADATA = {
     tagline: msg`Monobank cards, jars, and your deposits share one connection, so a token change is a one-time job.`,
     metaTitle: msg`Bank Connection Management — Budgie`,
     metaDescription: msg`One connection backs every account under it. Change a Monobank or Binance token once and all follow. Statement banks need no token.`,
-    primaryKeyword: 'manage bank connections app',
     seoKeywords: [
         'manage bank connections app',
         'bank integration management',
@@ -33,6 +32,5 @@ export const FEATURE_METADATA = {
     ],
     relatedArticleSlugs: ['cloud-budgeting-privacy-risks', 'local-first-movement-developers'],
     publishedAt: '2026-09-02',
-    updatedAt: '2026-09-02',
-    ogTags: ['bank sync', 'accounts', 'credentials']
+    updatedAt: '2026-09-02'
 } satisfies FeatureRegistryEntryInterface;

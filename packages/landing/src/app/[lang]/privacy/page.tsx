@@ -165,7 +165,7 @@ export default async function PrivacyPillarHubPage(props: PageLangParam) {
                     </Trans>
                 </FeatureStory.Intro>
 
-                <FeatureStory.Point index={0}>
+                <FeatureStory.Point>
                     <Trans>
                         Privacy is the first group in Settings. Every account, transaction and category lives in a single file on the phone
                         — there is no vendor database holding a second copy.
@@ -176,7 +176,6 @@ export default async function PrivacyPillarHubPage(props: PageLangParam) {
                     alt={t(
                         i18n
                     )`Budgie Settings screen with a Privacy card stating all financial data is stored locally on the device, above a Security group where App Lock is not yet enabled and Screenshot Protection is off`}
-                    index={0}
                     locale={lang}
                     scene="private-budget-app-alternative-1"
                     slug="private-budget-app-alternative"
@@ -189,13 +188,13 @@ export default async function PrivacyPillarHubPage(props: PageLangParam) {
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Point index={1}>
+                <FeatureStory.Point>
                     <Trans>
                         Nothing on this screen asks who you are. There is no account, no email, no sign-in step — so there is no server-side
                         profile that a breach could expose.
                     </Trans>
                 </FeatureStory.Point>
-                <FeatureStory.Point index={2}>
+                <FeatureStory.Point>
                     <Trans>
                         App Lock is opt-in, and the PIN you set does double duty: it becomes the key the whole file is encrypted with. Until
                         you set one, the file is ordinary local storage — private to the app sandbox, but not encrypted.

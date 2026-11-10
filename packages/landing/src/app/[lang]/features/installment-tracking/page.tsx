@@ -76,37 +76,34 @@ export default async function InstallmentTrackingFeaturePage(props: PageLangPara
                     <Trans>Convert the purchase once. Budgie follows the monthly parts and tells you what is left.</Trans>
                 </FeatureStory.Intro>
 
-                <FeatureStory.Step index={0} title={<Trans>Turn a purchase into a plan</Trans>}>
+                <FeatureStory.Step title={<Trans>Turn a purchase into a plan</Trans>}>
                     <Trans>Open the expense, choose Pay in parts and pick the number of payments. The total updates as you tap.</Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
                     alt={t(i18n)`Budgie Pay in parts sheet for an electronics purchase with three payments selected and the plan total`}
-                    index={0}
                     locale={lang}
                     priority
                     scene="installment-tracking-1"
                     slug="installment-tracking"
                 />
 
-                <FeatureStory.Step index={1} title={<Trans>Monthly parts attach themselves</Trans>}>
+                <FeatureStory.Step title={<Trans>Monthly parts attach themselves</Trans>}>
                     <Trans>When your bank syncs, Budgie finds next month&apos;s part on the same account and adds it to the plan.</Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
                     alt={t(i18n)`Budgie installment plan screen showing two of three payments paid, the next amount and its date`}
-                    index={1}
                     locale={lang}
                     scene="installment-tracking-2"
                     slug="installment-tracking"
                 />
 
-                <FeatureStory.Step index={2} title={<Trans>The next payment, right on Home</Trans>}>
+                <FeatureStory.Step title={<Trans>The next payment, right on Home</Trans>}>
                     <Trans>Plans sit under You owe on Home, with what is left to pay and the amount and date of the next part.</Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
                     alt={t(
                         i18n
                     )`Budgie home screen with an installment plan card under You owe showing the next payment and the amount left`}
-                    index={2}
                     locale={lang}
                     scene="installment-tracking-3"
                     slug="installment-tracking"
@@ -186,7 +183,7 @@ export default async function InstallmentTrackingFeaturePage(props: PageLangPara
             </FeatureBenefits>
 
             <FeatureDetails>
-                <FeatureDetails.Item index={0} title={<Trans>See the total before you commit</Trans>}>
+                <FeatureDetails.Item title={<Trans>See the total before you commit</Trans>}>
                     <p>
                         <Trans>
                             Pick 2, 3, 4, 6, 10, 12 or 24 payments and the plan total and the size of each part change on the spot. Budgie
@@ -200,7 +197,7 @@ export default async function InstallmentTrackingFeaturePage(props: PageLangPara
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Item index={1} title={<Trans>Returned it? The plan closes too</Trans>}>
+                <FeatureDetails.Item title={<Trans>Returned it? The plan closes too</Trans>}>
                     <p>
                         <Trans>
                             Sent the phone back? Once the refund is linked to the purchase, Budgie closes the plan at the amount you already
@@ -208,12 +205,11 @@ export default async function InstallmentTrackingFeaturePage(props: PageLangPara
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Guides index={2} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>
                 <FeatureFaq.Item
-                    index={0}
                     question={<Trans>Which purchases can I turn into a plan?</Trans>}
                     answer={
                         <Trans>
@@ -223,7 +219,6 @@ export default async function InstallmentTrackingFeaturePage(props: PageLangPara
                     }
                 />
                 <FeatureFaq.Item
-                    index={1}
                     question={<Trans>How does Budgie find the monthly parts?</Trans>}
                     answer={
                         <Trans>
@@ -234,7 +229,6 @@ export default async function InstallmentTrackingFeaturePage(props: PageLangPara
                     }
                 />
                 <FeatureFaq.Item
-                    index={2}
                     question={<Trans>What if my bank charges a fee?</Trans>}
                     answer={
                         <Trans>
@@ -244,7 +238,6 @@ export default async function InstallmentTrackingFeaturePage(props: PageLangPara
                     }
                 />
                 <FeatureFaq.Item
-                    index={3}
                     question={<Trans>What happens if I return the item?</Trans>}
                     answer={
                         <Trans>
@@ -254,7 +247,6 @@ export default async function InstallmentTrackingFeaturePage(props: PageLangPara
                     }
                 />
                 <FeatureFaq.Item
-                    index={4}
                     question={<Trans>Where do I see what I still owe?</Trans>}
                     answer={
                         <Trans>

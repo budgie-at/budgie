@@ -12,11 +12,9 @@ export interface FeatureRegistryEntryInterface {
     readonly tagline: MessageDescriptor;
     readonly metaTitle: MessageDescriptor;
     readonly metaDescription: MessageDescriptor;
-    readonly primaryKeyword: string;
     readonly seoKeywords: readonly string[];
     readonly relatedFeatureSlugs: readonly string[];
     readonly relatedArticleSlugs: readonly string[];
     readonly publishedAt: string;
     readonly updatedAt: string;
-    readonly ogTags: readonly string[];
 }

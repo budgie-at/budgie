@@ -1,7 +1,5 @@
 @import 'tailwindcss';
 
-@plugin 'tailwindcss-animate';
-
 @source '../*.{js,ts,jsx,tsx,mdx}';
 
 @custom-variant dark (&:is(.dark *));
@@ -71,26 +69,6 @@
     --dur-fast: 160ms;
     --dur-base: 260ms;
     --dur-slow: 400ms;
-
-    --animate-accordion-down: accordion-down 0.2s ease-out;
-    --animate-accordion-up: accordion-up 0.2s ease-out;
-
-    @keyframes accordion-down {
-        from {
-            height: 0;
-        }
-        to {
-            height: var(--radix-accordion-content-height);
-        }
-    }
-    @keyframes accordion-up {
-        from {
-            height: var(--radix-accordion-content-height);
-        }
-        to {
-            height: 0;
-        }
-    }
 }
 
 /*
@@ -2669,5 +2647,23 @@ section[data-density='COMPACT'] .story-grid {
     .fade-in,
     .fade-in-view {
         animation: none;
+    }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    details[name='home-faq'] {
+        interpolate-size: allow-keywords;
+    }
+
+    details[name='home-faq']::details-content {
+        block-size: 0;
+        overflow: hidden;
+        transition:
+            block-size 0.2s ease-out,
+            content-visibility 0.2s allow-discrete;
+    }
+
+    details[name='home-faq'][open]::details-content {
+        block-size: auto;
     }
 }

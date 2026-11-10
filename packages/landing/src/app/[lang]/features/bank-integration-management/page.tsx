@@ -51,14 +51,14 @@ export default async function BankIntegrationManagementFeaturePage(props: PageLa
                     </Trans>
                 </FeatureStory.Intro>
 
-                <FeatureStory.Step index={0} title={<Trans>Connect the bank once</Trans>}>
+                <FeatureStory.Step title={<Trans>Connect the bank once</Trans>}>
                     <Trans>
                         Setup asks for one credential and spells out how to scope it — for Binance, an API key and secret with reading
                         enabled and trading and withdrawals switched off. Budgie stores it on the bank, not on an account, and fetches
                         whatever that key can see.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="binance-sync-1" slug="binance-sync">
+                <FeatureStory.Shot alt={firstShotAlt} locale={lang} scene="binance-sync-1" slug="binance-sync">
                     <FeatureStory.Callout y={0.22}>
                         <Trans>Generate it in Binance</Trans>
                     </FeatureStory.Callout>
@@ -67,7 +67,7 @@ export default async function BankIntegrationManagementFeaturePage(props: PageLa
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={1} title={<Trans>Every account behind that key</Trans>}>
+                <FeatureStory.Step title={<Trans>Every account behind that key</Trans>}>
                     <Trans>
                         The bank gets its own screen: the cards and jars synced from it, each with its balance and a switch that pauses one
                         account while its siblings keep going. A Monobank connection can pull the bank&apos;s account list again later and
@@ -78,7 +78,6 @@ export default async function BankIntegrationManagementFeaturePage(props: PageLa
                     alt={t(
                         i18n
                     )`Budgie Monobank connection screen listing two cards and a jar with balances, sync switches, and Add deposit and Add accounts buttons`}
-                    index={1}
                     locale={lang}
                     scene="monobank-sync-1"
                     slug="monobank-sync"
@@ -91,7 +90,7 @@ export default async function BankIntegrationManagementFeaturePage(props: PageLa
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={2} title={<Trans>Each account keeps its own controls</Trans>}>
+                <FeatureStory.Step title={<Trans>Each account keeps its own controls</Trans>}>
                     <Trans>
                         Open an account and its sync card is there: pause it, paste a fresh token — which lands on the shared connection and
                         clears the error counters of every account on it — or re-pull a window, from the last seven days up to the entire
@@ -102,7 +101,6 @@ export default async function BankIntegrationManagementFeaturePage(props: PageLa
                     alt={t(
                         i18n
                     )`Budgie Account Settings screen for a Monobank card with the re-sync sheet open on entire history, 90, 30 and 7 days`}
-                    index={2}
                     locale={lang}
                     scene="bank-resync-window-1"
                     slug="bank-resync-window"
@@ -196,7 +194,7 @@ export default async function BankIntegrationManagementFeaturePage(props: PageLa
             </FeatureBenefits>
 
             <FeatureDetails>
-                <FeatureDetails.Item index={0} title={<Trans>Why the credential deserves its own object</Trans>}>
+                <FeatureDetails.Item title={<Trans>Why the credential deserves its own object</Trans>}>
                     <p>
                         <Trans>
                             A bank token is not a property of one account — it is a property of your relationship with the bank. Budgie
@@ -212,7 +210,7 @@ export default async function BankIntegrationManagementFeaturePage(props: PageLa
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Item index={1} title={<Trans>One screen per bank</Trans>}>
+                <FeatureDetails.Item title={<Trans>One screen per bank</Trans>}>
                     <p>
                         <Trans>
                             Each bank section on the home screen has a shortcut into its connection. Inside you get the accounts that belong
@@ -229,12 +227,11 @@ export default async function BankIntegrationManagementFeaturePage(props: PageLa
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Guides index={2} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>
                 <FeatureFaq.Item
-                    index={0}
                     question={<Trans>Do I have to re-add every account when my token expires?</Trans>}
                     answer={
                         <Trans>
@@ -244,7 +241,6 @@ export default async function BankIntegrationManagementFeaturePage(props: PageLa
                     }
                 />
                 <FeatureFaq.Item
-                    index={1}
                     question={<Trans>Can jars and deposits sit on the same connection as my card?</Trans>}
                     answer={
                         <Trans>
@@ -254,7 +250,6 @@ export default async function BankIntegrationManagementFeaturePage(props: PageLa
                     }
                 />
                 <FeatureFaq.Item
-                    index={2}
                     question={<Trans>What happens if I close one of the accounts?</Trans>}
                     answer={
                         <Trans>
@@ -264,7 +259,6 @@ export default async function BankIntegrationManagementFeaturePage(props: PageLa
                     }
                 />
                 <FeatureFaq.Item
-                    index={3}
                     question={<Trans>Does this work for banks I import statements from?</Trans>}
                     answer={
                         <Trans>
@@ -274,7 +268,6 @@ export default async function BankIntegrationManagementFeaturePage(props: PageLa
                     }
                 />
                 <FeatureFaq.Item
-                    index={4}
                     question={<Trans>Can I open a deposit from any connection?</Trans>}
                     answer={
                         <Trans>

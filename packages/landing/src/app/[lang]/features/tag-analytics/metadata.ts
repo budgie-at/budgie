@@ -14,7 +14,6 @@ export const FEATURE_METADATA = {
     tagline: msg`A Tags tab in Analytics with income and spending totalled tag by tag, each with its share of the period, plus an Untagged row for every gap in your labeling.`,
     metaTitle: msg`Spending Analytics by Tag — Drillable Reports — Budgie`,
     metaDescription: msg`See income and spending per tag in a dedicated Analytics tab, each with its share of the period. The Untagged row finds every transaction missing a label.`,
-    primaryKeyword: 'spending by tag analytics',
     seoKeywords: [
         'spending by tag analytics',
         'tag-based budget app',
@@ -34,6 +33,5 @@ export const FEATURE_METADATA = {
     ],
     relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-shutdown-private-alternative'],
     publishedAt: '2026-01-04',
-    updatedAt: '2026-09-27',
-    ogTags: ['tags', 'analytics', 'drill-down']
+    updatedAt: '2026-09-27'
 } satisfies FeatureRegistryEntryInterface;

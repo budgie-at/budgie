@@ -14,7 +14,6 @@ export const FEATURE_METADATA = {
     tagline: msg`Category and tag breakdowns for any period. Drill into any row.`,
     metaTitle: msg`Spending Analytics & Charts — Budgie`,
     metaDescription: msg`Category and tag breakdowns for any period, with drill-down from any row to its transactions. Analytics that find your gaps.`,
-    primaryKeyword: 'spending tracker with charts',
     seoKeywords: [
         'spending tracker with charts',
         'expense analytics app',
@@ -34,6 +33,5 @@ export const FEATURE_METADATA = {
     ],
     relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-shutdown-private-alternative'],
     publishedAt: '2025-12-19',
-    updatedAt: '2026-09-16',
-    ogTags: ['analytics', 'charts', 'drill-down']
+    updatedAt: '2026-09-16'
 } satisfies FeatureRegistryEntryInterface;

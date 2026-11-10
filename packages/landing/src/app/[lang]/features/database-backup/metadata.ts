@@ -14,7 +14,6 @@ export const FEATURE_METADATA = {
     tagline: msg`One compressed backup file, PIN-locked once you set a PIN. No account, restore by picking the file.`,
     metaTitle: msg`PIN-Locked Database Backup — Budgie`,
     metaDescription: msg`Back up your entire Budgie database as one compressed file, PIN-locked if you set a PIN. Save it anywhere and restore by picking the file.`,
-    primaryKeyword: 'expense tracker backup restore',
     seoKeywords: [
         'expense tracker backup restore',
         'finance app backup file',
@@ -25,6 +24,5 @@ export const FEATURE_METADATA = {
     relatedFeatureSlugs: ['data-export', 'pin-app-lock', 'expense-tracking', 'screenshot-protection'],
     relatedArticleSlugs: ['open-source-budgeting-transparency', 'local-first-movement-developers'],
     publishedAt: '2025-12-21',
-    updatedAt: '2026-05-03',
-    ogTags: ['backup', 'restore', 'encryption']
+    updatedAt: '2026-05-03'
 } satisfies FeatureRegistryEntryInterface;

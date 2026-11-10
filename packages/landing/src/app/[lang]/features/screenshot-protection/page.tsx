@@ -52,11 +52,11 @@ export default async function ScreenshotProtectionFeaturePage(props: PageLangPar
                     </Trans>
                 </FeatureStory.Intro>
 
-                <FeatureStory.Point index={0}>
+                <FeatureStory.Point>
                     <Trans>One switch, off by default, sitting directly under the PIN-lock card in the Security section.</Trans>
                 </FeatureStory.Point>
 
-                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="screenshot-protection-1" slug="screenshot-protection">
+                <FeatureStory.Shot alt={firstShotAlt} locale={lang} scene="screenshot-protection-1" slug="screenshot-protection">
                     <FeatureStory.Callout index={0} y={0.382}>
                         <Trans>PIN lock, right above</Trans>
                     </FeatureStory.Callout>
@@ -65,13 +65,13 @@ export default async function ScreenshotProtectionFeaturePage(props: PageLangPar
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Point index={1}>
+                <FeatureStory.Point>
                     <Trans>
                         Turn it on and Budgie asks the system to block screenshots and screen recordings of the app. Whether a capture is
                         blocked or comes out blank is up to your phone.
                     </Trans>
                 </FeatureStory.Point>
-                <FeatureStory.Point index={2}>
+                <FeatureStory.Point>
                     <Trans>
                         The moment Budgie stops being the active app, amounts swap to a placeholder — most visible in the app switcher. It
                         applies everywhere amounts appear, with no per-screen setup.
@@ -134,7 +134,7 @@ export default async function ScreenshotProtectionFeaturePage(props: PageLangPar
             </FeatureBenefits>
 
             <FeatureDetails>
-                <FeatureDetails.Item index={0} title={<Trans>Why a glance at the app switcher is a real privacy leak</Trans>}>
+                <FeatureDetails.Item title={<Trans>Why a glance at the app switcher is a real privacy leak</Trans>}>
                     <p>
                         <Trans>
                             Swipe up to switch apps and whatever was on screen a moment ago is still there in the preview — including
@@ -149,12 +149,11 @@ export default async function ScreenshotProtectionFeaturePage(props: PageLangPar
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>
                 <FeatureFaq.Item
-                    index={0}
                     question={<Trans>What does Screenshot Protection actually hide?</Trans>}
                     answer={
                         <Trans>
@@ -164,7 +163,6 @@ export default async function ScreenshotProtectionFeaturePage(props: PageLangPar
                     }
                 />
                 <FeatureFaq.Item
-                    index={1}
                     question={<Trans>Does it block screenshots and screen recordings?</Trans>}
                     answer={
                         <Trans>
@@ -174,7 +172,6 @@ export default async function ScreenshotProtectionFeaturePage(props: PageLangPar
                     }
                 />
                 <FeatureFaq.Item
-                    index={2}
                     question={<Trans>Where do I turn it on?</Trans>}
                     answer={
                         <Trans>
@@ -184,7 +181,6 @@ export default async function ScreenshotProtectionFeaturePage(props: PageLangPar
                     }
                 />
                 <FeatureFaq.Item
-                    index={3}
                     question={<Trans>Does it work alongside the PIN lock?</Trans>}
                     answer={
                         <Trans>

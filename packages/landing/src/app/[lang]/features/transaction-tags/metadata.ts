@@ -14,11 +14,9 @@ export const FEATURE_METADATA = {
     tagline: msg`Layer tags on top of categories. One transaction can be Groceries (category) and #vacation, #shared, #reimbursable (tags).`,
     metaTitle: msg`Custom Transaction Tags for Expense Tracking — Budgie`,
     metaDescription: msg`Tags answer "for which project, person, or purpose" — separate from categories. Multi-select fast, promote a primary tag for at-a-glance scanning, and slice analytics per tag.`,
-    primaryKeyword: 'transaction labels app',
     seoKeywords: ['transaction labels app', 'expense tagging app', 'tag transactions', 'project expense tags', 'shared expense tracker'],
     relatedFeatureSlugs: ['tag-analytics', 'primary-tag', 'custom-categories', 'expense-tracking', 'split-transactions'],
     relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-shutdown-private-alternative'],
     publishedAt: '2025-11-19',
-    updatedAt: '2026-05-03',
-    ogTags: ['tags', 'organization', 'analytics']
+    updatedAt: '2026-05-03'
 } satisfies FeatureRegistryEntryInterface;

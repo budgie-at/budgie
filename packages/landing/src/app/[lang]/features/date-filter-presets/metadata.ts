@@ -14,7 +14,6 @@ export const FEATURE_METADATA = {
     tagline: msg`Seven presets, a Monday-to-Sunday week for This Week and Last Week, custom range fallback, and an amount range beside them.`,
     metaTitle: msg`Date Filter Presets — Budgie`,
     metaDescription: msg`Today, This Week, Last Week, This Month, Last Month, This Year, All Time — every screen with a list, two taps to the right window. Plus a From/To amount range in the same filter row.`,
-    primaryKeyword: 'filter transactions by date',
     seoKeywords: [
         'filter transactions by date',
         'date range expense tracker',
@@ -31,6 +30,5 @@ export const FEATURE_METADATA = {
     ],
     relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-shutdown-private-alternative'],
     publishedAt: '2026-05-02',
-    updatedAt: '2026-09-02',
-    ogTags: ['filters', 'dates', 'presets']
+    updatedAt: '2026-09-02'
 } satisfies FeatureRegistryEntryInterface;

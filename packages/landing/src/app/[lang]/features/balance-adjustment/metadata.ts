@@ -14,7 +14,6 @@ export const FEATURE_METADATA = {
     tagline: msg`Correct an account balance without pretending it was income or an expense.`,
     metaTitle: msg`Balance Adjustment — Budgie`,
     metaDescription: msg`Set the balance your bank shows and Budgie books the difference as a dated Adjustment transaction, not a silent edit. First-class, editable, and excluded from your rules.`,
-    primaryKeyword: 'balance adjustment app',
     seoKeywords: [
         'balance adjustment app',
         'reconcile account balance',
@@ -25,6 +24,5 @@ export const FEATURE_METADATA = {
     relatedFeatureSlugs: ['account-management', 'net-worth-tracker', 'multi-currency'],
     relatedArticleSlugs: ['ynab-alternatives-privacy', 'cloud-budgeting-privacy-risks'],
     publishedAt: '2026-09-11',
-    updatedAt: '2026-09-11',
-    ogTags: ['balance', 'reconcile', 'accounts']
+    updatedAt: '2026-09-11'
 } satisfies FeatureRegistryEntryInterface;

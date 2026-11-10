@@ -14,7 +14,6 @@ export const FEATURE_METADATA = {
     tagline: msg`If the title contains this and the MCC is that, set the category, add the tag, or make it a transfer.`,
     metaTitle: msg`Transaction Categorization Rules — Budgie`,
     metaDescription: msg`Build rules that match on title, comment, amount, MCC, account, type, or import source and automatically set a category, add a tag, or convert to a transfer — on every bank sync and import.`,
-    primaryKeyword: 'transaction categorization rules',
     seoKeywords: [
         'transaction categorization rules',
         'auto categorize transactions',
@@ -33,6 +32,5 @@ export const FEATURE_METADATA = {
     ],
     relatedArticleSlugs: ['mint-shutdown-private-alternative', 'ynab-alternatives-privacy'],
     publishedAt: '2026-09-02',
-    updatedAt: '2026-09-02',
-    ogTags: ['rules', 'categorization', 'automation']
+    updatedAt: '2026-09-02'
 } satisfies FeatureRegistryEntryInterface;

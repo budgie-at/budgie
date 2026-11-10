@@ -1,6 +1,7 @@
-import { Children, cloneElement, isValidElement } from 'react';
+import { cloneElement, isValidElement } from 'react';
 
 import { StoryDensityEnum } from '../../enum/story-density.enum';
+import { assignFeatureStoryIndexes } from '../../utils/assign-feature-story-indexes.util';
 import { groupFeatureStoryShots } from '../../utils/group-feature-story-shots.util';
 import { FeatureStoryCallout } from '../feature-story-callout/feature-story-callout';
 import { FeatureStoryIntro } from '../feature-story-intro/feature-story-intro';
@@ -18,10 +19,11 @@ interface Props {
 }
 
 const FeatureStoryRoot = ({ density = StoryDensityEnum.DEFAULT, children }: Props) => {
-    const elements = Children.toArray(children).filter(child => isValidElement(child));
+    const indexed = assignFeatureStoryIndexes(children);
+    const elements = indexed.filter(child => isValidElement(child));
     const intro = elements.filter(element => element.type === FeatureStoryIntro);
     const steps = elements.filter(element => element.type === FeatureStoryStep || element.type === FeatureStoryPoint);
-    const groups = groupFeatureStoryShots(children);
+    const groups = groupFeatureStoryShots(indexed);
 
     return (
         <section className="story-section" {...(density === StoryDensityEnum.COMPACT && { 'data-density': density })}>

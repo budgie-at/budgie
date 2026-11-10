@@ -14,7 +14,6 @@ export const FEATURE_METADATA = {
     tagline: msg`Direct from Monobank. No aggregator. Your history on your device.`,
     metaTitle: msg`Monobank Auto-Sync — Budgie`,
     metaDescription: msg`Connect Monobank with a personal token. Cards and jars, the history depth you choose, and exchange rates sync straight to your device — no aggregator.`,
-    primaryKeyword: 'monobank expense tracker',
     seoKeywords: ['monobank sync', 'monobank api', 'monobank expense tracker', 'monobank jar tracking', 'monobank budget app'],
     relatedFeatureSlugs: [
         'sync-data-repairs',
@@ -31,6 +30,5 @@ export const FEATURE_METADATA = {
     ],
     relatedArticleSlugs: ['cloud-budgeting-privacy-risks', 'local-first-movement-developers'],
     publishedAt: '2025-12-25',
-    updatedAt: '2026-10-14',
-    ogTags: ['monobank', 'bank sync', 'privacy']
+    updatedAt: '2026-10-14'
 } satisfies FeatureRegistryEntryInterface;

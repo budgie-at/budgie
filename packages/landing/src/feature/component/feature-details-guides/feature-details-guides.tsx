@@ -8,12 +8,12 @@ import { getI18nInstance } from '../../../i18n/app-router-i18n';
 import { FeatureDetailsItem } from '../feature-details-item/feature-details-item';
 
 interface Props {
-    readonly index: number;
+    readonly index?: number;
     readonly locale: string;
     readonly slugs: readonly string[];
 }
 
-export const FeatureDetailsGuides = ({ index, locale, slugs }: Props) => {
+export const FeatureDetailsGuides = ({ index = 0, locale, slugs }: Props) => {
     const i18n = getI18nInstance(locale);
     const articles = slugs
         .map(slug => ARTICLE_REGISTRY.find(entry => entry.slug === slug))

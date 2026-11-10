@@ -14,7 +14,6 @@ export const FEATURE_METADATA = {
     tagline: msg`That €87 supermarket bill was groceries and a phone charger. Split it.`,
     metaTitle: msg`Split Transactions — Budgie`,
     metaDescription: msg`Divide a single transaction across multiple categories with a running left-to-assign total. Each split keeps its own tags and comment.`,
-    primaryKeyword: 'split transaction by category',
     seoKeywords: [
         'split transaction by category',
         'split expense app',
@@ -25,6 +24,5 @@ export const FEATURE_METADATA = {
     relatedFeatureSlugs: ['expense-tracking', 'custom-categories', 'transaction-tags'],
     relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-shutdown-private-alternative'],
     publishedAt: '2026-02-01',
-    updatedAt: '2026-09-16',
-    ogTags: ['split', 'categories', 'transactions']
+    updatedAt: '2026-09-16'
 } satisfies FeatureRegistryEntryInterface;

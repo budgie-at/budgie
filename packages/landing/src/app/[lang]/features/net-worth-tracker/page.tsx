@@ -46,10 +46,10 @@ export default async function NetWorthTrackerFeaturePage(props: PageLangParam) {
                     <Trans>Three screens, from the total on your home screen down to what you owe and what you are owed.</Trans>
                 </FeatureStory.Intro>
 
-                <FeatureStory.Step index={0} title={<Trans>One number, everything in it</Trans>}>
+                <FeatureStory.Step title={<Trans>One number, everything in it</Trans>}>
                     <Trans>Bank, cash, crypto and debt are already inside the figure at the top of Home.</Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="net-worth-tracker-1" slug="net-worth-tracker">
+                <FeatureStory.Shot alt={firstShotAlt} locale={lang} scene="net-worth-tracker-1" slug="net-worth-tracker">
                     <FeatureStory.Callout y={0.175}>
                         <Trans>Total in your base currency</Trans>
                     </FeatureStory.Callout>
@@ -58,12 +58,11 @@ export default async function NetWorthTrackerFeaturePage(props: PageLangParam) {
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={1} title={<Trans>Every currency, one total</Trans>}>
+                <FeatureStory.Step title={<Trans>Every currency, one total</Trans>}>
                     <Trans>A euro account keeps its own currency. The figure on Home counts what it is worth in yours today.</Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
                     alt={t(i18n)`Budgie home screen with a euro-denominated account listed under a total balance shown in dollars`}
-                    index={1}
                     locale={lang}
                     scene="multi-currency-1"
                     slug="multi-currency"
@@ -76,12 +75,11 @@ export default async function NetWorthTrackerFeaturePage(props: PageLangParam) {
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={2} title={<Trans>Debt counts, both directions</Trans>}>
+                <FeatureStory.Step title={<Trans>Debt counts, both directions</Trans>}>
                     <Trans>What you lent adds to your net worth. What you owe subtracts from it, down to the last repayment.</Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
                     alt={t(i18n)`Budgie home screen scrolled to the savings, you owe and owed to you groups with a subtotal on each one`}
-                    index={2}
                     locale={lang}
                     scene="net-worth-tracker-2"
                     slug="net-worth-tracker"
@@ -159,7 +157,7 @@ export default async function NetWorthTrackerFeaturePage(props: PageLangParam) {
             </FeatureBenefits>
 
             <FeatureDetails>
-                <FeatureDetails.Item index={0} title={<Trans>Why an expense tracker should also be a balance sheet</Trans>}>
+                <FeatureDetails.Item title={<Trans>Why an expense tracker should also be a balance sheet</Trans>}>
                     <p>
                         <Trans>
                             Most expense apps stop at &ldquo;this month&apos;s spending.&rdquo; Budgie gives you the full balance-sheet view
@@ -173,12 +171,11 @@ export default async function NetWorthTrackerFeaturePage(props: PageLangParam) {
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>
                 <FeatureFaq.Item
-                    index={0}
                     question={<Trans>Where do exchange rates come from?</Trans>}
                     answer={
                         <Trans>
@@ -188,7 +185,6 @@ export default async function NetWorthTrackerFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={1}
                     question={<Trans>Can I exclude an account from net worth?</Trans>}
                     answer={
                         <Trans>
@@ -198,7 +194,6 @@ export default async function NetWorthTrackerFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={2}
                     question={<Trans>How do crypto holdings price?</Trans>}
                     answer={
                         <Trans>
@@ -208,7 +203,6 @@ export default async function NetWorthTrackerFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={3}
                     question={<Trans>Is the home screen number always accurate?</Trans>}
                     answer={
                         <Trans>

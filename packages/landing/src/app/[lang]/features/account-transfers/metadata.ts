@@ -14,7 +14,6 @@ export const FEATURE_METADATA = {
     tagline: msg`Cross-currency, dual-amount, exact. Money between your own accounts is never an expense.`,
     metaTitle: msg`Account Transfers — Budgie`,
     metaDescription: msg`Transfer between your own accounts as a first-class transaction type with automatic FX conversion and dual-amount display. Spending stats stay clean; balance reconciliation stays exact.`,
-    primaryKeyword: 'transfer between accounts app',
     seoKeywords: [
         'transfer between accounts app',
         'cross-currency transfer tracker',
@@ -25,6 +24,5 @@ export const FEATURE_METADATA = {
     relatedFeatureSlugs: ['transfer-pair-detection', 'transaction-long-press-menu', 'multi-currency', 'bank-resync-window'],
     relatedArticleSlugs: ['ynab-alternatives-privacy', 'cloud-budgeting-privacy-risks'],
     publishedAt: '2025-12-19',
-    updatedAt: '2026-05-03',
-    ogTags: ['transfers', 'multi-currency', 'accounts']
+    updatedAt: '2026-05-03'
 } satisfies FeatureRegistryEntryInterface;

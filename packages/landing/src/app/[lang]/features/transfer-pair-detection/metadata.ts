@@ -14,7 +14,6 @@ export const FEATURE_METADATA = {
     tagline: msg`Budgie consolidates obvious transfers and merchant refunds automatically, then leaves ambiguous matches for review.`,
     metaTitle: msg`Smart Transfer and Refund Consolidation — Budgie`,
     metaDescription: msg`Budgie merges obvious transfer pairs, merchant refunds and duplicates of manual expenses so bank imports do not inflate spending or income.`,
-    primaryKeyword: 'duplicate transaction merger',
     seoKeywords: [
         'duplicate transaction merger',
         'transfer pair detection',
@@ -26,6 +25,5 @@ export const FEATURE_METADATA = {
     relatedFeatureSlugs: ['sync-data-repairs', 'account-transfers', 'transaction-long-press-menu', 'bank-resync-window'],
     relatedArticleSlugs: ['mint-shutdown-private-alternative', 'cloud-budgeting-privacy-risks'],
     publishedAt: '2026-05-01',
-    updatedAt: '2026-09-16',
-    ogTags: ['transfers', 'deduplication', 'smart']
+    updatedAt: '2026-09-16'
 } satisfies FeatureRegistryEntryInterface;

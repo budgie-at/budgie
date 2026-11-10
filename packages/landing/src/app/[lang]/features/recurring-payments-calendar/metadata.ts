@@ -14,7 +14,6 @@ export const FEATURE_METADATA = {
     tagline: msg`Spot the slow leak before it bills. Subscription patterns plotted on a month calendar with forecasted upcoming.`,
     metaTitle: msg`Recurring Payments Calendar — Budgie`,
     metaDescription: msg`Budgie auto-detects subscription and recurring-payment patterns from your history and plots them on a monthly calendar so you can see upcoming bills within the current month.`,
-    primaryKeyword: 'recurring payment tracker',
     seoKeywords: [
         'recurring payment tracker',
         'subscription tracker app',
@@ -25,6 +24,5 @@ export const FEATURE_METADATA = {
     relatedFeatureSlugs: ['spending-analytics', 'ai-auto-categorization', 'date-filter-presets', 'expense-tracking'],
     relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-shutdown-private-alternative'],
     publishedAt: '2026-02-22',
-    updatedAt: '2026-09-16',
-    ogTags: ['recurring', 'subscriptions', 'calendar']
+    updatedAt: '2026-09-16'
 } satisfies FeatureRegistryEntryInterface;

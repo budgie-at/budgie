@@ -2,7 +2,7 @@ import type { FeatureStoryCallout } from '../feature-story-callout/feature-story
 import type { ComponentProps, ReactElement } from 'react';
 
 interface Props {
-    readonly index: number;
+    readonly index?: number;
     readonly callouts: readonly ReactElement<ComponentProps<typeof FeatureStoryCallout>>[];
 }
 

@@ -138,7 +138,7 @@ export default async function AiFeaturesPillarHubPage(props: PageLangParam) {
                     </Trans>
                 </FeatureStory.Intro>
 
-                <FeatureStory.Step index={0} title={<Trans>One switch, downloads on demand</Trans>}>
+                <FeatureStory.Step title={<Trans>One switch, downloads on demand</Trans>}>
                     <Trans>
                         New installs start with the On-device AI card off; if you were already using AI, it stays on. Either way the switch
                         controls it, and each model downloads only when you first use the feature that needs it — about 2.5 GB in total if
@@ -149,7 +149,6 @@ export default async function AiFeaturesPillarHubPage(props: PageLangParam) {
                     alt={t(
                         i18n
                     )`Budgie settings screen with the AI section, the On-device AI toggle switched on and two AI status cards below it`}
-                    index={0}
                     locale={lang}
                     scene="on-device-ai-budget-app-1"
                     slug="on-device-ai-budget-app"
@@ -162,14 +161,13 @@ export default async function AiFeaturesPillarHubPage(props: PageLangParam) {
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={1} title={<Trans>Nothing goes out to be processed</Trans>}>
+                <FeatureStory.Step title={<Trans>Nothing goes out to be processed</Trans>}>
                     <Trans>Budgie writes the English name and the search keywords for a foreign category right on the phone.</Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
                     alt={t(
                         i18n
                     )`Budgie edit category screen showing an AI-generated metadata block with an English translation and search keywords`}
-                    index={1}
                     locale={lang}
                     scene="ai-category-translation-1"
                     slug="ai-category-translation"
@@ -182,14 +180,13 @@ export default async function AiFeaturesPillarHubPage(props: PageLangParam) {
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={2} title={<Trans>Nothing to send, nothing sent</Trans>}>
+                <FeatureStory.Step title={<Trans>Nothing to send, nothing sent</Trans>}>
                     <Trans>Past that one download, no AI feature opens a connection. There is no provider in the loop to trust.</Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
                     alt={t(
                         i18n
                     )`Budgie settings screen with the offline-and-private notice above the automatic MCC category assignment toggle`}
-                    index={2}
                     locale={lang}
                     scene="ai-auto-categorization-2"
                     slug="ai-auto-categorization"

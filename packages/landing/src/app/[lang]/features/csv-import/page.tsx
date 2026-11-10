@@ -52,14 +52,14 @@ export default async function CsvImportFeaturePage(props: PageLangParam) {
                     </Trans>
                 </FeatureStory.Intro>
 
-                <FeatureStory.Step index={0} title={<Trans>Any column order works</Trans>}>
+                <FeatureStory.Step title={<Trans>Any column order works</Trans>}>
                     <Trans>
                         Each field gets its own selector listing the headers found in your file, so nothing depends on the order your bank
                         chose. To Account, Category, Date, Amount and To Currency have to be mapped; the badge in the corner counts the rows
                         Budgie found.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot alt={storyAlt} index={0} locale={lang} scene="csv-import-1" slug="csv-import">
+                <FeatureStory.Shot alt={storyAlt} locale={lang} scene="csv-import-1" slug="csv-import">
                     <FeatureStory.Callout y={0.356}>
                         <Trans>One column per field</Trans>
                     </FeatureStory.Callout>
@@ -68,25 +68,25 @@ export default async function CsvImportFeaturePage(props: PageLangParam) {
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={1} title={<Trans>Start from a built-in preset</Trans>}>
+                <FeatureStory.Step title={<Trans>Start from a built-in preset</Trans>}>
                     <Trans>
                         Three presets ship with the app — Budgie&apos;s own export, SmartBudget and FinEye. Tapping one fills every selector
                         at once and tells you the columns are still yours to adjust.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot alt={storyAlt} index={1} locale={lang} scene="csv-import-1" slug="csv-import">
+                <FeatureStory.Shot alt={storyAlt} locale={lang} scene="csv-import-1" slug="csv-import">
                     <FeatureStory.Callout y={0.266}>
                         <Trans>Presets fill every field</Trans>
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={2} title={<Trans>Optional columns carry the detail</Trans>}>
+                <FeatureStory.Step title={<Trans>Optional columns carry the detail</Trans>}>
                     <Trans>
                         Map the second account leg and the row lands as a transfer instead of two unrelated entries. Map MCC and the
                         merchant code picks the category. External ID keeps your bank&apos;s own reference on the transaction.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot alt={storyAlt} index={2} locale={lang} scene="csv-import-1" slug="csv-import">
+                <FeatureStory.Shot alt={storyAlt} locale={lang} scene="csv-import-1" slug="csv-import">
                     <FeatureStory.Callout y={0.775}>
                         <Trans>External ID is optional</Trans>
                     </FeatureStory.Callout>
@@ -151,7 +151,7 @@ export default async function CsvImportFeaturePage(props: PageLangParam) {
             </FeatureBenefits>
 
             <FeatureDetails>
-                <FeatureDetails.Item index={0} title={<Trans>Why CSV is the universal escape hatch</Trans>}>
+                <FeatureDetails.Item title={<Trans>Why CSV is the universal escape hatch</Trans>}>
                     <p>
                         <Trans>
                             Not every bank has an API, and not every app you are leaving will hand you anything but a spreadsheet. CSV is
@@ -178,12 +178,11 @@ export default async function CsvImportFeaturePage(props: PageLangParam) {
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>
                 <FeatureFaq.Item
-                    index={0}
                     question={<Trans>Will it work with my bank?</Trans>}
                     answer={
                         <Trans>
@@ -193,7 +192,6 @@ export default async function CsvImportFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={1}
                     question={<Trans>Does importing add to what I already have?</Trans>}
                     answer={
                         <Trans>
@@ -203,7 +201,6 @@ export default async function CsvImportFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={2}
                     question={<Trans>Does CSV import preserve the original transaction date?</Trans>}
                     answer={
                         <Trans>
@@ -213,7 +210,6 @@ export default async function CsvImportFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={3}
                     question={<Trans>Can I edit transactions after CSV import?</Trans>}
                     answer={
                         <Trans>

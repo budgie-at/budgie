@@ -50,26 +50,26 @@ export default async function BiometricAuthenticationFeaturePage(props: PageLang
                     </Trans>
                 </FeatureStory.Intro>
 
-                <FeatureStory.Point index={0}>
+                <FeatureStory.Point>
                     <Trans>
                         The switch lives inside the App Lock card in Settings, under Security. It only appears once you have set a PIN and
                         the device has a biometric enrolled — there is no biometric-only mode.
                     </Trans>
                 </FeatureStory.Point>
 
-                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="screenshot-protection-1" slug="screenshot-protection">
+                <FeatureStory.Shot alt={firstShotAlt} locale={lang} scene="screenshot-protection-1" slug="screenshot-protection">
                     <FeatureStory.Callout y={0.42}>
                         <Trans>App Lock: PIN and biometric unlock</Trans>
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Point index={1}>
+                <FeatureStory.Point>
                     <Trans>
                         On a cold launch Budgie asks the system to authenticate you the moment the lock screen appears, and a successful
                         scan takes you straight in. The keypad also keeps a scan button, so you can ask for it again.
                     </Trans>
                 </FeatureStory.Point>
-                <FeatureStory.Point index={2}>
+                <FeatureStory.Point>
                     <Trans>
                         Cancel or fail and nothing is lost: the keypad was already there. Budgie switches the device-passcode fallback off
                         on purpose, so your PIN is the only other way in.
@@ -147,7 +147,7 @@ export default async function BiometricAuthenticationFeaturePage(props: PageLang
             </FeatureBenefits>
 
             <FeatureDetails>
-                <FeatureDetails.Item index={0} title={<Trans>Why biometrics belong on a finance app you check ten times a day</Trans>}>
+                <FeatureDetails.Item title={<Trans>Why biometrics belong on a finance app you check ten times a day</Trans>}>
                     <p>
                         <Trans>
                             Biometrics are the right balance for an expense app you open ten times a day. Budgie calls the system
@@ -163,12 +163,11 @@ export default async function BiometricAuthenticationFeaturePage(props: PageLang
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>
                 <FeatureFaq.Item
-                    index={0}
                     question={<Trans>Does Budgie store my biometric data?</Trans>}
                     answer={
                         <Trans>
@@ -178,7 +177,6 @@ export default async function BiometricAuthenticationFeaturePage(props: PageLang
                     }
                 />
                 <FeatureFaq.Item
-                    index={1}
                     question={<Trans>What if biometrics fail?</Trans>}
                     answer={
                         <Trans>
@@ -189,7 +187,6 @@ export default async function BiometricAuthenticationFeaturePage(props: PageLang
                     }
                 />
                 <FeatureFaq.Item
-                    index={2}
                     question={<Trans>Can I disable biometrics?</Trans>}
                     answer={
                         <Trans>
@@ -199,7 +196,6 @@ export default async function BiometricAuthenticationFeaturePage(props: PageLang
                     }
                 />
                 <FeatureFaq.Item
-                    index={3}
                     question={<Trans>Is biometric unlock safer than a PIN?</Trans>}
                     answer={
                         <Trans>

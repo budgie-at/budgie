@@ -16,7 +16,6 @@ export const FEATURE_METADATA = {
     tagline: msg`Self-hosting promises privacy but ships a server you have to babysit. Budgie gives you the same data ownership with zero ops. Your phone is the server.`,
     metaTitle: msg`Self-Hosted Budget App Mobile — No Server Needed — Budgie`,
     metaDescription: msg`Get the privacy of self-hosted finance apps without running a server. Budgie's data lives on your phone and syncs and backs up encrypted to your own iCloud on iOS; you can also keep the backup file wherever you like. Zero ops, full ownership.`,
-    primaryKeyword: 'self-hosted budget mobile app',
     seoKeywords: [
         'self-hosted budget mobile app',
         'self-hosted finance no server',
@@ -27,6 +26,5 @@ export const FEATURE_METADATA = {
     relatedFeatureSlugs: ['expense-tracking', 'database-backup', 'data-export', 'subscription-free-budget-app'],
     relatedArticleSlugs: ['local-first-movement-developers', 'cloud-budgeting-privacy-risks'],
     publishedAt: '2026-05-07',
-    updatedAt: '2026-05-07',
-    ogTags: ['self-hosted', 'privacy', 'no-server']
+    updatedAt: '2026-05-07'
 } satisfies FeatureRegistryEntryInterface;

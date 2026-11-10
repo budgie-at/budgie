@@ -14,7 +14,6 @@ export const FEATURE_METADATA = {
     tagline: msg`One tag per row. Scan a long list at a glance.`,
     metaTitle: msg`Primary Tag — Quick-Scan Transaction Labeling — Budgie`,
     metaDescription: msg`The first tag on a transaction is its primary tag, shown on the list. Long-press another tag in the picker to change it.`,
-    primaryKeyword: 'label transactions quickly',
     seoKeywords: [
         'label transactions quickly',
         'primary tag finance app',
@@ -25,6 +24,5 @@ export const FEATURE_METADATA = {
     relatedFeatureSlugs: ['transaction-tags', 'tag-analytics', 'categorization-rules', 'spending-analytics'],
     relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-shutdown-private-alternative'],
     publishedAt: '2026-04-24',
-    updatedAt: '2026-05-03',
-    ogTags: ['tags', 'ui', 'scanning']
+    updatedAt: '2026-05-03'
 } satisfies FeatureRegistryEntryInterface;

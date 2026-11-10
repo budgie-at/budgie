@@ -51,13 +51,13 @@ export default async function AccountManagementFeaturePage(props: PageLangParam)
                     </Trans>
                 </FeatureStory.Intro>
 
-                <FeatureStory.Step index={0} title={<Trans>Accounts group themselves by type</Trans>}>
+                <FeatureStory.Step title={<Trans>Accounts group themselves by type</Trans>}>
                     <Trans>
                         Bank, cash, crypto, deposit and debt each get their own section on the home screen, and every section heading
                         carries the subtotal for the accounts under it.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="account-management-1" slug="account-management">
+                <FeatureStory.Shot alt={firstShotAlt} locale={lang} scene="account-management-1" slug="account-management">
                     <FeatureStory.Callout y={0.177}>
                         <Trans>Total balance up top</Trans>
                     </FeatureStory.Callout>
@@ -66,7 +66,7 @@ export default async function AccountManagementFeaturePage(props: PageLangParam)
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={1} title={<Trans>Each type brings its own form</Trans>}>
+                <FeatureStory.Step title={<Trans>Each type brings its own form</Trans>}>
                     <Trans>
                         Picking Deposit opens the deposit form: opening balance, name, currency — then an interest rate and a maturity date
                         that only this type asks for.
@@ -74,7 +74,6 @@ export default async function AccountManagementFeaturePage(props: PageLangParam)
                 </FeatureStory.Step>
                 <FeatureStory.Shot
                     alt={t(i18n)`Budgie new deposit account form with currency, interest rate and maturity date fields`}
-                    index={1}
                     locale={lang}
                     scene="account-management-3"
                     slug="account-management"
@@ -87,7 +86,7 @@ export default async function AccountManagementFeaturePage(props: PageLangParam)
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={2} title={<Trans>Archive instead of deleting</Trans>}>
+                <FeatureStory.Step title={<Trans>Archive instead of deleting</Trans>}>
                     <Trans>
                         An archived account leaves the home screen and the totals but keeps every transaction. Settings lists them, ready to
                         search and restore.
@@ -95,7 +94,6 @@ export default async function AccountManagementFeaturePage(props: PageLangParam)
                 </FeatureStory.Step>
                 <FeatureStory.Shot
                     alt={t(i18n)`Budgie archived accounts screen listing two archived accounts, each with a restore button`}
-                    index={2}
                     locale={lang}
                     scene="account-management-2"
                     slug="account-management"
@@ -194,7 +192,7 @@ export default async function AccountManagementFeaturePage(props: PageLangParam)
             </FeatureBenefits>
 
             <FeatureDetails>
-                <FeatureDetails.Item index={0} title={<Trans>Why real life is multi-account</Trans>}>
+                <FeatureDetails.Item title={<Trans>Why real life is multi-account</Trans>}>
                     <p>
                         <Trans>
                             Real life is multi-account. A current account, a savings pot, a fixed-term deposit, a travel card, a crypto
@@ -211,7 +209,7 @@ export default async function AccountManagementFeaturePage(props: PageLangParam)
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Item index={1} title={<Trans>Archive is not the same as inactive</Trans>}>
+                <FeatureDetails.Item title={<Trans>Archive is not the same as inactive</Trans>}>
                     <p>
                         <Trans>
                             Two ways to get an account out of the way, for two different reasons. Archive it when you are done with it — an
@@ -221,12 +219,11 @@ export default async function AccountManagementFeaturePage(props: PageLangParam)
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Guides index={2} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>
                 <FeatureFaq.Item
-                    index={0}
                     question={<Trans>Is there a limit on the number of accounts?</Trans>}
                     answer={
                         <Trans>
@@ -235,7 +232,6 @@ export default async function AccountManagementFeaturePage(props: PageLangParam)
                     }
                 />
                 <FeatureFaq.Item
-                    index={1}
                     question={<Trans>Can I track an account in a different currency?</Trans>}
                     answer={
                         <Trans>
@@ -245,7 +241,6 @@ export default async function AccountManagementFeaturePage(props: PageLangParam)
                     }
                 />
                 <FeatureFaq.Item
-                    index={2}
                     question={<Trans>What happens to transactions when I delete an account?</Trans>}
                     answer={
                         <Trans>
@@ -257,7 +252,6 @@ export default async function AccountManagementFeaturePage(props: PageLangParam)
                     }
                 />
                 <FeatureFaq.Item
-                    index={3}
                     question={<Trans>Can I track fixed-term deposits?</Trans>}
                     answer={
                         <Trans>
@@ -267,7 +261,6 @@ export default async function AccountManagementFeaturePage(props: PageLangParam)
                     }
                 />
                 <FeatureFaq.Item
-                    index={4}
                     question={<Trans>Can I track loans I owe or money owed to me?</Trans>}
                     answer={
                         <Trans>

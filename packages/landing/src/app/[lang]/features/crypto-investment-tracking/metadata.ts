@@ -14,7 +14,6 @@ export const FEATURE_METADATA = {
     tagline: msg`Two hundred crypto assets in one dashboard, alongside your bank accounts.`,
     metaTitle: msg`Crypto Portfolio Tracking — Budgie`,
     metaDescription: msg`Track Bitcoin, Ethereum, and 200 crypto assets alongside your bank accounts in one net-worth view. The largest come with a year of daily price history.`,
-    primaryKeyword: 'crypto portfolio tracker app',
     seoKeywords: [
         'crypto portfolio tracker app',
         'crypto + bank tracker',
@@ -27,6 +26,5 @@ export const FEATURE_METADATA = {
     relatedFeatureSlugs: ['binance-sync', 'net-worth-tracker', 'account-management', 'multi-currency'],
     relatedArticleSlugs: ['ynab-alternatives-privacy', 'historical-exchange-rates-budget-analytics'],
     publishedAt: '2025-11-17',
-    updatedAt: '2026-09-26',
-    ogTags: ['crypto', 'bitcoin', 'net worth']
+    updatedAt: '2026-09-26'
 } satisfies FeatureRegistryEntryInterface;

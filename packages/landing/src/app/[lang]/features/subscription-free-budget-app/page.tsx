@@ -51,13 +51,12 @@ export default async function SubscriptionFreeBudgetAppPage(props: PageLangParam
                     <Trans>One settings screen, and the thing worth noticing is the row that never appears on it.</Trans>
                 </FeatureStory.Intro>
 
-                <FeatureStory.Point index={0}>
+                <FeatureStory.Point>
                     <Trans>Privacy, Security, General and every group under them open in full, with no upgrade row in between.</Trans>
                 </FeatureStory.Point>
 
                 <FeatureStory.Shot
                     alt={firstShotAlt}
-                    index={0}
                     locale={lang}
                     scene="subscription-free-budget-app-1"
                     slug="subscription-free-budget-app"
@@ -70,10 +69,10 @@ export default async function SubscriptionFreeBudgetAppPage(props: PageLangParam
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Point index={1}>
+                <FeatureStory.Point>
                     <Trans>There is no subscription paywall in the tracker; every feature is free.</Trans>
                 </FeatureStory.Point>
-                <FeatureStory.Point index={2}>
+                <FeatureStory.Point>
                     <Trans>Bank sync and on-device AI are free too. The tracker itself never expires.</Trans>
                 </FeatureStory.Point>
             </FeatureStory>
@@ -165,7 +164,7 @@ export default async function SubscriptionFreeBudgetAppPage(props: PageLangParam
             </FeatureBenefits>
 
             <FeatureDetails>
-                <FeatureDetails.Item index={0} title={<Trans>Why this matters</Trans>}>
+                <FeatureDetails.Item title={<Trans>Why this matters</Trans>}>
                     <p>
                         <Trans>
                             Recurring monthly fees turn budgeting into another bill. Budgie is completely free — every feature, no unlock,
@@ -173,12 +172,11 @@ export default async function SubscriptionFreeBudgetAppPage(props: PageLangParam
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>
                 <FeatureFaq.Item
-                    index={0}
                     question={<Trans>Is anything in Budgie paid?</Trans>}
                     answer={
                         <Trans>
@@ -188,12 +186,10 @@ export default async function SubscriptionFreeBudgetAppPage(props: PageLangParam
                     }
                 />
                 <FeatureFaq.Item
-                    index={1}
                     question={<Trans>Does Budgie have ads or a paid tier?</Trans>}
                     answer={<Trans>No. There is no paid tier and no ads — every feature ships free in the app you install.</Trans>}
                 />
                 <FeatureFaq.Item
-                    index={2}
                     question={<Trans>Is &ldquo;subscription-free&rdquo; really durable?</Trans>}
                     answer={
                         <Trans>
@@ -203,7 +199,6 @@ export default async function SubscriptionFreeBudgetAppPage(props: PageLangParam
                     }
                 />
                 <FeatureFaq.Item
-                    index={3}
                     question={<Trans>Why do other apps charge monthly?</Trans>}
                     answer={
                         <Trans>

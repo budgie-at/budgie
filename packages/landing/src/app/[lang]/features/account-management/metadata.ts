@@ -14,7 +14,6 @@ export const FEATURE_METADATA = {
     tagline: msg`Bank, cash, deposit, crypto, and debt, all on one home screen, each with its own color.`,
     metaTitle: msg`Multi-Account Money Management — Budgie`,
     metaDescription: msg`Track bank, cash, deposit, crypto, and debt accounts in one private app. Crypto groups by currency, archive or mark inactive, and multi-currency net worth control.`,
-    primaryKeyword: 'money management app',
     seoKeywords: [
         'money management app',
         'multi-account budget app',
@@ -32,6 +31,5 @@ export const FEATURE_METADATA = {
     ],
     relatedArticleSlugs: ['ynab-alternatives-privacy', 'cloud-budgeting-privacy-risks'],
     publishedAt: '2025-11-17',
-    updatedAt: '2026-09-07',
-    ogTags: ['accounts', 'management', 'multi-account']
+    updatedAt: '2026-09-07'
 } satisfies FeatureRegistryEntryInterface;

@@ -46,13 +46,13 @@ export default async function CustomCategoriesFeaturePage(props: PageLangParam) 
                     </Trans>
                 </FeatureStory.Intro>
 
-                <FeatureStory.Step index={0} title={<Trans>This list is yours alone</Trans>}>
+                <FeatureStory.Step title={<Trans>This list is yours alone</Trans>}>
                     <Trans>
                         Settings &rsaquo; Categories shows the categories you created and nothing else — the built-in tree stays out of the
                         way until you need it. The ones you tag most transactions with sort to the top.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="custom-categories-1" slug="custom-categories">
+                <FeatureStory.Shot alt={firstShotAlt} locale={lang} scene="custom-categories-1" slug="custom-categories">
                     <FeatureStory.Callout y={0.216}>
                         <Trans>Only the ones you created</Trans>
                     </FeatureStory.Callout>
@@ -61,7 +61,7 @@ export default async function CustomCategoriesFeaturePage(props: PageLangParam) 
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={1} title={<Trans>Edit it until it fits</Trans>}>
+                <FeatureStory.Step title={<Trans>Edit it until it fits</Trans>}>
                     <Trans>
                         Change the name, tap the tile for a different icon. Renaming unlinks nothing — transactions hold on to the category
                         by id. Budgie keeps an English translation and a handful of search keywords beside the name, so the selector still
@@ -72,7 +72,6 @@ export default async function CustomCategoriesFeaturePage(props: PageLangParam) 
                     alt={t(
                         i18n
                     )`Budgie Edit Category form showing the icon tile, the name field and the AI-generated translation and search keywords`}
-                    index={1}
                     locale={lang}
                     scene="custom-categories-2"
                     slug="custom-categories"
@@ -85,7 +84,7 @@ export default async function CustomCategoriesFeaturePage(props: PageLangParam) 
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={2} title={<Trans>Merge without losing transactions</Trans>}>
+                <FeatureStory.Step title={<Trans>Merge without losing transactions</Trans>}>
                     <Trans>
                         Two categories that mean the same thing become one: pick the category to keep and every transaction moves across
                         before the other one goes. The picker offers the built-in tree alongside your own, or a new category made on the
@@ -94,7 +93,6 @@ export default async function CustomCategoriesFeaturePage(props: PageLangParam) 
                 </FeatureStory.Step>
                 <FeatureStory.Shot
                     alt={t(i18n)`Budgie category picker open over the Edit Category form, listing the categories to merge into`}
-                    index={2}
                     locale={lang}
                     scene="custom-categories-3"
                     slug="custom-categories"
@@ -181,7 +179,7 @@ export default async function CustomCategoriesFeaturePage(props: PageLangParam) 
             </FeatureBenefits>
 
             <FeatureDetails>
-                <FeatureDetails.Item index={0} title={<Trans>Why pre-baked category trees never fit</Trans>}>
+                <FeatureDetails.Item title={<Trans>Why pre-baked category trees never fit</Trans>}>
                     <p>
                         <Trans>
                             Pre-baked category trees never fit. Budgie lets you build, rename, merge two categories into one (with
@@ -195,12 +193,11 @@ export default async function CustomCategoriesFeaturePage(props: PageLangParam) 
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>
                 <FeatureFaq.Item
-                    index={0}
                     question={<Trans>Can I rename categories without losing data?</Trans>}
                     answer={
                         <Trans>
@@ -209,7 +206,6 @@ export default async function CustomCategoriesFeaturePage(props: PageLangParam) 
                     }
                 />
                 <FeatureFaq.Item
-                    index={1}
                     question={<Trans>What does merging two categories do?</Trans>}
                     answer={
                         <Trans>
@@ -219,7 +215,6 @@ export default async function CustomCategoriesFeaturePage(props: PageLangParam) 
                     }
                 />
                 <FeatureFaq.Item
-                    index={2}
                     question={<Trans>How does the popularity sort work?</Trans>}
                     answer={
                         <Trans>
@@ -229,7 +224,6 @@ export default async function CustomCategoriesFeaturePage(props: PageLangParam) 
                     }
                 />
                 <FeatureFaq.Item
-                    index={3}
                     question={<Trans>Can I import a pre-built category tree?</Trans>}
                     answer={
                         <Trans>

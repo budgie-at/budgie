@@ -9,7 +9,7 @@ interface Props {
 
 export const BankFeeTrackingDetailsSection = ({ locale }: Props) => (
     <FeatureDetails>
-        <FeatureDetails.Item index={0} title={<Trans>Why fees need their own entry type</Trans>}>
+        <FeatureDetails.Item title={<Trans>Why fees need their own entry type</Trans>}>
             <p>
                 <Trans>
                     A cash withdrawal is a transfer from your bank account to cash, but the ATM commission is still a real expense. If both
@@ -23,6 +23,6 @@ export const BankFeeTrackingDetailsSection = ({ locale }: Props) => (
                 </Trans>
             </p>
         </FeatureDetails.Item>
-        <FeatureDetails.Guides index={1} locale={locale} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+        <FeatureDetails.Guides locale={locale} slugs={FEATURE_METADATA.relatedArticleSlugs} />
     </FeatureDetails>
 );

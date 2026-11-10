@@ -51,12 +51,12 @@ export default async function SplitTransactionsFeaturePage(props: PageLangParam)
                     </Trans>
                 </FeatureStory.Intro>
 
-                <FeatureStory.Step index={0} title={<Trans>One receipt, three categories</Trans>}>
+                <FeatureStory.Step title={<Trans>One receipt, three categories</Trans>}>
                     <Trans>
                         Switch the expense to split mode and add a row per category. Each row carries its own icon, category and amount.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="split-transactions-1" slug="split-transactions">
+                <FeatureStory.Shot alt={firstShotAlt} locale={lang} scene="split-transactions-1" slug="split-transactions">
                     <FeatureStory.Callout y={0.721}>
                         <Trans>Each split, its own category</Trans>
                     </FeatureStory.Callout>
@@ -65,14 +65,13 @@ export default async function SplitTransactionsFeaturePage(props: PageLangParam)
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={1} title={<Trans>The remainder counts down</Trans>}>
+                <FeatureStory.Step title={<Trans>The remainder counts down</Trans>}>
                     <Trans>Use Add item to add another row; the label under the rows shows how much is still left to assign.</Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
                     alt={t(
                         i18n
                     )`Budgie split sheet with Home Maintenance and Electronics & Gadgets rows, an Add item button and a $62.50 left to assign label`}
-                    index={1}
                     locale={lang}
                     scene="split-transactions-2"
                     slug="split-transactions"
@@ -147,7 +146,7 @@ export default async function SplitTransactionsFeaturePage(props: PageLangParam)
             </FeatureBenefits>
 
             <FeatureDetails>
-                <FeatureDetails.Item index={0} title={<Trans>Why receipts mix categories</Trans>}>
+                <FeatureDetails.Item title={<Trans>Why receipts mix categories</Trans>}>
                     <p>
                         <Trans>
                             Receipts mix categories. Without splits, you fudge — pick the dominant category and lose the breakdown.
@@ -163,29 +162,25 @@ export default async function SplitTransactionsFeaturePage(props: PageLangParam)
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>
                 <FeatureFaq.Item
-                    index={0}
                     question={<Trans>How many splits can I make per transaction?</Trans>}
                     answer={
                         <Trans>No limit. Add as many split rows as you need; the total must equal the original transaction amount.</Trans>
                     }
                 />
                 <FeatureFaq.Item
-                    index={1}
                     question={<Trans>Can splits have different tags?</Trans>}
                     answer={<Trans>Yes. Each split row keeps its own tags and comment, fully independent of the others.</Trans>}
                 />
                 <FeatureFaq.Item
-                    index={2}
                     question={<Trans>Does split mode work for income too?</Trans>}
                     answer={<Trans>Yes. Switch to split inside the income form just like the expense form.</Trans>}
                 />
                 <FeatureFaq.Item
-                    index={3}
                     question={<Trans>What happens to analytics after splitting?</Trans>}
                     answer={
                         <Trans>

@@ -53,19 +53,13 @@ export default async function AiTransactionSuggestionsFeaturePage(props: PageLan
                     <Trans>The pills on the expense form, and the On-device AI section in Settings that powers them.</Trans>
                 </FeatureStory.Intro>
 
-                <FeatureStory.Step index={0} title={<Trans>Pills appear on the empty form</Trans>}>
+                <FeatureStory.Step title={<Trans>Pills appear on the empty form</Trans>}>
                     <Trans>
                         Open a new expense and suggestion pills are already waiting above the action buttons, before an amount is entered.
                         Nothing is filled in until you tap one, and the form works as usual if you ignore them.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot
-                    alt={firstShotAlt}
-                    index={0}
-                    locale={lang}
-                    scene="ai-transaction-suggestions-1"
-                    slug="ai-transaction-suggestions"
-                >
+                <FeatureStory.Shot alt={firstShotAlt} locale={lang} scene="ai-transaction-suggestions-1" slug="ai-transaction-suggestions">
                     <FeatureStory.Callout index={0} y={0.448}>
                         <Trans>Tappable suggestion pills</Trans>
                     </FeatureStory.Callout>
@@ -74,7 +68,7 @@ export default async function AiTransactionSuggestionsFeaturePage(props: PageLan
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={1} title={<Trans>Powered by the on-device AI</Trans>}>
+                <FeatureStory.Step title={<Trans>Powered by the on-device AI</Trans>}>
                     <Trans>
                         Settings has an AI section with an On-device AI switch and a Learning row that shows whether learning is up to date.
                         New manual entries use your own history right away; editing a transaction or adding one by voice also uses the
@@ -85,7 +79,6 @@ export default async function AiTransactionSuggestionsFeaturePage(props: PageLan
                     alt={t(
                         i18n
                     )`Budgie settings AI section with the On-device AI switch, a Translation row and a Learning row reading learning up to date`}
-                    index={1}
                     locale={lang}
                     scene="on-device-ai-budget-app-1"
                     slug="on-device-ai-budget-app"
@@ -171,7 +164,7 @@ export default async function AiTransactionSuggestionsFeaturePage(props: PageLan
             </FeatureBenefits>
 
             <FeatureDetails>
-                <FeatureDetails.Item index={0} title={<Trans>Why the same merchant should never need a second thought</Trans>}>
+                <FeatureDetails.Item title={<Trans>Why the same merchant should never need a second thought</Trans>}>
                     <p>
                         <Trans>
                             Typing the category, picking a tag and entering the usual amount for the same coffee shop again and again is
@@ -186,7 +179,7 @@ export default async function AiTransactionSuggestionsFeaturePage(props: PageLan
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Item index={1} title={<Trans>Your habits first, the on-device model on top</Trans>}>
+                <FeatureDetails.Item title={<Trans>Your habits first, the on-device model on top</Trans>}>
                     <p>
                         <Trans>
                             Budgie spots what repeats weekly or monthly in your history and surfaces the usual category, tags, comment and
@@ -202,12 +195,11 @@ export default async function AiTransactionSuggestionsFeaturePage(props: PageLan
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Guides index={2} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>
                 <FeatureFaq.Item
-                    index={0}
                     question={<Trans>Where do the suggestions come from?</Trans>}
                     answer={
                         <Trans>
@@ -217,14 +209,12 @@ export default async function AiTransactionSuggestionsFeaturePage(props: PageLan
                     }
                 />
                 <FeatureFaq.Item
-                    index={1}
                     question={<Trans>Will it suggest things I never bought?</Trans>}
                     answer={
                         <Trans>No. The suggestion engine only proposes values from transactions you have already logged or imported.</Trans>
                     }
                 />
                 <FeatureFaq.Item
-                    index={2}
                     question={<Trans>Can I disable suggestions?</Trans>}
                     answer={
                         <Trans>
@@ -235,7 +225,6 @@ export default async function AiTransactionSuggestionsFeaturePage(props: PageLan
                     }
                 />
                 <FeatureFaq.Item
-                    index={3}
                     question={<Trans>Does this work for income and transfers too?</Trans>}
                     answer={<Trans>On expense and income, yes. The transfer form does not show suggestions.</Trans>}
                 />

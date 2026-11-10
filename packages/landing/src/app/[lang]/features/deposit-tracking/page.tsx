@@ -50,13 +50,13 @@ export default async function DepositTrackingFeaturePage(props: PageLangParam) {
                     </Trans>
                 </FeatureStory.Intro>
 
-                <FeatureStory.Step index={0} title={<Trans>A deposit is not a savings account</Trans>}>
+                <FeatureStory.Step title={<Trans>A deposit is not a savings account</Trans>}>
                     <Trans>
                         The account screen carries the current balance, the interest rate, the maturity date, the days remaining and a
                         calculated expected payout.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="deposit-tracking-1" slug="deposit-tracking">
+                <FeatureStory.Shot alt={firstShotAlt} locale={lang} scene="deposit-tracking-1" slug="deposit-tracking">
                     <FeatureStory.Callout y={0.339}>
                         <Trans>Maturity date and days left</Trans>
                     </FeatureStory.Callout>
@@ -65,7 +65,7 @@ export default async function DepositTrackingFeaturePage(props: PageLangParam) {
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={1} title={<Trans>Close it and the money moves</Trans>}>
+                <FeatureStory.Step title={<Trans>Close it and the money moves</Trans>}>
                     <Trans>
                         Open the account menu and choose Close Deposit. Budgie moves the remaining balance to the destination you pick and
                         archives the deposit.
@@ -73,7 +73,6 @@ export default async function DepositTrackingFeaturePage(props: PageLangParam) {
                 </FeatureStory.Step>
                 <FeatureStory.Shot
                     alt={t(i18n)`Budgie deposit account screen with the account menu open showing the Edit and Close Deposit actions`}
-                    index={1}
                     locale={lang}
                     scene="deposit-tracking-2"
                     slug="deposit-tracking"
@@ -155,7 +154,7 @@ export default async function DepositTrackingFeaturePage(props: PageLangParam) {
             </FeatureBenefits>
 
             <FeatureDetails>
-                <FeatureDetails.Item index={0} title={<Trans>Why deposits need their own account type</Trans>}>
+                <FeatureDetails.Item title={<Trans>Why deposits need their own account type</Trans>}>
                     <p>
                         <Trans>
                             A deposit is not everyday cash. Budgie treats it as a distinct account type so the principal stays separate from
@@ -170,12 +169,11 @@ export default async function DepositTrackingFeaturePage(props: PageLangParam) {
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>
                 <FeatureFaq.Item
-                    index={0}
                     question={<Trans>Can I spend from a deposit account?</Trans>}
                     answer={
                         <Trans>
@@ -185,7 +183,6 @@ export default async function DepositTrackingFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={1}
                     question={<Trans>Does Budgie automatically accrue deposit interest?</Trans>}
                     answer={
                         <Trans>
@@ -195,7 +192,6 @@ export default async function DepositTrackingFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={2}
                     question={<Trans>How do I close a deposit?</Trans>}
                     answer={
                         <Trans>
@@ -205,7 +201,6 @@ export default async function DepositTrackingFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={3}
                     question={<Trans>Can deposits be included in net worth?</Trans>}
                     answer={
                         <Trans>
@@ -215,7 +210,6 @@ export default async function DepositTrackingFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={4}
                     question={<Trans>Can I start a deposit from a payment I already made?</Trans>}
                     answer={
                         <Trans>

@@ -5,7 +5,7 @@ import type { ReactNode } from 'react';
 const DEFAULT_FOCUS = 0.5;
 
 interface Props {
-    readonly index: number;
+    readonly index?: number;
     readonly slug: string;
     readonly scene: string;
     readonly locale: string;
@@ -15,7 +15,7 @@ interface Props {
     readonly children?: ReactNode;
 }
 
-export const FeatureStoryShot = ({ index, slug, scene, locale, alt, priority = false, focus = DEFAULT_FOCUS, children }: Props) => {
+export const FeatureStoryShot = ({ index = 0, slug, scene, locale, alt, priority = false, focus = DEFAULT_FOCUS, children }: Props) => {
     const focusStyle = { '--story-focus': focus };
 
     return (

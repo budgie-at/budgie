@@ -57,25 +57,19 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
                     </Trans>
                 </FeatureStory.Intro>
 
-                <FeatureStory.Step index={0} title={<Trans>One tap on the mic</Trans>}>
+                <FeatureStory.Step title={<Trans>One tap on the mic</Trans>}>
                     <Trans>
                         The quick-entry sheet opens over your accounts with a mic button in the middle of the bottom bar. Tap it and talk —
                         one sentence can hold several expenses, and a review sheet shows every extracted row before anything is saved.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot
-                    alt={firstShotAlt}
-                    index={0}
-                    locale={lang}
-                    scene="voice-transaction-entry-1"
-                    slug="voice-transaction-entry"
-                >
+                <FeatureStory.Shot alt={firstShotAlt} locale={lang} scene="voice-transaction-entry-1" slug="voice-transaction-entry">
                     <FeatureStory.Callout index={0} x={0.5} y={0.878}>
                         <Trans>Tap the mic and speak</Trans>
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={1} title={<Trans>Transcribed on the phone, never uploaded</Trans>}>
+                <FeatureStory.Step title={<Trans>Transcribed on the phone, never uploaded</Trans>}>
                     <Trans>
                         Voice entry runs on the On-device AI switch in Settings, which is off until you turn it on. Turning it on starts a
                         one-time download of about 2.5 GB, best on Wi-Fi. After that, your audio becomes text on the phone and is never sent
@@ -86,7 +80,6 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
                     alt={t(
                         i18n
                     )`Budgie Settings screen with the On-device AI switch described as categorizing transactions, suggesting tags and transcribing voice notes on this device, above Translation and Learning progress rows`}
-                    index={1}
                     locale={lang}
                     scene="on-device-ai-budget-app-1"
                     slug="on-device-ai-budget-app"
@@ -171,7 +164,7 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
             </FeatureBenefits>
 
             <FeatureDetails>
-                <FeatureDetails.Item index={0} title={<Trans>Voice entry without sending your audio anywhere</Trans>}>
+                <FeatureDetails.Item title={<Trans>Voice entry without sending your audio anywhere</Trans>}>
                     <p>
                         <Trans>
                             Voice is the fastest input mode for an expense. Budgie keeps the audio entirely on the device: it becomes text
@@ -186,12 +179,11 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>
                 <FeatureFaq.Item
-                    index={0}
                     question={<Trans>Which languages does voice entry support?</Trans>}
                     answer={
                         <Trans>
@@ -203,7 +195,6 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
                     }
                 />
                 <FeatureFaq.Item
-                    index={1}
                     question={<Trans>Is my voice recorded anywhere?</Trans>}
                     answer={
                         <Trans>
@@ -212,7 +203,6 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
                     }
                 />
                 <FeatureFaq.Item
-                    index={2}
                     question={<Trans>What if it mishears me?</Trans>}
                     answer={
                         <Trans>
@@ -222,7 +212,6 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
                     }
                 />
                 <FeatureFaq.Item
-                    index={3}
                     question={<Trans>Does it work offline?</Trans>}
                     answer={<Trans>Yes — after the one-time download, voice entry works without any internet connection.</Trans>}
                 />

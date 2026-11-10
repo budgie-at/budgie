@@ -52,14 +52,14 @@ export default async function TagAnalyticsFeaturePage(props: PageLangParam) {
                     </Trans>
                 </FeatureStory.Intro>
 
-                <FeatureStory.Step index={0} title={<Trans>Categories cannot answer every question</Trans>}>
+                <FeatureStory.Step title={<Trans>Categories cannot answer every question</Trans>}>
                     <Trans>
                         A category says what kind of expense something is. Which trip, which project, which person is a different question,
                         and that is what a tag records. Analytics keeps a Tags tab beside Categories, under the same period and filter
                         chips.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="statistics-tags-tab-1" slug="statistics-tags-tab">
+                <FeatureStory.Shot alt={firstShotAlt} locale={lang} scene="statistics-tags-tab-1" slug="statistics-tags-tab">
                     <FeatureStory.Callout index={0} y={0.123}>
                         <Trans>Tags, beside Categories</Trans>
                     </FeatureStory.Callout>
@@ -71,14 +71,14 @@ export default async function TagAnalyticsFeaturePage(props: PageLangParam) {
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={1} title={<Trans>Income and spending, tag by tag</Trans>}>
+                <FeatureStory.Step title={<Trans>Income and spending, tag by tag</Trans>}>
                     <Trans>
                         The tab splits in two: income by tag first, then spending by tag, each row a tag with its total for the period. The
                         same tag can appear on both lists, so a tag that earns and costs is not flattened into one figure.
                     </Trans>
                 </FeatureStory.Step>
 
-                <FeatureStory.Step index={2} title={<Trans>Every tag carries its share</Trans>}>
+                <FeatureStory.Step title={<Trans>Every tag carries its share</Trans>}>
                     <Trans>
                         Under each total is that tag&apos;s share — of the period&apos;s income, or of its expenses. The shares can add up
                         past 100%, because a transaction can carry several tags and counts in full under each of them. Tapping a row opens
@@ -164,7 +164,7 @@ export default async function TagAnalyticsFeaturePage(props: PageLangParam) {
             </FeatureBenefits>
 
             <FeatureDetails>
-                <FeatureDetails.Item index={0} title={<Trans>Why category analytics alone leaves money unlabeled</Trans>}>
+                <FeatureDetails.Item title={<Trans>Why category analytics alone leaves money unlabeled</Trans>}>
                     <p>
                         <Trans>
                             Category-based analytics answer what kind of expense a transaction is — groceries, transport, dining. Tags
@@ -183,7 +183,7 @@ export default async function TagAnalyticsFeaturePage(props: PageLangParam) {
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Item index={1} title={<Trans>The Untagged row is the gap</Trans>}>
+                <FeatureDetails.Item title={<Trans>The Untagged row is the gap</Trans>}>
                     <p>
                         <Trans>
                             Untagged is not an error state — it is what is left over. Anything in the period carrying no tag is grouped into
@@ -207,12 +207,11 @@ export default async function TagAnalyticsFeaturePage(props: PageLangParam) {
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Guides index={2} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>
                 <FeatureFaq.Item
-                    index={0}
                     question={<Trans>How is this different from category analytics?</Trans>}
                     answer={
                         <Trans>
@@ -223,7 +222,6 @@ export default async function TagAnalyticsFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={1}
                     question={<Trans>What&apos;s the Untagged bucket?</Trans>}
                     answer={
                         <Trans>
@@ -234,7 +232,6 @@ export default async function TagAnalyticsFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={2}
                     question={<Trans>Can I drill down from a tag?</Trans>}
                     answer={
                         <Trans>
@@ -244,7 +241,6 @@ export default async function TagAnalyticsFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeatureFaq.Item
-                    index={3}
                     question={<Trans>Does this work with the date filter?</Trans>}
                     answer={
                         <Trans>

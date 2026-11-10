@@ -108,7 +108,7 @@ export default async function BalanceAdjustmentFeaturePage(props: PageLangParam)
             </FeatureBenefits>
 
             <FeatureDetails>
-                <FeatureDetails.Item index={0} title={<Trans>Why a correction is not an expense</Trans>}>
+                <FeatureDetails.Item title={<Trans>Why a correction is not an expense</Trans>}>
                     <p>
                         <Trans>
                             Reality drifts from the ledger: a cash amount you forgot to record, a starting balance you estimated, a bank
@@ -123,12 +123,11 @@ export default async function BalanceAdjustmentFeaturePage(props: PageLangParam)
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>
                 <FeatureFaq.Item
-                    index={0}
                     question={<Trans>Is an adjustment just another transaction?</Trans>}
                     answer={
                         <Trans>
@@ -138,7 +137,6 @@ export default async function BalanceAdjustmentFeaturePage(props: PageLangParam)
                     }
                 />
                 <FeatureFaq.Item
-                    index={1}
                     question={<Trans>When should I set a target balance?</Trans>}
                     answer={
                         <Trans>
@@ -148,7 +146,6 @@ export default async function BalanceAdjustmentFeaturePage(props: PageLangParam)
                     }
                 />
                 <FeatureFaq.Item
-                    index={2}
                     question={<Trans>Does an adjustment count as income or spending?</Trans>}
                     answer={
                         <Trans>
@@ -158,7 +155,6 @@ export default async function BalanceAdjustmentFeaturePage(props: PageLangParam)
                     }
                 />
                 <FeatureFaq.Item
-                    index={3}
                     question={<Trans>What does Recalculate Balances do?</Trans>}
                     answer={
                         <Trans>
@@ -168,7 +164,6 @@ export default async function BalanceAdjustmentFeaturePage(props: PageLangParam)
                     }
                 />
                 <FeatureFaq.Item
-                    index={4}
                     question={<Trans>Can I edit or remove an adjustment?</Trans>}
                     answer={
                         <Trans>

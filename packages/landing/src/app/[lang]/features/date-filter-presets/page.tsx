@@ -49,14 +49,14 @@ export default async function DateFilterPresetsFeaturePage(props: PageLangParam)
                     </Trans>
                 </FeatureStory.Intro>
 
-                <FeatureStory.Step index={0} title={<Trans>Seven presets, one tap</Trans>}>
+                <FeatureStory.Step title={<Trans>Seven presets, one tap</Trans>}>
                     <Trans>
                         The Date chip opens a month calendar with the presets in a row underneath it: Today, This Week, Last Week, This
                         Month, Last Month, This Year, All Time. When none of them is the window you want, pick a start and an end date on
                         the calendar instead and tap Show selected range.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="date-filter-presets-1" slug="date-filter-presets">
+                <FeatureStory.Shot alt={firstShotAlt} locale={lang} scene="date-filter-presets-1" slug="date-filter-presets">
                     <FeatureStory.Callout y={0.498}>
                         <Trans>Pick any range by hand</Trans>
                     </FeatureStory.Callout>
@@ -65,7 +65,7 @@ export default async function DateFilterPresetsFeaturePage(props: PageLangParam)
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={1} title={<Trans>The list re-queries instantly</Trans>}>
+                <FeatureStory.Step title={<Trans>The list re-queries instantly</Trans>}>
                     <Trans>
                         Last Month lands as a chip in the filter row and the count above the list drops from 761 transactions to 73, every
                         row now dated inside August. Clear All puts the whole list back, and the date chip stacks with the type, amount,
@@ -74,7 +74,6 @@ export default async function DateFilterPresetsFeaturePage(props: PageLangParam)
                 </FeatureStory.Step>
                 <FeatureStory.Shot
                     alt={t(i18n)`Budgie transaction list filtered to Last Month, showing the active chip and 73 matching transactions`}
-                    index={1}
                     locale={lang}
                     scene="date-filter-presets-2"
                     slug="date-filter-presets"
@@ -156,7 +155,7 @@ export default async function DateFilterPresetsFeaturePage(props: PageLangParam)
             </FeatureBenefits>
 
             <FeatureDetails>
-                <FeatureDetails.Item index={0} title={<Trans>Why a date picker should never be the bottleneck</Trans>}>
+                <FeatureDetails.Item title={<Trans>Why a date picker should never be the bottleneck</Trans>}>
                     <p>
                         <Trans>
                             Manual date pickers are slow. Budgie wraps them with the seven presets you actually use, plus a custom-range
@@ -170,7 +169,7 @@ export default async function DateFilterPresetsFeaturePage(props: PageLangParam)
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Item index={1} title={<Trans>Narrow by amount, not just by date</Trans>}>
+                <FeatureDetails.Item title={<Trans>Narrow by amount, not just by date</Trans>}>
                     <p>
                         <Trans>
                             The filter row is not only about time. Next to the date, type, and category chips there is an amount range: set
@@ -185,12 +184,11 @@ export default async function DateFilterPresetsFeaturePage(props: PageLangParam)
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Guides index={2} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>
                 <FeatureFaq.Item
-                    index={0}
                     question={<Trans>Can I customize the week start?</Trans>}
                     answer={
                         <Trans>
@@ -200,7 +198,6 @@ export default async function DateFilterPresetsFeaturePage(props: PageLangParam)
                     }
                 />
                 <FeatureFaq.Item
-                    index={1}
                     question={<Trans>Are the presets the same on every screen?</Trans>}
                     answer={
                         <Trans>
@@ -210,7 +207,6 @@ export default async function DateFilterPresetsFeaturePage(props: PageLangParam)
                     }
                 />
                 <FeatureFaq.Item
-                    index={2}
                     question={<Trans>Can I filter by amount too?</Trans>}
                     answer={
                         <Trans>
@@ -220,12 +216,10 @@ export default async function DateFilterPresetsFeaturePage(props: PageLangParam)
                     }
                 />
                 <FeatureFaq.Item
-                    index={3}
                     question={<Trans>What does &ldquo;All Time&rdquo; cover?</Trans>}
                     answer={<Trans>Every transaction in your database. Useful for full-history analytics or one-off audits.</Trans>}
                 />
                 <FeatureFaq.Item
-                    index={4}
                     question={<Trans>Can I save a custom range?</Trans>}
                     answer={
                         <Trans>Custom ranges are session-scoped today. Saved custom ranges are on the roadmap for a future release.</Trans>

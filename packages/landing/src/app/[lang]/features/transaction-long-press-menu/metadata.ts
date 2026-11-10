@@ -14,7 +14,6 @@ export const FEATURE_METADATA = {
     tagline: msg`Long-press any transaction card to edit, convert to refund or transfer, attach a debt, delete, or revert. No full edit form required.`,
     metaTitle: msg`Quick Edit Transaction App — Long-Press Menu — Budgie`,
     metaDescription: msg`Long-press a transaction in Budgie for a menu: edit, convert to refund or transfer, attach a debt, delete, or revert — no edit form.`,
-    primaryKeyword: 'quick edit transaction app',
     seoKeywords: [
         'quick edit transaction app',
         'long-press transaction menu',
@@ -36,6 +35,5 @@ export const FEATURE_METADATA = {
     ],
     relatedArticleSlugs: ['cloud-budgeting-privacy-risks', 'local-first-movement-developers'],
     publishedAt: '2026-05-07',
-    updatedAt: '2026-09-26',
-    ogTags: ['ux', 'gestures', 'productivity']
+    updatedAt: '2026-09-26'
 } satisfies FeatureRegistryEntryInterface;

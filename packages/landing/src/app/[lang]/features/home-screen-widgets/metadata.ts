@@ -14,7 +14,6 @@ export const FEATURE_METADATA = {
     tagline: msg`Net worth, budget, and quick add, right on your iPhone Home Screen. No need to open the app.`,
     metaTitle: msg`Home Screen Widgets — Budgie`,
     metaDescription: msg`Add net worth, budget, and quick-add widgets to your iPhone Home Screen. Check your numbers at a glance, then tap straight into adding a transaction.`,
-    primaryKeyword: 'budget app home screen widget',
     seoKeywords: [
         'budget app home screen widget',
         'net worth widget iphone',
@@ -25,6 +24,5 @@ export const FEATURE_METADATA = {
     relatedFeatureSlugs: ['net-worth-tracker', 'budget-planning', 'expense-tracking', 'pin-app-lock', 'runway'],
     relatedArticleSlugs: ['ynab-alternatives-privacy'],
     publishedAt: '2026-09-27',
-    updatedAt: '2026-09-27',
-    ogTags: ['widgets', 'home screen', 'quick add']
+    updatedAt: '2026-09-27'
 } satisfies FeatureRegistryEntryInterface;

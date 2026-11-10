@@ -52,25 +52,19 @@ export default async function UncategorizedTransactionsFeaturePage(props: PageLa
                     <Trans>The count above your list, the focused list behind it, and the row you open to fix.</Trans>
                 </FeatureStory.Intro>
 
-                <FeatureStory.Step index={0} title={<Trans>The pill counts what you missed</Trans>}>
+                <FeatureStory.Step title={<Trans>The pill counts what you missed</Trans>}>
                     <Trans>
                         It sits above the list and counts only the transactions without a category inside your active account, date, type,
                         tag and amount filters.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot
-                    alt={firstShotAlt}
-                    index={0}
-                    locale={lang}
-                    scene="uncategorized-transactions-1"
-                    slug="uncategorized-transactions"
-                >
+                <FeatureStory.Shot alt={firstShotAlt} locale={lang} scene="uncategorized-transactions-1" slug="uncategorized-transactions">
                     <FeatureStory.Callout y={0.204}>
                         <Trans>Missing categories in this filter</Trans>
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={1} title={<Trans>Open the list behind the inbox</Trans>}>
+                <FeatureStory.Step title={<Trans>Open the list behind the inbox</Trans>}>
                     <Trans>
                         The pill opens the{' '}
                         <Link
@@ -84,7 +78,6 @@ export default async function UncategorizedTransactionsFeaturePage(props: PageLa
                 </FeatureStory.Step>
                 <FeatureStory.Shot
                     alt={t(i18n)`Budgie Missing categories screen listing income and expense rows that still have no category`}
-                    index={1}
                     locale={lang}
                     scene="uncategorized-transactions-2"
                     slug="uncategorized-transactions"
@@ -94,7 +87,7 @@ export default async function UncategorizedTransactionsFeaturePage(props: PageLa
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={2} title={<Trans>Fix one, the count drops</Trans>}>
+                <FeatureStory.Step title={<Trans>Fix one, the count drops</Trans>}>
                     <Trans>
                         Open a row, set its category, and both this list and the pill behind it update on their own — no reload, no manual
                         refresh.
@@ -102,7 +95,6 @@ export default async function UncategorizedTransactionsFeaturePage(props: PageLa
                 </FeatureStory.Step>
                 <FeatureStory.Shot
                     alt={t(i18n)`The same Budgie Missing categories list with its first uncategorised row ready to open`}
-                    index={2}
                     locale={lang}
                     scene="uncategorized-transactions-2"
                     slug="uncategorized-transactions"
@@ -170,7 +162,7 @@ export default async function UncategorizedTransactionsFeaturePage(props: PageLa
             </FeatureBenefits>
 
             <FeatureDetails>
-                <FeatureDetails.Item index={0} title={<Trans>Why uncategorized transactions quietly break reports</Trans>}>
+                <FeatureDetails.Item title={<Trans>Why uncategorized transactions quietly break reports</Trans>}>
                     <p>
                         <Trans>
                             One uncategorized grocery run can make your food budget look better than it is. A few missing categories across
@@ -196,12 +188,11 @@ export default async function UncategorizedTransactionsFeaturePage(props: PageLa
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
-                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+                <FeatureDetails.Guides locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>
                 <FeatureFaq.Item
-                    index={0}
                     question={<Trans>What are uncategorized transactions?</Trans>}
                     answer={
                         <Trans>
@@ -211,7 +202,6 @@ export default async function UncategorizedTransactionsFeaturePage(props: PageLa
                     }
                 />
                 <FeatureFaq.Item
-                    index={1}
                     question={<Trans>Does the count respect my current filters?</Trans>}
                     answer={
                         <Trans>
@@ -221,14 +211,12 @@ export default async function UncategorizedTransactionsFeaturePage(props: PageLa
                     }
                 />
                 <FeatureFaq.Item
-                    index={2}
                     question={<Trans>Will this slow down my transaction list?</Trans>}
                     answer={
                         <Trans>No. The count and the drill-down list both run entirely on-device, without a cloud analytics service.</Trans>
                     }
                 />
                 <FeatureFaq.Item
-                    index={3}
                     question={<Trans>Is there a faster way to fix many of them?</Trans>}
                     answer={
                         <Trans>
