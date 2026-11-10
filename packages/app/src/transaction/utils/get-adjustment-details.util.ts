@@ -13,7 +13,7 @@ import type { SyncEntityInterface, TransactionWithRelationsEntityInterface } fro
 
 export const getAdjustmentDetails = (
     transaction: TransactionWithRelationsEntityInterface,
-    sync: Pick<SyncEntityInterface, 'mode' | 'reconciledAt' | 'reconciledBalance' | 'reconciliationTransactionId'> | null
+    sync: Pick<SyncEntityInterface, 'mode' | 'setupBalance' | 'reconciledAt' | 'reconciledBalance' | 'reconciliationTransactionId'> | null
 ): AdjustmentTransactionDetailsInterface | null => {
     const initialIsIncrease = isPositiveAdjustmentTransaction(transaction);
     const entryType = initialIsIncrease ? TransactionEntryTypeEnum.DEBIT : TransactionEntryTypeEnum.CREDIT;
@@ -25,10 +25,12 @@ export const getAdjustmentDetails = (
 
     const isBankAuthoritative = BANK_AUTHORITATIVE_ACCOUNT_TYPES.includes(entry.account.type);
     const reconciledAt = sync?.mode === SyncModeEnum.FORWARD && isDefined(sync.reconciledBalance) ? sync.reconciledAt : null;
+    const isPinnedToSetupBalance = sync?.mode === SyncModeEnum.BACKWARD && isDefined(sync.setupBalance);
 
     return {
         isAmountReadOnly: isBankAuthoritative || (isDefined(reconciledAt) && sync?.reconciliationTransactionId === transaction.id),
-        isBalanceFixed: isBankAuthoritative || (isDefined(reconciledAt) && transaction.operatedAt <= reconciledAt),
+        isBalanceFixed:
+            isBankAuthoritative || isPinnedToSetupBalance || (isDefined(reconciledAt) && transaction.operatedAt <= reconciledAt),
         accountId: entry.accountId,
         accountTitle: entry.account.title,
         accountIcon: entry.account.icon,
