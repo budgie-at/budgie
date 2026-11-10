@@ -1,12 +1,12 @@
-import { and, asc, eq, inArray, isNull, or, sql } from 'drizzle-orm';
+import { and, asc, eq, inArray, isNull, sql } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
+import { transactionFilters } from '../../@generic/repository/base-transaction-filter.repository';
 import { Db } from '../../@generic/service/db.service';
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
-import { TransactionConsolidationTypeEnum } from '../../transaction/enum/transaction-consolidation-type.enum';
 import { TransactionTypeEnum } from '../../transaction/enum/transaction-type.enum';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { TransactionEntryTypeEnum } from '../enum/transaction-entry-type.enum';
@@ -23,20 +23,6 @@ export class TransactionEntryPositionRepository extends Context.Service<Transact
                 TransactionEntryTypeEnum.CREDIT,
                 TransactionEntryTypeEnum.FEE
             ] as const;
-
-            const buildPositionLedgerEntryCondition = () =>
-                or(
-                    isNull(TransactionEntryEntityTable.originalTransactionId),
-                    sql`
-                EXISTS (
-                    SELECT 1
-                    FROM transactions ledger_transaction
-                    WHERE ledger_transaction.id = ${TransactionEntryEntityTable.transactionId}
-                      AND ledger_transaction.consolidation_type = ${TransactionConsolidationTypeEnum.REFUND}
-                      AND ledger_transaction.deleted_at IS NULL
-                )
-            `
-                );
 
             const buildExternalCryptoPositionEntryCondition = (instrumentId: number) =>
                 sql`
@@ -88,7 +74,7 @@ export class TransactionEntryPositionRepository extends Context.Service<Transact
                                     isNull(TransactionEntityTable.deletedAt),
                                     isNull(TransactionEntryEntityTable.deletedAt),
                                     inArray(TransactionEntryEntityTable.type, POSITION_ENTRY_TYPES),
-                                    buildPositionLedgerEntryCondition(),
+                                    transactionFilters.buildRefundAwareLedgerEntryCondition(),
                                     buildExternalCryptoPositionEntryCondition(instrumentId)
                                 )
                             )
