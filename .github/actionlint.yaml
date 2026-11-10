@@ -4,3 +4,7 @@ self-hosted-runner:
         - linux-portable-4x8
         - trf-linux-amd64-2x4
         - trf-linux-amd64-4x8
+paths:
+    .github/workflows/**/*.yml:
+        ignore:
+            - 'unexpected key "queue" for "concurrency" section'
