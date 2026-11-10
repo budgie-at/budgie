@@ -28,7 +28,6 @@ import { SyncModeEnum } from '../../sync/enum/sync-mode.enum';
 import { SyncEntityTable } from '../../sync/table/sync-entity.table';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
-import { TransactionConsolidationTypeEnum } from '../../transaction/enum/transaction-consolidation-type.enum';
 import { TransactionTypeEnum } from '../../transaction/enum/transaction-type.enum';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { AccountBalanceEntityTable } from '../table/account-balance-entity.table';
@@ -58,9 +57,6 @@ const getActiveAccountWhereSql = (...conditions: SQL[]) =>
 
 const getConvertedDebtTargetBalanceSql = (defaultInstrumentId: number, exchangeRateSql: SQL) =>
     sql<number>`CASE WHEN ${AccountEntityTable.targetBaseInstrumentId} = ${defaultInstrumentId} AND ${AccountEntityTable.targetBaseAmount} IS NOT NULL THEN ${AccountEntityTable.targetBaseAmount} ELSE COALESCE(${AccountEntityTable.targetBalance} * ${exchangeRateSql}, 0) END`;
-
-const getBalanceLedgerEntryConditionSql = () =>
-    sql`(${TransactionEntryEntityTable.originalTransactionId} IS NULL OR ${TransactionEntityTable.consolidationType} = ${TransactionConsolidationTypeEnum.REFUND})`;
 
 const getDebtProgressSql = (
     baseInstrumentId: number | null,
@@ -93,7 +89,7 @@ const getDebtProgressSql = (
 const getAccountBalanceWithTransactionsSql = (accountIdReference = sql.raw('accounts.id')) => {
     const latestAccountBalanceSql = sql<number>`SELECT ${AccountBalanceEntityTable.amount} FROM ${AccountBalanceEntityTable} WHERE ${AccountBalanceEntityTable.accountId} = ${accountIdReference} LIMIT 1`;
     const lastBalanceUpdatedAtSql = sql`SELECT MAX(${AccountBalanceEntityTable.updatedAt}) FROM ${AccountBalanceEntityTable} WHERE ${AccountBalanceEntityTable.accountId} = ${accountIdReference}`;
-    const transactionsSumSinceLastBalanceSql = sql<number>`SELECT ${getTransactionsSumSql()} FROM ${TransactionEntryEntityTable} INNER JOIN ${TransactionEntityTable} ON ${TransactionEntityTable.id} = ${TransactionEntryEntityTable.transactionId} WHERE ${TransactionEntryEntityTable.accountId} = ${accountIdReference} AND ${TransactionEntryEntityTable.deletedAt} IS NULL AND ${transactionFilters.buildVisibleTransactionCondition()} AND ${getBalanceLedgerEntryConditionSql()} AND ${TransactionEntryEntityTable.createdAt} > COALESCE((${lastBalanceUpdatedAtSql}), -1)`;
+    const transactionsSumSinceLastBalanceSql = sql<number>`SELECT ${getTransactionsSumSql()} FROM ${TransactionEntryEntityTable} INNER JOIN ${TransactionEntityTable} ON ${TransactionEntityTable.id} = ${TransactionEntryEntityTable.transactionId} WHERE ${TransactionEntryEntityTable.accountId} = ${accountIdReference} AND ${TransactionEntryEntityTable.deletedAt} IS NULL AND ${transactionFilters.buildVisibleTransactionCondition()} AND ${transactionFilters.buildRefundAwareLedgerEntryCondition()} AND ${TransactionEntryEntityTable.createdAt} > COALESCE((${lastBalanceUpdatedAtSql}), -1)`;
 
     const ledgerSumSql = sql<number>`CASE WHEN ${inArray(sql.raw('accounts.type'), BANK_AUTHORITATIVE_ACCOUNT_TYPES)} THEN 0 ELSE COALESCE((${transactionsSumSinceLastBalanceSql}), 0) END`;
 
@@ -125,7 +121,7 @@ export class AccountBalanceRepository extends Context.Service<AccountBalanceRepo
                         and(
                             isNull(TransactionEntryEntityTable.deletedAt),
                             transactionFilters.buildVisibleTransactionCondition(),
-                            getBalanceLedgerEntryConditionSql(),
+                            transactionFilters.buildRefundAwareLedgerEntryCondition(),
                             inArray(TransactionEntryEntityTable.accountId, accountIds)
                         )
                     )
@@ -164,7 +160,7 @@ export class AccountBalanceRepository extends Context.Service<AccountBalanceRepo
                             isNull(TransactionEntryEntityTable.deletedAt),
                             lte(TransactionEntityTable.operatedAt, operatedUntil),
                             transactionFilters.buildVisibleTransactionCondition(),
-                            getBalanceLedgerEntryConditionSql()
+                            transactionFilters.buildRefundAwareLedgerEntryCondition()
                         )
                     )
             ).pipe(Effect.map(([row]) => row.balance)),
@@ -296,7 +292,7 @@ export class AccountBalanceRepository extends Context.Service<AccountBalanceRepo
                       AND ${sql`${TransactionEntryEntityTable.deletedAt} IS NULL`}
                       AND ${sql`${TransactionEntityTable.type} != ${TransactionTypeEnum.TRANSFER}`}
                       AND ${transactionFilters.buildVisibleTransactionCondition()}
-                      AND ${getBalanceLedgerEntryConditionSql()}
+                      AND ${transactionFilters.buildRefundAwareLedgerEntryCondition()}
                 ), 0)`;
 
             return Db.query(db =>

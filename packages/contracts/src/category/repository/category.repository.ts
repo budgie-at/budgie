@@ -78,14 +78,6 @@ export class CategoryRepository extends Context.Service<CategoryRepository>()('@
 
                 return category;
             }),
-            findActiveById: (id: number) =>
-                Db.query(db =>
-                    db
-                        .select()
-                        .from(CategoryEntityTable)
-                        .where(and(eq(CategoryEntityTable.id, id), isNull(CategoryEntityTable.deletedAt)))
-                        .limit(1)
-                ).pipe(Effect.map(categories => categories.at(0))),
             findActiveBySeedKey: (seedKey: string, syncZone: string) =>
                 Db.query(db =>
                     db

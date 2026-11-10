@@ -15,14 +15,15 @@ import { TransactionEntryEntityTable } from '../../transaction-entry/table/trans
 import { TransactionTagsAssociationEnum } from '../../transaction-tags/enum/transaction-tags-association.enum';
 import { TransactionTagsEntityTable } from '../../transaction-tags/table/transaction-tags-entity.table';
 import { TransactionAssociationEnum } from '../../transaction/enum/transaction-association.enum';
+import { TransactionConsolidationTypeEnum } from '../../transaction/enum/transaction-consolidation-type.enum';
 import { TransactionTypeEnum } from '../../transaction/enum/transaction-type.enum';
 import { TransactionFilterInterface } from '../../transaction/interface/transaction-filter.interface';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
-import { PRECISION } from '../constant/precision.constant';
 import { LanguageEnum } from '../enum/language.enum';
 import { AmountRangeInterface } from '../interface/amount-range.interface';
 import { DateRangeInterface } from '../interface/date-range.interface';
 import { buildTranslatedCategoryRelation } from '../utils/build-translated-category-relation.util';
+import { convertToMicroUnits } from '../utils/convert-to-micro-units.util';
 
 class BaseTransactionFilterRepository {
     private static readonly CATEGORIZABLE_TYPES = [TransactionTypeEnum.INCOME, TransactionTypeEnum.EXPENSE];
@@ -109,6 +110,13 @@ class BaseTransactionFilterRepository {
         return and(isNull(TransactionEntryEntityTable.originalTransactionId), isNull(TransactionEntryEntityTable.deletedAt));
     }
 
+    buildRefundAwareLedgerEntryCondition() {
+        return or(
+            isNull(TransactionEntryEntityTable.originalTransactionId),
+            eq(TransactionEntityTable.consolidationType, TransactionConsolidationTypeEnum.REFUND)
+        );
+    }
+
     buildPrimaryLedgerEntryCondition() {
         return and(this.buildLedgerEntryCondition(), eq(TransactionEntryEntityTable.kind, TransactionEntryKindEnum.PRIMARY));
     }
@@ -186,8 +194,8 @@ class BaseTransactionFilterRepository {
 
     private buildAmountCondition({ from, to }: AmountRangeInterface) {
         const amountParts: SQL[] = [
-            ...(isDefined(from) ? [gte(TransactionEntryEntityTable.amount, Math.round(from * PRECISION))] : []),
-            ...(isDefined(to) ? [lte(TransactionEntryEntityTable.amount, Math.round(to * PRECISION))] : [])
+            ...(isDefined(from) ? [gte(TransactionEntryEntityTable.amount, convertToMicroUnits(from))] : []),
+            ...(isDefined(to) ? [lte(TransactionEntryEntityTable.amount, convertToMicroUnits(to))] : [])
         ];
 
         if (isEmptyArray(amountParts)) {

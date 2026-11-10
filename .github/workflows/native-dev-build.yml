@@ -12,38 +12,12 @@ permissions:
 
 jobs:
   assert-ai:
-    name: Assert AI is enabled
-    runs-on: [self-hosted, linux-portable-2x4]
-    timeout-minutes: 10
     permissions:
       contents: read
-    env:
-      APP_VARIANT: development
-      EAS_BUILD_PROFILE: development
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
-
-      - name: Setup Node
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version: 22.22.2
-
-      - name: Restore package manager cache
-        uses: rnw-community/mobile-ci/actions/node-pm-cache@9a151735055f5ab661650523ad7c6375ae007bef # v4.12.0
-        with:
-          package-manager: pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Assert AI is enabled
-        run: bash .github/scripts/assert-ai-enabled.sh
+    uses: ./.github/workflows/assert-ai.yml
+    with:
+      app-variant: development
+      eas-build-profile: development
 
   dev-release:
     name: iOS development build and release

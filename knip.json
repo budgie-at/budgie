@@ -39,6 +39,7 @@
     "workspaces": {
         "tests/sync-tests": {
             "ignoreDependencies": [
+                "@budgie/import-export",
                 "@lingui/core",
                 "expo-app-intents"
             ]

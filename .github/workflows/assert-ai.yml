@@ -1,0 +1,38 @@
+name: Assert AI enabled
+
+on:
+    workflow_call:
+        inputs:
+            app-variant:
+                type: string
+                default: ''
+            eas-build-profile:
+                type: string
+                default: ''
+            runner-labels:
+                type: string
+                default: '["self-hosted","linux-portable-2x4"]'
+
+permissions:
+    contents: read
+
+jobs:
+    assert-ai:
+        name: Assert AI is enabled
+        runs-on: ${{ fromJSON(inputs.runner-labels) }}
+        timeout-minutes: 10
+        env:
+            APP_VARIANT: ${{ inputs.app-variant }}
+            EAS_BUILD_PROFILE: ${{ inputs.eas-build-profile }}
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+              with:
+                  persist-credentials: false
+
+            - uses: ./.github/actions/setup
+
+            - name: Assert AI is enabled
+              run: |
+                  [ -n "$APP_VARIANT" ] || unset APP_VARIANT
+                  bash .github/scripts/assert-ai-enabled.sh

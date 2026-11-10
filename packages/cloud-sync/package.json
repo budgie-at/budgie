@@ -1,6 +1,6 @@
 {
     "name": "@budgie/cloud-sync",
-    "version": "6.173.3",
+    "version": "6.173.7",
     "private": true,
     "description": "Cloud sync package: record mapping, upload, apply, household sharing and the sync engine",
     "sideEffects": false,
@@ -17,9 +17,7 @@
         "build": "node ../../node_modules/@typescript/native/bin/tsc -p tsconfig.json",
         "build:watch": "pnpm build --watch",
         "clear": "rimraf dist node_modules/.cache .turbo",
-        "format": "oxfmt --write src",
         "lint": "oxlint --type-aware src",
-        "lint:fix": "oxlint --type-aware --fix src",
         "ts": "node ../../scripts/typecheck.cjs --noEmit -p tsconfig.json",
         "ts:native": "node ../../scripts/typecheck.cjs --native --noEmit -p tsconfig.json"
     },
