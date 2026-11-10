@@ -21,7 +21,7 @@ const createPendingCategory = Effect.fnUntraced(function* () {
 });
 
 const takePendingTranslation = Effect.flatMap(TranslationDrainerService, translationDrainerService =>
-    Effect.map(translationDrainerService['config'].fetchPending(1), ([translation]) =>
+    Effect.map(translationDrainerService.fetchPending(1), ([translation]) =>
         getDefined(translation, () => {
             throw new Error('no pending translation');
         })
