@@ -36,6 +36,7 @@ export class AiModelResidencyService extends Context.Service<AiModelResidencySer
         const leases = new Map<AiSubsystemNameEnum, number>();
         const idleTimers = new Map<AiSubsystemNameEnum, Fiber.Fiber<void, NativeCallError>>();
         const lock = yield* Semaphore.make(1);
+        const drainLock = yield* Semaphore.make(1);
         let isSuspended = false;
         let enabledSubsystems: ReadonlySet<AiSubsystemNameEnum> = new Set();
 
@@ -77,6 +78,7 @@ export class AiModelResidencyService extends Context.Service<AiModelResidencySer
         );
 
         return {
+            drainLock,
             acquire: Effect.fn('AiModelResidencyService.acquire')(function* (subsystem: AiSubsystemNameEnum) {
                 clearIdleTimer(subsystem);
                 leases.set(subsystem, getLeaseCount(subsystem) + 1);

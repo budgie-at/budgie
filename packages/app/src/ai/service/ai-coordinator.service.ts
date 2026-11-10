@@ -7,14 +7,11 @@ import * as FiberSet from 'effect/FiberSet';
 import * as Layer from 'effect/Layer';
 import * as Scope from 'effect/Scope';
 import * as Semaphore from 'effect/Semaphore';
-import * as Stream from 'effect/Stream';
-import * as SubscriptionRef from 'effect/SubscriptionRef';
 import { AppState } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { appAtomRegistry } from '../../@generic/constant/app-atom-registry.constant';
-import { Workload } from '../../@generic/service/workload.service';
 import { waitForIdle } from '../../@generic/utils/wait-for-idle.util';
 import { aiCoordinatorSnapshotAtom } from '../constant/ai-snapshot-atoms.constant';
 import { EmbeddingProgressStore } from '../store/embedding-progress.store';
@@ -35,7 +32,6 @@ import type { AppStateStatus } from 'react-native';
 
 export class AiCoordinatorService extends Context.Service<AiCoordinatorService>()('@budgie/app/AiCoordinatorService', {
     make: Effect.gen(function* () {
-        const workload = yield* Workload;
         const aiModelResidencyService = yield* AiModelResidencyService;
         const chatService = yield* ChatService;
         const embeddingDrainerService = yield* EmbeddingDrainerService;
@@ -160,12 +156,6 @@ export class AiCoordinatorService extends Context.Service<AiCoordinatorService>(
                 ),
                 scope
             );
-            yield* Effect.forkIn(
-                Stream.runForEach(SubscriptionRef.changes(workload.foregroundCount), count =>
-                    Effect.forEach(drainers, drainer => drainer.setForegroundBusy(count > 0), { discard: true })
-                ),
-                scope
-            );
             yield* aiModelDownloadService.start(getEnabledAiSubsystems(settings));
             const isSuspended = AppState.currentState !== 'active' && AppState.currentState !== 'unknown';
             patchAtom(aiCoordinatorSnapshotAtom, { isSuspended });
@@ -202,7 +192,6 @@ export class AiCoordinatorService extends Context.Service<AiCoordinatorService>(
 }) {
     static readonly layer = Layer.effect(AiCoordinatorService, AiCoordinatorService.make).pipe(
         Layer.provide([
-            Workload.layer,
             AiModelResidencyService.layer,
             ChatService.layer,
             EmbeddingDrainerService.layer,

@@ -4,13 +4,14 @@ import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
 import { appAtomRegistry } from '../../@generic/constant/app-atom-registry.constant';
+import { Workload } from '../../@generic/service/workload.service';
 import { commentEmbeddingDrainerSnapshotAtom, merchantEmbeddingDrainerSnapshotAtom } from '../constant/ai-snapshot-atoms.constant';
 import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 import { DrainerStateEnum } from '../enum/drainer-state.enum';
 import { EmbeddingProgressStore } from '../store/embedding-progress.store';
 
 import { AiModelResidencyService } from './ai-model-residency.service';
-import { DrainerService } from './drainer.service';
+import { makeDrainer } from './drainer.service';
 import { LocalEmbeddingService } from './embedding.service';
 
 import type { DrainerSnapshotInterface } from '../interface/drainer-snapshot.interface';
@@ -29,7 +30,7 @@ export class EmbeddingDrainerService extends Context.Service<EmbeddingDrainerSer
         );
 
         const createDrainer = (index: typeof embeddingIndexService.merchant, snapshot: Atom.Writable<DrainerSnapshotInterface>) =>
-            DrainerService.make<DbError | AiInvokeError>(
+            makeDrainer<DbError | AiInvokeError>(
                 {
                     subsystem: AiSubsystemNameEnum.EMBEDDING,
                     relaxedIntervalMs: 2500,
@@ -74,7 +75,8 @@ export class EmbeddingDrainerService extends Context.Service<EmbeddingDrainerSer
         Layer.provide([
             EmbeddingIndexService.layer.pipe(Layer.provide(LocalEmbeddingService.invokerLayer)),
             EmbeddingProgressStore.layer,
-            AiModelResidencyService.layer
+            AiModelResidencyService.layer,
+            Workload.layer
         ])
     );
 }

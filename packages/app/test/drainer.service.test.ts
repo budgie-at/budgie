@@ -3,15 +3,19 @@ import * as Context from 'effect/Context';
 import * as Deferred from 'effect/Deferred';
 import * as Effect from 'effect/Effect';
 import * as Fiber from 'effect/Fiber';
+import * as FetchHttpClient from 'effect/http/FetchHttpClient';
 import * as Layer from 'effect/Layer';
 import * as Atom from 'effect/reactivity/Atom';
+import * as Semaphore from 'effect/Semaphore';
+import * as SubscriptionRef from 'effect/SubscriptionRef';
 import * as TestClock from 'effect/testing/TestClock';
 import { vi } from 'vitest';
 
 import { appAtomRegistry } from '../src/@generic/constant/app-atom-registry.constant';
+import { Workload } from '../src/@generic/service/workload.service';
 import { AiSubsystemNameEnum } from '../src/ai/enum/ai-subsystem-name.enum';
 import { DrainerStateEnum } from '../src/ai/enum/drainer-state.enum';
-import { DrainerService } from '../src/ai/service/drainer.service';
+import { makeDrainer } from '../src/ai/service/drainer.service';
 
 import { inertDbLayer } from './fixture/inert-db-layer';
 
@@ -31,11 +35,12 @@ class ResidencyTestService extends Context.Service<ResidencyTestService, Context
 const residency = { isModelReady: true };
 
 const residencyLayer = Layer.mock(ResidencyTestService)({
+    drainLock: Semaphore.makeUnsafe(1),
     acquire: () => Effect.sync(() => residency.isModelReady),
     release: () => Effect.void
 });
 
-const testLayer = Layer.mergeAll(residencyLayer, inertDbLayer);
+const testLayer = Workload.layer.pipe(Layer.provideMerge(Layer.mergeAll(residencyLayer, inertDbLayer, FetchHttpClient.layer)));
 
 type Row = Effect.Effect<void>;
 
@@ -47,10 +52,11 @@ interface HarnessOptions {
 
 const makeHarness = Effect.fnUntraced(function* ({ rows = () => [], pending = 0, relaxedIntervalMs = 1000 }: HarnessOptions = {}) {
     const service = yield* ResidencyTestService;
+    const workload = yield* Workload;
     const fetches: number[] = [];
     const counter = { pending };
     const snapshot = Atom.keepAlive(Atom.make<DrainerSnapshotInterface>({ state: DrainerStateEnum.IDLE, pending, errorMessage: null }));
-    const drainer = yield* DrainerService.make<never>(
+    const drainer = yield* makeDrainer<never>(
         {
             subsystem: AiSubsystemNameEnum.EMBEDDING,
             relaxedIntervalMs,
@@ -75,7 +81,7 @@ const makeHarness = Effect.fnUntraced(function* ({ rows = () => [], pending = 0,
         fetches,
         counter,
         snapshot,
-        setForegroundBusy: (isBusy: boolean) => drainer.setForegroundBusy(isBusy)
+        setForegroundBusy: (isBusy: boolean) => SubscriptionRef.set(workload.foregroundCount, isBusy ? 1 : 0)
     };
 });
 
@@ -123,10 +129,10 @@ const failing: Row = Effect.die(new Error('boom'));
 
 const advance = (millis: number) => TestClock.adjust(`${millis} millis`);
 
-const provideLive = <A, E>(effect: Effect.Effect<A, E, ResidencyTestService | Db | Scope.Scope>) =>
+const provideLive = <A, E>(effect: Effect.Effect<A, E, ResidencyTestService | Workload | Db | Scope.Scope>) =>
     effect.pipe(Effect.scoped, Effect.provide(testLayer));
 
-const provide = <A, E>(effect: Effect.Effect<A, E, ResidencyTestService | Db | Scope.Scope>) =>
+const provide = <A, E>(effect: Effect.Effect<A, E, ResidencyTestService | Workload | Db | Scope.Scope>) =>
     effect.pipe(
         Effect.ensuring(advance(1)),
         Effect.scoped,

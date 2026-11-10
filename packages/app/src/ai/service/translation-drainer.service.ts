@@ -5,13 +5,14 @@ import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
 import { appAtomRegistry } from '../../@generic/constant/app-atom-registry.constant';
+import { Workload } from '../../@generic/service/workload.service';
 import { translationDrainerSnapshotAtom } from '../constant/ai-snapshot-atoms.constant';
 import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 import { TranslationProgressStore } from '../store/translation-progress.store';
 
 import { AiModelResidencyService } from './ai-model-residency.service';
 import { ChatService } from './chat.service';
-import { DrainerService } from './drainer.service';
+import { makeDrainer } from './drainer.service';
 
 import type { AiInvokeError } from '@budgie/ai';
 import type { CategoryEntityInterface, Db, DbError } from '@budgie/contracts';
@@ -32,7 +33,7 @@ export class TranslationDrainerService extends Context.Service<TranslationDraine
                 .translate(row.title)
                 .pipe(Effect.flatMap(result => updateTranslation(row.id, row.title, result.titleEn, result.titleTags)));
 
-        return yield* DrainerService.make<DbError | AiInvokeError>(
+        return yield* makeDrainer<DbError | AiInvokeError>(
             {
                 subsystem: AiSubsystemNameEnum.CHAT,
                 relaxedIntervalMs: 5000,
@@ -79,7 +80,8 @@ export class TranslationDrainerService extends Context.Service<TranslationDraine
             TagRepository.layer,
             TranslationLlmService.layer.pipe(Layer.provide(ChatService.invokerLayer)),
             TranslationProgressStore.layer,
-            AiModelResidencyService.layer
+            AiModelResidencyService.layer,
+            Workload.layer
         ])
     );
 }

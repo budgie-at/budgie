@@ -5,12 +5,12 @@ import * as Exit from 'effect/Exit';
 import * as FetchHttpClient from 'effect/http/FetchHttpClient';
 import * as Layer from 'effect/Layer';
 import * as Atom from 'effect/reactivity/Atom';
+import * as Semaphore from 'effect/Semaphore';
 import { vi } from 'vitest';
 
 import { emptyFn } from '@rnw-community/shared';
 
 import { appAtomRegistry } from '../src/@generic/constant/app-atom-registry.constant';
-import { Workload } from '../src/@generic/service/workload.service';
 import { aiCoordinatorSnapshotAtom } from '../src/ai/constant/ai-snapshot-atoms.constant';
 import { AiSubsystemNameEnum } from '../src/ai/enum/ai-subsystem-name.enum';
 import { AiSubsystemStatusEnum } from '../src/ai/enum/ai-subsystem-status.enum';
@@ -94,8 +94,8 @@ const chatLayer = Layer.unwrap(
 
 const coordinatorLayer = Layer.effect(AiCoordinatorService, AiCoordinatorService.make).pipe(
     Layer.provide([
-        Workload.layer,
         Layer.mock(AiModelResidencyService)({
+            drainLock: Semaphore.makeUnsafe(1),
             resume: () => Effect.void,
             suspend: () => Effect.suspend(() => ((counters.residencySuspends += 1) === 1 ? Effect.die('suspend failed') : Effect.void))
         }),
@@ -108,7 +108,6 @@ const coordinatorLayer = Layer.effect(AiCoordinatorService, AiCoordinatorService
             halt: () => Effect.void,
             schedule: () => Effect.void,
             cancelBoost: emptyFn,
-            setForegroundBusy: () => Effect.void,
             snapshot: Atom.make<DrainerSnapshotInterface>({ state: DrainerStateEnum.IDLE, pending: 0, errorMessage: null })
         }),
         Layer.mock(TranslationProgressStore)({ snapshot: Atom.make({ percent: 0, pending: 0, total: 0 }) }),

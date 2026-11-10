@@ -4,286 +4,246 @@ import * as Effect from 'effect/Effect';
 import * as Exit from 'effect/Exit';
 import * as FiberHandle from 'effect/FiberHandle';
 import * as Option from 'effect/Option';
+import * as Ref from 'effect/Ref';
 import * as Semaphore from 'effect/Semaphore';
+import * as Stream from 'effect/Stream';
+import * as SubscriptionRef from 'effect/SubscriptionRef';
 import { AppState } from 'react-native';
 
 import { isEmptyArray } from '@rnw-community/shared';
 
 import { appAtomRegistry } from '../../@generic/constant/app-atom-registry.constant';
+import { Workload } from '../../@generic/service/workload.service';
 import { waitForIdle } from '../../@generic/utils/wait-for-idle.util';
 import { DrainerStateEnum } from '../enum/drainer-state.enum';
 import { DrainerConfigInterface } from '../interface/drainer-config.interface';
-import { DrainerSnapshotInterface } from '../interface/drainer-snapshot.interface';
 import { getRootErrorMessage } from '../utils/get-root-error-message.util';
 import { patchAtom } from '../utils/patch-atom.util';
 
 import type { AiModelResidencyService } from './ai-model-residency.service';
 import type { Db } from '@budgie/contracts';
 import type * as Context from 'effect/Context';
-import type * as Atom from 'effect/reactivity/Atom';
 
-export class DrainerService<E> {
-    static readonly make = Effect.fn('DrainerService.make')(function* <E>(
-        config: DrainerConfigInterface<E>,
-        modelResidency: Context.Service.Shape<typeof AiModelResidencyService>
-    ) {
-        const loop = yield* FiberHandle.make();
-        const retryTimer = yield* FiberHandle.make();
+export const makeDrainer = Effect.fnUntraced(function* <E>(
+    config: DrainerConfigInterface<E>,
+    modelResidency: Context.Service.Shape<typeof AiModelResidencyService>
+) {
+    const workload = yield* Workload;
+    const loop = yield* FiberHandle.make();
+    const retryTimer = yield* FiberHandle.make();
+    const foregroundWatch = yield* FiberHandle.make();
+    const batchLock = yield* Semaphore.make(1);
+    const isStarted = yield* Ref.make(false);
+    const consecutiveFailures = yield* Ref.make(0);
+    const { snapshot } = config;
+    const maxConsecutiveFailures = 5;
+    const progressRefreshEvery = 25;
+    const idleIntervalMs = 10_000;
+    const drainLockBusyRescheduleMs = 1_000;
+    const errorAutoRetryMs = 30_000;
+    const sqliteBusyPattern = /database is locked|SQLITE_BUSY/iu;
+    const blockedStates = new Set([DrainerStateEnum.BOOSTING, DrainerStateEnum.PAUSED, DrainerStateEnum.ERROR]);
 
-        return new DrainerService(config, modelResidency, loop, retryTimer);
+    const readState = (): DrainerStateEnum => appAtomRegistry.get(snapshot).state;
+
+    const relaxedDelay = (): number => (appAtomRegistry.get(snapshot).pending === 0 ? idleIntervalMs : config.relaxedIntervalMs);
+
+    const isSafe = Effect.gen(function* () {
+        const isForegroundIdle = (yield* SubscriptionRef.get(workload.foregroundCount)) === 0;
+
+        return (yield* Ref.get(isStarted)) && AppState.currentState === 'active' && isForegroundIdle;
     });
 
-    private static readonly MAX_CONSECUTIVE_FAILURES = 5;
-    private static readonly PROGRESS_REFRESH_EVERY = 25;
-    private static readonly IDLE_INTERVAL_MS = 10_000;
-    private static readonly MUTEX_BUSY_RESCHEDULE_MS = 1_000;
-    private static readonly ERROR_AUTO_RETRY_MS = 30_000;
-    private static readonly SQLITE_BUSY_PATTERN = /database is locked|SQLITE_BUSY/iu;
-    private static readonly BLOCKED_STATES = [DrainerStateEnum.BOOSTING, DrainerStateEnum.PAUSED, DrainerStateEnum.ERROR];
-    private static readonly mutex = Semaphore.makeUnsafe(1);
+    const canSchedule = Effect.map(isSafe, safe => safe && !blockedStates.has(readState()));
 
-    readonly snapshot: Atom.Writable<DrainerSnapshotInterface>;
+    const isBoosting = Effect.map(isSafe, safe => safe && readState() === DrainerStateEnum.BOOSTING);
 
-    readonly whenIdle = Effect.fn('DrainerService.whenIdle')(function* (this: DrainerService<E>) {
-        yield* this.batchLock.withPermit(Effect.void);
+    const halt = Effect.fn('Drainer.halt')(function* () {
+        yield* FiberHandle.run(loop, Effect.interrupt);
     });
 
-    readonly start = Effect.fn('DrainerService.start')(function* (this: DrainerService<E>) {
-        if (this.started) {
-            return;
+    const whenIdle = Effect.fn('Drainer.whenIdle')(function* () {
+        yield* batchLock.withPermit(Effect.void);
+    });
+
+    const cancelBoost = (): void => {
+        if (readState() === DrainerStateEnum.BOOSTING) {
+            patchAtom(snapshot, { state: DrainerStateEnum.IDLE });
         }
-        this.started = true;
-        yield* this.schedule();
-        yield* this.refreshPending();
-    });
+    };
 
-    readonly schedule = Effect.fn('DrainerService.schedule')(function* (this: DrainerService<E>): Effect.fn.Return<void, never, Db> {
-        if (!this.canSchedule()) {
-            return;
-        }
-        yield* FiberHandle.run(this.loop, this.drain());
-    });
+    const refreshPending = Effect.ignore(
+        Effect.gen(function* () {
+            patchAtom(snapshot, { pending: yield* config.countPending });
+        })
+    );
 
-    readonly halt = Effect.fn('DrainerService.halt')(function* (this: DrainerService<E>) {
-        yield* FiberHandle.run(this.loop, Effect.interrupt);
-    });
+    const finalizeBatch = Effect.ignore(config.afterBatch).pipe(Effect.andThen(refreshPending), Effect.andThen(YIELD_TO_UI));
 
-    readonly stop = Effect.fn('DrainerService.stop')(function* (this: DrainerService<E>) {
-        this.started = false;
-        yield* this.halt();
-        yield* FiberHandle.clear(this.retryTimer);
-        if (this.state !== DrainerStateEnum.PAUSED) {
-            patchAtom(this.snapshot, { state: DrainerStateEnum.IDLE });
-        }
-    });
-
-    readonly pause = Effect.fn('DrainerService.pause')(function* (this: DrainerService<E>) {
-        if (this.state === DrainerStateEnum.PAUSED) {
-            return;
-        }
-        this.cancelBoost();
-        yield* this.halt();
-        yield* FiberHandle.clear(this.retryTimer);
-        yield* this.whenIdle();
-        patchAtom(this.snapshot, { state: DrainerStateEnum.PAUSED });
-    });
-
-    readonly resume = Effect.fn('DrainerService.resume')(function* (this: DrainerService<E>) {
-        if (this.state !== DrainerStateEnum.PAUSED) {
-            return;
-        }
-        patchAtom(this.snapshot, { state: DrainerStateEnum.IDLE });
-        yield* this.schedule();
-        yield* this.refreshPending();
-    });
-
-    readonly setForegroundBusy = Effect.fn('DrainerService.setForegroundBusy')(function* (
-        this: DrainerService<E>,
-        isForegroundBusy: boolean
-    ) {
-        this.isForegroundBusy = isForegroundBusy;
-        if (isForegroundBusy) {
-            yield* this.halt();
-
-            return;
-        }
-        yield* this.schedule();
-    });
-
-    readonly boost = Effect.fn('DrainerService.boost')(function* (this: DrainerService<E>) {
-        if (this.state === DrainerStateEnum.BOOSTING) {
-            return;
-        }
-        yield* this.halt();
-        yield* this.batchLock.withPermit(
-            Effect.ensuring(DrainerService.mutex.withPermitsIfAvailable(1)(this.runBoost()), this.finishBoost())
-        );
-    });
-
-    readonly retry = Effect.fn('DrainerService.retry')(function* (this: DrainerService<E>): Effect.fn.Return<void, never, Db> {
-        this.consecutiveFailures = 0;
-        patchAtom(this.snapshot, { state: DrainerStateEnum.IDLE, errorMessage: null });
-        yield* this.schedule();
-    });
-
-    private readonly drain = Effect.fn('DrainerService.drain')(function* (this: DrainerService<E>) {
-        let delay = this.relaxedDelay();
-        while (this.canSchedule()) {
-            yield* Effect.sleep(delay);
-            yield* waitForIdle;
-            if (!this.canSchedule()) {
-                return;
-            }
-            delay = yield* Effect.uninterruptible(this.batchLock.withPermit(this.relaxedTick()));
-        }
-    });
-
-    private readonly relaxedTick = Effect.fn('DrainerService.relaxedTick')(function* (this: DrainerService<E>) {
-        const outcome = yield* DrainerService.mutex.withPermitsIfAvailable(1)(
-            this.config.fetchPending(this.config.relaxedBatchSize).pipe(
-                Effect.flatMap(rows => (isEmptyArray(rows) ? Effect.succeed(true) : this.withModel(this.processRows(rows)))),
-                Effect.tapCause(Effect.logError),
-                Effect.orElseSucceed(() => true),
-                Effect.ensuring(this.finalizeBatch())
-            )
+    const withModel = (use: Effect.Effect<void, E, Db>): Effect.Effect<boolean, E, Db> =>
+        Effect.acquireUseRelease(
+            modelResidency.acquire(config.subsystem),
+            isReady => (isReady ? Effect.as(use, true) : Effect.succeed(false)),
+            () => modelResidency.release(config.subsystem)
         );
 
-        return Option.match(outcome, {
-            onNone: () => DrainerService.MUTEX_BUSY_RESCHEDULE_MS,
-            onSome: isReady => (isReady ? this.relaxedDelay() : DrainerService.ERROR_AUTO_RETRY_MS)
-        });
-    });
-
-    private readonly processRows = Effect.fnUntraced(function* (this: DrainerService<E>, rows: Effect.Effect<void, E, Db>[]) {
-        for (const row of rows) {
-            if (!this.isSafe() || this.state === DrainerStateEnum.ERROR) {
-                return;
-            }
-            yield* this.runRow(row);
-        }
-    });
-
-    private readonly runBoost = Effect.fn('DrainerService.runBoost')(function* (this: DrainerService<E>) {
-        this.consecutiveFailures = 0;
-        patchAtom(this.snapshot, { state: DrainerStateEnum.BOOSTING, errorMessage: null });
-        yield* this.withModel(this.boostRows()).pipe(Effect.ensuring(this.finalizeBatch()));
-    });
-
-    private readonly boostRows = Effect.fnUntraced(function* (this: DrainerService<E>) {
-        let processed = 0;
-        while (this.isBoosting()) {
-            const rows = yield* this.config.fetchPending(this.config.boostBatchSize);
-            if (isEmptyArray(rows)) {
-                return;
-            }
-            for (const row of rows) {
-                if (!this.isBoosting()) {
-                    return;
-                }
-                yield* this.runRow(row);
-                processed += 1;
-                yield* this.paceBoost(processed);
-            }
-        }
-    });
-
-    private readonly finishBoost = Effect.fn('DrainerService.finishBoost')(function* (this: DrainerService<E>) {
-        if (this.state === DrainerStateEnum.BOOSTING) {
-            patchAtom(this.snapshot, { state: DrainerStateEnum.IDLE });
-        }
-        yield* this.schedule();
-    });
-
-    private readonly runRow = Effect.fnUntraced(function* (this: DrainerService<E>, row: Effect.Effect<void, E, Db>) {
+    const runRow = Effect.fnUntraced(function* (row: Effect.Effect<void, E, Db>, retry: Effect.Effect<void, never, Db>) {
         const exit = yield* Effect.exit(row);
         if (Exit.isSuccess(exit)) {
-            this.consecutiveFailures = 0;
+            yield* Ref.set(consecutiveFailures, 0);
 
             return;
         }
         const message = exit.cause.pipe(Cause.squash, getRootErrorMessage);
-        if (DrainerService.SQLITE_BUSY_PATTERN.test(message)) {
+        if (sqliteBusyPattern.test(message)) {
             return;
         }
-        this.consecutiveFailures += 1;
-        if (this.consecutiveFailures < DrainerService.MAX_CONSECUTIVE_FAILURES) {
+        if ((yield* Ref.updateAndGet(consecutiveFailures, failures => failures + 1)) < maxConsecutiveFailures) {
             return;
         }
-        patchAtom(this.snapshot, { state: DrainerStateEnum.ERROR, errorMessage: message });
-        yield* FiberHandle.run(this.retryTimer, Effect.delay(this.autoRetry(), DrainerService.ERROR_AUTO_RETRY_MS));
+        patchAtom(snapshot, { state: DrainerStateEnum.ERROR, errorMessage: message });
+        yield* FiberHandle.run(
+            retryTimer,
+            Effect.delay(
+                Effect.suspend(() => (readState() === DrainerStateEnum.ERROR ? retry : Effect.void)),
+                errorAutoRetryMs
+            )
+        );
     });
 
-    private readonly autoRetry = Effect.fn('DrainerService.autoRetry')(function* (this: DrainerService<E>) {
-        if (this.state === DrainerStateEnum.ERROR) {
-            yield* this.retry();
+    const processRows = Effect.fnUntraced(function* (rows: Effect.Effect<void, E, Db>[], retry: Effect.Effect<void, never, Db>) {
+        for (const row of rows) {
+            if (!(yield* isSafe) || readState() === DrainerStateEnum.ERROR) {
+                return;
+            }
+            yield* runRow(row, retry);
         }
     });
 
-    private readonly finalizeBatch = Effect.fn('DrainerService.finalizeBatch')(function* (this: DrainerService<E>) {
-        yield* Effect.ignore(this.config.afterBatch);
-        yield* this.refreshPending();
-        yield* YIELD_TO_UI;
+    const relaxedTick = Effect.fn('Drainer.relaxedTick')(function* (retry: Effect.Effect<void, never, Db>) {
+        const outcome = yield* modelResidency.drainLock.withPermitsIfAvailable(1)(
+            config.fetchPending(config.relaxedBatchSize).pipe(
+                Effect.flatMap(rows => (isEmptyArray(rows) ? Effect.succeed(true) : withModel(processRows(rows, retry)))),
+                Effect.tapCause(Effect.logError),
+                Effect.orElseSucceed(() => true),
+                Effect.ensuring(finalizeBatch)
+            )
+        );
+
+        return Option.match(outcome, {
+            onNone: () => drainLockBusyRescheduleMs,
+            onSome: isReady => (isReady ? relaxedDelay() : errorAutoRetryMs)
+        });
     });
 
-    private readonly refreshPending = Effect.fn('DrainerService.refreshPending')(
-        function* (this: DrainerService<E>) {
-            patchAtom(this.snapshot, { pending: yield* this.config.countPending });
-        },
-        effect => Effect.ignore(effect)
-    );
-
-    private readonly batchLock = Semaphore.makeUnsafe(1);
-    private started = false;
-    private isForegroundBusy = false;
-    private consecutiveFailures = 0;
-
-    private constructor(
-        private readonly config: DrainerConfigInterface<E>,
-        private readonly modelResidency: Context.Service.Shape<typeof AiModelResidencyService>,
-        private readonly loop: FiberHandle.FiberHandle,
-        private readonly retryTimer: FiberHandle.FiberHandle
-    ) {
-        this.snapshot = config.snapshot;
-    }
-
-    private get state(): DrainerStateEnum {
-        return appAtomRegistry.get(this.snapshot).state;
-    }
-
-    cancelBoost(): void {
-        if (this.state === DrainerStateEnum.BOOSTING) {
-            patchAtom(this.snapshot, { state: DrainerStateEnum.IDLE });
+    const drain = Effect.fn('Drainer.drain')(function* (retry: Effect.Effect<void, never, Db>) {
+        let delay = relaxedDelay();
+        while (yield* canSchedule) {
+            yield* Effect.sleep(delay);
+            yield* waitForIdle;
+            if (!(yield* canSchedule)) {
+                return;
+            }
+            delay = yield* Effect.uninterruptible(batchLock.withPermit(relaxedTick(retry)));
         }
-    }
+    });
 
-    private withModel(use: Effect.Effect<void, E, Db>): Effect.Effect<boolean, E, Db> {
-        return Effect.acquireUseRelease(
-            this.modelResidency.acquire(this.config.subsystem),
-            isReady => (isReady ? Effect.as(use, true) : Effect.succeed(false)),
-            () => this.modelResidency.release(this.config.subsystem)
-        );
-    }
+    const retry = Effect.fn('Drainer.retry')(function* (): Effect.fn.Return<void, never, Db> {
+        yield* Ref.set(consecutiveFailures, 0);
+        patchAtom(snapshot, { state: DrainerStateEnum.IDLE, errorMessage: null });
+        if (yield* canSchedule) {
+            yield* FiberHandle.run(loop, drain(retry()));
+        }
+    });
 
-    private paceBoost(processed: number): Effect.Effect<void, never, Db> {
-        return Effect.andThen(
-            processed % this.config.yieldEveryRows === 0 ? YIELD_TO_UI : Effect.void,
-            processed % DrainerService.PROGRESS_REFRESH_EVERY === 0 ? this.refreshPending() : Effect.void
-        );
-    }
+    const schedule = Effect.fn('Drainer.schedule')(function* () {
+        if (yield* canSchedule) {
+            yield* FiberHandle.run(loop, drain(retry()));
+        }
+    });
 
-    private relaxedDelay(): number {
-        return appAtomRegistry.get(this.snapshot).pending === 0 ? DrainerService.IDLE_INTERVAL_MS : this.config.relaxedIntervalMs;
-    }
+    const boostRows = Effect.fnUntraced(function* () {
+        let processed = 0;
+        while (yield* isBoosting) {
+            const rows = yield* config.fetchPending(config.boostBatchSize);
+            if (isEmptyArray(rows)) {
+                return;
+            }
+            for (const row of rows) {
+                if (!(yield* isBoosting)) {
+                    return;
+                }
+                yield* runRow(row, retry());
+                processed += 1;
+                yield* processed % config.yieldEveryRows === 0 ? YIELD_TO_UI : Effect.void;
+                yield* processed % progressRefreshEvery === 0 ? refreshPending : Effect.void;
+            }
+        }
+    });
 
-    private isBoosting(): boolean {
-        return this.isSafe() && this.state === DrainerStateEnum.BOOSTING;
-    }
+    const runBoost = Effect.fn('Drainer.runBoost')(function* () {
+        yield* Ref.set(consecutiveFailures, 0);
+        patchAtom(snapshot, { state: DrainerStateEnum.BOOSTING, errorMessage: null });
+        yield* withModel(boostRows()).pipe(Effect.ensuring(finalizeBatch));
+    });
 
-    private canSchedule(): boolean {
-        return this.isSafe() && !DrainerService.BLOCKED_STATES.includes(this.state);
-    }
+    const finishBoost = Effect.fn('Drainer.finishBoost')(function* () {
+        cancelBoost();
+        yield* schedule();
+    });
 
-    private isSafe(): boolean {
-        return this.started && AppState.currentState === 'active' && !this.isForegroundBusy;
-    }
-}
+    return {
+        snapshot,
+        fetchPending: config.fetchPending,
+        whenIdle,
+        halt,
+        schedule,
+        retry,
+        cancelBoost,
+        start: Effect.fn('Drainer.start')(function* () {
+            if (yield* Ref.getAndSet(isStarted, true)) {
+                return;
+            }
+            yield* FiberHandle.run(
+                foregroundWatch,
+                Stream.runForEach(SubscriptionRef.changes(workload.foregroundCount), count => (count > 0 ? halt() : schedule()))
+            );
+            yield* schedule();
+            yield* refreshPending;
+        }),
+        stop: Effect.fn('Drainer.stop')(function* () {
+            yield* Ref.set(isStarted, false);
+            yield* halt();
+            yield* FiberHandle.clear(retryTimer);
+            yield* FiberHandle.clear(foregroundWatch);
+            if (readState() !== DrainerStateEnum.PAUSED) {
+                patchAtom(snapshot, { state: DrainerStateEnum.IDLE });
+            }
+        }),
+        pause: Effect.fn('Drainer.pause')(function* () {
+            if (readState() === DrainerStateEnum.PAUSED) {
+                return;
+            }
+            cancelBoost();
+            yield* halt();
+            yield* FiberHandle.clear(retryTimer);
+            yield* whenIdle();
+            patchAtom(snapshot, { state: DrainerStateEnum.PAUSED });
+        }),
+        resume: Effect.fn('Drainer.resume')(function* () {
+            if (readState() !== DrainerStateEnum.PAUSED) {
+                return;
+            }
+            patchAtom(snapshot, { state: DrainerStateEnum.IDLE });
+            yield* schedule();
+            yield* refreshPending;
+        }),
+        boost: Effect.fn('Drainer.boost')(function* () {
+            if (readState() === DrainerStateEnum.BOOSTING) {
+                return;
+            }
+            yield* halt();
+            yield* batchLock.withPermit(Effect.ensuring(modelResidency.drainLock.withPermitsIfAvailable(1)(runBoost()), finishBoost()));
+        })
+    };
+});

@@ -1,6 +1,5 @@
 import { appAtomRegistry } from '@app/@generic/constant/app-atom-registry.constant';
 import { NativeCallError } from '@app/@generic/error/native-call.error';
-import { Workload } from '@app/@generic/service/workload.service';
 import {
     aiCoordinatorSnapshotAtom,
     embeddingProgressSnapshotAtom,
@@ -23,7 +22,7 @@ import * as Effect from 'effect/Effect';
 import * as Exit from 'effect/Exit';
 import * as Layer from 'effect/Layer';
 import * as Queue from 'effect/Queue';
-import * as SubscriptionRef from 'effect/SubscriptionRef';
+import * as Semaphore from 'effect/Semaphore';
 import * as TestClock from 'effect/testing/TestClock';
 import { beforeEach, vi } from 'vitest';
 
@@ -72,8 +71,8 @@ const makeLifecycle = Effect.fnUntraced(function* (
     const chat = yield* ChatService.make;
     const coordinator = yield* AiCoordinatorService.make.pipe(
         Effect.provide([
-            Layer.mock(Workload, { foregroundCount: yield* SubscriptionRef.make(0) }),
             Layer.mock(AiModelResidencyService, {
+                drainLock: Semaphore.makeUnsafe(1),
                 resume: enabled =>
                     Effect.sync(() => {
                         resumes.push([...enabled]);
@@ -94,8 +93,7 @@ const makeLifecycle = Effect.fnUntraced(function* (
                 stop: () => Effect.void,
                 halt: () => Effect.void,
                 schedule: () => Effect.void,
-                whenIdle: () => Effect.suspend(() => idle),
-                setForegroundBusy: () => Effect.void
+                whenIdle: () => Effect.suspend(() => idle)
             }),
             Layer.mock(TranslationProgressStore, { snapshot: translationProgressSnapshotAtom, refresh: () => Effect.void }),
             Layer.mock(EmbeddingProgressStore, {
