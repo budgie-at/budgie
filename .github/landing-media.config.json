@@ -59,7 +59,7 @@
         },
         {
             "name": "on-device-ai-budget-app-1",
-            "deepLink": "budgie://settings?anchor=ai",
+            "deepLink": "budgie://settings/ai-features",
             "settleSeconds": 340
         },
         {
