@@ -80,6 +80,6 @@ on the row while `default_category_translations` supplies the displayed one.
 
 A seeded database is plain SQLite and the PIN lives in SecureStore, so no PIN
 unlocks a seeded lock screen. Every scene behind the lock — the Settings security
-card with App Lock active, `biometric-authentication-1` — stays unreachable until
+card with App Lock active — stays unreachable until
 the seed hook can produce a SQLCipher database with a known key; the simulator
 also has no enrolled Face ID, which the biometric rows are gated on.

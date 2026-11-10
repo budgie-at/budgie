@@ -262,7 +262,7 @@ export const SCENES: Readonly<Record<string, Scene>> = {
             await b.expectId(ctx, 'SuggestionPill.PatternCategory.0', 15_000);
         }
     },
-    'ai-merchant-translation-1': {
+    'ai-category-translation-1': {
         run: async ctx => {
             await open(ctx, 'budgie://settings/categories', 'CategoryCard.Сільпо');
             await b.tapId(ctx, 'CategoryCard.Сільпо');
