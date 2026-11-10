@@ -1,11 +1,10 @@
-import { UserIconNameEnum } from '@budgie/contracts';
+import { UserIconNameEnum, logAndContinue } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { ActionsMenuItem } from '../../../@generic/component/actions-menu-item/actions-menu-item';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
-import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { useDeleteTransaction } from '../../hook/use-delete-transaction.hook';
 import { TransactionListContextMenuSelector } from '../transaction-list-context-menu/transaction-list-context-menu.selector';
 

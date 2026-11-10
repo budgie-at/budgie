@@ -1,4 +1,4 @@
-import { UserIconNameEnum } from '@budgie/contracts';
+import { UserIconNameEnum, logAndContinue } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { ImpactFeedbackStyle } from 'expo-haptics';
@@ -9,7 +9,6 @@ import { GroupedListSection } from '../../../@generic/component/grouped-list-sec
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
-import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { SettingsRow } from '../../../settings/components/settings-row/settings-row';
 import { useRuleForm } from '../../hooks/use-rule-form.hook';
 import { RuleFormSelector } from '../rule-form-layout/rule-form-layout.selector';

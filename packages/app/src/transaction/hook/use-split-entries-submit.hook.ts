@@ -1,3 +1,4 @@
+import { logAndContinue } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import * as Effect from 'effect/Effect';
 
@@ -6,7 +7,6 @@ import { isDefined } from '@rnw-community/shared';
 import { useMorphingSheetDismiss } from '../../@generic/context/morphing-sheet.context';
 import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
-import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
 import { stripLocalId, withEntryAmount } from '../utils/entry-with-local-id.util';
 
 import type { EntryWithLocalIdInterface } from '../utils/entry-with-local-id.util';

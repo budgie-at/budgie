@@ -1,5 +1,5 @@
 // eslint-disable max-lines -- approved by liaugust: appServicesLayer is the single registration point
-import { TranslationLlmService, VoiceLlmService } from '@budgie/ai';
+import { VoiceLlmService } from '@budgie/ai';
 import {
     BudgetCategoryLimitRepository,
     BudgetFundSpendService,
@@ -12,10 +12,8 @@ import {
 } from '@budgie/budget';
 import {
     CategorizeInboxService,
-    CommentEmbeddingRepository,
     EmbeddingIndexService,
     EmbeddingSuggestionService,
-    MerchantEmbeddingRepository,
     TransactionCategorizeInboxRepository,
     TransactionEmbeddingRepository
 } from '@budgie/categorization';
@@ -34,19 +32,16 @@ import {
     SettingsRepository,
     SyncRepository,
     TagRepository,
-    MccGroupRepository,
     StatisticsRepository,
     TransactionEntryBaseValuationRepository,
     TransactionEntryPositionRepository,
     TransactionEntryRepository,
-    TransactionPatternRepository,
     TransactionRepository,
     TransactionConsolidationRepository,
     TransactionReceiptRepository,
     TransactionDayNetAmountRepository,
     TransactionViewRepository,
     TransactionTagsRepository,
-    SyncApplyStateRepository,
     SyncIdentityRepository,
     SyncRecordRepository,
     SyncZoneRegistryRepository
@@ -57,20 +52,15 @@ import {
     AccountBalanceIncrementalService,
     AccountDebtOpeningService,
     AccountService,
-    AccountTransferConversionService,
     BalanceAdjustmentService,
     CategoryService,
     DebtAccountService,
-    ImportedBatchNormalizerService,
-    ImportedTransactionEntryUpdateService,
     InstallmentPlanService,
     LedgerWorkload,
     MoneyDataUpgradeService,
     ReceiptMatchService,
     RefreshedImportedEntriesService,
-    TransactionBatchCreateService,
     TransactionDebtSettlementService,
-    TransactionDepositSafetyService,
     TransactionImportService,
     TransactionService,
     TransactionTransferService,
@@ -83,8 +73,7 @@ import {
     ExchangeRatesService,
     HistoricalExchangeRateRepository,
     InstrumentDailyMarketPriceRepository,
-    InstrumentMarketDataJobRepository,
-    InzhurPriceService
+    InstrumentMarketDataJobRepository
 } from '@budgie/market';
 import { RecurringRefreshService, RecurringService } from '@budgie/recurring';
 import { RuleEngineService, RuleMatcherService, RuleRepository, RuleService, TransactionRuleRepository } from '@budgie/rules';
@@ -94,7 +83,6 @@ import {
     ErsteSyncService,
     ExternalAccountService,
     AccountReissueMergeService,
-    InzhurBankFlowService,
     InzhurGainService,
     InzhurManualPurchaseService,
     InzhurOperationsImportService,
@@ -103,7 +91,6 @@ import {
     PrivatbankCategoryMatcherService,
     PrivatbankSyncService,
     ResyncService,
-    SyncBalanceReconciliationService,
     SyncOperationMetadataService,
     SyncProviderRegistryService,
     SyncRepairService,
@@ -157,11 +144,9 @@ import { AppDataSyncService } from '../../sync/service/app-data-sync.service';
 import { BackgroundSyncSessionService } from '../../sync/service/background-sync-session.service';
 import { EnableBankingConnectionService } from '../../sync/service/enable-banking-connection.service';
 import { TagService } from '../../tag/service/tag.service';
-import { PatternCacheService } from '../../transaction/service/pattern-cache/pattern-cache.service';
 import { RepeatedTransactionService } from '../../transaction/service/repeated-transaction.service';
 import { WalletCaptureImportService } from '../../wallet-capture/service/wallet-capture-import.service';
 import { WalletCaptureNativeService } from '../../wallet-capture/service/wallet-capture-native.service';
-import { WalletCaptureTransactionService } from '../../wallet-capture/service/wallet-capture-transaction.service';
 import { WidgetSnapshotService } from '../../widget/service/widget-snapshot.service';
 import { DatabaseLifecycleService } from '../drizzle/service/database-lifecycle.service';
 import { DatabaseMaintenanceService } from '../drizzle/service/database-maintenance.service';
@@ -193,7 +178,6 @@ export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     BudgetFundSpendService.layer,
     Layer.mergeAll(RecurringService.layer, RecurringRefreshService.layer, RecurringReminderService.layer),
     AccountBalanceIncrementalService.layer,
-    AccountTransferConversionService.layer,
     AccountService.layer,
     BalanceAdjustmentService.layer,
     AccountArchiveService.layer,
@@ -215,7 +199,6 @@ export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     ImporterService.layer,
     TagRepository.layer,
     TagService.layer,
-    SyncApplyStateRepository.layer,
     SyncIdentityRepository.layer,
     SyncOutboxRepository.layer,
     HouseholdShareService.layer,
@@ -226,8 +209,6 @@ export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     CategoryIconBackfillService.layer,
     MccCategoryRepository.layer,
     TransactionReceiptRepository.layer,
-    CommentEmbeddingRepository.layer,
-    MerchantEmbeddingRepository.layer,
     TransactionEmbeddingRepository.layer,
     RuleRepository.layer,
     TransactionRuleRepository.layer,
@@ -256,7 +237,6 @@ export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     VoiceReviewBatchCreateService.layer,
     ReceiptMatchService.layer,
     ReceiptScanService.layer,
-    TranslationLlmService.layer.pipe(Layer.provide(ChatService.invokerLayer)),
     VoiceLlmService.layer.pipe(Layer.provide(ChatService.invokerLayer)),
     EmbeddingSuggestionService.layer.pipe(Layer.provide(LocalEmbeddingService.invokerLayer)),
     EmbeddingIndexService.layer.pipe(Layer.provide(LocalEmbeddingService.invokerLayer)),
@@ -277,7 +257,6 @@ export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     AccountReissueMergeService.layer,
     SyncRepairService.layer,
     OwnTransferRepairService.layer,
-    SyncBalanceReconciliationService.layer,
     SyncOperationMetadataService.layer,
     PrivatbankCategoryMatcherService.layer,
     MonobankSyncService.layer,
@@ -286,12 +265,10 @@ export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     ErsteSyncService.layer,
     PrivatbankSyncService.layer,
     SyncProviderRegistryService.layer,
-    InzhurPriceService.layer,
     InzhurSetupService.layer,
     InzhurOperationsImportService.layer,
     InzhurManualPurchaseService.layer,
     InzhurGainService.layer,
-    InzhurBankFlowService.layer,
     InvestmentReturnRepository.layer,
     ResyncService.layer,
     AppDataSyncService.layer,
@@ -310,27 +287,19 @@ export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     TransactionEntryBaseValuationRepository.layer,
     TransactionEntryPositionRepository.layer,
     TransactionTagsRepository.layer,
-    TransactionPatternRepository.layer,
     StatisticsRepository.layer,
-    MccGroupRepository.layer,
     EntryBaseValuationService.layer,
     MoneyDataUpgradeService.layer,
-    ImportedBatchNormalizerService.layer,
-    ImportedTransactionEntryUpdateService.layer,
-    PatternCacheService.layer,
     RefreshedImportedEntriesService.layer,
     RepeatedTransactionService.layer,
-    TransactionBatchCreateService.layer,
     TransactionDebtSettlementService.layer,
     InstallmentPlanService.layer,
-    TransactionDepositSafetyService.layer,
     TransactionImportService.layer,
     RefundConsolidationService.layer,
     TransactionTransferService.layer,
     TransferCreationService.layer,
     TransactionService.layer,
     WalletCaptureNativeService.layer,
-    WalletCaptureTransactionService.layer,
     WalletCaptureImportService.layer,
     InstallIdService.layer,
     cloudBackupLayer,

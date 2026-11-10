@@ -1,3 +1,4 @@
+import { logAndContinue } from '@budgie/contracts';
 import { AnimatedLegendList } from '@legendapp/list/reanimated';
 import * as Effect from 'effect/Effect';
 import { ReactElement, ReactNode } from 'react';
@@ -18,7 +19,6 @@ import { useSearchInputBottom } from '../../hook/use-search-input-bottom.hook';
 import { useStickyDefinedValue } from '../../hook/use-sticky-defined-value.hook';
 import { IdInterface } from '../../interface/id.interface';
 import { appRuntime } from '../../runtime/app.runtime';
-import { logAndContinue } from '../../utils/log-and-continue.util';
 import { DeletableRow } from '../deletable-row/deletable-row';
 import { LoadingContent } from '../loading-content/loading-content';
 import { SEARCH_LIST_BOTTOM_CLEARANCE } from '../searchable-page/searchable-page.constant';

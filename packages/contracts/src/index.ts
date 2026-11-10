@@ -7,6 +7,7 @@ export { YIELD_TO_UI } from './@generic/constant/yield-to-ui.constant';
 export { convertFromMicroUnits } from './@generic/utils/convert-from-micro-units.util';
 export { convertToMicroUnits } from './@generic/utils/convert-to-micro-units.util';
 export { makeLoggerLayer } from './@generic/utils/make-logger-layer.util';
+export { logAndContinue } from './@generic/utils/log-and-continue.util';
 
 export { ThemeEnum } from './@generic/enum/theme.enum';
 export { CurrencyEnum } from './@generic/enum/currency.enum';
@@ -70,7 +71,6 @@ export { isBorrowLikeDebtType } from './account/utils/is-borrow-like-debt-type.u
 
 export { AccountBalanceEntityTable } from './account-balance/table/account-balance-entity.table';
 
-export type { AccountBalanceEntityInterface } from './account-balance/entity/account-balance-entity.interface';
 export type { AccountBalanceCreateEntityInterface } from './account-balance/entity/account-balance-create-entity.interface';
 
 export { AccountBalanceRepository } from './account-balance/repository/account-balance.repository';
@@ -172,8 +172,6 @@ export { DefaultCategoryTranslationEntityTable } from './category-translation/ta
 
 export { MccGroupEntityTable } from './mcc-group/table/mcc-group-entity.table';
 
-export { MccGroupRepository } from './mcc-group/repository/mcc-group.repository';
-
 export { ATM_CASH_WITHDRAWAL_MCC } from './mcc-category/constant/atm-cash-withdrawal-mcc.constant';
 export { ATM_CASH_WITHDRAWAL_TITLE_PREFIXES } from './mcc-category/constant/atm-cash-withdrawal-title-prefixes.constant';
 export { CASH_DEPOSIT_TITLE_PREFIXES } from './mcc-category/constant/cash-deposit-title-prefixes.constant';
@@ -238,8 +236,6 @@ export type { TransactionTagsCreateEntityInterface } from './transaction-tags/en
 export { TransactionTagsRepository } from './transaction-tags/repository/transaction-tags.repository';
 export { TransactionReceiptEntityTable } from './transaction-receipt/table/transaction-receipt-entity.table';
 
-export type { TransactionReceiptEntityInterface } from './transaction-receipt/entity/transaction-receipt-entity.interface';
-export type { TransactionReceiptCreateEntityInterface } from './transaction-receipt/entity/transaction-receipt-create-entity.interface';
 export { TransactionReceiptRepository } from './transaction-receipt/repository/transaction-receipt.repository';
 export type { ReceiptMatchCandidateInterface } from './transaction-receipt/interface/receipt-match-candidate.interface';
 
@@ -345,7 +341,6 @@ export type { RuleCreateInputInterface } from './rule/input/rule-create-input.in
 export type { RuleUpdateInputInterface } from './rule/input/rule-update-input.interface';
 
 export { RuleConditionEntityTable } from './rule-condition/table/rule-condition-entity.table';
-export type { RuleConditionEntityInterface } from './rule-condition/entity/rule-condition-entity.interface';
 export type { RuleConditionCreateEntityInterface } from './rule-condition/entity/rule-condition-create-entity.interface';
 export type { RuleConditionCreateInputInterface } from './rule-condition/input/rule-condition-create-input.interface';
 
@@ -425,7 +420,6 @@ export { SyncZoneRoleEnum } from './cloud-sync/enum/sync-zone-role.enum';
 
 export { generateSyncId } from './cloud-sync/utils/generate-sync-id.util';
 export { deriveSyncId } from './cloud-sync/utils/derive-sync-id.util';
-export { deriveSeedSyncId } from './cloud-sync/utils/derive-seed-sync-id.util';
 export { deriveBankTransactionSyncId } from './cloud-sync/utils/derive-bank-transaction-sync-id.util';
 export { deriveConsolidationSyncId } from './cloud-sync/utils/derive-consolidation-sync-id.util';
 
@@ -435,15 +429,10 @@ export { SyncPendingEntityTable } from './cloud-sync/table/sync-pending-entity.t
 export { SyncApplyStateEntityTable } from './cloud-sync/table/sync-apply-state-entity.table';
 export { SyncZoneRegistryEntityTable } from './cloud-sync/table/sync-zone-registry-entity.table';
 
-export type { SyncRecordEntityInterface } from './cloud-sync/entity/sync-record-entity.interface';
-export type { SyncRecordCreateEntityInterface } from './cloud-sync/entity/sync-record-create-entity.interface';
 export type { SyncOutboxEntityInterface } from './cloud-sync/entity/sync-outbox-entity.interface';
 export type { SyncOutboxCreateEntityInterface } from './cloud-sync/entity/sync-outbox-create-entity.interface';
-export type { SyncPendingEntityInterface } from './cloud-sync/entity/sync-pending-entity.interface';
 export type { SyncPendingCreateEntityInterface } from './cloud-sync/entity/sync-pending-create-entity.interface';
-export type { SyncApplyStateEntityInterface } from './cloud-sync/entity/sync-apply-state-entity.interface';
 export type { SyncZoneRegistryEntityInterface } from './cloud-sync/entity/sync-zone-registry-entity.interface';
-export type { SyncZoneRegistryCreateEntityInterface } from './cloud-sync/entity/sync-zone-registry-create-entity.interface';
 
 export { SyncRecordRepository } from './cloud-sync/repository/sync-record.repository';
 export { SyncApplyStateRepository } from './cloud-sync/repository/sync-apply-state.repository';

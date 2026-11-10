@@ -1,9 +1,9 @@
+import { logAndContinue } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
-import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { AiFeaturesPageSelector } from '../../../app/(tabs)/settings/ai-features-page.selector';
 import { SettingSwitch } from '../../../settings/components/setting-switch/setting-switch';

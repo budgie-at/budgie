@@ -1,3 +1,4 @@
+import { logAndContinue } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as Notifications from 'expo-notifications';
@@ -7,7 +8,6 @@ import { Text, View } from 'react-native';
 import { GroupedListSectionTitle } from '../../../@generic/component/grouped-list-section-title/grouped-list-section-title';
 import { SegmentedControl } from '../../../@generic/component/segmented-control/segmented-control';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
-import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { toNativeCallError } from '../../../@generic/utils/to-native-call-error.util';
 import { RecurringReminderChoiceEnum } from '../../enum/recurring-reminder-choice.enum';
 import { buildRecurringReminderSegments } from '../../utils/build-recurring-reminder-segments.util';

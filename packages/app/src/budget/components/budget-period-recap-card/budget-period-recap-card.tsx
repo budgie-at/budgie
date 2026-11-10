@@ -1,5 +1,5 @@
 import { BudgetPeriodSnapshotRepository } from '@budgie/budget';
-import { UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
+import { UserIconNameEnum, convertFromMicroUnits, logAndContinue } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
@@ -10,7 +10,6 @@ import { isNotEmptyArray } from '@rnw-community/shared';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
-import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { BudgetSelector } from '../../budget.selector';
 import { useFormatBudgetPeriod } from '../../hooks/use-format-budget-period.hook';

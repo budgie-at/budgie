@@ -1,3 +1,4 @@
+import { logAndContinue } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { useState } from 'react';
@@ -10,7 +11,6 @@ import { SheetSurface } from '../../../@generic/component/sheet-surface/sheet-su
 import { MOTION_FADE_IN } from '../../../@generic/constant/motion.constant';
 import { useSurfaceSettled } from '../../../@generic/context/surface-settled.context';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
-import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { AccountSelectorModalSelector } from '../../../app/account-selector-modal.selector';
 import { useSearchAccountsSortedQuery } from '../../query/use-search-accounts-sorted.query';

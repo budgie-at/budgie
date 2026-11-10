@@ -1,8 +1,8 @@
+import { logAndContinue } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 import { useRef, useState } from 'react';
 
 import { appRuntime } from '../runtime/app.runtime';
-import { logAndContinue } from '../utils/log-and-continue.util';
 
 import type { AppServices } from '../runtime/app.runtime';
 

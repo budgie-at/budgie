@@ -1,4 +1,4 @@
-import { AccountTypeEnum, DebtEventAssociationEnum, TransactionTypeEnum } from '@budgie/contracts';
+import { AccountTypeEnum, DebtEventAssociationEnum, TransactionTypeEnum, logAndContinue } from '@budgie/contracts';
 import { AccountService, TransactionDebtSettlementService } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
@@ -9,7 +9,6 @@ import { isDefined } from '@rnw-community/shared';
 
 import { useOpenModal } from '../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { appRuntime } from '../../@generic/runtime/app.runtime';
-import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
 import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
 
 import type { DebtSettlementAccountInterface } from '../interface/debt-settlement-account.interface';

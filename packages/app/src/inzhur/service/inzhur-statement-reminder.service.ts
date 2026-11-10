@@ -1,3 +1,4 @@
+import { logAndContinue } from '@budgie/contracts';
 import { InzhurSetupService } from '@budgie/sync';
 import { i18n } from '@lingui/core';
 import { msg, plural } from '@lingui/core/macro';
@@ -11,7 +12,6 @@ import { isDefined } from '@rnw-community/shared';
 
 import { NativeCallError } from '../../@generic/error/native-call.error';
 import { isNotificationPermissionGranted } from '../../@generic/utils/is-notification-permission-granted.util';
-import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
 import { postLocalNotification } from '../../@generic/utils/post-local-notification.util';
 import { BUDGET_ALERT_CHANNEL_ID } from '../../budget/constant/budget-alert-channel-id.constant';
 

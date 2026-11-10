@@ -1,9 +1,9 @@
+import { logAndContinue } from '@budgie/contracts';
 import { TransferConsolidationDrainerService, TransferConsolidationWorkload } from '@budgie/sync';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
 import { Workload } from '../../@generic/service/workload.service';
-import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
 import { waitForIdle } from '../../@generic/utils/wait-for-idle.util';
 import { InzhurPendingTopUpService } from '../../inzhur/service/inzhur-pending-top-up.service';
 

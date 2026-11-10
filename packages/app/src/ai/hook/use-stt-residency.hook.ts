@@ -1,3 +1,4 @@
+import { logAndContinue } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 import * as Fiber from 'effect/Fiber';
 import { useEffect, useRef } from 'react';
@@ -6,7 +7,6 @@ import { isDefined } from '@rnw-community/shared';
 
 import { appAtomRegistry } from '../../@generic/constant/app-atom-registry.constant';
 import { appRuntime } from '../../@generic/runtime/app.runtime';
-import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
 import { sttSnapshotAtom } from '../constant/ai-snapshot-atoms.constant';
 import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';

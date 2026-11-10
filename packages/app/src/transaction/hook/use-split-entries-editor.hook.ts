@@ -1,4 +1,4 @@
-import { convertFromMicroUnits, convertToMicroUnits } from '@budgie/contracts';
+import { convertFromMicroUnits, convertToMicroUnits, logAndContinue } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 import { NotificationFeedbackType } from 'expo-haptics';
 import { useState } from 'react';
@@ -8,7 +8,6 @@ import { isPositiveNumber } from '@rnw-community/shared';
 
 import { useVibration } from '../../@generic/hook/use-vibration.hook';
 import { appRuntime } from '../../@generic/runtime/app.runtime';
-import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
 import { createEmptyEntry, withEntryAmount } from '../utils/entry-with-local-id.util';
 import { sumEntryAmounts } from '../utils/sum-entry-amounts.util';
 

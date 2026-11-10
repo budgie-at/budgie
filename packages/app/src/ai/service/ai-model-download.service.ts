@@ -1,3 +1,4 @@
+import { logAndContinue } from '@budgie/contracts';
 import * as Clock from 'effect/Clock';
 import * as Context from 'effect/Context';
 import * as Duration from 'effect/Duration';
@@ -18,7 +19,6 @@ import { isDefined, isEmptyArray, isNotEmptyString, isPositiveNumber } from '@rn
 import { appAtomRegistry } from '../../@generic/constant/app-atom-registry.constant';
 import { NetworkTypeEnum } from '../../@generic/enum/network-type.enum';
 import { NetworkService } from '../../@generic/service/network.service';
-import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
 import { AI_MODEL_DOWNLOAD_ORDER, AI_MODEL_FILES, AI_MODEL_FREE_SPACE_RESERVE_BYTES } from '../constant/ai-model-files.constant';
 import { aiModelDownloadSnapshotAtom } from '../constant/ai-snapshot-atoms.constant';
 import { WHISPER_MODEL_FILENAME } from '../constant/whisper-model.constant';

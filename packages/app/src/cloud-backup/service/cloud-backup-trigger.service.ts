@@ -1,4 +1,4 @@
-import { SYNC_IDENTITY_TABLES } from '@budgie/contracts';
+import { SYNC_IDENTITY_TABLES, logAndContinue } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Duration from 'effect/Duration';
 import * as Effect from 'effect/Effect';
@@ -10,7 +10,6 @@ import * as TaskManager from 'expo-task-manager';
 import { appStateChanges } from '../../@generic/constant/app-state-changes.constant';
 import { DatabaseChangeService } from '../../@generic/drizzle/service/database-change.service';
 import { Workload } from '../../@generic/service/workload.service';
-import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
 import { CLOUD_BACKUP_TASK } from '../constant/cloud-backup-task.constant';
 
 import { CloudBackupService } from './cloud-backup.service';

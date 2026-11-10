@@ -1,10 +1,10 @@
+import { logAndContinue } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import * as Effect from 'effect/Effect';
 import { ReactNode, useEffect, useState } from 'react';
 import { AppState, AppStateStatus } from 'react-native';
 
 import { appRuntime } from '../../@generic/runtime/app.runtime';
-import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
 import { isSettingsLoadingAtom } from '../../settings/constants/settings-atoms.constant';
 import { useSetting } from '../../settings/hook/use-setting.hook';
 import { SiriCatalogService } from '../../siri/service/siri-catalog.service';

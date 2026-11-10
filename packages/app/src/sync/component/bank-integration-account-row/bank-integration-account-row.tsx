@@ -1,4 +1,4 @@
-import { AccountAssociationEnum, AccountWithInstrumentEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { AccountAssociationEnum, AccountWithInstrumentEntityInterface, UserIconNameEnum, logAndContinue } from '@budgie/contracts';
 import { SyncProviderRegistryService } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
@@ -12,7 +12,6 @@ import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-s
 import { TONAL_DISC_BACKGROUND } from '../../../@generic/constant/tonal-disc-background.constant';
 import { TestIDPartEnum } from '../../../@generic/enum/test-id-part.enum';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
-import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { testID } from '../../../@generic/utils/test-id.util';
 import { toTrueMinus } from '../../../@generic/utils/to-true-minus.util';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';

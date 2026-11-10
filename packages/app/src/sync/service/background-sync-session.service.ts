@@ -1,4 +1,4 @@
-import { SyncEntityTable, SyncRepository } from '@budgie/contracts';
+import { SyncEntityTable, SyncRepository, logAndContinue } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import { getTableName } from 'drizzle-orm';
 import * as Context from 'effect/Context';
@@ -10,7 +10,6 @@ import * as Stream from 'effect/Stream';
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { BackgroundSyncModule } from '../../../modules/background-sync';
-import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
 
 export class BackgroundSyncSessionService extends Context.Service<BackgroundSyncSessionService>()(
     '@budgie/app/BackgroundSyncSessionService',

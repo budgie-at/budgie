@@ -1,11 +1,10 @@
-import { UserIconNameEnum } from '@budgie/contracts';
+import { UserIconNameEnum, logAndContinue } from '@budgie/contracts';
 import { RecurringService } from '@budgie/recurring';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 
 import { ActionsMenuItem } from '../../../@generic/component/actions-menu-item/actions-menu-item';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
-import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { RecurringDetailSelector } from '../recurring-detail-content/recurring-detail.selector';
 

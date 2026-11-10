@@ -10,7 +10,8 @@ import {
     LanguageEnum,
     SettingsRepository,
     StatisticsRepository,
-    convertFromMicroUnits
+    convertFromMicroUnits,
+    logAndContinue
 } from '@budgie/contracts';
 import { RecurringService } from '@budgie/recurring';
 import { setupI18n } from '@lingui/core';
@@ -33,7 +34,6 @@ import { Platform } from 'react-native';
 import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { NativeCallError } from '../../@generic/error/native-call.error';
-import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
 import { BUDGET_PACE_STATUS_LABEL } from '../../budget/constant/budget-pace-status-label.constant';
 import { BudgetProjectionService } from '../../budget/service/budget-projection.service';
 import { DEFAULT_DECIMAL_PLACES } from '../../i18n/constant/default-decimal-places.constant';

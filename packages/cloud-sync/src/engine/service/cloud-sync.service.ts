@@ -1,4 +1,4 @@
-import { SYNC_IDENTITY_TABLES } from '@budgie/contracts';
+import { SYNC_IDENTITY_TABLES, logAndContinue } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Duration from 'effect/Duration';
 import * as Effect from 'effect/Effect';
@@ -13,7 +13,6 @@ import { cloudSyncDomainLayer } from '../layer/cloud-sync-domain.layer';
 import { CloudSyncDatabaseChanges } from '../port/cloud-sync-database-changes.port';
 import { CloudSyncHost } from '../port/cloud-sync-host.port';
 import { CloudSyncTransport } from '../port/cloud-sync-transport.port';
-import { logAndContinue } from '../utils/log-and-continue.util';
 
 import { CloudSyncDrainService } from './cloud-sync-drain.service';
 import { CloudSyncEngineService } from './cloud-sync-engine.service';

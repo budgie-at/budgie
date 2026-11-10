@@ -1,3 +1,4 @@
+import { logAndContinue } from '@budgie/contracts';
 import { MoneyDataUpgradeService } from '@budgie/ledger';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
@@ -10,7 +11,6 @@ import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { appAtomRuntime, appRuntime } from '../../@generic/runtime/app.runtime';
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
-import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
 import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
 import { MoneyDataUpgradeProgressStateEnum } from '../enum/money-data-upgrade-progress-state.enum';
 import { MoneyDataUpgradeStatusSnapshotInterface } from '../interface/money-data-upgrade-status-snapshot.interface';

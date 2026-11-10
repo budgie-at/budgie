@@ -1,4 +1,11 @@
-import { HOUSEHOLD_SYNC_ZONE, PERSONAL_SYNC_ZONE, SyncDatabaseScopeEnum, SyncRecordRepository, SyncZoneRoleEnum } from '@budgie/contracts';
+import {
+    HOUSEHOLD_SYNC_ZONE,
+    PERSONAL_SYNC_ZONE,
+    SyncDatabaseScopeEnum,
+    SyncRecordRepository,
+    SyncZoneRoleEnum,
+    logAndContinue
+} from '@budgie/contracts';
 import * as Clock from 'effect/Clock';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -21,7 +28,6 @@ import { CloudSyncHost } from '../port/cloud-sync-host.port';
 import { CloudSyncStateStore } from '../port/cloud-sync-state-store.port';
 import { CloudSyncTransport } from '../port/cloud-sync-transport.port';
 import { isCloudSyncSideRecordType } from '../utils/is-cloud-sync-side-record-type.util';
-import { logAndContinue } from '../utils/log-and-continue.util';
 import { toCloudSyncEnvelope } from '../utils/to-cloud-sync-envelope.util';
 
 import { BankOwnershipService } from './bank-ownership.service';
