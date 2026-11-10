@@ -3,6 +3,8 @@ import { router } from 'expo-router';
 import { emptyFn, isDefined } from '@rnw-community/shared';
 
 import type { ModalEntries } from '../type/modal-entries.type';
+import type { ModalOpener } from '../type/modal-opener.type';
+import type { ModalOpeners } from '../type/modal-openers.type';
 import type { ModalParams } from '../type/modal-params.type';
 import type { ModalResult } from '../type/modal-result.type';
 import type { ModalRoute } from '../type/modal-route.type';
@@ -10,6 +12,16 @@ import type { ModalRoute } from '../type/modal-route.type';
 export class ModalStore {
     private readonly entries: ModalEntries = {};
     private readonly listeners = new Map<ModalRoute, Set<() => void>>();
+    private readonly openers: ModalOpeners = {};
+
+    opener<TRoute extends ModalRoute>(route: TRoute): ModalOpener<TRoute> {
+        const openers: ModalOpeners<TRoute> = this.openers;
+        const opener = openers[route] ?? ((params, onResult) => void this.open(route, params, onResult));
+
+        openers[route] = opener;
+
+        return opener;
+    }
 
     open<TRoute extends ModalRoute>(route: TRoute, params?: ModalParams<TRoute>, onResult?: (result: ModalResult<TRoute> | null) => void) {
         const entries: ModalEntries<TRoute> = this.entries;
