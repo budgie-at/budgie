@@ -42,9 +42,7 @@
     "scripts": {
         "build": "rm -rf ./dist && bob build",
         "clear": "rm -rf coverage && rm -rf dist && rm -f *.tsbuildinfo",
-        "format": "oxfmt --write src",
         "lint": "oxlint --type-aware src",
-        "lint:fix": "oxlint --type-aware --fix src",
         "test": "vitest run",
         "ts": "node ../../scripts/typecheck.cjs --noEmit -p tsconfig.json && node ../../scripts/typecheck.cjs --noEmit -p tsconfig.build.json",
         "ts:native": "node ../../scripts/typecheck.cjs --native --noEmit -p tsconfig.json && node ../../scripts/typecheck.cjs --native --noEmit -p tsconfig.build.json"

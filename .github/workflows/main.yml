@@ -35,19 +35,6 @@ jobs:
           fetch-tags: true
           ref: main
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
-
-      - name: Setup Node
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version: 22.x
-
-      - name: Restore package manager cache
-        uses: rnw-community/mobile-ci/actions/node-pm-cache@9a151735055f5ab661650523ad7c6375ae007bef # v4.12.0
-        with:
-          package-manager: pnpm
-
       - name: Setup Git user
         run: |
           git config user.name "Vitalii Yehorov"
@@ -66,10 +53,10 @@ jobs:
             exit 1
           fi
 
-      - name: Install dependencies
-        env:
-            RNLLAMA_SKIP_POSTINSTALL: '1'
-        run: pnpm install --frozen-lockfile
+      - uses: ./.github/actions/setup
+        with:
+          node-version: 22.x
+          skip-llama-postinstall: 'true'
 
       - name: Sync Lingui catalogs
         run: pnpm i18n:sync
@@ -135,31 +122,19 @@ jobs:
           persist-credentials: false
           ref: main
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
-
-      - name: Setup Node
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+      - id: setup
+        uses: ./.github/actions/setup
         with:
           node-version: 22.x
 
-      - name: Restore package manager cache
-        id: pm-cache
-        uses: rnw-community/mobile-ci/actions/node-pm-cache@9a151735055f5ab661650523ad7c6375ae007bef # v4.12.0
-        with:
-          package-manager: pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
       - name: Save package manager cache
-        if: steps.pm-cache.outputs.cache-hit != 'true'
+        if: steps.setup.outputs.cache-hit != 'true'
         uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         timeout-minutes: 10
         continue-on-error: true
         with:
-          path: ${{ steps.pm-cache.outputs.path }}
-          key: ${{ steps.pm-cache.outputs.cache-key }}
+          path: ${{ steps.setup.outputs.path }}
+          key: ${{ steps.setup.outputs.cache-key }}
 
       - name: Build internal workspace packages
         run: pnpm exec turbo build --filter='@budgie/*'

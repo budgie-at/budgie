@@ -17,6 +17,7 @@
         "@budgie/cloud-sync": "workspace:*",
         "@budgie/consolidation": "workspace:*",
         "@budgie/contracts": "workspace:^",
+        "@budgie/import-export": "workspace:*",
         "@budgie/ledger": "workspace:*",
         "@budgie/market": "workspace:*",
         "@budgie/recurring": "workspace:*",
