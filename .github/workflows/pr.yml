@@ -23,6 +23,7 @@ jobs:
             pull-requests: read
         outputs:
             mobile: ${{ steps.gate.outputs.mobile }}
+            e2e-scripts: ${{ steps.gate.outputs.e2e-scripts }}
         steps:
             - name: Compute mobile-impact gate
               id: gate
@@ -30,6 +31,7 @@ jobs:
               with:
                   script: |
                       let mobile = true;
+                      let e2eScripts = true;
 
                       try {
                         const files = await github.paginate(github.rest.pulls.listFiles, {
@@ -61,12 +63,17 @@ jobs:
                             (/^test-|media|compose/.test(filename.slice('tests/app-tests/scripts/'.length))))
                         );
                         mobile = !mobileSuiteExempt;
-                        core.info(`Inspected ${files.length} changed files; mobile affected: ${mobile}`);
+                        e2eScripts = files.length === 0 || files.some(({ filename }) =>
+                          /^(e2e|tests\/app-tests|packages\/app\/fastlane|packages\/app\/assets\/fonts)\//.test(filename) ||
+                          /^\.github\/(scripts\/|actions\/|workflows\/pr\.yml$|(landing-media|store-screenshots)\.config\.json$)/.test(filename)
+                        );
+                        core.info(`Inspected ${files.length} changed files; mobile affected: ${mobile}; e2e scripts affected: ${e2eScripts}`);
                       } catch (error) {
                         core.warning(`Could not inspect PR files; defaulting to mobile=true: ${error.message}`);
                       }
 
                       core.setOutput('mobile', mobile ? 'true' : 'false');
+                      core.setOutput('e2e-scripts', e2eScripts ? 'true' : 'false');
 
     code-quality:
         name: Code quality checks
@@ -82,24 +89,16 @@ jobs:
               uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
               with:
                   persist-credentials: false
+                  filter: blob:none
+                  sparse-checkout-cone-mode: false
+                  sparse-checkout: |
+                      /*
+                      !/packages/app/fastlane/screenshots/**/*.png
+                      !/tests/app-tests/fixtures/*.db
 
-            - name: Setup pnpm
-              uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
-
-            - name: Setup Node
-              uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+            - uses: ./.github/actions/setup
               with:
-                  node-version: 22.22.2
-
-            - name: Restore package manager cache
-              uses: rnw-community/mobile-ci/actions/node-pm-cache@9a151735055f5ab661650523ad7c6375ae007bef # v4.12.0
-              with:
-                  package-manager: pnpm
-
-            - name: Install dependencies
-              env:
-                  RNLLAMA_SKIP_POSTINSTALL: '1'
-              run: pnpm install --frozen-lockfile
+                  skip-llama-postinstall: 'true'
 
             - name: Lingui catalogs are up to date
               run: pnpm i18n:check
@@ -151,8 +150,15 @@ jobs:
                 include:
                     - suite: packages
                       filters: --filter=!@budgie-at/sync-tests --filter=!@budgie-at/consolidation-tests
-                    - suite: sync
+                    - suite: sync 1/3
                       filters: --filter=@budgie-at/sync-tests
+                      args: -- --shard=1/3
+                    - suite: sync 2/3
+                      filters: --filter=@budgie-at/sync-tests
+                      args: -- --shard=2/3
+                    - suite: sync 3/3
+                      filters: --filter=@budgie-at/sync-tests
+                      args: -- --shard=3/3
                     - suite: consolidation
                       filters: --filter=@budgie-at/consolidation-tests
         timeout-minutes: 45
@@ -163,32 +169,27 @@ jobs:
               uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
               with:
                   persist-credentials: false
+                  filter: blob:none
+                  sparse-checkout-cone-mode: false
+                  sparse-checkout: |
+                      /*
+                      !/packages/app/fastlane/screenshots/**/*.png
+                      !/tests/app-tests/fixtures/*.db
 
-            - name: Setup pnpm
-              uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
-
-            - name: Setup Node
-              uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+            - uses: ./.github/actions/setup
               with:
-                  node-version: 22.22.2
+                  skip-llama-postinstall: 'true'
 
-            - name: Restore package manager cache
-              uses: rnw-community/mobile-ci/actions/node-pm-cache@9a151735055f5ab661650523ad7c6375ae007bef # v4.12.0
-              with:
-                  package-manager: pnpm
-
-            - name: Install dependencies
-              env:
-                  RNLLAMA_SKIP_POSTINSTALL: '1'
-              run: pnpm install --frozen-lockfile
-
-            - name: Build
-              run: pnpm build
+            - name: Build workspace packages
+              if: startsWith(matrix.suite, 'sync')
+              run: pnpm exec turbo build --filter='@budgie/*'
 
             - name: Unit tests
-              run: pnpm test --concurrency=2 ${{ matrix.filters }}
+              run: pnpm test --concurrency=2 ${{ matrix.filters }} ${{ matrix.args }}
 
     e2e-script-tests:
+        if: needs.detect-mobile-impact.outputs.e2e-scripts == 'true'
+        needs: [detect-mobile-impact]
         name: E2E script self-tests
         runs-on: [self-hosted, linux-portable-2x4]
         timeout-minutes: 10
@@ -228,38 +229,17 @@ jobs:
                     bash "$t"
                   done
 
+            - name: Typecheck the e2e project
+              working-directory: e2e
+              run: npm ci && npm run simlock:install && npm run ts
+
     assert-ai-ota:
         if: needs.detect-mobile-impact.outputs.mobile == 'true'
         needs: [detect-mobile-impact]
         name: Assert AI is enabled (OTA preview)
-        runs-on: [self-hosted, linux-portable-2x4]
-        timeout-minutes: 10
         permissions:
             contents: read
-        steps:
-            - name: Checkout repository
-              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-              with:
-                  persist-credentials: false
-
-            - name: Setup pnpm
-              uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
-
-            - name: Setup Node
-              uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-              with:
-                  node-version: 22.22.2
-
-            - name: Restore package manager cache
-              uses: rnw-community/mobile-ci/actions/node-pm-cache@9a151735055f5ab661650523ad7c6375ae007bef # v4.12.0
-              with:
-                  package-manager: pnpm
-
-            - name: Install dependencies
-              run: pnpm install --frozen-lockfile
-
-            - name: Assert AI is enabled
-              run: bash .github/scripts/assert-ai-enabled.sh
+        uses: ./.github/workflows/assert-ai.yml
 
     ota-preview:
         if: needs.detect-mobile-impact.outputs.mobile == 'true'
@@ -505,6 +485,8 @@ jobs:
               uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
               with:
                   persist-credentials: false
+                  filter: blob:none
+                  sparse-checkout: .github
 
             - name: Run actionlint
               shell: bash

@@ -16,7 +16,6 @@
         "ios": "EXPO_PUBLIC_AI_DISABLE=true APP_VARIANT=development expo run:ios",
         "ios:device": "EXPO_PUBLIC_AI_DISABLE=true APP_VARIANT=development expo run:ios --device",
         "lint": "oxlint --type-aware src",
-        "lint:fix": "oxlint --type-aware --fix src",
         "prebuild": "expo prebuild --clean",
         "prebuild:dev": "EXPO_PUBLIC_AI_DISABLE=true APP_VARIANT=development expo prebuild --clean",
         "start": "expo start --dev-client -c",

@@ -1,0 +1,44 @@
+name: Setup workspace
+description: pnpm, Node, the package manager cache and a frozen install. Run after actions/checkout.
+
+inputs:
+    node-version:
+        description: Node version to install.
+        default: 22.22.2
+    skip-llama-postinstall:
+        description: Skip the llama.rn native artifact download during install.
+        default: 'false'
+
+outputs:
+    cache-hit:
+        description: Whether the package manager cache restored an exact-key entry.
+        value: ${{ steps.pm-cache.outputs.cache-hit }}
+    cache-key:
+        description: The package manager cache key.
+        value: ${{ steps.pm-cache.outputs.cache-key }}
+    path:
+        description: The package manager store path for actions/cache/save.
+        value: ${{ steps.pm-cache.outputs.path }}
+
+runs:
+    using: composite
+    steps:
+        - name: Setup pnpm
+          uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+
+        - name: Setup Node
+          uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+          with:
+              node-version: ${{ inputs.node-version }}
+
+        - name: Restore package manager cache
+          id: pm-cache
+          uses: rnw-community/mobile-ci/actions/node-pm-cache@9a151735055f5ab661650523ad7c6375ae007bef # v4.12.0
+          with:
+              package-manager: pnpm
+
+        - name: Install dependencies
+          shell: bash
+          env:
+              RNLLAMA_SKIP_POSTINSTALL: ${{ inputs.skip-llama-postinstall == 'true' && '1' || '' }}
+          run: pnpm install --frozen-lockfile
