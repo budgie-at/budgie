@@ -1,19 +1,20 @@
-import { AccordionContent } from '../../../ui/accordion/accordion-content';
-import { AccordionItem } from '../../../ui/accordion/accordion-item';
-import { AccordionTrigger } from '../../../ui/accordion/accordion-trigger';
+import { ChevronDown } from 'reicon-react';
 
 import type { ReactNode } from 'react';
 
 interface Props {
     readonly question: ReactNode;
     readonly answer: ReactNode;
-    readonly index: number;
 }
 
-export const FaqSectionItem = ({ question, answer, index }: Props) => (
-    <AccordionItem className="border-b border-border/40 py-2" value={`item-${index}`}>
-        <AccordionTrigger className="text-left font-medium hover:no-underline">{question}</AccordionTrigger>
+export const FaqSectionItem = ({ question, answer }: Props) => (
+    <details className="group border-b border-border/40 py-2" name="home-faq">
+        <summary className="flex cursor-pointer list-none items-center justify-between py-4 text-left font-medium [&::-webkit-details-marker]:hidden">
+            {question}
 
-        <AccordionContent className="text-muted-foreground">{answer}</AccordionContent>
-    </AccordionItem>
+            <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200 group-open:rotate-180" />
+        </summary>
+
+        <div className="pb-4 pt-0 text-sm text-muted-foreground">{answer}</div>
+    </details>
 );

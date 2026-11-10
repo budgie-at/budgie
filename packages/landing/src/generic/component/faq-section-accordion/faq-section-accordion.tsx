@@ -1,6 +1,5 @@
 import { useLingui } from '@lingui/react/macro';
 
-import { Accordion } from '../../../ui/accordion/accordion';
 import { FaqPageJsonLd } from '../faq-page-json-ld/faq-page-json-ld';
 import { FaqSectionItem } from '../faq-section-item/faq-section-item';
 
@@ -18,9 +17,7 @@ export const FaqSectionAccordion = ({ children }: Props) => {
             <FaqPageJsonLd i18n={i18n} itemType={FaqSectionItem}>
                 {children}
             </FaqPageJsonLd>
-            <Accordion className="w-full" collapsible type="single">
-                {children}
-            </Accordion>
+            <div className="w-full">{children}</div>
         </>
     );
 };

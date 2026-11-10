@@ -26,7 +26,6 @@ export const FaqSection = () => (
                                 that PIN; iCloud copies are encrypted there too, and end-to-end with Advanced Data Protection.
                             </Trans>
                         }
-                        index={0}
                         question={<Trans>Where is my financial data stored?</Trans>}
                     />
 
@@ -38,7 +37,6 @@ export const FaqSection = () => (
                                 refreshes need a connection, and they catch up when you are back online.
                             </Trans>
                         }
-                        index={1}
                         question={<Trans>Does Budgie work without an internet connection?</Trans>}
                     />
 
@@ -50,7 +48,6 @@ export const FaqSection = () => (
                                 for a banking password and there is no aggregator such as Plaid in between.
                             </Trans>
                         }
-                        index={2}
                         question={<Trans>Can I sync my bank without giving Budgie my bank login?</Trans>}
                     />
 
@@ -62,7 +59,6 @@ export const FaqSection = () => (
                                 with the project.
                             </Trans>
                         }
-                        index={3}
                         question={<Trans>Is Budgie open source?</Trans>}
                     />
 
@@ -73,7 +69,6 @@ export const FaqSection = () => (
                                 on-device AI never expire and never charge you.
                             </Trans>
                         }
-                        index={4}
                         question={<Trans>Is there a subscription?</Trans>}
                     />
                 </FaqSectionAccordion>
