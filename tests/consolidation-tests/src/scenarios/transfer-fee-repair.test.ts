@@ -6,7 +6,7 @@ import {
     TransactionEntryEntityTable,
     TransactionEntryTypeEnum
 } from '@budgie/contracts';
-import { TransferConsolidationService } from '@budgie/sync';
+import { TransferConsolidationService } from '@budgie/ledger';
 import { expect, layer } from '@effect/vitest';
 import { and, eq, isNull } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';

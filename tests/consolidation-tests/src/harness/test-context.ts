@@ -18,8 +18,8 @@ import {
     TransactionRepository,
     TransactionTagsRepository
 } from '@budgie/contracts';
-import { AccountBalanceIncrementalService, LedgerWorkload, TransactionService } from '@budgie/ledger';
-import { AtmCashMoveService, TransferConsolidationService } from '@budgie/sync';
+import { AccountBalanceIncrementalService, LedgerWorkload, TransactionService, TransferConsolidationService } from '@budgie/ledger';
+import { AtmCashMoveService, transferConsolidationBankFlowLayer } from '@budgie/sync';
 import * as Clock from 'effect/Clock';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -51,6 +51,7 @@ export const TestLayer = Layer.mergeAll(
     TransactionEntryRepository.layer,
     TransactionTagsRepository.layer
 ).pipe(
+    Layer.provideMerge(transferConsolidationBankFlowLayer),
     Layer.provideMerge(
         Layer.succeed(P2pTransferTitleResolver, (direction: P2pFiatDirectionEnum, assetCode: string): string =>
             direction === P2pFiatDirectionEnum.BUY ? `Binance P2P buy ${assetCode}` : `Binance P2P sell ${assetCode}`

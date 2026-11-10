@@ -11,13 +11,8 @@ import {
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
-import { AccountArchiveService } from '@budgie/ledger';
-import {
-    ExternalAccountService,
-    SyncRepairService,
-    TransferConsolidationService,
-    UnpairedOwnCardTransferRepairService
-} from '@budgie/sync';
+import { AccountArchiveService, TransferConsolidationService } from '@budgie/ledger';
+import { ExternalAccountService, SyncRepairService, UnpairedOwnCardTransferRepairService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import { and, eq, isNull } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';

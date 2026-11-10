@@ -1,9 +1,9 @@
 import { TransactionEmbeddingRepository } from '@budgie/categorization';
 import { buildConsolidationScopeFromTransactions } from '@budgie/consolidation';
 import { Db, SettingsRepository, SyncRecordTypeEnum, TransactionRepository } from '@budgie/contracts';
+import { TransferConsolidationService } from '@budgie/ledger';
 import { RecurringService } from '@budgie/recurring';
 import { RuleEngineService } from '@budgie/rules';
-import { TransferConsolidationService } from '@budgie/sync';
 import * as Cause from 'effect/Cause';
 import * as Clock from 'effect/Clock';
 import * as Context from 'effect/Context';

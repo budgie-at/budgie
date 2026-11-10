@@ -2,8 +2,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 import { AccountBalanceRepository, AccountDebtTypeEnum, AccountTypeEnum, PRECISION, UserIconNameEnum } from '@budgie/contracts';
-import { AccountDebtOpeningService, AccountBalanceIncrementalService } from '@budgie/ledger';
-import { TransferConsolidationService } from '@budgie/sync';
+import { AccountBalanceIncrementalService, AccountDebtOpeningService, TransferConsolidationService } from '@budgie/ledger';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 

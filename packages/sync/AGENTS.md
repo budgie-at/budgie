@@ -40,7 +40,7 @@ src/
 │   ├── layer/                              # Shared dependency layers of the sync families
 │   ├── util/
 │   │   └── make-{sync,polling-sync,file-sync}-service.util.ts   # Sync family factories
-│   └── service/                            # Token, registry, resync, repair, transfer consolidation
+│   └── service/                            # Token, registry, resync, repair, transfer-consolidation drainer
 ├── monobank/                 # Monobank implementation (wire types come from the SDK)
 │   ├── client/
 │   │   └── monobank.client.ts
@@ -70,6 +70,10 @@ The host app owns scheduling and native IO and provides three layer-less ports:
 
 `LedgerWorkload` (from `@budgie/ledger`) covers foreground-exclusive work, and consolidation needs the
 `P2pTransferTitleResolver` port from `@budgie/consolidation`.
+
+`TransferConsolidationService` lives in `@budgie/ledger` and runs the bank-specific steps through its
+layer-less `TransferConsolidationBankFlow` port; `transferConsolidationBankFlowLayer` (`core/layer/`)
+implements it with the Inzhur bank flow and the own-transfer repair, and the host provides it.
 
 ## Architecture
 

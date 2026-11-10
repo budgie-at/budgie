@@ -1,5 +1,6 @@
 import { AccountEntityTable, ExternalSourceEnum, SyncEntityTable, TransactionTypeEnum } from '@budgie/contracts';
-import { ExternalAccountService, TransferConsolidationService } from '@budgie/sync';
+import { TransferConsolidationService } from '@budgie/ledger';
+import { ExternalAccountService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import { eq, isNull } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';

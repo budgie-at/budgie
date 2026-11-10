@@ -1,5 +1,6 @@
 import { AccountEntityTable, AccountTypeEnum, ExternalSourceEnum, PRECISION, SyncModeEnum } from '@budgie/contracts';
-import { EnableBankingSyncService, SyncHistoryDepthEnum, TransferConsolidationService } from '@budgie/sync';
+import { TransferConsolidationService } from '@budgie/ledger';
+import { EnableBankingSyncService, SyncHistoryDepthEnum } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';

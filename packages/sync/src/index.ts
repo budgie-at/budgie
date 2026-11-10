@@ -74,6 +74,7 @@ export type { ErsteRowInterface } from './erste/interface/erste-row.interface';
 export type { PdfTextItemInterface } from './erste/interface/pdf-text-item.interface';
 
 export { SyncWorkload } from './core/port/sync-workload.port';
+export { transferConsolidationBankFlowLayer } from './core/layer/transfer-consolidation-bank-flow.layer';
 export { TransferConsolidationWorkload } from './core/port/transfer-consolidation-workload.port';
 export { SyncFileReader } from './core/port/sync-file-reader.port';
 export { SyncRequestSigner } from './core/port/sync-request-signer.port';
@@ -92,7 +93,6 @@ export { AccountReissueMergeService } from './core/service/account-reissue-merge
 export { SyncBalanceReconciliationService } from './core/service/sync-balance-reconciliation.service';
 export { AtmCashMoveService } from './core/service/atm-cash-move.service';
 export { TransferConsolidationDrainerService } from './core/service/transfer-consolidation-drainer.service';
-export { TransferConsolidationService } from './core/service/transfer-consolidation.service';
 export { generateDefaultSyncAccountTitle } from './core/utils/generate-default-sync-account-title.util';
 export { makeFileSyncService } from './core/utils/make-file-sync-service.util';
 export { mapBankTransactionToCreateInput } from './core/utils/map-bank-transaction-to-create-input.util';

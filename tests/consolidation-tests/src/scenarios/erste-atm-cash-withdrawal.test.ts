@@ -1,6 +1,6 @@
 import { ConsolidationCoordinatorService } from '@budgie/consolidation';
 import { AccountTypeEnum, ExternalSourceEnum, PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
-import { TransferConsolidationService } from '@budgie/sync';
+import { TransferConsolidationService } from '@budgie/ledger';
 import { expect, layer } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 

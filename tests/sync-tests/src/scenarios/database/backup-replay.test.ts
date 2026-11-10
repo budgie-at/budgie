@@ -9,8 +9,7 @@ import {
     TransactionEntryTypeEnum,
     convertFromMicroUnits
 } from '@budgie/contracts';
-import { AccountBalanceIncrementalService } from '@budgie/ledger';
-import { TransferConsolidationService } from '@budgie/sync';
+import { AccountBalanceIncrementalService, TransferConsolidationService } from '@budgie/ledger';
 import { describe, expect, it } from '@effect/vitest';
 import { and, eq, isNotNull, isNull } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';

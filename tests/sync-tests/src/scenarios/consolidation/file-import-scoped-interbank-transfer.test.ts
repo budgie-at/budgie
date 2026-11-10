@@ -1,10 +1,10 @@
 import { AccountTypeEnum, CurrencyEnum, ExternalSourceEnum, PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
+import { TransferConsolidationService } from '@budgie/ledger';
 import {
     SyncAccountBalanceStateEnum,
     SyncAccountTypeEnum,
     SyncProviderEnum,
     SyncTransactionTypeEnum,
-    TransferConsolidationService,
     TransferConsolidationDrainerService
 } from '@budgie/sync';
 import { describe, expect, it, vi } from '@effect/vitest';

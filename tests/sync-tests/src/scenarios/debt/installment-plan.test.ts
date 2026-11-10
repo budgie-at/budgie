@@ -16,12 +16,12 @@ import {
     TransactionTypeEnum
 } from '@budgie/contracts';
 import {
-    DebtAccountService,
     AccountBalanceIncrementalService,
+    DebtAccountService,
     InstallmentPlanService,
-    TransactionDebtSettlementService
+    TransactionDebtSettlementService,
+    TransferConsolidationService
 } from '@budgie/ledger';
-import { TransferConsolidationService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import { and, eq, inArray } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';

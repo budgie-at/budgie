@@ -15,7 +15,12 @@ import {
     UserIconNameEnum,
     convertToMicroUnits
 } from '@budgie/contracts';
-import { AccountBalanceIncrementalService, BalanceAdjustmentService, TransactionService } from '@budgie/ledger';
+import {
+    AccountBalanceIncrementalService,
+    BalanceAdjustmentService,
+    TransactionService,
+    TransferConsolidationService
+} from '@budgie/ledger';
 import { RuleEngineService } from '@budgie/rules';
 import { addMonths } from 'date-fns/addMonths';
 import { addSeconds } from 'date-fns/addSeconds';
@@ -46,7 +51,6 @@ import { SyncWorkload } from '../../core/port/sync-workload.port';
 import { SyncBalanceReconciliationService } from '../../core/service/sync-balance-reconciliation.service';
 import { SyncIntegrationTokenService } from '../../core/service/sync-integration-token.service';
 import { SyncOperationMetadataService } from '../../core/service/sync-operation-metadata.service';
-import { TransferConsolidationService } from '../../core/service/transfer-consolidation.service';
 import { makePollingSyncAccountSetup } from '../../core/utils/make-polling-sync-account-setup.util';
 import { makePollingSyncService } from '../../core/utils/make-polling-sync-service.util';
 import { mapBankTransactionToCreateInput } from '../../core/utils/map-bank-transaction-to-create-input.util';
