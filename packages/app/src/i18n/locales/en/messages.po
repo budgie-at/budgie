@@ -3557,14 +3557,8 @@ msgstr "Could not update rule"
 msgid "Could not update setting"
 msgstr "Could not update setting"
 
-#: src/settings/components/auto-assign-mcc-category/auto-assign-mcc-category.tsx
-#: src/settings/components/default-account-selector/default-account-selector.tsx
-#: src/settings/components/default-currency-selector/default-currency-selector.tsx
 #: src/settings/components/language-selector/language-selector.tsx
-#: src/settings/components/pin-management-rows/pin-management-rows.tsx
-#: src/settings/components/screenshot-protection-row/screenshot-protection-row.tsx
-#: src/settings/components/show-cents-row/show-cents-row.tsx
-#: src/settings/components/theme-switch/theme-switch.tsx
+#: src/settings/utils/run-settings-update.util.ts
 msgid "Could not update settings"
 msgstr "Could not update settings"
 
