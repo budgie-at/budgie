@@ -1,10 +1,4 @@
-import {
-    TransactionCreateInputInterface,
-    TransactionCreateInputSchema,
-    TransactionEntityInterface,
-    TransactionEntryTypeEnum,
-    TransactionTypeEnum
-} from '@budgie/contracts';
+import { Db, ExternalSourceEnum, TransactionCreateInputInterface, TransactionEntryTypeEnum } from '@budgie/contracts';
 import { createTransactionInput } from '@budgie/ledger';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useLingui } from '@lingui/react/macro';
@@ -19,32 +13,18 @@ import { isDefined } from '@rnw-community/shared';
 import { useSingleFlight } from '../../@generic/hook/use-single-flight.hook';
 import { useVibration } from '../../@generic/hook/use-vibration.hook';
 import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
+import { attachReceipt } from '../../receipt/utils/attach-receipt.util';
 import { RecurringRefreshModeEnum } from '../../recurring/enum/recurring-refresh-mode.enum';
 import { scheduleRecurringRefresh } from '../../recurring/utils/schedule-recurring-refresh.util';
 import { buildPrimaryEntry } from '../utils/build-primary-entry.util';
 
-import type { AppServices } from '../../@generic/runtime/app.runtime';
-import type * as Cause from 'effect/Cause';
-
-interface UseTransactionFormConfig {
-    readonly onSubmit: (
-        data: TransactionCreateInputInterface
-    ) => Effect.Effect<TransactionEntityInterface, Cause.YieldableError, AppServices>;
-    readonly fromAccountId: number | null;
-    readonly toAccountId: number | null;
-    readonly type: TransactionTypeEnum;
-    readonly schema: typeof TransactionCreateInputSchema;
-    readonly categoryId?: number;
-    readonly comment?: string;
-    readonly title?: string;
-    readonly operatedAt?: Date;
-    readonly amount?: number;
-}
+import type { CreateTransactionFormConfigInterface } from '../interface/create-transaction-form-config.interface';
 
 export const useCreateTransactionForm = ({
     type,
     schema,
     onSubmit,
+    receipt = null,
     fromAccountId,
     toAccountId,
     amount = 0,
@@ -52,7 +32,7 @@ export const useCreateTransactionForm = ({
     comment = '',
     title = '',
     operatedAt
-}: UseTransactionFormConfig) => {
+}: CreateTransactionFormConfigInterface) => {
     const { t } = useLingui();
     const { run } = useSingleFlight();
     const [hapticNotification] = useVibration();
@@ -75,9 +55,19 @@ export const useCreateTransactionForm = ({
         }
     });
 
+    const persist = (data: TransactionCreateInputInterface) =>
+        isDefined(receipt)
+            ? Db.transaction(
+                  Effect.tap(
+                      onSubmit({ ...data, externalId: receipt.fingerprint, externalSource: ExternalSourceEnum.RECEIPT }),
+                      transaction => attachReceipt(receipt, transaction.id)
+                  )
+              )
+            : onSubmit(data);
+
     const handleSubmit = (data: TransactionCreateInputInterface) =>
         run(
-            onSubmit(data).pipe(
+            persist(data).pipe(
                 Effect.tap(() => scheduleRecurringRefresh(RecurringRefreshModeEnum.RECENT)),
                 Effect.tap(() =>
                     Effect.sync(() => {
