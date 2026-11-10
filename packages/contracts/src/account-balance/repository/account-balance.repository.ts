@@ -4,7 +4,7 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { CURRENT_TIMESTAMP } from '../../@generic/constant/current-timestamp.constant';
 import { transactionFilters } from '../../@generic/repository/base-transaction-filter.repository';
@@ -31,7 +31,9 @@ import { TransactionEntryEntityTable } from '../../transaction-entry/table/trans
 import { TransactionTypeEnum } from '../../transaction/enum/transaction-type.enum';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { AccountBalanceEntityTable } from '../table/account-balance-entity.table';
+import { getDebtLedgerBalance } from '../utils/get-debt-ledger-balance.util';
 
+import type { AccountEntityInterface } from '../../account/entity/account-entity.interface';
 import type { AccountBalanceCreateEntityInterface } from '../entity/account-balance-create-entity.interface';
 
 const getTransactionsSumSql = () =>
@@ -109,6 +111,25 @@ const bulkUpsert = (balances: Pick<AccountBalanceCreateEntityInterface, 'account
             })
     );
 
+const getDebtLedgerAmounts = (accountIds: number[]) => {
+    const getDebtEventDirectionSumSql = (direction: DebtEventDirectionEnum) =>
+        sql<number>`COALESCE(SUM(CASE WHEN ${DebtEventEntityTable.direction} = ${direction} THEN ${DebtEventEntityTable.amount} ELSE 0 END), 0)`.mapWith(
+            Number
+        );
+
+    return Db.query(db =>
+        db
+            .select({
+                accountId: DebtEventEntityTable.debtAccountId,
+                openedAmount: getDebtEventDirectionSumSql(DebtEventDirectionEnum.OPEN),
+                closedAmount: getDebtEventDirectionSumSql(DebtEventDirectionEnum.CLOSE)
+            })
+            .from(DebtEventEntityTable)
+            .where(and(inArray(DebtEventEntityTable.debtAccountId, accountIds), isNull(DebtEventEntityTable.deletedAt)))
+            .groupBy(DebtEventEntityTable.debtAccountId)
+    );
+};
+
 export class AccountBalanceRepository extends Context.Service<AccountBalanceRepository>()('@budgie/contracts/AccountBalanceRepository', {
     make: Effect.succeed({
         getLedgerBalances: Effect.fn('AccountBalanceRepository.getLedgerBalances')(function* (accountIds: number[]) {
@@ -130,24 +151,32 @@ export class AccountBalanceRepository extends Context.Service<AccountBalanceRepo
 
             return new Map(results.map(({ accountId, balance }) => [accountId, balance]));
         }),
-        getDebtLedgerAmounts: (accountIds: number[]) => {
-            const getDebtEventDirectionSumSql = (direction: DebtEventDirectionEnum) =>
-                sql<number>`COALESCE(SUM(CASE WHEN ${DebtEventEntityTable.direction} = ${direction} THEN ${DebtEventEntityTable.amount} ELSE 0 END), 0)`.mapWith(
-                    Number
-                );
+        getDebtLedgerBalances: Effect.fn('AccountBalanceRepository.getDebtLedgerBalances')(function* (
+            debtAccounts: Pick<AccountEntityInterface, 'id' | 'debtType' | 'targetBalance'>[]
+        ) {
+            if (isEmptyArray(debtAccounts)) {
+                return new Map<number, number>();
+            }
 
-            return Db.query(db =>
-                db
-                    .select({
-                        accountId: DebtEventEntityTable.debtAccountId,
-                        openedAmount: getDebtEventDirectionSumSql(DebtEventDirectionEnum.OPEN),
-                        closedAmount: getDebtEventDirectionSumSql(DebtEventDirectionEnum.CLOSE)
-                    })
-                    .from(DebtEventEntityTable)
-                    .where(and(inArray(DebtEventEntityTable.debtAccountId, accountIds), isNull(DebtEventEntityTable.deletedAt)))
-                    .groupBy(DebtEventEntityTable.debtAccountId)
+            const ledgerAmounts = yield* getDebtLedgerAmounts(debtAccounts.map(({ id }) => id));
+            const ledgerAmountsMap = new Map(ledgerAmounts.map(ledgerAmount => [ledgerAmount.accountId, ledgerAmount]));
+
+            return new Map(
+                debtAccounts.map(({ id, debtType, targetBalance }) => {
+                    const ledgerAmount = ledgerAmountsMap.get(id);
+                    const openedAmount = ledgerAmount?.openedAmount ?? 0;
+
+                    return [
+                        id,
+                        getDebtLedgerBalance(
+                            ledgerAmount?.closedAmount ?? 0,
+                            debtType,
+                            isPositiveNumber(openedAmount) ? openedAmount : targetBalance
+                        )
+                    ];
+                })
             );
-        },
+        }),
         getLedgerBalanceUntil: (accountId: number, operatedUntil: Date) =>
             Db.query(db =>
                 db
