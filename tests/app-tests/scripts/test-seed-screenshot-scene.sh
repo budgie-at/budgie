@@ -107,9 +107,14 @@ SCENE=home-hero-1 LOCALE=en APPEARANCE=light \
     bash "$SEED_SCRIPT" --dry-run --output "$HERO_DATABASE_PATH" >/dev/null
 
 assert_equals \
-    'home-hero-1 composes 5 shared reads into one session with no foreign key violations' \
+    'home-hero-1 composes the 01-home shared reads into one session with no foreign key violations' \
     '' \
     "$(sqlite3 "$HERO_DATABASE_PATH" 'PRAGMA foreign_key_check;')"
+
+assert_equals \
+    'every seeded cell leaves asset account balances equal to the ledger' \
+    '0' \
+    "$(sqlite3 "$HERO_DATABASE_PATH" "SELECT COUNT(*) FROM account_balances INNER JOIN accounts ON accounts.id = account_balances.account_id WHERE accounts.type IN ('BANK', 'CASH', 'SAVINGS', 'DEPOSIT', 'CRYPTO') AND account_balances.amount != COALESCE((SELECT SUM(CASE WHEN transaction_entries.type = 'DEBIT' THEN transaction_entries.amount WHEN transaction_entries.type IN ('CREDIT', 'FEE') THEN -transaction_entries.amount ELSE 0 END) FROM transaction_entries INNER JOIN transactions ON transactions.id = transaction_entries.transaction_id WHERE transaction_entries.account_id = account_balances.account_id AND transaction_entries.deleted_at IS NULL AND transactions.deleted_at IS NULL AND transactions.consolidation_parent_transaction_id IS NULL AND (transaction_entries.original_transaction_id IS NULL OR transactions.consolidation_type = 'REFUND')), 0);")"
 
 BUDGET_DATABASE_PATH="$TEMP_DIR/budget-planning-2.db"
 
@@ -129,7 +134,7 @@ SCENE=uncategorized-transactions-1 LOCALE=en APPEARANCE=light \
 assert_equals \
     'uncategorized-transactions-1 clears the category on 14 recent expense entries' \
     '14' \
-    "$(sqlite3 "$UNCATEGORIZED_DATABASE_PATH" 'SELECT COUNT(*) FROM transaction_entries WHERE category_id IS NULL;')"
+    "$(sqlite3 "$UNCATEGORIZED_DATABASE_PATH" "SELECT COUNT(*) FROM transaction_entries INNER JOIN transactions ON transactions.id = transaction_entries.transaction_id WHERE transactions.type = 'EXPENSE' AND transaction_entries.category_id IS NULL;")"
 
 TAGS_DATABASE_PATH="$TEMP_DIR/transaction-tags-1.db"
 
