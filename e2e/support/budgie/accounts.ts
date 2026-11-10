@@ -62,7 +62,6 @@ export async function openSettingsCard(
     await expect(card).toBeVisible({ timeout: 3_000 });
     if (centreOn !== undefined) {
         await scrollToCentre(ctx, centreOn);
-        await sleep(600);
     }
     await card.tap();
     await expectId(ctx, destinationId, 8_000);

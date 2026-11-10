@@ -89,7 +89,7 @@ test('21 transfer consolidation', { tags: ['transactions'] }, async ({ budgie })
         await b.scrollTo(ctx, 'AccountCard.AddBalance.E2E_Consolidation_Cash');
         await b.expectId(ctx, 'AccountCard.AddBalance.E2E_Consolidation_Cash');
         await b.scrollTo(ctx, 'InstitutionRow.1');
-        await b.sleep(600);
+        await b.expectSettledId(ctx, 'InstitutionRow.1');
         await b.tapId(ctx, 'InstitutionRow.1');
         await b.expectId(ctx, 'Institution.Page', 3_000);
         await b.scrollTo(ctx, 'Institution.ShowAllAccounts');

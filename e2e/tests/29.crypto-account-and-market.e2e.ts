@@ -91,8 +91,7 @@ test('29 crypto account and market', { tags: ['crypto'] }, async ({ budgie }) =>
         await b.tapId(ctx, 'CryptoGroup.Toggle.BTC');
         await b.expectNoId(ctx, 'AccountCard.E2E Crypto Vault', 5_000);
         await b.expectId(ctx, 'CryptoGroup.Market.ETH', 5_000);
-        // waitForAnimationToEnd: the BTC group is still collapsing.
-        await b.sleep(800);
+        await b.expectSettledId(ctx, 'CryptoGroup.Market.ETH');
         // The collapsed ETH row ends under the floating tab bar, whose Settings tab covers the row's centre: tap its top edge.
         await id('CryptoGroup.Market.ETH').tap({ position: { x: 185, y: 12 } });
         await b.expectId(ctx, 'CurrencyMarket.Header.ETH', 10_000);

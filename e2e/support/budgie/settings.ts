@@ -1,6 +1,6 @@
 import { expect } from 'e2e';
 
-import { byText, expectId, openLink, scrollTo, sleep, tapId, type Ctx } from './core.ts';
+import { byText, expectId, openLink, scrollTo, tapId, type Ctx } from './core.ts';
 
 /** `openLink: budgie://settings?anchor=<anchor>` followed by the settings container wait the flows repeat. */
 export async function openSettingsAnchor(ctx: Ctx, anchor: string): Promise<void> {
@@ -17,7 +17,7 @@ export async function goHome(ctx: Ctx): Promise<void> {
 /** subflows/settings/run-money-data-upgrade */
 export async function runMoneyDataUpgrade(ctx: Ctx): Promise<void> {
     await openLink(ctx, 'budgie://settings/data');
-    await sleep(400);
+    await expectId(ctx, 'DataPage.Container', 15_000);
     await scrollTo(ctx, 'SettingsPage.MoneyDataUpgradeCard');
     await expectId(ctx, 'SettingsPage.MoneyDataUpgradeCard', 10_000);
     await tapId(ctx, 'SettingsPage.MoneyDataUpgradeCard');

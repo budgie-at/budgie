@@ -4,6 +4,7 @@ import {
     byId,
     byText,
     expectId,
+    expectSettledId,
     fillId,
     openLink,
     retry,
@@ -80,7 +81,7 @@ async function endAmountEditing(ctx: Ctx): Promise<void> {
 export async function addCategoryLimit(ctx: Ctx, category: string, index = 0, scroll = true): Promise<void> {
     if (scroll) {
         await scrollTo(ctx, 'BudgetSetup.CategoryLimitAddButton');
-        await sleep(400);
+        await expectSettledId(ctx, 'BudgetSetup.CategoryLimitAddButton');
     }
     await retry(3, async () => {
         await tapId(ctx, 'BudgetSetup.CategoryLimitAddButton');

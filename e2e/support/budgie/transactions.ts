@@ -12,7 +12,6 @@ import {
     retry,
     scrollTo,
     selectCategoryBySearch,
-    sleep,
     tapId,
     type Ctx
 } from './core.ts';
@@ -292,7 +291,7 @@ export async function pickTransferAccount(ctx: Ctx, selectorId: string, name: st
 export async function consolidateMatches(ctx: Ctx): Promise<void> {
     const { screen } = ctx;
     await openLink(ctx, 'budgie://settings/data');
-    await sleep(600);
+    await expectId(ctx, 'DataPage.Container', 15_000);
     await scrollTo(ctx, 'SettingsPage.RecalculateBalancesCard');
     await expectId(ctx, 'SettingsPage.RecalculateBalancesCard', 10_000);
     await scrollTo(ctx, 'SettingsPage.ConsolidateTransfersCard', 'up');
