@@ -3,22 +3,11 @@ import { CategorySourceEnum, ExternalSourceEnum, TransactionEntryTypeEnum, Trans
 import { IBAN_BRIDGE_CONSOLIDATION_TYPES_SQL } from '../../../shared/constant/iban-bridge-consolidation-types-sql.constant';
 import { TRANSFER_MCC_GROUP_ID } from '../../../shared/constant/transfer-mcc-group-id.constant';
 import { TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS } from '../../../shared/constant/transfer-pair-fast-time-window.constant';
-import { applyConsolidationScanScopeSql } from '../../utils/apply-consolidation-scan-scope-sql.util';
 import { buildCalibratedTransferExclusionSql } from '../../utils/build-calibrated-transfer-exclusion-sql.util';
+import { operatedAtScopeSql } from '../../utils/operated-at-scope-sql.util';
+import { scopedSql } from '../../utils/scoped-sql.util';
 
-import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
-
-const TARGET_INCOME_SCOPE_SQL_PLACEHOLDER = '__IBAN_BRIDGE_CANONICAL_DUPLICATE_INCOME_SCOPE_SQL__';
-const CANONICAL_SCOPE_SQL_PLACEHOLDER = '__IBAN_BRIDGE_CANONICAL_DUPLICATE_CANONICAL_SCOPE_SQL__';
-const SOURCE_EXPENSE_SCOPE_SQL_PLACEHOLDER = '__IBAN_BRIDGE_CANONICAL_DUPLICATE_EXPENSE_SCOPE_SQL__';
-
-const IBAN_BRIDGE_CANONICAL_DUPLICATE_SCOPE_EXPRESSIONS = new Map([
-    [TARGET_INCOME_SCOPE_SQL_PLACEHOLDER, 'target_income_tx.operated_at'],
-    [CANONICAL_SCOPE_SQL_PLACEHOLDER, 'canonical_tx.operated_at'],
-    [SOURCE_EXPENSE_SCOPE_SQL_PLACEHOLDER, 'source_expense_tx.operated_at']
-]);
-
-const IBAN_BRIDGE_CANONICAL_DUPLICATE_CANDIDATES_BASE_SQL = `
+export const IBAN_BRIDGE_CANONICAL_DUPLICATE_CANDIDATES_SQL = scopedSql`
             WITH candidate_rows AS (
                 SELECT
                     source_expense_tx.id as expenseTransactionId,
@@ -114,7 +103,7 @@ const IBAN_BRIDGE_CANONICAL_DUPLICATE_CANDIDATES_BASE_SQL = `
                     AND target_income_tx.consolidation_parent_transaction_id IS NULL
                     AND target_income_tx.operated_at BETWEEN source_expense_tx.operated_at - ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
                         AND source_expense_tx.operated_at + ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
-                    ${TARGET_INCOME_SCOPE_SQL_PLACEHOLDER}
+                    ${operatedAtScopeSql('target_income_tx.operated_at')}
                 INNER JOIN transaction_entries target_income_entry ON
                     target_income_entry.transaction_id = target_income_tx.id
                     AND target_income_entry.deleted_at IS NULL
@@ -131,14 +120,14 @@ const IBAN_BRIDGE_CANONICAL_DUPLICATE_CANDIDATES_BASE_SQL = `
                     AND canonical_tx.to_account_id = target_account.id
                     AND canonical_tx.operated_at BETWEEN source_expense_tx.operated_at - ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
                         AND source_expense_tx.operated_at + ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
-                    ${CANONICAL_SCOPE_SQL_PLACEHOLDER}
+                    ${operatedAtScopeSql('canonical_tx.operated_at')}
                 LEFT JOIN mcc_categories source_expense_mcc ON source_expense_mcc.id = source_expense_entry.mcc_category_id
                 LEFT JOIN mcc_categories target_income_mcc ON target_income_mcc.id = target_income_entry.mcc_category_id
                 WHERE source_expense_entry.deleted_at IS NULL
                     AND source_expense_entry.original_transaction_id IS NULL
                     AND source_expense_entry.exchange_rate > 0
                     AND source_expense_entry.amount > 0
-                    ${SOURCE_EXPENSE_SCOPE_SQL_PLACEHOLDER}
+                    ${operatedAtScopeSql('source_expense_tx.operated_at')}
                     AND ${buildCalibratedTransferExclusionSql('source_expense_tx', 'source_account.id')}
                     AND ${buildCalibratedTransferExclusionSql('target_income_tx', 'target_account.id')}
                     AND source_expense_entry.to_iban IS NOT NULL
@@ -240,10 +229,3 @@ const IBAN_BRIDGE_CANONICAL_DUPLICATE_CANDIDATES_BASE_SQL = `
                     )
                 )
 `;
-
-export const IBAN_BRIDGE_CANONICAL_DUPLICATE_CANDIDATES_SQL = (scope: ConsolidationScanScopeInterface | null): string =>
-    applyConsolidationScanScopeSql(
-        IBAN_BRIDGE_CANONICAL_DUPLICATE_CANDIDATES_BASE_SQL,
-        scope,
-        IBAN_BRIDGE_CANONICAL_DUPLICATE_SCOPE_EXPRESSIONS
-    );

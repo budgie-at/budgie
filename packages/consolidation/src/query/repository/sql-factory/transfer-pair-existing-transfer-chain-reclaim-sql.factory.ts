@@ -3,21 +3,10 @@ import { TransactionConsolidationTypeEnum, TransactionTypeEnum } from '@budgie/c
 import { IBAN_BRIDGE_CHAIN_FX_TOLERANCE } from '../../../shared/constant/iban-bridge-chain-fx-tolerance.constant';
 import { TRANSFER_MCC_GROUP_ID } from '../../../shared/constant/transfer-mcc-group-id.constant';
 import { TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS } from '../../../shared/constant/transfer-pair-fast-time-window.constant';
-import { applyConsolidationScanScopeSql } from '../../utils/apply-consolidation-scan-scope-sql.util';
+import { operatedAtScopeSql } from '../../utils/operated-at-scope-sql.util';
+import { scopedSql } from '../../utils/scoped-sql.util';
 
-import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
-
-const BRIDGE_INCOME_SCOPE_SQL_PLACEHOLDER = '__EXISTING_TRANSFER_CHAIN_RECLAIM_INCOME_SCOPE_SQL__';
-const BRIDGE_EXPENSE_SCOPE_SQL_PLACEHOLDER = '__EXISTING_TRANSFER_CHAIN_RECLAIM_EXPENSE_SCOPE_SQL__';
-const EXISTING_TRANSFER_SCOPE_SQL_PLACEHOLDER = '__EXISTING_TRANSFER_CHAIN_RECLAIM_TRANSFER_SCOPE_SQL__';
-
-const EXISTING_TRANSFER_CHAIN_RECLAIM_SCOPE_EXPRESSIONS = new Map([
-    [BRIDGE_INCOME_SCOPE_SQL_PLACEHOLDER, 'bridge_income_tx.operated_at'],
-    [BRIDGE_EXPENSE_SCOPE_SQL_PLACEHOLDER, 'bridge_expense_tx.operated_at'],
-    [EXISTING_TRANSFER_SCOPE_SQL_PLACEHOLDER, 'existing_transfer.operated_at']
-]);
-
-const EXISTING_TRANSFER_CHAIN_RECLAIM_CANDIDATES_BASE_SQL = `
+export const EXISTING_TRANSFER_CHAIN_RECLAIM_CANDIDATES_SQL = scopedSql`
             SELECT
                 'AUTO_EXISTING_TRANSFER_CHAIN_RECLAIM' as confidenceBucket,
                 existingTransferId,
@@ -117,7 +106,7 @@ const EXISTING_TRANSFER_CHAIN_RECLAIM_CANDIDATES_BASE_SQL = `
                     AND bridge_income_tx.consolidation_parent_transaction_id IS NULL
                     AND bridge_income_tx.operated_at BETWEEN existing_transfer.operated_at - ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
                         AND existing_transfer.operated_at + ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
-                    ${BRIDGE_INCOME_SCOPE_SQL_PLACEHOLDER}
+                    ${operatedAtScopeSql('bridge_income_tx.operated_at')}
                 INNER JOIN transaction_entries bridge_income_entry ON
                     bridge_income_entry.transaction_id = bridge_income_tx.id
                     AND bridge_income_entry.deleted_at IS NULL
@@ -138,7 +127,7 @@ const EXISTING_TRANSFER_CHAIN_RECLAIM_CANDIDATES_BASE_SQL = `
                     AND bridge_expense_tx.consolidation_parent_transaction_id IS NULL
                     AND bridge_expense_tx.operated_at BETWEEN existing_transfer.operated_at - ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
                         AND existing_transfer.operated_at + ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
-                    ${BRIDGE_EXPENSE_SCOPE_SQL_PLACEHOLDER}
+                    ${operatedAtScopeSql('bridge_expense_tx.operated_at')}
                 INNER JOIN transaction_entries bridge_expense_entry ON
                     bridge_expense_entry.transaction_id = bridge_expense_tx.id
                     AND bridge_expense_entry.deleted_at IS NULL
@@ -153,7 +142,7 @@ const EXISTING_TRANSFER_CHAIN_RECLAIM_CANDIDATES_BASE_SQL = `
                     AND existing_transfer.deleted_at IS NULL
                     AND existing_transfer.consolidation_parent_transaction_id IS NULL
                     AND existing_transfer.consolidation_type = '${TransactionConsolidationTypeEnum.TRANSFER_PAIR}'
-                    ${EXISTING_TRANSFER_SCOPE_SQL_PLACEHOLDER}
+                    ${operatedAtScopeSql('existing_transfer.operated_at')}
                     AND source_account.id != target_account.id
                     AND (
                         bridge_income_mcc.mcc_group_id = ${TRANSFER_MCC_GROUP_ID}
@@ -166,10 +155,3 @@ const EXISTING_TRANSFER_CHAIN_RECLAIM_CANDIDATES_BASE_SQL = `
                 AND bridgeIncomeRank = 1
                 AND bridgeExpenseRank = 1
 `;
-
-export const EXISTING_TRANSFER_CHAIN_RECLAIM_CANDIDATES_SQL = (scope: ConsolidationScanScopeInterface | null): string =>
-    applyConsolidationScanScopeSql(
-        EXISTING_TRANSFER_CHAIN_RECLAIM_CANDIDATES_BASE_SQL,
-        scope,
-        EXISTING_TRANSFER_CHAIN_RECLAIM_SCOPE_EXPRESSIONS
-    );

@@ -3,22 +3,11 @@ import { TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts
 import { CANONICAL_CENT_TOLERANCE_AMOUNT } from '../../../shared/constant/canonical-cent-tolerance.constant';
 import { IBAN_BRIDGE_CONSOLIDATION_TYPES_SQL } from '../../../shared/constant/iban-bridge-consolidation-types-sql.constant';
 import { TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS } from '../../../shared/constant/transfer-pair-fast-time-window.constant';
-import { applyConsolidationScanScopeSql } from '../../utils/apply-consolidation-scan-scope-sql.util';
 import { buildCalibratedTransferExclusionSql } from '../../utils/build-calibrated-transfer-exclusion-sql.util';
+import { operatedAtScopeSql } from '../../utils/operated-at-scope-sql.util';
+import { scopedSql } from '../../utils/scoped-sql.util';
 
-import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
-
-const SUPERSEDED_SCOPE_SQL_PLACEHOLDER = '__IBAN_BRIDGE_CANONICAL_SUPERSESSION_SUPERSEDED_SCOPE_SQL__';
-const CANONICAL_SCOPE_SQL_PLACEHOLDER = '__IBAN_BRIDGE_CANONICAL_SUPERSESSION_CANONICAL_SCOPE_SQL__';
-const BRIDGE_ORIGIN_SCOPE_SQL_PLACEHOLDER = '__IBAN_BRIDGE_CANONICAL_SUPERSESSION_BRIDGE_ORIGIN_SCOPE_SQL__';
-
-const IBAN_BRIDGE_CANONICAL_SUPERSESSION_SCOPE_EXPRESSIONS = new Map([
-    [SUPERSEDED_SCOPE_SQL_PLACEHOLDER, 'superseded_tx.operated_at'],
-    [CANONICAL_SCOPE_SQL_PLACEHOLDER, 'canonical_tx.operated_at'],
-    [BRIDGE_ORIGIN_SCOPE_SQL_PLACEHOLDER, 'canonical_bridge_origin_tx.operated_at']
-]);
-
-const IBAN_BRIDGE_CANONICAL_SUPERSESSION_CANDIDATES_BASE_SQL = `
+export const IBAN_BRIDGE_CANONICAL_SUPERSESSION_CANDIDATES_SQL = scopedSql`
             SELECT
                 'AUTO_IBAN_BRIDGE_CANONICAL_SUPERSESSION' as confidenceBucket,
                 supersededCanonicalTransactionId,
@@ -78,7 +67,7 @@ const IBAN_BRIDGE_CANONICAL_SUPERSESSION_CANDIDATES_BASE_SQL = `
                     AND canonical_tx.to_account_id != bridge_account.id
                     AND canonical_tx.operated_at BETWEEN superseded_tx.operated_at - ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
                         AND superseded_tx.operated_at + ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
-                    ${CANONICAL_SCOPE_SQL_PLACEHOLDER}
+                    ${operatedAtScopeSql('canonical_tx.operated_at')}
                 INNER JOIN accounts target_account ON
                     target_account.id = canonical_tx.to_account_id
                     AND target_account.deleted_at IS NULL
@@ -105,23 +94,16 @@ const IBAN_BRIDGE_CANONICAL_SUPERSESSION_CANDIDATES_BASE_SQL = `
                     AND canonical_bridge_origin_tx.consolidation_parent_transaction_id = canonical_tx.id
                     AND canonical_bridge_origin_tx.operated_at BETWEEN superseded_tx.operated_at - ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
                         AND superseded_tx.operated_at + ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
-                    ${BRIDGE_ORIGIN_SCOPE_SQL_PLACEHOLDER}
+                    ${operatedAtScopeSql('canonical_bridge_origin_tx.operated_at')}
                 WHERE superseded_tx.type = '${TransactionTypeEnum.TRANSFER}'
                     AND superseded_tx.deleted_at IS NULL
                     AND superseded_tx.consolidation_parent_transaction_id IS NULL
                     AND superseded_tx.updated_by IS NULL
                     AND superseded_tx.consolidation_type IN (${IBAN_BRIDGE_CONSOLIDATION_TYPES_SQL})
                     AND ${buildCalibratedTransferExclusionSql('superseded_tx', 'source_account.id, bridge_account.id')}
-                    ${SUPERSEDED_SCOPE_SQL_PLACEHOLDER}
+                    ${operatedAtScopeSql('superseded_tx.operated_at')}
             )
             WHERE supersededMatchCount = 1
                 AND canonicalMatchCount = 1
             ORDER BY supersededCanonicalTransactionId, canonicalTransactionId
 `;
-
-export const IBAN_BRIDGE_CANONICAL_SUPERSESSION_CANDIDATES_SQL = (scope: ConsolidationScanScopeInterface | null): string =>
-    applyConsolidationScanScopeSql(
-        IBAN_BRIDGE_CANONICAL_SUPERSESSION_CANDIDATES_BASE_SQL,
-        scope,
-        IBAN_BRIDGE_CANONICAL_SUPERSESSION_SCOPE_EXPRESSIONS
-    );

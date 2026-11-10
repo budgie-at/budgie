@@ -2,13 +2,8 @@ import { TransactionConsolidationTypeEnum, TransactionEntryTypeEnum, Transaction
 
 import { CANONICAL_CENT_TOLERANCE_AMOUNT } from '../../../shared/constant/canonical-cent-tolerance.constant';
 import { TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS } from '../../../shared/constant/transfer-pair-fast-time-window.constant';
-import { applyConsolidationScanScopeSql } from '../../utils/apply-consolidation-scan-scope-sql.util';
-
-import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
-
-const PAIR_SCOPE_SQL_PLACEHOLDER = '__IBAN_BRIDGE_DUPLICATE_PAIR_SCOPE_SQL__';
-
-const IBAN_BRIDGE_DUPLICATE_PAIR_SCOPE_EXPRESSIONS = new Map([[PAIR_SCOPE_SQL_PLACEHOLDER, 'pair_tx.operated_at']]);
+import { operatedAtScopeSql } from '../../utils/operated-at-scope-sql.util';
+import { scopedSql } from '../../utils/scoped-sql.util';
 
 const buildCanonicalLegSql = (
     alias: string,
@@ -49,7 +44,7 @@ const buildNoClaimedLegSql = (accountColumn: string): string => `NOT EXISTS (
                             AND claimed_entry.account_id = bridge_tx.${accountColumn}
                     )`;
 
-const IBAN_BRIDGE_DUPLICATE_PAIR_CANDIDATES_BASE_SQL = `
+export const IBAN_BRIDGE_DUPLICATE_PAIR_CANDIDATES_SQL = scopedSql`
             WITH candidate_rows AS (
                 SELECT
                     pair_tx.id as pairTransactionId,
@@ -81,7 +76,7 @@ const IBAN_BRIDGE_DUPLICATE_PAIR_CANDIDATES_BASE_SQL = `
                     AND pair_tx.consolidation_parent_transaction_id IS NULL
                     AND pair_tx.updated_by IS NULL
                     AND pair_tx.consolidation_type = '${TransactionConsolidationTypeEnum.TRANSFER_PAIR}'
-                    ${PAIR_SCOPE_SQL_PLACEHOLDER}
+                    ${operatedAtScopeSql('pair_tx.operated_at')}
                     AND (SELECT COUNT(*) FROM transactions pair_child WHERE pair_child.consolidation_parent_transaction_id = pair_tx.id) = 2
                     AND ${buildNoClaimedLegSql('from_account_id')}
                     AND ${buildNoClaimedLegSql('to_account_id')}
@@ -99,6 +94,3 @@ const IBAN_BRIDGE_DUPLICATE_PAIR_CANDIDATES_BASE_SQL = `
                 AND bridgeRank = 1
             ORDER BY pairTransactionId
 `;
-
-export const IBAN_BRIDGE_DUPLICATE_PAIR_CANDIDATES_SQL = (scope: ConsolidationScanScopeInterface | null): string =>
-    applyConsolidationScanScopeSql(IBAN_BRIDGE_DUPLICATE_PAIR_CANDIDATES_BASE_SQL, scope, IBAN_BRIDGE_DUPLICATE_PAIR_SCOPE_EXPRESSIONS);

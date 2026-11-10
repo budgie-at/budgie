@@ -1,21 +1,10 @@
 import { TransactionTypeEnum } from '@budgie/contracts';
 
 import { TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS } from '../../../shared/constant/transfer-pair-fast-time-window.constant';
-import { applyConsolidationScanScopeSql } from '../../utils/apply-consolidation-scan-scope-sql.util';
+import { operatedAtScopeSql } from '../../utils/operated-at-scope-sql.util';
+import { scopedSql } from '../../utils/scoped-sql.util';
 
-import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
-
-const BRIDGE_INCOME_SCOPE_SQL_PLACEHOLDER = '__EXISTING_TRANSFER_BRIDGE_INCOME_SCOPE_SQL__';
-const SOURCE_EXPENSE_SCOPE_SQL_PLACEHOLDER = '__EXISTING_TRANSFER_BRIDGE_EXPENSE_SCOPE_SQL__';
-const EXISTING_TRANSFER_SCOPE_SQL_PLACEHOLDER = '__EXISTING_TRANSFER_BRIDGE_TRANSFER_SCOPE_SQL__';
-
-const EXISTING_TRANSFER_BRIDGE_SCOPE_EXPRESSIONS = new Map([
-    [BRIDGE_INCOME_SCOPE_SQL_PLACEHOLDER, 'bridge_income_tx.operated_at'],
-    [SOURCE_EXPENSE_SCOPE_SQL_PLACEHOLDER, 'source_expense_tx.operated_at'],
-    [EXISTING_TRANSFER_SCOPE_SQL_PLACEHOLDER, 'existing_transfer.operated_at']
-]);
-
-const EXISTING_TRANSFER_BRIDGE_CANDIDATES_BASE_SQL = `
+export const EXISTING_TRANSFER_BRIDGE_CANDIDATES_SQL = scopedSql`
             SELECT
                 'AUTO_EXISTING_TRANSFER_BRIDGE' as confidenceBucket,
                 sourceExpenseTransactionId,
@@ -116,14 +105,14 @@ const EXISTING_TRANSFER_BRIDGE_CANDIDATES_BASE_SQL = `
                     AND bridge_income_tx.consolidation_parent_transaction_id IS NULL
                     AND bridge_income_tx.operated_at BETWEEN existing_transfer.operated_at - ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
                         AND existing_transfer.operated_at + ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
-                    ${BRIDGE_INCOME_SCOPE_SQL_PLACEHOLDER}
+                    ${operatedAtScopeSql('bridge_income_tx.operated_at')}
                 INNER JOIN transactions source_expense_tx ON
                     source_expense_tx.type = '${TransactionTypeEnum.EXPENSE}'
                     AND source_expense_tx.deleted_at IS NULL
                     AND source_expense_tx.consolidation_parent_transaction_id IS NULL
                     AND source_expense_tx.operated_at BETWEEN bridge_income_tx.operated_at - ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
                         AND bridge_income_tx.operated_at + ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
-                    ${SOURCE_EXPENSE_SCOPE_SQL_PLACEHOLDER}
+                    ${operatedAtScopeSql('source_expense_tx.operated_at')}
                 INNER JOIN transaction_entries source_expense_entry ON
                     source_expense_entry.transaction_id = source_expense_tx.id
                     AND source_expense_entry.deleted_at IS NULL
@@ -140,7 +129,7 @@ const EXISTING_TRANSFER_BRIDGE_CANDIDATES_BASE_SQL = `
                     AND existing_transfer.consolidation_parent_transaction_id IS NULL
                     AND existing_transfer.from_account_id IS NOT NULL
                     AND existing_transfer.to_account_id IS NOT NULL
-                    ${EXISTING_TRANSFER_SCOPE_SQL_PLACEHOLDER}
+                    ${operatedAtScopeSql('existing_transfer.operated_at')}
                     AND source_account.id != bridge_account.id
                     AND bridge_account.id != target_account.id
                     AND source_account.id != target_account.id
@@ -149,6 +138,3 @@ const EXISTING_TRANSFER_BRIDGE_CANDIDATES_BASE_SQL = `
                 AND bridgeIncomeRank = 1
                 AND existingTransferRank = 1
 `;
-
-export const EXISTING_TRANSFER_BRIDGE_CANDIDATES_SQL = (scope: ConsolidationScanScopeInterface | null): string =>
-    applyConsolidationScanScopeSql(EXISTING_TRANSFER_BRIDGE_CANDIDATES_BASE_SQL, scope, EXISTING_TRANSFER_BRIDGE_SCOPE_EXPRESSIONS);

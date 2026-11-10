@@ -14,18 +14,11 @@ import {
     TRANSFER_PAIR_P2P_FIAT_AUTHORITATIVE_MAX_DELTA_RATIO,
     TRANSFER_PAIR_P2P_FIAT_TIME_WINDOW_SECONDS
 } from '../../../shared/constant/transfer-pair-p2p-fiat.constant';
-import { applyConsolidationScanScopeSql } from '../../utils/apply-consolidation-scan-scope-sql.util';
+import { operatedAtScopeSql } from '../../utils/operated-at-scope-sql.util';
+import { scopedSql } from '../../utils/scoped-sql.util';
 
 import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 
-const P2P_SOURCE_SCOPE_SQL_PLACEHOLDER = '__P2P_REPAIR_SOURCE_SCOPE_SQL__';
-const REPLACEMENT_BANK_SCOPE_SQL_PLACEHOLDER = '__P2P_REPAIR_REPLACEMENT_BANK_SCOPE_SQL__';
-const EXISTING_SOURCE_IDS_SCOPE_SQL_PLACEHOLDER = '__P2P_REPAIR_EXISTING_SOURCE_IDS_SCOPE_SQL__';
-const REPLACEMENT_SOURCE_IDS_SCOPE_SQL_PLACEHOLDER = '__P2P_REPAIR_REPLACEMENT_SOURCE_IDS_SCOPE_SQL__';
-const SCOPE_EXPRESSIONS = new Map([
-    [P2P_SOURCE_SCOPE_SQL_PLACEHOLDER, 'p2p_source.operated_at'],
-    [REPLACEMENT_BANK_SCOPE_SQL_PLACEHOLDER, 'replacement_bank_transaction.operated_at']
-]);
 const buildBankQuoteMatchSql = (bankTransactionAlias: string, bankEntryAlias: string): string => `
     (
         p2p_source.type = '${TransactionTypeEnum.INCOME}'
@@ -77,14 +70,14 @@ const CURRENT_MATCHING_BANK_ENTRY_COUNT_SQL = `
         AND bank_entry.deleted_at IS NULL
         AND (${buildBankQuoteMatchSql('bank_source', 'bank_entry')})
 `;
-const REPLACEMENT_MATCHING_BANK_TRANSACTION_COUNT_SQL = `
+const REPLACEMENT_MATCHING_BANK_TRANSACTION_COUNT_SQL = scopedSql`
     SELECT COUNT(DISTINCT replacement_bank_transaction.id)
     FROM transaction_entries replacement_bank_entry
     INNER JOIN transactions replacement_bank_transaction
         ON replacement_bank_transaction.id = replacement_bank_entry.transaction_id
         AND replacement_bank_transaction.deleted_at IS NULL
         AND replacement_bank_transaction.consolidation_parent_transaction_id IS NULL
-        ${REPLACEMENT_BANK_SCOPE_SQL_PLACEHOLDER}
+        ${operatedAtScopeSql('replacement_bank_transaction.operated_at')}
     INNER JOIN accounts replacement_bank_account
         ON replacement_bank_account.id = replacement_bank_entry.account_id
         AND replacement_bank_account.type IN (${P2P_FIAT_BANK_ACCOUNT_TYPE_SQL})
@@ -118,51 +111,6 @@ const buildScopedReplacementBankTransactionSql = (transactionIdsSql: string): st
             AND ABS(p2p_source.operated_at - scoped_replacement_bank_transaction.operated_at) <= ${TRANSFER_PAIR_P2P_FIAT_TIME_WINDOW_SECONDS}
             AND (${buildBankQuoteMatchSql('scoped_replacement_bank_transaction', 'scoped_replacement_bank_entry')})
     )
-`;
-const SQL = `
-    SELECT DISTINCT canonical.id AS canonicalTransactionId
-    FROM transactions canonical
-    INNER JOIN transaction_entries p2p_entry
-        ON p2p_entry.transaction_id = canonical.id
-        AND p2p_entry.original_transaction_id IS NOT NULL
-        AND p2p_entry.deleted_at IS NULL
-        AND p2p_entry.quoted_instrument_id IS NOT NULL
-        AND p2p_entry.quoted_amount > 0
-    INNER JOIN accounts p2p_account
-        ON p2p_account.id = p2p_entry.account_id
-        AND p2p_account.type = '${AccountTypeEnum.CRYPTO_SYNC}'
-        AND p2p_account.deleted_at IS NULL
-        AND p2p_account.is_active = 1
-    INNER JOIN transactions p2p_source
-        ON p2p_source.id = p2p_entry.original_transaction_id
-        AND p2p_source.deleted_at IS NULL
-        ${P2P_SOURCE_SCOPE_SQL_PLACEHOLDER}
-    WHERE canonical.consolidation_type = '${TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER}'
-        AND canonical.updated_by IS NULL
-        AND canonical.deleted_at IS NULL
-        AND (
-            (
-                p2p_source.type = '${TransactionTypeEnum.INCOME}'
-                AND p2p_entry.type = '${TransactionEntryTypeEnum.DEBIT}'
-            )
-            OR (
-                p2p_source.type = '${TransactionTypeEnum.EXPENSE}'
-                AND p2p_entry.type = '${TransactionEntryTypeEnum.CREDIT}'
-            )
-        )
-        AND (
-            (
-                ${EXISTING_SOURCE_IDS_SCOPE_SQL_PLACEHOLDER}
-                AND (${CURRENT_BANK_ENTRY_COUNT_SQL}) != 1
-                AND (${CURRENT_MATCHING_BANK_ENTRY_COUNT_SQL}) = 1
-            )
-            OR (
-                ${REPLACEMENT_SOURCE_IDS_SCOPE_SQL_PLACEHOLDER}
-                AND (${CURRENT_BANK_ENTRY_COUNT_SQL}) = 1
-                AND (${CURRENT_MATCHING_BANK_ENTRY_COUNT_SQL}) = 0
-                AND (${REPLACEMENT_MATCHING_BANK_TRANSACTION_COUNT_SQL}) = 1
-            )
-        )
 `;
 
 const buildSourceIdsScopeSql = (
@@ -216,12 +164,48 @@ const buildReplacementSourceIdsScopeSql = (scope: ConsolidationScanScopeInterfac
     `
     );
 
-export const buildP2pFiatAuthoritativeRepairCandidateSql = (scope: ConsolidationScanScopeInterface | null): string =>
-    applyConsolidationScanScopeSql(
-        SQL.replaceAll(EXISTING_SOURCE_IDS_SCOPE_SQL_PLACEHOLDER, buildExistingSourceIdsScopeSql(scope)).replaceAll(
-            REPLACEMENT_SOURCE_IDS_SCOPE_SQL_PLACEHOLDER,
-            buildReplacementSourceIdsScopeSql(scope)
-        ),
-        scope,
-        SCOPE_EXPRESSIONS
-    );
+export const buildP2pFiatAuthoritativeRepairCandidateSql = scopedSql`
+    SELECT DISTINCT canonical.id AS canonicalTransactionId
+    FROM transactions canonical
+    INNER JOIN transaction_entries p2p_entry
+        ON p2p_entry.transaction_id = canonical.id
+        AND p2p_entry.original_transaction_id IS NOT NULL
+        AND p2p_entry.deleted_at IS NULL
+        AND p2p_entry.quoted_instrument_id IS NOT NULL
+        AND p2p_entry.quoted_amount > 0
+    INNER JOIN accounts p2p_account
+        ON p2p_account.id = p2p_entry.account_id
+        AND p2p_account.type = '${AccountTypeEnum.CRYPTO_SYNC}'
+        AND p2p_account.deleted_at IS NULL
+        AND p2p_account.is_active = 1
+    INNER JOIN transactions p2p_source
+        ON p2p_source.id = p2p_entry.original_transaction_id
+        AND p2p_source.deleted_at IS NULL
+        ${operatedAtScopeSql('p2p_source.operated_at')}
+    WHERE canonical.consolidation_type = '${TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER}'
+        AND canonical.updated_by IS NULL
+        AND canonical.deleted_at IS NULL
+        AND (
+            (
+                p2p_source.type = '${TransactionTypeEnum.INCOME}'
+                AND p2p_entry.type = '${TransactionEntryTypeEnum.DEBIT}'
+            )
+            OR (
+                p2p_source.type = '${TransactionTypeEnum.EXPENSE}'
+                AND p2p_entry.type = '${TransactionEntryTypeEnum.CREDIT}'
+            )
+        )
+        AND (
+            (
+                ${buildExistingSourceIdsScopeSql}
+                AND (${CURRENT_BANK_ENTRY_COUNT_SQL}) != 1
+                AND (${CURRENT_MATCHING_BANK_ENTRY_COUNT_SQL}) = 1
+            )
+            OR (
+                ${buildReplacementSourceIdsScopeSql}
+                AND (${CURRENT_BANK_ENTRY_COUNT_SQL}) = 1
+                AND (${CURRENT_MATCHING_BANK_ENTRY_COUNT_SQL}) = 0
+                AND (${REPLACEMENT_MATCHING_BANK_TRANSACTION_COUNT_SQL}) = 1
+            )
+        )
+`;
