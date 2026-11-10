@@ -1,9 +1,9 @@
-import { AccountBalanceRepository, AccountRepository, AccountTypeEnum, Db, getDebtLedgerBalance } from '@budgie/contracts';
+import { AccountBalanceRepository, AccountRepository, AccountTypeEnum, Db } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined, isEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isEmptyArray } from '@rnw-community/shared';
 
 import { DepositNegativeBalanceError } from '../error/deposit-negative-balance.error';
 
@@ -26,35 +26,6 @@ export class AccountBalanceIncrementalService extends Context.Service<AccountBal
             ): AccountBalanceCreateEntityInterface => ({
                 amount: debtLedgerBalances.get(account.id) ?? ledgerBalances.get(account.id) ?? 0,
                 accountId: account.id
-            });
-
-            const getDebtLedgerBalances = Effect.fn('AccountBalanceIncrementalService.getDebtLedgerBalances')(function* (
-                accounts: AccountEntityInterface[]
-            ) {
-                const debtAccounts = accounts.filter(account => account.type === AccountTypeEnum.DEBT);
-
-                if (isEmptyArray(debtAccounts)) {
-                    return new Map<number, number>();
-                }
-
-                const ledgerAmounts = yield* accountBalanceRepository.getDebtLedgerAmounts(debtAccounts.map(({ id }) => id));
-                const ledgerAmountsMap = new Map(ledgerAmounts.map(ledgerAmount => [ledgerAmount.accountId, ledgerAmount]));
-
-                return debtAccounts.reduce((map, account) => {
-                    const ledgerAmount = ledgerAmountsMap.get(account.id);
-                    const openedAmount = ledgerAmount?.openedAmount ?? 0;
-
-                    map.set(
-                        account.id,
-                        getDebtLedgerBalance(
-                            ledgerAmount?.closedAmount ?? 0,
-                            account.debtType,
-                            isPositiveNumber(openedAmount) ? openedAmount : account.targetBalance
-                        )
-                    );
-
-                    return map;
-                }, new Map<number, number>());
             });
 
             const getPreviousDepositBalances = Effect.fn('AccountBalanceIncrementalService.getPreviousDepositBalances')(function* (
@@ -101,7 +72,9 @@ export class AccountBalanceIncrementalService extends Context.Service<AccountBal
                 const accountIds = accounts.map(({ id }) => id);
                 yield* balanceAdjustmentService.rebaseReconciliations(accountIds);
                 const ledgerBalances = yield* accountBalanceRepository.getLedgerBalances(accountIds);
-                const debtLedgerBalances = yield* getDebtLedgerBalances(accounts);
+                const debtLedgerBalances = yield* accountBalanceRepository.getDebtLedgerBalances(
+                    accounts.filter(account => account.type === AccountTypeEnum.DEBT)
+                );
 
                 const balancesToInsert = accounts.map(account => buildBalanceInput(account, ledgerBalances, debtLedgerBalances));
 
