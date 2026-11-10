@@ -54,12 +54,12 @@
             "test": "voice-transaction-entry-1"
         },
         {
-            "name": "ai-merchant-translation-1",
-            "test": "ai-merchant-translation-1"
+            "name": "ai-category-translation-1",
+            "test": "ai-category-translation-1"
         },
         {
             "name": "on-device-ai-budget-app-1",
-            "deepLink": "budgie://settings?anchor=ai",
+            "deepLink": "budgie://settings/ai-features",
             "settleSeconds": 340
         },
         {
@@ -77,10 +77,6 @@
         {
             "name": "binance-sync-1",
             "deepLink": "budgie://create-account/BINANCE"
-        },
-        {
-            "name": "binance-sync-2",
-            "deepLink": "budgie://"
         },
         {
             "name": "net-worth-tracker-1",
@@ -131,12 +127,8 @@
             "test": "account-transfers-2"
         },
         {
-            "name": "biometric-authentication-1",
-            "deepLink": "budgie://settings/pin?mode=CHANGE"
-        },
-        {
             "name": "csv-import-1",
-            "deepLink": "budgie://settings/import"
+            "deepLink": "budgie://settings/data"
         },
         {
             "name": "csv-import-2",

@@ -36,7 +36,7 @@ export async function openConvertToInstallment(ctx: Ctx, transactionId: number):
     await scrollTo(ctx, 'TransactionInfo.ConvertButton');
     await sleep(400);
     await tapId(ctx, 'TransactionInfo.ConvertButton');
-    await ctx.screen.getByText('Pay in parts').first().tap();
+    await tapId(ctx, 'TransactionActionsMenu.ConvertToInstallmentButton');
     await expectId(ctx, 'ConvertToInstallment.Page', 10_000);
 }
 

@@ -22,7 +22,11 @@
 #   showcase.db         curated dataset, anchored on a fixed date
 #   <LOCALE>.sql         locale overlay (strings + display currency)
 #   shift-dates.sql      re-anchors every date on the capture day
-#   scenes/<scene>.sql   optional per-scene state overlay, applied last
+#   scenes/shared/budget-healthy.sql   a ~65% monthly budget, applied before
+#                        the scene overlay so a scene can pin its own budget
+#   scenes/<scene>.sql   optional per-scene state overlay
+#   opening-balances.sql books opening balances and sets account_balances
+#                        to the ledger, applied last
 # and the hook itself owns `language`, `theme` and the lock/screenshot flags,
 # unless the scene overlay overrides them. A scene overlay is resolved by
 # filename convention: scenes/$SCENE.sql, else scenes/<SCENE minus -N>.sql,
@@ -170,11 +174,15 @@ prepare_database() {
             updated_at = unixepoch('now');
     "
 
+    sqlite3 "$PREPARED_DATABASE_PATH" < "$SCENES_DIR/shared/budget-healthy.sql"
+
     resolve_scene_overlay_path
 
     if [ -n "$SCENE_OVERLAY_PATH" ]; then
         ( cd "$SCENES_DIR" && sqlite3 "$PREPARED_DATABASE_PATH" < "$SCENE_OVERLAY_PATH" )
     fi
+
+    sqlite3 "$PREPARED_DATABASE_PATH" < "$SCREENSHOTS_DIR/opening-balances.sql"
 
     sqlite3 "$PREPARED_DATABASE_PATH" 'PRAGMA wal_checkpoint(TRUNCATE);' >/dev/null
     rm -f "$PREPARED_DATABASE_PATH-wal" "$PREPARED_DATABASE_PATH-shm"
