@@ -40,7 +40,21 @@ import type { SQLiteColumn, SelectedFields } from 'drizzle-orm/sqlite-core';
 
 export class StatisticsRepository extends Context.Service<StatisticsRepository>()('@budgie/contracts/StatisticsRepository', {
     make: Effect.sync(() => {
-        const buildSpendingTransactionIdsQuery = (db: DB, baseWhere: SQL | undefined, type: TransactionTypeEnum | null) =>
+        const buildTypeCondition = (type: TransactionTypeEnum, categoryIds: number[] | null) =>
+            type === TransactionTypeEnum.EXPENSE && isNotEmptyArray(categoryIds)
+                ? and(
+                      transactionFilters.buildExpenseAnalyticsEntryCondition(),
+                      inArray(TransactionEntryEntityTable.categoryId, categoryIds),
+                      ne(TransactionEntityTable.type, TransactionTypeEnum.ADJUSTMENT)
+                  )
+                : eq(TransactionEntityTable.type, type);
+
+        const buildSpendingTransactionIdsQuery = (
+            db: DB,
+            baseWhere: SQL | undefined,
+            type: TransactionTypeEnum | null,
+            categoryIds: number[] | null
+        ) =>
             db
                 .selectDistinct({ id: TransactionEntityTable.id })
                 .from(TransactionEntityTable)
@@ -52,7 +66,7 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
                         transactionFilters.buildPrimaryLedgerEntryCondition(),
                         transactionFilters.buildNonDebtAccountCondition(),
                         buildSpendingEntryCondition(),
-                        ...(isDefined(type) ? [eq(TransactionEntityTable.type, type)] : [])
+                        ...(isDefined(type) ? [buildTypeCondition(type, categoryIds)] : [])
                     )
                 );
 
@@ -338,7 +352,12 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
         return {
             getTransactions: (filters: StatisticsFilterInterface, limit: number, language: LanguageEnum) =>
                 Db.query(db => {
-                    const transactionIds = buildSpendingTransactionIdsQuery(db, buildStatisticsFilterWhere(db, filters), filters.type);
+                    const transactionIds = buildSpendingTransactionIdsQuery(
+                        db,
+                        buildStatisticsFilterWhere(db, filters),
+                        filters.type,
+                        filters.categoryIds
+                    );
 
                     return db.query.TransactionEntityTable.findMany({
                         with: transactionFilters.buildFullTransactionRelations(language),
@@ -477,12 +496,22 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
 
             getIncomeTransactionsQuery: (filters: TransactionFilterInterface) =>
                 Db.query(db =>
-                    buildSpendingTransactionIdsQuery(db, transactionFilters.buildFilterWhere(filters), TransactionTypeEnum.INCOME)
+                    buildSpendingTransactionIdsQuery(
+                        db,
+                        transactionFilters.buildFilterWhere(filters),
+                        TransactionTypeEnum.INCOME,
+                        filters.categoryIds
+                    )
                 ),
 
             getExpenseTransactionsQuery: (filters: TransactionFilterInterface) =>
                 Db.query(db =>
-                    buildSpendingTransactionIdsQuery(db, transactionFilters.buildFilterWhere(filters), TransactionTypeEnum.EXPENSE)
+                    buildSpendingTransactionIdsQuery(
+                        db,
+                        transactionFilters.buildFilterWhere(filters),
+                        TransactionTypeEnum.EXPENSE,
+                        filters.categoryIds
+                    )
                 )
         };
     })
