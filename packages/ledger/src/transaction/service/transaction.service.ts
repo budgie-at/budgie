@@ -135,12 +135,11 @@ export class TransactionService extends Context.Service<TransactionService>()('@
 
                 return;
             }
-            const accountIds = transaction?.entries.map(entry => entry.accountId) ?? [];
+            const debtEvent = yield* debtEventRepository.findByTransactionId(id);
+            const accountIds = [...(transaction?.entries.map(entry => entry.accountId) ?? []), debtEvent?.debtAccountId].filter(isDefined);
             if (shouldKeepTombstone && isDefined(transaction?.externalId)) {
-                const debtEvent = yield* debtEventRepository.findByTransactionId(id);
                 yield* debtEventRepository.deleteByTransactionId(id);
                 yield* transactionRepository.archiveByIds([id]);
-                accountIds.push(...[debtEvent?.debtAccountId].filter(isDefined));
             } else {
                 yield* transactionRepository.deleteById(id);
             }

@@ -116,6 +116,7 @@ export class AccountArchiveService extends Context.Service<AccountArchiveService
                         yield* debtEventRepository.restoreByAccountIds([id]);
                         yield* transactionEntryRepository.restoreByAccountIds([id], archivedAt);
                         yield* transactionRepository.restoreByAccountIds([id], archivedAt);
+                        yield* accountBalanceIncrementalService.updateBalancesByAccountIds([id]);
                     })
                 );
             }),
