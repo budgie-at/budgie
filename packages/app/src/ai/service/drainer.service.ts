@@ -208,7 +208,6 @@ export const makeDrainer = Effect.fnUntraced(function* <E>(
                 foregroundWatch,
                 Stream.runForEach(SubscriptionRef.changes(workload.foregroundCount), count => (count > 0 ? halt() : schedule()))
             );
-            yield* schedule();
             yield* refreshPending;
         }),
         stop: Effect.fn('Drainer.stop')(function* () {
