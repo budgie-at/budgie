@@ -6,7 +6,9 @@ import * as b from '../support/budgie/core.ts';
 import { plan } from '../support/media/plan.ts';
 import { test } from '../support/media/test.ts';
 
-for (const cell of plan().filter(cell => cell.test === 'ai-transaction-suggestions-1' || cell.test === 'ai-tag-suggestions-1')) {
+const cells = plan().filter(cell => cell.test === 'ai-transaction-suggestions-1' || cell.test === 'ai-tag-suggestions-1');
+
+for (const cell of cells.filter((cell, index) => cells.findIndex(other => other.test === cell.test) === index)) {
     test(`${cell.scene} applies the selected suggestion`, async ({ media }) => {
         await media.capture({ ...cell, path: resolve('.e2e/suggestion-actions', `${cell.scene}.png`) });
         const isTag = cell.test === 'ai-tag-suggestions-1';
