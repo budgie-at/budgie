@@ -6,7 +6,7 @@ import {
     TransactionConsolidationTypeEnum,
     TransactionEntryTypeEnum
 } from '@budgie/contracts';
-import { TransferConsolidationService } from '@budgie/sync';
+import { TransferConsolidationService } from '@budgie/ledger';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 

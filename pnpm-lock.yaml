@@ -763,9 +763,6 @@ importers:
       '@budgie/rules':
         specifier: workspace:*
         version: link:../rules
-      '@budgie/sync':
-        specifier: workspace:*
-        version: link:../sync
       '@noble/hashes':
         specifier: ^2.4.0
         version: 2.4.0

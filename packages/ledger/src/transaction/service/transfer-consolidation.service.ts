@@ -1,11 +1,4 @@
 import { ConsolidationCandidateRepository, ConsolidationCoordinatorService } from '@budgie/consolidation';
-import {
-    AccountBalanceIncrementalService,
-    InstallmentPlanService,
-    LedgerWorkload,
-    TransactionDebtSettlementService,
-    TransactionTransferService
-} from '@budgie/ledger';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -13,25 +6,28 @@ import * as Semaphore from 'effect/Semaphore';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
-import { InzhurBankFlowService } from '../../inzhur/service/inzhur-bank-flow.service';
+import { LedgerWorkload } from '../../@generic/port/ledger-workload.port';
+import { TransferConsolidationBankFlow } from '../../@generic/port/transfer-consolidation-bank-flow.port';
+import { AccountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
+import { InstallmentPlanService } from '../../installment/service/installment-plan.service';
 
-import { OwnTransferRepairService } from './own-transfer-repair.service';
+import { TransactionDebtSettlementService } from './transaction-debt-settlement.service';
+import { TransactionTransferService } from './transaction-transfer.service';
 
 import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 
 export class TransferConsolidationService extends Context.Service<TransferConsolidationService>()(
-    '@budgie/sync/TransferConsolidationService',
+    '@budgie/ledger/TransferConsolidationService',
     {
         make: Effect.gen(function* () {
             const ledgerWorkload = yield* LedgerWorkload;
-            const ownTransfers = yield* OwnTransferRepairService;
+            const bankFlow = yield* TransferConsolidationBankFlow;
             const consolidationCoordinatorService = yield* ConsolidationCoordinatorService;
             const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
             const installmentPlanService = yield* InstallmentPlanService;
             const transactionDebtSettlementService = yield* TransactionDebtSettlementService;
             const consolidationCandidateRepository = yield* ConsolidationCandidateRepository;
             const transactionTransferService = yield* TransactionTransferService;
-            const inzhurBankFlowService = yield* InzhurBankFlowService;
             const exclusive = yield* Semaphore.make(1);
 
             const runExclusive = <A, E, R>(effect: Effect.Effect<A, E, R>) => exclusive.withPermit(ledgerWorkload.runForeground(effect));
@@ -69,7 +65,7 @@ export class TransferConsolidationService extends Context.Service<TransferConsol
                 consolidate: Effect.fn('TransferConsolidationService.consolidate')(function* (
                     scope: ConsolidationScanScopeInterface | null
                 ) {
-                    yield* inzhurBankFlowService.apply(scope);
+                    yield* bankFlow.prepare(scope);
 
                     const coordinated = yield* consolidationCoordinatorService.consolidate(scope);
                     const converted = yield* convertHouseholdTransfers(scope);
@@ -78,7 +74,7 @@ export class TransferConsolidationService extends Context.Service<TransferConsol
                     yield* updateBalancesAfterConsolidation(result.consolidated);
                     yield* installmentPlanService.attachDueParts();
                     yield* transactionDebtSettlementService.repairDebtPaymentCategories();
-                    yield* ownTransfers.repair(scope);
+                    yield* bankFlow.repair(scope);
 
                     return result;
                 }, runExclusive),
@@ -97,14 +93,12 @@ export class TransferConsolidationService extends Context.Service<TransferConsol
 ) {
     static readonly layer = Layer.effect(TransferConsolidationService, TransferConsolidationService.make).pipe(
         Layer.provide([
-            OwnTransferRepairService.layer,
             ConsolidationCoordinatorService.layer,
             ConsolidationCandidateRepository.layer,
             AccountBalanceIncrementalService.layer,
             InstallmentPlanService.layer,
             TransactionDebtSettlementService.layer,
-            TransactionTransferService.layer,
-            InzhurBankFlowService.layer
+            TransactionTransferService.layer
         ])
     );
 }

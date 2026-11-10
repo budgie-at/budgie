@@ -1,6 +1,6 @@
 import { ConsolidationCandidateRepository, RefundPairRepository } from '@budgie/consolidation';
 import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
-import { TransferConsolidationService } from '@budgie/sync';
+import { TransferConsolidationService } from '@budgie/ledger';
 import { afterEach, expect, layer, vi } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 

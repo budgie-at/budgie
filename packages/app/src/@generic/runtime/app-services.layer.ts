@@ -55,13 +55,18 @@ import { ExporterService, ImporterService } from '@budgie/import-export';
 import {
     AccountArchiveService,
     AccountBalanceIncrementalService,
+    AccountDebtOpeningService,
     AccountService,
-    BalanceAdjustmentService,
     AccountTransferConversionService,
+    BalanceAdjustmentService,
     CategoryService,
+    DebtAccountService,
     ImportedBatchNormalizerService,
     ImportedTransactionEntryUpdateService,
     InstallmentPlanService,
+    LedgerWorkload,
+    MoneyDataUpgradeService,
+    ReceiptMatchService,
     RefreshedImportedEntriesService,
     TransactionBatchCreateService,
     TransactionDebtSettlementService,
@@ -69,12 +74,8 @@ import {
     TransactionImportService,
     TransactionService,
     TransactionTransferService,
-    TransferCreationService,
-    LedgerWorkload,
-    AccountDebtOpeningService,
-    DebtAccountService,
-    MoneyDataUpgradeService,
-    ReceiptMatchService
+    TransferConsolidationService,
+    TransferCreationService
 } from '@budgie/ledger';
 import {
     EntryBaseValuationService,
@@ -106,8 +107,8 @@ import {
     SyncOperationMetadataService,
     SyncProviderRegistryService,
     SyncRepairService,
+    transferConsolidationBankFlowLayer,
     OwnTransferRepairService,
-    TransferConsolidationService,
     UnpairedOwnCardTransferRepairService
 } from '@budgie/sync';
 import * as Effect from 'effect/Effect';
@@ -173,7 +174,9 @@ const ledgerWorkloadLayer = Layer.effect(
     LedgerWorkload,
     Effect.map(Workload, workload => LedgerWorkload.of({ runForeground: workload.runForeground }))
 ).pipe(Layer.provide(Workload.layer));
-const ledgerPortsLayer = Layer.mergeAll(ledgerWorkloadLayer, p2pTransferTitleResolverLayer);
+const ledgerPortsLayer = transferConsolidationBankFlowLayer.pipe(
+    Layer.provideMerge(Layer.mergeAll(ledgerWorkloadLayer, p2pTransferTitleResolverLayer))
+);
 export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     AccountRepository.layer,
     AccountBalanceRepository.layer,

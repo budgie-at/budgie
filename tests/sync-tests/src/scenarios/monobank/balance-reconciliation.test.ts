@@ -8,7 +8,8 @@ import {
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
-import { MonobankSyncService, ResyncService, TransferConsolidationService } from '@budgie/sync';
+import { TransferConsolidationService } from '@budgie/ledger';
+import { MonobankSyncService, ResyncService } from '@budgie/sync';
 import { afterEach, describe, expect, it, vi } from '@effect/vitest';
 import { and, eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';

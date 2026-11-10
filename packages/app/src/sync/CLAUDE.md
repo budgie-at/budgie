@@ -27,12 +27,13 @@ A new sync provider composes `SyncSetupPage`, `SyncAccountsStep`, `SyncParkedAcc
 ### Composition
 
 The sync services, family factories (`makeSyncService`, `makePollingSyncService`, `makeFileSyncService`),
-`SyncProviderRegistryService`, resync, repair and transfer consolidation live in `@budgie/sync` (see
-`packages/sync/AGENTS.md`). This module keeps the UI, the `.task.ts` registrations, the rule and
+`SyncProviderRegistryService`, resync and repair live in `@budgie/sync` (see
+`packages/sync/AGENTS.md`); `TransferConsolidationService` lives in `@budgie/ledger`. This module keeps the UI, the `.task.ts` registrations, the rule and
 transfer-consolidation drainers, `AppDataSyncService`, and the port adapters in `layer/`:
 `syncWorkloadLayer` (`SyncWorkload` over `Workload`, the drainers and expo background tasks),
 `syncFileReaderLayer` (`SyncFileReader` over the native PDF extractor and `expo-file-system`) and
-`p2pTransferTitleResolverLayer` (Lingui titles for Binance P2P transfers). `appServicesLayer` provides them.
+`p2pTransferTitleResolverLayer` (Lingui titles for Binance P2P transfers). `appServicesLayer` provides them
+together with `transferConsolidationBankFlowLayer` from `@budgie/sync`.
 
 ### Adding a provider
 

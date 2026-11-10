@@ -1,5 +1,5 @@
 import { AccountBalanceRepository, PRECISION, TransactionEntryEntityTable, TransactionEntryTypeEnum } from '@budgie/contracts';
-import { TransferConsolidationService } from '@budgie/sync';
+import { TransferConsolidationService } from '@budgie/ledger';
 import { describe, expect, it } from '@effect/vitest';
 import { and, eq, isNull } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';

@@ -1,4 +1,5 @@
-import { TransferConsolidationService, TransferConsolidationDrainerService } from '@budgie/sync';
+import { TransferConsolidationService } from '@budgie/ledger';
+import { TransferConsolidationDrainerService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Deferred from 'effect/Deferred';
 import * as Effect from 'effect/Effect';

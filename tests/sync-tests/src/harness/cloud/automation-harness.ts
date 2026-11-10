@@ -4,6 +4,7 @@ import { P2pTransferTitleResolver } from '@budgie/consolidation';
 import { Db, ExternalSourceEnum } from '@budgie/contracts';
 import { LedgerWorkload } from '@budgie/ledger';
 import { RecurringService } from '@budgie/recurring';
+import { transferConsolidationBankFlowLayer } from '@budgie/sync';
 import { expect } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -23,6 +24,7 @@ export const embeddingBoostProbe = { calls: 0 };
 const automationLayer = Layer.mergeAll(
     deviceLayer,
     SyncAutomationService.layer.pipe(
+        Layer.provide(transferConsolidationBankFlowLayer),
         Layer.provide([
             Layer.succeed(
                 SyncAutomationEmbeddingBoost,

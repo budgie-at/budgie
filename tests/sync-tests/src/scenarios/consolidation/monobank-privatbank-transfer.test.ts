@@ -1,12 +1,11 @@
 import { ConsolidationCoordinatorService } from '@budgie/consolidation';
 import { ExternalSourceEnum, TransactionConsolidationTypeEnum, TransactionEntityTable } from '@budgie/contracts';
-import { TransactionImportService } from '@budgie/ledger';
+import { TransactionImportService, TransferConsolidationService } from '@budgie/ledger';
 import {
     mapBankTransactionToCreateInput,
     MonobankSyncService,
     PrivatbankCategoryMatcherService,
-    privatbankTransactionMapper,
-    TransferConsolidationService
+    privatbankTransactionMapper
 } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';

@@ -1,5 +1,6 @@
 import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
-import { AtmCashMoveService, TransferConsolidationService } from '@budgie/sync';
+import { TransferConsolidationService } from '@budgie/ledger';
+import { AtmCashMoveService } from '@budgie/sync';
 import * as Effect from 'effect/Effect';
 import { expect } from 'vitest';
 

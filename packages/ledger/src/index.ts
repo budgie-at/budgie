@@ -1,4 +1,5 @@
 export { LedgerWorkload } from './@generic/port/ledger-workload.port';
+export { TransferConsolidationBankFlow } from './@generic/port/transfer-consolidation-bank-flow.port';
 
 export { DepositNegativeBalanceError } from './account/error/deposit-negative-balance.error';
 export { DebtTransferNotAllowedError } from './transaction/error/debt-transfer-not-allowed.error';
@@ -29,6 +30,7 @@ export { TransactionDepositSafetyService } from './transaction/service/transacti
 export { TransactionImportService } from './transaction/service/transaction-import.service';
 export { TransactionService } from './transaction/service/transaction.service';
 export { TransactionTransferService } from './transaction/service/transaction-transfer.service';
+export { TransferConsolidationService } from './transaction/service/transfer-consolidation.service';
 export { TransferCreationService } from './transaction/service/transfer-creation.service';
 
 export { assertTransferAccountsAreNotDebt } from './transaction/utils/assert-transfer-accounts-are-not-debt.util';

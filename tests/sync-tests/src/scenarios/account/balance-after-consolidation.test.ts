@@ -1,6 +1,5 @@
 import { AccountBalanceRepository, AccountTypeEnum } from '@budgie/contracts';
-import { AccountBalanceIncrementalService } from '@budgie/ledger';
-import { TransferConsolidationService } from '@budgie/sync';
+import { AccountBalanceIncrementalService, TransferConsolidationService } from '@budgie/ledger';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 

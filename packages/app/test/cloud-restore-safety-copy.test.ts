@@ -1,6 +1,6 @@
 import { CloudSyncSafetyCopy } from '@budgie/cloud-sync';
 import { P2pTransferTitleResolver } from '@budgie/consolidation';
-import { LedgerWorkload } from '@budgie/ledger';
+import { LedgerWorkload, TransferConsolidationBankFlow } from '@budgie/ledger';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 import * as Exit from 'effect/Exit';
@@ -61,6 +61,7 @@ describe('restore safety copy expiry', () => {
                 FetchHttpClient.layer,
                 Reactivity.layer,
                 Layer.mock(LedgerWorkload)({}),
+                Layer.mock(TransferConsolidationBankFlow)({}),
                 Layer.succeed(P2pTransferTitleResolver, () => 'unused')
             ])
         )

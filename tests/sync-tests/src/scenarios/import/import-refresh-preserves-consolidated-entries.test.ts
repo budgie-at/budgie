@@ -8,8 +8,7 @@ import {
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
-import { TransactionImportService, TransactionService } from '@budgie/ledger';
-import { TransferConsolidationService } from '@budgie/sync';
+import { TransactionImportService, TransactionService, TransferConsolidationService } from '@budgie/ledger';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 

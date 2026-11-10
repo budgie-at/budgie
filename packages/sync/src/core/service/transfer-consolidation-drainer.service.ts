@@ -1,4 +1,5 @@
 import { mergeConsolidationScopes } from '@budgie/consolidation';
+import { TransferConsolidationService } from '@budgie/ledger';
 import * as Context from 'effect/Context';
 import * as Duration from 'effect/Duration';
 import * as Effect from 'effect/Effect';
@@ -8,8 +9,6 @@ import * as Ref from 'effect/Ref';
 import { isDefined } from '@rnw-community/shared';
 
 import { TransferConsolidationWorkload } from '../port/transfer-consolidation-workload.port';
-
-import { TransferConsolidationService } from './transfer-consolidation.service';
 
 import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 
