@@ -36,10 +36,6 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
     const ruleEngineService = yield* RuleEngineService;
     const accountReissueMergeService = yield* AccountReissueMergeService;
     const syncService = yield* makeSyncService(definition);
-    const findKnownExternalIds = Effect.all([
-        transactionService.findIdMapByExternalSource(definition.provider),
-        Effect.map(transactionService.findDeletedExternalIdsByExternalSource(definition.provider), ids => new Set(ids))
-    ]);
     const millisecondsPerSecond = 1000;
     const resolveMccCategoryLookupKey =
         definition.resolveMccCategoryLookupKey ?? ((transaction: SyncTransactionInterface) => transaction.category ?? '');
@@ -100,6 +96,11 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
               timeMs < forwardSyncFromAt.getTime()
             : timeMs >= (backwardSyncLimitAt?.getTime() ?? 0);
 
+    const isImportable = (transaction: SyncTransactionInterface, sync: SyncEntityInterface | undefined, context: ImportContextInterface) =>
+        (!isDefined(sync) || !isDeliveredByLiveConnection(sync, transaction.time * millisecondsPerSecond)) &&
+        (isKnownSyncTransaction(transaction, context.existingTransactionIdMap) ||
+            !isKnownSyncTransaction(transaction, context.deletedExternalIds));
+
     const importAccountTransactions = Effect.fnUntraced(function* (
         client: FileBasedSyncClientInterface,
         bankAccount: SyncAccountInterface,
@@ -108,10 +109,7 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
         const account = yield* prepareImportAccount(bankAccount);
 
         const sync = yield* syncRepository.getByAccountId(account.id);
-        const transactions = client
-            .getTransactions(bankAccount.id)
-            .filter(transaction => !isDefined(sync) || !isDeliveredByLiveConnection(sync, transaction.time * millisecondsPerSecond))
-            .filter(transaction => !isKnownSyncTransaction(transaction, context.deletedExternalIds));
+        const transactions = client.getTransactions(bankAccount.id).filter(transaction => isImportable(transaction, sync, context));
         if (!isNotEmptyArray(transactions)) {
             return {
                 newTransactions: [],
@@ -195,7 +193,7 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
     const importWork = Effect.fnUntraced(function* (client: FileBasedSyncClientInterface, bankAccounts: SyncAccountInterface[]) {
         const [mccCategoryLookupMap, [existingTransactionIdMap, deletedExternalIds]] = yield* Effect.all([
             definition.resolveMccCategoryIdMap(client, bankAccounts),
-            findKnownExternalIds
+            transactionService.findKnownExternalIds(definition.provider)
         ]);
         const context: ImportContextInterface = { mccCategoryLookupMap, existingTransactionIdMap, deletedExternalIds };
         const accountImportResults = yield* Db.transaction(importAccounts(client, bankAccounts, context));
@@ -255,7 +253,7 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
         reviewImport: Effect.fn('AbstractFileSyncService.reviewImport')(function* (uri: string, selectedAccountIds: string[]) {
             const { client, bankAccounts } = yield* parseFile(uri);
             const selectedBankAccounts = bankAccounts.filter(account => selectedAccountIds.includes(account.id));
-            const [existingTransactionIdMap, deletedExternalIds] = yield* findKnownExternalIds;
+            const [existingTransactionIdMap, deletedExternalIds] = yield* transactionService.findKnownExternalIds(definition.provider);
 
             return buildFileSyncImportReview(client, selectedBankAccounts, existingTransactionIdMap, deletedExternalIds);
         }),

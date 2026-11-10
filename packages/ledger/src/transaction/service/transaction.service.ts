@@ -162,8 +162,11 @@ export class TransactionService extends Context.Service<TransactionService>()('@
             ),
             findIdMapByExternalSource: (externalSource: ExternalSourceEnum, accountIds?: readonly number[]) =>
                 transactionRepository.findIdMapByExternalSource(externalSource, accountIds),
-            findDeletedExternalIdsByExternalSource: (externalSource: ExternalSourceEnum) =>
-                transactionRepository.findDeletedExternalIdsByExternalSource(externalSource),
+            findKnownExternalIds: (externalSource: ExternalSourceEnum) =>
+                Effect.all([
+                    transactionRepository.findIdMapByExternalSource(externalSource),
+                    Effect.map(transactionRepository.findDeletedExternalIdsByExternalSource(externalSource), ids => new Set(ids))
+                ]),
             moveExternalEntryToAccount: Effect.fn('TransactionService.moveExternalEntryToAccount')(
                 function* (transactionId: number, externalId: string, accountId: number, isIncome: boolean) {
                     const existingEntry = yield* transactionEntryRepository.findByTransactionIdAndExternalId(transactionId, externalId);

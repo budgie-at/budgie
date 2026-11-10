@@ -1,10 +1,20 @@
-import { SyncRepository, TransactionEntityTable } from '@budgie/contracts';
+import {
+    ExternalSourceEnum,
+    PRECISION,
+    SyncRepository,
+    TransactionEntityTable,
+    TransactionEntryEntityTable,
+    TransactionTypeEnum
+} from '@budgie/contracts';
 import { AccountArchiveService, TransactionService } from '@budgie/ledger';
 import { describe, expect, it } from '@effect/vitest';
-import { eq } from 'drizzle-orm';
+import { and, eq, isNull } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
 import { buildMonobank, monobankStub, MonobankSyncService, setupMonobankFixture, testDb, TestLayer } from '../../harness';
+import { insertOne } from '../../harness/db/insert-one';
+
+import type { StatementItem } from '@liaugust/monobank-sdk';
 
 const EXTERNAL_ID = 'tx-deleted';
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -30,25 +40,31 @@ const syncThenDelete = Effect.gen(function* () {
     return { account, payload };
 });
 
+const resyncWith = (accountId: number, payload: StatementItem) =>
+    Effect.gen(function* () {
+        const monobankSyncService = yield* MonobankSyncService;
+        const syncRepository = yield* SyncRepository;
+
+        yield* syncRepository.resetForWindowedResync(accountId, new Date(2026, 0, 1));
+        monobankStub.statementBatches([[payload]]);
+        yield* monobankSyncService.sync();
+    });
+
 describe('monobank/deleted-transaction-resync', () => {
     it.effect('keeps a deleted synced transaction deleted when a re-sync returns it again', () =>
         Effect.gen(function* () {
-            const monobankSyncService = yield* MonobankSyncService;
-            const syncRepository = yield* SyncRepository;
             const { account, payload } = yield* syncThenDelete;
 
-            yield* syncRepository.resetForWindowedResync(account.id, new Date(2026, 0, 1));
-            monobankStub.statementBatches([[payload]]);
-            yield* monobankSyncService.sync();
+            yield* resyncWith(account.id, payload);
 
             yield* expectOnlyTombstone;
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('keeps a transaction deleted a day earlier deleted after its account is archived and restored', () =>
+    it.effect('keeps a transaction deleted a day earlier deleted after its account is archived, restored and re-synced', () =>
         Effect.gen(function* () {
             const accountArchiveService = yield* AccountArchiveService;
-            const { account } = yield* syncThenDelete;
+            const { account, payload } = yield* syncThenDelete;
             yield* testDb
                 .update(TransactionEntityTable)
                 .set({ deletedAt: new Date(Date.now() - DAY_MS) })
@@ -56,8 +72,61 @@ describe('monobank/deleted-transaction-resync', () => {
 
             yield* accountArchiveService.archiveById(account.id);
             yield* accountArchiveService.restoreById(account.id);
+            yield* resyncWith(account.id, payload);
 
             yield* expectOnlyTombstone;
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('re-creates rows of an archived account on a newly linked account', () =>
+        Effect.gen(function* () {
+            const monobankSyncService = yield* MonobankSyncService;
+            const accountArchiveService = yield* AccountArchiveService;
+            const { account } = yield* setupMonobankFixture();
+            const oldPayload = buildMonobank.transaction({ id: 'tx-old', amount: -2500, hold: false });
+
+            monobankStub.statement([oldPayload]);
+            yield* monobankSyncService.sync();
+            yield* accountArchiveService.archiveById(account.id);
+            const { account: linkedAccount } = yield* setupMonobankFixture('mono-acc-2');
+            monobankStub.statement([oldPayload, buildMonobank.transaction({ id: 'tx-new', amount: -1000, hold: false })]);
+            yield* monobankSyncService.sync();
+
+            const liveRows = yield* testDb
+                .select()
+                .from(TransactionEntityTable)
+                .where(and(eq(TransactionEntityTable.fromAccountId, linkedAccount.id), isNull(TransactionEntityTable.deletedAt)));
+            expect(liveRows).toHaveLength(2);
+            expect(liveRows.map(row => row.externalId)).toEqual(expect.arrayContaining(['tx-new', 'tx-old']));
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('keeps updating a live row that shares its id with a soft-deleted copy', () =>
+        Effect.gen(function* () {
+            const monobankSyncService = yield* MonobankSyncService;
+            const { account } = yield* setupMonobankFixture();
+
+            monobankStub.statement([buildMonobank.transaction({ id: EXTERNAL_ID, amount: -2500, hold: false })]);
+            yield* monobankSyncService.sync();
+            yield* insertOne(TransactionEntityTable, {
+                type: TransactionTypeEnum.EXPENSE,
+                title: 'Soft-deleted copy',
+                externalId: EXTERNAL_ID,
+                externalSource: ExternalSourceEnum.MONOBANK,
+                comment: '',
+                fromAccountId: account.id,
+                toAccountId: null,
+                exchangeRate: 1,
+                deletedAt: new Date()
+            });
+
+            yield* resyncWith(account.id, buildMonobank.transaction({ id: EXTERNAL_ID, amount: -3000, hold: false }));
+
+            const entries = yield* testDb
+                .select()
+                .from(TransactionEntryEntityTable)
+                .where(eq(TransactionEntryEntityTable.externalId, EXTERNAL_ID));
+            expect(entries.map(entry => entry.amount)).toStrictEqual([30 * PRECISION]);
         }).pipe(Effect.provide(TestLayer))
     );
 });
