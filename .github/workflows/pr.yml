@@ -64,7 +64,7 @@ jobs:
                         );
                         mobile = !mobileSuiteExempt;
                         e2eScripts = files.length === 0 || files.some(({ filename }) =>
-                          /^(e2e|tests\/app-tests|packages\/app\/fastlane|packages\/app\/assets\/fonts)\//.test(filename) ||
+                          /^(e2e|scripts|tests\/app-tests|packages\/app\/fastlane|packages\/app\/assets\/fonts)\//.test(filename) ||
                           /^\.github\/(scripts\/|actions\/|workflows\/pr\.yml$|(landing-media|store-screenshots)\.config\.json$)/.test(filename)
                         );
                         core.info(`Inspected ${files.length} changed files; mobile affected: ${mobile}; e2e scripts affected: ${e2eScripts}`);
