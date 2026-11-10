@@ -5,8 +5,8 @@ import { useFormContext, useWatch } from 'react-hook-form';
 import { isDefined } from '@rnw-community/shared';
 
 import { GroupedListValueRow } from '../../../@generic/component/grouped-list-value-row/grouped-list-value-row';
+import { useOpenModal } from '../../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
-import { useDatePickerModal } from '../../../transaction/context/date-picker-modal.context';
 import { BudgetSelector } from '../../budget.selector';
 import { BudgetFundFormValues } from '../../constant/budget-fund-form-schema.constant';
 
@@ -14,7 +14,7 @@ export const BudgetFundDueField = () => {
     const { t } = useLingui();
     const { formatDayAndMonthAndYear } = useFormatDate();
     const { control, setValue } = useFormContext<BudgetFundFormValues>();
-    const [openDatePicker] = useDatePickerModal();
+    const openDatePicker = useOpenModal('/date-picker');
     const dueAtMs = useWatch({ control, name: 'dueAtMs' });
     const dueLabel = formatDayAndMonthAndYear(new Date(dueAtMs));
 

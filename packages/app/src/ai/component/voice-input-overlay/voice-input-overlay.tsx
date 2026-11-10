@@ -5,16 +5,16 @@ import { useEffect, useRef } from 'react';
 
 import { emptyFn, isNotEmptyArray } from '@rnw-community/shared';
 
+import { useOpenModal } from '../../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
-import { useVoiceReviewModal } from '../../context/voice-review-modal.context';
 import { VoiceInputStateEnum } from '../../enum/voice-input-state.enum';
 import { useVoiceInput } from '../../hook/use-voice-input.hook';
 import { VoiceInputOverlayContent } from '../voice-input-overlay-content/voice-input-overlay-content';
 
-import type { VoiceReviewModalResult } from '../../context/voice-review-modal.context';
+import type { ModalResult } from '../../../@generic/type/modal-result.type';
 
 export const VoiceInputOverlay = ({ onClose }: { readonly onClose: () => void }) => {
-    const [openVoiceReview] = useVoiceReviewModal();
+    const openVoiceReview = useOpenModal('/voice-review');
     const voiceInput = useVoiceInput();
 
     const isLiveRef = useRef<boolean>(true);
@@ -28,16 +28,16 @@ export const VoiceInputOverlay = ({ onClose }: { readonly onClose: () => void })
         isLiveRef.current = true;
 
         const runOnce = (): void => {
-            const handleReviewResult = (result: VoiceReviewModalResult): void => {
+            const handleReviewResult = (result: ModalResult<'/voice-review'> | null): void => {
                 if (!isLiveRef.current) {
                     return;
                 }
-                if (result.kind === 're-record') {
+                if (result?.kind === 're-record') {
                     runOnce();
 
                     return;
                 }
-                if (result.kind === 'saved' && isNotEmptyArray(result.transactionIds)) {
+                if (result?.kind === 'saved' && isNotEmptyArray(result.transactionIds)) {
                     const hasSingleSavedTransaction = result.transactionIds.length === 1;
                     onClose();
                     if (hasSingleSavedTransaction) {

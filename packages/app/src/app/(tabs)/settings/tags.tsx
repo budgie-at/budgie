@@ -9,10 +9,10 @@ import { SearchablePage } from '../../../@generic/component/searchable-page/sear
 import { UsageFailureRow } from '../../../@generic/component/usage-failure-row/usage-failure-row';
 import { GROUPED_LIST_SIZING } from '../../../@generic/constant/grouped-list-sizing.constant';
 import { useCreateAction } from '../../../@generic/hook/use-create-action.hook';
+import { useOpenModal } from '../../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { goBackToSettings } from '../../../settings/utils/go-back-to-settings.util';
 import { TagCard } from '../../../tag/components/tag-card/tag-card';
 import { TagEmptyState } from '../../../tag/components/tag-empty-state/tag-empty-state';
-import { useTagFormModal } from '../../../tag/context/tag-form-modal.context';
 import { useTagsWithUsageQuery } from '../../../tag/query/use-tags-with-usage.query';
 
 import { TagPageSelector } from './tag-page.selector';
@@ -21,7 +21,7 @@ const NO_TAGS: TagEntityInterface[] = [];
 
 export default function Tags() {
     const { t } = useLingui();
-    const [openTagForm] = useTagFormModal();
+    const openTagForm = useOpenModal('/tag-form');
 
     const [search, setSearch] = useState('');
     const { tags, usage, isUsageFailure, retryUsage, isFailure, retry } = useTagsWithUsageQuery(search);
@@ -38,12 +38,13 @@ export default function Tags() {
     };
 
     const handleClearSearch = () => void setSearch('');
+    const handleCreateFromSearch = (defaultTitle: string) => void openTagForm({ defaultTitle });
 
     const listData = isFailure ? NO_TAGS : tags;
     const emptyState = isFailure ? (
         <SearchablePageErrorState onRetry={retry} />
     ) : (
-        <TagEmptyState search={search} onClearSearch={handleClearSearch} />
+        <TagEmptyState search={search} onClearSearch={handleClearSearch} onCreate={handleCreateFromSearch} />
     );
 
     const renderCard = (tag: TagEntityInterface, index: number, isLast: boolean) => (

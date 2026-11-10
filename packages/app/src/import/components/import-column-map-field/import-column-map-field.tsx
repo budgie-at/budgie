@@ -8,8 +8,8 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { useOpenModal } from '../../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { cn } from '../../../@generic/utils/cn.util';
-import { useImportColumnMapperModal } from '../../context/import-column-mapper-modal.context';
 import { isImportColumnNameInformative } from '../../utils/is-import-column-name-informative.util';
 import { ImportColumnMapperSelector } from '../import-column-mapper/import-column-mapper.selector';
 
@@ -29,7 +29,7 @@ export const ImportColumnMapField = ({ control, name, label, headers, selectedHe
         field: { value, onChange },
         fieldState: { error }
     } = useController({ control, name });
-    const [openImportColumnMapper] = useImportColumnMapperModal();
+    const openImportColumnMapper = useOpenModal('/import-column-mapper');
 
     const handleOpen = () => {
         openImportColumnMapper({ headers, selectedHeaders, samples, currentValue: value, fieldLabel: label, isRequired }, result => {

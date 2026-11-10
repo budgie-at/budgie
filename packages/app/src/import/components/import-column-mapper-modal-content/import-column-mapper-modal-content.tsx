@@ -13,7 +13,7 @@ import { useMorphingSheetCommit } from '../../../@generic/hook/use-morphing-shee
 import { useMorphingSheetListHeight } from '../../../@generic/hook/use-morphing-sheet-list-height.hook';
 import { ImportColumnMapperModalSelector } from '../../../app/import-column-mapper.selector';
 
-import type { ImportColumnMapperResult } from '../../context/import-column-mapper-modal.context';
+import type { ModalResult } from '../../../@generic/type/modal-result.type';
 
 const sortHeaders = (first: string, second: string): number => first.localeCompare(second);
 
@@ -24,7 +24,7 @@ interface Props {
     readonly currentValue: string | undefined;
     readonly fieldLabel: string;
     readonly isRequired: boolean;
-    readonly onCommit: (result: ImportColumnMapperResult) => void;
+    readonly onCommit: (result: ModalResult<'/import-column-mapper'> | null) => void;
 }
 
 export const ImportColumnMapperModalContent = (props: Props) => {

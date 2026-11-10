@@ -5,8 +5,8 @@ import { router } from 'expo-router';
 
 import { isDefined, isEmptyArray } from '@rnw-community/shared';
 
+import { useOpenModal } from '../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { showActionToast } from '../../@generic/utils/show-action-toast/show-action-toast';
-import { useConvertToInstallmentModal } from '../context/convert-to-installment-modal.context';
 
 import { useRevertInstallmentPlan } from './use-revert-installment-plan.hook';
 
@@ -14,7 +14,7 @@ import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts'
 
 export const useOpenConvertToInstallment = (transaction: TransactionWithRelationsEntityInterface) => {
     const { t } = useLingui();
-    const [openConvertToInstallment] = useConvertToInstallmentModal();
+    const openConvertToInstallment = useOpenModal('/convert-to-installment');
     const { revert } = useRevertInstallmentPlan();
     const categoryEntries = getTransactionCategoryEntries(transaction.entries);
     const [sourceEntry, ...extraEntries] = categoryEntries;

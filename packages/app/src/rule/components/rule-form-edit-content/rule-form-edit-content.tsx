@@ -11,17 +11,17 @@ import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
 import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { SettingsRow } from '../../../settings/components/settings-row/settings-row';
-import { RuleFormResultType } from '../../context/rule-form-modal.context';
 import { useRuleForm } from '../../hooks/use-rule-form.hook';
 import { RuleFormSelector } from '../rule-form-layout/rule-form-layout.selector';
 import { RuleFormScreen } from '../rule-form-screen/rule-form-screen';
 import { RuleFormSubmitBar } from '../rule-form-submit-bar/rule-form-submit-bar';
 
+import type { ModalResult } from '../../../@generic/type/modal-result.type';
 import type { RuleCreateInputInterface, RuleWithRelationsEntityInterface } from '@budgie/contracts';
 
 interface Props {
     readonly rule: RuleWithRelationsEntityInterface;
-    readonly onSuccess: (result: RuleFormResultType) => void;
+    readonly onSuccess: (result: ModalResult<'/rule-form'> | null) => void;
     readonly onCancel: () => void;
 }
 

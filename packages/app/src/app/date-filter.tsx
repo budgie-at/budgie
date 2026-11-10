@@ -1,17 +1,14 @@
 import { DateFilterSheetContent } from '../@generic/component/date-filter-sheet-content/date-filter-sheet-content';
 import { SingleStepMorphingSheet } from '../@generic/component/single-step-morphing-sheet/single-step-morphing-sheet';
-import { useDateFilterModal, useDateFilterModalParams } from '../@generic/context/date-filter-modal.context';
-import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
+import { useModalRoute } from '../@generic/hook/use-modal-route/use-modal-route.hook';
 import { useMorphingSheetResult } from '../@generic/hook/use-morphing-sheet-result.hook';
 import { TransactionFiltersSelector } from '../transaction/components/transaction-filters/transaction-filters.selector';
 
-import type { DateFilterResult } from '../@generic/context/date-filter-modal.context';
+import type { ModalResult } from '../@generic/type/modal-result.type';
 
 export default function DateFilterModal() {
-    const [, resolveDateFilter, dismissDateFilter] = useDateFilterModal();
-    useModalDismiss(dismissDateFilter);
-    const currentParams = useDateFilterModalParams();
-    const { handleCommit, handleDismissed } = useMorphingSheetResult<DateFilterResult>(resolveDateFilter);
+    const { params: currentParams, resolve: resolveDateFilter } = useModalRoute('/date-filter');
+    const { handleCommit, handleDismissed } = useMorphingSheetResult<ModalResult<'/date-filter'>>(resolveDateFilter);
 
     return (
         <SingleStepMorphingSheet onDismiss={handleDismissed}>

@@ -6,10 +6,10 @@ import * as Effect from 'effect/Effect';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { useOpenModal } from '../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { showSuccessToast } from '../../@generic/utils/show-success-toast/show-success-toast';
 import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
 import { useSetting } from '../../settings/hook/use-setting.hook';
-import { useCategorySelectorModal } from '../context/category-selector-modal.context';
 
 import type { MutationTracker } from '../../@generic/type/mutation-tracker.type';
 import type { CategoryEntityInterface } from '@budgie/contracts';
@@ -17,7 +17,7 @@ import type { CategoryEntityInterface } from '@budgie/contracts';
 export const useMoveAndDeleteCategory = () => {
     const { t } = useLingui();
     const language = useSetting('language');
-    const [openCategorySelector] = useCategorySelectorModal();
+    const openCategorySelector = useOpenModal('/category-selector');
 
     return Effect.fn('useMoveAndDeleteCategory.moveAndDelete')(function* (
         source: Pick<CategoryEntityInterface, 'id' | 'title' | 'syncZone'>,

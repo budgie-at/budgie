@@ -10,8 +10,8 @@ import { useFormContext } from 'react-hook-form';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
+import { useOpenModal } from '../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { ColorPaletteVariant } from '../../@generic/type/color-palette-variant.type';
-import { useSplitEntriesModal } from '../context/split-entries-modal.context';
 import { sumEntryAmounts } from '../utils/sum-entry-amounts.util';
 import { sumTransactionAmounts } from '../utils/sum-transaction-amounts.util';
 
@@ -39,7 +39,7 @@ export const useQuickFormSplit = ({
     setFromNumeric
 }: UseQuickFormSplitConfig): UseQuickFormSplitResult => {
     const { getValues, setValue } = useFormContext<TransactionCreateInputInterface>();
-    const [openSplitEntries] = useSplitEntriesModal();
+    const openSplitEntries = useOpenModal('/split-entries');
 
     const buildInitialSplitEntries = (
         currentCategoryEntries: TransactionEntryCreateInputInterface[],

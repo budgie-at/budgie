@@ -5,9 +5,9 @@ import { isDefined } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
+import { useOpenModal } from '../../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
-import { useDatePickerModal } from '../../../transaction/context/date-picker-modal.context';
 
 interface Props {
     readonly date: Date | null;
@@ -18,7 +18,7 @@ interface Props {
 
 export const AccountFormDatePicker = ({ date, onChange, testID, variant }: Props) => {
     const { formatDayAndFullMonthAndYear } = useFormatDate();
-    const [openDatePicker] = useDatePickerModal();
+    const openDatePicker = useOpenModal('/date-picker');
     const { t } = useLingui();
 
     const handleOpen = () => {

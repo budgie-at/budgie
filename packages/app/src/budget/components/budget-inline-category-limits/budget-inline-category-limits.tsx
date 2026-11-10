@@ -8,7 +8,7 @@ import { isEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { HeaderTextAction } from '../../../@generic/component/header-text-action/header-text-action';
-import { useCategorySelectorModal } from '../../../category/context/category-selector-modal.context';
+import { useOpenModal } from '../../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { BudgetSelector } from '../../budget.selector';
 import { BudgetFormValues } from '../../constant/budget-form-schema.constant';
 import { BudgetAddCategoryLimitRow } from '../budget-add-category-limit-row/budget-add-category-limit-row';
@@ -28,7 +28,7 @@ export const BudgetInlineCategoryLimits = ({ currencySymbol, onCategoryAdded }: 
     const { control } = useFormContext<BudgetFormValues>();
     const { fields, append, remove } = useFieldArray({ control, name: 'categoryLimits' });
     const categoryLimits = useWatch({ control, name: 'categoryLimits' });
-    const [openCategorySelector] = useCategorySelectorModal();
+    const openCategorySelector = useOpenModal('/category-selector');
     const shouldScrollOnNextLayoutRef = useRef(false);
 
     const selectedCategoryIds = categoryLimits.map(limit => limit.categoryId).filter(isPositiveNumber);

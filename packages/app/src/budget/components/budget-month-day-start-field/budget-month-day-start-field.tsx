@@ -3,8 +3,8 @@ import { useFormContext, useWatch } from 'react-hook-form';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { useOpenModal } from '../../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { useToday } from '../../../@generic/hook/use-today.hook';
-import { useDatePickerModal } from '../../../transaction/context/date-picker-modal.context';
 import { BudgetFormValues } from '../../constant/budget-form-schema.constant';
 import { BudgetStartsOnRow } from '../budget-starts-on-row/budget-starts-on-row';
 
@@ -14,7 +14,7 @@ export const BudgetMonthDayStartField = () => {
     const { t } = useLingui();
     const today = useToday();
     const { control, setValue } = useFormContext<BudgetFormValues>();
-    const [openDatePicker] = useDatePickerModal();
+    const openDatePicker = useOpenModal('/date-picker');
     const [periodStartDay, useLastDayOfMonth] = useWatch({ control, name: ['periodStartDay', 'useLastDayOfMonth'] });
     const value = useLastDayOfMonth ? t`Last day of each month` : t`Day ${periodStartDay} of each month`;
 

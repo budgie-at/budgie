@@ -6,14 +6,14 @@ import { isPositiveNumber } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
 import { StatsEmptyCard } from '../../../@generic/component/stats-empty-card/stats-empty-card';
+import { useOpenModal } from '../../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { useGetBankIntegrationCountQuery } from '../../../sync/query/use-get-bank-integration-count.query';
-import { useRuleFormModal } from '../../context/rule-form-modal.context';
 import { RulesPageSelector } from '../../selector/rules-page.selector';
 
 export const RulesFeatureIntro = () => {
     const { t } = useLingui();
     const bankIntegrationCount = useGetBankIntegrationCountQuery();
-    const [openRuleForm] = useRuleFormModal();
+    const openRuleForm = useOpenModal('/rule-form');
 
     const handleCreateRule = () => {
         openRuleForm();

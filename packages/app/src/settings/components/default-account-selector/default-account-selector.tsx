@@ -5,13 +5,10 @@ import { useLingui } from '@lingui/react/macro';
 import { isDefined } from '@rnw-community/shared';
 
 import { RoundedEdgeEnum } from '../../../@generic/enum/rounded-edge.enum';
-import { appRuntime } from '../../../@generic/runtime/app.runtime';
-import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
-import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
-import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
+import { useOpenModal } from '../../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
 import { defaultAccountAtom } from '../../constants/settings-atoms.constant';
-import { updateSettingsMutation } from '../../mutation/update-settings.mutation';
+import { runSettingsUpdate } from '../../utils/run-settings-update.util';
 import { AnchoredSettingsRow } from '../anchored-settings-row/anchored-settings-row';
 import { SettingsRowAccessory } from '../settings-row-accessory/settings-row-accessory';
 
@@ -20,7 +17,7 @@ import type { AnchoredMorphOriginInterface } from '../../../@generic/interface/a
 export const DefaultAccountSelector = () => {
     const defaultAccount = useAtomValue(defaultAccountAtom);
     const { t } = useLingui();
-    const [openAccountSelector] = useAccountSelectorModal();
+    const openAccountSelector = useOpenModal('/account-selector');
 
     const selectedAccount = isDefined(defaultAccount?.deletedAt) ? null : defaultAccount;
     const icon = selectedAccount?.icon ?? UserIconNameEnum.Wallet;
@@ -30,11 +27,7 @@ export const DefaultAccountSelector = () => {
     const handleSelect = (origin: AnchoredMorphOriginInterface) => {
         openAccountSelector({ initialAccountId: defaultAccount?.id ?? null, origin }, accountId => {
             if (isDefined(accountId)) {
-                appRuntime.runFork(
-                    logAndContinue(
-                        updateSettingsMutation({ defaultAccountId: accountId }).pipe(toastOnFailure(t`Could not update settings`))
-                    )
-                );
+                runSettingsUpdate({ defaultAccountId: accountId });
             }
         });
     };

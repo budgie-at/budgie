@@ -18,13 +18,13 @@ import { reorderTagIdsByPrimary } from '../../utils/reorder-tag-ids-by-primary.u
 import { TagCreateRow } from '../tag-create-row/tag-create-row';
 import { TagsSelectContent } from '../tags-select-content/tags-select-content';
 
-import type { TagsSelectorModalParams } from '../../context/tags-selector-modal.context';
+import type { ModalParams } from '../../../@generic/type/modal-params.type';
 import type { TagsSelectorActionInterface } from '../../interface/tags-selector-action.interface';
 import type { TagsSelectorStateInterface } from '../../interface/tags-selector-state.interface';
 import type { Dispatch } from 'react';
 
 interface Props {
-    readonly params: TagsSelectorModalParams;
+    readonly params: ModalParams<'/tags-selector'>;
     readonly selection: TagsSelectorStateInterface;
     readonly search: string;
     readonly dispatch: Dispatch<TagsSelectorActionInterface>;

@@ -5,7 +5,7 @@ import { TransactionFeeStepEnum } from '../../enum/transaction-fee-step.enum';
 import { useTransactionFeeSteps } from '../../hook/use-transaction-fee-steps.hook';
 
 import type { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
-import type { TransactionFeeModalResult } from '../../context/transaction-fee-modal.context';
+import type { ModalResult } from '../../../@generic/type/modal-result.type';
 import type { TransactionEntryCreateInputInterface } from '@budgie/contracts';
 
 interface Props {
@@ -13,7 +13,7 @@ interface Props {
     readonly currencySymbol: string;
     readonly entry: TransactionEntryCreateInputInterface | null;
     readonly variant: ColorPaletteVariant;
-    readonly onConfirm: (result: TransactionFeeModalResult) => void;
+    readonly onConfirm: (result: ModalResult<'/transaction-fee'>) => void;
     readonly onDismiss: () => void;
 }
 

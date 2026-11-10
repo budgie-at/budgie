@@ -11,7 +11,7 @@ import { SplitEntryRow } from '../split-entry-row/split-entry-row';
 import { TransactionFeeRemoveButton } from '../transaction-fee-remove-button/transaction-fee-remove-button';
 import { TransactionFeeSaveButton } from '../transaction-fee-save-button/transaction-fee-save-button';
 
-import type { TransactionFeeModalResult } from '../../context/transaction-fee-modal.context';
+import type { ModalResult } from '../../../@generic/type/modal-result.type';
 import type { TransactionEntryCreateInputInterface } from '@budgie/contracts';
 import type { Ref } from 'react';
 
@@ -22,7 +22,7 @@ interface Props {
     readonly amountRef: Ref<TextInput>;
     readonly onAmountChange: (amount: number) => void;
     readonly onCategoryPress: () => void;
-    readonly onConfirm: (result: TransactionFeeModalResult) => void;
+    readonly onConfirm: (result: ModalResult<'/transaction-fee'>) => void;
     readonly onDone?: () => void;
 }
 

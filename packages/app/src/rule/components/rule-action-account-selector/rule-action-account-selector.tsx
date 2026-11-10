@@ -16,8 +16,8 @@ import { isDefined } from '@rnw-community/shared';
 
 import { AnchoredMorphTrigger } from '../../../@generic/component/anchored-morph-trigger/anchored-morph-trigger';
 import { RoundedEdgeEnum } from '../../../@generic/enum/rounded-edge.enum';
+import { useOpenModal } from '../../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { isEnumValue } from '../../../@generic/type-guard/is-enum-value.type-guard';
-import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
 import { RuleValueGlyph } from '../rule-value-glyph/rule-value-glyph';
 import { RuleValuePickerButton } from '../rule-value-picker-button/rule-value-picker-button';
@@ -56,7 +56,7 @@ const resolveTransferCopy = (hasExpenseCondition: boolean, hasIncomeCondition: b
 export const RuleActionAccountSelector = ({ index, testID }: Props) => {
     const { t } = useLingui();
     const { control, formState } = useFormContext<RuleCreateInputInterface>();
-    const [openAccountSelector] = useAccountSelectorModal();
+    const openAccountSelector = useOpenModal('/account-selector');
     const {
         field: { value: accountId, onChange }
     } = useController({ control, name: `actions.${index}.accountId` });

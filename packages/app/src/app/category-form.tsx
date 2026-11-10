@@ -1,14 +1,11 @@
 import { View } from 'react-native';
 
 import { useAccessibilityLayer } from '../@generic/hook/use-accessibility-layer.hook';
-import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
+import { useModalRoute } from '../@generic/hook/use-modal-route/use-modal-route.hook';
 import { CategoryForm } from '../category/components/category-form/category-form';
-import { useCategoryFormModal, useCategoryFormModalParams } from '../category/context/category-form-modal.context';
 
 export default function CategoryFormModal() {
-    const [, resolveCategoryForm, dismissCategoryForm] = useCategoryFormModal();
-    useModalDismiss(dismissCategoryForm);
-    const currentParams = useCategoryFormModalParams();
+    const { params: currentParams, resolve: resolveCategoryForm } = useModalRoute('/category-form');
     const isCovered = useAccessibilityLayer();
 
     const handleCancel = () => {

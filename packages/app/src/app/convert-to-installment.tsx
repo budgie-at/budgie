@@ -4,19 +4,15 @@ import { isDefined } from '@rnw-community/shared';
 
 import { SingleStepMorphingSheet } from '../@generic/component/single-step-morphing-sheet/single-step-morphing-sheet';
 import { useModalRouteState } from '../@generic/hook/use-modal-route-state/use-modal-route-state.hook';
+import { useModalRoute } from '../@generic/hook/use-modal-route/use-modal-route.hook';
 import { useMorphingSheetResult } from '../@generic/hook/use-morphing-sheet-result.hook';
 import { ConvertToInstallmentContent } from '../installment-plan/component/convert-to-installment-content/convert-to-installment-content';
-import {
-    useConvertToInstallmentModal,
-    useConvertToInstallmentModalParams
-} from '../installment-plan/context/convert-to-installment-modal.context';
 
 import { ConvertToInstallmentModalSelector } from './convert-to-installment-modal.selector';
 
 export default function ConvertToInstallmentModal() {
-    const [, resolveConvertToInstallment, dismissConvertToInstallment] = useConvertToInstallmentModal();
-    const currentParams = useConvertToInstallmentModalParams();
-    useModalRouteState(currentParams, dismissConvertToInstallment);
+    const { params: currentParams, resolve: resolveConvertToInstallment } = useModalRoute('/convert-to-installment');
+    useModalRouteState(currentParams);
     const { handleCommit, handleDismissed } = useMorphingSheetResult<number>(resolveConvertToInstallment);
 
     if (!isDefined(currentParams)) {

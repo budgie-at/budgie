@@ -5,16 +5,16 @@ import * as Effect from 'effect/Effect';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { useOpenModal } from '../../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
 import { dismissAllOrReplace } from '../../../@generic/utils/dismiss-all-or-replace.util';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
-import { useAccountSelectorModal } from '../../context/account-selector-modal.context';
 
 export const useDepositCloseAction = (accountId: number, balance: number, instrumentSymbol: string) => {
     const { t } = useLingui();
-    const [openAccountSelector] = useAccountSelectorModal();
+    const openAccountSelector = useOpenModal('/account-selector');
     const formatDigits = useDisplayFormatDigits();
     const { isLoading, run } = useSingleFlight();
 

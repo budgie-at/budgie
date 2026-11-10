@@ -5,11 +5,10 @@ import { router } from 'expo-router';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
+import { useOpenModal } from '../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { dismissAllOrReplace } from '../../@generic/utils/dismiss-all-or-replace.util';
 import { useOpenConvertToInstallment } from '../../installment-plan/hook/use-open-convert-to-installment.hook';
 import { TransactionActionsMenuSelector } from '../components/transaction-actions-menu/transaction-actions-menu.selector';
-import { useConvertToRefundModal } from '../context/convert-to-refund-modal.context';
-import { useConvertToTransferModal } from '../context/convert-to-transfer-modal.context';
 
 import { useDebtSettlementTransactionActions } from './use-debt-settlement-transaction-actions.hook';
 import { useRevertConsolidation } from './use-revert-consolidation.hook';
@@ -28,8 +27,8 @@ export const useSimpleTransactionActionsMenu = ({
 }: SimpleTransactionActionsMenuParamsInterface) => {
     const transactionId = transaction.id;
     const { t } = useLingui();
-    const [openConvertToTransfer] = useConvertToTransferModal();
-    const [openConvertToRefund] = useConvertToRefundModal();
+    const openConvertToTransfer = useOpenModal('/convert-to-transfer');
+    const openConvertToRefund = useOpenModal('/convert-to-refund');
     const persistedCategoryEntries = getTransactionCategoryEntries(transaction.entries);
     const [sourceEntry] = persistedCategoryEntries;
     const isConsolidated = isDefined(transaction.consolidationType);

@@ -1,15 +1,16 @@
 import { useLingui } from '@lingui/react/macro';
 import { FormProvider } from 'react-hook-form';
 
-import { RuleFormResultType } from '../../context/rule-form-modal.context';
 import { useRuleForm } from '../../hooks/use-rule-form.hook';
 import { RulePrefillDataInterface } from '../../interface/rule-prefill-data.interface';
 import { RuleFormScreen } from '../rule-form-screen/rule-form-screen';
 import { RuleFormSubmitBar } from '../rule-form-submit-bar/rule-form-submit-bar';
 
+import type { ModalResult } from '../../../@generic/type/modal-result.type';
+
 interface Props {
     readonly prefillData?: RulePrefillDataInterface;
-    readonly onSuccess: (result: RuleFormResultType) => void;
+    readonly onSuccess: (result: ModalResult<'/rule-form'> | null) => void;
     readonly onCancel: () => void;
 }
 

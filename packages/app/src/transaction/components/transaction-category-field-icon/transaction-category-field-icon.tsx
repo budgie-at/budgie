@@ -5,8 +5,8 @@ import { useFormContext, useWatch } from 'react-hook-form';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { useOpenModal } from '../../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
-import { useCategorySelectorModal } from '../../../category/context/category-selector-modal.context';
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
 import { TransactionFormRowPlaceholderToneEnum } from '../../enum/transaction-form-row-placeholder-tone.enum';
 import { setPrimaryCategory } from '../../utils/set-primary-category.util';
@@ -26,7 +26,7 @@ interface Props {
 export const TransactionCategoryFieldIcon = ({ ref, variant, isSplitActive }: Props) => {
     const { t } = useLingui();
     const { control, setValue } = useFormContext<TransactionCreateInputInterface>();
-    const [openCategorySelector] = useCategorySelectorModal();
+    const openCategorySelector = useOpenModal('/category-selector');
     const entries = useWatch({ control, name: 'entries' });
     const categoryId = getTransactionCategoryEntries(entries).at(0)?.categoryId ?? null;
     const { category } = useGetCategoryByIdQuery(categoryId ?? 0);

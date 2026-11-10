@@ -22,11 +22,11 @@ import { IconTitleField } from '../../../@generic/component/icon-title-field/ico
 import { Icon } from '../../../@generic/component/icon/icon';
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { UsageFailureRow } from '../../../@generic/component/usage-failure-row/usage-failure-row';
-import { useIconSelectorModal } from '../../../@generic/context/icon-selector-modal.context';
 import { EntityOperationEnum } from '../../../@generic/enum/entity-operation.enum';
 import { useEntityOperation } from '../../../@generic/hook/use-entity-operation.hook';
 import { useEntityUsage } from '../../../@generic/hook/use-entity-usage.hook';
 import { useIconSearchEntries } from '../../../@generic/hook/use-icon-search-entries.hook';
+import { useOpenModal } from '../../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
@@ -62,7 +62,7 @@ export const CategoryForm = (props: Props) => {
     const operation = useEntityOperation();
     const { usage, isUsagePending, isUsageFailure, retryUsage } = useEntityUsage(categoryUsageAtom);
     const deleteCategory = useDeleteCategory();
-    const [openIconSelector] = useIconSelectorModal();
+    const openIconSelector = useOpenModal('/icon-selector');
     const iconSearchEntries = useIconSearchEntries();
 
     const { handleSubmit, setValue, formState, icon, title } = useCategoryForm(category ?? null, defaultTitle);

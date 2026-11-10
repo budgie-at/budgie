@@ -5,7 +5,7 @@ import { useFormContext, useWatch } from 'react-hook-form';
 import { isDefined } from '@rnw-community/shared';
 
 import { GroupedListValueRow } from '../../../@generic/component/grouped-list-value-row/grouped-list-value-row';
-import { useDateFilterModal } from '../../../@generic/context/date-filter-modal.context';
+import { useOpenModal } from '../../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { BudgetSelector } from '../../budget.selector';
 import { BudgetEventFormValues } from '../../constant/budget-event-form-schema.constant';
@@ -14,7 +14,7 @@ export const BudgetEventDatesField = () => {
     const { t } = useLingui();
     const { formatMonthAndDay, formatDayAndMonthAndYear } = useFormatDate();
     const { control, setValue } = useFormContext<BudgetEventFormValues>();
-    const [openDateFilter] = useDateFilterModal();
+    const openDateFilter = useOpenModal('/date-filter');
     const [startsAtMs, endsAtMs] = useWatch({ control, name: ['startsAtMs', 'endsAtMs'] });
     const startLabel = formatMonthAndDay(new Date(startsAtMs));
     const endLabel = formatDayAndMonthAndYear(new Date(endsAtMs));

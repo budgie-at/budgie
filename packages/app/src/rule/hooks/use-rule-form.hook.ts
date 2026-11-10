@@ -25,13 +25,13 @@ import { RulePrefillDataInterface } from '../interface/rule-prefill-data.interfa
 import { RuleApplicationDrainerService } from '../service/rule-application-drainer.service';
 import { showRuleApplicationToast } from '../utils/show-rule-application-toast.util';
 
-import type { RuleFormResultType } from '../context/rule-form-modal.context';
+import type { ModalResult } from '../../@generic/type/modal-result.type';
 
 type UseRuleFormOptionsInterface = {
     readonly ruleId?: number;
     readonly defaultValues?: RuleCreateInputInterface | null;
     readonly prefillData?: RulePrefillDataInterface | null;
-    readonly onSuccess?: (result: RuleFormResultType) => void;
+    readonly onSuccess?: (result: ModalResult<'/rule-form'> | null) => void;
 };
 
 const DEFAULT_VALUES: RuleCreateInputInterface = {

@@ -4,8 +4,8 @@ import { useFormContext, useWatch } from 'react-hook-form';
 import { isDefined } from '@rnw-community/shared';
 
 import { GroupedListValueRow } from '../../../@generic/component/grouped-list-value-row/grouped-list-value-row';
+import { useOpenModal } from '../../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
-import { useDatePickerModal } from '../../../transaction/context/date-picker-modal.context';
 
 import type { RecurringSeriesFormValues } from '../../constant/recurring-series-form-schema.constant';
 
@@ -18,7 +18,7 @@ interface Props {
 export const RecurringFormDateRow = ({ name, title, testID }: Props) => {
     const { control, setValue } = useFormContext<RecurringSeriesFormValues>();
     const date = useWatch({ control, name });
-    const [openDatePicker] = useDatePickerModal();
+    const openDatePicker = useOpenModal('/date-picker');
     const { formatDayAndMonthAndYear } = useFormatDate();
 
     const handlePress = () => {

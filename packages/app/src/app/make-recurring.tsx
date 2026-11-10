@@ -1,7 +1,7 @@
 import { useLingui } from '@lingui/react/macro';
 import { router, useLocalSearchParams } from 'expo-router';
 
-import { emptyFn, isDefined } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { SingleStepMorphingSheet } from '../@generic/component/single-step-morphing-sheet/single-step-morphing-sheet';
 import { useModalRouteState } from '../@generic/hook/use-modal-route-state/use-modal-route-state.hook';
@@ -35,7 +35,7 @@ export default function MakeRecurringScreen() {
     };
 
     const { handleCommit, handleDismissed } = useMorphingSheetResult<MakeRecurringResultType>(handleResolved);
-    useModalRouteState(parsedTransactionId, emptyFn);
+    useModalRouteState(parsedTransactionId);
 
     if (!isDefined(parsedTransactionId)) {
         return null;

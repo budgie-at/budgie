@@ -10,11 +10,11 @@ import { SearchablePage } from '../../../@generic/component/searchable-page/sear
 import { UsageFailureRow } from '../../../@generic/component/usage-failure-row/usage-failure-row';
 import { GROUPED_LIST_SIZING } from '../../../@generic/constant/grouped-list-sizing.constant';
 import { useCreateAction } from '../../../@generic/hook/use-create-action.hook';
+import { useOpenModal } from '../../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { CategoryCard } from '../../../category/components/category-card/category-card';
 import { CategoryEmptyState } from '../../../category/components/category-empty-state/category-empty-state';
 import { CategoryFamilySection } from '../../../category/components/category-family-section/category-family-section';
 import { CategoryListHeader } from '../../../category/components/category-list-header/category-list-header';
-import { useCategoryFormModal } from '../../../category/context/category-form-modal.context';
 import { useCategoriesWithUsageQuery } from '../../../category/query/use-categories-with-usage.query';
 import { goBackToSettings } from '../../../settings/utils/go-back-to-settings.util';
 
@@ -27,7 +27,7 @@ const UNUSED: EntityUsageInterface = { transactionCount: 0, lastUsedAt: null };
 
 export default function Categories() {
     const { t } = useLingui();
-    const [openCategoryForm] = useCategoryFormModal();
+    const openCategoryForm = useOpenModal('/category-form');
 
     const [search, setSearch] = useState('');
     const { categories, usage, isUsageFailure, retryUsage, isFailure, retry } = useCategoriesWithUsageQuery(search, false);
@@ -44,12 +44,13 @@ export default function Categories() {
     };
 
     const handleClearSearch = () => void setSearch('');
+    const handleCreateFromSearch = (defaultTitle: string) => void openCategoryForm({ defaultTitle });
 
     const listData = isFailure ? NO_CATEGORIES : categories;
     const emptyState = isFailure ? (
         <SearchablePageErrorState onRetry={retry} />
     ) : (
-        <CategoryEmptyState search={search} onClearSearch={handleClearSearch} />
+        <CategoryEmptyState search={search} onClearSearch={handleClearSearch} onCreate={handleCreateFromSearch} />
     );
 
     const renderCard = (category: CategoryEntityInterface, index: number, isLast: boolean) => {

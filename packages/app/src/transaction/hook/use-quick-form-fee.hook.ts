@@ -4,8 +4,8 @@ import { useFormContext } from 'react-hook-form';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { useOpenModal } from '../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { ColorPaletteVariant } from '../../@generic/type/color-palette-variant.type';
-import { useTransactionFeeModal } from '../context/transaction-fee-modal.context';
 import { sumEntryAmounts } from '../utils/sum-entry-amounts.util';
 
 import { useApplyTransactionFeeResult } from './use-apply-transaction-fee-result.hook';
@@ -36,7 +36,7 @@ export const useQuickFormFee = ({
 }: UseQuickFormFeeConfig): UseQuickFormFeeResult => {
     const { getValues } = useFormContext<TransactionCreateInputInterface>();
     const applyFeeResult = useApplyTransactionFeeResult(transactionType, setFromNumeric);
-    const [openTransactionFee] = useTransactionFeeModal();
+    const openTransactionFee = useOpenModal('/transaction-fee');
 
     const feeEntries = getTransactionFeeEntries(entries);
     const feeAmount = sumEntryAmounts(feeEntries);

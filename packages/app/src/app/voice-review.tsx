@@ -3,13 +3,12 @@ import { useEffect, useEffectEvent } from 'react';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
-import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
+import { useModalRoute } from '../@generic/hook/use-modal-route/use-modal-route.hook';
 import { useMorphingSheetResult } from '../@generic/hook/use-morphing-sheet-result.hook';
 import { VoiceReviewModalContent } from '../ai/component/voice-review-modal-content/voice-review-modal-content';
-import { useVoiceReviewModal, useVoiceReviewModalParams } from '../ai/context/voice-review-modal.context';
 import { VoiceReviewRowInterface } from '../ai/interface/voice-review-row.interface';
 
-import type { VoiceReviewModalResult } from '../ai/context/voice-review-modal.context';
+import type { ModalResult } from '../@generic/type/modal-result.type';
 
 const mapExtractedToReviewRows = (transactions: AITransactionInterface[]): VoiceReviewRowInterface[] => {
     const usedCategoryIds = new Set<number>();
@@ -34,12 +33,10 @@ const mapExtractedToReviewRows = (transactions: AITransactionInterface[]): Voice
 };
 
 export default function VoiceReviewModal() {
-    const [, resolveVoiceReview, dismissVoiceReview] = useVoiceReviewModal();
-    useModalDismiss(dismissVoiceReview);
-    const currentParams = useVoiceReviewModalParams();
-    const { handleCommit, handleDismissed } = useMorphingSheetResult<VoiceReviewModalResult>(resolveVoiceReview);
+    const { params: currentParams, resolve: resolveVoiceReview } = useModalRoute('/voice-review');
+    const { handleCommit, handleDismissed } = useMorphingSheetResult<ModalResult<'/voice-review'>>(resolveVoiceReview);
 
-    const handleUnmount = useEffectEvent(() => void resolveVoiceReview({ kind: 're-record' }, { skipBack: true }));
+    const handleUnmount = useEffectEvent(() => void resolveVoiceReview({ kind: 're-record' }, true));
 
     useEffect(() => () => void handleUnmount(), []);
 

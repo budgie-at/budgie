@@ -6,8 +6,8 @@ import { isDefined } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
+import { useOpenModal } from '../../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { SYNC_ERROR_LABEL } from '../../constant/sync-error-label.constant';
-import { useResyncWindowPickerModal } from '../../context/resync-window-picker-modal.context';
 import { hasSyncProblem } from '../../utils/has-sync-problem.util';
 import { AccountSyncCardSelector } from '../account-sync-card/account-sync-card.selector';
 
@@ -17,7 +17,7 @@ interface Props {
 
 export const AccountSyncProblemRow = ({ sync }: Props) => {
     const { t } = useLingui();
-    const [openResyncWindowPicker] = useResyncWindowPickerModal();
+    const openResyncWindowPicker = useOpenModal('/resync-window-picker');
 
     const handleRetry = () => {
         openResyncWindowPicker({ accountId: sync.accountId });

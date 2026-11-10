@@ -3,7 +3,7 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 
-import { useTagsSelectorModal } from '../../../tag/context/tags-selector-modal.context';
+import { useOpenModal } from '../../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { useSearchTagsQuery } from '../../../tag/query/use-search-tags.query';
 import { UNTAGGED_TAG_ID_PARAM } from '../../../transaction/constant/untagged-tag-id-param.constant';
 import { buildUncategorizedRouteParams } from '../../../transaction/utils/build-uncategorized-route-params.util';
@@ -22,7 +22,7 @@ interface Props {
 
 export const CategorizeInboxTagProvider = ({ params, children }: Props) => {
     const { t } = useLingui();
-    const [openTagsSelector] = useTagsSelectorModal();
+    const openTagsSelector = useOpenModal('/tags-selector');
     const { tags } = useSearchTagsQuery();
     const labelsById = useCategorizeInboxLabels((tags ?? []).map(tag => ({ id: tag.id, title: tag.title, icon: UserIconNameEnum.Tag })));
 

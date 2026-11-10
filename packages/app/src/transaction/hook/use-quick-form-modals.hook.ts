@@ -3,11 +3,11 @@ import { useFormContext, useWatch } from 'react-hook-form';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { useDatePickerModal } from '../context/date-picker-modal.context';
+import { useOpenModal } from '../../@generic/hook/use-open-modal/use-open-modal.hook';
 
 export const useQuickFormModals = () => {
     const { control, setValue } = useFormContext<TransactionCreateInputInterface>();
-    const [openDatePicker] = useDatePickerModal();
+    const openDatePicker = useOpenModal('/date-picker');
 
     const operatedAt = useWatch({ control, name: 'operatedAt' });
 

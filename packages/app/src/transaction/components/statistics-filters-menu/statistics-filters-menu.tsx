@@ -8,10 +8,7 @@ import { ActionsMenuItem } from '../../../@generic/component/actions-menu-item/a
 import { ActionsMenu } from '../../../@generic/component/actions-menu/actions-menu';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { TITLE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/title-max-font-size-multiplier.constant';
-import { useTransactionAccountFilterModal } from '../../context/transaction-account-filter-modal.context';
-import { useTransactionAmountFilterModal } from '../../context/transaction-amount-filter-modal.context';
-import { useTransactionCategoryFilterModal } from '../../context/transaction-category-filter-modal.context';
-import { useTransactionTagFilterModal } from '../../context/transaction-tag-filter-modal.context';
+import { useOpenModal } from '../../../@generic/hook/use-open-modal/use-open-modal.hook';
 
 interface Props {
     readonly filters: TransactionFilterInterface;
@@ -23,10 +20,10 @@ const continuousCorners = { borderCurve: 'continuous' as const };
 // eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
 export const StatisticsFiltersMenu = ({ filters, onChange }: Props) => {
     const { t } = useLingui();
-    const [openAmountFilter] = useTransactionAmountFilterModal();
-    const [openCategoryFilter] = useTransactionCategoryFilterModal();
-    const [openTagFilter] = useTransactionTagFilterModal();
-    const [openAccountFilter] = useTransactionAccountFilterModal();
+    const openAmountFilter = useOpenModal('/transaction-amount-filter');
+    const openCategoryFilter = useOpenModal('/transaction-category-filter');
+    const openTagFilter = useOpenModal('/transaction-tag-filter');
+    const openAccountFilter = useOpenModal('/transaction-account-filter');
 
     const handleAmount = () =>
         void openAmountFilter({ value: filters.amount }, result => {

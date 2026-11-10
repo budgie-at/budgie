@@ -16,7 +16,7 @@ import { VoiceReviewFooter } from '../voice-review-footer/voice-review-footer';
 import { VoiceReviewList } from '../voice-review-list/voice-review-list';
 import { VoiceReviewSaveButton } from '../voice-review-save-button/voice-review-save-button';
 
-import type { VoiceReviewModalResult } from '../../context/voice-review-modal.context';
+import type { ModalResult } from '../../../@generic/type/modal-result.type';
 import type { UseVoiceReviewReturnInterface } from '../../interface/use-voice-review-return.interface';
 
 interface Props {
@@ -25,7 +25,7 @@ interface Props {
     readonly originalText: string;
     readonly accountId: number | null;
     readonly onCategoryPress: (rowId: string, categoryId: number | null) => void;
-    readonly onCommit: (result: VoiceReviewModalResult) => void;
+    readonly onCommit: (result: ModalResult<'/voice-review'>) => void;
 }
 
 export const VoiceReviewStep = (props: Props) => {

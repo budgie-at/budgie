@@ -4,9 +4,9 @@ import { FormProvider } from 'react-hook-form';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { useOpenModal } from '../../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { useEmbeddingGenerator } from '../../../ai/hook/use-embedding-generator.hook';
-import { useConsolidationSourceModal } from '../../context/consolidation-source-modal.context';
 import { useTransactionFeeFormActions } from '../../hook/use-transaction-fee-form-actions.hook';
 import { useTransferTransactionActions } from '../../hook/use-transfer-transaction-actions.hook';
 import { useUpdateTransactionForm } from '../../hook/use-update-transaction-form.hook';
@@ -21,7 +21,7 @@ export const UpdateTransferTransaction = ({ transaction, openFeeOnMount }: Updat
     const { t } = useLingui();
     const { markForEmbedding } = useEmbeddingGenerator();
     const { formRef, handleFeePress } = useTransactionFeeFormActions(openFeeOnMount);
-    const [openConsolidationSource] = useConsolidationSourceModal();
+    const openConsolidationSource = useOpenModal('/consolidation-source');
 
     const initialDestinationAmount = convertFromMicroUnits(
         transaction.entries.find(entry => entry.type === TransactionEntryTypeEnum.DEBIT)?.amount ?? 0

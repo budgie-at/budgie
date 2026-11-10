@@ -5,7 +5,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { AnchoredMorphTrigger } from '../../../@generic/component/anchored-morph-trigger/anchored-morph-trigger';
 import { RoundedEdgeEnum } from '../../../@generic/enum/rounded-edge.enum';
-import { useAccountSelectorModal } from '../../context/account-selector-modal.context';
+import { useOpenModal } from '../../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { useAccountSelector } from '../../hooks/use-account-selector.hook';
 import { DebtOpeningAccountRow } from '../debt-opening-account-row/debt-opening-account-row';
 
@@ -20,7 +20,7 @@ interface Props {
 }
 
 export const DebtOpeningAccountField = ({ accountId, label, variant, onChange }: Props) => {
-    const [openAccountSelector] = useAccountSelectorModal();
+    const openAccountSelector = useOpenModal('/account-selector');
     const { selectedAccount, formattedBalance } = useAccountSelector({
         accountId,
         excludeAccountTypes: [AccountTypeEnum.DEBT]

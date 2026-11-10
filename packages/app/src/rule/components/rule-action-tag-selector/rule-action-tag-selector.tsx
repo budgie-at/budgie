@@ -4,7 +4,7 @@ import { useController, useFormContext } from 'react-hook-form';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { useTagsSelectorModal } from '../../../tag/context/tags-selector-modal.context';
+import { useOpenModal } from '../../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { useGetTagByIdsQuery } from '../../../tag/query/use-get-tag-by-ids.query';
 import { RuleValueGlyph } from '../rule-value-glyph/rule-value-glyph';
 import { RuleValuePickerButton } from '../rule-value-picker-button/rule-value-picker-button';
@@ -20,7 +20,7 @@ export const RuleActionTagSelector = ({ index, testID }: Props) => {
     const {
         field: { value: tagId, onChange }
     } = useController({ control, name: `actions.${index}.tagId` });
-    const [openTagsSelector] = useTagsSelectorModal();
+    const openTagsSelector = useOpenModal('/tags-selector');
     const selectedTagIds = isDefined(tagId) ? [tagId] : [];
     const { tags } = useGetTagByIdsQuery(selectedTagIds);
     const tagTitle = tags?.at(0)?.title;

@@ -7,7 +7,7 @@ import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { TransactionFilterChip } from '../../../transaction/components/transaction-filter-chip/transaction-filter-chip';
 import { TransactionFiltersSelector } from '../../../transaction/components/transaction-filters/transaction-filters.selector';
 import { DATE_PERIOD } from '../../constant/date-period.constant';
-import { useDateFilterModal } from '../../context/date-filter-modal.context';
+import { useOpenModal } from '../../hook/use-open-modal/use-open-modal.hook';
 import { getPeriodByDateRange } from '../../utils/date/get-period-by-date-range.util';
 
 interface Props {
@@ -18,7 +18,7 @@ interface Props {
 export const DateFilter = ({ value, onChange }: Props) => {
     const { formatMonthAndDay, formatDayAndMonthAndYear } = useFormatDate();
     const { t } = useLingui();
-    const [openDateFilter] = useDateFilterModal();
+    const openDateFilter = useOpenModal('/date-filter');
 
     const handleOpen = () => {
         openDateFilter({ value }, selectedFilter => {

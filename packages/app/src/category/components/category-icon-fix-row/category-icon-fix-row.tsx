@@ -12,7 +12,7 @@ import { GroupedListRow } from '../../../@generic/component/grouped-list-row/gro
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { IconSuggestions } from '../../../@generic/component/icon-suggestions/icon-suggestions';
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
-import { useIconSelectorModal } from '../../../@generic/context/icon-selector-modal.context';
+import { useOpenModal } from '../../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { showSuccessToast } from '../../../@generic/utils/show-success-toast/show-success-toast';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
@@ -27,7 +27,7 @@ interface Props {
 
 export const CategoryIconFixRow = ({ category }: Props) => {
     const { t } = useLingui();
-    const [openIconSelector] = useIconSelectorModal();
+    const openIconSelector = useOpenModal('/icon-selector');
     const iconTerms = getCategoryIconTerms(category);
     const primaryForeground = useCSSVariable('--color-primary');
     const suggestionVariables = { ...(isDefined(primaryForeground) && { '--color-secondary-foreground': primaryForeground }) };

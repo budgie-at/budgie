@@ -4,7 +4,7 @@ import { useController, useFormContext } from 'react-hook-form';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { useCategorySelectorModal } from '../../../category/context/category-selector-modal.context';
+import { useOpenModal } from '../../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
 import { RuleValueGlyph } from '../rule-value-glyph/rule-value-glyph';
 import { RuleValuePickerButton } from '../rule-value-picker-button/rule-value-picker-button';
@@ -20,7 +20,7 @@ export const RuleActionCategorySelector = ({ index, testID }: Props) => {
     const {
         field: { value: categoryId, onChange }
     } = useController({ control, name: `actions.${index}.categoryId` });
-    const [openCategorySelector] = useCategorySelectorModal();
+    const openCategorySelector = useOpenModal('/category-selector');
     const { category } = useGetCategoryByIdQuery(categoryId ?? 0);
 
     const isMissing = !isDefined(categoryId) && (formState.isDirty || formState.submitCount > 0);

@@ -5,9 +5,9 @@ import * as Effect from 'effect/Effect';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
+import { useOpenModal } from '../../@generic/hook/use-open-modal/use-open-modal.hook';
 import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { useDisplayFormatDigits } from '../../i18n/hook/use-display-format-digits.hook';
-import { useAccountSelectorModal } from '../context/account-selector-modal.context';
 import { getDebtOpeningMessages } from '../utils/get-debt-opening-messages.util';
 
 import type { BorrowedDebtIncomeInterface } from '../interface/borrowed-debt-income.interface';
@@ -15,7 +15,7 @@ import type { BorrowedDebtIncomeInterface } from '../interface/borrowed-debt-inc
 export const useAttachDebtSelector = () => {
     const { t } = useLingui();
     const formatDigits = useDisplayFormatDigits();
-    const [openAccountSelector] = useAccountSelectorModal();
+    const openAccountSelector = useOpenModal('/account-selector');
 
     return (
         borrowedIncome: BorrowedDebtIncomeInterface | null,

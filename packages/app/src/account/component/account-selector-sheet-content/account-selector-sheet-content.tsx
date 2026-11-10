@@ -17,11 +17,12 @@ import { useSearchAccountsSortedQuery } from '../../query/use-search-accounts-so
 import { isUntrackedOwnAccount } from '../../utils/is-untracked-own-account.util';
 import { AccountSelectContent } from '../account-select-content/account-select-content';
 
-import type { AccountSelectorModalParams, AccountSelectorResult } from '../../context/account-selector-modal.context';
+import type { ModalParams } from '../../../@generic/type/modal-params.type';
+import type { ModalResult } from '../../../@generic/type/modal-result.type';
 
 interface Props {
-    readonly params: AccountSelectorModalParams;
-    readonly onSelect: (accountId: AccountSelectorResult) => void;
+    readonly params: ModalParams<'/account-selector'>;
+    readonly onSelect: (accountId: ModalResult<'/account-selector'> | null) => void;
     readonly onBack?: () => void;
     readonly className?: string;
     readonly isSearchAutoFocused?: boolean;

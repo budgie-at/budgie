@@ -6,10 +6,10 @@ import { CategorySelectorStepEnum } from '../../enum/category-selector-step.enum
 import { CategorySelectorCreateStep } from '../category-selector-create-step/category-selector-create-step';
 import { CategorySelectorStep } from '../category-selector-step/category-selector-step';
 
-import type { CategorySelectorModalParams } from '../../context/category-selector-modal.context';
+import type { ModalParams } from '../../../@generic/type/modal-params.type';
 
 interface Props {
-    readonly params: CategorySelectorModalParams;
+    readonly params: ModalParams<'/category-selector'>;
     readonly onCommit: (categoryId: number) => void;
     readonly onDismiss: () => void;
 }

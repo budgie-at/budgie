@@ -1,11 +1,11 @@
-import type { ConvertToTransferModalParams } from '../context/convert-to-transfer-modal.context';
+import type { ModalParams } from '../../@generic/type/modal-params.type';
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import type { EmptyFn } from '@rnw-community/shared';
 
 export interface SimpleTransactionActionsMenuParamsInterface {
     readonly transaction: TransactionWithRelationsEntityInterface;
     readonly transactionAccountId?: number | null;
-    readonly transactionType: ConvertToTransferModalParams['transactionType'];
+    readonly transactionType: ModalParams<'/convert-to-transfer'>['transactionType'];
     readonly categoryEntryCount: number;
     readonly onDelete: () => unknown;
     readonly onFeePress: EmptyFn;
