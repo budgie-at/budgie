@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.173.5](https://github.com/budgie-at/budgie/compare/v6.173.4...v6.173.5) (2026-11-10)
+
+### Bug Fixes
+
+* **app:** close the gap above pinned section headers ([#2090](https://github.com/budgie-at/budgie/issues/2090)) ([a140012](https://github.com/budgie-at/budgie/commit/a1400129cac7f5dd96489065055028b32571d3e6)), closes [#2081](https://github.com/budgie-at/budgie/issues/2081)
+
+
 ## [6.173.4](https://github.com/budgie-at/budgie/compare/v6.173.3...v6.173.4) (2026-11-09)
 
 ### Bug Fixes
