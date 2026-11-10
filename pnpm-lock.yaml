@@ -775,6 +775,22 @@ importers:
       effect:
         specifier: 4.1.2
         version: 4.1.2
+    devDependencies:
+      '@budgie-at/test-kit':
+        specifier: workspace:*
+        version: link:../../tests/test-kit
+      '@effect/vitest':
+        specifier: 4.1.2
+        version: 4.1.2(effect@4.1.2)(vitest@5.1.0(@opentelemetry/api@1.9.1)(@types/node@26.6.6)(msw@3.0.3(@types/node@26.6.6)(graphql@16.13.2)(supports-color@8.1.1)(vite@8.0.16(@types/node@26.6.6)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1)))(vite@8.0.16(@types/node@26.6.6)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1)))
+      '@types/node':
+        specifier: 26.6.6
+        version: 26.6.6
+      typescript:
+        specifier: npm:@typescript/typescript6@6.0.2
+        version: '@typescript/typescript6@6.0.2'
+      vitest:
+        specifier: 5.1.0
+        version: 5.1.0(@opentelemetry/api@1.9.1)(@types/node@26.6.6)(msw@3.0.3(@types/node@26.6.6)(graphql@16.13.2)(supports-color@8.1.1)(vite@8.0.16(@types/node@26.6.6)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1)))(vite@8.0.16(@types/node@26.6.6)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1))
 
   packages/consolidation:
     dependencies:
