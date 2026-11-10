@@ -106,15 +106,16 @@ export class AccountArchiveService extends Context.Service<AccountArchiveService
 
                 yield* Db.transaction(
                     Effect.gen(function* () {
+                        const archivedAt = (yield* accountRepository.findByIdIncludingArchived(id))?.deletedAt;
                         const restoredAccounts = yield* accountRepository.restoreById(id);
 
-                        if (!isNotEmptyArray(restoredAccounts)) {
+                        if (!isDefined(archivedAt) || !isNotEmptyArray(restoredAccounts)) {
                             return;
                         }
 
                         yield* debtEventRepository.restoreByAccountIds([id]);
-                        yield* transactionEntryRepository.restoreByAccountIds([id]);
-                        yield* transactionRepository.restoreByAccountIds([id]);
+                        yield* transactionEntryRepository.restoreByAccountIds([id], archivedAt);
+                        yield* transactionRepository.restoreByAccountIds([id], archivedAt);
                     })
                 );
             }),

@@ -12,6 +12,7 @@ import { isDefined, isEmptyArray, isNotEmptyArray, isPositiveNumber } from '@rnw
 import { transactionFilters } from '../../@generic/repository/base-transaction-filter.repository';
 import { Db } from '../../@generic/service/db.service';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
+import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { PERSONAL_SYNC_ZONE } from '../../cloud-sync/constant/personal-sync-zone.constant';
 import { TransactionEntryAssociationEnum } from '../../transaction-entry/enum/transaction-entry-association.enum';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
@@ -449,9 +450,13 @@ export class TransactionRepository extends Context.Service<TransactionRepository
 
             findDeletedExternalIdsByExternalSource: Effect.fn('TransactionRepository.findDeletedExternalIdsByExternalSource')(function* (
                 externalSource: ExternalSourceEnum,
-                accountIds: readonly number[]
+                accountIds?: readonly number[]
             ) {
-                const results = yield* findExternalIdRows(externalSource, isNotNull(TransactionEntityTable.deletedAt), accountIds);
+                const results = yield* findExternalIdRows(
+                    externalSource,
+                    sql`${TransactionEntityTable.deletedAt} IS NOT NULL AND EXISTS (SELECT 1 FROM ${AccountEntityTable} WHERE ${AccountEntityTable.id} IN (${TransactionEntityTable.fromAccountId}, ${TransactionEntityTable.toAccountId}) AND ${AccountEntityTable.deletedAt} IS NULL)`,
+                    accountIds
+                );
 
                 return results.map(row => row.externalId).filter(isDefined);
             }),
@@ -516,15 +521,18 @@ export class TransactionRepository extends Context.Service<TransactionRepository
 
             truncate: Db.query(db => db.delete(TransactionEntityTable)),
 
-            restoreByAccountIds: (accountIds: number[]) =>
+            restoreByAccountIds: (accountIds: number[], archivedAt: Date) =>
                 Db.query(db =>
                     db
                         .update(TransactionEntityTable)
                         .set({ deletedAt: null })
                         .where(
-                            or(
-                                inArray(TransactionEntityTable.toAccountId, accountIds),
-                                inArray(TransactionEntityTable.fromAccountId, accountIds)
+                            and(
+                                or(
+                                    inArray(TransactionEntityTable.toAccountId, accountIds),
+                                    inArray(TransactionEntityTable.fromAccountId, accountIds)
+                                ),
+                                gte(TransactionEntityTable.deletedAt, archivedAt)
                             )
                         )
                 ),

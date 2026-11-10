@@ -1,4 +1,5 @@
 import { AccountEntityTable, ExternalSourceEnum, TransactionEntityTable } from '@budgie/contracts';
+import { TransactionService } from '@budgie/ledger';
 import { BinanceSyncService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import { and, eq, isNull } from 'drizzle-orm';
@@ -46,6 +47,15 @@ const fetchActiveBinanceTransactions = () =>
         .from(TransactionEntityTable)
         .where(and(eq(TransactionEntityTable.externalSource, ExternalSourceEnum.BINANCE), isNull(TransactionEntityTable.deletedAt)));
 
+const expectTradeStaysDeletedAfterResync = (syncId: number) =>
+    Effect.gen(function* () {
+        stubAdaTrades(TRADE_ID);
+        yield* resyncBinance(syncId);
+
+        expect(yield* fetchBinanceTransactions).toHaveLength(1);
+        expect(yield* fetchActiveBinanceTransactions()).toHaveLength(0);
+    });
+
 const fetchAdaAccounts = () => testDb.select().from(AccountEntityTable).where(eq(AccountEntityTable.externalId, ADA_ACCOUNT_EXTERNAL_ID));
 
 describe('binance/deleted-data', () => {
@@ -54,11 +64,18 @@ describe('binance/deleted-data', () => {
             const { sync } = yield* syncAdaTradeOnce();
             yield* testDb.update(TransactionEntityTable).set({ deletedAt: new Date() });
 
-            stubAdaTrades(TRADE_ID);
-            yield* resyncBinance(sync.id);
+            yield* expectTradeStaysDeletedAfterResync(sync.id);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-            expect(yield* fetchBinanceTransactions).toHaveLength(1);
-            expect(yield* fetchActiveBinanceTransactions()).toHaveLength(0);
+    it.effect('does not recreate a trade the user deleted', () =>
+        Effect.gen(function* () {
+            const transactionService = yield* TransactionService;
+            const { sync } = yield* syncAdaTradeOnce();
+            const [transaction] = yield* fetchActiveBinanceTransactions();
+            yield* transactionService.deleteById(transaction.id);
+
+            yield* expectTradeStaysDeletedAfterResync(sync.id);
         }).pipe(Effect.provide(TestLayer))
     );
 

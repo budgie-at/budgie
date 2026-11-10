@@ -47,7 +47,7 @@ export class InzhurOpeningBalanceService extends Context.Service<InzhurOpeningBa
                 }
 
                 if (isDefined(existing)) {
-                    yield* transactionService.deleteById(existing.id);
+                    yield* transactionService.purgeById(existing.id);
                 }
 
                 if (amount === 0) {

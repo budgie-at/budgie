@@ -216,8 +216,10 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
                 return [];
             }
 
-            const existingTransactionIdMap = yield* transactionService.findIdMapByExternalSource(provider);
-            const newTransactions = transactions.filter(bankTransaction => !existingTransactionIdMap.has(bankTransaction.id));
+            const [existingTransactionIdMap, deletedIds] = yield* transactionService.findKnownExternalIds(provider);
+            const newTransactions = transactions.filter(
+                bankTransaction => !existingTransactionIdMap.has(bankTransaction.id) && !deletedIds.has(bankTransaction.id)
+            );
             const existingTransactions = transactions.filter(bankTransaction => existingTransactionIdMap.has(bankTransaction.id));
 
             const createdTransactions = yield* createNewTransactions(newTransactions, accountId);
