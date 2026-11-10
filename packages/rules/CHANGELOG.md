@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.173.14](https://github.com/budgie-at/budgie/compare/v6.173.13...v6.173.14) (2026-11-10)
+
+**Note:** Version bump only for package @budgie/rules
+
+
+
+
+
 ## [6.173.13](https://github.com/budgie-at/budgie/compare/v6.173.12...v6.173.13) (2026-11-10)
 
 **Note:** Version bump only for package @budgie/rules
