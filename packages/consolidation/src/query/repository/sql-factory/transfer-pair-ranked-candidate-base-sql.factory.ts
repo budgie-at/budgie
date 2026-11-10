@@ -22,21 +22,12 @@ import {
 } from '../../../shared/constant/transfer-pair-hinted-fee.constant';
 import { P2P_ORDER_EXTERNAL_ID_MARKER } from '../../../shared/constant/transfer-pair-p2p-fiat.constant';
 import { buildPrefixLikeSql } from '../../../shared/utils/build-prefix-like-sql.util';
-import { applyConsolidationScanScopeSql } from '../../utils/apply-consolidation-scan-scope-sql.util';
+import { operatedAtScopeSql } from '../../utils/operated-at-scope-sql.util';
+import { scopedSql } from '../../utils/scoped-sql.util';
 
 import { TRANSFER_PAIR_AVAILABLE_EXCHANGE_RATES_SQL } from './transfer-pair-available-exchange-rates-sql.factory';
 
-import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
-
-const EXPENSE_SCOPE_SQL_PLACEHOLDER = '__TRANSFER_PAIR_EXPENSE_SCOPE_SQL__';
-const INCOME_SCOPE_SQL_PLACEHOLDER = '__TRANSFER_PAIR_INCOME_SCOPE_SQL__';
-
-const TRANSFER_PAIR_RANKED_CANDIDATE_BASE_SCOPE_EXPRESSIONS = new Map([
-    [EXPENSE_SCOPE_SQL_PLACEHOLDER, 'expense_tx.operated_at'],
-    [INCOME_SCOPE_SQL_PLACEHOLDER, 'income_tx.operated_at']
-]);
-
-const TRANSFER_PAIR_RANKED_CANDIDATE_BASE_SQL = `
+export const buildTransferPairRankedCandidateBaseSql = scopedSql`
             WITH expense_entries AS (
                 SELECT
                     expense_entry.id as expenseEntryId,
@@ -101,7 +92,7 @@ const TRANSFER_PAIR_RANKED_CANDIDATE_BASE_SQL = `
                                 AND expense_tx.operated_at + ${REFUND_TIME_WINDOW_SECONDS}
                             AND ${buildPrefixLikeSql('rejected_payment_refund_tx.title', REFUND_TITLE_PREFIXES.rejectedPaymentPrincipal)}
                     )
-                    ${EXPENSE_SCOPE_SQL_PLACEHOLDER}
+                    ${operatedAtScopeSql('expense_tx.operated_at')}
             ),
             income_entries AS (
                 SELECT
@@ -148,7 +139,7 @@ const TRANSFER_PAIR_RANKED_CANDIDATE_BASE_SQL = `
                     AND income_entry.original_transaction_id IS NULL
                     AND income_entry.type = '${TransactionEntryTypeEnum.DEBIT}'
                     AND NOT ${buildPrefixLikeSql('income_tx.title', [...REFUND_TITLE_PREFIXES.rejectedPaymentPrincipal, ...REFUND_TITLE_PREFIXES.rejectedPaymentFee])}
-                    ${INCOME_SCOPE_SQL_PLACEHOLDER}
+                    ${operatedAtScopeSql('income_tx.operated_at')}
             ),
             ${TRANSFER_PAIR_AVAILABLE_EXCHANGE_RATES_SQL}
             scored_pairs_base AS (
@@ -291,6 +282,3 @@ const TRANSFER_PAIR_RANKED_CANDIDATE_BASE_SQL = `
                         AND expense_entries.expenseOperatedAt + ${TRANSFER_PAIR_TIME_WINDOW_SECONDS}
             ),
 `;
-
-export const buildTransferPairRankedCandidateBaseSql = (scope: ConsolidationScanScopeInterface | null): string =>
-    applyConsolidationScanScopeSql(TRANSFER_PAIR_RANKED_CANDIDATE_BASE_SQL, scope, TRANSFER_PAIR_RANKED_CANDIDATE_BASE_SCOPE_EXPRESSIONS);

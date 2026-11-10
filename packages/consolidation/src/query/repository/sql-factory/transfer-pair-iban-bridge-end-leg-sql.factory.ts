@@ -3,21 +3,16 @@ import { TransactionConsolidationTypeEnum, TransactionEntryTypeEnum, Transaction
 import { CANONICAL_CENT_TOLERANCE_AMOUNT } from '../../../shared/constant/canonical-cent-tolerance.constant';
 import { TRANSFER_MCC_GROUP_ID } from '../../../shared/constant/transfer-mcc-group-id.constant';
 import { TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS } from '../../../shared/constant/transfer-pair-fast-time-window.constant';
-import { applyConsolidationScanScopeSql } from '../../utils/apply-consolidation-scan-scope-sql.util';
 import { buildCalibratedTransferExclusionSql } from '../../utils/build-calibrated-transfer-exclusion-sql.util';
-
-import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
-
-const END_LEG_SCOPE_SQL_PLACEHOLDER = '__IBAN_BRIDGE_END_LEG_SCOPE_SQL__';
-
-const IBAN_BRIDGE_END_LEG_SCOPE_EXPRESSIONS = new Map([[END_LEG_SCOPE_SQL_PLACEHOLDER, 'end_leg_tx.operated_at']]);
+import { operatedAtScopeSql } from '../../utils/operated-at-scope-sql.util';
+import { scopedSql } from '../../utils/scoped-sql.util';
 
 const BRIDGE_ENTRY_CONDITION_SQL = `bridge_entry.transaction_id = canonical_tx.id
                             AND bridge_entry.deleted_at IS NULL
                             AND bridge_entry.original_transaction_id IS NOT NULL
                             AND bridge_entry.account_id NOT IN (canonical_tx.from_account_id, canonical_tx.to_account_id)`;
 
-const IBAN_BRIDGE_END_LEG_CANDIDATES_BASE_SQL = `
+export const IBAN_BRIDGE_END_LEG_CANDIDATES_SQL = scopedSql`
             WITH invented_legs AS (
                 SELECT
                     canonical_tx.id as canonicalTransactionId,
@@ -98,7 +93,7 @@ const IBAN_BRIDGE_END_LEG_CANDIDATES_BASE_SQL = `
                     AND end_leg_tx.consolidation_type IS NULL
                     AND end_leg_tx.operated_at BETWEEN invented_legs.canonicalOperatedAt - ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
                         AND invented_legs.canonicalOperatedAt + ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
-                    ${END_LEG_SCOPE_SQL_PLACEHOLDER}
+                    ${operatedAtScopeSql('end_leg_tx.operated_at')}
                 LEFT JOIN mcc_categories end_leg_mcc ON end_leg_mcc.id = end_leg_entry.mcc_category_id
                 WHERE (end_leg_mcc.mcc_group_id IS NULL OR end_leg_mcc.mcc_group_id = ${TRANSFER_MCC_GROUP_ID})
                     AND ${buildCalibratedTransferExclusionSql('end_leg_tx', 'invented_legs.accountId')}
@@ -122,6 +117,3 @@ const IBAN_BRIDGE_END_LEG_CANDIDATES_BASE_SQL = `
                 AND endLegRank = 1
             ORDER BY canonicalTransactionId, accountId
 `;
-
-export const IBAN_BRIDGE_END_LEG_CANDIDATES_SQL = (scope: ConsolidationScanScopeInterface | null): string =>
-    applyConsolidationScanScopeSql(IBAN_BRIDGE_END_LEG_CANDIDATES_BASE_SQL, scope, IBAN_BRIDGE_END_LEG_SCOPE_EXPRESSIONS);

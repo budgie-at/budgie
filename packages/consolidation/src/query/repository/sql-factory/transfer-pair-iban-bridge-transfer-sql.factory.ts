@@ -4,23 +4,10 @@ import { CANONICAL_CENT_TOLERANCE_AMOUNT } from '../../../shared/constant/canoni
 import { IBAN_BRIDGE_CHAIN_FX_TOLERANCE } from '../../../shared/constant/iban-bridge-chain-fx-tolerance.constant';
 import { TRANSFER_MCC_GROUP_ID } from '../../../shared/constant/transfer-mcc-group-id.constant';
 import { TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS } from '../../../shared/constant/transfer-pair-fast-time-window.constant';
-import { applyConsolidationScanScopeSql } from '../../utils/apply-consolidation-scan-scope-sql.util';
+import { operatedAtScopeSql } from '../../utils/operated-at-scope-sql.util';
+import { scopedSql } from '../../utils/scoped-sql.util';
 
-import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
-
-const INCOME_SCOPE_SQL_PLACEHOLDER = '__IBAN_BRIDGE_TRANSFER_INCOME_SCOPE_SQL__';
-const EXPENSE_SCOPE_SQL_PLACEHOLDER = '__IBAN_BRIDGE_TRANSFER_EXPENSE_SCOPE_SQL__';
-const DIRECT_TRANSFER_SCOPE_SQL_PLACEHOLDER = '__IBAN_BRIDGE_TRANSFER_DIRECT_SCOPE_SQL__';
-const EXISTING_CANONICAL_SCOPE_SQL_PLACEHOLDER = '__IBAN_BRIDGE_TRANSFER_EXISTING_CANONICAL_SCOPE_SQL__';
-
-const IBAN_BRIDGE_TRANSFER_SCOPE_EXPRESSIONS = new Map([
-    [INCOME_SCOPE_SQL_PLACEHOLDER, 'income_tx.operated_at'],
-    [EXPENSE_SCOPE_SQL_PLACEHOLDER, 'expense_tx.operated_at'],
-    [DIRECT_TRANSFER_SCOPE_SQL_PLACEHOLDER, 'direct_tx.operated_at'],
-    [EXISTING_CANONICAL_SCOPE_SQL_PLACEHOLDER, 'existing_canonical_tx.operated_at']
-]);
-
-const IBAN_BRIDGE_TRANSFER_CANDIDATES_BASE_SQL = `
+export const IBAN_BRIDGE_TRANSFER_CANDIDATES_SQL = scopedSql`
             WITH bridge_candidates AS (
                 SELECT
                     expense_tx.id as expenseTransactionId,
@@ -51,7 +38,7 @@ const IBAN_BRIDGE_TRANSFER_CANDIDATES_BASE_SQL = `
                     AND income_tx.consolidation_parent_transaction_id IS NULL
                     AND income_tx.operated_at BETWEEN expense_tx.operated_at - ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
                         AND expense_tx.operated_at + ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
-                    ${INCOME_SCOPE_SQL_PLACEHOLDER}
+                    ${operatedAtScopeSql('income_tx.operated_at')}
                 INNER JOIN transaction_entries income_entry ON
                     income_entry.transaction_id = income_tx.id
                     AND income_entry.deleted_at IS NULL
@@ -73,7 +60,7 @@ const IBAN_BRIDGE_TRANSFER_CANDIDATES_BASE_SQL = `
                     AND expense_entry.original_transaction_id IS NULL
                     AND expense_entry.exchange_rate > 0
                     AND expense_entry.amount > 0
-                    ${EXPENSE_SCOPE_SQL_PLACEHOLDER}
+                    ${operatedAtScopeSql('expense_tx.operated_at')}
                     AND expense_entry.to_iban IS NOT NULL
                     AND expense_entry.to_iban != ''
                     AND income_entry.to_iban IS NOT NULL
@@ -112,7 +99,7 @@ const IBAN_BRIDGE_TRANSFER_CANDIDATES_BASE_SQL = `
                     AND direct_tx.to_account_id = bridge_candidates.targetAccountId
                     AND direct_tx.operated_at BETWEEN bridge_candidates.operatedAt - ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
                         AND bridge_candidates.operatedAt + ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
-                    ${DIRECT_TRANSFER_SCOPE_SQL_PLACEHOLDER}
+                    ${operatedAtScopeSql('direct_tx.operated_at')}
                     AND EXISTS (
                         SELECT 1
                         FROM transaction_entries direct_source_entry
@@ -144,7 +131,7 @@ const IBAN_BRIDGE_TRANSFER_CANDIDATES_BASE_SQL = `
                     AND existing_canonical_tx.to_account_id = bridge_candidates.targetAccountId
                     AND existing_canonical_tx.operated_at BETWEEN bridge_candidates.operatedAt - ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
                         AND bridge_candidates.operatedAt + ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
-                    ${EXISTING_CANONICAL_SCOPE_SQL_PLACEHOLDER}
+                    ${operatedAtScopeSql('existing_canonical_tx.operated_at')}
                     AND EXISTS (
                         SELECT 1
                         FROM transaction_entries existing_canonical_target_entry
@@ -165,6 +152,3 @@ const IBAN_BRIDGE_TRANSFER_CANDIDATES_BASE_SQL = `
                     )
             )
 `;
-
-export const IBAN_BRIDGE_TRANSFER_CANDIDATES_SQL = (scope: ConsolidationScanScopeInterface | null): string =>
-    applyConsolidationScanScopeSql(IBAN_BRIDGE_TRANSFER_CANDIDATES_BASE_SQL, scope, IBAN_BRIDGE_TRANSFER_SCOPE_EXPRESSIONS);

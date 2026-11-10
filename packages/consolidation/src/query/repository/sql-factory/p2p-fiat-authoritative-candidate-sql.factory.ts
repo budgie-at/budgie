@@ -7,18 +7,10 @@ import {
     TRANSFER_PAIR_P2P_FIAT_TIME_WINDOW_SECONDS,
     P2P_ORDER_EXTERNAL_ID_MARKER
 } from '../../../shared/constant/transfer-pair-p2p-fiat.constant';
-import { applyConsolidationScanScopeSql } from '../../utils/apply-consolidation-scan-scope-sql.util';
+import { operatedAtScopeSql } from '../../utils/operated-at-scope-sql.util';
+import { scopedSql } from '../../utils/scoped-sql.util';
 
-import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
-
-const P2P_SCOPE_SQL_PLACEHOLDER = '__P2P_AUTHORITATIVE_SCOPE_SQL__';
-const BANK_SCOPE_SQL_PLACEHOLDER = '__BANK_AUTHORITATIVE_SCOPE_SQL__';
-const SCOPE_EXPRESSIONS = new Map([
-    [P2P_SCOPE_SQL_PLACEHOLDER, 'p2p_transaction.operated_at'],
-    [BANK_SCOPE_SQL_PLACEHOLDER, 'bank_transaction.operated_at']
-]);
-
-const SQL = `
+export const buildP2pFiatAuthoritativeCandidateSql = scopedSql`
     WITH p2p_entries AS (
         SELECT
             p2p_transaction.id AS transactionId,
@@ -51,7 +43,7 @@ const SQL = `
             AND p2p_entry.quoted_instrument_id IS NOT NULL
             AND p2p_entry.quoted_amount > 0
             AND p2p_entry.quoted_unit_price > 0
-            ${P2P_SCOPE_SQL_PLACEHOLDER}
+            ${operatedAtScopeSql('p2p_transaction.operated_at')}
     ),
     bank_entries AS (
         SELECT
@@ -79,7 +71,7 @@ const SQL = `
         INNER JOIN instruments bank_instrument ON bank_instrument.id = bank_account.instrument_id
         WHERE bank_entry.deleted_at IS NULL
             AND bank_entry.original_transaction_id IS NULL
-            ${BANK_SCOPE_SQL_PLACEHOLDER}
+            ${operatedAtScopeSql('bank_transaction.operated_at')}
     ),
     authoritative_pairs AS (
         SELECT
@@ -150,6 +142,3 @@ const SQL = `
     )
     SELECT * FROM authoritative_pairs
 `;
-
-export const buildP2pFiatAuthoritativeCandidateSql = (scope: ConsolidationScanScopeInterface | null): string =>
-    applyConsolidationScanScopeSql(SQL, scope, SCOPE_EXPRESSIONS);
