@@ -22,6 +22,7 @@ import { TransactionUpdatedByEnum } from '../enum/transaction-updated-by.enum';
 import { TransactionEntityTable } from '../table/transaction-entity.table';
 import { deriveEmbeddingFlag } from '../utils/derive-embedding-flag.util';
 
+import type { DB } from '../../@generic/type/db.type';
 import type { TransactionCreateEntityInterface } from '../entity/transaction-create-entity.interface';
 import type { TransactionUpdateInputInterface } from '../input/transaction-update-input.interface';
 import type { PotentialExpenseDuplicateInputInterface } from '../interface/potential-expense-duplicate-input.interface';
@@ -35,6 +36,18 @@ export class TransactionRepository extends Context.Service<TransactionRepository
                 with: { [TransactionEntryAssociationEnum.MCC_CATEGORY]: true }
             }
         } as const;
+
+        const findVisibleWithLedgerEntries = (
+            where: NonNullable<Parameters<DB['query']['TransactionEntityTable']['findMany']>[0]>['where'],
+            orderBy?: NonNullable<Parameters<DB['query']['TransactionEntityTable']['findMany']>[0]>['orderBy']
+        ) =>
+            Db.query(db =>
+                db.query.TransactionEntityTable.findMany({
+                    where: { ...where, deletedAt: { isNull: true }, consolidationParentTransactionId: { isNull: true } },
+                    with: { [TransactionAssociationEnum.ENTRIES]: { where: transactionFilters.ledgerEntryFilter } },
+                    ...(isDefined(orderBy) && { orderBy })
+                })
+            );
 
         const selectOperatedAtTime = Effect.fnUntraced(function* (aggregateSql: SQL<number | null>, condition: SQL | undefined) {
             const result = yield* Db.query(db =>
@@ -517,76 +530,34 @@ export class TransactionRepository extends Context.Service<TransactionRepository
                 ),
 
             findByAccountIdsWithEntries: (accountIds: readonly number[]) =>
-                Db.query(db =>
-                    db.query.TransactionEntityTable.findMany({
-                        where: {
-                            deletedAt: { isNull: true },
-                            consolidationParentTransactionId: { isNull: true },
-                            OR: [{ fromAccountId: { in: [...accountIds] } }, { toAccountId: { in: [...accountIds] } }]
-                        },
-                        with: {
-                            [TransactionAssociationEnum.ENTRIES]: {
-                                where: transactionFilters.ledgerEntryFilter
-                            }
-                        },
-                        orderBy: { operatedAt: 'asc', id: 'asc' }
-                    })
+                findVisibleWithLedgerEntries(
+                    { OR: [{ fromAccountId: { in: [...accountIds] } }, { toAccountId: { in: [...accountIds] } }] },
+                    { operatedAt: 'asc', id: 'asc' }
                 ),
 
             findTransfersIntoAccountSince: (accountId: number, since: Date, externalSources: readonly ExternalSourceEnum[]) =>
-                Db.query(db =>
-                    db.query.TransactionEntityTable.findMany({
-                        where: {
-                            type: TransactionTypeEnum.TRANSFER,
-                            deletedAt: { isNull: true },
-                            consolidationParentTransactionId: { isNull: true },
-                            toAccountId: accountId,
-                            operatedAt: { gte: since },
-                            externalSource: { in: [...externalSources] }
-                        },
-                        with: {
-                            [TransactionAssociationEnum.ENTRIES]: {
-                                where: transactionFilters.ledgerEntryFilter
-                            }
-                        },
-                        orderBy: { operatedAt: 'asc', id: 'asc' }
-                    })
+                findVisibleWithLedgerEntries(
+                    {
+                        type: TransactionTypeEnum.TRANSFER,
+                        toAccountId: accountId,
+                        operatedAt: { gte: since },
+                        externalSource: { in: [...externalSources] }
+                    },
+                    { operatedAt: 'asc', id: 'asc' }
                 ),
 
             findTransfersFromAccountByExternalIdPrefix: (accountId: number, externalIdPrefix: string) =>
-                Db.query(db =>
-                    db.query.TransactionEntityTable.findMany({
-                        where: {
-                            type: TransactionTypeEnum.TRANSFER,
-                            deletedAt: { isNull: true },
-                            consolidationParentTransactionId: { isNull: true },
-                            fromAccountId: accountId,
-                            externalId: { like: `${externalIdPrefix}%` }
-                        },
-                        with: {
-                            [TransactionAssociationEnum.ENTRIES]: {
-                                where: transactionFilters.ledgerEntryFilter
-                            }
-                        }
-                    })
-                ),
+                findVisibleWithLedgerEntries({
+                    type: TransactionTypeEnum.TRANSFER,
+                    fromAccountId: accountId,
+                    externalId: { like: `${externalIdPrefix}%` }
+                }),
 
             findTransfersForConversion: (accountId: number) =>
-                Db.query(db =>
-                    db.query.TransactionEntityTable.findMany({
-                        where: {
-                            type: TransactionTypeEnum.TRANSFER,
-                            deletedAt: { isNull: true },
-                            consolidationParentTransactionId: { isNull: true },
-                            OR: [{ fromAccountId: accountId }, { toAccountId: accountId }]
-                        },
-                        with: {
-                            [TransactionAssociationEnum.ENTRIES]: {
-                                where: transactionFilters.ledgerEntryFilter
-                            }
-                        }
-                    })
-                ),
+                findVisibleWithLedgerEntries({
+                    type: TransactionTypeEnum.TRANSFER,
+                    OR: [{ fromAccountId: accountId }, { toAccountId: accountId }]
+                }),
 
             deleteByAccountId: (accountId: number) =>
                 Db.query(db =>
