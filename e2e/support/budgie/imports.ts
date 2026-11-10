@@ -76,7 +76,7 @@ export async function openE2EFixturesFullPath(
             await expect(item('E2EFixtures')).toBeVisible({ timeout: 8_000 });
             continue;
         }
-        const onMyPhone = screen.getByTestId(/^(On My iPhone|DOC\.sidebar\.item\.On My iPhone)$/).first();
+        const onMyPhone = screen.getByTestId(/^(DOC\.sidebar\.item\.)?[^.]* iPhone$/).first();
         if (await onMyPhone.isVisible()) {
             await onMyPhone.tap();
             await sleep(800);
@@ -160,9 +160,9 @@ async function scrollPickerTo(ctx: Ctx, row: Locator): Promise<void> {
 /**
  * subflows/import/select-file-from-app-provider: in the open document
  * picker, Browse to the app's E2EFixtures folder and pick `name`
- * (`erste-statement-008, pdf`). The picker is system UI, but it renders in
- * the app's own tree: tabs are buttons, folders and files list items whose
- * id is their name.
+ * (`erste-statement-008, pdf`). The picker is system UI in the app's own
+ * language, rendered in the app's tree: tabs are buttons found by their icon,
+ * folders and files list items whose id is their name.
  */
 export async function selectFileFromAppProvider(ctx: Ctx, name: string): Promise<void> {
     const { screen } = ctx;
@@ -173,11 +173,7 @@ export async function selectFileFromAppProvider(ctx: Ctx, name: string): Promise
     const picker = byId(screen, 'DOC.browsingModeTabBar');
     // The picker reopens where it was left; tapping an already selected Browse tab would pop to its root.
     if (!(await byId(screen, 'Browse View (Picker)').isVisible())) {
-        await picker
-            .getByRole('button', { name: 'Browse' })
-            .or(picker.getByRole('tab', { name: 'Browse' }))
-            .first()
-            .tap();
+        await picker.getByTestId('folder.fill').first().tap();
         await sleep(800);
     }
     const row = screen.getByTestId(fileRowId(name)).first();
