@@ -1,340 +1,167 @@
 [![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner2-direct.svg)](https://stand-with-ukraine.pp.ua)
 
 <p align="center">
-    <img alt="Budgie Logo" src="assets/black-on-white.svg" width="200">
+    <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="packages/landing/public/logo/white-on-black.svg">
+        <img alt="Budgie logo" src="assets/black-on-white.svg" width="200">
+    </picture>
 </p>
 
-# Budgie — Mobile Expenses, Banking & Wealth Tracker (Offline-First)
+<h1 align="center">Budgie</h1>
 
-> A privacy-first money app with offline-first design, optional bank sync, and an AI chat that answers questions about your spending, budgets, debts, goals, and portfolio (stocks & crypto).
+<p align="center">An offline-first expense tracker for iPhone and iPad. Your ledger lives on your device.</p>
 
-## Table of Contents
+<p align="center">
+    <a href="LICENSE"><img alt="License: O'SAASY" src="https://img.shields.io/badge/license-O'SAASY-blue"></a>
+    <a href="https://github.com/budgie-at/budgie/actions/workflows/main.yml"><img alt="Deploy production workflow status" src="https://github.com/budgie-at/budgie/actions/workflows/main.yml/badge.svg?branch=main"></a>
+    <img alt="Platform: iOS" src="https://img.shields.io/badge/platform-iOS-lightgrey">
+    <a href="https://www.budgie.at"><img alt="Website: budgie.at" src="https://img.shields.io/badge/web-budgie.at-green"></a>
+</p>
 
-- [Project Description](#project-description)
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Architecture](#architecture)
-- [Roadmap](#roadmap)
-  - [Phase 0 — Foundations](#phase-0--foundations-week-1)
-  - [Phase 1 — Core Expenses & Budgets](#phase-1--core-expenses--budgets-weeks-23)
-  - [Phase 2 — Bank Sync & Ingestion](#phase-2--sync-read-only--ingestion-weeks-45)
-  - [Phase 3 — Portfolio (Stocks & Crypto)](#phase-3--portfolio-stocks--crypto-weeks-67)
-  - [Phase 4 — Debts & Goals](#phase-4--debts--goals-weeks-89)
-  - [Phase 5 — AI Chat v1](#phase-5--ai-chat-v1-local-first-weeks-1011)
-  - [Phase 6 — Rules, Recurring & Notifications](#phase-6--rules-recurring--notifications-weeks-1213)
-  - [Phase 7 — Polish & Public Beta](#phase-7--polish--public-beta-weeks-1415)
-  - [Phase 8 — v1 Launch](#phase-8--v1-launch-week-16)
-- [Non-Functional Requirements](#non-functional-requirements)
-- [AI Chat Capabilities](#ai-chat-capabilities-v1)
-- [QA & Testing](#qa--testing)
-- [CI/CD](#cicd)
-- [Risks & Mitigations](#risks--mitigations)
-- [Backlog / Nice-to-Have](#backlog--nice-to-have)
-- [Contributing](#contributing)
-- [License](LICENSE)
+Budgie tracks expenses, income, transfers, budgets and net worth across cash, bank, crypto, deposit and debt accounts. The local SQLite database is the source of truth: everyday use needs no account, no server and no connection. Bank sync, exchange-rate updates and AI are optional extras that run only when you turn them on, and the AI runs on the device.
 
----
+<table align="center">
+    <tr>
+        <td><img alt="Home screen with total balance, monthly budget and accounts" src="packages/app/fastlane/screenshots/variants/dark/ios/en-US/01_iphone_home.png" width="210"></td>
+        <td><img alt="Spending analytics" src="packages/app/fastlane/screenshots/variants/dark/ios/en-US/03_iphone_analytics.png" width="210"></td>
+        <td><img alt="Budget details with category limits" src="packages/app/fastlane/screenshots/variants/dark/ios/en-US/04_iphone_budget.png" width="210"></td>
+        <td><img alt="Inbox of uncategorized transactions" src="packages/app/fastlane/screenshots/variants/dark/ios/en-US/05_iphone_inbox.png" width="210"></td>
+    </tr>
+</table>
 
-## Project Description
-
-**Vision**: Clarity about money without giving up privacy. Budgie works entirely offline, then selectively uses the network for bank sync and market prices when available.
-
-**Audience**: Individuals and couples who want simple day-to-day tracking with a wider view (banking + investments + debts + goals).
-
-**Differentiators**:
-- Offline-first core (manual entry always works; everything stored locally)
-- Bank sync ingestion that never blocks manual use (read-only; dedupe with local entries)
-- Unified wealth view (cash/bank, stocks, crypto, debts, goals)
-- Built-in AI chat that speaks plain language about your money (“why did groceries spike?”, “how to hit my trip goal?”)
-
-**Platforms**: iOS & Android (React Native / Expo)
-**Monetization (later)**: Free core; Pro adds multi-device sync, advanced rules, expanded connectors, automated exports
-**Privacy**: Local database is the source of truth; encryption at rest; opt-in analytics; no ads
-
----
+Screenshots show fixture data.
 
 ## Features
 
-- **Expenses**: Quick add (≤3 taps), categories, accounts, budgets (monthly)
-- **Insights**: Category breakdown, daily burn, budget usage
-- **Bank Sync (read-only)**: OAuth connectors + CSV import fallback, dedupe, rules
-- **Portfolio**: Stocks & crypto holdings with cached prices and P&L
-- **Debts**: Credit/loan tracking, APR, payoff calculators (snowball/avalanche)
-- **Goals**: Targets, deadlines, allocation suggestions
-- **AI Chat**: Natural-language Q&A with citations into app views
-- **Export**: CSV (month/custom); onboarding with sample data; full offline usability
+**Tracking**
+
+- Expenses, income and transfers; refunds, split purchases and receipt scanning (the camera reads receipts on the device).
+- Account types: bank, cash, crypto, stocks, savings, deposits and debts (lent, borrowed and installment plans), with multi-currency balances and net worth in a base currency.
+- Categories and tags you define, plus automatic categories from merchant category codes.
+- Spending analytics, date filters, and a runway estimate.
+
+**Planning**
+
+- Monthly budgets with category limits, funds and alerts as you approach a limit.
+- Recurring charge detection and a calendar of upcoming charges.
+- Rules that categorize, tag and convert transactions automatically, and an inbox for uncategorized spending.
+
+**Getting data in and out**
+
+- Bank sync with Monobank, Binance and Enable Banking (European banks, with your own Enable Banking key); statement import from PrivatBank exports and Erste PDFs; operations import for Inzhur fund accounts.
+- CSV import with column mapping, CSV export, and database backups.
+
+**On-device AI (optional, downloaded on demand)**
+
+- Category and tag suggestions from an embedding model and a small language model, and voice entry with Whisper speech recognition. All three run locally through `llama.rn`.
+
+**On iOS**
+
+- Home Screen widgets (budget, net worth, quick add), Siri and Shortcuts through App Intents, Apple Pay capture, and a share extension for receipts.
+- iCloud sync through CloudKit and household sharing of accounts.
+- App lock with a PIN and biometrics, and screenshot protection.
+- Five languages: English, German, Spanish, French and Ukrainian.
+
+**Platforms.** iOS and iPadOS are the supported platforms: releases are built and published for iOS, and the end-to-end suite runs on iOS simulators. The Expo project also carries Android configuration (`pnpm android`, a package id and Play Store metadata), but the production release pipeline has Android publishing switched off.
+
+## Privacy and data
+
+- **Storage.** Transactions, accounts and settings are stored in a SQLite database on the device. Setting a PIN encrypts the database with SQLCipher, and backups keep that encryption.
+- **Network use.** Budgie has no server of its own and ships no analytics SDK. The app contacts:
+    - exchange-rate and price APIs (exchangerate-api.com, CoinGecko, Frankfurter) to value balances in your base currency;
+    - your bank providers (Monobank, Binance, Enable Banking), only for connections you set up; the Enable Banking key is kept in the device's secure storage;
+    - Hugging Face, to download the AI models once, after you enable AI;
+    - Expo's update service, for over-the-air JavaScript updates in release builds;
+    - iCloud, only if you enable sync, backup or household sharing.
+- **AI.** Embeddings, suggestions and speech recognition run on the device after the models are downloaded. Receipts are read on the device.
+
+## Tech stack
+
+| Area | Technology |
+| --- | --- |
+| App | Expo 58, React Native 0.88, React 19.3 with React Compiler, Expo Router 58 |
+| Data | SQLite through `@op-engineering/op-sqlite` (SQLCipher, sqlite-vec, FTS5) and Drizzle ORM 1.0 RC |
+| Logic | [Effect](https://effect.website) 4: services, layers, typed errors, atoms for live queries |
+| Styling and UI | Uniwind 1.13 (Tailwind CSS 4 for React Native), Reanimated 4, LegendList |
+| i18n | Lingui 6.12 |
+| On-device AI | `llama.rn` (embeddings, language model, Whisper) |
+| Landing site | Next.js 16, React 19, Tailwind CSS 4 |
+| Tooling | pnpm 12, Turborepo, Lerna, TypeScript 6 API with `tsrs` and `@typescript/native`, Oxlint with Effect rules, Oxfmt, Knip, jscpd |
+| Tests | Vitest and `@effect/vitest`; end-to-end tests on iOS simulators |
+
+## Repository layout
+
+```
+packages/
+  app/             Expo app (feature modules, screens, native modules for iCloud, receipts and background sync)
+  contracts/       Shared schemas, entities, repositories and the database port
+  ledger/          Transactions, transfers, imports and account balances
+  budget/          Budget domain logic
+  market/          Exchange rates, market data and base-currency valuation
+  recurring/       Recurring charge detection and calendar projection
+  rules/           Rules engine: matching, application, transfer conversion
+  categorization/  Embeddings, category and tag suggestions, categorize inbox
+  ai/              AI services: suggestions, voice extraction, chat invoker
+  import-export/   CSV import and export
+  consolidation/   Transaction consolidation
+  sync/            Bank integrations
+  cloud-sync/      iCloud record mapping, sync engine and household sharing
+  amount-input/    Auto-fitting amount input and display components
+  landing/         Next.js marketing site (budgie.at)
+tests/             Integration suites (sync, budget, consolidation) and the shared test kit
+e2e/               End-to-end suite for the iOS app
+docs/              Engineering notes: i18n, component composition, toolchain, CloudKit runbook
+```
+
+## Getting started
+
+Requirements: Node.js 22.22.2 or newer and pnpm 12.16.1 (the `packageManager` field; `corepack enable` picks it up). Running the app needs a Mac with Xcode, because the app uses native modules and runs as an Expo dev client rather than in Expo Go.
+
+```bash
+pnpm install
+pnpm build
+```
+
+Run the app in a development build on the iOS simulator (this variant builds with on-device AI disabled):
+
+```bash
+cd packages/app
+pnpm ios
+```
+
+Start the Metro dev server for an installed dev client:
+
+```bash
+cd packages/app
+pnpm start
+```
 
----
-
-## Assets
+Run the marketing site:
 
-- [Logos](https://www.figma.com/design/BGehzLZktv9XRlStPootaE/Budgie?node-id=0-1&t=Apy06tSgKFKIFFO4-1)
+```bash
+pnpm --filter @budgie-at/landing start
+```
 
----
+## Development
 
-## Tech Stack
+Run these before committing, in this order:
 
-- **App**: React Native (Expo), TypeScript, Expo Router, TanStack Query, Zustand/Jotai
-- **Local DB**: WatermelonDB (schema versions & migrations, lazy loading, sync adapter)
-- **Bank Sync**: Aggregator/OAuth connectors (abstracted provider API) + CSV import
-- *8Market Data**: On-demand price fetch & local cache for stocks/crypto; offline last-known prices
-- **AI**: On-device first (small LLM) with optional cloud inference; RAG over local data
-- **Observability**: Sentry (crash/perf), opt-in analytics (redacted events)
-- **Testing**: Vitest, React Native Testing Library, tester-army e2e (E2E)
-- **CI/CD**: GitHub Actions → EAS build & submit; tester-army e2e on a simulator farm for E2E
+```bash
+pnpm format && pnpm ts && pnpm lint && pnpm deadcode && pnpm cpd
+```
 
----
-
-## Architecture
-
-- **Offline-first**: All core features work without network; bank sync & price fetches are additive
-- **Ingestion pipeline**: normalize → dedupe (fuzzy match) → categorize (rules) → review queue
-- **Price cache**: batched fetch; last-known fallback; manual override
-- **AI layer**: embeddings over local data (transactions/budgets/holdings/debts/goals); intent → metric/period/entity; optional cloud for heavy queries
-- **Security**: tokens in secure storage; at-rest encryption where available; PII minimization
-- **WatermelonDB specifics**: normalized models, background sync adapter for bank imports, schema migrations tracked per version
-
----
-
-## Roadmap
-
-> Track in GitHub Projects. Use labels `area:*`, `type:feat|bug|doc`, `size:S|M|L`, `prio:P0|P1|P2`.
-
-## Phase 0 — Foundations (Week 1)
-**Goals**
-- App scaffold, tokens, navigation; WatermelonDB v0; secure storage; CI/E2E
-
-**Deliverables**
-- Boot iOS/Android; dark mode
-- WMDB schema + migrations; seed sample data
-- Actions: typecheck, lint, tests, EAS build; E2E “app opens”
-- Sentry; analytics consent
-
-**Acceptance**
-- Cold start < 2s; PR CI green; crash-free dev builds ≥ 99%
-
-**Key Tasks**
-- `feat: expo + ts strict + router`
-- `feat(contracts): data contracts`
-- `feat(db): watermelon schema v0 + migrations`
-- `chore(ci): actions + EAS + e2e skeleton`
-- `feat(security): secure storage + opt-in analytics`
-
----
-
-## Phase 1 — Core Expenses & Budgets (Weeks 2–3)
-
-**Goals**
-- Ultra-fast manual entry; lists; edit/delete; budgets; base insights
-
-**Deliverables**
-- Quick Add (amount → category → account → note)
-- Transactions list (virtualized), edit, delete (soft)
-- Budgets (monthly/category) + progress ring; insights (category pie, daily line)
-- CSV export
-
-**Acceptance**
-- Add expense ≤ 3 taps (median); full offline
-- Budget recomputes instantly on add/edit/remove
-- Unit/component tests for input & budget math
-
-**Key Tasks**
-- `feat(tx): quick add + keyboard`
-- `feat(budget): model + UI + recompute`
-- `feat(insights): category + daily`
-- `feat(export): csv (month/custom)`
-
-## Phase 2 — Bank Sync (Read-Only) & Ingestion (Weeks 4–5)
-
-**Goals**
-- Link bank; import safely; never block offline usage
-
-**Deliverables**
-- Connector abstraction (OAuth UI, token store) + CSV import fallback
-- Ingestion pipeline: normalize → dedupe → categorize (rules)
-- Manual review queue (imported/uncategorized)
-- Background sync (pull on open; user-triggered refresh)
-
-**Acceptance**
-- First link pulls 90 days in < 60s (happy path)
-- Dedupe rate ≥ 99% vs manual entries (amount/date/merchant heuristics)
-- Network failures fail “softly”; app remains usable offline
-
-**Key Tasks**
-- `feat(ingest): provider sdk + oauth`
-- `feat(ingest): normalizer + dedupe`
-- `feat(rules): merchant/time/amount heuristics`
-- `ui: review queue + conflict hints`
-
-## Phase 3 — Portfolio (Stocks & Crypto) (Weeks 6–7)
-
-**Goals**
-- Manual holdings; price cache; unified net worth
-
-**Deliverables**
-- Holdings editor (ticker/qty/cost; crypto: symbol/network)
-- Price cache (batched fetch; last-known fallback)
-- Portfolio screen: value, P&L (daily/total), allocation
-- Watchlists; manual price override
-
-**Acceptance**
-- Renders offline with last-known prices
-- Price refresh < 2s per symbol (batched)
-- P&L matches spreadsheet within ±0.1%
-
-**Key Tasks**
-- `feat(prices): cache + adapters`
-- `feat(portfolio): holdings + charts`
-- `test: rounding/currency math`
-
-## Phase 4 — Debts & Goals (Weeks 8–9)
-
-**Goals**
-- Track loans/credit; payoff; fund goals; budget interplay
-
-**Deliverables**
-- Debts (APR, min payment, due date), payoff calculators (snowball/avalanche)
-- Goals (target/date/priority); allocation suggestions from surplus
-- Notifications: due payments, slipping goals
-
-**Acceptance**
-- Amortization accurate to lender statement within 1 payment
-- Goal ETA responds to budget changes
-
-**Key Tasks**
-- `feat(debts): model + calculators + reminders`
-- `feat(goals): model + allocation engine`
-- `ui: insights → goals/debt widgets`
-
-## Phase 5 — AI Chat v1 (Local-First) (Weeks 10–11)
-
-**Goals**
-- Natural-language Q&A and explanations over user data
-
-**Deliverables**
-- Embedding index over transactions/budgets/holdings/debts/goals
-- Intent detection: query → metric/period/category/entity
-- Chat UI with citations to in-app views; privacy toggle (offline-only vs cloud-assist)
-
-**Acceptance**
-- Answers < 2s for common queries
-- ≥90% correct on curated set; answers link to source screens
-
-**Key Tasks**
-- `feat(ai): embeddings + retrieval`
-- `feat(chat): intents + tool responses`
-- `test: gold-set Q&A`
-
-## Phase 6 — Rules, Recurring & Notifications (Weeks 12–13)
-
-**Goals**
-- Reduce manual work; habit-forming nudges
-
-**Deliverables**
-- Rules editor (contains/regex → set category/account/goal)
-- Recurring transactions (salary/subscriptions) with drift handling
-- Alerts: budget 80/100%, low balance, upcoming debt payment
-
-**Acceptance**
-- ≥95% of repeated merchants auto-categorized after 2 entries
-- Recurring reliability ≥ 99% within 1h of schedule
-
-**Key Tasks**
-- `feat(rules): engine + audit log`
-- `feat(recurring): scheduler`
-- `feat(notify): local notifications`
-
-## Phase 7 — Polish & Public Beta (Weeks 14–15)
-
-**Goals**
-- A11y, perf, stability; store prep
-
-**Deliverables**
-- Accessibility pass (labels, contrast, dynamic type); haptics/gestures
-- Perf: list virtualization; WatermelonDB indices; memoized selectors
-- App icons, splash, store metadata; feedback panel
-
-**Acceptance**
-- Crash-free users ≥ 99.5% (beta)
-- TTI < 1.5s on mid-tier devices
-
-**Key Tasks**
-- `perf: profile + optimize`
-- `a11y: voiceover/talkback`
-- `release: beta metadata + guide`
-
-## Phase 8 — v1 Launch (Week 16)
-
-**Goals**
-- Production release; support loop; metrics
-
-**Deliverables**
-- Store listings (localized), privacy policy, support site
-- Post-launch dashboard: activation, retention, crash
-- Data portability docs (export/delete)
-
-**Acceptance**
-- Approved on App Store & Play
-- Activation ≥ 60% (first 5 transactions within 24h)
-
-**Key Tasks**
-- `release: 1.0.0`
-- `docs: privacy + data handling`
-- `growth: share/export hooks`
-
----
-
-## Non-Functional Requirements
-- **Offline-first**: All core actions work without network; sync & prices are additive
-- **Security**: Keystore-backed token storage; PII minimization; redacted analytics
-- **Performance**: Add/edit < 100 ms; chat answers < 2 s (local queries)
-- **Reliability**: Idempotent ingestion; conflict-safe merges; reversible migrations
-- **Accessibility8**: WCAG AA contrast; full screen-reader paths; reduced motion
-- **Internationalization**: Locale/currency aware; RTL-safe layouts
-
-## AI Chat Capabilities (v1)
-- **Q&A**: “How much did I spend on food last month?”, “What’s my net worth trend?”
-- **Explain**: “Why is this month higher?” (high-impact merchants, one-offs)
-- **Coach**: “To hit the Trip goal by July, add €X/week or cut Y% from dining.”
-- **Navigate**: Answers link to filtered views/charts
-- **Privacy Controls**: Offline-only mode vs per-question cloud assist (opt-in)
-
-## QA & Testing
-
-- **Unit**: currency math, dedupe, rules, amortization, P&L
-- **Component**: Quick Add, BudgetCard, HoldingsEditor, DebtPlanner, Chat
-- **E2E (tester-army e2e)**: First run → Link bank (mock) → Import → Budget updates → Portfolio render → Debt payoff → Chat Q&A
-- **Property-based**: dedupe & rules engine
-
-## CI/CD
-- **PR checks**: typecheck, lint, tests, bundle size, E2E (Android)
-- **Builds**: nightly internal; weekly beta; EAS submit
-- **Observability**: symbolication, crash triage, auto-changelog (semantic-release)
-
-### Lint tooling performance
-
-Five equal-topology macOS arm64 runs using fresh processes, warm filesystem/dependency caches, and sequential Oxlint-first plus direct-root ESLint measured the parent at a 21.67 s / 1423.0 MiB median and the JavaScript-bridge configuration at 21.97 s / 1311.1 MiB. The bridge reduces ESLint ownership from 50 to 13 rules and median peak memory by 111.9 MiB, but Oxlint JavaScript plugins remain alpha and are not a native-speed substitute.
-
-- [ ] Replace bridged ESLint-plugin rules with native Oxlint rules as coverage lands.
-
-## Risks & Mitigations
-- **Aggregator variance**: Abstract provider; CSV fallback; robust normalizer
-- **Price feeds**: Cache & batch; show timestamps; allow manual overrides offline
-- **LLM footprint**: Modular AI (on-device first); streaming; cloud opt-in for complex queries
-- **Data integrity**: Import audit log; idempotent merges; user-visible review queue
-
-## Backlog / Nice-to-Have
-- [ ] Restore automated `UPPER_CASE` enum-member enforcement with Oxlint when it supports an equivalent naming-convention rule.
-- Receipt OCR; bank SMS/email parsers
-- Widgets & lock-screen complications
-- Shared spaces (household) with roles
-- Tax lots & realized gains report
-- Multi-goal optimizer (Pareto frontier)
+- `pnpm test` runs the Turborepo `test` task. Domain packages keep suites in `packages/<name>/test/`, the app has a small node suite in `packages/app/test/`, and cross-package scenarios live in `tests/sync-tests`, `tests/budget-tests` and `tests/consolidation-tests`. There are no component tests.
+- End-to-end tests live in `e2e/` and run against an E2E build of the app on iOS simulators. See [the E2E runbook](tests/app-tests/E2E-RUNBOOK.md).
+- After changing user-facing text, run `pnpm i18n:sync` and commit the `.po` and `.ts` catalogs. See [docs/i18n.md](docs/i18n.md).
+- Pull requests do not compile native code when a prebuilt base binary exists for their native key. See [AGENTS.md](AGENTS.md) for the CI model.
 
 ## Contributing
-- Create small, focused PRs.
-- Use Conventional Commits (`feat:`, `fix:`, `chore:`…).
-- Add tests for new logic; update docs for user-facing changes.
+
+- Use [Conventional Commits](https://www.conventionalcommits.org) for commit messages and pull request titles: `type(scope): description`. Allowed scopes are `app`, `contracts`, `ai`, `landing`, `sync`, `cloud-sync`, `budget`, `market`, `ledger`, `recurring`, `rules`, `categorization`, `import-export`, `consolidation` and `amount-input`. Omit the scope for repo-wide changes.
+- [AGENTS.md](AGENTS.md) holds the full coding rules; `CLAUDE.md` is a symlink to it.
+- Work is tracked in GitHub issues, labelled by `status:*`, `kind:*`, `priority:*`, `needs:*`, `agent:*` and `area:*`.
+- Report security issues privately through [GitHub security advisories](https://github.com/budgie-at/budgie/security/advisories/new) rather than a public issue. See [SECURITY.md](SECURITY.md).
 
 ## License
-TBD (e.g., MIT).
+
+Budgie is released under the [O'SAASY License](LICENSE) (see [osaasy.dev](https://osaasy.dev)): you may use, modify and distribute it, but you may not offer it to third parties as a hosted or SaaS product that competes with the original licensor.
