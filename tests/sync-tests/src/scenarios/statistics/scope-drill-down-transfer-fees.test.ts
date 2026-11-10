@@ -11,6 +11,7 @@ import {
     TransactionTypeEnum,
     UserIconNameEnum
 } from '@budgie/contracts';
+import { TransferConsolidationService } from '@budgie/ledger';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
@@ -18,6 +19,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { seed, TestLayer } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
+import { seedRefundedExpense } from '../../harness/seed/seed-refund-fixture';
 
 const OCTOBER = { from: new Date('2026-10-01T00:00:00.000Z'), to: new Date('2026-10-31T23:59:59.999Z') };
 const OPERATED_AT = new Date('2026-10-11T12:00:00.000Z');
@@ -252,6 +254,20 @@ const uncategorizedScope: ScopeInterface = {
     pickTotal: categoryRows => categoryRows.find(row => !isDefined(row.category?.id))
 };
 
+const taggedScope = (tagId: number): ScopeInterface => ({
+    categoryIds: null,
+    tagIds: [tagId],
+    isScoped: () => true,
+    pickTotal: (_categoryRows, tagRows) => tagRows.find(row => row.tag?.id === tagId)
+});
+
+const untaggedScope: ScopeInterface = {
+    categoryIds: null,
+    tagIds: [],
+    isScoped: () => true,
+    pickTotal: (_categoryRows, tagRows) => tagRows.find(row => !isDefined(row.tag?.id))
+};
+
 const compareScope = Effect.fnUntraced(function* (scope: ScopeInterface, instrumentId: number) {
     const statisticsRepository = yield* StatisticsRepository;
     const filters = { ...DEFAULT_TRANSACTION_FILTER, date: OCTOBER };
@@ -303,6 +319,53 @@ describe('uncategorised and tag drill-downs with transfer fees', () => {
                 { inCategoryId: null, outsideFeeCategoryId: category.id, tagId: null },
                 { names: IN_SCOPE_NAMES, amount: 53 }
             );
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('Tag: lists exactly the transactions its total counts, with per-row amounts adding up to the total', () =>
+        Effect.gen(function* () {
+            const tag = yield* seed.tag('Scope drill-down');
+
+            yield* expectScopeParity(
+                taggedScope(tag.id),
+                { inCategoryId: null, outsideFeeCategoryId: null, tagId: tag.id },
+                { names: IN_SCOPE_NAMES, amount: 63 }
+            );
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('Untagged: lists exactly the transactions its total counts, leaving untagged transfers out', () =>
+        expectScopeParity(
+            untaggedScope,
+            { inCategoryId: null, outsideFeeCategoryId: null, tagId: null },
+            { names: ['plain expense', 'split expense', 'income with fee in scope'], amount: 61 }
+        ).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('lists a refund-consolidated expense once in the Uncategorised and Tag scopes, as their totals count it', () =>
+        Effect.gen(function* () {
+            const transferConsolidationService = yield* TransferConsolidationService;
+            const card = yield* seed.account({ title: 'Card', externalId: 'scope-drill-refund-card' });
+            const tag = yield* seed.tag('Scope refund');
+            const { expense } = yield* seedRefundedExpense({
+                accountId: card.id,
+                expenseAmount: 100 * PRECISION,
+                refundAmounts: [30 * PRECISION],
+                expenseOperatedAt: OPERATED_AT,
+                externalIdPrefix: 'scope-drill-refund'
+            });
+
+            yield* seed.transactionTag(expense.id, tag.id);
+            yield* transferConsolidationService.consolidate(null);
+
+            const results = yield* Effect.forEach([uncategorizedScope, taggedScope(tag.id)], scope =>
+                compareScope(scope, card.instrumentId)
+            );
+
+            expect(results.map(({ listedIds, total }) => [listedIds, total?.transactionCount, total?.amount])).toStrictEqual([
+                [[expense.id], 1, 70 * PRECISION],
+                [[expense.id], 1, 70 * PRECISION]
+            ]);
         }).pipe(Effect.provide(TestLayer))
     );
 });

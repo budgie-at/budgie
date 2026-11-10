@@ -40,14 +40,22 @@ import type { SQLiteColumn, SelectedFields } from 'drizzle-orm/sqlite-core';
 
 export class StatisticsRepository extends Context.Service<StatisticsRepository>()('@budgie/contracts/StatisticsRepository', {
     make: Effect.sync(() => {
-        const buildTypeCondition = (type: TransactionTypeEnum, { categoryIds }: Pick<StatisticsFilterInterface, 'categoryIds'>) =>
-            type === TransactionTypeEnum.EXPENSE && isDefined(categoryIds)
+        const buildTypeCondition = (
+            type: TransactionTypeEnum,
+            { categoryIds, tagIds }: Pick<StatisticsFilterInterface, 'categoryIds' | 'tagIds'>
+        ) =>
+            type === TransactionTypeEnum.EXPENSE && (isDefined(categoryIds) || isDefined(tagIds))
                 ? and(
                       transactionFilters.buildExpenseAnalyticsEntryCondition(),
                       ne(TransactionEntityTable.type, TransactionTypeEnum.ADJUSTMENT),
-                      isNotEmptyArray(categoryIds)
-                          ? inArray(TransactionEntryEntityTable.categoryId, categoryIds)
-                          : isNull(TransactionEntryEntityTable.categoryId)
+                      ...(isEmptyArray(tagIds) ? [ne(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER)] : []),
+                      ...(isDefined(categoryIds)
+                          ? [
+                                isNotEmptyArray(categoryIds)
+                                    ? inArray(TransactionEntryEntityTable.categoryId, categoryIds)
+                                    : isNull(TransactionEntryEntityTable.categoryId)
+                            ]
+                          : [])
                   )
                 : eq(TransactionEntityTable.type, type);
 
@@ -55,7 +63,7 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
             db: DB,
             baseWhere: SQL | undefined,
             type: TransactionTypeEnum | null,
-            scope: Pick<StatisticsFilterInterface, 'categoryIds'>
+            scope: Pick<StatisticsFilterInterface, 'categoryIds' | 'tagIds'>
         ) =>
             db
                 .selectDistinct({ id: TransactionEntityTable.id })
