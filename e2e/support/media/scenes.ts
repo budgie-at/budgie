@@ -182,7 +182,7 @@ async function statementImport(ctx: Ctx, bank: string, file: string, rowId: stri
     await b.tapId(ctx, `CreateAccount.${bank}`);
     await b.expectId(ctx, 'CreateFileBankAccount.SelectFileButton', 10_000);
     await b.tapUntil(ctx, 'CreateFileBankAccount.SelectFileButton', () =>
-        expect(ctx.screen.getByRole('button', { name: 'Cancel' }).first()).toBeVisible({ timeout: 5_000 })
+        expect(b.byId(ctx.screen, 'DOC.browsingModeTabBar')).toBeVisible({ timeout: 5_000 })
     );
     await i.selectFileFromAppProvider(ctx, file);
     await b.expectId(ctx, rowId, 5_000);
@@ -365,7 +365,7 @@ export const SCENES: Readonly<Record<string, Scene>> = {
             );
             await b.tapId(ctx, 'ImportPresetPickerSelector.Toggle');
             await b.tapId(ctx, 'ImportScreen.PresetChip.Budgie');
-            await b.expectText(ctx, /^Import \d+ transactions?$/);
+            await b.expectId(ctx, 'CsvPage.StartImportButton', 15_000);
         }
     },
     'custom-categories-2': {
@@ -398,7 +398,7 @@ export const SCENES: Readonly<Record<string, Scene>> = {
             await scrollDown(ctx, b.byId(ctx.screen, 'TransactionInfo.ConvertButton'), true);
             await b.sleep(600);
             await b.tapId(ctx, 'TransactionInfo.ConvertButton');
-            await b.tapText(ctx, 'Attach debt');
+            await b.tapId(ctx, 'TransactionActionsMenu.AttachDebtSettlementButton');
             await b.expectId(ctx, 'AccountPickerBottomSheet.Input', 10_000);
         }
     },
@@ -452,14 +452,14 @@ export const SCENES: Readonly<Record<string, Scene>> = {
     'privatbank-import-1': {
         run: async ctx => {
             await statementImport(ctx, 'PRIVATBANK', 'privatbank-statement-001, xlsx', 'SyncAccountSelection.Row.Privatbank_1234');
-            await b.expectText(ctx, 'Select all');
+            await b.expectId(ctx, 'SyncAccountSelection.ToggleAll', 5_000);
         }
     },
     'privatbank-import-2': {
         run: async ctx => {
             await statementImport(ctx, 'PRIVATBANK', 'privatbank-statement-001, xlsx', 'SyncAccountSelection.Row.Privatbank_1234');
             await b.tapId(ctx, 'SyncAccountSelection.Row.Privatbank_1234');
-            await b.expectText(ctx, 'Deselect all', 3_000);
+            await b.expectId(ctx, 'SyncAccountSelection.ToggleAll', 3_000);
         }
     },
     'recurring-payments-calendar-1': { run: openRecurringCalendar },

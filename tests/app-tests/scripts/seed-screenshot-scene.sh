@@ -22,6 +22,8 @@
 #   showcase.db         curated dataset, anchored on a fixed date
 #   <LOCALE>.sql         locale overlay (strings + display currency)
 #   shift-dates.sql      re-anchors every date on the capture day
+#   scenes/shared/budget-healthy.sql   a ~65% monthly budget, applied before
+#                        the scene overlay so a scene can pin its own budget
 #   scenes/<scene>.sql   optional per-scene state overlay
 #   opening-balances.sql books opening balances and sets account_balances
 #                        to the ledger, applied last
@@ -171,6 +173,8 @@ prepare_database() {
             is_budget_push_enabled = 0,
             updated_at = unixepoch('now');
     "
+
+    sqlite3 "$PREPARED_DATABASE_PATH" < "$SCENES_DIR/shared/budget-healthy.sql"
 
     resolve_scene_overlay_path
 

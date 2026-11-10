@@ -166,8 +166,7 @@ async function scrollPickerTo(ctx: Ctx, row: Locator): Promise<void> {
  */
 export async function selectFileFromAppProvider(ctx: Ctx, name: string): Promise<void> {
     const { screen } = ctx;
-    const cancel = screen.getByRole('button', { name: 'Cancel' }).first();
-    await expect(cancel).toBeVisible({ timeout: 15_000 });
+    await expect(byId(screen, 'DOC.browsingModeTabBar')).toBeVisible({ timeout: 15_000 });
     if (await byText(screen, 'Apple Account Verification').isVisible()) {
         await screen.getByText('Not Now').last().tap();
     }

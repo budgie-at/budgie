@@ -128,7 +128,7 @@
         },
         {
             "name": "csv-import-1",
-            "deepLink": "budgie://settings/import"
+            "deepLink": "budgie://settings/data"
         },
         {
             "name": "csv-import-2",
