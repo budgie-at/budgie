@@ -1,6 +1,7 @@
 import { UnconsolidationService } from '@budgie/consolidation';
 import {
     Db,
+    DebtEventRepository,
     ExternalSourceEnum,
     type TransactionCreateInputInterface,
     type TransactionEntryEntityInterface,
@@ -44,6 +45,7 @@ export class TransactionService extends Context.Service<TransactionService>()('@
         const importedTransactionEntryUpdateService = yield* ImportedTransactionEntryUpdateService;
         const transactionBatchCreateService = yield* TransactionBatchCreateService;
         const transactionDebtSettlementService = yield* TransactionDebtSettlementService;
+        const debtEventRepository = yield* DebtEventRepository;
         const transactionDepositSafetyService = yield* TransactionDepositSafetyService;
         const unconsolidationService = yield* UnconsolidationService;
 
@@ -133,14 +135,18 @@ export class TransactionService extends Context.Service<TransactionService>()('@
 
                 return;
             }
+            const accountIds = transaction?.entries.map(entry => entry.accountId) ?? [];
             if (shouldKeepTombstone && isDefined(transaction?.externalId)) {
+                const debtEvent = yield* debtEventRepository.findByTransactionId(id);
+                yield* debtEventRepository.deleteByTransactionId(id);
                 yield* transactionRepository.archiveByIds([id]);
+                accountIds.push(...[debtEvent?.debtAccountId].filter(isDefined));
             } else {
                 yield* transactionRepository.deleteById(id);
             }
             yield* transactionTagsRepository.deleteByTransactionId(id);
             yield* transactionEntryRepository.deleteByTransactionId(id);
-            yield* accountBalanceIncrementalService.updateBalancesByAccountIds(transaction?.entries.map(entry => entry.accountId) ?? []);
+            yield* accountBalanceIncrementalService.updateBalancesByAccountIds(accountIds);
         });
 
         return {
@@ -248,6 +254,7 @@ export class TransactionService extends Context.Service<TransactionService>()('@
             TransactionEntryRepository.layer,
             TransactionRepository.layer,
             TransactionTagsRepository.layer,
+            DebtEventRepository.layer,
             AccountBalanceIncrementalService.layer,
             EntryBaseValuationService.layer,
             ImportedTransactionEntryUpdateService.layer,
