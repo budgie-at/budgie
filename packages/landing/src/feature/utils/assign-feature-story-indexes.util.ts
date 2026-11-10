@@ -6,15 +6,11 @@ import { FeatureStoryStep } from '../component/feature-story-step/feature-story-
 
 import type { ReactNode } from 'react';
 
-interface IndexedProps {
-    readonly index?: number;
-}
-
 export const assignFeatureStoryIndexes = (children: ReactNode): ReactNode[] => {
     let stepCount = 0;
 
     return Children.toArray(children).map(child => {
-        if (!isValidElement<IndexedProps>(child)) {
+        if (!isValidElement<{ readonly index?: number }>(child)) {
             return child;
         }
 
