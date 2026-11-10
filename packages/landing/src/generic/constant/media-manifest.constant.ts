@@ -235,10 +235,9 @@ export const MEDIA_MANIFEST: readonly MediaManifestEntryInterface[] = [
     {
         slug: 'erste-bank-pdf-import',
         scene: 'erste-bank-pdf-import-1',
-        locales: ['en'],
+        locales: ['de', 'en', 'es', 'fr', 'uk'],
         themes: [MediaThemeEnum.DARK, MediaThemeEnum.LIGHT]
     },
-    { slug: 'erste-bank-pdf-import', scene: 'erste-bank-pdf-import-1', locales: ['fr'], themes: [MediaThemeEnum.LIGHT] },
     {
         slug: 'expense-tracking',
         scene: 'expense-tracking-1',
@@ -377,8 +376,18 @@ export const MEDIA_MANIFEST: readonly MediaManifestEntryInterface[] = [
         locales: ['de', 'en', 'es', 'fr', 'uk'],
         themes: [MediaThemeEnum.DARK, MediaThemeEnum.LIGHT]
     },
-    { slug: 'privatbank-import', scene: 'privatbank-import-1', locales: ['en'], themes: [MediaThemeEnum.DARK, MediaThemeEnum.LIGHT] },
-    { slug: 'privatbank-import', scene: 'privatbank-import-2', locales: ['en'], themes: [MediaThemeEnum.DARK, MediaThemeEnum.LIGHT] },
+    {
+        slug: 'privatbank-import',
+        scene: 'privatbank-import-1',
+        locales: ['de', 'en', 'es', 'fr', 'uk'],
+        themes: [MediaThemeEnum.DARK, MediaThemeEnum.LIGHT]
+    },
+    {
+        slug: 'privatbank-import',
+        scene: 'privatbank-import-2',
+        locales: ['de', 'en', 'es', 'fr', 'uk'],
+        themes: [MediaThemeEnum.DARK, MediaThemeEnum.LIGHT]
+    },
     {
         slug: 'private-budget-app-alternative',
         scene: 'private-budget-app-alternative-1',
