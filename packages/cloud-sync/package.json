@@ -18,8 +18,9 @@
         "build:watch": "pnpm build --watch",
         "clear": "rimraf dist node_modules/.cache .turbo",
         "lint": "oxlint --type-aware src",
-        "ts": "node ../../scripts/typecheck.cjs --noEmit -p tsconfig.json",
-        "ts:native": "node ../../scripts/typecheck.cjs --native --noEmit -p tsconfig.json"
+        "test": "vitest run",
+        "ts": "node ../../scripts/typecheck.cjs --noEmit -p tsconfig.json && node ../../scripts/typecheck.cjs --noEmit -p tsconfig.test.json",
+        "ts:native": "node ../../scripts/typecheck.cjs --native --noEmit -p tsconfig.json && node ../../scripts/typecheck.cjs --native --noEmit -p tsconfig.test.json"
     },
     "dependencies": {
         "@budgie/ai": "workspace:*",
@@ -33,5 +34,12 @@
         "@rnw-community/shared": "^3.0.5",
         "drizzle-orm": "1.0.0-rc.4",
         "effect": "4.1.2"
+    },
+    "devDependencies": {
+        "@budgie-at/test-kit": "workspace:*",
+        "@effect/vitest": "4.1.2",
+        "@types/node": "26.6.6",
+        "typescript": "npm:@typescript/typescript6@6.0.2",
+        "vitest": "5.1.0"
     }
 }
