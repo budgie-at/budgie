@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.173.21](https://github.com/budgie-at/budgie/compare/v6.173.20...v6.173.21) (2026-11-10)
+
+### Bug Fixes
+
+* **contracts:** include transfer fees in the expense category drill-down ([#2113](https://github.com/budgie-at/budgie/issues/2113)) ([ca1f20a](https://github.com/budgie-at/budgie/commit/ca1f20a6dedf35157b16ed4c81c5771a6c78cbd5))
+
+
 ## [6.173.20](https://github.com/budgie-at/budgie/compare/v6.173.19...v6.173.20) (2026-11-10)
 
 ### Bug Fixes
