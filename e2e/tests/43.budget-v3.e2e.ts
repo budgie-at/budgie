@@ -67,7 +67,7 @@ test('43 budget v3', { tags: ['budget'] }, async ({ budgie }) => {
 
     await b.phase('event budget', async () => {
         await b.scrollTo(ctx, 'BudgetDetails.EventAddButton');
-        await b.sleep(400);
+        await b.expectSettledId(ctx, 'BudgetDetails.EventAddButton');
         await b.tapId(ctx, 'BudgetDetails.EventAddButton');
         await b.expectId(ctx, 'BudgetEvent.NameInput', 3_000);
         await b.fillId(ctx, 'BudgetEvent.NameInput', EVENT);

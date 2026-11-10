@@ -1,6 +1,6 @@
 import { expect, type Locator } from 'e2e';
 
-import { byId, byText, expectId, expectNoId, openLink, scrollTo, sleep, tapId, tapUntil, type Ctx } from './core.ts';
+import { byId, byText, expectId, expectNoId, expectSettledId, openLink, scrollTo, sleep, tapId, tapUntil, type Ctx } from './core.ts';
 import { navigateToTransactions } from './transactions.ts';
 
 async function importAutomaticallyMappedCsv(ctx: Ctx): Promise<void> {
@@ -198,7 +198,7 @@ export async function openCsvImportPicker(ctx: Ctx): Promise<void> {
     await openLink(ctx, 'budgie://settings/data');
     await expectId(ctx, 'DataPage.Container', 15_000);
     await scrollTo(ctx, 'CsvPage.ImportCard');
-    await sleep(400);
+    await expectSettledId(ctx, 'CsvPage.ImportCard');
     await tapUntil(ctx, 'CsvPage.ImportCard', () => expect(byText(ctx.screen, 'Cancel')).toBeVisible({ timeout: 15_000 }));
 }
 

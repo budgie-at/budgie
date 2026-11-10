@@ -27,7 +27,7 @@ test('44 inzhur operations import', { tags: ['import'] }, async ({ budgie }) => 
 
     await core.phase('cash and fund holdings are shown on the institution', async () => {
         await core.scrollTo(ctx, 'InstitutionRow.1');
-        await core.sleep(600);
+        await core.expectSettledId(ctx, 'InstitutionRow.1');
         await core.tapId(ctx, 'InstitutionRow.1');
         await core.expectId(ctx, 'Institution.Page', 10_000);
         await core.expectId(ctx, 'AccountCard.Balance.Cash.7_164', 10_000);

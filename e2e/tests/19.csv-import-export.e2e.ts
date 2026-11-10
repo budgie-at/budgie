@@ -36,7 +36,7 @@ test('19 csv import export', { tags: ['import'] }, async ({ budgie }) => {
         await b.openLink(ctx, 'budgie://settings/data');
         await b.expectId(ctx, 'DataPage.Container', 15_000);
         await b.scrollTo(ctx, 'CsvPage.ExportCard');
-        await b.sleep(400);
+        await b.expectSettledId(ctx, 'CsvPage.ExportCard');
         await b.tapUntil(ctx, 'CsvPage.ExportCard', () => b.expectText(ctx, 'Save to Files', 15_000));
         await sec.dismissSaveToFilesSheet(ctx);
         await b.expectId(ctx, 'DataPage.Container', 5_000);

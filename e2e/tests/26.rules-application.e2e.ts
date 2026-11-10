@@ -105,7 +105,7 @@ test('26 rules application', { tags: ['rules'] }, async ({ budgie }) => {
         await b.tapId(ctx, 'RuleForm.Footer.SubmitButton');
         await b.expectId(ctx, 'RulesPage.RuleCard.0');
         await b.tapId(ctx, 'RulesPage.RuleCardEnabledSwitch.0');
-        await b.sleep(400);
+        await expect(b.byId(ctx.screen, 'RulesPage.RuleCardEnabledSwitch.0')).toBeChecked({ checked: false });
         await createExpense(ctx, { amount: '25', account: ACCOUNT, category: 'Other', comment: 'Uber Ride' });
         await expectExpenseInfo('budgie://transactions/9/expense', 'Uber Ride');
         await deleteRule();

@@ -38,7 +38,6 @@ test('31 debt settlement attachments', { tags: ['debt'] }, async ({ budgie }) =>
         await navigateToTransactions(ctx);
         if (scroll) {
             await b.scrollToCentre(ctx, card(label));
-            await b.sleep(600);
         } else {
             await b.expectId(ctx, card(label), 5_000);
         }
@@ -50,7 +49,7 @@ test('31 debt settlement attachments', { tags: ['debt'] }, async ({ budgie }) =>
     const attachFromForm = async () => {
         await b.tapId(ctx, 'TransactionActionsMenu.TriggerButton');
         await b.expectId(ctx, 'TransactionActionsMenu.AttachDebtSettlementButton');
-        await b.sleep(400);
+        await b.expectSettledId(ctx, 'TransactionActionsMenu.AttachDebtSettlementButton');
         await b.tapId(ctx, 'TransactionActionsMenu.AttachDebtSettlementButton');
         await b.expectId(ctx, 'AccountPickerBottomSheet.Input', 10_000);
     };
@@ -68,7 +67,7 @@ test('31 debt settlement attachments', { tags: ['debt'] }, async ({ budgie }) =>
         await b.expectId(ctx, 'TransactionInfo.Page', 10_000);
         await b.tapId(ctx, 'TransactionInfo.EditButton.Label');
         await expect(b.byText(screen, 'Edit Income')).toBeVisible({ timeout: 10_000 });
-        await b.sleep(400);
+        await b.expectSettledId(ctx, 'TransactionActionsMenu.TriggerButton');
     };
     const borrowedFromHome = async () => {
         await home();
@@ -113,7 +112,7 @@ test('31 debt settlement attachments', { tags: ['debt'] }, async ({ budgie }) =>
         await b.sleep(400);
         await b.scrollTo(ctx, 'TransactionActionsMenu.DetachDebtSettlementButton');
         await b.tapId(ctx, 'TransactionActionsMenu.DetachDebtSettlementButton');
-        await b.sleep(400);
+        await b.expectNoId(ctx, 'TransactionActionsMenu.DetachDebtSettlementButton');
         await b.scrollTo(ctx, 'TransactionInfo.Row.Account', 'up');
         await b.expectNoId(ctx, 'TransactionInfo.Row.Debt');
         await openInfoConversions(ctx);
@@ -148,12 +147,12 @@ test('31 debt settlement attachments', { tags: ['debt'] }, async ({ budgie }) =>
         const expense = card('E2E_Borrowed_Debt_Attach_Expense');
         await navigateToTransactions(ctx);
         await b.scrollTo(ctx, expense);
-        await b.sleep(400);
+        await b.expectSettledId(ctx, expense);
         await b.tapId(ctx, expense);
         await b.expectId(ctx, 'TransactionInfo.Page', 10_000);
         await b.tapId(ctx, 'TransactionInfo.EditButton.Label');
         await expect(b.byText(screen, 'Edit Expense')).toBeVisible({ timeout: 10_000 });
-        await b.sleep(400);
+        await b.expectSettledId(ctx, 'TransactionActionsMenu.TriggerButton');
         await attachFromForm();
         await selectAccountBySearch(ctx, BORROWED);
         await expect(b.byText(screen, `Debt · ${BORROWED}`)).toBeVisible();
@@ -169,7 +168,6 @@ test('31 debt settlement attachments', { tags: ['debt'] }, async ({ budgie }) =>
         await editIncome(12);
         await attachFromForm();
         await pickDebtWithTotal(BORROWED, '15000');
-        await b.sleep(400);
         await expect(b.byText(screen, `Debt · ${BORROWED}`)).toBeVisible();
         await submitTransactionAndReturnToList(ctx);
         await b.scrollTo(ctx, card('E2E_Borrowed_Debt_Attach_Income'));
