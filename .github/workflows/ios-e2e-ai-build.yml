@@ -18,10 +18,6 @@ jobs:
             contents: read
             packages: write
             actions: read
-        concurrency:
-            group: ios-simulator-farm
-            queue: max
-            cancel-in-progress: false
         uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@9a151735055f5ab661650523ad7c6375ae007bef # v4.12.0
         with:
             control-runner-labels: '["self-hosted","linux-portable-2x4"]'
