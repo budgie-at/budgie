@@ -2619,9 +2619,17 @@ msgstr "Change icon, current: {iconName}"
 msgid "Change PIN"
 msgstr "Change PIN"
 
+#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
+msgid "Changes not uploaded"
+msgstr "Changes not uploaded"
+
 #: src/budget/hooks/use-budget-forecast-labels.hook.ts
 msgid "Chart max {scaleAmount}"
 msgstr "Chart max {scaleAmount}"
+
+#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
+msgid "Check iCloud settings"
+msgstr "Check iCloud settings"
 
 #: src/budget/constant/budget-save-blocker-label.constant.ts
 msgid "Check the form to continue"
@@ -5274,11 +5282,19 @@ msgstr "iCloud backup"
 msgid "iCloud backup, sync and family sharing need an Apple Account. Sign in from the Settings app."
 msgstr "iCloud backup, sync and family sharing need an Apple Account. Sign in from the Settings app."
 
+#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
+msgid "iCloud is busy"
+msgstr "iCloud is busy"
+
 #: src/cloud-backup/constant/cloud-backup-status-message.constant.ts
 #: src/cloud-backup/hook/use-restore-cloud-backup.hook.ts
 #: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
 msgid "iCloud storage full"
 msgstr "iCloud storage full"
+
+#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
+msgid "iCloud sync error"
+msgstr "iCloud sync error"
 
 #: src/cloud-backup/hook/use-restore-cloud-backup.hook.ts
 msgid "iCloud unavailable"
@@ -6550,6 +6566,10 @@ msgstr "No icons found"
 #: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
 msgid "No income in this view"
 msgstr "No income in this view"
+
+#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
+msgid "No internet connection"
+msgstr "No internet connection"
 
 #: src/ai/component/voice-review-empty-state/voice-review-empty-state.tsx
 msgid "No items to save"
@@ -8911,10 +8931,6 @@ msgstr "SmartBudget"
 msgid "Sold {soldLabel}"
 msgstr "Sold {soldLabel}"
 
-#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
-msgid "Some changes could not be uploaded to iCloud. Your data is safe on this device. Try again."
-msgstr "Some changes could not be uploaded to iCloud. Your data is safe on this device. Try again."
-
 #: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
 msgid "Some transactions may be hidden by the account or amount filter."
 msgstr "Some transactions may be hidden by the account or amount filter."
@@ -9201,22 +9217,6 @@ msgstr "Sync past transactions"
 #: src/account/constant/account-sync-state-label.constant.ts
 msgid "Sync paused"
 msgstr "Sync paused"
-
-#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
-msgid "Sync paused by an iCloud error. Your data is safe on this device. Try again."
-msgstr "Sync paused by an iCloud error. Your data is safe on this device. Try again."
-
-#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
-msgid "Sync paused: iCloud is busy right now. Try again in a few minutes."
-msgstr "Sync paused: iCloud is busy right now. Try again in a few minutes."
-
-#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
-msgid "Sync paused: no internet connection. Check your connection, then try again."
-msgstr "Sync paused: no internet connection. Check your connection, then try again."
-
-#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
-msgid "Sync paused: your Apple Account needs attention. Check iCloud in the Settings app, then try again."
-msgstr "Sync paused: your Apple Account needs attention. Check iCloud in the Settings app, then try again."
 
 #: src/app/(tabs)/settings/sync-repairs.tsx
 msgid "Sync repairs"

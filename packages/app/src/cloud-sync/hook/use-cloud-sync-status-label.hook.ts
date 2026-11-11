@@ -13,11 +13,11 @@ import { cloudSyncStatusAtom } from '../constant/cloud-sync-status-atom.constant
 import type { MessageDescriptor } from '@lingui/core';
 
 const CLOUD_SYNC_ERROR_MESSAGE: Record<CloudSyncErrorReasonEnum, MessageDescriptor> = {
-    [CloudSyncErrorReasonEnum.NETWORK_UNAVAILABLE]: msg`Sync paused: no internet connection. Check your connection, then try again.`,
-    [CloudSyncErrorReasonEnum.ICLOUD_BUSY]: msg`Sync paused: iCloud is busy right now. Try again in a few minutes.`,
-    [CloudSyncErrorReasonEnum.ACCOUNT_NEEDS_ATTENTION]: msg`Sync paused: your Apple Account needs attention. Check iCloud in the Settings app, then try again.`,
-    [CloudSyncErrorReasonEnum.CHANGES_REJECTED]: msg`Some changes could not be uploaded to iCloud. Your data is safe on this device. Try again.`,
-    [CloudSyncErrorReasonEnum.UNKNOWN]: msg`Sync paused by an iCloud error. Your data is safe on this device. Try again.`
+    [CloudSyncErrorReasonEnum.NETWORK_UNAVAILABLE]: msg`No internet connection`,
+    [CloudSyncErrorReasonEnum.ICLOUD_BUSY]: msg`iCloud is busy`,
+    [CloudSyncErrorReasonEnum.ACCOUNT_NEEDS_ATTENTION]: msg`Check iCloud settings`,
+    [CloudSyncErrorReasonEnum.CHANGES_REJECTED]: msg`Changes not uploaded`,
+    [CloudSyncErrorReasonEnum.UNKNOWN]: msg`iCloud sync error`
 };
 
 const CLOUD_SYNC_STATUS_MESSAGE: Record<

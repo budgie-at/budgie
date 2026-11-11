@@ -2618,9 +2618,17 @@ msgstr "Змінити іконку, поточна: {iconName}"
 msgid "Change PIN"
 msgstr "Змінити PIN‑код"
 
+#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
+msgid "Changes not uploaded"
+msgstr "Зміни не вивантажено"
+
 #: src/budget/hooks/use-budget-forecast-labels.hook.ts
 msgid "Chart max {scaleAmount}"
 msgstr "Максимум графіка {scaleAmount}"
+
+#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
+msgid "Check iCloud settings"
+msgstr "Перевірте налаштування iCloud"
 
 #: src/budget/constant/budget-save-blocker-label.constant.ts
 msgid "Check the form to continue"
@@ -5273,11 +5281,19 @@ msgstr "Резервна копія в iCloud"
 msgid "iCloud backup, sync and family sharing need an Apple Account. Sign in from the Settings app."
 msgstr "Для копій в iCloud, синхронізації та спільного доступу з родиною потрібен обліковий запис Apple. Увійдіть у програмі «Налаштування»."
 
+#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
+msgid "iCloud is busy"
+msgstr "iCloud зайнятий"
+
 #: src/cloud-backup/constant/cloud-backup-status-message.constant.ts
 #: src/cloud-backup/hook/use-restore-cloud-backup.hook.ts
 #: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
 msgid "iCloud storage full"
 msgstr "Сховище iCloud заповнене"
+
+#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
+msgid "iCloud sync error"
+msgstr "Помилка синхронізації iCloud"
 
 #: src/cloud-backup/hook/use-restore-cloud-backup.hook.ts
 msgid "iCloud unavailable"
@@ -6549,6 +6565,10 @@ msgstr "Іконки не знайдено"
 #: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
 msgid "No income in this view"
 msgstr "У цьому поданні немає доходів"
+
+#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
+msgid "No internet connection"
+msgstr "Немає підключення до інтернету"
 
 #: src/ai/component/voice-review-empty-state/voice-review-empty-state.tsx
 msgid "No items to save"
@@ -8910,10 +8930,6 @@ msgstr "SmartBudget"
 msgid "Sold {soldLabel}"
 msgstr "Продано {soldLabel}"
 
-#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
-msgid "Some changes could not be uploaded to iCloud. Your data is safe on this device. Try again."
-msgstr "Деякі зміни не вдалося вивантажити в iCloud. Ваші дані в безпеці на цьому пристрої. Спробуйте ще раз."
-
 #: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
 msgid "Some transactions may be hidden by the account or amount filter."
 msgstr "Деякі транзакції можуть бути приховані фільтром рахунку чи суми."
@@ -9200,22 +9216,6 @@ msgstr "Синхронізувати минулі транзакції"
 #: src/account/constant/account-sync-state-label.constant.ts
 msgid "Sync paused"
 msgstr "Синхронізацію призупинено"
-
-#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
-msgid "Sync paused by an iCloud error. Your data is safe on this device. Try again."
-msgstr "Синхронізацію призупинено через помилку iCloud. Ваші дані в безпеці на цьому пристрої. Спробуйте ще раз."
-
-#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
-msgid "Sync paused: iCloud is busy right now. Try again in a few minutes."
-msgstr "Синхронізацію призупинено: iCloud зараз перевантажений. Спробуйте ще раз за кілька хвилин."
-
-#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
-msgid "Sync paused: no internet connection. Check your connection, then try again."
-msgstr "Синхронізацію призупинено: немає підключення до інтернету. Перевірте з’єднання і спробуйте ще раз."
-
-#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
-msgid "Sync paused: your Apple Account needs attention. Check iCloud in the Settings app, then try again."
-msgstr "Синхронізацію призупинено: обліковий запис Apple потребує уваги. Перевірте iCloud у програмі «Параметри» і спробуйте ще раз."
 
 #: src/app/(tabs)/settings/sync-repairs.tsx
 msgid "Sync repairs"
