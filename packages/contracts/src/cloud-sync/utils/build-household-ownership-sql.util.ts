@@ -20,20 +20,19 @@ const BANK_ACCOUNT_ID_SOURCES = [
 
 const PersonalBankAccountTable = alias(AccountEntityTable, 'personal_bank_account');
 
-const sameBankAccountSql = sql`
-    AND NOT EXISTS (
-        SELECT 1 FROM ${AccountEntityTable} AS ${PersonalBankAccountTable}
-        WHERE ${PersonalBankAccountTable.syncZone} = ${PERSONAL_SYNC_ZONE}
-          AND ${PersonalBankAccountTable.deletedAt} IS NULL
-          AND ${inArray(PersonalBankAccountTable.externalSource, BANK_ACCOUNT_ID_SOURCES)}
-          AND ${PersonalBankAccountTable.externalSource} = ${AccountEntityTable.externalSource}
-          AND ${PersonalBankAccountTable.externalId} = ${AccountEntityTable.externalId}
-    )`;
+const samePersonalBankAccountSql = sql`EXISTS (
+    SELECT 1 FROM ${AccountEntityTable} AS ${PersonalBankAccountTable}
+    WHERE ${PersonalBankAccountTable.syncZone} = ${PERSONAL_SYNC_ZONE}
+      AND ${PersonalBankAccountTable.deletedAt} IS NULL
+      AND ${inArray(PersonalBankAccountTable.externalSource, BANK_ACCOUNT_ID_SOURCES)}
+      AND ${PersonalBankAccountTable.externalSource} = ${AccountEntityTable.externalSource}
+      AND ${PersonalBankAccountTable.externalId} = ${AccountEntityTable.externalId}
+)`;
 
-export const buildSharedByOtherSql = (recordType: SyncRecordTypeEnum.ACCOUNT | SyncRecordTypeEnum.BUDGET) => {
+export const buildHouseholdOwnershipSql = (recordType: SyncRecordTypeEnum.ACCOUNT | SyncRecordTypeEnum.BUDGET) => {
     const table = recordType === SyncRecordTypeEnum.ACCOUNT ? AccountEntityTable : BudgetEntityTable;
-
-    return sql`(
+    const isDuplicateCandidate = recordType === SyncRecordTypeEnum.ACCOUNT ? samePersonalBankAccountSql : sql`0`;
+    const isUnprovenSql = sql`(
     ${table.syncZone} = ${HOUSEHOLD_SYNC_ZONE}
     AND NOT EXISTS (
         SELECT 1 FROM ${SyncRecordEntityTable}
@@ -42,18 +41,23 @@ export const buildSharedByOtherSql = (recordType: SyncRecordTypeEnum.ACCOUNT | S
           AND ${SyncRecordEntityTable.recordType} = ${recordType}
     )
     AND NOT EXISTS (
+        SELECT 1 FROM ${SyncOutboxEntityTable}
+        WHERE ${SyncOutboxEntityTable.syncZone} = ${PERSONAL_SYNC_ZONE}
+          AND ${SyncOutboxEntityTable.syncId} = ${table.syncId}
+          AND ${SyncOutboxEntityTable.recordType} = ${recordType}
+    )
+    AND NOT EXISTS (
         SELECT 1 FROM ${SyncRecordEntityTable}
         WHERE ${SyncRecordEntityTable.syncZone} = ${HOUSEHOLD_SYNC_ZONE}
           AND ${SyncRecordEntityTable.syncId} = ${table.syncId}
           AND ${SyncRecordEntityTable.recordType} = ${recordType}
           AND json_extract(${SyncRecordEntityTable.payload}, '$.encryptedFields.ownerId') = ${CURRENT_CLOUD_USER_SQL}
     )
-    AND NOT EXISTS (
-        SELECT 1 FROM ${SyncOutboxEntityTable}
-        WHERE ${SyncOutboxEntityTable.syncZone} = ${PERSONAL_SYNC_ZONE}
-          AND ${SyncOutboxEntityTable.syncId} = ${table.syncId}
-          AND ${SyncOutboxEntityTable.recordType} = ${recordType}
-    )
-    ${recordType === SyncRecordTypeEnum.ACCOUNT ? sameBankAccountSql : sql``}
 )`;
+
+    return {
+        isOwned: sql`NOT ${isUnprovenSql}`,
+        isSharedByOther: sql`(${isUnprovenSql} AND NOT ${isDuplicateCandidate})`,
+        isDuplicateOfOwn: sql`(${isUnprovenSql} AND ${isDuplicateCandidate})`
+    };
 };
