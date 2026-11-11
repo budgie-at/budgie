@@ -2,6 +2,8 @@ import { isDefined } from '@rnw-community/shared';
 
 import { HTTP_STATUS_UNAUTHORIZED } from '../core/constant/http-status.constant';
 
+import { buildWiseAuthorizedSession, buildWiseRoutes, WISE_BANK, WISE_CODE } from './e2e-fake-wise';
+
 import type { ClientInfo, StatementItem } from '@liaugust/monobank-sdk';
 
 type FakeHandlerType = (body: string) => unknown;
@@ -19,6 +21,13 @@ const SYNTHETIC_BANK = 'E2E Synthetic Bank';
 const CONNECT_BANK = 'E2E Connect Bank';
 const CONNECT_CODE = 'e2e-connect-code';
 const CONNECT_SESSION = 'e2e-connect-session';
+const CONSENT_VALIDITY_SECONDS = NINETY_DAYS * 24 * 60 * 60;
+const AUTH_CODE_BY_BANK = new Map([
+    [CONNECT_BANK, CONNECT_CODE],
+    [WISE_BANK, WISE_CODE]
+]);
+
+const consentValidUntil = (): string => new Date(Date.now() + (NINETY_DAYS - 1) * MILLISECONDS_PER_DAY).toISOString();
 
 const dayAgo = (days: number): string => new Date(Date.now() - days * MILLISECONDS_PER_DAY).toISOString().slice(0, ISO_DATE_LENGTH);
 
@@ -37,25 +46,39 @@ const ENABLE_BANKING_ROUTES: ReadonlyArray<readonly [string, RegExp, FakeHandler
         'GET',
         /^\/aspsps$/u,
         () => ({
-            aspsps: [SYNTHETIC_BANK, CONNECT_BANK].map(name => ({
-                name,
-                country: 'DE',
-                maximum_consent_validity: NINETY_DAYS * 24 * 60 * 60,
-                beta: false
-            }))
+            aspsps: [
+                ...[SYNTHETIC_BANK, CONNECT_BANK].map(name => ({
+                    name,
+                    country: 'DE',
+                    maximum_consent_validity: CONSENT_VALIDITY_SECONDS,
+                    beta: false
+                })),
+                { name: WISE_BANK, country: 'GB', maximum_consent_validity: CONSENT_VALIDITY_SECONDS, beta: false },
+                {
+                    name: WISE_BANK,
+                    country: 'DE',
+                    maximum_consent_validity: CONSENT_VALIDITY_SECONDS,
+                    beta: false,
+                    required_psu_headers: ['psu-ip-address']
+                }
+            ]
         })
     ],
     [
         'POST',
         /^\/auth$/u,
         body => ({
-            url: `budgie://enable-banking/callback?code=${body.includes(CONNECT_BANK) ? CONNECT_CODE : 'e2e-code'}&state=${/"state":"([^"]+)"/u.exec(body)?.[1] ?? ''}`
+            url: `budgie://enable-banking/callback?code=${[...AUTH_CODE_BY_BANK].find(([bank]) => body.includes(`"${bank}"`))?.[1] ?? 'e2e-code'}&state=${/"state":"([^"]+)"/u.exec(body)?.[1] ?? ''}`
         })
     ],
     [
         'POST',
         /^\/sessions$/u,
         body => {
+            if (body.includes(WISE_CODE)) {
+                return buildWiseAuthorizedSession(consentValidUntil());
+            }
+
             const isConnectBank = body.includes(CONNECT_CODE);
 
             return {
@@ -70,7 +93,7 @@ const ENABLE_BANKING_ROUTES: ReadonlyArray<readonly [string, RegExp, FakeHandler
                     }
                 ],
                 aspsp: { name: isConnectBank ? CONNECT_BANK : SYNTHETIC_BANK, country: 'DE' },
-                access: { valid_until: new Date(Date.now() + (NINETY_DAYS - 1) * MILLISECONDS_PER_DAY).toISOString() }
+                access: { valid_until: consentValidUntil() }
             };
         }
     ],
@@ -79,6 +102,7 @@ const ENABLE_BANKING_ROUTES: ReadonlyArray<readonly [string, RegExp, FakeHandler
         new RegExp(`^/sessions/${CONNECT_SESSION}$`, 'u'),
         () => ({ status: 'AUTHORIZED', accounts_data: [{ uid: 'e2e-uid-connect', identification_hash: 'e2e-hash-connect' }] })
     ],
+    ...buildWiseRoutes(dayAgo),
     [
         'GET',
         /^\/sessions\/[^/]+$/u,

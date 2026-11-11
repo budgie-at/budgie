@@ -10,6 +10,8 @@ const THROWAWAY_KEY = 'e2e00000-0000-4000-8000-0000000000e1.pem, txt';
 const SYNTHETIC_ACCOUNT = 'E2E Synthetic Bank E2E Current';
 const CONNECT_ACCOUNT = 'E2E Statement Account';
 const CONNECT_ACCOUNT_ID = 960;
+const WISE_EUR_ACCOUNT = 'Wise EUR';
+const WISE_USD_ACCOUNT = 'Wise USD';
 
 test('44 enable banking', { tags: ['sync'], platforms: ['ios'] }, async ({ budgie }) => {
     const ctx = budgie.ctx;
@@ -72,6 +74,35 @@ test('44 enable banking', { tags: ['sync'], platforms: ['ios'] }, async ({ budgi
         await expect(
             screen.getByRole('button', { name: /^Balance Adjustment, \+€747,.*E2E Synthetic Bank E2E Current$/ }).first()
         ).toBeVisible();
+    });
+
+    await b.phase('connect Wise from its own row: both balances and the conversion as one transfer', async () => {
+        await b.openLink(ctx, 'budgie://create-account');
+        await b.scrollTo(ctx, 'CreateAccount.WISE');
+        await b.tapId(ctx, 'CreateAccount.WISE');
+        await b.expectText(ctx, 'Set up once, about 5 minutes', 10_000);
+        await b.tapId(ctx, 'CreateEnableBankingAccount.ContinueButton');
+        await pickFile('EnableBankingKeyStep.ChooseKeyFile', THROWAWAY_KEY);
+        await expect(id('EnableBankingKeyStep.ChooseKeyFile')).toHaveText(/^Key file loaded/);
+        await b.tapId(ctx, 'CreateEnableBankingAccount.ContinueButton');
+        await b.expectId(ctx, 'EnableBankingBankRow.Wise', 15_000);
+        await b.tapId(ctx, 'EnableBankingBankRow.Wise');
+        await b.expectText(ctx, 'Choose accounts', 30_000);
+        await expect(screen.getByRole('switch', { name: /^Wise EUR, EUR/ }).first()).toBeVisible();
+        await expect(screen.getByRole('switch', { name: /^Wise USD, USD/ }).first()).toBeVisible();
+        await b.tapId(ctx, 'CreateEnableBankingAccount.ContinueButton');
+        await b.expectId(ctx, 'SyncHistoryDepthOption.FULL', 10_000);
+        await b.tapId(ctx, 'CreateEnableBankingAccount.StartSyncButton');
+        await b.expectId(ctx, 'HomePage.TotalBalance', 30_000);
+        await b.scrollTo(ctx, `AccountCard.${WISE_EUR_ACCOUNT}`);
+        await expect(id(`AccountCard.${WISE_EUR_ACCOUNT}`)).toHaveText(/€1,000, Up to date$/, { timeout: 90_000 });
+        await b.scrollTo(ctx, `AccountCard.${WISE_USD_ACCOUNT}`);
+        await expect(id(`AccountCard.${WISE_USD_ACCOUNT}`)).toHaveText(/\$108, Up to date$/, { timeout: 90_000 });
+        await b.openLink(ctx, 'budgie://transactions');
+        await expect(screen.getByRole('button', { name: /^E2E Other Bank, \+€1,100,.*Wise EUR$/ }).first()).toBeVisible({
+            timeout: 30_000
+        });
+        await expect(screen.getByText(/Wise EUR.*Wise USD/).first()).toBeVisible();
     });
 
     await b.phase('valid consent', async () => {

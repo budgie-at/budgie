@@ -18,7 +18,9 @@
 ### No-service slots (registry returns `null`)
 
 These `ExternalSourceEnum` members exist but have no service yet:
-`REVOLUT`, `WISE`, `COINBASE`, `CSV`, `MANUAL`
+`REVOLUT`, `COINBASE`, `CSV`, `MANUAL`
+
+`WISE` has no registered sync service either: its create-account row opens the Enable Banking flow with Wise preselected, and its accounts are `ENABLE_BANKING` accounts.
 
 ### Setup screens
 

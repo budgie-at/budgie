@@ -100,7 +100,7 @@ Each bank provider has:
 | Enable Banking | ✅ Implemented | On-device, per-user key |
 | Privatbank     | 📋 Planned     | -                       |
 | Revolut        | 📋 Planned     | -                       |
-| Wise           | 📋 Planned     | -                       |
+| Wise           | ✅ Implemented | Enable Banking ASPSP    |
 
 ### Provider Parser Pattern
 
@@ -343,6 +343,10 @@ The boundary has no overlap by design, and there is no content match. `connect.t
 | A row on the last day, absent from the imported file   | Lost, balance adjusted  |
 | A row in the file that the bank books on the next day  | Counted twice, adjusted |
 | A row booked late, dated before the start date         | Lost, balance adjusted  |
+
+## Wise
+
+Wise is an ASPSP inside Enable Banking, named by `WISE_ASPSP_NAME`. Each of its balances is an `ENABLE_BANKING` account of one integration, titled by `EnableBankingMapper.mapAccount` (`Wise EUR`, `Wise USD`). Consolidation treats accounts that share `integration_id` as one bank, so a conversion between two balances pairs as a transfer, while a top-up from another bank stays an income. `ExternalSourceEnum.WISE` only names the create-account row that opens the Enable Banking flow with Wise preselected; no `WISE` accounts exist. `wise.test.ts` and `packages/sync/src/e2e/e2e-fake-api.ts` carry the synthetic fixtures.
 
 ## Testing
 
