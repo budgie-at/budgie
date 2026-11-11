@@ -43,20 +43,12 @@ const seedCrossCurrencyRows = (source: ExternalSourceEnum, expenseConsent: strin
     });
 
 layer(TestLayer)('consolidation/enable-banking-transfer-pairing', it => {
-    it.effect('never treats accounts of two Enable Banking connections as the same bank for a USD expense and EUR income', () =>
+    it.effect.each([
+        { title: 'accounts of two Enable Banking connections', expenseConsent: 'consent-a', incomeConsent: 'consent-b' },
+        { title: 'Enable Banking accounts without a connection', expenseConsent: null, incomeConsent: null }
+    ])('never treats $title as the same bank for a USD expense and EUR income', ({ expenseConsent, incomeConsent }) =>
         Effect.gen(function* () {
-            const { expense, income } = yield* seedCrossCurrencyRows(ExternalSourceEnum.ENABLE_BANKING, 'consent-a', 'consent-b');
-
-            expect(yield* runConsolidation()).toEqual({ found: 0, consolidated: 0 });
-            for (const { id } of [expense, income]) {
-                expect((yield* testQueryService.fetchTransactionById(id)).consolidationParentTransactionId).toBeNull();
-            }
-        })
-    );
-
-    it.effect('never treats Enable Banking accounts without a connection as the same bank for a USD expense and EUR income', () =>
-        Effect.gen(function* () {
-            const { expense, income } = yield* seedCrossCurrencyRows(ExternalSourceEnum.ENABLE_BANKING, null, null);
+            const { expense, income } = yield* seedCrossCurrencyRows(ExternalSourceEnum.ENABLE_BANKING, expenseConsent, incomeConsent);
 
             expect(yield* runConsolidation()).toEqual({ found: 0, consolidated: 0 });
             for (const { id } of [expense, income]) {
