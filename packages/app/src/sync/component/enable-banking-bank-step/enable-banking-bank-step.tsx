@@ -39,21 +39,22 @@ export const EnableBankingBankStep = ({ banks, isLoading, preselectedBankName, o
     const [query, setQuery] = useState('');
     const deferredQuery = useDeferredValue(query);
 
-    const normalizedQuery = foldSearchText(deferredQuery.trim());
     const regionCode = getDeviceRegionCode();
     const matchingBanks = Arr.sort(
         banks.filter(bank => !isDefined(preselectedBankName) || isBankNamed(bank, preselectedBankName)),
         Order.mapInput(Order.String, (bank: EnableBankingBankInterface) => bank.name.toLocaleLowerCase())
     )
         .map((bank, index) => ({ ...bank, id: index }))
-        .filter(bank => bank.isSupported && foldSearchText(`${bank.name} ${bank.country}`).includes(normalizedQuery));
+        .filter(bank => bank.isSupported && foldSearchText(`${bank.name} ${bank.country}`).includes(foldSearchText(deferredQuery.trim())));
     const localBanks = matchingBanks.filter(bank => bank.country === regionCode);
     const otherBanks = matchingBanks.filter(bank => bank.country !== regionCode);
     const hasBothGroups = isNotEmptyArray(localBanks) && isNotEmptyArray(otherBanks);
     const listData = hasBothGroups ? otherBanks : matchingBanks;
 
-    const emptyTitle = isDefined(preselectedBankName) ? t`${preselectedBankName} is not available` : t`No banks found`;
-    const emptyDescription = isDefined(preselectedBankName)
+    const isPreselectedBankMissing =
+        isDefined(preselectedBankName) && !banks.some(bank => bank.isSupported && isBankNamed(bank, preselectedBankName));
+    const emptyTitle = isPreselectedBankMissing ? t`${preselectedBankName} is not available` : t`No banks found`;
+    const emptyDescription = isPreselectedBankMissing
         ? t`Enable Banking cannot connect ${preselectedBankName} in any country right now.`
         : t`Try another name.`;
 
