@@ -3,11 +3,11 @@ import { isDefined } from '@rnw-community/shared';
 import { HTTP_STATUS_UNAUTHORIZED } from '../core/constant/http-status.constant';
 import { WISE_ASPSP_NAME } from '../enable-banking/constant/wise-aspsp-name.constant';
 
-import { buildWiseAuthorizedSession, buildWiseRoutes, WISE_CODE } from './e2e-fake-wise';
+import { WISE_ACCOUNTS, WISE_CODE, WISE_SESSION } from './e2e-fake-wise';
 
 import type { ClientInfo, StatementItem } from '@liaugust/monobank-sdk';
 
-type FakeHandlerType = (body: string) => unknown;
+type FakeHandlerType = (body: string, path: string) => unknown;
 
 const REQUEST_PATTERN = /^https:\/\/([^/?#]+)([^?#]*)/u;
 const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
@@ -31,6 +31,8 @@ const AUTH_CODE_BY_BANK = new Map([
 const consentValidUntil = (): string => new Date(Date.now() + (NINETY_DAYS - 1) * MILLISECONDS_PER_DAY).toISOString();
 
 const dayAgo = (days: number): string => new Date(Date.now() - days * MILLISECONDS_PER_DAY).toISOString().slice(0, ISO_DATE_LENGTH);
+
+const wiseAccountOf = (path: string) => WISE_ACCOUNTS.find(({ uid }) => path.split('/')[2] === uid);
 
 const ENABLE_BANKING_ROUTES: ReadonlyArray<readonly [string, RegExp, FakeHandlerType]> = [
     [
@@ -77,7 +79,17 @@ const ENABLE_BANKING_ROUTES: ReadonlyArray<readonly [string, RegExp, FakeHandler
         /^\/sessions$/u,
         body => {
             if (body.includes(WISE_CODE)) {
-                return buildWiseAuthorizedSession(consentValidUntil());
+                return {
+                    session_id: WISE_SESSION,
+                    accounts: WISE_ACCOUNTS.map(({ currency, hash, iban }) => ({
+                        ...(isDefined(iban) && { account_id: iban }),
+                        cash_account_type: 'CACC',
+                        currency,
+                        identification_hash: hash
+                    })),
+                    aspsp: { name: WISE_ASPSP_NAME, country: 'GB' },
+                    access: { valid_until: consentValidUntil() }
+                };
             }
 
             const isConnectBank = body.includes(CONNECT_CODE);
@@ -103,7 +115,14 @@ const ENABLE_BANKING_ROUTES: ReadonlyArray<readonly [string, RegExp, FakeHandler
         new RegExp(`^/sessions/${CONNECT_SESSION}$`, 'u'),
         () => ({ status: 'AUTHORIZED', accounts_data: [{ uid: 'e2e-uid-connect', identification_hash: 'e2e-hash-connect' }] })
     ],
-    ...buildWiseRoutes(dayAgo),
+    [
+        'GET',
+        new RegExp(`^/sessions/${WISE_SESSION}$`, 'u'),
+        () => ({
+            status: 'AUTHORIZED',
+            accounts_data: WISE_ACCOUNTS.map(({ uid, hash }) => ({ uid, identification_hash: hash }))
+        })
+    ],
     [
         'GET',
         /^\/sessions\/[^/]+$/u,
@@ -113,13 +132,27 @@ const ENABLE_BANKING_ROUTES: ReadonlyArray<readonly [string, RegExp, FakeHandler
     [
         'GET',
         /^\/accounts\/[^/]+\/balances$/u,
-        () => ({ balances: [{ balance_amount: { amount: '1234.56', currency: 'EUR' }, balance_type: 'CLBD' }] })
+        (_body, path) => {
+            const account = wiseAccountOf(path);
+
+            return {
+                balances: [
+                    {
+                        balance_amount: { amount: account?.balance ?? '1234.56', currency: account?.currency ?? 'EUR' },
+                        balance_type: 'CLBD'
+                    }
+                ]
+            };
+        }
     ],
     [
         'GET',
         /^\/accounts\/[^/]+\/transactions$/u,
-        () => ({
-            transactions: [
+        (_body, path) => ({
+            transactions: wiseAccountOf(path)?.transactions.map(({ daysAgo, ...transaction }) => ({
+                ...transaction,
+                booking_date: dayAgo(daysAgo)
+            })) ?? [
                 {
                     entry_reference: 'e2e-tx-1',
                     transaction_amount: { amount: '12.50', currency: 'EUR' },
@@ -243,7 +276,7 @@ export const installE2eFakeApi = (): void => {
         const route = routes.find(([routeMethod, pattern]) => routeMethod === method && pattern.test(path));
 
         return Promise.resolve(
-            isDefined(route) ? respond(200, route[2](readBody(init?.body))) : respond(404, { error: 'E2E_UNKNOWN_ROUTE' })
+            isDefined(route) ? respond(200, route[2](readBody(init?.body), path)) : respond(404, { error: 'E2E_UNKNOWN_ROUTE' })
         );
     };
 };
