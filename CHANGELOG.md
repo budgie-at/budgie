@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.173.29](https://github.com/budgie-at/budgie/compare/v6.173.28...v6.173.29) (2026-11-11)
+
+### Bug Fixes
+
+* **sync:** pair opposite untracked own transfers booked on different days ([#2129](https://github.com/budgie-at/budgie/issues/2129)) ([5a1586b](https://github.com/budgie-at/budgie/commit/5a1586b8b243d54690ae760e8dcd22f791aa46fa))
+
+
 ## [6.173.28](https://github.com/budgie-at/budgie/compare/v6.173.27...v6.173.28) (2026-11-11)
 
 **Note:** Version bump only for package @budgie-at/root
