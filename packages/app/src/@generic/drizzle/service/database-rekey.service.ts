@@ -15,6 +15,8 @@ import { DATABASE_DIRECTORY } from '../constant/database-directory.constant';
 import { DATABASE_LOCATION } from '../constant/database-location.constant';
 import { DB_NAME } from '../constant/db-name.constant';
 import { openSqliteClient } from '../utils/open-sqlite-client.util';
+import { persistDatabaseKey } from '../utils/persist-database-key.util';
+import { readDatabaseKey } from '../utils/read-database-key.util';
 
 import { DatabaseLifecycleService } from './database-lifecycle.service';
 import { DatabaseSwapService } from './database-swap.service';
@@ -154,10 +156,17 @@ export class DatabaseRekeyService extends Context.Service<DatabaseRekeyService>(
                 yield* updateMigratedDatabaseSettings(targetName, target.key, target.settings);
             }),
             rekey: Effect.fn('DatabaseRekeyService.rekey')(function* (params: RekeyParamsInterface, onCommit: Effect.Effect<void>) {
+                const previousKey = yield* readDatabaseKey;
+
                 yield* prepare(params).pipe(
                     Effect.andThen(
                         commit(params.nextKey, onCommit).pipe(
-                            Effect.onError(() => restoreBackupDatabase().pipe(Effect.andThen(databaseSwapService.end)))
+                            Effect.onError(() =>
+                                persistDatabaseKey(previousKey).pipe(
+                                    Effect.andThen(restoreBackupDatabase()),
+                                    Effect.andThen(databaseSwapService.end)
+                                )
+                            )
                         )
                     ),
                     Effect.ensuring(

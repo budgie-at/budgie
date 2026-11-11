@@ -94,18 +94,19 @@ const takeSnapshot = () => {
     copyInto(killed.files, storage.files);
     copyInto(killed.secrets, secrets);
 };
-const killBeforeTransferring = (sourceUri: string) => {
-    storage.beforeTransfer = uri => {
-        if (uri === sourceUri) {
-            takeSnapshot();
-        }
-    };
-};
-const restartAfterKill = () => {
+const restartAfterKill = Effect.sync(() => {
     storage.beforeTransfer = () => void 0;
     copyInto(storage.files, killed.files);
     copyInto(secrets, killed.secrets);
-};
+});
+const killBeforeTransferring = (sourceUri: string, run: Effect.Effect<unknown>) =>
+    Effect.sync(() => {
+        storage.beforeTransfer = uri => {
+            if (uri === sourceUri) {
+                takeSnapshot();
+            }
+        };
+    }).pipe(Effect.andThen(run), Effect.andThen(restartAfterKill));
 
 const servicesLayer = Layer.mergeAll(
     Layer.effect(DatabaseImportService, DatabaseImportService.make),
@@ -123,9 +124,10 @@ const servicesLayer = Layer.mergeAll(
     Layer.provideMerge(inertDbLayer)
 );
 
-const importBackup = Effect.exit(Effect.flatMap(DatabaseImportService, service => service.importFromUri('backup', 'backup-pin'))).pipe(
-    Effect.provide(servicesLayer)
-);
+const importBackup = (backupPin: string) =>
+    Effect.exit(Effect.flatMap(DatabaseImportService, service => service.importFromUri('backup', backupPin))).pipe(
+        Effect.provide(servicesLayer)
+    );
 const changePin = (onCommit: Effect.Effect<void>) =>
     Effect.sync(() => closeWrites.set('documents/SQLite/auth-migration.db', 'rekeyed@new-pin')).pipe(
         Effect.andThen(Effect.flatMap(DatabaseRekeyService, service => service.rekey({ nextKey: 'new-pin' }, onCommit))),
@@ -133,6 +135,7 @@ const changePin = (onCommit: Effect.Effect<void>) =>
         Effect.provide(servicesLayer)
     );
 const storePin = Effect.sync(() => void secrets.set('user_pin', 'new-pin'));
+const killBeforeStoringPin = changePin(Effect.sync(takeSnapshot).pipe(Effect.andThen(storePin))).pipe(Effect.andThen(restartAfterKill));
 const boot = Effect.exit(
     Effect.flatMap(DatabaseConnectionService, () => Effect.void).pipe(
         Effect.provide(DatabaseConnectionService.layer.pipe(Layer.provide(Reactivity.layer)))
@@ -140,6 +143,12 @@ const boot = Effect.exit(
 );
 const readSyncState = Effect.flatMap(CloudSyncStateStore, store => store.read).pipe(Effect.provide(importDependenciesLayer));
 const databaseFiles = () => Object.fromEntries([...storage.files].filter(([path]) => path.startsWith('documents/SQLite/')));
+const expectBoot = (files: Record<string, string>, pin: string) =>
+    Effect.gen(function* () {
+        expect(Exit.isSuccess(yield* boot)).toBe(true);
+        expect(databaseFiles()).toEqual(files);
+        expect(Object.fromEntries(secrets)).toEqual({ user_pin: pin });
+    });
 
 const startup = DatabaseConnectionService.make.pipe(
     Effect.provide(Layer.mergeAll(DatabaseChangeService.layer, DatabaseSwapService.layer).pipe(Layer.provideMerge(Reactivity.layer))),
@@ -332,77 +341,87 @@ describe('database swap recovery after a kill', () => {
 
     it.effect('restores the original database, PIN and sync state when an import is killed after the move-aside', () =>
         Effect.gen(function* () {
-            killBeforeTransferring('cache/import-temp.db');
-            yield* importBackup;
-            restartAfterKill();
+            yield* killBeforeTransferring('cache/import-temp.db', importBackup('backup-pin'));
 
-            expect(Exit.isSuccess(yield* boot)).toBe(true);
-            expect(databaseFiles()).toEqual({ 'documents/SQLite/budgie.db': 'original@old-pin' });
-            expect(Object.fromEntries(secrets)).toEqual({ user_pin: 'old-pin' });
+            yield* expectBoot({ 'documents/SQLite/budgie.db': 'original@old-pin' }, 'old-pin');
+            expect(yield* readSyncState).toEqual(previousState);
+        })
+    );
+
+    it.effect('keeps the moved-aside database when a cloud restore is killed after the move-aside', () =>
+        Effect.gen(function* () {
+            storage.files.set('backup', 'imported@old-pin');
+            storage.files.set('documents/SQLite/pre-restore.db', 'original@old-pin');
+            storage.files.set('documents/SQLite/pre-restore.pending', '');
+            yield* killBeforeTransferring('cache/import-temp.db', importBackup('old-pin'));
+
+            yield* expectBoot(
+                {
+                    'documents/SQLite/budgie.db': 'original@old-pin',
+                    'documents/SQLite/budgie.db.replaced-0': 'original@old-pin',
+                    'documents/SQLite/pre-restore.db': 'original@old-pin'
+                },
+                'old-pin'
+            );
             expect(yield* readSyncState).toEqual(previousState);
         })
     );
 
     it.effect('finishes an import killed after the new database was moved in', () =>
         Effect.gen(function* () {
-            killBeforeTransferring('backup-wal');
-            yield* importBackup;
-            restartAfterKill();
+            yield* killBeforeTransferring('backup-wal', importBackup('backup-pin'));
 
-            expect(Exit.isSuccess(yield* boot)).toBe(true);
-            expect(databaseFiles()).toEqual({ 'documents/SQLite/budgie.db': 'imported@backup-pin' });
-            expect(Object.fromEntries(secrets)).toEqual({ user_pin: 'backup-pin' });
+            yield* expectBoot({ 'documents/SQLite/budgie.db': 'imported@backup-pin' }, 'backup-pin');
             expect(yield* readSyncState).toEqual(importedState);
         })
     );
 
     it.effect('keeps the old PIN when a PIN change is killed between the two moves', () =>
         Effect.gen(function* () {
-            killBeforeTransferring('documents/SQLite/auth-migration.db');
-            yield* changePin(storePin);
-            restartAfterKill();
+            yield* killBeforeTransferring('documents/SQLite/auth-migration.db', changePin(storePin));
 
-            expect(Exit.isSuccess(yield* boot)).toBe(true);
-            expect(databaseFiles()).toEqual({
-                'documents/SQLite/budgie.db': 'original@old-pin',
-                'documents/SQLite/auth-migration.db': 'rekeyed@new-pin'
-            });
-            expect(Object.fromEntries(secrets)).toEqual({ user_pin: 'old-pin' });
+            yield* expectBoot(
+                { 'documents/SQLite/budgie.db': 'original@old-pin', 'documents/SQLite/auth-migration.db': 'rekeyed@new-pin' },
+                'old-pin'
+            );
         })
     );
 
     it.effect('promotes the new PIN when a PIN change is killed after the new database is in place', () =>
         Effect.gen(function* () {
-            yield* changePin(Effect.sync(takeSnapshot).pipe(Effect.andThen(storePin)));
-            restartAfterKill();
+            yield* killBeforeStoringPin;
 
-            expect(Exit.isSuccess(yield* boot)).toBe(true);
-            expect(databaseFiles()).toEqual({ 'documents/SQLite/budgie.db': 'rekeyed@new-pin' });
-            expect(Object.fromEntries(secrets)).toEqual({ user_pin: 'new-pin' });
+            yield* expectBoot({ 'documents/SQLite/budgie.db': 'rekeyed@new-pin' }, 'new-pin');
         })
     );
 
     it.effect('opens with the stored PIN and keeps a stale rekey backup when the PIN change never moved a file', () =>
         Effect.gen(function* () {
-            killBeforeTransferring('documents/SQLite/budgie.db');
-            yield* changePin(storePin);
-            restartAfterKill();
+            yield* killBeforeTransferring('documents/SQLite/budgie.db', changePin(storePin));
             storage.files.set('documents/SQLite/budgie.db.bak', 'stale@older-pin');
 
-            expect(Exit.isSuccess(yield* boot)).toBe(true);
-            expect(databaseFiles()).toEqual({
-                'documents/SQLite/budgie.db': 'original@old-pin',
-                'documents/SQLite/budgie.db.bak': 'stale@older-pin',
-                'documents/SQLite/auth-migration.db': 'rekeyed@new-pin'
-            });
-            expect(Object.fromEntries(secrets)).toEqual({ user_pin: 'old-pin' });
+            yield* expectBoot(
+                {
+                    'documents/SQLite/budgie.db': 'original@old-pin',
+                    'documents/SQLite/budgie.db.bak': 'stale@older-pin',
+                    'documents/SQLite/auth-migration.db': 'rekeyed@new-pin'
+                },
+                'old-pin'
+            );
+        })
+    );
+
+    it.effect('restores the old PIN with the old database when a committed PIN change rolls back', () =>
+        Effect.gen(function* () {
+            expect(Exit.isFailure(yield* changePin(storePin.pipe(Effect.andThen(Effect.die('after commit')))))).toBe(true);
+
+            yield* expectBoot({ 'documents/SQLite/budgie.db': 'original@old-pin' }, 'old-pin');
         })
     );
 
     it.effect('leaves files and keys untouched when no key opens the live database', () =>
         Effect.gen(function* () {
-            yield* changePin(Effect.sync(takeSnapshot).pipe(Effect.andThen(storePin)));
-            restartAfterKill();
+            yield* killBeforeStoringPin;
             storage.files.set('documents/SQLite/budgie.db', 'rekeyed@unknown-pin');
             const filesBefore = databaseFiles();
             const secretsBefore = Object.fromEntries(secrets);
@@ -415,7 +434,7 @@ describe('database swap recovery after a kill', () => {
 
     it.effect('leaves only the PIN behind after a successful import and PIN change', () =>
         Effect.gen(function* () {
-            expect(Exit.isSuccess(yield* importBackup)).toBe(true);
+            expect(Exit.isSuccess(yield* importBackup('backup-pin'))).toBe(true);
             expect(Object.fromEntries(secrets)).toEqual({ user_pin: 'backup-pin' });
             expect(yield* readSyncState).toEqual(importedState);
 

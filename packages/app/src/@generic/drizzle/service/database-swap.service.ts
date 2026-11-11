@@ -23,7 +23,7 @@ export class DatabaseSwapService extends Context.Service<DatabaseSwapService>()(
 
         return {
             read: Effect.promise(() => SecureStore.getItemAsync(swapKey, PIN_SECURE_STORE_OPTIONS)).pipe(
-                Effect.map(value => Option.flatMap(Option.fromNullOr(value), Schema.decodeOption(DatabaseSwapJsonSchema)))
+                Effect.map(value => Option.getOrNull(Option.flatMap(Option.fromNullOr(value), Schema.decodeOption(DatabaseSwapJsonSchema))))
             ),
             begin: Effect.fn('DatabaseSwapService.begin')(function* (swap: typeof DatabaseSwapSchema.Type) {
                 const encodedSwap = yield* Schema.encodeEffect(DatabaseSwapJsonSchema)(swap).pipe(Effect.orDie);

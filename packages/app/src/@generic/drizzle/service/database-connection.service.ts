@@ -6,7 +6,6 @@ import * as Effect from 'effect/Effect';
 import * as Exit from 'effect/Exit';
 import { identity } from 'effect/Function';
 import * as Layer from 'effect/Layer';
-import * as Option from 'effect/Option';
 import * as Scope from 'effect/Scope';
 import { File } from 'expo-file-system';
 
@@ -53,54 +52,61 @@ export class DatabaseConnectionService extends Context.Service<DatabaseConnectio
                 catch: cause => DatabaseOpenError.make({ cause })
             });
 
-        const recoverMissingDatabase = Effect.gen(function* () {
-            if (new File(DATABASE_DIRECTORY, DB_NAME).exists || !DATABASE_DIRECTORY.exists) {
-                return;
-            }
+        const recoverMissingDatabase = (swapBackupName: string | null) =>
+            Effect.gen(function* () {
+                if (new File(DATABASE_DIRECTORY, DB_NAME).exists || !DATABASE_DIRECTORY.exists) {
+                    return;
+                }
 
-            const rekeyBackup = new File(DATABASE_DIRECTORY, `${DB_NAME}.bak`);
+                const newestMovedAside = DATABASE_DIRECTORY.list()
+                    .map(entry => entry.name)
+                    .filter(name => name.startsWith(REPLACED_DATABASE_PREFIX))
+                    .map(name => name.slice(REPLACED_DATABASE_PREFIX.length))
+                    .filter(movedAt => /^\d+$/u.test(movedAt))
+                    .map(Number)
+                    .sort((left, right) => right - left)
+                    .map(movedAt => `${REPLACED_DATABASE_PREFIX}${movedAt}`)
+                    .at(0);
+                const backupName = [swapBackupName, `${DB_NAME}.bak`, newestMovedAside]
+                    .filter(isDefined)
+                    .find(name => new File(DATABASE_DIRECTORY, name).exists);
 
-            if (rekeyBackup.exists) {
-                return yield* restoreAsLiveDatabase(rekeyBackup, '');
-            }
+                if (!isDefined(backupName)) {
+                    return;
+                }
 
-            const newestMovedAt = DATABASE_DIRECTORY.list()
-                .map(entry => entry.name)
-                .filter(name => name.startsWith(REPLACED_DATABASE_PREFIX))
-                .map(name => name.slice(REPLACED_DATABASE_PREFIX.length))
-                .filter(movedAt => /^\d+$/u.test(movedAt))
-                .map(Number)
-                .sort((left, right) => right - left)
-                .at(0);
+                yield* Effect.forEach(
+                    ['-wal', '-shm', ''],
+                    suffix => {
+                        const backup = new File(DATABASE_DIRECTORY, `${backupName}${suffix}`);
 
-            if (!isDefined(newestMovedAt)) {
-                return;
-            }
+                        return backup.exists ? restoreAsLiveDatabase(backup, suffix) : Effect.void;
+                    },
+                    { discard: true }
+                );
+            }).pipe(Effect.catchDefect(cause => Effect.fail(DatabaseOpenError.make({ cause }))));
 
-            yield* Effect.forEach(
-                ['-wal', '-shm', ''],
-                suffix => {
-                    const movedAside = new File(DATABASE_DIRECTORY, `${REPLACED_DATABASE_PREFIX}${newestMovedAt}${suffix}`);
-
-                    return movedAside.exists ? restoreAsLiveDatabase(movedAside, suffix) : Effect.void;
-                },
-                { discard: true }
-            );
-        }).pipe(Effect.catchDefect(cause => Effect.fail(DatabaseOpenError.make({ cause }))));
-
-        yield* recoverInterruptedRestore.pipe(Effect.catchDefect(defect => Effect.logError(defect)));
-        yield* recoverMissingDatabase;
-
-        const openConnections = (databaseKey: string | null) => {
-            const openConnection = openSqliteClient(DB_NAME, databaseKey).pipe(Scope.provide(scope));
+        const openConnections = (databaseKey: string | null, connectionScope: Scope.Scope) => {
+            const openConnection = openSqliteClient(DB_NAME, databaseKey).pipe(Scope.provide(connectionScope));
 
             return Effect.all([openConnection, openConnection], { concurrency: 'unbounded' });
         };
 
+        const isLiveBeforeRecovery = new File(DATABASE_DIRECTORY, DB_NAME).exists;
         const pendingSwap = yield* databaseSwapService.read;
-        const finishedSwap = Option.getOrNull(Option.filter(pendingSwap, swap => new File(DATABASE_DIRECTORY, swap.backupName).exists));
-        const swapConnections = isDefined(finishedSwap)
-            ? yield* openConnections(finishedSwap.key).pipe(
+
+        yield* recoverInterruptedRestore.pipe(Effect.catchDefect(defect => Effect.logError(defect)));
+        yield* recoverMissingDatabase(pendingSwap?.backupName ?? null);
+
+        const finishedSwap =
+            isLiveBeforeRecovery && isDefined(pendingSwap) && new File(DATABASE_DIRECTORY, pendingSwap.backupName).exists
+                ? pendingSwap
+                : null;
+        const openWithStoredKey = Effect.flatMap(readDatabaseKey, databaseKey => openConnections(databaseKey, scope));
+        const [writer, reader] = yield* isDefined(finishedSwap)
+            ? Effect.flatMap(Scope.fork(scope), swapScope =>
+                  openConnections(finishedSwap.key, swapScope).pipe(Effect.onError(() => Scope.close(swapScope, Exit.void)))
+              ).pipe(
                   Effect.tap(() => databaseSwapService.commit(finishedSwap)),
                   Effect.tap(() =>
                       Effect.sync(() => {
@@ -109,14 +115,13 @@ export class DatabaseConnectionService extends Context.Service<DatabaseConnectio
                           });
                       })
                   ),
-                  Effect.option
+                  Effect.catchTags({ DatabaseOpenError: () => openWithStoredKey })
               )
-            : Option.none();
-        const [writer, reader] = Option.isSome(swapConnections)
-            ? swapConnections.value
-            : yield* Effect.flatMap(readDatabaseKey, openConnections);
+            : openWithStoredKey;
 
-        yield* databaseSwapService.end;
+        if (isDefined(pendingSwap)) {
+            yield* databaseSwapService.end.pipe(Effect.catchDefect(defect => Effect.logError(defect)));
+        }
 
         yield* applyPragmas(writer, [
             writer`PRAGMA journal_mode = WAL`.raw,
