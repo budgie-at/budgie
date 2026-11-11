@@ -36,6 +36,7 @@ import {
     TestLayer,
     testQueryService
 } from '../../harness';
+import { walletCaptureSeedHistoricalRate } from '../../harness/wallet-capture/wallet-capture-historical-rate.harness';
 
 const operatedAt = new Date('2026-05-01T12:00:00Z');
 const fixture = Effect.gen(function* () {
@@ -330,9 +331,19 @@ describe('account/own-transfer-repair', () => {
     );
 
     it.effect.each([
-        { title: 'fee-deducted', currency: 'UAH', received: 9_900_000, sent: 10_000_000 },
-        { title: 'foreign-currency', currency: 'USD', received: 9_900_000, sent: 400_000_000 }
-    ])('re-pairs a late $title bank expense with a converted Binance deposit', ({ currency, received, sent }) =>
+        { title: 'fee-deducted', currency: 'UAH', received: 9_900_000, sent: 10_000_000, rate: null, paired: true },
+        { title: 'in-band foreign-currency', currency: 'USD', received: 9_900_000, sent: 250_000, rate: 40, paired: true },
+        { title: 'out-of-band foreign-currency', currency: 'USD', received: 9_900_000, sent: 2_500_000, rate: 40, paired: false },
+        {
+            title: 'unrated foreign-currency',
+            currency: 'USD',
+            received: 9_900_000,
+            sent: 250_000,
+            rate: null,
+            paired: false,
+            withdrawal: true
+        }
+    ])('re-pairs a late $title expense with a Binance deposit: $paired', ({ currency, received, sent, rate, paired, withdrawal }) =>
         Effect.gen(function* () {
             const repair = yield* OwnTransferRepairService;
             const balances = yield* AccountBalanceRepository;
@@ -342,10 +353,25 @@ describe('account/own-transfer-repair', () => {
             expect(yield* repair.repair()).toBe(1);
             const [untracked] = yield* findUntrackedAccounts;
             const instrument = yield* seed.instrument({ code: currency });
+            if (isDefined(rate)) {
+                yield* walletCaptureSeedHistoricalRate(instrument.id, binance.instrumentId, rate, '2026-04-30');
+            }
             const bank = yield* seed.account({ instrumentId: currency === 'UAH' ? binance.instrumentId : instrument.id });
             const expense = yield* seed.bankPairExpense({ operatedAt, externalId: 'late-expense' }, { accountId: bank.id, amount: sent });
-            yield* seed.updateTransaction(expense.id, { title: 'На свою картку', externalSource: ExternalSourceEnum.MONOBANK });
+            yield* seed.updateTransaction(expense.id, {
+                title: withdrawal === true ? 'Binance USD withdrawal' : 'На свою картку',
+                externalSource: withdrawal === true ? ExternalSourceEnum.BINANCE : ExternalSourceEnum.MONOBANK
+            });
             const before = yield* balances.getLedgerBalances([binance.id, bank.id]);
+            if (!paired) {
+                yield* repair.repair();
+                expect((yield* testQueryService.findTransactionById(expense.id)).consolidationParentTransactionId).toBeNull();
+                yield* expectUntrackedTransfer(deposit.id, binance.id);
+                expect(yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toEqual([]);
+                expect(yield* balances.getLedgerBalances([binance.id, bank.id])).toEqual(before);
+
+                return;
+            }
             expect(yield* repair.repair()).toBe(1);
             yield* expectPair(expense.id, deposit.id, bank.id, binance.id);
             const [canonical] = yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);

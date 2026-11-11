@@ -3,6 +3,7 @@ export { buildConsolidationScopeFromTransactions } from './auto/utils/build-cons
 export { mergeConsolidationScopes } from './auto/utils/merge-consolidation-scopes.util';
 export { P2pFiatDirectionEnum } from './auto/enum/p2p-fiat-direction.enum';
 export { P2P_ORDER_EXTERNAL_ID_MARKER } from './shared/constant/transfer-pair-p2p-fiat.constant';
+export { TRANSFER_PAIR_IMPLIED_RATE_TOLERANCE } from './shared/constant/transfer-pair-implied-rate-tolerance.constant';
 export { ConsolidationExecutorService } from './executor/service/consolidation-executor.service';
 export { ConsolidationRepairExecutorService } from './executor/service/consolidation-repair-executor.service';
 export { P2pTransferTitleResolver } from './executor/service/p2p-transfer-title-resolver.service';
