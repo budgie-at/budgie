@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.173.32](https://github.com/budgie-at/budgie/compare/v6.173.31...v6.173.32) (2026-11-11)
+
+### Bug Fixes
+
+* **app:** match Apple Pay captures to synced cards by last four digits ([#2156](https://github.com/budgie-at/budgie/issues/2156)) ([4cc8371](https://github.com/budgie-at/budgie/commit/4cc8371ed2689f158e8abb2760b9c9095af9c1cb))
+
+
 ## [6.173.31](https://github.com/budgie-at/budgie/compare/v6.173.30...v6.173.31) (2026-11-11)
 
 ### Bug Fixes
