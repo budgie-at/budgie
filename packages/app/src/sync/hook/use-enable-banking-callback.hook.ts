@@ -57,12 +57,12 @@ export const useEnableBankingCallback = (
     );
 
     useEffect(() => {
-        appAtomRegistry.set(enableBankingSetupPathAtom, pathname);
+        if (isFocused) {
+            appAtomRegistry.set(enableBankingSetupPathAtom, pathname);
+        }
+    }, [isFocused, pathname]);
 
-        return () => {
-            appAtomRegistry.set(enableBankingSetupPathAtom, null);
-        };
-    }, [pathname]);
+    useEffect(() => () => void appAtomRegistry.set(enableBankingSetupPathAtom, null), []);
 
     useEffect(() => {
         if (isFocused && !isLoading && isDefined(callbackUrl) && appAtomRegistry.get(enableBankingCallbackUrlAtom) === callbackUrl) {
