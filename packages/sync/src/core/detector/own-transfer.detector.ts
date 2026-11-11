@@ -47,6 +47,10 @@ class OwnTransferDetector {
         ['я', 'ya']
     ]);
 
+    private static readonly CARD_SHAPED_EXTERNAL_ID = /^[\d*•●xх]{12,}$/iu;
+
+    private static readonly MERCHANT_REFERENCE = /^[A-Z][A-Z0-9.&'-]*\s*\*\s*\d{4}\s+\p{L}/u;
+
     private readonly normalizedPhrases = Object.values(OwnTransferDetector.PHRASES)
         .flat()
         .map(phrase => this.normalize(phrase));
@@ -61,10 +65,11 @@ class OwnTransferDetector {
     }
 
     matchesAccount(title: string, account: Pick<AccountEntityInterface, 'externalId' | 'title'>): boolean {
+        const externalId = (account.externalId ?? '').replaceAll(/\s/gu, '');
+
         return this.cardSuffixes(title).some(
             suffix =>
-                (/^(?:\d|[*•●xх\s])+$/iu.test(account.externalId ?? '') &&
-                    (account.externalId ?? '').replaceAll(/\s/gu, '').endsWith(suffix)) ||
+                (OwnTransferDetector.CARD_SHAPED_EXTERNAL_ID.test(externalId) && externalId.endsWith(suffix)) ||
                 new RegExp(`[•*]${suffix}$`, 'u').test(account.title)
         );
     }
@@ -83,6 +88,10 @@ class OwnTransferDetector {
     }
 
     private cardSuffixes(title: string): string[] {
+        if (OwnTransferDetector.MERCHANT_REFERENCE.test(title)) {
+            return [];
+        }
+
         return [...title.matchAll(/(?:[*•●]+|[xх]{2,})\s*(\d{4})(?![\p{L}\p{N}])/giu)].map(match => match[1]);
     }
 
