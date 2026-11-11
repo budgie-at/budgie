@@ -25,6 +25,7 @@ import { ICloudErrorCode } from '../../transport/enum/icloud-error-code.enum';
 import { ICloudSyncScope } from '../../transport/enum/icloud-sync-scope.enum';
 import { ICloudZoneChangeReason } from '../../transport/enum/icloud-zone-change-reason.enum';
 import { CLOUD_SYNC_RECORDS } from '../constant/cloud-sync-records.constant';
+import { CloudSyncErrorReasonEnum } from '../enum/cloud-sync-error-reason.enum';
 import { CloudSyncLineageChoiceEnum } from '../enum/cloud-sync-lineage-choice.enum';
 import { CloudSyncLineageDecisionEnum } from '../enum/cloud-sync-lineage-decision.enum';
 import { CloudSyncRestorePhaseEnum } from '../enum/cloud-sync-restore-phase.enum';
@@ -239,7 +240,7 @@ export class CloudSyncEngineService extends Context.Service<CloudSyncEngineServi
                 }
 
                 if (!isString(account.userRecordName)) {
-                    yield* patch({ blocked: CloudSyncStatusEnum.ERROR });
+                    yield* patch({ blocked: CloudSyncStatusEnum.ERROR, errorReason: CloudSyncErrorReasonEnum.ACCOUNT_NEEDS_ATTENTION });
 
                     return;
                 }
@@ -259,10 +260,9 @@ export class CloudSyncEngineService extends Context.Service<CloudSyncEngineServi
                         CloudSyncTransportError: error =>
                             patch({
                                 isEngineRunning: false,
-                                blocked:
-                                    error.code === ICloudErrorCode.ACCOUNT_UNAVAILABLE
-                                        ? CloudSyncStatusEnum.PAUSED_SIGNED_OUT
-                                        : CloudSyncStatusEnum.ERROR
+                                ...(error.code === ICloudErrorCode.ACCOUNT_UNAVAILABLE
+                                    ? { blocked: CloudSyncStatusEnum.PAUSED_SIGNED_OUT }
+                                    : state.failurePatch(error.code))
                             })
                     })
                 )

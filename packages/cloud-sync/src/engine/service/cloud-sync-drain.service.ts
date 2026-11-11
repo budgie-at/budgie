@@ -17,6 +17,7 @@ import { ICloudSyncScope } from '../../transport/enum/icloud-sync-scope.enum';
 import { SyncUploadService } from '../../upload/service/sync-upload.service';
 import { CloudSyncDeviceRecordSchema } from '../constant/cloud-sync-device-record-schema.constant';
 import { CLOUD_SYNC_RECORDS } from '../constant/cloud-sync-records.constant';
+import { CloudSyncErrorReasonEnum } from '../enum/cloud-sync-error-reason.enum';
 import { CloudSyncStatusEnum } from '../enum/cloud-sync-status.enum';
 import { cloudSyncDomainLayer } from '../layer/cloud-sync-domain.layer';
 import { CloudSyncHost } from '../port/cloud-sync-host.port';
@@ -151,7 +152,7 @@ export class CloudSyncDrainService extends Context.Service<CloudSyncDrainService
             state.heldKeys.clear();
             for (const rejection of batch.rejections) {
                 state.failedKeys.add(buildCloudSyncKey(rejection.syncZone, rejection.syncId));
-                yield* state.patch({ blocked: CloudSyncStatusEnum.ERROR });
+                yield* state.patch({ blocked: CloudSyncStatusEnum.ERROR, errorReason: CloudSyncErrorReasonEnum.CHANGES_REJECTED });
             }
 
             const register = (item: CloudSyncPushedItemInterface): void => {

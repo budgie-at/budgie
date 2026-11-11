@@ -1,4 +1,5 @@
 export const CloudSyncRowSelector = {
     Card: 'CloudSyncRow.Card',
-    Switch: 'CloudSyncRow.Switch'
+    Switch: 'CloudSyncRow.Switch',
+    Retry: 'CloudSyncRow.Retry'
 } as const;

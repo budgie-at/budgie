@@ -15,8 +15,10 @@ import { isDefined } from '@rnw-community/shared';
 
 import { HouseholdEndModeEnum } from '../../household/enum/household-end-mode.enum';
 import { ICLOUD_DEFAULT_OWNER_NAME } from '../../transport/constant/icloud-default-owner-name.constant';
+import { ICloudErrorCode } from '../../transport/enum/icloud-error-code.enum';
 import { ICloudSyncScope } from '../../transport/enum/icloud-sync-scope.enum';
 import { CLOUD_SYNC_RECORDS } from '../constant/cloud-sync-records.constant';
+import { CloudSyncErrorReasonEnum } from '../enum/cloud-sync-error-reason.enum';
 import { CloudSyncStatusEnum } from '../enum/cloud-sync-status.enum';
 import { CloudSyncHost } from '../port/cloud-sync-host.port';
 import { CloudSyncStateStore } from '../port/cloud-sync-state-store.port';
@@ -44,6 +46,7 @@ export class CloudSyncSessionState extends Context.Service<CloudSyncSessionState
             isQuotaExceeded: false,
             isFetching: false,
             blocked: null,
+            errorReason: CloudSyncErrorReasonEnum.UNKNOWN,
             lastSyncedAt: null,
             fetchedRecordCount: 0,
             isInitialFetchComplete: false
@@ -66,6 +69,17 @@ export class CloudSyncSessionState extends Context.Service<CloudSyncSessionState
             yield* host.publishHouseholdOwnerName(storedOwnerName);
         });
 
+        const errorReasonByCode: Partial<Record<ICloudErrorCode, CloudSyncErrorReasonEnum>> = {
+            [ICloudErrorCode.NETWORK_UNAVAILABLE]: CloudSyncErrorReasonEnum.NETWORK_UNAVAILABLE,
+            [ICloudErrorCode.SERVICE_BUSY]: CloudSyncErrorReasonEnum.ICLOUD_BUSY,
+            [ICloudErrorCode.LIMIT_EXCEEDED]: CloudSyncErrorReasonEnum.ICLOUD_BUSY,
+            [ICloudErrorCode.ACCOUNT_UNAVAILABLE]: CloudSyncErrorReasonEnum.ACCOUNT_NEEDS_ATTENTION,
+            [ICloudErrorCode.BACKUP_KEY_UNAVAILABLE]: CloudSyncErrorReasonEnum.ACCOUNT_NEEDS_ATTENTION,
+            [ICloudErrorCode.PERMISSION_FAILURE]: CloudSyncErrorReasonEnum.ACCOUNT_NEEDS_ATTENTION,
+            [ICloudErrorCode.PARTICIPANT_NEEDS_VERIFICATION]: CloudSyncErrorReasonEnum.ACCOUNT_NEEDS_ATTENTION,
+            [ICloudErrorCode.CONSTRAINT_VIOLATION]: CloudSyncErrorReasonEnum.CHANGES_REJECTED
+        };
+
         const publish = Effect.flatMap(Ref.get(session), current => {
             const household = zones.get(HOUSEHOLD_SYNC_ZONE);
             const isReady =
@@ -79,7 +93,8 @@ export class CloudSyncSessionState extends Context.Service<CloudSyncSessionState
                     lastSyncedAt: current.lastSyncedAt,
                     fetchedRecordCount: current.fetchedRecordCount,
                     isInitialFetchComplete: current.isInitialFetchComplete,
-                    isQuotaExceeded: current.isQuotaExceeded
+                    isQuotaExceeded: current.isQuotaExceeded,
+                    errorReason: current.blocked === CloudSyncStatusEnum.ERROR ? current.errorReason : null
                 })
                 .pipe(Effect.andThen(host.publishHousehold(isReady)));
         });
@@ -120,6 +135,10 @@ export class CloudSyncSessionState extends Context.Service<CloudSyncSessionState
                 labelByZone.get(buildCloudSyncKey(id.ownerName, id.zoneName)),
             patch: (partial: Partial<CloudSyncSessionInterface>) =>
                 Ref.update(session, current => ({ ...current, ...partial })).pipe(Effect.andThen(publish)),
+            failurePatch: (code: ICloudErrorCode): Pick<CloudSyncSessionInterface, 'blocked' | 'errorReason'> => ({
+                blocked: CloudSyncStatusEnum.ERROR,
+                errorReason: errorReasonByCode[code] ?? CloudSyncErrorReasonEnum.UNKNOWN
+            }),
             dropItem: (itemKey: string): void => {
                 const item = pushed.get(itemKey);
 

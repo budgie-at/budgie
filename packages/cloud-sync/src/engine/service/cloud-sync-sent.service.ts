@@ -10,7 +10,6 @@ import { SyncApplyService } from '../../apply/service/sync-apply.service';
 import { ICloudErrorCode } from '../../transport/enum/icloud-error-code.enum';
 import { SyncUploadService } from '../../upload/service/sync-upload.service';
 import { CLOUD_SYNC_RECORDS } from '../constant/cloud-sync-records.constant';
-import { CloudSyncStatusEnum } from '../enum/cloud-sync-status.enum';
 import { cloudSyncDomainLayer } from '../layer/cloud-sync-domain.layer';
 import { CloudSyncStateStore } from '../port/cloud-sync-state-store.port';
 import { buildCloudSyncKey } from '../utils/build-cloud-sync-key.util';
@@ -124,7 +123,7 @@ export class CloudSyncSentService extends Context.Service<CloudSyncSentService>(
             if (failure.recordType === CLOUD_SYNC_RECORDS.metaRecordType && (yield* Ref.get(state.session)).isAwaitingMeta) {
                 yield* engineService.stopEngineUnlocked();
                 yield* patch(
-                    failure.code === ICloudErrorCode.QUOTA_EXCEEDED ? { isQuotaExceeded: true } : { blocked: CloudSyncStatusEnum.ERROR }
+                    failure.code === ICloudErrorCode.QUOTA_EXCEEDED ? { isQuotaExceeded: true } : state.failurePatch(failure.code)
                 );
 
                 return;
@@ -143,7 +142,7 @@ export class CloudSyncSentService extends Context.Service<CloudSyncSentService>(
                     state.failedKeys.add(itemKey);
 
                     if (failure.code !== ICloudErrorCode.UNKNOWN_ITEM) {
-                        yield* patch({ blocked: CloudSyncStatusEnum.ERROR });
+                        yield* patch(state.failurePatch(failure.code));
                     }
                 }
             }
