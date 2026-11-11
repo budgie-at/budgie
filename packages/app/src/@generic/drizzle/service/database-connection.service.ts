@@ -14,7 +14,7 @@ import { getErrorMessage, isDefined } from '@rnw-community/shared';
 import { recoverInterruptedRestore } from '../../../cloud-backup/utils/recover-interrupted-restore.util';
 import { DATABASE_DIRECTORY } from '../constant/database-directory.constant';
 import { DB_NAME } from '../constant/db-name.constant';
-import { REPLACED_DATABASE_MARKER } from '../constant/replaced-database-marker.constant';
+import { REPLACED_DATABASE_PREFIX } from '../constant/replaced-database-prefix.constant';
 import { DatabaseOpenError } from '../error/database-open.error';
 import { openSqliteClient } from '../utils/open-sqlite-client.util';
 import { readDatabaseKey } from '../utils/read-database-key.util';
@@ -43,17 +43,19 @@ export class DatabaseConnectionService extends Context.Service<DatabaseConnectio
                 { discard: true }
             ).pipe(Effect.mapError(cause => DatabaseOpenError.make({ cause })));
 
-        const replacedDatabasePrefix = `${DB_NAME}${REPLACED_DATABASE_MARKER}`;
-
         const recoverReplacedDatabase = Effect.gen(function* () {
-            if (new File(DATABASE_DIRECTORY, DB_NAME).exists || !DATABASE_DIRECTORY.exists) {
+            if (
+                new File(DATABASE_DIRECTORY, DB_NAME).exists ||
+                new File(DATABASE_DIRECTORY, `${DB_NAME}.bak`).exists ||
+                !DATABASE_DIRECTORY.exists
+            ) {
                 return;
             }
 
             const newestMovedAt = DATABASE_DIRECTORY.list()
                 .map(entry => entry.name)
-                .filter(name => name.startsWith(replacedDatabasePrefix))
-                .map(name => name.slice(replacedDatabasePrefix.length))
+                .filter(name => name.startsWith(REPLACED_DATABASE_PREFIX))
+                .map(name => name.slice(REPLACED_DATABASE_PREFIX.length))
                 .filter(movedAt => /^\d+$/u.test(movedAt))
                 .map(Number)
                 .sort((left, right) => right - left)
@@ -66,7 +68,7 @@ export class DatabaseConnectionService extends Context.Service<DatabaseConnectio
             yield* Effect.forEach(
                 ['-wal', '-shm', ''],
                 suffix => {
-                    const movedAside = new File(DATABASE_DIRECTORY, `${replacedDatabasePrefix}${newestMovedAt}${suffix}`);
+                    const movedAside = new File(DATABASE_DIRECTORY, `${REPLACED_DATABASE_PREFIX}${newestMovedAt}${suffix}`);
 
                     return movedAside.exists
                         ? Effect.tryPromise({

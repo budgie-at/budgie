@@ -52,7 +52,7 @@ export class File {
     }
 
     moveSync(destination: File | Directory, options?: { overwrite?: boolean }) {
-        if (storage.failMoveFrom === this.uri) {
+        if (storage.failMoveFrom === this.uri || storage.failMoveBackFrom === this.uri) {
             throw new Error('move failed');
         }
         const target = this.prepareDestination(destination, options);
@@ -124,5 +124,6 @@ export const resetStorage = () => {
     storage.failWrite = false;
     storage.failCopy = false;
     storage.failMoveFrom = null;
+    storage.failMoveBackFrom = null;
     storage.crashAfterRemove = false;
 };

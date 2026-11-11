@@ -122,6 +122,19 @@ describe('connection startup recovery', () => {
         })
     );
 
+    it.effect('leaves the moved-aside database in place while an interrupted rekey backup exists', () =>
+        Effect.gen(function* () {
+            storage.files.set('documents/SQLite/budgie.db.bak', 'rekey-backup');
+            storage.files.set('documents/SQLite/budgie.db.replaced-1700000000000', 'original');
+
+            yield* startup;
+
+            expect(storage.files.has('documents/SQLite/budgie.db')).toBe(false);
+            expect(storage.files.get('documents/SQLite/budgie.db.bak')).toBe('rekey-backup');
+            expect(storage.files.get('documents/SQLite/budgie.db.replaced-1700000000000')).toBe('original');
+        })
+    );
+
     it.effect('blocks SQLite open when the moved-aside database cannot be restored and retries', () =>
         Effect.gen(function* () {
             storage.files.set('documents/SQLite/budgie.db.replaced-1700000000000', 'original');

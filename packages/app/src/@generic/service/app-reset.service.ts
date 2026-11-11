@@ -13,7 +13,7 @@ import { SiriCatalogService } from '../../siri/service/siri-catalog.service';
 import { PatternCacheService } from '../../transaction/service/pattern-cache/pattern-cache.service';
 import { DATABASE_DIRECTORY } from '../drizzle/constant/database-directory.constant';
 import { DB_NAME } from '../drizzle/constant/db-name.constant';
-import { REPLACED_DATABASE_MARKER } from '../drizzle/constant/replaced-database-marker.constant';
+import { REPLACED_DATABASE_PREFIX } from '../drizzle/constant/replaced-database-prefix.constant';
 import { DatabaseLifecycleOperationEnum } from '../drizzle/enum/database-lifecycle-operation.enum';
 import { DatabaseLifecycleService } from '../drizzle/service/database-lifecycle.service';
 import { reloadApp } from '../utils/reload-app.util';
@@ -53,16 +53,17 @@ export class AppResetService extends Context.Service<AppResetService>()('@budgie
             yield* aiStorageReplacementService.pauseLongLivedRuntime();
             yield* aiModelResidencyService.suspend();
             yield* databaseLifecycleService.close();
-            deleteDatabaseFiles(databasePath);
-            deleteDatabaseFiles(`${databasePath}.bak`);
 
             if (DATABASE_DIRECTORY.exists) {
                 DATABASE_DIRECTORY.list()
-                    .filter(entry => entry.name.startsWith(`${DB_NAME}${REPLACED_DATABASE_MARKER}`))
+                    .filter(entry => entry.name.startsWith(REPLACED_DATABASE_PREFIX))
                     .forEach(entry => {
                         entry.delete();
                     });
             }
+
+            deleteDatabaseFiles(databasePath);
+            deleteDatabaseFiles(`${databasePath}.bak`);
         });
 
         const deleteCacheContents = Effect.fn('AppResetService.deleteCacheContents')(function* () {

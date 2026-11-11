@@ -7,5 +7,6 @@ export class FileSystemStorage {
     failWrite = false;
     failCopy = false;
     failMoveFrom: string | null = null;
+    failMoveBackFrom: string | null = null;
     crashAfterRemove = false;
 }

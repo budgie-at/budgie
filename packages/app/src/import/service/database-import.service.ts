@@ -9,7 +9,7 @@ import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { DATABASE_DIRECTORY } from '../../@generic/drizzle/constant/database-directory.constant';
 import { DB_NAME } from '../../@generic/drizzle/constant/db-name.constant';
-import { REPLACED_DATABASE_MARKER } from '../../@generic/drizzle/constant/replaced-database-marker.constant';
+import { REPLACED_DATABASE_PREFIX } from '../../@generic/drizzle/constant/replaced-database-prefix.constant';
 import { DatabaseLifecycleOperationEnum } from '../../@generic/drizzle/enum/database-lifecycle-operation.enum';
 import { UnsupportedBackupError } from '../../@generic/drizzle/error/unsupported-backup.error';
 import { DatabaseLifecycleService } from '../../@generic/drizzle/service/database-lifecycle.service';
@@ -41,9 +41,9 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
         };
 
         const deleteProbeFiles = (probePath: string): void => {
-            deleteFileIfExists(probePath);
             deleteFileIfExists(`${probePath}-wal`);
             deleteFileIfExists(`${probePath}-shm`);
+            deleteFileIfExists(probePath);
         };
 
         const readProbeDatabase = Effect.fn('DatabaseImportService.readProbeDatabase')(function* (backupPin: string | null) {
@@ -101,7 +101,7 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
         const replaceFromUri = Effect.fn('DatabaseImportService.replaceFromUri')(function* (sourceUri: string) {
             const destinationPath = new File(DATABASE_DIRECTORY, DB_NAME).uri;
             const movedAsideAt = yield* Clock.currentTimeMillis;
-            const replacedPath = `${destinationPath}${REPLACED_DATABASE_MARKER}${movedAsideAt}`;
+            const replacedPath = new File(DATABASE_DIRECTORY, `${REPLACED_DATABASE_PREFIX}${movedAsideAt}`).uri;
             const tempPath = `${Paths.cache.uri}/import-temp.db`;
 
             yield* aiStorageReplacementService.pauseLongLivedRuntime();
@@ -139,9 +139,7 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
             yield* authService.persistPin(backupPin);
             yield* replaceFromUri(sourceUri).pipe(
                 Effect.onError(() =>
-                    new File(DATABASE_DIRECTORY, DB_NAME).exists
-                        ? cloudSyncStateStore.update(previousState).pipe(Effect.andThen(authService.persistPin(previousPin)), Effect.orDie)
-                        : Effect.void
+                    cloudSyncStateStore.update(previousState).pipe(Effect.andThen(authService.persistPin(previousPin)), Effect.orDie)
                 ),
                 Effect.ensuring(Effect.sync(() => void deleteFileIfExists(`${Paths.cache.uri}/import-temp.db`)))
             );
