@@ -125,8 +125,7 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
                     return false;
                 }
 
-                yield* FiberSet.clear(consumers);
-                yield* locked(stopEngineUnlocked());
+                yield* FiberSet.clear(consumers).pipe(Effect.andThen(locked(stopEngineUnlocked())), Effect.uninterruptible);
 
                 return true;
             }),
