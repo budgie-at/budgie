@@ -114,29 +114,39 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
                           transactionIds: []
                       })).filter(isSingleEntry)
                     : legs;
-            const findInstrumentId = (transaction: TransactionWithEntriesEntityInterface) =>
-                accounts.find(account => account.id === candidateEntries(transaction)[0].accountId)?.instrumentId;
-            const findCounterparts = (leg: TransactionWithEntriesEntityInterface) =>
-                pool.filter(other => {
-                    const [entry] = candidateEntries(leg);
-                    const [otherEntry] = candidateEntries(other);
+            const keyOf = (transaction: TransactionWithEntriesEntityInterface) => {
+                const [entry] = candidateEntries(transaction);
+                const instrumentId = accounts.find(account => account.id === entry.accountId)?.instrumentId;
 
-                    return (
-                        otherEntry.type !== entry.type &&
-                        otherEntry.accountId !== entry.accountId &&
-                        otherEntry.amount === entry.amount &&
-                        isDefined(findInstrumentId(leg)) &&
-                        findInstrumentId(other) === findInstrumentId(leg) &&
-                        enableBankingOwnTransferDetector.pairsAcrossDays(leg, other)
-                    );
-                });
+                return { entry, key: isDefined(instrumentId) ? `${instrumentId}:${entry.amount}` : null };
+            };
+            const indexed = pool.map(transaction => ({ transaction, ...keyOf(transaction) }));
+            const groups = new Map<string, typeof indexed>();
+            for (const item of indexed) {
+                if (isDefined(item.key)) {
+                    groups.set(item.key, [...(groups.get(item.key) ?? []), item]);
+                }
+            }
+            const findCounterparts = (leg: TransactionWithEntriesEntityInterface) => {
+                const { entry, key } = keyOf(leg);
+
+                return (isDefined(key) ? (groups.get(key) ?? []) : [])
+                    .filter(
+                        other =>
+                            other.entry.type !== entry.type &&
+                            other.entry.accountId !== entry.accountId &&
+                            enableBankingOwnTransferDetector.pairsAcrossDays(leg, other.transaction)
+                    )
+                    .map(other => other.transaction);
+            };
 
             return yield* Db.transaction(
                 Effect.gen(function* () {
+                    const consumed = new Set<number>();
                     let paired = 0;
 
                     for (const leg of legs) {
-                        const [counterpart, ...others] = findCounterparts(leg);
+                        const [counterpart, ...others] = consumed.has(leg.id) ? [] : findCounterparts(leg);
 
                         if (
                             isDefined(counterpart) &&
@@ -144,11 +154,13 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
                             findCounterparts(counterpart).length === 1 &&
                             (yield* pair(leg, counterpart))
                         ) {
+                            consumed.add(counterpart.id);
                             yield* balances.updateBalancesByAccountIds(
                                 [
                                     candidateEntries(leg)[0].accountId,
                                     candidateEntries(counterpart)[0].accountId,
-                                    leg.untrackedAccountId
+                                    leg.untrackedAccountId,
+                                    counterpart.untrackedAccountId
                                 ].filter(isDefined)
                             );
                             paired += 1;

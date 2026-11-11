@@ -7,13 +7,14 @@ import {
     InstrumentTypeEnum,
     TransactionConsolidationTypeEnum,
     TransactionEntityTable,
+    TransactionEntryEntityTable,
     TransactionTypeEnum,
     TransactionUpdatedByEnum
 } from '@budgie/contracts';
 import { AccountBalanceIncrementalService } from '@budgie/ledger';
 import { EnableBankingSyncService, OwnTransferRepairService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
 import { isDefined } from '@rnw-community/shared';
@@ -619,6 +620,43 @@ describe('account/own-transfer-repair', () => {
                 yield* expectUntrackedTransfer(income.id, receiver.id);
                 expect(yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toEqual([]);
             }
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('merges untracked legs held on two untracked accounts of one instrument and refreshes both', () =>
+        Effect.gen(function* () {
+            const repair = yield* OwnTransferRepairService;
+            const balances = yield* AccountBalanceRepository;
+            const sender = yield* seed.account();
+            const receiver = yield* seed.account();
+            const incomeAt = new Date(operatedAt.getTime() + 3 * 86_400_000);
+            const expense = yield* seed.bankPairExpense(
+                { operatedAt, externalId: 'out-leg' },
+                { accountId: sender.id, amount: 50_000_000 }
+            );
+            yield* seed.updateTransaction(expense.id, { title: 'Eigenes Konto', externalSource: ExternalSourceEnum.ENABLE_BANKING });
+            expect(yield* repair.repair({ operatedAtFrom: operatedAt, operatedAtTo: operatedAt, transactionIds: [expense.id] })).toBe(1);
+            const [first] = yield* findUntrackedAccounts;
+            const second = yield* seed.account({
+                externalId: first.externalId ?? '',
+                instrumentId: first.instrumentId,
+                isActive: false,
+                includeInNetWorth: false
+            });
+            yield* testDb
+                .update(TransactionEntryEntityTable)
+                .set({ accountId: second.id })
+                .where(and(eq(TransactionEntryEntityTable.transactionId, expense.id), eq(TransactionEntryEntityTable.accountId, first.id)));
+            yield* testDb.update(TransactionEntityTable).set({ toAccountId: second.id }).where(eq(TransactionEntityTable.id, expense.id));
+            yield* (yield* AccountBalanceIncrementalService).updateBalancesByAccountIds([first.id, second.id]);
+            const income = yield* seed.bankPairIncome(
+                { operatedAt: incomeAt, externalId: 'in-leg' },
+                { accountId: receiver.id, amount: 50_000_000 }
+            );
+            yield* seed.updateTransaction(income.id, { title: 'Eigenes Konto', externalSource: ExternalSourceEnum.ENABLE_BANKING });
+            yield* repair.repair({ operatedAtFrom: incomeAt, operatedAtTo: incomeAt, transactionIds: [income.id] });
+            yield* expectPair(expense.id, income.id, sender.id, receiver.id);
+            expect((yield* balances.getByAccountIds([first.id, second.id])).map(balance => balance.amount)).toEqual([0, 0]);
         }).pipe(Effect.provide(TestLayer))
     );
 
