@@ -1,4 +1,4 @@
-import type { RecurringSeriesKindEnum, UserIconType } from '@budgie/contracts';
+import type { RecurringSeriesKindEnum } from '@budgie/contracts';
 
 export interface RecurringChargeInterface {
     readonly kind: RecurringSeriesKindEnum;
@@ -12,6 +12,4 @@ export interface RecurringChargeInterface {
     readonly defaultAmount: number;
     readonly accountId: number;
     readonly categoryId: number | null;
-    readonly categoryTitle: string | null;
-    readonly categoryIcon: UserIconType | null;
 }

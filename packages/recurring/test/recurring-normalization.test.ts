@@ -18,9 +18,7 @@ const charge = (day: number, title: string): RecurringChargeInterface => ({
     comment: '',
     defaultAmount: 12 * PRECISION,
     accountId: 1,
-    categoryId: null,
-    categoryTitle: null,
-    categoryIcon: null
+    categoryId: null
 });
 
 it.effect('strips payment processor prefixes before comparing merchant labels', () =>

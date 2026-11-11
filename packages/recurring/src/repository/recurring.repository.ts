@@ -75,8 +75,7 @@ export class RecurringRepository extends Context.Service<RecurringRepository>()(
         };
 
         const queryCharges =
-            (historical: boolean, defaultInstrumentId: number | null, language: LanguageEnum, kind: RecurringSeriesKindEnum) =>
-            (filter: SQL | undefined) =>
+            (historical: boolean, defaultInstrumentId: number | null, kind: RecurringSeriesKindEnum) => (filter: SQL | undefined) =>
                 Db.query(db => {
                     const rateToDefault = buildRateToDefault(AccountEntityTable.instrumentId, defaultInstrumentId);
                     const defaultAmount = sql<number>`${TransactionEntryEntityTable.amount} * ${rateToDefault}`;
@@ -93,17 +92,11 @@ export class RecurringRepository extends Context.Service<RecurringRepository>()(
                             instrumentId: AccountEntityTable.instrumentId,
                             counterpartyIban: TransactionEntryEntityTable.toIban,
                             accountId: AccountEntityTable.id,
-                            categoryId: TransactionEntryEntityTable.categoryId,
-                            categoryTitle: sql<
-                                string | null
-                            >`COALESCE(${DefaultCategoryTranslationEntityTable.title}, ${CategoryEntityTable.title})`,
-                            categoryIcon: CategoryEntityTable.icon
+                            categoryId: TransactionEntryEntityTable.categoryId
                         })
                         .from(TransactionEntityTable)
                         .innerJoin(TransactionEntryEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
                         .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
-                        .leftJoin(CategoryEntityTable, eq(TransactionEntryEntityTable.categoryId, CategoryEntityTable.id))
-                        .leftJoin(DefaultCategoryTranslationEntityTable, buildCategoryTranslationJoinCondition(language))
                         .where(
                             and(
                                 ...kindConditions[kind],
@@ -126,30 +119,22 @@ export class RecurringRepository extends Context.Service<RecurringRepository>()(
         return Effect.succeed({
             findCharges: (
                 defaultInstrumentId: number | null,
-                language: LanguageEnum,
                 since: Date,
                 kind: RecurringSeriesKindEnum = RecurringSeriesKindEnum.EXPENSE
-            ) => queryCharges(false, defaultInstrumentId, language, kind)(gte(TransactionEntityTable.operatedAt, since)),
+            ) => queryCharges(false, defaultInstrumentId, kind)(gte(TransactionEntityTable.operatedAt, since)),
             findHistoricalCharges: (
                 defaultInstrumentId: number | null,
-                language: LanguageEnum,
                 since: Date,
                 kind: RecurringSeriesKindEnum = RecurringSeriesKindEnum.EXPENSE
-            ) => queryCharges(true, defaultInstrumentId, language, kind)(gte(TransactionEntityTable.operatedAt, since)),
-            findLinkedCharges: (defaultInstrumentId: number | null, language: LanguageEnum) =>
-                Effect.forEach(RECURRING_TRACKED_KINDS, kind =>
-                    queryCharges(true, defaultInstrumentId, language, kind)(liveLinkedTransactions)
-                ).pipe(Effect.map(charges => charges.flat())),
-            findChargeByTransactionId: (
-                defaultInstrumentId: number | null,
-                language: LanguageEnum,
-                kind: RecurringSeriesKindEnum,
-                transactionId: number
-            ) =>
+            ) => queryCharges(true, defaultInstrumentId, kind)(gte(TransactionEntityTable.operatedAt, since)),
+            findLinkedCharges: (defaultInstrumentId: number | null) =>
+                Effect.forEach(RECURRING_TRACKED_KINDS, kind => queryCharges(true, defaultInstrumentId, kind)(liveLinkedTransactions)).pipe(
+                    Effect.map(charges => charges.flat())
+                ),
+            findChargeByTransactionId: (defaultInstrumentId: number | null, kind: RecurringSeriesKindEnum, transactionId: number) =>
                 queryCharges(
                     true,
                     defaultInstrumentId,
-                    language,
                     kind
                 )(eq(TransactionEntityTable.id, transactionId)).pipe(Effect.map(([charge]) => charge)),
             findAllSeries: Db.query(db =>

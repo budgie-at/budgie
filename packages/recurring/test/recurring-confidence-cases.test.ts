@@ -21,9 +21,7 @@ const charge = (date: Date, amount: number, counterpartyIban: string | null = nu
     counterpartyIban,
     kind: RecurringSeriesKindEnum.EXPENSE,
     accountId: 1,
-    categoryId: null,
-    categoryTitle: null,
-    categoryIcon: null
+    categoryId: null
 });
 
 const monthlyCharges = (amounts: readonly number[], counterpartyIban: string | null = null) =>

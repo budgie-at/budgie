@@ -5,7 +5,6 @@ import {
     AccountTypeEnum,
     AccountEntityTable,
     Db,
-    LanguageEnum,
     TransactionEntityTable,
     CASH_WITHDRAWAL_TRACKED_CATEGORY_ID,
     PRECISION,
@@ -912,7 +911,7 @@ layer(TestLayer)('recurringService', it => {
                 { discard: true }
             );
             const charges = yield* Effect.flatMap(RecurringRepository, repository =>
-                repository.findCharges(DEFAULT_INSTRUMENT_ID, LanguageEnum.EN, new Date(2025, 0, 1))
+                repository.findCharges(DEFAULT_INSTRUMENT_ID, new Date(2025, 0, 1))
             );
             expect(charges).toHaveLength(4);
             const months = yield* Effect.forEach([2, 3, 4, JUNE, JULY], calendar);

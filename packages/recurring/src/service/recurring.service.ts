@@ -55,7 +55,7 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
             const { defaultInstrumentId, language } = yield* settingsRepository.getSettings();
             const rows = yield* recurringRepository.findSeriesRows(defaultInstrumentId, language);
             const links = yield* recurringRepository.findLinks;
-            const charges = yield* recurringRepository.findLinkedCharges(defaultInstrumentId, language);
+            const charges = yield* recurringRepository.findLinkedCharges(defaultInstrumentId);
             const chargeByKey = new Map(charges.map(charge => [chargeKey(charge.kind, charge.transactionId), charge]));
             const models: RecurringReadModelInterface[] = rows.map(series => ({
                 series: { ...series, defaultAmount: Math.round(series.defaultAmount) },
@@ -124,9 +124,9 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
         });
 
         const findCharge = Effect.fnUntraced(function* (transactionId: number, kinds: readonly RecurringSeriesKindEnum[]) {
-            const { defaultInstrumentId, language } = yield* settingsRepository.getSettings();
+            const { defaultInstrumentId } = yield* settingsRepository.getSettings();
             const charges = yield* Effect.forEach(kinds, kind =>
-                recurringRepository.findChargeByTransactionId(defaultInstrumentId, language, kind, transactionId)
+                recurringRepository.findChargeByTransactionId(defaultInstrumentId, kind, transactionId)
             );
             const charge = charges.find(isDefined);
 

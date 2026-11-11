@@ -85,8 +85,8 @@ export class RecurringRefreshService extends Context.Service<RecurringRefreshSer
         const initialPermit = yield* Semaphore.make(1);
         const isInitialDone = yield* Ref.make(false);
 
-        const loadLinkedCharges = Effect.fnUntraced(function* (defaultInstrumentId: number | null, language: LanguageEnum) {
-            const charges = yield* recurringRepository.findLinkedCharges(defaultInstrumentId, language);
+        const loadLinkedCharges = Effect.fnUntraced(function* (defaultInstrumentId: number | null) {
+            const charges = yield* recurringRepository.findLinkedCharges(defaultInstrumentId);
 
             return new Map(charges.map(charge => [chargeKey(charge.kind, charge.transactionId), charge]));
         });
@@ -173,9 +173,9 @@ export class RecurringRefreshService extends Context.Service<RecurringRefreshSer
                 : yield* recurringRepository.updateSeries(row.id, facts);
         });
 
-        const detectInTransaction = Effect.fnUntraced(function* (now: Date, defaultInstrumentId: number | null, language: LanguageEnum) {
+        const detectInTransaction = Effect.fnUntraced(function* (now: Date, defaultInstrumentId: number | null) {
             const rows = yield* recurringRepository.findAllSeries;
-            const linkedCharges = yield* loadLinkedCharges(defaultInstrumentId, language);
+            const linkedCharges = yield* loadLinkedCharges(defaultInstrumentId);
             const storedLinks = yield* recurringRepository.findLinks;
             const everLinkedSeriesIds = yield* recurringRepository.findEverLinkedSeriesIds;
             const droppedIds = yield* dropInvalidLinks(rows, storedLinks, linkedCharges);
@@ -189,7 +189,7 @@ export class RecurringRefreshService extends Context.Service<RecurringRefreshSer
             const occupied = new Set(liveLinks.map(link => pairKey(link.seriesId, link.cycleDate.getTime())));
             const since = subMonths(now, RECURRING_HISTORY_MONTHS);
             const charges = (yield* Effect.forEach(RECURRING_TRACKED_KINDS, kind =>
-                recurringRepository.findCharges(defaultInstrumentId, language, since, kind)
+                recurringRepository.findCharges(defaultInstrumentId, since, kind)
             ))
                 .flat()
                 .filter(charge => !excludedOnly.has(charge.transactionId));
@@ -233,7 +233,7 @@ export class RecurringRefreshService extends Context.Service<RecurringRefreshSer
             const historicalCharges =
                 zeroLinkRowIds.size > 0
                     ? (yield* Effect.forEach(RECURRING_TRACKED_KINDS, kind =>
-                          recurringRepository.findHistoricalCharges(defaultInstrumentId, language, since, kind)
+                          recurringRepository.findHistoricalCharges(defaultInstrumentId, since, kind)
                       )).flat()
                     : [];
             const unresolvedIndexes = detected.map((_, index) => index).filter(index => !resolved.has(index));
@@ -341,10 +341,10 @@ export class RecurringRefreshService extends Context.Service<RecurringRefreshSer
             const since = subDays(now, MATCH_WINDOW_DAYS);
             const rows = yield* recurringRepository.findSeriesRows(defaultInstrumentId, language);
             const links = yield* recurringRepository.findLinks;
-            const linkedCharges = yield* loadLinkedCharges(defaultInstrumentId, language);
+            const linkedCharges = yield* loadLinkedCharges(defaultInstrumentId);
             const linkedTransactions = new Set(links.filter(link => !link.isExcluded).map(link => link.transactionId));
             const candidates = (yield* Effect.forEach(RECURRING_TRACKED_KINDS, kind =>
-                recurringRepository.findHistoricalCharges(defaultInstrumentId, language, since, kind)
+                recurringRepository.findHistoricalCharges(defaultInstrumentId, since, kind)
             ))
                 .flat()
                 .filter(charge => !linkedTransactions.has(charge.transactionId));
@@ -382,8 +382,8 @@ export class RecurringRefreshService extends Context.Service<RecurringRefreshSer
         });
 
         const detectUnlocked = Effect.fnUntraced(function* (now: Date) {
-            const { defaultInstrumentId, language } = yield* settingsRepository.getSettings();
-            yield* Db.transaction(detectInTransaction(now, defaultInstrumentId, language));
+            const { defaultInstrumentId } = yield* settingsRepository.getSettings();
+            yield* Db.transaction(detectInTransaction(now, defaultInstrumentId));
             yield* Ref.set(lastDetectionAt, now.getTime());
             yield* Ref.set(isInitialDone, true);
         });
