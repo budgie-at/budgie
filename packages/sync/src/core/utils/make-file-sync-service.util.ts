@@ -231,6 +231,9 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
         return buildImportResult(bankAccounts.length, accountImportResults);
     });
 
+    const importParsed = (client: FileBasedSyncClientInterface, bankAccounts: SyncAccountInterface[]) =>
+        syncWorkload.runUser(importWork(client, bankAccounts));
+
     const parseFile = Effect.fnUntraced(function* (uri: string) {
         const { client, bankAccounts } = yield* definition.parseFile(uri);
 
@@ -239,8 +242,7 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
 
     return {
         ...syncService,
-        importParsed: (client: FileBasedSyncClientInterface, bankAccounts: SyncAccountInterface[]) =>
-            syncWorkload.runUser(importWork(client, bankAccounts)),
+        importParsed,
         importPreview: Effect.fn('AbstractFileSyncService.importPreview')(function* (uri: string) {
             const { bankAccounts } = yield* parseFile(uri);
 
@@ -268,7 +270,7 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
                 return;
             }
 
-            yield* syncWorkload.runUser(importWork(client, selectedBankAccounts));
+            yield* importParsed(client, selectedBankAccounts);
         }),
         quickImport: Effect.fn('AbstractFileSyncService.quickImport')(function* (uri: string) {
             const { client, bankAccounts } = yield* parseFile(uri);
@@ -292,7 +294,7 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
                 return buildImportResult(0, []);
             }
 
-            return yield* syncWorkload.runUser(importWork(client, bankAccountsToImport));
+            return yield* importParsed(client, bankAccountsToImport);
         })
     };
 });
