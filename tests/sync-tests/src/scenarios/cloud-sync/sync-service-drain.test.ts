@@ -18,12 +18,14 @@ import {
     seed,
     testDb,
     failedSaveOf,
+    fetchedEvent,
     flattenBatches,
     readOutboxCount,
     reconfigureAndAcknowledgeMeta,
     runSyncService,
     savedFrom,
-    sentEvent
+    sentEvent,
+    syncAccount
 } from '../../harness';
 
 const readSystemFields = (recordName: string) =>
@@ -199,12 +201,7 @@ describe('cloud-sync/sync-service drain', () => {
     it.effect('releases terminal failed deletes and retries them on foreground', () =>
         runSyncService((context, service) =>
             Effect.gen(function* () {
-                yield* reconfigureAndAcknowledgeMeta(context, service);
-                const account = yield* seed.account({ title: 'Deleted cash' });
-                yield* service.drain;
-                yield* service.handleSentChanges(
-                    sentEvent({ savedRecords: savedFrom(flattenBatches(context.transport.calls.savedBatches).slice(1), 'saved') })
-                );
+                const account = yield* syncAccount(context, service, 'Deleted cash');
                 yield* testDb.$client.unsafe('DELETE FROM accounts WHERE id = ?', [account.id]);
                 yield* service.drain;
                 const targets = context.transport.calls.deletedBatches.flat();
@@ -226,6 +223,46 @@ describe('cloud-sync/sync-service drain', () => {
                 expect(context.transport.calls.deletedBatches.length).toBeGreaterThan(deletesBefore);
                 yield* service.handleSentChanges(sentEvent({ deletedRecords: targets }));
                 expect(appAtomRegistry.get(cloudSyncStatusAtom).status).toBe(CloudSyncStatusEnum.IDLE);
+            })
+        )
+    );
+
+    it.effect('lets a fetched deletion win over a save of a record deleted elsewhere', () =>
+        runSyncService((context, service) =>
+            Effect.gen(function* () {
+                const account = yield* syncAccount(context, service, 'Deleted elsewhere');
+                yield* testDb.$client.unsafe('UPDATE accounts SET title = ? WHERE id = ?', ['Edited locally', account.id]);
+                yield* service.drain;
+                const edited = flattenBatches(context.transport.calls.savedBatches).filter(
+                    record => record.recordName === account.syncId && record.systemFields === 'saved'
+                );
+                expect(edited).toHaveLength(1);
+                yield* service.handleSentChanges(
+                    sentEvent({
+                        failedSaves: edited.map(record => ({
+                            ...failedSaveOf(record, ICloudErrorCode.UNKNOWN_ITEM, 'deleted', null),
+                            isRetried: false
+                        }))
+                    })
+                );
+                expect(appAtomRegistry.get(cloudSyncStatusAtom).status).toBe(CloudSyncStatusEnum.IDLE);
+                const other = yield* seed.account({ title: 'Still syncing' });
+                yield* service.drain;
+                const resent = flattenBatches(context.transport.calls.savedBatches).filter(record => record.recordName === account.syncId);
+                expect(resent).toHaveLength(2);
+                expect(flattenBatches(context.transport.calls.savedBatches).some(record => record.recordName === other.syncId)).toBe(true);
+                yield* service.handleFetchedChanges({
+                    ...fetchedEvent(),
+                    deletions: edited.map(({ zoneName, ownerName, recordName, recordType }) => ({
+                        zoneName,
+                        ownerName,
+                        recordName,
+                        recordType
+                    }))
+                });
+                const remaining = yield* testDb.$client.unsafe('SELECT id FROM accounts WHERE id = ?', [account.id]);
+                expect(remaining).toHaveLength(0);
+                expect(appAtomRegistry.get(cloudSyncStatusAtom).status).not.toBe(CloudSyncStatusEnum.ERROR);
             })
         )
     );

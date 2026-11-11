@@ -141,7 +141,10 @@ export class CloudSyncSentService extends Context.Service<CloudSyncSentService>(
                     yield* patch({ isQuotaExceeded: true });
                 } else if (failure.code !== ICloudErrorCode.SERVER_RECORD_CHANGED) {
                     state.failedKeys.add(itemKey);
-                    yield* patch({ blocked: CloudSyncStatusEnum.ERROR });
+
+                    if (failure.code !== ICloudErrorCode.UNKNOWN_ITEM) {
+                        yield* patch({ blocked: CloudSyncStatusEnum.ERROR });
+                    }
                 }
             }
         });

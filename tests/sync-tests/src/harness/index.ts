@@ -198,6 +198,7 @@ export {
     readAccountCount,
     readOutboxCount,
     reconfigureAndAcknowledgeMeta,
+    syncAccount,
     runSyncService,
     savedFrom,
     sentEvent,
