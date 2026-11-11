@@ -54,6 +54,17 @@ layer(TestLayer)('consolidation/enable-banking-transfer-pairing', it => {
         })
     );
 
+    it.effect('never treats Enable Banking accounts without a connection as the same bank for a USD expense and EUR income', () =>
+        Effect.gen(function* () {
+            const { expense, income } = yield* seedCrossCurrencyRows(ExternalSourceEnum.ENABLE_BANKING, null, null);
+
+            expect(yield* runConsolidation()).toEqual({ found: 0, consolidated: 0 });
+            for (const { id } of [expense, income]) {
+                expect((yield* testQueryService.fetchTransactionById(id)).consolidationParentTransactionId).toBeNull();
+            }
+        })
+    );
+
     it.effect('pairs a conversion between two balances of one Enable Banking connection', () =>
         Effect.gen(function* () {
             const { expense, income, usdAccount, eurAccount } = yield* seedCrossCurrencyRows(
@@ -65,7 +76,9 @@ layer(TestLayer)('consolidation/enable-banking-transfer-pairing', it => {
             expect((yield* runConsolidation()).consolidated).toBe(1);
             const [canonical] = yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
             expect(canonical).toMatchObject({ fromAccountId: usdAccount.id, toAccountId: eurAccount.id });
-            expect(new Set(yield* testQueryService.fetchChildTransactionIds(canonical.id))).toEqual(new Set([expense.id, income.id]));
+            const childIds = yield* testQueryService.fetchChildTransactionIds(canonical.id);
+            expect(childIds).toHaveLength(2);
+            expect(new Set(childIds)).toEqual(new Set([expense.id, income.id]));
             yield* expectSecondConsolidationRunStable();
         })
     );
