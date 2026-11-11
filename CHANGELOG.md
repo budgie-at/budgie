@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.173.27](https://github.com/budgie-at/budgie/compare/v6.173.26...v6.173.27) (2026-11-11)
+
+### Bug Fixes
+
+* **cloud-sync:** keep sync stopped when stop arrives during startup ([#2125](https://github.com/budgie-at/budgie/issues/2125)) ([1fc3e29](https://github.com/budgie-at/budgie/commit/1fc3e29800a9bef40a5411109d3f24120940713c))
+
+
 ## [6.173.26](https://github.com/budgie-at/budgie/compare/v6.173.25...v6.173.26) (2026-11-11)
 
 ### Bug Fixes
