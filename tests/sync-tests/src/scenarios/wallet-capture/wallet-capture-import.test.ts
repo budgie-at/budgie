@@ -285,6 +285,33 @@ describe('Wallet capture account resolution', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
+    const BLACK = 'Monobank Black •4242';
+    const WHITE = 'Monobank White •1111';
+
+    it.effect.each([
+        ['Black •••• 4242', [BLACK, WHITE], BLACK],
+        ['Visa ·•••• 1111', [BLACK, WHITE], WHITE],
+        ['monobank Black', [BLACK, WHITE], BLACK],
+        ['monobank', [BLACK], BLACK],
+        ['monobank', [BLACK, WHITE], 'Cash'],
+        ['Monobank Black 9999', [BLACK, WHITE], 'Cash']
+    ] as const)('resolves the card "%s" among %j to "%s"', ([cardName, titles, expectedTitle]) =>
+        Effect.gen(function* () {
+            const walletCaptureImportService = yield* WalletCaptureImportService;
+            yield* seed.instrument();
+            const cash = yield* seed.account({ title: 'Cash' });
+            const accounts = [cash, ...(yield* Effect.forEach(titles, title => seed.account({ title })))];
+            yield* testDb.update(SettingsEntityTable).set({ defaultAccountId: cash.id });
+
+            walletCaptureNativeStub.seed([buildUnpinnedCapture(cardName)]);
+
+            expect(yield* walletCaptureImportService.drain()).toEqual([]);
+            expect((yield* walletCaptureFindTransaction(CAPTURE_ID)).fromAccountId).toBe(
+                accounts.find(account => account.title === expectedTitle)?.id
+            );
+        }).pipe(Effect.provide(TestLayer))
+    );
+
     it.effect('falls back to the default account when no title matches the card name', () =>
         Effect.gen(function* () {
             const walletCaptureImportService = yield* WalletCaptureImportService;

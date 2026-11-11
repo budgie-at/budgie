@@ -53,15 +53,34 @@ export class WalletCaptureImportService extends Context.Service<WalletCaptureImp
                 .split(/[^\p{L}\p{N}]+/u)
                 .filter(isNotEmptyString);
 
-        const findAccountIdByCardName = (cardName: string | null, accounts: readonly Pick<AccountEntityInterface, 'id' | 'title'>[]) => {
-            const cardWords = new Set(tokenize(cardName ?? ''));
-            const matches = accounts
-                .map(account => ({ id: account.id, words: tokenize(account.title) }))
-                .filter(match => isNotEmptyArray(match.words) && match.words.every(word => cardWords.has(word)));
+        const isCardDigits = (word: string) => /^\d{4}$/u.test(word);
+
+        const pickMostSpecific = (matches: readonly { readonly id: number; readonly words: readonly string[] }[]) => {
             const bestWordCount = Math.max(0, ...matches.map(match => match.words.length));
             const bestMatches = matches.filter(match => match.words.length === bestWordCount);
 
             return bestMatches.length === 1 ? bestMatches[0]?.id : null;
+        };
+
+        const findAccountIdByCardName = (cardName: string | null, accounts: readonly Pick<AccountEntityInterface, 'id' | 'title'>[]) => {
+            const cardWords = tokenize(cardName ?? '');
+            const hasCardDigits = cardWords.some(isCardDigits);
+            const titles = accounts.map(account => ({ id: account.id, words: tokenize(account.title) }));
+            const digitMatches = titles.filter(title => title.words.some(word => isCardDigits(word) && cardWords.includes(word)));
+            const nameMatches = titles
+                .filter(title => !hasCardDigits || !title.words.some(isCardDigits))
+                .map(title => ({ id: title.id, words: title.words.filter(word => !isCardDigits(word)) }))
+                .filter(title => isNotEmptyArray(title.words));
+
+            return (
+                (digitMatches.length === 1 ? digitMatches[0]?.id : null) ??
+                pickMostSpecific(nameMatches.filter(title => title.words.every(word => cardWords.includes(word)))) ??
+                pickMostSpecific(
+                    nameMatches.filter(
+                        title => isNotEmptyArray(cardWords) && cardWords.every(word => isCardDigits(word) || title.words.includes(word))
+                    )
+                )
+            );
         };
 
         const resolveRecord = Effect.fnUntraced(function* (
