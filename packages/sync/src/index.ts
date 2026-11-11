@@ -112,6 +112,8 @@ export { BinanceSyncService } from './binance/service/binance-sync.service';
 
 export { ErsteSyncService } from './erste/service/erste-sync.service';
 
+export { parseWiseCsv } from './wise/parser/wise-csv.parser';
+
 export { InzhurOperationsImportService } from './inzhur/service/inzhur-operations-import.service';
 export type { InzhurOperationsImportSummaryInterface } from './inzhur/interface/inzhur-operations-import-summary.interface';
 export type { InzhurOperationsFundSummaryInterface } from './inzhur/interface/inzhur-operations-fund-summary.interface';
