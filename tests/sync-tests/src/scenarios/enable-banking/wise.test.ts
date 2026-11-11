@@ -13,7 +13,6 @@ import * as Effect from 'effect/Effect';
 
 import {
     buildEnableBankingTransaction,
-    ENABLE_BANKING_APPLICATION_ID,
     enableBankingDaysAgo,
     enableBankingStub,
     fetchAccountBalance,
@@ -26,6 +25,7 @@ import {
     testQueryService,
     TestLayer
 } from '../../harness';
+import { buildPending, CALLBACK_URL } from '../../harness/enable-banking/enable-banking-connect-scenario';
 
 const SESSION = 'session-wise';
 const EUR_UID = 'uid-wise-eur';
@@ -84,17 +84,8 @@ const connectWise = Effect.gen(function* () {
     }));
 
     const result = yield* service.completeAuthorization(
-        {
-            state: 'state-wise',
-            applicationId: ENABLE_BANKING_APPLICATION_ID,
-            aspspName: WISE_ASPSP_NAME,
-            aspspCountry: 'DE',
-            integrationId: null,
-            connectAccountId: null,
-            callbackUrl: 'budgie://enable-banking/callback',
-            expiresAtMs: Date.now() + 60_000
-        },
-        'budgie://enable-banking/callback?code=code-wise&state=state-wise'
+        buildPending('state-wise', null, null, WISE_ASPSP_NAME),
+        `${CALLBACK_URL}?code=code-wise&state=state-wise`
     );
     yield* skipRequestedSync(service.setupAccountSyncBatch(result.token, result.accounts, [EUR_HASH, USD_HASH], SyncHistoryDepthEnum.FULL));
     yield* skipRequestedSync(service.sync());
@@ -108,7 +99,7 @@ const connectWise = Effect.gen(function* () {
 describe('enable-banking/wise', () => {
     freezeDateClock(new Date('2026-11-11T12:00:00.000Z'));
 
-    it.effect('connects every Wise balance as its own account of one integration', () =>
+    it.effect('connects each Wise balance as an account of one integration and pairs the conversion as one transfer', () =>
         Effect.gen(function* () {
             const { eurAccount, usdAccount } = yield* connectWise;
 
@@ -116,19 +107,9 @@ describe('enable-banking/wise', () => {
             expect(usdAccount).toMatchObject({ title: 'Wise USD', externalSource: ExternalSourceEnum.ENABLE_BANKING });
             expect(usdAccount.integrationId).not.toBeNull();
             expect(usdAccount.integrationId).toBe(eurAccount.integrationId);
-            expect(
-                (yield* fetchEnableBankingTransactions()).filter(row =>
-                    [`${EUR_HASH}:conversion`, `${USD_HASH}:conversion`].includes(row.externalId ?? '')
-                )
-            ).toHaveLength(2);
             expect(yield* fetchAccountBalance(eurAccount.id)).toBe(1000 * PRECISION);
             expect(yield* fetchAccountBalance(usdAccount.id)).toBe(108.2 * PRECISION);
-        }).pipe(Effect.provide(TestLayer))
-    );
 
-    it.effect('pairs the EUR to USD conversion as one transfer and leaves the top-up an income', () =>
-        Effect.gen(function* () {
-            const { eurAccount, usdAccount } = yield* connectWise;
             const consolidation = yield* TransferConsolidationService;
 
             yield* consolidation.consolidate(null);

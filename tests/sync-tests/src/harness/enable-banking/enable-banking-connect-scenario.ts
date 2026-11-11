@@ -47,10 +47,15 @@ export const CALLBACK_URL = 'budgie://enable-banking/callback';
 export const TOKEN = buildEnableBankingToken(SESSION);
 export const VALID_UNTIL = '2099-01-01T00:00:00.000Z';
 
-export const buildPending = (state: string, connectAccountId: number | null = null, integrationId: number | null = null) => ({
+export const buildPending = (
+    state: string,
+    connectAccountId: number | null = null,
+    integrationId: number | null = null,
+    aspspName = 'Synthetic Bank'
+) => ({
     state,
     applicationId: ENABLE_BANKING_APPLICATION_ID,
-    aspspName: 'Synthetic Bank',
+    aspspName,
     aspspCountry: 'DE',
     integrationId,
     connectAccountId,
