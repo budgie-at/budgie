@@ -411,6 +411,7 @@ export { CRYPTO_ACCOUNT_TYPES } from './account/constant/crypto-account-types.co
 
 export { PERSONAL_SYNC_ZONE } from './cloud-sync/constant/personal-sync-zone.constant';
 export { HOUSEHOLD_SYNC_ZONE } from './cloud-sync/constant/household-sync-zone.constant';
+export { CURRENT_CLOUD_USER_SQL } from './cloud-sync/constant/current-cloud-user-sql.constant';
 export { RANDOM_SYNC_ID_SQL } from './cloud-sync/constant/random-sync-id-sql.constant';
 export { SYNC_IDENTITY_TABLES } from './cloud-sync/constant/sync-identity-tables.constant';
 
