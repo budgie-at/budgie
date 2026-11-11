@@ -2,10 +2,10 @@ import { expect } from 'e2e';
 
 import * as a from '../support/budgie/accounts.ts';
 import * as b from '../support/budgie/core.ts';
-import { test } from '../support/budgie/test.ts';
+import { PENDING_ANDROID_PORT, test } from '../support/budgie/test.ts';
 import * as t from '../support/budgie/transactions.ts';
 
-test('10 transfer transaction', { tags: ['transactions'] }, async ({ budgie }) => {
+test('10 transfer transaction', { tags: ['transactions'], platforms: PENDING_ANDROID_PORT }, async ({ budgie }) => {
     const ctx = budgie.ctx;
     const { screen } = ctx;
     const home = async (txn: string, transfer: string) => {

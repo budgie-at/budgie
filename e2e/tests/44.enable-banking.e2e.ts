@@ -11,7 +11,7 @@ const SYNTHETIC_ACCOUNT = 'E2E Synthetic Bank E2E Current';
 const CONNECT_ACCOUNT = 'E2E Statement Account';
 const CONNECT_ACCOUNT_ID = 960;
 
-test('44 enable banking', { tags: ['sync'] }, async ({ budgie }) => {
+test('44 enable banking', { tags: ['sync'], platforms: ['ios'] }, async ({ budgie }) => {
     const ctx = budgie.ctx;
     const { screen } = ctx;
     const id = (testId: string) => b.byId(screen, testId);

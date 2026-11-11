@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: ios-dev-prerelease
+  group: dev-prerelease
   cancel-in-progress: false
 
 permissions:
@@ -20,7 +20,7 @@ jobs:
       eas-build-profile: development
 
   dev-release:
-    name: iOS development build and release
+    name: Development build and release
     needs: assert-ai
     permissions:
       contents: write
@@ -28,7 +28,7 @@ jobs:
     with:
       control-runner-labels: '["self-hosted","linux-portable-2x4"]'
       enable-ios: true
-      enable-android: false
+      enable-android: true
       ios-runner-labels: '["self-hosted","macOS","ARM64","macos-maestro"]'
       app-dir: packages/app
       build-profile: development

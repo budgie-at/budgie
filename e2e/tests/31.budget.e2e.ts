@@ -3,7 +3,7 @@ import { expect } from 'e2e';
 
 import * as bu from '../support/budgie/budget.ts';
 import * as b from '../support/budgie/core.ts';
-import { test } from '../support/budgie/test.ts';
+import { PENDING_ANDROID_PORT, test } from '../support/budgie/test.ts';
 import {
     createExpense,
     enterComment,
@@ -18,7 +18,7 @@ const ACCOUNT = 'Rules Test Account';
 const CATEGORY = 'Rules Test Category';
 const MATCH_COMMENT = 'E2E Budget Details Match';
 
-test('31 budget', { tags: ['budget'] }, async ({ budgie }) => {
+test('31 budget', { tags: ['budget'], platforms: PENDING_ANDROID_PORT }, async ({ budgie }) => {
     const ctx = budgie.ctx;
     const { screen } = ctx;
     const id = (testId: string) => b.byId(screen, testId);
@@ -245,7 +245,7 @@ test('31 budget', { tags: ['budget'] }, async ({ budgie }) => {
         await scrollAbove(ctx, 'BudgetSetup.DeleteButton', b.byId(screen, 'BudgetSetup.SaveButton'));
         await b.tapId(ctx, 'BudgetSetup.DeleteButton');
         await expect(b.byText(screen, 'Delete budget?')).toBeVisible({ timeout: 3_000 });
-        await screen.getByText('Delete').last().tap();
+        await b.alertButton(screen, 'Delete').tap();
         await b.expectNoId(ctx, 'BudgetWidget.Card');
         await b.expectId(ctx, 'BudgetWidget.EmptyState', 3_000);
     });

@@ -12,3 +12,5 @@ export const test = base.extend<{ budgie: Budgie }>({
         await use(new Budgie({ screen, app, device }));
     }
 });
+
+export const PENDING_ANDROID_PORT = ['ios'];

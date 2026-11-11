@@ -2,12 +2,12 @@ import { expect } from 'e2e';
 
 import * as b from '../support/budgie/core.ts';
 import * as s from '../support/budgie/settings.ts';
-import { test } from '../support/budgie/test.ts';
+import { PENDING_ANDROID_PORT, test } from '../support/budgie/test.ts';
 import * as t from '../support/budgie/transactions.ts';
 
 const card = (name: string) => `TransactionCard.Label.E2E_Refund_${name}`;
 
-test('22 refund consolidation', { tags: ['transactions'] }, async ({ budgie }) => {
+test('22 refund consolidation', { tags: ['transactions'], platforms: PENDING_ANDROID_PORT }, async ({ budgie }) => {
     const ctx = budgie.ctx;
     const { screen } = ctx;
     const id = (testId: string) => b.byId(screen, testId);
@@ -49,7 +49,7 @@ test('22 refund consolidation', { tags: ['transactions'] }, async ({ budgie }) =
         await b.tapId(ctx, 'ConvertToRefund.CandidateRow.2');
         await b.tapId(ctx, 'ConvertToRefund.DoneButton');
         await expect(b.byText(screen, 'Convert to Refund?')).toBeVisible();
-        await screen.getByRole('button', { name: 'Convert' }).last().tap();
+        await b.alertButton(screen, 'Convert').tap();
         await b.expectId(ctx, 'TransactionInfo.Row.Consolidation', 10_000);
         await sources(/^E2E Refund Partial, \+₴40, .*/i);
         await b.tapId(ctx, 'ConsolidationSourceModal.RevertButton');

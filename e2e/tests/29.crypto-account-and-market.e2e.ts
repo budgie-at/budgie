@@ -156,10 +156,10 @@ test('29 crypto account and market', { tags: ['crypto'] }, async ({ budgie }) =>
     await b.phase('runway settings: include crypto', async () => {
         await b.openLink(ctx, 'budgie://settings?anchor=runway');
         await b.expectId(ctx, 'SettingsPage.RunwayCryptoCard', 10_000);
-        await expect(runwaySwitch('Pill')).toHaveValue('1');
-        await expect(runwaySwitch('Crypto')).toHaveValue('0');
+        await b.expectSwitch(ctx, runwaySwitch('Pill'), true);
+        await b.expectSwitch(ctx, runwaySwitch('Crypto'), false);
         await runwaySwitch('Crypto').tap();
-        await expect(runwaySwitch('Crypto')).toHaveValue('1', { timeout: 3_000 });
+        await b.expectSwitch(ctx, runwaySwitch('Crypto'), true, 3_000);
         await b.openLink(ctx, 'budgie://analytics?tab=runway');
         await b.expectId(ctx, 'RunwayVerdict.Figure._15', 10_000);
         await b.expectId(ctx, 'RunwayVerdict.CryptoNote');
@@ -167,17 +167,17 @@ test('29 crypto account and market', { tags: ['crypto'] }, async ({ budgie }) =>
 
     await b.phase('runway pill hidden, then shown again', async () => {
         await b.openLink(ctx, 'budgie://settings?anchor=runway');
-        await expect(runwaySwitch('Pill')).toHaveValue('1', { timeout: 10_000 });
+        await b.expectSwitch(ctx, runwaySwitch('Pill'), true, 10_000);
         await runwaySwitch('Pill').tap();
-        await expect(runwaySwitch('Pill')).toHaveValue('0', { timeout: 3_000 });
+        await b.expectSwitch(ctx, runwaySwitch('Pill'), false, 3_000);
         await b.openLink(ctx, 'budgie://');
         await b.expectId(ctx, 'HomePage.TotalBalance', 10_000);
         await scrollToComposition();
         await b.expectNoId(ctx, 'RunwayPill');
         await b.openLink(ctx, 'budgie://settings?anchor=runway');
-        await expect(runwaySwitch('Pill')).toHaveValue('0', { timeout: 10_000 });
+        await b.expectSwitch(ctx, runwaySwitch('Pill'), false, 10_000);
         await runwaySwitch('Pill').tap();
-        await expect(runwaySwitch('Pill')).toHaveValue('1', { timeout: 3_000 });
+        await b.expectSwitch(ctx, runwaySwitch('Pill'), true, 3_000);
         await b.openLink(ctx, 'budgie://');
         await b.expectId(ctx, 'HomePage.TotalBalance', 10_000);
         try {

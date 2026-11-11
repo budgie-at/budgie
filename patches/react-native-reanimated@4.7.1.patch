@@ -1,0 +1,44 @@
+diff --git a/Common/cpp/reanimated/LayoutAnimations/LayoutAnimationsProxy.cpp b/Common/cpp/reanimated/LayoutAnimations/LayoutAnimationsProxy.cpp
+index c0825bb47a6fac02331138b5e0a0e5bbb52df0fa..4b5803ca59394c83c3c2c8ca0482873eb4cd14cb 100644
+--- a/Common/cpp/reanimated/LayoutAnimations/LayoutAnimationsProxy.cpp
++++ b/Common/cpp/reanimated/LayoutAnimations/LayoutAnimationsProxy.cpp
+@@ -833,10 +833,12 @@ void LayoutAnimationsProxy::addOngoingAnimations(ShadowViewMutationList &mutatio
+   // correctedTags matches the iterator
+   int i = -1;
+ #endif
++  decltype(updateMap_) unmountedUpdates;
+   for (auto &[tag, updateValues] : updateMap_) {
+ #ifdef ANDROID
+     i++;
+     if (correctedTags != nullptr && correctedTags[i] == -1) {
++      unmountedUpdates.insert_or_assign(tag, updateValues);
+       // skip views that have not been mounted yet
+       // on Android we start entering animations from the JS thread
+       // so it might happen, that the first frame of the animation goes through
+@@ -868,7 +870,7 @@ void LayoutAnimationsProxy::addOngoingAnimations(ShadowViewMutationList &mutatio
+       layoutAnimation.opacity.reset();
+     }
+   }
+-  updateMap_.clear();
++  updateMap_ = std::move(unmountedUpdates);
+ }
+ 
+ void LayoutAnimationsProxy::endAnimationsRecursively(
+diff --git a/Common/cpp/reanimated/LayoutAnimations/LayoutAnimationsProxyCommon.cpp b/Common/cpp/reanimated/LayoutAnimations/LayoutAnimationsProxyCommon.cpp
+index 0742d063666ac5579232b2f53e4117f427b7177d..15a64ed7843f7e26201dd0f2aa78a28e3979ebe8 100644
+--- a/Common/cpp/reanimated/LayoutAnimations/LayoutAnimationsProxyCommon.cpp
++++ b/Common/cpp/reanimated/LayoutAnimations/LayoutAnimationsProxyCommon.cpp
+@@ -644,6 +644,13 @@ void LayoutAnimationsProxyCommon::cleanupCompletedAnimations(
+     if (needsFinalFrameReconciliation(animation.type)) {
+       finalView.layoutMetrics = animation.finalView.layoutMetrics;
+     }
++    const auto lostFrame = updateMap_.find(tag);
++    if (!completedAnimation.shouldRemove && lostFrame != updateMap_.end() && lostFrame->second.newProps) {
++      finalView.props = lostFrame->second.newProps;
++      if (animation.opacity && getViewProps(finalView).opacity == *animation.opacity) {
++        animation.opacity.reset();
++      }
++    }
+     if (!completedAnimation.shouldRemove && animation.opacity) {
+ #ifdef ANDROID
+       opacityRestorations.push_back(OpacityRestoration{

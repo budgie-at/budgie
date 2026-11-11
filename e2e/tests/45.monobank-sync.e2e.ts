@@ -1,9 +1,9 @@
 import { expect } from 'e2e';
 
 import * as b from '../support/budgie/core.ts';
-import { test } from '../support/budgie/test.ts';
+import { PENDING_ANDROID_PORT, test } from '../support/budgie/test.ts';
 
-test('45 monobank sync', { tags: ['sync'] }, async ({ budgie }) => {
+test('45 monobank sync', { tags: ['sync'], platforms: PENDING_ANDROID_PORT }, async ({ budgie }) => {
     const ctx = budgie.ctx;
     const { screen } = ctx;
     const card = 'Monobank Black •1234';

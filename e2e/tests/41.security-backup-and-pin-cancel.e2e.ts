@@ -6,7 +6,7 @@ import * as sec from '../support/budgie/security.ts';
 import * as s from '../support/budgie/settings.ts';
 import { test } from '../support/budgie/test.ts';
 
-test('41 security backup and pin cancel', { tags: ['security'] }, async ({ budgie }) => {
+test('41 security backup and pin cancel', { tags: ['security'], platforms: ['ios'] }, async ({ budgie }) => {
     const ctx = budgie.ctx;
     await budgie.start({ fixture: '17.db' });
 

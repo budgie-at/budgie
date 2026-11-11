@@ -142,7 +142,7 @@ test('25 rules CRUD', { tags: ['rules'] }, async ({ budgie }) => {
         await r.pick(ctx, 'RuleForm.Condition.1.FieldSelector', 'TRANSACTION_TYPE');
         await expect(id('RuleForm.Condition.1.ValueInput')).toBeVisible();
         await b.tapId(ctx, 'RuleForm.Condition.1.ValueInput');
-        await screen.getByText('Expense').last().tap();
+        await b.alertButton(screen, 'Expense').tap();
         await b.scrollTo(ctx, 'RuleForm.Action.0.CategorySelector');
         await category();
         await r.submitRuleSkipExisting(ctx);

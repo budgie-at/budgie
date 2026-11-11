@@ -1,13 +1,13 @@
 import { expect } from 'e2e';
 
 import * as b from '../support/budgie/core.ts';
-import { test } from '../support/budgie/test.ts';
+import { PENDING_ANDROID_PORT, test } from '../support/budgie/test.ts';
 import * as t from '../support/budgie/transactions.ts';
 
 const LABEL = 'TransactionCard.Label.E2E_Split_Expense';
 const SPLIT_SUBTITLE = /, Groceries, Restaurants & Cafes, E2E Txn Account$/;
 
-test('24 split transaction and analytics', { tags: ['transactions'] }, async ({ budgie }) => {
+test('24 split transaction and analytics', { tags: ['transactions'], platforms: PENDING_ANDROID_PORT }, async ({ budgie }) => {
     const ctx = budgie.ctx;
     const { screen } = ctx;
     const id = (testId: string) => b.byId(screen, testId);
@@ -124,7 +124,7 @@ test('24 split transaction and analytics', { tags: ['transactions'] }, async ({ 
         await b.expectId(ctx, 'SplitEntries.RemoveSplitButton');
         await b.tapId(ctx, 'SplitEntries.RemoveSplitButton');
         await expect(b.byText(screen, 'Remove split?')).toBeVisible({ timeout: 10_000 });
-        await screen.getByText('Remove split').last().tap();
+        await b.alertButton(screen, 'Remove split').tap();
         await expect(b.byText(screen, 'Remove split?')).toBeHidden({ timeout: 15_000 });
         await menuWithoutTransfer();
         await t.submitTransactionAndReturnToList(ctx);

@@ -5,7 +5,7 @@ import * as c from '../support/budgie/categories.ts';
 import * as b from '../support/budgie/core.ts';
 import * as m from '../support/budgie/misc.ts';
 import * as s from '../support/budgie/settings.ts';
-import { test } from '../support/budgie/test.ts';
+import { PENDING_ANDROID_PORT, test } from '../support/budgie/test.ts';
 import * as t from '../support/budgie/transactions.ts';
 
 const ALL = [
@@ -16,7 +16,7 @@ const ALL = [
     'E2E_Missing_Rate_Expense'
 ] as const;
 
-test('14 transaction filters', { tags: ['transactions'] }, async ({ budgie }) => {
+test('14 transaction filters', { tags: ['transactions'], platforms: PENDING_ANDROID_PORT }, async ({ budgie }) => {
     const ctx = budgie.ctx;
     const { screen } = ctx;
     const id = (testId: string) => b.byId(screen, testId);

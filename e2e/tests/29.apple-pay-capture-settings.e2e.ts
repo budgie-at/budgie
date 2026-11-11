@@ -3,7 +3,7 @@ import { expect } from 'e2e';
 import * as b from '../support/budgie/core.ts';
 import { test } from '../support/budgie/test.ts';
 
-test('29 apple pay capture settings', { tags: ['settings'] }, async ({ budgie }) => {
+test('29 apple pay capture settings', { tags: ['settings'], platforms: ['ios'] }, async ({ budgie }) => {
     const ctx = budgie.ctx;
     const { screen } = ctx;
     await budgie.start({ fixture: '18.db' });

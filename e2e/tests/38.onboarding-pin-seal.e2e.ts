@@ -1,8 +1,8 @@
 import * as b from '../support/budgie/core.ts';
 import { enterPin } from '../support/budgie/security.ts';
-import { test } from '../support/budgie/test.ts';
+import { PENDING_ANDROID_PORT, test } from '../support/budgie/test.ts';
 
-test('38 onboarding PIN seal', { tags: ['onboarding'] }, async ({ budgie }) => {
+test('38 onboarding PIN seal', { tags: ['onboarding'], platforms: PENDING_ANDROID_PORT }, async ({ budgie }) => {
     const ctx = budgie.ctx;
     await budgie.start({ fixture: '38-onboarding.db', wait: 'none' });
 

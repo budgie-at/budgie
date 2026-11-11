@@ -1,9 +1,9 @@
 import { expect } from 'e2e';
 
 import * as b from '../support/budgie/core.ts';
-import { test } from '../support/budgie/test.ts';
+import { PENDING_ANDROID_PORT, test } from '../support/budgie/test.ts';
 
-test('36 bank integration settings', { tags: ['sync'] }, async ({ budgie }) => {
+test('36 bank integration settings', { tags: ['sync'], platforms: PENDING_ANDROID_PORT }, async ({ budgie }) => {
     const ctx = budgie.ctx;
     const { screen } = ctx;
     const id = (testId: string) => b.byId(screen, testId);
@@ -107,7 +107,7 @@ test('36 bank integration settings', { tags: ['sync'] }, async ({ budgie }) => {
         await b.expectId(ctx, 'BankIntegration.AccountRow.8.Menu.External', 3_000);
         await b.tapId(ctx, 'BankIntegration.AccountRow.8.Menu.External');
         await b.expectText(ctx, 'Mark as External?');
-        await screen.getByText('Mark External').last().tap();
+        await b.alertButton(screen, 'Mark External').tap();
         await b.expectNoId(ctx, 'BankIntegration.AccountRow.8', 10_000);
         await b.expectId(ctx, 'BankIntegration.Page');
     });

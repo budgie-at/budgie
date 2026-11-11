@@ -1,12 +1,12 @@
 import { expect } from 'e2e';
 
 import * as b from '../support/budgie/core.ts';
-import { test } from '../support/budgie/test.ts';
+import { PENDING_ANDROID_PORT, test } from '../support/budgie/test.ts';
 import * as t from '../support/budgie/transactions.ts';
 
 const card = (name: string) => `TransactionCard.Label.E2E_Consolidation_${name}`;
 
-test('21 transfer consolidation', { tags: ['transactions'] }, async ({ budgie }) => {
+test('21 transfer consolidation', { tags: ['transactions'], platforms: PENDING_ANDROID_PORT }, async ({ budgie }) => {
     const ctx = budgie.ctx;
     const { screen } = ctx;
     const id = (testId: string) => b.byId(screen, testId);

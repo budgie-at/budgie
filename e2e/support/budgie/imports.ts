@@ -1,6 +1,19 @@
 import { expect, type Locator } from 'e2e';
 
-import { byId, byText, expectId, expectNoId, expectSettledId, openLink, scrollTo, sleep, tapId, tapUntil, type Ctx } from './core.ts';
+import {
+    alertButton,
+    byId,
+    byText,
+    expectId,
+    expectNoId,
+    expectSettledId,
+    openLink,
+    scrollTo,
+    sleep,
+    tapId,
+    tapUntil,
+    type Ctx
+} from './core.ts';
 import { navigateToTransactions } from './transactions.ts';
 
 async function importAutomaticallyMappedCsv(ctx: Ctx): Promise<void> {
@@ -168,7 +181,7 @@ export async function selectFileFromAppProvider(ctx: Ctx, name: string): Promise
     const { screen } = ctx;
     await expect(byId(screen, 'DOC.browsingModeTabBar')).toBeVisible({ timeout: 15_000 });
     if (await byText(screen, 'Apple Account Verification').isVisible()) {
-        await screen.getByText('Not Now').last().tap();
+        await alertButton(screen, 'Not Now').tap();
     }
     const picker = byId(screen, 'DOC.browsingModeTabBar');
     // The picker reopens where it was left; tapping an already selected Browse tab would pop to its root.

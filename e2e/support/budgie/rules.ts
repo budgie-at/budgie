@@ -2,6 +2,7 @@ import { expect } from 'e2e';
 
 import { swipeRowToDelete } from './categories.ts';
 import {
+    alertButton,
     byId,
     byText,
     expectId,
@@ -37,7 +38,7 @@ export async function submitRuleSkipExisting(ctx: Ctx): Promise<void> {
         await sleep(800);
     }
     if (await ask.isVisible()) {
-        await ctx.screen.getByText('Skip').last().tap();
+        await alertButton(ctx.screen, 'Skip').tap();
     }
     await expectId(ctx, 'RulesPage.Page', 10_000);
 }
@@ -46,7 +47,7 @@ export async function submitRuleSkipExisting(ctx: Ctx): Promise<void> {
 export async function submitRuleApplyExisting(ctx: Ctx): Promise<void> {
     await tapId(ctx, 'RuleForm.Footer.SubmitButton');
     await expect(byText(ctx.screen, 'Apply to existing transactions?')).toBeVisible();
-    await ctx.screen.getByText('Apply').last().tap();
+    await alertButton(ctx.screen, 'Apply').tap();
     await expectId(ctx, 'RulesPage.Page', 10_000);
     await expect(byText(ctx.screen, 'Rule applied')).toBeVisible({ timeout: 15_000 });
 }
@@ -56,7 +57,7 @@ export async function deleteFirstRule(ctx: Ctx): Promise<void> {
     const { screen } = ctx;
     await swipeRowToDelete(ctx, 'RulesPage.RuleCard.0');
     await expect(byText(screen, 'Delete this rule?')).toBeVisible();
-    await screen.getByText('Delete').last().tap();
+    await alertButton(screen, 'Delete').tap();
     await expect(byText(screen, 'Delete this rule?')).toBeHidden();
 }
 
@@ -104,10 +105,8 @@ export async function deleteFirstRuleViaForm(ctx: Ctx): Promise<void> {
     // centerElement: at the bottom of the form the label sits under the floating Save footer, which takes the tap.
     await scrollToCentre(ctx, 'RuleForm.Footer.DeleteButton.Label');
     // The form can still be animating in: a tap then is dropped, so tap again until the confirmation shows.
-    await tapUntil(ctx, 'RuleForm.Footer.DeleteButton.Label', () =>
-        expect(screen.getByText('Delete').last()).toBeVisible({ timeout: 3_000 })
-    );
-    await screen.getByText('Delete').last().tap();
+    await tapUntil(ctx, 'RuleForm.Footer.DeleteButton.Label', () => expect(alertButton(screen, 'Delete')).toBeVisible({ timeout: 3_000 }));
+    await alertButton(screen, 'Delete').tap();
     await expectId(ctx, 'RulesPage.Page', 5_000);
 }
 

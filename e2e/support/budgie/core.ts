@@ -1,7 +1,7 @@
 import { leaseIdForUdid, simlockApiFromEnv, type SimlockApi } from '@mobile-ci/e2e-simlock/exec';
 import {
     byId,
-    done,
+    done as doneOnKeyboard,
     retry,
     scrollTo as scrollToLocator,
     scrollToCentered as scrollToCenteredId,
@@ -10,7 +10,7 @@ import {
 } from '@mobile-ci/e2e-simlock/steps';
 import { expect } from 'e2e';
 
-import { clearDatabase, ensureFixtures, seedDatabase } from './fixtures.ts';
+import { clearDatabase, documentsOf, ensureFixtures, seedDatabase } from './fixtures.ts';
 
 import type { Device } from '@e2e-dev/mobile';
 import type { App, Locator, Screen } from 'e2e';
@@ -26,10 +26,29 @@ export interface Ctx {
 
 export const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-export { byId, done, retry };
+export { byId, retry };
 
-/** iPhone 17 Pro, the one device the suite leases, in the points `boundingBox()` reports. */
-const VIEWPORT_HEIGHT = 874;
+export async function done(ctx: Ctx): Promise<void> {
+    await (isIos(ctx) ? doneOnKeyboard(ctx) : ctx.device.dismissKeyboard());
+}
+
+export const isIos = (ctx: Ctx): boolean => ctx.device.unstable_raw.platform === 'ios';
+
+const geometry = (ctx: Ctx): { readonly viewportHeight: number; readonly unit: number } =>
+    isIos(ctx) ? { viewportHeight: 874, unit: 1 } : { viewportHeight: 2400, unit: 2.625 };
+
+export const alertButton = (screen: Screen, label: string): Locator => screen.getByText(new RegExp(`^${label}$`, 'i')).last();
+
+export async function expectSwitch(ctx: Ctx, locator: Locator, isOn: boolean, timeout?: number): Promise<void> {
+    const options = timeout === undefined ? undefined : { timeout };
+    if (isIos(ctx)) {
+        await expect(locator).toHaveValue(isOn ? '1' : '0', options);
+    } else if (isOn) {
+        await expect(locator).toBeChecked(options);
+    } else {
+        await expect(locator).not.toBeChecked(options);
+    }
+}
 
 /** Text selectors are case-insensitive regexes matching the whole string; this is the exact-text form most tests mean. */
 export const byText = (screen: Screen, text: string | RegExp): Locator => screen.getByText(text).first();
@@ -80,13 +99,15 @@ export async function tapUntil(ctx: Ctx, testId: string, next: () => Promise<voi
 
 /** Drags `testId` out of the bottom band where the floating action button and tab bar cover it, along a column clear of the settings switches. */
 export async function scrollToCentered(ctx: Ctx, testId: string): Promise<void> {
-    await scrollToCenteredId(ctx, testId, { viewportHeight: VIEWPORT_HEIGHT, bottomBandPx: 314, dragX: 200 });
+    const { viewportHeight, unit } = geometry(ctx);
+    await scrollToCenteredId(ctx, testId, { viewportHeight, bottomBandPx: 314 * unit, dragX: 200 * unit });
     await expectSettledId(ctx, testId);
 }
 
 /** Brings `testId` near the middle, clear of the floating tab bar and header, and waits for the list to stop: a tap during the drag's momentum only stops the scroll. 200 lets the last row of a list rest at 621 without its bounce reading as movement. */
 export async function scrollToCentre(ctx: Ctx, testId: string, direction: 'up' | 'down' = 'down'): Promise<void> {
-    await scrollToMiddle(ctx, testId, { viewportHeight: VIEWPORT_HEIGHT, direction, tolerancePx: 200, dragX: 201 });
+    const { viewportHeight, unit } = geometry(ctx);
+    await scrollToMiddle(ctx, testId, { viewportHeight, direction, tolerancePx: 200 * unit, maxDragPx: 300 * unit, dragX: 201 * unit });
     await expectSettledId(ctx, testId);
 }
 
@@ -94,7 +115,7 @@ export async function scrollToCentre(ctx: Ctx, testId: string, direction: 'up' |
 async function acceptOpenInPrompt({ screen }: Ctx): Promise<void> {
     const prompt = screen.getByText(/^Open in /);
     if (await prompt.first().isVisible()) {
-        await screen.getByText('Open').last().tap();
+        await alertButton(screen, 'Open').tap();
         await expect(prompt.first()).toBeHidden({ timeout: 3_000 });
     }
 }
@@ -167,25 +188,25 @@ export class Budgie {
         return this.#lease;
     }
 
-    /** The app data container: `E2E_CSV_FIXTURES_URI` is `file://<container>/Documents/E2ECsvFixtures`. */
+    /** The app data container: `E2E_CSV_FIXTURES_URI` is `file://<documents>/E2ECsvFixtures`. */
     async container(): Promise<string> {
-        this.#container ??= await ensureFixtures(this.api, await this.lease());
+        this.#container ??= await ensureFixtures(this.api, await this.lease(), this.ctx.device.unstable_raw.platform);
         return this.#container;
     }
 
     async csvFixturesUri(): Promise<string> {
-        return `file://${await this.container()}/Documents/E2ECsvFixtures`;
+        return `file://${documentsOf(await this.container())}/E2ECsvFixtures`;
     }
 
     async fixturesUri(): Promise<string> {
-        return `file://${await this.container()}/Documents/E2EFixtures`;
+        return `file://${documentsOf(await this.container())}/E2EFixtures`;
     }
 
     async start(options: StartOptions = {}): Promise<void> {
         const { screen, app } = this.ctx;
         const lease = await this.lease();
         const container = await this.container();
-        if (!primed.has(lease)) {
+        if (!primed.has(lease) && this.ctx.device.unstable_raw.platform === 'ios') {
             // prime-deep-links, the shard's pre-run flow: iOS asks before the first custom-scheme link on a fresh simulator.
             await phase('prime deep links', async () => {
                 await app.open();

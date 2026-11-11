@@ -2,7 +2,7 @@ import { expect } from 'e2e';
 
 import * as bu from '../support/budgie/budget.ts';
 import * as b from '../support/budgie/core.ts';
-import { test } from '../support/budgie/test.ts';
+import { PENDING_ANDROID_PORT, test } from '../support/budgie/test.ts';
 import {
     deleteTransaction,
     enterComment,
@@ -19,7 +19,7 @@ const CATEGORY = 'Rules Test Category';
 const UPDATE_COMMENT = 'E2E Budget Update Txn';
 const UPDATE_CARD = 'TransactionCard.Label.E2E_Budget_Update_Txn';
 
-test('33 budget transactions', { tags: ['budget'] }, async ({ budgie }) => {
+test('33 budget transactions', { tags: ['budget'], platforms: PENDING_ANDROID_PORT }, async ({ budgie }) => {
     const ctx = budgie.ctx;
     const { screen } = ctx;
     const category = { id: 42, share: '' };
@@ -69,7 +69,7 @@ test('33 budget transactions', { tags: ['budget'] }, async ({ budgie }) => {
         await b.tapId(ctx, 'ConvertToRefund.CandidateRow.9');
         await b.tapId(ctx, 'ConvertToRefund.ConvertButton');
         await expect(b.byText(screen, 'Convert to Refund?')).toBeVisible({ timeout: 10_000 });
-        await screen.getByText('Convert').last().tap();
+        await b.alertButton(screen, 'Convert').tap();
         await b.expectId(ctx, 'TransactionInfo.Row.RefundSummary', 10_000);
         await b.tapId(ctx, 'PageHeader.BackButton');
         await bu.expectWidgetSpent(ctx, '€70 / €1,000', { ...category, share: '35%' }, 5_000);

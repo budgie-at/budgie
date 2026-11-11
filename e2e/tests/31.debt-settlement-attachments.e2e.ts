@@ -3,7 +3,7 @@ import { expect } from 'e2e';
 import { exitAccountDetailsToHome, openAccountDetails, selectAccountBySearch } from '../support/budgie/accounts.ts';
 import { selectCategory } from '../support/budgie/categories.ts';
 import * as b from '../support/budgie/core.ts';
-import { test } from '../support/budgie/test.ts';
+import { PENDING_ANDROID_PORT, test } from '../support/budgie/test.ts';
 import {
     enterComment,
     longPressTransactionAction,
@@ -18,7 +18,7 @@ import {
 const LENT = 'E2E Lent Debt';
 const BORROWED = 'E2E Borrowed Debt';
 
-test('31 debt settlement attachments', { tags: ['debt'] }, async ({ budgie }) => {
+test('31 debt settlement attachments', { tags: ['debt'], platforms: PENDING_ANDROID_PORT }, async ({ budgie }) => {
     const ctx = budgie.ctx;
     const { screen } = ctx;
     const id = (testId: string) => b.byId(screen, testId);

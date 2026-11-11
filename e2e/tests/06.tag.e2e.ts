@@ -4,7 +4,7 @@ import * as a from '../support/budgie/accounts.ts';
 import * as c from '../support/budgie/categories.ts';
 import * as b from '../support/budgie/core.ts';
 import * as m from '../support/budgie/misc.ts';
-import { test } from '../support/budgie/test.ts';
+import { PENDING_ANDROID_PORT, test } from '../support/budgie/test.ts';
 import * as t from '../support/budgie/transactions.ts';
 
 test('06 tag', { tags: ['tags'] }, async ({ budgie }) => {
@@ -44,7 +44,7 @@ test('06 tag', { tags: ['tags'] }, async ({ budgie }) => {
         await b.tapId(ctx, 'TagCard.E2E Tag Search');
         await b.expectId(ctx, 'TagForm.Delete', 10_000);
         await b.tapId(ctx, 'TagForm.Delete');
-        await screen.getByText('Delete').last().tap();
+        await b.alertButton(screen, 'Delete').tap();
         await b.expectNoId(ctx, 'TagForm.Delete', 10_000);
         await b.expectNoId(ctx, 'TagCard.E2E Tag Search');
         await id('TagPage.SearchInput').clear();
@@ -59,12 +59,12 @@ test('06 tag', { tags: ['tags'] }, async ({ budgie }) => {
         await b.expectNoId(ctx, 'TagCard.E2E Tag Primary');
         await c.swipeRowToDelete(ctx, 'TagCard.E2E Tag Updated');
         await expect(screen.getByText(/^Delete .E2E Tag Updated.\?$/i).first()).toBeVisible();
-        await screen.getByText('Delete').last().tap();
+        await b.alertButton(screen, 'Delete').tap();
         await b.expectNoId(ctx, 'TagCard.E2E Tag Updated', 10_000);
     });
 });
 
-test('06 tag merge', { tags: ['tags'] }, async ({ budgie }) => {
+test('06 tag merge', { tags: ['tags'], platforms: PENDING_ANDROID_PORT }, async ({ budgie }) => {
     const ctx = budgie.ctx;
 
     await budgie.start({ fixture: '14.db' });

@@ -111,7 +111,13 @@ hand the result to the e2e suite, which drives simulators leased from the Mac
 Studio simlock farm from a Linux runner. No Mac runner slot is claimed. A Mac build happens only for
 a key nothing has published a base for.
 
-`.github/workflows/ios-native-cache.yml` is the warm-up that publishes the base.
+Android follows the same path: `pr.yml`'s `android-e2e` job repacks the
+published Android base (`arm64-v8a`, the ABI of the farm's emulators) and runs
+the same suite with `E2E_PLATFORM=android` against emulators leased from the
+same farm. A missing Android base is built by Gradle on the Linux pool, never on
+a Mac. Tests that drive an iOS-only surface carry `platforms: ['ios']`.
+
+`.github/workflows/ios-native-cache.yml` is the warm-up that publishes both bases.
 It runs on a push to `main` touching `packages/app/**`, the lockfile or the
 workspace manifests, and it can be dispatched with `force-base: true` for the two
 things a fingerprint cannot see: a native change inside an ignored path, and a
@@ -120,7 +126,7 @@ value compiled into the binary that was rotated.
 Three rules hold this together, and breaking any one of them silently makes every
 pull request build natively again (or, worse, test the wrong binary):
 
-- **`fingerprint-env` is one address.** `pr.yml`, `media-smoke.yml`,
+- **`fingerprint-env` is one address.** `pr.yml` (both e2e jobs), `media-smoke.yml`,
   `store-screenshots.yml` and `ios-native-cache.yml` pass byte-identical
   `APP_VARIANT=e2e` + `EXPO_PUBLIC_AI_DISABLE=true` +
   `EXPO_PUBLIC_LOGGING_DISABLE=true`. A single differing byte and the warm-up

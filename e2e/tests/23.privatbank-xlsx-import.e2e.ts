@@ -11,7 +11,7 @@ import * as t from '../support/budgie/transactions.ts';
 const NAME = 'Privatbank •1234';
 const CARD = `AccountCard.${NAME}`;
 
-test('23 privatbank xlsx import', { tags: ['import'] }, async ({ budgie }) => {
+test('23 privatbank xlsx import', { tags: ['import'], platforms: ['ios'] }, async ({ budgie }) => {
     const ctx = budgie.ctx;
     const { screen } = ctx;
     const quickImport = async () => {

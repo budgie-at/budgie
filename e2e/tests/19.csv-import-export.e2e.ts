@@ -5,7 +5,7 @@ import * as sec from '../support/budgie/security.ts';
 import * as s from '../support/budgie/settings.ts';
 import { test } from '../support/budgie/test.ts';
 
-test('19 csv import export', { tags: ['import'] }, async ({ budgie }) => {
+test('19 csv import export', { tags: ['import'], platforms: ['ios'] }, async ({ budgie }) => {
     const ctx = budgie.ctx;
     const { screen } = ctx;
     const importCsv = async () => {
@@ -41,7 +41,7 @@ test('19 csv import export', { tags: ['import'] }, async ({ budgie }) => {
         await sec.dismissSaveToFilesSheet(ctx);
         await b.expectId(ctx, 'DataPage.Container', 5_000);
         if (await b.byText(screen, 'Convert past amounts?').isVisible()) {
-            await screen.getByText('Cancel').last().tap();
+            await b.alertButton(screen, 'Cancel').tap();
         }
         await s.goHome(ctx);
     });

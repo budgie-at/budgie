@@ -1,8 +1,8 @@
 import * as a from '../support/budgie/accounts.ts';
 import * as b from '../support/budgie/core.ts';
-import { test } from '../support/budgie/test.ts';
+import { PENDING_ANDROID_PORT, test } from '../support/budgie/test.ts';
 
-test('01 account bank', { tags: ['accounts'] }, async ({ budgie }) => {
+test('01 account bank', { tags: ['accounts'], platforms: PENDING_ANDROID_PORT }, async ({ budgie }) => {
     const ctx = budgie.ctx;
 
     await budgie.start({ fixture: '01.db' });

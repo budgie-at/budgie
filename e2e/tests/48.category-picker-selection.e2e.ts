@@ -3,7 +3,7 @@ import { expect } from 'e2e';
 import * as bu from '../support/budgie/budget.ts';
 import * as b from '../support/budgie/core.ts';
 import * as r from '../support/budgie/rules.ts';
-import { test } from '../support/budgie/test.ts';
+import { PENDING_ANDROID_PORT, test } from '../support/budgie/test.ts';
 import * as t from '../support/budgie/transactions.ts';
 
 const COFFEE = 'CategorizeInboxGroupRow.EXPENSE|e2e confident coffee||';
@@ -63,20 +63,24 @@ test('48 searched category applies to rule action', { tags: ['picker', 'rules'] 
     await expect(b.byId(ctx.screen, 'RuleForm.Action.0.CategorySelector.Value')).toHaveText('Groceries');
 });
 
-test('48 searched category applies to budget limit', { tags: ['picker', 'budget'] }, async ({ budgie }) => {
-    const ctx = budgie.ctx;
-    await budgie.start({ fixture: 'budget-base.db', wait: 'tabbar' });
-    await bu.openEmptyBudget(ctx);
-    await bu.chooseEmptyCanvas(ctx);
-    await b.scrollTo(ctx, 'BudgetSetup.CategoryLimitAddButton');
-    await b.tapId(ctx, 'BudgetSetup.CategoryLimitAddButton');
-    await b.expectSettledId(ctx, 'CategoryPickerBottomSheet.Input');
-    await b.fillId(ctx, 'CategoryPickerBottomSheet.Input', 'Grocer');
-    await b.tapId(ctx, 'CategoryPickerBottomSheet.Card.Groceries');
-    await b.expectNoId(ctx, 'CategoryPickerBottomSheet.Input', 5_000);
-    await b.expectId(ctx, 'BudgetSetup.CategoryLimit.0.Row');
-    await b.expectText(ctx, 'Groceries');
-});
+test(
+    '48 searched category applies to budget limit',
+    { tags: ['picker', 'budget'], platforms: PENDING_ANDROID_PORT },
+    async ({ budgie }) => {
+        const ctx = budgie.ctx;
+        await budgie.start({ fixture: 'budget-base.db', wait: 'tabbar' });
+        await bu.openEmptyBudget(ctx);
+        await bu.chooseEmptyCanvas(ctx);
+        await b.scrollTo(ctx, 'BudgetSetup.CategoryLimitAddButton');
+        await b.tapId(ctx, 'BudgetSetup.CategoryLimitAddButton');
+        await b.expectSettledId(ctx, 'CategoryPickerBottomSheet.Input');
+        await b.fillId(ctx, 'CategoryPickerBottomSheet.Input', 'Grocer');
+        await b.tapId(ctx, 'CategoryPickerBottomSheet.Card.Groceries');
+        await b.expectNoId(ctx, 'CategoryPickerBottomSheet.Input', 5_000);
+        await b.expectId(ctx, 'BudgetSetup.CategoryLimit.0.Row');
+        await b.expectText(ctx, 'Groceries');
+    }
+);
 
 test('48 shared account and tag pickers apply selections', { tags: ['picker'] }, async ({ budgie }) => {
     const ctx = budgie.ctx;

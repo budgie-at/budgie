@@ -1,10 +1,10 @@
 import { expect } from 'e2e';
 
 import * as b from '../support/budgie/core.ts';
-import { test } from '../support/budgie/test.ts';
+import { PENDING_ANDROID_PORT, test } from '../support/budgie/test.ts';
 import * as t from '../support/budgie/transactions.ts';
 
-test('44 voice review empty sheet', { tags: ['transactions'] }, async ({ budgie }) => {
+test('44 voice review empty sheet', { tags: ['transactions'], platforms: PENDING_ANDROID_PORT }, async ({ budgie }) => {
     const ctx = budgie.ctx;
 
     await budgie.start({ fixture: '08.db' });
