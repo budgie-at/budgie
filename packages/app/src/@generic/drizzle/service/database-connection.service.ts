@@ -91,18 +91,31 @@ export class DatabaseConnectionService extends Context.Service<DatabaseConnectio
         yield* recoverInterruptedRestore.pipe(Effect.catchDefect(defect => Effect.logError(defect)));
         yield* recoverMissingDatabase;
 
-        const pendingSwap = yield* databaseSwapService.read;
-        const committedSwap = Option.filter(pendingSwap, swap => new File(DATABASE_DIRECTORY, swap.backupName).exists);
-        const databaseKey = Option.isSome(committedSwap) ? committedSwap.value.key : yield* readDatabaseKey;
-        const openConnection = openSqliteClient(DB_NAME, databaseKey).pipe(Scope.provide(scope));
-        const [writer, reader] = yield* Effect.all([openConnection, openConnection], { concurrency: 'unbounded' });
+        const openConnections = (databaseKey: string | null) => {
+            const openConnection = openSqliteClient(DB_NAME, databaseKey).pipe(Scope.provide(scope));
 
-        if (Option.isSome(committedSwap)) {
-            yield* databaseSwapService.commit(committedSwap.value);
-            ['', '-wal', '-shm'].forEach(suffix => {
-                deleteIfExists(new File(DATABASE_DIRECTORY, `${committedSwap.value.backupName}${suffix}`));
-            });
-        }
+            return Effect.all([openConnection, openConnection], { concurrency: 'unbounded' });
+        };
+
+        const pendingSwap = yield* databaseSwapService.read;
+        const finishedSwap = Option.getOrNull(Option.filter(pendingSwap, swap => new File(DATABASE_DIRECTORY, swap.backupName).exists));
+        const swapConnections = isDefined(finishedSwap)
+            ? yield* openConnections(finishedSwap.key).pipe(
+                  Effect.tap(() => databaseSwapService.commit(finishedSwap)),
+                  Effect.tap(() =>
+                      Effect.sync(() => {
+                          ['', '-wal', '-shm'].forEach(suffix => {
+                              deleteIfExists(new File(DATABASE_DIRECTORY, `${finishedSwap.backupName}${suffix}`));
+                          });
+                      })
+                  ),
+                  Effect.option
+              )
+            : Option.none();
+        const [writer, reader] = Option.isSome(swapConnections)
+            ? swapConnections.value
+            : yield* Effect.flatMap(readDatabaseKey, openConnections);
+
         yield* databaseSwapService.end;
 
         yield* applyPragmas(writer, [

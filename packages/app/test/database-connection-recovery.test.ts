@@ -382,6 +382,23 @@ describe('database swap recovery after a kill', () => {
         })
     );
 
+    it.effect('opens with the stored PIN and keeps a stale rekey backup when the PIN change never moved a file', () =>
+        Effect.gen(function* () {
+            killBeforeTransferring('documents/SQLite/budgie.db');
+            yield* changePin(storePin);
+            restartAfterKill();
+            storage.files.set('documents/SQLite/budgie.db.bak', 'stale@older-pin');
+
+            expect(Exit.isSuccess(yield* boot)).toBe(true);
+            expect(databaseFiles()).toEqual({
+                'documents/SQLite/budgie.db': 'original@old-pin',
+                'documents/SQLite/budgie.db.bak': 'stale@older-pin',
+                'documents/SQLite/auth-migration.db': 'rekeyed@new-pin'
+            });
+            expect(Object.fromEntries(secrets)).toEqual({ user_pin: 'old-pin' });
+        })
+    );
+
     it.effect('leaves files and keys untouched when no key opens the live database', () =>
         Effect.gen(function* () {
             yield* changePin(Effect.sync(takeSnapshot).pipe(Effect.andThen(storePin)));
