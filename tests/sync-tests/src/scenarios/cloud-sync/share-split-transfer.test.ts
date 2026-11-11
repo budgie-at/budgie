@@ -1,9 +1,12 @@
+import { appAtomRegistry } from '@app/@generic/constant/app-atom-registry.constant';
+import { cloudSyncStatusAtom } from '@app/cloud-sync/constant/cloud-sync-status-atom.constant';
 import { TestSeedService } from '@budgie-at/test-kit';
-import { ICloudParticipantRole, ICloudSyncScope, SyncApplyService } from '@budgie/cloud-sync';
+import { CloudSyncStatusEnum, ICloudParticipantRole, ICloudSyncScope, SyncApplyService } from '@budgie/cloud-sync';
 import { HOUSEHOLD_SYNC_ZONE, PERSONAL_SYNC_ZONE, Db, SyncZoneRoleEnum } from '@budgie/contracts';
 import { TransactionService } from '@budgie/ledger';
 import { describe, expect } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
+import * as Exit from 'effect/Exit';
 
 import {
     testDb,
@@ -269,6 +272,46 @@ describe('cloud-sync/share-split-transfer', () => {
                     )
                 );
                 expect(yield* countRows(testDb, "sync_pending WHERE sync_id = 'held-leg'")).toBe(1);
+            })
+        );
+
+        it.effect('clears the fetching status when the did-fetch owner transfer flush fails', () =>
+            Effect.gen(function* () {
+                const { clouds, leg } = yield* startOwnerLegDeletion;
+                const context = makeSyncServiceContext(testDb);
+                const exit = yield* context.run(
+                    Effect.gen(function* () {
+                        const service = yield* syncService;
+                        yield* matchZoneLineage(context);
+                        yield* service.reconfigure;
+                        yield* uploadDevice(testDb, clouds);
+                        expect(appAtomRegistry.get(cloudSyncStatusAtom).status).toBe(CloudSyncStatusEnum.IDLE);
+                        yield* service.handleFetchedChanges({
+                            deletions: [
+                                {
+                                    recordName: leg.syncId,
+                                    recordType: 'TransactionLeg',
+                                    ownerName: '__defaultOwner__',
+                                    zoneName: 'household-zone'
+                                }
+                            ],
+                            scope: ICloudSyncScope.SHARED,
+                            records: [],
+                            changedShares: []
+                        });
+                        yield* service.handleWillFetch({ scope: ICloudSyncScope.PRIVATE });
+                        expect(appAtomRegistry.get(cloudSyncStatusAtom).status).toBe(CloudSyncStatusEnum.SYNCING);
+
+                        yield* testDb.$client.unsafe(
+                            "CREATE TRIGGER fail_outbox_insert BEFORE INSERT ON sync_outbox BEGIN SELECT RAISE(ABORT, 'flush failed'); END"
+                        );
+
+                        return yield* Effect.exit(service.handleDidFetch({ scope: ICloudSyncScope.PRIVATE }));
+                    })
+                );
+                yield* testDb.$client.unsafe('DROP TRIGGER fail_outbox_insert');
+                expect(Exit.isFailure(exit)).toBe(true);
+                expect(appAtomRegistry.get(cloudSyncStatusAtom).status).not.toBe(CloudSyncStatusEnum.SYNCING);
             })
         );
 

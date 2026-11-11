@@ -225,9 +225,11 @@ export class CloudSyncFetchService extends Context.Service<CloudSyncFetchService
                 }
 
                 if (!(yield* Ref.get(state.isBatchFailed))) {
-                    yield* applyService.enqueueOwnerTransfers(
-                        [...state.ownerTransferRetries].flatMap(([linkId, targets]) => [...targets].map(zone => ({ linkId, zone })))
-                    );
+                    yield* applyService
+                        .enqueueOwnerTransfers(
+                            [...state.ownerTransferRetries].flatMap(([linkId, targets]) => [...targets].map(zone => ({ linkId, zone })))
+                        )
+                        .pipe(Effect.onError(() => patch({ isFetching: false })));
                     state.ownerTransferRetries.clear();
                 }
                 yield* patch({
