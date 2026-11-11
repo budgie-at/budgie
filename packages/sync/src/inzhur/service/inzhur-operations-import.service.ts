@@ -82,14 +82,13 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
 
             const recordTradePrices = (
                 actions: readonly InzhurPlannedActionInterface[],
-                accountByFund: ReadonlyMap<string, AccountEntityInterface>,
-                knownMicroUnits: (action: InzhurPlannedActionInterface) => number | null
+                accountByFund: ReadonlyMap<string, AccountEntityInterface>
             ) => {
                 const totals = new Map<string, InzhurTradePriceTotalInterface>();
 
                 for (const action of actions.filter(isTrade)) {
                     const instrumentId = accountByFund.get(action.fundName ?? '')?.instrumentId;
-                    const microUnits = knownMicroUnits(action);
+                    const microUnits = convertToMicroUnits(action.quantity ?? 0);
 
                     if (isDefined(instrumentId) && isPositiveNumber(microUnits)) {
                         const priceDate = toKyivDay(action.occurredAt);
@@ -324,9 +323,7 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
                 };
                 const newActions = plan.actions.filter(action => !existingIds.has(action.externalId));
 
-                yield* recordTradePrices(plan.actions, accountByFund, action =>
-                    isDefined(action.quantity) ? convertToMicroUnits(action.quantity) : null
-                );
+                yield* recordTradePrices(plan.actions, accountByFund);
 
                 const quantities = inzhurQuantityResolver.resolve({
                     actions: plan.actions,
@@ -362,12 +359,6 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
                 if (isNotEmptyArray(unresolvedFundNames)) {
                     return yield* InzhurPriceMissingError.make({ fundNames: [...new Set(unresolvedFundNames)] });
                 }
-
-                yield* recordTradePrices(plan.actions, accountByFund, action => {
-                    const resolved = quantities.get(action.externalId);
-
-                    return isDefined(resolved) && !resolved.isEstimated ? resolved.microUnits : null;
-                });
 
                 const pairing = yield* inzhurOperationsBankPairingService.plan(setup, plan.actions, ledger, {
                     from: periodStart,
