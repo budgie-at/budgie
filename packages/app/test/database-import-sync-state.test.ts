@@ -60,6 +60,22 @@ const previous: CloudSyncStateInterface = {
     householdOwnerDisplayName: null
 };
 
+const importLayer = Layer.effect(DatabaseImportService, DatabaseImportService.make).pipe(
+    Layer.provide([
+        Layer.mock(DatabaseLifecycleService)({ run: (_operation, effect) => effect, close: () => Effect.void }),
+        Layer.mock(AiStorageReplacementService)({ pauseLongLivedRuntime: () => Effect.void }),
+        Layer.mock(AiEmbeddingStatusService)({ forgetModel: Effect.void }),
+        Layer.mock(AuthService)({ getPin: () => Effect.succeed(null), persistPin: () => Effect.void }),
+        cloudSyncStateStoreLayer
+    ])
+);
+
+const importBackup = Effect.exit(Effect.flatMap(DatabaseImportService, service => service.importFromUri('backup', null))).pipe(
+    Effect.provide([importLayer, inertDbLayer])
+);
+
+const databaseFiles = () => Object.fromEntries([...storage.files].filter(([path]) => path.startsWith('documents/SQLite/')));
+
 describe('database import sync state', () => {
     beforeEach(() => {
         resetStorage();
@@ -68,10 +84,12 @@ describe('database import sync state', () => {
         storage.failCopy = false;
         storage.failMoveFrom = null;
     });
-    it.effect.each(['close', 'copy', 'move', 'success'])('preserves recoverable sync state on %s failure', failure =>
+    it.effect.each(['close', 'copy', 'move', 'cleanup', 'success'])('preserves recoverable sync state on %s failure', failure =>
         Effect.gen(function* () {
+            const isCommitted = failure === 'success' || failure === 'cleanup';
             storage.failCopy = failure === 'copy';
             storage.failMoveFrom = failure === 'move' ? 'cache/import-temp.db' : null;
+            storage.failDelete = failure === 'cleanup' ? 'documents/SQLite/budgie.db.replaced-0' : null;
             const holder = { state: previous, pin: 'previous-pin' };
             const layer = Layer.effect(DatabaseImportService, DatabaseImportService.make).pipe(
                 Layer.provide([
@@ -98,19 +116,64 @@ describe('database import sync state', () => {
 
                 return yield* Effect.exit(Effect.flatMap(DatabaseImportService, service => service.importFromUri('backup', 'new-pin')));
             }).pipe(Effect.provide([layer, inertDbLayer, cloudSyncStateStoreLayer]));
-            expect(Exit.isFailure(result)).toBe(failure !== 'success');
+            expect(Exit.isFailure(result)).toBe(!isCommitted);
             if (Exit.isFailure(result)) {
                 expect(Cause.squash(result.cause)).toEqual(failure === 'close' ? 'close failed' : expect.any(Error));
             }
             expect(yield* Effect.flatMap(CloudSyncStateStore, store => store.read).pipe(Effect.provide(cloudSyncStateStoreLayer))).toEqual(
-                failure === 'move' || failure === 'success'
+                isCommitted
                     ? { ...previous, stateSerialization: null, resolvedLineageId: null, restorePhase: CloudSyncRestorePhaseEnum.PENDING }
                     : previous
             );
-            expect(storage.files.has('documents/SQLite/budgie.db')).toBe(failure !== 'move');
-            expect(holder.pin).toBe(failure === 'move' || failure === 'success' ? 'new-pin' : 'previous-pin');
+            expect(storage.files.get('documents/SQLite/budgie.db')).toBe(isCommitted ? 'backup' : 'database');
+            expect(holder.pin).toBe(isCommitted ? 'new-pin' : 'previous-pin');
             expect(query).not.toHaveBeenCalled();
             query.mockRestore();
+        })
+    );
+
+    it.effect.each([
+        { name: 'restores the live database when the new file cannot be moved in', stale: false, failMoveFrom: 'cache/import-temp.db' },
+        {
+            name: 'restores the live database when a sidecar cannot be moved aside',
+            stale: false,
+            failMoveFrom: 'documents/SQLite/budgie.db-wal'
+        },
+        { name: 'keeps stale moved-aside files when the import fails', stale: true, failMoveFrom: 'cache/import-temp.db' }
+    ])('$name', ({ stale, failMoveFrom }) =>
+        Effect.gen(function* () {
+            storage.files.set('documents/SQLite/budgie.db-wal', 'database-wal');
+            storage.files.set('backup-wal', 'backup-wal');
+            if (stale) {
+                storage.files.set('documents/SQLite/budgie.db.replaced', 'stale');
+                storage.files.set('documents/SQLite/budgie.db.replaced-shm', 'stale-shm');
+            }
+            storage.failMoveFrom = failMoveFrom;
+
+            expect(Exit.isFailure(yield* importBackup)).toBe(true);
+            expect(databaseFiles()).toEqual({
+                'documents/SQLite/budgie.db': 'database',
+                'documents/SQLite/budgie.db-wal': 'database-wal',
+                ...(stale && { 'documents/SQLite/budgie.db.replaced': 'stale', 'documents/SQLite/budgie.db.replaced-shm': 'stale-shm' })
+            });
+        })
+    );
+    it.effect.each([false, true])('replaces the live database, removes its moved-aside files and keeps stale ones %s', stale =>
+        Effect.gen(function* () {
+            storage.files.set('documents/SQLite/budgie.db-wal', 'database-wal');
+            storage.files.set('documents/SQLite/budgie.db-shm', 'database-shm');
+            storage.files.set('backup-wal', 'backup-wal');
+            if (stale) {
+                storage.files.set('documents/SQLite/budgie.db.replaced', 'stale');
+                storage.files.set('documents/SQLite/budgie.db.replaced-wal', 'stale-wal');
+            }
+
+            expect(Exit.isSuccess(yield* importBackup)).toBe(true);
+            expect(databaseFiles()).toEqual({
+                'documents/SQLite/budgie.db': 'backup',
+                'documents/SQLite/budgie.db-wal': 'backup-wal',
+                ...(stale && { 'documents/SQLite/budgie.db.replaced': 'stale', 'documents/SQLite/budgie.db.replaced-wal': 'stale-wal' })
+            });
         })
     );
 });
