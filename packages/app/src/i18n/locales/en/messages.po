@@ -811,6 +811,10 @@ msgstr "{periodLabel} closed {amount} under"
 msgid "{periodLabel}, spent {spentAmount} of {limitAmount}"
 msgstr "{periodLabel}, spent {spentAmount} of {limitAmount}"
 
+#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+msgid "{preselectedBankName} is not available"
+msgstr "{preselectedBankName} is not available"
+
 #: src/budget/hooks/use-budget-forecast-labels.hook.ts
 msgid "{projectedAmount} · {gapAmount} over"
 msgstr "{projectedAmount} · {gapAmount} over"
@@ -3008,6 +3012,10 @@ msgstr "Confirm your PIN"
 msgid "Connect"
 msgstr "Connect"
 
+#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+msgid "Connect {preselectedBankName}"
+msgstr "Connect {preselectedBankName}"
+
 #: src/rule/components/rules-feature-intro/rules-feature-intro.tsx
 msgid "Connect a bank"
 msgstr "Connect a bank"
@@ -4447,6 +4455,10 @@ msgstr "Empty canvas"
 msgid "Enable Banking"
 msgstr "Enable Banking"
 
+#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+msgid "Enable Banking cannot connect {preselectedBankName} in any country right now."
+msgstr "Enable Banking cannot connect {preselectedBankName} in any country right now."
+
 #: src/sync/hook/use-explain-enable-banking-error.hook.ts
 msgid "Enable Banking rejected the redirect URL. Correct the redirect URL registered in your application so it matches the setup steps exactly."
 msgstr "Enable Banking rejected the redirect URL. Correct the redirect URL registered in your application so it matches the setup steps exactly."
@@ -4677,6 +4689,10 @@ msgstr "Every transaction has a tag."
 #: src/budget/constant/budget-period-rate-label.constant.ts
 msgid "every two weeks"
 msgstr "every two weeks"
+
+#: src/app/(main)/create-account/index.tsx
+msgid "Every Wise balance through Enable Banking"
+msgstr "Every Wise balance through Enable Banking"
 
 #: src/budget/components/budget-fund-repeat-field/budget-fund-repeat-field.tsx
 msgid "Every year"
@@ -6495,7 +6511,7 @@ msgstr "No archived accounts match “{search}”"
 msgid "No backups yet"
 msgstr "No backups yet"
 
-#: src/sync/component/enable-banking-bank-step/enable-banking-bank-step.tsx
+#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
 msgid "No banks found"
 msgstr "No banks found"
 
@@ -10110,7 +10126,7 @@ msgstr "Try Again"
 msgid "Try another name, phone number or email."
 msgstr "Try another name, phone number or email."
 
-#: src/sync/component/enable-banking-bank-step/enable-banking-bank-step.tsx
+#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
 msgid "Try another name."
 msgstr "Try another name."
 
@@ -10647,6 +10663,7 @@ msgid "Wi-Fi"
 msgstr "Wi-Fi"
 
 #: src/account/constant/bank-provider-title.constant.ts
+#: src/app/(main)/create-account/index.tsx
 #: src/rule/constant/external-source.constant.ts
 msgid "Wise"
 msgstr "Wise"

@@ -12,6 +12,7 @@ import { CreateEnableBankingAccount } from '../../../sync/component/create-enabl
 import { CreateErsteAccount } from '../../../sync/component/create-erste-account/create-erste-account';
 import { CreateMonobankAccount } from '../../../sync/component/create-monobank-account/create-monobank-account';
 import { CreatePrivatbankAccount } from '../../../sync/component/create-privatbank-account/create-privatbank-account';
+import { WISE_ASPSP_NAME } from '../../../sync/constant/wise-aspsp-name.constant';
 
 type AccountRouteType = AccountTypeEnum | ExternalSourceEnum;
 
@@ -43,7 +44,15 @@ export default function CreateAccountType() {
         case ExternalSourceEnum.INZHUR:
             return <ImportInzhurStatement />;
         case ExternalSourceEnum.ENABLE_BANKING:
-            return <CreateEnableBankingAccount connectAccountId={connectAccountIdNumber} savedApplicationId={savedApplicationId ?? null} />;
+            return (
+                <CreateEnableBankingAccount
+                    connectAccountId={connectAccountIdNumber}
+                    savedApplicationId={savedApplicationId ?? null}
+                    preselectedBankName={null}
+                />
+            );
+        case ExternalSourceEnum.WISE:
+            return <CreateEnableBankingAccount connectAccountId={null} savedApplicationId={null} preselectedBankName={WISE_ASPSP_NAME} />;
         case AccountTypeEnum.STOCKS:
         case AccountTypeEnum.SAVINGS:
         case AccountTypeEnum.BANK_SYNC:
@@ -51,7 +60,6 @@ export default function CreateAccountType() {
         case ExternalSourceEnum.MANUAL:
         case ExternalSourceEnum.REVOLUT:
         case ExternalSourceEnum.COINBASE:
-        case ExternalSourceEnum.WISE:
         case ExternalSourceEnum.CSV:
         case ExternalSourceEnum.RECEIPT:
         case ExternalSourceEnum.APPLE_PAY_AUTOMATION:
