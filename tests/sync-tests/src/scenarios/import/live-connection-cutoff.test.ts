@@ -2,6 +2,9 @@ import { ExternalSourceEnum, SyncModeEnum } from '@budgie/contracts';
 import { EnableBankingSyncService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
+import { afterEach, beforeEach, vi } from 'vitest';
+
+import { isDefined } from '@rnw-community/shared';
 
 import {
     buildEnableBankingToken,
@@ -43,11 +46,19 @@ const fetchFileExternalIds = (accountId: number) =>
     Effect.map(fetchAccountRows(accountId), rows =>
         rows
             .filter(row => row.externalSource === ExternalSourceEnum.ERSTE)
-            .map(row => row.externalId ?? '')
+            .map(row => row.externalId)
+            .filter(isDefined)
             .sort((left, right) => left.localeCompare(right))
     );
 
 describe('import/live-connection-cutoff', () => {
+    beforeEach(() => {
+        vi.useFakeTimers({ now: new Date('2026-11-04T12:00:00.000Z'), toFake: ['Date'] });
+    });
+    afterEach(() => {
+        vi.useRealTimers();
+    });
+
     it.effect('history depth "all" imports file rows older than the first live day and leaves that day to the live feed', () =>
         Effect.gen(function* () {
             const account = yield* syncLiveHistory(null);

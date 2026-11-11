@@ -81,31 +81,30 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
         yield* accountRepository.updateById(account.id, { integrationId: integration.id });
     });
 
-    const resolveDeliveredWindow = Effect.fnUntraced(function* (accountId: number, sync: SyncEntityInterface | undefined) {
+    const resolveIsDelivered = Effect.fnUntraced(function* (accountId: number, sync: SyncEntityInterface | undefined) {
         if (!isDefined(sync)) {
-            return null;
+            return () => false;
         }
 
         const { backwardSyncLimitAt, forwardSyncFromAt, mode, provider } = sync;
         if (provider === definition.provider) {
-            return isDefined(backwardSyncLimitAt) && isDefined(forwardSyncFromAt)
-                ? { fromMs: backwardSyncLimitAt.getTime(), toMs: forwardSyncFromAt.getTime() }
-                : null;
+            return (timeMs: number) =>
+                isDefined(backwardSyncLimitAt) &&
+                isDefined(forwardSyncFromAt) &&
+                timeMs >= backwardSyncLimitAt.getTime() &&
+                timeMs < forwardSyncFromAt.getTime();
         }
 
         if (mode === SyncModeEnum.BACKWARD) {
-            return { fromMs: backwardSyncLimitAt?.getTime() ?? 0, toMs: Infinity };
+            return (timeMs: number) => !isDefined(backwardSyncLimitAt) || timeMs >= backwardSyncLimitAt.getTime();
         }
 
-        const deliveredFrom =
-            (yield* transactionRepository.getEarliestTransactionTimeByAccountIdAndSource(accountId, provider)) ?? forwardSyncFromAt;
+        const earliestLiveAt = yield* transactionRepository.getEarliestTransactionTimeByAccountIdAndSource(accountId, provider);
+        const earliestDeliveredAt = earliestLiveAt ?? forwardSyncFromAt;
 
-        return {
-            fromMs: isDefined(deliveredFrom)
-                ? Date.UTC(deliveredFrom.getUTCFullYear(), deliveredFrom.getUTCMonth(), deliveredFrom.getUTCDate())
-                : 0,
-            toMs: Infinity
-        };
+        return (timeMs: number) =>
+            isDefined(earliestDeliveredAt) &&
+            timeMs >= Date.UTC(earliestDeliveredAt.getUTCFullYear(), earliestDeliveredAt.getUTCMonth(), earliestDeliveredAt.getUTCDate());
     });
 
     const importAccountTransactions = Effect.fnUntraced(function* (
@@ -117,19 +116,12 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
         yield* createBankSyncRecord(account.id);
         yield* linkFileImportIntegration(account);
         const sync = yield* syncRepository.getByAccountId(account.id);
-        const deliveredWindow = yield* resolveDeliveredWindow(account.id, sync);
-        const isDelivered = ({ time }: SyncTransactionInterface) =>
-            isDefined(deliveredWindow) &&
-            time * millisecondsInSecond >= deliveredWindow.fromMs &&
-            time * millisecondsInSecond < deliveredWindow.toMs;
-        const transactions = client
-            .getTransactions(bankAccount.id)
-            .filter(
-                transaction =>
-                    !isDelivered(transaction) &&
-                    (isKnownSyncTransaction(transaction, context.existingTransactionIdMap) ||
-                        !isKnownSyncTransaction(transaction, context.deletedExternalIds))
-            );
+        const isDelivered = yield* resolveIsDelivered(account.id, sync);
+        const isImportable = (transaction: SyncTransactionInterface) =>
+            !isDelivered(transaction.time * millisecondsInSecond) &&
+            (isKnownSyncTransaction(transaction, context.existingTransactionIdMap) ||
+                !isKnownSyncTransaction(transaction, context.deletedExternalIds));
+        const transactions = client.getTransactions(bankAccount.id).filter(isImportable);
         if (!isNotEmptyArray(transactions)) {
             return {
                 newTransactions: [],
@@ -287,9 +279,12 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
             );
             const existingAccounts = yield* syncService.findAccountsByExternalId(bankAccounts.map(account => account.id));
             const newBankAccounts = yield* syncService.excludeKnownAccounts(bankAccounts);
-            const bankAccountsToImport = bankAccounts.filter(
-                account => enabledAccountIds.has(existingAccounts.get(account.id)?.id ?? 0) || newBankAccounts.includes(account)
-            );
+            const isEnabled = (account: SyncAccountInterface) => {
+                const existingAccount = existingAccounts.get(account.id);
+
+                return isDefined(existingAccount) && enabledAccountIds.has(existingAccount.id);
+            };
+            const bankAccountsToImport = bankAccounts.filter(account => isEnabled(account) || newBankAccounts.includes(account));
             if (!isNotEmptyArray(bankAccountsToImport)) {
                 return buildImportResult(0, []);
             }
