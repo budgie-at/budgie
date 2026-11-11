@@ -2,6 +2,8 @@ import { AccountTypeEnum } from '@budgie/contracts';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { getIntegrationGroupNumber } from '../../account/utils/get-integration-group-number.util';
+
 import type { HouseholdAccountShareEntryInterface } from '../interface/household-account-share-entry.interface';
 import type { HouseholdAccountShareGroupInterface } from '../interface/household-account-share-group.interface';
 
@@ -39,17 +41,13 @@ export const groupHouseholdAccountShares = (
         });
     });
 
-    const unlabeledIntegrations = [...groups.values()]
-        .flatMap(({ integration }) => (isDefined(integration) && !isDefined(integration.label) ? [integration] : []))
-        .sort((left, right) => left.id - right.id);
+    const integrations = [...groups.values()].flatMap(({ integration }) => (isDefined(integration) ? [integration] : []));
 
     return [...groups.values()]
-        .map(group => {
-            const sameProvider = unlabeledIntegrations.filter(integration => integration.provider === group.integration?.provider);
-            const index = sameProvider.findIndex(integration => integration.id === group.integration?.id);
-
-            return { ...group, groupNumber: sameProvider.length > 1 && index >= 0 ? index + 1 : null };
-        })
+        .map(group => ({
+            ...group,
+            groupNumber: isDefined(group.integration) ? getIntegrationGroupNumber(integrations, group.integration) : null
+        }))
         .sort(
             (left, right) =>
                 getGroupRank(left) - getGroupRank(right) ||

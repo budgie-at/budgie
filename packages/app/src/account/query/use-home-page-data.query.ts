@@ -18,6 +18,7 @@ import { HomeSectionKindEnum } from '../enum/home-section-kind.enum';
 import { buildIntegrationProviderMap } from '../utils/build-integration-provider-map.util';
 import { getDebtProgressDisplayState } from '../utils/get-debt-progress-display-state.util';
 import { getDebtSectionKind } from '../utils/get-debt-section-kind.util';
+import { getIntegrationGroupNumber } from '../utils/get-integration-group-number.util';
 import { resolveBankProviderGroup } from '../utils/resolve-bank-provider-group.util';
 
 import type { DebtSectionInterface } from '../interface/debt-section.interface';
@@ -71,15 +72,14 @@ const buildInstitutionGroups = (
             : [];
     });
 
+    const integrations = entries.map(({ integrationId, provider, label }) => ({ id: integrationId, provider, label }));
+
     return entries.map(entry => {
-        const unlabeledSameProviderIntegrationIds = entries
-            .filter(other => other.provider === entry.provider && !isDefined(other.label))
-            .map(other => other.integrationId)
-            .sort((left, right) => left - right);
-        const groupNumber =
-            !isDefined(entry.label) && unlabeledSameProviderIntegrationIds.length > 1
-                ? unlabeledSameProviderIntegrationIds.indexOf(entry.integrationId) + 1
-                : null;
+        const groupNumber = getIntegrationGroupNumber(integrations, {
+            id: entry.integrationId,
+            provider: entry.provider,
+            label: entry.label
+        });
 
         return { ...entry, groupNumber, total: sumConvertedBalances(entry.accounts, balancesByAccountId) };
     });

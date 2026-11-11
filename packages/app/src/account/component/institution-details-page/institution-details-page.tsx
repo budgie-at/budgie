@@ -4,7 +4,6 @@ import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
 import { ScreenChromeFrame } from '@rnw-community/react-native-screen-chrome';
-import { isDefined } from '@rnw-community/shared';
 
 import { CollapsibleChromeHeader } from '../../../@generic/component/collapsible-chrome-header/collapsible-chrome-header';
 import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
@@ -18,9 +17,9 @@ import { getBankIntegrationCapabilities } from '../../../sync/utils/get-bank-int
 import { CollapsibleChromeTransactionList } from '../../../transaction/components/collapsible-chrome-transaction-list/collapsible-chrome-transaction-list';
 import { TransactionAccountTitlePrefixContext } from '../../../transaction/context/transaction-account-title-prefix.context';
 import { ACCOUNT_DETAILS_SCREEN_CHROME_CONFIG } from '../../constant/account-details-screen-chrome-config.constant';
-import { BANK_PROVIDER_TITLE } from '../../constant/bank-provider-title.constant';
 import { useIsStaticAccountDetailsHeader } from '../../hook/use-is-static-account-details-header.hook';
 import { getBankIntegrationTitle } from '../../utils/get-bank-integration-title.util';
+import { getBankProviderTitle } from '../../utils/get-bank-provider-title.util';
 import { AccountDetailsHeaderBackdrop } from '../account-details-header-backdrop/account-details-header-backdrop';
 import { AccountDetailsHeroBalance } from '../account-details-hero-balance/account-details-hero-balance';
 import { AccountDetailsStaticTitle } from '../account-details-static-title/account-details-static-title';
@@ -45,9 +44,7 @@ export const InstitutionDetailsPage = ({ integration, institution, balancesByAcc
     const displayTotal = Number(institution.total.toFixed(decimalPlaces)) === 0 ? 0 : institution.total;
     const totalAccount = { type: AccountTypeEnum.BANK, instrument: defaultInstrument };
     const isStaticHeader = useIsStaticAccountDetailsHeader();
-    const titleDescriptor = BANK_PROVIDER_TITLE[institution.provider];
-    const providerTitle = isDefined(titleDescriptor) ? t(titleDescriptor) : institution.provider;
-    const title = getBankIntegrationTitle(providerTitle, institution.label, institution.groupNumber);
+    const title = getBankIntegrationTitle(getBankProviderTitle(t, institution.provider), institution.label, institution.groupNumber);
     const contextValue = { integration, capabilities: getBankIntegrationCapabilities(integration) };
     const titlePrefix = institution.provider === ExternalSourceEnum.INZHUR ? null : institution.provider;
     const headerTitle = isStaticHeader ? (

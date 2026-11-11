@@ -1,10 +1,8 @@
 import { useLingui } from '@lingui/react/macro';
 
-import { isDefined } from '@rnw-community/shared';
-
 import { BankLogo } from '../../../@generic/component/bank-logo/bank-logo';
-import { BANK_PROVIDER_TITLE } from '../../../account/constant/bank-provider-title.constant';
 import { getBankIntegrationTitle } from '../../../account/utils/get-bank-integration-title.util';
+import { getBankProviderTitle } from '../../../account/utils/get-bank-provider-title.util';
 import { getInstitutionAccountTitle } from '../../../account/utils/get-institution-account-title.util';
 import { HouseholdAccountShareGroup } from '../household-account-share-group/household-account-share-group';
 
@@ -18,12 +16,7 @@ interface Props extends Pick<HouseholdAccountShareGroupInterface, 'groupNumber' 
 export const HouseholdBankShareGroup = ({ groupKey, integration, groupNumber, accounts }: Props) => {
     const { t } = useLingui();
 
-    const titleDescriptor = BANK_PROVIDER_TITLE[integration.provider];
-    const title = getBankIntegrationTitle(
-        isDefined(titleDescriptor) ? t(titleDescriptor) : integration.provider,
-        integration.label,
-        groupNumber
-    );
+    const title = getBankIntegrationTitle(getBankProviderTitle(t, integration.provider), integration.label, groupNumber);
     const displayAccounts = accounts.map(account => ({
         ...account,
         title: getInstitutionAccountTitle(account.title, integration.provider)
