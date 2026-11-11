@@ -8,6 +8,7 @@ import { ProtectedText } from '../../../@generic/component/protected-text/protec
 import { StickySectionHeaderBackdrop } from '../../../@generic/component/sticky-section-header-backdrop/sticky-section-header-backdrop';
 import { FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/footnote-max-font-size-multiplier.constant';
 import { TITLE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/title-max-font-size-multiplier.constant';
+import { cn } from '../../../@generic/utils/cn.util';
 import { toTrueMinus } from '../../../@generic/utils/to-true-minus.util';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
@@ -15,11 +16,16 @@ import { defaultInstrumentAtom } from '../../../settings/constants/settings-atom
 interface Props {
     readonly title: string;
     readonly total: number | null;
+    readonly totalClassName?: string;
     readonly leading?: ReactNode;
+    readonly titleAccessory?: ReactNode;
+    readonly subtitleLeading?: ReactNode;
     readonly children?: ReactNode;
 }
 
-export const AccountSectionHeaderFrame = ({ title, total, leading, children }: Props) => {
+export const AccountSectionHeaderFrame = (props: Props) => {
+    const { title, total, totalClassName, leading, titleAccessory, subtitleLeading, children } = props;
+
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const formatDigits = useDisplayFormatDigits();
 
@@ -30,7 +36,7 @@ export const AccountSectionHeaderFrame = ({ title, total, leading, children }: P
             <StickySectionHeaderBackdrop />
             <View className="flex-row flex-wrap items-center justify-between gap-x-md">
                 <View className="min-w-0 shrink flex-row items-center gap-x-sm">
-                    {leading}
+                    <View className="w-[8px] items-center overflow-visible">{leading}</View>
                     <Text
                         accessibilityRole="header"
                         maxFontSizeMultiplier={TITLE_MAX_FONT_SIZE_MULTIPLIER}
@@ -38,17 +44,23 @@ export const AccountSectionHeaderFrame = ({ title, total, leading, children }: P
                     >
                         {title}
                     </Text>
+                    {titleAccessory}
                 </View>
                 {isDefined(formattedTotal) ? (
                     <ProtectedText
                         maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER}
-                        className="text-[15px] font-medium text-secondary-foreground tabular-nums"
+                        className={cn('text-[15px] font-medium text-secondary-foreground tabular-nums', totalClassName)}
                     >
                         {formattedTotal}
                     </ProtectedText>
                 ) : null}
             </View>
-            {children}
+            {isDefined(children) ? (
+                <View className="-mt-xs flex-row items-center gap-x-sm">
+                    <View className="w-[8px] items-center overflow-visible">{subtitleLeading}</View>
+                    <View className="min-w-0 flex-1">{children}</View>
+                </View>
+            ) : null}
         </View>
     );
 };

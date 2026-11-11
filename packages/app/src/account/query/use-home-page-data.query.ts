@@ -105,8 +105,8 @@ const buildHomePageSections = (
     integrationLabels: ReadonlyMap<number, string | null>,
     balanceSummary: Pick<HomeAccountBalanceSummaryInterface, 'balancesByAccountId' | 'debtSectionTotals'>
 ): HomeSectionInterface[] => {
-    const isSharedByOther = (account: AccountWithSyncEntityInterface) =>
-        balanceSummary.balancesByAccountId.get(account.id)?.isSharedByOther === true;
+    const { balancesByAccountId } = balanceSummary;
+    const isSharedByOther = (account: AccountWithSyncEntityInterface) => balancesByAccountId.get(account.id)?.isSharedByOther === true;
     const familyAccounts = activeAccounts.filter(isSharedByOther).sort((left, right) => left.title.localeCompare(right.title));
     const ownAccounts = activeAccounts.filter(account => !isSharedByOther(account));
     const debtAccounts = ownAccounts.filter(account => account.type === AccountTypeEnum.DEBT);
@@ -119,7 +119,7 @@ const buildHomePageSections = (
         otherAccounts.filter(isProviderAccount),
         integrationProviders,
         integrationLabels,
-        balanceSummary.balancesByAccountId
+        balancesByAccountId
     );
     const institutionsByType = groupBy(institutions, getInstitutionSectionType);
     const debtGroups = groupBy(debtAccounts, account => getDebtSectionKind(account.debtType));
@@ -146,7 +146,7 @@ const buildHomePageSections = (
         return {
             kind: HomeSectionKindEnum.ACCOUNT_TYPE as const,
             type,
-            total: sumConvertedBalances(accounts, balanceSummary.balancesByAccountId) + institutionsTotal,
+            total: sumConvertedBalances(accounts, balancesByAccountId) + institutionsTotal,
             data: [...typeInstitutions, ...accountItems]
         };
     });
@@ -160,16 +160,16 @@ const buildHomePageSections = (
 
         return isNotEmptyArray(data) ? [{ kind, data, total: balanceSummary.debtSectionTotals.get(kind) ?? 0 }] : [];
     });
-
+    const familyTotal = sumConvertedBalances(familyAccounts, balancesByAccountId);
     const familySections = isNotEmptyArray(familyAccounts)
-        ? [{ kind: HomeSectionKindEnum.FAMILY as const, data: familyAccounts, total: 0 }]
+        ? [{ kind: HomeSectionKindEnum.FAMILY as const, data: familyAccounts, total: familyTotal }]
         : [];
     const cashSection = isNotEmptyArray(cashAccounts)
         ? [
               {
                   kind: HomeSectionKindEnum.CASH as const,
                   type: AccountTypeEnum.CASH as const,
-                  total: sumConvertedBalances(cashAccounts, balanceSummary.balancesByAccountId),
+                  total: sumConvertedBalances(cashAccounts, balancesByAccountId),
                   data: cashAccounts
               }
           ]

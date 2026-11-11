@@ -13,7 +13,7 @@ export const HomeSectionHeader = ({ section }: Props) => {
     const total = section.data.length === 1 ? null : section.total;
 
     if (section.kind === HomeSectionKindEnum.FAMILY) {
-        return <FamilySectionHeader />;
+        return <FamilySectionHeader total={total} />;
     }
 
     if (isDebtSection(section)) {

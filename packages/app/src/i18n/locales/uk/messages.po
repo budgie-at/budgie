@@ -1106,6 +1106,10 @@ msgstr "+{hiddenCategoryCount} ще"
 msgid "+{incomeAmount} / month"
 msgstr "+{incomeAmount} / міс."
 
+#: src/account/component/family-section-header/family-section-header.tsx
+msgid "<0>Paused</0> · not in your total"
+msgstr "<0>Призупинено</0> · не враховується у підсумку"
+
 #: src/budget/components/budget-limit-row/budget-limit-row.tsx
 msgid "−{carriedLabel} carried"
 msgstr "−{carriedLabel} перенесено"
@@ -7089,6 +7093,10 @@ msgstr "Відкрийте застосунок Inzhur"
 msgid "Open the Settings app and sign in to your Apple Account. Backups from your iPhone and iPad appear here."
 msgstr "Відкрийте «Налаштування» та ввійдіть в обліковий запис Apple. Копії з вашого iPhone та iPad з’являться тут."
 
+#: src/account/component/family-section-header/family-section-header.tsx
+msgid "Opens Family settings"
+msgstr "Відкриває налаштування родини"
+
 #: src/category/components/category-form-hero-icon/category-form-hero-icon.tsx
 msgid "Opens the icon picker"
 msgstr "Відкриває вибір іконки"
@@ -7393,6 +7401,10 @@ msgstr "Пауза"
 msgid "Paused"
 msgstr "Призупинено"
 
+#: src/account/component/family-section-header/family-section-header.tsx
+msgid "Paused, balances may be out of date. Sign in to iCloud to update"
+msgstr "Призупинено, баланси можуть бути застарілими. Увійдіть в iCloud, щоб оновити їх"
+
 #: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
 msgid "Paused: a different Apple Account is signed in"
 msgstr "Призупинено: увійшли в інший обліковий запис Apple"
@@ -7401,7 +7413,6 @@ msgstr "Призупинено: увійшли в інший обліковий 
 msgid "Paused: no Wi-Fi"
 msgstr "Призупинено: немає Wi-Fi"
 
-#: src/account/component/family-section-header/family-section-header.tsx
 #: src/household/component/family-row/family-row.tsx
 #: src/household/utils/get-household-summary-labels.util.ts
 msgid "Paused: sign in to iCloud"
@@ -8724,6 +8735,14 @@ msgstr "Поширено членом родини"
 #: src/category/components/category-family-section/category-family-section.tsx
 msgid "Shared with family"
 msgstr "Спільне з родиною"
+
+#: src/account/component/family-section-header/family-section-header.tsx
+msgid "Shared with you"
+msgstr "Спільне з вами"
+
+#: src/account/component/family-section-header/family-section-header.tsx
+msgid "Shared with you · not in your total"
+msgstr "Спільне з вами · не враховується у підсумку"
 
 #: src/household/utils/get-family-labels.util.ts
 msgid "Shared with your family"
