@@ -1,5 +1,5 @@
 import { buildConsolidationScopeFromTransactions } from '@budgie/consolidation';
-import { AccountRepository, BankIntegrationRepository, Db, SyncModeEnum, SyncRepository } from '@budgie/contracts';
+import { AccountRepository, BankIntegrationRepository, Db, SyncModeEnum, SyncRepository, TransactionRepository } from '@budgie/contracts';
 import { AccountBalanceIncrementalService, TransactionImportService, TransactionService } from '@budgie/ledger';
 import { RuleEngineService } from '@budgie/rules';
 import * as Effect from 'effect/Effect';
@@ -11,6 +11,7 @@ import { AccountReissueMergeService } from '../service/account-reissue-merge.ser
 import { SyncOperationMetadataService } from '../service/sync-operation-metadata.service';
 
 import { buildFileSyncImportReview } from './build-file-sync-import-review.util';
+import { isDeliveredByLiveConnection } from './is-delivered-by-live-connection.util';
 import { isKnownSyncTransaction } from './is-known-sync-transaction.util';
 import { makeSyncService } from './make-sync-service.util';
 import { mapBankTransactionToCreateInput } from './map-bank-transaction-to-create-input.util';
@@ -29,6 +30,7 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
     const accountRepository = yield* AccountRepository;
     const bankIntegrationRepository = yield* BankIntegrationRepository;
     const syncRepository = yield* SyncRepository;
+    const transactionRepository = yield* TransactionRepository;
     const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
     const transactionImportService = yield* TransactionImportService;
     const transactionService = yield* TransactionService;
@@ -36,7 +38,6 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
     const ruleEngineService = yield* RuleEngineService;
     const accountReissueMergeService = yield* AccountReissueMergeService;
     const syncService = yield* makeSyncService(definition);
-    const millisecondsPerSecond = 1000;
     const resolveMccCategoryLookupKey =
         definition.resolveMccCategoryLookupKey ?? ((transaction: SyncTransactionInterface) => transaction.category ?? '');
 
@@ -88,16 +89,13 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
         return account;
     });
 
-    const isDeliveredByLiveConnection = ({ backwardSyncLimitAt, forwardSyncFromAt, provider }: SyncEntityInterface, timeMs: number) =>
-        provider === definition.provider
-            ? isDefined(backwardSyncLimitAt) &&
-              isDefined(forwardSyncFromAt) &&
-              timeMs >= backwardSyncLimitAt.getTime() &&
-              timeMs < forwardSyncFromAt.getTime()
-            : timeMs >= (backwardSyncLimitAt?.getTime() ?? 0);
-
-    const isImportable = (transaction: SyncTransactionInterface, sync: SyncEntityInterface | undefined, context: ImportContextInterface) =>
-        (!isDefined(sync) || !isDeliveredByLiveConnection(sync, transaction.time * millisecondsPerSecond)) &&
+    const isImportable = (
+        transaction: SyncTransactionInterface,
+        sync: SyncEntityInterface | undefined,
+        earliestLiveAt: Date | null,
+        context: ImportContextInterface
+    ) =>
+        (!isDefined(sync) || !isDeliveredByLiveConnection(sync, definition.provider, earliestLiveAt, transaction.time)) &&
         (isKnownSyncTransaction(transaction, context.existingTransactionIdMap) ||
             !isKnownSyncTransaction(transaction, context.deletedExternalIds));
 
@@ -107,9 +105,13 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
         context: ImportContextInterface
     ) {
         const account = yield* prepareImportAccount(bankAccount);
-
         const sync = yield* syncRepository.getByAccountId(account.id);
-        const transactions = client.getTransactions(bankAccount.id).filter(transaction => isImportable(transaction, sync, context));
+        const earliestLiveAt = isDefined(sync)
+            ? yield* transactionRepository.getEarliestTransactionTimeByAccountIdAndSource(account.id, sync.provider)
+            : null;
+        const transactions = client
+            .getTransactions(bankAccount.id)
+            .filter(transaction => isImportable(transaction, sync, earliestLiveAt, context));
         if (!isNotEmptyArray(transactions)) {
             return {
                 newTransactions: [],
