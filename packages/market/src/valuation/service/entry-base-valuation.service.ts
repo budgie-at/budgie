@@ -16,6 +16,7 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
+import { findLastIndexOnOrBefore } from '../../@generic/utils/find-last-index-on-or-before.util';
 import { resolveDirectOrInverseRate } from '../../@generic/utils/resolve-direct-or-inverse-rate.util';
 import { ExchangeRateRepository } from '../../exchange-rate/repository/exchange-rate.repository';
 import { ExchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
@@ -24,6 +25,7 @@ import { HistoricalExchangeRateRepository } from '../../historical-exchange-rate
 import type { EntryBaseValuationContextInterface } from '../interface/entry-base-valuation-context.interface';
 import type { EntryBaseValuationInputInterface } from '../interface/entry-base-valuation-input.interface';
 import type { EntryBaseValuationInterface } from '../interface/entry-base-valuation.interface';
+import type { RateLookupsInterface } from '../interface/rate-lookups.interface';
 import type {
     AccountWithInstrumentEntityInterface,
     TransactionCreateInputInterface,
@@ -67,22 +69,81 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
             return yield* Effect.die(new Error(`Exchange rate ${account.instrumentId}->${targetInstrumentId} not found`));
         });
 
-        const resolveHistoricalEuroRate = Effect.fnUntraced(function* (instrumentId: number, euroInstrumentId: number, rateDate: string) {
+        const queryLookups: RateLookupsInterface = {
+            findForDateOrBefore: historicalExchangeRateRepository.findForDateOrBefore,
+            findEarliest: historicalExchangeRateRepository.findEarliest,
+            findLatest: exchangeRateRepository.findByBaseAndQuoteIds,
+            findInstrumentByCode: instrumentRepository.findByCode
+        };
+
+        const makeRangeLookups = Effect.fnUntraced(function* (fromDate: string, toDate: string) {
+            const capacity = Number.MAX_SAFE_INTEGER;
+            const rangeRates = yield* Cache.make({
+                capacity,
+                lookup: ([sourceInstrumentId, targetInstrumentId]: readonly [number, number]) =>
+                    Effect.map(
+                        Effect.all([
+                            historicalExchangeRateRepository.findForDateOrBefore(sourceInstrumentId, targetInstrumentId, fromDate),
+                            historicalExchangeRateRepository.findInDateRange(sourceInstrumentId, targetInstrumentId, fromDate, toDate)
+                        ]),
+                        ([before, inRange]) => {
+                            const rates = isDefined(before) && before.rateDate < fromDate ? [before, ...inRange] : inRange;
+
+                            return { rates, rateDates: rates.map(rate => rate.rateDate) };
+                        }
+                    )
+            });
+            const earliest = yield* Cache.make({
+                capacity,
+                lookup: ([sourceInstrumentId, targetInstrumentId]: readonly [number, number]) =>
+                    historicalExchangeRateRepository.findEarliest(sourceInstrumentId, targetInstrumentId)
+            });
+            const latest = yield* Cache.make({
+                capacity,
+                lookup: ([baseInstrumentId, quoteInstrumentId]: readonly [number, number]) =>
+                    exchangeRateRepository.findByBaseAndQuoteIds(baseInstrumentId, quoteInstrumentId)
+            });
+            const instruments = yield* Cache.make({ capacity, lookup: (code: CurrencyEnum) => instrumentRepository.findByCode(code) });
+
+            const lookups: RateLookupsInterface = {
+                findForDateOrBefore: (sourceInstrumentId, targetInstrumentId, rateDate) =>
+                    rateDate < fromDate || rateDate > toDate
+                        ? historicalExchangeRateRepository.findForDateOrBefore(sourceInstrumentId, targetInstrumentId, rateDate)
+                        : Effect.map(
+                              Cache.get(rangeRates, [sourceInstrumentId, targetInstrumentId] as const),
+                              ({ rates, rateDates }) => rates[findLastIndexOnOrBefore(rateDates, rateDate)]
+                          ),
+                findEarliest: (sourceInstrumentId, targetInstrumentId) =>
+                    Cache.get(earliest, [sourceInstrumentId, targetInstrumentId] as const),
+                findLatest: (baseInstrumentId, quoteInstrumentId) => Cache.get(latest, [baseInstrumentId, quoteInstrumentId] as const),
+                findInstrumentByCode: code => Cache.get(instruments, code)
+            };
+
+            return lookups;
+        });
+
+        const resolveHistoricalEuroRate = Effect.fnUntraced(function* (
+            lookups: RateLookupsInterface,
+            instrumentId: number,
+            euroInstrumentId: number,
+            rateDate: string
+        ) {
             if (instrumentId === euroInstrumentId) {
                 return 1;
             }
 
-            const exchangeRate = yield* historicalExchangeRateRepository.findForDateOrBefore(instrumentId, euroInstrumentId, rateDate);
+            const exchangeRate = yield* lookups.findForDateOrBefore(instrumentId, euroInstrumentId, rateDate);
 
             return isDefined(exchangeRate) ? exchangeRate.rate : null;
         });
 
         const resolveHistoricalBridgeExchangeRate = Effect.fnUntraced(function* (
+            lookups: RateLookupsInterface,
             sourceInstrumentId: number,
             targetInstrumentId: number,
             rateDate: string
         ) {
-            const euroInstrument = yield* instrumentRepository.findByCode(CurrencyEnum.EUR);
+            const euroInstrument = yield* lookups.findInstrumentByCode(CurrencyEnum.EUR);
 
             if (!isDefined(euroInstrument)) {
                 return null;
@@ -90,8 +151,8 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
 
             const [sourceToEuroRate, targetToEuroRate] = yield* Effect.all(
                 [
-                    resolveHistoricalEuroRate(sourceInstrumentId, euroInstrument.id, rateDate),
-                    resolveHistoricalEuroRate(targetInstrumentId, euroInstrument.id, rateDate)
+                    resolveHistoricalEuroRate(lookups, sourceInstrumentId, euroInstrument.id, rateDate),
+                    resolveHistoricalEuroRate(lookups, targetInstrumentId, euroInstrument.id, rateDate)
                 ],
                 { concurrency: 'unbounded' }
             );
@@ -104,13 +165,14 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
         });
 
         const resolveDirectHistoricalRateOrNull = Effect.fnUntraced(function* (
+            lookups: RateLookupsInterface,
             sourceInstrumentId: number,
             targetInstrumentId: number,
             operatedAt: Date
         ) {
             const rateDate = format(operatedAt, rateDateFormat);
             const dateRate = yield* resolveDirectOrInverseRate(
-                (sourceId, targetId) => historicalExchangeRateRepository.findForDateOrBefore(sourceId, targetId, rateDate),
+                (sourceId, targetId) => lookups.findForDateOrBefore(sourceId, targetId, rateDate),
                 sourceInstrumentId,
                 targetInstrumentId
             );
@@ -119,55 +181,67 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
                 return dateRate;
             }
 
-            const oldestRate = yield* resolveDirectOrInverseRate(
-                (sourceId, targetId) => historicalExchangeRateRepository.findEarliest(sourceId, targetId),
-                sourceInstrumentId,
-                targetInstrumentId
-            );
+            const oldestRate = yield* resolveDirectOrInverseRate(lookups.findEarliest, sourceInstrumentId, targetInstrumentId);
 
             if (isDefined(oldestRate)) {
                 return oldestRate;
             }
 
-            const bridgeExchangeRate = yield* resolveHistoricalBridgeExchangeRate(sourceInstrumentId, targetInstrumentId, rateDate);
+            const bridgeExchangeRate = yield* resolveHistoricalBridgeExchangeRate(
+                lookups,
+                sourceInstrumentId,
+                targetInstrumentId,
+                rateDate
+            );
 
             if (isDefined(bridgeExchangeRate)) {
                 return bridgeExchangeRate;
             }
 
-            return yield* resolveDirectOrInverseRate(
-                (sourceId, targetId) => exchangeRateRepository.findByBaseAndQuoteIds(sourceId, targetId),
-                sourceInstrumentId,
-                targetInstrumentId
-            );
+            return yield* resolveDirectOrInverseRate(lookups.findLatest, sourceInstrumentId, targetInstrumentId);
         });
 
-        const resolveHistoricalBaseExchangeRateOrNull = Effect.fn('EntryBaseValuationService.resolveHistoricalBaseExchangeRateOrNull')(
-            function* (sourceInstrumentId: number, targetInstrumentId: number, operatedAt: Date) {
-                const directRate = yield* resolveDirectHistoricalRateOrNull(sourceInstrumentId, targetInstrumentId, operatedAt);
+        const resolveBaseExchangeRateOrNull = Effect.fnUntraced(function* (
+            lookups: RateLookupsInterface,
+            sourceInstrumentId: number,
+            targetInstrumentId: number,
+            operatedAt: Date
+        ) {
+            const directRate = yield* resolveDirectHistoricalRateOrNull(lookups, sourceInstrumentId, targetInstrumentId, operatedAt);
 
-                if (isDefined(directRate)) {
-                    return directRate;
-                }
-
-                const hryvniaInstrument = yield* instrumentRepository.findByCode(CurrencyEnum.UAH);
-
-                if (
-                    !isDefined(hryvniaInstrument) ||
-                    sourceInstrumentId === hryvniaInstrument.id ||
-                    targetInstrumentId === hryvniaInstrument.id
-                ) {
-                    return null;
-                }
-
-                const sourceToHryvniaRate = yield* resolveDirectHistoricalRateOrNull(sourceInstrumentId, hryvniaInstrument.id, operatedAt);
-                const hryvniaToTargetRate = yield* resolveDirectHistoricalRateOrNull(hryvniaInstrument.id, targetInstrumentId, operatedAt);
-
-                return isDefined(sourceToHryvniaRate) && isDefined(hryvniaToTargetRate) ? sourceToHryvniaRate * hryvniaToTargetRate : null;
+            if (isDefined(directRate)) {
+                return directRate;
             }
-        );
 
-        const createContext = Effect.fn('EntryBaseValuationService.createContext')(function* () {
+            const hryvniaInstrument = yield* lookups.findInstrumentByCode(CurrencyEnum.UAH);
+
+            if (
+                !isDefined(hryvniaInstrument) ||
+                sourceInstrumentId === hryvniaInstrument.id ||
+                targetInstrumentId === hryvniaInstrument.id
+            ) {
+                return null;
+            }
+
+            const sourceToHryvniaRate = yield* resolveDirectHistoricalRateOrNull(
+                lookups,
+                sourceInstrumentId,
+                hryvniaInstrument.id,
+                operatedAt
+            );
+            const hryvniaToTargetRate = yield* resolveDirectHistoricalRateOrNull(
+                lookups,
+                hryvniaInstrument.id,
+                targetInstrumentId,
+                operatedAt
+            );
+
+            return isDefined(sourceToHryvniaRate) && isDefined(hryvniaToTargetRate) ? sourceToHryvniaRate * hryvniaToTargetRate : null;
+        });
+
+        const createContext = Effect.fn('EntryBaseValuationService.createContext')(function* (operatedAts: readonly Date[]) {
+            const rateDates = operatedAts.map(operatedAt => format(operatedAt, rateDateFormat)).sort();
+            const lookups = yield* makeRangeLookups(rateDates.at(0) ?? '', rateDates.at(-1) ?? '');
             const context: EntryBaseValuationContextInterface = {
                 baseInstrument: yield* exchangeRatesService.getBaseInstrument(),
                 accounts: yield* Cache.make({
@@ -177,7 +251,7 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
                 rates: yield* Cache.make({
                     capacity: Number.MAX_SAFE_INTEGER,
                     lookup: ([sourceInstrumentId, targetInstrumentId, rateDayStart]: readonly [number, number, number]) =>
-                        resolveHistoricalBaseExchangeRateOrNull(sourceInstrumentId, targetInstrumentId, new Date(rateDayStart))
+                        resolveBaseExchangeRateOrNull(lookups, sourceInstrumentId, targetInstrumentId, new Date(rateDayStart))
                 })
             };
 
@@ -257,11 +331,14 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
         });
 
         return {
-            resolveHistoricalBaseExchangeRateOrNull,
+            resolveHistoricalBaseExchangeRateOrNull: Effect.fn('EntryBaseValuationService.resolveHistoricalBaseExchangeRateOrNull')(
+                (sourceInstrumentId: number, targetInstrumentId: number, operatedAt: Date) =>
+                    resolveBaseExchangeRateOrNull(queryLookups, sourceInstrumentId, targetInstrumentId, operatedAt)
+            ),
             valueMicroUnitEntry: Effect.fn('EntryBaseValuationService.valueMicroUnitEntry')(function* (
                 input: EntryBaseValuationInputInterface
             ) {
-                const valuationContext = yield* createContext();
+                const valuationContext = yield* createContext([input.operatedAt]);
 
                 return yield* valueAccountAmount(input, valuationContext);
             }),
@@ -269,14 +346,14 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
                 entries: TransactionEntryCreateInputInterface[],
                 operatedAt: Date
             ) {
-                const valuationContext = yield* createContext();
+                const valuationContext = yield* createContext([operatedAt]);
 
                 return yield* valueEntriesInContext(entries, operatedAt, valuationContext);
             }),
             valueTransactionsEntries: Effect.fn('EntryBaseValuationService.valueTransactionsEntries')(function* (
                 transactions: readonly Pick<TransactionCreateInputInterface, 'entries' | 'operatedAt'>[]
             ) {
-                const context = yield* createContext();
+                const context = yield* createContext(transactions.map(transaction => transaction.operatedAt));
 
                 return yield* Effect.forEach(
                     transactions,

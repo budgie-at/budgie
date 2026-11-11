@@ -13,3 +13,4 @@ export type { EntryBaseValuationInterface } from './valuation/interface/entry-ba
 export type { CryptoPositionInterface } from './market-data/interface/crypto-position.interface';
 
 export type { InzhurFundPriceInterface } from './market-data/interface/inzhur-fund-price.interface';
+export { findLastIndexOnOrBefore } from './@generic/utils/find-last-index-on-or-before.util';

@@ -311,8 +311,9 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
                         [transaction.externalId, ...transaction.entries.map(entry => entry.externalId)].filter(isNotEmptyString)
                     )
                 );
+                const ledgerByExternalId = new Map(ledger.map(transaction => [transaction.externalId, transaction]));
                 const storedTrade = (action: InzhurPlannedActionInterface) => {
-                    const transaction = ledger.find(item => item.externalId === action.externalId);
+                    const transaction = ledgerByExternalId.get(action.externalId);
                     const fundAccountId = accountByFund.get(action.fundName ?? '')?.id;
 
                     return {

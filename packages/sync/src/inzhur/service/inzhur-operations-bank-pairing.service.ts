@@ -60,7 +60,7 @@ export class InzhurOperationsBankPairingService extends Context.Service<InzhurOp
             };
 
             const findBankTransfer = (
-                ledger: readonly TransactionWithEntriesEntityInterface[],
+                bankTransfers: readonly TransactionWithEntriesEntityInterface[],
                 action: InzhurPlannedActionInterface,
                 cashAccountId: number,
                 claimedIds: ReadonlySet<number>
@@ -70,11 +70,7 @@ export class InzhurOperationsBankPairingService extends Context.Service<InzhurOp
                 const amountMicroUnits = convertToMicroUnits(action.cashAmount);
 
                 return pickNearest(
-                    ledger.filter(
-                        transaction =>
-                            transaction.type === TransactionTypeEnum.TRANSFER &&
-                            INZHUR_BANK_DESCRIPTION_PATTERNS.externalSources.some(source => source === transaction.externalSource)
-                    ),
+                    bankTransfers,
                     action,
                     claimedIds,
                     entry => entry.accountId === cashAccountId && entry.type === entryType && entry.amount === amountMicroUnits
@@ -137,17 +133,16 @@ export class InzhurOperationsBankPairingService extends Context.Service<InzhurOp
                 const isBankTransfer = (transaction: TransactionWithEntriesEntityInterface) =>
                     transaction.type === TransactionTypeEnum.TRANSFER &&
                     INZHUR_BANK_DESCRIPTION_PATTERNS.externalSources.some(source => source === transaction.externalSource);
+                const bankTransfers = ledger.filter(isBankTransfer);
                 const stampedBankByOperationId = new Map<string, TransactionWithEntriesEntityInterface>(
-                    ledger.flatMap(transaction =>
-                        isBankTransfer(transaction)
-                            ? transaction.entries
-                                  .filter(
-                                      entry =>
-                                          entry.accountId === setup.cashAccount.id &&
-                                          entry.externalId?.startsWith(INZHUR_OPERATION_EXTERNAL_ID_PREFIX)
-                                  )
-                                  .flatMap(entry => (isDefined(entry.externalId) ? [[entry.externalId, transaction] as const] : []))
-                            : []
+                    bankTransfers.flatMap(transaction =>
+                        transaction.entries
+                            .filter(
+                                entry =>
+                                    entry.accountId === setup.cashAccount.id &&
+                                    entry.externalId?.startsWith(INZHUR_OPERATION_EXTERNAL_ID_PREFIX)
+                            )
+                            .flatMap(entry => (isDefined(entry.externalId) ? [[entry.externalId, transaction] as const] : []))
                     )
                 );
                 const claimedBankIds = new Set([...stampedBankByOperationId.values()].map(transaction => transaction.id));
@@ -161,7 +156,7 @@ export class InzhurOperationsBankPairingService extends Context.Service<InzhurOp
                     item => item.kind === InzhurOperationKindEnum.TOP_UP || item.kind === InzhurOperationKindEnum.WITHDRAWAL
                 )) {
                     const isKnown = stampedBankByOperationId.has(action.externalId) || existingIds.has(action.externalId);
-                    const bankTransfer = isKnown ? null : findBankTransfer(ledger, action, setup.cashAccount.id, claimedBankIds);
+                    const bankTransfer = isKnown ? null : findBankTransfer(bankTransfers, action, setup.cashAccount.id, claimedBankIds);
                     const bankDividend =
                         isKnown || isDefined(bankTransfer) || action.kind !== InzhurOperationKindEnum.WITHDRAWAL
                             ? null
