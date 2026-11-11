@@ -121,12 +121,18 @@ beforeEach(() => {
 
 afterEach(() => {
     mockServer.resetHandlers();
-    expect(unhandledRequests).toEqual([]);
     const previousDispatcher = getGlobalDispatcher();
     setGlobalDispatcher(new Agent());
 
     return Effect.runPromise(
-        Effect.promise(() => previousDispatcher.destroy()).pipe(Effect.andThen(assertStoredBalancesMatchLedger(testDb)))
+        Effect.promise(() => previousDispatcher.destroy()).pipe(
+            Effect.andThen(assertStoredBalancesMatchLedger(testDb)),
+            Effect.andThen(
+                Effect.sync(() => {
+                    expect(unhandledRequests).toEqual([]);
+                })
+            )
+        )
     );
 });
 
