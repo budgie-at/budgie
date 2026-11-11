@@ -70,6 +70,17 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
             }
         });
 
+        const moveDatabaseFiles = (sourcePath: string, destinationPath: string) =>
+            Effect.forEach(
+                ['', '-wal', '-shm'],
+                suffix => {
+                    const sourceFile = new File(`${sourcePath}${suffix}`);
+
+                    return sourceFile.exists ? Effect.promise(() => sourceFile.move(new File(`${destinationPath}${suffix}`))) : Effect.void;
+                },
+                { discard: true }
+            );
+
         const copyDatabaseSidecars = Effect.fn('DatabaseImportService.copyDatabaseSidecars')(function* (
             sourceUri: string,
             destinationPath: string
@@ -87,15 +98,28 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
 
         const replaceFromUri = Effect.fn('DatabaseImportService.replaceFromUri')(function* (sourceUri: string) {
             const destinationPath = new File(DATABASE_DIRECTORY, DB_NAME).uri;
+            const replacedPath = `${destinationPath}.replaced`;
             const tempPath = `${Paths.cache.uri}/import-temp.db`;
 
             yield* aiStorageReplacementService.pauseLongLivedRuntime();
             deleteFileIfExists(tempPath);
+            deleteProbeFiles(replacedPath);
             yield* Effect.promise(() => new File(sourceUri).copy(new File(tempPath)));
             yield* databaseLifecycleService.close();
-            deleteProbeFiles(destinationPath);
-            yield* Effect.promise(() => new File(tempPath).move(new File(destinationPath)));
-            yield* copyDatabaseSidecars(sourceUri, destinationPath);
+            yield* moveDatabaseFiles(destinationPath, replacedPath).pipe(
+                Effect.andThen(
+                    Effect.promise(() => new File(tempPath).move(new File(destinationPath))).pipe(
+                        Effect.andThen(copyDatabaseSidecars(sourceUri, destinationPath)),
+                        Effect.onError(() =>
+                            Effect.sync(() => {
+                                deleteProbeFiles(destinationPath);
+                            })
+                        )
+                    )
+                ),
+                Effect.onError(() => moveDatabaseFiles(replacedPath, destinationPath))
+            );
+            deleteProbeFiles(replacedPath);
         });
 
         const runImport = Effect.fn('DatabaseImportService.runImport')(function* (pickedUri: string, backupPin: string | null) {
