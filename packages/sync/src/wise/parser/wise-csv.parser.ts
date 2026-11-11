@@ -1,3 +1,4 @@
+import { millisecondsInSecond } from 'date-fns/constants';
 import * as Option from 'effect/Option';
 import * as Result from 'effect/Result';
 import * as Schema from 'effect/Schema';
@@ -25,11 +26,10 @@ const WiseCsvRowSchema = Schema.Struct({
 
 const WISE_CSV_COLUMNS = Object.keys(WiseCsvRowSchema.fields);
 const DATE_TIME_PATTERN = /^(\d{2})-(\d{2})-(\d{4}) (\d{2}:\d{2}:\d{2}).*$/u;
-const MILLISECONDS_PER_SECOND = 1000;
 
 const decodeRow = Schema.decodeUnknownOption(WiseCsvRowSchema);
 
-const parseTime = (dateTime: string): number => Date.parse(dateTime.replace(DATE_TIME_PATTERN, '$3-$2-$1T$4Z')) / MILLISECONDS_PER_SECOND;
+const parseTime = (dateTime: string): number => Date.parse(dateTime.replace(DATE_TIME_PATTERN, '$3-$2-$1T$4Z')) / millisecondsInSecond;
 
 const mapRow = (row: typeof WiseCsvRowSchema.Type): SyncTransactionInterface => {
     const isIncome = row['Transaction Type'] === 'CREDIT';

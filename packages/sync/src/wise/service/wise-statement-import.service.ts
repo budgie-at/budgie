@@ -65,24 +65,26 @@ export class WiseStatementImportService extends Context.Service<WiseStatementImp
             ) {
                 const { client, bankAccounts: fileBankAccounts } = yield* parseFile(uri);
                 const accounts = yield* accountRepository.findByIntegrationId(integrationId);
-                const targets = fileBankAccounts.flatMap(({ currencyCode }) => {
-                    const matches = accounts.filter(account => account.instrument.code === currencyCode);
-                    const [account] = matches;
+                const matches = fileBankAccounts.flatMap(({ currencyCode }) => {
+                    const candidates = accounts.filter(account => account.instrument.code === currencyCode);
+                    const [account] = candidates;
 
-                    return matches.length === 1 && isDefined(account.externalId) ? [{ externalId: account.externalId, currencyCode }] : [];
+                    return candidates.length === 1 && isDefined(account.externalId)
+                        ? [{ externalId: account.externalId, currencyCode, transactions: client.getTransactions(currencyCode) }]
+                        : [];
                 });
-                const currencyByExternalId = new Map(targets.map(({ externalId, currencyCode }) => [externalId, currencyCode]));
-                const countTransactions = (currencyCodes: Iterable<string>) =>
-                    [...currencyCodes].reduce((total, currencyCode) => total + client.getTransactions(currencyCode).length, 0);
+                const transactionsByExternalId = new Map(matches.map(({ externalId, transactions }) => [externalId, transactions]));
+                const bankAccounts = matches.map(({ externalId, currencyCode }) => buildBankAccount(externalId, currencyCode));
+                const countTransactions = (groups: Iterable<readonly unknown[]>) =>
+                    [...groups].reduce((total, group) => total + group.length, 0);
                 const skippedTransactionCount =
-                    countTransactions(fileBankAccounts.map(({ currencyCode }) => currencyCode)) -
-                    countTransactions(currencyByExternalId.values());
-                const bankAccounts = targets.map(({ externalId, currencyCode }) => buildBankAccount(externalId, currencyCode));
+                    countTransactions(fileBankAccounts.map(({ currencyCode }) => client.getTransactions(currencyCode))) -
+                    countTransactions(transactionsByExternalId.values());
 
                 const result = yield* fileSyncService.importParsed(
                     {
                         getAccounts: () => bankAccounts,
-                        getTransactions: externalId => client.getTransactions(currencyByExternalId.get(externalId) ?? '')
+                        getTransactions: externalId => transactionsByExternalId.get(externalId) ?? []
                     },
                     bankAccounts
                 );
