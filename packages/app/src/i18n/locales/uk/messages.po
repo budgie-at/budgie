@@ -182,6 +182,10 @@ msgstr "{0, plural, one {Очікуємо, поки # людина приєдн�
 msgid "{absoluteQuantity, plural, one {{count} certificate} other {{count} certificates}}"
 msgstr "{absoluteQuantity, plural, one {{count} сертифікат} few {{count} сертифікати} many {{count} сертифікатів} other {{count} сертифіката}}"
 
+#: src/household/component/household-account-share-group-row/household-account-share-group-row.tsx
+msgid "{accountCount, plural, one {{sharedCount} of # shared} other {{sharedCount} of # shared}}"
+msgstr "{accountCount, plural, one {Спільні: {sharedCount} з #} few {Спільні: {sharedCount} з #} many {Спільні: {sharedCount} з #} other {Спільні: {sharedCount} з #}}"
+
 #: src/onboarding/hook/use-onboarding-file-state.hook.ts
 msgid "{accountCount, plural, one {# account} other {# accounts}}"
 msgstr "{accountCount, plural, one {# рахунок} few {# рахунки} many {# рахунків} other {# рахунку}}"
@@ -1613,6 +1617,10 @@ msgstr "Усі минулі суми конвертовано"
 #: src/import/utils/get-import-required-footer.util.ts
 msgid "All required fields matched. Tap a field to change it."
 msgstr "Усі обов’язкові поля зіставлено. Торкніться поля, щоб змінити його."
+
+#: src/household/component/household-account-share-group-row/household-account-share-group-row.tsx
+msgid "All shared"
+msgstr "Усі спільні"
 
 #: src/i18n/hook/use-format-date-range.hook.ts
 msgid "All time"
@@ -3566,8 +3574,8 @@ msgid "Could not update settings"
 msgstr "Не вдалося оновити налаштування"
 
 #: src/budget/components/budget-share-field/budget-share-field.tsx
-#: src/household/component/household-account-share-row/household-account-share-row.tsx
 #: src/household/component/household-share-section/household-share-section.tsx
+#: src/household/hook/use-household-accounts-sharing.hook.ts
 msgid "Could not update sharing"
 msgstr "Не вдалося оновити спільний доступ"
 
@@ -6790,6 +6798,10 @@ msgstr "не встановлено"
 msgid "Not set"
 msgstr "Не задано"
 
+#: src/household/component/household-account-share-group-row/household-account-share-group-row.tsx
+msgid "Not shared"
+msgstr "Не спільні"
+
 #: src/household/component/family-row/family-row.tsx
 msgid "Not shared yet"
 msgstr "Ще не спільне"
@@ -8698,6 +8710,10 @@ msgstr "Поділитися файлом копії"
 msgid "Share accounts with family"
 msgstr "Ділитися рахунками з родиною"
 
+#: src/household/component/household-account-share-group-row/household-account-share-group-row.tsx
+msgid "Share all {title}"
+msgstr "Ділитися всім: {title}"
+
 #: src/household/component/household-share-section/household-share-section.tsx
 msgid "Share all your accounts"
 msgstr "Ділитися всіма рахунками"
@@ -8824,6 +8840,10 @@ msgstr "Показує всі категорії"
 #: src/budget/components/budget-verdict/budget-verdict.tsx
 msgid "Shows how this is calculated"
 msgstr "Показує, як це розраховано"
+
+#: src/household/component/household-account-share-group-row/household-account-share-group-row.tsx
+msgid "Shows or hides its accounts"
+msgstr "Показує або приховує рахунки"
 
 #: src/rule/components/rule-form-submit-bar/rule-form-submit-bar.tsx
 msgid "Shows what is missing"

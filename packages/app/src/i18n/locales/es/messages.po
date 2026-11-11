@@ -182,6 +182,10 @@ msgstr "{0, plural, one {Esperando a # persona para unirse} other {Esperando a #
 msgid "{absoluteQuantity, plural, one {{count} certificate} other {{count} certificates}}"
 msgstr "{absoluteQuantity, plural, one {{count} certificado} other {{count} certificados}}"
 
+#: src/household/component/household-account-share-group-row/household-account-share-group-row.tsx
+msgid "{accountCount, plural, one {{sharedCount} of # shared} other {{sharedCount} of # shared}}"
+msgstr "{accountCount, plural, one {{sharedCount} de # compartida} other {{sharedCount} de # compartidas}}"
+
 #: src/onboarding/hook/use-onboarding-file-state.hook.ts
 msgid "{accountCount, plural, one {# account} other {# accounts}}"
 msgstr "{accountCount, plural, one {# cuenta} other {# cuentas}}"
@@ -1613,6 +1617,10 @@ msgstr "Todos los importes pasados están convertidos"
 #: src/import/utils/get-import-required-footer.util.ts
 msgid "All required fields matched. Tap a field to change it."
 msgstr "Todos los campos obligatorios asignados. Toca un campo para cambiarlo."
+
+#: src/household/component/household-account-share-group-row/household-account-share-group-row.tsx
+msgid "All shared"
+msgstr "Todas compartidas"
 
 #: src/i18n/hook/use-format-date-range.hook.ts
 msgid "All time"
@@ -3566,8 +3574,8 @@ msgid "Could not update settings"
 msgstr "No se pudo actualizar la configuración"
 
 #: src/budget/components/budget-share-field/budget-share-field.tsx
-#: src/household/component/household-account-share-row/household-account-share-row.tsx
 #: src/household/component/household-share-section/household-share-section.tsx
+#: src/household/hook/use-household-accounts-sharing.hook.ts
 msgid "Could not update sharing"
 msgstr "No se pudo actualizar lo compartido"
 
@@ -6790,6 +6798,10 @@ msgstr "no establecido"
 msgid "Not set"
 msgstr "Sin configurar"
 
+#: src/household/component/household-account-share-group-row/household-account-share-group-row.tsx
+msgid "Not shared"
+msgstr "No compartidas"
+
 #: src/household/component/family-row/family-row.tsx
 msgid "Not shared yet"
 msgstr "Aún sin compartir"
@@ -8698,6 +8710,10 @@ msgstr "Compartir un archivo de copia"
 msgid "Share accounts with family"
 msgstr "Compartir cuentas con la familia"
 
+#: src/household/component/household-account-share-group-row/household-account-share-group-row.tsx
+msgid "Share all {title}"
+msgstr "Compartir todo: {title}"
+
 #: src/household/component/household-share-section/household-share-section.tsx
 msgid "Share all your accounts"
 msgstr "Compartir todas tus cuentas"
@@ -8824,6 +8840,10 @@ msgstr "Muestra todas las categorías"
 #: src/budget/components/budget-verdict/budget-verdict.tsx
 msgid "Shows how this is calculated"
 msgstr "Muestra cómo se calcula"
+
+#: src/household/component/household-account-share-group-row/household-account-share-group-row.tsx
+msgid "Shows or hides its accounts"
+msgstr "Muestra u oculta sus cuentas"
 
 #: src/rule/components/rule-form-submit-bar/rule-form-submit-bar.tsx
 msgid "Shows what is missing"
