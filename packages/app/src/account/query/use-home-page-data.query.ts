@@ -12,6 +12,7 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
+import { groupBy } from '../../@generic/utils/group-by.util';
 import { decimalPlacesAtom, defaultInstrumentIdAtom } from '../../settings/constants/settings-atoms.constant';
 import { ACCOUNT_CONVERTED_BALANCE_TABLES } from '../constant/account-balance-tables.constant';
 import { HomeSectionKindEnum } from '../enum/home-section-kind.enum';
@@ -46,18 +47,6 @@ const sumConvertedBalances = (
     balancesByAccountId: ReadonlyMap<number, HomeAccountBalanceInterface>
 ): number => accounts.reduce((total, account) => total + (balancesByAccountId.get(account.id)?.convertedBalance ?? 0), 0);
 
-const groupBy = <Item, Key>(items: readonly Item[], getKey: (item: Item) => Key): Map<Key, Item[]> => {
-    const groups = new Map<Key, Item[]>();
-
-    items.forEach(item => {
-        const key = getKey(item);
-
-        groups.set(key, [...(groups.get(key) ?? []), item]);
-    });
-
-    return groups;
-};
-
 const buildInstitutionGroups = (
     providerAccounts: AccountWithSyncEntityInterface[],
     integrationProviders: ReadonlyMap<number, ExternalSourceEnum>,
@@ -74,15 +63,11 @@ const buildInstitutionGroups = (
 
     const integrations = entries.map(({ integrationId, provider, label }) => ({ id: integrationId, provider, label }));
 
-    return entries.map(entry => {
-        const groupNumber = getIntegrationGroupNumber(integrations, {
-            id: entry.integrationId,
-            provider: entry.provider,
-            label: entry.label
-        });
-
-        return { ...entry, groupNumber, total: sumConvertedBalances(entry.accounts, balancesByAccountId) };
-    });
+    return entries.map((entry, index) => ({
+        ...entry,
+        groupNumber: getIntegrationGroupNumber(integrations, integrations[index]),
+        total: sumConvertedBalances(entry.accounts, balancesByAccountId)
+    }));
 };
 
 const isCryptoInstitution = (institution: InstitutionGroupInterface): boolean =>

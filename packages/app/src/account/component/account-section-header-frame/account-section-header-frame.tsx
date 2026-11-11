@@ -19,13 +19,10 @@ interface Props {
     readonly totalClassName?: string;
     readonly leading?: ReactNode;
     readonly titleAccessory?: ReactNode;
-    readonly subtitleLeading?: ReactNode;
     readonly children?: ReactNode;
 }
 
-export const AccountSectionHeaderFrame = (props: Props) => {
-    const { title, total, totalClassName, leading, titleAccessory, subtitleLeading, children } = props;
-
+export const AccountSectionHeaderFrame = ({ title, total, totalClassName, leading, titleAccessory, children }: Props) => {
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const formatDigits = useDisplayFormatDigits();
 
@@ -55,12 +52,7 @@ export const AccountSectionHeaderFrame = (props: Props) => {
                     </ProtectedText>
                 ) : null}
             </View>
-            {isDefined(children) ? (
-                <View className="-mt-xs flex-row items-center gap-x-sm">
-                    <View className="w-[8px] items-center overflow-visible">{subtitleLeading}</View>
-                    <View className="min-w-0 flex-1">{children}</View>
-                </View>
-            ) : null}
+            {children}
         </View>
     );
 };

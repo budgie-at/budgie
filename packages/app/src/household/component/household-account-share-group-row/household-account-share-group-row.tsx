@@ -1,5 +1,7 @@
 import { useLingui } from '@lingui/react/macro';
+import { useState } from 'react';
 import { Text, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
@@ -8,9 +10,11 @@ import { LoadingContent } from '../../../@generic/component/loading-content/load
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 import { GROUPED_LIST_SUBTITLE_CLASSNAME } from '../../../@generic/constant/grouped-list-subtitle-class-name.constant';
 import { GROUPED_LIST_TITLE_CLASS_NAME } from '../../../@generic/constant/grouped-list-title-class-name.constant';
+import { PRESENCE_ENTERING, PRESENCE_EXITING } from '../../../@generic/constant/presence-motion.constant';
 import { cn } from '../../../@generic/utils/cn.util';
 import { useHouseholdAccountsSharing } from '../../hook/use-household-accounts-sharing.hook';
 import { HouseholdAccountShareGroupChevron } from '../household-account-share-group-chevron/household-account-share-group-chevron';
+import { HouseholdAccountShareRow } from '../household-account-share-row/household-account-share-row';
 
 import { HouseholdAccountShareGroupRowSelector } from './household-account-share-group-row.selector';
 
@@ -21,14 +25,15 @@ interface Props {
     readonly groupKey: string;
     readonly title: string;
     readonly left: ReactNode;
-    readonly accounts: readonly Pick<HouseholdAccountShareEntryInterface, 'id' | 'isShared'>[];
-    readonly isExpanded: boolean;
-    readonly onToggle: () => void;
+    readonly accounts: readonly HouseholdAccountShareEntryInterface[];
 }
 
-export const HouseholdAccountShareGroupRow = ({ groupKey, title, left, accounts, isExpanded, onToggle }: Props) => {
+export const HouseholdAccountShareGroupRow = ({ groupKey, title, left, accounts }: Props) => {
     const { t } = useLingui();
     const { setShared, isLoading } = useHouseholdAccountsSharing();
+    const [isExpanded, setIsExpanded] = useState(false);
+
+    const handleToggle = () => void setIsExpanded(!isExpanded);
 
     const handleChange = (next: boolean) =>
         void setShared(
@@ -44,45 +49,54 @@ export const HouseholdAccountShareGroupRow = ({ groupKey, title, left, accounts,
     const accessibilityState = { expanded: isExpanded };
 
     return (
-        <View className="min-h-[50px] flex-row items-center">
-            <View className="absolute top-0 right-0 left-[64px] h-hairline bg-surface-separator" pointerEvents="none" />
-            <HapticPressable
-                onPress={onToggle}
-                pressedScale={1}
-                accessibilityRole="button"
-                accessibilityLabel={`${title}, ${subtitle}`}
-                accessibilityHint={t`Shows or hides its accounts`}
-                accessibilityState={accessibilityState}
-                className="min-w-0 flex-1 flex-row items-center gap-x-xl py-lg pr-lg pl-3xl active:opacity-70"
-                testID={HouseholdAccountShareGroupRowSelector.Row(groupKey)}
-            >
-                {left}
-                <View className="min-w-0 flex-1 gap-y-xxs">
-                    <Text className={cn('text-primary', GROUPED_LIST_TITLE_CLASS_NAME)} numberOfLines={2}>
-                        {title}
-                    </Text>
-                    <Text className={cn('text-secondary-foreground', GROUPED_LIST_SUBTITLE_CLASSNAME)}>{subtitle}</Text>
-                </View>
-            </HapticPressable>
-            <LoadingContent isLoading={isLoading}>
-                <ThemedSwitch
-                    value={isAllShared}
-                    onValueChange={handleChange}
-                    disabled={isLoading}
-                    accessibilityLabel={t`Share all ${title}`}
-                    testID={HouseholdAccountShareGroupRowSelector.Switch(groupKey)}
-                />
-            </LoadingContent>
-            <HapticPressable
-                onPress={onToggle}
-                pressedScale={1}
-                accessibilityElementsHidden
-                importantForAccessibility="no-hide-descendants"
-                className="self-stretch justify-center pr-3xl pl-lg active:opacity-70"
-                testID={HouseholdAccountShareGroupRowSelector.Expand(groupKey)}
-            >
-                <HouseholdAccountShareGroupChevron isExpanded={isExpanded} />
-            </HapticPressable>
-        </View>
+        <>
+            <View className="min-h-[50px] flex-row items-center">
+                <View className="absolute top-0 right-0 left-[64px] h-hairline bg-surface-separator" pointerEvents="none" />
+                <HapticPressable
+                    onPress={handleToggle}
+                    pressedScale={1}
+                    accessibilityRole="button"
+                    accessibilityLabel={`${title}, ${subtitle}`}
+                    accessibilityHint={t`Shows or hides its accounts`}
+                    accessibilityState={accessibilityState}
+                    className="min-w-0 flex-1 flex-row items-center gap-x-xl py-lg pr-lg pl-3xl active:opacity-70"
+                    testID={HouseholdAccountShareGroupRowSelector.Row(groupKey)}
+                >
+                    {left}
+                    <View className="min-w-0 flex-1 gap-y-xxs">
+                        <Text className={cn('text-primary', GROUPED_LIST_TITLE_CLASS_NAME)} numberOfLines={2}>
+                            {title}
+                        </Text>
+                        <Text className={cn('text-secondary-foreground', GROUPED_LIST_SUBTITLE_CLASSNAME)}>{subtitle}</Text>
+                    </View>
+                </HapticPressable>
+                <LoadingContent isLoading={isLoading}>
+                    <ThemedSwitch
+                        value={isAllShared}
+                        onValueChange={handleChange}
+                        disabled={isLoading}
+                        accessibilityLabel={t`Share all ${title}`}
+                        testID={HouseholdAccountShareGroupRowSelector.Switch(groupKey)}
+                    />
+                </LoadingContent>
+                <HapticPressable
+                    onPress={handleToggle}
+                    pressedScale={1}
+                    accessibilityElementsHidden
+                    importantForAccessibility="no-hide-descendants"
+                    className="self-stretch justify-center pr-3xl pl-lg active:opacity-70"
+                    testID={HouseholdAccountShareGroupRowSelector.Expand(groupKey)}
+                >
+                    <HouseholdAccountShareGroupChevron isExpanded={isExpanded} />
+                </HapticPressable>
+            </View>
+            {isExpanded
+                ? accounts.map(account => (
+                      <Animated.View key={account.id} entering={PRESENCE_ENTERING} exiting={PRESENCE_EXITING} className="pl-[48px]">
+                          <HouseholdAccountShareRow account={account} />
+                      </Animated.View>
+                  ))
+                : null}
+        </>
     );
 };

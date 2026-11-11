@@ -2,6 +2,7 @@ import { AccountTypeEnum } from '@budgie/contracts';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { groupBy } from '../../@generic/utils/group-by.util';
 import { getIntegrationGroupNumber } from '../../account/utils/get-integration-group-number.util';
 
 import type { HouseholdAccountShareEntryInterface } from '../interface/household-account-share-entry.interface';
@@ -19,39 +20,38 @@ const TYPE_ORDER = [
     AccountTypeEnum.DEBT
 ];
 
-const getGroupRank = ({ integration, type }: Pick<HouseholdAccountShareGroupInterface, 'integration' | 'type'>): number =>
-    isDefined(integration) ? -1 : TYPE_ORDER.indexOf(type);
+const compareGroups = (left: HouseholdAccountShareGroupInterface, right: HouseholdAccountShareGroupInterface): number => {
+    if (isDefined(left.integration) && isDefined(right.integration)) {
+        return (
+            `${left.integration.provider} ${left.integration.label ?? ''}`.localeCompare(
+                `${right.integration.provider} ${right.integration.label ?? ''}`
+            ) || (left.groupNumber ?? 0) - (right.groupNumber ?? 0)
+        );
+    }
 
-const getBankSortKey = ({ integration }: Pick<HouseholdAccountShareGroupInterface, 'integration'>): string =>
-    isDefined(integration) ? `${integration.provider} ${integration.label ?? ''}` : '';
+    return (
+        (isDefined(left.integration) ? -1 : TYPE_ORDER.indexOf(left.type)) -
+        (isDefined(right.integration) ? -1 : TYPE_ORDER.indexOf(right.type))
+    );
+};
 
 export const groupHouseholdAccountShares = (
     accounts: readonly HouseholdAccountShareEntryInterface[]
 ): HouseholdAccountShareGroupInterface[] => {
-    const groups = new Map<string, Omit<HouseholdAccountShareGroupInterface, 'groupNumber'>>();
+    const groups = [
+        ...groupBy(accounts, account => (isDefined(account.integration) ? `bank-${account.integration.id}` : `type-${account.type}`))
+    ].map(([key, groupAccounts]) => ({
+        key,
+        type: groupAccounts[0].type,
+        integration: groupAccounts[0].integration,
+        accounts: groupAccounts
+    }));
+    const integrations = groups.flatMap(({ integration }) => (isDefined(integration) ? [integration] : []));
 
-    accounts.forEach(account => {
-        const key = isDefined(account.integration) ? `bank-${account.integration.id}` : `type-${account.type}`;
-
-        groups.set(key, {
-            key,
-            type: account.type,
-            integration: account.integration,
-            accounts: [...(groups.get(key)?.accounts ?? []), account]
-        });
-    });
-
-    const integrations = [...groups.values()].flatMap(({ integration }) => (isDefined(integration) ? [integration] : []));
-
-    return [...groups.values()]
+    return groups
         .map(group => ({
             ...group,
             groupNumber: isDefined(group.integration) ? getIntegrationGroupNumber(integrations, group.integration) : null
         }))
-        .sort(
-            (left, right) =>
-                getGroupRank(left) - getGroupRank(right) ||
-                getBankSortKey(left).localeCompare(getBankSortKey(right)) ||
-                (left.groupNumber ?? 0) - (right.groupNumber ?? 0)
-        );
+        .sort(compareGroups);
 };

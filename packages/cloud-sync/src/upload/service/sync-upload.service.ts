@@ -225,7 +225,7 @@ export class SyncUploadService extends Context.Service<SyncUploadService>()('@bu
                     .select({
                         ownerId: sql<
                             string | null
-                        >`CASE WHEN ${buildHouseholdOwnershipSql(recordType).isOwned} THEN ${CURRENT_CLOUD_USER_SQL} ELSE (
+                        >`CASE WHEN ${buildHouseholdOwnershipSql(recordType)} THEN ${CURRENT_CLOUD_USER_SQL} ELSE (
                             SELECT json_extract(${SyncRecordEntityTable.payload}, '$.encryptedFields.ownerId') FROM ${SyncRecordEntityTable}
                             WHERE ${SyncRecordEntityTable.syncZone} = ${HOUSEHOLD_SYNC_ZONE}
                               AND ${SyncRecordEntityTable.syncId} = ${row.syncId}

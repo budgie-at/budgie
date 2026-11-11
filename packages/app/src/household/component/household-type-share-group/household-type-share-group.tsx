@@ -4,7 +4,7 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { ACCOUNT_ICON } from '../../../account/constant/account-icon.constant';
 import { ACCOUNT_TYPE_SWATCH } from '../../../account/constant/account-type-swatch.constant';
 import { ACCOUNT_TYPE } from '../../../account/constant/account-type.constant';
-import { HouseholdAccountShareGroup } from '../household-account-share-group/household-account-share-group';
+import { HouseholdAccountShareGroupRow } from '../household-account-share-group-row/household-account-share-group-row';
 
 import type { HouseholdAccountShareGroupInterface } from '../../interface/household-account-share-group.interface';
 
@@ -18,7 +18,7 @@ export const HouseholdTypeShareGroup = ({ groupKey, type, accounts }: Props) => 
     const swatch = ACCOUNT_TYPE_SWATCH[type];
 
     return (
-        <HouseholdAccountShareGroup
+        <HouseholdAccountShareGroupRow
             groupKey={groupKey}
             title={t(ACCOUNT_TYPE[type])}
             left={
