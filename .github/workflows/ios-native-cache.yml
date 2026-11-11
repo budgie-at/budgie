@@ -54,7 +54,7 @@ jobs:
                 [{"name":"e2e","appDir":"packages/app","appId":"com.vitaliiyehorov.budgie.e2e",
                 "prebuildCommand":"npx expo prebuild -p android --clean --no-install"}]
             android-abis: arm64-v8a
-            gradle-args: -x lint -x lintVitalAnalyzeRelease -x lintAnalyzeRelease
+            gradle-args: -x lint -x lintVitalAnalyzeRelease -x lintAnalyzeRelease --max-workers=2
             android-timeout-minutes: 120
             ios-cache-profile: ios-e2e-budgie-v2
             publish-base: true
