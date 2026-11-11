@@ -2618,9 +2618,17 @@ msgstr "Symbol ändern, aktuell: {iconName}"
 msgid "Change PIN"
 msgstr "PIN ändern"
 
+#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
+msgid "Changes not uploaded"
+msgstr "Änderungen nicht hochgeladen"
+
 #: src/budget/hooks/use-budget-forecast-labels.hook.ts
 msgid "Chart max {scaleAmount}"
 msgstr "Diagramm-Maximum {scaleAmount}"
+
+#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
+msgid "Check iCloud settings"
+msgstr "iCloud-Einstellungen prüfen"
 
 #: src/budget/constant/budget-save-blocker-label.constant.ts
 msgid "Check the form to continue"
@@ -5273,11 +5281,19 @@ msgstr "iCloud-Sicherung"
 msgid "iCloud backup, sync and family sharing need an Apple Account. Sign in from the Settings app."
 msgstr "iCloud-Sicherung, Synchronisation und Familienfreigabe brauchen einen Apple Account. Melde dich in der Einstellungen-App an."
 
+#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
+msgid "iCloud is busy"
+msgstr "iCloud ist ausgelastet"
+
 #: src/cloud-backup/constant/cloud-backup-status-message.constant.ts
 #: src/cloud-backup/hook/use-restore-cloud-backup.hook.ts
 #: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
 msgid "iCloud storage full"
 msgstr "iCloud-Speicher voll"
+
+#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
+msgid "iCloud sync error"
+msgstr "iCloud-Synchronisierungsfehler"
 
 #: src/cloud-backup/hook/use-restore-cloud-backup.hook.ts
 msgid "iCloud unavailable"
@@ -6549,6 +6565,10 @@ msgstr "Keine Symbole gefunden"
 #: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
 msgid "No income in this view"
 msgstr "Keine Einnahmen in dieser Ansicht"
+
+#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
+msgid "No internet connection"
+msgstr "Keine Internetverbindung"
 
 #: src/ai/component/voice-review-empty-state/voice-review-empty-state.tsx
 msgid "No items to save"
@@ -8910,10 +8930,6 @@ msgstr "SmartBudget"
 msgid "Sold {soldLabel}"
 msgstr "{soldLabel} verkauft"
 
-#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
-msgid "Some changes could not be uploaded to iCloud. Your data is safe on this device. Try again."
-msgstr "Einige Änderungen konnten nicht in iCloud hochgeladen werden. Deine Daten sind auf diesem Gerät sicher. Versuche es erneut."
-
 #: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
 msgid "Some transactions may be hidden by the account or amount filter."
 msgstr "Einige Transaktionen sind eventuell durch den Konto- oder Betragsfilter ausgeblendet."
@@ -9200,22 +9216,6 @@ msgstr "Frühere Transaktionen synchronisieren"
 #: src/account/constant/account-sync-state-label.constant.ts
 msgid "Sync paused"
 msgstr "Synchronisation pausiert"
-
-#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
-msgid "Sync paused by an iCloud error. Your data is safe on this device. Try again."
-msgstr "Synchronisierung wegen eines iCloud-Fehlers pausiert. Deine Daten sind auf diesem Gerät sicher. Versuche es erneut."
-
-#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
-msgid "Sync paused: iCloud is busy right now. Try again in a few minutes."
-msgstr "Synchronisierung pausiert: iCloud ist gerade ausgelastet. Versuche es in ein paar Minuten erneut."
-
-#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
-msgid "Sync paused: no internet connection. Check your connection, then try again."
-msgstr "Synchronisierung pausiert: keine Internetverbindung. Prüfe deine Verbindung und versuche es erneut."
-
-#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
-msgid "Sync paused: your Apple Account needs attention. Check iCloud in the Settings app, then try again."
-msgstr "Synchronisierung pausiert: Dein Apple Account erfordert Aufmerksamkeit. Prüfe iCloud in der Einstellungen-App und versuche es erneut."
 
 #: src/app/(tabs)/settings/sync-repairs.tsx
 msgid "Sync repairs"
