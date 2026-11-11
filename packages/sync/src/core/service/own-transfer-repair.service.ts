@@ -21,6 +21,7 @@ import * as Layer from 'effect/Layer';
 import { isDefined, isEmptyArray, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { binanceOwnTransferDetector } from '../../binance/detector/binance-own-transfer.detector';
+import { enableBankingOwnTransferDetector } from '../../enable-banking/detector/enable-banking-own-transfer.detector';
 import { ownTransferDetector } from '../detector/own-transfer.detector';
 import { OwnTransferRepository } from '../repository/own-transfer.repository';
 
@@ -97,6 +98,66 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
                     fromEntryToIban: credit.toIban
                 }
             });
+        });
+
+        const pairUntrackedTransfers = Effect.fnUntraced(function* (
+            scope: ConsolidationScanScopeInterface | null,
+            accounts: readonly Pick<AccountEntityInterface, 'id' | 'instrumentId'>[]
+        ) {
+            const legs = (yield* repository.findUntrackedTransfers(scope)).filter(isSingleEntry);
+            const horizonMs = 2 * enableBankingOwnTransferDetector.bookingHorizonMs;
+            const pool =
+                isDefined(scope) && isNotEmptyArray(legs)
+                    ? (yield* repository.findUntrackedTransfers({
+                          operatedAtFrom: DateTime.toDateUtc(DateTime.makeUnsafe(scope.operatedAtFrom.getTime() - horizonMs)),
+                          operatedAtTo: DateTime.toDateUtc(DateTime.makeUnsafe(scope.operatedAtTo.getTime() + horizonMs)),
+                          transactionIds: []
+                      })).filter(isSingleEntry)
+                    : legs;
+            const findInstrumentId = (transaction: TransactionWithEntriesEntityInterface) =>
+                accounts.find(account => account.id === candidateEntries(transaction)[0].accountId)?.instrumentId;
+            const findCounterparts = (leg: TransactionWithEntriesEntityInterface) =>
+                pool.filter(other => {
+                    const [entry] = candidateEntries(leg);
+                    const [otherEntry] = candidateEntries(other);
+
+                    return (
+                        otherEntry.type !== entry.type &&
+                        otherEntry.accountId !== entry.accountId &&
+                        otherEntry.amount === entry.amount &&
+                        isDefined(findInstrumentId(leg)) &&
+                        findInstrumentId(other) === findInstrumentId(leg) &&
+                        enableBankingOwnTransferDetector.pairsAcrossDays(leg, other)
+                    );
+                });
+
+            return yield* Db.transaction(
+                Effect.gen(function* () {
+                    let paired = 0;
+
+                    for (const leg of legs) {
+                        const [counterpart, ...others] = findCounterparts(leg);
+
+                        if (
+                            isDefined(counterpart) &&
+                            isEmptyArray(others) &&
+                            findCounterparts(counterpart).length === 1 &&
+                            (yield* pair(leg, counterpart))
+                        ) {
+                            yield* balances.updateBalancesByAccountIds(
+                                [
+                                    candidateEntries(leg)[0].accountId,
+                                    candidateEntries(counterpart)[0].accountId,
+                                    leg.untrackedAccountId
+                                ].filter(isDefined)
+                            );
+                            paired += 1;
+                        }
+                    }
+
+                    return paired;
+                })
+            );
         });
 
         return {
@@ -239,7 +300,7 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
                     })
                     .filter(isDefined);
 
-                return yield* Db.transaction(
+                const repaired = yield* Db.transaction(
                     Effect.gen(function* () {
                         const consumed = new Set<number>();
                         let repaired = 0;
@@ -274,6 +335,8 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
                         return repaired;
                     })
                 );
+
+                return repaired + (yield* pairUntrackedTransfers(scope, accounts));
             })
         };
     })
