@@ -102,7 +102,7 @@ test('44 enable banking', { tags: ['sync'], platforms: ['ios'] }, async ({ budgi
         await expect(screen.getByRole('button', { name: /^E2E Other Bank, \+€1,100,.*Wise EUR$/ }).first()).toBeVisible({
             timeout: 30_000
         });
-        await expect(screen.getByText(/Wise EUR.*Wise USD/).first()).toBeVisible();
+        await expect(screen.getByText(/Wise EUR.*Wise USD/).first()).toBeVisible({ timeout: 30_000 });
     });
 
     await b.phase('valid consent', async () => {

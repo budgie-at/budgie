@@ -57,6 +57,7 @@ const connectWise = Effect.gen(function* () {
             buildEnableBankingTransaction({
                 entry_reference: 'conversion',
                 booking_date: enableBankingDaysAgo(1),
+                transaction_amount: { amount: '100.00', currency: 'EUR' },
                 creditor: { name: 'Synthetic Conversion' }
             }),
             buildEnableBankingTransaction({
@@ -115,7 +116,11 @@ describe('enable-banking/wise', () => {
             expect(usdAccount).toMatchObject({ title: 'Wise USD', externalSource: ExternalSourceEnum.ENABLE_BANKING });
             expect(usdAccount.integrationId).not.toBeNull();
             expect(usdAccount.integrationId).toBe(eurAccount.integrationId);
-            expect((yield* fetchEnableBankingTransactions()).filter(row => row.externalId?.includes('conversion'))).toHaveLength(2);
+            expect(
+                (yield* fetchEnableBankingTransactions()).filter(row =>
+                    [`${EUR_HASH}:conversion`, `${USD_HASH}:conversion`].includes(row.externalId ?? '')
+                )
+            ).toHaveLength(2);
             expect(yield* fetchAccountBalance(eurAccount.id)).toBe(1000 * PRECISION);
             expect(yield* fetchAccountBalance(usdAccount.id)).toBe(108.2 * PRECISION);
         }).pipe(Effect.provide(TestLayer))

@@ -346,7 +346,7 @@ The boundary has no overlap by design, and there is no content match. `connect.t
 
 ## Wise
 
-Wise is an ASPSP inside Enable Banking, named by `WISE_ASPSP_NAME`. Each of its balances is an `ENABLE_BANKING` account of one integration, titled by `EnableBankingMapper.mapAccount` (`Wise EUR`, `Wise USD`). Consolidation treats accounts that share `integration_id` as one bank, so a conversion between two balances pairs as a transfer, while a top-up from another bank stays an income. `ExternalSourceEnum.WISE` only names the create-account row that opens the Enable Banking flow with Wise preselected; no `WISE` accounts exist. `wise.test.ts` and `packages/sync/src/e2e/e2e-fake-api.ts` carry the synthetic fixtures.
+Wise is an ASPSP inside Enable Banking, named by `WISE_ASPSP_NAME`. Each of its balances is an `ENABLE_BANKING` account of one integration, titled by `EnableBankingMapper.mapAccount` (`Wise EUR`, `Wise USD`). Consolidation treats accounts that share `integration_id` as one bank, so a conversion between two balances pairs as a transfer, while a top-up from another bank stays an income. `ExternalSourceEnum.WISE` only names the create-account row that opens the Enable Banking flow with Wise preselected; no `WISE` accounts exist. `wise.test.ts` carries the sync fixtures and `packages/sync/src/e2e/e2e-fake-wise.ts` the e2e fake API ones.
 
 ## Testing
 
