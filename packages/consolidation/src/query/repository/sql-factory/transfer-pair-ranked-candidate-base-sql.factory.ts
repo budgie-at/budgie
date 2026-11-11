@@ -49,6 +49,7 @@ export const buildTransferPairRankedCandidateBaseSql = scopedSql`
                     expense_instrument.type as expenseInstrumentType,
                     expense_account.external_source as expenseExternalSource,
                     COALESCE(NULLIF(expense_account.external_source, ''), expense_tx.external_source) as expenseBankSource,
+                    expense_account.integration_id as expenseIntegrationId,
                     SUBSTR(expense_account.iban, -${TRANSFER_PAIR_ACCOUNT_HINT_SUFFIX_LENGTH}) as expenseAccountHintSuffix,
                     CASE
                         WHEN expense_account.iban IS NOT NULL
@@ -114,6 +115,7 @@ export const buildTransferPairRankedCandidateBaseSql = scopedSql`
                     income_instrument.type as incomeInstrumentType,
                     income_account.external_source as incomeExternalSource,
                     COALESCE(NULLIF(income_account.external_source, ''), income_tx.external_source) as incomeBankSource,
+                    income_account.integration_id as incomeIntegrationId,
                     SUBSTR(income_account.iban, -${TRANSFER_PAIR_ACCOUNT_HINT_SUFFIX_LENGTH}) as incomeAccountHintSuffix,
                     CASE
                         WHEN income_account.iban IS NOT NULL
@@ -190,6 +192,11 @@ export const buildTransferPairRankedCandidateBaseSql = scopedSql`
                         ELSE 0
                     END as sameCurrency,
                     CASE
+                        WHEN expense_entries.expenseBankSource = '${ExternalSourceEnum.ENABLE_BANKING}'
+                            AND income_entries.incomeBankSource = '${ExternalSourceEnum.ENABLE_BANKING}'
+                            AND expense_entries.expenseIntegrationId IS NOT NULL
+                            AND expense_entries.expenseIntegrationId = income_entries.incomeIntegrationId
+                        THEN 1
                         WHEN expense_entries.expenseBankSource IS NOT NULL
                             AND expense_entries.expenseBankSource != ''
                             AND income_entries.incomeBankSource IS NOT NULL
@@ -250,7 +257,13 @@ export const buildTransferPairRankedCandidateBaseSql = scopedSql`
                             AND expense_entries.expenseBankSource != ''
                             AND income_entries.incomeBankSource IS NOT NULL
                             AND income_entries.incomeBankSource != ''
-                            AND expense_entries.expenseBankSource != income_entries.incomeBankSource
+                            AND (
+                                expense_entries.expenseBankSource != income_entries.incomeBankSource
+                                OR (
+                                    expense_entries.expenseBankSource = '${ExternalSourceEnum.ENABLE_BANKING}'
+                                    AND expense_entries.expenseIntegrationId IS NOT income_entries.incomeIntegrationId
+                                )
+                            )
                             AND expense_entries.expenseInstrumentId = income_entries.incomeInstrumentId
                             AND expense_entries.expenseMccGroupId = ${TRANSFER_MCC_GROUP_ID}
                             AND income_entries.incomeMccGroupId = ${TRANSFER_MCC_GROUP_ID}
