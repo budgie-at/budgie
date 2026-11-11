@@ -2,7 +2,7 @@ import { appAtomRegistry } from '@app/@generic/constant/app-atom-registry.consta
 import { assertStoredBalancesMatchLedger, resetTestDb } from '@budgie-at/test-kit';
 import * as Effect from 'effect/Effect';
 import { Agent, getGlobalDispatcher, setGlobalDispatcher } from 'undici';
-import { vi, afterAll, afterEach, beforeAll, beforeEach } from 'vitest';
+import { expect, vi, afterAll, afterEach, beforeAll, beforeEach } from 'vitest';
 
 import { emptyFn, isDefined } from '@rnw-community/shared';
 
@@ -96,12 +96,18 @@ import { walletCaptureNativeStub } from '../wallet-capture/wallet-capture-app-in
 import { mockServer } from './mock-server';
 import { backupDatabasePath, testDb } from './test-db';
 
+const unhandledRequests: string[] = [];
+
 beforeAll(() => {
     appAtomRegistry.reset();
+    mockServer.events.on('request:unhandled', ({ request }) => {
+        unhandledRequests.push(`${request.method} ${request.url}`);
+    });
     mockServer.listen({ onUnhandledFrame: 'error' });
 });
 
 beforeEach(() => {
+    unhandledRequests.length = 0;
     walletCaptureNativeStub.reset();
     testSigner.reset();
     enableBankingStub.reset();
@@ -115,6 +121,7 @@ beforeEach(() => {
 
 afterEach(() => {
     mockServer.resetHandlers();
+    expect(unhandledRequests).toEqual([]);
     const previousDispatcher = getGlobalDispatcher();
     setGlobalDispatcher(new Agent());
 
