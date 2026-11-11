@@ -16,16 +16,16 @@ export const useEnableBankingBankLoading = (connectAccountId: number | null) => 
     const { t } = useLingui();
     const explainError = useExplainEnableBankingError();
 
-    const loadBanks = (applicationId: string) =>
-        Effect.flatMap(EnableBankingSyncService, service => service.listBanks(applicationId)).pipe(
-            Effect.mapError(error =>
-                Schema.is(SyncUnauthorizedError)(error)
-                    ? EnableBankingSetupError.make({ reason: EnableBankingSetupErrorReasonEnum.INACTIVE_APPLICATION })
-                    : error
-            ),
-            Effect.mapError(explainError),
-            toastOnFailure(t`Could not verify the application`)
-        );
+    const loadBanks = <Error, Requirements>(applicationId: string, saveKey: Effect.Effect<void, Error, Requirements>) =>
+        Effect.flatMap(saveKey, () =>
+            Effect.flatMap(EnableBankingSyncService, service => service.listBanks(applicationId)).pipe(
+                Effect.mapError(error =>
+                    Schema.is(SyncUnauthorizedError)(error)
+                        ? EnableBankingSetupError.make({ reason: EnableBankingSetupErrorReasonEnum.INACTIVE_APPLICATION })
+                        : error
+                )
+            )
+        ).pipe(Effect.mapError(explainError), toastOnFailure(t`Could not verify the application`));
 
     const beginAuthorization = (applicationId: string, bank: EnableBankingBankInterface) =>
         Effect.flatMap(EnableBankingConnectionService, connection => connection.begin(applicationId, bank, null, connectAccountId)).pipe(

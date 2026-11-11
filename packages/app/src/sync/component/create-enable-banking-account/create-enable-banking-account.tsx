@@ -111,7 +111,7 @@ export const CreateEnableBankingAccount = ({ connectAccountId, savedApplicationI
 
         void run(
             Effect.gen(function* () {
-                const listedBanks = yield* Effect.flatMap(savePickedKey(parsedApplicationId), () => loadBanks(parsedApplicationId)).pipe(
+                const listedBanks = yield* loadBanks(parsedApplicationId, savePickedKey(parsedApplicationId)).pipe(
                     Effect.tapError(() =>
                         Effect.sync(() => {
                             setStep(EnableBankingSetupStepEnum.KEY);
