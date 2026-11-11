@@ -4,7 +4,7 @@ import * as Effect from 'effect/Effect';
 
 import { seed } from '../seed/seed';
 
-import { binanceStub } from './binance-stub';
+import { stubEmptyBinanceEndpoints } from './stub-empty-binance-endpoints';
 
 const BINANCE_TOKEN = JSON.stringify({ apiKey: 'test-api-key', apiSecret: 'test-api-secret' });
 
@@ -48,25 +48,7 @@ export const setupBinanceFixture = (options: SetupBinanceFixtureOptions = {}) =>
             binanceTradeCursor: options.binanceTradeCursor ?? null
         });
 
-        binanceStub.serverTime(options.serverTimeOffsetMs);
-        binanceStub.exchangeInfoAllValid();
-        binanceStub.spotBalances([]);
-        binanceStub.fundingBalances([]);
-        binanceStub.deposits([]);
-        binanceStub.withdrawals([]);
-        binanceStub.fiatOrders([], []);
-        binanceStub.fiatPayments([]);
-        binanceStub.c2cOrders([], []);
-        binanceStub.myTrades({});
-        binanceStub.convertTradeFlow([]);
-        binanceStub.universalTransfers([]);
-        binanceStub.earnPositions([]);
-        binanceStub.lockedEarnPositions([]);
-        binanceStub.earnRewards([]);
-        binanceStub.lockedEarnRewards([]);
-        binanceStub.ethStakingRewards([]);
-        binanceStub.dividends([]);
-        binanceStub.dustLogs([]);
+        stubEmptyBinanceEndpoints(options.serverTimeOffsetMs);
 
         return { account, sync, instrument, externalId, token: BINANCE_TOKEN, asset, wallet };
     });

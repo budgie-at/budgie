@@ -51,6 +51,7 @@ export { buildBinance } from './binance/build-binance';
 export { binanceErrorResponse } from './binance/binance-error-response';
 export { STALE_SYNC_AGE_MS, RUN_DEADLINE_MS, advanceClock, jumpPastDeadline, restoreRealTimers } from './binance/binance-clock';
 export { setupBinanceFixture } from './binance/setup-binance-fixture';
+export { stubEmptyBinanceEndpoints } from './binance/stub-empty-binance-endpoints';
 export {
     buildEarnDayKey,
     expectFiatPrincipalAndFee,
