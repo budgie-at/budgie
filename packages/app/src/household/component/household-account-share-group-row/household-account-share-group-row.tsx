@@ -1,4 +1,3 @@
-import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
@@ -40,9 +39,7 @@ export const HouseholdAccountShareGroupRow = ({ groupKey, title, left, accounts,
     const accountCount = accounts.length;
     const sharedCount = accounts.filter(account => account.isShared).length;
     const isAllShared = sharedCount === accountCount;
-    const partialSubtitle = isPositiveNumber(sharedCount)
-        ? t({ message: plural(accountCount, { one: `${sharedCount} of # shared`, other: `${sharedCount} of # shared` }) })
-        : t`Not shared`;
+    const partialSubtitle = isPositiveNumber(sharedCount) ? t`${sharedCount} of ${accountCount} shared` : t`Not shared`;
     const subtitle = isAllShared ? t`All shared` : partialSubtitle;
     const accessibilityState = { expanded: isExpanded };
 

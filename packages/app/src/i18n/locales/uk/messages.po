@@ -182,10 +182,6 @@ msgstr "{0, plural, one {Очікуємо, поки # людина приєдн�
 msgid "{absoluteQuantity, plural, one {{count} certificate} other {{count} certificates}}"
 msgstr "{absoluteQuantity, plural, one {{count} сертифікат} few {{count} сертифікати} many {{count} сертифікатів} other {{count} сертифіката}}"
 
-#: src/household/component/household-account-share-group-row/household-account-share-group-row.tsx
-msgid "{accountCount, plural, one {{sharedCount} of # shared} other {{sharedCount} of # shared}}"
-msgstr "{accountCount, plural, one {Спільні: {sharedCount} з #} few {Спільні: {sharedCount} з #} many {Спільні: {sharedCount} з #} other {Спільні: {sharedCount} з #}}"
-
 #: src/onboarding/hook/use-onboarding-file-state.hook.ts
 msgid "{accountCount, plural, one {# account} other {# accounts}}"
 msgstr "{accountCount, plural, one {# рахунок} few {# рахунки} many {# рахунків} other {# рахунку}}"
@@ -934,6 +930,10 @@ msgstr "{setAsideLabel} відкласти {thisPeriod}"
 #: src/household/utils/get-household-summary-labels.util.ts
 msgid "{sharedCount, plural, one {# shared account} other {# shared accounts}}"
 msgstr "{sharedCount, plural, one {# спільний рахунок} few {# спільні рахунки} many {# спільних рахунків} other {# спільного рахунку}}"
+
+#: src/household/component/household-account-share-group-row/household-account-share-group-row.tsx
+msgid "{sharedCount} of {accountCount} shared"
+msgstr "Спільні: {sharedCount} з {accountCount}"
 
 #: src/transaction/components/statistics-drill-down-caption/statistics-drill-down-caption.tsx
 msgid "{shareLabel} of income"

@@ -182,10 +182,6 @@ msgstr "{0, plural, one {Esperando a # persona para unirse} other {Esperando a #
 msgid "{absoluteQuantity, plural, one {{count} certificate} other {{count} certificates}}"
 msgstr "{absoluteQuantity, plural, one {{count} certificado} other {{count} certificados}}"
 
-#: src/household/component/household-account-share-group-row/household-account-share-group-row.tsx
-msgid "{accountCount, plural, one {{sharedCount} of # shared} other {{sharedCount} of # shared}}"
-msgstr "{accountCount, plural, one {{sharedCount} de # compartida} other {{sharedCount} de # compartidas}}"
-
 #: src/onboarding/hook/use-onboarding-file-state.hook.ts
 msgid "{accountCount, plural, one {# account} other {# accounts}}"
 msgstr "{accountCount, plural, one {# cuenta} other {# cuentas}}"
@@ -934,6 +930,10 @@ msgstr "{setAsideLabel} por reservar {thisPeriod}"
 #: src/household/utils/get-household-summary-labels.util.ts
 msgid "{sharedCount, plural, one {# shared account} other {# shared accounts}}"
 msgstr "{sharedCount, plural, one {# cuenta compartida} other {# cuentas compartidas}}"
+
+#: src/household/component/household-account-share-group-row/household-account-share-group-row.tsx
+msgid "{sharedCount} of {accountCount} shared"
+msgstr "{sharedCount} de {accountCount} compartidas"
 
 #: src/transaction/components/statistics-drill-down-caption/statistics-drill-down-caption.tsx
 msgid "{shareLabel} of income"

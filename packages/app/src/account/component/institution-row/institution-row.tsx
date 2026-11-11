@@ -6,8 +6,6 @@ import { cva } from 'class-variance-authority';
 import { router } from 'expo-router';
 import { Text, View } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
-
 import { BankLogo } from '../../../@generic/component/bank-logo/bank-logo';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { ROW_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-max-font-size-multiplier.constant';
@@ -15,8 +13,8 @@ import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-access
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { InzhurInstitutionRowDetail } from '../../../inzhur/component/inzhur-institution-row-detail/inzhur-institution-row-detail';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
-import { BANK_PROVIDER_TITLE } from '../../constant/bank-provider-title.constant';
 import { getBankIntegrationTitle } from '../../utils/get-bank-integration-title.util';
+import { getBankProviderTitle } from '../../utils/get-bank-provider-title.util';
 import { InstitutionRowDetail } from '../institution-row-detail/institution-row-detail';
 import { InstitutionRowTotal } from '../institution-row-total/institution-row-total';
 
@@ -42,8 +40,7 @@ export const InstitutionRow = ({ institution }: Props) => {
 
     const handlePress = () => void router.push({ pathname: '/institution/[id]', params: { id: String(integrationId) } });
 
-    const titleDescriptor = BANK_PROVIDER_TITLE[provider];
-    const title = getBankIntegrationTitle(isDefined(titleDescriptor) ? t(titleDescriptor) : provider, label, groupNumber);
+    const title = getBankIntegrationTitle(getBankProviderTitle(t, provider), label, groupNumber);
     const accountsCount = accounts.length;
     const accountsCountLabel = accounts.every(account => account.type === AccountTypeEnum.CRYPTO_SYNC)
         ? t({ message: plural(accountsCount, { one: '# asset', other: '# assets' }) })
