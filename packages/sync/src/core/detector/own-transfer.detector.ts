@@ -49,7 +49,7 @@ class OwnTransferDetector {
 
     private static readonly CARD_SHAPED_EXTERNAL_ID = /^[\d*•●xх]{12,}$/iu;
 
-    private static readonly MERCHANT_REFERENCE = /^\S+\s*\*\s*\d{4}\s+\p{L}/u;
+    private static readonly MERCHANT_REFERENCE = /^[A-Z][A-Z0-9.&'-]*\s*\*\s*\d{4}\s+\p{L}/u;
 
     private readonly normalizedPhrases = Object.values(OwnTransferDetector.PHRASES)
         .flat()

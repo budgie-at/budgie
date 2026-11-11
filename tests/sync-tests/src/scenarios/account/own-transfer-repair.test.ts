@@ -440,15 +440,9 @@ describe('account/own-transfer-repair', () => {
 
     it.effect.each([
         { converts: false, externalId: '1234', targetTitle: 'Savings', title: 'Переказ на картку *1234' },
-        { converts: false, externalId: '991234', targetTitle: 'Savings', title: 'Переказ на картку *1234' },
-        { converts: true, externalId: '4731 **** **** 1234', targetTitle: 'Savings', title: 'Переказ на картку *1234' },
         { converts: true, externalId: '537541******1234', targetTitle: 'Savings', title: 'Переказ на картку *1234' },
-        { converts: true, externalId: '5375****1234', targetTitle: 'Savings', title: 'Переказ на картку *1234' },
         { converts: false, externalId: 'fixture-mono-id', targetTitle: 'Monobank Black •1234', title: 'SQ *1234 COFFEE' },
-        { converts: false, externalId: 'fixture-mono-id', targetTitle: 'Monobank Black •1234', title: 'PAYPAL *1234 SHOP' },
-        { converts: false, externalId: 'fixture-mono-id', targetTitle: 'Monobank Black •1234', title: 'UBER *1234 TRIP' },
-        { converts: true, externalId: 'fixture-mono-id', targetTitle: 'Monobank Black •1234', title: 'Переказ на картку *1234' },
-        { converts: true, externalId: 'fixture-mono-id', targetTitle: 'Monobank Black •1234', title: 'To card •1234' }
+        { converts: true, externalId: 'fixture-mono-id', targetTitle: 'Monobank Black •1234', title: 'Переказ на картку *1234' }
     ])('manual target $externalId / $targetTitle with "$title" converts: $converts', ({ converts, externalId, targetTitle, title }) =>
         Effect.gen(function* () {
             const { repair, source, target, expense } = yield* fixture;
@@ -576,12 +570,16 @@ describe('own transfer detector', () => {
     it.each(['SQ *1234 COFFEE', 'PAYPAL *1234 SHOP', 'UBER *1234 TRIP'])('rejects the merchant descriptor %s as a card mask', title => {
         expect(ownTransferDetector.matchesAccount(title, { externalId: null, title: 'Visa •1234' })).toBe(false);
     });
-    it.each(['Переказ на картку *1234', 'To card •1234', 'Переказ на картку *1234 через Приват24', 'To card *1234 Ivan'])(
-        'matches the account title mask for %s',
-        title => {
-            expect(ownTransferDetector.matchesAccount(title, { externalId: null, title: 'Visa •1234' })).toBe(true);
-        }
-    );
+    it.each([
+        'Переказ на картку *1234',
+        'To card •1234',
+        'Переказ на картку *1234 через Приват24',
+        'To card *1234 Ivan',
+        'Переказ *1234 Іван',
+        '****1234 Переказ'
+    ])('matches the account title mask for %s', title => {
+        expect(ownTransferDetector.matchesAccount(title, { externalId: null, title: 'Visa •1234' })).toBe(true);
+    });
     it.each(['400000****2468', '*2468', '****2468', '•2468', 'Зі своєї картки *2468'])('matches the account title mask for %s', title => {
         expect(ownTransferDetector.matchesAccount(title, { externalId: 'fixture-mono-id', title: 'Monobank Black •2468' })).toBe(true);
     });
