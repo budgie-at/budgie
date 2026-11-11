@@ -1,4 +1,4 @@
-import { SyncOutboxRepository, SyncUploadService } from '@budgie/cloud-sync';
+import { HouseholdShareService, SyncOutboxRepository, SyncUploadService } from '@budgie/cloud-sync';
 import {
     PERSONAL_SYNC_ZONE,
     HOUSEHOLD_SYNC_ZONE,
@@ -120,12 +120,19 @@ describe('net worth excludes accounts shared by other family members', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('treats a household copy of my own bank account as mine', () =>
+    it.effect('hides a stale household copy of my own bank account and counts only the personal account', () =>
         Effect.gen(function* () {
             const identity = { externalSource: ExternalSourceEnum.MONOBANK, externalId: 'mono-black-5535' };
             const { euro, family } = yield* seedOwnAndFamilyAccounts(identity, identity);
+            const sharedByMe = yield* onShareDevice(
+                testDb,
+                Effect.flatMap(HouseholdShareService, service => service.findSharedAccountIds)
+            );
 
-            expect(yield* isSharedByOther(euro.id, family.id)).toBe(0);
+            expect(yield* isSharedByOther(euro.id, family.id)).toBeUndefined();
+            expect(yield* netWorth(euro.id)).toBe(OWN_BALANCE);
+            expect((yield* (yield* AccountBalanceRepository).getLiquidTotal(euro.id, false)).at(0)?.total).toBe(OWN_BALANCE);
+            expect(sharedByMe).not.toContain(family.id);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -184,6 +191,22 @@ describe('net worth excludes accounts shared by other family members', () => {
     );
 
     shareDevices('owner stamp', test => {
+        test.effect('counts a shared own bank account exactly once', () =>
+            Effect.gen(function* () {
+                const { clouds } = yield* startHousehold(SyncZoneRoleEnum.PARTICIPANT);
+                const { euro, family } = yield* seedOwnAndFamilyAccounts(
+                    { externalSource: ExternalSourceEnum.MONOBANK, externalId: 'mono-white' },
+                    { externalSource: ExternalSourceEnum.MONOBANK, externalId: 'mono-black' }
+                );
+
+                yield* testDb.$client.unsafe('UPDATE accounts SET sync_zone = ? WHERE id = ?', [PERSONAL_SYNC_ZONE, family.id]);
+                yield* shareAndUpload(testDb, clouds, family.id);
+
+                expect(yield* isSharedByOther(euro.id, family.id)).toBe(0);
+                expect(yield* netWorth(euro.id)).toBe(OWN_BALANCE + FAMILY_BALANCE);
+            }).pipe(Effect.provide(TestLayer))
+        );
+
         test.effect('stamps a shared account with my owner id so it stays mine without the personal tombstone', () =>
             Effect.gen(function* () {
                 const { clouds } = yield* startHousehold(SyncZoneRoleEnum.PARTICIPANT);

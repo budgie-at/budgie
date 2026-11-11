@@ -1,7 +1,7 @@
 import {
     AccountEntityTable,
     BudgetEntityTable,
-    buildSharedByOtherSql,
+    buildHouseholdOwnershipSql,
     CURRENT_CLOUD_USER_SQL,
     Db,
     HOUSEHOLD_SYNC_ZONE,
@@ -223,12 +223,14 @@ export class SyncUploadService extends Context.Service<SyncUploadService>()('@bu
             return Db.query(db =>
                 db
                     .select({
-                        ownerId: sql<string | null>`CASE WHEN ${buildSharedByOtherSql(recordType)} THEN (
+                        ownerId: sql<
+                            string | null
+                        >`CASE WHEN ${buildHouseholdOwnershipSql(recordType).isOwned} THEN ${CURRENT_CLOUD_USER_SQL} ELSE (
                             SELECT json_extract(${SyncRecordEntityTable.payload}, '$.encryptedFields.ownerId') FROM ${SyncRecordEntityTable}
                             WHERE ${SyncRecordEntityTable.syncZone} = ${HOUSEHOLD_SYNC_ZONE}
                               AND ${SyncRecordEntityTable.syncId} = ${row.syncId}
                               AND ${SyncRecordEntityTable.recordType} = ${recordType}
-                        ) ELSE ${CURRENT_CLOUD_USER_SQL} END`
+                        ) END`
                     })
                     .from(table)
                     .where(and(eq(table.syncZone, HOUSEHOLD_SYNC_ZONE), eq(table.syncId, row.syncId)))
