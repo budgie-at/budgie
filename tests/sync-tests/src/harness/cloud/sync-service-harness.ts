@@ -52,6 +52,7 @@ export const INSTALL_ID = 'install-a';
 interface FakeTransportCallsInterface {
     readonly started: (string | null)[];
     stopped: number;
+    isRunning: boolean;
     readonly savedBatches: ICloudRecordPayload[][];
     readonly deletedBatches: ICloudRecordId[][];
     readonly deletedZones: string[];
@@ -80,12 +81,14 @@ interface FakeTransportBehaviorInterface {
     participants: readonly ICloudShareParticipant[];
     joinedHousehold: ICloudJoinedHousehold | null;
     ownedHousehold: ICloudOwnedHousehold | null;
+    accountStatusGate: { readonly reached: Latch.Latch; readonly release: Latch.Latch } | null;
 }
 
 const makeFakeTransport = () => {
     const calls: FakeTransportCallsInterface = {
         started: [],
         stopped: 0,
+        isRunning: false,
         savedBatches: [],
         deletedBatches: [],
         deletedZones: [],
@@ -112,18 +115,26 @@ const makeFakeTransport = () => {
         isStateInvalid: false,
         participants: [],
         joinedHousehold: null,
-        ownedHousehold: null
+        ownedHousehold: null,
+        accountStatusGate: null
     };
 
     const layer = Layer.succeed(CloudSyncTransport, {
         events: Stream.empty,
-        getAccountStatus: Effect.sync(() => behavior.accountStatus),
+        getAccountStatus: Effect.suspend(() => {
+            const gate = behavior.accountStatusGate;
+
+            return isDefined(gate)
+                ? gate.reached.open.pipe(Effect.andThen(gate.release.await), Effect.andThen(Effect.sync(() => behavior.accountStatus)))
+                : Effect.sync(() => behavior.accountStatus);
+        }),
         startSync: (startScope: ICloudSyncScope, state: string | null) =>
             Effect.gen(function* () {
                 if (startScope === ICloudSyncScope.SHARED) {
                     calls.sharedStarted.push(state);
                 } else {
                     calls.started.push(state);
+                    calls.isRunning = true;
                 }
                 if (behavior.isStateInvalid && state !== null) {
                     return yield* CloudSyncTransportError.make({ code: ICloudErrorCode.INVALID_STATE, message: 'invalid state' });
@@ -135,6 +146,7 @@ const makeFakeTransport = () => {
                     calls.sharedStopped += 1;
                 } else {
                     calls.stopped += 1;
+                    calls.isRunning = false;
                 }
             }),
         syncNow: () => Effect.void,
@@ -280,7 +292,7 @@ export const makeSyncServiceContext = (database: DB = testDb, store = makeFakeSt
         SyncResetRepository.layer,
         BankOwnershipService.layer.pipe(Layer.provide(installIdLayer)),
         foregroundHostLayer,
-        Layer.succeed(CloudSyncDatabaseChanges, Stream.empty)
+        Layer.succeed(CloudSyncDatabaseChanges, Stream.never)
     ).pipe(Layer.provide(Reactivity.layer), Layer.provideMerge(installIdLayer));
     const layer = Layer.mergeAll(
         CloudSyncService.layer,
