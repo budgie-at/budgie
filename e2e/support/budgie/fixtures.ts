@@ -10,12 +10,10 @@ import { drop, exec, mustDrop, mustExec, untar, writeFile, type SimlockApi } fro
 export const BUNDLE_ID =
     process.env.E2E_APP_ID ?? (process.env.E2E_PLATFORM === 'android' ? 'com.vitaliiyehorov.budgie.e2e' : 'com.vitalyiegorov.budgie.e2e');
 
-/** The app's data directory on an Android emulator; its `files/` is what iOS calls the container's `Documents/`. */
 const ANDROID_CONTAINER = `/data/data/${BUNDLE_ID}`;
 const ANDROID_FILES = `${ANDROID_CONTAINER}/files`;
 const ANDROID_PERMISSIONS = ['READ_CONTACTS', 'WRITE_CONTACTS', 'POST_NOTIFICATIONS'];
 
-/** The folder of `container` the app's `Paths.document` points at. */
 export const documentsOf = (container: string): string => (container === ANDROID_CONTAINER ? ANDROID_FILES : `${container}/Documents`);
 
 const APP_TESTS = fileURLToPath(new URL('../../../tests/app-tests/', import.meta.url));
@@ -86,14 +84,11 @@ function stagedDocuments(): Promise<Buffer> {
 
 const prepared = new Set<string>();
 
-/** Runs `script` in the leased emulator's root shell. */
 const androidShell = (api: SimlockApi, leaseId: string, script: string, stdin?: string): Promise<string> =>
     mustExec(api, leaseId, ['shell', script], stdin, 'adb');
 
-/** Gives `path` back to the app: files written as root keep root's owner and SELinux label, and the app cannot open them. */
 const androidOwn = (path: string): string => `chown -R $(stat -c %u:%g ${ANDROID_CONTAINER}) ${path} && restorecon -RF ${path}`;
 
-/** The Android half of `ensureFixtures`: the fixtures unpacked into the app's `files/` through a root shell. */
 async function ensureAndroidFixtures(api: SimlockApi, leaseId: string): Promise<string> {
     await mustExec(api, leaseId, ['root'], undefined, 'adb');
     await mustExec(api, leaseId, ['wait-for-device'], undefined, 'adb');
@@ -220,7 +215,6 @@ export async function clearDatabase(api: SimlockApi, leaseId: string, container:
     await mustDrop(api, leaseId, ['rm', `${container}/Documents/SQLite`, 'budgie.db']);
 }
 
-/** Android's `stopApp` plus database swap: the app stopped, its SecureStore (the keychain's counterpart) cleared, the database removed, then `then` run. */
 async function resetAndroidApp(api: SimlockApi, leaseId: string, then: string): Promise<void> {
     const sqlite = `${ANDROID_FILES}/SQLite`;
     await androidShell(

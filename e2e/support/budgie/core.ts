@@ -28,22 +28,17 @@ export const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, 
 
 export { byId, retry };
 
-/** Ends keyboard input: the iOS keyboard's Done key; Android has no keyboard toolbar, and a "Done" button there belongs to the sheet. */
 export async function done(ctx: Ctx): Promise<void> {
     await (isIos(ctx) ? doneOnKeyboard(ctx) : ctx.device.dismissKeyboard());
 }
 
-/** Whether the test drives the iOS target; the Android target differs in viewport, keyboard and system dialogs. */
 export const isIos = (ctx: Ctx): boolean => ctx.device.unstable_raw.platform === 'ios';
 
-/** The leased device in the units `boundingBox()` reports: iPhone 17 Pro points, or Pixel 6 pixels at 2.625 per point. */
 const geometry = (ctx: Ctx): { readonly viewportHeight: number; readonly unit: number } =>
     isIos(ctx) ? { viewportHeight: 874, unit: 1 } : { viewportHeight: 2400, unit: 2.625 };
 
-/** A system alert's button: Android draws its labels in capitals, so the label matches whole and case-insensitively. */
 export const alertButton = (screen: Screen, label: string): Locator => screen.getByText(new RegExp(`^${label}$`, 'i')).last();
 
-/** Asserts a switch's state: iOS reports it as the value `1`/`0`, Android as the checked state. */
 export async function expectSwitch(ctx: Ctx, locator: Locator, isOn: boolean, timeout?: number): Promise<void> {
     const options = timeout === undefined ? undefined : { timeout };
     if (isIos(ctx)) {
