@@ -67,12 +67,29 @@ describe('app reset', () => {
             storage.files.set('documents/SQLite/budgie.db-wal', 'live-wal');
             storage.files.set('documents/SQLite/budgie.db.replaced-123', 'original');
             storage.files.set('documents/SQLite/budgie.db.replaced-123-wal', 'original-wal');
+            storage.files.set('documents/SQLite/budgie.db.bak', 'rekey-backup');
 
             yield* Effect.flatMap(AppResetService, service => service.clearAllDataAndRestart()).pipe(
                 Effect.provide([resetLayer, inertDbLayer])
             );
 
             expect([...storage.files.keys()].filter(path => path.startsWith('documents/SQLite/budgie.db'))).toEqual([]);
+        })
+    );
+    it.effect('keeps the live database while an older copy it would be restored from cannot be erased', () =>
+        Effect.gen(function* () {
+            resetStorage();
+            storage.files.set('documents/SQLite/budgie.db', 'live');
+            storage.files.set('documents/SQLite/budgie.db.bak', 'rekey-backup');
+            storage.failDelete = 'documents/SQLite/budgie.db.bak';
+
+            yield* Effect.exit(
+                Effect.flatMap(AppResetService, service => service.clearAllDataAndRestart()).pipe(
+                    Effect.provide([resetLayer, inertDbLayer])
+                )
+            );
+
+            expect(storage.files.get('documents/SQLite/budgie.db')).toBe('live');
         })
     );
 });
