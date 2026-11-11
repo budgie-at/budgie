@@ -6,12 +6,14 @@ import * as Effect from 'effect/Effect';
 import * as Exit from 'effect/Exit';
 import { identity } from 'effect/Function';
 import * as Layer from 'effect/Layer';
+import * as Option from 'effect/Option';
 import * as Scope from 'effect/Scope';
 import { File } from 'expo-file-system';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { recoverInterruptedRestore } from '../../../cloud-backup/utils/recover-interrupted-restore.util';
+import { deleteIfExists } from '../../utils/delete-if-exists.util';
 import { DATABASE_DIRECTORY } from '../constant/database-directory.constant';
 import { DB_NAME } from '../constant/db-name.constant';
 import { REPLACED_DATABASE_PREFIX } from '../constant/replaced-database-prefix.constant';
@@ -20,6 +22,7 @@ import { openSqliteClient } from '../utils/open-sqlite-client.util';
 import { readDatabaseKey } from '../utils/read-database-key.util';
 
 import { DatabaseChangeService } from './database-change.service';
+import { DatabaseSwapService } from './database-swap.service';
 
 import type * as SqlClient from 'effect/sql/SqlClient';
 import type { SqlError } from 'effect/sql/SqlError';
@@ -27,6 +30,7 @@ import type { SqlError } from 'effect/sql/SqlError';
 export class DatabaseConnectionService extends Context.Service<DatabaseConnectionService>()('@budgie/app/DatabaseConnectionService', {
     make: Effect.gen(function* () {
         const databaseChangeService = yield* DatabaseChangeService;
+        const databaseSwapService = yield* DatabaseSwapService;
         const vectorTableNames = ['title_embedding_vec', 'merchant_embedding_vec', 'comment_embedding_vec'];
         const scope = yield* Scope.make();
 
@@ -87,9 +91,19 @@ export class DatabaseConnectionService extends Context.Service<DatabaseConnectio
         yield* recoverInterruptedRestore.pipe(Effect.catchDefect(defect => Effect.logError(defect)));
         yield* recoverMissingDatabase;
 
-        const databaseKey = yield* readDatabaseKey;
+        const pendingSwap = yield* databaseSwapService.read;
+        const committedSwap = Option.filter(pendingSwap, swap => new File(DATABASE_DIRECTORY, swap.backupName).exists);
+        const databaseKey = Option.isSome(committedSwap) ? committedSwap.value.key : yield* readDatabaseKey;
         const openConnection = openSqliteClient(DB_NAME, databaseKey).pipe(Scope.provide(scope));
         const [writer, reader] = yield* Effect.all([openConnection, openConnection], { concurrency: 'unbounded' });
+
+        if (Option.isSome(committedSwap)) {
+            yield* databaseSwapService.commit(committedSwap.value);
+            ['', '-wal', '-shm'].forEach(suffix => {
+                deleteIfExists(new File(DATABASE_DIRECTORY, `${committedSwap.value.backupName}${suffix}`));
+            });
+        }
+        yield* databaseSwapService.end;
 
         yield* applyPragmas(writer, [
             writer`PRAGMA journal_mode = WAL`.raw,
@@ -115,6 +129,6 @@ export class DatabaseConnectionService extends Context.Service<DatabaseConnectio
 }) {
     static readonly layer = Layer.effect(DatabaseConnectionService, DatabaseConnectionService.make).pipe(
         Layer.orDie,
-        Layer.provide(DatabaseChangeService.layer)
+        Layer.provide([DatabaseChangeService.layer, DatabaseSwapService.layer])
     );
 }

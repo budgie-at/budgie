@@ -17,12 +17,14 @@ import { DB_NAME } from '../constant/db-name.constant';
 import { openSqliteClient } from '../utils/open-sqlite-client.util';
 
 import { DatabaseLifecycleService } from './database-lifecycle.service';
+import { DatabaseSwapService } from './database-swap.service';
 import { RekeyParamsInterface } from './interface/rekey-params.interface';
 import { TranscodeTargetInterface } from './interface/transcode-target.interface';
 
 export class DatabaseRekeyService extends Context.Service<DatabaseRekeyService>()('@budgie/app/DatabaseRekeyService', {
     make: Effect.gen(function* () {
         const databaseLifecycleService = yield* DatabaseLifecycleService;
+        const databaseSwapService = yield* DatabaseSwapService;
         const settingsRepository = yield* SettingsRepository;
         const reactivity = yield* Reactivity.Reactivity;
 
@@ -99,7 +101,8 @@ export class DatabaseRekeyService extends Context.Service<DatabaseRekeyService>(
             }
         });
 
-        const commit = Effect.fn('DatabaseRekeyService.commit')(function* (onCommit: Effect.Effect<void>) {
+        const commit = Effect.fn('DatabaseRekeyService.commit')(function* (nextKey: string | null, onCommit: Effect.Effect<void>) {
+            yield* databaseSwapService.begin({ key: nextKey, backupName: `${DB_NAME}.bak`, isImport: false });
             yield* databaseLifecycleService.close();
             deleteFileIfExists(`${destinationUri}-wal`);
             deleteFileIfExists(`${destinationUri}-shm`);
@@ -108,6 +111,7 @@ export class DatabaseRekeyService extends Context.Service<DatabaseRekeyService>(
             }
             yield* moveFile(tempDatabaseUri, destinationUri);
             yield* onCommit;
+            yield* databaseSwapService.end;
             deleteDatabaseFiles(backupUri);
         });
 
@@ -151,7 +155,11 @@ export class DatabaseRekeyService extends Context.Service<DatabaseRekeyService>(
             }),
             rekey: Effect.fn('DatabaseRekeyService.rekey')(function* (params: RekeyParamsInterface, onCommit: Effect.Effect<void>) {
                 yield* prepare(params).pipe(
-                    Effect.andThen(commit(onCommit).pipe(Effect.onError(() => restoreBackupDatabase()))),
+                    Effect.andThen(
+                        commit(params.nextKey, onCommit).pipe(
+                            Effect.onError(() => restoreBackupDatabase().pipe(Effect.andThen(databaseSwapService.end)))
+                        )
+                    ),
                     Effect.ensuring(
                         Effect.sync(() => {
                             deleteDatabaseFiles(tempDatabaseUri);
@@ -163,6 +171,6 @@ export class DatabaseRekeyService extends Context.Service<DatabaseRekeyService>(
     })
 }) {
     static readonly layer = Layer.effect(DatabaseRekeyService, DatabaseRekeyService.make).pipe(
-        Layer.provide([DatabaseLifecycleService.layer, SettingsRepository.layer])
+        Layer.provide([DatabaseLifecycleService.layer, DatabaseSwapService.layer, SettingsRepository.layer])
     );
 }
