@@ -94,8 +94,8 @@ Each bank provider has:
 
 ### Supported Providers
 
-| Provider       | Status        | Implementation          |
-| -------------- | ------------- | ----------------------- |
+| Provider       | Status         | Implementation          |
+| -------------- | -------------- | ----------------------- |
 | Monobank       | ✅ Implemented | Full support            |
 | Enable Banking | ✅ Implemented | On-device, per-user key |
 | Privatbank     | 📋 Planned     | -                       |
@@ -338,15 +338,15 @@ Disconnecting keeps an account holding any row not from the connection and retur
 
 The boundary has no overlap by design, and there is no content match. `connect.test.ts` pins these cases, and reconciliation corrects the balance in all of them:
 
-| Case                                                   | Result                  |
-| ------------------------------------------------------ | ----------------------- |
-| A row on the last day, absent from the imported file   | Lost, balance adjusted  |
-| A row in the file that the bank books on the next day  | Counted twice, adjusted |
-| A row booked late, dated before the start date         | Lost, balance adjusted  |
+| Case                                                  | Result                  |
+| ----------------------------------------------------- | ----------------------- |
+| A row on the last day, absent from the imported file  | Lost, balance adjusted  |
+| A row in the file that the bank books on the next day | Counted twice, adjusted |
+| A row booked late, dated before the start date        | Lost, balance adjusted  |
 
 ## Wise
 
-Wise is an ASPSP inside Enable Banking, named by `WISE_ASPSP_NAME`. Each of its balances is an `ENABLE_BANKING` account of one integration, titled by `EnableBankingMapper.mapAccount` (`Wise EUR`, `Wise USD`). Consolidation treats accounts that share `integration_id` as one bank, so a conversion between two balances pairs as a transfer, while a top-up from another bank stays an income. `ExternalSourceEnum.WISE` only names the create-account row that opens the Enable Banking flow with Wise preselected; no `WISE` accounts exist. `wise.test.ts` carries the sync fixtures and `packages/sync/src/e2e/e2e-fake-wise.ts` the e2e fake API ones.
+Wise is an ASPSP inside Enable Banking, named by `WISE_ASPSP_NAME`. Each of its balances is an `ENABLE_BANKING` account of one integration, titled by `EnableBankingMapper.mapAccount` (`Wise EUR`, `Wise USD`). Consolidation treats accounts that share `integration_id` as one bank, so a conversion between two balances pairs as a transfer, while a top-up from another bank stays an income. `ExternalSourceEnum.WISE` only names the create-account row that opens the Enable Banking flow with Wise preselected; no `WISE` accounts exist. `WiseStatementImportService` imports older history from Wise's per-currency CSV export onto the connection's accounts, matched by currency, through `makeFileSyncService` with provider `WISE`, so the earliest-live-day cutoff dedupes it against the live feed. `wise.test.ts` and `wise-statement-import.test.ts` carry the sync fixtures and `packages/sync/src/e2e/e2e-fake-wise.ts` the e2e fake API ones.
 
 ## Testing
 
@@ -382,6 +382,7 @@ Fixtures come from `buildMonobank` in the harness and are typed as SDK types.
 | `@liaugust/monobank-sdk` | Monobank Personal API client, schemas, and error classes |
 | `date-fns`               | Date manipulation                                        |
 | `xlsx`                   | Privatbank statement parsing                             |
+| `papaparse`              | Wise CSV statement parsing                               |
 | `@rnw-community/shared`  | Type guards                                              |
 | `effect`                 | Effects, `effect/http` transport, Schema, tagged errors  |
 | `@noble/hashes`          | Binance HMAC signing                                     |

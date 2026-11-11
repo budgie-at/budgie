@@ -75,11 +75,9 @@ export class WiseStatementImportService extends Context.Service<WiseStatementImp
                 });
                 const transactionsByExternalId = new Map(matches.map(({ externalId, transactions }) => [externalId, transactions]));
                 const bankAccounts = matches.map(({ externalId, currencyCode }) => buildBankAccount(externalId, currencyCode));
-                const countTransactions = (groups: Iterable<readonly unknown[]>) =>
-                    [...groups].reduce((total, group) => total + group.length, 0);
                 const skippedTransactionCount =
-                    countTransactions(fileBankAccounts.map(({ currencyCode }) => client.getTransactions(currencyCode))) -
-                    countTransactions(transactionsByExternalId.values());
+                    fileBankAccounts.reduce((total, { currencyCode }) => total + client.getTransactions(currencyCode).length, 0) -
+                    matches.reduce((total, { transactions }) => total + transactions.length, 0);
 
                 const result = yield* fileSyncService.importParsed(
                     {
