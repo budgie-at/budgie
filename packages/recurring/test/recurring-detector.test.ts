@@ -17,9 +17,7 @@ const charge = (day: number, amount: number, title = 'APPLE', accountId = 1): Re
     comment: '',
     defaultAmount: amount * PRECISION,
     accountId,
-    categoryId: null,
-    categoryTitle: null,
-    categoryIcon: null
+    categoryId: null
 });
 
 it.effect('keeps distinguishing merchant tokens in display titles without changing recurring identity', () =>

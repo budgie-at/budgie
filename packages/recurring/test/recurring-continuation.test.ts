@@ -17,9 +17,7 @@ const charge = (month: number, day: number, amount: number, title: string): Recu
     comment: '',
     defaultAmount: amount * PRECISION,
     accountId: 1,
-    categoryId: null,
-    categoryTitle: null,
-    categoryIcon: null
+    categoryId: null
 });
 
 const netflixCharges = (secondAmount: number) => [

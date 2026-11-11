@@ -24,9 +24,7 @@ const charge = (transactionId: number, date: Date, amount: number, title = 'NETF
     counterpartyIban: null,
     kind: RecurringSeriesKindEnum.EXPENSE,
     accountId,
-    categoryId: null,
-    categoryTitle: null,
-    categoryIcon: null
+    categoryId: null
 });
 
 const entry = (

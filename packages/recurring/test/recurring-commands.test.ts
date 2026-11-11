@@ -1,7 +1,6 @@
 import { resetTestDb } from '@budgie-at/test-kit';
 import {
     ExchangeRateEntityTable,
-    LanguageEnum,
     PRECISION,
     RecurringCadenceUnitEnum,
     RecurringMatchSourceEnum,
@@ -405,12 +404,7 @@ layer(TestLayer)('recurringService commands', it => {
             expect(series.find(item => item.id === created.id)?.alert).not.toBe(RecurringAlertEnum.PRICE_CHANGE);
             expect(calendar.totalAmount).toBe(100);
             expect(
-                yield* (yield* repository).findChargeByTransactionId(
-                    DEFAULT_INSTRUMENT_ID,
-                    LanguageEnum.EN,
-                    RecurringSeriesKindEnum.EXPENSE,
-                    transaction.id
-                )
+                yield* (yield* repository).findChargeByTransactionId(DEFAULT_INSTRUMENT_ID, RecurringSeriesKindEnum.EXPENSE, transaction.id)
             ).toMatchObject({
                 nativeAmount: 100 * PRECISION,
                 defaultAmount: 100 * PRECISION,

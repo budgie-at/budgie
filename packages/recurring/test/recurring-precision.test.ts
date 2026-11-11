@@ -21,9 +21,7 @@ const charge = (day: number, title = 'NETFLIX', nativeAmount = 12, kind = Recurr
     counterpartyIban: null,
     kind,
     accountId: 1,
-    categoryId: null,
-    categoryTitle: null,
-    categoryIcon: null
+    categoryId: null
 });
 
 const calendarFromCharges = (
