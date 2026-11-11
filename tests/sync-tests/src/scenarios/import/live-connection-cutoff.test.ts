@@ -15,13 +15,18 @@ import {
     seedEnableBankingAccount,
     TestLayer
 } from '../../harness';
-import { buildPdfRow, fetchAccountRows, importPdf, noonDaysAgo } from '../../harness/enable-banking/enable-banking-connect-scenario';
+import {
+    buildPdfRow,
+    DAY_MS,
+    fetchAccountRows,
+    importPdf,
+    noonDaysAgo
+} from '../../harness/enable-banking/enable-banking-connect-scenario';
 
 const HASH = 'hash-cutoff';
 const UID = 'uid-cutoff';
 const SESSION = 'session-cutoff';
 const LIVE_FROM_DAYS_AGO = 30;
-const DAY_MS = 24 * 60 * 60 * 1000;
 
 const seedLiveAccount = (backwardSyncLimitAt: Date | null) =>
     seedEnableBankingAccount({ hash: HASH, token: buildEnableBankingToken(SESSION), mode: SyncModeEnum.BACKWARD, backwardSyncLimitAt });
@@ -72,26 +77,29 @@ describe('import/live-connection-cutoff', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('a 24-month depth with 30 days delivered fills the gap before the first live day', () =>
+    it.effect.each([
+        {
+            name: 'a 24-month depth with 30 days delivered fills the gap before the first live day',
+            limitDaysAgo: 730,
+            isSynced: true,
+            rows: [buildPdfRow('gap-row', noonDaysAgo(200)), buildPdfRow('boundary-day', noonDaysAgo(LIVE_FROM_DAYS_AGO))],
+            expected: ['gap-row']
+        },
+        {
+            name: 'a backfill still running keeps the chosen depth as the cutoff',
+            limitDaysAgo: 60,
+            isSynced: false,
+            rows: [buildPdfRow('before-limit', noonDaysAgo(90)), buildPdfRow('inside-limit', noonDaysAgo(45))],
+            expected: ['before-limit']
+        }
+    ])('$name', ({ limitDaysAgo, isSynced, rows, expected }) =>
         Effect.gen(function* () {
-            const account = yield* syncLiveHistory(new Date(Date.now() - 730 * DAY_MS));
+            const limit = new Date(Date.now() - limitDaysAgo * DAY_MS);
+            const account = isSynced ? yield* syncLiveHistory(limit) : (yield* seedLiveAccount(limit)).account;
 
-            yield* importPdf(
-                [buildPdfRow('gap-row', noonDaysAgo(200)), buildPdfRow('boundary-day', noonDaysAgo(LIVE_FROM_DAYS_AGO))],
-                HASH
-            );
+            yield* importPdf(rows, HASH);
 
-            expect(yield* fetchFileExternalIds(account.id)).toEqual(['gap-row']);
-        }).pipe(Effect.provide(TestLayer))
-    );
-
-    it.effect('a backfill still running keeps the chosen depth as the cutoff', () =>
-        Effect.gen(function* () {
-            const { account } = yield* seedLiveAccount(new Date(Date.now() - 60 * DAY_MS));
-
-            yield* importPdf([buildPdfRow('before-limit', noonDaysAgo(90)), buildPdfRow('inside-limit', noonDaysAgo(45))], HASH);
-
-            expect(yield* fetchFileExternalIds(account.id)).toEqual(['before-limit']);
+            expect(yield* fetchFileExternalIds(account.id)).toEqual(expected);
         }).pipe(Effect.provide(TestLayer))
     );
 });
