@@ -249,7 +249,7 @@ jobs:
         with:
             app-dir: packages/app
             scheme: budgie
-            platforms: ios
+            platforms: ios,android
             package-manager: pnpm
             install-command: pnpm install --frozen-lockfile
             install-cache-paths: |
@@ -271,7 +271,7 @@ jobs:
         uses: rnw-community/mobile-ci/.github/workflows/expo-fingerprint-guard.yml@9a151735055f5ab661650523ad7c6375ae007bef # v4.12.0
         with:
             working-directory: packages/app
-            platforms: ios
+            platforms: ios,android
             app-env: |
                 APP_VARIANT=production
             package-manager: pnpm
@@ -354,6 +354,65 @@ jobs:
             e2e-timeout-minutes: 45
             # The public gateway, not the LAN address: only one Linux host shares the farm's LAN,
             # and the tunnel costs nothing measurable (10 flows: 4m12s public, 4m03s-4m25s LAN).
+            simlock-url: https://simlock.vitaliiyehorov.dev
+        secrets:
+            simlock-token: ${{ secrets.SIMLOCK_TOKEN }}
+
+    android-e2e:
+        if: needs.detect-mobile-impact.outputs.mobile == 'true'
+        needs: [detect-mobile-impact]
+        name: Android E2E
+        permissions:
+            contents: read
+            packages: write
+            actions: read
+        concurrency:
+            group: android-emulator-farm
+            queue: max
+            cancel-in-progress: false
+        uses: rnw-community/mobile-ci/.github/workflows/android-maestro.yml@9a151735055f5ab661650523ad7c6375ae007bef # v4.12.0
+        with:
+            control-runner-labels: '["self-hosted","linux-portable-2x4"]'
+            turbo-version: 2.11.5
+            target-packages: |
+                @budgie-at/app
+                @budgie-at/app-tests
+            trigger-paths: .github/workflows/pr.yml,e2e/**
+            targets: >-
+                [{"name":"e2e","appDir":"packages/app","appId":"com.vitaliiyehorov.budgie.e2e",
+                "prebuildCommand":"npx expo prebuild -p android --clean --no-install"}]
+            android-abis: arm64-v8a
+            gradle-args: -x lint -x lintVitalAnalyzeRelease -x lintAnalyzeRelease
+            build-timeout-minutes: 120
+            build-env: |
+                APP_VARIANT=e2e
+                EXPO_PUBLIC_AI_DISABLE=true
+                EXPO_PUBLIC_LOGGING_DISABLE=true
+            install-command: pnpm install --frozen-lockfile
+            install-cache-paths: |
+                node_modules/.pnpm/llama.rn@*/node_modules/llama.rn/android/src/main/jniLibs
+                node_modules/.pnpm/llama.rn@*/node_modules/llama.rn/ios/rnllama.xcframework
+            install-cache-key: llama.rn-0.13.0-rc.7-react-native-0.88.1
+            package-manager: pnpm
+            build-command: pnpm exec turbo build --filter='@budgie/*'
+            fingerprint-env: |
+                APP_VARIANT=e2e
+                EXPO_PUBLIC_AI_DISABLE=true
+                EXPO_PUBLIC_LOGGING_DISABLE=true
+            repack-env: |
+                APP_VARIANT=e2e
+                EXPO_PUBLIC_AI_DISABLE=true
+                EXPO_PUBLIC_LOGGING_DISABLE=true
+            expect-config: |
+                extra.appVariant=e2e
+                extra.aiEnabled=false
+                extra.loggingEnabled=false
+            test-framework: e2e
+            e2e-dir: e2e
+            e2e-runner-labels: '["self-hosted","linux-portable-4x8"]'
+            e2e-workers: '3'
+            e2e-retries: '1'
+            e2e-timeout-minutes: 60
             simlock-url: https://simlock.vitaliiyehorov.dev
         secrets:
             simlock-token: ${{ secrets.SIMLOCK_TOKEN }}

@@ -189,6 +189,7 @@ const getExpoConfig = ({ config }) => ({
                     extraProguardRules: ANDROID_PROGUARD_RULES,
                     gifEnabled: false,
                     webpEnabled: false,
+                    ...(IS_E2E && { useLegacyPackaging: true }),
                     packagingOptions: {
                         exclude: ['org/bouncycastle/pqc/**', 'org/bouncycastle/x509/**', 'org/apache/commons/codec/language/bm/**']
                     },
