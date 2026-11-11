@@ -2,9 +2,12 @@ import { SYNC_IDENTITY_TABLES, logAndContinue } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Duration from 'effect/Duration';
 import * as Effect from 'effect/Effect';
+import * as FiberSet from 'effect/FiberSet';
 import * as Layer from 'effect/Layer';
 import * as Ref from 'effect/Ref';
 import * as Stream from 'effect/Stream';
+
+import { isPositiveNumber } from '@rnw-community/shared';
 
 import { ICloudSyncScope } from '../../transport/enum/icloud-sync-scope.enum';
 import { CloudSyncEventKindEnum } from '../enum/cloud-sync-event-kind.enum';
@@ -41,7 +44,8 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
         const userDataTableNames = new Set(SYNC_IDENTITY_TABLES.map(table => table.name));
         const { locked } = state;
         const { drain } = drainService;
-        const { reconfigure, reconfigureUnlocked } = engineService;
+        const consumers = yield* FiberSet.make();
+        const { reconfigure, reconfigureUnlocked, stopEngineUnlocked } = engineService;
         const { discoverHousehold, finishHouseholdCleanupUnlocked } = householdService;
 
         const dispatchEvent = (item: CloudSyncEventType) => {
@@ -103,7 +107,10 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
         });
 
         const forkConsumer = <A, E, R, R2>(stream: Stream.Stream<A, E, R>, handle: (event: A) => Effect.Effect<unknown, unknown, R2>) =>
-            Effect.forkDetach(Stream.runForEach(stream, event => logAndContinue(handle(event))));
+            FiberSet.run(
+                consumers,
+                Stream.runForEach(stream, event => logAndContinue(handle(event)))
+            );
 
         return {
             reconfigure,
@@ -111,6 +118,17 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
             discoverHousehold,
             resolveLineageConflict: engineService.resolveLineageConflict,
             leaveHousehold: householdService.leaveHousehold,
+            stop: Effect.fn('CloudSyncService.stop')(function* () {
+                const consumerCount = yield* FiberSet.size(consumers);
+
+                if (!isPositiveNumber(consumerCount)) {
+                    return false;
+                }
+
+                yield* FiberSet.clear(consumers).pipe(Effect.andThen(locked(stopEngineUnlocked())), Effect.uninterruptible);
+
+                return true;
+            }),
             start: Effect.fn('CloudSyncService.start')(function* () {
                 yield* state.publishStoredOwnerName();
                 yield* forkConsumer(transport.events, dispatchEvent);
