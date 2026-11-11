@@ -35,7 +35,7 @@ export const householdAccountsOverviewAtom = databaseQueryAtom(
         const accounts = yield* accountRepository.getAllActiveAccounts;
         const sharedAccountIds = yield* householdShareService.findSharedAccountIds;
         const integrations = yield* bankIntegrationRepository.findActive;
-        const integrationsById = new Map(integrations.map(({ id, provider, label }) => [id, { id, provider, label }]));
+        const integrationsById = new Map(integrations.map(integration => [integration.id, integration]));
         const sharedByMeIds = new Set(sharedAccountIds);
 
         return {

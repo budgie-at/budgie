@@ -138,7 +138,11 @@ export class CloudSyncEngineService extends Context.Service<CloudSyncEngineServi
                 yield* stateStore.update({ boundUserRecordName: userRecordName });
             }
 
-            yield* settingsRepository.update({ cloudUserRecordName: userRecordName });
+            const settings = yield* settingsRepository.find;
+
+            if (settings?.cloudUserRecordName !== userRecordName) {
+                yield* settingsRepository.update({ cloudUserRecordName: userRecordName });
+            }
 
             yield* refreshZones();
             yield* householdService.refreshPrivateOwnerName();

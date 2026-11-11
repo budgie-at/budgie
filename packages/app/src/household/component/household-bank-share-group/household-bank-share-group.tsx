@@ -4,7 +4,7 @@ import { BankLogo } from '../../../@generic/component/bank-logo/bank-logo';
 import { getBankIntegrationTitle } from '../../../account/utils/get-bank-integration-title.util';
 import { getBankProviderTitle } from '../../../account/utils/get-bank-provider-title.util';
 import { getInstitutionAccountTitle } from '../../../account/utils/get-institution-account-title.util';
-import { HouseholdAccountShareGroup } from '../household-account-share-group/household-account-share-group';
+import { HouseholdAccountShareGroupRow } from '../household-account-share-group-row/household-account-share-group-row';
 
 import type { HouseholdAccountShareGroupInterface } from '../../interface/household-account-share-group.interface';
 
@@ -23,7 +23,7 @@ export const HouseholdBankShareGroup = ({ groupKey, integration, groupNumber, ac
     }));
 
     return (
-        <HouseholdAccountShareGroup
+        <HouseholdAccountShareGroupRow
             groupKey={groupKey}
             title={title}
             left={<BankLogo bankProvider={integration.provider} bankName={integration.label ?? title} size={36} />}

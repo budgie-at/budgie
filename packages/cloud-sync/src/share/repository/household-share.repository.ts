@@ -252,24 +252,14 @@ export class HouseholdShareRepository extends Context.Service<HouseholdShareRepo
                     db
                         .select({ id: AccountEntityTable.id })
                         .from(AccountEntityTable)
-                        .where(
-                            and(
-                                eq(AccountEntityTable.syncZone, householdZone),
-                                buildHouseholdOwnershipSql(SyncRecordTypeEnum.ACCOUNT).isOwned
-                            )
-                        )
+                        .where(and(eq(AccountEntityTable.syncZone, householdZone), buildHouseholdOwnershipSql(SyncRecordTypeEnum.ACCOUNT)))
                 ).pipe(Effect.map(rows => rows.map(({ id }) => id))),
             findBudgetIdsSharedByThisUser: (householdZone: string) =>
                 Db.query(db =>
                     db
                         .select({ id: BudgetEntityTable.id })
                         .from(BudgetEntityTable)
-                        .where(
-                            and(
-                                eq(BudgetEntityTable.syncZone, householdZone),
-                                buildHouseholdOwnershipSql(SyncRecordTypeEnum.BUDGET).isOwned
-                            )
-                        )
+                        .where(and(eq(BudgetEntityTable.syncZone, householdZone), buildHouseholdOwnershipSql(SyncRecordTypeEnum.BUDGET)))
                 ).pipe(Effect.map(rows => rows.map(({ id }) => id)))
         };
     })

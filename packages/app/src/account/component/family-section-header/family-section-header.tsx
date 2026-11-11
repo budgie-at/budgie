@@ -2,7 +2,7 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
@@ -44,16 +44,12 @@ export const FamilySectionHeader = ({ total }: Props) => {
     const pausedIcon = isAvailable ? null : (
         <Icon icon={UserIconNameEnum.CloudOff} size={12} strokeWidth={2.25} className="text-warning-strong" />
     );
-    const statusLine = isAvailable ? (
-        <Text maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER} className="text-[13px] text-secondary-foreground">
-            <Trans>Shared with you · not in your total</Trans>
-        </Text>
+    const statusText = isAvailable ? (
+        <Trans>Shared with you · not in your total</Trans>
     ) : (
-        <Text maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER} className="text-[13px] text-secondary-foreground">
-            <Trans>
-                <Text className="font-semibold text-warning-strong">Paused</Text> · not in your total
-            </Trans>
-        </Text>
+        <Trans>
+            <Text className="font-semibold text-warning-strong">Paused</Text> · not in your total
+        </Trans>
     );
 
     return (
@@ -75,9 +71,15 @@ export const FamilySectionHeader = ({ total }: Props) => {
                 titleAccessory={
                     <Icon icon={UserIconNameEnum.ChevronRight} size={14} strokeWidth={2.5} className="text-secondary-foreground" />
                 }
-                subtitleLeading={pausedIcon}
             >
-                {statusLine}
+                <View className="-mt-xs flex-row items-center gap-x-sm">
+                    <View className="w-[8px] items-center overflow-visible">{pausedIcon}</View>
+                    <View className="min-w-0 flex-1">
+                        <Text maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER} className="text-[13px] text-secondary-foreground">
+                            {statusText}
+                        </Text>
+                    </View>
+                </View>
             </AccountSectionHeaderFrame>
         </HapticPressable>
     );
