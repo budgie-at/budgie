@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.173.31](https://github.com/budgie-at/budgie/compare/v6.173.30...v6.173.31) (2026-11-11)
+
+### Bug Fixes
+
+* **app:** keep the live database until an import has replaced it ([#2134](https://github.com/budgie-at/budgie/issues/2134)) ([6daf314](https://github.com/budgie-at/budgie/commit/6daf3143e228a36de84e4673b69f30c8c565f09b))
+
+
 ## [6.173.30](https://github.com/budgie-at/budgie/compare/v6.173.29...v6.173.30) (2026-11-11)
 
 ### Performance Improvements
