@@ -22,11 +22,39 @@ export class WiseStatementImportService extends Context.Service<WiseStatementImp
         const accountRepository = yield* AccountRepository;
         const syncFileReader = yield* SyncFileReader;
 
+        const buildBankAccount = (id: string, currencyCode: string): SyncAccountInterface => ({
+            id,
+            provider: SyncProviderEnum.WISE,
+            currencyCode,
+            currencyCodeNumeric: 0,
+            balance: 0,
+            balanceState: SyncAccountBalanceStateEnum.REPRESENTABLE,
+            creditLimit: 0,
+            type: SyncAccountTypeEnum.CHECKING
+        });
+
+        const parseFile = Effect.fn('WiseStatementImportService.parseFile')(function* (uri: string) {
+            const text = yield* syncFileReader.readText(uri);
+            const transactionsByCurrency = yield* Effect.fromResult(parseWiseCsv(text)).pipe(
+                Effect.mapError(message => SyncInvalidResponseError.make({ provider: SyncProviderEnum.WISE, message }))
+            );
+            const bankAccounts = [...transactionsByCurrency.keys()].map(currencyCode => buildBankAccount(currencyCode, currencyCode));
+
+            return {
+                client: {
+                    getAccounts: () => bankAccounts,
+                    getTransactions: (currencyCode: string) => transactionsByCurrency.get(currencyCode) ?? []
+                },
+                bankAccounts
+            };
+        });
+
         const fileSyncService = yield* makeFileSyncService({
             provider: ExternalSourceEnum.WISE,
             accountType: AccountTypeEnum.BANK_SYNC,
             generateAccountTitle: account => generateDefaultSyncAccountTitle('Wise', account),
             accountIcon: () => UserIconNameEnum.Landmark,
+            parseFile,
             resolveMccCategoryIdMap: () => Effect.succeed(new Map())
         });
 
@@ -35,38 +63,26 @@ export class WiseStatementImportService extends Context.Service<WiseStatementImp
                 uri: string,
                 integrationId: number
             ) {
-                const text = yield* syncFileReader.readText(uri);
-                const transactionsByCurrency = yield* Effect.fromResult(parseWiseCsv(text)).pipe(
-                    Effect.mapError(message => SyncInvalidResponseError.make({ provider: SyncProviderEnum.WISE, message }))
-                );
+                const { client, bankAccounts: fileBankAccounts } = yield* parseFile(uri);
                 const accounts = yield* accountRepository.findByIntegrationId(integrationId);
-                const importable = [...transactionsByCurrency].flatMap(([currencyCode, transactions]) => {
+                const targets = fileBankAccounts.flatMap(({ currencyCode }) => {
                     const matches = accounts.filter(account => account.instrument.code === currencyCode);
                     const [account] = matches;
 
-                    return matches.length === 1 && isDefined(account.externalId)
-                        ? [{ externalId: account.externalId, currencyCode, transactions }]
-                        : [];
+                    return matches.length === 1 && isDefined(account.externalId) ? [{ externalId: account.externalId, currencyCode }] : [];
                 });
-                const importedCount = importable.reduce((total, { transactions }) => total + transactions.length, 0);
-                const parsedCount = [...transactionsByCurrency.values()].reduce((total, transactions) => total + transactions.length, 0);
-                const bankAccounts = importable.map(({ externalId, currencyCode }): SyncAccountInterface => ({
-                    id: externalId,
-                    provider: SyncProviderEnum.WISE,
-                    currencyCode,
-                    currencyCodeNumeric: 0,
-                    balance: 0,
-                    balanceState: SyncAccountBalanceStateEnum.REPRESENTABLE,
-                    creditLimit: 0,
-                    type: SyncAccountTypeEnum.CHECKING
-                }));
-                const transactionsByExternalId = new Map(importable.map(({ externalId, transactions }) => [externalId, transactions]));
-                const skippedTransactionCount = parsedCount - importedCount;
+                const currencyByExternalId = new Map(targets.map(({ externalId, currencyCode }) => [externalId, currencyCode]));
+                const countTransactions = (currencyCodes: Iterable<string>) =>
+                    [...currencyCodes].reduce((total, currencyCode) => total + client.getTransactions(currencyCode).length, 0);
+                const skippedTransactionCount =
+                    countTransactions(fileBankAccounts.map(({ currencyCode }) => currencyCode)) -
+                    countTransactions(currencyByExternalId.values());
+                const bankAccounts = targets.map(({ externalId, currencyCode }) => buildBankAccount(externalId, currencyCode));
 
                 const result = yield* fileSyncService.importParsed(
                     {
                         getAccounts: () => bankAccounts,
-                        getTransactions: externalId => transactionsByExternalId.get(externalId) ?? []
+                        getTransactions: externalId => client.getTransactions(currencyByExternalId.get(externalId) ?? '')
                     },
                     bankAccounts
                 );
