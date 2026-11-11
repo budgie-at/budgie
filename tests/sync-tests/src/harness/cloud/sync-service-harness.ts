@@ -344,6 +344,7 @@ export const syncService = Effect.gen(function* () {
         stopEngine: engineService.stopEngineUnlocked(),
         handleFetchedChanges: fetchService.handleFetchedChanges,
         handleStateSerialization: fetchService.handleStateSerialization,
+        handleWillFetch: fetchService.handleWillFetch,
         handleDidFetch: fetchService.handleDidFetch,
         handleSentChanges: sentService.handleSentChanges,
         handleZoneChange: engineService.handleZoneChange,
