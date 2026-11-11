@@ -10,17 +10,18 @@ import { EnableBankingConnectionService } from '../service/enable-banking-connec
 
 import { useExplainEnableBankingError } from './use-explain-enable-banking-error.hook';
 
+import type { useEnableBankingKeyState } from './use-enable-banking-key-state.hook';
 import type { EnableBankingBankInterface } from '@budgie/sync';
 
-export const useEnableBankingBankLoading = (connectAccountId: number | null) => {
+export const useEnableBankingBankLoading = (
+    connectAccountId: number | null,
+    savePickedKey: ReturnType<typeof useEnableBankingKeyState>['savePickedKey']
+) => {
     const { t } = useLingui();
     const explainError = useExplainEnableBankingError();
 
-    const loadBanks = <SaveKeyError, SaveKeyRequirements>(
-        applicationId: string,
-        saveKey: Effect.Effect<void, SaveKeyError, SaveKeyRequirements>
-    ) =>
-        Effect.flatMap(saveKey, () =>
+    const loadBanks = (applicationId: string) =>
+        Effect.flatMap(savePickedKey(applicationId), () =>
             Effect.flatMap(EnableBankingSyncService, service => service.listBanks(applicationId)).pipe(
                 Effect.mapError(error =>
                     Schema.is(SyncUnauthorizedError)(error)

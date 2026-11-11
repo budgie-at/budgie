@@ -810,10 +810,6 @@ msgstr "{periodLabel} clôturé avec {amount} en dessous"
 msgid "{periodLabel}, spent {spentAmount} of {limitAmount}"
 msgstr "{periodLabel}, {spentAmount} dépensés sur {limitAmount}"
 
-#: src/sync/component/enable-banking-bank-step/enable-banking-bank-step.tsx
-msgid "{preselectedBankName} is not available"
-msgstr "{preselectedBankName} n'est pas disponible"
-
 #: src/budget/hooks/use-budget-forecast-labels.hook.ts
 msgid "{projectedAmount} · {gapAmount} over"
 msgstr "{projectedAmount} · {gapAmount} au-dessus"
@@ -4453,10 +4449,6 @@ msgstr "Page blanche"
 #: src/rule/constant/external-source.constant.ts
 msgid "Enable Banking"
 msgstr "Enable Banking"
-
-#: src/sync/component/enable-banking-bank-step/enable-banking-bank-step.tsx
-msgid "Enable Banking cannot connect {preselectedBankName} in any country right now."
-msgstr "Enable Banking ne peut actuellement connecter {preselectedBankName} dans aucun pays."
 
 #: src/sync/hook/use-explain-enable-banking-error.hook.ts
 msgid "Enable Banking rejected the redirect URL. Correct the redirect URL registered in your application so it matches the setup steps exactly."

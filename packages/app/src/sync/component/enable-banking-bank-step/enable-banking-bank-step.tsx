@@ -5,7 +5,7 @@ import * as Order from 'effect/Order';
 import { useDeferredValue, useState } from 'react';
 import { View } from 'react-native';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { GroupedListItem } from '../../../@generic/component/grouped-list-item/grouped-list-item';
 import { GroupedListSectionTitle } from '../../../@generic/component/grouped-list-section-title/grouped-list-section-title';
@@ -17,7 +17,6 @@ import { SearchablePageList } from '../../../@generic/component/searchable-page-
 import { SearchablePage } from '../../../@generic/component/searchable-page/searchable-page';
 import { GROUPED_LIST_SIZING } from '../../../@generic/constant/grouped-list-sizing.constant';
 import { getDeviceRegionCode } from '../../utils/get-device-region-code.util';
-import { isBankNamed } from '../../utils/is-bank-named.util';
 import { EnableBankingBankRow } from '../enable-banking-bank-row/enable-banking-bank-row';
 
 import type { EnableBankingBankInterface } from '@budgie/sync';
@@ -25,7 +24,6 @@ import type { EnableBankingBankInterface } from '@budgie/sync';
 interface Props {
     readonly banks: readonly EnableBankingBankInterface[];
     readonly isLoading: boolean;
-    readonly preselectedBankName: string | null;
     readonly onSelectBank: (bank: EnableBankingBankInterface) => void;
     readonly onGoBack: () => void;
 }
@@ -34,14 +32,14 @@ const COMBINING_MARKS = /[̀-ͯ]/gu;
 
 const foldSearchText = (text: string): string => text.normalize('NFD').replaceAll(COMBINING_MARKS, '').toLowerCase();
 
-export const EnableBankingBankStep = ({ banks, isLoading, preselectedBankName, onSelectBank, onGoBack }: Props) => {
+export const EnableBankingBankStep = ({ banks, isLoading, onSelectBank, onGoBack }: Props) => {
     const { t } = useLingui();
     const [query, setQuery] = useState('');
     const deferredQuery = useDeferredValue(query);
 
     const regionCode = getDeviceRegionCode();
     const matchingBanks = Arr.sort(
-        banks.filter(bank => !isDefined(preselectedBankName) || isBankNamed(bank, preselectedBankName)),
+        banks,
         Order.mapInput(Order.String, (bank: EnableBankingBankInterface) => bank.name.toLocaleLowerCase())
     )
         .map((bank, index) => ({ ...bank, id: index }))
@@ -50,13 +48,6 @@ export const EnableBankingBankStep = ({ banks, isLoading, preselectedBankName, o
     const otherBanks = matchingBanks.filter(bank => bank.country !== regionCode);
     const hasBothGroups = isNotEmptyArray(localBanks) && isNotEmptyArray(otherBanks);
     const listData = hasBothGroups ? otherBanks : matchingBanks;
-
-    const isPreselectedBankMissing =
-        isDefined(preselectedBankName) && !banks.some(bank => bank.isSupported && isBankNamed(bank, preselectedBankName));
-    const emptyTitle = isPreselectedBankMissing ? t`${preselectedBankName} is not available` : t`No banks found`;
-    const emptyDescription = isPreselectedBankMissing
-        ? t`Enable Banking cannot connect ${preselectedBankName} in any country right now.`
-        : t`Try another name.`;
 
     const renderCard = (bank: EnableBankingBankInterface, index: number, isLast: boolean) => (
         <GroupedListItem isFirst={index === 0} isLast={isLast}>
@@ -90,7 +81,11 @@ export const EnableBankingBankStep = ({ banks, isLoading, preselectedBankName, o
                     data={listData}
                     emptyState={
                         <LoadingContent isLoading={isLoading}>
-                            <SearchablePageEmptyState icon={UserIconNameEnum.Search} title={emptyTitle} description={emptyDescription} />
+                            <SearchablePageEmptyState
+                                icon={UserIconNameEnum.Search}
+                                title={t`No banks found`}
+                                description={t`Try another name.`}
+                            />
                         </LoadingContent>
                     }
                     listHeader={listHeader}
