@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.173.33](https://github.com/budgie-at/budgie/compare/v6.173.32...v6.173.33) (2026-11-11)
+
+### Bug Fixes
+
+* **cloud-sync:** treat a save of a record deleted elsewhere as non-fatal ([#2158](https://github.com/budgie-at/budgie/issues/2158)) ([e4686aa](https://github.com/budgie-at/budgie/commit/e4686aae369804b29194386991b436331f3fc637))
+
+
 ## [6.173.32](https://github.com/budgie-at/budgie/compare/v6.173.31...v6.173.32) (2026-11-11)
 
 ### Bug Fixes
