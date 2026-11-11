@@ -1,10 +1,16 @@
 import { HouseholdShareService } from '@budgie/cloud-sync';
-import { AccountEntityTable, SyncOutboxEntityTable, SyncRecordEntityTable, SyncZoneRegistryEntityTable } from '@budgie/contracts';
+import {
+    AccountEntityTable,
+    SettingsEntityTable,
+    SyncOutboxEntityTable,
+    SyncRecordEntityTable,
+    SyncZoneRegistryEntityTable
+} from '@budgie/contracts';
 
 import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
 
 export const householdAccountShareAtom = databaseQueryFamily(
-    [AccountEntityTable, SyncZoneRegistryEntityTable, SyncRecordEntityTable, SyncOutboxEntityTable],
+    [AccountEntityTable, SyncZoneRegistryEntityTable, SyncRecordEntityTable, SyncOutboxEntityTable, SettingsEntityTable],
     HouseholdShareService,
     (householdShareService, accountId: number) => householdShareService.findAccountShareStatus(accountId)
 );

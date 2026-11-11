@@ -1,12 +1,18 @@
 import {
+    AccountEntityTable,
+    BudgetEntityTable,
+    buildHouseholdOwnershipSql,
+    CURRENT_CLOUD_USER_SQL,
     Db,
+    HOUSEHOLD_SYNC_ZONE,
     SyncOutboxOperationEnum,
+    SyncRecordEntityTable,
     SyncRecordTypeEnum,
     SyncRecordRepository,
     SYNC_MOVED_FROM_MARKER_PREFIX,
     SYNC_MOVED_TO_MARKER_PREFIX
 } from '@budgie/contracts';
-import { and, eq, getTableColumns } from 'drizzle-orm';
+import { and, eq, getTableColumns, sql } from 'drizzle-orm';
 import * as Clock from 'effect/Clock';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -204,10 +210,38 @@ export class SyncUploadService extends Context.Service<SyncUploadService>()('@bu
                 : Result.succeed(encoded.success);
         });
 
+        const findHouseholdOwnerId = (row: SyncOutboxEntityInterface, recordType: SyncAggregateRecordType) => {
+            if (
+                row.syncZone !== HOUSEHOLD_SYNC_ZONE ||
+                (recordType !== SyncRecordTypeEnum.ACCOUNT && recordType !== SyncRecordTypeEnum.BUDGET)
+            ) {
+                return Effect.succeed(null);
+            }
+
+            const table = recordType === SyncRecordTypeEnum.ACCOUNT ? AccountEntityTable : BudgetEntityTable;
+
+            return Db.query(db =>
+                db
+                    .select({
+                        ownerId: sql<
+                            string | null
+                        >`CASE WHEN ${buildHouseholdOwnershipSql(recordType).isOwned} THEN ${CURRENT_CLOUD_USER_SQL} ELSE (
+                            SELECT json_extract(${SyncRecordEntityTable.payload}, '$.encryptedFields.ownerId') FROM ${SyncRecordEntityTable}
+                            WHERE ${SyncRecordEntityTable.syncZone} = ${HOUSEHOLD_SYNC_ZONE}
+                              AND ${SyncRecordEntityTable.syncId} = ${row.syncId}
+                              AND ${SyncRecordEntityTable.recordType} = ${recordType}
+                        ) END`
+                    })
+                    .from(table)
+                    .where(and(eq(table.syncZone, HOUSEHOLD_SYNC_ZONE), eq(table.syncId, row.syncId)))
+                    .limit(1)
+            ).pipe(Effect.map(rows => rows.at(0)?.ownerId ?? null));
+        };
+
         const annotateRecords = (
             records: readonly SyncRecordInterface[],
             row: SyncOutboxEntityInterface,
-            movedFrom: string | null,
+            homeFields: EncodedSyncFieldsType,
             legOwnerName: string | null
         ) =>
             records.map(record => {
@@ -215,8 +249,8 @@ export class SyncUploadService extends Context.Service<SyncUploadService>()('@bu
                     return withSyncRecordFields(record, record.zone, { privateOwnerName: legOwnerName });
                 }
 
-                return isNotEmptyString(movedFrom) && record.recordName === row.syncId && record.zone === row.syncZone
-                    ? withSyncRecordFields(record, record.zone, { movedFrom })
+                return record.recordName === row.syncId && record.zone === row.syncZone
+                    ? withSyncRecordFields(record, record.zone, homeFields)
                     : record;
             });
 
@@ -231,11 +265,12 @@ export class SyncUploadService extends Context.Service<SyncUploadService>()('@bu
                 return rejected(row, encoded.failure);
             }
 
-            const changedColumns = parseChangedColumns(row.changedColumns);
+            const movedFrom = readSyncMoveMarker(parseChangedColumns(row.changedColumns), SYNC_MOVED_FROM_MARKER_PREFIX);
+            const ownerId = yield* findHouseholdOwnerId(row, row.recordType);
             const records = annotateRecords(
                 encoded.success,
                 row,
-                readSyncMoveMarker(changedColumns, SYNC_MOVED_FROM_MARKER_PREFIX),
+                { ...(isNotEmptyString(movedFrom) && { movedFrom }), ...(isNotEmptyString(ownerId) && { ownerId }) },
                 privateOwnerName
             );
 

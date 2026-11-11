@@ -6,6 +6,7 @@ import {
     BudgetSinkingFundEntityTable,
     ExchangeRateEntityTable,
     PERSONAL_SYNC_ZONE,
+    SettingsEntityTable,
     SyncRecordEntityTable,
     SyncOutboxEntityTable,
     TransactionEntityTable,
@@ -56,6 +57,7 @@ export const budgetSpentAtom = databaseQueryFamily(
     [
         SyncRecordEntityTable,
         SyncOutboxEntityTable,
+        SettingsEntityTable,
         TransactionEntryEntityTable,
         TransactionEntityTable,
         TransactionTagsEntityTable,

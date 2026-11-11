@@ -1,0 +1,1 @@
+ALTER TABLE `settings` ADD `cloud_user_record_name` text;

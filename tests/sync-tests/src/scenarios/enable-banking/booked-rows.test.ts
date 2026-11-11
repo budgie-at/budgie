@@ -4,6 +4,7 @@ import { EnableBankingSyncService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
+import { afterEach, beforeEach, vi } from 'vitest';
 
 import {
     buildEnableBankingToken,
@@ -54,6 +55,13 @@ const syncOnce = Effect.gen(function* () {
 });
 
 describe('enable-banking/booked-rows', () => {
+    beforeEach(() => {
+        vi.useFakeTimers({ now: new Date('2026-11-04T12:00:00.000Z'), toFake: ['Date'] });
+    });
+    afterEach(() => {
+        vi.useRealTimers();
+    });
+
     it.effect('never stores a non-BOOK row', () =>
         Effect.gen(function* () {
             const service = yield* EnableBankingSyncService;

@@ -10,6 +10,7 @@ import {
     CategoryRepository,
     ExchangeRateEntityTable,
     SyncRecordEntityTable,
+    SettingsEntityTable,
     SyncOutboxEntityTable,
     TransactionEntityTable,
     TransactionEntryEntityTable
@@ -60,7 +61,8 @@ export const suggestedBudgetTemplateAtom = Atom.family((key: { readonly nowTimes
             AccountEntityTable,
             ExchangeRateEntityTable,
             SyncRecordEntityTable,
-            SyncOutboxEntityTable
+            SyncOutboxEntityTable,
+            SettingsEntityTable
         ],
         Effect.gen(function* () {
             const budgetRepository = yield* BudgetRepository;

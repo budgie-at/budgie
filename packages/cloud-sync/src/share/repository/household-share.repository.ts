@@ -1,12 +1,12 @@
 import {
-    buildSharedByOtherSql,
+    buildHouseholdOwnershipSql,
     AccountEntityTable,
     BudgetEntityTable,
     Db,
     PERSONAL_SYNC_ZONE,
     SyncRecordTypeEnum
 } from '@budgie/contracts';
-import { and, eq, not, getTableColumns } from 'drizzle-orm';
+import { and, eq, getTableColumns } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -252,14 +252,24 @@ export class HouseholdShareRepository extends Context.Service<HouseholdShareRepo
                     db
                         .select({ id: AccountEntityTable.id })
                         .from(AccountEntityTable)
-                        .where(and(eq(AccountEntityTable.syncZone, householdZone), not(buildSharedByOtherSql(SyncRecordTypeEnum.ACCOUNT))))
+                        .where(
+                            and(
+                                eq(AccountEntityTable.syncZone, householdZone),
+                                buildHouseholdOwnershipSql(SyncRecordTypeEnum.ACCOUNT).isOwned
+                            )
+                        )
                 ).pipe(Effect.map(rows => rows.map(({ id }) => id))),
             findBudgetIdsSharedByThisUser: (householdZone: string) =>
                 Db.query(db =>
                     db
                         .select({ id: BudgetEntityTable.id })
                         .from(BudgetEntityTable)
-                        .where(and(eq(BudgetEntityTable.syncZone, householdZone), not(buildSharedByOtherSql(SyncRecordTypeEnum.BUDGET))))
+                        .where(
+                            and(
+                                eq(BudgetEntityTable.syncZone, householdZone),
+                                buildHouseholdOwnershipSql(SyncRecordTypeEnum.BUDGET).isOwned
+                            )
+                        )
                 ).pipe(Effect.map(rows => rows.map(({ id }) => id)))
         };
     })

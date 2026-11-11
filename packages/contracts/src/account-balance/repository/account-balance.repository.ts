@@ -1,5 +1,5 @@
 /* eslint-disable max-lines -- File owns the account-balance ledger and valuation SQL pipeline that must stay together */
-import { type SQL, type SQLWrapper, and, eq, inArray, isNull, lte, notInArray, sql } from 'drizzle-orm';
+import { type SQL, type SQLWrapper, and, eq, inArray, isNull, lte, not, notInArray, sql } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -19,7 +19,7 @@ import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { BankIntegrationEntityTable } from '../../bank-integration/table/bank-integration-entity.table';
 import { SyncRecordTypeEnum } from '../../cloud-sync/enum/sync-record-type.enum';
-import { buildSharedByOtherSql } from '../../cloud-sync/utils/build-shared-by-other-sql.util';
+import { buildHouseholdOwnershipSql } from '../../cloud-sync/utils/build-household-ownership-sql.util';
 import { DebtEventDirectionEnum } from '../../debt-event/enum/debt-event-direction.enum';
 import { DebtEventEntityTable } from '../../debt-event/table/debt-event-entity.table';
 import { InstrumentTypeEnum } from '../../instrument/enum/instrument-type.enum';
@@ -52,7 +52,7 @@ const buildNetWorthExchangeRateConversionSql = (defaultInstrumentId: number) =>
 
 const getConvertedBalanceSql = (balanceSql: SQL, exchangeRateSql: SQL) => roundToMinorUnitSql(sql`(${balanceSql}) * ${exchangeRateSql}`);
 
-const getOwnNetWorthAccountSql = () => sql`NOT ${buildSharedByOtherSql(SyncRecordTypeEnum.ACCOUNT)}`;
+const accountOwnershipSql = buildHouseholdOwnershipSql(SyncRecordTypeEnum.ACCOUNT);
 
 const getActiveAccountWhereSql = (...conditions: SQL[]) =>
     and(...conditions, eq(AccountEntityTable.isActive, true), isNull(AccountEntityTable.deletedAt));
@@ -229,7 +229,7 @@ export class AccountBalanceRepository extends Context.Service<AccountBalanceRepo
                         and(
                             eq(AccountEntityTable.includeInNetWorth, true),
                             isNull(AccountEntityTable.deletedAt),
-                            getOwnNetWorthAccountSql()
+                            accountOwnershipSql.isOwned
                         )
                     )
             );
@@ -273,7 +273,7 @@ export class AccountBalanceRepository extends Context.Service<AccountBalanceRepo
                         debtProgressPercentage: debtProgressSql.percentage,
                         debtTotalAmount: debtProgressSql.totalAmount,
                         hasLedgerHistory: sql<number>`EXISTS (SELECT 1 FROM ${TransactionEntryEntityTable} WHERE ${TransactionEntryEntityTable.accountId} = ${AccountEntityTable.id} AND ${TransactionEntryEntityTable.deletedAt} IS NULL)`,
-                        isSharedByOther: sql<number>`CASE WHEN ${buildSharedByOtherSql(SyncRecordTypeEnum.ACCOUNT)} THEN 1 ELSE 0 END`,
+                        isSharedByOther: sql<number>`CASE WHEN ${accountOwnershipSql.isSharedByOther} THEN 1 ELSE 0 END`,
                         instrument: InstrumentEntityTable,
                         integrationLabel: BankIntegrationEntityTable.label
                     })
@@ -287,7 +287,7 @@ export class AccountBalanceRepository extends Context.Service<AccountBalanceRepo
                             isNull(BankIntegrationEntityTable.deletedAt)
                         )
                     )
-                    .where(isNull(AccountEntityTable.deletedAt))
+                    .where(and(isNull(AccountEntityTable.deletedAt), not(accountOwnershipSql.isDuplicateOfOwn)))
             );
         },
         getLatestUpdatedAt: Db.query(db =>
@@ -341,7 +341,7 @@ export class AccountBalanceRepository extends Context.Service<AccountBalanceRepo
                         and(
                             eq(AccountEntityTable.includeInNetWorth, true),
                             isNull(AccountEntityTable.deletedAt),
-                            getOwnNetWorthAccountSql()
+                            accountOwnershipSql.isOwned
                         )
                     )
             );
@@ -368,7 +368,7 @@ export class AccountBalanceRepository extends Context.Service<AccountBalanceRepo
                         total: sql<number>`COALESCE(SUM(${getConvertedBalanceSql(getAccountBalanceWithTransactionsSql(), exchangeRateSql)}), 0)`
                     })
                     .from(AccountEntityTable)
-                    .where(getActiveAccountWhereSql(inArray(AccountEntityTable.type, accountTypes), getOwnNetWorthAccountSql()))
+                    .where(getActiveAccountWhereSql(inArray(AccountEntityTable.type, accountTypes), accountOwnershipSql.isOwned))
             );
         },
         getTotalRemainingDebtByType: (defaultInstrumentId: number, debtType: AccountDebtTypeEnum) => {
