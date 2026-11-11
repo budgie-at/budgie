@@ -32,6 +32,20 @@ export class TransactionCategorizeInboxRepository extends Context.Service<Transa
             const writeChunkSize = 500;
             const queryBuilder = new QueryBuilder();
 
+            const categorySourcePolicy: Record<CategorySourceEnum, { readonly isCategorized: boolean; readonly isEvidence: boolean }> = {
+                [CategorySourceEnum.USER]: { isCategorized: true, isEvidence: true },
+                [CategorySourceEnum.RULE]: { isCategorized: true, isEvidence: true },
+                [CategorySourceEnum.MANUAL_EXPENSE_DUPLICATE]: { isCategorized: true, isEvidence: true },
+                [CategorySourceEnum.MCC_DEFAULT]: { isCategorized: false, isEvidence: false },
+                [CategorySourceEnum.INBOX]: { isCategorized: false, isEvidence: false },
+                [CategorySourceEnum.AI]: { isCategorized: true, isEvidence: false },
+                [CategorySourceEnum.FEE]: { isCategorized: true, isEvidence: false },
+                [CategorySourceEnum.DEBT_SETTLEMENT]: { isCategorized: true, isEvidence: false }
+            };
+            const categorySources = Object.values(CategorySourceEnum);
+            const uncategorizedSources = categorySources.filter(source => !categorySourcePolicy[source].isCategorized);
+            const evidenceSources = categorySources.filter(source => categorySourcePolicy[source].isEvidence);
+
             const buildNonInstallmentDebtPaymentCondition = () =>
                 notExists(
                     queryBuilder
@@ -120,10 +134,7 @@ export class TransactionCategorizeInboxRepository extends Context.Service<Transa
                             CategoryEntityTable,
                             and(
                                 eq(CategoryEntityTable.id, TransactionEntryEntityTable.categoryId),
-                                notInArray(TransactionEntryEntityTable.categorySource, [
-                                    CategorySourceEnum.MCC_DEFAULT,
-                                    CategorySourceEnum.INBOX
-                                ]),
+                                notInArray(TransactionEntryEntityTable.categorySource, uncategorizedSources),
                                 eq(CategoryEntityTable.isSystemCategory, false),
                                 isNull(CategoryEntityTable.deletedAt)
                             )
@@ -234,11 +245,7 @@ export class TransactionCategorizeInboxRepository extends Context.Service<Transa
                         .where(
                             buildEvidenceWhere([
                                 isNotNull(TransactionEntryEntityTable.categoryId),
-                                inArray(TransactionEntryEntityTable.categorySource, [
-                                    CategorySourceEnum.USER,
-                                    CategorySourceEnum.RULE,
-                                    CategorySourceEnum.MANUAL_EXPENSE_DUPLICATE
-                                ]),
+                                inArray(TransactionEntryEntityTable.categorySource, evidenceSources),
                                 eq(CategoryEntityTable.isSystemCategory, false),
                                 isNull(CategoryEntityTable.deletedAt)
                             ])
