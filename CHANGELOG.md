@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.175.1](https://github.com/budgie-at/budgie/compare/v6.175.0...v6.175.1) (2026-11-11)
+
+### Bug Fixes
+
+* **sync:** bound FX re-pairs of untracked own transfers by the market rate ([#2166](https://github.com/budgie-at/budgie/issues/2166)) ([fcafcf6](https://github.com/budgie-at/budgie/commit/fcafcf6e8321b29d803a1392e40678b8f6cf0f3c))
+
+
 # [6.175.0](https://github.com/budgie-at/budgie/compare/v6.174.2...v6.175.0) (2026-11-11)
 
 ### Features
