@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.173.22](https://github.com/budgie-at/budgie/compare/v6.173.21...v6.173.22) (2026-11-11)
+
+### Bug Fixes
+
+* **cloud-sync:** clear the fetching status when the DID_FETCH retry flush fails ([#2120](https://github.com/budgie-at/budgie/issues/2120)) ([4491e08](https://github.com/budgie-at/budgie/commit/4491e08caaeeb3ac7fe470e43f3531dcfd0791d0))
+
+
 ## [6.173.21](https://github.com/budgie-at/budgie/compare/v6.173.20...v6.173.21) (2026-11-10)
 
 ### Bug Fixes
