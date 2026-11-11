@@ -43,13 +43,21 @@ export class DatabaseConnectionService extends Context.Service<DatabaseConnectio
                 { discard: true }
             ).pipe(Effect.mapError(cause => DatabaseOpenError.make({ cause })));
 
-        const recoverReplacedDatabase = Effect.gen(function* () {
-            if (
-                new File(DATABASE_DIRECTORY, DB_NAME).exists ||
-                new File(DATABASE_DIRECTORY, `${DB_NAME}.bak`).exists ||
-                !DATABASE_DIRECTORY.exists
-            ) {
+        const restoreAsLiveDatabase = (source: File, suffix: string) =>
+            Effect.tryPromise({
+                try: () => source.move(new File(DATABASE_DIRECTORY, `${DB_NAME}${suffix}`), { overwrite: true }),
+                catch: cause => DatabaseOpenError.make({ cause })
+            });
+
+        const recoverMissingDatabase = Effect.gen(function* () {
+            if (new File(DATABASE_DIRECTORY, DB_NAME).exists || !DATABASE_DIRECTORY.exists) {
                 return;
+            }
+
+            const rekeyBackup = new File(DATABASE_DIRECTORY, `${DB_NAME}.bak`);
+
+            if (rekeyBackup.exists) {
+                return yield* restoreAsLiveDatabase(rekeyBackup, '');
             }
 
             const newestMovedAt = DATABASE_DIRECTORY.list()
@@ -70,19 +78,14 @@ export class DatabaseConnectionService extends Context.Service<DatabaseConnectio
                 suffix => {
                     const movedAside = new File(DATABASE_DIRECTORY, `${REPLACED_DATABASE_PREFIX}${newestMovedAt}${suffix}`);
 
-                    return movedAside.exists
-                        ? Effect.tryPromise({
-                              try: () => movedAside.move(new File(DATABASE_DIRECTORY, `${DB_NAME}${suffix}`), { overwrite: true }),
-                              catch: cause => DatabaseOpenError.make({ cause })
-                          })
-                        : Effect.void;
+                    return movedAside.exists ? restoreAsLiveDatabase(movedAside, suffix) : Effect.void;
                 },
                 { discard: true }
             );
         }).pipe(Effect.catchDefect(cause => Effect.fail(DatabaseOpenError.make({ cause }))));
 
         yield* recoverInterruptedRestore.pipe(Effect.catchDefect(defect => Effect.logError(defect)));
-        yield* recoverReplacedDatabase;
+        yield* recoverMissingDatabase;
 
         const databaseKey = yield* readDatabaseKey;
         const openConnection = openSqliteClient(DB_NAME, databaseKey).pipe(Scope.provide(scope));

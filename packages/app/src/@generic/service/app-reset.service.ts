@@ -62,8 +62,8 @@ export class AppResetService extends Context.Service<AppResetService>()('@budgie
                     });
             }
 
-            deleteDatabaseFiles(databasePath);
             deleteDatabaseFiles(`${databasePath}.bak`);
+            deleteDatabaseFiles(databasePath);
         });
 
         const deleteCacheContents = Effect.fn('AppResetService.deleteCacheContents')(function* () {
@@ -85,12 +85,11 @@ export class AppResetService extends Context.Service<AppResetService>()('@budgie
                 yield* databaseLifecycleService.run(
                     DatabaseLifecycleOperationEnum.RESET,
                     runAllAndFailWithFirstError([
-                        runPrimaryResetSteps(),
+                        runPrimaryResetSteps().pipe(Effect.andThen(authService.persistPin(null))),
                         deleteCacheContents(),
                         Effect.sync(() => {
                             patternCacheService.invalidate();
                         }),
-                        authService.persistPin(null),
                         siriCatalogService.clear()
                     ])
                 );

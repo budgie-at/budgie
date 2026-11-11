@@ -122,16 +122,57 @@ describe('connection startup recovery', () => {
         })
     );
 
-    it.effect('leaves the moved-aside database in place while an interrupted rekey backup exists', () =>
+    it.effect('restores the database left in the rekey backup when no live database exists', () =>
+        Effect.gen(function* () {
+            storage.files.set('documents/SQLite/budgie.db.bak', 'rekey-backup');
+
+            yield* startup;
+
+            expect(openSqliteClient).toHaveBeenCalled();
+            expect(storage.files.get('documents/SQLite/budgie.db')).toBe('rekey-backup');
+            expect(storage.files.has('documents/SQLite/budgie.db.bak')).toBe(false);
+        })
+    );
+
+    it.effect('keeps a live database and leaves the rekey backup in place', () =>
+        Effect.gen(function* () {
+            storage.files.set('documents/SQLite/budgie.db', 'live');
+            storage.files.set('documents/SQLite/budgie.db.bak', 'rekey-backup');
+
+            yield* startup;
+
+            expect(openSqliteClient).toHaveBeenCalled();
+            expect(storage.files.get('documents/SQLite/budgie.db')).toBe('live');
+            expect(storage.files.get('documents/SQLite/budgie.db.bak')).toBe('rekey-backup');
+        })
+    );
+
+    it.effect('restores the rekey backup and leaves the moved-aside database in place', () =>
         Effect.gen(function* () {
             storage.files.set('documents/SQLite/budgie.db.bak', 'rekey-backup');
             storage.files.set('documents/SQLite/budgie.db.replaced-1700000000000', 'original');
 
             yield* startup;
 
-            expect(storage.files.has('documents/SQLite/budgie.db')).toBe(false);
-            expect(storage.files.get('documents/SQLite/budgie.db.bak')).toBe('rekey-backup');
+            expect(storage.files.get('documents/SQLite/budgie.db')).toBe('rekey-backup');
+            expect(storage.files.has('documents/SQLite/budgie.db.bak')).toBe(false);
             expect(storage.files.get('documents/SQLite/budgie.db.replaced-1700000000000')).toBe('original');
+        })
+    );
+
+    it.effect('blocks SQLite open when the rekey backup cannot be restored and retries', () =>
+        Effect.gen(function* () {
+            storage.files.set('documents/SQLite/budgie.db.bak', 'rekey-backup');
+            storage.failMoveFrom = 'documents/SQLite/budgie.db.bak';
+
+            const error = yield* Effect.flip(startup);
+
+            expect(error._tag).toBe('DatabaseOpenError');
+            expect(openSqliteClient).not.toHaveBeenCalled();
+            expect(storage.files.get('documents/SQLite/budgie.db.bak')).toBe('rekey-backup');
+            storage.failMoveFrom = null;
+            yield* startup;
+            expect(storage.files.get('documents/SQLite/budgie.db')).toBe('rekey-backup');
         })
     );
 

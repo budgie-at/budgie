@@ -48,12 +48,19 @@ vi.mock('../src/siri/service/siri-catalog.service', async () => {
 vi.mock('../src/@generic/utils/reload-app.util', () => import('./fixture/reload-app-fake'));
 vi.mock('expo-file-system', () => import('./fixture/expo-file-system-fake'));
 
+const pinHolder: { pin: string | null } = { pin: 'previous-pin' };
+
 const resetLayer = Layer.effect(AppResetService, AppResetService.make).pipe(
     Layer.provide([
         Layer.mock(DatabaseLifecycleService)({ run: (_operation, effect) => effect, close: () => Effect.void }),
         Layer.mock(AiStorageReplacementService)({ pauseLongLivedRuntime: () => Effect.void }),
         Layer.mock(AiModelResidencyService)({ drainLock: Semaphore.makeUnsafe(1), suspend: () => Effect.void }),
-        Layer.mock(AuthService)({ persistPin: () => Effect.void }),
+        Layer.mock(AuthService)({
+            persistPin: pin =>
+                Effect.sync(() => {
+                    pinHolder.pin = pin;
+                })
+        }),
         Layer.mock(PatternCacheService)({ invalidate: () => undefined }),
         Layer.mock(SiriCatalogService)({ clear: () => Effect.void })
     ])
@@ -67,12 +74,31 @@ describe('app reset', () => {
             storage.files.set('documents/SQLite/budgie.db-wal', 'live-wal');
             storage.files.set('documents/SQLite/budgie.db.replaced-123', 'original');
             storage.files.set('documents/SQLite/budgie.db.replaced-123-wal', 'original-wal');
+            storage.files.set('documents/SQLite/budgie.db.bak', 'rekey-backup');
 
             yield* Effect.flatMap(AppResetService, service => service.clearAllDataAndRestart()).pipe(
                 Effect.provide([resetLayer, inertDbLayer])
             );
 
             expect([...storage.files.keys()].filter(path => path.startsWith('documents/SQLite/budgie.db'))).toEqual([]);
+        })
+    );
+    it.effect('keeps the live database and its PIN while an older copy it would be restored from cannot be erased', () =>
+        Effect.gen(function* () {
+            resetStorage();
+            pinHolder.pin = 'previous-pin';
+            storage.files.set('documents/SQLite/budgie.db', 'live');
+            storage.files.set('documents/SQLite/budgie.db.bak', 'rekey-backup');
+            storage.failDelete = 'documents/SQLite/budgie.db.bak';
+
+            yield* Effect.exit(
+                Effect.flatMap(AppResetService, service => service.clearAllDataAndRestart()).pipe(
+                    Effect.provide([resetLayer, inertDbLayer])
+                )
+            );
+
+            expect(storage.files.get('documents/SQLite/budgie.db')).toBe('live');
+            expect(pinHolder.pin).toBe('previous-pin');
         })
     );
 });
