@@ -51,7 +51,6 @@ import type { InzhurOperationsFundSummaryInterface } from '../interface/inzhur-o
 import type { InzhurOperationsImportSummaryInterface } from '../interface/inzhur-operations-import-summary.interface';
 import type { InzhurPlannedActionInterface } from '../interface/inzhur-planned-action.interface';
 import type { InzhurSetupInterface } from '../interface/inzhur-setup.interface';
-import type { InzhurTradePriceTotalInterface } from '../interface/inzhur-trade-price-total.interface';
 import type { AccountEntityInterface, TransactionWithEntriesEntityInterface } from '@budgie/contracts';
 import type { InzhurFundPriceInterface } from '@budgie/market';
 
@@ -76,41 +75,6 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
 
             const isManualPurchase = (transaction: TransactionWithEntriesEntityInterface) =>
                 isDefined(transaction.externalId) && transaction.externalId.startsWith(INZHUR_MANUAL_EXTERNAL_ID_PREFIX);
-
-            const isTrade = (action: InzhurPlannedActionInterface) =>
-                action.kind === InzhurOperationKindEnum.BUY || action.kind === InzhurOperationKindEnum.SELL;
-
-            const recordTradePrices = (
-                actions: readonly InzhurPlannedActionInterface[],
-                accountByFund: ReadonlyMap<string, AccountEntityInterface>
-            ) => {
-                const totals = new Map<string, InzhurTradePriceTotalInterface>();
-
-                for (const action of actions.filter(isTrade)) {
-                    const instrumentId = accountByFund.get(action.fundName ?? '')?.instrumentId;
-                    const microUnits = convertToMicroUnits(action.quantity ?? 0);
-
-                    if (isDefined(instrumentId) && isPositiveNumber(microUnits)) {
-                        const priceDate = toKyivDay(action.occurredAt);
-                        const key = `${instrumentId}:${priceDate}`;
-                        const total = totals.get(key) ?? { instrumentId, priceDate, cash: 0, microUnits: 0 };
-
-                        totals.set(key, {
-                            ...total,
-                            cash: total.cash + convertToMicroUnits(action.cashAmount),
-                            microUnits: total.microUnits + microUnits
-                        });
-                    }
-                }
-
-                return inzhurPriceService.recordTradePrices(
-                    [...totals.values()].map(({ instrumentId, priceDate, cash, microUnits }) => ({
-                        instrumentId,
-                        priceDate,
-                        price: cash / microUnits
-                    }))
-                );
-            };
 
             const sumQuantity = (
                 ledger: readonly TransactionWithEntriesEntityInterface[],
@@ -324,7 +288,15 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
                 };
                 const newActions = plan.actions.filter(action => !existingIds.has(action.externalId));
 
-                yield* recordTradePrices(plan.actions, accountByFund);
+                yield* inzhurPriceService.recordTradePrices(
+                    plan.actions.flatMap(action => {
+                        const instrumentId = accountByFund.get(action.fundName ?? '')?.instrumentId;
+
+                        return isDefined(instrumentId) && isPositiveNumber(action.quantity)
+                            ? [{ instrumentId, priceDate: toKyivDay(action.occurredAt), price: action.cashAmount / action.quantity }]
+                            : [];
+                    })
+                );
 
                 const quantities = inzhurQuantityResolver.resolve({
                     actions: plan.actions,
@@ -353,6 +325,8 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
                         currentPrices
                     )
                 });
+                const isTrade = (action: InzhurPlannedActionInterface) =>
+                    action.kind === InzhurOperationKindEnum.BUY || action.kind === InzhurOperationKindEnum.SELL;
                 const unresolvedFundNames = newActions
                     .filter(action => isTrade(action) && !quantities.has(action.externalId))
                     .flatMap(action => (isDefined(action.fundName) ? [action.fundName] : []));

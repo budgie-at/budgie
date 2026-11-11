@@ -28,6 +28,7 @@ import type { EntryBaseValuationInterface } from '../interface/entry-base-valuat
 import type { RateLookupsInterface } from '../interface/rate-lookups.interface';
 import type {
     AccountWithInstrumentEntityInterface,
+    DbError,
     TransactionCreateInputInterface,
     TransactionEntryCreateInputInterface
 } from '@budgie/contracts';
@@ -76,34 +77,30 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
             findInstrumentByCode: instrumentRepository.findByCode
         };
 
-        const makeRangeLookups = Effect.fnUntraced(function* (fromDate: string, toDate: string) {
-            const capacity = Number.MAX_SAFE_INTEGER;
-            const rangeRates = yield* Cache.make({
-                capacity,
-                lookup: ([sourceInstrumentId, targetInstrumentId]: readonly [number, number]) =>
-                    Effect.map(
-                        Effect.all([
-                            historicalExchangeRateRepository.findForDateOrBefore(sourceInstrumentId, targetInstrumentId, fromDate),
-                            historicalExchangeRateRepository.findInDateRange(sourceInstrumentId, targetInstrumentId, fromDate, toDate)
-                        ]),
-                        ([before, inRange]) => {
-                            const rates = isDefined(before) && before.rateDate < fromDate ? [before, ...inRange] : inRange;
+        const memoize = <Key, Value, Requirements>(lookup: (key: Key) => Effect.Effect<Value, DbError, Requirements>) =>
+            Cache.make({ capacity: Number.MAX_SAFE_INTEGER, lookup });
 
-                            return { rates, rateDates: rates.map(rate => rate.rateDate) };
-                        }
-                    )
-            });
-            const earliest = yield* Cache.make({
-                capacity,
-                lookup: ([sourceInstrumentId, targetInstrumentId]: readonly [number, number]) =>
-                    historicalExchangeRateRepository.findEarliest(sourceInstrumentId, targetInstrumentId)
-            });
-            const latest = yield* Cache.make({
-                capacity,
-                lookup: ([baseInstrumentId, quoteInstrumentId]: readonly [number, number]) =>
-                    exchangeRateRepository.findByBaseAndQuoteIds(baseInstrumentId, quoteInstrumentId)
-            });
-            const instruments = yield* Cache.make({ capacity, lookup: (code: CurrencyEnum) => instrumentRepository.findByCode(code) });
+        const makeRangeLookups = Effect.fnUntraced(function* (fromDate: string, toDate: string) {
+            const rangeRates = yield* memoize(([sourceInstrumentId, targetInstrumentId]: readonly [number, number]) =>
+                Effect.map(
+                    Effect.all([
+                        historicalExchangeRateRepository.findForDateOrBefore(sourceInstrumentId, targetInstrumentId, fromDate),
+                        historicalExchangeRateRepository.findInDateRange(sourceInstrumentId, targetInstrumentId, fromDate, toDate)
+                    ]),
+                    ([before, inRange]) => {
+                        const rates = isDefined(before) && before.rateDate < fromDate ? [before, ...inRange] : inRange;
+
+                        return { rates, rateDates: rates.map(rate => rate.rateDate) };
+                    }
+                )
+            );
+            const earliest = yield* memoize(([sourceInstrumentId, targetInstrumentId]: readonly [number, number]) =>
+                historicalExchangeRateRepository.findEarliest(sourceInstrumentId, targetInstrumentId)
+            );
+            const latest = yield* memoize(([baseInstrumentId, quoteInstrumentId]: readonly [number, number]) =>
+                exchangeRateRepository.findByBaseAndQuoteIds(baseInstrumentId, quoteInstrumentId)
+            );
+            const instruments = yield* memoize((code: CurrencyEnum) => instrumentRepository.findByCode(code));
 
             const lookups: RateLookupsInterface = {
                 findForDateOrBefore: (sourceInstrumentId, targetInstrumentId, rateDate) =>
@@ -244,15 +241,10 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
             const lookups = yield* makeRangeLookups(rateDates.at(0) ?? '', rateDates.at(-1) ?? '');
             const context: EntryBaseValuationContextInterface = {
                 baseInstrument: yield* exchangeRatesService.getBaseInstrument(),
-                accounts: yield* Cache.make({
-                    capacity: Number.MAX_SAFE_INTEGER,
-                    lookup: (accountId: number) => accountRepository.findByIdIncludingArchived(accountId)
-                }),
-                rates: yield* Cache.make({
-                    capacity: Number.MAX_SAFE_INTEGER,
-                    lookup: ([sourceInstrumentId, targetInstrumentId, rateDayStart]: readonly [number, number, number]) =>
-                        resolveBaseExchangeRateOrNull(lookups, sourceInstrumentId, targetInstrumentId, new Date(rateDayStart))
-                })
+                accounts: yield* memoize((accountId: number) => accountRepository.findByIdIncludingArchived(accountId)),
+                rates: yield* memoize(([sourceInstrumentId, targetInstrumentId, rateDayStart]: readonly [number, number, number]) =>
+                    resolveBaseExchangeRateOrNull(lookups, sourceInstrumentId, targetInstrumentId, new Date(rateDayStart))
+                )
             };
 
             return context;

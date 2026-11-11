@@ -54,6 +54,12 @@ export class InzhurGainService extends Context.Service<InzhurGainService>()('@bu
             return days;
         };
 
+        const buildStepLookup = (points: readonly InzhurValuePointInterface[]) => {
+            const dates = points.map(point => point.date);
+
+            return (day: string): number | null => points[findLastIndexOnOrBefore(dates, day)]?.value ?? null;
+        };
+
         const buildRunningTotal = (
             dated: readonly InzhurDatedMovementInterface[],
             pick: (item: InzhurDatedMovementInterface) => number
@@ -64,11 +70,12 @@ export class InzhurGainService extends Context.Service<InzhurGainService>()('@bu
                 totalByDay.set(item.day, (totalByDay.get(item.day) ?? 0) + pick(item));
             }
 
-            const days = [...totalByDay.keys()].sort();
             let running = 0;
-            const cumulative = days.map(day => (running += totalByDay.get(day) ?? 0));
+            const lookup = buildStepLookup(
+                [...totalByDay.keys()].sort().map(date => ({ date, value: (running += totalByDay.get(date) ?? 0) }))
+            );
 
-            return (day: string) => cumulative[findLastIndexOnOrBefore(days, day)] ?? 0;
+            return (day: string) => lookup(day) ?? 0;
         };
 
         const loadLedger = Effect.fnUntraced(function* () {
@@ -121,7 +128,7 @@ export class InzhurGainService extends Context.Service<InzhurGainService>()('@bu
                     )
                 ])
             );
-            const priceDaysByAccountId = new Map(priceEntries.map(([accountId, prices]) => [accountId, prices.map(price => price.date)]));
+            const priceByAccountId = new Map(priceEntries.map(([accountId, prices]) => [accountId, buildStepLookup(prices)]));
 
             return {
                 cashAccountId,
@@ -130,9 +137,7 @@ export class InzhurGainService extends Context.Service<InzhurGainService>()('@bu
                 dated,
                 pricesByAccountId,
                 balanceOn: (accountId: number, day: string) => balanceByAccountId.get(accountId)?.(day) ?? 0,
-                priceOn: (accountId: number, day: string) =>
-                    pricesByAccountId.get(accountId)?.[findLastIndexOnOrBefore(priceDaysByAccountId.get(accountId) ?? [], day)]?.value ??
-                    null
+                priceOn: (accountId: number, day: string) => priceByAccountId.get(accountId)?.(day) ?? null
             } satisfies InzhurGainLedgerInterface;
         });
 
