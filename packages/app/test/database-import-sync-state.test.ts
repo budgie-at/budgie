@@ -127,7 +127,11 @@ describe('database import sync state', () => {
                 expect(
                     storage.files.get(failure === 'move-back' ? 'documents/SQLite/budgie.db.replaced-0' : 'documents/SQLite/budgie.db')
                 ).toBe(isCommitted ? 'backup' : 'database');
-                expect(Object.fromEntries(secrets)).toEqual({ user_pin: isCommitted ? 'new-pin' : 'previous-pin' });
+                expect(Object.fromEntries(secrets)).toEqual({
+                    user_pin: isCommitted ? 'new-pin' : 'previous-pin',
+                    ...(failure === 'move-back' && { database_swap: secrets.get('database_swap') })
+                });
+                expect(secrets.has('database_swap')).toBe(failure === 'move-back');
                 expect(query).not.toHaveBeenCalled();
                 query.mockRestore();
             })

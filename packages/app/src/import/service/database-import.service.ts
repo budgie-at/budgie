@@ -145,7 +145,11 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
                 Effect.onError(() =>
                     cloudSyncStateStore
                         .update(previousState)
-                        .pipe(Effect.andThen(authService.persistPin(previousPin)), Effect.andThen(databaseSwapService.end), Effect.orDie)
+                        .pipe(
+                            Effect.andThen(authService.persistPin(previousPin)),
+                            Effect.andThen(new File(DATABASE_DIRECTORY, DB_NAME).exists ? databaseSwapService.end : Effect.void),
+                            Effect.orDie
+                        )
                 ),
                 Effect.ensuring(Effect.sync(() => void deleteFileIfExists(`${Paths.cache.uri}/import-temp.db`)))
             );
