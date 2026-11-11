@@ -1,5 +1,5 @@
 import { AccountTypeEnum, ExternalSourceEnum } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
+import { WISE_ASPSP_NAME } from '@budgie/sync';
 import { Redirect, useLocalSearchParams } from 'expo-router';
 
 import { isNotEmptyString } from '@rnw-community/shared';
@@ -13,7 +13,6 @@ import { CreateEnableBankingAccount } from '../../../sync/component/create-enabl
 import { CreateErsteAccount } from '../../../sync/component/create-erste-account/create-erste-account';
 import { CreateMonobankAccount } from '../../../sync/component/create-monobank-account/create-monobank-account';
 import { CreatePrivatbankAccount } from '../../../sync/component/create-privatbank-account/create-privatbank-account';
-import { WISE_ASPSP_NAME } from '../../../sync/constant/wise-aspsp-name.constant';
 
 type AccountRouteType = AccountTypeEnum | ExternalSourceEnum;
 
@@ -23,7 +22,6 @@ export default function CreateAccountType() {
         connectAccountId?: string;
         savedApplicationId?: string;
     }>();
-    const { t } = useLingui();
     const connectAccountIdNumber = isNotEmptyString(connectAccountId) ? Number(connectAccountId) : null;
 
     switch (type) {
@@ -54,9 +52,7 @@ export default function CreateAccountType() {
                 />
             );
         case ExternalSourceEnum.WISE:
-            return (
-                <CreateEnableBankingAccount connectAccountId={null} savedApplicationId={null} preselectedBankName={t(WISE_ASPSP_NAME)} />
-            );
+            return <CreateEnableBankingAccount connectAccountId={null} savedApplicationId={null} preselectedBankName={WISE_ASPSP_NAME} />;
         case AccountTypeEnum.STOCKS:
         case AccountTypeEnum.SAVINGS:
         case AccountTypeEnum.BANK_SYNC:

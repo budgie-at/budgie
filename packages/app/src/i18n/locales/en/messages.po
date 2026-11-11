@@ -10665,7 +10665,6 @@ msgstr "Wi-Fi"
 #: src/account/constant/bank-provider-title.constant.ts
 #: src/app/(main)/create-account/index.tsx
 #: src/rule/constant/external-source.constant.ts
-#: src/sync/constant/wise-aspsp-name.constant.ts
 msgid "Wise"
 msgstr "Wise"
 
