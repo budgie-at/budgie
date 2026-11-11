@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.173.30](https://github.com/budgie-at/budgie/compare/v6.173.29...v6.173.30) (2026-11-11)
+
+### Performance Improvements
+
+* **app:** list recurring read tables explicitly ([#2130](https://github.com/budgie-at/budgie/issues/2130)) ([e1bc46d](https://github.com/budgie-at/budgie/commit/e1bc46db2366f762549f641ef5bbe8ab73e3bfdb))
+
+
 ## [6.173.29](https://github.com/budgie-at/budgie/compare/v6.173.28...v6.173.29) (2026-11-11)
 
 **Note:** Version bump only for package @budgie-at/app
