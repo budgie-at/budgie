@@ -3421,6 +3421,10 @@ msgstr "Could not reset bank sync"
 msgid "Could not resolve the iCloud conflict"
 msgstr "Could not resolve the iCloud conflict"
 
+#: src/cloud-sync/component/cloud-sync-retry-row/cloud-sync-retry-row.tsx
+msgid "Could not restart iCloud sync"
+msgstr "Could not restart iCloud sync"
+
 #: src/account/hooks/use-restore-archived-account.hook.ts
 msgid "Could not restore account."
 msgstr "Could not restore account."
@@ -8907,6 +8911,10 @@ msgstr "SmartBudget"
 msgid "Sold {soldLabel}"
 msgstr "Sold {soldLabel}"
 
+#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
+msgid "Some changes could not be uploaded to iCloud. Your data is safe on this device. Try again."
+msgstr "Some changes could not be uploaded to iCloud. Your data is safe on this device. Try again."
+
 #: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
 msgid "Some transactions may be hidden by the account or amount filter."
 msgstr "Some transactions may be hidden by the account or amount filter."
@@ -9169,10 +9177,6 @@ msgstr "Sync failed"
 msgid "Sync failed for {title}"
 msgstr "Sync failed for {title}"
 
-#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
-msgid "Sync failed. Retrying…"
-msgstr "Sync failed. Retrying…"
-
 #: src/sync/component/bank-integration-status-line/bank-integration-status-line.tsx
 msgid "Sync is off for all accounts"
 msgstr "Sync is off for all accounts"
@@ -9197,6 +9201,22 @@ msgstr "Sync past transactions"
 #: src/account/constant/account-sync-state-label.constant.ts
 msgid "Sync paused"
 msgstr "Sync paused"
+
+#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
+msgid "Sync paused by an iCloud error. Your data is safe on this device. Try again."
+msgstr "Sync paused by an iCloud error. Your data is safe on this device. Try again."
+
+#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
+msgid "Sync paused: iCloud is busy right now. Try again in a few minutes."
+msgstr "Sync paused: iCloud is busy right now. Try again in a few minutes."
+
+#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
+msgid "Sync paused: no internet connection. Check your connection, then try again."
+msgstr "Sync paused: no internet connection. Check your connection, then try again."
+
+#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
+msgid "Sync paused: your Apple Account needs attention. Check iCloud in the Settings app, then try again."
+msgstr "Sync paused: your Apple Account needs attention. Check iCloud in the Settings app, then try again."
 
 #: src/app/(tabs)/settings/sync-repairs.tsx
 msgid "Sync repairs"
@@ -10094,6 +10114,7 @@ msgstr "Try adjusting your filters to see more results"
 #: src/auth/components/forgot-pin-footer/forgot-pin-footer.tsx
 #: src/cloud-backup/component/cloud-backup-list/cloud-backup-list.tsx
 #: src/cloud-backup/component/cloud-backup-row/cloud-backup-row.tsx
+#: src/cloud-sync/component/cloud-sync-retry-row/cloud-sync-retry-row.tsx
 #: src/onboarding/component/onboarding-icloud-restore-row/onboarding-icloud-restore-row.tsx
 #: src/settings/components/sync-repairs-error-card/sync-repairs-error-card.tsx
 #: src/sync/component/analytics-history-boundary/analytics-history-boundary.tsx
