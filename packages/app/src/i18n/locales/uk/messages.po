@@ -810,7 +810,7 @@ msgstr "{periodLabel} завершено з {amount} під лімітом"
 msgid "{periodLabel}, spent {spentAmount} of {limitAmount}"
 msgstr "{periodLabel}, витрачено {spentAmount} із {limitAmount}"
 
-#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+#: src/sync/component/enable-banking-bank-step/enable-banking-bank-step.tsx
 msgid "{preselectedBankName} is not available"
 msgstr "{preselectedBankName} недоступний"
 
@@ -3499,8 +3499,8 @@ msgid "Could not start syncing"
 msgstr "Не вдалося почати синхронізацію"
 
 #: src/sync/component/account-connect-bank-row/account-connect-bank-row.tsx
-#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
 #: src/sync/component/enable-banking-reauthorize-row/enable-banking-reauthorize-row.tsx
+#: src/sync/hook/use-enable-banking-bank-loading.hook.ts
 msgid "Could not start the authorization"
 msgstr "Не вдалося почати авторизацію"
 
@@ -3617,7 +3617,7 @@ msgstr "Не вдалося оновити транзакцію."
 msgid "Could not verify the API key permissions"
 msgstr "Не вдалося перевірити дозволи API-ключа"
 
-#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+#: src/sync/hook/use-enable-banking-bank-loading.hook.ts
 msgid "Could not verify the application"
 msgstr "Не вдалося перевірити застосунок"
 
@@ -4454,7 +4454,7 @@ msgstr "Порожній шаблон"
 msgid "Enable Banking"
 msgstr "Enable Banking"
 
-#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+#: src/sync/component/enable-banking-bank-step/enable-banking-bank-step.tsx
 msgid "Enable Banking cannot connect {preselectedBankName} in any country right now."
 msgstr "Enable Banking наразі не може підключити {preselectedBankName} в жодній країні."
 
@@ -6510,7 +6510,7 @@ msgstr "Немає архівних рахунків за запитом «{sear
 msgid "No backups yet"
 msgstr "Копій ще немає"
 
-#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+#: src/sync/component/enable-banking-bank-step/enable-banking-bank-step.tsx
 msgid "No banks found"
 msgstr "Банків не знайдено"
 
@@ -10125,7 +10125,7 @@ msgstr "Спробувати знову"
 msgid "Try another name, phone number or email."
 msgstr "Спробуйте інше ім’я, номер телефону або електронну адресу."
 
-#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+#: src/sync/component/enable-banking-bank-step/enable-banking-bank-step.tsx
 msgid "Try another name."
 msgstr "Спробуйте іншу назву."
 
@@ -10664,6 +10664,7 @@ msgstr "Wi-Fi"
 #: src/account/constant/bank-provider-title.constant.ts
 #: src/app/(main)/create-account/index.tsx
 #: src/rule/constant/external-source.constant.ts
+#: src/sync/constant/wise-aspsp-name.constant.ts
 msgid "Wise"
 msgstr "Wise"
 

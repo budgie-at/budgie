@@ -810,7 +810,7 @@ msgstr "{periodLabel} cerró con {amount} por debajo"
 msgid "{periodLabel}, spent {spentAmount} of {limitAmount}"
 msgstr "{periodLabel}, gastado {spentAmount} de {limitAmount}"
 
-#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+#: src/sync/component/enable-banking-bank-step/enable-banking-bank-step.tsx
 msgid "{preselectedBankName} is not available"
 msgstr "{preselectedBankName} no está disponible"
 
@@ -3499,8 +3499,8 @@ msgid "Could not start syncing"
 msgstr "No se pudo iniciar la sincronización"
 
 #: src/sync/component/account-connect-bank-row/account-connect-bank-row.tsx
-#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
 #: src/sync/component/enable-banking-reauthorize-row/enable-banking-reauthorize-row.tsx
+#: src/sync/hook/use-enable-banking-bank-loading.hook.ts
 msgid "Could not start the authorization"
 msgstr "No se pudo iniciar la autorización"
 
@@ -3617,7 +3617,7 @@ msgstr "No se pudo actualizar la transacción."
 msgid "Could not verify the API key permissions"
 msgstr "No se pudieron verificar los permisos de la clave de API"
 
-#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+#: src/sync/hook/use-enable-banking-bank-loading.hook.ts
 msgid "Could not verify the application"
 msgstr "No se pudo verificar la aplicación"
 
@@ -4454,7 +4454,7 @@ msgstr "Lienzo en blanco"
 msgid "Enable Banking"
 msgstr "Enable Banking"
 
-#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+#: src/sync/component/enable-banking-bank-step/enable-banking-bank-step.tsx
 msgid "Enable Banking cannot connect {preselectedBankName} in any country right now."
 msgstr "Enable Banking no puede conectar {preselectedBankName} en ningún país por ahora."
 
@@ -6510,7 +6510,7 @@ msgstr "Ninguna cuenta archivada coincide con «{search}»"
 msgid "No backups yet"
 msgstr "Aún no hay copias"
 
-#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+#: src/sync/component/enable-banking-bank-step/enable-banking-bank-step.tsx
 msgid "No banks found"
 msgstr "No se encontraron bancos"
 
@@ -10125,7 +10125,7 @@ msgstr "Intentar de nuevo"
 msgid "Try another name, phone number or email."
 msgstr "Prueba con otro nombre, teléfono o correo electrónico."
 
-#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+#: src/sync/component/enable-banking-bank-step/enable-banking-bank-step.tsx
 msgid "Try another name."
 msgstr "Prueba con otro nombre."
 
@@ -10664,6 +10664,7 @@ msgstr "Wi-Fi"
 #: src/account/constant/bank-provider-title.constant.ts
 #: src/app/(main)/create-account/index.tsx
 #: src/rule/constant/external-source.constant.ts
+#: src/sync/constant/wise-aspsp-name.constant.ts
 msgid "Wise"
 msgstr "Wise"
 

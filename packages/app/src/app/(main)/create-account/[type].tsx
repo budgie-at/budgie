@@ -1,4 +1,5 @@
 import { AccountTypeEnum, ExternalSourceEnum } from '@budgie/contracts';
+import { useLingui } from '@lingui/react/macro';
 import { Redirect, useLocalSearchParams } from 'expo-router';
 
 import { isNotEmptyString } from '@rnw-community/shared';
@@ -22,6 +23,7 @@ export default function CreateAccountType() {
         connectAccountId?: string;
         savedApplicationId?: string;
     }>();
+    const { t } = useLingui();
     const connectAccountIdNumber = isNotEmptyString(connectAccountId) ? Number(connectAccountId) : null;
 
     switch (type) {
@@ -52,7 +54,9 @@ export default function CreateAccountType() {
                 />
             );
         case ExternalSourceEnum.WISE:
-            return <CreateEnableBankingAccount connectAccountId={null} savedApplicationId={null} preselectedBankName={WISE_ASPSP_NAME} />;
+            return (
+                <CreateEnableBankingAccount connectAccountId={null} savedApplicationId={null} preselectedBankName={t(WISE_ASPSP_NAME)} />
+            );
         case AccountTypeEnum.STOCKS:
         case AccountTypeEnum.SAVINGS:
         case AccountTypeEnum.BANK_SYNC:
