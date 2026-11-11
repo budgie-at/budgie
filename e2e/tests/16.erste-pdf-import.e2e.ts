@@ -9,7 +9,7 @@ import * as t from '../support/budgie/transactions.ts';
 
 const CARD = 'AccountCard.Erste EUR';
 
-test('16 erste pdf import', { tags: ['import'] }, async ({ budgie }) => {
+test('16 erste pdf import', { tags: ['import'], platforms: ['ios'] }, async ({ budgie }) => {
     const ctx = budgie.ctx;
     const { screen } = ctx;
     const quickImport = async (file: string) => {

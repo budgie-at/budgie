@@ -2,9 +2,9 @@ import { expect } from 'e2e';
 
 import * as a from '../support/budgie/accounts.ts';
 import * as b from '../support/budgie/core.ts';
-import { test } from '../support/budgie/test.ts';
+import { PENDING_ANDROID_PORT, test } from '../support/budgie/test.ts';
 
-test('03 account debt lent', { tags: ['accounts'] }, async ({ budgie }) => {
+test('03 account debt lent', { tags: ['accounts'], platforms: PENDING_ANDROID_PORT }, async ({ budgie }) => {
     const ctx = budgie.ctx;
     const { screen } = ctx;
 

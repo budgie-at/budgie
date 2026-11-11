@@ -6,7 +6,7 @@ import * as b from '../support/budgie/core.ts';
 import { BUNDLE_ID } from '../support/budgie/fixtures.ts';
 import { test } from '../support/budgie/test.ts';
 
-test('47 safe to spend remains scrollable at the largest text size', { tags: ['budget'] }, async ({ budgie }) => {
+test('47 safe to spend remains scrollable at the largest text size', { tags: ['budget'], platforms: ['ios'] }, async ({ budgie }) => {
     const ctx = budgie.ctx;
     await budgie.start({ fixture: 'budget-base.db', wait: 'tabbar' });
     await bu.openEmptyBudget(ctx);

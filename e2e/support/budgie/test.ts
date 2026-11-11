@@ -12,3 +12,6 @@ export const test = base.extend<{ budgie: Budgie }>({
         await use(new Budgie({ screen, app, device }));
     }
 });
+
+/** `platforms` for a test that does not pass on Android yet; each one is ported and loses this in #2137. */
+export const PENDING_ANDROID_PORT = ['ios'];

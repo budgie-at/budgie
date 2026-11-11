@@ -7,7 +7,16 @@ import { fileURLToPath } from 'node:url';
 import { drop, exec, mustDrop, mustExec, untar, writeFile, type SimlockApi } from '@mobile-ci/e2e-simlock/exec';
 
 // E2E_APP_ID: the bundle id mobile-ci's e2e job installs; support/config.ts installs the app under it.
-export const BUNDLE_ID = process.env.E2E_APP_ID ?? 'com.vitalyiegorov.budgie.e2e';
+export const BUNDLE_ID =
+    process.env.E2E_APP_ID ?? (process.env.E2E_PLATFORM === 'android' ? 'com.vitaliiyehorov.budgie.e2e' : 'com.vitalyiegorov.budgie.e2e');
+
+/** The app's data directory on an Android emulator; its `files/` is what iOS calls the container's `Documents/`. */
+const ANDROID_CONTAINER = `/data/data/${BUNDLE_ID}`;
+const ANDROID_FILES = `${ANDROID_CONTAINER}/files`;
+const ANDROID_PERMISSIONS = ['READ_CONTACTS', 'WRITE_CONTACTS', 'POST_NOTIFICATIONS'];
+
+/** The folder of `container` the app's `Paths.document` points at. */
+export const documentsOf = (container: string): string => (container === ANDROID_CONTAINER ? ANDROID_FILES : `${container}/Documents`);
 
 const APP_TESTS = fileURLToPath(new URL('../../../tests/app-tests/', import.meta.url));
 const MARKER = 'Documents/E2EFixtures/.simlock-staged';
@@ -77,8 +86,45 @@ function stagedDocuments(): Promise<Buffer> {
 
 const prepared = new Set<string>();
 
-/** The app's data container on the leased simulator, with the staged fixtures in it. */
-export async function ensureFixtures(api: SimlockApi, leaseId: string): Promise<string> {
+/** Runs `script` in the leased emulator's root shell. */
+const androidShell = (api: SimlockApi, leaseId: string, script: string, stdin?: string): Promise<string> =>
+    mustExec(api, leaseId, ['shell', script], stdin, 'adb');
+
+/** Gives `path` back to the app: files written as root keep root's owner and SELinux label, and the app cannot open them. */
+const androidOwn = (path: string): string => `chown -R $(stat -c %u:%g ${ANDROID_CONTAINER}) ${path} && restorecon -RF ${path}`;
+
+/** The Android half of `ensureFixtures`: the fixtures unpacked into the app's `files/` through a root shell. */
+async function ensureAndroidFixtures(api: SimlockApi, leaseId: string): Promise<string> {
+    await mustExec(api, leaseId, ['root'], undefined, 'adb');
+    await mustExec(api, leaseId, ['wait-for-device'], undefined, 'adb');
+    const marker = `${ANDROID_FILES}/E2EFixtures/.simlock-staged`;
+    if ((await exec(api, leaseId, ['shell', `test -f ${marker}`], undefined, 'adb')).exitCode !== 0) {
+        const started = Date.now();
+        for (const archive of fixtureTarBatches(await stagedDocuments())) {
+            await androidShell(
+                api,
+                leaseId,
+                `mkdir -p ${ANDROID_FILES} && base64 -d | tar -x -C ${ANDROID_FILES} --strip-components=1`,
+                archive.toString('base64')
+            );
+        }
+        await androidShell(api, leaseId, `touch ${marker} && ${androidOwn(ANDROID_FILES)}`);
+        console.log(`[fixtures] installed into the app files in ${((Date.now() - started) / 1000).toFixed(1)}s`);
+    }
+    if (!prepared.has(leaseId)) {
+        for (const permission of ANDROID_PERMISSIONS) {
+            await exec(api, leaseId, ['shell', `pm grant ${BUNDLE_ID} android.permission.${permission}`], undefined, 'adb');
+        }
+        prepared.add(leaseId);
+    }
+    return ANDROID_CONTAINER;
+}
+
+/** The app's data container on the leased simulator or emulator, with the staged fixtures in it. */
+export async function ensureFixtures(api: SimlockApi, leaseId: string, platform: string): Promise<string> {
+    if (platform === 'android') {
+        return ensureAndroidFixtures(api, leaseId);
+    }
     const container = (await mustExec(api, leaseId, ['get_app_container', BUNDLE_ID, 'data'])).trim();
     if (!container.startsWith('/')) {
         throw new Error(`unexpected app data container for ${BUNDLE_ID}: ${container}`);
@@ -146,6 +192,14 @@ async function stopApp(api: SimlockApi, leaseId: string): Promise<void> {
  * the staged fixture `name` (`25.db`, `31-debt.db`) the live database.
  */
 export async function seedDatabase(api: SimlockApi, leaseId: string, container: string, name: string): Promise<void> {
+    if (container === ANDROID_CONTAINER) {
+        await resetAndroidApp(
+            api,
+            leaseId,
+            `cp ${ANDROID_FILES}/E2EFixtures/${name} ${ANDROID_FILES}/SQLite/budgie.db && ${androidOwn(`${ANDROID_FILES}/SQLite`)}`
+        );
+        return;
+    }
     await stopApp(api, leaseId);
     const sqlite = `${container}/Documents/SQLite`;
     const source = `${container}/Documents/E2EFixtures/${name}`;
@@ -158,6 +212,20 @@ export async function seedDatabase(api: SimlockApi, leaseId: string, container: 
 
 /** No database at all: the app starts as on first launch, fixtures still staged. */
 export async function clearDatabase(api: SimlockApi, leaseId: string, container: string): Promise<void> {
+    if (container === ANDROID_CONTAINER) {
+        await resetAndroidApp(api, leaseId, 'true');
+        return;
+    }
     await stopApp(api, leaseId);
     await mustDrop(api, leaseId, ['rm', `${container}/Documents/SQLite`, 'budgie.db']);
+}
+
+/** Android's `stopApp` plus database swap: the app stopped, its SecureStore (the keychain's counterpart) cleared, the database removed, then `then` run. */
+async function resetAndroidApp(api: SimlockApi, leaseId: string, then: string): Promise<void> {
+    const sqlite = `${ANDROID_FILES}/SQLite`;
+    await androidShell(
+        api,
+        leaseId,
+        `am force-stop ${BUNDLE_ID} && rm -f ${ANDROID_CONTAINER}/shared_prefs/SecureStore*.xml ${sqlite}/budgie.db ${sqlite}/budgie.db-wal ${sqlite}/budgie.db-shm && mkdir -p ${sqlite} && ${then}`
+    );
 }

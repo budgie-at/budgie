@@ -3,6 +3,7 @@ import { expect } from 'e2e';
 import { selectAccountBySearch } from './accounts.ts';
 import { pickCategoryCard } from './categories.ts';
 import {
+    alertButton,
     byId,
     byText,
     expectId,
@@ -157,7 +158,7 @@ export async function submitTransactionAndReturnToList(ctx: Ctx): Promise<void> 
 async function confirmDeleteDialog(ctx: Ctx): Promise<void> {
     const ask = byText(ctx.screen, 'Are you sure?');
     await expect(ask).toBeVisible({ timeout: 3_000 });
-    await ctx.screen.getByText('Delete').last().tap();
+    await alertButton(ctx.screen, 'Delete').tap();
     await expect(ask).toBeHidden({ timeout: 10_000 });
 }
 
@@ -206,7 +207,7 @@ export async function longPressConvertToTransfer(ctx: Ctx, cardId: string): Prom
 export async function confirmRevertConsolidation(ctx: Ctx): Promise<void> {
     const ask = byText(ctx.screen, 'Separate transactions?');
     await expect(ask).toBeVisible({ timeout: 10_000 });
-    await ctx.screen.getByRole('button', { name: 'Separate' }).last().tap();
+    await alertButton(ctx.screen, 'Separate').tap();
     await expect(ask).toBeHidden({ timeout: 15_000 });
 }
 
@@ -299,7 +300,7 @@ export async function consolidateMatches(ctx: Ctx): Promise<void> {
     const consolidate = byId(screen, 'SettingsPage.ConsolidateTransfersCard');
     await consolidate.tap({ position: await relativePoint(consolidate, 0.5, 0.25) });
     await expect(byText(screen, /high-confidence transfer/i)).toBeVisible({ timeout: 3_000 });
-    await screen.getByText('Merge').last().tap();
+    await alertButton(screen, 'Merge').tap();
     await expect(byText(screen, 'Transfers and refunds merged')).toBeVisible({ timeout: 30_000 });
 }
 

@@ -1,8 +1,8 @@
 import * as b from '../support/budgie/core.ts';
 import * as r from '../support/budgie/rules.ts';
-import { test } from '../support/budgie/test.ts';
+import { PENDING_ANDROID_PORT, test } from '../support/budgie/test.ts';
 
-test('26 rules suggestions', { tags: ['rules'] }, async ({ budgie }) => {
+test('26 rules suggestions', { tags: ['rules'], platforms: PENDING_ANDROID_PORT }, async ({ budgie }) => {
     const ctx = budgie.ctx;
 
     // setup/setup-rules-test

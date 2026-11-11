@@ -5,7 +5,7 @@ import * as core from '../support/budgie/core.ts';
 import * as imports from '../support/budgie/imports.ts';
 import { test } from '../support/budgie/test.ts';
 
-test('44 inzhur operations import', { tags: ['import'] }, async ({ budgie }) => {
+test('44 inzhur operations import', { tags: ['import'], platforms: ['ios'] }, async ({ budgie }) => {
     const { ctx } = budgie;
     const { screen } = ctx;
 

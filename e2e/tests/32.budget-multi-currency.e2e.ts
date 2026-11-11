@@ -2,7 +2,7 @@ import { expect } from 'e2e';
 
 import * as bu from '../support/budgie/budget.ts';
 import * as b from '../support/budgie/core.ts';
-import { test } from '../support/budgie/test.ts';
+import { PENDING_ANDROID_PORT, test } from '../support/budgie/test.ts';
 import {
     deleteTransaction,
     enterComment,
@@ -18,7 +18,7 @@ const CATEGORY = 'Groceries';
 const COMMENT = 'E2E Budget MC Category Txn';
 const CARD = 'TransactionCard.Label.E2E_Budget_MC_Category_Txn';
 
-test('32 budget multi currency', { tags: ['budget'] }, async ({ budgie }) => {
+test('32 budget multi currency', { tags: ['budget'], platforms: PENDING_ANDROID_PORT }, async ({ budgie }) => {
     const ctx = budgie.ctx;
     const { screen } = ctx;
     const id = (testId: string) => b.byId(screen, testId);

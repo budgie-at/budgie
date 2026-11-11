@@ -3,7 +3,7 @@ import { expect } from 'e2e';
 import * as bu from '../support/budgie/budget.ts';
 import * as b from '../support/budgie/core.ts';
 import { selectTagBySearch } from '../support/budgie/tags.ts';
-import { test } from '../support/budgie/test.ts';
+import { PENDING_ANDROID_PORT, test } from '../support/budgie/test.ts';
 import {
     enterComment,
     navigateToTransactions,
@@ -21,7 +21,7 @@ const EVENT = 'E2E Trip';
 const EXPENSE_COMMENT = 'E2E Budget Event Match';
 const FUND = 'E2E Insurance Fund';
 
-test('43 budget v3', { tags: ['budget'] }, async ({ budgie }) => {
+test('43 budget v3', { tags: ['budget'], platforms: PENDING_ANDROID_PORT }, async ({ budgie }) => {
     const ctx = budgie.ctx;
     const { screen } = ctx;
     const id = (testId: string) => b.byId(screen, testId);

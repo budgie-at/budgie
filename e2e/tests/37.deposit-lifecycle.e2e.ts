@@ -3,12 +3,12 @@ import { expect } from 'e2e';
 import * as a from '../support/budgie/accounts.ts';
 import * as c from '../support/budgie/categories.ts';
 import * as b from '../support/budgie/core.ts';
-import { test } from '../support/budgie/test.ts';
+import { PENDING_ANDROID_PORT, test } from '../support/budgie/test.ts';
 import * as t from '../support/budgie/transactions.ts';
 
 const DEPOSIT = 'E2E Deposit Account';
 
-test('37 deposit lifecycle', { tags: ['accounts'] }, async ({ budgie }) => {
+test('37 deposit lifecycle', { tags: ['accounts'], platforms: PENDING_ANDROID_PORT }, async ({ budgie }) => {
     const ctx = budgie.ctx;
     const { screen } = ctx;
     const depositCard = async () => {
@@ -130,7 +130,7 @@ test('37 deposit lifecycle', { tags: ['accounts'] }, async ({ budgie }) => {
         const ask = b.byText(screen, 'Close Deposit?');
         await expect(ask).toBeVisible({ timeout: 10_000 });
         await b.expectText(ctx, /555/);
-        const confirm = screen.getByText('Close Deposit').last();
+        const confirm = b.alertButton(screen, 'Close Deposit');
         await expect(confirm).toBeEnabled();
         await confirm.tap();
         await expect(ask).toBeHidden({ timeout: 10_000 });

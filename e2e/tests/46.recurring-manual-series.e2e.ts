@@ -2,12 +2,12 @@ import { expect } from 'e2e';
 
 import * as bu from '../support/budgie/budget.ts';
 import * as b from '../support/budgie/core.ts';
-import { test } from '../support/budgie/test.ts';
+import { PENDING_ANDROID_PORT, test } from '../support/budgie/test.ts';
 import * as t from '../support/budgie/transactions.ts';
 
 const ROW = 'RecurringPane.Row.E2E_Manual_Netflix';
 
-test('46 recurring manual series', { tags: ['recurring'] }, async ({ budgie }) => {
+test('46 recurring manual series', { tags: ['recurring'], platforms: PENDING_ANDROID_PORT }, async ({ budgie }) => {
     const ctx = budgie.ctx;
 
     await budgie.start({ fixture: '20.db' });

@@ -3,10 +3,10 @@ import { expect } from 'e2e';
 import * as c from '../support/budgie/categories.ts';
 import * as b from '../support/budgie/core.ts';
 import * as g from '../support/budgie/tags.ts';
-import { test } from '../support/budgie/test.ts';
+import { PENDING_ANDROID_PORT, test } from '../support/budgie/test.ts';
 import * as t from '../support/budgie/transactions.ts';
 
-test('08 expense transaction', { tags: ['transactions'] }, async ({ budgie }) => {
+test('08 expense transaction', { tags: ['transactions'], platforms: PENDING_ANDROID_PORT }, async ({ budgie }) => {
     const ctx = budgie.ctx;
     const { screen } = ctx;
     const id = (testId: string) => b.byId(screen, testId);

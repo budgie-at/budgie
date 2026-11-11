@@ -6,7 +6,7 @@ import * as m from '../support/budgie/misc.ts';
 import { test } from '../support/budgie/test.ts';
 import * as t from '../support/budgie/transactions.ts';
 
-test('42 receipt scan share', { tags: ['receipt'] }, async ({ budgie }) => {
+test('42 receipt scan share', { tags: ['receipt'], platforms: ['ios'] }, async ({ budgie }) => {
     const ctx = budgie.ctx;
     const { screen } = ctx;
 

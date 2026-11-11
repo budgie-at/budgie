@@ -4,9 +4,9 @@ import * as a from '../support/budgie/accounts.ts';
 import * as b from '../support/budgie/core.ts';
 import * as sec from '../support/budgie/security.ts';
 import * as s from '../support/budgie/settings.ts';
-import { test } from '../support/budgie/test.ts';
+import { PENDING_ANDROID_PORT, test } from '../support/budgie/test.ts';
 
-test('17 security app lock', { tags: ['security'] }, async ({ budgie }) => {
+test('17 security app lock', { tags: ['security'], platforms: PENDING_ANDROID_PORT }, async ({ budgie }) => {
     const ctx = budgie.ctx;
     const { screen } = ctx;
     const pinPage = () => b.expectId(ctx, 'PinPage.Container', 10_000);

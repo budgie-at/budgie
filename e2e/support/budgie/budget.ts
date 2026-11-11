@@ -6,6 +6,7 @@ import {
     expectId,
     expectSettledId,
     fillId,
+    isIos,
     openLink,
     retry,
     scrollTo,
@@ -34,7 +35,9 @@ export async function chooseEmptyCanvas(ctx: Ctx): Promise<void> {
 /** Types `value` into a budget amount input and waits for the field to show it. */
 export async function fillAmount(ctx: Ctx, testId: string, value: string): Promise<void> {
     await tapId(ctx, testId);
-    await expectId(ctx, 'inputView');
+    if (isIos(ctx)) {
+        await expectId(ctx, 'inputView');
+    }
     await retry(1, async () => {
         await expect(byId(ctx.screen, testId)).toBeFocused();
         await fillId(ctx, testId, value);
@@ -57,6 +60,10 @@ export async function setOverallLimit(ctx: Ctx, value: string): Promise<void> {
  */
 async function endAmountEditing(ctx: Ctx): Promise<void> {
     const { screen } = ctx;
+    if (!isIos(ctx)) {
+        await ctx.device.dismissKeyboard();
+        return;
+    }
     const pad = byId(screen, 'inputView');
     if (!(await pad.isVisible())) {
         return;

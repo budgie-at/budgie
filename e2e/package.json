@@ -1,17 +1,18 @@
 {
-  "name": "budgie-e2e-agent",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "simlock:install": "command -v jq >/dev/null || { echo 'simlock:install needs jq' >&2; exit 1; } && curl -fsSLo node_modules/.fetch-e2e-simlock.sh https://raw.githubusercontent.com/rnw-community/mobile-ci/9a151735055f5ab661650523ad7c6375ae007bef/scripts/fetch-e2e-simlock.sh && bash node_modules/.fetch-e2e-simlock.sh 9a151735055f5ab661650523ad7c6375ae007bef .",
-    "test:ios": "e2e run --target ios",
-    "ts": "tsc --noEmit"
-  },
-  "devDependencies": {
-    "@e2e-dev/mobile": "0.12.5",
-    "e2e": "0.22.0",
-    "agent-device": "0.21.35",
-    "@types/node": "^22.10.0",
-    "typescript": "~5.9.3"
-  }
+    "name": "budgie-e2e-agent",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "simlock:install": "command -v jq >/dev/null || { echo 'simlock:install needs jq' >&2; exit 1; } && curl -fsSLo node_modules/.fetch-e2e-simlock.sh https://raw.githubusercontent.com/rnw-community/mobile-ci/9a151735055f5ab661650523ad7c6375ae007bef/scripts/fetch-e2e-simlock.sh && bash node_modules/.fetch-e2e-simlock.sh 9a151735055f5ab661650523ad7c6375ae007bef .",
+        "test:ios": "e2e run --target ios",
+        "test:android": "E2E_PLATFORM=android e2e run --target android",
+        "ts": "tsc --noEmit"
+    },
+    "devDependencies": {
+        "@e2e-dev/mobile": "0.12.5",
+        "e2e": "0.22.0",
+        "agent-device": "0.21.35",
+        "@types/node": "^22.10.0",
+        "typescript": "~5.9.3"
+    }
 }

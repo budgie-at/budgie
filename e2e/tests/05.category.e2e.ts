@@ -2,10 +2,10 @@ import * as a from '../support/budgie/accounts.ts';
 import * as c from '../support/budgie/categories.ts';
 import * as b from '../support/budgie/core.ts';
 import * as m from '../support/budgie/misc.ts';
-import { test } from '../support/budgie/test.ts';
+import { PENDING_ANDROID_PORT, test } from '../support/budgie/test.ts';
 import * as t from '../support/budgie/transactions.ts';
 
-test('05 category', { tags: ['categories'] }, async ({ budgie }) => {
+test('05 category', { tags: ['categories'], platforms: PENDING_ANDROID_PORT }, async ({ budgie }) => {
     const ctx = budgie.ctx;
     const { screen } = ctx;
     const id = (testId: string) => b.byId(screen, testId);
@@ -50,7 +50,7 @@ test('05 category', { tags: ['categories'] }, async ({ budgie }) => {
         await b.tapId(ctx, 'CategoryCard.E2E Category Search');
         await b.expectText(ctx, /^E2E Category Search/i);
         await b.tapId(ctx, 'CategoryForm.Delete');
-        await screen.getByText('Delete').last().tap();
+        await b.alertButton(screen, 'Delete').tap();
         await b.expectNoId(ctx, 'CategoryForm.Delete', 10_000);
         await b.expectNoId(ctx, 'CategoryCard.E2E Category Search');
         await id('CategoryPage.SearchInput').clear();
@@ -69,7 +69,7 @@ test('05 category', { tags: ['categories'] }, async ({ budgie }) => {
         await b.expectId(ctx, 'CategoryCard.Icon.E2E Category Updated.reicon:Heart');
         await b.expectNoId(ctx, 'CategoryCard.E2E Category Primary');
         await c.swipeRowToDelete(ctx, 'CategoryCard.E2E Category Updated');
-        await screen.getByText('Delete').last().tap();
+        await b.alertButton(screen, 'Delete').tap();
         await b.expectNoId(ctx, 'CategoryCard.E2E Category Updated', 10_000);
     });
 });

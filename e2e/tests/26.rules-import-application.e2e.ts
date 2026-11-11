@@ -2,9 +2,9 @@ import * as b from '../support/budgie/core.ts';
 import { importTestTransactions } from '../support/budgie/imports.ts';
 import * as r from '../support/budgie/rules.ts';
 import { selectTagBySearch } from '../support/budgie/tags.ts';
-import { test } from '../support/budgie/test.ts';
+import { PENDING_ANDROID_PORT, test } from '../support/budgie/test.ts';
 
-test('26 rules import application', { tags: ['rules'] }, async ({ budgie }) => {
+test('26 rules import application', { tags: ['rules'], platforms: PENDING_ANDROID_PORT }, async ({ budgie }) => {
     const ctx = budgie.ctx;
 
     // setup/setup-rules-test
