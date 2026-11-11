@@ -74,9 +74,9 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
             }
         });
 
-        const moveDatabaseFiles = (sourcePath: string, destinationPath: string) =>
+        const moveDatabaseFiles = (sourcePath: string, destinationPath: string, suffixes: readonly string[]) =>
             Effect.forEach(
-                ['', '-wal', '-shm'],
+                suffixes,
                 suffix => {
                     const sourceFile = new File(`${sourcePath}${suffix}`);
 
@@ -112,7 +112,7 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
             yield* Effect.promise(() => new File(sourceUri).copy(new File(tempPath)));
             yield* databaseSwapService.begin(swap);
             yield* databaseLifecycleService.close();
-            yield* moveDatabaseFiles(destinationPath, replacedPath).pipe(
+            yield* moveDatabaseFiles(destinationPath, replacedPath, ['', '-wal', '-shm']).pipe(
                 Effect.andThen(
                     Effect.promise(() => new File(tempPath).move(new File(destinationPath))).pipe(
                         Effect.andThen(copyDatabaseSidecars(sourceUri, destinationPath)),
@@ -124,7 +124,7 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
                         )
                     )
                 ),
-                Effect.onError(() => moveDatabaseFiles(replacedPath, destinationPath))
+                Effect.onError(() => moveDatabaseFiles(replacedPath, destinationPath, ['-wal', '-shm', '']))
             );
             yield* databaseSwapService.end.pipe(
                 Effect.andThen(

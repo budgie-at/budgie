@@ -163,6 +163,20 @@ describe('database import sync state', () => {
             });
         })
     );
+    it.effect('keeps the original set moved aside and the swap record when its WAL cannot be moved back', () =>
+        Effect.gen(function* () {
+            storage.files.set('documents/SQLite/budgie.db-wal', 'database-wal');
+            storage.failMoveFrom = 'cache/import-temp.db';
+            storage.failMoveBackFrom = 'documents/SQLite/budgie.db.replaced-0-wal';
+
+            expect(Exit.isFailure(yield* importBackup)).toBe(true);
+            expect(databaseFiles()).toEqual({
+                'documents/SQLite/budgie.db.replaced-0': 'database',
+                'documents/SQLite/budgie.db.replaced-0-wal': 'database-wal'
+            });
+            expect(secrets.has('database_swap')).toBe(true);
+        })
+    );
     it.effect.each([false, true])('replaces the live database, removes its moved-aside files and keeps stale ones %s', stale =>
         Effect.gen(function* () {
             storage.files.set('documents/SQLite/budgie.db-wal', 'database-wal');
