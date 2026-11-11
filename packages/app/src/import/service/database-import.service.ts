@@ -1,4 +1,5 @@
 import { CloudSyncRestorePhaseEnum, CloudSyncStateStore } from '@budgie/cloud-sync';
+import * as Clock from 'effect/Clock';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -98,12 +99,12 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
 
         const replaceFromUri = Effect.fn('DatabaseImportService.replaceFromUri')(function* (sourceUri: string) {
             const destinationPath = new File(DATABASE_DIRECTORY, DB_NAME).uri;
-            const replacedPath = `${destinationPath}.replaced`;
+            const movedAsideAt = yield* Clock.currentTimeMillis;
+            const replacedPath = `${destinationPath}.replaced-${movedAsideAt}`;
             const tempPath = `${Paths.cache.uri}/import-temp.db`;
 
             yield* aiStorageReplacementService.pauseLongLivedRuntime();
             deleteFileIfExists(tempPath);
-            deleteProbeFiles(replacedPath);
             yield* Effect.promise(() => new File(sourceUri).copy(new File(tempPath)));
             yield* databaseLifecycleService.close();
             yield* moveDatabaseFiles(destinationPath, replacedPath).pipe(
@@ -119,7 +120,9 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
                 ),
                 Effect.onError(() => moveDatabaseFiles(replacedPath, destinationPath))
             );
-            deleteProbeFiles(replacedPath);
+            yield* Effect.sync(() => {
+                deleteProbeFiles(replacedPath);
+            }).pipe(Effect.catchDefect(() => Effect.void));
         });
 
         const runImport = Effect.fn('DatabaseImportService.runImport')(function* (pickedUri: string, backupPin: string | null) {
