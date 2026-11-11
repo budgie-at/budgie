@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.174.1](https://github.com/budgie-at/budgie/compare/v6.174.0...v6.174.1) (2026-11-11)
+
+### Bug Fixes
+
+* **app:** recover a moved-aside database at boot after a failed import ([#2167](https://github.com/budgie-at/budgie/issues/2167)) ([28ad1f7](https://github.com/budgie-at/budgie/commit/28ad1f7a8cbc1d7ddd1f3870776acc388b88e959))
+
+
 # [6.174.0](https://github.com/budgie-at/budgie/compare/v6.173.33...v6.174.0) (2026-11-11)
 
 ### Bug Fixes
