@@ -1,8 +1,11 @@
+import { CloudSyncService } from '@budgie/cloud-sync';
+import { logAndContinue } from '@budgie/contracts';
 import { TransferConsolidationDrainerService } from '@budgie/sync';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Fiber from 'effect/Fiber';
 import * as Layer from 'effect/Layer';
+import * as Option from 'effect/Option';
 import * as Ref from 'effect/Ref';
 import * as Semaphore from 'effect/Semaphore';
 
@@ -41,6 +44,12 @@ export class DatabaseLifecycleService extends Context.Service<DatabaseLifecycleS
         });
 
         const runExclusively = Effect.fn('DatabaseLifecycleService.runExclusively')(function* <E>(work: Effect.Effect<void, E, Db>) {
+            const cloudSyncService = yield* Effect.serviceOption(CloudSyncService);
+            const resumeCloudSync =
+                Option.isSome(cloudSyncService) && (yield* cloudSyncService.value.stop())
+                    ? logAndContinue(cloudSyncService.value.start())
+                    : Effect.void;
+
             yield* workload.block;
             yield* transferConsolidationDrainerService.cancelPending();
             yield* ruleApplicationDrainerService.cancelPending();
@@ -48,7 +57,13 @@ export class DatabaseLifecycleService extends Context.Service<DatabaseLifecycleS
             yield* workload.awaitForegroundIdle.pipe(Effect.timeoutOption(drainTimeoutMs));
             yield* workload
                 .runForeground(work)
-                .pipe(Effect.onError(() => Effect.flatMap(Ref.get(isClosed), closed => (closed ? Effect.void : workload.unblock))));
+                .pipe(
+                    Effect.onError(() =>
+                        Effect.flatMap(Ref.get(isClosed), closed =>
+                            closed ? Effect.void : workload.unblock.pipe(Effect.andThen(resumeCloudSync))
+                        )
+                    )
+                );
         });
 
         return {
