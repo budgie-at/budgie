@@ -1,4 +1,4 @@
-import { ConsolidationExecutorService } from '@budgie/consolidation';
+import { ConsolidationExecutorService, TRANSFER_PAIR_IMPLIED_RATE_TOLERANCE } from '@budgie/consolidation';
 import {
     AccountNatureEnum,
     AccountRepository,
@@ -13,6 +13,7 @@ import {
     UserIconNameEnum
 } from '@budgie/contracts';
 import { AccountBalanceIncrementalService, TransactionTransferService } from '@budgie/ledger';
+import { EntryBaseValuationService } from '@budgie/market';
 import * as Context from 'effect/Context';
 import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
@@ -34,6 +35,7 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
         const consolidation = yield* ConsolidationExecutorService;
         const balances = yield* AccountBalanceIncrementalService;
         const accountRepository = yield* AccountRepository;
+        const valuation = yield* EntryBaseValuationService;
 
         const candidateEntries = (transaction: TransactionWithEntriesEntityInterface) =>
             transaction.entries.filter(
@@ -260,15 +262,44 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
                           transactionIds: []
                       })).filter(isSingleEntry);
                 const untrackedOpposites = (yield* findPlausibleOpposites(competingUntrackedTransfers)).links;
-                const decisions = [
-                    ...untrackedTransfers.flatMap(transaction => {
-                        const account = accounts.find(candidate => candidate.id === candidateEntries(transaction)[0].accountId);
+                const isWithinMarketRate = Effect.fnUntraced(function* (
+                    transaction: TransactionWithEntriesEntityInterface,
+                    instrumentId: number,
+                    counterpart: TransactionWithEntriesEntityInterface
+                ) {
+                    const counterpartInstrumentId = accounts.find(
+                        candidate => candidate.id === candidateEntries(counterpart)[0].accountId
+                    )?.instrumentId;
+                    if (counterpartInstrumentId === instrumentId) {
+                        return true;
+                    }
+                    if (!isDefined(counterpartInstrumentId)) {
+                        return false;
+                    }
+                    const rate = yield* valuation.resolveHistoricalBaseExchangeRateOrNull(
+                        counterpartInstrumentId,
+                        instrumentId,
+                        transaction.operatedAt
+                    );
+                    const [{ amount }] = candidateEntries(transaction);
 
-                        return isDefined(account) ? [{ transaction, account, matches: cardMatches(transaction), canFallback: false }] : [];
-                    }),
-                    ...candidates
-                ]
-                    .map(({ transaction, account, matches, canFallback }) => {
+                    return (
+                        isPositiveNumber(rate) &&
+                        Math.abs(candidateEntries(counterpart)[0].amount * rate - amount) <= amount * TRANSFER_PAIR_IMPLIED_RATE_TOLERANCE
+                    );
+                });
+                const decisions = (yield* Effect.forEach(
+                    [
+                        ...untrackedTransfers.flatMap(transaction => {
+                            const account = accounts.find(candidate => candidate.id === candidateEntries(transaction)[0].accountId);
+
+                            return isDefined(account)
+                                ? [{ transaction, account, matches: cardMatches(transaction), canFallback: false }]
+                                : [];
+                        }),
+                        ...candidates
+                    ],
+                    Effect.fnUntraced(function* ({ transaction, account, matches, canFallback }) {
                         const links = opposites.filter(link => link.transactionId === transaction.id);
                         const counterpart = eligibleOpposites.find(candidate => candidate.id === links[0]?.oppositeId);
                         const competitors = new Set([
@@ -282,7 +313,8 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
                             isDefined(counterpart.externalSource) &&
                             competitors.size === 1 &&
                             competitors.has(transaction.id) &&
-                            (transaction.type === TransactionTypeEnum.TRANSFER ||
+                            ((transaction.type === TransactionTypeEnum.TRANSFER &&
+                                (yield* isWithinMarketRate(transaction, account.instrumentId, counterpart))) ||
                                 (account.instrumentId ===
                                     accounts.find(candidate => candidate.id === candidateEntries(counterpart)[0].accountId)?.instrumentId &&
                                     Math.abs(candidateEntries(transaction)[0].amount - candidateEntries(counterpart)[0].amount) <=
@@ -310,7 +342,7 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
 
                         return null;
                     })
-                    .filter(isDefined);
+                )).filter(isDefined);
 
                 const repaired = yield* Db.transaction(
                     Effect.gen(function* () {
@@ -359,7 +391,8 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
             TransactionTransferService.layer,
             ConsolidationExecutorService.layer,
             AccountBalanceIncrementalService.layer,
-            AccountRepository.layer
+            AccountRepository.layer,
+            EntryBaseValuationService.layer
         ])
     );
 }
