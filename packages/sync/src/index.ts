@@ -112,6 +112,7 @@ export { BinanceSyncService } from './binance/service/binance-sync.service';
 
 export { ErsteSyncService } from './erste/service/erste-sync.service';
 
+export { WiseStatementImportService } from './wise/service/wise-statement-import.service';
 export { parseWiseCsv } from './wise/parser/wise-csv.parser';
 
 export { InzhurOperationsImportService } from './inzhur/service/inzhur-operations-import.service';

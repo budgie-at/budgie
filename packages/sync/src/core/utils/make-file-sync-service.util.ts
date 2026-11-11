@@ -52,7 +52,8 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
             accountCount,
             existingTransactionCount: parsedTransactionCount - newTransactionCount,
             newTransactionCount,
-            parsedTransactionCount
+            parsedTransactionCount,
+            skippedTransactionCount: 0
         };
     };
 
@@ -238,6 +239,8 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
 
     return {
         ...syncService,
+        importParsed: (client: FileBasedSyncClientInterface, bankAccounts: SyncAccountInterface[]) =>
+            syncWorkload.runUser(importWork(client, bankAccounts)),
         importPreview: Effect.fn('AbstractFileSyncService.importPreview')(function* (uri: string) {
             const { bankAccounts } = yield* parseFile(uri);
 

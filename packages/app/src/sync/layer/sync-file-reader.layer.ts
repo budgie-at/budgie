@@ -11,5 +11,6 @@ const pdfExtractorNativeModule = requireNativeModule<PdfExtractorNativeModuleInt
 
 export const syncFileReaderLayer = Layer.succeed(SyncFileReader, {
     readPdfTextItems: uri => Effect.promise(() => pdfExtractorNativeModule.extractTextItems(uri)),
-    readBytes: uri => Effect.promise(() => new File(uri).arrayBuffer().then(buffer => new Uint8Array(buffer)))
+    readBytes: uri => Effect.promise(() => new File(uri).arrayBuffer().then(buffer => new Uint8Array(buffer))),
+    readText: uri => Effect.promise(() => new File(uri).text())
 });
