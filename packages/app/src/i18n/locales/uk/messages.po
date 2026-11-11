@@ -747,6 +747,10 @@ msgstr "{newTransactionCount, plural, one {Імпортувати # транза
 msgid "{newTransactionCount} new, {existingTransactionCount} already imported, {parsedTransactionCount} checked"
 msgstr "{newTransactionCount} нових, {existingTransactionCount} вже імпортовано, {parsedTransactionCount} перевірено"
 
+#: src/sync/hook/use-quick-import.hook.ts
+msgid "{newTransactionCount} new, {existingTransactionCount} already imported, {skippedTransactionCount} skipped without a matching account"
+msgstr "{newTransactionCount} нових, {existingTransactionCount} уже імпортовано, {skippedTransactionCount} пропущено без відповідного рахунку"
+
 #: src/account/component/family-section-header/family-section-header.tsx
 #: src/household/utils/get-family-labels.util.ts
 #: src/household/utils/get-household-summary-labels.util.ts
@@ -1988,6 +1992,10 @@ msgstr "Автоматичне налаштування вимкнено"
 #: src/app/(tabs)/settings/index.tsx
 msgid "Automation"
 msgstr "Автоматизація"
+
+#: src/sync/component/wise-statement-import-row/wise-statement-import-row.tsx
+msgid "Available after the first sync finishes"
+msgstr "Доступно після завершення першої синхронізації"
 
 #: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 msgid "Available once the import finishes"
@@ -5232,6 +5240,10 @@ msgstr "Сховати цифрову клавіатуру"
 msgid "Hide screen captures"
 msgstr "Приховувати знімки екрана"
 
+#: src/sync/component/wise-statement-import-row/wise-statement-import-row.tsx
+msgid "History"
+msgstr "Історія"
+
 #: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
 msgid "History depth"
 msgstr "Глибина історії"
@@ -5390,6 +5402,10 @@ msgstr "Імпорт з Inzhur"
 #: src/sync/component/file-import-review-step/file-import-review-step.tsx
 msgid "Import into"
 msgstr "Імпортувати в"
+
+#: src/sync/component/wise-statement-import-row/wise-statement-import-row.tsx
+msgid "Import older history"
+msgstr "Імпортувати старішу історію"
 
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Import Privatbank"
@@ -10666,6 +10682,10 @@ msgstr "Wi-Fi"
 #: src/rule/constant/external-source.constant.ts
 msgid "Wise"
 msgstr "Wise"
+
+#: src/sync/component/wise-statement-import-row/wise-statement-import-row.tsx
+msgid "Wise CSV export, one file per balance"
+msgstr "CSV-експорт Wise, один файл на баланс"
 
 #: src/inzhur/component/inzhur-operations-import-summary/inzhur-operations-import-summary.tsx
 msgid "Withdrawals"

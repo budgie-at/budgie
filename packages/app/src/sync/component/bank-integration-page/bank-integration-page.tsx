@@ -17,6 +17,7 @@ import { BankIntegrationOverview } from '../bank-integration-overview/bank-integ
 import { BankIntegrationStatements } from '../bank-integration-statements/bank-integration-statements';
 import { EnableBankingConnectionCard } from '../enable-banking-connection-card/enable-banking-connection-card';
 import { EnableBankingDisconnectRow } from '../enable-banking-disconnect-row/enable-banking-disconnect-row';
+import { WiseStatementImportRow } from '../wise-statement-import-row/wise-statement-import-row';
 
 interface Props {
     readonly integration: BankIntegrationEntityInterface;
@@ -33,6 +34,7 @@ export const BankIntegrationPage = ({ integration }: Props) => {
     const isEnableBanking = integration.provider === ExternalSourceEnum.ENABLE_BANKING;
     const keyCard = isEnableBanking ? <EnableBankingConnectionCard /> : monobankKeyCard;
     const disconnect = isEnableBanking ? <EnableBankingDisconnectRow /> : null;
+    const olderHistory = isEnableBanking ? <WiseStatementImportRow /> : null;
     const defaultTitle = getBankIntegrationTitle(t(EXTERNAL_SOURCE[integration.provider]), integration.label, null);
     const title = isEnableBanking && isNotEmptyString(integration.label) ? integration.label : defaultTitle;
 
@@ -50,6 +52,7 @@ export const BankIntegrationPage = ({ integration }: Props) => {
                     <BankIntegrationOverview />
                     {statements}
                     {keyCard}
+                    {olderHistory}
                     <BankIntegrationAccountList />
                     {disconnect}
                 </BankIntegrationContext.Provider>
