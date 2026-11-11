@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.174.0](https://github.com/budgie-at/budgie/compare/v6.173.33...v6.174.0) (2026-11-11)
+
+### Bug Fixes
+
+* **cloud-sync:** hide stale household copies of this user's own bank accounts ([2fb6e44](https://github.com/budgie-at/budgie/commit/2fb6e44546d45c4043c9060480b5044491e93082))
+
+
 ## [6.173.21](https://github.com/budgie-at/budgie/compare/v6.173.20...v6.173.21) (2026-11-10)
 
 **Note:** Version bump only for package @budgie/budget

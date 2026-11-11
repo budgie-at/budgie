@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.174.0](https://github.com/budgie-at/budgie/compare/v6.173.33...v6.174.0) (2026-11-11)
+
+### Bug Fixes
+
+* **cloud-sync:** keep this user's own accounts out of the Family section ([e267b22](https://github.com/budgie-at/budgie/commit/e267b22e7abdbaa07be0e1bc592f5504203a33f4))
+
+### Features
+
+* **app:** group accounts in Family sharing by bank and type ([9cd7346](https://github.com/budgie-at/budgie/commit/9cd73463ea98242650261ad9fe5534fb649ded87))
+* **app:** group every bank and account type in Family sharing ([c0ed715](https://github.com/budgie-at/budgie/commit/c0ed7150a5161232ea3851809bb1b78d6f14c5b6))
+* **app:** sharpen the Family section on Home ([a3c46b7](https://github.com/budgie-at/budgie/commit/a3c46b7de7970658031e23c3ab2f5562fd0db0b3))
+
+
 ## [6.173.33](https://github.com/budgie-at/budgie/compare/v6.173.32...v6.173.33) (2026-11-11)
 
 **Note:** Version bump only for package @budgie-at/app
