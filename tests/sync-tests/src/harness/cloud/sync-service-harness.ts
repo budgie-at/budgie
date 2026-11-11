@@ -30,6 +30,7 @@ import * as Stream from 'effect/Stream';
 import { isDefined } from '@rnw-community/shared';
 
 import { testDb } from '../scenario/test-db';
+import { seed } from '../seed/seed';
 
 import type {
     ICloudAccountStatusResult,
@@ -420,3 +421,15 @@ export const failedSaveOf = (
     message,
     serverRecord
 });
+
+export const syncAccount = (context: SyncServiceContext, service: SyncServiceType, title: string) =>
+    Effect.gen(function* () {
+        yield* reconfigureAndAcknowledgeMeta(context, service);
+        const account = yield* seed.account({ title });
+        yield* service.drain;
+        yield* service.handleSentChanges(
+            sentEvent({ savedRecords: savedFrom(flattenBatches(context.transport.calls.savedBatches).slice(1), 'saved') })
+        );
+
+        return account;
+    });
