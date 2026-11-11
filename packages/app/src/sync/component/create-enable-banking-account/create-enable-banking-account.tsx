@@ -53,9 +53,10 @@ export const CreateEnableBankingAccount = ({ connectAccountId, savedApplicationI
         return hasConnectKey ? EnableBankingSetupStepEnum.BANK : EnableBankingSetupStepEnum.GUIDE;
     });
     const [banks, setBanks] = useState<readonly EnableBankingBankInterface[]>([]);
-    const [hasListedBanks, setHasListedBanks] = useState(false);
     const [authorization, setAuthorization] = useState<EnableBankingAuthorizationInterface | null>(null);
     const [historyDepth, setHistoryDepth] = useState(SyncHistoryDepthEnum.FULL);
+    const isPreselected = (bank: EnableBankingBankInterface) => bank.name.toLocaleLowerCase() === preselectedBankName?.toLocaleLowerCase();
+    const candidateBanks = isDefined(preselectedBankName) ? banks.filter(isPreselected) : banks;
     const { isLoading: isBusy, run } = useSingleFlight();
     const { applicationId, parsedApplicationId, isKeyPicked, handleApplicationIdChange, handlePickKey, savePickedKey } =
         useEnableBankingKeyState(run, connectApplicationId);
@@ -94,7 +95,7 @@ export const CreateEnableBankingAccount = ({ connectAccountId, savedApplicationI
             }
         },
         () => {
-            setStep(hasListedBanks ? EnableBankingSetupStepEnum.BANK : EnableBankingSetupStepEnum.KEY);
+            setStep(isNotEmptyArray(banks) ? EnableBankingSetupStepEnum.BANK : EnableBankingSetupStepEnum.KEY);
         }
     );
 
@@ -119,14 +120,10 @@ export const CreateEnableBankingAccount = ({ connectAccountId, savedApplicationI
                     )
                 );
                 const regionCode = getDeviceRegionCode();
-                const candidateBanks = isDefined(preselectedBankName)
-                    ? listedBanks.filter(bank => bank.name.toLocaleLowerCase() === preselectedBankName.toLocaleLowerCase())
-                    : listedBanks;
-                const localPreselectedBank = isDefined(preselectedBankName)
-                    ? candidateBanks.find(bank => bank.isSupported && bank.country === regionCode)
-                    : null;
-                setBanks(candidateBanks);
-                setHasListedBanks(isNotEmptyArray(listedBanks));
+                const localPreselectedBank = listedBanks.find(
+                    bank => isPreselected(bank) && bank.isSupported && bank.country === regionCode
+                );
+                setBanks(listedBanks);
 
                 if (isDefined(localPreselectedBank)) {
                     yield* startAuthorization(parsedApplicationId, localPreselectedBank);
@@ -158,7 +155,7 @@ export const CreateEnableBankingAccount = ({ connectAccountId, savedApplicationI
             return;
         }
 
-        setStep(hasListedBanks ? EnableBankingSetupStepEnum.BANK : EnableBankingSetupStepEnum.KEY);
+        setStep(isNotEmptyArray(banks) ? EnableBankingSetupStepEnum.BANK : EnableBankingSetupStepEnum.KEY);
         void run(Effect.flatMap(EnableBankingConnectionService, connection => connection.discardPending));
     };
 
@@ -282,7 +279,7 @@ export const CreateEnableBankingAccount = ({ connectAccountId, savedApplicationI
     if (step === EnableBankingSetupStepEnum.BANK) {
         return (
             <EnableBankingBankStep
-                banks={banks}
+                banks={candidateBanks}
                 isLoading={isBusy}
                 preselectedBankName={preselectedBankName}
                 onSelectBank={handleSelectBank}
