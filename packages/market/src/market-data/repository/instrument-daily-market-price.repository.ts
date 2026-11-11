@@ -4,6 +4,8 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
+import { isNotEmptyArray } from '@rnw-community/shared';
+
 import { bulkUpsert } from '../../@generic/utils/bulk-upsert.util';
 
 import type { InstrumentDailyMarketPriceCreateEntityInterface } from '@budgie/contracts';
@@ -38,6 +40,12 @@ export class InstrumentDailyMarketPriceRepository extends Context.Service<Instru
                         inputs,
                         ['price', 'marketCap', 'volume', 'source']
                     ),
+                insertMissing: (inputs: InstrumentDailyMarketPriceCreateEntityInterface[]) =>
+                    isNotEmptyArray(inputs)
+                        ? Db.query(db => db.insert(InstrumentDailyMarketPriceEntityTable).values(inputs).onConflictDoNothing()).pipe(
+                              Effect.asVoid
+                          )
+                        : Effect.void,
                 findLatest: (instrumentId: number, quoteInstrumentId: number) =>
                     Db.query(db =>
                         db.query.InstrumentDailyMarketPriceEntityTable.findFirst({

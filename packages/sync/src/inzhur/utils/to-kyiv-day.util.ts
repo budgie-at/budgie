@@ -1,1 +1,3 @@
-export const toKyivDay = (date: Date): string => date.toLocaleDateString('en-CA', { timeZone: 'Europe/Kyiv' });
+const kyivDayFormat = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Kyiv' });
+
+export const toKyivDay = (date: Date): string => kyivDayFormat.format(date);

@@ -13,6 +13,7 @@ import { InzhurPriceParseError } from '../error/inzhur-price-parse.error';
 import { InstrumentDailyMarketPriceRepository } from '../repository/instrument-daily-market-price.repository';
 
 import type { InzhurFundPriceInterface } from '../interface/inzhur-fund-price.interface';
+import type { InstrumentDailyMarketPriceCreateEntityInterface } from '@budgie/contracts';
 
 export class InzhurPriceService extends Context.Service<InzhurPriceService>()('@budgie/market/InzhurPriceService', {
     make: Effect.gen(function* () {
@@ -20,6 +21,7 @@ export class InzhurPriceService extends Context.Service<InzhurPriceService>()('@
         const instrumentRepository = yield* InstrumentRepository;
         const pageUrl = 'https://www.inzhur.reit/';
         const fetchTimeoutMs = 15_000;
+        const statementSource = 'inzhur-statement';
         const certificatePricePattern =
             /&quot;value&quot;:\[0,&quot;([^&]+)&quot;\],&quot;dynamicValue&quot;:\[0,&quot;initialInvestment&quot;\],&quot;hint&quot;:\[0,&quot;(?:(?!&quot;).)*?фонду (Inzhur [A-Za-z]+)/gu;
         const certificatePriceSchema = Schema.FiniteFromString.check(Schema.isGreaterThan(0));
@@ -60,6 +62,23 @@ export class InzhurPriceService extends Context.Service<InzhurPriceService>()('@
 
         return {
             fetchPrices,
+            recordTradePrices: Effect.fn('InzhurPriceService.recordTradePrices')(function* (
+                prices: readonly Pick<InstrumentDailyMarketPriceCreateEntityInterface, 'instrumentId' | 'priceDate' | 'price'>[]
+            ) {
+                const hryvnia = yield* instrumentRepository.findByCode(CurrencyEnum.UAH);
+
+                if (isDefined(hryvnia)) {
+                    yield* instrumentDailyMarketPriceRepository.insertMissing(
+                        prices.map(price => ({
+                            ...price,
+                            quoteInstrumentId: hryvnia.id,
+                            marketCap: null,
+                            volume: null,
+                            source: statementSource
+                        }))
+                    );
+                }
+            }),
             findNearestPrice: Effect.fn('InzhurPriceService.findNearestPrice')(function* (instrumentId: number, priceDate: string) {
                 const hryvnia = yield* instrumentRepository.findByCode(CurrencyEnum.UAH);
 

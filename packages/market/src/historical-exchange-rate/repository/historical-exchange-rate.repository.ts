@@ -70,6 +70,16 @@ export class HistoricalExchangeRateRepository extends Context.Service<Historical
                             .orderBy(asc(rates.rateDate))
                             .limit(1);
                     }).pipe(Effect.map(rows => rows.at(0)?.rateDate ?? null)),
+                findInDateRange: (sourceInstrumentId: number, targetInstrumentId: number, fromDate: string, toDate: string) =>
+                    Db.query(db =>
+                        db.query.HistoricalExchangeRateEntityTable.findMany({
+                            where: {
+                                ...buildPairCondition(sourceInstrumentId, targetInstrumentId),
+                                rateDate: { gte: fromDate, lte: toDate }
+                            },
+                            orderBy: { rateDate: 'asc' }
+                        })
+                    ),
                 findEarliest: (sourceInstrumentId: number, targetInstrumentId: number) =>
                     Db.query(db =>
                         db.query.HistoricalExchangeRateEntityTable.findFirst({

@@ -6,7 +6,7 @@ import {
     TransactionTypeEnum,
     convertFromMicroUnits
 } from '@budgie/contracts';
-import { InstrumentDailyMarketPriceRepository } from '@budgie/market';
+import { InstrumentDailyMarketPriceRepository, findLastIndexOnOrBefore } from '@budgie/market';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -54,8 +54,29 @@ export class InzhurGainService extends Context.Service<InzhurGainService>()('@bu
             return days;
         };
 
-        const findPriceOn = (prices: readonly InzhurValuePointInterface[], day: string) =>
-            prices.findLast(price => price.date <= day)?.value ?? null;
+        const buildStepLookup = (points: readonly InzhurValuePointInterface[]) => {
+            const dates = points.map(point => point.date);
+
+            return (day: string): number | null => points[findLastIndexOnOrBefore(dates, day)]?.value ?? null;
+        };
+
+        const buildRunningTotal = (
+            dated: readonly InzhurDatedMovementInterface[],
+            pick: (item: InzhurDatedMovementInterface) => number
+        ) => {
+            const totalByDay = new Map<string, number>();
+
+            for (const item of dated) {
+                totalByDay.set(item.day, (totalByDay.get(item.day) ?? 0) + pick(item));
+            }
+
+            let running = 0;
+            const lookup = buildStepLookup(
+                [...totalByDay.keys()].sort().map(date => ({ date, value: (running += totalByDay.get(date) ?? 0) }))
+            );
+
+            return (day: string) => lookup(day) ?? 0;
+        };
 
         const loadLedger = Effect.fnUntraced(function* () {
             const setup = yield* inzhurSetupService.findSetup();
@@ -98,19 +119,31 @@ export class InzhurGainService extends Context.Service<InzhurGainService>()('@bu
                 )
             );
             const pricesByAccountId = new Map(priceEntries);
+            const balanceByAccountId = new Map(
+                [cashAccountId, ...fundAccountIds].map(accountId => [
+                    accountId,
+                    buildRunningTotal(
+                        dated.filter(item => item.movement.accountId === accountId),
+                        item => item.amount
+                    )
+                ])
+            );
+            const priceByAccountId = new Map(priceEntries.map(([accountId, prices]) => [accountId, buildStepLookup(prices)]));
 
-            return { cashAccountId, fundAccountIds, firstDay, dated, pricesByAccountId };
+            return {
+                cashAccountId,
+                fundAccountIds,
+                firstDay,
+                dated,
+                pricesByAccountId,
+                balanceOn: (accountId: number, day: string) => balanceByAccountId.get(accountId)?.(day) ?? 0,
+                priceOn: (accountId: number, day: string) => priceByAccountId.get(accountId)?.(day) ?? null
+            } satisfies InzhurGainLedgerInterface;
         });
 
-        const balanceOn = (ledger: InzhurGainLedgerInterface, accountId: number, day: string) =>
-            ledger.dated.reduce(
-                (total, item) => (item.movement.accountId === accountId && item.day <= day ? total + item.amount : total),
-                0
-            );
-
         const fundValueOn = (ledger: InzhurGainLedgerInterface, accountId: number, day: string) => {
-            const quantity = balanceOn(ledger, accountId, day);
-            const price = findPriceOn(ledger.pricesByAccountId.get(accountId) ?? [], day);
+            const quantity = ledger.balanceOn(accountId, day);
+            const price = ledger.priceOn(accountId, day);
 
             if (quantity === 0) {
                 return 0;
@@ -126,7 +159,7 @@ export class InzhurGainService extends Context.Service<InzhurGainService>()('@bu
                 return null;
             }
 
-            return fundValues.reduce<number>((total, value) => total + (value ?? 0), balanceOn(ledger, ledger.cashAccountId, day));
+            return fundValues.reduce<number>((total, value) => total + (value ?? 0), ledger.balanceOn(ledger.cashAccountId, day));
         };
 
         const findCounterpartId = (ledger: InzhurGainLedgerInterface, movement: LedgerMovementInterface) =>
@@ -162,16 +195,13 @@ export class InzhurGainService extends Context.Service<InzhurGainService>()('@bu
         };
 
         const buildGain = (
-            ledger: InzhurGainLedgerInterface,
-            { valueOn, flowOf }: InzhurGainMeasureInterface,
+            { valueOn, contributionsUntil }: InzhurGainMeasureInterface,
             startDate: string,
             today: string
         ): InzhurGainInterface => {
             const startValue = valueOn(startDate);
             const endValue = valueOn(today);
-            const contributions = ledger.dated
-                .filter(item => item.day > startDate && item.day <= today)
-                .reduce((total, item) => total + flowOf(item), 0);
+            const contributions = contributionsUntil(today) - contributionsUntil(startDate);
             const gain = isDefined(startValue) && isDefined(endValue) ? endValue - startValue - contributions : null;
             const base = isDefined(startValue) ? startValue + contributions : 0;
 
@@ -185,19 +215,14 @@ export class InzhurGainService extends Context.Service<InzhurGainService>()('@bu
             };
         };
 
-        const buildRangedGains = (
-            ledger: InzhurGainLedgerInterface,
-            measure: InzhurGainMeasureInterface,
-            today: string,
-            startDay: string
-        ): InzhurRangedGainInterface[] => {
+        const buildRangedGains = (measure: InzhurGainMeasureInterface, today: string, startDay: string): InzhurRangedGainInterface[] => {
             const ranged = ([InzhurGainRangeEnum.MONTH, InzhurGainRangeEnum.THREE_MONTHS] as const)
                 .map(range => ({ range, startDate: shiftDay(today, -rangeDays[range]) }))
                 .filter(({ startDate }) => startDate > startDay);
 
             return [...ranged, { range: InzhurGainRangeEnum.ALL, startDate: startDay }].map(({ range, startDate }) => ({
                 range,
-                ...buildGain(ledger, measure, startDate, today)
+                ...buildGain(measure, startDate, today)
             }));
         };
 
@@ -207,9 +232,9 @@ export class InzhurGainService extends Context.Service<InzhurGainService>()('@bu
                 .filter((point): point is InzhurValuePointInterface => isDefined(point.value))
                 .map(point => ({ date: point.date, value: roundMoney(point.value) }));
 
-        const buildGainSeries = (ledger: InzhurGainLedgerInterface, measure: InzhurGainMeasureInterface, today: string, startDay: string) =>
+        const buildGainSeries = (measure: InzhurGainMeasureInterface, today: string, startDay: string) =>
             listDays(startDay, today)
-                .map(date => ({ date, value: buildGain(ledger, measure, startDay, date).gain }))
+                .map(date => ({ date, value: buildGain(measure, startDay, date).gain }))
                 .filter((point): point is InzhurValuePointInterface => isDefined(point.value));
 
         const buildReport = (ledger: InzhurGainLedgerInterface, measure: InzhurGainMeasureInterface, today: string) => {
@@ -217,8 +242,8 @@ export class InzhurGainService extends Context.Service<InzhurGainService>()('@bu
 
             return {
                 series: buildSeries(ledger, today, measure.valueOn),
-                gainSeries: buildGainSeries(ledger, measure, today, startDay),
-                gains: buildRangedGains(ledger, measure, today, startDay)
+                gainSeries: buildGainSeries(measure, today, startDay),
+                gains: buildRangedGains(measure, today, startDay)
             };
         };
 
@@ -232,7 +257,7 @@ export class InzhurGainService extends Context.Service<InzhurGainService>()('@bu
 
                 const measure = {
                     valueOn: (day: string) => institutionValueOn(ledger, day),
-                    flowOf: (item: InzhurDatedMovementInterface) => institutionFlowOf(ledger, item)
+                    contributionsUntil: buildRunningTotal(ledger.dated, item => institutionFlowOf(ledger, item))
                 };
 
                 return {
@@ -249,7 +274,7 @@ export class InzhurGainService extends Context.Service<InzhurGainService>()('@bu
 
                 const measure = {
                     valueOn: (day: string) => fundValueOn(ledger, fundAccountId, day),
-                    flowOf: (item: InzhurDatedMovementInterface) => fundFlowOf(ledger, fundAccountId, item)
+                    contributionsUntil: buildRunningTotal(ledger.dated, item => fundFlowOf(ledger, fundAccountId, item))
                 };
 
                 return {

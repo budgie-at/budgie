@@ -7,4 +7,6 @@ export interface InzhurGainLedgerInterface {
     readonly firstDay: string;
     readonly dated: readonly InzhurDatedMovementInterface[];
     readonly pricesByAccountId: ReadonlyMap<number, readonly InzhurValuePointInterface[]>;
+    readonly balanceOn: (accountId: number, day: string) => number;
+    readonly priceOn: (accountId: number, day: string) => number | null;
 }

@@ -16,7 +16,7 @@ import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { SyncFileReader } from '../../core/port/sync-file-reader.port';
 import { SyncWorkload } from '../../core/port/sync-workload.port';
@@ -275,20 +275,41 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
                         [transaction.externalId, ...transaction.entries.map(entry => entry.externalId)].filter(isNotEmptyString)
                     )
                 );
+                const ledgerByExternalId = new Map(ledger.map(transaction => [transaction.externalId, transaction]));
                 const storedTrade = (action: InzhurPlannedActionInterface) => {
-                    const transaction = ledger.find(item => item.externalId === action.externalId);
+                    const transaction = ledgerByExternalId.get(action.externalId);
                     const fundAccountId = accountByFund.get(action.fundName ?? '')?.id;
 
-                    return { transaction, quantity: transaction?.entries.find(entry => entry.accountId === fundAccountId)?.amount };
+                    return {
+                        transaction,
+                        quantity: transaction?.entries.find(entry => entry.accountId === fundAccountId)?.amount,
+                        cash: transaction?.entries.find(entry => entry.accountId === cashAccountId)?.amount
+                    };
                 };
                 const newActions = plan.actions.filter(action => !existingIds.has(action.externalId));
+
+                yield* inzhurPriceService.recordTradePrices(
+                    plan.actions.flatMap(action => {
+                        const instrumentId = accountByFund.get(action.fundName ?? '')?.instrumentId;
+
+                        return isDefined(instrumentId) && isPositiveNumber(action.quantity)
+                            ? [{ instrumentId, priceDate: toKyivDay(action.occurredAt), price: action.cashAmount / action.quantity }]
+                            : [];
+                    })
+                );
+
                 const quantities = inzhurQuantityResolver.resolve({
                     actions: plan.actions,
                     storedMicroUnitsByExternalId: new Map(
                         plan.actions.flatMap(action => {
-                            const { quantity } = storedTrade(action);
+                            const { quantity, cash } = storedTrade(action);
+                            const isReestimated =
+                                action.kind === InzhurOperationKindEnum.BUY &&
+                                !isDefined(action.quantity) &&
+                                isDefined(cash) &&
+                                convertToMicroUnits(action.cashAmount) >= cash;
 
-                            return isDefined(quantity) ? [[action.externalId, quantity] as const] : [];
+                            return isDefined(quantity) && !isReestimated ? [[action.externalId, quantity] as const] : [];
                         })
                     ),
                     baseMicroUnitsByFund: new Map(
@@ -340,13 +361,12 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
                 const amendedTrades = plan.actions
                     .filter(action => isTrade(action) && existingIds.has(action.externalId))
                     .flatMap(action => {
-                        const { transaction: stored, quantity: storedQuantity } = storedTrade(action);
+                        const { transaction: stored, quantity: storedQuantity, cash: storedCash } = storedTrade(action);
                         const account = accountByFund.get(action.fundName ?? '');
-                        const storedCash = stored?.entries.find(entry => entry.accountId === cashAccountId)?.amount;
 
-                        const quantity = action.isSellAll
-                            ? (quantities.get(action.externalId)?.microUnits ?? storedQuantity)
-                            : storedQuantity;
+                        const quantity = isDefined(action.quantity)
+                            ? storedQuantity
+                            : (quantities.get(action.externalId)?.microUnits ?? storedQuantity);
 
                         return isDefined(stored) &&
                             isDefined(account) &&
