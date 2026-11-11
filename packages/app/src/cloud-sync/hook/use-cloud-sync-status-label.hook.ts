@@ -41,11 +41,8 @@ export const useCloudSyncStatusLabel = () => {
     const idleLabel = isDefined(lastSyncedAt) ? t`Synced ${relative}` : t`Not synced yet`;
 
     const isFailed = status === CloudSyncStatusEnum.ERROR;
-    const messages = {
-        ...CLOUD_SYNC_STATUS_MESSAGE,
-        [CloudSyncStatusEnum.ERROR]: CLOUD_SYNC_ERROR_MESSAGE[errorReason ?? CloudSyncErrorReasonEnum.UNKNOWN]
-    };
-    const statusLabel = status === CloudSyncStatusEnum.IDLE ? idleLabel : t(messages[status]);
+    const failedMessage = CLOUD_SYNC_ERROR_MESSAGE[errorReason ?? CloudSyncErrorReasonEnum.UNKNOWN];
+    const statusLabel = status === CloudSyncStatusEnum.IDLE ? idleLabel : t(isFailed ? failedMessage : CLOUD_SYNC_STATUS_MESSAGE[status]);
     const isActive = status === CloudSyncStatusEnum.IDLE || status === CloudSyncStatusEnum.SYNCING;
     const isQuotaBlocking = isQuotaExceeded && isActive;
 
