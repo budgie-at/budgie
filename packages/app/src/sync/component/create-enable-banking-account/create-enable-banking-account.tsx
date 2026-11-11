@@ -53,6 +53,7 @@ export const CreateEnableBankingAccount = ({ connectAccountId, savedApplicationI
         return hasConnectKey ? EnableBankingSetupStepEnum.BANK : EnableBankingSetupStepEnum.GUIDE;
     });
     const [banks, setBanks] = useState<readonly EnableBankingBankInterface[]>([]);
+    const [hasListedBanks, setHasListedBanks] = useState(false);
     const [authorization, setAuthorization] = useState<EnableBankingAuthorizationInterface | null>(null);
     const [historyDepth, setHistoryDepth] = useState(SyncHistoryDepthEnum.FULL);
     const { isLoading: isBusy, run } = useSingleFlight();
@@ -93,7 +94,7 @@ export const CreateEnableBankingAccount = ({ connectAccountId, savedApplicationI
             }
         },
         () => {
-            setStep(isNotEmptyArray(banks) ? EnableBankingSetupStepEnum.BANK : EnableBankingSetupStepEnum.KEY);
+            setStep(hasListedBanks ? EnableBankingSetupStepEnum.BANK : EnableBankingSetupStepEnum.KEY);
         }
     );
 
@@ -125,6 +126,7 @@ export const CreateEnableBankingAccount = ({ connectAccountId, savedApplicationI
                     ? candidateBanks.find(bank => bank.isSupported && bank.country === regionCode)
                     : null;
                 setBanks(candidateBanks);
+                setHasListedBanks(isNotEmptyArray(listedBanks));
 
                 if (isDefined(localPreselectedBank)) {
                     yield* startAuthorization(parsedApplicationId, localPreselectedBank);
@@ -156,7 +158,7 @@ export const CreateEnableBankingAccount = ({ connectAccountId, savedApplicationI
             return;
         }
 
-        setStep(isNotEmptyArray(banks) ? EnableBankingSetupStepEnum.BANK : EnableBankingSetupStepEnum.KEY);
+        setStep(hasListedBanks ? EnableBankingSetupStepEnum.BANK : EnableBankingSetupStepEnum.KEY);
         void run(Effect.flatMap(EnableBankingConnectionService, connection => connection.discardPending));
     };
 
@@ -278,7 +280,15 @@ export const CreateEnableBankingAccount = ({ connectAccountId, savedApplicationI
     }
 
     if (step === EnableBankingSetupStepEnum.BANK) {
-        return <EnableBankingBankStep banks={banks} isLoading={isBusy} onSelectBank={handleSelectBank} onGoBack={handleStepAwareGoBack} />;
+        return (
+            <EnableBankingBankStep
+                banks={banks}
+                isLoading={isBusy}
+                preselectedBankName={preselectedBankName}
+                onSelectBank={handleSelectBank}
+                onGoBack={handleStepAwareGoBack}
+            />
+        );
     }
 
     return (
