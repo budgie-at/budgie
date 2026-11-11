@@ -114,6 +114,34 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
                 Stream.runForEach(stream, event => logAndContinue(handle(event)))
             );
 
+        const forkConsumers = Effect.fnUntraced(function* () {
+            yield* forkConsumer(transport.events, dispatchEvent);
+            yield* forkConsumer(
+                Stream.filter(host.foregroundChanges, isForeground => isForeground),
+                () => foreground().pipe(Effect.andThen(discoverHousehold), Effect.andThen(host.bumpHouseholdRefresh))
+            );
+            yield* forkConsumer(
+                Stream.concat(Stream.fromEffect(host.isForeground), host.foregroundChanges).pipe(
+                    Stream.switchMap(isForeground => (isForeground ? Stream.tick(periodicFetchInterval) : Stream.empty))
+                ),
+                fetchPeriodically
+            );
+            yield* forkConsumer(
+                databaseChanges.pipe(
+                    Stream.filter(tableNames => tableNames.some(tableName => userDataTableNames.has(tableName))),
+                    Stream.debounce(localWriteDebounce)
+                ),
+                () => drain
+            );
+            yield* forkConsumer(
+                databaseChanges.pipe(
+                    Stream.filter(tableNames => tableNames.includes('settings')),
+                    Stream.debounce(settingsDebounce)
+                ),
+                () => reconfigure
+            );
+        });
+
         return {
             reconfigure,
             drain,
@@ -132,38 +160,14 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
                 return true;
             }, lifecycle.withPermits(1)),
             start: Effect.fn('CloudSyncService.start')(function* () {
+                yield* state.publishStoredOwnerName();
+
                 const consumerCount = yield* FiberSet.size(consumers);
 
-                if (isPositiveNumber(consumerCount)) {
-                    return;
+                if (!isPositiveNumber(consumerCount)) {
+                    yield* forkConsumers();
                 }
 
-                yield* state.publishStoredOwnerName();
-                yield* forkConsumer(transport.events, dispatchEvent);
-                yield* forkConsumer(
-                    Stream.filter(host.foregroundChanges, isForeground => isForeground),
-                    () => foreground().pipe(Effect.andThen(discoverHousehold), Effect.andThen(host.bumpHouseholdRefresh))
-                );
-                yield* forkConsumer(
-                    Stream.concat(Stream.fromEffect(host.isForeground), host.foregroundChanges).pipe(
-                        Stream.switchMap(isForeground => (isForeground ? Stream.tick(periodicFetchInterval) : Stream.empty))
-                    ),
-                    fetchPeriodically
-                );
-                yield* forkConsumer(
-                    databaseChanges.pipe(
-                        Stream.filter(tableNames => tableNames.some(tableName => userDataTableNames.has(tableName))),
-                        Stream.debounce(localWriteDebounce)
-                    ),
-                    () => drain
-                );
-                yield* forkConsumer(
-                    databaseChanges.pipe(
-                        Stream.filter(tableNames => tableNames.includes('settings')),
-                        Stream.debounce(settingsDebounce)
-                    ),
-                    () => reconfigure
-                );
                 yield* locked(finishHouseholdCleanupUnlocked());
                 yield* reconfigure;
                 yield* discoverHousehold;
