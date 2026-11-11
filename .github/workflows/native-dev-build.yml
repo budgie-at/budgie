@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: ios-dev-prerelease
+  group: dev-prerelease
   cancel-in-progress: false
 
 permissions:
