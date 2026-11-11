@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.173.23](https://github.com/budgie-at/budgie/compare/v6.173.22...v6.173.23) (2026-11-11)
+
+### Bug Fixes
+
+* **app:** stop cloud sync while import or restore replaces the database ([#2119](https://github.com/budgie-at/budgie/issues/2119)) ([289cad5](https://github.com/budgie-at/budgie/commit/289cad5c68bf825d30c92e029493460baa628880))
+
+
 ## [6.173.22](https://github.com/budgie-at/budgie/compare/v6.173.21...v6.173.22) (2026-11-11)
 
 ### Bug Fixes
