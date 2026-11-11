@@ -2,7 +2,7 @@ import { vi } from 'vitest';
 
 import { isDefined, isString } from '@rnw-community/shared';
 
-import { storage } from './expo-file-system-fake';
+import { File, storage } from './expo-file-system-fake';
 
 export class Directory {
     static readonly pickDirectoryAsync = vi.fn<() => Promise<Pick<Directory, 'uri'>>>();
@@ -14,7 +14,13 @@ export class Directory {
     }
 
     get exists() {
-        return storage.files.has(this.uri);
+        return storage.files.has(this.uri) || [...storage.files.keys()].some(uri => uri.startsWith(`${this.uri}/`));
+    }
+
+    list() {
+        return [...storage.files.keys()]
+            .filter(uri => uri.startsWith(`${this.uri}/`) && !uri.slice(this.uri.length + 1).includes('/'))
+            .map(uri => new File(uri));
     }
 
     create(options?: { overwrite?: boolean; idempotent?: boolean; intermediates?: boolean }) {

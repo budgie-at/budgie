@@ -84,52 +84,64 @@ describe('database import sync state', () => {
         storage.failCopy = false;
         storage.failMoveFrom = null;
     });
-    it.effect.each(['close', 'copy', 'move', 'cleanup', 'success'])('preserves recoverable sync state on %s failure', failure =>
-        Effect.gen(function* () {
-            const isCommitted = failure === 'success' || failure === 'cleanup';
-            storage.failCopy = failure === 'copy';
-            storage.failMoveFrom = failure === 'move' ? 'cache/import-temp.db' : null;
-            storage.failDelete = failure === 'cleanup' ? 'documents/SQLite/budgie.db.replaced-0' : null;
-            const holder = { state: previous, pin: 'previous-pin' };
-            const layer = Layer.effect(DatabaseImportService, DatabaseImportService.make).pipe(
-                Layer.provide([
-                    Layer.mock(DatabaseLifecycleService)({
-                        run: (_operation, effect) => effect,
-                        close: () => (failure === 'close' ? Effect.die('close failed') : Effect.void)
-                    }),
-                    Layer.mock(AiStorageReplacementService)({ pauseLongLivedRuntime: () => Effect.void }),
-                    Layer.mock(AiEmbeddingStatusService)({ forgetModel: Effect.void }),
-                    Layer.mock(AuthService)({
-                        getPin: () => Effect.succeed(holder.pin),
-                        persistPin: pin =>
-                            Effect.sync(() => {
-                                holder.pin = pin ?? '';
-                            })
-                    }),
-                    cloudSyncStateStoreLayer
-                ])
-            );
-            const query = vi.spyOn(Db, 'query');
-            const result = yield* Effect.gen(function* () {
-                const store = yield* CloudSyncStateStore;
-                yield* store.update(previous);
+    it.effect.each(['close', 'copy', 'move', 'move-back', 'cleanup', 'success'])(
+        'preserves recoverable sync state on %s failure',
+        failure =>
+            Effect.gen(function* () {
+                const isCommitted = failure === 'success' || failure === 'cleanup';
+                storage.failCopy = failure === 'copy';
+                storage.failMoveFrom = failure === 'move' || failure === 'move-back' ? 'cache/import-temp.db' : null;
+                storage.failMoveBackFrom = failure === 'move-back' ? 'documents/SQLite/budgie.db.replaced-0' : null;
+                storage.failDelete = failure === 'cleanup' ? 'documents/SQLite/budgie.db.replaced-0' : null;
+                const holder = { state: previous, pin: 'previous-pin' };
+                const layer = Layer.effect(DatabaseImportService, DatabaseImportService.make).pipe(
+                    Layer.provide([
+                        Layer.mock(DatabaseLifecycleService)({
+                            run: (_operation, effect) => effect,
+                            close: () => (failure === 'close' ? Effect.die('close failed') : Effect.void)
+                        }),
+                        Layer.mock(AiStorageReplacementService)({ pauseLongLivedRuntime: () => Effect.void }),
+                        Layer.mock(AiEmbeddingStatusService)({ forgetModel: Effect.void }),
+                        Layer.mock(AuthService)({
+                            getPin: () => Effect.succeed(holder.pin),
+                            persistPin: pin =>
+                                Effect.sync(() => {
+                                    holder.pin = pin ?? '';
+                                })
+                        }),
+                        cloudSyncStateStoreLayer
+                    ])
+                );
+                const query = vi.spyOn(Db, 'query');
+                const result = yield* Effect.gen(function* () {
+                    const store = yield* CloudSyncStateStore;
+                    yield* store.update(previous);
 
-                return yield* Effect.exit(Effect.flatMap(DatabaseImportService, service => service.importFromUri('backup', 'new-pin')));
-            }).pipe(Effect.provide([layer, inertDbLayer, cloudSyncStateStoreLayer]));
-            expect(Exit.isFailure(result)).toBe(!isCommitted);
-            if (Exit.isFailure(result)) {
-                expect(Cause.squash(result.cause)).toEqual(failure === 'close' ? 'close failed' : expect.any(Error));
-            }
-            expect(yield* Effect.flatMap(CloudSyncStateStore, store => store.read).pipe(Effect.provide(cloudSyncStateStoreLayer))).toEqual(
-                isCommitted
-                    ? { ...previous, stateSerialization: null, resolvedLineageId: null, restorePhase: CloudSyncRestorePhaseEnum.PENDING }
-                    : previous
-            );
-            expect(storage.files.get('documents/SQLite/budgie.db')).toBe(isCommitted ? 'backup' : 'database');
-            expect(holder.pin).toBe(isCommitted ? 'new-pin' : 'previous-pin');
-            expect(query).not.toHaveBeenCalled();
-            query.mockRestore();
-        })
+                    return yield* Effect.exit(Effect.flatMap(DatabaseImportService, service => service.importFromUri('backup', 'new-pin')));
+                }).pipe(Effect.provide([layer, inertDbLayer, cloudSyncStateStoreLayer]));
+                expect(Exit.isFailure(result)).toBe(!isCommitted);
+                if (Exit.isFailure(result)) {
+                    expect(Cause.squash(result.cause)).toEqual(failure === 'close' ? 'close failed' : expect.any(Error));
+                }
+                expect(
+                    yield* Effect.flatMap(CloudSyncStateStore, store => store.read).pipe(Effect.provide(cloudSyncStateStoreLayer))
+                ).toEqual(
+                    isCommitted
+                        ? {
+                              ...previous,
+                              stateSerialization: null,
+                              resolvedLineageId: null,
+                              restorePhase: CloudSyncRestorePhaseEnum.PENDING
+                          }
+                        : previous
+                );
+                expect(
+                    storage.files.get(failure === 'move-back' ? 'documents/SQLite/budgie.db.replaced-0' : 'documents/SQLite/budgie.db')
+                ).toBe(isCommitted ? 'backup' : 'database');
+                expect(holder.pin).toBe(isCommitted ? 'new-pin' : 'previous-pin');
+                expect(query).not.toHaveBeenCalled();
+                query.mockRestore();
+            })
     );
 
     it.effect.each([
