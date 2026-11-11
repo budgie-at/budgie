@@ -28,8 +28,6 @@ export class RecurringReminderService extends Context.Service<RecurringReminderS
         const instrumentRepository = yield* InstrumentRepository;
 
         const scheduleLocalNotification = Effect.fnUntraced(function* (notification: ScheduledLocalNotificationInterface) {
-            yield* ensureNotificationChannel(notification.channel);
-
             yield* Effect.tryPromise({
                 try: () =>
                     Notifications.scheduleNotificationAsync({
@@ -74,23 +72,17 @@ export class RecurringReminderService extends Context.Service<RecurringReminderS
             return i18n._(msg`${amount} due in ${daysUntilDue} days`);
         };
 
-        const schedulePlan = Effect.fnUntraced(function* (
-            plan: RecurringReminderPlanInterface,
-            series: RecurringSeriesListItemInterface,
-            formatAmount: (nativeAmount: number, symbol: string) => string
-        ) {
-            const instrument = isDefined(series.instrumentId) ? yield* instrumentRepository.findById(series.instrumentId) : null;
-            const symbol = isDefined(instrument) ? instrument.symbol : '';
+        const buildReminderChannel = () => ({ id: 'recurring-reminders', name: i18n._(msg`Recurring reminders`) });
 
-            yield* scheduleLocalNotification({
-                channel: { id: 'recurring-reminders', name: i18n._(msg`Recurring reminders`) },
+        const schedulePlan = (plan: RecurringReminderPlanInterface, series: RecurringSeriesListItemInterface, amount: string) =>
+            scheduleLocalNotification({
+                channel: buildReminderChannel(),
                 identifier: `recurring-reminder-${plan.seriesId}`,
                 title: series.title,
-                body: buildDueBody(plan.daysUntilDue, formatAmount(series.nativeAmount, symbol)),
+                body: buildDueBody(plan.daysUntilDue, amount),
                 data: { kind: RecurringNotificationKindEnum.RECURRING, seriesId: plan.seriesId },
                 date: plan.scheduledAt
             });
-        });
 
         return {
             reschedule: Effect.fn('RecurringReminderService.reschedule')(function* (now: Date) {
@@ -122,13 +114,29 @@ export class RecurringReminderService extends Context.Service<RecurringReminderS
                 const formatAmount = (nativeAmount: number, symbol: string): string =>
                     formatSymbolAmount(convertFromMicroUnits(nativeAmount), symbol, absolute => numberFormatter.format(absolute));
                 const seriesById = new Map(series.map(item => [item.id, item]));
+                const plannedSeries = plans.map(plan => seriesById.get(plan.seriesId)).filter(isDefined);
+                const instrumentIds = [...new Set(plannedSeries.map(item => item.instrumentId).filter(isDefined))];
+                const symbolEntries = yield* Effect.forEach(instrumentIds, instrumentId =>
+                    instrumentRepository
+                        .findById(instrumentId)
+                        .pipe(Effect.map(instrument => [instrumentId, isDefined(instrument) ? instrument.symbol : ''] as const))
+                );
+                const symbolByInstrumentId = new Map(symbolEntries);
+
+                yield* ensureNotificationChannel(buildReminderChannel());
 
                 yield* Effect.forEach(
                     plans,
                     plan => {
                         const item = seriesById.get(plan.seriesId);
 
-                        return isDefined(item) ? schedulePlan(plan, item, formatAmount) : Effect.void;
+                        if (!isDefined(item)) {
+                            return Effect.void;
+                        }
+
+                        const symbol = isDefined(item.instrumentId) ? (symbolByInstrumentId.get(item.instrumentId) ?? '') : '';
+
+                        return schedulePlan(plan, item, formatAmount(item.nativeAmount, symbol));
                     },
                     { discard: true }
                 );
