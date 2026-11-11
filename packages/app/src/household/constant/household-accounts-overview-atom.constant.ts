@@ -4,6 +4,7 @@ import {
     AccountRepository,
     HOUSEHOLD_SYNC_ZONE,
     PERSONAL_SYNC_ZONE,
+    SettingsEntityTable,
     SyncOutboxEntityTable,
     SyncRecordEntityTable,
     SyncZoneRegistryEntityTable
@@ -15,7 +16,7 @@ import { databaseQueryAtom } from '../../@generic/utils/database-query-atom.util
 import type { HouseholdAccountsOverviewInterface } from '../interface/household-accounts-overview.interface';
 
 export const householdAccountsOverviewAtom = databaseQueryAtom(
-    [AccountEntityTable, SyncZoneRegistryEntityTable, SyncRecordEntityTable, SyncOutboxEntityTable],
+    [AccountEntityTable, SyncZoneRegistryEntityTable, SyncRecordEntityTable, SyncOutboxEntityTable, SettingsEntityTable],
     Effect.gen(function* () {
         const accountRepository = yield* AccountRepository;
         const householdShareService = yield* HouseholdShareService;

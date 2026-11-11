@@ -119,12 +119,17 @@ export class CloudSyncEngineService extends Context.Service<CloudSyncEngineServi
             return CloudSyncLineageDecisionEnum.JOIN;
         });
 
+        const pauseForOtherAccountUnlocked = Effect.fnUntraced(function* () {
+            yield* stopEngineUnlocked();
+            yield* settingsRepository.update({ cloudUserRecordName: null });
+            yield* patch({ blocked: CloudSyncStatusEnum.PAUSED_OTHER_ACCOUNT });
+        });
+
         const startEngineUnlocked = Effect.fnUntraced(function* (userRecordName: string) {
             const stored = yield* stateStore.read;
 
             if (isDefined(stored.boundUserRecordName) && stored.boundUserRecordName !== userRecordName) {
-                yield* stopEngineUnlocked();
-                yield* patch({ blocked: CloudSyncStatusEnum.PAUSED_OTHER_ACCOUNT });
+                yield* pauseForOtherAccountUnlocked();
 
                 return;
             }
@@ -132,6 +137,8 @@ export class CloudSyncEngineService extends Context.Service<CloudSyncEngineServi
             if (!isDefined(stored.boundUserRecordName)) {
                 yield* stateStore.update({ boundUserRecordName: userRecordName });
             }
+
+            yield* settingsRepository.update({ cloudUserRecordName: userRecordName });
 
             yield* refreshZones();
             yield* householdService.refreshPrivateOwnerName();
@@ -324,8 +331,7 @@ export class CloudSyncEngineService extends Context.Service<CloudSyncEngineServi
                     yield* stopEngineUnlocked();
                     yield* patch({ blocked: CloudSyncStatusEnum.PAUSED_SIGNED_OUT });
                 } else if (isDefined(stored.boundUserRecordName) && event.currentUserRecordName !== stored.boundUserRecordName) {
-                    yield* stopEngineUnlocked();
-                    yield* patch({ blocked: CloudSyncStatusEnum.PAUSED_OTHER_ACCOUNT });
+                    yield* pauseForOtherAccountUnlocked();
                 } else if (!(current.isEngineRunning && event.changeType === ICloudAccountChangeType.SIGN_IN)) {
                     yield* stopEngineUnlocked();
                     yield* stateStore.update({ stateSerialization: null });

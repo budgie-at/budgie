@@ -44,6 +44,7 @@ export const SettingsEntityTable = sqliteTable(
         lastCloudBackupAt: int('last_cloud_backup_at', { mode: 'timestamp' }),
         cloudSyncEnabled: int('cloud_sync_enabled', { mode: 'boolean' }).notNull().default(true),
         lineageId: text('lineage_id'),
+        cloudUserRecordName: text('cloud_user_record_name'),
         householdShareEverything: int('household_share_everything', { mode: 'boolean' }).notNull().default(false)
     })
 );
