@@ -60,7 +60,7 @@ export const CreateEnableBankingAccount = ({ connectAccountId, savedApplicationI
     const { applicationId, parsedApplicationId, isKeyPicked, handleApplicationIdChange, handlePickKey, savePickedKey } =
         useEnableBankingKeyState(run, connectApplicationId);
 
-    const { loadBanks, beginAuthorization } = useEnableBankingBankLoading(setStep, savePickedKey, connectAccountId);
+    const { loadBanks, beginAuthorization } = useEnableBankingBankLoading(connectAccountId);
 
     const {
         accountSelection,
@@ -98,6 +98,12 @@ export const CreateEnableBankingAccount = ({ connectAccountId, savedApplicationI
         }
     );
 
+    const startAuthorization = (applicationId: string, bank: EnableBankingBankInterface) =>
+        Effect.gen(function* () {
+            setStep(EnableBankingSetupStepEnum.WAITING);
+            yield* beginAuthorization(applicationId, bank);
+        }).pipe(Effect.tapError(() => Effect.sync(() => void setStep(EnableBankingSetupStepEnum.BANK))));
+
     const handleContinue = () => {
         if (!isDefined(parsedApplicationId)) {
             return;
@@ -105,16 +111,21 @@ export const CreateEnableBankingAccount = ({ connectAccountId, savedApplicationI
 
         void run(
             Effect.gen(function* () {
-                const listedBanks = yield* loadBanks(parsedApplicationId);
+                const listedBanks = yield* Effect.flatMap(savePickedKey(parsedApplicationId), () => loadBanks(parsedApplicationId)).pipe(
+                    Effect.tapError(() =>
+                        Effect.sync(() => {
+                            setStep(EnableBankingSetupStepEnum.KEY);
+                        })
+                    )
+                );
+                const regionCode = getDeviceRegionCode();
                 const localPreselectedBank = isDefined(preselectedBankName)
-                    ? listedBanks.find(
-                          bank => bank.isSupported && bank.country === getDeviceRegionCode() && isBankNamed(bank, preselectedBankName)
-                      )
+                    ? listedBanks.find(bank => bank.isSupported && bank.country === regionCode && isBankNamed(bank, preselectedBankName))
                     : null;
                 setBanks(listedBanks);
 
                 if (isDefined(localPreselectedBank)) {
-                    yield* beginAuthorization(parsedApplicationId, localPreselectedBank);
+                    yield* startAuthorization(parsedApplicationId, localPreselectedBank);
                 } else {
                     setStep(EnableBankingSetupStepEnum.BANK);
                 }
@@ -135,7 +146,7 @@ export const CreateEnableBankingAccount = ({ connectAccountId, savedApplicationI
             return;
         }
 
-        void run(beginAuthorization(parsedApplicationId, bank));
+        void run(startAuthorization(parsedApplicationId, bank));
     };
 
     const handleChooseAnotherBank = () => {
