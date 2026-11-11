@@ -176,6 +176,42 @@ describe('cloud-sync/share-accounts', () => {
             })
         );
 
+        it.effect('moves every account of a batch share to the household and back on a batch unshare', () =>
+            Effect.gen(function* () {
+                const { deviceB, clouds } = yield* startHousehold(SyncZoneRoleEnum.PARTICIPANT);
+                const { joint, wallet } = yield* seedJointHistory;
+                const accountIds = [joint.id, wallet.id];
+
+                yield* uploadDevice(testDb, clouds);
+                yield* onShareDevice(
+                    testDb,
+                    Effect.flatMap(HouseholdShareService, service => service.shareAccounts(accountIds))
+                );
+                yield* uploadDevice(testDb, clouds);
+
+                expectNoRejections(yield* pullHousehold(deviceB, clouds, MEMBER_DEVICE));
+                yield* expectTitleZones(deviceB, 'accounts', [
+                    ['Joint', HOUSEHOLD_SYNC_ZONE],
+                    ['Wallet', HOUSEHOLD_SYNC_ZONE]
+                ]);
+                expect(yield* countRows(deviceB, `transactions WHERE sync_zone = '${HOUSEHOLD_SYNC_ZONE}'`)).toBe(3);
+                yield* expectLedgers(testDb, deviceB);
+
+                yield* onShareDevice(
+                    testDb,
+                    Effect.flatMap(HouseholdShareService, service => service.unshareAccounts(accountIds))
+                );
+                yield* uploadDevice(testDb, clouds);
+
+                expectNoRejections(yield* pullHousehold(deviceB, clouds, MEMBER_DEVICE));
+                expect(yield* countRows(deviceB, `accounts`)).toBe(0);
+                expect(yield* countRows(testDb, `accounts WHERE sync_zone = '${PERSONAL_SYNC_ZONE}'`)).toBe(2);
+                expect(yield* countRows(testDb, `transactions WHERE sync_zone = '${PERSONAL_SYNC_ZONE}'`)).toBe(3);
+                expect(yield* countRows(testDb, `sync_outbox`)).toBe(0);
+                yield* expectLedgers(testDb, deviceB);
+            })
+        );
+
         it.effect.each(['upload', 'reverse', 'shuffled'] as const)(
             'converges on the owner second device when the move is delivered in %s order, split and duplicated',
             order =>

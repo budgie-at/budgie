@@ -361,6 +361,17 @@ export class HouseholdShareService extends Context.Service<HouseholdShareService
             }
         });
 
+        const shareAccounts = Effect.fn('HouseholdShareService.shareAccounts')(function* (accountIds: readonly number[]) {
+            yield* requireHousehold();
+            yield* moveAccounts(accountIds, PERSONAL_SYNC_ZONE, HOUSEHOLD_SYNC_ZONE, null);
+        });
+
+        const unshareAccounts = Effect.fn('HouseholdShareService.unshareAccounts')(function* (accountIds: readonly number[]) {
+            const sharedIds = yield* findSharedAccountIds;
+
+            yield* moveAccounts(accountIds, HOUSEHOLD_SYNC_ZONE, PERSONAL_SYNC_ZONE, new Set(sharedIds));
+        });
+
         const resolveShareState = (syncZone: string | undefined, id: number, sharedIds: readonly number[]) => {
             if (syncZone !== HOUSEHOLD_SYNC_ZONE) {
                 return HouseholdShareStateEnum.PRIVATE;
@@ -401,15 +412,10 @@ export class HouseholdShareService extends Context.Service<HouseholdShareService
             findPrivateSideOwnerName: repository.findPrivateSideOwnerName,
             findSharedAccountIds,
             findSharedBudgetIds,
-            shareAccount: Effect.fn('HouseholdShareService.shareAccount')(function* (accountId: number) {
-                yield* requireHousehold();
-                yield* moveAccounts([accountId], PERSONAL_SYNC_ZONE, HOUSEHOLD_SYNC_ZONE, null);
-            }),
-            unshareAccount: Effect.fn('HouseholdShareService.unshareAccount')(function* (accountId: number) {
-                const sharedIds = yield* findSharedAccountIds;
-
-                yield* moveAccounts([accountId], HOUSEHOLD_SYNC_ZONE, PERSONAL_SYNC_ZONE, new Set(sharedIds));
-            }),
+            shareAccount: (accountId: number) => shareAccounts([accountId]),
+            unshareAccount: (accountId: number) => unshareAccounts([accountId]),
+            shareAccounts,
+            unshareAccounts,
             setShareEverything: Effect.fn('HouseholdShareService.setShareEverything')(function* (isEnabled: boolean) {
                 if (isEnabled) {
                     yield* requireHousehold();
