@@ -85,12 +85,11 @@ export class AppResetService extends Context.Service<AppResetService>()('@budgie
                 yield* databaseLifecycleService.run(
                     DatabaseLifecycleOperationEnum.RESET,
                     runAllAndFailWithFirstError([
-                        runPrimaryResetSteps(),
+                        runPrimaryResetSteps().pipe(Effect.andThen(authService.persistPin(null))),
                         deleteCacheContents(),
                         Effect.sync(() => {
                             patternCacheService.invalidate();
                         }),
-                        authService.persistPin(null),
                         siriCatalogService.clear()
                     ])
                 );
