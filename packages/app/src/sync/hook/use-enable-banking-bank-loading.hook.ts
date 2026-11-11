@@ -16,7 +16,10 @@ export const useEnableBankingBankLoading = (connectAccountId: number | null) => 
     const { t } = useLingui();
     const explainError = useExplainEnableBankingError();
 
-    const loadBanks = <Error, Requirements>(applicationId: string, saveKey: Effect.Effect<void, Error, Requirements>) =>
+    const loadBanks = <SaveKeyError, SaveKeyRequirements>(
+        applicationId: string,
+        saveKey: Effect.Effect<void, SaveKeyError, SaveKeyRequirements>
+    ) =>
         Effect.flatMap(saveKey, () =>
             Effect.flatMap(EnableBankingSyncService, service => service.listBanks(applicationId)).pipe(
                 Effect.mapError(error =>

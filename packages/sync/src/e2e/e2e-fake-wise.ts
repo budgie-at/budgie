@@ -1,4 +1,5 @@
-export const WISE_BANK = 'Wise';
+import { WISE_ASPSP_NAME } from '../enable-banking/constant/wise-aspsp-name.constant';
+
 export const WISE_CODE = 'e2e-wise-code';
 
 const WISE_SESSION = 'e2e-wise-session';
@@ -14,7 +15,7 @@ export const buildWiseAuthorizedSession = (validUntil: string) => ({
         { account_id: { iban: 'BE71096123456769' }, cash_account_type: 'CACC', currency: 'EUR', identification_hash: 'e2e-hash-wise-eur' },
         { cash_account_type: 'CACC', currency: 'USD', identification_hash: 'e2e-hash-wise-usd' }
     ],
-    aspsp: { name: WISE_BANK, country: 'GB' },
+    aspsp: { name: WISE_ASPSP_NAME, country: 'GB' },
     access: { valid_until: validUntil }
 });
 

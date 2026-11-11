@@ -1,8 +1,9 @@
 import { isDefined } from '@rnw-community/shared';
 
 import { HTTP_STATUS_UNAUTHORIZED } from '../core/constant/http-status.constant';
+import { WISE_ASPSP_NAME } from '../enable-banking/constant/wise-aspsp-name.constant';
 
-import { buildWiseAuthorizedSession, buildWiseRoutes, WISE_BANK, WISE_CODE } from './e2e-fake-wise';
+import { buildWiseAuthorizedSession, buildWiseRoutes, WISE_CODE } from './e2e-fake-wise';
 
 import type { ClientInfo, StatementItem } from '@liaugust/monobank-sdk';
 
@@ -24,7 +25,7 @@ const CONNECT_SESSION = 'e2e-connect-session';
 const CONSENT_VALIDITY_SECONDS = NINETY_DAYS * 24 * 60 * 60;
 const AUTH_CODE_BY_BANK = new Map([
     [CONNECT_BANK, CONNECT_CODE],
-    [WISE_BANK, WISE_CODE]
+    [WISE_ASPSP_NAME, WISE_CODE]
 ]);
 
 const consentValidUntil = (): string => new Date(Date.now() + (NINETY_DAYS - 1) * MILLISECONDS_PER_DAY).toISOString();
@@ -53,9 +54,9 @@ const ENABLE_BANKING_ROUTES: ReadonlyArray<readonly [string, RegExp, FakeHandler
                     maximum_consent_validity: CONSENT_VALIDITY_SECONDS,
                     beta: false
                 })),
-                { name: WISE_BANK, country: 'GB', maximum_consent_validity: CONSENT_VALIDITY_SECONDS, beta: false },
+                { name: WISE_ASPSP_NAME, country: 'GB', maximum_consent_validity: CONSENT_VALIDITY_SECONDS, beta: false },
                 {
-                    name: WISE_BANK,
+                    name: WISE_ASPSP_NAME,
                     country: 'DE',
                     maximum_consent_validity: CONSENT_VALIDITY_SECONDS,
                     beta: false,
