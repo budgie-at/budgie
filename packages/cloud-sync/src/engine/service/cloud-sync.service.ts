@@ -5,6 +5,7 @@ import * as Effect from 'effect/Effect';
 import * as FiberSet from 'effect/FiberSet';
 import * as Layer from 'effect/Layer';
 import * as Ref from 'effect/Ref';
+import * as Semaphore from 'effect/Semaphore';
 import * as Stream from 'effect/Stream';
 
 import { isPositiveNumber } from '@rnw-community/shared';
@@ -45,6 +46,7 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
         const { locked } = state;
         const { drain } = drainService;
         const consumers = yield* FiberSet.make();
+        const lifecycle = yield* Semaphore.make(1);
         const { reconfigure, reconfigureUnlocked, stopEngineUnlocked } = engineService;
         const { discoverHousehold, finishHouseholdCleanupUnlocked } = householdService;
 
@@ -128,8 +130,14 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
                 yield* FiberSet.clear(consumers).pipe(Effect.andThen(locked(stopEngineUnlocked())), Effect.uninterruptible);
 
                 return true;
-            }),
+            }, lifecycle.withPermits(1)),
             start: Effect.fn('CloudSyncService.start')(function* () {
+                const consumerCount = yield* FiberSet.size(consumers);
+
+                if (isPositiveNumber(consumerCount)) {
+                    return;
+                }
+
                 yield* state.publishStoredOwnerName();
                 yield* forkConsumer(transport.events, dispatchEvent);
                 yield* forkConsumer(
@@ -159,7 +167,7 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
                 yield* locked(finishHouseholdCleanupUnlocked());
                 yield* reconfigure;
                 yield* discoverHousehold;
-            })
+            }, lifecycle.withPermits(1))
         };
     })
 }) {
