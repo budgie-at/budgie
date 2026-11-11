@@ -9,6 +9,7 @@ import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { DATABASE_DIRECTORY } from '../../@generic/drizzle/constant/database-directory.constant';
 import { DB_NAME } from '../../@generic/drizzle/constant/db-name.constant';
+import { REPLACED_DATABASE_MARKER } from '../../@generic/drizzle/constant/replaced-database-marker.constant';
 import { DatabaseLifecycleOperationEnum } from '../../@generic/drizzle/enum/database-lifecycle-operation.enum';
 import { UnsupportedBackupError } from '../../@generic/drizzle/error/unsupported-backup.error';
 import { DatabaseLifecycleService } from '../../@generic/drizzle/service/database-lifecycle.service';
@@ -100,7 +101,7 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
         const replaceFromUri = Effect.fn('DatabaseImportService.replaceFromUri')(function* (sourceUri: string) {
             const destinationPath = new File(DATABASE_DIRECTORY, DB_NAME).uri;
             const movedAsideAt = yield* Clock.currentTimeMillis;
-            const replacedPath = `${destinationPath}.replaced-${movedAsideAt}`;
+            const replacedPath = `${destinationPath}${REPLACED_DATABASE_MARKER}${movedAsideAt}`;
             const tempPath = `${Paths.cache.uri}/import-temp.db`;
 
             yield* aiStorageReplacementService.pauseLongLivedRuntime();

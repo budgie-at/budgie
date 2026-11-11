@@ -7,11 +7,14 @@ import * as Exit from 'effect/Exit';
 import { identity } from 'effect/Function';
 import * as Layer from 'effect/Layer';
 import * as Scope from 'effect/Scope';
+import { File } from 'expo-file-system';
 
-import { getErrorMessage } from '@rnw-community/shared';
+import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { recoverInterruptedRestore } from '../../../cloud-backup/utils/recover-interrupted-restore.util';
+import { DATABASE_DIRECTORY } from '../constant/database-directory.constant';
 import { DB_NAME } from '../constant/db-name.constant';
+import { REPLACED_DATABASE_MARKER } from '../constant/replaced-database-marker.constant';
 import { DatabaseOpenError } from '../error/database-open.error';
 import { openSqliteClient } from '../utils/open-sqlite-client.util';
 import { readDatabaseKey } from '../utils/read-database-key.util';
@@ -40,7 +43,44 @@ export class DatabaseConnectionService extends Context.Service<DatabaseConnectio
                 { discard: true }
             ).pipe(Effect.mapError(cause => DatabaseOpenError.make({ cause })));
 
+        const replacedDatabasePrefix = `${DB_NAME}${REPLACED_DATABASE_MARKER}`;
+
+        const recoverReplacedDatabase = Effect.gen(function* () {
+            if (new File(DATABASE_DIRECTORY, DB_NAME).exists || !DATABASE_DIRECTORY.exists) {
+                return;
+            }
+
+            const newestMovedAt = DATABASE_DIRECTORY.list()
+                .map(entry => entry.name)
+                .filter(name => name.startsWith(replacedDatabasePrefix))
+                .map(name => name.slice(replacedDatabasePrefix.length))
+                .filter(movedAt => /^\d+$/u.test(movedAt))
+                .map(Number)
+                .sort((left, right) => right - left)
+                .at(0);
+
+            if (!isDefined(newestMovedAt)) {
+                return;
+            }
+
+            yield* Effect.forEach(
+                ['-wal', '-shm', ''],
+                suffix => {
+                    const movedAside = new File(DATABASE_DIRECTORY, `${replacedDatabasePrefix}${newestMovedAt}${suffix}`);
+
+                    return movedAside.exists
+                        ? Effect.tryPromise({
+                              try: () => movedAside.move(new File(DATABASE_DIRECTORY, `${DB_NAME}${suffix}`), { overwrite: true }),
+                              catch: cause => DatabaseOpenError.make({ cause })
+                          })
+                        : Effect.void;
+                },
+                { discard: true }
+            );
+        }).pipe(Effect.catchDefect(cause => Effect.fail(DatabaseOpenError.make({ cause }))));
+
         yield* recoverInterruptedRestore.pipe(Effect.catchDefect(defect => Effect.logError(defect)));
+        yield* recoverReplacedDatabase;
 
         const databaseKey = yield* readDatabaseKey;
         const openConnection = openSqliteClient(DB_NAME, databaseKey).pipe(Scope.provide(scope));
