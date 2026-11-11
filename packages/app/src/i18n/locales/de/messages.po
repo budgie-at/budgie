@@ -1106,6 +1106,10 @@ msgstr "+{hiddenCategoryCount} weitere"
 msgid "+{incomeAmount} / month"
 msgstr "+{incomeAmount} / Monat"
 
+#: src/account/component/family-section-header/family-section-header.tsx
+msgid "<0>Paused</0> · not in your total"
+msgstr "<0>Pausiert</0> · nicht in deinem Gesamtbetrag"
+
 #: src/budget/components/budget-limit-row/budget-limit-row.tsx
 msgid "−{carriedLabel} carried"
 msgstr "−{carriedLabel} übertragen"
@@ -7089,6 +7093,10 @@ msgstr "Öffne die Inzhur-App"
 msgid "Open the Settings app and sign in to your Apple Account. Backups from your iPhone and iPad appear here."
 msgstr "Öffne die Einstellungen-App und melde dich mit deinem Apple Account an. Sicherungen von iPhone und iPad erscheinen hier."
 
+#: src/account/component/family-section-header/family-section-header.tsx
+msgid "Opens Family settings"
+msgstr "Öffnet die Familieneinstellungen"
+
 #: src/category/components/category-form-hero-icon/category-form-hero-icon.tsx
 msgid "Opens the icon picker"
 msgstr "Öffnet die Symbolauswahl"
@@ -7393,6 +7401,10 @@ msgstr "Pausieren"
 msgid "Paused"
 msgstr "Pausiert"
 
+#: src/account/component/family-section-header/family-section-header.tsx
+msgid "Paused, balances may be out of date. Sign in to iCloud to update"
+msgstr "Pausiert, Salden sind möglicherweise veraltet. Melde dich bei iCloud an, um sie zu aktualisieren"
+
 #: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
 msgid "Paused: a different Apple Account is signed in"
 msgstr "Pausiert: Ein anderer Apple Account ist angemeldet"
@@ -7401,7 +7413,6 @@ msgstr "Pausiert: Ein anderer Apple Account ist angemeldet"
 msgid "Paused: no Wi-Fi"
 msgstr "Pausiert: kein WLAN"
 
-#: src/account/component/family-section-header/family-section-header.tsx
 #: src/household/component/family-row/family-row.tsx
 #: src/household/utils/get-household-summary-labels.util.ts
 msgid "Paused: sign in to iCloud"
@@ -8724,6 +8735,14 @@ msgstr "Von einem Familienmitglied geteilt"
 #: src/category/components/category-family-section/category-family-section.tsx
 msgid "Shared with family"
 msgstr "Mit Familie geteilt"
+
+#: src/account/component/family-section-header/family-section-header.tsx
+msgid "Shared with you"
+msgstr "Mit dir geteilt"
+
+#: src/account/component/family-section-header/family-section-header.tsx
+msgid "Shared with you · not in your total"
+msgstr "Mit dir geteilt · nicht in deinem Gesamtbetrag"
 
 #: src/household/utils/get-family-labels.util.ts
 msgid "Shared with your family"
