@@ -97,4 +97,26 @@ describe('categorize inbox history', () => {
         expect(buckets.map(bucket => bucket.count)).toEqual([0, 1, 0, 0, 0, 1]);
         expect(getCategorizeInboxMonthlyCounts([])).toEqual([]);
     });
+    it('clamps to the twelve months ending at the last payment and ignores earlier payments', () => {
+        const buckets = getCategorizeInboxMonthlyCounts(
+            historyRows([
+                new Date(2024, 0, 10, 12),
+                new Date(2024, 2, 5, 12),
+                new Date(2024, 2, 20, 12),
+                new Date(2025, 0, 31, 12),
+                new Date(2025, 1, 3, 12),
+                new Date(2025, 1, 27, 12),
+                new Date(2025, 5, 15, 12),
+                new Date(2026, 0, 2, 12),
+                new Date(2026, 0, 14, 12),
+                new Date(2026, 0, 30, 12)
+            ])
+        );
+        expect(buckets).toHaveLength(12);
+        expect(buckets[0]?.month.getFullYear()).toBe(2025);
+        expect(buckets[0]?.month.getMonth()).toBe(1);
+        expect(buckets.at(-1)?.month.getFullYear()).toBe(2026);
+        expect(buckets.at(-1)?.month.getMonth()).toBe(0);
+        expect(buckets.map(bucket => bucket.count)).toEqual([2, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 3]);
+    });
 });
