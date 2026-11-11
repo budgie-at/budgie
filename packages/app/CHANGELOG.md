@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.175.2](https://github.com/budgie-at/budgie/compare/v6.175.1...v6.175.2) (2026-11-11)
+
+### Bug Fixes
+
+* **app:** restore the database left in budgie.db.bak by an interrupted PIN change ([#2171](https://github.com/budgie-at/budgie/issues/2171)) ([c328792](https://github.com/budgie-at/budgie/commit/c328792444378bb45a5a157ab740dcc6ef17423a))
+
+
 ## [6.175.1](https://github.com/budgie-at/budgie/compare/v6.175.0...v6.175.1) (2026-11-11)
 
 **Note:** Version bump only for package @budgie-at/app
