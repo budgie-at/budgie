@@ -1,9 +1,11 @@
 import { WalletCaptureReviewReasonEnum } from '@app/wallet-capture/enum/wallet-capture-review-reason.enum';
 import { WalletCaptureImportService } from '@app/wallet-capture/service/wallet-capture-import.service';
 import {
+    AccountEntityTable,
     CategorySourceEnum,
     CurrencyEnum,
     ExternalSourceEnum,
+    SettingsEntityTable,
     TransactionConsolidationTypeEnum,
     TransactionEntityTable
 } from '@budgie/contracts';
@@ -18,6 +20,7 @@ import { buildMonobank } from '../../harness/monobank/build-monobank';
 import { monobankStub } from '../../harness/monobank/monobank-stub';
 import { testDb } from '../../harness/scenario/test-db';
 import { TestLayer } from '../../harness/scenario/test-runtime';
+import { seed } from '../../harness/seed/seed';
 import { walletCaptureNativeStub } from '../../harness/wallet-capture/wallet-capture-app-intents.stub';
 import { walletCaptureSeedMonobankAccount } from '../../harness/wallet-capture/wallet-capture-bank-account.harness';
 import { walletCaptureSeedHistoricalRate } from '../../harness/wallet-capture/wallet-capture-historical-rate.harness';
@@ -167,6 +170,26 @@ describe('wallet-capture/bank-consolidation', () => {
             yield* consolidate();
             yield* expectMerged();
         }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect.each(['"monobank"', '"monobank Black"', '"Black •••• 4242"'])(
+        'merges an unpinned capture from the Wallet card %s into the Monobank row instead of booking it on the default account',
+        cardName =>
+            Effect.gen(function* () {
+                const account = yield* walletCaptureSeedMonobankAccount(SYNC_FROM);
+                const cash = yield* seed.account({ title: 'Cash', instrumentId: account.instrumentId });
+                yield* testDb
+                    .update(AccountEntityTable)
+                    .set({ title: 'Monobank Black •4242' })
+                    .where(eq(AccountEntityTable.id, account.id));
+                yield* testDb.update(SettingsEntityTable).set({ defaultAccountId: cash.id });
+
+                expect(yield* drainCapture(account.id, CAPTURE_ID, { accountId: 'null', cardName })).toEqual([]);
+
+                yield* syncBankExpense(BANK_AMOUNT);
+                yield* consolidate();
+                yield* expectMerged();
+            }).pipe(Effect.provide(TestLayer))
     );
 
     it.effect('merges a EUR capture converted at 44.5 into a UAH bank row within 3 percent of the converted amount', () =>
