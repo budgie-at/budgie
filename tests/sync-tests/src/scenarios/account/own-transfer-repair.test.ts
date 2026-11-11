@@ -7,20 +7,35 @@ import {
     InstrumentTypeEnum,
     TransactionConsolidationTypeEnum,
     TransactionEntityTable,
+    TransactionEntryEntityTable,
     TransactionTypeEnum,
     TransactionUpdatedByEnum
 } from '@budgie/contracts';
 import { AccountBalanceIncrementalService } from '@budgie/ledger';
-import { OwnTransferRepairService } from '@budgie/sync';
+import { EnableBankingSyncService, OwnTransferRepairService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { ownTransferDetector } from '../../../../../packages/sync/src/core/detector/own-transfer.detector';
 import { OwnTransferRepository } from '../../../../../packages/sync/src/core/repository/own-transfer.repository';
-import { explainQueryPlan, seed, testDb, TestLayer, testQueryService } from '../../harness';
+import {
+    buildEnableBankingToken,
+    buildEnableBankingTransaction,
+    enableBankingDaysAgo,
+    enableBankingStub,
+    explainQueryPlan,
+    fetchEnableBankingTransactions,
+    makeEnableBankingSyncStale,
+    seed,
+    seedEnableBankingAccount,
+    seedExchangeRate,
+    testDb,
+    TestLayer,
+    testQueryService
+} from '../../harness';
 
 const operatedAt = new Date('2026-05-01T12:00:00Z');
 const fixture = Effect.gen(function* () {
@@ -44,10 +59,11 @@ const addIncome = (accountId: number) =>
 const findUntrackedAccounts = testDb.query.AccountEntityTable.findMany({ where: { externalId: 'untracked-own-account' } });
 const expectUntrackedTransfer = (transactionId: number, accountId: number) =>
     Effect.gen(function* () {
-        const [untracked] = yield* findUntrackedAccounts;
+        const untrackedIds = (yield* findUntrackedAccounts).map(untracked => untracked.id);
         const transaction = yield* testQueryService.findTransactionById(transactionId);
         expect(transaction.type).toBe(TransactionTypeEnum.TRANSFER);
-        expect([transaction.fromAccountId, transaction.toAccountId]).toEqual(expect.arrayContaining([accountId, untracked.id]));
+        expect(transaction.fromAccountId === accountId ? untrackedIds : [accountId]).toContain(transaction.toAccountId);
+        expect(transaction.toAccountId === accountId ? untrackedIds : [accountId]).toContain(transaction.fromAccountId);
     });
 const expectExpense = (transactionId: number) =>
     Effect.gen(function* () {
@@ -550,6 +566,150 @@ describe('account/own-transfer-repair', () => {
             yield* seed.updateTransaction(income.id, { title: 'На свою картку', externalSource: ExternalSourceEnum.MONOBANK });
             yield* expectUnpaired(expense.id, income.id);
             expect(yield* findUntrackedAccounts).toEqual([]);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect.each([
+        { title: 'Enable Banking legs 3 days apart', source: ExternalSourceEnum.ENABLE_BANKING, days: 3, merged: true },
+        { title: 'Enable Banking legs 8 days apart', source: ExternalSourceEnum.ENABLE_BANKING, days: 8, merged: false },
+        { title: 'Monobank legs 3 days apart', source: ExternalSourceEnum.MONOBANK, days: 3, merged: false },
+        { title: 'different amounts', source: ExternalSourceEnum.ENABLE_BANKING, days: 3, merged: false, received: 49_000_000 },
+        { title: 'different instruments', source: ExternalSourceEnum.ENABLE_BANKING, days: 3, merged: false, currency: 'USD' },
+        { title: 'the same account', source: ExternalSourceEnum.ENABLE_BANKING, days: 3, merged: false, sameAccount: true },
+        { title: 'a competing counterpart', source: ExternalSourceEnum.ENABLE_BANKING, days: 3, merged: false, competitor: true }
+    ])('untracked own transfers with $title merged: $merged', ({ source, days, merged, received, currency, sameAccount, competitor }) =>
+        Effect.gen(function* () {
+            const repair = yield* OwnTransferRepairService;
+            const balances = yield* AccountBalanceRepository;
+            const sender = yield* seed.account();
+            const instrument = isDefined(currency) ? yield* seed.instrument({ code: currency }) : null;
+            if (isDefined(instrument)) {
+                yield* seedExchangeRate(instrument.id, sender.instrumentId, 40);
+            }
+            const receiver =
+                sameAccount === true ? sender : yield* seed.account({ ...(isDefined(instrument) && { instrumentId: instrument.id }) });
+            const seedLeg = (type: TransactionTypeEnum, accountId: number, offsetDays: number, amount: number) =>
+                Effect.gen(function* () {
+                    const legInput = {
+                        operatedAt: new Date(operatedAt.getTime() + offsetDays * 86_400_000),
+                        externalId: `${type}-${offsetDays}`
+                    };
+                    const leg =
+                        type === TransactionTypeEnum.INCOME
+                            ? yield* seed.bankPairIncome(legInput, { accountId, amount })
+                            : yield* seed.bankPairExpense(legInput, { accountId, amount });
+                    yield* seed.updateTransaction(leg.id, { title: 'Eigenes Konto', externalSource: source });
+
+                    return leg;
+                });
+            const expense = yield* seedLeg(TransactionTypeEnum.EXPENSE, sender.id, 0, 50_000_000);
+            const income = yield* seedLeg(TransactionTypeEnum.INCOME, receiver.id, days, received ?? 50_000_000);
+            if (competitor === true) {
+                yield* seedLeg(TransactionTypeEnum.EXPENSE, sender.id, 1, 50_000_000);
+            }
+            const before = yield* balances.getLedgerBalances([sender.id, receiver.id]);
+            yield* repair.repair();
+            expect(yield* repair.repair()).toBe(0);
+            expect(yield* balances.getLedgerBalances([sender.id, receiver.id])).toEqual(before);
+            if (merged) {
+                yield* expectPair(expense.id, income.id, sender.id, receiver.id);
+                const [untracked] = yield* findUntrackedAccounts;
+                expect((yield* balances.getByAccountIds([untracked.id])).map(balance => balance.amount)).toEqual([0]);
+            } else {
+                yield* expectUntrackedTransfer(expense.id, sender.id);
+                yield* expectUntrackedTransfer(income.id, receiver.id);
+                expect(yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toEqual([]);
+            }
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('merges untracked legs held on two untracked accounts of one instrument and refreshes both', () =>
+        Effect.gen(function* () {
+            const repair = yield* OwnTransferRepairService;
+            const balances = yield* AccountBalanceRepository;
+            const sender = yield* seed.account();
+            const receiver = yield* seed.account();
+            const incomeAt = new Date(operatedAt.getTime() + 3 * 86_400_000);
+            const expense = yield* seed.bankPairExpense(
+                { operatedAt, externalId: 'out-leg' },
+                { accountId: sender.id, amount: 50_000_000 }
+            );
+            yield* seed.updateTransaction(expense.id, { title: 'Eigenes Konto', externalSource: ExternalSourceEnum.ENABLE_BANKING });
+            expect(yield* repair.repair({ operatedAtFrom: operatedAt, operatedAtTo: operatedAt, transactionIds: [expense.id] })).toBe(1);
+            const [first] = yield* findUntrackedAccounts;
+            const second = yield* seed.account({
+                externalId: first.externalId ?? '',
+                instrumentId: first.instrumentId,
+                isActive: false,
+                includeInNetWorth: false
+            });
+            yield* testDb
+                .update(TransactionEntryEntityTable)
+                .set({ accountId: second.id })
+                .where(and(eq(TransactionEntryEntityTable.transactionId, expense.id), eq(TransactionEntryEntityTable.accountId, first.id)));
+            yield* testDb.update(TransactionEntityTable).set({ toAccountId: second.id }).where(eq(TransactionEntityTable.id, expense.id));
+            yield* (yield* AccountBalanceIncrementalService).updateBalancesByAccountIds([first.id, second.id]);
+            const income = yield* seed.bankPairIncome(
+                { operatedAt: incomeAt, externalId: 'in-leg' },
+                { accountId: receiver.id, amount: 50_000_000 }
+            );
+            yield* seed.updateTransaction(income.id, { title: 'Eigenes Konto', externalSource: ExternalSourceEnum.ENABLE_BANKING });
+            yield* repair.repair({ operatedAtFrom: incomeAt, operatedAtTo: incomeAt, transactionIds: [income.id] });
+            yield* expectPair(expense.id, income.id, sender.id, receiver.id);
+            expect((yield* balances.getByAccountIds([first.id, second.id])).map(balance => balance.amount)).toEqual([0, 0]);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('merges untracked Enable Banking legs from a scoped repair and keeps them merged after a re-sync', () =>
+        Effect.gen(function* () {
+            const repair = yield* OwnTransferRepairService;
+            const service = yield* EnableBankingSyncService;
+            const token = buildEnableBankingToken('session-own');
+            const sender = yield* seedEnableBankingAccount({ hash: 'hash-sender', token });
+            const receiver = yield* seedEnableBankingAccount({ hash: 'hash-receiver', token });
+            enableBankingStub.session('session-own', [
+                { uid: 'uid-sender', hash: 'hash-sender' },
+                { uid: 'uid-receiver', hash: 'hash-receiver' }
+            ]);
+            const stubLeg = (uid: string, indicator: string, daysAgo: number) => {
+                enableBankingStub.balances(uid);
+                enableBankingStub.transactions(uid, () => ({
+                    transactions: [
+                        buildEnableBankingTransaction({
+                            entry_reference: `${uid}-own`,
+                            transaction_amount: { amount: '500.00', currency: 'EUR' },
+                            credit_debit_indicator: indicator,
+                            booking_date: enableBankingDaysAgo(daysAgo),
+                            creditor: null,
+                            remittance_information: ['Eigenes Konto']
+                        })
+                    ]
+                }));
+            };
+            stubLeg('uid-sender', 'DBIT', 4);
+            stubLeg('uid-receiver', 'CRDT', 1);
+            const syncAndRepair = Effect.gen(function* () {
+                yield* makeEnableBankingSyncStale(sender.sync.id);
+                yield* makeEnableBankingSyncStale(receiver.sync.id);
+                yield* service.sync();
+                for (const transaction of yield* fetchEnableBankingTransactions()) {
+                    yield* repair.repair({
+                        operatedAtFrom: transaction.operatedAt,
+                        operatedAtTo: transaction.operatedAt,
+                        transactionIds: [transaction.id]
+                    });
+                }
+
+                return yield* fetchEnableBankingTransactions();
+            });
+            const synced = yield* syncAndRepair;
+            const [canonical] = yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
+            expect(canonical.fromAccountId).toBe(sender.account.id);
+            expect(canonical.toAccountId).toBe(receiver.account.id);
+            expect(synced.map(transaction => transaction.consolidationParentTransactionId)).toEqual([canonical.id, canonical.id]);
+            expect(yield* syncAndRepair).toEqual(synced);
+            expect(yield* repair.repair()).toBe(0);
+            expect(yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toHaveLength(1);
         }).pipe(Effect.provide(TestLayer))
     );
 });
