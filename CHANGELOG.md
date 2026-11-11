@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.175.0](https://github.com/budgie-at/budgie/compare/v6.174.2...v6.175.0) (2026-11-11)
+
+### Features
+
+* add android ci, farm e2e and the fixes that block android ([#2165](https://github.com/budgie-at/budgie/issues/2165)) ([ef34804](https://github.com/budgie-at/budgie/commit/ef348040d33317a79e96e4b95a1cb56d44a2a4be)), closes [#2140](https://github.com/budgie-at/budgie/issues/2140) [#2157](https://github.com/budgie-at/budgie/issues/2157) [#2137](https://github.com/budgie-at/budgie/issues/2137) [#2136](https://github.com/budgie-at/budgie/issues/2136) [#2138](https://github.com/budgie-at/budgie/issues/2138) [#2139](https://github.com/budgie-at/budgie/issues/2139) [#2137](https://github.com/budgie-at/budgie/issues/2137)
+
+
 ## [6.174.2](https://github.com/budgie-at/budgie/compare/v6.174.1...v6.174.2) (2026-11-11)
 
 ### Bug Fixes
