@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.173.26](https://github.com/budgie-at/budgie/compare/v6.173.25...v6.173.26) (2026-11-11)
+
+### Bug Fixes
+
+* **sync:** tighten own-transfer card matching ([#2124](https://github.com/budgie-at/budgie/issues/2124)) ([533929f](https://github.com/budgie-at/budgie/commit/533929faa5cad81272259c86188e2c0976e35021))
+
+
 ## [6.173.25](https://github.com/budgie-at/budgie/compare/v6.173.24...v6.173.25) (2026-11-11)
 
 **Note:** Version bump only for package @budgie-at/root
