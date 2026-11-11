@@ -232,7 +232,9 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
     });
 
     const parseFile = Effect.fnUntraced(function* (uri: string) {
-        const { client, bankAccounts } = yield* definition.parseFile(uri);
+        const { client, bankAccounts } = isDefined(definition.parseFile)
+            ? yield* definition.parseFile(uri)
+            : { client: { getAccounts: () => [], getTransactions: () => [] }, bankAccounts: [] };
 
         return { client, bankAccounts: yield* syncService.excludeExternalAccounts(bankAccounts) };
     });

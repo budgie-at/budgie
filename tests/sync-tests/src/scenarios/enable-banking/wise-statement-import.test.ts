@@ -49,8 +49,8 @@ describe('enable-banking/wise-statement-import', () => {
             const eurResult = yield* importStatement(eurAccount, WISE_STATEMENT.EUR);
             const usdResult = yield* importStatement(eurAccount, WISE_STATEMENT.USD);
 
-            expect(eurResult).toMatchObject({ accountCount: 1, newTransactionCount: 6, skippedTransactionCount: 0 });
-            expect(usdResult).toMatchObject({ accountCount: 1, newTransactionCount: 3, skippedTransactionCount: 0 });
+            expect(eurResult).toMatchObject({ accountCount: 2, newTransactionCount: 6, skippedTransactionCount: 0 });
+            expect(usdResult).toMatchObject({ accountCount: 2, newTransactionCount: 3, skippedTransactionCount: 0 });
             expect(yield* fetchWiseExternalIds(eurAccount)).toEqual([
                 'BALANCE-1000005:in',
                 'CARD-1000002',
@@ -72,8 +72,8 @@ describe('enable-banking/wise-statement-import', () => {
             const gbpResult = yield* importStatement(eurAccount, WISE_STATEMENT.GBP);
             const headerOnlyResult = yield* importStatement(eurAccount, WISE_STATEMENT.HEADER_ONLY);
 
-            expect(gbpResult).toMatchObject({ accountCount: 0, newTransactionCount: 0, skippedTransactionCount: 1 });
-            expect(headerOnlyResult).toMatchObject({ accountCount: 0, newTransactionCount: 0, skippedTransactionCount: 0 });
+            expect(gbpResult).toMatchObject({ accountCount: 2, newTransactionCount: 0, skippedTransactionCount: 1 });
+            expect(headerOnlyResult).toMatchObject({ accountCount: 2, newTransactionCount: 0, skippedTransactionCount: 0 });
             expect(yield* fetchWiseExternalIds(eurAccount)).toEqual([]);
         }).pipe(Effect.provide(wiseStatementLayer))
     );

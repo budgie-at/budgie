@@ -8,7 +8,7 @@ import type { Db, DbError, MccCategoryLookupInterface } from '@budgie/contracts'
 import type * as Effect from 'effect/Effect';
 
 export interface FileSyncServiceDefinitionInterface extends SyncServiceDefinitionInterface {
-    readonly parseFile: (uri: string) => Effect.Effect<ParsedFileResultInterface, SyncError>;
+    readonly parseFile?: (uri: string) => Effect.Effect<ParsedFileResultInterface, SyncError>;
     readonly resolveMccCategoryIdMap: (
         client: FileBasedSyncClientInterface,
         bankAccounts: SyncAccountInterface[]

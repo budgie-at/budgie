@@ -3,7 +3,7 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { SyncAccountBalanceStateEnum } from '../../core/enum/sync-account-balance-state.enum';
 import { SyncAccountTypeEnum } from '../../core/enum/sync-account-type.enum';
@@ -27,7 +27,6 @@ export class WiseStatementImportService extends Context.Service<WiseStatementImp
             accountType: AccountTypeEnum.BANK_SYNC,
             generateAccountTitle: account => generateDefaultSyncAccountTitle('Wise', account),
             accountIcon: () => UserIconNameEnum.Landmark,
-            parseFile: () => Effect.die(new Error('Wise statements import through importForIntegration')),
             resolveMccCategoryIdMap: () => Effect.succeed(new Map())
         });
 
@@ -64,16 +63,6 @@ export class WiseStatementImportService extends Context.Service<WiseStatementImp
                 const transactionsByExternalId = new Map(importable.map(({ externalId, transactions }) => [externalId, transactions]));
                 const skippedTransactionCount = parsedCount - importedCount;
 
-                if (!isNotEmptyArray(bankAccounts)) {
-                    return {
-                        accountCount: 0,
-                        parsedTransactionCount: 0,
-                        newTransactionCount: 0,
-                        existingTransactionCount: 0,
-                        skippedTransactionCount
-                    };
-                }
-
                 const result = yield* fileSyncService.importParsed(
                     {
                         getAccounts: () => bankAccounts,
@@ -82,7 +71,7 @@ export class WiseStatementImportService extends Context.Service<WiseStatementImp
                     bankAccounts
                 );
 
-                return { ...result, skippedTransactionCount };
+                return { ...result, accountCount: accounts.length, skippedTransactionCount };
             })
         };
     })

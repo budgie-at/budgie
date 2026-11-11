@@ -25,7 +25,10 @@ export const WiseStatementImportRow = () => {
         importHandler: uri => Effect.flatMap(WiseStatementImportService, service => service.importForIntegration(uri, integration.id))
     });
 
-    if (Option.getOrNull(decodeEnableBankingToken(integration.token))?.aspspName !== WISE_ASPSP_NAME) {
+    const aspspName = Option.getOrNull(decodeEnableBankingToken(integration.token))?.aspspName;
+    const isWiseConnection = aspspName === WISE_ASPSP_NAME;
+
+    if (!isWiseConnection) {
         return null;
     }
 

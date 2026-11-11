@@ -24,16 +24,12 @@ const WiseCsvRowSchema = Schema.Struct({
 });
 
 const WISE_CSV_COLUMNS = Object.keys(WiseCsvRowSchema.fields);
-const DATE_TIME_PATTERN = /^(\d{2})-(\d{2})-(\d{4}) (\d{2}):(\d{2}):(\d{2})/u;
+const DATE_TIME_PATTERN = /^(\d{2})-(\d{2})-(\d{4}) (\d{2}:\d{2}:\d{2}).*$/u;
 const MILLISECONDS_PER_SECOND = 1000;
 
 const decodeRow = Schema.decodeUnknownOption(WiseCsvRowSchema);
 
-const parseTime = (dateTime: string): number => {
-    const [day, month, year, hours, minutes, seconds] = (DATE_TIME_PATTERN.exec(dateTime) ?? []).slice(1).map(Number);
-
-    return Date.UTC(year, month - 1, day, hours, minutes, seconds) / MILLISECONDS_PER_SECOND;
-};
+const parseTime = (dateTime: string): number => Date.parse(dateTime.replace(DATE_TIME_PATTERN, '$3-$2-$1T$4Z')) / MILLISECONDS_PER_SECOND;
 
 const mapRow = (row: typeof WiseCsvRowSchema.Type): SyncTransactionInterface => {
     const isIncome = row['Transaction Type'] === 'CREDIT';
@@ -79,7 +75,10 @@ export const parseWiseCsv = (text: string): Result.Result<ReadonlyMap<string, Sy
 
         const transaction = mapRow(decoded.value);
 
-        transactionsByCurrency.set(transaction.accountId, [...(transactionsByCurrency.get(transaction.accountId) ?? []), transaction]);
+        const currencyTransactions = transactionsByCurrency.get(transaction.accountId) ?? [];
+
+        currencyTransactions.push(transaction);
+        transactionsByCurrency.set(transaction.accountId, currencyTransactions);
     }
 
     return Result.succeed(transactionsByCurrency);
