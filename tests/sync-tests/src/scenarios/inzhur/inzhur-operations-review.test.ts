@@ -27,6 +27,12 @@ const bytesByUri = {
     'late.xlsx': buildInzhurOperationsWorkbook([{ at: '2026-06-10T10:00:00', type: TOP_UP_TYPE, debit: 50 }]),
     'empty.xlsx': buildInzhurOperationsWorkbook([]),
     [FULL_URI]: buildInzhurOperationsWorkbook(FULL_HISTORY_ROWS),
+    'unpriced-conversion.xlsx': buildInzhurOperationsWorkbook([
+        { at: '2026-01-10T10:00:00', type: TOP_UP_TYPE, debit: 4000 },
+        { at: '2026-01-10T10:05:00', type: 'Купівля 100 сертифікатів', fund: OCEAN, credit: 4000 },
+        { at: '2026-03-05T09:00:00', type: 'Конвертація', fund: OCEAN, debit: 4300 },
+        { at: '2026-03-05T09:00:03', type: 'Конвертація', fund: REIT, credit: 4300 }
+    ]),
     [NO_SURCHARGE_URI]: buildInzhurOperationsWorkbook(FULL_HISTORY_ROWS.filter(row => row.type !== 'Доплата')),
     [OLDER_TOP_UP_URI]: buildInzhurOperationsWorkbook([{ at: '2026-01-10T10:00:00', type: TOP_UP_TYPE, debit: 1000 }]),
     [SECOND_TOP_UP_URI]: buildInzhurOperationsWorkbook([{ at: '2026-01-11T10:00:00', type: TOP_UP_TYPE, debit: 1000 }])
@@ -64,7 +70,7 @@ describe('inzhur/operations-review', () => {
         Effect.gen(function* () {
             const inzhurSetupService = yield* InzhurSetupService;
 
-            expect(yield* Effect.flip(importInzhurOperations(FULL_URI))).toBeInstanceOf(InzhurPriceMissingError);
+            expect(yield* Effect.flip(importInzhurOperations('unpriced-conversion.xlsx'))).toBeInstanceOf(InzhurPriceMissingError);
             expect(yield* inzhurSetupService.findSetup()).toBeNull();
         }).pipe(Effect.provide(Layer.merge(layer, inzhurHomeClientLayer({}))))
     );

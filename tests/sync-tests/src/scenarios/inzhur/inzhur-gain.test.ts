@@ -1,4 +1,10 @@
-import { HistoricalExchangeRateEntityTable, CurrencyEnum, SettingsEntityTable, TransactionEntryEntityTable } from '@budgie/contracts';
+import {
+    HistoricalExchangeRateEntityTable,
+    InstrumentDailyMarketPriceEntityTable,
+    CurrencyEnum,
+    SettingsEntityTable,
+    TransactionEntryEntityTable
+} from '@budgie/contracts';
 import { MoneyDataUpgradeService } from '@budgie/ledger';
 import { InzhurGainRangeEnum, InzhurGainService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
@@ -67,6 +73,14 @@ const importHeld = Effect.gen(function* () {
     yield* importInzhurOperations('held.xlsx');
 
     return yield* requireInzhurFundByName(REIT);
+});
+
+const importHeldWithoutPrices = Effect.gen(function* () {
+    const reit = yield* importHeld;
+
+    yield* testDb.delete(InstrumentDailyMarketPriceEntityTable);
+
+    return reit;
 });
 
 const topUpFromBank = Effect.gen(function* () {
@@ -177,9 +191,30 @@ describe('inzhur/gain', () => {
         }).pipe(Effect.provide(layer))
     );
 
-    it.effect('returns a null gain instead of failing when a price is missing', () =>
+    it.effect('values the history from the statement trade prices', () =>
         Effect.gen(function* () {
             const reit = yield* importHeld;
+            const report = yield* (yield* InzhurGainService).getFundReport(reit.id, TODAY);
+
+            expect(report?.series.at(0)).toEqual({ date: FIRST_DAY, value: 1000 });
+            expect(report?.prices).toEqual([{ date: FIRST_DAY, value: REIT_PRICE }]);
+        }).pipe(Effect.provide(layer))
+    );
+
+    it.effect('keeps a website price over the statement trade price of the same day', () =>
+        Effect.gen(function* () {
+            yield* seedInzhurPrice(REIT_ISIN, FIRST_DAY, 12);
+
+            const reit = yield* importHeld;
+            const report = yield* (yield* InzhurGainService).getFundReport(reit.id, TODAY);
+
+            expect(report?.prices).toEqual([{ date: FIRST_DAY, value: 12 }]);
+        }).pipe(Effect.provide(layer))
+    );
+
+    it.effect('returns a null gain instead of failing when a price is missing', () =>
+        Effect.gen(function* () {
+            const reit = yield* importHeldWithoutPrices;
 
             expect(yield* findAllTimeGain()).toMatchObject({ startValue: null, gain: null, percent: null });
             expect(yield* findFundAllTimeGain(reit.id)).toMatchObject({ startValue: null, gain: null });
@@ -239,8 +274,8 @@ describe('inzhur/gain', () => {
     );
     it.effect('starts gains at the first valued day when prices begin after the history', () =>
         Effect.gen(function* () {
+            yield* importHeldWithoutPrices;
             yield* seedInzhurPrice(REIT_ISIN, '2026-03-05', REIT_PRICE);
-            yield* importHeld;
 
             const report = yield* (yield* InzhurGainService).getInstitutionReport('2026-03-06');
 

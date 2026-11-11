@@ -48,16 +48,29 @@ const snapshotLedger = Effect.map(fetchSourceLedger(ExternalSourceEnum.INZHUR), 
     ledger.map(({ id, externalId }) => [id, externalId])
 );
 
+const findConvertedInQuantity = (fundAccountId: number) =>
+    Effect.map(
+        fetchInzhurLedger,
+        ledger =>
+            ledger
+                .filter(transaction => transaction.title === 'Bought REIT')
+                .at(-1)
+                ?.entries.find(entry => entry.accountId === fundAccountId)?.amount
+    );
+
 describe('inzhur/operations-lifecycle', () => {
-    it.effect('keeps stored conversion buys authoritative when prices change before a chained conversion re-import', () =>
+    it.effect('refines a stored conversion estimate when a nearer price arrives before a chained conversion re-import', () =>
         Effect.gen(function* () {
             yield* importInzhurOperations('chain.xlsx');
             const reit = yield* requireInzhurFundByName(REIT);
             expect(yield* fetchAccountBalance(reit.id)).toBe(0);
-            const snapshot = yield* snapshotLedger;
+            expect(yield* findConvertedInQuantity(reit.id)).toBe(430 * PRECISION);
             yield* seedInzhurPrice(REIT_ISIN, '2026-03-05', 10.05);
             yield* importInzhurOperations('chain.xlsx');
             expect(yield* fetchAccountBalance(reit.id)).toBe(0);
+            expect(yield* findConvertedInQuantity(reit.id)).toBe(428 * PRECISION);
+            const snapshot = yield* snapshotLedger;
+            yield* importInzhurOperations('chain.xlsx');
             expect(yield* snapshotLedger).toEqual(snapshot);
         }).pipe(Effect.provide(Layer.merge(layer, inzhurHomeClientLayer({ [REIT]: 10, 'Inzhur Energy': 10 }))))
     );

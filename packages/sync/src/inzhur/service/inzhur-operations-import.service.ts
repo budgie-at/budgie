@@ -16,7 +16,7 @@ import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { SyncFileReader } from '../../core/port/sync-file-reader.port';
 import { SyncWorkload } from '../../core/port/sync-workload.port';
@@ -51,6 +51,7 @@ import type { InzhurOperationsFundSummaryInterface } from '../interface/inzhur-o
 import type { InzhurOperationsImportSummaryInterface } from '../interface/inzhur-operations-import-summary.interface';
 import type { InzhurPlannedActionInterface } from '../interface/inzhur-planned-action.interface';
 import type { InzhurSetupInterface } from '../interface/inzhur-setup.interface';
+import type { InzhurTradePriceTotalInterface } from '../interface/inzhur-trade-price-total.interface';
 import type { AccountEntityInterface, TransactionWithEntriesEntityInterface } from '@budgie/contracts';
 import type { InzhurFundPriceInterface } from '@budgie/market';
 
@@ -75,6 +76,42 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
 
             const isManualPurchase = (transaction: TransactionWithEntriesEntityInterface) =>
                 isDefined(transaction.externalId) && transaction.externalId.startsWith(INZHUR_MANUAL_EXTERNAL_ID_PREFIX);
+
+            const isTrade = (action: InzhurPlannedActionInterface) =>
+                action.kind === InzhurOperationKindEnum.BUY || action.kind === InzhurOperationKindEnum.SELL;
+
+            const recordTradePrices = (
+                actions: readonly InzhurPlannedActionInterface[],
+                accountByFund: ReadonlyMap<string, AccountEntityInterface>,
+                knownMicroUnits: (action: InzhurPlannedActionInterface) => number | null
+            ) => {
+                const totals = new Map<string, InzhurTradePriceTotalInterface>();
+
+                for (const action of actions.filter(isTrade)) {
+                    const instrumentId = accountByFund.get(action.fundName ?? '')?.instrumentId;
+                    const microUnits = knownMicroUnits(action);
+
+                    if (isDefined(instrumentId) && isPositiveNumber(microUnits)) {
+                        const priceDate = toKyivDay(action.occurredAt);
+                        const key = `${instrumentId}:${priceDate}`;
+                        const total = totals.get(key) ?? { instrumentId, priceDate, cash: 0, microUnits: 0 };
+
+                        totals.set(key, {
+                            ...total,
+                            cash: total.cash + convertToMicroUnits(action.cashAmount),
+                            microUnits: total.microUnits + microUnits
+                        });
+                    }
+                }
+
+                return inzhurPriceService.recordTradePrices(
+                    [...totals.values()].map(({ instrumentId, priceDate, cash, microUnits }) => ({
+                        instrumentId,
+                        priceDate,
+                        price: cash / microUnits
+                    }))
+                );
+            };
 
             const sumQuantity = (
                 ledger: readonly TransactionWithEntriesEntityInterface[],
@@ -279,16 +316,30 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
                     const transaction = ledger.find(item => item.externalId === action.externalId);
                     const fundAccountId = accountByFund.get(action.fundName ?? '')?.id;
 
-                    return { transaction, quantity: transaction?.entries.find(entry => entry.accountId === fundAccountId)?.amount };
+                    return {
+                        transaction,
+                        quantity: transaction?.entries.find(entry => entry.accountId === fundAccountId)?.amount,
+                        cash: transaction?.entries.find(entry => entry.accountId === cashAccountId)?.amount
+                    };
                 };
                 const newActions = plan.actions.filter(action => !existingIds.has(action.externalId));
+
+                yield* recordTradePrices(plan.actions, accountByFund, action =>
+                    isDefined(action.quantity) ? convertToMicroUnits(action.quantity) : null
+                );
+
                 const quantities = inzhurQuantityResolver.resolve({
                     actions: plan.actions,
                     storedMicroUnitsByExternalId: new Map(
                         plan.actions.flatMap(action => {
-                            const { quantity } = storedTrade(action);
+                            const { quantity, cash } = storedTrade(action);
+                            const isReestimated =
+                                action.kind === InzhurOperationKindEnum.BUY &&
+                                !isDefined(action.quantity) &&
+                                isDefined(cash) &&
+                                convertToMicroUnits(action.cashAmount) >= cash;
 
-                            return isDefined(quantity) ? [[action.externalId, quantity] as const] : [];
+                            return isDefined(quantity) && !isReestimated ? [[action.externalId, quantity] as const] : [];
                         })
                     ),
                     baseMicroUnitsByFund: new Map(
@@ -304,8 +355,6 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
                         currentPrices
                     )
                 });
-                const isTrade = (action: InzhurPlannedActionInterface) =>
-                    action.kind === InzhurOperationKindEnum.BUY || action.kind === InzhurOperationKindEnum.SELL;
                 const unresolvedFundNames = newActions
                     .filter(action => isTrade(action) && !quantities.has(action.externalId))
                     .flatMap(action => (isDefined(action.fundName) ? [action.fundName] : []));
@@ -313,6 +362,12 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
                 if (isNotEmptyArray(unresolvedFundNames)) {
                     return yield* InzhurPriceMissingError.make({ fundNames: [...new Set(unresolvedFundNames)] });
                 }
+
+                yield* recordTradePrices(plan.actions, accountByFund, action => {
+                    const resolved = quantities.get(action.externalId);
+
+                    return isDefined(resolved) && !resolved.isEstimated ? resolved.microUnits : null;
+                });
 
                 const pairing = yield* inzhurOperationsBankPairingService.plan(setup, plan.actions, ledger, {
                     from: periodStart,
@@ -340,13 +395,12 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
                 const amendedTrades = plan.actions
                     .filter(action => isTrade(action) && existingIds.has(action.externalId))
                     .flatMap(action => {
-                        const { transaction: stored, quantity: storedQuantity } = storedTrade(action);
+                        const { transaction: stored, quantity: storedQuantity, cash: storedCash } = storedTrade(action);
                         const account = accountByFund.get(action.fundName ?? '');
-                        const storedCash = stored?.entries.find(entry => entry.accountId === cashAccountId)?.amount;
 
-                        const quantity = action.isSellAll
-                            ? (quantities.get(action.externalId)?.microUnits ?? storedQuantity)
-                            : storedQuantity;
+                        const quantity = isDefined(action.quantity)
+                            ? storedQuantity
+                            : (quantities.get(action.externalId)?.microUnits ?? storedQuantity);
 
                         return isDefined(stored) &&
                             isDefined(account) &&
