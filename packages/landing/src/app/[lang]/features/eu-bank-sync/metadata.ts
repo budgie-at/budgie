@@ -19,7 +19,6 @@ export const FEATURE_METADATA = {
         'Trade Republic budget app',
         'EU bank sync app',
         'connect bank account budgeting app Europe',
-        'private bank sync no aggregator',
         'Enable Banking budget app'
     ],
     relatedFeatureSlugs: ['monobank-sync', 'binance-sync', 'bank-integration-management', 'bank-resync-window', 'sync-data-repairs'],

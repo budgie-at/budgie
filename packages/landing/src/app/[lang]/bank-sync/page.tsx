@@ -213,9 +213,9 @@ export default async function BankSyncPillarHubPage(props: PageLangParam) {
                     answer={
                         <>
                             <Trans>
-                                Live sync works only with Monobank and Binance, and statement import only with PrivatBank and Erste Bank
-                                Austria. Any other bank can still be added: export a CSV file from its app or website and map the columns
-                                once, or start from a built-in preset.
+                                Live sync works with Monobank, Binance and EU banks through your own Enable Banking app, and statement
+                                import with PrivatBank and Erste Bank Austria. Any other bank can still be added: export a CSV file from its
+                                app or website and map the columns once, or start from a built-in preset.
                             </Trans>{' '}
                             <Link className="font-semibold underline underline-offset-4" href={`/${lang}/features/csv-import`}>
                                 <Trans>More about CSV import</Trans>
@@ -227,9 +227,9 @@ export default async function BankSyncPillarHubPage(props: PageLangParam) {
                 <FeaturePageFaqItem
                     answer={
                         <Trans>
-                            Monobank and Binance connect with a personal API key for live, automatic sync. Erste and PrivatBank statements
-                            import directly from PDF or XLSX, and any other bank works through flexible CSV import with column mapping or a
-                            built-in preset.
+                            Monobank and Binance connect with a personal API key for live, automatic sync, and EU banks such as N26 and
+                            Trade Republic sync through your own Enable Banking app. Erste and PrivatBank statements import directly from
+                            PDF or XLSX, and any other bank works through flexible CSV import with column mapping or a built-in preset.
                         </Trans>
                     }
                     question={<Trans>Which banks does Budgie support?</Trans>}

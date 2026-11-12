@@ -35,8 +35,8 @@ export default async function PrivacyPillarHubPage(props: PageLangParam) {
                 locale={lang}
                 tagline={
                     <Trans>
-                        No account. No aggregator. No telemetry. Six features that make Budgie the most private expense tracker on iOS and
-                        Android.
+                        No account. No Budgie server. No telemetry. Six features that make Budgie the most private expense tracker on iOS
+                        and Android.
                     </Trans>
                 }
                 updatedAt={PRIVACY_PILLAR_HUB_METADATA.updatedAt}
@@ -136,7 +136,7 @@ export default async function PrivacyPillarHubPage(props: PageLangParam) {
                     <Trans>
                         Cloud-based personal finance apps mirror every transaction to their servers. Budgie keeps your ledger on your device
                         and syncs and copies it to your own iCloud and, for accounts and budgets you share, to your family&apos;s shared
-                        iCloud space. No account, no aggregator, no copy on a vendor&apos;s server.
+                        iCloud space. No account and no copy on a vendor&apos;s server.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageCategoryComparison categoryLabel={<Trans>Cloud-based PFM apps</Trans>}>
@@ -240,7 +240,7 @@ export default async function PrivacyPillarHubPage(props: PageLangParam) {
                         label={<Trans>Sync method</Trans>}
                     />
                     <FeaturePageCategoryComparison.Row
-                        budgieValue={<Trans>None</Trans>}
+                        budgieValue={<Trans>None, except EU banks through your own Enable Banking app</Trans>}
                         competitorValue={<Trans>Third-party aggregator service</Trans>}
                         label={<Trans>Aggregator middleman</Trans>}
                     />
@@ -329,7 +329,8 @@ export default async function PrivacyPillarHubPage(props: PageLangParam) {
                     answer={
                         <Trans>
                             Budgie talks to Monobank&apos;s own API with a token you paste in, parses Erste PDF statements and PrivatBank
-                            Excel exports on the device, and imports any other bank through generic CSV. No aggregator sits in between.
+                            Excel exports on the device, and imports any other bank through generic CSV. EU banks connect through your own
+                            Enable Banking app, which passes data from your bank to your phone. No Budgie server sits in between.
                         </Trans>
                     }
                 />
@@ -374,8 +375,9 @@ export default async function PrivacyPillarHubPage(props: PageLangParam) {
                     question={<Trans>What about third-party aggregators?</Trans>}
                     answer={
                         <Trans>
-                            Aggregators sit between you and your bank, mirroring transactions to their servers. Budgie deliberately does not
-                            use them.
+                            Aggregators sit between you and your bank, mirroring transactions to their servers. Monobank, Binance and
+                            statement imports use none. EU banks connect through Enable Banking with an application you create yourself, and
+                            the data goes from your bank to your phone, never to a Budgie server.
                         </Trans>
                     }
                 />

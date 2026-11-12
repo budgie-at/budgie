@@ -41,7 +41,7 @@ export default async function ReceiptScanningFeaturePage(props: PageLangParam) {
                     <Trans>Camera, Photos, Files, or share a receipt into Budgie.</Trans>
                 </FeatureSpecTiles.Tile>
                 <FeatureSpecTiles.Tile title={<Trans>where the receipt is read</Trans>} value={<Trans>On iPhone</Trans>}>
-                    <Trans>Receipts are read on this device and never uploaded.</Trans>
+                    <Trans>Receipt images are read on this device and never uploaded.</Trans>
                 </FeatureSpecTiles.Tile>
                 <FeatureSpecTiles.Tile title={<Trans>expenses saved without you</Trans>} value={<Trans>None</Trans>}>
                     <Trans>Nothing is saved until you confirm the form.</Trans>
@@ -83,15 +83,15 @@ export default async function ReceiptScanningFeaturePage(props: PageLangParam) {
                         widget
                     </Trans>
                 </FeatureBenefits.Benefit>
-                <FeatureBenefits.Benefit icon={ShieldCheck} title={<Trans>Receipts stay on your iPhone</Trans>}>
-                    <Trans>Text is read on the device and the receipt is not uploaded</Trans>
+                <FeatureBenefits.Benefit icon={ShieldCheck} title={<Trans>Receipt images stay on your iPhone</Trans>}>
+                    <Trans>Text is read on the device and the receipt image is not uploaded</Trans>
                 </FeatureBenefits.Benefit>
                 <FeatureBenefits.Benefit icon={FileText} title={<Trans>Matched to what you already have</Trans>}>
                     <Trans>A receipt attaches to the bank purchase it belongs to instead of adding a second expense</Trans>
                 </FeatureBenefits.Benefit>
                 <FeatureBenefits.Included>
                     <FeatureBenefits.Item>
-                        <Trans>Photos and PDF files can be picked from Photos or Files, or shared into Budgie</Trans>
+                        <Trans>Receipt images and documents can be picked from Photos or Files, or shared into Budgie</Trans>
                     </FeatureBenefits.Item>
                     <FeatureBenefits.Item>
                         <Trans>The form opens with the amount, shop name, date, a suggested category and the card&apos;s account</Trans>
@@ -137,8 +137,9 @@ export default async function ReceiptScanningFeaturePage(props: PageLangParam) {
                     question={<Trans>Does the receipt leave my iPhone?</Trans>}
                     answer={
                         <Trans>
-                            No. Budgie reads the text on the device, and the camera and photo prompts say receipts are never uploaded. Your
-                            expense is stored with the rest of your data on your iPhone.
+                            The image does not. Budgie reads the text on the device and never uploads the receipt image. The expense and its
+                            receipt details, such as the shop name, are stored with the rest of your data and sync through your own iCloud
+                            when sync is on.
                         </Trans>
                     }
                 />
@@ -156,8 +157,9 @@ export default async function ReceiptScanningFeaturePage(props: PageLangParam) {
                     question={<Trans>Will a scan add a duplicate of my bank purchase?</Trans>}
                     answer={
                         <Trans>
-                            Not if the bank purchase is already in Budgie. The form opens on the matching transaction and saving attaches
-                            the receipt to it. A receipt you scanned before is flagged as Already scanned.
+                            Not if Budgie finds a matching bank purchase: same amount and currency, from a day before the receipt to five
+                            days after. The form opens on that transaction and saving attaches the receipt to it. A receipt you scanned
+                            before is flagged as Already scanned.
                         </Trans>
                     }
                 />

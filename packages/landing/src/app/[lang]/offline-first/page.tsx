@@ -210,7 +210,7 @@ export default async function OfflineFirstPillarHubPage(props: PageLangParam) {
                         <Trans>No Budgie backend — no vendor database to leak, and the iCloud copies are encrypted</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={4}>
-                        <Trans>Optional bank sync uses your own API tokens — never a third-party aggregator</Trans>
+                        <Trans>Optional bank sync uses keys you create yourself, with no Budgie server in between</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>

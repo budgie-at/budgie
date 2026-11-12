@@ -9,7 +9,7 @@ export const PRIVACY_PILLAR_HUB_METADATA: PillarHubMetadataInterface = {
     pillar: PillarEnum.PRIVACY,
     title: msg`Private Expense Tracker — On Your Device`,
     metaTitle: msg`Private Expense Tracker — On-Device — Budgie`,
-    metaDescription: msg`Budgie is a private expense tracker by architecture: encrypted on-device storage, no account, no aggregator, biometric lock, screenshot protection, and encrypted iCloud sync and backups on iOS.`,
+    metaDescription: msg`Budgie is a private expense tracker by architecture: encrypted on-device storage, no account, no Budgie server, biometric lock, screenshot protection, and encrypted iCloud sync and backups on iOS.`,
     seoKeywords: [
         msg`private expense tracker`,
         msg`no account budget app`,

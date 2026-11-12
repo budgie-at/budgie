@@ -2624,8 +2624,8 @@ msgid "Aggregators sit between you and your bank, mirroring every transaction to
 msgstr "Агрегатори знаходяться між вами та вашим банком, дублюючи кожну транзакцію на свої сервери. Budgie спілкується з вашим банком безпосередньо через токени або імпортує виписки, які ви завантажуєте самостійно."
 
 #: src/app/[lang]/privacy/page.tsx
-msgid "Aggregators sit between you and your bank, mirroring transactions to their servers. Budgie deliberately does not use them."
-msgstr "Агрегатори знаходяться між вами та вашим банком, дублюючи транзакції на свої сервери. Budgie свідомо не використовує їх."
+msgid "Aggregators sit between you and your bank, mirroring transactions to their servers. Monobank, Binance and statement imports use none. EU banks connect through Enable Banking with an application you create yourself, and the data goes from your bank to your phone, never to a Budgie server."
+msgstr "Агрегатори стоять між вами та вашим банком і копіюють транзакції на свої сервери. Monobank, Binance та імпорт виписок їх не використовують. Банки ЄС підключаються через Enable Banking із застосунком, який ви створюєте самі, а дані йдуть із вашого банку на ваш телефон і ніколи не потрапляють на сервер Budgie."
 
 #: src/app/[lang]/features/ai-auto-categorization/opengraph-image.tsx
 #: src/app/[lang]/features/ai-category-translation/opengraph-image.tsx
@@ -4742,8 +4742,8 @@ msgid "Budgie is a privacy-first, offline-first mobile application designed to h
 msgstr "Budgie — це мобільний застосунок, орієнтований на приватність і принцип offline-first, який допомагає відстежувати витрати, керувати бюджетами, синхронізувати банківські рахунки (за бажанням), стежити за інвестиціями (акції та криптовалюти), обліковувати борги й позики, ставити фінансові цілі та отримувати фінансові інсайти за допомогою ШІ. Сервіс працює переважно на вашому пристрої, із зашифрованими копіями у вашому власному iCloud на iOS, які можна вимкнути в налаштуваннях, і додатковими хмарними функціями, що потребують вашої явної згоди."
 
 #: src/app/[lang]/privacy/metadata.ts
-msgid "Budgie is a private expense tracker by architecture: encrypted on-device storage, no account, no aggregator, biometric lock, screenshot protection, and encrypted iCloud sync and backups on iOS."
-msgstr "Budgie — приватний трекер витрат за своєю архітектурою: зашифроване сховище на пристрої, без облікового запису, без агрегатора, біометричне блокування, захист від скриншотів і зашифровані синхронізація та копії в iCloud на iOS."
+msgid "Budgie is a private expense tracker by architecture: encrypted on-device storage, no account, no Budgie server, biometric lock, screenshot protection, and encrypted iCloud sync and backups on iOS."
+msgstr "Budgie — приватний трекер витрат за своєю архітектурою: зашифроване сховище на пристрої, без облікового запису, без сервера Budgie, біометричне блокування, захист від знімків екрана, а на iOS ще й зашифрована синхронізація та резервні копії через iCloud."
 
 #: src/app/[lang]/open-source/metadata.ts
 msgid "Budgie is a source-available personal finance app. Read the source, audit privacy claims, contribute features, and trust your expense tracker because you can verify it."
@@ -5296,8 +5296,8 @@ msgid "Budgie takes a fundamentally different approach to budgeting software. Bu
 msgstr "Budgie принципово інакше підходить до програм для бюджету. Створений із нуля як offline-first застосунок, він залишає ваші фінансові дані у сховищі, яке контролюєте ви, із зашифрованими синхронізацією та копіями замість корпоративної бази даних."
 
 #: src/app/[lang]/privacy/page.tsx
-msgid "Budgie talks to Monobank's own API with a token you paste in, parses Erste PDF statements and PrivatBank Excel exports on the device, and imports any other bank through generic CSV. No aggregator sits in between."
-msgstr "Budgie звертається до власного API Monobank за токеном, який ви вставляєте самі, розбирає PDF-виписки Erste та Excel-експорти ПриватБанку просто на пристрої й імпортує будь-який інший банк через звичайний CSV. Жодного агрегатора посередині."
+msgid "Budgie talks to Monobank's own API with a token you paste in, parses Erste PDF statements and PrivatBank Excel exports on the device, and imports any other bank through generic CSV. EU banks connect through your own Enable Banking app, which passes data from your bank to your phone. No Budgie server sits in between."
+msgstr "Budgie звертається до власного API Monobank із токеном, який ви вставляєте, розбирає PDF-виписки Erste та Excel-експорти PrivatBank на пристрої, а будь-який інший банк імпортує через універсальний CSV. Банки ЄС підключаються через ваш власний застосунок Enable Banking, який передає дані з вашого банку на ваш телефон. Жодного сервера Budgie посередині."
 
 #: src/app/[lang]/layout.tsx
 msgid "Budgie Team"
@@ -6596,8 +6596,8 @@ msgid "Cloud-based (data on their servers)"
 msgstr "Хмарний (дані на їхніх серверах)"
 
 #: src/app/[lang]/privacy/page.tsx
-msgid "Cloud-based personal finance apps mirror every transaction to their servers. Budgie keeps your ledger on your device and syncs and copies it to your own iCloud and, for accounts and budgets you share, to your family's shared iCloud space. No account, no aggregator, no copy on a vendor's server."
-msgstr "Хмарні застосунки для особистих фінансів копіюють кожну транзакцію на свої сервери. Budgie зберігає ваші записи на пристрої, синхронізує та копіює їх у ваш iCloud, а для рахунків і бюджетів, якими ви ділитеся, — у спільний простір iCloud вашої родини. Без облікового запису, без агрегатора та без копій на сервері постачальника."
+msgid "Cloud-based personal finance apps mirror every transaction to their servers. Budgie keeps your ledger on your device and syncs and copies it to your own iCloud and, for accounts and budgets you share, to your family's shared iCloud space. No account and no copy on a vendor's server."
+msgstr "Хмарні застосунки для особистих фінансів копіюють кожну транзакцію на свої сервери. Budgie зберігає вашу книгу обліку на вашому пристрої, синхронізує й копіює її у ваш власний iCloud, а для спільних рахунків і бюджетів — у спільний iCloud-простір вашої родини. Без облікового запису й без копії на сервері вендора."
 
 #: src/app/[lang]/privacy/page.tsx
 msgid "Cloud-based PFM apps"
@@ -11571,8 +11571,8 @@ msgid "Live"
 msgstr "Наживо"
 
 #: src/app/[lang]/bank-sync/page.tsx
-msgid "Live sync works only with Monobank and Binance, and statement import only with PrivatBank and Erste Bank Austria. Any other bank can still be added: export a CSV file from its app or website and map the columns once, or start from a built-in preset."
-msgstr "Автоматична синхронізація працює лише з Monobank і Binance, а імпорт виписок — лише з ПриватБанком і Erste Bank Austria. Будь-який інший банк усе одно можна додати: експортуйте CSV-файл із його застосунку чи сайту й один раз налаштуйте відповідність стовпців або почніть із готового шаблону."
+msgid "Live sync works with Monobank, Binance and EU banks through your own Enable Banking app, and statement import with PrivatBank and Erste Bank Austria. Any other bank can still be added: export a CSV file from its app or website and map the columns once, or start from a built-in preset."
+msgstr "Живу синхронізацію підтримують Monobank, Binance і банки ЄС через ваш власний застосунок Enable Banking, а імпорт виписок — PrivatBank та Erste Bank Austria. Будь-який інший банк теж можна додати: експортуйте CSV-файл із його застосунку чи сайту й один раз зіставте стовпці або почніть із вбудованого шаблону."
 
 #: src/app/[lang]/features/debt-tracking/opengraph-image.tsx
 msgid "loans"
@@ -12272,8 +12272,8 @@ msgid "Monobank"
 msgstr "Monobank"
 
 #: src/app/[lang]/bank-sync/page.tsx
-msgid "Monobank and Binance connect with a personal API key for live, automatic sync. Erste and PrivatBank statements import directly from PDF or XLSX, and any other bank works through flexible CSV import with column mapping or a built-in preset."
-msgstr "Monobank і Binance підключаються через персональний API-ключ для автоматичної синхронізації в реальному часі. Виписки Erste та PrivatBank імпортуються напряму з PDF чи XLSX, а будь-який інший банк працює через гнучкий імпорт CSV із зіставленням стовпців або вбудованим шаблоном."
+msgid "Monobank and Binance connect with a personal API key for live, automatic sync, and EU banks such as N26 and Trade Republic sync through your own Enable Banking app. Erste and PrivatBank statements import directly from PDF or XLSX, and any other bank works through flexible CSV import with column mapping or a built-in preset."
+msgstr "Monobank і Binance підключаються через персональний API-ключ для живої автоматичної синхронізації, а банки ЄС, як-от N26 і Trade Republic, синхронізуються через ваш власний застосунок Enable Banking. Виписки Erste і PrivatBank імпортуються напряму з PDF або XLSX, а будь-який інший банк працює через гнучкий CSV-імпорт із зіставленням стовпців або вбудований шаблон."
 
 #: src/app/[lang]/blog/monobank-api-token/page.tsx
 msgid "Monobank API token"
@@ -12839,8 +12839,8 @@ msgid "No account, no vendor cloud, no tracking. The database lives on your phon
 msgstr "Без облікового запису, без хмари постачальника, без відстеження. База даних живе в телефоні, синхронізується між вашими пристроями через ваш iCloud на iOS, і застосунку ніколи не потрібне з'єднання, щоб щось відкрити, знайти чи обчислити."
 
 #: src/app/[lang]/privacy/page.tsx
-msgid "No account. No aggregator. No telemetry. Six features that make Budgie the most private expense tracker on iOS and Android."
-msgstr "Без акаунта. Без агрегатора. Без телеметрії. Шість функцій, що роблять Budgie найбільш приватним трекером витрат на iOS та Android."
+msgid "No account. No Budgie server. No telemetry. Six features that make Budgie the most private expense tracker on iOS and Android."
+msgstr "Без облікового запису. Без сервера Budgie. Без телеметрії. Шість функцій, що роблять Budgie найприватнішим трекером витрат на iOS і Android."
 
 #: src/app/[lang]/ai-features/page.tsx
 msgid "No AI cloud, no tracking"
@@ -13106,10 +13106,6 @@ msgstr "Ні. Budgie читає файл на вашому телефоні й �
 msgid "No. Budgie reads the PDF on your phone and keeps the bookings there. The statement is never uploaded."
 msgstr "Ні. Budgie читає PDF на вашому телефоні й зберігає операції там. Виписка ніколи нікуди не завантажується."
 
-#: src/app/[lang]/features/receipt-scanning/page.tsx
-msgid "No. Budgie reads the text on the device, and the camera and photo prompts say receipts are never uploaded. Your expense is stored with the rest of your data on your iPhone."
-msgstr "Ні. Budgie читає текст на пристрої, а запити доступу до камери й фото повідомляють, що чеки ніколи не завантажуються. Ваша витрата зберігається разом з рештою ваших даних на iPhone."
-
 #: src/app/[lang]/blog/erste-george-pdf-statement-import/page.tsx
 msgid "No. Budgie recognizes bookings it has already imported and skips them, so overlapping statements are safe."
 msgstr "Ні. Budgie розпізнає вже імпортовані операції й пропускає їх, тож виписки, що перекриваються, безпечні."
@@ -13308,7 +13304,6 @@ msgstr "Ні. Ваш телефон запитує дані безпосеред
 #: src/app/[lang]/features/receipt-scanning/page.tsx
 #: src/app/[lang]/features/siri-budget-questions/page.tsx
 #: src/app/[lang]/features/sync-data-repairs/page.tsx
-#: src/app/[lang]/privacy/page.tsx
 msgid "None"
 msgstr "Немає"
 
@@ -13319,6 +13314,10 @@ msgstr "Немає — платного тарифу не існує"
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "None of these revenue models work without collecting, analyzing, and retaining your financial data. Your transaction history is not just a feature of the product. It <0>is</0> the product."
 msgstr "Жодна з цих моделей доходу не працює без збору, аналізу та зберігання ваших фінансових даних. Ваша історія транзакцій -- це не просто функція продукту. Вона <0>і є</0> продуктом."
+
+#: src/app/[lang]/privacy/page.tsx
+msgid "None, except EU banks through your own Enable Banking app"
+msgstr "Жодних, окрім банків ЄС через ваш власний застосунок Enable Banking"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Not all “private” budget apps are created equal. Here’s a checklist for evaluating alternatives:"
@@ -13353,8 +13352,8 @@ msgid "Not for your Monobank cards and jars. Cash, and accounts at banks Budgie 
 msgstr "Для карток і банок monobank — ні. Готівку й рахунки в банках, які Budgie не синхронізує, і далі потрібно додавати вручну або імпортувати з файлу."
 
 #: src/app/[lang]/features/receipt-scanning/page.tsx
-msgid "Not if the bank purchase is already in Budgie. The form opens on the matching transaction and saving attaches the receipt to it. A receipt you scanned before is flagged as Already scanned."
-msgstr "Ні, якщо банківська покупка вже є в Budgie. Форма відкривається на відповідній транзакції, і збереження прикріплює до неї чек. Чек, який ви вже сканували, позначається як «Уже відскановано»."
+msgid "Not if Budgie finds a matching bank purchase: same amount and currency, from a day before the receipt to five days after. The form opens on that transaction and saving attaches the receipt to it. A receipt you scanned before is flagged as Already scanned."
+msgstr "Ні, якщо Budgie знайде відповідну банківську покупку: така сама сума й валюта, від дня перед чеком до п’яти днів після нього. Форма відкривається на цій операції, а збереження прикріплює чек до неї. Чек, який ви вже сканували, позначається як «Уже відскановано»."
 
 #: src/app/[lang]/features/home-screen-widgets/page.tsx
 msgid "Not if you have a PIN set. Every amount on every widget is replaced with dots the moment a PIN is on, with no separate switch to remember."
@@ -14703,8 +14702,8 @@ msgid "option asks before it resets anything"
 msgstr "опція питає, перш ніж щось скинути"
 
 #: src/app/[lang]/offline-first/page.tsx
-msgid "Optional bank sync uses your own API tokens — never a third-party aggregator"
-msgstr "Необов'язкова банківська синхронізація використовує ваші власні API-токени — ніяких сторонніх агрегаторів"
+msgid "Optional bank sync uses keys you create yourself, with no Budgie server in between"
+msgstr "Необов’язкова банківська синхронізація використовує ключі, які ви створюєте самі, без сервера Budgie посередині"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Optional Bank Synchronization"
@@ -15042,10 +15041,6 @@ msgstr "Особисті витрати змішуються з витратам
 #: src/app/[lang]/changelog/page.tsx
 msgid "Phones with a fingerprint sensor and no face scanner are now offered biometric unlock, and the lock screen shows a fingerprint icon on them."
 msgstr "Телефонам із сканером відбитка пальця, але без сканера обличчя, тепер пропонується біометричне розблокування, а на екрані блокування показується значок відбитка."
-
-#: src/app/[lang]/features/receipt-scanning/page.tsx
-msgid "Photos and PDF files can be picked from Photos or Files, or shared into Budgie"
-msgstr "Фото й PDF-файли можна вибрати з Фото чи Файлів або поділитися ними з Budgie"
 
 #: src/app/[lang]/features/installment-tracking/page.tsx
 msgid "Pick 2, 3, 4, 6, 10, 12 or 24 and watch the total update."
@@ -15999,6 +15994,18 @@ msgstr "«Перерахувати баланси» в Налаштування�
 msgid "Recategorize a transaction and Budgie offers to remember it for next time."
 msgstr "Змініть категорію транзакції, і Budgie запропонує запам'ятати це на наступний раз."
 
+#: src/app/[lang]/features/receipt-scanning/page.tsx
+msgid "Receipt images and documents can be picked from Photos or Files, or shared into Budgie"
+msgstr "Зображення чеків і документи можна вибрати з Фото чи Файлів або поділитися ними в Budgie"
+
+#: src/app/[lang]/features/receipt-scanning/page.tsx
+msgid "Receipt images are read on this device and never uploaded."
+msgstr "Зображення чеків розпізнаються на цьому пристрої й ніколи не завантажуються."
+
+#: src/app/[lang]/features/receipt-scanning/page.tsx
+msgid "Receipt images stay on your iPhone"
+msgstr "Зображення чеків залишаються на вашому iPhone"
+
 #: src/app/[lang]/features/receipt-scanning/metadata.ts
 #: src/app/[lang]/features/receipt-scanning/opengraph-image.tsx
 msgid "Receipt Scanning"
@@ -16020,10 +16027,6 @@ msgstr "Сканування чеків на iPhone — Budgie"
 msgid "receipts"
 msgstr "чеки"
 
-#: src/app/[lang]/features/receipt-scanning/page.tsx
-msgid "Receipts are read on this device and never uploaded."
-msgstr "Чеки розпізнаються на цьому пристрої й ніколи не завантажуються."
-
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Receipts mix categories. Without splits, you fudge — pick the dominant category and lose the breakdown. Budgie's split modal lets you allocate fractions of the same transaction across as many categories as you like."
 msgstr "Чеки змішують категорії. Без розбивки доводиться хитрувати — вибирати домінуючу категорію та втрачати деталізацію. Модальне вікно розбивки Budgie дозволяє розподіляти частини однієї транзакції на скільки завгодно категорій."
@@ -16035,10 +16038,6 @@ msgstr "Чеки накопичуються. Важливо, що з ними в
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Receipts rarely fit one category"
 msgstr "Чеки рідко належать лише до однієї категорії"
-
-#: src/app/[lang]/features/receipt-scanning/page.tsx
-msgid "Receipts stay on your iPhone"
-msgstr "Чеки залишаються на вашому iPhone"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Receive credit for discovered vulnerabilities (if desired)"
@@ -18622,8 +18621,8 @@ msgid "Testimonials"
 msgstr "Відгуки"
 
 #: src/app/[lang]/features/receipt-scanning/page.tsx
-msgid "Text is read on the device and the receipt is not uploaded"
-msgstr "Текст розпізнається на пристрої, а чек не завантажується"
+msgid "Text is read on the device and the receipt image is not uploaded"
+msgstr "Текст розпізнається на пристрої, а зображення чека не завантажується"
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "That €200 you lent your sister, the €1500 you owe a friend. Both are first-class accounts with target balances, return dates, and contact assignment."
@@ -19092,6 +19091,10 @@ msgstr "Головний екран показує поруч із загаль�
 #: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
 msgid "The hryvnia-to-euro rate has moved a lot over the years. If last year’s spending were converted at today’s rate, your reports would quietly rewrite your history. Budgie ships with years of daily exchange rates, so transactions you import from past years are valued at the rate of the day they happened."
 msgstr "Курс гривні до євро за ці роки сильно змінювався. Якби торішні витрати перераховувалися за сьогоднішнім курсом, звіти непомітно переписали б вашу історію. Budgie має вбудовану історію щоденних курсів за багато років, тож транзакції, які ви імпортуєте за минулі роки, оцінюються за курсом того дня, коли вони відбулися."
+
+#: src/app/[lang]/features/receipt-scanning/page.tsx
+msgid "The image does not. Budgie reads the text on the device and never uploads the receipt image. The expense and its receipt details, such as the shop name, are stored with the rest of your data and sync through your own iCloud when sync is on."
+msgstr "Зображення — ні. Budgie розпізнає текст на пристрої й ніколи не завантажує зображення чека. Витрата та дані з чека, як-от назва магазину, зберігаються разом з рештою ваших даних і синхронізуються через ваш власний iCloud, якщо синхронізацію ввімкнено."
 
 #: src/app/[lang]/features/csv-import/page.tsx
 msgid "The importer builds the ledger out of the file: accounts and categories are created from the values it finds, MCC codes resolve to categories, and rows with both account legs become transfers. Dates are read as MM/DD/YYYY HH:MM:SS or YYYY-MM-DD, and amounts use a dot as the decimal separator."
