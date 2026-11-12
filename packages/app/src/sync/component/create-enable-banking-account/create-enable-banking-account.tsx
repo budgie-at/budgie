@@ -120,13 +120,12 @@ export const CreateEnableBankingAccount = ({ connectAccountId, savedApplicationI
                     )
                 );
                 const regionCode = getDeviceRegionCode();
-                const localPreselectedBank = listedBanks.find(
-                    bank => isPreselected(bank) && bank.isSupported && bank.country === regionCode
-                );
+                const preselectedBanks = listedBanks.filter(bank => isPreselected(bank) && bank.isSupported);
+                const preselectedBank = preselectedBanks.find(bank => bank.country === regionCode) ?? preselectedBanks.at(0);
                 setBanks(listedBanks);
 
-                if (isDefined(localPreselectedBank)) {
-                    yield* startAuthorization(parsedApplicationId, localPreselectedBank);
+                if (isDefined(preselectedBank)) {
+                    yield* startAuthorization(parsedApplicationId, preselectedBank);
                 } else {
                     setStep(EnableBankingSetupStepEnum.BANK);
                 }

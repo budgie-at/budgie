@@ -86,8 +86,6 @@ test('44 enable banking', { tags: ['sync'], platforms: ['ios'] }, async ({ budgi
         await pickFile('EnableBankingKeyStep.ChooseKeyFile', THROWAWAY_KEY);
         await expect(id('EnableBankingKeyStep.ChooseKeyFile')).toHaveText(/^Key file loaded/);
         await b.tapId(ctx, 'CreateEnableBankingAccount.ContinueButton');
-        await b.expectId(ctx, 'EnableBankingBankRow.Wise', 15_000);
-        await b.tapId(ctx, 'EnableBankingBankRow.Wise');
         await b.expectText(ctx, 'Choose accounts', 30_000);
         await expect(screen.getByRole('switch', { name: /^Wise EUR, EUR/ }).first()).toBeVisible();
         await expect(screen.getByRole('switch', { name: /^Wise USD, USD/ }).first()).toBeVisible();
