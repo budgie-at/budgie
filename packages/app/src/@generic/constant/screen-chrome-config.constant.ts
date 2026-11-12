@@ -19,8 +19,8 @@ export const SCREEN_CHROME_CONFIG: ScreenChromeConfigOverridesInterface = {
               dark: { solid: 'rgba(0,0,0,0.92)', wash: 'rgba(0,0,0,0.92)' }
           }
         : {
-              light: { solid: 'rgba(255,255,255,0.86)', wash: 'rgba(255,255,255,0.62)' },
-              dark: { solid: 'rgba(0,0,0,0.84)', wash: 'rgba(0,0,0,0.58)' }
+              light: { solid: 'rgba(255,255,255,0.95)', wash: 'rgba(255,255,255,0.78)' },
+              dark: { solid: 'rgba(0,0,0,0.94)', wash: 'rgba(0,0,0,0.74)' }
           },
     maskStops: {
         top: {
@@ -41,9 +41,9 @@ export const SCREEN_CHROME_CONFIG: ScreenChromeConfigOverridesInterface = {
             : {
                   0: { color: 'transparent' },
                   0.25: { color: 'rgba(0,0,0,0.02)' },
-                  0.5: { color: 'rgba(0,0,0,0.09)' },
-                  0.75: { color: 'rgba(0,0,0,0.2)' },
-                  1: { color: 'rgba(0,0,0,0.36)' }
+                  0.5: { color: 'rgba(0,0,0,0.08)' },
+                  0.75: { color: 'rgba(0,0,0,0.18)' },
+                  1: { color: 'rgba(0,0,0,0.32)' }
               }
     }
 };
