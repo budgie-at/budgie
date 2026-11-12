@@ -9,8 +9,16 @@ name: Store screenshots
 on:
     workflow_dispatch:
         inputs:
+            platforms:
+                description: Platforms to capture
+                type: choice
+                options:
+                    - ios,android
+                    - ios
+                    - android
+                default: ios,android
             upload:
-                description: Upload captured screenshots to App Store Connect
+                description: Upload captured screenshots to App Store Connect and Google Play
                 type: boolean
                 default: false
 
@@ -24,6 +32,7 @@ permissions:
 jobs:
     screenshots:
         name: Capture and upload store screenshots
+        if: contains(inputs.platforms, 'ios')
         # A reusable workflow can only narrow the token it is given; see pr.yml.
         permissions:
             contents: read
@@ -33,7 +42,7 @@ jobs:
             group: ios-simulator-farm
             queue: max
             cancel-in-progress: false
-        uses: rnw-community/mobile-ci/.github/workflows/store-screenshots.yml@9a151735055f5ab661650523ad7c6375ae007bef # v4.12.0
+        uses: rnw-community/mobile-ci/.github/workflows/store-screenshots.yml@30a27b3a7efc2fa550627e0c0767829f8ab219c3 # v4.12.4
         with:
             control-runner-labels: '["self-hosted","linux-portable-2x4"]'
             config-path: .github/store-screenshots.config.json
@@ -78,3 +87,60 @@ jobs:
             ASC_KEY_ID: ${{ secrets.EXPO_IOS_ASC_KEY_ID }}
             ASC_ISSUER_ID: ${{ secrets.EXPO_IOS_ASC_ISSUER_ID }}
             simlock-token: ${{ secrets.SIMLOCK_TOKEN }}
+
+    android-screenshots:
+        name: Capture and upload Google Play screenshots
+        if: contains(inputs.platforms, 'android')
+        permissions:
+            contents: read
+            packages: write
+            actions: read
+        concurrency:
+            group: android-store-screenshots
+            queue: max
+            cancel-in-progress: false
+        uses: rnw-community/mobile-ci/.github/workflows/store-screenshots.yml@30a27b3a7efc2fa550627e0c0767829f8ab219c3 # v4.12.4
+        with:
+            control-runner-labels: '["self-hosted","linux-portable-2x4"]'
+            config-path: .github/store-screenshots-android.config.json
+            package-manager: pnpm
+            install-cache-paths: |
+                node_modules/.pnpm/llama.rn@*/node_modules/llama.rn/android/src/main/jniLibs
+                node_modules/.pnpm/llama.rn@*/node_modules/llama.rn/ios/rnllama.xcframework
+            install-cache-key: llama.rn-0.13.0-rc.7-react-native-0.88.1
+            fingerprint-env: |
+                APP_VARIANT=e2e
+                EXPO_PUBLIC_AI_DISABLE=true
+                EXPO_PUBLIC_LOGGING_DISABLE=true
+            repack-env: |
+                APP_VARIANT=e2e
+                EXPO_PUBLIC_AI_DISABLE=true
+                EXPO_PUBLIC_LOGGING_DISABLE=true
+            expect-config: |
+                extra.appVariant=e2e
+                extra.aiEnabled=false
+                extra.loggingEnabled=false
+            android-build-runner-labels: '["self-hosted","trf-linux-amd64-4x8"]'
+            android-build-timeout-minutes: 120
+            android-capture-runner-labels: '["self-hosted","trf-linux-amd64-4x8"]'
+            android-capture-timeout-minutes: 120
+            post-capture-command: |
+                if ! command -v magick >/dev/null; then
+                    curl -fsSL -o "$RUNNER_TEMP/imagemagick.AppImage" https://github.com/ImageMagick/ImageMagick/releases/download/7.1.2-35/ImageMagick-7.1.2-35-gcc-x86_64.AppImage
+                    chmod +x "$RUNNER_TEMP/imagemagick.AppImage"
+                    (cd "$RUNNER_TEMP" && ./imagemagick.AppImage --appimage-extract >/dev/null)
+                    mkdir -p "$RUNNER_TEMP/bin"
+                    ln -sf "$RUNNER_TEMP/squashfs-root/AppRun" "$RUNNER_TEMP/bin/magick"
+                    export PATH="$RUNNER_TEMP/bin:$PATH"
+                fi
+                for locale in en-US fr-FR uk de-DE es-ES; do
+                    SCREENSHOTS_RAW_DIR="$SCREENSHOTS_OUTPUT_DIR/raw" PLAY_SCREENSHOTS_DIR="$SCREENSHOTS_OUTPUT_DIR/raw/play" \
+                        bash packages/app/fastlane/screenshots/design/compose-screenshots.sh "$locale" dark --device "$DEVICE_SLUG"
+                done
+            upload-runner-labels: '["ubuntu-latest"]'
+            upload-screenshots: ${{ inputs.upload }}
+        secrets:
+            EAS_EXTRA_ENV: |
+                GOOGLE_SERVICE_ACCOUNT_JSON<<GOOGLE_SERVICE_ACCOUNT_JSON_EOF
+                ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+                GOOGLE_SERVICE_ACCOUNT_JSON_EOF

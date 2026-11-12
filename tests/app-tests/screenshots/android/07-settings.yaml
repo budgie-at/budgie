@@ -1,0 +1,9 @@
+appId: ${APP_ID}
+---
+- openLink: budgie://settings
+- extendedWaitUntil:
+      visible:
+          id: SettingsPage.DataEncryption.State.Off
+      timeout: 60000
+- waitForAnimationToEnd
+- takeScreenshot: 07-settings

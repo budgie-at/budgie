@@ -245,7 +245,7 @@ jobs:
         permissions:
             contents: write
             pull-requests: write
-        uses: rnw-community/mobile-ci/.github/workflows/expo-ota-preview.yml@9a151735055f5ab661650523ad7c6375ae007bef # v4.12.0
+        uses: rnw-community/mobile-ci/.github/workflows/expo-ota-preview.yml@30a27b3a7efc2fa550627e0c0767829f8ab219c3 # v4.12.4
         with:
             app-dir: packages/app
             scheme: budgie
@@ -268,10 +268,10 @@ jobs:
         permissions:
             contents: read
             pull-requests: read
-        uses: rnw-community/mobile-ci/.github/workflows/expo-fingerprint-guard.yml@9a151735055f5ab661650523ad7c6375ae007bef # v4.12.0
+        uses: rnw-community/mobile-ci/.github/workflows/expo-fingerprint-guard.yml@30a27b3a7efc2fa550627e0c0767829f8ab219c3 # v4.12.4
         with:
             working-directory: packages/app
-            platforms: ios
+            platforms: ios,android
             app-env: |
                 APP_VARIANT=production
             package-manager: pnpm
@@ -301,7 +301,7 @@ jobs:
             group: ios-simulator-farm
             queue: max
             cancel-in-progress: false
-        uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@9a151735055f5ab661650523ad7c6375ae007bef # v4.12.0
+        uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@30a27b3a7efc2fa550627e0c0767829f8ab219c3 # v4.12.4
         with:
             control-runner-labels: '["self-hosted","linux-portable-2x4"]'
             build-runner-labels: '["self-hosted","macOS","ARM64","macos-maestro"]'
@@ -370,7 +370,7 @@ jobs:
             group: android-emulator-farm
             queue: max
             cancel-in-progress: false
-        uses: rnw-community/mobile-ci/.github/workflows/android-maestro.yml@9a151735055f5ab661650523ad7c6375ae007bef # v4.12.0
+        uses: rnw-community/mobile-ci/.github/workflows/android-maestro.yml@30a27b3a7efc2fa550627e0c0767829f8ab219c3 # v4.12.4
         with:
             control-runner-labels: '["self-hosted","linux-portable-2x4"]'
             turbo-version: 2.11.5
@@ -587,6 +587,7 @@ jobs:
             - ota-preview
             - fingerprint-guard
             - ios-e2e
+            - android-e2e
             - store-screenshots-gallery
         runs-on: [self-hosted, linux-portable-2x4]
         timeout-minutes: 5

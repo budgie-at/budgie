@@ -1,0 +1,15 @@
+[
+    {
+        "relation": [
+            "delegate_permission/common.handle_all_urls"
+        ],
+        "target": {
+            "namespace": "android_app",
+            "package_name": "com.vitaliiyehorov.budgie",
+            "sha256_cert_fingerprints": [
+                "6F:47:DB:7B:C9:E4:5D:44:71:3B:47:56:01:46:29:B5:BD:82:A6:3E:EE:A6:45:20:E1:DD:1B:40:89:A8:8A:2B",
+                "69:EB:2B:C7:89:FC:DF:DA:A7:1D:F4:63:3A:55:7D:42:52:C6:7F:39:71:71:36:C7:6B:FF:BC:03:5A:94:48:45"
+            ]
+        }
+    }
+]

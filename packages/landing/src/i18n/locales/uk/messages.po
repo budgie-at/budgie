@@ -2745,6 +2745,10 @@ msgstr "Усі ваші фінансові дані, включно з тран�
 msgid "Allocate until nothing is left"
 msgstr "Розподіляйте, доки нічого не лишиться"
 
+#: src/beta/component/beta-android-card/beta-android-card.tsx
+msgid "Allow installs from your browser when Android asks."
+msgstr "Дозвольте встановлення з вашого браузера, коли Android про це запитає."
+
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Allow reasonable time for fixes before public disclosure"
 msgstr "Надайте розумний час для виправлення перед публічним розкриттям"
@@ -2952,6 +2956,10 @@ msgstr "І категорія, яку ви обрали"
 #: src/app/[lang]/open-source/page.tsx
 msgid "And the lock that enforces it"
 msgstr "І блокування, яке його забезпечує"
+
+#: src/beta/component/beta-android-card/beta-android-card.tsx
+msgid "Android preview build"
+msgstr "Попередня збірка для Android"
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Animated example: six bank transactions are grouped by merchant, two confident groups are categorized with one tap, and the bottom panel moves from 6 left to 1 left and 5 done, with Undo."
@@ -3821,6 +3829,7 @@ msgstr "Перш ніж переходити до альтернатив, дав
 msgid "Before fully committing:"
 msgstr "Перш ніж повністю перейти:"
 
+#: src/beta/component/beta-android-card/beta-android-card.tsx
 #: src/beta/component/beta-release-card/beta-release-card.tsx
 msgid "Before you install"
 msgstr "Перед встановленням"
@@ -4331,6 +4340,14 @@ msgstr "Budgie автоматично виявляє шаблони підпис
 msgid "Budgie backs up and syncs automatically, with your financial data encrypted on your device before it leaves. No Budgie account and no Budgie server."
 msgstr "Budgie автоматично робить резервні копії та синхронізує, а ваші фінансові дані шифруються на пристрої, перш ніж його залишити. Без облікового запису Budgie й без сервера Budgie."
 
+#: src/app/[lang]/beta/page.tsx
+msgid "Budgie Beta"
+msgstr "Budgie Beta"
+
+#: src/app/[lang]/beta/page.tsx
+msgid "Budgie Beta Install"
+msgstr "Встановлення Budgie Beta"
+
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Budgie Bitcoin market screen with a holdings card listing the quantity, average cost, cost basis and unrealized profit"
 msgstr "Екран ринку Bitcoin у Budgie з карткою активів: кількість, середня вартість, вартість придбання та нереалізований прибуток"
@@ -4716,14 +4733,6 @@ msgstr "Екран плану розстрочки Budgie із сумою до �
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Budgie integrates investment holdings into the same net-worth view as your bank accounts and debt. Most portfolio trackers don't model fiat side-by-side."
 msgstr "Budgie інтегрує інвестиційні позиції в той самий вигляд чистих активів, що й ваші банківські рахунки та борги. Більшість трекерів портфелів не моделюють фіатні активи поруч."
-
-#: src/app/[lang]/beta/page.tsx
-msgid "Budgie iOS Beta"
-msgstr "Budgie iOS Бета"
-
-#: src/app/[lang]/beta/page.tsx
-msgid "Budgie iOS Beta Install"
-msgstr "Встановлення бета-версії Budgie для iOS"
 
 #: src/app/[lang]/offline-first/metadata.ts
 msgid "Budgie is a fully offline budget app. Add expenses, view analytics, and import bank statements without internet. Your data is synced and backed up to storage you control."
@@ -10908,13 +10917,17 @@ msgstr "Спочатку є додаткова складність у розу�
 msgid "Install and open"
 msgstr "Встановіть і відкрийте"
 
+#: src/beta/component/beta-android-card/beta-android-card.tsx
+msgid "Install on Android"
+msgstr "Встановити на Android"
+
 #: src/beta/component/beta-release-card/beta-release-card.tsx
 msgid "Install on iPhone"
 msgstr "Встановити на iPhone"
 
 #: src/app/[lang]/beta/page.tsx
-msgid "Install the latest development build over-the-air on a registered iPhone."
-msgstr "Встановіть останню розробницьку збірку по повітрю (OTA) на зареєстрований iPhone."
+msgid "Install the latest development build on a registered iPhone, or the preview build on Android."
+msgstr "Встановіть найновішу збірку для розробки на зареєстрований iPhone або попередню збірку на Android."
 
 #: src/app/[lang]/features/installment-tracking/metadata.ts
 msgid "Installment Tracker for Pay in Parts Purchases"
@@ -11188,6 +11201,10 @@ msgstr "Він визначає, який тег показує список, к
 #: src/generic/component/home-tour-section/home-tour-section.tsx
 msgid "It files itself"
 msgstr "Вона впорядковується сама"
+
+#: src/beta/component/beta-android-card/beta-android-card.tsx
+msgid "It installs beside the Google Play version."
+msgstr "Вона встановлюється поруч із версією з Google Play."
 
 #: src/app/[lang]/features/runway/page.tsx
 msgid "It is your cash and bank balance divided by how much more you spend than you earn in a typical month. If nothing changes, that is how long the money lasts, and Runway shows the month it would run out."
@@ -19951,6 +19968,10 @@ msgstr "Це разовий імпорт, а не постійне підклю�
 #: src/app/[lang]/features/privatbank-import/page.tsx
 msgid "This is a one-time import from a Privat24 statement export, not a live sync — each export covers a single card or account, so a multi-card wallet needs one import per card."
 msgstr "Це одноразовий імпорт із виписки Приват24, а не синхронізація в реальному часі — кожен експорт охоплює лише одну картку або рахунок, тож гаманцю з кількома картками потрібен один імпорт на картку."
+
+#: src/beta/component/beta-android-card/beta-android-card.tsx
+msgid "This is a preview build signed for testing, so Play Protect may show a warning."
+msgstr "Це попередня збірка, підписана для тестування, тому Play Protect може показати попередження."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "This is a valid concern known as “build verification.” Budgie uses reproducible builds where possible, allowing anyone to verify that the published app matches the source code. For mobile apps, additional trust is required in the app store distribution, but the public source code ensures you can build the app yourself if you want maximum verification. We also provide checksums for releases so you can verify download integrity."
