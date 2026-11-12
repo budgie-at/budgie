@@ -252,12 +252,9 @@ export async function createDebtAccount(ctx: Ctx, debt: DebtAccount): Promise<vo
     await expectId(ctx, 'AccountForm.CurrencySelector', 3_000);
     await pickAccountCurrency(ctx, debt.currency);
 
-    if (debt.debtType === 'LENT') {
-        await scrollTo(ctx, 'AccountForm.DebtType.LENT.Selected');
-    } else {
-        await scrollToCentre(ctx, 'AccountForm.DebtType.BORROW');
-        await tapUntil(byId(screen, 'AccountForm.DebtType.BORROW'), () => expectId(ctx, 'AccountForm.DebtType.BORROW.Selected', 2_000));
-    }
+    const debtTypeId = `AccountForm.DebtType.${debt.debtType}`;
+    await scrollToCentre(ctx, debtTypeId);
+    await tapUntil(byId(screen, debtTypeId), () => expectId(ctx, `${debtTypeId}.Selected`, 2_000));
 
     await scrollTo(ctx, 'AccountForm.TargetBalanceInput', 'up');
     const target = byId(screen, 'AccountForm.TargetBalanceInput');
@@ -276,6 +273,7 @@ export async function createDebtAccount(ctx: Ctx, debt: DebtAccount): Promise<vo
         await expectId(ctx, `AccountForm.SelectedOpeningAccount.${debt.fundingAccountId ?? debt.fundingAccount}`, 5_000);
     }
 
+    await scrollTo(ctx, `${debtTypeId}.Selected`);
     await submitAccountForm(ctx, () => expectId(ctx, 'HomePage.TotalBalance', 15_000));
     await scrollTo(ctx, `AccountCard.${debt.name}`);
 }
