@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.180.1](https://github.com/budgie-at/budgie/compare/v6.180.0...v6.180.1) (2026-11-12)
+
+### Bug Fixes
+
+* **app:** hide scrolled content behind the collapsed screen header title ([#2192](https://github.com/budgie-at/budgie/issues/2192)) ([48d82bd](https://github.com/budgie-at/budgie/commit/48d82bdbc7f3beef80bf1661c6eb1da6503d6941))
+
+
 # [6.180.0](https://github.com/budgie-at/budgie/compare/v6.179.1...v6.180.0) (2026-11-12)
 
 ### Features
