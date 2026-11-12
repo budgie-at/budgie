@@ -21,7 +21,7 @@ interface Props {
 }
 
 export const HomeSectionItem = ({ item, section, balancesByAccountId }: Props) => {
-    if (isInstitutionGroup(item) && item.accounts.length === 1) {
+    if (isInstitutionGroup(item) && item.accounts.length === 1 && item.accounts[0].type !== AccountTypeEnum.STOCKS) {
         const [account] = item.accounts;
         const bankName = item.label ?? account.title;
 

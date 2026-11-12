@@ -34,9 +34,9 @@ test('51 manual brokerage with stocks', { tags: ['accounts'], platforms: PENDING
         await core.fillId(ctx, 'CreateAccount.Amount', '2000');
         await core.tapId(ctx, 'AccountForm.NameInput.Label');
         await core.tapUntil(ctx, 'AccountForm.SubmitButton', () => core.expectId(ctx, 'HomePage.TotalBalance', 15_000));
-        await core.scrollTo(ctx, 'InstitutionRow.1');
-        await core.expectSettledId(ctx, 'InstitutionRow.1');
-        await core.tapId(ctx, 'InstitutionRow.1');
+        await core.scrollTo(ctx, 'InstitutionRow.E2E Broker');
+        await core.expectSettledId(ctx, 'InstitutionRow.E2E Broker');
+        await core.tapId(ctx, 'InstitutionRow.E2E Broker');
         await core.expectId(ctx, 'Institution.Page', 10_000);
     });
 
@@ -60,12 +60,12 @@ test('51 manual brokerage with stocks', { tags: ['accounts'], platforms: PENDING
         await expect(core.byId(screen, 'Brokerage.GainLine')).toHaveText(/\+\$200/, { timeout: 10_000 });
         await core.tapId(ctx, 'PageHeader.BackButton');
         await core.expectId(ctx, 'HomePage.TotalBalance', 10_000);
-        await core.scrollTo(ctx, 'InstitutionRow.1');
-        await expect(core.byId(screen, 'InstitutionRow.1')).toHaveText(/\$2,200/, { timeout: 10_000 });
+        await core.scrollTo(ctx, 'InstitutionRow.E2E Broker');
+        await expect(core.byId(screen, 'InstitutionRow.E2E Broker')).toHaveText(/\$2,200/, { timeout: 10_000 });
     });
 
     await core.phase('sell part of the position', async () => {
-        await core.tapId(ctx, 'InstitutionRow.1');
+        await core.tapId(ctx, 'InstitutionRow.E2E Broker');
         await core.expectId(ctx, 'Institution.Page', 10_000);
         await core.scrollTo(ctx, position);
         await core.tapUntil(ctx, position, () => core.expectId(ctx, 'AccountDetails.Page', 10_000));

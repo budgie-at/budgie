@@ -1,6 +1,8 @@
 import { BrokerageService } from '@app/brokerage/service/brokerage.service';
 import {
+    AccountBalanceRepository,
     AccountRepository,
+    ExternalSourceEnum,
     AccountTypeEnum,
     InstrumentTypeEnum,
     TransactionEntryPositionRepository,
@@ -37,6 +39,15 @@ describe('market-data/brokerage-trades', () => {
                 currentBalance: 2000,
                 includeInNetWorth: true,
                 isActive: true
+            });
+
+            const balances = yield* AccountBalanceRepository;
+            const homeRows = yield* balances.getHomeAccountRows(dollar.id);
+
+            expect(homeRows.find(row => row.account.id === cash.id)).toMatchObject({
+                account: { integrationId: cash.integrationId },
+                integrationLabel: 'Broker',
+                integrationProvider: ExternalSourceEnum.MANUAL
             });
 
             const securityId = yield* brokerageService.buy(cash.integrationId ?? 0, LISTING, {

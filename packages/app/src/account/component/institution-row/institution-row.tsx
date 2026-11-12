@@ -11,6 +11,7 @@ import { HapticPressable } from '../../../@generic/component/haptic-pressable/ha
 import { ROW_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-max-font-size-multiplier.constant';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
+import { testID } from '../../../@generic/utils/test-id.util';
 import { InzhurInstitutionRowDetail } from '../../../inzhur/component/inzhur-institution-row-detail/inzhur-institution-row-detail';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { getBankIntegrationTitle } from '../../utils/get-bank-integration-title.util';
@@ -46,6 +47,8 @@ export const InstitutionRow = ({ institution }: Props) => {
         ? t({ message: plural(accountsCount, { one: '# asset', other: '# assets' }) })
         : t({ message: plural(accountsCount, { one: '# account', other: '# accounts' }) });
     const bankName = label ?? title;
+    const rowKey = provider === ExternalSourceEnum.MANUAL ? bankName : integrationId;
+    const rowTestID = testID(InstitutionRowSelector.Row(rowKey));
     const accessibilityLabel = [title, protectAmount(total, defaultInstrument.symbol), accountsCountLabel].join(', ');
 
     return (
@@ -55,7 +58,7 @@ export const InstitutionRow = ({ institution }: Props) => {
             accessibilityLabel={accessibilityLabel}
             onPress={handlePress}
             className={rowVariants({ isStacked })}
-            testID={InstitutionRowSelector.Row(integrationId)}
+            {...rowTestID}
         >
             <BankLogo bankProvider={provider} bankName={bankName} size={44} />
 
