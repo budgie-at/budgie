@@ -39,7 +39,10 @@ const CURRENCY_MARKET_CHROME_CONFIG = {
 
 export const CurrencyMarketPage = ({ instrument: storedInstrument }: Props) => {
     const defaultInstrumentId = useAtomValue(defaultInstrumentIdAtom);
-    const { latestPrice, previousPrice, prices } = useInstrumentMarketDataQuery(storedInstrument.id, defaultInstrumentId);
+    const { latestPrice, previousPrice, prices } = useInstrumentMarketDataQuery(
+        storedInstrument.id,
+        storedInstrument.quoteInstrumentId ?? defaultInstrumentId
+    );
 
     const priceBottom = useSharedValue(HERO_PRICE_HEIGHT);
 

@@ -26,12 +26,13 @@ import type { ReactNode } from 'react';
 
 interface Props<E> {
     readonly title: string;
+    readonly currencySymbol: string;
     readonly isReady: boolean;
     readonly onSubmit: (values: SecurityTradeFormValues) => Effect.Effect<unknown, E, AppServices>;
     readonly children?: ReactNode;
 }
 
-export const SecurityTradeForm = <E,>({ title, isReady, onSubmit, children }: Props<E>) => {
+export const SecurityTradeForm = <E,>({ title, currencySymbol, isReady, onSubmit, children }: Props<E>) => {
     const { t } = useLingui();
     const [operatedAt] = useState(() => new Date());
     const form = useForm<SecurityTradeFormValues>({
@@ -80,13 +81,13 @@ export const SecurityTradeForm = <E,>({ title, isReady, onSubmit, children }: Pr
                             />
                             <SecurityTradeNumberField
                                 name="price"
-                                label={t`Price per share`}
+                                label={`${t`Price per share`} (${currencySymbol})`}
                                 icon={UserIconNameEnum.Tag}
                                 testID={BrokerageSelector.PriceInput}
                             />
                             <SecurityTradeNumberField
                                 name="fee"
-                                label={t`Fee`}
+                                label={`${t`Fee`} (${currencySymbol})`}
                                 icon={UserIconNameEnum.Receipt}
                                 testID={BrokerageSelector.FeeInput}
                             />

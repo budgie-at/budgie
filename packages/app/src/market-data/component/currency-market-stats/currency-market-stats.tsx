@@ -7,6 +7,7 @@ import { isDefined } from '@rnw-community/shared';
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { useFormatCompactDigits } from '../../../i18n/hook/use-format-compact-digits.hook';
+import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { getMarketDailyChange } from '../../utils/get-market-daily-change.util';
 import { CurrencyMarketDailyChangeRow } from '../currency-market-daily-change-row/currency-market-daily-change-row';
@@ -26,6 +27,8 @@ const VALUE_CLASSNAME = 'text-secondary-foreground text-[17px] tabular-nums';
 export const CurrencyMarketStats = ({ instrument, latestPrice, previousPrice }: Props) => {
     const { t } = useLingui();
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
+    const { instrument: quoteInstrument } = useGetInstrumentByIdQuery(latestPrice?.quoteInstrumentId ?? defaultInstrument.id);
+    const symbol = quoteInstrument?.symbol ?? defaultInstrument.symbol;
     const formatCompactDigits = useFormatCompactDigits();
 
     const { code, marketCapRank } = instrument;
@@ -54,14 +57,14 @@ export const CurrencyMarketStats = ({ instrument, latestPrice, previousPrice }: 
                 <GroupedListRow
                     title={t`Market cap`}
                     testID={CurrencyMarketPageSelector.MarketCap(code)}
-                    right={<Text className={VALUE_CLASSNAME}>{formatCompactDigits(marketCap, defaultInstrument.symbol)}</Text>}
+                    right={<Text className={VALUE_CLASSNAME}>{formatCompactDigits(marketCap, symbol)}</Text>}
                 />
             ) : null}
             {isDefined(volume) ? (
                 <GroupedListRow
                     title={t`Volume (24h)`}
                     testID={CurrencyMarketPageSelector.Volume(code)}
-                    right={<Text className={VALUE_CLASSNAME}>{formatCompactDigits(volume, defaultInstrument.symbol)}</Text>}
+                    right={<Text className={VALUE_CLASSNAME}>{formatCompactDigits(volume, symbol)}</Text>}
                 />
             ) : null}
             {isDefined(rank) ? <GroupedListRow title={t`Rank`} right={<Text className={VALUE_CLASSNAME}>{`#${rank}`}</Text>} /> : null}

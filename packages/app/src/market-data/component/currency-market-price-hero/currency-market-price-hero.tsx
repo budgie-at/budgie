@@ -5,6 +5,7 @@ import { Text, View } from 'react-native';
 import { isDefined } from '@rnw-community/shared';
 
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
+import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { useMarketPriceHeroChange } from '../../hook/use-market-price-hero-change.hook';
 import { useMarketPriceHeroSuffix } from '../../hook/use-market-price-hero-suffix.hook';
@@ -39,7 +40,9 @@ export const CurrencyMarketPriceHero = ({
     rangeStartDate,
     priceBottom
 }: Props) => {
-    const { symbol } = useAtomValue(defaultInstrumentAtom);
+    const defaultInstrument = useAtomValue(defaultInstrumentAtom);
+    const { instrument: quoteInstrument } = useGetInstrumentByIdQuery(latestPrice?.quoteInstrumentId ?? defaultInstrument.id);
+    const symbol = quoteInstrument?.symbol ?? defaultInstrument.symbol;
     const fractionDigits = getMarketPriceFractionDigits(latestPrice?.price ?? 0);
     const formatPrice = useFormatDigits(MIN_PRICE_FRACTION_DIGITS, fractionDigits);
 
