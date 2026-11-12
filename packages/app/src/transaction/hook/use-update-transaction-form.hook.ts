@@ -5,11 +5,13 @@ import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
 import { NotificationFeedbackType } from 'expo-haptics';
+import { router, useNavigation } from 'expo-router';
 import { useForm } from 'react-hook-form';
+
+import { isDefined } from '@rnw-community/shared';
 
 import { useSingleFlight } from '../../@generic/hook/use-single-flight.hook';
 import { useVibration } from '../../@generic/hook/use-vibration.hook';
-import { dismissAllOrReplace } from '../../@generic/utils/dismiss-all-or-replace.util';
 import { goBackOrReplace } from '../../@generic/utils/go-back-or-replace.util';
 import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
 import { attachReceipt } from '../../receipt/utils/attach-receipt.util';
@@ -39,6 +41,7 @@ export const useUpdateTransactionForm = ({
     const deleteTransaction = useDeleteTransaction();
     const { run } = useSingleFlight();
     const [hapticNotification] = useVibration();
+    const navigation = useNavigation();
 
     const form = useForm({
         mode: 'onSubmit',
@@ -69,7 +72,15 @@ export const useUpdateTransactionForm = ({
         run(
             Effect.gen(function* () {
                 if (yield* deleteTransaction(id)) {
-                    dismissAllOrReplace('/');
+                    const state = navigation.getState();
+                    const isOpenedFromInfo =
+                        isDefined(state) && state.routes[state.index - 1]?.name === state.routes[state.index]?.name.replace(/\/edit$/u, '');
+
+                    if (isOpenedFromInfo) {
+                        router.dismiss(2);
+                    } else {
+                        goBackOrReplace('/');
+                    }
                 }
             })
         );

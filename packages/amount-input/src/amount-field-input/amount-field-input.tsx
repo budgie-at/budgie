@@ -24,6 +24,7 @@ export const AmountFieldInput = (props: AmountFieldInputPropsInterface) => {
         format,
         onChangeValue,
         selectTextOnFocus,
+        submitBehavior,
         onFocus,
         onBlur,
         placeholder = '',
@@ -34,7 +35,7 @@ export const AmountFieldInput = (props: AmountFieldInputPropsInterface) => {
         ...textInputProps
     } = props;
     const { fontSize, contentOpacity } = useAmountFieldContext();
-    const amountInputProps = useAmountInput({ value, format, onChangeValue, selectTextOnFocus, onFocus, onBlur });
+    const amountInputProps = useAmountInput({ value, format, onChangeValue, selectTextOnFocus, submitBehavior, onFocus, onBlur });
     const typographyProps = {
         className,
         allowFontScaling,
