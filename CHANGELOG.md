@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.177.0](https://github.com/budgie-at/budgie/compare/v6.176.0...v6.177.0) (2026-11-12)
+
+### Bug Fixes
+
+* **app:** build op-sqlite with SQLCipher on Android so sealing with a PIN works ([#2179](https://github.com/budgie-at/budgie/issues/2179)) ([5304e92](https://github.com/budgie-at/budgie/commit/5304e924a151b74044ce345b49539c6e76c73862))
+
+### Features
+
+* **app:** shorten iCloud sync error subtitles to one line ([4805e78](https://github.com/budgie-at/budgie/commit/4805e78571eaa577dbedd1eb6470543c6c4b389c))
+* explain iCloud sync failures and offer a retry in Settings ([833517c](https://github.com/budgie-at/budgie/commit/833517cf98e6b530e43df6a5d66dcb4dd23d753b))
+
+
 # [6.176.0](https://github.com/budgie-at/budgie/compare/v6.175.4...v6.176.0) (2026-11-12)
 
 ### Features
