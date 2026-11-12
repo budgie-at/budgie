@@ -317,6 +317,10 @@ msgstr "{count, plural, =0 {Merge “{sourceTitle}” into “{targetTitle}” a
 msgid "{count, plural, one {{formattedAmount} rolled over across # category} other {{formattedAmount} rolled over across # categories}}"
 msgstr "{count, plural, one {{formattedAmount} rolled over across # category} other {{formattedAmount} rolled over across # categories}}"
 
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "{count, plural, one {# account. Balances come straight from the bank.} other {# accounts. Balances come straight from the bank.}}"
+msgstr "{count, plural, one {# account. Balances come straight from the bank.} other {# accounts. Balances come straight from the bank.}}"
+
 #: src/settings/utils/get-sync-repair-text.util.ts
 msgid "{count, plural, one {# duplicate} other {# duplicates}}"
 msgstr "{count, plural, one {# duplicate} other {# duplicates}}"
@@ -699,10 +703,6 @@ msgstr "{minutesLeft, plural, one {About # minute left} other {About # minutes l
 #: src/import/components/import-screen-footer/import-screen-footer.tsx
 msgid "{missingRequiredCount, plural, one {Choose a column for # required field.} other {Choose columns for # required fields.}}"
 msgstr "{missingRequiredCount, plural, one {Choose a column for # required field.} other {Choose columns for # required fields.}}"
-
-#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
-msgid "{monobankAccountCount, plural, one {# account. Balances come straight from the bank.} other {# accounts. Balances come straight from the bank.}}"
-msgstr "{monobankAccountCount, plural, one {# account. Balances come straight from the bank.} other {# accounts. Balances come straight from the bank.}}"
 
 #: src/runway/component/runway-history-bar-label/runway-history-bar-label.tsx
 msgid "{month}, out {expenseAmount}, in {incomeAmount}"
@@ -4630,7 +4630,12 @@ msgstr "Erste Bank (PDF)"
 msgid "Estimated from your past transactions using your current limits."
 msgstr "Estimated from your past transactions using your current limits."
 
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "EU bank connected"
+msgstr "EU bank connected"
+
 #: src/app/(main)/create-account/index.tsx
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "EU banks"
 msgstr "EU banks"
 
@@ -9965,6 +9970,10 @@ msgstr "Track manually"
 #: src/app/(main)/create-account/index.tsx
 msgid "Trade Republic, N26 and other EU banks"
 msgstr "Trade Republic, N26 and other EU banks"
+
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "Trade Republic, N26 and other EU banks, read-only."
+msgstr "Trade Republic, N26 and other EU banks, read-only."
 
 #: ../ledger/src/transaction/service/transaction-debt-settlement.service.ts
 msgid "Transaction already has a debt attachment"
