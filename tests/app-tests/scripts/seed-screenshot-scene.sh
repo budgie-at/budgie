@@ -338,7 +338,7 @@ install_android_database() {
     done
 
     adb shell "settings put global hide_error_dialogs 1 && am broadcast -a android.intent.action.CLOSE_SYSTEM_DIALOGS >/dev/null"
-    ( for i in 1 2 3 4 5 6 7 8 9 10 11 12; do sleep 3; echo "debug t=$((i*3)) $(cat /sys/fs/cgroup/memory.current) $(grep -E 'oom_kill|^max' /sys/fs/cgroup/memory.events | tr '\n' ' ') $(adb get-state 2>&1)"; done; tail -n 80 "$RUNNER_TEMP"/mobile-ci-emulator-*.log ) >&2 &
+    ( sleep 12; ps -eo rss,vsz,args --sort=-rss | head -12 | cut -c1-200; grep -E '^(anon|file|shmem|file_mapped|kernel) ' /sys/fs/cgroup/memory.stat; tail -n 40 "$RUNNER_TEMP"/mobile-ci-emulator-*.log ) >&2 &
     adb shell "am force-stop $APP_ID && rm -f $app_data_directory/shared_prefs/SecureStore*.xml $files_directory/SQLite/budgie.db* && mkdir -p $files_directory/SQLite $files_directory/E2EFixtures"
     adb push "$PREPARED_DATABASE_PATH" "$files_directory/SQLite/budgie.db" >/dev/null
 
