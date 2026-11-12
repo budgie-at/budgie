@@ -56,14 +56,14 @@ vi.mock('../src/auth/service/auth.service', async () => {
 });
 vi.mock('../src/@generic/drizzle/utils/open-sqlite-client.util', async () => {
     const Effect = await import('effect/Effect');
-    const { inertSqlClient } = await import('./fixture/inert-sql-client');
+    const { openSqliteFileClient } = await import('./fixture/inert-sql-client');
     const { storage: files } = await import('./fixture/expo-file-system-fake');
     const { DatabaseOpenError } = await import('../src/@generic/drizzle/error/database-open.error');
 
     return {
         openSqliteClient: vi.fn((filename: string, key: string | null) =>
             (files.files.get(`documents/SQLite/${filename}`)?.split('@').at(1) ?? null) === key
-                ? inertSqlClient
+                ? openSqliteFileClient(filename)
                 : Effect.fail(DatabaseOpenError.make({ cause: 'wrong key' }))
         )
     };
@@ -96,12 +96,13 @@ const takeSnapshot = () => {
 };
 const restartAfterKill = Effect.sync(() => {
     storage.beforeTransfer = () => void 0;
+    storage.afterTransfer = () => void 0;
     copyInto(storage.files, killed.files);
     copyInto(secrets, killed.secrets);
 });
-const killBeforeTransferring = (sourceUri: string, run: Effect.Effect<unknown>) =>
+const killOnTransfer = (moment: 'beforeTransfer' | 'afterTransfer', sourceUri: string, run: Effect.Effect<unknown>) =>
     Effect.sync(() => {
-        storage.beforeTransfer = uri => {
+        storage[moment] = uri => {
             if (uri === sourceUri) {
                 takeSnapshot();
             }
@@ -335,15 +336,21 @@ describe('database swap recovery after a kill', () => {
         secrets.set('user_pin', 'old-pin');
         storage.files.set('documents/SQLite/budgie.db', 'original@old-pin');
         storage.files.set('backup', 'imported@backup-pin');
-        storage.files.set('backup-wal', 'imported-wal');
+        storage.files.set('backup-wal', 'wal-rows');
         storage.files.set('documents/cloud-sync-state.json', JSON.stringify(previousState));
     });
 
     it.effect('restores the original database, PIN and sync state when an import is killed after the move-aside', () =>
         Effect.gen(function* () {
-            yield* killBeforeTransferring('cache/import-temp.db', importBackup('backup-pin'));
+            yield* killOnTransfer('beforeTransfer', 'documents/SQLite/import-temp.db', importBackup('backup-pin'));
 
-            yield* expectBoot({ 'documents/SQLite/budgie.db': 'original@old-pin' }, 'old-pin');
+            yield* expectBoot(
+                {
+                    'documents/SQLite/budgie.db': 'original@old-pin',
+                    'documents/SQLite/import-temp.db': 'imported+wal-rows@backup-pin'
+                },
+                'old-pin'
+            );
             expect(yield* readSyncState).toEqual(previousState);
         })
     );
@@ -353,13 +360,14 @@ describe('database swap recovery after a kill', () => {
             storage.files.set('backup', 'imported@old-pin');
             storage.files.set('documents/SQLite/pre-restore.db', 'original@old-pin');
             storage.files.set('documents/SQLite/pre-restore.pending', '');
-            yield* killBeforeTransferring('cache/import-temp.db', importBackup('old-pin'));
+            yield* killOnTransfer('beforeTransfer', 'documents/SQLite/import-temp.db', importBackup('old-pin'));
 
             yield* expectBoot(
                 {
                     'documents/SQLite/budgie.db': 'original@old-pin',
                     'documents/SQLite/budgie.db.replaced-0': 'original@old-pin',
-                    'documents/SQLite/pre-restore.db': 'original@old-pin'
+                    'documents/SQLite/pre-restore.db': 'original@old-pin',
+                    'documents/SQLite/import-temp.db': 'imported+wal-rows@old-pin'
                 },
                 'old-pin'
             );
@@ -367,18 +375,18 @@ describe('database swap recovery after a kill', () => {
         })
     );
 
-    it.effect('finishes an import killed after the new database was moved in', () =>
+    it.effect('finishes an import killed after the new database was moved in with the rows of its WAL', () =>
         Effect.gen(function* () {
-            yield* killBeforeTransferring('backup-wal', importBackup('backup-pin'));
+            yield* killOnTransfer('afterTransfer', 'documents/SQLite/import-temp.db', importBackup('backup-pin'));
 
-            yield* expectBoot({ 'documents/SQLite/budgie.db': 'imported@backup-pin' }, 'backup-pin');
+            yield* expectBoot({ 'documents/SQLite/budgie.db': 'imported+wal-rows@backup-pin' }, 'backup-pin');
             expect(yield* readSyncState).toEqual(importedState);
         })
     );
 
     it.effect('keeps the old PIN when a PIN change is killed between the two moves', () =>
         Effect.gen(function* () {
-            yield* killBeforeTransferring('documents/SQLite/auth-migration.db', changePin(storePin));
+            yield* killOnTransfer('beforeTransfer', 'documents/SQLite/auth-migration.db', changePin(storePin));
 
             yield* expectBoot(
                 { 'documents/SQLite/budgie.db': 'original@old-pin', 'documents/SQLite/auth-migration.db': 'rekeyed@new-pin' },
@@ -397,7 +405,7 @@ describe('database swap recovery after a kill', () => {
 
     it.effect('opens with the stored PIN and keeps a stale rekey backup when the PIN change never moved a file', () =>
         Effect.gen(function* () {
-            yield* killBeforeTransferring('documents/SQLite/budgie.db', changePin(storePin));
+            yield* killOnTransfer('beforeTransfer', 'documents/SQLite/budgie.db', changePin(storePin));
             storage.files.set('documents/SQLite/budgie.db.bak', 'stale@older-pin');
 
             yield* expectBoot(

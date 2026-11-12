@@ -61,6 +61,7 @@ export class File {
             throw new Error('crash');
         }
         const contents = this.textSync();
+        const source = this.uri;
         storage.events.push('move');
         storage.files.set(target.uri, contents);
         const modified = storage.modified.get(this.uri);
@@ -70,6 +71,7 @@ export class File {
         }
         storage.files.delete(this.uri);
         this.uri = target.uri;
+        storage.afterTransfer(source);
     }
 
     move(destination: File | Directory, options?: { overwrite?: boolean }) {
@@ -85,6 +87,7 @@ export class File {
         }
         const target = this.prepareDestination(destination, options);
         storage.files.set(target.uri, this.textSync());
+        storage.afterTransfer(this.uri);
 
         return Promise.resolve();
     }
@@ -129,4 +132,5 @@ export const resetStorage = () => {
     storage.failMoveBackFrom = null;
     storage.crashAfterRemove = false;
     storage.beforeTransfer = emptyFn;
+    storage.afterTransfer = emptyFn;
 };
