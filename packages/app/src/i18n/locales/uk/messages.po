@@ -629,6 +629,10 @@ msgstr "{gigabytes} ГБ"
 msgid "{groupCount, plural, one {# group} other {# groups}}"
 msgstr "{groupCount, plural, one {# група} few {# групи} many {# груп} other {# групи}}"
 
+#: src/brokerage/component/security-holding-row/security-holding-row.tsx
+msgid "{held} held"
+msgstr "{held} у портфелі"
+
 #: src/@generic/component/collapsible-stats-section/collapsible-stats-section.tsx
 msgid "{hiddenCount, plural, one {Show # more} other {Show # more}}"
 msgstr "{hiddenCount, plural, one {Показати ще #} few {Показати ще #} many {Показати ще #} other {Показати ще #}}"
@@ -2511,6 +2515,7 @@ msgstr "Переносити все"
 msgid "Carry savings"
 msgstr "Переносити заощадження"
 
+#: src/account/component/institution-account-row/institution-account-row.tsx
 #: src/account/constant/account-type.constant.ts
 #: src/categorize-inbox/components/categorize-inbox-transfer-accounts/categorize-inbox-transfer-accounts.tsx
 #: src/inzhur/component/inzhur-operations-import-summary/inzhur-operations-import-summary.tsx

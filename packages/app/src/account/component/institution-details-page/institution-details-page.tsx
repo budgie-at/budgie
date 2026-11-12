@@ -18,8 +18,7 @@ import { CollapsibleChromeTransactionList } from '../../../transaction/component
 import { TransactionAccountTitlePrefixContext } from '../../../transaction/context/transaction-account-title-prefix.context';
 import { ACCOUNT_DETAILS_SCREEN_CHROME_CONFIG } from '../../constant/account-details-screen-chrome-config.constant';
 import { useIsStaticAccountDetailsHeader } from '../../hook/use-is-static-account-details-header.hook';
-import { getBankIntegrationTitle } from '../../utils/get-bank-integration-title.util';
-import { getBankProviderTitle } from '../../utils/get-bank-provider-title.util';
+import { getInstitutionTitle } from '../../utils/get-institution-title.util';
 import { AccountDetailsHeaderBackdrop } from '../account-details-header-backdrop/account-details-header-backdrop';
 import { AccountDetailsHeroBalance } from '../account-details-hero-balance/account-details-hero-balance';
 import { AccountDetailsStaticTitle } from '../account-details-static-title/account-details-static-title';
@@ -44,7 +43,7 @@ export const InstitutionDetailsPage = ({ integration, institution, balancesByAcc
     const displayTotal = Number(institution.total.toFixed(decimalPlaces)) === 0 ? 0 : institution.total;
     const totalAccount = { type: AccountTypeEnum.BANK, instrument: defaultInstrument };
     const isStaticHeader = useIsStaticAccountDetailsHeader();
-    const title = getBankIntegrationTitle(getBankProviderTitle(t, institution.provider), institution.label, institution.groupNumber);
+    const title = getInstitutionTitle(t, institution.provider, institution.label, institution.groupNumber);
     const contextValue = { integration, capabilities: getBankIntegrationCapabilities(integration) };
     const titlePrefix = institution.provider === ExternalSourceEnum.INZHUR ? null : institution.provider;
     const headerTitle = isStaticHeader ? (

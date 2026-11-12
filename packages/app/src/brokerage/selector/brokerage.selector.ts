@@ -9,5 +9,6 @@ export const BrokerageSelector = {
     FeeInput: 'Brokerage.FeeInput',
     DateButton: 'Brokerage.DateButton',
     SaveButton: 'Brokerage.SaveButton',
-    SellButton: 'Brokerage.SellButton'
+    SellButton: 'Brokerage.SellButton',
+    Holding: 'Brokerage.Holding'
 } as const;

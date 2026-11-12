@@ -14,8 +14,7 @@ import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-am
 import { testID } from '../../../@generic/utils/test-id.util';
 import { InzhurInstitutionRowDetail } from '../../../inzhur/component/inzhur-institution-row-detail/inzhur-institution-row-detail';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
-import { getBankIntegrationTitle } from '../../utils/get-bank-integration-title.util';
-import { getBankProviderTitle } from '../../utils/get-bank-provider-title.util';
+import { getInstitutionTitle } from '../../utils/get-institution-title.util';
 import { InstitutionRowDetail } from '../institution-row-detail/institution-row-detail';
 import { InstitutionRowTotal } from '../institution-row-total/institution-row-total';
 
@@ -41,7 +40,7 @@ export const InstitutionRow = ({ institution }: Props) => {
 
     const handlePress = () => void router.push({ pathname: '/institution/[id]', params: { id: String(integrationId) } });
 
-    const title = getBankIntegrationTitle(getBankProviderTitle(t, provider), label, groupNumber);
+    const title = getInstitutionTitle(t, provider, label, groupNumber);
     const accountsCount = accounts.length;
     const accountsCountLabel = accounts.every(account => account.type === AccountTypeEnum.CRYPTO_SYNC)
         ? t({ message: plural(accountsCount, { one: '# asset', other: '# assets' }) })

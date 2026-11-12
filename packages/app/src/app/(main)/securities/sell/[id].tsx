@@ -3,9 +3,12 @@ import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { useLocalSearchParams } from 'expo-router';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { IdParamInterface } from '../../../../@generic/interface/id-param.interface';
 import { useGetAccountByIdQuery } from '../../../../account/query/use-get-account-by-id.query';
 import { useGetAccountsByIntegrationIdQuery } from '../../../../account/query/use-get-accounts-by-integration-id.query';
+import { SecurityHoldingRow } from '../../../../brokerage/component/security-holding-row/security-holding-row';
 import { SecurityTradeForm } from '../../../../brokerage/component/security-trade-form/security-trade-form';
 import { BrokerageService } from '../../../../brokerage/service/brokerage.service';
 
@@ -23,5 +26,9 @@ export default function SellSecurity() {
     const handleSubmit = (values: SecurityTradeFormValues) =>
         Effect.flatMap(BrokerageService, brokerageService => brokerageService.sell(accountId, values));
 
-    return <SecurityTradeForm title={t`Sell`} currencySymbol={cash?.instrument.symbol ?? ''} isReady onSubmit={handleSubmit} />;
+    return (
+        <SecurityTradeForm title={t`Sell`} currencySymbol={cash?.instrument.symbol ?? ''} isReady onSubmit={handleSubmit}>
+            {isDefined(account) ? <SecurityHoldingRow accountId={accountId} instrument={account.instrument} /> : null}
+        </SecurityTradeForm>
+    );
 }

@@ -1,4 +1,4 @@
-import { convertFromMicroUnits } from '@budgie/contracts';
+import { ExternalSourceEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import * as Arr from 'effect/Array';
@@ -43,11 +43,13 @@ export const CurrencyMarketAccounts = ({ instrument }: Props) => {
             {accountRows.map(row => {
                 const amount = convertFromMicroUnits(row.balance);
                 const valueLabel = isDefined(valuationRate) ? formatMoney(amount * valuationRate, defaultInstrument.symbol) : null;
+                const brokerageLabel = row.integrationProvider === ExternalSourceEnum.MANUAL ? row.integrationLabel : null;
+                const account = { ...row.account, title: brokerageLabel ?? row.account.title };
 
                 return (
                     <CurrencyMarketAccountRow
                         key={row.account.id}
-                        account={row.account}
+                        account={account}
                         sync={row.sync}
                         instrumentCode={instrument.code}
                         amount={amount}

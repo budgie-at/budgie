@@ -16,6 +16,7 @@ export const SecurityListingRow = ({ listing, isSelected, onSelect }: Props) => 
     return (
         <GroupedListCheckRow
             title={listing.name}
+            titleNumberOfLines={2}
             subtitle={joinWithMiddot([listing.symbol, listing.exchange])}
             isSelected={isSelected}
             onPress={handlePress}
