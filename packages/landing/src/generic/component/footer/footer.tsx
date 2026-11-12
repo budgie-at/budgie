@@ -234,9 +234,15 @@ export const Footer = async ({ lang }: Props) => {
                 </div>
 
                 <div className="flex flex-col gap-4 sm:flex-row justify-between items-center border-t border-border/40 pt-8">
-                    <p className="text-xs text-muted-foreground">
-                        <Trans>&copy; {year} Budgie. All rights reserved.</Trans>
-                    </p>
+                    <div className="space-y-1">
+                        <p className="text-xs text-muted-foreground">
+                            <Trans>&copy; {year} Budgie. All rights reserved.</Trans>
+                        </p>
+
+                        <p className="text-xs text-muted-foreground">
+                            <Trans>Google Play and the Google Play logo are trademarks of Google LLC.</Trans>
+                        </p>
+                    </div>
 
                     <div className="flex flex-wrap justify-center gap-x-4 gap-y-2">
                         <Link

@@ -2,9 +2,14 @@ import { Trans } from '@lingui/react/macro';
 
 import { Badge } from '../../../ui/badge';
 import { WaitlistVariantEnum } from '../../enum/waitlist-variant.enum';
+import { GooglePlayBadge } from '../google-play-badge/google-play-badge';
 import { WaitlistForm } from '../waitlist-form/waitlist-form';
 
-export const HeroSectionHeader = () => (
+interface Props {
+    readonly lang: string;
+}
+
+export const HeroSectionHeader = ({ lang }: Props) => (
     <div className="hero-copy">
         <Badge className="hero-enter hero-badge rounded-full px-4 py-1.5 text-sm font-medium" variant="secondary">
             <Trans>Private beta</Trans>
@@ -20,6 +25,10 @@ export const HeroSectionHeader = () => (
 
         <div className="hero-enter hero-action">
             <WaitlistForm variant={WaitlistVariantEnum.HERO} />
+
+            <div className="mt-4">
+                <GooglePlayBadge lang={lang} />
+            </div>
         </div>
     </div>
 );

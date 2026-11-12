@@ -9727,6 +9727,10 @@ msgstr "Керування жестами — однією рукою, без п
 msgid "gestures"
 msgstr "жести"
 
+#: src/generic/component/google-play-badge/google-play-badge.tsx
+msgid "Get it on Google Play"
+msgstr "Доступно в Google Play"
+
 #: src/generic/component/waitlist-form/waitlist-form.tsx
 msgid "Get the app when it opens"
 msgstr "Отримайте застосунок, щойно він відкриється"
@@ -9802,6 +9806,10 @@ msgstr "Хороша документація процесу міграції"
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Good multi-currency support"
 msgstr "Хороша підтримка багатьох валют"
+
+#: src/generic/component/footer/footer.tsx
+msgid "Google Play and the Google Play logo are trademarks of Google LLC."
+msgstr "Google Play і логотип Google Play є товарними знаками Google LLC."
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Groceries"
