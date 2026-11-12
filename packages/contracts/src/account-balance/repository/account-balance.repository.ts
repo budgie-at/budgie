@@ -227,17 +227,12 @@ export class AccountBalanceRepository extends Context.Service<AccountBalanceRepo
                     .where(and(eq(AccountEntityTable.includeInNetWorth, true), isNull(AccountEntityTable.deletedAt), isAccountOwnedSql))
             );
         },
-        getTotalByCryptoInstrument: (instrumentId: number) =>
+        getTotalByUnitInstrument: (instrumentId: number) =>
             Db.query(db =>
                 db
                     .select({ balance: sql<number>`COALESCE(SUM(${getAccountBalanceWithTransactionsSql()}), 0)` })
                     .from(AccountEntityTable)
-                    .where(
-                        getActiveAccountWhereSql(
-                            inArray(AccountEntityTable.type, CRYPTO_ACCOUNT_TYPES),
-                            eq(AccountEntityTable.instrumentId, instrumentId)
-                        )
-                    )
+                    .where(getActiveAccountWhereSql(isUnitAccountSql(), eq(AccountEntityTable.instrumentId, instrumentId)))
             ),
         getHomeAccountRows: (defaultInstrumentId: number) => {
             const balanceSql = getAccountBalanceWithTransactionsSql();
@@ -268,7 +263,8 @@ export class AccountBalanceRepository extends Context.Service<AccountBalanceRepo
                         hasLedgerHistory: sql<number>`EXISTS (SELECT 1 FROM ${TransactionEntryEntityTable} WHERE ${TransactionEntryEntityTable.accountId} = ${AccountEntityTable.id} AND ${TransactionEntryEntityTable.deletedAt} IS NULL)`,
                         isSharedByOther: sql<number>`CASE WHEN NOT ${isAccountOwnedSql} THEN 1 ELSE 0 END`,
                         instrument: InstrumentEntityTable,
-                        integrationLabel: BankIntegrationEntityTable.label
+                        integrationLabel: BankIntegrationEntityTable.label,
+                        integrationProvider: BankIntegrationEntityTable.provider
                     })
                     .from(AccountEntityTable)
                     .innerJoin(InstrumentEntityTable, eq(InstrumentEntityTable.id, AccountEntityTable.instrumentId))

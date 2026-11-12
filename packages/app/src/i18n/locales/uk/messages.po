@@ -830,7 +830,7 @@ msgstr "Синхронізація {providerName}"
 msgid "{quantityLabel} · updated from imports"
 msgstr "{quantityLabel} · оновлено з імпортів"
 
-#: src/account/component/fund-account-card/fund-account-card.tsx
+#: src/account/component/security-account-card/security-account-card.tsx
 msgid "{quantityLabel}, worth {valueLabel}"
 msgstr "{quantityLabel}, вартість {valueLabel}"
 
@@ -1456,6 +1456,11 @@ msgstr "Додати комісію"
 #: src/transaction/components/split-entries-add-item-footer/split-entries-add-item-footer.tsx
 msgid "Add item"
 msgstr "Додати запис"
+
+#: src/app/(main)/securities/buy/[id].tsx
+#: src/brokerage/component/brokerage-add-position-action/brokerage-add-position-action.tsx
+msgid "Add position"
+msgstr "Додати позицію"
 
 #: src/rule/constant/rule-action-type.constant.ts
 msgid "add tag"
@@ -2241,6 +2246,12 @@ msgstr "Поверніть дані Budgie з резервної копії з �
 #: src/cloud-sync/component/cloud-sync-initial-fetch-row/cloud-sync-initial-fetch-row.tsx
 msgid "Bringing your data from iCloud…"
 msgstr "Завантажуємо ваші дані з iCloud…"
+
+#: src/account/component/create-simple-account/create-simple-account.tsx
+#: src/account/constant/bank-provider-title.constant.ts
+#: src/app/(main)/create-account/index.tsx
+msgid "Brokerage"
+msgstr "Брокер"
 
 #: src/category/components/category-icon-fix-row/category-icon-fix-row.tsx
 msgid "Browse icons"
@@ -3477,6 +3488,10 @@ msgstr "Не вдалося зберегти ключ у захищеному с
 msgid "Could not save the purchase"
 msgstr "Не вдалося зберегти покупку"
 
+#: src/brokerage/component/security-trade-form/security-trade-form.tsx
+msgid "Could not save the trade"
+msgstr "Не вдалося зберегти угоду"
+
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "Could not seal the file"
 msgstr "Не вдалося запечатати файл"
@@ -3851,9 +3866,9 @@ msgstr "дата"
 #: src/@generic/component/date-filter-sheet-content/date-filter-sheet-content.tsx
 #: src/@generic/component/date-filter/date-filter.tsx
 #: src/@generic/component/date-picker-sheet-content/date-picker-sheet-content.tsx
+#: src/@generic/component/operated-at-field/operated-at-field.tsx
 #: src/app/(main)/import-csv.tsx
 #: src/import/utils/get-import-match-description.util.ts
-#: src/inzhur/component/inzhur-purchase-date-field/inzhur-purchase-date-field.tsx
 #: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
 #: src/transaction/components/transaction-date-tags-row/transaction-date-tags-row.tsx
 msgid "Date"
@@ -4332,6 +4347,10 @@ msgstr "напр. обід з командою"
 #: src/account/component/create-simple-account/create-simple-account.tsx
 msgid "e.g. Main card"
 msgstr "напр. основна картка"
+
+#: src/account/component/create-simple-account/create-simple-account.tsx
+msgid "e.g. My broker"
+msgstr "напр. Мій брокер"
 
 #: src/rule/hooks/use-rule-text-value-meta.hook.ts
 msgid "e.g. Netflix"
@@ -4864,6 +4883,7 @@ msgstr "Запрошена родина може його редагувати"
 msgid "Features"
 msgstr "Функції"
 
+#: src/brokerage/component/security-trade-form/security-trade-form.tsx
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
 #: src/transaction/components/transaction-fee-field-icon/transaction-fee-field-icon.tsx
 #: src/transaction/components/transaction-fee-step/transaction-fee-step.tsx
@@ -7732,6 +7752,10 @@ msgstr "Ціна недоступна"
 msgid "Price per certificate"
 msgstr "Ціна за сертифікат"
 
+#: src/brokerage/component/security-trade-form/security-trade-form.tsx
+msgid "Price per share"
+msgstr "Ціна за акцію"
+
 #: src/recurring/hook/use-recurring-alert-message.hook.ts
 msgid "Price went from {fromAmount} to {toAmount} on {changedDate}"
 msgstr "Ціна змінилася з {fromAmount} на {toAmount} ({changedDate})"
@@ -7870,6 +7894,10 @@ msgstr "Готові"
 #: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
 msgid "Ready to file"
 msgstr "Готово до розподілу"
+
+#: src/market-data/component/currency-market-realized-return-row/currency-market-realized-return-row.tsx
+msgid "Realized return"
+msgstr "Реалізований прибуток"
 
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx
@@ -8356,6 +8384,7 @@ msgid "Same trigger as a rule above"
 msgstr "Та сама умова, що й у правила вище"
 
 #: src/@generic/component/modal-form-save-button/modal-form-save-button.tsx
+#: src/brokerage/component/security-trade-form/security-trade-form.tsx
 #: src/inzhur/component/inzhur-purchase-footer/inzhur-purchase-footer.tsx
 #: src/recurring/components/recurring-series-form-screen/recurring-series-form-screen.tsx
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
@@ -8634,6 +8663,11 @@ msgstr "Оберіть експортований XLSX-файл"
 msgid "Selected"
 msgstr "Вибрано"
 
+#: src/account/component/account-actions-menu/account-actions-menu.tsx
+#: src/app/(main)/securities/sell/[id].tsx
+msgid "Sell"
+msgstr "Продати"
+
 #: src/household/component/household-invite-row/household-invite-row.tsx
 msgid "Send an invitation with Messages"
 msgstr "Надіслати запрошення в Повідомленнях"
@@ -8788,6 +8822,10 @@ msgstr "Спільне з вами · не враховується у підс�
 #: src/household/utils/get-family-labels.util.ts
 msgid "Shared with your family"
 msgstr "Спільне з вашою родиною"
+
+#: src/brokerage/component/security-trade-form/security-trade-form.tsx
+msgid "Shares"
+msgstr "Акції"
 
 #: src/household/utils/get-household-share-labels.util.ts
 msgid "Sharing"
@@ -9114,6 +9152,10 @@ msgstr "Ще сплатити"
 #: src/onboarding/constant/onboarding-account-options.constant.ts
 msgid "Stocks"
 msgstr "Акції"
+
+#: src/app/(main)/create-account/index.tsx
+msgid "Stocks and ETFs at a broker"
+msgstr "Акції та ETF у брокера"
 
 #: src/household/component/household-stop-sharing-row/household-stop-sharing-row.tsx
 msgid "Stop sharing"
@@ -9778,6 +9820,10 @@ msgstr "Позначка показує, скільки має бути відк
 msgid "Tick marks where spending should be by today."
 msgstr "Позначка показує, скільки мало б бути витрачено на сьогодні."
 
+#: src/brokerage/component/security-search-section/security-search-section.tsx
+msgid "Ticker, ISIN or name"
+msgstr "Тікер, ISIN або назва"
+
 #: src/budget/utils/resolve-budget-display-status.util.ts
 msgid "Tight"
 msgstr "Впритул"
@@ -9945,6 +9991,10 @@ msgstr "Усього сплачено"
 #: src/recurring/components/recurring-detail-stats/recurring-detail-stats.tsx
 msgid "Total received"
 msgstr "Усього отримано"
+
+#: src/brokerage/component/brokerage-gain-line/brokerage-gain-line.tsx
+msgid "total return"
+msgstr "загальний прибуток"
 
 #: src/settings/hook/use-biometric-label.hook.ts
 msgid "Touch ID"
@@ -10485,11 +10535,11 @@ msgstr "Використовує регулярний вираз до 200 сим
 msgid "Value"
 msgstr "Вартість"
 
-#: src/account/component/fund-account-card/fund-account-card.tsx
+#: src/account/component/security-account-card/security-account-card.tsx
 msgid "value unavailable"
 msgstr "вартість недоступна"
 
-#: src/account/component/fund-account-card/fund-account-card.tsx
+#: src/account/component/security-account-card/security-account-card.tsx
 msgid "Value unavailable"
 msgstr "Вартість недоступна"
 

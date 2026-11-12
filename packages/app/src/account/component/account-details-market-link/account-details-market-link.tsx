@@ -7,7 +7,7 @@ import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { CryptoCurrencyIcon } from '../../../@generic/component/crypto-currency-icon/crypto-currency-icon';
+import { CurrencySelectorInstrumentIcon } from '../../../@generic/component/currency-selector-instrument-icon/currency-selector-instrument-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
@@ -22,7 +22,7 @@ import { useAccountDetailsMarketSummary } from '../../hook/use-account-details-m
 import type { InstrumentEntityInterface } from '@budgie/contracts';
 
 interface Props {
-    readonly instrument: Pick<InstrumentEntityInterface, 'id' | 'code' | 'name'>;
+    readonly instrument: Pick<InstrumentEntityInterface, 'id' | 'code' | 'name' | 'symbol' | 'type'>;
 }
 
 const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
@@ -61,7 +61,7 @@ export const AccountDetailsMarketLink = ({ instrument }: Props) => {
             testID={AccountDetailsSelector.MarketLink}
             onPress={handlePress}
         >
-            <CryptoCurrencyIcon code={instrument.code} size={20} />
+            <CurrencySelectorInstrumentIcon code={instrument.code} symbol={instrument.symbol} type={instrument.type} size={20} />
             <View className={contentVariants({ stacked: isStacked })}>
                 <Text className="shrink text-[15px] font-medium text-primary" numberOfLines={1}>
                     {instrument.name}

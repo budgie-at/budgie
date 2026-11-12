@@ -5,6 +5,8 @@ import { View } from 'react-native';
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { InstitutionSelector } from '../../../app/(main)/institution/institution.selector';
+import { BrokerageAddPositionAction } from '../../../brokerage/component/brokerage-add-position-action/brokerage-add-position-action';
+import { BrokerageGainLine } from '../../../brokerage/component/brokerage-gain-line/brokerage-gain-line';
 import { InzhurFreshnessLine } from '../../../inzhur/component/inzhur-freshness-line/inzhur-freshness-line';
 import { InzhurImportStatementAction } from '../../../inzhur/component/inzhur-import-statement-action/inzhur-import-statement-action';
 import { InzhurInstitutionChart } from '../../../inzhur/component/inzhur-institution-chart/inzhur-institution-chart';
@@ -30,6 +32,7 @@ export const InstitutionDetailsSummary = ({ institution, balancesByAccountId }: 
     const progress = resolveInitialSyncProgress(syncs);
 
     const isInzhur = institution.provider === ExternalSourceEnum.INZHUR;
+    const isBrokerage = institution.provider === ExternalSourceEnum.MANUAL;
     const statusLine = isNotEmptyArray(syncs) ? <BankIntegrationStatusPill syncs={syncs} /> : null;
 
     return (
@@ -37,6 +40,7 @@ export const InstitutionDetailsSummary = ({ institution, balancesByAccountId }: 
             <View className="items-center gap-y-lg pb-md" testID={InstitutionSelector.Hero}>
                 <View style={balanceSlotStyle} />
                 {isInzhur ? <InzhurInstitutionGainLine /> : null}
+                {isBrokerage ? <BrokerageGainLine institution={institution} balancesByAccountId={balancesByAccountId} /> : null}
                 {isInzhur ? <InzhurFreshnessLine /> : statusLine}
             </View>
             {isInzhur ? <InzhurInstitutionChart /> : null}
@@ -44,6 +48,7 @@ export const InstitutionDetailsSummary = ({ institution, balancesByAccountId }: 
             {isDefined(progress) ? <SyncImportProgress progress={progress} /> : null}
             {isInzhur ? <InzhurPendingTopUps /> : null}
             {isInzhur ? <InzhurImportStatementAction /> : null}
+            {isBrokerage ? <BrokerageAddPositionAction /> : null}
             <InstitutionAccounts institution={institution} balancesByAccountId={balancesByAccountId} />
         </View>
     );

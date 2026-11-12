@@ -4,6 +4,7 @@ import { Text, View } from 'react-native';
 import { MoneyText } from '../../../@generic/component/money-text/money-text';
 import { MoneyTextVariantEnum } from '../../../@generic/enum/money-text-variant.enum';
 import { useFormatInstrumentAmount } from '../../../i18n/hook/use-format-instrument-amount.hook';
+import { isSecurityInstrumentType } from '../../../instrument/utils/is-security-instrument-type.util';
 
 import type { AggregatedTransactionEntryInterface } from '../../interface/aggregated-transaction-entry.interface';
 
@@ -17,8 +18,8 @@ interface Props {
 export const TransactionTransferAmount = ({ fromEntry, toEntry, accountId, testID }: Props) => {
     const formatDigits = useFormatInstrumentAmount();
 
-    if (toEntry.account.instrument.type === InstrumentTypeEnum.FUND || fromEntry.account.instrument.type === InstrumentTypeEnum.FUND) {
-        const moneyEntry = toEntry.account.instrument.type === InstrumentTypeEnum.FUND ? fromEntry : toEntry;
+    if (isSecurityInstrumentType(toEntry.account.instrument.type) || isSecurityInstrumentType(fromEntry.account.instrument.type)) {
+        const moneyEntry = isSecurityInstrumentType(toEntry.account.instrument.type) ? fromEntry : toEntry;
 
         return (
             <View className="shrink-0 items-end" testID={testID}>

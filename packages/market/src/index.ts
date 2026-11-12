@@ -16,3 +16,4 @@ export type { InzhurFundPriceInterface } from './market-data/interface/inzhur-fu
 export { findLastIndexOnOrBefore } from './@generic/utils/find-last-index-on-or-before.util';
 
 export { YahooMarketDataService } from './market-data/service/yahoo-market-data.service';
+export type { YahooListingInterface } from './market-data/interface/yahoo-listing.interface';

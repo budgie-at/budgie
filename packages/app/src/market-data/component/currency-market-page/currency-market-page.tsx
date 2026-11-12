@@ -9,6 +9,7 @@ import { GroupedSurface } from '../../../@generic/component/grouped-surface/grou
 import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
 import { RevealGate } from '../../../@generic/component/reveal-gate/reveal-gate';
 import { SCREEN_CHROME_CONFIG } from '../../../@generic/constant/screen-chrome-config.constant';
+import { getInstrumentUnitLabel } from '../../../instrument/utils/get-instrument-unit-label.util';
 import { defaultInstrumentIdAtom } from '../../../settings/constants/settings-atoms.constant';
 import { useInstrumentMarketDataQuery } from '../../query/use-instrument-market-data.query';
 import { CurrencyMarketAccounts } from '../currency-market-accounts/currency-market-accounts';
@@ -36,11 +37,13 @@ const CURRENCY_MARKET_CHROME_CONFIG = {
     collapseEnd: TITLE_HANDOFF_DISTANCE
 };
 
-export const CurrencyMarketPage = ({ instrument }: Props) => {
+export const CurrencyMarketPage = ({ instrument: storedInstrument }: Props) => {
     const defaultInstrumentId = useAtomValue(defaultInstrumentIdAtom);
-    const { latestPrice, previousPrice, prices } = useInstrumentMarketDataQuery(instrument.id, defaultInstrumentId);
+    const { latestPrice, previousPrice, prices } = useInstrumentMarketDataQuery(storedInstrument.id, defaultInstrumentId);
 
     const priceBottom = useSharedValue(HERO_PRICE_HEIGHT);
+
+    const instrument = { ...storedInstrument, code: getInstrumentUnitLabel(storedInstrument) };
 
     const latestPriceDate = latestPrice?.priceDate ?? null;
 

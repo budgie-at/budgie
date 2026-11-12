@@ -1,4 +1,4 @@
-import { CRYPTO_ACCOUNT_TYPES, convertFromMicroUnits } from '@budgie/contracts';
+import { convertFromMicroUnits } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import * as Arr from 'effect/Array';
@@ -30,9 +30,7 @@ export const CurrencyMarketAccounts = ({ instrument }: Props) => {
     const formatMoney = useDisplayFormatDigits();
 
     const accountRows = Arr.sort(
-        rows.filter(
-            row => row.account.isActive && row.account.instrumentId === instrument.id && CRYPTO_ACCOUNT_TYPES.includes(row.account.type)
-        ),
+        rows.filter(row => row.account.isActive && row.account.instrumentId === instrument.id),
         Order.flip(Order.mapInput(Order.Number, (row: (typeof rows)[number]) => row.balance))
     );
 

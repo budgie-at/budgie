@@ -7,7 +7,7 @@ import { useIsAmountProtected } from '../../../@generic/hook/use-is-amount-prote
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
-import { calculateCryptoReturn } from '../../utils/calculate-crypto-return.util';
+import { calculateInstrumentReturn } from '../../utils/calculate-instrument-return.util';
 import { getMarketChangeSign } from '../../utils/get-market-change-sign.util';
 import { getMarketMoveClassName } from '../../utils/get-market-move-class-name.util';
 import { CurrencyMarketPageSelector } from '../currency-market-page/currency-market-page.selector';
@@ -33,17 +33,17 @@ export const CurrencyMarketReturnRow = ({ position, valuationRate, balance, inst
     const formatPercent = useFormatDigits(PERCENT_FRACTION_DIGITS);
     const isAmountProtected = useIsAmountProtected();
 
-    const cryptoReturn = calculateCryptoReturn(position, valuationRate, balance);
-    const sign = getMarketChangeSign(cryptoReturn?.profit ?? 0);
-    const percentLabel = isDefined(cryptoReturn?.percent)
-        ? ` (${getMarketChangeSign(cryptoReturn.percent)}${formatPercent(Math.abs(cryptoReturn.percent))}%)`
+    const instrumentReturn = calculateInstrumentReturn(position, valuationRate, balance);
+    const sign = getMarketChangeSign(instrumentReturn?.profit ?? 0);
+    const percentLabel = isDefined(instrumentReturn?.percent)
+        ? ` (${getMarketChangeSign(instrumentReturn.percent)}${formatPercent(Math.abs(instrumentReturn.percent))}%)`
         : '';
-    const returnLabel = isDefined(cryptoReturn)
-        ? `${sign}${formatMoney(Math.abs(cryptoReturn.profit), symbol)}${percentLabel}`
+    const returnLabel = isDefined(instrumentReturn)
+        ? `${sign}${formatMoney(Math.abs(instrumentReturn.profit), symbol)}${percentLabel}`
         : t`Unavailable`;
-    const returnShare = isDefined(cryptoReturn?.percent) ? cryptoReturn.percent / PERCENT : (cryptoReturn?.profit ?? 0);
+    const returnShare = isDefined(instrumentReturn?.percent) ? instrumentReturn.percent / PERCENT : (instrumentReturn?.profit ?? 0);
     const returnClassName =
-        isDefined(cryptoReturn) && !isAmountProtected ? getMarketMoveClassName(returnShare) : 'text-secondary-foreground';
+        isDefined(instrumentReturn) && !isAmountProtected ? getMarketMoveClassName(returnShare) : 'text-secondary-foreground';
 
     return (
         <CurrencyMarketPositionRow

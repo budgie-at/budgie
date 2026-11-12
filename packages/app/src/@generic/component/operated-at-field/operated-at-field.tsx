@@ -2,17 +2,18 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useController } from 'react-hook-form';
 
-import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
-import { GroupedListValueRow } from '../../../@generic/component/grouped-list-value-row/grouped-list-value-row';
-import { usePickDate } from '../../../@generic/hook/use-pick-date.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
-import { InzhurSelector } from '../../selector/inzhur.selector';
+import { usePickDate } from '../../hook/use-pick-date.hook';
+import { GroupedListSection } from '../grouped-list-section/grouped-list-section';
+import { GroupedListValueRow } from '../grouped-list-value-row/grouped-list-value-row';
 
-import type { InzhurPurchaseFormValues } from '../../constant/inzhur-purchase-form-schema.constant';
+interface Props {
+    readonly testID: string;
+}
 
-export const InzhurPurchaseDateField = () => {
+export const OperatedAtField = ({ testID }: Props) => {
     const { t } = useLingui();
-    const { field } = useController<InzhurPurchaseFormValues, 'operatedAt'>({ name: 'operatedAt' });
+    const { field } = useController<Record<'operatedAt', Date>, 'operatedAt'>({ name: 'operatedAt' });
     const { formatDayAndFullMonthAndYear } = useFormatDate();
     const pickDate = usePickDate();
 
@@ -28,7 +29,7 @@ export const InzhurPurchaseDateField = () => {
                 title={t`Date`}
                 value={formatDayAndFullMonthAndYear(field.value)}
                 onPress={handleOpen}
-                testID={InzhurSelector.PurchaseDateButton}
+                testID={testID}
             />
         </GroupedListSection>
     );

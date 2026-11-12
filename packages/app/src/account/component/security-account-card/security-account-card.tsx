@@ -9,7 +9,7 @@ import { PROTECTED_AMOUNT_PLACEHOLDER } from '../../../@generic/constant/protect
 import { ROW_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-max-font-size-multiplier.constant';
 import { useIsAmountProtected } from '../../../@generic/hook/use-is-amount-protected.hook';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
-import { useFormatFundQuantity } from '../../../i18n/hook/use-format-fund-quantity.hook';
+import { useFormatInstrumentAmount } from '../../../i18n/hook/use-format-instrument-amount.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { AccountCardBalance } from '../account-card-balance/account-card-balance';
 import { AccountCardBase } from '../account-card-base/account-card-base';
@@ -20,14 +20,16 @@ interface Props {
     readonly convertedBalance: number | null;
 }
 
-export const FundAccountCard = ({ account, balance, convertedBalance }: Props) => {
+export const SecurityAccountCard = ({ account, balance, convertedBalance }: Props) => {
     const { t } = useLingui();
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const protectAmount = useProtectedAmountLabel();
-    const formatFundQuantity = useFormatFundQuantity();
+    const formatInstrumentAmount = useFormatInstrumentAmount();
 
     const isAmountProtected = useIsAmountProtected();
-    const quantityLabel = isAmountProtected ? PROTECTED_AMOUNT_PLACEHOLDER : formatFundQuantity(balance);
+    const quantityLabel = isAmountProtected
+        ? PROTECTED_AMOUNT_PLACEHOLDER
+        : formatInstrumentAmount(balance, account.instrument.symbol, account.instrument.type);
     const valueLabel = isDefined(convertedBalance) ? protectAmount(convertedBalance, defaultInstrument.symbol) : t`value unavailable`;
     const value = isDefined(convertedBalance) ? (
         <AccountCardBalance title={account.title} balance={convertedBalance} instrumentSymbol={defaultInstrument.symbol} />
