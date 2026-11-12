@@ -128,6 +128,12 @@ export default async function AiFeaturesPillarHubPage(props: PageLangParam) {
                         }
                         title={<Trans>Bulk Transaction Categorization</Trans>}
                     />
+                    <PillarHubFeatureGrid.Item
+                        href={`/${lang}/features/receipt-scanning`}
+                        index={7}
+                        tagline={<Trans>Scan a receipt and confirm a prefilled expense. The text is read on your iPhone.</Trans>}
+                        title={<Trans>Receipt Scanning — Read on Your iPhone</Trans>}
+                    />
                 </PillarHubFeatureGrid>
             </PillarHubSection>
 

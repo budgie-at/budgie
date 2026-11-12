@@ -109,6 +109,22 @@ export default async function PrivacyPillarHubPage(props: PageLangParam) {
                         tagline={<Trans>One file. No account. Restore by picking it — encrypted if your PIN was set.</Trans>}
                         title={<Trans>Database Backup &amp; Restore</Trans>}
                     />
+                    <PillarHubFeatureGrid.Item
+                        href={`/${lang}/features/icloud-sync`}
+                        index={6}
+                        tagline={
+                            <Trans>
+                                Your iPhone and iPad stay in sync through your own iCloud, encrypted on the device before it leaves.
+                            </Trans>
+                        }
+                        title={<Trans>iCloud Sync and Backup — No Budgie Account</Trans>}
+                    />
+                    <PillarHubFeatureGrid.Item
+                        href={`/${lang}/features/family-sharing`}
+                        index={7}
+                        tagline={<Trans>Share the accounts and budgets you choose with family. Everything else stays private.</Trans>}
+                        title={<Trans>Family Sharing — Share Only What You Choose</Trans>}
+                    />
                 </PillarHubFeatureGrid>
             </PillarHubSection>
 
@@ -180,10 +196,10 @@ export default async function PrivacyPillarHubPage(props: PageLangParam) {
                     scene="private-budget-app-alternative-1"
                     slug="private-budget-app-alternative"
                 >
-                    <FeatureStory.Callout index={0} y={0.255}>
+                    <FeatureStory.Callout index={8} y={0.255}>
                         <Trans>Stored locally on your device</Trans>
                     </FeatureStory.Callout>
-                    <FeatureStory.Callout index={1} y={0.4}>
+                    <FeatureStory.Callout index={9} y={0.4}>
                         <Trans>App Lock, off by default</Trans>
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>

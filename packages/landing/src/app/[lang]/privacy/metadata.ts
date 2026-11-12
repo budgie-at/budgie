@@ -20,5 +20,5 @@ export const PRIVACY_PILLAR_HUB_METADATA: PillarHubMetadataInterface = {
         msg`budget app without bank login`
     ],
     publishedAt: '2026-05-07',
-    updatedAt: '2026-09-26'
+    updatedAt: '2026-11-12'
 };

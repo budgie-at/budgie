@@ -11,19 +11,29 @@ export const FEATURE_METADATA = {
     tier: FeatureTierEnum.HERO,
     pillar: PillarEnum.PLANNING,
     name: msg`Budget Planning`,
-    tagline: msg`One overall limit, per-category limits, and a cap for everything else, with a home-screen widget and on-device alerts.`,
-    metaTitle: msg`Monthly Budget Planning — Budgie`,
-    metaDescription: msg`Set an overall monthly limit plus per-category limits, track the current cycle from the home-screen widget, and get on-device alerts at 80% and 100% of your limit. No server involved.`,
-    seoKeywords: ['monthly budget app', 'budget planning app', 'category budget limits', 'offline budget alerts', 'monthly budget cycle'],
+    tagline: msg`Weekly to yearly budgets with category limits, rollover, safe to spend, sinking funds and on-device alerts.`,
+    metaTitle: msg`Budget Planning: Weekly, Monthly, Sinking Funds — Budgie`,
+    metaDescription: msg`Weekly, biweekly, monthly or yearly budgets with category limits, rollover, a daily safe-to-spend figure, sinking funds and event budgets. Alerts run on your device. No server involved.`,
+    seoKeywords: [
+        'sinking funds app',
+        'weekly budget app',
+        'safe to spend',
+        'budget planning app',
+        'category budget limits',
+        'offline budget alerts'
+    ],
     relatedFeatureSlugs: [
         'spending-analytics',
         'custom-categories',
         'expense-tracking',
         'multi-currency',
         'recurring-payments-calendar',
-        'database-backup'
+        'database-backup',
+        'family-sharing',
+        'siri-budget-questions',
+        'sinking-funds'
     ],
     relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-shutdown-private-alternative'],
     publishedAt: '2026-09-02',
-    updatedAt: '2026-09-02'
+    updatedAt: '2026-11-12'
 } satisfies FeatureRegistryEntryInterface;
