@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.178.0](https://github.com/budgie-at/budgie/compare/v6.177.0...v6.178.0) (2026-11-12)
+
+### Features
+
+* **app:** offer EU banks (Enable Banking) in onboarding import ([#2180](https://github.com/budgie-at/budgie/issues/2180)) ([27d104e](https://github.com/budgie-at/budgie/commit/27d104e97e0bd58720881af717386973bf977c6b))
+
+
 # [6.177.0](https://github.com/budgie-at/budgie/compare/v6.176.0...v6.177.0) (2026-11-12)
 
 ### Bug Fixes
