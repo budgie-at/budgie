@@ -107,6 +107,7 @@ export { CloudSyncInstallId } from './engine/port/cloud-sync-install-id.port';
 export { CloudSyncDatabaseChanges } from './engine/port/cloud-sync-database-changes.port';
 export { CloudSyncHost } from './engine/port/cloud-sync-host.port';
 export { CloudSyncTransportError } from './engine/error/cloud-sync-transport.error';
+export { CloudSyncErrorReasonEnum } from './engine/enum/cloud-sync-error-reason.enum';
 export { CloudSyncStatusEnum } from './engine/enum/cloud-sync-status.enum';
 export { CloudSyncRestorePhaseEnum } from './engine/enum/cloud-sync-restore-phase.enum';
 export { CloudSyncLineageChoiceEnum } from './engine/enum/cloud-sync-lineage-choice.enum';

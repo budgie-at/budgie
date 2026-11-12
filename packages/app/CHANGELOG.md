@@ -3,6 +3,42 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.178.0](https://github.com/budgie-at/budgie/compare/v6.177.0...v6.178.0) (2026-11-12)
+
+### Features
+
+* **app:** offer EU banks (Enable Banking) in onboarding import ([#2180](https://github.com/budgie-at/budgie/issues/2180)) ([27d104e](https://github.com/budgie-at/budgie/commit/27d104e97e0bd58720881af717386973bf977c6b))
+
+
+# [6.177.0](https://github.com/budgie-at/budgie/compare/v6.176.0...v6.177.0) (2026-11-12)
+
+### Features
+
+* **app:** shorten iCloud sync error subtitles to one line ([4805e78](https://github.com/budgie-at/budgie/commit/4805e78571eaa577dbedd1eb6470543c6c4b389c))
+* explain iCloud sync failures and offer a retry in Settings ([833517c](https://github.com/budgie-at/budgie/commit/833517cf98e6b530e43df6a5d66dcb4dd23d753b))
+
+
+# [6.176.0](https://github.com/budgie-at/budgie/compare/v6.175.4...v6.176.0) (2026-11-12)
+
+### Features
+
+* **app:** refresh App Store listing for family sharing, receipts, EU banks and Siri ([#2177](https://github.com/budgie-at/budgie/issues/2177)) ([9f33a0d](https://github.com/budgie-at/budgie/commit/9f33a0d692607fceb80446d3c4aec54f72adb597))
+
+
+## [6.175.4](https://github.com/budgie-at/budgie/compare/v6.175.3...v6.175.4) (2026-11-12)
+
+### Bug Fixes
+
+* **app:** fold the backup's WAL into a single file before an import swaps it in ([#2176](https://github.com/budgie-at/budgie/issues/2176)) ([0db4b95](https://github.com/budgie-at/budgie/commit/0db4b95e6c2c252298ece83132a14401be4e0c4a)), closes [#2174](https://github.com/budgie-at/budgie/issues/2174)
+
+
+## [6.175.3](https://github.com/budgie-at/budgie/compare/v6.175.2...v6.175.3) (2026-11-12)
+
+### Bug Fixes
+
+* **app:** keep a recoverable key and sync state while database files are swapped ([#2175](https://github.com/budgie-at/budgie/issues/2175)) ([48ff814](https://github.com/budgie-at/budgie/commit/48ff814ae9c2d4f3f284ef08073e9f6041068702)), closes [#2168](https://github.com/budgie-at/budgie/issues/2168) [#2170](https://github.com/budgie-at/budgie/issues/2170)
+
+
 ## [6.175.2](https://github.com/budgie-at/budgie/compare/v6.175.1...v6.175.2) (2026-11-11)
 
 ### Bug Fixes

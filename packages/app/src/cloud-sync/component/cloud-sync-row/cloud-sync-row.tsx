@@ -12,6 +12,7 @@ import { SettingsWarningSubtitle } from '../../../settings/components/settings-w
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { updateSettingsMutation } from '../../../settings/mutation/update-settings.mutation';
 import { useCloudSyncStatusLabel } from '../../hook/use-cloud-sync-status-label.hook';
+import { CloudSyncRetryRow } from '../cloud-sync-retry-row/cloud-sync-retry-row';
 
 import { CloudSyncRowSelector } from './cloud-sync-row.selector';
 
@@ -19,7 +20,7 @@ export const CloudSyncRow = () => {
     const { t } = useLingui();
     const isEnabled = useSetting('cloudSyncEnabled');
     const { isAvailable } = useICloudAccount();
-    const { label, isHealthy, isSignedOut } = useCloudSyncStatusLabel();
+    const { label, isHealthy, isSignedOut, isFailed } = useCloudSyncStatusLabel();
     const { run, isLoading } = useSingleFlight();
 
     const isAccountUnavailable = !isAvailable || isSignedOut;
@@ -37,17 +38,21 @@ export const CloudSyncRow = () => {
     const offLabel = isAccountUnavailable ? t`Sign in to iCloud to turn on` : t`Turned off`;
     const onLabel = isHealthy ? label : <SettingsWarningSubtitle>{label}</SettingsWarningSubtitle>;
     const subtitle = isOn ? onLabel : offLabel;
+    const isRetryVisible = isOn && isFailed;
 
     return (
-        <GroupedListSwitchRow
-            left={<SettingsRowIcon icon={UserIconNameEnum.RefreshCw} variant="ghost" />}
-            title={t`Sync across devices`}
-            subtitle={subtitle}
-            value={isOn}
-            isLoading={isLoading}
-            testID={CloudSyncRowSelector.Card}
-            switchTestID={CloudSyncRowSelector.Switch}
-            {...(!isAccountUnavailable && !isLoading && { onChange: handleChange })}
-        />
+        <>
+            <GroupedListSwitchRow
+                left={<SettingsRowIcon icon={UserIconNameEnum.RefreshCw} variant="ghost" />}
+                title={t`Sync across devices`}
+                subtitle={subtitle}
+                value={isOn}
+                isLoading={isLoading}
+                testID={CloudSyncRowSelector.Card}
+                switchTestID={CloudSyncRowSelector.Switch}
+                {...(!isAccountUnavailable && !isLoading && { onChange: handleChange })}
+            />
+            {isRetryVisible ? <CloudSyncRetryRow /> : null}
+        </>
     );
 };

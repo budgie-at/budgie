@@ -7,14 +7,15 @@ import * as Exit from 'effect/Exit';
 import * as Layer from 'effect/Layer';
 import { beforeEach, vi } from 'vitest';
 
+import { emptyFn } from '@rnw-community/shared';
+
 import { DatabaseLifecycleService } from '../src/@generic/drizzle/service/database-lifecycle.service';
-import { AiEmbeddingStatusService } from '../src/ai/service/ai-embedding-status.service';
-import { AiStorageReplacementService } from '../src/ai/service/ai-storage-replacement.service';
-import { AuthService } from '../src/auth/service/auth.service';
 import { cloudSyncStateStoreLayer } from '../src/cloud-sync/layer/cloud-sync-state-store.layer';
 import { DatabaseImportService } from '../src/import/service/database-import.service';
 
 import { resetStorage, storage } from './fixture/expo-file-system-fake';
+import { secrets } from './fixture/expo-secure-store-fake';
+import { importDependenciesLayer } from './fixture/import-dependencies-layer';
 import { inertDbLayer } from './fixture/inert-db-layer';
 
 import type { CloudSyncStateInterface } from '@budgie/cloud-sync';
@@ -45,10 +46,13 @@ vi.mock('../src/@generic/drizzle/utils/resolve-backup-file.util', async () => {
 
     return { resolveBackupFile: (uri: string) => Effect.succeed(uri) };
 });
-vi.mock('../src/@generic/drizzle/utils/open-sqlite-client.util', () => ({ openSqliteClient: vi.fn() }));
+vi.mock('../src/@generic/drizzle/utils/open-sqlite-client.util', async () => ({
+    openSqliteClient: vi.fn((await import('./fixture/inert-sql-client')).openSqliteFileClient)
+}));
 vi.mock('../src/@generic/utils/reload-app.util', () => import('./fixture/reload-app-fake'));
 
 vi.mock('expo-file-system', () => import('./fixture/expo-file-system-fake'));
+vi.mock('expo-secure-store', () => import('./fixture/expo-secure-store-fake'));
 
 const previous: CloudSyncStateInterface = {
     boundUserRecordName: 'owner',
@@ -63,10 +67,7 @@ const previous: CloudSyncStateInterface = {
 const importLayer = Layer.effect(DatabaseImportService, DatabaseImportService.make).pipe(
     Layer.provide([
         Layer.mock(DatabaseLifecycleService)({ run: (_operation, effect) => effect, close: () => Effect.void }),
-        Layer.mock(AiStorageReplacementService)({ pauseLongLivedRuntime: () => Effect.void }),
-        Layer.mock(AiEmbeddingStatusService)({ forgetModel: Effect.void }),
-        Layer.mock(AuthService)({ getPin: () => Effect.succeed(null), persistPin: () => Effect.void }),
-        cloudSyncStateStoreLayer
+        importDependenciesLayer
     ])
 );
 
@@ -79,6 +80,7 @@ const databaseFiles = () => Object.fromEntries([...storage.files].filter(([path]
 describe('database import sync state', () => {
     beforeEach(() => {
         resetStorage();
+        secrets.clear();
         storage.files.set('documents/SQLite/budgie.db', 'database');
         storage.files.set('backup', 'backup');
         storage.failCopy = false;
@@ -90,26 +92,17 @@ describe('database import sync state', () => {
             Effect.gen(function* () {
                 const isCommitted = failure === 'success' || failure === 'cleanup';
                 storage.failCopy = failure === 'copy';
-                storage.failMoveFrom = failure === 'move' || failure === 'move-back' ? 'cache/import-temp.db' : null;
+                storage.failMoveFrom = failure === 'move' || failure === 'move-back' ? 'documents/SQLite/import-temp.db' : null;
                 storage.failMoveBackFrom = failure === 'move-back' ? 'documents/SQLite/budgie.db.replaced-0' : null;
                 storage.failDelete = failure === 'cleanup' ? 'documents/SQLite/budgie.db.replaced-0' : null;
-                const holder = { state: previous, pin: 'previous-pin' };
+                secrets.set('user_pin', 'previous-pin');
                 const layer = Layer.effect(DatabaseImportService, DatabaseImportService.make).pipe(
                     Layer.provide([
                         Layer.mock(DatabaseLifecycleService)({
                             run: (_operation, effect) => effect,
                             close: () => (failure === 'close' ? Effect.die('close failed') : Effect.void)
                         }),
-                        Layer.mock(AiStorageReplacementService)({ pauseLongLivedRuntime: () => Effect.void }),
-                        Layer.mock(AiEmbeddingStatusService)({ forgetModel: Effect.void }),
-                        Layer.mock(AuthService)({
-                            getPin: () => Effect.succeed(holder.pin),
-                            persistPin: pin =>
-                                Effect.sync(() => {
-                                    holder.pin = pin ?? '';
-                                })
-                        }),
-                        cloudSyncStateStoreLayer
+                        importDependenciesLayer
                     ])
                 );
                 const query = vi.spyOn(Db, 'query');
@@ -138,20 +131,28 @@ describe('database import sync state', () => {
                 expect(
                     storage.files.get(failure === 'move-back' ? 'documents/SQLite/budgie.db.replaced-0' : 'documents/SQLite/budgie.db')
                 ).toBe(isCommitted ? 'backup' : 'database');
-                expect(holder.pin).toBe(isCommitted ? 'new-pin' : 'previous-pin');
+                expect(Object.fromEntries(secrets)).toEqual({
+                    user_pin: isCommitted ? 'new-pin' : 'previous-pin',
+                    ...(failure === 'move-back' && { database_swap: secrets.get('database_swap') })
+                });
+                expect(secrets.has('database_swap')).toBe(failure === 'move-back');
                 expect(query).not.toHaveBeenCalled();
                 query.mockRestore();
             })
     );
 
     it.effect.each([
-        { name: 'restores the live database when the new file cannot be moved in', stale: false, failMoveFrom: 'cache/import-temp.db' },
+        {
+            name: 'restores the live database when the new file cannot be moved in',
+            stale: false,
+            failMoveFrom: 'documents/SQLite/import-temp.db'
+        },
         {
             name: 'restores the live database when a sidecar cannot be moved aside',
             stale: false,
             failMoveFrom: 'documents/SQLite/budgie.db-wal'
         },
-        { name: 'keeps stale moved-aside files when the import fails', stale: true, failMoveFrom: 'cache/import-temp.db' }
+        { name: 'keeps stale moved-aside files when the import fails', stale: true, failMoveFrom: 'documents/SQLite/import-temp.db' }
     ])('$name', ({ stale, failMoveFrom }) =>
         Effect.gen(function* () {
             storage.files.set('documents/SQLite/budgie.db-wal', 'database-wal');
@@ -170,6 +171,30 @@ describe('database import sync state', () => {
             });
         })
     );
+    it.effect('keeps the original set moved aside and the swap record when its WAL cannot be moved back', () =>
+        Effect.gen(function* () {
+            storage.files.set('documents/SQLite/budgie.db-wal', 'database-wal');
+            storage.failMoveFrom = 'documents/SQLite/import-temp.db';
+            storage.failMoveBackFrom = 'documents/SQLite/budgie.db.replaced-0-wal';
+
+            expect(Exit.isFailure(yield* importBackup)).toBe(true);
+            expect(databaseFiles()).toEqual({
+                'documents/SQLite/budgie.db.replaced-0': 'database',
+                'documents/SQLite/budgie.db.replaced-0-wal': 'database-wal'
+            });
+            expect(secrets.has('database_swap')).toBe(true);
+        })
+    );
+    it.effect('keeps the live database when the backup WAL cannot be folded into the copy', () =>
+        Effect.gen(function* () {
+            storage.files.set('backup-wal', 'backup-wal');
+            vi.spyOn(storage, 'checkpoint').mockImplementationOnce(emptyFn);
+
+            expect(Exit.isFailure(yield* importBackup)).toBe(true);
+            expect(databaseFiles()).toEqual({ 'documents/SQLite/budgie.db': 'database' });
+            expect(secrets.has('database_swap')).toBe(false);
+        })
+    );
     it.effect.each([false, true])('replaces the live database, removes its moved-aside files and keeps stale ones %s', stale =>
         Effect.gen(function* () {
             storage.files.set('documents/SQLite/budgie.db-wal', 'database-wal');
@@ -182,8 +207,7 @@ describe('database import sync state', () => {
 
             expect(Exit.isSuccess(yield* importBackup)).toBe(true);
             expect(databaseFiles()).toEqual({
-                'documents/SQLite/budgie.db': 'backup',
-                'documents/SQLite/budgie.db-wal': 'backup-wal',
+                'documents/SQLite/budgie.db': 'backup+backup-wal',
                 ...(stale && { 'documents/SQLite/budgie.db.replaced': 'stale', 'documents/SQLite/budgie.db.replaced-wal': 'stale-wal' })
             });
         })

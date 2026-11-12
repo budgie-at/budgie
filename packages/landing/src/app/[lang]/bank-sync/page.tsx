@@ -41,6 +41,9 @@ export default async function BankSyncPillarHubPage(props: PageLangParam) {
                         <Trans>Connect Monobank once and new transactions, jars, and FX rates arrive on their own</Trans>
                     </PillarHubHeroBulletItem>
                     <PillarHubHeroBulletItem>
+                        <Trans>Connect EU banks such as N26 and Trade Republic through your own Enable Banking app</Trans>
+                    </PillarHubHeroBulletItem>
+                    <PillarHubHeroBulletItem>
                         <Trans>No live connection? Import statements from Erste PDF, PrivatBank XLSX, or any bank&apos;s CSV</Trans>
                     </PillarHubHeroBulletItem>
                     <PillarHubHeroBulletItem>
@@ -64,20 +67,28 @@ export default async function BankSyncPillarHubPage(props: PageLangParam) {
                         title={<Trans>Monobank Expense Tracker — Direct API Sync, No Plaid</Trans>}
                     />
                     <PillarHubFeatureGrid.Item
-                        href={`/${lang}/features/bank-integration-management`}
+                        href={`/${lang}/features/eu-bank-sync`}
                         index={1}
+                        tagline={
+                            <Trans>N26, Trade Republic and other EU banks sync to your phone through your own Enable Banking app.</Trans>
+                        }
+                        title={<Trans>EU Bank Sync — No Budgie Server in Between</Trans>}
+                    />
+                    <PillarHubFeatureGrid.Item
+                        href={`/${lang}/features/bank-integration-management`}
+                        index={2}
                         tagline={<Trans>Cards, jars, and deposits share a single connection, so a token change is a one-time job.</Trans>}
                         title={<Trans>Bank Connections — One Credential, Many Accounts</Trans>}
                     />
                     <PillarHubFeatureGrid.Item
                         href={`/${lang}/features/bank-resync-window`}
-                        index={2}
+                        index={3}
                         tagline={<Trans>Re-pull a slice. Keep your edits. No nuke-from-orbit.</Trans>}
                         title={<Trans>Windowed Bank Re-sync</Trans>}
                     />
                     <PillarHubFeatureGrid.Item
                         href={`/${lang}/features/sync-data-repairs`}
-                        index={3}
+                        index={4}
                         tagline={
                             <Trans>Finds duplicate imports and pairs your own-card transfers that arrived as two separate rows.</Trans>
                         }
@@ -85,7 +96,7 @@ export default async function BankSyncPillarHubPage(props: PageLangParam) {
                     />
                     <PillarHubFeatureGrid.Item
                         href={`/${lang}/features/transfer-pair-detection`}
-                        index={4}
+                        index={5}
                         tagline={
                             <Trans>
                                 Budgie consolidates obvious transfers and merchant refunds automatically, then leaves ambiguous matches for
@@ -96,25 +107,25 @@ export default async function BankSyncPillarHubPage(props: PageLangParam) {
                     />
                     <PillarHubFeatureGrid.Item
                         href={`/${lang}/features/csv-import`}
-                        index={5}
+                        index={6}
                         tagline={<Trans>Any bank, any column order — map it on one screen or start from a built-in preset.</Trans>}
                         title={<Trans>CSV Bank Statement Import</Trans>}
                     />
                     <PillarHubFeatureGrid.Item
                         href={`/${lang}/features/erste-bank-pdf-import`}
-                        index={6}
+                        index={7}
                         tagline={<Trans>Classic and modern PDF formats — full statement import in seconds.</Trans>}
                         title={<Trans>Erste Bank PDF Import</Trans>}
                     />
                     <PillarHubFeatureGrid.Item
                         href={`/${lang}/features/privatbank-import`}
-                        index={7}
+                        index={8}
                         tagline={<Trans>One-time import, MCC-mapped — long-press an account card to jump to the picker.</Trans>}
                         title={<Trans>PrivatBank XLSX Import</Trans>}
                     />
                     <PillarHubFeatureGrid.Item
                         href={`/${lang}/features/binance-sync`}
-                        index={8}
+                        index={9}
                         tagline={
                             <Trans>
                                 Spot, Funding, and Simple Earn balances plus P2P, trades, and rewards — signed with a read-only API key.
@@ -124,9 +135,15 @@ export default async function BankSyncPillarHubPage(props: PageLangParam) {
                     />
                     <PillarHubFeatureGrid.Item
                         href={`/${lang}/features/installment-tracking`}
-                        index={9}
+                        index={10}
                         tagline={<Trans>Turn a purchase paid in parts into a plan. Each synced monthly part attaches itself.</Trans>}
                         title={<Trans>Pay in Parts: Installment Tracking</Trans>}
+                    />
+                    <PillarHubFeatureGrid.Item
+                        href={`/${lang}/features/inzhur-fund-tracking`}
+                        index={11}
+                        tagline={<Trans>Import your Inzhur operations and see each fund&apos;s value and return on what you paid.</Trans>}
+                        title={<Trans>Inzhur Fund Certificates</Trans>}
                     />
                 </PillarHubFeatureGrid>
             </PillarHubSection>
@@ -196,9 +213,9 @@ export default async function BankSyncPillarHubPage(props: PageLangParam) {
                     answer={
                         <>
                             <Trans>
-                                Live sync works only with Monobank and Binance, and statement import only with PrivatBank and Erste Bank
-                                Austria. Any other bank can still be added: export a CSV file from its app or website and map the columns
-                                once, or start from a built-in preset.
+                                Live sync works with Monobank, Binance and EU banks through your own Enable Banking app, and statement
+                                import with PrivatBank and Erste Bank Austria. Any other bank can still be added: export a CSV file from its
+                                app or website and map the columns once, or start from a built-in preset.
                             </Trans>{' '}
                             <Link className="font-semibold underline underline-offset-4" href={`/${lang}/features/csv-import`}>
                                 <Trans>More about CSV import</Trans>
@@ -210,9 +227,9 @@ export default async function BankSyncPillarHubPage(props: PageLangParam) {
                 <FeaturePageFaqItem
                     answer={
                         <Trans>
-                            Monobank and Binance connect with a personal API key for live, automatic sync. Erste and PrivatBank statements
-                            import directly from PDF or XLSX, and any other bank works through flexible CSV import with column mapping or a
-                            built-in preset.
+                            Monobank and Binance connect with a personal API key for live, automatic sync, and EU banks such as N26 and
+                            Trade Republic sync through your own Enable Banking app. Erste and PrivatBank statements import directly from
+                            PDF or XLSX, and any other bank works through flexible CSV import with column mapping or a built-in preset.
                         </Trans>
                     }
                     question={<Trans>Which banks does Budgie support?</Trans>}

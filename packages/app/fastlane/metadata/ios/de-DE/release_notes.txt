@@ -1,5 +1,12 @@
-Willkommen bei Budgie, jetzt im App Store!
+Das bisher größte Budgie-Update: Budgets mit der Familie teilen, Belege scannen und EU-Banken synchronisieren.
 
-Erfasse Ausgaben offline, plane Monatsbudgets und sieh, wohin dein Geld fließt. Behalte Konten und Währungen im Blick, prüfe regelmäßige Zahlungen und probiere die optionale KI auf deinem Gerät für Kategorien und Spracheingabe aus.
+• Geteilte Budgets: Wähle aus, welche Konten und Budgets du über iCloud mit deinem Partner oder deiner Familie teilst.
+• iCloud-Sync und Backup: iPhone und iPad bleiben synchron, deine Finanzdaten werden auf deinem Gerät verschlüsselt, bevor sie es verlassen.
+• Belege mit der Kamera scannen oder aus Fotos oder Dateien wählen. Die Texterkennung läuft auf deinem iPhone.
+• EU-Banksync: Verbinde Banken wie N26 und Trade Republic über deine eigene Enable-Banking-App. Buchungen laufen nie über einen Budgie-Server.
+• Frag Siri, wie viel du ausgegeben hast, was in deinem Budget übrig ist, wie hoch deine Salden sind und welche Abbuchungen in den nächsten 7 Tagen fällig sind.
+• Budgets neu gebaut: Zeiträume von wöchentlich bis jährlich, Übertrag, ein täglicher Sicher-ausgebbar-Wert, eine Tempo-Prognose, Rücklagen für jährliche Rechnungen und Budgets für Anlässe.
+• Klügere wiederkehrende Zahlungen: Abos, Rechnungen und regelmäßige Einnahmen werden automatisch erkannt, und du kannst eigene hinzufügen.
+• Jeder Bildschirm überarbeitet, von Start und Buchungen bis zum Kategorisierungs-Eingang und den Einstellungen.
 
-Ohne Registrierung. Ohne Abo. Dein Geld, deine Regeln.
+Weiterhin Offline-first. Kein Konto. Kein Abo.

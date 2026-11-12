@@ -3,7 +3,7 @@ import { FileSystemStorage } from './file-system-storage';
 
 export { Directory };
 
-import { isDefined, isString } from '@rnw-community/shared';
+import { emptyFn, isDefined, isString } from '@rnw-community/shared';
 
 export const storage = new FileSystemStorage();
 
@@ -52,6 +52,7 @@ export class File {
     }
 
     moveSync(destination: File | Directory, options?: { overwrite?: boolean }) {
+        storage.beforeTransfer(this.uri);
         if (storage.failMoveFrom === this.uri || storage.failMoveBackFrom === this.uri) {
             throw new Error('move failed');
         }
@@ -60,6 +61,7 @@ export class File {
             throw new Error('crash');
         }
         const contents = this.textSync();
+        const source = this.uri;
         storage.events.push('move');
         storage.files.set(target.uri, contents);
         const modified = storage.modified.get(this.uri);
@@ -69,6 +71,7 @@ export class File {
         }
         storage.files.delete(this.uri);
         this.uri = target.uri;
+        storage.afterTransfer(source);
     }
 
     move(destination: File | Directory, options?: { overwrite?: boolean }) {
@@ -78,11 +81,13 @@ export class File {
     }
 
     copy(destination: File | Directory, options?: { overwrite?: boolean }) {
+        storage.beforeTransfer(this.uri);
         if (storage.failCopy) {
             throw new Error('copy failed');
         }
         const target = this.prepareDestination(destination, options);
         storage.files.set(target.uri, this.textSync());
+        storage.afterTransfer(this.uri);
 
         return Promise.resolve();
     }
@@ -126,4 +131,6 @@ export const resetStorage = () => {
     storage.failMoveFrom = null;
     storage.failMoveBackFrom = null;
     storage.crashAfterRemove = false;
+    storage.beforeTransfer = emptyFn;
+    storage.afterTransfer = emptyFn;
 };

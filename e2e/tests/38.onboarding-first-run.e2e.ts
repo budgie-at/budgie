@@ -20,6 +20,7 @@ test('38 onboarding first run', { tags: ['onboarding'], platforms: PENDING_ANDRO
         await b.tapId(ctx, 'OnboardingAccounts.BANK');
         await b.tapId(ctx, 'OnboardingAccounts.AddButton');
         await b.expectId(ctx, 'OnboardingBalances.LaterButton', 3_000);
+        await b.expectId(ctx, 'OnboardingBalances.EuBanksOption');
         await b.fillId(ctx, 'OnboardingBalanceRow.1.Amount', '1234567');
         await b.expectText(ctx, 'Done', 3_000);
         await b.tapText(ctx, 'Done');

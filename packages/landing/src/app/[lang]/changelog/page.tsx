@@ -94,6 +94,38 @@ export default async function ChangelogPage(props: PageLangParam) {
                     </BlogArticleHeading>
 
                     <BlogArticleSubheading>
+                        <Trans>iCloud backup, sync between your devices and family sharing</Trans>
+                    </BlogArticleSubheading>
+                    <BlogArticleProse>
+                        <Trans>
+                            Budgie can back up and sync your data through iCloud, so your iPhone and iPad stay in step, and you can share
+                            chosen accounts and budgets with your partner or family. A Family section on Home shows the accounts shared with
+                            you, and your own accounts are kept out of it. If iCloud sync fails, Settings explains why in one line and
+                            offers a retry. See{' '}
+                            <Link className="font-semibold underline underline-offset-4" href={`/${lang}/features/icloud-sync`}>
+                                iCloud sync
+                            </Link>{' '}
+                            and{' '}
+                            <Link className="font-semibold underline underline-offset-4" href={`/${lang}/features/family-sharing`}>
+                                family sharing
+                            </Link>
+                            .
+                        </Trans>
+                    </BlogArticleProse>
+                    <BlogArticleSubheading>
+                        <Trans>Siri and budget questions</Trans>
+                    </BlogArticleSubheading>
+                    <BlogArticleProse>
+                        <Trans>
+                            Ask Siri how much you spent, what is left in your budget, your balances and which charges are due in the next 7
+                            days. Siri only reads your data; it cannot change anything. See{' '}
+                            <Link className="font-semibold underline underline-offset-4" href={`/${lang}/features/siri-budget-questions`}>
+                                Siri budget questions
+                            </Link>
+                            .
+                        </Trans>
+                    </BlogArticleProse>
+                    <BlogArticleSubheading>
                         <Trans>Budgets: periods, income-aware limits, sinking funds</Trans>
                     </BlogArticleSubheading>
                     <BlogArticleProse>
@@ -184,6 +216,44 @@ export default async function ChangelogPage(props: PageLangParam) {
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
+                                Onboarding import now offers EU banks next to Monobank and bank statements. See{' '}
+                                <Link className="font-semibold underline underline-offset-4" href={`/${lang}/features/eu-bank-sync`}>
+                                    EU bank sync
+                                </Link>
+                                .
+                            </Trans>
+                        </BlogArticleListItem>
+                        <BlogArticleListItem>
+                            <Trans>
+                                Inzhur fund certificates are tracked as holdings with daily prices, and Inzhur history is valued from the
+                                trade prices in your statement. See{' '}
+                                <Link
+                                    className="font-semibold underline underline-offset-4"
+                                    href={`/${lang}/features/inzhur-fund-tracking`}
+                                >
+                                    Inzhur fund tracking
+                                </Link>
+                                .
+                            </Trans>
+                        </BlogArticleListItem>
+                        <BlogArticleListItem>
+                            <Trans>
+                                Movements to or from your own accounts that Budgie does not track are filed under an automatic account, and
+                                paired into a transfer when the other side arrives, including across different days and currencies. See{' '}
+                                <Link
+                                    className="font-semibold underline underline-offset-4"
+                                    href={`/${lang}/features/transfer-pair-detection`}
+                                >
+                                    transfer pair detection
+                                </Link>
+                                .
+                            </Trans>
+                        </BlogArticleListItem>
+                        <BlogArticleListItem>
+                            <Trans>Apple Pay captures are matched to your synced cards by the last four digits.</Trans>
+                        </BlogArticleListItem>
+                        <BlogArticleListItem>
+                            <Trans>
                                 Tapping a bank on Home opens that bank&rsquo;s page with its total, sync status, accounts and all of its
                                 transactions, instead of its settings.
                             </Trans>
@@ -241,6 +311,19 @@ export default async function ChangelogPage(props: PageLangParam) {
                         </BlogArticleListItem>
                     </BlogArticleList>
                     <BlogArticleSubheading>
+                        <Trans>Categorize inbox and debts</Trans>
+                    </BlogArticleSubheading>
+                    <BlogArticleProse>
+                        <Trans>
+                            A group in the categorize inbox can be attached to a debt in one step. Payments that cannot take a debt are
+                            skipped. See{' '}
+                            <Link className="font-semibold underline underline-offset-4" href={`/${lang}/features/debt-tracking`}>
+                                debt &amp; loan tracking
+                            </Link>
+                            .
+                        </Trans>
+                    </BlogArticleProse>
+                    <BlogArticleSubheading>
                         <Trans>Look and feel</Trans>
                     </BlogArticleSubheading>
                     <BlogArticleProse>
@@ -249,7 +332,17 @@ export default async function ChangelogPage(props: PageLangParam) {
                             the categorize inbox were rebuilt as grouped lists with a consistent look. Home shows your net worth with an
                             asset mix bar and a card for cash, and linked banks appear as one card with their own logo. Settings moves data
                             tools onto their own screen. The Runway tab reads as one screen with labelled charts, and its monthly burn trims
-                            one-off spikes.
+                            one-off spikes. Sheets open with a morphing transition, and animations and haptics follow one consistent set of
+                            timings across the app.
+                        </Trans>
+                    </BlogArticleProse>
+                    <BlogArticleSubheading>
+                        <Trans>Reliability</Trans>
+                    </BlogArticleSubheading>
+                    <BlogArticleProse>
+                        <Trans>
+                            Your data is kept safe while an import, a restore or a PIN change replaces the database: an interrupted change
+                            is recovered the next time the app opens.
                         </Trans>
                     </BlogArticleProse>
                 </BlogArticleSection>

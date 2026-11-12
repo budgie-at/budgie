@@ -1,37 +1,49 @@
-Dein Geld ist Privatsache. Dein Haushaltsbuch auch.
+Dein Geld ist privat. Jetzt entscheidest du, wer es mitverwalten darf.
 
-Mit Budgie erfasst du Ausgaben, behältst dein Budget im Blick und siehst, wie sich dein Vermögen entwickelt. Ohne Registrierung. Deine Buchungen liegen auf deinem Gerät und sind auch ohne Internet verfügbar.
+Budgie ist ein Offline-first-Ausgabentracker und Budgetplaner. Kein Budgie-Konto, kein Abo und kein Budgie-Server, der deine Buchungen speichert. Dein Haushaltsbuch liegt auf deinem iPhone und folgt dir über dein eigenes iCloud auf deine anderen Geräte und zu den Menschen, mit denen du teilst.
 
-VERSTEHE DEINE AUSGABEN
-• Erfasse Ausgaben, Einnahmen und Umbuchungen für Bargeld, Karten und Konten.
-• Nutze eigene Kategorien und Tags und teile Einkäufe auf mehrere Kategorien auf.
-• Erkenne Muster in Diagrammen und Kategorieauswertungen mit flexiblen Datumsfiltern.
+NEU: GEMEINSAM MIT DER FAMILIE PLANEN
+• Wähle aus, welche Konten und Budgets du über iCloud mit deinem Partner oder deiner Familie teilst. Sie können ansehen und bearbeiten, was du freigibst.
+• Dein eigenes iPhone und iPad bleiben automatisch synchron, auch nach Tagen ohne Internet.
+• Automatische iCloud-Backups, bei denen deine Finanzdaten auf deinem Gerät verschlüsselt werden, bevor sie es verlassen.
 
-PLANE MIT DEM, WAS DU HAST
-• Lege ein Monatsbudget mit Kategorienlimits fest und sieh, wie viel übrig bleibt.
-• Aktiviere Hinweise, wenn du dich einem Limit näherst oder es erreichst.
-• Die Reichweite schätzt anhand deiner bisherigen Buchungen, wie lange dein Geld reichen könnte.
-• Sieh erkannte regelmäßige Zahlungen und Abos im Kalender.
+NEU: BELEG SCANNEN, FERTIG
+• Richte die Kamera auf einen Kassenzettel oder wähle ihn aus Fotos oder Dateien. Die Texterkennung läuft auf deinem iPhone, erstellt eine fertige Ausgabe zum Speichern und wendet deine Regeln an.
+• Erfasse Apple-Pay-Zahlungen automatisch mit einer Automation in der Kurzbefehle-App.
 
-WENIGER TIPPEN IM ALLTAG
-• Übernimm Vorschläge aus früheren Buchungen für wiederkehrende Ausgaben.
-• Ordne Buchungen mit Regeln zu und bearbeite nicht kategorisierte Ausgaben gesammelt.
-• Aktiviere die KI auf deinem Gerät für Kategorie- und Tag-Vorschläge sowie die Spracheingabe. Nach dem Modelldownload laufen Spracherkennung und KI lokal.
+NEU: EU-BANKSYNC DIREKT AUF DEIN TELEFON
+• Verbinde EU-Banken wie N26 und Trade Republic über deine eigene Enable-Banking-App. Die Buchungen kommen über Enable Banking auf dein Telefon und laufen nie über einen Budgie-Server.
+• Auch Monobank und Binance werden synchronisiert, einschließlich Binance-Kartenkäufen, Earn-Erträgen und Staking.
+• Importiere CSV-Dateien mit automatisch zugeordneten Spalten, PDF-Auszüge von Erste, Exporte der PrivatBank und Auszüge von Inzhur-Fonds.
 
-ALLE KONTEN IM BLICK
-• Verwalte Bargeld, Bankkonten, Krypto, Einlagen und Schulden.
-• Sieh Salden und Nettovermögen mit Wechselkursen in deiner Basiswährung.
-• Behalte Budget und Vermögen mit Widgets auf dem Home-Bildschirm im Blick.
+NEU: SIRI FRAGEN
+Frag Siri zum Beispiel, wie viel du für Lebensmittel ausgegeben hast. Siri antwortet mit deinen Ausgaben, dem Rest deines Budgets, Kontosalden, Nettovermögen und den Abbuchungen der nächsten 7 Tage, ohne dass du die App öffnest. Beträge bleiben verborgen, solange die PIN-Sperre aktiv ist.
 
-DEINE DATEN, DEINE WAHL
-• Importiere CSV-Dateien und unterstützte Bankauszüge, darunter PDF-Auszüge von Erste und Exporte der PrivatBank.
-• Verbinde auf Wunsch Monobank oder Binance mit deinen eigenen API-Zugangsdaten. Für die manuelle Erfassung brauchst du keine Bankverbindung.
-• Exportiere Buchungen als CSV und erstelle eigene Datenbanksicherungen.
+BUDGETS MIT WEITBLICK
+• Wöchentliche, zweiwöchentliche, monatliche oder jährliche Budgets mit Kategorienlimits und Übertrag für alles, was du nicht ausgegeben hast.
+• Sicher ausgebbar: ein Tageswert, der sich laufend anpasst, plus eine Prognose, die dich warnt, bevor eine Kategorie überzogen wird.
+• Lege mit Rücklagen Geld für jährliche Rechnungen zur Seite, vorgeschlagen aus deinen wiederkehrenden Zahlungen.
+• Eigene Budgets für Reisen und Anlässe sowie Budgets auf Basis deines Einkommens.
+• Passe Limits automatisch an dein tatsächliches Ausgabeverhalten an.
 
-PRIVAT AUF DEINEM GERÄT
-Aktiviere eine PIN, um die Datenbank mit SQLCipher zu verschlüsseln. Nutze biometrisches Entsperren und den Screenshot-Schutz. Bei gesetzter PIN bleiben auch Datenbanksicherungen verschlüsselt.
+KEINE WIEDERKEHRENDE ABBUCHUNG VERPASSEN
+• Abos, Rechnungen und regelmäßige Einnahmen werden automatisch erkannt und als Liste oder Kalender angezeigt.
+• Füge eine wiederkehrende Zahlung selbst hinzu. Budgie ordnet die folgenden Abbuchungen zu.
 
-Ausgaben, Budgets und Auswertungen funktionieren offline. Banksynchronisierung, aktuelle Wechselkurse und KI-Modelldownloads benötigen Internet. Die KI ist optional und braucht Speicherplatz für ihre Modelle.
+WENIGER TIPPEN, MEHR ÜBERBLICK
+• Bearbeite nicht kategorisierte Ausgaben in einem gruppierten Eingang, mit wenigen Taps pro Gruppe.
+• Vorschläge aus deinem Verlauf, Regeln, Aufteilungen, Erstattungen und Käufe in Raten.
+• Optionale KI auf deinem Gerät für Kategorie- und Tag-Vorschläge sowie Spracheingabe. Spracherkennung und KI laufen lokal, sobald die Modelle geladen sind.
+
+EINE ANSICHT, ALLE WÄHRUNGEN
+• Bargeld, Karten, Bankkonten, Krypto, Einlagen, Anlagefonds und Schulden in einem Nettovermögen, in deiner Basiswährung.
+• Ausgabendiagramme, Kategorietrends und eine Reichweite, die zeigt, wie lange dein Geld reichen könnte.
+• Widgets für den Home-Bildschirm zu Budget und Nettovermögen.
+
+PRIVAT VON GRUND AUF
+Lege eine PIN fest, und deine Datenbank wird mit SQLCipher verschlüsselt. Ergänze Face ID, Screenshot-Schutz und einen Privatmodus, der Beträge ausblendet. Exportiere als CSV oder behalte eine vollständige Sicherungsdatei, die du selbst kontrollierst.
+
+Tägliche Erfassung, Budgets und Auswertungen funktionieren offline. iCloud-Sync, Banksynchronisierung, Wechselkurse und KI-Modelldownloads benötigen Internet. Die KI ist optional und braucht Speicherplatz für ihre Modelle.
 
 Kostenlos. Ohne Budgie-Konto. Ohne Abo.
 Fang mit deiner nächsten Ausgabe an.

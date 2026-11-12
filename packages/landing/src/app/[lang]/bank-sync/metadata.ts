@@ -18,5 +18,5 @@ export const BANK_SYNC_PILLAR_HUB_METADATA: PillarHubMetadataInterface = {
         msg`duplicate transaction cleanup`
     ],
     publishedAt: '2026-09-26',
-    updatedAt: '2026-09-26'
+    updatedAt: '2026-11-12'
 };

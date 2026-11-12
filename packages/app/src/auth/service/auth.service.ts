@@ -12,6 +12,7 @@ import { DatabaseLifecycleOperationEnum } from '../../@generic/drizzle/enum/data
 import { DatabaseLifecycleService } from '../../@generic/drizzle/service/database-lifecycle.service';
 import { DatabaseRekeyService } from '../../@generic/drizzle/service/database-rekey.service';
 import { RekeyParamsInterface } from '../../@generic/drizzle/service/interface/rekey-params.interface';
+import { persistDatabaseKey } from '../../@generic/drizzle/utils/persist-database-key.util';
 import { reloadApp } from '../../@generic/utils/reload-app.util';
 import { WidgetSnapshotService } from '../../widget/service/widget-snapshot.service';
 import { PIN_KEY } from '../constant/pin-key.constant';
@@ -38,21 +39,15 @@ export class AuthService extends Context.Service<AuthService>()('@budgie/app/Aut
             return yield* Effect.promise(() => SecureStore.getItemAsync(PIN_KEY, PIN_SECURE_STORE_OPTIONS));
         });
 
-        const persistPin = Effect.fn('AuthService.persistPin')(function* (pin: string | null) {
-            if (isNotEmptyString(pin)) {
-                yield* Effect.promise(() => SecureStore.setItemAsync(PIN_KEY, pin, PIN_SECURE_STORE_OPTIONS));
-            } else {
-                yield* Effect.promise(() => SecureStore.deleteItemAsync(PIN_KEY, PIN_SECURE_STORE_OPTIONS));
-            }
-        });
-
         const runRekey = Effect.fn('AuthService.runRekey')(function* (params: RekeyParamsInterface, afterCommit: Effect.Effect<void>) {
             const previousPin = yield* getPin();
 
-            yield* databaseRekeyService.rekey(params, persistPin(params.nextKey).pipe(Effect.orDie, Effect.andThen(afterCommit))).pipe(
-                Effect.andThen(reloadApp),
-                Effect.onError(() => persistPin(previousPin).pipe(Effect.orDie))
-            );
+            yield* databaseRekeyService
+                .rekey(params, persistDatabaseKey(params.nextKey).pipe(Effect.orDie, Effect.andThen(afterCommit)))
+                .pipe(
+                    Effect.andThen(reloadApp),
+                    Effect.onError(() => persistDatabaseKey(previousPin).pipe(Effect.orDie))
+                );
         });
 
         const rekeyDatabase = Effect.fn('AuthService.rekeyDatabase')(function* (
@@ -73,7 +68,7 @@ export class AuthService extends Context.Service<AuthService>()('@budgie/app/Aut
                 const pin = yield* getPin();
 
                 if (isNotEmptyString(pin)) {
-                    yield* persistPin(pin);
+                    yield* persistDatabaseKey(pin);
                 }
             }),
             getBiometricTypes: Effect.fn('AuthService.getBiometricTypes')(
@@ -170,7 +165,7 @@ export class AuthService extends Context.Service<AuthService>()('@budgie/app/Aut
                 });
             }),
             getPin,
-            persistPin
+            persistPin: persistDatabaseKey
         };
     })
 }) {

@@ -1,6 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import Link from 'next/link';
 import { Bell, Sparkles, Target } from 'reicon-react';
 
 import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
@@ -32,11 +33,11 @@ export default async function BudgetPlanningFeaturePage(props: PageLangParam) {
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>One monthly limit, split by category</Trans>}
+                heading={<Trans>One budget, split by category and period</Trans>}
                 tagline={
                     <Trans>
-                        Set one overall monthly limit, add per-category limits, cap everything else, and watch the cycle fill up from your
-                        home screen. Every number is computed on your device.
+                        Run a budget weekly, biweekly, monthly or yearly, add per-category limits, set money aside for yearly bills and see
+                        what is safe to spend today. Every number is computed on your device.
                     </Trans>
                 }
             >
@@ -173,6 +174,9 @@ export default async function BudgetPlanningFeaturePage(props: PageLangParam) {
                         Start from a template built out of your own recent spending, from a generic starter budget, or from an empty canvas
                     </Trans>
                 </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={Target} title={<Trans>Safe to spend, with a forecast</Trans>}>
+                    <Trans>A daily figure that adjusts as you go, and a warning before a category is on pace to run over</Trans>
+                </FeatureBenefits.Benefit>
                 <FeatureBenefits.Included>
                     <FeatureBenefits.Item>
                         <Trans>The exact dates of the current cycle on both the detail screen and the home widget</Trans>
@@ -191,6 +195,9 @@ export default async function BudgetPlanningFeaturePage(props: PageLangParam) {
                     <FeatureBenefits.Item>
                         <Trans>Spending on accounts in other currencies is converted into your budget currency</Trans>
                     </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
+                        <Trans>Unspent category money can roll over into the next period</Trans>
+                    </FeatureBenefits.Item>
                 </FeatureBenefits.Included>
             </FeatureBenefits>
 
@@ -198,8 +205,9 @@ export default async function BudgetPlanningFeaturePage(props: PageLangParam) {
                 <FeatureDetails.Item title={<Trans>One limit, split the way you actually spend</Trans>}>
                     <p>
                         <Trans>
-                            A Budgie budget runs on a monthly cycle, and the period it currently covers is shown on the budget detail screen
-                            and on the home widget, so you always know which dates the numbers belong to.
+                            A Budgie budget can run weekly, biweekly, monthly or yearly, and existing budgets stay monthly. The period it
+                            currently covers is shown on the budget detail screen and on the home widget, so you always know which dates the
+                            numbers belong to.
                         </Trans>
                     </p>
                     <p>
@@ -207,6 +215,26 @@ export default async function BudgetPlanningFeaturePage(props: PageLangParam) {
                             A budget is one overall limit plus as many per-category limits as you want, and a single cap for everything that
                             falls outside those categories. The form shows how much you have allocated, how much is left, and warns you the
                             moment your category limits exceed the overall limit.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            Under Limit from you choose a fixed amount, the income received this period, or the income you expect, which
+                            comes from your recurring income. An allocation block shows money that is unassigned or over-assigned, and
+                            unspent category money can roll over into the next period. Yearly bills and trips have their own page on{' '}
+                            <Link className="font-semibold underline underline-offset-4" href={`/${lang}/features/sinking-funds`}>
+                                sinking funds and event budgets
+                            </Link>
+                            .
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Item title={<Trans>Safe to spend, and a warning before you go over</Trans>}>
+                    <p>
+                        <Trans>
+                            Safe to spend is one daily figure for the rest of the period, with a day strip, and it adjusts as you spend. A
+                            pace forecast compares how fast a category is filling with how much of the period has passed, and alerts you
+                            before the category runs over.
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
@@ -218,27 +246,11 @@ export default async function BudgetPlanningFeaturePage(props: PageLangParam) {
                             notification the first time a limit reaches 80% and again when it reaches 100%.
                         </Trans>
                     </p>
-                    <p>
-                        <Trans>
-                            Which alerts have already fired is remembered in on-device key-value storage, keyed by budget and period start,
-                            so you get each warning once per cycle instead of a stream of duplicates. There is no server in the loop:
-                            nothing about your budget, your categories, or your spending is uploaded to send these notifications.
-                        </Trans>
-                    </p>
                 </FeatureDetails.Item>
                 <FeatureDetails.Guides locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
             </FeatureDetails>
 
             <FeatureFaq locale={lang}>
-                <FeatureFaq.Item
-                    question={<Trans>Which budget periods are supported?</Trans>}
-                    answer={
-                        <Trans>
-                            Monthly. Budgie tracks one active budget over a monthly cycle, and both the detail screen and the home widget
-                            print the exact start and end dates of the period the numbers cover.
-                        </Trans>
-                    }
-                />
                 <FeatureFaq.Item
                     question={<Trans>Do the alerts need an internet connection?</Trans>}
                     answer={

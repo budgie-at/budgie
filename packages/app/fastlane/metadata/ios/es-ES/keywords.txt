@@ -1,1 +1,1 @@
-dinero,ahorro,cuentas,ingresos,planificador,suscripciones,divisas,privado,cartera,cripto,csv
+recibo,escaner,planificador,pareja,compartido,sync,banco,offline,facturas,suscripcion,ahorro,cripto

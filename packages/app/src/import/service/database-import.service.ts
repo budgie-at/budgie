@@ -1,9 +1,10 @@
-import { CloudSyncRestorePhaseEnum, CloudSyncStateStore } from '@budgie/cloud-sync';
+import { CloudSyncStateStore } from '@budgie/cloud-sync';
 import * as Clock from 'effect/Clock';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
-import { File, Paths } from 'expo-file-system';
+import * as Reactivity from 'effect/reactivity/Reactivity';
+import { File } from 'expo-file-system';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
@@ -13,6 +14,7 @@ import { REPLACED_DATABASE_PREFIX } from '../../@generic/drizzle/constant/replac
 import { DatabaseLifecycleOperationEnum } from '../../@generic/drizzle/enum/database-lifecycle-operation.enum';
 import { UnsupportedBackupError } from '../../@generic/drizzle/error/unsupported-backup.error';
 import { DatabaseLifecycleService } from '../../@generic/drizzle/service/database-lifecycle.service';
+import { DatabaseSwapService } from '../../@generic/drizzle/service/database-swap.service';
 import { isSupportedMigrationCreatedAt } from '../../@generic/drizzle/utils/is-supported-migration-created-at.util';
 import { openSqliteClient } from '../../@generic/drizzle/utils/open-sqlite-client.util';
 import { readLastMigrationCreatedAt } from '../../@generic/drizzle/utils/read-last-migration-created-at.util';
@@ -29,8 +31,12 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
         const aiStorageReplacementService = yield* AiStorageReplacementService;
         const aiEmbeddingStatusService = yield* AiEmbeddingStatusService;
         const authService = yield* AuthService;
+        const databaseSwapService = yield* DatabaseSwapService;
         const cloudSyncStateStore = yield* CloudSyncStateStore;
+        const reactivity = yield* Reactivity.Reactivity;
         const probeDatabaseName = 'import-probe.db';
+        const tempDatabaseName = 'import-temp.db';
+        const tempPath = new File(DATABASE_DIRECTORY, tempDatabaseName).uri;
 
         const deleteFileIfExists = (path: string): void => {
             const file = new File(path);
@@ -40,10 +46,10 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
             }
         };
 
-        const deleteProbeFiles = (probePath: string): void => {
-            deleteFileIfExists(`${probePath}-wal`);
-            deleteFileIfExists(`${probePath}-shm`);
-            deleteFileIfExists(probePath);
+        const deleteDatabaseFiles = (path: string): void => {
+            deleteFileIfExists(`${path}-wal`);
+            deleteFileIfExists(`${path}-shm`);
+            deleteFileIfExists(path);
         };
 
         const readProbeDatabase = Effect.fn('DatabaseImportService.readProbeDatabase')(function* (backupPin: string | null) {
@@ -72,9 +78,9 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
             }
         });
 
-        const moveDatabaseFiles = (sourcePath: string, destinationPath: string) =>
+        const moveDatabaseFiles = (sourcePath: string, destinationPath: string, suffixes: readonly string[]) =>
             Effect.forEach(
-                ['', '-wal', '-shm'],
+                suffixes,
                 suffix => {
                     const sourceFile = new File(`${sourcePath}${suffix}`);
 
@@ -83,47 +89,53 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
                 { discard: true }
             );
 
-        const copyDatabaseSidecars = Effect.fn('DatabaseImportService.copyDatabaseSidecars')(function* (
-            sourceUri: string,
-            destinationPath: string
-        ) {
-            yield* copyFileIfExists(`${sourceUri}-wal`, `${destinationPath}-wal`).pipe(
-                Effect.andThen(copyFileIfExists(`${sourceUri}-shm`, `${destinationPath}-shm`)),
-                Effect.catchDefect(() =>
-                    Effect.sync(() => {
-                        deleteFileIfExists(`${destinationPath}-wal`);
-                        deleteFileIfExists(`${destinationPath}-shm`);
-                    })
-                )
+        const foldIntoSingleFile = Effect.fn('DatabaseImportService.foldIntoSingleFile')(function* (backupPin: string | null) {
+            yield* openSqliteClient(tempDatabaseName, backupPin).pipe(
+                Effect.flatMap(client => client`PRAGMA journal_mode = DELETE`.raw),
+                Effect.scoped,
+                Effect.provideService(Reactivity.Reactivity, reactivity),
+                Effect.orDie
             );
+
+            if (new File(`${tempPath}-wal`).exists) {
+                return yield* Effect.die(new Error('The backup WAL was not folded into the import copy'));
+            }
         });
 
-        const replaceFromUri = Effect.fn('DatabaseImportService.replaceFromUri')(function* (sourceUri: string) {
+        const replaceFromUri = Effect.fn('DatabaseImportService.replaceFromUri')(function* (sourceUri: string, backupPin: string | null) {
             const destinationPath = new File(DATABASE_DIRECTORY, DB_NAME).uri;
             const movedAsideAt = yield* Clock.currentTimeMillis;
-            const replacedPath = new File(DATABASE_DIRECTORY, `${REPLACED_DATABASE_PREFIX}${movedAsideAt}`).uri;
-            const tempPath = `${Paths.cache.uri}/import-temp.db`;
+            const swap = { key: backupPin, backupName: `${REPLACED_DATABASE_PREFIX}${movedAsideAt}`, isImport: true };
+            const replacedPath = new File(DATABASE_DIRECTORY, swap.backupName).uri;
 
             yield* aiStorageReplacementService.pauseLongLivedRuntime();
-            deleteFileIfExists(tempPath);
+            deleteDatabaseFiles(tempPath);
             yield* Effect.promise(() => new File(sourceUri).copy(new File(tempPath)));
+            yield* copyFileIfExists(`${sourceUri}-wal`, `${tempPath}-wal`);
+            yield* foldIntoSingleFile(backupPin);
+            yield* databaseSwapService.begin(swap);
             yield* databaseLifecycleService.close();
-            yield* moveDatabaseFiles(destinationPath, replacedPath).pipe(
+            yield* moveDatabaseFiles(destinationPath, replacedPath, ['', '-wal', '-shm']).pipe(
                 Effect.andThen(
                     Effect.promise(() => new File(tempPath).move(new File(destinationPath))).pipe(
-                        Effect.andThen(copyDatabaseSidecars(sourceUri, destinationPath)),
+                        Effect.andThen(databaseSwapService.commit(swap)),
                         Effect.onError(() =>
                             Effect.sync(() => {
-                                deleteProbeFiles(destinationPath);
+                                deleteDatabaseFiles(destinationPath);
                             })
                         )
                     )
                 ),
-                Effect.onError(() => moveDatabaseFiles(replacedPath, destinationPath))
+                Effect.onError(() => moveDatabaseFiles(replacedPath, destinationPath, ['-wal', '-shm', '']))
             );
-            yield* Effect.sync(() => {
-                deleteProbeFiles(replacedPath);
-            }).pipe(Effect.catchDefect(() => Effect.void));
+            yield* databaseSwapService.end.pipe(
+                Effect.andThen(
+                    Effect.sync(() => {
+                        deleteDatabaseFiles(replacedPath);
+                    })
+                ),
+                Effect.catchDefect(() => Effect.void)
+            );
         });
 
         const runImport = Effect.fn('DatabaseImportService.runImport')(function* (pickedUri: string, backupPin: string | null) {
@@ -131,17 +143,17 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
             const previousPin = yield* authService.getPin();
             const previousState = yield* cloudSyncStateStore.read;
 
-            yield* cloudSyncStateStore.update({
-                stateSerialization: null,
-                resolvedLineageId: null,
-                restorePhase: CloudSyncRestorePhaseEnum.PENDING
-            });
-            yield* authService.persistPin(backupPin);
-            yield* replaceFromUri(sourceUri).pipe(
+            yield* replaceFromUri(sourceUri, backupPin).pipe(
                 Effect.onError(() =>
-                    cloudSyncStateStore.update(previousState).pipe(Effect.andThen(authService.persistPin(previousPin)), Effect.orDie)
+                    cloudSyncStateStore
+                        .update(previousState)
+                        .pipe(
+                            Effect.andThen(authService.persistPin(previousPin)),
+                            Effect.andThen(new File(DATABASE_DIRECTORY, DB_NAME).exists ? databaseSwapService.end : Effect.void),
+                            Effect.orDie
+                        )
                 ),
-                Effect.ensuring(Effect.sync(() => void deleteFileIfExists(`${Paths.cache.uri}/import-temp.db`)))
+                Effect.ensuring(Effect.sync(() => void deleteDatabaseFiles(tempPath)))
             );
         }, Effect.scoped);
 
@@ -155,7 +167,7 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
             canOpenBackup: Effect.fn('DatabaseImportService.canOpenBackup')(function* (sourceUri: string, backupPin: string | null) {
                 const probePath = new File(DATABASE_DIRECTORY, probeDatabaseName).uri;
 
-                deleteProbeFiles(probePath);
+                deleteDatabaseFiles(probePath);
 
                 return yield* resolveBackupFile(sourceUri).pipe(
                     Effect.flatMap(backupUri => Effect.promise(() => new File(backupUri).copy(new File(probePath)))),
@@ -164,7 +176,7 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
                     Effect.catchTags({ DatabaseOpenError: () => Effect.succeed(false), SqlError: () => Effect.succeed(false) }),
                     Effect.ensuring(
                         Effect.sync(() => {
-                            deleteProbeFiles(probePath);
+                            deleteDatabaseFiles(probePath);
                         })
                     )
                 );
@@ -178,6 +190,7 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
             AiStorageReplacementService.layer,
             AiEmbeddingStatusService.layer,
             AuthService.layer,
+            DatabaseSwapService.layer,
             cloudSyncStateStoreLayer
         ])
     );

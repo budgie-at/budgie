@@ -1,3 +1,4 @@
+import type { CloudSyncErrorReasonEnum } from '../enum/cloud-sync-error-reason.enum';
 import type { CloudSyncStatusEnum } from '../enum/cloud-sync-status.enum';
 
 export interface CloudSyncSessionInterface {
@@ -9,6 +10,7 @@ export interface CloudSyncSessionInterface {
     readonly isQuotaExceeded: boolean;
     readonly isFetching: boolean;
     readonly blocked: CloudSyncStatusEnum | null;
+    readonly errorReason: CloudSyncErrorReasonEnum;
     readonly lastSyncedAt: number | null;
     readonly fetchedRecordCount: number;
     readonly isInitialFetchComplete: boolean;

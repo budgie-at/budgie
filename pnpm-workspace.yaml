@@ -42,6 +42,7 @@ allowBuilds:
   node-llama-cpp: false
 
 patchedDependencies:
+  '@op-engineering/op-sqlite@18.2.5': patches/@op-engineering__op-sqlite@18.2.5.patch
   drizzle-orm@1.0.0-rc.4: patches/drizzle-orm@1.0.0-rc.4.patch
   expo-pdf-text-extract@1.1.0: patches/expo-pdf-text-extract@1.1.0.patch
   react-native-reanimated@4.7.1: patches/react-native-reanimated@4.7.1.patch
