@@ -2620,8 +2620,8 @@ msgid "Aggregator's clock"
 msgstr "Horloge de l'agrégateur"
 
 #: src/app/[lang]/privacy/page.tsx
-msgid "Aggregators sit between you and your bank, mirroring every transaction to their servers. Budgie talks to your bank directly via tokens or imports statements you download yourself."
-msgstr "Les agrégateurs s'intercalent entre vous et votre banque, copiant chaque transaction sur leurs serveurs. Budgie communique directement avec votre banque via des jetons ou importe les relevés que vous téléchargez vous-même."
+msgid "Aggregators sit between you and your bank, mirroring every transaction to their servers. Budgie talks to Monobank and Binance directly with keys you create, connects EU banks through your own Enable Banking app, or imports statements you download yourself."
+msgstr "Les agrégateurs s'intercalent entre vous et votre banque, copiant chaque transaction sur leurs serveurs. Budgie communique directement avec Monobank et Binance grâce à des clés que vous créez, connecte les banques de l’UE via votre propre app Enable Banking, ou importe les relevés que vous téléchargez vous-même."
 
 #: src/app/[lang]/privacy/page.tsx
 msgid "Aggregators sit between you and your bank, mirroring transactions to their servers. Monobank, Binance and statement imports use none. EU banks connect through Enable Banking with an application you create yourself, and the data goes from your bank to your phone, never to a Budgie server."
@@ -3716,10 +3716,6 @@ msgstr "Les codes émis par la banque font le travail : les cafés vont dans Res
 #: src/app/[lang]/features/mcc-auto-category/opengraph-image.tsx
 msgid "Bank-issued codes do the work."
 msgstr "Les codes émis par la banque font le travail."
-
-#: src/app/[lang]/privacy/page.tsx
-msgid "Bank-level only"
-msgstr "Au niveau bancaire uniquement"
 
 #: src/app/[lang]/features/bank-fee-tracking/opengraph-image.tsx
 msgid "bank-sync"
@@ -7673,10 +7669,6 @@ msgstr "Fouiller les écrans pour un seul chiffre"
 msgid "digits open the app and your data"
 msgstr "chiffres ouvrent l'app et vos données"
 
-#: src/app/[lang]/privacy/page.tsx
-msgid "Direct API tokens or PDF/CSV"
-msgstr "Jetons API directs ou PDF/CSV"
-
 #: src/app/[lang]/bank-sync/page.tsx
 #: src/app/[lang]/privacy/page.tsx
 msgid "Direct API. No aggregator. Full transaction history to your device."
@@ -10168,8 +10160,8 @@ msgid "How does AI improve over time?"
 msgstr "Comment l'IA s'améliore-t-elle avec le temps ?"
 
 #: src/app/[lang]/privacy/page.tsx
-msgid "How does bank sync work without an aggregator?"
-msgstr "Comment la synchronisation bancaire fonctionne-t-elle sans agrégateur ?"
+msgid "How does bank sync work without a Budgie server?"
+msgstr "Comment la synchronisation bancaire fonctionne-t-elle sans serveur Budgie ?"
 
 #: src/app/[lang]/bank-sync/page.tsx
 msgid "How does Binance sync work?"
@@ -23406,6 +23398,10 @@ msgstr "Vos soldes bancaires et numéros de compte"
 msgid "Your bank to your phone. No Budgie server."
 msgstr "De votre banque à votre téléphone. Aucun serveur Budgie."
 
+#: src/app/[lang]/privacy/page.tsx
+msgid "Your bank, plus Enable Banking for EU banks"
+msgstr "Votre banque, plus Enable Banking pour les banques de l’UE"
+
 #: src/generic/component/home-tour-section/home-tour-section.tsx
 msgid "Your bank, with nobody in between"
 msgstr "Votre banque, sans intermédiaire"
@@ -23674,6 +23670,10 @@ msgstr "Votre propre iCloud"
 #: src/app/[lang]/features/icloud-sync/page.tsx
 msgid "Your own iCloud is the only place your data goes besides your devices."
 msgstr "Votre propre iCloud est le seul endroit où vont vos données en dehors de vos appareils."
+
+#: src/app/[lang]/privacy/page.tsx
+msgid "Your own keys, your own Enable Banking app, or statement import"
+msgstr "Vos propres clés, votre propre app Enable Banking ou l’import de relevés"
 
 #: src/app/[lang]/page.tsx
 msgid "Your own token calls the bank API directly. No Plaid, no data broker."

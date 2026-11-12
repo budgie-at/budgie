@@ -224,8 +224,9 @@ export default async function PrivacyPillarHubPage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Aggregators sit between you and your bank, mirroring every transaction to their servers. Budgie talks to your bank
-                        directly via tokens or imports statements you download yourself.
+                        Aggregators sit between you and your bank, mirroring every transaction to their servers. Budgie talks to Monobank
+                        and Binance directly with keys you create, connects EU banks through your own Enable Banking app, or imports
+                        statements you download yourself.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageCategoryComparison categoryLabel={<Trans>Aggregator-based PFM apps</Trans>}>
@@ -235,7 +236,7 @@ export default async function PrivacyPillarHubPage(props: PageLangParam) {
                         label={<Trans>Bank access</Trans>}
                     />
                     <FeaturePageCategoryComparison.Row
-                        budgieValue={<Trans>Direct API tokens or PDF/CSV</Trans>}
+                        budgieValue={<Trans>Your own keys, your own Enable Banking app, or statement import</Trans>}
                         competitorValue={<Trans>OAuth via aggregator</Trans>}
                         label={<Trans>Sync method</Trans>}
                     />
@@ -245,7 +246,7 @@ export default async function PrivacyPillarHubPage(props: PageLangParam) {
                         label={<Trans>Aggregator middleman</Trans>}
                     />
                     <FeaturePageCategoryComparison.Row
-                        budgieValue={<Trans>Bank-level only</Trans>}
+                        budgieValue={<Trans>Your bank, plus Enable Banking for EU banks</Trans>}
                         competitorValue={<Trans>Bank + aggregator + app</Trans>}
                         label={<Trans>Bank breach impact</Trans>}
                     />
@@ -325,7 +326,7 @@ export default async function PrivacyPillarHubPage(props: PageLangParam) {
                     }
                 />
                 <FeaturePageFaqItem
-                    question={<Trans>How does bank sync work without an aggregator?</Trans>}
+                    question={<Trans>How does bank sync work without a Budgie server?</Trans>}
                     answer={
                         <Trans>
                             Budgie talks to Monobank&apos;s own API with a token you paste in, parses Erste PDF statements and PrivatBank
