@@ -34,6 +34,27 @@ const dayAgo = (days: number): string => new Date(Date.now() - days * MILLISECON
 
 const wiseAccountOf = (path: string) => WISE_ACCOUNTS.find(({ uid }) => path.split('/')[2] === uid);
 
+const fakeAspsps = () => ({
+    aspsps: [
+        ...[SYNTHETIC_BANK, CONNECT_BANK].map(name => ({
+            name,
+            country: 'DE',
+            maximum_consent_validity: CONSENT_VALIDITY_SECONDS,
+            beta: false,
+            psu_types: ['personal']
+        })),
+        { name: WISE_ASPSP_NAME, country: 'GB', maximum_consent_validity: CONSENT_VALIDITY_SECONDS, beta: false, psu_types: ['personal'] },
+        {
+            name: WISE_ASPSP_NAME,
+            country: 'DE',
+            maximum_consent_validity: CONSENT_VALIDITY_SECONDS,
+            beta: false,
+            psu_types: ['personal'],
+            required_psu_headers: ['psu-ip-address']
+        }
+    ]
+});
+
 const ENABLE_BANKING_ROUTES: ReadonlyArray<readonly [string, RegExp, FakeHandlerType]> = [
     [
         'GET',
@@ -45,28 +66,7 @@ const ENABLE_BANKING_ROUTES: ReadonlyArray<readonly [string, RegExp, FakeHandler
             redirect_urls: ['https://budgie.at/enable-banking/callback']
         })
     ],
-    [
-        'GET',
-        /^\/aspsps$/u,
-        () => ({
-            aspsps: [
-                ...[SYNTHETIC_BANK, CONNECT_BANK].map(name => ({
-                    name,
-                    country: 'DE',
-                    maximum_consent_validity: CONSENT_VALIDITY_SECONDS,
-                    beta: false
-                })),
-                { name: WISE_ASPSP_NAME, country: 'GB', maximum_consent_validity: CONSENT_VALIDITY_SECONDS, beta: false },
-                {
-                    name: WISE_ASPSP_NAME,
-                    country: 'DE',
-                    maximum_consent_validity: CONSENT_VALIDITY_SECONDS,
-                    beta: false,
-                    required_psu_headers: ['psu-ip-address']
-                }
-            ]
-        })
-    ],
+    ['GET', /^\/aspsps$/u, fakeAspsps],
     [
         'POST',
         /^\/auth$/u,
@@ -239,7 +239,10 @@ const MONOBANK_ROUTES: ReadonlyArray<readonly [string, RegExp, FakeHandlerType]>
     ['GET', /^\/personal\/statement\/[^/]+\/\d+(\/\d+)?$/u, monobankStatement]
 ];
 
+const ENABLE_BANKING_PUBLIC_ROUTES: ReadonlyArray<readonly [string, RegExp, FakeHandlerType]> = [['GET', /^\/api\/aspsps$/u, fakeAspsps]];
+
 const ROUTES_BY_HOST = new Map([
+    ['enablebanking.com', ENABLE_BANKING_PUBLIC_ROUTES],
     ['api.enablebanking.com', ENABLE_BANKING_ROUTES],
     ['api.monobank.ua', MONOBANK_ROUTES]
 ]);

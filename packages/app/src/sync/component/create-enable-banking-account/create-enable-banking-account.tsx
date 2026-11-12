@@ -39,10 +39,16 @@ interface Props {
     readonly connectAccountId: number | null;
     readonly savedApplicationId: string | null;
     readonly preselectedBankName: string | null;
+    readonly preselectedCountry: string | null;
 }
 
 // eslint-disable-next-line max-lines-per-function, max-statements -- Form orchestration component with multiple hooks and handlers
-export const CreateEnableBankingAccount = ({ connectAccountId, savedApplicationId: connectApplicationId, preselectedBankName }: Props) => {
+export const CreateEnableBankingAccount = ({
+    connectAccountId,
+    savedApplicationId: connectApplicationId,
+    preselectedBankName,
+    preselectedCountry
+}: Props) => {
     const { t } = useLingui();
     const hasConnectKey = isDefined(connectApplicationId);
     const [step, setStep] = useState(() => {
@@ -55,10 +61,11 @@ export const CreateEnableBankingAccount = ({ connectAccountId, savedApplicationI
     const [banks, setBanks] = useState<readonly EnableBankingBankInterface[]>([]);
     const [authorization, setAuthorization] = useState<EnableBankingAuthorizationInterface | null>(null);
     const [historyDepth, setHistoryDepth] = useState(SyncHistoryDepthEnum.FULL);
-    const isPreselected = (bank: EnableBankingBankInterface) => bank.name.toLocaleLowerCase() === preselectedBankName?.toLocaleLowerCase();
+    const isPreselected = (bank: EnableBankingBankInterface) =>
+        bank.name.toLocaleLowerCase() === preselectedBankName?.toLocaleLowerCase() && bank.country === (preselectedCountry ?? bank.country);
     const candidateBanks = isDefined(preselectedBankName) ? banks.filter(isPreselected) : banks;
     const { isLoading: isBusy, run } = useSingleFlight();
-    const { applicationId, parsedApplicationId, isKeyPicked, handleApplicationIdChange, handlePickKey, savePickedKey } =
+    const { applicationId, parsedApplicationId, isKeyPicked, isContinueDisabled, handleApplicationIdChange, handlePickKey, savePickedKey } =
         useEnableBankingKeyState(run, connectApplicationId);
 
     const { loadBanks, beginAuthorization } = useEnableBankingBankLoading(connectAccountId, savePickedKey);
@@ -182,8 +189,6 @@ export const CreateEnableBankingAccount = ({ connectAccountId, savedApplicationI
                 handleGoBack();
         }
     };
-
-    const isContinueDisabled = !isDefined(parsedApplicationId) || !isKeyPicked;
 
     const handleShowHistory = () => {
         setStep(EnableBankingSetupStepEnum.HISTORY);

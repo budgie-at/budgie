@@ -1160,6 +1160,10 @@ msgstr "1S"
 msgid "1Y"
 msgstr "1A"
 
+#: src/account/component/create-more-banks-card/create-more-banks-card.tsx
+msgid "2,000+ EU banks"
+msgstr "Más de 2.000 bancos de la UE"
+
 #: src/budget/components/budget-day-strip-key/budget-day-strip-key.tsx
 msgid "2× plan"
 msgstr "2× plan"
@@ -2129,6 +2133,10 @@ msgstr "Banco desconectado"
 msgid "Bank integration settings"
 msgstr "Ajustes de la integración bancaria"
 
+#: src/sync/component/enable-banking-public-bank-list/enable-banking-public-bank-list.tsx
+msgid "Bank not listed?"
+msgstr "¿Tu banco no aparece?"
+
 #: src/inzhur/component/inzhur-operations-details/inzhur-operations-details.tsx
 msgid "Bank payments"
 msgstr "Pagos bancarios"
@@ -2149,6 +2157,10 @@ msgstr "Sincronización bancaria restablecida"
 #: src/rule/constant/rule-condition-field.constant.ts
 msgid "Bank, import or manual entry"
 msgstr "Banco, importación o entrada manual"
+
+#: src/app/(main)/create-account/index.tsx
+msgid "Banks"
+msgstr "Bancos"
 
 #: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
 msgid "Bars compare each category with the largest one."
@@ -3788,6 +3800,7 @@ msgstr "Credenciales requeridas"
 #: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 #: src/account/constant/account-kind-title.constant.ts
 #: src/account/constant/account-type.constant.ts
+#: src/app/(main)/create-account/index.tsx
 #: src/onboarding/constant/onboarding-account-options.constant.ts
 msgid "Crypto"
 msgstr "Cripto"
@@ -4653,7 +4666,6 @@ msgstr "Estimado a partir de tus transacciones pasadas con tus límites actuales
 msgid "EU bank connected"
 msgstr "Banco de la UE conectado"
 
-#: src/app/(main)/create-account/index.tsx
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "EU banks"
 msgstr "Bancos de la UE"
@@ -5593,6 +5605,7 @@ msgid "Invalid file"
 msgstr "Archivo inválido"
 
 #: src/account/constant/account-type.constant.ts
+#: src/app/(main)/create-account/index.tsx
 msgid "Investments"
 msgstr "Inversiones"
 
@@ -6001,6 +6014,7 @@ msgstr "Gestionar presupuesto"
 msgid "Manage this refund from the original purchase."
 msgstr "Gestiona este reembolso desde la compra original."
 
+#: src/app/(main)/create-account/index.tsx
 #: src/rule/constant/external-source.constant.ts
 msgid "Manual"
 msgstr "Manual"
@@ -6291,6 +6305,10 @@ msgstr "Más acciones"
 #: src/transaction/components/transaction-info-more-actions-row/transaction-info-more-actions-row.tsx
 msgid "More Actions…"
 msgstr "Más acciones…"
+
+#: src/app/(main)/create-account/index.tsx
+msgid "More banks"
+msgstr "Más bancos"
 
 #: src/categorize-inbox/components/categorize-inbox-category-provider/categorize-inbox-category-provider.tsx
 msgid "More categories"
@@ -7508,6 +7526,10 @@ msgstr "Pagar a plazos · {operatedAtLabel} · {accountTitle}"
 msgid "Payment history"
 msgstr "Historial de pagos"
 
+#: src/app/(main)/create-account/index.tsx
+msgid "Payment providers"
+msgstr "Proveedores de pago"
+
 #: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
 msgid "Payment schedule unavailable"
 msgstr "Calendario de pagos no disponible"
@@ -8529,6 +8551,10 @@ msgstr "Buscar cuentas…"
 msgid "Search archived accounts…"
 msgstr "Buscar cuentas archivadas…"
 
+#: src/account/component/create-more-banks-card/create-more-banks-card.tsx
+msgid "Search banks connected through Enable Banking"
+msgstr "Busca bancos conectados mediante Enable Banking"
+
 #: src/rule/components/rule-mcc-selector-modal-content/rule-mcc-selector-modal-content.tsx
 msgid "Search by code or description…"
 msgstr "Buscar por código o descripción..."
@@ -8746,6 +8772,10 @@ msgstr "Establecer fecha de vencimiento"
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx
 msgid "Set Return Date"
 msgstr "Establecer fecha de devolución"
+
+#: src/sync/component/enable-banking-public-bank-list/enable-banking-public-bank-list.tsx
+msgid "Set up Enable Banking to see every bank"
+msgstr "Configura Enable Banking para ver todos los bancos"
 
 #: src/sync/component/enable-banking-setup-guide/enable-banking-setup-guide.tsx
 msgid "Set up once, about 5 minutes"
@@ -9240,10 +9270,6 @@ msgstr "La sincronización está desactivada para todos los activos"
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Sync off"
 msgstr "Sincronización desactivada"
-
-#: src/app/(main)/create-account/index.tsx
-msgid "Sync or import"
-msgstr "Sincronizar o importar"
 
 #: src/sync/component/resync-account/resync-account.tsx
 #: src/sync/component/resync-window-picker-modal-content/resync-window-picker-modal-content.tsx
@@ -9993,14 +10019,6 @@ msgstr "Touch ID no se completó. Inténtalo de nuevo o continúa sin él."
 #: src/budget/components/budget-events-section/budget-events-section.tsx
 msgid "Track a trip or project with its own limit. Tagged expenses still count in this budget."
 msgstr "Controla un viaje o proyecto con su propio límite. Los gastos con etiqueta siguen contando en este presupuesto."
-
-#: src/app/(main)/create-account/index.tsx
-msgid "Track manually"
-msgstr "Registrar manualmente"
-
-#: src/app/(main)/create-account/index.tsx
-msgid "Trade Republic, N26 and other EU banks"
-msgstr "Trade Republic, N26 y otros bancos de la UE"
 
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Trade Republic, N26 and other EU banks, read-only."

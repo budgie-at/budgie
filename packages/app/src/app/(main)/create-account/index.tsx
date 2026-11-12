@@ -7,6 +7,7 @@ import { GroupedSurface } from '../../../@generic/component/grouped-surface/grou
 import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
 import { CreateAccountCard } from '../../../account/component/create-account-card/create-account-card';
+import { CreateMoreBanksCard } from '../../../account/component/create-more-banks-card/create-more-banks-card';
 import { CreateSyncCard } from '../../../account/component/create-sync-card/create-sync-card';
 import { ACCOUNT_ICON } from '../../../account/constant/account-icon.constant';
 import { ACCOUNT_KIND_TITLE } from '../../../account/constant/account-kind-title.constant';
@@ -17,7 +18,7 @@ export default function Index() {
     return (
         <GroupedSurface>
             <CollapsibleChromePage title={t`New Account`} leading={<HeaderBackButton />} contentClassName="gap-y-7xl pb-5xl">
-                <GroupedListSection title={t`Track manually`}>
+                <GroupedListSection title={t`Manual`}>
                     <CreateAccountCard
                         description={t`Cards and everyday spending`}
                         icon={ACCOUNT_ICON.BANK}
@@ -50,7 +51,7 @@ export default function Index() {
                     />
                 </GroupedListSection>
 
-                <GroupedListSection title={t`Sync or import`} footer={t`Tokens and statements stay on this device.`}>
+                <GroupedListSection title={t`Banks`}>
                     <CreateSyncCard
                         description={t`Automatic sync with a personal token`}
                         title={t`Monobank`}
@@ -62,26 +63,34 @@ export default function Index() {
                         bankProvider={ExternalSourceEnum.PRIVATBANK}
                     />
                     <CreateSyncCard description={t`Import a PDF statement`} title={t`Erste Bank`} bankProvider={ExternalSourceEnum.ERSTE} />
-                    <CreateSyncCard
-                        description={t`Import an XLSX operations export`}
-                        title={t`Inzhur`}
-                        bankProvider={ExternalSourceEnum.INZHUR}
-                    />
-                    <CreateSyncCard
-                        description={t`Sync with a read-only API key`}
-                        title={t`Binance`}
-                        bankProvider={ExternalSourceEnum.BINANCE}
-                    />
-                    <CreateSyncCard
-                        description={t`Trade Republic, N26 and other EU banks`}
-                        title={t`EU banks`}
-                        bankProvider={ExternalSourceEnum.ENABLE_BANKING}
-                    />
+                </GroupedListSection>
+
+                <GroupedListSection title={t`Payment providers`}>
                     <CreateSyncCard
                         description={t`Every Wise balance through Enable Banking`}
                         title={t`Wise`}
                         bankProvider={ExternalSourceEnum.WISE}
                     />
+                </GroupedListSection>
+
+                <GroupedListSection title={t`Crypto`}>
+                    <CreateSyncCard
+                        description={t`Sync with a read-only API key`}
+                        title={t`Binance`}
+                        bankProvider={ExternalSourceEnum.BINANCE}
+                    />
+                </GroupedListSection>
+
+                <GroupedListSection title={t`Investments`}>
+                    <CreateSyncCard
+                        description={t`Import an XLSX operations export`}
+                        title={t`Inzhur`}
+                        bankProvider={ExternalSourceEnum.INZHUR}
+                    />
+                </GroupedListSection>
+
+                <GroupedListSection title={t`More banks`} footer={t`Tokens and statements stay on this device.`}>
+                    <CreateMoreBanksCard />
                 </GroupedListSection>
 
                 <MenuSpacer />

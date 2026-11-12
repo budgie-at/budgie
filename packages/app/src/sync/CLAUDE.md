@@ -22,6 +22,10 @@ These `ExternalSourceEnum` members exist but have no service yet:
 
 `WISE` has no registered sync service either: its create-account row opens the Enable Banking flow with Wise preselected, and its accounts are `ENABLE_BANKING` accounts.
 
+### Enable Banking entry points
+
+The New Account screen has one `2,000+ EU banks` row (`CreateAccount.MoreBanks`) that opens `/create-account/banks`: `EnableBankingPublicBankList` loads `listPublicBanks` through `enableBankingPublicBanksAtom` and renders `EnableBankingBankStep`, with a `Bank not listed?` row (`CreateAccount.ENABLE_BANKING`) that opens the generic `/create-account/ENABLE_BANKING` flow. Picking a bank opens `/create-account/bank/[country]/[name]`, which renders `CreateEnableBankingAccount` with that bank and country preselected; the bank stays in the path because `usePathname()` is what `+native-intent.tsx` returns after the consent redirect (the setup-path hook re-encodes each segment). Wise uses `/create-account/WISE` with a name-only preselection.
+
 ### Setup screens
 
 A new sync provider composes `SyncSetupPage`, `SyncAccountsStep`, `SyncParkedAccountsSection`, `SyncHistoryStep`, `SyncGuideSteps` and `SyncCredentialRow`, and adds only its own credential step and copy.

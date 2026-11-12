@@ -346,6 +346,8 @@ The boundary has no overlap by design, and there is no content match. `connect.t
 
 ## Wise
 
+`EnableBankingSyncService.listPublicBanks` reads the keyless public catalog at `https://enablebanking.com/api/aspsps` (no application key, personal banks only, the same mapping as `listBanks`), so the app can list every bank before the user has an Enable Banking key.
+
 Wise is an ASPSP inside Enable Banking, named by `WISE_ASPSP_NAME`. Each of its balances is an `ENABLE_BANKING` account of one integration, titled by `EnableBankingMapper.mapAccount` (`Wise EUR`, `Wise USD`). Consolidation treats accounts that share `integration_id` as one bank, so a conversion between two balances pairs as a transfer, while a top-up from another bank stays an income. `ExternalSourceEnum.WISE` only names the create-account row that opens the Enable Banking flow with Wise preselected; no `WISE` accounts exist. `WiseStatementImportService` imports older history from Wise's per-currency CSV export onto the connection's accounts, matched by currency, through `makeFileSyncService` with provider `WISE`, so the earliest-live-day cutoff dedupes it against the live feed. `wise.test.ts` and `wise-statement-import.test.ts` carry the sync fixtures and `packages/sync/src/e2e/e2e-fake-wise.ts` the e2e fake API ones.
 
 ## Testing

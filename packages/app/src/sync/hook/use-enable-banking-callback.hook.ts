@@ -58,7 +58,7 @@ export const useEnableBankingCallback = (
 
     useEffect(() => {
         if (isFocused) {
-            appAtomRegistry.set(enableBankingSetupPathAtom, pathname);
+            appAtomRegistry.set(enableBankingSetupPathAtom, pathname.split('/').map(encodeURIComponent).join('/'));
         }
     }, [isFocused, pathname]);
 

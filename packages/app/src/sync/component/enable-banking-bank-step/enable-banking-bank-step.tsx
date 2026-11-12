@@ -20,6 +20,7 @@ import { getDeviceRegionCode } from '../../utils/get-device-region-code.util';
 import { EnableBankingBankRow } from '../enable-banking-bank-row/enable-banking-bank-row';
 
 import type { EnableBankingBankInterface } from '@budgie/sync';
+import type { ReactElement } from 'react';
 
 interface Props {
     readonly banks: readonly EnableBankingBankInterface[];
@@ -27,13 +28,14 @@ interface Props {
     readonly preselectedBankName: string | null;
     readonly onSelectBank: (bank: EnableBankingBankInterface) => void;
     readonly onGoBack: () => void;
+    readonly children?: ReactElement;
 }
 
 const COMBINING_MARKS = /[̀-ͯ]/gu;
 
 const foldSearchText = (text: string): string => text.normalize('NFD').replaceAll(COMBINING_MARKS, '').toLowerCase();
 
-export const EnableBankingBankStep = ({ banks, isLoading, preselectedBankName, onSelectBank, onGoBack }: Props) => {
+export const EnableBankingBankStep = ({ banks, isLoading, preselectedBankName, onSelectBank, onGoBack, children }: Props) => {
     const { t } = useLingui();
     const [query, setQuery] = useState('');
     const deferredQuery = useDeferredValue(query);
@@ -91,10 +93,13 @@ export const EnableBankingBankStep = ({ banks, isLoading, preselectedBankName, o
                     data={listData}
                     emptyState={
                         <LoadingContent isLoading={isLoading}>
-                            <SearchablePageEmptyState icon={UserIconNameEnum.Search} title={emptyTitle} description={emptyDescription} />
+                            <SearchablePageEmptyState icon={UserIconNameEnum.Search} title={emptyTitle} description={emptyDescription}>
+                                {children}
+                            </SearchablePageEmptyState>
                         </LoadingContent>
                     }
                     listHeader={listHeader}
+                    listFooter={children}
                     renderCard={renderCard}
                     sizing={GROUPED_LIST_SIZING}
                 />
