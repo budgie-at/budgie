@@ -1,6 +1,6 @@
 {
     "name": "@budgie-at/app",
-    "version": "6.179.1",
+    "version": "6.180.0",
     "private": true,
     "scripts": {
         "android": "expo run:android",

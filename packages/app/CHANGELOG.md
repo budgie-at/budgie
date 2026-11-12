@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.180.0](https://github.com/budgie-at/budgie/compare/v6.179.1...v6.180.0) (2026-11-12)
+
+### Features
+
+* publish Android to Google Play with store screenshots and landing links ([#2188](https://github.com/budgie-at/budgie/issues/2188)) ([c365903](https://github.com/budgie-at/budgie/commit/c3659037816e48a9262cfd3964cedb7a979a5434)), closes [#2139](https://github.com/budgie-at/budgie/issues/2139) [#2141](https://github.com/budgie-at/budgie/issues/2141) [#2165](https://github.com/budgie-at/budgie/issues/2165) [#2152](https://github.com/budgie-at/budgie/issues/2152) [#2187](https://github.com/budgie-at/budgie/issues/2187)
+
+
 ## [6.179.1](https://github.com/budgie-at/budgie/compare/v6.179.0...v6.179.1) (2026-11-12)
 
 ### Bug Fixes
