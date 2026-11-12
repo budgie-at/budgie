@@ -1,37 +1,49 @@
-Tu dinero es personal. Su gestión también debería serlo.
+Tu dinero es personal. Ahora decides con quién compartirlo.
 
-Budgie te ayuda a registrar gastos, respetar tu presupuesto y ver tus cuentas con claridad, sin crear una cuenta de usuario. Tus movimientos se guardan en tu dispositivo y puedes consultarlos aunque no tengas conexión.
+Budgie es un registro de gastos y planificador de presupuesto que prioriza el uso sin conexión. Sin cuenta de Budgie, sin suscripción y sin servidor de Budgie que guarde tus movimientos. Tu registro vive en tu iPhone y, a través de tu propio iCloud, te sigue a tus otros dispositivos y a quienes lo compartes.
 
-DESCUBRE EN QUÉ GASTAS
-• Registra gastos, ingresos y transferencias entre efectivo, tarjetas y cuentas.
-• Crea categorías y etiquetas a tu medida y reparte una compra entre varias categorías.
-• Consulta gráficos y desgloses por categoría con filtros de fechas.
+NOVEDAD: PRESUPUESTA EN FAMILIA
+• Elige qué cuentas y presupuestos compartir con tu pareja o familia a través de iCloud. Podrán ver y editar lo que compartas. Todo lo demás sigue siendo privado.
+• Tu iPhone y tu iPad se sincronizan solos, incluso tras días sin conexión.
+• Copias automáticas en iCloud, con cada registro cifrado en tu dispositivo antes de salir de él.
 
-PLANIFICA CON MÁS PERSPECTIVA
-• Define un presupuesto mensual con límites por categoría y consulta cuánto te queda.
-• Activa avisos cuando te acerques a un límite o lo alcances.
-• Estima cuánto podría durarte el dinero a partir de tu historial de movimientos.
-• Consulta los pagos recurrentes y las suscripciones detectados en un calendario.
+NOVEDAD: ESCANEA UN RECIBO Y LISTO
+• Apunta la cámara a un recibo o elige uno desde Fotos o Archivos. El reconocimiento de texto se ejecuta en tu iPhone, crea un gasto listo para guardar y aplica tus reglas.
+• Registra los pagos con Apple Pay automáticamente con una automatización de Atajos.
+
+NOVEDAD: SINCRONIZACIÓN BANCARIA EN LA UE, SIN INTERMEDIARIOS
+• Conecta bancos de la UE como N26 y Trade Republic mediante tu propia app de Enable Banking. Tu teléfono habla directamente con el banco, sin servidor de Budgie por el medio.
+• También se sincronizan Monobank y Binance, incluidas las compras con tarjeta de Binance, las recompensas de Earn y el staking.
+• Importa archivos CSV con las columnas emparejadas automáticamente, extractos PDF de Erste, exportaciones de PrivatBank y extractos de fondos de Inzhur.
+
+NOVEDAD: PREGUNTA A SIRI
+Pregunta a Siri, por ejemplo, cuánto has gastado en supermercado. Siri responde con tus gastos, lo que queda del presupuesto, saldos, patrimonio neto y los cargos de hoy, sin abrir la app. Los importes permanecen ocultos mientras el bloqueo con PIN esté activado.
+
+PRESUPUESTOS QUE MIRAN AL FUTURO
+• Presupuestos semanales, quincenales, mensuales o anuales con límites por categoría y traspaso de lo que no gastaste.
+• Disponible sin riesgo: una cifra diaria que se ajusta sobre la marcha, y una previsión que te avisa antes de que una categoría se pase.
+• Aparta dinero para pagos anuales con fondos de reserva, sugeridos a partir de tus pagos recurrentes.
+• Presupuestos aparte para viajes y eventos, y basados en tus ingresos.
+• Ajusta los límites según cómo gastas en realidad.
+
+NO TE PIERDAS NINGÚN CARGO RECURRENTE
+• Suscripciones, facturas e ingresos recurrentes se detectan automáticamente, en lista o calendario.
+• Añade tú mismo un pago recurrente. Budgie asocia los cargos que lleguen después.
 
 MENOS TECLEAR, MÁS CONTROL
-• Aprovecha las sugerencias de movimientos anteriores para registrar gastos habituales.
-• Organiza movimientos con reglas y clasifica juntos los gastos pendientes.
-• Activa la IA en el dispositivo para sugerir categorías y etiquetas o añadir gastos con la voz. Tras descargar los modelos, el reconocimiento de voz y la IA funcionan de forma local.
+• Clasifica los gastos sin categoría en una bandeja agrupada, con unos pocos toques por grupo.
+• Sugerencias de tu historial, reglas, divisiones, reembolsos y compras a plazos.
+• IA opcional en el dispositivo para sugerir categorías y etiquetas y para introducir datos por voz. El reconocimiento de voz y la IA funcionan de forma local tras descargar los modelos.
 
-TUS CUENTAS, EN CONJUNTO
-• Lleva el control del efectivo, las cuentas bancarias, las criptomonedas, los depósitos y las deudas.
-• Consulta saldos y patrimonio neto en tu moneda base mediante tipos de cambio.
-• Ten a mano tu presupuesto y patrimonio con widgets en la pantalla de inicio.
+UNA VISTA, TODAS LAS MONEDAS
+• Efectivo, tarjetas, cuentas bancarias, criptomonedas, depósitos, fondos de inversión y deudas en un único patrimonio neto, en tu moneda base.
+• Gráficos de gastos, tendencias por categoría y una autonomía que estima cuánto te durará el dinero.
+• Widgets en la pantalla de inicio para tu presupuesto y tu patrimonio neto.
 
-TRAE TU HISTORIAL
-• Importa archivos CSV y extractos bancarios compatibles, incluidos PDF de Erste y exportaciones de PrivatBank.
-• Si lo deseas, conecta Monobank o Binance con tus propias credenciales de API. El registro manual no requiere conectar ningún banco.
-• Exporta movimientos en CSV y crea copias de seguridad de tu base de datos.
+PRIVADO POR DISEÑO
+Configura un PIN y tu base de datos se cifra con SQLCipher. Añade Face ID, protección de capturas de pantalla y un modo de privacidad que oculta los importes. Exporta a CSV o conserva un archivo de copia de seguridad completo que controlas tú.
 
-PRIVACIDAD EN TU DISPOSITIVO
-Activa un PIN para cifrar la base de datos con SQLCipher. Añade el desbloqueo biométrico y activa la protección de capturas de pantalla. Las copias de seguridad conservan el cifrado cuando hay un PIN configurado.
-
-El registro diario, los presupuestos y las estadísticas funcionan sin conexión. La sincronización bancaria, la actualización de tipos de cambio y la descarga de modelos de IA necesitan internet. La IA es opcional y requiere espacio para sus modelos.
+El registro diario, los presupuestos y las estadísticas funcionan sin conexión. iCloud, la sincronización bancaria, los tipos de cambio y la descarga de modelos de IA necesitan internet. La IA es opcional y requiere espacio para sus modelos.
 
 Gratis. Sin cuenta de Budgie. Sin suscripción.
 Empieza con tu próximo gasto.

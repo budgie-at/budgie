@@ -1,1 +1,1 @@
-geld,planer,einnahmen,sparen,kosten,abos,vermögen,währungen,krypto,privat,finanzplan,übersicht
+ausgaben,kassenzettel,scanner,planer,paar,geteilt,sync,bank,offline,abo,rechnungen,sparen,krypto

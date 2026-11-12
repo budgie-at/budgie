@@ -1,37 +1,49 @@
-Your money is personal. Keep it that way.
+Your money is personal. Now you choose who shares it.
 
-Budgie helps you track expenses, stay within your budget and see your whole financial picture, without creating an account. Your spending history lives on your device, ready when you need it, even without a connection.
+Budgie is an offline-first expense tracker and budget planner. No Budgie account, no subscription and no Budgie server holding your transactions. Your ledger lives on your iPhone, and through your own iCloud it follows you to your other devices and to the people you share it with.
 
-SPEND WITH A CLEARER PICTURE
-• Log expenses, income and transfers across cash, cards and accounts.
-• Make categories and tags your own, and split purchases across categories.
-• See where your money goes with spending charts, category breakdowns and date filters.
+NEW: BUDGET TOGETHER AS A FAMILY
+• Choose which accounts and budgets to share with your partner or family through iCloud. They can see and edit what you share. Everything else stays private.
+• Your own iPhone and iPad stay in sync automatically, even after days offline.
+• Automatic iCloud backups, with every record encrypted on your device before it leaves.
 
-PLAN WHAT COMES NEXT
-• Set a monthly budget with category limits and see what is left.
-• Enable budget alerts as you approach or reach your limits.
-• Estimate how long your money could last with runway, based on your transaction history.
-• See detected recurring charges and subscriptions in a calendar.
+NEW: SCAN A RECEIPT, DONE
+• Point the camera at a receipt, or pick one from Photos or Files. Text recognition runs on your iPhone, fills in a ready-to-save expense and applies your rules.
+• Capture Apple Pay taps automatically with a Shortcuts automation.
+
+NEW: EU BANK SYNC, WITH NO MIDDLEMAN
+• Connect EU banks such as N26 and Trade Republic through your own Enable Banking app. Your phone talks to the bank directly. There is no Budgie server in between.
+• Monobank and Binance sync too, including Binance card purchases, Earn rewards and staking.
+• Import CSV files with columns matched automatically, Erste PDF statements, PrivatBank exports and Inzhur fund statements.
+
+NEW: ASK SIRI
+"How much did I spend on groceries?" Siri answers with your spending, what is left in your budget, account balances, net worth and today's upcoming charges, without opening the app. Amounts stay hidden while your PIN lock is on.
+
+BUDGETS THAT LOOK AHEAD
+• Weekly, biweekly, monthly or yearly budgets with category limits, and rollover for what you did not spend.
+• Safe to spend: one daily figure that adjusts as you go, plus a forecast that warns you before a category runs over.
+• Set money aside for yearly bills with sinking funds, suggested from your recurring payments.
+• Separate budgets for trips and events, and budgets based on your income.
+• Auto-tune limits from how you actually spend.
+
+NEVER MISS A RECURRING CHARGE
+• Subscriptions, bills and recurring income are detected automatically and shown as a list or a calendar.
+• Add a recurring payment yourself. Budgie matches the charges that follow.
 
 LESS TYPING, MORE CONTROL
-• Use suggestions from past transactions to log familiar expenses.
-• Apply rules to organize transactions and review uncategorized spending together.
-• Enable on-device AI for category and tag suggestions, plus voice entry. Speech recognition and AI processing run locally after the models download.
+• Clear uncategorized spending in a grouped inbox, a few taps per group.
+• Suggestions from your history, rules, splits, refunds and pay-in-parts purchases.
+• Optional on-device AI for category and tag suggestions and voice entry. Speech recognition and AI run locally after the models download.
 
-ONE VIEW, MANY CURRENCIES
-• Track cash, bank accounts, crypto, deposits and debts.
-• View balances and net worth in your base currency using exchange rates.
-• Keep budget and net worth summaries close with Home Screen widgets.
-
-BRING YOUR HISTORY WITH YOU
-• Import transactions from CSV files and supported bank statements, including Erste PDFs and PrivatBank exports.
-• Connect Monobank or Binance with your own API credentials if you choose. Manual tracking needs no bank connection.
-• Export transactions to CSV and create database backups you control.
+ONE VIEW, EVERY CURRENCY
+• Cash, cards, bank accounts, crypto, deposits, investment funds and debts in one net worth, in your base currency.
+• Spending charts, category trends and a runway that shows how long your money could last.
+• Home Screen widgets for your budget and net worth.
 
 PRIVATE BY DESIGN
-Your ledger stays on your device. Enable a PIN to encrypt the database with SQLCipher, add biometric unlock and turn on screenshot protection. Backups retain the database encryption when a PIN is set.
+Set a PIN and your database is encrypted with SQLCipher. Add Face ID, screenshot protection and a privacy mode that masks amounts. Export to CSV or keep a full backup file you control.
 
-Everyday tracking, budgets and analytics work offline. Bank sync, exchange-rate updates and AI model downloads need internet access. AI is optional and requires device storage for its models.
+Everyday tracking, budgets and analytics work offline. iCloud sync, bank sync, exchange rates and AI model downloads need internet access. AI is optional and needs device storage for its models.
 
 Free to use. No Budgie account. No subscription.
 Start with your next expense.

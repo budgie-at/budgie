@@ -1,1 +1,1 @@
-argent,gestion,comptes,revenus,épargne,abonnements,devises,patrimoine,portefeuille,crypto,csv
+reçu,scanner,planificateur,couple,partagé,sync,banque,offline,factures,abonnement,épargne,crypto
