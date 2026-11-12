@@ -1,0 +1,23 @@
+appId: ${APP_ID}
+---
+- openLink: budgie://
+- extendedWaitUntil:
+      visible:
+          id: HomePage.TotalBalance
+      timeout: 60000
+- repeat:
+      times: 12
+      while:
+          notVisible:
+              id: 'DebtAccountCardSummary\.OutstandingAmount\..+'
+      commands:
+          - swipe:
+                start: 20%, 70%
+                end: 20%, 35%
+                duration: 600
+- swipe:
+      start: 20%, 60%
+      end: 20%, 40%
+      duration: 900
+- waitForAnimationToEnd
+- takeScreenshot: 06-account

@@ -1,0 +1,10 @@
+appId: ${APP_ID}
+---
+- tapOn:
+      id: PinPage.Digit.1
+- tapOn:
+      id: PinPage.Digit.2
+- tapOn:
+      id: PinPage.Digit.3
+- tapOn:
+      id: PinPage.Digit.4

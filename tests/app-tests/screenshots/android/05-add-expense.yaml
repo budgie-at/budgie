@@ -1,0 +1,15 @@
+appId: ${APP_ID}
+---
+- openLink: budgie://create-transaction/expense
+- extendedWaitUntil:
+      visible:
+          id: SuggestionPill.PatternCategory.0
+      timeout: 60000
+- tapOn:
+      id: SuggestionPill.PatternCategory.0
+- extendedWaitUntil:
+      notVisible:
+          id: SuggestionPill.PatternCategory.0
+      timeout: 10000
+- waitForAnimationToEnd
+- takeScreenshot: 05-add-expense

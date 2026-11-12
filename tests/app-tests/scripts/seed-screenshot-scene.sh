@@ -13,10 +13,11 @@
 #   LOCALE          en | fr | uk | de | es
 #   APPEARANCE      light | dark
 #   APP_ID          bundle id
-#   PLATFORM        ios
+#   PLATFORM        ios | android
 #   DEVICE_SLUG     slugified device name
-#   SIMULATOR_UDID  booted simulator UDID
-#   APP_PATH        packaged .app path
+#   SIMULATOR_UDID  booted simulator UDID (ios)
+#   APP_PATH        packaged .app path (ios)
+#   ANDROID_SERIAL  adb serial of the booted emulator (android)
 #
 # The database is assembled from fixtures/screenshots:
 #   showcase.db         curated dataset, anchored on a fixed date
@@ -291,19 +292,10 @@ install_file_fixtures() {
     done
 }
 
-install_database() {
+install_ios_database() {
     local app_data_container
     local sqlite_directory
 
-    PLATFORM="${PLATFORM:-ios}"
-
-    if [ "$PLATFORM" != "ios" ]; then
-        echo "seed-screenshot-scene: unsupported PLATFORM '$PLATFORM', only ios is implemented" >&2
-
-        exit 1
-    fi
-
-    APP_ID="${APP_ID:?APP_ID is required}"
     SIMULATOR_UDID="${SIMULATOR_UDID:?SIMULATOR_UDID is required}"
 
     app_data_container=$(xcrun simctl get_app_container "$SIMULATOR_UDID" "$APP_ID" data)
@@ -325,7 +317,58 @@ install_database() {
     echo "seed-screenshot-scene: installed into $sqlite_directory/budgie.db"
 
     install_file_fixtures "$app_data_container"
+}
 
+install_android_database() {
+    local app_data_directory="/data/data/$APP_ID"
+    local files_directory="$app_data_directory/files"
+    local fixture_path
+
+    ANDROID_SERIAL="${ANDROID_SERIAL:?ANDROID_SERIAL is required}"
+    export ANDROID_SERIAL
+
+    sqlite3 "$PREPARED_DATABASE_PATH" 'UPDATE settings SET is_screenshot_protection_enabled = 0;'
+
+    adb root >/dev/null
+    adb wait-for-device
+
+    for _ in 1 2 3 4 5 6 7 8 9 10; do
+        [ "$(adb shell id -u | tr -d '\r')" = "0" ] && break
+        sleep 1
+    done
+
+    adb shell "am force-stop $APP_ID && rm -f $app_data_directory/shared_prefs/SecureStore*.xml $files_directory/SQLite/budgie.db* && mkdir -p $files_directory/SQLite $files_directory/E2EFixtures"
+    adb push "$PREPARED_DATABASE_PATH" "$files_directory/SQLite/budgie.db" >/dev/null
+
+    for fixture_path in "$FIXTURES_DIR"/e2e-*.csv "$FIXTURES_DIR"/e2e-*.pdf "$FIXTURES_DIR"/e2e-*.xlsx; do
+        [ -f "$fixture_path" ] || continue
+
+        adb push "$fixture_path" "$files_directory/E2EFixtures/$(basename "$fixture_path")" >/dev/null
+    done
+
+    adb shell "chown -R \$(stat -c %u:%g $app_data_directory) $files_directory && restorecon -RF $files_directory"
+    adb shell pm grant "$APP_ID" android.permission.POST_NOTIFICATIONS >/dev/null 2>&1 || true
+
+    echo "seed-screenshot-scene: installed into $ANDROID_SERIAL:$files_directory/SQLite/budgie.db"
+}
+
+install_database() {
+    PLATFORM="${PLATFORM:-ios}"
+    APP_ID="${APP_ID:?APP_ID is required}"
+
+    case "$PLATFORM" in
+        ios)
+            install_ios_database
+            ;;
+        android)
+            install_android_database
+            ;;
+        *)
+            echo "seed-screenshot-scene: unsupported PLATFORM '$PLATFORM', expected ios or android" >&2
+
+            exit 1
+            ;;
+    esac
 }
 
 prepare_database

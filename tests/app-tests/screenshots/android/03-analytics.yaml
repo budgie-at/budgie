@@ -1,0 +1,23 @@
+appId: ${APP_ID}
+---
+- openLink: budgie://analytics
+- extendedWaitUntil:
+      visible:
+          id: TransactionFilters.DateChipActive
+      timeout: 60000
+- tapOn:
+      id: TransactionFilters.DateChipActive
+- extendedWaitUntil:
+      visible:
+          id: TransactionFilters.DatePeriod.LAST_MONTH
+      timeout: 10000
+- tapOn:
+      id: TransactionFilters.DatePeriod.LAST_MONTH
+- tapOn:
+      id: TransactionFilters.DateApplyButton
+- extendedWaitUntil:
+      visible:
+          id: 'CategoryStatisticsCard\.[^.]+'
+      timeout: 15000
+- waitForAnimationToEnd
+- takeScreenshot: 03-analytics
