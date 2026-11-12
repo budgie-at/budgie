@@ -57,6 +57,7 @@ export class TransactionEntryPositionRepository extends Context.Service<Transact
                                     Boolean
                                 ),
                                 accountId: AccountEntityTable.id,
+                                isActive: AccountEntityTable.isActive,
                                 transferAccountId: sql<number | null>`(
                                     SELECT opposite.account_id FROM transaction_entries opposite
                                     INNER JOIN accounts destination ON destination.id = opposite.account_id

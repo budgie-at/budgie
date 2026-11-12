@@ -108,3 +108,43 @@ it.effect('rescales every FIFO lot in a reverse split without moving cost betwee
         ).toMatchObject({ amount: 1, costBasis: 200, realizedProfitLoss: 60 });
     })
 );
+
+it.effect('keeps transferred lots in original purchase order', () =>
+    Effect.sync(() => {
+        expect(
+            calculateInstrumentPosition(
+                [
+                    { accountId: 1, type: TransactionEntryTypeEnum.DEBIT, amount: PRECISION, baseAmount: 100 * PRECISION },
+                    { accountId: 2, type: TransactionEntryTypeEnum.DEBIT, amount: PRECISION, baseAmount: 200 * PRECISION },
+                    {
+                        accountId: 1,
+                        transferAccountId: 2,
+                        type: TransactionEntryTypeEnum.CREDIT,
+                        amount: PRECISION,
+                        baseAmount: 250 * PRECISION
+                    },
+                    {
+                        accountId: 2,
+                        transferAccountId: 1,
+                        type: TransactionEntryTypeEnum.DEBIT,
+                        amount: PRECISION,
+                        baseAmount: 250 * PRECISION
+                    },
+                    { accountId: 2, type: TransactionEntryTypeEnum.CREDIT, amount: PRECISION, baseAmount: 300 * PRECISION }
+                ],
+                [2]
+            )
+        ).toMatchObject({ amount: 1, costBasis: 200, realizedProfitLoss: 200 });
+    })
+);
+
+it.effect('leaves inactive accounts out of an unscoped position', () =>
+    Effect.sync(() => {
+        expect(
+            calculateInstrumentPosition([
+                { accountId: 1, isActive: true, type: TransactionEntryTypeEnum.DEBIT, amount: PRECISION, baseAmount: 100 * PRECISION },
+                { accountId: 2, isActive: false, type: TransactionEntryTypeEnum.DEBIT, amount: PRECISION, baseAmount: 50 * PRECISION }
+            ])
+        ).toMatchObject({ amount: 1, costBasis: 100 });
+    })
+);

@@ -14,10 +14,11 @@ const consumeLots = (lots: readonly InstrumentPositionLotInterface[], amount: nu
         const consumedAmount = Math.min(lot.amount, Math.max(0, remainingAmount));
         const consumedCost = isDefined(lot.baseAmount) ? (lot.baseAmount * consumedAmount) / lot.amount : null;
         if (isPositiveNumber(consumedAmount)) {
-            consumed.push({ amount: consumedAmount, baseAmount: consumedCost });
+            consumed.push({ amount: consumedAmount, baseAmount: consumedCost, order: lot.order });
         }
         if (lot.amount > consumedAmount) {
             remaining.push({
+                ...lot,
                 amount: lot.amount - consumedAmount,
                 baseAmount: isDefined(lot.baseAmount) ? lot.baseAmount - (consumedCost ?? 0) : null
             });
@@ -32,16 +33,21 @@ export const calculateInstrumentPosition = (
     entries: readonly InstrumentPositionEntryRowInterface[],
     accountIds?: readonly number[]
 ): InstrumentPositionInterface => {
+    const inactiveAccountIds = new Set(entries.filter(entry => entry.isActive === false).map(entry => entry.accountId ?? 0));
+    const isReported = (accountId: number) => (isDefined(accountIds) ? accountIds.includes(accountId) : !inactiveAccountIds.has(accountId));
     const accountLots = new Map<number, readonly InstrumentPositionLotInterface[]>();
     let realizedProfitLossMicro = 0;
-    for (const entry of entries) {
+    for (const [order, entry] of entries.entries()) {
         const accountId = entry.accountId ?? 0;
         const lots = accountLots.get(accountId) ?? [];
         if (isDefined(entry.transferAccountId)) {
             if (entry.type === TransactionEntryTypeEnum.CREDIT) {
                 const { consumed, remaining } = consumeLots(lots, entry.amount);
                 accountLots.set(accountId, remaining);
-                accountLots.set(entry.transferAccountId, (accountLots.get(entry.transferAccountId) ?? []).concat(consumed));
+                accountLots.set(
+                    entry.transferAccountId,
+                    (accountLots.get(entry.transferAccountId) ?? []).concat(consumed).sort((left, right) => left.order - right.order)
+                );
             }
         } else if (entry.isAdjustment === true && isDefined(entry.baseAmount)) {
             const quantity = lots.reduce((total, lot) => total + lot.amount, 0);
@@ -52,7 +58,7 @@ export const calculateInstrumentPosition = (
                     ? lots
                           .map(lot => ({ ...lot, amount: (lot.amount * Math.max(0, nextQuantity)) / quantity }))
                           .filter(lot => isPositiveNumber(lot.amount))
-                    : [{ amount: Math.max(0, nextQuantity), baseAmount: 0 }].filter(lot => isPositiveNumber(lot.amount))
+                    : [{ amount: Math.max(0, nextQuantity), baseAmount: 0, order }].filter(lot => isPositiveNumber(lot.amount))
             );
         } else if (entry.type === TransactionEntryTypeEnum.DEBIT) {
             accountLots.set(
@@ -60,7 +66,8 @@ export const calculateInstrumentPosition = (
                 lots
                     .concat({
                         amount: entry.amount,
-                        baseAmount: isDefined(entry.baseAmount) ? entry.baseAmount + (entry.feeBaseAmount ?? 0) : null
+                        baseAmount: isDefined(entry.baseAmount) ? entry.baseAmount + (entry.feeBaseAmount ?? 0) : null,
+                        order
                     })
                     .filter(lot => isPositiveNumber(lot.amount))
             );
@@ -71,7 +78,7 @@ export const calculateInstrumentPosition = (
                 entry.isAdjustment !== true &&
                 isDefined(entry.baseAmount) &&
                 consumed.every(lot => isDefined(lot.baseAmount)) &&
-                (!isDefined(accountIds) || accountIds.includes(accountId))
+                isReported(accountId)
             ) {
                 realizedProfitLossMicro +=
                     entry.baseAmount - (entry.feeBaseAmount ?? 0) - consumed.reduce((total, lot) => total + (lot.baseAmount ?? 0), 0);
@@ -80,7 +87,7 @@ export const calculateInstrumentPosition = (
         }
     }
     const lots = [...accountLots]
-        .flatMap(([accountId, openLots]) => (!isDefined(accountIds) || accountIds.includes(accountId) ? openLots : []))
+        .flatMap(([accountId, openLots]) => (isReported(accountId) ? openLots : []))
         .filter(lot => isDefined(lot.baseAmount) && isPositiveNumber(lot.amount));
     const amountMicro = lots.reduce((total, lot) => total + lot.amount, 0);
     const costBasisMicro = isNotEmptyArray(lots) ? lots.reduce((total, lot) => total + (lot.baseAmount ?? 0), 0) : null;
