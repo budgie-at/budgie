@@ -27,7 +27,6 @@ vi.mock('@lingui/react/macro', () => ({ useLingui: () => ({ t: (parts: TemplateS
 vi.mock('../src/@generic/hook/use-single-flight.hook', () => ({ useSingleFlight: () => ({ run: save }) }));
 vi.mock('../src/transaction/hook/use-delete-transaction.hook', () => ({ useDeleteTransaction: vi.fn() }));
 vi.mock('../src/@generic/utils/go-back-or-replace.util', () => ({ goBackOrReplace: vi.fn() }));
-vi.mock('expo-router', () => ({ router: { dismiss: vi.fn() }, useNavigation: () => ({ getState: () => undefined }) }));
 vi.mock('../src/recurring/utils/schedule-recurring-refresh.util', () => ({ scheduleRecurringRefresh: () => Effect.void }));
 vi.mock('../src/@generic/utils/toast-on-failure.util', () => ({ toastOnFailure: () => (effect: unknown) => effect }));
 vi.mock('react-hook-form', async importOriginal => {

@@ -1,7 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { CreateAccountScreenSelector } from '../../../account/component/create-account-screen/create-account-screen.selector';
 import { useContacts } from '../../hook/use-contacts.hook';
@@ -34,11 +34,8 @@ export const ContactSelector = ({ contactId, onSelect, testID, variant, emptyDes
                 })
         );
 
-    const title = isNotEmptyString(contactId)
-        ? (contacts.find(({ id }) => id === contactId)?.name ?? t`Select a contact`)
-        : t`Select a contact`;
-
     const contact = contacts.find(({ id }) => id === contactId) ?? null;
+    const title = contact?.name ?? t`Select a contact`;
     const iconVariant: ColorPaletteVariant = isDefined(contact) ? variant : 'secondary';
     const description = isDefined(contact) ? selectedDescription : emptyDescription;
 

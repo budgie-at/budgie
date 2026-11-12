@@ -26,7 +26,7 @@ const requestPermission = Effect.gen(function* () {
             catch: cause => NativeCallError.make({ cause })
         });
     }
-}).pipe(Effect.tapError(Effect.logError), Effect.ignore);
+}).pipe(Effect.catchCause(Effect.logError));
 
 const contactsAtom = appAtomRuntime.atom(
     Effect.gen(function* () {
