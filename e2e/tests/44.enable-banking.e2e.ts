@@ -12,6 +12,7 @@ const CONNECT_ACCOUNT = 'E2E Statement Account';
 const CONNECT_ACCOUNT_ID = 960;
 const WISE_EUR_ACCOUNT = 'Wise EUR';
 const WISE_USD_ACCOUNT = 'Wise USD';
+const WISE_INSTITUTION_ROW = 'InstitutionRow.96';
 
 test('44 enable banking', { tags: ['sync'], platforms: ['ios'] }, async ({ budgie }) => {
     const ctx = budgie.ctx;
@@ -94,15 +95,17 @@ test('44 enable banking', { tags: ['sync'], platforms: ['ios'] }, async ({ budgi
         await b.expectId(ctx, 'SyncHistoryDepthOption.FULL', 10_000);
         await b.tapId(ctx, 'CreateEnableBankingAccount.StartSyncButton');
         await b.expectId(ctx, 'HomePage.TotalBalance', 30_000);
-        await b.scrollTo(ctx, `AccountCard.${WISE_EUR_ACCOUNT}`, 'up');
-        await expect(id(`AccountCard.${WISE_EUR_ACCOUNT}`)).toHaveText(/€1,000, Up to date$/, { timeout: 90_000 });
-        await b.scrollTo(ctx, `AccountCard.${WISE_USD_ACCOUNT}`);
-        await expect(id(`AccountCard.${WISE_USD_ACCOUNT}`)).toHaveText(/\$108, Up to date$/, { timeout: 90_000 });
-        await b.openLink(ctx, 'budgie://transactions');
-        await expect(screen.getByRole('button', { name: /^E2E Other Bank, \+€1,100,.*Wise EUR$/ }).first()).toBeVisible({
+        await b.scrollTo(ctx, WISE_INSTITUTION_ROW, 'up');
+        await expect(id(WISE_INSTITUTION_ROW)).toHaveText(/^Enable Banking · Wise, .*2 accounts$/, { timeout: 90_000 });
+        await b.tapId(ctx, WISE_INSTITUTION_ROW);
+        await expect(id(`AccountCard.${WISE_EUR_ACCOUNT}`)).toHaveText(/€1,000\.00, Up to date$/, { timeout: 90_000 });
+        await expect(id(`AccountCard.${WISE_USD_ACCOUNT}`)).toHaveText(/\$108\.20, Up to date$/, { timeout: 90_000 });
+        await expect(
+            screen.getByRole('button', { name: /^E2E Wise Conversion, €100\.00, \$108\.20, From Wise EUR to Wise USD$/ }).first()
+        ).toBeVisible({
             timeout: 30_000
         });
-        await expect(screen.getByText(/Wise EUR.*Wise USD/).first()).toBeVisible({ timeout: 30_000 });
+        await expect(screen.getByRole('button', { name: /^E2E Other Bank, \+€1,100\.00,.*Wise EUR$/ }).first()).toBeVisible();
     });
 
     await b.phase('valid consent', async () => {
