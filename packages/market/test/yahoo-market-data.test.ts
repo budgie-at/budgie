@@ -183,6 +183,7 @@ it.effect('keeps Yahoo ticker identity separate from crypto and reuses ISIN and 
         expect(stock.id).not.toBe(crypto.id);
         expect((yield* yahoo.resolveOrCreate(stockListing, 'US0001234567')).id).toBe(stock.id);
         const isinFirst = yield* yahoo.resolveOrCreate(listing, 'DE0001234567');
+        expect(isinFirst.code).toBe('YAHOO:TEST.DE');
         expect((yield* yahoo.resolveOrCreate(listing, 'TEST.DE')).id).toBe(isinFirst.id);
     }).pipe(Effect.provide(YahooLayer))
 );

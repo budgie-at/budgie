@@ -36,3 +36,22 @@ it.effect('preserves total cost after a split quantity adjustment', () =>
         ).toMatchObject({ amount: 4, costBasis: 100, averageCost: 25 });
     })
 );
+
+it.effect('preserves cost and realized return through reverse splits and quantity fixes', () =>
+    Effect.sync(() => {
+        expect(
+            calculateInstrumentPosition([
+                opening,
+                { type: TransactionEntryTypeEnum.CREDIT, amount: PRECISION, baseAmount: 0, isAdjustment: true },
+                { type: TransactionEntryTypeEnum.CREDIT, amount: PRECISION / 2, baseAmount: 0, isAdjustment: true },
+                { type: TransactionEntryTypeEnum.CREDIT, amount: PRECISION / 4, baseAmount: 70 * PRECISION }
+            ])
+        ).toMatchObject({ amount: 0.25, costBasis: 50, realizedProfitLoss: 20 });
+        expect(
+            calculateInstrumentPosition([
+                opening,
+                { type: TransactionEntryTypeEnum.CREDIT, amount: 2 * PRECISION, baseAmount: 0, isAdjustment: true }
+            ])
+        ).toMatchObject({ amount: 0, costBasis: null, realizedProfitLoss: 0 });
+    })
+);

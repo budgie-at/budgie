@@ -98,10 +98,11 @@ export class YahooMarketDataService extends Context.Service<YahooMarketDataServi
                         : []
                 );
             }),
-            resolveOrCreate: Effect.fn('YahooMarketDataService.resolveOrCreate')(function* (listing: YahooListingInterface, query: string) {
-                const code = /^[A-Z]{2}[A-Z0-9]{9}\d$/u.test(query.trim().toUpperCase())
-                    ? query.trim().toUpperCase()
-                    : `YAHOO:${listing.symbol}`;
+            resolveOrCreate: Effect.fn('YahooMarketDataService.resolveOrCreate')(function* (
+                listing: YahooListingInterface,
+                _query: string
+            ) {
+                const code = `YAHOO:${listing.symbol}`;
                 const findExisting = Effect.gen(function* () {
                     const byProvider = yield* instrumentRepository.findByProvider(InstrumentPriceProviderEnum.YAHOO, listing.symbol);
                     const byCode = byProvider ?? (yield* instrumentRepository.findByCode(code));

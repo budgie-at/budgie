@@ -40,10 +40,13 @@ export const calculateInstrumentPosition = (entries: readonly InstrumentPosition
             });
         } else {
             const remainingLots = consumeLots(lots, entry.amount);
+            const hasKnownCost = lots.every(lot => isDefined(lot.baseAmount));
             if (
                 entry.type === TransactionEntryTypeEnum.CREDIT &&
+                entry.isAdjustment !== true &&
+                entry.isInstrumentTransfer !== true &&
                 isDefined(entry.baseAmount) &&
-                lots.every(lot => isDefined(lot.baseAmount))
+                hasKnownCost
             ) {
                 realizedProfitLossMicro +=
                     entry.baseAmount -
@@ -51,7 +54,17 @@ export const calculateInstrumentPosition = (entries: readonly InstrumentPosition
                     lots.reduce((total, lot) => total + (lot.baseAmount ?? 0), 0) +
                     remainingLots.reduce((total, lot) => total + (lot.baseAmount ?? 0), 0);
             }
-            lots = remainingLots;
+            const remainingAmount = remainingLots.reduce((total, lot) => total + lot.amount, 0);
+            const consumedCost =
+                lots.reduce((total, lot) => total + (lot.baseAmount ?? 0), 0) -
+                remainingLots.reduce((total, lot) => total + (lot.baseAmount ?? 0), 0);
+            lots =
+                entry.isAdjustment === true
+                    ? remainingLots.map(lot => ({
+                          amount: lot.amount,
+                          baseAmount: hasKnownCost ? (lot.baseAmount ?? 0) + (consumedCost * lot.amount) / remainingAmount : null
+                      }))
+                    : remainingLots;
         }
     }
     lots = lots.filter(lot => isDefined(lot.baseAmount) && isPositiveNumber(lot.amount));

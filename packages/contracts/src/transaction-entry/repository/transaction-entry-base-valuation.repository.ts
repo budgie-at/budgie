@@ -120,6 +120,7 @@ export class TransactionEntryBaseValuationRepository extends Context.Service<Tra
                         and(
                             eq(TransactionEntryEntityTable.baseInstrumentId, baseInstrumentId),
                             isNotNull(TransactionEntryEntityTable.baseExchangeRate),
+                            isNull(TransactionEntryEntityTable.quotedUnitPrice),
                             buildLiveEntryCondition(),
                             between(rateDateSql, fromDate, toDate)
                         )
@@ -145,7 +146,7 @@ export class TransactionEntryBaseValuationRepository extends Context.Service<Tra
                         input.rateDate,
                         input.sourceInstrumentId,
                         sql`base_exchange_rate = ${input.baseExchangeRate}, base_amount = ROUND(amount * ${input.baseExchangeRate})`,
-                        sql`te.base_instrument_id = ${input.baseInstrumentId} AND ABS(te.base_exchange_rate - ${input.previousBaseExchangeRate}) <= ${input.previousBaseExchangeRate} * 1e-9`
+                        sql`te.quoted_unit_price IS NULL AND te.base_instrument_id = ${input.baseInstrumentId} AND ABS(te.base_exchange_rate - ${input.previousBaseExchangeRate}) <= ${input.previousBaseExchangeRate} * 1e-9`
                     )
             };
         })

@@ -28,7 +28,7 @@ export class TransactionEntryPositionRepository extends Context.Service<Transact
                 TransactionEntryTypeEnum.FEE
             ] as const;
 
-            const buildExternalInstrumentPositionEntryCondition = (instrumentId: number) =>
+            const buildExternalInstrumentPositionEntryCondition = (instrumentId: number, accountIds?: readonly number[]) =>
                 sql`
             (
                 ${TransactionEntityTable.type} != ${TransactionTypeEnum.TRANSFER}
@@ -44,6 +44,7 @@ export class TransactionEntryPositionRepository extends Context.Service<Transact
                       AND opposite_account.deleted_at IS NULL
                       AND ${isUnitAccountSql(sql`opposite_account.type`, sql`opposite_account.instrument_id`)}
                       AND opposite_account.instrument_id = ${instrumentId}
+                      ${isDefined(accountIds) ? sql`AND ${inArray(sql`opposite_account.id`, accountIds)}` : sql``}
                       AND opposite_entry.type IN (${TransactionEntryTypeEnum.DEBIT}, ${TransactionEntryTypeEnum.CREDIT})
                       AND opposite_entry.type != ${TransactionEntryEntityTable.type}
                 )
@@ -77,6 +78,11 @@ export class TransactionEntryPositionRepository extends Context.Service<Transact
                         db
                             .select({
                                 type: TransactionEntryEntityTable.type,
+                                isAdjustment: sql<boolean>`${TransactionEntityTable.type} = ${TransactionTypeEnum.ADJUSTMENT}`.mapWith(
+                                    Boolean
+                                ),
+                                isInstrumentTransfer:
+                                    sql<boolean>`NOT ${buildExternalInstrumentPositionEntryCondition(instrumentId)}`.mapWith(Boolean),
                                 amount: TransactionEntryEntityTable.amount,
                                 feeBaseAmount: sql<
                                     number | null
@@ -106,7 +112,7 @@ export class TransactionEntryPositionRepository extends Context.Service<Transact
                                     isNull(TransactionEntryEntityTable.deletedAt),
                                     inArray(TransactionEntryEntityTable.type, POSITION_ENTRY_TYPES),
                                     transactionFilters.buildRefundAwareLedgerEntryCondition(),
-                                    buildExternalInstrumentPositionEntryCondition(instrumentId)
+                                    buildExternalInstrumentPositionEntryCondition(instrumentId, accountIds)
                                 )
                             )
                             .orderBy(
