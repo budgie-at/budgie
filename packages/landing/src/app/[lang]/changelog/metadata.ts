@@ -8,7 +8,7 @@ export const CHANGELOG_METADATA = {
     description: msg`Everything new in Budgie, month by month: budget periods and sinking funds, manual recurring payments, receipt scanning, EU bank sync, and more.`,
     keywords: 'budgie changelog, budgie new features, budgie release notes, expense tracker updates',
     publishedAt: '2026-09-07',
-    updatedAt: '2026-11-06'
+    updatedAt: '2026-11-12'
 };
 
 /* oxlint-enable lingui/no-unlocalized-strings */
