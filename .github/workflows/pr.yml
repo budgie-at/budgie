@@ -271,7 +271,7 @@ jobs:
         uses: rnw-community/mobile-ci/.github/workflows/expo-fingerprint-guard.yml@9a151735055f5ab661650523ad7c6375ae007bef # v4.12.0
         with:
             working-directory: packages/app
-            platforms: ios
+            platforms: ios,android
             app-env: |
                 APP_VARIANT=production
             package-manager: pnpm
