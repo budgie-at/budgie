@@ -1,8 +1,8 @@
 import * as b from '../support/budgie/core.ts';
 import { enterPin } from '../support/budgie/security.ts';
-import { PENDING_ANDROID_PORT, test } from '../support/budgie/test.ts';
+import { test } from '../support/budgie/test.ts';
 
-test('38 onboarding PIN seal', { tags: ['onboarding'], platforms: PENDING_ANDROID_PORT }, async ({ budgie }) => {
+test('38 onboarding PIN seal', { tags: ['onboarding'] }, async ({ budgie }) => {
     const ctx = budgie.ctx;
     await budgie.start({ fixture: '38-onboarding.db', wait: 'none' });
 
@@ -29,12 +29,12 @@ test('38 onboarding PIN seal', { tags: ['onboarding'], platforms: PENDING_ANDROI
         await b.expectId(ctx, 'OnboardingSeal.HoldButton', 3_000);
         await b.tapId(ctx, 'OnboardingSeal.HoldButton');
         await b.expectText(ctx, 'Seal with this PIN?');
-        await ctx.screen.getByRole('button', { name: 'Cancel', exact: true }).first().tap();
+        await b.alertButton(ctx.screen, 'Cancel').tap();
         await b.expectId(ctx, 'OnboardingSeal.HoldButton');
         await b.expectNoId(ctx, 'OnboardingSealedMoment.ContinueButton');
         await b.tapId(ctx, 'OnboardingSeal.HoldButton');
         await b.expectText(ctx, 'Seal with this PIN?');
-        await ctx.screen.getByRole('button', { name: 'Seal', exact: true }).first().tap();
+        await b.alertButton(ctx.screen, 'Seal').tap();
         await b.expectId(ctx, 'OnboardingSealedMoment.ContinueButton', 30_000);
         await b.tapUntil(ctx, 'OnboardingSealedMoment.ContinueButton', () => b.expectId(ctx, 'OnboardingReceipt.GoToBudgieButton', 3_000));
         await b.tapId(ctx, 'OnboardingReceipt.GoToBudgieButton');
