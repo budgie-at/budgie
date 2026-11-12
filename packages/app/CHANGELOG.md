@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.179.1](https://github.com/budgie-at/budgie/compare/v6.179.0...v6.179.1) (2026-11-12)
+
+### Bug Fixes
+
+* **app:** bring Android screens to parity with iOS ([#2181](https://github.com/budgie-at/budgie/issues/2181)) ([fbec04b](https://github.com/budgie-at/budgie/commit/fbec04b92a903f1a563ef6b9cdcb203dd8b94f84))
+
+
 # [6.178.0](https://github.com/budgie-at/budgie/compare/v6.177.0...v6.178.0) (2026-11-12)
 
 ### Features
