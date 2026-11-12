@@ -177,7 +177,7 @@ export default async function LandingPage(props: PageLangParam) {
             <FaqSection />
             <BlogSection locale={lang} />
 
-            <CtaSection />
+            <CtaSection lang={lang} />
         </main>
     );
 }

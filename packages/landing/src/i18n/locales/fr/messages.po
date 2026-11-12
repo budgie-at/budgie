@@ -2621,6 +2621,10 @@ msgstr "Toutes vos données financières, y compris les transactions, comptes, b
 msgid "Allocate until nothing is left"
 msgstr "Répartissez jusqu'à ce qu'il ne reste plus rien"
 
+#: src/beta/component/beta-android-card/beta-android-card.tsx
+msgid "Allow installs from your browser when Android asks."
+msgstr "Autorisez les installations depuis votre navigateur lorsque Android vous le demande."
+
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Allow reasonable time for fixes before public disclosure"
 msgstr "Accordez un délai raisonnable pour les correctifs avant la divulgation publique"
@@ -2816,6 +2820,10 @@ msgstr "Et la catégorie que vous avez choisie"
 #: src/app/[lang]/open-source/page.tsx
 msgid "And the lock that enforces it"
 msgstr "Et le verrouillage qui l’applique"
+
+#: src/beta/component/beta-android-card/beta-android-card.tsx
+msgid "Android preview build"
+msgstr "Version préliminaire pour Android"
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Animated example: six bank transactions are grouped by merchant, two confident groups are categorized with one tap, and the bottom panel moves from 6 left to 1 left and 5 done, with Undo."
@@ -3583,6 +3591,7 @@ msgstr "Avant de plonger dans les alternatives, comprenons les raisons principal
 msgid "Before fully committing:"
 msgstr "Avant de vous engager pleinement :"
 
+#: src/beta/component/beta-android-card/beta-android-card.tsx
 #: src/beta/component/beta-release-card/beta-release-card.tsx
 msgid "Before you install"
 msgstr "Avant d'installer"
@@ -4065,6 +4074,14 @@ msgstr "Budgie détecte automatiquement les récurrences et les affiche dans un 
 msgid "Budgie auto-detects subscription and recurring-payment patterns from your history and plots them on a monthly calendar so you can see upcoming bills within the current month."
 msgstr "Budgie détecte automatiquement les abonnements et les paiements récurrents à partir de votre historique et les affiche sur un calendrier mensuel pour que vous puissiez voir les factures à venir dans le mois en cours."
 
+#: src/app/[lang]/beta/page.tsx
+msgid "Budgie Beta"
+msgstr "Budgie bêta"
+
+#: src/app/[lang]/beta/page.tsx
+msgid "Budgie Beta Install"
+msgstr "Installation de Budgie bêta"
+
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Budgie Bitcoin market screen with a holdings card listing the quantity, average cost, cost basis and unrealized profit"
 msgstr "Écran du marché Bitcoin de Budgie avec une carte de détention indiquant la quantité, le coût moyen, le prix de revient et le gain latent"
@@ -4438,14 +4455,6 @@ msgstr "Écran du plan d'échelonnement de Budgie avec le montant restant à rem
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Budgie integrates investment holdings into the same net-worth view as your bank accounts and debt. Most portfolio trackers don't model fiat side-by-side."
 msgstr "Budgie intègre les positions d’investissement dans la même vue de patrimoine net que vos comptes bancaires et dettes. La plupart des gestionnaires de portefeuille ne modélisent pas le fiat en parallèle."
-
-#: src/app/[lang]/beta/page.tsx
-msgid "Budgie iOS Beta"
-msgstr "Budgie iOS Bêta"
-
-#: src/app/[lang]/beta/page.tsx
-msgid "Budgie iOS Beta Install"
-msgstr "Installation bêta Budgie iOS"
 
 #: src/app/[lang]/offline-first/metadata.ts
 msgid "Budgie is a fully offline budget app. Add expenses, view analytics, and import bank statements without internet. Your data is synced and backed up to storage you control."
@@ -9091,6 +9100,10 @@ msgstr "Flux piloté par gestes — une seule main, pas de chasse à la barre d'
 msgid "gestures"
 msgstr "gestes"
 
+#: src/generic/component/google-play-badge/google-play-badge.tsx
+msgid "Get it on Google Play"
+msgstr "Disponible sur Google Play"
+
 #: src/generic/component/waitlist-form/waitlist-form.tsx
 msgid "Get the app when it opens"
 msgstr "Recevez l'app dès son ouverture"
@@ -9166,6 +9179,10 @@ msgstr "Bonne documentation du processus de migration"
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Good multi-currency support"
 msgstr "Bon support multi-devises"
+
+#: src/generic/component/footer/footer.tsx
+msgid "Google Play and the Google Play logo are trademarks of Google LLC."
+msgstr "Google Play et le logo Google Play sont des marques de Google LLC."
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Groceries"
@@ -10154,13 +10171,17 @@ msgstr "Au départ, il y a une complexité supplémentaire pour comprendre les C
 msgid "Install and open"
 msgstr "Installez et ouvrez"
 
+#: src/beta/component/beta-android-card/beta-android-card.tsx
+msgid "Install on Android"
+msgstr "Installer sur Android"
+
 #: src/beta/component/beta-release-card/beta-release-card.tsx
 msgid "Install on iPhone"
 msgstr "Installer sur iPhone"
 
 #: src/app/[lang]/beta/page.tsx
-msgid "Install the latest development build over-the-air on a registered iPhone."
-msgstr "Installez la dernière version de développement par voie hertzienne (OTA) sur un iPhone enregistré."
+msgid "Install the latest development build on a registered iPhone, or the preview build on Android."
+msgstr "Installez la dernière version de développement sur un iPhone enregistré, ou la version préliminaire sur Android."
 
 #: src/app/[lang]/features/installment-tracking/metadata.ts
 msgid "Installment Tracker for Pay in Parts Purchases"
@@ -10389,6 +10410,10 @@ msgstr "Elle détermine quelle étiquette la liste affiche quand une transaction
 #: src/generic/component/home-tour-section/home-tour-section.tsx
 msgid "It files itself"
 msgstr "Elle se classe toute seule"
+
+#: src/beta/component/beta-android-card/beta-android-card.tsx
+msgid "It installs beside the Google Play version."
+msgstr "Elle s'installe à côté de la version Google Play."
 
 #: src/app/[lang]/features/runway/page.tsx
 msgid "It is your cash and bank balance divided by how much more you spend than you earn in a typical month. If nothing changes, that is how long the money lasts, and Runway shows the month it would run out."
@@ -18539,6 +18564,10 @@ msgstr "Il s'agit d'un import ponctuel, pas d'une connexion permanente à la ban
 #: src/app/[lang]/features/privatbank-import/page.tsx
 msgid "This is a one-time import from a Privat24 statement export, not a live sync — each export covers a single card or account, so a multi-card wallet needs one import per card."
 msgstr "Il s'agit d'un import ponctuel à partir d'un relevé Privat24, pas d'une synchronisation en direct — chaque export ne couvre qu'une seule carte ou un seul compte, donc un portefeuille à plusieurs cartes nécessite un import par carte."
+
+#: src/beta/component/beta-android-card/beta-android-card.tsx
+msgid "This is a preview build signed for testing, so Play Protect may show a warning."
+msgstr "Il s'agit d'une version préliminaire signée pour les tests ; Play Protect peut donc afficher un avertissement."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "This is a valid concern known as “build verification.” Budgie uses reproducible builds where possible, allowing anyone to verify that the published app matches the source code. For mobile apps, additional trust is required in the app store distribution, but the public source code ensures you can build the app yourself if you want maximum verification. We also provide checksums for releases so you can verify download integrity."
