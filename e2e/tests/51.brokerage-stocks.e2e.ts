@@ -83,6 +83,6 @@ test('51 manual brokerage with stocks', { tags: ['accounts'], platforms: PENDING
         await core.expectId(ctx, 'CurrencyMarket.Header.BGTX', 10_000);
         await core.expectText(ctx, '6 BGTX');
         await core.scrollTo(ctx, 'CurrencyMarket.Holdings.RealizedProfit.BGTX');
-        await expect(core.byId(screen, 'CurrencyMarket.Holdings.RealizedProfit.BGTX')).toHaveText(/\+\$100/, { timeout: 10_000 });
+        await core.expectText(ctx, '+$100', 10_000);
     });
 });
