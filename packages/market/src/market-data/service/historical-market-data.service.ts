@@ -28,7 +28,6 @@ import * as Schema from 'effect/Schema';
 import { getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { fetchJson } from '../../@generic/utils/fetch-json.util';
-import { ExchangeRateRepository } from '../../exchange-rate/repository/exchange-rate.repository';
 import { ExchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
 import { HistoricalExchangeRateRepository } from '../../historical-exchange-rate/repository/historical-exchange-rate.repository';
 import { EntryBaseValuationService } from '../../valuation/service/entry-base-valuation.service';
@@ -56,7 +55,6 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
             const instrumentMarketDataJobRepository = yield* InstrumentMarketDataJobRepository;
             const instrumentRepository = yield* InstrumentRepository;
             const exchangeRatesService = yield* ExchangeRatesService;
-            const exchangeRateRepository = yield* ExchangeRateRepository;
             const accountRepository = yield* AccountRepository;
             const transactionEntryBaseValuationRepository = yield* TransactionEntryBaseValuationRepository;
             const entryBaseValuationService = yield* EntryBaseValuationService;
@@ -403,11 +401,16 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                     return yield* writeRates;
                 }
 
+                const instrument = yield* instrumentRepository.findById(job.instrumentId);
                 const buckets = (yield* transactionEntryBaseValuationRepository.findBaseValuationBucketsInRange(
                     baseInstrument.id,
                     job.fromDate,
                     job.toDate
-                )).filter(bucket => bucket.sourceInstrumentId !== baseInstrument.id);
+                )).filter(
+                    bucket =>
+                        bucket.sourceInstrumentId !== baseInstrument.id &&
+                        (instrument?.type === InstrumentTypeEnum.FIAT || bucket.sourceInstrumentId === job.instrumentId)
+                );
                 const resolveBucketRates = Effect.forEach(buckets, bucket =>
                     entryBaseValuationService.resolveHistoricalBaseExchangeRateOrNull(
                         bucket.sourceInstrumentId,
@@ -489,61 +492,35 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                     return {
                         prices,
                         rates: buildHistoricalRateInputs(prices),
-                        unsupportedInstruments:
-                            instrument.priceProvider === InstrumentPriceProviderEnum.YAHOO && !isNotEmptyArray(prices) ? [instrument] : []
+                        unsupportedInstruments: []
                     } satisfies MarketDataJobResultInterface;
                 }),
                 storeJobData: Effect.fn('HistoricalMarketDataService.storeJobData')(function* (
                     job: InstrumentMarketDataJobEntityInterface,
                     result: MarketDataJobResultInterface
                 ) {
-                    const rates = [...result.rates, ...(yield* entryBaseValuationService.deriveHistoricalPriceRates(result.prices))];
-                    const writeRates = Effect.all(
-                        [
-                            historicalExchangeRateRepository.bulkUpsert(rates),
-                            exchangeRateRepository.bulkUpsert(
-                                rates
-                                    .filter(rate =>
-                                        result.prices.some(price => price.source === inzhurSource && price.priceDate === rate.rateDate)
-                                    )
-                                    .map(rate => ({
-                                        baseInstrumentId: rate.sourceInstrumentId,
-                                        quoteInstrumentId: rate.targetInstrumentId,
-                                        rate: rate.rate,
-                                        source: inzhurSource
-                                    }))
-                            )
-                        ],
-                        { discard: true }
-                    );
+                    const writeRates = historicalExchangeRateRepository.bulkUpsert(result.rates);
 
                     yield* Db.transaction(
-                        Effect.flatMap(
-                            instrumentMarketDataJobRepository.markCompleted(
-                                job,
-                                result.unsupportedInstruments.some(instrument => instrument.id === job.instrumentId)
-                                    ? InstrumentMarketDataJobStatusEnum.UNSUPPORTED
-                                    : InstrumentMarketDataJobStatusEnum.COMPLETED
-                            ),
-                            isClaimOwner =>
-                                isClaimOwner
-                                    ? Effect.all(
-                                          [
-                                              instrumentDailyMarketPriceRepository.bulkUpsert(result.prices),
-                                              revalueEntriesAround(job, writeRates),
-                                              instrumentMarketDataJobRepository.enqueueMany(
-                                                  result.unsupportedInstruments.map(unsupportedInstrument => ({
-                                                      instrumentId: unsupportedInstrument.id,
-                                                      quoteInstrumentId: job.quoteInstrumentId,
-                                                      fromDate: job.fromDate,
-                                                      toDate: job.toDate,
-                                                      status: InstrumentMarketDataJobStatusEnum.UNSUPPORTED
-                                                  }))
-                                              )
-                                          ],
-                                          { discard: true }
-                                      )
-                                    : Effect.void
+                        Effect.flatMap(instrumentMarketDataJobRepository.markCompleted(job), isClaimOwner =>
+                            isClaimOwner
+                                ? Effect.all(
+                                      [
+                                          instrumentDailyMarketPriceRepository.bulkUpsert(result.prices),
+                                          revalueEntriesAround(job, writeRates),
+                                          instrumentMarketDataJobRepository.enqueueMany(
+                                              result.unsupportedInstruments.map(unsupportedInstrument => ({
+                                                  instrumentId: unsupportedInstrument.id,
+                                                  quoteInstrumentId: job.quoteInstrumentId,
+                                                  fromDate: job.fromDate,
+                                                  toDate: job.toDate,
+                                                  status: InstrumentMarketDataJobStatusEnum.UNSUPPORTED
+                                              }))
+                                          )
+                                      ],
+                                      { discard: true }
+                                  )
+                                : Effect.void
                         )
                     );
                 }),
@@ -560,7 +537,6 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
             InstrumentMarketDataJobRepository.layer,
             InstrumentRepository.layer,
             ExchangeRatesService.layer,
-            ExchangeRateRepository.layer,
             AccountRepository.layer,
             TransactionEntryBaseValuationRepository.layer,
             EntryBaseValuationService.layer,

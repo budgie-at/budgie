@@ -115,17 +115,12 @@ export class InstrumentMarketDataJobRepository extends Context.Service<Instrumen
                             )
                             .limit(1)
                     ).pipe(Effect.map(isNotEmptyArray)),
-                markCompleted: (
-                    job: Pick<InstrumentMarketDataJobEntityInterface, 'id' | 'attempts'>,
-                    status:
-                        | InstrumentMarketDataJobStatusEnum.COMPLETED
-                        | InstrumentMarketDataJobStatusEnum.UNSUPPORTED = InstrumentMarketDataJobStatusEnum.COMPLETED
-                ) =>
+                markCompleted: (job: Pick<InstrumentMarketDataJobEntityInterface, 'id' | 'attempts'>) =>
                     Db.query(db =>
                         db
                             .update(InstrumentMarketDataJobEntityTable)
                             .set({
-                                status,
+                                status: InstrumentMarketDataJobStatusEnum.COMPLETED,
                                 lockedAt: null,
                                 completedAt: new Date(),
                                 updatedAt: new Date()

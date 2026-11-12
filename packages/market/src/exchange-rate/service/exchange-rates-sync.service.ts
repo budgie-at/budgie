@@ -165,7 +165,7 @@ export class ExchangeRatesSyncService extends Context.Service<ExchangeRatesSyncS
             );
         });
 
-        const syncYahooRates = Effect.fnUntraced(function* (baseInstrument: InstrumentEntityInterface) {
+        const syncYahooRates = Effect.fnUntraced(function* () {
             const accounts = yield* accountRepository.getAllActiveAccounts;
             const instruments = (yield* instrumentRepository.getAll).filter(
                 instrument =>
@@ -184,11 +184,7 @@ export class ExchangeRatesSyncService extends Context.Service<ExchangeRatesSyncS
                     if (!isPositiveNumber(price) || !isDefined(instrument.quoteInstrumentId)) {
                         return;
                     }
-                    const conversion = yield* exchangeRatesService.convertStrict(instrument.quoteInstrumentId, baseInstrument.id, 1);
                     const inputs = buildRatePairInputs(instrument.id, instrument.quoteInstrumentId, price, 'yahoo.com');
-                    if (instrument.quoteInstrumentId !== baseInstrument.id && isDefined(conversion)) {
-                        inputs.push(...buildRatePairInputs(instrument.id, baseInstrument.id, price * conversion.exchangeRate, 'yahoo.com'));
-                    }
                     yield* Db.transaction(exchangeRateRepository.bulkUpsert(inputs));
                 }),
                 { discard: true }
@@ -213,7 +209,7 @@ export class ExchangeRatesSyncService extends Context.Service<ExchangeRatesSyncS
                     yield* syncFiatRates(baseInstrument);
                     yield* Effect.sleep(1);
                     yield* syncCryptoRates(baseInstrument);
-                    yield* syncYahooRates(baseInstrument);
+                    yield* syncYahooRates();
                     const syncedAtMs = yield* Clock.currentTimeMillis;
                     yield* Ref.set(lastSyncedAtMs, syncedAtMs);
                 },

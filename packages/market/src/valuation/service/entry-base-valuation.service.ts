@@ -8,7 +8,6 @@ import {
     convertToMicroUnits
 } from '@budgie/contracts';
 import { format } from 'date-fns/format';
-import { parseISO } from 'date-fns/parseISO';
 import { startOfDay } from 'date-fns/startOfDay';
 import * as Cache from 'effect/Cache';
 import * as Context from 'effect/Context';
@@ -30,8 +29,6 @@ import type { RateLookupsInterface } from '../interface/rate-lookups.interface';
 import type {
     AccountWithInstrumentEntityInterface,
     DbError,
-    InstrumentDailyMarketPriceCreateEntityInterface,
-    HistoricalExchangeRateEntityInterface,
     TransactionCreateInputInterface,
     TransactionEntryCreateInputInterface
 } from '@budgie/contracts';
@@ -209,36 +206,21 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
             targetInstrumentId: number,
             operatedAt: Date
         ) {
-            const directRate = yield* resolveDirectHistoricalRateOrNull(lookups, sourceInstrumentId, targetInstrumentId, operatedAt);
-
-            if (isDefined(directRate)) {
-                return directRate;
+            if (sourceInstrumentId === targetInstrumentId) {
+                return 1;
             }
-
-            const hryvniaInstrument = yield* lookups.findInstrumentByCode(CurrencyEnum.UAH);
-
-            if (
-                !isDefined(hryvniaInstrument) ||
-                sourceInstrumentId === hryvniaInstrument.id ||
-                targetInstrumentId === hryvniaInstrument.id
-            ) {
-                return null;
+            const source = yield* instrumentRepository.findById(sourceInstrumentId);
+            const quoteInstrumentId = source?.quoteInstrumentId;
+            if (!isDefined(quoteInstrumentId) || quoteInstrumentId === sourceInstrumentId) {
+                return yield* resolveDirectHistoricalRateOrNull(lookups, sourceInstrumentId, targetInstrumentId, operatedAt);
             }
+            const sourceToQuoteRate = yield* resolveDirectHistoricalRateOrNull(lookups, sourceInstrumentId, quoteInstrumentId, operatedAt);
+            const quoteToTargetRate =
+                quoteInstrumentId === targetInstrumentId
+                    ? 1
+                    : yield* resolveDirectHistoricalRateOrNull(lookups, quoteInstrumentId, targetInstrumentId, operatedAt);
 
-            const sourceToHryvniaRate = yield* resolveDirectHistoricalRateOrNull(
-                lookups,
-                sourceInstrumentId,
-                hryvniaInstrument.id,
-                operatedAt
-            );
-            const hryvniaToTargetRate = yield* resolveDirectHistoricalRateOrNull(
-                lookups,
-                hryvniaInstrument.id,
-                targetInstrumentId,
-                operatedAt
-            );
-
-            return isDefined(sourceToHryvniaRate) && isDefined(hryvniaToTargetRate) ? sourceToHryvniaRate * hryvniaToTargetRate : null;
+            return isDefined(sourceToQuoteRate) && isDefined(quoteToTargetRate) ? sourceToQuoteRate * quoteToTargetRate : null;
         });
 
         const createContext = Effect.fn('EntryBaseValuationService.createContext')(function* (operatedAts: readonly Date[]) {
@@ -328,41 +310,6 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
         });
 
         return {
-            deriveHistoricalPriceRates: Effect.fn('EntryBaseValuationService.deriveHistoricalPriceRates')(function* (
-                prices: InstrumentDailyMarketPriceCreateEntityInterface[]
-            ) {
-                const baseInstrument = yield* exchangeRatesService.getBaseInstrument();
-                if (!isDefined(baseInstrument)) {
-                    return [];
-                }
-
-                return (yield* Effect.forEach(
-                    prices,
-                    Effect.fnUntraced(function* (price) {
-                        if (price.quoteInstrumentId === baseInstrument.id) {
-                            return [];
-                        }
-                        const rate = yield* resolveBaseExchangeRateOrNull(
-                            queryLookups,
-                            price.quoteInstrumentId,
-                            baseInstrument.id,
-                            parseISO(price.priceDate)
-                        );
-                        const rates: HistoricalExchangeRateEntityInterface[] = isPositiveNumber(rate)
-                            ? [
-                                  {
-                                      sourceInstrumentId: price.instrumentId,
-                                      targetInstrumentId: baseInstrument.id,
-                                      rateDate: price.priceDate,
-                                      rate: price.price * rate
-                                  }
-                              ]
-                            : [];
-
-                        return rates;
-                    })
-                )).flat();
-            }),
             resolveHistoricalBaseExchangeRateOrNull: Effect.fn('EntryBaseValuationService.resolveHistoricalBaseExchangeRateOrNull')(
                 (sourceInstrumentId: number, targetInstrumentId: number, operatedAt: Date) =>
                     resolveBaseExchangeRateOrNull(queryLookups, sourceInstrumentId, targetInstrumentId, operatedAt)

@@ -46,6 +46,7 @@ export class YahooMarketDataService extends Context.Service<YahooMarketDataServi
                 client.get(`https://query1.finance.yahoo.com/${path}`, { urlParams, headers: { 'User-Agent': 'Budgie/1.0' } }),
                 HttpClientResponse.schemaBodyJson(schema)
             ).pipe(Effect.retry({ times: 2, schedule: Schedule.exponential(300) }), Effect.timeout(10000));
+        const minorUnitCurrencies: Partial<Record<string, string>> = { GBp: 'GBP', GBX: 'GBP', ZAc: 'ZAR', ILA: 'ILS' };
         const chart = Effect.fn('YahooMarketDataService.chart')(function* (symbol: string, from: Date, to: Date) {
             const response = yield* request(`v8/finance/chart/${encodeURIComponent(symbol)}`, chartSchema, {
                 period1: Math.floor(from.getTime() / 1000),
@@ -53,7 +54,26 @@ export class YahooMarketDataService extends Context.Service<YahooMarketDataServi
                 interval: '1d'
             });
 
-            return response.chart.result?.at(0) ?? null;
+            const data = response.chart.result?.at(0);
+            if (!isDefined(data)) {
+                return null;
+            }
+            const currency = minorUnitCurrencies[data.meta.currency];
+            const divisor = isDefined(currency) ? 100 : 1;
+
+            return {
+                ...data,
+                meta: {
+                    ...data.meta,
+                    currency: currency ?? data.meta.currency,
+                    ...(isDefined(data.meta.regularMarketPrice) && { regularMarketPrice: data.meta.regularMarketPrice / divisor })
+                },
+                indicators: {
+                    quote: data.indicators.quote.map(quote => ({
+                        close: quote.close.map(price => (isDefined(price) ? price / divisor : null))
+                    }))
+                }
+            };
         });
 
         return {
@@ -79,8 +99,16 @@ export class YahooMarketDataService extends Context.Service<YahooMarketDataServi
                 );
             }),
             resolveOrCreate: Effect.fn('YahooMarketDataService.resolveOrCreate')(function* (listing: YahooListingInterface, query: string) {
-                const code = /^[A-Z]{2}[A-Z0-9]{9}\d$/u.test(query.trim().toUpperCase()) ? query.trim().toUpperCase() : listing.symbol;
-                const existing = yield* instrumentRepository.findByCode(code);
+                const code = /^[A-Z]{2}[A-Z0-9]{9}\d$/u.test(query.trim().toUpperCase())
+                    ? query.trim().toUpperCase()
+                    : `YAHOO:${listing.symbol}`;
+                const findExisting = Effect.gen(function* () {
+                    const byProvider = yield* instrumentRepository.findByProvider(InstrumentPriceProviderEnum.YAHOO, listing.symbol);
+                    const byCode = byProvider ?? (yield* instrumentRepository.findByCode(code));
+
+                    return byCode?.priceProvider === InstrumentPriceProviderEnum.YAHOO ? byCode : null;
+                });
+                const existing = yield* findExisting;
                 if (isDefined(existing)) {
                     return existing;
                 }
@@ -93,7 +121,7 @@ export class YahooMarketDataService extends Context.Service<YahooMarketDataServi
 
                 return yield* Db.transaction(
                     Effect.gen(function* () {
-                        const instrument = yield* instrumentRepository.findByCode(code);
+                        const instrument = yield* findExisting;
 
                         return (
                             instrument ??

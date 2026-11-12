@@ -13,7 +13,7 @@ import {
     SYNC_MOVED_FROM_MARKER_PREFIX,
     SYNC_MOVED_TO_MARKER_PREFIX
 } from '@budgie/contracts';
-import { and, eq, getTableColumns, inArray, sql } from 'drizzle-orm';
+import { and, eq, getTableColumns, inArray, isNotNull, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
 import * as Clock from 'effect/Clock';
 import * as Context from 'effect/Context';
@@ -165,7 +165,7 @@ export class SyncUploadService extends Context.Service<SyncUploadService>()('@bu
                           })
                           .from(InstrumentEntityTable)
                           .leftJoin(quoteInstrument, eq(InstrumentEntityTable.quoteInstrumentId, quoteInstrument.id))
-                          .where(inArray(InstrumentEntityTable.id, instrumentIds))
+                          .where(and(inArray(InstrumentEntityTable.id, instrumentIds), isNotNull(InstrumentEntityTable.quoteInstrumentId)))
                   );
             const instrumentDefinitions = new Map(instruments.map(({ id, ...definition }) => [id, JSON.stringify(definition)]));
 
