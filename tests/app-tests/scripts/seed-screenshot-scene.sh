@@ -336,6 +336,7 @@ install_android_database() {
         [ "$(adb shell id -u | tr -d '\r')" = "0" ] && break
         sleep 1
     done
+    [ "$(adb shell id -u | tr -d '\r')" = "0" ] || { echo "seed-screenshot-scene: adb root is unavailable on $ANDROID_SERIAL" >&2; exit 1; }
 
     adb shell "pm enable com.google.android.apps.nexuslauncher/com.android.launcher3.testing.TestInformationProvider >/dev/null 2>&1; content call --uri content://com.google.android.apps.nexuslauncher.TestInfo --method enable-transient-taskbar >/dev/null 2>&1; settings put global hide_error_dialogs 1 && am broadcast -a android.intent.action.CLOSE_SYSTEM_DIALOGS >/dev/null"
     adb shell "am force-stop $APP_ID && rm -f $app_data_directory/shared_prefs/SecureStore*.xml $files_directory/SQLite/budgie.db* && mkdir -p $files_directory/SQLite $files_directory/E2EFixtures"

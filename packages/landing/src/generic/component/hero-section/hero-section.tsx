@@ -10,7 +10,7 @@ export const HeroSection = ({ locale }: Props) => (
         <div aria-hidden="true" className="hero-backdrop" />
 
         <div className="container hero-grid">
-            <HeroSectionHeader lang={locale} />
+            <HeroSectionHeader />
             <HeroSectionImage locale={locale} />
         </div>
     </section>

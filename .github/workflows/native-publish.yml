@@ -45,7 +45,6 @@ jobs:
       android-lint-gate-gradle-cache: false
       android-lint-gate-gradle-args: '-PreactNativeArchitectures=arm64-v8a --no-daemon'
       lint-timeout-minutes: 60
-      required-android-abi: arm64-v8a
       app-dir: packages/app
       build-profile: production
       submit-profile: production

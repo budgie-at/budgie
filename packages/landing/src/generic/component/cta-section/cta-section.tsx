@@ -1,14 +1,9 @@
 import { Trans } from '@lingui/react/macro';
 
 import { WaitlistVariantEnum } from '../../enum/waitlist-variant.enum';
-import { GooglePlayBadge } from '../google-play-badge/google-play-badge';
 import { WaitlistForm } from '../waitlist-form/waitlist-form';
 
-interface Props {
-    readonly lang: string;
-}
-
-export const CtaSection = ({ lang }: Props) => (
+export const CtaSection = () => (
     <section className="w-full bg-primary py-8 text-primary-foreground md:py-20" id="waitlist">
         <div className="container">
             <div className="mx-auto flex max-w-2xl flex-col items-center gap-6 text-center">
@@ -23,8 +18,6 @@ export const CtaSection = ({ lang }: Props) => (
                 <div className="w-full">
                     <WaitlistForm showCount={false} variant={WaitlistVariantEnum.CTA} />
                 </div>
-
-                <GooglePlayBadge lang={lang} />
             </div>
         </div>
     </section>
