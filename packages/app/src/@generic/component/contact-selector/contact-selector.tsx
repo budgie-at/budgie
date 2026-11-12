@@ -1,13 +1,12 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
-import { CreateAccountScreenSelector } from '../../../account/component/create-account-screen/create-account-screen.selector';
-import { useContacts } from '../../hook/use-contacts.hook';
 import { useOpenModal } from '../../hook/use-open-modal/use-open-modal.hook';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { CircleIcon } from '../circle-icon/circle-icon';
+import { SelectedContactCell } from '../selected-contact-cell/selected-contact-cell';
 import { SimpleHorizontalCell } from '../simple-horizontal-cell/simple-horizontal-cell';
 
 interface Props {
@@ -20,33 +19,37 @@ interface Props {
 }
 
 export const ContactSelector = ({ contactId, onSelect, testID, variant, emptyDescription, selectedDescription }: Props) => {
-    const { contacts, retry } = useContacts(false);
     const openContactSelector = useOpenModal('/contact-selector');
     const { t } = useLingui();
 
     const handleOpen = () => {
         openContactSelector({ selectedContactId: contactId }, selectedContact => {
             if (isDefined(selectedContact)) {
-                retry();
                 onSelect(selectedContact.id);
             }
         });
     };
 
-    const title = isNotEmptyString(contactId) ? (contacts.find(({ id }) => id === contactId)?.name ?? '') : t`Select a contact`;
-
-    const contact = contacts.find(({ id }) => id === contactId) ?? null;
-    const iconVariant: ColorPaletteVariant = isDefined(contact) ? variant : 'secondary';
-    const description = isDefined(contact) ? selectedDescription : emptyDescription;
+    if (isDefined(contactId)) {
+        return (
+            <SelectedContactCell
+                contactId={contactId}
+                testID={testID}
+                variant={variant}
+                emptyDescription={emptyDescription}
+                selectedDescription={selectedDescription}
+                onPress={handleOpen}
+            />
+        );
+    }
 
     return (
         <SimpleHorizontalCell
-            title={title}
-            description={description}
-            left={<CircleIcon icon={UserIconNameEnum.User} variant={iconVariant} />}
+            title={t`Select a contact`}
+            description={emptyDescription}
+            left={<CircleIcon icon={UserIconNameEnum.User} variant="secondary" />}
             onPress={handleOpen}
             testID={testID}
-            {...(isDefined(contact) && { titleTestID: CreateAccountScreenSelector.SelectedContact(contact.name) })}
         />
     );
 };

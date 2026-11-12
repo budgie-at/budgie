@@ -3,7 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 import { ReactNode } from 'react';
 import { Control } from 'react-hook-form';
 
-import { EmptyFn, isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { EmptyFn, isDefined } from '@rnw-community/shared';
 
 import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
 import { useStickyDefinedValue } from '../../../@generic/hook/use-sticky-defined-value.hook';
@@ -40,14 +40,13 @@ export const DepositAccountFormScreen = (props: Props) => {
     });
     const variant = ACCOUNT_COLOR[AccountTypeEnum.DEPOSIT];
     const stickyInstrument = useStickyDefinedValue(instrument);
-    const hasTitle = isNotEmptyString(fields.title.field.value.trim());
 
     if (!isDefined(stickyInstrument)) {
         return <EmptyScreen />;
     }
 
     return (
-        <CreateAccountScreen title={title} onSubmit={onSubmit} isSubmitting={isSubmitting} isSubmitDisabled={!hasTitle}>
+        <CreateAccountScreen title={title} onSubmit={onSubmit} isSubmitting={isSubmitting} accountName={fields.title.field.value}>
             {children}
 
             <CreateAccountCoreFields

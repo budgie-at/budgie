@@ -12,42 +12,39 @@ export type Contact = Contacts.ExistingContact;
 
 const EMPTY_CONTACTS: Contact[] = [];
 
-const loadContacts = (isPermissionRequested: boolean) =>
-    Effect.gen(function* () {
-        const currentPermission = yield* Effect.tryPromise({
-            try: () => Contacts.getPermissionsAsync(),
-            catch: cause => NativeCallError.make({ cause })
-        });
-        const permission =
-            isPermissionRequested && currentPermission.status === Contacts.PermissionStatus.UNDETERMINED
-                ? yield* Effect.tryPromise({
-                      try: () => Contacts.requestPermissionsAsync(),
-                      catch: cause => NativeCallError.make({ cause })
-                  })
-                : currentPermission;
+const loadContacts = Effect.gen(function* () {
+    const currentPermission = yield* Effect.tryPromise({
+        try: () => Contacts.getPermissionsAsync(),
+        catch: cause => NativeCallError.make({ cause })
+    });
+    const permission =
+        currentPermission.status === Contacts.PermissionStatus.UNDETERMINED
+            ? yield* Effect.tryPromise({
+                  try: () => Contacts.requestPermissionsAsync(),
+                  catch: cause => NativeCallError.make({ cause })
+              })
+            : currentPermission;
 
-        if (!permission.granted) {
-            return { contacts: EMPTY_CONTACTS, permission };
-        }
+    if (!permission.granted) {
+        return { contacts: EMPTY_CONTACTS, permission };
+    }
 
-        const { data } = yield* Effect.tryPromise({
-            try: () =>
-                Contacts.getContactsAsync({
-                    fields: [Contacts.Fields.Name, Contacts.Fields.PhoneNumbers, Contacts.Fields.Emails, Contacts.Fields.Image]
-                }),
-            catch: cause => NativeCallError.make({ cause })
-        });
+    const { data } = yield* Effect.tryPromise({
+        try: () =>
+            Contacts.getContactsAsync({
+                fields: [Contacts.Fields.Name, Contacts.Fields.PhoneNumbers, Contacts.Fields.Emails, Contacts.Fields.Image]
+            }),
+        catch: cause => NativeCallError.make({ cause })
+    });
 
-        return { contacts: data, permission };
-    }).pipe(Effect.tapError(Effect.logError));
+    return { contacts: data, permission };
+}).pipe(Effect.tapError(Effect.logError));
 
-const contactsAtom = appAtomRuntime.atom(loadContacts(true));
-const passiveContactsAtom = appAtomRuntime.atom(loadContacts(false));
+const contactsAtom = appAtomRuntime.atom(loadContacts);
 
-export const useContacts = (isPermissionRequested: boolean) => {
-    const atom = isPermissionRequested ? contactsAtom : passiveContactsAtom;
-    const result = useAtomValue(atom);
-    const retry = useAtomRefresh(atom);
+export const useContacts = () => {
+    const result = useAtomValue(contactsAtom);
+    const retry = useAtomRefresh(contactsAtom);
     const data = AsyncResult.getOrElse(result, () => null);
 
     useAppState(isActive => {

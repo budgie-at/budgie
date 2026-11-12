@@ -1,10 +1,10 @@
 import { TransactionTypeEnum } from '@budgie/contracts';
-import { Redirect, useIsFocused, useLocalSearchParams } from 'expo-router';
+import { Redirect, useFocusEffect, useIsFocused, useLocalSearchParams } from 'expo-router';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { BackOrHomeRedirect } from '../../../@generic/component/back-or-home-redirect/back-or-home-redirect';
 import { IdParamInterface } from '../../../@generic/interface/id-param.interface';
+import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { useGetTransactionByIdQuery } from '../../query/use-get-transaction-by-id.query';
 import { getTransactionHref } from '../../utils/get-transaction-href.util';
 import { TransactionInfoConsolidatedRoute } from '../transaction-info-consolidated-route/transaction-info-consolidated-route';
@@ -27,12 +27,16 @@ export const TransactionInfoRoute = ({ children, transactionType }: Props) => {
         isDefined(transaction) ? transaction.consolidationParentTransactionId : null
     );
 
-    if (isLoading) {
-        return null;
-    }
+    const isMissing = !isLoading && (!isDefined(transactionId) || !isDefined(transaction));
 
-    if (!isDefined(transactionId) || !isDefined(transaction)) {
-        return <BackOrHomeRedirect />;
+    useFocusEffect(() => {
+        if (isMissing) {
+            goBackOrReplace('/');
+        }
+    });
+
+    if (isLoading || !isDefined(transactionId) || !isDefined(transaction)) {
+        return null;
     }
 
     if (isDefined(transaction.consolidationParentTransactionId)) {

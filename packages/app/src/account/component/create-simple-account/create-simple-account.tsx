@@ -7,7 +7,7 @@ import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { useController } from 'react-hook-form';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
@@ -43,7 +43,6 @@ const NAME_PLACEHOLDER: Record<Props['type'], MessageDescriptor> = {
     [AccountTypeEnum.CRYPTO]: msg`e.g. Cold wallet`
 };
 
-// eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
 export const CreateSimpleAccount = ({ type }: Props) => {
     const { t } = useLingui();
     const isCrypto = type === AccountTypeEnum.CRYPTO;
@@ -91,11 +90,15 @@ export const CreateSimpleAccount = ({ type }: Props) => {
     }
 
     const variant = ACCOUNT_COLOR[type];
-    const hasTitle = isNotEmptyString(fields.title.field.value.trim());
     const minimumDecimalPlaces = isCrypto ? MICRO_UNIT_DECIMAL_PLACES : 0;
 
     return (
-        <CreateAccountScreen title={t(TITLE[type])} onSubmit={handleSubmit} isSubmitting={isSubmitting} isSubmitDisabled={!hasTitle}>
+        <CreateAccountScreen
+            title={t(TITLE[type])}
+            onSubmit={handleSubmit}
+            isSubmitting={isSubmitting}
+            accountName={fields.title.field.value}
+        >
             <AccountBalanceField
                 label={t`Starting balance`}
 

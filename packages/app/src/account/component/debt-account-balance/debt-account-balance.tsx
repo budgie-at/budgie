@@ -43,10 +43,8 @@ export const DebtAccountBalance = ({ accountId, debtType, instrumentSymbol, summ
         return <DebtAccountPaidOff accountId={accountId} debtType={debtType} instrumentSymbol={instrumentSymbol} summary={summary} />;
     }
 
-    const { outstandingAmount, overpaidAmount, paidAmount, totalAmount, percentage } = {
-        ...summary,
-        percentage: getDebtDisplayPercentage(summary.percentage)
-    };
+    const { outstandingAmount, overpaidAmount, paidAmount, totalAmount } = summary;
+    const percentage = getDebtDisplayPercentage(summary.percentage);
     const borrowed = isBorrowLikeDebtType(debtType);
     const borrowedTotalLabel = debtType === AccountDebtTypeEnum.INSTALLMENT ? t`Total` : t`Borrowed`;
 
@@ -60,8 +58,7 @@ export const DebtAccountBalance = ({ accountId, debtType, instrumentSymbol, summ
         formattedPaidAmount: protectAmount(paidAmount, instrumentSymbol),
         formattedTotalAmount: protectAmount(totalAmount, instrumentSymbol)
     };
-    const overpaidAccessibilityLabel = isOverpaid ? ` ${labels.overpaidLabel}: ${labels.formattedOverpaidAmount}.` : '';
-    const accessibilityLabel = `${labels.directionLabel}: ${protectAmount(outstandingAmount, instrumentSymbol)}. ${labels.paidLabel}: ${labels.formattedPaidAmount}. ${labels.totalLabel}: ${labels.formattedTotalAmount}.${overpaidAccessibilityLabel} ${percentage}%`;
+    const accessibilityLabel = `${labels.directionLabel}: ${protectAmount(outstandingAmount, instrumentSymbol)}. ${labels.paidLabel}: ${labels.formattedPaidAmount}. ${labels.totalLabel}: ${labels.formattedTotalAmount}.${isOverpaid ? ` ${labels.overpaidLabel}: ${labels.formattedOverpaidAmount}.` : ''} ${percentage}%`;
 
     return (
         <View

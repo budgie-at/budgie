@@ -6,7 +6,7 @@ import * as Effect from 'effect/Effect';
 import { useState } from 'react';
 import { useController } from 'react-hook-form';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
 import { useStickyDefinedValue } from '../../../@generic/hook/use-sticky-defined-value.hook';
@@ -51,6 +51,7 @@ export const CreateDebtAccount = () => {
             : Effect.flatMap(DebtAccountService, debtAccountService => debtAccountService.createDebt(values))
     );
     const isLentDebt = debtType === AccountDebtTypeEnum.LENT;
+    const variant = ACCOUNT_COLOR.DEBT;
     const fields = {
         ...useAccountCreateBindings(control, {
             title: 'title',
@@ -67,7 +68,6 @@ export const CreateDebtAccount = () => {
     const stickyInstrument = useStickyDefinedValue(instrument);
     const balanceFieldLabel = isLentDebt ? t`Already returned` : t`Already repaid`;
     const debtAmountLabel = isLentDebt ? t`Amount lent` : t`Amount borrowed`;
-    const hasTitle = isNotEmptyString(fields.title.field.value.trim());
     const openingAccountLabel = isLentDebt ? t`From account` : t`To account`;
 
     if (!isDefined(stickyInstrument)) {
@@ -75,9 +75,14 @@ export const CreateDebtAccount = () => {
     }
 
     return (
-        <CreateAccountScreen title={t`Debt Account`} onSubmit={handleSubmit} isSubmitting={isSubmitting} isSubmitDisabled={!hasTitle}>
+        <CreateAccountScreen
+            title={t`Debt Account`}
+            onSubmit={handleSubmit}
+            isSubmitting={isSubmitting}
+            accountName={fields.title.field.value}
+        >
             <CreateAccountCoreFields
-                variant={ACCOUNT_COLOR.DEBT}
+                variant={variant}
                 fields={fields}
                 instrumentSymbol={stickyInstrument.symbol}
                 balanceFieldLabel={balanceFieldLabel}
@@ -86,7 +91,7 @@ export const CreateDebtAccount = () => {
                 <DebtOpeningAccountField
                     accountId={openingAccountId}
                     label={openingAccountLabel}
-                    variant={ACCOUNT_COLOR.DEBT}
+                    variant={variant}
                     onChange={setOpeningAccountId}
                 />
 
@@ -105,11 +110,7 @@ export const CreateDebtAccount = () => {
                     onChange={fields.contactId.field.onChange}
                 />
 
-                <AccountFormDateField
-                    value={fields.deadline.field.value}
-                    onChange={fields.deadline.field.onChange}
-                    variant={ACCOUNT_COLOR.DEBT}
-                />
+                <AccountFormDateField value={fields.deadline.field.value} onChange={fields.deadline.field.onChange} variant={variant} />
             </CreateAccountCoreFields>
         </CreateAccountScreen>
     );
