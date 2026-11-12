@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.175.4](https://github.com/budgie-at/budgie/compare/v6.175.3...v6.175.4) (2026-11-12)
+
+### Bug Fixes
+
+* **app:** fold the backup's WAL into a single file before an import swaps it in ([#2176](https://github.com/budgie-at/budgie/issues/2176)) ([0db4b95](https://github.com/budgie-at/budgie/commit/0db4b95e6c2c252298ece83132a14401be4e0c4a)), closes [#2174](https://github.com/budgie-at/budgie/issues/2174)
+
+
 ## [6.175.3](https://github.com/budgie-at/budgie/compare/v6.175.2...v6.175.3) (2026-11-12)
 
 ### Bug Fixes
