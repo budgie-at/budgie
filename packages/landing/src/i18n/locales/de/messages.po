@@ -2087,8 +2087,8 @@ msgid "A project that ignores security issues or dismisses user concerns is send
 msgstr "Ein Projekt, das Sicherheitsprobleme ignoriert oder Nutzerbedenken abweist, sendet klare Signale über seine Prioritäten. Umgekehrt zeigt ein Projekt mit durchdachten, zeitnahen Antworten auf Bedenken ein echtes Engagement für seine Nutzer."
 
 #: src/app/[lang]/features/siri-budget-questions/page.tsx
-msgid "A quick money question should not need a login, a tap and a scroll."
-msgstr "Eine schnelle Geldfrage sollte weder Login noch Tippen noch Scrollen brauchen."
+msgid "A quick money question should not need a tap and a scroll."
+msgstr "Eine schnelle Geldfrage sollte weder Tippen noch Scrollen brauchen."
 
 #: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
 msgid "A quick setup checklist"
@@ -2123,8 +2123,8 @@ msgid "A review sheet shows every row before anything is saved. Fix a row, fix t
 msgstr "Ein Prüfbildschirm zeigt jede Zeile, bevor etwas gespeichert wird. Eine Zeile korrigieren, den ganzen Stapel auf einmal anpassen oder neu aufnehmen und es erneut versuchen."
 
 #: src/app/[lang]/features/receipt-scanning/page.tsx
-msgid "A scan never creates or changes a transaction on its own. You see what Budgie read, fix anything that is wrong, and save. If a receipt cannot be read, you get an empty form to fill in yourself."
-msgstr "Ein Scan legt nie von selbst eine Buchung an oder ändert eine. Du siehst, was Budgie gelesen hat, korrigierst Fehler und speicherst. Wenn ein Beleg nicht gelesen werden kann, erhältst du ein leeres Formular zum Selbstausfüllen."
+msgid "A scan never creates or changes a transaction on its own. You see what Budgie read, fix anything that is wrong, and save. If no receipt text is found, Budgie tells you so and nothing is created."
+msgstr "Ein Scan legt nie von selbst eine Buchung an oder ändert eine. Du siehst, was Budgie gelesen hat, korrigierst Fehler und speicherst. Findet Budgie keinen Belegtext, sagt es dir das, und es wird nichts angelegt."
 
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
 msgid "A self-hosted finance app"
@@ -2597,7 +2597,7 @@ msgstr "Danach ist jede ausgewählte Karte und jeder Topf ein eigenes Konto in B
 
 #: src/app/[lang]/features/sinking-funds/page.tsx
 msgid "After three closed periods that were all at or under 80% of a category limit, or all over it, Budgie moves that limit by at most 10%."
-msgstr "Nach drei abgeschlossenen Zeiträumen, die alle bei höchstens 80 % eines Kategorielimits lagen oder alle darüber, verschiebt Budgie dieses Limit um höchstens 10 %."
+msgstr "Nach drei abgeschlossenen Zeiträumen, die alle bei höchstens 80 % eines Kategorielimits lagen oder alle über dem Limit lagen, verschiebt Budgie dieses Limit um höchstens 10 %."
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "After you categorize a single group, the bar at the bottom of the screen offers to create a rule. The rule editor opens already filled in with the words the group has in common and the category you just picked."
@@ -2857,7 +2857,7 @@ msgstr "Eine englische Übersetzung, direkt daneben"
 
 #: src/app/[lang]/features/sinking-funds/page.tsx
 msgid "An event budget pairs a tag with a date range, such as a holiday. It has its own limit and optional category limits, and it covers the days from the first to the last date."
-msgstr "Ein Event-Budget koppelt ein Tag mit einem Zeitraum, etwa einem Urlaub. Es hat ein eigenes Limit und optionale Kategorielimits und deckt die Tage vom ersten bis zum letzten Datum ab."
+msgstr "Ein Eventbudget koppelt ein Tag mit einem Zeitraum, etwa einem Urlaub. Es hat ein eigenes Limit und optionale Kategorielimits und deckt die Tage vom ersten bis zum letzten Datum ab."
 
 #: src/app/[lang]/changelog/page.tsx
 msgid "An expense for the first part of a bank installment purchase can be turned into an installment plan from its menu. Later parts attach to the plan and keep their own categories. The sheet takes any number of months from 2 to 120 and shows the monthly payment, the plan total and an optional fee. See <0>installment tracking</0>."
@@ -3594,7 +3594,7 @@ msgstr "Bankverbindungen — ein Zugang, viele Konten"
 
 #: src/app/[lang]/features/eu-bank-sync/page.tsx
 msgid "Bank consent does not last forever, and how long it lasts depends on the bank. Budgie shows the date your consent is valid until and warns you when it is close to ending. When it ends, tap Authorize again to renew it. Your existing transactions stay."
-msgstr "Die Zustimmung der Bank gilt nicht ewig, und wie lange sie gilt, hängt von der Bank ab. Budgie zeigt das Datum, bis zu dem deine Zustimmung gültig ist, und warnt dich, wenn es bald endet. Läuft sie ab, tippe erneut auf Autorisieren, um sie zu erneuern. Deine bestehenden Buchungen bleiben erhalten."
+msgstr "Die Zustimmung der Bank gilt nicht ewig, und wie lange sie gilt, hängt von der Bank ab. Budgie zeigt das Datum, bis zu dem deine Zustimmung gültig ist, und warnt dich, wenn es bald endet. Läuft sie ab, tippe auf Erneut autorisieren, um sie zu erneuern. Deine bestehenden Buchungen bleiben erhalten."
 
 #: src/app/[lang]/features/bank-fee-tracking/metadata.ts
 #: src/app/[lang]/features/bank-fee-tracking/opengraph-image.tsx
@@ -4368,8 +4368,8 @@ msgid "Budgie calls the Monobank API directly with a token you generate. No aggr
 msgstr "Budgie ruft die Monobank-API direkt mit einem Token auf, das Sie selbst erzeugen. Kein Aggregator, kein Bankpasswort."
 
 #: src/app/[lang]/changelog/page.tsx
-msgid "Budgie can back up and sync your data through iCloud, so your iPhone and iPad stay in step, and you can share chosen accounts and budgets with your partner or family. A Family section on Home groups shared accounts by bank and account type, and your own accounts are kept out of it. If iCloud sync fails, Settings explains why in one line and offers a retry. See <0>iCloud sync</0> and <1>family sharing</1>."
-msgstr "Budgie kann deine Daten über iCloud sichern und synchronisieren, damit iPhone und iPad im Gleichschritt bleiben, und du kannst ausgewählte Konten und Budgets mit deinem Partner oder deiner Familie teilen. Ein Familienbereich auf der Startseite gruppiert geteilte Konten nach Bank und Kontotyp, deine eigenen Konten bleiben außen vor. Schlägt die iCloud-Synchronisierung fehl, erklärt dir das die Einstellungen in einer Zeile und bietet einen neuen Versuch an. Siehe <0>iCloud-Sync</0> und <1>Familienfreigabe</1>."
+msgid "Budgie can back up and sync your data through iCloud, so your iPhone and iPad stay in step, and you can share chosen accounts and budgets with your partner or family. A Family section on Home shows the accounts shared with you, and your own accounts are kept out of it. If iCloud sync fails, Settings explains why in one line and offers a retry. See <0>iCloud sync</0> and <1>family sharing</1>."
+msgstr "Budgie kann deine Daten über iCloud sichern und synchronisieren, damit iPhone und iPad im Gleichschritt bleiben, und du kannst ausgewählte Konten und Budgets mit deinem Partner oder deiner Familie teilen. Ein Familienbereich auf der Startseite zeigt die mit dir geteilten Konten, deine eigenen Konten bleiben außen vor. Schlägt die iCloud-Synchronisierung fehl, erklären dir die Einstellungen in einer Zeile den Grund und bieten einen neuen Versuch an. Siehe <0>iCloud-Sync</0> und <1>Familienfreigabe</1>."
 
 #: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
 msgid "Budgie cannot create the personal automation for you. iOS requires you to save it in Shortcuts."
@@ -8680,10 +8680,6 @@ msgstr "Jede Zeile mit Datum im August"
 msgid "Every row now from August"
 msgstr "Jede Zeile jetzt aus August"
 
-#: src/app/[lang]/features/receipt-scanning/page.tsx
-msgid "Every scan ends in a form you confirm before anything is saved."
-msgstr "Jeder Scan endet in einem Formular, das du bestätigst, bevor etwas gespeichert wird."
-
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "Every suggestion Budgie makes comes from your own data. Nothing is invented, and there is no shared model of other people's spending involved."
 msgstr "Jeder Vorschlag von Budgie stammt aus den eigenen Daten. Nichts wird erfunden, und es ist kein geteiltes Modell fremder Ausgaben im Spiel."
@@ -9239,6 +9235,10 @@ msgstr "Finden Sie fehlende Kategorien, bevor Diagramme lügen."
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 msgid "Find mistakes after saving"
 msgstr "Fehler nach dem Speichern finden"
+
+#: src/app/[lang]/features/siri-budget-questions/page.tsx
+msgid "Find the app, wait for it to load"
+msgstr "App suchen, auf das Laden warten"
 
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Find uncategorized transactions fast"
@@ -13160,7 +13160,7 @@ msgstr "Nein. Von der PrivatBank akzeptiert Budgie nur den Excel-Auszug, wähle 
 
 #: src/app/[lang]/features/sinking-funds/page.tsx
 msgid "No. Funds, event budgets and tuning are worked out on your device, with no account and no subscription."
-msgstr "Nein. Fonds, Event-Budgets und die automatische Anpassung werden auf deinem Gerät berechnet, ohne Konto und ohne Abo."
+msgstr "Nein. Fonds, Eventbudgets und die automatische Anpassung werden auf deinem Gerät berechnet, ohne Konto und ohne Abo."
 
 #: src/app/[lang]/features/icloud-sync/page.tsx
 msgid "No. iCloud sync is iPhone and iPad only. On Android you export a backup file by hand and import it on the new phone."
@@ -13187,8 +13187,8 @@ msgid "No. PrivatBank import works from a statement file. To add new operations,
 msgstr "Nein. Der PrivatBank-Import arbeitet mit einer Auszugsdatei. Für neue Umsätze exportierst du einen frischen Auszug und drückst in Budgie lange auf die Kontokarte."
 
 #: src/app/[lang]/features/receipt-scanning/page.tsx
-msgid "No. Receipt scanning is available on iPhone only."
-msgstr "Nein. Das Belegscannen ist nur auf dem iPhone verfügbar."
+msgid "No. Receipt scanning is available on iPhone and iPad."
+msgstr "Nein. Belege scannen gibt es auf iPhone und iPad."
 
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "No. Rules are explicit conditions you wrote and can read back. AI categorization is a separate on-device suggestion engine for merchants no rule covers yet."
@@ -13436,6 +13436,10 @@ msgstr "Nichts wird als Einnahme gezählt"
 #: src/app/[lang]/bank-sync/page.tsx
 msgid "Nothing is lost. Each connection commits what it fetched to your local database as it completes, and every row carries a source id, so the next sync picks up where it left off without creating duplicates."
 msgstr "Nichts geht verloren. Jede Verbindung schreibt das Abgerufene sofort nach Abschluss in Ihre lokale Datenbank, und jede Zeile trägt eine Quell-ID, sodass die nächste Synchronisierung dort weitermacht, ohne Duplikate zu erzeugen."
+
+#: src/app/[lang]/features/receipt-scanning/page.tsx
+msgid "Nothing is saved until you confirm the form."
+msgstr "Nichts wird gespeichert, bevor du das Formular bestätigst."
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Nothing is saved until you tap Save, and Save stays off until every row has an amount and a category"
@@ -16638,8 +16642,8 @@ msgid "Savings, deposits and investments are never counted, because they are not
 msgstr "Ersparnisse, Festgelder und Investments zählen nie mit, weil Sie davon nicht im Alltag ausgeben. Krypto bleibt standardmäßig außen vor. Aktivieren Sie in den Einstellungen Krypto einbeziehen, dann zählt die Reichweite es zum heutigen Marktwert und vermerkt das beim Urteil."
 
 #: src/app/[lang]/features/siri-budget-questions/page.tsx
-msgid "Say “How is my Budgie budget” or “Budgie budget status” for your budget. Say “What's my balance in Budgie” or name an account: “What's my savings balance in Budgie”. Say “What's my net worth in Budgie” for your total."
-msgstr "Sag „How is my Budgie budget“ oder „Budgie budget status“ für dein Budget. Sag „What's my balance in Budgie“ oder nenne ein Konto: „What's my savings balance in Budgie“. Sag „What's my net worth in Budgie“ für dein Gesamtvermögen."
+msgid "Say “How is my Budgie budget” or “Budgie budget status” for your budget. Name an account for its balance: “What's my savings balance in Budgie”. Say “What's my net worth in Budgie” or “What's my balance in Budgie” for your total."
+msgstr "Sag „How is my Budgie budget“ oder „Budgie budget status“ für dein Budget. Nenne ein Konto für seinen Kontostand: „What's my savings balance in Budgie“. Sag „What's my net worth in Budgie“ oder „What's my balance in Budgie“ für dein Gesamtvermögen."
 
 #: src/app/[lang]/features/voice-transaction-entry/metadata.ts
 msgid "Say \"twelve for coffee, forty for the taxi, and eight euros for parking\" and Budgie logs all three as a reviewable batch. The audio never leaves your phone."
@@ -16662,8 +16666,8 @@ msgid "Say it, Budgie logs it"
 msgstr "Sag es, Budgie erfasst es"
 
 #: src/app/[lang]/features/siri-budget-questions/page.tsx
-msgid "Say one of these to Siri. Say “How much did I spend on groceries in Budgie”, then name the category you want. Say “Budgie spending on” followed by a category for the same answer."
-msgstr "Sag Siri eines davon. Sag „How much did I spend on groceries in Budgie“ und nenne dann die gewünschte Kategorie. Sag „Budgie spending on“ gefolgt von einer Kategorie für dieselbe Antwort."
+msgid "Say one of these to Siri. Say “How much did I spend on groceries in Budgie”, or “How much did I spend in Budgie” and then name the category. Say “Budgie spending on” followed by a category for the same answer."
+msgstr "Sag Siri eines davon. Sag „How much did I spend on groceries in Budgie“ oder „How much did I spend in Budgie“ und nenne dann die Kategorie. Sag „Budgie spending on“ gefolgt von einer Kategorie für dieselbe Antwort."
 
 #: src/app/[lang]/features/siri-budget-questions/page.tsx
 msgid "Say the question out loud"
@@ -16686,8 +16690,8 @@ msgid "Scan a receipt with the camera or pick it from Photos or Files. Text is r
 msgstr "Scanne einen Beleg mit der Kamera oder wähle ihn aus Fotos oder Dateien. Der Text wird auf deinem iPhone gelesen, und du bestätigst eine vorausgefüllte Ausgabe oder hängst den Beleg an einen Bankumsatz an."
 
 #: src/app/[lang]/features/receipt-scanning/page.tsx
-msgid "Scan a receipt with the camera, or pick it from Photos or Files. Text is read on your iPhone and every scan opens a prefilled form for you to confirm."
-msgstr "Scanne einen Beleg mit der Kamera oder wähle ihn aus Fotos oder Dateien. Der Text wird auf deinem iPhone gelesen, und jeder Scan öffnet ein vorausgefülltes Formular, das du bestätigst."
+msgid "Scan a receipt with the camera, or pick it from Photos or Files. Text is read on your iPhone and a readable receipt opens a prefilled form for you to confirm."
+msgstr "Scanne einen Beleg mit der Kamera oder wähle ihn aus Fotos oder Dateien. Der Text wird auf deinem iPhone gelesen, und ein lesbarer Beleg öffnet ein vorausgefülltes Formular, das du bestätigst."
 
 #: src/app/[lang]/features/receipt-scanning/page.tsx
 msgid "Scan a receipt, confirm the expense"
@@ -16726,8 +16730,8 @@ msgid "Scanning a long transaction list for one tag is hard. Budgie shows the ma
 msgstr "Eine lange Transaktionsliste nach einem Tag zu durchsuchen ist mühsam. Budgie zeigt den Haupt-Tag jeder Zeile als Chip mit der Anzahl der übrigen, sodass du #urlaub oder #gemeinsam erkennst, ohne etwas zu öffnen."
 
 #: src/app/[lang]/features/receipt-scanning/page.tsx
-msgid "Scanning the same receipt twice shows Already scanned and opens the first transaction"
-msgstr "Wird derselbe Beleg zweimal gescannt, erscheint Bereits gescannt und die erste Buchung wird geöffnet"
+msgid "Scanning the same receipt twice shows Already scanned; tap it to open the first transaction"
+msgstr "Wird derselbe Beleg zweimal gescannt, erscheint Bereits gescannt; tippe darauf, um die erste Buchung zu öffnen"
 
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
 msgid "Scans 24 months of history to detect a pattern, not just the current month"
@@ -17328,8 +17332,8 @@ msgid "Share the accounts and budgets you choose with family. Everything else st
 msgstr "Teile die Konten und Budgets deiner Wahl mit der Familie. Alles andere bleibt privat."
 
 #: src/app/[lang]/features/family-sharing/page.tsx
-msgid "Shared accounts appear in their own Family section, grouped by bank and by account type. It shows the family total and says the money is shared with you, not counted in your total."
-msgstr "Geteilte Konten erscheinen im eigenen Bereich Familie, gruppiert nach Bank und Kontotyp. Er zeigt die Familiensumme und weist darauf hin, dass das Geld mit dir geteilt wird und nicht in deine Summe einfließt."
+msgid "Shared accounts appear in their own Family section. It shows the family total and says the money is shared with you, not counted in your total."
+msgstr "Geteilte Konten erscheinen im eigenen Bereich Familie. Er zeigt die Familiensumme und weist darauf hin, dass das Geld mit dir geteilt wird und nicht in deine Summe einfließt."
 
 #: src/app/[lang]/features/family-sharing/page.tsx
 msgid "Shared data travels through iCloud"
@@ -17407,7 +17411,7 @@ msgstr "Rücklagen"
 #: src/app/[lang]/features/sinking-funds/metadata.ts
 #: src/app/[lang]/features/sinking-funds/opengraph-image.tsx
 msgid "Sinking Funds and Event Budgets"
-msgstr "Rücklagen und Anlassbudgets"
+msgstr "Rücklagen und Eventbudgets"
 
 #: src/app/[lang]/features/sinking-funds/metadata.ts
 msgid "Sinking Funds and Trip Budgets — Budgie"
@@ -20776,7 +20780,7 @@ msgstr "Unter jeder Summe steht der Anteil dieses Tags — an den Einnahmen des 
 
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Under Limit from you choose a fixed amount, the income received this period, or the income you expect, which comes from your recurring income. An allocation block shows money that is unassigned or over-assigned, and unspent category money can roll over into the next period. Yearly bills and trips have their own page on <0>sinking funds and event budgets</0>."
-msgstr "Unter Limit aus wählst du einen festen Betrag, das in diesem Zeitraum erhaltene Einkommen oder das erwartete Einkommen, das aus deinen wiederkehrenden Einnahmen stammt. Ein Zuteilungsblock zeigt Geld, das nicht oder zu viel zugeteilt ist, und nicht ausgegebenes Kategoriegeld kann in den nächsten Zeitraum übertragen werden. Jährliche Rechnungen und Reisen haben eine eigene Seite zu <0>Rücklagen und Anlassbudgets</0>."
+msgstr "Unter Limit aus wählst du einen festen Betrag, das in diesem Zeitraum erhaltene Einkommen oder das erwartete Einkommen, das aus deinen wiederkehrenden Einnahmen stammt. Ein Zuteilungsblock zeigt Geld, das nicht oder zu viel zugeteilt ist, und nicht ausgegebenes Kategoriegeld kann in den nächsten Zeitraum übertragen werden. Jährliche Rechnungen und Reisen haben eine eigene Seite zu <0>Rücklagen und Eventbudgets</0>."
 
 #: src/app/[lang]/features/icloud-sync/page.tsx
 msgid "Under Sync across devices, Settings shows when your data last synced. If syncing stops, it names the reason and tells you what to do next."
@@ -20829,10 +20833,6 @@ msgstr "Entsperre per Face ID, Touch ID oder Fingerabdruck/Gesicht. Das Handy gl
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "Unlock with your face"
 msgstr "Mit deinem Gesicht entsperren"
-
-#: src/app/[lang]/features/siri-budget-questions/page.tsx
-msgid "Unlock your phone, find the app, wait for it to load"
-msgstr "Telefon entsperren, App suchen, auf das Laden warten"
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Unrealized gain over cost basis"
@@ -21158,7 +21158,7 @@ msgstr "Wöchentliche bis jährliche Budgets mit Kategorielimits, Übertrag, Sic
 
 #: src/app/[lang]/features/budget-planning/metadata.ts
 msgid "Weekly, biweekly, monthly or yearly budgets with category limits, rollover, a daily safe-to-spend figure, sinking funds and event budgets. Alerts run on your device. No server involved."
-msgstr "Wöchentliche, zweiwöchentliche, monatliche oder jährliche Budgets mit Kategorielimits, Übertrag, einem täglichen Wert für sicher Ausgebbares, Rücklagen und Anlassbudgets. Hinweise laufen auf deinem Gerät. Kein Server im Spiel."
+msgstr "Wöchentliche, zweiwöchentliche, monatliche oder jährliche Budgets mit Kategorielimits, Übertrag, einem täglichen Wert für sicher Ausgebbares, Rücklagen und Eventbudgets. Hinweise laufen auf deinem Gerät. Kein Server im Spiel."
 
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 msgid "What a deposit shows you"
@@ -22784,7 +22784,7 @@ msgstr "Ja. Eine Anpassung öffnet in ihrer eigenen Detailansicht und lässt sic
 
 #: src/app/[lang]/features/sinking-funds/page.tsx
 msgid "Yes. An event budget pairs a tag with a date range and has its own limit and optional category limits. The tagged spending still counts in your main budget."
-msgstr "Ja. Ein Anlassbudget verbindet einen Tag mit einem Datumsbereich und hat ein eigenes Limit und optionale Kategorielimits. Die getaggten Ausgaben zählen weiterhin in deinem Hauptbudget."
+msgstr "Ja. Ein Eventbudget verbindet einen Tag mit einem Datumsbereich und hat ein eigenes Limit und optionale Kategorielimits. Die getaggten Ausgaben zählen weiterhin in deinem Hauptbudget."
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "Yes. Analytics reads straight from your phone — every chart works without internet."

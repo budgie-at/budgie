@@ -1864,7 +1864,7 @@ msgstr "Une période sur mesure si besoin"
 
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "A daily figure that adjusts as you go, and a warning before a category is on pace to run over"
-msgstr "Un montant quotidien qui s’ajuste au fil du temps, et une alerte avant qu’une catégorie ne dépasse son plafond"
+msgstr "Un montant quotidien qui s’ajuste au fil du temps, et une alerte avant qu’une catégorie ne dépasse sa limite"
 
 #: src/app/[lang]/features/balance-adjustment/page.tsx
 msgid "A dated Adjustment row is added"
@@ -2087,8 +2087,8 @@ msgid "A project that ignores security issues or dismisses user concerns is send
 msgstr "Un projet qui ignore les problèmes de sécurité ou rejette les préoccupations des utilisateurs envoie des signaux clairs sur ses priorités. À l'inverse, un projet offrant des réponses réfléchies et rapides aux préoccupations démontre un engagement authentique envers ses utilisateurs."
 
 #: src/app/[lang]/features/siri-budget-questions/page.tsx
-msgid "A quick money question should not need a login, a tap and a scroll."
-msgstr "Une question rapide sur votre argent ne devrait pas exiger une connexion, un appui et un défilement."
+msgid "A quick money question should not need a tap and a scroll."
+msgstr "Une question rapide sur votre argent ne devrait pas exiger un appui et un défilement."
 
 #: src/app/[lang]/blog/uah-eur-budget-ukrainians-in-eu/page.tsx
 msgid "A quick setup checklist"
@@ -2123,8 +2123,8 @@ msgid "A review sheet shows every row before anything is saved. Fix a row, fix t
 msgstr "Une feuille de vérification affiche chaque ligne avant tout enregistrement. Corrigez une ligne, corrigez tout le lot d'un coup, ou réenregistrez pour réessayer."
 
 #: src/app/[lang]/features/receipt-scanning/page.tsx
-msgid "A scan never creates or changes a transaction on its own. You see what Budgie read, fix anything that is wrong, and save. If a receipt cannot be read, you get an empty form to fill in yourself."
-msgstr "Un scan ne crée ni ne modifie jamais une opération tout seul. Vous voyez ce que Budgie a lu, corrigez ce qui est faux et enregistrez. Si un reçu est illisible, vous obtenez un formulaire vide à remplir vous-même."
+msgid "A scan never creates or changes a transaction on its own. You see what Budgie read, fix anything that is wrong, and save. If no receipt text is found, Budgie tells you so and nothing is created."
+msgstr "Un scan ne crée ni ne modifie jamais une opération tout seul. Vous voyez ce que Budgie a lu, corrigez ce qui est faux et enregistrez. Si aucun texte de reçu n’est trouvé, Budgie vous le signale et rien n’est créé."
 
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
 msgid "A self-hosted finance app"
@@ -4368,8 +4368,8 @@ msgid "Budgie calls the Monobank API directly with a token you generate. No aggr
 msgstr "Budgie appelle l’API Monobank directement avec un jeton que vous générez. Pas d’agrégateur, pas de mot de passe bancaire."
 
 #: src/app/[lang]/changelog/page.tsx
-msgid "Budgie can back up and sync your data through iCloud, so your iPhone and iPad stay in step, and you can share chosen accounts and budgets with your partner or family. A Family section on Home groups shared accounts by bank and account type, and your own accounts are kept out of it. If iCloud sync fails, Settings explains why in one line and offers a retry. See <0>iCloud sync</0> and <1>family sharing</1>."
-msgstr "Budgie peut sauvegarder et synchroniser vos données via iCloud pour que votre iPhone et votre iPad restent synchronisés, et vous pouvez partager des comptes et budgets choisis avec votre conjoint ou votre famille. Une section Famille sur l’accueil regroupe les comptes partagés par banque et type de compte, sans y mêler vos propres comptes. Si la synchronisation iCloud échoue, les Réglages expliquent pourquoi en une ligne et proposent de réessayer. Voir <0>la synchronisation iCloud</0> et <1>le partage familial</1>."
+msgid "Budgie can back up and sync your data through iCloud, so your iPhone and iPad stay in step, and you can share chosen accounts and budgets with your partner or family. A Family section on Home shows the accounts shared with you, and your own accounts are kept out of it. If iCloud sync fails, Settings explains why in one line and offers a retry. See <0>iCloud sync</0> and <1>family sharing</1>."
+msgstr "Budgie peut sauvegarder et synchroniser vos données via iCloud pour que votre iPhone et votre iPad restent synchronisés, et vous pouvez partager des comptes et budgets choisis avec votre conjoint ou votre famille. Une section Famille sur l’accueil affiche les comptes partagés avec vous, sans y mêler vos propres comptes. Si la synchronisation iCloud échoue, les Paramètres expliquent pourquoi en une ligne et proposent de réessayer. Voir <0>la synchronisation iCloud</0> et <1>le partage familial</1>."
 
 #: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
 msgid "Budgie cannot create the personal automation for you. iOS requires you to save it in Shortcuts."
@@ -8680,10 +8680,6 @@ msgstr "Chaque ligne datée d'août"
 msgid "Every row now from August"
 msgstr "Chaque ligne date d'août"
 
-#: src/app/[lang]/features/receipt-scanning/page.tsx
-msgid "Every scan ends in a form you confirm before anything is saved."
-msgstr "Chaque scan se termine par un formulaire que vous confirmez avant tout enregistrement."
-
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "Every suggestion Budgie makes comes from your own data. Nothing is invented, and there is no shared model of other people's spending involved."
 msgstr "Chaque suggestion faite par Budgie provient de vos propres données. Rien n'est inventé, et aucun modèle partagé des dépenses d'autres personnes n'entre en jeu."
@@ -9239,6 +9235,10 @@ msgstr "Trouvez les catégories manquantes avant que les graphiques mentent."
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 msgid "Find mistakes after saving"
 msgstr "Repérez les erreurs après l'enregistrement"
+
+#: src/app/[lang]/features/siri-budget-questions/page.tsx
+msgid "Find the app, wait for it to load"
+msgstr "Trouver l’app, attendre qu’elle se charge"
 
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Find uncategorized transactions fast"
@@ -10017,7 +10017,7 @@ msgstr "Les widgets de l'écran d'accueil masquent aussi les montants quand le v
 
 #: src/app/[lang]/changelog/page.tsx
 msgid "Home, Settings, account forms, rules, categories and tags, budgets, recurring payments, transaction forms and the categorize inbox were rebuilt as grouped lists with a consistent look. Home shows your net worth with an asset mix bar and a card for cash, and linked banks appear as one card with their own logo. Settings moves data tools onto their own screen. The Runway tab reads as one screen with labelled charts, and its monthly burn trims one-off spikes. Sheets open with a morphing transition, and animations and haptics follow one consistent set of timings across the app."
-msgstr "L’accueil, les Réglages, les formulaires de compte, les règles, les catégories et étiquettes, les budgets, les paiements récurrents, les formulaires d’opération et la boîte de catégorisation ont été refaits en listes groupées au style cohérent. L’accueil affiche votre patrimoine net avec une barre de répartition des actifs et une carte pour les espèces, et les banques liées apparaissent sous forme d’une seule carte avec leur propre logo. Les Réglages déplacent les outils de données vers leur propre écran. L’onglet Autonomie forme un seul écran avec des graphiques légendés, et sa dépense mensuelle lisse les pics ponctuels. Les feuilles s’ouvrent avec une transition fluide, et les animations et le retour haptique suivent des durées cohérentes dans toute l’app."
+msgstr "L’accueil, les Paramètres, les formulaires de compte, les règles, les catégories et étiquettes, les budgets, les paiements récurrents, les formulaires d’opération et la boîte de catégorisation ont été refaits en listes groupées au style cohérent. L’accueil affiche votre patrimoine net avec une barre de répartition des actifs et une carte pour les espèces, et les banques liées apparaissent sous forme d’une seule carte avec leur propre logo. Les Paramètres déplacent les outils de données vers leur propre écran. L’onglet Autonomie forme un seul écran avec des graphiques légendés, et sa dépense mensuelle lisse les pics ponctuels. Les feuilles s’ouvrent avec une transition fluide, et les animations et le retour haptique suivent des durées cohérentes dans toute l’app."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Hope they comply"
@@ -13187,8 +13187,8 @@ msgid "No. PrivatBank import works from a statement file. To add new operations,
 msgstr "Non. L'import PrivatBank fonctionne à partir d'un fichier de relevé. Pour ajouter de nouvelles opérations, exportez un relevé récent et faites un appui long sur la carte du compte dans Budgie."
 
 #: src/app/[lang]/features/receipt-scanning/page.tsx
-msgid "No. Receipt scanning is available on iPhone only."
-msgstr "Non. La numérisation de reçus n’est disponible que sur iPhone."
+msgid "No. Receipt scanning is available on iPhone and iPad."
+msgstr "Non. Le scan de reçus est disponible sur iPhone et iPad."
 
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "No. Rules are explicit conditions you wrote and can read back. AI categorization is a separate on-device suggestion engine for merchants no rule covers yet."
@@ -13437,6 +13437,10 @@ msgstr "Rien n'est compté comme revenu"
 msgid "Nothing is lost. Each connection commits what it fetched to your local database as it completes, and every row carries a source id, so the next sync picks up where it left off without creating duplicates."
 msgstr "Rien n'est perdu. Chaque connexion enregistre ce qu'elle a récupéré dans votre base de données locale dès que c'est terminé, et chaque ligne porte un identifiant source, si bien que la synchronisation suivante reprend là où elle s'est arrêtée sans créer de doublons."
 
+#: src/app/[lang]/features/receipt-scanning/page.tsx
+msgid "Nothing is saved until you confirm the form."
+msgstr "Rien n’est enregistré tant que vous n’avez pas confirmé le formulaire."
+
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Nothing is saved until you tap Save, and Save stays off until every row has an amount and a category"
 msgstr "Rien n'est enregistré tant que vous n'appuyez pas sur Enregistrer, et Enregistrer reste désactivé tant que chaque ligne n'a pas un montant et une catégorie"
@@ -13568,7 +13572,7 @@ msgstr "proposé comme source de dépense"
 
 #: src/app/[lang]/features/eu-bank-sync/page.tsx
 msgid "Offered during onboarding, next to Monobank and statement import"
-msgstr "Proposé à l’accueil, à côté de Monobank et de l’import de relevés"
+msgstr "Proposé lors de la configuration initiale, à côté de Monobank et de l’import de relevés"
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "offline"
@@ -13891,7 +13895,7 @@ msgstr "IA sur l'appareil"
 
 #: src/app/[lang]/changelog/page.tsx
 msgid "Onboarding import now offers EU banks next to Monobank and bank statements. See <0>EU bank sync</0>."
-msgstr "L’import de l’accueil propose désormais les banques de l’UE à côté de Monobank et des relevés bancaires. Voir <0>la synchronisation des banques de l’UE</0>."
+msgstr "L’import lors de la configuration initiale propose désormais les banques de l’UE à côté de Monobank et des relevés bancaires. Voir <0>la synchronisation des banques de l’UE</0>."
 
 #: src/app/[lang]/changelog/page.tsx
 msgid "Onboarding is rebuilt around choosing your key: a PIN or the phone lock only, or restoring a backup. Forgot PIN and add PIN later are sheets, and Settings shows your database file and when it was last backed up."
@@ -14468,7 +14472,7 @@ msgstr "Seule la réinitialisation de tout l'historique demande confirmation."
 
 #: src/app/[lang]/features/sinking-funds/page.tsx
 msgid "Only through auto-tune, by at most 10% after three closed periods that were all at or under 80% or all over the limit. Each change is listed under Limit changes, and you can switch tuning off per budget."
-msgstr "Uniquement via le réglage automatique, de 10 % au maximum après trois périodes clôturées, toutes à 80 % ou moins du plafond, ou toutes au-dessus. Chaque changement est listé sous Changements de limite, et vous pouvez désactiver le réglage pour chaque budget."
+msgstr "Uniquement via le réglage automatique, de 10 % au maximum après trois périodes clôturées, toutes à 80 % ou moins de la limite, ou toutes au-dessus. Chaque changement est listé sous Changements de limite, et vous pouvez désactiver le réglage pour chaque budget."
 
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 msgid "Only to download the PDF from George. Reading the statement happens entirely on your device — it never leaves your phone."
@@ -16505,7 +16509,7 @@ msgstr "Les règles s’appliquent à chaque nouvelle transaction Monobank, et l
 
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Run a budget weekly, biweekly, monthly or yearly, add per-category limits, set money aside for yearly bills and see what is safe to spend today. Every number is computed on your device."
-msgstr "Gérez un budget hebdomadaire, bimensuel, mensuel ou annuel, ajoutez des plafonds par catégorie, mettez de l’argent de côté pour les factures annuelles et voyez ce qu’il reste à dépenser aujourd’hui. Chaque chiffre est calculé sur votre appareil."
+msgstr "Gérez un budget hebdomadaire, bimensuel, mensuel ou annuel, ajoutez des limites par catégorie, mettez de l’argent de côté pour les factures annuelles et voyez ce qui est sûr à dépenser aujourd’hui. Chaque chiffre est calculé sur votre appareil."
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Running a cloud-first application requires servers, databases, and ongoing operational costs that scale with users. Local-first applications offload computation and storage to user devices. The marginal cost of an additional user approaches zero."
@@ -16563,19 +16567,19 @@ msgstr "Réimport sans risque"
 
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Safe to spend is one daily figure for the rest of the period, with a day strip, and it adjusts as you spend. A pace forecast compares how fast a category is filling with how much of the period has passed, and alerts you before the category runs over."
-msgstr "Reste à dépenser est un montant quotidien pour le reste de la période, avec une bande des jours, et il s’ajuste à mesure que vous dépensez. Une prévision de rythme compare la vitesse à laquelle une catégorie se remplit à la part de la période écoulée, et vous alerte avant que la catégorie ne dépasse."
+msgstr "Sûr à dépenser est un montant quotidien pour le reste de la période, avec une bande des jours, et il s’ajuste à mesure que vous dépensez. Une prévision de rythme compare la vitesse à laquelle une catégorie se remplit à la part de la période écoulée, et vous alerte avant que la catégorie ne dépasse."
 
 #: src/app/[lang]/features/sinking-funds/page.tsx
 msgid "Safe to spend looks fine until it lands"
-msgstr "Reste à dépenser semble correct jusqu’à ce que la facture tombe"
+msgstr "Sûr à dépenser semble correct jusqu’à ce que la facture tombe"
 
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Safe to spend, and a warning before you go over"
-msgstr "Reste à dépenser, et une alerte avant de dépasser"
+msgstr "Sûr à dépenser, et une alerte avant de dépasser"
 
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Safe to spend, with a forecast"
-msgstr "Reste à dépenser, avec une prévision"
+msgstr "Sûr à dépenser, avec une prévision"
 
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Same"
@@ -16638,8 +16642,8 @@ msgid "Savings, deposits and investments are never counted, because they are not
 msgstr "L'épargne, les dépôts et les placements ne sont jamais comptés, car ce n'est pas de l'argent que vous dépensez au quotidien. Les cryptos sont exclues par défaut. Activez Inclure les cryptos dans les paramètres et l'autonomie les compte à leur valeur de marché actuelle, avec une mention sur le verdict pour que vous le sachiez."
 
 #: src/app/[lang]/features/siri-budget-questions/page.tsx
-msgid "Say “How is my Budgie budget” or “Budgie budget status” for your budget. Say “What's my balance in Budgie” or name an account: “What's my savings balance in Budgie”. Say “What's my net worth in Budgie” for your total."
-msgstr "Dites « How is my Budgie budget » ou « Budgie budget status » pour votre budget. Dites « What's my balance in Budgie » ou nommez un compte : « What's my savings balance in Budgie ». Dites « What's my net worth in Budgie » pour votre total."
+msgid "Say “How is my Budgie budget” or “Budgie budget status” for your budget. Name an account for its balance: “What's my savings balance in Budgie”. Say “What's my net worth in Budgie” or “What's my balance in Budgie” for your total."
+msgstr "Dites « How is my Budgie budget » ou « Budgie budget status » pour votre budget. Nommez un compte pour connaître son solde : « What's my savings balance in Budgie ». Dites « What's my net worth in Budgie » ou « What's my balance in Budgie » pour votre total."
 
 #: src/app/[lang]/features/voice-transaction-entry/metadata.ts
 msgid "Say \"twelve for coffee, forty for the taxi, and eight euros for parking\" and Budgie logs all three as a reviewable batch. The audio never leaves your phone."
@@ -16662,8 +16666,8 @@ msgid "Say it, Budgie logs it"
 msgstr "Dites-le, Budgie l'enregistre"
 
 #: src/app/[lang]/features/siri-budget-questions/page.tsx
-msgid "Say one of these to Siri. Say “How much did I spend on groceries in Budgie”, then name the category you want. Say “Budgie spending on” followed by a category for the same answer."
-msgstr "Dites l’une de ces phrases à Siri. Dites « How much did I spend on groceries in Budgie », puis nommez la catégorie voulue. Dites « Budgie spending on » suivi d’une catégorie pour obtenir la même réponse."
+msgid "Say one of these to Siri. Say “How much did I spend on groceries in Budgie”, or “How much did I spend in Budgie” and then name the category. Say “Budgie spending on” followed by a category for the same answer."
+msgstr "Dites l’une de ces phrases à Siri. Dites « How much did I spend on groceries in Budgie », ou « How much did I spend in Budgie » puis nommez la catégorie. Dites « Budgie spending on » suivi d’une catégorie pour obtenir la même réponse."
 
 #: src/app/[lang]/features/siri-budget-questions/page.tsx
 msgid "Say the question out loud"
@@ -16686,8 +16690,8 @@ msgid "Scan a receipt with the camera or pick it from Photos or Files. Text is r
 msgstr "Scannez un reçu avec l’appareil photo ou choisissez-le dans Photos ou Fichiers. Le texte est lu sur votre iPhone, et vous confirmez une dépense préremplie ou la rattachez à un achat bancaire."
 
 #: src/app/[lang]/features/receipt-scanning/page.tsx
-msgid "Scan a receipt with the camera, or pick it from Photos or Files. Text is read on your iPhone and every scan opens a prefilled form for you to confirm."
-msgstr "Scannez un reçu avec l’appareil photo ou choisissez-le dans Photos ou Fichiers. Le texte est lu sur votre iPhone et chaque scan ouvre un formulaire prérempli que vous confirmez."
+msgid "Scan a receipt with the camera, or pick it from Photos or Files. Text is read on your iPhone and a readable receipt opens a prefilled form for you to confirm."
+msgstr "Scannez un reçu avec l’appareil photo ou choisissez-le dans Photos ou Fichiers. Le texte est lu sur votre iPhone et un reçu lisible ouvre un formulaire prérempli que vous confirmez."
 
 #: src/app/[lang]/features/receipt-scanning/page.tsx
 msgid "Scan a receipt, confirm the expense"
@@ -16726,8 +16730,8 @@ msgid "Scanning a long transaction list for one tag is hard. Budgie shows the ma
 msgstr "Parcourir une longue liste de transactions à la recherche d'une étiquette est pénible. Budgie affiche l'étiquette principale de chaque ligne sous forme de pastille, avec le nombre des autres, pour que vous repériez #vacances ou #partagé sans rien ouvrir."
 
 #: src/app/[lang]/features/receipt-scanning/page.tsx
-msgid "Scanning the same receipt twice shows Already scanned and opens the first transaction"
-msgstr "Scanner deux fois le même reçu affiche Déjà scanné et ouvre la première opération"
+msgid "Scanning the same receipt twice shows Already scanned; tap it to open the first transaction"
+msgstr "Scanner deux fois le même reçu affiche Déjà scanné ; touchez-le pour ouvrir la première opération"
 
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
 msgid "Scans 24 months of history to detect a pattern, not just the current month"
@@ -17157,15 +17161,15 @@ msgstr "Mettez de l’argent de côté"
 
 #: src/app/[lang]/features/sinking-funds/metadata.ts
 msgid "Set money aside each period for annual bills, budget a trip with its own limit and let Budgie nudge category limits by at most 10%. Works offline, no subscription."
-msgstr "Mettez de l’argent de côté à chaque période pour les factures annuelles, budgétez un voyage avec son propre plafond et laissez Budgie ajuster les plafonds de catégorie de 10 % au maximum. Fonctionne hors ligne, sans abonnement."
+msgstr "Mettez de l’argent de côté à chaque période pour les factures annuelles, budgétez un voyage avec sa propre limite et laissez Budgie ajuster les limites de catégorie de 10 % au maximum. Fonctionne hors ligne, sans abonnement."
 
 #: src/app/[lang]/features/sinking-funds/page.tsx
 msgid "Set money aside every period for a bill that comes once a year, give a trip its own budget, and let Budgie suggest small limit changes from your real history."
-msgstr "Mettez de l’argent de côté à chaque période pour une facture annuelle, donnez un budget à part à un voyage et laissez Budgie suggérer de petits ajustements de plafond d’après votre historique réel."
+msgstr "Mettez de l’argent de côté à chaque période pour une facture annuelle, donnez un budget à part à un voyage et laissez Budgie suggérer de petits ajustements de limite d’après votre historique réel."
 
 #: src/app/[lang]/features/sinking-funds/metadata.ts
 msgid "Set money aside for yearly bills, budget a trip on its own and let limits tune themselves."
-msgstr "Mettez de côté pour les factures annuelles, budgétez un voyage à part et laissez les plafonds s’ajuster d’eux-mêmes."
+msgstr "Mettez de côté pour les factures annuelles, budgétez un voyage à part et laissez les limites s’ajuster d’elles-mêmes."
 
 #: src/app/[lang]/features/balance-adjustment/metadata.ts
 msgid "Set the balance your bank shows and Budgie books the difference as a dated Adjustment transaction, not a silent edit. First-class, editable, and excluded from your rules."
@@ -17328,8 +17332,8 @@ msgid "Share the accounts and budgets you choose with family. Everything else st
 msgstr "Partagez avec votre famille les comptes et budgets que vous choisissez. Tout le reste reste privé."
 
 #: src/app/[lang]/features/family-sharing/page.tsx
-msgid "Shared accounts appear in their own Family section, grouped by bank and by account type. It shows the family total and says the money is shared with you, not counted in your total."
-msgstr "Les comptes partagés apparaissent dans leur propre section Famille, regroupés par banque et par type de compte. Elle affiche le total de la famille et précise que l’argent est partagé avec vous, et non compté dans votre total."
+msgid "Shared accounts appear in their own Family section. It shows the family total and says the money is shared with you, not counted in your total."
+msgstr "Les comptes partagés apparaissent dans leur propre section Famille. Elle affiche le total de la famille et précise que l’argent est partagé avec vous, et non compté dans votre total."
 
 #: src/app/[lang]/features/family-sharing/page.tsx
 msgid "Shared data travels through iCloud"
@@ -17341,7 +17345,7 @@ msgstr "Partager de l’argent ne signifie pas tout partager."
 
 #: src/app/[lang]/features/family-sharing/page.tsx
 msgid "Sharing uses your own iCloud. Turn on Sync across devices, open Settings, then Family, and tap Invite family. Send the invitation with Messages. Your partner opens the link on their iPhone or iPad and joins. Budgie has no server of its own and no account to create."
-msgstr "Le partage utilise votre propre iCloud. Activez Synchroniser entre appareils, ouvrez Paramètres, puis Famille, et appuyez sur Inviter la famille. Envoyez l’invitation avec Messages. Votre conjoint ouvre le lien sur son iPhone ou son iPad et nous rejoint. Budgie n’a aucun serveur propre et aucun compte à créer."
+msgstr "Le partage utilise votre propre iCloud. Activez Synchroniser entre appareils, ouvrez Paramètres, puis Famille, et appuyez sur Inviter la famille. Envoyez l’invitation avec Messages. Votre conjoint ouvre le lien sur son iPhone ou son iPad et rejoint la famille. Budgie n’a aucun serveur propre et aucun compte à créer."
 
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "Sharper with every entry"
@@ -20830,10 +20834,6 @@ msgstr "Déverrouillez avec Face ID, Touch ID ou empreinte/visage. Le téléphon
 msgid "Unlock with your face"
 msgstr "Déverrouillez avec votre visage"
 
-#: src/app/[lang]/features/siri-budget-questions/page.tsx
-msgid "Unlock your phone, find the app, wait for it to load"
-msgstr "Déverrouiller le téléphone, trouver l’app, attendre qu’elle se charge"
-
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Unrealized gain over cost basis"
 msgstr "Gain latent par rapport au prix de revient"
@@ -21154,11 +21154,11 @@ msgstr "Site web : https://budgie.at"
 
 #: src/app/[lang]/features/budget-planning/metadata.ts
 msgid "Weekly to yearly budgets with category limits, rollover, safe to spend, sinking funds and on-device alerts."
-msgstr "Budgets hebdomadaires à annuels avec plafonds par catégorie, report, reste à dépenser, fonds de réserve et alertes sur l’appareil."
+msgstr "Budgets hebdomadaires à annuels avec limites par catégorie, report, sûr à dépenser, fonds de réserve et alertes sur l’appareil."
 
 #: src/app/[lang]/features/budget-planning/metadata.ts
 msgid "Weekly, biweekly, monthly or yearly budgets with category limits, rollover, a daily safe-to-spend figure, sinking funds and event budgets. Alerts run on your device. No server involved."
-msgstr "Budgets hebdomadaires, bimensuels, mensuels ou annuels avec plafonds par catégorie, report, montant quotidien à dépenser, fonds de réserve et budgets d’événements. Les alertes s’exécutent sur votre appareil. Aucun serveur impliqué."
+msgstr "Budgets hebdomadaires, bimensuels, mensuels ou annuels avec limites par catégorie, report, montant quotidien à dépenser, fonds de réserve et budgets d’événements. Les alertes s’exécutent sur votre appareil. Aucun serveur impliqué."
 
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 msgid "What a deposit shows you"
@@ -22784,7 +22784,7 @@ msgstr "Oui. Un ajustement s'ouvre dans son propre écran de détail et se modif
 
 #: src/app/[lang]/features/sinking-funds/page.tsx
 msgid "Yes. An event budget pairs a tag with a date range and has its own limit and optional category limits. The tagged spending still counts in your main budget."
-msgstr "Oui. Un budget d’événement associe une étiquette à une plage de dates et a son propre plafond, avec des plafonds de catégorie facultatifs. Les dépenses étiquetées comptent toujours dans votre budget principal."
+msgstr "Oui. Un budget d’événement associe une étiquette à une plage de dates et a sa propre limite, avec des limites de catégorie facultatives. Les dépenses étiquetées comptent toujours dans votre budget principal."
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "Yes. Analytics reads straight from your phone — every chart works without internet."
@@ -22888,7 +22888,7 @@ msgstr "Oui. Les entrées de frais comptent dans leur catégorie choisie, y comp
 
 #: src/app/[lang]/features/inzhur-fund-tracking/page.tsx
 msgid "Yes. Fund accounts are included in net worth by default, and you can exclude any account in its settings."
-msgstr "Oui. Les comptes de fonds sont inclus par défaut dans le patrimoine net, et vous pouvez exclure n’importe quel compte dans ses réglages."
+msgstr "Oui. Les comptes de fonds sont inclus par défaut dans le patrimoine net, et vous pouvez exclure n’importe quel compte dans ses paramètres."
 
 #: src/app/[lang]/features/dark-mode/page.tsx
 msgid "Yes. Green income and red expense amounts turn brighter in dark mode so they stay easy to read on black."
@@ -23113,7 +23113,7 @@ msgstr "Vous pouvez aussi créer vous-même un paiement récurrent, avec montant
 
 #: src/app/[lang]/features/icloud-sync/page.tsx
 msgid "You can also share chosen accounts and budgets with family through iCloud. That has its own page: Family sharing."
-msgstr "Vous pouvez aussi partager des comptes et budgets choisis avec votre famille via iCloud. Cela a sa propre page : Partage en famille."
+msgstr "Vous pouvez aussi partager des comptes et budgets choisis avec votre famille via iCloud. Cela a sa propre page : Partage familial."
 
 #: src/app/[lang]/offline-first/page.tsx
 msgid "You can log an expense at 30,000 feet, walk through a Tube tunnel, or work a week off-grid — Budgie just keeps working. When you are back online, optional bank sync fills in the gaps you missed; manual edits are never blocked."

@@ -99,9 +99,9 @@ export default async function ChangelogPage(props: PageLangParam) {
                     <BlogArticleProse>
                         <Trans>
                             Budgie can back up and sync your data through iCloud, so your iPhone and iPad stay in step, and you can share
-                            chosen accounts and budgets with your partner or family. A Family section on Home groups shared accounts by bank
-                            and account type, and your own accounts are kept out of it. If iCloud sync fails, Settings explains why in one
-                            line and offers a retry. See{' '}
+                            chosen accounts and budgets with your partner or family. A Family section on Home shows the accounts shared with
+                            you, and your own accounts are kept out of it. If iCloud sync fails, Settings explains why in one line and
+                            offers a retry. See{' '}
                             <Link className="font-semibold underline underline-offset-4" href={`/${lang}/features/icloud-sync`}>
                                 iCloud sync
                             </Link>{' '}

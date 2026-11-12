@@ -30,8 +30,8 @@ export default async function ReceiptScanningFeaturePage(props: PageLangParam) {
                 heading={<Trans>Scan a receipt, confirm the expense</Trans>}
                 tagline={
                     <Trans>
-                        Scan a receipt with the camera, or pick it from Photos or Files. Text is read on your iPhone and every scan opens a
-                        prefilled form for you to confirm.
+                        Scan a receipt with the camera, or pick it from Photos or Files. Text is read on your iPhone and a readable receipt
+                        opens a prefilled form for you to confirm.
                     </Trans>
                 }
             />
@@ -44,7 +44,7 @@ export default async function ReceiptScanningFeaturePage(props: PageLangParam) {
                     <Trans>Receipts are read on this device and never uploaded.</Trans>
                 </FeatureSpecTiles.Tile>
                 <FeatureSpecTiles.Tile title={<Trans>expenses saved without you</Trans>} value={<Trans>None</Trans>}>
-                    <Trans>Every scan ends in a form you confirm before anything is saved.</Trans>
+                    <Trans>Nothing is saved until you confirm the form.</Trans>
                 </FeatureSpecTiles.Tile>
             </FeatureSpecTiles>
 
@@ -97,7 +97,7 @@ export default async function ReceiptScanningFeaturePage(props: PageLangParam) {
                         <Trans>The form opens with the amount, shop name, date, a suggested category and the card&apos;s account</Trans>
                     </FeatureBenefits.Item>
                     <FeatureBenefits.Item>
-                        <Trans>Scanning the same receipt twice shows Already scanned and opens the first transaction</Trans>
+                        <Trans>Scanning the same receipt twice shows Already scanned; tap it to open the first transaction</Trans>
                     </FeatureBenefits.Item>
                     <FeatureBenefits.Item>
                         <Trans>Your categorization rules apply to scanned receipts</Trans>
@@ -125,7 +125,7 @@ export default async function ReceiptScanningFeaturePage(props: PageLangParam) {
                     <p>
                         <Trans>
                             A scan never creates or changes a transaction on its own. You see what Budgie read, fix anything that is wrong,
-                            and save. If a receipt cannot be read, you get an empty form to fill in yourself.
+                            and save. If no receipt text is found, Budgie tells you so and nothing is created.
                         </Trans>
                     </p>
                 </FeatureDetails.Item>
@@ -172,7 +172,7 @@ export default async function ReceiptScanningFeaturePage(props: PageLangParam) {
                 />
                 <FeatureFaq.Item
                     question={<Trans>Is receipt scanning available on Android?</Trans>}
-                    answer={<Trans>No. Receipt scanning is available on iPhone only.</Trans>}
+                    answer={<Trans>No. Receipt scanning is available on iPhone and iPad.</Trans>}
                 />
             </FeatureFaq>
         </FeaturePageShell>

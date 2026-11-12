@@ -88,8 +88,8 @@ export default async function FamilySharingFeaturePage(props: PageLangParam) {
                 </FeatureBenefits.Benefit>
                 <FeatureBenefits.Benefit icon={Eye} title={<Trans>A Family section on Home</Trans>}>
                     <Trans>
-                        Shared accounts appear in their own Family section, grouped by bank and by account type. It shows the family total
-                        and says the money is shared with you, not counted in your total.
+                        Shared accounts appear in their own Family section. It shows the family total and says the money is shared with you,
+                        not counted in your total.
                     </Trans>
                 </FeatureBenefits.Benefit>
                 <FeatureBenefits.Benefit icon={Lock} title={<Trans>Private stays private</Trans>}>

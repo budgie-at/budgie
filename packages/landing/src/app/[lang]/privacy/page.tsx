@@ -196,10 +196,10 @@ export default async function PrivacyPillarHubPage(props: PageLangParam) {
                     scene="private-budget-app-alternative-1"
                     slug="private-budget-app-alternative"
                 >
-                    <FeatureStory.Callout index={8} y={0.255}>
+                    <FeatureStory.Callout index={0} y={0.255}>
                         <Trans>Stored locally on your device</Trans>
                     </FeatureStory.Callout>
-                    <FeatureStory.Callout index={9} y={0.4}>
+                    <FeatureStory.Callout index={1} y={0.4}>
                         <Trans>App Lock, off by default</Trans>
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>

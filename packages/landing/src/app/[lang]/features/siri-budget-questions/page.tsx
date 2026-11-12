@@ -50,11 +50,11 @@ export default async function SiriBudgetQuestionsFeaturePage(props: PageLangPara
 
             <FeatureVersus
                 heading={<Trans>Open the app or just ask</Trans>}
-                lede={<Trans>A quick money question should not need a login, a tap and a scroll.</Trans>}
+                lede={<Trans>A quick money question should not need a tap and a scroll.</Trans>}
             >
                 <FeatureVersus.Without title={<Trans>Open the app</Trans>}>
                     <FeatureVersus.Item>
-                        <Trans>Unlock your phone, find the app, wait for it to load</Trans>
+                        <Trans>Find the app, wait for it to load</Trans>
                     </FeatureVersus.Item>
                     <FeatureVersus.Item>
                         <Trans>Dig through screens for one number</Trans>
@@ -109,15 +109,16 @@ export default async function SiriBudgetQuestionsFeaturePage(props: PageLangPara
                 <FeatureDetails.Item title={<Trans>What you can ask</Trans>}>
                     <p>
                         <Trans>
-                            Say one of these to Siri. Say &ldquo;How much did I spend on groceries in Budgie&rdquo;, then name the category
-                            you want. Say &ldquo;Budgie spending on&rdquo; followed by a category for the same answer.
+                            Say one of these to Siri. Say &ldquo;How much did I spend on groceries in Budgie&rdquo;, or &ldquo;How much did
+                            I spend in Budgie&rdquo; and then name the category. Say &ldquo;Budgie spending on&rdquo; followed by a category
+                            for the same answer.
                         </Trans>
                     </p>
                     <p>
                         <Trans>
-                            Say &ldquo;How is my Budgie budget&rdquo; or &ldquo;Budgie budget status&rdquo; for your budget. Say
-                            &ldquo;What&apos;s my balance in Budgie&rdquo; or name an account: &ldquo;What&apos;s my savings balance in
-                            Budgie&rdquo;. Say &ldquo;What&apos;s my net worth in Budgie&rdquo; for your total.
+                            Say &ldquo;How is my Budgie budget&rdquo; or &ldquo;Budgie budget status&rdquo; for your budget. Name an account
+                            for its balance: &ldquo;What&apos;s my savings balance in Budgie&rdquo;. Say &ldquo;What&apos;s my net worth in
+                            Budgie&rdquo; or &ldquo;What&apos;s my balance in Budgie&rdquo; for your total.
                         </Trans>
                     </p>
                     <p>
