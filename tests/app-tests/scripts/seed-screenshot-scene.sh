@@ -337,6 +337,8 @@ install_android_database() {
         sleep 1
     done
 
+    adb shell "settings put global hide_error_dialogs 1 && pm disable-user --user 0 com.google.android.apps.nexuslauncher >/dev/null 2>&1; am broadcast -a android.intent.action.CLOSE_SYSTEM_DIALOGS >/dev/null"
+    echo "seed-screenshot-scene: debug memory $(cat /sys/fs/cgroup/memory.peak /sys/fs/cgroup/memory.current 2>/dev/null | tr '\n' ' ') $(grep oom_kill /sys/fs/cgroup/memory.events 2>/dev/null | tr '\n' ' ')"
     adb shell "am force-stop $APP_ID && rm -f $app_data_directory/shared_prefs/SecureStore*.xml $files_directory/SQLite/budgie.db* && mkdir -p $files_directory/SQLite $files_directory/E2EFixtures"
     adb push "$PREPARED_DATABASE_PATH" "$files_directory/SQLite/budgie.db" >/dev/null
 
