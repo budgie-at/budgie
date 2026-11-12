@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.179.0](https://github.com/budgie-at/budgie/compare/v6.178.0...v6.179.0) (2026-11-12)
+
+### Features
+
+* **landing:** cover iCloud sync, family sharing, Siri, EU banks, receipts, Inzhur and sinking funds ([#2184](https://github.com/budgie-at/budgie/issues/2184)) ([9733aae](https://github.com/budgie-at/budgie/commit/9733aaeada0d8dc0316d9a5c95d732bab6d6d369))
+
+
 # [6.178.0](https://github.com/budgie-at/budgie/compare/v6.177.0...v6.178.0) (2026-11-12)
 
 ### Features
