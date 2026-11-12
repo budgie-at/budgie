@@ -124,6 +124,7 @@ jobs:
             android-build-timeout-minutes: 120
             android-capture-runner-labels: '["self-hosted","trf-linux-amd64-4x8"]'
             android-capture-timeout-minutes: 120
+            emulator-ram-size: '1536'
             post-capture-command: |
                 if ! command -v magick >/dev/null; then
                     curl -fsSL -o "$RUNNER_TEMP/imagemagick.AppImage" https://github.com/ImageMagick/ImageMagick/releases/download/7.1.2-35/ImageMagick-7.1.2-35-gcc-x86_64.AppImage
