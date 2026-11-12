@@ -1,6 +1,6 @@
 import { appAtomRegistry } from '@app/@generic/constant/app-atom-registry.constant';
 import { cloudSyncStatusAtom } from '@app/cloud-sync/constant/cloud-sync-status-atom.constant';
-import { CloudSyncStatusEnum, HouseholdShareService, ICloudErrorCode, ICloudSyncScope } from '@budgie/cloud-sync';
+import { CloudSyncErrorReasonEnum, CloudSyncStatusEnum, HouseholdShareService, ICloudErrorCode, ICloudSyncScope } from '@budgie/cloud-sync';
 import {
     PERSONAL_SYNC_ZONE,
     HOUSEHOLD_SYNC_ZONE,
@@ -105,6 +105,7 @@ describe('cloud-sync/sync-service drain', () => {
                     expect(appAtomRegistry.get(cloudSyncStatusAtom).isQuotaExceeded).toBe(code === ICloudErrorCode.QUOTA_EXCEEDED);
                     if (code === ICloudErrorCode.ACCOUNT_UNAVAILABLE) {
                         expect(appAtomRegistry.get(cloudSyncStatusAtom).status).toBe(CloudSyncStatusEnum.ERROR);
+                        expect(appAtomRegistry.get(cloudSyncStatusAtom).errorReason).toBe(CloudSyncErrorReasonEnum.ACCOUNT_NEEDS_ATTENTION);
                     }
                     expect(flattenBatches(context.transport.calls.savedBatches).some(record => record.recordName === account.syncId)).toBe(
                         false
@@ -190,6 +191,7 @@ describe('cloud-sync/sync-service drain', () => {
                 yield* seed.account({ title: 'Oversized'.repeat(200_000) });
                 yield* service.drain;
                 expect(appAtomRegistry.get(cloudSyncStatusAtom).status).toBe(CloudSyncStatusEnum.ERROR);
+                expect(appAtomRegistry.get(cloudSyncStatusAtom).errorReason).toBe(CloudSyncErrorReasonEnum.CHANGES_REJECTED);
                 const batches = context.transport.calls.savedBatches.length;
                 yield* service.drain;
                 expect(context.transport.calls.savedBatches).toHaveLength(batches);

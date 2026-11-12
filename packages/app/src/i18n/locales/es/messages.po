@@ -316,6 +316,10 @@ msgstr "{count, plural, =0 {Fusionar “{sourceTitle}” con “{targetTitle}”
 msgid "{count, plural, one {{formattedAmount} rolled over across # category} other {{formattedAmount} rolled over across # categories}}"
 msgstr "{count, plural, one {{formattedAmount} trasladados a # categoría} other {{formattedAmount} trasladados a # categorías}}"
 
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "{count, plural, one {# account. Balances come straight from the bank.} other {# accounts. Balances come straight from the bank.}}"
+msgstr "{count, plural, one {# cuenta. Los saldos llegan directamente del banco.} other {# cuentas. Los saldos llegan directamente del banco.}}"
+
 #: src/settings/utils/get-sync-repair-text.util.ts
 msgid "{count, plural, one {# duplicate} other {# duplicates}}"
 msgstr "{count, plural, one {# duplicado} other {# duplicados}}"
@@ -698,10 +702,6 @@ msgstr "{minutesLeft, plural, one {Queda aproximadamente # minuto} other {Quedan
 #: src/import/components/import-screen-footer/import-screen-footer.tsx
 msgid "{missingRequiredCount, plural, one {Choose a column for # required field.} other {Choose columns for # required fields.}}"
 msgstr "{missingRequiredCount, plural, one {Elige una columna para # campo obligatorio.} other {Elige columnas para # campos obligatorios.}}"
-
-#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
-msgid "{monobankAccountCount, plural, one {# account. Balances come straight from the bank.} other {# accounts. Balances come straight from the bank.}}"
-msgstr "{monobankAccountCount, plural, one {# cuenta. Los saldos llegan directamente del banco.} other {# cuentas. Los saldos llegan directamente del banco.}}"
 
 #: src/runway/component/runway-history-bar-label/runway-history-bar-label.tsx
 msgid "{month}, out {expenseAmount}, in {incomeAmount}"
@@ -2618,9 +2618,17 @@ msgstr "Cambiar icono, actual: {iconName}"
 msgid "Change PIN"
 msgstr "Cambiar PIN"
 
+#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
+msgid "Changes not uploaded"
+msgstr "Cambios sin subir"
+
 #: src/budget/hooks/use-budget-forecast-labels.hook.ts
 msgid "Chart max {scaleAmount}"
 msgstr "Máximo del gráfico {scaleAmount}"
+
+#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
+msgid "Check iCloud settings"
+msgstr "Revisa los ajustes de iCloud"
 
 #: src/budget/constant/budget-save-blocker-label.constant.ts
 msgid "Check the form to continue"
@@ -3419,6 +3427,10 @@ msgstr "No se pudo restablecer la sincronización bancaria"
 #: src/cloud-sync/component/cloud-sync-lineage-prompt/cloud-sync-lineage-prompt.tsx
 msgid "Could not resolve the iCloud conflict"
 msgstr "No se pudo resolver el conflicto de iCloud"
+
+#: src/cloud-sync/component/cloud-sync-retry-row/cloud-sync-retry-row.tsx
+msgid "Could not restart iCloud sync"
+msgstr "No se pudo reiniciar la sincronización con iCloud"
 
 #: src/account/hooks/use-restore-archived-account.hook.ts
 msgid "Could not restore account."
@@ -4617,7 +4629,12 @@ msgstr "Erste Bank (PDF)"
 msgid "Estimated from your past transactions using your current limits."
 msgstr "Estimado a partir de tus transacciones pasadas con tus límites actuales."
 
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "EU bank connected"
+msgstr "Banco de la UE conectado"
+
 #: src/app/(main)/create-account/index.tsx
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "EU banks"
 msgstr "Bancos de la UE"
 
@@ -5269,11 +5286,19 @@ msgstr "Copia en iCloud"
 msgid "iCloud backup, sync and family sharing need an Apple Account. Sign in from the Settings app."
 msgstr "La copia en iCloud, la sincronización y el uso compartido en familia necesitan una cuenta de Apple. Inicia sesión en la app Ajustes."
 
+#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
+msgid "iCloud is busy"
+msgstr "iCloud está ocupado"
+
 #: src/cloud-backup/constant/cloud-backup-status-message.constant.ts
 #: src/cloud-backup/hook/use-restore-cloud-backup.hook.ts
 #: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
 msgid "iCloud storage full"
 msgstr "Almacenamiento de iCloud lleno"
+
+#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
+msgid "iCloud sync error"
+msgstr "Error de sincronización de iCloud"
 
 #: src/cloud-backup/hook/use-restore-cloud-backup.hook.ts
 msgid "iCloud unavailable"
@@ -6545,6 +6570,10 @@ msgstr "No se encontraron iconos"
 #: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
 msgid "No income in this view"
 msgstr "No hay ingresos en esta vista"
+
+#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
+msgid "No internet connection"
+msgstr "Sin conexión a internet"
 
 #: src/ai/component/voice-review-empty-state/voice-review-empty-state.tsx
 msgid "No items to save"
@@ -8674,10 +8703,6 @@ msgstr "Reservado"
 msgid "Set budget"
 msgstr "Crear presupuesto"
 
-#: src/budget/constant/budget-save-blocker-label.constant.ts
-msgid "Set every category limit to continue"
-msgstr "Define todos los límites de categoría para continuar"
-
 #: src/account/component/deposit-maturity-date-field/deposit-maturity-date-field.tsx
 msgid "Set Maturity Date"
 msgstr "Establecer fecha de vencimiento"
@@ -9168,10 +9193,6 @@ msgstr "Sincronización fallida"
 msgid "Sync failed for {title}"
 msgstr "Error de sincronización de {title}"
 
-#: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
-msgid "Sync failed. Retrying…"
-msgstr "Error. Reintentando…"
-
 #: src/sync/component/bank-integration-status-line/bank-integration-status-line.tsx
 msgid "Sync is off for all accounts"
 msgstr "Sincronización desactivada en todas las cuentas"
@@ -9347,7 +9368,7 @@ msgstr "Toca para cambiar el signo"
 msgid "Tap to choose another"
 msgstr "Toca para elegir otro"
 
-#: src/@generic/component/search-input/search-input.tsx
+#: src/@generic/component/input-clear-button/input-clear-button.tsx
 msgid "Tap to clear"
 msgstr "Toca para limpiar"
 
@@ -9945,6 +9966,10 @@ msgstr "Registrar manualmente"
 msgid "Trade Republic, N26 and other EU banks"
 msgstr "Trade Republic, N26 y otros bancos de la UE"
 
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "Trade Republic, N26 and other EU banks, read-only."
+msgstr "Trade Republic, N26 y otros bancos de la UE, solo lectura."
+
 #: ../ledger/src/transaction/service/transaction-debt-settlement.service.ts
 msgid "Transaction already has a debt attachment"
 msgstr "La transacción ya tiene una vinculación de deuda"
@@ -10093,6 +10118,7 @@ msgstr "Intenta ajustar tus filtros para ver más resultados"
 #: src/auth/components/forgot-pin-footer/forgot-pin-footer.tsx
 #: src/cloud-backup/component/cloud-backup-list/cloud-backup-list.tsx
 #: src/cloud-backup/component/cloud-backup-row/cloud-backup-row.tsx
+#: src/cloud-sync/component/cloud-sync-retry-row/cloud-sync-retry-row.tsx
 #: src/onboarding/component/onboarding-icloud-restore-row/onboarding-icloud-restore-row.tsx
 #: src/settings/components/sync-repairs-error-card/sync-repairs-error-card.tsx
 #: src/sync/component/analytics-history-boundary/analytics-history-boundary.tsx

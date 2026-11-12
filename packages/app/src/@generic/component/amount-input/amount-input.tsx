@@ -20,6 +20,7 @@ export const AmountInput = (props: Props) => {
         onChangeValue,
         inputClassName,
         selectTextOnFocus,
+        submitBehavior,
         valuePrefix,
         minimumDecimalPlaces = 0,
         acceptedDecimalSeparators = [],
@@ -28,7 +29,7 @@ export const AmountInput = (props: Props) => {
         ...rest
     } = props;
     const format = useAmountFormat(minimumDecimalPlaces, valuePrefix);
-    const amountInputProps = useAmountInput({ value, format, onChangeValue, selectTextOnFocus, onFocus, onBlur });
+    const amountInputProps = useAmountInput({ value, format, onChangeValue, selectTextOnFocus, submitBehavior, onFocus, onBlur });
 
     const handleChangeText = (text: string) => {
         amountInputProps.onChangeText(normalizeAmountDecimalSeparators(text, format.decimalSeparator, acceptedDecimalSeparators));

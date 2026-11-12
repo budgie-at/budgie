@@ -3,6 +3,35 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.179.1](https://github.com/budgie-at/budgie/compare/v6.179.0...v6.179.1) (2026-11-12)
+
+### Bug Fixes
+
+* **app:** bring Android screens to parity with iOS ([#2181](https://github.com/budgie-at/budgie/issues/2181)) ([fbec04b](https://github.com/budgie-at/budgie/commit/fbec04b92a903f1a563ef6b9cdcb203dd8b94f84))
+
+
+# [6.178.0](https://github.com/budgie-at/budgie/compare/v6.177.0...v6.178.0) (2026-11-12)
+
+### Features
+
+* **app:** offer EU banks (Enable Banking) in onboarding import ([#2180](https://github.com/budgie-at/budgie/issues/2180)) ([27d104e](https://github.com/budgie-at/budgie/commit/27d104e97e0bd58720881af717386973bf977c6b))
+
+
+# [6.177.0](https://github.com/budgie-at/budgie/compare/v6.176.0...v6.177.0) (2026-11-12)
+
+### Features
+
+* **app:** shorten iCloud sync error subtitles to one line ([4805e78](https://github.com/budgie-at/budgie/commit/4805e78571eaa577dbedd1eb6470543c6c4b389c))
+* explain iCloud sync failures and offer a retry in Settings ([833517c](https://github.com/budgie-at/budgie/commit/833517cf98e6b530e43df6a5d66dcb4dd23d753b))
+
+
+# [6.176.0](https://github.com/budgie-at/budgie/compare/v6.175.4...v6.176.0) (2026-11-12)
+
+### Features
+
+* **app:** refresh App Store listing for family sharing, receipts, EU banks and Siri ([#2177](https://github.com/budgie-at/budgie/issues/2177)) ([9f33a0d](https://github.com/budgie-at/budgie/commit/9f33a0d692607fceb80446d3c4aec54f72adb597))
+
+
 ## [6.175.4](https://github.com/budgie-at/budgie/compare/v6.175.3...v6.175.4) (2026-11-12)
 
 ### Bug Fixes

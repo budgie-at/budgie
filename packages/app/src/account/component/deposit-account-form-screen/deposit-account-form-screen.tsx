@@ -46,7 +46,7 @@ export const DepositAccountFormScreen = (props: Props) => {
     }
 
     return (
-        <CreateAccountScreen title={title} onSubmit={onSubmit} isSubmitting={isSubmitting}>
+        <CreateAccountScreen title={title} onSubmit={onSubmit} isSubmitting={isSubmitting} accountName={fields.title.field.value}>
             {children}
 
             <CreateAccountCoreFields

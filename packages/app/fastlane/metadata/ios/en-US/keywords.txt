@@ -1,1 +1,1 @@
-spending,planner,offline,private,bills,subscriptions,savings,net,worth,currency,crypto,csv,voice
+receipt,scanner,planner,couple,shared,sync,bank,spending,offline,bills,subscription,savings,crypto

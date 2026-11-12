@@ -1,5 +1,6 @@
 import { isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
+import { isAiEnabled } from '../../../@generic/utils/is-ai-enabled.util';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { SuggestionOrchestratorSharedProps } from '../../interface/suggestion-orchestrator-shared-props.type';
 import { CategorySuggestionRow } from '../category-suggestion-row/category-suggestion-row';
@@ -30,7 +31,7 @@ export const AiSuggestionOrchestrator = (props: SuggestionOrchestratorSharedProp
     const hasCategorySelected = isPositiveNumber(safeCategoryId) && isCategoryUserConfirmed;
     const hasComment = isNotEmptyString(comment);
 
-    const isStageActive = isSuggestionsEnabled && !isSplitActive && hasContext;
+    const isStageActive = isAiEnabled() && isSuggestionsEnabled && !isSplitActive && hasContext;
 
     if (isStageActive && !hasCategorySelected) {
         return (

@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.179.1](https://github.com/budgie-at/budgie/compare/v6.179.0...v6.179.1) (2026-11-12)
+
+**Note:** Version bump only for package @budgie/cloud-sync
+
+
+
+
+
+# [6.177.0](https://github.com/budgie-at/budgie/compare/v6.176.0...v6.177.0) (2026-11-12)
+
+### Features
+
+* explain iCloud sync failures and offer a retry in Settings ([833517c](https://github.com/budgie-at/budgie/commit/833517cf98e6b530e43df6a5d66dcb4dd23d753b))
+
+
 ## [6.175.1](https://github.com/budgie-at/budgie/compare/v6.175.0...v6.175.1) (2026-11-11)
 
 **Note:** Version bump only for package @budgie/cloud-sync

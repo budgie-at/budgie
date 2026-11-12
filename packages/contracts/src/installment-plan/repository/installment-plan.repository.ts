@@ -83,7 +83,7 @@ export class InstallmentPlanRepository extends Context.Service<InstallmentPlanRe
                             TransactionEntryEntityTable,
                             and(
                                 eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id),
-                                transactionFilters.buildPrimaryLedgerEntryCondition()
+                                transactionFilters.buildCategorizableEntryCondition()
                             )
                         )
                         .where(

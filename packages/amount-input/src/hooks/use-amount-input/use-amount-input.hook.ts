@@ -10,7 +10,16 @@ import type { UseAmountInputOptionsInterface } from '../../interface/use-amount-
 import type { BlurEvent, FocusEvent, TextInputProps } from 'react-native';
 
 export const useAmountInput = (options: UseAmountInputOptionsInterface): AmountInputPropsInterface => {
-    const { value, format, onChangeValue, commitOnBlur = false, selectTextOnFocus = false, onFocus, onBlur } = options;
+    const {
+        value,
+        format,
+        onChangeValue,
+        commitOnBlur = false,
+        selectTextOnFocus = false,
+        submitBehavior = 'submit',
+        onFocus,
+        onBlur
+    } = options;
 
     const [editableText, setEditableText] = useState<string | null>(null);
     const [selection, setSelection] = useState<TextInputProps['selection'] | null>(null);
@@ -56,7 +65,7 @@ export const useAmountInput = (options: UseAmountInputOptionsInterface): AmountI
         onFocus: handleFocus,
         onBlur: handleBlur,
         keyboardType: 'decimal-pad',
-        submitBehavior: 'submit',
+        submitBehavior,
         selectTextOnFocus,
         ...(isDefined(selection) && { selection })
     };

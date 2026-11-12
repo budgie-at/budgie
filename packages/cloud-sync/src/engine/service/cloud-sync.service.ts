@@ -148,6 +148,7 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
             discoverHousehold,
             resolveLineageConflict: engineService.resolveLineageConflict,
             leaveHousehold: householdService.leaveHousehold,
+            retry: foreground(),
             stop: Effect.fn('CloudSyncService.stop')(function* () {
                 const consumerCount = yield* FiberSet.size(consumers);
 

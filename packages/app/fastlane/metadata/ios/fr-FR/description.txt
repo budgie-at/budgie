@@ -1,37 +1,49 @@
-Votre argent est personnel. Sa gestion devrait le rester.
+Votre argent est personnel. Désormais, vous choisissez avec qui le partager.
 
-Avec Budgie, notez vos dépenses, gardez le cap sur votre budget et voyez où vous en êtes, sans créer de compte utilisateur. Vos opérations sont stockées sur votre appareil, accessibles même sans connexion.
+Budgie est un suivi de dépenses et un planificateur de budget pensé pour le hors ligne. Aucun compte Budgie, aucun abonnement, aucun serveur Budgie qui conserve vos opérations. Votre registre vit sur votre iPhone et, via votre propre iCloud, vous suit sur vos autres appareils et chez ceux avec qui vous le partagez.
 
-COMPRENEZ VOS DÉPENSES
-• Notez dépenses, revenus et virements pour vos espèces, cartes et comptes.
-• Créez vos catégories et étiquettes, et répartissez un achat entre plusieurs catégories.
-• Consultez graphiques et répartitions par catégorie avec des filtres de dates.
+NOUVEAU : BUDGET À PLUSIEURS, EN FAMILLE
+• Choisissez les comptes et budgets à partager avec votre conjoint ou votre famille via iCloud. Ils peuvent consulter et modifier ce que vous partagez.
+• Votre iPhone et votre iPad restent synchronisés, même après des jours hors ligne.
+• Sauvegardes iCloud automatiques, vos données financières chiffrées sur votre appareil avant de le quitter.
 
-PRÉPAREZ LA SUITE
-• Fixez un budget mensuel avec des plafonds par catégorie et voyez ce qu’il vous reste.
-• Activez les alertes lorsque vous approchez d’un plafond ou l’atteignez.
-• Estimez combien de temps votre argent pourrait durer grâce à l’autonomie calculée à partir de votre historique.
-• Retrouvez les paiements récurrents et abonnements détectés dans un calendrier.
+NOUVEAU : SCANNEZ UN REÇU, C’EST FAIT
+• Pointez la caméra sur un reçu ou choisissez-le dans Photos ou Fichiers. La reconnaissance de texte s’exécute sur votre iPhone, prépare une dépense prête à enregistrer et applique vos règles.
+• Enregistrez automatiquement vos paiements Apple Pay grâce à une automatisation Raccourcis.
 
-MOINS DE SAISIE AU QUOTIDIEN
-• Reprenez les suggestions issues de vos anciennes opérations pour vos dépenses habituelles.
-• Classez les opérations avec des règles et traitez ensemble celles qui restent sans catégorie.
-• Activez l’IA sur votre appareil pour les suggestions de catégories et d’étiquettes, ainsi que la saisie vocale. Après le téléchargement des modèles, la reconnaissance vocale et l’IA fonctionnent localement.
+NOUVEAU : SYNCHRONISATION DES BANQUES DE L’UE, DIRECTEMENT SUR VOTRE TÉLÉPHONE
+• Connectez des banques de l’UE comme N26 et Trade Republic via votre app Enable Banking. Les opérations arrivent sur votre téléphone via Enable Banking et ne transitent jamais par un serveur Budgie.
+• Monobank et Binance aussi, y compris achats par carte Binance, récompenses Earn et staking.
+• Importez des CSV aux colonnes associées automatiquement, des relevés PDF Erste, des exports PrivatBank et des relevés de fonds Inzhur.
 
-PLUSIEURS DEVISES, UNE VUE D’ENSEMBLE
-• Suivez espèces, comptes bancaires, cryptomonnaies, dépôts et dettes.
-• Consultez soldes et patrimoine net dans votre devise de référence à l’aide des taux de change.
-• Gardez budget et patrimoine à portée de main avec les widgets de l’écran d’accueil.
+NOUVEAU : DEMANDEZ À SIRI
+Demandez par exemple à Siri combien vous avez dépensé en courses. Siri répond avec vos dépenses, le reste de votre budget, vos soldes, votre patrimoine net et les prélèvements des 7 prochains jours, sans ouvrir l’app. Les montants restent masqués tant que le code PIN est activé.
 
-RETROUVEZ VOTRE HISTORIQUE
-• Importez des fichiers CSV et les relevés bancaires compatibles, dont les PDF Erste et les exports PrivatBank.
-• Connectez Monobank ou Binance avec vos propres identifiants API si vous le souhaitez. La saisie manuelle ne nécessite aucune connexion bancaire.
-• Exportez vos opérations en CSV et créez vos propres sauvegardes de la base de données.
+DES BUDGETS QUI ANTICIPENT
+• Budgets hebdomadaires, bimensuels, mensuels ou annuels avec plafonds par catégorie et report du non-dépensé.
+• Reste à dépenser : un montant quotidien qui s’ajuste, et une prévision qui vous alerte avant qu’une catégorie ne dépasse.
+• Mettez de côté pour les dépenses annuelles avec des fonds de réserve, suggérés d’après vos paiements récurrents.
+• Budgets à part pour voyages et événements, et fondés sur vos revenus.
+• Ajustez les plafonds selon vos dépenses réelles.
 
-LA CONFIDENTIALITÉ SUR VOTRE APPAREIL
-Activez un code PIN pour chiffrer la base de données avec SQLCipher. Ajoutez le déverrouillage biométrique et la protection des captures d’écran. Les sauvegardes conservent le chiffrement lorsqu’un code PIN est défini.
+AUCUN PRÉLÈVEMENT RÉCURRENT OUBLIÉ
+• Abonnements, factures et revenus récurrents sont détectés automatiquement, en liste ou en calendrier.
+• Ajoutez un paiement récurrent vous-même. Budgie associe les prélèvements suivants.
 
-Le suivi quotidien, les budgets et les statistiques fonctionnent hors ligne. La synchronisation bancaire, l’actualisation des taux de change et le téléchargement des modèles d’IA nécessitent internet. L’IA est facultative et demande de l’espace pour ses modèles.
+MOINS DE SAISIE, PLUS DE CONTRÔLE
+• Classez les dépenses sans catégorie par groupes, en quelques appuis.
+• Suggestions de votre historique, règles, répartitions, remboursements et achats en plusieurs fois.
+• IA facultative sur l’appareil pour suggérer catégories et étiquettes et saisir à la voix. Reconnaissance vocale et IA fonctionnent localement après le téléchargement des modèles.
+
+UNE VUE, TOUTES LES DEVISES
+• Espèces, cartes, comptes, cryptomonnaies, dépôts, fonds de placement et dettes dans un seul patrimoine net, dans votre devise de référence.
+• Graphiques de dépenses, tendances par catégorie et autonomie estimant combien de temps votre argent pourrait durer.
+• Widgets de l’écran d’accueil pour votre budget et votre patrimoine net.
+
+CONFIDENTIEL PAR CONCEPTION
+Définissez un code PIN et votre base est chiffrée avec SQLCipher. Ajoutez Face ID, la protection des captures d’écran et un mode confidentialité qui masque les montants. Exportez en CSV ou gardez une sauvegarde complète que vous contrôlez.
+
+Suivi, budgets et statistiques fonctionnent hors ligne. iCloud, la synchronisation bancaire, les taux de change et le téléchargement des modèles d’IA nécessitent internet. L’IA est facultative et demande de l’espace pour ses modèles.
 
 Gratuit. Sans compte Budgie. Sans abonnement.
 Commencez par votre prochaine dépense.

@@ -6,13 +6,15 @@ import { isDefined } from '@rnw-community/shared';
 
 import { CreateAccountScreenSelector } from '../../../account/component/create-account-screen/create-account-screen.selector';
 import { useGetRatesByBaseAndQuoteIdsQuery } from '../../../exchange-rate/query/use-get-rates-by-base-and-quote-ids.query';
+import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useGetInstrumentsByTypeQuery } from '../../../instrument/query/use-get-instruments-by-type.query';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { useOpenModal } from '../../hook/use-open-modal/use-open-modal.hook';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
-import { formatExchangeRate } from '../../utils/format-exchange-rate.util';
 import { AccountCurrencyIcon } from '../account-currency-icon/account-currency-icon';
 import { GroupedListRow } from '../grouped-list-row/grouped-list-row';
+
+const MAX_RATE_DECIMALS = 6;
 
 interface Props {
     readonly value: number;
@@ -30,9 +32,10 @@ export const CreateAccountCurrencyField = ({
     note
 }: Props) => {
     const { t } = useLingui();
-    const defaultInstrument = useAtomValue(defaultInstrumentAtom);
+    const { id: defaultInstrumentId, code: defaultCode } = useAtomValue(defaultInstrumentAtom);
     const { instruments } = useGetInstrumentsByTypeQuery(instrumentType);
-    const { rate } = useGetRatesByBaseAndQuoteIdsQuery(value, defaultInstrument.id);
+    const { rate } = useGetRatesByBaseAndQuoteIdsQuery(value, defaultInstrumentId);
+    const formatRate = useFormatDigits(0, MAX_RATE_DECIMALS);
     const openCurrencySelector = useOpenModal('/currency-selector');
 
     const handleOpen = () => {
@@ -50,8 +53,7 @@ export const CreateAccountCurrencyField = ({
     }
 
     const { code, name, symbol } = selectedCurrency;
-    const defaultCode = defaultInstrument.code;
-    const convertedAmount = isDefined(rate) ? formatExchangeRate(rate.rate) : '1';
+    const convertedAmount = isDefined(rate) ? formatRate(rate.rate) : '1';
     const rateSubtitle = isDefined(rate) ? t`${code} · 1 ${code} ≈ ${convertedAmount} ${defaultCode}` : t`${code} · Base currency`;
     const subtitle = isDefined(note) ? `${code} · ${note}` : rateSubtitle;
 

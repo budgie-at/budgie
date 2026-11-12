@@ -1,7 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { CreateAccountScreenSelector } from '../../../account/component/create-account-screen/create-account-screen.selector';
 import { useContacts } from '../../hook/use-contacts.hook';
@@ -20,21 +20,22 @@ interface Props {
 }
 
 export const ContactSelector = ({ contactId, onSelect, testID, variant, emptyDescription, selectedDescription }: Props) => {
-    const { contacts } = useContacts();
+    const { contacts, requestAccess } = useContacts();
     const openContactSelector = useOpenModal('/contact-selector');
     const { t } = useLingui();
 
-    const handleOpen = () => {
-        openContactSelector({ selectedContactId: contactId }, selectedContact => {
-            if (isDefined(selectedContact)) {
-                onSelect(selectedContact.id);
-            }
-        });
-    };
-
-    const title = isNotEmptyString(contactId) ? (contacts.find(({ id }) => id === contactId)?.name ?? '') : t`Select a contact`;
+    const handleOpen = () =>
+        void requestAccess().then(
+            () =>
+                void openContactSelector({ selectedContactId: contactId }, selectedContact => {
+                    if (isDefined(selectedContact)) {
+                        onSelect(selectedContact.id);
+                    }
+                })
+        );
 
     const contact = contacts.find(({ id }) => id === contactId) ?? null;
+    const title = contact?.name ?? t`Select a contact`;
     const iconVariant: ColorPaletteVariant = isDefined(contact) ? variant : 'secondary';
     const description = isDefined(contact) ? selectedDescription : emptyDescription;
 

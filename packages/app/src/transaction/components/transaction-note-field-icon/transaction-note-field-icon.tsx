@@ -44,6 +44,7 @@ export const TransactionNoteFieldIcon = () => {
                         value={comment}
                         onChangeText={handleChange}
                         multiline
+                        textAlignVertical="top"
                         scrollEnabled={false}
                         autoFocus
                         maxLength={TRANSACTION_COMMENT_MAX_LENGTH}

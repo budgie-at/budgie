@@ -5,7 +5,7 @@ import { router } from 'expo-router';
 import { isPositiveNumber } from '@rnw-community/shared';
 
 import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
-import { useNonSystemCategoriesQuery } from '../../../category/query/use-non-system-categories.query';
+import { useSearchCategoriesQuery } from '../../../category/query/use-search-categories.query';
 import { useGetAllRulesQuery } from '../../../rule/query/use-get-all-rules.query';
 import { useSearchTagsQuery } from '../../../tag/query/use-search-tags.query';
 import { SettingsRowAccessory } from '../settings-row-accessory/settings-row-accessory';
@@ -17,11 +17,11 @@ const handleNavigateToRules = () => void router.push('/settings/rules');
 
 export const OrganizeSettingsRows = () => {
     const { t } = useLingui();
-    const { categories } = useNonSystemCategoriesQuery();
+    const { categories } = useSearchCategoriesQuery('', false);
     const { tags } = useSearchTagsQuery();
     const { rules } = useGetAllRulesQuery();
 
-    const categoryCount = isPositiveNumber(categories.length) ? String(categories.length) : '';
+    const categoryCount = isPositiveNumber(categories?.length) ? String(categories.length) : '';
     const tagCount = isPositiveNumber(tags?.length) ? String(tags.length) : '';
     const ruleCount = isPositiveNumber(rules?.length) ? String(rules.length) : '';
 
