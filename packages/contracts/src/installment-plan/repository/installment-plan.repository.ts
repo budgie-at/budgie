@@ -101,16 +101,6 @@ export class InstallmentPlanRepository extends Context.Service<InstallmentPlanRe
                                 )
                             )
                         )
-                ).pipe(
-                    Effect.map(candidates => {
-                        const entryCounts = new Map<number, number>();
-
-                        candidates.forEach(candidate => {
-                            entryCounts.set(candidate.transactionId, (entryCounts.get(candidate.transactionId) ?? 0) + 1);
-                        });
-
-                        return candidates.filter(candidate => entryCounts.get(candidate.transactionId) === 1);
-                    })
                 ),
             getSchedule: Effect.fn('InstallmentPlanRepository.getSchedule')(function* (accountId: number) {
                 const account = yield* accountRepository.findById(accountId);

@@ -302,6 +302,33 @@ describe('installment plan', () => {
             }).pipe(Effect.provide(TestLayer))
     );
 
+    it.effect('leaves the monthly part of an unconverted split purchase unlinked', () =>
+        Effect.gen(function* () {
+            const card = yield* seedBankSyncAccount('Black', ExternalSourceEnum.MONOBANK, 'UA-unconverted-split-plan');
+            const first = yield* seedPart(card.id, 'Платіж Camera Store', 100, new Date(2026, 0, 28, 10));
+
+            yield* seed.manualExpense({
+                accountId: card.id,
+                title: 'Платіж Other Store',
+                amount: toMicroUnits(120),
+                operatedAt: new Date(2026, 0, 28, 11),
+                externalSource: ExternalSourceEnum.MONOBANK,
+                entries: [
+                    { amount: toMicroUnits(100), categoryId: null },
+                    { amount: toMicroUnits(20), categoryId: null }
+                ]
+            });
+
+            const { accountId } = yield* convert(first.id, 3, 300);
+
+            yield* seedPart(card.id, 'Щомісячний платіж Other Store', 100, new Date(2026, 1, 28, 10));
+            yield* (yield* AccountBalanceIncrementalService).updateBalancesByAccountIds([card.id]);
+            yield* runPostSync();
+
+            expect(yield* fetchAttachedTransactionIds(accountId)).toEqual([first.id]);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
     it.effect('attaches an early payoff after the latest monthly installment', () =>
         Effect.gen(function* () {
             const { card, first, second } = yield* seedMonthlyPayoffParts('UA-early-payoff', 'Tech Shop');
