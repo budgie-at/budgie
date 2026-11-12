@@ -32,7 +32,7 @@ export const ContactSelectorModalContent = ({ selectedContactId, onCommit }: Pro
     const [search, setSearch] = useState('');
     const listStyle = useMorphingSheetListHeight(MORPHING_SHEET_SELECTOR_HEIGHT_RATIO);
     const commit = useMorphingSheetCommit(onCommit);
-    const { contacts, isLoading, isInitial, isFailure, isDenied, isLimited, retry } = useContacts();
+    const { contacts, isLoading, isInitial, isFailure, isDenied, isLimited, retry } = useContacts(true);
 
     const sections = [{ title: null, data: filterContacts(contacts, search) }];
     const hasContacts = isNotEmptyArray(contacts);

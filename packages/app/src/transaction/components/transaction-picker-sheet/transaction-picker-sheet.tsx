@@ -4,6 +4,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { SheetSurface } from '../../../@generic/component/sheet-surface/sheet-surface';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
+import { cn } from '../../../@generic/utils/cn.util';
 
 import type { ReactNode } from 'react';
 
@@ -18,12 +19,13 @@ interface Props {
 export const TransactionPickerSheet = ({ header, pinnedFooter, scrollFooter, children, testID }: Props) => {
     const largeText = useIsAccessibilityTextSize();
     const frameClassName = largeText ? 'flex-1 pt-sm' : 'flex-1 pt-xl';
+    const frameStackClassName = isDefined(pinnedFooter) ? 'z-30' : null;
     const headerClassName = largeText ? 'shrink-0 px-xl' : 'shrink-0 px-xl pb-md';
     const contentClassName = largeText ? 'grow px-xl pb-[16px]' : 'grow px-xl pb-xl';
 
     return (
         <SheetSurface className="pt-lg">
-            <View className={frameClassName} collapsable={false}>
+            <View className={cn(frameClassName, frameStackClassName)} collapsable={false}>
                 <View className={headerClassName} collapsable={false}>
                     {header}
                 </View>

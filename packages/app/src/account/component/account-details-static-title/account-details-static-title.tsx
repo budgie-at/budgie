@@ -5,6 +5,7 @@ import { useCollapsibleHeaderScroll } from '@rnw-community/react-native-collapsi
 import { useScreenChrome } from '@rnw-community/react-native-screen-chrome';
 
 import { CHROME_TITLE_TEXT_PROPS } from '../../../@generic/constant/chrome-title-text-props.constant';
+import { MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/max-font-size-multiplier.constant';
 import { ACCOUNT_DETAILS_NAV_BALANCE_FADE_START } from '../../constant/account-details-nav-balance-fade-start.constant';
 import { useAccountDetailsBalanceLabel } from '../../hook/use-account-details-balance-label.hook';
 import { useAccountHeroValue } from '../../hook/use-account-hero-value.hook';
@@ -43,13 +44,15 @@ export const AccountDetailsStaticTitle = ({ title, ...props }: Props) => {
                 <Text
                     className="text-primary font-semibold text-[17px] text-center"
                     {...CHROME_TITLE_TEXT_PROPS}
+                    maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
                     accessibilityRole="header"
                 >
                     {title}
                 </Text>
                 <Animated.Text
-                    className="text-secondary-foreground text-[13px] text-center tabular-nums"
+                    className="text-secondary-foreground text-[13px] leading-[16px] text-center tabular-nums"
                     numberOfLines={1}
+                    maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
                     style={balanceAnimatedStyle}
                 >
                     {getBalanceLabel(balance, account)}

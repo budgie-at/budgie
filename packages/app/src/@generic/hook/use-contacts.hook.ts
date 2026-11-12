@@ -12,14 +12,14 @@ export type Contact = Contacts.ExistingContact;
 
 const EMPTY_CONTACTS: Contact[] = [];
 
-const contactsAtom = appAtomRuntime.atom(
+const loadContacts = (isPermissionRequested: boolean) =>
     Effect.gen(function* () {
         const currentPermission = yield* Effect.tryPromise({
             try: () => Contacts.getPermissionsAsync(),
             catch: cause => NativeCallError.make({ cause })
         });
         const permission =
-            currentPermission.status === Contacts.PermissionStatus.UNDETERMINED
+            isPermissionRequested && currentPermission.status === Contacts.PermissionStatus.UNDETERMINED
                 ? yield* Effect.tryPromise({
                       try: () => Contacts.requestPermissionsAsync(),
                       catch: cause => NativeCallError.make({ cause })
@@ -39,12 +39,15 @@ const contactsAtom = appAtomRuntime.atom(
         });
 
         return { contacts: data, permission };
-    }).pipe(Effect.tapError(Effect.logError))
-);
+    }).pipe(Effect.tapError(Effect.logError));
 
-export const useContacts = () => {
-    const result = useAtomValue(contactsAtom);
-    const retry = useAtomRefresh(contactsAtom);
+const contactsAtom = appAtomRuntime.atom(loadContacts(true));
+const passiveContactsAtom = appAtomRuntime.atom(loadContacts(false));
+
+export const useContacts = (isPermissionRequested: boolean) => {
+    const atom = isPermissionRequested ? contactsAtom : passiveContactsAtom;
+    const result = useAtomValue(atom);
+    const retry = useAtomRefresh(atom);
     const data = AsyncResult.getOrElse(result, () => null);
 
     useAppState(isActive => {

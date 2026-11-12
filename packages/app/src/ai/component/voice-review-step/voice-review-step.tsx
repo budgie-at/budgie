@@ -41,7 +41,7 @@ export const VoiceReviewStep = (props: Props) => {
     return (
         <View style={sheetStyle}>
             <SheetSurface className="pt-lg">
-                <View className="flex-1" testID={VoiceReviewSelector.Page} collapsable={false}>
+                <View className="z-30 flex-1" testID={VoiceReviewSelector.Page} collapsable={false}>
                     <SheetTitle title={t`Voice notes`} className={titleClassName} maxFontSizeMultiplier={MAX_CHROME_FONT_SIZE_MULTIPLIER} />
                     <VoiceReviewList
                         review={review}

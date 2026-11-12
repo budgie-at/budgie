@@ -2,7 +2,7 @@ import { ThemeEnum } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 import { DarkTheme, DefaultTheme, ThemeProvider as NavigationThemeProvider } from 'expo-router';
 import * as SystemUI from 'expo-system-ui';
-import { useLayoutEffect } from 'react';
+import { useEffect, useLayoutEffect } from 'react';
 import { Appearance, StatusBar, View } from 'react-native';
 import { Uniwind, useResolveClassNames, useUniwind } from 'uniwind';
 
@@ -42,9 +42,16 @@ export const ThemeProvider = ({ children }: Props) => {
         appRuntime.runFork(Effect.promise(() => SystemUI.setBackgroundColorAsync(background)));
     }, [background]);
 
+    useEffect(() => {
+        StatusBar.setBarStyle(barStyle);
+
+        const subscription = Appearance.addChangeListener(() => void StatusBar.setBarStyle(barStyle));
+
+        return () => void subscription.remove();
+    }, [barStyle]);
+
     return (
         <NavigationThemeProvider value={navigationTheme}>
-            <StatusBar barStyle={barStyle} />
             <View className="flex-1">{children}</View>
         </NavigationThemeProvider>
     );

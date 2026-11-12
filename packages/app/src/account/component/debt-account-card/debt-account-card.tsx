@@ -10,6 +10,7 @@ import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-am
 import { InstallmentPlanNextPayment } from '../../../installment-plan/component/installment-plan-next-payment/installment-plan-next-payment';
 import { DEBT_REMAINING_LABEL } from '../../constant/debt-remaining-label.constant';
 import { DEBT_SETTLED_LABEL } from '../../constant/debt-settled-label.constant';
+import { getDebtDisplayPercentage } from '../../utils/get-debt-display-percentage.util';
 import { DebtAccountCardDeadline } from '../debt-account-card-deadline/debt-account-card-deadline';
 import { DebtAccountCardEmpty } from '../debt-account-card-empty/debt-account-card-empty';
 import { DebtAccountCardFrame } from '../debt-account-card-frame/debt-account-card-frame';
@@ -53,7 +54,7 @@ export const DebtAccountCard = ({ account, instrumentSymbol, debtProgressSummary
     }
 
     const { outstandingAmount, paidAmount, percentage, totalAmount } = debtProgressSummary;
-    const displayPercentage = percentage >= 100 ? 100 : Math.floor(percentage);
+    const displayPercentage = getDebtDisplayPercentage(percentage);
     const separator = isDefined(deadlineBadge) && !isStacked ? <Text className="text-[13px] text-secondary-foreground">·</Text> : null;
     const progressSubtitle = (
         <View className={progressSubtitleVariants({ isStacked })}>

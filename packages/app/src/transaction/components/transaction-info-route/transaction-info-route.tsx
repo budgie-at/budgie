@@ -3,6 +3,7 @@ import { Redirect, useIsFocused, useLocalSearchParams } from 'expo-router';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
+import { BackOrHomeRedirect } from '../../../@generic/component/back-or-home-redirect/back-or-home-redirect';
 import { IdParamInterface } from '../../../@generic/interface/id-param.interface';
 import { useGetTransactionByIdQuery } from '../../query/use-get-transaction-by-id.query';
 import { getTransactionHref } from '../../utils/get-transaction-href.util';
@@ -31,7 +32,7 @@ export const TransactionInfoRoute = ({ children, transactionType }: Props) => {
     }
 
     if (!isDefined(transactionId) || !isDefined(transaction)) {
-        return <Redirect href="/" />;
+        return <BackOrHomeRedirect />;
     }
 
     if (isDefined(transaction.consolidationParentTransactionId)) {

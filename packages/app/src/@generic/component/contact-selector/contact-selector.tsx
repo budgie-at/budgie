@@ -20,13 +20,14 @@ interface Props {
 }
 
 export const ContactSelector = ({ contactId, onSelect, testID, variant, emptyDescription, selectedDescription }: Props) => {
-    const { contacts } = useContacts();
+    const { contacts, retry } = useContacts(false);
     const openContactSelector = useOpenModal('/contact-selector');
     const { t } = useLingui();
 
     const handleOpen = () => {
         openContactSelector({ selectedContactId: contactId }, selectedContact => {
             if (isDefined(selectedContact)) {
+                retry();
                 onSelect(selectedContact.id);
             }
         });

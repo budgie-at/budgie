@@ -2,6 +2,7 @@ import { useAtomValue } from '@effect/atom-react/Hooks';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { useUnitValuationRateQuery } from '../../exchange-rate/query/use-unit-valuation-rate.query';
 import { useFormatDigits } from '../../i18n/hook/use-format-digits.hook';
 import { useInstrumentMarketDataQuery } from '../../market-data/query/use-instrument-market-data.query';
 import { getMarketDailyChange } from '../../market-data/utils/get-market-daily-change.util';
@@ -16,9 +17,10 @@ export const useAccountDetailsMarketSummary = (instrumentId: number) => {
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const { latestPrice, previousPrice } = useInstrumentMarketDataQuery(instrumentId, defaultInstrument.id);
     const formatPercent = useFormatDigits(PERCENT_FRACTION_DIGITS);
-    const formatPrice = useFormatDigits(getMarketPriceFractionDigits(latestPrice?.price ?? 0));
+    const valuationRate = useUnitValuationRateQuery(instrumentId, defaultInstrument.id);
+    const price = valuationRate ?? latestPrice?.price;
+    const formatPrice = useFormatDigits(getMarketPriceFractionDigits(price ?? 0));
 
-    const price = latestPrice?.price;
     const change = getMarketDailyChange(latestPrice, previousPrice);
 
     return {

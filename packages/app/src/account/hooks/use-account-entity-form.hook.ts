@@ -5,7 +5,7 @@ import * as Effect from 'effect/Effect';
 import { router } from 'expo-router';
 import { useForm } from 'react-hook-form';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { appAtomRegistry } from '../../@generic/constant/app-atom-registry.constant';
 import { useShowError } from '../../@generic/hook/use-show-error.hook';
@@ -15,7 +15,7 @@ import { householdAccountShareDraftAtom } from '../constant/household-account-sh
 
 import type { AppServices } from '../../@generic/runtime/app.runtime';
 import type * as Cause from 'effect/Cause';
-import type { FieldErrors, FieldValues, Resolver, UseFormHandleSubmit, UseFormReturn } from 'react-hook-form';
+import type { FieldValues, Resolver, UseFormHandleSubmit, UseFormReturn } from 'react-hook-form';
 
 export const useAccountEntityForm = <T extends FieldValues>(
     resolver: Resolver<T>,
@@ -52,11 +52,7 @@ export const useAccountEntityForm = <T extends FieldValues>(
             )
         );
 
-    const handleInvalid = (errors: FieldErrors<T>) => {
-        const message = Object.values(errors).find(error => isNotEmptyString(error?.message))?.message;
-
-        showError(new Error(isNotEmptyString(message) ? message : t`Please check the account details`));
-    };
+    const handleInvalid = () => void showError(new Error(t`Please check the account details`));
 
     return {
         ...form,
