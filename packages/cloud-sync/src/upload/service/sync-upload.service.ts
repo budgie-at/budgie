@@ -1,5 +1,6 @@
 import {
     AccountEntityTable,
+    InstrumentEntityTable,
     BudgetEntityTable,
     buildHouseholdOwnershipSql,
     CURRENT_CLOUD_USER_SQL,
@@ -12,7 +13,8 @@ import {
     SYNC_MOVED_FROM_MARKER_PREFIX,
     SYNC_MOVED_TO_MARKER_PREFIX
 } from '@budgie/contracts';
-import { and, eq, getTableColumns, sql } from 'drizzle-orm';
+import { and, eq, getTableColumns, inArray, sql } from 'drizzle-orm';
+import { alias } from 'drizzle-orm/sqlite-core';
 import * as Clock from 'effect/Clock';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -21,7 +23,7 @@ import * as Option from 'effect/Option';
 import * as Result from 'effect/Result';
 import * as Schema from 'effect/Schema';
 
-import { isDefined, isNotEmptyString, isNumber } from '@rnw-community/shared';
+import { isDefined, isEmptyArray, isNotEmptyString, isNumber } from '@rnw-community/shared';
 
 import { stringifySyncJson } from '../../apply/utils/stringify-sync-json.util';
 import { buildCloudSyncKey } from '../../engine/utils/build-cloud-sync-key.util';
@@ -145,7 +147,30 @@ export class SyncUploadService extends Context.Service<SyncUploadService>()('@bu
                 }
             }
 
+            const quoteInstrument = alias(InstrumentEntityTable, 'quote_instrument');
+            const instrumentIds = [...(wanted.get('instruments')?.ids ?? [])];
+            const instruments = isEmptyArray(instrumentIds)
+                ? []
+                : yield* Db.query(db =>
+                      db
+                          .select({
+                              id: InstrumentEntityTable.id,
+                              code: InstrumentEntityTable.code,
+                              type: InstrumentEntityTable.type,
+                              name: InstrumentEntityTable.name,
+                              symbol: InstrumentEntityTable.symbol,
+                              priceProvider: InstrumentEntityTable.priceProvider,
+                              providerInstrumentId: InstrumentEntityTable.providerInstrumentId,
+                              quoteInstrumentCode: quoteInstrument.code
+                          })
+                          .from(InstrumentEntityTable)
+                          .leftJoin(quoteInstrument, eq(InstrumentEntityTable.quoteInstrumentId, quoteInstrument.id))
+                          .where(inArray(InstrumentEntityTable.id, instrumentIds))
+                  );
+            const instrumentDefinitions = new Map(instruments.map(({ id, ...definition }) => [id, JSON.stringify(definition)]));
+
             return {
+                findInstrumentDefinition: localId => instrumentDefinitions.get(localId) ?? null,
                 findSyncIdentity: (tableName, localId) => identities.get(tableName)?.get(localId) ?? null,
                 findNaturalKey: (tableName, localId) => naturalKeys.get(tableName)?.get(localId) ?? null
             } satisfies SyncReferenceResolverInterface;

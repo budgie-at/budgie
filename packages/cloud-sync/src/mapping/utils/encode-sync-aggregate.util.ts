@@ -81,6 +81,14 @@ const encodeRow = (
             );
             if (isDefined(encoded)) {
                 fields[column.field] = encoded;
+                const localId = row[column.property];
+                const definition =
+                    column.reference?.tableName === 'instruments' && isNumber(localId)
+                        ? resolver.findInstrumentDefinition?.(localId)
+                        : null;
+                if (isDefined(definition)) {
+                    fields[`${column.field}Definition`] = definition;
+                }
             }
         }
         if (isDefined(descriptor.parentLink) && !isNotEmptyString(fields[SYNC_ID_PROPERTY])) {
