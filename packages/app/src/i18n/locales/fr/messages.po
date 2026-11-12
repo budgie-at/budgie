@@ -316,6 +316,10 @@ msgstr "{count, plural, =0 {Fusionner « {sourceTitle} » dans « {targetTitle} 
 msgid "{count, plural, one {{formattedAmount} rolled over across # category} other {{formattedAmount} rolled over across # categories}}"
 msgstr "{count, plural, one {{formattedAmount} reportés sur # catégorie} other {{formattedAmount} reportés sur # catégories}}"
 
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "{count, plural, one {# account. Balances come straight from the bank.} other {# accounts. Balances come straight from the bank.}}"
+msgstr "{count, plural, one {# compte. Les soldes viennent directement de la banque.} other {# comptes. Les soldes viennent directement de la banque.}}"
+
 #: src/settings/utils/get-sync-repair-text.util.ts
 msgid "{count, plural, one {# duplicate} other {# duplicates}}"
 msgstr "{count, plural, one {# doublon} other {# doublons}}"
@@ -698,10 +702,6 @@ msgstr "{minutesLeft, plural, one {Environ # minute restante} other {Environ # m
 #: src/import/components/import-screen-footer/import-screen-footer.tsx
 msgid "{missingRequiredCount, plural, one {Choose a column for # required field.} other {Choose columns for # required fields.}}"
 msgstr "{missingRequiredCount, plural, one {Choisissez une colonne pour # champ obligatoire.} other {Choisissez des colonnes pour # champs obligatoires.}}"
-
-#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
-msgid "{monobankAccountCount, plural, one {# account. Balances come straight from the bank.} other {# accounts. Balances come straight from the bank.}}"
-msgstr "{monobankAccountCount, plural, one {# compte. Les soldes viennent directement de la banque.} other {# comptes. Les soldes viennent directement de la banque.}}"
 
 #: src/runway/component/runway-history-bar-label/runway-history-bar-label.tsx
 msgid "{month}, out {expenseAmount}, in {incomeAmount}"
@@ -4629,7 +4629,12 @@ msgstr "Erste Bank (PDF)"
 msgid "Estimated from your past transactions using your current limits."
 msgstr "Estimé à partir de tes transactions passées avec tes limites actuelles."
 
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "EU bank connected"
+msgstr "Banque de l'UE connectée"
+
 #: src/app/(main)/create-account/index.tsx
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "EU banks"
 msgstr "Banques de l'UE"
 
@@ -9964,6 +9969,10 @@ msgstr "Suivre manuellement"
 #: src/app/(main)/create-account/index.tsx
 msgid "Trade Republic, N26 and other EU banks"
 msgstr "Trade Republic, N26 et d'autres banques de l'UE"
+
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "Trade Republic, N26 and other EU banks, read-only."
+msgstr "Trade Republic, N26 et d'autres banques de l'UE, en lecture seule."
 
 #: ../ledger/src/transaction/service/transaction-debt-settlement.service.ts
 msgid "Transaction already has a debt attachment"

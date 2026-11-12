@@ -6,10 +6,8 @@ import { router } from 'expo-router';
 import { useState } from 'react';
 import { Alert } from 'react-native';
 
-import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
-import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { PillButton } from '../../../@generic/component/pill-button/pill-button';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
@@ -22,6 +20,7 @@ import { useOnboardingNavigation } from '../../hook/use-onboarding-navigation.ho
 import { OnboardingService } from '../../service/onboarding.service';
 import { OnboardingBalanceRow } from '../onboarding-balance-row/onboarding-balance-row';
 import { OnboardingFooterAction } from '../onboarding-footer-action/onboarding-footer-action';
+import { OnboardingImportRow } from '../onboarding-import-row/onboarding-import-row';
 import { OnboardingKeyboardControls } from '../onboarding-keyboard-controls/onboarding-keyboard-controls';
 import { OnboardingStepIntro } from '../onboarding-step-intro/onboarding-step-intro';
 import { OnboardingStepLayout } from '../onboarding-step-layout/onboarding-step-layout';
@@ -68,6 +67,9 @@ export const OnboardingBalances = () => {
     const handleMonobankPress = () =>
         void router.push({ pathname: '/create-account/[type]', params: { type: ExternalSourceEnum.MONOBANK } });
 
+    const handleEuBanksPress = () =>
+        void router.push({ pathname: '/create-account/[type]', params: { type: ExternalSourceEnum.ENABLE_BANKING } });
+
     const handleStatementPress = () => {
         Alert.alert(t`Which bank is the statement from?`, t`Budgie reads these statements on this phone.`, [
             {
@@ -85,26 +87,32 @@ export const OnboardingBalances = () => {
     const hasAccounts = isNotEmptyArray(accounts);
     const hasManualAccounts = isNotEmptyArray(manualAccounts);
 
-    const monobankAccountCount = accounts.filter(account => account.externalSource === ExternalSourceEnum.MONOBANK).length;
+    const countAccountsFrom = (sources: readonly ExternalSourceEnum[]) =>
+        accounts.filter(account => isDefined(account.externalSource) && sources.includes(account.externalSource)).length;
+    const describeBankAccounts = (count: number) =>
+        t({
+            message: plural(count, {
+                one: '# account. Balances come straight from the bank.',
+                other: '# accounts. Balances come straight from the bank.'
+            })
+        });
+
+    const monobankAccountCount = countAccountsFrom([ExternalSourceEnum.MONOBANK]);
     const isMonobankConnected = isPositiveNumber(monobankAccountCount);
-    const monobankIcon = isMonobankConnected ? UserIconNameEnum.CircleCheck : UserIconNameEnum.Link;
-    const monobankIconClassName = isMonobankConnected ? 'text-positive-foreground' : 'text-secondary-foreground';
     const monobankTitle = isMonobankConnected ? t`Monobank connected` : t`Monobank`;
     const monobankDescription = isMonobankConnected
-        ? t({
-              message: plural(monobankAccountCount, {
-                  one: '# account. Balances come straight from the bank.',
-                  other: '# accounts. Balances come straight from the bank.'
-              })
-          })
+        ? describeBankAccounts(monobankAccountCount)
         : t`Token stays on this phone, sent only to Monobank.`;
 
-    const statementAccountCount = accounts.filter(
-        account => account.externalSource === ExternalSourceEnum.PRIVATBANK || account.externalSource === ExternalSourceEnum.ERSTE
-    ).length;
+    const euBankAccountCount = countAccountsFrom([ExternalSourceEnum.ENABLE_BANKING]);
+    const isEuBankConnected = isPositiveNumber(euBankAccountCount);
+    const euBankTitle = isEuBankConnected ? t`EU bank connected` : t`EU banks`;
+    const euBankDescription = isEuBankConnected
+        ? describeBankAccounts(euBankAccountCount)
+        : t`Trade Republic, N26 and other EU banks, read-only.`;
+
+    const statementAccountCount = countAccountsFrom([ExternalSourceEnum.PRIVATBANK, ExternalSourceEnum.ERSTE]);
     const isStatementImported = isPositiveNumber(statementAccountCount);
-    const statementIcon = isStatementImported ? UserIconNameEnum.CircleCheck : UserIconNameEnum.FileText;
-    const statementIconClassName = isStatementImported ? 'text-positive-foreground' : 'text-secondary-foreground';
     const statementTitle = isStatementImported ? t`Statement imported` : t`Bank statement`;
     const statementDescription = isStatementImported
         ? t({
@@ -114,7 +122,8 @@ export const OnboardingBalances = () => {
               })
           })
         : t`Erste (PDF) or Privatbank (XLSX), read on this phone.`;
-    const isSaveDisabled = hasAccounts && !isNotEmptyArray(enteredBalances) && !isMonobankConnected && !isStatementImported;
+    const hasImportedAccounts = isMonobankConnected || isEuBankConnected || isStatementImported;
+    const isSaveDisabled = hasAccounts && !isNotEmptyArray(enteredBalances) && !hasImportedAccounts;
     const balancesLabel = isSaveDisabled ? t`Enter a balance to save` : t`Save balances`;
     const saveLabel = hasAccounts ? balancesLabel : t`Continue without accounts`;
     const handleContinuePress = hasAccounts ? handleSavePress : handleLaterPress;
@@ -164,16 +173,26 @@ export const OnboardingBalances = () => {
             ) : null}
 
             <GroupedListSection title={importTitle}>
-                <GroupedListRow
+                <OnboardingImportRow
                     testID={OnboardingBalancesSelector.MonobankOption}
-                    left={<GroupedListIcon icon={monobankIcon} iconClassName={monobankIconClassName} />}
+                    icon={UserIconNameEnum.Link}
+                    isImported={isMonobankConnected}
                     title={monobankTitle}
                     subtitle={monobankDescription}
                     onPress={handleMonobankPress}
                 />
-                <GroupedListRow
+                <OnboardingImportRow
+                    testID={OnboardingBalancesSelector.EuBanksOption}
+                    icon={UserIconNameEnum.Landmark}
+                    isImported={isEuBankConnected}
+                    title={euBankTitle}
+                    subtitle={euBankDescription}
+                    onPress={handleEuBanksPress}
+                />
+                <OnboardingImportRow
                     testID={OnboardingBalancesSelector.StatementOption}
-                    left={<GroupedListIcon icon={statementIcon} iconClassName={statementIconClassName} />}
+                    icon={UserIconNameEnum.FileText}
+                    isImported={isStatementImported}
                     title={statementTitle}
                     subtitle={statementDescription}
                     onPress={handleStatementPress}
