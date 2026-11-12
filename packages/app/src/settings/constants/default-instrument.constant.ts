@@ -12,5 +12,6 @@ export const DEFAULT_INSTRUMENT = {
     type: InstrumentTypeEnum.FIAT,
     priceProvider: null,
     providerInstrumentId: null,
+    quoteInstrumentId: null,
     marketCapRank: null
 } satisfies InstrumentEntityInterface;

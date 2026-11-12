@@ -14,10 +14,10 @@ import { getMarketPriceFractionDigits } from '../../utils/get-market-price-fract
 import { CurrencyMarketPageSelector } from '../currency-market-page/currency-market-page.selector';
 import { CurrencyMarketPositionRow } from '../currency-market-position-row/currency-market-position-row';
 
-import type { CryptoPositionInterface } from '@budgie/market';
+import type { InstrumentPositionInterface } from '@budgie/market';
 
 interface Props {
-    readonly position: CryptoPositionInterface;
+    readonly position: InstrumentPositionInterface;
     readonly costBasis: number;
     readonly balance: number;
     readonly instrumentCode: string;

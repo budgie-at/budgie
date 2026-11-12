@@ -36,22 +36,23 @@ const backfilledDates = [
 const euroRateByCode: Record<string, number> = { UAH: 48, USD: 1.2, GBP: 0.85 };
 const requestedQuotes: string[] = [];
 
+const FiatHttpLayer = makeRoutedFakeHttpClientLayer(url => {
+    if (url.pathname.endsWith('/currencies')) {
+        return [{ iso_code: CurrencyEnum.EUR }, { iso_code: CurrencyEnum.USD }, { iso_code: CurrencyEnum.UAH }];
+    }
+
+    const quotes = (url.searchParams.get('quotes') ?? '').split(',');
+
+    requestedQuotes.push(...quotes);
+
+    return backfilledDates.flatMap(date => quotes.map(quote => ({ date, base: CurrencyEnum.EUR, quote, rate: euroRateByCode[quote] })));
+});
+
 const FiatBackfillLayer = Layer.mergeAll(
     TestLayer,
-    HistoricalMarketDataService.layer,
-    AccountRepository.layer,
-    makeRoutedFakeHttpClientLayer(url => {
-        if (url.pathname.endsWith('/currencies')) {
-            return [{ iso_code: CurrencyEnum.EUR }, { iso_code: CurrencyEnum.USD }, { iso_code: CurrencyEnum.UAH }];
-        }
-
-        const quotes = (url.searchParams.get('quotes') ?? '').split(',');
-
-        requestedQuotes.push(...quotes);
-
-        return backfilledDates.flatMap(date => quotes.map(quote => ({ date, base: CurrencyEnum.EUR, quote, rate: euroRateByCode[quote] })));
-    })
-);
+    HistoricalMarketDataService.layer.pipe(Layer.provide(FiatHttpLayer)),
+    AccountRepository.layer
+).pipe(Layer.provideMerge(FiatHttpLayer));
 
 const prepare = Effect.fnUntraced(function* (codes: CurrencyEnum[]) {
     const instrumentRepository = yield* InstrumentRepository;

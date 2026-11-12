@@ -1,4 +1,4 @@
-import { int, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { int, sqliteTable, text, type AnySQLiteColumn } from 'drizzle-orm/sqlite-core';
 
 import { convertEnumToDrizzleEnum } from '../../@generic/utils/convert-enum-to-drizzle-enum.util';
 import { withBaseEntityTableColumns } from '../../@generic/utils/with-base-entity-table-columns.util';
@@ -18,6 +18,7 @@ export const InstrumentEntityTable = sqliteTable(
             enum: convertEnumToDrizzleEnum(InstrumentPriceProviderEnum)
         }).$type<InstrumentPriceProviderEnum>(),
         providerInstrumentId: text('provider_instrument_id'),
+        quoteInstrumentId: int('quote_instrument_id').references((): AnySQLiteColumn => InstrumentEntityTable.id),
         marketCapRank: int('market_cap_rank', { mode: 'number' })
     })
 );

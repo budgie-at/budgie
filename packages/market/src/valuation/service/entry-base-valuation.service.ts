@@ -8,6 +8,7 @@ import {
     convertToMicroUnits
 } from '@budgie/contracts';
 import { format } from 'date-fns/format';
+import { parseISO } from 'date-fns/parseISO';
 import { startOfDay } from 'date-fns/startOfDay';
 import * as Cache from 'effect/Cache';
 import * as Context from 'effect/Context';
@@ -29,6 +30,8 @@ import type { RateLookupsInterface } from '../interface/rate-lookups.interface';
 import type {
     AccountWithInstrumentEntityInterface,
     DbError,
+    InstrumentDailyMarketPriceCreateEntityInterface,
+    HistoricalExchangeRateEntityInterface,
     TransactionCreateInputInterface,
     TransactionEntryCreateInputInterface
 } from '@budgie/contracts';
@@ -55,7 +58,9 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
             const isPriceDriven =
                 account.type === AccountTypeEnum.CRYPTO ||
                 account.type === AccountTypeEnum.CRYPTO_SYNC ||
-                account.instrument.type === InstrumentTypeEnum.FUND;
+                account.instrument.type === InstrumentTypeEnum.FUND ||
+                account.instrument.type === InstrumentTypeEnum.EQUITY ||
+                account.instrument.type === InstrumentTypeEnum.ETF;
 
             if (isPriceDriven) {
                 const missingValuation: EntryBaseValuationInterface = {
@@ -323,6 +328,41 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
         });
 
         return {
+            deriveHistoricalPriceRates: Effect.fn('EntryBaseValuationService.deriveHistoricalPriceRates')(function* (
+                prices: InstrumentDailyMarketPriceCreateEntityInterface[]
+            ) {
+                const baseInstrument = yield* exchangeRatesService.getBaseInstrument();
+                if (!isDefined(baseInstrument)) {
+                    return [];
+                }
+
+                return (yield* Effect.forEach(
+                    prices,
+                    Effect.fnUntraced(function* (price) {
+                        if (price.quoteInstrumentId === baseInstrument.id) {
+                            return [];
+                        }
+                        const rate = yield* resolveBaseExchangeRateOrNull(
+                            queryLookups,
+                            price.quoteInstrumentId,
+                            baseInstrument.id,
+                            parseISO(price.priceDate)
+                        );
+                        const rates: HistoricalExchangeRateEntityInterface[] = isPositiveNumber(rate)
+                            ? [
+                                  {
+                                      sourceInstrumentId: price.instrumentId,
+                                      targetInstrumentId: baseInstrument.id,
+                                      rateDate: price.priceDate,
+                                      rate: price.price * rate
+                                  }
+                              ]
+                            : [];
+
+                        return rates;
+                    })
+                )).flat();
+            }),
             resolveHistoricalBaseExchangeRateOrNull: Effect.fn('EntryBaseValuationService.resolveHistoricalBaseExchangeRateOrNull')(
                 (sourceInstrumentId: number, targetInstrumentId: number, operatedAt: Date) =>
                     resolveBaseExchangeRateOrNull(queryLookups, sourceInstrumentId, targetInstrumentId, operatedAt)
