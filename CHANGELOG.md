@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.175.3](https://github.com/budgie-at/budgie/compare/v6.175.2...v6.175.3) (2026-11-12)
+
+### Bug Fixes
+
+* **app:** keep a recoverable key and sync state while database files are swapped ([#2175](https://github.com/budgie-at/budgie/issues/2175)) ([48ff814](https://github.com/budgie-at/budgie/commit/48ff814ae9c2d4f3f284ef08073e9f6041068702)), closes [#2168](https://github.com/budgie-at/budgie/issues/2168) [#2170](https://github.com/budgie-at/budgie/issues/2170)
+
+
 ## [6.175.2](https://github.com/budgie-at/budgie/compare/v6.175.1...v6.175.2) (2026-11-11)
 
 ### Bug Fixes
