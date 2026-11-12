@@ -6818,6 +6818,10 @@ msgstr "Недостатньо вільного місця, щоб розпак�
 msgid "Not enough history yet"
 msgstr "Ще недостатньо історії"
 
+#: src/brokerage/component/security-trade-form/security-trade-form.tsx
+msgid "Not enough shares held on the trade date"
+msgstr "Недостатньо часток на дату операції"
+
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
 msgid "Not now"
 msgstr "Не зараз"

@@ -6818,6 +6818,10 @@ msgstr "No hay suficiente espacio libre para extraer esta copia de seguridad."
 msgid "Not enough history yet"
 msgstr "Aún no hay suficiente historial"
 
+#: src/brokerage/component/security-trade-form/security-trade-form.tsx
+msgid "Not enough shares held on the trade date"
+msgstr "No hay suficientes participaciones en la fecha de la operación"
+
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
 msgid "Not now"
 msgstr "Ahora no"

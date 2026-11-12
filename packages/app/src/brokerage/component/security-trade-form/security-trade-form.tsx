@@ -15,8 +15,10 @@ import { OperatedAtField } from '../../../@generic/component/operated-at-field/o
 import { PillButtonFooter } from '../../../@generic/component/pill-button-footer/pill-button-footer';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
+import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { SecurityTradeFormSchema } from '../../constant/security-trade-form-schema.constant';
+import { InsufficientSecurityHoldingError } from '../../error/insufficient-security-holding.error';
 import { BrokerageSelector } from '../../selector/brokerage.selector';
 import { SecurityTradeNumberField } from '../security-trade-number-field/security-trade-number-field';
 
@@ -46,6 +48,9 @@ export const SecurityTradeForm = <E,>({ title, currencySymbol, isReady, onSubmit
         run(
             onSubmit(values).pipe(
                 Effect.tap(() => Effect.sync(() => void goBackOrReplace('/'))),
+                Effect.catchIf(Schema.is(InsufficientSecurityHoldingError), () =>
+                    Effect.sync(() => void showErrorToast(t`Could not save the trade`, t`Not enough shares held on the trade date`))
+                ),
                 toastOnFailure(t`Could not save the trade`)
             )
         )

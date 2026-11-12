@@ -45,6 +45,15 @@ describe('market-data/brokerage-trades', () => {
                 fee: 5,
                 operatedAt: TRADE_DAY
             });
+            expect(
+                yield* brokerageService.sell(securityId, { quantity: 11, price: 125, fee: 0, operatedAt: TRADE_DAY }).pipe(Effect.flip)
+            ).toMatchObject({ _tag: 'InsufficientSecurityHoldingError' });
+            expect(
+                yield* brokerageService
+                    .sell(securityId, { quantity: 1, price: 125, fee: 0, operatedAt: new Date('2026-03-01') })
+                    .pipe(Effect.flip)
+            ).toMatchObject({ _tag: 'InsufficientSecurityHoldingError' });
+            expect(yield* fetchAccountBalance(securityId)).toBe(10_000_000);
             yield* brokerageService.sell(securityId, { quantity: 4, price: 125, fee: 0, operatedAt: TRADE_DAY });
 
             const security = yield* accountRepository.findById(securityId);

@@ -1,4 +1,5 @@
 import {
+    AccountBalanceRepository,
     AccountRepository,
     AccountTypeEnum,
     BANK_FEE_CATEGORY_ID,
@@ -23,6 +24,7 @@ import * as Layer from 'effect/Layer';
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { HistoricalMarketDataDrainerService } from '../../market-data/service/historical-market-data-drainer.service';
+import { InsufficientSecurityHoldingError } from '../error/insufficient-security-holding.error';
 
 import type { SecurityTradeFormValues } from '../constant/security-trade-form-schema.constant';
 import type {
@@ -35,6 +37,7 @@ import type { YahooListingInterface } from '@budgie/market';
 export class BrokerageService extends Context.Service<BrokerageService>()('@budgie/app/BrokerageService', {
     make: Effect.gen(function* () {
         const accountRepository = yield* AccountRepository;
+        const accountBalanceRepository = yield* AccountBalanceRepository;
         const accountService = yield* AccountService;
         const bankIntegrationRepository = yield* BankIntegrationRepository;
         const transferCreationService = yield* TransferCreationService;
@@ -182,6 +185,12 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
                 function* (accountId: number, trade: SecurityTradeFormValues) {
                     const security = yield* findSecurityAccount(accountId);
 
+                    const holding = yield* accountBalanceRepository.getLedgerBalanceUntil(accountId, trade.operatedAt);
+
+                    if (convertToMicroUnits(trade.quantity) > holding) {
+                        return yield* InsufficientSecurityHoldingError.make();
+                    }
+
                     yield* recordTrade(security, trade, true);
                 },
                 effect => Db.transaction(effect)
@@ -191,6 +200,7 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
 }) {
     static readonly layer = Layer.effect(BrokerageService, BrokerageService.make).pipe(
         Layer.provide([
+            AccountBalanceRepository.layer,
             AccountRepository.layer,
             AccountService.layer,
             BankIntegrationRepository.layer,

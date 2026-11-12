@@ -6818,6 +6818,10 @@ msgstr "Nicht genügend freier Speicherplatz, um dieses Backup zu entpacken."
 msgid "Not enough history yet"
 msgstr "Noch nicht genug Verlauf"
 
+#: src/brokerage/component/security-trade-form/security-trade-form.tsx
+msgid "Not enough shares held on the trade date"
+msgstr "Am Handelsdatum sind nicht genügend Anteile vorhanden"
+
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
 msgid "Not now"
 msgstr "Nicht jetzt"

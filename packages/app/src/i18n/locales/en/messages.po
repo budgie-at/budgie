@@ -6819,6 +6819,10 @@ msgstr "Not enough free storage to extract this backup."
 msgid "Not enough history yet"
 msgstr "Not enough history yet"
 
+#: src/brokerage/component/security-trade-form/security-trade-form.tsx
+msgid "Not enough shares held on the trade date"
+msgstr "Not enough shares held on the trade date"
+
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
 msgid "Not now"
 msgstr "Not now"
