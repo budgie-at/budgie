@@ -3,7 +3,7 @@ import { FileSystemStorage } from './file-system-storage';
 
 export { Directory };
 
-import { isDefined, isString } from '@rnw-community/shared';
+import { emptyFn, isDefined, isString } from '@rnw-community/shared';
 
 export const storage = new FileSystemStorage();
 
@@ -52,6 +52,7 @@ export class File {
     }
 
     moveSync(destination: File | Directory, options?: { overwrite?: boolean }) {
+        storage.beforeTransfer(this.uri);
         if (storage.failMoveFrom === this.uri || storage.failMoveBackFrom === this.uri) {
             throw new Error('move failed');
         }
@@ -78,6 +79,7 @@ export class File {
     }
 
     copy(destination: File | Directory, options?: { overwrite?: boolean }) {
+        storage.beforeTransfer(this.uri);
         if (storage.failCopy) {
             throw new Error('copy failed');
         }
@@ -126,4 +128,5 @@ export const resetStorage = () => {
     storage.failMoveFrom = null;
     storage.failMoveBackFrom = null;
     storage.crashAfterRemove = false;
+    storage.beforeTransfer = emptyFn;
 };

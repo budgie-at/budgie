@@ -1,3 +1,5 @@
+import { emptyFn } from '@rnw-community/shared';
+
 export class FileSystemStorage {
     readonly files = new Map<string, string>();
     readonly modified = new Map<string, number>();
@@ -9,4 +11,5 @@ export class FileSystemStorage {
     failMoveFrom: string | null = null;
     failMoveBackFrom: string | null = null;
     crashAfterRemove = false;
+    beforeTransfer: (sourceUri: string) => void = emptyFn;
 }
