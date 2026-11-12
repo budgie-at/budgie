@@ -193,7 +193,7 @@ test('44 enable banking', { tags: ['sync'], platforms: ['ios'] }, async ({ budgi
     });
 
     await b.phase('disconnect returns a connected account with its rows and balance', async () => {
-        await openIntegration(96, 'E2E Connect Bank');
+        await openIntegration(97, 'E2E Connect Bank');
         await b.scrollTo(ctx, 'EnableBankingConnectionCard.Disconnect');
         await b.tapId(ctx, 'EnableBankingConnectionCard.Disconnect');
         await b.expectText(ctx, 'Disconnect this bank?');
