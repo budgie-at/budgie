@@ -4,13 +4,15 @@ import * as FetchHttpClient from 'effect/http/FetchHttpClient';
 import * as Schema from 'effect/Schema';
 import { NextResponse } from 'next/server';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { githubJsonFetch } from '../../../../beta/utils/github-json-fetch.util';
 
 const GITHUB_REPO_API_URL = 'https://api.github.com/repos/budgie-at/budgie';
-const ANDROID_PREVIEW_TAG_REFS_URL = `${GITHUB_REPO_API_URL}/git/matching-refs/tags/android-preview-`;
+const ANDROID_PREVIEW_TAG_PREFIX = 'android-preview-';
+const ANDROID_PREVIEW_TAG_REFS_URL = `${GITHUB_REPO_API_URL}/git/matching-refs/tags/${ANDROID_PREVIEW_TAG_PREFIX}?per_page=100`;
 const TAG_REF_PREFIX = 'refs/tags/';
+const ANDROID_PREVIEW_PULL_REQUEST_NUMBER_REGEX = /^(\d+)-/u;
 const APK_EXTENSION = '.apk';
 const AndroidPreviewTagRefListSchema = Schema.Array(Schema.Struct({ ref: Schema.String }));
 const AndroidPreviewReleaseSchema = Schema.Struct({
@@ -23,14 +25,24 @@ const NOT_FOUND_STATUS = 404;
 
 const resolveApkDownloadUrl = Effect.fnUntraced(function* () {
     const tagRefs = yield* githubJsonFetch(ANDROID_PREVIEW_TAG_REFS_URL, AndroidPreviewTagRefListSchema, NO_STORE_REQUEST_INIT);
-    const latestTagRef = tagRefs?.at(-1);
+    const latestTagName = (tagRefs ?? [])
+        .map(tagRef => tagRef.ref.slice(TAG_REF_PREFIX.length))
+        .map(tagName => ({
+            pullRequestNumber: Number(
+                ANDROID_PREVIEW_PULL_REQUEST_NUMBER_REGEX.exec(tagName.slice(ANDROID_PREVIEW_TAG_PREFIX.length))?.[1]
+            ),
+            tagName
+        }))
+        .filter(entry => isPositiveNumber(entry.pullRequestNumber))
+        .sort((entryA, entryB) => entryB.pullRequestNumber - entryA.pullRequestNumber)
+        .at(0)?.tagName;
 
-    if (!isDefined(latestTagRef)) {
+    if (!isDefined(latestTagName)) {
         return null;
     }
 
     const release = yield* githubJsonFetch(
-        `${GITHUB_REPO_API_URL}/releases/tags/${latestTagRef.ref.slice(TAG_REF_PREFIX.length)}`,
+        `${GITHUB_REPO_API_URL}/releases/tags/${latestTagName}`,
         AndroidPreviewReleaseSchema,
         NO_STORE_REQUEST_INIT
     );
