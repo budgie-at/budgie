@@ -98,14 +98,15 @@ test('44 enable banking', { tags: ['sync'], platforms: ['ios'] }, async ({ budgi
         await b.scrollTo(ctx, WISE_INSTITUTION_ROW, 'up');
         await expect(id(WISE_INSTITUTION_ROW)).toHaveText(/^Enable Banking · Wise, .*2 accounts$/, { timeout: 90_000 });
         await b.tapId(ctx, WISE_INSTITUTION_ROW);
-        await expect(id(`AccountCard.${WISE_EUR_ACCOUNT}`)).toHaveText(/€1,000\.00, Up to date$/, { timeout: 90_000 });
-        await expect(id(`AccountCard.${WISE_USD_ACCOUNT}`)).toHaveText(/\$108\.20, Up to date$/, { timeout: 90_000 });
-        await expect(
-            screen.getByRole('button', { name: /^E2E Wise Conversion, €100\.00, \$108\.20, From Wise EUR to Wise USD$/ }).first()
-        ).toBeVisible({
-            timeout: 30_000
-        });
-        await expect(screen.getByRole('button', { name: /^E2E Other Bank, \+€1,100\.00,.*Wise EUR$/ }).first()).toBeVisible();
+        await expect(id(`AccountCard.${WISE_EUR_ACCOUNT}`)).toHaveText(/€1,000, Up to date$/, { timeout: 90_000 });
+        await expect(id(`AccountCard.${WISE_USD_ACCOUNT}`)).toHaveText(/\$108, Up to date$/, { timeout: 90_000 });
+        await expect(id('TransactionCard.Label.E2E_Wise_Conversion')).toHaveText(
+            /^E2E Wise Conversion, €100, \$108, From Wise EUR to Wise USD$/,
+            {
+                timeout: 30_000
+            }
+        );
+        await expect(id('TransactionCard.Label.E2E_Other_Bank')).toHaveText(/^E2E Other Bank, \+€1,100,.*Wise EUR$/);
     });
 
     await b.phase('valid consent', async () => {
