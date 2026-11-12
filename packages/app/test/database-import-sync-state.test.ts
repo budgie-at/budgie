@@ -7,6 +7,8 @@ import * as Exit from 'effect/Exit';
 import * as Layer from 'effect/Layer';
 import { beforeEach, vi } from 'vitest';
 
+import { emptyFn } from '@rnw-community/shared';
+
 import { DatabaseLifecycleService } from '../src/@generic/drizzle/service/database-lifecycle.service';
 import { cloudSyncStateStoreLayer } from '../src/cloud-sync/layer/cloud-sync-state-store.layer';
 import { DatabaseImportService } from '../src/import/service/database-import.service';
@@ -44,7 +46,9 @@ vi.mock('../src/@generic/drizzle/utils/resolve-backup-file.util', async () => {
 
     return { resolveBackupFile: (uri: string) => Effect.succeed(uri) };
 });
-vi.mock('../src/@generic/drizzle/utils/open-sqlite-client.util', () => ({ openSqliteClient: vi.fn() }));
+vi.mock('../src/@generic/drizzle/utils/open-sqlite-client.util', async () => ({
+    openSqliteClient: vi.fn((await import('./fixture/inert-sql-client')).openSqliteFileClient)
+}));
 vi.mock('../src/@generic/utils/reload-app.util', () => import('./fixture/reload-app-fake'));
 
 vi.mock('expo-file-system', () => import('./fixture/expo-file-system-fake'));
@@ -88,7 +92,7 @@ describe('database import sync state', () => {
             Effect.gen(function* () {
                 const isCommitted = failure === 'success' || failure === 'cleanup';
                 storage.failCopy = failure === 'copy';
-                storage.failMoveFrom = failure === 'move' || failure === 'move-back' ? 'cache/import-temp.db' : null;
+                storage.failMoveFrom = failure === 'move' || failure === 'move-back' ? 'documents/SQLite/import-temp.db' : null;
                 storage.failMoveBackFrom = failure === 'move-back' ? 'documents/SQLite/budgie.db.replaced-0' : null;
                 storage.failDelete = failure === 'cleanup' ? 'documents/SQLite/budgie.db.replaced-0' : null;
                 secrets.set('user_pin', 'previous-pin');
@@ -138,13 +142,17 @@ describe('database import sync state', () => {
     );
 
     it.effect.each([
-        { name: 'restores the live database when the new file cannot be moved in', stale: false, failMoveFrom: 'cache/import-temp.db' },
+        {
+            name: 'restores the live database when the new file cannot be moved in',
+            stale: false,
+            failMoveFrom: 'documents/SQLite/import-temp.db'
+        },
         {
             name: 'restores the live database when a sidecar cannot be moved aside',
             stale: false,
             failMoveFrom: 'documents/SQLite/budgie.db-wal'
         },
-        { name: 'keeps stale moved-aside files when the import fails', stale: true, failMoveFrom: 'cache/import-temp.db' }
+        { name: 'keeps stale moved-aside files when the import fails', stale: true, failMoveFrom: 'documents/SQLite/import-temp.db' }
     ])('$name', ({ stale, failMoveFrom }) =>
         Effect.gen(function* () {
             storage.files.set('documents/SQLite/budgie.db-wal', 'database-wal');
@@ -166,7 +174,7 @@ describe('database import sync state', () => {
     it.effect('keeps the original set moved aside and the swap record when its WAL cannot be moved back', () =>
         Effect.gen(function* () {
             storage.files.set('documents/SQLite/budgie.db-wal', 'database-wal');
-            storage.failMoveFrom = 'cache/import-temp.db';
+            storage.failMoveFrom = 'documents/SQLite/import-temp.db';
             storage.failMoveBackFrom = 'documents/SQLite/budgie.db.replaced-0-wal';
 
             expect(Exit.isFailure(yield* importBackup)).toBe(true);
@@ -175,6 +183,16 @@ describe('database import sync state', () => {
                 'documents/SQLite/budgie.db.replaced-0-wal': 'database-wal'
             });
             expect(secrets.has('database_swap')).toBe(true);
+        })
+    );
+    it.effect('keeps the live database when the backup WAL cannot be folded into the copy', () =>
+        Effect.gen(function* () {
+            storage.files.set('backup-wal', 'backup-wal');
+            vi.spyOn(storage, 'checkpoint').mockImplementationOnce(emptyFn);
+
+            expect(Exit.isFailure(yield* importBackup)).toBe(true);
+            expect(databaseFiles()).toEqual({ 'documents/SQLite/budgie.db': 'database' });
+            expect(secrets.has('database_swap')).toBe(false);
         })
     );
     it.effect.each([false, true])('replaces the live database, removes its moved-aside files and keeps stale ones %s', stale =>
@@ -189,8 +207,7 @@ describe('database import sync state', () => {
 
             expect(Exit.isSuccess(yield* importBackup)).toBe(true);
             expect(databaseFiles()).toEqual({
-                'documents/SQLite/budgie.db': 'backup',
-                'documents/SQLite/budgie.db-wal': 'backup-wal',
+                'documents/SQLite/budgie.db': 'backup+backup-wal',
                 ...(stale && { 'documents/SQLite/budgie.db.replaced': 'stale', 'documents/SQLite/budgie.db.replaced-wal': 'stale-wal' })
             });
         })

@@ -1,5 +1,6 @@
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
+import * as Reactivity from 'effect/reactivity/Reactivity';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -19,5 +20,6 @@ export const importDependenciesLayer = Layer.mergeAll(
         persistPin: pin => Effect.sync(() => void (isDefined(pin) ? secrets.set('user_pin', pin) : secrets.delete('user_pin')))
     }),
     DatabaseSwapService.layer,
-    cloudSyncStateStoreLayer
+    cloudSyncStateStoreLayer,
+    Reactivity.layer
 );

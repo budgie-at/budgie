@@ -3,7 +3,8 @@ import * as Clock from 'effect/Clock';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
-import { File, Paths } from 'expo-file-system';
+import * as Reactivity from 'effect/reactivity/Reactivity';
+import { File } from 'expo-file-system';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
@@ -32,7 +33,10 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
         const authService = yield* AuthService;
         const databaseSwapService = yield* DatabaseSwapService;
         const cloudSyncStateStore = yield* CloudSyncStateStore;
+        const reactivity = yield* Reactivity.Reactivity;
         const probeDatabaseName = 'import-probe.db';
+        const tempDatabaseName = 'import-temp.db';
+        const tempPath = new File(DATABASE_DIRECTORY, tempDatabaseName).uri;
 
         const deleteFileIfExists = (path: string): void => {
             const file = new File(path);
@@ -42,10 +46,10 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
             }
         };
 
-        const deleteProbeFiles = (probePath: string): void => {
-            deleteFileIfExists(`${probePath}-wal`);
-            deleteFileIfExists(`${probePath}-shm`);
-            deleteFileIfExists(probePath);
+        const deleteDatabaseFiles = (path: string): void => {
+            deleteFileIfExists(`${path}-wal`);
+            deleteFileIfExists(`${path}-shm`);
+            deleteFileIfExists(path);
         };
 
         const readProbeDatabase = Effect.fn('DatabaseImportService.readProbeDatabase')(function* (backupPin: string | null) {
@@ -85,19 +89,17 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
                 { discard: true }
             );
 
-        const copyDatabaseSidecars = Effect.fn('DatabaseImportService.copyDatabaseSidecars')(function* (
-            sourceUri: string,
-            destinationPath: string
-        ) {
-            yield* copyFileIfExists(`${sourceUri}-wal`, `${destinationPath}-wal`).pipe(
-                Effect.andThen(copyFileIfExists(`${sourceUri}-shm`, `${destinationPath}-shm`)),
-                Effect.catchDefect(() =>
-                    Effect.sync(() => {
-                        deleteFileIfExists(`${destinationPath}-wal`);
-                        deleteFileIfExists(`${destinationPath}-shm`);
-                    })
-                )
+        const foldIntoSingleFile = Effect.fn('DatabaseImportService.foldIntoSingleFile')(function* (backupPin: string | null) {
+            yield* openSqliteClient(tempDatabaseName, backupPin).pipe(
+                Effect.flatMap(client => client`PRAGMA journal_mode = DELETE`.raw),
+                Effect.scoped,
+                Effect.provideService(Reactivity.Reactivity, reactivity),
+                Effect.orDie
             );
+
+            if (new File(`${tempPath}-wal`).exists) {
+                return yield* Effect.die(new Error('The backup WAL was not folded into the import copy'));
+            }
         });
 
         const replaceFromUri = Effect.fn('DatabaseImportService.replaceFromUri')(function* (sourceUri: string, backupPin: string | null) {
@@ -105,21 +107,21 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
             const movedAsideAt = yield* Clock.currentTimeMillis;
             const swap = { key: backupPin, backupName: `${REPLACED_DATABASE_PREFIX}${movedAsideAt}`, isImport: true };
             const replacedPath = new File(DATABASE_DIRECTORY, swap.backupName).uri;
-            const tempPath = `${Paths.cache.uri}/import-temp.db`;
 
             yield* aiStorageReplacementService.pauseLongLivedRuntime();
-            deleteFileIfExists(tempPath);
+            deleteDatabaseFiles(tempPath);
             yield* Effect.promise(() => new File(sourceUri).copy(new File(tempPath)));
+            yield* copyFileIfExists(`${sourceUri}-wal`, `${tempPath}-wal`);
+            yield* foldIntoSingleFile(backupPin);
             yield* databaseSwapService.begin(swap);
             yield* databaseLifecycleService.close();
             yield* moveDatabaseFiles(destinationPath, replacedPath, ['', '-wal', '-shm']).pipe(
                 Effect.andThen(
                     Effect.promise(() => new File(tempPath).move(new File(destinationPath))).pipe(
-                        Effect.andThen(copyDatabaseSidecars(sourceUri, destinationPath)),
                         Effect.andThen(databaseSwapService.commit(swap)),
                         Effect.onError(() =>
                             Effect.sync(() => {
-                                deleteProbeFiles(destinationPath);
+                                deleteDatabaseFiles(destinationPath);
                             })
                         )
                     )
@@ -129,7 +131,7 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
             yield* databaseSwapService.end.pipe(
                 Effect.andThen(
                     Effect.sync(() => {
-                        deleteProbeFiles(replacedPath);
+                        deleteDatabaseFiles(replacedPath);
                     })
                 ),
                 Effect.catchDefect(() => Effect.void)
@@ -151,7 +153,7 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
                             Effect.orDie
                         )
                 ),
-                Effect.ensuring(Effect.sync(() => void deleteFileIfExists(`${Paths.cache.uri}/import-temp.db`)))
+                Effect.ensuring(Effect.sync(() => void deleteDatabaseFiles(tempPath)))
             );
         }, Effect.scoped);
 
@@ -165,7 +167,7 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
             canOpenBackup: Effect.fn('DatabaseImportService.canOpenBackup')(function* (sourceUri: string, backupPin: string | null) {
                 const probePath = new File(DATABASE_DIRECTORY, probeDatabaseName).uri;
 
-                deleteProbeFiles(probePath);
+                deleteDatabaseFiles(probePath);
 
                 return yield* resolveBackupFile(sourceUri).pipe(
                     Effect.flatMap(backupUri => Effect.promise(() => new File(backupUri).copy(new File(probePath)))),
@@ -174,7 +176,7 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
                     Effect.catchTags({ DatabaseOpenError: () => Effect.succeed(false), SqlError: () => Effect.succeed(false) }),
                     Effect.ensuring(
                         Effect.sync(() => {
-                            deleteProbeFiles(probePath);
+                            deleteDatabaseFiles(probePath);
                         })
                     )
                 );
