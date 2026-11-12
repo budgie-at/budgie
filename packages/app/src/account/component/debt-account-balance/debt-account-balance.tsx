@@ -74,7 +74,7 @@ export const DebtAccountBalance = ({ accountId, debtType, instrumentSymbol, summ
                     </Text>
                 </View>
 
-                <Text className="text-sm font-semibold text-primary" testID={DebtAccountBalanceSelector.Percentage(percentage)}>
+                <Text className="text-sm font-semibold text-primary" testID={DebtAccountBalanceSelector.Percentage(summary.percentage)}>
                     {percentage}%
                 </Text>
             </View>
