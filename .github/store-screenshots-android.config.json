@@ -27,9 +27,9 @@
         }
     ],
     "capture-scenes": [
-        { "name": "01-home", "deepLink": "budgie://", "readySelector": { "id": "HomePage.TotalBalance" }, "settleSeconds": 12 },
+        { "name": "01-home", "flow": "01-home.yaml" },
         { "name": "03-analytics", "flow": "03-analytics.yaml" },
-        { "name": "04-budget", "deepLink": "budgie://budget", "readySelector": { "id": "BudgetDetails.EditButton" }, "settleSeconds": 12 },
+        { "name": "04-budget", "flow": "04-budget.yaml" },
         { "name": "05-add-expense", "flow": "05-add-expense.yaml" },
         { "name": "06-account", "flow": "06-account.yaml" },
         { "name": "07-settings", "flow": "07-settings.yaml" },
