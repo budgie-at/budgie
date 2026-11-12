@@ -9727,6 +9727,10 @@ msgstr "Flux piloté par gestes — une seule main, pas de chasse à la barre d'
 msgid "gestures"
 msgstr "gestes"
 
+#: src/generic/component/google-play-badge/google-play-badge.tsx
+msgid "Get it on Google Play"
+msgstr "Disponible sur Google Play"
+
 #: src/generic/component/waitlist-form/waitlist-form.tsx
 msgid "Get the app when it opens"
 msgstr "Recevez l'app dès son ouverture"
@@ -9802,6 +9806,10 @@ msgstr "Bonne documentation du processus de migration"
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Good multi-currency support"
 msgstr "Bon support multi-devises"
+
+#: src/generic/component/footer/footer.tsx
+msgid "Google Play and the Google Play logo are trademarks of Google LLC."
+msgstr "Google Play et le logo Google Play sont des marques de Google LLC."
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Groceries"
