@@ -587,6 +587,7 @@ jobs:
             - ota-preview
             - fingerprint-guard
             - ios-e2e
+            - android-e2e
             - store-screenshots-gallery
         runs-on: [self-hosted, linux-portable-2x4]
         timeout-minutes: 5
