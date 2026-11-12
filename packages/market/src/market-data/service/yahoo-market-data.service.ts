@@ -98,10 +98,7 @@ export class YahooMarketDataService extends Context.Service<YahooMarketDataServi
                         : []
                 );
             }),
-            resolveOrCreate: Effect.fn('YahooMarketDataService.resolveOrCreate')(function* (
-                listing: YahooListingInterface,
-                _query: string
-            ) {
+            resolveOrCreate: Effect.fn('YahooMarketDataService.resolveOrCreate')(function* (listing: YahooListingInterface) {
                 const code = `YAHOO:${listing.symbol}`;
                 const findExisting = Effect.gen(function* () {
                     const byProvider = yield* instrumentRepository.findByProvider(InstrumentPriceProviderEnum.YAHOO, listing.symbol);

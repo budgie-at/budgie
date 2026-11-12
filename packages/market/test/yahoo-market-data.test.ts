@@ -71,9 +71,9 @@ it.effect('decodes listings, resolves currency and bridges EUR quotes at read ti
         const dollar = yield* Effect.flatMap(instruments.findByCode('USD'), Effect.fromNullishOr);
         yield* setDefaultInstrument(dollar.id);
         expect(yield* yahoo.search('Test')).toStrictEqual([listing]);
-        const instrument = yield* yahoo.resolveOrCreate(listing, 'DE0001234567');
+        const instrument = yield* yahoo.resolveOrCreate(listing);
         expect(instrument.quoteInstrumentId).toBe(euro.id);
-        expect((yield* yahoo.resolveOrCreate(listing, 'DE0001234567')).id).toBe(instrument.id);
+        expect((yield* yahoo.resolveOrCreate(listing)).id).toBe(instrument.id);
         const account = yield* testSeedService.account({ instrumentId: instrument.id, type: AccountTypeEnum.STOCKS });
         const syncing = yield* sync.sync().pipe(Effect.forkChild);
         yield* TestClock.adjust('1 second');
@@ -172,19 +172,19 @@ it.effect('completes a missing Yahoo symbol without creating an unsupported sent
     }).pipe(Effect.provide(YahooLayer))
 );
 
-it.effect('keeps Yahoo ticker identity separate from crypto and reuses ISIN and ticker searches', () =>
+it.effect('keeps Yahoo ticker identity separate from crypto and reuses listings', () =>
     Effect.gen(function* () {
         const yahoo = yield* YahooMarketDataService;
         const instruments = yield* InstrumentRepository;
         const crypto = yield* instruments.create({ code: 'SOL', name: 'Solana test', symbol: 'SOL', type: InstrumentTypeEnum.CRYPTO });
         const stockListing = { ...listing, symbol: 'SOL' };
-        const stock = yield* yahoo.resolveOrCreate(stockListing, 'SOL');
+        const stock = yield* yahoo.resolveOrCreate(stockListing);
         expect(stock.code).toBe('YAHOO:SOL');
         expect(stock.id).not.toBe(crypto.id);
-        expect((yield* yahoo.resolveOrCreate(stockListing, 'US0001234567')).id).toBe(stock.id);
-        const isinFirst = yield* yahoo.resolveOrCreate(listing, 'DE0001234567');
-        expect(isinFirst.code).toBe('YAHOO:TEST.DE');
-        expect((yield* yahoo.resolveOrCreate(listing, 'TEST.DE')).id).toBe(isinFirst.id);
+        expect((yield* yahoo.resolveOrCreate(stockListing)).id).toBe(stock.id);
+        const security = yield* yahoo.resolveOrCreate(listing);
+        expect(security.code).toBe('YAHOO:TEST.DE');
+        expect((yield* yahoo.resolveOrCreate(listing)).id).toBe(security.id);
     }).pipe(Effect.provide(YahooLayer))
 );
 

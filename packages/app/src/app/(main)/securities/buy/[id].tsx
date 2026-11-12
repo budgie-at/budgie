@@ -25,7 +25,7 @@ export default function BuySecurity() {
 
     const handleSubmit = (values: SecurityTradeFormValues) =>
         isDefined(listing)
-            ? Effect.flatMap(BrokerageService, brokerageService => brokerageService.buy(integrationId, listing, query, values))
+            ? Effect.flatMap(BrokerageService, brokerageService => brokerageService.buy(integrationId, listing, values))
             : Effect.void;
 
     const isReady = isDefined(listing);

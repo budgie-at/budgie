@@ -141,10 +141,9 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
             buy: Effect.fn('BrokerageService.buy')(function* (
                 integrationId: number,
                 listing: YahooListingInterface,
-                query: string,
                 trade: SecurityTradeFormValues
             ) {
-                const instrument = yield* yahooMarketDataService.resolveOrCreate(listing, query);
+                const instrument = yield* yahooMarketDataService.resolveOrCreate(listing);
                 const accountId = yield* Db.transaction(
                     Effect.gen(function* () {
                         const existing = (yield* accountRepository.findByIntegrationId(integrationId)).find(
@@ -185,7 +184,7 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
                 function* (accountId: number, trade: SecurityTradeFormValues) {
                     const security = yield* findSecurityAccount(accountId);
 
-                    const holding = yield* accountBalanceRepository.getLedgerBalanceUntil(accountId, trade.operatedAt);
+                    const holding = yield* accountBalanceRepository.getMinimumLedgerBalanceFrom(accountId, trade.operatedAt);
 
                     if (convertToMicroUnits(trade.quantity) > holding) {
                         return yield* InsufficientSecurityHoldingError.make();

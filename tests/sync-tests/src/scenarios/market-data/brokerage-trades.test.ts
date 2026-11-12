@@ -39,7 +39,7 @@ describe('market-data/brokerage-trades', () => {
                 isActive: true
             });
 
-            const securityId = yield* brokerageService.buy(cash.integrationId ?? 0, LISTING, 'BGTX', {
+            const securityId = yield* brokerageService.buy(cash.integrationId ?? 0, LISTING, {
                 quantity: 10,
                 price: 100,
                 fee: 5,
@@ -69,6 +69,12 @@ describe('market-data/brokerage-trades', () => {
                 averageCost: 100.5,
                 realizedProfitLoss: 98
             });
+            yield* brokerageService.sell(securityId, { quantity: 6, price: 125, fee: 0, operatedAt: new Date('2026-03-10') });
+            expect(
+                yield* brokerageService
+                    .sell(securityId, { quantity: 1, price: 125, fee: 0, operatedAt: new Date('2026-03-05') })
+                    .pipe(Effect.flip)
+            ).toMatchObject({ _tag: 'InsufficientSecurityHoldingError' });
         }).pipe(Effect.provide(TestLayer))
     );
 });

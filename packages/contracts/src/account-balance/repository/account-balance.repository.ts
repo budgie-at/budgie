@@ -176,6 +176,37 @@ export class AccountBalanceRepository extends Context.Service<AccountBalanceRepo
                 })
             );
         }),
+        getMinimumLedgerBalanceFrom: (accountId: number, operatedFrom: Date) =>
+            Db.query(db =>
+                db.get<{ balance: number }>(sql`
+                    WITH entries AS (
+                        SELECT ${TransactionEntityTable.operatedAt} AS operated_at,
+                            ${TransactionEntityTable.id} AS transaction_id,
+                            ${TransactionEntryEntityTable.id} AS entry_id,
+                            CASE WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT}
+                                THEN ${TransactionEntryEntityTable.amount}
+                                WHEN ${TransactionEntryEntityTable.type} IN (${TransactionEntryTypeEnum.CREDIT}, ${TransactionEntryTypeEnum.FEE})
+                                THEN -${TransactionEntryEntityTable.amount} ELSE 0 END AS amount
+                        FROM ${TransactionEntryEntityTable}
+                        INNER JOIN ${TransactionEntityTable} ON ${TransactionEntityTable.id} = ${TransactionEntryEntityTable.transactionId}
+                        WHERE ${and(
+                            eq(TransactionEntryEntityTable.accountId, accountId),
+                            isNull(TransactionEntryEntityTable.deletedAt),
+                            transactionFilters.buildVisibleTransactionCondition(),
+                            transactionFilters.buildRefundAwareLedgerEntryCondition()
+                        )}
+                    ), balances AS (
+                        SELECT operated_at,
+                            SUM(amount) OVER (ORDER BY operated_at, transaction_id, entry_id ROWS UNBOUNDED PRECEDING) AS balance
+                        FROM entries
+                    )
+                    SELECT MIN(balance) AS balance FROM (
+                        SELECT COALESCE(SUM(amount), 0) AS balance FROM entries WHERE operated_at <= ${Math.floor(operatedFrom.getTime() / 1000)}
+                        UNION ALL
+                        SELECT balance FROM balances WHERE operated_at > ${Math.floor(operatedFrom.getTime() / 1000)}
+                    )
+                `)
+            ).pipe(Effect.map(row => row.balance)),
         getLedgerBalanceUntil: (accountId: number, operatedUntil: Date) =>
             Db.query(db =>
                 db
