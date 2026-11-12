@@ -3,8 +3,6 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined } from '@rnw-community/shared';
-
 import { PRECISION } from '../../@generic/constant/precision.constant';
 import { transactionFilters } from '../../@generic/repository/base-transaction-filter.repository';
 import { Db } from '../../@generic/service/db.service';
@@ -28,29 +26,6 @@ export class TransactionEntryPositionRepository extends Context.Service<Transact
                 TransactionEntryTypeEnum.FEE
             ] as const;
 
-            const buildExternalInstrumentPositionEntryCondition = (instrumentId: number, accountIds?: readonly number[]) =>
-                sql`
-            (
-                ${TransactionEntityTable.type} != ${TransactionTypeEnum.TRANSFER}
-                OR ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.FEE}
-                OR NOT EXISTS (
-                    SELECT 1
-                    FROM transaction_entries opposite_entry
-                    INNER JOIN accounts opposite_account ON opposite_account.id = opposite_entry.account_id
-                    WHERE opposite_entry.transaction_id = ${TransactionEntryEntityTable.transactionId}
-                      AND opposite_entry.id != ${TransactionEntryEntityTable.id}
-                      AND opposite_entry.deleted_at IS NULL
-                      AND opposite_entry.original_transaction_id IS NULL
-                      AND opposite_account.deleted_at IS NULL
-                      AND ${isUnitAccountSql(sql`opposite_account.type`, sql`opposite_account.instrument_id`)}
-                      AND opposite_account.instrument_id = ${instrumentId}
-                      ${isDefined(accountIds) ? sql`AND ${inArray(sql`opposite_account.id`, accountIds)}` : sql``}
-                      AND opposite_entry.type IN (${TransactionEntryTypeEnum.DEBIT}, ${TransactionEntryTypeEnum.CREDIT})
-                      AND opposite_entry.type != ${TransactionEntryEntityTable.type}
-                )
-            )
-        `;
-
             return {
                 findCashReturn: (accountIds: readonly number[], baseInstrumentId: number) =>
                     Db.query(db =>
@@ -73,7 +48,7 @@ export class TransactionEntryPositionRepository extends Context.Service<Transact
                             )
                     ).pipe(Effect.map(([row]) => row.amount)),
 
-                findInstrumentPositionEntries: (instrumentId: number, baseInstrumentId: number, accountIds?: readonly number[]) =>
+                findInstrumentPositionEntries: (instrumentId: number, baseInstrumentId: number) =>
                     Db.query(db =>
                         db
                             .select({
@@ -81,8 +56,21 @@ export class TransactionEntryPositionRepository extends Context.Service<Transact
                                 isAdjustment: sql<boolean>`${TransactionEntityTable.type} = ${TransactionTypeEnum.ADJUSTMENT}`.mapWith(
                                     Boolean
                                 ),
-                                isInstrumentTransfer:
-                                    sql<boolean>`NOT ${buildExternalInstrumentPositionEntryCondition(instrumentId)}`.mapWith(Boolean),
+                                accountId: AccountEntityTable.id,
+                                transferAccountId: sql<number | null>`(
+                                    SELECT opposite.account_id FROM transaction_entries opposite
+                                    INNER JOIN accounts destination ON destination.id = opposite.account_id
+                                    WHERE ${TransactionEntityTable.type} = ${TransactionTypeEnum.TRANSFER}
+                                      AND ${TransactionEntryEntityTable.type} IN (${TransactionEntryTypeEnum.DEBIT}, ${TransactionEntryTypeEnum.CREDIT})
+                                      AND opposite.transaction_id = ${TransactionEntryEntityTable.transactionId}
+                                      AND opposite.type IN (${TransactionEntryTypeEnum.DEBIT}, ${TransactionEntryTypeEnum.CREDIT})
+                                      AND opposite.type != ${TransactionEntryEntityTable.type}
+                                      AND opposite.deleted_at IS NULL AND opposite.original_transaction_id IS NULL
+                                      AND destination.deleted_at IS NULL
+                                      AND ${isUnitAccountSql(sql`destination.type`, sql`destination.instrument_id`)}
+                                      AND destination.instrument_id = ${instrumentId}
+                                    LIMIT 1
+                                )`,
                                 amount: TransactionEntryEntityTable.amount,
                                 feeBaseAmount: sql<
                                     number | null
@@ -104,15 +92,12 @@ export class TransactionEntryPositionRepository extends Context.Service<Transact
                             .where(
                                 and(
                                     isUnitAccountSql(),
-                                    ...(isDefined(accountIds) ? [inArray(AccountEntityTable.id, accountIds)] : []),
                                     eq(AccountEntityTable.instrumentId, instrumentId),
-                                    eq(AccountEntityTable.isActive, true),
                                     isNull(AccountEntityTable.deletedAt),
                                     isNull(TransactionEntityTable.deletedAt),
                                     isNull(TransactionEntryEntityTable.deletedAt),
                                     inArray(TransactionEntryEntityTable.type, POSITION_ENTRY_TYPES),
-                                    transactionFilters.buildRefundAwareLedgerEntryCondition(),
-                                    buildExternalInstrumentPositionEntryCondition(instrumentId, accountIds)
+                                    transactionFilters.buildRefundAwareLedgerEntryCondition()
                                 )
                             )
                             .orderBy(

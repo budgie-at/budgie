@@ -450,9 +450,7 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                     },
                     { discard: true }
                 );
-                if (instrument?.type === InstrumentTypeEnum.FIAT) {
-                    yield* transactionEntryBaseValuationRepository.rebaseSecurityTradeCosts(baseInstrument.id);
-                }
+                yield* transactionEntryBaseValuationRepository.rebaseSecurityTradeCosts(baseInstrument.id);
             });
 
             const enqueueAccounts = Effect.fn('HistoricalMarketDataService.enqueueAccounts')(function* (

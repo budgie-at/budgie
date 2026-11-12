@@ -15,16 +15,13 @@ import { databaseQueryFamily } from '../../@generic/utils/database-query-family.
 export const instrumentPositionEntriesAtom = databaseQueryFamily(
     [TransactionEntryEntityTable, TransactionEntityTable, AccountEntityTable, InstrumentEntityTable],
     TransactionEntryPositionRepository,
-    (
-        transactionEntryPositionRepository,
-        [instrumentIds, baseInstrumentId, accountIds]: readonly [readonly number[], number, (readonly number[])?]
-    ) =>
+    (transactionEntryPositionRepository, [instrumentIds, baseInstrumentId]: readonly [readonly number[], number]) =>
         Effect.forEach(instrumentIds, instrumentId =>
-            transactionEntryPositionRepository.findInstrumentPositionEntries(instrumentId, baseInstrumentId, accountIds)
+            transactionEntryPositionRepository.findInstrumentPositionEntries(instrumentId, baseInstrumentId)
         )
 );
 
 export const useInstrumentPositionsQuery = (instrumentIds: readonly number[], baseInstrumentId: number, accountIds?: readonly number[]) =>
-    AsyncResult.getOrElse(useLiveAtomValue(instrumentPositionEntriesAtom([instrumentIds, baseInstrumentId, accountIds])), () => []).map(
-        entries => calculateInstrumentPosition(entries)
+    AsyncResult.getOrElse(useLiveAtomValue(instrumentPositionEntriesAtom([instrumentIds, baseInstrumentId])), () => []).map(entries =>
+        calculateInstrumentPosition(entries, accountIds)
     );

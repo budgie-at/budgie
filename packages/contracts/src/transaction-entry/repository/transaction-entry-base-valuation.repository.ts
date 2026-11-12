@@ -100,6 +100,7 @@ export class TransactionEntryBaseValuationRepository extends Context.Service<Tra
                           AND security.type != cash.type
                           AND cash.base_instrument_id = ${baseInstrumentId}
                           AND cash.base_amount IS NOT NULL
+                          AND (security.base_instrument_id IS NOT ${baseInstrumentId} OR security.base_amount IS NOT cash.base_amount)
                           AND cash.deleted_at IS NULL AND security.deleted_at IS NULL
                           AND cash.original_transaction_id IS NULL AND security.original_transaction_id IS NULL
                           AND cash_account.deleted_at IS NULL AND trade.deleted_at IS NULL
@@ -120,7 +121,6 @@ export class TransactionEntryBaseValuationRepository extends Context.Service<Tra
                         and(
                             eq(TransactionEntryEntityTable.baseInstrumentId, baseInstrumentId),
                             isNotNull(TransactionEntryEntityTable.baseExchangeRate),
-                            isNull(TransactionEntryEntityTable.quotedUnitPrice),
                             buildLiveEntryCondition(),
                             between(rateDateSql, fromDate, toDate)
                         )
@@ -146,7 +146,7 @@ export class TransactionEntryBaseValuationRepository extends Context.Service<Tra
                         input.rateDate,
                         input.sourceInstrumentId,
                         sql`base_exchange_rate = ${input.baseExchangeRate}, base_amount = ROUND(amount * ${input.baseExchangeRate})`,
-                        sql`te.quoted_unit_price IS NULL AND te.base_instrument_id = ${input.baseInstrumentId} AND ABS(te.base_exchange_rate - ${input.previousBaseExchangeRate}) <= ${input.previousBaseExchangeRate} * 1e-9`
+                        sql`te.base_instrument_id = ${input.baseInstrumentId} AND ABS(te.base_exchange_rate - ${input.previousBaseExchangeRate}) <= ${input.previousBaseExchangeRate} * 1e-9`
                     )
             };
         })

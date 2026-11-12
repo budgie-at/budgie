@@ -2,7 +2,8 @@ import type { TransactionEntryTypeEnum } from '../enum/transaction-entry-type.en
 
 export interface InstrumentPositionEntryRowInterface {
     readonly isAdjustment?: boolean;
-    readonly isInstrumentTransfer?: boolean;
+    readonly accountId?: number;
+    readonly transferAccountId?: number | null;
     readonly type: TransactionEntryTypeEnum;
     readonly amount: number;
     readonly feeBaseAmount?: number | null;

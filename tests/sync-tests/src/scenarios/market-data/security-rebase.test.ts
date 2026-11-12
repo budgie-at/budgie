@@ -8,12 +8,14 @@ import {
     TransactionEntityTable,
     TransactionEntryEntityTable,
     TransactionEntryPositionRepository,
+    TransactionEntryBaseValuationRepository,
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
 import { MoneyDataUpgradeService } from '@budgie/ledger';
 import { HistoricalMarketDataService, InstrumentMarketDataJobRepository, calculateInstrumentPosition } from '@budgie/market';
 import { expect, it } from '@effect/vitest';
+import { sql } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
@@ -79,8 +81,8 @@ it.effect('rebases security trade costs from cash consideration and scopes FIFO 
         );
         yield* testDb.update(SettingsEntityTable).set({ defaultInstrumentId: euro.id });
         yield* upgrade.run('Missing base');
-        const entries = yield* positions.findInstrumentPositionEntries(security.id, euro.id, [account.id]);
-        expect(calculateInstrumentPosition(entries)).toMatchObject({ amount: 2, costBasis: 50, averageCost: 25 });
+        const entries = yield* positions.findInstrumentPositionEntries(security.id, euro.id);
+        expect(calculateInstrumentPosition(entries, [account.id])).toMatchObject({ amount: 2, costBasis: 50, averageCost: 25 });
         expect(calculateInstrumentPosition(yield* positions.findInstrumentPositionEntries(security.id, euro.id))).toMatchObject({
             amount: 4,
             costBasis: 100
@@ -95,7 +97,7 @@ it.effect('rebases security trade costs from cash consideration and scopes FIFO 
             unsupportedInstruments: []
         });
         expect(
-            calculateInstrumentPosition(yield* positions.findInstrumentPositionEntries(security.id, euro.id, [account.id]))
+            calculateInstrumentPosition(yield* positions.findInstrumentPositionEntries(security.id, euro.id), [account.id])
         ).toMatchObject({
             amount: 2,
             costBasis: 80,
@@ -111,7 +113,7 @@ it.effect('rebases security trade costs from cash consideration and scopes FIFO 
             unsupportedInstruments: []
         });
         expect(
-            calculateInstrumentPosition(yield* positions.findInstrumentPositionEntries(security.id, euro.id, [account.id]))
+            calculateInstrumentPosition(yield* positions.findInstrumentPositionEntries(security.id, euro.id), [account.id])
         ).toMatchObject({
             amount: 2,
             costBasis: 80
@@ -131,8 +133,8 @@ it.effect('rebases security trade costs from cash consideration and scopes FIFO 
                 type: TransactionEntryTypeEnum.CREDIT,
                 amount: 1_000_000,
                 baseInstrumentId: euro.id,
-                baseAmount: 40_000_000,
-                baseExchangeRate: 40
+                baseAmount: 60_000_000,
+                baseExchangeRate: 60
             },
             {
                 transactionId: transfer.id,
@@ -140,14 +142,14 @@ it.effect('rebases security trade costs from cash consideration and scopes FIFO 
                 type: TransactionEntryTypeEnum.DEBIT,
                 amount: 1_000_000,
                 baseInstrumentId: euro.id,
-                baseAmount: 40_000_000,
-                baseExchangeRate: 40
+                baseAmount: 60_000_000,
+                baseExchangeRate: 60
             }
         ]);
         expect(
-            calculateInstrumentPosition(yield* positions.findInstrumentPositionEntries(security.id, euro.id, [account.id]))
+            calculateInstrumentPosition(yield* positions.findInstrumentPositionEntries(security.id, euro.id), [account.id])
         ).toMatchObject({ amount: 1, costBasis: 40, realizedProfitLoss: 0 });
-        expect(calculateInstrumentPosition(yield* positions.findInstrumentPositionEntries(security.id, euro.id, [other.id]))).toMatchObject(
+        expect(calculateInstrumentPosition(yield* positions.findInstrumentPositionEntries(security.id, euro.id), [other.id])).toMatchObject(
             { amount: 3, costBasis: 120, realizedProfitLoss: 0 }
         );
         expect(calculateInstrumentPosition(yield* positions.findInstrumentPositionEntries(security.id, euro.id))).toMatchObject({
@@ -182,12 +184,16 @@ it.effect('rebases security trade costs from cash consideration and scopes FIFO 
                 })
         );
         yield* upgrade.run('Missing base');
+        const valuation = yield* TransactionEntryBaseValuationRepository;
+        yield* valuation.rebaseSecurityTradeCosts(euro.id);
+        expect(yield* testDb.get<{ changes: number }>(sql`SELECT changes() AS changes`)).toEqual({ changes: 0 });
         expect(yield* positions.findCashReturn([cash.id], euro.id)).toBe(8);
         expect(yield* positions.findCashReturn([other.id], euro.id)).toBe(0);
     }).pipe(
         Effect.provide([
             TestLayer,
             HistoricalMarketDataService.layer.pipe(Layer.provide(TestLayer)),
+            TransactionEntryBaseValuationRepository.layer,
             InstrumentMarketDataJobRepository.layer
         ])
     )
