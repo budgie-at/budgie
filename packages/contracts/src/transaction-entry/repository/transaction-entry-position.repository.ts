@@ -3,6 +3,9 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
+import { isDefined } from '@rnw-community/shared';
+
+import { PRECISION } from '../../@generic/constant/precision.constant';
 import { transactionFilters } from '../../@generic/repository/base-transaction-filter.repository';
 import { Db } from '../../@generic/service/db.service';
 import { CRYPTO_ACCOUNT_TYPES } from '../../account/constant/crypto-account-types.constant';
@@ -48,7 +51,28 @@ export class TransactionEntryPositionRepository extends Context.Service<Transact
         `;
 
             return {
-                findInstrumentPositionEntries: (instrumentId: number, baseInstrumentId: number) =>
+                findCashReturn: (accountIds: readonly number[], baseInstrumentId: number) =>
+                    Db.query(db =>
+                        db
+                            .select({
+                                amount: sql<number>`COALESCE(SUM(CASE WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT} THEN ${TransactionEntryEntityTable.baseAmount} ELSE -${TransactionEntryEntityTable.baseAmount} END), 0) * 1.0 / ${PRECISION}`
+                            })
+                            .from(TransactionEntryEntityTable)
+                            .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+                            .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
+                            .where(
+                                and(
+                                    inArray(AccountEntityTable.id, accountIds),
+                                    eq(TransactionEntryEntityTable.baseInstrumentId, baseInstrumentId),
+                                    inArray(TransactionEntityTable.type, [TransactionTypeEnum.INCOME, TransactionTypeEnum.EXPENSE]),
+                                    transactionFilters.buildLedgerEntryCondition(),
+                                    isNull(AccountEntityTable.deletedAt),
+                                    isNull(TransactionEntityTable.deletedAt)
+                                )
+                            )
+                    ).pipe(Effect.map(([row]) => row.amount)),
+
+                findInstrumentPositionEntries: (instrumentId: number, baseInstrumentId: number, accountIds?: readonly number[]) =>
                     Db.query(db =>
                         db
                             .select({
@@ -74,6 +98,7 @@ export class TransactionEntryPositionRepository extends Context.Service<Transact
                             .where(
                                 and(
                                     isUnitAccountSql(),
+                                    ...(isDefined(accountIds) ? [inArray(AccountEntityTable.id, accountIds)] : []),
                                     eq(AccountEntityTable.instrumentId, instrumentId),
                                     eq(AccountEntityTable.isActive, true),
                                     isNull(AccountEntityTable.deletedAt),
