@@ -32,13 +32,13 @@ export const DeviceDataSection = ({ title }: Props) => {
 
     const fileSize = formatFileSize(databaseFileSize);
     const isAlsoInICloud = IS_CLOUD_BACKUP_SUPPORTED && isAvailable && (isCloudBackupEnabled || isCloudSyncEnabled);
-    const storageSubtitle = isAlsoInICloud ? t`${fileSize} · Also in iCloud` : t`${fileSize} · Not in iCloud`;
-    const isICloudSignInShown = IS_CLOUD_BACKUP_SUPPORTED && !isAvailable;
+    const iCloudStorageSubtitle = isAlsoInICloud ? t`${fileSize} · Also in iCloud` : t`${fileSize} · Not in iCloud`;
+    const storageSubtitle = IS_CLOUD_BACKUP_SUPPORTED ? iCloudStorageSubtitle : fileSize;
     const isProtected = (isAlsoInICloud && isCloudBackupEnabled) || isDefined(lastBackupAt);
     const missingBackupFooter = IS_CLOUD_BACKUP_SUPPORTED
         ? t`Turn on iCloud backup or save a backup file to protect your data.`
         : t`Save a backup file to protect your data.`;
-    const footer = isICloudSignInShown || isProtected ? null : missingBackupFooter;
+    const footer = (IS_CLOUD_BACKUP_SUPPORTED && !isAvailable) || isProtected ? null : missingBackupFooter;
 
     return (
         <GroupedListSection title={title} footer={footer}>

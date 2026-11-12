@@ -4,7 +4,7 @@ import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import * as Contacts from 'expo-contacts/legacy';
 
 import { NativeCallError } from '../error/native-call.error';
-import { appAtomRuntime } from '../runtime/app.runtime';
+import { appAtomRuntime, appRuntime } from '../runtime/app.runtime';
 
 import { useAppState } from './use-app-state.hook';
 
@@ -12,19 +12,25 @@ export type Contact = Contacts.ExistingContact;
 
 const EMPTY_CONTACTS: Contact[] = [];
 
-const contactsAtom = appAtomRuntime.atom(
-    Effect.gen(function* () {
-        const currentPermission = yield* Effect.tryPromise({
-            try: () => Contacts.getPermissionsAsync(),
+const getPermission = Effect.tryPromise({
+    try: () => Contacts.getPermissionsAsync(),
+    catch: cause => NativeCallError.make({ cause })
+});
+
+const requestPermission = Effect.gen(function* () {
+    const { status } = yield* getPermission;
+
+    if (status === Contacts.PermissionStatus.UNDETERMINED) {
+        yield* Effect.tryPromise({
+            try: () => Contacts.requestPermissionsAsync(),
             catch: cause => NativeCallError.make({ cause })
         });
-        const permission =
-            currentPermission.status === Contacts.PermissionStatus.UNDETERMINED
-                ? yield* Effect.tryPromise({
-                      try: () => Contacts.requestPermissionsAsync(),
-                      catch: cause => NativeCallError.make({ cause })
-                  })
-                : currentPermission;
+    }
+}).pipe(Effect.catchCause(Effect.logError));
+
+const contactsAtom = appAtomRuntime.atom(
+    Effect.gen(function* () {
+        const permission = yield* getPermission;
 
         if (!permission.granted) {
             return { contacts: EMPTY_CONTACTS, permission };
@@ -60,6 +66,7 @@ export const useContacts = () => {
         isFailure: AsyncResult.isFailure(result),
         isDenied: data?.permission.granted === false,
         isLimited: data?.permission.accessPrivileges === 'limited',
-        retry
+        retry,
+        requestAccess: () => appRuntime.runPromise(requestPermission).then(retry)
     };
 };

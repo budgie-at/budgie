@@ -8703,10 +8703,6 @@ msgstr "Reservado"
 msgid "Set budget"
 msgstr "Crear presupuesto"
 
-#: src/budget/constant/budget-save-blocker-label.constant.ts
-msgid "Set every category limit to continue"
-msgstr "Define todos los límites de categoría para continuar"
-
 #: src/account/component/deposit-maturity-date-field/deposit-maturity-date-field.tsx
 msgid "Set Maturity Date"
 msgstr "Establecer fecha de vencimiento"
@@ -9372,7 +9368,7 @@ msgstr "Toca para cambiar el signo"
 msgid "Tap to choose another"
 msgstr "Toca para elegir otro"
 
-#: src/@generic/component/search-input/search-input.tsx
+#: src/@generic/component/input-clear-button/input-clear-button.tsx
 msgid "Tap to clear"
 msgstr "Toca para limpiar"
 

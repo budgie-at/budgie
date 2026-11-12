@@ -1,7 +1,7 @@
 import { useLingui } from '@lingui/react/macro';
 import { ReactNode } from 'react';
 
-import { EmptyFn } from '@rnw-community/shared';
+import { EmptyFn, isNotEmptyString } from '@rnw-community/shared';
 
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
@@ -13,15 +13,16 @@ interface Props {
     readonly title: string;
     readonly onSubmit: EmptyFn;
     readonly isSubmitting?: boolean;
-    readonly isSubmitDisabled?: boolean;
+    readonly accountName: string;
     readonly children: ReactNode;
 }
 
 const CURRENCY_ROW_KEYBOARD_BOTTOM_OFFSET = 250;
 const SCROLL_VIEW_PROPS = { bottomOffset: CURRENCY_ROW_KEYBOARD_BOTTOM_OFFSET };
 
-export const CreateAccountScreen = ({ title, children, onSubmit, isSubmitting, isSubmitDisabled }: Props) => {
+export const CreateAccountScreen = ({ title, children, onSubmit, isSubmitting, accountName }: Props) => {
     const { t } = useLingui();
+    const isSubmitDisabled = !isNotEmptyString(accountName.trim());
     const submitLabel = isSubmitDisabled ? t`Add a name to continue` : t`Create account`;
 
     return (

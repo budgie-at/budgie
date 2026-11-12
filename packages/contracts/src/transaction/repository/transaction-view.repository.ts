@@ -208,7 +208,7 @@ export class TransactionViewRepository extends Context.Service<TransactionViewRe
             getById: (id: number, language: LanguageEnum) =>
                 Db.query(db =>
                     db.query.TransactionEntityTable.findFirst({
-                        where: { id },
+                        where: { id, deletedAt: { isNull: true } },
                         with: transactionFilters.buildFullTransactionRelations(language)
                     })
                 ),

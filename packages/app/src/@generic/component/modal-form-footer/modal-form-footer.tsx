@@ -13,7 +13,7 @@ interface Props extends PropsWithChildren {
 }
 
 export const ModalFormFooter = ({ onCancel, onSave, isSaveDisabled, saveTestID, isSaving, children }: Props) => (
-    <View className="px-3xl pb-3xl gap-y-md pt-xl">
+    <View className="z-30 px-3xl pb-3xl gap-y-md pt-xl">
         {children}
 
         <View className="flex-row gap-x-md">

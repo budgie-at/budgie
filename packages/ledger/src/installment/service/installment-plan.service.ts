@@ -24,7 +24,7 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { AccountArchiveService } from '../../account/service/account-archive.service';
 import { AccountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
@@ -60,7 +60,10 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
         const isSamePlanExpense = (
             candidate: Pick<TransactionEntityInterface, 'externalSource' | 'title'>,
             reference: Pick<TransactionEntityInterface, 'externalSource' | 'title'>
-        ) => candidate.externalSource === reference.externalSource && normalizeTitle(candidate.title) === normalizeTitle(reference.title);
+        ) =>
+            isNotEmptyString(normalizeTitle(reference.title)) &&
+            candidate.externalSource === reference.externalSource &&
+            normalizeTitle(candidate.title) === normalizeTitle(reference.title);
         const isAcceptableFlexibleAmount = (amount: number, regularAmount: number, remainingAmount: number) => {
             const multiple = Math.round(amount / regularAmount);
 
@@ -71,8 +74,21 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
             );
         };
 
+        const findAttachableCandidates = (accountId: number, from: Date, to: Date) =>
+            installmentPlanRepository.findCandidates(accountId, from, to).pipe(
+                Effect.map(candidates => {
+                    const entryCounts = new Map<number, number>();
+
+                    candidates.forEach(candidate => {
+                        entryCounts.set(candidate.transactionId, (entryCounts.get(candidate.transactionId) ?? 0) + 1);
+                    });
+
+                    return candidates.filter(candidate => entryCounts.get(candidate.transactionId) === 1);
+                })
+            );
+
         const findDueCandidates = (accountId: number, dueAt: Date) =>
-            installmentPlanRepository.findCandidates(
+            findAttachableCandidates(
                 accountId,
                 startOfDay(subDays(dueAt, dueDateToleranceDays)),
                 endOfDay(addDays(dueAt, dueDateToleranceDays))
@@ -122,7 +138,7 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
 
             if (firstPart.externalSource !== ExternalSourceEnum.MONOBANK) {
                 const regularAmount = Math.round(schedule.totalAmount / schedule.installmentCount);
-                const flexibleCandidates = yield* installmentPlanRepository.findCandidates(
+                const flexibleCandidates = yield* findAttachableCandidates(
                     firstPart.accountId,
                     firstPart.operatedAt,
                     endOfDay(
@@ -186,7 +202,7 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
             totalAmount: number
         ) {
             const regularAmount = Math.round(totalAmount / installmentCount);
-            const candidates = yield* installmentPlanRepository.findCandidates(
+            const candidates = yield* findAttachableCandidates(
                 primaryEntry.accountId,
                 startOfDay(subDays(getInstallmentDueDate(transaction.operatedAt, -(installmentCount - 1)), dueDateToleranceDays)),
                 transaction.operatedAt
@@ -276,7 +292,7 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
                 return [];
             }
 
-            const candidates = yield* installmentPlanRepository.findCandidates(
+            const candidates = yield* findAttachableCandidates(
                 latestPart.accountId,
                 latestPart.operatedAt,
                 endOfDay(addDays(getInstallmentDueDate(firstPart.operatedAt, schedule.installmentCount - 1), dueDateToleranceDays))

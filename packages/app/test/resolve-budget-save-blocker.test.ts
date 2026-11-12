@@ -37,12 +37,15 @@ describe('resolveBudgetSaveBlocker', () => {
         expect(resolveBudgetSaveBlocker({ ...HYDRATED, name: '  ' })).toBe(BUDGET_SAVE_BLOCKER_LABEL.name);
         expect(resolveBudgetSaveBlocker({ ...HYDRATED, overallLimit: 0 })).toBe(BUDGET_SAVE_BLOCKER_LABEL.limit);
         expect(resolveBudgetSaveBlocker({ ...HYDRATED, overallLimit: 5000 })).toBe(BUDGET_SAVE_BLOCKER_LABEL.overAllocated);
+    });
+
+    it('lets categories without a limit save', () => {
         expect(
             resolveBudgetSaveBlocker({
                 ...HYDRATED,
-                categoryLimits: [{ categoryId: 1, limitAmount: 0, rolloverMode: BudgetRolloverModeEnum.NONE }]
+                categoryLimits: [...HYDRATED.categoryLimits, { categoryId: 4, limitAmount: 0, rolloverMode: BudgetRolloverModeEnum.NONE }]
             })
-        ).toBe(BUDGET_SAVE_BLOCKER_LABEL.categoryLimit);
+        ).toBeNull();
     });
 
     it('ignores the fixed limit for income-based budgets', () => {

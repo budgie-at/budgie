@@ -70,7 +70,7 @@ export const AccountDetailsField = (props: Props) => {
                 onChangeText={titleBinding.field.onChange}
                 onBlur={titleBinding.field.onBlur}
                 selectTextOnFocus={selectNameOnFocus}
-                className="h-[28px] px-0 text-(length:--text-lg)"
+                className="h-auto min-h-[28px] px-0 text-(length:--text-lg)"
                 maxLength={ACCOUNT_TITLE_MAX_LENGTH}
                 placeholder={placeholder}
                 accessibilityLabel={t`Account name`}

@@ -9,7 +9,6 @@ import { useForm } from 'react-hook-form';
 
 import { useSingleFlight } from '../../@generic/hook/use-single-flight.hook';
 import { useVibration } from '../../@generic/hook/use-vibration.hook';
-import { dismissAllOrReplace } from '../../@generic/utils/dismiss-all-or-replace.util';
 import { goBackOrReplace } from '../../@generic/utils/go-back-or-replace.util';
 import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
 import { attachReceipt } from '../../receipt/utils/attach-receipt.util';
@@ -69,7 +68,7 @@ export const useUpdateTransactionForm = ({
         run(
             Effect.gen(function* () {
                 if (yield* deleteTransaction(id)) {
-                    dismissAllOrReplace('/');
+                    goBackOrReplace('/');
                 }
             })
         );

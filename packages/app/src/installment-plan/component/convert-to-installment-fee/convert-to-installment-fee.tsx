@@ -80,6 +80,8 @@ export const ConvertToInstallmentFee = ({ instrumentSymbol, split, onEditingChan
             borderless
             placeholder="0"
             inputAccessoryViewID={ConvertToInstallmentModalSelector.FeeKeyboardDone}
+            returnKeyType="done"
+            submitBehavior="blurAndSubmit"
             inputClassName="h-auto min-h-[44px] min-w-[44px] px-0 text-right text-md font-semibold text-primary tabular-nums"
             accessibilityLabel={t`Fee, percent`}
             accessibilityHint={t`Percent of the plan total before the fee`}
