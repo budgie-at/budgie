@@ -14,6 +14,7 @@ import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-access
 import { cn } from '../../../@generic/utils/cn.util';
 import { AccountDetailsSelector } from '../../../app/(main)/account/[id]/account-details.selector';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
+import { isListedSecurityType } from '../../../instrument/utils/is-listed-security-type.util';
 import { getMarketChangeSign } from '../../../market-data/utils/get-market-change-sign.util';
 import { getMarketMoveClassName } from '../../../market-data/utils/get-market-move-class-name.util';
 import { isMarketPriceStale } from '../../../market-data/utils/is-market-price-stale.util';
@@ -38,7 +39,7 @@ export const AccountDetailsMarketLink = ({ instrument }: Props) => {
     const isStacked = useIsAccessibilityTextSize();
 
     const isUp = isDefined(change) && change >= 0;
-    const marketName = instrument.name;
+    const marketName = isListedSecurityType(instrument.type) ? instrument.symbol : instrument.name;
     const staleDate = isDefined(priceDate) && isMarketPriceStale(priceDate) ? formatMonthAndDay(parseISO(priceDate)) : null;
     const dailyDirection = isUp ? t`up ${changeShare} over the last 24 hours` : t`down ${changeShare} over the last 24 hours`;
     const staleDirection = isUp ? t`up ${changeShare} on ${staleDate}` : t`down ${changeShare} on ${staleDate}`;
@@ -64,7 +65,7 @@ export const AccountDetailsMarketLink = ({ instrument }: Props) => {
             <CurrencySelectorInstrumentIcon code={instrument.code} symbol={instrument.symbol} type={instrument.type} size={20} />
             <View className={contentVariants({ stacked: isStacked })}>
                 <Text className="shrink text-[15px] font-medium text-primary" numberOfLines={1}>
-                    {instrument.name}
+                    {marketName}
                 </Text>
                 <Text className="text-[15px] text-secondary-foreground tabular-nums" numberOfLines={1}>
                     {priceLabel}

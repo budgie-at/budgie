@@ -24,7 +24,12 @@ interface Props {
 export const InstitutionAccountRow = ({ account, provider, bankName, balancesByAccountId, position }: Props) => {
     const { t } = useLingui();
     const isBrokerageCash = provider === ExternalSourceEnum.MANUAL && account.instrument.type === InstrumentTypeEnum.FIAT;
-    const displayAccount = { ...account, title: isBrokerageCash ? t`Cash` : getInstitutionAccountTitle(account.title, provider) };
+    const displayAccount = {
+        ...account,
+        title: isBrokerageCash
+            ? t({ message: 'Cash', context: 'Brokerage cash account' })
+            : getInstitutionAccountTitle(account.title, provider)
+    };
     const logoBankName = bankName ?? account.title;
     const leading =
         account.type === AccountTypeEnum.CRYPTO_SYNC || isListedSecurityType(account.instrument.type) ? (

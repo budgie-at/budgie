@@ -27,6 +27,7 @@ export const GainLine = ({ gain, percent, suffix, instrumentSymbol, testID }: Pr
     return (
         <ProtectedText
             className={cn('px-5xl text-center text-[15px] leading-[20px] font-medium tabular-nums', toneClassName)}
+            maxFontSizeMultiplier={2}
             testID={testID}
         >
             {label}

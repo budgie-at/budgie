@@ -690,6 +690,10 @@ msgstr "Marché {marketName}, {priceLabel}, {direction}"
 msgid "{matchingRulesCount, plural, one {# matching rule} other {# matching rules}}"
 msgstr "{matchingRulesCount, plural, one {# règle correspondante} other {# règles correspondantes}}"
 
+#: src/brokerage/component/security-trade-form/security-trade-form.tsx
+msgid "{maxQuantity, plural, one {Only # share held} other {Only # shares held}}"
+msgstr "{maxQuantity, plural, one {Seulement # part détenue} other {Seulement # parts détenues}}"
+
 #: src/@generic/hook/use-format-file-size.hook.ts
 msgid "{megabytes} MB"
 msgstr "{megabytes} Mo"
@@ -2410,6 +2414,10 @@ msgstr "Les catégories intégrées sont toujours là. Ajoutez les vôtres pour 
 msgid "Burning"
 msgstr "En baisse"
 
+#: src/transaction/hook/use-transaction-row-title.hook.ts
+msgid "Buy {title}"
+msgstr "Achat {title}"
+
 #: src/runway/component/runway-drivers/runway-drivers.tsx
 msgid "By category"
 msgstr "Par catégorie"
@@ -2515,13 +2523,17 @@ msgstr "Tout reporter"
 msgid "Carry savings"
 msgstr "Reporter les économies"
 
-#: src/account/component/institution-account-row/institution-account-row.tsx
 #: src/account/constant/account-type.constant.ts
 #: src/categorize-inbox/components/categorize-inbox-transfer-accounts/categorize-inbox-transfer-accounts.tsx
 #: src/inzhur/component/inzhur-operations-import-summary/inzhur-operations-import-summary.tsx
 #: src/onboarding/constant/onboarding-account-options.constant.ts
 msgid "Cash"
 msgstr "Espèces"
+
+#: src/account/component/institution-account-row/institution-account-row.tsx
+msgctxt "Brokerage cash account"
+msgid "Cash"
+msgstr "Liquidités"
 
 #: src/categorize-inbox/components/categorize-inbox-section-chip/categorize-inbox-section-chip.tsx
 msgctxt "Categorize inbox section chip"
@@ -7810,6 +7822,10 @@ msgstr "Compte privé de {ownerName}"
 msgid "Private by design"
 msgstr "Privé par conception"
 
+#: src/app/(main)/securities/sell/[id].tsx
+msgid "Proceeds"
+msgstr "Produit de la vente"
+
 #: src/budget/components/budget-category-forecast/budget-category-forecast.tsx
 msgid "Projected {overAmount} over"
 msgstr "Prévision : {overAmount} de dépassement"
@@ -8276,6 +8292,10 @@ msgstr "Reprendre"
 msgid "Retry"
 msgstr "Réessayer"
 
+#: src/brokerage/component/security-position-gain-line/security-position-gain-line.tsx
+msgid "return"
+msgstr "rendement"
+
 #: src/market-data/component/currency-market-return-row/currency-market-return-row.tsx
 #: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
 msgid "Return"
@@ -8676,6 +8696,10 @@ msgstr "Sélectionné"
 #: src/app/(main)/securities/sell/[id].tsx
 msgid "Sell"
 msgstr "Vendre"
+
+#: src/transaction/hook/use-transaction-row-title.hook.ts
+msgid "Sell {title}"
+msgstr "Vente {title}"
 
 #: src/household/component/household-invite-row/household-invite-row.tsx
 msgid "Send an invitation with Messages"
@@ -9971,6 +9995,7 @@ msgstr "Dépôts"
 #: src/account/component/debt-account-card/debt-account-card.tsx
 #: src/account/component/debt-account-paid-off/debt-account-paid-off.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
+#: src/app/(main)/securities/buy/[id].tsx
 #: src/installment-plan/component/installment-plan-total-field/installment-plan-total-field.tsx
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "Total"

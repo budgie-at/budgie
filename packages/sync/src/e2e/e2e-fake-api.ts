@@ -182,12 +182,15 @@ const MONOBANK_ROUTES: ReadonlyArray<readonly [string, RegExp, FakeHandlerType]>
     ['GET', /^\/personal\/statement\/[^/]+\/\d+(\/\d+)?$/u, monobankStatement]
 ];
 
-const E2E_SECURITY_SYMBOL = 'BGTX';
+const E2E_SECURITIES = [
+    { symbol: 'BGTX', currency: 'USD', shortname: 'Budgie Example', longname: 'Budgie Example Holdings', exchDisp: 'E2E Exchange' },
+    { symbol: 'BGEU', currency: 'EUR', shortname: 'Budgie Euro', longname: 'Budgie Euro Fund', exchDisp: 'E2E Euronext' }
+] as const;
 const E2E_SECURITY_LATEST_CLOSE = 120;
 const E2E_SECURITY_DAILY_RISE = 2;
 const E2E_SECURITY_HISTORY_DAYS = 10;
 
-const yahooChart = () => {
+const yahooChart = (currency: string) => () => {
     const todayNoonSeconds = Math.floor(Date.now() / MILLISECONDS_PER_DAY) * SECONDS_PER_DAY + SECONDS_PER_DAY / 2;
     const daysAgo = Array.from({ length: E2E_SECURITY_HISTORY_DAYS }, (_day, index) => E2E_SECURITY_HISTORY_DAYS - 1 - index);
 
@@ -195,7 +198,7 @@ const yahooChart = () => {
         chart: {
             result: [
                 {
-                    meta: { currency: 'USD', regularMarketPrice: E2E_SECURITY_LATEST_CLOSE },
+                    meta: { currency, regularMarketPrice: E2E_SECURITY_LATEST_CLOSE },
                     timestamp: daysAgo.map(days => todayNoonSeconds - days * SECONDS_PER_DAY),
                     indicators: { quote: [{ close: daysAgo.map(days => E2E_SECURITY_LATEST_CLOSE - days * E2E_SECURITY_DAILY_RISE) }] }
                 }
@@ -208,19 +211,11 @@ const YAHOO_ROUTES: ReadonlyArray<readonly [string, RegExp, FakeHandlerType]> = 
     [
         'GET',
         /^\/v1\/finance\/search$/u,
-        () => ({
-            quotes: [
-                {
-                    symbol: E2E_SECURITY_SYMBOL,
-                    quoteType: 'EQUITY',
-                    shortname: 'Budgie Example',
-                    longname: 'Budgie Example Holdings',
-                    exchDisp: 'E2E Exchange'
-                }
-            ]
-        })
+        () => ({ quotes: E2E_SECURITIES.map(({ currency: _currency, ...quote }) => ({ ...quote, quoteType: 'EQUITY' })) })
     ],
-    ['GET', /^\/v8\/finance\/chart\/[^/]+$/u, yahooChart]
+    ...E2E_SECURITIES.map(
+        ({ symbol, currency }) => ['GET', new RegExp(`^/v8/finance/chart/${symbol}$`, 'u'), yahooChart(currency)] as const
+    )
 ];
 
 const ROUTES_BY_HOST = new Map([

@@ -10,5 +10,8 @@ export const BrokerageSelector = {
     DateButton: 'Brokerage.DateButton',
     SaveButton: 'Brokerage.SaveButton',
     SellButton: 'Brokerage.SellButton',
-    Holding: 'Brokerage.Holding'
+    Holding: 'Brokerage.Holding',
+    TradeTotal: 'Brokerage.TradeTotal',
+    QuantityError: 'Brokerage.QuantityError',
+    PositionGainLine: 'Brokerage.PositionGainLine'
 } as const;

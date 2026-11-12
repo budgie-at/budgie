@@ -1,6 +1,7 @@
 import { UserIconType } from '@budgie/contracts';
-import { Text, View } from 'react-native';
+import { Text, View, useWindowDimensions } from 'react-native';
 
+import { ROW_MAX_FONT_SIZE_MULTIPLIER } from '../../constant/row-max-font-size-multiplier.constant';
 import { cn } from '../../utils/cn.util';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Icon } from '../icon/icon';
@@ -22,7 +23,9 @@ interface Props {
 const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 
 export const GroupedListActionRow = ({ label, icon, onPress, isDisabled, isLoading, labelClassName, trailing, testID }: Props) => {
+    const { fontScale } = useWindowDimensions();
     const isInactive = isDisabled || isLoading;
+    const iconSize = Math.round(20 * Math.min(fontScale, ROW_MAX_FONT_SIZE_MULTIPLIER));
     const accessibilityState = { disabled: isInactive, busy: isLoading };
 
     return (
@@ -42,8 +45,10 @@ export const GroupedListActionRow = ({ label, icon, onPress, isDisabled, isLoadi
         >
             <LoadingContent isLoading={isLoading}>
                 <View className="flex-row items-center gap-x-md">
-                    <Icon icon={icon} size={20} className={labelClassName} />
-                    <Text className={cn('flex-1 text-[17px]', labelClassName)}>{label}</Text>
+                    <Icon icon={icon} size={iconSize} className={labelClassName} />
+                    <Text maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER} className={cn('flex-1 text-[17px]', labelClassName)}>
+                        {label}
+                    </Text>
                     {trailing}
                 </View>
             </LoadingContent>

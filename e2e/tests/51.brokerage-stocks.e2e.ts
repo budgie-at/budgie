@@ -50,6 +50,7 @@ test('51 manual brokerage with stocks', { tags: ['accounts'], platforms: PENDING
         await core.tapId(ctx, 'Brokerage.Listing.BGTX');
         await typeDigits('Brokerage.QuantityInput', '10');
         await typeDigits('Brokerage.PriceInput', '100');
+        await expect(core.byId(screen, 'Brokerage.TradeTotal')).toHaveText(/\$1,000/, { timeout: 3_000 });
         await saveTrade('Institution.Page');
     });
 
@@ -72,8 +73,13 @@ test('51 manual brokerage with stocks', { tags: ['accounts'], platforms: PENDING
         await core.tapUntil(ctx, 'AccountDetails.ActionsButton', () => core.expectId(ctx, 'Brokerage.SellButton', 5_000));
         await core.tapId(ctx, 'Brokerage.SellButton');
         await core.expectId(ctx, 'Brokerage.TradePage', 10_000);
-        await typeDigits('Brokerage.QuantityInput', '4');
+        await typeDigits('Brokerage.QuantityInput', '40');
+        await expect(core.byId(screen, 'Brokerage.QuantityError')).toHaveText(/Only 10 shares held/, { timeout: 3_000 });
+        await expect(core.byId(screen, 'Brokerage.SaveButton')).toBeDisabled();
+        await core.fillId(ctx, 'Brokerage.QuantityInput', '4');
+        await core.done(ctx);
         await typeDigits('Brokerage.PriceInput', '125');
+        await expect(core.byId(screen, 'Brokerage.TradeTotal')).toHaveText(/\$500/, { timeout: 3_000 });
         await saveTrade('AccountDetails.Page');
     });
 

@@ -7,6 +7,8 @@ import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
+import { BankLogo } from '../../../@generic/component/bank-logo/bank-logo';
+import { CryptoCurrencyIcon } from '../../../@generic/component/crypto-currency-icon/crypto-currency-icon';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hook';
 import { homeAccountRowsAtom } from '../../../account/query/use-home-page-data.query';
@@ -43,13 +45,19 @@ export const CurrencyMarketAccounts = ({ instrument }: Props) => {
             {accountRows.map(row => {
                 const amount = convertFromMicroUnits(row.balance);
                 const valueLabel = isDefined(valuationRate) ? formatMoney(amount * valuationRate, defaultInstrument.symbol) : null;
-                const brokerageLabel = row.integrationProvider === ExternalSourceEnum.MANUAL ? row.integrationLabel : null;
-                const account = { ...row.account, title: brokerageLabel ?? row.account.title };
+                const brokerageName = row.integrationProvider === ExternalSourceEnum.MANUAL ? row.integrationLabel : null;
+                const account = { ...row.account, title: brokerageName ?? row.account.title };
+                const leading = isDefined(brokerageName) ? (
+                    <BankLogo bankProvider={ExternalSourceEnum.MANUAL} bankName={brokerageName} size={28} />
+                ) : (
+                    <CryptoCurrencyIcon code={instrument.code} size={28} />
+                );
 
                 return (
                     <CurrencyMarketAccountRow
                         key={row.account.id}
                         account={account}
+                        leading={leading}
                         sync={row.sync}
                         instrumentCode={instrument.code}
                         amount={amount}

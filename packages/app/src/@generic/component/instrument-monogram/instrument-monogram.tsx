@@ -1,5 +1,6 @@
 import { Text, View } from 'react-native';
 
+import { MAX_FONT_SIZE_MULTIPLIER } from '../../constant/max-font-size-multiplier.constant';
 import { cn } from '../../utils/cn.util';
 
 interface Props {
@@ -27,7 +28,12 @@ export const InstrumentMonogram = ({ code, size, className }: Props) => {
             accessibilityElementsHidden
             importantForAccessibility="no-hide-descendants"
         >
-            <Text className="font-semibold text-primary" style={monogramStyle} numberOfLines={1}>
+            <Text
+                maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
+                className="font-semibold text-primary"
+                style={monogramStyle}
+                numberOfLines={1}
+            >
                 {ticker.slice(0, MONOGRAM_LENGTH)}
             </Text>
         </View>

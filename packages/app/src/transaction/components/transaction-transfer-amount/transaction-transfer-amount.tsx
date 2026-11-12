@@ -5,6 +5,7 @@ import { MoneyText } from '../../../@generic/component/money-text/money-text';
 import { MoneyTextVariantEnum } from '../../../@generic/enum/money-text-variant.enum';
 import { useFormatInstrumentAmount } from '../../../i18n/hook/use-format-instrument-amount.hook';
 import { isSecurityInstrumentType } from '../../../instrument/utils/is-security-instrument-type.util';
+import { TransactionSecurityTradeAmount } from '../transaction-security-trade-amount/transaction-security-trade-amount';
 
 import type { AggregatedTransactionEntryInterface } from '../../interface/aggregated-transaction-entry.interface';
 
@@ -19,18 +20,7 @@ export const TransactionTransferAmount = ({ fromEntry, toEntry, accountId, testI
     const formatDigits = useFormatInstrumentAmount();
 
     if (isSecurityInstrumentType(toEntry.account.instrument.type) || isSecurityInstrumentType(fromEntry.account.instrument.type)) {
-        const moneyEntry = isSecurityInstrumentType(toEntry.account.instrument.type) ? fromEntry : toEntry;
-
-        return (
-            <View className="shrink-0 items-end" testID={testID}>
-                <MoneyText
-                    amount={convertFromMicroUnits(moneyEntry.amount)}
-                    instrumentSymbol={moneyEntry.account.instrument.symbol}
-                    variant={MoneyTextVariantEnum.ROW}
-                    tone="primary"
-                />
-            </View>
-        );
+        return <TransactionSecurityTradeAmount fromEntry={fromEntry} toEntry={toEntry} accountId={accountId} testID={testID} />;
     }
 
     const isIncoming = accountId === toEntry.account.id;

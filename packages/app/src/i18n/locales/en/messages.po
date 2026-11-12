@@ -691,6 +691,10 @@ msgstr "{marketName} market, {priceLabel}, {direction}"
 msgid "{matchingRulesCount, plural, one {# matching rule} other {# matching rules}}"
 msgstr "{matchingRulesCount, plural, one {# matching rule} other {# matching rules}}"
 
+#: src/brokerage/component/security-trade-form/security-trade-form.tsx
+msgid "{maxQuantity, plural, one {Only # share held} other {Only # shares held}}"
+msgstr "{maxQuantity, plural, one {Only # share held} other {Only # shares held}}"
+
 #: src/@generic/hook/use-format-file-size.hook.ts
 msgid "{megabytes} MB"
 msgstr "{megabytes} MB"
@@ -2411,6 +2415,10 @@ msgstr "Built-in categories are always there. Add your own to sort spending the 
 msgid "Burning"
 msgstr "Burning"
 
+#: src/transaction/hook/use-transaction-row-title.hook.ts
+msgid "Buy {title}"
+msgstr "Buy {title}"
+
 #: src/runway/component/runway-drivers/runway-drivers.tsx
 msgid "By category"
 msgstr "By category"
@@ -2516,11 +2524,15 @@ msgstr "Carry all"
 msgid "Carry savings"
 msgstr "Carry savings"
 
-#: src/account/component/institution-account-row/institution-account-row.tsx
 #: src/account/constant/account-type.constant.ts
 #: src/categorize-inbox/components/categorize-inbox-transfer-accounts/categorize-inbox-transfer-accounts.tsx
 #: src/inzhur/component/inzhur-operations-import-summary/inzhur-operations-import-summary.tsx
 #: src/onboarding/constant/onboarding-account-options.constant.ts
+msgid "Cash"
+msgstr "Cash"
+
+#: src/account/component/institution-account-row/institution-account-row.tsx
+msgctxt "Brokerage cash account"
 msgid "Cash"
 msgstr "Cash"
 
@@ -7811,6 +7823,10 @@ msgstr "Private account of {ownerName}"
 msgid "Private by design"
 msgstr "Private by design"
 
+#: src/app/(main)/securities/sell/[id].tsx
+msgid "Proceeds"
+msgstr "Proceeds"
+
 #: src/budget/components/budget-category-forecast/budget-category-forecast.tsx
 msgid "Projected {overAmount} over"
 msgstr "Projected {overAmount} over"
@@ -8277,6 +8293,10 @@ msgstr "Resume"
 msgid "Retry"
 msgstr "Retry"
 
+#: src/brokerage/component/security-position-gain-line/security-position-gain-line.tsx
+msgid "return"
+msgstr "return"
+
 #: src/market-data/component/currency-market-return-row/currency-market-return-row.tsx
 #: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
 msgid "Return"
@@ -8677,6 +8697,10 @@ msgstr "Selected"
 #: src/app/(main)/securities/sell/[id].tsx
 msgid "Sell"
 msgstr "Sell"
+
+#: src/transaction/hook/use-transaction-row-title.hook.ts
+msgid "Sell {title}"
+msgstr "Sell {title}"
 
 #: src/household/component/household-invite-row/household-invite-row.tsx
 msgid "Send an invitation with Messages"
@@ -9972,6 +9996,7 @@ msgstr "Top-ups"
 #: src/account/component/debt-account-card/debt-account-card.tsx
 #: src/account/component/debt-account-paid-off/debt-account-paid-off.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
+#: src/app/(main)/securities/buy/[id].tsx
 #: src/installment-plan/component/installment-plan-total-field/installment-plan-total-field.tsx
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "Total"

@@ -6,20 +6,18 @@ import { GroupedListSection } from '../../../@generic/component/grouped-list-sec
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { GROUPED_LIST_SUBTITLE_CLASSNAME } from '../../../@generic/constant/grouped-list-subtitle-class-name.constant';
 import { cn } from '../../../@generic/utils/cn.util';
-import { useAccountBalanceQuery } from '../../../account/query/use-account-balance.query';
 import { useFormatInstrumentAmount } from '../../../i18n/hook/use-format-instrument-amount.hook';
 import { BrokerageSelector } from '../../selector/brokerage.selector';
 
 import type { InstrumentEntityInterface } from '@budgie/contracts';
 
 interface Props {
-    readonly accountId: number;
+    readonly balance: number;
     readonly instrument: Pick<InstrumentEntityInterface, 'code' | 'name' | 'symbol' | 'type'>;
 }
 
-export const SecurityHoldingRow = ({ accountId, instrument }: Props) => {
+export const SecurityHoldingRow = ({ balance, instrument }: Props) => {
     const { t } = useLingui();
-    const { balance } = useAccountBalanceQuery(accountId);
     const formatInstrumentAmount = useFormatInstrumentAmount();
 
     const held = formatInstrumentAmount(balance, instrument.symbol, instrument.type);

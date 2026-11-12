@@ -690,6 +690,10 @@ msgstr "Markt {marketName}, {priceLabel}, {direction}"
 msgid "{matchingRulesCount, plural, one {# matching rule} other {# matching rules}}"
 msgstr "{matchingRulesCount, plural, one {# passende Regel} other {# passende Regeln}}"
 
+#: src/brokerage/component/security-trade-form/security-trade-form.tsx
+msgid "{maxQuantity, plural, one {Only # share held} other {Only # shares held}}"
+msgstr "{maxQuantity, plural, one {Nur # Anteil im Bestand} other {Nur # Anteile im Bestand}}"
+
 #: src/@generic/hook/use-format-file-size.hook.ts
 msgid "{megabytes} MB"
 msgstr "{megabytes} MB"
@@ -2410,6 +2414,10 @@ msgstr "Die integrierten Kategorien sind immer da. Füge eigene hinzu, um Ausgab
 msgid "Burning"
 msgstr "Cash-Burn"
 
+#: src/transaction/hook/use-transaction-row-title.hook.ts
+msgid "Buy {title}"
+msgstr "Kauf {title}"
+
 #: src/runway/component/runway-drivers/runway-drivers.tsx
 msgid "By category"
 msgstr "Nach Kategorie"
@@ -2515,13 +2523,17 @@ msgstr "Alles übertragen"
 msgid "Carry savings"
 msgstr "Ersparnis übertragen"
 
-#: src/account/component/institution-account-row/institution-account-row.tsx
 #: src/account/constant/account-type.constant.ts
 #: src/categorize-inbox/components/categorize-inbox-transfer-accounts/categorize-inbox-transfer-accounts.tsx
 #: src/inzhur/component/inzhur-operations-import-summary/inzhur-operations-import-summary.tsx
 #: src/onboarding/constant/onboarding-account-options.constant.ts
 msgid "Cash"
 msgstr "Bargeld"
+
+#: src/account/component/institution-account-row/institution-account-row.tsx
+msgctxt "Brokerage cash account"
+msgid "Cash"
+msgstr "Cash"
 
 #: src/categorize-inbox/components/categorize-inbox-section-chip/categorize-inbox-section-chip.tsx
 msgctxt "Categorize inbox section chip"
@@ -3495,7 +3507,7 @@ msgstr "Der Kauf konnte nicht gespeichert werden"
 
 #: src/brokerage/component/security-trade-form/security-trade-form.tsx
 msgid "Could not save the trade"
-msgstr "Der Trade konnte nicht gespeichert werden"
+msgstr "Die Transaktion konnte nicht gespeichert werden"
 
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "Could not seal the file"
@@ -7763,7 +7775,7 @@ msgstr "Kurs pro Zertifikat"
 
 #: src/brokerage/component/security-trade-form/security-trade-form.tsx
 msgid "Price per share"
-msgstr "Preis pro Aktie"
+msgstr "Preis pro Anteil"
 
 #: src/recurring/hook/use-recurring-alert-message.hook.ts
 msgid "Price went from {fromAmount} to {toAmount} on {changedDate}"
@@ -7809,6 +7821,10 @@ msgstr "Privates Konto von {ownerName}"
 #: src/settings/components/settings-about-footer/settings-about-footer.tsx
 msgid "Private by design"
 msgstr "Privat durch Design"
+
+#: src/app/(main)/securities/sell/[id].tsx
+msgid "Proceeds"
+msgstr "Erlös"
 
 #: src/budget/components/budget-category-forecast/budget-category-forecast.tsx
 msgid "Projected {overAmount} over"
@@ -8276,6 +8292,10 @@ msgstr "Fortsetzen"
 msgid "Retry"
 msgstr "Erneut versuchen"
 
+#: src/brokerage/component/security-position-gain-line/security-position-gain-line.tsx
+msgid "return"
+msgstr "Rendite"
+
 #: src/market-data/component/currency-market-return-row/currency-market-return-row.tsx
 #: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
 msgid "Return"
@@ -8677,6 +8697,10 @@ msgstr "Ausgewählt"
 msgid "Sell"
 msgstr "Verkaufen"
 
+#: src/transaction/hook/use-transaction-row-title.hook.ts
+msgid "Sell {title}"
+msgstr "Verkauf {title}"
+
 #: src/household/component/household-invite-row/household-invite-row.tsx
 msgid "Send an invitation with Messages"
 msgstr "Einladung mit Nachrichten senden"
@@ -8834,7 +8858,7 @@ msgstr "Mit deiner Familie geteilt"
 
 #: src/brokerage/component/security-trade-form/security-trade-form.tsx
 msgid "Shares"
-msgstr "Aktien"
+msgstr "Anteile"
 
 #: src/household/utils/get-household-share-labels.util.ts
 msgid "Sharing"
@@ -9971,6 +9995,7 @@ msgstr "Einzahlungen"
 #: src/account/component/debt-account-card/debt-account-card.tsx
 #: src/account/component/debt-account-paid-off/debt-account-paid-off.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
+#: src/app/(main)/securities/buy/[id].tsx
 #: src/installment-plan/component/installment-plan-total-field/installment-plan-total-field.tsx
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "Total"
