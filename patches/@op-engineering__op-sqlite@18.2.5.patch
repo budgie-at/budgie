@@ -1,0 +1,20 @@
+diff --git a/android/build.gradle b/android/build.gradle
+index 3049da40003924ef578a2c92e0eae9bcc5babd0f..2493e432cad923b9bdaf0b114879ae42ee11b0b7 100644
+--- a/android/build.gradle
++++ b/android/build.gradle
+@@ -64,12 +64,12 @@ def tokenizers = []
+ 
+ // On the example app, the package.json is located at the root of the project
+ // On the user app, the package.json is located at the root of the node_modules directory
+-def isUserApp = rootDir.absolutePath.contains("node_modules")
++def libraryDir = projectDir.canonicalFile.parentFile
++def isUserApp = libraryDir.absolutePath.contains("node_modules")
+ def packageJsonFile
+ 
+ if (isUserApp) {
+-  // Start from the root + 1 level up (to avoid detecting the op-sqlite/package.json) and traverse upwards to find the first package.json
+-  File currentDir = new File("$rootDir/../")
++  File currentDir = libraryDir.parentFile
+   packageJsonFile = null
+ 
+   // Try to find package.json by traversing upwards
