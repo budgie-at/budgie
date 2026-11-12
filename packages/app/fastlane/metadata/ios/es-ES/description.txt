@@ -3,21 +3,21 @@ Tu dinero es personal. Ahora decides con quién compartirlo.
 Budgie es un registro de gastos y planificador de presupuesto que prioriza el uso sin conexión. Sin cuenta de Budgie, sin suscripción y sin servidor de Budgie que guarde tus movimientos. Tu registro vive en tu iPhone y, a través de tu propio iCloud, te sigue a tus otros dispositivos y a quienes lo compartes.
 
 NOVEDAD: PRESUPUESTA EN FAMILIA
-• Elige qué cuentas y presupuestos compartir con tu pareja o familia a través de iCloud. Podrán ver y editar lo que compartas. Todo lo demás sigue siendo privado.
+• Elige qué cuentas y presupuestos compartir con tu pareja o familia a través de iCloud. Podrán ver y editar lo que compartas.
 • Tu iPhone y tu iPad se sincronizan solos, incluso tras días sin conexión.
-• Copias automáticas en iCloud, con cada registro cifrado en tu dispositivo antes de salir de él.
+• Copias automáticas en iCloud, con tus datos financieros cifrados en tu dispositivo antes de salir de él.
 
 NOVEDAD: ESCANEA UN RECIBO Y LISTO
 • Apunta la cámara a un recibo o elige uno desde Fotos o Archivos. El reconocimiento de texto se ejecuta en tu iPhone, crea un gasto listo para guardar y aplica tus reglas.
 • Registra los pagos con Apple Pay automáticamente con una automatización de Atajos.
 
-NOVEDAD: SINCRONIZACIÓN BANCARIA EN LA UE, SIN INTERMEDIARIOS
-• Conecta bancos de la UE como N26 y Trade Republic mediante tu propia app de Enable Banking. Tu teléfono habla directamente con el banco, sin servidor de Budgie por el medio.
+NOVEDAD: SINCRONIZACIÓN BANCARIA EN LA UE, DIRECTO A TU TELÉFONO
+• Conecta bancos de la UE como N26 y Trade Republic mediante tu propia app de Enable Banking. Los movimientos llegan a tu teléfono a través de Enable Banking y nunca pasan por un servidor de Budgie.
 • También se sincronizan Monobank y Binance, incluidas las compras con tarjeta de Binance, las recompensas de Earn y el staking.
 • Importa archivos CSV con las columnas emparejadas automáticamente, extractos PDF de Erste, exportaciones de PrivatBank y extractos de fondos de Inzhur.
 
 NOVEDAD: PREGUNTA A SIRI
-Pregunta a Siri, por ejemplo, cuánto has gastado en supermercado. Siri responde con tus gastos, lo que queda del presupuesto, saldos, patrimonio neto y los cargos de hoy, sin abrir la app. Los importes permanecen ocultos mientras el bloqueo con PIN esté activado.
+Pregunta a Siri, por ejemplo, cuánto has gastado en supermercado. Siri responde con tus gastos, lo que queda del presupuesto, saldos, patrimonio neto y los cargos de los próximos 7 días, sin abrir la app. Los importes permanecen ocultos mientras el bloqueo con PIN esté activado.
 
 PRESUPUESTOS QUE MIRAN AL FUTURO
 • Presupuestos semanales, quincenales, mensuales o anuales con límites por categoría y traspaso de lo que no gastaste.

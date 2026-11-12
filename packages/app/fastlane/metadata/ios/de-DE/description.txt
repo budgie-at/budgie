@@ -3,21 +3,21 @@ Dein Geld ist privat. Jetzt entscheidest du, wer es mitverwalten darf.
 Budgie ist ein Offline-first-Ausgabentracker und Budgetplaner. Kein Budgie-Konto, kein Abo und kein Budgie-Server, der deine Buchungen speichert. Dein Haushaltsbuch liegt auf deinem iPhone und folgt dir über dein eigenes iCloud auf deine anderen Geräte und zu den Menschen, mit denen du teilst.
 
 NEU: GEMEINSAM MIT DER FAMILIE PLANEN
-• Wähle aus, welche Konten und Budgets du über iCloud mit deinem Partner oder deiner Familie teilst. Sie können ansehen und bearbeiten, was du freigibst. Alles andere bleibt privat.
+• Wähle aus, welche Konten und Budgets du über iCloud mit deinem Partner oder deiner Familie teilst. Sie können ansehen und bearbeiten, was du freigibst.
 • Dein eigenes iPhone und iPad bleiben automatisch synchron, auch nach Tagen ohne Internet.
-• Automatische iCloud-Backups, bei denen jeder Eintrag auf deinem Gerät verschlüsselt wird, bevor er es verlässt.
+• Automatische iCloud-Backups, bei denen deine Finanzdaten auf deinem Gerät verschlüsselt werden, bevor sie es verlassen.
 
 NEU: BELEG SCANNEN, FERTIG
 • Richte die Kamera auf einen Kassenzettel oder wähle ihn aus Fotos oder Dateien. Die Texterkennung läuft auf deinem iPhone, erstellt eine fertige Ausgabe zum Speichern und wendet deine Regeln an.
 • Erfasse Apple-Pay-Zahlungen automatisch mit einer Automation in der Kurzbefehle-App.
 
-NEU: EU-BANKSYNC OHNE UMWEG
-• Verbinde EU-Banken wie N26 und Trade Republic über deine eigene Enable-Banking-App. Dein Telefon spricht direkt mit der Bank. Es gibt keinen Budgie-Server dazwischen.
+NEU: EU-BANKSYNC DIREKT AUF DEIN TELEFON
+• Verbinde EU-Banken wie N26 und Trade Republic über deine eigene Enable-Banking-App. Die Buchungen kommen über Enable Banking auf dein Telefon und laufen nie über einen Budgie-Server.
 • Auch Monobank und Binance werden synchronisiert, einschließlich Binance-Kartenkäufen, Earn-Erträgen und Staking.
 • Importiere CSV-Dateien mit automatisch zugeordneten Spalten, PDF-Auszüge von Erste, Exporte der PrivatBank und Auszüge von Inzhur-Fonds.
 
 NEU: SIRI FRAGEN
-Frag Siri zum Beispiel, wie viel du für Lebensmittel ausgegeben hast. Siri antwortet mit deinen Ausgaben, dem Rest deines Budgets, Kontosalden, Nettovermögen und den heute anstehenden Abbuchungen, ohne dass du die App öffnest. Beträge bleiben verborgen, solange die PIN-Sperre aktiv ist.
+Frag Siri zum Beispiel, wie viel du für Lebensmittel ausgegeben hast. Siri antwortet mit deinen Ausgaben, dem Rest deines Budgets, Kontosalden, Nettovermögen und den Abbuchungen der nächsten 7 Tage, ohne dass du die App öffnest. Beträge bleiben verborgen, solange die PIN-Sperre aktiv ist.
 
 BUDGETS MIT WEITBLICK
 • Wöchentliche, zweiwöchentliche, monatliche oder jährliche Budgets mit Kategorienlimits und Übertrag für alles, was du nicht ausgegeben hast.

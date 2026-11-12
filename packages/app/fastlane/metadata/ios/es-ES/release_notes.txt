@@ -1,10 +1,10 @@
 La mayor actualización de Budgie hasta ahora: comparte presupuestos en familia, escanea recibos y sincroniza bancos de la UE.
 
-• Presupuesto compartido: elige qué cuentas y presupuestos compartir con tu pareja o tu familia a través de iCloud. Todo lo demás sigue siendo privado.
-• Sincronización y copia en iCloud: tu iPhone y tu iPad se mantienen sincronizados, con cada registro cifrado en tu dispositivo antes de salir de él.
+• Presupuesto compartido: elige qué cuentas y presupuestos compartir con tu pareja o tu familia a través de iCloud.
+• Sincronización y copia en iCloud: tu iPhone y tu iPad se mantienen sincronizados, con tus datos financieros cifrados en tu dispositivo antes de salir de él.
 • Escanea recibos con la cámara o elígelos desde Fotos o Archivos. El reconocimiento de texto se ejecuta en tu iPhone.
-• Sincronización bancaria en la UE: conecta bancos como N26 y Trade Republic mediante tu propia app de Enable Banking, sin servidor de Budgie por el medio.
-• Pregunta a Siri cuánto has gastado, cuánto queda de tu presupuesto, tus saldos y los cargos previstos para hoy.
+• Sincronización bancaria en la UE: conecta bancos como N26 y Trade Republic mediante tu propia app de Enable Banking. Los movimientos nunca pasan por un servidor de Budgie.
+• Pregunta a Siri cuánto has gastado, cuánto queda de tu presupuesto, tus saldos y los cargos de los próximos 7 días.
 • Presupuestos renovados: periodos de semanales a anuales, traspaso de lo no gastado, una cifra diaria disponible sin riesgo, una previsión de ritmo, fondos de reserva para pagos anuales y presupuestos para eventos.
 • Pagos recurrentes más inteligentes: las suscripciones, las facturas y los ingresos recurrentes se detectan automáticamente, y puedes añadir los tuyos.
 • Todas las pantallas pulidas, desde Inicio y movimientos hasta la bandeja de clasificación y los ajustes.

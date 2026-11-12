@@ -3,21 +3,21 @@ Votre argent est personnel. Désormais, vous choisissez avec qui le partager.
 Budgie est un suivi de dépenses et un planificateur de budget pensé pour le hors ligne. Aucun compte Budgie, aucun abonnement, aucun serveur Budgie qui conserve vos opérations. Votre registre vit sur votre iPhone et, via votre propre iCloud, vous suit sur vos autres appareils et chez ceux avec qui vous le partagez.
 
 NOUVEAU : BUDGET À PLUSIEURS, EN FAMILLE
-• Choisissez les comptes et budgets à partager avec votre conjoint ou votre famille via iCloud. Ils peuvent consulter et modifier ce que vous partagez. Le reste demeure privé.
+• Choisissez les comptes et budgets à partager avec votre conjoint ou votre famille via iCloud. Ils peuvent consulter et modifier ce que vous partagez.
 • Votre iPhone et votre iPad restent synchronisés, même après des jours hors ligne.
-• Sauvegardes iCloud automatiques, chaque enregistrement chiffré sur votre appareil avant de le quitter.
+• Sauvegardes iCloud automatiques, vos données financières chiffrées sur votre appareil avant de le quitter.
 
 NOUVEAU : SCANNEZ UN REÇU, C’EST FAIT
 • Pointez la caméra sur un reçu ou choisissez-le dans Photos ou Fichiers. La reconnaissance de texte s’exécute sur votre iPhone, prépare une dépense prête à enregistrer et applique vos règles.
 • Enregistrez automatiquement vos paiements Apple Pay grâce à une automatisation Raccourcis.
 
-NOUVEAU : SYNCHRONISATION DES BANQUES DE L’UE, SANS INTERMÉDIAIRE
-• Connectez des banques de l’UE comme N26 et Trade Republic via votre app Enable Banking. Votre téléphone dialogue directement avec la banque, sans serveur Budgie.
+NOUVEAU : SYNCHRONISATION DES BANQUES DE L’UE, DIRECTEMENT SUR VOTRE TÉLÉPHONE
+• Connectez des banques de l’UE comme N26 et Trade Republic via votre app Enable Banking. Les opérations arrivent sur votre téléphone via Enable Banking et ne transitent jamais par un serveur Budgie.
 • Monobank et Binance aussi, y compris achats par carte Binance, récompenses Earn et staking.
 • Importez des CSV aux colonnes associées automatiquement, des relevés PDF Erste, des exports PrivatBank et des relevés de fonds Inzhur.
 
 NOUVEAU : DEMANDEZ À SIRI
-Demandez par exemple à Siri combien vous avez dépensé en courses. Siri répond avec vos dépenses, le reste de votre budget, vos soldes, votre patrimoine net et les prélèvements du jour, sans ouvrir l’app. Les montants restent masqués tant que le code PIN est activé.
+Demandez par exemple à Siri combien vous avez dépensé en courses. Siri répond avec vos dépenses, le reste de votre budget, vos soldes, votre patrimoine net et les prélèvements des 7 prochains jours, sans ouvrir l’app. Les montants restent masqués tant que le code PIN est activé.
 
 DES BUDGETS QUI ANTICIPENT
 • Budgets hebdomadaires, bimensuels, mensuels ou annuels avec plafonds par catégorie et report du non-dépensé.

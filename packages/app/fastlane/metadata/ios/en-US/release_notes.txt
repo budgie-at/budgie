@@ -1,10 +1,10 @@
 The biggest Budgie update yet: share budgets with your family, scan receipts and sync EU banks.
 
-• Shared budgets: choose which accounts and budgets to share with your partner or family through iCloud. Everything else stays private.
-• iCloud sync and backup: your iPhone and iPad stay in sync, with every record encrypted on your device before it leaves.
+• Shared budgets: choose which accounts and budgets to share with your partner or family through iCloud.
+• iCloud sync and backup: your iPhone and iPad stay in sync, with your financial data encrypted on your device before it leaves.
 • Scan receipts with the camera, or pick them from Photos or Files. Text recognition runs on your iPhone.
-• EU bank sync: connect banks such as N26 and Trade Republic through your own Enable Banking app, with no Budgie server in between.
-• Ask Siri how much you spent, what is left in your budget, your balances and today's upcoming charges.
+• EU bank sync: connect banks such as N26 and Trade Republic through your own Enable Banking app. Transactions never pass through a Budgie server.
+• Ask Siri how much you spent, what is left in your budget, your balances and charges due in the next 7 days.
 • Budgets, rebuilt: weekly to yearly periods, rollover, a daily safe-to-spend figure, a pace forecast, sinking funds for yearly bills and event budgets.
 • Smarter recurring payments: subscriptions, bills and recurring income are detected automatically, and you can add your own.
 • Every screen polished, from Home and transactions to the categorize inbox and settings.

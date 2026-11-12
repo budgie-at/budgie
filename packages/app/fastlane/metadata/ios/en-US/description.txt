@@ -3,21 +3,21 @@ Your money is personal. Now you choose who shares it.
 Budgie is an offline-first expense tracker and budget planner. No Budgie account, no subscription and no Budgie server holding your transactions. Your ledger lives on your iPhone, and through your own iCloud it follows you to your other devices and to the people you share it with.
 
 NEW: BUDGET TOGETHER AS A FAMILY
-• Choose which accounts and budgets to share with your partner or family through iCloud. They can see and edit what you share. Everything else stays private.
+• Choose which accounts and budgets to share with your partner or family through iCloud. They can see and edit what you share.
 • Your own iPhone and iPad stay in sync automatically, even after days offline.
-• Automatic iCloud backups, with every record encrypted on your device before it leaves.
+• Automatic iCloud backups, with your financial data encrypted on your device before it leaves.
 
 NEW: SCAN A RECEIPT, DONE
 • Point the camera at a receipt, or pick one from Photos or Files. Text recognition runs on your iPhone, fills in a ready-to-save expense and applies your rules.
 • Capture Apple Pay taps automatically with a Shortcuts automation.
 
-NEW: EU BANK SYNC, WITH NO MIDDLEMAN
-• Connect EU banks such as N26 and Trade Republic through your own Enable Banking app. Your phone talks to the bank directly. There is no Budgie server in between.
+NEW: EU BANK SYNC, STRAIGHT TO YOUR PHONE
+• Connect EU banks such as N26 and Trade Republic through your own Enable Banking app. Transactions arrive on your phone through Enable Banking and never pass through a Budgie server.
 • Monobank and Binance sync too, including Binance card purchases, Earn rewards and staking.
 • Import CSV files with columns matched automatically, Erste PDF statements, PrivatBank exports and Inzhur fund statements.
 
 NEW: ASK SIRI
-"How much did I spend on groceries?" Siri answers with your spending, what is left in your budget, account balances, net worth and today's upcoming charges, without opening the app. Amounts stay hidden while your PIN lock is on.
+"How much did I spend on groceries?" Siri answers with your spending, what is left in your budget, account balances, net worth and charges due in the next 7 days, without opening the app. Amounts stay hidden while your PIN lock is on.
 
 BUDGETS THAT LOOK AHEAD
 • Weekly, biweekly, monthly or yearly budgets with category limits, and rollover for what you did not spend.
