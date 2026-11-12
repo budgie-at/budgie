@@ -1,37 +1,9 @@
 appId: ${APP_ID}
 ---
-- openLink: budgie://pin-setup?mode=CREATE
-- extendedWaitUntil:
-      visible:
-          id: PinPage.Container
-      timeout: 60000
-- runFlow: enter-pin.yaml
-- waitForAnimationToEnd
-- runFlow: enter-pin.yaml
-- extendedWaitUntil:
-      visible:
-          id: 'PinScreen\.ForgotPinButton|TabBar\.Settings|PageHeader\.BackButton'
-      timeout: 90000
-- runFlow:
-      when:
-          visible:
-              id: PinScreen.ForgotPinButton
-      file: enter-pin.yaml
-- extendedWaitUntil:
-      visible:
-          id: 'TabBar\.Settings|PageHeader\.BackButton'
-      timeout: 15000
-- runFlow:
-      when:
-          notVisible:
-              id: TabBar.Settings
-      commands:
-          - tapOn:
-                id: PageHeader.BackButton
 - openLink: budgie://settings
 - extendedWaitUntil:
       visible:
-          id: SettingsPage.DataEncryption.State.On
-      timeout: 15000
+          id: SettingsPage.DataEncryption.State.Off
+      timeout: 60000
 - waitForAnimationToEnd
 - takeScreenshot: 07-settings
