@@ -337,8 +337,8 @@ install_android_database() {
         sleep 1
     done
 
-    adb shell "settings put global hide_error_dialogs 1 && am broadcast -a android.intent.action.CLOSE_SYSTEM_DIALOGS >/dev/null"
-    ( tail -n0 -F "$RUNNER_TEMP"/mobile-ci-emulator-5554.log >&2 & for i in $(seq 1 20); do sleep 2; echo "debug t=$((i*2)) $(cat /sys/fs/cgroup/memory.current) $(grep -E '^(anon|file) ' /sys/fs/cgroup/memory.stat | tr '\n' ' ') qemu=$(ps -C qemu-system-x86_64-headless -o rss= | tr -d ' ')"; done; kill %1 ) >&2 &
+    adb shell "setprop debug.hwui.renderer skiagl && settings put global hide_error_dialogs 1 && am broadcast -a android.intent.action.CLOSE_SYSTEM_DIALOGS >/dev/null"
+    ( sleep 20; echo "debug qemu=$(ps -C qemu-system-x86_64-headless -o rss= | tr -d ' ') renderer=$(adb shell getprop debug.hwui.renderer 2>&1)"; find /tmp/android-* -path '*crash*' -type f 2>/dev/null | head; tail -n 15 "$RUNNER_TEMP"/mobile-ci-emulator-5554.log ) >&2 &
     adb shell "am force-stop $APP_ID && rm -f $app_data_directory/shared_prefs/SecureStore*.xml $files_directory/SQLite/budgie.db* && mkdir -p $files_directory/SQLite $files_directory/E2EFixtures"
     adb push "$PREPARED_DATABASE_PATH" "$files_directory/SQLite/budgie.db" >/dev/null
 
