@@ -19,9 +19,9 @@
         {
             "platform": "android",
             "device": "tablet",
-            "width": 1600,
-            "height": 2560,
-            "density": 320,
+            "width": 1200,
+            "height": 1920,
+            "density": 240,
             "locales": ["en", "fr", "uk", "de", "es"],
             "appearances": ["dark"]
         }

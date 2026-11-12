@@ -46,7 +46,7 @@ with the cutout rectangle leaves only the screen opening.
 
 `--device phone` and `--device tablet` compose the Play set from the Android
 captures under `raw/android/<phone|tablet>/` (`.github/store-screenshots-android.config.json`
-captures them at 1080x2100 and 1600x2560, so every slide stays under Play's 2:1
+captures them at 1080x2100 and 1200x1920, so every slide stays under Play's 2:1
 aspect limit). Play has no device frame to borrow, so `draw_screen_frame` in
 `frame-device.sh` draws a plain rounded bezel around the capture. The slides
 land in fastlane supply's layout, `metadata/android/<locale>/images/phoneScreenshots`
