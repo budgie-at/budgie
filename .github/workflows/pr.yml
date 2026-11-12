@@ -349,7 +349,7 @@ jobs:
             test-framework: e2e
             e2e-dir: e2e
             e2e-runner-labels: '["self-hosted","linux-portable-4x8"]'
-            e2e-workers: '10'
+            e2e-workers: '9'
             e2e-retries: '1'
             e2e-timeout-minutes: 45
             # The public gateway, not the LAN address: only one Linux host shares the farm's LAN,
@@ -410,7 +410,7 @@ jobs:
             test-framework: e2e
             e2e-dir: e2e
             e2e-runner-labels: '["self-hosted","linux-portable-4x8"]'
-            e2e-workers: '3'
+            e2e-workers: '4'
             e2e-retries: '1'
             e2e-timeout-minutes: 60
             simlock-url: https://simlock.vitaliiyehorov.dev
