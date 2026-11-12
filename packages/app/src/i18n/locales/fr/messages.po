@@ -8703,10 +8703,6 @@ msgstr "Mis de côté"
 msgid "Set budget"
 msgstr "Définir un budget"
 
-#: src/budget/constant/budget-save-blocker-label.constant.ts
-msgid "Set every category limit to continue"
-msgstr "Définissez chaque limite de catégorie pour continuer"
-
 #: src/account/component/deposit-maturity-date-field/deposit-maturity-date-field.tsx
 msgid "Set Maturity Date"
 msgstr "Définir la date d'échéance"

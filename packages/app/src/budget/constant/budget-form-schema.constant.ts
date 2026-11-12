@@ -11,7 +11,7 @@ const MAX_PERIOD_START_DAY = 28;
 
 export const BudgetCategoryLimitFormSchema = Schema.Struct({
     categoryId: Schema.Finite.check(Schema.isInt(), Schema.isGreaterThan(0)),
-    limitAmount: Schema.Finite.check(Schema.isGreaterThan(0)),
+    limitAmount: Schema.Finite.check(Schema.isGreaterThanOrEqualTo(0)),
     rolloverMode: Schema.Enum(BudgetRolloverModeEnum)
 });
 

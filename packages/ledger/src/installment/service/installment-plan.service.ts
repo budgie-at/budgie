@@ -24,7 +24,7 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { AccountArchiveService } from '../../account/service/account-archive.service';
 import { AccountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
@@ -60,7 +60,10 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
         const isSamePlanExpense = (
             candidate: Pick<TransactionEntityInterface, 'externalSource' | 'title'>,
             reference: Pick<TransactionEntityInterface, 'externalSource' | 'title'>
-        ) => candidate.externalSource === reference.externalSource && normalizeTitle(candidate.title) === normalizeTitle(reference.title);
+        ) =>
+            isNotEmptyString(normalizeTitle(reference.title)) &&
+            candidate.externalSource === reference.externalSource &&
+            normalizeTitle(candidate.title) === normalizeTitle(reference.title);
         const isAcceptableFlexibleAmount = (amount: number, regularAmount: number, remainingAmount: number) => {
             const multiple = Math.round(amount / regularAmount);
 

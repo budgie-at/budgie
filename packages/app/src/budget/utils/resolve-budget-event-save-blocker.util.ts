@@ -23,10 +23,6 @@ export const resolveBudgetEventSaveBlocker = (values: BudgetEventFormValues): Me
         return BUDGET_SAVE_BLOCKER_LABEL.limit;
     }
 
-    if (values.categoryLimits.some(limit => limit.limitAmount <= 0)) {
-        return BUDGET_SAVE_BLOCKER_LABEL.categoryLimit;
-    }
-
     if (budgetComputeAllocation({ ...values, otherLimit: 0 }).isOverAllocated) {
         return BUDGET_SAVE_BLOCKER_LABEL.overAllocated;
     }

@@ -8703,10 +8703,6 @@ msgstr "Відкладено"
 msgid "Set budget"
 msgstr "Створити бюджет"
 
-#: src/budget/constant/budget-save-blocker-label.constant.ts
-msgid "Set every category limit to continue"
-msgstr "Встановіть усі ліміти категорій, щоб продовжити"
-
 #: src/account/component/deposit-maturity-date-field/deposit-maturity-date-field.tsx
 msgid "Set Maturity Date"
 msgstr "Встановити дату погашення"

@@ -8703,10 +8703,6 @@ msgstr "Zurückgelegt"
 msgid "Set budget"
 msgstr "Budget festlegen"
 
-#: src/budget/constant/budget-save-blocker-label.constant.ts
-msgid "Set every category limit to continue"
-msgstr "Alle Kategorielimits festlegen, um fortzufahren"
-
 #: src/account/component/deposit-maturity-date-field/deposit-maturity-date-field.tsx
 msgid "Set Maturity Date"
 msgstr "Fälligkeitsdatum festlegen"

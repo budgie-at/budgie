@@ -42,6 +42,14 @@ it.effect('rejects a fixed budget whose allocation exceeds the limit', () =>
     })
 );
 
+it.effect('accepts a category without a limit', () =>
+    Effect.sync(() => {
+        const categoryLimits = [...FORM.categoryLimits, { categoryId: 2, limitAmount: 0, rolloverMode: BudgetRolloverModeEnum.NONE }];
+
+        expect(Schema.decodeExit(BudgetFormSchema)({ ...FORM, categoryLimits })._tag).toBe('Success');
+    })
+);
+
 it.effect('does not require a fixed amount or a fitting allocation when the limit comes from income', () =>
     Effect.sync(() => {
         const incomeForm = { ...FORM, limitSource: BudgetLimitSourceEnum.INCOME_RECEIVED, overallLimit: 0, otherLimit: 5000 };

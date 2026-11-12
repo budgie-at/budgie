@@ -755,6 +755,53 @@ describe('installment plan', () => {
                 expect((yield* fetchDebtProgress(accountId)).outstandingAmount).toBe(0);
             }).pipe(Effect.provide(TestLayer))
         );
+
+        it.effect('converts an untitled cash expense without linking other untitled expenses', () =>
+            Effect.gen(function* () {
+                const cash = yield* seedBankSyncAccount('Cash', null, 'UA-flex-untitled');
+
+                yield* seedLaptop(cash.id, 84, new Date(2026, 9, 12, 10), '');
+                yield* seed.manualExpense({
+                    accountId: cash.id,
+                    amount: toMicroUnits(100),
+                    operatedAt: new Date(2026, 10, 1, 10),
+                    entries: [
+                        { amount: toMicroUnits(84), categoryId: null },
+                        { amount: toMicroUnits(16), categoryId: null }
+                    ]
+                });
+
+                const first = yield* seedLaptop(cash.id, 84, new Date(2026, 10, 12, 10), '');
+
+                yield* seedLaptop(cash.id, 84, new Date(2026, 11, 12, 10), '');
+
+                const { accountId } = yield* convert(first.id, 12, 1_008);
+
+                expect(yield* fetchAttachedTransactionIds(accountId)).toEqual([first.id]);
+            }).pipe(Effect.provide(TestLayer))
+        );
+
+        it.effect('skips a split expense that only partly matches the payment', () =>
+            Effect.gen(function* () {
+                const cash = yield* seedBankSyncAccount('Cash', null, 'UA-flex-split');
+
+                yield* seed.manualExpense({
+                    accountId: cash.id,
+                    title: 'Laptop',
+                    amount: toMicroUnits(1_100),
+                    operatedAt: new Date(2026, 0, 12, 10),
+                    entries: [
+                        { amount: toMicroUnits(1_000), categoryId: null },
+                        { amount: toMicroUnits(100), categoryId: null }
+                    ]
+                });
+
+                const second = yield* seedLaptop(cash.id, 1_000, new Date(2026, 1, 12, 10));
+                const { accountId } = yield* convert(second.id, 6, 6_000);
+
+                expect(yield* fetchAttachedTransactionIds(accountId)).toEqual([second.id]);
+            }).pipe(Effect.provide(TestLayer))
+        );
     });
 
     it.effect('reverts a plan back to standalone expenses and removes the plan account', () =>
