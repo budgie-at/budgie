@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.176.0](https://github.com/budgie-at/budgie/compare/v6.175.4...v6.176.0) (2026-11-12)
+
+### Features
+
+* **app:** refresh App Store listing for family sharing, receipts, EU banks and Siri ([#2177](https://github.com/budgie-at/budgie/issues/2177)) ([9f33a0d](https://github.com/budgie-at/budgie/commit/9f33a0d692607fceb80446d3c4aec54f72adb597))
+
+
 ## [6.175.4](https://github.com/budgie-at/budgie/compare/v6.175.3...v6.175.4) (2026-11-12)
 
 ### Bug Fixes
