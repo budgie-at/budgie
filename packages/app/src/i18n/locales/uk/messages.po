@@ -9372,7 +9372,7 @@ msgstr "Торкніться, щоб змінити знак"
 msgid "Tap to choose another"
 msgstr "Торкніться, щоб вибрати інший"
 
-#: src/@generic/component/search-input/search-input.tsx
+#: src/@generic/component/input-clear-button/input-clear-button.tsx
 msgid "Tap to clear"
 msgstr "Натисніть, щоб очистити"
 

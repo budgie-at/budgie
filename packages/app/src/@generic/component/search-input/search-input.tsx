@@ -1,7 +1,6 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
 import { ComponentProps, Ref } from 'react';
-import { Pressable, TextInput, View } from 'react-native';
+import { TextInput, View } from 'react-native';
 import Animated, { Keyframe } from 'react-native-reanimated';
 
 import { isNotEmptyString } from '@rnw-community/shared';
@@ -9,6 +8,7 @@ import { isNotEmptyString } from '@rnw-community/shared';
 import { EASE_OUT, MOTION_BASE_DURATION, MOTION_FADE_OUT } from '../../constant/motion.constant';
 import { cn } from '../../utils/cn.util';
 import { Icon } from '../icon/icon';
+import { InputClearButton } from '../input-clear-button/input-clear-button';
 
 interface Props extends ComponentProps<typeof TextInput> {
     readonly value: string;
@@ -39,8 +39,6 @@ export const SearchInput = (props: Props) => {
         submitBehavior,
         ...rest
     } = props;
-    const { t } = useLingui();
-
     const showClear = isNotEmptyString(value);
     const resolvedAutoCapitalize = autoCapitalize ?? 'none';
     const resolvedAutoCorrect = autoCorrect ?? false;
@@ -73,17 +71,7 @@ export const SearchInput = (props: Props) => {
             <View className={cn('ml-sm h-[32px] w-[32px] items-center justify-center', clearButtonClassName)}>
                 {showClear ? (
                     <Animated.View entering={ENTERING} exiting={MOTION_FADE_OUT}>
-                        <Pressable
-                            accessibilityLabel={t`Tap to clear`}
-                            accessibilityRole="button"
-                            className={cn('h-[32px] w-[32px] items-center justify-center', clearButtonClassName)}
-                            hitSlop={8}
-                            onPress={handleClear}
-                        >
-                            <View className="h-[18px] w-[18px] items-center justify-center rounded-full bg-secondary-foreground/70">
-                                <Icon icon={UserIconNameEnum.X} size={11} className="text-primary-reverse" />
-                            </View>
-                        </Pressable>
+                        <InputClearButton className={clearButtonClassName} onPress={handleClear} />
                     </Animated.View>
                 ) : null}
             </View>

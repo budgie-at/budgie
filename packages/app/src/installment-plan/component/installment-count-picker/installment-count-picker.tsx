@@ -70,6 +70,8 @@ export const InstallmentCountPicker = ({ selectedCount, minimumCount = MIN_INSTA
                         selectTextOnFocus
                         textAlign="right"
                         inputAccessoryViewID={ConvertToInstallmentModalSelector.CountKeyboardDone}
+                        returnKeyType="done"
+                        submitBehavior="blurAndSubmit"
                         className="h-auto min-h-[44px] min-w-[44px] px-0 py-0 text-(length:--text-xl) font-semibold text-primary tabular-nums"
                         accessibilityLabel={t`Number of months`}
                         accessibilityHint={t`Between ${lowestCount} and ${MAX_INSTALLMENT_COUNT} months`}

@@ -14,9 +14,9 @@ interface Props extends ComponentPropsWithRef<typeof TextInput> {
 const inputVariant = cva('text-primary rounded-2xl', {
     variants: {
         size: {
-            sm: 'h-[36px] px-xl text-md',
-            md: 'h-[44px] px-xl text-md',
-            lg: 'h-[62px] px-4xl text-(length:--text-lg)'
+            sm: 'h-[36px] px-xl text-md android:py-0',
+            md: 'h-[44px] px-xl text-md android:py-0',
+            lg: 'h-[62px] px-4xl text-(length:--text-lg) android:py-0'
         },
         status: {
             error: 'border border-destructive-corner bg-destructive-background/5 text-destructive-foreground',
@@ -32,6 +32,7 @@ const inputVariant = cva('text-primary rounded-2xl', {
 export const Input = ({ size = 'sm', status = 'default', borderless = false, className, ...rest }: Props) => (
     <TextInput
         placeholderTextColorClassName="accent-primary/50"
+        textAlignVertical="center"
         {...rest}
         className={cn(inputVariant({ size, status, borderless }), className)}
     />

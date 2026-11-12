@@ -9372,7 +9372,7 @@ msgstr "Touchez pour changer le signe"
 msgid "Tap to choose another"
 msgstr "Touchez pour en choisir un autre"
 
-#: src/@generic/component/search-input/search-input.tsx
+#: src/@generic/component/input-clear-button/input-clear-button.tsx
 msgid "Tap to clear"
 msgstr "Appuyez pour effacer"
 

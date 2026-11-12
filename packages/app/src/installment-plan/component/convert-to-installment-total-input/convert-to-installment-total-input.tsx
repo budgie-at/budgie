@@ -44,6 +44,8 @@ export const ConvertToInstallmentTotalInput = ({ planTotal, instrumentSymbol, on
                     selectTextOnFocus
                     textAlign="center"
                     inputAccessoryViewID={ConvertToInstallmentModalSelector.TotalKeyboardDone}
+                    returnKeyType="done"
+                    submitBehavior="blurAndSubmit"
                     className="font-medium text-primary"
                     accessibilityLabel={t`Plan total`}
                     accessibilityHint={t`The exact amount you will pay, fee included`}
