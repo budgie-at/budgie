@@ -637,10 +637,6 @@ msgstr "{held} у портфелі"
 msgid "{heldQuantity, plural, one {Only # share held} other {Only # shares held}}"
 msgstr "{heldQuantity, plural, one {Лише # частка в наявності} few {Лише # частки в наявності} many {Лише # часток в наявності} other {Лише # частки в наявності}}"
 
-#: src/brokerage/component/security-trade-quantity-hint/security-trade-quantity-hint.tsx
-msgid "{heldQuantity, plural, one {Up to # share} other {Up to # shares}}"
-msgstr "{heldQuantity, plural, one {До # частки} few {До # часток} many {До # часток} other {До # частки}}"
-
 #: src/@generic/component/collapsible-stats-section/collapsible-stats-section.tsx
 msgid "{hiddenCount, plural, one {Show # more} other {Show # more}}"
 msgstr "{hiddenCount, plural, one {Показати ще #} few {Показати ще #} many {Показати ще #} other {Показати ще #}}"
@@ -4643,10 +4639,6 @@ msgstr "Ввести покупку"
 msgid "Enter the backup's PIN"
 msgstr "Введіть PIN‑код резервної копії"
 
-#: src/brokerage/component/security-trade-quantity-hint/security-trade-quantity-hint.tsx
-msgid "Enter the number of shares to save"
-msgstr "Введіть кількість часток, щоб зберегти"
-
 #: src/auth/utils/get-pin-setup-meta.util.ts
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
 msgid "Enter the same PIN again."
@@ -7499,6 +7491,10 @@ msgstr "Частина вашої історії. Старіша активні�
 #: src/inzhur/component/inzhur-operations-details/inzhur-operations-details.tsx
 msgid "Partial export"
 msgstr "Частковий експорт"
+
+#: src/brokerage/component/brokerage-institution-row-detail/brokerage-institution-row-detail.tsx
+msgid "Partial value"
+msgstr "Часткова вартість"
 
 #: src/brokerage/component/brokerage-gain-line/brokerage-gain-line.tsx
 #: src/brokerage/component/brokerage-institution-row-detail/brokerage-institution-row-detail.tsx
@@ -10935,6 +10931,10 @@ msgstr "Ви використали {threshold}% ліміту для {categoryNa
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "You have used {threshold}% of your budget for spending outside category limits {thisPeriod}."
 msgstr "Ви використали {threshold}% бюджету на витрати поза лімітами категорій {thisPeriod}."
+
+#: src/brokerage/component/security-trade-quantity-hint/security-trade-quantity-hint.tsx
+msgid "You hold {heldQuantity} {symbol}"
+msgstr "У вас {heldQuantity} {symbol}"
 
 #: src/household/component/household-leave-row/household-leave-row.tsx
 msgid "You keep a copy of the shared data"

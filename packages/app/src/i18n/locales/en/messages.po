@@ -638,10 +638,6 @@ msgstr "{held} held"
 msgid "{heldQuantity, plural, one {Only # share held} other {Only # shares held}}"
 msgstr "{heldQuantity, plural, one {Only # share held} other {Only # shares held}}"
 
-#: src/brokerage/component/security-trade-quantity-hint/security-trade-quantity-hint.tsx
-msgid "{heldQuantity, plural, one {Up to # share} other {Up to # shares}}"
-msgstr "{heldQuantity, plural, one {Up to # share} other {Up to # shares}}"
-
 #: src/@generic/component/collapsible-stats-section/collapsible-stats-section.tsx
 msgid "{hiddenCount, plural, one {Show # more} other {Show # more}}"
 msgstr "{hiddenCount, plural, one {Show # more} other {Show # more}}"
@@ -4644,10 +4640,6 @@ msgstr "Enter purchase"
 msgid "Enter the backup's PIN"
 msgstr "Enter the backup's PIN"
 
-#: src/brokerage/component/security-trade-quantity-hint/security-trade-quantity-hint.tsx
-msgid "Enter the number of shares to save"
-msgstr "Enter the number of shares to save"
-
 #: src/auth/utils/get-pin-setup-meta.util.ts
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
 msgid "Enter the same PIN again."
@@ -7500,6 +7492,10 @@ msgstr "Part of your history. Older activity is not included."
 #: src/inzhur/component/inzhur-operations-details/inzhur-operations-details.tsx
 msgid "Partial export"
 msgstr "Partial export"
+
+#: src/brokerage/component/brokerage-institution-row-detail/brokerage-institution-row-detail.tsx
+msgid "Partial value"
+msgstr "Partial value"
 
 #: src/brokerage/component/brokerage-gain-line/brokerage-gain-line.tsx
 #: src/brokerage/component/brokerage-institution-row-detail/brokerage-institution-row-detail.tsx
@@ -10936,6 +10932,10 @@ msgstr "You have used {threshold}% of the limit for {categoryName} {thisPeriod}.
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "You have used {threshold}% of your budget for spending outside category limits {thisPeriod}."
 msgstr "You have used {threshold}% of your budget for spending outside category limits {thisPeriod}."
+
+#: src/brokerage/component/security-trade-quantity-hint/security-trade-quantity-hint.tsx
+msgid "You hold {heldQuantity} {symbol}"
+msgstr "You hold {heldQuantity} {symbol}"
 
 #: src/household/component/household-leave-row/household-leave-row.tsx
 msgid "You keep a copy of the shared data"

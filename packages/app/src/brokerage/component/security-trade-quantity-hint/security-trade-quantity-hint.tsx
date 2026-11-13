@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { useFormState, useWatch } from 'react-hook-form';
 import { AccessibilityInfo, Text } from 'react-native';
 
-import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { cn } from '../../../@generic/utils/cn.util';
 import { BrokerageSelector } from '../../selector/brokerage.selector';
@@ -13,9 +13,10 @@ import type { SecurityTradeFormValues } from '../../constant/security-trade-form
 
 interface Props {
     readonly maxQuantity: number | null;
+    readonly symbol: string;
 }
 
-export const SecurityTradeQuantityHint = ({ maxQuantity }: Props) => {
+export const SecurityTradeQuantityHint = ({ maxQuantity, symbol }: Props) => {
     const { t } = useLingui();
     const quantity = useWatch<SecurityTradeFormValues, 'quantity'>({ name: 'quantity' });
     const { errors } = useFormState<SecurityTradeFormValues>({ name: 'quantity' });
@@ -26,11 +27,8 @@ export const SecurityTradeQuantityHint = ({ maxQuantity }: Props) => {
     const error = isDefined(maxQuantity) && quantity > maxQuantity ? overHoldingError : serverError;
     const isError = isNotEmptyString(error);
     const toneClassName = isError ? 'text-destructive-foreground' : 'text-secondary-foreground';
-    const hint = isPositiveNumber(quantity) ? '' : t`Enter the number of shares to save`;
-    const availableLabel = isDefined(maxQuantity)
-        ? t({ message: plural(heldQuantity, { one: 'Up to # share', other: 'Up to # shares' }) })
-        : hint;
-    const label = isError ? error : availableLabel;
+    const heldLabel = isDefined(maxQuantity) ? t`You hold ${heldQuantity} ${symbol}` : '';
+    const label = isError ? error : heldLabel;
 
     useEffect(() => {
         if (isNotEmptyString(error)) {
@@ -40,7 +38,10 @@ export const SecurityTradeQuantityHint = ({ maxQuantity }: Props) => {
 
     return (
         <Text
-            className={cn('min-h-[18px] px-3xl pt-md text-[13px] leading-[18px]', toneClassName)}
+            className={cn('-mb-[26px] h-[26px] px-3xl pt-md text-[13px] leading-[18px]', toneClassName)}
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            maxFontSizeMultiplier={1}
             accessibilityLiveRegion="polite"
             testID={BrokerageSelector.QuantityHint}
         >

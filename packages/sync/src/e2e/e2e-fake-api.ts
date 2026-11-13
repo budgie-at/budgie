@@ -190,8 +190,15 @@ const E2E_SECURITIES = [
 const E2E_UNPRICED_SECURITY = 'BGNP';
 const SEARCH_QUERY_PATTERN = /[?&]q=([^&#]*)/u;
 const E2E_SECURITY_LATEST_CLOSE = 120;
-const E2E_SECURITY_DAILY_RISE = 2;
-const E2E_SECURITY_HISTORY_DAYS = 10;
+const E2E_SECURITY_DAILY_RISE = 0.4;
+const E2E_SECURITY_SWING = 4;
+const E2E_SECURITY_SWING_FREQUENCY = 0.7;
+const E2E_SECURITY_HISTORY_DAYS = 60;
+const e2eSecurityClose = (days: number) =>
+    Math.round(
+        (E2E_SECURITY_LATEST_CLOSE - days * E2E_SECURITY_DAILY_RISE - E2E_SECURITY_SWING * Math.sin(days * E2E_SECURITY_SWING_FREQUENCY)) *
+            100
+    ) / 100;
 
 const yahooChart = (currency: string, isPriced: boolean) => () => {
     const todayNoonSeconds = Math.floor(Date.now() / MILLISECONDS_PER_DAY) * SECONDS_PER_DAY + SECONDS_PER_DAY / 2;
@@ -204,9 +211,7 @@ const yahooChart = (currency: string, isPriced: boolean) => () => {
                     meta: { currency, ...(isPriced && { regularMarketPrice: E2E_SECURITY_LATEST_CLOSE }) },
                     timestamp: daysAgo.map(days => todayNoonSeconds - days * SECONDS_PER_DAY),
                     indicators: {
-                        quote: [
-                            { close: daysAgo.map(days => (isPriced ? E2E_SECURITY_LATEST_CLOSE - days * E2E_SECURITY_DAILY_RISE : null)) }
-                        ]
+                        quote: [{ close: daysAgo.map(days => (isPriced ? e2eSecurityClose(days) : null)) }]
                     }
                 }
             ]

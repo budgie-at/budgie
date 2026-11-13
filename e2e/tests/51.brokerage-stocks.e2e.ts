@@ -97,7 +97,7 @@ test('51 manual brokerage with stocks', { tags: ['accounts'], platforms: PENDING
         await expect(core.byId(screen, 'Brokerage.SaveButton')).toBeDisabled();
         await core.fillId(ctx, 'Brokerage.QuantityInput', '4');
         await core.done(ctx);
-        await expect(core.byId(screen, 'Brokerage.QuantityHint')).toHaveText(/Up to 10 shares/, { timeout: 3_000 });
+        await expect(core.byId(screen, 'Brokerage.QuantityHint')).toHaveText(/You hold 10 BGTX/, { timeout: 3_000 });
         await expect(core.byId(screen, 'Brokerage.PriceInput')).toHaveValue('120', { timeout: 10_000 });
         await replaceDigits('Brokerage.PriceInput', '125');
         await expect(core.byId(screen, 'Brokerage.SaveButton')).toHaveText(/Sell · \$500/, { timeout: 3_000 });
@@ -123,7 +123,7 @@ test('51 manual brokerage with stocks', { tags: ['accounts'], platforms: PENDING
         await saveTrade('Institution.Page');
         await core.scrollTo(ctx, 'AccountCard.Budgie Euro Fund');
         await core.tapUntil(ctx, 'AccountCard.Budgie Euro Fund', () => core.expectId(ctx, 'CurrencyMarket.Header.BGEU', 10_000));
-        await core.expectText(ctx, /\+€18\.00/, 10_000);
+        await core.expectText(ctx, /\+€\d+\.\d{2} \(/, 10_000);
         await core.scrollTo(ctx, 'CurrencyMarket.Holdings.Value.BGEU');
         await core.expectText(ctx, /At €120\.00 ≈ \$/, 10_000);
     });

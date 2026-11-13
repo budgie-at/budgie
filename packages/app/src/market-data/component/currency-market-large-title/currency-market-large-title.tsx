@@ -17,7 +17,7 @@ export const CurrencyMarketLargeTitle = ({ instrument, hasPrice }: Props) => {
     const caption = hasPrice && isDefined(instrument.marketCapRank) ? `${instrument.code} · #${instrument.marketCapRank}` : instrument.code;
 
     return (
-        <View className="gap-y-xxs" testID={CurrencyMarketPageSelector.Header(instrument.code)}>
+        <View className="gap-y-xxs pr-3xl" testID={CurrencyMarketPageSelector.Header(instrument.code)}>
             <View className="flex-row items-center gap-x-md">
                 <CurrencySelectorInstrumentIcon code={instrument.code} symbol={instrument.symbol} type={instrument.type} size={32} />
                 <Text accessibilityRole="header" className="text-primary min-w-0 flex-1 text-[28px] font-bold" {...CHROME_TITLE_TEXT_PROPS}>

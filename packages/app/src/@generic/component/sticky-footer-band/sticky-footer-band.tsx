@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { useWindowDimensions, View } from 'react-native';
 import { KeyboardStickyView } from 'react-native-keyboard-controller';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -16,10 +17,13 @@ const KEYBOARD_GAP = 12;
 
 export const StickyFooterBand = ({ children }: Props): ReactNode => {
     const { bottom } = useSafeAreaInsets();
+    const { height } = useWindowDimensions();
     const keyboardOffset = { closed: 0, opened: bottom - KEYBOARD_GAP };
+    const backdropStyle = { position: 'absolute', top: '100%', right: 0, left: 0, height } satisfies ViewStyle;
 
     return (
         <KeyboardStickyView style={STICKY_FOOTER_STYLE} offset={keyboardOffset}>
+            <View className="bg-surface" style={backdropStyle} pointerEvents="none" />
             <ScreenChromeFooter style={FOOTER_STYLE}>{children}</ScreenChromeFooter>
         </KeyboardStickyView>
     );

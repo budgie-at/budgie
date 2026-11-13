@@ -21,12 +21,10 @@ const CHARACTER_WIDTH_SCALE = 0.62;
 export const InstrumentMonogram = ({ code, size, className }: Props) => {
     const padding = Math.max(1, Math.round(size * PADDING_SCALE));
     const fittingLength = Math.floor((size - 2 * padding) / (MINIMUM_FONT_SIZE * CHARACTER_WIDTH_SCALE));
-    const ticker = code
-        .replaceAll(/[^a-z0-9]/giu, '')
-        .toUpperCase()
-        .slice(0, Math.min(TICKER_LENGTH, Math.max(MONOGRAM_LENGTH, fittingLength)));
+    const symbol = code.replaceAll(/[^a-z0-9]/giu, '').toUpperCase();
+    const ticker = symbol.length <= Math.min(TICKER_LENGTH, fittingLength) ? symbol : symbol.slice(0, MONOGRAM_LENGTH);
     const swatch = getChartSwatches([
-        ticker.split('').reduce((hash, character, index) => hash + character.charCodeAt(0) * (index + 1), 0)
+        symbol.split('').reduce((hash, character, index) => hash + character.charCodeAt(0) * (index + 1), 0)
     ]).at(0);
     const scale = ticker.length > MONOGRAM_LENGTH ? TICKER_SCALE : MONOGRAM_SCALE;
     const fontSize = Math.max(MINIMUM_FONT_SIZE, Math.round(size * scale));

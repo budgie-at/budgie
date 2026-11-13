@@ -1,4 +1,4 @@
-import { Trans } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { Text } from 'react-native';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
@@ -17,6 +17,7 @@ import type { AccountWithSyncEntityInterface } from '@budgie/contracts';
 
 const CAPTION_HOLDINGS_COUNT = 3;
 const STACKED_CAPTION_HOLDINGS_COUNT = 2;
+const CAPTION_MAX_LINES = 2;
 
 interface Props {
     readonly accounts: readonly AccountWithSyncEntityInterface[];
@@ -25,6 +26,7 @@ interface Props {
 }
 
 export const BrokerageInstitutionRowDetail = ({ accounts, accountsCountLabel, balancesByAccountId }: Props) => {
+    const { t } = useLingui();
     const isAmountProtected = useIsAmountProtected();
     const isStacked = useIsAccessibilityTextSize();
     const formatPercent = useFormatPercent();
@@ -39,7 +41,6 @@ export const BrokerageInstitutionRowDetail = ({ accounts, accountsCountLabel, ba
         .map(holding => (isAmountProtected ? holding.label : `${holding.label} ${formatPercent(holding.weight)}`))
         .join(' · ');
     const caption = isNotEmptyString(composition) ? composition : accountsCountLabel;
-    const captionLines = isStacked ? 0 : 1;
 
     if (!hasSecurities) {
         return <InstitutionRowDetail accounts={accounts} accountsCountLabel={accountsCountLabel} />;
@@ -50,7 +51,7 @@ export const BrokerageInstitutionRowDetail = ({ accounts, accountsCountLabel, ba
             <Text
                 className="text-[13px] text-secondary-foreground"
                 maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
-                numberOfLines={captionLines}
+                numberOfLines={CAPTION_MAX_LINES}
             >
                 {caption}
             </Text>
@@ -59,9 +60,10 @@ export const BrokerageInstitutionRowDetail = ({ accounts, accountsCountLabel, ba
                     <Text
                         className="text-[13px] text-secondary-foreground"
                         maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
-                        numberOfLines={captionLines}
+                        numberOfLines={CAPTION_MAX_LINES}
+                        accessibilityLabel={t`Partial value — some prices unavailable`}
                     >
-                        <Trans>Partial value — some prices unavailable</Trans>
+                        <Trans>Partial value</Trans>
                     </Text>
                 ) : (
                     <BrokerageReturnText gain={gain} percent={percent} instrumentSymbol={instrumentSymbol} />

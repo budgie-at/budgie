@@ -637,10 +637,6 @@ msgstr "{held} im Bestand"
 msgid "{heldQuantity, plural, one {Only # share held} other {Only # shares held}}"
 msgstr "{heldQuantity, plural, one {Nur # Anteil im Bestand} other {Nur # Anteile im Bestand}}"
 
-#: src/brokerage/component/security-trade-quantity-hint/security-trade-quantity-hint.tsx
-msgid "{heldQuantity, plural, one {Up to # share} other {Up to # shares}}"
-msgstr "{heldQuantity, plural, one {Bis zu # Anteil} other {Bis zu # Anteile}}"
-
 #: src/@generic/component/collapsible-stats-section/collapsible-stats-section.tsx
 msgid "{hiddenCount, plural, one {Show # more} other {Show # more}}"
 msgstr "{hiddenCount, plural, one {# weitere anzeigen} other {# weitere anzeigen}}"
@@ -4643,10 +4639,6 @@ msgstr "Kauf eingeben"
 msgid "Enter the backup's PIN"
 msgstr "Gib die PIN des Backups ein"
 
-#: src/brokerage/component/security-trade-quantity-hint/security-trade-quantity-hint.tsx
-msgid "Enter the number of shares to save"
-msgstr "Anzahl der Anteile eingeben, um zu speichern"
-
 #: src/auth/utils/get-pin-setup-meta.util.ts
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
 msgid "Enter the same PIN again."
@@ -7499,6 +7491,10 @@ msgstr "Teil deines Verlaufs. Ältere Aktivitäten sind nicht enthalten."
 #: src/inzhur/component/inzhur-operations-details/inzhur-operations-details.tsx
 msgid "Partial export"
 msgstr "Teilexport"
+
+#: src/brokerage/component/brokerage-institution-row-detail/brokerage-institution-row-detail.tsx
+msgid "Partial value"
+msgstr "Teilwert"
 
 #: src/brokerage/component/brokerage-gain-line/brokerage-gain-line.tsx
 #: src/brokerage/component/brokerage-institution-row-detail/brokerage-institution-row-detail.tsx
@@ -10935,6 +10931,10 @@ msgstr "Du hast {threshold} % des Limits für {categoryName} {thisPeriod} verbra
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "You have used {threshold}% of your budget for spending outside category limits {thisPeriod}."
 msgstr "Du hast {threshold} % deines Budgets für Ausgaben außerhalb der Kategorielimits {thisPeriod} verbraucht."
+
+#: src/brokerage/component/security-trade-quantity-hint/security-trade-quantity-hint.tsx
+msgid "You hold {heldQuantity} {symbol}"
+msgstr "Du hältst {heldQuantity} {symbol}"
 
 #: src/household/component/household-leave-row/household-leave-row.tsx
 msgid "You keep a copy of the shared data"

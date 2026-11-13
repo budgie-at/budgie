@@ -637,10 +637,6 @@ msgstr "{held} en cartera"
 msgid "{heldQuantity, plural, one {Only # share held} other {Only # shares held}}"
 msgstr "{heldQuantity, plural, one {Solo tienes # participación} other {Solo tienes # participaciones}}"
 
-#: src/brokerage/component/security-trade-quantity-hint/security-trade-quantity-hint.tsx
-msgid "{heldQuantity, plural, one {Up to # share} other {Up to # shares}}"
-msgstr "{heldQuantity, plural, one {Hasta # participación} other {Hasta # participaciones}}"
-
 #: src/@generic/component/collapsible-stats-section/collapsible-stats-section.tsx
 msgid "{hiddenCount, plural, one {Show # more} other {Show # more}}"
 msgstr "{hiddenCount, plural, one {Mostrar # más} other {Mostrar # más}}"
@@ -4643,10 +4639,6 @@ msgstr "Introducir compra"
 msgid "Enter the backup's PIN"
 msgstr "Introduce el PIN de la copia de seguridad"
 
-#: src/brokerage/component/security-trade-quantity-hint/security-trade-quantity-hint.tsx
-msgid "Enter the number of shares to save"
-msgstr "Introduce el número de participaciones para guardar"
-
 #: src/auth/utils/get-pin-setup-meta.util.ts
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
 msgid "Enter the same PIN again."
@@ -7499,6 +7491,10 @@ msgstr "Parte de tu historial. La actividad anterior no está incluida."
 #: src/inzhur/component/inzhur-operations-details/inzhur-operations-details.tsx
 msgid "Partial export"
 msgstr "Exportación parcial"
+
+#: src/brokerage/component/brokerage-institution-row-detail/brokerage-institution-row-detail.tsx
+msgid "Partial value"
+msgstr "Valor parcial"
 
 #: src/brokerage/component/brokerage-gain-line/brokerage-gain-line.tsx
 #: src/brokerage/component/brokerage-institution-row-detail/brokerage-institution-row-detail.tsx
@@ -10935,6 +10931,10 @@ msgstr "Has usado el {threshold}% del límite de {categoryName} {thisPeriod}."
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "You have used {threshold}% of your budget for spending outside category limits {thisPeriod}."
 msgstr "Has usado el {threshold}% de tu presupuesto para gastos fuera de los límites por categoría {thisPeriod}."
+
+#: src/brokerage/component/security-trade-quantity-hint/security-trade-quantity-hint.tsx
+msgid "You hold {heldQuantity} {symbol}"
+msgstr "Tienes {heldQuantity} {symbol}"
 
 #: src/household/component/household-leave-row/household-leave-row.tsx
 msgid "You keep a copy of the shared data"
