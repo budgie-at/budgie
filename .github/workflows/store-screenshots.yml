@@ -42,7 +42,7 @@ jobs:
             group: ios-simulator-farm
             queue: max
             cancel-in-progress: false
-        uses: rnw-community/mobile-ci/.github/workflows/store-screenshots.yml@30a27b3a7efc2fa550627e0c0767829f8ab219c3 # v4.12.4
+        uses: rnw-community/mobile-ci/.github/workflows/store-screenshots.yml@e1b51d801ddbf75a07408822f581e387ac2783e1 # v4.13.0
         with:
             control-runner-labels: '["self-hosted","linux-portable-2x4"]'
             config-path: .github/store-screenshots.config.json
@@ -99,7 +99,7 @@ jobs:
             group: android-store-screenshots
             queue: max
             cancel-in-progress: false
-        uses: rnw-community/mobile-ci/.github/workflows/store-screenshots.yml@8b890c9402471d8ac6da1aded7fb4a24bc785fd1 # feat/store-screenshots-android-e2e
+        uses: rnw-community/mobile-ci/.github/workflows/store-screenshots.yml@e1b51d801ddbf75a07408822f581e387ac2783e1 # v4.13.0
         with:
             control-runner-labels: '["self-hosted","linux-portable-2x4"]'
             config-path: .github/store-screenshots-android.config.json

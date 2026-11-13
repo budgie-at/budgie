@@ -1,7 +1,7 @@
 #!/bin/bash
-# Source mobile-ci's shared simslim helper at the pinned ref (v4.12.4), cached per ref.
+# Source mobile-ci's shared simslim helper at the pinned ref (v4.13.0), cached per ref.
 
-MOBILE_CI_REF="${MOBILE_CI_REF:-30a27b3a7efc2fa550627e0c0767829f8ab219c3}"
+MOBILE_CI_REF="${MOBILE_CI_REF:-e1b51d801ddbf75a07408822f581e387ac2783e1}"
 SIMSLIM_PROFILE_REF="${SIMSLIM_PROFILE_REF:-$MOBILE_CI_REF}"
 export SIMSLIM_PROFILE_REF
 
