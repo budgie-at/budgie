@@ -74,12 +74,12 @@ test('51 manual brokerage with stocks', { tags: ['accounts'], platforms: PENDING
         await expect(core.byId(screen, 'Brokerage.GainLine')).toHaveText(/▲ \$200/, { timeout: 10_000 });
         await core.tapId(ctx, 'PageHeader.BackButton');
         await core.expectId(ctx, 'HomePage.TotalBalance', 10_000);
-        await core.scrollTo(ctx, 'HomeHolding.BGTX', 'up');
-        await expect(core.byId(screen, 'HomeHolding.Value.BGTX')).toHaveText(/\$1,200/, { timeout: 10_000 });
-        await expect(core.byId(screen, 'HomeHolding.Return.BGTX')).toHaveText(/▲ \$200/, { timeout: 10_000 });
-        await expect(core.byId(screen, 'HomeHolding.Caption.BGTX')).toHaveText(/^10 BGTX/);
+        await core.scrollTo(ctx, 'HomeHolding.YAHOO:BGTX', 'up');
+        await expect(core.byId(screen, 'HomeHolding.Value.YAHOO:BGTX')).toHaveText(/\$1,200/, { timeout: 10_000 });
+        await expect(core.byId(screen, 'HomeHolding.Return.YAHOO:BGTX')).toHaveText(/▲ \$200/, { timeout: 10_000 });
+        await expect(core.byId(screen, 'HomeHolding.Caption.YAHOO:BGTX')).toHaveText(/^10 BGTX/);
         await core.scrollTo(ctx, 'InstitutionRow.E2E Broker');
-        await expect(core.byId(screen, 'InstitutionRow.E2E Broker')).toHaveText(/Cash · 1 position/, { timeout: 10_000 });
+        await expect(core.byId(screen, 'InstitutionRow.E2E Broker')).toHaveText(/\$1,200 in 1 position/, { timeout: 10_000 });
     });
 
     await core.phase('the brokerage row opens the broker, the holding row opens the stock and sells', async () => {
@@ -87,8 +87,8 @@ test('51 manual brokerage with stocks', { tags: ['accounts'], platforms: PENDING
         await core.expectId(ctx, 'Institution.Page', 10_000);
         await core.tapId(ctx, 'PageHeader.BackButton');
         await core.expectId(ctx, 'HomePage.TotalBalance', 10_000);
-        await core.scrollToCentered(ctx, 'HomeHolding.BGTX');
-        await core.tapUntil(ctx, 'HomeHolding.BGTX', () => core.expectId(ctx, 'CurrencyMarket.Header.BGTX', 10_000));
+        await core.scrollToCentered(ctx, 'HomeHolding.YAHOO:BGTX');
+        await core.tapUntil(ctx, 'HomeHolding.YAHOO:BGTX', () => core.expectId(ctx, 'CurrencyMarket.Header.BGTX', 10_000));
         await core.expectText(ctx, '10 BGTX', 10_000);
         await core.expectText(ctx, '$1,200', 10_000);
         const heldIn = screen.getByRole('button', { name: /^E2E Broker/ }).first();

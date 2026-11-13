@@ -27,7 +27,7 @@ test('29 crypto account and market', { tags: ['crypto'] }, async ({ budgie }) =>
     await b.phase('home crypto holdings', async () => {
         await b.expectId(ctx, 'HomeHolding.BTC', 10_000);
         await ids('HomeHolding.Caption.BTC', 'HomeHolding.Value.BTC', 'NetWorthComposition');
-        await expect(id('HomeHolding.Caption.BTC')).toHaveText(/^4 BTC · .*2 wallets$/);
+        await expect(id('HomeHolding.Caption.BTC')).toHaveText(/^4 BTC · .*2 accounts$/);
         await b.expectId(ctx, 'HomeHolding.ETH', 10_000);
         await ids('HomeHolding.Caption.ETH', 'HomeHolding.Value.ETH');
         await b.expectNoId(ctx, 'AccountCard.E2E Crypto Vault');
@@ -35,7 +35,7 @@ test('29 crypto account and market', { tags: ['crypto'] }, async ({ budgie }) =>
 
     await b.phase('binance exchange row opens its institution', async () => {
         await b.scrollToCentered(ctx, 'InstitutionRow.1');
-        await expect(id('InstitutionRow.1')).toHaveText(/Fiat · 1 asset/);
+        await expect(id('InstitutionRow.1')).toHaveText(/ in 1 asset/);
         await b.tapId(ctx, 'InstitutionRow.1');
         await b.expectId(ctx, 'Institution.Page', 10_000);
         await ids('AccountCard.E2E Binance BTC', 'AccountCard.Balance.E2E_Binance_BTC.2_BTC');
