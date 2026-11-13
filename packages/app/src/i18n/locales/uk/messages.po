@@ -343,7 +343,7 @@ msgstr "{count, plural, one {{formattedAmount} перенесено на # ка�
 #. js-lingui-explicit-id
 #: src/yield/hook/use-yield-hero-sentence.hook.ts
 msgid "passive-income.hero.sentence"
-msgstr "{count, plural, one {{trend, select, up {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} позиції, на {change} більше.} down {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} позиції, на {change} менше.} new {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} позиції, нове за цей період.} other {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} позиції.}}} few {{trend, select, up {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} позиціях, на {change} більше.} down {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} позиціях, на {change} менше.} new {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} позиціях, нове за цей період.} other {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} позиціях.}}} many {{trend, select, up {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} позиціях, на {change} більше.} down {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} позиціях, на {change} менше.} new {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} позиціях, нове за цей період.} other {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} позиціях.}}} other {{trend, select, up {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} позиції, на {change} більше.} down {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} позиції, на {change} менше.} new {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} позиції, нове за цей період.} other {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} позиції.}}}}"
+msgstr "{count, plural, one {{trend, select, up {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} активі, на {change} більше.} down {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} активі, на {change} менше.} new {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} активі, нове за цей період.} other {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} активі.}}} few {{trend, select, up {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} активах, на {change} більше.} down {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} активах, на {change} менше.} new {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} активах, нове за цей період.} other {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} активах.}}} many {{trend, select, up {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} активах, на {change} більше.} down {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} активах, на {change} менше.} new {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} активах, нове за цей період.} other {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} активах.}}} other {{trend, select, up {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} активу, на {change} більше.} down {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} активу, на {change} менше.} new {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} активу, нове за цей період.} other {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} активу.}}}}"
 
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "{count, plural, one {# account. Balances come straight from the bank.} other {# accounts. Balances come straight from the bank.}}"
@@ -674,7 +674,7 @@ msgstr "{hiddenCount, plural, one {Показати ще #} few {Показат�
 
 #: src/yield/hook/use-yield-rate-text.hook.ts
 msgid "{holdingCount, plural, one {across # holding} other {across # holdings}}"
-msgstr "{holdingCount, plural, one {у # позиції} few {у # позиціях} many {у # позиціях} other {у # позиціях}}"
+msgstr "{holdingCount, plural, one {у # активі} few {у # активах} many {у # активах} other {у # активах}}"
 
 #: src/app/(main)/import-csv.tsx
 msgid "{importedCount} imported, {failedCount} failed"
@@ -1115,11 +1115,11 @@ msgstr "{total} ГБ на цьому телефоні"
 
 #: src/yield/hook/use-yield-rate-text.hook.ts
 msgid "{totalCount, plural, one {on {holdingCount} of # holding} other {on {holdingCount} of # holdings}}"
-msgstr "{totalCount, plural, one {для {holdingCount} із # позиції} few {для {holdingCount} із # позицій} many {для {holdingCount} із # позицій} other {для {holdingCount} із # позицій}}"
+msgstr "{totalCount, plural, one {для {holdingCount} із # активу} few {для {holdingCount} із # активів} many {для {holdingCount} із # активів} other {для {holdingCount} із # активу}}"
 
 #: src/budget/components/budget-history-section/budget-history-section.tsx
 msgid "{totalCount, plural, one {On budget {onBudgetCount} of # period} other {On budget {onBudgetCount} of # periods}}"
-msgstr "{totalCount, plural, one {У межах бюджету {onBudgetCount} з # періоду} few {У межах бюджету {onBudgetCount} з # періодів} many {У межах бюджету {onBudgetCount} з # періодів} other {У межах бюджету {onBudgetCount} з # періодів}}"
+msgstr "{totalCount, plural, one {для {holdingCount} із # активу} few {для {holdingCount} із # активів} many {для {holdingCount} із # активів} other {для {holdingCount} із # активу}}"
 
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "{totalSize} GB"
@@ -7712,6 +7712,10 @@ msgstr "Частковий експорт"
 #: src/yield/component/yield-screen-title/yield-screen-title.tsx
 msgid "Passive income"
 msgstr "Пасивний дохід"
+
+#: src/yield/component/passive-income-analytics-card-content/passive-income-analytics-card-content.tsx
+msgid "Passive income · {approximate}{amount}"
+msgstr "Пасивний дохід · {approximate}{amount}"
 
 #: src/yield/component/yield-legend/yield-legend.tsx
 msgid "Passive income by kind"

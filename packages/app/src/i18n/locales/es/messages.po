@@ -343,7 +343,7 @@ msgstr "{count, plural, one {{formattedAmount} trasladados a # categoría} other
 #. js-lingui-explicit-id
 #: src/yield/hook/use-yield-hero-sentence.hook.ts
 msgid "passive-income.hero.sentence"
-msgstr "{count, plural, one {{trend, select, up {Ganaste {amount} antes de impuestos {rangeCaption}, {rate} al año en {count} posición, {change} más.} down {Ganaste {amount} antes de impuestos {rangeCaption}, {rate} al año en {count} posición, {change} menos.} new {Ganaste {amount} antes de impuestos {rangeCaption}, {rate} al año en {count} posición, nuevo en este periodo.} other {Ganaste {amount} antes de impuestos {rangeCaption}, {rate} al año en {count} posición.}}} other {{trend, select, up {Ganaste {amount} antes de impuestos {rangeCaption}, {rate} al año en {count} posiciones, {change} más.} down {Ganaste {amount} antes de impuestos {rangeCaption}, {rate} al año en {count} posiciones, {change} menos.} new {Ganaste {amount} antes de impuestos {rangeCaption}, {rate} al año en {count} posiciones, nuevo en este periodo.} other {Ganaste {amount} antes de impuestos {rangeCaption}, {rate} al año en {count} posiciones.}}}}"
+msgstr "{count, plural, one {{trend, select, up {Ganaste {amount} antes de impuestos {rangeCaption}, {rate} al año en {count} posición, {change} más.} down {Ganaste {amount} antes de impuestos {rangeCaption}, {rate} al año en {count} posición, {change} menos.} new {Ganaste {amount} antes de impuestos {rangeCaption}, {rate} al año en {count} posición, nuevo en este periodo.} other {Ganaste {amount} antes de impuestos {rangeCaption}, {rate} al año en {count} posición.}}} other {{trend, select, up {Ganaste {amount} antes de impuestos {rangeCaption}, {rate} al año en {count} posiciones, {change} más.} down {Ganaste {amount} antes de impuestos {rangeCaption}, {rate} al año en {count} posiciones, {change} menos.} new {Ganaste {amount} antes de impuestos {rangeCaption}, {rate} al año en {count} posiciones, nuevo en este periodo.} other {Ganaste {amount} antes de impuestos {rangeCaption}, {rate} al año en {count} posiciones.}}} many {{trend, select, up {Ganaste {amount} antes de impuestos {rangeCaption}, {rate} al año en {count} posiciones, {change} más.} down {Ganaste {amount} antes de impuestos {rangeCaption}, {rate} al año en {count} posiciones, {change} menos.} new {Ganaste {amount} antes de impuestos {rangeCaption}, {rate} al año en {count} posiciones, nuevo en este periodo.} other {Ganaste {amount} antes de impuestos {rangeCaption}, {rate} al año en {count} posiciones.}}}}"
 
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "{count, plural, one {# account. Balances come straight from the bank.} other {# accounts. Balances come straight from the bank.}}"
@@ -364,7 +364,7 @@ msgstr "{count, plural, one {# mes} other {# meses}}"
 #. js-lingui-explicit-id
 #: src/yield/component/yield-chart-summary-text/yield-chart-summary-text.tsx
 msgid "passive-income.payouts.summary"
-msgstr "{count, plural, one {# pago · {amount} · {lastPayout}} other {# pagos · {amount} · {lastPayout}}}"
+msgstr "{count, plural, one {# pago · {amount} · {lastPayout}} other {# pagos · {amount} · {lastPayout}} many {# pagos · {amount} · {lastPayout}}}"
 
 #: src/category/hooks/use-move-and-delete-category.hook.ts
 msgid "{count, plural, one {# transaction moves to “{targetTitle}”. “{sourceTitle}” will be deleted.} other {# transactions move to “{targetTitle}”. “{sourceTitle}” will be deleted.}}"
@@ -674,7 +674,7 @@ msgstr "{hiddenCount, plural, one {Mostrar # más} other {Mostrar # más}}"
 
 #: src/yield/hook/use-yield-rate-text.hook.ts
 msgid "{holdingCount, plural, one {across # holding} other {across # holdings}}"
-msgstr "{holdingCount, plural, one {en # posición} other {en # posiciones}}"
+msgstr "{holdingCount, plural, one {en # posición} other {en # posiciones} many {en # posiciones}}"
 
 #: src/app/(main)/import-csv.tsx
 msgid "{importedCount} imported, {failedCount} failed"
@@ -1115,11 +1115,11 @@ msgstr "{total} GB en este teléfono"
 
 #: src/yield/hook/use-yield-rate-text.hook.ts
 msgid "{totalCount, plural, one {on {holdingCount} of # holding} other {on {holdingCount} of # holdings}}"
-msgstr "{totalCount, plural, one {en {holdingCount} de # posición} other {en {holdingCount} de # posiciones}}"
+msgstr "{totalCount, plural, one {en {holdingCount} de # posición} other {en {holdingCount} de # posiciones} many {en {holdingCount} de # posiciones}}"
 
 #: src/budget/components/budget-history-section/budget-history-section.tsx
 msgid "{totalCount, plural, one {On budget {onBudgetCount} of # period} other {On budget {onBudgetCount} of # periods}}"
-msgstr "{totalCount, plural, one {Dentro del presupuesto {onBudgetCount} de # periodo} other {Dentro del presupuesto {onBudgetCount} de # periodos}}"
+msgstr "{totalCount, plural, one {Dentro del presupuesto {onBudgetCount} de # periodo} other {Dentro del presupuesto {onBudgetCount} de # periodos} many {Dentro del presupuesto {onBudgetCount} de # periodos}}"
 
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "{totalSize} GB"
@@ -7712,6 +7712,10 @@ msgstr "Exportación parcial"
 #: src/yield/component/yield-screen-title/yield-screen-title.tsx
 msgid "Passive income"
 msgstr "Ingresos pasivos"
+
+#: src/yield/component/passive-income-analytics-card-content/passive-income-analytics-card-content.tsx
+msgid "Passive income · {approximate}{amount}"
+msgstr "Ingresos pasivos · {approximate}{amount}"
 
 #: src/yield/component/yield-legend/yield-legend.tsx
 msgid "Passive income by kind"

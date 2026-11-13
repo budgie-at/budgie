@@ -7714,6 +7714,10 @@ msgstr "Partial export"
 msgid "Passive income"
 msgstr "Passive income"
 
+#: src/yield/component/passive-income-analytics-card-content/passive-income-analytics-card-content.tsx
+msgid "Passive income · {approximate}{amount}"
+msgstr "Passive income · {approximate}{amount}"
+
 #: src/yield/component/yield-legend/yield-legend.tsx
 msgid "Passive income by kind"
 msgstr "Passive income by kind"

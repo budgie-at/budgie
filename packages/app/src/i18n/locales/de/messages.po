@@ -674,7 +674,7 @@ msgstr "{hiddenCount, plural, one {# weitere anzeigen} other {# weitere anzeigen
 
 #: src/yield/hook/use-yield-rate-text.hook.ts
 msgid "{holdingCount, plural, one {across # holding} other {across # holdings}}"
-msgstr "{holdingCount, plural, one {über # Position} other {über # Positionen}}"
+msgstr "{holdingCount, plural, one {über # Anlage} other {über # Anlagen}}"
 
 #: src/app/(main)/import-csv.tsx
 msgid "{importedCount} imported, {failedCount} failed"
@@ -1115,11 +1115,11 @@ msgstr "{total} GB auf diesem Telefon"
 
 #: src/yield/hook/use-yield-rate-text.hook.ts
 msgid "{totalCount, plural, one {on {holdingCount} of # holding} other {on {holdingCount} of # holdings}}"
-msgstr "{totalCount, plural, one {bei {holdingCount} von # Position} other {bei {holdingCount} von # Positionen}}"
+msgstr "{totalCount, plural, one {bei {holdingCount} von # Anlage} other {bei {holdingCount} von # Anlagen}}"
 
 #: src/budget/components/budget-history-section/budget-history-section.tsx
 msgid "{totalCount, plural, one {On budget {onBudgetCount} of # period} other {On budget {onBudgetCount} of # periods}}"
-msgstr "{totalCount, plural, one {{onBudgetCount} von # Zeitraum im Budget} other {{onBudgetCount} von # Zeiträumen im Budget}}"
+msgstr "{totalCount, plural, one {bei {holdingCount} von # Anlage} other {bei {holdingCount} von # Anlagen}}"
 
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "{totalSize} GB"
@@ -1752,7 +1752,7 @@ msgstr "Alle Bedingungen"
 
 #: src/yield/component/yield-screen-title/yield-screen-title.tsx
 msgid "All holdings"
-msgstr "Alle Bestände"
+msgstr "Alle Anlagen"
 
 #: src/account/component/automatic-account-card/automatic-account-card.tsx
 msgid "All matched"
@@ -1919,7 +1919,7 @@ msgstr "und +{extraCount}"
 
 #: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
 msgid "Annual yield uses the last 365 days. Crypto yield is measured on your whole balance, staked or not."
-msgstr "Die Jahresrendite basiert auf den letzten 365 Tagen. Die Krypto-Rendite wird auf Ihr gesamtes Guthaben bezogen, ob gestaked oder nicht."
+msgstr "Die Jahresrendite basiert auf den letzten 365 Tagen. Die Krypto-Rendite wird auf dein gesamtes Guthaben bezogen, ob gestaked oder nicht."
 
 #: src/recurring/components/recurring-form-account-field/recurring-form-account-field.tsx
 msgid "Any account"
@@ -4334,7 +4334,7 @@ msgstr "Ausschüttungen"
 
 #: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
 msgid "Distributions count as income but not in the yield. Holdings shown with “—” are left out of the yield and of “At this pace”."
-msgstr "Ausschüttungen zählen als Einkommen, aber nicht zur Rendite. Bestände mit „—“ bleiben bei der Rendite und bei „In diesem Tempo“ außen vor."
+msgstr "Ausschüttungen zählen als Einkommen, aber nicht zur Rendite. Anlagen mit „—“ bleiben bei der Rendite und bei „In diesem Tempo“ außen vor."
 
 #: src/yield/constant/yield-kind-label.constant.ts
 msgid "Dividend"
@@ -6846,7 +6846,7 @@ msgstr "Keine ausgeblendeten Konten passen zu „{search}“"
 
 #: src/transaction/components/transaction-info-yield-source-row/transaction-info-yield-source-row.tsx
 msgid "No holding to link yet"
-msgstr "Noch kein Bestand zum Verknüpfen"
+msgstr "Noch keine Anlage zum Verknüpfen"
 
 #: src/@generic/component/icon-selector-empty-state/icon-selector-empty-state.tsx
 msgid "No icons found"
@@ -7113,7 +7113,7 @@ msgstr "Nicht verknüpft"
 
 #: src/yield/component/yield-section-header/yield-section-header.tsx
 msgid "Not linked to a holding"
-msgstr "Keinem Bestand zugeordnet"
+msgstr "Keiner Anlage zugeordnet"
 
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
 msgid "Not now"
@@ -7421,7 +7421,7 @@ msgstr "George (Erste Bank Online-Banking) öffnen"
 
 #: src/yield/component/yield-open-position-button/yield-open-position-button.tsx
 msgid "Open holding"
-msgstr "Bestand öffnen"
+msgstr "Anlage öffnen"
 
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Open its statement and choose a date range that covers your full history"
@@ -7713,6 +7713,10 @@ msgstr "Teilexport"
 msgid "Passive income"
 msgstr "Passives Einkommen"
 
+#: src/yield/component/passive-income-analytics-card-content/passive-income-analytics-card-content.tsx
+msgid "Passive income · {approximate}{amount}"
+msgstr "Passives Einkommen · {approximate}{amount}"
+
 #: src/yield/component/yield-legend/yield-legend.tsx
 msgid "Passive income by kind"
 msgstr "Passives Einkommen nach Art"
@@ -7723,7 +7727,7 @@ msgstr "Diagramm des passiven Einkommens"
 
 #: src/yield/component/yield-empty-state/yield-empty-state.tsx
 msgid "Passive income shows up here when you earn staking rewards, dividends or interest"
-msgstr "Passives Einkommen erscheint hier, sobald Sie Staking-Prämien, Dividenden oder Zinsen verdienen"
+msgstr "Passives Einkommen erscheint hier, sobald du Staking-Prämien, Dividenden oder Zinsen verdienen"
 
 #: src/yield/component/yield-entry-row-content/yield-entry-row-content.tsx
 msgid "Passive income, {subtitle}"
@@ -9234,7 +9238,7 @@ msgstr "Alle Daten anzeigen"
 
 #: src/yield/component/yield-screen-title/yield-screen-title.tsx
 msgid "Show all holdings"
-msgstr "Alle Bestände anzeigen"
+msgstr "Alle Anlagen anzeigen"
 
 #: src/transaction/components/statistics-share-bar/statistics-share-bar.tsx
 msgid "Show breakdown"
