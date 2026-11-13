@@ -439,7 +439,7 @@ export const SCENES: Readonly<Record<string, Scene>> = {
         run: async ctx => {
             await home(ctx);
             await a.openNewAccount(ctx);
-            await b.scrollTo(ctx, 'CreateAccount.MONOBANK', 'up');
+            await b.scrollToCentre(ctx, 'CreateAccount.MONOBANK', 'up');
             await b.tapId(ctx, 'CreateAccount.MONOBANK');
             await b.expectId(ctx, 'CreateMonobankAccount.ScrollView', 15_000);
         }
