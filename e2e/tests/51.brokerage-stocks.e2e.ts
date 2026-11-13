@@ -83,8 +83,8 @@ test('51 manual brokerage with stocks', { tags: ['accounts'], platforms: PENDING
         await core.expectId(ctx, 'Institution.Page', 10_000);
         await core.scrollTo(ctx, position);
         await core.tapUntil(ctx, position, () => core.expectId(ctx, 'CurrencyMarket.Header.BGTX', 10_000));
-        await expect(core.byId(screen, 'CurrencyMarket.Holdings.Balance.BGTX')).toHaveText(/10 BGTX/, { timeout: 10_000 });
-        await expect(core.byId(screen, 'CurrencyMarket.Holdings.Value.BGTX')).toHaveText(/\$1,200/, { timeout: 10_000 });
+        await core.expectText(ctx, '10 BGTX', 10_000);
+        await core.expectText(ctx, '$1,200', 10_000);
         const heldIn = screen.getByRole('button', { name: /^E2E Broker/ }).first();
         await scrollTo(screen, heldIn);
         await heldIn.tap();
@@ -122,9 +122,7 @@ test('51 manual brokerage with stocks', { tags: ['accounts'], platforms: PENDING
         await replaceDigits('Brokerage.PriceInput', '100');
         await saveTrade('Institution.Page');
         await core.scrollTo(ctx, 'AccountCard.Budgie Euro Fund');
-        await core.tapUntil(ctx, 'AccountCard.Budgie Euro Fund', () => core.expectId(ctx, 'AccountDetails.Page', 10_000));
-        await core.tapId(ctx, 'AccountDetails.MarketLink');
-        await core.expectId(ctx, 'CurrencyMarket.Header.BGEU', 10_000);
+        await core.tapUntil(ctx, 'AccountCard.Budgie Euro Fund', () => core.expectId(ctx, 'CurrencyMarket.Header.BGEU', 10_000));
         await core.expectText(ctx, /\+€18\.00/, 10_000);
         await core.scrollTo(ctx, 'CurrencyMarket.Holdings.Value.BGEU');
         await core.expectText(ctx, /At €120\.00 ≈ \$/, 10_000);
