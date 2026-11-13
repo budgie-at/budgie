@@ -1,4 +1,4 @@
-import { AccountTypeEnum, ExternalSourceEnum, convertFromMicroUnits } from '@budgie/contracts';
+import { ExternalSourceEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import * as Arr from 'effect/Array';
@@ -47,9 +47,6 @@ export const CurrencyMarketAccounts = ({ instrument }: Props) => {
                 const valueLabel = isDefined(valuationRate) ? formatMoney(amount * valuationRate, defaultInstrument.symbol) : null;
                 const brokerageName = row.integrationProvider === ExternalSourceEnum.MANUAL ? row.integrationLabel : null;
                 const account = { ...row.account, title: brokerageName ?? row.account.title };
-                const isInstitutionHolding =
-                    row.integrationProvider === ExternalSourceEnum.MANUAL || row.account.type === AccountTypeEnum.CRYPTO_SYNC;
-                const institutionId = isInstitutionHolding ? row.account.integrationId : null;
                 const leading = isDefined(brokerageName) ? (
                     <BankLogo bankProvider={ExternalSourceEnum.MANUAL} bankName={brokerageName} size={28} />
                 ) : (
@@ -65,7 +62,6 @@ export const CurrencyMarketAccounts = ({ instrument }: Props) => {
                         instrumentCode={instrument.code}
                         amount={amount}
                         valueLabel={valueLabel}
-                        institutionId={institutionId}
                         testID={CurrencyMarketPageSelector.Account(instrument.code, row.account.id)}
                     />
                 );

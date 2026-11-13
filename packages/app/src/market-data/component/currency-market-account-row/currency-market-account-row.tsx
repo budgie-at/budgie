@@ -25,11 +25,10 @@ interface Props {
     readonly sync: Pick<SyncEntityInterface, 'provider'> | null;
     readonly amount: number;
     readonly valueLabel: string | null;
-    readonly institutionId: number | null;
     readonly testID: string;
 }
 
-export const CurrencyMarketAccountRow = ({ account, leading, instrumentCode, sync, amount, valueLabel, institutionId, testID }: Props) => {
+export const CurrencyMarketAccountRow = ({ account, leading, instrumentCode, sync, amount, valueLabel, testID }: Props) => {
     const { t } = useLingui();
     const isAmountProtected = useIsAmountProtected();
     const isStacked = useIsAccessibilityTextSize();
@@ -76,10 +75,7 @@ export const CurrencyMarketAccountRow = ({ account, leading, instrumentCode, syn
         </View>
     );
 
-    const handlePress = () =>
-        void (isDefined(institutionId)
-            ? router.push({ pathname: '/institution/[id]', params: { id: String(institutionId) } })
-            : router.push({ pathname: '/account/[id]/details', params: { id: String(account.id) } }));
+    const handlePress = () => void router.push({ pathname: '/account/[id]/details', params: { id: String(account.id) } });
 
     return (
         <GroupedListRow
