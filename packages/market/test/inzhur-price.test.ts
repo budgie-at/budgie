@@ -33,7 +33,7 @@ const operatedAt = new Date('2026-06-03T12:00:00.000Z');
 const InzhurLayer = (html: string) =>
     Layer.mergeAll(
         TestLayer,
-        HistoricalMarketDataService.layer,
+        HistoricalMarketDataService.layer.pipe(Layer.provide(makeHtmlHttpClientLayer(html))),
         AccountRepository.layer,
         InzhurPriceService.layer,
         InstrumentDailyMarketPriceRepository.layer,

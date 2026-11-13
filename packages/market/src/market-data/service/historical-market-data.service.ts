@@ -27,6 +27,7 @@ import * as Schema from 'effect/Schema';
 
 import { getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
+import { USDT_INSTRUMENT_CODE } from '../../@generic/constant/usdt-instrument-code.constant';
 import { fetchJson } from '../../@generic/utils/fetch-json.util';
 import { formatUtcDay } from '../../@generic/utils/format-utc-day.util';
 import { ExchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
@@ -38,6 +39,7 @@ import { InstrumentMarketDataJobRepository } from '../repository/instrument-mark
 import { buildHistoricalRateInputs } from '../utils/build-historical-rate-inputs.util';
 
 import { InzhurPriceService } from './inzhur-price.service';
+import { KlinesHistoryService } from './klines-history.service';
 
 import type { MarketDataJobResultInterface } from '../interface/market-data-job-result.interface';
 import type {
@@ -61,6 +63,7 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
             const entryBaseValuationService = yield* EntryBaseValuationService;
             const inzhurPriceService = yield* InzhurPriceService;
             const marketPricedRevaluationService = yield* MarketPricedRevaluationService;
+            const klinesHistoryService = yield* KlinesHistoryService;
             const dataWindowDays = 365;
             const frankfurterApiUrl = 'https://api.frankfurter.dev/v2';
             const maxFiatRateGapDays = 7;
@@ -428,15 +431,31 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                 const instruments = yield* instrumentRepository.getAll;
                 const instrumentById = new Map(instruments.map(instrument => [instrument.id, instrument]));
                 const hryvniaInstrument = yield* instrumentRepository.findByCode(CurrencyEnum.UAH);
+                const cryptoInstrumentIds = getCandidateInstrumentIds(
+                    accounts.filter(account => account.type === AccountTypeEnum.CRYPTO || account.type === AccountTypeEnum.CRYPTO_SYNC),
+                    instrumentById,
+                    isSupportedInstrument
+                );
                 const cryptoInputs = yield* Effect.forEach(
-                    getCandidateInstrumentIds(
-                        accounts.filter(account => account.type === AccountTypeEnum.CRYPTO || account.type === AccountTypeEnum.CRYPTO_SYNC),
-                        instrumentById,
-                        isSupportedInstrument
-                    ),
+                    cryptoInstrumentIds,
                     instrumentId => buildAccountJobInput(instrumentId, baseInstrument.id),
                     { concurrency: 'unbounded' }
                 );
+                const tether = yield* klinesHistoryService.findUsdtInstrument;
+                const unsupportedKlinesIds = new Set(
+                    isDefined(tether) ? yield* instrumentMarketDataJobRepository.findUnsupportedInstrumentIds(tether.id) : []
+                );
+                const klinesInputs = isDefined(tether)
+                    ? yield* Effect.forEach(
+                          cryptoInstrumentIds.filter(instrumentId => instrumentId !== tether.id && !unsupportedKlinesIds.has(instrumentId)),
+                          instrumentId =>
+                              Effect.flatMap(hasOpenJob(instrumentId, tether.id), isOpen =>
+                                  isOpen
+                                      ? Effect.succeed(null)
+                                      : klinesHistoryService.buildJobInput(instrumentId, baseInstrument.id, tether.id)
+                              )
+                      )
+                    : [];
                 const fundInputs = isDefined(hryvniaInstrument)
                     ? yield* Effect.forEach(
                           getCandidateInstrumentIds(accounts, instrumentById, isInzhurInstrument),
@@ -445,7 +464,7 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                       )
                     : [];
 
-                yield* instrumentMarketDataJobRepository.enqueueMany([...cryptoInputs, ...fundInputs].filter(isDefined));
+                yield* instrumentMarketDataJobRepository.enqueueMany([...cryptoInputs, ...klinesInputs, ...fundInputs].filter(isDefined));
                 yield* instrumentMarketDataJobRepository.enqueueMany([yield* buildFiatJobInput()].filter(isDefined));
             });
 
@@ -465,6 +484,12 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
 
                     if (instrument.type === InstrumentTypeEnum.FIAT) {
                         return yield* fetchHistoricalFiatRates(job);
+                    }
+
+                    const quoteInstrument = yield* instrumentRepository.findById(job.quoteInstrumentId);
+
+                    if (instrument.type === InstrumentTypeEnum.CRYPTO && quoteInstrument?.code === USDT_INSTRUMENT_CODE) {
+                        return yield* klinesHistoryService.fetchJobData(instrument, job);
                     }
 
                     const prices = isInzhurInstrument(instrument)
@@ -541,7 +566,8 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
             TransactionEntryBaseValuationRepository.layer,
             EntryBaseValuationService.layer,
             InzhurPriceService.layer,
-            MarketPricedRevaluationService.layer
+            MarketPricedRevaluationService.layer,
+            KlinesHistoryService.layer
         ])
     );
 }

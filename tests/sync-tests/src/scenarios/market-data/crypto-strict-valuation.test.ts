@@ -15,6 +15,7 @@ import {
     InstrumentDailyMarketPriceRepository,
     InstrumentMarketDataJobRepository,
     InzhurPriceService,
+    KlinesHistoryService,
     MarketPricedRevaluationService
 } from '@budgie/market';
 import { describe, expect, it } from '@effect/vitest';
@@ -84,7 +85,7 @@ describe('market-data/crypto-strict-valuation', () => {
                 baseExchangeRate: 50_000,
                 baseAmount: 50_000 * PRECISION
             });
-        }).pipe(Effect.provide(Layer.merge(HistoricalMarketDataService.layer, TestLayer)))
+        }).pipe(Effect.provide(HistoricalMarketDataService.layer.pipe(Layer.provideMerge(TestLayer))))
     );
 
     it.effect('leaves the job retriable when the repair fails and still runs the first-batch correction on retry', () =>
@@ -120,6 +121,7 @@ describe('market-data/crypto-strict-valuation', () => {
                     TransactionEntryBaseValuationRepository.layer,
                     EntryBaseValuationService.layer,
                     InzhurPriceService.layer,
+                    KlinesHistoryService.layer,
                     failingRepairLayer
                 ])
             );
