@@ -1,9 +1,11 @@
+import { Platform, useWindowDimensions } from 'react-native';
 import { Gesture } from 'react-native-gesture-handler';
 import { useSharedValue } from 'react-native-reanimated';
 import { scheduleOnRN, scheduleOnUI } from 'react-native-worklets';
 
 import { useVibration } from '../../@generic/hook/use-vibration.hook';
 import { MARKET_CHART_PADDING_X } from '../constant/market-chart-padding-x.constant';
+import { MarketChartScrubModeEnum } from '../enum/market-chart-scrub-mode.enum';
 
 const ACTIVE_OFFSET = 6;
 const FAIL_OFFSET = 12;
@@ -11,6 +13,8 @@ const ACTIVE_OFFSET_X: [number, number] = [-ACTIVE_OFFSET, ACTIVE_OFFSET];
 const FAIL_OFFSET_Y: [number, number] = [-FAIL_OFFSET, FAIL_OFFSET];
 const NO_INDEX = -1;
 const MAX_SCRUB_TICKS = 40;
+const EDGE_EXCLUSION = 24;
+const IS_ANDROID = Platform.OS === 'android';
 
 const getMarketChartIndex = (x: number, width: number, count: number): number => {
     'worklet';
@@ -27,11 +31,37 @@ const getMarketChartIndex = (x: number, width: number, count: number): number =>
     return Math.min(Math.max(index, 0), lastIndex);
 };
 
-export const useMarketChartScrub = (width: number, count: number, onScrub: (index: number | null) => void) => {
+const getMarketChartBin = (x: number, width: number, count: number): number => {
+    'worklet';
+
+    const drawableWidth = width - MARKET_CHART_PADDING_X * 2;
+
+    if (drawableWidth <= 0 || count <= 0) {
+        return 0;
+    }
+
+    return Math.min(Math.max(Math.floor(((x - MARKET_CHART_PADDING_X) / drawableWidth) * count), 0), count - 1);
+};
+
+export const useMarketChartScrub = (
+    width: number,
+    count: number,
+    onScrub: (index: number | null) => void,
+    mode: MarketChartScrubModeEnum = MarketChartScrubModeEnum.POINT
+) => {
     const [, , hapticSelection] = useVibration();
+    const { width: screenWidth } = useWindowDimensions();
+    const isBin = mode === MarketChartScrubModeEnum.BIN;
+    const excludesEdges = isBin && IS_ANDROID;
     const activeIndex = useSharedValue(NO_INDEX);
     const lastTickIndex = useSharedValue(NO_INDEX);
     const tickStep = Math.max(1, Math.ceil(count / MAX_SCRUB_TICKS));
+
+    const toIndex = (x: number) => {
+        'worklet';
+
+        return isBin ? getMarketChartBin(x, width, count) : getMarketChartIndex(x, width, count);
+    };
 
     const selectIndex = (index: number) => {
         'worklet';
@@ -49,20 +79,32 @@ export const useMarketChartScrub = (width: number, count: number, onScrub: (inde
 
     const handleSelect = (index: number) => void scheduleOnUI(selectIndex, index);
 
-    const panGesture = Gesture.Pan()
+    const pan = Gesture.Pan()
         .activeOffsetX(ACTIVE_OFFSET_X)
         .failOffsetY(FAIL_OFFSET_Y)
+        .onTouchesDown((event, manager) => {
+            const touchX = event.allTouches.at(0)?.absoluteX ?? EDGE_EXCLUSION;
+
+            if (excludesEdges && (touchX < EDGE_EXCLUSION || touchX > screenWidth - EDGE_EXCLUSION)) {
+                manager.fail();
+            }
+        })
         .onStart(event => {
             lastTickIndex.set(NO_INDEX);
-            selectIndex(getMarketChartIndex(event.x, width, count));
+            selectIndex(toIndex(event.x));
         })
         .onUpdate(event => {
-            selectIndex(getMarketChartIndex(event.x, width, count));
+            selectIndex(toIndex(event.x));
         })
         .onFinalize(() => {
             lastTickIndex.set(NO_INDEX);
             selectIndex(NO_INDEX);
         });
 
-    return { activeIndex, panGesture, handleSelect };
+    const tap = Gesture.Tap().onEnd(() => {
+        activeIndex.set(NO_INDEX);
+        scheduleOnRN(onScrub, null);
+    });
+
+    return { activeIndex, panGesture: isBin ? Gesture.Race(pan, tap) : pan, handleSelect };
 };
