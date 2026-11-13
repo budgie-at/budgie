@@ -10,7 +10,9 @@ import {
     TransactionTagsRepository,
     TransactionTypeEnum,
     type TransactionUpdateServiceInputInterface,
-    TransactionUpdatedByEnum
+    TransactionUpdatedByEnum,
+    type TransactionWithEntriesEntityInterface,
+    TransactionYieldRepository
 } from '@budgie/contracts';
 import { EntryBaseValuationService } from '@budgie/market';
 import * as Context from 'effect/Context';
@@ -48,6 +50,7 @@ export class TransactionService extends Context.Service<TransactionService>()('@
         const debtEventRepository = yield* DebtEventRepository;
         const transactionDepositSafetyService = yield* TransactionDepositSafetyService;
         const unconsolidationService = yield* UnconsolidationService;
+        const transactionYieldRepository = yield* TransactionYieldRepository;
 
         const resolveOperationMetadata = (
             entries: TransactionCreateInputInterface['entries'],
@@ -148,6 +151,29 @@ export class TransactionService extends Context.Service<TransactionService>()('@
             yield* accountBalanceIncrementalService.updateBalancesByAccountIds(accountIds);
         });
 
+        const resolveYieldPatch = Effect.fnUntraced(function* (
+            existing: TransactionWithEntriesEntityInterface | undefined,
+            input: TransactionUpdateServiceInputInterface
+        ) {
+            const type = input.type ?? existing?.type ?? TransactionTypeEnum.EXPENSE;
+            const landingAccountId =
+                type === TransactionTypeEnum.INCOME
+                    ? (input.toAccountId ?? existing?.toAccountId ?? null)
+                    : (input.fromAccountId ?? existing?.fromAccountId ?? null);
+            const sourceAccountId =
+                'yieldSourceAccountId' in input ? (input.yieldSourceAccountId ?? null) : (existing?.yieldSourceAccountId ?? null);
+            const isSourceInZone =
+                !isDefined(sourceAccountId) ||
+                !isDefined(landingAccountId) ||
+                (yield* transactionYieldRepository.areAccountsInSameZone(sourceAccountId, landingAccountId));
+
+            return {
+                ...('yieldKind' in input && { yieldKind: input.yieldKind ?? null }),
+                ...('yieldSourceAccountId' in input && { yieldSourceAccountId: input.yieldSourceAccountId ?? null }),
+                ...(!isSourceInZone && { yieldSourceAccountId: null })
+            };
+        });
+
         return {
             bulkCreate,
             bulkUpdateImported: Effect.fn('TransactionService.bulkUpdateImported')(
@@ -225,7 +251,8 @@ export class TransactionService extends Context.Service<TransactionService>()('@
                         fromAccountId: input.fromAccountId,
                         toAccountId: input.toAccountId,
                         exchangeRate: input.exchangeRate,
-                        updatedBy: TransactionUpdatedByEnum.USER
+                        updatedBy: TransactionUpdatedByEnum.USER,
+                        ...(yield* resolveYieldPatch(existingTransaction, input))
                     });
 
                     yield* upsertTransactionEntriesAndTags({
@@ -252,6 +279,7 @@ export class TransactionService extends Context.Service<TransactionService>()('@
         Layer.provide([
             TransactionEntryRepository.layer,
             TransactionRepository.layer,
+            TransactionYieldRepository.layer,
             TransactionTagsRepository.layer,
             DebtEventRepository.layer,
             AccountBalanceIncrementalService.layer,

@@ -237,6 +237,7 @@ export { insertTransactionTag } from './transaction-tags/utils/insert-transactio
 export type { TransactionTagsEntityInterface } from './transaction-tags/entity/transaction-tags-entity.interface';
 export type { TransactionTagsCreateEntityInterface } from './transaction-tags/entity/transaction-tags-create-entity.interface';
 
+export { TransactionYieldRepository } from './transaction/repository/transaction-yield.repository';
 export { TransactionTagsRepository } from './transaction-tags/repository/transaction-tags.repository';
 export { TransactionReceiptEntityTable } from './transaction-receipt/table/transaction-receipt-entity.table';
 
