@@ -14,6 +14,7 @@ import { BrokerageReturnText } from '../../../brokerage/component/brokerage-retu
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { HomeHoldingRowSelector } from '../home-holding-row/home-holding-row.selector';
+import { HomeTodayChangeText } from '../home-today-change-text/home-today-change-text';
 
 import type { HoldingReturnInterface } from '../../interface/holding-return.interface';
 import type { HomeHoldingInterface } from '../../interface/home-holding.interface';
@@ -21,6 +22,7 @@ import type { HomeHoldingInterface } from '../../interface/home-holding.interfac
 interface Props {
     readonly holding: Pick<HomeHoldingInterface, 'instrument' | 'value' | 'isValued'>;
     readonly holdingReturn: HoldingReturnInterface | undefined;
+    readonly todayChange: number | undefined;
     readonly isReturnLoading: boolean;
 }
 
@@ -30,17 +32,18 @@ const amountVariants = cva('gap-y-xxs', {
     variants: { isStacked: { true: 'items-start', false: 'max-w-[55%] shrink-0 items-end' } }
 });
 
-export const HomeHoldingRowAmount = ({ holding, holdingReturn, isReturnLoading }: Props) => {
+export const HomeHoldingRowAmount = ({ holding, holdingReturn, todayChange, isReturnLoading }: Props) => {
     const isStacked = useIsAccessibilityTextSize();
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const formatDigits = useDisplayFormatDigits();
 
     const instrumentCode = holding.instrument.code;
-    const isReturnPending = isReturnLoading && !isDefined(holdingReturn);
+    const isToday = !isDefined(holdingReturn) && isDefined(todayChange);
+    const isReturnPending = isReturnLoading && !isDefined(holdingReturn) && !isToday;
     const realPercent =
         isDefined(holdingReturn) && isPositiveNumber(holdingReturn.costBasis) ? holdingReturn.gain / holdingReturn.costBasis : null;
     const percent = isDefined(holdingReturn) ? realPercent : PLACEHOLDER_PERCENT;
-    const isReturnEmpty = !isReturnPending && !isDefined(holdingReturn);
+    const isReturnEmpty = !isReturnPending && !isDefined(holdingReturn) && !isToday;
     const importantForAccessibility = isReturnEmpty ? 'no-hide-descendants' : 'auto';
 
     return (
@@ -67,12 +70,21 @@ export const HomeHoldingRowAmount = ({ holding, holdingReturn, isReturnLoading }
                 importantForAccessibility={importantForAccessibility}
             >
                 <LoadingContent isLoading={isReturnPending} loadingIndicator={null}>
-                    <BrokerageReturnText
-                        gain={holdingReturn?.gain ?? holding.value}
-                        percent={percent}
-                        instrumentSymbol={defaultInstrument.symbol}
-                        testID={HomeHoldingRowSelector.Return(instrumentCode)}
-                    />
+                    {isToday ? (
+                        <HomeTodayChangeText
+                            gain={null}
+                            percent={todayChange}
+                            maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
+                            testID={HomeHoldingRowSelector.Today(instrumentCode)}
+                        />
+                    ) : (
+                        <BrokerageReturnText
+                            gain={holdingReturn?.gain ?? holding.value}
+                            percent={percent}
+                            instrumentSymbol={defaultInstrument.symbol}
+                            testID={HomeHoldingRowSelector.Return(instrumentCode)}
+                        />
+                    )}
                 </LoadingContent>
             </View>
         </View>

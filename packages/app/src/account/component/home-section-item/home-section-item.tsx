@@ -50,8 +50,8 @@ export const HomeSectionItem = ({ item, section, balancesByAccountId, holdingRet
             <HomeHoldingRow
                 holding={item}
                 holdingReturn={holdingReturns.holdingsBySectionType.get(section.type)?.get(item.instrument.id)}
+                todayChange={holdingReturns.todayByInstrumentId.get(item.instrument.id)}
                 isReturnLoading={holdingReturns.isLoading}
-                sectionType={section.type}
             />
         ) : null;
     }

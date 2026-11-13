@@ -67,11 +67,6 @@ msgstr "{0, plural, one {# account} other {# accounts}}"
 msgid "{0, plural, one {# asset} other {# assets}}"
 msgstr "{0, plural, one {# asset} other {# assets}}"
 
-#. placeholder {0}: accounts.length
-#: src/account/component/home-holding-row-caption/home-holding-row-caption.tsx
-msgid "{0, plural, one {# broker} other {# brokers}}"
-msgstr "{0, plural, one {# broker} other {# brokers}}"
-
 #. placeholder {0}: charges.length
 #: src/siri/service/siri-catalog.service.ts
 msgid "{0, plural, one {# charge is due in the next 7 days, {formattedTotal} in total: {chargeList}.} other {# charges are due in the next 7 days, {formattedTotal} in total: {chargeList}.}}"
@@ -139,11 +134,6 @@ msgstr "{0, plural, one {# transaction} other {# transactions}}"
 #: src/inzhur/component/inzhur-operations-details/inzhur-operations-details.tsx
 msgid "{0, plural, one {# transfer waiting} other {# transfers waiting}}"
 msgstr "{0, plural, one {# transfer waiting} other {# transfers waiting}}"
-
-#. placeholder {0}: accounts.length
-#: src/account/component/home-holding-row-caption/home-holding-row-caption.tsx
-msgid "{0, plural, one {# wallet} other {# wallets}}"
-msgstr "{0, plural, one {# wallet} other {# wallets}}"
 
 #. placeholder {0}: summary.alreadyImportedCount
 #: src/inzhur/component/inzhur-operations-import-summary/inzhur-operations-import-summary.tsx
@@ -256,6 +246,10 @@ msgstr "{assignedLabel} assigned · {incomeLabel} received"
 msgid "{availableCount, plural, one {# column available} other {# columns available}}"
 msgstr "{availableCount, plural, one {# column available} other {# columns available}}"
 
+#: src/account/component/institution-row/institution-row.tsx
+msgid "{cashLabel} cash"
+msgstr "{cashLabel} cash"
+
 #: src/inzhur/component/inzhur-institution-row-detail/inzhur-institution-row-detail.tsx
 msgid "{cashLabel} cash · {fundsLabel}"
 msgstr "{cashLabel} cash · {fundsLabel}"
@@ -279,6 +273,10 @@ msgstr "{categoryName}: {threshold}% spent"
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "{categoryName}: limit reached"
 msgstr "{categoryName}: limit reached"
+
+#: src/account/component/home-today-change-text/home-today-change-text.tsx
+msgid "{change} today"
+msgstr "{change} today"
 
 #: src/transaction/components/statistics-change-label/statistics-change-label.tsx
 msgid "{changePercent} less than {previousLabel}"
@@ -830,13 +828,25 @@ msgstr "{periodLabel} closed {amount} under"
 msgid "{periodLabel}, spent {spentAmount} of {limitAmount}"
 msgstr "{periodLabel}, spent {spentAmount} of {limitAmount}"
 
-#: src/account/utils/get-institution-row-caption.util.ts
-msgid "{positionsCount, plural, one {Cash · # position} other {Cash · # positions}}"
-msgstr "{positionsCount, plural, one {Cash · # position} other {Cash · # positions}}"
+#: src/account/utils/get-holding-places-label.util.ts
+msgid "{placesCount, plural, one {# account} other {# accounts}}"
+msgstr "{placesCount, plural, one {# account} other {# accounts}}"
+
+#: src/account/utils/get-holding-places-label.util.ts
+msgid "{placesCount, plural, one {# broker} other {# brokers}}"
+msgstr "{placesCount, plural, one {# broker} other {# brokers}}"
+
+#: src/account/utils/get-holding-places-label.util.ts
+msgid "{placesCount, plural, one {# wallet} other {# wallets}}"
+msgstr "{placesCount, plural, one {# wallet} other {# wallets}}"
 
 #: src/account/utils/get-institution-row-caption.util.ts
-msgid "{positionsCount, plural, one {Fiat · # asset} other {Fiat · # assets}}"
-msgstr "{positionsCount, plural, one {Fiat · # asset} other {Fiat · # assets}}"
+msgid "{positionsCount, plural, one {{investedLabel} in # asset} other {{investedLabel} in # assets}}"
+msgstr "{positionsCount, plural, one {{investedLabel} in # asset} other {{investedLabel} in # assets}}"
+
+#: src/account/utils/get-institution-row-caption.util.ts
+msgid "{positionsCount, plural, one {{investedLabel} in # position} other {{investedLabel} in # positions}}"
+msgstr "{positionsCount, plural, one {{investedLabel} in # position} other {{investedLabel} in # positions}}"
 
 #: src/budget/hooks/use-budget-forecast-labels.hook.ts
 msgid "{projectedAmount} · {gapAmount} over"
@@ -2578,6 +2588,7 @@ msgid "Cash"
 msgstr "Cash"
 
 #: src/account/component/institution-account-row/institution-account-row.tsx
+#: src/account/component/institution-row-cash/institution-row-cash.tsx
 #: src/brokerage/query/use-brokerage-summary.query.ts
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgctxt "Brokerage cash account"

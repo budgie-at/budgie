@@ -13,20 +13,19 @@ import { HomeHoldingRowSelector } from './home-holding-row.selector';
 
 import type { HoldingReturnInterface } from '../../interface/holding-return.interface';
 import type { HomeHoldingInterface } from '../../interface/home-holding.interface';
-import type { AccountTypeEnum } from '@budgie/contracts';
 
 interface Props {
     readonly holding: HomeHoldingInterface;
     readonly holdingReturn: HoldingReturnInterface | undefined;
-    readonly sectionType: AccountTypeEnum;
+    readonly todayChange: number | undefined;
     readonly isReturnLoading: boolean;
 }
 
-const rowVariants = cva('min-h-[64px] gap-x-xl py-lg pr-xl pl-3xl active:bg-surface-fill', {
-    variants: { isStacked: { true: 'gap-y-sm', false: 'flex-row items-center' } }
+const rowVariants = cva('min-h-[64px] gap-x-xl pr-xl pl-3xl active:bg-surface-fill', {
+    variants: { isStacked: { true: 'gap-y-xs py-md', false: 'flex-row items-center py-lg' } }
 });
 
-export const HomeHoldingRow = ({ holding, holdingReturn, sectionType, isReturnLoading }: Props) => {
+export const HomeHoldingRow = ({ holding, holdingReturn, todayChange, isReturnLoading }: Props) => {
     const { instrument } = holding;
 
     const isStacked = useIsAccessibilityTextSize();
@@ -49,14 +48,19 @@ export const HomeHoldingRow = ({ holding, holdingReturn, sectionType, isReturnLo
                     className="text-[17px] font-semibold text-primary"
                     maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
                     ellipsizeMode="tail"
-                    numberOfLines={2}
+                    numberOfLines={1}
                 >
                     {instrument.name}
                 </Text>
-                <HomeHoldingRowCaption holding={holding} sectionType={sectionType} />
+                <HomeHoldingRowCaption holding={holding} />
             </View>
 
-            <HomeHoldingRowAmount holding={holding} holdingReturn={holdingReturn} isReturnLoading={isReturnLoading} />
+            <HomeHoldingRowAmount
+                holding={holding}
+                holdingReturn={holdingReturn}
+                todayChange={todayChange}
+                isReturnLoading={isReturnLoading}
+            />
         </HapticPressable>
     );
 };

@@ -1,21 +1,23 @@
 import {
     AccountEntityTable,
     AccountTypeEnum,
+    InstrumentDailyMarketPriceEntityTable,
     InstrumentEntityTable,
     TransactionEntityTable,
     TransactionEntryEntityTable,
     TransactionEntryPositionRepository
 } from '@budgie/contracts';
-import { calculateInstrumentPosition } from '@budgie/market';
+import { InstrumentDailyMarketPriceRepository, calculateInstrumentPosition } from '@budgie/market';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import * as Effect from 'effect/Effect';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
 import { calculatePortfolioReturn } from '../../brokerage/utils/calculate-portfolio-return.util';
+import { getMarketDailyChange } from '../../market-data/utils/get-market-daily-change.util';
 import { defaultInstrumentIdAtom } from '../../settings/constants/settings-atoms.constant';
 import { isAccountTypeSection } from '../type-guard/is-account-type-section.type-guard';
 import { isHomeHolding } from '../type-guard/is-home-holding.type-guard';
@@ -42,6 +44,24 @@ const homePortfolioEntriesAtom = databaseQueryFamily(
         })
 );
 
+const getDailyChangeKey = ([instrumentId, quoteInstrumentId]: readonly [number, number]): string => `${instrumentId}:${quoteInstrumentId}`;
+
+const homeDailyChangesAtom = databaseQueryFamily(
+    [InstrumentDailyMarketPriceEntityTable],
+    InstrumentDailyMarketPriceRepository,
+    (repository, pairs: readonly (readonly [number, number])[]) =>
+        Effect.forEach(pairs, ([instrumentId, quoteInstrumentId]) =>
+            repository
+                .findRecent(instrumentId, quoteInstrumentId, 2)
+                .pipe(
+                    Effect.map(
+                        ([latest, previous]) =>
+                            [getDailyChangeKey([instrumentId, quoteInstrumentId]), getMarketDailyChange(latest, previous)] as const
+                    )
+                )
+        )
+);
+
 const sortIds = (ids: readonly number[]): number[] => [...new Set(ids)].sort((left, right) => left - right);
 
 export const useHomeHoldingReturnsQuery = (sections: readonly HomeSectionInterface[]): HomeHoldingReturnsInterface => {
@@ -59,6 +79,22 @@ export const useHomeHoldingReturnsQuery = (sections: readonly HomeSectionInterfa
     });
     const instrumentIds = sortIds(holdingSections.flatMap(({ holdings }) => holdings.map(holding => holding.instrument.id)));
     const cashAccountIds = sortIds(holdingSections.flatMap(section => section.cashAccountIds));
+    const quoteInstrumentIds = new Map(
+        holdingSections.flatMap(({ holdings }) =>
+            holdings.map(({ instrument }) => [instrument.id, instrument.quoteInstrumentId ?? defaultInstrumentId] as const)
+        )
+    );
+    const dailyChangePairs = instrumentIds.map(
+        instrumentId => [instrumentId, quoteInstrumentIds.get(instrumentId) ?? defaultInstrumentId] as const
+    );
+    const dailyChanges = new Map(AsyncResult.getOrElse(useLiveAtomValue(homeDailyChangesAtom(dailyChangePairs)), () => []));
+    const todayByInstrumentId = new Map(
+        dailyChangePairs.flatMap(pair => {
+            const change = dailyChanges.get(getDailyChangeKey(pair));
+
+            return isDefined(change) ? [[pair[0], change] as const] : [];
+        })
+    );
     const data = AsyncResult.getOrElse(
         useLiveAtomValue(homePortfolioEntriesAtom([instrumentIds, cashAccountIds, defaultInstrumentId])),
         () => null
@@ -82,13 +118,28 @@ export const useHomeHoldingReturnsQuery = (sections: readonly HomeSectionInterfa
             return isDefined(holdingReturn) ? [[instrument.id, holdingReturn]] : [];
         });
         const hasReturn = isNotEmptyArray(holdingReturns) || portfolio.gain !== 0;
+        const todayMoves = holdings.flatMap(({ instrument, value }) => {
+            const change = todayByInstrumentId.get(instrument.id);
 
-        return { type, portfolio, hasReturn, holdingReturns: new Map(holdingReturns) };
+            return isDefined(change) ? [{ value, gain: (value * change) / (1 + change) }] : [];
+        });
+        const todayGain = todayMoves.reduce((total, move) => total + move.gain, 0);
+        const todayStartValue = todayMoves.reduce((total, move) => total + move.value - move.gain, 0);
+        const today = isNotEmptyArray(todayMoves)
+            ? { gain: todayGain, percent: isPositiveNumber(todayStartValue) ? todayGain / todayStartValue : null }
+            : null;
+
+        return { type, portfolio, hasReturn, today, holdingReturns: new Map(holdingReturns) };
     });
 
     return {
         holdingsBySectionType: new Map(results.map(({ type, holdingReturns }) => [type, holdingReturns])),
         bySectionType: new Map(results.flatMap(({ type, portfolio, hasReturn }) => (hasReturn ? [[type, portfolio] as const] : []))),
-        isLoading: !isCashCurrent || instrumentIds.some(instrumentId => !entriesByInstrumentId.has(instrumentId))
+        todayByInstrumentId,
+        todayBySectionType: new Map(results.flatMap(({ type, today }) => (isDefined(today) ? [[type, today] as const] : []))),
+        isLoading:
+            !isCashCurrent ||
+            instrumentIds.some(instrumentId => !entriesByInstrumentId.has(instrumentId)) ||
+            dailyChangePairs.some(pair => !dailyChanges.has(getDailyChangeKey(pair)))
     };
 };

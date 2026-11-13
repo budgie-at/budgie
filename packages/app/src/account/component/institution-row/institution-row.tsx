@@ -15,6 +15,7 @@ import { InzhurInstitutionRowDetail } from '../../../inzhur/component/inzhur-ins
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { getInstitutionRowCaption } from '../../utils/get-institution-row-caption.util';
 import { getInstitutionTitle } from '../../utils/get-institution-title.util';
+import { InstitutionRowCash } from '../institution-row-cash/institution-row-cash';
 import { InstitutionRowDetail } from '../institution-row-detail/institution-row-detail';
 import { InstitutionRowTotal } from '../institution-row-total/institution-row-total';
 
@@ -26,8 +27,8 @@ interface Props {
     readonly institution: InstitutionGroupInterface;
 }
 
-const rowVariants = cva('min-h-[64px] gap-x-xl py-lg pr-lg pl-3xl active:bg-surface-fill', {
-    variants: { isStacked: { true: 'gap-y-sm', false: 'flex-row items-center' } }
+const rowVariants = cva('min-h-[64px] gap-x-xl pr-lg pl-3xl active:bg-surface-fill', {
+    variants: { isStacked: { true: 'gap-y-xs py-md', false: 'flex-row items-center py-lg' } }
 });
 
 export const InstitutionRow = ({ institution }: Props) => {
@@ -41,11 +42,12 @@ export const InstitutionRow = ({ institution }: Props) => {
     const handlePress = () => void router.push({ pathname: '/institution/[id]', params: { id: String(integrationId) } });
 
     const title = getInstitutionTitle(t, provider, label, groupNumber);
-    const caption = getInstitutionRowCaption(t, institution);
+    const caption = getInstitutionRowCaption(t, institution, protectAmount(total - cash, defaultInstrument.symbol));
     const bankName = label ?? title;
-    const rowTotal = isHoldingProvider ? cash : total;
+    const cashLabel = protectAmount(cash, defaultInstrument.symbol);
+    const amountLabel = isHoldingProvider ? t`${cashLabel} cash` : protectAmount(total, defaultInstrument.symbol);
     const rowTestID = testID(InstitutionRowSelector.Row(provider === ExternalSourceEnum.MANUAL ? bankName : integrationId));
-    const accessibilityLabel = [title, protectAmount(rowTotal, defaultInstrument.symbol), caption].join(', ');
+    const accessibilityLabel = [title, caption, amountLabel].join(', ');
 
     return (
         <HapticPressable
@@ -73,7 +75,11 @@ export const InstitutionRow = ({ institution }: Props) => {
                 )}
             </View>
 
-            <InstitutionRowTotal integrationId={integrationId} total={rowTotal} />
+            {isHoldingProvider ? (
+                <InstitutionRowCash integrationId={integrationId} cash={cash} />
+            ) : (
+                <InstitutionRowTotal integrationId={integrationId} total={total} />
+            )}
         </HapticPressable>
     );
 };
