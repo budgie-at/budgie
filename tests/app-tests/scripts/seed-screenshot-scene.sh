@@ -183,6 +183,10 @@ prepare_database() {
         ( cd "$SCENES_DIR" && sqlite3 "$PREPARED_DATABASE_PATH" < "$SCENE_OVERLAY_PATH" )
     fi
 
+    if [ "${PLATFORM:-ios}" = android ]; then
+        sqlite3 "$PREPARED_DATABASE_PATH" 'UPDATE settings SET is_screenshot_protection_enabled = 0;'
+    fi
+
     sqlite3 "$PREPARED_DATABASE_PATH" < "$SCREENSHOTS_DIR/opening-balances.sql"
 
     sqlite3 "$PREPARED_DATABASE_PATH" 'PRAGMA wal_checkpoint(TRUNCATE);' >/dev/null
@@ -326,8 +330,6 @@ install_android_database() {
 
     ANDROID_SERIAL="${ANDROID_SERIAL:?ANDROID_SERIAL is required}"
     export ANDROID_SERIAL
-
-    sqlite3 "$PREPARED_DATABASE_PATH" 'UPDATE settings SET is_screenshot_protection_enabled = 0;'
 
     adb root >/dev/null
     adb wait-for-device

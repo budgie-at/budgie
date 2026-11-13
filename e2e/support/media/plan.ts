@@ -112,7 +112,15 @@ export function plan(env: NodeJS.ProcessEnv = process.env): readonly Cell[] {
                     locale,
                     appearance,
                     settleSeconds: 0,
-                    path: join(root, 'raw/ios', slug, locale, appearance, `${scene.seed ?? name}.png`)
+                    path: join(
+                        root,
+                        'raw',
+                        env.E2E_PLATFORM === 'android' ? 'android' : 'ios',
+                        slug,
+                        locale,
+                        appearance,
+                        `${scene.seed ?? name}.png`
+                    )
                 },
                 index
             )

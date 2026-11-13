@@ -53,8 +53,12 @@ async function viewport(ctx: Ctx): Promise<{ width: number; height: number }> {
     let size = viewports.get(deviceId);
     if (size === undefined) {
         const shot = await client.capture.screenshot({});
-        if (shot.logicalWidth === undefined || shot.logicalHeight === undefined) throw new Error('the screenshot reported no logical size');
-        size = { width: shot.logicalWidth, height: shot.logicalHeight };
+        const width = b.isIos(ctx) ? shot.logicalWidth : shot.width;
+        const height = b.isIos(ctx) ? shot.logicalHeight : shot.height;
+        if (width === undefined || height === undefined) {
+            throw new Error('the screenshot reported no viewport size');
+        }
+        size = { width, height };
         viewports.set(deviceId, size);
     }
     return size;

@@ -224,3 +224,13 @@ async function resetAndroidApp(api: SimlockApi, leaseId: string, then: string): 
         `am force-stop ${BUNDLE_ID} && rm -f ${ANDROID_CONTAINER}/shared_prefs/SecureStore*.xml ${sqlite}/budgie.db ${sqlite}/budgie.db-wal ${sqlite}/budgie.db-shm && mkdir -p ${sqlite} && ${then}`
     );
 }
+
+export async function installAndroidDatabase(api: SimlockApi, leaseId: string, database: Buffer): Promise<void> {
+    await resetAndroidApp(api, leaseId, 'true');
+    await androidShell(
+        api,
+        leaseId,
+        `base64 -d > ${ANDROID_FILES}/SQLite/budgie.db && ${androidOwn(`${ANDROID_FILES}/SQLite`)}`,
+        database.toString('base64')
+    );
+}
