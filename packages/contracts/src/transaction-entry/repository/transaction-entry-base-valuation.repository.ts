@@ -149,14 +149,31 @@ export class TransactionEntryBaseValuationRepository extends Context.Service<Tra
                         page.afterId,
                         page.limit
                     ),
-                findMarketPricedEntryDaysBySyncIds: (transactionSyncIds: readonly string[]) =>
-                    Db.query(db =>
-                        selectLiveEntries(
-                            db,
-                            live => ({ instrumentId: live.instrumentId, rateDate: live.rateDate }),
-                            live => and(buildMarketPricedCondition(live), inArray(live.transactionSyncId, [...transactionSyncIds]))
-                        ).groupBy(sql`instrument_id`, sql`rate_date`)
-                    ),
+                findMarketPricedEntryDaysBySyncIds: Effect.fn('TransactionEntryBaseValuationRepository.findMarketPricedEntryDaysBySyncIds')(
+                    function* (transactionSyncIds: readonly string[]) {
+                        const days = new Map<string, { readonly instrumentId: number; readonly rateDate: string }>();
+
+                        for (let start = 0; start < transactionSyncIds.length; start += 500) {
+                            const rows = yield* Db.query(db =>
+                                selectLiveEntries(
+                                    db,
+                                    live => ({ instrumentId: live.instrumentId, rateDate: live.rateDate }),
+                                    live =>
+                                        and(
+                                            buildMarketPricedCondition(live),
+                                            inArray(live.transactionSyncId, transactionSyncIds.slice(start, start + 500))
+                                        )
+                                ).groupBy(sql`instrument_id`, sql`rate_date`)
+                            );
+
+                            for (const row of rows) {
+                                days.set(`${row.instrumentId}:${row.rateDate}`, row);
+                            }
+                        }
+
+                        return [...days.values()];
+                    }
+                ),
                 findMarketPricedInstrumentIds: Db.query(db =>
                     selectLiveEntries(db, live => ({ instrumentId: live.instrumentId }), buildMarketPricedCondition).groupBy(
                         sql`instrument_id`

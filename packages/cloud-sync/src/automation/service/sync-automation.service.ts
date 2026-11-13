@@ -53,13 +53,13 @@ export class SyncAutomationService extends Context.Service<SyncAutomationService
                 const touchedSyncIds = result.touchedRows[TRANSACTIONS_TABLE] ?? [];
 
                 yield* settleVoid(marketPricedRevaluationService.revalueTransactions(touchedSyncIds));
-                yield* settleVoid(yieldTagRepair(touchedSyncIds));
 
                 const hasDeletedTransactions = isNotEmptyArray(result.deleted[SyncRecordTypeEnum.TRANSACTION] ?? []);
                 const hasSeriesChange = isNotEmptyArray(result.touchedRows[RECURRING_SERIES_TABLE] ?? []) || isNotEmptyArray(result.merged);
                 const consolidated = yield* settle(consolidate(touchedSyncIds), 0);
                 const survivorIds = (yield* transactionRepository.findLiveIdsBySyncIds(touchedSyncIds)).map(({ id }) => id);
 
+                yield* settleVoid(yieldTagRepair(touchedSyncIds));
                 yield* settleVoid(ruleEngine.applyCreateSafeRulesToTransactionIds(survivorIds));
 
                 const settings = yield* settingsRepository.find;

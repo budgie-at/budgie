@@ -150,13 +150,26 @@ export class TransactionYieldRepository extends Context.Service<TransactionYield
                     ),
                 findUntaggedCandidatesAfter: (query: YieldTagCandidateQueryInterface, afterId: number, limit: number) =>
                     selectCandidates(and(buildUnclassifiedYieldCondition(query), gt(TransactionEntityTable.id, afterId)), limit),
-                findUntaggedCandidatesBySyncIds: (query: YieldTagCandidateQueryInterface, syncIds: readonly string[]) =>
-                    isEmptyArray(syncIds)
-                        ? Effect.succeed([])
-                        : selectCandidates(
-                              and(buildUnclassifiedYieldCondition(query), inArray(TransactionEntityTable.syncId, [...syncIds])),
-                              syncIds.length
-                          ),
+                findUntaggedCandidatesBySyncIds: Effect.fn('TransactionYieldRepository.findUntaggedCandidatesBySyncIds')(function* (
+                    query: YieldTagCandidateQueryInterface,
+                    syncIds: readonly string[]
+                ) {
+                    const candidates = [];
+
+                    for (let start = 0; start < syncIds.length; start += 500) {
+                        candidates.push(
+                            ...(yield* selectCandidates(
+                                and(
+                                    buildUnclassifiedYieldCondition(query),
+                                    inArray(TransactionEntityTable.syncId, syncIds.slice(start, start + 500))
+                                ),
+                                500
+                            ))
+                        );
+                    }
+
+                    return candidates;
+                }),
                 fillYieldTags: (transactionId: number, fields: YieldFieldsInterface) =>
                     Db.query(db =>
                         db
