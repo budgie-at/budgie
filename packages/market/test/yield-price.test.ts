@@ -7,38 +7,39 @@ import { YieldPriceService } from '../src/yield/service/yield-price.service';
 
 import { BASE_ID, ETH_ID, FUND_ID, UAH_ID, USDT_ID, USD_ID, dailyPrices, latestRate, makeYieldPriceLayer } from './yield-test-kit';
 
-import type { YieldPricedInstrumentInterface } from '../src/yield/interface/yield-priced-instrument.interface';
+import type { YieldPricedInstrumentType } from '../src/yield/interface/yield-priced-instrument.type';
 import type { YieldWorldInterface } from './yield-test-kit';
 
-const ETH: YieldPricedInstrumentInterface = { id: ETH_ID, code: 'ETH', type: InstrumentTypeEnum.CRYPTO };
-const USDT: YieldPricedInstrumentInterface = { id: USDT_ID, code: 'USDT', type: InstrumentTypeEnum.CRYPTO };
-const FUND: YieldPricedInstrumentInterface = { id: FUND_ID, code: 'INZ', type: InstrumentTypeEnum.FUND };
-const HRYVNIA: YieldPricedInstrumentInterface = { id: UAH_ID, code: 'UAH', type: InstrumentTypeEnum.FIAT };
-const BASE: YieldPricedInstrumentInterface = { id: BASE_ID, code: 'EUR', type: InstrumentTypeEnum.FIAT };
+const ETH: YieldPricedInstrumentType = { id: ETH_ID, code: 'ETH', type: InstrumentTypeEnum.CRYPTO };
+const USDT: YieldPricedInstrumentType = { id: USDT_ID, code: 'USDT', type: InstrumentTypeEnum.CRYPTO };
+const FUND: YieldPricedInstrumentType = { id: FUND_ID, code: 'INZ', type: InstrumentTypeEnum.FUND };
+const HRYVNIA: YieldPricedInstrumentType = { id: UAH_ID, code: 'UAH', type: InstrumentTypeEnum.FIAT };
+const BASE: YieldPricedInstrumentType = { id: BASE_ID, code: 'EUR', type: InstrumentTypeEnum.FIAT };
 
-const resolveDays = (world: YieldWorldInterface, instrument: YieldPricedInstrumentInterface, days: readonly string[]) =>
+const hryvniaRate = (rateDate: string, rate: number) => ({ sourceInstrumentId: UAH_ID, targetInstrumentId: BASE_ID, rateDate, rate });
+
+const resolveDays = (world: YieldWorldInterface, instrument: YieldPricedInstrumentType, days: readonly string[]) =>
     Effect.gen(function* () {
         const service = yield* YieldPriceService;
         const series = yield* service.loadSeries(instrument, BASE_ID, '2026-03-01', '2026-06-30');
 
-        return days.map(day => service.resolve(series, day));
+        return yield* Effect.forEach(days, day => service.resolve(series, day));
     }).pipe(Effect.provide(makeYieldPriceLayer(world)));
 
-const findLatest = (world: YieldWorldInterface, instrument: YieldPricedInstrumentInterface) =>
+const findLatest = (world: YieldWorldInterface, instrument: YieldPricedInstrumentType) =>
     Effect.flatMap(YieldPriceService, service => service.findLatestPrice(instrument, BASE_ID)).pipe(
         Effect.provide(makeYieldPriceLayer(world))
     );
 
 const priced = (price: number, sourceDay: string | null) => ({ price, isEstimated: false, isFarEstimated: false, sourceDay });
+const estimated = (price: number | null, isFarEstimated: boolean) => ({ price, isEstimated: true, isFarEstimated, sourceDay: null });
 
 describe('YieldPriceService', () => {
-    it.effect('carries a crypto price at most 3 days forward and never carries a later price back', () =>
+    it.effect('carries a crypto price at most 3 days, and estimates at the valuation day rate beyond it', () =>
         Effect.gen(function* () {
             const world = {
-                prices: [
-                    ...dailyPrices(ETH_ID, BASE_ID, ['2026-03-10', '2026-03-10'], 2000),
-                    ...dailyPrices(ETH_ID, BASE_ID, ['2026-05-20', '2026-05-20'], 2500)
-                ]
+                prices: [...dailyPrices(ETH_ID, BASE_ID, ['2026-03-10'], 2000), ...dailyPrices(ETH_ID, BASE_ID, ['2026-05-20'], 2500)],
+                latestRates: [latestRate(ETH_ID, BASE_ID, 2100)]
             };
             const [exact, threeDays, fourDays, farAway, onlyLater] = yield* resolveDays(world, ETH, [
                 '2026-03-10',
@@ -50,71 +51,138 @@ describe('YieldPriceService', () => {
 
             expect(exact).toEqual(priced(2000, '2026-03-10'));
             expect(threeDays).toEqual(priced(2000, '2026-03-10'));
-            expect(fourDays).toEqual({ price: 2000, isEstimated: true, isFarEstimated: false, sourceDay: '2026-03-10' });
-            expect(farAway).toEqual({ price: 2000, isEstimated: true, isFarEstimated: true, sourceDay: '2026-03-10' });
-            expect(onlyLater).toEqual({ price: 2000, isEstimated: true, isFarEstimated: false, sourceDay: '2026-03-10' });
+            expect(fourDays).toEqual(estimated(2100, false));
+            expect(farAway).toEqual(estimated(2100, true));
+            expect(onlyLater).toEqual(estimated(2100, false));
         })
     );
 
     it.effect('keys prices by the UTC day of an instant', () =>
         Effect.gen(function* () {
-            const world = { prices: dailyPrices(ETH_ID, BASE_ID, ['2026-03-10', '2026-03-10'], 2000) };
+            const world = { prices: dailyPrices(ETH_ID, BASE_ID, ['2026-03-10'], 2000), latestRates: [latestRate(ETH_ID, BASE_ID, 2100)] };
             const nearMidnight = new Date('2026-03-13T23:30:00.000Z');
-            const [point] = yield* resolveDays(world, ETH, [formatUtcDay(nearMidnight)]);
+            const nextInstant = new Date('2026-03-14T00:30:00.000Z');
+            const [sameDay, nextDay] = yield* resolveDays(world, ETH, [formatUtcDay(nearMidnight), formatUtcDay(nextInstant)]);
 
             expect(formatUtcDay(nearMidnight)).toBe('2026-03-13');
-            expect(point).toEqual(priced(2000, '2026-03-10'));
+            expect(sameDay).toEqual(priced(2000, '2026-03-10'));
+            expect(nextDay).toEqual(estimated(2100, false));
         })
     );
 
     it.effect('prices a FUND with the nearest NAV within 31 days on either side, converted through UAH', () =>
         Effect.gen(function* () {
-            const world = {
-                prices: dailyPrices(FUND_ID, UAH_ID, ['2026-04-01', '2026-04-01'], 10),
-                historicalRates: [{ sourceInstrumentId: UAH_ID, targetInstrumentId: BASE_ID, rateDate: '2026-01-01', rate: 0.025 }]
-            };
+            const world = { prices: dailyPrices(FUND_ID, UAH_ID, ['2026-04-01'], 10), historicalRates: [hryvniaRate('2026-01-01', 0.025)] };
             const [before, after, far] = yield* resolveDays(world, FUND, ['2026-03-02', '2026-05-02', '2026-05-03']);
 
             expect(before).toEqual(priced(0.25, '2026-04-01'));
             expect(after).toEqual(priced(0.25, '2026-04-01'));
-            expect(far).toEqual({ price: 0.25, isEstimated: true, isFarEstimated: true, sourceDay: '2026-04-01' });
+            expect(far).toEqual(estimated(null, true));
         })
     );
 
-    it.effect('never estimates fiat and always prices the base at 1', () =>
+    it.effect('picks the nearest NAV across a weekend gap', () =>
         Effect.gen(function* () {
             const world = {
-                historicalRates: [{ sourceInstrumentId: UAH_ID, targetInstrumentId: BASE_ID, rateDate: '2025-01-01', rate: 0.025 }]
+                prices: [...dailyPrices(FUND_ID, UAH_ID, ['2026-04-03'], 10), ...dailyPrices(FUND_ID, UAH_ID, ['2026-04-06'], 20)],
+                historicalRates: [hryvniaRate('2026-01-01', 0.1)]
             };
-            const [fiat] = yield* resolveDays(world, HRYVNIA, ['2026-06-30']);
+            const [saturday, sunday] = yield* resolveDays(world, FUND, ['2026-04-04', '2026-04-05']);
+
+            expect(saturday).toEqual(priced(1, '2026-04-03'));
+            expect(sunday).toEqual(priced(2, '2026-04-06'));
+        })
+    );
+
+    it.effect('tie-breaks to the earlier NAV when both sides are equally near', () =>
+        Effect.gen(function* () {
+            const world = {
+                prices: [...dailyPrices(FUND_ID, UAH_ID, ['2026-04-02'], 10), ...dailyPrices(FUND_ID, UAH_ID, ['2026-04-06'], 20)],
+                historicalRates: [hryvniaRate('2026-01-01', 0.1)]
+            };
+            const [tie] = yield* resolveDays(world, FUND, ['2026-04-04']);
+
+            expect(tie).toEqual(priced(1, '2026-04-02'));
+        })
+    );
+
+    it.effect('converts a FUND NAV at the valuation day UAH rate, not the NAV day rate', () =>
+        Effect.gen(function* () {
+            const world = {
+                prices: dailyPrices(FUND_ID, UAH_ID, ['2026-04-01'], 10),
+                historicalRates: [hryvniaRate('2026-03-01', 0.02), hryvniaRate('2026-04-01', 0.03)]
+            };
+            const [earlier, later] = yield* resolveDays(world, FUND, ['2026-03-20', '2026-04-10']);
+
+            expect(earlier).toEqual(priced(0.2, '2026-04-01'));
+            expect(later).toEqual(priced(0.3, '2026-04-01'));
+        })
+    );
+
+    it.effect('estimates a FUND instead of pricing it at 0 when the UAH rate is missing', () =>
+        Effect.gen(function* () {
+            const world = { prices: dailyPrices(FUND_ID, UAH_ID, ['2026-04-01'], 10) };
+            const [point] = yield* resolveDays(world, FUND, ['2026-04-01']);
+
+            expect(point).toEqual(estimated(null, false));
+        })
+    );
+
+    it.effect('uses the earliest UAH rate for a FUND day before the first rate', () =>
+        Effect.gen(function* () {
+            const world = {
+                prices: dailyPrices(FUND_ID, UAH_ID, ['2026-03-10'], 10),
+                historicalRates: [hryvniaRate('2026-03-15', 0.02), hryvniaRate('2026-04-01', 0.5)]
+            };
+            const [point] = yield* resolveDays(world, FUND, ['2026-03-05']);
+
+            expect(point).toEqual(priced(0.2, '2026-03-10'));
+        })
+    );
+
+    it.effect('never estimates fiat, uses the earliest rate before the first one, and prices the base at 1', () =>
+        Effect.gen(function* () {
+            const world = { historicalRates: [hryvniaRate('2026-03-05', 0.03), hryvniaRate('2026-03-20', 0.04)] };
+            const [beforeFirst, between, after] = yield* resolveDays(world, HRYVNIA, ['2026-03-01', '2026-03-10', '2026-03-25']);
             const [base] = yield* resolveDays(world, BASE, ['2026-06-30']);
 
-            expect(fiat).toEqual(priced(0.025, '2025-01-01'));
+            expect(beforeFirst).toEqual(priced(0.03, null));
+            expect(between).toEqual(priced(0.03, null));
+            expect(after).toEqual(priced(0.04, null));
             expect(base).toEqual(priced(1, null));
         })
     );
 
-    it.effect('prices a stablecoin from stored prices and estimates an unpriced day at the dollar rate', () =>
+    it.effect('prices a stablecoin from stored prices and estimates an unpriced day at the dollar rate of that day', () =>
         Effect.gen(function* () {
             const world = {
-                prices: dailyPrices(USDT_ID, BASE_ID, ['2026-03-10', '2026-03-10'], 0.97),
-                latestRates: [latestRate(USD_ID, BASE_ID, 0.9)]
+                prices: dailyPrices(USDT_ID, BASE_ID, ['2026-03-10'], 0.97),
+                historicalRates: [
+                    { sourceInstrumentId: USD_ID, targetInstrumentId: BASE_ID, rateDate: '2026-03-05', rate: 0.9 },
+                    { sourceInstrumentId: USD_ID, targetInstrumentId: BASE_ID, rateDate: '2026-04-15', rate: 0.8 }
+                ]
             };
-            const [depeg, carried, unpriced] = yield* resolveDays(world, USDT, ['2026-03-10', '2026-03-12', '2026-04-20']);
-            const [noPrices] = yield* resolveDays({ latestRates: world.latestRates }, USDT, ['2026-04-20']);
+            const [depeg, carried, nearUnpriced, farUnpriced] = yield* resolveDays(world, USDT, [
+                '2026-03-10',
+                '2026-03-12',
+                '2026-03-20',
+                '2026-04-20'
+            ]);
+            const [noPrices] = yield* resolveDays({ historicalRates: world.historicalRates }, USDT, ['2026-04-20']);
 
-            expect(depeg).toEqual(priced(0.97, '2026-03-10'));
+            expect(depeg).toEqual({ price: 0.97, isEstimated: false, isFarEstimated: false, sourceDay: '2026-03-10' });
             expect(carried).toEqual(priced(0.97, '2026-03-10'));
-            expect(unpriced).toEqual({ price: 0.9, isEstimated: true, isFarEstimated: false, sourceDay: null });
-            expect(noPrices).toEqual({ price: 0.9, isEstimated: true, isFarEstimated: false, sourceDay: null });
+            expect(nearUnpriced).toEqual(estimated(0.9, false));
+            expect(farUnpriced).toEqual(estimated(0.8, true));
+            expect(noPrices).toEqual(estimated(0.8, true));
         })
     );
 
-    it.effect('estimates a crypto at the latest rate, far, when it has no stored price', () =>
+    it.effect('estimates a crypto at the fallback rate, far, when it has no stored price', () =>
         Effect.gen(function* () {
             const [point] = yield* resolveDays({ latestRates: [latestRate(ETH_ID, BASE_ID, 2100)] }, ETH, ['2026-06-01']);
 
-            expect(point).toEqual({ price: 2100, isEstimated: true, isFarEstimated: true, sourceDay: null });
+            expect(point).toEqual(estimated(2100, true));
         })
     );
 
@@ -122,7 +190,7 @@ describe('YieldPriceService', () => {
         Effect.gen(function* () {
             const [point] = yield* resolveDays({}, ETH, ['2026-06-01']);
 
-            expect(point).toEqual({ price: null, isEstimated: true, isFarEstimated: true, sourceDay: null });
+            expect(point).toEqual(estimated(null, true));
         })
     );
 
@@ -142,7 +210,7 @@ describe('YieldPriceService', () => {
         Effect.gen(function* () {
             const world = {
                 prices: dailyPrices(FUND_ID, UAH_ID, ['2026-04-01', '2026-04-02'], 10),
-                latestRates: [latestRate(UAH_ID, BASE_ID, 0.025), latestRate(UAH_ID, BASE_ID, 0.025)]
+                latestRates: [latestRate(UAH_ID, BASE_ID, 0.025)]
             };
 
             expect(yield* findLatest(world, FUND)).toEqual({ price: 0.25, isEstimated: false });

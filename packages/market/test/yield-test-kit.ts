@@ -1,14 +1,11 @@
 import { makeTestPlatformLayer } from '@budgie-at/test-kit';
 import { InstrumentRepository, InstrumentTypeEnum } from '@budgie/contracts';
-import { differenceInCalendarDays } from 'date-fns/differenceInCalendarDays';
-import { parseISO } from 'date-fns/parseISO';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { formatUtcDay } from '../src/@generic/utils/format-utc-day.util';
 import { ExchangeRateRepository } from '../src/exchange-rate/repository/exchange-rate.repository';
-import { HistoricalExchangeRateRepository } from '../src/historical-exchange-rate/repository/historical-exchange-rate.repository';
 import { InstrumentDailyMarketPriceRepository } from '../src/market-data/repository/instrument-daily-market-price.repository';
+import { EntryBaseValuationService } from '../src/valuation/service/entry-base-valuation.service';
 import { YieldPriceService } from '../src/yield/service/yield-price.service';
 
 import { testDb } from './test-context';
@@ -29,7 +26,6 @@ export const ETH_ID = 35;
 export const USDT_ID = 36;
 export const FUND_ID = 900;
 const NOW = new Date('2026-11-13T12:00:00.000Z');
-const MS_PER_DAY = 86_400_000;
 
 export interface YieldWorldInterface {
     readonly prices?: readonly InstrumentDailyMarketPriceEntityInterface[];
@@ -43,17 +39,17 @@ export interface YieldWorldInterface {
 export const dailyPrices = (
     instrumentId: number,
     quoteInstrumentId: number,
-    range: readonly [string, string],
+    days: readonly string[],
     price: number
 ): InstrumentDailyMarketPriceEntityInterface[] =>
-    Array.from({ length: differenceInCalendarDays(parseISO(range[1]), parseISO(range[0])) + 1 }, (_, index) => ({
+    days.map((priceDate, index) => ({
         id: index + 1,
         createdAt: NOW,
         updatedAt: NOW,
         deletedAt: null,
         instrumentId,
         quoteInstrumentId,
-        priceDate: formatUtcDay(new Date(Date.parse(`${range[0]}T00:00:00.000Z`) + index * MS_PER_DAY)),
+        priceDate,
         price,
         marketCap: null,
         volume: null,
@@ -119,28 +115,18 @@ export const makeYieldPriceLayer = (world: YieldWorldInterface) =>
                             .at(-1)
                     )
             }),
-            Layer.mock(HistoricalExchangeRateRepository)({
-                findInDateRange: (sourceInstrumentId, targetInstrumentId, fromDate, toDate) =>
-                    Effect.succeed(
-                        (world.historicalRates ?? []).filter(
-                            rate =>
-                                rate.sourceInstrumentId === sourceInstrumentId &&
-                                rate.targetInstrumentId === targetInstrumentId &&
-                                rate.rateDate >= fromDate &&
-                                rate.rateDate <= toDate
-                        )
-                    ),
-                findForDateOrBefore: (sourceInstrumentId, targetInstrumentId, rateDate) =>
-                    Effect.succeed(
-                        (world.historicalRates ?? [])
-                            .filter(
-                                rate =>
-                                    rate.sourceInstrumentId === sourceInstrumentId &&
-                                    rate.targetInstrumentId === targetInstrumentId &&
-                                    rate.rateDate <= rateDate
-                            )
-                            .at(-1)
-                    )
+            Layer.mock(EntryBaseValuationService)({
+                resolveHistoricalBaseExchangeRateForDay: (sourceInstrumentId, targetInstrumentId, rateDate) => {
+                    const pairRates = (world.historicalRates ?? []).filter(
+                        rate => rate.sourceInstrumentId === sourceInstrumentId && rate.targetInstrumentId === targetInstrumentId
+                    );
+                    const onOrBefore = pairRates.filter(rate => rate.rateDate <= rateDate).at(-1);
+                    const latest = (world.latestRates ?? []).find(
+                        rate => rate.baseInstrumentId === sourceInstrumentId && rate.quoteInstrumentId === targetInstrumentId
+                    );
+
+                    return Effect.succeed(onOrBefore?.rate ?? pairRates.at(0)?.rate ?? latest?.rate ?? null);
+                }
             }),
             Layer.mock(ExchangeRateRepository)({
                 findByBaseAndQuoteIds: (baseInstrumentId, quoteInstrumentId) =>
