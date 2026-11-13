@@ -22,6 +22,10 @@ msgstr "Binance P2P-Kauf von {assetCode}"
 msgid "Binance P2P sell {assetCode}"
 msgstr "Binance P2P-Verkauf von {assetCode}"
 
+#: src/yield/component/yield-position-row/yield-position-row.tsx
+msgid " on whole balance"
+msgstr " auf das gesamte Guthaben"
+
 #: src/account/component/archived-account-card/archived-account-card.tsx
 msgid ", closed at the provider"
 msgstr ", beim Anbieter geschlossen"
@@ -239,6 +243,10 @@ msgstr "{amount} am {date} eingezahlt. Was hast du gekauft?"
 #: src/rule/utils/show-rule-application-toast.util.ts
 msgid "{applied, plural, one {# matching transaction updated} other {# matching transactions updated}}"
 msgstr "{applied, plural, one {# passende Transaktion aktualisiert} other {# passende Transaktionen aktualisiert}}"
+
+#: src/yield/hook/use-yield-position-rate-text.hook.ts
+msgid "{approximate}{formattedRate} a year"
+msgstr "{approximate}{formattedRate} pro Jahr"
 
 #: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 msgid "{approxTransactions, plural, one {about # transaction} other {about # transactions}}"
@@ -780,6 +788,7 @@ msgid "{name} raised to {amountLabel}"
 msgstr "{name} auf {amountLabel} erhöht"
 
 #: src/yield/hook/use-yield-hero-line-text.hook.ts
+#: src/yield/hook/use-yield-position-subtitle.hook.ts
 msgid "{net} after tax"
 msgstr "{net} nach Steuern"
 
@@ -889,6 +898,14 @@ msgstr "{quantityLabel}, Wert {valueLabel}"
 #: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
 msgid "{rate, plural, =1 {about once a week} =2 {about twice a week} other {about # a week}}"
 msgstr "{rate, plural, =1 {etwa einmal pro Woche} =2 {etwa zweimal pro Woche} other {etwa # pro Woche}}"
+
+#: src/yield/hook/use-yield-deposit-subtitle.hook.ts
+msgid "{rate}% · matures {maturity}"
+msgstr "{rate}% · Fälligkeit {maturity}"
+
+#: src/yield/hook/use-yield-deposit-subtitle.hook.ts
+msgid "{rate}% a year"
+msgstr "{rate}% pro Jahr"
 
 #: src/inzhur/component/inzhur-operations-import-summary/inzhur-operations-import-summary.tsx
 msgid "{recordedLabel}, {alreadyLabel}. You can edit any entry like a normal transaction."
@@ -1067,6 +1084,10 @@ msgstr "{title} läuft zu schnell"
 msgid "{title}, {protectedAmount} per month"
 msgstr "{title}, {protectedAmount} pro Monat"
 
+#: src/yield/component/yield-position-row/yield-position-row.tsx
+msgid "{title}, earned {earned} {rangeCaption}, {secondary}{wholeBalance}"
+msgstr "{title}, verdient {earned} {rangeCaption}, {secondary}{wholeBalance}"
+
 #: src/tag/components/tag-selector-row/tag-selector-row.tsx
 msgid "{title}, primary"
 msgstr "{title}, primär"
@@ -1122,6 +1143,10 @@ msgstr "{transferCount} jetzt Überweisungen"
 #: src/inzhur/component/inzhur-fund-holding-line/inzhur-fund-holding-line.tsx
 msgid "{unitPrice} each"
 msgstr "je {unitPrice}"
+
+#: src/yield/hook/use-yield-position-subtitle.hook.ts
+msgid "{units} {instrumentCode} earned"
+msgstr "{units} {instrumentCode} verdient"
 
 #: src/inzhur/component/inzhur-operations-details/inzhur-operations-details.tsx
 msgid "{unmatchedBankCount, plural, one {# bank payment to Inzhur has no matching row in the file} other {# bank payments to Inzhur have no matching row in the file}}"
@@ -1222,6 +1247,7 @@ msgstr "1 Tag"
 #: src/inzhur/component/inzhur-performance-chart/inzhur-performance-chart.tsx
 #: src/market-data/component/currency-market-range-control/currency-market-range-control.tsx
 #: src/yield/component/yield-hero-delta/yield-hero-delta.tsx
+#: src/yield/component/yield-range-control/yield-range-control.tsx
 msgid "1M"
 msgstr "1 M"
 
@@ -1231,6 +1257,7 @@ msgstr "1 W"
 
 #: src/market-data/component/currency-market-range-control/currency-market-range-control.tsx
 #: src/yield/component/yield-hero-delta/yield-hero-delta.tsx
+#: src/yield/component/yield-range-control/yield-range-control.tsx
 msgid "1Y"
 msgstr "1 J"
 
@@ -1257,6 +1284,7 @@ msgstr "3 Tage"
 #: src/inzhur/component/inzhur-performance-chart/inzhur-performance-chart.tsx
 #: src/market-data/component/currency-market-range-control/currency-market-range-control.tsx
 #: src/yield/component/yield-hero-delta/yield-hero-delta.tsx
+#: src/yield/component/yield-range-control/yield-range-control.tsx
 msgid "3M"
 msgstr "3 M"
 
@@ -1438,9 +1466,21 @@ msgstr "Konten ({selectedAccountsCount})"
 msgid "Accounts you sync appear here."
 msgstr "Synchronisierte Konten erscheinen hier."
 
+#: src/yield/hook/use-yield-deposit-subtitle.hook.ts
+msgid "Accruing {accruingAmount}"
+msgstr "Aufgelaufen {accruingAmount}"
+
+#: src/yield/hook/use-yield-deposit-subtitle.hook.ts
+msgid "Accruing {accruingAmount} · pays {maturity}"
+msgstr "Aufgelaufen {accruingAmount} · Auszahlung {maturity}"
+
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
 msgid "Action: {label}"
 msgstr "Aktion: {label}"
+
+#: src/yield/component/yield-section-header/yield-section-header.tsx
+msgid "Active"
+msgstr "Aktiv"
 
 #: src/settings/components/budget-management-card/budget-management-card.tsx
 msgid "Active budget"
@@ -1666,6 +1706,7 @@ msgstr "KI aus"
 
 #: src/@generic/component/filter-sheet/filter-sheet-bulk-toggle/filter-sheet-bulk-toggle.tsx
 #: src/inzhur/component/inzhur-performance-chart/inzhur-performance-chart.tsx
+#: src/yield/component/yield-range-control/yield-range-control.tsx
 msgid "All"
 msgstr "Alle"
 
@@ -3059,6 +3100,7 @@ msgid "Close menu"
 msgstr "Menü schließen"
 
 #: src/account/component/archived-account-trailing/archived-account-trailing.tsx
+#: src/yield/component/yield-section-header/yield-section-header.tsx
 msgid "Closed"
 msgstr "Geschlossen"
 
@@ -6989,6 +7031,10 @@ msgstr "Noch nicht genug Verlauf"
 msgid "Not enough price history"
 msgstr "Nicht genug Kurshistorie"
 
+#: src/yield/component/yield-section-header/yield-section-header.tsx
+msgid "Not linked to a holding"
+msgstr "Keinem Bestand zugeordnet"
+
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
 msgid "Not now"
 msgstr "Nicht jetzt"
@@ -7710,9 +7756,17 @@ msgstr "Zahlungen pro Monat"
 msgid "Payments this rule already changed stay as they are."
 msgstr "Von dieser Regel bereits geänderte Zahlungen bleiben unverändert."
 
+#: src/yield/component/yield-section-header/yield-section-header.tsx
+msgid "Payouts"
+msgstr "Auszahlungen"
+
 #: src/account/component/deposit-close-link-payouts-button/deposit-close-link-payouts-button.tsx
 msgid "Payouts already recorded? Link them"
 msgstr "Auszahlungen schon erfasst? Verknüpfen"
+
+#: src/yield/component/yield-section-header/yield-section-header.tsx
+msgid "Payouts we couldn’t match to a deposit or exchange asset"
+msgstr "Auszahlungen, die wir keinem Einlagenkonto oder Börsenwert zuordnen konnten"
 
 #: src/sync/component/bank-integration-statements/bank-integration-statements.tsx
 msgid "PDF or spreadsheet from {bank}"
@@ -8059,6 +8113,10 @@ msgstr "Erhöhe den Gesamtbetrag oder wähle weniger Zahlungen"
 #: src/budget/components/budget-limit-change-row/budget-limit-change-row.tsx
 msgid "Raised {dateLabel} · over the limit {count} periods in a row"
 msgstr "Erhöht am {dateLabel} · {count} Zeiträume in Folge über dem Limit"
+
+#: src/yield/component/yield-range-control/yield-range-control.tsx
+msgid "Range, {currentLabel}"
+msgstr "Zeitraum, {currentLabel}"
 
 #: src/market-data/component/currency-market-stats/currency-market-stats.tsx
 msgid "Rank"
