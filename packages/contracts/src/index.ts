@@ -191,6 +191,9 @@ export { TransactionTypeEnum } from './transaction/enum/transaction-type.enum';
 export { TransactionUpdatedByEnum } from './transaction/enum/transaction-updated-by.enum';
 export { TransactionConsolidationTypeEnum } from './transaction/enum/transaction-consolidation-type.enum';
 export { TransactionAssociationEnum } from './transaction/enum/transaction-association.enum';
+export { YieldKindEnum } from './transaction/enum/yield-kind.enum';
+export type { YieldFieldsInterface } from './transaction/interface/yield-fields.interface';
+export { normalizeYieldFields } from './transaction/utils/normalize-yield-fields.util';
 
 export { DEFAULT_TRANSACTION_FILTER } from './transaction/constant/default-transaction-filter.constant';
 export { TRANSFER_PAIR_TIME_WINDOW_SECONDS } from './transaction/constant/transfer-pair-time-window.constant';
