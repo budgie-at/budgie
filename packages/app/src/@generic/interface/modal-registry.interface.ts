@@ -116,6 +116,10 @@ export interface ModalRegistryInterface {
         readonly result: LanguageEnum;
     };
     readonly '/resync-window-picker': { readonly params: { readonly accountId: number }; readonly result: null };
+    readonly '/deposit-close': {
+        readonly params: { readonly depositAccountId: number; readonly destinationAccountId: number };
+        readonly result: null;
+    };
     readonly '/rule-form': {
         readonly params: { readonly ruleId?: number; readonly prefillData?: RulePrefillDataInterface };
         readonly result: 'created' | 'updated' | 'deleted';

@@ -1,5 +1,3 @@
-import { expect } from 'e2e';
-
 import * as a from '../support/budgie/accounts.ts';
 import * as c from '../support/budgie/categories.ts';
 import * as b from '../support/budgie/core.ts';
@@ -127,13 +125,9 @@ test('37 deposit lifecycle', { tags: ['accounts'], platforms: PENDING_ANDROID_PO
         await b.tapId(ctx, 'AccountDetails.CloseDepositButton');
         await b.expectId(ctx, 'AccountPickerBottomSheet.Input');
         await a.selectAccountFromNativePicker(ctx, 'AccountPickerBottomSheet.Option.E2E Expense Source');
-        const ask = b.byText(screen, 'Close Deposit?');
-        await expect(ask).toBeVisible({ timeout: 10_000 });
+        await b.expectId(ctx, 'DepositClose.AmountInput', 10_000);
         await b.expectText(ctx, /555/);
-        const confirm = b.alertButton(screen, 'Close Deposit');
-        await expect(confirm).toBeEnabled();
-        await confirm.tap();
-        await expect(ask).toBeHidden({ timeout: 10_000 });
+        await b.tapId(ctx, 'DepositClose.ConfirmButton');
         await b.expectId(ctx, 'HomePage.TotalBalance', 15_000);
         await b.expectId(ctx, 'AccountCard.Balance.E2E_Expense_Source.615');
         await b.expectId(ctx, 'HomePage.NetWorthValue.715');

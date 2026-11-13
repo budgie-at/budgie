@@ -556,10 +556,6 @@ msgstr "{formattedAmount} auf {name} übertragen"
 msgid "{formattedAveragePerDay} a day"
 msgstr "{formattedAveragePerDay} pro Tag"
 
-#: src/account/component/account-actions-menu/use-deposit-close-action.hook.ts
-msgid "{formattedBalance} will be transferred to {destinationAccountTitle} and this deposit will be archived. You can restore it anytime from Settings → Archived Accounts."
-msgstr "{formattedBalance} wird auf {destinationAccountTitle} übertragen und diese Einlage wird archiviert. Sie können sie jederzeit unter Einstellungen → Archivierte Konten wiederherstellen."
-
 #: src/recurring/components/recurring-calendar-day/recurring-calendar-day.tsx
 msgid "{formattedDate}. Paid: {entryCount}. Still to pay: {forecastedCount}."
 msgstr "{formattedDate}. Bezahlt: {entryCount}. Noch zu zahlen: {forecastedCount}."
@@ -1722,6 +1718,10 @@ msgstr "Der Betrag muss größer als die Gebühr sein"
 msgid "Amount or merchant is empty"
 msgstr "Betrag oder Händler fehlt"
 
+#: src/account/component/deposit-close-sheet-content/deposit-close-sheet-content.tsx
+msgid "Amount received"
+msgstr "Erhaltener Betrag"
+
 #. js-lingui-explicit-id
 #: ../ledger/src/account/error/deposit-close-amount-invalid.error.ts
 msgid "account.depositCloseAmountInvalid"
@@ -2434,7 +2434,6 @@ msgstr "Nicht lesbar: Deine verschlüsselten iCloud-Daten wurden nach dem Erstel
 
 #: src/@generic/component/deletable-row/deletable-row.tsx
 #: src/@generic/component/modal-form-cancel-button/modal-form-cancel-button.tsx
-#: src/account/component/account-actions-menu/use-deposit-close-action.hook.ts
 #: src/account/hooks/use-delete-archived-account.hook.ts
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
@@ -2952,13 +2951,9 @@ msgid "Close"
 msgstr "Schließen"
 
 #: src/account/component/account-actions-menu/account-actions-menu.tsx
-#: src/account/component/account-actions-menu/use-deposit-close-action.hook.ts
+#: src/account/component/deposit-close-sheet-content/deposit-close-sheet-content.tsx
 msgid "Close Deposit"
 msgstr "Einlage schließen"
-
-#: src/account/component/account-actions-menu/use-deposit-close-action.hook.ts
-msgid "Close Deposit?"
-msgstr "Einlage schließen?"
 
 #: src/@generic/component/popover-menu/popover-menu.tsx
 msgid "Close menu"
@@ -3206,6 +3201,7 @@ msgid "Could not check sync data"
 msgstr "Synchronisationsdaten konnten nicht geprüft werden"
 
 #: src/account/component/account-actions-menu/use-deposit-close-action.hook.ts
+#: src/account/component/deposit-close-sheet-content/deposit-close-sheet-content.tsx
 msgid "Could not close deposit"
 msgstr "Einlage konnte nicht geschlossen werden"
 
@@ -3336,6 +3332,10 @@ msgstr "Beitritt zur Familie fehlgeschlagen"
 #: src/household/component/household-leave-row/household-leave-row.tsx
 msgid "Could not leave the family"
 msgstr "Familie konnte nicht verlassen werden"
+
+#: src/account/component/deposit-close-link-payouts-button/deposit-close-link-payouts-button.tsx
+msgid "Could not link payouts"
+msgstr "Auszahlungen konnten nicht verknüpft werden"
 
 #: src/ai/component/ai-model-storage/ai-model-storage.tsx
 msgid "Could not load"
@@ -5561,6 +5561,10 @@ msgstr "Zinssatz"
 msgid "Interest Rate % (Optional)"
 msgstr "Zinssatz % (Optional)"
 
+#: src/account/component/deposit-close-delta-line/deposit-close-delta-line.tsx
+msgid "Interest recorded: +{formattedDelta}"
+msgstr "Erfasste Zinsen: +{formattedDelta}"
+
 #: src/sync/component/create-file-bank-account/create-file-bank-account.tsx
 msgid "Invalid file"
 msgstr "Ungültige Datei"
@@ -7508,6 +7512,10 @@ msgstr "Zahlungen pro Monat"
 msgid "Payments this rule already changed stay as they are."
 msgstr "Von dieser Regel bereits geänderte Zahlungen bleiben unverändert."
 
+#: src/account/component/deposit-close-link-payouts-button/deposit-close-link-payouts-button.tsx
+msgid "Payouts already recorded? Link them"
+msgstr "Auszahlungen schon erfasst? Verknüpfen"
+
 #: src/sync/component/bank-integration-statements/bank-integration-statements.tsx
 msgid "PDF or spreadsheet from {bank}"
 msgstr "PDF oder Tabelle von {bank}"
@@ -8810,6 +8818,10 @@ msgstr "Kurzbefehle"
 msgid "Shortcuts is not available on this device."
 msgstr "Shortcuts ist auf diesem Gerät nicht verfügbar."
 
+#: src/account/component/deposit-close-delta-line/deposit-close-delta-line.tsx
+msgid "Shortfall: −{formattedDelta}"
+msgstr "Fehlbetrag: −{formattedDelta}"
+
 #: src/account/component/institution-accounts/institution-accounts.tsx
 msgid "Show all {accountsCount} accounts"
 msgstr "Alle {accountsCount} Konten anzeigen"
@@ -10052,6 +10064,7 @@ msgstr "Überweisung aus der Spardose"
 msgid "transfer to"
 msgstr "überweisen an"
 
+#: src/account/component/deposit-close-sheet-content/deposit-close-sheet-content.tsx
 #: src/categorize-inbox/components/categorize-inbox-transfer-screen/categorize-inbox-transfer-screen.tsx
 msgid "Transfer to"
 msgstr "Überweisung an"

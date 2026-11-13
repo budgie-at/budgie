@@ -16,14 +16,12 @@ import type { AccountEntityInterface } from '@budgie/contracts';
 
 interface Props {
     readonly account: Pick<AccountEntityInterface, 'id' | 'type' | 'debtType'>;
-    readonly balance: number;
-    readonly instrumentSymbol: string;
 }
 
-export const AccountActionsMenu = ({ account, balance, instrumentSymbol }: Props) => {
+export const AccountActionsMenu = ({ account }: Props) => {
     const { t } = useLingui();
     const router = useRouter();
-    const closeAction = useDepositCloseAction(account.id, balance, instrumentSymbol);
+    const closeAction = useDepositCloseAction(account.id);
     const archiveAction = useArchiveAccount(account.id, () => void dismissAllOrReplace('/'));
     const revertAction = useRevertInstallmentPlan();
 

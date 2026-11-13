@@ -185,6 +185,7 @@ export const RootLayoutContent = () => {
                                                                         name="resync-window-picker"
                                                                         options={MORPHING_SHEET_OPTIONS}
                                                                     />
+                                                                    <Stack.Screen name="deposit-close" options={MORPHING_SHEET_OPTIONS} />
                                                                     <Stack.Screen
                                                                         name="contact-selector"
                                                                         options={MORPHING_SHEET_OPTIONS}

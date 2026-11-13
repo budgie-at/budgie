@@ -53,9 +53,7 @@ export default function AccountDetails() {
     }
 
     const instrumentSymbol = account.instrument.symbol;
-    const headerTrailing = isUntrackedOwnAccount(account) ? null : (
-        <AccountActionsMenu account={account} balance={balance} instrumentSymbol={instrumentSymbol} />
-    );
+    const headerTrailing = isUntrackedOwnAccount(account) ? null : <AccountActionsMenu account={account} />;
 
     const accountSummary =
         account.type === AccountTypeEnum.DEBT ? (

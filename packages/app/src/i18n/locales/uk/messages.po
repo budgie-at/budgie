@@ -556,10 +556,6 @@ msgstr "{formattedAmount} перенесено на {name}"
 msgid "{formattedAveragePerDay} a day"
 msgstr "{formattedAveragePerDay} на день"
 
-#: src/account/component/account-actions-menu/use-deposit-close-action.hook.ts
-msgid "{formattedBalance} will be transferred to {destinationAccountTitle} and this deposit will be archived. You can restore it anytime from Settings → Archived Accounts."
-msgstr "{formattedBalance} буде переведено на {destinationAccountTitle}, а цей депозит буде архівовано. Ви можете відновити його в будь-який час у Налаштуваннях → Архівовані рахунки."
-
 #: src/recurring/components/recurring-calendar-day/recurring-calendar-day.tsx
 msgid "{formattedDate}. Paid: {entryCount}. Still to pay: {forecastedCount}."
 msgstr "{formattedDate}. Сплачено: {entryCount}. Залишилося сплатити: {forecastedCount}."
@@ -1722,6 +1718,10 @@ msgstr "Сума має бути більшою за комісію"
 msgid "Amount or merchant is empty"
 msgstr "Сума або продавець не вказані"
 
+#: src/account/component/deposit-close-sheet-content/deposit-close-sheet-content.tsx
+msgid "Amount received"
+msgstr "Отримана сума"
+
 #. js-lingui-explicit-id
 #: ../ledger/src/account/error/deposit-close-amount-invalid.error.ts
 msgid "account.depositCloseAmountInvalid"
@@ -2434,7 +2434,6 @@ msgstr "Не вдасться прочитати: ваші зашифрован�
 
 #: src/@generic/component/deletable-row/deletable-row.tsx
 #: src/@generic/component/modal-form-cancel-button/modal-form-cancel-button.tsx
-#: src/account/component/account-actions-menu/use-deposit-close-action.hook.ts
 #: src/account/hooks/use-delete-archived-account.hook.ts
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
@@ -2952,13 +2951,9 @@ msgid "Close"
 msgstr "Закрити"
 
 #: src/account/component/account-actions-menu/account-actions-menu.tsx
-#: src/account/component/account-actions-menu/use-deposit-close-action.hook.ts
+#: src/account/component/deposit-close-sheet-content/deposit-close-sheet-content.tsx
 msgid "Close Deposit"
 msgstr "Закрити депозит"
-
-#: src/account/component/account-actions-menu/use-deposit-close-action.hook.ts
-msgid "Close Deposit?"
-msgstr "Закрити депозит?"
 
 #: src/@generic/component/popover-menu/popover-menu.tsx
 msgid "Close menu"
@@ -3206,6 +3201,7 @@ msgid "Could not check sync data"
 msgstr "Не вдалося перевірити дані синхронізації"
 
 #: src/account/component/account-actions-menu/use-deposit-close-action.hook.ts
+#: src/account/component/deposit-close-sheet-content/deposit-close-sheet-content.tsx
 msgid "Could not close deposit"
 msgstr "Не вдалося закрити депозит"
 
@@ -3336,6 +3332,10 @@ msgstr "Не вдалося приєднатися до родини"
 #: src/household/component/household-leave-row/household-leave-row.tsx
 msgid "Could not leave the family"
 msgstr "Не вдалося вийти з родини"
+
+#: src/account/component/deposit-close-link-payouts-button/deposit-close-link-payouts-button.tsx
+msgid "Could not link payouts"
+msgstr "Не вдалося пов'язати виплати"
 
 #: src/ai/component/ai-model-storage/ai-model-storage.tsx
 msgid "Could not load"
@@ -5561,6 +5561,10 @@ msgstr "Відсоткова ставка"
 msgid "Interest Rate % (Optional)"
 msgstr "Відсоткова ставка % (необов'язково)"
 
+#: src/account/component/deposit-close-delta-line/deposit-close-delta-line.tsx
+msgid "Interest recorded: +{formattedDelta}"
+msgstr "Записано відсотки: +{formattedDelta}"
+
 #: src/sync/component/create-file-bank-account/create-file-bank-account.tsx
 msgid "Invalid file"
 msgstr "Невірний файл"
@@ -7508,6 +7512,10 @@ msgstr "Платежів на місяць"
 msgid "Payments this rule already changed stay as they are."
 msgstr "Платежі, які це правило вже змінило, залишаться як є."
 
+#: src/account/component/deposit-close-link-payouts-button/deposit-close-link-payouts-button.tsx
+msgid "Payouts already recorded? Link them"
+msgstr "Виплати вже записані? Пов'язати їх"
+
 #: src/sync/component/bank-integration-statements/bank-integration-statements.tsx
 msgid "PDF or spreadsheet from {bank}"
 msgstr "PDF або таблиця з {bank}"
@@ -8810,6 +8818,10 @@ msgstr "Швидкі команди"
 msgid "Shortcuts is not available on this device."
 msgstr "Shortcuts недоступний на цьому пристрої."
 
+#: src/account/component/deposit-close-delta-line/deposit-close-delta-line.tsx
+msgid "Shortfall: −{formattedDelta}"
+msgstr "Недоотримано: −{formattedDelta}"
+
 #: src/account/component/institution-accounts/institution-accounts.tsx
 msgid "Show all {accountsCount} accounts"
 msgstr "Показати всі рахунки ({accountsCount})"
@@ -10052,6 +10064,7 @@ msgstr "Переказ з банки"
 msgid "transfer to"
 msgstr "переказати на"
 
+#: src/account/component/deposit-close-sheet-content/deposit-close-sheet-content.tsx
 #: src/categorize-inbox/components/categorize-inbox-transfer-screen/categorize-inbox-transfer-screen.tsx
 msgid "Transfer to"
 msgstr "Переказ до"
