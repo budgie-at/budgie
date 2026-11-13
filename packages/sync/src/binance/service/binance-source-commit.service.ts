@@ -1,5 +1,5 @@
 import { P2P_ORDER_EXTERNAL_ID_MARKER, buildConsolidationScopeFromTransactions } from '@budgie/consolidation';
-import { AccountRepository, TransactionRepository } from '@budgie/contracts';
+import { AccountRepository, TransactionRepository, TransactionYieldRepository, YieldKindEnum } from '@budgie/contracts';
 import {
     AccountBalanceIncrementalService,
     ImportedTransactionEntryUpdateService,
@@ -34,6 +34,7 @@ export class BinanceSourceCommitService extends Context.Service<BinanceSourceCom
     make: Effect.gen(function* () {
         const accountRepository = yield* AccountRepository;
         const transactionRepository = yield* TransactionRepository;
+        const transactionYieldRepository = yield* TransactionYieldRepository;
         const importedTransactionEntryUpdateService = yield* ImportedTransactionEntryUpdateService;
         const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
         const transactionService = yield* TransactionService;
@@ -156,6 +157,19 @@ export class BinanceSourceCommitService extends Context.Service<BinanceSourceCom
             return createdCount;
         });
 
+        const refineYieldKinds = Effect.fnUntraced(function* (
+            transactions: readonly SyncTransactionInterface[],
+            existingIdMap: ReadonlyMap<string, number>
+        ) {
+            for (const transaction of transactions) {
+                const transactionId = existingIdMap.get(transaction.id);
+
+                if (isDefined(transactionId) && isDefined(transaction.yieldKind) && transaction.yieldKind !== YieldKindEnum.DISTRIBUTION) {
+                    yield* transactionYieldRepository.refineImportedYieldKind(transactionId, transaction.yieldKind);
+                }
+            }
+        });
+
         return {
             findAssetCodes: Effect.fn('BinanceSourceCommitService.findAssetCodes')(function* (token: string) {
                 return (yield* findIntegrationAccounts(token))
@@ -175,6 +189,7 @@ export class BinanceSourceCommitService extends Context.Service<BinanceSourceCom
                 for (const transaction of existingTransactions) {
                     reconciledCount += yield* reconcileSourceAccount(transaction, resolveAccount, existingIdMap);
                 }
+                yield* refineYieldKinds(existingTransactions, existingIdMap);
                 if (options.updateExistingAmounts && isNotEmptyArray(existingTransactions)) {
                     const inputs = yield* buildSourceInputs(existingTransactions, resolveAccount);
                     if (isNotEmptyArray(inputs)) {
@@ -244,6 +259,7 @@ export class BinanceSourceCommitService extends Context.Service<BinanceSourceCom
     static readonly layer = Layer.effect(BinanceSourceCommitService, BinanceSourceCommitService.make).pipe(
         Layer.provide([
             pollingSyncDependenciesLayer,
+            TransactionYieldRepository.layer,
             AccountBalanceIncrementalService.layer,
             ImportedTransactionEntryUpdateService.layer,
             TransferCreationService.layer,
