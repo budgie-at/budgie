@@ -54,12 +54,15 @@ export const SecurityTradeForm = <E,>(props: Props<E>) => {
         defaultValues: { quantity: 0, price: 0, fee: 0, operatedAt }
     });
     const { isLoading, run } = useSingleFlight();
-    const priceIdentity = `${symbol}:${currencySymbol}`;
-    const priceIdentityRef = useRef(priceIdentity);
+    const identityRef = useRef({ symbol, currencySymbol });
 
     useEffect(() => {
-        if (priceIdentityRef.current !== priceIdentity) {
-            priceIdentityRef.current = priceIdentity;
+        if (identityRef.current.currencySymbol !== currencySymbol) {
+            form.resetField('fee');
+        }
+
+        if (identityRef.current.symbol !== symbol || identityRef.current.currencySymbol !== currencySymbol) {
+            identityRef.current = { symbol, currencySymbol };
             form.resetField('price');
         }
 
@@ -72,7 +75,7 @@ export const SecurityTradeForm = <E,>(props: Props<E>) => {
         } else {
             form.resetField('price');
         }
-    }, [form, priceIdentity, suggestedPrice.price]);
+    }, [form, currencySymbol, symbol, suggestedPrice.price]);
 
     const handleSave = form.handleSubmit(values =>
         run(
