@@ -76,10 +76,10 @@ export const useHomeHoldingReturnsQuery = (sections: readonly HomeSectionInterfa
             return { ...holding, position: isDefined(entries) ? calculateInstrumentPosition(entries, accountIds) : null };
         });
         const portfolio = calculatePortfolioReturn(positions, cash, type === AccountTypeEnum.STOCKS ? cashReturn : 0);
-        const holdingReturns = positions.flatMap(({ instrument, position }, index): [number, HoldingReturnInterface][] => {
-            const gain = portfolio.positionGains[index];
+        const holdingReturns = positions.flatMap(({ instrument }, index): [number, HoldingReturnInterface][] => {
+            const holdingReturn = portfolio.positionReturns[index];
 
-            return isDefined(gain) && isDefined(position?.costBasis) ? [[instrument.id, { gain, costBasis: position.costBasis }]] : [];
+            return isDefined(holdingReturn) ? [[instrument.id, holdingReturn]] : [];
         });
         const hasReturn = isNotEmptyArray(holdingReturns) || portfolio.gain !== 0;
 

@@ -37,7 +37,7 @@ export const useBrokerageSummaryQuery = (
 
     const getValue = (account: Pick<AccountWithSyncEntityInterface, 'id'>) => balancesByAccountId.get(account.id)?.convertedBalance ?? 0;
     const cash = cashAccounts.reduce((total, account) => total + getValue(account), 0);
-    const { gain, percent, positionGains } = calculatePortfolioReturn(
+    const { gain, percent, positionReturns } = calculatePortfolioReturn(
         securities.map((account, index) => ({
             value: getValue(account),
             balance: balancesByAccountId.get(account.id)?.balance ?? 0,
@@ -54,8 +54,9 @@ export const useBrokerageSummaryQuery = (
         .map((account, index) => {
             const holdingValue = getValue(account);
             const isValued = balancesByAccountId.get(account.id)?.isValued === true;
-            const holdingGain = positionGains.at(index) ?? null;
-            const costBasis = isDefined(holdingGain) ? (positions.at(index)?.costBasis ?? null) : null;
+            const holdingReturn = positionReturns.at(index) ?? null;
+            const holdingGain = holdingReturn?.gain ?? null;
+            const costBasis = holdingReturn?.costBasis ?? null;
 
             return {
                 account,

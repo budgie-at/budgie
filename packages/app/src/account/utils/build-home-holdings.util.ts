@@ -15,14 +15,15 @@ export const buildHomeHoldings = (
         .map(group => {
             const balances = group.map(account => balancesByAccountId.get(account.id));
             const value = balances.reduce((total, balance) => total + (balance?.convertedBalance ?? 0), 0);
+            const isValued = balances.every(balance => balance?.isValued === true);
 
             return {
                 instrument: group[0].instrument,
                 accounts: group,
                 balance: balances.reduce((total, balance) => total + (balance?.balance ?? 0), 0),
                 value,
-                isValued: balances.every(balance => balance?.isValued === true),
-                weight: isPositiveNumber(value) && isPositiveNumber(sectionTotal) ? value / sectionTotal : null
+                isValued,
+                weight: isValued && isPositiveNumber(value) && isPositiveNumber(sectionTotal) ? value / sectionTotal : null
             };
         })
         .sort((left, right) => right.value - left.value);
