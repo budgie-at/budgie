@@ -41,7 +41,8 @@ appId: ${APP_ID}
       commands:
           - tapOn:
                 id: PageHeader.BackButton
-- openLink: budgie://settings
+- tapOn:
+      id: TabBar.Settings
 - extendedWaitUntil:
       visible:
           id: SettingsPage.DataEncryption.State.On
