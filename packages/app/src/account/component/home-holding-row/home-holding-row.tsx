@@ -19,13 +19,14 @@ interface Props {
     readonly holding: HomeHoldingInterface;
     readonly holdingReturn: HoldingReturnInterface | undefined;
     readonly sectionType: AccountTypeEnum;
+    readonly isReturnLoading: boolean;
 }
 
 const rowVariants = cva('min-h-[64px] gap-x-xl py-lg pr-xl pl-3xl active:bg-surface-fill', {
     variants: { isStacked: { true: 'gap-y-sm', false: 'flex-row items-center' } }
 });
 
-export const HomeHoldingRow = ({ holding, holdingReturn, sectionType }: Props) => {
+export const HomeHoldingRow = ({ holding, holdingReturn, sectionType, isReturnLoading }: Props) => {
     const { instrument } = holding;
 
     const isStacked = useIsAccessibilityTextSize();
@@ -55,7 +56,7 @@ export const HomeHoldingRow = ({ holding, holdingReturn, sectionType }: Props) =
                 <HomeHoldingRowCaption holding={holding} sectionType={sectionType} />
             </View>
 
-            <HomeHoldingRowAmount holding={holding} holdingReturn={holdingReturn} />
+            <HomeHoldingRowAmount holding={holding} holdingReturn={holdingReturn} isReturnLoading={isReturnLoading} />
         </HapticPressable>
     );
 };

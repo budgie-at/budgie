@@ -1,16 +1,17 @@
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { View } from 'react-native';
 
-import { isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
+import { cn } from '../../../@generic/utils/cn.util';
 import { BrokerageReturnText } from '../../../brokerage/component/brokerage-return-text/brokerage-return-text';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 
-import type { HoldingReturnInterface } from '../../interface/holding-return.interface';
+import type { PortfolioReturnInterface } from '../../../brokerage/interface/portfolio-return.interface';
 
 interface Props {
-    readonly sectionReturn: HoldingReturnInterface | undefined;
+    readonly sectionReturn: Pick<PortfolioReturnInterface, 'gain' | 'percent'> | undefined;
     readonly isLoading: boolean;
     readonly testID: string;
 }
@@ -18,20 +19,22 @@ interface Props {
 export const HomeSectionReturnLine = ({ sectionReturn, isLoading, testID }: Props) => {
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
 
-    const percent =
-        isDefined(sectionReturn) && isPositiveNumber(sectionReturn.costBasis) ? sectionReturn.gain / sectionReturn.costBasis : null;
+    const isEmpty = !isLoading && !isDefined(sectionReturn);
+    const importantForAccessibility = isEmpty ? 'no-hide-descendants' : 'auto';
 
     return (
-        <View className="min-h-[18px] pl-[16px]">
+        <View
+            className={cn('pl-[16px]', isEmpty && 'opacity-0')}
+            accessibilityElementsHidden={isEmpty}
+            importantForAccessibility={importantForAccessibility}
+        >
             <LoadingContent isLoading={isLoading} loadingIndicator={null}>
-                {isDefined(sectionReturn) ? (
-                    <BrokerageReturnText
-                        gain={sectionReturn.gain}
-                        percent={percent}
-                        instrumentSymbol={defaultInstrument.symbol}
-                        testID={testID}
-                    />
-                ) : null}
+                <BrokerageReturnText
+                    gain={sectionReturn?.gain ?? 0}
+                    percent={sectionReturn?.percent ?? null}
+                    instrumentSymbol={defaultInstrument.symbol}
+                    testID={testID}
+                />
             </LoadingContent>
         </View>
     );

@@ -49,7 +49,8 @@ export const HomeSectionItem = ({ item, section, balancesByAccountId, holdingRet
         return isAccountTypeSection(section) ? (
             <HomeHoldingRow
                 holding={item}
-                holdingReturn={holdingReturns.byInstrumentId.get(item.instrument.id)}
+                holdingReturn={holdingReturns.holdingsBySectionType.get(section.type)?.get(item.instrument.id)}
+                isReturnLoading={holdingReturns.isLoading}
                 sectionType={section.type}
             />
         ) : null;

@@ -5,6 +5,7 @@ import { Text, View } from 'react-native';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
+import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { ROW_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-max-font-size-multiplier.constant';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
@@ -19,18 +20,20 @@ import type { HomeHoldingInterface } from '../../interface/home-holding.interfac
 interface Props {
     readonly holding: Pick<HomeHoldingInterface, 'instrument' | 'value' | 'isValued'>;
     readonly holdingReturn: HoldingReturnInterface | undefined;
+    readonly isReturnLoading: boolean;
 }
 
 const amountVariants = cva('gap-y-xxs', {
     variants: { isStacked: { true: 'items-start', false: 'max-w-[55%] shrink-0 items-end' } }
 });
 
-export const HomeHoldingRowAmount = ({ holding, holdingReturn }: Props) => {
+export const HomeHoldingRowAmount = ({ holding, holdingReturn, isReturnLoading }: Props) => {
     const isStacked = useIsAccessibilityTextSize();
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const formatDigits = useDisplayFormatDigits();
 
     const instrumentCode = holding.instrument.code;
+    const isReturnPending = isReturnLoading && !isDefined(holdingReturn);
     const percent =
         isDefined(holdingReturn) && isPositiveNumber(holdingReturn.costBasis) ? holdingReturn.gain / holdingReturn.costBasis : null;
 
@@ -52,13 +55,15 @@ export const HomeHoldingRowAmount = ({ holding, holdingReturn }: Props) => {
                     <Trans>Value unavailable</Trans>
                 </Text>
             )}
-            {isDefined(holdingReturn) ? (
-                <BrokerageReturnText
-                    gain={holdingReturn.gain}
-                    percent={percent}
-                    instrumentSymbol={defaultInstrument.symbol}
-                    testID={HomeHoldingRowSelector.Return(instrumentCode)}
-                />
+            {isDefined(holdingReturn) || isReturnPending ? (
+                <LoadingContent isLoading={isReturnPending} loadingIndicator={null}>
+                    <BrokerageReturnText
+                        gain={holdingReturn?.gain ?? 0}
+                        percent={percent}
+                        instrumentSymbol={defaultInstrument.symbol}
+                        testID={HomeHoldingRowSelector.Return(instrumentCode)}
+                    />
+                </LoadingContent>
             ) : null}
         </View>
     );

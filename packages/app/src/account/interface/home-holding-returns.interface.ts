@@ -1,8 +1,9 @@
+import type { PortfolioReturnInterface } from '../../brokerage/interface/portfolio-return.interface';
 import type { HoldingReturnInterface } from './holding-return.interface';
 import type { AccountTypeEnum } from '@budgie/contracts';
 
 export interface HomeHoldingReturnsInterface {
-    readonly byInstrumentId: ReadonlyMap<number, HoldingReturnInterface>;
-    readonly bySectionType: ReadonlyMap<AccountTypeEnum, HoldingReturnInterface>;
+    readonly holdingsBySectionType: ReadonlyMap<AccountTypeEnum, ReadonlyMap<number, HoldingReturnInterface>>;
+    readonly bySectionType: ReadonlyMap<AccountTypeEnum, Pick<PortfolioReturnInterface, 'gain' | 'percent'>>;
     readonly isLoading: boolean;
 }
