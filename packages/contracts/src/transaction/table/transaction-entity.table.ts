@@ -11,6 +11,7 @@ import { withSyncIdentityColumns } from '../../cloud-sync/utils/with-sync-identi
 import { TransactionConsolidationTypeEnum } from '../enum/transaction-consolidation-type.enum';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
 import { TransactionUpdatedByEnum } from '../enum/transaction-updated-by.enum';
+import { YieldKindEnum } from '../enum/yield-kind.enum';
 
 import type { AnySQLiteColumn } from 'drizzle-orm/sqlite-core';
 
@@ -40,6 +41,10 @@ export const TransactionEntityTable = sqliteTable(
             enum: convertEnumToDrizzleEnum(TransactionConsolidationTypeEnum)
         }).$type<TransactionConsolidationTypeEnum>(),
         fundAccountId: int('fund_account_id', { mode: 'number' }).references(() => AccountEntityTable.id, { onDelete: 'set null' }),
+        yieldKind: text('yield_kind', { enum: convertEnumToDrizzleEnum(YieldKindEnum) }).$type<YieldKindEnum>(),
+        yieldSourceAccountId: int('yield_source_account_id', { mode: 'number' }).references(() => AccountEntityTable.id, {
+            onDelete: 'set null'
+        }),
         operatedWeekday: int('operated_weekday', { mode: 'number' })
             .generatedAlwaysAs(sql`CAST(strftime('%w', operated_at, 'unixepoch') AS INTEGER)`, { mode: 'virtual' })
             .notNull(),
@@ -77,6 +82,9 @@ export const TransactionEntityTable = sqliteTable(
         index('transactions_fund_account_idx')
             .on(table.fundAccountId)
             .where(sql`${table.fundAccountId} IS NOT NULL`),
+        index('transactions_yield_kind_idx')
+            .on(table.yieldKind, table.operatedAt)
+            .where(sql`${table.yieldKind} IS NOT NULL`),
         index('transactions_from_account_idx')
             .on(table.fromAccountId)
             .where(sql`${table.fromAccountId} IS NOT NULL`),

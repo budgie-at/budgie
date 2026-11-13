@@ -31,6 +31,8 @@ import m0027 from './20261106130000_cloud_sync_outbox_triggers/migration.sql';
 import m0028 from './20261108010559_common_johnny_blaze/migration.sql';
 import m0029 from './20261111113359_exotic_exiles/migration.sql';
 import m0030 from './20261113083725_perfect_blink/migration.sql';
+import m0031 from './20261113100108_yield_kind/migration.sql';
+import m0032 from './20261113100109_yield_outbox_triggers/migration.sql';
 
   export default {
     migrations: {
@@ -64,7 +66,9 @@ import m0030 from './20261113083725_perfect_blink/migration.sql';
 "20261106130000_cloud_sync_outbox_triggers": m0027,
 "20261108010559_common_johnny_blaze": m0028,
 "20261111113359_exotic_exiles": m0029,
-"20261113083725_perfect_blink": m0030
+"20261113083725_perfect_blink": m0030,
+"20261113100108_yield_kind": m0031,
+"20261113100109_yield_outbox_triggers": m0032
 }
   }
   

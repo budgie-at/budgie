@@ -1,5 +1,7 @@
 import * as Schema from 'effect/Schema';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { OptionalNullablePositiveNumberSchema } from '../../@generic/schema/optional-nullable-positive-number.schema';
 import { PositiveNumberSchema } from '../../@generic/schema/positive-number.schema';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
@@ -9,6 +11,8 @@ import { TRANSACTION_TITLE_MAX_LENGTH } from '../constant/transaction-title-max-
 import { TransactionConsolidationTypeEnum } from '../enum/transaction-consolidation-type.enum';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
 import { TransactionUpdatedByEnum } from '../enum/transaction-updated-by.enum';
+import { YieldKindEnum } from '../enum/yield-kind.enum';
+import { isYieldKindAllowedForType } from '../utils/is-yield-kind-allowed-for-type.util';
 
 export const TransactionCreateInputSchema = Schema.Struct({
     type: Schema.Enum(TransactionTypeEnum),
@@ -25,6 +29,8 @@ export const TransactionCreateInputSchema = Schema.Struct({
     importFingerprint: Schema.String.pipe(Schema.NullOr, Schema.optional),
     consolidationParentTransactionId: OptionalNullablePositiveNumberSchema,
     fundAccountId: OptionalNullablePositiveNumberSchema,
+    yieldKind: Schema.Enum(YieldKindEnum).pipe(Schema.NullOr, Schema.optional),
+    yieldSourceAccountId: OptionalNullablePositiveNumberSchema,
     consolidationType: Schema.Enum(TransactionConsolidationTypeEnum).pipe(Schema.NullOr, Schema.optional),
     amount: Schema.Finite,
     debtAccountId: OptionalNullablePositiveNumberSchema,
@@ -32,4 +38,13 @@ export const TransactionCreateInputSchema = Schema.Struct({
     tagIds: Schema.Finite.pipe(Schema.Array, Schema.mutable),
     ruleTagIds: Schema.Finite.pipe(Schema.Array, Schema.mutable, Schema.optional),
     entries: Schema.mutable(Schema.Array(TransactionEntryCreateInputSchema).check(Schema.isMinLength(1)))
-});
+}).check(
+    Schema.makeFilter(
+        ({ type, yieldKind }) =>
+            !isDefined(yieldKind) ||
+            isYieldKindAllowedForType(type, yieldKind) || {
+                path: ['yieldKind'],
+                issue: `Yield kind '${yieldKind}' is not allowed for '${type}' transactions.`
+            }
+    )
+);

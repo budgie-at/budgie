@@ -94,6 +94,8 @@ const buildAdjustment = (accountType: AccountTypeEnum): TransactionWithRelations
         consolidationParentTransactionId: null,
         consolidationType: null,
         fundAccountId: null,
+        yieldKind: null,
+        yieldSourceAccountId: null,
         operatedWeekday: 6,
         operatedMinuteOfDay: 720,
         entries: [
