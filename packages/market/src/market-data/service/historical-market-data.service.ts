@@ -484,40 +484,45 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                 ) {
                     const instrument = yield* instrumentRepository.findById(job.instrumentId);
                     const writeRates = historicalExchangeRateRepository.bulkUpsert(result.rates);
-                    const latestPrice = yield* instrumentDailyMarketPriceRepository.findLatest(job.instrumentId, job.quoteInstrumentId);
-                    const isFirstPriceBatch = !isDefined(latestPrice);
+                    const earliestPriceDate = yield* instrumentDailyMarketPriceRepository.findEarliestPriceDate(job.instrumentId);
+                    const isFirstPriceBatch = !isDefined(earliestPriceDate) || earliestPriceDate >= job.fromDate;
                     const isJobUnsupported = result.unsupportedInstruments.some(unsupported => unsupported.id === job.instrumentId);
+                    const isRepairNeeded =
+                        !isJobUnsupported &&
+                        isDefined(instrument) &&
+                        instrument.type !== InstrumentTypeEnum.FIAT &&
+                        isNotEmptyArray(result.prices);
                     const markJob = isJobUnsupported
                         ? instrumentMarketDataJobRepository.markUnsupported(job)
                         : instrumentMarketDataJobRepository.markCompleted(job);
-                    const isStored = yield* Db.transaction(
-                        Effect.flatMap(markJob, isClaimOwner =>
-                            isClaimOwner
-                                ? Effect.all(
-                                      [
-                                          instrumentDailyMarketPriceRepository.bulkUpsert(result.prices),
-                                          instrument?.type === InstrumentTypeEnum.FIAT ? revalueEntriesAround(job, writeRates) : writeRates,
-                                          instrumentMarketDataJobRepository.enqueueMany(
-                                              result.unsupportedInstruments
-                                                  .filter(unsupported => unsupported.id !== job.instrumentId)
-                                                  .map(unsupported => ({
-                                                      instrumentId: unsupported.id,
-                                                      quoteInstrumentId: job.quoteInstrumentId,
-                                                      fromDate: job.fromDate,
-                                                      toDate: job.toDate,
-                                                      status: InstrumentMarketDataJobStatusEnum.UNSUPPORTED
-                                                  }))
-                                          )
-                                      ],
-                                      { discard: true }
-                                  ).pipe(Effect.as(true))
-                                : Effect.succeed(false)
-                        )
+                    const writeData = Effect.all(
+                        [
+                            instrumentDailyMarketPriceRepository.bulkUpsert(result.prices),
+                            instrument?.type === InstrumentTypeEnum.FIAT ? revalueEntriesAround(job, writeRates) : writeRates,
+                            instrumentMarketDataJobRepository.enqueueMany(
+                                result.unsupportedInstruments
+                                    .filter(unsupported => unsupported.id !== job.instrumentId)
+                                    .map(unsupported => ({
+                                        instrumentId: unsupported.id,
+                                        quoteInstrumentId: job.quoteInstrumentId,
+                                        fromDate: job.fromDate,
+                                        toDate: job.toDate,
+                                        status: InstrumentMarketDataJobStatusEnum.UNSUPPORTED
+                                    }))
+                            )
+                        ],
+                        { discard: true }
                     );
 
-                    if (isStored && isDefined(instrument) && instrument.type !== InstrumentTypeEnum.FIAT && isNotEmptyArray(result.prices)) {
+                    if (isRepairNeeded) {
+                        yield* Db.transaction(writeData);
                         yield* marketPricedRevaluationService.repairAfterPriceJob(job, instrument.type, isFirstPriceBatch);
+                        yield* markJob;
+
+                        return;
                     }
+
+                    yield* Db.transaction(Effect.flatMap(markJob, isClaimOwner => (isClaimOwner ? writeData : Effect.void)));
                 }),
                 failJob: (job: InstrumentMarketDataJobEntityInterface, cause: Cause.Cause<unknown>) =>
                     instrumentMarketDataJobRepository.markFailed(job, cause.pipe(Cause.squash, getErrorMessage))
