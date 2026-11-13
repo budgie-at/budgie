@@ -11,6 +11,7 @@ import {
     TransactionTypeEnum,
     TransactionYieldRepository,
     YieldKindEnum,
+    YieldRepository,
     convertFromMicroUnits,
     convertToMicroUnits
 } from '@budgie/contracts';
@@ -30,6 +31,7 @@ import { AccountBalanceIncrementalService } from './account-balance-incremental.
 import { BalanceAdjustmentService } from './balance-adjustment.service';
 
 import type { DepositClosePrefillInterface } from '../interface/deposit-close-prefill.interface';
+import type { YieldPositionMovementRowInterface } from '@budgie/contracts';
 
 export class DepositInterestService extends Context.Service<DepositInterestService>()('@budgie/ledger/DepositInterestService', {
     make: Effect.gen(function* () {
@@ -38,6 +40,7 @@ export class DepositInterestService extends Context.Service<DepositInterestServi
         const transactionRepository = yield* TransactionRepository;
         const transactionEntryRepository = yield* TransactionEntryRepository;
         const transactionYieldRepository = yield* TransactionYieldRepository;
+        const yieldRepository = yield* YieldRepository;
         const balanceAdjustmentService = yield* BalanceAdjustmentService;
         const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
         const entryBaseValuationService = yield* EntryBaseValuationService;
@@ -62,6 +65,23 @@ export class DepositInterestService extends Context.Service<DepositInterestServi
 
         const accrue = (balance: number, rate: number, from: Date, to: Date) =>
             (balance * (rate / percent) * (Math.max(0, to.getTime() - from.getTime()) / dayMs)) / daysPerYear;
+
+        const accrueOverMovements = (movements: readonly YieldPositionMovementRowInterface[], rate: number, from: Date, to: Date) => {
+            let balance = 0;
+            let accruedUntil = from;
+            let accrual = 0;
+
+            for (const movement of movements.filter(({ operatedAt }) => operatedAt < to)) {
+                if (movement.operatedAt > accruedUntil) {
+                    accrual += accrue(balance, rate, accruedUntil, movement.operatedAt);
+                    accruedUntil = movement.operatedAt;
+                }
+
+                balance += movement.amount;
+            }
+
+            return accrual + accrue(balance, rate, accruedUntil, to);
+        };
 
         const createInterest = Effect.fnUntraced(function* (depositAccountId: number, amount: number, operatedAt: Date) {
             const valuation = yield* entryBaseValuationService.valueMicroUnitEntry({ accountId: depositAccountId, amount, operatedAt });
@@ -152,7 +172,8 @@ export class DepositInterestService extends Context.Service<DepositInterestServi
                 const now = yield* DateTime.nowAsDate;
                 const accrualStart = max([termStart, timeline.lastInterestAt ?? termStart]);
                 const accrualEnd = isDefined(deposit.deadline) ? min([now, deposit.deadline]) : now;
-                const accrual = accrue(ledgerBalance, deposit.interestRate ?? 0, accrualStart, accrualEnd);
+                const movements = yield* yieldRepository.findPositionMovements([depositAccountId]);
+                const accrual = accrueOverMovements(movements, deposit.interestRate ?? 0, accrualStart, accrualEnd);
                 const expected = ledgerBalance + Math.round(accrual / centInMicroUnits) * centInMicroUnits;
                 const unassignedInterestIds = yield* transactionYieldRepository.findUnassignedInterestIds(depositAccountId, termStart);
                 const hasUnassignedInterest = isNotEmptyArray(unassignedInterestIds);
@@ -182,6 +203,7 @@ export class DepositInterestService extends Context.Service<DepositInterestServi
             TransactionRepository.layer,
             TransactionEntryRepository.layer,
             TransactionYieldRepository.layer,
+            YieldRepository.layer,
             BalanceAdjustmentService.layer,
             AccountBalanceIncrementalService.layer,
             EntryBaseValuationService.layer

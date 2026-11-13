@@ -1,4 +1,4 @@
-import { type SQL, and, asc, eq, gt, gte, inArray, isNotNull, isNull, like, ne, or, sql } from 'drizzle-orm';
+import { type SQL, and, asc, eq, gt, gte, inArray, isNotNull, isNull, like, ne, notInArray, or, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
 import * as Context from 'effect/Context';
 import * as DateTime from 'effect/DateTime';
@@ -16,6 +16,7 @@ import { CategorySourceEnum } from '../../transaction-entry/enum/category-source
 import { TransactionEntryKindEnum } from '../../transaction-entry/enum/transaction-entry-kind.enum';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
+import { YIELD_POSITION_ACCOUNT_TYPES } from '../../yield/constant/yield-position-account-types.constant';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
 import { TransactionUpdatedByEnum } from '../enum/transaction-updated-by.enum';
 import { YieldKindEnum } from '../enum/yield-kind.enum';
@@ -128,9 +129,16 @@ export class TransactionYieldRepository extends Context.Service<TransactionYield
                                     eq(TransactionEntityTable.type, TransactionTypeEnum.INCOME),
                                     eq(TransactionEntityTable.yieldKind, YieldKindEnum.INTEREST),
                                     isNull(TransactionEntityTable.yieldSourceAccountId),
+                                    notInArray(AccountEntityTable.type, [...YIELD_POSITION_ACCOUNT_TYPES]),
                                     eq(AccountEntityTable.instrumentId, depositAccount.instrumentId),
                                     eq(AccountEntityTable.syncZone, depositAccount.syncZone),
-                                    gte(TransactionEntityTable.operatedAt, since)
+                                    gte(TransactionEntityTable.operatedAt, since),
+                                    sql`NOT EXISTS (SELECT 1 FROM ${AccountEntityTable} other WHERE other.id != ${depositAccountId} AND other.type = ${AccountTypeEnum.DEPOSIT}
+                                        AND other.instrument_id = ${depositAccount.instrumentId} AND other.sync_zone = ${depositAccount.syncZone}
+                                        AND (other.deleted_at IS NULL OR other.deleted_at > ${TransactionEntityTable.operatedAt})
+                                        AND (other.created_at <= ${TransactionEntityTable.operatedAt} OR EXISTS (SELECT 1 FROM ${TransactionEntityTable} principal
+                                            WHERE principal.type = ${TransactionTypeEnum.TRANSFER} AND principal.to_account_id = other.id
+                                            AND principal.deleted_at IS NULL AND principal.operated_at <= ${TransactionEntityTable.operatedAt})))`
                                 )
                             )
                     ).pipe(Effect.map(rows => rows.map(({ id }) => id)));

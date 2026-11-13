@@ -1,4 +1,4 @@
-import { InstrumentTypeEnum, UserIconNameEnum, YieldKindEnum } from '@budgie/contracts';
+import { InstrumentTypeEnum, UserIconNameEnum, YIELD_POSITION_ACCOUNT_TYPES, YieldKindEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 
@@ -6,7 +6,6 @@ import { isDefined } from '@rnw-community/shared';
 
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
 import { YIELD_KIND_LABEL } from '../../../yield/constant/yield-kind-label.constant';
-import { YIELD_POSITION_ACCOUNT_TYPES } from '../../../yield/constant/yield-position-account-types.constant';
 import { useEditTransactionYield } from '../../hook/use-edit-transaction-yield.hook';
 import { findYieldLandingAccount } from '../../utils/find-yield-landing-account.util';
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';

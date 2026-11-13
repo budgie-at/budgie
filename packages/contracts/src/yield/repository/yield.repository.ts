@@ -19,6 +19,7 @@ import { TransactionEntryEntityTable } from '../../transaction-entry/table/trans
 import { TransactionTypeEnum } from '../../transaction/enum/transaction-type.enum';
 import { YieldKindEnum } from '../../transaction/enum/yield-kind.enum';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
+import { YIELD_POSITION_ACCOUNT_TYPES } from '../constant/yield-position-account-types.constant';
 
 import type { YieldPayoutQueryInterface } from '../interface/yield-payout-query.interface';
 import type { YieldPositionMovementRowInterface } from '../interface/yield-position-movement-row.interface';
@@ -28,12 +29,11 @@ import type { SQLiteEffectSelect } from 'drizzle-orm/sqlite-core/effect';
 
 export class YieldRepository extends Context.Service<YieldRepository>()('@budgie/contracts/YieldRepository', {
     make: Effect.sync(() => {
-        const POSITION_ACCOUNT_TYPES = [AccountTypeEnum.DEPOSIT, AccountTypeEnum.SAVINGS, ...CRYPTO_ACCOUNT_TYPES, AccountTypeEnum.STOCKS];
         const RATED_ACCOUNT_TYPES = [AccountTypeEnum.DEPOSIT, AccountTypeEnum.SAVINGS];
         const NO_MOVEMENTS: readonly YieldPositionMovementRowInterface[] = [];
         const yieldSourceAccount = alias(AccountEntityTable, 'yield_source_account');
 
-        const landingHoldsPositionSql = sql`(${inArray(AccountEntityTable.type, POSITION_ACCOUNT_TYPES)} OR ${eq(InstrumentEntityTable.type, InstrumentTypeEnum.FUND)})`;
+        const landingHoldsPositionSql = sql`(${inArray(AccountEntityTable.type, [...YIELD_POSITION_ACCOUNT_TYPES])} OR ${eq(InstrumentEntityTable.type, InstrumentTypeEnum.FUND)})`;
         const positionAccountIdSql = sql<number | null>`CASE
             WHEN ${TransactionEntityTable.yieldSourceAccountId} IS NOT NULL THEN ${TransactionEntityTable.yieldSourceAccountId}
             WHEN ${landingHoldsPositionSql} THEN ${AccountEntityTable.id}

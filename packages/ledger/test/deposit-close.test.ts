@@ -31,6 +31,21 @@ const daysAgo = (days: number) => new Date(BASE_TIME.getTime() - days * DAY_MS);
 
 const setNow = TestClock.setTime(BASE_TIME.getTime());
 
+const fundDeposit = (bankAccountId: number, depositAccountId: number, principalDaysAgo: number) =>
+    Effect.gen(function* () {
+        yield* (yield* seed).directTransfer({
+            exchangeRate: 1,
+            operatedAt: daysAgo(principalDaysAgo),
+            sourceAccountId: bankAccountId,
+            sourceAmount: convertToMicroUnits(PRINCIPAL),
+            sourceEntryExchangeRate: 1,
+            targetAccountId: depositAccountId,
+            targetAmount: convertToMicroUnits(PRINCIPAL),
+            toIban: null
+        });
+        yield* (yield* AccountBalanceIncrementalService).updateBalancesByAccountIds([bankAccountId, depositAccountId]);
+    });
+
 const seedDeposit = (input: { readonly interestRate: number | null; readonly principalDaysAgo: number; readonly instrumentId?: number }) =>
     Effect.gen(function* () {
         const testSeedService = yield* seed;
@@ -41,17 +56,7 @@ const seedDeposit = (input: { readonly interestRate: number | null; readonly pri
         const deposit = yield* testSeedService.account({ type: AccountTypeEnum.DEPOSIT, title: 'Deposit', instrumentId });
 
         yield* accountRepository.updateById(deposit.id, { interestRate: input.interestRate });
-        yield* testSeedService.directTransfer({
-            exchangeRate: 1,
-            operatedAt: daysAgo(input.principalDaysAgo),
-            sourceAccountId: bank.id,
-            sourceAmount: convertToMicroUnits(PRINCIPAL),
-            sourceEntryExchangeRate: 1,
-            targetAccountId: deposit.id,
-            targetAmount: convertToMicroUnits(PRINCIPAL),
-            toIban: null
-        });
-        yield* (yield* AccountBalanceIncrementalService).updateBalancesByAccountIds([bank.id, deposit.id]);
+        yield* fundDeposit(bank.id, deposit.id, input.principalDaysAgo);
 
         return { bank, destination, deposit };
     });
@@ -171,6 +176,16 @@ describe('deposit close', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
+    it.effect('accrues a top-up only from the day it landed', () =>
+        Effect.gen(function* () {
+            const { bank, deposit } = yield* seedDeposit({ interestRate: 12, principalDaysAgo: 73 });
+
+            yield* fundDeposit(bank.id, deposit.id, 1);
+
+            expect((yield* prefillOf(deposit.id)).amountReceived).toBeCloseTo(2 * PRINCIPAL + 243.29, 1);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
     it.effect('stops the accrual at maturity', () =>
         Effect.gen(function* () {
             const { deposit } = yield* seedDeposit({ interestRate: 12, principalDaysAgo: 73 });
@@ -205,6 +220,38 @@ describe('deposit close', () => {
             expect((yield* transactionRepository.getByIdRaw(sourced.id))?.yieldSourceAccountId).toBe(other.id);
             expect((yield* transactionRepository.getByIdRaw(none.id))?.yieldSourceAccountId).toBeNull();
             expect((yield* transactionRepository.getByIdRaw(none.id))?.yieldKind).toBe(YieldKindEnum.NONE);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('never offers or links a payout another open deposit could have paid', () =>
+        Effect.gen(function* () {
+            const { bank, deposit } = yield* seedDeposit({ interestRate: 12, principalDaysAgo: 73 });
+            const other = yield* (yield* seed).account({ type: AccountTypeEnum.DEPOSIT, title: 'Other', instrumentId: 1 });
+
+            yield* fundDeposit(bank.id, other.id, 40);
+
+            const before = yield* seedBankInterest(bank.id, null, daysAgo(50));
+            const during = yield* seedBankInterest(bank.id, null, daysAgo(20));
+
+            yield* Effect.flatMap(DepositInterestService, service => service.linkInterestPayouts(deposit.id));
+
+            expect((yield* (yield* TransactionRepository).getByIdRaw(before.id))?.yieldSourceAccountId).toBe(deposit.id);
+            expect((yield* (yield* TransactionRepository).getByIdRaw(during.id))?.yieldSourceAccountId).toBeNull();
+            expect(yield* prefillOf(deposit.id)).toMatchObject({ hasUnassignedInterest: false });
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('never links interest that landed on a savings account of its own', () =>
+        Effect.gen(function* () {
+            const { deposit } = yield* seedDeposit({ interestRate: 12, principalDaysAgo: 73 });
+            const savings = yield* (yield* seed).account({ type: AccountTypeEnum.SAVINGS, title: 'Savings', instrumentId: 1 });
+            const payout = yield* seedBankInterest(savings.id, null, daysAgo(20));
+
+            expect(yield* prefillOf(deposit.id)).toMatchObject({ hasUnassignedInterest: false });
+
+            yield* Effect.flatMap(DepositInterestService, service => service.linkInterestPayouts(deposit.id));
+
+            expect((yield* (yield* TransactionRepository).getByIdRaw(payout.id))?.yieldSourceAccountId).toBeNull();
         }).pipe(Effect.provide(TestLayer))
     );
 
