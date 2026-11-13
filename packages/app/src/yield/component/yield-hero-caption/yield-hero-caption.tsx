@@ -22,17 +22,16 @@ interface Props {
 
 export const YieldHeroCaption = ({ summary, bucket }: Props) => {
     const { t } = useLingui();
-    const { screenKey, mode, isPeriodCaption } = use(YieldScreenContext);
-    const { formatRangeCaption, formatPeriod } = useYieldDateLabels();
+    const { screenKey, mode, rangeCaption, isPeriodCaption } = use(YieldScreenContext);
+    const { formatPeriod } = useYieldDateLabels();
     const { formatDayAndMonthAndYear } = useFormatDate();
 
-    const { group, range } = screenKey.key;
+    const { group } = screenKey.key;
 
     if (isPeriodCaption && isDefined(screenKey.period)) {
         return <YieldHeroPeriodCaption period={screenKey.period} />;
     }
 
-    const rangeCaption = formatRangeCaption(range, summary.windowStart);
     const groupLabel = isDefined(group) ? t(YIELD_GROUP_LABEL[group]) : '';
     const throughDay = isDefined(bucket) ? formatDayAndMonthAndYear(parseISO(bucket.end)) : '';
     const bucketPeriod = isDefined(bucket) ? formatPeriod(bucket, summary.bucketUnit) : '';

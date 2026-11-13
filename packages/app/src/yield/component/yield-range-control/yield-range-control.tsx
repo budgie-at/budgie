@@ -7,8 +7,10 @@ import { Text } from 'react-native';
 
 import { ActionsMenu } from '../../../@generic/component/actions-menu/actions-menu';
 import { SegmentedControl } from '../../../@generic/component/segmented-control/segmented-control';
+import { HapticPressFeedbackEnum } from '../../../@generic/enum/haptic-press-feedback.enum';
 import { useIsLargeText } from '../../../@generic/hook/use-is-large-text.hook';
 import { yieldRangeAtom } from '../../constant/yield-range-atom.constant';
+import { YIELD_RANGE_LABEL } from '../../constant/yield-range-label.constant';
 import { YieldScreenContext } from '../../context/yield-screen.context';
 import { YieldSelectionContext } from '../../context/yield-selection.context';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
@@ -27,12 +29,11 @@ export const YieldRangeControl = () => {
         router.setParams({ range, focus: '' });
     };
 
-    const segments = [
-        { value: YieldRangeEnum.MONTH, label: t`1M`, testID: PassiveIncomeSelector.Range(YieldRangeEnum.MONTH) },
-        { value: YieldRangeEnum.QUARTER, label: t`3M`, testID: PassiveIncomeSelector.Range(YieldRangeEnum.QUARTER) },
-        { value: YieldRangeEnum.YEAR, label: t`1Y`, testID: PassiveIncomeSelector.Range(YieldRangeEnum.YEAR) },
-        { value: YieldRangeEnum.ALL, label: t`All`, testID: PassiveIncomeSelector.Range(YieldRangeEnum.ALL) }
-    ];
+    const segments = Object.values(YieldRangeEnum).map(range => ({
+        value: range,
+        label: t(YIELD_RANGE_LABEL[range]),
+        testID: PassiveIncomeSelector.Range(range)
+    }));
     const currentLabel = segments.find(segment => segment.value === screenKey.key.range)?.label ?? '';
 
     if (isLargeText) {
@@ -50,5 +51,12 @@ export const YieldRangeControl = () => {
         );
     }
 
-    return <SegmentedControl segments={segments} value={screenKey.key.range} onChange={handleChange} />;
+    return (
+        <SegmentedControl
+            segments={segments}
+            value={screenKey.key.range}
+            onChange={handleChange}
+            pressFeedback={HapticPressFeedbackEnum.NONE}
+        />
+    );
 };

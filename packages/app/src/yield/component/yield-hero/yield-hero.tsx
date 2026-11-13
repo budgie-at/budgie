@@ -15,7 +15,6 @@ import { yieldSummaryFamily } from '../../constant/yield-summary-family-atom.con
 import { YieldScreenContext } from '../../context/yield-screen.context';
 import { YieldSelectionContext } from '../../context/yield-selection.context';
 import { YieldChartModeEnum } from '../../enum/yield-chart-mode.enum';
-import { useYieldDateLabels } from '../../hook/use-yield-date-labels.hook';
 import { useYieldHeroSentence } from '../../hook/use-yield-hero-sentence.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 import { buildYieldRunningTotal } from '../../utils/build-yield-running-total.util';
@@ -23,13 +22,11 @@ import { YieldHeroCaption } from '../yield-hero-caption/yield-hero-caption';
 import { YieldHeroLine } from '../yield-hero-line/yield-hero-line';
 
 export const YieldHero = () => {
-    const { screenKey, mode } = use(YieldScreenContext);
+    const { screenKey, mode, rangeCaption } = use(YieldScreenContext);
     const { selectedIndex } = use(YieldSelectionContext);
     const summary = AsyncResult.getOrElse(useLiveAtomValue(yieldSummaryFamily(screenKey.key)), () => null);
-    const { formatRangeCaption } = useYieldDateLabels();
     const { symbol } = useAtomValue(defaultInstrumentAtom);
 
-    const rangeCaption = isDefined(summary) ? formatRangeCaption(screenKey.key.range, summary.windowStart) : '';
     const sentence = useYieldHeroSentence(summary, rangeCaption);
     const bucket = isDefined(selectedIndex) ? (summary?.buckets.at(selectedIndex) ?? null) : null;
     const runningTotal =

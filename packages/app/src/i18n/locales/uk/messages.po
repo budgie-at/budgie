@@ -900,12 +900,12 @@ msgid "{rate, plural, =1 {about once a week} =2 {about twice a week} other {abou
 msgstr "{rate, plural, =1 {приблизно раз на тиждень} =2 {приблизно двічі на тиждень} one {близько # на тиждень} few {близько # на тиждень} many {близько # на тиждень} other {близько # на тиждень}}"
 
 #: src/yield/hook/use-yield-deposit-subtitle.hook.ts
-msgid "{rate}% · matures {maturity}"
-msgstr "{rate}% · погашення {maturity}"
+msgid "{rate} · matures {maturity}"
+msgstr "{rate} · погашення {maturity}"
 
 #: src/yield/hook/use-yield-deposit-subtitle.hook.ts
-msgid "{rate}% a year"
-msgstr "{rate}% річних"
+msgid "{rate} a year"
+msgstr "{rate} річних"
 
 #: src/inzhur/component/inzhur-operations-import-summary/inzhur-operations-import-summary.tsx
 msgid "{recordedLabel}, {alreadyLabel}. You can edit any entry like a normal transaction."
@@ -1246,8 +1246,7 @@ msgstr "1 день"
 
 #: src/inzhur/component/inzhur-performance-chart/inzhur-performance-chart.tsx
 #: src/market-data/component/currency-market-range-control/currency-market-range-control.tsx
-#: src/yield/component/yield-hero-delta/yield-hero-delta.tsx
-#: src/yield/component/yield-range-control/yield-range-control.tsx
+#: src/yield/constant/yield-range-label.constant.ts
 msgid "1M"
 msgstr "1 міс."
 
@@ -1256,8 +1255,7 @@ msgid "1W"
 msgstr "1 тиж."
 
 #: src/market-data/component/currency-market-range-control/currency-market-range-control.tsx
-#: src/yield/component/yield-hero-delta/yield-hero-delta.tsx
-#: src/yield/component/yield-range-control/yield-range-control.tsx
+#: src/yield/constant/yield-range-label.constant.ts
 msgid "1Y"
 msgstr "1 р."
 
@@ -1283,8 +1281,7 @@ msgstr "3 дні"
 
 #: src/inzhur/component/inzhur-performance-chart/inzhur-performance-chart.tsx
 #: src/market-data/component/currency-market-range-control/currency-market-range-control.tsx
-#: src/yield/component/yield-hero-delta/yield-hero-delta.tsx
-#: src/yield/component/yield-range-control/yield-range-control.tsx
+#: src/yield/constant/yield-range-label.constant.ts
 msgid "3M"
 msgstr "3 міс."
 
@@ -1706,7 +1703,7 @@ msgstr "ШІ вимкнено"
 
 #: src/@generic/component/filter-sheet/filter-sheet-bulk-toggle/filter-sheet-bulk-toggle.tsx
 #: src/inzhur/component/inzhur-performance-chart/inzhur-performance-chart.tsx
-#: src/yield/component/yield-range-control/yield-range-control.tsx
+#: src/yield/constant/yield-range-label.constant.ts
 msgid "All"
 msgstr "Усі"
 

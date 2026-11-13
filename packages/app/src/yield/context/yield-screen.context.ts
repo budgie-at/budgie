@@ -16,6 +16,7 @@ export const YieldScreenContext = createContext<YieldScreenContextInterface>({
         period: null
     },
     mode: YieldChartModeEnum.BARS,
+    rangeCaption: '',
     isPeriodCaption: false,
     setMode: emptyFn
 });

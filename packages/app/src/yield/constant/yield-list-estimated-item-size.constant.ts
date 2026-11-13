@@ -1,1 +1,0 @@
-export const YIELD_LIST_ESTIMATED_ITEM_SIZE = 60;

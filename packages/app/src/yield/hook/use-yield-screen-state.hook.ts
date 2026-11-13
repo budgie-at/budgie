@@ -7,6 +7,8 @@ import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { yieldSummaryFamily } from '../constant/yield-summary-family-atom.constant';
 import { YieldChartModeEnum } from '../enum/yield-chart-mode.enum';
 
+import { useYieldDateLabels } from './use-yield-date-labels.hook';
+
 import type { YieldScreenKeyInterface } from '../interface/yield-screen-key.interface';
 import type { YieldScreenStateInterface } from '../interface/yield-screen-state.interface';
 
@@ -15,6 +17,7 @@ export const useYieldScreenState = (screenKey: YieldScreenKeyInterface): YieldSc
     const [selection, setSelection] = useState<number | null>(null);
     const [isTouched, setIsTouched] = useState(false);
     const summary = AsyncResult.getOrElse(useLiveAtomValue(yieldSummaryFamily(screenKey.key)), () => null);
+    const { formatRangeCaption } = useYieldDateLabels();
 
     const selectIndex = (index: number | null) => {
         setIsTouched(true);
@@ -34,8 +37,10 @@ export const useYieldScreenState = (screenKey: YieldScreenKeyInterface): YieldSc
         : -1;
     const untouchedIndex = focusIndex >= 0 ? focusIndex : null;
 
+    const rangeCaption = isDefined(summary) ? formatRangeCaption(screenKey.key.range, summary.windowStart) : '';
+
     return {
-        screen: { screenKey, mode, isPeriodCaption: !isTouched && isDefined(screenKey.period), setMode },
+        screen: { screenKey, mode, rangeCaption, isPeriodCaption: !isTouched && isDefined(screenKey.period), setMode },
         selection: { selectedIndex: isTouched ? selection : untouchedIndex, selectIndex, cancelScrub }
     };
 };
