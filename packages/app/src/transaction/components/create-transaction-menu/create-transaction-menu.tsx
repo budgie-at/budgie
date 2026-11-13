@@ -30,8 +30,8 @@ import type { RefObject } from 'react';
 const CLOSE_ROTATION = 45;
 const OPEN_SPRING = { ...SPRING_SETTLE, duration: 320 };
 const FADE_TIMING = { duration: MOTION_FAST_DURATION, easing: EASE_OUT };
-const GRID_CLASSNAME = 'gap-xl pt-[52px]';
-const LARGE_TEXT_GRID_CLASSNAME = 'gap-xl pt-[46px]';
+const CHIP_GAP_CLASSNAME = 'gap-xl';
+const LARGE_TEXT_CHIP_GAP_CLASSNAME = 'gap-sm';
 
 interface Props {
     readonly isOpen: boolean;
@@ -106,7 +106,7 @@ export const CreateTransactionMenu = ({ isOpen, onClose, triggerRef, accountId, 
     const contextActionTestID = createAction?.testID ?? CreateTransactionMenuSelector.item(0);
     const pointerEvents = isOpen ? 'box-none' : 'none';
     const accessibilityVisibility = isOpen ? 'auto' : 'no-hide-descendants';
-    const gridClassName = fontScale >= CREATE_MENU_LARGE_TEXT_FONT_SCALE ? LARGE_TEXT_GRID_CLASSNAME : GRID_CLASSNAME;
+    const chipGapClassName = fontScale >= CREATE_MENU_LARGE_TEXT_FONT_SCALE ? LARGE_TEXT_CHIP_GAP_CLASSNAME : CHIP_GAP_CLASSNAME;
 
     useEffect(() => {
         if (isOpen) {
@@ -156,37 +156,8 @@ export const CreateTransactionMenu = ({ isOpen, onClose, triggerRef, accountId, 
                     <View className="flex-1 bg-black/90" />
                 </Animated.View>
 
-                <View className={gridClassName} pointerEvents="box-none">
-                    <CreateMenuReveal progress={progress} order={2} className="flex-row gap-xl">
-                        <CreateMenuTile
-                            ref={firstTileRef}
-                            icon={UserIconNameEnum.TrendingDown}
-                            label={t`Expense`}
-                            testID={CreateTransactionMenuSelector.Expense}
-                            variant="destructive"
-                            onPress={handleCreateExpense}
-                        />
-                        <CreateMenuTile
-                            icon={UserIconNameEnum.TrendingUp}
-                            label={t`Income`}
-                            testID={CreateTransactionMenuSelector.Income}
-                            variant="positive"
-                            onPress={handleCreateIncome}
-                        />
-                    </CreateMenuReveal>
-
-                    <CreateMenuReveal progress={progress} order={1} className="flex-row gap-xl">
-                        <CreateMenuTile
-                            icon={UserIconNameEnum.ArrowLeftRight}
-                            label={t`Transfer`}
-                            testID={CreateTransactionMenuSelector.Transfer}
-                            variant="warning"
-                            onPress={handleCreateTransfer}
-                        />
-                        {isDefined(ReceiptScannerModule) ? <ReceiptSourceMenu onClose={onClose} /> : null}
-                    </CreateMenuReveal>
-
-                    <CreateMenuReveal progress={progress} order={3} className="absolute inset-x-0 top-0 flex-row gap-xl">
+                <View className={chipGapClassName} pointerEvents="box-none">
+                    <CreateMenuReveal progress={progress} order={3} className="flex-row gap-xl">
                         <CreateMenuChip
                             icon={UserIconNameEnum.Repeat}
                             label={t`Recurring`}
@@ -202,6 +173,37 @@ export const CreateTransactionMenu = ({ isOpen, onClose, triggerRef, accountId, 
                             onPress={handleCreateAccount}
                         />
                     </CreateMenuReveal>
+
+                    <View className="gap-xl" pointerEvents="box-none">
+                        <CreateMenuReveal progress={progress} order={2} className="flex-row gap-xl">
+                            <CreateMenuTile
+                                ref={firstTileRef}
+                                icon={UserIconNameEnum.TrendingDown}
+                                label={t`Expense`}
+                                testID={CreateTransactionMenuSelector.Expense}
+                                variant="destructive"
+                                onPress={handleCreateExpense}
+                            />
+                            <CreateMenuTile
+                                icon={UserIconNameEnum.TrendingUp}
+                                label={t`Income`}
+                                testID={CreateTransactionMenuSelector.Income}
+                                variant="positive"
+                                onPress={handleCreateIncome}
+                            />
+                        </CreateMenuReveal>
+
+                        <CreateMenuReveal progress={progress} order={1} className="flex-row gap-xl">
+                            <CreateMenuTile
+                                icon={UserIconNameEnum.ArrowLeftRight}
+                                label={t`Transfer`}
+                                testID={CreateTransactionMenuSelector.Transfer}
+                                variant="warning"
+                                onPress={handleCreateTransfer}
+                            />
+                            {isDefined(ReceiptScannerModule) ? <ReceiptSourceMenu onClose={onClose} /> : null}
+                        </CreateMenuReveal>
+                    </View>
                 </View>
 
                 <View className="flex-row items-end gap-xl" pointerEvents="box-none">
