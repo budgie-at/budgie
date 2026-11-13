@@ -633,6 +633,14 @@ msgstr "{groupCount, plural, one {# група} few {# групи} many {# гр�
 msgid "{held} held"
 msgstr "{held} у портфелі"
 
+#: src/brokerage/component/security-trade-quantity-hint/security-trade-quantity-hint.tsx
+msgid "{heldQuantity, plural, one {Only # share held} other {Only # shares held}}"
+msgstr "{heldQuantity, plural, one {Лише # частка в наявності} few {Лише # частки в наявності} many {Лише # часток в наявності} other {Лише # частки в наявності}}"
+
+#: src/brokerage/component/security-trade-quantity-hint/security-trade-quantity-hint.tsx
+msgid "{heldQuantity, plural, one {Up to # share} other {Up to # shares}}"
+msgstr "{heldQuantity, plural, one {До # частки} few {До # часток} many {До # часток} other {До # частки}}"
+
 #: src/@generic/component/collapsible-stats-section/collapsible-stats-section.tsx
 msgid "{hiddenCount, plural, one {Show # more} other {Show # more}}"
 msgstr "{hiddenCount, plural, one {Показати ще #} few {Показати ще #} many {Показати ще #} other {Показати ще #}}"
@@ -689,14 +697,6 @@ msgstr "Ринок {marketName}, {priceLabel}, {direction}"
 #: src/rule/components/rules-list-header/rules-list-header.tsx
 msgid "{matchingRulesCount, plural, one {# matching rule} other {# matching rules}}"
 msgstr "{matchingRulesCount, plural, one {# відповідне правило} few {# відповідні правила} many {# відповідних правил} other {# відповідного правила}}"
-
-#: src/brokerage/component/security-trade-quantity-hint/security-trade-quantity-hint.tsx
-msgid "{maxQuantity, plural, one {Only # share held} other {Only # shares held}}"
-msgstr "{maxQuantity, plural, one {Лише # частка в наявності} few {Лише # частки в наявності} many {Лише # часток в наявності} other {Лише # частки в наявності}}"
-
-#: src/brokerage/component/security-trade-quantity-hint/security-trade-quantity-hint.tsx
-msgid "{maxQuantity, plural, one {Up to # share} other {Up to # shares}}"
-msgstr "{maxQuantity, plural, one {До # частки} few {До # часток} many {До # часток} other {До # частки}}"
 
 #: src/@generic/hook/use-format-file-size.hook.ts
 msgid "{megabytes} MB"
@@ -4106,6 +4106,11 @@ msgstr "Видаляє {DB_NAME} з цього телефона"
 msgid "Deposit"
 msgstr "Депозит"
 
+#: src/app/(main)/securities/buy/[id].tsx
+msgctxt "Brokerage funding"
+msgid "Deposit"
+msgstr "Поповнення"
+
 #: src/account/component/create-deposit-account/create-deposit-account.tsx
 msgid "Deposit Account"
 msgstr "Депозитний рахунок"
@@ -4629,6 +4634,10 @@ msgstr "Ввести покупку"
 #: src/import/component/import-backup-pin/import-backup-pin.tsx
 msgid "Enter the backup's PIN"
 msgstr "Введіть PIN‑код резервної копії"
+
+#: src/brokerage/component/security-trade-quantity-hint/security-trade-quantity-hint.tsx
+msgid "Enter the number of shares to save"
+msgstr "Введіть кількість часток, щоб зберегти"
 
 #: src/auth/utils/get-pin-setup-meta.util.ts
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
@@ -6986,6 +6995,10 @@ msgstr "Кількість сертифікатів"
 msgid "Number of months"
 msgstr "Кількість місяців"
 
+#: src/brokerage/component/security-trade-form/security-trade-form.tsx
+msgid "Number of shares"
+msgstr "Кількість часток"
+
 #: src/account/component/debt-account-card-summary/debt-account-card-summary.tsx
 msgid "of"
 msgstr "з"
@@ -7473,6 +7486,11 @@ msgstr "Частина вашої історії. Старіша активні�
 #: src/inzhur/component/inzhur-operations-details/inzhur-operations-details.tsx
 msgid "Partial export"
 msgstr "Частковий експорт"
+
+#: src/brokerage/component/brokerage-gain-line/brokerage-gain-line.tsx
+#: src/brokerage/component/brokerage-institution-row-detail/brokerage-institution-row-detail.tsx
+msgid "Partial value — some prices unavailable"
+msgstr "Неповна вартість — деяких цін немає"
 
 #: src/market-data/component/currency-market-overview/currency-market-overview.tsx
 msgid "Past 3 months"
@@ -8356,9 +8374,6 @@ msgid "Retry"
 msgstr "Повторити"
 
 #: src/brokerage/component/security-position-gain-line/security-position-gain-line.tsx
-msgid "return"
-msgstr "дохідність"
-
 #: src/market-data/component/currency-market-return-row/currency-market-return-row.tsx
 #: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
 msgid "Return"
@@ -9069,14 +9084,6 @@ msgstr "SmartBudget"
 #: src/inzhur/component/inzhur-operations-fund-row/inzhur-operations-fund-row.tsx
 msgid "Sold {soldLabel}"
 msgstr "Продано {soldLabel}"
-
-#: src/brokerage/component/brokerage-gain-line/brokerage-gain-line.tsx
-msgid "Some prices are unavailable, so this total is incomplete"
-msgstr "Деякі ціни недоступні, тому підсумок неповний"
-
-#: src/brokerage/component/brokerage-institution-row-detail/brokerage-institution-row-detail.tsx
-msgid "Some prices unavailable"
-msgstr "Деякі ціни недоступні"
 
 #: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
 msgid "Some transactions may be hidden by the account or amount filter."
@@ -10107,8 +10114,8 @@ msgid "Total received"
 msgstr "Усього отримано"
 
 #: src/brokerage/component/brokerage-gain-line/brokerage-gain-line.tsx
-msgid "total return"
-msgstr "загальний прибуток"
+msgid "Total return"
+msgstr "Загальна прибутковість"
 
 #: src/settings/hook/use-biometric-label.hook.ts
 msgid "Touch ID"

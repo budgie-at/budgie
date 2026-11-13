@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { useFormState, useWatch } from 'react-hook-form';
 import { AccessibilityInfo, Text } from 'react-native';
 
-import { isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { cn } from '../../../@generic/utils/cn.util';
 import { BrokerageSelector } from '../../selector/brokerage.selector';
@@ -12,7 +12,7 @@ import { BrokerageSelector } from '../../selector/brokerage.selector';
 import type { SecurityTradeFormValues } from '../../constant/security-trade-form-schema.constant';
 
 interface Props {
-    readonly maxQuantity: number;
+    readonly maxQuantity: number | null;
 }
 
 export const SecurityTradeQuantityHint = ({ maxQuantity }: Props) => {
@@ -21,11 +21,16 @@ export const SecurityTradeQuantityHint = ({ maxQuantity }: Props) => {
     const { errors } = useFormState<SecurityTradeFormValues>({ name: 'quantity' });
 
     const serverError = errors.quantity?.type === 'server' ? (errors.quantity.message ?? '') : '';
-    const overHoldingError = t({ message: plural(maxQuantity, { one: 'Only # share held', other: 'Only # shares held' }) });
-    const error = quantity > maxQuantity ? overHoldingError : serverError;
+    const heldQuantity = maxQuantity ?? 0;
+    const overHoldingError = t({ message: plural(heldQuantity, { one: 'Only # share held', other: 'Only # shares held' }) });
+    const error = isDefined(maxQuantity) && quantity > maxQuantity ? overHoldingError : serverError;
     const isError = isNotEmptyString(error);
     const toneClassName = isError ? 'text-destructive-foreground' : 'text-secondary-foreground';
-    const label = isError ? error : t({ message: plural(maxQuantity, { one: 'Up to # share', other: 'Up to # shares' }) });
+    const hint = isPositiveNumber(quantity) ? '' : t`Enter the number of shares to save`;
+    const availableLabel = isDefined(maxQuantity)
+        ? t({ message: plural(heldQuantity, { one: 'Up to # share', other: 'Up to # shares' }) })
+        : hint;
+    const label = isError ? error : availableLabel;
 
     useEffect(() => {
         if (isNotEmptyString(error)) {

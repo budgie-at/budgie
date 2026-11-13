@@ -4,12 +4,12 @@ import { useLingui } from '@lingui/react/macro';
 import { isDefined } from '@rnw-community/shared';
 
 import { CollapsibleChromeScrollFade } from '../../../@generic/component/collapsible-chrome-scroll-fade/collapsible-chrome-scroll-fade';
-import { GainLine } from '../../../@generic/component/gain-line/gain-line';
 import { useUnitValuationRateQuery } from '../../../exchange-rate/query/use-unit-valuation-rate.query';
 import { useInstrumentPositionsQuery } from '../../../market-data/query/use-instrument-positions.query';
 import { calculateInstrumentReturn } from '../../../market-data/utils/calculate-instrument-return.util';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { BrokerageSelector } from '../../selector/brokerage.selector';
+import { BrokerageReturnHero } from '../brokerage-return-hero/brokerage-return-hero';
 
 import type { AccountEntityInterface } from '@budgie/contracts';
 
@@ -36,10 +36,10 @@ export const SecurityPositionGainLine = ({ account, balance }: Props) => {
 
     return (
         <CollapsibleChromeScrollFade>
-            <GainLine
+            <BrokerageReturnHero
                 gain={instrumentReturn.profit}
                 percent={percent}
-                suffix={t`return`}
+                caption={t`Return`}
                 instrumentSymbol={defaultInstrument.symbol}
                 testID={BrokerageSelector.PositionGainLine}
             />

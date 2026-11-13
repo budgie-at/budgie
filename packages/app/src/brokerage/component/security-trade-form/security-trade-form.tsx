@@ -77,7 +77,6 @@ export const SecurityTradeForm = <E,>(props: Props<E>) => {
     );
 
     const isOverHolding = isDefined(maxQuantity) && quantity > maxQuantity;
-    const quantityFooter = isDefined(maxQuantity) ? <SecurityTradeQuantityHint maxQuantity={maxQuantity} /> : null;
     const isSaveDisabled = !isReady || !form.formState.isValid || isOverHolding;
     const priceFooter = <SecurityTradePriceHint missingRateCurrency={suggestedPrice.missingRateCurrency} currencySymbol={currencySymbol} />;
 
@@ -100,11 +99,12 @@ export const SecurityTradeForm = <E,>(props: Props<E>) => {
                 >
                     <FormLayoutGroup className="gap-y-[32px]">
                         {children}
-                        <GroupedListSection footer={quantityFooter}>
+                        <GroupedListSection footer={<SecurityTradeQuantityHint maxQuantity={maxQuantity} />}>
                             <SecurityTradeNumberField
                                 name="quantity"
                                 label={t`Shares`}
                                 icon={UserIconNameEnum.Hash}
+                                placeholder={t`Number of shares`}
                                 testID={BrokerageSelector.QuantityInput}
                             />
                         </GroupedListSection>

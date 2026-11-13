@@ -58,9 +58,9 @@ export const BrokerageInstitutionRowDetail = ({ accounts, accountsCountLabel, ba
                     <Text
                         className="text-[13px] text-secondary-foreground"
                         maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
-                        numberOfLines={1}
+                        numberOfLines={captionLines}
                     >
-                        <Trans>Some prices unavailable</Trans>
+                        <Trans>Partial value — some prices unavailable</Trans>
                     </Text>
                 ) : (
                     <BrokerageReturnText gain={gain} percent={percent} instrumentSymbol={instrumentSymbol} />

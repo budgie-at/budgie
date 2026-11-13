@@ -69,7 +69,7 @@ test('51 manual brokerage with stocks', { tags: ['accounts'], platforms: PENDING
         await core.scrollTo(ctx, position);
         await expect(core.byId(screen, position)).toHaveText(/10 BGTX, worth \$1,200/, { timeout: 30_000 });
         await core.scrollTo(ctx, 'Brokerage.GainLine', 'up');
-        await expect(core.byId(screen, 'Brokerage.GainLine')).toHaveText(/\+\$200/, { timeout: 10_000 });
+        await expect(core.byId(screen, 'Brokerage.GainLine')).toHaveText(/▲ \$200/, { timeout: 10_000 });
         await core.tapId(ctx, 'PageHeader.BackButton');
         await core.expectId(ctx, 'HomePage.TotalBalance', 10_000);
         await core.scrollTo(ctx, 'InstitutionRow.E2E Broker');
@@ -108,7 +108,7 @@ test('51 manual brokerage with stocks', { tags: ['accounts'], platforms: PENDING
     await core.phase('a euro-quoted listing shows its price change in euros', async () => {
         await core.openLink(ctx, 'budgie://institution/1');
         await core.expectId(ctx, 'Institution.Page', 10_000);
-        await expect(screen.getByRole('button', { name: /^Sell BGTX, \+\$500, 4 BGTX @ \$125/ }).first()).toBeVisible({ timeout: 10_000 });
+        await expect(screen.getByRole('button', { name: /^Sell BGTX, \$500, 4 BGTX @ \$125/ }).first()).toBeVisible({ timeout: 10_000 });
         await pickSecurity('BGEU');
         await typeDigits('Brokerage.QuantityInput', '1');
         await replaceDigits('Brokerage.PriceInput', '100');

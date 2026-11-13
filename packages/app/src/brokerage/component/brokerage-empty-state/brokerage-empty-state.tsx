@@ -7,12 +7,14 @@ import { EmptyState } from '../../../@generic/component/empty-state/empty-state'
 import { useOpenAddPosition } from '../../hook/use-open-add-position.hook';
 import { BrokerageSelector } from '../../selector/brokerage.selector';
 
+const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
+
 export const BrokerageEmptyState = () => {
     const { t } = useLingui();
     const handlePress = useOpenAddPosition();
 
     return (
-        <View className="items-center gap-y-3xl px-3xl">
+        <View className="items-center gap-y-2xl rounded-3xl bg-surface-row px-3xl py-3xl" style={CONTINUOUS_CORNERS}>
             <EmptyState
                 circleIcon={UserIconNameEnum.ChartLine}
                 title={t`No positions yet`}

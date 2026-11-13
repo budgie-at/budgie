@@ -37,7 +37,9 @@ export default function BuySecurity() {
 
     const handleSubmit = (values: SecurityTradeFormValues) =>
         isDefined(listing)
-            ? Effect.flatMap(BrokerageService, brokerageService => brokerageService.buy(integrationId, listing, values))
+            ? Effect.flatMap(BrokerageService, brokerageService =>
+                  brokerageService.buy(integrationId, listing, values, t({ message: 'Deposit', context: 'Brokerage funding' }))
+              )
             : Effect.void;
 
     const currencySymbol = cash?.instrument.symbol ?? '';

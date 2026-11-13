@@ -141,7 +141,9 @@ export const useTransactionSubtitleSegments = (
     return {
         segments: [
             refundedLabel,
-            (isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction)) && !isDefined(fundTradeLabel)
+            (isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction)) &&
+            !isDefined(fundTradeLabel) &&
+            !isNotEmptyString(transaction.title)
                 ? t`Manual adjustment`
                 : null,
             isUncategorizedTransaction(transaction) ? t`Uncategorized` : null,

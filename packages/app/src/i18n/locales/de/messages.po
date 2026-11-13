@@ -633,6 +633,14 @@ msgstr "{groupCount, plural, one {# Gruppe} other {# Gruppen}}"
 msgid "{held} held"
 msgstr "{held} im Bestand"
 
+#: src/brokerage/component/security-trade-quantity-hint/security-trade-quantity-hint.tsx
+msgid "{heldQuantity, plural, one {Only # share held} other {Only # shares held}}"
+msgstr "{heldQuantity, plural, one {Nur # Anteil im Bestand} other {Nur # Anteile im Bestand}}"
+
+#: src/brokerage/component/security-trade-quantity-hint/security-trade-quantity-hint.tsx
+msgid "{heldQuantity, plural, one {Up to # share} other {Up to # shares}}"
+msgstr "{heldQuantity, plural, one {Bis zu # Anteil} other {Bis zu # Anteile}}"
+
 #: src/@generic/component/collapsible-stats-section/collapsible-stats-section.tsx
 msgid "{hiddenCount, plural, one {Show # more} other {Show # more}}"
 msgstr "{hiddenCount, plural, one {# weitere anzeigen} other {# weitere anzeigen}}"
@@ -689,14 +697,6 @@ msgstr "Markt {marketName}, {priceLabel}, {direction}"
 #: src/rule/components/rules-list-header/rules-list-header.tsx
 msgid "{matchingRulesCount, plural, one {# matching rule} other {# matching rules}}"
 msgstr "{matchingRulesCount, plural, one {# passende Regel} other {# passende Regeln}}"
-
-#: src/brokerage/component/security-trade-quantity-hint/security-trade-quantity-hint.tsx
-msgid "{maxQuantity, plural, one {Only # share held} other {Only # shares held}}"
-msgstr "{maxQuantity, plural, one {Nur # Anteil im Bestand} other {Nur # Anteile im Bestand}}"
-
-#: src/brokerage/component/security-trade-quantity-hint/security-trade-quantity-hint.tsx
-msgid "{maxQuantity, plural, one {Up to # share} other {Up to # shares}}"
-msgstr "{maxQuantity, plural, one {Bis zu # Anteil} other {Bis zu # Anteile}}"
 
 #: src/@generic/hook/use-format-file-size.hook.ts
 msgid "{megabytes} MB"
@@ -4106,6 +4106,11 @@ msgstr "Löscht {DB_NAME} von diesem Telefon"
 msgid "Deposit"
 msgstr "Termineinlage"
 
+#: src/app/(main)/securities/buy/[id].tsx
+msgctxt "Brokerage funding"
+msgid "Deposit"
+msgstr "Einzahlung"
+
 #: src/account/component/create-deposit-account/create-deposit-account.tsx
 msgid "Deposit Account"
 msgstr "Einlagenkonto"
@@ -4629,6 +4634,10 @@ msgstr "Kauf eingeben"
 #: src/import/component/import-backup-pin/import-backup-pin.tsx
 msgid "Enter the backup's PIN"
 msgstr "Gib die PIN des Backups ein"
+
+#: src/brokerage/component/security-trade-quantity-hint/security-trade-quantity-hint.tsx
+msgid "Enter the number of shares to save"
+msgstr "Anzahl der Anteile eingeben, um zu speichern"
 
 #: src/auth/utils/get-pin-setup-meta.util.ts
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
@@ -6986,6 +6995,10 @@ msgstr "Anzahl der Zertifikate"
 msgid "Number of months"
 msgstr "Anzahl der Monate"
 
+#: src/brokerage/component/security-trade-form/security-trade-form.tsx
+msgid "Number of shares"
+msgstr "Anzahl der Anteile"
+
 #: src/account/component/debt-account-card-summary/debt-account-card-summary.tsx
 msgid "of"
 msgstr "von"
@@ -7473,6 +7486,11 @@ msgstr "Teil deines Verlaufs. Ältere Aktivitäten sind nicht enthalten."
 #: src/inzhur/component/inzhur-operations-details/inzhur-operations-details.tsx
 msgid "Partial export"
 msgstr "Teilexport"
+
+#: src/brokerage/component/brokerage-gain-line/brokerage-gain-line.tsx
+#: src/brokerage/component/brokerage-institution-row-detail/brokerage-institution-row-detail.tsx
+msgid "Partial value — some prices unavailable"
+msgstr "Teilwert – einige Kurse fehlen"
 
 #: src/market-data/component/currency-market-overview/currency-market-overview.tsx
 msgid "Past 3 months"
@@ -8356,9 +8374,6 @@ msgid "Retry"
 msgstr "Erneut versuchen"
 
 #: src/brokerage/component/security-position-gain-line/security-position-gain-line.tsx
-msgid "return"
-msgstr "Rendite"
-
 #: src/market-data/component/currency-market-return-row/currency-market-return-row.tsx
 #: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
 msgid "Return"
@@ -9069,14 +9084,6 @@ msgstr "SmartBudget"
 #: src/inzhur/component/inzhur-operations-fund-row/inzhur-operations-fund-row.tsx
 msgid "Sold {soldLabel}"
 msgstr "{soldLabel} verkauft"
-
-#: src/brokerage/component/brokerage-gain-line/brokerage-gain-line.tsx
-msgid "Some prices are unavailable, so this total is incomplete"
-msgstr "Einige Preise sind nicht verfügbar, daher ist die Summe unvollständig"
-
-#: src/brokerage/component/brokerage-institution-row-detail/brokerage-institution-row-detail.tsx
-msgid "Some prices unavailable"
-msgstr "Einige Preise nicht verfügbar"
 
 #: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
 msgid "Some transactions may be hidden by the account or amount filter."
@@ -10107,7 +10114,7 @@ msgid "Total received"
 msgstr "Insgesamt erhalten"
 
 #: src/brokerage/component/brokerage-gain-line/brokerage-gain-line.tsx
-msgid "total return"
+msgid "Total return"
 msgstr "Gesamtrendite"
 
 #: src/settings/hook/use-biometric-label.hook.ts

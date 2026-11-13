@@ -6,6 +6,7 @@ import { testDb } from '../scenario/test-db';
 export const fetchBalanceAdjustments = (accountId: number) =>
     testDb
         .select({
+            title: TransactionEntityTable.title,
             amount: TransactionEntryEntityTable.amount,
             type: TransactionEntryEntityTable.type,
             operatedAt: TransactionEntityTable.operatedAt

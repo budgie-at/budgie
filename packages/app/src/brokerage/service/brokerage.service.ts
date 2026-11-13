@@ -71,8 +71,9 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
         const recordTrade = Effect.fnUntraced(function* (
             security: AccountWithInstrumentEntityInterface,
             trade: SecurityTradeFormValues,
-            isSell: boolean
+            fundingTitle: string | null
         ) {
+            const isSell = !isDefined(fundingTitle);
             const cash = yield* findCashAccount(security);
             const cashAmount = roundHalfExpand(trade.quantity * trade.price, DEFAULT_DECIMAL_PLACES);
             const fee = roundHalfExpand(trade.fee, DEFAULT_DECIMAL_PLACES);
@@ -82,7 +83,7 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
                   (yield* accountBalanceRepository.getMinimumLedgerBalanceFrom(cash.id, trade.operatedAt));
 
             if (isPositiveNumber(shortfall)) {
-                yield* balanceAdjustmentService.create(cash.id, shortfall, trade.operatedAt);
+                yield* balanceAdjustmentService.create(cash.id, shortfall, trade.operatedAt, fundingTitle ?? '');
             }
 
             const quantityMicroUnits = convertToMicroUnits(trade.quantity);
@@ -154,7 +155,8 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
             buy: Effect.fn('BrokerageService.buy')(function* (
                 integrationId: number,
                 listing: YahooListingInterface,
-                trade: SecurityTradeFormValues
+                trade: SecurityTradeFormValues,
+                fundingTitle: string
             ) {
                 const instrument = yield* yahooMarketDataService.resolveOrCreate(listing);
                 const accountId = yield* Db.transaction(
@@ -178,7 +180,7 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
 
                         const security = yield* findSecurityAccount(account.id);
 
-                        yield* recordTrade(security, trade, false);
+                        yield* recordTrade(security, trade, fundingTitle);
 
                         return account.id;
                     })
@@ -203,7 +205,7 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
                         return yield* InsufficientSecurityHoldingError.make();
                     }
 
-                    yield* recordTrade(security, trade, true);
+                    yield* recordTrade(security, trade, null);
                 },
                 effect => Db.transaction(effect)
             )

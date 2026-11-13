@@ -15,10 +15,11 @@ interface Props {
     readonly label: string;
     readonly icon: UserIconType;
     readonly maxDecimals?: number;
+    readonly placeholder?: string;
     readonly testID: string;
 }
 
-export const SecurityTradeNumberField = ({ name, label, icon, maxDecimals, testID }: Props) => {
+export const SecurityTradeNumberField = ({ name, label, icon, maxDecimals, placeholder = '0', testID }: Props) => {
     const { decimalSeparator } = useLocaleInfo();
     const { field } = useController<SecurityTradeFormValues, typeof name>({ name });
     const formatValue = (value: number) => (isPositiveNumber(value) ? String(value).replace('.', decimalSeparator) : '');
@@ -56,7 +57,7 @@ export const SecurityTradeNumberField = ({ name, label, icon, maxDecimals, testI
             value={text}
             onChangeText={handleChangeText}
             onBlur={handleBlur}
-            placeholder="0"
+            placeholder={placeholder}
             keyboardType="decimal-pad"
             testID={testID}
         />

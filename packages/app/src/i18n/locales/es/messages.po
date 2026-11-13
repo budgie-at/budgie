@@ -633,6 +633,14 @@ msgstr "{groupCount, plural, one {# grupo} other {# grupos}}"
 msgid "{held} held"
 msgstr "{held} en cartera"
 
+#: src/brokerage/component/security-trade-quantity-hint/security-trade-quantity-hint.tsx
+msgid "{heldQuantity, plural, one {Only # share held} other {Only # shares held}}"
+msgstr "{heldQuantity, plural, one {Solo tienes # participación} other {Solo tienes # participaciones}}"
+
+#: src/brokerage/component/security-trade-quantity-hint/security-trade-quantity-hint.tsx
+msgid "{heldQuantity, plural, one {Up to # share} other {Up to # shares}}"
+msgstr "{heldQuantity, plural, one {Hasta # participación} other {Hasta # participaciones}}"
+
 #: src/@generic/component/collapsible-stats-section/collapsible-stats-section.tsx
 msgid "{hiddenCount, plural, one {Show # more} other {Show # more}}"
 msgstr "{hiddenCount, plural, one {Mostrar # más} other {Mostrar # más}}"
@@ -689,14 +697,6 @@ msgstr "Mercado de {marketName}, {priceLabel}, {direction}"
 #: src/rule/components/rules-list-header/rules-list-header.tsx
 msgid "{matchingRulesCount, plural, one {# matching rule} other {# matching rules}}"
 msgstr "{matchingRulesCount, plural, one {# regla coincidente} other {# reglas coincidentes}}"
-
-#: src/brokerage/component/security-trade-quantity-hint/security-trade-quantity-hint.tsx
-msgid "{maxQuantity, plural, one {Only # share held} other {Only # shares held}}"
-msgstr "{maxQuantity, plural, one {Solo tienes # participación} other {Solo tienes # participaciones}}"
-
-#: src/brokerage/component/security-trade-quantity-hint/security-trade-quantity-hint.tsx
-msgid "{maxQuantity, plural, one {Up to # share} other {Up to # shares}}"
-msgstr "{maxQuantity, plural, one {Hasta # participación} other {Hasta # participaciones}}"
 
 #: src/@generic/hook/use-format-file-size.hook.ts
 msgid "{megabytes} MB"
@@ -4106,6 +4106,11 @@ msgstr "Elimina {DB_NAME} de este teléfono"
 msgid "Deposit"
 msgstr "Depósito"
 
+#: src/app/(main)/securities/buy/[id].tsx
+msgctxt "Brokerage funding"
+msgid "Deposit"
+msgstr "Depósito"
+
 #: src/account/component/create-deposit-account/create-deposit-account.tsx
 msgid "Deposit Account"
 msgstr "Cuenta de depósito"
@@ -4629,6 +4634,10 @@ msgstr "Introducir compra"
 #: src/import/component/import-backup-pin/import-backup-pin.tsx
 msgid "Enter the backup's PIN"
 msgstr "Introduce el PIN de la copia de seguridad"
+
+#: src/brokerage/component/security-trade-quantity-hint/security-trade-quantity-hint.tsx
+msgid "Enter the number of shares to save"
+msgstr "Introduce el número de participaciones para guardar"
 
 #: src/auth/utils/get-pin-setup-meta.util.ts
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
@@ -6986,6 +6995,10 @@ msgstr "Número de certificados"
 msgid "Number of months"
 msgstr "Número de meses"
 
+#: src/brokerage/component/security-trade-form/security-trade-form.tsx
+msgid "Number of shares"
+msgstr "Número de participaciones"
+
 #: src/account/component/debt-account-card-summary/debt-account-card-summary.tsx
 msgid "of"
 msgstr "de"
@@ -7473,6 +7486,11 @@ msgstr "Parte de tu historial. La actividad anterior no está incluida."
 #: src/inzhur/component/inzhur-operations-details/inzhur-operations-details.tsx
 msgid "Partial export"
 msgstr "Exportación parcial"
+
+#: src/brokerage/component/brokerage-gain-line/brokerage-gain-line.tsx
+#: src/brokerage/component/brokerage-institution-row-detail/brokerage-institution-row-detail.tsx
+msgid "Partial value — some prices unavailable"
+msgstr "Valor parcial: faltan algunos precios"
 
 #: src/market-data/component/currency-market-overview/currency-market-overview.tsx
 msgid "Past 3 months"
@@ -8356,9 +8374,6 @@ msgid "Retry"
 msgstr "Reintentar"
 
 #: src/brokerage/component/security-position-gain-line/security-position-gain-line.tsx
-msgid "return"
-msgstr "rentabilidad"
-
 #: src/market-data/component/currency-market-return-row/currency-market-return-row.tsx
 #: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
 msgid "Return"
@@ -9069,14 +9084,6 @@ msgstr "SmartBudget"
 #: src/inzhur/component/inzhur-operations-fund-row/inzhur-operations-fund-row.tsx
 msgid "Sold {soldLabel}"
 msgstr "Vendido {soldLabel}"
-
-#: src/brokerage/component/brokerage-gain-line/brokerage-gain-line.tsx
-msgid "Some prices are unavailable, so this total is incomplete"
-msgstr "Algunos precios no están disponibles, así que el total está incompleto"
-
-#: src/brokerage/component/brokerage-institution-row-detail/brokerage-institution-row-detail.tsx
-msgid "Some prices unavailable"
-msgstr "Algunos precios no disponibles"
 
 #: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
 msgid "Some transactions may be hidden by the account or amount filter."
@@ -10107,8 +10114,8 @@ msgid "Total received"
 msgstr "Total recibido"
 
 #: src/brokerage/component/brokerage-gain-line/brokerage-gain-line.tsx
-msgid "total return"
-msgstr "rentabilidad total"
+msgid "Total return"
+msgstr "Rentabilidad total"
 
 #: src/settings/hook/use-biometric-label.hook.ts
 msgid "Touch ID"

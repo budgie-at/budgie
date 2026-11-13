@@ -24,6 +24,7 @@ import { testDb } from '../../harness/scenario/test-db';
 
 const LISTING = { symbol: 'BGTX', name: 'Budgie Example Holdings', exchange: 'E2E Exchange', type: InstrumentTypeEnum.EQUITY } as const;
 const TRADE_DAY = new Date('2026-03-02T12:00:00.000Z');
+const FUNDING_TITLE = 'Deposit';
 
 const createBrokerage = Effect.gen(function* () {
     mockServer.use(
@@ -62,12 +63,17 @@ describe('market-data/brokerage-trades', () => {
                 integrationProvider: ExternalSourceEnum.MANUAL
             });
 
-            const securityId = yield* brokerageService.buy(cash.integrationId ?? 0, LISTING, {
-                quantity: 10,
-                price: 100,
-                fee: 5,
-                operatedAt: TRADE_DAY
-            });
+            const securityId = yield* brokerageService.buy(
+                cash.integrationId ?? 0,
+                LISTING,
+                {
+                    quantity: 10,
+                    price: 100,
+                    fee: 5,
+                    operatedAt: TRADE_DAY
+                },
+                FUNDING_TITLE
+            );
             expect(
                 yield* brokerageService.sell(securityId, { quantity: 11, price: 125, fee: 0, operatedAt: TRADE_DAY }).pipe(Effect.flip)
             ).toMatchObject({ _tag: 'InsufficientSecurityHoldingError' });
@@ -87,7 +93,7 @@ describe('market-data/brokerage-trades', () => {
             expect(yield* fetchAccountBalance(securityId)).toBe(6_000_000);
             expect(yield* fetchAccountBalance(cash.id)).toBe(500_000_000);
             expect(yield* fetchBalanceAdjustments(cash.id)).toEqual([
-                { amount: 1_005_000_000, type: TransactionEntryTypeEnum.DEBIT, operatedAt: TRADE_DAY }
+                { title: FUNDING_TITLE, amount: 1_005_000_000, type: TransactionEntryTypeEnum.DEBIT, operatedAt: TRADE_DAY }
             ]);
             expect(calculateInstrumentPosition(entries)).toEqual({
                 amount: 6,
@@ -101,12 +107,17 @@ describe('market-data/brokerage-trades', () => {
                     .sell(securityId, { quantity: 1, price: 125, fee: 0, operatedAt: new Date('2026-03-05') })
                     .pipe(Effect.flip)
             ).toMatchObject({ _tag: 'InsufficientSecurityHoldingError' });
-            yield* brokerageService.buy(cash.integrationId ?? 0, LISTING, {
-                quantity: 2,
-                price: 100,
-                fee: 0,
-                operatedAt: new Date('2026-03-11')
-            });
+            yield* brokerageService.buy(
+                cash.integrationId ?? 0,
+                LISTING,
+                {
+                    quantity: 2,
+                    price: 100,
+                    fee: 0,
+                    operatedAt: new Date('2026-03-11')
+                },
+                FUNDING_TITLE
+            );
             expect(yield* fetchAccountBalance(cash.id)).toBe(1_050_000_000);
             expect(yield* fetchBalanceAdjustments(cash.id)).toHaveLength(1);
         }).pipe(Effect.provide(TestLayer))
@@ -115,12 +126,17 @@ describe('market-data/brokerage-trades', () => {
     it.effect('stores a sell with a fee as gross cash plus a fee entry, so the brokerage row shows gross proceeds and the fee as net', () =>
         Effect.gen(function* () {
             const { brokerageService, cash } = yield* createBrokerage;
-            const securityId = yield* brokerageService.buy(cash.integrationId ?? 0, LISTING, {
-                quantity: 10,
-                price: 100,
-                fee: 0,
-                operatedAt: TRADE_DAY
-            });
+            const securityId = yield* brokerageService.buy(
+                cash.integrationId ?? 0,
+                LISTING,
+                {
+                    quantity: 10,
+                    price: 100,
+                    fee: 0,
+                    operatedAt: TRADE_DAY
+                },
+                FUNDING_TITLE
+            );
 
             yield* brokerageService.sell(securityId, { quantity: 4, price: 125, fee: 3, operatedAt: TRADE_DAY });
 
@@ -150,16 +166,21 @@ describe('market-data/brokerage-trades', () => {
         Effect.gen(function* () {
             const { brokerageService, cash } = yield* createBrokerage;
 
-            yield* brokerageService.buy(cash.integrationId ?? 0, LISTING, {
-                quantity: 21,
-                price: 43.1471,
-                fee: 25.157,
-                operatedAt: TRADE_DAY
-            });
+            yield* brokerageService.buy(
+                cash.integrationId ?? 0,
+                LISTING,
+                {
+                    quantity: 21,
+                    price: 43.1471,
+                    fee: 25.157,
+                    operatedAt: TRADE_DAY
+                },
+                FUNDING_TITLE
+            );
 
             expect(yield* fetchAccountBalance(cash.id)).toBe(0);
             expect(yield* fetchBalanceAdjustments(cash.id)).toEqual([
-                { amount: 906_090_000 + 25_160_000, type: TransactionEntryTypeEnum.DEBIT, operatedAt: TRADE_DAY }
+                { title: FUNDING_TITLE, amount: 906_090_000 + 25_160_000, type: TransactionEntryTypeEnum.DEBIT, operatedAt: TRADE_DAY }
             ]);
         }).pipe(Effect.provide(TestLayer))
     );

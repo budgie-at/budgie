@@ -1,9 +1,9 @@
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Text } from 'react-native';
 
-import { GainLine } from '../../../@generic/component/gain-line/gain-line';
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { BrokerageSelector } from '../../selector/brokerage.selector';
+import { BrokerageReturnHero } from '../brokerage-return-hero/brokerage-return-hero';
 
 interface Props {
     readonly gain: number;
@@ -20,14 +20,14 @@ export const BrokerageGainLine = ({ gain, percent, instrumentSymbol, isLoading, 
         <LoadingContent isLoading={isLoading} loadingIndicator={null}>
             {isPartial ? (
                 <Text className="px-5xl text-center text-[15px] leading-[20px] text-secondary-foreground" maxFontSizeMultiplier={2}>
-                    <Trans>Some prices are unavailable, so this total is incomplete</Trans>
+                    <Trans>Partial value — some prices unavailable</Trans>
                 </Text>
             ) : (
-                <GainLine
+                <BrokerageReturnHero
                     gain={gain}
                     percent={percent}
-                    suffix={t`total return`}
                     instrumentSymbol={instrumentSymbol}
+                    caption={t`Total return`}
                     testID={BrokerageSelector.GainLine}
                 />
             )}

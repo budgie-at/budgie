@@ -31,7 +31,8 @@ export const TransactionSecurityTradeAmount = ({ transaction, accountId, testID 
 
     const { securityEntry } = trade;
     const isPositionContext = accountId === securityEntry.accountId;
-    const cashPrefix = isPositiveNumber(trade.cashFlow) ? '+' : '−';
+    const cashDirectionPrefix = isPositiveNumber(trade.cashFlow) ? '+' : '−';
+    const cashPrefix = isDefined(accountId) ? cashDirectionPrefix : '';
 
     if (!isPositionContext) {
         return (

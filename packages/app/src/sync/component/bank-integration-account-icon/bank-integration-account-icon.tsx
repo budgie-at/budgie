@@ -1,4 +1,4 @@
-import { AccountWithInstrumentEntityInterface, ExternalSourceEnum, UserIconType } from '@budgie/contracts';
+import { AccountWithInstrumentEntityInterface, ExternalSourceEnum, UserIconNameEnum, UserIconType } from '@budgie/contracts';
 
 import { BankLogo } from '../../../@generic/component/bank-logo/bank-logo';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
@@ -23,9 +23,11 @@ export const BankIntegrationAccountIcon = ({ icon, instrument }: Props) => {
         return <CurrencySelectorInstrumentIcon code={instrument.code} symbol={instrument.symbol} type={instrument.type} size={36} />;
     }
 
+    const cashIcon = integration.provider === ExternalSourceEnum.MANUAL ? UserIconNameEnum.Wallet : icon;
+
     return (
         <CircleIcon
-            icon={icon}
+            icon={cashIcon}
             variant="primary"
             size={36}
             iconSize={18}
