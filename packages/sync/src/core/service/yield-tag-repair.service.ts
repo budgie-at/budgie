@@ -37,20 +37,28 @@ export class YieldTagRepairService extends Context.Service<YieldTagRepairService
             return isDefined(match) ? { yieldKind: match[1], yieldSourceAccountId: null } : null;
         };
 
-        const buildInzhurPatch = (candidate: YieldTagCandidateInterface): YieldFieldsInterface | null => {
-            const fields = buildInzhurYieldFields(candidate);
+        const buildInzhurPatch = Effect.fnUntraced(function* (candidate: YieldTagCandidateInterface) {
+            const fields = buildInzhurYieldFields(candidate, candidate.title === INZHUR_UNATTRIBUTED_DIVIDEND_TITLE);
+            const landingAccountId = candidate.toAccountId ?? candidate.fromAccountId;
 
-            return isDefined(fields)
-                ? { ...fields, yieldSourceAccountId: candidate.isFundInZone ? fields.yieldSourceAccountId : null }
-                : null;
-        };
+            if (!isDefined(fields)) {
+                return null;
+            }
+
+            const isSourceInZone =
+                isDefined(fields.yieldSourceAccountId) &&
+                isDefined(landingAccountId) &&
+                (yield* transactionYieldRepository.areAccountsInSameZone(fields.yieldSourceAccountId, landingAccountId));
+
+            return { ...fields, yieldSourceAccountId: isSourceInZone ? fields.yieldSourceAccountId : null };
+        });
 
         const repairBatch = Effect.fnUntraced(function* (candidates: readonly YieldTagCandidateInterface[]) {
             const binanceIds: number[] = [];
 
             for (const candidate of candidates) {
                 const binancePatch = buildBinancePatch(candidate);
-                const rawPatch = buildInzhurPatch(candidate) ?? binancePatch;
+                const rawPatch = (yield* buildInzhurPatch(candidate)) ?? binancePatch;
                 const patch = isDefined(rawPatch)
                     ? normalizeYieldFields(candidate.type, rawPatch.yieldKind, rawPatch.yieldSourceAccountId)
                     : null;

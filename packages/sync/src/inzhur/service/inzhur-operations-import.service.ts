@@ -6,6 +6,7 @@ import {
     SyncRepository,
     TransactionEntryTypeEnum,
     TransactionRepository,
+    TransactionYieldRepository,
     convertFromMicroUnits,
     convertToMicroUnits
 } from '@budgie/contracts';
@@ -63,6 +64,7 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
             const syncRepository = yield* SyncRepository;
             const transactionRepository = yield* TransactionRepository;
             const transactionService = yield* TransactionService;
+            const transactionYieldRepository = yield* TransactionYieldRepository;
             const transferCreationService = yield* TransferCreationService;
             const inzhurPriceService = yield* InzhurPriceService;
             const inzhurBankFlowService = yield* InzhurBankFlowService;
@@ -134,11 +136,11 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
                     };
                 });
 
-            const buildIncomeOrTaxInput = (
+            const buildIncomeOrTaxInput = Effect.fnUntraced(function* (
                 action: InzhurPlannedActionInterface,
                 cashAccount: AccountEntityInterface,
                 fundAccount: AccountEntityInterface
-            ) => {
+            ) {
                 const isDividend = action.kind === InzhurOperationKindEnum.DIVIDEND;
                 const entry = {
                     ...buildPrimaryEntry(
@@ -151,17 +153,19 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
                 };
                 const title = `${toInzhurShortName(fundAccount.title)} ${isDividend ? 'dividends' : 'dividend tax'}`;
                 const input = buildInzhurTransactionInput(title, action.externalId, action.occurredAt, [entry]);
-                const yieldFields = buildInzhurYieldFields({ type: input.type, fundAccountId: fundAccount.id, title });
+                const yieldFields = buildInzhurYieldFields({ type: input.type, fundAccountId: fundAccount.id }, false);
+                const isSourceInZone =
+                    isDefined(yieldFields) && (yield* transactionYieldRepository.areAccountsInSameZone(fundAccount.id, cashAccount.id));
 
                 return {
                     ...input,
                     fundAccountId: fundAccount.id,
                     ...(isDefined(yieldFields) && {
                         yieldKind: yieldFields.yieldKind,
-                        yieldSourceAccountId: cashAccount.syncZone === fundAccount.syncZone ? yieldFields.yieldSourceAccountId : null
+                        yieldSourceAccountId: isSourceInZone ? yieldFields.yieldSourceAccountId : null
                     })
                 };
-            };
+            });
 
             const readPriceMap = Effect.fnUntraced(function* (
                 actions: readonly InzhurPlannedActionInterface[],
@@ -393,13 +397,18 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
                         return isDefined(account) && isDefined(quantity) ? [buildTradeInput(action, account, quantity.microUnits)] : [];
                     })
                 ];
-                const incomeInputs = newActions
-                    .filter(action => action.kind === InzhurOperationKindEnum.DIVIDEND || action.kind === InzhurOperationKindEnum.TAX)
-                    .flatMap(action => {
+                const incomeInputs = yield* Effect.forEach(
+                    newActions.filter(
+                        action => action.kind === InzhurOperationKindEnum.DIVIDEND || action.kind === InzhurOperationKindEnum.TAX
+                    ),
+                    action => {
                         const account = accountByFund.get(action.fundName ?? '');
 
-                        return isDefined(account) ? [buildIncomeOrTaxInput(action, setup.cashAccount, account)] : [];
-                    });
+                        return isDefined(account)
+                            ? Effect.map(buildIncomeOrTaxInput(action, setup.cashAccount, account), input => [input])
+                            : Effect.succeed([]);
+                    }
+                ).pipe(Effect.map(inputs => inputs.flat()));
 
                 for (const { stored } of amendedTrades) {
                     yield* transactionService.purgeById(stored.id);
@@ -495,6 +504,7 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
             AccountBalanceRepository.layer,
             SyncRepository.layer,
             TransactionRepository.layer,
+            TransactionYieldRepository.layer,
             TransactionService.layer,
             TransferCreationService.layer,
             InzhurPriceService.layer,

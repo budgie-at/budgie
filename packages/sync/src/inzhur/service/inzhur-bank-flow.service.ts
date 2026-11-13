@@ -103,11 +103,7 @@ export class InzhurBankFlowService extends Context.Service<InzhurBankFlowService
         });
 
         const tagDividend = Effect.fnUntraced(function* (transaction: TransactionWithEntriesEntityInterface, fundAccountId: number | null) {
-            const yieldFields = buildInzhurYieldFields({
-                type: transaction.type,
-                fundAccountId,
-                title: INZHUR_UNATTRIBUTED_DIVIDEND_TITLE
-            });
+            const yieldFields = buildInzhurYieldFields({ type: transaction.type, fundAccountId }, true);
 
             if (isDefined(transaction.yieldKind) || !isDefined(yieldFields)) {
                 return;

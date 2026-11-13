@@ -50,10 +50,8 @@ export class TransactionYieldRepository extends Context.Service<TransactionYield
                             externalId: TransactionEntityTable.externalId,
                             title: TransactionEntityTable.title,
                             fundAccountId: TransactionEntityTable.fundAccountId,
-                            isFundInZone:
-                                sql<number>`COALESCE((SELECT ${AccountEntityTable.syncZone} FROM ${AccountEntityTable} WHERE ${AccountEntityTable.id} = ${TransactionEntityTable.fundAccountId}) = ${TransactionEntityTable.syncZone}, 0)`.mapWith(
-                                    Boolean
-                                )
+                            toAccountId: TransactionEntityTable.toAccountId,
+                            fromAccountId: TransactionEntityTable.fromAccountId
                         })
                         .from(TransactionEntityTable)
                         .where(where)

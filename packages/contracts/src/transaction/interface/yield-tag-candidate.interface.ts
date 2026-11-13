@@ -1,8 +1,6 @@
 import type { TransactionEntityInterface } from '../entity/transaction-entity.interface';
 
-export interface YieldTagCandidateInterface extends Pick<
+export type YieldTagCandidateInterface = Pick<
     TransactionEntityInterface,
-    'id' | 'type' | 'externalId' | 'title' | 'fundAccountId'
-> {
-    readonly isFundInZone: boolean;
-}
+    'id' | 'type' | 'externalId' | 'title' | 'fundAccountId' | 'toAccountId' | 'fromAccountId'
+>;
