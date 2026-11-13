@@ -1,5 +1,6 @@
 import { type SQL, and, asc, eq, gt, inArray, isNotNull, isNull, like, ne, or, sql } from 'drizzle-orm';
 import * as Context from 'effect/Context';
+import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
@@ -60,6 +61,32 @@ export class TransactionYieldRepository extends Context.Service<TransactionYield
                 );
 
             return {
+                findLastDepositBalanceEventAt: Effect.fn('TransactionYieldRepository.findLastDepositBalanceEventAt')(function* (
+                    depositAccountId: number
+                ) {
+                    const isInterest = sql`(${TransactionEntityTable.type} = ${TransactionTypeEnum.INCOME} AND ${TransactionEntityTable.yieldKind} = ${YieldKindEnum.INTEREST})`;
+                    const [row] = yield* Db.query(db =>
+                        db
+                            .select({
+                                lastBalanceEventAt: sql<
+                                    number | null
+                                >`MAX(CASE WHEN ${TransactionEntityTable.type} IN (${TransactionTypeEnum.ADJUSTMENT}, ${TransactionTypeEnum.TRANSFER}) OR ${isInterest} THEN ${TransactionEntityTable.operatedAt} END)`
+                            })
+                            .from(TransactionEntryEntityTable)
+                            .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+                            .where(
+                                and(
+                                    transactionFilters.buildVisibleTransactionCondition(),
+                                    transactionFilters.buildLedgerEntryCondition(),
+                                    eq(TransactionEntryEntityTable.accountId, depositAccountId)
+                                )
+                            )
+                    );
+
+                    return isDefined(row.lastBalanceEventAt)
+                        ? DateTime.toDateUtc(DateTime.makeUnsafe(row.lastBalanceEventAt * 1000))
+                        : null;
+                }),
                 findInterestCandidates: (
                     externalSources: readonly ExternalSourceEnum[],
                     likePatterns: readonly string[],
