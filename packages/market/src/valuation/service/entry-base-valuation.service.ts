@@ -300,11 +300,14 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
 
             if (stablecoinCodes.has(instrument.code)) {
                 const dollar = yield* lookups.findInstrumentByCode(CurrencyEnum.USD);
+                const dollarRate = isDefined(dollar) ? yield* resolveQuoteToBaseRate(lookups, dollar.id, baseInstrumentId, rateDate) : null;
 
-                return estimated(isDefined(dollar) ? yield* resolveQuoteToBaseRate(lookups, dollar.id, baseInstrumentId, rateDate) : null);
+                return estimated(dollarRate);
             }
 
-            return estimated(yield* resolveBaseExchangeRateOrNull(lookups, instrument.id, baseInstrumentId, rateDate));
+            const fallbackRate = yield* resolveBaseExchangeRateOrNull(lookups, instrument.id, baseInstrumentId, rateDate);
+
+            return estimated(fallbackRate);
         });
 
         const resolveFundRate = Effect.fnUntraced(function* (
@@ -324,7 +327,9 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
                 return confirmed(nav.price * hryvniaToBase);
             }
 
-            return estimated(yield* resolveBaseExchangeRateOrNull(lookups, instrumentId, baseInstrumentId, rateDate));
+            const fallbackRate = yield* resolveBaseExchangeRateOrNull(lookups, instrumentId, baseInstrumentId, rateDate);
+
+            return estimated(fallbackRate);
         });
 
         const resolveAccountRate = Effect.fnUntraced(function* (

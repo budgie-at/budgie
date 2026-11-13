@@ -5,6 +5,7 @@ import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
 import { Db } from '../../@generic/service/db.service';
+import type { DB } from '../../@generic/type/db.type';
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { InstrumentTypeEnum } from '../../instrument/enum/instrument-type.enum';
@@ -15,7 +16,7 @@ import type { BaseValuationBucketRevaluationInterface } from '../interface/base-
 import type { BaseValuationBucketUpdateInterface } from '../interface/base-valuation-bucket-update.interface';
 import type { EntryBaseValuationUpdateInterface } from '../interface/entry-base-valuation-update.interface';
 import type { MarketPricedEntryPageInterface } from '../interface/market-priced-entry-page.interface';
-import type { SQL } from 'drizzle-orm';
+import type { SQL, SQLWrapper } from 'drizzle-orm';
 import type { SelectedFields } from 'drizzle-orm/sqlite-core';
 
 export class TransactionEntryBaseValuationRepository extends Context.Service<TransactionEntryBaseValuationRepository>()(
@@ -23,7 +24,7 @@ export class TransactionEntryBaseValuationRepository extends Context.Service<Tra
     {
         make: Effect.sync(() => {
             const originalTransaction = alias(TransactionEntityTable, 'original_transaction');
-            const liveEntries = (db: Parameters<Parameters<typeof Db.query>[0]>[0]) =>
+            const liveEntries = (db: DB) =>
                 db
                     .select({
                         id: TransactionEntryEntityTable.id,
@@ -57,7 +58,7 @@ export class TransactionEntryBaseValuationRepository extends Context.Service<Tra
                     .as('live_entries');
             type LiveEntries = ReturnType<typeof liveEntries>;
             const selectLiveEntries = <Fields extends SelectedFields>(
-                db: Parameters<Parameters<typeof Db.query>[0]>[0],
+                db: DB,
                 buildFields: (live: LiveEntries) => Fields,
                 buildCondition: (live: LiveEntries) => SQL | undefined
             ) => {
@@ -65,8 +66,9 @@ export class TransactionEntryBaseValuationRepository extends Context.Service<Tra
 
                 return db.select(buildFields(live)).from(live).where(buildCondition(live));
             };
-            const buildMarketPricedCondition = (live: LiveEntries) =>
-                sql`(${live.accountType} IN (${AccountTypeEnum.CRYPTO}, ${AccountTypeEnum.CRYPTO_SYNC}) OR ${live.instrumentId} IN (SELECT id FROM instruments WHERE type = ${InstrumentTypeEnum.FUND}))`;
+            const buildMarketPricedPredicate = (accountType: SQLWrapper, instrumentId: SQLWrapper) =>
+                sql`(${accountType} IN (${AccountTypeEnum.CRYPTO}, ${AccountTypeEnum.CRYPTO_SYNC}) OR ${instrumentId} IN (SELECT id FROM instruments WHERE type = ${InstrumentTypeEnum.FUND}))`;
+            const buildMarketPricedCondition = (live: LiveEntries) => buildMarketPricedPredicate(live.accountType, live.instrumentId);
             const buildPendingCondition = (live: LiveEntries, baseInstrumentId: number) =>
                 or(isNull(live.baseInstrumentId), sql`${live.baseInstrumentId} != ${baseInstrumentId}`);
             const findBaseValuationBuckets = (buildCondition: (live: LiveEntries) => SQL | undefined) =>
@@ -113,7 +115,7 @@ export class TransactionEntryBaseValuationRepository extends Context.Service<Tra
                               AND te.deleted_at IS NULL
                               AND t.deleted_at IS NULL
                               AND a.deleted_at IS NULL
-                              AND NOT (a.type IN (${AccountTypeEnum.CRYPTO}, ${AccountTypeEnum.CRYPTO_SYNC}) OR a.instrument_id IN (SELECT id FROM instruments WHERE type = ${InstrumentTypeEnum.FUND}))
+                              AND NOT ${buildMarketPricedPredicate(sql`a.type`, sql`a.instrument_id`)}
                               AND ${condition}
                         )
                     `)
@@ -167,7 +169,7 @@ export class TransactionEntryBaseValuationRepository extends Context.Service<Tra
                             live => ({ rateDate: sql<string | null>`MIN(${live.rateDate})` }),
                             live => and(buildMarketPricedCondition(live), eq(live.instrumentId, instrumentId))
                         )
-                    ).pipe(Effect.map(([row]) => row?.rateDate ?? null)),
+                    ).pipe(Effect.map(([row]) => row.rateDate)),
                 findMarketPricedAccountIds: (accountIds: readonly number[]) =>
                     Db.query(db =>
                         db
@@ -176,7 +178,7 @@ export class TransactionEntryBaseValuationRepository extends Context.Service<Tra
                             .where(
                                 and(
                                     inArray(AccountEntityTable.id, [...accountIds]),
-                                    sql`(${AccountEntityTable.type} IN (${AccountTypeEnum.CRYPTO}, ${AccountTypeEnum.CRYPTO_SYNC}) OR ${AccountEntityTable.instrumentId} IN (SELECT id FROM instruments WHERE type = ${InstrumentTypeEnum.FUND}))`
+                                    buildMarketPricedPredicate(AccountEntityTable.type, AccountEntityTable.instrumentId)
                                 )
                             )
                     ).pipe(Effect.map(rows => rows.map(row => row.id))),
