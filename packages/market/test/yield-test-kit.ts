@@ -1,20 +1,38 @@
 import { makeTestPlatformLayer } from '@budgie-at/test-kit';
-import { InstrumentRepository, InstrumentTypeEnum } from '@budgie/contracts';
+import {
+    AccountTypeEnum,
+    InstrumentRepository,
+    InstrumentTypeEnum,
+    PRECISION,
+    TransactionTypeEnum,
+    YieldKindEnum,
+    YieldRepository
+} from '@budgie/contracts';
+import { differenceInCalendarDays } from 'date-fns/differenceInCalendarDays';
+import { parseISO } from 'date-fns/parseISO';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
+import * as TestClock from 'effect/testing/TestClock';
 
+import { formatUtcDay } from '../src/@generic/utils/format-utc-day.util';
 import { ExchangeRateRepository } from '../src/exchange-rate/repository/exchange-rate.repository';
 import { InstrumentDailyMarketPriceRepository } from '../src/market-data/repository/instrument-daily-market-price.repository';
 import { EntryBaseValuationService } from '../src/valuation/service/entry-base-valuation.service';
+import { YieldRangeEnum } from '../src/yield/enum/yield-range.enum';
 import { YieldPriceService } from '../src/yield/service/yield-price.service';
+import { YieldService } from '../src/yield/service/yield.service';
 
 import { testDb } from './test-context';
 
+import type { YieldQueryKeyInterface } from '../src/yield/interface/yield-query-key.interface';
 import type {
     ExchangeRateEntityTable,
     HistoricalExchangeRateEntityInterface,
     InstrumentDailyMarketPriceEntityInterface,
-    InstrumentEntityInterface
+    InstrumentEntityInterface,
+    YieldFactRowInterface,
+    YieldPositionMovementRowInterface,
+    YieldPositionRowInterface
 } from '@budgie/contracts';
 
 type ExchangeRateEntityInterface = typeof ExchangeRateEntityTable.$inferSelect;
@@ -24,10 +42,22 @@ export const USD_ID = 2;
 export const UAH_ID = 33;
 export const ETH_ID = 35;
 export const USDT_ID = 36;
+export const SOL_ID = 40;
 export const FUND_ID = 900;
+export const ETH_ACCOUNT_ID = 10;
+export const SOL_ACCOUNT_ID = 11;
+export const FUND_ACCOUNT_ID = 20;
+export const DEPOSIT_ACCOUNT_ID = 30;
 const NOW = new Date('2026-11-13T12:00:00.000Z');
+const TODAY = new Date(2026, 10, 13, 12, 0, 0);
+const MS_PER_DAY = 86_400_000;
+const ETH_REWARD_DAYS = ['2026-02-01', '2026-05-01', '2026-08-01', '2026-11-01'];
+let nextTransactionId = 1;
 
 export interface YieldWorldInterface {
+    readonly facts?: readonly YieldFactRowInterface[];
+    readonly positions?: readonly YieldPositionRowInterface[];
+    readonly movements?: readonly YieldPositionMovementRowInterface[];
     readonly prices?: readonly InstrumentDailyMarketPriceEntityInterface[];
     readonly historicalRates?: readonly Pick<
         HistoricalExchangeRateEntityInterface,
@@ -142,3 +172,170 @@ export const makeYieldPriceLayer = (world: YieldWorldInterface) =>
         ]),
         Layer.provideMerge(makeTestPlatformLayer(testDb))
     );
+
+export const priceRange = (
+    instrumentId: number,
+    quoteInstrumentId: number,
+    range: readonly [string, string],
+    price: number,
+    stepDays = 1
+): InstrumentDailyMarketPriceEntityInterface[] =>
+    dailyPrices(
+        instrumentId,
+        quoteInstrumentId,
+        Array.from({ length: Math.floor(differenceInCalendarDays(parseISO(range[1]), parseISO(range[0])) / stepDays) + 1 }, (_, index) =>
+            formatUtcDay(new Date(Date.parse(`${range[0]}T00:00:00.000Z`) + index * stepDays * MS_PER_DAY))
+        ),
+        price
+    );
+
+export const at = (day: string) => new Date(`${day}T12:00:00`);
+
+const fact = (day: string, overrides: Partial<YieldFactRowInterface> = {}): YieldFactRowInterface => {
+    nextTransactionId += 1;
+
+    return {
+        transactionId: nextTransactionId,
+        transactionType: TransactionTypeEnum.INCOME,
+        yieldKind: YieldKindEnum.STAKING,
+        operatedAt: at(day),
+        amount: PRECISION,
+        baseValue: PRECISION,
+        isEstimated: false,
+        landingAccountId: ETH_ACCOUNT_ID,
+        landingInstrumentId: ETH_ID,
+        landingInstrumentCode: 'ETH',
+        landingInstrumentType: InstrumentTypeEnum.CRYPTO,
+        positionAccountId: ETH_ACCOUNT_ID,
+        ...overrides
+    };
+};
+
+export const valued = (day: string, units: number, value: number, overrides: Partial<YieldFactRowInterface> = {}) =>
+    fact(day, { amount: Math.round(units * PRECISION), baseValue: Math.round(value * PRECISION), ...overrides });
+
+export const tax = (day: string, value: number, positionAccountId: number | null = ETH_ACCOUNT_ID) =>
+    valued(day, value, value, { transactionType: TransactionTypeEnum.EXPENSE, yieldKind: YieldKindEnum.TAX, positionAccountId });
+
+export const position = (overrides: Partial<YieldPositionRowInterface> = {}): YieldPositionRowInterface => ({
+    id: ETH_ACCOUNT_ID,
+    title: 'ETH · Binance',
+    type: AccountTypeEnum.CRYPTO_SYNC,
+    isActive: true,
+    deletedAt: null,
+    interestRate: null,
+    deadline: null,
+    instrumentId: ETH_ID,
+    instrumentCode: 'ETH',
+    instrumentSymbol: 'ETH',
+    instrumentType: InstrumentTypeEnum.CRYPTO,
+    ...overrides
+});
+
+export const deposit = (overrides: Partial<YieldPositionRowInterface> = {}) =>
+    position({
+        id: DEPOSIT_ACCOUNT_ID,
+        title: 'Term deposit',
+        type: AccountTypeEnum.DEPOSIT,
+        instrumentId: BASE_ID,
+        instrumentCode: 'USD',
+        instrumentSymbol: '$',
+        instrumentType: InstrumentTypeEnum.FIAT,
+        ...overrides
+    });
+
+export const interest = (day: string, value: number, overrides: Partial<YieldFactRowInterface> = {}) =>
+    valued(day, value, value, {
+        yieldKind: YieldKindEnum.INTEREST,
+        landingAccountId: DEPOSIT_ACCOUNT_ID,
+        landingInstrumentId: BASE_ID,
+        landingInstrumentCode: 'USD',
+        landingInstrumentType: InstrumentTypeEnum.FIAT,
+        positionAccountId: DEPOSIT_ACCOUNT_ID,
+        ...overrides
+    });
+
+export const movement = (accountId: number, day: string, units: number): YieldPositionMovementRowInterface => ({
+    accountId,
+    operatedAt: at(day),
+    amount: Math.round(units * PRECISION)
+});
+
+const makeYieldRepositoryLayer = (world: YieldWorldInterface) =>
+    Layer.mock(YieldRepository)({
+        findFacts: () => Effect.succeed([...(world.facts ?? [])]),
+        findPositions: () => Effect.succeed([...(world.positions ?? [])]),
+        findPositionMovements: accountIds => Effect.succeed((world.movements ?? []).filter(row => accountIds.includes(row.accountId))),
+        findPayouts: () => Effect.succeed([])
+    });
+
+const key = (overrides: Partial<YieldQueryKeyInterface> = {}): YieldQueryKeyInterface => ({
+    range: YieldRangeEnum.YEAR,
+    positionAccountId: null,
+    instrumentId: null,
+    group: null,
+    baseInstrumentId: BASE_ID,
+    ...overrides
+});
+
+const makeYieldLayer = (world: YieldWorldInterface) =>
+    Layer.effect(YieldService, YieldService.make).pipe(
+        Layer.provide(makeYieldRepositoryLayer(world)),
+        Layer.provideMerge(makeYieldPriceLayer(world))
+    );
+
+export const summarize = (world: YieldWorldInterface, overrides: Partial<YieldQueryKeyInterface> = {}) =>
+    Effect.gen(function* () {
+        yield* TestClock.setTime(TODAY.getTime());
+
+        return yield* (yield* YieldService).summarize(key(overrides));
+    }).pipe(Effect.provide(makeYieldLayer(world)));
+
+export const earnedBetween = (world: YieldWorldInterface, fromDay: string, toDay: string) =>
+    Effect.flatMap(YieldService, service => service.earnedBetween(fromDay, toDay, BASE_ID)).pipe(Effect.provide(makeYieldLayer(world)));
+
+export const mergeWorlds = (...worlds: readonly YieldWorldInterface[]): YieldWorldInterface => ({
+    facts: worlds.flatMap(world => world.facts ?? []),
+    positions: worlds.flatMap(world => world.positions ?? []),
+    movements: worlds.flatMap(world => world.movements ?? []),
+    prices: worlds.flatMap(world => world.prices ?? []),
+    historicalRates: worlds.flatMap(world => world.historicalRates ?? []),
+    latestRates: worlds.flatMap(world => world.latestRates ?? [])
+});
+
+export const ethStakingWorld: YieldWorldInterface = {
+    positions: [position()],
+    movements: [movement(ETH_ACCOUNT_ID, '2025-01-01', 10), ...ETH_REWARD_DAYS.map(day => movement(ETH_ACCOUNT_ID, day, 0.1))],
+    facts: ETH_REWARD_DAYS.map(day => valued(day, 0.1, 200)),
+    prices: priceRange(ETH_ID, BASE_ID, ['2025-10-01', '2026-11-13'], 2000),
+    latestRates: [latestRate(ETH_ID, BASE_ID, 2000)]
+};
+
+export const ETH_AVERAGE_UNITS = 3710.1 / 365;
+export const ETH_RATE = 0.4 / ETH_AVERAGE_UNITS;
+
+export const lumpyDepositWorld = (interestRate: number | null): YieldWorldInterface => ({
+    positions: [deposit({ interestRate })],
+    movements: [
+        movement(DEPOSIT_ACCOUNT_ID, '2026-05-01', 1000),
+        movement(DEPOSIT_ACCOUNT_ID, '2026-08-01', 10),
+        movement(DEPOSIT_ACCOUNT_ID, '2026-11-01', 12)
+    ],
+    facts: [interest('2026-08-01', 10), interest('2026-11-01', 12)]
+});
+
+export const LUMPY_RATE = (12 / (93942 / 93)) * (365 / 92);
+
+export const solPosition = position({
+    id: SOL_ACCOUNT_ID,
+    title: 'SOL',
+    instrumentId: SOL_ID,
+    instrumentCode: 'SOL',
+    instrumentSymbol: 'SOL'
+});
+
+export const solHolding = (units: number): YieldWorldInterface => ({
+    positions: [solPosition],
+    movements: [movement(SOL_ACCOUNT_ID, '2025-01-01', units)],
+    prices: priceRange(SOL_ID, BASE_ID, ['2025-10-01', '2026-11-13'], 100)
+});
