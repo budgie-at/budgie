@@ -125,10 +125,17 @@ export class TransactionYieldRepository extends Context.Service<TransactionYield
                 areAccountsInSameZone: (firstAccountId: number, secondAccountId: number) =>
                     Db.query(db =>
                         db
-                            .select({ zoneCount: sql<number>`COUNT(DISTINCT ${AccountEntityTable.syncZone})`.mapWith(Number) })
+                            .select({
+                                accountCount: sql<number>`COUNT(*)`.mapWith(Number),
+                                zoneCount: sql<number>`COUNT(DISTINCT ${AccountEntityTable.syncZone})`.mapWith(Number)
+                            })
                             .from(AccountEntityTable)
-                            .where(inArray(AccountEntityTable.id, [firstAccountId, secondAccountId]))
-                    ).pipe(Effect.map(([row]) => row.zoneCount === 1)),
+                            .where(
+                                and(inArray(AccountEntityTable.id, [firstAccountId, secondAccountId]), isNull(AccountEntityTable.deletedAt))
+                            )
+                    ).pipe(
+                        Effect.map(([row]) => row.accountCount === new Set([firstAccountId, secondAccountId]).size && row.zoneCount === 1)
+                    ),
                 refineImportedYieldKind: (transactionId: number, yieldKind: YieldKindEnum) =>
                     Db.query(db =>
                         db

@@ -57,19 +57,25 @@ const readYield = (id: number) =>
         }))
     );
 
+const seedIncomeWithDeposit = Effect.gen(function* () {
+    const testSeedService = yield* seed;
+    const bank = yield* testSeedService.account({ type: AccountTypeEnum.BANK });
+    const deposit = yield* testSeedService.account({ type: AccountTypeEnum.DEPOSIT });
+    const income = yield* testSeedService.manualExpense({
+        accountId: bank.id,
+        amount: AMOUNT,
+        operatedAt: OPERATED_AT,
+        type: TransactionTypeEnum.INCOME
+    });
+
+    return { bank, deposit, income };
+});
+
 describe('TransactionService.updateById yield fields', () => {
     it.effect('stores a kind and a same-zone source set by the user', () =>
         Effect.gen(function* () {
-            const testSeedService = yield* seed;
             const transactionService = yield* TransactionService;
-            const bank = yield* testSeedService.account({ type: AccountTypeEnum.BANK });
-            const deposit = yield* testSeedService.account({ type: AccountTypeEnum.DEPOSIT });
-            const income = yield* testSeedService.manualExpense({
-                accountId: bank.id,
-                amount: AMOUNT,
-                operatedAt: OPERATED_AT,
-                type: TransactionTypeEnum.INCOME
-            });
+            const { bank, deposit, income } = yield* seedIncomeWithDeposit;
 
             yield* transactionService.updateById(
                 income.id,
@@ -82,16 +88,8 @@ describe('TransactionService.updateById yield fields', () => {
 
     it.effect('keeps the stored yield fields when the edit does not mention them', () =>
         Effect.gen(function* () {
-            const testSeedService = yield* seed;
             const transactionService = yield* TransactionService;
-            const bank = yield* testSeedService.account({ type: AccountTypeEnum.BANK });
-            const deposit = yield* testSeedService.account({ type: AccountTypeEnum.DEPOSIT });
-            const income = yield* testSeedService.manualExpense({
-                accountId: bank.id,
-                amount: AMOUNT,
-                operatedAt: OPERATED_AT,
-                type: TransactionTypeEnum.INCOME
-            });
+            const { bank, deposit, income } = yield* seedIncomeWithDeposit;
 
             yield* transactionService.updateById(
                 income.id,
@@ -126,6 +124,25 @@ describe('TransactionService.updateById yield fields', () => {
                 incomeUpdate(sharedBank.id, { yieldKind: YieldKindEnum.INTEREST, yieldSourceAccountId: sharedDeposit.id })
             );
             yield* transactionService.updateById(income.id, incomeUpdate(personalBank.id, {}));
+
+            expect(yield* readYield(income.id)).toEqual({ yieldKind: YieldKindEnum.INTEREST, yieldSourceAccountId: null });
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect.each(['missing', 'archived'])('nulls a source account that is %s', state =>
+        Effect.gen(function* () {
+            const transactionService = yield* TransactionService;
+            const accountRepository = yield* AccountRepository;
+            const { bank, deposit, income } = yield* seedIncomeWithDeposit;
+
+            yield* accountRepository.archiveById(deposit.id);
+            yield* transactionService.updateById(
+                income.id,
+                incomeUpdate(bank.id, {
+                    yieldKind: YieldKindEnum.INTEREST,
+                    yieldSourceAccountId: state === 'missing' ? deposit.id + 1000 : deposit.id
+                })
+            );
 
             expect(yield* readYield(income.id)).toEqual({ yieldKind: YieldKindEnum.INTEREST, yieldSourceAccountId: null });
         }).pipe(Effect.provide(TestLayer))

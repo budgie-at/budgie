@@ -2,6 +2,8 @@ import {
     AccountTypeEnum,
     ExternalSourceEnum,
     HOUSEHOLD_SYNC_ZONE,
+    PERSONAL_SYNC_ZONE,
+    SyncZoneRoleEnum,
     TransactionTypeEnum,
     TransactionYieldRepository,
     YieldKindEnum
@@ -19,7 +21,15 @@ import {
     pullDevice,
     pushDevice,
     refreshAllBalances,
+    expectNoRejections,
+    pullHousehold,
+    pullZones,
+    queryRows,
     resetTestDb,
+    shareAndUpload,
+    shareDevices,
+    startHousehold,
+    uploadDevice,
     testDb,
     TestSeedService
 } from '../../harness';
@@ -43,10 +53,8 @@ const onRepository = <A, E>(effect: (repository: TransactionYieldRepository['Ser
         Effect.provideService(Db, testDb)
     );
 
-const seedYieldIncome = (deviceB: DB, cloud: FakeCloudTransport, yieldKind: YieldKindEnum | null) =>
+const seedYieldLedger = (yieldKind: YieldKindEnum | null) =>
     Effect.gen(function* () {
-        yield* resetTestDb(deviceB);
-
         const seed = new TestSeedService(testDb);
         const bank = yield* seed.account({ title: 'Bank' });
         const deposit = yield* seed.account({ title: 'Deposit', type: AccountTypeEnum.DEPOSIT });
@@ -67,26 +75,37 @@ const seedYieldIncome = (deviceB: DB, cloud: FakeCloudTransport, yieldKind: Yiel
             income.id
         ]);
         yield* refreshAllBalances(testDb);
-        yield* pushDevice(testDb, cloud);
-        yield* pullDevice(deviceB, cloud, DEVICE_B);
-        yield* pullDevice(testDb, cloud, DEVICE_A);
 
         return { bank, deposit, income };
     });
 
-const deliverNullSourceFromB = <E>(prepareLocal: Effect.Effect<unknown, E>) =>
+const seedYieldIncome = (deviceB: DB, cloud: FakeCloudTransport, yieldKind: YieldKindEnum | null) =>
+    Effect.gen(function* () {
+        yield* resetTestDb(deviceB);
+
+        const seeded = yield* seedYieldLedger(yieldKind);
+
+        yield* pushDevice(testDb, cloud);
+        yield* pullDevice(deviceB, cloud, DEVICE_B);
+        yield* pullDevice(testDb, cloud, DEVICE_A);
+
+        return seeded;
+    });
+
+const deliverEditFromB = <E>(prepareLocal: Effect.Effect<unknown, E>, assignment: string) =>
     Effect.gen(function* () {
         const deviceB = yield* Db;
         const cloud = new FakeCloudTransport();
 
         yield* seedYieldIncome(deviceB, cloud, YieldKindEnum.DIVIDEND);
         yield* prepareLocal;
-        yield* deviceB.$client.unsafe(`UPDATE transactions SET yield_source_account_id = NULL, title = 'Edited on B' WHERE comment = ?`, [
-            KEY
-        ]);
+        yield* deviceB.$client.unsafe(`UPDATE transactions SET ${assignment}, title = 'Edited on B' WHERE comment = ?`, [KEY]);
         yield* pushDevice(deviceB, cloud);
         yield* pullDevice(testDb, cloud, DEVICE_A);
     });
+
+const deliverNullSourceFromB = <E>(prepareLocal: Effect.Effect<unknown, E>) =>
+    deliverEditFromB(prepareLocal, 'yield_source_account_id = NULL');
 
 describe('cloud-sync/yield-apply', () => {
     it.layer(makeTestDbLayer(null), { excludeTestServices: true })('two devices', it => {
@@ -175,6 +194,71 @@ describe('cloud-sync/yield-apply', () => {
                 );
 
                 expect(yield* yieldOf(testDb)).toMatchObject({ yieldKind: YieldKindEnum.DIVIDEND, sourceTitle: null });
+            })
+        );
+
+        it.effect('keeps a same-zone source when the local parent has no entries', () =>
+            Effect.gen(function* () {
+                yield* deliverNullSourceFromB(
+                    testDb.$client
+                        .unsafe(`DELETE FROM transaction_entries WHERE transaction_id IN (SELECT id FROM transactions WHERE comment = ?)`, [
+                            KEY
+                        ])
+                        .pipe(
+                            Effect.andThen(() => refreshAllBalances(testDb)),
+                            Effect.andThen(() => testDb.$client.unsafe(`DELETE FROM sync_outbox`))
+                        )
+                );
+
+                expect(yield* yieldOf(testDb)).toMatchObject({ yieldKind: YieldKindEnum.DIVIDEND, sourceTitle: 'Deposit' });
+            })
+        );
+
+        it.effect('nulls an incoming source that lives in another zone', () =>
+            Effect.gen(function* () {
+                yield* deliverEditFromB(
+                    testDb.$client.unsafe(`UPDATE accounts SET sync_zone = ? WHERE title = 'Deposit'`, [HOUSEHOLD_SYNC_ZONE]),
+                    'comment = comment'
+                );
+
+                expect(yield* yieldOf(testDb)).toMatchObject({ yieldKind: YieldKindEnum.DIVIDEND, sourceTitle: null });
+            })
+        );
+
+        it.effect('sets the source after the unit is held until the source account arrives', () =>
+            Effect.gen(function* () {
+                const deviceB = yield* Db;
+                const cloud = new FakeCloudTransport();
+
+                yield* seedYieldIncome(deviceB, cloud, YieldKindEnum.DIVIDEND);
+                yield* resetTestDb(deviceB);
+
+                const results = yield* pullDevice(deviceB, cloud, 'device-c', { order: 'reverse', chunkSize: 1 });
+
+                expect(results.some(result => result.heldBack > 0)).toBe(true);
+                expect(results[results.length - 1].heldBack).toBe(0);
+                expect(yield* yieldOf(deviceB)).toMatchObject({ yieldKind: YieldKindEnum.DIVIDEND, sourceTitle: 'Deposit' });
+            })
+        );
+    });
+
+    shareDevices('owner second device', it => {
+        it.effect('nulls the local source of a transaction that the owner moved to the household zone', () =>
+            Effect.gen(function* () {
+                const { deviceB, clouds } = yield* startHousehold(SyncZoneRoleEnum.OWNER);
+                const { bank } = yield* seedYieldLedger(YieldKindEnum.DIVIDEND);
+
+                yield* uploadDevice(testDb, clouds);
+                yield* pullZones(deviceB, clouds.personal, 'owner-b', [PERSONAL_SYNC_ZONE]);
+                yield* shareAndUpload(testDb, clouds, bank.id);
+                expectNoRejections(yield* pullHousehold(deviceB, clouds, 'owner-b-household'));
+
+                expect(
+                    yield* queryRows(
+                        deviceB,
+                        `SELECT sync_zone AS zone, yield_kind AS yieldKind, yield_source_account_id AS source FROM transactions`
+                    )
+                ).toEqual([{ zone: HOUSEHOLD_SYNC_ZONE, yieldKind: YieldKindEnum.DIVIDEND, source: null }]);
             })
         );
     });
