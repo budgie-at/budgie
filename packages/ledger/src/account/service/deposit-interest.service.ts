@@ -133,7 +133,7 @@ export class DepositInterestService extends Context.Service<DepositInterestServi
             ),
             recordCloseDelta: Effect.fn('DepositInterestService.recordCloseDelta')(
                 function* (depositAccountId: number, amountReceived: number) {
-                    if (amountReceived < 0) {
+                    if (!Number.isFinite(amountReceived) || amountReceived < 0) {
                         return yield* DepositCloseAmountInvalidError.make();
                     }
 

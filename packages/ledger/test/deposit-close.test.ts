@@ -132,10 +132,10 @@ describe('deposit close', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('rejects a negative amount received', () =>
+    it.effect.each([-1, Number.NaN, Number.POSITIVE_INFINITY])('rejects an invalid amount received (%s)', amountReceived =>
         Effect.gen(function* () {
             const { deposit, destination } = yield* seedDeposit({ interestRate: 10, principalDaysAgo: 90 });
-            const error = yield* Effect.flip(close(deposit.id, destination.id, -1));
+            const error = yield* Effect.flip(close(deposit.id, destination.id, amountReceived));
 
             expect(error._tag).toBe('DepositCloseAmountInvalidError');
             expect(yield* ledgerBalanceOf(deposit.id)).toBe(convertToMicroUnits(PRINCIPAL));
@@ -188,6 +188,23 @@ describe('deposit close', () => {
             yield* seedBankInterest(bank.id, deposit.id, daysAgo(30));
 
             expect((yield* prefillOf(deposit.id)).amountReceived).toBeCloseTo(PRINCIPAL + 98.63, 1);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('never relinks a NONE row or a row that already has a source', () =>
+        Effect.gen(function* () {
+            const { bank, deposit } = yield* seedDeposit({ interestRate: 12, principalDaysAgo: 73 });
+            const other = yield* (yield* seed).account({ type: AccountTypeEnum.DEPOSIT, title: 'Other', instrumentId: 1 });
+            const transactionRepository = yield* TransactionRepository;
+            const sourced = yield* seedBankInterest(bank.id, other.id, daysAgo(20));
+            const none = yield* seedBankInterest(bank.id, null, daysAgo(10));
+
+            yield* transactionRepository.updateById(none.id, { yieldKind: YieldKindEnum.NONE, yieldSourceAccountId: null });
+            yield* Effect.flatMap(DepositInterestService, service => service.linkInterestPayouts(deposit.id));
+
+            expect((yield* transactionRepository.getByIdRaw(sourced.id))?.yieldSourceAccountId).toBe(other.id);
+            expect((yield* transactionRepository.getByIdRaw(none.id))?.yieldSourceAccountId).toBeNull();
+            expect((yield* transactionRepository.getByIdRaw(none.id))?.yieldKind).toBe(YieldKindEnum.NONE);
         }).pipe(Effect.provide(TestLayer))
     );
 

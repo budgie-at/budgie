@@ -5,7 +5,7 @@ import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined, isEmptyArray } from '@rnw-community/shared';
+import { isDefined, isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
 
 import { transactionFilters } from '../../@generic/repository/base-transaction-filter.repository';
 import { Db } from '../../@generic/service/db.service';
@@ -66,12 +66,12 @@ export class TransactionYieldRepository extends Context.Service<TransactionYield
                     depositAccountId: number
                 ) {
                     const isInterest = sql`(${TransactionEntityTable.type} = ${TransactionTypeEnum.INCOME} AND ${TransactionEntityTable.yieldKind} = ${YieldKindEnum.INTEREST})`;
-                    const [row] = yield* Db.query(db =>
+                    const [onDeposit] = yield* Db.query(db =>
                         db
                             .select({
                                 lastBalanceEventAt: sql<
                                     number | null
-                                >`MAX(CASE WHEN ${TransactionEntryEntityTable.accountId} = ${depositAccountId} AND (${TransactionEntityTable.type} IN (${TransactionTypeEnum.ADJUSTMENT}, ${TransactionTypeEnum.TRANSFER}) OR ${isInterest}) THEN ${TransactionEntityTable.operatedAt} END)`,
+                                >`MAX(CASE WHEN ${TransactionEntityTable.type} IN (${TransactionTypeEnum.ADJUSTMENT}, ${TransactionTypeEnum.TRANSFER}) OR ${isInterest} THEN ${TransactionEntityTable.operatedAt} END)`,
                                 firstPrincipalAt: sql<
                                     number | null
                                 >`MIN(CASE WHEN ${TransactionEntityTable.type} = ${TransactionTypeEnum.TRANSFER} AND ${TransactionEntityTable.toAccountId} = ${depositAccountId} THEN ${TransactionEntityTable.operatedAt} END)`,
@@ -85,20 +85,34 @@ export class TransactionYieldRepository extends Context.Service<TransactionYield
                                 and(
                                     transactionFilters.buildVisibleTransactionCondition(),
                                     transactionFilters.buildLedgerEntryCondition(),
-                                    or(
-                                        eq(TransactionEntryEntityTable.accountId, depositAccountId),
-                                        eq(TransactionEntityTable.yieldSourceAccountId, depositAccountId)
-                                    )
+                                    eq(TransactionEntryEntityTable.accountId, depositAccountId)
+                                )
+                            )
+                    );
+                    const [attributed] = yield* Db.query(db =>
+                        db
+                            .select({
+                                lastInterestAt: sql<
+                                    number | null
+                                >`MAX(CASE WHEN ${isInterest} THEN ${TransactionEntityTable.operatedAt} END)`
+                            })
+                            .from(TransactionEntityTable)
+                            .where(
+                                and(
+                                    transactionFilters.buildVisibleTransactionCondition(),
+                                    eq(TransactionEntityTable.yieldSourceAccountId, depositAccountId),
+                                    sql`EXISTS (SELECT 1 FROM ${TransactionEntryEntityTable} WHERE ${TransactionEntryEntityTable.transactionId} = ${TransactionEntityTable.id} AND ${TransactionEntryEntityTable.originalTransactionId} IS NULL AND ${TransactionEntryEntityTable.deletedAt} IS NULL)`
                                 )
                             )
                     );
                     const toDate = (seconds: number | null | undefined) =>
                         isDefined(seconds) ? DateTime.toDateUtc(DateTime.makeUnsafe(seconds * 1000)) : null;
+                    const lastInterestSeconds = [onDeposit.lastInterestAt, attributed.lastInterestAt].filter(isDefined);
 
                     return {
-                        lastBalanceEventAt: toDate(row.lastBalanceEventAt),
-                        firstPrincipalAt: toDate(row.firstPrincipalAt),
-                        lastInterestAt: toDate(row.lastInterestAt)
+                        lastBalanceEventAt: toDate(onDeposit.lastBalanceEventAt),
+                        firstPrincipalAt: toDate(onDeposit.firstPrincipalAt),
+                        lastInterestAt: toDate(isNotEmptyArray(lastInterestSeconds) ? Math.max(...lastInterestSeconds) : null)
                     };
                 }),
                 findUnassignedInterestIds: (depositAccountId: number, since: Date) => {
