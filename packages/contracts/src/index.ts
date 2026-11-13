@@ -324,6 +324,9 @@ export { SettingsRepository } from './settings/repository/settings.repository';
 
 export { StatisticsRepository } from './statistics/repository/statistics.repository';
 export { InvestmentReturnRepository } from './investment-return/repository/investment-return.repository';
+export { YieldRepository } from './yield/repository/yield.repository';
+export type { YieldScopeInterface } from './yield/interface/yield-scope.interface';
+export type { YieldFactRowInterface } from './yield/interface/yield-fact-row.interface';
 export type { LedgerMovementInterface } from './investment-return/interface/ledger-movement.interface';
 
 export type { StatisticsFilterInterface } from './statistics/interface/statistics-filter.interface';
