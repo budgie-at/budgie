@@ -32,7 +32,7 @@ export default function Categories() {
     useCreateAction({
         icon: UserIconNameEnum.Folder,
         label: t`Category`,
-        variant: 'primary',
+        variant: 'cyan',
         onPress: () => void openCategoryForm()
     });
 

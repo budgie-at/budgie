@@ -21,6 +21,7 @@ const iconPalette: Record<ColorPaletteVariant, ClassValue> = {
     ...BACKGROUND_COLOR_PALETTE,
     default: 'bg-default-foreground/20',
     primary: 'bg-primary/10',
+    cyan: 'bg-cyan-foreground/20',
     secondary: 'bg-secondary-foreground/15',
     positive: 'bg-positive-foreground/20',
     warning: 'bg-warning-foreground/20',

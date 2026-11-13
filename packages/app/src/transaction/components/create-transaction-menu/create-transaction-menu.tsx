@@ -122,14 +122,13 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
             accessibilityElementsHidden={!isOpen}
             importantForAccessibility={accessibilityVisibility}
         >
-            <Animated.View
-                className="absolute inset-x-0 bottom-0 h-[360px] bg-linear-to-b from-black/0 via-black/75 to-black/90"
-                style={scrimStyle}
-                pointerEvents="none"
-            />
-
             <View className="absolute inset-x-0 bottom-0 gap-xl px-lg pb-safe" pointerEvents="box-none">
-                <CreateMenuReveal progress={progress} order={3} className="flex-row gap-md">
+                <Animated.View className="absolute inset-x-0 -top-[80px] bottom-0" style={scrimStyle} pointerEvents="none">
+                    <View className="h-[56px] bg-linear-to-b from-black/0 to-black/90" />
+                    <View className="flex-1 bg-black/90" />
+                </Animated.View>
+
+                <CreateMenuReveal progress={progress} order={3} className="flex-row gap-xl">
                     <CreateMenuChip
                         icon={UserIconNameEnum.Repeat}
                         label={t`Recurring`}
