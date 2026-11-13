@@ -20,7 +20,6 @@ import { TransactionTypeEnum } from '../../transaction/enum/transaction-type.enu
 import { YieldKindEnum } from '../../transaction/enum/yield-kind.enum';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 
-import type { YieldFactRowInterface } from '../interface/yield-fact-row.interface';
 import type { YieldPayoutQueryInterface } from '../interface/yield-payout-query.interface';
 import type { YieldPositionMovementRowInterface } from '../interface/yield-position-movement-row.interface';
 import type { YieldScopeInterface } from '../interface/yield-scope.interface';
@@ -42,14 +41,15 @@ export class YieldRepository extends Context.Service<YieldRepository>()('@budgie
         END`;
         const scopeInstrumentIdSql = sql<number>`COALESCE(${yieldSourceAccount.instrumentId}, ${AccountEntityTable.instrumentId})`;
 
-        const buildEstimatedSql = (baseInstrumentId: number) => sql<number>`CASE
+        const buildEstimatedSql = (baseInstrumentId: number) =>
+            sql<boolean>`CASE
             WHEN (${inArray(AccountEntityTable.type, CRYPTO_ACCOUNT_TYPES)} OR ${eq(InstrumentEntityTable.type, InstrumentTypeEnum.FUND)})
              AND (${TransactionEntryEntityTable.baseInstrumentId} IS NULL
                   OR ${TransactionEntryEntityTable.baseInstrumentId} != ${baseInstrumentId}
                   OR ${TransactionEntryEntityTable.baseExchangeRate} IS NULL)
             THEN 1
             ELSE 0
-        END`;
+        END`.mapWith(isPositiveNumber);
 
         const buildYieldKindCondition = () =>
             and(isNotNull(TransactionEntityTable.yieldKind), ne(TransactionEntityTable.yieldKind, YieldKindEnum.NONE));
@@ -119,7 +119,7 @@ export class YieldRepository extends Context.Service<YieldRepository>()('@budgie
                                 operatedAt: TransactionEntityTable.operatedAt,
                                 amount: TransactionEntryEntityTable.amount,
                                 baseValue: sql<number>`COALESCE(${buildEntryBaseValueSql(baseInstrumentId)}, 0)`,
-                                estimated: buildEstimatedSql(baseInstrumentId),
+                                isEstimated: buildEstimatedSql(baseInstrumentId),
                                 landingAccountId: AccountEntityTable.id,
                                 landingInstrumentId: AccountEntityTable.instrumentId,
                                 landingInstrumentCode: InstrumentEntityTable.code,
@@ -131,14 +131,8 @@ export class YieldRepository extends Context.Service<YieldRepository>()('@budgie
                     )
                         .where(buildYieldFactWhere(scope))
                         .orderBy(asc(TransactionEntityTable.operatedAt), asc(TransactionEntityTable.id))
-                ).pipe(
-                    Effect.map(rows =>
-                        rows.map(({ estimated, ...row }): YieldFactRowInterface => ({
-                            ...row,
-                            isEstimated: isPositiveNumber(estimated)
-                        }))
-                    )
                 ),
+
             findPositions: (attributedAccountIds: readonly number[], ratedScope: YieldScopeInterface) =>
                 Db.query(db =>
                     db
