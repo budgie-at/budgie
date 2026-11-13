@@ -4,6 +4,7 @@ import * as Effect from 'effect/Effect';
 import * as HttpClient from 'effect/http/HttpClient';
 import * as HttpClientResponse from 'effect/http/HttpClientResponse';
 import * as Layer from 'effect/Layer';
+import * as Schema from 'effect/Schema';
 import { beforeEach } from 'vitest';
 
 import { isDefined } from '@rnw-community/shared';
@@ -22,13 +23,22 @@ beforeEach(() => Effect.runPromise(resetTestDb(testDb)));
 
 export const setDefaultInstrument = (defaultInstrumentId: number) => testDb.update(SettingsEntityTable).set({ defaultInstrumentId });
 
-export const makeRoutedFakeHttpClientLayer = (resolveBody: (url: URL) => unknown) =>
+const encodeJson = Schema.encodeSync(Schema.fromJsonString(Schema.Unknown));
+
+export const makeStatusHttpClientLayer = (respond: (url: URL) => { readonly status: number; readonly body: unknown }) =>
     Layer.succeed(
         HttpClient.HttpClient,
         HttpClient.make((request, url) =>
-            Effect.succeed(HttpClientResponse.fromWeb(request, new Response(JSON.stringify(resolveBody(url)), { status: 200 })))
+            Effect.sync(() => {
+                const { status, body } = respond(url);
+
+                return HttpClientResponse.fromWeb(request, new Response(encodeJson(body), { status }));
+            })
         )
     );
+
+export const makeRoutedFakeHttpClientLayer = (resolveBody: (url: URL) => unknown) =>
+    makeStatusHttpClientLayer(url => ({ status: 200, body: resolveBody(url) }));
 
 export const makeFakeHttpClientLayer = (body: unknown) => makeRoutedFakeHttpClientLayer(() => body);
 
