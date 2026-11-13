@@ -156,6 +156,7 @@ export const RootLayoutContent = () => {
                                                                     <Stack.Screen name="(main)/inzhur/purchase" />
                                                                     <Stack.Screen name="(main)/account/[id]/update" />
                                                                     <Stack.Screen name="(main)/currency/[id]" />
+                                                                    <Stack.Screen name="(main)/passive-income" />
                                                                     <Stack.Screen name="(main)/create-transaction/expense" />
                                                                     <Stack.Screen name="(main)/create-transaction/income" />
                                                                     <Stack.Screen name="(main)/create-transaction/transfer" />
@@ -199,6 +200,10 @@ export const RootLayoutContent = () => {
                                                                     <Stack.Screen name="voice-review" options={MORPHING_SHEET_OPTIONS} />
                                                                     <Stack.Screen
                                                                         name="budget-safe-to-spend"
+                                                                        options={MORPHING_SHEET_OPTIONS}
+                                                                    />
+                                                                    <Stack.Screen
+                                                                        name="passive-income-info"
                                                                         options={MORPHING_SHEET_OPTIONS}
                                                                     />
                                                                     <Stack.Screen

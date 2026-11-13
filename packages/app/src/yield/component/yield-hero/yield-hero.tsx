@@ -19,6 +19,7 @@ import { useYieldHeroSentence } from '../../hook/use-yield-hero-sentence.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 import { buildYieldRunningTotal } from '../../utils/build-yield-running-total.util';
 import { YieldHeroCaption } from '../yield-hero-caption/yield-hero-caption';
+import { YieldHeroInfoButton } from '../yield-hero-info-button/yield-hero-info-button';
 import { YieldHeroLine } from '../yield-hero-line/yield-hero-line';
 
 export const YieldHero = () => {
@@ -38,7 +39,10 @@ export const YieldHero = () => {
 
     return (
         <View className="gap-y-xs" accessible accessibilityLabel={sentence}>
-            {isDefined(summary) ? <YieldHeroCaption summary={summary} bucket={bucket} /> : <View className="min-h-[18px]" />}
+            <View className="min-h-[18px] flex-row items-center justify-between gap-x-xs">
+                <View className="flex-1">{isDefined(summary) ? <YieldHeroCaption summary={summary} bucket={bucket} /> : null}</View>
+                <YieldHeroInfoButton />
+            </View>
 
             <LoadingContent isLoading={!isDefined(summary)}>
                 <Animated.View key={figureKey} entering={FadeIn.duration(MOTION_FAST_DURATION)}>
