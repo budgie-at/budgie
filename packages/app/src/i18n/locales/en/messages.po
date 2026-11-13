@@ -3648,7 +3648,7 @@ msgstr "Could not save recurring payment."
 msgid "Could not save tag"
 msgstr "Could not save tag"
 
-#: src/transaction/hook/use-edit-transaction-yield.hook.ts
+#: src/transaction/hook/use-save-transaction-yield.hook.ts
 msgid "Could not save the change."
 msgstr "Could not save the change."
 

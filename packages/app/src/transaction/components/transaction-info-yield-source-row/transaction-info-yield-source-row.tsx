@@ -1,30 +1,28 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useEffectEvent } from 'react';
 
-import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
 import { YIELD_SOURCE_FOCUS } from '../../../yield/constant/yield-source-focus.constant';
-import { useEditTransactionYield } from '../../hook/use-edit-transaction-yield.hook';
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
 import { TransactionInfoRow } from '../transaction-info-row/transaction-info-row';
 
 import type { YieldScreenParamsInterface } from '../../../yield/interface/yield-screen-params.interface';
-import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 
 interface Props {
-    readonly transaction: TransactionWithRelationsEntityInterface;
+    readonly sourceTitle: string | null;
+    readonly hasSourceCandidates: boolean;
+    readonly onOpenPicker: () => void;
 }
 
-export const TransactionInfoYieldSourceRow = ({ transaction }: Props) => {
+export const TransactionInfoYieldSourceRow = ({ sourceTitle, hasSourceCandidates, onOpenPicker }: Props) => {
     const { t } = useLingui();
     const { focus } = useLocalSearchParams<YieldScreenParamsInterface>();
-    const { openSourcePicker, hasSourceCandidates } = useEditTransactionYield(transaction);
-    const { account: source } = useGetAccountByIdQuery(transaction.yieldSourceAccountId ?? 0);
 
     const focusSource = useEffectEvent(() => {
         if (focus === YIELD_SOURCE_FOCUS) {
-            openSourcePicker();
+            onOpenPicker();
+            router.setParams({ focus: '' });
         }
     });
 
@@ -34,7 +32,7 @@ export const TransactionInfoYieldSourceRow = ({ transaction }: Props) => {
         }
     }, [hasSourceCandidates]);
 
-    const linkedSource = source?.title ?? t`Not linked`;
+    const linkedSource = sourceTitle ?? t`Not linked`;
     const sourceValue = hasSourceCandidates ? linkedSource : t`No holding to link yet`;
 
     return (
@@ -43,7 +41,7 @@ export const TransactionInfoYieldSourceRow = ({ transaction }: Props) => {
             label={t`Source`}
             value={sourceValue}
             testID={TransactionInfoPageSelector.Row.YieldSource}
-            {...(hasSourceCandidates && { onPress: openSourcePicker })}
+            {...(hasSourceCandidates && { onPress: onOpenPicker })}
         />
     );
 };

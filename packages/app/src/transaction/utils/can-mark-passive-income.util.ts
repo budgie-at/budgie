@@ -7,4 +7,5 @@ import { buildYieldKindOptions } from '../../yield/utils/build-yield-kind-option
 import type { TransactionTypeEnum } from '@budgie/contracts';
 
 export const canMarkPassiveIncome = (type: TransactionTypeEnum, yieldKind: YieldKindEnum | null): boolean =>
-    (!isDefined(yieldKind) || yieldKind === YieldKindEnum.NONE) && buildYieldKindOptions(type).some(kind => kind !== YieldKindEnum.NONE);
+    (!isDefined(yieldKind) || yieldKind === YieldKindEnum.NONE) &&
+    buildYieldKindOptions(type).some(kind => kind !== YieldKindEnum.NONE && kind !== YieldKindEnum.TAX);

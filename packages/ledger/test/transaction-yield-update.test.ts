@@ -1,7 +1,10 @@
 import {
     AccountRepository,
     AccountTypeEnum,
+    Db,
     HOUSEHOLD_SYNC_ZONE,
+    SyncRecordEntityTable,
+    SyncRecordTypeEnum,
     TransactionEntryTypeEnum,
     TransactionRepository,
     TransactionTypeEnum,
@@ -220,6 +223,49 @@ describe('TransactionService.updateYield', () => {
             yield* updateYield(income.id, { yieldKind: YieldKindEnum.INTEREST, yieldSourceAccountId: sharedDeposit.id });
 
             expect(yield* readYield(income.id)).toMatchObject({ yieldKind: YieldKindEnum.INTEREST, yieldSourceAccountId: null });
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('normalizes a transfer to no kind and no source', () =>
+        Effect.gen(function* () {
+            const testSeedService = yield* seed;
+            const { deposit, bank } = yield* seedIncomeWithDeposit;
+            const transfer = yield* testSeedService.manualExpense({
+                accountId: bank.id,
+                amount: AMOUNT,
+                operatedAt: OPERATED_AT,
+                type: TransactionTypeEnum.TRANSFER
+            });
+
+            yield* updateYield(transfer.id, { yieldKind: YieldKindEnum.STAKING, yieldSourceAccountId: deposit.id });
+
+            expect(yield* readYield(transfer.id)).toMatchObject({ yieldKind: null, yieldSourceAccountId: null });
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('leaves a foreign transfer leg untouched', () =>
+        Effect.gen(function* () {
+            const { deposit, income } = yield* seedIncomeWithDeposit;
+            const stored = yield* Effect.flatMap(TransactionRepository, repository => repository.getByIdRaw(income.id));
+
+            yield* Db.query(db =>
+                db.insert(SyncRecordEntityTable).values({
+                    syncZone: stored?.syncZone ?? '',
+                    syncId: stored?.syncId ?? '',
+                    recordType: SyncRecordTypeEnum.TRANSACTION_LEG
+                })
+            );
+            yield* updateYield(income.id, { yieldKind: YieldKindEnum.INTEREST, yieldSourceAccountId: deposit.id });
+
+            expect(yield* readYield(income.id)).toMatchObject({ yieldKind: null, yieldSourceAccountId: null });
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('ignores a missing transaction', () =>
+        Effect.gen(function* () {
+            const result = yield* updateYield(9_999, { yieldKind: YieldKindEnum.INTEREST });
+
+            expect(result).toBeUndefined();
         }).pipe(Effect.provide(TestLayer))
     );
 });

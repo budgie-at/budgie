@@ -7,8 +7,8 @@ it.each([
     [TransactionTypeEnum.INCOME, null, true],
     [TransactionTypeEnum.INCOME, YieldKindEnum.NONE, true],
     [TransactionTypeEnum.INCOME, YieldKindEnum.STAKING, false],
-    [TransactionTypeEnum.EXPENSE, null, true],
-    [TransactionTypeEnum.EXPENSE, YieldKindEnum.TAX, false],
+    [TransactionTypeEnum.EXPENSE, null, false],
+    [TransactionTypeEnum.EXPENSE, YieldKindEnum.NONE, false],
     [TransactionTypeEnum.TRANSFER, null, false]
 ])('%s with kind %s can be marked: %s', (type, yieldKind, expected) => {
     expect(canMarkPassiveIncome(type, yieldKind)).toBe(expected);

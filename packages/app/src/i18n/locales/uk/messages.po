@@ -3647,7 +3647,7 @@ msgstr "Не вдалося зберегти регулярний платіж."
 msgid "Could not save tag"
 msgstr "Не вдалося зберегти тег"
 
-#: src/transaction/hook/use-edit-transaction-yield.hook.ts
+#: src/transaction/hook/use-save-transaction-yield.hook.ts
 msgid "Could not save the change."
 msgstr "Не вдалося зберегти зміну."
 

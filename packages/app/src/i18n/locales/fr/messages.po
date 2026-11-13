@@ -3647,7 +3647,7 @@ msgstr "Impossible d'enregistrer le paiement récurrent."
 msgid "Could not save tag"
 msgstr "Impossible d'enregistrer l'étiquette"
 
-#: src/transaction/hook/use-edit-transaction-yield.hook.ts
+#: src/transaction/hook/use-save-transaction-yield.hook.ts
 msgid "Could not save the change."
 msgstr "Impossible d’enregistrer la modification."
 

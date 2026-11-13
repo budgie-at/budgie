@@ -4,11 +4,13 @@ import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import { router } from 'expo-router';
+import Animated from 'react-native-reanimated';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
+import { PRESENCE_ENTERING } from '../../../@generic/constant/presence-motion.constant';
 import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hook';
 import { defaultInstrumentIdAtom } from '../../../settings/constants/settings-atoms.constant';
 import { yieldSummaryFamily } from '../../constant/yield-summary-family-atom.constant';
@@ -42,18 +44,24 @@ export const YieldEntryRowContent = ({ scope }: Props) => {
                 : { instrument: String(instrumentId), from: `instrument-${instrumentId}` }
         });
 
+    if (!isDefined(summary)) {
+        return null;
+    }
+
     return (
-        <GroupedListSection>
-            <YieldRow
-                left={<GroupedListIcon icon={UserIconNameEnum.Sprout} />}
-                title={t`Passive income`}
-                subtitle={subtitle}
-                trailing=""
-                secondary=""
-                accessibilityLabel={t`Passive income, ${subtitle}`}
-                onPress={handlePress}
-                testID={PassiveIncomeSelector.EntryRow}
-            />
-        </GroupedListSection>
+        <Animated.View entering={PRESENCE_ENTERING}>
+            <GroupedListSection>
+                <YieldRow
+                    left={<GroupedListIcon icon={UserIconNameEnum.Sprout} />}
+                    title={t`Passive income`}
+                    subtitle={subtitle}
+                    trailing=""
+                    secondary=""
+                    accessibilityLabel={t`Passive income, ${subtitle}`}
+                    onPress={handlePress}
+                    testID={PassiveIncomeSelector.EntryRow}
+                />
+            </GroupedListSection>
+        </Animated.View>
     );
 };

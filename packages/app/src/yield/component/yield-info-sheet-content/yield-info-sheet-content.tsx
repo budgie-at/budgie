@@ -1,10 +1,13 @@
 import { Trans, useLingui } from '@lingui/react/macro';
 import { parseISO } from 'date-fns/parseISO';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
-import { ScrollView, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
+import { FormsheetHeader } from '../../../@generic/component/formsheet-header/formsheet-header';
+import { ScrollableSheetCard } from '../../../@generic/component/scrollable-sheet-card/scrollable-sheet-card';
+import { MORPHING_SHEET_DESTINATION_HEIGHT_RATIO } from '../../../@generic/constant/morphing-sheet-height-ratio.constant';
 import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { yieldSummaryFamily } from '../../constant/yield-summary-family-atom.constant';
@@ -38,10 +41,12 @@ export const YieldInfoSheetContent = ({ screenKey }: Props) => {
     });
 
     return (
-        <ScrollView className="max-h-[560px]" contentContainerClassName="gap-y-lg px-3xl pb-3xl" testID={PassiveIncomeSelector.InfoSheet}>
-            <Text accessibilityRole="header" className="text-lg font-semibold text-primary">
-                <Trans>About these figures</Trans>
-            </Text>
+        <ScrollableSheetCard
+            header={<FormsheetHeader size="md" title={t`About these figures`} />}
+            ratio={MORPHING_SHEET_DESTINATION_HEIGHT_RATIO}
+            contentClassName="gap-y-lg px-3xl pb-3xl"
+            testID={PassiveIncomeSelector.InfoSheet}
+        >
             <Text className="text-md text-primary">{periodText}</Text>
             <Text className="text-md text-primary">
                 <Trans>
@@ -73,6 +78,6 @@ export const YieldInfoSheetContent = ({ screenKey }: Props) => {
                     ))}
                 </View>
             ) : null}
-        </ScrollView>
+        </ScrollableSheetCard>
     );
 };

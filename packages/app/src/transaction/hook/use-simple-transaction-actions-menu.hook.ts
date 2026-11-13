@@ -12,7 +12,7 @@ import { TransactionActionsMenuSelector } from '../components/transaction-action
 import { canMarkPassiveIncome } from '../utils/can-mark-passive-income.util';
 
 import { useDebtSettlementTransactionActions } from './use-debt-settlement-transaction-actions.hook';
-import { useEditTransactionYield } from './use-edit-transaction-yield.hook';
+import { useOpenYieldKindPicker } from './use-open-yield-kind-picker.hook';
 import { useRevertConsolidation } from './use-revert-consolidation.hook';
 
 import type { SimpleTransactionActionsMenuParamsInterface } from '../interface/simple-transaction-actions-menu-params.interface';
@@ -42,7 +42,7 @@ export const useSimpleTransactionActionsMenu = ({
         transactionAccountId
     });
 
-    const { openKindPicker } = useEditTransactionYield(transaction);
+    const openKindPicker = useOpenYieldKindPicker(transaction);
 
     const handleOpenRefundConvert = () => {
         openConvertToRefund({ refundIncomeTransactionId: transactionId }, canonicalId => {

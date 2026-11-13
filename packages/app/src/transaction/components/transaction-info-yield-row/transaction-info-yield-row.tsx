@@ -21,7 +21,7 @@ interface Props {
 
 export const TransactionInfoYieldRow = ({ transaction }: Props) => {
     const { t } = useLingui();
-    const { openKindPicker } = useEditTransactionYield(transaction);
+    const { openKindPicker, openSourcePicker, hasSourceCandidates } = useEditTransactionYield(transaction);
     const { account: source } = useGetAccountByIdQuery(transaction.yieldSourceAccountId ?? 0);
 
     const kind = transaction.yieldKind;
@@ -35,7 +35,7 @@ export const TransactionInfoYieldRow = ({ transaction }: Props) => {
         isDefined(landing) && (YIELD_POSITION_ACCOUNT_TYPES.includes(landing.type) || landing.instrument.type === InstrumentTypeEnum.FUND);
     const positionId = transaction.yieldSourceAccountId ?? (canLandingHoldPosition ? landing.id : null);
     const kindLabel = t(YIELD_KIND_LABEL[kind]);
-    const sourceTitle = source?.title;
+    const sourceTitle = source?.title ?? null;
     const value = isDefined(sourceTitle) ? t`${kindLabel} · from ${sourceTitle}` : kindLabel;
 
     const handleOpenScreen = () =>
@@ -57,7 +57,11 @@ export const TransactionInfoYieldRow = ({ transaction }: Props) => {
                 testID={TransactionInfoPageSelector.Row.YieldKind}
                 onPress={openKindPicker}
             />
-            <TransactionInfoYieldSourceRow transaction={transaction} />
+            <TransactionInfoYieldSourceRow
+                sourceTitle={sourceTitle}
+                hasSourceCandidates={hasSourceCandidates}
+                onOpenPicker={openSourcePicker}
+            />
         </>
     );
 };

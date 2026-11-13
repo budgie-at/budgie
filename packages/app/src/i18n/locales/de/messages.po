@@ -3647,7 +3647,7 @@ msgstr "Wiederkehrende Zahlung konnte nicht gespeichert werden."
 msgid "Could not save tag"
 msgstr "Tag konnte nicht gespeichert werden"
 
-#: src/transaction/hook/use-edit-transaction-yield.hook.ts
+#: src/transaction/hook/use-save-transaction-yield.hook.ts
 msgid "Could not save the change."
 msgstr "Die Änderung konnte nicht gespeichert werden."
 

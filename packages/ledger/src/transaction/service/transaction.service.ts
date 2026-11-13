@@ -152,6 +152,13 @@ export class TransactionService extends Context.Service<TransactionService>()('@
             yield* accountBalanceIncrementalService.updateBalancesByAccountIds(accountIds);
         });
 
+        const findForUserEdit = Effect.fnUntraced(function* (id: number) {
+            const existing = yield* transactionRepository.getByIdWithEntries(id);
+            const isForeignLeg = isDefined(existing) && (yield* transactionRepository.isForeignTransferLeg(id));
+
+            return { existing, foreignLeg: isForeignLeg ? existing : void 0 };
+        });
+
         const resolveYieldPatch = Effect.fnUntraced(function* (
             existing: TransactionWithEntriesEntityInterface | undefined,
             input: Omit<TransactionUpdateServiceInputInterface, 'entries' | 'tagIds'>
@@ -229,25 +236,25 @@ export class TransactionService extends Context.Service<TransactionService>()('@
             ),
             updateYield: Effect.fn('TransactionService.updateYield')(
                 function* (id: number, patch: Partial<Pick<TransactionCreateEntityInterface, 'yieldKind' | 'yieldSourceAccountId'>>) {
-                    const existingTransaction = yield* transactionRepository.getByIdWithEntries(id);
+                    const { existing, foreignLeg } = yield* findForUserEdit(id);
 
-                    if (!isDefined(existingTransaction) || (yield* transactionRepository.isForeignTransferLeg(id))) {
-                        return existingTransaction;
+                    if (!isDefined(existing) || isDefined(foreignLeg)) {
+                        return existing;
                     }
 
                     return yield* transactionRepository.updateById(id, {
                         updatedBy: TransactionUpdatedByEnum.USER,
-                        ...(yield* resolveYieldPatch(existingTransaction, patch))
+                        ...(yield* resolveYieldPatch(existing, patch))
                     });
                 },
                 effect => Db.transaction(effect)
             ),
             updateById: Effect.fn('TransactionService.updateById')(
                 function* (id: number, input: TransactionUpdateServiceInputInterface) {
-                    const existingTransaction = yield* transactionRepository.getByIdWithEntries(id);
+                    const { existing: existingTransaction, foreignLeg } = yield* findForUserEdit(id);
 
-                    if (isDefined(existingTransaction) && (yield* transactionRepository.isForeignTransferLeg(id))) {
-                        return existingTransaction;
+                    if (isDefined(foreignLeg)) {
+                        return foreignLeg;
                     }
 
                     yield* transactionDepositSafetyService.assertNoDepositExpenseInputs([
