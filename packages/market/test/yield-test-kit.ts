@@ -19,6 +19,7 @@ import { ExchangeRateRepository } from '../src/exchange-rate/repository/exchange
 import { InstrumentDailyMarketPriceRepository } from '../src/market-data/repository/instrument-daily-market-price.repository';
 import { EntryBaseValuationService } from '../src/valuation/service/entry-base-valuation.service';
 import { YieldRangeEnum } from '../src/yield/enum/yield-range.enum';
+import { YieldHoldingService } from '../src/yield/service/yield-holding.service';
 import { YieldPriceService } from '../src/yield/service/yield-price.service';
 import { YieldService } from '../src/yield/service/yield.service';
 
@@ -280,8 +281,11 @@ const key = (overrides: Partial<YieldQueryKeyInterface> = {}): YieldQueryKeyInte
 
 const makeYieldLayer = (world: YieldWorldInterface) =>
     Layer.effect(YieldService, YieldService.make).pipe(
-        Layer.provide(makeYieldRepositoryLayer(world)),
-        Layer.provideMerge(makeYieldPriceLayer(world))
+        Layer.provideMerge(
+            Layer.effect(YieldHoldingService, YieldHoldingService.make).pipe(
+                Layer.provideMerge(Layer.mergeAll(makeYieldRepositoryLayer(world), makeYieldPriceLayer(world)))
+            )
+        )
     );
 
 export const summarize = (world: YieldWorldInterface, overrides: Partial<YieldQueryKeyInterface> = {}) =>
