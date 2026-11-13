@@ -19,14 +19,15 @@ interface Props {
 export const TransactionSecurityTradeAmount = ({ trade, accountId, testID }: Props) => {
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const { securityEntry } = trade;
-    const positionValue = accountId === securityEntry.accountId ? securityEntry.baseAmount : null;
+    const isSecurityAccountRow = accountId === securityEntry.accountId;
+    const positionValue = isSecurityAccountRow ? securityEntry.baseAmount : null;
     const directionPrefix = trade.isBuy ? '+' : '−';
     const cashDirectionPrefix = isPositiveNumber(trade.cashFlow) ? '+' : '−';
     const cashPrefix = isDefined(accountId) ? cashDirectionPrefix : '';
     const isPositionValue = isDefined(positionValue);
     const amount = convertFromMicroUnits(Math.abs(positionValue ?? trade.cashFlow));
     const instrumentSymbol = isPositionValue ? defaultInstrument.symbol : trade.cashInstrument.symbol;
-    const prefix = isPositionValue ? directionPrefix : cashPrefix;
+    const prefix = isSecurityAccountRow ? directionPrefix : cashPrefix;
 
     return (
         <View className="shrink-0 items-end" testID={testID}>

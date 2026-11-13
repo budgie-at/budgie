@@ -28,7 +28,7 @@ export const BankIntegrationRenameCard = () => {
         void appRuntime.runPromise(
             Effect.flatMap(BankIntegrationRepository, bankIntegrationRepository =>
                 bankIntegrationRepository.updateById(integration.id, { label })
-            ).pipe(toastOnFailure(t`Could not rename brokerage`))
+            ).pipe(toastOnFailure(t`Could not rename brokerage`), Effect.ignoreCause({ log: true }))
         );
     };
 

@@ -32,7 +32,7 @@ export default function BuySecurity() {
               }
             : null
     );
-    const suggestedPrice = useSecurityPriceQuery(listing?.symbol ?? '', accounts ?? []);
+    const suggestedPrice = useSecurityPriceQuery(listing?.symbol ?? '', accounts ?? [], null);
 
     const handleSubmit = (values: SecurityTradeFormValues) =>
         isDefined(listing)

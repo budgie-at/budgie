@@ -6640,8 +6640,8 @@ msgid "No contacts on this device"
 msgstr "Aucun contact sur cet appareil"
 
 #: src/brokerage/component/security-trade-price-hint/security-trade-price-hint.tsx
-msgid "No current price for this security. Enter the price you paid per share."
-msgstr "Aucun cours actuel pour ce titre. Saisissez le prix payé par action."
+msgid "No current price for this security. Enter the price per share."
+msgstr "Aucun cours actuel pour ce titre. Saisissez le prix par action."
 
 #: src/category/components/category-empty-state/category-empty-state.tsx
 msgid "No custom categories yet"

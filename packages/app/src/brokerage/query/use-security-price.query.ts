@@ -9,10 +9,10 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { appAtomRuntime } from '../../@generic/runtime/app.runtime';
 import { useGetRatesByBaseAndQuoteIdsQuery } from '../../exchange-rate/query/use-get-rates-by-base-and-quote-ids.query';
-import { DEFAULT_DECIMAL_PLACES } from '../../i18n/constant/default-decimal-places.constant';
 import { useGetInstrumentsByTypeQuery } from '../../instrument/query/use-get-instruments-by-type.query';
 import { roundHalfExpand } from '../../market-data/utils/round-half-expand.util';
 import { defaultInstrumentAtom } from '../../settings/constants/settings-atoms.constant';
+import { SECURITY_PRICE_MAX_DECIMALS } from '../constant/security-price-max-decimals.constant';
 import { findBrokerageCashAccount } from '../utils/find-brokerage-cash-account.util';
 
 import type { AccountWithInstrumentEntityInterface } from '@budgie/contracts';
@@ -25,13 +25,17 @@ const securityQuoteAtom = Atom.family((symbol: string) =>
     )
 );
 
-export const useSecurityPriceQuery = (symbol: string, accounts: readonly AccountWithInstrumentEntityInterface[]) => {
+export const useSecurityPriceQuery = (
+    symbol: string,
+    accounts: readonly AccountWithInstrumentEntityInterface[],
+    settlementInstrumentId: number | null
+) => {
     const quoteResult = useAtomValue(securityQuoteAtom(symbol));
     const quote = AsyncResult.getOrElse(quoteResult, () => null);
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const { instruments } = useGetInstrumentsByTypeQuery(InstrumentTypeEnum.FIAT);
     const quoteInstrumentId = instruments.find(instrument => instrument.code === quote?.currency)?.id ?? 0;
-    const cash = findBrokerageCashAccount(accounts, quoteInstrumentId);
+    const cash = findBrokerageCashAccount(accounts, settlementInstrumentId ?? quoteInstrumentId);
     const cashInstrumentId = cash?.instrumentId ?? 0;
     const { rate: quoteRate } = useGetRatesByBaseAndQuoteIdsQuery(quoteInstrumentId, defaultInstrument.id);
     const { rate: cashRate } = useGetRatesByBaseAndQuoteIdsQuery(cashInstrumentId, defaultInstrument.id);
@@ -41,10 +45,9 @@ export const useSecurityPriceQuery = (symbol: string, accounts: readonly Account
     const cashToDefault = getRateToDefault(cashInstrumentId, cashRate?.rate);
     const isSameCurrency = quote?.currency === cash?.instrument.code;
     const convertedPrice =
-        isDefined(quote) && isDefined(quoteToDefault) && isDefined(cashToDefault)
-            ? roundHalfExpand((quote.price * quoteToDefault) / cashToDefault, DEFAULT_DECIMAL_PLACES)
-            : null;
-    const price = isSameCurrency ? (quote?.price ?? null) : convertedPrice;
+        isDefined(quote) && isDefined(quoteToDefault) && isDefined(cashToDefault) ? (quote.price * quoteToDefault) / cashToDefault : null;
+    const unroundedPrice = isSameCurrency ? (quote?.price ?? null) : convertedPrice;
+    const price = isDefined(unroundedPrice) ? roundHalfExpand(unroundedPrice, SECURITY_PRICE_MAX_DECIMALS) : null;
 
     return {
         cash,

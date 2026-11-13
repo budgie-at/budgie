@@ -4,7 +4,7 @@ import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
-import { EmptyFn, isNotEmptyString } from '@rnw-community/shared';
+import { EmptyFn, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { useSetting } from '../../settings/hook/use-setting.hook';
@@ -21,7 +21,7 @@ export const useArchiveAccount = (accountId: number, onArchived: EmptyFn) => {
     const { account } = useGetAccountByIdQuery(accountId);
     const shareStatusResult = useLiveAtomValue(householdAccountShareAtom(accountId));
     const isBrokerageCash = account?.externalSource === ExternalSourceEnum.MANUAL && account.instrument.type === InstrumentTypeEnum.FIAT;
-    const isArchivable = isAccountArchivable(shareStatusResult) && !isBrokerageCash;
+    const isArchivable = isDefined(account) && isAccountArchivable(shareStatusResult) && !isBrokerageCash;
     const isShareLoading = AsyncResult.isInitial(shareStatusResult);
     const defaultAccountId = useSetting('defaultAccountId');
 

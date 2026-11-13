@@ -24,7 +24,7 @@ export default function SellSecurity() {
     const { accounts } = useGetAccountsByIntegrationIdQuery(account?.integrationId ?? 0);
     const yahooSymbol =
         account?.instrument.priceProvider === InstrumentPriceProviderEnum.YAHOO ? account.instrument.providerInstrumentId : null;
-    const suggestedPrice = useSecurityPriceQuery(yahooSymbol ?? '', accounts ?? []);
+    const suggestedPrice = useSecurityPriceQuery(yahooSymbol ?? '', accounts ?? [], account?.instrument.quoteInstrumentId ?? 0);
     const currencySymbol = suggestedPrice.cash?.instrument.symbol ?? '';
 
     const handleSubmit = (values: SecurityTradeFormValues) =>

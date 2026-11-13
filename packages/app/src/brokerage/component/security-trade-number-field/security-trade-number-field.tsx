@@ -36,9 +36,10 @@ export const SecurityTradeNumberField = ({ name, label, icon, maxDecimals, place
     }
 
     const handleChangeText = (value: string) => {
-        const fraction = normalizeAmountDecimalSeparators(value, '.', [',']).split('.').at(1) ?? '';
+        const getFractionLength = (input: string) => (normalizeAmountDecimalSeparators(input, '.', [',']).split('.').at(1) ?? '').length;
+        const fractionLength = getFractionLength(value);
 
-        if (isDefined(maxDecimals) && fraction.length > maxDecimals) {
+        if (isDefined(maxDecimals) && fractionLength > maxDecimals && fractionLength >= getFractionLength(text)) {
             return;
         }
 

@@ -36,7 +36,26 @@ export const useBrokerageSummaryQuery = (
 
     const getValue = (account: Pick<AccountWithSyncEntityInterface, 'id'>) => balancesByAccountId.get(account.id)?.convertedBalance ?? 0;
     const [value, cash] = [securities, cashAccounts].map(group => group.reduce((total, account) => total + getValue(account), 0));
-    const gain = positions.reduce((total, position) => total + position.realizedProfitLoss - (position.costBasis ?? 0), value + cashReturn);
+    const securityGains = securities.map((account, index) => {
+        const accountBalance = balancesByAccountId.get(account.id);
+        const position = positions.at(index);
+        const costBasis = position?.costBasis;
+
+        if (
+            accountBalance?.isValued !== true ||
+            !isDefined(position) ||
+            !isDefined(costBasis) ||
+            !isPositiveNumber(accountBalance.balance)
+        ) {
+            return null;
+        }
+
+        return getValue(account) * Math.min(position.amount / accountBalance.balance, 1) - costBasis;
+    });
+    const gain = positions.reduce(
+        (total, position, index) => total + position.realizedProfitLoss + (securityGains.at(index) ?? 0),
+        cashReturn
+    );
     const moneyIn = value + cash - gain;
     const positiveTotal = [...securities, ...cashAccounts].reduce((total, account) => total + Math.max(getValue(account), 0), 0);
     const cashLabel = t({ message: 'Cash', context: 'Brokerage cash account' });
@@ -45,8 +64,8 @@ export const useBrokerageSummaryQuery = (
         .map((account, index) => {
             const holdingValue = getValue(account);
             const isValued = balancesByAccountId.get(account.id)?.isValued === true;
-            const costBasis = isValued ? (positions.at(index)?.costBasis ?? null) : null;
-            const holdingGain = isDefined(costBasis) ? holdingValue - costBasis : null;
+            const holdingGain = securityGains.at(index) ?? null;
+            const costBasis = isDefined(holdingGain) ? (positions.at(index)?.costBasis ?? null) : null;
 
             return {
                 account,

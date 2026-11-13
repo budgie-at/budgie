@@ -3,7 +3,7 @@ import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import { isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
@@ -18,6 +18,7 @@ import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { DEFAULT_DECIMAL_PLACES } from '../../../i18n/constant/default-decimal-places.constant';
+import { SECURITY_PRICE_MAX_DECIMALS } from '../../constant/security-price-max-decimals.constant';
 import { SecurityTradeFormSchema } from '../../constant/security-trade-form-schema.constant';
 import { SecurityTradeSideEnum } from '../../enum/security-trade-side.enum';
 import { InsufficientSecurityHoldingError } from '../../error/insufficient-security-holding.error';
@@ -42,8 +43,6 @@ interface Props<E> {
     readonly children?: ReactNode;
 }
 
-const PRICE_MAX_DECIMALS = 4;
-
 // eslint-disable-next-line max-lines-per-function -- Layout/form component requires many lines
 export const SecurityTradeForm = <E,>(props: Props<E>) => {
     const { side, symbol, currencySymbol, maxQuantity, suggestedPrice, onSubmit, children } = props;
@@ -55,8 +54,15 @@ export const SecurityTradeForm = <E,>(props: Props<E>) => {
         defaultValues: { quantity: 0, price: 0, fee: 0, operatedAt }
     });
     const { isLoading, run } = useSingleFlight();
+    const priceIdentity = `${symbol}:${currencySymbol}`;
+    const priceIdentityRef = useRef(priceIdentity);
 
     useEffect(() => {
+        if (priceIdentityRef.current !== priceIdentity) {
+            priceIdentityRef.current = priceIdentity;
+            form.resetField('price');
+        }
+
         if (form.getFieldState('price').isDirty) {
             return;
         }
@@ -66,7 +72,7 @@ export const SecurityTradeForm = <E,>(props: Props<E>) => {
         } else {
             form.resetField('price');
         }
-    }, [form, suggestedPrice.price]);
+    }, [form, priceIdentity, suggestedPrice.price]);
 
     const handleSave = form.handleSubmit(values =>
         run(
@@ -128,7 +134,7 @@ export const SecurityTradeForm = <E,>(props: Props<E>) => {
                                 name="price"
                                 label={`${t`Price per share`} (${currencySymbol})`}
                                 icon={UserIconNameEnum.Tag}
-                                maxDecimals={PRICE_MAX_DECIMALS}
+                                maxDecimals={SECURITY_PRICE_MAX_DECIMALS}
                                 placeholder={t`Price per share`}
                                 testID={BrokerageSelector.PriceInput}
                             />

@@ -23,7 +23,7 @@ export const SecurityTradePriceHint = ({ missingRateCurrency, isUnavailable, cur
                     Quoted in {missingRateCurrency} with no exchange rate yet. Enter the price in {currencySymbol}.
                 </Trans>
             ) : (
-                <Trans>No current price for this security. Enter the price you paid per share.</Trans>
+                <Trans>No current price for this security. Enter the price per share.</Trans>
             )}
         </Text>
     );
