@@ -348,7 +348,7 @@ install_android_database() {
         adb push "$fixture_path" "$files_directory/E2EFixtures/$(basename "$fixture_path")" >/dev/null
     done
 
-    adb shell "chown -R \$(stat -c %u:%g $app_data_directory) $files_directory && restorecon -RF $files_directory"
+    adb shell "chown -R \$(stat -c %u:%g $app_data_directory) $files_directory && chcon -R \$(stat -c %C $app_data_directory) $files_directory"
     adb shell pm grant "$APP_ID" android.permission.POST_NOTIFICATIONS >/dev/null 2>&1 || true
 
     echo "seed-screenshot-scene: installed into $ANDROID_SERIAL:$files_directory/SQLite/budgie.db"
