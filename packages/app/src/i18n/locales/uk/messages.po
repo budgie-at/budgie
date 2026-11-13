@@ -1722,6 +1722,11 @@ msgstr "Сума має бути більшою за комісію"
 msgid "Amount or merchant is empty"
 msgstr "Сума або продавець не вказані"
 
+#. js-lingui-explicit-id
+#: ../ledger/src/account/error/deposit-close-amount-invalid.error.ts
+msgid "account.depositCloseAmountInvalid"
+msgstr "Отримана сума не може бути відʼємною"
+
 #: src/inzhur/component/inzhur-purchase-amount-field/inzhur-purchase-amount-field.tsx
 msgid "Amount spent"
 msgstr "Витрачена сума"

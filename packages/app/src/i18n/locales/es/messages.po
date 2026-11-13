@@ -1722,6 +1722,11 @@ msgstr "El importe debe ser mayor que la comisión"
 msgid "Amount or merchant is empty"
 msgstr "Falta el importe o el comercio"
 
+#. js-lingui-explicit-id
+#: ../ledger/src/account/error/deposit-close-amount-invalid.error.ts
+msgid "account.depositCloseAmountInvalid"
+msgstr "El importe recibido no puede ser negativo"
+
 #: src/inzhur/component/inzhur-purchase-amount-field/inzhur-purchase-amount-field.tsx
 msgid "Amount spent"
 msgstr "Importe gastado"

@@ -28,6 +28,7 @@ import { DepositReceivingAmountMismatchError } from '../../account/error/deposit
 import { AccountArchiveService } from '../../account/service/account-archive.service';
 import { AccountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { AccountService } from '../../account/service/account.service';
+import { DepositInterestService } from '../../account/service/deposit-interest.service';
 import { TRANSFER_CONVERSION_ERROR_MESSAGE } from '../constant/transfer-conversion-error-message.constant';
 import { BuildTransferEntryCreateEntityInputInterface } from '../interface/build-transfer-entry-create-entity-input.interface';
 import { TransferConversionResultInterface } from '../interface/transfer-conversion-result.interface';
@@ -55,6 +56,7 @@ export class TransactionTransferService extends Context.Service<TransactionTrans
         const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
         const accountArchiveService = yield* AccountArchiveService;
         const accountService = yield* AccountService;
+        const depositInterestService = yield* DepositInterestService;
         const exchangeRatesService = yield* ExchangeRatesService;
         const entryBaseValuationService = yield* EntryBaseValuationService;
         const transferCreationService = yield* TransferCreationService;
@@ -446,7 +448,9 @@ export class TransactionTransferService extends Context.Service<TransactionTrans
                 effect => Db.transaction(effect)
             ),
             closeDepositTo: Effect.fn('TransactionTransferService.closeDepositTo')(
-                function* (depositAccountId: number, destinationAccountId: number) {
+                function* (depositAccountId: number, destinationAccountId: number, amountReceived: number) {
+                    yield* depositInterestService.recordCloseDelta(depositAccountId, amountReceived);
+
                     const depositBalanceRows = yield* accountBalanceRepository.getByAccountId(depositAccountId);
                     const depositBalanceMicroUnits = depositBalanceRows.at(0)?.balance ?? 0;
 
@@ -480,6 +484,7 @@ export class TransactionTransferService extends Context.Service<TransactionTrans
             AccountBalanceIncrementalService.layer,
             AccountArchiveService.layer,
             AccountService.layer,
+            DepositInterestService.layer,
             ExchangeRatesService.layer,
             EntryBaseValuationService.layer,
             TransferCreationService.layer

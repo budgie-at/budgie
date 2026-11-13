@@ -1,4 +1,5 @@
-import { type SQL, and, asc, eq, gt, inArray, isNotNull, isNull, like, ne, or, sql } from 'drizzle-orm';
+import { type SQL, and, asc, eq, gt, gte, inArray, isNotNull, isNull, like, ne, or, sql } from 'drizzle-orm';
+import { alias } from 'drizzle-orm/sqlite-core';
 import * as Context from 'effect/Context';
 import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
@@ -61,7 +62,7 @@ export class TransactionYieldRepository extends Context.Service<TransactionYield
                 );
 
             return {
-                findLastDepositBalanceEventAt: Effect.fn('TransactionYieldRepository.findLastDepositBalanceEventAt')(function* (
+                findDepositYieldTimeline: Effect.fn('TransactionYieldRepository.findDepositYieldTimeline')(function* (
                     depositAccountId: number
                 ) {
                     const isInterest = sql`(${TransactionEntityTable.type} = ${TransactionTypeEnum.INCOME} AND ${TransactionEntityTable.yieldKind} = ${YieldKindEnum.INTEREST})`;
@@ -70,7 +71,13 @@ export class TransactionYieldRepository extends Context.Service<TransactionYield
                             .select({
                                 lastBalanceEventAt: sql<
                                     number | null
-                                >`MAX(CASE WHEN ${TransactionEntityTable.type} IN (${TransactionTypeEnum.ADJUSTMENT}, ${TransactionTypeEnum.TRANSFER}) OR ${isInterest} THEN ${TransactionEntityTable.operatedAt} END)`
+                                >`MAX(CASE WHEN ${TransactionEntryEntityTable.accountId} = ${depositAccountId} AND (${TransactionEntityTable.type} IN (${TransactionTypeEnum.ADJUSTMENT}, ${TransactionTypeEnum.TRANSFER}) OR ${isInterest}) THEN ${TransactionEntityTable.operatedAt} END)`,
+                                firstPrincipalAt: sql<
+                                    number | null
+                                >`MIN(CASE WHEN ${TransactionEntityTable.type} = ${TransactionTypeEnum.TRANSFER} AND ${TransactionEntityTable.toAccountId} = ${depositAccountId} THEN ${TransactionEntityTable.operatedAt} END)`,
+                                lastInterestAt: sql<
+                                    number | null
+                                >`MAX(CASE WHEN ${isInterest} AND (${TransactionEntityTable.yieldSourceAccountId} = ${depositAccountId} OR ${TransactionEntityTable.toAccountId} = ${depositAccountId}) THEN ${TransactionEntityTable.operatedAt} END)`
                             })
                             .from(TransactionEntryEntityTable)
                             .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
@@ -78,15 +85,57 @@ export class TransactionYieldRepository extends Context.Service<TransactionYield
                                 and(
                                     transactionFilters.buildVisibleTransactionCondition(),
                                     transactionFilters.buildLedgerEntryCondition(),
-                                    eq(TransactionEntryEntityTable.accountId, depositAccountId)
+                                    or(
+                                        eq(TransactionEntryEntityTable.accountId, depositAccountId),
+                                        eq(TransactionEntityTable.yieldSourceAccountId, depositAccountId)
+                                    )
                                 )
                             )
                     );
+                    const toDate = (seconds: number | null | undefined) =>
+                        isDefined(seconds) ? DateTime.toDateUtc(DateTime.makeUnsafe(seconds * 1000)) : null;
 
-                    return isDefined(row.lastBalanceEventAt)
-                        ? DateTime.toDateUtc(DateTime.makeUnsafe(row.lastBalanceEventAt * 1000))
-                        : null;
+                    return {
+                        lastBalanceEventAt: toDate(row.lastBalanceEventAt),
+                        firstPrincipalAt: toDate(row.firstPrincipalAt),
+                        lastInterestAt: toDate(row.lastInterestAt)
+                    };
                 }),
+                findUnassignedInterestIds: (depositAccountId: number, since: Date) => {
+                    const depositAccount = alias(AccountEntityTable, 'deposit_account');
+
+                    return Db.query(db =>
+                        db
+                            .select({ id: TransactionEntityTable.id })
+                            .from(TransactionEntityTable)
+                            .innerJoin(AccountEntityTable, eq(AccountEntityTable.id, TransactionEntityTable.toAccountId))
+                            .innerJoin(depositAccount, eq(depositAccount.id, depositAccountId))
+                            .where(
+                                and(
+                                    transactionFilters.buildVisibleTransactionCondition(),
+                                    eq(TransactionEntityTable.type, TransactionTypeEnum.INCOME),
+                                    eq(TransactionEntityTable.yieldKind, YieldKindEnum.INTEREST),
+                                    isNull(TransactionEntityTable.yieldSourceAccountId),
+                                    eq(AccountEntityTable.instrumentId, depositAccount.instrumentId),
+                                    eq(AccountEntityTable.syncZone, depositAccount.syncZone),
+                                    gte(TransactionEntityTable.operatedAt, since)
+                                )
+                            )
+                    ).pipe(Effect.map(rows => rows.map(({ id }) => id)));
+                },
+                linkInterestToDeposit: (depositAccountId: number, transactionIds: readonly number[]) =>
+                    isEmptyArray(transactionIds)
+                        ? Effect.void
+                        : Db.query(db =>
+                              db
+                                  .update(TransactionEntityTable)
+                                  .set({
+                                      yieldSourceAccountId: depositAccountId,
+                                      updatedBy: TransactionUpdatedByEnum.USER,
+                                      updatedAt: new Date()
+                                  })
+                                  .where(inArray(TransactionEntityTable.id, [...transactionIds]))
+                          ).pipe(Effect.asVoid),
                 findInterestCandidates: (
                     externalSources: readonly ExternalSourceEnum[],
                     likePatterns: readonly string[],

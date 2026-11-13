@@ -1723,6 +1723,11 @@ msgstr "Amount must be larger than the fee"
 msgid "Amount or merchant is empty"
 msgstr "Amount or merchant is empty"
 
+#. js-lingui-explicit-id
+#: ../ledger/src/account/error/deposit-close-amount-invalid.error.ts
+msgid "account.depositCloseAmountInvalid"
+msgstr "Amount received cannot be negative"
+
 #: src/inzhur/component/inzhur-purchase-amount-field/inzhur-purchase-amount-field.tsx
 msgid "Amount spent"
 msgstr "Amount spent"

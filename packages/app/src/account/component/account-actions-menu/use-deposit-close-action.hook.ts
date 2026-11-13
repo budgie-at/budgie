@@ -47,7 +47,7 @@ export const useDepositCloseAction = (accountId: number, balance: number, instru
 
         const transactionTransferService = yield* TransactionTransferService;
 
-        yield* transactionTransferService.closeDepositTo(accountId, destinationAccountId);
+        yield* transactionTransferService.closeDepositTo(accountId, destinationAccountId, balance);
         yield* Effect.sync(() => void dismissAllOrReplace('/'));
     });
 
