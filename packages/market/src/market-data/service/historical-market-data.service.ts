@@ -32,15 +32,16 @@ import { formatUtcDay } from '../../@generic/utils/format-utc-day.util';
 import { ExchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
 import { HistoricalExchangeRateRepository } from '../../historical-exchange-rate/repository/historical-exchange-rate.repository';
 import { EntryBaseValuationService } from '../../valuation/service/entry-base-valuation.service';
+import { MarketPricedRevaluationService } from '../../valuation/service/market-priced-revaluation.service';
 import { InstrumentDailyMarketPriceRepository } from '../repository/instrument-daily-market-price.repository';
 import { InstrumentMarketDataJobRepository } from '../repository/instrument-market-data-job.repository';
+import { buildHistoricalRateInputs } from '../utils/build-historical-rate-inputs.util';
 
 import { InzhurPriceService } from './inzhur-price.service';
 
 import type { MarketDataJobResultInterface } from '../interface/market-data-job-result.interface';
 import type {
     AccountEntityInterface,
-    HistoricalExchangeRateEntityInterface,
     InstrumentDailyMarketPriceCreateEntityInterface,
     InstrumentEntityInterface,
     InstrumentMarketDataJobEntityInterface
@@ -59,6 +60,7 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
             const transactionEntryBaseValuationRepository = yield* TransactionEntryBaseValuationRepository;
             const entryBaseValuationService = yield* EntryBaseValuationService;
             const inzhurPriceService = yield* InzhurPriceService;
+            const marketPricedRevaluationService = yield* MarketPricedRevaluationService;
             const dataWindowDays = 365;
             const frankfurterApiUrl = 'https://api.frankfurter.dev/v2';
             const maxFiatRateGapDays = 7;
@@ -128,24 +130,6 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
 
                 return format(supportedDate, rateDateFormat);
             };
-
-            const buildHistoricalRateInputs = (
-                prices: InstrumentDailyMarketPriceCreateEntityInterface[]
-            ): HistoricalExchangeRateEntityInterface[] =>
-                prices.flatMap(price => [
-                    {
-                        sourceInstrumentId: price.instrumentId,
-                        targetInstrumentId: price.quoteInstrumentId,
-                        rateDate: price.priceDate,
-                        rate: price.price
-                    },
-                    {
-                        sourceInstrumentId: price.quoteInstrumentId,
-                        targetInstrumentId: price.instrumentId,
-                        rateDate: price.priceDate,
-                        rate: 1 / price.price
-                    }
-                ]);
 
             const buildTimedValueMap = (values: ReadonlyArray<readonly [number, number]>): Map<string, number> =>
                 values.reduce(
@@ -446,7 +430,7 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                 const hryvniaInstrument = yield* instrumentRepository.findByCode(CurrencyEnum.UAH);
                 const cryptoInputs = yield* Effect.forEach(
                     getCandidateInstrumentIds(
-                        accounts.filter(account => account.type === AccountTypeEnum.CRYPTO),
+                        accounts.filter(account => account.type === AccountTypeEnum.CRYPTO || account.type === AccountTypeEnum.CRYPTO_SYNC),
                         instrumentById,
                         isSupportedInstrument
                     ),
@@ -500,29 +484,40 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                 ) {
                     const instrument = yield* instrumentRepository.findById(job.instrumentId);
                     const writeRates = historicalExchangeRateRepository.bulkUpsert(result.rates);
-
-                    yield* Db.transaction(
-                        Effect.flatMap(instrumentMarketDataJobRepository.markCompleted(job), isClaimOwner =>
+                    const latestPrice = yield* instrumentDailyMarketPriceRepository.findLatest(job.instrumentId, job.quoteInstrumentId);
+                    const isFirstPriceBatch = !isDefined(latestPrice);
+                    const isJobUnsupported = result.unsupportedInstruments.some(unsupported => unsupported.id === job.instrumentId);
+                    const markJob = isJobUnsupported
+                        ? instrumentMarketDataJobRepository.markUnsupported(job)
+                        : instrumentMarketDataJobRepository.markCompleted(job);
+                    const isStored = yield* Db.transaction(
+                        Effect.flatMap(markJob, isClaimOwner =>
                             isClaimOwner
                                 ? Effect.all(
                                       [
                                           instrumentDailyMarketPriceRepository.bulkUpsert(result.prices),
                                           instrument?.type === InstrumentTypeEnum.FIAT ? revalueEntriesAround(job, writeRates) : writeRates,
                                           instrumentMarketDataJobRepository.enqueueMany(
-                                              result.unsupportedInstruments.map(unsupportedInstrument => ({
-                                                  instrumentId: unsupportedInstrument.id,
-                                                  quoteInstrumentId: job.quoteInstrumentId,
-                                                  fromDate: job.fromDate,
-                                                  toDate: job.toDate,
-                                                  status: InstrumentMarketDataJobStatusEnum.UNSUPPORTED
-                                              }))
+                                              result.unsupportedInstruments
+                                                  .filter(unsupported => unsupported.id !== job.instrumentId)
+                                                  .map(unsupported => ({
+                                                      instrumentId: unsupported.id,
+                                                      quoteInstrumentId: job.quoteInstrumentId,
+                                                      fromDate: job.fromDate,
+                                                      toDate: job.toDate,
+                                                      status: InstrumentMarketDataJobStatusEnum.UNSUPPORTED
+                                                  }))
                                           )
                                       ],
                                       { discard: true }
-                                  )
-                                : Effect.void
+                                  ).pipe(Effect.as(true))
+                                : Effect.succeed(false)
                         )
                     );
+
+                    if (isStored && isDefined(instrument) && instrument.type !== InstrumentTypeEnum.FIAT && isNotEmptyArray(result.prices)) {
+                        yield* marketPricedRevaluationService.repairAfterPriceJob(job, instrument.type, isFirstPriceBatch);
+                    }
                 }),
                 failJob: (job: InstrumentMarketDataJobEntityInterface, cause: Cause.Cause<unknown>) =>
                     instrumentMarketDataJobRepository.markFailed(job, cause.pipe(Cause.squash, getErrorMessage))
@@ -540,7 +535,8 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
             AccountRepository.layer,
             TransactionEntryBaseValuationRepository.layer,
             EntryBaseValuationService.layer,
-            InzhurPriceService.layer
+            InzhurPriceService.layer,
+            MarketPricedRevaluationService.layer
         ])
     );
 }

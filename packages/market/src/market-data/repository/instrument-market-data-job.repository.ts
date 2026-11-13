@@ -44,6 +44,18 @@ export class InstrumentMarketDataJobRepository extends Context.Service<Instrumen
                     eq(InstrumentMarketDataJobEntityTable.attempts, job.attempts)
                 );
 
+            const markFinished = (
+                job: Pick<InstrumentMarketDataJobEntityInterface, 'id' | 'attempts'>,
+                status: InstrumentMarketDataJobStatusEnum.COMPLETED | InstrumentMarketDataJobStatusEnum.UNSUPPORTED
+            ) =>
+                Db.query(db =>
+                    db
+                        .update(InstrumentMarketDataJobEntityTable)
+                        .set({ status, lockedAt: null, completedAt: new Date(), updatedAt: new Date() })
+                        .where(buildClaimOwnerCondition(job))
+                        .returning({ id: InstrumentMarketDataJobEntityTable.id })
+                ).pipe(Effect.map(isNotEmptyArray));
+
             return {
                 enqueueMany: Effect.fn('InstrumentMarketDataJobRepository.enqueueMany')(function* (
                     inputs: InstrumentMarketDataJobCreateEntityInterface[]
@@ -116,18 +128,9 @@ export class InstrumentMarketDataJobRepository extends Context.Service<Instrumen
                             .limit(1)
                     ).pipe(Effect.map(isNotEmptyArray)),
                 markCompleted: (job: Pick<InstrumentMarketDataJobEntityInterface, 'id' | 'attempts'>) =>
-                    Db.query(db =>
-                        db
-                            .update(InstrumentMarketDataJobEntityTable)
-                            .set({
-                                status: InstrumentMarketDataJobStatusEnum.COMPLETED,
-                                lockedAt: null,
-                                completedAt: new Date(),
-                                updatedAt: new Date()
-                            })
-                            .where(buildClaimOwnerCondition(job))
-                            .returning({ id: InstrumentMarketDataJobEntityTable.id })
-                    ).pipe(Effect.map(isNotEmptyArray)),
+                    markFinished(job, InstrumentMarketDataJobStatusEnum.COMPLETED),
+                markUnsupported: (job: Pick<InstrumentMarketDataJobEntityInterface, 'id' | 'attempts'>) =>
+                    markFinished(job, InstrumentMarketDataJobStatusEnum.UNSUPPORTED),
                 markFailed: (job: Pick<InstrumentMarketDataJobEntityInterface, 'id' | 'attempts'>, errorMessage: string) =>
                     Db.query(db =>
                         db
