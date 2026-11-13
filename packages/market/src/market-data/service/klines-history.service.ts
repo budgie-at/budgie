@@ -9,6 +9,7 @@ import * as Layer from 'effect/Layer';
 import { isDefined } from '@rnw-community/shared';
 
 import { USDT_INSTRUMENT_CODE } from '../../@generic/constant/usdt-instrument-code.constant';
+import { STABLECOIN_CODES } from '../../valuation/constant/stablecoin-codes.constant';
 import { InstrumentDailyMarketPriceRepository } from '../repository/instrument-daily-market-price.repository';
 import { buildHistoricalRateInputs } from '../utils/build-historical-rate-inputs.util';
 
@@ -38,6 +39,12 @@ export class KlinesHistoryService extends Context.Service<KlinesHistoryService>(
                 baseInstrumentId: number,
                 usdtInstrumentId: number
             ) {
+                const instrument = yield* instrumentRepository.findById(instrumentId);
+
+                if (!isDefined(instrument) || STABLECOIN_CODES.has(instrument.code)) {
+                    return null;
+                }
+
                 const earliestPrice = yield* instrumentDailyMarketPriceRepository.findEarliest(instrumentId, baseInstrumentId);
                 const oldestEntryDate = yield* transactionEntryBaseValuationRepository.findOldestMarketPricedEntryDate(instrumentId);
 
@@ -72,23 +79,17 @@ export class KlinesHistoryService extends Context.Service<KlinesHistoryService>(
 
                 const euro = yield* instrumentRepository.findByCode(CurrencyEnum.EUR);
                 const euroOpens = isDefined(euro) ? yield* binanceKlinesClient.fetchEuroDailyOpens(job.fromDate, job.toDate) : [];
-                const prices = opens.map((open): InstrumentDailyMarketPriceCreateEntityInterface => ({
-                    instrumentId: job.instrumentId,
+                const toPrice = (instrumentId: number, open: (typeof opens)[number]): InstrumentDailyMarketPriceCreateEntityInterface => ({
+                    instrumentId,
                     quoteInstrumentId: job.quoteInstrumentId,
                     priceDate: open.priceDate,
                     price: open.price,
                     marketCap: null,
                     volume: null,
                     source
-                }));
-                const euroPrices = isDefined(euro)
-                    ? euroOpens.map(open => ({
-                          instrumentId: euro.id,
-                          quoteInstrumentId: job.quoteInstrumentId,
-                          priceDate: open.priceDate,
-                          price: open.price
-                      }))
-                    : [];
+                });
+                const prices = opens.map(open => toPrice(job.instrumentId, open));
+                const euroPrices = isDefined(euro) ? euroOpens.map(open => toPrice(euro.id, open)) : [];
                 const result: MarketDataJobResultInterface = {
                     prices,
                     rates: buildHistoricalRateInputs([...prices, ...euroPrices]),

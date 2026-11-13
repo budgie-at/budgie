@@ -231,4 +231,44 @@ describe('klines history jobs', () => {
             });
         }).pipe(Effect.provide(KlinesLayer(() => ({ status: 200, body: [] }))))
     );
+
+    it.effect('queues no klines job for a stablecoin', () =>
+        Effect.gen(function* () {
+            const service = yield* KlinesHistoryService;
+            const dailyPriceRepository = yield* InstrumentDailyMarketPriceRepository;
+            const euro = yield* requireInstrumentByCode(CurrencyEnum.EUR);
+            const tether = yield* requireInstrumentByCode('USDT');
+            const stablecoin = yield* testSeedService.instrument({
+                code: 'USDC',
+                name: 'USDC',
+                symbol: 'USDC',
+                type: InstrumentTypeEnum.CRYPTO
+            });
+            const account = yield* testSeedService.account({ instrumentId: stablecoin.id, type: AccountTypeEnum.CRYPTO_SYNC });
+
+            yield* setDefaultInstrument(euro.id);
+            yield* testSeedService.valuedIncome({
+                accountId: account.id,
+                amount: PRECISION,
+                operatedAt: new Date('2023-02-01T10:00:00.000Z'),
+                title: 'Reward',
+                baseInstrumentId: null,
+                baseExchangeRate: null,
+                baseAmount: null
+            });
+            yield* dailyPriceRepository.bulkUpsert([
+                {
+                    instrumentId: stablecoin.id,
+                    quoteInstrumentId: euro.id,
+                    priceDate: '2025-11-14',
+                    price: 1,
+                    marketCap: null,
+                    volume: null,
+                    source: 'test'
+                }
+            ]);
+
+            expect(yield* service.buildJobInput(stablecoin.id, euro.id, tether.id)).toBeNull();
+        }).pipe(Effect.provide(KlinesLayer(() => ({ status: 200, body: [] }))))
+    );
 });

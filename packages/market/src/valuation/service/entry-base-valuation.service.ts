@@ -25,6 +25,7 @@ import { HistoricalExchangeRateRepository } from '../../historical-exchange-rate
 import { InstrumentDailyMarketPriceRepository } from '../../market-data/repository/instrument-daily-market-price.repository';
 import { InzhurPriceService } from '../../market-data/service/inzhur-price.service';
 import { CRYPTO_PRICE_CARRY_DAYS, FUND_PRICE_CARRY_DAYS } from '../constant/price-carry-days.constant';
+import { STABLECOIN_CODES } from '../constant/stablecoin-codes.constant';
 
 import type { EntryBaseValuationContextInterface } from '../interface/entry-base-valuation-context.interface';
 import type { EntryBaseValuationInputInterface } from '../interface/entry-base-valuation-input.interface';
@@ -47,7 +48,6 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
         const exchangeRatesService = yield* ExchangeRatesService;
         const exchangeRateRepository = yield* ExchangeRateRepository;
         const inzhurPriceService = yield* InzhurPriceService;
-        const stablecoinCodes: ReadonlySet<string> = new Set(['USDT', 'USDC', 'FDUSD']);
 
         const confirmed = (rate: number): ResolvedBaseRateInterface => ({ rate, isConfirmed: true });
         const estimated = (rate: number | null): ResolvedBaseRateInterface | null => (isDefined(rate) ? { rate, isConfirmed: false } : null);
@@ -298,7 +298,7 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
                 return confirmed(pricedRate);
             }
 
-            if (stablecoinCodes.has(instrument.code)) {
+            if (STABLECOIN_CODES.has(instrument.code)) {
                 const dollar = yield* lookups.findInstrumentByCode(CurrencyEnum.USD);
                 const dollarRate = isDefined(dollar) ? yield* resolveQuoteToBaseRate(lookups, dollar.id, baseInstrumentId, rateDate) : null;
 
