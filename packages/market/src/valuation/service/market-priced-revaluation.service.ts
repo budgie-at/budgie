@@ -41,6 +41,7 @@ export class MarketPricedRevaluationService extends Context.Service<MarketPriced
             const instrumentDailyMarketPriceRepository = yield* InstrumentDailyMarketPriceRepository;
             const settingsRepository = yield* SettingsRepository;
             const batchSize = 200;
+            const syncIdChunkSize = 500;
             const cryptoStrictValuationVersion = 1;
             const lastDay = '9999-12-31';
 
@@ -169,13 +170,16 @@ export class MarketPricedRevaluationService extends Context.Service<MarketPriced
                 revalueTransactions: Effect.fn('MarketPricedRevaluationService.revalueTransactions')(function* (
                     transactionSyncIds: readonly string[]
                 ) {
-                    const days = isNotEmptyArray(transactionSyncIds)
-                        ? yield* transactionEntryBaseValuationRepository.findMarketPricedEntryDaysBySyncIds(transactionSyncIds)
-                        : [];
+                    for (let start = 0; start < transactionSyncIds.length; start += syncIdChunkSize) {
+                        const chunk = transactionSyncIds.slice(start, start + syncIdChunkSize);
 
-                    yield* Effect.forEach(days, day => revalueInstrumentRange(day.instrumentId, day.rateDate, day.rateDate), {
-                        discard: true
-                    });
+                        yield* revaluePages(
+                            afterId => transactionEntryBaseValuationRepository.findMarketPricedEntriesBySyncIds(chunk, afterId, batchSize),
+                            toPricedUpdate,
+                            () => Effect.void,
+                            0
+                        );
+                    }
                 }),
                 repairAfterPriceJob: Effect.fn('MarketPricedRevaluationService.repairAfterPriceJob')(function* (
                     job: Pick<InstrumentMarketDataJobEntityInterface, 'instrumentId' | 'fromDate' | 'toDate'>,
