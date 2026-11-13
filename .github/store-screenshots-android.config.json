@@ -13,16 +13,8 @@
             "width": 1080,
             "height": 2100,
             "density": 420,
-            "locales": [
-                "en",
-                "fr",
-                "uk",
-                "de",
-                "es"
-            ],
-            "appearances": [
-                "dark"
-            ]
+            "locales": ["en", "fr", "uk", "de", "es"],
+            "appearances": ["dark"]
         },
         {
             "platform": "android",
@@ -30,53 +22,18 @@
             "width": 1200,
             "height": 1920,
             "density": 240,
-            "locales": [
-                "en",
-                "fr",
-                "uk",
-                "de",
-                "es"
-            ],
-            "appearances": [
-                "dark"
-            ]
+            "locales": ["en", "fr", "uk", "de", "es"],
+            "appearances": ["dark"]
         }
     ],
     "capture-scenes": [
-        {
-            "name": "01-home",
-            "deepLink": "budgie://",
-            "readySelector": {
-                "id": "HomePage.TotalBalance"
-            }
-        },
-        {
-            "name": "03-analytics",
-            "test": "03-analytics"
-        },
-        {
-            "name": "04-budget",
-            "deepLink": "budgie://budget",
-            "readySelector": {
-                "id": "BudgetDetails.EditButton"
-            }
-        },
-        {
-            "name": "05-add-expense",
-            "test": "05-add-expense"
-        },
-        {
-            "name": "06-account",
-            "test": "net-worth-tracker-2"
-        },
-        {
-            "name": "07-settings",
-            "test": "07-settings"
-        },
-        {
-            "name": "09-inbox",
-            "test": "bulk-categorize-transactions-1"
-        }
+        { "name": "01-home", "deepLink": "budgie://", "readySelector": { "id": "HomePage.TotalBalance" } },
+        { "name": "03-analytics", "test": "03-analytics" },
+        { "name": "04-budget", "deepLink": "budgie://budget", "readySelector": { "id": "BudgetDetails.EditButton" } },
+        { "name": "05-add-expense", "test": "05-add-expense" },
+        { "name": "06-account", "test": "net-worth-tracker-2" },
+        { "name": "07-settings", "test": "07-settings" },
+        { "name": "09-inbox", "test": "bulk-categorize-transactions-1" }
     ],
     "settle-seconds": 6,
     "status-bar-override": true,
