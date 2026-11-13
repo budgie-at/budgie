@@ -348,6 +348,11 @@ msgstr "{count, plural, one {# vorhandene Transaktion passt zu dieser Regel.} ot
 msgid "{count, plural, one {# month} other {# months}}"
 msgstr "{count, plural, one {# Monat} other {# Monate}}"
 
+#. js-lingui-explicit-id
+#: src/yield/component/yield-chart-summary-text/yield-chart-summary-text.tsx
+msgid "passive-income.payouts.summary"
+msgstr "{count, plural, one {# Auszahlung · {amount} · {lastPayout}} other {# Auszahlungen · {amount} · {lastPayout}}}"
+
 #: src/category/hooks/use-move-and-delete-category.hook.ts
 msgid "{count, plural, one {# transaction moves to “{targetTitle}”. “{sourceTitle}” will be deleted.} other {# transactions move to “{targetTitle}”. “{sourceTitle}” will be deleted.}}"
 msgstr "{count, plural, one {# Transaktion wird nach „{targetTitle}“ verschoben. „{sourceTitle}“ wird gelöscht.} other {# Transaktionen werden nach „{targetTitle}“ verschoben. „{sourceTitle}“ wird gelöscht.}}"
@@ -815,6 +820,10 @@ msgstr "{paymentCount} Zahlungen werden zu Überweisungen von dem Konto, das du 
 #: src/budget/hooks/use-budget-limit-accessibility.hook.ts
 msgid "{percent}% used"
 msgstr "{percent} % verbraucht"
+
+#: src/yield/hook/use-yield-plot-accessibility.hook.ts
+msgid "{period}, {total}: {parts}"
+msgstr "{period}, {total}: {parts}"
 
 #: src/inzhur/component/inzhur-operations-period-header/inzhur-operations-period-header.tsx
 msgid "{periodFrom} – {periodTo}"
@@ -5264,6 +5273,7 @@ msgid "Hidden accounts stay off Home. Their totals and net worth settings don’
 msgstr "Ausgeblendete Konten erscheinen nicht auf der Startseite. Ihre Einstellungen für Summen und Nettovermögen bleiben unverändert."
 
 #: src/yield/hook/use-yield-hero-sentence.hook.ts
+#: src/yield/hook/use-yield-plot-accessibility.hook.ts
 msgid "hidden amount"
 msgstr "verborgener Betrag"
 
@@ -6545,6 +6555,10 @@ msgstr "Nächste Zahlung {nextPaymentLabel}"
 msgid "Next period"
 msgstr "Nächster Zeitraum"
 
+#: src/yield/component/yield-chart-summary-text/yield-chart-summary-text.tsx
+msgid "No {groupLabel} in this range"
+msgstr "Kein Eintrag „{groupLabel}“ in diesem Zeitraum"
+
 #: src/onboarding/component/onboarding-welcome-actions/onboarding-welcome-actions.tsx
 msgid "No account needed · Takes about a minute"
 msgstr "Kein Konto nötig · Dauert etwa eine Minute"
@@ -6691,6 +6705,10 @@ msgstr "Keine MCC-Codes verfügbar"
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "No new transactions"
 msgstr "Keine neuen Transaktionen"
+
+#: src/yield/component/yield-chart-summary-text/yield-chart-summary-text.tsx
+msgid "No passive income {caption} · last payout {lastPayout}"
+msgstr "Kein passives Einkommen {caption} · letzte Auszahlung {lastPayout}"
 
 #: src/market-data/component/currency-market-chart-status/currency-market-chart-status.tsx
 msgid "No price history yet"
@@ -7468,6 +7486,10 @@ msgstr "Teil deines Verlaufs. Ältere Aktivitäten sind nicht enthalten."
 msgid "Partial export"
 msgstr "Teilexport"
 
+#: src/yield/hook/use-yield-plot-accessibility.hook.ts
+msgid "Passive income chart"
+msgstr "Diagramm des passiven Einkommens"
+
 #: src/market-data/component/currency-market-overview/currency-market-overview.tsx
 msgid "Past 3 months"
 msgstr "Letzte 3 Monate"
@@ -7612,9 +7634,33 @@ msgstr "PDF-Kontoauszug"
 msgid "People"
 msgstr "Personen"
 
+#: src/yield/component/yield-chart-card/yield-chart-card.tsx
+msgid "Per day"
+msgstr "Pro Tag"
+
 #: src/runway/component/runway-verdict-figure/runway-verdict-figure.tsx
 msgid "per month"
 msgstr "pro Monat"
+
+#: src/yield/component/yield-chart-card/yield-chart-card.tsx
+msgid "Per month"
+msgstr "Pro Monat"
+
+#: src/yield/component/yield-chart-mode-control/yield-chart-mode-control.tsx
+msgid "Per period"
+msgstr "Pro Zeitraum"
+
+#: src/yield/component/yield-chart-card/yield-chart-card.tsx
+msgid "Per quarter"
+msgstr "Pro Quartal"
+
+#: src/yield/component/yield-chart-card/yield-chart-card.tsx
+msgid "Per week"
+msgstr "Pro Woche"
+
+#: src/yield/component/yield-chart-card/yield-chart-card.tsx
+msgid "Per year"
+msgstr "Pro Jahr"
 
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
 msgid "Percent of the plan total before the fee"
@@ -7840,6 +7886,10 @@ msgstr "Preise vom {priceDate}"
 #: src/tag/components/tag-selector-row/tag-selector-row.tsx
 msgid "Primary"
 msgstr "Primär"
+
+#: src/yield/component/yield-chart-running-total/yield-chart-running-total.tsx
+msgid "prior {priorAmount}"
+msgstr "Vorperiode {priorAmount}"
 
 #: src/settings/components/support-settings-rows/support-settings-rows.tsx
 msgid "Privacy policy"
@@ -8407,6 +8457,11 @@ msgstr "Regeln"
 msgid "Rules work on imported transactions"
 msgstr "Regeln funktionieren mit importierten Transaktionen"
 
+#: src/yield/component/yield-chart-card/yield-chart-card.tsx
+#: src/yield/component/yield-chart-mode-control/yield-chart-mode-control.tsx
+msgid "Running total"
+msgstr "Laufende Summe"
+
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Runs in the background, and much slower while the app is closed."
 msgstr "Läuft im Hintergrund und deutlich langsamer, wenn die App geschlossen ist."
@@ -8685,6 +8740,10 @@ msgstr "Sicherheit"
 msgid "See all {total}"
 msgstr "Alle {total} anzeigen"
 
+#: src/yield/component/yield-chart-see-all-time/yield-chart-see-all-time.tsx
+msgid "See all time"
+msgstr "Gesamten Zeitraum anzeigen"
+
 #: src/tag/components/tags-feature-intro/tags-feature-intro.tsx
 msgid "See spending by context, not just category"
 msgstr "Ausgaben nach Kontext sehen, nicht nur nach Kategorie"
@@ -8949,6 +9008,10 @@ msgstr "Liste anzeigen"
 #: src/account/component/account-switch-field/account-switch-field.tsx
 msgid "Show on Home"
 msgstr "Auf Startseite anzeigen"
+
+#: src/yield/hook/use-yield-plot-accessibility.hook.ts
+msgid "Show payouts for {label}"
+msgstr "Auszahlungen für {label} anzeigen"
 
 #: src/runway/component/runway-settings-rows/runway-settings-rows.tsx
 msgid "Show runway"

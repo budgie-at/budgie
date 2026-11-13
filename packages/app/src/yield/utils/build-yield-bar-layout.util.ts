@@ -1,6 +1,7 @@
 import { YieldGroupEnum } from '@budgie/market';
 
 import { MARKET_CHART_PADDING_X } from '../../market-data/constant/market-chart-padding-x.constant';
+import { YIELD_STACK_GROUPS } from '../constant/yield-stack-groups.constant';
 
 import type { YieldBarLayoutInputInterface } from '../interface/yield-bar-layout-input.interface';
 import type { YieldBarLayoutInterface } from '../interface/yield-bar-layout.interface';
@@ -13,12 +14,6 @@ const SEGMENT_GAP = 2;
 const NARROW_SEGMENT_GAP = 1;
 const NARROW_BAR_WIDTH = 8;
 const TICK_HEIGHT = 1;
-const STACK_GROUPS = [
-    YieldGroupEnum.STAKING_EARN,
-    YieldGroupEnum.INTEREST,
-    YieldGroupEnum.DIVIDENDS,
-    YieldGroupEnum.DISTRIBUTIONS
-] as const;
 
 const buildGroupRecord = (): Record<YieldGroupEnum, YieldBarRectInterface[]> => ({
     [YieldGroupEnum.STAKING_EARN]: [],
@@ -73,14 +68,14 @@ export const buildYieldBarLayout = ({
     buckets.forEach((bucket, index) => {
         const left = (xs.at(index) ?? 0) - barWidth / 2;
         const heights = mergeSmallSegments(
-            STACK_GROUPS.map(group => (visibleGroups.includes(group) ? bucket.amounts[group] * scale : 0)),
+            YIELD_STACK_GROUPS.map(group => (visibleGroups.includes(group) ? bucket.amounts[group] * scale : 0)),
             gap
         );
         const topIndex = heights.findLastIndex(segment => segment > 0);
         const taxHeight = bucket.amounts[YieldGroupEnum.TAX] * scale;
         let bottom = zeroY;
 
-        STACK_GROUPS.forEach((group, groupIndex) => {
+        YIELD_STACK_GROUPS.forEach((group, groupIndex) => {
             const segment = heights.at(groupIndex) ?? 0;
             const isTop = groupIndex === topIndex;
             const drawn = isTop ? segment : Math.max(segment - gap, 0);
