@@ -16,6 +16,7 @@ import { SearchablePageEmptyState } from '../../../@generic/component/searchable
 import { SearchablePageList } from '../../../@generic/component/searchable-page-list/searchable-page-list';
 import { SearchablePage } from '../../../@generic/component/searchable-page/searchable-page';
 import { GROUPED_LIST_SIZING } from '../../../@generic/constant/grouped-list-sizing.constant';
+import { foldSearchText } from '../../../@generic/utils/fold-search-text.util';
 import { getDeviceRegionCode } from '../../utils/get-device-region-code.util';
 import { EnableBankingBankRow } from '../enable-banking-bank-row/enable-banking-bank-row';
 
@@ -30,10 +31,6 @@ interface Props {
     readonly onGoBack: () => void;
     readonly children?: ReactElement;
 }
-
-const COMBINING_MARKS = /[̀-ͯ]/gu;
-
-const foldSearchText = (text: string): string => text.normalize('NFD').replaceAll(COMBINING_MARKS, '').toLowerCase();
 
 export const EnableBankingBankStep = ({ banks, isLoading, preselectedBankName, onSelectBank, onGoBack, children }: Props) => {
     const { t } = useLingui();

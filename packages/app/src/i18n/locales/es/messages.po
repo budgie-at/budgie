@@ -1160,9 +1160,10 @@ msgstr "1S"
 msgid "1Y"
 msgstr "1A"
 
-#: src/account/component/create-more-banks-card/create-more-banks-card.tsx
-msgid "2,000+ EU banks"
-msgstr "Más de 2.000 bancos de la UE"
+#: src/account/component/create-bank-search-results/create-bank-search-results.tsx
+#: src/app/(main)/create-account/index.tsx
+msgid "2,000+ European banks"
+msgstr "Más de 2000 bancos europeos"
 
 #: src/budget/components/budget-day-strip-key/budget-day-strip-key.tsx
 msgid "2× plan"
@@ -1468,6 +1469,10 @@ msgstr "Añadir comisión"
 #: src/transaction/components/split-entries-add-item-footer/split-entries-add-item-footer.tsx
 msgid "Add item"
 msgstr "Agregar elemento"
+
+#: src/app/(main)/create-account/index.tsx
+msgid "Add manually"
+msgstr "Añadir manualmente"
 
 #: src/rule/constant/rule-action-type.constant.ts
 msgid "add tag"
@@ -1985,10 +1990,6 @@ msgstr "Cuentas automáticas"
 msgid "Automatic sync"
 msgstr "Sincronización automática"
 
-#: src/app/(main)/create-account/index.tsx
-msgid "Automatic sync with a personal token"
-msgstr "Sincronización automática con un token personal"
-
 #: src/budget/components/budget-limit-changes-row/budget-limit-changes-row.tsx
 msgid "Automatic tuning is off"
 msgstr "El ajuste automático está desactivado"
@@ -2133,10 +2134,6 @@ msgstr "Banco desconectado"
 msgid "Bank integration settings"
 msgstr "Ajustes de la integración bancaria"
 
-#: src/sync/component/enable-banking-public-bank-list/enable-banking-public-bank-list.tsx
-msgid "Bank not listed?"
-msgstr "¿Tu banco no aparece?"
-
 #: src/inzhur/component/inzhur-operations-details/inzhur-operations-details.tsx
 msgid "Bank payments"
 msgstr "Pagos bancarios"
@@ -2157,10 +2154,6 @@ msgstr "Sincronización bancaria restablecida"
 #: src/rule/constant/rule-condition-field.constant.ts
 msgid "Bank, import or manual entry"
 msgstr "Banco, importación o entrada manual"
-
-#: src/app/(main)/create-account/index.tsx
-msgid "Banks"
-msgstr "Bancos"
 
 #: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
 msgid "Bars compare each category with the largest one."
@@ -2451,6 +2444,10 @@ msgstr "No se puede cambiar después"
 msgid "Can't be read: your iCloud encrypted data was reset after this backup was made"
 msgstr "No se puede leer: tus datos cifrados de iCloud se restablecieron después de esta copia"
 
+#: src/sync/component/enable-banking-public-bank-list/enable-banking-public-bank-list.tsx
+msgid "Can't find your bank?"
+msgstr "¿No encuentras tu banco?"
+
 #: src/@generic/component/deletable-row/deletable-row.tsx
 #: src/@generic/component/modal-form-cancel-button/modal-form-cancel-button.tsx
 #: src/account/component/account-actions-menu/use-deposit-close-action.hook.ts
@@ -2513,7 +2510,7 @@ msgid "Card network code (MCC)"
 msgstr "Código de la red de tarjetas (MCC)"
 
 #: src/app/(main)/create-account/index.tsx
-msgid "Cards and everyday spending"
+msgid "Cards and daily spending"
 msgstr "Tarjetas y gastos diarios"
 
 #: src/budget/components/budget-rollover-mode-menu/budget-rollover-mode-menu.tsx
@@ -2543,10 +2540,6 @@ msgstr "Efectivo y ahorros"
 #: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
 msgid "cash from an ATM"
 msgstr "efectivo de cajero"
-
-#: src/app/(main)/create-account/index.tsx
-msgid "Cash wallets and savings goals"
-msgstr "Efectivo y metas de ahorro"
 
 #: src/categorize-inbox/components/categorize-inbox-group-row-subtitle/categorize-inbox-group-row-subtitle.tsx
 msgid "Cash withdrawal"
@@ -3066,6 +3059,14 @@ msgstr "Conectar Monobank"
 #: src/sync/component/account-connect-bank-row/account-connect-bank-row.tsx
 msgid "Connect to bank"
 msgstr "Conectar con el banco"
+
+#: src/app/(main)/create-account/index.tsx
+msgid "Connect with a read‑only key"
+msgstr "Conectar con una clave de solo lectura"
+
+#: src/app/(main)/create-account/index.tsx
+msgid "Connect with a token from the app"
+msgstr "Conectar con un token de la app"
 
 #: src/sync/component/bank-integration-key-card/bank-integration-key-card.tsx
 #: src/sync/component/enable-banking-connection-card/enable-banking-connection-card.tsx
@@ -3800,7 +3801,6 @@ msgstr "Credenciales requeridas"
 #: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 #: src/account/constant/account-kind-title.constant.ts
 #: src/account/constant/account-type.constant.ts
-#: src/app/(main)/create-account/index.tsx
 #: src/onboarding/constant/onboarding-account-options.constant.ts
 msgid "Crypto"
 msgstr "Cripto"
@@ -4569,6 +4569,10 @@ msgstr "Introduce todos los importes"
 msgid "Enter an amount"
 msgstr "Introduce un importe"
 
+#: src/app/(main)/create-account/index.tsx
+msgid "Enter balances yourself. No connection needed."
+msgstr "Introduce los saldos tú mismo. No hace falta conexión."
+
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Enter current PIN"
 msgstr "Ingresa el PIN actual"
@@ -4670,6 +4674,10 @@ msgstr "Banco de la UE conectado"
 msgid "EU banks"
 msgstr "Bancos de la UE"
 
+#: src/account/component/create-bank-search-results/create-bank-search-results.tsx
+msgid "European banks"
+msgstr "Bancos europeos"
+
 #: src/app/(main)/budget/event/[id]/index.tsx
 msgid "Event budget"
 msgstr "Presupuesto del evento"
@@ -4726,10 +4734,6 @@ msgstr "Cada transacción tiene una etiqueta."
 msgid "every two weeks"
 msgstr "cada dos semanas"
 
-#: src/app/(main)/create-account/index.tsx
-msgid "Every Wise balance through Enable Banking"
-msgstr "Todos los saldos de Wise a través de Enable Banking"
-
 #: src/budget/components/budget-fund-repeat-field/budget-fund-repeat-field.tsx
 msgid "Every year"
 msgstr "Cada año"
@@ -4773,6 +4777,14 @@ msgstr "Todo sigue en este dispositivo y no se sube nada. Pero cualquiera que pu
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "Exact match, any letter case"
 msgstr "Coincidencia exacta, sin distinguir mayúsculas"
+
+#: src/app/(main)/create-account/index.tsx
+msgid "Excel statement from Inzhur"
+msgstr "Extracto de Excel de Inzhur"
+
+#: src/app/(main)/create-account/index.tsx
+msgid "Excel statement from Privat24"
+msgstr "Extracto de Excel de Privat24"
 
 #: src/account/component/start-deposit-funding-summary/start-deposit-funding-summary.tsx
 #: src/transaction/components/transaction-info-money-rows/transaction-info-money-rows.tsx
@@ -4956,6 +4968,10 @@ msgstr "Archivar {count} como {labelTitle}"
 msgid "File {merchantTitle} as {candidateTitle}"
 msgstr "Archivar {merchantTitle} como {candidateTitle}"
 
+#: src/app/(main)/create-account/index.tsx
+msgid "Files are read on this device and never uploaded."
+msgstr "Los archivos se leen en este dispositivo y nunca se suben."
+
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Fill missing currency conversions"
 msgstr "Completa las conversiones de moneda que faltan"
@@ -5038,8 +5054,8 @@ msgid "Fixed amount"
 msgstr "Importe fijo"
 
 #: src/app/(main)/create-account/index.tsx
-msgid "Fixed-term savings with interest"
-msgstr "Ahorro a plazo fijo con intereses"
+msgid "Fixed term with interest"
+msgstr "Plazo fijo con intereses"
 
 #: src/budget/components/budget-details-forecast/budget-details-forecast.tsx
 msgid "Forecast"
@@ -5381,10 +5397,6 @@ msgstr "Se ignora el signo menos."
 msgid "Import"
 msgstr "Importar"
 
-#: src/app/(main)/create-account/index.tsx
-msgid "Import a PDF statement"
-msgstr "Importar un extracto PDF"
-
 #: src/sync/component/bank-integration-statements/bank-integration-statements.tsx
 msgid "Import a statement from {bank} to add your accounts."
 msgstr "Importa un extracto de {bank} para añadir tus cuentas."
@@ -5396,14 +5408,6 @@ msgstr "Importar cuentas y transacciones desde extracto PDF de Erste Bank"
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Import accounts now, or add them later in Budgie."
 msgstr "Importa cuentas ahora o añádelas más tarde en Budgie."
-
-#: src/app/(main)/create-account/index.tsx
-msgid "Import an XLSX operations export"
-msgstr "Importar una exportación de operaciones XLSX"
-
-#: src/app/(main)/create-account/index.tsx
-msgid "Import an XLSX statement"
-msgstr "Importar un extracto XLSX"
 
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "Import anyway"
@@ -5456,6 +5460,10 @@ msgstr "Importación iniciada"
 #: src/sync/component/bank-integration-statements/bank-integration-statements.tsx
 msgid "Import statement"
 msgstr "Importar extracto"
+
+#: src/app/(main)/create-account/index.tsx
+msgid "Import statements"
+msgstr "Importar extractos"
 
 #: src/settings/components/device-data-section/device-data-section.tsx
 msgid "Import, export, repair and reset"
@@ -5605,7 +5613,6 @@ msgid "Invalid file"
 msgstr "Archivo inválido"
 
 #: src/account/constant/account-type.constant.ts
-#: src/app/(main)/create-account/index.tsx
 msgid "Investments"
 msgstr "Inversiones"
 
@@ -6014,7 +6021,6 @@ msgstr "Gestionar presupuesto"
 msgid "Manage this refund from the original purchase."
 msgstr "Gestiona este reembolso desde la compra original."
 
-#: src/app/(main)/create-account/index.tsx
 #: src/rule/constant/external-source.constant.ts
 msgid "Manual"
 msgstr "Manual"
@@ -6305,10 +6311,6 @@ msgstr "Más acciones"
 #: src/transaction/components/transaction-info-more-actions-row/transaction-info-more-actions-row.tsx
 msgid "More Actions…"
 msgstr "Más acciones…"
-
-#: src/app/(main)/create-account/index.tsx
-msgid "More banks"
-msgstr "Más bancos"
 
 #: src/categorize-inbox/components/categorize-inbox-category-provider/categorize-inbox-category-provider.tsx
 msgid "More categories"
@@ -7526,10 +7528,6 @@ msgstr "Pagar a plazos · {operatedAtLabel} · {accountTitle}"
 msgid "Payment history"
 msgstr "Historial de pagos"
 
-#: src/app/(main)/create-account/index.tsx
-msgid "Payment providers"
-msgstr "Proveedores de pago"
-
 #: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
 msgid "Payment schedule unavailable"
 msgstr "Calendario de pagos no disponible"
@@ -7564,6 +7562,10 @@ msgstr "PDF u hoja de cálculo de {bank}"
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "PDF statement"
 msgstr "Extracto PDF"
+
+#: src/app/(main)/create-account/index.tsx
+msgid "PDF statement from George"
+msgstr "Extracto en PDF de George"
 
 #: src/household/component/household-people-section/household-people-section.tsx
 msgid "People"
@@ -7902,6 +7904,18 @@ msgstr "Leído en este teléfono"
 #: src/sync/component/enable-banking-key-step/enable-banking-key-step.tsx
 msgid "Read the Enable Banking Terms"
 msgstr "Leer los Términos de Enable Banking"
+
+#: src/sync/component/enable-banking-public-bank-list/enable-banking-public-bank-list.tsx
+msgid "Read-only through Enable Banking. You sign in on your bank's own page."
+msgstr "Solo lectura a través de Enable Banking. Inicias sesión en la página de tu banco."
+
+#: src/app/(main)/create-account/index.tsx
+msgid "Read-only. Tokens and keys stay on this device."
+msgstr "Solo lectura. Los tokens y las claves se quedan en este dispositivo."
+
+#: src/account/component/create-bank-search-results/create-bank-search-results.tsx
+msgid "Read-only. You sign in on your bank's own page."
+msgstr "Solo lectura. Inicias sesión en la página de tu banco."
 
 #: src/receipt/components/receipt-scan-toast/receipt-scan-toast.tsx
 msgid "Reading receipt"
@@ -8551,9 +8565,9 @@ msgstr "Buscar cuentas…"
 msgid "Search archived accounts…"
 msgstr "Buscar cuentas archivadas…"
 
-#: src/account/component/create-more-banks-card/create-more-banks-card.tsx
-msgid "Search banks connected through Enable Banking"
-msgstr "Busca bancos conectados mediante Enable Banking"
+#: src/app/(main)/create-account/index.tsx
+msgid "Search banks and accounts"
+msgstr "Buscar bancos y cuentas"
 
 #: src/rule/components/rule-mcc-selector-modal-content/rule-mcc-selector-modal-content.tsx
 msgid "Search by code or description…"
@@ -8773,10 +8787,6 @@ msgstr "Establecer fecha de vencimiento"
 msgid "Set Return Date"
 msgstr "Establecer fecha de devolución"
 
-#: src/sync/component/enable-banking-public-bank-list/enable-banking-public-bank-list.tsx
-msgid "Set up Enable Banking to see every bank"
-msgstr "Configura Enable Banking para ver todos los bancos"
-
 #: src/sync/component/enable-banking-setup-guide/enable-banking-setup-guide.tsx
 msgid "Set up once, about 5 minutes"
 msgstr "Configuración única, unos 5 minutos"
@@ -8939,6 +8949,15 @@ msgstr "Muestra u oculta sus cuentas"
 #: src/rule/components/rule-form-submit-bar/rule-form-submit-bar.tsx
 msgid "Shows what is missing"
 msgstr "Muestra lo que falta"
+
+#: src/app/(main)/create-account/index.tsx
+msgid "Sign in on Wise's own page"
+msgstr "Inicia sesión en la página de Wise"
+
+#: src/account/component/create-bank-search-results/create-bank-search-results.tsx
+#: src/app/(main)/create-account/index.tsx
+msgid "Sign in on your bank's own page"
+msgstr "Inicia sesión en la página de tu banco"
 
 #: src/household/component/household-invite-row/household-invite-row.tsx
 msgid "Sign in to iCloud to invite"
@@ -9244,6 +9263,10 @@ msgstr "Sincronizar {title}"
 msgid "Sync across devices"
 msgstr "Sincronizar entre dispositivos"
 
+#: src/app/(main)/create-account/index.tsx
+msgid "Sync automatically"
+msgstr "Sincronizar automáticamente"
+
 #: src/transaction/components/adjustment-amount-display/adjustment-amount-display.tsx
 #: src/transaction/components/adjustment-direction/adjustment-direction.tsx
 msgid "Sync controls this adjustment. Only the note can be edited."
@@ -9287,10 +9310,6 @@ msgstr "Reparaciones de sincronización"
 #: src/sync/component/account-sync-problem-row/account-sync-problem-row.tsx
 msgid "Sync stopped"
 msgstr "Sincronización detenida"
-
-#: src/app/(main)/create-account/index.tsx
-msgid "Sync with a read-only API key"
-msgstr "Sincroniza con una clave API de solo lectura"
 
 #: src/sync/component/create-binance-account/create-binance-account.tsx
 msgid "Sync your Binance balances and transactions"
@@ -9949,10 +9968,6 @@ msgstr "Token requerido"
 msgid "Token stays on this phone, sent only to Monobank."
 msgstr "El token se queda en este teléfono y solo se envía a Monobank."
 
-#: src/app/(main)/create-account/index.tsx
-msgid "Tokens and statements stay on this device."
-msgstr "Los tokens y extractos se quedan en este dispositivo."
-
 #: src/recurring/hook/use-recurring-due-label.hook.ts
 msgid "Tomorrow"
 msgstr "Mañana"
@@ -10527,6 +10542,10 @@ msgstr "Úsalas solo si las conversiones, importaciones o saldos parecen incorre
 msgid "Use Touch ID"
 msgstr "Usar Touch ID"
 
+#: src/sync/component/enable-banking-public-bank-list/enable-banking-public-bank-list.tsx
+msgid "Use your own Enable Banking key"
+msgstr "Usar tu propia clave de Enable Banking"
+
 #: src/settings/components/default-currency-selector/default-currency-selector.tsx
 msgid "Used for totals and reports"
 msgstr "Para totales e informes"
@@ -10608,8 +10627,12 @@ msgid "Waiting for your bank"
 msgstr "Esperando a tu banco"
 
 #: src/app/(main)/create-account/index.tsx
-msgid "Wallets and exchange balances"
-msgstr "Monederos y saldos de exchanges"
+msgid "Wallet cash, savings and pots"
+msgstr "Efectivo, ahorros y huchas"
+
+#: src/app/(main)/create-account/index.tsx
+msgid "Wallets you track yourself"
+msgstr "Carteras que gestionas tú"
 
 #: src/sync/component/account-sync-warning-row/account-sync-warning-row.tsx
 msgid "Warning"

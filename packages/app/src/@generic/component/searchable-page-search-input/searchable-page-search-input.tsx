@@ -32,6 +32,7 @@ export const SearchablePageSearchInput = ({ search, placeholder, onSearchChange,
                     placeholder={placeholder}
                     testID={testID}
                     containerClassName="h-[44px]"
+                    returnKeyType="search"
                 />
             </View>
         </KeyboardStickyView>

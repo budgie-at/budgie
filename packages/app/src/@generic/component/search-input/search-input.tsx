@@ -6,6 +6,7 @@ import Animated, { Keyframe } from 'react-native-reanimated';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
+import { MAX_FONT_SIZE_MULTIPLIER } from '../../constant/max-font-size-multiplier.constant';
 import { EASE_OUT, MOTION_BASE_DURATION, MOTION_FADE_OUT } from '../../constant/motion.constant';
 import { cn } from '../../utils/cn.util';
 import { Icon } from '../icon/icon';
@@ -61,6 +62,7 @@ export const SearchInput = (props: Props) => {
             <Icon icon={UserIconNameEnum.Search} size={20} className="text-secondary-foreground" />
             <TextInput
                 placeholderTextColorClassName="accent-secondary-foreground"
+                maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
                 {...rest}
                 value={value}
                 onChangeText={onChangeText}

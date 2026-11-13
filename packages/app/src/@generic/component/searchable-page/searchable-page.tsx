@@ -1,14 +1,16 @@
 import { ReactNode } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
 import { CollapsibleHeaderBackdrop, ScreenChromeFrame } from '@rnw-community/react-native-screen-chrome';
 import { EmptyFn } from '@rnw-community/shared';
 
-import { CHROME_TITLE_TEXT_PROPS } from '../../constant/chrome-title-text-props.constant';
+import { STACKED_TITLE_CHROME_CONFIG } from '../../constant/stacked-title-chrome-config.constant';
 import { ScreenChromeThemeProvider } from '../../provider/screen-chrome-theme.provider';
 import { CollapsibleChromeHeader } from '../collapsible-chrome-header/collapsible-chrome-header';
 import { GoBackButton } from '../go-back-button/go-back-button';
 import { SearchablePageSearchInput } from '../searchable-page-search-input/searchable-page-search-input';
+import { StackedLargeTitle } from '../stacked-large-title/stacked-large-title';
+import { StackedSmallTitle } from '../stacked-small-title/stacked-small-title';
 
 interface Props {
     readonly title: string;
@@ -23,20 +25,10 @@ interface Props {
 
 export const SearchablePage = (props: Props) => {
     const { title, onGoBack, search, searchPlaceholder, onSearchChange, searchInputTestID, testID, children } = props;
-    const largeTitleLayer = (
-        <Text className="text-primary font-medium text-3xl" {...CHROME_TITLE_TEXT_PROPS}>
-            {title}
-        </Text>
-    );
-    const smallTitleLayer = (
-        <Text className="text-primary text-lg font-semibold text-center" {...CHROME_TITLE_TEXT_PROPS}>
-            {title}
-        </Text>
-    );
 
     return (
         <View className="flex-1">
-            <ScreenChromeThemeProvider>
+            <ScreenChromeThemeProvider config={STACKED_TITLE_CHROME_CONFIG}>
                 <ScreenChromeFrame>
                     <View className="flex-1 px-5xl" testID={testID}>
                         {children}
@@ -46,8 +38,8 @@ export const SearchablePage = (props: Props) => {
 
                     <CollapsibleChromeHeader
                         leading={<GoBackButton onPress={onGoBack} />}
-                        expandedTitle={largeTitleLayer}
-                        collapsedTitle={smallTitleLayer}
+                        expandedTitle={<StackedLargeTitle title={title} />}
+                        collapsedTitle={<StackedSmallTitle title={title} />}
                     />
                 </ScreenChromeFrame>
             </ScreenChromeThemeProvider>

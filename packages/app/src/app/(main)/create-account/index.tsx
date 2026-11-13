@@ -1,100 +1,172 @@
-import { AccountTypeEnum, ExternalSourceEnum } from '@budgie/contracts';
+import { AccountTypeEnum, ExternalSourceEnum, UserIconNameEnum } from '@budgie/contracts';
+import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
+import { useDeferredValue, useState } from 'react';
+import { View, useWindowDimensions } from 'react-native';
+
+import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
 import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
-import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
-import { CreateAccountCard } from '../../../account/component/create-account-card/create-account-card';
+import { SearchListBottomSpacer } from '../../../@generic/component/search-list-bottom-spacer/search-list-bottom-spacer';
+import { SearchablePageSearchInput } from '../../../@generic/component/searchable-page-search-input/searchable-page-search-input';
+import { StackedLargeTitle } from '../../../@generic/component/stacked-large-title/stacked-large-title';
+import { StackedSmallTitle } from '../../../@generic/component/stacked-small-title/stacked-small-title';
+import { STACKED_TITLE_CHROME_CONFIG } from '../../../@generic/constant/stacked-title-chrome-config.constant';
+import { foldSearchText } from '../../../@generic/utils/fold-search-text.util';
+import { CreateAccountTypeTile } from '../../../account/component/create-account-type-tile/create-account-type-tile';
+import { CreateBankSearchResults } from '../../../account/component/create-bank-search-results/create-bank-search-results';
 import { CreateMoreBanksCard } from '../../../account/component/create-more-banks-card/create-more-banks-card';
 import { CreateSyncCard } from '../../../account/component/create-sync-card/create-sync-card';
 import { ACCOUNT_ICON } from '../../../account/constant/account-icon.constant';
 import { ACCOUNT_KIND_TITLE } from '../../../account/constant/account-kind-title.constant';
 
+import type { MessageDescriptor } from '@lingui/core';
+
+const GROUPED_STACKED_TITLE_CHROME_CONFIG = {
+    ...STACKED_TITLE_CHROME_CONFIG,
+    colors: {
+        light: { solid: 'rgb(242,242,247)', wash: 'rgb(242,242,247)' },
+        dark: { solid: 'rgb(0,0,0)', wash: 'rgb(0,0,0)' }
+    },
+    maskStops: {
+        top: {
+            0: { color: '#000000' },
+            0.25: { color: '#000000' },
+            0.5: { color: '#000000' },
+            0.75: { color: 'rgba(0,0,0,0.6)' },
+            1: { color: 'transparent' }
+        },
+        bottom: {}
+    }
+};
+
+const LARGE_TEXT_FONT_SCALE = 1.2;
+
+const SYNC_OPTIONS = [
+    { provider: ExternalSourceEnum.MONOBANK, title: msg`Monobank`, description: msg`Connect with a token from the app` },
+    { provider: ExternalSourceEnum.WISE, title: msg`Wise`, description: msg`Sign in on Wise's own page` },
+    { provider: ExternalSourceEnum.BINANCE, title: msg`Binance`, description: msg`Connect with a read‑only key` }
+];
+
+const IMPORT_OPTIONS = [
+    { provider: ExternalSourceEnum.PRIVATBANK, title: msg`Privatbank`, description: msg`Excel statement from Privat24` },
+    { provider: ExternalSourceEnum.ERSTE, title: msg`Erste Bank`, description: msg`PDF statement from George` },
+    { provider: ExternalSourceEnum.INZHUR, title: msg`Inzhur`, description: msg`Excel statement from Inzhur` }
+];
+
+const MANUAL_OPTIONS = [
+    {
+        type: AccountTypeEnum.BANK,
+        icon: ACCOUNT_ICON[AccountTypeEnum.BANK],
+        title: ACCOUNT_KIND_TITLE[AccountTypeEnum.BANK],
+        description: msg`Cards and daily spending`
+    },
+    {
+        type: AccountTypeEnum.CASH,
+        icon: ACCOUNT_ICON[AccountTypeEnum.CASH],
+        title: ACCOUNT_KIND_TITLE[AccountTypeEnum.CASH],
+        description: msg`Wallet cash, savings and pots`
+    },
+    {
+        type: AccountTypeEnum.CRYPTO,
+        icon: ACCOUNT_ICON[AccountTypeEnum.CRYPTO],
+        title: ACCOUNT_KIND_TITLE[AccountTypeEnum.CRYPTO],
+        description: msg`Wallets you track yourself`
+    },
+    {
+        type: AccountTypeEnum.DEBT,
+        icon: ACCOUNT_ICON[AccountTypeEnum.DEBT],
+        title: ACCOUNT_KIND_TITLE[AccountTypeEnum.DEBT],
+        description: msg`Money you lent or borrowed`
+    },
+    {
+        type: AccountTypeEnum.DEPOSIT,
+        icon: UserIconNameEnum.Vault,
+        title: ACCOUNT_KIND_TITLE[AccountTypeEnum.DEPOSIT],
+        description: msg`Fixed term with interest`
+    }
+];
+
 export default function Index() {
     const { t } = useLingui();
+    const [query, setQuery] = useState('');
+    const { fontScale } = useWindowDimensions();
+    const tileClassName = fontScale > LARGE_TEXT_FONT_SCALE ? 'basis-1/3' : 'flex-1';
+
+    const normalizedQuery = foldSearchText(useDeferredValue(query).trim());
+    const isSearching = isNotEmptyString(normalizedQuery);
+    const isMatch = ({ title }: { readonly title: MessageDescriptor }) => foldSearchText(t(title)).includes(normalizedQuery);
+    const syncOptions = SYNC_OPTIONS.filter(isMatch);
+    const importOptions = IMPORT_OPTIONS.filter(isMatch);
+    const manualOptions = MANUAL_OPTIONS.filter(isMatch);
+    const syncFooter = isSearching ? null : t`Read-only. Tokens and keys stay on this device.`;
+    const importFooter = isSearching ? null : t`Files are read on this device and never uploaded.`;
+    const manualFooter = isSearching ? null : t`Enter balances yourself. No connection needed.`;
 
     return (
         <GroupedSurface>
-            <CollapsibleChromePage title={t`New Account`} leading={<HeaderBackButton />} contentClassName="gap-y-7xl pb-5xl">
-                <GroupedListSection title={t`Manual`}>
-                    <CreateAccountCard
-                        description={t`Cards and everyday spending`}
-                        icon={ACCOUNT_ICON.BANK}
-                        title={t(ACCOUNT_KIND_TITLE[AccountTypeEnum.BANK])}
-                        type={AccountTypeEnum.BANK}
-                    />
-                    <CreateAccountCard
-                        description={t`Cash wallets and savings goals`}
-                        icon={ACCOUNT_ICON.CASH}
-                        title={t(ACCOUNT_KIND_TITLE[AccountTypeEnum.CASH])}
-                        type={AccountTypeEnum.CASH}
-                    />
-                    <CreateAccountCard
-                        description={t`Wallets and exchange balances`}
-                        icon={ACCOUNT_ICON.CRYPTO}
-                        title={t(ACCOUNT_KIND_TITLE[AccountTypeEnum.CRYPTO])}
-                        type={AccountTypeEnum.CRYPTO}
-                    />
-                    <CreateAccountCard
-                        description={t`Money you lent or borrowed`}
-                        icon={ACCOUNT_ICON.DEBT}
-                        title={t(ACCOUNT_KIND_TITLE[AccountTypeEnum.DEBT])}
-                        type={AccountTypeEnum.DEBT}
-                    />
-                    <CreateAccountCard
-                        description={t`Fixed-term savings with interest`}
-                        icon={ACCOUNT_ICON.DEPOSIT}
-                        title={t(ACCOUNT_KIND_TITLE[AccountTypeEnum.DEPOSIT])}
-                        type={AccountTypeEnum.DEPOSIT}
-                    />
-                </GroupedListSection>
+            <CollapsibleChromePage
+                largeTitle={<StackedLargeTitle title={t`New Account`} />}
+                smallTitle={<StackedSmallTitle title={t`New Account`} />}
+                leading={<HeaderBackButton />}
+                contentClassName="gap-y-[24px] pt-[20px]"
+                chromeConfig={GROUPED_STACKED_TITLE_CHROME_CONFIG}
+            >
+                {isNotEmptyArray(syncOptions) ? (
+                    <GroupedListSection title={t`Sync automatically`} footer={syncFooter}>
+                        {syncOptions.map(option => (
+                            <CreateSyncCard
+                                key={option.provider}
+                                title={t(option.title)}
+                                description={t(option.description)}
+                                bankProvider={option.provider}
+                            />
+                        ))}
+                        {isSearching ? null : (
+                            <CreateMoreBanksCard title={t`2,000+ European banks`} subtitle={t`Sign in on your bank's own page`} />
+                        )}
+                    </GroupedListSection>
+                ) : null}
 
-                <GroupedListSection title={t`Banks`}>
-                    <CreateSyncCard
-                        description={t`Automatic sync with a personal token`}
-                        title={t`Monobank`}
-                        bankProvider={ExternalSourceEnum.MONOBANK}
-                    />
-                    <CreateSyncCard
-                        description={t`Import an XLSX statement`}
-                        title={t`Privatbank`}
-                        bankProvider={ExternalSourceEnum.PRIVATBANK}
-                    />
-                    <CreateSyncCard description={t`Import a PDF statement`} title={t`Erste Bank`} bankProvider={ExternalSourceEnum.ERSTE} />
-                </GroupedListSection>
+                {isNotEmptyArray(importOptions) ? (
+                    <GroupedListSection title={t`Import statements`} footer={importFooter}>
+                        {importOptions.map(option => (
+                            <CreateSyncCard
+                                key={option.provider}
+                                title={t(option.title)}
+                                description={t(option.description)}
+                                bankProvider={option.provider}
+                            />
+                        ))}
+                    </GroupedListSection>
+                ) : null}
 
-                <GroupedListSection title={t`Payment providers`}>
-                    <CreateSyncCard
-                        description={t`Every Wise balance through Enable Banking`}
-                        title={t`Wise`}
-                        bankProvider={ExternalSourceEnum.WISE}
-                    />
-                </GroupedListSection>
+                {isNotEmptyArray(manualOptions) ? (
+                    <GroupedListSection title={t`Add manually`} footer={manualFooter}>
+                        <View className="flex-row flex-wrap px-md">
+                            {manualOptions.map(option => (
+                                <CreateAccountTypeTile
+                                    key={option.type}
+                                    title={t(option.title)}
+                                    description={t(option.description)}
+                                    icon={option.icon}
+                                    type={option.type}
+                                    className={tileClassName}
+                                />
+                            ))}
+                        </View>
+                    </GroupedListSection>
+                ) : null}
 
-                <GroupedListSection title={t`Crypto`}>
-                    <CreateSyncCard
-                        description={t`Sync with a read-only API key`}
-                        title={t`Binance`}
-                        bankProvider={ExternalSourceEnum.BINANCE}
-                    />
-                </GroupedListSection>
+                {isSearching ? <CreateBankSearchResults query={normalizedQuery} /> : null}
 
-                <GroupedListSection title={t`Investments`}>
-                    <CreateSyncCard
-                        description={t`Import an XLSX operations export`}
-                        title={t`Inzhur`}
-                        bankProvider={ExternalSourceEnum.INZHUR}
-                    />
-                </GroupedListSection>
-
-                <GroupedListSection title={t`More banks`} footer={t`Tokens and statements stay on this device.`}>
-                    <CreateMoreBanksCard />
-                </GroupedListSection>
-
-                <MenuSpacer />
+                <SearchListBottomSpacer />
             </CollapsibleChromePage>
+
+            <SearchablePageSearchInput search={query} placeholder={t`Search banks and accounts`} onSearchChange={setQuery} />
         </GroupedSurface>
     );
 }
