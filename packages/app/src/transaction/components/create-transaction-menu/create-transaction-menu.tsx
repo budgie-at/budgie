@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import { AccessibilityInfo, StyleSheet, View, useWindowDimensions } from 'react-native';
 import Animated, { useAnimatedStyle, useReducedMotion, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 import Toast from 'react-native-toast-message';
+import { scheduleOnRN } from 'react-native-worklets';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -109,22 +110,37 @@ export const CreateTransactionMenu = ({ isOpen, onClose, triggerRef, accountId, 
     const stackGapClassName = fontScale >= CREATE_MENU_LARGE_TEXT_FONT_SCALE ? LARGE_TEXT_STACK_GAP_CLASSNAME : STACK_GAP_CLASSNAME;
 
     useEffect(() => {
-        if (isOpen) {
-            Toast.hide();
-            progress.set(isReducedMotion ? withTiming(1, FADE_TIMING) : withSpring(1, OPEN_SPRING));
-        } else {
+        if (!isOpen) {
             progress.set(withTiming(0, FADE_TIMING));
+
+            return;
         }
+
+        const focusFirstTile = () => {
+            if (isDefined(firstTileRef.current)) {
+                AccessibilityInfo.sendAccessibilityEvent(firstTileRef.current, 'focus');
+            }
+        };
+        const handleOpened = (finished?: boolean) => {
+            'worklet';
+            if (finished === true) {
+                scheduleOnRN(focusFirstTile);
+            }
+        };
+
+        Toast.hide();
+        progress.set(isReducedMotion ? withTiming(1, FADE_TIMING, handleOpened) : withSpring(1, OPEN_SPRING, handleOpened));
     }, [isOpen, isReducedMotion, progress]);
 
     useEffect(() => {
-        const focusTarget = isOpen ? firstTileRef.current : triggerRef.current;
-        const shouldMoveFocus = isOpen || shouldRestoreFocusRef.current;
+        if (isOpen || !shouldRestoreFocusRef.current) {
+            return;
+        }
 
         shouldRestoreFocusRef.current = false;
 
-        if (shouldMoveFocus && isDefined(focusTarget)) {
-            AccessibilityInfo.sendAccessibilityEvent(focusTarget, 'focus');
+        if (isDefined(triggerRef.current)) {
+            AccessibilityInfo.sendAccessibilityEvent(triggerRef.current, 'focus');
         }
     }, [isOpen, triggerRef]);
 
