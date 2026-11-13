@@ -8,7 +8,7 @@ import { exec, mustDrop, mustExec, writeFile } from '@mobile-ci/e2e-simlock/exec
 import { expect } from 'e2e';
 
 import * as b from '../budgie/core.ts';
-import { BUNDLE_ID } from '../budgie/fixtures.ts';
+import { BUNDLE_ID, installAndroidDatabase } from '../budgie/fixtures.ts';
 
 import { SCENES } from './scenes.ts';
 import { workerShell } from './steps.ts';
@@ -40,7 +40,7 @@ const STATUS_BAR = [
 ];
 
 /** The scene database for one cell: `seed-screenshot-scene.sh --dry-run`, the store seed hook's own build, on this machine. */
-function sceneDatabase(cell: Cell, timeZone: string | undefined): Buffer {
+function sceneDatabase(cell: Cell, timeZone: string | undefined, platform: string): Buffer {
     const dir = mkdtempSync(join(tmpdir(), 'budgie-scene-'));
     try {
         const output = join(dir, 'budgie.db');
@@ -49,6 +49,7 @@ function sceneDatabase(cell: Cell, timeZone: string | undefined): Buffer {
             env: {
                 ...process.env,
                 SCENE: cell.scene,
+                PLATFORM: platform,
                 LOCALE: cell.locale,
                 APPEARANCE: cell.appearance,
                 ...(timeZone === undefined ? {} : { TZ: timeZone })
@@ -98,7 +99,7 @@ export class Media extends b.Budgie {
     async capture(cell: Cell): Promise<void> {
         const lease = await this.lease();
         const container = await this.container();
-        if (!primed.has(lease)) {
+        if (b.isIos(this.ctx) && !primed.has(lease)) {
             // prime-deep-links: iOS asks before the first custom-scheme link on a fresh simulator. Before the seed, so no scene's PIN lock is in the way.
             await b.phase('prime deep links', async () => {
                 await this.ctx.app.open();
@@ -110,6 +111,10 @@ export class Media extends b.Budgie {
         }
         await b.phase('seed', () => this.seed(lease, container, cell));
         await b.phase('device', async () => {
+            if (!b.isIos(this.ctx)) {
+                await this.prepareAndroid(cell);
+                return;
+            }
             await mustExec(this.api, lease, ['ui', 'appearance', cell.appearance]);
             await this.writeAppDefaults('AppleLanguages', '-array', cell.locale);
             await this.writeAppDefaults('AppleLocale', '-string', cell.locale);
@@ -148,7 +153,16 @@ export class Media extends b.Budgie {
         mkdirSync(dirname(path), { recursive: true });
         // The leased model (media.config.ts sets it); the simulator's own name is the farm's.
         const model = process.env.SIMLOCK_DEVICE ?? this.ctx.device.unstable_raw.deviceName;
-        const shot = await this.ctx.device.unstable_raw.client.capture.screenshot({ path, pixelDensity: nativeScale(model) });
+        const shot = await this.ctx.device.unstable_raw.client.capture.screenshot({
+            path,
+            pixelDensity: b.isIos(this.ctx) ? nativeScale(model) : undefined
+        });
+        if (
+            !b.isIos(this.ctx) &&
+            (shot.width !== Number(process.env.SCREENSHOT_WIDTH) || shot.height !== Number(process.env.SCREENSHOT_HEIGHT))
+        ) {
+            throw new Error(`Android screenshot has unexpected dimensions: ${shot.width}x${shot.height}`);
+        }
         if (shot.path !== path) copyFileSync(shot.path, path);
         console.log(`[capture] ${path} ${shot.width ?? '?'}x${shot.height ?? '?'}`);
     }
@@ -170,6 +184,9 @@ export class Media extends b.Budgie {
      * scene database is built in this runner's zone, with a warning.
      */
     private async timeZone(lease: string): Promise<string | undefined> {
+        if (!b.isIos(this.ctx)) {
+            return (await mustExec(this.api, lease, ['shell', 'getprop persist.sys.timezone'], undefined, 'adb')).trim() || undefined;
+        }
         if (!timeZones.has(lease)) {
             const zone = await workerShell(this.api, lease, '/usr/bin/readlink /etc/localtime')
                 .then(out => /zoneinfo\/(.+)$/.exec(out.trim())?.[1])
@@ -188,7 +205,10 @@ export class Media extends b.Budgie {
             await prepare(this, cell);
             return;
         }
-        await this.installDatabase(sceneDatabase(cell, await this.timeZone(lease)));
+        await this.installDatabase(sceneDatabase(cell, await this.timeZone(lease), this.ctx.device.unstable_raw.platform));
+        if (!b.isIos(this.ctx)) {
+            return;
+        }
         for (const name of fileFixtures()) {
             await writeFile(this.api, lease, `${container}/Documents/E2EFixtures/${name}`, readFileSync(join(APP_TESTS, 'fixtures', name)));
         }
@@ -204,9 +224,55 @@ export class Media extends b.Budgie {
         await mustExec(this.api, await this.lease(), ['spawn', 'defaults', 'write', plist, key, type, value]);
     }
 
+    private async prepareAndroid(cell: Cell): Promise<void> {
+        const lease = await this.lease();
+        const shell = (script: string) => mustExec(this.api, lease, ['shell', script], undefined, 'adb');
+        const width = Number(process.env.SCREENSHOT_WIDTH);
+        const height = Number(process.env.SCREENSHOT_HEIGHT);
+        const density = Number(process.env.SCREENSHOT_DENSITY);
+        if (![width, height, density].every(value => Number.isInteger(value) && value > 0)) {
+            throw new Error('Android media requires positive integer SCREENSHOT_WIDTH, SCREENSHOT_HEIGHT and SCREENSHOT_DENSITY');
+        }
+        await shell(`wm size ${width}x${height} && wm density ${density}`);
+        await shell(`cmd locale set-app-locales ${BUNDLE_ID} --locales ${cell.locale}`);
+        await shell(`cmd uimode night ${cell.appearance === 'dark' ? 'yes' : 'no'}`);
+        if ((Math.min(width, height) * 160) / density >= 600) {
+            await shell('pm enable com.google.android.apps.nexuslauncher/com.android.launcher3.testing.TestInformationProvider');
+            await shell('content call --uri content://com.google.android.apps.nexuslauncher.TestInfo --method enable-transient-taskbar');
+        }
+        await shell('settings put global hide_error_dialogs 1 && am broadcast -a android.intent.action.CLOSE_SYSTEM_DIALOGS');
+        if (process.env.SCREENSHOT_STATUS_BAR === 'real') {
+            return;
+        }
+        await shell('settings put global sysui_demo_allowed 1 && settings put global sysui_tuner_demo_on 1');
+        for (let attempt = 0; ; attempt++) {
+            const state = await shell('dumpsys activity service com.android.systemui/.SystemUIService DemoModeController');
+            if (state.includes('isDemoModeAllowed=true') && state.includes('isInDemoMode=true')) {
+                break;
+            }
+            if (attempt === 9) {
+                throw new Error(`SystemUI did not enter demo mode: ${state}`);
+            }
+            await b.sleep(1_000);
+        }
+        for (const command of [
+            'clock -e hhmm 0941',
+            'network -e wifi show -e level 4 -e fully true',
+            'network -e mobile show -e datatype none -e level 4',
+            'battery -e level 100 -e plugged false',
+            'notifications -e visible false'
+        ]) {
+            await shell(`am broadcast -a com.android.systemui.demo -e command ${command}`);
+        }
+    }
+
     /** The app stopped, its keychain reset, and `database` its live database. */
     async installDatabase(database: Buffer): Promise<void> {
         const lease = await this.lease();
+        if (!b.isIos(this.ctx)) {
+            await installAndroidDatabase(this.api, lease, database);
+            return;
+        }
         const sqlite = `${await this.container()}/Documents/SQLite`;
         await exec(this.api, lease, ['terminate', BUNDLE_ID]);
         await mustExec(this.api, lease, ['keychain', 'reset']);
