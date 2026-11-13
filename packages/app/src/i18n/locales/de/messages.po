@@ -664,6 +664,10 @@ msgstr "{installmentCount, plural, one {In # Zahlung aufteilen} other {In # Zahl
 msgid "passive-income.chart.so-far"
 msgstr "{label} bisher"
 
+#: src/yield/component/yield-legend-row/yield-legend-row.tsx
+msgid "{label}, {amount}"
+msgstr "{label}, {amount}"
+
 #: src/yield/hook/use-yield-plot-accessibility.hook.ts
 msgid "{label}: {amount}"
 msgstr "{label}: {amount}"
@@ -1145,6 +1149,10 @@ msgstr "−{changePercent} ggü. {shortPreviousLabel}"
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "≈ {formattedMonths} mo"
 msgstr "≈ {formattedMonths} Mon."
+
+#: src/yield/component/yield-legend-footnote/yield-legend-footnote.tsx
+msgid "≈ includes estimates"
+msgstr "≈ enthält Schätzwerte"
 
 #: src/account/component/crypto-currency-group-market-link/crypto-currency-group-market-link.tsx
 msgid "1 {instrumentCode} ≈ {defaultInstrumentSymbol}{formattedRate}"
@@ -6951,6 +6959,10 @@ msgstr "Noch nicht synchronisiert"
 msgid "Not synced: Auto-Invest, Binance Pay, Binance Card, gift cards, sub-account transfers, margin and futures."
 msgstr "Nicht synchronisiert: Auto-Invest, Binance Pay, Binance Card, Geschenkkarten, Subkonto-Überweisungen, Margin und Futures."
 
+#: src/yield/component/yield-legend-retry/yield-legend-retry.tsx
+msgid "Not updated · Retry"
+msgstr "Nicht aktualisiert · Erneut versuchen"
+
 #: src/inzhur/component/inzhur-cash-account-card/inzhur-cash-account-card.tsx
 msgid "Not yet invested"
 msgstr "Noch nicht investiert"
@@ -7477,6 +7489,10 @@ msgstr "Teil deines Verlaufs. Ältere Aktivitäten sind nicht enthalten."
 #: src/inzhur/component/inzhur-operations-details/inzhur-operations-details.tsx
 msgid "Partial export"
 msgstr "Teilexport"
+
+#: src/yield/component/yield-legend/yield-legend.tsx
+msgid "Passive income by kind"
+msgstr "Passives Einkommen nach Art"
 
 #: src/yield/hook/use-yield-plot-accessibility.hook.ts
 msgid "Passive income chart"
@@ -9585,6 +9601,10 @@ msgstr "Steuer {taxLabel}"
 msgid "Tax withheld"
 msgstr "Einbehaltene Steuer"
 
+#: src/yield/component/yield-legend-footnote/yield-legend-footnote.tsx
+msgid "Tax withheld {tax}"
+msgstr "Einbehaltene Steuer {tax}"
+
 #: src/account/constant/account-kind-title.constant.ts
 msgid "Term deposit"
 msgstr "Festgeld"
@@ -10611,6 +10631,10 @@ msgstr "Heute aktualisiert"
 #: src/market-data/component/currency-market-stats-footer/currency-market-stats-footer.tsx
 msgid "Updated yesterday"
 msgstr "Gestern aktualisiert"
+
+#: src/yield/component/yield-legend-footnote/yield-legend-footnote.tsx
+msgid "Updating prices…"
+msgstr "Preise werden aktualisiert …"
 
 #: src/auth/components/pin-sealing-state/pin-sealing-state.tsx
 msgid "Updating your PIN"

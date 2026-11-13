@@ -12,6 +12,8 @@ import { YieldChartModeEnum } from '../../enum/yield-chart-mode.enum';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 import { YieldChartModeControl } from '../yield-chart-mode-control/yield-chart-mode-control';
 import { YieldChartPlot } from '../yield-chart-plot/yield-chart-plot';
+import { YieldLegendFootnote } from '../yield-legend-footnote/yield-legend-footnote';
+import { YieldLegend } from '../yield-legend/yield-legend';
 
 const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 const BUCKET_TITLE = {
@@ -40,6 +42,10 @@ export const YieldChartCard = () => {
             </View>
 
             <YieldChartPlot />
+
+            <YieldLegend />
+
+            <YieldLegendFootnote />
         </View>
     );
 };
