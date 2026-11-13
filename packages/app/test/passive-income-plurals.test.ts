@@ -108,3 +108,58 @@ describe('passive income plural catalogs', () => {
         expect(translate(locale, catalog, SO_FAR_ID, { label: 'Nov 2026' })).toContain('Nov 2026');
     });
 });
+
+type CompiledBranches = Readonly<Record<string, Messages[string]>>;
+
+const isBranches = (value: unknown): value is CompiledBranches => typeof value === 'object' && value !== null;
+
+const collectPlaceholders = (message: Messages[string], names: Set<string>): Set<string> => {
+    if (typeof message === 'string') {
+        return names;
+    }
+
+    message.forEach(node => {
+        if (typeof node === 'string') {
+            return;
+        }
+
+        const [name, , options] = node;
+
+        if (name !== '#') {
+            names.add(name);
+        }
+
+        if (isBranches(options)) {
+            Object.values(options).forEach(branch => collectPlaceholders(branch, names));
+        }
+    });
+
+    return names;
+};
+
+describe('compiled catalogs only reference placeholders their source declares', () => {
+    it.each(catalogs)('%s', (locale, catalog) => {
+        const offenders = Object.entries(catalog).flatMap(([id, message]) => {
+            if (!(id in enMessages)) {
+                return [];
+            }
+
+            const declared = collectPlaceholders(enMessages[id] ?? '', new Set());
+
+            return [...collectPlaceholders(message, new Set())].filter(name => !declared.has(name)).map(name => `${locale}:${id}:${name}`);
+        });
+
+        expect(offenders).toEqual([]);
+    });
+
+    it.each(catalogs)('%s budget history keeps its own placeholders', (_locale, catalog) => {
+        const budgetHistoryId = Object.keys(enMessages).find(id =>
+            collectPlaceholders(enMessages[id] ?? '', new Set()).has('onBudgetCount')
+        );
+        const placeholders = collectPlaceholders(catalog[budgetHistoryId ?? ''] ?? '', new Set());
+
+        expect(budgetHistoryId).toBeDefined();
+        expect(placeholders.has('onBudgetCount')).toBe(true);
+        expect(placeholders.has('holdingCount')).toBe(false);
+    });
+});

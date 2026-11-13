@@ -1119,7 +1119,7 @@ msgstr "{totalCount, plural, one {en {holdingCount} de # posición} other {en {h
 
 #: src/budget/components/budget-history-section/budget-history-section.tsx
 msgid "{totalCount, plural, one {On budget {onBudgetCount} of # period} other {On budget {onBudgetCount} of # periods}}"
-msgstr "{totalCount, plural, one {Dentro del presupuesto {onBudgetCount} de # periodo} other {Dentro del presupuesto {onBudgetCount} de # periodos} many {Dentro del presupuesto {onBudgetCount} de # periodos}}"
+msgstr "{totalCount, plural, one {Dentro del presupuesto {onBudgetCount} de # periodo} other {Dentro del presupuesto {onBudgetCount} de # periodos}}"
 
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "{totalSize} GB"

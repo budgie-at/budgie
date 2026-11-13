@@ -1119,7 +1119,7 @@ msgstr "{totalCount, plural, one {sur {holdingCount} de # position} other {sur {
 
 #: src/budget/components/budget-history-section/budget-history-section.tsx
 msgid "{totalCount, plural, one {On budget {onBudgetCount} of # period} other {On budget {onBudgetCount} of # periods}}"
-msgstr "{totalCount, plural, one {Dans le budget {onBudgetCount} sur # période} other {Dans le budget {onBudgetCount} sur # périodes} many {Dans le budget {onBudgetCount} sur # périodes}}"
+msgstr "{totalCount, plural, one {Dans le budget {onBudgetCount} sur # période} other {Dans le budget {onBudgetCount} sur # périodes}}"
 
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "{totalSize} GB"
@@ -7690,7 +7690,7 @@ msgstr "Déjà payé : {paid}"
 
 #: src/transaction/hook/use-dividend-role-label.hook.ts
 msgid "Paid to your bank · {bankTitle}"
-msgstr "Versés à votre banque · {bankTitle}"
+msgstr "Versés à ta banque · {bankTitle}"
 
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
 msgid "Pair transfers and refunds"

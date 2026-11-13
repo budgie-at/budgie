@@ -1119,7 +1119,7 @@ msgstr "{totalCount, plural, one {bei {holdingCount} von # Anlage} other {bei {h
 
 #: src/budget/components/budget-history-section/budget-history-section.tsx
 msgid "{totalCount, plural, one {On budget {onBudgetCount} of # period} other {On budget {onBudgetCount} of # periods}}"
-msgstr "{totalCount, plural, one {bei {holdingCount} von # Anlage} other {bei {holdingCount} von # Anlagen}}"
+msgstr "{totalCount, plural, one {{onBudgetCount} von # Zeitraum im Budget} other {{onBudgetCount} von # Zeiträumen im Budget}}"
 
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "{totalSize} GB"
@@ -7727,7 +7727,7 @@ msgstr "Diagramm des passiven Einkommens"
 
 #: src/yield/component/yield-empty-state/yield-empty-state.tsx
 msgid "Passive income shows up here when you earn staking rewards, dividends or interest"
-msgstr "Passives Einkommen erscheint hier, sobald du Staking-Prämien, Dividenden oder Zinsen verdienen"
+msgstr "Passives Einkommen erscheint hier, sobald du Staking-Prämien, Dividenden oder Zinsen verdienst"
 
 #: src/yield/component/yield-entry-row-content/yield-entry-row-content.tsx
 msgid "Passive income, {subtitle}"

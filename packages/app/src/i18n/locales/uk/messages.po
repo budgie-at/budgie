@@ -1119,7 +1119,7 @@ msgstr "{totalCount, plural, one {для {holdingCount} із # активу} few
 
 #: src/budget/components/budget-history-section/budget-history-section.tsx
 msgid "{totalCount, plural, one {On budget {onBudgetCount} of # period} other {On budget {onBudgetCount} of # periods}}"
-msgstr "{totalCount, plural, one {для {holdingCount} із # активу} few {для {holdingCount} із # активів} many {для {holdingCount} із # активів} other {для {holdingCount} із # активу}}"
+msgstr "{totalCount, plural, one {У межах бюджету {onBudgetCount} з # періоду} few {У межах бюджету {onBudgetCount} з # періодів} many {У межах бюджету {onBudgetCount} з # періодів} other {У межах бюджету {onBudgetCount} з # періодів}}"
 
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "{totalSize} GB"
