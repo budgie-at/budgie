@@ -1,5 +1,5 @@
 import { HistoricalMarketDataDrainerService } from '@app/market-data/service/historical-market-data-drainer.service';
-import { InstrumentMarketDataJobStatusEnum, InstrumentRepository } from '@budgie/contracts';
+import { InstrumentMarketDataJobStatusEnum, InstrumentRepository, SettingsRepository } from '@budgie/contracts';
 import { InstrumentMarketDataJobRepository } from '@budgie/market';
 import { afterEach, beforeEach, describe, expect, it, vi } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
@@ -110,6 +110,18 @@ describe('market-data/historical-market-data-loader', () => {
             yield* advanceScheduledDrain(drainDelayMs);
 
             expect(markFailedExecutions).toHaveBeenCalledTimes(1);
+        }).pipe(Effect.provide(TestClockLayer))
+    );
+
+    it.effect('runs the one-time crypto valuation step once the queue is empty', () =>
+        Effect.gen(function* () {
+            const historicalMarketDataDrainerService = yield* HistoricalMarketDataDrainerService;
+            const settingsRepository = yield* SettingsRepository;
+
+            yield* historicalMarketDataDrainerService.scheduleDrain();
+            yield* advanceScheduledDrain(drainDelayMs);
+
+            expect((yield* settingsRepository.getSettings()).cryptoStrictValuationVersion).toBe(1);
         }).pipe(Effect.provide(TestClockLayer))
     );
 });
