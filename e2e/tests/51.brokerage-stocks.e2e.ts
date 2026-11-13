@@ -74,7 +74,7 @@ test('51 manual brokerage with stocks', { tags: ['accounts'], platforms: PENDING
         await expect(core.byId(screen, 'Brokerage.GainLine')).toHaveText(/▲ \$200/, { timeout: 10_000 });
         await core.tapId(ctx, 'PageHeader.BackButton');
         await core.expectId(ctx, 'HomePage.TotalBalance', 10_000);
-        await core.scrollTo(ctx, 'HomeHolding.BGTX');
+        await core.scrollTo(ctx, 'HomeHolding.BGTX', 'up');
         await expect(core.byId(screen, 'HomeHolding.Value.BGTX')).toHaveText(/\$1,200/, { timeout: 10_000 });
         await expect(core.byId(screen, 'HomeHolding.Return.BGTX')).toHaveText(/▲ \$200/, { timeout: 10_000 });
         await expect(core.byId(screen, 'HomeHolding.Caption.BGTX')).toHaveText(/^10 BGTX/);
