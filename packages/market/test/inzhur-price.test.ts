@@ -36,9 +36,8 @@ const InzhurLayer = (html: string) =>
         HistoricalMarketDataService.layer.pipe(Layer.provide(makeHtmlHttpClientLayer(html))),
         AccountRepository.layer,
         InzhurPriceService.layer,
-        InstrumentDailyMarketPriceRepository.layer,
-        makeHtmlHttpClientLayer(html)
-    );
+        InstrumentDailyMarketPriceRepository.layer
+    ).pipe(Layer.provideMerge(makeHtmlHttpClientLayer(html)));
 
 const drainFundJob = Effect.fnUntraced(function* (instrumentId: number) {
     const historicalMarketDataService = yield* HistoricalMarketDataService;

@@ -6,14 +6,14 @@ import { isNotEmptyString } from '@rnw-community/shared';
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
 import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
-import { getBankIntegrationTitle } from '../../../account/utils/get-bank-integration-title.util';
+import { getInstitutionTitle } from '../../../account/utils/get-institution-title.util';
 import { BankIntegrationSelector } from '../../../app/(main)/bank-integration/bank-integration.selector';
-import { EXTERNAL_SOURCE } from '../../../rule/constant/external-source.constant';
 import { BankIntegrationContext } from '../../context/bank-integration.context';
 import { getBankIntegrationCapabilities } from '../../utils/get-bank-integration-capabilities.util';
 import { BankIntegrationAccountList } from '../bank-integration-account-list/bank-integration-account-list';
 import { BankIntegrationKeyCard } from '../bank-integration-key-card/bank-integration-key-card';
 import { BankIntegrationOverview } from '../bank-integration-overview/bank-integration-overview';
+import { BankIntegrationRenameCard } from '../bank-integration-rename-card/bank-integration-rename-card';
 import { BankIntegrationStatements } from '../bank-integration-statements/bank-integration-statements';
 import { EnableBankingConnectionCard } from '../enable-banking-connection-card/enable-banking-connection-card';
 import { EnableBankingDisconnectRow } from '../enable-banking-disconnect-row/enable-banking-disconnect-row';
@@ -33,7 +33,8 @@ export const BankIntegrationPage = ({ integration }: Props) => {
     const isEnableBanking = integration.provider === ExternalSourceEnum.ENABLE_BANKING;
     const keyCard = isEnableBanking ? <EnableBankingConnectionCard /> : monobankKeyCard;
     const disconnect = isEnableBanking ? <EnableBankingDisconnectRow /> : null;
-    const defaultTitle = getBankIntegrationTitle(t(EXTERNAL_SOURCE[integration.provider]), integration.label, null);
+    const rename = integration.provider === ExternalSourceEnum.MANUAL ? <BankIntegrationRenameCard /> : null;
+    const defaultTitle = getInstitutionTitle(t, integration.provider, integration.label, null);
     const title = isEnableBanking && isNotEmptyString(integration.label) ? integration.label : defaultTitle;
 
     const contextValue = { integration, capabilities };
@@ -50,6 +51,7 @@ export const BankIntegrationPage = ({ integration }: Props) => {
                     <BankIntegrationOverview />
                     {statements}
                     {keyCard}
+                    {rename}
                     <BankIntegrationAccountList />
                     {disconnect}
                 </BankIntegrationContext.Provider>

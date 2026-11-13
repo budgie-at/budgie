@@ -9,6 +9,7 @@ import { MoneyText } from '../../../@generic/component/money-text/money-text';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
 import { MoneyTextVariantEnum } from '../../../@generic/enum/money-text-variant.enum';
 import { useFormatInstrumentAmount } from '../../../i18n/hook/use-format-instrument-amount.hook';
+import { isSecurityInstrumentType } from '../../../instrument/utils/is-security-instrument-type.util';
 import { defaultInstrumentIdAtom } from '../../../settings/constants/settings-atoms.constant';
 import { ConvertedAmountLabel } from '../converted-amount-label/converted-amount-label';
 import { DebtSettlementConvertedAmountLabel } from '../debt-settlement-converted-amount-label/debt-settlement-converted-amount-label';
@@ -34,7 +35,7 @@ export const TransactionEntryAmount = ({ debtEvent, entry, variant, sign, testID
     const defaultInstrumentId = useAtomValue(defaultInstrumentIdAtom);
     const formatDigits = useFormatInstrumentAmount();
 
-    if (entry.account.instrument.type === InstrumentTypeEnum.FUND) {
+    if (isSecurityInstrumentType(entry.account.instrument.type)) {
         return <TransactionFundEntryAmount entry={entry} testID={testID} />;
     }
 

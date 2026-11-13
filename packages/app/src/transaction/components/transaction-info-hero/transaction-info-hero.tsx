@@ -1,21 +1,20 @@
 import { AmountField, AmountFieldText } from '@budgie/amount-input';
-import { TransactionTypeEnum, UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
+import { TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View, useWindowDimensions } from 'react-native';
 
-import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
-import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { cn } from '../../../@generic/utils/cn.util';
 import { MatchingRulesPill } from '../../../rule/components/matching-rules-pill/matching-rules-pill';
 import { TRANSACTION_INFO_MAX_FONT_SCALE } from '../../constant/transaction-info-max-font-scale.constant';
 import { TRANSACTION_INFO_STACKED_FONT_SCALE } from '../../constant/transaction-info-stacked-font-scale.constant';
 import { TRANSACTION_TYPE } from '../../constant/transaction-type.constant';
+import { useProtectedInstrumentAmountLabel } from '../../hook/use-protected-instrument-amount-label.hook';
+import { useTransactionRowTitle } from '../../hook/use-transaction-row-title.hook';
 import { formatTransactionInfoAmount } from '../../utils/format-transaction-info-amount.util';
-import { getTransactionDisplayTitle } from '../../utils/get-transaction-display-title.util';
-import { getTransactionInfoDestinationEntry } from '../../utils/get-transaction-info-destination-entry.util';
-import { getTransactionInfoPrimaryEntry } from '../../utils/get-transaction-info-primary-entry.util';
+import { formatTransactionInfoDestination } from '../../utils/format-transaction-info-destination.util';
 import { getTransactionType } from '../../utils/get-transaction-type.util';
 import { TransactionInfoHeroDate } from '../transaction-info-hero-date/transaction-info-hero-date';
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
@@ -32,22 +31,15 @@ interface Props {
 
 export const TransactionInfoHero = ({ transaction, matchingRuleIds, onAmountLayout, onTitleLayout }: Props) => {
     const { t } = useLingui();
-    const formatDigits = useProtectedAmountLabel();
+    const formatAmount = useProtectedInstrumentAmountLabel();
+    const rowTitle = useTransactionRowTitle(transaction);
     const { fontScale } = useWindowDimensions();
     const largeText = fontScale > TRANSACTION_INFO_STACKED_FONT_SCALE;
     const heroClassName = largeText ? 'items-center pt-md pb-3xl' : 'items-center pt-3xl pb-5xl';
     const showIcon = getTransactionType(transaction) === TransactionTypeEnum.TRANSFER;
     const amountClassName = getTransactionType(transaction) === TransactionTypeEnum.INCOME ? 'text-positive-strong' : 'text-primary';
-    const displayTitle = getTransactionDisplayTitle(transaction);
-    const title = isNotEmptyString(displayTitle) ? displayTitle : t(TRANSACTION_TYPE[transaction.type]);
-    const sourceEntry = getTransactionInfoPrimaryEntry(transaction);
-    const destinationEntry = getTransactionInfoDestinationEntry(transaction);
-    const destinationAmount =
-        isDefined(sourceEntry) &&
-        isDefined(destinationEntry) &&
-        sourceEntry.account.instrument.id !== destinationEntry.account.instrument.id
-            ? `→ ${formatDigits(convertFromMicroUnits(destinationEntry.amount), destinationEntry.account.instrument.symbol)}`
-            : null;
+    const title = isNotEmptyString(rowTitle) ? rowTitle : t(TRANSACTION_TYPE[transaction.type]);
+    const destinationAmount = formatTransactionInfoDestination(transaction, formatAmount);
     const amountFontSize = largeText ? 34 : 40;
 
     return (
@@ -76,7 +68,7 @@ export const TransactionInfoHero = ({ transaction, matchingRuleIds, onAmountLayo
                         className={cn('leading-[48px] font-semibold tracking-[-1px] text-center', amountClassName)}
                         selectable
                     >
-                        {formatTransactionInfoAmount(transaction, formatDigits)}
+                        {formatTransactionInfoAmount(transaction, formatAmount)}
                     </AmountFieldText>
                 </AmountField>
             </View>

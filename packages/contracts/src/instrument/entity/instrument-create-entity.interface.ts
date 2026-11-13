@@ -4,5 +4,5 @@ import type { InstrumentEntityInterface } from './instrument-entity.interface';
 
 export type InstrumentCreateEntityInterface = PartialByKeysType<
     Omit<InstrumentEntityInterface, BaseEntityKeyType>,
-    'priceProvider' | 'providerInstrumentId' | 'marketCapRank'
+    'quoteInstrumentId' | 'priceProvider' | 'providerInstrumentId' | 'marketCapRank'
 >;

@@ -60,6 +60,8 @@ export class TransferCreationService extends Context.Service<TransferCreationSer
             baseInstrumentId: valuation.baseInstrumentId,
             baseExchangeRate: valuation.baseExchangeRate,
             baseAmount: valuation.baseAmount,
+            quotedInstrumentId: entry.quotedInstrumentId ?? null,
+            quotedUnitPrice: entry.quotedUnitPrice ?? null,
             toIban: entry.toIban ?? null
         });
 

@@ -3,7 +3,7 @@
   "dialect": "sqlite",
   "id": "0b41315f-eee0-425c-a97e-5363f88a3b06",
   "prevIds": [
-    "3becd8f9-eed5-48e6-8f60-67a18e51fd9d"
+    "1016fbd6-baa9-4ff3-9cd0-13a57c6ff001"
   ],
   "ddl": [
     {
@@ -2367,6 +2367,16 @@
       "default": null,
       "generated": null,
       "name": "provider_instrument_id",
+      "entityType": "columns",
+      "table": "instruments"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "quote_instrument_id",
       "entityType": "columns",
       "table": "instruments"
     },
@@ -5555,6 +5565,21 @@
       "name": "fk_instrument_daily_market_prices_quote_instrument_id_instruments_id_fk",
       "entityType": "fks",
       "table": "instrument_daily_market_prices"
+    },
+    {
+      "columns": [
+        "quote_instrument_id"
+      ],
+      "tableTo": "instruments",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "nameExplicit": false,
+      "name": "fk_instruments_quote_instrument_id_instruments_id_fk",
+      "entityType": "fks",
+      "table": "instruments"
     },
     {
       "columns": [

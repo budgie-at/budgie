@@ -6,6 +6,7 @@ export interface TransactionDayNetAmountRowInterface {
     readonly baseAmount: number;
     readonly instrumentSymbol: string;
     readonly instrumentType: InstrumentTypeEnum;
+    readonly hasSecurity: boolean;
     readonly instrumentCount: number;
     readonly unvaluedCount: number;
 }

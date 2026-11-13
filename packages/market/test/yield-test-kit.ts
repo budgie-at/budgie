@@ -109,6 +109,7 @@ const fiat = (id: number, code: string): InstrumentEntityInterface => ({
     symbol: code,
     priceProvider: null,
     providerInstrumentId: null,
+    quoteInstrumentId: null,
     marketCapRank: null
 });
 

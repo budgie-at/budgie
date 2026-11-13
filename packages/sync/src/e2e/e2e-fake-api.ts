@@ -4,7 +4,7 @@ import { HTTP_STATUS_UNAUTHORIZED } from '../core/constant/http-status.constant'
 
 import type { ClientInfo, StatementItem } from '@liaugust/monobank-sdk';
 
-type FakeHandlerType = (body: string) => unknown;
+type FakeHandlerType = (body: string, url: string) => unknown;
 
 const REQUEST_PATTERN = /^https:\/\/([^/?#]+)([^?#]*)/u;
 const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
@@ -12,6 +12,7 @@ const ISO_DATE_LENGTH = 10;
 const NINETY_DAYS = 90;
 const MILLISECONDS_PER_SECOND = 1000;
 const SECONDS_PER_HOUR = 3600;
+const SECONDS_PER_DAY = 86_400;
 const UAH_NUMERIC_CODE = 980;
 const REJECTED_TOKEN_PATTERN = /^e2e-rejected/u;
 
@@ -181,9 +182,67 @@ const MONOBANK_ROUTES: ReadonlyArray<readonly [string, RegExp, FakeHandlerType]>
     ['GET', /^\/personal\/statement\/[^/]+\/\d+(\/\d+)?$/u, monobankStatement]
 ];
 
+const E2E_SECURITIES = [
+    { symbol: 'BGTX', currency: 'USD', shortname: 'Budgie Example', longname: 'Budgie Example Holdings', exchDisp: 'E2E Exchange' },
+    { symbol: 'BGEU', currency: 'EUR', shortname: 'Budgie Euro', longname: 'Budgie Euro Fund', exchDisp: 'E2E Euronext' },
+    { symbol: 'BGNP', currency: 'USD', shortname: 'Budgie Unpriced', longname: 'Budgie Unpriced Trust', exchDisp: 'E2E OTC' }
+] as const;
+const E2E_UNPRICED_SECURITY = 'BGNP';
+const SEARCH_QUERY_PATTERN = /[?&]q=([^&#]*)/u;
+const E2E_SECURITY_LATEST_CLOSE = 120;
+const E2E_SECURITY_DAILY_RISE = 0.4;
+const E2E_SECURITY_SWING = 4;
+const E2E_SECURITY_SWING_FREQUENCY = 0.7;
+const E2E_SECURITY_HISTORY_DAYS = 60;
+const e2eSecurityClose = (days: number) =>
+    Math.round(
+        (E2E_SECURITY_LATEST_CLOSE - days * E2E_SECURITY_DAILY_RISE - E2E_SECURITY_SWING * Math.sin(days * E2E_SECURITY_SWING_FREQUENCY)) *
+            100
+    ) / 100;
+
+const yahooChart = (currency: string, isPriced: boolean) => () => {
+    const todayNoonSeconds = Math.floor(Date.now() / MILLISECONDS_PER_DAY) * SECONDS_PER_DAY + SECONDS_PER_DAY / 2;
+    const daysAgo = Array.from({ length: E2E_SECURITY_HISTORY_DAYS }, (_day, index) => E2E_SECURITY_HISTORY_DAYS - 1 - index);
+
+    return {
+        chart: {
+            result: [
+                {
+                    meta: { currency, ...(isPriced && { regularMarketPrice: E2E_SECURITY_LATEST_CLOSE }) },
+                    timestamp: daysAgo.map(days => todayNoonSeconds - days * SECONDS_PER_DAY),
+                    indicators: {
+                        quote: [{ close: daysAgo.map(days => (isPriced ? e2eSecurityClose(days) : null)) }]
+                    }
+                }
+            ]
+        }
+    };
+};
+
+const YAHOO_ROUTES: ReadonlyArray<readonly [string, RegExp, FakeHandlerType]> = [
+    [
+        'GET',
+        /^\/v1\/finance\/search$/u,
+        (_body, url) => {
+            const query = decodeURIComponent((SEARCH_QUERY_PATTERN.exec(url)?.[1] ?? '').replaceAll('+', ' ')).toLowerCase();
+
+            return {
+                quotes: E2E_SECURITIES.filter(security =>
+                    [security.symbol, security.shortname, security.longname].some(value => value.toLowerCase().includes(query))
+                ).map(({ currency: _currency, ...quote }) => ({ ...quote, quoteType: 'EQUITY' }))
+            };
+        }
+    ],
+    ...E2E_SECURITIES.map(
+        ({ symbol, currency }) =>
+            ['GET', new RegExp(`^/v8/finance/chart/${symbol}$`, 'u'), yahooChart(currency, symbol !== E2E_UNPRICED_SECURITY)] as const
+    )
+];
+
 const ROUTES_BY_HOST = new Map([
     ['api.enablebanking.com', ENABLE_BANKING_ROUTES],
-    ['api.monobank.ua', MONOBANK_ROUTES]
+    ['api.monobank.ua', MONOBANK_ROUTES],
+    ['query1.finance.yahoo.com', YAHOO_ROUTES]
 ]);
 
 const readBody = (body: unknown): string => {
@@ -218,7 +277,7 @@ export const installE2eFakeApi = (): void => {
         const route = routes.find(([routeMethod, pattern]) => routeMethod === method && pattern.test(path));
 
         return Promise.resolve(
-            isDefined(route) ? respond(200, route[2](readBody(init?.body))) : respond(404, { error: 'E2E_UNKNOWN_ROUTE' })
+            isDefined(route) ? respond(200, route[2](readBody(init?.body), toUrl(input))) : respond(404, { error: 'E2E_UNKNOWN_ROUTE' })
         );
     };
 };

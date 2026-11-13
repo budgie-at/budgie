@@ -230,11 +230,15 @@ describe('TransactionService.updateYield', () => {
         Effect.gen(function* () {
             const testSeedService = yield* seed;
             const { deposit, bank } = yield* seedIncomeWithDeposit;
-            const transfer = yield* testSeedService.manualExpense({
-                accountId: bank.id,
-                amount: AMOUNT,
+            const transfer = yield* testSeedService.directTransfer({
+                exchangeRate: 1,
                 operatedAt: OPERATED_AT,
-                type: TransactionTypeEnum.TRANSFER
+                sourceAccountId: bank.id,
+                sourceAmount: AMOUNT,
+                sourceEntryExchangeRate: 1,
+                targetAccountId: deposit.id,
+                targetAmount: AMOUNT,
+                toIban: null
             });
 
             yield* updateYield(transfer.id, { yieldKind: YieldKindEnum.STAKING, yieldSourceAccountId: deposit.id });

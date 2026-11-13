@@ -99,6 +99,7 @@ export class MoneyDataUpgradeService extends Context.Service<MoneyDataUpgradeSer
                 discard: true
             });
             yield* marketPricedRevaluationService.valuePendingEntries(baseInstrument.id, countProcessed);
+            yield* transactionEntryBaseValuationRepository.rebaseSecurityTradeCosts(baseInstrument.id);
             yield* updateProgress(snapshot => ({ ...snapshot, isUpdatingBalances: true }));
 
             return yield* accountBalanceIncrementalService.updateAllBalances(true);

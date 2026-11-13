@@ -37,6 +37,12 @@ export default function Index() {
                         type={AccountTypeEnum.CRYPTO}
                     />
                     <CreateAccountCard
+                        description={t`Stocks and ETFs at a broker`}
+                        icon={ACCOUNT_ICON.STOCKS}
+                        title={t`Brokerage`}
+                        type={AccountTypeEnum.STOCKS}
+                    />
+                    <CreateAccountCard
                         description={t`Money you lent or borrowed`}
                         icon={ACCOUNT_ICON.DEBT}
                         title={t(ACCOUNT_KIND_TITLE[AccountTypeEnum.DEBT])}

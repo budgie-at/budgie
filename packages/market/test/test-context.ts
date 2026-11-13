@@ -1,5 +1,5 @@
 import { buildTestDb, makeTestPlatformLayer, resetTestDb, TestSeedService } from '@budgie-at/test-kit';
-import { InstrumentRepository, PRECISION, SettingsEntityTable, TransactionEntryBaseValuationRepository } from '@budgie/contracts';
+import { Db, InstrumentRepository, PRECISION, SettingsEntityTable, TransactionEntryBaseValuationRepository } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 import * as HttpClient from 'effect/http/HttpClient';
 import * as HttpClientResponse from 'effect/http/HttpClientResponse';
@@ -10,7 +10,6 @@ import { beforeEach } from 'vitest';
 import { isDefined } from '@rnw-community/shared';
 
 import { ExchangeRateRepository } from '../src/exchange-rate/repository/exchange-rate.repository';
-import { ExchangeRatesSyncService } from '../src/exchange-rate/service/exchange-rates-sync.service';
 import { ExchangeRatesService } from '../src/exchange-rate/service/exchange-rates.service';
 import { HistoricalExchangeRateRepository } from '../src/historical-exchange-rate/repository/historical-exchange-rate.repository';
 import { EntryBaseValuationService } from '../src/valuation/service/entry-base-valuation.service';
@@ -44,13 +43,12 @@ export const makeFakeHttpClientLayer = (body: unknown) => makeRoutedFakeHttpClie
 
 export const TestLayer = Layer.mergeAll(
     ExchangeRatesService.layer,
-    ExchangeRatesSyncService.layer,
     EntryBaseValuationService.layer,
     ExchangeRateRepository.layer,
     HistoricalExchangeRateRepository.layer,
     InstrumentRepository.layer,
     TransactionEntryBaseValuationRepository.layer
-).pipe(Layer.provideMerge(makeTestPlatformLayer(testDb)));
+).pipe(Layer.provide(makeTestPlatformLayer(testDb)), Layer.provideMerge(Layer.succeed(Db, testDb)));
 
 export const makeHtmlHttpClientLayer = (html: string) =>
     Layer.succeed(

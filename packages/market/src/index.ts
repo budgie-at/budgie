@@ -7,12 +7,12 @@ export { InstrumentMarketDataJobRepository } from './market-data/repository/inst
 export { HistoricalMarketDataService } from './market-data/service/historical-market-data.service';
 export { KlinesHistoryService } from './market-data/service/klines-history.service';
 export { InzhurPriceService } from './market-data/service/inzhur-price.service';
-export { calculateCryptoPosition } from './market-data/utils/calculate-crypto-position.util';
+export { calculateInstrumentPosition } from './market-data/utils/calculate-instrument-position.util';
 export { EntryBaseValuationService } from './valuation/service/entry-base-valuation.service';
 export { MarketPricedRevaluationService } from './valuation/service/market-priced-revaluation.service';
 export { InzhurPriceParseError } from './market-data/error/inzhur-price-parse.error';
 export type { EntryBaseValuationInterface } from './valuation/interface/entry-base-valuation.interface';
-export type { CryptoPositionInterface } from './market-data/interface/crypto-position.interface';
+export type { InstrumentPositionInterface } from './market-data/interface/instrument-position.interface';
 
 export type { InzhurFundPriceInterface } from './market-data/interface/inzhur-fund-price.interface';
 export { findLastIndexOnOrBefore } from './@generic/utils/find-last-index-on-or-before.util';
@@ -38,3 +38,6 @@ export type { YieldEstimateCauseInterface } from './yield/interface/yield-estima
 export type { YieldEstimatedFigureInterface } from './yield/interface/yield-estimated-figure.interface';
 export type { YieldCryptoRewardsInterface } from './yield/interface/yield-crypto-rewards.interface';
 export type { YieldVsRateInterface } from './yield/interface/yield-vs-rate.interface';
+
+export { YahooMarketDataService } from './market-data/service/yahoo-market-data.service';
+export type { YahooListingInterface } from './market-data/interface/yahoo-listing.interface';

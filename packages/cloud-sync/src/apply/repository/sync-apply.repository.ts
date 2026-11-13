@@ -1,13 +1,14 @@
-import { SyncRecordTypeEnum, Db, SyncOutboxEntityTable, SyncPendingEntityTable } from '@budgie/contracts';
+import { SyncRecordTypeEnum, InstrumentEntityTable, Db, SyncOutboxEntityTable, SyncPendingEntityTable } from '@budgie/contracts';
 import { and, eq, inArray, ne, sql } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
 
 import { SYNC_SCHEMA_PAUSED_MISSING_RECORD_TYPE } from '../constant/sync-schema-paused.constant';
 
+import type { SYNC_INSTRUMENT_DEFINITION_SCHEMA } from '../../mapping/constant/sync-instrument-definition-schema.constant';
 import type { SyncFamilyRecordInterface } from '../interface/sync-family-record.interface';
 import type { SyncLocalIdInterface } from '../interface/sync-local-id.interface';
 import type { SyncLocalRowInterface } from '../interface/sync-local-row.interface';
@@ -64,6 +65,38 @@ export class SyncApplyRepository extends Context.Service<SyncApplyRepository>()(
                           ).pipe(Effect.map(fallbackRows => fallbackRows.at(0)?.localId ?? null))
                 )
             ),
+        resolveInstrument: Effect.fn('SyncApplyRepository.resolveInstrument')(function* (
+            code: string,
+            definition: typeof SYNC_INSTRUMENT_DEFINITION_SCHEMA.Type | undefined
+        ) {
+            const existing = yield* Db.query(db => db.query.InstrumentEntityTable.findFirst({ where: { code } }));
+            if (isDefined(existing) || !isDefined(definition) || definition.code !== code) {
+                return existing?.id ?? null;
+            }
+            const { quoteInstrumentCode } = definition;
+            const quote = isDefined(quoteInstrumentCode)
+                ? yield* Db.query(db => db.query.InstrumentEntityTable.findFirst({ where: { code: quoteInstrumentCode } }))
+                : null;
+            if (isDefined(definition.quoteInstrumentCode) && !isDefined(quote)) {
+                return null;
+            }
+            const [created] = yield* Db.query(db =>
+                db
+                    .insert(InstrumentEntityTable)
+                    .values({
+                        code,
+                        type: definition.type,
+                        name: definition.name,
+                        symbol: definition.symbol,
+                        priceProvider: definition.priceProvider,
+                        providerInstrumentId: definition.providerInstrumentId,
+                        quoteInstrumentId: quote?.id ?? null
+                    })
+                    .returning({ id: InstrumentEntityTable.id })
+            );
+
+            return created.id;
+        }),
         findNaturalKeyId: (tableName: string, keyColumn: string, key: string) =>
             Db.query(db =>
                 db.$client.unsafe<SyncLocalIdInterface>(

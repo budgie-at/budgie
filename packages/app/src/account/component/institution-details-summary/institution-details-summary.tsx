@@ -5,6 +5,7 @@ import { View } from 'react-native';
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { InstitutionSelector } from '../../../app/(main)/institution/institution.selector';
+import { BrokerageInstitutionSummary } from '../../../brokerage/component/brokerage-institution-summary/brokerage-institution-summary';
 import { InzhurFreshnessLine } from '../../../inzhur/component/inzhur-freshness-line/inzhur-freshness-line';
 import { InzhurImportStatementAction } from '../../../inzhur/component/inzhur-import-statement-action/inzhur-import-statement-action';
 import { InzhurInstitutionChart } from '../../../inzhur/component/inzhur-institution-chart/inzhur-institution-chart';
@@ -31,6 +32,10 @@ export const InstitutionDetailsSummary = ({ institution, balancesByAccountId }: 
 
     const isInzhur = institution.provider === ExternalSourceEnum.INZHUR;
     const statusLine = isNotEmptyArray(syncs) ? <BankIntegrationStatusPill syncs={syncs} /> : null;
+
+    if (institution.provider === ExternalSourceEnum.MANUAL) {
+        return <BrokerageInstitutionSummary institution={institution} balancesByAccountId={balancesByAccountId} />;
+    }
 
     return (
         <View className="gap-y-4xl">

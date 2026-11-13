@@ -51,9 +51,8 @@ const FiatHttpLayer = makeRoutedFakeHttpClientLayer(url => {
 const FiatBackfillLayer = Layer.mergeAll(
     TestLayer,
     HistoricalMarketDataService.layer.pipe(Layer.provide(FiatHttpLayer)),
-    AccountRepository.layer,
-    FiatHttpLayer
-);
+    AccountRepository.layer
+).pipe(Layer.provideMerge(FiatHttpLayer));
 
 const prepare = Effect.fnUntraced(function* (codes: CurrencyEnum[]) {
     const instrumentRepository = yield* InstrumentRepository;

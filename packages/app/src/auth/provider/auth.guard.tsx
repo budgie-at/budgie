@@ -27,7 +27,7 @@ export const AuthGuard = ({ children }: Props) => {
         } else if (isUnlockedOnPin) {
             goBackOrReplace('/');
         }
-    }, [isLockedOutsidePin, isUnlockedOnPin]);
+    }, [isLockedOutsidePin, isUnlockedOnPin, pathname]);
 
     if (isLoading) {
         return <EmptyScreen />;

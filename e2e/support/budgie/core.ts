@@ -124,7 +124,9 @@ async function acceptOpenInPrompt({ screen }: Ctx): Promise<void> {
 export async function openLink(ctx: Ctx, url: string): Promise<void> {
     await ctx.device.openLink(url);
     await sleep(500);
-    await acceptOpenInPrompt(ctx);
+    if (isIos(ctx)) {
+        await acceptOpenInPrompt(ctx);
+    }
 }
 
 /** Waits until `testId` is visible and its frame holds still for one poll, so a sheet still springing in cannot slide another control under the next tap. */

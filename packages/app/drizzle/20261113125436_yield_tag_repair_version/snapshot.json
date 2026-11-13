@@ -2376,6 +2376,16 @@
       "autoincrement": false,
       "default": null,
       "generated": null,
+      "name": "quote_instrument_id",
+      "entityType": "columns",
+      "table": "instruments"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
       "name": "market_cap_rank",
       "entityType": "columns",
       "table": "instruments"
@@ -5585,6 +5595,21 @@
       "name": "fk_instrument_daily_market_prices_quote_instrument_id_instruments_id_fk",
       "entityType": "fks",
       "table": "instrument_daily_market_prices"
+    },
+    {
+      "columns": [
+        "quote_instrument_id"
+      ],
+      "tableTo": "instruments",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "nameExplicit": false,
+      "name": "fk_instruments_quote_instrument_id_instruments_id_fk",
+      "entityType": "fks",
+      "table": "instruments"
     },
     {
       "columns": [

@@ -1,21 +1,28 @@
-import { AccountDebtTypeEnum, AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { AccountAssociationEnum, AccountDebtTypeEnum, AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
+
+import { isDefined } from '@rnw-community/shared';
 
 import { ActionsMenuItem } from '../../../@generic/component/actions-menu-item/actions-menu-item';
 import { ActionsMenu } from '../../../@generic/component/actions-menu/actions-menu';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { dismissAllOrReplace } from '../../../@generic/utils/dismiss-all-or-replace.util';
 import { AccountDetailsSelector } from '../../../app/(main)/account/[id]/account-details.selector';
+import { BrokerageSelector } from '../../../brokerage/selector/brokerage.selector';
 import { useRevertInstallmentPlan } from '../../../installment-plan/hook/use-revert-installment-plan.hook';
+import { isListedSecurityType } from '../../../instrument/utils/is-listed-security-type.util';
 import { useArchiveAccount } from '../../hooks/use-archive-account.hook';
 
 import { useDepositCloseAction } from './use-deposit-close-action.hook';
 
-import type { AccountEntityInterface } from '@budgie/contracts';
+import type { AccountWithInstrumentEntityInterface } from '@budgie/contracts';
 
 interface Props {
-    readonly account: Pick<AccountEntityInterface, 'id' | 'type' | 'debtType'>;
+    readonly account: Pick<
+        AccountWithInstrumentEntityInterface,
+        'id' | 'type' | 'debtType' | 'integrationId' | AccountAssociationEnum.INSTRUMENT
+    >;
 }
 
 export const AccountActionsMenu = ({ account }: Props) => {
@@ -26,9 +33,11 @@ export const AccountActionsMenu = ({ account }: Props) => {
     const revertAction = useRevertInstallmentPlan();
 
     const handleEdit = () => void router.navigate({ pathname: '/account/[id]/update', params: { id: String(account.id) } });
+    const handleSell = () => void router.navigate({ pathname: '/securities/sell/[id]', params: { id: String(account.id) } });
     const handleRevert = () => void revertAction.revert(account.id, () => void dismissAllOrReplace('/'));
 
     const isBusy = closeAction.isLoading || archiveAction.isLoading || revertAction.isLoading;
+    const isBrokeragePosition = isDefined(account.integrationId) && isListedSecurityType(account.instrument.type);
     const isInstallmentPlan = account.type === AccountTypeEnum.DEBT && account.debtType === AccountDebtTypeEnum.INSTALLMENT;
 
     const typeSpecificItem =
@@ -63,6 +72,14 @@ export const AccountActionsMenu = ({ account }: Props) => {
                 onPress={handleEdit}
                 testID={AccountDetailsSelector.EditButton}
             />
+            {isBrokeragePosition ? (
+                <ActionsMenuItem
+                    icon={UserIconNameEnum.HandCoins}
+                    label={t`Sell`}
+                    onPress={handleSell}
+                    testID={BrokerageSelector.SellButton}
+                />
+            ) : null}
             {isInstallmentPlan ? (
                 <ActionsMenuItem
                     icon={UserIconNameEnum.Undo2}

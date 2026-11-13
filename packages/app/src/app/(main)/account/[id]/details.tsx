@@ -106,7 +106,7 @@ export default function AccountDetails() {
     );
 
     return (
-        <GroupedSurface testID={AccountDetailsSelector.Page}>
+        <AccountDetailsMenuControls account={account}>
             <RevealGate isLoading={false}>
                 <ScreenChromeThemeProvider config={ACCOUNT_DETAILS_SCREEN_CHROME_CONFIG}>
                     <ScreenChromeFrame>
@@ -129,8 +129,6 @@ export default function AccountDetails() {
                     </ScreenChromeFrame>
                 </ScreenChromeThemeProvider>
             </RevealGate>
-
-            <AccountDetailsMenuControls account={account} />
-        </GroupedSurface>
+        </AccountDetailsMenuControls>
     );
 }

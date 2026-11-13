@@ -69,3 +69,19 @@ frame_capture() {
         -define png:color-type=6 -depth 8 "$out"
     rm -f "$cutout_mask"
 }
+
+draw_screen_frame() {
+    local screen_w="$1" screen_h="$2" out="$3"
+    local bezel radius frame_w frame_h
+    bezel=$((screen_w * 22 / 1000))
+    radius=$((screen_w * 55 / 1000))
+    frame_w=$((screen_w + 2 * bezel))
+    frame_h=$((screen_h + 2 * bezel))
+    magick -size "${frame_w}x${frame_h}" xc:none \
+        -fill '#0C0D0E' -stroke '#3A3D40' -strokewidth 2 \
+        -draw "roundrectangle 1,1 $((frame_w - 2)),$((frame_h - 2)) $((radius + bezel)),$((radius + bezel))" \
+        \( -size "${frame_w}x${frame_h}" xc:none -fill white \
+        -draw "roundrectangle $bezel,$bezel $((bezel + screen_w - 1)),$((bezel + screen_h - 1)) $radius,$radius" \) \
+        -compose DstOut -composite -define png:color-type=6 -depth 8 "$out"
+    echo "$bezel"
+}

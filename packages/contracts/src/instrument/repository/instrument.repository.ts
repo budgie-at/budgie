@@ -16,6 +16,10 @@ export class InstrumentRepository extends Context.Service<InstrumentRepository>(
             Db.query(db => db.insert(InstrumentEntityTable).values([input]).returning()).pipe(Effect.map(([instrument]) => instrument)),
         findById: (id: number) => Db.query(db => db.query.InstrumentEntityTable.findFirst({ where: { id } })),
         findByCode: (code: string) => Db.query(db => db.query.InstrumentEntityTable.findFirst({ where: { code } })),
+        findByProvider: (priceProvider: InstrumentPriceProviderEnum, providerInstrumentId: string) =>
+            Db.query(db =>
+                db.query.InstrumentEntityTable.findFirst({ where: { priceProvider, providerInstrumentId, deletedAt: { isNull: true } } })
+            ),
         findByType: (type: InstrumentTypeEnum) => Db.query(db => db.query.InstrumentEntityTable.findMany({ where: { type } })),
         findByTypeAndPriceProviderWithProviderInstrumentId: (type: InstrumentTypeEnum, priceProvider: InstrumentPriceProviderEnum) =>
             Db.query(db =>

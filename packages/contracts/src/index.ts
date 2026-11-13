@@ -298,7 +298,7 @@ export type { TransactionEntryUpdateInputInterface } from './transaction-entry/i
 export type { TransactionEntryEntityInterface } from './transaction-entry/entity/transaction-entry-entity.interface';
 export type { TransactionEntryWithRelationsEntityInterface } from './transaction-entry/entity/transaction-entry-with-relations-entity.interface';
 export type { TransactionEntryCreateEntityInterface } from './transaction-entry/entity/transaction-entry-create-entity.interface';
-export type { CryptoPositionEntryRowInterface } from './transaction-entry/interface/crypto-position-entry-row.interface';
+export type { InstrumentPositionEntryRowInterface } from './transaction-entry/interface/instrument-position-entry-row.interface';
 export type { PendingBaseValuationBucketInterface } from './transaction-entry/interface/pending-base-valuation-bucket.interface';
 export type { MarketPricedEntryRowInterface } from './transaction-entry/interface/market-priced-entry-row.interface';
 export type { EntryBaseValuationUpdateInterface } from './transaction-entry/interface/entry-base-valuation-update.interface';

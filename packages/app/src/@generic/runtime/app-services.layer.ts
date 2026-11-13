@@ -77,6 +77,7 @@ import {
     HistoricalExchangeRateRepository,
     InstrumentDailyMarketPriceRepository,
     InstrumentMarketDataJobRepository,
+    YahooMarketDataService,
     YieldService
 } from '@budgie/market';
 import { RecurringRefreshService, RecurringService } from '@budgie/recurring';
@@ -123,6 +124,7 @@ import { EmbeddingProgressStore } from '../../ai/store/embedding-progress.store'
 import { TranslationProgressStore } from '../../ai/store/translation-progress.store';
 import { AuthService } from '../../auth/service/auth.service';
 import { PinAttemptService } from '../../auth/service/pin-attempt.service';
+import { BrokerageService } from '../../brokerage/service/brokerage.service';
 import { BudgetAlertMonitorService } from '../../budget/service/budget-alert-monitor.service';
 import { BudgetFundSuggestionService } from '../../budget/service/budget-fund-suggestion.service';
 import { BudgetProjectionService } from '../../budget/service/budget-projection.service';
@@ -256,6 +258,8 @@ export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     ExchangeRatesService.layer,
     ExchangeRateBackgroundService.layer,
     HistoricalMarketDataDrainerService.layer,
+    YahooMarketDataService.layer,
+    BrokerageService.layer,
     TransferConsolidationService.layer,
     UnpairedOwnCardTransferRepairService.layer,
     ExternalAccountService.layer,

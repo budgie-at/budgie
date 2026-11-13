@@ -29,6 +29,7 @@ import type {
     UserIconType,
     YieldKindEnum
 } from '@budgie/contracts';
+import type { YahooListingInterface } from '@budgie/market';
 
 export interface ModalRegistryInterface {
     readonly '/account-selector': {
@@ -142,6 +143,10 @@ export interface ModalRegistryInterface {
             readonly selectedValue: string | null;
         };
         readonly result: string;
+    };
+    readonly '/security-selector': {
+        readonly params: { readonly selectedSymbol: string | null };
+        readonly result: YahooListingInterface;
     };
     readonly '/split-entries': {
         readonly params: {

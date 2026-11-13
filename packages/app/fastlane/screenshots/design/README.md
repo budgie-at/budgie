@@ -42,6 +42,18 @@ capture would otherwise poke past the bezel at all four corners. Flood-filling
 the border-connected transparent region out of the alpha mask and intersecting
 with the cutout rectangle leaves only the screen opening.
 
+### Google Play
+
+`--device phone` and `--device tablet` compose the Play set from the Android
+captures under `raw/android/<phone|tablet>/` (`.github/store-screenshots-android.config.json`
+captures them at 1080x2100 and 1200x1920, so every slide stays under Play's 2:1
+aspect limit). Play has no device frame to borrow, so `draw_screen_frame` in
+`frame-device.sh` draws a plain rounded bezel around the capture. The slides
+land in fastlane supply's layout, `metadata/android/<locale>/images/phoneScreenshots`
+and `tenInchScreenshots` (`PLAY_SCREENSHOTS_DIR` overrides the root), named
+`01_home.png` through `07_settings.png`. Android captures run with screenshot
+protection off, because its `FLAG_SECURE` blanks every capture.
+
 ## Story
 
 Seven slides per device, in store order. The output filename sets the order;

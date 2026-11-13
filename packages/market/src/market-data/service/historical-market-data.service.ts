@@ -1,6 +1,5 @@
 import {
     AccountRepository,
-    AccountTypeEnum,
     CurrencyEnum,
     Db,
     DbError,
@@ -13,6 +12,7 @@ import {
 import { addDays } from 'date-fns/addDays';
 import { format } from 'date-fns/format';
 import { isAfter } from 'date-fns/isAfter';
+import { max } from 'date-fns/max';
 import { parseISO } from 'date-fns/parseISO';
 import { subDays } from 'date-fns/subDays';
 import * as Arr from 'effect/Array';
@@ -41,6 +41,7 @@ import { buildHistoricalRateInputs } from '../utils/build-historical-rate-inputs
 
 import { InzhurPriceService } from './inzhur-price.service';
 import { KlinesHistoryService } from './klines-history.service';
+import { YahooMarketDataService } from './yahoo-market-data.service';
 
 import type { MarketDataJobResultInterface } from '../interface/market-data-job-result.interface';
 import type {
@@ -65,6 +66,7 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
             const inzhurPriceService = yield* InzhurPriceService;
             const marketPricedRevaluationService = yield* MarketPricedRevaluationService;
             const klinesHistoryService = yield* KlinesHistoryService;
+            const yahooMarketDataService = yield* YahooMarketDataService;
             const dataWindowDays = 365;
             const frankfurterApiUrl = 'https://api.frankfurter.dev/v2';
             const maxFiatRateGapDays = 7;
@@ -79,7 +81,6 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
             const coinGeckoCoinsApiUrl = 'https://api.coingecko.com/api/v3/coins';
             const fetchTimeoutMs = 10_000;
             const maxAttempts = MARKET_DATA_JOB_MAX_ATTEMPTS;
-            const source = 'coingecko.com';
             const inzhurSource = 'inzhur.reit';
             const rateDateFormat = 'yyyy-MM-dd';
             const staleLockMs = MARKET_DATA_JOB_STALE_LOCK_MS;
@@ -97,43 +98,16 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                     instrumentMarketDataJobRepository.hasOpen(instrumentId, quoteInstrumentId, maxAttempts, staleLockedBefore)
                 );
 
-            const isSupportedInstrument = (instrument: InstrumentEntityInterface | undefined): boolean =>
-                isDefined(instrument) &&
-                instrument.type === InstrumentTypeEnum.CRYPTO &&
-                instrument.priceProvider === InstrumentPriceProviderEnum.COINGECKO &&
-                isDefined(instrument.providerInstrumentId);
+            const isPricedInstrument = (instrument: InstrumentEntityInterface | undefined): boolean =>
+                isDefined(instrument) && isDefined(instrument.priceProvider) && isDefined(instrument.providerInstrumentId);
 
-            const isInzhurInstrument = (instrument: InstrumentEntityInterface | undefined): boolean =>
-                isDefined(instrument) &&
-                instrument.type === InstrumentTypeEnum.FUND &&
-                instrument.priceProvider === InstrumentPriceProviderEnum.INZHUR &&
-                isDefined(instrument.providerInstrumentId);
+            const isCoinGeckoCrypto = (instrument: InstrumentEntityInterface | undefined): boolean =>
+                isPricedInstrument(instrument) &&
+                instrument?.type === InstrumentTypeEnum.CRYPTO &&
+                instrument.priceProvider === InstrumentPriceProviderEnum.COINGECKO;
 
-            const getCandidateInstrumentIds = (
-                accounts: AccountEntityInterface[],
-                instrumentById: Map<number, InstrumentEntityInterface>,
-                isSupported: (instrument: InstrumentEntityInterface | undefined) => boolean
-            ): number[] => {
-                const uniqueInstrumentIds = new Set<number>();
-
-                for (const account of accounts) {
-                    const isCandidate = !uniqueInstrumentIds.has(account.instrumentId);
-
-                    if (isCandidate && isSupported(instrumentById.get(account.instrumentId))) {
-                        uniqueInstrumentIds.add(account.instrumentId);
-                    }
-                }
-
-                return [...uniqueInstrumentIds];
-            };
-
-            const getSupportedFromDate = (fromDate: string): string => {
-                const earliestDate = subDays(new Date(), dataWindowDays - 1);
-                const requestedDate = parseISO(fromDate);
-                const supportedDate = isAfter(requestedDate, earliestDate) ? requestedDate : earliestDate;
-
-                return format(supportedDate, rateDateFormat);
-            };
+            const getSupportedFromDate = (fromDate: string): string =>
+                format(max([parseISO(fromDate), subDays(new Date(), dataWindowDays - 1)]), rateDateFormat);
 
             const buildTimedValueMap = (values: ReadonlyArray<readonly [number, number]>): Map<string, number> =>
                 values.reduce(
@@ -232,7 +206,7 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                                   price,
                                   marketCap: marketCapByDate.get(priceDate) ?? null,
                                   volume: volumeByDate.get(priceDate) ?? null,
-                                  source
+                                  source: 'coingecko.com'
                               }
                           ]
                         : []
@@ -264,7 +238,19 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                 return [price];
             });
 
-            const getHeldFiatInstruments = Effect.fn('HistoricalMarketDataService.getHeldFiatInstruments')(function* () {
+            const fetchPrices = (instrument: InstrumentEntityInterface, job: InstrumentMarketDataJobEntityInterface) => {
+                if (instrument.priceProvider === InstrumentPriceProviderEnum.INZHUR) {
+                    return fetchInzhurPrices(instrument, job);
+                }
+
+                return instrument.priceProvider === InstrumentPriceProviderEnum.YAHOO
+                    ? yahooMarketDataService.fetchDailyPrices(instrument, job)
+                    : fetchHistoricalPrices(instrument, job);
+            };
+
+            const getHeldFiatInstruments = Effect.fn('HistoricalMarketDataService.getHeldFiatInstruments')(function* (
+                instrumentById?: ReadonlyMap<number, InstrumentEntityInterface>
+            ) {
                 const baseInstrument = yield* exchangeRatesService.getBaseInstrument();
                 const euroInstrument = yield* instrumentRepository.findByCode(CurrencyEnum.EUR);
 
@@ -273,7 +259,16 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                 }
 
                 const accounts = yield* accountRepository.getAllActiveAccounts;
-                const heldInstrumentIds = new Set([baseInstrument.id, ...accounts.map(account => account.instrumentId)]);
+                const instruments =
+                    instrumentById ?? new Map((yield* instrumentRepository.getAll).map(instrument => [instrument.id, instrument]));
+                const heldInstrumentIds = new Set([
+                    baseInstrument.id,
+                    ...accounts.map(account => account.instrumentId),
+                    ...accounts
+                        .map(account => instruments.get(account.instrumentId))
+                        .filter(isDefined)
+                        .map(instrument => instrument.quoteInstrumentId)
+                ]);
                 const unsupportedIds = yield* instrumentMarketDataJobRepository.findUnsupportedInstrumentIds(euroInstrument.id);
                 const unsupportedInstrumentIds = new Set(unsupportedIds);
                 const fiatInstruments = yield* instrumentRepository.findByType(InstrumentTypeEnum.FIAT);
@@ -315,8 +310,10 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                 ).at(0);
             });
 
-            const buildFiatJobInput = Effect.fn('HistoricalMarketDataService.buildFiatJobInput')(function* () {
-                const heldFiatInstruments = yield* getHeldFiatInstruments();
+            const buildFiatJobInput = Effect.fn('HistoricalMarketDataService.buildFiatJobInput')(function* (
+                instrumentById: ReadonlyMap<number, InstrumentEntityInterface>
+            ) {
+                const heldFiatInstruments = yield* getHeldFiatInstruments(instrumentById);
 
                 if (!isDefined(heldFiatInstruments) || !isNotEmptyArray(heldFiatInstruments.instruments)) {
                     return null;
@@ -355,7 +352,8 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                           to: job.toDate
                       })
                     : [];
-                const result: MarketDataJobResultInterface = {
+
+                return {
                     prices: [],
                     rates: rates.flatMap(({ date, quote, rate }) => {
                         const sourceInstrumentId = instrumentIdByCode.get(quote);
@@ -365,9 +363,7 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                             : [];
                     }),
                     unsupportedInstruments: instruments.filter(instrument => !supportedCodes.has(instrument.code))
-                };
-
-                return result;
+                } satisfies MarketDataJobResultInterface;
             });
 
             const revalueEntriesAround = Effect.fn('HistoricalMarketDataService.revalueEntriesAround')(function* (
@@ -380,11 +376,16 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                     return yield* writeRates;
                 }
 
+                const instrument = yield* instrumentRepository.findById(job.instrumentId);
                 const buckets = (yield* transactionEntryBaseValuationRepository.findBaseValuationBucketsInRange(
                     baseInstrument.id,
                     job.fromDate,
                     job.toDate
-                )).filter(bucket => bucket.sourceInstrumentId !== baseInstrument.id);
+                )).filter(
+                    bucket =>
+                        bucket.sourceInstrumentId !== baseInstrument.id &&
+                        (instrument?.type === InstrumentTypeEnum.FIAT || bucket.sourceInstrumentId === job.instrumentId)
+                );
                 const resolveBucketRates = Effect.forEach(buckets, bucket =>
                     entryBaseValuationService.resolveHistoricalBaseExchangeRateForDay(
                         bucket.sourceInstrumentId,
@@ -418,6 +419,7 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                     },
                     { discard: true }
                 );
+                yield* transactionEntryBaseValuationRepository.rebaseSecurityTradeCosts(baseInstrument.id);
             });
 
             const enqueueAccounts = Effect.fn('HistoricalMarketDataService.enqueueAccounts')(function* (
@@ -431,17 +433,14 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
 
                 const instruments = yield* instrumentRepository.getAll;
                 const instrumentById = new Map(instruments.map(instrument => [instrument.id, instrument]));
-                const hryvniaInstrument = yield* instrumentRepository.findByCode(CurrencyEnum.UAH);
-                const cryptoInstrumentIds = getCandidateInstrumentIds(
-                    accounts.filter(account => account.type === AccountTypeEnum.CRYPTO || account.type === AccountTypeEnum.CRYPTO_SYNC),
-                    instrumentById,
-                    isSupportedInstrument
-                );
-                const cryptoInputs = yield* Effect.forEach(
-                    cryptoInstrumentIds,
-                    instrumentId => buildAccountJobInput(instrumentId, baseInstrument.id),
+                const heldInstrumentIds = [...new Set(accounts.map(account => account.instrumentId))];
+                const inputs = yield* Effect.forEach(
+                    heldInstrumentIds.filter(instrumentId => isPricedInstrument(instrumentById.get(instrumentId))),
+                    instrumentId =>
+                        buildAccountJobInput(instrumentId, instrumentById.get(instrumentId)?.quoteInstrumentId ?? baseInstrument.id),
                     { concurrency: 'unbounded' }
                 );
+                const cryptoInstrumentIds = heldInstrumentIds.filter(instrumentId => isCoinGeckoCrypto(instrumentById.get(instrumentId)));
                 const tether = yield* klinesHistoryService.findUsdtInstrument;
                 const unsupportedKlinesIds = new Set(
                     isDefined(tether) ? yield* instrumentMarketDataJobRepository.findUnsupportedInstrumentIds(tether.id) : []
@@ -457,16 +456,9 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                               )
                       )
                     : [];
-                const fundInputs = isDefined(hryvniaInstrument)
-                    ? yield* Effect.forEach(
-                          getCandidateInstrumentIds(accounts, instrumentById, isInzhurInstrument),
-                          instrumentId => buildAccountJobInput(instrumentId, hryvniaInstrument.id),
-                          { concurrency: 'unbounded' }
-                      )
-                    : [];
 
-                yield* instrumentMarketDataJobRepository.enqueueMany([...cryptoInputs, ...klinesInputs, ...fundInputs].filter(isDefined));
-                yield* instrumentMarketDataJobRepository.enqueueMany([yield* buildFiatJobInput()].filter(isDefined));
+                yield* instrumentMarketDataJobRepository.enqueueMany([...inputs, ...klinesInputs].filter(isDefined));
+                yield* instrumentMarketDataJobRepository.enqueueMany([yield* buildFiatJobInput(instrumentById)].filter(isDefined));
             });
 
             return {
@@ -493,16 +485,13 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                         return yield* klinesHistoryService.fetchJobData(instrument, job);
                     }
 
-                    const prices = isInzhurInstrument(instrument)
-                        ? yield* fetchInzhurPrices(instrument, job)
-                        : yield* fetchHistoricalPrices(instrument, job);
-                    const result: MarketDataJobResultInterface = {
+                    const prices = yield* fetchPrices(instrument, job);
+
+                    return {
                         prices,
                         rates: buildHistoricalRateInputs(prices),
                         unsupportedInstruments: []
-                    };
-
-                    return result;
+                    } satisfies MarketDataJobResultInterface;
                 }),
                 storeJobData: Effect.fn('HistoricalMarketDataService.storeJobData')(function* (
                     job: InstrumentMarketDataJobEntityInterface,
@@ -524,7 +513,7 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                     const writeData = Effect.all(
                         [
                             instrumentDailyMarketPriceRepository.bulkUpsert(result.prices),
-                            instrument?.type === InstrumentTypeEnum.FIAT ? revalueEntriesAround(job, writeRates) : writeRates,
+                            revalueEntriesAround(job, writeRates),
                             instrumentMarketDataJobRepository.enqueueMany(
                                 result.unsupportedInstruments
                                     .filter(unsupported => unsupported.id !== job.instrumentId)
@@ -568,7 +557,8 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
             EntryBaseValuationService.layer,
             InzhurPriceService.layer,
             MarketPricedRevaluationService.layer,
-            KlinesHistoryService.layer
+            KlinesHistoryService.layer,
+            YahooMarketDataService.layer
         ])
     );
 }

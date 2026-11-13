@@ -11,7 +11,7 @@ import {
     YieldKindEnum,
     convertFromMicroUnits
 } from '@budgie/contracts';
-import { YieldRangeEnum, YieldService, calculateCryptoPosition } from '@budgie/market';
+import { YieldRangeEnum, YieldService, calculateInstrumentPosition } from '@budgie/market';
 import { InzhurGainService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
@@ -122,10 +122,10 @@ describe('yield/parity', () => {
             });
             yield* seedYield(wallet.id, YieldKindEnum.STAKING, 30, 0.1);
 
-            const entries = yield* (yield* TransactionEntryPositionRepository).findCryptoPositionEntries(coin.id, BASE_ID);
+            const entries = yield* (yield* TransactionEntryPositionRepository).findInstrumentPositionEntries(coin.id, BASE_ID);
             const summary = yield* summarize({ range: YieldRangeEnum.ALL, instrumentId: coin.id });
 
-            expect(calculateCryptoPosition(entries).costBasis).toBeCloseTo(1 + summary.earned.value, DECIMAL_PLACES);
+            expect(calculateInstrumentPosition(entries).costBasis).toBeCloseTo(1 + summary.earned.value, DECIMAL_PLACES);
             expect(summary.earned.value).toBeCloseTo(0.1, DECIMAL_PLACES);
         }).pipe(Effect.provide(TestLayer))
     );
