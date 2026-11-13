@@ -9,6 +9,7 @@ import {
     YieldKindEnum,
     YieldRepository
 } from '@budgie/contracts';
+import { ExchangeRateRepository } from '@budgie/market';
 import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
@@ -18,10 +19,10 @@ import { explainQueryPlan, seed, testDb, TestLayer } from '../../harness';
 import type { YieldScopeInterface } from '@budgie/contracts';
 
 const BASE_ID = 1;
-const OTHER_BASE_ID = 2;
 const ALL: YieldScopeInterface = { positionAccountId: null, instrumentId: null };
 const DAY = new Date(2026, 2, 10, 12, 0, 0);
-const YIELD_INDEX = 'transactions_yield_kind_idx';
+const YIELD_INDEX_PLAN = /SEARCH transactions USING (COVERING )?INDEX transactions_yield_kind_idx/u;
+const TRANSACTIONS_SCAN_PLAN = /SCAN transactions/u;
 
 const seedYield = Effect.fnUntraced(function* (
     accountId: number,
@@ -85,7 +86,64 @@ describe('yield/repository', () => {
                 .where(eq(TransactionEntryEntityTable.transactionId, reward.id));
 
             expect((yield* findFacts()).map(fact => fact.isEstimated)).toEqual([true, false]);
-            expect((yield* findFacts(OTHER_BASE_ID)).map(fact => fact.isEstimated)).toEqual([true, false]);
+
+            const otherBase = yield* seed.instrument({ code: 'YLD2', name: 'Other base', symbol: 'YLD2' });
+
+            yield* testDb
+                .update(TransactionEntryEntityTable)
+                .set({ baseInstrumentId: otherBase.id, baseExchangeRate: 1 })
+                .where(eq(TransactionEntryEntityTable.transactionId, reward.id));
+
+            expect((yield* findFacts()).map(fact => fact.isEstimated)).toEqual([true, false]);
+            expect((yield* findFacts(otherBase.id)).map(fact => fact.isEstimated)).toEqual([false, false]);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('excludes deleted, consolidated, deleted-leg and transfer rows', () =>
+        Effect.gen(function* () {
+            const cash = yield* seed.account({ type: AccountTypeEnum.CASH });
+            const kept = yield* seedYield(cash.id, YieldKindEnum.INTEREST);
+            const deleted = yield* seedYield(cash.id, YieldKindEnum.INTEREST);
+            const consolidated = yield* seedYield(cash.id, YieldKindEnum.INTEREST);
+            const deletedLeg = yield* seedYield(cash.id, YieldKindEnum.INTEREST);
+            const transfer = yield* seedYield(cash.id, YieldKindEnum.INTEREST);
+
+            yield* testDb.update(TransactionEntityTable).set({ deletedAt: DAY }).where(eq(TransactionEntityTable.id, deleted.id));
+            yield* testDb
+                .update(TransactionEntityTable)
+                .set({ consolidationParentTransactionId: kept.id })
+                .where(eq(TransactionEntityTable.id, consolidated.id));
+            yield* testDb
+                .update(TransactionEntryEntityTable)
+                .set({ deletedAt: DAY })
+                .where(eq(TransactionEntryEntityTable.transactionId, deletedLeg.id));
+            yield* testDb
+                .update(TransactionEntityTable)
+                .set({ type: TransactionTypeEnum.TRANSFER })
+                .where(eq(TransactionEntityTable.id, transfer.id));
+
+            expect((yield* findFacts()).map(fact => fact.transactionId)).toEqual([kept.id]);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('converts a non-base fiat reward through the confirmed exchange rate', () =>
+        Effect.gen(function* () {
+            const foreign = yield* seed.instrument({ code: 'YLD3', name: 'Foreign', symbol: 'YLD3' });
+            const account = yield* seed.account({ type: AccountTypeEnum.CASH, instrumentId: foreign.id });
+            const exchangeRateRepository = yield* ExchangeRateRepository;
+            const reward = yield* seedYield(account.id, YieldKindEnum.INTEREST);
+
+            yield* exchangeRateRepository.bulkUpsert([
+                { baseInstrumentId: foreign.id, quoteInstrumentId: BASE_ID, rate: 2, source: 'test' }
+            ]);
+            yield* testDb
+                .update(TransactionEntryEntityTable)
+                .set({ baseInstrumentId: null, baseExchangeRate: null, baseAmount: null })
+                .where(eq(TransactionEntryEntityTable.transactionId, reward.id));
+
+            expect((yield* findFacts()).map(fact => [fact.amount, fact.baseValue, fact.isEstimated])).toEqual([
+                [10 * PRECISION, 20 * PRECISION, false]
+            ]);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -134,9 +192,10 @@ describe('yield/repository', () => {
             const scopedPlan = yield* explainQueryPlan(repository.hasYieldFor({ positionAccountId: deposit.id, instrumentId: null }));
             const factsPlan = yield* explainQueryPlan(repository.findFacts(ALL, BASE_ID));
 
-            expect(hasYieldPlan.join('\n')).toContain(YIELD_INDEX);
-            expect(scopedPlan.join('\n')).toContain(YIELD_INDEX);
-            expect(factsPlan.join('\n')).toContain(YIELD_INDEX);
+            for (const plan of [hasYieldPlan, scopedPlan, factsPlan]) {
+                expect(plan.join('\n')).toMatch(YIELD_INDEX_PLAN);
+                expect(plan.join('\n')).not.toMatch(TRANSACTIONS_SCAN_PLAN);
+            }
         }).pipe(Effect.provide(TestLayer))
     );
 

@@ -20,15 +20,14 @@ import { TransactionTypeEnum } from '../../transaction/enum/transaction-type.enu
 import { YieldKindEnum } from '../../transaction/enum/yield-kind.enum';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 
-import type { DB } from '../../@generic/type/db.type';
 import type { YieldFactRowInterface } from '../interface/yield-fact-row.interface';
 import type { YieldScopeInterface } from '../interface/yield-scope.interface';
 import type { SQL } from 'drizzle-orm';
+import type { SQLiteEffectSelect } from 'drizzle-orm/sqlite-core/effect';
 
 export class YieldRepository extends Context.Service<YieldRepository>()('@budgie/contracts/YieldRepository', {
     make: Effect.sync(() => {
         const POSITION_ACCOUNT_TYPES = [AccountTypeEnum.DEPOSIT, AccountTypeEnum.SAVINGS, ...CRYPTO_ACCOUNT_TYPES, AccountTypeEnum.STOCKS];
-        const PROBE_BASE_INSTRUMENT_ID = 0;
         const yieldSourceAccount = alias(AccountEntityTable, 'yield_source_account');
 
         const landingHoldsPositionSql = sql`(${inArray(AccountEntityTable.type, POSITION_ACCOUNT_TYPES)} OR ${eq(InstrumentEntityTable.type, InstrumentTypeEnum.FUND)})`;
@@ -51,6 +50,9 @@ export class YieldRepository extends Context.Service<YieldRepository>()('@budgie
         const buildYieldKindCondition = () =>
             and(isNotNull(TransactionEntityTable.yieldKind), ne(TransactionEntityTable.yieldKind, YieldKindEnum.NONE));
 
+        const buildYieldKindIndexCondition = () =>
+            sql`${TransactionEntityTable.id} IN (SELECT id FROM ${TransactionEntityTable} WHERE ${buildYieldKindCondition()})`;
+
         const buildYieldLandingEntryCondition = () =>
             or(
                 and(
@@ -72,30 +74,15 @@ export class YieldRepository extends Context.Service<YieldRepository>()('@budgie
         const buildYieldFactWhere = (scope: YieldScopeInterface, extra: SQL[] = []) =>
             and(
                 transactionFilters.buildVisibleTransactionCondition(),
-                sql`${TransactionEntityTable.id} IN (SELECT id FROM ${TransactionEntityTable} WHERE ${buildYieldKindCondition()})`,
+                buildYieldKindIndexCondition(),
                 transactionFilters.buildPrimaryLedgerEntryCondition(),
                 buildYieldLandingEntryCondition(),
                 ...buildYieldScopeCondition(scope),
                 ...extra
             );
 
-        const selectFactRows = (db: DB, baseInstrumentId: number) =>
-            db
-                .select({
-                    transactionId: TransactionEntityTable.id,
-                    transactionType: TransactionEntityTable.type,
-                    yieldKind: sql<YieldKindEnum>`${TransactionEntityTable.yieldKind}`,
-                    operatedAt: TransactionEntityTable.operatedAt,
-                    amount: TransactionEntryEntityTable.amount,
-                    baseValue: sql<number>`${buildEntryBaseValueSql(baseInstrumentId)}`,
-                    estimated: buildEstimatedSql(baseInstrumentId),
-                    landingAccountId: AccountEntityTable.id,
-                    landingInstrumentId: AccountEntityTable.instrumentId,
-                    landingInstrumentCode: InstrumentEntityTable.code,
-                    landingInstrumentType: InstrumentEntityTable.type,
-                    positionAccountId: positionAccountIdSql
-                })
-                .from(TransactionEntityTable)
+        const joinYieldLegs = <TQuery extends SQLiteEffectSelect>(query: TQuery) =>
+            query
                 .innerJoin(TransactionEntryEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
                 .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
                 .innerJoin(InstrumentEntityTable, eq(AccountEntityTable.instrumentId, InstrumentEntityTable.id))
@@ -111,13 +98,33 @@ export class YieldRepository extends Context.Service<YieldRepository>()('@budgie
             ).pipe(Effect.map(isNotEmptyArray)),
 
             hasYieldFor: (scope: YieldScopeInterface) =>
-                Db.query(db => selectFactRows(db, PROBE_BASE_INSTRUMENT_ID).where(buildYieldFactWhere(scope)).limit(1)).pipe(
-                    Effect.map(isNotEmptyArray)
-                ),
+                Db.query(db =>
+                    joinYieldLegs(db.select({ id: TransactionEntityTable.id }).from(TransactionEntityTable).$dynamic())
+                        .where(buildYieldFactWhere(scope))
+                        .limit(1)
+                ).pipe(Effect.map(isNotEmptyArray)),
 
             findFacts: (scope: YieldScopeInterface, baseInstrumentId: number) =>
                 Db.query(db =>
-                    selectFactRows(db, baseInstrumentId)
+                    joinYieldLegs(
+                        db
+                            .select({
+                                transactionId: TransactionEntityTable.id,
+                                transactionType: TransactionEntityTable.type,
+                                yieldKind: sql<YieldKindEnum>`${TransactionEntityTable.yieldKind}`,
+                                operatedAt: TransactionEntityTable.operatedAt,
+                                amount: TransactionEntryEntityTable.amount,
+                                baseValue: sql<number>`COALESCE(${buildEntryBaseValueSql(baseInstrumentId)}, 0)`,
+                                estimated: buildEstimatedSql(baseInstrumentId),
+                                landingAccountId: AccountEntityTable.id,
+                                landingInstrumentId: AccountEntityTable.instrumentId,
+                                landingInstrumentCode: InstrumentEntityTable.code,
+                                landingInstrumentType: InstrumentEntityTable.type,
+                                positionAccountId: positionAccountIdSql
+                            })
+                            .from(TransactionEntityTable)
+                            .$dynamic()
+                    )
                         .where(buildYieldFactWhere(scope))
                         .orderBy(asc(TransactionEntityTable.operatedAt), asc(TransactionEntityTable.id))
                 ).pipe(

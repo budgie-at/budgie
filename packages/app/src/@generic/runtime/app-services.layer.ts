@@ -28,7 +28,6 @@ import {
     InstallmentPlanRepository,
     InstrumentRepository,
     InvestmentReturnRepository,
-    YieldRepository,
     MccCategoryRepository,
     SettingsRepository,
     SyncRepository,
@@ -46,7 +45,8 @@ import {
     TransactionTagsRepository,
     SyncIdentityRepository,
     SyncRecordRepository,
-    SyncZoneRegistryRepository
+    SyncZoneRegistryRepository,
+    YieldRepository
 } from '@budgie/contracts';
 import { ExporterService, ImporterService } from '@budgie/import-export';
 import {
