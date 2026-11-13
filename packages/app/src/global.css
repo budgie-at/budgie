@@ -175,6 +175,16 @@
             --color-chart-4: #b37400;
             --color-chart-5: #c8487f;
             --color-chart-6: #5a45cf;
+            --color-yield-staking: #1f6bc7;
+            --color-yield-staking-contrast: #1a5aa8;
+            --color-yield-interest: #c8487f;
+            --color-yield-interest-contrast: #a83a6a;
+            --color-yield-dividends: #0b87a6;
+            --color-yield-dividends-contrast: #08718b;
+            --color-yield-distributions: #b37400;
+            --color-yield-distributions-contrast: #966100;
+            --color-yield-tax: #7c7c80;
+            --color-yield-tax-contrast: #6c6c70;
         }
 
         @variant dark {
@@ -281,6 +291,16 @@
             --color-chart-4: #e0a020;
             --color-chart-5: #e3679a;
             --color-chart-6: #9d93f0;
+            --color-yield-staking: #4a8fe6;
+            --color-yield-staking-contrast: #6aa6ef;
+            --color-yield-interest: #cc5487;
+            --color-yield-interest-contrast: #dd6c9d;
+            --color-yield-dividends: #1a98b6;
+            --color-yield-dividends-contrast: #3bb0cf;
+            --color-yield-distributions: #c08410;
+            --color-yield-distributions-contrast: #d69a2a;
+            --color-yield-tax: #98989d;
+            --color-yield-tax-contrast: #aeaeb2;
         }
     }
 }
