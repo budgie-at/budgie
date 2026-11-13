@@ -654,8 +654,8 @@ importers:
         specifier: 1.0.0-rc.4
         version: 1.0.0-rc.4
       eas-build-cache-provider:
-        specifier: ^25.1.1
-        version: 25.1.1(supports-color@8.1.1)
+        specifier: ^27.6.0
+        version: 27.6.0(supports-color@8.1.1)
       emojibase-data:
         specifier: ~18.0.0
         version: 18.0.0(emojibase@17.0.0)
@@ -6470,8 +6470,8 @@ packages:
       zod:
         optional: true
 
-  eas-build-cache-provider@25.1.1:
-    resolution: {integrity: sha512-ywBdqTKYPXxn8rU2tT4lPZ5S2EE6yrrq/Xa3sx2R6+mIuB5JXGJEPKXrELdo5QvtVMycpKpXAQbMZAHiOc7S8w==}
+  eas-build-cache-provider@27.6.0:
+    resolution: {integrity: sha512-/8SOWH/FYA7ZZPNFLDFd/B9zQOIInM3lQdEQn4Pmu4j7opJbJ6T9q49o8/HNioWIPYjkAFhFk7Iy2Qa14mRoTg==}
     engines: {node: '>=20.0.0'}
 
   eastasianwidth@0.2.0:
@@ -14709,7 +14709,7 @@ snapshots:
       expo-sqlite: 58.0.7(expo@58.0.22)(react-native@0.88.1(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
       zod: 4.6.7
 
-  eas-build-cache-provider@25.1.1(supports-color@8.1.1):
+  eas-build-cache-provider@27.6.0(supports-color@8.1.1):
     dependencies:
       '@babel/code-frame': 7.23.5
       '@expo/config': 11.0.10(supports-color@8.1.1)
