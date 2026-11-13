@@ -22,6 +22,7 @@ import { TransactionTypeEnum } from '../enum/transaction-type.enum';
 import { TransactionUpdatedByEnum } from '../enum/transaction-updated-by.enum';
 import { TransactionEntityTable } from '../table/transaction-entity.table';
 import { deriveEmbeddingFlag } from '../utils/derive-embedding-flag.util';
+import { normalizeYieldFields } from '../utils/normalize-yield-fields.util';
 
 import type { DB } from '../../@generic/type/db.type';
 import type { TransactionCreateEntityInterface } from '../entity/transaction-create-entity.interface';
@@ -117,9 +118,36 @@ export class TransactionRepository extends Context.Service<TransactionRepository
             return [];
         });
 
+        const withNormalizedYieldFields = (input: TransactionCreateEntityInterface): TransactionCreateEntityInterface => ({
+            ...input,
+            ...normalizeYieldFields(input.type, input.yieldKind ?? null, input.yieldSourceAccountId ?? null)
+        });
+
+        const resolveYieldPatch = Effect.fnUntraced(function* (id: number, input: TransactionUpdateInputInterface) {
+            const touchesYield = isDefined(input.type) || 'yieldKind' in input || 'yieldSourceAccountId' in input;
+            const stored = touchesYield
+                ? yield* Db.query(db =>
+                      db.query.TransactionEntityTable.findFirst({
+                          columns: { type: true, yieldKind: true, yieldSourceAccountId: true },
+                          where: { id }
+                      })
+                  )
+                : null;
+
+            if (!isDefined(stored)) {
+                return {};
+            }
+
+            return normalizeYieldFields(
+                input.type ?? stored.type,
+                'yieldKind' in input ? (input.yieldKind ?? null) : stored.yieldKind,
+                'yieldSourceAccountId' in input ? (input.yieldSourceAccountId ?? null) : stored.yieldSourceAccountId
+            );
+        });
+
         const bulkCreate = Effect.fn('TransactionRepository.bulkCreate')(function* (inputs: TransactionCreateEntityInterface[]) {
             if (isNotEmptyArray(inputs)) {
-                return yield* Db.query(db => db.insert(TransactionEntityTable).values(inputs).returning());
+                return yield* Db.query(db => db.insert(TransactionEntityTable).values(inputs.map(withNormalizedYieldFields)).returning());
             }
 
             return [];
@@ -253,7 +281,7 @@ export class TransactionRepository extends Context.Service<TransactionRepository
             }),
 
             updateById: Effect.fn('TransactionRepository.updateById')(function* (id: number, input: TransactionUpdateInputInterface) {
-                const finalInput = { ...input, ...deriveEmbeddingFlag(input) };
+                const finalInput = { ...input, ...deriveEmbeddingFlag(input), ...(yield* resolveYieldPatch(id, input)) };
                 const [transaction] = yield* Db.query(db =>
                     db.update(TransactionEntityTable).set(finalInput).where(eq(TransactionEntityTable.id, id)).returning()
                 );
