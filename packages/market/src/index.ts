@@ -35,3 +35,4 @@ export type { YieldAnnualYieldInterface } from './yield/interface/yield-annual-y
 export type { YieldCombinedYieldInterface } from './yield/interface/yield-combined-yield.interface';
 export type { YieldDeltaInterface } from './yield/interface/yield-delta.interface';
 export type { YieldEstimateCauseInterface } from './yield/interface/yield-estimate-cause.interface';
+export type { YieldEstimatedFigureInterface } from './yield/interface/yield-estimated-figure.interface';
