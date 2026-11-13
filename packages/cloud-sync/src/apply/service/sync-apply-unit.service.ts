@@ -104,6 +104,17 @@ export class SyncApplyUnitService extends Context.Service<SyncApplyUnitService>(
             };
         });
 
+        const normalizeMergedYield = (
+            recordType: SyncRecordTypeEnum,
+            merged: Readonly<Record<string, SyncCellType>>
+        ): Readonly<Record<string, SyncCellType>> => {
+            const { type, yieldKind, yieldSourceAccountId } = merged;
+
+            return recordType === SyncRecordTypeEnum.TRANSACTION && isTransactionType(type)
+                ? { ...merged, ...normalizeYieldFields(type, isYieldKind(yieldKind) ? yieldKind : null, yieldSourceAccountId ?? null) }
+                : merged;
+        };
+
         const readChangedColumns = (changedColumns: string): readonly string[] =>
             Option.getOrElse(Schema.decodeOption(columnListSchema)(changedColumns), () => []);
 
@@ -324,8 +335,11 @@ export class SyncApplyUnitService extends Context.Service<SyncApplyUnitService>(
                     localChanged: changedProperties,
                     authorship: SYNC_AUTHORSHIP_COLUMNS[parentTable] ?? null
                 });
-                const updates = diffSyncCells(parentDescriptor, result.merged, localCells);
-                const kept = result.keptLocal.map(property => getSyncColumnName(parentDescriptor, property));
+                const mergedCells = normalizeMergedYield(decoded.recordType, result.merged);
+                const updates = diffSyncCells(parentDescriptor, mergedCells, localCells);
+                const kept = Object.keys(serverParentCells)
+                    .filter(property => mergedCells[property] !== (serverParentCells[property] ?? null))
+                    .map(property => getSyncColumnName(parentDescriptor, property));
 
                 if (isNotEmptyArray(Object.keys(updates))) {
                     yield* repository.updateRow(parentTable, parentLocalId, updates);

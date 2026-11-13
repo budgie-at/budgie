@@ -158,6 +158,29 @@ describe('cloud-sync/yield-apply', () => {
             })
         );
 
+        it.effect.each([
+            { local: `yield_kind = 'STAKING'`, remote: `type = 'TRANSFER'` },
+            { local: `type = 'TRANSFER'`, remote: `yield_kind = 'STAKING'` }
+        ])('never merges a kind onto a transfer when the devices edit $local and $remote', ({ local, remote }) =>
+            Effect.gen(function* () {
+                const deviceB = yield* Db;
+                const cloud = new FakeCloudTransport();
+
+                yield* seedYieldIncome(deviceB, cloud, null);
+                yield* testDb.$client.unsafe(`UPDATE transactions SET ${local} WHERE comment = ?`, [KEY]);
+                yield* deviceB.$client.unsafe(`UPDATE transactions SET ${remote} WHERE comment = ?`, [KEY]);
+                yield* pushDevice(deviceB, cloud);
+                yield* pullDevice(testDb, cloud, DEVICE_A);
+
+                expect(yield* yieldOf(testDb)).toMatchObject({ type: 'TRANSFER', yieldKind: null, sourceTitle: null });
+
+                yield* pushDevice(testDb, cloud);
+                yield* pullDevice(deviceB, cloud, DEVICE_B);
+
+                expect(yield* yieldOf(deviceB)).toMatchObject({ type: 'TRANSFER', yieldKind: null, sourceTitle: null });
+            })
+        );
+
         it.effect('normalizes an invalid kind delivered by another device', () =>
             Effect.gen(function* () {
                 const deviceB = yield* Db;
