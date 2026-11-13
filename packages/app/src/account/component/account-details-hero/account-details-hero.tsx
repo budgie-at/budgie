@@ -4,6 +4,8 @@ import Animated from 'react-native-reanimated';
 
 import { CollapsibleChromeScrollFade } from '../../../@generic/component/collapsible-chrome-scroll-fade/collapsible-chrome-scroll-fade';
 import { MOTION_FADE_IN, MOTION_FADE_OUT, MOTION_LAYOUT } from '../../../@generic/constant/motion.constant';
+import { SecurityPositionGainLine } from '../../../brokerage/component/security-position-gain-line/security-position-gain-line';
+import { isListedSecurityType } from '../../../instrument/utils/is-listed-security-type.util';
 import { InzhurFundReturns } from '../../../inzhur/component/inzhur-fund-returns/inzhur-fund-returns';
 import { isInzhurFundAccount } from '../../../inzhur/utils/is-inzhur-fund-account.util';
 import { ACCOUNT_DETAILS_HERO_BALANCE_HEIGHT } from '../../constant/account-details-hero-balance-height.constant';
@@ -33,7 +35,7 @@ export const AccountDetailsHero = ({ account, balance }: Props) => {
         <View className="items-center gap-y-lg pb-md">
             <View style={BALANCE_SLOT_STYLE} />
 
-            {isCryptoAccountType(account.type) ? (
+            {isCryptoAccountType(account.type) || isListedSecurityType(account.instrument.type) ? (
                 <>
                     <CollapsibleChromeScrollFade>
                         <AccountDetailsConvertedValue balance={balance} instrument={account.instrument} />
@@ -57,7 +59,9 @@ export const AccountDetailsHero = ({ account, balance }: Props) => {
                 </Animated.View>
             )}
 
-            {isInzhurFundAccount(account) ? null : (
+            {isListedSecurityType(account.instrument.type) ? <SecurityPositionGainLine account={account} balance={balance} /> : null}
+
+            {isInzhurFundAccount(account) || isListedSecurityType(account.instrument.type) ? null : (
                 <Animated.View layout={MOTION_LAYOUT}>
                     <AccountDetailsMonthChips accountId={account.id} />
                 </Animated.View>

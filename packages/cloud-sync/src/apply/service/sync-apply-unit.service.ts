@@ -166,11 +166,13 @@ export class SyncApplyUnitService extends Context.Service<SyncApplyUnitService>(
             unitIds: ReadonlyMap<string, number>
         ) {
             if (reference.kind === SyncReferenceKindEnum.NATURAL_KEY) {
-                return yield* repository.findNaturalKeyId(
-                    reference.tableName,
-                    SYNC_NATURAL_KEY_PROPERTIES[reference.tableName],
-                    reference.key
-                );
+                return reference.tableName === 'instruments'
+                    ? yield* repository.resolveInstrument(reference.key, reference.instrumentDefinition)
+                    : yield* repository.findNaturalKeyId(
+                          reference.tableName,
+                          SYNC_NATURAL_KEY_PROPERTIES[reference.tableName],
+                          reference.key
+                      );
             }
 
             const localId =

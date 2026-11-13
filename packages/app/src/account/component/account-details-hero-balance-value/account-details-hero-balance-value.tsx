@@ -1,4 +1,4 @@
-import { AccountAssociationEnum, AccountWithInstrumentEntityInterface, InstrumentTypeEnum } from '@budgie/contracts';
+import { AccountAssociationEnum, AccountWithInstrumentEntityInterface } from '@budgie/contracts';
 import { Text } from 'react-native';
 
 import { ProtectedMoney } from '../../../@generic/component/protected-money/protected-money';
@@ -9,6 +9,8 @@ import { useIsAmountProtected } from '../../../@generic/hook/use-is-amount-prote
 import { getTextStyleForTicket } from '../../../@generic/utils/get-text-style-for-ticket.util';
 import { MILLION } from '../../../i18n/constant/compact-thresholds.constant';
 import { useFormatCompactDigits } from '../../../i18n/hook/use-format-compact-digits.hook';
+import { getInstrumentUnitLabel } from '../../../instrument/utils/get-instrument-unit-label.util';
+import { isSecurityInstrumentType } from '../../../instrument/utils/is-security-instrument-type.util';
 import { ACCOUNT_DETAILS_HERO_BALANCE_HEIGHT } from '../../constant/account-details-hero-balance-height.constant';
 import { useAccountDetailsBalanceLabel } from '../../hook/use-account-details-balance-label.hook';
 import { isCryptoAccountType } from '../../utils/is-crypto-account-type.util';
@@ -23,9 +25,11 @@ export const AccountDetailsHeroBalanceValue = ({ balance, account }: Props) => {
     const isAmountProtected = useIsAmountProtected();
     const formatCompactDigits = useFormatCompactDigits(MILLION);
 
-    const isUnitAccount = isCryptoAccountType(account.type) || account.instrument.type === InstrumentTypeEnum.FUND;
+    const isUnitAccount = isCryptoAccountType(account.type) || isSecurityInstrumentType(account.instrument.type);
     const balanceLabel =
-        Math.abs(balance) >= MILLION ? `${formatCompactDigits(balance)} ${account.instrument.code}` : getBalanceLabel(balance, account);
+        Math.abs(balance) >= MILLION
+            ? `${formatCompactDigits(balance)} ${getInstrumentUnitLabel(account.instrument)}`
+            : getBalanceLabel(balance, account);
 
     if (isUnitAccount && isAmountProtected) {
         return (

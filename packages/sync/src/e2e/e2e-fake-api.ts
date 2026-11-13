@@ -12,6 +12,7 @@ const ISO_DATE_LENGTH = 10;
 const NINETY_DAYS = 90;
 const MILLISECONDS_PER_SECOND = 1000;
 const SECONDS_PER_HOUR = 3600;
+const SECONDS_PER_DAY = 86_400;
 const UAH_NUMERIC_CODE = 980;
 const REJECTED_TOKEN_PATTERN = /^e2e-rejected/u;
 
@@ -181,9 +182,46 @@ const MONOBANK_ROUTES: ReadonlyArray<readonly [string, RegExp, FakeHandlerType]>
     ['GET', /^\/personal\/statement\/[^/]+\/\d+(\/\d+)?$/u, monobankStatement]
 ];
 
+const E2E_SECURITIES = [
+    { symbol: 'BGTX', currency: 'USD', shortname: 'Budgie Example', longname: 'Budgie Example Holdings', exchDisp: 'E2E Exchange' },
+    { symbol: 'BGEU', currency: 'EUR', shortname: 'Budgie Euro', longname: 'Budgie Euro Fund', exchDisp: 'E2E Euronext' }
+] as const;
+const E2E_SECURITY_LATEST_CLOSE = 120;
+const E2E_SECURITY_DAILY_RISE = 2;
+const E2E_SECURITY_HISTORY_DAYS = 10;
+
+const yahooChart = (currency: string) => () => {
+    const todayNoonSeconds = Math.floor(Date.now() / MILLISECONDS_PER_DAY) * SECONDS_PER_DAY + SECONDS_PER_DAY / 2;
+    const daysAgo = Array.from({ length: E2E_SECURITY_HISTORY_DAYS }, (_day, index) => E2E_SECURITY_HISTORY_DAYS - 1 - index);
+
+    return {
+        chart: {
+            result: [
+                {
+                    meta: { currency, regularMarketPrice: E2E_SECURITY_LATEST_CLOSE },
+                    timestamp: daysAgo.map(days => todayNoonSeconds - days * SECONDS_PER_DAY),
+                    indicators: { quote: [{ close: daysAgo.map(days => E2E_SECURITY_LATEST_CLOSE - days * E2E_SECURITY_DAILY_RISE) }] }
+                }
+            ]
+        }
+    };
+};
+
+const YAHOO_ROUTES: ReadonlyArray<readonly [string, RegExp, FakeHandlerType]> = [
+    [
+        'GET',
+        /^\/v1\/finance\/search$/u,
+        () => ({ quotes: E2E_SECURITIES.map(({ currency: _currency, ...quote }) => ({ ...quote, quoteType: 'EQUITY' })) })
+    ],
+    ...E2E_SECURITIES.map(
+        ({ symbol, currency }) => ['GET', new RegExp(`^/v8/finance/chart/${symbol}$`, 'u'), yahooChart(currency)] as const
+    )
+];
+
 const ROUTES_BY_HOST = new Map([
     ['api.enablebanking.com', ENABLE_BANKING_ROUTES],
-    ['api.monobank.ua', MONOBANK_ROUTES]
+    ['api.monobank.ua', MONOBANK_ROUTES],
+    ['query1.finance.yahoo.com', YAHOO_ROUTES]
 ]);
 
 const readBody = (body: unknown): string => {

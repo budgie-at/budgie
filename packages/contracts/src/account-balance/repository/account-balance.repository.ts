@@ -17,13 +17,13 @@ import { LIQUID_ACCOUNT_TYPES } from '../../account/constant/liquid-account-type
 import { AccountDebtTypeEnum } from '../../account/enum/account-debt-type.enum';
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
+import { isUnitAccountSql } from '../../account/utils/is-unit-account-sql.util';
 import { BankIntegrationEntityTable } from '../../bank-integration/table/bank-integration-entity.table';
 import { SyncRecordTypeEnum } from '../../cloud-sync/enum/sync-record-type.enum';
 import { buildDuplicateOfOwnAccountSql } from '../../cloud-sync/utils/build-duplicate-of-own-account-sql.util';
 import { buildHouseholdOwnershipSql } from '../../cloud-sync/utils/build-household-ownership-sql.util';
 import { DebtEventDirectionEnum } from '../../debt-event/enum/debt-event-direction.enum';
 import { DebtEventEntityTable } from '../../debt-event/table/debt-event-entity.table';
-import { InstrumentTypeEnum } from '../../instrument/enum/instrument-type.enum';
 import { InstrumentEntityTable } from '../../instrument/table/instrument-entity.table';
 import { SyncModeEnum } from '../../sync/enum/sync-mode.enum';
 import { SyncEntityTable } from '../../sync/table/sync-entity.table';
@@ -46,10 +46,8 @@ const buildFiatExchangeRateConversionSql = (defaultInstrumentId: number) =>
 const buildStrictExchangeRateConversionSql = (defaultInstrumentId: number) =>
     getExchangeRateWithHistoricalFallbackSql(defaultInstrumentId, sql.raw('accounts.instrument_id'));
 
-const isUnitAccountSql = sql`(${inArray(AccountEntityTable.type, CRYPTO_ACCOUNT_TYPES)} OR EXISTS (SELECT 1 FROM ${InstrumentEntityTable} WHERE ${InstrumentEntityTable.id} = ${AccountEntityTable.instrumentId} AND ${InstrumentEntityTable.type} != ${InstrumentTypeEnum.FIAT}))`;
-
 const buildNetWorthExchangeRateConversionSql = (defaultInstrumentId: number) =>
-    sql`CASE WHEN ${isUnitAccountSql} THEN ${buildStrictExchangeRateConversionSql(defaultInstrumentId)} ELSE ${buildFiatExchangeRateConversionSql(defaultInstrumentId)} END`;
+    sql`CASE WHEN ${isUnitAccountSql()} THEN ${buildStrictExchangeRateConversionSql(defaultInstrumentId)} ELSE ${buildFiatExchangeRateConversionSql(defaultInstrumentId)} END`;
 
 const getConvertedBalanceSql = (balanceSql: SQL, exchangeRateSql: SQL) => roundToMinorUnitSql(sql`(${balanceSql}) * ${exchangeRateSql}`);
 
@@ -178,6 +176,37 @@ export class AccountBalanceRepository extends Context.Service<AccountBalanceRepo
                 })
             );
         }),
+        getMinimumLedgerBalanceFrom: (accountId: number, operatedFrom: Date) =>
+            Db.query(db =>
+                db.get<{ balance: number }>(sql`
+                    WITH entries AS (
+                        SELECT ${TransactionEntityTable.operatedAt} AS operated_at,
+                            ${TransactionEntityTable.id} AS transaction_id,
+                            ${TransactionEntryEntityTable.id} AS entry_id,
+                            CASE WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT}
+                                THEN ${TransactionEntryEntityTable.amount}
+                                WHEN ${TransactionEntryEntityTable.type} IN (${TransactionEntryTypeEnum.CREDIT}, ${TransactionEntryTypeEnum.FEE})
+                                THEN -${TransactionEntryEntityTable.amount} ELSE 0 END AS amount
+                        FROM ${TransactionEntryEntityTable}
+                        INNER JOIN ${TransactionEntityTable} ON ${TransactionEntityTable.id} = ${TransactionEntryEntityTable.transactionId}
+                        WHERE ${and(
+                            eq(TransactionEntryEntityTable.accountId, accountId),
+                            isNull(TransactionEntryEntityTable.deletedAt),
+                            transactionFilters.buildVisibleTransactionCondition(),
+                            transactionFilters.buildRefundAwareLedgerEntryCondition()
+                        )}
+                    ), balances AS (
+                        SELECT operated_at,
+                            SUM(amount) OVER (ORDER BY operated_at, transaction_id, entry_id ROWS UNBOUNDED PRECEDING) AS balance
+                        FROM entries
+                    )
+                    SELECT MIN(balance) AS balance FROM (
+                        SELECT COALESCE(SUM(amount), 0) AS balance FROM entries WHERE operated_at <= ${Math.floor(operatedFrom.getTime() / 1000)}
+                        UNION ALL
+                        SELECT balance FROM balances WHERE operated_at > ${Math.floor(operatedFrom.getTime() / 1000)}
+                    )
+                `)
+            ).pipe(Effect.map(row => row.balance)),
         getLedgerBalanceUntil: (accountId: number, operatedUntil: Date) =>
             Db.query(db =>
                 db
@@ -229,17 +258,12 @@ export class AccountBalanceRepository extends Context.Service<AccountBalanceRepo
                     .where(and(eq(AccountEntityTable.includeInNetWorth, true), isNull(AccountEntityTable.deletedAt), isAccountOwnedSql))
             );
         },
-        getTotalByCryptoInstrument: (instrumentId: number) =>
+        getTotalByUnitInstrument: (instrumentId: number) =>
             Db.query(db =>
                 db
                     .select({ balance: sql<number>`COALESCE(SUM(${getAccountBalanceWithTransactionsSql()}), 0)` })
                     .from(AccountEntityTable)
-                    .where(
-                        getActiveAccountWhereSql(
-                            inArray(AccountEntityTable.type, CRYPTO_ACCOUNT_TYPES),
-                            eq(AccountEntityTable.instrumentId, instrumentId)
-                        )
-                    )
+                    .where(getActiveAccountWhereSql(isUnitAccountSql(), eq(AccountEntityTable.instrumentId, instrumentId)))
             ),
         getHomeAccountRows: (defaultInstrumentId: number) => {
             const balanceSql = getAccountBalanceWithTransactionsSql();
@@ -270,7 +294,8 @@ export class AccountBalanceRepository extends Context.Service<AccountBalanceRepo
                         hasLedgerHistory: sql<number>`EXISTS (SELECT 1 FROM ${TransactionEntryEntityTable} WHERE ${TransactionEntryEntityTable.accountId} = ${AccountEntityTable.id} AND ${TransactionEntryEntityTable.deletedAt} IS NULL)`,
                         isSharedByOther: sql<number>`CASE WHEN NOT ${isAccountOwnedSql} THEN 1 ELSE 0 END`,
                         instrument: InstrumentEntityTable,
-                        integrationLabel: BankIntegrationEntityTable.label
+                        integrationLabel: BankIntegrationEntityTable.label,
+                        integrationProvider: BankIntegrationEntityTable.provider
                     })
                     .from(AccountEntityTable)
                     .innerJoin(InstrumentEntityTable, eq(InstrumentEntityTable.id, AccountEntityTable.instrumentId))

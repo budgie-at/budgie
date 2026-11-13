@@ -13,6 +13,7 @@ import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-scre
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
 import { MICRO_UNIT_DECIMAL_PLACES } from '../../../@generic/constant/micro-unit-decimal-places.constant';
 import { useStickyDefinedValue } from '../../../@generic/hook/use-sticky-defined-value.hook';
+import { BrokerageService } from '../../../brokerage/service/brokerage.service';
 import { useGetInstrumentsByTypeQuery } from '../../../instrument/query/use-get-instruments-by-type.query';
 import { HistoricalMarketDataDrainerService } from '../../../market-data/service/historical-market-data-drainer.service';
 import { defaultInstrumentIdAtom } from '../../../settings/constants/settings-atoms.constant';
@@ -28,19 +29,21 @@ import { CreateAccountOptionsSection } from '../create-account-options-section/c
 import { CreateAccountScreen } from '../create-account-screen/create-account-screen';
 
 interface Props {
-    readonly type: AccountTypeEnum.BANK | AccountTypeEnum.CASH | AccountTypeEnum.CRYPTO;
+    readonly type: AccountTypeEnum.BANK | AccountTypeEnum.CASH | AccountTypeEnum.CRYPTO | AccountTypeEnum.STOCKS;
 }
 
 const TITLE: Record<Props['type'], MessageDescriptor> = {
     [AccountTypeEnum.BANK]: msg`Checking Account`,
     [AccountTypeEnum.CASH]: msg`Savings Account`,
-    [AccountTypeEnum.CRYPTO]: msg`Crypto Account`
+    [AccountTypeEnum.CRYPTO]: msg`Crypto Account`,
+    [AccountTypeEnum.STOCKS]: msg`Brokerage`
 };
 
 const NAME_PLACEHOLDER: Record<Props['type'], MessageDescriptor> = {
     [AccountTypeEnum.BANK]: msg`e.g. Main card`,
     [AccountTypeEnum.CASH]: msg`e.g. Emergency fund`,
-    [AccountTypeEnum.CRYPTO]: msg`e.g. Cold wallet`
+    [AccountTypeEnum.CRYPTO]: msg`e.g. Cold wallet`,
+    [AccountTypeEnum.STOCKS]: msg`e.g. My broker`
 };
 
 export const CreateSimpleAccount = ({ type }: Props) => {
@@ -64,8 +67,9 @@ export const CreateSimpleAccount = ({ type }: Props) => {
     const { control, handleSubmit, instrument, isSubmitting } = useLiabilityAccountForm(formValues, values =>
         Effect.gen(function* () {
             const accountService = yield* AccountService;
+            const brokerageService = yield* BrokerageService;
             const historicalMarketDataDrainerService = yield* HistoricalMarketDataDrainerService;
-            const account = yield* accountService.create(values);
+            const account = type === AccountTypeEnum.STOCKS ? yield* brokerageService.create(values) : yield* accountService.create(values);
 
             yield* Effect.forkDetach(historicalMarketDataDrainerService.enqueueAccounts([account]).pipe(Effect.tapCause(Effect.logError)));
 

@@ -10,6 +10,7 @@ import { isDefined } from '@rnw-community/shared';
 import { SCREEN_CHROME_CONTENT_INSET_TOP } from '../../../@generic/constant/screen-chrome-content-inset.constant';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
+import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { getMarketPriceFractionDigits } from '../../utils/get-market-price-fraction-digits.util';
 import { isMarketPriceStale } from '../../utils/is-market-price-stale.util';
@@ -19,7 +20,7 @@ import type { SharedValue } from 'react-native-reanimated';
 
 interface Props {
     readonly instrumentName: string;
-    readonly latestPrice: Pick<InstrumentDailyMarketPriceEntityInterface, 'price' | 'priceDate'> | undefined;
+    readonly latestPrice: Pick<InstrumentDailyMarketPriceEntityInterface, 'price' | 'priceDate' | 'quoteInstrumentId'> | undefined;
     readonly priceBottom: SharedValue<number>;
 }
 
@@ -27,7 +28,9 @@ const MIN_FRACTION_DIGITS = 2;
 const PRICE_FADE_DISTANCE = 8;
 
 export const CurrencyMarketSmallTitle = ({ instrumentName, latestPrice, priceBottom }: Props) => {
-    const { symbol } = useAtomValue(defaultInstrumentAtom);
+    const defaultInstrument = useAtomValue(defaultInstrumentAtom);
+    const { instrument: quoteInstrument } = useGetInstrumentByIdQuery(latestPrice?.quoteInstrumentId ?? defaultInstrument.id);
+    const symbol = quoteInstrument?.symbol ?? defaultInstrument.symbol;
     const formatPrice = useFormatDigits(MIN_FRACTION_DIGITS, getMarketPriceFractionDigits(latestPrice?.price ?? 0));
     const { config } = useScreenChrome();
     const { scrollY } = useCollapsibleHeaderScroll();

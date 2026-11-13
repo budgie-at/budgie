@@ -7,12 +7,12 @@ import { FixedChromePage } from '../../../@generic/component/fixed-chrome-page/f
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
 import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
 import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
+import { OperatedAtField } from '../../../@generic/component/operated-at-field/operated-at-field';
 import { InzhurPurchaseFormSchema } from '../../constant/inzhur-purchase-form-schema.constant';
 import { InzhurSelector } from '../../selector/inzhur.selector';
 import { buildInzhurPurchaseDefaults } from '../../utils/build-inzhur-purchase-defaults.util';
 import { InzhurPurchaseAmountField } from '../inzhur-purchase-amount-field/inzhur-purchase-amount-field';
 import { InzhurPurchaseCertificatesField } from '../inzhur-purchase-certificates-field/inzhur-purchase-certificates-field';
-import { InzhurPurchaseDateField } from '../inzhur-purchase-date-field/inzhur-purchase-date-field';
 import { InzhurPurchaseFooter } from '../inzhur-purchase-footer/inzhur-purchase-footer';
 import { InzhurPurchaseFundField } from '../inzhur-purchase-fund-field/inzhur-purchase-fund-field';
 
@@ -45,7 +45,7 @@ export const InzhurPurchaseForm = ({ topUp, defaultFundName }: Props) => {
                         <InzhurPurchaseFundField />
                         <InzhurPurchaseCertificatesField />
                         <InzhurPurchaseAmountField />
-                        <InzhurPurchaseDateField />
+                        <OperatedAtField testID={InzhurSelector.PurchaseDateButton} />
                     </FormLayoutGroup>
                 </FixedChromePage>
             </FormProvider>

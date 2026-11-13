@@ -1,11 +1,12 @@
-import { InstrumentTypeEnum, TransactionTypeEnum, convertFromMicroUnits } from '@budgie/contracts';
+import { TransactionTypeEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { PROTECTED_AMOUNT_PLACEHOLDER } from '../../@generic/constant/protected-amount-placeholder.constant';
 import { useIsAmountProtected } from '../../@generic/hook/use-is-amount-protected.hook';
-import { useFormatFundQuantity } from '../../i18n/hook/use-format-fund-quantity.hook';
+import { useFormatInstrumentAmount } from '../../i18n/hook/use-format-instrument-amount.hook';
+import { isSecurityInstrumentType } from '../../instrument/utils/is-security-instrument-type.util';
 
 import { useDividendRoleLabel } from './use-dividend-role-label.hook';
 
@@ -13,22 +14,28 @@ import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts'
 
 export const useFundTradeLabel = (transaction: TransactionWithRelationsEntityInterface) => {
     const { t } = useLingui();
-    const formatFundQuantity = useFormatFundQuantity();
+    const formatInstrumentAmount = useFormatInstrumentAmount();
     const isAmountProtected = useIsAmountProtected();
     const dividendRole = useDividendRoleLabel(transaction);
-    const fundEntry = transaction.entries.find(entry => entry.account.instrument.type === InstrumentTypeEnum.FUND);
+    const fundEntry = transaction.entries.find(entry => isSecurityInstrumentType(entry.account.instrument.type));
 
     if (isDefined(dividendRole) || !isDefined(fundEntry)) {
         return dividendRole;
     }
 
-    const quantity = isAmountProtected ? PROTECTED_AMOUNT_PLACEHOLDER : formatFundQuantity(convertFromMicroUnits(fundEntry.amount));
+    const quantity = isAmountProtected
+        ? PROTECTED_AMOUNT_PLACEHOLDER
+        : formatInstrumentAmount(
+              convertFromMicroUnits(fundEntry.amount),
+              fundEntry.account.instrument.symbol,
+              fundEntry.account.instrument.type
+          );
 
     if (transaction.type === TransactionTypeEnum.ADJUSTMENT) {
         return t`Adjustment · ${quantity}`;
     }
 
-    const cashTitle = transaction.entries.find(entry => entry.account.instrument.type !== InstrumentTypeEnum.FUND)?.account.title;
+    const cashTitle = transaction.entries.find(entry => !isSecurityInstrumentType(entry.account.instrument.type))?.account.title;
 
     if (transaction.type !== TransactionTypeEnum.TRANSFER || !isDefined(cashTitle)) {
         return null;

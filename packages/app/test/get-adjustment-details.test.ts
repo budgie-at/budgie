@@ -65,6 +65,7 @@ const buildAccount = (type: AccountTypeEnum): AccountWithInstrumentEntityInterfa
         symbol: '€',
         priceProvider: null,
         providerInstrumentId: null,
+        quoteInstrumentId: null,
         marketCapRank: null
     }
 });

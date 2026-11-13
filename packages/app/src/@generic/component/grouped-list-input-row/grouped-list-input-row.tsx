@@ -1,5 +1,7 @@
 import { Text, View, useWindowDimensions } from 'react-native';
 
+import { useIsAccessibilityTextSize } from '../../hook/use-is-accessibility-text-size.hook';
+import { cn } from '../../utils/cn.util';
 import { GroupedListIcon } from '../grouped-list-icon/grouped-list-icon';
 import { Input } from '../input/input';
 
@@ -20,10 +22,12 @@ const INPUT_LINE_HEIGHT = 28;
 
 export const GroupedListInputRow = ({ icon, label, ...inputProps }: Props) => {
     const { fontScale } = useWindowDimensions();
+    const isStacked = useIsAccessibilityTextSize();
+    const alignClassName = isStacked ? 'items-start' : 'items-center';
     const inputStyle = { minHeight: INPUT_LINE_HEIGHT * Math.min(fontScale, inputProps.maxFontSizeMultiplier ?? fontScale) };
 
     return (
-        <View className="min-h-[50px] flex-row items-center gap-x-xl px-3xl py-lg">
+        <View className={cn('min-h-[50px] flex-row gap-x-xl px-3xl py-lg', alignClassName)}>
             <GroupedListIcon icon={icon} />
             <View className="flex-1 gap-y-md">
                 <Text className="text-secondary-foreground text-[13px]">{label}</Text>

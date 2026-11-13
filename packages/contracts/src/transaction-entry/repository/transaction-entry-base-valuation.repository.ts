@@ -6,7 +6,10 @@ import * as Layer from 'effect/Layer';
 
 import { Db } from '../../@generic/service/db.service';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
+import { InstrumentTypeEnum } from '../../instrument/enum/instrument-type.enum';
+import { TransactionTypeEnum } from '../../transaction/enum/transaction-type.enum';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
+import { TransactionEntryTypeEnum } from '../enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../table/transaction-entry-entity.table';
 
 import type { BaseValuationBucketRevaluationInterface } from '../interface/base-valuation-bucket-revaluation.interface';
@@ -76,6 +79,41 @@ export class TransactionEntryBaseValuationRepository extends Context.Service<Tra
                 );
 
             return {
+                rebaseSecurityTradeCosts: (baseInstrumentId: number) =>
+                    Db.mutation(
+                        { type: 'update', tables: ['transaction_entries'] },
+                        Db.query(db =>
+                            db.run(sql`
+                        UPDATE transaction_entries AS security
+                        SET base_instrument_id = ${baseInstrumentId},
+                            base_amount = cash.base_amount,
+                            base_exchange_rate = cash.base_amount * 1.0 / NULLIF(security.amount, 0)
+                        FROM transaction_entries cash
+                        INNER JOIN accounts cash_account ON cash_account.id = cash.account_id
+                        INNER JOIN instruments cash_instrument ON cash_instrument.id = cash_account.instrument_id
+                        INNER JOIN transactions trade ON trade.id = cash.transaction_id
+                        WHERE security.transaction_id = cash.transaction_id
+                          AND trade.type = ${TransactionTypeEnum.TRANSFER}
+                          AND cash_instrument.type = ${InstrumentTypeEnum.FIAT}
+                          AND cash.type IN (${TransactionEntryTypeEnum.DEBIT}, ${TransactionEntryTypeEnum.CREDIT})
+                          AND security.type IN (${TransactionEntryTypeEnum.DEBIT}, ${TransactionEntryTypeEnum.CREDIT})
+                          AND security.type != cash.type
+                          AND cash.base_instrument_id = ${baseInstrumentId}
+                          AND cash.base_amount IS NOT NULL
+                          AND (security.base_instrument_id IS NOT ${baseInstrumentId} OR security.base_amount IS NOT cash.base_amount)
+                          AND cash.deleted_at IS NULL AND security.deleted_at IS NULL
+                          AND cash.original_transaction_id IS NULL AND security.original_transaction_id IS NULL
+                          AND cash_account.deleted_at IS NULL AND trade.deleted_at IS NULL
+                          AND security.account_id IN (
+                              SELECT account.id FROM accounts account
+                              INNER JOIN instruments instrument ON instrument.id = account.instrument_id
+                              WHERE instrument.type IN (${InstrumentTypeEnum.EQUITY}, ${InstrumentTypeEnum.ETF})
+                                AND account.deleted_at IS NULL
+                          )
+                    `)
+                        )
+                    ),
+
                 findPendingBaseValuationBuckets: (baseInstrumentId: number) =>
                     findBaseValuationBuckets(() => buildPendingBaseValuationWhere(baseInstrumentId)),
                 findBaseValuationBucketsInRange: (baseInstrumentId: number, fromDate: string, toDate: string) =>

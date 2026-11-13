@@ -1,7 +1,6 @@
 import { accountBalanceAtom } from '@app/account/query/use-account-balance.query';
 import { archivedAccountBalanceAtom } from '@app/account/query/use-archived-account-balance.query';
 import { archivedAccountsAtom } from '@app/account/query/use-archived-accounts.query';
-import { cryptoInstrumentBalanceAtom } from '@app/account/query/use-crypto-instrument-balance.query';
 import { debtAccountManualSettledAmountAtom } from '@app/account/query/use-debt-account-manual-settled-amount.query';
 import { debtAccountProgressAtom } from '@app/account/query/use-debt-account-progress-summary.query';
 import { accountByIdAtom } from '@app/account/query/use-get-account-by-id.query';
@@ -11,6 +10,7 @@ import { inactiveAccountsAtom } from '@app/account/query/use-inactive-accounts.q
 import { netWorthAtom } from '@app/account/query/use-net-worth.query';
 import { accountCountAtom, searchAccountsAtom } from '@app/account/query/use-search-accounts-grouped.query';
 import { searchAccountsSortedAtom } from '@app/account/query/use-search-accounts-sorted.query';
+import { unitInstrumentBalanceAtom } from '@app/account/query/use-unit-instrument-balance.query';
 import { genericBudgetTemplateAtom, suggestedBudgetTemplateAtom } from '@app/budget/hooks/use-budget-template-draft.hook';
 import { activeBudgetAtom } from '@app/budget/query/use-get-active-budget.query';
 import { budgetCategoryLimitsAtom } from '@app/budget/query/use-get-budget-category-limits.query';
@@ -32,9 +32,9 @@ import { rateByBaseAndQuoteIdsAtom } from '@app/exchange-rate/query/use-get-rate
 import { installmentPlanScheduleAtom } from '@app/installment-plan/query/use-installment-plan-schedule.query';
 import { instrumentByIdAtom } from '@app/instrument/query/use-get-instrument-by-id.query';
 import { instrumentsByTypeAtom } from '@app/instrument/query/use-get-instruments-by-type.query';
-import { cryptoPositionEntriesAtom } from '@app/market-data/query/use-crypto-instrument-position.query';
 import { latestMarketDataJobAtom, marketPriceCountAtom } from '@app/market-data/query/use-instrument-market-data-progress.query';
 import { recentMarketPricesAtom } from '@app/market-data/query/use-instrument-market-data.query';
+import { instrumentPositionEntriesAtom } from '@app/market-data/query/use-instrument-positions.query';
 import { allMccCategoriesAtom } from '@app/mcc-category/query/use-get-all-mcc-categories.query';
 import { mccCategoryByIdAtom } from '@app/mcc-category/query/use-get-mcc-category-by-id.query';
 import { accountCountAtom as onboardingAccountCountAtom } from '@app/onboarding/hook/use-is-onboarding-active.hook';
@@ -156,7 +156,7 @@ const liveAtoms = ({
     accountBalance: accountBalanceAtom(account.id),
     archivedAccountBalance: archivedAccountBalanceAtom(account.id),
     archivedAccounts: archivedAccountsAtom,
-    cryptoInstrumentBalance: cryptoInstrumentBalanceAtom(BASE_INSTRUMENT_ID),
+    unitInstrumentBalance: unitInstrumentBalanceAtom(BASE_INSTRUMENT_ID),
     debtAccountManualSettledAmount: debtAccountManualSettledAmountAtom(installmentAccount.id),
     debtAccountProgress: debtAccountProgressAtom(installmentAccount.id),
     accountById: accountByIdAtom(account.id),
@@ -187,7 +187,7 @@ const liveAtoms = ({
     installmentPlanSchedule: installmentPlanScheduleAtom(installmentAccount.id),
     instrumentById: instrumentByIdAtom(BASE_INSTRUMENT_ID),
     instrumentsByType: instrumentsByTypeAtom(InstrumentTypeEnum.FIAT),
-    cryptoPositionEntries: cryptoPositionEntriesAtom([BASE_INSTRUMENT_ID, BASE_INSTRUMENT_ID]),
+    instrumentPositionEntries: instrumentPositionEntriesAtom([[BASE_INSTRUMENT_ID], BASE_INSTRUMENT_ID]),
     latestMarketDataJob: latestMarketDataJobAtom([BASE_INSTRUMENT_ID, 2]),
     marketPriceCount: marketPriceCountAtom([BASE_INSTRUMENT_ID, 2]),
     recentMarketPrices: recentMarketPricesAtom([BASE_INSTRUMENT_ID, 2]),

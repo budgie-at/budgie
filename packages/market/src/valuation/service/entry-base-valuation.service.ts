@@ -55,7 +55,9 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
             const isPriceDriven =
                 account.type === AccountTypeEnum.CRYPTO ||
                 account.type === AccountTypeEnum.CRYPTO_SYNC ||
-                account.instrument.type === InstrumentTypeEnum.FUND;
+                account.instrument.type === InstrumentTypeEnum.FUND ||
+                account.instrument.type === InstrumentTypeEnum.EQUITY ||
+                account.instrument.type === InstrumentTypeEnum.ETF;
 
             if (isPriceDriven) {
                 const missingValuation: EntryBaseValuationInterface = {
@@ -204,36 +206,21 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
             targetInstrumentId: number,
             operatedAt: Date
         ) {
-            const directRate = yield* resolveDirectHistoricalRateOrNull(lookups, sourceInstrumentId, targetInstrumentId, operatedAt);
-
-            if (isDefined(directRate)) {
-                return directRate;
+            if (sourceInstrumentId === targetInstrumentId) {
+                return 1;
             }
-
-            const hryvniaInstrument = yield* lookups.findInstrumentByCode(CurrencyEnum.UAH);
-
-            if (
-                !isDefined(hryvniaInstrument) ||
-                sourceInstrumentId === hryvniaInstrument.id ||
-                targetInstrumentId === hryvniaInstrument.id
-            ) {
-                return null;
+            const source = yield* instrumentRepository.findById(sourceInstrumentId);
+            const quoteInstrumentId = source?.quoteInstrumentId;
+            if (!isDefined(quoteInstrumentId) || quoteInstrumentId === sourceInstrumentId) {
+                return yield* resolveDirectHistoricalRateOrNull(lookups, sourceInstrumentId, targetInstrumentId, operatedAt);
             }
+            const sourceToQuoteRate = yield* resolveDirectHistoricalRateOrNull(lookups, sourceInstrumentId, quoteInstrumentId, operatedAt);
+            const quoteToTargetRate =
+                quoteInstrumentId === targetInstrumentId
+                    ? 1
+                    : yield* resolveDirectHistoricalRateOrNull(lookups, quoteInstrumentId, targetInstrumentId, operatedAt);
 
-            const sourceToHryvniaRate = yield* resolveDirectHistoricalRateOrNull(
-                lookups,
-                sourceInstrumentId,
-                hryvniaInstrument.id,
-                operatedAt
-            );
-            const hryvniaToTargetRate = yield* resolveDirectHistoricalRateOrNull(
-                lookups,
-                hryvniaInstrument.id,
-                targetInstrumentId,
-                operatedAt
-            );
-
-            return isDefined(sourceToHryvniaRate) && isDefined(hryvniaToTargetRate) ? sourceToHryvniaRate * hryvniaToTargetRate : null;
+            return isDefined(sourceToQuoteRate) && isDefined(quoteToTargetRate) ? sourceToQuoteRate * quoteToTargetRate : null;
         });
 
         const createContext = Effect.fn('EntryBaseValuationService.createContext')(function* (operatedAts: readonly Date[]) {
