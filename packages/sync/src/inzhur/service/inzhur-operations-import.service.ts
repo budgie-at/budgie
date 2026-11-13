@@ -32,6 +32,7 @@ import { inzhurOperationsPlanner } from '../planner/inzhur-operations.planner';
 import { inzhurQuantityResolver } from '../planner/inzhur-quantity.resolver';
 import { buildInzhurTradeEntries } from '../utils/build-inzhur-trade-entries.util';
 import { buildInzhurTransactionInput } from '../utils/build-inzhur-transaction-input.util';
+import { buildInzhurYieldFields } from '../utils/build-inzhur-yield-fields.util';
 import { findLowestDayEndBalance } from '../utils/find-lowest-day-end-balance.util';
 import { getKyivDayStart } from '../utils/get-kyiv-day-start.util';
 import { isInzhurPeriod } from '../utils/is-inzhur-period.util';
@@ -135,13 +136,13 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
 
             const buildIncomeOrTaxInput = (
                 action: InzhurPlannedActionInterface,
-                cashAccountId: number,
+                cashAccount: AccountEntityInterface,
                 fundAccount: AccountEntityInterface
             ) => {
                 const isDividend = action.kind === InzhurOperationKindEnum.DIVIDEND;
                 const entry = {
                     ...buildPrimaryEntry(
-                        cashAccountId,
+                        cashAccount.id,
                         isDividend ? TransactionEntryTypeEnum.DEBIT : TransactionEntryTypeEnum.CREDIT,
                         action.cashAmount,
                         action.externalId
@@ -149,10 +150,16 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
                     categoryId: isDividend ? INVESTMENTS_CATEGORY_ID : TAXES_CATEGORY_ID
                 };
                 const title = `${toInzhurShortName(fundAccount.title)} ${isDividend ? 'dividends' : 'dividend tax'}`;
+                const input = buildInzhurTransactionInput(title, action.externalId, action.occurredAt, [entry]);
+                const yieldFields = buildInzhurYieldFields({ type: input.type, fundAccountId: fundAccount.id, title });
 
                 return {
-                    ...buildInzhurTransactionInput(title, action.externalId, action.occurredAt, [entry]),
-                    fundAccountId: fundAccount.id
+                    ...input,
+                    fundAccountId: fundAccount.id,
+                    ...(isDefined(yieldFields) && {
+                        yieldKind: yieldFields.yieldKind,
+                        yieldSourceAccountId: cashAccount.syncZone === fundAccount.syncZone ? yieldFields.yieldSourceAccountId : null
+                    })
                 };
             };
 
@@ -391,7 +398,7 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
                     .flatMap(action => {
                         const account = accountByFund.get(action.fundName ?? '');
 
-                        return isDefined(account) ? [buildIncomeOrTaxInput(action, cashAccountId, account)] : [];
+                        return isDefined(account) ? [buildIncomeOrTaxInput(action, setup.cashAccount, account)] : [];
                     });
 
                 for (const { stored } of amendedTrades) {
