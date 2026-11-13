@@ -486,6 +486,10 @@ msgstr "{downloaded} of {total} GB is kept. It carries on when you're back onlin
 msgid "{duplicateTransactionCount, plural, one {# skipped} other {# skipped}}"
 msgstr "{duplicateTransactionCount, plural, one {# skipped} other {# skipped}}"
 
+#: src/yield/hook/use-yield-entry-subtitle.hook.ts
+msgid "{earned} past year · {yieldText}"
+msgstr "{earned} past year · {yieldText}"
+
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "{entryStatusLabel}. {formattedAmount} {caption}. {formattedSpentLabel}, {formattedDaysLeft}."
 msgstr "{entryStatusLabel}. {formattedAmount} {caption}. {formattedSpentLabel}, {formattedDaysLeft}."
@@ -603,6 +607,7 @@ msgstr "{formattedDifference} over limit"
 msgid "{formattedDifference} under limit"
 msgstr "{formattedDifference} under limit"
 
+#: src/yield/hook/use-yield-entry-subtitle.hook.ts
 #: src/yield/hook/use-yield-rate-text.hook.ts
 msgid "{formattedRate} a year"
 msgstr "{formattedRate} a year"
@@ -1474,6 +1479,7 @@ msgid "Accounts you sync appear here."
 msgstr "Accounts you sync appear here."
 
 #: src/yield/hook/use-yield-deposit-subtitle.hook.ts
+#: src/yield/hook/use-yield-entry-subtitle.hook.ts
 msgid "Accruing {accruingAmount}"
 msgstr "Accruing {accruingAmount}"
 
@@ -7676,6 +7682,7 @@ msgid "Partial export"
 msgstr "Partial export"
 
 #: src/yield/component/yield-empty-state/yield-empty-state.tsx
+#: src/yield/component/yield-entry-row-content/yield-entry-row-content.tsx
 #: src/yield/component/yield-screen-content/yield-screen-content.tsx
 #: src/yield/component/yield-screen-title/yield-screen-title.tsx
 msgid "Passive income"
@@ -7692,6 +7699,10 @@ msgstr "Passive income chart"
 #: src/yield/component/yield-empty-state/yield-empty-state.tsx
 msgid "Passive income shows up here when you earn staking rewards, dividends or interest"
 msgstr "Passive income shows up here when you earn staking rewards, dividends or interest"
+
+#: src/yield/component/yield-entry-row-content/yield-entry-row-content.tsx
+msgid "Passive income, {subtitle}"
+msgstr "Passive income, {subtitle}"
 
 #: src/market-data/component/currency-market-overview/currency-market-overview.tsx
 msgid "Past 3 months"

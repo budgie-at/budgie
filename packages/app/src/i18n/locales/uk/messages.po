@@ -485,6 +485,10 @@ msgstr "{downloaded} з {total} ГБ збережено. Завантаженн�
 msgid "{duplicateTransactionCount, plural, one {# skipped} other {# skipped}}"
 msgstr "{duplicateTransactionCount, plural, one {# пропущено} few {# пропущено} many {# пропущено} other {# пропущено}}"
 
+#: src/yield/hook/use-yield-entry-subtitle.hook.ts
+msgid "{earned} past year · {yieldText}"
+msgstr "{earned} за останній рік · {yieldText}"
+
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "{entryStatusLabel}. {formattedAmount} {caption}. {formattedSpentLabel}, {formattedDaysLeft}."
 msgstr "{entryStatusLabel}. {formattedAmount} {caption}. {formattedSpentLabel}, {formattedDaysLeft}."
@@ -602,6 +606,7 @@ msgstr "{formattedDifference} понад ліміт"
 msgid "{formattedDifference} under limit"
 msgstr "{formattedDifference} у межах ліміту"
 
+#: src/yield/hook/use-yield-entry-subtitle.hook.ts
 #: src/yield/hook/use-yield-rate-text.hook.ts
 msgid "{formattedRate} a year"
 msgstr "{formattedRate} на рік"
@@ -1473,6 +1478,7 @@ msgid "Accounts you sync appear here."
 msgstr "Рахунки, які ви синхронізуєте, з’являться тут."
 
 #: src/yield/hook/use-yield-deposit-subtitle.hook.ts
+#: src/yield/hook/use-yield-entry-subtitle.hook.ts
 msgid "Accruing {accruingAmount}"
 msgstr "Нараховується {accruingAmount}"
 
@@ -7675,6 +7681,7 @@ msgid "Partial export"
 msgstr "Частковий експорт"
 
 #: src/yield/component/yield-empty-state/yield-empty-state.tsx
+#: src/yield/component/yield-entry-row-content/yield-entry-row-content.tsx
 #: src/yield/component/yield-screen-content/yield-screen-content.tsx
 #: src/yield/component/yield-screen-title/yield-screen-title.tsx
 msgid "Passive income"
@@ -7691,6 +7698,10 @@ msgstr "Графік пасивного доходу"
 #: src/yield/component/yield-empty-state/yield-empty-state.tsx
 msgid "Passive income shows up here when you earn staking rewards, dividends or interest"
 msgstr "Пасивний дохід з’являється тут, коли ви отримуєте винагороди за стейкінг, дивіденди або відсотки"
+
+#: src/yield/component/yield-entry-row-content/yield-entry-row-content.tsx
+msgid "Passive income, {subtitle}"
+msgstr "Пасивний дохід, {subtitle}"
 
 #: src/market-data/component/currency-market-overview/currency-market-overview.tsx
 msgid "Past 3 months"
