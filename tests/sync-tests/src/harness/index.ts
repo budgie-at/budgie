@@ -22,6 +22,7 @@ export { fetchAccountIntegrationToken } from './db/fetch-account-integration-tok
 export { testQueryService } from './db/test-query-service';
 export { requireInstrument } from './db/require-instrument';
 export { fetchAccountBalance } from './db/fetch-account-balance';
+export { fetchBalanceAdjustments } from './db/fetch-balance-adjustments';
 export { fetchDebtProgress } from './db/fetch-debt-progress';
 export { upsertCurrencyRate } from './db/upsert-currency-rate';
 export { monobankStub } from './monobank/monobank-stub';

@@ -5,11 +5,11 @@ import Animated, { Extrapolation, interpolate, useAnimatedStyle } from 'react-na
 import { useScreenChrome, useScreenChromeScrollY } from '@rnw-community/react-native-screen-chrome';
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { TRANSACTION_INFO_COMPACT_MAX_FONT_SCALE } from '../../constant/transaction-info-compact-max-font-scale.constant';
 import { TRANSACTION_TYPE } from '../../constant/transaction-type.constant';
+import { useProtectedInstrumentAmountLabel } from '../../hook/use-protected-instrument-amount-label.hook';
+import { useTransactionRowTitle } from '../../hook/use-transaction-row-title.hook';
 import { formatTransactionInfoAmount } from '../../utils/format-transaction-info-amount.util';
-import { getTransactionDisplayTitle } from '../../utils/get-transaction-display-title.util';
 import { TransactionInfoCompactLine } from '../transaction-info-compact-line/transaction-info-compact-line';
 
 import type { TransactionInfoHandoffInterface } from '../../interface/transaction-info-handoff.interface';
@@ -32,7 +32,8 @@ export const TransactionInfoNavTitle = (props: Props) => {
     const { config } = useScreenChrome();
     const { fontScale } = useWindowDimensions();
     const scrollY = useScreenChromeScrollY();
-    const formatDigits = useProtectedAmountLabel();
+    const formatAmount = useProtectedInstrumentAmountLabel();
+    const rowTitle = useTransactionRowTitle(transaction);
     const titleOffset = (COMPACT_TITLE_LINE_HEIGHT * Math.min(fontScale, TRANSACTION_INFO_COMPACT_MAX_FONT_SCALE)) / 2;
     const centringStyle = useAnimatedStyle(() => {
         const [titleStart, titleEnd] = handoff.compactTitleRange.get();
@@ -51,8 +52,7 @@ export const TransactionInfoNavTitle = (props: Props) => {
         };
     });
 
-    const displayTitle = getTransactionDisplayTitle(transaction);
-    const title = isNotEmptyString(displayTitle) ? displayTitle : t(TRANSACTION_TYPE[transaction.type]);
+    const title = isNotEmptyString(rowTitle) ? rowTitle : t(TRANSACTION_TYPE[transaction.type]);
     const rowStyle = { height: config.headerHeight };
     const containerStyle = [Z_INDEX_STYLE, { paddingHorizontal: horizontalInset }];
 
@@ -70,7 +70,7 @@ export const TransactionInfoNavTitle = (props: Props) => {
                         {compactTitle ?? title}
                     </TransactionInfoCompactLine>
                     <TransactionInfoCompactLine range={handoff.compactAmountRange} className="text-[15px] leading-[19px] tabular-nums">
-                        {compactAmount ?? formatTransactionInfoAmount(transaction, formatDigits)}
+                        {compactAmount ?? formatTransactionInfoAmount(transaction, formatAmount)}
                     </TransactionInfoCompactLine>
                 </Animated.View>
             </View>

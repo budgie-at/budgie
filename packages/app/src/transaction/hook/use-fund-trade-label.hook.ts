@@ -3,19 +3,16 @@ import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { PROTECTED_AMOUNT_PLACEHOLDER } from '../../@generic/constant/protected-amount-placeholder.constant';
-import { useIsAmountProtected } from '../../@generic/hook/use-is-amount-protected.hook';
-import { useFormatInstrumentAmount } from '../../i18n/hook/use-format-instrument-amount.hook';
 import { isSecurityInstrumentType } from '../../instrument/utils/is-security-instrument-type.util';
 
 import { useDividendRoleLabel } from './use-dividend-role-label.hook';
+import { useProtectedInstrumentAmountLabel } from './use-protected-instrument-amount-label.hook';
 
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 
-export const useFundTradeLabel = (transaction: TransactionWithRelationsEntityInterface) => {
+export const useFundTradeLabel = (transaction: TransactionWithRelationsEntityInterface, accountId: number | null) => {
     const { t } = useLingui();
-    const formatInstrumentAmount = useFormatInstrumentAmount();
-    const isAmountProtected = useIsAmountProtected();
+    const formatQuantity = useProtectedInstrumentAmountLabel();
     const dividendRole = useDividendRoleLabel(transaction);
     const fundEntry = transaction.entries.find(entry => isSecurityInstrumentType(entry.account.instrument.type));
 
@@ -23,13 +20,11 @@ export const useFundTradeLabel = (transaction: TransactionWithRelationsEntityInt
         return dividendRole;
     }
 
-    const quantity = isAmountProtected
-        ? PROTECTED_AMOUNT_PLACEHOLDER
-        : formatInstrumentAmount(
-              convertFromMicroUnits(fundEntry.amount),
-              fundEntry.account.instrument.symbol,
-              fundEntry.account.instrument.type
-          );
+    const quantity = formatQuantity(
+        convertFromMicroUnits(fundEntry.amount),
+        fundEntry.account.instrument.symbol,
+        fundEntry.account.instrument.type
+    );
 
     if (transaction.type === TransactionTypeEnum.ADJUSTMENT) {
         return t`Adjustment · ${quantity}`;
@@ -41,5 +36,10 @@ export const useFundTradeLabel = (transaction: TransactionWithRelationsEntityInt
         return null;
     }
 
-    return transaction.toAccountId === fundEntry.accountId ? t`From ${cashTitle} · +${quantity}` : t`To ${cashTitle} · −${quantity}`;
+    const [positionLabel, cashLabel] =
+        transaction.toAccountId === fundEntry.accountId
+            ? [t`From ${cashTitle}`, t`From ${cashTitle} · +${quantity}`]
+            : [t`To ${cashTitle}`, t`To ${cashTitle} · −${quantity}`];
+
+    return accountId === fundEntry.accountId ? positionLabel : cashLabel;
 };

@@ -191,6 +191,10 @@ export const RootLayoutContent = () => {
                                                                         name="contact-selector"
                                                                         options={MORPHING_SHEET_OPTIONS}
                                                                     />
+                                                                    <Stack.Screen
+                                                                        name="security-selector"
+                                                                        options={MORPHING_SHEET_OPTIONS}
+                                                                    />
                                                                     <Stack.Screen name="tags-selector" options={MORPHING_SHEET_OPTIONS} />
                                                                     <Stack.Screen
                                                                         name="category-destination"

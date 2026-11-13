@@ -30,7 +30,9 @@ export const GroupedListInputRow = ({ icon, label, ...inputProps }: Props) => {
         <View className={cn('min-h-[50px] flex-row gap-x-xl px-3xl py-lg', alignClassName)}>
             <GroupedListIcon icon={icon} />
             <View className="flex-1 gap-y-md">
-                <Text className="text-secondary-foreground text-[13px]">{label}</Text>
+                <Text className="text-secondary-foreground text-[13px]" maxFontSizeMultiplier={inputProps.maxFontSizeMultiplier}>
+                    {label}
+                </Text>
                 <Input
                     {...inputProps}
                     borderless

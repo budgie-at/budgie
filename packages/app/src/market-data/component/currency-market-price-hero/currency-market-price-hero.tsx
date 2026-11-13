@@ -4,6 +4,7 @@ import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { TITLE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/title-max-font-size-multiplier.constant';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
@@ -91,6 +92,9 @@ export const CurrencyMarketPriceHero = ({
             <Text
                 className="text-secondary-foreground text-[15px] leading-[20px] font-semibold tabular-nums"
                 numberOfLines={1}
+                adjustsFontSizeToFit
+                minimumFontScale={0.6}
+                maxFontSizeMultiplier={TITLE_MAX_FONT_SIZE_MULTIPLIER}
                 testID={CurrencyMarketPageSelector.Change(instrumentCode)}
             >
                 {isDefined(changeLabel) ? <Text className={changeClassName}>{changeLabel}</Text> : null}

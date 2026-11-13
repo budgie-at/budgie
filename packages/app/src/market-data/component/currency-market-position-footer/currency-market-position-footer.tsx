@@ -3,6 +3,8 @@ import { Text } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { TITLE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/title-max-font-size-multiplier.constant';
+
 interface Props {
     readonly costBasis: number | null;
     readonly valuationRate: number | null;
@@ -14,11 +16,15 @@ export const CurrencyMarketPositionFooter = ({ costBasis, valuationRate }: Props
     }
 
     return (
-        <Text className="text-secondary-foreground px-3xl pt-md text-[13px] leading-[18px]">
+        <Text
+            className="text-secondary-foreground px-3xl pt-md text-[13px] leading-[18px]"
+            numberOfLines={4}
+            maxFontSizeMultiplier={TITLE_MAX_FONT_SIZE_MULTIPLIER}
+        >
             {isDefined(valuationRate) ? (
-                <Trans>No purchase price is recorded for this balance, so the return can’t be calculated.</Trans>
+                <Trans>No purchase price recorded, so return is unavailable.</Trans>
             ) : (
-                <Trans>No market price yet, so value and return can’t be calculated.</Trans>
+                <Trans>No market price yet, so value and return are unavailable.</Trans>
             )}
         </Text>
     );

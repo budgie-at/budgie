@@ -1,8 +1,9 @@
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { View } from 'react-native';
 import { useSharedValue } from 'react-native-reanimated';
+import { useResolveClassNames } from 'uniwind';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isString } from '@rnw-community/shared';
 
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
@@ -32,9 +33,21 @@ const HERO_PRICE_HEIGHT = 41;
 const CURRENCY_MARKET_CHROME_CONFIG = {
     ...SCREEN_CHROME_CONFIG,
     collapsedHeaderHeight: 44,
-    smallTitleStart: 0,
-    largeTitleEnd: TITLE_HANDOFF_DISTANCE,
-    collapseEnd: TITLE_HANDOFF_DISTANCE
+    smallTitleStart: TITLE_HANDOFF_DISTANCE / 2,
+    largeTitleEnd: TITLE_HANDOFF_DISTANCE / 2,
+    collapseEnd: TITLE_HANDOFF_DISTANCE,
+    maskStops: {
+        ...SCREEN_CHROME_CONFIG.maskStops,
+        top: {
+            0: { color: '#000000' },
+            0.25: { color: '#000000' },
+            0.5: { color: '#000000' },
+            0.62: { color: '#000000' },
+            0.75: { color: 'rgba(0,0,0,0.35)' },
+            0.86: { color: 'transparent' },
+            1: { color: 'transparent' }
+        }
+    }
 };
 
 export const CurrencyMarketPage = ({ instrument: storedInstrument }: Props) => {
@@ -44,9 +57,14 @@ export const CurrencyMarketPage = ({ instrument: storedInstrument }: Props) => {
         storedInstrument.quoteInstrumentId ?? defaultInstrumentId
     );
 
+    const { backgroundColor } = useResolveClassNames('bg-grouped-surface');
     const priceBottom = useSharedValue(HERO_PRICE_HEIGHT);
 
     const instrument = { ...storedInstrument, code: getInstrumentUnitLabel(storedInstrument) };
+    const surfaceColors = isString(backgroundColor) ? { solid: backgroundColor, wash: backgroundColor } : null;
+    const chromeConfig = isDefined(surfaceColors)
+        ? { ...CURRENCY_MARKET_CHROME_CONFIG, colors: { light: surfaceColors, dark: surfaceColors } }
+        : CURRENCY_MARKET_CHROME_CONFIG;
 
     return (
         <GroupedSurface>
@@ -57,7 +75,7 @@ export const CurrencyMarketPage = ({ instrument: storedInstrument }: Props) => {
                     smallTitle={
                         <CurrencyMarketSmallTitle instrumentName={instrument.name} latestPrice={latestPrice} priceBottom={priceBottom} />
                     }
-                    chromeConfig={CURRENCY_MARKET_CHROME_CONFIG}
+                    chromeConfig={chromeConfig}
                     contentClassName="px-3xl gap-y-[28px] pb-8xl"
                 >
                     <CurrencyMarketOverview instrument={instrument} prices={prices} priceBottom={priceBottom} />

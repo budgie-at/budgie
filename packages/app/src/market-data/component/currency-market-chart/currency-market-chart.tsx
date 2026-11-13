@@ -7,6 +7,7 @@ import { useCSSVariable } from 'uniwind';
 import { isNumber, isString } from '@rnw-community/shared';
 
 import { StyledLine } from '../../../@generic/component/styled-line/styled-line';
+import { FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/footnote-max-font-size-multiplier.constant';
 import { MARKET_CHART_PLOT_HEIGHT } from '../../constant/market-chart-plot-height.constant';
 import { MarketChartToneEnum } from '../../enum/market-chart-tone.enum';
 import { useMarketChartAccessibility } from '../../hook/use-market-chart-accessibility.hook';
@@ -127,10 +128,18 @@ export const CurrencyMarketChart = ({ prices, selectedIndex, rangeLabel, startLa
             </GestureDetector>
 
             <View className="mt-xs min-h-[16px] flex-row items-center justify-between">
-                <Text className="text-secondary-foreground text-[12px] leading-[16px] tabular-nums" numberOfLines={1}>
+                <Text
+                    className="text-secondary-foreground text-[12px] leading-[16px] tabular-nums"
+                    numberOfLines={1}
+                    maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER}
+                >
                     {startLabel}
                 </Text>
-                <Text className="text-secondary-foreground text-[12px] leading-[16px] tabular-nums" numberOfLines={1}>
+                <Text
+                    className="text-secondary-foreground text-[12px] leading-[16px] tabular-nums"
+                    numberOfLines={1}
+                    maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER}
+                >
                     {endLabel}
                 </Text>
             </View>

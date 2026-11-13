@@ -633,6 +633,10 @@ msgstr "{groupCount, plural, one {# Gruppe} other {# Gruppen}}"
 msgid "{held} held"
 msgstr "{held} im Bestand"
 
+#: src/brokerage/component/security-trade-quantity-hint/security-trade-quantity-hint.tsx
+msgid "{heldQuantity, plural, one {Only # share held} other {Only # shares held}}"
+msgstr "{heldQuantity, plural, one {Nur # Anteil im Bestand} other {Nur # Anteile im Bestand}}"
+
 #: src/@generic/component/collapsible-stats-section/collapsible-stats-section.tsx
 msgid "{hiddenCount, plural, one {Show # more} other {Show # more}}"
 msgstr "{hiddenCount, plural, one {# weitere anzeigen} other {# weitere anzeigen}}"
@@ -689,14 +693,6 @@ msgstr "Markt {marketName}, {priceLabel}, {direction}"
 #: src/rule/components/rules-list-header/rules-list-header.tsx
 msgid "{matchingRulesCount, plural, one {# matching rule} other {# matching rules}}"
 msgstr "{matchingRulesCount, plural, one {# passende Regel} other {# passende Regeln}}"
-
-#: src/brokerage/component/security-trade-quantity-hint/security-trade-quantity-hint.tsx
-msgid "{maxQuantity, plural, one {Only # share held} other {Only # shares held}}"
-msgstr "{maxQuantity, plural, one {Nur # Anteil im Bestand} other {Nur # Anteile im Bestand}}"
-
-#: src/brokerage/component/security-trade-quantity-hint/security-trade-quantity-hint.tsx
-msgid "{maxQuantity, plural, one {Up to # share} other {Up to # shares}}"
-msgstr "{maxQuantity, plural, one {Bis zu # Anteil} other {Bis zu # Anteile}}"
 
 #: src/@generic/hook/use-format-file-size.hook.ts
 msgid "{megabytes} MB"
@@ -838,11 +834,16 @@ msgstr "{providerName} · Anschaffungskosten unbekannt"
 msgid "{providerName} sync"
 msgstr "{providerName}-Synchronisation"
 
+#: src/transaction/components/transaction-security-trade-detail/transaction-security-trade-detail.tsx
+msgid "{quantity} @ {unitPrice}"
+msgstr "{quantity} zu {unitPrice}"
+
 #: src/inzhur/component/update-inzhur-account-page/update-inzhur-account-page.tsx
 msgid "{quantityLabel} · updated from imports"
 msgstr "{quantityLabel} · aus Importen aktualisiert"
 
 #: src/account/component/security-account-card/security-account-card.tsx
+#: src/brokerage/component/brokerage-holding-row/brokerage-holding-row.tsx
 msgid "{quantityLabel}, worth {valueLabel}"
 msgstr "{quantityLabel}, Wert {valueLabel}"
 
@@ -1412,6 +1413,10 @@ msgstr "Füge eine Person in Kontakte hinzu und kehre zurück."
 msgid "Add a PIN any time later"
 msgstr "Eine PIN kannst du jederzeit später hinzufügen"
 
+#: src/brokerage/component/brokerage-empty-state/brokerage-empty-state.tsx
+msgid "Add a stock or ETF to see its value and return here."
+msgstr "Füge eine Aktie oder einen ETF hinzu, um hier Wert und Rendite zu sehen."
+
 #: src/category/components/categories-feature-intro/categories-feature-intro.tsx
 #: src/transaction/components/statistics-empty-ledger/statistics-empty-ledger.tsx
 msgid "Add a transaction"
@@ -1474,8 +1479,9 @@ msgstr "Gebühr hinzufügen"
 msgid "Add item"
 msgstr "Eintrag hinzufügen"
 
-#: src/app/(main)/securities/buy/[id].tsx
 #: src/brokerage/component/brokerage-add-position-action/brokerage-add-position-action.tsx
+#: src/brokerage/component/brokerage-empty-state/brokerage-empty-state.tsx
+#: src/brokerage/component/security-trade-form/security-trade-form.tsx
 msgid "Add position"
 msgstr "Position hinzufügen"
 
@@ -2274,6 +2280,10 @@ msgstr "Deine Daten werden aus iCloud geholt…"
 msgid "Brokerage"
 msgstr "Depot"
 
+#: src/sync/component/bank-integration-rename-card/bank-integration-rename-card.tsx
+msgid "Brokerage name"
+msgstr "Name des Brokers"
+
 #: src/category/components/category-icon-fix-row/category-icon-fix-row.tsx
 msgid "Browse icons"
 msgstr "Symbole durchsuchen"
@@ -2427,6 +2437,14 @@ msgstr "Die integrierten Kategorien sind immer da. Füge eigene hinzu, um Ausgab
 msgid "Burning"
 msgstr "Cash-Burn"
 
+#: src/brokerage/component/security-trade-save-footer/security-trade-save-footer.tsx
+msgid "Buy"
+msgstr "Kaufen"
+
+#: src/brokerage/component/security-trade-form/security-trade-form.tsx
+msgid "Buy {symbol}"
+msgstr "{symbol} kaufen"
+
 #: src/transaction/hook/use-transaction-row-title.hook.ts
 msgid "Buy {title}"
 msgstr "Kauf {title}"
@@ -2544,6 +2562,8 @@ msgid "Cash"
 msgstr "Bargeld"
 
 #: src/account/component/institution-account-row/institution-account-row.tsx
+#: src/brokerage/query/use-brokerage-summary.query.ts
+#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgctxt "Brokerage cash account"
 msgid "Cash"
 msgstr "Cash"
@@ -2704,6 +2724,10 @@ msgstr "Prüfe die Schreibweise oder versuche einen Code wie 5812."
 #: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 msgid "Check the spelling or try a code like EUR."
 msgstr "Prüfe die Schreibweise oder versuche einen Code wie EUR."
+
+#: src/brokerage/component/security-selector-modal-content/security-selector-modal-content.tsx
+msgid "Check the spelling or try a ticker like AAPL."
+msgstr "Prüfe die Schreibweise oder versuche ein Kürzel wie AAPL."
 
 #: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 msgid "Check the spelling or try a ticker like BTC."
@@ -2889,6 +2913,11 @@ msgstr "Schlüsseldatei erneut wählen"
 #: src/categorize-inbox/components/categorize-inbox-payments-screen/categorize-inbox-payments-screen.tsx
 msgid "Choose payments"
 msgstr "Zahlungen auswählen"
+
+#: src/brokerage/component/security-picker-row/security-picker-row.tsx
+#: src/brokerage/component/security-selector-modal-content/security-selector-modal-content.tsx
+msgid "Choose security"
+msgstr "Wertpapier wählen"
 
 #: src/categorize-inbox/components/categorize-inbox-tag-provider/categorize-inbox-tag-provider.tsx
 msgid "Choose tags"
@@ -3458,6 +3487,10 @@ msgstr "Familiengruppe konnte nicht entfernt werden"
 #: src/ai/component/ai-model-storage/ai-model-storage.tsx
 msgid "Could not remove unused downloads"
 msgstr "Ungenutzte Downloads konnten nicht entfernt werden"
+
+#: src/sync/component/bank-integration-rename-card/bank-integration-rename-card.tsx
+msgid "Could not rename brokerage"
+msgstr "Broker konnte nicht umbenannt werden"
 
 #: src/settings/hooks/use-sync-repairs-action.hook.ts
 msgid "Could not repair sync data"
@@ -4079,6 +4112,11 @@ msgstr "Löscht {DB_NAME} von diesem Telefon"
 #: src/account/constant/account-type.constant.ts
 msgid "Deposit"
 msgstr "Termineinlage"
+
+#: src/app/(main)/securities/buy/[id].tsx
+msgctxt "Brokerage funding"
+msgid "Deposit"
+msgstr "Einzahlung"
 
 #: src/account/component/create-deposit-account/create-deposit-account.tsx
 msgid "Deposit Account"
@@ -5004,6 +5042,10 @@ msgstr "Filter"
 msgid "Filters · {activeCount}"
 msgstr "Filter · {activeCount}"
 
+#: src/brokerage/component/security-selector-modal-content/security-selector-modal-content.tsx
+msgid "Find a stock or ETF"
+msgstr "Aktie oder ETF finden"
+
 #: src/import/components/import-preset-options/import-preset-options.tsx
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
 msgid "FinEye"
@@ -5089,6 +5131,10 @@ msgstr "Von"
 #: src/transaction/components/convert-transfer-summary/convert-transfer-summary.tsx
 msgid "From {accountTitle}"
 msgstr "Von {accountTitle}"
+
+#: src/transaction/hook/use-fund-trade-label.hook.ts
+msgid "From {cashTitle}"
+msgstr "Von {cashTitle}"
 
 #: src/transaction/hook/use-fund-trade-label.hook.ts
 msgid "From {cashTitle} · +{quantity}"
@@ -5300,6 +5346,10 @@ msgstr "Verlaufsimport pausiert"
 #: src/onboarding/component/onboarding-seal-footer/onboarding-seal-footer.tsx
 msgid "Hold to seal with this PIN"
 msgstr "Halten, um mit dieser PIN zu versiegeln"
+
+#: src/brokerage/component/brokerage-holdings/brokerage-holdings.tsx
+msgid "Holdings · {holdingsCount}"
+msgstr "Positionen · {holdingsCount}"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Home screen"
@@ -6388,6 +6438,7 @@ msgstr "Ins Bargeld verschoben"
 #: src/budget/components/budget-name-field/budget-name-field.tsx
 #: src/category/components/category-form/category-form.tsx
 #: src/recurring/components/recurring-form-title-field/recurring-form-title-field.tsx
+#: src/sync/component/bank-integration-rename-card/bank-integration-rename-card.tsx
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Name"
 msgstr "Name"
@@ -6591,6 +6642,10 @@ msgstr "Keine Änderung"
 msgid "No contacts on this device"
 msgstr "Keine Kontakte auf diesem Gerät"
 
+#: src/brokerage/component/security-trade-price-hint/security-trade-price-hint.tsx
+msgid "No current price for this security. Enter the price per share."
+msgstr "Für dieses Wertpapier gibt es keinen aktuellen Kurs. Gib den Preis pro Aktie ein."
+
 #: src/category/components/category-empty-state/category-empty-state.tsx
 msgid "No custom categories yet"
 msgstr "Noch keine eigenen Kategorien"
@@ -6636,8 +6691,8 @@ msgid "No limit changes yet"
 msgstr "Noch keine Limitänderungen"
 
 #: src/market-data/component/currency-market-position-footer/currency-market-position-footer.tsx
-msgid "No market price yet, so value and return can’t be calculated."
-msgstr "Noch kein Marktkurs, daher lassen sich Wert und Rendite nicht berechnen."
+msgid "No market price yet, so value and return are unavailable."
+msgstr "Noch kein Marktpreis, daher sind Wert und Rendite nicht verfügbar."
 
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "No matching accounts"
@@ -6663,6 +6718,10 @@ msgstr "Keine MCC-Codes verfügbar"
 msgid "No new transactions"
 msgstr "Keine neuen Transaktionen"
 
+#: src/brokerage/component/brokerage-empty-state/brokerage-empty-state.tsx
+msgid "No positions yet"
+msgstr "Noch keine Positionen"
+
 #: src/market-data/component/currency-market-chart-status/currency-market-chart-status.tsx
 msgid "No price history yet"
 msgstr "Noch kein Kursverlauf"
@@ -6680,8 +6739,8 @@ msgid "No problems found"
 msgstr "Keine Probleme gefunden"
 
 #: src/market-data/component/currency-market-position-footer/currency-market-position-footer.tsx
-msgid "No purchase price is recorded for this balance, so the return can’t be calculated."
-msgstr "Für diesen Bestand ist kein Kaufpreis erfasst, daher lässt sich die Rendite nicht berechnen."
+msgid "No purchase price recorded, so return is unavailable."
+msgstr "Kein Kaufpreis erfasst, daher ist die Rendite nicht verfügbar."
 
 #: src/receipt/hook/use-receipt-scan.hook.ts
 msgid "No receipt found"
@@ -6942,6 +7001,10 @@ msgstr "Anzahl der Zertifikate"
 #: src/installment-plan/component/installment-count-picker/installment-count-picker.tsx
 msgid "Number of months"
 msgstr "Anzahl der Monate"
+
+#: src/brokerage/component/security-trade-form/security-trade-form.tsx
+msgid "Number of shares"
+msgstr "Anzahl der Anteile"
 
 #: src/account/component/debt-account-card-summary/debt-account-card-summary.tsx
 msgid "of"
@@ -7219,6 +7282,7 @@ msgid "Operations imported"
 msgstr "Vorgänge importiert"
 
 #: src/app/(main)/import-csv.tsx
+#: src/brokerage/component/security-trade-form/security-trade-form.tsx
 msgid "Optional"
 msgstr "Optional"
 
@@ -7430,6 +7494,16 @@ msgstr "Teil deines Verlaufs. Ältere Aktivitäten sind nicht enthalten."
 #: src/inzhur/component/inzhur-operations-details/inzhur-operations-details.tsx
 msgid "Partial export"
 msgstr "Teilexport"
+
+#: src/brokerage/component/brokerage-gain-line/brokerage-gain-line.tsx
+#: src/brokerage/component/brokerage-institution-row-detail/brokerage-institution-row-detail.tsx
+msgid "Partial value"
+msgstr "Teilwert"
+
+#: src/brokerage/component/brokerage-gain-line/brokerage-gain-line.tsx
+#: src/brokerage/component/brokerage-institution-row-detail/brokerage-institution-row-detail.tsx
+msgid "Partial value — some prices unavailable"
+msgstr "Teilwert – einige Kurse fehlen"
 
 #: src/market-data/component/currency-market-overview/currency-market-overview.tsx
 msgid "Past 3 months"
@@ -7789,6 +7863,7 @@ msgid "Price per certificate"
 msgstr "Kurs pro Zertifikat"
 
 #: src/brokerage/component/security-trade-form/security-trade-form.tsx
+#: src/transaction/components/transaction-info-money-rows/transaction-info-money-rows.tsx
 msgid "Price per share"
 msgstr "Preis pro Anteil"
 
@@ -7837,10 +7912,6 @@ msgstr "Privates Konto von {ownerName}"
 msgid "Private by design"
 msgstr "Privat durch Design"
 
-#: src/app/(main)/securities/sell/[id].tsx
-msgid "Proceeds"
-msgstr "Erlös"
-
 #: src/budget/components/budget-category-forecast/budget-category-forecast.tsx
 msgid "Projected {overAmount} over"
 msgstr "Prognose: {overAmount} drüber"
@@ -7868,6 +7939,10 @@ msgstr "Schnellauswahl"
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 msgid "Quick rule"
 msgstr "Schnellregel"
+
+#: src/brokerage/component/security-trade-price-hint/security-trade-price-hint.tsx
+msgid "Quoted in {missingRateCurrency} with no exchange rate yet. Enter the price in {currencySymbol}."
+msgstr "Notiert in {missingRateCurrency}, noch ohne Wechselkurs. Gib den Preis in {currencySymbol} ein."
 
 #: src/installment-plan/component/convert-to-installment-content/convert-to-installment-content.tsx
 msgid "Raise the total above the paid {formattedPaid}"
@@ -8308,9 +8383,6 @@ msgid "Retry"
 msgstr "Erneut versuchen"
 
 #: src/brokerage/component/security-position-gain-line/security-position-gain-line.tsx
-msgid "return"
-msgstr "Rendite"
-
 #: src/market-data/component/currency-market-return-row/currency-market-return-row.tsx
 #: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
 msgid "Return"
@@ -8428,7 +8500,6 @@ msgid "Same trigger as a rule above"
 msgstr "Gleicher Auslöser wie eine Regel darüber"
 
 #: src/@generic/component/modal-form-save-button/modal-form-save-button.tsx
-#: src/brokerage/component/security-trade-form/security-trade-form.tsx
 #: src/inzhur/component/inzhur-purchase-footer/inzhur-purchase-footer.tsx
 #: src/recurring/components/recurring-series-form-screen/recurring-series-form-screen.tsx
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
@@ -8574,6 +8645,11 @@ msgstr "Archivierte Konten suchen…"
 msgid "Search by code or description…"
 msgstr "Nach Code oder Beschreibung suchen..."
 
+#: src/brokerage/component/security-picker-row/security-picker-row.tsx
+#: src/brokerage/component/security-selector-modal-content/security-selector-modal-content.tsx
+msgid "Search by ticker, ISIN or company name."
+msgstr "Suche nach Kürzel, ISIN oder Firmenname."
+
 #: src/transaction/components/transaction-category-filter-content/transaction-category-filter-content.tsx
 msgid "Search categories..."
 msgstr "Kategorien durchsuchen..."
@@ -8708,9 +8784,14 @@ msgid "Selected"
 msgstr "Ausgewählt"
 
 #: src/account/component/account-actions-menu/account-actions-menu.tsx
-#: src/app/(main)/securities/sell/[id].tsx
+#: src/brokerage/component/security-trade-form/security-trade-form.tsx
+#: src/brokerage/component/security-trade-save-footer/security-trade-save-footer.tsx
 msgid "Sell"
 msgstr "Verkaufen"
+
+#: src/brokerage/component/security-trade-form/security-trade-form.tsx
+msgid "Sell {symbol}"
+msgstr "{symbol} verkaufen"
 
 #: src/transaction/hook/use-transaction-row-title.hook.ts
 msgid "Sell {title}"
@@ -9016,6 +9097,10 @@ msgstr "SmartBudget"
 #: src/inzhur/component/inzhur-operations-fund-row/inzhur-operations-fund-row.tsx
 msgid "Sold {soldLabel}"
 msgstr "{soldLabel} verkauft"
+
+#: src/brokerage/component/brokerage-gain-line/brokerage-gain-line.tsx
+msgid "Some prices are unavailable"
+msgstr "Einige Preise sind nicht verfügbar"
 
 #: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
 msgid "Some transactions may be hidden by the account or amount filter."
@@ -9868,7 +9953,7 @@ msgstr "Der Strich zeigt, wo die Rücklage heute stehen sollte."
 msgid "Tick marks where spending should be by today."
 msgstr "Der Strich zeigt, wo die Ausgaben heute stehen sollten."
 
-#: src/brokerage/component/security-search-section/security-search-section.tsx
+#: src/brokerage/component/security-selector-modal-content/security-selector-modal-content.tsx
 msgid "Ticker, ISIN or name"
 msgstr "Ticker, ISIN oder Name"
 
@@ -9905,6 +9990,10 @@ msgstr "An {accountTitle}"
 #: src/categorize-inbox/components/categorize-inbox-transfer-undo/categorize-inbox-transfer-undo.tsx
 msgid "To {accountTitle}, rule saved"
 msgstr "An {accountTitle}, Regel gespeichert"
+
+#: src/transaction/hook/use-fund-trade-label.hook.ts
+msgid "To {cashTitle}"
+msgstr "An {cashTitle}"
 
 #: src/transaction/hook/use-fund-trade-label.hook.ts
 msgid "To {cashTitle} · −{quantity}"
@@ -10010,7 +10099,6 @@ msgstr "Einzahlungen"
 #: src/account/component/debt-account-card/debt-account-card.tsx
 #: src/account/component/debt-account-paid-off/debt-account-paid-off.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
-#: src/app/(main)/securities/buy/[id].tsx
 #: src/installment-plan/component/installment-plan-total-field/installment-plan-total-field.tsx
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "Total"
@@ -10042,7 +10130,7 @@ msgid "Total received"
 msgstr "Insgesamt erhalten"
 
 #: src/brokerage/component/brokerage-gain-line/brokerage-gain-line.tsx
-msgid "total return"
+msgid "Total return"
 msgstr "Gesamtrendite"
 
 #: src/settings/hook/use-biometric-label.hook.ts
@@ -10585,10 +10673,12 @@ msgid "Value"
 msgstr "Wert"
 
 #: src/account/component/security-account-card/security-account-card.tsx
+#: src/brokerage/component/brokerage-holding-row/brokerage-holding-row.tsx
 msgid "value unavailable"
 msgstr "Wert nicht verfügbar"
 
 #: src/account/component/security-account-card/security-account-card.tsx
+#: src/brokerage/component/brokerage-holding-row/brokerage-holding-row.tsx
 msgid "Value unavailable"
 msgstr "Wert nicht verfügbar"
 
