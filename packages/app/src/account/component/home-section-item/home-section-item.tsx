@@ -33,7 +33,7 @@ export const HomeSectionItem = ({ item, section, balancesByAccountId }: Props) =
     }
 
     if (isInstitutionGroup(item)) {
-        return <InstitutionRow institution={item} />;
+        return <InstitutionRow institution={item} balancesByAccountId={balancesByAccountId} />;
     }
 
     if ('accounts' in item) {

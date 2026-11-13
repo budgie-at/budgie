@@ -79,6 +79,49 @@ describe('transaction/day-net-amounts', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
+    it.effect('keeps the security instrument type on a day that mixes cash and a security', () =>
+        Effect.gen(function* () {
+            const instrument = yield* seed.instrument({
+                code: 'YAHOO:BGTX',
+                name: 'Budgie Example',
+                symbol: 'BGTX',
+                type: InstrumentTypeEnum.EQUITY
+            });
+            const cash = yield* seed.account({ type: AccountTypeEnum.CASH });
+            const security = yield* seed.account({ instrumentId: instrument.id });
+
+            yield* seed.manualExpense({ accountId: cash.id, amount: 10 * PRECISION, operatedAt: DAY });
+            yield* seed.manualExpense({ accountId: security.id, amount: PRECISION, operatedAt: DAY });
+
+            const [day] = yield* getDayNetAmounts([cash.id, security.id]);
+
+            expect(day).toMatchObject({ instrumentCount: 2, hasSecurity: true });
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('flags a security on an unscoped day whatever the row order of crypto, cash and the security', () =>
+        Effect.gen(function* () {
+            const crypto = yield* seed.instrument({ code: 'ETH', name: 'Ethereum', symbol: 'ETH', type: InstrumentTypeEnum.CRYPTO });
+            const equity = yield* seed.instrument({
+                code: 'YAHOO:BGTX',
+                name: 'Budgie Example',
+                symbol: 'BGTX',
+                type: InstrumentTypeEnum.EQUITY
+            });
+            const cryptoAccount = yield* seed.account({ instrumentId: crypto.id });
+            const groceries = yield* seed.account({ type: AccountTypeEnum.CASH });
+            const security = yield* seed.account({ instrumentId: equity.id });
+
+            yield* seed.manualExpense({ accountId: cryptoAccount.id, amount: convertToMicroUnits(0.001), operatedAt: DAY });
+            yield* seed.manualExpense({ accountId: groceries.id, amount: 10 * PRECISION, operatedAt: DAY });
+            yield* seed.manualExpense({ accountId: security.id, amount: PRECISION, operatedAt: DAY });
+
+            const [day] = yield* getDayNetAmounts(null);
+
+            expect(day).toMatchObject({ instrumentCount: 3, hasSecurity: true });
+        }).pipe(Effect.provide(TestLayer))
+    );
+
     it.effect('nets a consolidated refund and matches the ledger balance', () =>
         Effect.gen(function* () {
             const accountBalanceRepository = yield* AccountBalanceRepository;

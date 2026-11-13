@@ -12,6 +12,7 @@ import { ROW_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-max
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { testID } from '../../../@generic/utils/test-id.util';
+import { BrokerageInstitutionRowDetail } from '../../../brokerage/component/brokerage-institution-row-detail/brokerage-institution-row-detail';
 import { InzhurInstitutionRowDetail } from '../../../inzhur/component/inzhur-institution-row-detail/inzhur-institution-row-detail';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { getInstitutionTitle } from '../../utils/get-institution-title.util';
@@ -20,17 +21,19 @@ import { InstitutionRowTotal } from '../institution-row-total/institution-row-to
 
 import { InstitutionRowSelector } from './institution-row.selector';
 
+import type { HomeAccountBalanceInterface } from '../../interface/home-account-balance.interface';
 import type { InstitutionGroupInterface } from '../../interface/institution-group.interface';
 
 interface Props {
     readonly institution: InstitutionGroupInterface;
+    readonly balancesByAccountId: ReadonlyMap<number, HomeAccountBalanceInterface>;
 }
 
 const rowVariants = cva('min-h-[64px] gap-x-xl py-lg pr-lg pl-3xl active:bg-surface-fill', {
     variants: { isStacked: { true: 'gap-y-sm', false: 'flex-row items-center' } }
 });
 
-export const InstitutionRow = ({ institution }: Props) => {
+export const InstitutionRow = ({ institution, balancesByAccountId }: Props) => {
     const { integrationId, provider, label, groupNumber, accounts, total } = institution;
 
     const { t } = useLingui();
@@ -46,8 +49,9 @@ export const InstitutionRow = ({ institution }: Props) => {
         ? t({ message: plural(accountsCount, { one: '# asset', other: '# assets' }) })
         : t({ message: plural(accountsCount, { one: '# account', other: '# accounts' }) });
     const bankName = label ?? title;
-    const rowKey = provider === ExternalSourceEnum.MANUAL ? bankName : integrationId;
-    const rowTestID = testID(InstitutionRowSelector.Row(rowKey));
+    const isBrokerage = provider === ExternalSourceEnum.MANUAL;
+    const hasDefaultDetail = provider !== ExternalSourceEnum.INZHUR && !isBrokerage;
+    const rowTestID = testID(InstitutionRowSelector.Row(isBrokerage ? bankName : integrationId));
     const accessibilityLabel = [title, protectAmount(total, defaultInstrument.symbol), accountsCountLabel].join(', ');
 
     return (
@@ -69,11 +73,15 @@ export const InstitutionRow = ({ institution }: Props) => {
                 >
                     {title}
                 </Text>
-                {provider === ExternalSourceEnum.INZHUR ? (
-                    <InzhurInstitutionRowDetail />
-                ) : (
-                    <InstitutionRowDetail accounts={accounts} accountsCountLabel={accountsCountLabel} />
-                )}
+                {provider === ExternalSourceEnum.INZHUR ? <InzhurInstitutionRowDetail /> : null}
+                {isBrokerage ? (
+                    <BrokerageInstitutionRowDetail
+                        accounts={accounts}
+                        accountsCountLabel={accountsCountLabel}
+                        balancesByAccountId={balancesByAccountId}
+                    />
+                ) : null}
+                {hasDefaultDetail ? <InstitutionRowDetail accounts={accounts} accountsCountLabel={accountsCountLabel} /> : null}
             </View>
 
             <InstitutionRowTotal integrationId={integrationId} total={total} />

@@ -10,6 +10,7 @@ import { transactionFilters } from '../../@generic/repository/base-transaction-f
 import { Db } from '../../@generic/service/db.service';
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
+import { InstrumentTypeEnum } from '../../instrument/enum/instrument-type.enum';
 import { InstrumentEntityTable } from '../../instrument/table/instrument-entity.table';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
@@ -33,6 +34,10 @@ export class TransactionDayNetAmountRepository extends Context.Service<Transacti
                     instrumentId: AccountEntityTable.instrumentId,
                     instrumentSymbol: InstrumentEntityTable.symbol,
                     instrumentType: InstrumentEntityTable.type,
+                    hasSecurity:
+                        sql<boolean>`${InstrumentEntityTable.type} IN (${InstrumentTypeEnum.EQUITY}, ${InstrumentTypeEnum.ETF}, ${InstrumentTypeEnum.FUND})`
+                            .mapWith(Boolean)
+                            .as('has_security'),
                     amount: sql<number>`SUM(${signSql} * ${TransactionEntryEntityTable.amount})`.mapWith(Number).as('amount'),
                     baseAmount: sql<number>`COALESCE(SUM(${signSql} * ${TransactionEntryEntityTable.baseAmount}), 0)`
                         .mapWith(Number)
@@ -122,6 +127,7 @@ export class TransactionDayNetAmountRepository extends Context.Service<Transacti
                             baseAmount: (day?.baseAmount ?? 0) + row.baseAmount,
                             instrumentSymbol: day?.instrumentSymbol ?? row.instrumentSymbol,
                             instrumentType: day?.instrumentType ?? row.instrumentType,
+                            hasSecurity: (day?.hasSecurity ?? false) || row.hasSecurity,
                             instrumentCount: instrumentIds.size,
                             unvaluedCount: (day?.unvaluedCount ?? 0) + row.unvaluedCount
                         });

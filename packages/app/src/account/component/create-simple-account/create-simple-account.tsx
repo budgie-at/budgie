@@ -93,8 +93,19 @@ export const CreateSimpleAccount = ({ type }: Props) => {
         return <EmptyScreen />;
     }
 
-    const variant = ACCOUNT_COLOR[type];
     const minimumDecimalPlaces = isCrypto ? MICRO_UNIT_DECIMAL_PLACES : 0;
+    const balanceField =
+        type === AccountTypeEnum.STOCKS ? null : (
+            <AccountBalanceField
+                label={t`Starting balance`}
+                instrumentSymbol={stickyInstrument.symbol}
+                value={fields.currentBalance.field.value}
+                onChange={fields.currentBalance.field.onChange}
+                allowNegative={!isCrypto}
+                minimumDecimalPlaces={minimumDecimalPlaces}
+                showInstrumentAfterAmount={isCrypto}
+            />
+        );
 
     return (
         <CreateAccountScreen
@@ -103,21 +114,12 @@ export const CreateSimpleAccount = ({ type }: Props) => {
             isSubmitting={isSubmitting}
             accountName={fields.title.field.value}
         >
-            <AccountBalanceField
-                label={t`Starting balance`}
-
-                instrumentSymbol={stickyInstrument.symbol}
-                value={fields.currentBalance.field.value}
-                onChange={fields.currentBalance.field.onChange}
-                allowNegative={!isCrypto}
-                minimumDecimalPlaces={minimumDecimalPlaces}
-                showInstrumentAfterAmount={isCrypto}
-            />
+            {balanceField}
 
             <FormLayoutGroup>
                 <CreateAccountDetailsSection
                     fields={fields}
-                    variant={variant}
+                    variant={ACCOUNT_COLOR[type]}
                     namePlaceholder={t(NAME_PLACEHOLDER[type])}
                     instrumentType={instrumentType}
                     onInstrumentChange={fields.instrumentId.field.onChange}

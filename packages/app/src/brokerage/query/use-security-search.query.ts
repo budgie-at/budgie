@@ -9,6 +9,8 @@ import { isNotEmptyString } from '@rnw-community/shared';
 
 import { appAtomRuntime } from '../../@generic/runtime/app.runtime';
 
+import type { YahooListingInterface } from '@budgie/market';
+
 const SEARCH_DEBOUNCE_MILLIS = 300;
 
 const securitySearchAtom = Atom.family((query: string) =>
@@ -21,5 +23,14 @@ const securitySearchAtom = Atom.family((query: string) =>
     )
 );
 
-export const useSecuritySearchQuery = (query: string) =>
-    AsyncResult.getOrElse(useAtomValue(securitySearchAtom(useDeferredValue(query.trim()))), () => []);
+export const useSecuritySearchQuery = (query: string) => {
+    const deferredQuery = useDeferredValue(query.trim());
+    const result = useAtomValue(securitySearchAtom(deferredQuery));
+    const listings = AsyncResult.getOrElse(result, () => []);
+    const isExactMatch = ({ symbol }: Pick<YahooListingInterface, 'symbol'>) => symbol.toLowerCase() === deferredQuery.toLowerCase();
+
+    return {
+        listings: [...listings.filter(isExactMatch), ...listings.filter(listing => !isExactMatch(listing))],
+        isLoading: AsyncResult.isInitial(result) || AsyncResult.isWaiting(result)
+    };
+};

@@ -7,6 +7,7 @@ import { useCollapsibleHeaderScroll } from '@rnw-community/react-native-collapsi
 import { useScreenChrome } from '@rnw-community/react-native-screen-chrome';
 import { isDefined } from '@rnw-community/shared';
 
+import { MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/max-font-size-multiplier.constant';
 import { SCREEN_CHROME_CONTENT_INSET_TOP } from '../../../@generic/constant/screen-chrome-content-inset.constant';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
@@ -56,6 +57,7 @@ export const CurrencyMarketSmallTitle = ({ instrumentName, latestPrice, priceBot
                 accessibilityRole="header"
                 className="text-primary text-center text-[17px] leading-[20px] font-semibold"
                 numberOfLines={1}
+                maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
             >
                 {instrumentName}
             </Text>
@@ -63,6 +65,7 @@ export const CurrencyMarketSmallTitle = ({ instrumentName, latestPrice, priceBot
                 <Animated.Text
                     className="text-secondary-foreground text-center text-[12px] leading-[15px] tabular-nums"
                     numberOfLines={1}
+                    maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
                     accessibilityElementsHidden
                     importantForAccessibility="no"
                     style={priceStyle}

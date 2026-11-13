@@ -7,7 +7,6 @@ import {
     CategorySourceEnum,
     Db,
     ExternalSourceEnum,
-    InstrumentTypeEnum,
     TransactionEntryKindEnum,
     TransactionEntryTypeEnum,
     TransactionTypeEnum,
@@ -15,7 +14,7 @@ import {
     convertToMicroUnits,
     generateSyncId
 } from '@budgie/contracts';
-import { AccountService, TransferCreationService } from '@budgie/ledger';
+import { AccountService, BalanceAdjustmentService, TransferCreationService } from '@budgie/ledger';
 import { EntryBaseValuationService, YahooMarketDataService } from '@budgie/market';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -23,8 +22,11 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
+import { DEFAULT_DECIMAL_PLACES } from '../../i18n/constant/default-decimal-places.constant';
 import { HistoricalMarketDataDrainerService } from '../../market-data/service/historical-market-data-drainer.service';
+import { roundHalfExpand } from '../../market-data/utils/round-half-expand.util';
 import { InsufficientSecurityHoldingError } from '../error/insufficient-security-holding.error';
+import { findBrokerageCashAccount } from '../utils/find-brokerage-cash-account.util';
 
 import type { SecurityTradeFormValues } from '../constant/security-trade-form-schema.constant';
 import type {
@@ -39,6 +41,7 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
         const accountRepository = yield* AccountRepository;
         const accountBalanceRepository = yield* AccountBalanceRepository;
         const accountService = yield* AccountService;
+        const balanceAdjustmentService = yield* BalanceAdjustmentService;
         const bankIntegrationRepository = yield* BankIntegrationRepository;
         const transferCreationService = yield* TransferCreationService;
         const entryBaseValuationService = yield* EntryBaseValuationService;
@@ -59,8 +62,7 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
 
         const findCashAccount = Effect.fnUntraced(function* ({ integrationId, instrument }: AccountWithInstrumentEntityInterface) {
             const accounts = isDefined(integrationId) ? yield* accountRepository.findByIntegrationId(integrationId) : [];
-            const cashAccounts = accounts.filter(account => account.instrument.type === InstrumentTypeEnum.FIAT);
-            const cashAccount = cashAccounts.find(account => account.instrumentId === instrument.quoteInstrumentId) ?? cashAccounts.at(0);
+            const cashAccount = findBrokerageCashAccount(accounts, instrument.quoteInstrumentId);
 
             return cashAccount ?? (yield* Effect.die(new Error('Brokerage cash account not found')));
         });
@@ -68,10 +70,19 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
         const recordTrade = Effect.fnUntraced(function* (
             security: AccountWithInstrumentEntityInterface,
             trade: SecurityTradeFormValues,
-            isSell: boolean
+            fundingTitle: string | null
         ) {
+            const isSell = !isDefined(fundingTitle);
             const cash = yield* findCashAccount(security);
-            const cashAmount = trade.quantity * trade.price;
+            const cashAmount = roundHalfExpand(trade.quantity * trade.price, DEFAULT_DECIMAL_PLACES);
+            const fee = roundHalfExpand(trade.fee, DEFAULT_DECIMAL_PLACES);
+            const minimumCashBalance = isSell ? 0 : yield* accountBalanceRepository.getMinimumLedgerBalanceFrom(cash.id, trade.operatedAt);
+            const shortfall = isSell ? 0 : convertToMicroUnits(cashAmount + fee) - Math.max(minimumCashBalance, 0);
+
+            if (isPositiveNumber(shortfall)) {
+                yield* balanceAdjustmentService.create(cash.id, shortfall, trade.operatedAt, fundingTitle ?? '');
+            }
+
             const quantityMicroUnits = convertToMicroUnits(trade.quantity);
             const { baseInstrumentId, baseAmount } = yield* entryBaseValuationService.valueMicroUnitEntry({
                 accountId: cash.id,
@@ -85,10 +96,10 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
                 quotedInstrumentId: cash.instrumentId,
                 quotedUnitPrice: convertToMicroUnits(trade.price)
             };
-            const feeEntries = isPositiveNumber(trade.fee)
+            const feeEntries = isPositiveNumber(fee)
                 ? [
                       {
-                          ...buildEntry(cash.id, TransactionEntryTypeEnum.FEE, trade.fee),
+                          ...buildEntry(cash.id, TransactionEntryTypeEnum.FEE, fee),
                           categoryId: BANK_FEE_CATEGORY_ID,
                           categorySource: CategorySourceEnum.FEE
                       }
@@ -141,7 +152,8 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
             buy: Effect.fn('BrokerageService.buy')(function* (
                 integrationId: number,
                 listing: YahooListingInterface,
-                trade: SecurityTradeFormValues
+                trade: SecurityTradeFormValues,
+                fundingTitle: string
             ) {
                 const instrument = yield* yahooMarketDataService.resolveOrCreate(listing);
                 const accountId = yield* Db.transaction(
@@ -165,7 +177,7 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
 
                         const security = yield* findSecurityAccount(account.id);
 
-                        yield* recordTrade(security, trade, false);
+                        yield* recordTrade(security, trade, fundingTitle);
 
                         return account.id;
                     })
@@ -190,7 +202,7 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
                         return yield* InsufficientSecurityHoldingError.make();
                     }
 
-                    yield* recordTrade(security, trade, true);
+                    yield* recordTrade(security, trade, null);
                 },
                 effect => Db.transaction(effect)
             )
@@ -202,6 +214,7 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
             AccountBalanceRepository.layer,
             AccountRepository.layer,
             AccountService.layer,
+            BalanceAdjustmentService.layer,
             BankIntegrationRepository.layer,
             TransferCreationService.layer,
             EntryBaseValuationService.layer,

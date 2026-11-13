@@ -4,15 +4,15 @@ import { useEffect } from 'react';
 import { useFormState, useWatch } from 'react-hook-form';
 import { AccessibilityInfo, Text } from 'react-native';
 
-import { isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-import { cn } from '../../../@generic/utils/cn.util';
+import { FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/footnote-max-font-size-multiplier.constant';
 import { BrokerageSelector } from '../../selector/brokerage.selector';
 
 import type { SecurityTradeFormValues } from '../../constant/security-trade-form-schema.constant';
 
 interface Props {
-    readonly maxQuantity: number;
+    readonly maxQuantity: number | null;
 }
 
 export const SecurityTradeQuantityHint = ({ maxQuantity }: Props) => {
@@ -21,11 +21,9 @@ export const SecurityTradeQuantityHint = ({ maxQuantity }: Props) => {
     const { errors } = useFormState<SecurityTradeFormValues>({ name: 'quantity' });
 
     const serverError = errors.quantity?.type === 'server' ? (errors.quantity.message ?? '') : '';
-    const overHoldingError = t({ message: plural(maxQuantity, { one: 'Only # share held', other: 'Only # shares held' }) });
-    const error = quantity > maxQuantity ? overHoldingError : serverError;
-    const isError = isNotEmptyString(error);
-    const toneClassName = isError ? 'text-destructive-foreground' : 'text-secondary-foreground';
-    const label = isError ? error : t({ message: plural(maxQuantity, { one: 'Up to # share', other: 'Up to # shares' }) });
+    const heldQuantity = maxQuantity ?? 0;
+    const overHoldingError = t({ message: plural(heldQuantity, { one: 'Only # share held', other: 'Only # shares held' }) });
+    const error = isDefined(maxQuantity) && quantity > maxQuantity ? overHoldingError : serverError;
 
     useEffect(() => {
         if (isNotEmptyString(error)) {
@@ -35,11 +33,14 @@ export const SecurityTradeQuantityHint = ({ maxQuantity }: Props) => {
 
     return (
         <Text
-            className={cn('min-h-[18px] px-3xl pt-md text-[13px] leading-[18px]', toneClassName)}
+            className="-mb-[30px] h-[30px] px-3xl pt-[6px] text-[13px] leading-[18px] text-destructive-foreground"
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER}
             accessibilityLiveRegion="polite"
             testID={BrokerageSelector.QuantityHint}
         >
-            {label}
+            {error}
         </Text>
     );
 };

@@ -100,7 +100,7 @@ export const useTransactionSubtitleSegments = (
     const feeLabel = useTransactionFeeLabel(transaction);
     const scopedCategoryIds = useContext(StatisticsCategoryIdsContext);
     const accountTitlePrefix = useContext(TransactionAccountTitlePrefixContext);
-    const fundTradeLabel = useFundTradeLabel(transaction);
+    const fundTradeLabel = useFundTradeLabel(transaction, accountId);
 
     const counterparty = getTransactionCounterparty(transaction, isDefined(accountTitlePrefix) ? null : accountId);
     const displayTitle = getTransactionDisplayTitle(transaction);
@@ -141,7 +141,9 @@ export const useTransactionSubtitleSegments = (
     return {
         segments: [
             refundedLabel,
-            (isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction)) && !isDefined(fundTradeLabel)
+            (isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction)) &&
+            !isDefined(fundTradeLabel) &&
+            !isNotEmptyString(transaction.title)
                 ? t`Manual adjustment`
                 : null,
             isUncategorizedTransaction(transaction) ? t`Uncategorized` : null,

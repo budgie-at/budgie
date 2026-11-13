@@ -1,11 +1,10 @@
-import { TransactionTypeEnum } from '@budgie/contracts';
 import { View } from 'react-native';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { ListRowDetail } from '../../../@generic/component/list-row-detail/list-row-detail';
-import { isSecurityInstrumentType } from '../../../instrument/utils/is-security-instrument-type.util';
 import { useTransactionSubtitleSegments } from '../../hook/use-transaction-subtitle-segments.hook';
+import { getSecurityTrade } from '../../utils/get-security-trade.util';
 import { isUncategorizedTransaction } from '../../utils/is-uncategorized-transaction.util';
 import { TransactionCardSelector } from '../transaction-card/transaction-card.selector';
 import { TransactionReceiptMarker } from '../transaction-receipt-marker/transaction-receipt-marker';
@@ -23,10 +22,8 @@ export const TransactionCardSubtitle = ({ transaction, accountId }: Props) => {
 
     const detailSegments = [...segments.flatMap(segment => segment.split(' · ')), feeLabel, accountTitle].filter(isNotEmptyString);
     const hasReceipt = isDefined(transaction.receipt);
-    const isBrokerageTrade =
-        !isDefined(accountId) &&
-        transaction.type === TransactionTypeEnum.TRANSFER &&
-        transaction.entries.some(entry => isSecurityInstrumentType(entry.account.instrument.type));
+    const trade = getSecurityTrade(transaction);
+    const isBrokerageTrade = isDefined(trade) && (!isDefined(accountId) || accountId === trade.securityEntry.accountId);
 
     if (isBrokerageTrade) {
         return <TransactionSecurityTradeDetail transaction={transaction} />;
