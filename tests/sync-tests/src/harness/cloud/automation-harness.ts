@@ -1,10 +1,10 @@
 import { TestSeedService, assertStoredBalancesMatchLedger, resetTestDb } from '@budgie-at/test-kit';
-import { SyncAutomationEmbeddingBoost, SyncAutomationService, SyncApplyService } from '@budgie/cloud-sync';
+import { SyncAutomationEmbeddingBoost, SyncAutomationService, SyncAutomationYieldTagRepair, SyncApplyService } from '@budgie/cloud-sync';
 import { P2pTransferTitleResolver } from '@budgie/consolidation';
 import { Db, ExternalSourceEnum } from '@budgie/contracts';
 import { LedgerWorkload } from '@budgie/ledger';
 import { RecurringService } from '@budgie/recurring';
-import { transferConsolidationBankFlowLayer } from '@budgie/sync';
+import { YieldTagRepairService, transferConsolidationBankFlowLayer } from '@budgie/sync';
 import { expect } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -32,6 +32,13 @@ const automationLayer = Layer.mergeAll(
                     embeddingBoostProbe.calls += 1;
                 })
             ),
+            Layer.effect(
+                SyncAutomationYieldTagRepair,
+                Effect.map(
+                    YieldTagRepairService,
+                    service => (transactionSyncIds: readonly string[]) => service.repairBySyncIds(transactionSyncIds)
+                )
+            ).pipe(Layer.provide(YieldTagRepairService.layer)),
             Layer.succeed(LedgerWorkload, LedgerWorkload.of({ runForeground: effect => effect })),
             Layer.succeed(P2pTransferTitleResolver, (_direction, assetCode) => `P2P ${assetCode}`)
         ])

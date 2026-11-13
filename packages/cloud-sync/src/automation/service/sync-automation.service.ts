@@ -14,6 +14,7 @@ import * as Layer from 'effect/Layer';
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { SyncAutomationEmbeddingBoost } from '../port/sync-automation-embedding-boost.port';
+import { SyncAutomationYieldTagRepair } from '../port/sync-automation-yield-tag-repair.port';
 
 import type { SyncApplyResultInterface } from '../../apply/interface/sync-apply-result.interface';
 import type { SyncAutomationResultInterface } from '../interface/sync-automation-result.interface';
@@ -31,6 +32,7 @@ export class SyncAutomationService extends Context.Service<SyncAutomationService
         const embeddingBoost = yield* SyncAutomationEmbeddingBoost;
         const transactionRepository = yield* TransactionRepository;
         const marketPricedRevaluationService = yield* MarketPricedRevaluationService;
+        const yieldTagRepair = yield* SyncAutomationYieldTagRepair;
 
         const settle = <A, E>(effect: Effect.Effect<A, E, Db>, fallback: A) =>
             Effect.catchCause(effect, cause =>
@@ -51,6 +53,7 @@ export class SyncAutomationService extends Context.Service<SyncAutomationService
                 const touchedSyncIds = result.touchedRows[TRANSACTIONS_TABLE] ?? [];
 
                 yield* settleVoid(marketPricedRevaluationService.revalueTransactions(touchedSyncIds));
+                yield* settleVoid(yieldTagRepair(touchedSyncIds));
 
                 const hasDeletedTransactions = isNotEmptyArray(result.deleted[SyncRecordTypeEnum.TRANSACTION] ?? []);
                 const hasSeriesChange = isNotEmptyArray(result.touchedRows[RECURRING_SERIES_TABLE] ?? []) || isNotEmptyArray(result.merged);
