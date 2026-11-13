@@ -691,9 +691,13 @@ msgstr "{marketName} market, {priceLabel}, {direction}"
 msgid "{matchingRulesCount, plural, one {# matching rule} other {# matching rules}}"
 msgstr "{matchingRulesCount, plural, one {# matching rule} other {# matching rules}}"
 
-#: src/brokerage/component/security-trade-form/security-trade-form.tsx
+#: src/brokerage/component/security-trade-quantity-hint/security-trade-quantity-hint.tsx
 msgid "{maxQuantity, plural, one {Only # share held} other {Only # shares held}}"
 msgstr "{maxQuantity, plural, one {Only # share held} other {Only # shares held}}"
+
+#: src/brokerage/component/security-trade-quantity-hint/security-trade-quantity-hint.tsx
+msgid "{maxQuantity, plural, one {Up to # share} other {Up to # shares}}"
+msgstr "{maxQuantity, plural, one {Up to # share} other {Up to # shares}}"
 
 #: src/@generic/hook/use-format-file-size.hook.ts
 msgid "{megabytes} MB"

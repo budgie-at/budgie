@@ -12,6 +12,6 @@ export const BrokerageSelector = {
     SellButton: 'Brokerage.SellButton',
     Holding: 'Brokerage.Holding',
     TradeTotal: 'Brokerage.TradeTotal',
-    QuantityError: 'Brokerage.QuantityError',
+    QuantityHint: 'Brokerage.QuantityHint',
     PositionGainLine: 'Brokerage.PositionGainLine'
 } as const;

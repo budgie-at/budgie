@@ -1,7 +1,7 @@
 import { isDefined } from '@rnw-community/shared';
 
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
-import { useFormatPercent } from '../../../i18n/hook/use-format-percent.hook';
+import { useFormatGainPercent } from '../../../i18n/hook/use-format-gain-percent.hook';
 import { cn } from '../../utils/cn.util';
 import { ProtectedText } from '../protected-text/protected-text';
 
@@ -15,7 +15,7 @@ interface Props {
 
 export const GainLine = ({ gain, percent, suffix, instrumentSymbol, testID }: Props) => {
     const formatDigits = useDisplayFormatDigits();
-    const formatPercent = useFormatPercent();
+    const formatPercent = useFormatGainPercent();
 
     const direction = Math.sign(Math.round(gain * 100));
     const sign = { [-1]: '−', 0: '', 1: '+' }[direction] ?? '';

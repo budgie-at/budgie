@@ -4,8 +4,6 @@ import { Text, View } from 'react-native';
 import { MoneyText } from '../../../@generic/component/money-text/money-text';
 import { MoneyTextVariantEnum } from '../../../@generic/enum/money-text-variant.enum';
 import { useFormatInstrumentAmount } from '../../../i18n/hook/use-format-instrument-amount.hook';
-import { isSecurityInstrumentType } from '../../../instrument/utils/is-security-instrument-type.util';
-import { TransactionSecurityTradeAmount } from '../transaction-security-trade-amount/transaction-security-trade-amount';
 
 import type { AggregatedTransactionEntryInterface } from '../../interface/aggregated-transaction-entry.interface';
 
@@ -18,10 +16,6 @@ interface Props {
 
 export const TransactionTransferAmount = ({ fromEntry, toEntry, accountId, testID }: Props) => {
     const formatDigits = useFormatInstrumentAmount();
-
-    if (isSecurityInstrumentType(toEntry.account.instrument.type) || isSecurityInstrumentType(fromEntry.account.instrument.type)) {
-        return <TransactionSecurityTradeAmount fromEntry={fromEntry} toEntry={toEntry} accountId={accountId} testID={testID} />;
-    }
 
     const isIncoming = accountId === toEntry.account.id;
     const primaryEntry = isIncoming ? toEntry : fromEntry;

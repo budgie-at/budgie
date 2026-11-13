@@ -1,6 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
-import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
@@ -23,7 +22,7 @@ import { SecurityTradeFormSchema } from '../../constant/security-trade-form-sche
 import { InsufficientSecurityHoldingError } from '../../error/insufficient-security-holding.error';
 import { BrokerageSelector } from '../../selector/brokerage.selector';
 import { SecurityTradeNumberField } from '../security-trade-number-field/security-trade-number-field';
-import { SecurityTradeQuantityError } from '../security-trade-quantity-error/security-trade-quantity-error';
+import { SecurityTradeQuantityHint } from '../security-trade-quantity-hint/security-trade-quantity-hint';
 
 import type { AppServices } from '../../../@generic/runtime/app.runtime';
 import type { SecurityTradeFormValues } from '../../constant/security-trade-form-schema.constant';
@@ -65,13 +64,7 @@ export const SecurityTradeForm = <E,>({ title, currencySymbol, isReady, maxQuant
     );
 
     const isOverHolding = isDefined(maxQuantity) && quantity > maxQuantity;
-    const overHoldingMessage = isDefined(maxQuantity)
-        ? t({ message: plural(maxQuantity, { one: 'Only # share held', other: 'Only # shares held' }) })
-        : '';
-    const quantityError = form.formState.errors.quantity;
-    const serverError = quantityError?.type === 'server' ? (quantityError.message ?? '') : '';
-    const quantityMessage = isOverHolding ? overHoldingMessage : serverError;
-    const quantityFooter = isDefined(maxQuantity) ? <SecurityTradeQuantityError message={quantityMessage} /> : null;
+    const quantityFooter = isDefined(maxQuantity) ? <SecurityTradeQuantityHint maxQuantity={maxQuantity} /> : null;
     const isSaveDisabled = !isReady || !form.formState.isValid || isOverHolding;
 
     return (

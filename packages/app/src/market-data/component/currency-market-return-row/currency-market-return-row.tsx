@@ -5,7 +5,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { useIsAmountProtected } from '../../../@generic/hook/use-is-amount-protected.hook';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
+import { useFormatGainPercent } from '../../../i18n/hook/use-format-gain-percent.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { calculateInstrumentReturn } from '../../utils/calculate-instrument-return.util';
 import { getMarketChangeSign } from '../../utils/get-market-change-sign.util';
@@ -23,20 +23,19 @@ interface Props {
     readonly subtitle: string | null;
 }
 
-const PERCENT_FRACTION_DIGITS = 2;
 const PERCENT = 100;
 
 export const CurrencyMarketReturnRow = ({ position, valuationRate, balance, instrumentCode, subtitle }: Props) => {
     const { t } = useLingui();
     const { symbol } = useAtomValue(defaultInstrumentAtom);
     const formatMoney = useDisplayFormatDigits();
-    const formatPercent = useFormatDigits(PERCENT_FRACTION_DIGITS);
+    const formatPercent = useFormatGainPercent();
     const isAmountProtected = useIsAmountProtected();
 
     const instrumentReturn = calculateInstrumentReturn(position, valuationRate, balance);
     const sign = getMarketChangeSign(instrumentReturn?.profit ?? 0);
     const percentLabel = isDefined(instrumentReturn?.percent)
-        ? ` (${getMarketChangeSign(instrumentReturn.percent)}${formatPercent(Math.abs(instrumentReturn.percent))}%)`
+        ? ` (${getMarketChangeSign(instrumentReturn.percent)}${formatPercent(instrumentReturn.percent / PERCENT)})`
         : '';
     const returnLabel = isDefined(instrumentReturn)
         ? `${sign}${formatMoney(Math.abs(instrumentReturn.profit), symbol)}${percentLabel}`

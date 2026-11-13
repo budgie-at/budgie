@@ -74,10 +74,11 @@ test('51 manual brokerage with stocks', { tags: ['accounts'], platforms: PENDING
         await core.tapId(ctx, 'Brokerage.SellButton');
         await core.expectId(ctx, 'Brokerage.TradePage', 10_000);
         await typeDigits('Brokerage.QuantityInput', '40');
-        await expect(core.byId(screen, 'Brokerage.QuantityError')).toHaveText(/Only 10 shares held/, { timeout: 3_000 });
+        await expect(core.byId(screen, 'Brokerage.QuantityHint')).toHaveText(/Only 10 shares held/, { timeout: 3_000 });
         await expect(core.byId(screen, 'Brokerage.SaveButton')).toBeDisabled();
         await core.fillId(ctx, 'Brokerage.QuantityInput', '4');
         await core.done(ctx);
+        await expect(core.byId(screen, 'Brokerage.QuantityHint')).toHaveText(/Up to 10 shares/, { timeout: 3_000 });
         await typeDigits('Brokerage.PriceInput', '125');
         await expect(core.byId(screen, 'Brokerage.TradeTotal')).toHaveText(/\$500/, { timeout: 3_000 });
         await saveTrade('AccountDetails.Page');
@@ -90,5 +91,25 @@ test('51 manual brokerage with stocks', { tags: ['accounts'], platforms: PENDING
         await core.expectText(ctx, '6 BGTX');
         await core.scrollTo(ctx, 'CurrencyMarket.Holdings.RealizedProfit.BGTX');
         await core.expectText(ctx, '+$100', 10_000);
+    });
+
+    await core.phase('a euro-quoted listing shows its price change in euros', async () => {
+        await core.openLink(ctx, 'budgie://institution/1');
+        await core.expectId(ctx, 'Institution.Page', 10_000);
+        await core.scrollTo(ctx, 'Brokerage.AddPositionButton');
+        await core.tapId(ctx, 'Brokerage.AddPositionButton');
+        await core.expectId(ctx, 'Brokerage.TradePage', 10_000);
+        await core.fillId(ctx, 'Brokerage.SearchInput', 'BGEU');
+        await core.done(ctx);
+        await core.expectId(ctx, 'Brokerage.Listing.BGEU', 15_000);
+        await core.tapId(ctx, 'Brokerage.Listing.BGEU');
+        await typeDigits('Brokerage.QuantityInput', '1');
+        await typeDigits('Brokerage.PriceInput', '100');
+        await saveTrade('Institution.Page');
+        await core.scrollTo(ctx, 'AccountCard.Budgie Euro Fund');
+        await core.tapUntil(ctx, 'AccountCard.Budgie Euro Fund', () => core.expectId(ctx, 'AccountDetails.Page', 10_000));
+        await core.tapId(ctx, 'AccountDetails.MarketLink');
+        await core.expectId(ctx, 'CurrencyMarket.Header.BGEU', 10_000);
+        await core.expectText(ctx, /\+€18\.00/, 10_000);
     });
 });

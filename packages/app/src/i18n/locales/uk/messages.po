@@ -690,9 +690,13 @@ msgstr "Ринок {marketName}, {priceLabel}, {direction}"
 msgid "{matchingRulesCount, plural, one {# matching rule} other {# matching rules}}"
 msgstr "{matchingRulesCount, plural, one {# відповідне правило} few {# відповідні правила} many {# відповідних правил} other {# відповідного правила}}"
 
-#: src/brokerage/component/security-trade-form/security-trade-form.tsx
+#: src/brokerage/component/security-trade-quantity-hint/security-trade-quantity-hint.tsx
 msgid "{maxQuantity, plural, one {Only # share held} other {Only # shares held}}"
 msgstr "{maxQuantity, plural, one {Лише # частка в наявності} few {Лише # частки в наявності} many {Лише # часток в наявності} other {Лише # частки в наявності}}"
+
+#: src/brokerage/component/security-trade-quantity-hint/security-trade-quantity-hint.tsx
+msgid "{maxQuantity, plural, one {Up to # share} other {Up to # shares}}"
+msgstr "{maxQuantity, plural, one {До # частки} few {До # часток} many {До # часток} other {До # частки}}"
 
 #: src/@generic/hook/use-format-file-size.hook.ts
 msgid "{megabytes} MB"

@@ -47,7 +47,7 @@ export const CurrencyMarketPriceHero = ({
     const formatPrice = useFormatDigits(MIN_PRICE_FRACTION_DIGITS, fractionDigits);
 
     const price = (scrubbedPrice ?? latestPrice)?.price;
-    const { changeLabel, changeClassName } = useMarketPriceHeroChange(price, basePrice, fractionDigits);
+    const { changeLabel, changeClassName } = useMarketPriceHeroChange(price, basePrice, fractionDigits, symbol);
     const { stalePriceDate, suffixLabel } = useMarketPriceHeroSuffix(latestPrice, scrubbedPrice, rangeLabel, rangeStartDate);
 
     const handlePriceLayout = (event: LayoutChangeEvent) =>
