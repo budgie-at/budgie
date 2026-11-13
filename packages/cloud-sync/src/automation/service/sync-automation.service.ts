@@ -2,6 +2,7 @@ import { TransactionEmbeddingRepository } from '@budgie/categorization';
 import { buildConsolidationScopeFromTransactions } from '@budgie/consolidation';
 import { Db, SettingsRepository, SyncRecordTypeEnum, TransactionRepository } from '@budgie/contracts';
 import { TransferConsolidationService } from '@budgie/ledger';
+import { MarketPricedRevaluationService } from '@budgie/market';
 import { RecurringService } from '@budgie/recurring';
 import { RuleEngineService } from '@budgie/rules';
 import * as Cause from 'effect/Cause';
@@ -29,6 +30,7 @@ export class SyncAutomationService extends Context.Service<SyncAutomationService
         const transactionEmbeddingRepository = yield* TransactionEmbeddingRepository;
         const embeddingBoost = yield* SyncAutomationEmbeddingBoost;
         const transactionRepository = yield* TransactionRepository;
+        const marketPricedRevaluationService = yield* MarketPricedRevaluationService;
 
         const settle = <A, E>(effect: Effect.Effect<A, E, Db>, fallback: A) =>
             Effect.catchCause(effect, cause =>
@@ -47,6 +49,9 @@ export class SyncAutomationService extends Context.Service<SyncAutomationService
         return {
             afterApply: Effect.fn('SyncAutomationService.afterApply')(function* (result: SyncApplyResultInterface) {
                 const touchedSyncIds = result.touchedRows[TRANSACTIONS_TABLE] ?? [];
+
+                yield* settleVoid(marketPricedRevaluationService.revalueTransactions(touchedSyncIds));
+
                 const hasDeletedTransactions = isNotEmptyArray(result.deleted[SyncRecordTypeEnum.TRANSACTION] ?? []);
                 const hasSeriesChange = isNotEmptyArray(result.touchedRows[RECURRING_SERIES_TABLE] ?? []) || isNotEmptyArray(result.merged);
                 const consolidated = yield* settle(consolidate(touchedSyncIds), 0);
@@ -84,6 +89,7 @@ export class SyncAutomationService extends Context.Service<SyncAutomationService
             TransferConsolidationService.layer,
             RuleEngineService.layer,
             RecurringService.layer,
+            MarketPricedRevaluationService.layer,
             SettingsRepository.layer,
             TransactionRepository.layer,
             TransactionEmbeddingRepository.layer
