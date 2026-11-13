@@ -1,6 +1,7 @@
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { Text } from 'react-native';
 
+import { FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/footnote-max-font-size-multiplier.constant';
 import { PROTECTED_AMOUNT_PLACEHOLDER } from '../../../@generic/constant/protected-amount-placeholder.constant';
 import { useIsAmountProtected } from '../../../@generic/hook/use-is-amount-protected.hook';
 import { THOUSAND } from '../../../i18n/constant/compact-thresholds.constant';
@@ -37,7 +38,12 @@ export const YieldChartPeakLabel = ({ totals, layout, axis }: Props) => {
     };
 
     return (
-        <Text pointerEvents="none" className="absolute text-[11px] font-medium tabular-nums text-secondary-foreground" style={peakStyle}>
+        <Text
+            pointerEvents="none"
+            maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER}
+            className="absolute text-[11px] font-medium tabular-nums text-secondary-foreground"
+            style={peakStyle}
+        >
             {peakLabel}
         </Text>
     );

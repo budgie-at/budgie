@@ -7,7 +7,7 @@ const HALF = 2;
 export const buildYieldBarsPath = (values: readonly number[], offset: number, rects: readonly YieldBarRectInterface[]): string => {
     'worklet';
 
-    let path = '';
+    const commands: (string | number)[] = [];
 
     rects.forEach((rect, index) => {
         const y = values[offset + index * VALUES_PER_RECT] ?? 0;
@@ -17,37 +17,30 @@ export const buildYieldBarsPath = (values: readonly number[], offset: number, re
             const radius = Math.min(rect.radius, height, rect.width / HALF);
             const right = rect.x + rect.width;
 
-            path += [
+            commands.push(
                 'M',
                 rect.x,
-                ',',
                 y + height,
                 'V',
                 y + radius,
                 'Q',
                 rect.x,
-                ',',
                 y,
-                ',',
                 rect.x + radius,
-                ',',
                 y,
                 'H',
                 right - radius,
                 'Q',
                 right,
-                ',',
                 y,
-                ',',
                 right,
-                ',',
                 y + radius,
                 'V',
                 y + height,
                 'Z'
-            ].join('');
+            );
         }
     });
 
-    return path;
+    return commands.join(' ');
 };

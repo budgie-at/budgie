@@ -11,12 +11,11 @@ import { YIELD_STACK_GROUPS } from '../../constant/yield-stack-groups.constant';
 import { YieldScreenContext } from '../../context/yield-screen.context';
 import { useYieldBarGeometry } from '../../hook/use-yield-bar-geometry.hook';
 import { buildYieldAxis } from '../../utils/build-yield-axis.util';
+import { buildYieldBarLayers } from '../../utils/build-yield-bar-layers.util';
 import { buildYieldBarLayout } from '../../utils/build-yield-bar-layout.util';
-import { getYieldGroupAccent } from '../../utils/get-yield-group-accent.util';
 import { YieldChartAxis } from '../yield-chart-axis/yield-chart-axis';
 import { YieldChartBarPath } from '../yield-chart-bar-path/yield-chart-bar-path';
 import { YieldChartDim } from '../yield-chart-dim/yield-chart-dim';
-import { YieldChartEstimatedPaths } from '../yield-chart-estimated-paths/yield-chart-estimated-paths';
 import { YieldChartPeakLabel } from '../yield-chart-peak-label/yield-chart-peak-label';
 
 import type { YieldSummaryInterface } from '@budgie/market';
@@ -27,7 +26,9 @@ interface Props {
 }
 
 const VALUES_PER_RECT = 2;
-const TAX_OFFSET_START = YIELD_STACK_GROUPS.length * 2;
+const ESTIMATED_FILL_OPACITY = 0.25;
+const ESTIMATED_STROKE = 1.5;
+const CONTRAST_ESTIMATED_STROKE = 2;
 
 export const YieldChartBars = ({ width, summary }: Props) => {
     const { screenKey } = use(YieldScreenContext);
@@ -41,26 +42,35 @@ export const YieldChartBars = ({ width, summary }: Props) => {
     const layout = buildYieldBarLayout({ buckets: summary.buckets, visibleGroups, width, height: YIELD_PLOT_HEIGHT, axis });
     const values = useYieldBarGeometry(layout);
     const pathSize = summary.buckets.length * VALUES_PER_RECT;
-    const colorOf = (colorGroup: YieldGroupEnum) => getYieldGroupAccent(colorGroup, isIncreaseContrast);
-    const stackOffsets = YIELD_STACK_GROUPS.map((stackGroup, index) => ({ stackGroup, offset: index * pathSize }));
-    const taxOffset = TAX_OFFSET_START * pathSize;
+    const layers = buildYieldBarLayers(layout, pathSize, isIncreaseContrast);
+    const estimatedStroke = isIncreaseContrast ? CONTRAST_ESTIMATED_STROKE : ESTIMATED_STROKE;
 
     return (
         <View className="h-[200px]">
             <Svg width={width} height={YIELD_PLOT_HEIGHT}>
                 <YieldChartAxis axis={axis} width={width} height={YIELD_PLOT_HEIGHT} />
-                {stackOffsets.map(({ stackGroup, offset }) => (
+                {layers.solid.map(layer => (
                     <YieldChartBarPath
-                        key={stackGroup}
+                        key={layer.group}
                         values={values}
-                        offset={offset}
-                        rects={layout.groups[stackGroup]}
-                        fillClassName={colorOf(stackGroup)}
+                        offset={layer.offset}
+                        rects={layer.rects}
+                        fillClassName={layer.fillClassName}
                     />
                 ))}
-                <YieldChartBarPath values={values} offset={taxOffset} rects={layout.tax} fillClassName={colorOf(YieldGroupEnum.TAX)} />
                 <YieldChartDim xs={layout.xs} slot={layout.slot} width={width} />
-                <YieldChartEstimatedPaths values={values} layout={layout} pathSize={pathSize} />
+                {layers.estimated.map(layer => (
+                    <YieldChartBarPath
+                        key={layer.group}
+                        values={values}
+                        offset={layer.offset}
+                        rects={layer.rects}
+                        fillClassName={layer.fillClassName}
+                        fillOpacity={ESTIMATED_FILL_OPACITY}
+                        strokeClassName={layer.fillClassName}
+                        strokeWidth={estimatedStroke}
+                    />
+                ))}
             </Svg>
 
             <YieldChartPeakLabel totals={totals} layout={layout} axis={axis} />

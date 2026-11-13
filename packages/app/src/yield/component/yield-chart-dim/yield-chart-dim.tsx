@@ -4,7 +4,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { StyledPath } from '../../../@generic/component/styled-path/styled-path';
 import { YIELD_PLOT_HEIGHT } from '../../constant/yield-plot-height.constant';
-import { YieldScreenContext } from '../../context/yield-screen.context';
+import { YieldSelectionContext } from '../../context/yield-selection.context';
 
 interface Props {
     readonly xs: readonly number[];
@@ -15,10 +15,10 @@ interface Props {
 const DIM_OPACITY = 0.6;
 const HALF = 2;
 
-const buildDimPath = (left: number, right: number) => ['M', left, ',', 0, 'H', right, 'V', YIELD_PLOT_HEIGHT, 'H', left, 'Z'].join('');
+const buildDimPath = (left: number, right: number) => ['M', left, 0, 'H', right, 'V', YIELD_PLOT_HEIGHT, 'H', left, 'Z'].join(' ');
 
 export const YieldChartDim = ({ xs, slot, width }: Props) => {
-    const { selectedIndex } = use(YieldScreenContext);
+    const { selectedIndex } = use(YieldSelectionContext);
 
     const selectedX = isDefined(selectedIndex) ? xs.at(selectedIndex) : null;
 

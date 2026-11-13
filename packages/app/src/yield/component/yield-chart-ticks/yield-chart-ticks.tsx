@@ -2,6 +2,7 @@ import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/footnote-max-font-size-multiplier.constant';
 import { MARKET_CHART_PADDING_X } from '../../../market-data/constant/market-chart-padding-x.constant';
 import { useYieldDateLabels } from '../../hook/use-yield-date-labels.hook';
 
@@ -39,6 +40,7 @@ export const YieldChartTicks = ({ buckets, unit, width }: Props) => {
                 <Text
                     key={tick.key}
                     numberOfLines={1}
+                    maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER}
                     className="absolute w-[64px] text-center text-[12px] leading-[16px] tabular-nums text-secondary-foreground"
                     style={tick.style}
                 >

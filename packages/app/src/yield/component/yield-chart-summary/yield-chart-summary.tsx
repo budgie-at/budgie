@@ -19,7 +19,7 @@ export const YieldChartSummary = ({ summary }: Props) => {
     const isSeeAllTimeVisible = summary.payoutCount === 0 && screenKey.key.range !== YieldRangeEnum.ALL;
 
     return (
-        <View className="h-[220px] items-center justify-center gap-y-sm px-3xl" testID={PassiveIncomeSelector.PlotSummary}>
+        <View className="min-h-[220px] items-center justify-center gap-y-sm px-3xl" testID={PassiveIncomeSelector.PlotSummary}>
             <YieldChartSummaryText summary={summary} />
             {isSeeAllTimeVisible ? <YieldChartSeeAllTime /> : null}
         </View>

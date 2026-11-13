@@ -24,7 +24,7 @@ export const YieldChartPlotBody = ({ width, summary }: Props) => {
     const reducedMotion = useReducedMotion();
 
     const { range, group } = screenKey.key;
-    const plotKey = reducedMotion ? `${range}-${group}-${mode}` : `${range}-${mode}`;
+    const plotKey = reducedMotion ? `${range}-${group}-${mode}-${summary.buckets.length}` : `${range}-${mode}-${summary.buckets.length}`;
     const plot =
         mode === YieldChartModeEnum.BARS ? (
             <YieldChartBars width={width} summary={summary} />

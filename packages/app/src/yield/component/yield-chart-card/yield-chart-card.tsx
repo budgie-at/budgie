@@ -32,7 +32,7 @@ export const YieldChartCard = () => {
 
     return (
         <View className="gap-y-[12px] rounded-3xl bg-surface-row p-[16px]" style={CONTINUOUS_CORNERS}>
-            <View className="h-[32px] flex-row items-center justify-between">
+            <View className="min-h-[32px] flex-row items-center justify-between">
                 <Text className="text-md font-semibold text-primary" testID={PassiveIncomeSelector.ChartTitle}>
                     {title}
                 </Text>

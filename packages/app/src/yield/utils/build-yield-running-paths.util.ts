@@ -7,7 +7,7 @@ import type { YieldRunningPathsInterface } from '../interface/yield-running-path
 
 const HALF_SLOT = 0.5;
 
-const command = (letter: string, x: number, y: number) => [letter, x, ',', y].join('');
+const command = (letter: string, x: number, y: number) => [letter, x, y].join(' ');
 
 export const buildYieldRunningPaths = ({
     cumulative,
@@ -21,7 +21,9 @@ export const buildYieldRunningPaths = ({
     const xOf = (index: number) => MARKET_CHART_PADDING_X + slot * (index + HALF_SLOT);
     const yOf = (value: number) => height - (value / axisTop) * height;
     const segment = (index: number) =>
-        command('M', xOf(index - 1), yOf(cumulative.at(index - 1) ?? 0)) + command('L', xOf(index), yOf(cumulative.at(index) ?? 0));
+        [command('M', xOf(index - 1), yOf(cumulative.at(index - 1) ?? 0)), command('L', xOf(index), yOf(cumulative.at(index) ?? 0))].join(
+            ' '
+        );
     const segmentIndices = cumulative.map((_, index) => index).slice(1);
     const lastIndex = cumulative.length - 1;
 
@@ -29,18 +31,18 @@ export const buildYieldRunningPaths = ({
         solid: segmentIndices
             .filter(index => estimated.at(index) !== true)
             .map(segment)
-            .join(''),
+            .join(' '),
         dashed: segmentIndices
             .filter(index => estimated.at(index) === true)
             .map(segment)
-            .join(''),
+            .join(' '),
         area: [
             command('M', xOf(0), height),
             ...cumulative.map((value, index) => command('L', xOf(index), yOf(value))),
             command('L', xOf(lastIndex), height),
             'Z'
-        ].join(''),
-        prior: isDefined(prior) ? prior.map((value, index) => command(index === 0 ? 'M' : 'L', xOf(index), yOf(value))).join('') : '',
+        ].join(' '),
+        prior: isDefined(prior) ? prior.map((value, index) => command(index === 0 ? 'M' : 'L', xOf(index), yOf(value))).join(' ') : '',
         endX: xOf(lastIndex),
         endY: yOf(cumulative.at(-1) ?? 0),
         priorEndY: isDefined(prior) ? yOf(prior.at(-1) ?? 0) : null

@@ -26,22 +26,6 @@ msgstr "P2P-продаж {assetCode} на Binance"
 msgid ", closed at the provider"
 msgstr ", закритий у провайдера"
 
-#: src/yield/hook/use-yield-hero-trend.hook.ts
-msgid ", down {change}"
-msgstr ", на {change} менше"
-
-#: src/yield/hook/use-yield-hero-trend.hook.ts
-msgid ", includes estimated values"
-msgstr ", враховано оцінені значення"
-
-#: src/yield/hook/use-yield-hero-trend.hook.ts
-msgid ", new this period"
-msgstr ", нове за цей період"
-
-#: src/yield/hook/use-yield-hero-trend.hook.ts
-msgid ", up {change}"
-msgstr ", на {change} більше"
-
 #: src/account/hooks/use-restore-archived-account.hook.ts
 msgid "“{accountTitle}” is back in Hidden accounts"
 msgstr "«{accountTitle}» знову серед прихованих рахунків"
@@ -332,6 +316,11 @@ msgstr "{count, plural, =0 {Об’єднати «{sourceTitle}» з «{targetTi
 msgid "{count, plural, one {{formattedAmount} rolled over across # category} other {{formattedAmount} rolled over across # categories}}"
 msgstr "{count, plural, one {{formattedAmount} перенесено на # категорію} few {{formattedAmount} перенесено на # категорії} many {{formattedAmount} перенесено на # категорій} other {{formattedAmount} перенесено на # категорії}}"
 
+#. js-lingui-explicit-id
+#: src/yield/hook/use-yield-hero-sentence.hook.ts
+msgid "passive-income.hero.sentence"
+msgstr "{count, plural, one {{trend, select, up {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} позиції, на {change} більше.} down {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} позиції, на {change} менше.} new {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} позиції, нове за цей період.} other {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} позиції.}}} few {{trend, select, up {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} позиціях, на {change} більше.} down {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} позиціях, на {change} менше.} new {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} позиціях, нове за цей період.} other {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} позиціях.}}} many {{trend, select, up {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} позиціях, на {change} більше.} down {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} позиціях, на {change} менше.} new {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} позиціях, нове за цей період.} other {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} позиціях.}}} other {{trend, select, up {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} позиції, на {change} більше.} down {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} позиції, на {change} менше.} new {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} позиції, нове за цей період.} other {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} позиції.}}}}"
+
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "{count, plural, one {# account. Balances come straight from the bank.} other {# accounts. Balances come straight from the bank.}}"
 msgstr "{count, plural, one {# рахунок. Баланси надходять безпосередньо з банку.} few {# рахунки. Баланси надходять безпосередньо з банку.} many {# рахунків. Баланси надходять безпосередньо з банку.} other {# рахунку. Баланси надходять безпосередньо з банку.}}"
@@ -376,11 +365,6 @@ msgstr "{count, plural, one {ще +#} few {ще +#} many {ще +#} other {ще +
 #: src/category/components/category-default-icon-button/category-default-icon-button.tsx
 msgid "{count, plural, one {Choose an icon for # category} other {Choose icons for # categories}}"
 msgstr "{count, plural, one {Виберіть іконку для # категорії} few {Виберіть іконки для # категорій} many {Виберіть іконки для # категорій} other {Виберіть іконки для # категорії}}"
-
-#. js-lingui-explicit-id
-#: src/yield/hook/use-yield-hero-sentence.hook.ts
-msgid "passive-income.hero.sentence"
-msgstr "{count, plural, one {Зароблено {amount} до податків {rangeCaption}, {rate} річних у # позиції{trend}{estimates}} few {Зароблено {amount} до податків {rangeCaption}, {rate} річних у # позиціях{trend}{estimates}} many {Зароблено {amount} до податків {rangeCaption}, {rate} річних у # позиціях{trend}{estimates}} other {Зароблено {amount} до податків {rangeCaption}, {rate} річних у # позиції{trend}{estimates}}}"
 
 #: src/category/components/category-default-icon-button/category-default-icon-button.tsx
 msgid "{count, plural, one {It still uses the default icon} other {They still use the default icon}}"
@@ -679,6 +663,10 @@ msgstr "{installmentCount, plural, one {Розбити на # платіж} few 
 #: src/yield/hook/use-yield-date-labels.hook.ts
 msgid "passive-income.chart.so-far"
 msgstr "{label} наразі"
+
+#: src/yield/hook/use-yield-plot-accessibility.hook.ts
+msgid "{label}: {amount}"
+msgstr "{label}: {amount}"
 
 #: src/siri/service/siri-catalog.service.ts
 msgid "{label}: {formattedSpent} of {formattedLimit} spent, {formattedLeft} left."
@@ -5578,6 +5566,10 @@ msgstr "Включає рахунки, додані пізніше. Почнет
 #: src/runway/component/runway-verdict-outlook/runway-verdict-outlook.tsx
 msgid "Includes crypto"
 msgstr "Включно з криптовалютою"
+
+#: src/yield/hook/use-yield-hero-sentence.hook.ts
+msgid "Includes estimated values."
+msgstr "Враховано оцінені значення."
 
 #: src/budget/components/budget-stat-row/budget-stat-row.tsx
 #: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx

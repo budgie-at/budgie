@@ -1,5 +1,5 @@
 import { useAtomValue } from '@effect/atom-react/Hooks';
-import { plural } from '@lingui/core/macro';
+import { plural, select } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
@@ -18,7 +18,7 @@ export const useYieldHeroSentence = (summary: YieldSummaryInterface | null, rang
     const formatRate = useFormatYieldRate();
     const formatAmount = useProtectedAmountLabel();
     const isAmountProtected = useIsAmountProtected();
-    const { trend, estimates } = useYieldHeroTrend(summary);
+    const { trend, change, isEstimated } = useYieldHeroTrend(summary);
     const { symbol } = useAtomValue(defaultInstrumentAtom);
 
     if (!isDefined(summary)) {
@@ -28,12 +28,23 @@ export const useYieldHeroSentence = (summary: YieldSummaryInterface | null, rang
     const amount = isAmountProtected ? t`hidden amount` : formatAmount(summary.earned.value, symbol);
     const rate = isDefined(summary.annualYield.rate) ? formatRate(summary.annualYield.rate) : t`no yield yet`;
     const count = summary.annualYield.holdingCount;
-
-    return t({
+    const sentence = t({
         id: 'passive-income.hero.sentence',
         message: plural(count, {
-            one: `Earned ${amount} before tax ${rangeCaption}, ${rate} a year across # holding${trend}${estimates}`,
-            other: `Earned ${amount} before tax ${rangeCaption}, ${rate} a year across # holdings${trend}${estimates}`
+            one: select(trend, {
+                up: `Earned ${amount} before tax ${rangeCaption}, ${rate} a year across ${count} holding, up ${change}.`,
+                down: `Earned ${amount} before tax ${rangeCaption}, ${rate} a year across ${count} holding, down ${change}.`,
+                new: `Earned ${amount} before tax ${rangeCaption}, ${rate} a year across ${count} holding, new this period.`,
+                other: `Earned ${amount} before tax ${rangeCaption}, ${rate} a year across ${count} holding.`
+            }),
+            other: select(trend, {
+                up: `Earned ${amount} before tax ${rangeCaption}, ${rate} a year across ${count} holdings, up ${change}.`,
+                down: `Earned ${amount} before tax ${rangeCaption}, ${rate} a year across ${count} holdings, down ${change}.`,
+                new: `Earned ${amount} before tax ${rangeCaption}, ${rate} a year across ${count} holdings, new this period.`,
+                other: `Earned ${amount} before tax ${rangeCaption}, ${rate} a year across ${count} holdings.`
+            })
         })
     });
+
+    return isEstimated ? [sentence, t`Includes estimated values.`].join(' ') : sentence;
 };

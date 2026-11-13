@@ -34,10 +34,10 @@ export const useYieldPlotAccessibility = (
     const amountOf = (value: number) => (isAmountProtected ? hidden : formatAmount(value, symbol));
     const parts = (summary?.groups ?? [])
         .map(({ group }) => {
-            const label = t(YIELD_GROUP_LABEL[group]).toLowerCase();
+            const label = t(YIELD_GROUP_LABEL[group]);
             const amount = amountOf(bucket?.amounts[group] ?? 0);
 
-            return [label, amount].join(' ');
+            return t`${label}: ${amount}`;
         })
         .join(', ');
     const period = isDefined(bucket) && isDefined(summary) ? formatPeriod(bucket, summary.bucketUnit) : '';

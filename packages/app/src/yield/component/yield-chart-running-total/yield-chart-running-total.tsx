@@ -6,6 +6,7 @@ import Svg from 'react-native-svg';
 import { isDefined } from '@rnw-community/shared';
 
 import { StyledPath } from '../../../@generic/component/styled-path/styled-path';
+import { FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/footnote-max-font-size-multiplier.constant';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { YIELD_PLOT_HEIGHT } from '../../constant/yield-plot-height.constant';
@@ -66,12 +67,20 @@ export const YieldChartRunningTotal = ({ width, summary }: Props) => {
                 <StyledPath d={paths.dashed} strokeClassName="accent-primary" strokeWidth={LINE_WIDTH} strokeDasharray={DASH} fill="none" />
             </Svg>
 
-            <Text className="absolute text-[11px] font-semibold tabular-nums text-primary" style={endStyle}>
+            <Text
+                maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER}
+                className="absolute text-[11px] font-semibold tabular-nums text-primary"
+                style={endStyle}
+            >
                 {endAmount}
             </Text>
 
             {isPriorLabelVisible ? (
-                <Text className="absolute text-[11px] tabular-nums text-secondary-foreground" style={priorStyle}>
+                <Text
+                    maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER}
+                    className="absolute text-[11px] tabular-nums text-secondary-foreground"
+                    style={priorStyle}
+                >
                     <Trans>prior {priorAmount}</Trans>
                 </Text>
             ) : null}

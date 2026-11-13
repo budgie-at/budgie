@@ -8,9 +8,13 @@ const rects = [
 ];
 
 it('skips rects whose animated height is not visible and rounds the top of the rest', () => {
-    expect(buildYieldBarsPath([80, 20, 100, 0], 0, rects)).toBe('M10,100V84Q10,80,14,80H26Q30,80,30,84V100Z');
+    expect(buildYieldBarsPath([80, 20, 100, 0], 0, rects)).toBe('M 10 100 V 84 Q 10 80 14 80 H 26 Q 30 80 30 84 V 100 Z');
 });
 
 it('reads the animated values from the offset and clamps the radius to the height', () => {
-    expect(buildYieldBarsPath([7, 7, 0, 0, 98, 2], 2, rects)).toBe('M40,100V100Q40,98,42,98H58Q60,98,60,100V100Z');
+    expect(buildYieldBarsPath([7, 7, 0, 0, 98, 2], 2, rects)).toBe('M 40 100 V 100 Q 40 98 42 98 H 58 Q 60 98 60 100 V 100 Z');
+});
+
+it('joins several visible rects into one path', () => {
+    expect(buildYieldBarsPath([80, 20, 50, 50], 0, rects).split('Z').length).toBe(3);
 });

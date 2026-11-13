@@ -2,7 +2,7 @@ import { expect, it } from '@effect/vitest';
 
 import { buildYieldRunningPaths } from '../src/yield/utils/build-yield-running-paths.util';
 
-const points = (path: string) => [...path.matchAll(/(-?[\d.]+),(-?[\d.]+)/gu)].map(match => [Number(match[1]), Number(match[2])]);
+const points = (path: string) => [...path.matchAll(/(-?[\d.]+) (-?[\d.]+)/gu)].map(match => [Number(match[1]), Number(match[2])]);
 
 it('draws estimated buckets dashed, the rest solid, and the prior path by bucket index', () => {
     const paths = buildYieldRunningPaths({

@@ -27,22 +27,6 @@ msgstr "Binance P2P sell {assetCode}"
 msgid ", closed at the provider"
 msgstr ", closed at the provider"
 
-#: src/yield/hook/use-yield-hero-trend.hook.ts
-msgid ", down {change}"
-msgstr ", down {change}"
-
-#: src/yield/hook/use-yield-hero-trend.hook.ts
-msgid ", includes estimated values"
-msgstr ", includes estimated values"
-
-#: src/yield/hook/use-yield-hero-trend.hook.ts
-msgid ", new this period"
-msgstr ", new this period"
-
-#: src/yield/hook/use-yield-hero-trend.hook.ts
-msgid ", up {change}"
-msgstr ", up {change}"
-
 #: src/account/hooks/use-restore-archived-account.hook.ts
 msgid "“{accountTitle}” is back in Hidden accounts"
 msgstr "“{accountTitle}” is back in Hidden accounts"
@@ -333,6 +317,11 @@ msgstr "{count, plural, =0 {Merge “{sourceTitle}” into “{targetTitle}” a
 msgid "{count, plural, one {{formattedAmount} rolled over across # category} other {{formattedAmount} rolled over across # categories}}"
 msgstr "{count, plural, one {{formattedAmount} rolled over across # category} other {{formattedAmount} rolled over across # categories}}"
 
+#. js-lingui-explicit-id
+#: src/yield/hook/use-yield-hero-sentence.hook.ts
+msgid "passive-income.hero.sentence"
+msgstr "{count, plural, one {{trend, select, up {Earned {amount} before tax {rangeCaption}, {rate} a year across {count} holding, up {change}.} down {Earned {amount} before tax {rangeCaption}, {rate} a year across {count} holding, down {change}.} new {Earned {amount} before tax {rangeCaption}, {rate} a year across {count} holding, new this period.} other {Earned {amount} before tax {rangeCaption}, {rate} a year across {count} holding.}}} other {{trend, select, up {Earned {amount} before tax {rangeCaption}, {rate} a year across {count} holdings, up {change}.} down {Earned {amount} before tax {rangeCaption}, {rate} a year across {count} holdings, down {change}.} new {Earned {amount} before tax {rangeCaption}, {rate} a year across {count} holdings, new this period.} other {Earned {amount} before tax {rangeCaption}, {rate} a year across {count} holdings.}}}}"
+
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "{count, plural, one {# account. Balances come straight from the bank.} other {# accounts. Balances come straight from the bank.}}"
 msgstr "{count, plural, one {# account. Balances come straight from the bank.} other {# accounts. Balances come straight from the bank.}}"
@@ -377,11 +366,6 @@ msgstr "{count, plural, one {+# more} other {+# more}}"
 #: src/category/components/category-default-icon-button/category-default-icon-button.tsx
 msgid "{count, plural, one {Choose an icon for # category} other {Choose icons for # categories}}"
 msgstr "{count, plural, one {Choose an icon for # category} other {Choose icons for # categories}}"
-
-#. js-lingui-explicit-id
-#: src/yield/hook/use-yield-hero-sentence.hook.ts
-msgid "passive-income.hero.sentence"
-msgstr "{count, plural, one {Earned {amount} before tax {rangeCaption}, {rate} a year across # holding{trend}{estimates}} other {Earned {amount} before tax {rangeCaption}, {rate} a year across # holdings{trend}{estimates}}}"
 
 #: src/category/components/category-default-icon-button/category-default-icon-button.tsx
 msgid "{count, plural, one {It still uses the default icon} other {They still use the default icon}}"
@@ -680,6 +664,10 @@ msgstr "{installmentCount, plural, one {Split into # payment} other {Split into 
 #: src/yield/hook/use-yield-date-labels.hook.ts
 msgid "passive-income.chart.so-far"
 msgstr "{label} so far"
+
+#: src/yield/hook/use-yield-plot-accessibility.hook.ts
+msgid "{label}: {amount}"
+msgstr "{label}: {amount}"
 
 #: src/siri/service/siri-catalog.service.ts
 msgid "{label}: {formattedSpent} of {formattedLimit} spent, {formattedLeft} left."
@@ -5579,6 +5567,10 @@ msgstr "Includes accounts you add later. Starts when you sign in to iCloud."
 #: src/runway/component/runway-verdict-outlook/runway-verdict-outlook.tsx
 msgid "Includes crypto"
 msgstr "Includes crypto"
+
+#: src/yield/hook/use-yield-hero-sentence.hook.ts
+msgid "Includes estimated values."
+msgstr "Includes estimated values."
 
 #: src/budget/components/budget-stat-row/budget-stat-row.tsx
 #: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx

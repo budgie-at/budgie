@@ -1,23 +1,38 @@
 import { YieldDeltaKindEnum } from '@budgie/market';
-import { useLingui } from '@lingui/react/macro';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { useFormatPercent } from '../../i18n/hook/use-format-percent.hook';
+import { YieldHeroTrendEnum } from '../enum/yield-hero-trend.enum';
 
-import type { YieldSummaryInterface } from '@budgie/market';
+import type { YieldDeltaInterface, YieldSummaryInterface } from '@budgie/market';
+
+const resolveTrend = (delta: YieldDeltaInterface | null): YieldHeroTrendEnum => {
+    if (!isDefined(delta)) {
+        return YieldHeroTrendEnum.NONE;
+    }
+
+    if (delta.kind === YieldDeltaKindEnum.NEW) {
+        return YieldHeroTrendEnum.NEW;
+    }
+
+    const ratio = delta.ratio ?? 0;
+
+    if (ratio === 0) {
+        return YieldHeroTrendEnum.NONE;
+    }
+
+    return isPositiveNumber(ratio) ? YieldHeroTrendEnum.UP : YieldHeroTrendEnum.DOWN;
+};
 
 export const useYieldHeroTrend = (summary: Pick<YieldSummaryInterface, 'delta' | 'earned'> | null) => {
-    const { t } = useLingui();
     const formatPercent = useFormatPercent();
-    const ratio = summary?.delta?.ratio ?? 0;
-    const change = formatPercent(Math.abs(ratio));
-    const trendByKind = {
-        [YieldDeltaKindEnum.NEW]: t`, new this period`,
-        [YieldDeltaKindEnum.CHANGE]: isPositiveNumber(ratio) ? t`, up ${change}` : t`, down ${change}`
-    };
-    const trend = isDefined(summary?.delta) ? trendByKind[summary.delta.kind] : '';
-    const estimates = summary?.earned.isEstimated === true ? t`, includes estimated values` : '';
 
-    return { trend, estimates };
+    const delta = summary?.delta ?? null;
+
+    return {
+        trend: resolveTrend(delta),
+        change: formatPercent(Math.abs(delta?.ratio ?? 0)),
+        isEstimated: summary?.earned.isEstimated === true
+    };
 };

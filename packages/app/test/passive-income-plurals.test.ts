@@ -18,13 +18,13 @@ const catalogs: readonly (readonly [string, Messages])[] = [
     ['uk', ukMessages]
 ];
 
-const sentenceValues = (count: number) => ({
+const sentenceValues = (count: number, trend = 'other') => ({
     count,
     amount: '$12',
     rangeCaption: 'in the last 30 days',
     rate: '5.0%',
-    trend: '',
-    estimates: ''
+    trend,
+    change: '12%'
 });
 
 const translate = (locale: string, catalog: Messages, id: string, values: Record<string, unknown>) => {
@@ -55,6 +55,16 @@ describe('passive income plural catalogs', () => {
         expect(one).toContain('у 1 позиції');
         expect(few).toContain('у 2 позиціях');
         expect(many).toContain('у 5 позиціях');
+    });
+
+    it.each(catalogs)('%s trend variants carry the change only when there is one', (locale, catalog) => {
+        const up = translate(locale, catalog, SENTENCE_ID, sentenceValues(3, 'up'));
+        const down = translate(locale, catalog, SENTENCE_ID, sentenceValues(3, 'down'));
+        const flat = translate(locale, catalog, SENTENCE_ID, sentenceValues(3));
+
+        expect(up).toContain('12%');
+        expect(down).toContain('12%');
+        expect(flat).not.toContain('12%');
     });
 
     it.each(catalogs)('%s so-far label embeds the period label', (locale, catalog) => {
