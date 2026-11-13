@@ -7,8 +7,6 @@ import {
     InstrumentTypeEnum,
     convertToMicroUnits
 } from '@budgie/contracts';
-import { format } from 'date-fns/format';
-import { startOfDay } from 'date-fns/startOfDay';
 import * as Cache from 'effect/Cache';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -17,6 +15,7 @@ import * as Layer from 'effect/Layer';
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { findLastIndexOnOrBefore } from '../../@generic/utils/find-last-index-on-or-before.util';
+import { formatUtcDay } from '../../@generic/utils/format-utc-day.util';
 import { resolveDirectOrInverseRate } from '../../@generic/utils/resolve-direct-or-inverse-rate.util';
 import { ExchangeRateRepository } from '../../exchange-rate/repository/exchange-rate.repository';
 import { ExchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
@@ -40,7 +39,6 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
         const instrumentRepository = yield* InstrumentRepository;
         const exchangeRatesService = yield* ExchangeRatesService;
         const exchangeRateRepository = yield* ExchangeRateRepository;
-        const rateDateFormat = 'yyyy-MM-dd';
 
         const buildBaseValuation = (baseInstrumentId: number, baseExchangeRate: number, amount: number): EntryBaseValuationInterface => ({
             baseInstrumentId,
@@ -100,7 +98,7 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
             const latest = yield* memoize(([baseInstrumentId, quoteInstrumentId]: readonly [number, number]) =>
                 exchangeRateRepository.findByBaseAndQuoteIds(baseInstrumentId, quoteInstrumentId)
             );
-            const instruments = yield* memoize((code: CurrencyEnum) => instrumentRepository.findByCode(code));
+            const instruments = yield* memoize((code: string) => instrumentRepository.findByCode(code));
 
             const lookups: RateLookupsInterface = {
                 findForDateOrBefore: (sourceInstrumentId, targetInstrumentId, rateDate) =>
@@ -165,9 +163,8 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
             lookups: RateLookupsInterface,
             sourceInstrumentId: number,
             targetInstrumentId: number,
-            operatedAt: Date
+            rateDate: string
         ) {
-            const rateDate = format(operatedAt, rateDateFormat);
             const dateRate = yield* resolveDirectOrInverseRate(
                 (sourceId, targetId) => lookups.findForDateOrBefore(sourceId, targetId, rateDate),
                 sourceInstrumentId,
@@ -202,9 +199,9 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
             lookups: RateLookupsInterface,
             sourceInstrumentId: number,
             targetInstrumentId: number,
-            operatedAt: Date
+            rateDate: string
         ) {
-            const directRate = yield* resolveDirectHistoricalRateOrNull(lookups, sourceInstrumentId, targetInstrumentId, operatedAt);
+            const directRate = yield* resolveDirectHistoricalRateOrNull(lookups, sourceInstrumentId, targetInstrumentId, rateDate);
 
             if (isDefined(directRate)) {
                 return directRate;
@@ -224,26 +221,26 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
                 lookups,
                 sourceInstrumentId,
                 hryvniaInstrument.id,
-                operatedAt
+                rateDate
             );
             const hryvniaToTargetRate = yield* resolveDirectHistoricalRateOrNull(
                 lookups,
                 hryvniaInstrument.id,
                 targetInstrumentId,
-                operatedAt
+                rateDate
             );
 
             return isDefined(sourceToHryvniaRate) && isDefined(hryvniaToTargetRate) ? sourceToHryvniaRate * hryvniaToTargetRate : null;
         });
 
         const createContext = Effect.fn('EntryBaseValuationService.createContext')(function* (operatedAts: readonly Date[]) {
-            const rateDates = operatedAts.map(operatedAt => format(operatedAt, rateDateFormat)).sort();
+            const rateDates = operatedAts.map(formatUtcDay).sort();
             const lookups = yield* makeRangeLookups(rateDates.at(0) ?? '', rateDates.at(-1) ?? '');
             const context: EntryBaseValuationContextInterface = {
                 baseInstrument: yield* exchangeRatesService.getBaseInstrument(),
                 accounts: yield* memoize((accountId: number) => accountRepository.findByIdIncludingArchived(accountId)),
-                rates: yield* memoize(([sourceInstrumentId, targetInstrumentId, rateDayStart]: readonly [number, number, number]) =>
-                    resolveBaseExchangeRateOrNull(lookups, sourceInstrumentId, targetInstrumentId, new Date(rateDayStart))
+                rates: yield* memoize(([sourceInstrumentId, targetInstrumentId, rateDate]: readonly [number, number, string]) =>
+                    resolveBaseExchangeRateOrNull(lookups, sourceInstrumentId, targetInstrumentId, rateDate)
                 )
             };
 
@@ -272,7 +269,7 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
             const baseExchangeRate = yield* Cache.get(context.rates, [
                 account.instrumentId,
                 baseInstrument.id,
-                startOfDay(operatedAt).getTime()
+                formatUtcDay(operatedAt)
             ]);
 
             if (!isDefined(baseExchangeRate)) {
@@ -325,8 +322,10 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
         return {
             resolveHistoricalBaseExchangeRateOrNull: Effect.fn('EntryBaseValuationService.resolveHistoricalBaseExchangeRateOrNull')(
                 (sourceInstrumentId: number, targetInstrumentId: number, operatedAt: Date) =>
-                    resolveBaseExchangeRateOrNull(queryLookups, sourceInstrumentId, targetInstrumentId, operatedAt)
+                    resolveBaseExchangeRateOrNull(queryLookups, sourceInstrumentId, targetInstrumentId, formatUtcDay(operatedAt))
             ),
+            resolveHistoricalBaseExchangeRateForDay: (sourceInstrumentId: number, targetInstrumentId: number, rateDate: string) =>
+                resolveBaseExchangeRateOrNull(queryLookups, sourceInstrumentId, targetInstrumentId, rateDate),
             valueMicroUnitEntry: Effect.fn('EntryBaseValuationService.valueMicroUnitEntry')(function* (
                 input: EntryBaseValuationInputInterface
             ) {

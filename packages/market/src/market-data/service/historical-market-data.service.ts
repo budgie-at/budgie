@@ -28,6 +28,7 @@ import * as Schema from 'effect/Schema';
 import { getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { fetchJson } from '../../@generic/utils/fetch-json.util';
+import { formatUtcDay } from '../../@generic/utils/format-utc-day.util';
 import { ExchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
 import { HistoricalExchangeRateRepository } from '../../historical-exchange-rate/repository/historical-exchange-rate.repository';
 import { EntryBaseValuationService } from '../../valuation/service/entry-base-valuation.service';
@@ -147,7 +148,13 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                 ]);
 
             const buildTimedValueMap = (values: ReadonlyArray<readonly [number, number]>): Map<string, number> =>
-                new Map(values.map(([timestamp, value]) => [format(new Date(timestamp), rateDateFormat), value]));
+                values.reduce(
+                    (valueByDay, [timestamp, value]) =>
+                        valueByDay.has(formatUtcDay(new Date(timestamp)))
+                            ? valueByDay
+                            : valueByDay.set(formatUtcDay(new Date(timestamp)), value),
+                    new Map<string, number>()
+                );
 
             const getToday = Effect.map(Clock.currentTimeMillis, now => format(now, rateDateFormat));
 
@@ -225,25 +232,23 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                 const marketCapByDate = buildTimedValueMap(data.market_caps);
                 const volumeByDate = buildTimedValueMap(data.total_volumes);
 
-                return data.prices.flatMap(([timestamp, price]): InstrumentDailyMarketPriceCreateEntityInterface[] => {
-                    const priceDate = format(new Date(timestamp), rateDateFormat);
+                const priceByDate = buildTimedValueMap(data.prices);
 
-                    if (!isPositiveNumber(price)) {
-                        return [];
-                    }
-
-                    return [
-                        {
-                            instrumentId: job.instrumentId,
-                            quoteInstrumentId: job.quoteInstrumentId,
-                            priceDate,
-                            price,
-                            marketCap: marketCapByDate.get(priceDate) ?? null,
-                            volume: volumeByDate.get(priceDate) ?? null,
-                            source
-                        }
-                    ];
-                });
+                return [...priceByDate].flatMap(([priceDate, price]): InstrumentDailyMarketPriceCreateEntityInterface[] =>
+                    isPositiveNumber(price)
+                        ? [
+                              {
+                                  instrumentId: job.instrumentId,
+                                  quoteInstrumentId: job.quoteInstrumentId,
+                                  priceDate,
+                                  price,
+                                  marketCap: marketCapByDate.get(priceDate) ?? null,
+                                  volume: volumeByDate.get(priceDate) ?? null,
+                                  source
+                              }
+                          ]
+                        : []
+                );
             });
 
             const fetchInzhurPrices = Effect.fn('HistoricalMarketDataService.fetchInzhurPrices')(function* (
@@ -393,10 +398,10 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                     job.toDate
                 )).filter(bucket => bucket.sourceInstrumentId !== baseInstrument.id);
                 const resolveBucketRates = Effect.forEach(buckets, bucket =>
-                    entryBaseValuationService.resolveHistoricalBaseExchangeRateOrNull(
+                    entryBaseValuationService.resolveHistoricalBaseExchangeRateForDay(
                         bucket.sourceInstrumentId,
                         baseInstrument.id,
-                        parseISO(bucket.rateDate)
+                        bucket.rateDate
                     )
                 );
                 const previousRates = yield* resolveBucketRates;

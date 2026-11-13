@@ -1,6 +1,5 @@
 import { Db, TransactionEntryBaseValuationRepository, YIELD_TO_UI } from '@budgie/contracts';
 import { EntryBaseValuationService, ExchangeRatesService } from '@budgie/market';
-import { parseISO } from 'date-fns/parseISO';
 import * as Arr from 'effect/Array';
 import * as Cause from 'effect/Cause';
 import * as Context from 'effect/Context';
@@ -45,15 +44,13 @@ export class MoneyDataUpgradeService extends Context.Service<MoneyDataUpgradeSer
             bucket: PendingBaseValuationBucketInterface,
             baseInstrumentId: number
         ) {
-            const operatedAt = parseISO(bucket.rateDate);
-
             const baseExchangeRate =
                 bucket.sourceInstrumentId === baseInstrumentId
                     ? 1
-                    : yield* entryBaseValuationService.resolveHistoricalBaseExchangeRateOrNull(
+                    : yield* entryBaseValuationService.resolveHistoricalBaseExchangeRateForDay(
                           bucket.sourceInstrumentId,
                           baseInstrumentId,
-                          operatedAt
+                          bucket.rateDate
                       );
 
             yield* transactionEntryBaseValuationRepository.updateBaseValuationBucket({

@@ -1,4 +1,4 @@
-import type { CurrencyEnum, Db, DbError, InstrumentEntityInterface } from '@budgie/contracts';
+import type { Db, DbError, InstrumentEntityInterface } from '@budgie/contracts';
 import type * as Effect from 'effect/Effect';
 
 export interface RateLookupsInterface {
@@ -6,7 +6,7 @@ export interface RateLookupsInterface {
         sourceInstrumentId: number,
         targetInstrumentId: number,
         rateDate: string
-    ) => Effect.Effect<{ readonly rate: number } | undefined, DbError, Db>;
+    ) => Effect.Effect<{ readonly rate: number; readonly rateDate: string } | undefined, DbError, Db>;
     readonly findEarliest: (
         sourceInstrumentId: number,
         targetInstrumentId: number
@@ -15,5 +15,5 @@ export interface RateLookupsInterface {
         sourceInstrumentId: number,
         targetInstrumentId: number
     ) => Effect.Effect<{ readonly rate: number } | undefined, DbError, Db>;
-    readonly findInstrumentByCode: (code: CurrencyEnum) => Effect.Effect<InstrumentEntityInterface | undefined, DbError, Db>;
+    readonly findInstrumentByCode: (code: string) => Effect.Effect<InstrumentEntityInterface | undefined, DbError, Db>;
 }

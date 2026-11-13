@@ -6,6 +6,8 @@ import * as HttpClientResponse from 'effect/http/HttpClientResponse';
 import * as Layer from 'effect/Layer';
 import { beforeEach } from 'vitest';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { ExchangeRateRepository } from '../src/exchange-rate/repository/exchange-rate.repository';
 import { ExchangeRatesSyncService } from '../src/exchange-rate/service/exchange-rates-sync.service';
 import { ExchangeRatesService } from '../src/exchange-rate/service/exchange-rates.service';
@@ -44,3 +46,10 @@ export const makeHtmlHttpClientLayer = (html: string) =>
         HttpClient.HttpClient,
         HttpClient.make((request, _url) => Effect.succeed(HttpClientResponse.fromWeb(request, new Response(html, { status: 200 }))))
     );
+
+export const requireInstrumentByCode = Effect.fnUntraced(function* (code: string) {
+    const instrumentRepository = yield* InstrumentRepository;
+    const instrument = yield* instrumentRepository.findByCode(code);
+
+    return isDefined(instrument) ? instrument : yield* Effect.die(new Error(`Instrument ${code} missing`));
+});
