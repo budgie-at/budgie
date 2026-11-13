@@ -32,9 +32,23 @@ const HERO_PRICE_HEIGHT = 41;
 const CURRENCY_MARKET_CHROME_CONFIG = {
     ...SCREEN_CHROME_CONFIG,
     collapsedHeaderHeight: 44,
-    smallTitleStart: 0,
-    largeTitleEnd: TITLE_HANDOFF_DISTANCE,
-    collapseEnd: TITLE_HANDOFF_DISTANCE
+    smallTitleStart: TITLE_HANDOFF_DISTANCE / 2,
+    largeTitleEnd: TITLE_HANDOFF_DISTANCE / 2,
+    collapseEnd: TITLE_HANDOFF_DISTANCE,
+    colors: {
+        light: { solid: 'rgb(242,242,247)', wash: 'rgb(242,242,247)' },
+        dark: { solid: 'rgb(0,0,0)', wash: 'rgb(0,0,0)' }
+    },
+    maskStops: {
+        ...SCREEN_CHROME_CONFIG.maskStops,
+        top: {
+            0: { color: '#000000' },
+            0.62: { color: '#000000' },
+            0.74: { color: 'rgba(0,0,0,0.35)' },
+            0.86: { color: 'transparent' },
+            1: { color: 'transparent' }
+        }
+    }
 };
 
 export const CurrencyMarketPage = ({ instrument: storedInstrument }: Props) => {

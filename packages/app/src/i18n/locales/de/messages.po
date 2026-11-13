@@ -6688,8 +6688,8 @@ msgid "No limit changes yet"
 msgstr "Noch keine Limitänderungen"
 
 #: src/market-data/component/currency-market-position-footer/currency-market-position-footer.tsx
-msgid "No market price yet, so value and return can’t be calculated."
-msgstr "Noch kein Marktkurs, daher lassen sich Wert und Rendite nicht berechnen."
+msgid "No market price yet, so value and return are unavailable."
+msgstr "Noch kein Marktpreis, daher sind Wert und Rendite nicht verfügbar."
 
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "No matching accounts"
@@ -6736,8 +6736,8 @@ msgid "No problems found"
 msgstr "Keine Probleme gefunden"
 
 #: src/market-data/component/currency-market-position-footer/currency-market-position-footer.tsx
-msgid "No purchase price is recorded for this balance, so the return can’t be calculated."
-msgstr "Für diesen Bestand ist kein Kaufpreis erfasst, daher lässt sich die Rendite nicht berechnen."
+msgid "No purchase price recorded, so return is unavailable."
+msgstr "Kein Kaufpreis erfasst, daher ist die Rendite nicht verfügbar."
 
 #: src/receipt/hook/use-receipt-scan.hook.ts
 msgid "No receipt found"

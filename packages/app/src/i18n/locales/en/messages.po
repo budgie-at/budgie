@@ -6689,8 +6689,8 @@ msgid "No limit changes yet"
 msgstr "No limit changes yet"
 
 #: src/market-data/component/currency-market-position-footer/currency-market-position-footer.tsx
-msgid "No market price yet, so value and return can’t be calculated."
-msgstr "No market price yet, so value and return can’t be calculated."
+msgid "No market price yet, so value and return are unavailable."
+msgstr "No market price yet, so value and return are unavailable."
 
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "No matching accounts"
@@ -6737,8 +6737,8 @@ msgid "No problems found"
 msgstr "No problems found"
 
 #: src/market-data/component/currency-market-position-footer/currency-market-position-footer.tsx
-msgid "No purchase price is recorded for this balance, so the return can’t be calculated."
-msgstr "No purchase price is recorded for this balance, so the return can’t be calculated."
+msgid "No purchase price recorded, so return is unavailable."
+msgstr "No purchase price recorded, so return is unavailable."
 
 #: src/receipt/hook/use-receipt-scan.hook.ts
 msgid "No receipt found"

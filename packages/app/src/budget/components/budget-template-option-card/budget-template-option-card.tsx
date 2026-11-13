@@ -5,6 +5,10 @@ import { isDefined } from '@rnw-community/shared';
 
 import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
+import { GROUPED_LIST_SUBTITLE_CLASSNAME } from '../../../@generic/constant/grouped-list-subtitle-class-name.constant';
+import { ROW_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-max-font-size-multiplier.constant';
+import { TITLE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/title-max-font-size-multiplier.constant';
+import { cn } from '../../../@generic/utils/cn.util';
 
 interface Props {
     readonly icon: UserIconNameEnum;
@@ -24,11 +28,19 @@ export const BudgetTemplateOptionCard = ({ icon, title, description, summary, on
         <GroupedListRow
             left={<GroupedListIcon icon={icon} />}
             title={
-                <Text className={titleClassName} numberOfLines={2}>
+                <Text className={titleClassName} numberOfLines={3} maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}>
                     {title}
                 </Text>
             }
-            subtitle={subtitle}
+            subtitle={
+                <Text
+                    className={cn('text-secondary-foreground', GROUPED_LIST_SUBTITLE_CLASSNAME)}
+                    numberOfLines={3}
+                    maxFontSizeMultiplier={TITLE_MAX_FONT_SIZE_MULTIPLIER}
+                >
+                    {subtitle}
+                </Text>
+            }
             testID={testID}
             {...(!isDisabled && { onPress })}
         />

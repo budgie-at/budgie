@@ -7,6 +7,8 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { ROW_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-max-font-size-multiplier.constant';
+import { TITLE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/title-max-font-size-multiplier.constant';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { useIsAmountProtected } from '../../../@generic/hook/use-is-amount-protected.hook';
 import { BANK_PROVIDER_TITLE } from '../../../account/constant/bank-provider-title.constant';
@@ -52,10 +54,23 @@ export const CurrencyMarketAccountRow = ({ account, leading, instrumentCode, syn
     );
     const title = (
         <View className="my-px min-h-[34px] min-w-0 flex-1 justify-center gap-y-xxs">
-            <Text className="text-primary text-[17px] leading-[22px]" numberOfLines={2} ellipsizeMode="tail">
+            <Text
+                className="text-primary text-[17px] leading-[22px]"
+                numberOfLines={2}
+                ellipsizeMode="tail"
+                maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
+            >
                 {account.title}
             </Text>
-            {isNotEmptyString(subtitle) ? <Text className="text-secondary-foreground text-[13px] leading-[18px]">{subtitle}</Text> : null}
+            {isNotEmptyString(subtitle) ? (
+                <Text
+                    className="text-secondary-foreground text-[13px] leading-[18px]"
+                    numberOfLines={2}
+                    maxFontSizeMultiplier={TITLE_MAX_FONT_SIZE_MULTIPLIER}
+                >
+                    {subtitle}
+                </Text>
+            ) : null}
             {isStacked ? amountBlock : null}
         </View>
     );

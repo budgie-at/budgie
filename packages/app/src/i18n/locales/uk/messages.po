@@ -6688,8 +6688,8 @@ msgid "No limit changes yet"
 msgstr "Змін лімітів поки немає"
 
 #: src/market-data/component/currency-market-position-footer/currency-market-position-footer.tsx
-msgid "No market price yet, so value and return can’t be calculated."
-msgstr "Ринкової ціни ще немає, тому вартість і прибутковість неможливо розрахувати."
+msgid "No market price yet, so value and return are unavailable."
+msgstr "Ринкової ціни ще немає, тому вартість і прибутковість недоступні."
 
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "No matching accounts"
@@ -6736,8 +6736,8 @@ msgid "No problems found"
 msgstr "Проблем не знайдено"
 
 #: src/market-data/component/currency-market-position-footer/currency-market-position-footer.tsx
-msgid "No purchase price is recorded for this balance, so the return can’t be calculated."
-msgstr "Для цього балансу не записано ціну купівлі, тому прибутковість неможливо розрахувати."
+msgid "No purchase price recorded, so return is unavailable."
+msgstr "Ціну купівлі не вказано, тому прибутковість недоступна."
 
 #: src/receipt/hook/use-receipt-scan.hook.ts
 msgid "No receipt found"
