@@ -274,8 +274,8 @@ msgid "{categoryName}: limit reached"
 msgstr "{categoryName}: limite atteinte"
 
 #: src/account/component/home-today-change-text/home-today-change-text.tsx
-msgid "{change} today"
-msgstr "{change} aujourd’hui"
+msgid "{change} · 24h"
+msgstr "{change} · 24 h"
 
 #: src/transaction/components/statistics-change-label/statistics-change-label.tsx
 msgid "{changePercent} less than {previousLabel}"

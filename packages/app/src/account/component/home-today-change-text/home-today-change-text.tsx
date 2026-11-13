@@ -39,7 +39,7 @@ export const HomeTodayChangeText = ({ gain, percent, maxFontSizeMultiplier, test
             className={cn('text-[13px] font-semibold tabular-nums', getMarketMoveClassName(percent))}
             testID={testID}
         >
-            {`${ARROW_BY_DIRECTION[Math.sign(percent)]}${t`${change} today`}`}
+            {`${ARROW_BY_DIRECTION[Math.sign(percent)]}${t`${change} · 24h`}`}
         </ProtectedText>
     );
 };
