@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.181.1](https://github.com/budgie-at/budgie/compare/v6.181.0...v6.181.1) (2026-11-13)
+
+### Bug Fixes
+
+* **app:** line the expanded screen title up with the back button ([#2199](https://github.com/budgie-at/budgie/issues/2199)) ([6b3ead8](https://github.com/budgie-at/budgie/commit/6b3ead8b3908db96e4c3e5a8d184c1283e75f65d)), closes [#2192](https://github.com/budgie-at/budgie/issues/2192)
+
+
 # [6.181.0](https://github.com/budgie-at/budgie/compare/v6.180.1...v6.181.0) (2026-11-13)
 
 ### Features
