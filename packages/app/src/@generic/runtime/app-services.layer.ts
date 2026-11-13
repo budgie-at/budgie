@@ -76,7 +76,8 @@ import {
     ExchangeRatesService,
     HistoricalExchangeRateRepository,
     InstrumentDailyMarketPriceRepository,
-    InstrumentMarketDataJobRepository
+    InstrumentMarketDataJobRepository,
+    YieldService
 } from '@budgie/market';
 import { RecurringRefreshService, RecurringService } from '@budgie/recurring';
 import { RuleEngineService, RuleMatcherService, RuleRepository, RuleService, TransactionRuleRepository } from '@budgie/rules';
@@ -276,6 +277,7 @@ export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     InzhurGainService.layer,
     InvestmentReturnRepository.layer,
     YieldRepository.layer,
+    YieldService.layer,
     ResyncService.layer,
     AppDataSyncService.layer,
     BackgroundSyncSessionService.layer,
