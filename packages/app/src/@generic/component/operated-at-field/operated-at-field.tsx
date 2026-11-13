@@ -14,7 +14,7 @@ interface Props {
 export const OperatedAtField = ({ testID }: Props) => {
     const { t } = useLingui();
     const { field } = useController<Record<'operatedAt', Date>, 'operatedAt'>({ name: 'operatedAt' });
-    const { formatDayAndFullMonthAndYear } = useFormatDate();
+    const { formatDayAndMonthAndYear } = useFormatDate();
     const pickDate = usePickDate();
 
     const handleOpen = () =>
@@ -27,7 +27,7 @@ export const OperatedAtField = ({ testID }: Props) => {
             <GroupedListValueRow
                 icon={UserIconNameEnum.Calendar}
                 title={t`Date`}
-                value={formatDayAndFullMonthAndYear(field.value)}
+                value={formatDayAndMonthAndYear(field.value)}
                 onPress={handleOpen}
                 testID={testID}
             />

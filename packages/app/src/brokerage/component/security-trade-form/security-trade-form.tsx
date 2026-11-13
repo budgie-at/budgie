@@ -23,10 +23,12 @@ import { SecurityTradeFormSchema } from '../../constant/security-trade-form-sche
 import { InsufficientSecurityHoldingError } from '../../error/insufficient-security-holding.error';
 import { BrokerageSelector } from '../../selector/brokerage.selector';
 import { SecurityTradeNumberField } from '../security-trade-number-field/security-trade-number-field';
+import { SecurityTradePriceHint } from '../security-trade-price-hint/security-trade-price-hint';
 import { SecurityTradeQuantityHint } from '../security-trade-quantity-hint/security-trade-quantity-hint';
 
 import type { AppServices } from '../../../@generic/runtime/app.runtime';
 import type { SecurityTradeFormValues } from '../../constant/security-trade-form-schema.constant';
+import type { useSecurityPriceQuery } from '../../query/use-security-price.query';
 import type { ReactNode } from 'react';
 
 interface Props<E> {
@@ -34,7 +36,7 @@ interface Props<E> {
     readonly currencySymbol: string;
     readonly isReady: boolean;
     readonly maxQuantity: number | null;
-    readonly suggestedPrice: number | null;
+    readonly suggestedPrice: ReturnType<typeof useSecurityPriceQuery>;
     readonly onSubmit: (values: SecurityTradeFormValues) => Effect.Effect<unknown, E, AppServices>;
     readonly summary: ReactNode;
     readonly children?: ReactNode;
@@ -55,10 +57,10 @@ export const SecurityTradeForm = <E,>(props: Props<E>) => {
     const { isLoading, run } = useSingleFlight();
 
     useEffect(() => {
-        if (isPositiveNumber(suggestedPrice) && !form.getFieldState('price').isDirty) {
-            form.setValue('price', suggestedPrice, { shouldValidate: true });
+        if (isPositiveNumber(suggestedPrice.price) && !form.getFieldState('price').isDirty) {
+            form.setValue('price', suggestedPrice.price, { shouldValidate: true });
         }
-    }, [form, suggestedPrice]);
+    }, [form, suggestedPrice.price]);
 
     const handleSave = form.handleSubmit(values =>
         run(
@@ -77,6 +79,7 @@ export const SecurityTradeForm = <E,>(props: Props<E>) => {
     const isOverHolding = isDefined(maxQuantity) && quantity > maxQuantity;
     const quantityFooter = isDefined(maxQuantity) ? <SecurityTradeQuantityHint maxQuantity={maxQuantity} /> : null;
     const isSaveDisabled = !isReady || !form.formState.isValid || isOverHolding;
+    const priceFooter = <SecurityTradePriceHint missingRateCurrency={suggestedPrice.missingRateCurrency} currencySymbol={currencySymbol} />;
 
     return (
         <GroupedSurface>
@@ -105,7 +108,7 @@ export const SecurityTradeForm = <E,>(props: Props<E>) => {
                                 testID={BrokerageSelector.QuantityInput}
                             />
                         </GroupedListSection>
-                        <GroupedListSection>
+                        <GroupedListSection footer={priceFooter}>
                             <SecurityTradeNumberField
                                 name="price"
                                 label={`${t`Price per share`} (${currencySymbol})`}

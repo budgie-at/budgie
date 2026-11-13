@@ -42,18 +42,18 @@ test('51 manual brokerage with stocks', { tags: ['accounts'], platforms: PENDING
 
     await budgie.start({ fixture: '01.db' });
 
-    await core.phase('create a manual brokerage with cash', async () => {
+    await core.phase('create a manual brokerage', async () => {
         await accounts.openNewAccount(ctx);
         await core.scrollTo(ctx, 'CreateAccount.STOCKS');
         await core.tapUntil(ctx, 'CreateAccount.STOCKS', () => core.expectId(ctx, 'AccountForm.NameInput', 3_000));
         await core.fillId(ctx, 'AccountForm.NameInput', 'E2E Broker');
-        await core.fillId(ctx, 'CreateAccount.Amount', '2000');
         await core.tapId(ctx, 'AccountForm.NameInput.Label');
         await core.tapUntil(ctx, 'AccountForm.SubmitButton', () => core.expectId(ctx, 'HomePage.TotalBalance', 15_000));
         await core.scrollTo(ctx, 'InstitutionRow.E2E Broker');
         await core.expectSettledId(ctx, 'InstitutionRow.E2E Broker');
         await core.tapId(ctx, 'InstitutionRow.E2E Broker');
         await core.expectId(ctx, 'Institution.Page', 10_000);
+        await core.expectText(ctx, 'No positions yet');
     });
 
     await core.phase('add a position found by ticker', async () => {
@@ -73,7 +73,7 @@ test('51 manual brokerage with stocks', { tags: ['accounts'], platforms: PENDING
         await core.tapId(ctx, 'PageHeader.BackButton');
         await core.expectId(ctx, 'HomePage.TotalBalance', 10_000);
         await core.scrollTo(ctx, 'InstitutionRow.E2E Broker');
-        await expect(core.byId(screen, 'InstitutionRow.E2E Broker')).toHaveText(/\$2,200/, { timeout: 10_000 });
+        await expect(core.byId(screen, 'InstitutionRow.E2E Broker')).toHaveText(/\$1,200/, { timeout: 10_000 });
     });
 
     await core.phase('sell part of the position', async () => {
@@ -111,7 +111,7 @@ test('51 manual brokerage with stocks', { tags: ['accounts'], platforms: PENDING
         await expect(screen.getByRole('button', { name: /^Sell BGTX, 4 BGTX @ \$125, \+\$500/ }).first()).toBeVisible({ timeout: 10_000 });
         await pickSecurity('BGEU');
         await typeDigits('Brokerage.QuantityInput', '1');
-        await typeDigits('Brokerage.PriceInput', '100');
+        await replaceDigits('Brokerage.PriceInput', '100');
         await saveTrade('Institution.Page');
         await core.scrollTo(ctx, 'AccountCard.Budgie Euro Fund');
         await core.tapUntil(ctx, 'AccountCard.Budgie Euro Fund', () => core.expectId(ctx, 'AccountDetails.Page', 10_000));

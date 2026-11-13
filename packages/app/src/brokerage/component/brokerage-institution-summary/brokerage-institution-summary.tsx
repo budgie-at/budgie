@@ -4,6 +4,7 @@ import { ACCOUNT_DETAILS_HERO_BALANCE_HEIGHT } from '../../../account/constant/a
 import { InstitutionSelector } from '../../../app/(main)/institution/institution.selector';
 import { useBrokerageSummaryQuery } from '../../query/use-brokerage-summary.query';
 import { BrokerageAddPositionAction } from '../brokerage-add-position-action/brokerage-add-position-action';
+import { BrokerageEmptyState } from '../brokerage-empty-state/brokerage-empty-state';
 import { BrokerageGainLine } from '../brokerage-gain-line/brokerage-gain-line';
 import { BrokerageHoldings } from '../brokerage-holdings/brokerage-holdings';
 
@@ -37,13 +38,19 @@ export const BrokerageInstitutionSummary = ({ institution, balancesByAccountId }
                     />
                 ) : null}
             </View>
-            <BrokerageAddPositionAction />
-            <BrokerageHoldings
-                holdings={holdings}
-                bankName={institution.label}
-                instrumentSymbol={instrumentSymbol}
-                balancesByAccountId={balancesByAccountId}
-            />
+            {hasSecurities ? (
+                <>
+                    <BrokerageAddPositionAction />
+                    <BrokerageHoldings
+                        holdings={holdings}
+                        bankName={institution.label}
+                        instrumentSymbol={instrumentSymbol}
+                        balancesByAccountId={balancesByAccountId}
+                    />
+                </>
+            ) : (
+                <BrokerageEmptyState />
+            )}
         </View>
     );
 };

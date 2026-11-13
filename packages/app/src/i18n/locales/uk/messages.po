@@ -1416,6 +1416,10 @@ msgstr "Додайте людину в «Контактах» і поверні�
 msgid "Add a PIN any time later"
 msgstr "PIN‑код можна додати будь-коли пізніше"
 
+#: src/brokerage/component/brokerage-empty-state/brokerage-empty-state.tsx
+msgid "Add a stock or ETF to see its value and return here."
+msgstr "Додайте акцію чи ETF, щоб бачити тут їхню вартість і дохідність."
+
 #: src/category/components/categories-feature-intro/categories-feature-intro.tsx
 #: src/transaction/components/statistics-empty-ledger/statistics-empty-ledger.tsx
 msgid "Add a transaction"
@@ -1480,6 +1484,7 @@ msgstr "Додати запис"
 
 #: src/app/(main)/securities/buy/[id].tsx
 #: src/brokerage/component/brokerage-add-position-action/brokerage-add-position-action.tsx
+#: src/brokerage/component/brokerage-empty-state/brokerage-empty-state.tsx
 msgid "Add position"
 msgstr "Додати позицію"
 
@@ -2553,6 +2558,7 @@ msgstr "Готівка"
 
 #: src/account/component/institution-account-row/institution-account-row.tsx
 #: src/brokerage/query/use-brokerage-summary.query.ts
+#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgctxt "Brokerage cash account"
 msgid "Cash"
 msgstr "Кошти"
@@ -5115,6 +5121,10 @@ msgid "From {accountTitle}"
 msgstr "З {accountTitle}"
 
 #: src/transaction/hook/use-fund-trade-label.hook.ts
+msgid "From {cashTitle}"
+msgstr "З {cashTitle}"
+
+#: src/transaction/hook/use-fund-trade-label.hook.ts
 msgid "From {cashTitle} · +{quantity}"
 msgstr "З {cashTitle} · +{quantity}"
 
@@ -6692,6 +6702,10 @@ msgstr "Немає доступних MCC-кодів"
 msgid "No new transactions"
 msgstr "Нових транзакцій немає"
 
+#: src/brokerage/component/brokerage-empty-state/brokerage-empty-state.tsx
+msgid "No positions yet"
+msgstr "Ще немає позицій"
+
 #: src/market-data/component/currency-market-chart-status/currency-market-chart-status.tsx
 msgid "No price history yet"
 msgstr "Історії цін ще немає"
@@ -7818,6 +7832,7 @@ msgid "Price per certificate"
 msgstr "Ціна за сертифікат"
 
 #: src/brokerage/component/security-trade-form/security-trade-form.tsx
+#: src/transaction/components/transaction-info-money-rows/transaction-info-money-rows.tsx
 msgid "Price per share"
 msgstr "Ціна за акцію"
 
@@ -7897,6 +7912,10 @@ msgstr "Швидкий вибір"
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 msgid "Quick rule"
 msgstr "Швидке правило"
+
+#: src/brokerage/component/security-trade-price-hint/security-trade-price-hint.tsx
+msgid "Quoted in {missingRateCurrency} with no exchange rate yet. Enter the price in {currencySymbol}."
+msgstr "Ціна в {missingRateCurrency}, а курсу ще немає. Введіть ціну в {currencySymbol}."
 
 #: src/installment-plan/component/convert-to-installment-content/convert-to-installment-content.tsx
 msgid "Raise the total above the paid {formattedPaid}"
@@ -9947,6 +9966,10 @@ msgstr "До {accountTitle}"
 #: src/categorize-inbox/components/categorize-inbox-transfer-undo/categorize-inbox-transfer-undo.tsx
 msgid "To {accountTitle}, rule saved"
 msgstr "До {accountTitle}, правило збережено"
+
+#: src/transaction/hook/use-fund-trade-label.hook.ts
+msgid "To {cashTitle}"
+msgstr "До {cashTitle}"
 
 #: src/transaction/hook/use-fund-trade-label.hook.ts
 msgid "To {cashTitle} · −{quantity}"

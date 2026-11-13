@@ -1,6 +1,7 @@
 export const BrokerageSelector = {
     AddPositionButton: 'Brokerage.AddPositionButton',
     GainLine: 'Brokerage.GainLine',
+    PriceHint: 'Brokerage.PriceHint',
     TradePage: 'Brokerage.TradePage',
     SearchInput: 'Brokerage.SearchInput',
     SecurityButton: 'Brokerage.SecurityButton',

@@ -33,7 +33,7 @@ export default function BuySecurity() {
               }
             : null
     );
-    const suggestedPrice = useSecurityPriceQuery(listing?.symbol ?? '', cash?.instrument.code ?? '');
+    const suggestedPrice = useSecurityPriceQuery(listing?.symbol ?? '', cash?.instrument);
 
     const handleSubmit = (values: SecurityTradeFormValues) =>
         isDefined(listing)
@@ -50,7 +50,7 @@ export default function BuySecurity() {
             maxQuantity={null}
             suggestedPrice={suggestedPrice}
             onSubmit={handleSubmit}
-            summary={<SecurityTradeAmountSection title={t`Total`} feeSign={1} currencySymbol={currencySymbol} />}
+            summary={<SecurityTradeAmountSection title={t`Total`} feeSign={1} currencySymbol={currencySymbol} maxQuantity={null} />}
         >
             <SecurityPickerRow listing={listing} onChange={setListing} />
         </SecurityTradeForm>

@@ -5,6 +5,7 @@ import { ROW_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-max
 import { cn } from '../../../@generic/utils/cn.util';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useFormatGainPercent } from '../../../i18n/hook/use-format-gain-percent.hook';
+import { getMarketMoveClassName } from '../../../market-data/utils/get-market-move-class-name.util';
 
 interface Props {
     readonly gain: number;
@@ -12,30 +13,24 @@ interface Props {
     readonly instrumentSymbol: string;
 }
 
-const TONE_BY_DIRECTION: Record<number, string> = {
-    [-1]: 'text-destructive-foreground',
-    0: 'text-secondary-foreground',
-    1: 'text-positive-foreground'
-};
+const ARROW_BY_DIRECTION: Record<number, string> = { [-1]: '▼ ', 0: '', 1: '▲ ' };
 
 export const BrokerageReturnText = ({ gain, percent, instrumentSymbol }: Props) => {
     const formatDigits = useDisplayFormatDigits();
     const formatPercent = useFormatGainPercent();
 
     const direction = Math.sign(Math.round(gain * 100));
-    const sign = ['−', '', '+'][direction + 1];
     const label = [formatDigits(Math.abs(gain), instrumentSymbol), isDefined(percent) ? formatPercent(percent) : null]
         .filter(isDefined)
-        .map(part => `${sign}${part}`)
         .join(' · ');
 
     return (
         <ProtectedText
             numberOfLines={1}
             maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
-            className={cn('text-[13px] font-medium tabular-nums', TONE_BY_DIRECTION[direction])}
+            className={cn('text-[13px] font-semibold tabular-nums', getMarketMoveClassName(direction === 0 ? 0 : (percent ?? gain)))}
         >
-            {label}
+            {`${ARROW_BY_DIRECTION[direction]}${label}`}
         </ProtectedText>
     );
 };

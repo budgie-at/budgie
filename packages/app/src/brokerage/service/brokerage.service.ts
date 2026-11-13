@@ -15,7 +15,7 @@ import {
     convertToMicroUnits,
     generateSyncId
 } from '@budgie/contracts';
-import { AccountService, TransferCreationService } from '@budgie/ledger';
+import { AccountService, BalanceAdjustmentService, TransferCreationService } from '@budgie/ledger';
 import { EntryBaseValuationService, YahooMarketDataService } from '@budgie/market';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -41,6 +41,7 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
         const accountRepository = yield* AccountRepository;
         const accountBalanceRepository = yield* AccountBalanceRepository;
         const accountService = yield* AccountService;
+        const balanceAdjustmentService = yield* BalanceAdjustmentService;
         const bankIntegrationRepository = yield* BankIntegrationRepository;
         const transferCreationService = yield* TransferCreationService;
         const entryBaseValuationService = yield* EntryBaseValuationService;
@@ -75,6 +76,15 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
             const cash = yield* findCashAccount(security);
             const cashAmount = roundHalfExpand(trade.quantity * trade.price, DEFAULT_DECIMAL_PLACES);
             const fee = roundHalfExpand(trade.fee, DEFAULT_DECIMAL_PLACES);
+            const shortfall = isSell
+                ? 0
+                : convertToMicroUnits(cashAmount + fee) -
+                  (yield* accountBalanceRepository.getMinimumLedgerBalanceFrom(cash.id, trade.operatedAt));
+
+            if (isPositiveNumber(shortfall)) {
+                yield* balanceAdjustmentService.create(cash.id, shortfall, trade.operatedAt);
+            }
+
             const quantityMicroUnits = convertToMicroUnits(trade.quantity);
             const { baseInstrumentId, baseAmount } = yield* entryBaseValuationService.valueMicroUnitEntry({
                 accountId: cash.id,
@@ -205,6 +215,7 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
             AccountBalanceRepository.layer,
             AccountRepository.layer,
             AccountService.layer,
+            BalanceAdjustmentService.layer,
             BankIntegrationRepository.layer,
             TransferCreationService.layer,
             EntryBaseValuationService.layer,

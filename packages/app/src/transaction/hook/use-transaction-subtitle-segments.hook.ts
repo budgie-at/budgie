@@ -100,7 +100,7 @@ export const useTransactionSubtitleSegments = (
     const feeLabel = useTransactionFeeLabel(transaction);
     const scopedCategoryIds = useContext(StatisticsCategoryIdsContext);
     const accountTitlePrefix = useContext(TransactionAccountTitlePrefixContext);
-    const fundTradeLabel = useFundTradeLabel(transaction);
+    const fundTradeLabel = useFundTradeLabel(transaction, accountId);
 
     const counterparty = getTransactionCounterparty(transaction, isDefined(accountTitlePrefix) ? null : accountId);
     const displayTitle = getTransactionDisplayTitle(transaction);

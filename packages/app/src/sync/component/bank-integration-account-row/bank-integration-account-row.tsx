@@ -38,7 +38,7 @@ export const BankIntegrationAccountRow = ({ account }: Props) => {
     const { balance } = useAccountBalanceQuery(account.id);
     const formatDigits = useDisplayFormatDigits();
     const formatAmount = useFormatInstrumentAmount();
-    const { sync, isFailed, leadLabel, switchLabel, isToggleVisible } = useBankIntegrationAccountRowState(account);
+    const { sync, displayTitle, isFailed, leadLabel, switchLabel, isToggleVisible } = useBankIntegrationAccountRowState(account);
 
     const { title } = account;
     const rowTestID = BankIntegrationSelector.AccountRow(account.id);
@@ -70,7 +70,7 @@ export const BankIntegrationAccountRow = ({ account }: Props) => {
             </View>
             <View className="min-w-0 flex-1 gap-y-xxs py-lg">
                 <Text className="text-[17px] text-primary" numberOfLines={2}>
-                    {account.title}
+                    {displayTitle}
                 </Text>
                 {isFailed ? (
                     <Text className="text-destructive-strong text-[13px] leading-[18px]" accessibilityLabel={t`Sync failed for ${title}`}>

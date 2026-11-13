@@ -1416,6 +1416,10 @@ msgstr "Ajoutez une personne dans Contacts, puis revenez ici."
 msgid "Add a PIN any time later"
 msgstr "Tu pourras ajouter un code PIN plus tard"
 
+#: src/brokerage/component/brokerage-empty-state/brokerage-empty-state.tsx
+msgid "Add a stock or ETF to see its value and return here."
+msgstr "Ajoutez une action ou un ETF pour voir ici sa valeur et son rendement."
+
 #: src/category/components/categories-feature-intro/categories-feature-intro.tsx
 #: src/transaction/components/statistics-empty-ledger/statistics-empty-ledger.tsx
 msgid "Add a transaction"
@@ -1480,6 +1484,7 @@ msgstr "Ajouter un élément"
 
 #: src/app/(main)/securities/buy/[id].tsx
 #: src/brokerage/component/brokerage-add-position-action/brokerage-add-position-action.tsx
+#: src/brokerage/component/brokerage-empty-state/brokerage-empty-state.tsx
 msgid "Add position"
 msgstr "Ajouter une position"
 
@@ -2553,6 +2558,7 @@ msgstr "Espèces"
 
 #: src/account/component/institution-account-row/institution-account-row.tsx
 #: src/brokerage/query/use-brokerage-summary.query.ts
+#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgctxt "Brokerage cash account"
 msgid "Cash"
 msgstr "Liquidités"
@@ -5115,6 +5121,10 @@ msgid "From {accountTitle}"
 msgstr "Depuis {accountTitle}"
 
 #: src/transaction/hook/use-fund-trade-label.hook.ts
+msgid "From {cashTitle}"
+msgstr "Depuis {cashTitle}"
+
+#: src/transaction/hook/use-fund-trade-label.hook.ts
 msgid "From {cashTitle} · +{quantity}"
 msgstr "Depuis {cashTitle} · +{quantity}"
 
@@ -6692,6 +6702,10 @@ msgstr "Aucun code MCC disponible"
 msgid "No new transactions"
 msgstr "Aucune nouvelle transaction"
 
+#: src/brokerage/component/brokerage-empty-state/brokerage-empty-state.tsx
+msgid "No positions yet"
+msgstr "Aucune position pour l’instant"
+
 #: src/market-data/component/currency-market-chart-status/currency-market-chart-status.tsx
 msgid "No price history yet"
 msgstr "Pas encore d'historique des prix"
@@ -7818,6 +7832,7 @@ msgid "Price per certificate"
 msgstr "Prix par certificat"
 
 #: src/brokerage/component/security-trade-form/security-trade-form.tsx
+#: src/transaction/components/transaction-info-money-rows/transaction-info-money-rows.tsx
 msgid "Price per share"
 msgstr "Prix par action"
 
@@ -7897,6 +7912,10 @@ msgstr "Choix rapides"
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 msgid "Quick rule"
 msgstr "Règle rapide"
+
+#: src/brokerage/component/security-trade-price-hint/security-trade-price-hint.tsx
+msgid "Quoted in {missingRateCurrency} with no exchange rate yet. Enter the price in {currencySymbol}."
+msgstr "Coté en {missingRateCurrency}, sans taux de change pour l’instant. Saisissez le prix en {currencySymbol}."
 
 #: src/installment-plan/component/convert-to-installment-content/convert-to-installment-content.tsx
 msgid "Raise the total above the paid {formattedPaid}"
@@ -9947,6 +9966,10 @@ msgstr "Vers {accountTitle}"
 #: src/categorize-inbox/components/categorize-inbox-transfer-undo/categorize-inbox-transfer-undo.tsx
 msgid "To {accountTitle}, rule saved"
 msgstr "Vers {accountTitle}, règle enregistrée"
+
+#: src/transaction/hook/use-fund-trade-label.hook.ts
+msgid "To {cashTitle}"
+msgstr "Vers {cashTitle}"
 
 #: src/transaction/hook/use-fund-trade-label.hook.ts
 msgid "To {cashTitle} · −{quantity}"

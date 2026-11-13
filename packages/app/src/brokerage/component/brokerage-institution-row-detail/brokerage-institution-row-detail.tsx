@@ -5,6 +5,7 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { ROW_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-max-font-size-multiplier.constant';
+import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { useIsAmountProtected } from '../../../@generic/hook/use-is-amount-protected.hook';
 import { InstitutionRowDetail } from '../../../account/component/institution-row-detail/institution-row-detail';
 import { useFormatPercent } from '../../../i18n/hook/use-format-percent.hook';
@@ -24,6 +25,7 @@ interface Props {
 
 export const BrokerageInstitutionRowDetail = ({ accounts, accountsCountLabel, balancesByAccountId }: Props) => {
     const isAmountProtected = useIsAmountProtected();
+    const isStacked = useIsAccessibilityTextSize();
     const formatPercent = useFormatPercent();
     const { gain, percent, holdings, hasSecurities, isLoading, isPartial, instrumentSymbol } = useBrokerageSummaryQuery(
         accounts,
@@ -36,6 +38,7 @@ export const BrokerageInstitutionRowDetail = ({ accounts, accountsCountLabel, ba
         .map(holding => (isAmountProtected ? holding.label : `${holding.label} ${formatPercent(holding.weight)}`))
         .join(' · ');
     const caption = isNotEmptyString(composition) ? composition : accountsCountLabel;
+    const captionLines = isStacked ? 0 : 1;
 
     if (!hasSecurities) {
         return <InstitutionRowDetail accounts={accounts} accountsCountLabel={accountsCountLabel} />;
@@ -43,7 +46,11 @@ export const BrokerageInstitutionRowDetail = ({ accounts, accountsCountLabel, ba
 
     return (
         <>
-            <Text className="text-[13px] text-secondary-foreground" maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER} numberOfLines={1}>
+            <Text
+                className="text-[13px] text-secondary-foreground"
+                maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
+                numberOfLines={captionLines}
+            >
                 {caption}
             </Text>
             <LoadingContent isLoading={isLoading} loadingIndicator={null}>

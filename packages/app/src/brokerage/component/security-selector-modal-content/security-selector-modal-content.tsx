@@ -57,6 +57,7 @@ export const SecuritySelectorModalContent = ({ selectedSymbol, onCommit }: Props
                         onSearchChange={setSearch}
                         placeholder={t`Ticker, ISIN or name`}
                         testID={BrokerageSelector.SearchInput}
+                        trailing={<View />}
                         isAutoFocused
                     />
                 }

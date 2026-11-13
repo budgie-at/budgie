@@ -6,11 +6,13 @@ import { View } from 'react-native';
 import { ScreenChromeFrame } from '@rnw-community/react-native-screen-chrome';
 
 import { CollapsibleChromeHeader } from '../../../@generic/component/collapsible-chrome-header/collapsible-chrome-header';
+import { CollapsibleChromeLegendList } from '../../../@generic/component/collapsible-chrome-legend-list/collapsible-chrome-legend-list';
 import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
 import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
 import { RevealGate } from '../../../@generic/component/reveal-gate/reveal-gate';
 import { ScreenChromeThemeProvider } from '../../../@generic/provider/screen-chrome-theme.provider';
 import { InstitutionSelector } from '../../../app/(main)/institution/institution.selector';
+import { isListedSecurityType } from '../../../instrument/utils/is-listed-security-type.util';
 import { decimalPlacesAtom, defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { BankIntegrationContext } from '../../../sync/context/bank-integration.context';
 import { getBankIntegrationCapabilities } from '../../../sync/utils/get-bank-integration-capabilities.util';
@@ -29,6 +31,9 @@ import { InstitutionSettingsButton } from '../institution-settings-button/instit
 import type { HomeAccountBalanceInterface } from '../../interface/home-account-balance.interface';
 import type { InstitutionGroupInterface } from '../../interface/institution-group.interface';
 import type { BankIntegrationEntityInterface } from '@budgie/contracts';
+
+const NO_ITEMS: readonly never[] = [];
+const renderNothing = () => null;
 
 interface Props {
     readonly integration: BankIntegrationEntityInterface;
@@ -52,13 +57,22 @@ export const InstitutionDetailsPage = ({ integration, institution, balancesByAcc
         <AccountDetailsTitle title={title} />
     );
 
+    const isEmptyBrokerage =
+        institution.provider === ExternalSourceEnum.MANUAL &&
+        !institution.accounts.some(account => isListedSecurityType(account.instrument.type));
+    const summary = <InstitutionDetailsSummary institution={institution} balancesByAccountId={balancesByAccountId} />;
+
     const transactionList = (
         <View className="flex-1">
-            <TransactionAccountTitlePrefixContext.Provider value={titlePrefix}>
-                <CollapsibleChromeTransactionList accountIds={institution.accounts.map(account => account.id)}>
-                    <InstitutionDetailsSummary institution={institution} balancesByAccountId={balancesByAccountId} />
-                </CollapsibleChromeTransactionList>
-            </TransactionAccountTitlePrefixContext.Provider>
+            {isEmptyBrokerage ? (
+                <CollapsibleChromeLegendList data={NO_ITEMS} renderItem={renderNothing} ListHeaderComponent={summary} />
+            ) : (
+                <TransactionAccountTitlePrefixContext.Provider value={titlePrefix}>
+                    <CollapsibleChromeTransactionList accountIds={institution.accounts.map(account => account.id)}>
+                        {summary}
+                    </CollapsibleChromeTransactionList>
+                </TransactionAccountTitlePrefixContext.Provider>
+            )}
         </View>
     );
 

@@ -41,7 +41,7 @@ export const useBrokerageSummaryQuery = (
     const positiveTotal = [...securities, ...cashAccounts].reduce((total, account) => total + Math.max(getValue(account), 0), 0);
     const cashLabel = t({ message: 'Cash', context: 'Brokerage cash account' });
 
-    const holdings: BrokerageHoldingInterface[] = [...securities, ...cashAccounts]
+    const holdings: BrokerageHoldingInterface[] = [...securities, ...cashAccounts.filter(account => getValue(account) !== 0)]
         .map((account, index) => {
             const holdingValue = getValue(account);
             const isValued = balancesByAccountId.get(account.id)?.isValued === true;

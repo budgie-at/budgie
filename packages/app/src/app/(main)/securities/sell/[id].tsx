@@ -29,7 +29,7 @@ export default function SellSecurity() {
     const currencySymbol = cash?.instrument.symbol ?? '';
     const yahooSymbol =
         account?.instrument.priceProvider === InstrumentPriceProviderEnum.YAHOO ? account.instrument.providerInstrumentId : null;
-    const suggestedPrice = useSecurityPriceQuery(yahooSymbol ?? '', cash?.instrument.code ?? '');
+    const suggestedPrice = useSecurityPriceQuery(yahooSymbol ?? '', cash?.instrument);
 
     const handleSubmit = (values: SecurityTradeFormValues) =>
         Effect.flatMap(BrokerageService, brokerageService => brokerageService.sell(accountId, values));
@@ -42,7 +42,7 @@ export default function SellSecurity() {
             maxQuantity={balance}
             suggestedPrice={suggestedPrice}
             onSubmit={handleSubmit}
-            summary={<SecurityTradeAmountSection title={t`Proceeds`} feeSign={-1} currencySymbol={currencySymbol} />}
+            summary={<SecurityTradeAmountSection title={t`Proceeds`} feeSign={-1} currencySymbol={currencySymbol} maxQuantity={balance} />}
         >
             {isDefined(account) ? <SecurityHoldingRow balance={balance} instrument={account.instrument} /> : null}
         </SecurityTradeForm>

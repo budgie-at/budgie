@@ -1,4 +1,10 @@
-import { AccountAssociationEnum, AccountWithInstrumentEntityInterface, ExternalSourceEnum, SyncStatusEnum } from '@budgie/contracts';
+import {
+    AccountAssociationEnum,
+    AccountWithInstrumentEntityInterface,
+    ExternalSourceEnum,
+    InstrumentTypeEnum,
+    SyncStatusEnum
+} from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
@@ -46,8 +52,11 @@ export const useBankIntegrationAccountRowState = (
                   account.iban
               );
 
+    const isBrokerageCash = integration.provider === ExternalSourceEnum.MANUAL && account.instrument.type === InstrumentTypeEnum.FIAT;
+
     return {
         sync,
+        displayTitle: isBrokerageCash ? t({ message: 'Cash', context: 'Brokerage cash account' }) : title,
         isFailed: sync?.status === SyncStatusEnum.FAILED,
         leadLabel: isNotEmptyString(stateLabels) ? stateLabels : identityLabel,
         switchLabel: capabilities.supportsFileImport ? t`Include ${title} in imports` : t`Sync ${title}`,
