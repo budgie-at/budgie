@@ -4,6 +4,7 @@ import { useController } from 'react-hook-form';
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { GroupedListInputRow } from '../../../@generic/component/grouped-list-input-row/grouped-list-input-row';
+import { ROW_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-max-font-size-multiplier.constant';
 import { normalizeAmountDecimalSeparators } from '../../../@generic/utils/normalize-amount-decimal-separators.util';
 import { useLocaleInfo } from '../../../i18n/hook/use-locale-info.hook';
 
@@ -59,6 +60,7 @@ export const SecurityTradeNumberField = ({ name, label, icon, maxDecimals, place
             onBlur={handleBlur}
             placeholder={placeholder}
             keyboardType="decimal-pad"
+            maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
             testID={testID}
         />
     );

@@ -7492,6 +7492,7 @@ msgstr "Teil deines Verlaufs. Ältere Aktivitäten sind nicht enthalten."
 msgid "Partial export"
 msgstr "Teilexport"
 
+#: src/brokerage/component/brokerage-gain-line/brokerage-gain-line.tsx
 #: src/brokerage/component/brokerage-institution-row-detail/brokerage-institution-row-detail.tsx
 msgid "Partial value"
 msgstr "Teilwert"
@@ -9093,6 +9094,10 @@ msgstr "SmartBudget"
 #: src/inzhur/component/inzhur-operations-fund-row/inzhur-operations-fund-row.tsx
 msgid "Sold {soldLabel}"
 msgstr "{soldLabel} verkauft"
+
+#: src/brokerage/component/brokerage-gain-line/brokerage-gain-line.tsx
+msgid "Some prices are unavailable"
+msgstr "Einige Preise sind nicht verfügbar"
 
 #: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
 msgid "Some transactions may be hidden by the account or amount filter."
@@ -10931,10 +10936,6 @@ msgstr "Du hast {threshold} % des Limits für {categoryName} {thisPeriod} verbra
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "You have used {threshold}% of your budget for spending outside category limits {thisPeriod}."
 msgstr "Du hast {threshold} % deines Budgets für Ausgaben außerhalb der Kategorielimits {thisPeriod} verbraucht."
-
-#: src/brokerage/component/security-trade-quantity-hint/security-trade-quantity-hint.tsx
-msgid "You hold {heldQuantity} {symbol}"
-msgstr "Du hältst {heldQuantity} {symbol}"
 
 #: src/household/component/household-leave-row/household-leave-row.tsx
 msgid "You keep a copy of the shared data"

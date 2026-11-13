@@ -13,7 +13,7 @@ interface Props {
 }
 
 const CONTENT_BOTTOM_CLEARANCE = 16;
-const FOCUSED_FIELD_CLEARANCE = 32;
+const FOCUSED_FIELD_CLEARANCE = 24;
 
 export const FixedChromeScroll = ({ children, testID, footerHeight = 0 }: Props) => {
     const { chromeHeight } = useBottomChromeInset();

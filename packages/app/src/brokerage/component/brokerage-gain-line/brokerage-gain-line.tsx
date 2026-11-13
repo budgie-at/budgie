@@ -1,7 +1,8 @@
 import { Trans, useLingui } from '@lingui/react/macro';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
+import { TITLE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/title-max-font-size-multiplier.constant';
 import { BrokerageSelector } from '../../selector/brokerage.selector';
 import { BrokerageReturnHero } from '../brokerage-return-hero/brokerage-return-hero';
 
@@ -19,9 +20,20 @@ export const BrokerageGainLine = ({ gain, percent, instrumentSymbol, isLoading, 
     return (
         <LoadingContent isLoading={isLoading} loadingIndicator={null}>
             {isPartial ? (
-                <Text className="px-5xl text-center text-[15px] leading-[20px] text-secondary-foreground" maxFontSizeMultiplier={2}>
-                    <Trans>Partial value — some prices unavailable</Trans>
-                </Text>
+                <View className="items-center gap-y-xxs px-5xl" accessible accessibilityLabel={t`Partial value — some prices unavailable`}>
+                    <Text
+                        className="text-center text-[15px] leading-[20px] font-semibold text-warning-foreground"
+                        maxFontSizeMultiplier={TITLE_MAX_FONT_SIZE_MULTIPLIER}
+                    >
+                        <Trans>Partial value</Trans>
+                    </Text>
+                    <Text
+                        className="text-center text-[13px] leading-[18px] text-secondary-foreground"
+                        maxFontSizeMultiplier={TITLE_MAX_FONT_SIZE_MULTIPLIER}
+                    >
+                        <Trans>Some prices are unavailable</Trans>
+                    </Text>
+                </View>
             ) : (
                 <BrokerageReturnHero
                     gain={gain}

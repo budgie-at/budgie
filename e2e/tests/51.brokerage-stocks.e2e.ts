@@ -97,7 +97,6 @@ test('51 manual brokerage with stocks', { tags: ['accounts'], platforms: PENDING
         await expect(core.byId(screen, 'Brokerage.SaveButton')).toBeDisabled();
         await core.fillId(ctx, 'Brokerage.QuantityInput', '4');
         await core.done(ctx);
-        await expect(core.byId(screen, 'Brokerage.QuantityHint')).toHaveText(/You hold 10 BGTX/, { timeout: 3_000 });
         await expect(core.byId(screen, 'Brokerage.PriceInput')).toHaveValue('120', { timeout: 10_000 });
         await replaceDigits('Brokerage.PriceInput', '125');
         await expect(core.byId(screen, 'Brokerage.SaveButton')).toHaveText(/Sell · \$500/, { timeout: 3_000 });

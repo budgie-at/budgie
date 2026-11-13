@@ -1,6 +1,6 @@
 import { Text, View } from 'react-native';
 
-import { ROW_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-max-font-size-multiplier.constant';
+import { TITLE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/title-max-font-size-multiplier.constant';
 import { BrokerageReturnText } from '../brokerage-return-text/brokerage-return-text';
 
 interface Props {
@@ -18,11 +18,12 @@ export const BrokerageReturnHero = ({ gain, percent, instrumentSymbol, caption, 
             percent={percent}
             instrumentSymbol={instrumentSymbol}
             className="text-center text-[17px] leading-[22px]"
+            maxFontSizeMultiplier={TITLE_MAX_FONT_SIZE_MULTIPLIER}
             testID={testID}
         />
         <Text
             className="text-center text-[13px] leading-[18px] text-secondary-foreground"
-            maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
+            maxFontSizeMultiplier={TITLE_MAX_FONT_SIZE_MULTIPLIER}
         >
             {caption}
         </Text>

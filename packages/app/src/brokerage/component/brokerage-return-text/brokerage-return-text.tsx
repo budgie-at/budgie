@@ -13,26 +13,33 @@ interface Props {
     readonly percent: number | null;
     readonly instrumentSymbol: string;
     readonly className?: string;
+    readonly maxFontSizeMultiplier?: number;
     readonly testID?: string;
 }
 
 const ARROW_BY_DIRECTION: Record<number, string> = { [-1]: '▼ ', 0: '', 1: '▲ ' };
 
-export const BrokerageReturnText = ({ gain, percent, instrumentSymbol, className, testID }: Props) => {
+export const BrokerageReturnText = ({
+    gain,
+    percent,
+    instrumentSymbol,
+    className,
+    maxFontSizeMultiplier = ROW_MAX_FONT_SIZE_MULTIPLIER,
+    testID
+}: Props) => {
     const formatDigits = useDisplayFormatDigits();
     const formatPercent = useFormatGainPercent();
-    const isAccessibilityTextSize = useIsAccessibilityTextSize();
 
     const direction = Math.sign(Math.round(gain * 100));
     const label = [formatDigits(Math.abs(gain), instrumentSymbol), isDefined(percent) ? formatPercent(percent) : null]
         .filter(isDefined)
         .join(' · ');
-    const lineCount = isAccessibilityTextSize ? 0 : 1;
+    const lineCount = useIsAccessibilityTextSize() ? 2 : 1;
 
     return (
         <ProtectedText
             numberOfLines={lineCount}
-            maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
+            maxFontSizeMultiplier={maxFontSizeMultiplier}
             className={cn(
                 'text-[13px] font-semibold tabular-nums',
                 getMarketMoveClassName(direction === 0 ? 0 : (percent ?? gain)),

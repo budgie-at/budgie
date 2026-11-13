@@ -108,7 +108,7 @@ export const SecurityTradeForm = <E,>(props: Props<E>) => {
                 >
                     <FormLayoutGroup className="gap-y-[32px]">
                         {children}
-                        <GroupedListSection footer={<SecurityTradeQuantityHint maxQuantity={maxQuantity} symbol={symbol} />}>
+                        <GroupedListSection footer={<SecurityTradeQuantityHint maxQuantity={maxQuantity} />}>
                             <SecurityTradeNumberField
                                 name="quantity"
                                 label={t`Shares`}
