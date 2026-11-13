@@ -87,7 +87,8 @@ const prepared = new Set<string>();
 const androidShell = (api: SimlockApi, leaseId: string, script: string, stdin?: string): Promise<string> =>
     mustExec(api, leaseId, ['shell', script], stdin, 'adb');
 
-const androidOwn = (path: string): string => `chown -R $(stat -c %u:%g ${ANDROID_CONTAINER}) ${path} && restorecon -RF ${path}`;
+const androidOwn = (path: string): string =>
+    `chown -R $(stat -c %u:%g ${ANDROID_CONTAINER}) ${path} && chcon -R $(stat -c %C ${ANDROID_CONTAINER}) ${path}`;
 
 async function ensureAndroidFixtures(api: SimlockApi, leaseId: string): Promise<string> {
     await mustExec(api, leaseId, ['root'], undefined, 'adb');

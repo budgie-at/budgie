@@ -1,9 +1,50 @@
 appId: ${APP_ID}
 ---
+- openLink: budgie://pin-setup?mode=CREATE
+- extendedWaitUntil:
+      visible:
+          id: PinPage.Container
+      timeout: 60000
+- repeat:
+      times: 2
+      commands:
+          - tapOn:
+                id: PinPage.Digit.1
+          - tapOn:
+                id: PinPage.Digit.2
+          - tapOn:
+                id: PinPage.Digit.3
+          - tapOn:
+                id: PinPage.Digit.4
+          - waitForAnimationToEnd
+- extendedWaitUntil:
+      visible:
+          id: PinScreen.ForgotPinButton
+      timeout: 90000
+- tapOn:
+      id: PinPage.Digit.1
+- tapOn:
+      id: PinPage.Digit.2
+- tapOn:
+      id: PinPage.Digit.3
+- tapOn:
+      id: PinPage.Digit.4
+- extendedWaitUntil:
+      notVisible:
+          id: PinScreen.ForgotPinButton
+      timeout: 15000
+- waitForAnimationToEnd
+- runFlow:
+      when:
+          visible:
+              id: PageHeader.BackButton
+      commands:
+          - tapOn:
+                id: PageHeader.BackButton
 - openLink: budgie://settings
 - extendedWaitUntil:
       visible:
-          id: SettingsPage.DataEncryption.State.Off
+          id: SettingsPage.DataEncryption.State.On
       timeout: 60000
 - waitForAnimationToEnd
 - takeScreenshot: 07-settings
