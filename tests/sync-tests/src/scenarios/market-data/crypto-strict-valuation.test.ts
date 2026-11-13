@@ -1,12 +1,17 @@
 import {
     AccountRepository,
+    AccountTypeEnum,
+    CurrencyEnum,
     InstrumentMarketDataJobStatusEnum,
     InstrumentRepository,
     PRECISION,
+    SettingsEntityTable,
     SettingsRepository,
     SyncApplyStateRepository,
-    TransactionEntryBaseValuationRepository
+    TransactionEntryBaseValuationRepository,
+    TransactionEntryEntityTable
 } from '@budgie/contracts';
+import { MoneyDataUpgradeService } from '@budgie/ledger';
 import {
     EntryBaseValuationService,
     ExchangeRatesService,
@@ -18,7 +23,8 @@ import {
     KlinesHistoryService,
     MarketPricedRevaluationService
 } from '@budgie/market';
-import { describe, expect, it } from '@effect/vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from '@effect/vitest';
+import { and, eq } from 'drizzle-orm';
 import * as Cause from 'effect/Cause';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -26,7 +32,7 @@ import * as Ref from 'effect/Ref';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { fetchEntryValuation, seed, seedCryptoSyncAccount, testDb, TestLayer } from '../../harness';
+import { fetchEntryValuation, requireInstrument, seed, seedCryptoSyncAccount, seedDailyPrice, testDb, TestLayer } from '../../harness';
 
 const readJobs = testDb.$client.unsafe<{ readonly instrumentId: number; readonly quoteInstrumentId: number; readonly status: string }>(
     'SELECT instrument_id AS instrumentId, quote_instrument_id AS quoteInstrumentId, status FROM instrument_market_data_jobs ORDER BY id'
@@ -177,4 +183,132 @@ describe('market-data/crypto-strict-valuation', () => {
             }).pipe(Effect.provide(historicalMarketDataLayer));
         }).pipe(Effect.provide(TestLayer))
     );
+});
+
+const reward = (accountId: number, operatedAt: string, baseInstrumentId: number | null, baseExchangeRate: number | null, baseAmount: number | null) =>
+    seed.valuedIncome({
+        accountId,
+        amount: PRECISION,
+        operatedAt: new Date(operatedAt),
+        title: 'Reward',
+        baseInstrumentId,
+        baseExchangeRate,
+        baseAmount
+    });
+
+const revalue = (instrumentId: number, fromDate: string, toDate: string) =>
+    Effect.flatMap(MarketPricedRevaluationService, service => service.revalueInstrumentRange(instrumentId, fromDate, toDate));
+
+const writeRate = (sourceInstrumentId: number, targetInstrumentId: number, rateDate: string, rate: number) =>
+    Effect.flatMap(HistoricalExchangeRateRepository, repository => repository.bulkUpsert([{ sourceInstrumentId, targetInstrumentId, rateDate, rate }]));
+
+const entryOf = (transactionId: number, accountId: number) =>
+    testDb
+        .select()
+        .from(TransactionEntryEntityTable)
+        .where(and(eq(TransactionEntryEntityTable.transactionId, transactionId), eq(TransactionEntryEntityTable.accountId, accountId)))
+        .pipe(Effect.map(([entry]) => entry));
+
+describe('market-data/crypto-strict-valuation scenarios', () => {
+    it.effect('aligns the kline open of day D-1 and the CoinGecko point of day D at the seam', () =>
+        Effect.gen(function* () {
+            const { euro, coin, account } = yield* seedCryptoSyncAccount('DOGE');
+            const tether = yield* requireInstrument('USDT');
+            const klinesDay = yield* reward(account.id, '2025-11-13T23:30:00.000Z', null, null, null);
+            const coinGeckoDay = yield* reward(account.id, '2025-11-14T00:30:00.000Z', null, null, null);
+
+            yield* seedDailyPrice(coin.id, euro.id, '2025-11-14', 56_000);
+            yield* seedDailyPrice(coin.id, tether.id, '2025-11-13', 60_000);
+            yield* writeRate(tether.id, euro.id, '2025-11-13', 0.92);
+            yield* revalue(coin.id, '2025-11-13', '2025-11-14');
+
+            expect((yield* fetchEntryValuation(testDb, klinesDay.entry.id)).baseExchangeRate).toBeCloseTo(55_200, 6);
+            expect((yield* fetchEntryValuation(testDb, coinGeckoDay.entry.id)).baseExchangeRate).toBe(56_000);
+        }).pipe(Effect.provide(MarketPricedRevaluationService.layer.pipe(Layer.provideMerge(TestLayer))))
+    );
+
+    it.effect('re-values trade legs in the one-time step', () =>
+        Effect.gen(function* () {
+            const { euro, coin, account: coinAccount } = yield* seedCryptoSyncAccount('BTC');
+            const tether = yield* requireInstrument('USDT');
+            const tetherAccount = yield* seed.account({ title: 'USDT', instrumentId: tether.id, type: AccountTypeEnum.CRYPTO_SYNC });
+            const trade = yield* seed.directTransfer({
+                exchangeRate: 1,
+                operatedAt: new Date('2026-05-10T09:00:00.000Z'),
+                sourceAccountId: tetherAccount.id,
+                sourceAmount: 50_000 * PRECISION,
+                sourceEntryExchangeRate: 1,
+                targetAccountId: coinAccount.id,
+                targetAmount: PRECISION,
+                toIban: null
+            });
+
+            yield* testDb
+                .update(TransactionEntryEntityTable)
+                .set({ baseInstrumentId: euro.id, baseExchangeRate: 1, baseAmount: PRECISION })
+                .where(eq(TransactionEntryEntityTable.transactionId, trade.id));
+            yield* seedDailyPrice(coin.id, euro.id, '2026-05-10', 50_000);
+            yield* seedDailyPrice(tether.id, euro.id, '2026-05-10', 0.92);
+            yield* Effect.flatMap(MarketPricedRevaluationService, service => service.runCryptoStrictValuationStep());
+
+            expect(yield* entryOf(trade.id, coinAccount.id)).toMatchObject({ baseExchangeRate: 50_000, baseAmount: 50_000 * PRECISION });
+            expect(yield* entryOf(trade.id, tetherAccount.id)).toMatchObject({ baseExchangeRate: 0.92, baseAmount: 46_000 * PRECISION });
+        }).pipe(Effect.provide(MarketPricedRevaluationService.layer.pipe(Layer.provideMerge(TestLayer))))
+    );
+
+    it.effect('keeps synced values intact on a device with no local prices', () =>
+        Effect.gen(function* () {
+            const { euro, account } = yield* seedCryptoSyncAccount('DOGE');
+            const { entry } = yield* reward(account.id, '2026-08-10T09:00:00.000Z', euro.id, 50_000, 50_000 * PRECISION);
+
+            yield* Effect.flatMap(MarketPricedRevaluationService, service => service.runCryptoStrictValuationStep());
+
+            expect(yield* fetchEntryValuation(testDb, entry.id)).toStrictEqual({
+                baseInstrumentId: euro.id,
+                baseExchangeRate: 50_000,
+                baseAmount: 50_000 * PRECISION
+            });
+        }).pipe(Effect.provide(MarketPricedRevaluationService.layer.pipe(Layer.provideMerge(TestLayer))))
+    );
+
+    describe('on a UTC+3 device', () => {
+        beforeEach(() => {
+            vi.stubEnv('TZ', 'Europe/Moscow');
+        });
+
+        afterEach(() => {
+            vi.unstubAllEnvs();
+        });
+
+        it.effect('values a 01:30 entry with its UTC day on the per-row and the bucket path alike', () =>
+            Effect.gen(function* () {
+                const euro = yield* requireInstrument(CurrencyEnum.EUR);
+                const hryvnia = yield* requireInstrument(CurrencyEnum.UAH);
+                const account = yield* seed.account({ type: AccountTypeEnum.BANK, instrumentId: hryvnia.id });
+                const operatedAt = new Date('2026-03-10T22:30:00.000Z');
+
+                yield* testDb.update(SettingsEntityTable).set({ defaultInstrumentId: euro.id });
+                yield* writeRate(hryvnia.id, euro.id, '2026-03-10', 0.025);
+                yield* writeRate(hryvnia.id, euro.id, '2026-03-11', 0.03);
+
+                const perRow = yield* Effect.flatMap(EntryBaseValuationService, service =>
+                    service.valueMicroUnitEntry({ accountId: account.id, amount: PRECISION, operatedAt })
+                );
+                const pending = yield* seed.valuedIncome({
+                    accountId: account.id,
+                    amount: PRECISION,
+                    operatedAt,
+                    title: 'Late salary',
+                    baseInstrumentId: null,
+                    baseExchangeRate: null,
+                    baseAmount: null
+                });
+
+                yield* Effect.flatMap(MoneyDataUpgradeService, service => service.run('Base instrument missing'));
+
+                expect(perRow.baseExchangeRate).toBe(0.025);
+                expect((yield* fetchEntryValuation(testDb, pending.entry.id)).baseExchangeRate).toBe(0.025);
+            }).pipe(Effect.provide(TestLayer))
+        );
+    });
 });
