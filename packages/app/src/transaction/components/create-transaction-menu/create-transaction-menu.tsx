@@ -51,6 +51,7 @@ export const CreateTransactionMenu = ({ isOpen, onClose, triggerRef, accountId, 
     const [hasOpened, setHasOpened] = useState(false);
     const firstTileRef = useRef<View>(null);
     const shouldRestoreFocusRef = useRef(false);
+    const isOpenRef = useRef(isOpen);
 
     const isVoiceInputEnabled = useSetting('isAiVoiceInputEnabled');
     const isAiAvailable = useAtomValue(aiSystemStatusAtom).state !== AiSystemStateEnum.DISABLED;
@@ -110,6 +111,8 @@ export const CreateTransactionMenu = ({ isOpen, onClose, triggerRef, accountId, 
     const stackGapClassName = fontScale >= CREATE_MENU_LARGE_TEXT_FONT_SCALE ? LARGE_TEXT_STACK_GAP_CLASSNAME : STACK_GAP_CLASSNAME;
 
     useEffect(() => {
+        isOpenRef.current = isOpen;
+
         if (!isOpen) {
             progress.set(withTiming(0, FADE_TIMING));
 
@@ -117,7 +120,7 @@ export const CreateTransactionMenu = ({ isOpen, onClose, triggerRef, accountId, 
         }
 
         const focusFirstTile = () => {
-            if (isDefined(firstTileRef.current)) {
+            if (isOpenRef.current && isDefined(firstTileRef.current)) {
                 AccessibilityInfo.sendAccessibilityEvent(firstTileRef.current, 'focus');
             }
         };
