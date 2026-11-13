@@ -67,10 +67,10 @@ export const AccountDetailsMarketLink = ({ instrument }: Props) => {
         >
             <CurrencySelectorInstrumentIcon code={instrument.code} symbol={instrument.symbol} type={instrument.type} size={20} />
             <View className={contentVariants({ stacked: isStacked })}>
-                <Text className="shrink text-[15px] font-medium text-primary" numberOfLines={1}>
+                <Text className="shrink-0 text-[15px] font-medium text-primary" numberOfLines={1}>
                     {marketName}
                 </Text>
-                <Text className="text-[15px] text-secondary-foreground tabular-nums" numberOfLines={1}>
+                <Text className="min-w-0 shrink text-[15px] text-secondary-foreground tabular-nums" numberOfLines={1}>
                     {priceLabel}
                 </Text>
                 {isDefined(changeShare) ? (
