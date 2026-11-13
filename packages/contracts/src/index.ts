@@ -327,6 +327,9 @@ export { InvestmentReturnRepository } from './investment-return/repository/inves
 export { YieldRepository } from './yield/repository/yield.repository';
 export type { YieldScopeInterface } from './yield/interface/yield-scope.interface';
 export type { YieldFactRowInterface } from './yield/interface/yield-fact-row.interface';
+export type { YieldPositionRowInterface } from './yield/interface/yield-position-row.interface';
+export type { YieldPositionMovementRowInterface } from './yield/interface/yield-position-movement-row.interface';
+export type { YieldPayoutQueryInterface } from './yield/interface/yield-payout-query.interface';
 export type { LedgerMovementInterface } from './investment-return/interface/ledger-movement.interface';
 
 export type { StatisticsFilterInterface } from './statistics/interface/statistics-filter.interface';

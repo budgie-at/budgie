@@ -1,4 +1,4 @@
-import { and, asc, eq, inArray, isNotNull, ne, or, sql } from 'drizzle-orm';
+import { and, asc, eq, gt, inArray, isNotNull, isNull, ne, or, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -21,6 +21,8 @@ import { YieldKindEnum } from '../../transaction/enum/yield-kind.enum';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 
 import type { YieldFactRowInterface } from '../interface/yield-fact-row.interface';
+import type { YieldPayoutQueryInterface } from '../interface/yield-payout-query.interface';
+import type { YieldPositionMovementRowInterface } from '../interface/yield-position-movement-row.interface';
 import type { YieldScopeInterface } from '../interface/yield-scope.interface';
 import type { SQL } from 'drizzle-orm';
 import type { SQLiteEffectSelect } from 'drizzle-orm/sqlite-core/effect';
@@ -28,6 +30,8 @@ import type { SQLiteEffectSelect } from 'drizzle-orm/sqlite-core/effect';
 export class YieldRepository extends Context.Service<YieldRepository>()('@budgie/contracts/YieldRepository', {
     make: Effect.sync(() => {
         const POSITION_ACCOUNT_TYPES = [AccountTypeEnum.DEPOSIT, AccountTypeEnum.SAVINGS, ...CRYPTO_ACCOUNT_TYPES, AccountTypeEnum.STOCKS];
+        const RATED_ACCOUNT_TYPES = [AccountTypeEnum.DEPOSIT, AccountTypeEnum.SAVINGS];
+        const NO_MOVEMENTS: readonly YieldPositionMovementRowInterface[] = [];
         const yieldSourceAccount = alias(AccountEntityTable, 'yield_source_account');
 
         const landingHoldsPositionSql = sql`(${inArray(AccountEntityTable.type, POSITION_ACCOUNT_TYPES)} OR ${eq(InstrumentEntityTable.type, InstrumentTypeEnum.FUND)})`;
@@ -134,6 +138,85 @@ export class YieldRepository extends Context.Service<YieldRepository>()('@budgie
                             isEstimated: isPositiveNumber(estimated)
                         }))
                     )
+                ),
+            findPositions: (accountIds: readonly number[], scope: YieldScopeInterface) =>
+                Db.query(db =>
+                    db
+                        .select({
+                            id: AccountEntityTable.id,
+                            title: AccountEntityTable.title,
+                            type: AccountEntityTable.type,
+                            isActive: AccountEntityTable.isActive,
+                            deletedAt: AccountEntityTable.deletedAt,
+                            interestRate: AccountEntityTable.interestRate,
+                            deadline: AccountEntityTable.deadline,
+                            instrumentId: AccountEntityTable.instrumentId,
+                            instrumentCode: InstrumentEntityTable.code,
+                            instrumentSymbol: InstrumentEntityTable.symbol,
+                            instrumentType: InstrumentEntityTable.type
+                        })
+                        .from(AccountEntityTable)
+                        .innerJoin(InstrumentEntityTable, eq(AccountEntityTable.instrumentId, InstrumentEntityTable.id))
+                        .where(
+                            or(
+                                ...(isNotEmptyArray(accountIds) ? [inArray(AccountEntityTable.id, [...accountIds])] : []),
+                                and(
+                                    isNull(AccountEntityTable.deletedAt),
+                                    eq(AccountEntityTable.isActive, true),
+                                    inArray(AccountEntityTable.type, RATED_ACCOUNT_TYPES),
+                                    gt(AccountEntityTable.interestRate, 0),
+                                    ...(isDefined(scope.positionAccountId) ? [eq(AccountEntityTable.id, scope.positionAccountId)] : []),
+                                    ...(isDefined(scope.instrumentId) ? [eq(AccountEntityTable.instrumentId, scope.instrumentId)] : [])
+                                )
+                            )
+                        )
+                ),
+
+            findPositionMovements: (accountIds: readonly number[]) =>
+                isNotEmptyArray(accountIds)
+                    ? Db.query(db =>
+                          db
+                              .select({
+                                  accountId: TransactionEntryEntityTable.accountId,
+                                  operatedAt: TransactionEntityTable.operatedAt,
+                                  amount: sql<number>`CASE WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT} THEN ${TransactionEntryEntityTable.amount} ELSE -${TransactionEntryEntityTable.amount} END`
+                              })
+                              .from(TransactionEntryEntityTable)
+                              .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+                              .where(
+                                  and(
+                                      transactionFilters.buildVisibleTransactionCondition(),
+                                      transactionFilters.buildLedgerEntryCondition(),
+                                      inArray(TransactionEntryEntityTable.accountId, [...accountIds])
+                                  )
+                              )
+                              .orderBy(asc(TransactionEntityTable.operatedAt), asc(TransactionEntryEntityTable.id))
+                      )
+                    : Effect.succeed(NO_MOVEMENTS),
+
+            findPayouts: (query: YieldPayoutQueryInterface) =>
+                Db.query(db =>
+                    db.query.TransactionEntityTable.findMany({
+                        with: transactionFilters.buildFullTransactionRelations(query.language),
+                        where: {
+                            RAW: (transactionTable, { inArray: inTransactionIds }) =>
+                                inTransactionIds(
+                                    transactionTable.id,
+                                    joinYieldLegs(
+                                        db.select({ id: TransactionEntityTable.id }).from(TransactionEntityTable).$dynamic()
+                                    ).where(
+                                        buildYieldFactWhere(query.scope, [
+                                            ...(isNotEmptyArray(query.kinds)
+                                                ? [inArray(TransactionEntityTable.yieldKind, [...query.kinds])]
+                                                : []),
+                                            ...(query.isUnassignedOnly ? [sql`${positionAccountIdSql} IS NULL`] : [])
+                                        ])
+                                    )
+                                )
+                        },
+                        orderBy: (transaction, { desc }) => [desc(transaction.operatedAt), desc(transaction.id)],
+                        limit: query.limit
+                    })
                 )
         };
     })
