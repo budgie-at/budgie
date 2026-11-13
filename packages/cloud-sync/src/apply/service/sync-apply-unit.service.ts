@@ -1,4 +1,12 @@
-import { SyncOutboxOperationEnum, SyncRecordRepository, SyncRecordTypeEnum } from '@budgie/contracts';
+import {
+    SyncOutboxOperationEnum,
+    SyncRecordRepository,
+    SyncRecordTypeEnum,
+    TransactionTypeEnum,
+    TransactionYieldRepository,
+    YieldKindEnum,
+    normalizeYieldFields
+} from '@budgie/contracts';
 import * as Arr from 'effect/Array';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -6,7 +14,7 @@ import * as Layer from 'effect/Layer';
 import * as Option from 'effect/Option';
 import * as Schema from 'effect/Schema';
 
-import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString, isNumber } from '@rnw-community/shared';
 
 import { SYNC_RECORD_DEFINITIONS } from '../../mapping/constant/sync-record-definitions.constant';
 import { SyncReferenceKindEnum } from '../../mapping/enum/sync-reference-kind.enum';
@@ -30,15 +38,79 @@ import type { SyncApplyItemInterface } from '../interface/sync-apply-item.interf
 import type { SyncApplyUnitInterface } from '../interface/sync-apply-unit.interface';
 import type { SyncPreResolutionInterface } from '../interface/sync-pre-resolution.interface';
 import type { SyncUnitOutcomeInterface } from '../interface/sync-unit-outcome.interface';
+import type { SyncCellType } from '../type/sync-cell.type';
 
 export class SyncApplyUnitService extends Context.Service<SyncApplyUnitService>()('@budgie/cloud-sync/SyncApplyUnitService', {
     make: Effect.gen(function* () {
         const repository = yield* SyncApplyRepository;
         const recordRepository = yield* SyncRecordRepository;
         const childApplyService = yield* SyncChildApplyService;
+        const yieldRepository = yield* TransactionYieldRepository;
 
         const jsonRecord = Schema.Record(Schema.String, Schema.Unknown).pipe(Schema.fromJsonString);
         const columnListSchema = Schema.String.pipe(Schema.Array, Schema.fromJsonString);
+
+        const yieldKindProperty = 'yieldKind';
+        const yieldSourceProperty = 'yieldSourceAccountId';
+        const isTransactionType = Schema.is(Schema.Enum(TransactionTypeEnum));
+        const isYieldKind = Schema.is(Schema.Enum(YieldKindEnum));
+
+        const normalizeIncomingTransactionRow = (row: SyncRowInterface): SyncRowInterface => {
+            const { type, yieldKind } = row.values;
+            const sourceReference = row.references.find(reference => reference.column === yieldSourceProperty) ?? null;
+            const normalized = normalizeYieldFields(
+                isTransactionType(type) ? type : TransactionTypeEnum.TRANSFER,
+                isYieldKind(yieldKind) ? yieldKind : null,
+                sourceReference
+            );
+
+            return {
+                ...row,
+                values: { ...row.values, [yieldKindProperty]: normalized.yieldKind },
+                references: row.references.filter(
+                    reference => reference.column !== yieldSourceProperty || reference === normalized.yieldSourceAccountId
+                )
+            };
+        };
+
+        const normalizeIncomingYield = (decoded: SyncApplyUnitInterface['decoded']): SyncApplyUnitInterface['decoded'] =>
+            decoded.recordType === SyncRecordTypeEnum.TRANSACTION
+                ? {
+                      ...decoded,
+                      rows: decoded.rows.map(row => (row.tableName === 'transactions' ? normalizeIncomingTransactionRow(row) : row))
+                  }
+                : decoded;
+
+        const keepLocalYieldCells = Effect.fnUntraced(function* (
+            server: Readonly<Record<string, SyncCellType>>,
+            local: Readonly<Record<string, SyncCellType>>,
+            landingAccountId: number | undefined
+        ) {
+            const { type, yieldKind: serverKind, yieldSourceAccountId: serverSource } = server;
+
+            if (!isTransactionType(type)) {
+                return server;
+            }
+
+            const { yieldKind: localKind, yieldSourceAccountId: localSource } = local;
+            const storedKind = isYieldKind(localKind) ? localKind : null;
+            const incomingSource = isNumber(serverSource) ? serverSource : null;
+            const storedSource = isNumber(localSource) ? localSource : null;
+            const isStoredSourceKept =
+                !isDefined(incomingSource) &&
+                isDefined(storedSource) &&
+                isDefined(landingAccountId) &&
+                (yield* yieldRepository.areAccountsInSameZone(storedSource, landingAccountId));
+
+            return {
+                ...server,
+                ...normalizeYieldFields(
+                    type,
+                    isYieldKind(serverKind) ? serverKind : storedKind,
+                    isStoredSourceKept ? storedSource : incomingSource
+                )
+            };
+        });
 
         const readChangedColumns = (changedColumns: string): readonly string[] =>
             Option.getOrElse(Schema.decodeOption(columnListSchema)(changedColumns), () => []);
@@ -172,7 +244,7 @@ export class SyncApplyUnitService extends Context.Service<SyncApplyUnitService>(
         });
 
         const applyUnit = Effect.fn('SyncApplyUnitService.applyUnit')(function* (unit: SyncApplyUnitInterface) {
-            const { decoded } = unit;
+            const decoded = normalizeIncomingYield(unit.decoded);
             const definition = SYNC_RECORD_DEFINITIONS[decoded.recordType];
             const parentTable = definition.parent.tableName;
             const parentDescriptor = definition.parent;
@@ -228,13 +300,16 @@ export class SyncApplyUnitService extends Context.Service<SyncApplyUnitService>(
 
                 unitIds.set(parentKey, parentLocalId);
 
-                if (decoded.recordType === SyncRecordTypeEnum.TRANSACTION) {
-                    const entryAccountIds = yield* repository.findEntryAccountIds(parentLocalId);
+                const entryAccountIds =
+                    decoded.recordType === SyncRecordTypeEnum.TRANSACTION ? yield* repository.findEntryAccountIds(parentLocalId) : [];
 
-                    accountIds.push(...entryAccountIds);
-                }
+                accountIds.push(...entryAccountIds);
 
-                const serverParentCells = toServerCells(parentDescriptor, parentRow, resolutions, unitIds);
+                const incomingParentCells = toServerCells(parentDescriptor, parentRow, resolutions, unitIds);
+                const serverParentCells =
+                    decoded.recordType === SyncRecordTypeEnum.TRANSACTION
+                        ? yield* keepLocalYieldCells(incomingParentCells, localCells, entryAccountIds.at(0))
+                        : incomingParentCells;
                 const result = mergeSyncRow({
                     local: localCells,
                     base: baseCells,
@@ -307,6 +382,11 @@ export class SyncApplyUnitService extends Context.Service<SyncApplyUnitService>(
     })
 }) {
     static readonly layer = Layer.effect(SyncApplyUnitService, SyncApplyUnitService.make).pipe(
-        Layer.provide([SyncApplyRepository.layer, SyncRecordRepository.layer, SyncChildApplyService.layer])
+        Layer.provide([
+            SyncApplyRepository.layer,
+            SyncRecordRepository.layer,
+            SyncChildApplyService.layer,
+            TransactionYieldRepository.layer
+        ])
     );
 }

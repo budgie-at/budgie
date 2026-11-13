@@ -1,4 +1,11 @@
-import { AccountTypeEnum, ExternalSourceEnum, TransactionTypeEnum, TransactionYieldRepository, YieldKindEnum } from '@budgie/contracts';
+import {
+    AccountTypeEnum,
+    ExternalSourceEnum,
+    HOUSEHOLD_SYNC_ZONE,
+    TransactionTypeEnum,
+    TransactionYieldRepository,
+    YieldKindEnum
+} from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
@@ -36,7 +43,7 @@ const onRepository = <A, E>(effect: (repository: TransactionYieldRepository['Ser
         Effect.provideService(Db, testDb)
     );
 
-const seedYieldIncome = (deviceB: DB, cloud: FakeCloudTransport, yieldKind: YieldKindEnum) =>
+const seedYieldIncome = (deviceB: DB, cloud: FakeCloudTransport, yieldKind: YieldKindEnum | null) =>
     Effect.gen(function* () {
         yield* resetTestDb(deviceB);
 
@@ -67,6 +74,20 @@ const seedYieldIncome = (deviceB: DB, cloud: FakeCloudTransport, yieldKind: Yiel
         return { bank, deposit, income };
     });
 
+const deliverNullSourceFromB = <E>(prepareLocal: Effect.Effect<unknown, E>) =>
+    Effect.gen(function* () {
+        const deviceB = yield* Db;
+        const cloud = new FakeCloudTransport();
+
+        yield* seedYieldIncome(deviceB, cloud, YieldKindEnum.DIVIDEND);
+        yield* prepareLocal;
+        yield* deviceB.$client.unsafe(`UPDATE transactions SET yield_source_account_id = NULL, title = 'Edited on B' WHERE comment = ?`, [
+            KEY
+        ]);
+        yield* pushDevice(deviceB, cloud);
+        yield* pullDevice(testDb, cloud, DEVICE_A);
+    });
+
 describe('cloud-sync/yield-apply', () => {
     it.layer(makeTestDbLayer(null), { excludeTestServices: true })('two devices', it => {
         it.effect('delivers a Binance refinement to the other device', () =>
@@ -80,6 +101,80 @@ describe('cloud-sync/yield-apply', () => {
                 yield* pullDevice(deviceB, cloud, DEVICE_B);
 
                 expect(yield* yieldOf(deviceB)).toMatchObject({ yieldKind: YieldKindEnum.STAKING, sourceTitle: 'Deposit' });
+            })
+        );
+
+        it.effect.each([YieldKindEnum.NONE, YieldKindEnum.DISTRIBUTION])(
+            'keeps a local %s when another device re-uploads the record without yield_kind',
+            yieldKind =>
+                Effect.gen(function* () {
+                    const deviceB = yield* Db;
+                    const cloud = new FakeCloudTransport();
+
+                    yield* seedYieldIncome(deviceB, cloud, yieldKind);
+                    yield* deviceB.$client.unsafe(`UPDATE transactions SET yield_kind = NULL, title = 'Edited on B' WHERE comment = ?`, [
+                        KEY
+                    ]);
+                    yield* pushDevice(deviceB, cloud);
+                    yield* pullDevice(testDb, cloud, DEVICE_A);
+
+                    expect(yield* yieldOf(testDb)).toMatchObject({ yieldKind, title: 'Edited on B' });
+                })
+        );
+
+        it.effect('nulls both fields when the incoming type no longer allows yield, whatever the local kind', () =>
+            Effect.gen(function* () {
+                const deviceB = yield* Db;
+                const cloud = new FakeCloudTransport();
+
+                yield* seedYieldIncome(deviceB, cloud, YieldKindEnum.STAKING);
+                yield* deviceB.$client.unsafe(
+                    `UPDATE transactions SET type = 'ADJUSTMENT', yield_kind = NULL, yield_source_account_id = NULL WHERE comment = ?`,
+                    [KEY]
+                );
+                yield* pushDevice(deviceB, cloud);
+                yield* pullDevice(testDb, cloud, DEVICE_A);
+
+                expect(yield* yieldOf(testDb)).toMatchObject({ type: 'ADJUSTMENT', yieldKind: null, sourceTitle: null });
+            })
+        );
+
+        it.effect('normalizes an invalid kind delivered by another device', () =>
+            Effect.gen(function* () {
+                const deviceB = yield* Db;
+                const cloud = new FakeCloudTransport();
+
+                yield* seedYieldIncome(deviceB, cloud, null);
+                yield* deviceB.$client.unsafe(`UPDATE transactions SET yield_kind = 'TAX' WHERE comment = ?`, [KEY]);
+                yield* pushDevice(deviceB, cloud);
+                yield* pullDevice(testDb, cloud, DEVICE_A);
+
+                expect(yield* yieldOf(testDb)).toMatchObject({ yieldKind: null, sourceTitle: null });
+            })
+        );
+
+        it.effect('ignores an incoming null source when the local source shares the zone, and never holds the record', () =>
+            Effect.gen(function* () {
+                yield* deliverNullSourceFromB(Effect.void);
+
+                expect(yield* yieldOf(testDb)).toMatchObject({
+                    yieldKind: YieldKindEnum.DIVIDEND,
+                    sourceTitle: 'Deposit',
+                    title: 'Edited on B'
+                });
+                expect(yield* testDb.$client.unsafe<{ readonly total: number }>(`SELECT COUNT(*) AS total FROM sync_pending`)).toEqual([
+                    { total: 0 }
+                ]);
+            })
+        );
+
+        it.effect('applies an incoming null source when the local source is now in another zone', () =>
+            Effect.gen(function* () {
+                yield* deliverNullSourceFromB(
+                    testDb.$client.unsafe(`UPDATE accounts SET sync_zone = ? WHERE title = 'Deposit'`, [HOUSEHOLD_SYNC_ZONE])
+                );
+
+                expect(yield* yieldOf(testDb)).toMatchObject({ yieldKind: YieldKindEnum.DIVIDEND, sourceTitle: null });
             })
         );
     });
