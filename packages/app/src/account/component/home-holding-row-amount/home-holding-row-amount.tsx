@@ -9,6 +9,7 @@ import { LoadingContent } from '../../../@generic/component/loading-content/load
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { ROW_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-max-font-size-multiplier.constant';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
+import { cn } from '../../../@generic/utils/cn.util';
 import { BrokerageReturnText } from '../../../brokerage/component/brokerage-return-text/brokerage-return-text';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
@@ -39,6 +40,8 @@ export const HomeHoldingRowAmount = ({ holding, holdingReturn, isReturnLoading }
     const realPercent =
         isDefined(holdingReturn) && isPositiveNumber(holdingReturn.costBasis) ? holdingReturn.gain / holdingReturn.costBasis : null;
     const percent = isDefined(holdingReturn) ? realPercent : PLACEHOLDER_PERCENT;
+    const isReturnEmpty = !isReturnPending && !isDefined(holdingReturn);
+    const importantForAccessibility = isReturnEmpty ? 'no-hide-descendants' : 'auto';
 
     return (
         <View className={amountVariants({ isStacked })}>
@@ -58,7 +61,11 @@ export const HomeHoldingRowAmount = ({ holding, holdingReturn, isReturnLoading }
                     <Trans>Value unavailable</Trans>
                 </Text>
             )}
-            {isDefined(holdingReturn) || isReturnPending ? (
+            <View
+                className={cn(isReturnEmpty && 'opacity-0')}
+                accessibilityElementsHidden={isReturnEmpty}
+                importantForAccessibility={importantForAccessibility}
+            >
                 <LoadingContent isLoading={isReturnPending} loadingIndicator={null}>
                     <BrokerageReturnText
                         gain={holdingReturn?.gain ?? holding.value}
@@ -67,7 +74,7 @@ export const HomeHoldingRowAmount = ({ holding, holdingReturn, isReturnLoading }
                         testID={HomeHoldingRowSelector.Return(instrumentCode)}
                     />
                 </LoadingContent>
-            ) : null}
+            </View>
         </View>
     );
 };
