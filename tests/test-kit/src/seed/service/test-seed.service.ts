@@ -61,7 +61,8 @@ export class TestSeedService {
                     code: input.code ?? 'UAH',
                     name: input.name ?? 'Hryvnia',
                     symbol: input.symbol ?? '₴',
-                    type: input.type ?? InstrumentTypeEnum.FIAT
+                    type: input.type ?? InstrumentTypeEnum.FIAT,
+                    quoteInstrumentId: input.quoteInstrumentId ?? null
                 } satisfies InstrumentCreateEntityInterface)
                 .returning();
 

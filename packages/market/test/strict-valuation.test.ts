@@ -182,7 +182,13 @@ describe('strict FUND hop', () => {
     const seedFund = Effect.fnUntraced(function* (code: string) {
         const euro = yield* requireInstrumentByCode(CurrencyEnum.EUR);
         const hryvnia = yield* requireInstrumentByCode(CurrencyEnum.UAH);
-        const fund = yield* testSeedService.instrument({ code, name: code, symbol: code, type: InstrumentTypeEnum.FUND });
+        const fund = yield* testSeedService.instrument({
+            code,
+            name: code,
+            symbol: code,
+            type: InstrumentTypeEnum.FUND,
+            quoteInstrumentId: hryvnia.id
+        });
         const account = yield* testSeedService.account({ instrumentId: fund.id, type: AccountTypeEnum.STOCKS });
 
         yield* setDefaultInstrument(euro.id);
