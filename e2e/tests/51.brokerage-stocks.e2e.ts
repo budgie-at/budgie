@@ -108,7 +108,7 @@ test('51 manual brokerage with stocks', { tags: ['accounts'], platforms: PENDING
     await core.phase('a euro-quoted listing shows its price change in euros', async () => {
         await core.openLink(ctx, 'budgie://institution/1');
         await core.expectId(ctx, 'Institution.Page', 10_000);
-        await expect(screen.getByRole('button', { name: /^Sell BGTX, 4 BGTX @ \$125, \+\$500/ }).first()).toBeVisible({ timeout: 10_000 });
+        await expect(screen.getByRole('button', { name: /^Sell BGTX, \+\$500, 4 BGTX @ \$125/ }).first()).toBeVisible({ timeout: 10_000 });
         await pickSecurity('BGEU');
         await typeDigits('Brokerage.QuantityInput', '1');
         await replaceDigits('Brokerage.PriceInput', '100');
