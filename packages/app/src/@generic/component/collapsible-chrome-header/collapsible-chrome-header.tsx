@@ -60,6 +60,13 @@ const collapsibleChromeHeaderStyles = StyleSheet.create({
         flex: 1,
         alignSelf: 'stretch',
         justifyContent: 'center'
+    },
+    navigationRowTitleLayer: {
+        justifyContent: 'flex-start'
+    },
+    navigationRowTitleLayerContent: {
+        alignSelf: 'stretch',
+        justifyContent: 'center'
     }
 });
 
@@ -76,7 +83,8 @@ export const CollapsibleChromeHeader = ({
 
     const collapseDistance = config.collapseEnd - config.collapseStart;
     const titleHorizontalPadding = isDefined(leading) || isDefined(trailing) ? TITLE_LAYER_HORIZONTAL_PADDING : HEADER_HORIZONTAL_PADDING;
-    const collapsedHeaderStyle = { height: config.collapsedHeaderHeight ?? config.headerHeight, bottom: 'auto' as const };
+    const navigationRowHeight = config.collapsedHeaderHeight ?? config.headerHeight;
+    const collapsedHeaderStyle = { height: navigationRowHeight, bottom: 'auto' as const };
     const collapsedContentContainerStyle = [
         collapsibleChromeHeaderStyles.titleLayer,
         collapsedHeaderStyle,
@@ -94,6 +102,7 @@ export const CollapsibleChromeHeader = ({
     const trailingSlotWidth = isDefined(trailing) ? HEADER_SLOT_SIZE : 0;
     const expandedContentContainerStyle = [
         collapsibleChromeHeaderStyles.titleLayer,
+        isDefined(leading) && collapsibleChromeHeaderStyles.navigationRowTitleLayer,
         {
             paddingLeft: HEADER_HORIZONTAL_PADDING + leadingSlotWidth,
             paddingRight: HEADER_HORIZONTAL_PADDING + trailingSlotWidth
@@ -109,8 +118,11 @@ export const CollapsibleChromeHeader = ({
             </View>
         </View>
     );
+    const expandedTitleLayerContentStyle = isDefined(leading)
+        ? [collapsibleChromeHeaderStyles.navigationRowTitleLayerContent, { minHeight: navigationRowHeight }]
+        : collapsibleChromeHeaderStyles.expandedTitleLayerContent;
     const expandedContent = (
-        <View style={collapsibleChromeHeaderStyles.expandedTitleLayerContent} pointerEvents={expandedTitlePointerEvents}>
+        <View style={expandedTitleLayerContentStyle} pointerEvents={expandedTitlePointerEvents}>
             {expandedTitle}
         </View>
     );
