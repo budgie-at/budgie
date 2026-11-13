@@ -1,0 +1,1 @@
+ALTER TABLE `settings` ADD `crypto_strict_valuation_version` integer DEFAULT 0 NOT NULL;

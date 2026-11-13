@@ -1,5 +1,5 @@
 import { Db, InstrumentDailyMarketPriceEntityTable } from '@budgie/contracts';
-import { and, count, eq, isNull } from 'drizzle-orm';
+import { and, count, eq, isNull, min } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -53,6 +53,25 @@ export class InstrumentDailyMarketPriceRepository extends Context.Service<Instru
                             orderBy: { priceDate: 'desc' }
                         })
                     ),
+                findEarliest: (instrumentId: number, quoteInstrumentId: number) =>
+                    Db.query(db =>
+                        db.query.InstrumentDailyMarketPriceEntityTable.findFirst({
+                            where: buildInstrumentQuoteFilter(instrumentId, quoteInstrumentId),
+                            orderBy: { priceDate: 'asc' }
+                        })
+                    ),
+                findEarliestPriceDate: (instrumentId: number) =>
+                    Db.query(db =>
+                        db
+                            .select({ priceDate: min(InstrumentDailyMarketPriceEntityTable.priceDate) })
+                            .from(InstrumentDailyMarketPriceEntityTable)
+                            .where(
+                                and(
+                                    eq(InstrumentDailyMarketPriceEntityTable.instrumentId, instrumentId),
+                                    isNull(InstrumentDailyMarketPriceEntityTable.deletedAt)
+                                )
+                            )
+                    ).pipe(Effect.map(([row]) => row.priceDate)),
                 findForDateOrBefore: (instrumentId: number, quoteInstrumentId: number, priceDate: string) =>
                     Db.query(db =>
                         db.query.InstrumentDailyMarketPriceEntityTable.findFirst({

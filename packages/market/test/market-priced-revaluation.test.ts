@@ -1,8 +1,20 @@
-import { AccountTypeEnum, CurrencyEnum, InstrumentTypeEnum, PRECISION, TransactionEntryBaseValuationRepository } from '@budgie/contracts';
+import {
+    AccountTypeEnum,
+    CurrencyEnum,
+    InstrumentTypeEnum,
+    PRECISION,
+    SettingsRepository,
+    TransactionEntryBaseValuationRepository
+} from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
 
-import { requireInstrumentByCode, setDefaultInstrument, TestLayer, testSeedService } from './test-context';
+import { HistoricalExchangeRateRepository } from '../src/historical-exchange-rate/repository/historical-exchange-rate.repository';
+import { InstrumentDailyMarketPriceRepository } from '../src/market-data/repository/instrument-daily-market-price.repository';
+import { MarketPricedRevaluationService } from '../src/valuation/service/market-priced-revaluation.service';
+
+import { requireInstrumentByCode, setDefaultInstrument, TestLayer, testDb, testSeedService } from './test-context';
 
 const seedAccounts = Effect.fnUntraced(function* () {
     const euro = yield* requireInstrumentByCode(CurrencyEnum.EUR);
@@ -79,5 +91,135 @@ describe('market-priced entry queries', () => {
             expect(yield* repository.findOldestMarketPricedEntryDate(coin.id)).toBe('2026-03-10');
             expect(yield* repository.findMarketPricedInstrumentIds).toStrictEqual([coin.id]);
         }).pipe(Effect.provide(TestLayer))
+    );
+});
+
+const RevaluationLayer = MarketPricedRevaluationService.layer.pipe(
+    Layer.provideMerge(Layer.mergeAll(InstrumentDailyMarketPriceRepository.layer, SettingsRepository.layer)),
+    Layer.provideMerge(TestLayer)
+);
+
+const writeDailyPrice = (instrumentId: number, quoteInstrumentId: number, priceDate: string, price: number) =>
+    Effect.gen(function* () {
+        yield* (yield* InstrumentDailyMarketPriceRepository).bulkUpsert([
+            { instrumentId, quoteInstrumentId, priceDate, price, marketCap: null, volume: null, source: 'test' }
+        ]);
+        yield* (yield* HistoricalExchangeRateRepository).bulkUpsert([
+            { sourceInstrumentId: instrumentId, targetInstrumentId: quoteInstrumentId, rateDate: priceDate, rate: price },
+            { sourceInstrumentId: quoteInstrumentId, targetInstrumentId: instrumentId, rateDate: priceDate, rate: 1 / price }
+        ]);
+    });
+
+const readEntry = (entryId: number) =>
+    testDb.$client
+        .unsafe<{ readonly baseInstrumentId: number | null; readonly baseExchangeRate: number | null; readonly baseAmount: number | null }>(
+            'SELECT base_instrument_id AS baseInstrumentId, base_exchange_rate AS baseExchangeRate, base_amount AS baseAmount FROM transaction_entries WHERE id = ?',
+            [entryId]
+        )
+        .pipe(Effect.map(([row]) => row));
+
+const readOutboxCount = testDb.$client
+    .unsafe<{ readonly total: number }>('SELECT COUNT(*) AS total FROM sync_outbox')
+    .pipe(Effect.map(([row]) => row.total));
+
+describe('market-priced revaluation', () => {
+    it.live('turns an Estimated value Priced once the day price arrives, without outbox rows', () =>
+        Effect.gen(function* () {
+            const service = yield* MarketPricedRevaluationService;
+            const { euro, coin, cryptoAccount } = yield* seedAccounts();
+            const { entry } = yield* testSeedService.valuedIncome({
+                accountId: cryptoAccount.id,
+                amount: 2 * PRECISION,
+                operatedAt: new Date('2026-03-10T12:00:00.000Z'),
+                title: 'Reward',
+                baseInstrumentId: euro.id,
+                baseExchangeRate: null,
+                baseAmount: 150 * PRECISION
+            });
+
+            yield* testDb.$client.unsafe('DELETE FROM sync_outbox');
+            yield* writeDailyPrice(coin.id, euro.id, '2026-03-10', 100);
+            yield* service.revalueInstrumentRange(coin.id, '2026-03-10', '2026-03-10');
+
+            expect(yield* readEntry(entry.id)).toMatchObject({ baseInstrumentId: euro.id, baseExchangeRate: 100, baseAmount: 200 * PRECISION });
+            expect(yield* readOutboxCount).toBe(0);
+        }).pipe(Effect.provide(RevaluationLayer))
+    );
+
+    it.live('never downgrades a value when the strict hop stays Estimated', () =>
+        Effect.gen(function* () {
+            const service = yield* MarketPricedRevaluationService;
+            const { euro, coin, cryptoAccount } = yield* seedAccounts();
+            const { entry } = yield* testSeedService.valuedIncome({
+                accountId: cryptoAccount.id,
+                amount: 2 * PRECISION,
+                operatedAt: new Date('2026-03-10T12:00:00.000Z'),
+                title: 'Reward',
+                baseInstrumentId: euro.id,
+                baseExchangeRate: 90,
+                baseAmount: 180 * PRECISION
+            });
+
+            yield* writeDailyPrice(coin.id, euro.id, '2026-03-01', 100);
+            yield* service.revalueInstrumentRange(coin.id, '2026-03-01', '2026-03-10');
+
+            expect(yield* readEntry(entry.id)).toMatchObject({ baseInstrumentId: euro.id, baseExchangeRate: 90, baseAmount: 180 * PRECISION });
+        }).pipe(Effect.provide(RevaluationLayer))
+    );
+
+    it.live('corrects an instrument from its earliest local price and leaves older entries alone', () =>
+        Effect.gen(function* () {
+            const service = yield* MarketPricedRevaluationService;
+            const { euro, coin, cryptoAccount } = yield* seedAccounts();
+            const older = yield* testSeedService.valuedIncome({
+                accountId: cryptoAccount.id,
+                amount: PRECISION,
+                operatedAt: new Date('2025-01-10T12:00:00.000Z'),
+                title: 'Old reward',
+                baseInstrumentId: euro.id,
+                baseExchangeRate: 70,
+                baseAmount: 70 * PRECISION
+            });
+            const gap = yield* testSeedService.valuedIncome({
+                accountId: cryptoAccount.id,
+                amount: PRECISION,
+                operatedAt: new Date('2026-03-20T12:00:00.000Z'),
+                title: 'Gap reward',
+                baseInstrumentId: euro.id,
+                baseExchangeRate: 100,
+                baseAmount: 100 * PRECISION
+            });
+
+            yield* writeDailyPrice(coin.id, euro.id, '2026-03-10', 100);
+            yield* service.correctInstrument(coin.id);
+
+            expect(yield* readEntry(older.entry.id)).toMatchObject({ baseInstrumentId: euro.id, baseExchangeRate: 70, baseAmount: 70 * PRECISION });
+            expect(yield* readEntry(gap.entry.id)).toMatchObject({ baseInstrumentId: euro.id, baseExchangeRate: null, baseAmount: 100 * PRECISION });
+        }).pipe(Effect.provide(RevaluationLayer))
+    );
+
+    it.live('runs the one-time step once and records it in settings', () =>
+        Effect.gen(function* () {
+            const service = yield* MarketPricedRevaluationService;
+            const settingsRepository = yield* SettingsRepository;
+            const { euro, coin, cryptoAccount } = yield* seedAccounts();
+            const { entry } = yield* testSeedService.valuedIncome({
+                accountId: cryptoAccount.id,
+                amount: PRECISION,
+                operatedAt: new Date('2026-03-10T12:00:00.000Z'),
+                title: 'Reward',
+                baseInstrumentId: euro.id,
+                baseExchangeRate: 1,
+                baseAmount: PRECISION
+            });
+
+            yield* writeDailyPrice(coin.id, euro.id, '2026-03-10', 100);
+            yield* service.runCryptoStrictValuationStep();
+            yield* writeDailyPrice(coin.id, euro.id, '2026-03-10', 300);
+            yield* service.runCryptoStrictValuationStep();
+
+            expect(yield* readEntry(entry.id)).toMatchObject({ baseInstrumentId: euro.id, baseExchangeRate: 100, baseAmount: 100 * PRECISION });
+            expect((yield* settingsRepository.getSettings()).cryptoStrictValuationVersion).toBe(1);
+        }).pipe(Effect.provide(RevaluationLayer))
     );
 });

@@ -8,6 +8,7 @@ export { HistoricalMarketDataService } from './market-data/service/historical-ma
 export { InzhurPriceService } from './market-data/service/inzhur-price.service';
 export { calculateCryptoPosition } from './market-data/utils/calculate-crypto-position.util';
 export { EntryBaseValuationService } from './valuation/service/entry-base-valuation.service';
+export { MarketPricedRevaluationService } from './valuation/service/market-priced-revaluation.service';
 export { InzhurPriceParseError } from './market-data/error/inzhur-price-parse.error';
 export type { EntryBaseValuationInterface } from './valuation/interface/entry-base-valuation.interface';
 export type { CryptoPositionInterface } from './market-data/interface/crypto-position.interface';

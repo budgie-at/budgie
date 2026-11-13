@@ -45,6 +45,7 @@ export const SettingsEntityTable = sqliteTable(
         cloudSyncEnabled: int('cloud_sync_enabled', { mode: 'boolean' }).notNull().default(true),
         lineageId: text('lineage_id'),
         cloudUserRecordName: text('cloud_user_record_name'),
-        householdShareEverything: int('household_share_everything', { mode: 'boolean' }).notNull().default(false)
+        householdShareEverything: int('household_share_everything', { mode: 'boolean' }).notNull().default(false),
+        cryptoStrictValuationVersion: int('crypto_strict_valuation_version', { mode: 'number' }).notNull().default(0)
     })
 );
