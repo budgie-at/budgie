@@ -27,6 +27,14 @@ const readYield = (id: number) =>
         }))
     );
 
+const seedBankAndDeposit = Effect.gen(function* () {
+    const testSeedService = yield* seed;
+    const account = yield* testSeedService.account({ type: AccountTypeEnum.BANK });
+    const source = yield* testSeedService.account({ type: AccountTypeEnum.DEPOSIT });
+
+    return { account, source };
+});
+
 const seedTaggedExpense = Effect.gen(function* () {
     const testSeedService = yield* seed;
     const transactionRepository = yield* TransactionRepository;
@@ -38,6 +46,19 @@ const seedTaggedExpense = Effect.gen(function* () {
     yield* transactionRepository.updateById(expense.id, { yieldKind: YieldKindEnum.TAX, yieldSourceAccountId: source.id });
 
     return { account, target, source, expense };
+});
+
+const expenseCreateEntity = (fromAccountId: number) => ({
+    type: TransactionTypeEnum.EXPENSE,
+    title: '',
+    comment: '',
+    externalId: null,
+    externalSource: null,
+    operatedAt: OPERATED_AT,
+    exchangeRate: 1,
+    fromAccountId,
+    toAccountId: null,
+    updatedBy: null
 });
 
 const createInput = (type: TransactionTypeEnum, yieldKind: YieldKindEnum) => ({
@@ -60,21 +81,10 @@ const createInput = (type: TransactionTypeEnum, yieldKind: YieldKindEnum) => ({
 describe('yield fields', () => {
     it.effect('create drops a kind the type does not allow, together with its source', () =>
         Effect.gen(function* () {
-            const testSeedService = yield* seed;
             const transactionRepository = yield* TransactionRepository;
-            const account = yield* testSeedService.account({ type: AccountTypeEnum.BANK });
-            const source = yield* testSeedService.account({ type: AccountTypeEnum.DEPOSIT });
+            const { account, source } = yield* seedBankAndDeposit;
             const transaction = yield* transactionRepository.create({
-                type: TransactionTypeEnum.EXPENSE,
-                title: '',
-                comment: '',
-                externalId: null,
-                externalSource: null,
-                operatedAt: OPERATED_AT,
-                exchangeRate: 1,
-                fromAccountId: account.id,
-                toAccountId: null,
-                updatedBy: null,
+                ...expenseCreateEntity(account.id),
                 yieldKind: YieldKindEnum.STAKING,
                 yieldSourceAccountId: source.id
             });
@@ -91,6 +101,46 @@ describe('yield fields', () => {
             yield* transactionRepository.updateById(expense.id, { title: 'Dividend tax' });
 
             expect(yield* readYield(expense.id)).toMatchObject({ yieldKind: YieldKindEnum.TAX, yieldSourceAccountId: source.id });
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('updateById keeps the stored kind when only the source changes', () =>
+        Effect.gen(function* () {
+            const { expense } = yield* seedTaggedExpense;
+            const testSeedService = yield* seed;
+            const transactionRepository = yield* TransactionRepository;
+            const otherSource = yield* testSeedService.account({ type: AccountTypeEnum.DEPOSIT, title: 'Other source' });
+
+            yield* transactionRepository.updateById(expense.id, { yieldSourceAccountId: otherSource.id });
+
+            expect(yield* readYield(expense.id)).toMatchObject({ yieldKind: YieldKindEnum.TAX, yieldSourceAccountId: otherSource.id });
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('updateById nulls the kind and the source when the kind is not allowed for the type', () =>
+        Effect.gen(function* () {
+            const { expense, source } = yield* seedTaggedExpense;
+            const transactionRepository = yield* TransactionRepository;
+
+            yield* transactionRepository.updateById(expense.id, { yieldKind: YieldKindEnum.STAKING, yieldSourceAccountId: source.id });
+
+            expect(yield* readYield(expense.id)).toMatchObject({ yieldKind: null, yieldSourceAccountId: null });
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('bulkCreate normalizes the yield fields of every row', () =>
+        Effect.gen(function* () {
+            const transactionRepository = yield* TransactionRepository;
+            const { account, source } = yield* seedBankAndDeposit;
+            const base = expenseCreateEntity(account.id);
+
+            const [disallowed, allowed] = yield* transactionRepository.bulkCreate([
+                { ...base, yieldKind: YieldKindEnum.STAKING, yieldSourceAccountId: source.id },
+                { ...base, yieldKind: YieldKindEnum.TAX, yieldSourceAccountId: source.id }
+            ]);
+
+            expect(yield* readYield(disallowed.id)).toMatchObject({ yieldKind: null, yieldSourceAccountId: null });
+            expect(yield* readYield(allowed.id)).toMatchObject({ yieldKind: YieldKindEnum.TAX, yieldSourceAccountId: source.id });
         }).pipe(Effect.provide(TestLayer))
     );
 

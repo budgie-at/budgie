@@ -1,5 +1,6 @@
-import { YieldKindEnum } from '@budgie/contracts';
+import { AccountEntityTable, HOUSEHOLD_SYNC_ZONE, TransactionEntityTable, YieldKindEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
+import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
 import {
@@ -7,8 +8,10 @@ import {
     fetchBankTransactions,
     fetchInzhurOperationsLedger,
     importInzhurBankFlow,
-    importInzhurOperations
+    importInzhurOperations,
+    testDb
 } from '../../harness';
+import { consolidateInzhur } from '../../harness/inzhur/consolidate-inzhur';
 import { REIT_DIVIDEND_DESCRIPTION, UNNAMED_DIVIDEND_DESCRIPTION } from '../../harness/inzhur/inzhur-bank-descriptions.constant';
 import { REIT_ISIN } from '../../harness/inzhur/inzhur-fund-isins.constant';
 import { BASE_ROWS, FULL_HISTORY_ROWS, OCEAN } from '../../harness/inzhur/inzhur-operation-rows.constant';
@@ -63,6 +66,43 @@ describe('inzhur/yield-tags', () => {
             });
             expect(transactions.find(({ externalId }) => externalId === 'dividend-unnamed')).toMatchObject({
                 yieldKind: YieldKindEnum.DIVIDEND,
+                yieldSourceAccountId: null
+            });
+        }).pipe(Effect.provide(layer))
+    );
+
+    it.effect('tags a dividend from a fund in another zone with no source', () =>
+        Effect.gen(function* () {
+            yield* importInzhurOperations(BASE_URI);
+
+            const bankAccount = yield* seedInzhurBankAccount;
+            const reit = yield* requireInzhurFundAccount(REIT_ISIN);
+
+            yield* testDb.update(AccountEntityTable).set({ syncZone: HOUSEHOLD_SYNC_ZONE }).where(eq(AccountEntityTable.id, reit.id));
+            yield* importInzhurBankFlow(bankAccount.id, 'dividend-reit', REIT_DIVIDEND_DESCRIPTION, 120, OPERATED_AT);
+
+            expect((yield* fetchBankTransactions).find(({ externalId }) => externalId === 'dividend-reit')).toMatchObject({
+                yieldKind: YieldKindEnum.DIVIDEND,
+                yieldSourceAccountId: null
+            });
+        }).pipe(Effect.provide(layer))
+    );
+
+    it.effect('leaves a dividend that already has a kind untouched', () =>
+        Effect.gen(function* () {
+            yield* importInzhurOperations(BASE_URI);
+
+            const bankAccount = yield* seedInzhurBankAccount;
+
+            yield* importInzhurBankFlow(bankAccount.id, 'dividend-reit', REIT_DIVIDEND_DESCRIPTION, 120, OPERATED_AT);
+            yield* testDb
+                .update(TransactionEntityTable)
+                .set({ yieldKind: YieldKindEnum.INTEREST, yieldSourceAccountId: null })
+                .where(eq(TransactionEntityTable.externalId, 'dividend-reit'));
+            yield* consolidateInzhur;
+
+            expect((yield* fetchBankTransactions).find(({ externalId }) => externalId === 'dividend-reit')).toMatchObject({
+                yieldKind: YieldKindEnum.INTEREST,
                 yieldSourceAccountId: null
             });
         }).pipe(Effect.provide(layer))

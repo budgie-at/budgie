@@ -5,6 +5,7 @@ import {
     TransactionEntryTypeEnum,
     TransactionRepository,
     TransactionTypeEnum,
+    TransactionUpdatedByEnum,
     YieldKindEnum
 } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
@@ -55,7 +56,8 @@ const readYield = (id: number) =>
     Effect.flatMap(TransactionRepository, repository => repository.getByIdRaw(id)).pipe(
         Effect.map(transaction => ({
             yieldKind: transaction?.yieldKind ?? null,
-            yieldSourceAccountId: transaction?.yieldSourceAccountId ?? null
+            yieldSourceAccountId: transaction?.yieldSourceAccountId ?? null,
+            updatedBy: transaction?.updatedBy ?? null
         }))
     );
 
@@ -80,7 +82,7 @@ describe('TransactionService.updateById yield fields', () => {
 
             yield* setUserYield(income.id, bank.id, deposit.id);
 
-            expect(yield* readYield(income.id)).toEqual({ yieldKind: YieldKindEnum.INTEREST, yieldSourceAccountId: deposit.id });
+            expect(yield* readYield(income.id)).toMatchObject({ yieldKind: YieldKindEnum.INTEREST, yieldSourceAccountId: deposit.id });
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -92,7 +94,7 @@ describe('TransactionService.updateById yield fields', () => {
             yield* setUserYield(income.id, bank.id, deposit.id);
             yield* transactionService.updateById(income.id, incomeUpdate(bank.id, { title: 'Monthly interest' }));
 
-            expect(yield* readYield(income.id)).toEqual({ yieldKind: YieldKindEnum.INTEREST, yieldSourceAccountId: deposit.id });
+            expect(yield* readYield(income.id)).toMatchObject({ yieldKind: YieldKindEnum.INTEREST, yieldSourceAccountId: deposit.id });
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -122,7 +124,33 @@ describe('TransactionService.updateById yield fields', () => {
             yield* setUserYield(income.id, sharedBank.id, sharedDeposit.id);
             yield* transactionService.updateById(income.id, incomeUpdate(personalBank.id, {}));
 
-            expect(yield* readYield(income.id)).toEqual({ yieldKind: YieldKindEnum.INTEREST, yieldSourceAccountId: null });
+            expect(yield* readYield(income.id)).toMatchObject({ yieldKind: YieldKindEnum.INTEREST, yieldSourceAccountId: null });
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('nulls a cross-zone source set in the same edit and marks the row as user-edited', () =>
+        Effect.gen(function* () {
+            const testSeedService = yield* seed;
+            const personalBank = yield* testSeedService.account({ type: AccountTypeEnum.BANK, title: 'Personal' });
+            const sharedDeposit = yield* testSeedService.account({
+                type: AccountTypeEnum.DEPOSIT,
+                title: 'Shared deposit',
+                syncZone: HOUSEHOLD_SYNC_ZONE
+            });
+            const income = yield* testSeedService.manualExpense({
+                accountId: personalBank.id,
+                amount: AMOUNT,
+                operatedAt: OPERATED_AT,
+                type: TransactionTypeEnum.INCOME
+            });
+
+            yield* setUserYield(income.id, personalBank.id, sharedDeposit.id);
+
+            expect(yield* readYield(income.id)).toEqual({
+                yieldKind: YieldKindEnum.INTEREST,
+                yieldSourceAccountId: null,
+                updatedBy: TransactionUpdatedByEnum.USER
+            });
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -141,7 +169,7 @@ describe('TransactionService.updateById yield fields', () => {
                 })
             );
 
-            expect(yield* readYield(income.id)).toEqual({ yieldKind: YieldKindEnum.INTEREST, yieldSourceAccountId: null });
+            expect(yield* readYield(income.id)).toMatchObject({ yieldKind: YieldKindEnum.INTEREST, yieldSourceAccountId: null });
         }).pipe(Effect.provide(TestLayer))
     );
 });
