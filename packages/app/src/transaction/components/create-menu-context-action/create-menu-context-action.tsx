@@ -6,6 +6,7 @@ import { BUTTON_PRESSED_SCALE } from '../../../@generic/constant/motion.constant
 import { HapticPressFeedbackEnum } from '../../../@generic/enum/haptic-press-feedback.enum';
 import { TestIDPartEnum } from '../../../@generic/enum/test-id-part.enum';
 import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
+import { CREATE_MENU_MAX_FONT_SIZE_MULTIPLIER } from '../../constant/create-menu-max-font-size-multiplier.constant';
 
 import type { UserIconNameEnum } from '@budgie/contracts';
 
@@ -30,6 +31,7 @@ export const CreateMenuContextAction = ({ icon, label, testID, onPress }: Props)
         <Icon className="text-primary-reverse" icon={icon} size={ICON_SIZE} />
         <Text
             className="shrink text-md font-semibold text-primary-reverse"
+            maxFontSizeMultiplier={CREATE_MENU_MAX_FONT_SIZE_MULTIPLIER}
             numberOfLines={1}
             {...testIDProps(testID, TestIDPartEnum.LABEL)}
         >
