@@ -155,6 +155,18 @@ describe('strict crypto hop', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
+    it.effect('leaves every base field empty when an unpriced crypto day has no rate to fall back on', () =>
+        Effect.gen(function* () {
+            const { account } = yield* seedCoinAccount('TSH5');
+
+            expect(yield* valueAt(account.id, '2026-03-10T12:00:00.000Z')).toStrictEqual({
+                baseInstrumentId: null,
+                baseExchangeRate: null,
+                baseAmount: null
+            });
+        }).pipe(Effect.provide(TestLayer))
+    );
+
     it.effect('keeps fiat valuation unchanged, old rates included', () =>
         Effect.gen(function* () {
             const { euro, instrument, account } = yield* seedBankAccount(CurrencyEnum.UAH);
@@ -196,6 +208,18 @@ describe('strict FUND hop', () => {
                 baseInstrumentId: euro.id,
                 baseExchangeRate: 20,
                 baseAmount: 40 * PRECISION
+            });
+        }).pipe(Effect.provide(TestLayer.pipe(Layer.provideMerge(InstrumentDailyMarketPriceRepository.layer))))
+    );
+
+    it.effect('leaves every base field empty when a FUND has no NAV to fall back on', () =>
+        Effect.gen(function* () {
+            const { account } = yield* seedFund('TFD3');
+
+            expect(yield* valueAt(account.id, '2026-08-11T12:00:00.000Z')).toStrictEqual({
+                baseInstrumentId: null,
+                baseExchangeRate: null,
+                baseAmount: null
             });
         }).pipe(Effect.provide(TestLayer.pipe(Layer.provideMerge(InstrumentDailyMarketPriceRepository.layer))))
     );

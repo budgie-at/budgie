@@ -86,12 +86,13 @@ describe('market-priced pending entries', () => {
 
             yield* reward(account.id, '2026-08-20T09:00:00.000Z', null, null, null);
             yield* seedDailyPrice(coin.id, euro.id, '2026-08-01', 50_000);
-            yield* runUpgrade;
 
+            const progress = yield* runUpgrade;
             const [totals] = yield* statisticsRepository.getTotalIncomeAndExpenseQuery(DEFAULT_TRANSACTION_FILTER, euro.id);
 
             expect(yield* repository.countPendingBaseValuationEntries(euro.id)).toBe(0);
             expect(totals.income).toBe(50_000 * PRECISION);
+            expect(progress).toMatchObject({ isRunning: false, pendingEntryCount: 0, processedEntryCount: 1, totalEntryCount: 1 });
         }).pipe(Effect.provide(TestLayer))
     );
 });

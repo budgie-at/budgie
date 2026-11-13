@@ -152,13 +152,17 @@ export class MarketPricedRevaluationService extends Context.Service<MarketPriced
             return {
                 revalueInstrumentRange,
                 correctInstrument,
-                valuePendingEntries: (baseInstrumentId: number, onPage: (entryCount: number) => Effect.Effect<void>) =>
-                    revaluePages(
+                valuePendingEntries: Effect.fn('MarketPricedRevaluationService.valuePendingEntries')(function* (
+                    baseInstrumentId: number,
+                    onPage: (entryCount: number) => Effect.Effect<void>
+                ) {
+                    yield* revaluePages(
                         afterId => transactionEntryBaseValuationRepository.findPendingMarketPricedEntries(baseInstrumentId, afterId, batchSize),
                         makeAnyValueUpdate(baseInstrumentId),
                         onPage,
                         0
-                    ),
+                    );
+                }),
                 revalueTransactions: Effect.fn('MarketPricedRevaluationService.revalueTransactions')(function* (
                     transactionSyncIds: readonly string[]
                 ) {
