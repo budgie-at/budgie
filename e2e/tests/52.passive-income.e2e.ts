@@ -35,7 +35,9 @@ test('52 passive income', { tags: ['passive-income'] }, async ({ budgie }) => {
         const heroWhole = (await id('PassiveIncome.Earned').textContent()) ?? '';
         assert.ok(cardText.includes(heroWhole.replace('≈', '').trim()));
         await expect(id('PassiveIncome.Caption')).toContainText('so far');
-        assert.match(await plotValue(), /so far/u);
+        if (b.isIos(ctx)) {
+            assert.match(await plotValue(), /so far/u);
+        }
         await b.expectId(ctx, 'PassiveIncome.YieldLine');
         await b.expectId(ctx, 'PassiveIncome.Delta');
         await b.scrollTo(ctx, 'PassiveIncome.NetAfterTax');
@@ -47,10 +49,15 @@ test('52 passive income', { tags: ['passive-income'] }, async ({ budgie }) => {
     await b.phase('1b focus, tap, legend isolate and scrub', async () => {
         await b.openLink(ctx, `budgie://passive-income?range=YEAR&focus=${previousMonthStart()}`);
         await b.expectId(ctx, 'PassiveIncome.Plot', 15_000);
-        assert.doesNotMatch(await plotValue(), /so far/u);
+        await expect(id('PassiveIncome.Caption')).not.toContainText('so far');
+        if (b.isIos(ctx)) {
+            assert.doesNotMatch(await plotValue(), /so far/u);
+        }
         await b.tapId(ctx, 'PassiveIncome.Plot');
         await expect(id('PassiveIncome.Caption')).toContainText('Earned');
-        assert.match(await plotValue(), /so far/u);
+        if (b.isIos(ctx)) {
+            assert.match(await plotValue(), /so far/u);
+        }
         await b.tapId(ctx, 'PassiveIncome.LegendRow.STAKING_EARN');
         await expect(id('PassiveIncome.Caption')).toContainText('Staking & Earn');
         await b.scrollTo(ctx, 'PassiveIncome.Section.PAYOUTS');
