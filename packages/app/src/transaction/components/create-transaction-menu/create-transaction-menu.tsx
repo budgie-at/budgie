@@ -129,7 +129,7 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
             />
 
             <View className="absolute inset-x-0 bottom-0 gap-xl px-lg pb-safe" pointerEvents="box-none">
-                <CreateMenuReveal progress={progress} order={3} className="flex-row flex-wrap gap-md">
+                <CreateMenuReveal progress={progress} order={3} className="flex-row gap-md">
                     <CreateMenuChip
                         icon={UserIconNameEnum.Repeat}
                         label={t`Recurring`}

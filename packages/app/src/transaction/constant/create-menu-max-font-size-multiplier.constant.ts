@@ -1,1 +1,0 @@
-export const CREATE_MENU_MAX_FONT_SIZE_MULTIPLIER = 1.3;
