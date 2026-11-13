@@ -12,7 +12,7 @@ export const useBiometricLabel = (): string | null => {
     const labels: Record<BiometricKindEnum, string> = {
         [BiometricKindEnum.FACE_ID]: t`Face ID`,
         [BiometricKindEnum.TOUCH_ID]: t`Touch ID`,
-        [BiometricKindEnum.FACE_UNLOCK]: t`Face unlock`,
+        [BiometricKindEnum.FACE_UNLOCK]: t`Facial recognition`,
         [BiometricKindEnum.FINGERPRINT]: t`Fingerprint`,
         [BiometricKindEnum.BIOMETRICS]: t`Biometrics`
     };

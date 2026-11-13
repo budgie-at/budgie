@@ -4914,13 +4914,13 @@ msgstr "Face ID"
 msgid "Face ID wasn't completed. Try again or continue without it."
 msgstr "Face ID не завершено. Спробуйте ще раз або продовжте без нього."
 
-#: src/settings/hook/use-biometric-label.hook.ts
-msgid "Face unlock"
-msgstr "Розблокування обличчям"
-
 #: src/auth/hook/use-pin-setup.hook.ts
 msgid "Face unlock wasn't completed. Try again or continue without it."
 msgstr "Розблокування обличчям не завершено. Спробуйте ще раз або продовжте без нього."
+
+#: src/settings/hook/use-biometric-label.hook.ts
+msgid "Facial recognition"
+msgstr "Розпізнавання обличчя"
 
 #: src/budget/components/budget-history-section/budget-history-section.tsx
 msgid "Faded bars are estimated from your past transactions using your current limits."
