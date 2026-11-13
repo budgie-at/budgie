@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.181.2](https://github.com/budgie-at/budgie/compare/v6.181.1...v6.181.2) (2026-11-13)
+
+### Bug Fixes
+
+* keep Android App lock over deep links and label seeded test data ([#2200](https://github.com/budgie-at/budgie/issues/2200)) ([3b6f247](https://github.com/budgie-at/budgie/commit/3b6f24741616c2700aa167593ac3b8e21e589026)), closes [#2187](https://github.com/budgie-at/budgie/issues/2187)
+
+
 ## [6.181.1](https://github.com/budgie-at/budgie/compare/v6.181.0...v6.181.1) (2026-11-13)
 
 ### Bug Fixes
