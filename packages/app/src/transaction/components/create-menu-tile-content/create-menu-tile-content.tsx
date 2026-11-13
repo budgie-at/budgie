@@ -20,28 +20,29 @@ interface Props {
 const ICON_SIZE = 36;
 const LARGE_TEXT_ICON_SIZE = 32;
 const LARGE_TEXT_FONT_SCALE = 1.3;
-const LINE_BREAK = '\n';
 
 export const CreateMenuTileContent = ({ icon, label, testID, variant }: Props) => {
     const { fontScale } = useWindowDimensions();
 
-    const text = splitCreateMenuLabel(label);
-    const numberOfLines = text.includes(LINE_BREAK) ? 2 : 1;
     const iconSize = fontScale >= LARGE_TEXT_FONT_SCALE ? LARGE_TEXT_ICON_SIZE : ICON_SIZE;
 
     return (
         <View className="min-h-[64px] grow flex-row items-center gap-md rounded-5xl bg-popover-surface py-sm pl-lg pr-xl">
             <CreateMenuIcon icon={icon} variant={variant} size={iconSize} />
-            <Text
-                className="flex-1 text-md font-semibold leading-tight text-primary"
-                maxFontSizeMultiplier={CREATE_MENU_MAX_FONT_SIZE_MULTIPLIER}
-                numberOfLines={numberOfLines}
-                adjustsFontSizeToFit
-                minimumFontScale={CREATE_MENU_MIN_FONT_SCALE}
-                {...testIDProps(testID, TestIDPartEnum.LABEL)}
-            >
-                {text}
-            </Text>
+            <View className="flex-1" {...testIDProps(testID, TestIDPartEnum.LABEL)}>
+                {splitCreateMenuLabel(label).map(line => (
+                    <Text
+                        key={line}
+                        className="text-md font-semibold leading-tight text-primary"
+                        maxFontSizeMultiplier={CREATE_MENU_MAX_FONT_SIZE_MULTIPLIER}
+                        numberOfLines={1}
+                        adjustsFontSizeToFit
+                        minimumFontScale={CREATE_MENU_MIN_FONT_SCALE}
+                    >
+                        {line}
+                    </Text>
+                ))}
+            </View>
         </View>
     );
 };

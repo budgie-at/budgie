@@ -36,12 +36,14 @@ export const ReceiptSourceMenu = ({ onClose }: Props) => {
 
     return (
         <View className="flex-1">
-            <CreateMenuTileContent
-                icon={UserIconNameEnum.ScanText}
-                label={label}
-                testID={CreateTransactionMenuSelector.ScanReceipt}
-                variant="violet"
-            />
+            <View className="grow" accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+                <CreateMenuTileContent
+                    icon={UserIconNameEnum.ScanText}
+                    label={label}
+                    testID={CreateTransactionMenuSelector.ScanReceipt}
+                    variant="violet"
+                />
+            </View>
             <Host style={StyleSheet.absoluteFill} testID={CreateTransactionMenuSelector.ScanReceipt}>
                 <Menu
                     label={
