@@ -2,12 +2,13 @@ import { createContext, use } from 'react';
 
 import { emptyFn } from '@rnw-community/shared';
 
+import { BiometricKindEnum } from '../enum/biometric-kind.enum';
+
 export interface AuthContextInterface {
     isUnlocked: boolean;
     isPinEnabled: boolean;
     isSomeAvailable: boolean;
-    isFaceIdAvailable: boolean;
-    isTouchIdAvailable: boolean;
+    biometricKind: BiometricKindEnum | null;
     setIsUnlocked: (unlocked: boolean) => void;
 }
 
@@ -16,8 +17,7 @@ export const AuthContext = createContext<AuthContextInterface>({
     isPinEnabled: false,
     isSomeAvailable: false,
     setIsUnlocked: emptyFn,
-    isFaceIdAvailable: false,
-    isTouchIdAvailable: false
+    biometricKind: null
 });
 
 export const useAuthContext = () => use(AuthContext);

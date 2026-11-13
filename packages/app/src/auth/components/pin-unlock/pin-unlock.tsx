@@ -2,6 +2,7 @@ import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
 import { Button } from '../../../@generic/component/button/button';
+import { BiometricKindEnum } from '../../enum/biometric-kind.enum';
 import { usePinAuthentication } from '../../hook/use-pin-authentication.hook';
 import { getPinFormStatus } from '../../utils/get-pin-form-status.util';
 import { PinFormBiometricButton } from '../pin-form-biometric-button/pin-form-biometric-button';
@@ -16,10 +17,17 @@ interface Props {
 
 export const PinUnlock = ({ onForgotPin }: Props) => {
     const { t } = useLingui();
-    const { addDigit, canUseBiometric, deleteDigit, error, handleBiometricAuth, input, isFaceIdAvailable, isInputDisabled, isLoading } =
+    const { addDigit, canUseBiometric, deleteDigit, error, handleBiometricAuth, input, biometricKind, isInputDisabled, isLoading } =
         usePinAuthentication();
 
-    const biometricDescription = isFaceIdAvailable ? t`Or unlock with Face ID.` : t`Or unlock with Touch ID.`;
+    const biometricDescriptions: Record<BiometricKindEnum, string> = {
+        [BiometricKindEnum.FACE_ID]: t`Or unlock with Face ID.`,
+        [BiometricKindEnum.TOUCH_ID]: t`Or unlock with Touch ID.`,
+        [BiometricKindEnum.FACE_UNLOCK]: t`Or unlock with your face.`,
+        [BiometricKindEnum.FINGERPRINT]: t`Or unlock with your fingerprint.`,
+        [BiometricKindEnum.BIOMETRICS]: t`Or unlock with biometrics.`
+    };
+    const biometricDescription = biometricDescriptions[biometricKind ?? BiometricKindEnum.BIOMETRICS];
     const description = canUseBiometric ? biometricDescription : t`Your data is sealed. Only your PIN opens it.`;
     const status = getPinFormStatus(isLoading, isInputDisabled);
 
@@ -42,7 +50,7 @@ export const PinUnlock = ({ onForgotPin }: Props) => {
                     />
                 }
             >
-                <PinFormBiometricButton isFaceIdAvailable={isFaceIdAvailable} {...(canUseBiometric && { onPress: handleBiometricAuth })} />
+                <PinFormBiometricButton biometricKind={biometricKind} {...(canUseBiometric && { onPress: handleBiometricAuth })} />
             </PinForm>
         </View>
     );
