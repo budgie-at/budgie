@@ -131,6 +131,7 @@ export { TagRepository } from './tag/repository/tag.repository';
 
 export { InstrumentTypeEnum } from './instrument/enum/instrument-type.enum';
 export { InstrumentPriceProviderEnum } from './instrument/enum/instrument-price-provider.enum';
+export { BINANCE_ASSET_ALIAS } from './instrument/constant/binance-asset-alias.constant';
 export { InstrumentMarketDataJobStatusEnum } from './instrument-market-data-job/enum/instrument-market-data-job-status.enum';
 
 export { InstrumentEntityTable } from './instrument/table/instrument-entity.table';
