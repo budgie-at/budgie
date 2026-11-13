@@ -38,7 +38,7 @@ export const YieldHero = () => {
     const isApproximate = isDefined(bucket) ? bucket.isEstimated : (summary?.earned.isEstimated ?? false);
 
     return (
-        <View className="gap-y-xs" accessible accessibilityLabel={sentence}>
+        <View className="gap-y-xs" accessible accessibilityLabel={sentence} testID={PassiveIncomeSelector.Hero}>
             <View className="min-h-[18px] flex-row items-center justify-between gap-x-xs">
                 <View className="flex-1">{isDefined(summary) ? <YieldHeroCaption summary={summary} bucket={bucket} /> : null}</View>
                 <YieldHeroInfoButton />

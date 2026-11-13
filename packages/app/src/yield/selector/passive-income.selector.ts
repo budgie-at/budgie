@@ -8,6 +8,7 @@ export const PassiveIncomeSelector = {
     RangeMenu: 'PassiveIncome.RangeMenu',
     Caption: 'PassiveIncome.Caption',
     Info: 'PassiveIncome.Info',
+    Hero: 'PassiveIncome.Hero',
     Earned: 'PassiveIncome.Earned',
     YieldLine: 'PassiveIncome.YieldLine',
     Delta: 'PassiveIncome.Delta',

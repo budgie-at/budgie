@@ -1,3 +1,5 @@
+import { expect } from 'e2e';
+
 import * as a from '../support/budgie/accounts.ts';
 import * as c from '../support/budgie/categories.ts';
 import * as b from '../support/budgie/core.ts';
@@ -126,7 +128,7 @@ test('37 deposit lifecycle', { tags: ['accounts'], platforms: PENDING_ANDROID_PO
         await b.expectId(ctx, 'AccountPickerBottomSheet.Input');
         await a.selectAccountFromNativePicker(ctx, 'AccountPickerBottomSheet.Option.E2E Expense Source');
         await b.expectId(ctx, 'DepositClose.AmountInput', 10_000);
-        await b.expectText(ctx, /555/);
+        await expect(b.byId(ctx.screen, 'DepositClose.AmountInput')).toHaveValue(/^555(\.00)?$/);
         await b.tapId(ctx, 'DepositClose.ConfirmButton');
         await b.expectId(ctx, 'HomePage.TotalBalance', 15_000);
         await b.expectId(ctx, 'AccountCard.Balance.E2E_Expense_Source.615');

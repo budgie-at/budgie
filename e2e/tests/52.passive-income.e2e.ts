@@ -31,15 +31,18 @@ test('52 passive income', { tags: ['passive-income'] }, async ({ budgie }) => {
         await b.expectId(ctx, 'PassiveIncome.AnalyticsCard', 15_000);
         const cardText = (await id('PassiveIncome.AnalyticsCard').textContent()) ?? '';
         await b.tapId(ctx, 'PassiveIncome.AnalyticsCard');
-        await b.expectId(ctx, 'PassiveIncome.Earned', 15_000);
-        const heroWhole = (await id('PassiveIncome.Earned').textContent()) ?? '';
-        assert.ok(cardText.includes(heroWhole.replace('≈', '').trim()));
+        await b.expectId(ctx, 'PassiveIncome.Hero', 15_000);
+        const heroFigure = cardText.match(/[^\s\d]?\d[\d,.]*/u)?.[0] ?? '';
+        assert.ok(heroFigure.length > 0);
+        await expect(id('PassiveIncome.Hero')).toHaveAccessibleName(
+            new RegExp(`^Earned .*${heroFigure.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&')}`, 'u')
+        );
         await expect(id('PassiveIncome.Caption')).toContainText('so far');
         if (b.isIos(ctx)) {
             assert.match(await plotValue(), /so far/u);
         }
-        await b.expectId(ctx, 'PassiveIncome.YieldLine');
-        await b.expectId(ctx, 'PassiveIncome.Delta');
+        await expect(id('PassiveIncome.Hero')).toHaveAccessibleName(/% a year across \d+ holdings?/u);
+        await expect(id('PassiveIncome.Hero')).toHaveAccessibleName(/new this period/u);
         await b.scrollTo(ctx, 'PassiveIncome.NetAfterTax');
         await b.tapId(ctx, 'PassiveIncome.Mode.RUNNING_TOTAL');
         await expect(id('PassiveIncome.ChartTitle')).toHaveText('Running total');
