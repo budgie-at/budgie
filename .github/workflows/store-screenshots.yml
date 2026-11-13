@@ -99,7 +99,7 @@ jobs:
             group: android-store-screenshots
             queue: max
             cancel-in-progress: false
-        uses: rnw-community/mobile-ci/.github/workflows/store-screenshots.yml@30a27b3a7efc2fa550627e0c0767829f8ab219c3 # v4.12.4
+        uses: rnw-community/mobile-ci/.github/workflows/store-screenshots.yml@8b890c9402471d8ac6da1aded7fb4a24bc785fd1 # feat/store-screenshots-android-e2e
         with:
             control-runner-labels: '["self-hosted","linux-portable-2x4"]'
             config-path: .github/store-screenshots-android.config.json
@@ -122,8 +122,14 @@ jobs:
                 extra.loggingEnabled=false
             android-build-runner-labels: '["self-hosted","trf-linux-amd64-4x8"]'
             android-build-timeout-minutes: 120
-            android-capture-runner-labels: '["self-hosted","trf-linux-amd64-4x8"]'
             android-capture-timeout-minutes: 120
+            test-framework: e2e
+            e2e-dir: e2e
+            e2e-android-command: npx e2e run --config media.config.ts --target android
+            e2e-runner-labels: '["self-hosted","linux-portable-4x8"]'
+            e2e-workers: '4'
+            e2e-retries: '1'
+            simlock-url: https://simlock.vitaliiyehorov.dev
             post-capture-command: |
                 if ! command -v magick >/dev/null; then
                     curl -fsSL -o "$RUNNER_TEMP/imagemagick.AppImage" https://github.com/ImageMagick/ImageMagick/releases/download/7.1.2-35/ImageMagick-7.1.2-35-gcc-x86_64.AppImage
@@ -144,3 +150,4 @@ jobs:
                 GOOGLE_SERVICE_ACCOUNT_JSON<<GOOGLE_SERVICE_ACCOUNT_JSON_EOF
                 ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
                 GOOGLE_SERVICE_ACCOUNT_JSON_EOF
+            simlock-token: ${{ secrets.SIMLOCK_TOKEN }}

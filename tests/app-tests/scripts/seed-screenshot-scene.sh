@@ -17,7 +17,6 @@
 #   DEVICE_SLUG     slugified device name
 #   SIMULATOR_UDID  booted simulator UDID (ios)
 #   APP_PATH        packaged .app path (ios)
-#   ANDROID_SERIAL  adb serial of the booted emulator (android)
 #
 # The database is assembled from fixtures/screenshots:
 #   showcase.db         curated dataset, anchored on a fixed date
@@ -323,39 +322,6 @@ install_ios_database() {
     install_file_fixtures "$app_data_container"
 }
 
-install_android_database() {
-    local app_data_directory="/data/data/$APP_ID"
-    local files_directory="$app_data_directory/files"
-    local fixture_path
-
-    ANDROID_SERIAL="${ANDROID_SERIAL:?ANDROID_SERIAL is required}"
-    export ANDROID_SERIAL
-
-    adb root >/dev/null
-    adb wait-for-device
-
-    for _ in 1 2 3 4 5 6 7 8 9 10; do
-        [ "$(adb shell id -u | tr -d '\r')" = "0" ] && break
-        sleep 1
-    done
-    [ "$(adb shell id -u | tr -d '\r')" = "0" ] || { echo "seed-screenshot-scene: adb root is unavailable on $ANDROID_SERIAL" >&2; exit 1; }
-
-    adb shell "pm enable com.google.android.apps.nexuslauncher/com.android.launcher3.testing.TestInformationProvider >/dev/null 2>&1; content call --uri content://com.google.android.apps.nexuslauncher.TestInfo --method enable-transient-taskbar >/dev/null 2>&1; settings put global hide_error_dialogs 1 && am broadcast -a android.intent.action.CLOSE_SYSTEM_DIALOGS >/dev/null"
-    adb shell "am force-stop $APP_ID && rm -f $app_data_directory/shared_prefs/SecureStore*.xml $files_directory/SQLite/budgie.db* && mkdir -p $files_directory/SQLite $files_directory/E2EFixtures"
-    adb push "$PREPARED_DATABASE_PATH" "$files_directory/SQLite/budgie.db" >/dev/null
-
-    for fixture_path in "$FIXTURES_DIR"/e2e-*.csv "$FIXTURES_DIR"/e2e-*.pdf "$FIXTURES_DIR"/e2e-*.xlsx; do
-        [ -f "$fixture_path" ] || continue
-
-        adb push "$fixture_path" "$files_directory/E2EFixtures/$(basename "$fixture_path")" >/dev/null
-    done
-
-    adb shell "chown -R \$(stat -c %u:%g $app_data_directory) $files_directory && chcon -R \$(stat -c %C $app_data_directory) $files_directory"
-    adb shell pm grant "$APP_ID" android.permission.POST_NOTIFICATIONS >/dev/null 2>&1 || true
-
-    echo "seed-screenshot-scene: installed into $ANDROID_SERIAL:$files_directory/SQLite/budgie.db"
-}
-
 install_database() {
     PLATFORM="${PLATFORM:-ios}"
     APP_ID="${APP_ID:?APP_ID is required}"
@@ -364,11 +330,8 @@ install_database() {
         ios)
             install_ios_database
             ;;
-        android)
-            install_android_database
-            ;;
         *)
-            echo "seed-screenshot-scene: unsupported PLATFORM '$PLATFORM', expected ios or android" >&2
+            echo "seed-screenshot-scene: installs only into an iOS simulator; PLATFORM '$PLATFORM' needs --dry-run" >&2
 
             exit 1
             ;;
