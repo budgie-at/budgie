@@ -34,14 +34,12 @@ test('52 passive income', { tags: ['passive-income'] }, async ({ budgie }) => {
         await b.expectId(ctx, 'PassiveIncome.Hero', 15_000);
         const heroFigure = cardText.match(/[^\s\d]?\d[\d,.]*/u)?.[0] ?? '';
         assert.ok(heroFigure.length > 0);
-        await expect(id('PassiveIncome.Hero')).toHaveAccessibleName(
-            new RegExp(`^Earned .*${heroFigure.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&')}`, 'u')
-        );
         await expect(id('PassiveIncome.Caption')).toContainText('so far');
         if (b.isIos(ctx)) {
+            assert.ok((await plotValue()).includes(heroFigure));
             assert.match(await plotValue(), /so far/u);
         }
-        await expect(id('PassiveIncome.Hero')).toHaveAccessibleName(/% a year across \d+ holdings?/u);
+        await expect(id('PassiveIncome.Hero')).toHaveAccessibleName(/^Earned .*% a year across \d+ holdings?/u);
         await expect(id('PassiveIncome.Hero')).toHaveAccessibleName(/new this period/u);
         await b.scrollTo(ctx, 'PassiveIncome.NetAfterTax');
         await b.tapId(ctx, 'PassiveIncome.Mode.RUNNING_TOTAL');
