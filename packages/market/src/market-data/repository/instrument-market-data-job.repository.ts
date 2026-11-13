@@ -127,6 +127,25 @@ export class InstrumentMarketDataJobRepository extends Context.Service<Instrumen
                             )
                             .limit(1)
                     ).pipe(Effect.map(isNotEmptyArray)),
+                hasActiveForInstruments: (instrumentIds: readonly number[]) =>
+                    isNotEmptyArray(instrumentIds)
+                        ? Db.query(db =>
+                              db
+                                  .select({ id: InstrumentMarketDataJobEntityTable.id })
+                                  .from(InstrumentMarketDataJobEntityTable)
+                                  .where(
+                                      and(
+                                          inArray(InstrumentMarketDataJobEntityTable.instrumentId, [...instrumentIds]),
+                                          inArray(InstrumentMarketDataJobEntityTable.status, [
+                                              InstrumentMarketDataJobStatusEnum.PENDING,
+                                              InstrumentMarketDataJobStatusEnum.RUNNING
+                                          ]),
+                                          isNull(InstrumentMarketDataJobEntityTable.deletedAt)
+                                      )
+                                  )
+                                  .limit(1)
+                          ).pipe(Effect.map(isNotEmptyArray))
+                        : Effect.succeed(false),
                 markCompleted: (job: Pick<InstrumentMarketDataJobEntityInterface, 'id' | 'attempts'>) =>
                     markFinished(job, InstrumentMarketDataJobStatusEnum.COMPLETED),
                 markUnsupported: (job: Pick<InstrumentMarketDataJobEntityInterface, 'id' | 'attempts'>) =>
