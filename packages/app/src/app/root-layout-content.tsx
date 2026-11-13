@@ -208,7 +208,11 @@ export const RootLayoutContent = () => {
                                                                     <Stack.Screen name="(main)/analytics/transactions" />
                                                                     <Stack.Screen name="(main)/categorize" />
                                                                     {MORPHING_SHEET_ROUTES.map(name => (
-                                                                        <Stack.Screen key={name} name={name} options={MORPHING_SHEET_OPTIONS} />
+                                                                        <Stack.Screen
+                                                                            key={name}
+                                                                            name={name}
+                                                                            options={MORPHING_SHEET_OPTIONS}
+                                                                        />
                                                                     ))}
                                                                     <Stack.Screen name="category-form" options={ENTITY_FORM_OPTIONS} />
                                                                     <Stack.Screen name="tag-form" options={ENTITY_FORM_OPTIONS} />
