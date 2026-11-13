@@ -14,8 +14,6 @@ import expo.modules.kotlin.Promise
 import expo.modules.kotlin.exception.Exceptions
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
-import java.io.File
-import java.util.UUID
 
 class ReceiptScannerModule : Module() {
   private val context: Context
@@ -50,9 +48,8 @@ class ReceiptScannerModule : Module() {
 
       try {
         val text = Tasks.await(recognizer.process(image))
-        val isRotated = image.rotationDegrees % 180 != 0
-        val width = (if (isRotated) image.height else image.width).toDouble()
-        val height = (if (isRotated) image.width else image.height).toDouble()
+        val width = image.width.toDouble()
+        val height = image.height.toDouble()
 
         text.textBlocks.flatMap { block -> block.lines }.mapNotNull { line ->
           val box = line.boundingBox ?: return@mapNotNull null
@@ -80,7 +77,7 @@ class ReceiptScannerModule : Module() {
         emptyList()
       }
 
-      finishScan(pages.mapNotNull { page -> copyToCache(page.imageUri) })
+      finishScan(pages.map { page -> page.imageUri.toString() })
     }
   }
 
@@ -90,21 +87,8 @@ class ReceiptScannerModule : Module() {
     promise.resolve(uris)
   }
 
-  private fun copyToCache(source: Uri): String? =
-    runCatching {
-      val directory = File(context.cacheDir, SCANS_DIRECTORY).apply { mkdirs() }
-      val target = File(directory, "${UUID.randomUUID()}.jpg")
-      context.contentResolver.openInputStream(source).use { input ->
-        requireNotNull(input)
-        target.outputStream().use { output -> input.copyTo(output) }
-      }
-
-      Uri.fromFile(target).toString()
-    }.getOrNull()
-
   companion object {
     private const val SCAN_REQUEST_CODE = 7341
-    private const val SCANS_DIRECTORY = "ReceiptScans"
 
     private val scannerOptions = GmsDocumentScannerOptions.Builder()
       .setGalleryImportAllowed(false)
