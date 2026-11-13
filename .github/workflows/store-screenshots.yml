@@ -126,7 +126,7 @@ jobs:
             test-framework: e2e
             e2e-dir: e2e
             e2e-android-command: npx e2e run --config media.config.ts --target android
-            e2e-runner-labels: '["self-hosted","linux-portable-4x8"]'
+            e2e-runner-labels: '["self-hosted","trf-linux-amd64-4x8"]'
             e2e-workers: '4'
             e2e-retries: '1'
             simlock-url: https://simlock.vitaliiyehorov.dev
