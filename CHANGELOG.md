@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.182.0](https://github.com/budgie-at/budgie/compare/v6.181.3...v6.182.0) (2026-11-13)
+
+### Features
+
+* **app:** rebuild the create menu as a thumb-reach tile grid ([#2205](https://github.com/budgie-at/budgie/issues/2205)) ([0f9ce92](https://github.com/budgie-at/budgie/commit/0f9ce92074c065eb5f5c750b6e3e1003d2cad208))
+
+
 ## [6.181.3](https://github.com/budgie-at/budgie/compare/v6.181.2...v6.181.3) (2026-11-13)
 
 ### Bug Fixes
