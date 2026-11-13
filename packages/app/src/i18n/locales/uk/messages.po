@@ -4298,7 +4298,7 @@ msgstr "напр. депозит на 12 місяців"
 msgid "e.g. 200"
 msgstr "напр. 200"
 
-#: src/account/component/deposit-interest-rate-field/deposit-interest-rate-field.tsx
+#: src/account/component/expected-yield-field/expected-yield-field.tsx
 msgid "e.g. 5"
 msgstr "напр. 5"
 
@@ -5557,7 +5557,7 @@ msgstr "Оплата частинами"
 msgid "Interest Rate"
 msgstr "Відсоткова ставка"
 
-#: src/account/component/deposit-interest-rate-field/deposit-interest-rate-field.tsx
+#: src/account/component/expected-yield-field/expected-yield-field.tsx
 msgid "Interest Rate % (Optional)"
 msgstr "Відсоткова ставка % (необов'язково)"
 
@@ -8690,6 +8690,10 @@ msgstr "Встановіть ліміт і відстежуйте витрати
 #: src/budget/constant/budget-save-blocker-label.constant.ts
 msgid "Set a limit to continue"
 msgstr "Встановіть ліміт, щоб продовжити"
+
+#: src/account/component/update-deposit-account/update-deposit-account.tsx
+msgid "Set a rate to record balance growth as interest"
+msgstr "Вкажіть ставку, щоб ріст балансу записувався як відсотки"
 
 #: src/wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card.tsx
 msgid "Set Amount and Merchant to Shortcut Input."

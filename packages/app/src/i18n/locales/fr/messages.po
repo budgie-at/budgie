@@ -4298,7 +4298,7 @@ msgstr "ex. dépôt à 12 mois"
 msgid "e.g. 200"
 msgstr "ex. 200"
 
-#: src/account/component/deposit-interest-rate-field/deposit-interest-rate-field.tsx
+#: src/account/component/expected-yield-field/expected-yield-field.tsx
 msgid "e.g. 5"
 msgstr "ex. 5"
 
@@ -5557,7 +5557,7 @@ msgstr "Paiement échelonné"
 msgid "Interest Rate"
 msgstr "Taux d'intérêt"
 
-#: src/account/component/deposit-interest-rate-field/deposit-interest-rate-field.tsx
+#: src/account/component/expected-yield-field/expected-yield-field.tsx
 msgid "Interest Rate % (Optional)"
 msgstr "Taux d'intérêt % (Facultatif)"
 
@@ -8690,6 +8690,10 @@ msgstr "Fixez une limite et suivez vos dépenses"
 #: src/budget/constant/budget-save-blocker-label.constant.ts
 msgid "Set a limit to continue"
 msgstr "Définissez une limite pour continuer"
+
+#: src/account/component/update-deposit-account/update-deposit-account.tsx
+msgid "Set a rate to record balance growth as interest"
+msgstr "Définissez un taux pour enregistrer la hausse du solde comme des intérêts"
 
 #: src/wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card.tsx
 msgid "Set Amount and Merchant to Shortcut Input."

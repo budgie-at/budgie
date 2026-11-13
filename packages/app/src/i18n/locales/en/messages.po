@@ -4299,7 +4299,7 @@ msgstr "e.g. 12-month deposit"
 msgid "e.g. 200"
 msgstr "e.g. 200"
 
-#: src/account/component/deposit-interest-rate-field/deposit-interest-rate-field.tsx
+#: src/account/component/expected-yield-field/expected-yield-field.tsx
 msgid "e.g. 5"
 msgstr "e.g. 5"
 
@@ -5558,7 +5558,7 @@ msgstr "Installment plan"
 msgid "Interest Rate"
 msgstr "Interest Rate"
 
-#: src/account/component/deposit-interest-rate-field/deposit-interest-rate-field.tsx
+#: src/account/component/expected-yield-field/expected-yield-field.tsx
 msgid "Interest Rate % (Optional)"
 msgstr "Interest Rate % (Optional)"
 
@@ -8691,6 +8691,10 @@ msgstr "Set a limit and track your spending"
 #: src/budget/constant/budget-save-blocker-label.constant.ts
 msgid "Set a limit to continue"
 msgstr "Set a limit to continue"
+
+#: src/account/component/update-deposit-account/update-deposit-account.tsx
+msgid "Set a rate to record balance growth as interest"
+msgstr "Set a rate to record balance growth as interest"
 
 #: src/wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card.tsx
 msgid "Set Amount and Merchant to Shortcut Input."
