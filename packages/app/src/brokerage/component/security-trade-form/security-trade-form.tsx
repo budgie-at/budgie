@@ -3,10 +3,10 @@ import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { FixedChromePage } from '../../../@generic/component/fixed-chrome-page/fixed-chrome-page';
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
@@ -18,6 +18,7 @@ import { PillButtonFooter } from '../../../@generic/component/pill-button-footer
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
+import { DEFAULT_DECIMAL_PLACES } from '../../../i18n/constant/default-decimal-places.constant';
 import { SecurityTradeFormSchema } from '../../constant/security-trade-form-schema.constant';
 import { InsufficientSecurityHoldingError } from '../../error/insufficient-security-holding.error';
 import { BrokerageSelector } from '../../selector/brokerage.selector';
@@ -33,12 +34,16 @@ interface Props<E> {
     readonly currencySymbol: string;
     readonly isReady: boolean;
     readonly maxQuantity: number | null;
+    readonly suggestedPrice: number | null;
     readonly onSubmit: (values: SecurityTradeFormValues) => Effect.Effect<unknown, E, AppServices>;
     readonly summary: ReactNode;
     readonly children?: ReactNode;
 }
 
-export const SecurityTradeForm = <E,>({ title, currencySymbol, isReady, maxQuantity, onSubmit, summary, children }: Props<E>) => {
+const PRICE_MAX_DECIMALS = 4;
+
+export const SecurityTradeForm = <E,>(props: Props<E>) => {
+    const { title, currencySymbol, isReady, maxQuantity, suggestedPrice, onSubmit, summary, children } = props;
     const { t } = useLingui();
     const [operatedAt] = useState(() => new Date());
     const form = useForm<SecurityTradeFormValues>({
@@ -48,6 +53,12 @@ export const SecurityTradeForm = <E,>({ title, currencySymbol, isReady, maxQuant
     });
     const quantity = useWatch({ control: form.control, name: 'quantity' });
     const { isLoading, run } = useSingleFlight();
+
+    useEffect(() => {
+        if (isPositiveNumber(suggestedPrice) && !form.getFieldState('price').isDirty) {
+            form.setValue('price', suggestedPrice, { shouldValidate: true });
+        }
+    }, [form, suggestedPrice]);
 
     const handleSave = form.handleSubmit(values =>
         run(
@@ -99,12 +110,14 @@ export const SecurityTradeForm = <E,>({ title, currencySymbol, isReady, maxQuant
                                 name="price"
                                 label={`${t`Price per share`} (${currencySymbol})`}
                                 icon={UserIconNameEnum.Tag}
+                                maxDecimals={PRICE_MAX_DECIMALS}
                                 testID={BrokerageSelector.PriceInput}
                             />
                             <SecurityTradeNumberField
                                 name="fee"
                                 label={`${t`Fee`} (${currencySymbol})`}
                                 icon={UserIconNameEnum.Receipt}
+                                maxDecimals={DEFAULT_DECIMAL_PLACES}
                                 testID={BrokerageSelector.FeeInput}
                             />
                         </GroupedListSection>

@@ -9,13 +9,16 @@ import * as Layer from 'effect/Layer';
 import * as Schedule from 'effect/Schedule';
 import * as Schema from 'effect/Schema';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
+
+import { ExchangeRateRepository } from '../../exchange-rate/repository/exchange-rate.repository';
 
 import type { YahooListingInterface } from '../interface/yahoo-listing.interface';
 
 export class YahooMarketDataService extends Context.Service<YahooMarketDataService>()('@budgie/market/YahooMarketDataService', {
     make: Effect.gen(function* () {
         const instrumentRepository = yield* InstrumentRepository;
+        const exchangeRateRepository = yield* ExchangeRateRepository;
         const client = (yield* HttpClient.HttpClient).pipe(
             HttpClient.filterStatus(status => status === 404 || (status >= 200 && status < 300))
         );
@@ -75,9 +78,20 @@ export class YahooMarketDataService extends Context.Service<YahooMarketDataServi
                 }
             };
         });
+        const recentChart = Effect.fnUntraced(function* (symbol: string) {
+            const now = yield* DateTime.nowAsDate;
+
+            return yield* chart(symbol, subDays(now, 7), now);
+        });
 
         return {
             chart,
+            quote: Effect.fn('YahooMarketDataService.quote')(function* (symbol: string) {
+                const data = yield* recentChart(symbol);
+                const price = data?.meta.regularMarketPrice ?? data?.indicators.quote.at(0)?.close.findLast(isPositiveNumber);
+
+                return isDefined(data) && isPositiveNumber(price) ? { currency: data.meta.currency, price } : null;
+            }),
             search: Effect.fn('YahooMarketDataService.search')(function* (query: string) {
                 const response = yield* request('v1/finance/search', Schema.Struct({ quotes: Schema.Array(listingSchema) }), {
                     ...Object.fromEntries([['q', query]]),
@@ -110,8 +124,7 @@ export class YahooMarketDataService extends Context.Service<YahooMarketDataServi
                 if (isDefined(existing)) {
                     return existing;
                 }
-                const now = yield* DateTime.nowAsDate;
-                const data = yield* chart(listing.symbol, subDays(now, 7), now);
+                const data = yield* recentChart(listing.symbol);
                 const currency = isDefined(data) ? yield* instrumentRepository.findByCode(data.meta.currency) : null;
                 if (!isDefined(currency) || currency.type !== InstrumentTypeEnum.FIAT) {
                     return yield* Effect.die(new Error('Unsupported trading currency'));
@@ -120,19 +133,27 @@ export class YahooMarketDataService extends Context.Service<YahooMarketDataServi
                 return yield* Db.transaction(
                     Effect.gen(function* () {
                         const instrument = yield* findExisting;
+                        if (isDefined(instrument)) {
+                            return instrument;
+                        }
+                        const created = yield* instrumentRepository.create({
+                            code,
+                            name: listing.name,
+                            symbol: listing.symbol.split('.').at(0) ?? listing.symbol,
+                            type: listing.type,
+                            priceProvider: InstrumentPriceProviderEnum.YAHOO,
+                            providerInstrumentId: listing.symbol,
+                            quoteInstrumentId: currency.id
+                        });
+                        const price = data?.meta.regularMarketPrice;
+                        if (isPositiveNumber(price)) {
+                            yield* exchangeRateRepository.bulkUpsert([
+                                { baseInstrumentId: created.id, quoteInstrumentId: currency.id, rate: price, source: 'yahoo.com' },
+                                { baseInstrumentId: currency.id, quoteInstrumentId: created.id, rate: 1 / price, source: 'yahoo.com' }
+                            ]);
+                        }
 
-                        return (
-                            instrument ??
-                            (yield* instrumentRepository.create({
-                                code,
-                                name: listing.name,
-                                symbol: listing.symbol.split('.').at(0) ?? listing.symbol,
-                                type: listing.type,
-                                priceProvider: InstrumentPriceProviderEnum.YAHOO,
-                                providerInstrumentId: listing.symbol,
-                                quoteInstrumentId: currency.id
-                            }))
-                        );
+                        return created;
                     })
                 );
             })
@@ -140,6 +161,6 @@ export class YahooMarketDataService extends Context.Service<YahooMarketDataServi
     })
 }) {
     static readonly layer = Layer.effect(YahooMarketDataService, YahooMarketDataService.make).pipe(
-        Layer.provide(InstrumentRepository.layer)
+        Layer.provide([InstrumentRepository.layer, ExchangeRateRepository.layer])
     );
 }

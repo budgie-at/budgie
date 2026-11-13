@@ -3,6 +3,7 @@ export const BrokerageSelector = {
     GainLine: 'Brokerage.GainLine',
     TradePage: 'Brokerage.TradePage',
     SearchInput: 'Brokerage.SearchInput',
+    SecurityButton: 'Brokerage.SecurityButton',
     Listing: (symbol: string) => `Brokerage.Listing.${symbol}` as const,
     QuantityInput: 'Brokerage.QuantityInput',
     PriceInput: 'Brokerage.PriceInput',

@@ -1,3 +1,4 @@
+import { ExternalSourceEnum, InstrumentTypeEnum } from '@budgie/contracts';
 import { AccountArchiveService } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
@@ -19,7 +20,8 @@ export const useArchiveAccount = (accountId: number, onArchived: EmptyFn) => {
     const { isLoading, runWithFeedback } = useShelvedAccountAction();
     const { account } = useGetAccountByIdQuery(accountId);
     const shareStatusResult = useLiveAtomValue(householdAccountShareAtom(accountId));
-    const isArchivable = isAccountArchivable(shareStatusResult);
+    const isBrokerageCash = account?.externalSource === ExternalSourceEnum.MANUAL && account.instrument.type === InstrumentTypeEnum.FIAT;
+    const isArchivable = isAccountArchivable(shareStatusResult) && !isBrokerageCash;
     const isShareLoading = AsyncResult.isInitial(shareStatusResult);
     const defaultAccountId = useSetting('defaultAccountId');
 

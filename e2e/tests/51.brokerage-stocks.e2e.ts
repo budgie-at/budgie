@@ -18,6 +18,22 @@ test('51 manual brokerage with stocks', { tags: ['accounts'], platforms: PENDING
         await expect(core.byId(screen, testId)).toHaveValue(digits);
         await core.done(ctx);
     };
+    const replaceDigits = async (testId: string, digits: string) => {
+        await core.scrollTo(ctx, testId);
+        await core.fillId(ctx, testId, digits);
+        await expect(core.byId(screen, testId)).toHaveValue(digits);
+        await core.done(ctx);
+    };
+    const pickSecurity = async (symbol: string) => {
+        await core.scrollTo(ctx, 'Brokerage.AddPositionButton');
+        await core.tapId(ctx, 'Brokerage.AddPositionButton');
+        await core.expectSettledId(ctx, 'Brokerage.SearchInput');
+        await core.fillId(ctx, 'Brokerage.SearchInput', symbol);
+        await core.expectId(ctx, `Brokerage.Listing.${symbol}`, 15_000);
+        await core.tapId(ctx, `Brokerage.Listing.${symbol}`);
+        await core.expectId(ctx, 'Brokerage.TradePage', 10_000);
+        await core.expectId(ctx, 'Brokerage.SecurityButton');
+    };
     const saveTrade = async (destinationId: string) => {
         await expect(core.byId(screen, 'Brokerage.SaveButton')).toBeEnabled({ timeout: 3_000 });
         await core.tapId(ctx, 'Brokerage.SaveButton');
@@ -41,15 +57,10 @@ test('51 manual brokerage with stocks', { tags: ['accounts'], platforms: PENDING
     });
 
     await core.phase('add a position found by ticker', async () => {
-        await core.scrollTo(ctx, 'Brokerage.AddPositionButton');
-        await core.tapId(ctx, 'Brokerage.AddPositionButton');
-        await core.expectId(ctx, 'Brokerage.TradePage', 10_000);
-        await core.fillId(ctx, 'Brokerage.SearchInput', 'BGTX');
-        await core.done(ctx);
-        await core.expectId(ctx, 'Brokerage.Listing.BGTX', 15_000);
-        await core.tapId(ctx, 'Brokerage.Listing.BGTX');
+        await pickSecurity('BGTX');
+        await expect(core.byId(screen, 'Brokerage.PriceInput')).toHaveValue('120', { timeout: 10_000 });
         await typeDigits('Brokerage.QuantityInput', '10');
-        await typeDigits('Brokerage.PriceInput', '100');
+        await replaceDigits('Brokerage.PriceInput', '100');
         await expect(core.byId(screen, 'Brokerage.TradeTotal')).toHaveText(/\$1,000/, { timeout: 3_000 });
         await saveTrade('Institution.Page');
     });
@@ -79,7 +90,8 @@ test('51 manual brokerage with stocks', { tags: ['accounts'], platforms: PENDING
         await core.fillId(ctx, 'Brokerage.QuantityInput', '4');
         await core.done(ctx);
         await expect(core.byId(screen, 'Brokerage.QuantityHint')).toHaveText(/Up to 10 shares/, { timeout: 3_000 });
-        await typeDigits('Brokerage.PriceInput', '125');
+        await expect(core.byId(screen, 'Brokerage.PriceInput')).toHaveValue('120', { timeout: 10_000 });
+        await replaceDigits('Brokerage.PriceInput', '125');
         await expect(core.byId(screen, 'Brokerage.TradeTotal')).toHaveText(/\$500/, { timeout: 3_000 });
         await saveTrade('AccountDetails.Page');
     });
@@ -96,14 +108,8 @@ test('51 manual brokerage with stocks', { tags: ['accounts'], platforms: PENDING
     await core.phase('a euro-quoted listing shows its price change in euros', async () => {
         await core.openLink(ctx, 'budgie://institution/1');
         await core.expectId(ctx, 'Institution.Page', 10_000);
-        await expect(screen.getByRole('button', { name: /^Sell BGTX, −4 BGTX → \$500$/ }).first()).toBeVisible({ timeout: 10_000 });
-        await core.scrollTo(ctx, 'Brokerage.AddPositionButton');
-        await core.tapId(ctx, 'Brokerage.AddPositionButton');
-        await core.expectId(ctx, 'Brokerage.TradePage', 10_000);
-        await core.fillId(ctx, 'Brokerage.SearchInput', 'BGEU');
-        await core.done(ctx);
-        await core.expectId(ctx, 'Brokerage.Listing.BGEU', 15_000);
-        await core.tapId(ctx, 'Brokerage.Listing.BGEU');
+        await expect(screen.getByRole('button', { name: /^Sell BGTX, 4 BGTX @ \$125, \+\$500/ }).first()).toBeVisible({ timeout: 10_000 });
+        await pickSecurity('BGEU');
         await typeDigits('Brokerage.QuantityInput', '1');
         await typeDigits('Brokerage.PriceInput', '100');
         await saveTrade('Institution.Page');

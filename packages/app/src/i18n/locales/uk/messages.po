@@ -838,11 +838,16 @@ msgstr "{providerName} · Вартість придбання невідома"
 msgid "{providerName} sync"
 msgstr "Синхронізація {providerName}"
 
+#: src/transaction/components/transaction-security-trade-detail/transaction-security-trade-detail.tsx
+msgid "{quantity} @ {unitPrice}"
+msgstr "{quantity} @ {unitPrice}"
+
 #: src/inzhur/component/update-inzhur-account-page/update-inzhur-account-page.tsx
 msgid "{quantityLabel} · updated from imports"
 msgstr "{quantityLabel} · оновлено з імпортів"
 
 #: src/account/component/security-account-card/security-account-card.tsx
+#: src/brokerage/component/brokerage-holding-row/brokerage-holding-row.tsx
 msgid "{quantityLabel}, worth {valueLabel}"
 msgstr "{quantityLabel}, вартість {valueLabel}"
 
@@ -2273,6 +2278,10 @@ msgstr "Завантажуємо ваші дані з iCloud…"
 msgid "Brokerage"
 msgstr "Брокер"
 
+#: src/sync/component/bank-integration-rename-card/bank-integration-rename-card.tsx
+msgid "Brokerage name"
+msgstr "Назва брокера"
+
 #: src/category/components/category-icon-fix-row/category-icon-fix-row.tsx
 msgid "Browse icons"
 msgstr "Переглянути значки"
@@ -2543,6 +2552,7 @@ msgid "Cash"
 msgstr "Готівка"
 
 #: src/account/component/institution-account-row/institution-account-row.tsx
+#: src/brokerage/query/use-brokerage-summary.query.ts
 msgctxt "Brokerage cash account"
 msgid "Cash"
 msgstr "Кошти"
@@ -2703,6 +2713,10 @@ msgstr "Перевірте написання або спробуйте код, 
 #: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 msgid "Check the spelling or try a code like EUR."
 msgstr "Перевірте написання або спробуйте код, як-от EUR."
+
+#: src/brokerage/component/security-selector-modal-content/security-selector-modal-content.tsx
+msgid "Check the spelling or try a ticker like AAPL."
+msgstr "Перевірте написання або спробуйте тикер, як-от AAPL."
 
 #: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 msgid "Check the spelling or try a ticker like BTC."
@@ -2888,6 +2902,11 @@ msgstr "Знову вибрати файл ключа"
 #: src/categorize-inbox/components/categorize-inbox-payments-screen/categorize-inbox-payments-screen.tsx
 msgid "Choose payments"
 msgstr "Обрати платежі"
+
+#: src/brokerage/component/security-picker-row/security-picker-row.tsx
+#: src/brokerage/component/security-selector-modal-content/security-selector-modal-content.tsx
+msgid "Choose security"
+msgstr "Оберіть цінний папір"
 
 #: src/categorize-inbox/components/categorize-inbox-tag-provider/categorize-inbox-tag-provider.tsx
 msgid "Choose tags"
@@ -3455,6 +3474,10 @@ msgstr "Не вдалося видалити родинну групу"
 #: src/ai/component/ai-model-storage/ai-model-storage.tsx
 msgid "Could not remove unused downloads"
 msgstr "Не вдалося видалити невикористані завантаження"
+
+#: src/sync/component/bank-integration-rename-card/bank-integration-rename-card.tsx
+msgid "Could not rename brokerage"
+msgstr "Не вдалося перейменувати брокера"
 
 #: src/settings/hooks/use-sync-repairs-action.hook.ts
 msgid "Could not repair sync data"
@@ -5001,6 +5024,10 @@ msgstr "Фільтри"
 msgid "Filters · {activeCount}"
 msgstr "Фільтри · {activeCount}"
 
+#: src/brokerage/component/security-selector-modal-content/security-selector-modal-content.tsx
+msgid "Find a stock or ETF"
+msgstr "Знайдіть акцію або ETF"
+
 #: src/import/components/import-preset-options/import-preset-options.tsx
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
 msgid "FinEye"
@@ -5297,6 +5324,10 @@ msgstr "Імпорт історії призупинено"
 #: src/onboarding/component/onboarding-seal-footer/onboarding-seal-footer.tsx
 msgid "Hold to seal with this PIN"
 msgstr "Утримуйте, щоб запечатати цим PIN‑кодом"
+
+#: src/brokerage/component/brokerage-holdings/brokerage-holdings.tsx
+msgid "Holdings · {holdingsCount}"
+msgstr "Активи · {holdingsCount}"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Home screen"
@@ -6385,6 +6416,7 @@ msgstr "Перенесено в готівку"
 #: src/budget/components/budget-name-field/budget-name-field.tsx
 #: src/category/components/category-form/category-form.tsx
 #: src/recurring/components/recurring-form-title-field/recurring-form-title-field.tsx
+#: src/sync/component/bank-integration-rename-card/bank-integration-rename-card.tsx
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Name"
 msgstr "Назва"
@@ -8571,6 +8603,11 @@ msgstr "Пошук архівних рахунків…"
 msgid "Search by code or description…"
 msgstr "Пошук за кодом або описом..."
 
+#: src/brokerage/component/security-picker-row/security-picker-row.tsx
+#: src/brokerage/component/security-selector-modal-content/security-selector-modal-content.tsx
+msgid "Search by ticker, ISIN or company name."
+msgstr "Шукайте за тикером, ISIN або назвою компанії."
+
 #: src/transaction/components/transaction-category-filter-content/transaction-category-filter-content.tsx
 msgid "Search categories..."
 msgstr "Пошук категорій..."
@@ -9013,6 +9050,14 @@ msgstr "SmartBudget"
 #: src/inzhur/component/inzhur-operations-fund-row/inzhur-operations-fund-row.tsx
 msgid "Sold {soldLabel}"
 msgstr "Продано {soldLabel}"
+
+#: src/brokerage/component/brokerage-gain-line/brokerage-gain-line.tsx
+msgid "Some prices are unavailable, so this total is incomplete"
+msgstr "Деякі ціни недоступні, тому підсумок неповний"
+
+#: src/brokerage/component/brokerage-institution-row-detail/brokerage-institution-row-detail.tsx
+msgid "Some prices unavailable"
+msgstr "Деякі ціни недоступні"
 
 #: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
 msgid "Some transactions may be hidden by the account or amount filter."
@@ -9865,7 +9910,7 @@ msgstr "Позначка показує, скільки має бути відк
 msgid "Tick marks where spending should be by today."
 msgstr "Позначка показує, скільки мало б бути витрачено на сьогодні."
 
-#: src/brokerage/component/security-search-section/security-search-section.tsx
+#: src/brokerage/component/security-selector-modal-content/security-selector-modal-content.tsx
 msgid "Ticker, ISIN or name"
 msgstr "Тікер, ISIN або назва"
 
@@ -10582,10 +10627,12 @@ msgid "Value"
 msgstr "Вартість"
 
 #: src/account/component/security-account-card/security-account-card.tsx
+#: src/brokerage/component/brokerage-holding-row/brokerage-holding-row.tsx
 msgid "value unavailable"
 msgstr "вартість недоступна"
 
 #: src/account/component/security-account-card/security-account-card.tsx
+#: src/brokerage/component/brokerage-holding-row/brokerage-holding-row.tsx
 msgid "Value unavailable"
 msgstr "Вартість недоступна"
 

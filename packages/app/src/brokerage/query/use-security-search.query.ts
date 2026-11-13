@@ -21,5 +21,11 @@ const securitySearchAtom = Atom.family((query: string) =>
     )
 );
 
-export const useSecuritySearchQuery = (query: string) =>
-    AsyncResult.getOrElse(useAtomValue(securitySearchAtom(useDeferredValue(query.trim()))), () => []);
+export const useSecuritySearchQuery = (query: string) => {
+    const result = useAtomValue(securitySearchAtom(useDeferredValue(query.trim())));
+
+    return {
+        listings: AsyncResult.getOrElse(result, () => []),
+        isLoading: AsyncResult.isInitial(result) || AsyncResult.isWaiting(result)
+    };
+};

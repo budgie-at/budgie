@@ -65,7 +65,7 @@ export const BankIntegrationAccountRow = ({ account }: Props) => {
         <View testID={rowTestID} className="min-h-[60px] flex-row items-center gap-x-xl px-3xl">
             <View className="absolute top-0 left-[64px] right-0 h-hairline bg-surface-separator" pointerEvents="none" />
             <View className="relative">
-                <BankIntegrationAccountIcon icon={account.icon} />
+                <BankIntegrationAccountIcon icon={account.icon} instrument={account.instrument} />
                 {isFailed ? <AccountSyncBadge state={AccountSyncStateEnum.FAILED} /> : null}
             </View>
             <View className="min-w-0 flex-1 gap-y-xxs py-lg">

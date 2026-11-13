@@ -1,4 +1,4 @@
-import { InstrumentTypeEnum } from '@budgie/contracts';
+import { InstrumentPriceProviderEnum, InstrumentTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { useLocalSearchParams } from 'expo-router';
@@ -12,6 +12,7 @@ import { useGetAccountsByIntegrationIdQuery } from '../../../../account/query/us
 import { SecurityHoldingRow } from '../../../../brokerage/component/security-holding-row/security-holding-row';
 import { SecurityTradeAmountSection } from '../../../../brokerage/component/security-trade-amount-section/security-trade-amount-section';
 import { SecurityTradeForm } from '../../../../brokerage/component/security-trade-form/security-trade-form';
+import { useSecurityPriceQuery } from '../../../../brokerage/query/use-security-price.query';
 import { BrokerageService } from '../../../../brokerage/service/brokerage.service';
 
 import type { SecurityTradeFormValues } from '../../../../brokerage/constant/security-trade-form-schema.constant';
@@ -26,6 +27,9 @@ export default function SellSecurity() {
     const cashAccounts = accounts?.filter(candidate => candidate.instrument.type === InstrumentTypeEnum.FIAT) ?? [];
     const cash = cashAccounts.find(candidate => candidate.instrumentId === account?.instrument.quoteInstrumentId) ?? cashAccounts.at(0);
     const currencySymbol = cash?.instrument.symbol ?? '';
+    const yahooSymbol =
+        account?.instrument.priceProvider === InstrumentPriceProviderEnum.YAHOO ? account.instrument.providerInstrumentId : null;
+    const suggestedPrice = useSecurityPriceQuery(yahooSymbol ?? '', cash?.instrument.code ?? '');
 
     const handleSubmit = (values: SecurityTradeFormValues) =>
         Effect.flatMap(BrokerageService, brokerageService => brokerageService.sell(accountId, values));
@@ -36,6 +40,7 @@ export default function SellSecurity() {
             currencySymbol={currencySymbol}
             isReady
             maxQuantity={balance}
+            suggestedPrice={suggestedPrice}
             onSubmit={handleSubmit}
             summary={<SecurityTradeAmountSection title={t`Proceeds`} feeSign={-1} currencySymbol={currencySymbol} />}
         >

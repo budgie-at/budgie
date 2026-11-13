@@ -23,7 +23,9 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
+import { DEFAULT_DECIMAL_PLACES } from '../../i18n/constant/default-decimal-places.constant';
 import { HistoricalMarketDataDrainerService } from '../../market-data/service/historical-market-data-drainer.service';
+import { roundHalfExpand } from '../../market-data/utils/round-half-expand.util';
 import { InsufficientSecurityHoldingError } from '../error/insufficient-security-holding.error';
 
 import type { SecurityTradeFormValues } from '../constant/security-trade-form-schema.constant';
@@ -71,7 +73,8 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
             isSell: boolean
         ) {
             const cash = yield* findCashAccount(security);
-            const cashAmount = trade.quantity * trade.price;
+            const cashAmount = roundHalfExpand(trade.quantity * trade.price, DEFAULT_DECIMAL_PLACES);
+            const fee = roundHalfExpand(trade.fee, DEFAULT_DECIMAL_PLACES);
             const quantityMicroUnits = convertToMicroUnits(trade.quantity);
             const { baseInstrumentId, baseAmount } = yield* entryBaseValuationService.valueMicroUnitEntry({
                 accountId: cash.id,
@@ -85,10 +88,10 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
                 quotedInstrumentId: cash.instrumentId,
                 quotedUnitPrice: convertToMicroUnits(trade.price)
             };
-            const feeEntries = isPositiveNumber(trade.fee)
+            const feeEntries = isPositiveNumber(fee)
                 ? [
                       {
-                          ...buildEntry(cash.id, TransactionEntryTypeEnum.FEE, trade.fee),
+                          ...buildEntry(cash.id, TransactionEntryTypeEnum.FEE, fee),
                           categoryId: BANK_FEE_CATEGORY_ID,
                           categorySource: CategorySourceEnum.FEE
                       }

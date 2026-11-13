@@ -134,4 +134,19 @@ describe('market-data/brokerage-trades', () => {
             expect(yield* fetchAccountBalance(cash.id)).toBe(1_497_000_000);
         }).pipe(Effect.provide(TestLayer))
     );
+
+    it.effect('rounds trade cash and fee to cents before storing them', () =>
+        Effect.gen(function* () {
+            const { brokerageService, cash } = yield* createBrokerage;
+
+            yield* brokerageService.buy(cash.integrationId ?? 0, LISTING, {
+                quantity: 21,
+                price: 43.1471,
+                fee: 25.157,
+                operatedAt: TRADE_DAY
+            });
+
+            expect(yield* fetchAccountBalance(cash.id)).toBe(2_000_000_000 - 906_090_000 - 25_160_000);
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

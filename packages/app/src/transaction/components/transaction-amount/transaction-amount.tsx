@@ -82,13 +82,7 @@ export const TransactionAmount = ({ transaction: fullTransaction, accountId = nu
 
     if (isDefined(fromEntry) && isDefined(toEntry)) {
         return [fromEntry, toEntry].some(entry => isSecurityInstrumentType(entry.account.instrument.type)) ? (
-            <TransactionSecurityTradeAmount
-                transaction={transaction}
-                fromEntry={fromEntry}
-                toEntry={toEntry}
-                accountId={accountId}
-                testID={amountTestID}
-            />
+            <TransactionSecurityTradeAmount transaction={transaction} accountId={accountId} testID={amountTestID} />
         ) : (
             <TransactionTransferAmount fromEntry={fromEntry} toEntry={toEntry} accountId={accountId} testID={amountTestID} />
         );

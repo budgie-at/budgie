@@ -73,6 +73,8 @@ it.effect('decodes listings, resolves currency and bridges EUR quotes at read ti
         expect(yield* yahoo.search('Test')).toStrictEqual([listing]);
         const instrument = yield* yahoo.resolveOrCreate(listing);
         expect(instrument.quoteInstrumentId).toBe(euro.id);
+        expect((yield* rates.findByBaseAndQuoteIds(instrument.id, euro.id))?.rate).toBe(100);
+        expect(yield* yahoo.quote('TEST.DE')).toStrictEqual({ currency: 'EUR', price: 100 });
         expect((yield* yahoo.resolveOrCreate(listing)).id).toBe(instrument.id);
         const account = yield* testSeedService.account({ instrumentId: instrument.id, type: AccountTypeEnum.STOCKS });
         const syncing = yield* sync.sync().pipe(Effect.forkChild);
