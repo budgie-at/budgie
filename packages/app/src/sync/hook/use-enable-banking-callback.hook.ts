@@ -3,7 +3,7 @@ import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
-import { useIsFocused, usePathname } from 'expo-router';
+import { useIsFocused, useLocalSearchParams, usePathname } from 'expo-router';
 import { useEffect, useEffectEvent } from 'react';
 
 import { isDefined } from '@rnw-community/shared';
@@ -29,6 +29,11 @@ export const useEnableBankingCallback = (
     const callbackUrl = useAtomValue(enableBankingCallbackUrlAtom);
     const isFocused = useIsFocused();
     const pathname = usePathname();
+    const { country, name } = useLocalSearchParams<{ country?: string; name?: string }>();
+    const setupPath =
+        isDefined(country) && isDefined(name)
+            ? `/create-account/bank/${encodeURIComponent(country)}/${encodeURIComponent(name)}`
+            : pathname;
 
     const handleCallback = useEffectEvent((url: string) =>
         run(
@@ -58,9 +63,9 @@ export const useEnableBankingCallback = (
 
     useEffect(() => {
         if (isFocused) {
-            appAtomRegistry.set(enableBankingSetupPathAtom, pathname.split('/').map(encodeURIComponent).join('/'));
+            appAtomRegistry.set(enableBankingSetupPathAtom, setupPath);
         }
-    }, [isFocused, pathname]);
+    }, [isFocused, setupPath]);
 
     useEffect(() => () => void appAtomRegistry.set(enableBankingSetupPathAtom, null), []);
 

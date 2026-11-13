@@ -16,6 +16,7 @@ import * as Clock from 'effect/Clock';
 import * as Context from 'effect/Context';
 import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
+import * as Exit from 'effect/Exit';
 import * as Layer from 'effect/Layer';
 import * as Predicate from 'effect/Predicate';
 import * as Schema from 'effect/Schema';
@@ -254,6 +255,13 @@ export class EnableBankingSyncService extends Context.Service<EnableBankingSyncS
             isSupported: !isNotEmptyArray(aspsp.required_psu_headers ?? [])
         });
 
+        const publicBanks = yield* Effect.cachedWithTTL(
+            Effect.map(new EnableBankingClient(null).getPublicAspsps(), ({ aspsps }) =>
+                aspsps.filter(aspsp => aspsp.psu_types?.includes('personal') === true).map(toBank)
+            ),
+            exit => (Exit.isSuccess(exit) ? '1 hour' : 0)
+        );
+
         return {
             ...pollingSyncService,
             listBanks: Effect.fn('EnableBankingSyncService.listBanks')(function* (applicationId: string, country: string | null = null) {
@@ -261,11 +269,7 @@ export class EnableBankingSyncService extends Context.Service<EnableBankingSyncS
 
                 return aspsps.map(toBank);
             }),
-            listPublicBanks: Effect.fn('EnableBankingSyncService.listPublicBanks')(function* () {
-                const { aspsps } = yield* new EnableBankingClient(null).getPublicAspsps();
-
-                return aspsps.filter(aspsp => aspsp.psu_types?.includes('personal') === true).map(toBank);
-            }),
+            listPublicBanks: Effect.fn('EnableBankingSyncService.listPublicBanks')(() => publicBanks),
             listApplicationIds: listApplicationIds(null),
             forgetCredentials: (applicationId: string) => clientService.forgetJwt(applicationId),
             validateCredentials: Effect.fn('EnableBankingSyncService.validateCredentials')(function* (applicationId: string) {

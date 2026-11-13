@@ -221,9 +221,12 @@ describe('enable-banking/authorization', () => {
     it.effect('lists the public bank catalog without a key and keeps only personal banks', () =>
         Effect.gen(function* () {
             const service = yield* EnableBankingSyncService;
+            let catalogRequests = 0;
             mockServer.use(
-                http.get('https://enablebanking.com/api/aspsps', () =>
-                    HttpResponse.json({
+                http.get('https://enablebanking.com/api/aspsps', () => {
+                    catalogRequests += 1;
+
+                    return HttpResponse.json({
                         aspsps: [
                             {
                                 name: 'Personal Bank',
@@ -234,13 +237,15 @@ describe('enable-banking/authorization', () => {
                             { name: 'Business Bank', country: 'DE', maximum_consent_validity: 86_400, psu_types: ['business'] },
                             { name: 'Untyped Bank', country: 'DE', maximum_consent_validity: 86_400 }
                         ]
-                    })
-                )
+                    });
+                })
             );
 
             expect(yield* service.listPublicBanks()).toEqual([
                 { name: 'Personal Bank', country: 'DE', maximumConsentValiditySeconds: 7_776_000, isBeta: false, isSupported: true }
             ]);
+            yield* service.listPublicBanks();
+            expect(catalogRequests).toBe(1);
         }).pipe(Effect.provide(TestLayer))
     );
 

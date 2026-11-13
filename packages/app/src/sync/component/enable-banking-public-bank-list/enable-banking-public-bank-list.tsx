@@ -1,5 +1,5 @@
 import { ExternalSourceEnum, UserIconNameEnum } from '@budgie/contracts';
-import { useAtomValue } from '@effect/atom-react/Hooks';
+import { useAtomRefresh, useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import { router } from 'expo-router';
@@ -8,6 +8,7 @@ import { View } from 'react-native';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
+import { SearchablePageErrorState } from '../../../@generic/component/searchable-page-error-state/searchable-page-error-state';
 import { CreateAccountSelector } from '../../../app/(main)/create-account/create-account.selector';
 import { enableBankingPublicBanksAtom } from '../../constant/enable-banking-public-banks-atom.constant';
 import { openEnableBankingBank } from '../../utils/open-enable-banking-bank.util';
@@ -27,11 +28,15 @@ const handleGoBack = () => {
 export const EnableBankingPublicBankList = () => {
     const { t } = useLingui();
     const result = useAtomValue(enableBankingPublicBanksAtom);
+    const retry = useAtomRefresh(enableBankingPublicBanksAtom);
+    const isLoading = AsyncResult.isInitial(result) || result.waiting;
+    const errorState = AsyncResult.isFailure(result) && !isLoading ? <SearchablePageErrorState onRetry={retry} /> : null;
 
     return (
         <EnableBankingBankStep
             banks={AsyncResult.getOrElse(result, () => NO_BANKS)}
-            isLoading={AsyncResult.isInitial(result)}
+            isLoading={isLoading}
+            errorState={errorState}
             preselectedBankName={null}
             onSelectBank={openEnableBankingBank}
             onGoBack={handleGoBack}
