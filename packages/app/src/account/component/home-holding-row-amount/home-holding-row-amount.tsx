@@ -23,6 +23,8 @@ interface Props {
     readonly isReturnLoading: boolean;
 }
 
+const PLACEHOLDER_PERCENT = 0.9999;
+
 const amountVariants = cva('gap-y-xxs', {
     variants: { isStacked: { true: 'items-start', false: 'max-w-[55%] shrink-0 items-end' } }
 });
@@ -34,8 +36,9 @@ export const HomeHoldingRowAmount = ({ holding, holdingReturn, isReturnLoading }
 
     const instrumentCode = holding.instrument.code;
     const isReturnPending = isReturnLoading && !isDefined(holdingReturn);
-    const percent =
+    const realPercent =
         isDefined(holdingReturn) && isPositiveNumber(holdingReturn.costBasis) ? holdingReturn.gain / holdingReturn.costBasis : null;
+    const percent = isDefined(holdingReturn) ? realPercent : PLACEHOLDER_PERCENT;
 
     return (
         <View className={amountVariants({ isStacked })}>
@@ -58,7 +61,7 @@ export const HomeHoldingRowAmount = ({ holding, holdingReturn, isReturnLoading }
             {isDefined(holdingReturn) || isReturnPending ? (
                 <LoadingContent isLoading={isReturnPending} loadingIndicator={null}>
                     <BrokerageReturnText
-                        gain={holdingReturn?.gain ?? 0}
+                        gain={holdingReturn?.gain ?? holding.value}
                         percent={percent}
                         instrumentSymbol={defaultInstrument.symbol}
                         testID={HomeHoldingRowSelector.Return(instrumentCode)}

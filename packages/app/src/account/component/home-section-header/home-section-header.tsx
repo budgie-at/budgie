@@ -35,6 +35,7 @@ export const HomeSectionHeader = ({ section, holdingReturns }: Props) => {
                 <HomeSectionReturnLine
                     sectionReturn={holdingReturns.bySectionType.get(section.type)}
                     isLoading={holdingReturns.isLoading}
+                    placeholderGain={section.total}
                     testID={HomeSectionHeaderSelector.Return(section.type)}
                 />
             ) : null}

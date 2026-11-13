@@ -10,15 +10,19 @@ import { defaultInstrumentAtom } from '../../../settings/constants/settings-atom
 
 import type { PortfolioReturnInterface } from '../../../brokerage/interface/portfolio-return.interface';
 
+const PLACEHOLDER_PERCENT = 0.9999;
+
 interface Props {
     readonly sectionReturn: Pick<PortfolioReturnInterface, 'gain' | 'percent'> | undefined;
     readonly isLoading: boolean;
+    readonly placeholderGain: number;
     readonly testID: string;
 }
 
-export const HomeSectionReturnLine = ({ sectionReturn, isLoading, testID }: Props) => {
+export const HomeSectionReturnLine = ({ sectionReturn, isLoading, placeholderGain, testID }: Props) => {
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
 
+    const percent = isDefined(sectionReturn) ? sectionReturn.percent : PLACEHOLDER_PERCENT;
     const isEmpty = !isLoading && !isDefined(sectionReturn);
     const importantForAccessibility = isEmpty ? 'no-hide-descendants' : 'auto';
 
@@ -30,8 +34,8 @@ export const HomeSectionReturnLine = ({ sectionReturn, isLoading, testID }: Prop
         >
             <LoadingContent isLoading={isLoading} loadingIndicator={null}>
                 <BrokerageReturnText
-                    gain={sectionReturn?.gain ?? 0}
-                    percent={sectionReturn?.percent ?? null}
+                    gain={sectionReturn?.gain ?? placeholderGain}
+                    percent={percent}
                     instrumentSymbol={defaultInstrument.symbol}
                     testID={testID}
                 />
