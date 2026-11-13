@@ -74,20 +74,36 @@ test('51 manual brokerage with stocks', { tags: ['accounts'], platforms: PENDING
         await expect(core.byId(screen, 'Brokerage.GainLine')).toHaveText(/▲ \$200/, { timeout: 10_000 });
         await core.tapId(ctx, 'PageHeader.BackButton');
         await core.expectId(ctx, 'HomePage.TotalBalance', 10_000);
+        await core.scrollTo(ctx, 'HomeHolding.BGTX');
+        await expect(core.byId(screen, 'HomeHolding.Value.BGTX')).toHaveText(/\$1,200/, { timeout: 10_000 });
+        await expect(core.byId(screen, 'HomeHolding.Return.BGTX')).toHaveText(/▲ \$200/, { timeout: 10_000 });
+        await expect(core.byId(screen, 'HomeHolding.Caption.BGTX')).toHaveText(/^10 BGTX/);
         await core.scrollTo(ctx, 'InstitutionRow.E2E Broker');
-        await expect(core.byId(screen, 'InstitutionRow.E2E Broker')).toHaveText(/\$1,200/, { timeout: 10_000 });
+        await expect(core.byId(screen, 'InstitutionRow.E2E Broker')).toHaveText(/Cash · 1 position/, { timeout: 10_000 });
     });
 
-    await core.phase('sell part of the position', async () => {
+    await core.phase('the brokerage row opens the broker, the holding row opens the stock', async () => {
         await core.tapId(ctx, 'InstitutionRow.E2E Broker');
         await core.expectId(ctx, 'Institution.Page', 10_000);
-        await core.scrollTo(ctx, position);
-        await core.tapUntil(ctx, position, () => core.expectId(ctx, 'CurrencyMarket.Header.BGTX', 10_000));
+        await core.tapId(ctx, 'PageHeader.BackButton');
+        await core.expectId(ctx, 'HomePage.TotalBalance', 10_000);
+        await core.scrollToCentered(ctx, 'HomeHolding.BGTX');
+        await core.tapUntil(ctx, 'HomeHolding.BGTX', () => core.expectId(ctx, 'CurrencyMarket.Header.BGTX', 10_000));
         await core.expectText(ctx, '10 BGTX', 10_000);
         await core.expectText(ctx, '$1,200', 10_000);
         const heldIn = screen.getByRole('button', { name: /^E2E Broker/ }).first();
         await scrollTo(screen, heldIn);
         await heldIn.tap();
+        await core.expectId(ctx, 'Institution.Page', 10_000);
+    });
+
+    await core.phase('sell part of the position', async () => {
+        await core.tapId(ctx, 'Institution.SettingsButton');
+        await core.expectId(ctx, 'BankIntegration.Page', 10_000);
+        await core.scrollTo(ctx, 'BankIntegration.AccountRow.2');
+        await core.tapId(ctx, 'BankIntegration.AccountRow.2.Menu');
+        await core.expectId(ctx, 'BankIntegration.AccountRow.2.Menu.Details', 3_000);
+        await core.tapId(ctx, 'BankIntegration.AccountRow.2.Menu.Details');
         await core.expectId(ctx, 'AccountDetails.Page', 10_000);
         await core.tapUntil(ctx, 'AccountDetails.ActionsButton', () => core.expectId(ctx, 'Brokerage.SellButton', 5_000));
         await core.tapId(ctx, 'Brokerage.SellButton');
