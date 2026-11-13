@@ -4,30 +4,30 @@ import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
+import { useAnimatedStyle, useReducedMotion, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 import Toast from 'react-native-toast-message';
-import { scheduleOnRN } from 'react-native-worklets';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { ReceiptScannerModule } from '../../../../modules/receipt-scanner';
 import { CircularActionButton } from '../../../@generic/component/circular-action-button/circular-action-button';
-import { EASE_OUT, MOTION_BASE_DURATION, MOTION_FAST_DURATION, SPRING_SETTLE } from '../../../@generic/constant/motion.constant';
+import { EASE_OUT, MOTION_FAST_DURATION, SPRING_SETTLE } from '../../../@generic/constant/motion.constant';
 import { useCreateActionContext } from '../../../@generic/context/create-action.context';
-import { CreateActionInterface } from '../../../@generic/interface/create-action.interface';
 import { aiSystemStatusAtom } from '../../../ai/constant/ai-system-status-atom.constant';
 import { useVoiceInputContext } from '../../../ai/context/voice-input.context';
 import { AiSystemStateEnum } from '../../../ai/enum/ai-system-state.enum';
 import { ReceiptSourceMenu } from '../../../receipt/components/receipt-source-menu/receipt-source-menu';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
-import { ActionItemButton } from '../action-item-button/action-item-button';
-import { ActionItem } from '../action-item/action-item';
-import { AiButton } from '../ai-button/ai-button';
+import { CreateMenuChip } from '../create-menu-chip/create-menu-chip';
+import { CreateMenuContextAction } from '../create-menu-context-action/create-menu-context-action';
+import { CreateMenuReveal } from '../create-menu-reveal/create-menu-reveal';
+import { CreateMenuTile } from '../create-menu-tile/create-menu-tile';
 
 import { CreateTransactionMenuSelector } from './create-transaction-menu.selector';
 
-const BUTTON_ROTATION_ACTIVE = 45;
-const HIDDEN_SCALE = 0.95;
+const CLOSE_ROTATION = 45;
+const OPEN_SPRING = { ...SPRING_SETTLE, duration: 320 };
+const FADE_TIMING = { duration: MOTION_FAST_DURATION, easing: EASE_OUT };
 
 interface Props {
     readonly isOpen: boolean;
@@ -41,17 +41,15 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
     const { t } = useLingui();
     const { createAction } = useCreateActionContext();
     const { open: openVoiceInput } = useVoiceInputContext();
-    const [isVisible, setIsVisible] = useState(false);
+    const [hasOpened, setHasOpened] = useState(false);
 
     const isVoiceInputEnabled = useSetting('isAiVoiceInputEnabled');
     const isAiAvailable = useAtomValue(aiSystemStatusAtom).state !== AiSystemStateEnum.DISABLED;
+    const isReducedMotion = useReducedMotion();
+    const progress = useSharedValue(0);
 
-    const rotation = useSharedValue(0);
-    const menuScale = useSharedValue(HIDDEN_SCALE);
-    const menuOpacity = useSharedValue(0);
-
-    if (isOpen && !isVisible) {
-        setIsVisible(true);
+    if (isOpen && !hasOpened) {
+        setHasOpened(true);
     }
 
     const handleCreateExpense = () => {
@@ -92,105 +90,106 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
     };
 
     const showAiButton = isVoiceInputEnabled && isAiAvailable && !isDefined(createAction);
-
-    const leadingItems: CreateActionInterface[] = [
-        ...(isDefined(createAction)
-            ? [{ testID: CreateTransactionMenuSelector.item(0), ...createAction, onPress: handleCreateAction }]
-            : []),
-        {
-            icon: UserIconNameEnum.TrendingDown,
-            label: t`Expense`,
-            testID: CreateTransactionMenuSelector.Expense,
-            variant: 'destructive',
-            onPress: handleCreateExpense
-        }
-    ];
-
-    const trailingItems: CreateActionInterface[] = [
-        {
-            icon: UserIconNameEnum.TrendingUp,
-            label: t`Income`,
-            testID: CreateTransactionMenuSelector.Income,
-            variant: 'positive',
-            onPress: handleCreateIncome
-        },
-        {
-            icon: UserIconNameEnum.ArrowLeftRight,
-            label: t`Transfer`,
-            testID: CreateTransactionMenuSelector.Transfer,
-            variant: 'warning',
-            onPress: handleCreateTransfer
-        },
-        {
-            icon: UserIconNameEnum.Repeat,
-            label: t`Recurring`,
-            testID: CreateTransactionMenuSelector.Recurring,
-            variant: 'violet',
-            onPress: handleCreateRecurring
-        },
-        {
-            icon: UserIconNameEnum.Wallet,
-            label: t`Account`,
-            testID: CreateTransactionMenuSelector.AddAccount,
-            variant: 'secondary',
-            onPress: handleCreateAccount
-        }
-    ];
-
-    const actionRows = [
-        ...leadingItems.map(item => <ActionItemButton key={item.label} {...item} />),
-        ...(isDefined(ReceiptScannerModule) ? [<ReceiptSourceMenu key="receipt-source" onClose={onClose} />] : []),
-        ...trailingItems.map(item => <ActionItemButton key={item.label} {...item} />)
-    ];
+    const contextActionTestID = createAction?.testID ?? CreateTransactionMenuSelector.item(0);
+    const pointerEvents = isOpen ? 'box-none' : 'none';
+    const accessibilityVisibility = isOpen ? 'auto' : 'no-hide-descendants';
 
     useEffect(() => {
         if (isOpen) {
             Toast.hide();
-            rotation.set(withSpring(BUTTON_ROTATION_ACTIVE, SPRING_SETTLE));
-            menuScale.set(withSpring(1, SPRING_SETTLE));
-            menuOpacity.set(withTiming(1, { duration: MOTION_BASE_DURATION, easing: EASE_OUT }));
-        } else if (isVisible) {
-            rotation.set(withSpring(0, SPRING_SETTLE));
-            menuScale.set(withTiming(HIDDEN_SCALE, { duration: MOTION_FAST_DURATION, easing: EASE_OUT }));
-            menuOpacity.set(
-                withTiming(0, { duration: MOTION_FAST_DURATION, easing: EASE_OUT }, finished => {
-                    if (finished) {
-                        scheduleOnRN(setIsVisible, false);
-                    }
-                })
-            );
+            progress.set(isReducedMotion ? withTiming(1, FADE_TIMING) : withSpring(1, OPEN_SPRING));
+        } else {
+            progress.set(withTiming(0, FADE_TIMING));
         }
-    }, [isOpen, isVisible, menuOpacity, menuScale, rotation]);
-    const buttonStyle = useAnimatedStyle(() => ({ transform: [{ rotate: `${rotation.get()}deg` }] }));
-    const aiButtonStyle = useAnimatedStyle(() => ({
-        transform: [{ scale: menuScale.get() }],
-        opacity: menuOpacity.get()
-    }));
+    }, [isOpen, isReducedMotion, progress]);
 
-    if (!isVisible) {
+    const closeButtonStyle = useAnimatedStyle(() => {
+        const value = progress.get();
+        const rotation = isReducedMotion ? CLOSE_ROTATION : CLOSE_ROTATION * value;
+
+        return { opacity: value > 0 ? 1 : 0, transform: [{ rotate: `${rotation}deg` }] };
+    });
+
+    if (!hasOpened) {
         return null;
     }
 
     return (
-        <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
-            {showAiButton && (
-                <Animated.View className="absolute inset-x-0 bottom-0 items-center pb-safe" style={aiButtonStyle} pointerEvents="box-none">
-                    <AiButton onPress={handleAiPress} testID={CreateTransactionMenuSelector.AiButton} />
-                </Animated.View>
-            )}
+        <View
+            style={StyleSheet.absoluteFill}
+            pointerEvents={pointerEvents}
+            accessibilityElementsHidden={!isOpen}
+            importantForAccessibility={accessibilityVisibility}
+        >
+            <View className="absolute inset-x-0 bottom-0 gap-xl px-lg pb-safe" pointerEvents="box-none">
+                <CreateMenuReveal progress={progress} order={3} className="flex-row flex-wrap gap-md">
+                    <CreateMenuChip
+                        icon={UserIconNameEnum.Repeat}
+                        label={t`Recurring`}
+                        testID={CreateTransactionMenuSelector.Recurring}
+                        variant="violet"
+                        onPress={handleCreateRecurring}
+                    />
+                    <CreateMenuChip
+                        icon={UserIconNameEnum.Wallet}
+                        label={t`Account`}
+                        testID={CreateTransactionMenuSelector.AddAccount}
+                        variant="secondary"
+                        onPress={handleCreateAccount}
+                    />
+                </CreateMenuReveal>
 
-            <View className="absolute inset-x-0 bottom-0 items-end px-lg pb-safe" pointerEvents="box-none">
-                <View className="self-stretch items-end" pointerEvents="box-none">
-                    {actionRows.map((row, index) => (
-                        <ActionItem key={row.key} index={index} isOpen={isOpen}>
-                            {row}
-                        </ActionItem>
-                    ))}
+                <CreateMenuReveal progress={progress} order={2} className="flex-row gap-xl">
+                    <CreateMenuTile
+                        icon={UserIconNameEnum.TrendingDown}
+                        label={t`Expense`}
+                        testID={CreateTransactionMenuSelector.Expense}
+                        variant="destructive"
+                        onPress={handleCreateExpense}
+                    />
+                    <CreateMenuTile
+                        icon={UserIconNameEnum.TrendingUp}
+                        label={t`Income`}
+                        testID={CreateTransactionMenuSelector.Income}
+                        variant="positive"
+                        onPress={handleCreateIncome}
+                    />
+                </CreateMenuReveal>
+
+                <CreateMenuReveal progress={progress} order={1} className="flex-row gap-xl">
+                    <CreateMenuTile
+                        icon={UserIconNameEnum.ArrowLeftRight}
+                        label={t`Transfer`}
+                        testID={CreateTransactionMenuSelector.Transfer}
+                        variant="warning"
+                        onPress={handleCreateTransfer}
+                    />
+                    {isDefined(ReceiptScannerModule) ? <ReceiptSourceMenu onClose={onClose} /> : null}
+                </CreateMenuReveal>
+
+                <View className="flex-row items-end gap-xl" pointerEvents="box-none">
+                    <CreateMenuReveal progress={progress} order={0} className="flex-1 flex-row">
+                        {isDefined(createAction) ? (
+                            <CreateMenuContextAction
+                                icon={createAction.icon}
+                                label={createAction.label}
+                                testID={contextActionTestID}
+                                onPress={handleCreateAction}
+                            />
+                        ) : null}
+                        {showAiButton ? (
+                            <CircularActionButton
+                                icon={UserIconNameEnum.Mic}
+                                onPress={handleAiPress}
+                                testID={CreateTransactionMenuSelector.AiButton}
+                            />
+                        ) : null}
+                    </CreateMenuReveal>
 
                     <CircularActionButton
                         icon={UserIconNameEnum.Plus}
                         onPress={onClose}
-                        animatedStyle={buttonStyle}
+                        animatedStyle={closeButtonStyle}
                         testID={CreateTransactionMenuSelector.Close}
                     />
                 </View>

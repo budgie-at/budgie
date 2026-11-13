@@ -3,7 +3,7 @@ import { useAtomSet } from '@effect/atom-react/Hooks';
 import { Button, Host, Menu, RNHostView } from '@expo/ui/swift-ui';
 import { useLingui } from '@lingui/react/macro';
 
-import { ActionItemLabel } from '../../../transaction/components/action-item-label/action-item-label';
+import { CreateMenuTileContent } from '../../../transaction/components/create-menu-tile-content/create-menu-tile-content';
 import { CreateTransactionMenuSelector } from '../../../transaction/components/create-transaction-menu/create-transaction-menu.selector';
 import { receiptScanRequestAtom } from '../../constant/receipt-scan-request-atom.constant';
 import { ReceiptSourceEnum } from '../../enum/receipt-source.enum';
@@ -11,6 +11,9 @@ import { ReceiptSourceEnum } from '../../enum/receipt-source.enum';
 interface Props {
     readonly onClose: () => void;
 }
+
+const MATCH_HEIGHT = { vertical: true };
+const HOST_STYLE = { flex: 1 };
 
 export const ReceiptSourceMenu = ({ onClose }: Props) => {
     const { t } = useLingui();
@@ -32,11 +35,11 @@ export const ReceiptSourceMenu = ({ onClose }: Props) => {
     };
 
     return (
-        <Host matchContents alignment="trailing" testID={CreateTransactionMenuSelector.ScanReceipt}>
+        <Host matchContents={MATCH_HEIGHT} style={HOST_STYLE} testID={CreateTransactionMenuSelector.ScanReceipt}>
             <Menu
                 label={
-                    <RNHostView matchContents>
-                        <ActionItemLabel
+                    <RNHostView matchContents={MATCH_HEIGHT}>
+                        <CreateMenuTileContent
                             icon={UserIconNameEnum.ScanText}
                             label={t`Scan receipt`}
                             testID={CreateTransactionMenuSelector.ScanReceipt}
