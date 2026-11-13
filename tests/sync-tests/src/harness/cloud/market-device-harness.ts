@@ -46,8 +46,3 @@ export const seedCryptoSyncAccountOn = (database: DB) =>
 
 export const readOnlyEntryId = (database: DB) =>
     database.$client.unsafe<{ readonly id: number }>('SELECT id FROM transaction_entries').pipe(Effect.map(([row]) => row.id));
-
-export const readIsApplying = (database: DB) =>
-    database.$client
-        .unsafe<{ readonly isApplying: number }>('SELECT COALESCE(MAX(is_applying), 0) AS isApplying FROM sync_apply_state')
-        .pipe(Effect.map(([row]) => row.isApplying));

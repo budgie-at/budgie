@@ -1,4 +1,4 @@
-import { PRECISION } from '@budgie/contracts';
+import { AccountTypeEnum, PRECISION } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
@@ -95,6 +95,68 @@ describe('cloud-sync/derived-base-valuation', () => {
                     baseAmount: 96_000 * PRECISION
                 });
                 expect(yield* readOnlyEntryId(testDb)).toBe(entry.id);
+            })
+        );
+
+        it.effect('stores the incoming base value when the parent operated_at changed remotely', () =>
+            Effect.gen(function* () {
+                const deviceB = yield* Db;
+                const cloud = new FakeCloudTransport();
+
+                yield* resetTestDb(deviceB);
+
+                const { euroId, account } = yield* seedCryptoSyncAccountOn(testDb);
+                const { entry } = yield* seedReward(testDb, account.id, euroId, 50_000, 50_000 * PRECISION);
+
+                yield* pushDevice(testDb, cloud);
+                yield* pullDevice(deviceB, cloud, DEVICE_B);
+                yield* deviceB.$client.unsafe('UPDATE transactions SET operated_at = ?', [
+                    Math.floor(new Date('2026-05-11T09:00:00.000Z').getTime() / 1000)
+                ]);
+                yield* deviceB.$client.unsafe('UPDATE transaction_entries SET base_exchange_rate = NULL, base_amount = ?', [
+                    48_000 * PRECISION
+                ]);
+                yield* pushDevice(deviceB, cloud);
+                yield* pullDevice(testDb, cloud, DEVICE_A);
+
+                expect(yield* fetchEntryValuation(testDb, entry.id)).toStrictEqual({
+                    baseInstrumentId: euroId,
+                    baseExchangeRate: null,
+                    baseAmount: 48_000 * PRECISION
+                });
+            })
+        );
+
+        it.effect('stores the incoming base value when the entry account changed remotely', () =>
+            Effect.gen(function* () {
+                const deviceB = yield* Db;
+                const cloud = new FakeCloudTransport();
+
+                yield* resetTestDb(deviceB);
+
+                const { euroId, account } = yield* seedCryptoSyncAccountOn(testDb);
+                const otherAccount = yield* new TestSeedService(testDb).account({
+                    title: 'BTC two',
+                    instrumentId: account.instrumentId,
+                    type: AccountTypeEnum.CRYPTO_SYNC
+                });
+                const { entry } = yield* seedReward(testDb, account.id, euroId, 50_000, 50_000 * PRECISION);
+
+                yield* pushDevice(testDb, cloud);
+                yield* pullDevice(deviceB, cloud, DEVICE_B);
+                yield* deviceB.$client.unsafe(
+                    "UPDATE transaction_entries SET account_id = (SELECT id FROM accounts WHERE title = 'BTC two'), base_exchange_rate = NULL, base_amount = ?",
+                    [48_000 * PRECISION]
+                );
+                yield* pushDevice(deviceB, cloud);
+                yield* pullDevice(testDb, cloud, DEVICE_A);
+
+                expect(yield* fetchEntryValuation(testDb, entry.id)).toStrictEqual({
+                    baseInstrumentId: euroId,
+                    baseExchangeRate: null,
+                    baseAmount: 48_000 * PRECISION
+                });
+                expect(otherAccount.id).not.toBe(account.id);
             })
         );
     });
