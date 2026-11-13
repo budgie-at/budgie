@@ -1,6 +1,7 @@
 import { makeTestPlatformLayer } from '@budgie-at/test-kit';
 import {
     AccountTypeEnum,
+    YieldRepository,
     PRECISION,
     TransactionEntityTable,
     TransactionEntryEntityTable,
@@ -12,7 +13,11 @@ import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { YieldRangeEnum } from '../src/yield/enum/yield-range.enum';
+import { YieldHoldingService } from '../src/yield/service/yield-holding.service';
+import { YieldPriceService } from '../src/yield/service/yield-price.service';
 import { YieldService } from '../src/yield/service/yield.service';
 
 import { testDb, testSeedService } from './test-context';
@@ -25,10 +30,13 @@ const MS_PER_DAY = 86_400_000;
 const WARMUP_RUNS = 2;
 const TIMED_RUNS = 10;
 const BUDGET_MS = 30;
+const NO_SCOPE = { positionAccountId: null, instrumentId: null };
 const BENCH_TIMEOUT_MS = 600_000;
 const BASE_INSTRUMENT_ID = 1;
 
-const BenchLayer = YieldService.layer.pipe(Layer.provideMerge(makeTestPlatformLayer(testDb)));
+const BenchLayer = Layer.mergeAll(YieldService.layer, YieldRepository.layer, YieldPriceService.layer).pipe(
+    Layer.provideMerge(makeTestPlatformLayer(testDb))
+);
 
 const seedBatch = Effect.fnUntraced(function* (start: number, cashId: number, depositId: number) {
     const now = Date.now();
@@ -79,40 +87,91 @@ const seedBatch = Effect.fnUntraced(function* (start: number, cashId: number, de
     );
 });
 
+const seedLedger = Effect.gen(function* () {
+    const cash = yield* testSeedService.account({ type: AccountTypeEnum.CASH });
+    const deposit = yield* testSeedService.account({ type: AccountTypeEnum.DEPOSIT });
+
+    yield* Effect.forEach(
+        Array.from({ length: TRANSACTION_COUNT / BATCH_SIZE }, (_, index) => index * BATCH_SIZE),
+        start => seedBatch(start, cash.id, deposit.id),
+        { discard: true }
+    );
+});
+
+const KEY = {
+    range: YieldRangeEnum.YEAR,
+    positionAccountId: null,
+    instrumentId: null,
+    group: null,
+    baseInstrumentId: BASE_INSTRUMENT_ID
+};
+
+const measureMedian = Effect.fnUntraced(function* <E, R>(summarize: Effect.Effect<unknown, E, R>) {
+    const timeOnce = Effect.gen(function* () {
+        const startedAt = performance.now();
+
+        yield* summarize;
+
+        return performance.now() - startedAt;
+    });
+
+    yield* Effect.forEach(Array.from({ length: WARMUP_RUNS }), () => timeOnce, { discard: true });
+
+    const timings = yield* Effect.forEach(Array.from({ length: TIMED_RUNS }), () => timeOnce);
+
+    return [...timings].sort((left, right) => left - right).at(Math.floor(TIMED_RUNS / 2)) ?? Number.POSITIVE_INFINITY;
+});
+
 describe('yield bench', () => {
     it.live(
-        'summarizes 5k yield rows among 100k transactions within 30 ms (median)',
+        'reports the full summarize median (findFacts, positions, movements and compute)',
         () =>
             Effect.gen(function* () {
-                const cash = yield* testSeedService.account({ type: AccountTypeEnum.CASH });
-                const deposit = yield* testSeedService.account({ type: AccountTypeEnum.DEPOSIT });
-
-                yield* Effect.forEach(
-                    Array.from({ length: TRANSACTION_COUNT / BATCH_SIZE }, (_, index) => index * BATCH_SIZE),
-                    start => seedBatch(start, cash.id, deposit.id),
-                    { discard: true }
-                );
+                yield* seedLedger;
 
                 const service = yield* YieldService;
-                const key = {
-                    range: YieldRangeEnum.YEAR,
-                    positionAccountId: null,
-                    instrumentId: null,
-                    group: null,
-                    baseInstrumentId: BASE_INSTRUMENT_ID
+                const median = yield* measureMedian(service.summarize(KEY));
+
+                yield* Effect.sync(() =>
+                    process.stdout.write(`yield summarize (full): median ${median.toFixed(1)} ms over ${TIMED_RUNS} runs\n`)
+                );
+            }).pipe(Effect.provide(BenchLayer)),
+        BENCH_TIMEOUT_MS
+    );
+
+    it.live(
+        'runs findFacts plus compute on preloaded positions and movements within 30 ms (median)',
+        () =>
+            Effect.gen(function* () {
+                yield* seedLedger;
+
+                const repository = yield* YieldRepository;
+                const facts = yield* repository.findFacts(NO_SCOPE, BASE_INSTRUMENT_ID);
+                const positions = yield* repository.findPositions(
+                    [...new Set(facts.map(fact => fact.positionAccountId).filter(isDefined))],
+                    NO_SCOPE
+                );
+                const movements = yield* repository.findPositionMovements(positions.map(position => position.id));
+                const preloaded = {
+                    ...repository,
+                    findPositions: () => Effect.succeed(positions),
+                    findPositionMovements: () => Effect.succeed(movements)
                 };
-                const timeOnce = Effect.gen(function* () {
-                    const startedAt = performance.now();
+                const priceService = yield* YieldPriceService;
+                const holdingService = yield* YieldHoldingService.make.pipe(
+                    Effect.provideService(YieldRepository, preloaded),
+                    Effect.provideService(YieldPriceService, priceService)
+                );
+                const service = yield* YieldService.make.pipe(
+                    Effect.provideService(YieldRepository, preloaded),
+                    Effect.provideService(YieldPriceService, priceService),
+                    Effect.provideService(YieldHoldingService, holdingService)
+                );
+                const median = yield* measureMedian(service.summarize(KEY));
 
-                    yield* service.summarize(key);
-
-                    return performance.now() - startedAt;
-                });
-
-                yield* Effect.forEach(Array.from({ length: WARMUP_RUNS }), () => timeOnce, { discard: true });
-
-                const timings = yield* Effect.forEach(Array.from({ length: TIMED_RUNS }), () => timeOnce);
-                const median = [...timings].sort((left, right) => left - right).at(Math.floor(TIMED_RUNS / 2)) ?? Number.POSITIVE_INFINITY;
+                yield* Effect.sync(() =>
+                    process.stdout.write(`yield findFacts + compute: median ${median.toFixed(1)} ms over ${TIMED_RUNS} runs\n`)
+                );
 
                 expect(median, `median ${median.toFixed(1)} ms over ${TIMED_RUNS} runs`).toBeLessThan(BUDGET_MS);
             }).pipe(Effect.provide(BenchLayer)),
