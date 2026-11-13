@@ -80,15 +80,16 @@ export class DepositInterestService extends Context.Service<DepositInterestServi
                         return yield* AccountNotFoundError.make({ id: depositAccountId });
                     }
 
-                    const lastBalanceEventAt = yield* transactionYieldRepository.findLastDepositBalanceEventAt(depositAccountId);
                     const ledgerBalances = yield* accountBalanceRepository.getLedgerBalances([depositAccountId]);
                     const ledgerBalance = ledgerBalances.get(depositAccountId) ?? 0;
                     const delta = convertToMicroUnits(newBalance) - ledgerBalance;
-                    const now = yield* DateTime.nowAsDate;
 
                     if (delta === 0) {
                         return;
                     }
+
+                    const lastBalanceEventAt = yield* transactionYieldRepository.findLastDepositBalanceEventAt(depositAccountId);
+                    const now = yield* DateTime.nowAsDate;
 
                     const elapsedDays = Math.max(0, now.getTime() - (lastBalanceEventAt ?? deposit.createdAt).getTime()) / dayMs;
                     const allowedInterest =

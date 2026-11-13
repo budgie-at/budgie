@@ -69,7 +69,7 @@ export class TestSeedService {
         });
     }
 
-    account(input: Partial<AccountCreateEntityInterface & Pick<AccountEntityInterface, 'createdAt'>> = {}) {
+    account(input: Partial<AccountCreateEntityInterface & Pick<AccountEntityInterface, 'createdAt' | 'syncZone'>> = {}) {
         return Effect.gen({ self: this }, function* () {
             const rows = yield* this.database
                 .insert(AccountEntityTable)
@@ -93,7 +93,8 @@ export class TestSeedService {
                     targetBaseAmount: input.targetBaseAmount ?? null,
                     includeInNetWorth: input.includeInNetWorth ?? true,
                     isActive: input.isActive ?? true,
-                    ...(isDefined(input.createdAt) && { createdAt: input.createdAt })
+                    ...(isDefined(input.createdAt) && { createdAt: input.createdAt }),
+                    ...(isDefined(input.syncZone) && { syncZone: input.syncZone })
                 } satisfies AccountCreateEntityInterface)
                 .returning();
 

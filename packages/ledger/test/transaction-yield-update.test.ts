@@ -46,8 +46,10 @@ const incomeUpdate = (
     ...extra
 });
 
-const moveToHousehold = (accountId: number) =>
-    Effect.flatMap(AccountRepository, repository => repository.updateById(accountId, { syncZone: HOUSEHOLD_SYNC_ZONE }));
+const setUserYield = (incomeId: number, landingAccountId: number, yieldSourceAccountId: number) =>
+    Effect.flatMap(TransactionService, transactionService =>
+        transactionService.updateById(incomeId, incomeUpdate(landingAccountId, { yieldKind: YieldKindEnum.INTEREST, yieldSourceAccountId }))
+    );
 
 const readYield = (id: number) =>
     Effect.flatMap(TransactionRepository, repository => repository.getByIdRaw(id)).pipe(
@@ -74,13 +76,9 @@ const seedIncomeWithDeposit = Effect.gen(function* () {
 describe('TransactionService.updateById yield fields', () => {
     it.effect('stores a kind and a same-zone source set by the user', () =>
         Effect.gen(function* () {
-            const transactionService = yield* TransactionService;
             const { bank, deposit, income } = yield* seedIncomeWithDeposit;
 
-            yield* transactionService.updateById(
-                income.id,
-                incomeUpdate(bank.id, { yieldKind: YieldKindEnum.INTEREST, yieldSourceAccountId: deposit.id })
-            );
+            yield* setUserYield(income.id, bank.id, deposit.id);
 
             expect(yield* readYield(income.id)).toEqual({ yieldKind: YieldKindEnum.INTEREST, yieldSourceAccountId: deposit.id });
         }).pipe(Effect.provide(TestLayer))
@@ -91,10 +89,7 @@ describe('TransactionService.updateById yield fields', () => {
             const transactionService = yield* TransactionService;
             const { bank, deposit, income } = yield* seedIncomeWithDeposit;
 
-            yield* transactionService.updateById(
-                income.id,
-                incomeUpdate(bank.id, { yieldKind: YieldKindEnum.INTEREST, yieldSourceAccountId: deposit.id })
-            );
+            yield* setUserYield(income.id, bank.id, deposit.id);
             yield* transactionService.updateById(income.id, incomeUpdate(bank.id, { title: 'Monthly interest' }));
 
             expect(yield* readYield(income.id)).toEqual({ yieldKind: YieldKindEnum.INTEREST, yieldSourceAccountId: deposit.id });
@@ -106,11 +101,16 @@ describe('TransactionService.updateById yield fields', () => {
             const testSeedService = yield* seed;
             const transactionService = yield* TransactionService;
             const personalBank = yield* testSeedService.account({ type: AccountTypeEnum.BANK, title: 'Personal' });
-            const sharedBank = yield* testSeedService.account({ type: AccountTypeEnum.BANK, title: 'Shared' });
-            const sharedDeposit = yield* testSeedService.account({ type: AccountTypeEnum.DEPOSIT, title: 'Shared deposit' });
-
-            yield* moveToHousehold(sharedBank.id);
-            yield* moveToHousehold(sharedDeposit.id);
+            const sharedBank = yield* testSeedService.account({
+                type: AccountTypeEnum.BANK,
+                title: 'Shared',
+                syncZone: HOUSEHOLD_SYNC_ZONE
+            });
+            const sharedDeposit = yield* testSeedService.account({
+                type: AccountTypeEnum.DEPOSIT,
+                title: 'Shared deposit',
+                syncZone: HOUSEHOLD_SYNC_ZONE
+            });
 
             const income = yield* testSeedService.manualExpense({
                 accountId: sharedBank.id,
@@ -119,10 +119,7 @@ describe('TransactionService.updateById yield fields', () => {
                 type: TransactionTypeEnum.INCOME
             });
 
-            yield* transactionService.updateById(
-                income.id,
-                incomeUpdate(sharedBank.id, { yieldKind: YieldKindEnum.INTEREST, yieldSourceAccountId: sharedDeposit.id })
-            );
+            yield* setUserYield(income.id, sharedBank.id, sharedDeposit.id);
             yield* transactionService.updateById(income.id, incomeUpdate(personalBank.id, {}));
 
             expect(yield* readYield(income.id)).toEqual({ yieldKind: YieldKindEnum.INTEREST, yieldSourceAccountId: null });

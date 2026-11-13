@@ -13,6 +13,7 @@ import {
     convertToMicroUnits
 } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
+import * as Clock from 'effect/Clock';
 import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
 import * as TestClock from 'effect/testing/TestClock';
@@ -23,13 +24,14 @@ import { AccountService } from '../src/account/service/account.service';
 import { seed, TestLayer } from './ledger-test-layer';
 
 const DAY_MS = 86_400_000;
+const BASE_TIME = new Date('2026-06-01T00:00:00.000Z');
 const PRINCIPAL = 10_000;
 
 const transfer = (sourceAccountId: number, targetAccountId: number, amount: number, daysAgo: number) =>
     Effect.flatMap(seed, testSeedService =>
         testSeedService.directTransfer({
             exchangeRate: 1,
-            operatedAt: new Date(Date.now() - daysAgo * DAY_MS),
+            operatedAt: new Date(BASE_TIME.getTime() - daysAgo * DAY_MS),
             sourceAccountId,
             sourceAmount: convertToMicroUnits(amount),
             sourceEntryExchangeRate: 1,
@@ -70,7 +72,8 @@ const readLatestOnDeposit = (depositAccountId: number) =>
     });
 
 const updateBalance = (depositAccountId: number, currentBalance: number) =>
-    TestClock.setTime(Date.now()).pipe(
+    Clock.currentTimeMillis.pipe(
+        Effect.flatMap(now => TestClock.adjust(Math.max(0, BASE_TIME.getTime() - now))),
         Effect.andThen(AccountService),
         Effect.flatMap(accountService => accountService.updateDepositById(depositAccountId, { currentBalance }))
     );
@@ -153,6 +156,28 @@ describe('DepositInterestService.recordGrowth', () => {
             yield* updateBalance(deposit.id, PRINCIPAL + 10);
 
             expect((yield* readLatestOnDeposit(deposit.id)).type).toBe(TransactionTypeEnum.ADJUSTMENT);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('falls back to the creation date for a deposit with no balance events', () =>
+        Effect.gen(function* () {
+            const testSeedService = yield* seed;
+            const accountRepository = yield* AccountRepository;
+            const deposit = yield* testSeedService.account({
+                type: AccountTypeEnum.DEPOSIT,
+                title: 'Fresh',
+                createdAt: new Date(BASE_TIME.getTime() - 30 * DAY_MS)
+            });
+
+            yield* accountRepository.updateById(deposit.id, { interestRate: 10 });
+            yield* updateBalance(deposit.id, 50);
+
+            expect(yield* readLatestOnDeposit(deposit.id)).toMatchObject({
+                type: TransactionTypeEnum.ADJUSTMENT,
+                yieldKind: null,
+                amount: convertToMicroUnits(50)
+            });
+            yield* assertStoredBalancesMatchLedger(yield* Db);
         }).pipe(Effect.provide(TestLayer))
     );
 
