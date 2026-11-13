@@ -65,6 +65,7 @@ export interface YieldWorldInterface {
         'rate' | 'rateDate' | 'sourceInstrumentId' | 'targetInstrumentId'
     >[];
     readonly latestRates?: readonly ExchangeRateEntityInterface[];
+    readonly instruments?: readonly InstrumentEntityInterface[];
 }
 
 export const dailyPrices = (
@@ -98,7 +99,7 @@ export const latestRate = (baseInstrumentId: number, quoteInstrumentId: number, 
     rate
 });
 
-const fiat = (id: number, code: string): InstrumentEntityInterface => ({
+export const fiat = (id: number, code: string): InstrumentEntityInterface => ({
     id,
     createdAt: NOW,
     updatedAt: NOW,
@@ -169,7 +170,8 @@ export const makeYieldPriceLayer = (world: YieldWorldInterface) =>
                     )
             }),
             Layer.mock(InstrumentRepository)({
-                findByCode: code => Effect.succeed(FIAT_INSTRUMENTS.find(instrument => instrument.code === code))
+                findByCode: code => Effect.succeed(FIAT_INSTRUMENTS.find(instrument => instrument.code === code)),
+                findById: id => Effect.succeed((world.instruments ?? []).find(instrument => instrument.id === id))
             })
         ]),
         Layer.provideMerge(makeTestPlatformLayer(testDb))

@@ -5,7 +5,7 @@ import * as Effect from 'effect/Effect';
 import { formatUtcDay } from '../src/@generic/utils/format-utc-day.util';
 import { YieldPriceService } from '../src/yield/service/yield-price.service';
 
-import { BASE_ID, ETH_ID, FUND_ID, UAH_ID, USDT_ID, USD_ID, dailyPrices, latestRate, makeYieldPriceLayer } from './yield-test-kit';
+import { BASE_ID, ETH_ID, FUND_ID, UAH_ID, USDT_ID, USD_ID, dailyPrices, fiat, latestRate, makeYieldPriceLayer } from './yield-test-kit';
 
 import type { YieldPricedInstrumentType } from '../src/yield/interface/yield-priced-instrument.type';
 import type { YieldWorldInterface } from './yield-test-kit';
@@ -15,6 +15,10 @@ const USDT: YieldPricedInstrumentType = { id: USDT_ID, code: 'USDT', type: Instr
 const FUND: YieldPricedInstrumentType = { id: FUND_ID, code: 'INZ', type: InstrumentTypeEnum.FUND };
 const HRYVNIA: YieldPricedInstrumentType = { id: UAH_ID, code: 'UAH', type: InstrumentTypeEnum.FIAT };
 const BASE: YieldPricedInstrumentType = { id: BASE_ID, code: 'EUR', type: InstrumentTypeEnum.FIAT };
+
+const STOCK_ID = 950;
+const STOCK: YieldPricedInstrumentType = { id: STOCK_ID, code: 'AAPL', type: InstrumentTypeEnum.EQUITY };
+const dollarQuotedStock = { ...fiat(STOCK_ID, 'AAPL'), type: InstrumentTypeEnum.EQUITY, quoteInstrumentId: USD_ID };
 
 const hryvniaRate = (rateDate: string, rate: number) => ({ sourceInstrumentId: UAH_ID, targetInstrumentId: BASE_ID, rateDate, rate });
 
@@ -203,6 +207,25 @@ describe('YieldPriceService', () => {
             expect(withRate).toEqual({ price: 2000, isEstimated: false });
             expect(withPrice).toEqual({ price: 1900, isEstimated: true });
             expect(withNothing).toEqual({ price: null, isEstimated: true });
+        })
+    );
+
+    it.effect('prices a stock quoted in another currency through the valuation day rate of its quote currency', () =>
+        Effect.gen(function* () {
+            const world = {
+                instruments: [dollarQuotedStock],
+                prices: dailyPrices(STOCK_ID, USD_ID, ['2026-03-10'], 200),
+                historicalRates: [{ sourceInstrumentId: USD_ID, targetInstrumentId: BASE_ID, rateDate: '2026-03-01', rate: 0.9 }],
+                latestRates: [latestRate(STOCK_ID, USD_ID, 210), latestRate(USD_ID, BASE_ID, 0.92)]
+            };
+            const [point] = yield* resolveDays(world, STOCK, ['2026-03-10']);
+
+            expect(point).toEqual(priced(180, '2026-03-10'));
+            expect(yield* findLatest(world, STOCK)).toEqual({ price: 210 * 0.92, isEstimated: false });
+            expect(yield* findLatest({ ...world, latestRates: [latestRate(USD_ID, BASE_ID, 0.92)] }, STOCK)).toEqual({
+                price: 200 * 0.92,
+                isEstimated: true
+            });
         })
     );
 

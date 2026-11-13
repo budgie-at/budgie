@@ -102,6 +102,9 @@ export class YieldPriceService extends Context.Service<YieldPriceService>()('@bu
             return isDefined(inverse) && isPositiveNumber(inverse.rate) ? 1 / inverse.rate : null;
         });
 
+        const findQuoteInstrumentId = (instrumentId: number, baseInstrumentId: number) =>
+            Effect.map(instrumentRepository.findById(instrumentId), instrument => instrument?.quoteInstrumentId ?? baseInstrumentId);
+
         const resolve = Effect.fn('YieldPriceService.resolve')(function* (series: YieldPriceSeriesInterface, day: string) {
             const beforeIndex = findLastIndexOnOrBefore(series.days, day);
             const beforeDay = series.days[beforeIndex];
@@ -165,7 +168,8 @@ export class YieldPriceService extends Context.Service<YieldPriceService>()('@bu
             fromDay: string,
             toDay: string
         ) {
-            const samples = yield* loadMarketSamples(instrument.id, baseInstrumentId, fromDay, toDay);
+            const quoteInstrumentId = yield* findQuoteInstrumentId(instrument.id, baseInstrumentId);
+            const samples = yield* loadMarketSamples(instrument.id, quoteInstrumentId, fromDay, toDay);
             const dollar = STABLECOIN_CODES.has(instrument.code) ? yield* instrumentRepository.findByCode(CurrencyEnum.USD) : null;
             const stablecoinRate = isDefined(dollar) ? rateOnDay(dollar.id, baseInstrumentId) : MISSING_RATE;
             const fallbackPrice = STABLECOIN_CODES.has(instrument.code) ? stablecoinRate : rateOnDay(instrument.id, baseInstrumentId);
@@ -173,7 +177,7 @@ export class YieldPriceService extends Context.Service<YieldPriceService>()('@bu
             return yield* buildSeries(
                 samples,
                 { carryDays: CRYPTO_PRICE_CARRY_DAYS, isNearest: false, isEstimable: true },
-                IDENTITY_RATE,
+                rateOnDay(quoteInstrumentId, baseInstrumentId),
                 fallbackPrice
             );
         });
@@ -191,16 +195,21 @@ export class YieldPriceService extends Context.Service<YieldPriceService>()('@bu
         });
 
         const findLatestMarketPrice = Effect.fnUntraced(function* (instrumentId: number, baseInstrumentId: number) {
-            const rate = yield* findLatestRate(instrumentId, baseInstrumentId);
+            const quoteInstrumentId = yield* findQuoteInstrumentId(instrumentId, baseInstrumentId);
+            const quoteRate = yield* findLatestRate(quoteInstrumentId, baseInstrumentId);
+            const rate = yield* findLatestRate(instrumentId, quoteInstrumentId);
 
-            if (isDefined(rate)) {
-                const priced: YieldLatestPriceInterface = { price: rate, isEstimated: false };
+            if (isDefined(rate) && isDefined(quoteRate)) {
+                const priced: YieldLatestPriceInterface = { price: rate * quoteRate, isEstimated: false };
 
                 return priced;
             }
 
-            const latest = yield* dailyPriceRepository.findLatest(instrumentId, baseInstrumentId);
-            const estimated: YieldLatestPriceInterface = { price: latest?.price ?? null, isEstimated: true };
+            const latest = yield* dailyPriceRepository.findLatest(instrumentId, quoteInstrumentId);
+            const estimated: YieldLatestPriceInterface = {
+                price: isDefined(latest) && isDefined(quoteRate) ? latest.price * quoteRate : null,
+                isEstimated: true
+            };
 
             return estimated;
         });
