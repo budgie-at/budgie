@@ -7,6 +7,8 @@ import * as Layer from 'effect/Layer';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
+import { MARKET_DATA_JOB_MAX_ATTEMPTS, MARKET_DATA_JOB_STALE_LOCK_MS } from '../constant/market-data-job-retry.constant';
+
 import type { InstrumentMarketDataJobCreateEntityInterface, InstrumentMarketDataJobEntityInterface } from '@budgie/contracts';
 
 export class InstrumentMarketDataJobRepository extends Context.Service<InstrumentMarketDataJobRepository>()(
@@ -132,20 +134,25 @@ export class InstrumentMarketDataJobRepository extends Context.Service<Instrumen
                             )
                             .limit(1)
                     ).pipe(Effect.map(isNotEmptyArray)),
-                hasActiveForInstruments: (instrumentIds: readonly number[], maxAttempts: number, staleLockedBefore: Date) =>
+                hasActiveForInstruments: (instrumentIds: readonly number[]) =>
                     isNotEmptyArray(instrumentIds)
-                        ? Db.query(db =>
-                              db
-                                  .select({ id: InstrumentMarketDataJobEntityTable.id })
-                                  .from(InstrumentMarketDataJobEntityTable)
-                                  .where(
-                                      and(
-                                          inArray(InstrumentMarketDataJobEntityTable.instrumentId, [...instrumentIds]),
-                                          buildOpenCondition(maxAttempts, staleLockedBefore)
+                        ? Effect.flatMap(DateTime.now, now =>
+                              Db.query(db =>
+                                  db
+                                      .select({ id: InstrumentMarketDataJobEntityTable.id })
+                                      .from(InstrumentMarketDataJobEntityTable)
+                                      .where(
+                                          and(
+                                              inArray(InstrumentMarketDataJobEntityTable.instrumentId, [...instrumentIds]),
+                                              buildOpenCondition(
+                                                  MARKET_DATA_JOB_MAX_ATTEMPTS,
+                                                  DateTime.toDateUtc(DateTime.subtractDuration(now, MARKET_DATA_JOB_STALE_LOCK_MS))
+                                              )
+                                          )
                                       )
-                                  )
-                                  .limit(1)
-                          ).pipe(Effect.map(isNotEmptyArray))
+                                      .limit(1)
+                              ).pipe(Effect.map(isNotEmptyArray))
+                          )
                         : Effect.succeed(false),
                 markCompleted: (job: Pick<InstrumentMarketDataJobEntityInterface, 'id' | 'attempts'>) =>
                     markFinished(job, InstrumentMarketDataJobStatusEnum.COMPLETED),

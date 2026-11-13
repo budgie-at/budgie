@@ -2,7 +2,12 @@ import { InstrumentMarketDataJobEntityTable, InstrumentMarketDataJobStatusEnum, 
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
+import * as TestClock from 'effect/testing/TestClock';
 
+import {
+    MARKET_DATA_JOB_MAX_ATTEMPTS as MAX_ATTEMPTS,
+    MARKET_DATA_JOB_STALE_LOCK_MS as STALE_LOCK_MS
+} from '../src/market-data/constant/market-data-job-retry.constant';
 import { InstrumentDailyMarketPriceRepository } from '../src/market-data/repository/instrument-daily-market-price.repository';
 import { InstrumentMarketDataJobRepository } from '../src/market-data/repository/instrument-market-data-job.repository';
 
@@ -12,8 +17,6 @@ const RepositoryLayer = Layer.mergeAll(InstrumentDailyMarketPriceRepository.laye
     Layer.provideMerge(TestLayer)
 );
 
-const MAX_ATTEMPTS = 3;
-const STALE_LOCK_MS = 5 * 60 * 1000;
 const NOW = new Date('2026-06-03T12:00:00.000Z');
 
 const seedCoin = (code: string) => testSeedService.instrument({ code, name: code, symbol: code, type: InstrumentTypeEnum.CRYPTO });
@@ -61,8 +64,9 @@ describe('yield market data reads', () => {
             const repository = yield* InstrumentMarketDataJobRepository;
             const coin = yield* seedCoin('YMD3');
             const other = yield* seedCoin('YMD4');
-            const isActive = (instrumentIds: readonly number[]) =>
-                repository.hasActiveForInstruments(instrumentIds, MAX_ATTEMPTS, new Date(NOW.getTime() - STALE_LOCK_MS));
+            const isActive = (instrumentIds: readonly number[]) => repository.hasActiveForInstruments(instrumentIds);
+
+            yield* TestClock.setTime(NOW.getTime());
             const setJob = (values: Partial<typeof InstrumentMarketDataJobEntityTable.$inferInsert>) =>
                 testDb.update(InstrumentMarketDataJobEntityTable).set(values);
 

@@ -34,6 +34,7 @@ import { ExchangeRatesService } from '../../exchange-rate/service/exchange-rates
 import { HistoricalExchangeRateRepository } from '../../historical-exchange-rate/repository/historical-exchange-rate.repository';
 import { EntryBaseValuationService } from '../../valuation/service/entry-base-valuation.service';
 import { MarketPricedRevaluationService } from '../../valuation/service/market-priced-revaluation.service';
+import { MARKET_DATA_JOB_MAX_ATTEMPTS, MARKET_DATA_JOB_STALE_LOCK_MS } from '../constant/market-data-job-retry.constant';
 import { InstrumentDailyMarketPriceRepository } from '../repository/instrument-daily-market-price.repository';
 import { InstrumentMarketDataJobRepository } from '../repository/instrument-market-data-job.repository';
 import { buildHistoricalRateInputs } from '../utils/build-historical-rate-inputs.util';
@@ -77,11 +78,11 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
             );
             const coinGeckoCoinsApiUrl = 'https://api.coingecko.com/api/v3/coins';
             const fetchTimeoutMs = 10_000;
-            const maxAttempts = 3;
+            const maxAttempts = MARKET_DATA_JOB_MAX_ATTEMPTS;
             const source = 'coingecko.com';
             const inzhurSource = 'inzhur.reit';
             const rateDateFormat = 'yyyy-MM-dd';
-            const staleLockMs = 5 * 60 * 1000;
+            const staleLockMs = MARKET_DATA_JOB_STALE_LOCK_MS;
             const coinGeckoTimedValueSchema = Schema.Tuple([Schema.Finite, Schema.Finite]);
             const coinGeckoMarketChartResponseSchema = Schema.Struct({
                 prices: Schema.Array(coinGeckoTimedValueSchema),
