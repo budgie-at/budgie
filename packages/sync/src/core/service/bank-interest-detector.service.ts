@@ -13,14 +13,16 @@ export class BankInterestDetectorService extends Context.Service<BankInterestDet
         make: Effect.gen(function* () {
             const transactionRepository = yield* TransactionRepository;
             const transactionYieldRepository = yield* TransactionYieldRepository;
-            const bankSources = [
-                ExternalSourceEnum.MONOBANK,
-                ExternalSourceEnum.PRIVATBANK,
-                ExternalSourceEnum.ERSTE,
-                ExternalSourceEnum.REVOLUT,
-                ExternalSourceEnum.ENABLE_BANKING,
-                ExternalSourceEnum.WISE
-            ];
+            const nonBankSources = new Set([
+                ExternalSourceEnum.MANUAL,
+                ExternalSourceEnum.APPLE_PAY_AUTOMATION,
+                ExternalSourceEnum.CSV,
+                ExternalSourceEnum.RECEIPT,
+                ExternalSourceEnum.COINBASE,
+                ExternalSourceEnum.BINANCE,
+                ExternalSourceEnum.INZHUR
+            ]);
+            const bankSources = Object.values(ExternalSourceEnum).filter(source => !nonBankSources.has(source));
             const interestKeywords: Record<LanguageEnum, readonly string[]> = {
                 [LanguageEnum.EN]: ['interest'],
                 [LanguageEnum.UK]: ['відсот', 'процент'],
@@ -56,7 +58,7 @@ export class BankInterestDetectorService extends Context.Service<BankInterestDet
                         bankSources,
                         likePatterns,
                         scope?.transactionIds ?? null
-                    )).filter(candidate => keywordPattern.test(`${candidate.title} ${candidate.comment}`));
+                    )).filter(candidate => keywordPattern.test([candidate.title, candidate.comment].filter(isDefined).join(' ')));
 
                     for (const candidate of candidates) {
                         yield* transactionRepository.updateById(candidate.id, {
