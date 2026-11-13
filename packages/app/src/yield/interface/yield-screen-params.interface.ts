@@ -1,4 +1,6 @@
-export interface YieldScreenParamsInterface {
+import type { UnknownOutputParams } from 'expo-router';
+
+export interface YieldScreenParamsInterface extends UnknownOutputParams {
     readonly range?: string;
     readonly position?: string;
     readonly instrument?: string;

@@ -27,6 +27,22 @@ msgstr "Binance P2P sell {assetCode}"
 msgid ", closed at the provider"
 msgstr ", closed at the provider"
 
+#: src/yield/hook/use-yield-hero-trend.hook.ts
+msgid ", down {change}"
+msgstr ", down {change}"
+
+#: src/yield/hook/use-yield-hero-trend.hook.ts
+msgid ", includes estimated values"
+msgstr ", includes estimated values"
+
+#: src/yield/hook/use-yield-hero-trend.hook.ts
+msgid ", new this period"
+msgstr ", new this period"
+
+#: src/yield/hook/use-yield-hero-trend.hook.ts
+msgid ", up {change}"
+msgstr ", up {change}"
+
 #: src/account/hooks/use-restore-archived-account.hook.ts
 msgid "“{accountTitle}” is back in Hidden accounts"
 msgstr "“{accountTitle}” is back in Hidden accounts"
@@ -357,6 +373,11 @@ msgstr "{count, plural, one {+# more} other {+# more}}"
 msgid "{count, plural, one {Choose an icon for # category} other {Choose icons for # categories}}"
 msgstr "{count, plural, one {Choose an icon for # category} other {Choose icons for # categories}}"
 
+#. js-lingui-explicit-id
+#: src/yield/hook/use-yield-hero-sentence.hook.ts
+msgid "passive-income.hero.sentence"
+msgstr "{count, plural, one {Earned {amount} before tax {rangeCaption}, {rate} a year across # holding{trend}{estimates}} other {Earned {amount} before tax {rangeCaption}, {rate} a year across # holdings{trend}{estimates}}}"
+
 #: src/category/components/category-default-icon-button/category-default-icon-button.tsx
 msgid "{count, plural, one {It still uses the default icon} other {They still use the default icon}}"
 msgstr "{count, plural, one {It still uses the default icon} other {They still use the default icon}}"
@@ -649,6 +670,11 @@ msgstr "{installmentCount, plural, one {# payment in total} other {# payments in
 #: src/installment-plan/component/convert-to-installment-create-button/convert-to-installment-create-button.tsx
 msgid "{installmentCount, plural, one {Split into # payment} other {Split into # payments}}"
 msgstr "{installmentCount, plural, one {Split into # payment} other {Split into # payments}}"
+
+#. js-lingui-explicit-id
+#: src/yield/hook/use-yield-date-labels.hook.ts
+msgid "passive-income.chart.so-far"
+msgstr "{label} so far"
 
 #: src/siri/service/siri-catalog.service.ts
 msgid "{label}: {formattedSpent} of {formattedLimit} spent, {formattedLeft} left."
@@ -1990,6 +2016,14 @@ msgstr "Automatic tuning is off"
 #: src/app/(tabs)/settings/index.tsx
 msgid "Automation"
 msgstr "Automation"
+
+#: src/yield/constant/yield-unavailable-label.constant.ts
+msgid "Available after 4 weeks"
+msgstr "Available after 4 weeks"
+
+#: src/yield/constant/yield-unavailable-label.constant.ts
+msgid "Available after the second payout"
+msgstr "Available after the second payout"
 
 #: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 msgid "Available once the import finishes"
@@ -4144,8 +4178,21 @@ msgstr "Dismiss Wallet capture?"
 msgid "Display"
 msgstr "Display"
 
+#: src/yield/constant/yield-kind-label.constant.ts
+msgid "Distribution"
+msgstr "Distribution"
+
+#: src/yield/constant/yield-group-label.constant.ts
+msgid "Distributions"
+msgstr "Distributions"
+
+#: src/yield/constant/yield-kind-label.constant.ts
+msgid "Dividend"
+msgstr "Dividend"
+
 #: src/inzhur/component/inzhur-fund-returns-card/inzhur-fund-returns-card.tsx
 #: src/inzhur/component/inzhur-operations-import-summary/inzhur-operations-import-summary.tsx
+#: src/yield/constant/yield-group-label.constant.ts
 msgid "Dividends"
 msgstr "Dividends"
 
@@ -4362,6 +4409,10 @@ msgstr "Each source becomes a separate transaction."
 #: src/budget/hooks/use-budget-day-strip-labels.hook.ts
 msgid "Each week against your {allowanceLabel} weekly allowance"
 msgstr "Each week against your {allowanceLabel} weekly allowance"
+
+#: src/yield/constant/yield-kind-label.constant.ts
+msgid "Earn"
+msgstr "Earn"
 
 #: src/@generic/component/entity-list-row/entity-list-row.tsx
 #: src/recurring/components/recurring-detail-edit-button/recurring-detail-edit-button.tsx
@@ -5213,6 +5264,10 @@ msgstr "Hidden accounts"
 msgid "Hidden accounts stay off Home. Their totals and net worth settings don’t change."
 msgstr "Hidden accounts stay off Home. Their totals and net worth settings don’t change."
 
+#: src/yield/hook/use-yield-hero-sentence.hook.ts
+msgid "hidden amount"
+msgstr "hidden amount"
+
 #: src/account/component/account-details-hidden-pill/account-details-hidden-pill.tsx
 #: src/account/component/account-inactive-icon/account-inactive-icon.tsx
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
@@ -5467,6 +5522,10 @@ msgstr "In runway, at today's prices"
 msgid "In Shortcuts, add a Transaction automation. Pick cards and Run Immediately."
 msgstr "In Shortcuts, add a Transaction automation. Pick cards and Run Immediately."
 
+#: src/yield/hook/use-yield-date-labels.hook.ts
+msgid "in the last 30 days"
+msgstr "in the last 30 days"
+
 #: src/sync/component/enable-banking-bank-step/enable-banking-bank-step.tsx
 msgid "In your country"
 msgstr "In your country"
@@ -5553,6 +5612,11 @@ msgstr "Installment"
 #: src/transaction/constant/debt-settlement-label.constant.ts
 msgid "Installment plan"
 msgstr "Installment plan"
+
+#: src/yield/constant/yield-group-label.constant.ts
+#: src/yield/constant/yield-kind-label.constant.ts
+msgid "Interest"
+msgstr "Interest"
 
 #: src/account/component/deposit-details-card/deposit-details-card.tsx
 msgid "Interest Rate"
@@ -6529,6 +6593,10 @@ msgstr "No archived accounts match “{search}”"
 msgid "No backups yet"
 msgstr "No backups yet"
 
+#: src/yield/constant/yield-unavailable-label.constant.ts
+msgid "No balance to measure"
+msgstr "No balance to measure"
+
 #: src/sync/component/enable-banking-bank-step/enable-banking-bank-step.tsx
 msgid "No banks found"
 msgstr "No banks found"
@@ -6739,6 +6807,10 @@ msgstr "No upcoming payment"
 msgid "No upcoming payments"
 msgstr "No upcoming payments"
 
+#: src/yield/hook/use-yield-hero-sentence.hook.ts
+msgid "no yield yet"
+msgstr "no yield yet"
+
 #: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
 msgid "Non-monthly bills are averaged per month."
 msgstr "Non-monthly bills are averaged per month."
@@ -6812,6 +6884,10 @@ msgstr "Not enough free storage to extract this backup."
 msgid "Not enough history yet"
 msgstr "Not enough history yet"
 
+#: src/yield/constant/yield-unavailable-label.constant.ts
+msgid "Not enough price history"
+msgstr "Not enough price history"
+
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
 msgid "Not now"
 msgstr "Not now"
@@ -6824,6 +6900,10 @@ msgstr "Not on any transactions. This can’t be undone."
 #: src/recurring/components/recurring-detail-history-row/recurring-detail-history-row.tsx
 msgid "Not part of this"
 msgstr "Not part of this"
+
+#: src/yield/constant/yield-kind-label.constant.ts
+msgid "Not passive income"
+msgstr "Not passive income"
 
 #: src/recurring/components/recurring-detail-destructive-row/recurring-detail-destructive-row.tsx
 #: src/recurring/components/recurring-list-row/recurring-list-row.tsx
@@ -7810,6 +7890,10 @@ msgstr "Purchases"
 #: src/settings/components/budget-push-toggle/budget-push-toggle.tsx
 msgid "Push notifications are disabled"
 msgstr "Push notifications are disabled"
+
+#: src/yield/hook/use-yield-date-labels.hook.ts
+msgid "Q{quarter} {year}"
+msgstr "Q{quarter} {year}"
 
 #: src/recurring/hook/use-recurring-cadence-label.hook.ts
 msgid "Quarterly"
@@ -8923,9 +9007,21 @@ msgstr "Sign in to your account"
 msgid "Similar transactions"
 msgstr "Similar transactions"
 
+#: src/yield/hook/use-yield-date-labels.hook.ts
+msgid "since {day}"
+msgstr "since {day}"
+
 #: src/i18n/hook/use-format-date-range.hook.ts
 msgid "Since {fromLabel}"
 msgstr "Since {fromLabel}"
+
+#: src/yield/hook/use-yield-date-labels.hook.ts
+msgid "since {fullDay}"
+msgstr "since {fullDay}"
+
+#: src/yield/hook/use-yield-date-labels.hook.ts
+msgid "since {month}"
+msgstr "since {month}"
 
 #: src/inzhur/component/inzhur-institution-gain-line/inzhur-institution-gain-line.tsx
 msgid "since {startLabel}"
@@ -8952,6 +9048,10 @@ msgstr "Smart suggestions"
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
 msgid "SmartBudget"
 msgstr "SmartBudget"
+
+#: src/yield/hook/use-yield-date-labels.hook.ts
+msgid "so far"
+msgstr "so far"
 
 #: src/inzhur/component/inzhur-operations-fund-row/inzhur-operations-fund-row.tsx
 msgid "Sold {soldLabel}"
@@ -9046,6 +9146,14 @@ msgstr "Splits your total into the purchase and a fee"
 #: src/runway/component/runway-all-in-toggle/runway-all-in-toggle.tsx
 msgid "Spreads irregular costs across the months."
 msgstr "Spreads irregular costs across the months."
+
+#: src/yield/constant/yield-kind-label.constant.ts
+msgid "Staking"
+msgstr "Staking"
+
+#: src/yield/constant/yield-group-label.constant.ts
+msgid "Staking & Earn"
+msgstr "Staking & Earn"
 
 #: src/account/component/start-deposit-form/start-deposit-form.tsx
 #: src/transaction/components/transaction-list-start-deposit-menu-item/transaction-list-start-deposit-menu-item.tsx
@@ -9417,6 +9525,11 @@ msgstr "Tap to select"
 #: src/inzhur/component/inzhur-operations-income-row/inzhur-operations-income-row.tsx
 msgid "Tax {taxLabel}"
 msgstr "Tax {taxLabel}"
+
+#: src/yield/constant/yield-group-label.constant.ts
+#: src/yield/constant/yield-kind-label.constant.ts
+msgid "Tax withheld"
+msgstr "Tax withheld"
 
 #: src/account/constant/account-kind-title.constant.ts
 msgid "Term deposit"
@@ -10387,6 +10500,10 @@ msgstr "Until {toLabel}"
 msgid "Until the model is ready, categories come from simple rules on this phone. If a download arrives damaged, Budgie deletes it and waits for you to retry."
 msgstr "Until the model is ready, categories come from simple rules on this phone. If a download arrives damaged, Budgie deletes it and waits for you to retry."
 
+#: src/yield/constant/yield-unavailable-label.constant.ts
+msgid "Unusually high · balance history may be incomplete"
+msgstr "Unusually high · balance history may be incomplete"
+
 #: src/account/component/account-details-market-link/account-details-market-link.tsx
 msgid "up {changeShare} on {staleDate}"
 msgstr "up {changeShare} on {staleDate}"
@@ -10607,6 +10724,10 @@ msgstr "Week"
 #: src/budget/hooks/use-budget-day-strip-labels.hook.ts
 msgid "Week {currentWeek} of {totalWeeks}. {overLabel}."
 msgstr "Week {currentWeek} of {totalWeeks}. {overLabel}."
+
+#: src/yield/hook/use-yield-date-labels.hook.ts
+msgid "Week of {day}"
+msgstr "Week of {day}"
 
 #: src/recurring/components/recurring-form-repeat-section/recurring-form-repeat-section.tsx
 #: src/recurring/hook/use-recurring-cadence-label.hook.ts

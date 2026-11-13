@@ -26,6 +26,22 @@ msgstr "P2P-продаж {assetCode} на Binance"
 msgid ", closed at the provider"
 msgstr ", закритий у провайдера"
 
+#: src/yield/hook/use-yield-hero-trend.hook.ts
+msgid ", down {change}"
+msgstr ", на {change} менше"
+
+#: src/yield/hook/use-yield-hero-trend.hook.ts
+msgid ", includes estimated values"
+msgstr ", враховано оцінені значення"
+
+#: src/yield/hook/use-yield-hero-trend.hook.ts
+msgid ", new this period"
+msgstr ", нове за цей період"
+
+#: src/yield/hook/use-yield-hero-trend.hook.ts
+msgid ", up {change}"
+msgstr ", на {change} більше"
+
 #: src/account/hooks/use-restore-archived-account.hook.ts
 msgid "“{accountTitle}” is back in Hidden accounts"
 msgstr "«{accountTitle}» знову серед прихованих рахунків"
@@ -356,6 +372,11 @@ msgstr "{count, plural, one {ще +#} few {ще +#} many {ще +#} other {ще +
 msgid "{count, plural, one {Choose an icon for # category} other {Choose icons for # categories}}"
 msgstr "{count, plural, one {Виберіть іконку для # категорії} few {Виберіть іконки для # категорій} many {Виберіть іконки для # категорій} other {Виберіть іконки для # категорії}}"
 
+#. js-lingui-explicit-id
+#: src/yield/hook/use-yield-hero-sentence.hook.ts
+msgid "passive-income.hero.sentence"
+msgstr "{count, plural, one {Зароблено {amount} до податків {rangeCaption}, {rate} річних у # позиції{trend}{estimates}} few {Зароблено {amount} до податків {rangeCaption}, {rate} річних у # позиціях{trend}{estimates}} many {Зароблено {amount} до податків {rangeCaption}, {rate} річних у # позиціях{trend}{estimates}} other {Зароблено {amount} до податків {rangeCaption}, {rate} річних у # позиції{trend}{estimates}}}"
+
 #: src/category/components/category-default-icon-button/category-default-icon-button.tsx
 msgid "{count, plural, one {It still uses the default icon} other {They still use the default icon}}"
 msgstr "{count, plural, one {Вона досі має типову іконку} few {Вони досі мають типову іконку} many {Вони досі мають типову іконку} other {Вони досі мають типову іконку}}"
@@ -648,6 +669,11 @@ msgstr "{installmentCount, plural, one {усього # платіж} few {усь
 #: src/installment-plan/component/convert-to-installment-create-button/convert-to-installment-create-button.tsx
 msgid "{installmentCount, plural, one {Split into # payment} other {Split into # payments}}"
 msgstr "{installmentCount, plural, one {Розбити на # платіж} few {Розбити на # платежі} many {Розбити на # платежів} other {Розбити на # платежу}}"
+
+#. js-lingui-explicit-id
+#: src/yield/hook/use-yield-date-labels.hook.ts
+msgid "passive-income.chart.so-far"
+msgstr "{label} наразі"
 
 #: src/siri/service/siri-catalog.service.ts
 msgid "{label}: {formattedSpent} of {formattedLimit} spent, {formattedLeft} left."
@@ -1989,6 +2015,14 @@ msgstr "Автоматичне налаштування вимкнено"
 #: src/app/(tabs)/settings/index.tsx
 msgid "Automation"
 msgstr "Автоматизація"
+
+#: src/yield/constant/yield-unavailable-label.constant.ts
+msgid "Available after 4 weeks"
+msgstr "Доступно через 4 тижні"
+
+#: src/yield/constant/yield-unavailable-label.constant.ts
+msgid "Available after the second payout"
+msgstr "Доступно після другої виплати"
 
 #: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 msgid "Available once the import finishes"
@@ -4143,8 +4177,21 @@ msgstr "Відхилити запис із Wallet?"
 msgid "Display"
 msgstr "Відображення"
 
+#: src/yield/constant/yield-kind-label.constant.ts
+msgid "Distribution"
+msgstr "Розподіл"
+
+#: src/yield/constant/yield-group-label.constant.ts
+msgid "Distributions"
+msgstr "Розподіли"
+
+#: src/yield/constant/yield-kind-label.constant.ts
+msgid "Dividend"
+msgstr "Дивіденд"
+
 #: src/inzhur/component/inzhur-fund-returns-card/inzhur-fund-returns-card.tsx
 #: src/inzhur/component/inzhur-operations-import-summary/inzhur-operations-import-summary.tsx
+#: src/yield/constant/yield-group-label.constant.ts
 msgid "Dividends"
 msgstr "Дивіденди"
 
@@ -4361,6 +4408,10 @@ msgstr "Кожне джерело знову стане окремою тран�
 #: src/budget/hooks/use-budget-day-strip-labels.hook.ts
 msgid "Each week against your {allowanceLabel} weekly allowance"
 msgstr "Кожен тиждень порівняно з вашим тижневим бюджетом {allowanceLabel}"
+
+#: src/yield/constant/yield-kind-label.constant.ts
+msgid "Earn"
+msgstr "Earn"
 
 #: src/@generic/component/entity-list-row/entity-list-row.tsx
 #: src/recurring/components/recurring-detail-edit-button/recurring-detail-edit-button.tsx
@@ -5212,6 +5263,10 @@ msgstr "Приховані рахунки"
 msgid "Hidden accounts stay off Home. Their totals and net worth settings don’t change."
 msgstr "Приховані рахунки не показуються на головній. Їхні налаштування підсумків і чистих активів не змінюються."
 
+#: src/yield/hook/use-yield-hero-sentence.hook.ts
+msgid "hidden amount"
+msgstr "прихована сума"
+
 #: src/account/component/account-details-hidden-pill/account-details-hidden-pill.tsx
 #: src/account/component/account-inactive-icon/account-inactive-icon.tsx
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
@@ -5466,6 +5521,10 @@ msgstr "У запасі, за сьогоднішніми цінами"
 msgid "In Shortcuts, add a Transaction automation. Pick cards and Run Immediately."
 msgstr "У Командах додайте автоматизацію «Транзакція». Виберіть картки та «Запускати негайно»."
 
+#: src/yield/hook/use-yield-date-labels.hook.ts
+msgid "in the last 30 days"
+msgstr "за останні 30 днів"
+
 #: src/sync/component/enable-banking-bank-step/enable-banking-bank-step.tsx
 msgid "In your country"
 msgstr "У вашій країні"
@@ -5552,6 +5611,11 @@ msgstr "Розстрочка"
 #: src/transaction/constant/debt-settlement-label.constant.ts
 msgid "Installment plan"
 msgstr "Оплата частинами"
+
+#: src/yield/constant/yield-group-label.constant.ts
+#: src/yield/constant/yield-kind-label.constant.ts
+msgid "Interest"
+msgstr "Відсотки"
 
 #: src/account/component/deposit-details-card/deposit-details-card.tsx
 msgid "Interest Rate"
@@ -6528,6 +6592,10 @@ msgstr "Немає архівних рахунків за запитом «{sear
 msgid "No backups yet"
 msgstr "Копій ще немає"
 
+#: src/yield/constant/yield-unavailable-label.constant.ts
+msgid "No balance to measure"
+msgstr "Немає балансу для оцінки"
+
 #: src/sync/component/enable-banking-bank-step/enable-banking-bank-step.tsx
 msgid "No banks found"
 msgstr "Банків не знайдено"
@@ -6738,6 +6806,10 @@ msgstr "Немає наступного платежу"
 msgid "No upcoming payments"
 msgstr "Немає майбутніх платежів"
 
+#: src/yield/hook/use-yield-hero-sentence.hook.ts
+msgid "no yield yet"
+msgstr "доходу ще немає"
+
 #: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
 msgid "Non-monthly bills are averaged per month."
 msgstr "Немісячні рахунки враховано як середнє за місяць."
@@ -6811,6 +6883,10 @@ msgstr "Недостатньо вільного місця, щоб розпак�
 msgid "Not enough history yet"
 msgstr "Ще недостатньо історії"
 
+#: src/yield/constant/yield-unavailable-label.constant.ts
+msgid "Not enough price history"
+msgstr "Недостатньо історії цін"
+
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
 msgid "Not now"
 msgstr "Не зараз"
@@ -6823,6 +6899,10 @@ msgstr "Не використовується в жодній транзакці
 #: src/recurring/components/recurring-detail-history-row/recurring-detail-history-row.tsx
 msgid "Not part of this"
 msgstr "Не належить до цієї серії"
+
+#: src/yield/constant/yield-kind-label.constant.ts
+msgid "Not passive income"
+msgstr "Не пасивний дохід"
 
 #: src/recurring/components/recurring-detail-destructive-row/recurring-detail-destructive-row.tsx
 #: src/recurring/components/recurring-list-row/recurring-list-row.tsx
@@ -7809,6 +7889,10 @@ msgstr "Покупки"
 #: src/settings/components/budget-push-toggle/budget-push-toggle.tsx
 msgid "Push notifications are disabled"
 msgstr "Push-сповіщення вимкнено"
+
+#: src/yield/hook/use-yield-date-labels.hook.ts
+msgid "Q{quarter} {year}"
+msgstr "{quarter} кв. {year}"
 
 #: src/recurring/hook/use-recurring-cadence-label.hook.ts
 msgid "Quarterly"
@@ -8922,9 +9006,21 @@ msgstr "Увійдіть у свій акаунт"
 msgid "Similar transactions"
 msgstr "Схожі транзакції"
 
+#: src/yield/hook/use-yield-date-labels.hook.ts
+msgid "since {day}"
+msgstr "з {day}"
+
 #: src/i18n/hook/use-format-date-range.hook.ts
 msgid "Since {fromLabel}"
 msgstr "З {fromLabel}"
+
+#: src/yield/hook/use-yield-date-labels.hook.ts
+msgid "since {fullDay}"
+msgstr "з {fullDay}"
+
+#: src/yield/hook/use-yield-date-labels.hook.ts
+msgid "since {month}"
+msgstr "з {month}"
 
 #: src/inzhur/component/inzhur-institution-gain-line/inzhur-institution-gain-line.tsx
 msgid "since {startLabel}"
@@ -8951,6 +9047,10 @@ msgstr "Розумні підказки"
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
 msgid "SmartBudget"
 msgstr "SmartBudget"
+
+#: src/yield/hook/use-yield-date-labels.hook.ts
+msgid "so far"
+msgstr "наразі"
 
 #: src/inzhur/component/inzhur-operations-fund-row/inzhur-operations-fund-row.tsx
 msgid "Sold {soldLabel}"
@@ -9045,6 +9145,14 @@ msgstr "Ділить вашу суму на покупку та комісію"
 #: src/runway/component/runway-all-in-toggle/runway-all-in-toggle.tsx
 msgid "Spreads irregular costs across the months."
 msgstr "Розподіляє нерегулярні витрати на місяці."
+
+#: src/yield/constant/yield-kind-label.constant.ts
+msgid "Staking"
+msgstr "Стейкінг"
+
+#: src/yield/constant/yield-group-label.constant.ts
+msgid "Staking & Earn"
+msgstr "Стейкінг і Earn"
 
 #: src/account/component/start-deposit-form/start-deposit-form.tsx
 #: src/transaction/components/transaction-list-start-deposit-menu-item/transaction-list-start-deposit-menu-item.tsx
@@ -9416,6 +9524,11 @@ msgstr "Торкніться для вибору"
 #: src/inzhur/component/inzhur-operations-income-row/inzhur-operations-income-row.tsx
 msgid "Tax {taxLabel}"
 msgstr "Податок {taxLabel}"
+
+#: src/yield/constant/yield-group-label.constant.ts
+#: src/yield/constant/yield-kind-label.constant.ts
+msgid "Tax withheld"
+msgstr "Утриманий податок"
 
 #: src/account/constant/account-kind-title.constant.ts
 msgid "Term deposit"
@@ -10386,6 +10499,10 @@ msgstr "До {toLabel}"
 msgid "Until the model is ready, categories come from simple rules on this phone. If a download arrives damaged, Budgie deletes it and waits for you to retry."
 msgstr "Поки модель не готова, категорії визначаються простими правилами на цьому телефоні. Якщо завантаження пошкоджено, Budgie видаляє його й чекає, поки ви спробуєте ще раз."
 
+#: src/yield/constant/yield-unavailable-label.constant.ts
+msgid "Unusually high · balance history may be incomplete"
+msgstr "Незвично високо · історія балансу може бути неповною"
+
 #: src/account/component/account-details-market-link/account-details-market-link.tsx
 msgid "up {changeShare} on {staleDate}"
 msgstr "зросла на {changeShare} {staleDate}"
@@ -10606,6 +10723,10 @@ msgstr "Тиждень"
 #: src/budget/hooks/use-budget-day-strip-labels.hook.ts
 msgid "Week {currentWeek} of {totalWeeks}. {overLabel}."
 msgstr "Тиждень {currentWeek} з {totalWeeks}. {overLabel}."
+
+#: src/yield/hook/use-yield-date-labels.hook.ts
+msgid "Week of {day}"
+msgstr "Тиждень з {day}"
 
 #: src/recurring/components/recurring-form-repeat-section/recurring-form-repeat-section.tsx
 #: src/recurring/hook/use-recurring-cadence-label.hook.ts
