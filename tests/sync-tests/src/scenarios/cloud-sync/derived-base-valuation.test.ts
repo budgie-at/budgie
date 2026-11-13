@@ -48,25 +48,44 @@ const seedReward = (database: DB, accountId: number, baseInstrumentId: number, b
         return seeded;
     });
 
+const seedRewardOnBothDevices = Effect.fnUntraced(function* (
+    seedExtra: (account: { readonly id: number; readonly instrumentId: number }) => Effect.Effect<unknown, unknown> = () => Effect.void
+) {
+    const deviceB = yield* Db;
+    const cloud = new FakeCloudTransport();
+
+    yield* resetTestDb(deviceB);
+
+    const { euroId, account } = yield* seedCryptoSyncAccountOn(testDb);
+
+    yield* seedExtra(account);
+
+    const { entry } = yield* seedReward(testDb, account.id, euroId, 50_000, 50_000 * PRECISION);
+
+    yield* pushDevice(testDb, cloud);
+    yield* pullDevice(deviceB, cloud, DEVICE_B);
+
+    return { deviceB, cloud, euroId, entry };
+});
+
+const markRemoteEntryEstimated = (deviceB: DB) =>
+    deviceB.$client.unsafe('UPDATE transaction_entries SET base_exchange_rate = NULL, base_amount = ?', [48_000 * PRECISION]);
+
+const expectEstimatedValue = Effect.fnUntraced(function* (entryId: number, baseInstrumentId: number, baseAmount: number) {
+    expect(yield* fetchEntryValuation(testDb, entryId)).toStrictEqual({ baseInstrumentId, baseExchangeRate: null, baseAmount });
+});
+
+const returnFromDeviceB = (deviceB: DB, cloud: FakeCloudTransport) =>
+    pushDevice(deviceB, cloud).pipe(Effect.andThen(pullDevice(testDb, cloud, DEVICE_A)));
+
 describe('cloud-sync/derived-base-valuation', () => {
     it.layer(makeTestDbLayer(null), { excludeTestServices: true })('two devices', it => {
         it.effect('keeps a local Priced value when the unchanged entry comes back Estimated', () =>
             Effect.gen(function* () {
-                const deviceB = yield* Db;
-                const cloud = new FakeCloudTransport();
+                const { deviceB, cloud, euroId, entry } = yield* seedRewardOnBothDevices();
 
-                yield* resetTestDb(deviceB);
-
-                const { euroId, account } = yield* seedCryptoSyncAccountOn(testDb);
-                const { entry } = yield* seedReward(testDb, account.id, euroId, 50_000, 50_000 * PRECISION);
-
-                yield* pushDevice(testDb, cloud);
-                yield* pullDevice(deviceB, cloud, DEVICE_B);
-                yield* deviceB.$client.unsafe('UPDATE transaction_entries SET base_exchange_rate = NULL, base_amount = ?', [
-                    48_000 * PRECISION
-                ]);
-                yield* pushDevice(deviceB, cloud);
-                yield* pullDevice(testDb, cloud, DEVICE_A);
+                yield* markRemoteEntryEstimated(deviceB);
+                yield* returnFromDeviceB(deviceB, cloud);
 
                 expect(yield* fetchEntryValuation(testDb, entry.id)).toStrictEqual({
                     baseInstrumentId: euroId,
@@ -79,91 +98,50 @@ describe('cloud-sync/derived-base-valuation', () => {
 
         it.effect('stores the incoming base value when the amount changed remotely', () =>
             Effect.gen(function* () {
-                const deviceB = yield* Db;
-                const cloud = new FakeCloudTransport();
+                const { deviceB, cloud, euroId, entry } = yield* seedRewardOnBothDevices();
 
-                yield* resetTestDb(deviceB);
-
-                const { euroId, account } = yield* seedCryptoSyncAccountOn(testDb);
-                const { entry } = yield* seedReward(testDb, account.id, euroId, 50_000, 50_000 * PRECISION);
-
-                yield* pushDevice(testDb, cloud);
-                yield* pullDevice(deviceB, cloud, DEVICE_B);
                 yield* deviceB.$client.unsafe('UPDATE transaction_entries SET amount = ?, base_exchange_rate = NULL, base_amount = ?', [
                     2 * PRECISION,
                     96_000 * PRECISION
                 ]);
-                yield* pushDevice(deviceB, cloud);
-                yield* pullDevice(testDb, cloud, DEVICE_A);
+                yield* returnFromDeviceB(deviceB, cloud);
 
-                expect(yield* fetchEntryValuation(testDb, entry.id)).toStrictEqual({
-                    baseInstrumentId: euroId,
-                    baseExchangeRate: null,
-                    baseAmount: 96_000 * PRECISION
-                });
+                yield* expectEstimatedValue(entry.id, euroId, 96_000 * PRECISION);
                 expect(yield* readOnlyEntryId(testDb)).toBe(entry.id);
             })
         );
 
         it.effect('stores the incoming base value when the parent operated_at changed remotely', () =>
             Effect.gen(function* () {
-                const deviceB = yield* Db;
-                const cloud = new FakeCloudTransport();
+                const { deviceB, cloud, euroId, entry } = yield* seedRewardOnBothDevices();
 
-                yield* resetTestDb(deviceB);
-
-                const { euroId, account } = yield* seedCryptoSyncAccountOn(testDb);
-                const { entry } = yield* seedReward(testDb, account.id, euroId, 50_000, 50_000 * PRECISION);
-
-                yield* pushDevice(testDb, cloud);
-                yield* pullDevice(deviceB, cloud, DEVICE_B);
                 yield* deviceB.$client.unsafe('UPDATE transactions SET operated_at = ?', [
                     Math.floor(new Date('2026-05-11T09:00:00.000Z').getTime() / 1000)
                 ]);
-                yield* deviceB.$client.unsafe('UPDATE transaction_entries SET base_exchange_rate = NULL, base_amount = ?', [
-                    48_000 * PRECISION
-                ]);
-                yield* pushDevice(deviceB, cloud);
-                yield* pullDevice(testDb, cloud, DEVICE_A);
+                yield* markRemoteEntryEstimated(deviceB);
+                yield* returnFromDeviceB(deviceB, cloud);
 
-                expect(yield* fetchEntryValuation(testDb, entry.id)).toStrictEqual({
-                    baseInstrumentId: euroId,
-                    baseExchangeRate: null,
-                    baseAmount: 48_000 * PRECISION
-                });
+                yield* expectEstimatedValue(entry.id, euroId, 48_000 * PRECISION);
             })
         );
 
         it.effect('stores the incoming base value when the entry account changed remotely', () =>
             Effect.gen(function* () {
-                const deviceB = yield* Db;
-                const cloud = new FakeCloudTransport();
+                const { deviceB, cloud, euroId, entry } = yield* seedRewardOnBothDevices(account =>
+                    new TestSeedService(testDb).account({
+                        title: 'BTC two',
+                        instrumentId: account.instrumentId,
+                        type: AccountTypeEnum.CRYPTO_SYNC
+                    })
+                );
 
-                yield* resetTestDb(deviceB);
-
-                const { euroId, account } = yield* seedCryptoSyncAccountOn(testDb);
-                const otherAccount = yield* new TestSeedService(testDb).account({
-                    title: 'BTC two',
-                    instrumentId: account.instrumentId,
-                    type: AccountTypeEnum.CRYPTO_SYNC
-                });
-                const { entry } = yield* seedReward(testDb, account.id, euroId, 50_000, 50_000 * PRECISION);
-
-                yield* pushDevice(testDb, cloud);
-                yield* pullDevice(deviceB, cloud, DEVICE_B);
                 yield* deviceB.$client.unsafe(
                     "UPDATE transaction_entries SET account_id = (SELECT id FROM accounts WHERE title = 'BTC two'), base_exchange_rate = NULL, base_amount = ?",
                     [48_000 * PRECISION]
                 );
-                yield* pushDevice(deviceB, cloud);
-                yield* pullDevice(testDb, cloud, DEVICE_A);
+                yield* returnFromDeviceB(deviceB, cloud);
 
-                expect(yield* fetchEntryValuation(testDb, entry.id)).toStrictEqual({
-                    baseInstrumentId: euroId,
-                    baseExchangeRate: null,
-                    baseAmount: 48_000 * PRECISION
-                });
-                expect(otherAccount.id).not.toBe(account.id);
+                yield* expectEstimatedValue(entry.id, euroId, 48_000 * PRECISION);
             })
         );
 

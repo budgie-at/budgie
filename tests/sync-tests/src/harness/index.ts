@@ -123,7 +123,7 @@ export { importInzhurBankTransaction } from './inzhur/import-inzhur-bank-transac
 export { importInzhurOperations } from './inzhur/import-inzhur-operations';
 export { FakeCloudTransport } from './cloud/fake-cloud-transport';
 
-export { TestSeedService, makeTestDbLayer, resetTestDb, assertStoredBalancesMatchLedger } from '@budgie-at/test-kit';
+export { TestSeedService, makeBinanceKline, makeTestDbLayer, resetTestDb, assertStoredBalancesMatchLedger } from '@budgie-at/test-kit';
 export { Db } from '@budgie/contracts';
 
 export { deviceLayer, onDevice, pullDevice, pushDevice, readOutboxRows, refreshAllBalances, uploadDevice } from './cloud/apply-harness';
@@ -237,6 +237,8 @@ export {
 export type { ShareCloudsInterface } from './cloud/share-harness';
 export { seedCryptoSyncAccount } from './seed/seed-crypto-sync-account';
 export { seedDailyPrice } from './seed/seed-daily-price';
+export { seedReward } from './seed/seed-reward';
+export { seedHistoricalRate } from './seed/seed-historical-rate';
 export { fetchEntryValuation } from './db/fetch-entry-valuation';
 export { readIsApplying } from './db/read-is-applying';
 export { onMarketDevice, readOnlyEntryId, seedCryptoSyncAccountOn, useEuroBase } from './cloud/market-device-harness';

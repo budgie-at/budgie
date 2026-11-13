@@ -14,7 +14,7 @@ import { HistoricalExchangeRateRepository } from '../src/historical-exchange-rat
 import { InstrumentDailyMarketPriceRepository } from '../src/market-data/repository/instrument-daily-market-price.repository';
 import { MarketPricedRevaluationService } from '../src/valuation/service/market-priced-revaluation.service';
 
-import { requireInstrumentByCode, setDefaultInstrument, TestLayer, testDb, testSeedService } from './test-context';
+import { requireInstrumentByCode, seedPendingIncome, setDefaultInstrument, TestLayer, testDb, testSeedService } from './test-context';
 
 const seedAccounts = Effect.fnUntraced(function* () {
     const euro = yield* requireInstrumentByCode(CurrencyEnum.EUR);
@@ -28,25 +28,14 @@ const seedAccounts = Effect.fnUntraced(function* () {
     return { euro, coin, cryptoAccount, bankAccount };
 });
 
-const pendingIncome = (accountId: number, operatedAt: string) =>
-    testSeedService.valuedIncome({
-        accountId,
-        amount: PRECISION,
-        operatedAt: new Date(operatedAt),
-        title: 'Reward',
-        baseInstrumentId: null,
-        baseExchangeRate: null,
-        baseAmount: null
-    });
-
 describe('market-priced entry queries', () => {
     it.effect('leaves market-priced accounts out of the fiat buckets', () =>
         Effect.gen(function* () {
             const repository = yield* TransactionEntryBaseValuationRepository;
             const { euro, coin, cryptoAccount, bankAccount } = yield* seedAccounts();
 
-            yield* pendingIncome(cryptoAccount.id, '2026-03-10T12:00:00.000Z');
-            yield* pendingIncome(bankAccount.id, '2026-03-10T12:00:00.000Z');
+            yield* seedPendingIncome(cryptoAccount.id, '2026-03-10T12:00:00.000Z');
+            yield* seedPendingIncome(bankAccount.id, '2026-03-10T12:00:00.000Z');
 
             const buckets = yield* repository.findPendingBaseValuationBuckets(euro.id);
 
@@ -60,9 +49,9 @@ describe('market-priced entry queries', () => {
         Effect.gen(function* () {
             const repository = yield* TransactionEntryBaseValuationRepository;
             const { euro, coin, cryptoAccount } = yield* seedAccounts();
-            const inside = yield* pendingIncome(cryptoAccount.id, '2026-03-10T23:30:00.000Z');
+            const inside = yield* seedPendingIncome(cryptoAccount.id, '2026-03-10T23:30:00.000Z');
 
-            yield* pendingIncome(cryptoAccount.id, '2026-03-11T00:30:00.000Z');
+            yield* seedPendingIncome(cryptoAccount.id, '2026-03-11T00:30:00.000Z');
 
             const page = yield* repository.findMarketPricedEntriesInRange({
                 instrumentId: coin.id,
@@ -134,6 +123,12 @@ const readIsApplying = testDb.$client
     .unsafe<{ readonly total: number }>('SELECT COUNT(*) AS total FROM sync_apply_state WHERE is_applying = 1')
     .pipe(Effect.map(([row]) => row.total));
 
+const expectNoSyncTrace = Effect.fnUntraced(function* (transactionId: number, stateBefore: unknown) {
+    expect(yield* readOutboxCount).toBe(0);
+    expect(yield* readTransactionState(transactionId)).toStrictEqual(stateBefore);
+    expect(yield* readIsApplying).toBe(0);
+});
+
 describe('market-priced revaluation', () => {
     it.live('turns an Estimated value Priced once the day price arrives, without outbox rows', () =>
         Effect.gen(function* () {
@@ -154,10 +149,12 @@ describe('market-priced revaluation', () => {
             yield* writeDailyPrice(coin.id, euro.id, '2026-03-10', 100);
             yield* service.revalueInstrumentRange(coin.id, '2026-03-10', '2026-03-10');
 
-            expect(yield* readEntry(entry.id)).toMatchObject({ baseInstrumentId: euro.id, baseExchangeRate: 100, baseAmount: 200 * PRECISION });
-            expect(yield* readOutboxCount).toBe(0);
-            expect(yield* readTransactionState(transaction.id)).toStrictEqual(stateBefore);
-            expect(yield* readIsApplying).toBe(0);
+            expect(yield* readEntry(entry.id)).toMatchObject({
+                baseInstrumentId: euro.id,
+                baseExchangeRate: 100,
+                baseAmount: 200 * PRECISION
+            });
+            yield* expectNoSyncTrace(transaction.id, stateBefore);
         }).pipe(Effect.provide(RevaluationLayer))
     );
 
@@ -178,7 +175,11 @@ describe('market-priced revaluation', () => {
             yield* writeDailyPrice(coin.id, euro.id, '2026-03-01', 100);
             yield* service.revalueInstrumentRange(coin.id, '2026-03-01', '2026-03-10');
 
-            expect(yield* readEntry(entry.id)).toMatchObject({ baseInstrumentId: euro.id, baseExchangeRate: 90, baseAmount: 180 * PRECISION });
+            expect(yield* readEntry(entry.id)).toMatchObject({
+                baseInstrumentId: euro.id,
+                baseExchangeRate: 90,
+                baseAmount: 180 * PRECISION
+            });
         }).pipe(Effect.provide(RevaluationLayer))
     );
 
@@ -210,12 +211,18 @@ describe('market-priced revaluation', () => {
             yield* writeDailyPrice(coin.id, euro.id, '2026-03-10', 100);
             yield* service.correctInstrument(coin.id);
 
-            expect(yield* readOutboxCount).toBe(0);
-            expect(yield* readTransactionState(gap.transaction.id)).toStrictEqual(stateBefore);
-            expect(yield* readIsApplying).toBe(0);
+            yield* expectNoSyncTrace(gap.transaction.id, stateBefore);
 
-            expect(yield* readEntry(older.entry.id)).toMatchObject({ baseInstrumentId: euro.id, baseExchangeRate: 70, baseAmount: 70 * PRECISION });
-            expect(yield* readEntry(gap.entry.id)).toMatchObject({ baseInstrumentId: euro.id, baseExchangeRate: null, baseAmount: 100 * PRECISION });
+            expect(yield* readEntry(older.entry.id)).toMatchObject({
+                baseInstrumentId: euro.id,
+                baseExchangeRate: 70,
+                baseAmount: 70 * PRECISION
+            });
+            expect(yield* readEntry(gap.entry.id)).toMatchObject({
+                baseInstrumentId: euro.id,
+                baseExchangeRate: null,
+                baseAmount: 100 * PRECISION
+            });
         }).pipe(Effect.provide(RevaluationLayer))
     );
 
@@ -241,11 +248,13 @@ describe('market-priced revaluation', () => {
             yield* writeDailyPrice(coin.id, euro.id, '2026-03-10', 300);
             yield* service.runCryptoStrictValuationStep();
 
-            expect(yield* readEntry(entry.id)).toMatchObject({ baseInstrumentId: euro.id, baseExchangeRate: 100, baseAmount: 100 * PRECISION });
+            expect(yield* readEntry(entry.id)).toMatchObject({
+                baseInstrumentId: euro.id,
+                baseExchangeRate: 100,
+                baseAmount: 100 * PRECISION
+            });
             expect((yield* settingsRepository.getSettings()).cryptoStrictValuationVersion).toBe(1);
-            expect(yield* readOutboxCount).toBe(0);
-            expect(yield* readTransactionState(transaction.id)).toStrictEqual(stateBefore);
-            expect(yield* readIsApplying).toBe(0);
+            yield* expectNoSyncTrace(transaction.id, stateBefore);
         }).pipe(Effect.provide(RevaluationLayer))
     );
 });

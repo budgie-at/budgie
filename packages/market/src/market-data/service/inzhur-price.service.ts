@@ -12,8 +12,8 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 import { InzhurPriceParseError } from '../error/inzhur-price-parse.error';
 import { InstrumentDailyMarketPriceRepository } from '../repository/instrument-daily-market-price.repository';
 
-import type { NearestPricePointInterface } from '../interface/nearest-price-point.interface';
 import type { InzhurFundPriceInterface } from '../interface/inzhur-fund-price.interface';
+import type { NearestPricePointInterface } from '../interface/nearest-price-point.interface';
 import type { InstrumentDailyMarketPriceCreateEntityInterface } from '@budgie/contracts';
 
 export class InzhurPriceService extends Context.Service<InzhurPriceService>()('@budgie/market/InzhurPriceService', {

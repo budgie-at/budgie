@@ -1,5 +1,5 @@
 import { buildTestDb, makeTestPlatformLayer, resetTestDb, TestSeedService } from '@budgie-at/test-kit';
-import { InstrumentRepository, SettingsEntityTable, TransactionEntryBaseValuationRepository } from '@budgie/contracts';
+import { InstrumentRepository, PRECISION, SettingsEntityTable, TransactionEntryBaseValuationRepository } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 import * as HttpClient from 'effect/http/HttpClient';
 import * as HttpClientResponse from 'effect/http/HttpClientResponse';
@@ -64,3 +64,14 @@ export const requireInstrumentByCode = Effect.fnUntraced(function* (code: string
 
     return isDefined(instrument) ? instrument : yield* Effect.die(new Error(`Instrument ${code} missing`));
 });
+
+export const seedPendingIncome = (accountId: number, operatedAt: string) =>
+    testSeedService.valuedIncome({
+        accountId,
+        amount: PRECISION,
+        operatedAt: new Date(operatedAt),
+        title: 'Reward',
+        baseInstrumentId: null,
+        baseExchangeRate: null,
+        baseAmount: null
+    });

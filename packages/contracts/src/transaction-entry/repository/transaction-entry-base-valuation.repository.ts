@@ -5,13 +5,13 @@ import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
 import { Db } from '../../@generic/service/db.service';
-import type { DB } from '../../@generic/type/db.type';
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { InstrumentTypeEnum } from '../../instrument/enum/instrument-type.enum';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { TransactionEntryEntityTable } from '../table/transaction-entry-entity.table';
 
+import type { DB } from '../../@generic/type/db.type';
 import type { BaseValuationBucketRevaluationInterface } from '../interface/base-valuation-bucket-revaluation.interface';
 import type { BaseValuationBucketUpdateInterface } from '../interface/base-valuation-bucket-update.interface';
 import type { EntryBaseValuationUpdateInterface } from '../interface/entry-base-valuation-update.interface';

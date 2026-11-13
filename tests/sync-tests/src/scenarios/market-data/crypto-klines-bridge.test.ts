@@ -7,19 +7,21 @@ import { http, HttpResponse } from 'msw';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { fetchEntryValuation, requireInstrument, seed, seedCryptoSyncAccount, seedDailyPrice, testDb, TestLayer } from '../../harness';
+import {
+    fetchEntryValuation,
+    makeBinanceKline,
+    requireInstrument,
+    seedCryptoSyncAccount,
+    seedDailyPrice,
+    seedReward,
+    testDb,
+    TestLayer
+} from '../../harness';
 import { mockServer } from '../../harness/scenario/mock-server';
 
-const dayMs = 86_400_000;
 const rewardDay = '2024-01-10';
 const coinOpen = 40_000;
 const euroOpen = 1.1;
-
-const kline = (day: string, open: number) => {
-    const openTime = Date.parse(`${day}T00:00:00.000Z`);
-
-    return [openTime, String(open), '0', '0', '0', '0', openTime + dayMs - 1, '0', 0, '0', '0', '0'];
-};
 
 const readJobStatuses = testDb.$client.unsafe<{
     readonly instrumentId: number;
@@ -50,21 +52,13 @@ describe('market-data/crypto-klines-bridge', () => {
         Effect.gen(function* () {
             const historicalMarketDataService = yield* HistoricalMarketDataService;
             const { euro, coin, account } = yield* seedCryptoSyncAccount('BTC');
-            const { entry } = yield* seed.valuedIncome({
-                accountId: account.id,
-                amount: PRECISION,
-                operatedAt: new Date(`${rewardDay}T09:00:00.000Z`),
-                title: 'Reward',
-                baseInstrumentId: null,
-                baseExchangeRate: null,
-                baseAmount: null
-            });
+            const { entry } = yield* seedReward(account.id, `${rewardDay}T09:00:00.000Z`, null, null, null);
 
             mockServer.use(
                 http.get('https://data-api.binance.vision/api/v3/klines', ({ request }) => {
                     const symbol = new URL(request.url).searchParams.get('symbol');
 
-                    return HttpResponse.json([kline(rewardDay, symbol === 'EURUSDT' ? euroOpen : coinOpen)]);
+                    return HttpResponse.json([makeBinanceKline(rewardDay, symbol === 'EURUSDT' ? euroOpen : coinOpen)]);
                 })
             );
             yield* seedDailyPrice(coin.id, euro.id, '2025-11-14', 90_000);
@@ -84,15 +78,7 @@ describe('market-data/crypto-klines-bridge', () => {
             const historicalMarketDataService = yield* HistoricalMarketDataService;
             const { euro, coin, account } = yield* seedCryptoSyncAccount('DOGE');
 
-            yield* seed.valuedIncome({
-                accountId: account.id,
-                amount: PRECISION,
-                operatedAt: new Date(`${rewardDay}T09:00:00.000Z`),
-                title: 'Reward',
-                baseInstrumentId: null,
-                baseExchangeRate: null,
-                baseAmount: null
-            });
+            yield* seedReward(account.id, `${rewardDay}T09:00:00.000Z`, null, null, null);
             mockServer.use(
                 http.get('https://data-api.binance.vision/api/v3/klines', () =>
                     HttpResponse.json({ code: -1121, msg: 'Invalid symbol.' }, { status: 400 })

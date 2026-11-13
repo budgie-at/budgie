@@ -3,8 +3,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from '@effect/vitest'
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { InstrumentDailyMarketPriceRepository } from '../src/market-data/repository/instrument-daily-market-price.repository';
 import { HistoricalExchangeRateRepository } from '../src/historical-exchange-rate/repository/historical-exchange-rate.repository';
+import { InstrumentDailyMarketPriceRepository } from '../src/market-data/repository/instrument-daily-market-price.repository';
 import { EntryBaseValuationService } from '../src/valuation/service/entry-base-valuation.service';
 
 import { requireInstrumentByCode, setDefaultInstrument, TestLayer, testSeedService } from './test-context';

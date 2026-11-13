@@ -50,7 +50,8 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
         const inzhurPriceService = yield* InzhurPriceService;
 
         const confirmed = (rate: number): ResolvedBaseRateInterface => ({ rate, isConfirmed: true });
-        const estimated = (rate: number | null): ResolvedBaseRateInterface | null => (isDefined(rate) ? { rate, isConfirmed: false } : null);
+        const estimated = (rate: number | null): ResolvedBaseRateInterface | null =>
+            isDefined(rate) ? { rate, isConfirmed: false } : null;
 
         const buildBaseValuation = (
             baseInstrumentId: number,
@@ -249,7 +250,12 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
             return isDefined(sourceToHryvniaRate) && isDefined(hryvniaToTargetRate) ? sourceToHryvniaRate * hryvniaToTargetRate : null;
         });
 
-        const resolveQuoteToBaseRate = (lookups: RateLookupsInterface, quoteInstrumentId: number, baseInstrumentId: number, rateDate: string) =>
+        const resolveQuoteToBaseRate = (
+            lookups: RateLookupsInterface,
+            quoteInstrumentId: number,
+            baseInstrumentId: number,
+            rateDate: string
+        ) =>
             quoteInstrumentId === baseInstrumentId
                 ? Effect.succeed(1)
                 : resolveBaseExchangeRateOrNull(lookups, quoteInstrumentId, baseInstrumentId, rateDate);

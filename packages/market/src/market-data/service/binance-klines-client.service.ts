@@ -68,7 +68,9 @@ export class BinanceKlinesClient extends Context.Service<BinanceKlinesClient>()(
                 )
             );
 
-            return pages.flat().map(([openTime, open]): DailyOpenPriceInterface => ({ priceDate: formatUtcDay(new Date(openTime)), price: open }));
+            return pages
+                .flat()
+                .map(([openTime, open]): DailyOpenPriceInterface => ({ priceDate: formatUtcDay(new Date(openTime)), price: open }));
         });
 
         const fetchSymbolOrNull = (symbol: string, fromDate: string, toDate: string) =>

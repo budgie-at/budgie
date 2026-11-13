@@ -32,7 +32,17 @@ import * as Ref from 'effect/Ref';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { fetchEntryValuation, requireInstrument, seed, seedCryptoSyncAccount, seedDailyPrice, testDb, TestLayer } from '../../harness';
+import {
+    fetchEntryValuation,
+    requireInstrument,
+    seed,
+    seedCryptoSyncAccount,
+    seedDailyPrice,
+    seedHistoricalRate,
+    seedReward,
+    testDb,
+    TestLayer
+} from '../../harness';
 
 const readJobs = testDb.$client.unsafe<{ readonly instrumentId: number; readonly quoteInstrumentId: number; readonly status: string }>(
     'SELECT instrument_id AS instrumentId, quote_instrument_id AS quoteInstrumentId, status FROM instrument_market_data_jobs ORDER BY id'
@@ -43,15 +53,7 @@ describe('market-data/crypto-strict-valuation', () => {
         Effect.gen(function* () {
             const historicalMarketDataService = yield* HistoricalMarketDataService;
             const { euro, coin, account } = yield* seedCryptoSyncAccount('BTC');
-            const { entry } = yield* seed.valuedIncome({
-                accountId: account.id,
-                amount: PRECISION,
-                operatedAt: new Date('2026-08-10T09:00:00.000Z'),
-                title: 'Reward',
-                baseInstrumentId: null,
-                baseExchangeRate: null,
-                baseAmount: null
-            });
+            const { entry } = yield* seedReward(account.id, '2026-08-10T09:00:00.000Z', null, null, null);
 
             yield* historicalMarketDataService.enqueueAccounts([account]);
 
@@ -119,16 +121,16 @@ describe('market-data/crypto-strict-valuation', () => {
             const historicalMarketDataLayer = Layer.effect(HistoricalMarketDataService, HistoricalMarketDataService.make).pipe(
                 Layer.provide([
                     HistoricalExchangeRateRepository.layer,
-                    InstrumentDailyMarketPriceRepository.layer,
-                    InstrumentMarketDataJobRepository.layer,
-                    InstrumentRepository.layer,
-                    ExchangeRatesService.layer,
-                    AccountRepository.layer,
-                    TransactionEntryBaseValuationRepository.layer,
-                    EntryBaseValuationService.layer,
-                    InzhurPriceService.layer,
+                    failingRepairLayer,
                     KlinesHistoryService.layer,
-                    failingRepairLayer
+                    TransactionEntryBaseValuationRepository.layer,
+                    InstrumentRepository.layer,
+                    InzhurPriceService.layer,
+                    InstrumentMarketDataJobRepository.layer,
+                    AccountRepository.layer,
+                    ExchangeRatesService.layer,
+                    EntryBaseValuationService.layer,
+                    InstrumentDailyMarketPriceRepository.layer
                 ])
             );
 
@@ -185,22 +187,8 @@ describe('market-data/crypto-strict-valuation', () => {
     );
 });
 
-const reward = (accountId: number, operatedAt: string, baseInstrumentId: number | null, baseExchangeRate: number | null, baseAmount: number | null) =>
-    seed.valuedIncome({
-        accountId,
-        amount: PRECISION,
-        operatedAt: new Date(operatedAt),
-        title: 'Reward',
-        baseInstrumentId,
-        baseExchangeRate,
-        baseAmount
-    });
-
 const revalue = (instrumentId: number, fromDate: string, toDate: string) =>
     Effect.flatMap(MarketPricedRevaluationService, service => service.revalueInstrumentRange(instrumentId, fromDate, toDate));
-
-const writeRate = (sourceInstrumentId: number, targetInstrumentId: number, rateDate: string, rate: number) =>
-    Effect.flatMap(HistoricalExchangeRateRepository, repository => repository.bulkUpsert([{ sourceInstrumentId, targetInstrumentId, rateDate, rate }]));
 
 const entryOf = (transactionId: number, accountId: number) =>
     testDb
@@ -214,12 +202,12 @@ describe('market-data/crypto-strict-valuation scenarios', () => {
         Effect.gen(function* () {
             const { euro, coin, account } = yield* seedCryptoSyncAccount('DOGE');
             const tether = yield* requireInstrument('USDT');
-            const klinesDay = yield* reward(account.id, '2025-11-13T23:30:00.000Z', null, null, null);
-            const coinGeckoDay = yield* reward(account.id, '2025-11-14T00:30:00.000Z', null, null, null);
+            const klinesDay = yield* seedReward(account.id, '2025-11-13T23:30:00.000Z', null, null, null);
+            const coinGeckoDay = yield* seedReward(account.id, '2025-11-14T00:30:00.000Z', null, null, null);
 
             yield* seedDailyPrice(coin.id, euro.id, '2025-11-14', 56_000);
             yield* seedDailyPrice(coin.id, tether.id, '2025-11-13', 60_000);
-            yield* writeRate(tether.id, euro.id, '2025-11-13', 0.92);
+            yield* seedHistoricalRate(tether.id, euro.id, '2025-11-13', 0.92);
             yield* revalue(coin.id, '2025-11-13', '2025-11-14');
 
             expect((yield* fetchEntryValuation(testDb, klinesDay.entry.id)).baseExchangeRate).toBeCloseTo(55_200, 6);
@@ -259,7 +247,7 @@ describe('market-data/crypto-strict-valuation scenarios', () => {
     it.effect('keeps synced values intact on a device with no local prices', () =>
         Effect.gen(function* () {
             const { euro, account } = yield* seedCryptoSyncAccount('DOGE');
-            const { entry } = yield* reward(account.id, '2026-08-10T09:00:00.000Z', euro.id, 50_000, 50_000 * PRECISION);
+            const { entry } = yield* seedReward(account.id, '2026-08-10T09:00:00.000Z', euro.id, 50_000, 50_000 * PRECISION);
 
             yield* Effect.flatMap(MarketPricedRevaluationService, service => service.runCryptoStrictValuationStep());
 
@@ -288,8 +276,8 @@ describe('market-data/crypto-strict-valuation scenarios', () => {
                 const operatedAt = new Date('2026-03-10T22:30:00.000Z');
 
                 yield* testDb.update(SettingsEntityTable).set({ defaultInstrumentId: euro.id });
-                yield* writeRate(hryvnia.id, euro.id, '2026-03-10', 0.025);
-                yield* writeRate(hryvnia.id, euro.id, '2026-03-11', 0.03);
+                yield* seedHistoricalRate(hryvnia.id, euro.id, '2026-03-10', 0.025);
+                yield* seedHistoricalRate(hryvnia.id, euro.id, '2026-03-11', 0.03);
 
                 const perRow = yield* Effect.flatMap(EntryBaseValuationService, service =>
                     service.valueMicroUnitEntry({ accountId: account.id, amount: PRECISION, operatedAt })

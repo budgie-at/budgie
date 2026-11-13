@@ -83,7 +83,9 @@ export class MarketPricedRevaluationService extends Context.Service<MarketPriced
                 });
 
                 if (isNotEmptyArray(updates)) {
-                    yield* syncApplyStateRepository.withoutTriggers(transactionEntryBaseValuationRepository.updateEntryBaseValuations(updates));
+                    yield* syncApplyStateRepository.withoutTriggers(
+                        transactionEntryBaseValuationRepository.updateEntryBaseValuations(updates)
+                    );
                 }
 
                 yield* YIELD_TO_UI;
@@ -157,7 +159,8 @@ export class MarketPricedRevaluationService extends Context.Service<MarketPriced
                     onPage: (entryCount: number) => Effect.Effect<void>
                 ) {
                     yield* revaluePages(
-                        afterId => transactionEntryBaseValuationRepository.findPendingMarketPricedEntries(baseInstrumentId, afterId, batchSize),
+                        afterId =>
+                            transactionEntryBaseValuationRepository.findPendingMarketPricedEntries(baseInstrumentId, afterId, batchSize),
                         makeAnyValueUpdate(baseInstrumentId),
                         onPage,
                         0
@@ -187,7 +190,11 @@ export class MarketPricedRevaluationService extends Context.Service<MarketPriced
                     const forwardDays = isFund ? FUND_PRICE_CARRY_DAYS : CRYPTO_PRICE_CARRY_DAYS;
                     const backwardDays = isFund ? FUND_PRICE_CARRY_DAYS : 0;
 
-                    yield* revalueInstrumentRange(job.instrumentId, shiftDay(job.fromDate, -backwardDays), shiftDay(job.toDate, forwardDays));
+                    yield* revalueInstrumentRange(
+                        job.instrumentId,
+                        shiftDay(job.fromDate, -backwardDays),
+                        shiftDay(job.toDate, forwardDays)
+                    );
                 }),
                 runCryptoStrictValuationStep: Effect.fn('MarketPricedRevaluationService.runCryptoStrictValuationStep')(function* () {
                     const settings = yield* settingsRepository.find;

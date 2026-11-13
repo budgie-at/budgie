@@ -10,24 +10,15 @@ import { MoneyDataUpgradeService } from '@budgie/ledger';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { fetchEntryValuation, requireInstrument, seed, seedCryptoSyncAccount, seedDailyPrice, testDb, TestLayer } from '../../harness';
-
-const reward = (
-    accountId: number,
-    operatedAt: string,
-    baseInstrumentId: number | null,
-    baseExchangeRate: number | null,
-    baseAmount: number | null
-) =>
-    seed.valuedIncome({
-        accountId,
-        amount: PRECISION,
-        operatedAt: new Date(operatedAt),
-        title: 'Reward',
-        baseInstrumentId,
-        baseExchangeRate,
-        baseAmount
-    });
+import {
+    fetchEntryValuation,
+    requireInstrument,
+    seedCryptoSyncAccount,
+    seedDailyPrice,
+    seedReward,
+    testDb,
+    TestLayer
+} from '../../harness';
 
 const runUpgrade = Effect.flatMap(MoneyDataUpgradeService, service => service.run('Base instrument missing'));
 
@@ -35,8 +26,8 @@ describe('market-priced pending entries', () => {
     it.effect('keeps an Estimated row Estimated when a pending row shares its bucket', () =>
         Effect.gen(function* () {
             const { euro, coin, account } = yield* seedCryptoSyncAccount('BTC');
-            const estimatedRow = yield* reward(account.id, '2026-08-10T09:00:00.000Z', euro.id, null, 40_000 * PRECISION);
-            const pendingRow = yield* reward(account.id, '2026-08-10T15:00:00.000Z', null, null, null);
+            const estimatedRow = yield* seedReward(account.id, '2026-08-10T09:00:00.000Z', euro.id, null, 40_000 * PRECISION);
+            const pendingRow = yield* seedReward(account.id, '2026-08-10T15:00:00.000Z', null, null, null);
 
             yield* seedDailyPrice(coin.id, euro.id, '2026-08-01', 50_000);
             yield* runUpgrade;
@@ -58,8 +49,8 @@ describe('market-priced pending entries', () => {
         Effect.gen(function* () {
             const { euro, coin, account } = yield* seedCryptoSyncAccount('BTC');
             const dollar = yield* requireInstrument(CurrencyEnum.USD);
-            const pricedDay = yield* reward(account.id, '2026-08-10T09:00:00.000Z', euro.id, 50_000, 50_000 * PRECISION);
-            const gapDay = yield* reward(account.id, '2026-08-20T09:00:00.000Z', euro.id, 50_000, 50_000 * PRECISION);
+            const pricedDay = yield* seedReward(account.id, '2026-08-10T09:00:00.000Z', euro.id, 50_000, 50_000 * PRECISION);
+            const gapDay = yield* seedReward(account.id, '2026-08-20T09:00:00.000Z', euro.id, 50_000, 50_000 * PRECISION);
 
             yield* seedDailyPrice(coin.id, dollar.id, '2026-08-10', 60_000);
             yield* testDb.update(SettingsEntityTable).set({ defaultInstrumentId: dollar.id });
@@ -84,7 +75,7 @@ describe('market-priced pending entries', () => {
             const repository = yield* TransactionEntryBaseValuationRepository;
             const statisticsRepository = yield* StatisticsRepository;
 
-            yield* reward(account.id, '2026-08-20T09:00:00.000Z', null, null, null);
+            yield* seedReward(account.id, '2026-08-20T09:00:00.000Z', null, null, null);
             yield* seedDailyPrice(coin.id, euro.id, '2026-08-01', 50_000);
 
             const progress = yield* runUpgrade;

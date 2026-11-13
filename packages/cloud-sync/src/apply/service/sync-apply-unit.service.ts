@@ -1,4 +1,5 @@
 import { SyncOutboxOperationEnum, SyncRecordRepository, SyncRecordTypeEnum } from '@budgie/contracts';
+import * as Arr from 'effect/Array';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -117,7 +118,7 @@ export class SyncApplyUnitService extends Context.Service<SyncApplyUnitService>(
         const absorbStandaloneLegs = Effect.fnUntraced(function* (unit: SyncApplyUnitInterface) {
             const accountIds: number[] = [];
             const legs = isDefined(unit.decoded.linkId)
-                ? unit.sources.filter(({ decoded }) => decoded.recordType === SyncRecordTypeEnum.TRANSACTION_LEG)
+                ? Arr.filter(unit.sources, ({ decoded }) => decoded.recordType === SyncRecordTypeEnum.TRANSACTION_LEG)
                 : [];
 
             for (const source of legs) {

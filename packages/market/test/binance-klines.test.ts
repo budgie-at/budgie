@@ -1,4 +1,5 @@
-import { AccountTypeEnum, CurrencyEnum, InstrumentMarketDataJobStatusEnum, InstrumentTypeEnum, PRECISION } from '@budgie/contracts';
+import { makeBinanceKline } from '@budgie-at/test-kit';
+import { AccountTypeEnum, CurrencyEnum, InstrumentMarketDataJobStatusEnum, InstrumentTypeEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 import * as Fiber from 'effect/Fiber';
@@ -10,20 +11,38 @@ import { InstrumentDailyMarketPriceRepository } from '../src/market-data/reposit
 import { BinanceKlinesClient } from '../src/market-data/service/binance-klines-client.service';
 import { KlinesHistoryService } from '../src/market-data/service/klines-history.service';
 
-import { makeStatusHttpClientLayer, requireInstrumentByCode, setDefaultInstrument, TestLayer, testSeedService } from './test-context';
-
-const dayMs = 86_400_000;
-
-const kline = (day: string, open: number) => {
-    const openTime = Date.parse(`${day}T00:00:00.000Z`);
-
-    return [openTime, String(open), '0', '0', '0', '0', openTime + dayMs - 1, '0', 0, '0', '0', '0'];
-};
+import {
+    makeStatusHttpClientLayer,
+    requireInstrumentByCode,
+    seedPendingIncome,
+    setDefaultInstrument,
+    TestLayer,
+    testSeedService
+} from './test-context';
 
 const invalidSymbol = { status: 400, body: { code: -1121, msg: 'Invalid symbol.' } };
 
 const provideClient = (respond: (url: URL) => { readonly status: number; readonly body: unknown }) =>
     Effect.provide(BinanceKlinesClient.layer.pipe(Layer.provideMerge(makeStatusHttpClientLayer(respond))));
+
+const seedCoinWithOldReward = Effect.fnUntraced(function* (code: string, name: string) {
+    const euro = yield* requireInstrumentByCode(CurrencyEnum.EUR);
+    const tether = yield* requireInstrumentByCode('USDT');
+    const coin = yield* testSeedService.instrument({ code, name, symbol: code, type: InstrumentTypeEnum.CRYPTO });
+    const account = yield* testSeedService.account({ instrumentId: coin.id, type: AccountTypeEnum.CRYPTO_SYNC });
+
+    yield* setDefaultInstrument(euro.id);
+    yield* seedPendingIncome(account.id, '2023-02-01T10:00:00.000Z');
+
+    return { euro, tether, coin };
+});
+
+const seedEuroPrice = (instrumentId: number, quoteInstrumentId: number) =>
+    Effect.flatMap(InstrumentDailyMarketPriceRepository, repository =>
+        repository.bulkUpsert([
+            { instrumentId, quoteInstrumentId, priceDate: '2025-11-14', price: 1, marketCap: null, volume: null, source: 'test' }
+        ])
+    );
 
 describe('Binance klines client', () => {
     it.effect('decodes daily opens and merges a renamed pair by day, current symbol first', () =>
@@ -40,10 +59,10 @@ describe('Binance klines client', () => {
                 const symbol = url.searchParams.get('symbol');
 
                 if (symbol === 'POLUSDT') {
-                    return { status: 200, body: [kline('2024-09-13', 0.4), kline('2024-09-14', 0.41)] };
+                    return { status: 200, body: [makeBinanceKline('2024-09-13', 0.4), makeBinanceKline('2024-09-14', 0.41)] };
                 }
 
-                return { status: 200, body: [kline('2024-09-12', 0.38), kline('2024-09-13', 0.99)] };
+                return { status: 200, body: [makeBinanceKline('2024-09-12', 0.38), makeBinanceKline('2024-09-13', 0.99)] };
             })
         )
     );
@@ -93,7 +112,7 @@ describe('Binance klines client', () => {
 
                 calls += 1;
 
-                return { status, body: status === 200 ? [kline('2024-01-01', 42_000)] : {} };
+                return { status, body: status === 200 ? [makeBinanceKline('2024-01-01', 42_000)] : {} };
             })
         );
     });
@@ -169,8 +188,8 @@ describe('klines history jobs', () => {
             Effect.provide(
                 KlinesLayer(url =>
                     url.searchParams.get('symbol') === 'EURUSDT'
-                        ? { status: 200, body: [kline('2024-05-10', 1.08)] }
-                        : { status: 200, body: [kline('2024-05-10', 60_000)] }
+                        ? { status: 200, body: [makeBinanceKline('2024-05-10', 1.08)] }
+                        : { status: 200, body: [makeBinanceKline('2024-05-10', 60_000)] }
                 )
             )
         )
@@ -191,36 +210,11 @@ describe('klines history jobs', () => {
     it.effect('windows a job from the oldest entry to the day before the earliest CoinGecko price', () =>
         Effect.gen(function* () {
             const service = yield* KlinesHistoryService;
-            const dailyPriceRepository = yield* InstrumentDailyMarketPriceRepository;
-            const euro = yield* requireInstrumentByCode(CurrencyEnum.EUR);
-            const tether = yield* requireInstrumentByCode('USDT');
-            const coin = yield* testSeedService.instrument({ code: 'TKW1', name: 'TKW1', symbol: 'TKW1', type: InstrumentTypeEnum.CRYPTO });
-            const account = yield* testSeedService.account({ instrumentId: coin.id, type: AccountTypeEnum.CRYPTO_SYNC });
-
-            yield* setDefaultInstrument(euro.id);
-            yield* testSeedService.valuedIncome({
-                accountId: account.id,
-                amount: PRECISION,
-                operatedAt: new Date('2023-02-01T10:00:00.000Z'),
-                title: 'Reward',
-                baseInstrumentId: null,
-                baseExchangeRate: null,
-                baseAmount: null
-            });
+            const { euro, tether, coin } = yield* seedCoinWithOldReward('TKW1', 'TKW1');
 
             expect(yield* service.buildJobInput(coin.id, euro.id, tether.id)).toBeNull();
 
-            yield* dailyPriceRepository.bulkUpsert([
-                {
-                    instrumentId: coin.id,
-                    quoteInstrumentId: euro.id,
-                    priceDate: '2025-11-14',
-                    price: 1,
-                    marketCap: null,
-                    volume: null,
-                    source: 'test'
-                }
-            ]);
+            yield* seedEuroPrice(coin.id, euro.id);
 
             expect(yield* service.buildJobInput(coin.id, euro.id, tether.id)).toStrictEqual({
                 instrumentId: coin.id,
@@ -235,40 +229,11 @@ describe('klines history jobs', () => {
     it.effect('queues no klines job for a stablecoin', () =>
         Effect.gen(function* () {
             const service = yield* KlinesHistoryService;
-            const dailyPriceRepository = yield* InstrumentDailyMarketPriceRepository;
-            const euro = yield* requireInstrumentByCode(CurrencyEnum.EUR);
-            const tether = yield* requireInstrumentByCode('USDT');
-            const stablecoin = yield* testSeedService.instrument({
-                code: 'USDC',
-                name: 'USDC',
-                symbol: 'USDC',
-                type: InstrumentTypeEnum.CRYPTO
-            });
-            const account = yield* testSeedService.account({ instrumentId: stablecoin.id, type: AccountTypeEnum.CRYPTO_SYNC });
+            const { euro, tether, coin } = yield* seedCoinWithOldReward('USDC', 'USDC');
 
-            yield* setDefaultInstrument(euro.id);
-            yield* testSeedService.valuedIncome({
-                accountId: account.id,
-                amount: PRECISION,
-                operatedAt: new Date('2023-02-01T10:00:00.000Z'),
-                title: 'Reward',
-                baseInstrumentId: null,
-                baseExchangeRate: null,
-                baseAmount: null
-            });
-            yield* dailyPriceRepository.bulkUpsert([
-                {
-                    instrumentId: stablecoin.id,
-                    quoteInstrumentId: euro.id,
-                    priceDate: '2025-11-14',
-                    price: 1,
-                    marketCap: null,
-                    volume: null,
-                    source: 'test'
-                }
-            ]);
+            yield* seedEuroPrice(coin.id, euro.id);
 
-            expect(yield* service.buildJobInput(stablecoin.id, euro.id, tether.id)).toBeNull();
+            expect(yield* service.buildJobInput(coin.id, euro.id, tether.id)).toBeNull();
         }).pipe(Effect.provide(KlinesLayer(() => ({ status: 200, body: [] }))))
     );
 });
