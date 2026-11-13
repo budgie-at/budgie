@@ -1,5 +1,6 @@
-import { format } from 'date-fns/format';
+const PAD_WIDTH = 2;
+const MONTH_OFFSET = 1;
 
-const DAY_FORMAT = 'yyyy-MM-dd';
+const pad = (value: number) => String(value).padStart(PAD_WIDTH, '0');
 
-export const formatYieldDay = (date: Date) => format(date, DAY_FORMAT);
+export const formatYieldDay = (date: Date) => `${date.getFullYear()}-${pad(date.getMonth() + MONTH_OFFSET)}-${pad(date.getDate())}`;

@@ -179,15 +179,19 @@ export class YieldService extends Context.Service<YieldService>()('@budgie/marke
             };
         };
 
-        const groupByBucket = (window: YieldWindowInterface, facts: readonly YieldFactInterface[], origin: Date) =>
-            facts.reduce((byIndex, fact) => {
-                const index = BUCKET_DIFFERENCE[window.unit](parseISO(fact.day), origin);
+        const groupByBucket = (window: YieldWindowInterface, facts: readonly YieldFactInterface[], origin: Date) => {
+            const indexByDay = new Map<string, number>();
+
+            return facts.reduce((byIndex, fact) => {
+                const index = indexByDay.get(fact.day) ?? BUCKET_DIFFERENCE[window.unit](parseISO(fact.day), origin);
                 const bucketFacts = byIndex.get(index) ?? [];
 
+                indexByDay.set(fact.day, index);
                 bucketFacts.push(fact);
 
                 return byIndex.set(index, bucketFacts);
             }, new Map<number, YieldFactInterface[]>());
+        };
 
         const sumByGroup = (facts: readonly YieldFactInterface[]): YieldGroupAmountsType => {
             const amounts = buildEmptyAmounts();

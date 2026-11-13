@@ -188,9 +188,10 @@ export class YieldRepository extends Context.Service<YieldRepository>()('@budgie
                                   amount: sql<number>`CASE WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT} THEN ${TransactionEntryEntityTable.amount} ELSE -${TransactionEntryEntityTable.amount} END`
                               })
                               .from(TransactionEntryEntityTable)
-                              .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+                              .crossJoin(TransactionEntityTable)
                               .where(
                                   and(
+                                      eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id),
                                       transactionFilters.buildVisibleTransactionCondition(),
                                       transactionFilters.buildLedgerEntryCondition(),
                                       inArray(TransactionEntryEntityTable.accountId, [...accountIds])
