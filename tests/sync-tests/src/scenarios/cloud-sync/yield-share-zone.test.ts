@@ -45,6 +45,30 @@ const seedSourcedInterest = Effect.gen(function* () {
     return { joint, deposit };
 });
 
+const shareOnOwner = (accountIds: readonly number[]) =>
+    onShareDevice(
+        testDb,
+        Effect.flatMap(HouseholdShareService, service => service.shareAccounts(accountIds))
+    );
+
+const unshareOnOwner = (accountId: number) =>
+    onShareDevice(
+        testDb,
+        Effect.flatMap(HouseholdShareService, service => service.unshareAccount(accountId))
+    );
+
+const startSharedPair = Effect.gen(function* () {
+    const { deviceB, clouds } = yield* startHousehold(SyncZoneRoleEnum.PARTICIPANT);
+    const { joint, deposit } = yield* seedSourcedInterest;
+
+    yield* uploadDevice(testDb, clouds);
+    yield* shareOnOwner([joint.id, deposit.id]);
+    yield* uploadDevice(testDb, clouds);
+    expectNoRejections(yield* pullHousehold(deviceB, clouds, MEMBER_DEVICE));
+
+    return { deviceB, clouds, deposit };
+});
+
 const sourceOf = (database: DB) =>
     queryRows(
         database,
@@ -82,19 +106,57 @@ describe('cloud-sync/yield-share-zone', () => {
             })
         );
 
-        it.effect('keeps the link when the position and its income move together', () =>
+        it.effect('queues the cleared source in the owner outbox', () =>
             Effect.gen(function* () {
-                const { deviceB, clouds } = yield* startHousehold(SyncZoneRoleEnum.PARTICIPANT);
+                yield* startHousehold(SyncZoneRoleEnum.PARTICIPANT);
+                const { joint } = yield* seedSourcedInterest;
+
+                yield* shareOnOwner([joint.id]);
+
+                expect(
+                    yield* countRows(
+                        testDb,
+                        `sync_outbox WHERE record_type = 'Transaction' AND operation = 'SAVE' AND changed_columns LIKE '%yield_source_account_id%'`
+                    )
+                ).toBe(1);
+            })
+        );
+
+        it.effect('clears a source that was soft-deleted before the share', () =>
+            Effect.gen(function* () {
+                yield* startHousehold(SyncZoneRoleEnum.PARTICIPANT);
                 const { joint, deposit } = yield* seedSourcedInterest;
 
-                yield* uploadDevice(testDb, clouds);
-                yield* onShareDevice(
-                    testDb,
-                    Effect.flatMap(HouseholdShareService, service => service.shareAccounts([joint.id, deposit.id]))
+                yield* testDb.$client.unsafe(`UPDATE accounts SET deleted_at = ? WHERE id = ?`, [Date.now(), deposit.id]);
+                yield* shareOnOwner([joint.id]);
+
+                expect(yield* sourceOf(testDb)).toEqual([{ yieldKind: YieldKindEnum.INTEREST, sourceTitle: null }]);
+            })
+        );
+
+        it.effect('clears the source when unsharing splits the income from its position, and wins over an older local edit', () =>
+            Effect.gen(function* () {
+                const { deviceB, clouds, deposit } = yield* startSharedPair;
+                yield* deviceB.$client.unsafe(
+                    `UPDATE transactions SET title = 'Interest', comment = 'edited on B' WHERE title = 'Interest'`
                 );
+
+                yield* unshareOnOwner(deposit.id);
                 yield* uploadDevice(testDb, clouds);
 
+                expect(yield* sourceOf(testDb)).toEqual([{ yieldKind: YieldKindEnum.INTEREST, sourceTitle: null }]);
                 expectNoRejections(yield* pullHousehold(deviceB, clouds, MEMBER_DEVICE));
+                expect(yield* sourceOf(deviceB)).toEqual([{ yieldKind: YieldKindEnum.INTEREST, sourceTitle: null }]);
+                expect(yield* queryRows(deviceB, `SELECT comment FROM transactions WHERE title = 'Interest'`)).toEqual([
+                    { comment: 'edited on B' }
+                ]);
+            })
+        );
+
+        it.effect('keeps the link when the position and its income move together', () =>
+            Effect.gen(function* () {
+                const { deviceB } = yield* startSharedPair;
+
                 expect(yield* sourceOf(deviceB)).toEqual([{ yieldKind: YieldKindEnum.INTEREST, sourceTitle: 'Deposit' }]);
             })
         );

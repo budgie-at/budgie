@@ -85,6 +85,9 @@ export const TransactionEntityTable = sqliteTable(
         index('transactions_yield_kind_idx')
             .on(table.yieldKind, table.operatedAt)
             .where(sql`${table.yieldKind} IS NOT NULL`),
+        index('transactions_yield_source_idx')
+            .on(table.yieldSourceAccountId)
+            .where(sql`${table.yieldSourceAccountId} IS NOT NULL`),
         index('transactions_from_account_idx')
             .on(table.fromAccountId)
             .where(sql`${table.fromAccountId} IS NOT NULL`),

@@ -279,7 +279,7 @@ export class HouseholdShareService extends Context.Service<HouseholdShareService
             const transactionIds = yield* repository.findTransactionIdsOnAccounts(accountIds);
 
             yield* alignTransactionIds(transactionIds, memo);
-            yield* transactionYieldRepository.clearCrossZoneSources(accountIds);
+            yield* transactionYieldRepository.clearCrossZoneSources;
         });
 
         const moveSeries = Effect.fnUntraced(function* (seriesId: number, from: string, to: string, memo: LabeledMemoType) {
@@ -351,6 +351,8 @@ export class HouseholdShareService extends Context.Service<HouseholdShareService
             if (isNotEmptyArray(transactionIds)) {
                 yield* alignTransactionIds(transactionIds, new Map());
             }
+
+            yield* transactionYieldRepository.clearCrossZoneSources;
         });
 
         const applyShareEverything = Effect.fn('HouseholdShareService.applyShareEverything')(function* () {

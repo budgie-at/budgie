@@ -34,6 +34,7 @@ import m0030 from './20261113083725_perfect_blink/migration.sql';
 import m0031 from './20261113100108_yield_kind/migration.sql';
 import m0032 from './20261113100109_yield_outbox_triggers/migration.sql';
 import m0033 from './20261113125436_yield_tag_repair_version/migration.sql';
+import m0034 from './20261113131801_yield_source_index/migration.sql';
 
   export default {
     migrations: {
@@ -70,7 +71,8 @@ import m0033 from './20261113125436_yield_tag_repair_version/migration.sql';
 "20261113083725_perfect_blink": m0030,
 "20261113100108_yield_kind": m0031,
 "20261113100109_yield_outbox_triggers": m0032,
-"20261113125436_yield_tag_repair_version": m0033
+"20261113125436_yield_tag_repair_version": m0033,
+"20261113131801_yield_source_index": m0034
 }
   }
   

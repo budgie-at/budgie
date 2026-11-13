@@ -136,25 +136,17 @@ export class TransactionYieldRepository extends Context.Service<TransactionYield
                     ).pipe(
                         Effect.map(([row]) => row.accountCount === new Set([firstAccountId, secondAccountId]).size && row.zoneCount === 1)
                     ),
-                clearCrossZoneSources: (accountIds: readonly number[]) =>
-                    isEmptyArray(accountIds)
-                        ? Effect.void
-                        : Db.query(db =>
-                              db
-                                  .update(TransactionEntityTable)
-                                  .set({ yieldSourceAccountId: null })
-                                  .where(
-                                      and(
-                                          isNotNull(TransactionEntityTable.yieldSourceAccountId),
-                                          or(
-                                              inArray(TransactionEntityTable.yieldSourceAccountId, [...accountIds]),
-                                              inArray(TransactionEntityTable.toAccountId, [...accountIds]),
-                                              inArray(TransactionEntityTable.fromAccountId, [...accountIds])
-                                          ),
-                                          sql`(SELECT ${AccountEntityTable.syncZone} FROM ${AccountEntityTable} WHERE ${AccountEntityTable.id} = ${TransactionEntityTable.yieldSourceAccountId}) IS NOT ${TransactionEntityTable.syncZone}`
-                                      )
-                                  )
-                          ).pipe(Effect.asVoid),
+                clearCrossZoneSources: Db.query(db =>
+                    db
+                        .update(TransactionEntityTable)
+                        .set({ yieldSourceAccountId: null, updatedAt: new Date() })
+                        .where(
+                            and(
+                                isNotNull(TransactionEntityTable.yieldSourceAccountId),
+                                sql`NOT EXISTS (SELECT 1 FROM ${AccountEntityTable} WHERE ${AccountEntityTable.id} = ${TransactionEntityTable.yieldSourceAccountId} AND ${AccountEntityTable.deletedAt} IS NULL AND ${AccountEntityTable.syncZone} = ${TransactionEntityTable.syncZone})`
+                            )
+                        )
+                ).pipe(Effect.asVoid),
                 refineImportedYieldKind: (transactionId: number, yieldKind: YieldKindEnum) =>
                     Db.query(db =>
                         db
