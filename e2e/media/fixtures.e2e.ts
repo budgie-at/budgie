@@ -128,3 +128,9 @@ test('fixture 31-transaction-info.db', { skip }, async ({ media }) => {
     await t.createExpense(ctx, { amount: '10', account: 'E2E Txn Account', category: 'E2E Info Category', comment: 'E2E Similar Expense' });
     await snapshot(budgie, '31-transaction-info.db');
 });
+
+test('fixture 52-passive-income-base.db', { skip }, async ({ media }) => {
+    const budgie = new Budgie(media.ctx);
+    await budgie.start({ fixture: '01.db' });
+    await snapshot(budgie, '52-passive-income-base.db');
+});
