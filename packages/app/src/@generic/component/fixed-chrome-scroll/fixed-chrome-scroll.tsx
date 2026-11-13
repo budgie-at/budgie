@@ -13,17 +13,19 @@ interface Props {
 }
 
 const CONTENT_BOTTOM_CLEARANCE = 16;
+const FOCUSED_FIELD_CLEARANCE = 24;
 
 export const FixedChromeScroll = ({ children, testID, footerHeight = 0 }: Props) => {
     const { chromeHeight } = useBottomChromeInset();
     const { config } = useScreenChrome();
     const contentInsetBottom = Math.max(chromeHeight, footerHeight) + CONTENT_BOTTOM_CLEARANCE;
+    const bottomOffset = contentInsetBottom + FOCUSED_FIELD_CLEARANCE;
 
     return (
         <ChromeKeyboardScrollView
             contentInsetTop={config.headerHeight}
             contentInsetBottom={contentInsetBottom}
-            bottomOffset={contentInsetBottom}
+            bottomOffset={bottomOffset}
             showsVerticalScrollIndicator={false}
             testID={testID}
         >

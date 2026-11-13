@@ -11,12 +11,14 @@ import { useContext } from 'react';
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { StatisticsCategoryIdsContext } from '../../context/statistics-category-ids.context';
+import { getSecurityTrade } from '../../utils/get-security-trade.util';
 import { getTransactionType } from '../../utils/get-transaction-type.util';
 import { isEarnedIncomeTransaction } from '../../utils/is-earned-income-transaction.util';
 import { selectStatisticsAmountTransaction } from '../../utils/select-statistics-amount-transaction.util';
 import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
 import { TransactionCardSelector } from '../transaction-card/transaction-card.selector';
 import { TransactionEntryAmount } from '../transaction-entry-amount/transaction-entry-amount';
+import { TransactionSecurityTradeAmount } from '../transaction-security-trade-amount/transaction-security-trade-amount';
 import { TransactionTransferAmount } from '../transaction-transfer-amount/transaction-transfer-amount';
 
 import type { AggregatedTransactionEntryInterface } from '../../interface/aggregated-transaction-entry.interface';
@@ -79,7 +81,13 @@ export const TransactionAmount = ({ transaction: fullTransaction, accountId = nu
     const amountTestID = TransactionCardSelector.Amount(transaction.id);
 
     if (isDefined(fromEntry) && isDefined(toEntry)) {
-        return <TransactionTransferAmount fromEntry={fromEntry} toEntry={toEntry} accountId={accountId} testID={amountTestID} />;
+        const trade = getSecurityTrade(transaction);
+
+        return isDefined(trade) ? (
+            <TransactionSecurityTradeAmount trade={trade} accountId={accountId} testID={amountTestID} />
+        ) : (
+            <TransactionTransferAmount fromEntry={fromEntry} toEntry={toEntry} accountId={accountId} testID={amountTestID} />
+        );
     }
 
     const sideEntry = isDefined(fromEntry) ? fromEntry : toEntry;
@@ -88,11 +96,13 @@ export const TransactionAmount = ({ transaction: fullTransaction, accountId = nu
         return null;
     }
 
-    const isAdjustment = isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction);
     const isInflow = getTransactionType(transaction) === TransactionTypeEnum.INCOME;
     const sideVariant = isEarnedIncomeTransaction(transaction) ? 'positive' : 'primary';
     const sign = isInflow ? '+' : '';
-    const sideTestID = isAdjustment ? TransactionCardSelector.AdjustmentAmount(convertFromMicroUnits(sideEntry.amount)) : amountTestID;
+    const sideTestID =
+        isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction)
+            ? TransactionCardSelector.AdjustmentAmount(convertFromMicroUnits(sideEntry.amount))
+            : amountTestID;
 
     return (
         <TransactionEntryAmount

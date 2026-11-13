@@ -19,7 +19,10 @@ it.effect('maps the main form to a service payload with micro units and a Date a
             overallLimit: 0,
             otherLimit: 50,
             otherRolloverMode: BudgetRolloverModeEnum.NONE,
-            categoryLimits: [{ categoryId: 1, limitAmount: 20, rolloverMode: BudgetRolloverModeEnum.SURPLUS }],
+            categoryLimits: [
+                { categoryId: 1, limitAmount: 20, rolloverMode: BudgetRolloverModeEnum.SURPLUS },
+                { categoryId: 2, limitAmount: 0, rolloverMode: BudgetRolloverModeEnum.SURPLUS }
+            ],
             instrumentId: 2
         });
 
@@ -89,10 +92,16 @@ it.effect('maps the event form to an EVENT budget without period tuning or rollo
             startsAtMs: new Date(2026, 10, 2, 9).getTime(),
             endsAtMs: new Date(2026, 10, 16, 22).getTime(),
             overallLimit: 3000,
-            categoryLimits: [{ categoryId: 1, limitAmount: 1100, rolloverMode: BudgetRolloverModeEnum.NONE }],
+            categoryLimits: [
+                { categoryId: 1, limitAmount: 1100, rolloverMode: BudgetRolloverModeEnum.NONE },
+                { categoryId: 2, limitAmount: 0, rolloverMode: BudgetRolloverModeEnum.NONE }
+            ],
             instrumentId: 2
         });
 
+        expect(payload.categoryLimits).toEqual([
+            { categoryId: 1, limitAmount: convertToMicroUnits(1100), rolloverMode: BudgetRolloverModeEnum.NONE }
+        ]);
         expect(payload.kind).toBe(BudgetKindEnum.EVENT);
         expect(payload.tagId).toBe(4);
         expect(payload.startsAt).toEqual(new Date(2026, 10, 2));

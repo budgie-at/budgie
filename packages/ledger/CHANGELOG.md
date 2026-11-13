@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.181.3](https://github.com/budgie-at/budgie/compare/v6.181.2...v6.181.3) (2026-11-13)
+
+**Note:** Version bump only for package @budgie/ledger
+
+
+
+
+
+# [6.181.0](https://github.com/budgie-at/budgie/compare/v6.180.1...v6.181.0) (2026-11-13)
+
+### Features
+
+* add stocks and ETF support with manual brokerages ([#2194](https://github.com/budgie-at/budgie/issues/2194)) ([18ab508](https://github.com/budgie-at/budgie/commit/18ab5086905359988aaf0653918ca79d6b2bf3ca))
+
+
+## [6.179.1](https://github.com/budgie-at/budgie/compare/v6.179.0...v6.179.1) (2026-11-12)
+
+### Bug Fixes
+
+* **app:** bring Android screens to parity with iOS ([#2181](https://github.com/budgie-at/budgie/issues/2181)) ([fbec04b](https://github.com/budgie-at/budgie/commit/fbec04b92a903f1a563ef6b9cdcb203dd8b94f84))
+
+
 ## [6.175.1](https://github.com/budgie-at/budgie/compare/v6.175.0...v6.175.1) (2026-11-11)
 
 **Note:** Version bump only for package @budgie/ledger

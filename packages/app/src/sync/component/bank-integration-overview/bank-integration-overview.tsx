@@ -10,7 +10,7 @@ import { useBankIntegrationSyncsQuery } from '../../query/use-bank-integration-s
 import { BankIntegrationStatusLine } from '../bank-integration-status-line/bank-integration-status-line';
 
 export const BankIntegrationOverview = () => {
-    const { integration } = useBankIntegration();
+    const { integration, capabilities } = useBankIntegration();
     const { config } = useScreenChrome();
     const scrollY = useScreenChromeScrollY();
     const reducedMotion = useReducedMotion();
@@ -20,11 +20,13 @@ export const BankIntegrationOverview = () => {
             : interpolate(scrollY.get(), [config.collapseStart, config.smallTitleStart], [1, 0], Extrapolation.CLAMP)
     }));
     const syncs = useBankIntegrationSyncsQuery(integration.id);
+    const statusLine =
+        capabilities.supportsLiveSync || capabilities.supportsFileImport ? <BankIntegrationStatusLine syncs={syncs} /> : null;
 
     return (
         <Animated.View style={animatedStyle} className="items-center gap-y-[8px] py-xl" testID={BankIntegrationSelector.Overview}>
             <BankLogo bankProvider={integration.provider} size={56} bankName={integration.label} />
-            <BankIntegrationStatusLine syncs={syncs} />
+            {statusLine}
         </Animated.View>
     );
 };

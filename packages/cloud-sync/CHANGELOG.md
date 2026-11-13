@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.181.3](https://github.com/budgie-at/budgie/compare/v6.181.2...v6.181.3) (2026-11-13)
+
+**Note:** Version bump only for package @budgie/cloud-sync
+
+
+
+
+
+# [6.181.0](https://github.com/budgie-at/budgie/compare/v6.180.1...v6.181.0) (2026-11-13)
+
+### Features
+
+* add stocks and ETF support with manual brokerages ([#2194](https://github.com/budgie-at/budgie/issues/2194)) ([18ab508](https://github.com/budgie-at/budgie/commit/18ab5086905359988aaf0653918ca79d6b2bf3ca))
+
+
+## [6.179.1](https://github.com/budgie-at/budgie/compare/v6.179.0...v6.179.1) (2026-11-12)
+
+**Note:** Version bump only for package @budgie/cloud-sync
+
+
+
+
+
 # [6.177.0](https://github.com/budgie-at/budgie/compare/v6.176.0...v6.177.0) (2026-11-12)
 
 ### Features

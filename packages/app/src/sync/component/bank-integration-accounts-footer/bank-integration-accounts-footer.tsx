@@ -23,6 +23,10 @@ export const BankIntegrationAccountsFooter = () => {
         capabilities.supportsLiveSync && isKeyRejected ? t`Syncing resumes for all accounts once you update the key.` : providerFooter;
     const footer = isEmpty ? t`Accounts you sync appear here.` : populatedFooter;
 
+    if (!capabilities.supportsLiveSync && !capabilities.supportsFileImport) {
+        return null;
+    }
+
     if (isEmpty && capabilities.supportsFileImport) {
         return null;
     }

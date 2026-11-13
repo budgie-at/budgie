@@ -4,7 +4,9 @@ import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { TITLE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/title-max-font-size-multiplier.constant';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
+import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { useMarketPriceHeroChange } from '../../hook/use-market-price-hero-change.hook';
 import { useMarketPriceHeroSuffix } from '../../hook/use-market-price-hero-suffix.hook';
@@ -39,12 +41,14 @@ export const CurrencyMarketPriceHero = ({
     rangeStartDate,
     priceBottom
 }: Props) => {
-    const { symbol } = useAtomValue(defaultInstrumentAtom);
+    const defaultInstrument = useAtomValue(defaultInstrumentAtom);
+    const { instrument: quoteInstrument } = useGetInstrumentByIdQuery(latestPrice?.quoteInstrumentId ?? defaultInstrument.id);
+    const symbol = quoteInstrument?.symbol ?? defaultInstrument.symbol;
     const fractionDigits = getMarketPriceFractionDigits(latestPrice?.price ?? 0);
     const formatPrice = useFormatDigits(MIN_PRICE_FRACTION_DIGITS, fractionDigits);
 
     const price = (scrubbedPrice ?? latestPrice)?.price;
-    const { changeLabel, changeClassName } = useMarketPriceHeroChange(price, basePrice, fractionDigits);
+    const { changeLabel, changeClassName } = useMarketPriceHeroChange(price, basePrice, fractionDigits, symbol);
     const { stalePriceDate, suffixLabel } = useMarketPriceHeroSuffix(latestPrice, scrubbedPrice, rangeLabel, rangeStartDate);
 
     const handlePriceLayout = (event: LayoutChangeEvent) =>
@@ -88,6 +92,9 @@ export const CurrencyMarketPriceHero = ({
             <Text
                 className="text-secondary-foreground text-[15px] leading-[20px] font-semibold tabular-nums"
                 numberOfLines={1}
+                adjustsFontSizeToFit
+                minimumFontScale={0.6}
+                maxFontSizeMultiplier={TITLE_MAX_FONT_SIZE_MULTIPLIER}
                 testID={CurrencyMarketPageSelector.Change(instrumentCode)}
             >
                 {isDefined(changeLabel) ? <Text className={changeClassName}>{changeLabel}</Text> : null}

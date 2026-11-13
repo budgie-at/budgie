@@ -75,7 +75,12 @@ export const CreateDebtAccount = () => {
     }
 
     return (
-        <CreateAccountScreen title={t`Debt Account`} onSubmit={handleSubmit} isSubmitting={isSubmitting}>
+        <CreateAccountScreen
+            title={t`Debt Account`}
+            onSubmit={handleSubmit}
+            isSubmitting={isSubmitting}
+            accountName={fields.title.field.value}
+        >
             <CreateAccountCoreFields
                 variant={variant}
                 fields={fields}

@@ -1,5 +1,5 @@
 import { TabList, TabSlot, TabTrigger, Tabs } from 'expo-router/ui';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 import { AnimatedBackdrop } from '../../@generic/component/animated-backdrop/animated-backdrop';
 import { FloatingTabBarSurface } from '../../@generic/component/floating-tab-bar-surface/floating-tab-bar-surface';
@@ -14,6 +14,8 @@ import { useIsOnboardingActive, useIsOnboardingPending } from '../../onboarding/
 import { CreateTransactionMenu } from '../../transaction/components/create-transaction-menu/create-transaction-menu';
 import { CreateTransactionTrigger } from '../../transaction/components/create-transaction-trigger/create-transaction-trigger';
 
+import type { View } from 'react-native';
+
 const TAB_BAR_CLEARANCE = FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN - 15;
 
 export default function TabsLayout() {
@@ -22,12 +24,14 @@ export default function TabsLayout() {
     const { isOpen: isVoiceInputOpen, close: closeVoiceInput } = useVoiceInputContext();
     const isOnboardingActive = useIsOnboardingActive();
     const isOnboardingPending = useIsOnboardingPending();
+    const triggerRef = useRef<View>(null);
 
     const handleCloseMenu = () => void setIsMenuOpen(false);
 
     const isTransactionMenuOpen = isMenuOpen && !isVoiceInputOpen;
     const isBackdropVisible = isMenuOpen || isVoiceInputOpen;
     const isTabBarVisible = !isOnboardingActive && !isOnboardingPending && !isBackdropVisible;
+    const tabsAccessibility = isTransactionMenuOpen ? 'no-hide-descendants' : 'auto';
 
     const handleBackdropClose = () => {
         if (isVoiceInputOpen) {
@@ -39,7 +43,7 @@ export default function TabsLayout() {
 
     return (
         <>
-            <Tabs>
+            <Tabs importantForAccessibility={tabsAccessibility}>
                 <TabBarClearanceContext value={TAB_BAR_CLEARANCE}>
                     <TabBarBackdropContext value={setTabBarBackdrop}>
                         <TabSlot />
@@ -56,13 +60,13 @@ export default function TabsLayout() {
                 {isTabBarVisible ? (
                     <FloatingTabBarSurface backdrop={tabBarBackdrop}>
                         <TabButtons />
-                        <CreateTransactionTrigger isOpen={isMenuOpen} onPress={openMenu} />
+                        <CreateTransactionTrigger ref={triggerRef} isOpen={isMenuOpen} onPress={openMenu} />
                     </FloatingTabBarSurface>
                 ) : null}
             </Tabs>
 
             <AnimatedBackdrop isVisible={isBackdropVisible} onClose={handleBackdropClose} />
-            <CreateTransactionMenu isOpen={isTransactionMenuOpen} onClose={handleCloseMenu} />
+            <CreateTransactionMenu isOpen={isTransactionMenuOpen} onClose={handleCloseMenu} triggerRef={triggerRef} />
         </>
     );
 }

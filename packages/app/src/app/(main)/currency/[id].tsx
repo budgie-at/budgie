@@ -7,6 +7,7 @@ import { GroupedSurface } from '../../../@generic/component/grouped-surface/grou
 import { RevealGate } from '../../../@generic/component/reveal-gate/reveal-gate';
 import { IdParamInterface } from '../../../@generic/interface/id-param.interface';
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
+import { isListedSecurityType } from '../../../instrument/utils/is-listed-security-type.util';
 import { CurrencyMarketPage } from '../../../market-data/component/currency-market-page/currency-market-page';
 
 export default function CurrencyMarketRoute() {
@@ -22,7 +23,7 @@ export default function CurrencyMarketRoute() {
         );
     }
 
-    if (!isDefined(instrument) || instrument.type !== InstrumentTypeEnum.CRYPTO) {
+    if (!isDefined(instrument) || (instrument.type !== InstrumentTypeEnum.CRYPTO && !isListedSecurityType(instrument.type))) {
         return <Redirect href="/" />;
     }
 

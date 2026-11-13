@@ -1,4 +1,4 @@
-import { AccountWithSyncEntityInterface } from '@budgie/contracts';
+import { AccountWithSyncEntityInterface, ExternalSourceEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Text } from 'react-native';
 
@@ -21,7 +21,10 @@ export const AccountListItem = ({ account, balancesByAccountId }: Props) => {
     const accountBalance = balancesByAccountId.get(account.id);
     const balance = accountBalance?.balance ?? 0;
     const convertedBalance = accountBalance?.isValued === true ? accountBalance.convertedBalance : null;
-    const isAwaitingBalance = !(accountBalance?.hasLedgerHistory ?? true) && MANUAL_BALANCE_ACCOUNT_TYPES.has(account.type);
+    const isAwaitingBalance =
+        !(accountBalance?.hasLedgerHistory ?? true) &&
+        MANUAL_BALANCE_ACCOUNT_TYPES.has(account.type) &&
+        account.externalSource !== ExternalSourceEnum.MANUAL;
 
     if (isAwaitingBalance) {
         return (

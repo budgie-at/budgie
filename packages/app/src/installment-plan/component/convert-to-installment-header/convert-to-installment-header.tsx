@@ -55,7 +55,7 @@ export const ConvertToInstallmentHeader = ({ params }: Props) => {
                 returnKeyType="done"
                 placeholder={t`Installment plan`}
                 accessibilityLabel={t`Plan name`}
-                className="h-auto min-h-[44px] px-0 py-xxs text-(length:--text-xl) font-semibold"
+                className="h-auto min-h-[44px] px-0 py-xxs android:py-xxs text-(length:--text-xl) font-semibold"
                 testID={ConvertToInstallmentModalSelector.TitleInput}
             />
         ) : (

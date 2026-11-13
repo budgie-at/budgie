@@ -6,7 +6,7 @@ import { View } from 'react-native';
 import { ScreenChromeFrame } from '@rnw-community/react-native-screen-chrome';
 import { isDefined } from '@rnw-community/shared';
 
-import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
+import { useProtectedInstrumentAmountLabel } from '../../hook/use-protected-instrument-amount-label.hook';
 import { useRevertConsolidation } from '../../hook/use-revert-consolidation.hook';
 import { useTransactionInfoHandoff } from '../../hook/use-transaction-info-handoff.hook';
 import { useGetConsolidationSourcesQuery } from '../../query/use-get-consolidation-sources.query';
@@ -34,12 +34,12 @@ export const RefundTransactionInfoContent = ({ transaction, parentTransaction }:
     const { t } = useLingui();
     const router = useRouter();
     const removeRefund = useRevertConsolidation(parentTransaction.id, router.back, true);
-    const formatDigits = useProtectedAmountLabel();
+    const formatAmount = useProtectedInstrumentAmountLabel();
     const { minimumHeight, handoff, onAmountLayout, onTitleLayout, onBodyLayout, onContentLayout, scrollRef, handleScrollEnd } =
         useTransactionInfoHandoff();
     const { sources, isLoading } = useGetConsolidationSourcesQuery(parentTransaction.id);
     const source = sources.find(row => row.sourceTransactionId === transaction.id);
-    const original = formatTransactionInfoAmount(parentTransaction, formatDigits);
+    const original = formatTransactionInfoAmount(parentTransaction, formatAmount);
     const merchant = getTransactionDisplayTitle(parentTransaction);
     const title = t`Refund from ${merchant}`;
     const handleOpenPurchase = () => void router.push(getTransactionHref(parentTransaction));
@@ -48,7 +48,7 @@ export const RefundTransactionInfoContent = ({ transaction, parentTransaction }:
         return isLoading ? null : <Redirect href={getTransactionHref(parentTransaction)} />;
     }
 
-    const amount = `+${formatDigits(convertFromMicroUnits(sumEntryAmounts(sources.filter(row => row.sourceTransactionId === transaction.id && row.entryType === TransactionEntryTypeEnum.DEBIT))), source.currencySymbol)}`;
+    const amount = `+${formatAmount(convertFromMicroUnits(sumEntryAmounts(sources.filter(row => row.sourceTransactionId === transaction.id && row.entryType === TransactionEntryTypeEnum.DEBIT))), source.currencySymbol, null)}`;
 
     return (
         <ScreenChromeFrame testID={TransactionInfoPageSelector.Page}>

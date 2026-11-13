@@ -4,9 +4,11 @@ import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/sha
 
 import { ListRowDetail } from '../../../@generic/component/list-row-detail/list-row-detail';
 import { useTransactionSubtitleSegments } from '../../hook/use-transaction-subtitle-segments.hook';
+import { getSecurityTrade } from '../../utils/get-security-trade.util';
 import { isUncategorizedTransaction } from '../../utils/is-uncategorized-transaction.util';
 import { TransactionCardSelector } from '../transaction-card/transaction-card.selector';
 import { TransactionReceiptMarker } from '../transaction-receipt-marker/transaction-receipt-marker';
+import { TransactionSecurityTradeDetail } from '../transaction-security-trade-detail/transaction-security-trade-detail';
 
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 
@@ -20,6 +22,12 @@ export const TransactionCardSubtitle = ({ transaction, accountId }: Props) => {
 
     const detailSegments = [...segments.flatMap(segment => segment.split(' · ')), feeLabel, accountTitle].filter(isNotEmptyString);
     const hasReceipt = isDefined(transaction.receipt);
+    const trade = getSecurityTrade(transaction);
+    const isBrokerageTrade = isDefined(trade) && (!isDefined(accountId) || accountId === trade.securityEntry.accountId);
+
+    if (isBrokerageTrade) {
+        return <TransactionSecurityTradeDetail transaction={transaction} />;
+    }
 
     if (!isNotEmptyArray(detailSegments) && !hasReceipt) {
         return null;

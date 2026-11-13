@@ -5,6 +5,7 @@ import {
     ExchangeRateEntityTable,
     HistoricalExchangeRateEntityTable,
     InstrumentDailyMarketPriceEntityTable,
+    InstrumentEntityTable,
     RecurringSeriesEntityTable,
     RecurringSeriesTransactionEntityTable,
     SettingsEntityTable,
@@ -21,6 +22,7 @@ export const RECURRING_READ_TABLES = [
     ExchangeRateEntityTable,
     HistoricalExchangeRateEntityTable,
     InstrumentDailyMarketPriceEntityTable,
+    InstrumentEntityTable,
     SettingsEntityTable,
     RecurringSeriesEntityTable,
     RecurringSeriesTransactionEntityTable

@@ -5,6 +5,8 @@ import { isDefined } from '@rnw-community/shared';
 
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { PROTECTED_HERO_PLACEHOLDER } from '../../../@generic/constant/protected-hero-placeholder.constant';
+import { ROW_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-max-font-size-multiplier.constant';
+import { TITLE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/title-max-font-size-multiplier.constant';
 import { useIsAmountProtected } from '../../../@generic/hook/use-is-amount-protected.hook';
 import { cn } from '../../../@generic/utils/cn.util';
 import { MILLION } from '../../../i18n/constant/compact-thresholds.constant';
@@ -35,11 +37,15 @@ export const CurrencyMarketAccountAmount = ({ amount, instrumentCode, valueLabel
             <ProtectedText
                 className={cn('text-primary text-[15px] leading-[20px] tabular-nums', alignClassName)}
                 placeholderText={PROTECTED_HERO_PLACEHOLDER}
+                maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
             >
                 {amountLabel}
             </ProtectedText>
             {isDefined(valueLabel) && !isAmountProtected ? (
-                <Text className={cn('text-secondary-foreground text-[13px] leading-[18px] tabular-nums', alignClassName)}>
+                <Text
+                    className={cn('text-secondary-foreground text-[13px] leading-[18px] tabular-nums', alignClassName)}
+                    maxFontSizeMultiplier={TITLE_MAX_FONT_SIZE_MULTIPLIER}
+                >
                     {valueLabel}
                 </Text>
             ) : null}

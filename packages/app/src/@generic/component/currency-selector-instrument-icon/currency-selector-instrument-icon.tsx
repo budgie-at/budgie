@@ -6,9 +6,11 @@ import { SvgXml } from 'react-native-svg';
 import { isDefined } from '@rnw-community/shared';
 
 import circleFlags from '../../../../assets/flags/circle-flags.json';
+import { isListedSecurityType } from '../../../instrument/utils/is-listed-security-type.util';
 import { GlyphSizeEnum } from '../../enum/glyph-size.enum';
 import { getGlyphSize } from '../../utils/get-glyph-size.util';
 import { CryptoCurrencyIcon } from '../crypto-currency-icon/crypto-currency-icon';
+import { InstrumentMonogram } from '../instrument-monogram/instrument-monogram';
 
 const CIRCLE_FLAGS: Readonly<Record<string, string>> = circleFlags;
 
@@ -32,6 +34,10 @@ interface Props {
 export const CurrencySelectorInstrumentIcon = ({ code, symbol, type, size = 48 }: Props) => {
     if (type === InstrumentTypeEnum.CRYPTO) {
         return <CryptoCurrencyIcon code={code} size={size} className="bg-surface-disc" />;
+    }
+
+    if (isListedSecurityType(type)) {
+        return <InstrumentMonogram code={symbol} size={size} />;
     }
 
     const style = { width: size, height: size } as const;

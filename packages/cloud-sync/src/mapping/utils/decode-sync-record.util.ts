@@ -4,6 +4,7 @@ import * as Schema from 'effect/Schema';
 import { getErrorMessage, isArray, isDefined, isNotEmptyString, isNumber, isRecord } from '@rnw-community/shared';
 
 import { SYNC_ID_PROPERTY } from '../constant/sync-identity-properties.constant';
+import { SYNC_INSTRUMENT_DEFINITION_SCHEMA } from '../constant/sync-instrument-definition-schema.constant';
 import { SYNC_RECORD_DECODERS } from '../constant/sync-record-decoders.constant';
 import { SYNC_RECORD_SCHEMA_VERSION } from '../constant/sync-record-schema-version.constant';
 import { SYNC_SCALAR_VALUE_NARROWERS } from '../constant/sync-scalar-value-narrowers.constant';
@@ -38,12 +39,20 @@ const ROW_VALUE_DECODERS: Readonly<Record<SyncColumnKindEnum, (value: unknown) =
 
 const decodeColumn = (column: SyncColumnDescriptorInterface, source: Readonly<Record<string, unknown>>): DecodedSyncColumnInterface => {
     const wire = source[column.field];
+    const instrumentDefinition = source[`${column.field}Definition`];
 
     if (isDefined(column.reference)) {
         return {
             value: null,
             reference: isNotEmptyString(wire)
-                ? { column: column.property, tableName: column.reference.tableName, kind: column.reference.kind, key: wire }
+                ? {
+                      column: column.property,
+                      tableName: column.reference.tableName,
+                      kind: column.reference.kind,
+                      key: wire,
+                      ...(column.reference.tableName === 'instruments' &&
+                          Schema.is(SYNC_INSTRUMENT_DEFINITION_SCHEMA)(instrumentDefinition) && { instrumentDefinition })
+                  }
                 : null
         };
     }

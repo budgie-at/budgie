@@ -13,10 +13,10 @@
 #   LOCALE          en | fr | uk | de | es
 #   APPEARANCE      light | dark
 #   APP_ID          bundle id
-#   PLATFORM        ios
+#   PLATFORM        ios | android
 #   DEVICE_SLUG     slugified device name
-#   SIMULATOR_UDID  booted simulator UDID
-#   APP_PATH        packaged .app path
+#   SIMULATOR_UDID  booted simulator UDID (ios)
+#   APP_PATH        packaged .app path (ios)
 #
 # The database is assembled from fixtures/screenshots:
 #   showcase.db         curated dataset, anchored on a fixed date
@@ -182,6 +182,10 @@ prepare_database() {
         ( cd "$SCENES_DIR" && sqlite3 "$PREPARED_DATABASE_PATH" < "$SCENE_OVERLAY_PATH" )
     fi
 
+    if [ "${PLATFORM:-ios}" = android ]; then
+        sqlite3 "$PREPARED_DATABASE_PATH" 'UPDATE settings SET is_screenshot_protection_enabled = 0;'
+    fi
+
     sqlite3 "$PREPARED_DATABASE_PATH" < "$SCREENSHOTS_DIR/opening-balances.sql"
 
     sqlite3 "$PREPARED_DATABASE_PATH" 'PRAGMA wal_checkpoint(TRUNCATE);' >/dev/null
@@ -291,19 +295,10 @@ install_file_fixtures() {
     done
 }
 
-install_database() {
+install_ios_database() {
     local app_data_container
     local sqlite_directory
 
-    PLATFORM="${PLATFORM:-ios}"
-
-    if [ "$PLATFORM" != "ios" ]; then
-        echo "seed-screenshot-scene: unsupported PLATFORM '$PLATFORM', only ios is implemented" >&2
-
-        exit 1
-    fi
-
-    APP_ID="${APP_ID:?APP_ID is required}"
     SIMULATOR_UDID="${SIMULATOR_UDID:?SIMULATOR_UDID is required}"
 
     app_data_container=$(xcrun simctl get_app_container "$SIMULATOR_UDID" "$APP_ID" data)
@@ -325,7 +320,22 @@ install_database() {
     echo "seed-screenshot-scene: installed into $sqlite_directory/budgie.db"
 
     install_file_fixtures "$app_data_container"
+}
 
+install_database() {
+    PLATFORM="${PLATFORM:-ios}"
+    APP_ID="${APP_ID:?APP_ID is required}"
+
+    case "$PLATFORM" in
+        ios)
+            install_ios_database
+            ;;
+        *)
+            echo "seed-screenshot-scene: installs only into an iOS simulator; PLATFORM '$PLATFORM' needs --dry-run" >&2
+
+            exit 1
+            ;;
+    esac
 }
 
 prepare_database

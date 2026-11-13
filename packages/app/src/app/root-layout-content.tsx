@@ -154,6 +154,8 @@ export const RootLayoutContent = () => {
                                                                     <Stack.Screen name="(main)/account/[id]/details" />
                                                                     <Stack.Screen name="(main)/institution/[id]" />
                                                                     <Stack.Screen name="(main)/inzhur/purchase" />
+                                                                    <Stack.Screen name="(main)/securities/buy/[id]" />
+                                                                    <Stack.Screen name="(main)/securities/sell/[id]" />
                                                                     <Stack.Screen name="(main)/account/[id]/update" />
                                                                     <Stack.Screen name="(main)/currency/[id]" />
                                                                     <Stack.Screen name="(main)/create-transaction/expense" />
@@ -187,6 +189,10 @@ export const RootLayoutContent = () => {
                                                                     />
                                                                     <Stack.Screen
                                                                         name="contact-selector"
+                                                                        options={MORPHING_SHEET_OPTIONS}
+                                                                    />
+                                                                    <Stack.Screen
+                                                                        name="security-selector"
                                                                         options={MORPHING_SHEET_OPTIONS}
                                                                     />
                                                                     <Stack.Screen name="tags-selector" options={MORPHING_SHEET_OPTIONS} />

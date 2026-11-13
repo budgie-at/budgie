@@ -30,6 +30,7 @@ import m0026 from './20261106125437_inzhur_fund_instruments/migration.sql';
 import m0027 from './20261106130000_cloud_sync_outbox_triggers/migration.sql';
 import m0028 from './20261108010559_common_johnny_blaze/migration.sql';
 import m0029 from './20261111113359_exotic_exiles/migration.sql';
+import m0030 from './20261112194935_tired_justin_hammer/migration.sql';
 
   export default {
     migrations: {
@@ -62,7 +63,8 @@ import m0029 from './20261111113359_exotic_exiles/migration.sql';
 "20261106125437_inzhur_fund_instruments": m0026,
 "20261106130000_cloud_sync_outbox_triggers": m0027,
 "20261108010559_common_johnny_blaze": m0028,
-"20261111113359_exotic_exiles": m0029
+"20261111113359_exotic_exiles": m0029,
+"20261112194935_tired_justin_hammer": m0030
 }
   }
   

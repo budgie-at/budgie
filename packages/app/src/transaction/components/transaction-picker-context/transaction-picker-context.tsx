@@ -2,8 +2,8 @@ import { Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { cn } from '../../../@generic/utils/cn.util';
+import { useProtectedInstrumentAmountLabel } from '../../hook/use-protected-instrument-amount-label.hook';
 import { useGetTransactionByIdQuery } from '../../query/use-get-transaction-by-id.query';
 import { formatTransactionInfoAmount } from '../../utils/format-transaction-info-amount.util';
 import { getTransactionDisplayTitle } from '../../utils/get-transaction-display-title.util';
@@ -16,13 +16,13 @@ interface Props {
 
 export const TransactionPickerContext = ({ transactionId, label, labelClassName }: Props) => {
     const { transaction } = useGetTransactionByIdQuery(transactionId);
-    const protectAmount = useProtectedAmountLabel();
+    const formatAmount = useProtectedInstrumentAmountLabel();
 
     if (!isDefined(transaction)) {
         return null;
     }
 
-    const amount = formatTransactionInfoAmount(transaction, protectAmount);
+    const amount = formatTransactionInfoAmount(transaction, formatAmount);
     const amountLabel = isNotEmptyString(label) ? `${label} · ${amount}` : amount;
 
     return (

@@ -2,6 +2,7 @@ import { msg } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { Suspense } from 'react';
 
+import { BetaAndroidCard } from '../../../beta/component/beta-android-card/beta-android-card';
 import { BetaReleaseSection } from '../../../beta/component/beta-release-section/beta-release-section';
 import { buildAlternates } from '../../../generic/utils/build-alternates.util';
 import { getI18nInstance } from '../../../i18n/app-router-i18n';
@@ -18,7 +19,7 @@ export async function generateMetadata(props: PageLangParam): Promise<Metadata> 
 
     return {
         alternates: buildAlternates(lang, '/beta'),
-        title: i18n._(msg`Budgie iOS Beta Install`),
+        title: i18n._(msg`Budgie Beta Install`),
         // oxlint-disable-next-line lingui/no-unlocalized-strings
         robots: 'noindex, follow'
     };
@@ -33,10 +34,10 @@ export default async function BetaPage(props: PageLangParam) {
             <section className="w-full py-20 md:py-32">
                 <div className="container px-4 md:px-6 max-w-2xl">
                     <h1 className="text-3xl font-bold tracking-tight mb-2">
-                        <Trans>Budgie iOS Beta</Trans>
+                        <Trans>Budgie Beta</Trans>
                     </h1>
                     <p className="text-muted-foreground mb-8">
-                        <Trans>Install the latest development build over-the-air on a registered iPhone.</Trans>
+                        <Trans>Install the latest development build on a registered iPhone, or the preview build on Android.</Trans>
                     </p>
                     <Suspense
                         fallback={
@@ -49,6 +50,9 @@ export default async function BetaPage(props: PageLangParam) {
                     >
                         <BetaReleaseSection locale={lang} />
                     </Suspense>
+                    <div className="mt-8">
+                        <BetaAndroidCard />
+                    </div>
                 </div>
             </section>
         </main>

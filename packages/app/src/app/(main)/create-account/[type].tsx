@@ -28,6 +28,7 @@ export default function CreateAccountType() {
         case AccountTypeEnum.CASH:
         case AccountTypeEnum.BANK:
         case AccountTypeEnum.CRYPTO:
+        case AccountTypeEnum.STOCKS:
             return <CreateSimpleAccount type={type} />;
         case AccountTypeEnum.DEBT:
             return <CreateDebtAccount />;
@@ -53,7 +54,6 @@ export default function CreateAccountType() {
             );
         case ExternalSourceEnum.WISE:
             return <CreateEnableBankingAccount connectAccountId={null} savedApplicationId={null} preselectedBankName={WISE_ASPSP_NAME} />;
-        case AccountTypeEnum.STOCKS:
         case AccountTypeEnum.SAVINGS:
         case AccountTypeEnum.BANK_SYNC:
         case AccountTypeEnum.CRYPTO_SYNC:

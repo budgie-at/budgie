@@ -61,7 +61,7 @@ export const HomeSectionsList = ({
         includeTopSafeArea: false,
         contentInsetTop: config.headerHeight - collapsedHeaderHeight,
         contentContainerStyle: {
-            paddingBottom: FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + bottomInset,
+            paddingBottom: FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN * 2 + bottomInset,
             paddingHorizontal: LIST_HORIZONTAL_PADDING,
             flexGrow: 1
         }

@@ -1,4 +1,3 @@
-import { InstrumentTypeEnum } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 
 import { isDefined } from '@rnw-community/shared';
@@ -10,13 +9,14 @@ import { useUnitValuationRateQuery } from '../../../exchange-rate/query/use-unit
 import { MILLION } from '../../../i18n/constant/compact-thresholds.constant';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useFormatInstrumentAmount } from '../../../i18n/hook/use-format-instrument-amount.hook';
+import { getInstrumentUnitLabel } from '../../../instrument/utils/get-instrument-unit-label.util';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 
 import type { InstrumentEntityInterface } from '@budgie/contracts';
 
 interface Props {
     readonly balance: number;
-    readonly instrument: Pick<InstrumentEntityInterface, 'id' | 'code'>;
+    readonly instrument: Pick<InstrumentEntityInterface, 'id' | 'code' | 'symbol' | 'type'>;
 }
 
 export const AccountDetailsConvertedValue = ({ balance, instrument }: Props) => {
@@ -29,7 +29,7 @@ export const AccountDetailsConvertedValue = ({ balance, instrument }: Props) => 
     const formattedValue = isDefined(convertedValue) ? formatDigits(convertedValue, defaultInstrument.symbol) : null;
     const approximatePrefix = convertedValue === 0 ? '' : '≈ ';
     const approximateValue = isDefined(formattedValue) ? `${approximatePrefix}${formattedValue}` : null;
-    const fullAmount = formatInstrumentAmount(balance, instrument.code, InstrumentTypeEnum.CRYPTO);
+    const fullAmount = formatInstrumentAmount(balance, getInstrumentUnitLabel(instrument), instrument.type);
     const convertedLabel =
         isDefined(approximateValue) && Math.abs(balance) >= MILLION ? `${fullAmount} · ${approximateValue}` : approximateValue;
 

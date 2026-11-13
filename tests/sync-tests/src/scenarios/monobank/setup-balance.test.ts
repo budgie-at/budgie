@@ -1,24 +1,23 @@
-import {
-    AccountRepository,
-    ExternalSourceEnum,
-    SyncModeEnum,
-    SyncRepository,
-    TransactionEntityTable,
-    TransactionEntryEntityTable,
-    TransactionEntryTypeEnum,
-    TransactionTypeEnum
-} from '@budgie/contracts';
+import { AccountRepository, ExternalSourceEnum, SyncModeEnum, SyncRepository, TransactionEntryTypeEnum } from '@budgie/contracts';
 import { AccountBalanceIncrementalService } from '@budgie/ledger';
 import { MonobankSyncService, ResyncService, SyncHistoryDepthEnum } from '@budgie/sync';
 import { afterEach, describe, expect, it, vi } from '@effect/vitest';
-import { and, eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 import * as Exit from 'effect/Exit';
 import * as FiberSet from 'effect/FiberSet';
 
 import { emptyFn } from '@rnw-community/shared';
 
-import { buildMonobank, fetchAccountBalance, inWorkload, monobankStub, seed, skipRequestedSync, testDb, TestLayer } from '../../harness';
+import {
+    buildMonobank,
+    fetchAccountBalance,
+    fetchBalanceAdjustments,
+    inWorkload,
+    monobankStub,
+    seed,
+    skipRequestedSync,
+    TestLayer
+} from '../../harness';
 
 import type { Services } from '../../harness/scenario/test-runtime';
 import type { AccountEntityInterface } from '@budgie/contracts';
@@ -38,17 +37,6 @@ const setupMonobankSync = Effect.fnUntraced(function* (bankAccount: Account) {
 
     return account;
 });
-
-const fetchBalanceAdjustments = (accountId: number) =>
-    testDb
-        .select({
-            amount: TransactionEntryEntityTable.amount,
-            type: TransactionEntryEntityTable.type,
-            operatedAt: TransactionEntityTable.operatedAt
-        })
-        .from(TransactionEntryEntityTable)
-        .innerJoin(TransactionEntityTable, eq(TransactionEntityTable.id, TransactionEntryEntityTable.transactionId))
-        .where(and(eq(TransactionEntityTable.type, TransactionTypeEnum.ADJUSTMENT), eq(TransactionEntryEntityTable.accountId, accountId)));
 
 const importHistory = Effect.fnUntraced(function* (onLaterRequest: () => Promise<void> | void = emptyFn) {
     const monobankSyncService = yield* MonobankSyncService;

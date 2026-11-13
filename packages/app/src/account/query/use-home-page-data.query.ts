@@ -16,7 +16,6 @@ import { groupBy } from '../../@generic/utils/group-by.util';
 import { decimalPlacesAtom, defaultInstrumentIdAtom } from '../../settings/constants/settings-atoms.constant';
 import { ACCOUNT_CONVERTED_BALANCE_TABLES } from '../constant/account-balance-tables.constant';
 import { HomeSectionKindEnum } from '../enum/home-section-kind.enum';
-import { buildIntegrationProviderMap } from '../utils/build-integration-provider-map.util';
 import { getDebtProgressDisplayState } from '../utils/get-debt-progress-display-state.util';
 import { getDebtSectionKind } from '../utils/get-debt-section-kind.util';
 import { getIntegrationGroupNumber } from '../utils/get-integration-group-number.util';
@@ -218,8 +217,12 @@ export const useHomePageDataQuery = () => {
 
         return account;
     });
-    const integrationProviders = buildIntegrationProviderMap(
-        data.map(row => ({ integrationId: row.account.integrationId, sync: row.sync }))
+    const integrationProviders = new Map(
+        data.flatMap(({ account, sync, integrationProvider }) => {
+            const provider = sync?.provider ?? integrationProvider;
+
+            return isDefined(account.integrationId) && isDefined(provider) ? [[account.integrationId, provider] as const] : [];
+        })
     );
 
     const balanceSummary: HomeAccountBalanceSummaryInterface = data.reduce((summary, row) => {

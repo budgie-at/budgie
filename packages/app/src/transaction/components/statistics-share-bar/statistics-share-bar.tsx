@@ -75,7 +75,7 @@ export const StatisticsShareBar = ({ segments, other, onOtherPress }: Props) => 
                     pressedScale={1}
                     accessibilityRole="button"
                     accessibilityState={breakdownState}
-                    className="min-h-[44px] justify-center active:opacity-60"
+                    className="-mt-lg min-h-[44px] pt-[12px] active:opacity-60"
                     hitSlop={0}
                     onPress={handleToggleBreakdown}
                 >
