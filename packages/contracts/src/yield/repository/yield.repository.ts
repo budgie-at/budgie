@@ -139,7 +139,7 @@ export class YieldRepository extends Context.Service<YieldRepository>()('@budgie
                         }))
                     )
                 ),
-            findPositions: (accountIds: readonly number[], scope: YieldScopeInterface) =>
+            findPositions: (attributedAccountIds: readonly number[], ratedScope: YieldScopeInterface) =>
                 Db.query(db =>
                     db
                         .select({
@@ -159,14 +159,20 @@ export class YieldRepository extends Context.Service<YieldRepository>()('@budgie
                         .innerJoin(InstrumentEntityTable, eq(AccountEntityTable.instrumentId, InstrumentEntityTable.id))
                         .where(
                             or(
-                                ...(isNotEmptyArray(accountIds) ? [inArray(AccountEntityTable.id, [...accountIds])] : []),
+                                ...(isNotEmptyArray(attributedAccountIds)
+                                    ? [inArray(AccountEntityTable.id, [...attributedAccountIds])]
+                                    : []),
                                 and(
                                     isNull(AccountEntityTable.deletedAt),
                                     eq(AccountEntityTable.isActive, true),
                                     inArray(AccountEntityTable.type, RATED_ACCOUNT_TYPES),
                                     gt(AccountEntityTable.interestRate, 0),
-                                    ...(isDefined(scope.positionAccountId) ? [eq(AccountEntityTable.id, scope.positionAccountId)] : []),
-                                    ...(isDefined(scope.instrumentId) ? [eq(AccountEntityTable.instrumentId, scope.instrumentId)] : [])
+                                    ...(isDefined(ratedScope.positionAccountId)
+                                        ? [eq(AccountEntityTable.id, ratedScope.positionAccountId)]
+                                        : []),
+                                    ...(isDefined(ratedScope.instrumentId)
+                                        ? [eq(AccountEntityTable.instrumentId, ratedScope.instrumentId)]
+                                        : [])
                                 )
                             )
                         )

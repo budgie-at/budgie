@@ -12,6 +12,10 @@ const RepositoryLayer = Layer.mergeAll(InstrumentDailyMarketPriceRepository.laye
     Layer.provideMerge(TestLayer)
 );
 
+const MAX_ATTEMPTS = 3;
+const STALE_LOCK_MS = 5 * 60 * 1000;
+const NOW = new Date('2026-06-03T12:00:00.000Z');
+
 const seedCoin = (code: string) => testSeedService.instrument({ code, name: code, symbol: code, type: InstrumentTypeEnum.CRYPTO });
 
 describe('yield market data reads', () => {
@@ -20,7 +24,19 @@ describe('yield market data reads', () => {
             const repository = yield* InstrumentDailyMarketPriceRepository;
             const coin = yield* seedCoin('YMD1');
             const quote = yield* seedCoin('YMD2');
+            const otherQuote = yield* seedCoin('YMD5');
 
+            yield* repository.bulkUpsert([
+                {
+                    instrumentId: coin.id,
+                    quoteInstrumentId: otherQuote.id,
+                    priceDate: '2026-03-02',
+                    price: 2,
+                    marketCap: null,
+                    volume: null,
+                    source: 'test'
+                }
+            ]);
             yield* repository.bulkUpsert(
                 ['2026-03-01', '2026-03-03', '2026-03-02', '2026-03-05'].map(priceDate => ({
                     instrumentId: coin.id,
@@ -33,36 +49,56 @@ describe('yield market data reads', () => {
                 }))
             );
 
-            expect((yield* repository.findInDateRange(coin.id, quote.id, '2026-03-02', '2026-03-03')).map(row => row.priceDate)).toEqual([
-                '2026-03-02',
-                '2026-03-03'
-            ]);
+            const rows = yield* repository.findInDateRange(coin.id, quote.id, '2026-03-02', '2026-03-03');
+
+            expect(rows.map(row => row.priceDate)).toEqual(['2026-03-02', '2026-03-03']);
+            expect(rows.map(row => row.quoteInstrumentId)).toEqual([quote.id, quote.id]);
         }).pipe(Effect.provide(RepositoryLayer))
     );
 
-    it.effect('reports pending or running jobs for any of the instruments', () =>
+    it.effect('counts only open jobs: pending, fresh running and retryable failed', () =>
         Effect.gen(function* () {
             const repository = yield* InstrumentMarketDataJobRepository;
             const coin = yield* seedCoin('YMD3');
             const other = yield* seedCoin('YMD4');
+            const isActive = (instrumentIds: readonly number[]) =>
+                repository.hasActiveForInstruments(instrumentIds, MAX_ATTEMPTS, new Date(NOW.getTime() - STALE_LOCK_MS));
+            const setJob = (values: Partial<typeof InstrumentMarketDataJobEntityTable.$inferInsert>) =>
+                testDb.update(InstrumentMarketDataJobEntityTable).set(values);
 
-            expect(yield* repository.hasActiveForInstruments([coin.id])).toBe(false);
+            expect(yield* isActive([coin.id])).toBe(false);
 
             yield* repository.enqueueMany([
                 { instrumentId: coin.id, quoteInstrumentId: other.id, fromDate: '2026-01-01', toDate: '2026-01-31' }
             ]);
 
-            expect(yield* repository.hasActiveForInstruments([other.id, coin.id])).toBe(true);
-            expect(yield* repository.hasActiveForInstruments([other.id])).toBe(false);
-            expect(yield* repository.hasActiveForInstruments([])).toBe(false);
+            expect(yield* isActive([other.id, coin.id])).toBe(true);
+            expect(yield* isActive([other.id])).toBe(false);
+            expect(yield* isActive([])).toBe(false);
 
-            yield* testDb.update(InstrumentMarketDataJobEntityTable).set({ status: InstrumentMarketDataJobStatusEnum.UNSUPPORTED });
+            yield* setJob({ status: InstrumentMarketDataJobStatusEnum.RUNNING, attempts: 1, lockedAt: NOW });
+            expect(yield* isActive([coin.id])).toBe(true);
 
-            expect(yield* repository.hasActiveForInstruments([coin.id])).toBe(false);
+            yield* setJob({ lockedAt: new Date(NOW.getTime() - 2 * STALE_LOCK_MS), attempts: MAX_ATTEMPTS });
+            expect(yield* isActive([coin.id])).toBe(false);
 
-            yield* testDb.update(InstrumentMarketDataJobEntityTable).set({ status: InstrumentMarketDataJobStatusEnum.RUNNING });
+            yield* setJob({ status: InstrumentMarketDataJobStatusEnum.FAILED, attempts: 1, lockedAt: null });
+            expect(yield* isActive([coin.id])).toBe(true);
 
-            expect(yield* repository.hasActiveForInstruments([coin.id])).toBe(true);
+            yield* setJob({ attempts: MAX_ATTEMPTS });
+            expect(yield* isActive([coin.id])).toBe(false);
+
+            yield* setJob({ status: InstrumentMarketDataJobStatusEnum.COMPLETED, attempts: 1 });
+            expect(yield* isActive([coin.id])).toBe(false);
+
+            yield* setJob({ status: InstrumentMarketDataJobStatusEnum.UNSUPPORTED });
+            expect(yield* isActive([coin.id])).toBe(false);
+
+            yield* setJob({ status: InstrumentMarketDataJobStatusEnum.PENDING, deletedAt: NOW });
+            expect(yield* isActive([coin.id])).toBe(false);
+
+            yield* setJob({ deletedAt: null });
+            expect(yield* isActive([coin.id])).toBe(true);
         }).pipe(Effect.provide(RepositoryLayer))
     );
 });

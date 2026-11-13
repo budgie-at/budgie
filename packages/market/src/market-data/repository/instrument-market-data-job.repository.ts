@@ -37,6 +37,18 @@ export class InstrumentMarketDataJobRepository extends Context.Service<Instrumen
                     isNull(InstrumentMarketDataJobEntityTable.deletedAt)
                 );
 
+            const buildOpenCondition = (maxAttempts: number, staleLockedBefore: Date) =>
+                and(
+                    isNull(InstrumentMarketDataJobEntityTable.deletedAt),
+                    or(
+                        buildClaimableCondition(maxAttempts, staleLockedBefore),
+                        and(
+                            eq(InstrumentMarketDataJobEntityTable.status, InstrumentMarketDataJobStatusEnum.RUNNING),
+                            gt(InstrumentMarketDataJobEntityTable.lockedAt, staleLockedBefore)
+                        )
+                    )
+                );
+
             const buildClaimOwnerCondition = (job: Pick<InstrumentMarketDataJobEntityInterface, 'id' | 'attempts'>) =>
                 and(
                     eq(InstrumentMarketDataJobEntityTable.id, job.id),
@@ -115,19 +127,12 @@ export class InstrumentMarketDataJobRepository extends Context.Service<Instrumen
                                 and(
                                     eq(InstrumentMarketDataJobEntityTable.instrumentId, instrumentId),
                                     eq(InstrumentMarketDataJobEntityTable.quoteInstrumentId, quoteInstrumentId),
-                                    isNull(InstrumentMarketDataJobEntityTable.deletedAt),
-                                    or(
-                                        buildClaimableCondition(maxAttempts, staleLockedBefore),
-                                        and(
-                                            eq(InstrumentMarketDataJobEntityTable.status, InstrumentMarketDataJobStatusEnum.RUNNING),
-                                            gt(InstrumentMarketDataJobEntityTable.lockedAt, staleLockedBefore)
-                                        )
-                                    )
+                                    buildOpenCondition(maxAttempts, staleLockedBefore)
                                 )
                             )
                             .limit(1)
                     ).pipe(Effect.map(isNotEmptyArray)),
-                hasActiveForInstruments: (instrumentIds: readonly number[]) =>
+                hasActiveForInstruments: (instrumentIds: readonly number[], maxAttempts: number, staleLockedBefore: Date) =>
                     isNotEmptyArray(instrumentIds)
                         ? Db.query(db =>
                               db
@@ -136,11 +141,7 @@ export class InstrumentMarketDataJobRepository extends Context.Service<Instrumen
                                   .where(
                                       and(
                                           inArray(InstrumentMarketDataJobEntityTable.instrumentId, [...instrumentIds]),
-                                          inArray(InstrumentMarketDataJobEntityTable.status, [
-                                              InstrumentMarketDataJobStatusEnum.PENDING,
-                                              InstrumentMarketDataJobStatusEnum.RUNNING
-                                          ]),
-                                          isNull(InstrumentMarketDataJobEntityTable.deletedAt)
+                                          buildOpenCondition(maxAttempts, staleLockedBefore)
                                       )
                                   )
                                   .limit(1)
