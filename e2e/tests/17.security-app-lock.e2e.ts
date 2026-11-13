@@ -56,6 +56,9 @@ test('17 security app lock', { tags: ['security'] }, async ({ budgie }) => {
         await b.expectId(ctx, 'AccountForm.NameInput', 3_000);
         await typed('Unfinished lock regression');
         await b.tapId(ctx, 'PageHeader.BackButton');
+        await b.expectId(ctx, 'CreateAccount.BANK', 3_000);
+        await b.tapId(ctx, 'PageHeader.BackButton');
+        await b.expectId(ctx, 'TabBar.Settings', 3_000);
     });
 
     await b.phase('change pin', async () => {
