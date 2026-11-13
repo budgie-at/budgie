@@ -1,5 +1,5 @@
 import { buildTestDb, makeTestPlatformLayer, resetTestDb, TestSeedService } from '@budgie-at/test-kit';
-import { InstrumentRepository, SettingsEntityTable } from '@budgie/contracts';
+import { InstrumentRepository, SettingsEntityTable, TransactionEntryBaseValuationRepository } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 import * as HttpClient from 'effect/http/HttpClient';
 import * as HttpClientResponse from 'effect/http/HttpClientResponse';
@@ -38,7 +38,8 @@ export const TestLayer = Layer.mergeAll(
     EntryBaseValuationService.layer,
     ExchangeRateRepository.layer,
     HistoricalExchangeRateRepository.layer,
-    InstrumentRepository.layer
+    InstrumentRepository.layer,
+    TransactionEntryBaseValuationRepository.layer
 ).pipe(Layer.provideMerge(makeTestPlatformLayer(testDb)));
 
 export const makeHtmlHttpClientLayer = (html: string) =>
