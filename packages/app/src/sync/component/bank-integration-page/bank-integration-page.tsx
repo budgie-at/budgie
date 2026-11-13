@@ -1,5 +1,7 @@
 import { BankIntegrationEntityInterface, ExternalSourceEnum } from '@budgie/contracts';
+import { WISE_ASPSP_NAME } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
+import * as Option from 'effect/Option';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
@@ -8,6 +10,7 @@ import { GroupedSurface } from '../../../@generic/component/grouped-surface/grou
 import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
 import { getInstitutionTitle } from '../../../account/utils/get-institution-title.util';
 import { BankIntegrationSelector } from '../../../app/(main)/bank-integration/bank-integration.selector';
+import { decodeEnableBankingToken } from '../../constant/decode-enable-banking-token.constant';
 import { BankIntegrationContext } from '../../context/bank-integration.context';
 import { getBankIntegrationCapabilities } from '../../utils/get-bank-integration-capabilities.util';
 import { BankIntegrationAccountList } from '../bank-integration-account-list/bank-integration-account-list';
@@ -34,7 +37,8 @@ export const BankIntegrationPage = ({ integration }: Props) => {
     const isEnableBanking = integration.provider === ExternalSourceEnum.ENABLE_BANKING;
     const keyCard = isEnableBanking ? <EnableBankingConnectionCard /> : monobankKeyCard;
     const disconnect = isEnableBanking ? <EnableBankingDisconnectRow /> : null;
-    const olderHistory = isEnableBanking ? <WiseStatementImportRow /> : null;
+    const isWise = Option.getOrNull(decodeEnableBankingToken(integration.token))?.aspspName === WISE_ASPSP_NAME;
+    const olderHistory = isWise ? <WiseStatementImportRow /> : null;
     const rename = integration.provider === ExternalSourceEnum.MANUAL ? <BankIntegrationRenameCard /> : null;
     const defaultTitle = getInstitutionTitle(t, integration.provider, integration.label, null);
     const title = isEnableBanking && isNotEmptyString(integration.label) ? integration.label : defaultTitle;
