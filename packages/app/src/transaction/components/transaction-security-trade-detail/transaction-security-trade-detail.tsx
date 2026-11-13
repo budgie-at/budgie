@@ -1,29 +1,40 @@
-import { convertFromMicroUnits } from '@budgie/contracts';
-import { Text } from 'react-native';
+import { TransactionEntryTypeEnum, convertFromMicroUnits } from '@budgie/contracts';
 
+import { isNotEmptyString } from '@rnw-community/shared';
+
+import { ListRowDetail } from '../../../@generic/component/list-row-detail/list-row-detail';
 import { useFormatInstrumentAmount } from '../../../i18n/hook/use-format-instrument-amount.hook';
 import { isSecurityInstrumentType } from '../../../instrument/utils/is-security-instrument-type.util';
+import { useTransactionFeeLabel } from '../../hook/use-transaction-fee-label.hook';
+import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
 
-import type { AggregatedTransactionEntryInterface } from '../../interface/aggregated-transaction-entry.interface';
+import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 
 interface Props {
-    readonly fromEntry: AggregatedTransactionEntryInterface;
-    readonly toEntry: AggregatedTransactionEntryInterface;
-    readonly fee: number;
+    readonly transaction: TransactionWithRelationsEntityInterface;
 }
 
-export const TransactionSecurityTradeDetail = ({ fromEntry, toEntry, fee }: Props) => {
+export const TransactionSecurityTradeDetail = ({ transaction }: Props) => {
     const formatInstrumentAmount = useFormatInstrumentAmount();
+    const feeLabel = useTransactionFeeLabel(transaction);
 
-    const isBuy = isSecurityInstrumentType(toEntry.account.instrument.type);
-    const [securityEntry, moneyEntry] = isBuy ? [toEntry, fromEntry] : [fromEntry, toEntry];
-    const cash = formatInstrumentAmount(convertFromMicroUnits(moneyEntry.amount - fee), moneyEntry.account.instrument.symbol, null);
-    const quantity = formatInstrumentAmount(
-        convertFromMicroUnits(securityEntry.amount),
-        securityEntry.account.instrument.symbol,
-        securityEntry.account.instrument.type
+    const securityEntries = transaction.entries.filter(entry => isSecurityInstrumentType(entry.account.instrument.type));
+    const cashEntries = transaction.entries.filter(
+        entry => !isSecurityInstrumentType(entry.account.instrument.type) && entry.type !== TransactionEntryTypeEnum.FEE
     );
-    const detail = isBuy ? `${cash} → +${quantity}` : `−${quantity} → ${cash}`;
+    const security = securityEntries.at(0)?.account.instrument;
+    const isBuy = securityEntries.at(0)?.accountId === transaction.toAccountId;
+    const cash = formatInstrumentAmount(
+        convertFromMicroUnits(sumEntryAmounts(cashEntries)),
+        cashEntries.at(0)?.account.instrument.symbol ?? '',
+        null
+    );
+    const quantity = formatInstrumentAmount(
+        convertFromMicroUnits(sumEntryAmounts(securityEntries)),
+        security?.symbol ?? '',
+        security?.type ?? null
+    );
+    const trade = isBuy ? `${cash} → +${quantity}` : `−${quantity} → ${cash}`;
 
-    return <Text className="text-secondary-foreground text-[13px] text-right tabular-nums">{detail}</Text>;
+    return <ListRowDetail segments={[trade, feeLabel].filter(isNotEmptyString)} />;
 };

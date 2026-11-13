@@ -1,12 +1,15 @@
+import { TransactionTypeEnum } from '@budgie/contracts';
 import { View } from 'react-native';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { ListRowDetail } from '../../../@generic/component/list-row-detail/list-row-detail';
+import { isSecurityInstrumentType } from '../../../instrument/utils/is-security-instrument-type.util';
 import { useTransactionSubtitleSegments } from '../../hook/use-transaction-subtitle-segments.hook';
 import { isUncategorizedTransaction } from '../../utils/is-uncategorized-transaction.util';
 import { TransactionCardSelector } from '../transaction-card/transaction-card.selector';
 import { TransactionReceiptMarker } from '../transaction-receipt-marker/transaction-receipt-marker';
+import { TransactionSecurityTradeDetail } from '../transaction-security-trade-detail/transaction-security-trade-detail';
 
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 
@@ -20,6 +23,14 @@ export const TransactionCardSubtitle = ({ transaction, accountId }: Props) => {
 
     const detailSegments = [...segments.flatMap(segment => segment.split(' · ')), feeLabel, accountTitle].filter(isNotEmptyString);
     const hasReceipt = isDefined(transaction.receipt);
+    const isBrokerageTrade =
+        !isDefined(accountId) &&
+        transaction.type === TransactionTypeEnum.TRANSFER &&
+        transaction.entries.some(entry => isSecurityInstrumentType(entry.account.instrument.type));
+
+    if (isBrokerageTrade) {
+        return <TransactionSecurityTradeDetail transaction={transaction} />;
+    }
 
     if (!isNotEmptyArray(detailSegments) && !hasReceipt) {
         return null;

@@ -847,6 +847,10 @@ msgstr "{quantityLabel} · updated from imports"
 msgid "{quantityLabel}, worth {valueLabel}"
 msgstr "{quantityLabel}, worth {valueLabel}"
 
+#: src/account/hook/use-account-details-market-summary.hook.ts
+msgid "{quotePriceLabel} ≈ {defaultPriceLabel}"
+msgstr "{quotePriceLabel} ≈ {defaultPriceLabel}"
+
 #: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
 msgid "{rate, plural, =1 {about once a week} =2 {about twice a week} other {about # a week}}"
 msgstr "{rate, plural, =1 {about once a week} =2 {about twice a week} other {about # a week}}"
@@ -1926,6 +1930,10 @@ msgstr "Assets · {accountCount}"
 #: src/account/component/institution-accounts/institution-accounts.tsx
 msgid "Assets · {accountsCount}"
 msgstr "Assets · {accountsCount}"
+
+#: src/market-data/component/currency-market-value-row/currency-market-value-row.tsx
+msgid "At {quoteLabel} ≈ {rateLabel} per {instrumentCode}"
+msgstr "At {quoteLabel} ≈ {rateLabel} per {instrumentCode}"
 
 #: src/market-data/component/currency-market-value-row/currency-market-value-row.tsx
 msgid "At {rateLabel} per {instrumentCode}"

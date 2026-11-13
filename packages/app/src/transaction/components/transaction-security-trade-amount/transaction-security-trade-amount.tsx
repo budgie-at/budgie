@@ -9,7 +9,6 @@ import { MoneyTextVariantEnum } from '../../../@generic/enum/money-text-variant.
 import { isSecurityInstrumentType } from '../../../instrument/utils/is-security-instrument-type.util';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
-import { TransactionSecurityTradeDetail } from '../transaction-security-trade-detail/transaction-security-trade-detail';
 
 import type { AggregatedTransactionEntryInterface } from '../../interface/aggregated-transaction-entry.interface';
 import type { TransactionAssociationEnum, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
@@ -33,19 +32,21 @@ export const TransactionSecurityTradeAmount = ({ transaction, fromEntry, toEntry
     const positionPrefix = isBuy ? '+' : '−';
     const netAmount = isBrokerageView ? fee : moneyEntry.amount;
     const netPrefix = isBrokerageView && isPositiveNumber(fee) ? '−' : '';
+    const isZeroFeeTrade = isBrokerageView && !isPositiveNumber(fee);
     const prefix = isDefined(positionAmount) ? positionPrefix : netPrefix;
     const instrumentSymbol = isDefined(positionAmount) ? defaultInstrument.symbol : moneyEntry.account.instrument.symbol;
 
     return (
-        <View className="shrink-0 gap-y-xxs items-end" testID={testID}>
-            <MoneyText
-                amount={convertFromMicroUnits(positionAmount ?? netAmount)}
-                instrumentSymbol={instrumentSymbol}
-                variant={MoneyTextVariantEnum.ROW}
-                prefix={prefix}
-                tone="primary"
-            />
-            {isBrokerageView ? <TransactionSecurityTradeDetail fromEntry={fromEntry} toEntry={toEntry} fee={fee} /> : null}
+        <View className="shrink-0 items-end" testID={testID}>
+            {isZeroFeeTrade ? null : (
+                <MoneyText
+                    amount={convertFromMicroUnits(positionAmount ?? netAmount)}
+                    instrumentSymbol={instrumentSymbol}
+                    variant={MoneyTextVariantEnum.ROW}
+                    prefix={prefix}
+                    tone="primary"
+                />
+            )}
         </View>
     );
 };

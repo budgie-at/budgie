@@ -48,8 +48,6 @@ export const CurrencyMarketPage = ({ instrument: storedInstrument }: Props) => {
 
     const instrument = { ...storedInstrument, code: getInstrumentUnitLabel(storedInstrument) };
 
-    const latestPriceDate = latestPrice?.priceDate ?? null;
-
     return (
         <GroupedSurface>
             <RevealGate isLoading={false}>
@@ -65,7 +63,7 @@ export const CurrencyMarketPage = ({ instrument: storedInstrument }: Props) => {
                     <CurrencyMarketOverview instrument={instrument} prices={prices} priceBottom={priceBottom} />
 
                     <View testID={CurrencyMarketPageSelector.Holdings(instrument.code)}>
-                        <CurrencyMarketPosition instrument={instrument} latestPriceDate={latestPriceDate} />
+                        <CurrencyMarketPosition instrument={instrument} latestPrice={latestPrice} />
                     </View>
 
                     <CurrencyMarketAccounts instrument={instrument} />

@@ -96,6 +96,7 @@ test('51 manual brokerage with stocks', { tags: ['accounts'], platforms: PENDING
     await core.phase('a euro-quoted listing shows its price change in euros', async () => {
         await core.openLink(ctx, 'budgie://institution/1');
         await core.expectId(ctx, 'Institution.Page', 10_000);
+        await expect(screen.getByRole('button', { name: /^Sell BGTX, −4 BGTX → \$500$/ }).first()).toBeVisible({ timeout: 10_000 });
         await core.scrollTo(ctx, 'Brokerage.AddPositionButton');
         await core.tapId(ctx, 'Brokerage.AddPositionButton');
         await core.expectId(ctx, 'Brokerage.TradePage', 10_000);
@@ -111,5 +112,7 @@ test('51 manual brokerage with stocks', { tags: ['accounts'], platforms: PENDING
         await core.tapId(ctx, 'AccountDetails.MarketLink');
         await core.expectId(ctx, 'CurrencyMarket.Header.BGEU', 10_000);
         await core.expectText(ctx, /\+€18\.00/, 10_000);
+        await core.scrollTo(ctx, 'CurrencyMarket.Holdings.Value.BGEU');
+        await core.expectText(ctx, /At €120\.00 ≈ \$/, 10_000);
     });
 });

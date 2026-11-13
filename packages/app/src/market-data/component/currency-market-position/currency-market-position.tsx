@@ -19,16 +19,16 @@ import { CurrencyMarketRealizedReturnRow } from '../currency-market-realized-ret
 import { CurrencyMarketReturnRows } from '../currency-market-return-rows/currency-market-return-rows';
 import { CurrencyMarketValueRow } from '../currency-market-value-row/currency-market-value-row';
 
-import type { InstrumentEntityInterface } from '@budgie/contracts';
+import type { InstrumentDailyMarketPriceEntityInterface, InstrumentEntityInterface } from '@budgie/contracts';
 
 interface Props {
     readonly instrument: Pick<InstrumentEntityInterface, 'id' | 'code'>;
-    readonly latestPriceDate: string | null;
+    readonly latestPrice: Pick<InstrumentDailyMarketPriceEntityInterface, 'price' | 'priceDate' | 'quoteInstrumentId'> | undefined;
 }
 
 const PRIMARY_VALUE_CLASSNAME = 'text-primary font-semibold';
 
-export const CurrencyMarketPosition = ({ instrument, latestPriceDate }: Props) => {
+export const CurrencyMarketPosition = ({ instrument, latestPrice }: Props) => {
     const { t } = useLingui();
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const { balance } = useUnitInstrumentBalanceQuery(instrument.id);
@@ -38,7 +38,7 @@ export const CurrencyMarketPosition = ({ instrument, latestPriceDate }: Props) =
 
     const hasBalance = convertToMicroUnits(balance) !== 0;
     const totalAmount = formatInstrumentAmount(balance, instrument.code, InstrumentTypeEnum.CRYPTO);
-    const isStale = isDefined(valuationRate) && isDefined(latestPriceDate) && isMarketPriceStale(latestPriceDate);
+    const isStale = isDefined(valuationRate) && isDefined(latestPrice) && isMarketPriceStale(latestPrice.priceDate);
     const staleNote = isStale ? t`At last known price` : null;
     const footer = hasBalance ? <CurrencyMarketPositionFooter costBasis={position.costBasis} valuationRate={valuationRate} /> : null;
 
@@ -53,6 +53,7 @@ export const CurrencyMarketPosition = ({ instrument, latestPriceDate }: Props) =
             {hasBalance && isDefined(valuationRate) ? (
                 <>
                     <CurrencyMarketValueRow
+                        latestPrice={latestPrice}
                         balance={balance}
                         positionAmount={position.amount}
                         valuationRate={valuationRate}

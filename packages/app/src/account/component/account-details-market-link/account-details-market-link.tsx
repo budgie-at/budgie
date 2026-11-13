@@ -23,7 +23,7 @@ import { useAccountDetailsMarketSummary } from '../../hook/use-account-details-m
 import type { InstrumentEntityInterface } from '@budgie/contracts';
 
 interface Props {
-    readonly instrument: Pick<InstrumentEntityInterface, 'id' | 'code' | 'name' | 'symbol' | 'type'>;
+    readonly instrument: Pick<InstrumentEntityInterface, 'id' | 'code' | 'name' | 'symbol' | 'type' | 'quoteInstrumentId'>;
 }
 
 const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
@@ -33,7 +33,10 @@ const contentVariants = cva('min-w-0 shrink gap-x-md gap-y-xs py-md', {
 
 export const AccountDetailsMarketLink = ({ instrument }: Props) => {
     const { t } = useLingui();
-    const { priceLabel, change, changeShare, priceDate } = useAccountDetailsMarketSummary(instrument.id);
+    const { priceLabel, change, changeShare, priceDate } = useAccountDetailsMarketSummary(
+        instrument.id,
+        isListedSecurityType(instrument.type) ? instrument.quoteInstrumentId : null
+    );
     const { formatMonthAndDay } = useFormatDate();
 
     const isStacked = useIsAccessibilityTextSize();
