@@ -31,6 +31,7 @@ import {
     movement,
     position,
     solHolding,
+    solPosition,
     summarize,
     valued
 } from './yield-test-kit';
@@ -88,7 +89,7 @@ describe('YieldService annual yield', () => {
             const priced = yield* summarize(fundWorld('2026-10-01'), { baseInstrumentId: UAH_ID });
             const sparse = yield* summarize(fundWorld('2026-06-01'), { baseInstrumentId: UAH_ID });
 
-            expect(priced.annualYield.rate).toBeCloseTo(0.055, 6);
+            expect(priced.annualYield.rate).toBeCloseTo((55 / 1000) * (365 / 339), 6);
             expect(priced.annualYield.isEstimated).toBe(false);
             expect(sparse.annualYield).toMatchObject({ rate: null, reason: YieldUnavailableReasonEnum.NOT_ENOUGH_PRICES });
         })
@@ -180,6 +181,116 @@ describe('YieldService annual yield', () => {
 
             expect(summary.annualYield.rate).toBeCloseTo(1400 / (ETH_AVERAGE_UNITS * 2000 + 10000), 6);
             expect(summary.annualYield.holdingCount).toBe(2);
+        })
+    );
+
+    it.effect('annualises the combined yield per position, so a short-history position cannot dilute a long one', () =>
+        Effect.gen(function* () {
+            const solReward = {
+                positionAccountId: SOL_ACCOUNT_ID,
+                landingAccountId: SOL_ACCOUNT_ID,
+                landingInstrumentId: SOL_ID,
+                landingInstrumentCode: 'SOL'
+            };
+            const youngSol = {
+                positions: [solPosition],
+                movements: [movement(SOL_ACCOUNT_ID, '2026-09-15', 203.3)],
+                prices: priceRange(SOL_ID, BASE_ID, ['2025-10-01', '2026-11-13'], 100),
+                facts: [valued('2026-10-15', 2, 200, solReward)]
+            };
+            const summary = yield* summarize(mergeWorlds(ethStakingWorld, youngSol));
+            const rates = summary.positions.map(row => row.annualYield.rate ?? Number.NaN);
+            const expected = (800 + (200 * 365) / 60) / (ETH_AVERAGE_UNITS * 2000 + 20330);
+
+            expect(summary.annualYield.rate).toBeCloseTo(expected, 6);
+            expect(summary.annualYield.rate).toBeGreaterThan(Math.min(...rates));
+            expect(summary.annualYield.rate).toBeLessThan(Math.max(...rates));
+        })
+    );
+
+    it.effect('leaves unpriced unit-mode positions out of the combined yield and its counts', () =>
+        Effect.gen(function* () {
+            const unpricedSol = {
+                positions: [solPosition],
+                movements: [movement(SOL_ACCOUNT_ID, '2025-01-01', 10)],
+                facts: [
+                    valued('2026-03-01', 1, 0, {
+                        positionAccountId: SOL_ACCOUNT_ID,
+                        landingAccountId: SOL_ACCOUNT_ID,
+                        landingInstrumentId: SOL_ID,
+                        landingInstrumentCode: 'SOL'
+                    })
+                ]
+            };
+            const summary = yield* summarize(mergeWorlds(ethStakingWorld, unpricedSol));
+
+            expect(summary.annualYield).toMatchObject({ holdingCount: 1, totalCount: 1 });
+            expect(summary.annualYield.rate).toBeCloseTo(ETH_RATE, 6);
+        })
+    );
+
+    it.effect('annualises a lumpy value-mode position over its payout span, and drops it without prices', () =>
+        Effect.gen(function* () {
+            const payout = (day: string, value: number) =>
+                valued(day, value, value, { ...toUsdt, yieldKind: YieldKindEnum.DIVIDEND, positionAccountId: SOL_ACCOUNT_ID });
+            const world = (lastPriceDay: string) => ({
+                positions: [solPosition],
+                movements: [movement(SOL_ACCOUNT_ID, '2026-05-01', 100)],
+                prices: priceRange(SOL_ID, BASE_ID, ['2026-04-01', lastPriceDay], 100),
+                facts: [payout('2026-08-01', 50), payout('2026-11-01', 60)]
+            });
+            const priced = yield* summarize(world('2026-11-13'));
+            const sparse = yield* summarize(world('2026-08-05'));
+
+            expect(priced.annualYield.rate).toBeCloseTo((60 / 10000) * (365 / 92), 6);
+            expect(sparse.annualYield).toMatchObject({ rate: null, reason: YieldUnavailableReasonEnum.NOT_ENOUGH_PRICES });
+        })
+    );
+
+    it.effect('averages a refunded position over its whole window, including the empty gap', () =>
+        Effect.gen(function* () {
+            const summary = yield* summarize({
+                positions: [position()],
+                movements: [
+                    movement(ETH_ACCOUNT_ID, '2025-01-01', 10),
+                    movement(ETH_ACCOUNT_ID, '2025-12-01', -10),
+                    movement(ETH_ACCOUNT_ID, '2026-06-01', 10),
+                    movement(ETH_ACCOUNT_ID, '2026-09-01', 0.2)
+                ],
+                facts: [valued('2026-09-01', 0.2, 400)]
+            });
+
+            expect(summary.annualYield.rate).toBeCloseTo(0.2 / ((17 * 10 + 92 * 10 + 74 * 10.2) / 365), 6);
+        })
+    );
+
+    it.effect('stops a closed position at its last held day', () =>
+        Effect.gen(function* () {
+            const summary = yield* summarize({
+                positions: [position()],
+                movements: [
+                    movement(ETH_ACCOUNT_ID, '2025-01-01', 10),
+                    movement(ETH_ACCOUNT_ID, '2026-01-15', 0.1),
+                    movement(ETH_ACCOUNT_ID, '2026-03-01', -10.1)
+                ],
+                facts: [valued('2026-01-15', 0.1, 200)]
+            });
+            const averageUnits = (62 * 10 + 45 * 10.1) / 107;
+
+            expect(summary.annualYield.rate).toBeCloseTo((0.1 / averageUnits) * (365 / 107), 6);
+        })
+    );
+
+    it.effect('marks the combined yield estimated when estimated rewards reach 5%', () =>
+        Effect.gen(function* () {
+            const solToUsdt = { ...toUsdt, positionAccountId: SOL_ACCOUNT_ID };
+            const summary = yield* summarize(
+                mergeWorlds(ethHolding, { prices: ethPrices(2000) }, solHolding(100), {
+                    facts: [valued('2026-03-01', 400, 400, toUsdt), valued('2026-03-02', 300, 300, { ...solToUsdt, isEstimated: true })]
+                })
+            );
+
+            expect(summary.annualYield.isEstimated).toBe(true);
         })
     );
 });

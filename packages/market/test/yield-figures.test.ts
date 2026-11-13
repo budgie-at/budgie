@@ -117,4 +117,36 @@ describe('YieldService figures', () => {
             expect(summary.estimateCauses).toEqual([{ instrumentCode: 'SOL', day: '2026-03-12', sourceDay: '2026-03-06' }]);
         })
     );
+
+    it.effect('marks the run rate and crypto rewards estimated when the latest price is estimated or missing', () =>
+        Effect.gen(function* () {
+            const estimatedPrice = yield* summarize({ ...ethStakingWorld, latestRates: [] });
+            const missingPrice = yield* summarize({ facts: [valued('2026-10-01', 0.1, 150)] });
+
+            expect(estimatedPrice.runRate).toMatchObject({ isEstimated: true });
+            expect(missingPrice.cryptoRewardsToday).toMatchObject({ value: 0, isEstimated: true });
+        })
+    );
+
+    it.effect('has no figures at all for an empty world', () =>
+        Effect.gen(function* () {
+            const summary = yield* summarize({});
+
+            expect(summary).toMatchObject({
+                hasYield: false,
+                earned: { value: 0, isEstimated: false },
+                payoutCount: 0,
+                delta: null,
+                runRate: null,
+                cryptoRewardsToday: null,
+                vsRate: null,
+                positions: [],
+                groups: [],
+                estimateCauses: [],
+                firstYieldDay: null,
+                lastPayoutDay: null
+            });
+            expect(summary.annualYield).toMatchObject({ rate: null, reason: null, holdingCount: 0, totalCount: 0 });
+        })
+    );
 });

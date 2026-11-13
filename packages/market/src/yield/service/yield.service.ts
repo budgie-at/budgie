@@ -42,9 +42,9 @@ import { YieldUnavailableReasonEnum } from '../enum/yield-unavailable-reason.enu
 
 import { YieldPriceService } from './yield-price.service';
 
-import type { YieldAnnualYieldInterface } from '../interface/yield-annual-yield.interface';
 import type { YieldBucketInterface } from '../interface/yield-bucket.interface';
 import type { YieldCombinedYieldInterface } from '../interface/yield-combined-yield.interface';
+import type { YieldCryptoRewardsInterface } from '../interface/yield-crypto-rewards.interface';
 import type { YieldDeltaInterface } from '../interface/yield-delta.interface';
 import type { YieldEstimateCauseInterface } from '../interface/yield-estimate-cause.interface';
 import type { YieldEstimatedFigureInterface } from '../interface/yield-estimated-figure.interface';
@@ -58,6 +58,7 @@ import type { YieldPositionSummaryInterface } from '../interface/yield-position-
 import type { YieldPositionYieldInterface } from '../interface/yield-position-yield.interface';
 import type { YieldPriceSeriesInterface } from '../interface/yield-price-series.interface';
 import type { YieldQueryKeyInterface } from '../interface/yield-query-key.interface';
+import type { YieldRateInterface } from '../interface/yield-rate.interface';
 import type { YieldSummaryInterface } from '../interface/yield-summary.interface';
 import type { YieldVsRateInterface } from '../interface/yield-vs-rate.interface';
 import type { YieldWindowInterface } from '../interface/yield-window.interface';
@@ -373,6 +374,7 @@ export class YieldService extends Context.Service<YieldService>()('@budgie/marke
                 firstInflowDay,
                 historyDays: isDefined(firstInflowDay) ? countDays(firstInflowDay, toDayKey) : 0,
                 days: held.length,
+                pricedDays,
                 averageUnits: isPositiveNumber(held.length) ? unitSum / held.length : 0,
                 averageValue: isPositiveNumber(pricedDays) ? valueSum / pricedDays : 0,
                 estimatedAverageValue: isPositiveNumber(pricedDays) ? estimatedValueSum / pricedDays : 0,
@@ -384,29 +386,45 @@ export class YieldService extends Context.Service<YieldService>()('@budgie/marke
             return holdings;
         });
 
-        const unavailable = (reason: YieldUnavailableReasonEnum | null): YieldAnnualYieldInterface => ({
+        const unavailable = (reason: YieldUnavailableReasonEnum | null): YieldRateInterface => ({
             rate: null,
             reason,
-            isEstimated: false
+            isEstimated: false,
+            rewardValue: 0,
+            estimatedRewardValue: 0,
+            annualisationDays: 0
         });
 
-        const finishRate = (ratio: number, days: number): YieldAnnualYieldInterface => {
+        const finishRate = (
+            counted: readonly YieldFactInterface[],
+            ratio: number,
+            days: number,
+            isEstimated: boolean
+        ): YieldRateInterface => {
             const rate = (ratio * YIELD_WINDOW_DAYS) / days;
 
-            return rate > MAX_RATE ? unavailable(YieldUnavailableReasonEnum.UNUSUALLY_HIGH) : { rate, reason: null, isEstimated: false };
+            return rate > MAX_RATE
+                ? unavailable(YieldUnavailableReasonEnum.UNUSUALLY_HIGH)
+                : {
+                      rate,
+                      reason: null,
+                      isEstimated,
+                      rewardValue: sumValues(counted),
+                      estimatedRewardValue: sumValues(counted.filter(reward => reward.isEstimated)),
+                      annualisationDays: days
+                  };
         };
-
-        const withEstimate = (result: YieldAnnualYieldInterface, isEstimated: boolean): YieldAnnualYieldInterface => ({
-            ...result,
-            isEstimated: isDefined(result.rate) && isEstimated
-        });
 
         const computeUnitYield = (rewards: readonly YieldFactInterface[], holdings: YieldHoldingsInterface) =>
             isPositiveNumber(holdings.averageUnits)
-                ? finishRate(sum(rewards.map(reward => reward.units)) / holdings.averageUnits, holdings.days)
+                ? finishRate(rewards, sum(rewards.map(reward => reward.units)) / holdings.averageUnits, holdings.days, false)
                 : unavailable(YieldUnavailableReasonEnum.NO_AVERAGE);
 
-        const computeValueYield = (rewards: readonly YieldFactInterface[], holdings: YieldHoldingsInterface) => {
+        const computeValueYield = (
+            rewards: readonly YieldFactInterface[],
+            holdings: YieldHoldingsInterface,
+            days: number
+        ): YieldRateInterface => {
             if (holdings.droppedShare > MAX_DROPPED_SHARE) {
                 return unavailable(YieldUnavailableReasonEnum.NOT_ENOUGH_PRICES);
             }
@@ -417,8 +435,10 @@ export class YieldService extends Context.Service<YieldService>()('@budgie/marke
 
             const kept = rewards.filter(reward => !holdings.droppedDays.has(reward.day));
 
-            return withEstimate(
-                finishRate(sumValues(kept) / holdings.averageValue, holdings.days),
+            return finishRate(
+                kept,
+                sumValues(kept) / holdings.averageValue,
+                days,
                 isEstimatedTotal(kept) || isShareEstimated(holdings.estimatedAverageValue, holdings.averageValue)
             );
         };
@@ -438,19 +458,14 @@ export class YieldService extends Context.Service<YieldService>()('@budgie/marke
 
             const later = rewards.slice(1);
             const span = yield* holdingsBetween(first.day, last.day);
-            const isUnitMode = rewards.every(reward => reward.landingInstrumentId === instrumentId);
-            const denominator = isUnitMode ? span.averageUnits : span.averageValue;
 
-            if (!isPositiveNumber(denominator)) {
-                return unavailable(YieldUnavailableReasonEnum.NO_AVERAGE);
+            if (rewards.every(reward => reward.landingInstrumentId === instrumentId)) {
+                return isPositiveNumber(span.averageUnits)
+                    ? finishRate(later, sum(later.map(reward => reward.units)) / span.averageUnits, days, false)
+                    : unavailable(YieldUnavailableReasonEnum.NO_AVERAGE);
             }
 
-            const numerator = isUnitMode ? sum(later.map(reward => reward.units)) : sumValues(later);
-
-            return withEstimate(
-                finishRate(numerator / denominator, days),
-                !isUnitMode && (isEstimatedTotal(later) || isShareEstimated(span.estimatedAverageValue, span.averageValue))
-            );
+            return computeValueYield(later, span, days - span.droppedDays.size);
         });
 
         const computeAnnualYield = Effect.fnUntraced(function* (
@@ -473,7 +488,7 @@ export class YieldService extends Context.Service<YieldService>()('@budgie/marke
 
             return rewards.every(reward => reward.landingInstrumentId === row.instrumentId)
                 ? computeUnitYield(rewards, holdings)
-                : computeValueYield(rewards, holdings);
+                : computeValueYield(rewards, holdings, holdings.pricedDays);
         });
 
         const buildPositionContext = Effect.fnUntraced(function* (row: YieldPositionRowInterface, input: YieldPositionInputInterface) {
@@ -494,11 +509,8 @@ export class YieldService extends Context.Service<YieldService>()('@budgie/marke
             );
             const positionYield: YieldPositionYieldInterface = {
                 ...annualYield,
-                rewardValue: sumValues(rewards),
-                estimatedRewardValue: sumValues(rewards.filter(reward => reward.isEstimated)),
                 averageValue: holdings.averageValue,
-                estimatedAverageValue: holdings.estimatedAverageValue,
-                windowDays: holdings.days
+                estimatedAverageValue: holdings.estimatedAverageValue
             };
             const context: YieldPositionContextInterface = { row, facts: input.facts, holdings, positionYield, latest };
 
@@ -532,7 +544,7 @@ export class YieldService extends Context.Service<YieldService>()('@budgie/marke
             excludesDistributions: boolean
         ): YieldCombinedYieldInterface => {
             const holding = contexts.filter(context => isPositiveNumber(context.positionYield.averageValue));
-            const yielding = contexts.filter(context => isDefined(context.positionYield.rate));
+            const yielding = holding.filter(context => isDefined(context.positionYield.rate));
             const totalValue = sum(holding.map(context => context.positionYield.averageValue));
             const coveredValue = sum(yielding.map(context => context.positionYield.averageValue));
             const counts = {
@@ -553,23 +565,27 @@ export class YieldService extends Context.Service<YieldService>()('@budgie/marke
             }
 
             if (!isNotEmptyArray(yielding)) {
-                return { ...counts, ...unavailable(contexts.map(context => context.positionYield.reason).find(isDefined) ?? null) };
+                const unavailableReason =
+                    contexts.map(context => context.positionYield.reason).find(isDefined) ??
+                    (contexts.some(context => isDefined(context.positionYield.rate)) ? YieldUnavailableReasonEnum.NO_AVERAGE : null);
+
+                return { ...counts, ...unavailable(unavailableReason) };
             }
 
-            if (!isPositiveNumber(coveredValue)) {
-                return { ...counts, ...unavailable(YieldUnavailableReasonEnum.NO_AVERAGE) };
-            }
-
-            const rewardValue = sum(yielding.map(context => context.positionYield.rewardValue));
-            const windowDays = Math.max(...yielding.map(context => context.positionYield.windowDays));
+            const annualised = (value: number, { positionYield }: YieldPositionContextInterface) =>
+                (value * YIELD_WINDOW_DAYS) / positionYield.annualisationDays;
+            const rewardValue = sum(yielding.map(context => annualised(context.positionYield.rewardValue, context)));
+            const estimatedRewardValue = sum(yielding.map(context => annualised(context.positionYield.estimatedRewardValue, context)));
+            const rate = rewardValue / coveredValue;
 
             return {
                 ...counts,
-                ...withEstimate(
-                    finishRate(rewardValue / coveredValue, windowDays),
-                    isShareEstimated(sum(yielding.map(context => context.positionYield.estimatedRewardValue)), rewardValue) ||
-                        isShareEstimated(sum(yielding.map(context => context.positionYield.estimatedAverageValue)), coveredValue)
-                )
+                rate: rate > MAX_RATE ? null : rate,
+                reason: rate > MAX_RATE ? YieldUnavailableReasonEnum.UNUSUALLY_HIGH : null,
+                isEstimated:
+                    rate <= MAX_RATE &&
+                    (isShareEstimated(estimatedRewardValue, rewardValue) ||
+                        isShareEstimated(sum(yielding.map(context => context.positionYield.estimatedAverageValue)), coveredValue))
             };
         };
 
@@ -577,21 +593,28 @@ export class YieldService extends Context.Service<YieldService>()('@budgie/marke
             const parts = contexts.map(({ row, holdings, positionYield, latest }) => {
                 const currentValue = holdings.currentUnits * (latest.price ?? 0);
                 const interestRate = row.interestRate ?? 0;
+                const isPriceMissing = !isDefined(latest.price);
 
                 if (isDefined(positionYield.rate)) {
-                    return { value: positionYield.rate * currentValue, isEstimated: positionYield.isEstimated || latest.isEstimated };
+                    return {
+                        value: positionYield.rate * currentValue,
+                        isEstimated: positionYield.isEstimated || latest.isEstimated || isPriceMissing,
+                        isPriceMissing
+                    };
                 }
 
                 return RATED_ACCOUNT_TYPES.has(row.type) && isPositiveNumber(interestRate)
-                    ? { value: (interestRate / PERCENT) * currentValue, isEstimated: latest.isEstimated }
-                    : { value: 0, isEstimated: false };
+                    ? { value: (interestRate / PERCENT) * currentValue, isEstimated: latest.isEstimated || isPriceMissing, isPriceMissing }
+                    : { value: 0, isEstimated: false, isPriceMissing: false };
             });
             const total = sum(parts.map(part => part.value));
 
             return isPositiveNumber(total)
                 ? {
                       value: total,
-                      isEstimated: isShareEstimated(sum(parts.filter(part => part.isEstimated).map(part => part.value)), total)
+                      isEstimated:
+                          parts.some(part => part.isPriceMissing) ||
+                          isShareEstimated(sum(parts.filter(part => part.isEstimated).map(part => part.value)), total)
                   }
                 : null;
         };
@@ -613,7 +636,10 @@ export class YieldService extends Context.Service<YieldService>()('@budgie/marke
             const endDay = deadlineDay < todayDay ? deadlineDay : todayDay;
             const days = Math.max(differenceInCalendarDays(parseISO(endDay), parseISO(firstInflowDay)), 0);
 
-            return ((holdings.currentUnits * interestRate) / PERCENT) * (days / YIELD_WINDOW_DAYS) * (latest.price ?? 0);
+            return {
+                value: ((holdings.currentUnits * interestRate) / PERCENT) * (days / YIELD_WINDOW_DAYS) * (latest.price ?? 0),
+                isEstimated: latest.isEstimated || !isDefined(latest.price)
+            };
         };
 
         const computeVsRate = ({ row, facts, positionYield }: YieldPositionContextInterface): YieldVsRateInterface | null => {
@@ -632,6 +658,7 @@ export class YieldService extends Context.Service<YieldService>()('@budgie/marke
             todayDay: string
         ): YieldPositionSummaryInterface => {
             const { row, holdings, positionYield } = context;
+            const accruing = computeAccruing(context, todayDay);
             const windowFacts = context.facts.filter(isInWindow);
             const income = windowFacts.filter(isIncome);
             const isOpen = row.isActive && !isDefined(row.deletedAt) && isPositiveNumber(holdings.currentUnits);
@@ -649,7 +676,8 @@ export class YieldService extends Context.Service<YieldService>()('@budgie/marke
                 rewardUnits: sum(income.filter(fact => fact.landingInstrumentId === row.instrumentId).map(fact => fact.units)),
                 tax: Math.abs(sumValues(windowFacts.filter(fact => !isIncome(fact)))),
                 annualYield: { rate: positionYield.rate, reason: positionYield.reason, isEstimated: positionYield.isEstimated },
-                accruing: computeAccruing(context, todayDay),
+                accruing: accruing?.value ?? null,
+                isAccruingEstimated: accruing?.isEstimated ?? false,
                 interestRate: row.interestRate,
                 deadline: isDefined(row.deadline) ? toDay(row.deadline) : null,
                 vsRate: computeVsRate(context)
@@ -672,15 +700,29 @@ export class YieldService extends Context.Service<YieldService>()('@budgie/marke
             const pricedInstruments = yield* Effect.forEach([...instruments], ([id, code]) =>
                 Effect.map(
                     yieldPriceService.findLatestPrice({ id, code, type: InstrumentTypeEnum.CRYPTO }, baseInstrumentId),
-                    latest => [id, latest.price ?? 0] as const
+                    latest => [id, latest] as const
                 )
             );
             const prices = new Map(pricedInstruments);
+            const parts = rewards.map(fact => {
+                const latest = prices.get(fact.landingInstrumentId);
 
-            return {
-                value: sum(rewards.map(fact => fact.units * (prices.get(fact.landingInstrumentId) ?? 0))),
-                arrivalValue: sumValues(rewards)
+                return {
+                    value: fact.units * (latest?.price ?? 0),
+                    isEstimated: latest?.isEstimated ?? true,
+                    isPriceMissing: !isDefined(latest?.price)
+                };
+            });
+            const value = sum(parts.map(part => part.value));
+            const cryptoRewards: YieldCryptoRewardsInterface = {
+                value,
+                arrivalValue: sumValues(rewards),
+                isEstimated:
+                    parts.some(part => part.isPriceMissing) ||
+                    isShareEstimated(sum(parts.filter(part => part.isEstimated).map(part => part.value)), value)
             };
+
+            return cryptoRewards;
         });
 
         const collectEstimateCauses = Effect.fnUntraced(function* (

@@ -17,6 +17,7 @@ export interface YieldPositionSummaryInterface {
     readonly tax: number;
     readonly annualYield: YieldAnnualYieldInterface;
     readonly accruing: number | null;
+    readonly isAccruingEstimated: boolean;
     readonly interestRate: number | null;
     readonly deadline: string | null;
     readonly vsRate: YieldVsRateInterface | null;

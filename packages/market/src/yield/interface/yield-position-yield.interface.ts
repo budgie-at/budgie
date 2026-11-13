@@ -1,9 +1,6 @@
-import type { YieldAnnualYieldInterface } from './yield-annual-yield.interface';
+import type { YieldRateInterface } from './yield-rate.interface';
 
-export interface YieldPositionYieldInterface extends YieldAnnualYieldInterface {
-    readonly rewardValue: number;
-    readonly estimatedRewardValue: number;
+export interface YieldPositionYieldInterface extends YieldRateInterface {
     readonly averageValue: number;
     readonly estimatedAverageValue: number;
-    readonly windowDays: number;
 }
