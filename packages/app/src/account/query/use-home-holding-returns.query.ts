@@ -18,6 +18,7 @@ import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
 import { calculatePortfolioReturn } from '../../brokerage/utils/calculate-portfolio-return.util';
 import { getMarketDailyChange } from '../../market-data/utils/get-market-daily-change.util';
+import { isMarketPriceStale } from '../../market-data/utils/is-market-price-stale.util';
 import { defaultInstrumentIdAtom } from '../../settings/constants/settings-atoms.constant';
 import { isAccountTypeSection } from '../type-guard/is-account-type-section.type-guard';
 import { isHomeHolding } from '../type-guard/is-home-holding.type-guard';
@@ -55,8 +56,11 @@ const homeDailyChangesAtom = databaseQueryFamily(
                 .findRecent(instrumentId, quoteInstrumentId, 2)
                 .pipe(
                     Effect.map(
-                        ([latest, previous]) =>
-                            [getDailyChangeKey([instrumentId, quoteInstrumentId]), getMarketDailyChange(latest, previous)] as const
+                        prices =>
+                            [
+                                getDailyChangeKey([instrumentId, quoteInstrumentId]),
+                                { change: getMarketDailyChange(prices.at(0), prices.at(1)), priceDate: prices.at(0)?.priceDate ?? null }
+                            ] as const
                     )
                 )
         )
@@ -90,9 +94,10 @@ export const useHomeHoldingReturnsQuery = (sections: readonly HomeSectionInterfa
     const dailyChanges = new Map(AsyncResult.getOrElse(useLiveAtomValue(homeDailyChangesAtom(dailyChangePairs)), () => []));
     const todayByInstrumentId = new Map(
         dailyChangePairs.flatMap(pair => {
-            const change = dailyChanges.get(getDailyChangeKey(pair));
+            const dailyChange = dailyChanges.get(getDailyChangeKey(pair));
+            const isFresh = isDefined(dailyChange?.priceDate) && !isMarketPriceStale(dailyChange.priceDate);
 
-            return isDefined(change) ? [[pair[0], change] as const] : [];
+            return isFresh && isDefined(dailyChange.change) && dailyChange.change > -1 ? [[pair[0], dailyChange.change] as const] : [];
         })
     );
     const data = AsyncResult.getOrElse(
