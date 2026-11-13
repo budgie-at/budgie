@@ -42,7 +42,11 @@ export const AccountSelectorSheetContent = ({ params, onSelect, onBack, classNam
         includeTypes: params.includeAccountTypes,
         onlyActive: params.onlyActive ?? true
     });
-    const selectableAccounts = accounts.filter(account => !isUntrackedOwnAccount(account) || account.id === params.initialAccountId);
+    const selectableAccounts = accounts.filter(
+        account =>
+            (!isUntrackedOwnAccount(account) || account.id === params.initialAccountId) &&
+            (!isDefined(params.syncZone) || account.syncZone === params.syncZone)
+    );
 
     const handleCreateAction = () => {
         if (!isDefined(createAction)) {

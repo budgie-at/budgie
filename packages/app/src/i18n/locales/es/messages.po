@@ -696,6 +696,10 @@ msgstr "{installmentCount, plural, one {# pago en total} other {# pagos en total
 msgid "{installmentCount, plural, one {Split into # payment} other {Split into # payments}}"
 msgstr "{installmentCount, plural, one {Dividir en # pago} other {Dividir en # pagos}}"
 
+#: src/transaction/components/transaction-info-yield-row/transaction-info-yield-row.tsx
+msgid "{kindLabel} · from {sourceTitle}"
+msgstr "{kindLabel} · de {sourceTitle}"
+
 #. js-lingui-explicit-id
 #: src/yield/hook/use-yield-date-labels.hook.ts
 msgid "passive-income.chart.so-far"
@@ -3643,6 +3647,10 @@ msgstr "No se pudo guardar el pago recurrente."
 msgid "Could not save tag"
 msgstr "No se pudo guardar la etiqueta"
 
+#: src/transaction/hook/use-edit-transaction-yield.hook.ts
+msgid "Could not save the change."
+msgstr "No se pudo guardar el cambio."
+
 #: src/sync/hook/use-explain-enable-banking-error.hook.ts
 msgid "Could not save the key in this phone's secure storage. Nothing was connected."
 msgstr "No se pudo guardar la clave en el almacenamiento seguro de este teléfono. No se conectó nada."
@@ -5960,6 +5968,10 @@ msgstr "Clave rechazada — sincronización en pausa"
 msgid "Key updated"
 msgstr "Clave actualizada"
 
+#: src/transaction/components/transaction-info-yield-row/transaction-info-yield-row.tsx
+msgid "Kind"
+msgstr "Tipo"
+
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Know what’s safe to spend"
 msgstr "Sabe cuánto puedes gastar"
@@ -6233,6 +6245,10 @@ msgstr "Asignar columnas CSV"
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 msgid "Mark as External?"
 msgstr "¿Marcar como externa?"
+
+#: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
+msgid "Mark as passive income"
+msgstr "Marcar como ingreso pasivo"
 
 #: src/recurring/components/recurring-detail-mark-recurring-menu-item/recurring-detail-mark-recurring-menu-item.tsx
 msgid "Mark as recurring"
@@ -6828,6 +6844,10 @@ msgstr "No hay cuentas ocultas"
 msgid "No hidden accounts match “{search}”"
 msgstr "Ninguna cuenta oculta coincide con «{search}»"
 
+#: src/transaction/components/transaction-info-yield-source-row/transaction-info-yield-source-row.tsx
+msgid "No holding to link yet"
+msgstr "Aún no hay ninguna posición que vincular"
+
 #: src/@generic/component/icon-selector-empty-state/icon-selector-empty-state.tsx
 msgid "No icons found"
 msgstr "No se encontraron iconos"
@@ -7086,6 +7106,10 @@ msgstr "Aún no hay suficiente historial"
 #: src/yield/constant/yield-unavailable-label.constant.ts
 msgid "Not enough price history"
 msgstr "Historial de precios insuficiente"
+
+#: src/transaction/components/transaction-info-yield-source-row/transaction-info-yield-source-row.tsx
+msgid "Not linked"
+msgstr "Sin vincular"
 
 #: src/yield/component/yield-section-header/yield-section-header.tsx
 msgid "Not linked to a holding"
@@ -7680,8 +7704,10 @@ msgstr "Parte de tu historial. La actividad anterior no está incluida."
 msgid "Partial export"
 msgstr "Exportación parcial"
 
+#: src/transaction/components/transaction-info-yield-row/transaction-info-yield-row.tsx
 #: src/yield/component/yield-empty-state/yield-empty-state.tsx
 #: src/yield/component/yield-entry-row-content/yield-entry-row-content.tsx
+#: src/yield/component/yield-kind-selector-content/yield-kind-selector-content.tsx
 #: src/yield/component/yield-screen-content/yield-screen-content.tsx
 #: src/yield/component/yield-screen-title/yield-screen-title.tsx
 msgid "Passive income"
@@ -9382,6 +9408,7 @@ msgstr "origen"
 
 #: src/rule/components/rule-condition-value-input/rule-condition-value-input.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
+#: src/transaction/components/transaction-info-yield-source-row/transaction-info-yield-source-row.tsx
 msgid "Source"
 msgstr "Fuente"
 

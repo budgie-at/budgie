@@ -696,6 +696,10 @@ msgstr "{installmentCount, plural, one {усього # платіж} few {усь
 msgid "{installmentCount, plural, one {Split into # payment} other {Split into # payments}}"
 msgstr "{installmentCount, plural, one {Розбити на # платіж} few {Розбити на # платежі} many {Розбити на # платежів} other {Розбити на # платежу}}"
 
+#: src/transaction/components/transaction-info-yield-row/transaction-info-yield-row.tsx
+msgid "{kindLabel} · from {sourceTitle}"
+msgstr "{kindLabel} · з {sourceTitle}"
+
 #. js-lingui-explicit-id
 #: src/yield/hook/use-yield-date-labels.hook.ts
 msgid "passive-income.chart.so-far"
@@ -3643,6 +3647,10 @@ msgstr "Не вдалося зберегти регулярний платіж."
 msgid "Could not save tag"
 msgstr "Не вдалося зберегти тег"
 
+#: src/transaction/hook/use-edit-transaction-yield.hook.ts
+msgid "Could not save the change."
+msgstr "Не вдалося зберегти зміну."
+
 #: src/sync/hook/use-explain-enable-banking-error.hook.ts
 msgid "Could not save the key in this phone's secure storage. Nothing was connected."
 msgstr "Не вдалося зберегти ключ у захищеному сховищі цього телефона. Нічого не підключено."
@@ -5960,6 +5968,10 @@ msgstr "Ключ відхилено — синхронізацію призуп�
 msgid "Key updated"
 msgstr "Ключ оновлено"
 
+#: src/transaction/components/transaction-info-yield-row/transaction-info-yield-row.tsx
+msgid "Kind"
+msgstr "Тип"
+
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Know what’s safe to spend"
 msgstr "Знайте, скільки можна витратити"
@@ -6233,6 +6245,10 @@ msgstr "Зіставити стовпці CSV"
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 msgid "Mark as External?"
 msgstr "Позначити як зовнішній?"
+
+#: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
+msgid "Mark as passive income"
+msgstr "Позначити як пасивний дохід"
 
 #: src/recurring/components/recurring-detail-mark-recurring-menu-item/recurring-detail-mark-recurring-menu-item.tsx
 msgid "Mark as recurring"
@@ -6828,6 +6844,10 @@ msgstr "Немає прихованих рахунків"
 msgid "No hidden accounts match “{search}”"
 msgstr "Немає прихованих рахунків за запитом «{search}»"
 
+#: src/transaction/components/transaction-info-yield-source-row/transaction-info-yield-source-row.tsx
+msgid "No holding to link yet"
+msgstr "Ще немає активу для зв’язування"
+
 #: src/@generic/component/icon-selector-empty-state/icon-selector-empty-state.tsx
 msgid "No icons found"
 msgstr "Іконки не знайдено"
@@ -7086,6 +7106,10 @@ msgstr "Ще недостатньо історії"
 #: src/yield/constant/yield-unavailable-label.constant.ts
 msgid "Not enough price history"
 msgstr "Недостатньо історії цін"
+
+#: src/transaction/components/transaction-info-yield-source-row/transaction-info-yield-source-row.tsx
+msgid "Not linked"
+msgstr "Не зв’язано"
 
 #: src/yield/component/yield-section-header/yield-section-header.tsx
 msgid "Not linked to a holding"
@@ -7680,8 +7704,10 @@ msgstr "Частина вашої історії. Старіша активні�
 msgid "Partial export"
 msgstr "Частковий експорт"
 
+#: src/transaction/components/transaction-info-yield-row/transaction-info-yield-row.tsx
 #: src/yield/component/yield-empty-state/yield-empty-state.tsx
 #: src/yield/component/yield-entry-row-content/yield-entry-row-content.tsx
+#: src/yield/component/yield-kind-selector-content/yield-kind-selector-content.tsx
 #: src/yield/component/yield-screen-content/yield-screen-content.tsx
 #: src/yield/component/yield-screen-title/yield-screen-title.tsx
 msgid "Passive income"
@@ -9382,6 +9408,7 @@ msgstr "джерело"
 
 #: src/rule/components/rule-condition-value-input/rule-condition-value-input.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
+#: src/transaction/components/transaction-info-yield-source-row/transaction-info-yield-source-row.tsx
 msgid "Source"
 msgstr "Джерело"
 

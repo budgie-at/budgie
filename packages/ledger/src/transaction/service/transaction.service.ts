@@ -3,6 +3,7 @@ import {
     Db,
     DebtEventRepository,
     ExternalSourceEnum,
+    type TransactionCreateEntityInterface,
     type TransactionCreateInputInterface,
     type TransactionEntryEntityInterface,
     TransactionEntryRepository,
@@ -153,7 +154,7 @@ export class TransactionService extends Context.Service<TransactionService>()('@
 
         const resolveYieldPatch = Effect.fnUntraced(function* (
             existing: TransactionWithEntriesEntityInterface | undefined,
-            input: TransactionUpdateServiceInputInterface
+            input: Omit<TransactionUpdateServiceInputInterface, 'entries' | 'tagIds'>
         ) {
             const type = input.type ?? existing?.type ?? TransactionTypeEnum.EXPENSE;
             const landingAccountId =
@@ -223,6 +224,21 @@ export class TransactionService extends Context.Service<TransactionService>()('@
                     const [transaction] = yield* bulkCreate([input]);
 
                     return transaction;
+                },
+                effect => Db.transaction(effect)
+            ),
+            updateYield: Effect.fn('TransactionService.updateYield')(
+                function* (id: number, patch: Partial<Pick<TransactionCreateEntityInterface, 'yieldKind' | 'yieldSourceAccountId'>>) {
+                    const existingTransaction = yield* transactionRepository.getByIdWithEntries(id);
+
+                    if (!isDefined(existingTransaction) || (yield* transactionRepository.isForeignTransferLeg(id))) {
+                        return existingTransaction;
+                    }
+
+                    return yield* transactionRepository.updateById(id, {
+                        updatedBy: TransactionUpdatedByEnum.USER,
+                        ...(yield* resolveYieldPatch(existingTransaction, patch))
+                    });
                 },
                 effect => Db.transaction(effect)
             ),

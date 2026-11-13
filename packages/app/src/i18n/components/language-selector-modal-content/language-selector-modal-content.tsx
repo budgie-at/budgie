@@ -1,9 +1,6 @@
 import { useLingui } from '@lingui/react/macro';
-import { View } from 'react-native';
 
-import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
-import { SheetSurface } from '../../../@generic/component/sheet-surface/sheet-surface';
-import { SheetTitleRow } from '../../../@generic/component/sheet-title-row/sheet-title-row';
+import { SelectorSheetList } from '../../../@generic/component/selector-sheet-list/selector-sheet-list';
 import { useMorphingSheetCommit } from '../../../@generic/hook/use-morphing-sheet-commit.hook';
 import { LANGUAGES } from '../../constant/languages.constant';
 import { LanguageSelectorRow } from '../language-selector-row/language-selector-row';
@@ -20,17 +17,10 @@ export const LanguageSelectorModalContent = ({ selectedLanguage, onCommit }: Pro
     const commit = useMorphingSheetCommit(onCommit);
 
     return (
-        <SheetSurface className="flex-none pt-lg" contentClassName="flex-none">
-            <View className="px-xl pb-lg">
-                <SheetTitleRow title={t`Language`} />
-            </View>
-            <View className="px-3xl pb-xl">
-                <GroupedListSection>
-                    {LANGUAGES.map(item => (
-                        <LanguageSelectorRow key={item.code} item={item} selectedLanguage={selectedLanguage} onSelect={commit} />
-                    ))}
-                </GroupedListSection>
-            </View>
-        </SheetSurface>
+        <SelectorSheetList title={t`Language`}>
+            {LANGUAGES.map(item => (
+                <LanguageSelectorRow key={item.code} item={item} selectedLanguage={selectedLanguage} onSelect={commit} />
+            ))}
+        </SelectorSheetList>
     );
 };

@@ -9,8 +9,10 @@ import { useOpenModal } from '../../@generic/hook/use-open-modal/use-open-modal.
 import { dismissAllOrReplace } from '../../@generic/utils/dismiss-all-or-replace.util';
 import { useOpenConvertToInstallment } from '../../installment-plan/hook/use-open-convert-to-installment.hook';
 import { TransactionActionsMenuSelector } from '../components/transaction-actions-menu/transaction-actions-menu.selector';
+import { canMarkPassiveIncome } from '../utils/can-mark-passive-income.util';
 
 import { useDebtSettlementTransactionActions } from './use-debt-settlement-transaction-actions.hook';
+import { useEditTransactionYield } from './use-edit-transaction-yield.hook';
 import { useRevertConsolidation } from './use-revert-consolidation.hook';
 
 import type { SimpleTransactionActionsMenuParamsInterface } from '../interface/simple-transaction-actions-menu-params.interface';
@@ -39,6 +41,8 @@ export const useSimpleTransactionActionsMenu = ({
         transactionId,
         transactionAccountId
     });
+
+    const { openKindPicker } = useEditTransactionYield(transaction);
 
     const handleOpenRefundConvert = () => {
         openConvertToRefund({ refundIncomeTransactionId: transactionId }, canonicalId => {
@@ -74,6 +78,7 @@ export const useSimpleTransactionActionsMenu = ({
         transactionType === TransactionTypeEnum.EXPENSE &&
         !isConsolidated &&
         !isDefined(transaction.consolidationParentTransactionId);
+    const isMarkableAsPassiveIncome = canMarkPassiveIncome(transactionType, transaction.yieldKind);
     const { debtSettlementAccount, hasDebtSettlement } = debtSettlementActions;
     const hasFee = isNotEmptyArray(getTransactionFeeEntries(transaction.entries));
     const isInstallment = debtSettlementAccount?.debtType === AccountDebtTypeEnum.INSTALLMENT;
@@ -88,6 +93,14 @@ export const useSimpleTransactionActionsMenu = ({
             testID: TransactionActionsMenuSelector.FeeButton,
             isPrimary: false,
             onPress: onFeePress
+        },
+        isMarkableAsPassiveIncome && {
+            key: 'passive-income',
+            icon: UserIconNameEnum.Sprout,
+            label: t`Mark as passive income`,
+            testID: TransactionActionsMenuSelector.MarkPassiveIncomeButton,
+            isPrimary: false,
+            onPress: openKindPicker
         },
         !hasDebtSettlement && {
             key: 'attach-debt',

@@ -26,7 +26,8 @@ import type {
     TransactionEntryTypeEnum,
     TransactionTypeEnum,
     UserIconNameEnum,
-    UserIconType
+    UserIconType,
+    YieldKindEnum
 } from '@budgie/contracts';
 
 export interface ModalRegistryInterface {
@@ -41,6 +42,7 @@ export interface ModalRegistryInterface {
             readonly onlyActive?: boolean;
             readonly showDebtTotal?: boolean;
             readonly createAction?: AccountSelectorCreateActionInterface;
+            readonly syncZone?: string;
             readonly origin?: AnchoredMorphOriginInterface;
         };
         readonly result: number;
@@ -114,6 +116,14 @@ export interface ModalRegistryInterface {
     readonly '/language-selector': {
         readonly params: { readonly selectedLanguage: LanguageEnum; readonly origin?: AnchoredMorphOriginInterface };
         readonly result: LanguageEnum;
+    };
+    readonly '/yield-kind': {
+        readonly params: {
+            readonly transactionType: TransactionTypeEnum;
+            readonly selectedKind: YieldKindEnum | null;
+            readonly origin?: AnchoredMorphOriginInterface;
+        };
+        readonly result: YieldKindEnum;
     };
     readonly '/resync-window-picker': { readonly params: { readonly accountId: number }; readonly result: null };
     readonly '/deposit-close': {

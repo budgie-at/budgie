@@ -174,6 +174,7 @@ export const RootLayoutContent = () => {
                                                                         name="account-selector"
                                                                         options={MORPHING_SHEET_OPTIONS}
                                                                     />
+                                                                    <Stack.Screen name="yield-kind" options={MORPHING_SHEET_OPTIONS} />
                                                                     <Stack.Screen
                                                                         name="currency-selector"
                                                                         options={MORPHING_SHEET_OPTIONS}
