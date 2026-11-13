@@ -43,8 +43,10 @@ const CURRENCY_MARKET_CHROME_CONFIG = {
         ...SCREEN_CHROME_CONFIG.maskStops,
         top: {
             0: { color: '#000000' },
+            0.25: { color: '#000000' },
+            0.5: { color: '#000000' },
             0.62: { color: '#000000' },
-            0.74: { color: 'rgba(0,0,0,0.35)' },
+            0.75: { color: 'rgba(0,0,0,0.35)' },
             0.86: { color: 'transparent' },
             1: { color: 'transparent' }
         }
