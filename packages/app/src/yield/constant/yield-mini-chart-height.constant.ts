@@ -1,0 +1,1 @@
+export const YIELD_MINI_CHART_HEIGHT = 32;
