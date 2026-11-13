@@ -1,4 +1,5 @@
 import { NotificationFeedbackType } from 'expo-haptics';
+import { useSegments } from 'expo-router';
 import { Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
@@ -44,6 +45,7 @@ const APP_TOAST_CONFIG: ToastConfig = {
 
 export const AppToastHost = () => {
     const insets = useSafeAreaInsets();
+    const [rootSegment] = useSegments();
     const [hapticNotification] = useVibration();
 
     const handleShow = (params: ToastShowParams) => {
@@ -55,7 +57,8 @@ export const AppToastHost = () => {
     };
 
     const topOffset = insets.top + SCREEN_CHROME_CONTENT_INSET_TOP;
-    const bottomOffset = insets.bottom + FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + SEARCH_LIST_BOTTOM_CLEARANCE;
+    const tabBarBottomOffset = insets.bottom + FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + SEARCH_LIST_BOTTOM_CLEARANCE;
+    const bottomOffset = rootSegment === '(tabs)' ? tabBarBottomOffset : insets.bottom + FLOATING_TAB_BAR_MARGIN;
 
     return <Toast onShow={handleShow} config={APP_TOAST_CONFIG} topOffset={topOffset} bottomOffset={bottomOffset} />;
 };

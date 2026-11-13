@@ -12,6 +12,7 @@ import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-am
 import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
 import { DEBT_REMAINING_LABEL } from '../../constant/debt-remaining-label.constant';
 import { DEBT_SETTLED_LABEL } from '../../constant/debt-settled-label.constant';
+import { getDebtDisplayPercentage } from '../../utils/get-debt-display-percentage.util';
 import { getDebtProgressDisplayState } from '../../utils/get-debt-progress-display-state.util';
 import { DebtAccountBalanceSkeleton } from '../debt-account-balance-skeleton/debt-account-balance-skeleton';
 import { DebtAccountPaidOff } from '../debt-account-paid-off/debt-account-paid-off';
@@ -42,7 +43,8 @@ export const DebtAccountBalance = ({ accountId, debtType, instrumentSymbol, summ
         return <DebtAccountPaidOff accountId={accountId} debtType={debtType} instrumentSymbol={instrumentSymbol} summary={summary} />;
     }
 
-    const { outstandingAmount, overpaidAmount, paidAmount, percentage, totalAmount } = summary;
+    const { outstandingAmount, overpaidAmount, paidAmount, totalAmount } = summary;
+    const percentage = getDebtDisplayPercentage(summary.percentage);
     const borrowed = isBorrowLikeDebtType(debtType);
     const borrowedTotalLabel = debtType === AccountDebtTypeEnum.INSTALLMENT ? t`Total` : t`Borrowed`;
 
@@ -56,8 +58,7 @@ export const DebtAccountBalance = ({ accountId, debtType, instrumentSymbol, summ
         formattedPaidAmount: protectAmount(paidAmount, instrumentSymbol),
         formattedTotalAmount: protectAmount(totalAmount, instrumentSymbol)
     };
-    const overpaidAccessibilityLabel = isOverpaid ? ` ${labels.overpaidLabel}: ${labels.formattedOverpaidAmount}.` : '';
-    const accessibilityLabel = `${labels.directionLabel}: ${protectAmount(outstandingAmount, instrumentSymbol)}. ${labels.paidLabel}: ${labels.formattedPaidAmount}. ${labels.totalLabel}: ${labels.formattedTotalAmount}.${overpaidAccessibilityLabel} ${percentage}%`;
+    const accessibilityLabel = `${labels.directionLabel}: ${protectAmount(outstandingAmount, instrumentSymbol)}. ${labels.paidLabel}: ${labels.formattedPaidAmount}. ${labels.totalLabel}: ${labels.formattedTotalAmount}.${isOverpaid ? ` ${labels.overpaidLabel}: ${labels.formattedOverpaidAmount}.` : ''} ${percentage}%`;
 
     return (
         <View
@@ -73,7 +74,7 @@ export const DebtAccountBalance = ({ accountId, debtType, instrumentSymbol, summ
                     </Text>
                 </View>
 
-                <Text className="text-sm font-semibold text-primary" testID={DebtAccountBalanceSelector.Percentage(percentage)}>
+                <Text className="text-sm font-semibold text-primary" testID={DebtAccountBalanceSelector.Percentage(summary.percentage)}>
                     {percentage}%
                 </Text>
             </View>

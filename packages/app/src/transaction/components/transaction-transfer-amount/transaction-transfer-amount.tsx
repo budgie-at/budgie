@@ -17,21 +17,6 @@ interface Props {
 export const TransactionTransferAmount = ({ fromEntry, toEntry, accountId, testID }: Props) => {
     const formatDigits = useFormatInstrumentAmount();
 
-    if (toEntry.account.instrument.type === InstrumentTypeEnum.FUND || fromEntry.account.instrument.type === InstrumentTypeEnum.FUND) {
-        const moneyEntry = toEntry.account.instrument.type === InstrumentTypeEnum.FUND ? fromEntry : toEntry;
-
-        return (
-            <View className="shrink-0 items-end" testID={testID}>
-                <MoneyText
-                    amount={convertFromMicroUnits(moneyEntry.amount)}
-                    instrumentSymbol={moneyEntry.account.instrument.symbol}
-                    variant={MoneyTextVariantEnum.ROW}
-                    tone="primary"
-                />
-            </View>
-        );
-    }
-
     const isIncoming = accountId === toEntry.account.id;
     const primaryEntry = isIncoming ? toEntry : fromEntry;
     const secondaryEntry = isIncoming ? fromEntry : toEntry;

@@ -1,0 +1,19 @@
+diff --git a/android/src/main/java/com/reactnativekeyboardcontroller/modules/statusbar/StatusBarManagerCompatModuleImpl.kt b/android/src/main/java/com/reactnativekeyboardcontroller/modules/statusbar/StatusBarManagerCompatModuleImpl.kt
+index e34fba28c5d168d275383b0bd2d27d6da95f3c5f..4d7065f25a662e8e8c5c00499baa143b3ebf8b93 100644
+--- a/android/src/main/java/com/reactnativekeyboardcontroller/modules/statusbar/StatusBarManagerCompatModuleImpl.kt
++++ b/android/src/main/java/com/reactnativekeyboardcontroller/modules/statusbar/StatusBarManagerCompatModuleImpl.kt
+@@ -100,13 +100,7 @@ class StatusBarManagerCompatModuleImpl(
+   }
+ 
+   fun setStyle(style: String) {
+-    if (!isEnabled()) {
+-      return original.setStyle(style)
+-    }
+-
+-    UiThreadUtil.runOnUiThread {
+-      getController()?.isAppearanceLightStatusBars = style == "dark-content"
+-    }
++    original.setStyle(style)
+   }
+ 
+   fun getConstants(): MutableMap<String, Any>? = original.getConstants()

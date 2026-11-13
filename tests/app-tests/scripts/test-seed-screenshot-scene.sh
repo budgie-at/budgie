@@ -83,6 +83,16 @@ for LOCALE in en fr uk de es; do
         "$(sqlite3 "$PRIVACY_DATABASE_PATH" "SELECT is_pin_enabled || '|' || is_biometric_enabled || '|' || is_screenshot_protection_enabled || '|' || (date(last_backup_at, 'unixepoch') = date('now')) FROM settings;")"
 done
 
+ANDROID_DATABASE_PATH="$TEMP_DIR/07-settings-android.db"
+
+PLATFORM=android SCENE=07-settings LOCALE=en APPEARANCE=dark \
+    bash "$SEED_SCRIPT" --dry-run --output "$ANDROID_DATABASE_PATH" >/dev/null
+
+assert_equals \
+    'an Android capture database keeps screenshot protection off, since FLAG_SECURE would blank every capture' \
+    '0' \
+    "$(sqlite3 "$ANDROID_DATABASE_PATH" "SELECT is_screenshot_protection_enabled FROM settings;")"
+
 SCENE=pin-app-lock-2 LOCALE=en APPEARANCE=light \
     bash "$SEED_SCRIPT" --dry-run --output "$FALLBACK_DATABASE_PATH" >/dev/null
 

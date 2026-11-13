@@ -100,6 +100,7 @@ export class MoneyDataUpgradeService extends Context.Service<MoneyDataUpgradeSer
             yield* Effect.forEach(Arr.chunksOf(buckets, bucketBatchSize), batch => valuePendingEntryBatch(batch, baseInstrument.id), {
                 discard: true
             });
+            yield* transactionEntryBaseValuationRepository.rebaseSecurityTradeCosts(baseInstrument.id);
             yield* updateProgress(snapshot => ({ ...snapshot, isUpdatingBalances: true }));
 
             return yield* accountBalanceIncrementalService.updateAllBalances(true);

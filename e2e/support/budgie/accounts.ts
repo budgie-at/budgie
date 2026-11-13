@@ -266,7 +266,7 @@ export async function createDebtAccount(ctx: Ctx, debt: DebtAccount): Promise<vo
     if (debt.fundingAccount === undefined || debt.fundingAccount === '') {
         await expectId(ctx, 'AccountForm.ManualOpeningHint');
     } else {
-        await done(ctx);
+        await title.tap();
         await scrollToCentre(ctx, 'AccountForm.OpeningAccountSelector', 'up');
         await tapId(ctx, 'AccountForm.OpeningAccountSelector');
         await expectId(ctx, 'AccountPickerBottomSheet.Input', 10_000);

@@ -1,7 +1,16 @@
-import { CurrencyEnum, Db, InstrumentPriceProviderEnum, InstrumentRepository, InstrumentTypeEnum } from '@budgie/contracts';
+import {
+    AccountRepository,
+    CurrencyEnum,
+    Db,
+    InstrumentPriceProviderEnum,
+    InstrumentRepository,
+    InstrumentTypeEnum
+} from '@budgie/contracts';
+import { subDays } from 'date-fns/subDays';
 import * as Arr from 'effect/Array';
 import * as Clock from 'effect/Clock';
 import * as Context from 'effect/Context';
+import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 import * as Ref from 'effect/Ref';
@@ -12,6 +21,7 @@ import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/sha
 
 import { fetchJson } from '../../@generic/utils/fetch-json.util';
 import { HistoricalExchangeRateRepository } from '../../historical-exchange-rate/repository/historical-exchange-rate.repository';
+import { YahooMarketDataService } from '../../market-data/service/yahoo-market-data.service';
 import { ExchangeRateRepository } from '../repository/exchange-rate.repository';
 
 import { ExchangeRatesService } from './exchange-rates.service';
@@ -24,6 +34,8 @@ import type {
 
 export class ExchangeRatesSyncService extends Context.Service<ExchangeRatesSyncService>()('@budgie/market/ExchangeRatesSyncService', {
     make: Effect.gen(function* () {
+        const yahooMarketDataService = yield* YahooMarketDataService;
+        const accountRepository = yield* AccountRepository;
         const exchangeRateRepository = yield* ExchangeRateRepository;
         const historicalExchangeRateRepository = yield* HistoricalExchangeRateRepository;
         const instrumentRepository = yield* InstrumentRepository;
@@ -153,6 +165,32 @@ export class ExchangeRatesSyncService extends Context.Service<ExchangeRatesSyncS
             );
         });
 
+        const syncYahooRates = Effect.fnUntraced(function* () {
+            const accounts = yield* accountRepository.getAllActiveAccounts;
+            const instruments = (yield* instrumentRepository.getAll).filter(
+                instrument =>
+                    instrument.priceProvider === InstrumentPriceProviderEnum.YAHOO &&
+                    isDefined(instrument.quoteInstrumentId) &&
+                    accounts.some(account => account.instrumentId === instrument.id)
+            );
+            yield* Effect.forEach(
+                instruments,
+                Effect.fnUntraced(function* (instrument) {
+                    const now = yield* DateTime.nowAsDate;
+                    const data = yield* yahooMarketDataService
+                        .chart(instrument.providerInstrumentId ?? instrument.code, subDays(now, 7), now)
+                        .pipe(Effect.orElseSucceed(() => null));
+                    const price = data?.meta.regularMarketPrice;
+                    if (!isPositiveNumber(price) || !isDefined(instrument.quoteInstrumentId)) {
+                        return;
+                    }
+                    const inputs = buildRatePairInputs(instrument.id, instrument.quoteInstrumentId, price, 'yahoo.com');
+                    yield* Db.transaction(exchangeRateRepository.bulkUpsert(inputs));
+                }),
+                { discard: true }
+            );
+        });
+
         return {
             sync: Effect.fn('ExchangeRatesSyncService.sync')(
                 function* () {
@@ -171,6 +209,7 @@ export class ExchangeRatesSyncService extends Context.Service<ExchangeRatesSyncS
                     yield* syncFiatRates(baseInstrument);
                     yield* Effect.sleep(1);
                     yield* syncCryptoRates(baseInstrument);
+                    yield* syncYahooRates();
                     const syncedAtMs = yield* Clock.currentTimeMillis;
                     yield* Ref.set(lastSyncedAtMs, syncedAtMs);
                 },
@@ -182,6 +221,8 @@ export class ExchangeRatesSyncService extends Context.Service<ExchangeRatesSyncS
 }) {
     static readonly layer = Layer.effect(ExchangeRatesSyncService, ExchangeRatesSyncService.make).pipe(
         Layer.provide([
+            YahooMarketDataService.layer,
+            AccountRepository.layer,
             ExchangeRateRepository.layer,
             HistoricalExchangeRateRepository.layer,
             InstrumentRepository.layer,

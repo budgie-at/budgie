@@ -1,0 +1,46 @@
+{
+    "android-target": {
+        "name": "e2e",
+        "appDir": "packages/app",
+        "appId": "com.vitaliiyehorov.budgie.e2e",
+        "prebuildCommand": "npx expo prebuild -p android --clean --no-install"
+    },
+    "capture-mode": "direct",
+    "capture-manifest": [
+        {
+            "platform": "android",
+            "device": "phone",
+            "width": 1080,
+            "height": 2100,
+            "density": 420,
+            "locales": ["en", "fr", "uk", "de", "es"],
+            "appearances": ["dark"]
+        },
+        {
+            "platform": "android",
+            "device": "tablet",
+            "width": 1200,
+            "height": 1920,
+            "density": 240,
+            "locales": ["en", "fr", "uk", "de", "es"],
+            "appearances": ["dark"]
+        }
+    ],
+    "capture-scenes": [
+        { "name": "01-home", "deepLink": "budgie://", "readySelector": { "id": "HomePage.TotalBalance" } },
+        { "name": "03-analytics", "test": "03-analytics" },
+        { "name": "04-budget", "deepLink": "budgie://budget", "readySelector": { "id": "BudgetDetails.EditButton" } },
+        { "name": "05-add-expense", "test": "05-add-expense" },
+        { "name": "06-account", "test": "net-worth-tracker-2" },
+        { "name": "07-settings", "test": "07-settings" },
+        { "name": "09-inbox", "test": "bulk-categorize-transactions-1" }
+    ],
+    "settle-seconds": 6,
+    "status-bar-override": true,
+    "build-env": "APP_VARIANT=e2e\nEXPO_PUBLIC_AI_DISABLE=true\nEXPO_PUBLIC_LOGGING_DISABLE=true\n",
+    "install-command": "pnpm install --frozen-lockfile",
+    "build-command": "pnpm exec turbo build --filter='@budgie/*'",
+    "android-gradle-args": "-x lint -x lintVitalAnalyzeRelease -x lintAnalyzeRelease --max-workers=1 -PreactNativeArchitectures=arm64-v8a",
+    "upload-command": "if ! command -v bundle >/dev/null; then\n  sudo apt-get update -qq\n  sudo apt-get -o DPkg::Lock::Timeout=300 install -y -qq --no-install-recommends ruby ruby-dev ruby-bundler\nfi\nexport BUNDLE_PATH=\"$RUNNER_TEMP/bundle\"\nBUNDLE_JOBS=4 bundle install --quiet\ncp -R \"$SCREENSHOTS_DIR/play/.\" fastlane/metadata/android/\nexport GOOGLE_SERVICE_ACCOUNT_KEY_PATH=\"$RUNNER_TEMP/google-service-account.json\"\ntrap 'rm -f \"$GOOGLE_SERVICE_ACCOUNT_KEY_PATH\"' EXIT\nprintf '%s' \"$GOOGLE_SERVICE_ACCOUNT_JSON\" > \"$GOOGLE_SERVICE_ACCOUNT_KEY_PATH\"\nbundle exec fastlane android android_screenshots\n",
+    "screenshots-download-dir": "fastlane/screenshots/raw"
+}

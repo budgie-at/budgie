@@ -3,6 +3,66 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.182.0](https://github.com/budgie-at/budgie/compare/v6.181.3...v6.182.0) (2026-11-13)
+
+### Features
+
+* **app:** rebuild the create menu as a thumb-reach tile grid ([#2205](https://github.com/budgie-at/budgie/issues/2205)) ([0f9ce92](https://github.com/budgie-at/budgie/commit/0f9ce92074c065eb5f5c750b6e3e1003d2cad208))
+
+
+## [6.181.3](https://github.com/budgie-at/budgie/compare/v6.181.2...v6.181.3) (2026-11-13)
+
+### Bug Fixes
+
+* **app:** rework brokerage flows, home value and trade display ([#2201](https://github.com/budgie-at/budgie/issues/2201)) ([c3e9b32](https://github.com/budgie-at/budgie/commit/c3e9b32e44b8ca138a3a78078b2f4a5f14b52e00)), closes [#2202](https://github.com/budgie-at/budgie/issues/2202)
+
+
+## [6.181.2](https://github.com/budgie-at/budgie/compare/v6.181.1...v6.181.2) (2026-11-13)
+
+### Bug Fixes
+
+* keep Android App lock over deep links and label seeded test data ([#2200](https://github.com/budgie-at/budgie/issues/2200)) ([3b6f247](https://github.com/budgie-at/budgie/commit/3b6f24741616c2700aa167593ac3b8e21e589026)), closes [#2187](https://github.com/budgie-at/budgie/issues/2187)
+
+
+## [6.181.1](https://github.com/budgie-at/budgie/compare/v6.181.0...v6.181.1) (2026-11-13)
+
+### Bug Fixes
+
+* **app:** line the expanded screen title up with the back button ([#2199](https://github.com/budgie-at/budgie/issues/2199)) ([6b3ead8](https://github.com/budgie-at/budgie/commit/6b3ead8b3908db96e4c3e5a8d184c1283e75f65d)), closes [#2192](https://github.com/budgie-at/budgie/issues/2192)
+
+
+# [6.181.0](https://github.com/budgie-at/budgie/compare/v6.180.1...v6.181.0) (2026-11-13)
+
+### Features
+
+* add stocks and ETF support with manual brokerages ([#2194](https://github.com/budgie-at/budgie/issues/2194)) ([18ab508](https://github.com/budgie-at/budgie/commit/18ab5086905359988aaf0653918ca79d6b2bf3ca))
+
+
+## [6.180.1](https://github.com/budgie-at/budgie/compare/v6.180.0...v6.180.1) (2026-11-12)
+
+### Bug Fixes
+
+* **app:** hide scrolled content behind the collapsed screen header title ([#2192](https://github.com/budgie-at/budgie/issues/2192)) ([48d82bd](https://github.com/budgie-at/budgie/commit/48d82bdbc7f3beef80bf1661c6eb1da6503d6941))
+
+
+# [6.180.0](https://github.com/budgie-at/budgie/compare/v6.179.1...v6.180.0) (2026-11-12)
+
+### Bug Fixes
+
+* **app:** show dark status bar icons on Android when the app theme overrides a dark system ([#2182](https://github.com/budgie-at/budgie/issues/2182)) ([44babcd](https://github.com/budgie-at/budgie/commit/44babcd089508475e7b1fa448392f053aaffd80e))
+
+### Features
+
+* publish Android to Google Play with store screenshots and landing links ([#2188](https://github.com/budgie-at/budgie/issues/2188)) ([c365903](https://github.com/budgie-at/budgie/commit/c3659037816e48a9262cfd3964cedb7a979a5434)), closes [#2139](https://github.com/budgie-at/budgie/issues/2139) [#2141](https://github.com/budgie-at/budgie/issues/2141) [#2165](https://github.com/budgie-at/budgie/issues/2165) [#2152](https://github.com/budgie-at/budgie/issues/2152) [#2187](https://github.com/budgie-at/budgie/issues/2187)
+
+
+## [6.179.1](https://github.com/budgie-at/budgie/compare/v6.179.0...v6.179.1) (2026-11-12)
+
+### Bug Fixes
+
+* **app:** bring Android screens to parity with iOS ([#2181](https://github.com/budgie-at/budgie/issues/2181)) ([fbec04b](https://github.com/budgie-at/budgie/commit/fbec04b92a903f1a563ef6b9cdcb203dd8b94f84))
+
+
 # [6.179.0](https://github.com/budgie-at/budgie/compare/v6.178.0...v6.179.0) (2026-11-12)
 
 ### Features

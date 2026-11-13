@@ -3,8 +3,10 @@ import { SQL, SQLWrapper, sql } from 'drizzle-orm';
 import { ExchangeRateEntityTable } from '../../exchange-rate/table/exchange-rate-entity.table';
 import { HistoricalExchangeRateEntityTable } from '../../historical-exchange-rate/table/historical-exchange-rate-entity.table';
 import { InstrumentDailyMarketPriceEntityTable } from '../../instrument-daily-market-price/table/instrument-daily-market-price-entity.table';
+import { InstrumentEntityTable } from '../../instrument/table/instrument-entity.table';
+import { CurrencyEnum } from '../enum/currency.enum';
 
-export const getDirectExchangeRateSql = (defaultInstrumentId: number, instrumentIdRef: SQL | SQLWrapper | number): SQL =>
+export const getDirectExchangeRateSql = (defaultInstrumentId: number | SQL, instrumentIdRef: SQL | SQLWrapper | number): SQL =>
     sql`
         (
             SELECT ${ExchangeRateEntityTable.rate} * 1.0
@@ -17,7 +19,7 @@ export const getDirectExchangeRateSql = (defaultInstrumentId: number, instrument
         )
     `;
 
-export const getInverseExchangeRateSql = (defaultInstrumentId: number, instrumentIdRef: SQL | SQLWrapper | number): SQL =>
+export const getInverseExchangeRateSql = (defaultInstrumentId: number | SQL, instrumentIdRef: SQL | SQLWrapper | number): SQL =>
     sql`
         (
             SELECT 1.0 / ${ExchangeRateEntityTable.rate}
@@ -30,7 +32,7 @@ export const getInverseExchangeRateSql = (defaultInstrumentId: number, instrumen
         )
     `;
 
-export const getHistoricalExchangeRateSql = (defaultInstrumentId: number, instrumentIdRef: SQL | SQLWrapper | number): SQL =>
+export const getHistoricalExchangeRateSql = (defaultInstrumentId: number | SQL, instrumentIdRef: SQL | SQLWrapper | number): SQL =>
     sql`
         (
             SELECT ${HistoricalExchangeRateEntityTable.rate} * 1.0
@@ -42,7 +44,7 @@ export const getHistoricalExchangeRateSql = (defaultInstrumentId: number, instru
         )
     `;
 
-export const getInverseHistoricalExchangeRateSql = (defaultInstrumentId: number, instrumentIdRef: SQL | SQLWrapper | number): SQL =>
+export const getInverseHistoricalExchangeRateSql = (defaultInstrumentId: number | SQL, instrumentIdRef: SQL | SQLWrapper | number): SQL =>
     sql`
         (
             SELECT 1.0 / ${HistoricalExchangeRateEntityTable.rate}
@@ -54,7 +56,7 @@ export const getInverseHistoricalExchangeRateSql = (defaultInstrumentId: number,
         )
     `;
 
-const getStoredExchangeRateSql = (defaultInstrumentId: number, instrumentIdRef: SQL | SQLWrapper | number): SQL =>
+const getStoredExchangeRateSql = (defaultInstrumentId: number | SQL, instrumentIdRef: SQL | SQLWrapper | number): SQL =>
     sql`COALESCE(
         ${getDirectExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
         ${getInverseExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
@@ -62,7 +64,7 @@ const getStoredExchangeRateSql = (defaultInstrumentId: number, instrumentIdRef: 
         ${getInverseHistoricalExchangeRateSql(defaultInstrumentId, instrumentIdRef)}
     )`;
 
-const getMarketPriceExchangeRateSql = (defaultInstrumentId: number, instrumentIdRef: SQL | SQLWrapper | number): SQL => {
+const getMarketPriceExchangeRateSql = (defaultInstrumentId: number | SQL, instrumentIdRef: SQL | SQLWrapper | number): SQL => {
     const quoteInstrumentIdSql = sql`latest.quote_instrument_id`;
 
     return sql`
@@ -83,8 +85,32 @@ const getMarketPriceExchangeRateSql = (defaultInstrumentId: number, instrumentId
     `;
 };
 
-export const getExchangeRateWithHistoricalFallbackSql = (defaultInstrumentId: number, instrumentIdRef: SQL | SQLWrapper | number): SQL =>
-    sql`COALESCE(
-        ${getStoredExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
-        ${getMarketPriceExchangeRateSql(defaultInstrumentId, instrumentIdRef)}
+const getFiatBridgeSql = (defaultInstrumentId: number | SQL, instrumentIdRef: SQL): SQL => {
+    const euroInstrumentId = sql`(SELECT id FROM instruments WHERE code = ${CurrencyEnum.EUR} LIMIT 1)`;
+
+    return sql`(
+        CASE WHEN ${instrumentIdRef} = ${euroInstrumentId} THEN 1.0 ELSE ${getHistoricalExchangeRateSql(euroInstrumentId, instrumentIdRef)} END
+        / CASE WHEN ${defaultInstrumentId} = ${euroInstrumentId} THEN 1.0 ELSE ${getHistoricalExchangeRateSql(euroInstrumentId, defaultInstrumentId)} END
     )`;
+};
+
+const getQuotedExchangeRateSql = (defaultInstrumentId: number | SQL, instrumentIdRef: SQL | SQLWrapper | number): SQL =>
+    sql`(
+        SELECT COALESCE(
+            ${getStoredExchangeRateSql(sql`quoted_instrument.quote_instrument_id`, instrumentIdRef)},
+            ${getMarketPriceExchangeRateSql(sql`quoted_instrument.quote_instrument_id`, instrumentIdRef)}
+        ) * CASE WHEN quoted_instrument.quote_instrument_id = ${defaultInstrumentId} THEN 1.0
+            ELSE COALESCE(${getStoredExchangeRateSql(defaultInstrumentId, sql`quoted_instrument.quote_instrument_id`)}, ${getFiatBridgeSql(defaultInstrumentId, sql`quoted_instrument.quote_instrument_id`)}) END
+        FROM ${InstrumentEntityTable} AS quoted_instrument
+        WHERE quoted_instrument.id = ${instrumentIdRef}
+          AND quoted_instrument.quote_instrument_id IS NOT NULL
+    )`;
+
+export const getExchangeRateWithHistoricalFallbackSql = (
+    defaultInstrumentId: number | SQL,
+    instrumentIdRef: SQL | SQLWrapper | number
+): SQL =>
+    sql`CASE WHEN (SELECT quote_instrument_id FROM ${InstrumentEntityTable} WHERE ${InstrumentEntityTable.id} = ${instrumentIdRef}) IS NOT NULL
+        THEN ${getQuotedExchangeRateSql(defaultInstrumentId, instrumentIdRef)}
+        ELSE COALESCE(${getStoredExchangeRateSql(defaultInstrumentId, instrumentIdRef)}, ${getMarketPriceExchangeRateSql(defaultInstrumentId, instrumentIdRef)})
+    END`;

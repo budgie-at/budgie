@@ -302,6 +302,33 @@ describe('installment plan', () => {
             }).pipe(Effect.provide(TestLayer))
     );
 
+    it.effect('leaves the monthly part of an unconverted split purchase unlinked', () =>
+        Effect.gen(function* () {
+            const card = yield* seedBankSyncAccount('Black', ExternalSourceEnum.MONOBANK, 'UA-unconverted-split-plan');
+            const first = yield* seedPart(card.id, 'Платіж Camera Store', 100, new Date(2026, 0, 28, 10));
+
+            yield* seed.manualExpense({
+                accountId: card.id,
+                title: 'Платіж Other Store',
+                amount: toMicroUnits(120),
+                operatedAt: new Date(2026, 0, 28, 11),
+                externalSource: ExternalSourceEnum.MONOBANK,
+                entries: [
+                    { amount: toMicroUnits(100), categoryId: null },
+                    { amount: toMicroUnits(20), categoryId: null }
+                ]
+            });
+
+            const { accountId } = yield* convert(first.id, 3, 300);
+
+            yield* seedPart(card.id, 'Щомісячний платіж Other Store', 100, new Date(2026, 1, 28, 10));
+            yield* (yield* AccountBalanceIncrementalService).updateBalancesByAccountIds([card.id]);
+            yield* runPostSync();
+
+            expect(yield* fetchAttachedTransactionIds(accountId)).toEqual([first.id]);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
     it.effect('attaches an early payoff after the latest monthly installment', () =>
         Effect.gen(function* () {
             const { card, first, second } = yield* seedMonthlyPayoffParts('UA-early-payoff', 'Tech Shop');
@@ -753,6 +780,53 @@ describe('installment plan', () => {
 
                 expect(yield* fetchAttachedTransactionIds(accountId)).toEqual([first.id, ...middle.map(part => part.id), exact.id]);
                 expect((yield* fetchDebtProgress(accountId)).outstandingAmount).toBe(0);
+            }).pipe(Effect.provide(TestLayer))
+        );
+
+        it.effect('converts an untitled cash expense without linking other untitled expenses', () =>
+            Effect.gen(function* () {
+                const cash = yield* seedBankSyncAccount('Cash', null, 'UA-flex-untitled');
+
+                yield* seedLaptop(cash.id, 84, new Date(2026, 9, 12, 10), '');
+                yield* seed.manualExpense({
+                    accountId: cash.id,
+                    amount: toMicroUnits(100),
+                    operatedAt: new Date(2026, 10, 1, 10),
+                    entries: [
+                        { amount: toMicroUnits(84), categoryId: null },
+                        { amount: toMicroUnits(16), categoryId: null }
+                    ]
+                });
+
+                const first = yield* seedLaptop(cash.id, 84, new Date(2026, 10, 12, 10), '');
+
+                yield* seedLaptop(cash.id, 84, new Date(2026, 11, 12, 10), '');
+
+                const { accountId } = yield* convert(first.id, 12, 1_008);
+
+                expect(yield* fetchAttachedTransactionIds(accountId)).toEqual([first.id]);
+            }).pipe(Effect.provide(TestLayer))
+        );
+
+        it.effect('skips a split expense that only partly matches the payment', () =>
+            Effect.gen(function* () {
+                const cash = yield* seedBankSyncAccount('Cash', null, 'UA-flex-split');
+
+                yield* seed.manualExpense({
+                    accountId: cash.id,
+                    title: 'Laptop',
+                    amount: toMicroUnits(1_100),
+                    operatedAt: new Date(2026, 0, 12, 10),
+                    entries: [
+                        { amount: toMicroUnits(1_000), categoryId: null },
+                        { amount: toMicroUnits(100), categoryId: null }
+                    ]
+                });
+
+                const second = yield* seedLaptop(cash.id, 1_000, new Date(2026, 1, 12, 10));
+                const { accountId } = yield* convert(second.id, 6, 6_000);
+
+                expect(yield* fetchAttachedTransactionIds(accountId)).toEqual([second.id]);
             }).pipe(Effect.provide(TestLayer))
         );
     });

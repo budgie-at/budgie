@@ -21,10 +21,6 @@ export const resolveBudgetSaveBlocker = (values: BudgetFormValues): MessageDescr
         return BUDGET_SAVE_BLOCKER_LABEL.limit;
     }
 
-    if (values.categoryLimits.some(limit => limit.limitAmount <= 0)) {
-        return BUDGET_SAVE_BLOCKER_LABEL.categoryLimit;
-    }
-
     if (isFixed && budgetComputeAllocation(values).isOverAllocated) {
         return BUDGET_SAVE_BLOCKER_LABEL.overAllocated;
     }

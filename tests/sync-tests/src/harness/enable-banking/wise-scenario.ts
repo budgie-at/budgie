@@ -3,6 +3,7 @@ import { EnableBankingSyncService, SyncHistoryDepthEnum, WISE_ASPSP_NAME } from 
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
+import { seedExchangeRate } from '../consolidation/seed-exchange-rate';
 import { testDb } from '../scenario/test-db';
 import { seed } from '../seed/seed';
 import { skipRequestedSync } from '../sync-workload/skip-requested-sync';
@@ -16,6 +17,7 @@ const EUR_UID = 'uid-wise-eur';
 const USD_UID = 'uid-wise-usd';
 export const EUR_HASH = 'hash-wise-eur';
 const USD_HASH = 'hash-wise-usd';
+const EUR_TO_USD_RATE = 1.1;
 
 export const connectWise = Effect.gen(function* () {
     const service = yield* EnableBankingSyncService;
@@ -76,6 +78,7 @@ export const connectWise = Effect.gen(function* () {
 
     const [eurAccount] = yield* testDb.select().from(AccountEntityTable).where(eq(AccountEntityTable.externalId, EUR_HASH));
     const [usdAccount] = yield* testDb.select().from(AccountEntityTable).where(eq(AccountEntityTable.externalId, USD_HASH));
+    yield* seedExchangeRate(eurAccount.instrumentId, usdAccount.instrumentId, EUR_TO_USD_RATE);
 
     return { eurAccount, usdAccount };
 });

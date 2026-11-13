@@ -11,26 +11,29 @@ import { HapticPressable } from '../../../@generic/component/haptic-pressable/ha
 import { ROW_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-max-font-size-multiplier.constant';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
+import { testID } from '../../../@generic/utils/test-id.util';
+import { BrokerageInstitutionRowDetail } from '../../../brokerage/component/brokerage-institution-row-detail/brokerage-institution-row-detail';
 import { InzhurInstitutionRowDetail } from '../../../inzhur/component/inzhur-institution-row-detail/inzhur-institution-row-detail';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
-import { getBankIntegrationTitle } from '../../utils/get-bank-integration-title.util';
-import { getBankProviderTitle } from '../../utils/get-bank-provider-title.util';
+import { getInstitutionTitle } from '../../utils/get-institution-title.util';
 import { InstitutionRowDetail } from '../institution-row-detail/institution-row-detail';
 import { InstitutionRowTotal } from '../institution-row-total/institution-row-total';
 
 import { InstitutionRowSelector } from './institution-row.selector';
 
+import type { HomeAccountBalanceInterface } from '../../interface/home-account-balance.interface';
 import type { InstitutionGroupInterface } from '../../interface/institution-group.interface';
 
 interface Props {
     readonly institution: InstitutionGroupInterface;
+    readonly balancesByAccountId: ReadonlyMap<number, HomeAccountBalanceInterface>;
 }
 
 const rowVariants = cva('min-h-[64px] gap-x-xl py-lg pr-lg pl-3xl active:bg-surface-fill', {
     variants: { isStacked: { true: 'gap-y-sm', false: 'flex-row items-center' } }
 });
 
-export const InstitutionRow = ({ institution }: Props) => {
+export const InstitutionRow = ({ institution, balancesByAccountId }: Props) => {
     const { integrationId, provider, label, groupNumber, accounts, total } = institution;
 
     const { t } = useLingui();
@@ -40,12 +43,15 @@ export const InstitutionRow = ({ institution }: Props) => {
 
     const handlePress = () => void router.push({ pathname: '/institution/[id]', params: { id: String(integrationId) } });
 
-    const title = getBankIntegrationTitle(getBankProviderTitle(t, provider), label, groupNumber);
+    const title = getInstitutionTitle(t, provider, label, groupNumber);
     const accountsCount = accounts.length;
     const accountsCountLabel = accounts.every(account => account.type === AccountTypeEnum.CRYPTO_SYNC)
         ? t({ message: plural(accountsCount, { one: '# asset', other: '# assets' }) })
         : t({ message: plural(accountsCount, { one: '# account', other: '# accounts' }) });
     const bankName = label ?? title;
+    const isBrokerage = provider === ExternalSourceEnum.MANUAL;
+    const hasDefaultDetail = provider !== ExternalSourceEnum.INZHUR && !isBrokerage;
+    const rowTestID = testID(InstitutionRowSelector.Row(isBrokerage ? bankName : integrationId));
     const accessibilityLabel = [title, protectAmount(total, defaultInstrument.symbol), accountsCountLabel].join(', ');
 
     return (
@@ -55,7 +61,7 @@ export const InstitutionRow = ({ institution }: Props) => {
             accessibilityLabel={accessibilityLabel}
             onPress={handlePress}
             className={rowVariants({ isStacked })}
-            testID={InstitutionRowSelector.Row(integrationId)}
+            {...rowTestID}
         >
             <BankLogo bankProvider={provider} bankName={bankName} size={44} />
 
@@ -67,11 +73,15 @@ export const InstitutionRow = ({ institution }: Props) => {
                 >
                     {title}
                 </Text>
-                {provider === ExternalSourceEnum.INZHUR ? (
-                    <InzhurInstitutionRowDetail />
-                ) : (
-                    <InstitutionRowDetail accounts={accounts} accountsCountLabel={accountsCountLabel} />
-                )}
+                {provider === ExternalSourceEnum.INZHUR ? <InzhurInstitutionRowDetail /> : null}
+                {isBrokerage ? (
+                    <BrokerageInstitutionRowDetail
+                        accounts={accounts}
+                        accountsCountLabel={accountsCountLabel}
+                        balancesByAccountId={balancesByAccountId}
+                    />
+                ) : null}
+                {hasDefaultDetail ? <InstitutionRowDetail accounts={accounts} accountsCountLabel={accountsCountLabel} /> : null}
             </View>
 
             <InstitutionRowTotal integrationId={integrationId} total={total} />

@@ -1,0 +1,1 @@
+export const CREATE_MENU_MIN_FONT_SCALE = 0.85;

@@ -195,7 +195,7 @@ export const buildTransferPairRankedCandidateBaseSql = scopedSql`
                             AND income_entries.incomeBankSource IS NOT NULL
                             AND income_entries.incomeBankSource != ''
                             AND expense_entries.expenseBankSource = income_entries.incomeBankSource
-                            AND expense_entries.expenseBankSource != '${ExternalSourceEnum.ENABLE_BANKING}'
+                            AND expense_entries.expenseBankSource NOT LIKE '${ExternalSourceEnum.ENABLE_BANKING}%'
                         THEN 1
                         WHEN expense_entries.expenseAccountBankHint IS NOT NULL
                             AND expense_entries.expenseAccountBankHint != ''

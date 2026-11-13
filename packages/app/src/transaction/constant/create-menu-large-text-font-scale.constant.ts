@@ -1,0 +1,1 @@
+export const CREATE_MENU_LARGE_TEXT_FONT_SCALE = 1.3;

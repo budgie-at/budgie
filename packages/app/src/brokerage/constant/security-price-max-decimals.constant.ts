@@ -1,0 +1,1 @@
+export const SECURITY_PRICE_MAX_DECIMALS = 4;

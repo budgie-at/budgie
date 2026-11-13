@@ -1,4 +1,5 @@
 import {
+    CurrencyEnum,
     AccountTypeEnum,
     AccountRepository,
     ExternalSourceEnum,
@@ -49,6 +50,7 @@ export class InzhurFundAccountService extends Context.Service<InzhurFundAccountS
                 code,
                 name,
                 symbol: name.split(' ').at(-1)?.toUpperCase() ?? code,
+                quoteInstrumentId: (yield* instrumentRepository.findByCode(CurrencyEnum.UAH))?.id,
                 priceProvider: InstrumentPriceProviderEnum.INZHUR,
                 providerInstrumentId: code
             });

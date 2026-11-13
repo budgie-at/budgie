@@ -53,8 +53,12 @@ async function viewport(ctx: Ctx): Promise<{ width: number; height: number }> {
     let size = viewports.get(deviceId);
     if (size === undefined) {
         const shot = await client.capture.screenshot({});
-        if (shot.logicalWidth === undefined || shot.logicalHeight === undefined) throw new Error('the screenshot reported no logical size');
-        size = { width: shot.logicalWidth, height: shot.logicalHeight };
+        const width = b.isIos(ctx) ? shot.logicalWidth : shot.width;
+        const height = b.isIos(ctx) ? shot.logicalHeight : shot.height;
+        if (width === undefined || height === undefined) {
+            throw new Error('the screenshot reported no viewport size');
+        }
+        size = { width, height };
         viewports.set(deviceId, size);
     }
     return size;
@@ -564,7 +568,8 @@ export const SCENES: Readonly<Record<string, Scene>> = {
             await expect(tabs.or(b.byId(ctx.screen, 'PageHeader.BackButton')).first()).toBeVisible({ timeout: 15_000 });
             if (!(await tabs.isVisible())) await b.tapId(ctx, 'PageHeader.BackButton');
             await expect(tabs).toBeVisible({ timeout: 15_000 });
-            await open(ctx, 'budgie://settings', 'SettingsPage.DataEncryption.State.On');
+            await tabs.tap();
+            await b.expectId(ctx, 'SettingsPage.DataEncryption.State.On', 15_000);
         }
     },
     'app-store-preview': {

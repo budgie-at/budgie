@@ -3,6 +3,9 @@ import { useState } from 'react';
 import { useController, useFormContext } from 'react-hook-form';
 import { Platform } from 'react-native';
 
+import { isNotEmptyString } from '@rnw-community/shared';
+
+import { InputClearButton } from '../../../@generic/component/input-clear-button/input-clear-button';
 import { Input } from '../../../@generic/component/input/input';
 import { useRuleTextValueMeta } from '../../hooks/use-rule-text-value-meta.hook';
 import { RuleValueField } from '../rule-value-field/rule-value-field';
@@ -23,10 +26,13 @@ export const RuleConditionTextValueInput = ({ index, testID }: Props) => {
     const { isPattern, placeholder, hint, isHintWarning, accessibilityLabel } = useRuleTextValueMeta(index);
 
     const handleFocus = () => void setIsFocused(true);
+    const handleClear = () => void onChange('');
     const handleBlur = () => {
         setIsFocused(false);
         onBlur();
     };
+
+    const isClearVisible = Platform.OS === 'android' && isFocused && isNotEmptyString(value);
 
     return (
         <RuleValueField isFocused={isFocused} hint={hint} isHintWarning={isHintWarning}>
@@ -50,6 +56,7 @@ export const RuleConditionTextValueInput = ({ index, testID }: Props) => {
                 submitBehavior="blurAndSubmit"
                 {...(isPattern && { style: MONOSPACE_STYLE })}
             />
+            {isClearVisible ? <InputClearButton onPress={handleClear} /> : null}
         </RuleValueField>
     );
 };

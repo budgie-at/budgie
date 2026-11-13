@@ -4,6 +4,7 @@ import * as Effect from 'effect/Effect';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { seedP2pExchangeRate } from '../harness/p2p-fiat-transfer-fixture';
 import { expectSecondConsolidationRunStable, runConsolidation } from '../harness/run-consolidation';
 import { testQueryService, testSeedService, TestLayer } from '../harness/test-context';
 
@@ -13,6 +14,7 @@ const OTHER_PROVIDER_AT = new Date('2026-06-23T15:00:00.000Z');
 const HALF_HOUR_LATER = new Date('2026-06-23T12:30:00.000Z');
 const USD_AMOUNT = 100 * PRECISION;
 const EUR_AMOUNT = 92 * PRECISION;
+const USD_TO_EUR_RATE = 0.9;
 
 const seedConnectionAccount = (title: string, source: ExternalSourceEnum, instrumentId: number, consent: string | null) =>
     Effect.gen(function* () {
@@ -45,6 +47,7 @@ const seedCrossCurrencyRows = (source: ExternalSourceEnum, expenseConsent: strin
 layer(TestLayer)('consolidation/enable-banking-transfer-pairing', it => {
     it.effect.each([
         { title: 'accounts of two Enable Banking connections', expenseConsent: 'consent-a', incomeConsent: 'consent-b' },
+        { title: 'two balances of one Enable Banking connection', expenseConsent: 'consent-wise', incomeConsent: 'consent-wise' },
         { title: 'Enable Banking accounts without a connection', expenseConsent: null, incomeConsent: null }
     ])('never treats $title as the same bank for a USD expense and EUR income', ({ expenseConsent, incomeConsent }) =>
         Effect.gen(function* () {
@@ -57,12 +60,17 @@ layer(TestLayer)('consolidation/enable-banking-transfer-pairing', it => {
         })
     );
 
-    it.effect('pairs a conversion between two balances of one Enable Banking connection', () =>
+    it.effect('pairs a conversion between two balances of one Enable Banking connection at the market rate, never its fee', () =>
         Effect.gen(function* () {
             const { expense, income, usdAccount, eurAccount } = yield* seedCrossCurrencyRows(
                 ExternalSourceEnum.ENABLE_BANKING,
                 'consent-wise',
                 'consent-wise'
+            );
+            yield* seedP2pExchangeRate(usdAccount.instrumentId, eurAccount.instrumentId, USD_TO_EUR_RATE);
+            yield* testSeedService.bankPairExpense(
+                { externalId: 'usd-fee', operatedAt: OPERATED_AT },
+                { accountId: usdAccount.id, amount: PRECISION, exchangeRate: 1, mccCategoryId: null }
             );
 
             expect((yield* runConsolidation()).consolidated).toBe(1);

@@ -4,7 +4,6 @@ import { Text } from 'react-native';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { cn } from '../../../@generic/utils/cn.util';
 import { CreateAccountSelector } from '../../../app/(main)/create-account/create-account.selector';
 
 interface Props {
@@ -12,7 +11,6 @@ interface Props {
     readonly description: string;
     readonly icon: UserIconNameEnum;
     readonly type: AccountTypeEnum;
-    readonly className: string;
 }
 
 const typeClassNames: Partial<Record<AccountTypeEnum, { readonly tileClassName: string; readonly glyphClassName: string }>> = {
@@ -21,6 +19,10 @@ const typeClassNames: Partial<Record<AccountTypeEnum, { readonly tileClassName: 
     [AccountTypeEnum.CRYPTO]: {
         tileClassName: 'bg-[#FF9500]/15 dark:bg-[#FF9F0A]/25',
         glyphClassName: 'text-[#C93400] dark:text-[#FF9F0A]'
+    },
+    [AccountTypeEnum.STOCKS]: {
+        tileClassName: 'bg-[#FF2D55]/15 dark:bg-[#FF375F]/25',
+        glyphClassName: 'text-[#D30F45] dark:text-[#FF375F]'
     },
     [AccountTypeEnum.DEBT]: { tileClassName: 'bg-[#FF3B30]/15 dark:bg-[#FF453A]/25', glyphClassName: 'text-[#D70015] dark:text-[#FF453A]' },
     [AccountTypeEnum.DEPOSIT]: {
@@ -31,7 +33,7 @@ const typeClassNames: Partial<Record<AccountTypeEnum, { readonly tileClassName: 
 
 const LABEL_MAX_FONT_SIZE_MULTIPLIER = 1.3;
 
-export const CreateAccountTypeTile = ({ title, description, icon, type, className }: Props) => {
+export const CreateAccountTypeTile = ({ title, description, icon, type }: Props) => {
     const handleNavigate = () => void router.push({ pathname: '/create-account/[type]', params: { type } });
 
     return (
@@ -41,7 +43,7 @@ export const CreateAccountTypeTile = ({ title, description, icon, type, classNam
             accessibilityLabel={title}
             accessibilityHint={description}
             onPress={handleNavigate}
-            className={cn('min-w-0 items-center gap-y-sm px-xxs py-xl active:opacity-70', className)}
+            className="min-w-0 basis-1/3 items-center gap-y-sm px-xxs py-xl active:opacity-70"
         >
             <CircleIcon
                 icon={icon}

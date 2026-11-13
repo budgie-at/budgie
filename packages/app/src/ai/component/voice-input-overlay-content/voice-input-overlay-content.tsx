@@ -1,4 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
+import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 import { useAnimatedStyle } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -33,6 +34,7 @@ interface Props {
 }
 
 export const VoiceInputOverlayContent = ({ voiceInput, onRecord, onCancel }: Props) => {
+    const { t } = useLingui();
     const { bottom } = useSafeAreaInsets();
 
     const closeButtonStyle = useAnimatedStyle(() => ({ transform: [{ rotate: `${CLOSE_BUTTON_ROTATION}deg` }] }));
@@ -65,6 +67,7 @@ export const VoiceInputOverlayContent = ({ voiceInput, onRecord, onCancel }: Pro
             <View className="absolute right-0 bottom-0 px-lg" style={closeContainerStyle} pointerEvents="box-none">
                 <CircularActionButton
                     icon={UserIconNameEnum.Plus}
+                    label={t`Close`}
                     onPress={onCancel}
                     animatedStyle={closeButtonStyle}
                     testID={VoiceInputOverlaySelector.CancelButton}

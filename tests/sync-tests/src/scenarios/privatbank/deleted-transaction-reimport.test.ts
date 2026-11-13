@@ -1,4 +1,4 @@
-import { ExternalSourceEnum, TransactionEntityTable } from '@budgie/contracts';
+import { ExternalSourceEnum, LanguageEnum, TransactionEntityTable, TransactionViewRepository } from '@budgie/contracts';
 import { AccountArchiveService, TransactionService } from '@budgie/ledger';
 import { describe, expect, it } from '@effect/vitest';
 import { and, eq, isNull } from 'drizzle-orm';
@@ -25,6 +25,7 @@ describe('privatbank/deleted-transaction-reimport', () => {
             yield* syncService.executeImportForSelectedAccounts(PRIVATBANK_STATEMENT_URI, [PRIVATBANK_CARD_ID]);
             const [transaction] = yield* fetchPrivatbankTransactions();
             yield* transactionService.deleteById(transaction.id);
+            expect(yield* (yield* TransactionViewRepository).getById(transaction.id, LanguageEnum.EN)).toBeUndefined();
 
             const review = yield* syncService.reviewImport(PRIVATBANK_STATEMENT_URI, [PRIVATBANK_CARD_ID]);
             expect(review.duplicateTransactionCount).toBe(review.parsedTransactionCount);

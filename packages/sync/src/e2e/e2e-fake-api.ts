@@ -3,19 +3,16 @@ import { isDefined } from '@rnw-community/shared';
 import { HTTP_STATUS_UNAUTHORIZED } from '../core/constant/http-status.constant';
 import { WISE_ASPSP_NAME } from '../enable-banking/constant/wise-aspsp-name.constant';
 
+import { MONOBANK_CLIENT_INFO, monobankStatement } from './e2e-fake-monobank';
 import { WISE_ACCOUNTS, WISE_CODE, WISE_SESSION } from './e2e-fake-wise';
 
-import type { ClientInfo, StatementItem } from '@liaugust/monobank-sdk';
-
-type FakeHandlerType = (body: string, path: string) => unknown;
+type FakeHandlerType = (body: string, url: string) => unknown;
 
 const REQUEST_PATTERN = /^https:\/\/([^/?#]+)([^?#]*)/u;
 const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
 const ISO_DATE_LENGTH = 10;
 const NINETY_DAYS = 90;
-const MILLISECONDS_PER_SECOND = 1000;
-const SECONDS_PER_HOUR = 3600;
-const UAH_NUMERIC_CODE = 980;
+const SECONDS_PER_DAY = 86_400;
 const REJECTED_TOKEN_PATTERN = /^e2e-rejected/u;
 
 const SYNTHETIC_BANK = 'E2E Synthetic Bank';
@@ -32,7 +29,7 @@ const consentValidUntil = (): string => new Date(Date.now() + (NINETY_DAYS - 1) 
 
 const dayAgo = (days: number): string => new Date(Date.now() - days * MILLISECONDS_PER_DAY).toISOString().slice(0, ISO_DATE_LENGTH);
 
-const wiseAccountOf = (path: string) => WISE_ACCOUNTS.find(({ uid }) => path.split('/')[2] === uid);
+const wiseAccountOf = (url: string) => WISE_ACCOUNTS.find(({ uid }) => REQUEST_PATTERN.exec(url)?.[2].split('/')[2] === uid);
 
 const fakeAspsps = () => ({
     aspsps: [
@@ -132,8 +129,8 @@ const ENABLE_BANKING_ROUTES: ReadonlyArray<readonly [string, RegExp, FakeHandler
     [
         'GET',
         /^\/accounts\/[^/]+\/balances$/u,
-        (_body, path) => {
-            const account = wiseAccountOf(path);
+        (_body, url) => {
+            const account = wiseAccountOf(url);
 
             return {
                 balances: [
@@ -148,8 +145,8 @@ const ENABLE_BANKING_ROUTES: ReadonlyArray<readonly [string, RegExp, FakeHandler
     [
         'GET',
         /^\/accounts\/[^/]+\/transactions$/u,
-        (_body, path) => ({
-            transactions: wiseAccountOf(path)?.transactions.map(({ daysAgo, ...transaction }) => ({
+        (_body, url) => ({
+            transactions: wiseAccountOf(url)?.transactions.map(({ daysAgo, ...transaction }) => ({
                 ...transaction,
                 booking_date: dayAgo(daysAgo)
             })) ?? [
@@ -175,65 +172,6 @@ const ENABLE_BANKING_ROUTES: ReadonlyArray<readonly [string, RegExp, FakeHandler
     ]
 ];
 
-const MONOBANK_CLIENT_INFO = {
-    clientId: 'e2e-client',
-    name: 'E2E Client',
-    accounts: [
-        {
-            id: 'e2e-mono-card',
-            sendId: 'e2e-send',
-            balance: 150_000,
-            creditLimit: 0,
-            currencyCode: UAH_NUMERIC_CODE,
-            cashbackType: 'UAH',
-            iban: 'UA213223130000026007233566001',
-            maskedPan: ['537541******1234'],
-            type: 'black'
-        }
-    ],
-    jars: [
-        {
-            id: 'e2e-mono-jar',
-            sendId: 'e2e-jar-send',
-            title: 'E2E Jar',
-            description: 'E2E Jar',
-            balance: 50_000,
-            goal: null,
-            currencyCode: UAH_NUMERIC_CODE
-        }
-    ]
-} satisfies ClientInfo;
-
-const monobankStatement = (): StatementItem[] => {
-    const nowSeconds = Math.floor(Date.now() / MILLISECONDS_PER_SECOND);
-    const item = { currencyCode: UAH_NUMERIC_CODE, commissionRate: 0, cashbackAmount: 0, hold: false };
-
-    return [
-        {
-            ...item,
-            id: 'e2e-mono-tx-1',
-            time: nowSeconds - SECONDS_PER_HOUR,
-            description: 'E2E Grocery',
-            mcc: 5411,
-            originalMcc: 5411,
-            amount: -25_000,
-            operationAmount: -25_000,
-            balance: 150_000
-        },
-        {
-            ...item,
-            id: 'e2e-mono-tx-2',
-            time: nowSeconds - 2 * SECONDS_PER_HOUR,
-            description: 'E2E Salary',
-            mcc: 4829,
-            originalMcc: 4829,
-            amount: 100_000,
-            operationAmount: 100_000,
-            balance: 175_000
-        }
-    ];
-};
-
 const MONOBANK_ROUTES: ReadonlyArray<readonly [string, RegExp, FakeHandlerType]> = [
     ['GET', /^\/personal\/client-info$/u, () => MONOBANK_CLIENT_INFO],
     ['GET', /^\/personal\/statement\/[^/]+\/\d+(\/\d+)?$/u, monobankStatement]
@@ -241,10 +179,68 @@ const MONOBANK_ROUTES: ReadonlyArray<readonly [string, RegExp, FakeHandlerType]>
 
 const ENABLE_BANKING_PUBLIC_ROUTES: ReadonlyArray<readonly [string, RegExp, FakeHandlerType]> = [['GET', /^\/api\/aspsps$/u, fakeAspsps]];
 
+const E2E_SECURITIES = [
+    { symbol: 'BGTX', currency: 'USD', shortname: 'Budgie Example', longname: 'Budgie Example Holdings', exchDisp: 'E2E Exchange' },
+    { symbol: 'BGEU', currency: 'EUR', shortname: 'Budgie Euro', longname: 'Budgie Euro Fund', exchDisp: 'E2E Euronext' },
+    { symbol: 'BGNP', currency: 'USD', shortname: 'Budgie Unpriced', longname: 'Budgie Unpriced Trust', exchDisp: 'E2E OTC' }
+] as const;
+const E2E_UNPRICED_SECURITY = 'BGNP';
+const SEARCH_QUERY_PATTERN = /[?&]q=([^&#]*)/u;
+const E2E_SECURITY_LATEST_CLOSE = 120;
+const E2E_SECURITY_DAILY_RISE = 0.4;
+const E2E_SECURITY_SWING = 4;
+const E2E_SECURITY_SWING_FREQUENCY = 0.7;
+const E2E_SECURITY_HISTORY_DAYS = 60;
+const e2eSecurityClose = (days: number) =>
+    Math.round(
+        (E2E_SECURITY_LATEST_CLOSE - days * E2E_SECURITY_DAILY_RISE - E2E_SECURITY_SWING * Math.sin(days * E2E_SECURITY_SWING_FREQUENCY)) *
+            100
+    ) / 100;
+
+const yahooChart = (currency: string, isPriced: boolean) => () => {
+    const todayNoonSeconds = Math.floor(Date.now() / MILLISECONDS_PER_DAY) * SECONDS_PER_DAY + SECONDS_PER_DAY / 2;
+    const daysAgo = Array.from({ length: E2E_SECURITY_HISTORY_DAYS }, (_day, index) => E2E_SECURITY_HISTORY_DAYS - 1 - index);
+
+    return {
+        chart: {
+            result: [
+                {
+                    meta: { currency, ...(isPriced && { regularMarketPrice: E2E_SECURITY_LATEST_CLOSE }) },
+                    timestamp: daysAgo.map(days => todayNoonSeconds - days * SECONDS_PER_DAY),
+                    indicators: {
+                        quote: [{ close: daysAgo.map(days => (isPriced ? e2eSecurityClose(days) : null)) }]
+                    }
+                }
+            ]
+        }
+    };
+};
+
+const YAHOO_ROUTES: ReadonlyArray<readonly [string, RegExp, FakeHandlerType]> = [
+    [
+        'GET',
+        /^\/v1\/finance\/search$/u,
+        (_body, url) => {
+            const query = decodeURIComponent((SEARCH_QUERY_PATTERN.exec(url)?.[1] ?? '').replaceAll('+', ' ')).toLowerCase();
+
+            return {
+                quotes: E2E_SECURITIES.filter(security =>
+                    [security.symbol, security.shortname, security.longname].some(value => value.toLowerCase().includes(query))
+                ).map(({ currency: _currency, ...quote }) => ({ ...quote, quoteType: 'EQUITY' }))
+            };
+        }
+    ],
+    ...E2E_SECURITIES.map(
+        ({ symbol, currency }) =>
+            ['GET', new RegExp(`^/v8/finance/chart/${symbol}$`, 'u'), yahooChart(currency, symbol !== E2E_UNPRICED_SECURITY)] as const
+    )
+];
+
 const ROUTES_BY_HOST = new Map([
     ['enablebanking.com', ENABLE_BANKING_PUBLIC_ROUTES],
     ['api.enablebanking.com', ENABLE_BANKING_ROUTES],
-    ['api.monobank.ua', MONOBANK_ROUTES]
+    ['api.monobank.ua', MONOBANK_ROUTES],
+    ['query1.finance.yahoo.com', YAHOO_ROUTES]
 ]);
 
 const readBody = (body: unknown): string => {
@@ -279,7 +275,7 @@ export const installE2eFakeApi = (): void => {
         const route = routes.find(([routeMethod, pattern]) => routeMethod === method && pattern.test(path));
 
         return Promise.resolve(
-            isDefined(route) ? respond(200, route[2](readBody(init?.body), path)) : respond(404, { error: 'E2E_UNKNOWN_ROUTE' })
+            isDefined(route) ? respond(200, route[2](readBody(init?.body), toUrl(input))) : respond(404, { error: 'E2E_UNKNOWN_ROUTE' })
         );
     };
 };

@@ -4,12 +4,16 @@ import * as a from '../support/budgie/accounts.ts';
 import * as b from '../support/budgie/core.ts';
 import * as sec from '../support/budgie/security.ts';
 import * as s from '../support/budgie/settings.ts';
-import { PENDING_ANDROID_PORT, test } from '../support/budgie/test.ts';
+import { test } from '../support/budgie/test.ts';
 
-test('17 security app lock', { tags: ['security'], platforms: PENDING_ANDROID_PORT }, async ({ budgie }) => {
+test('17 security app lock', { tags: ['security'] }, async ({ budgie }) => {
     const ctx = budgie.ctx;
     const { screen } = ctx;
     const pinPage = () => b.expectId(ctx, 'PinPage.Container', 10_000);
+    const openSettingsTab = async () => {
+        await b.tapId(ctx, 'TabBar.Settings');
+        await b.expectId(ctx, 'SettingsPage.Container', 10_000);
+    };
     const typed = (text: string) => expect(screen.getByText(text).or(screen.getByDisplayValue(text)).first()).toBeVisible();
 
     await budgie.start({ fixture: '17.db' });
@@ -30,9 +34,18 @@ test('17 security app lock', { tags: ['security'], platforms: PENDING_ANDROID_PO
         await sec.exhaustPinAttempts(ctx);
         await sec.enterPin(ctx, '1234');
         await b.expectId(ctx, 'TabBar.Settings', 10_000);
-        await a.navigateToSettings(ctx);
+        await openSettingsTab();
         await b.expectId(ctx, 'SettingsPage.DataEncryption.State.On', 3_000);
     });
+
+    if (!b.isIos(ctx)) {
+        await b.phase('an incoming link stays behind the lock', async () => {
+            await b.openLink(ctx, 'budgie://');
+            await pinPage();
+            await sec.enterPin(ctx, '1234');
+            await b.expectId(ctx, 'HomePage.TotalBalance', 10_000);
+        });
+    }
 
     await b.phase('unfinished form survives a lock', async () => {
         await a.openNewAccount(ctx);
@@ -52,10 +65,13 @@ test('17 security app lock', { tags: ['security'], platforms: PENDING_ANDROID_PO
         await b.expectId(ctx, 'AccountForm.NameInput', 3_000);
         await typed('Unfinished lock regression');
         await b.tapId(ctx, 'PageHeader.BackButton');
+        await b.expectId(ctx, 'CreateAccount.BANK', 3_000);
+        await b.tapId(ctx, 'PageHeader.BackButton');
+        await b.expectId(ctx, 'TabBar.Settings', 3_000);
     });
 
     await b.phase('change pin', async () => {
-        await a.navigateToSettings(ctx);
+        await openSettingsTab();
         await a.openSettingsCard(ctx, 'SettingsPage.AppLockChangePinButton', 'PinPage.Container');
         await pinPage();
         await sec.exhaustPinAttempts(ctx);
@@ -72,7 +88,7 @@ test('17 security app lock', { tags: ['security'], platforms: PENDING_ANDROID_PO
     });
 
     await b.phase('disable lock', async () => {
-        await a.navigateToSettings(ctx);
+        await openSettingsTab();
         await a.openSettingsCard(ctx, 'SettingsPage.AppLockDisableButton', 'PinPage.Container');
         await pinPage();
         await sec.enterPin(ctx, '5678');

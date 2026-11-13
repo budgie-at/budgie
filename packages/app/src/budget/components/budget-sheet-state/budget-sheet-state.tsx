@@ -33,7 +33,7 @@ export const BudgetSheetState = (props: Props) => {
             contentClassName="flex-none"
             header={header ?? <FormsheetHeader size="sm" title={title} titleClassName="leading-tight" />}
         >
-            <View className="px-5xl pt-md pb-3xl gap-y-xl">
+            <View className="z-30 px-5xl pt-md pb-3xl gap-y-xl">
                 <BudgetDataState isLoading={isLoading} isError={isError} description={stateDescription} title={unavailableTitle} />
                 <PillButton label={t`Close`} testID={BudgetSelector.DataStateCloseButton} onPress={dismiss} />
             </View>

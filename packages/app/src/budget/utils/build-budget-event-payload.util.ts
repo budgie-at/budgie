@@ -1,6 +1,8 @@
 import { BudgetKindEnum, BudgetLimitSourceEnum, BudgetPeriodEnum, BudgetRolloverModeEnum, convertToMicroUnits } from '@budgie/contracts';
 import { startOfDay } from 'date-fns/startOfDay';
 
+import { isPositiveNumber } from '@rnw-community/shared';
+
 import type { BudgetEventFormValues } from '../constant/budget-event-form-schema.constant';
 import type { BudgetCreateInputInterface } from '@budgie/budget';
 
@@ -19,9 +21,11 @@ export const buildBudgetEventPayload = (values: BudgetEventFormValues): BudgetCr
     otherLimit: 0,
     otherRolloverMode: BudgetRolloverModeEnum.NONE,
     instrumentId: values.instrumentId,
-    categoryLimits: values.categoryLimits.map(limit => ({
-        categoryId: limit.categoryId,
-        limitAmount: convertToMicroUnits(limit.limitAmount),
-        rolloverMode: BudgetRolloverModeEnum.NONE
-    }))
+    categoryLimits: values.categoryLimits
+        .filter(limit => isPositiveNumber(limit.limitAmount))
+        .map(limit => ({
+            categoryId: limit.categoryId,
+            limitAmount: convertToMicroUnits(limit.limitAmount),
+            rolloverMode: BudgetRolloverModeEnum.NONE
+        }))
 });

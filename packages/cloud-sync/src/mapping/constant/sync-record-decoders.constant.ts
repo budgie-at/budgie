@@ -5,6 +5,7 @@ import { isDefined } from '@rnw-community/shared';
 import { SyncColumnKindEnum } from '../enum/sync-column-kind.enum';
 import { SyncLinkRoleEnum } from '../enum/sync-link-role.enum';
 
+import { SYNC_INSTRUMENT_DEFINITION_SCHEMA } from './sync-instrument-definition-schema.constant';
 import { SYNC_RECORD_DEFINITIONS } from './sync-record-definitions.constant';
 
 import type { SyncColumnDescriptorInterface } from '../interface/sync-column-descriptor.interface';
@@ -25,7 +26,17 @@ const buildValueSchema = (column: SyncColumnDescriptorInterface): Schema.Constra
 
 const buildFields = (columns: readonly SyncColumnDescriptorInterface[]): Record<string, Schema.ConstraintDecoder<unknown>> =>
     Object.fromEntries(
-        columns.map(column => [column.field, column.isRequired ? buildValueSchema(column) : Schema.optionalKey(buildValueSchema(column))])
+        columns.flatMap((column): (readonly [string, Schema.ConstraintDecoder<unknown>])[] => [
+            [column.field, column.isRequired ? buildValueSchema(column) : Schema.optionalKey(buildValueSchema(column))],
+            ...(column.reference?.tableName === 'instruments'
+                ? [
+                      [
+                          `${column.field}Definition`,
+                          SYNC_INSTRUMENT_DEFINITION_SCHEMA.pipe(Schema.fromJsonString, Schema.optionalKey)
+                      ] as const
+                  ]
+                : [])
+        ])
     );
 
 const buildLinkFields = (linkRole: SyncLinkRoleEnum | null): Record<string, Schema.ConstraintDecoder<unknown>> => {

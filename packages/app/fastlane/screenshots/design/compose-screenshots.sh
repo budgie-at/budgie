@@ -5,7 +5,8 @@ set -euo pipefail
 DESIGN_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SCREENSHOTS_DIR="$(cd "$DESIGN_DIR/.." && pwd)"
 APP_DIR="$(cd "$SCREENSHOTS_DIR/../.." && pwd)"
-RAW_DIR="${SCREENSHOTS_RAW_DIR:-$SCREENSHOTS_DIR/raw}/ios"
+RAW_ROOT="${SCREENSHOTS_RAW_DIR:-$SCREENSHOTS_DIR/raw}"
+PLAY_DIR="${PLAY_SCREENSHOTS_DIR:-$APP_DIR/fastlane/metadata/android}"
 FONT="${CAPTION_FONT:-$APP_DIR/assets/fonts/FixelDisplay-Bold.ttf}"
 SUBLINE_FONT="${SUBLINE_FONT:-$APP_DIR/assets/fonts/FixelDisplay-SemiBold.ttf}"
 
@@ -15,7 +16,7 @@ DEVICE_ARGUMENT='all'
 if [[ "${3:-}" == "--device" ]]; then
     DEVICE_ARGUMENT="${4:-all}"
 elif [[ -n "${3:-}" ]]; then
-    echo "error: unknown argument '${3}'. Use --device iphone|ipad|all." >&2
+    echo "error: unknown argument '${3}'. Use --device iphone|ipad|all|phone|tablet." >&2
     exit 1
 fi
 
@@ -27,9 +28,10 @@ case "$VARIANT_ARGUMENT" in
         ;;
 esac
 case "$DEVICE_ARGUMENT" in
-    iphone | ipad | all) ;;
+    iphone | ipad | phone | tablet) SELECTED_DEVICES="$DEVICE_ARGUMENT" ;;
+    all) SELECTED_DEVICES='iphone ipad' ;;
     *)
-        echo "error: unknown device '$DEVICE_ARGUMENT'. Use iphone, ipad, or all." >&2
+        echo "error: unknown device '$DEVICE_ARGUMENT'. Use iphone, ipad, all, phone, or tablet." >&2
         exit 1
         ;;
 esac
@@ -60,8 +62,10 @@ else
     SELECTED_LOCALES=("$LOCALE_ARGUMENT")
 fi
 
-resolve_frameit_frames_dir
-resolve_device_frames
+if [[ "$SELECTED_DEVICES" != phone && "$SELECTED_DEVICES" != tablet ]]; then
+    resolve_frameit_frames_dir
+    resolve_device_frames
+fi
 
 CANVAS_PALETTES=(
     '#003B25|#00140C|0,119,80'
@@ -328,14 +332,14 @@ build_shadow() {
 
 compose_one() {
     local device="$1" scene="$2" appearance="$3" palette_index="$4" width_fraction="$5" out_name="$6"
-    local device_slug frame_file cutout_x cutout_y cutout_w cutout_h
+    local frame_file cutout_x cutout_y cutout_w cutout_h
     local src canvas_w canvas_h headline subline chips work
     local top_hex bottom_hex glow_rgb frame_w frame_h device_w device_h device_x device_y
     local stack_h text_y glow_size glow_x glow_y
 
     case "$device" in
         iphone)
-            device_slug="$IPHONE_DEVICE_SLUG"
+            src="$RAW_ROOT/ios/$IPHONE_DEVICE_SLUG/$RAW_LOCALE/$appearance/$scene.png"
             frame_file="$IPHONE_FRAME"
             cutout_x=$IPHONE_CUTOUT_X
             cutout_y=$IPHONE_CUTOUT_Y
@@ -343,12 +347,16 @@ compose_one() {
             cutout_h=$IPHONE_CUTOUT_H
             ;;
         ipad)
-            device_slug="$IPAD_DEVICE_SLUG"
+            src="$RAW_ROOT/ios/$IPAD_DEVICE_SLUG/$RAW_LOCALE/$appearance/$scene.png"
             frame_file="$IPAD_FRAME"
             cutout_x=$IPAD_CUTOUT_X
             cutout_y=$IPAD_CUTOUT_Y
             cutout_w=$IPAD_CUTOUT_W
             cutout_h=$IPAD_CUTOUT_H
+            ;;
+        phone | tablet)
+            src="$RAW_ROOT/android/$device/$RAW_LOCALE/$appearance/$scene.png"
+            frame_file="$WORK_ROOT/$device-frame.png"
             ;;
         *)
             echo "error: unknown device '$device'" >&2
@@ -356,7 +364,6 @@ compose_one() {
             ;;
     esac
 
-    src="$RAW_DIR/$device_slug/$RAW_LOCALE/$appearance/$scene.png"
     if [[ ! -f "$src" ]]; then
         echo "error: missing raw capture $src" >&2
         exit 1
@@ -371,6 +378,12 @@ compose_one() {
     if ((canvas_w >= canvas_h)); then
         echo "error: raw capture $src is ${canvas_w}x${canvas_h}; only portrait captures are supported" >&2
         exit 1
+    fi
+    if [[ "$device" == phone || "$device" == tablet ]]; then
+        cutout_w=$canvas_w
+        cutout_h=$canvas_h
+        cutout_x="$(draw_screen_frame "$canvas_w" "$canvas_h" "$frame_file")"
+        cutout_y=$cutout_x
     fi
 
     IFS='|' read -r top_hex bottom_hex glow_rgb <<< "${CANVAS_PALETTES[$palette_index]}"
@@ -430,6 +443,20 @@ SCENES=(
     "ipad|09-inbox|4|0.80|25_ipad_inbox.png"
     "ipad|06-account|5|0.80|26_ipad_account.png"
     "ipad|07-settings|6|0.80|27_ipad_settings.png"
+    "phone|01-home|0|0.92|01_home.png"
+    "phone|05-add-expense|1|0.80|02_add-expense.png"
+    "phone|03-analytics|2|0.80|03_analytics.png"
+    "phone|04-budget|3|0.80|04_budget.png"
+    "phone|09-inbox|4|0.80|05_inbox.png"
+    "phone|06-account|5|0.80|06_account.png"
+    "phone|07-settings|6|0.80|07_settings.png"
+    "tablet|01-home|0|0.88|01_home.png"
+    "tablet|05-add-expense|1|0.80|02_add-expense.png"
+    "tablet|03-analytics|2|0.80|03_analytics.png"
+    "tablet|04-budget|3|0.80|04_budget.png"
+    "tablet|09-inbox|4|0.80|05_inbox.png"
+    "tablet|06-account|5|0.80|06_account.png"
+    "tablet|07-settings|6|0.80|07_settings.png"
 )
 
 run_variant() {
@@ -440,13 +467,17 @@ run_variant() {
 
     for entry in "${SCENES[@]}"; do
         IFS='|' read -r device scene palette_index width_fraction out_name <<< "$entry"
-        if [[ "$DEVICE_ARGUMENT" != "all" && "$DEVICE_ARGUMENT" != "$device" ]]; then
+        if [[ " $SELECTED_DEVICES " != *" $device "* ]]; then
             continue
         fi
         compose_one "$device" "$scene" "$variant" "$palette_index" "$width_fraction" "$out_name"
     done
 
-    publish_stage "$SCREENSHOTS_DIR/variants/${PUBLISH_VARIANT_NAME:-$variant}/ios/$ASC_LOCALE"
+    case "$SELECTED_DEVICES" in
+        phone) publish_stage "$PLAY_DIR/$ASC_LOCALE/images/phoneScreenshots" ;;
+        tablet) publish_stage "$PLAY_DIR/$ASC_LOCALE/images/tenInchScreenshots" ;;
+        *) publish_stage "$SCREENSHOTS_DIR/variants/${PUBLISH_VARIANT_NAME:-$variant}/ios/$ASC_LOCALE" ;;
+    esac
 }
 
 for ASC_LOCALE in "${SELECTED_LOCALES[@]}"; do

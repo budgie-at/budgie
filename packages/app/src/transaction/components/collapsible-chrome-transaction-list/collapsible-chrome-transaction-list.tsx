@@ -1,9 +1,12 @@
 import { useState } from 'react';
 import { View } from 'react-native';
 import { useSharedValue } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { CollapsibleChromeLegendList } from '../../../@generic/component/collapsible-chrome-legend-list/collapsible-chrome-legend-list';
 import { CollapsibleChromePinnedBar } from '../../../@generic/component/collapsible-chrome-pinned-bar/collapsible-chrome-pinned-bar';
+import { CollapsibleChromeCollapseDistanceContext } from '../../../@generic/context/collapsible-chrome-collapse-distance.context';
+import { getCollapsibleChromePinDistance } from '../../../@generic/utils/get-collapsible-chrome-pin-distance.util';
 import { useTransactionList } from '../../hook/use-transaction-list.hook';
 import { TransactionFilters } from '../transaction-filters/transaction-filters';
 import { TransactionListCount } from '../transaction-list-count/transaction-list-count';
@@ -28,6 +31,7 @@ export const CollapsibleChromeTransactionList = ({ accountIds, children }: Props
     const [filtersY, setFiltersY] = useState(0);
     const [pinnedFiltersHeight, setPinnedFiltersHeight] = useState(0);
     const headerOffsets = useSharedValue<number[]>([]);
+    const { top } = useSafeAreaInsets();
 
     const handleFiltersLayout = (event: LayoutChangeEvent) => void setFiltersY(event.nativeEvent.layout.y);
 
@@ -43,24 +47,26 @@ export const CollapsibleChromeTransactionList = ({ accountIds, children }: Props
 
     return (
         <>
-            <TransactionListCount filters={activeFilters}>
-                <TransactionSectionsList
-                    sections={sections}
-                    onEndReached={loadMore}
-                    listEmptyState={
-                        <TransactionListEmptyState
-                            isLoading={isLoading}
-                            hasFiltersSelected={hasFiltersSelected}
-                            onClearFilters={clearFilters}
-                        />
-                    }
-                    accountIds={activeFilters.accountIds}
-                    footerSpacerMultiplier={FAB_FOOTER_SPACER_MULTIPLIER}
-                    listHeader={listHeader}
-                    listComponent={CollapsibleChromeLegendList}
-                    headerOffsets={headerOffsets}
-                />
-            </TransactionListCount>
+            <CollapsibleChromeCollapseDistanceContext value={getCollapsibleChromePinDistance(filtersY, top)}>
+                <TransactionListCount filters={activeFilters}>
+                    <TransactionSectionsList
+                        sections={sections}
+                        onEndReached={loadMore}
+                        listEmptyState={
+                            <TransactionListEmptyState
+                                isLoading={isLoading}
+                                hasFiltersSelected={hasFiltersSelected}
+                                onClearFilters={clearFilters}
+                            />
+                        }
+                        accountIds={activeFilters.accountIds}
+                        footerSpacerMultiplier={FAB_FOOTER_SPACER_MULTIPLIER}
+                        listHeader={listHeader}
+                        listComponent={CollapsibleChromeLegendList}
+                        headerOffsets={headerOffsets}
+                    />
+                </TransactionListCount>
+            </CollapsibleChromeCollapseDistanceContext>
 
             <CollapsibleChromePinnedBar
                 anchorY={filtersY}

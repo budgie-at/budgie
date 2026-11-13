@@ -11,10 +11,10 @@ import { CurrencyMarketPageSelector } from '../currency-market-page/currency-mar
 import { CurrencyMarketPositionRow } from '../currency-market-position-row/currency-market-position-row';
 import { CurrencyMarketReturnRow } from '../currency-market-return-row/currency-market-return-row';
 
-import type { CryptoPositionInterface } from '@budgie/market';
+import type { InstrumentPositionInterface } from '@budgie/market';
 
 interface Props {
-    readonly position: CryptoPositionInterface;
+    readonly position: InstrumentPositionInterface;
     readonly valuationRate: number | null;
     readonly balance: number;
     readonly instrumentCode: string;

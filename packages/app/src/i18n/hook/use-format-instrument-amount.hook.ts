@@ -3,6 +3,7 @@ import { InstrumentTypeEnum } from '@budgie/contracts';
 import { isNotEmptyString } from '@rnw-community/shared';
 
 import { MICRO_UNIT_DECIMAL_PLACES } from '../../@generic/constant/micro-unit-decimal-places.constant';
+import { isListedSecurityType } from '../../instrument/utils/is-listed-security-type.util';
 
 import { useDisplayFormatDigits } from './use-display-format-digits.hook';
 import { useFormatDigits } from './use-format-digits.hook';
@@ -18,7 +19,7 @@ export const useFormatInstrumentAmount = () => {
             return formatFundQuantity(amount);
         }
 
-        if (instrumentType !== InstrumentTypeEnum.CRYPTO) {
+        if (instrumentType !== InstrumentTypeEnum.CRYPTO && !isListedSecurityType(instrumentType)) {
             return formatDigits(amount, symbol);
         }
 

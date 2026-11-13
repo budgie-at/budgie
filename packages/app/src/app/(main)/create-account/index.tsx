@@ -2,7 +2,7 @@ import { AccountTypeEnum, ExternalSourceEnum, UserIconNameEnum } from '@budgie/c
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { useDeferredValue, useState } from 'react';
-import { View, useWindowDimensions } from 'react-native';
+import { View } from 'react-native';
 
 import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
@@ -43,8 +43,6 @@ const GROUPED_STACKED_TITLE_CHROME_CONFIG = {
     }
 };
 
-const LARGE_TEXT_FONT_SCALE = 1.2;
-
 const SYNC_OPTIONS = [
     { provider: ExternalSourceEnum.MONOBANK, title: msg`Monobank`, description: msg`Connect with a token from the app` },
     { provider: ExternalSourceEnum.WISE, title: msg`Wise`, description: msg`Sign in on Wise's own page` },
@@ -77,6 +75,12 @@ const MANUAL_OPTIONS = [
         description: msg`Wallets you track yourself`
     },
     {
+        type: AccountTypeEnum.STOCKS,
+        icon: ACCOUNT_ICON[AccountTypeEnum.STOCKS],
+        title: msg`Brokerage`,
+        description: msg`Stocks and ETFs at a broker`
+    },
+    {
         type: AccountTypeEnum.DEBT,
         icon: ACCOUNT_ICON[AccountTypeEnum.DEBT],
         title: ACCOUNT_KIND_TITLE[AccountTypeEnum.DEBT],
@@ -93,8 +97,6 @@ const MANUAL_OPTIONS = [
 export default function Index() {
     const { t } = useLingui();
     const [query, setQuery] = useState('');
-    const { fontScale } = useWindowDimensions();
-    const tileClassName = fontScale > LARGE_TEXT_FONT_SCALE ? 'basis-1/3' : 'flex-1';
 
     const normalizedQuery = foldSearchText(useDeferredValue(query).trim());
     const isSearching = isNotEmptyString(normalizedQuery);
@@ -154,7 +156,6 @@ export default function Index() {
                                     description={t(option.description)}
                                     icon={option.icon}
                                     type={option.type}
-                                    className={tileClassName}
                                 />
                             ))}
                         </View>

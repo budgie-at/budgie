@@ -28,6 +28,7 @@ export default function CreateAccountType() {
         case AccountTypeEnum.CASH:
         case AccountTypeEnum.BANK:
         case AccountTypeEnum.CRYPTO:
+        case AccountTypeEnum.STOCKS:
             return <CreateSimpleAccount type={type} />;
         case AccountTypeEnum.DEBT:
             return <CreateDebtAccount />;
@@ -61,7 +62,6 @@ export default function CreateAccountType() {
                     preselectedCountry={null}
                 />
             );
-        case AccountTypeEnum.STOCKS:
         case AccountTypeEnum.SAVINGS:
         case AccountTypeEnum.BANK_SYNC:
         case AccountTypeEnum.CRYPTO_SYNC:

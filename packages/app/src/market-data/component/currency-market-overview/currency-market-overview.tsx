@@ -22,7 +22,7 @@ import type { InstrumentDailyMarketPriceEntityInterface, InstrumentEntityInterfa
 import type { SharedValue } from 'react-native-reanimated';
 
 interface Props {
-    readonly instrument: Pick<InstrumentEntityInterface, 'id' | 'code'>;
+    readonly instrument: Pick<InstrumentEntityInterface, 'id' | 'code' | 'quoteInstrumentId'>;
     readonly prices: readonly InstrumentDailyMarketPriceEntityInterface[];
     readonly priceBottom: SharedValue<number>;
 }
@@ -38,7 +38,7 @@ const MIN_CHART_POINTS = 2;
 export const CurrencyMarketOverview = ({ instrument, prices, priceBottom }: Props) => {
     const { t } = useLingui();
     const defaultInstrumentId = useAtomValue(defaultInstrumentIdAtom);
-    const progress = useInstrumentMarketDataProgressQuery(instrument.id, defaultInstrumentId);
+    const progress = useInstrumentMarketDataProgressQuery(instrument.id, instrument.quoteInstrumentId ?? defaultInstrumentId);
     const [range, setRange] = useState(MarketChartRangeEnum.MONTH);
     const [scrubIndex, setScrubIndex] = useState<number | null>(null);
 
