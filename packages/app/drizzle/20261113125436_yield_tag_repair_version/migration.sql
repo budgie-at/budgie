@@ -1,0 +1,1 @@
+ALTER TABLE `settings` ADD `yield_tag_repair_version` integer DEFAULT 0 NOT NULL;

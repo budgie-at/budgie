@@ -193,6 +193,7 @@ export { TransactionConsolidationTypeEnum } from './transaction/enum/transaction
 export { TransactionAssociationEnum } from './transaction/enum/transaction-association.enum';
 export { YieldKindEnum } from './transaction/enum/yield-kind.enum';
 export type { YieldFieldsInterface } from './transaction/interface/yield-fields.interface';
+export type { YieldTagCandidateInterface } from './transaction/interface/yield-tag-candidate.interface';
 export { normalizeYieldFields } from './transaction/utils/normalize-yield-fields.util';
 
 export { DEFAULT_TRANSACTION_FILTER } from './transaction/constant/default-transaction-filter.constant';

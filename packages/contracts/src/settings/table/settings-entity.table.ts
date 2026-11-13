@@ -46,6 +46,7 @@ export const SettingsEntityTable = sqliteTable(
         lineageId: text('lineage_id'),
         cloudUserRecordName: text('cloud_user_record_name'),
         householdShareEverything: int('household_share_everything', { mode: 'boolean' }).notNull().default(false),
-        cryptoStrictValuationVersion: int('crypto_strict_valuation_version', { mode: 'number' }).notNull().default(0)
+        cryptoStrictValuationVersion: int('crypto_strict_valuation_version', { mode: 'number' }).notNull().default(0),
+        yieldTagRepairVersion: int('yield_tag_repair_version', { mode: 'number' }).notNull().default(0)
     })
 );

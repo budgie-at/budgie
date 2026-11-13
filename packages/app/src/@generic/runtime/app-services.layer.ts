@@ -95,6 +95,7 @@ import {
     SyncOperationMetadataService,
     SyncProviderRegistryService,
     SyncRepairService,
+    YieldTagRepairService,
     transferConsolidationBankFlowLayer,
     OwnTransferRepairService,
     UnpairedOwnCardTransferRepairService
@@ -257,6 +258,7 @@ export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     ExternalAccountService.layer,
     AccountReissueMergeService.layer,
     SyncRepairService.layer,
+    YieldTagRepairService.layer,
     OwnTransferRepairService.layer,
     SyncOperationMetadataService.layer,
     PrivatbankCategoryMatcherService.layer,
