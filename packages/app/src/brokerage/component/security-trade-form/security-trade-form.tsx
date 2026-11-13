@@ -4,9 +4,9 @@ import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
 import { useEffect, useState } from 'react';
-import { FormProvider, useForm, useWatch } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 
-import { isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { FixedChromePage } from '../../../@generic/component/fixed-chrome-page/fixed-chrome-page';
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
@@ -14,17 +14,18 @@ import { GroupedListSection } from '../../../@generic/component/grouped-list-sec
 import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
 import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
 import { OperatedAtField } from '../../../@generic/component/operated-at-field/operated-at-field';
-import { PillButtonFooter } from '../../../@generic/component/pill-button-footer/pill-button-footer';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { DEFAULT_DECIMAL_PLACES } from '../../../i18n/constant/default-decimal-places.constant';
 import { SecurityTradeFormSchema } from '../../constant/security-trade-form-schema.constant';
+import { SecurityTradeSideEnum } from '../../enum/security-trade-side.enum';
 import { InsufficientSecurityHoldingError } from '../../error/insufficient-security-holding.error';
 import { BrokerageSelector } from '../../selector/brokerage.selector';
 import { SecurityTradeNumberField } from '../security-trade-number-field/security-trade-number-field';
 import { SecurityTradePriceHint } from '../security-trade-price-hint/security-trade-price-hint';
 import { SecurityTradeQuantityHint } from '../security-trade-quantity-hint/security-trade-quantity-hint';
+import { SecurityTradeSaveFooter } from '../security-trade-save-footer/security-trade-save-footer';
 
 import type { AppServices } from '../../../@generic/runtime/app.runtime';
 import type { SecurityTradeFormValues } from '../../constant/security-trade-form-schema.constant';
@@ -32,20 +33,20 @@ import type { useSecurityPriceQuery } from '../../query/use-security-price.query
 import type { ReactNode } from 'react';
 
 interface Props<E> {
-    readonly title: string;
+    readonly side: SecurityTradeSideEnum;
+    readonly symbol: string;
     readonly currencySymbol: string;
-    readonly isReady: boolean;
     readonly maxQuantity: number | null;
     readonly suggestedPrice: ReturnType<typeof useSecurityPriceQuery>;
     readonly onSubmit: (values: SecurityTradeFormValues) => Effect.Effect<unknown, E, AppServices>;
-    readonly summary: ReactNode;
     readonly children?: ReactNode;
 }
 
 const PRICE_MAX_DECIMALS = 4;
 
+// eslint-disable-next-line max-lines-per-function -- Layout/form component requires many lines
 export const SecurityTradeForm = <E,>(props: Props<E>) => {
-    const { title, currencySymbol, isReady, maxQuantity, suggestedPrice, onSubmit, summary, children } = props;
+    const { side, symbol, currencySymbol, maxQuantity, suggestedPrice, onSubmit, children } = props;
     const { t } = useLingui();
     const [operatedAt] = useState(() => new Date());
     const form = useForm<SecurityTradeFormValues>({
@@ -53,7 +54,6 @@ export const SecurityTradeForm = <E,>(props: Props<E>) => {
         resolver: standardSchemaResolver(Schema.toStandardSchemaV1(SecurityTradeFormSchema)),
         defaultValues: { quantity: 0, price: 0, fee: 0, operatedAt }
     });
-    const quantity = useWatch({ control: form.control, name: 'quantity' });
     const { isLoading, run } = useSingleFlight();
 
     useEffect(() => {
@@ -76,9 +76,17 @@ export const SecurityTradeForm = <E,>(props: Props<E>) => {
         )
     );
 
-    const isOverHolding = isDefined(maxQuantity) && quantity > maxQuantity;
-    const isSaveDisabled = !isReady || !form.formState.isValid || isOverHolding;
-    const priceFooter = <SecurityTradePriceHint missingRateCurrency={suggestedPrice.missingRateCurrency} currencySymbol={currencySymbol} />;
+    const isReady = isNotEmptyString(symbol);
+    const buyTitle = isReady ? t`Buy ${symbol}` : t`Add position`;
+    const sellTitle = isReady ? t`Sell ${symbol}` : t`Sell`;
+    const title = side === SecurityTradeSideEnum.BUY ? buyTitle : sellTitle;
+    const priceFooter = (
+        <SecurityTradePriceHint
+            missingRateCurrency={suggestedPrice.missingRateCurrency}
+            isUnavailable={suggestedPrice.isUnavailable}
+            currencySymbol={currencySymbol}
+        />
+    );
 
     return (
         <GroupedSurface>
@@ -88,12 +96,13 @@ export const SecurityTradeForm = <E,>(props: Props<E>) => {
                     leading={<HeaderBackButton />}
                     testID={BrokerageSelector.TradePage}
                     footer={
-                        <PillButtonFooter
-                            label={t`Save`}
-                            onPress={handleSave}
+                        <SecurityTradeSaveFooter
+                            side={side}
+                            currencySymbol={currencySymbol}
+                            maxQuantity={maxQuantity}
+                            isReady={isReady}
                             isLoading={isLoading}
-                            isDisabled={isSaveDisabled}
-                            testID={BrokerageSelector.SaveButton}
+                            onPress={handleSave}
                         />
                     }
                 >
@@ -121,10 +130,10 @@ export const SecurityTradeForm = <E,>(props: Props<E>) => {
                                 label={`${t`Fee`} (${currencySymbol})`}
                                 icon={UserIconNameEnum.Receipt}
                                 maxDecimals={DEFAULT_DECIMAL_PLACES}
+                                placeholder={t`Optional`}
                                 testID={BrokerageSelector.FeeInput}
                             />
                         </GroupedListSection>
-                        {summary}
                         <OperatedAtField testID={BrokerageSelector.DateButton} />
                     </FormLayoutGroup>
                 </FixedChromePage>

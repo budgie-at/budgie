@@ -16,6 +16,7 @@ import type { HomeAccountBalanceInterface } from '../../../account/interface/hom
 import type { AccountWithSyncEntityInterface } from '@budgie/contracts';
 
 const CAPTION_HOLDINGS_COUNT = 3;
+const STACKED_CAPTION_HOLDINGS_COUNT = 2;
 
 interface Props {
     readonly accounts: readonly AccountWithSyncEntityInterface[];
@@ -34,7 +35,7 @@ export const BrokerageInstitutionRowDetail = ({ accounts, accountsCountLabel, ba
 
     const composition = holdings
         .flatMap(holding => (isDefined(holding.weight) ? [{ label: holding.label, weight: holding.weight }] : []))
-        .slice(0, CAPTION_HOLDINGS_COUNT)
+        .slice(0, isStacked ? STACKED_CAPTION_HOLDINGS_COUNT : CAPTION_HOLDINGS_COUNT)
         .map(holding => (isAmountProtected ? holding.label : `${holding.label} ${formatPercent(holding.weight)}`))
         .join(' · ');
     const caption = isNotEmptyString(composition) ? composition : accountsCountLabel;

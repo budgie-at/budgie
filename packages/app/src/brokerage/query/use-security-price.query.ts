@@ -25,7 +25,8 @@ const securityQuoteAtom = Atom.family((symbol: string) =>
 );
 
 export const useSecurityPriceQuery = (symbol: string, cashInstrument: Pick<InstrumentEntityInterface, 'id' | 'code'> | undefined) => {
-    const quote = AsyncResult.getOrElse(useAtomValue(securityQuoteAtom(symbol)), () => null);
+    const quoteResult = useAtomValue(securityQuoteAtom(symbol));
+    const quote = AsyncResult.getOrElse(quoteResult, () => null);
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const { instruments } = useGetInstrumentsByTypeQuery(InstrumentTypeEnum.FIAT);
     const quoteInstrumentId = instruments.find(instrument => instrument.code === quote?.currency)?.id ?? 0;
@@ -43,5 +44,10 @@ export const useSecurityPriceQuery = (symbol: string, cashInstrument: Pick<Instr
             : null;
     const price = isSameCurrency ? (quote?.price ?? null) : convertedPrice;
 
-    return { price, missingRateCurrency: isDefined(quote) && !isDefined(price) ? quote.currency : null };
+    return {
+        price,
+        missingRateCurrency: isDefined(quote) && !isDefined(price) ? quote.currency : null,
+        isUnavailable:
+            isNotEmptyString(symbol) && !isDefined(quote) && !AsyncResult.isInitial(quoteResult) && !AsyncResult.isWaiting(quoteResult)
+    };
 };

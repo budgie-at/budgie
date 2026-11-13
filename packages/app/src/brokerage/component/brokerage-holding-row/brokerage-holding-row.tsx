@@ -1,5 +1,6 @@
 import { ExternalSourceEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
+import { router } from 'expo-router';
 import { Text } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
@@ -37,8 +38,16 @@ export const BrokerageHoldingRow = ({ holding, balance, bankName, instrumentSymb
     const formatInstrumentAmount = useFormatInstrumentAmount();
     const formatPercent = useFormatPercent();
 
-    const { account, label, value, isValued, weight, gain, gainPercent } = holding;
-    const { instrument } = account;
+    const {
+        account,
+        account: { instrument },
+        label,
+        value,
+        isValued,
+        weight,
+        gain,
+        gainPercent
+    } = holding;
     const isSecurity = isListedSecurityType(instrument.type);
     const displayAccount = isSecurity ? account : { ...account, title: label };
     const quantityLabel = isAmountProtected
@@ -47,6 +56,7 @@ export const BrokerageHoldingRow = ({ holding, balance, bankName, instrumentSymb
     const weightLabel = isDefined(weight) && !isAmountProtected ? formatPercent(weight) : null;
     const subtitle = [quantityLabel, weightLabel].filter(isDefined).join(' · ');
     const valueLabel = isValued ? protectAmount(value, instrumentSymbol) : t`value unavailable`;
+    const openSecurity = () => void router.push({ pathname: '/currency/[id]', params: { id: String(instrument.id) } });
     const leading = isSecurity ? (
         <CurrencySelectorInstrumentIcon code={instrument.code} symbol={instrument.symbol} type={instrument.type} size={44} />
     ) : (
@@ -62,6 +72,7 @@ export const BrokerageHoldingRow = ({ holding, balance, bankName, instrumentSymb
                     convertedBalance={null}
                     amountLabel={t`${quantityLabel}, worth ${valueLabel}`}
                     subtitle={subtitle}
+                    {...(isSecurity && { onPress: openSecurity })}
                 >
                     {isValued ? (
                         <AccountCardBalance title={displayAccount.title} balance={value} instrumentSymbol={instrumentSymbol} />

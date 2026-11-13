@@ -4,7 +4,7 @@ import { HTTP_STATUS_UNAUTHORIZED } from '../core/constant/http-status.constant'
 
 import type { ClientInfo, StatementItem } from '@liaugust/monobank-sdk';
 
-type FakeHandlerType = (body: string) => unknown;
+type FakeHandlerType = (body: string, url: string) => unknown;
 
 const REQUEST_PATTERN = /^https:\/\/([^/?#]+)([^?#]*)/u;
 const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
@@ -184,13 +184,16 @@ const MONOBANK_ROUTES: ReadonlyArray<readonly [string, RegExp, FakeHandlerType]>
 
 const E2E_SECURITIES = [
     { symbol: 'BGTX', currency: 'USD', shortname: 'Budgie Example', longname: 'Budgie Example Holdings', exchDisp: 'E2E Exchange' },
-    { symbol: 'BGEU', currency: 'EUR', shortname: 'Budgie Euro', longname: 'Budgie Euro Fund', exchDisp: 'E2E Euronext' }
+    { symbol: 'BGEU', currency: 'EUR', shortname: 'Budgie Euro', longname: 'Budgie Euro Fund', exchDisp: 'E2E Euronext' },
+    { symbol: 'BGNP', currency: 'USD', shortname: 'Budgie Unpriced', longname: 'Budgie Unpriced Trust', exchDisp: 'E2E OTC' }
 ] as const;
+const E2E_UNPRICED_SECURITY = 'BGNP';
+const SEARCH_QUERY_PATTERN = /[?&]q=([^&#]*)/u;
 const E2E_SECURITY_LATEST_CLOSE = 120;
 const E2E_SECURITY_DAILY_RISE = 2;
 const E2E_SECURITY_HISTORY_DAYS = 10;
 
-const yahooChart = (currency: string) => () => {
+const yahooChart = (currency: string, isPriced: boolean) => () => {
     const todayNoonSeconds = Math.floor(Date.now() / MILLISECONDS_PER_DAY) * SECONDS_PER_DAY + SECONDS_PER_DAY / 2;
     const daysAgo = Array.from({ length: E2E_SECURITY_HISTORY_DAYS }, (_day, index) => E2E_SECURITY_HISTORY_DAYS - 1 - index);
 
@@ -198,9 +201,13 @@ const yahooChart = (currency: string) => () => {
         chart: {
             result: [
                 {
-                    meta: { currency, regularMarketPrice: E2E_SECURITY_LATEST_CLOSE },
+                    meta: { currency, ...(isPriced && { regularMarketPrice: E2E_SECURITY_LATEST_CLOSE }) },
                     timestamp: daysAgo.map(days => todayNoonSeconds - days * SECONDS_PER_DAY),
-                    indicators: { quote: [{ close: daysAgo.map(days => E2E_SECURITY_LATEST_CLOSE - days * E2E_SECURITY_DAILY_RISE) }] }
+                    indicators: {
+                        quote: [
+                            { close: daysAgo.map(days => (isPriced ? E2E_SECURITY_LATEST_CLOSE - days * E2E_SECURITY_DAILY_RISE : null)) }
+                        ]
+                    }
                 }
             ]
         }
@@ -211,10 +218,19 @@ const YAHOO_ROUTES: ReadonlyArray<readonly [string, RegExp, FakeHandlerType]> = 
     [
         'GET',
         /^\/v1\/finance\/search$/u,
-        () => ({ quotes: E2E_SECURITIES.map(({ currency: _currency, ...quote }) => ({ ...quote, quoteType: 'EQUITY' })) })
+        (_body, url) => {
+            const query = decodeURIComponent((SEARCH_QUERY_PATTERN.exec(url)?.[1] ?? '').replaceAll('+', ' ')).toLowerCase();
+
+            return {
+                quotes: E2E_SECURITIES.filter(security =>
+                    [security.symbol, security.shortname, security.longname].some(value => value.toLowerCase().includes(query))
+                ).map(({ currency: _currency, ...quote }) => ({ ...quote, quoteType: 'EQUITY' }))
+            };
+        }
     ],
     ...E2E_SECURITIES.map(
-        ({ symbol, currency }) => ['GET', new RegExp(`^/v8/finance/chart/${symbol}$`, 'u'), yahooChart(currency)] as const
+        ({ symbol, currency }) =>
+            ['GET', new RegExp(`^/v8/finance/chart/${symbol}$`, 'u'), yahooChart(currency, symbol !== E2E_UNPRICED_SECURITY)] as const
     )
 ];
 
@@ -256,7 +272,7 @@ export const installE2eFakeApi = (): void => {
         const route = routes.find(([routeMethod, pattern]) => routeMethod === method && pattern.test(path));
 
         return Promise.resolve(
-            isDefined(route) ? respond(200, route[2](readBody(init?.body))) : respond(404, { error: 'E2E_UNKNOWN_ROUTE' })
+            isDefined(route) ? respond(200, route[2](readBody(init?.body), toUrl(input))) : respond(404, { error: 'E2E_UNKNOWN_ROUTE' })
         );
     };
 };

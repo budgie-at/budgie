@@ -1,3 +1,4 @@
+import { scrollTo } from '@mobile-ci/e2e-simlock/steps';
 import { expect } from 'e2e';
 
 import * as accounts from '../support/budgie/accounts.ts';
@@ -61,7 +62,8 @@ test('51 manual brokerage with stocks', { tags: ['accounts'], platforms: PENDING
         await expect(core.byId(screen, 'Brokerage.PriceInput')).toHaveValue('120', { timeout: 10_000 });
         await typeDigits('Brokerage.QuantityInput', '10');
         await replaceDigits('Brokerage.PriceInput', '100');
-        await expect(core.byId(screen, 'Brokerage.TradeTotal')).toHaveText(/\$1,000/, { timeout: 3_000 });
+        await core.expectText(ctx, 'Buy BGTX');
+        await expect(core.byId(screen, 'Brokerage.SaveButton')).toHaveText(/Buy · \$1,000/, { timeout: 3_000 });
         await saveTrade('Institution.Page');
     });
 
@@ -80,7 +82,13 @@ test('51 manual brokerage with stocks', { tags: ['accounts'], platforms: PENDING
         await core.tapId(ctx, 'InstitutionRow.E2E Broker');
         await core.expectId(ctx, 'Institution.Page', 10_000);
         await core.scrollTo(ctx, position);
-        await core.tapUntil(ctx, position, () => core.expectId(ctx, 'AccountDetails.Page', 10_000));
+        await core.tapUntil(ctx, position, () => core.expectId(ctx, 'CurrencyMarket.Header.BGTX', 10_000));
+        await expect(core.byId(screen, 'CurrencyMarket.Holdings.Balance.BGTX')).toHaveText(/10 BGTX/, { timeout: 10_000 });
+        await expect(core.byId(screen, 'CurrencyMarket.Holdings.Value.BGTX')).toHaveText(/\$1,200/, { timeout: 10_000 });
+        const heldIn = screen.getByRole('button', { name: /^E2E Broker/ }).first();
+        await scrollTo(screen, heldIn);
+        await heldIn.tap();
+        await core.expectId(ctx, 'AccountDetails.Page', 10_000);
         await core.tapUntil(ctx, 'AccountDetails.ActionsButton', () => core.expectId(ctx, 'Brokerage.SellButton', 5_000));
         await core.tapId(ctx, 'Brokerage.SellButton');
         await core.expectId(ctx, 'Brokerage.TradePage', 10_000);
@@ -92,7 +100,7 @@ test('51 manual brokerage with stocks', { tags: ['accounts'], platforms: PENDING
         await expect(core.byId(screen, 'Brokerage.QuantityHint')).toHaveText(/Up to 10 shares/, { timeout: 3_000 });
         await expect(core.byId(screen, 'Brokerage.PriceInput')).toHaveValue('120', { timeout: 10_000 });
         await replaceDigits('Brokerage.PriceInput', '125');
-        await expect(core.byId(screen, 'Brokerage.TradeTotal')).toHaveText(/\$500/, { timeout: 3_000 });
+        await expect(core.byId(screen, 'Brokerage.SaveButton')).toHaveText(/Sell · \$500/, { timeout: 3_000 });
         await saveTrade('AccountDetails.Page');
     });
 

@@ -24,6 +24,7 @@ import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
 import { useFormatDate } from '../../i18n/hook/use-format-date.hook';
+import { isSecurityInstrumentType } from '../../instrument/utils/is-security-instrument-type.util';
 import { defaultInstrumentAtom } from '../../settings/constants/settings-atoms.constant';
 import { useSetting } from '../../settings/hook/use-setting.hook';
 
@@ -58,9 +59,11 @@ const toDayNetAmount = (
         return { amount: row.amount, instrumentSymbol: row.instrumentSymbol, isApproximate: false };
     }
 
-    return isPositiveNumber(row.unvaluedCount)
+    const isSecurityDay = isSecurityInstrumentType(row.instrumentType);
+
+    return isPositiveNumber(row.unvaluedCount) || (isSecurityDay && row.instrumentCount > 1)
         ? null
-        : { amount: row.baseAmount, instrumentSymbol: defaultInstrument.symbol, isApproximate: true };
+        : { amount: row.baseAmount, instrumentSymbol: defaultInstrument.symbol, isApproximate: !isSecurityDay };
 };
 
 const groupTransactionsByDay = (transactions: TransactionWithRelationsEntityInterface[]): TransactionWithRelationsEntityInterface[][] => {

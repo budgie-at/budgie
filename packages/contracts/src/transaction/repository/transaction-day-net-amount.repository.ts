@@ -10,6 +10,7 @@ import { transactionFilters } from '../../@generic/repository/base-transaction-f
 import { Db } from '../../@generic/service/db.service';
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
+import { InstrumentTypeEnum } from '../../instrument/enum/instrument-type.enum';
 import { InstrumentEntityTable } from '../../instrument/table/instrument-entity.table';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
@@ -121,7 +122,10 @@ export class TransactionDayNetAmountRepository extends Context.Service<Transacti
                             amount: (day?.amount ?? 0) + row.amount,
                             baseAmount: (day?.baseAmount ?? 0) + row.baseAmount,
                             instrumentSymbol: day?.instrumentSymbol ?? row.instrumentSymbol,
-                            instrumentType: day?.instrumentType ?? row.instrumentType,
+                            instrumentType:
+                                day?.instrumentType === InstrumentTypeEnum.FIAT
+                                    ? row.instrumentType
+                                    : (day?.instrumentType ?? row.instrumentType),
                             instrumentCount: instrumentIds.size,
                             unvaluedCount: (day?.unvaluedCount ?? 0) + row.unvaluedCount
                         });

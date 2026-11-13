@@ -1,5 +1,4 @@
 import { InstrumentPriceProviderEnum, InstrumentTypeEnum } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { useLocalSearchParams } from 'expo-router';
 
@@ -10,15 +9,14 @@ import { useAccountBalanceQuery } from '../../../../account/query/use-account-ba
 import { useGetAccountByIdQuery } from '../../../../account/query/use-get-account-by-id.query';
 import { useGetAccountsByIntegrationIdQuery } from '../../../../account/query/use-get-accounts-by-integration-id.query';
 import { SecurityHoldingRow } from '../../../../brokerage/component/security-holding-row/security-holding-row';
-import { SecurityTradeAmountSection } from '../../../../brokerage/component/security-trade-amount-section/security-trade-amount-section';
 import { SecurityTradeForm } from '../../../../brokerage/component/security-trade-form/security-trade-form';
+import { SecurityTradeSideEnum } from '../../../../brokerage/enum/security-trade-side.enum';
 import { useSecurityPriceQuery } from '../../../../brokerage/query/use-security-price.query';
 import { BrokerageService } from '../../../../brokerage/service/brokerage.service';
 
 import type { SecurityTradeFormValues } from '../../../../brokerage/constant/security-trade-form-schema.constant';
 
 export default function SellSecurity() {
-    const { t } = useLingui();
     const accountId = Number(useLocalSearchParams<IdParamInterface>().id);
 
     const { account } = useGetAccountByIdQuery(accountId);
@@ -36,13 +34,12 @@ export default function SellSecurity() {
 
     return (
         <SecurityTradeForm
-            title={t`Sell`}
+            side={SecurityTradeSideEnum.SELL}
+            symbol={account?.instrument.symbol ?? ''}
             currencySymbol={currencySymbol}
-            isReady
             maxQuantity={balance}
             suggestedPrice={suggestedPrice}
             onSubmit={handleSubmit}
-            summary={<SecurityTradeAmountSection title={t`Proceeds`} feeSign={-1} currencySymbol={currencySymbol} maxQuantity={balance} />}
         >
             {isDefined(account) ? <SecurityHoldingRow balance={balance} instrument={account.instrument} /> : null}
         </SecurityTradeForm>

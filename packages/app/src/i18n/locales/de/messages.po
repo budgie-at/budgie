@@ -1482,9 +1482,9 @@ msgstr "Gebühr hinzufügen"
 msgid "Add item"
 msgstr "Eintrag hinzufügen"
 
-#: src/app/(main)/securities/buy/[id].tsx
 #: src/brokerage/component/brokerage-add-position-action/brokerage-add-position-action.tsx
 #: src/brokerage/component/brokerage-empty-state/brokerage-empty-state.tsx
+#: src/brokerage/component/security-trade-form/security-trade-form.tsx
 msgid "Add position"
 msgstr "Position hinzufügen"
 
@@ -2439,6 +2439,14 @@ msgstr "Die integrierten Kategorien sind immer da. Füge eigene hinzu, um Ausgab
 #: src/runway/component/runway-verdict/runway-verdict.tsx
 msgid "Burning"
 msgstr "Cash-Burn"
+
+#: src/brokerage/component/security-trade-save-footer/security-trade-save-footer.tsx
+msgid "Buy"
+msgstr "Kaufen"
+
+#: src/brokerage/component/security-trade-form/security-trade-form.tsx
+msgid "Buy {symbol}"
+msgstr "{symbol} kaufen"
 
 #: src/transaction/hook/use-transaction-row-title.hook.ts
 msgid "Buy {title}"
@@ -6639,6 +6647,10 @@ msgstr "Keine Änderung"
 msgid "No contacts on this device"
 msgstr "Keine Kontakte auf diesem Gerät"
 
+#: src/brokerage/component/security-trade-price-hint/security-trade-price-hint.tsx
+msgid "No current price for this security. Enter the price you paid per share."
+msgstr "Für dieses Wertpapier gibt es keinen aktuellen Kurs. Gib den gezahlten Preis pro Aktie ein."
+
 #: src/category/components/category-empty-state/category-empty-state.tsx
 msgid "No custom categories yet"
 msgstr "Noch keine eigenen Kategorien"
@@ -7275,6 +7287,7 @@ msgid "Operations imported"
 msgstr "Vorgänge importiert"
 
 #: src/app/(main)/import-csv.tsx
+#: src/brokerage/component/security-trade-form/security-trade-form.tsx
 msgid "Optional"
 msgstr "Optional"
 
@@ -7899,10 +7912,6 @@ msgstr "Privates Konto von {ownerName}"
 msgid "Private by design"
 msgstr "Privat durch Design"
 
-#: src/app/(main)/securities/sell/[id].tsx
-msgid "Proceeds"
-msgstr "Erlös"
-
 #: src/budget/components/budget-category-forecast/budget-category-forecast.tsx
 msgid "Projected {overAmount} over"
 msgstr "Prognose: {overAmount} drüber"
@@ -8491,7 +8500,6 @@ msgid "Same trigger as a rule above"
 msgstr "Gleicher Auslöser wie eine Regel darüber"
 
 #: src/@generic/component/modal-form-save-button/modal-form-save-button.tsx
-#: src/brokerage/component/security-trade-form/security-trade-form.tsx
 #: src/inzhur/component/inzhur-purchase-footer/inzhur-purchase-footer.tsx
 #: src/recurring/components/recurring-series-form-screen/recurring-series-form-screen.tsx
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
@@ -8776,9 +8784,14 @@ msgid "Selected"
 msgstr "Ausgewählt"
 
 #: src/account/component/account-actions-menu/account-actions-menu.tsx
-#: src/app/(main)/securities/sell/[id].tsx
+#: src/brokerage/component/security-trade-form/security-trade-form.tsx
+#: src/brokerage/component/security-trade-save-footer/security-trade-save-footer.tsx
 msgid "Sell"
 msgstr "Verkaufen"
+
+#: src/brokerage/component/security-trade-form/security-trade-form.tsx
+msgid "Sell {symbol}"
+msgstr "{symbol} verkaufen"
 
 #: src/transaction/hook/use-transaction-row-title.hook.ts
 msgid "Sell {title}"
@@ -10082,7 +10095,6 @@ msgstr "Einzahlungen"
 #: src/account/component/debt-account-card/debt-account-card.tsx
 #: src/account/component/debt-account-paid-off/debt-account-paid-off.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
-#: src/app/(main)/securities/buy/[id].tsx
 #: src/installment-plan/component/installment-plan-total-field/installment-plan-total-field.tsx
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "Total"

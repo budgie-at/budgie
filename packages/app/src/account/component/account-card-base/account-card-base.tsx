@@ -34,6 +34,7 @@ interface Props {
     readonly amountLabel?: string;
     readonly subtitle?: string;
     readonly onImport?: EmptyFn;
+    readonly onPress?: EmptyFn;
     readonly children?: ReactNode;
 }
 
@@ -47,7 +48,7 @@ const amountVariants = cva('gap-y-xxs', {
     variants: { isStacked: { true: 'items-start', false: 'max-w-[55%] shrink-0 items-end' } }
 });
 
-export const AccountCardBase = ({ account, balance, convertedBalance, amountLabel, subtitle, onImport, children }: Props) => {
+export const AccountCardBase = ({ account, balance, convertedBalance, amountLabel, subtitle, onImport, onPress, children }: Props) => {
     const { id, title, icon, iban, type, integrationId, sync, instrument } = account;
 
     const { t } = useLingui();
@@ -82,7 +83,7 @@ export const AccountCardBase = ({ account, balance, convertedBalance, amountLabe
                 accessibilityLabel={accessibilityLabel}
                 accessibilityActions={accessibilityActions}
                 onAccessibilityAction={handleAccessibilityAction}
-                onPress={navigateToAccount}
+                onPress={onPress ?? navigateToAccount}
                 onLongPress={openMenu}
                 className={rowVariants({ isStacked })}
             >

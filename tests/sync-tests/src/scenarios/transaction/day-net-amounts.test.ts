@@ -79,6 +79,26 @@ describe('transaction/day-net-amounts', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
+    it.effect('keeps the security instrument type on a day that mixes cash and a security', () =>
+        Effect.gen(function* () {
+            const instrument = yield* seed.instrument({
+                code: 'YAHOO:BGTX',
+                name: 'Budgie Example',
+                symbol: 'BGTX',
+                type: InstrumentTypeEnum.EQUITY
+            });
+            const cash = yield* seed.account({ type: AccountTypeEnum.CASH });
+            const security = yield* seed.account({ instrumentId: instrument.id });
+
+            yield* seed.manualExpense({ accountId: cash.id, amount: 10 * PRECISION, operatedAt: DAY });
+            yield* seed.manualExpense({ accountId: security.id, amount: PRECISION, operatedAt: DAY });
+
+            const [day] = yield* getDayNetAmounts([cash.id, security.id]);
+
+            expect(day).toMatchObject({ instrumentCount: 2, instrumentType: InstrumentTypeEnum.EQUITY });
+        }).pipe(Effect.provide(TestLayer))
+    );
+
     it.effect('nets a consolidated refund and matches the ledger balance', () =>
         Effect.gen(function* () {
             const accountBalanceRepository = yield* AccountBalanceRepository;
