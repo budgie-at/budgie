@@ -1,6 +1,5 @@
-import { AccountTypeEnum, ExternalSourceEnum } from '@budgie/contracts';
+import { ExternalSourceEnum } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
-import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { router } from 'expo-router';
@@ -12,29 +11,27 @@ import { ROW_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-max
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { testID } from '../../../@generic/utils/test-id.util';
-import { BrokerageInstitutionRowDetail } from '../../../brokerage/component/brokerage-institution-row-detail/brokerage-institution-row-detail';
 import { InzhurInstitutionRowDetail } from '../../../inzhur/component/inzhur-institution-row-detail/inzhur-institution-row-detail';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
+import { getInstitutionRowCaption } from '../../utils/get-institution-row-caption.util';
 import { getInstitutionTitle } from '../../utils/get-institution-title.util';
 import { InstitutionRowDetail } from '../institution-row-detail/institution-row-detail';
 import { InstitutionRowTotal } from '../institution-row-total/institution-row-total';
 
 import { InstitutionRowSelector } from './institution-row.selector';
 
-import type { HomeAccountBalanceInterface } from '../../interface/home-account-balance.interface';
 import type { InstitutionGroupInterface } from '../../interface/institution-group.interface';
 
 interface Props {
     readonly institution: InstitutionGroupInterface;
-    readonly balancesByAccountId: ReadonlyMap<number, HomeAccountBalanceInterface>;
 }
 
 const rowVariants = cva('min-h-[64px] gap-x-xl py-lg pr-lg pl-3xl active:bg-surface-fill', {
     variants: { isStacked: { true: 'gap-y-sm', false: 'flex-row items-center' } }
 });
 
-export const InstitutionRow = ({ institution, balancesByAccountId }: Props) => {
-    const { integrationId, provider, label, groupNumber, accounts, total } = institution;
+export const InstitutionRow = ({ institution }: Props) => {
+    const { integrationId, provider, label, groupNumber, accounts, total, cash, isHoldingProvider } = institution;
 
     const { t } = useLingui();
     const isStacked = useIsAccessibilityTextSize();
@@ -44,15 +41,11 @@ export const InstitutionRow = ({ institution, balancesByAccountId }: Props) => {
     const handlePress = () => void router.push({ pathname: '/institution/[id]', params: { id: String(integrationId) } });
 
     const title = getInstitutionTitle(t, provider, label, groupNumber);
-    const accountsCount = accounts.length;
-    const accountsCountLabel = accounts.every(account => account.type === AccountTypeEnum.CRYPTO_SYNC)
-        ? t({ message: plural(accountsCount, { one: '# asset', other: '# assets' }) })
-        : t({ message: plural(accountsCount, { one: '# account', other: '# accounts' }) });
+    const caption = getInstitutionRowCaption(t, institution);
     const bankName = label ?? title;
-    const isBrokerage = provider === ExternalSourceEnum.MANUAL;
-    const hasDefaultDetail = provider !== ExternalSourceEnum.INZHUR && !isBrokerage;
-    const rowTestID = testID(InstitutionRowSelector.Row(isBrokerage ? bankName : integrationId));
-    const accessibilityLabel = [title, protectAmount(total, defaultInstrument.symbol), accountsCountLabel].join(', ');
+    const rowTotal = isHoldingProvider ? cash : total;
+    const rowTestID = testID(InstitutionRowSelector.Row(provider === ExternalSourceEnum.MANUAL ? bankName : integrationId));
+    const accessibilityLabel = [title, protectAmount(rowTotal, defaultInstrument.symbol), caption].join(', ');
 
     return (
         <HapticPressable
@@ -73,18 +66,14 @@ export const InstitutionRow = ({ institution, balancesByAccountId }: Props) => {
                 >
                     {title}
                 </Text>
-                {provider === ExternalSourceEnum.INZHUR ? <InzhurInstitutionRowDetail /> : null}
-                {isBrokerage ? (
-                    <BrokerageInstitutionRowDetail
-                        accounts={accounts}
-                        accountsCountLabel={accountsCountLabel}
-                        balancesByAccountId={balancesByAccountId}
-                    />
-                ) : null}
-                {hasDefaultDetail ? <InstitutionRowDetail accounts={accounts} accountsCountLabel={accountsCountLabel} /> : null}
+                {provider === ExternalSourceEnum.INZHUR ? (
+                    <InzhurInstitutionRowDetail />
+                ) : (
+                    <InstitutionRowDetail accounts={accounts} accountsCountLabel={caption} />
+                )}
             </View>
 
-            <InstitutionRowTotal integrationId={integrationId} total={total} />
+            <InstitutionRowTotal integrationId={integrationId} total={rowTotal} />
         </HapticPressable>
     );
 };

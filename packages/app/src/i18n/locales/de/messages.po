@@ -52,12 +52,24 @@ msgstr "„{title}“ gelöscht"
 msgid "(pick one)"
 msgstr "(bitte wählen)"
 
+#. placeholder {0}: accounts.length
 #. placeholder {0}: parts.length
 #. placeholder {0}: shelvedList.shelvedCount
 #: src/account/component/shelved-accounts-page/shelved-accounts-page.tsx
+#: src/account/utils/get-institution-row-caption.util.ts
 #: src/rule/hooks/use-rule-condition-formatter.hook.ts
 msgid "{0, plural, one {# account} other {# accounts}}"
 msgstr "{0, plural, one {# Konto} other {# Konten}}"
+
+#. placeholder {0}: accounts.length
+#: src/account/utils/get-institution-row-caption.util.ts
+msgid "{0, plural, one {# asset} other {# assets}}"
+msgstr "{0, plural, one {# Asset} other {# Assets}}"
+
+#. placeholder {0}: accounts.length
+#: src/account/component/home-holding-row-caption/home-holding-row-caption.tsx
+msgid "{0, plural, one {# broker} other {# brokers}}"
+msgstr "{0, plural, one {# Broker} other {# Broker}}"
 
 #. placeholder {0}: charges.length
 #: src/siri/service/siri-catalog.service.ts
@@ -127,6 +139,11 @@ msgstr "{0, plural, one {# Transaktion} other {# Transaktionen}}"
 msgid "{0, plural, one {# transfer waiting} other {# transfers waiting}}"
 msgstr "{0, plural, one {# Überweisung ausstehend} other {# Überweisungen ausstehend}}"
 
+#. placeholder {0}: accounts.length
+#: src/account/component/home-holding-row-caption/home-holding-row-caption.tsx
+msgid "{0, plural, one {# wallet} other {# wallets}}"
+msgstr "{0, plural, one {# Wallet} other {# Wallets}}"
+
 #. placeholder {0}: summary.alreadyImportedCount
 #: src/inzhur/component/inzhur-operations-import-summary/inzhur-operations-import-summary.tsx
 msgid "{0, plural, one {# was already imported} other {# were already imported}}"
@@ -187,14 +204,8 @@ msgid "{accountCount, plural, one {# account} other {# accounts}}"
 msgstr "{accountCount, plural, one {# Konto} other {# Konten}}"
 
 #: src/account/component/accounts-group/accounts-group.tsx
-#: src/account/component/crypto-currency-group-toggle-row/crypto-currency-group-toggle-row.tsx
-#: src/account/component/institution-row/institution-row.tsx
 msgid "{accountsCount, plural, one {# account} other {# accounts}}"
 msgstr "{accountsCount, plural, one {# Konto} other {# Konten}}"
-
-#: src/account/component/institution-row/institution-row.tsx
-msgid "{accountsCount, plural, one {# asset} other {# assets}}"
-msgstr "{accountsCount, plural, one {# Vermögenswert} other {# Vermögenswerte}}"
 
 #: src/market-data/component/currency-market-stale-price/currency-market-stale-price.tsx
 msgid "{ageDays, plural, one {# day old} other {# days old}}"
@@ -818,6 +829,14 @@ msgstr "{periodLabel}: {amount} unter dem Limit abgeschlossen"
 msgid "{periodLabel}, spent {spentAmount} of {limitAmount}"
 msgstr "{periodLabel}, {spentAmount} von {limitAmount} ausgegeben"
 
+#: src/account/utils/get-institution-row-caption.util.ts
+msgid "{positionsCount, plural, one {Cash · # position} other {Cash · # positions}}"
+msgstr "{positionsCount, plural, one {Cash · # Position} other {Cash · # Positionen}}"
+
+#: src/account/utils/get-institution-row-caption.util.ts
+msgid "{positionsCount, plural, one {Fiat · # asset} other {Fiat · # assets}}"
+msgstr "{positionsCount, plural, one {Fiat · # Asset} other {Fiat · # Assets}}"
+
 #: src/budget/hooks/use-budget-forecast-labels.hook.ts
 msgid "{projectedAmount} · {gapAmount} over"
 msgstr "{projectedAmount} · {gapAmount} drüber"
@@ -1143,10 +1162,6 @@ msgstr "−{changePercent} ggü. {shortPreviousLabel}"
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "≈ {formattedMonths} mo"
 msgstr "≈ {formattedMonths} Mon."
-
-#: src/account/component/crypto-currency-group-market-link/crypto-currency-group-market-link.tsx
-msgid "1 {instrumentCode} ≈ {defaultInstrumentSymbol}{formattedRate}"
-msgstr "1 {instrumentCode} ≈ {defaultInstrumentSymbol}{formattedRate}"
 
 #: src/transaction/components/conversion-row/conversion-row.tsx
 msgid "1 {sourceCode} = {formattedRate} {destinationCode}"
@@ -6264,10 +6279,6 @@ msgstr "Fehlt ein Konto? Verknüpfe es in Enable Banking mit deiner Anwendung un
 msgid "Missing categories"
 msgstr "Fehlende Kategorien"
 
-#: src/account/component/crypto-currency-group-market-link/crypto-currency-group-market-link.tsx
-msgid "Missing rate"
-msgstr "Kurs fehlt"
-
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "Mobile data"
 msgstr "Mobile Daten"
@@ -7496,12 +7507,10 @@ msgid "Partial export"
 msgstr "Teilexport"
 
 #: src/brokerage/component/brokerage-gain-line/brokerage-gain-line.tsx
-#: src/brokerage/component/brokerage-institution-row-detail/brokerage-institution-row-detail.tsx
 msgid "Partial value"
 msgstr "Teilwert"
 
 #: src/brokerage/component/brokerage-gain-line/brokerage-gain-line.tsx
-#: src/brokerage/component/brokerage-institution-row-detail/brokerage-institution-row-detail.tsx
 msgid "Partial value — some prices unavailable"
 msgstr "Teilwert – einige Kurse fehlen"
 
@@ -10677,6 +10686,7 @@ msgstr "Wert"
 msgid "value unavailable"
 msgstr "Wert nicht verfügbar"
 
+#: src/account/component/home-holding-row-amount/home-holding-row-amount.tsx
 #: src/account/component/security-account-card/security-account-card.tsx
 #: src/brokerage/component/brokerage-holding-row/brokerage-holding-row.tsx
 msgid "Value unavailable"

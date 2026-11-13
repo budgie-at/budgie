@@ -11,6 +11,7 @@ import { ScreenChromeThemeProvider } from '../../@generic/provider/screen-chrome
 import { HomeSectionsList } from '../../account/component/home-sections-list/home-sections-list';
 import { NetWorthCollapsibleHeader } from '../../account/component/net-worth-collapsible-header/net-worth-collapsible-header';
 import { NetWorthComposition } from '../../account/component/net-worth-composition/net-worth-composition';
+import { useHomeHoldingReturnsQuery } from '../../account/query/use-home-holding-returns.query';
 import { useHomePageDataQuery } from '../../account/query/use-home-page-data.query';
 import { AiDownloadHomeStatus } from '../../ai/component/ai-download-home-status/ai-download-home-status';
 import { BudgetWidget } from '../../budget/components/budget-widget/budget-widget';
@@ -28,6 +29,7 @@ const HOME_SCREEN_CHROME_CONFIG = {
 
 export default function HomePage() {
     const { activeAccountCount, balanceSummary, isLoading, sections } = useHomePageDataQuery();
+    const holdingReturns = useHomeHoldingReturnsQuery(sections);
     const { bottom } = useSafeAreaInsets();
     const onboardingHref = useOnboardingRedirect();
     const isOnboardingPending = useIsOnboardingPending();
@@ -62,6 +64,7 @@ export default function HomePage() {
                         isLoading={isLoading}
                         bottomInset={bottom}
                         balancesByAccountId={balanceSummary.balancesByAccountId}
+                        holdingReturns={holdingReturns}
                         listHeaderComponent={listHeaderComponent}
                     />
                 </ScreenChromeStickyHeadersProvider>
