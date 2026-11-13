@@ -6581,6 +6581,10 @@ msgstr "No icons found"
 msgid "No income in this view"
 msgstr "No income in this view"
 
+#: src/account/component/deposit-close-delta-line/deposit-close-delta-line.tsx
+msgid "No interest to record"
+msgstr "No interest to record"
+
 #: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
 msgid "No internet connection"
 msgstr "No internet connection"

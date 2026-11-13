@@ -6580,6 +6580,10 @@ msgstr "Aucune icône trouvée"
 msgid "No income in this view"
 msgstr "Aucun revenu dans cette vue"
 
+#: src/account/component/deposit-close-delta-line/deposit-close-delta-line.tsx
+msgid "No interest to record"
+msgstr "Aucun intérêt à enregistrer"
+
 #: src/cloud-sync/hook/use-cloud-sync-status-label.hook.ts
 msgid "No internet connection"
 msgstr "Aucune connexion Internet"

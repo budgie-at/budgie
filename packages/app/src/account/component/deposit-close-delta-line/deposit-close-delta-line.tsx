@@ -13,9 +13,10 @@ export const DepositCloseDeltaLine = ({ delta, instrumentSymbol }: Props) => {
     const { t } = useLingui();
     const formatDigits = useDisplayFormatDigits();
     const formattedDelta = formatDigits(Math.abs(delta), instrumentSymbol);
-    const deltaLine = delta < 0 ? t`Shortfall: −${formattedDelta}` : t`Interest recorded: +${formattedDelta}`;
+    const interestLine = delta < 0 ? t`Shortfall: −${formattedDelta}` : t`Interest recorded: +${formattedDelta}`;
+    const deltaLine = delta === 0 ? t`No interest to record` : interestLine;
 
-    return delta === 0 ? null : (
+    return (
         <Text className="text-secondary-foreground text-sm" testID={DepositCloseSelector.DeltaLine}>
             {deltaLine}
         </Text>
