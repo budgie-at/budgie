@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.181.3](https://github.com/budgie-at/budgie/compare/v6.181.2...v6.181.3) (2026-11-13)
+
+### Bug Fixes
+
+* **app:** rework brokerage flows, home value and trade display ([#2201](https://github.com/budgie-at/budgie/issues/2201)) ([c3e9b32](https://github.com/budgie-at/budgie/commit/c3e9b32e44b8ca138a3a78078b2f4a5f14b52e00)), closes [#2202](https://github.com/budgie-at/budgie/issues/2202)
+
+
 ## [6.181.2](https://github.com/budgie-at/budgie/compare/v6.181.1...v6.181.2) (2026-11-13)
 
 ### Bug Fixes
