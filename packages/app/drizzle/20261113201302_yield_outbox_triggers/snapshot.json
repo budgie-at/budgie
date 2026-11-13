@@ -1,7 +1,7 @@
 {
-  "id": "03185226-bdb3-4c0b-b2ea-3e96b8f147b8",
+  "id": "d98918e5-f83f-4e58-89fa-028ba1dc71ff",
   "prevIds": [
-    "33acd207-8d29-458b-9279-81c9ad968fcb"
+    "5837460f-9660-4567-ac80-3c12f1cc147b"
   ],
   "version": "7",
   "dialect": "sqlite",
@@ -3762,6 +3762,16 @@
     },
     {
       "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "0",
+      "generated": null,
+      "name": "yield_tag_repair_version",
+      "entityType": "columns",
+      "table": "settings"
+    },
+    {
+      "type": "integer",
       "notNull": false,
       "autoincrement": false,
       "default": null,
@@ -7330,6 +7340,20 @@
       "where": "\"transactions\".\"yield_kind\" IS NOT NULL",
       "origin": "manual",
       "name": "transactions_yield_kind_idx",
+      "entityType": "indexes",
+      "table": "transactions"
+    },
+    {
+      "columns": [
+        {
+          "value": "yield_source_account_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": "\"transactions\".\"yield_source_account_id\" IS NOT NULL",
+      "origin": "manual",
+      "name": "transactions_yield_source_idx",
       "entityType": "indexes",
       "table": "transactions"
     },

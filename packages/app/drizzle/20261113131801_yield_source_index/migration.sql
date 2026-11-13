@@ -1,1 +1,0 @@
-CREATE INDEX `transactions_yield_source_idx` ON `transactions` (`yield_source_account_id`) WHERE "transactions"."yield_source_account_id" IS NOT NULL;

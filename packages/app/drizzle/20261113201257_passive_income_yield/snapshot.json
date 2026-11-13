@@ -1,9 +1,9 @@
 {
   "version": "7",
   "dialect": "sqlite",
-  "id": "8301feb6-5c2e-4bfa-bb5b-ca5d9e2c7f5b",
+  "id": "5837460f-9660-4567-ac80-3c12f1cc147b",
   "prevIds": [
-    "03185226-bdb3-4c0b-b2ea-3e96b8f147b8"
+    "1016fbd6-baa9-4ff3-9cd0-13a57c6ff001"
   ],
   "ddl": [
     {
@@ -7340,6 +7340,20 @@
       "where": "\"transactions\".\"yield_kind\" IS NOT NULL",
       "origin": "manual",
       "name": "transactions_yield_kind_idx",
+      "entityType": "indexes",
+      "table": "transactions"
+    },
+    {
+      "columns": [
+        {
+          "value": "yield_source_account_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": "\"transactions\".\"yield_source_account_id\" IS NOT NULL",
+      "origin": "manual",
+      "name": "transactions_yield_source_idx",
       "entityType": "indexes",
       "table": "transactions"
     },
