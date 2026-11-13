@@ -56,7 +56,17 @@ export const useBrokerageSummaryQuery = (
         (total, position, index) => total + position.realizedProfitLoss + (securityGains.at(index) ?? 0),
         cashReturn
     );
-    const moneyIn = value + cash - gain;
+    const unknownBasisValue = securities.reduce((total, account, index) => {
+        const accountBalance = balancesByAccountId.get(account.id);
+        const position = positions.at(index);
+        const knownShare =
+            isDefined(securityGains.at(index)) && isDefined(position) && isPositiveNumber(accountBalance?.balance)
+                ? Math.min(position.amount / accountBalance.balance, 1)
+                : 0;
+
+        return total + getValue(account) * (1 - knownShare);
+    }, 0);
+    const moneyIn = value + cash - gain - unknownBasisValue;
     const positiveTotal = [...securities, ...cashAccounts].reduce((total, account) => total + Math.max(getValue(account), 0), 0);
     const cashLabel = t({ message: 'Cash', context: 'Brokerage cash account' });
 
