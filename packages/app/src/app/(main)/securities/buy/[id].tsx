@@ -22,7 +22,6 @@ export default function BuySecurity() {
     const params = useLocalSearchParams<SecurityBuyParamsType>();
     const integrationId = Number(params.id);
     const { accounts } = useGetAccountsByIntegrationIdQuery(integrationId);
-    const cash = accounts?.find(account => account.instrument.type === InstrumentTypeEnum.FIAT);
     const [listing, setListing] = useState<YahooListingInterface | null>(() =>
         isNotEmptyString(params.symbol)
             ? {
@@ -33,7 +32,7 @@ export default function BuySecurity() {
               }
             : null
     );
-    const suggestedPrice = useSecurityPriceQuery(listing?.symbol ?? '', cash?.instrument);
+    const suggestedPrice = useSecurityPriceQuery(listing?.symbol ?? '', accounts ?? []);
 
     const handleSubmit = (values: SecurityTradeFormValues) =>
         isDefined(listing)
@@ -42,7 +41,7 @@ export default function BuySecurity() {
               )
             : Effect.void;
 
-    const currencySymbol = cash?.instrument.symbol ?? '';
+    const currencySymbol = suggestedPrice.cash?.instrument.symbol ?? '';
 
     return (
         <SecurityTradeForm

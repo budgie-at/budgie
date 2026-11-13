@@ -59,7 +59,9 @@ export const InstitutionDetailsPage = ({ integration, institution, balancesByAcc
 
     const isEmptyBrokerage =
         institution.provider === ExternalSourceEnum.MANUAL &&
-        !institution.accounts.some(account => isListedSecurityType(account.instrument.type));
+        !institution.accounts.some(
+            account => isListedSecurityType(account.instrument.type) || balancesByAccountId.get(account.id)?.hasLedgerHistory === true
+        );
     const summary = <InstitutionDetailsSummary institution={institution} balancesByAccountId={balancesByAccountId} />;
 
     const transactionList = (

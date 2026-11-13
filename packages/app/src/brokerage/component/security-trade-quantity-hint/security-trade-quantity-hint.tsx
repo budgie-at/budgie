@@ -6,6 +6,7 @@ import { AccessibilityInfo, Text } from 'react-native';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
+import { FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/footnote-max-font-size-multiplier.constant';
 import { BrokerageSelector } from '../../selector/brokerage.selector';
 
 import type { SecurityTradeFormValues } from '../../constant/security-trade-form-schema.constant';
@@ -32,10 +33,10 @@ export const SecurityTradeQuantityHint = ({ maxQuantity }: Props) => {
 
     return (
         <Text
-            className="-mb-[26px] h-[26px] px-3xl pt-[6px] text-[13px] leading-[18px] text-destructive-foreground"
+            className="-mb-[30px] h-[30px] px-3xl pt-[6px] text-[13px] leading-[18px] text-destructive-foreground"
             numberOfLines={1}
             adjustsFontSizeToFit
-            maxFontSizeMultiplier={1}
+            maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER}
             accessibilityLiveRegion="polite"
             testID={BrokerageSelector.QuantityHint}
         >

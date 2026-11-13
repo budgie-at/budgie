@@ -19,12 +19,11 @@ import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import * as Atom from 'effect/reactivity/Atom';
 import { useState } from 'react';
 
-import { isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
 import { useFormatDate } from '../../i18n/hook/use-format-date.hook';
-import { isSecurityInstrumentType } from '../../instrument/utils/is-security-instrument-type.util';
 import { defaultInstrumentAtom } from '../../settings/constants/settings-atoms.constant';
 import { useSetting } from '../../settings/hook/use-setting.hook';
 
@@ -53,17 +52,18 @@ const hiddenDayNetAmountsAtom = Atom.make(AsyncResult.success<TransactionDayNetA
 
 const toDayNetAmount = (
     row: TransactionDayNetAmountRowInterface,
-    defaultInstrument: Pick<InstrumentEntityInterface, 'symbol'>
+    defaultInstrument: Pick<InstrumentEntityInterface, 'symbol'>,
+    isAccountScoped: boolean
 ): TransactionsDayNetAmountInterface | null => {
     if (row.instrumentCount === 1 && row.instrumentType === InstrumentTypeEnum.FIAT) {
         return { amount: row.amount, instrumentSymbol: row.instrumentSymbol, isApproximate: false };
     }
 
-    const isSecurityDay = isSecurityInstrumentType(row.instrumentType);
+    const isMixedDay = row.instrumentCount > 1;
 
-    return isPositiveNumber(row.unvaluedCount) || (isSecurityDay && row.instrumentCount > 1)
+    return isPositiveNumber(row.unvaluedCount) || (isAccountScoped && isMixedDay && row.hasSecurity)
         ? null
-        : { amount: row.baseAmount, instrumentSymbol: defaultInstrument.symbol, isApproximate: !isSecurityDay };
+        : { amount: row.baseAmount, instrumentSymbol: defaultInstrument.symbol, isApproximate: isMixedDay || !row.hasSecurity };
 };
 
 const groupTransactionsByDay = (transactions: TransactionWithRelationsEntityInterface[]): TransactionWithRelationsEntityInterface[][] => {
@@ -122,7 +122,10 @@ export const useGetTransactionSectionsQuery = <Transaction extends TransactionWi
 
     const dayNetAmountsResult = useLiveAtomValue(getDayNetAmountsAtom());
     const dayNetAmounts = new Map(
-        AsyncResult.getOrElse(dayNetAmountsResult, () => []).map(row => [row.day, toDayNetAmount(row, defaultInstrument)])
+        AsyncResult.getOrElse(dayNetAmountsResult, () => []).map(row => [
+            row.day,
+            toDayNetAmount(row, defaultInstrument, Option.exists(dayTotalsAccountIds, isNotEmptyArray))
+        ])
     );
 
     const formatDayTitle = (date: Date | string) => {

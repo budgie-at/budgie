@@ -7,24 +7,17 @@ import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 import { MoneyText } from '../../../@generic/component/money-text/money-text';
 import { MoneyTextVariantEnum } from '../../../@generic/enum/money-text-variant.enum';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
-import { getSecurityTrade } from '../../utils/get-security-trade.util';
 
-import type { TransactionAssociationEnum, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
+import type { getSecurityTrade } from '../../utils/get-security-trade.util';
 
 interface Props {
-    readonly transaction: Pick<TransactionWithRelationsEntityInterface, TransactionAssociationEnum.ENTRIES | 'toAccountId' | 'type'>;
+    readonly trade: NonNullable<ReturnType<typeof getSecurityTrade>>;
     readonly accountId: number | null;
     readonly testID: string;
 }
 
-export const TransactionSecurityTradeAmount = ({ transaction, accountId, testID }: Props) => {
+export const TransactionSecurityTradeAmount = ({ trade, accountId, testID }: Props) => {
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
-    const trade = getSecurityTrade(transaction);
-
-    if (!isDefined(trade)) {
-        return null;
-    }
-
     const { securityEntry } = trade;
     const positionValue = accountId === securityEntry.accountId ? securityEntry.baseAmount : null;
     const directionPrefix = trade.isBuy ? '+' : '−';

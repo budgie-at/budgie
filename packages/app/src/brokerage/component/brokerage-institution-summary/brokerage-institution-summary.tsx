@@ -1,5 +1,7 @@
 import { View } from 'react-native';
 
+import { isNotEmptyArray } from '@rnw-community/shared';
+
 import { ACCOUNT_DETAILS_HERO_BALANCE_HEIGHT } from '../../../account/constant/account-details-hero-balance-height.constant';
 import { InstitutionSelector } from '../../../app/(main)/institution/institution.selector';
 import { useBrokerageSummaryQuery } from '../../query/use-brokerage-summary.query';
@@ -38,19 +40,15 @@ export const BrokerageInstitutionSummary = ({ institution, balancesByAccountId }
                     />
                 ) : null}
             </View>
-            {hasSecurities ? (
-                <>
-                    <BrokerageAddPositionAction />
-                    <BrokerageHoldings
-                        holdings={holdings}
-                        bankName={institution.label}
-                        instrumentSymbol={instrumentSymbol}
-                        balancesByAccountId={balancesByAccountId}
-                    />
-                </>
-            ) : (
-                <BrokerageEmptyState />
-            )}
+            {hasSecurities ? <BrokerageAddPositionAction /> : <BrokerageEmptyState />}
+            {isNotEmptyArray(holdings) ? (
+                <BrokerageHoldings
+                    holdings={holdings}
+                    bankName={institution.label}
+                    instrumentSymbol={instrumentSymbol}
+                    balancesByAccountId={balancesByAccountId}
+                />
+            ) : null}
         </View>
     );
 };

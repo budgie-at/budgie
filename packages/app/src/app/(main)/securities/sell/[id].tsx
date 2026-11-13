@@ -1,4 +1,4 @@
-import { InstrumentPriceProviderEnum, InstrumentTypeEnum } from '@budgie/contracts';
+import { InstrumentPriceProviderEnum } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 import { useLocalSearchParams } from 'expo-router';
 
@@ -22,12 +22,10 @@ export default function SellSecurity() {
     const { account } = useGetAccountByIdQuery(accountId);
     const { balance } = useAccountBalanceQuery(accountId);
     const { accounts } = useGetAccountsByIntegrationIdQuery(account?.integrationId ?? 0);
-    const cashAccounts = accounts?.filter(candidate => candidate.instrument.type === InstrumentTypeEnum.FIAT) ?? [];
-    const cash = cashAccounts.find(candidate => candidate.instrumentId === account?.instrument.quoteInstrumentId) ?? cashAccounts.at(0);
-    const currencySymbol = cash?.instrument.symbol ?? '';
     const yahooSymbol =
         account?.instrument.priceProvider === InstrumentPriceProviderEnum.YAHOO ? account.instrument.providerInstrumentId : null;
-    const suggestedPrice = useSecurityPriceQuery(yahooSymbol ?? '', cash?.instrument);
+    const suggestedPrice = useSecurityPriceQuery(yahooSymbol ?? '', accounts ?? []);
+    const currencySymbol = suggestedPrice.cash?.instrument.symbol ?? '';
 
     const handleSubmit = (values: SecurityTradeFormValues) =>
         Effect.flatMap(BrokerageService, brokerageService => brokerageService.sell(accountId, values));

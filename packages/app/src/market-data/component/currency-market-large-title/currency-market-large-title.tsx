@@ -4,6 +4,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { CurrencySelectorInstrumentIcon } from '../../../@generic/component/currency-selector-instrument-icon/currency-selector-instrument-icon';
 import { CHROME_TITLE_TEXT_PROPS } from '../../../@generic/constant/chrome-title-text-props.constant';
+import { TITLE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/title-max-font-size-multiplier.constant';
 import { CurrencyMarketPageSelector } from '../currency-market-page/currency-market-page.selector';
 
 import type { InstrumentEntityInterface } from '@budgie/contracts';
@@ -24,7 +25,11 @@ export const CurrencyMarketLargeTitle = ({ instrument, hasPrice }: Props) => {
                     {instrument.name}
                 </Text>
             </View>
-            <Text className="text-secondary-foreground text-[15px]" numberOfLines={1}>
+            <Text
+                className="text-secondary-foreground text-[15px]"
+                numberOfLines={1}
+                maxFontSizeMultiplier={TITLE_MAX_FONT_SIZE_MULTIPLIER}
+            >
                 {caption}
             </Text>
         </View>

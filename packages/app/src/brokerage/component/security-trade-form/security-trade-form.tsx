@@ -57,8 +57,14 @@ export const SecurityTradeForm = <E,>(props: Props<E>) => {
     const { isLoading, run } = useSingleFlight();
 
     useEffect(() => {
-        if (isPositiveNumber(suggestedPrice.price) && !form.getFieldState('price').isDirty) {
+        if (form.getFieldState('price').isDirty) {
+            return;
+        }
+
+        if (isPositiveNumber(suggestedPrice.price)) {
             form.setValue('price', suggestedPrice.price, { shouldValidate: true });
+        } else {
+            form.resetField('price');
         }
     }, [form, suggestedPrice.price]);
 

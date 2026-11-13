@@ -18,7 +18,7 @@ import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 import { HttpResponse, http } from 'msw';
 
-import { fetchAccountBalance, fetchBalanceAdjustments, fetchExpenseEntries, requireInstrument, TestLayer } from '../../harness';
+import { fetchAccountBalance, fetchBalanceAdjustments, fetchExpenseEntries, requireInstrument, seed, TestLayer } from '../../harness';
 import { mockServer } from '../../harness/scenario/mock-server';
 import { testDb } from '../../harness/scenario/test-db';
 
@@ -182,6 +182,25 @@ describe('market-data/brokerage-trades', () => {
             expect(yield* fetchBalanceAdjustments(cash.id)).toEqual([
                 { title: FUNDING_TITLE, amount: 906_090_000 + 25_160_000, type: TransactionEntryTypeEnum.DEBIT, operatedAt: TRADE_DAY }
             ]);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('deposits only the trade cost when the cash account goes negative later for an unrelated expense', () =>
+        Effect.gen(function* () {
+            const { brokerageService, cash } = yield* createBrokerage;
+
+            yield* seed.manualExpense({ accountId: cash.id, amount: 50_000_000, operatedAt: new Date('2026-03-10T12:00:00.000Z') });
+            yield* brokerageService.buy(
+                cash.integrationId ?? 0,
+                LISTING,
+                { quantity: 10, price: 10, fee: 0, operatedAt: TRADE_DAY },
+                FUNDING_TITLE
+            );
+
+            expect(yield* fetchBalanceAdjustments(cash.id)).toEqual([
+                { title: FUNDING_TITLE, amount: 100_000_000, type: TransactionEntryTypeEnum.DEBIT, operatedAt: TRADE_DAY }
+            ]);
+            expect(yield* fetchAccountBalance(cash.id)).toBe(-50_000_000);
         }).pipe(Effect.provide(TestLayer))
     );
 });

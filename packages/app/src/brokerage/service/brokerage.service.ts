@@ -7,7 +7,6 @@ import {
     CategorySourceEnum,
     Db,
     ExternalSourceEnum,
-    InstrumentTypeEnum,
     TransactionEntryKindEnum,
     TransactionEntryTypeEnum,
     TransactionTypeEnum,
@@ -27,6 +26,7 @@ import { DEFAULT_DECIMAL_PLACES } from '../../i18n/constant/default-decimal-plac
 import { HistoricalMarketDataDrainerService } from '../../market-data/service/historical-market-data-drainer.service';
 import { roundHalfExpand } from '../../market-data/utils/round-half-expand.util';
 import { InsufficientSecurityHoldingError } from '../error/insufficient-security-holding.error';
+import { findBrokerageCashAccount } from '../utils/find-brokerage-cash-account.util';
 
 import type { SecurityTradeFormValues } from '../constant/security-trade-form-schema.constant';
 import type {
@@ -62,8 +62,7 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
 
         const findCashAccount = Effect.fnUntraced(function* ({ integrationId, instrument }: AccountWithInstrumentEntityInterface) {
             const accounts = isDefined(integrationId) ? yield* accountRepository.findByIntegrationId(integrationId) : [];
-            const cashAccounts = accounts.filter(account => account.instrument.type === InstrumentTypeEnum.FIAT);
-            const cashAccount = cashAccounts.find(account => account.instrumentId === instrument.quoteInstrumentId) ?? cashAccounts.at(0);
+            const cashAccount = findBrokerageCashAccount(accounts, instrument.quoteInstrumentId);
 
             return cashAccount ?? (yield* Effect.die(new Error('Brokerage cash account not found')));
         });
@@ -77,10 +76,8 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
             const cash = yield* findCashAccount(security);
             const cashAmount = roundHalfExpand(trade.quantity * trade.price, DEFAULT_DECIMAL_PLACES);
             const fee = roundHalfExpand(trade.fee, DEFAULT_DECIMAL_PLACES);
-            const shortfall = isSell
-                ? 0
-                : convertToMicroUnits(cashAmount + fee) -
-                  (yield* accountBalanceRepository.getMinimumLedgerBalanceFrom(cash.id, trade.operatedAt));
+            const minimumCashBalance = isSell ? 0 : yield* accountBalanceRepository.getMinimumLedgerBalanceFrom(cash.id, trade.operatedAt);
+            const shortfall = isSell ? 0 : convertToMicroUnits(cashAmount + fee) - Math.max(minimumCashBalance, 0);
 
             if (isPositiveNumber(shortfall)) {
                 yield* balanceAdjustmentService.create(cash.id, shortfall, trade.operatedAt, fundingTitle ?? '');

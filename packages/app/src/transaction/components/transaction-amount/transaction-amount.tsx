@@ -10,8 +10,8 @@ import { useContext } from 'react';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { isSecurityInstrumentType } from '../../../instrument/utils/is-security-instrument-type.util';
 import { StatisticsCategoryIdsContext } from '../../context/statistics-category-ids.context';
+import { getSecurityTrade } from '../../utils/get-security-trade.util';
 import { getTransactionType } from '../../utils/get-transaction-type.util';
 import { isEarnedIncomeTransaction } from '../../utils/is-earned-income-transaction.util';
 import { selectStatisticsAmountTransaction } from '../../utils/select-statistics-amount-transaction.util';
@@ -81,8 +81,10 @@ export const TransactionAmount = ({ transaction: fullTransaction, accountId = nu
     const amountTestID = TransactionCardSelector.Amount(transaction.id);
 
     if (isDefined(fromEntry) && isDefined(toEntry)) {
-        return [fromEntry, toEntry].some(entry => isSecurityInstrumentType(entry.account.instrument.type)) ? (
-            <TransactionSecurityTradeAmount transaction={transaction} accountId={accountId} testID={amountTestID} />
+        const trade = getSecurityTrade(transaction);
+
+        return isDefined(trade) ? (
+            <TransactionSecurityTradeAmount trade={trade} accountId={accountId} testID={amountTestID} />
         ) : (
             <TransactionTransferAmount fromEntry={fromEntry} toEntry={toEntry} accountId={accountId} testID={amountTestID} />
         );
@@ -94,11 +96,13 @@ export const TransactionAmount = ({ transaction: fullTransaction, accountId = nu
         return null;
     }
 
-    const isAdjustment = isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction);
     const isInflow = getTransactionType(transaction) === TransactionTypeEnum.INCOME;
     const sideVariant = isEarnedIncomeTransaction(transaction) ? 'positive' : 'primary';
     const sign = isInflow ? '+' : '';
-    const sideTestID = isAdjustment ? TransactionCardSelector.AdjustmentAmount(convertFromMicroUnits(sideEntry.amount)) : amountTestID;
+    const sideTestID =
+        isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction)
+            ? TransactionCardSelector.AdjustmentAmount(convertFromMicroUnits(sideEntry.amount))
+            : amountTestID;
 
     return (
         <TransactionEntryAmount
