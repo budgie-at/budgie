@@ -21,8 +21,7 @@ interface Props {
     readonly variant: ColorPaletteVariant;
 }
 
-const ICON_SIZE = 36;
-const LARGE_TEXT_ICON_SIZE = 32;
+const ICON_SIZE = 40;
 const LABEL_CLASSNAME = 'text-md font-semibold leading-tight text-primary';
 const TILE_CLASSNAME = 'grow flex-row items-center gap-md rounded-5xl bg-popover-surface pl-lg pr-xl';
 
@@ -31,7 +30,6 @@ export const CreateMenuTileContent = ({ icon, label, testID, variant }: Props) =
     const [labelLayout, setLabelLayout] = useState(CreateMenuLabelLayoutEnum.PENDING);
 
     const isLargeText = fontScale >= CREATE_MENU_LARGE_TEXT_FONT_SCALE;
-    const iconSize = isLargeText ? LARGE_TEXT_ICON_SIZE : ICON_SIZE;
     const tileClassName = isLargeText ? `h-[68px] py-xs ${TILE_CLASSNAME}` : `h-[64px] py-xxs ${TILE_CLASSNAME}`;
     const lines = labelLayout === CreateMenuLabelLayoutEnum.SPLIT ? splitCreateMenuLabel(label) : [label];
     const lineClassName = labelLayout === CreateMenuLabelLayoutEnum.PENDING ? `opacity-0 ${LABEL_CLASSNAME}` : LABEL_CLASSNAME;
@@ -42,7 +40,7 @@ export const CreateMenuTileContent = ({ icon, label, testID, variant }: Props) =
 
     return (
         <View className={tileClassName}>
-            <CreateMenuIcon icon={icon} variant={variant} size={iconSize} />
+            <CreateMenuIcon icon={icon} variant={variant} size={ICON_SIZE} />
             <View className="flex-1" {...testIDProps(testID, TestIDPartEnum.LABEL)}>
                 <Text
                     className={`absolute inset-x-0 top-0 opacity-0 ${LABEL_CLASSNAME}`}

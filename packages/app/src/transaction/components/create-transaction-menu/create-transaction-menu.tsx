@@ -30,8 +30,8 @@ import type { RefObject } from 'react';
 const CLOSE_ROTATION = 45;
 const OPEN_SPRING = { ...SPRING_SETTLE, duration: 320 };
 const FADE_TIMING = { duration: MOTION_FAST_DURATION, easing: EASE_OUT };
-const CHIP_GAP_CLASSNAME = 'gap-xl';
-const LARGE_TEXT_CHIP_GAP_CLASSNAME = 'gap-sm';
+const STACK_GAP_CLASSNAME = 'gap-xl';
+const LARGE_TEXT_STACK_GAP_CLASSNAME = 'gap-lg';
 
 interface Props {
     readonly isOpen: boolean;
@@ -106,7 +106,7 @@ export const CreateTransactionMenu = ({ isOpen, onClose, triggerRef, accountId, 
     const contextActionTestID = createAction?.testID ?? CreateTransactionMenuSelector.item(0);
     const pointerEvents = isOpen ? 'box-none' : 'none';
     const accessibilityVisibility = isOpen ? 'auto' : 'no-hide-descendants';
-    const chipGapClassName = fontScale >= CREATE_MENU_LARGE_TEXT_FONT_SCALE ? LARGE_TEXT_CHIP_GAP_CLASSNAME : CHIP_GAP_CLASSNAME;
+    const stackGapClassName = fontScale >= CREATE_MENU_LARGE_TEXT_FONT_SCALE ? LARGE_TEXT_STACK_GAP_CLASSNAME : STACK_GAP_CLASSNAME;
 
     useEffect(() => {
         if (isOpen) {
@@ -156,7 +156,7 @@ export const CreateTransactionMenu = ({ isOpen, onClose, triggerRef, accountId, 
                     <View className="flex-1 bg-black/90" />
                 </Animated.View>
 
-                <View className={chipGapClassName} pointerEvents="box-none">
+                <View className={stackGapClassName} pointerEvents="box-none">
                     <CreateMenuReveal progress={progress} order={3} className="flex-row gap-xl">
                         <CreateMenuChip
                             icon={UserIconNameEnum.Repeat}
@@ -174,7 +174,7 @@ export const CreateTransactionMenu = ({ isOpen, onClose, triggerRef, accountId, 
                         />
                     </CreateMenuReveal>
 
-                    <View className="gap-xl" pointerEvents="box-none">
+                    <View className={stackGapClassName} pointerEvents="box-none">
                         <CreateMenuReveal progress={progress} order={2} className="flex-row gap-xl">
                             <CreateMenuTile
                                 ref={firstTileRef}
