@@ -1,4 +1,10 @@
-import { SettingsRepository, SyncApplyStateRepository, TransactionYieldRepository, YIELD_TO_UI } from '@budgie/contracts';
+import {
+    SettingsRepository,
+    SyncApplyStateRepository,
+    TransactionYieldRepository,
+    YIELD_TO_UI,
+    normalizeYieldFields
+} from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -44,14 +50,17 @@ export class YieldTagRepairService extends Context.Service<YieldTagRepairService
 
             for (const candidate of candidates) {
                 const binancePatch = buildBinancePatch(candidate);
-                const patch = buildInzhurPatch(candidate) ?? binancePatch;
+                const rawPatch = buildInzhurPatch(candidate) ?? binancePatch;
+                const patch = isDefined(rawPatch)
+                    ? normalizeYieldFields(candidate.type, rawPatch.yieldKind, rawPatch.yieldSourceAccountId)
+                    : null;
 
-                if (isDefined(patch)) {
+                if (isDefined(patch) && isDefined(patch.yieldKind)) {
                     yield* transactionYieldRepository.fillYieldTags(candidate.id, patch);
-                }
 
-                if (isDefined(binancePatch)) {
-                    binanceIds.push(candidate.id);
+                    if (isDefined(binancePatch)) {
+                        binanceIds.push(candidate.id);
+                    }
                 }
             }
 

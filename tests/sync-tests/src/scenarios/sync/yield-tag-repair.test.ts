@@ -1,11 +1,15 @@
 import {
+    AccountEntityTable,
     AccountTypeEnum,
     ExternalSourceEnum,
+    HOUSEHOLD_SYNC_ZONE,
     INVESTMENTS_CATEGORY_ID,
     SettingsRepository,
+    SyncApplyStateRepository,
     TransactionEntityTable,
     TransactionEntryEntityTable,
     TransactionRepository,
+    TransactionYieldRepository,
     TransactionTypeEnum,
     TransactionUpdatedByEnum,
     YieldKindEnum
@@ -14,6 +18,7 @@ import { INZHUR_UNATTRIBUTED_DIVIDEND_TITLE, YieldTagRepairService } from '@budg
 import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
 
 import { readOutboxRows, seed, testDb, TestLayer } from '../../harness';
 
@@ -47,6 +52,20 @@ const clearOutbox = testDb.$client.unsafe('DELETE FROM sync_outbox');
 
 const repair = Effect.flatMap(YieldTagRepairService, service => service.runOnce()).pipe(Effect.provide(YieldTagRepairService.layer));
 
+const failingRepairLayer = Layer.mergeAll(
+    SettingsRepository.layer,
+    SyncApplyStateRepository.layer,
+    Layer.effect(
+        TransactionYieldRepository,
+        Effect.map(TransactionYieldRepository.make, repository => ({ ...repository, fillYieldTags: () => Effect.die('interrupted') }))
+    )
+);
+
+const failingRepair = Effect.flatMap(YieldTagRepairService.make, service => service.runOnce()).pipe(
+    Effect.provide(failingRepairLayer),
+    Effect.exit
+);
+
 const seedProviders = Effect.gen(function* () {
     const binance = yield* seed.account({ title: 'BNB', type: AccountTypeEnum.CRYPTO_SYNC, externalSource: ExternalSourceEnum.BINANCE });
     const cash = yield* seed.account({ title: 'Inzhur cash', type: AccountTypeEnum.CASH, externalSource: ExternalSourceEnum.INZHUR });
@@ -75,7 +94,7 @@ const seedProviders = Effect.gen(function* () {
     yield* setFields(tax.id, { fundAccountId: fund.id });
     yield* clearOutbox;
 
-    return { fund, earn, locked, staking, distribution, dividend, tax, unattributed };
+    return { binance, fund, earn, locked, staking, distribution, dividend, tax, unattributed };
 });
 
 describe('sync/yield-tag-repair', () => {
@@ -147,5 +166,73 @@ describe('sync/yield-tag-repair', () => {
             expect((yield* readTag(rows.staking.id)).yieldKind).toBeNull();
             expect(yield* readOutboxRows(testDb)).toEqual([]);
         }).pipe(Effect.provide([TestLayer, YieldTagRepairService.layer]))
+    );
+
+    it.effect('tags only income for Binance prefixes and leaves expenses and transfers untagged', () =>
+        Effect.gen(function* () {
+            const rows = yield* seedProviders;
+            const binanceExpense = yield* seed.manualExpense({
+                accountId: rows.binance.id,
+                amount: 500_000,
+                operatedAt: OPERATED_AT,
+                externalId: 'binance:earn:BNB:2026-06-02',
+                externalSource: ExternalSourceEnum.BINANCE
+            });
+            const transfer = yield* seedIncome(rows.binance.id, { externalId: 'binance:earn:BNB:2026-06-03' });
+
+            yield* setFields(transfer.id, { type: TransactionTypeEnum.TRANSFER });
+            yield* repair;
+
+            expect(yield* readTag(binanceExpense.id)).toMatchObject({ yieldKind: null, yieldSourceAccountId: null });
+            expect(yield* readTag(transfer.id)).toMatchObject({ yieldKind: null, yieldSourceAccountId: null });
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('gives a null source when the fund lives in another zone', () =>
+        Effect.gen(function* () {
+            const rows = yield* seedProviders;
+
+            yield* testDb.update(AccountEntityTable).set({ syncZone: HOUSEHOLD_SYNC_ZONE }).where(eq(AccountEntityTable.id, rows.fund.id));
+            yield* repair;
+
+            expect(yield* readTag(rows.dividend.id)).toMatchObject({ yieldKind: YieldKindEnum.DIVIDEND, yieldSourceAccountId: null });
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('keeps updated_at and updated_by of repaired rows', () =>
+        Effect.gen(function* () {
+            const rows = yield* seedProviders;
+
+            yield* setFields(rows.dividend.id, {
+                updatedBy: TransactionUpdatedByEnum.USER,
+                updatedAt: new Date('2026-01-01T00:00:00.000Z')
+            });
+            const [before] = yield* testDb.select().from(TransactionEntityTable).where(eq(TransactionEntityTable.id, rows.dividend.id));
+
+            yield* repair;
+
+            const [after] = yield* testDb.select().from(TransactionEntityTable).where(eq(TransactionEntityTable.id, rows.dividend.id));
+
+            expect(after).toMatchObject({ yieldKind: YieldKindEnum.DIVIDEND, updatedBy: before.updatedBy, updatedAt: before.updatedAt });
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('completes a partially tagged state on the next run and sets the version only at the end', () =>
+        Effect.gen(function* () {
+            const rows = yield* seedProviders;
+
+            yield* setFields(rows.earn.id, { yieldKind: YieldKindEnum.EARN });
+
+            expect((yield* failingRepair)._tag).toBe('Failure');
+            expect((yield* (yield* SettingsRepository).getSettings()).yieldTagRepairVersion).toBe(0);
+            expect((yield* readTag(rows.staking.id)).yieldKind).toBeNull();
+
+            yield* repair;
+
+            expect((yield* readTag(rows.earn.id)).yieldKind).toBe(YieldKindEnum.EARN);
+            expect((yield* readTag(rows.staking.id)).yieldKind).toBe(YieldKindEnum.STAKING);
+            expect((yield* readTag(rows.dividend.id)).yieldKind).toBe(YieldKindEnum.DIVIDEND);
+            expect((yield* (yield* SettingsRepository).getSettings()).yieldTagRepairVersion).toBe(1);
+        }).pipe(Effect.provide(TestLayer))
     );
 });
