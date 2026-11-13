@@ -36,3 +36,5 @@ export type { YieldCombinedYieldInterface } from './yield/interface/yield-combin
 export type { YieldDeltaInterface } from './yield/interface/yield-delta.interface';
 export type { YieldEstimateCauseInterface } from './yield/interface/yield-estimate-cause.interface';
 export type { YieldEstimatedFigureInterface } from './yield/interface/yield-estimated-figure.interface';
+export type { YieldCryptoRewardsInterface } from './yield/interface/yield-crypto-rewards.interface';
+export type { YieldVsRateInterface } from './yield/interface/yield-vs-rate.interface';

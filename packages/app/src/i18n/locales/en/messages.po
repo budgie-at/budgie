@@ -49,6 +49,10 @@ msgstr "“{sourceTitle}” merged into “{targetTitle}”"
 msgid "“{title}” deleted"
 msgstr "“{title}” deleted"
 
+#: src/yield/hook/use-yield-rate-text.hook.ts
+msgid "(12 mo)"
+msgstr "(12 mo)"
+
 #: src/rule/components/rule-action-phrase/rule-action-phrase.tsx
 msgid "(pick one)"
 msgstr "(pick one)"
@@ -197,6 +201,10 @@ msgstr "{accountsCount, plural, one {# account} other {# accounts}}"
 msgid "{accountsCount, plural, one {# asset} other {# assets}}"
 msgstr "{accountsCount, plural, one {# asset} other {# assets}}"
 
+#: src/yield/component/yield-breakdown-vs-rate/yield-breakdown-vs-rate.tsx
+msgid "{actual} vs {expected}"
+msgstr "{actual} vs {expected}"
+
 #: src/market-data/component/currency-market-stale-price/currency-market-stale-price.tsx
 msgid "{ageDays, plural, one {# day old} other {# days old}}"
 msgstr "{ageDays, plural, one {# day old} other {# days old}}"
@@ -204,6 +212,10 @@ msgstr "{ageDays, plural, one {# day old} other {# days old}}"
 #: src/inzhur/component/inzhur-import-statement-action/inzhur-import-statement-action.tsx
 msgid "{ageLabel}. Import statement"
 msgstr "{ageLabel}. Import statement"
+
+#: src/yield/component/yield-breakdown-run-rate/yield-breakdown-run-rate.tsx
+msgid "{amount} a year"
+msgstr "{amount} a year"
 
 #: src/recurring/service/recurring-reminder.service.ts
 msgid "{amount} due in {daysUntilDue} days"
@@ -232,6 +244,10 @@ msgstr "{applied, plural, one {# matching transaction updated} other {# matching
 #: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 msgid "{approxTransactions, plural, one {about # transaction} other {about # transactions}}"
 msgstr "{approxTransactions, plural, one {about # transaction} other {about # transactions}}"
+
+#: src/yield/component/yield-breakdown-crypto-today/yield-breakdown-crypto-today.tsx
+msgid "{arrival} on arrival"
+msgstr "{arrival} on arrival"
 
 #: src/budget/components/budget-allocation-block/budget-allocation-block.tsx
 msgid "{assignedLabel} assigned · {incomeLabel} expected"
@@ -579,6 +595,10 @@ msgstr "{formattedDifference} over limit"
 msgid "{formattedDifference} under limit"
 msgstr "{formattedDifference} under limit"
 
+#: src/yield/hook/use-yield-rate-text.hook.ts
+msgid "{formattedRate} a year"
+msgstr "{formattedRate} a year"
+
 #: src/transaction/components/split-entries-remainder/split-entries-remainder.tsx
 msgid "{formattedRemaining} left to assign"
 msgstr "{formattedRemaining} left to assign"
@@ -640,6 +660,10 @@ msgstr "{groupCount, plural, one {# group} other {# groups}}"
 msgid "{hiddenCount, plural, one {Show # more} other {Show # more}}"
 msgstr "{hiddenCount, plural, one {Show # more} other {Show # more}}"
 
+#: src/yield/hook/use-yield-rate-text.hook.ts
+msgid "{holdingCount, plural, one {across # holding} other {across # holdings}}"
+msgstr "{holdingCount, plural, one {across # holding} other {across # holdings}}"
+
 #: src/app/(main)/import-csv.tsx
 msgid "{importedCount} imported, {failedCount} failed"
 msgstr "{importedCount} imported, {failedCount} failed"
@@ -669,6 +693,7 @@ msgstr "{label} so far"
 msgid "{label}, {amount}"
 msgstr "{label}, {amount}"
 
+#: src/yield/component/yield-hero-period-caption/yield-hero-period-caption.tsx
 #: src/yield/hook/use-yield-plot-accessibility.hook.ts
 msgid "{label}: {amount}"
 msgstr "{label}: {amount}"
@@ -754,6 +779,10 @@ msgstr "{name} lowered to {amountLabel}"
 #: src/budget/components/budget-limit-changes-row/budget-limit-changes-row.tsx
 msgid "{name} raised to {amountLabel}"
 msgstr "{name} raised to {amountLabel}"
+
+#: src/yield/hook/use-yield-hero-line-text.hook.ts
+msgid "{net} after tax"
+msgstr "{net} after tax"
 
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "{newAccountCount, plural, one {Add # account in {currencyCode}} other {Add # accounts in {currencyCode}}}"
@@ -951,6 +980,10 @@ msgstr "{selectedInGroupCount} of {accountsCount} selected"
 msgid "{setAsideLabel} to set aside {thisPeriod}"
 msgstr "{setAsideLabel} to set aside {thisPeriod}"
 
+#: src/yield/hook/use-yield-hero-line-text.hook.ts
+msgid "{share} of passive income"
+msgstr "{share} of passive income"
+
 #: src/household/utils/get-household-summary-labels.util.ts
 msgid "{sharedCount, plural, one {# shared account} other {# shared accounts}}"
 msgstr "{sharedCount, plural, one {# shared account} other {# shared accounts}}"
@@ -966,6 +999,10 @@ msgstr "{shareLabel} of income"
 #: src/transaction/components/statistics-drill-down-caption/statistics-drill-down-caption.tsx
 msgid "{shareLabel} of spending"
 msgstr "{shareLabel} of spending"
+
+#: src/yield/component/yield-hero-delta/yield-hero-delta.tsx
+msgid "{sign}{change} vs prior {rangeShort}"
+msgstr "{sign}{change} vs prior {rangeShort}"
 
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "{similarCount, plural, one {# similar · last 6 months} other {# similar · last 6 months}}"
@@ -1046,6 +1083,10 @@ msgstr "{title}, spent {spentAmount} of {limitAmount}, {statusLabel}"
 #: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
 msgid "{total} GB on this phone"
 msgstr "{total} GB on this phone"
+
+#: src/yield/hook/use-yield-rate-text.hook.ts
+msgid "{totalCount, plural, one {on {holdingCount} of # holding} other {on {holdingCount} of # holdings}}"
+msgstr "{totalCount, plural, one {on {holdingCount} of # holding} other {on {holdingCount} of # holdings}}"
 
 #: src/budget/components/budget-history-section/budget-history-section.tsx
 msgid "{totalCount, plural, one {On budget {onBudgetCount} of # period} other {On budget {onBudgetCount} of # periods}}"
@@ -1146,10 +1187,22 @@ msgstr "−{carriedLabel} carried"
 msgid "−{changePercent} vs {shortPreviousLabel}"
 msgstr "−{changePercent} vs {shortPreviousLabel}"
 
+#: src/yield/component/yield-breakdown-crypto-today/yield-breakdown-crypto-today.tsx
+msgid "≈ {amount}"
+msgstr "≈ {amount}"
+
+#: src/yield/component/yield-breakdown-run-rate/yield-breakdown-run-rate.tsx
+msgid "≈ {amount} a year"
+msgstr "≈ {amount} a year"
+
 #: src/runway/component/runway-pill/runway-pill.tsx
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "≈ {formattedMonths} mo"
 msgstr "≈ {formattedMonths} mo"
+
+#: src/yield/hook/use-yield-rate-text.hook.ts
+msgid "≈ {formattedRate} a year"
+msgstr "≈ {formattedRate} a year"
 
 #: src/yield/component/yield-legend-footnote/yield-legend-footnote.tsx
 msgid "≈ includes estimates"
@@ -1169,6 +1222,7 @@ msgstr "1 day"
 
 #: src/inzhur/component/inzhur-performance-chart/inzhur-performance-chart.tsx
 #: src/market-data/component/currency-market-range-control/currency-market-range-control.tsx
+#: src/yield/component/yield-hero-delta/yield-hero-delta.tsx
 msgid "1M"
 msgstr "1M"
 
@@ -1177,6 +1231,7 @@ msgid "1W"
 msgstr "1W"
 
 #: src/market-data/component/currency-market-range-control/currency-market-range-control.tsx
+#: src/yield/component/yield-hero-delta/yield-hero-delta.tsx
 msgid "1Y"
 msgstr "1Y"
 
@@ -1202,6 +1257,7 @@ msgstr "3 days"
 
 #: src/inzhur/component/inzhur-performance-chart/inzhur-performance-chart.tsx
 #: src/market-data/component/currency-market-range-control/currency-market-range-control.tsx
+#: src/yield/component/yield-hero-delta/yield-hero-delta.tsx
 msgid "3M"
 msgstr "3M"
 
@@ -1969,6 +2025,10 @@ msgstr "At last known price, {rateLabel} per {instrumentCode}"
 #: src/market-data/component/currency-market-value-row/currency-market-value-row.tsx
 msgid "At last known price, ≈ {rateLabel} per {instrumentCode}"
 msgstr "At last known price, ≈ {rateLabel} per {instrumentCode}"
+
+#: src/yield/component/yield-breakdown-run-rate/yield-breakdown-run-rate.tsx
+msgid "At this pace"
+msgstr "At this pace"
 
 #: src/categorize-inbox/components/categorize-inbox-group-attach-debt-option/categorize-inbox-group-attach-debt-option.tsx
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
@@ -3825,6 +3885,10 @@ msgstr "Crypto"
 msgid "Crypto Account"
 msgstr "Crypto Account"
 
+#: src/yield/component/yield-breakdown-crypto-today/yield-breakdown-crypto-today.tsx
+msgid "Crypto rewards today"
+msgstr "Crypto rewards today"
+
 #: src/account/constant/account-kind-title.constant.ts
 #: src/account/constant/account-type.constant.ts
 msgid "Crypto sync"
@@ -4419,6 +4483,14 @@ msgstr "Each week against your {allowanceLabel} weekly allowance"
 msgid "Earn"
 msgstr "Earn"
 
+#: src/yield/component/yield-hero-caption/yield-hero-caption.tsx
+msgid "Earned {rangeCaption}"
+msgstr "Earned {rangeCaption}"
+
+#: src/yield/component/yield-hero-caption/yield-hero-caption.tsx
+msgid "Earned through {throughDay}"
+msgstr "Earned through {throughDay}"
+
 #: src/@generic/component/entity-list-row/entity-list-row.tsx
 #: src/recurring/components/recurring-detail-edit-button/recurring-detail-edit-button.tsx
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
@@ -4812,6 +4884,10 @@ msgstr "Exchange rate not found"
 #: src/transaction/components/conversion-row/conversion-row.tsx
 msgid "Exchange rate: {rateLabel}"
 msgstr "Exchange rate: {rateLabel}"
+
+#: src/yield/hook/use-yield-rate-text.hook.ts
+msgid "excl. distributions"
+msgstr "excl. distributions"
 
 #: src/budget/components/budget-limit-source-field/budget-limit-source-field.tsx
 #: src/budget/components/budget-stat-row/budget-stat-row.tsx
@@ -6457,6 +6533,10 @@ msgstr "Needs review"
 msgid "Net"
 msgstr "Net"
 
+#: src/yield/component/yield-breakdown-net/yield-breakdown-net.tsx
+msgid "Net after tax"
+msgstr "Net after tax"
+
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Net worth"
 msgstr "Net worth"
@@ -6514,6 +6594,10 @@ msgstr "New set aside"
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "New tag"
 msgstr "New tag"
+
+#: src/yield/component/yield-hero-delta/yield-hero-delta.tsx
+msgid "New this period"
+msgstr "New this period"
 
 #: src/app/(main)/create-transaction/transfer.tsx
 msgid "New Transfer"
@@ -10744,6 +10828,10 @@ msgstr "Voice notes"
 #: src/market-data/component/currency-market-stats/currency-market-stats.tsx
 msgid "Volume (24h)"
 msgstr "Volume (24h)"
+
+#: src/yield/component/yield-breakdown-vs-rate/yield-breakdown-vs-rate.tsx
+msgid "vs rate"
+msgstr "vs rate"
 
 #: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
