@@ -237,3 +237,4 @@ export type { ShareCloudsInterface } from './cloud/share-harness';
 export { seedCryptoSyncAccount } from './seed/seed-crypto-sync-account';
 export { seedDailyPrice } from './seed/seed-daily-price';
 export { fetchEntryValuation } from './db/fetch-entry-valuation';
+export { onMarketDevice, readIsApplying, readOnlyEntryId, seedCryptoSyncAccountOn, useEuroBase } from './cloud/market-device-harness';

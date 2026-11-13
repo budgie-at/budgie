@@ -22,6 +22,8 @@ import { readStoredMovedTo } from '../utils/read-stored-moved-to.util';
 import { stringifySyncJson } from '../utils/stringify-sync-json.util';
 import { toStoredSyncApplyItem } from '../utils/to-stored-sync-apply-item.util';
 
+import { SyncEntryBaseValuationGuard } from './sync-entry-base-valuation-guard.service';
+
 import type { SyncRowReferenceInterface } from '../../mapping/interface/sync-row-reference.interface';
 import type { SyncRowInterface } from '../../mapping/interface/sync-row.interface';
 import type { SyncTableDescriptorInterface } from '../../mapping/interface/sync-table-descriptor.interface';
@@ -121,6 +123,7 @@ export class SyncApplyUnitService extends Context.Service<SyncApplyUnitService>(
             );
         const repository = yield* SyncApplyRepository;
         const recordRepository = yield* SyncRecordRepository;
+        const entryBaseValuationGuard = yield* SyncEntryBaseValuationGuard;
 
         const descriptors: Record<string, SyncTableDescriptorInterface> = Object.fromEntries(
             Object.values(SYNC_RECORD_DEFINITIONS)
@@ -288,11 +291,12 @@ export class SyncApplyUnitService extends Context.Service<SyncApplyUnitService>(
             parentLocalId: number,
             context: ChildSyncContextInterface
         ) {
-            const { resolutions, unitIds, baseRows, isGated } = context;
+            const { resolutions, unitIds, baseRows, isGated, isParentTimingUnchanged } = context;
             const descriptor = descriptors[tableName];
             const parentProperty = descriptor.parentLink?.property ?? '';
             const serverRows = unit.decoded.rows.filter(row => row.tableName === tableName);
             const localRows = yield* repository.findChildren(tableName, getSyncColumnName(descriptor, parentProperty), parentLocalId);
+            const guardBaseValuation = yield* entryBaseValuationGuard.forRows(tableName, localRows, isParentTimingUnchanged);
             const authorship = SYNC_AUTHORSHIP_COLUMNS[tableName] ?? null;
             const naturalKeys = SYNC_CHILD_NATURAL_KEYS[tableName] ?? [];
             const serverIdentities = new Set(serverRows.map(row => `${row.syncZone}|${row.syncId}`));
@@ -331,7 +335,7 @@ export class SyncApplyUnitService extends Context.Service<SyncApplyUnitService>(
                     const result = mergeSyncRow({
                         local: localCells,
                         base: baseCells,
-                        server: serverCells,
+                        server: guardBaseValuation(localCells, serverCells),
                         localChanged: isGated ? null : new Set(),
                         authorship
                     });
@@ -524,10 +528,11 @@ export class SyncApplyUnitService extends Context.Service<SyncApplyUnitService>(
                     accountIds.push(...entryAccountIds);
                 }
 
+                const serverParentCells = toServerCells(parentDescriptor, parentRow, resolutions, unitIds);
                 const result = mergeSyncRow({
                     local: localCells,
                     base: baseCells,
-                    server: toServerCells(parentDescriptor, parentRow, resolutions, unitIds),
+                    server: serverParentCells,
                     localChanged: changedProperties,
                     authorship: SYNC_AUTHORSHIP_COLUMNS[parentTable] ?? null
                 });
@@ -547,7 +552,8 @@ export class SyncApplyUnitService extends Context.Service<SyncApplyUnitService>(
                         resolutions,
                         unitIds,
                         baseRows,
-                        isGated: isDefined(outbox) && changedColumns.includes(tableName)
+                        isGated: isDefined(outbox) && changedColumns.includes(tableName),
+                        isParentTimingUnchanged: localCells['operatedAt'] === serverParentCells['operatedAt']
                     });
 
                     kept.push(...childResult.keptColumns);
@@ -593,6 +599,6 @@ export class SyncApplyUnitService extends Context.Service<SyncApplyUnitService>(
     })
 }) {
     static readonly layer = Layer.effect(SyncApplyUnitService, SyncApplyUnitService.make).pipe(
-        Layer.provide([SyncApplyRepository.layer, SyncRecordRepository.layer])
+        Layer.provide([SyncApplyRepository.layer, SyncRecordRepository.layer, SyncEntryBaseValuationGuard.layer])
     );
 }
