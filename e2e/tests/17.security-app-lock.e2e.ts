@@ -10,6 +10,10 @@ test('17 security app lock', { tags: ['security'] }, async ({ budgie }) => {
     const ctx = budgie.ctx;
     const { screen } = ctx;
     const pinPage = () => b.expectId(ctx, 'PinPage.Container', 10_000);
+    const openSettingsTab = async () => {
+        await b.tapId(ctx, 'TabBar.Settings');
+        await b.expectId(ctx, 'SettingsPage.Container', 10_000);
+    };
     const typed = (text: string) => expect(screen.getByText(text).or(screen.getByDisplayValue(text)).first()).toBeVisible();
 
     await budgie.start({ fixture: '17.db' });
@@ -30,7 +34,7 @@ test('17 security app lock', { tags: ['security'] }, async ({ budgie }) => {
         await sec.exhaustPinAttempts(ctx);
         await sec.enterPin(ctx, '1234');
         await b.expectId(ctx, 'TabBar.Settings', 10_000);
-        await a.navigateToSettings(ctx);
+        await openSettingsTab();
         await b.expectId(ctx, 'SettingsPage.DataEncryption.State.On', 3_000);
     });
 
@@ -55,7 +59,7 @@ test('17 security app lock', { tags: ['security'] }, async ({ budgie }) => {
     });
 
     await b.phase('change pin', async () => {
-        await a.navigateToSettings(ctx);
+        await openSettingsTab();
         await a.openSettingsCard(ctx, 'SettingsPage.AppLockChangePinButton', 'PinPage.Container');
         await pinPage();
         await sec.exhaustPinAttempts(ctx);
@@ -72,7 +76,7 @@ test('17 security app lock', { tags: ['security'] }, async ({ budgie }) => {
     });
 
     await b.phase('disable lock', async () => {
-        await a.navigateToSettings(ctx);
+        await openSettingsTab();
         await a.openSettingsCard(ctx, 'SettingsPage.AppLockDisableButton', 'PinPage.Container');
         await pinPage();
         await sec.enterPin(ctx, '5678');
