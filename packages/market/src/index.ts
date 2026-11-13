@@ -14,3 +14,5 @@ export type { CryptoPositionInterface } from './market-data/interface/crypto-pos
 
 export type { InzhurFundPriceInterface } from './market-data/interface/inzhur-fund-price.interface';
 export { findLastIndexOnOrBefore } from './@generic/utils/find-last-index-on-or-before.util';
+export { formatUtcDay } from './@generic/utils/format-utc-day.util';
+export { CRYPTO_PRICE_CARRY_DAYS, FUND_PRICE_CARRY_DAYS } from './valuation/constant/price-carry-days.constant';
