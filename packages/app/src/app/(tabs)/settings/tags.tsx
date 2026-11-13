@@ -25,7 +25,7 @@ export default function Tags() {
     useCreateAction({
         icon: UserIconNameEnum.Tag,
         label: t`Tag`,
-        variant: 'primary',
+        variant: 'cyan',
         onPress: () => void openTagForm()
     });
 

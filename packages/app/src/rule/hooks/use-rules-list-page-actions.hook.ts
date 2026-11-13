@@ -39,7 +39,7 @@ export const useRulesListPageActions = () => {
     useCreateAction({
         icon: UserIconNameEnum.Zap,
         label: t`Rule`,
-        variant: 'primary',
+        variant: 'cyan',
         onPress: handleCreateRule,
         testID: RulesPageSelector.CreateButton
     });

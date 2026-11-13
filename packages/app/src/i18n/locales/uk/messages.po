@@ -1383,6 +1383,7 @@ msgstr "Активний бюджет"
 #: src/budget/components/budget-event-category-limits/budget-event-category-limits.tsx
 #: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
 #: src/budget/components/budget-list-section/budget-list-section.tsx
+#: src/transaction/components/create-transaction-trigger/create-transaction-trigger.tsx
 #: src/transaction/components/transaction-date-tags-row/transaction-date-tags-row.tsx
 #: src/transaction/components/transaction-fee-field-icon/transaction-fee-field-icon.tsx
 #: src/transaction/components/transaction-note-field-icon/transaction-note-field-icon.tsx
@@ -3009,6 +3010,7 @@ msgstr "Буфер обміну порожній"
 #: src/@generic/component/selector-modal-search-header/selector-modal-search-header.tsx
 #: src/@generic/component/sheet-title-row/sheet-title-row.tsx
 #: src/@generic/hook/use-morphing-sheet-back.hook.ts
+#: src/ai/component/voice-input-overlay-content/voice-input-overlay-content.tsx
 #: src/budget/components/budget-sheet-state/budget-sheet-state.tsx
 #: src/sync/component/get-token-card/get-token-card.tsx
 #: src/transaction/components/transaction-fee-step/transaction-fee-step.tsx
@@ -3025,6 +3027,7 @@ msgid "Close Deposit?"
 msgstr "Закрити депозит?"
 
 #: src/@generic/component/popover-menu/popover-menu.tsx
+#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 msgid "Close menu"
 msgstr "Закрити меню"
 
@@ -10698,6 +10701,10 @@ msgstr "Переглянути транзакції"
 #: src/recurring/components/recurring-calendar-content/recurring-calendar-content.tsx
 msgid "View your payments in another month."
 msgstr "Перегляньте платежі в іншому місяці."
+
+#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
+msgid "Voice input"
+msgstr "Голосове введення"
 
 #: src/ai/component/ai-settings-section/ai-settings-section.tsx
 #: src/ai/component/voice-review-step/voice-review-step.tsx
