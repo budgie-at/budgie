@@ -44,3 +44,17 @@ it('keeps an Analytics period only when both days are valid', () => {
     });
     expect(toYieldKey({ periodFrom: '2026-10-03' }, YieldRangeEnum.YEAR, 1).period).toBeNull();
 });
+
+it('accepts only plain digit ids', () => {
+    expect(toYieldKey({ position: '1e2' }, YieldRangeEnum.YEAR, 1).key.positionAccountId).toBeNull();
+    expect(toYieldKey({ position: '0x10' }, YieldRangeEnum.YEAR, 1).key.positionAccountId).toBeNull();
+    expect(toYieldKey({ instrument: ' 7' }, YieldRangeEnum.YEAR, 1).key.instrumentId).toBeNull();
+    expect(toYieldKey({ instrument: '7' }, YieldRangeEnum.YEAR, 1).key.instrumentId).toBe(7);
+});
+
+it('rejects days that are not real calendar days', () => {
+    expect(toYieldKey({ focus: '2026-13-45' }, YieldRangeEnum.YEAR, 1).focusDay).toBeNull();
+    expect(toYieldKey({ focus: '2026-02-30' }, YieldRangeEnum.YEAR, 1).focusDay).toBeNull();
+    expect(toYieldKey({ focus: '2028-02-29' }, YieldRangeEnum.YEAR, 1).focusDay).toBe('2028-02-29');
+    expect(toYieldKey({ periodFrom: '2026-13-45', periodTo: '2026-10-20' }, YieldRangeEnum.YEAR, 1).period).toBeNull();
+});

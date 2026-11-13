@@ -6,6 +6,10 @@ const GRIDLINE_SPANS = 2;
 const EMPTY_AXIS: YieldAxisInterface = { step: 1, top: 1, bottom: 0, gridlines: [0, 1] };
 
 export const buildYieldAxis = (maxValue: number, minValue: number): YieldAxisInterface => {
+    if (!Number.isFinite(maxValue) || !Number.isFinite(minValue)) {
+        return EMPTY_AXIS;
+    }
+
     const top = Math.max(maxValue, 0);
     const bottom = Math.min(minValue, 0);
     const rawStep = (top - bottom) / GRIDLINE_SPANS;
@@ -16,13 +20,13 @@ export const buildYieldAxis = (maxValue: number, minValue: number): YieldAxisInt
 
     const magnitude = DECIMAL_BASE ** Math.floor(Math.log10(rawStep));
     const step = (NICE_STEPS.find(nice => nice >= rawStep / magnitude) ?? DECIMAL_BASE) * magnitude;
-    const axisTop = Math.ceil(top / step) * step;
-    const axisBottom = Math.floor(bottom / step) * step;
+    const topSteps = Math.ceil(top / step);
+    const bottomSteps = Math.floor(bottom / step);
 
     return {
         step,
-        top: axisTop,
-        bottom: axisBottom,
-        gridlines: Array.from({ length: Math.round((axisTop - axisBottom) / step) + 1 }, (_, index) => axisBottom + index * step)
+        top: topSteps * step,
+        bottom: bottomSteps * step,
+        gridlines: Array.from({ length: topSteps - bottomSteps + 1 }, (_, index) => (bottomSteps + index) * step)
     };
 };

@@ -28,15 +28,30 @@ const buildGroupRecord = (): Record<YieldGroupEnum, YieldBarRectInterface[]> => 
     [YieldGroupEnum.TAX]: []
 });
 
-const mergeSmallSegments = (heights: readonly number[]) =>
-    heights.reduce<number[]>((merged, height, index) => {
-        const total = height + (merged.at(index) ?? 0);
-        const hasLaterSegment = heights.slice(index + 1).some(later => later > 0);
+const mergeSmallSegments = (heights: readonly number[], gap: number) => {
+    const topIndex = heights.findLastIndex(height => height > 0);
+    let carried = 0;
 
-        return total > 0 && total < MIN_SEGMENT_HEIGHT && hasLaterSegment
-            ? [...merged.slice(0, index), 0, total]
-            : [...merged.slice(0, index), total];
-    }, []);
+    return heights.map((height, index) => {
+        if (height <= 0) {
+            return 0;
+        }
+
+        const total = height + carried;
+
+        if (index < topIndex && total - gap < MIN_SEGMENT_HEIGHT) {
+            carried = total;
+
+            return 0;
+        }
+
+        carried = 0;
+
+        return total;
+    });
+};
+
+const buildRadius = (height: number, isTop: boolean) => (isTop && height > 0 ? Math.min(BAR_RADIUS, height) : 0);
 
 export const buildYieldBarLayout = ({
     buckets,
@@ -57,27 +72,37 @@ export const buildYieldBarLayout = ({
 
     buckets.forEach((bucket, index) => {
         const left = (xs.at(index) ?? 0) - barWidth / 2;
-        const heights = mergeSmallSegments(visibleGroups.map(group => bucket.amounts[group] * scale));
+        const heights = mergeSmallSegments(
+            STACK_GROUPS.map(group => (visibleGroups.includes(group) ? bucket.amounts[group] * scale : 0)),
+            gap
+        );
         const topIndex = heights.findLastIndex(segment => segment > 0);
         const taxHeight = bucket.amounts[YieldGroupEnum.TAX] * scale;
         let bottom = zeroY;
 
-        STACK_GROUPS.forEach(group => {
-            const visibleIndex = visibleGroups.indexOf(group);
-            const segment = visibleIndex >= 0 ? (heights.at(visibleIndex) ?? 0) : 0;
-            const isTop = visibleIndex === topIndex && segment > 0;
+        STACK_GROUPS.forEach((group, groupIndex) => {
+            const segment = heights.at(groupIndex) ?? 0;
+            const isTop = groupIndex === topIndex;
             const drawn = isTop ? segment : Math.max(segment - gap, 0);
-            const estimatedHeight = bucket.amounts[group] > 0 ? (drawn * bucket.estimatedAmounts[group]) / bucket.amounts[group] : 0;
+            const ratio = bucket.amounts[group] > 0 ? Math.min(Math.max(bucket.estimatedAmounts[group] / bucket.amounts[group], 0), 1) : 0;
+            const estimatedHeight = drawn * ratio;
+            const pricedHeight = drawn - estimatedHeight;
             const top = bottom - drawn;
 
             groups[group].push({
                 x: left,
                 y: top + estimatedHeight,
                 width: barWidth,
-                height: drawn - estimatedHeight,
-                radius: isTop && estimatedHeight === 0 ? BAR_RADIUS : 0
+                height: pricedHeight,
+                radius: buildRadius(pricedHeight, isTop && estimatedHeight === 0)
             });
-            estimated[group].push({ x: left, y: top, width: barWidth, height: estimatedHeight, radius: isTop ? BAR_RADIUS : 0 });
+            estimated[group].push({
+                x: left,
+                y: top,
+                width: barWidth,
+                height: estimatedHeight,
+                radius: buildRadius(estimatedHeight, isTop)
+            });
             bottom -= segment;
         });
 

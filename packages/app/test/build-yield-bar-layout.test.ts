@@ -24,6 +24,22 @@ const bucket = (staking: number, interest: number, tax = 0, estimatedStaking = 0
     isEstimated: false
 });
 
+const ALL_GROUPS = [YieldGroupEnum.STAKING_EARN, YieldGroupEnum.INTEREST, YieldGroupEnum.DIVIDENDS, YieldGroupEnum.DISTRIBUTIONS];
+
+const full = (
+    staking: number,
+    interest: number,
+    dividends: number,
+    distributions: number,
+    estimatedDividends = 0
+): YieldBucketInterface => ({
+    ...bucket(staking, interest),
+    amounts: { ...amounts(staking, interest), [YieldGroupEnum.DIVIDENDS]: dividends, [YieldGroupEnum.DISTRIBUTIONS]: distributions },
+    estimatedAmounts: { ...amounts(0, 0), [YieldGroupEnum.DIVIDENDS]: estimatedDividends }
+});
+
+const axisOf100 = { step: 50, top: 100, bottom: 0, gridlines: [0, 50, 100] };
+
 const VISIBLE = [YieldGroupEnum.STAKING_EARN, YieldGroupEnum.INTEREST];
 
 it('stacks visible groups bottom to top with a 2 pt gap and rounds only the top segment', () => {
@@ -90,7 +106,68 @@ it('splits a segment into its priced part and its estimated part on top', () => 
     expect(layout.estimated[YieldGroupEnum.STAKING_EARN][0]).toMatchObject({ y: 0, height: 100, radius: 4 });
 });
 
+it('merges on the drawn height so no visible segment is shorter than 3 pt', () => {
+    const layout = buildYieldBarLayout({ buckets: [bucket(2, 98)], visibleGroups: VISIBLE, width: 112, height: 200, axis: axisOf100 });
+
+    expect(layout.groups[YieldGroupEnum.STAKING_EARN][0]?.height).toBe(0);
+    expect(layout.groups[YieldGroupEnum.INTEREST][0]).toMatchObject({ y: 0, height: 200 });
+});
+
+it('cascades a merge through three small groups into the top one', () => {
+    const layout = buildYieldBarLayout({
+        buckets: [full(1, 1, 1, 97)],
+        visibleGroups: ALL_GROUPS,
+        width: 112,
+        height: 100,
+        axis: axisOf100
+    });
+
+    expect(layout.groups[YieldGroupEnum.STAKING_EARN][0]?.height).toBe(0);
+    expect(layout.groups[YieldGroupEnum.INTEREST][0]?.height).toBe(0);
+    expect(layout.groups[YieldGroupEnum.DIVIDENDS][0]?.height).toBe(0);
+    expect(layout.groups[YieldGroupEnum.DISTRIBUTIONS][0]).toMatchObject({ y: 0, height: 100, radius: 4 });
+});
+
+it('computes the estimated ratio on the group own amount and clamps it', () => {
+    const own = buildYieldBarLayout({
+        buckets: [full(0, 1, 10, 80, 5)],
+        visibleGroups: ALL_GROUPS,
+        width: 112,
+        height: 100,
+        axis: axisOf100
+    });
+    const clamped = buildYieldBarLayout({
+        buckets: [full(0, 0, 10, 80, 20)],
+        visibleGroups: ALL_GROUPS,
+        width: 112,
+        height: 100,
+        axis: axisOf100
+    });
+
+    expect(own.estimated[YieldGroupEnum.DIVIDENDS][0]?.height).toBe(4.5);
+    expect(clamped.estimated[YieldGroupEnum.DIVIDENDS][0]?.height).toBe(8);
+    expect(clamped.groups[YieldGroupEnum.DIVIDENDS][0]?.height).toBe(0);
+});
+
+it('caps the radius at the segment height and gives empty rects no radius', () => {
+    const tiny = buildYieldBarLayout({ buckets: [bucket(2, 0)], visibleGroups: VISIBLE, width: 112, height: 100, axis: axisOf100 });
+    const empty = buildYieldBarLayout({ buckets: [bucket(0, 0)], visibleGroups: VISIBLE, width: 112, height: 100, axis: axisOf100 });
+
+    expect(tiny.groups[YieldGroupEnum.STAKING_EARN][0]).toMatchObject({ height: 2, radius: 2 });
+    expect(empty.groups[YieldGroupEnum.STAKING_EARN][0]?.radius).toBe(0);
+    expect(empty.estimated[YieldGroupEnum.STAKING_EARN][0]?.radius).toBe(0);
+});
+
+it('stacks in group order whatever the order of the visible groups', () => {
+    const input = { buckets: [bucket(60, 40)], width: 112, height: 200, axis: axisOf100 };
+
+    expect(buildYieldBarLayout({ ...input, visibleGroups: [...VISIBLE].reverse() })).toEqual(
+        buildYieldBarLayout({ ...input, visibleGroups: VISIBLE })
+    );
+});
+
 it('accumulates a running total', () => {
     expect(buildYieldRunningTotal([1, 2, 3])).toEqual([1, 3, 6]);
     expect(buildYieldRunningTotal([])).toEqual([]);
+    expect(buildYieldRunningTotal([5, -8, 2])).toEqual([5, -3, -1]);
 });

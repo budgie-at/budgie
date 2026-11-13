@@ -14,9 +14,24 @@ const SELECTABLE_GROUPS: readonly YieldGroupEnum[] = [
 const FROM_PATTERN = /^(account|instrument)-\d+$/u;
 const DAY_PATTERN = /^\d{4}-\d{2}-\d{2}$/u;
 
-const isValidDay = (value: string | undefined): value is string => isDefined(value) && DAY_PATTERN.test(value);
+const DIGITS_PATTERN = /^\d+$/u;
+
+const isValidDay = (value: string | undefined): value is string => {
+    if (!isDefined(value) || !DAY_PATTERN.test(value)) {
+        return false;
+    }
+
+    const [year = 0, month = 0, day = 0] = value.split('-').map(Number);
+    const date = new Date(Date.UTC(year, month - 1, day));
+
+    return date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day;
+};
 
 const toPositiveId = (value: string | undefined) => {
+    if (!isDefined(value) || !DIGITS_PATTERN.test(value)) {
+        return null;
+    }
+
     const id = Number(value);
 
     return Number.isInteger(id) && isPositiveNumber(id) ? id : null;

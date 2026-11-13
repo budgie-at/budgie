@@ -6,6 +6,7 @@ import { scheduleOnRN, scheduleOnUI } from 'react-native-worklets';
 import { useVibration } from '../../@generic/hook/use-vibration.hook';
 import { MARKET_CHART_PADDING_X } from '../constant/market-chart-padding-x.constant';
 import { MarketChartScrubModeEnum } from '../enum/market-chart-scrub-mode.enum';
+import { getMarketChartBin } from '../utils/get-market-chart-bin.util';
 
 const ACTIVE_OFFSET = 6;
 const FAIL_OFFSET = 12;
@@ -29,18 +30,6 @@ const getMarketChartIndex = (x: number, width: number, count: number): number =>
     const index = Math.round(((x - MARKET_CHART_PADDING_X) / drawableWidth) * lastIndex);
 
     return Math.min(Math.max(index, 0), lastIndex);
-};
-
-const getMarketChartBin = (x: number, width: number, count: number): number => {
-    'worklet';
-
-    const drawableWidth = width - MARKET_CHART_PADDING_X * 2;
-
-    if (drawableWidth <= 0 || count <= 0) {
-        return 0;
-    }
-
-    return Math.min(Math.max(Math.floor(((x - MARKET_CHART_PADDING_X) / drawableWidth) * count), 0), count - 1);
 };
 
 export const useMarketChartScrub = (
