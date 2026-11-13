@@ -10,23 +10,29 @@ const ICON_SIZE = 32;
 
 interface Props {
     readonly icon: UserIconNameEnum;
+    readonly label: string;
     readonly onPress: () => void;
     readonly animatedStyle?: AnimatedStyle<ViewStyle>;
     readonly testID?: string;
 }
 
-export const CircularActionButton = ({ icon, onPress, animatedStyle, testID }: Props) => (
+export const CircularActionButton = ({ icon, label, onPress, animatedStyle, testID }: Props) => (
     <HapticPressable
         pressedScale={BUTTON_PRESSED_SCALE}
         className="h-18 w-18"
         testID={testID}
-        accessibilityLabel={testID}
+        accessibilityLabel={label}
         accessibilityRole="button"
+        accessibilityShowsLargeContentViewer
+        accessibilityLargeContentTitle={label}
         collapsable={false}
         onPress={onPress}
     >
-        <Animated.View className="bg-primary rounded-full items-center justify-center h-full w-full" style={animatedStyle}>
-            <Icon className="text-primary-reverse" icon={icon} size={ICON_SIZE} />
+        <Animated.View
+            className="h-full w-full items-center justify-center rounded-full bg-primary light:bg-popover-surface"
+            style={animatedStyle}
+        >
+            <Icon className="text-primary-reverse light:text-primary" icon={icon} size={ICON_SIZE} />
         </Animated.View>
     </HapticPressable>
 );

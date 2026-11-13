@@ -19,6 +19,8 @@ const ICON_RATIO = 0.5;
 
 const iconPalette: Record<ColorPaletteVariant, ClassValue> = {
     ...BACKGROUND_COLOR_PALETTE,
+    default: 'bg-default-foreground/20',
+    primary: 'bg-primary/10',
     secondary: 'bg-secondary-foreground/15',
     positive: 'bg-positive-foreground/20',
     warning: 'bg-warning-foreground/20',

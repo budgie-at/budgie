@@ -15,10 +15,10 @@ interface Props {
     readonly variant: ColorPaletteVariant;
 }
 
-const ICON_SIZE = 40;
+const ICON_SIZE = 36;
 
 export const CreateMenuTileContent = ({ icon, label, testID, variant }: Props) => (
-    <View className="min-h-[64px] flex-row items-center gap-xl rounded-5xl bg-popover-surface px-xl py-sm">
+    <View className="min-h-[64px] flex-row items-center gap-lg rounded-5xl bg-popover-surface px-xl py-sm">
         <CreateMenuIcon icon={icon} variant={variant} size={ICON_SIZE} />
         <Text
             className="flex-1 text-md font-semibold text-primary"

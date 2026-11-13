@@ -4,7 +4,7 @@ import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { useAnimatedStyle, useReducedMotion, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
+import Animated, { useAnimatedStyle, useReducedMotion, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 import Toast from 'react-native-toast-message';
 
 import { isDefined } from '@rnw-community/shared';
@@ -19,7 +19,6 @@ import { AiSystemStateEnum } from '../../../ai/enum/ai-system-state.enum';
 import { ReceiptSourceMenu } from '../../../receipt/components/receipt-source-menu/receipt-source-menu';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { CreateMenuChip } from '../create-menu-chip/create-menu-chip';
-import { CreateMenuContextAction } from '../create-menu-context-action/create-menu-context-action';
 import { CreateMenuReveal } from '../create-menu-reveal/create-menu-reveal';
 import { CreateMenuTile } from '../create-menu-tile/create-menu-tile';
 
@@ -110,6 +109,8 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
         return { opacity: value > 0 ? 1 : 0, transform: [{ rotate: `${rotation}deg` }] };
     });
 
+    const scrimStyle = useAnimatedStyle(() => ({ opacity: progress.get() }));
+
     if (!hasOpened) {
         return null;
     }
@@ -121,6 +122,12 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
             accessibilityElementsHidden={!isOpen}
             importantForAccessibility={accessibilityVisibility}
         >
+            <Animated.View
+                className="absolute inset-x-0 bottom-0 h-[360px] bg-linear-to-b from-black/0 via-black/75 to-black/90"
+                style={scrimStyle}
+                pointerEvents="none"
+            />
+
             <View className="absolute inset-x-0 bottom-0 gap-xl px-lg pb-safe" pointerEvents="box-none">
                 <CreateMenuReveal progress={progress} order={3} className="flex-row flex-wrap gap-md">
                     <CreateMenuChip
@@ -134,7 +141,7 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
                         icon={UserIconNameEnum.Wallet}
                         label={t`Account`}
                         testID={CreateTransactionMenuSelector.AddAccount}
-                        variant="secondary"
+                        variant="default"
                         onPress={handleCreateAccount}
                     />
                 </CreateMenuReveal>
@@ -170,16 +177,18 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
                 <View className="flex-row items-end gap-xl" pointerEvents="box-none">
                     <CreateMenuReveal progress={progress} order={0} className="flex-1 flex-row">
                         {isDefined(createAction) ? (
-                            <CreateMenuContextAction
+                            <CreateMenuTile
                                 icon={createAction.icon}
                                 label={createAction.label}
                                 testID={contextActionTestID}
+                                variant={createAction.variant}
                                 onPress={handleCreateAction}
                             />
                         ) : null}
                         {showAiButton ? (
                             <CircularActionButton
                                 icon={UserIconNameEnum.Mic}
+                                label={t`Voice input`}
                                 onPress={handleAiPress}
                                 testID={CreateTransactionMenuSelector.AiButton}
                             />
@@ -188,6 +197,7 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
 
                     <CircularActionButton
                         icon={UserIconNameEnum.Plus}
+                        label={t`Close menu`}
                         onPress={onClose}
                         animatedStyle={closeButtonStyle}
                         testID={CreateTransactionMenuSelector.Close}
