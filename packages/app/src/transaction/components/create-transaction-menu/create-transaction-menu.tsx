@@ -2,8 +2,8 @@ import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
-import { useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import { AccessibilityInfo, StyleSheet, View, useWindowDimensions } from 'react-native';
 import Animated, { useAnimatedStyle, useReducedMotion, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 import Toast from 'react-native-toast-message';
 
@@ -18,29 +18,38 @@ import { useVoiceInputContext } from '../../../ai/context/voice-input.context';
 import { AiSystemStateEnum } from '../../../ai/enum/ai-system-state.enum';
 import { ReceiptSourceMenu } from '../../../receipt/components/receipt-source-menu/receipt-source-menu';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
+import { CREATE_MENU_LARGE_TEXT_FONT_SCALE } from '../../constant/create-menu-large-text-font-scale.constant';
 import { CreateMenuChip } from '../create-menu-chip/create-menu-chip';
 import { CreateMenuReveal } from '../create-menu-reveal/create-menu-reveal';
 import { CreateMenuTile } from '../create-menu-tile/create-menu-tile';
 
 import { CreateTransactionMenuSelector } from './create-transaction-menu.selector';
 
+import type { RefObject } from 'react';
+
 const CLOSE_ROTATION = 45;
 const OPEN_SPRING = { ...SPRING_SETTLE, duration: 320 };
 const FADE_TIMING = { duration: MOTION_FAST_DURATION, easing: EASE_OUT };
+const GRID_CLASSNAME = 'gap-xl pt-[52px]';
+const LARGE_TEXT_GRID_CLASSNAME = 'gap-xl pt-[46px]';
 
 interface Props {
     readonly isOpen: boolean;
     readonly onClose: () => void;
+    readonly triggerRef: RefObject<View | null>;
     readonly accountId?: number;
     readonly accountType?: AccountTypeEnum;
 }
 
 // eslint-disable-next-line max-lines-per-function, max-statements
-export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType }: Props) => {
+export const CreateTransactionMenu = ({ isOpen, onClose, triggerRef, accountId, accountType }: Props) => {
     const { t } = useLingui();
     const { createAction } = useCreateActionContext();
     const { open: openVoiceInput } = useVoiceInputContext();
+    const { fontScale } = useWindowDimensions();
     const [hasOpened, setHasOpened] = useState(false);
+    const firstTileRef = useRef<View>(null);
+    const shouldRestoreFocusRef = useRef(false);
 
     const isVoiceInputEnabled = useSetting('isAiVoiceInputEnabled');
     const isAiAvailable = useAtomValue(aiSystemStatusAtom).state !== AiSystemStateEnum.DISABLED;
@@ -50,6 +59,11 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
     if (isOpen && !hasOpened) {
         setHasOpened(true);
     }
+
+    const handleDismiss = () => {
+        shouldRestoreFocusRef.current = true;
+        onClose();
+    };
 
     const handleCreateExpense = () => {
         onClose();
@@ -92,6 +106,7 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
     const contextActionTestID = createAction?.testID ?? CreateTransactionMenuSelector.item(0);
     const pointerEvents = isOpen ? 'box-none' : 'none';
     const accessibilityVisibility = isOpen ? 'auto' : 'no-hide-descendants';
+    const gridClassName = fontScale >= CREATE_MENU_LARGE_TEXT_FONT_SCALE ? LARGE_TEXT_GRID_CLASSNAME : GRID_CLASSNAME;
 
     useEffect(() => {
         if (isOpen) {
@@ -101,6 +116,17 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
             progress.set(withTiming(0, FADE_TIMING));
         }
     }, [isOpen, isReducedMotion, progress]);
+
+    useEffect(() => {
+        const focusTarget = isOpen ? firstTileRef.current : triggerRef.current;
+        const shouldMoveFocus = isOpen || shouldRestoreFocusRef.current;
+
+        shouldRestoreFocusRef.current = false;
+
+        if (shouldMoveFocus && isDefined(focusTarget)) {
+            AccessibilityInfo.sendAccessibilityEvent(focusTarget, 'focus');
+        }
+    }, [isOpen, triggerRef]);
 
     const closeButtonStyle = useAnimatedStyle(() => {
         const value = progress.get();
@@ -121,6 +147,8 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
             pointerEvents={pointerEvents}
             accessibilityElementsHidden={!isOpen}
             importantForAccessibility={accessibilityVisibility}
+            accessibilityViewIsModal={isOpen}
+            onAccessibilityEscape={handleDismiss}
         >
             <View className="absolute inset-x-0 bottom-0 gap-xl px-lg pb-safe" pointerEvents="box-none">
                 <Animated.View className="absolute inset-x-0 -top-[80px] bottom-0" style={scrimStyle} pointerEvents="none">
@@ -128,50 +156,53 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
                     <View className="flex-1 bg-black/90" />
                 </Animated.View>
 
-                <CreateMenuReveal progress={progress} order={3} className="flex-row gap-xl">
-                    <CreateMenuChip
-                        icon={UserIconNameEnum.Repeat}
-                        label={t`Recurring`}
-                        testID={CreateTransactionMenuSelector.Recurring}
-                        variant="violet"
-                        onPress={handleCreateRecurring}
-                    />
-                    <CreateMenuChip
-                        icon={UserIconNameEnum.Wallet}
-                        label={t`Account`}
-                        testID={CreateTransactionMenuSelector.AddAccount}
-                        variant="default"
-                        onPress={handleCreateAccount}
-                    />
-                </CreateMenuReveal>
+                <View className={gridClassName} pointerEvents="box-none">
+                    <CreateMenuReveal progress={progress} order={2} className="flex-row gap-xl">
+                        <CreateMenuTile
+                            ref={firstTileRef}
+                            icon={UserIconNameEnum.TrendingDown}
+                            label={t`Expense`}
+                            testID={CreateTransactionMenuSelector.Expense}
+                            variant="destructive"
+                            onPress={handleCreateExpense}
+                        />
+                        <CreateMenuTile
+                            icon={UserIconNameEnum.TrendingUp}
+                            label={t`Income`}
+                            testID={CreateTransactionMenuSelector.Income}
+                            variant="positive"
+                            onPress={handleCreateIncome}
+                        />
+                    </CreateMenuReveal>
 
-                <CreateMenuReveal progress={progress} order={2} className="flex-row gap-xl">
-                    <CreateMenuTile
-                        icon={UserIconNameEnum.TrendingDown}
-                        label={t`Expense`}
-                        testID={CreateTransactionMenuSelector.Expense}
-                        variant="destructive"
-                        onPress={handleCreateExpense}
-                    />
-                    <CreateMenuTile
-                        icon={UserIconNameEnum.TrendingUp}
-                        label={t`Income`}
-                        testID={CreateTransactionMenuSelector.Income}
-                        variant="positive"
-                        onPress={handleCreateIncome}
-                    />
-                </CreateMenuReveal>
+                    <CreateMenuReveal progress={progress} order={1} className="flex-row gap-xl">
+                        <CreateMenuTile
+                            icon={UserIconNameEnum.ArrowLeftRight}
+                            label={t`Transfer`}
+                            testID={CreateTransactionMenuSelector.Transfer}
+                            variant="warning"
+                            onPress={handleCreateTransfer}
+                        />
+                        {isDefined(ReceiptScannerModule) ? <ReceiptSourceMenu onClose={onClose} /> : null}
+                    </CreateMenuReveal>
 
-                <CreateMenuReveal progress={progress} order={1} className="flex-row gap-xl">
-                    <CreateMenuTile
-                        icon={UserIconNameEnum.ArrowLeftRight}
-                        label={t`Transfer`}
-                        testID={CreateTransactionMenuSelector.Transfer}
-                        variant="warning"
-                        onPress={handleCreateTransfer}
-                    />
-                    {isDefined(ReceiptScannerModule) ? <ReceiptSourceMenu onClose={onClose} /> : null}
-                </CreateMenuReveal>
+                    <CreateMenuReveal progress={progress} order={3} className="absolute inset-x-0 top-0 flex-row gap-xl">
+                        <CreateMenuChip
+                            icon={UserIconNameEnum.Repeat}
+                            label={t`Recurring`}
+                            testID={CreateTransactionMenuSelector.Recurring}
+                            variant="violet"
+                            onPress={handleCreateRecurring}
+                        />
+                        <CreateMenuChip
+                            icon={UserIconNameEnum.Wallet}
+                            label={t`Account`}
+                            testID={CreateTransactionMenuSelector.AddAccount}
+                            variant="default"
+                            onPress={handleCreateAccount}
+                        />
+                    </CreateMenuReveal>
+                </View>
 
                 <View className="flex-row items-end gap-xl" pointerEvents="box-none">
                     <CreateMenuReveal progress={progress} order={0} className="flex-1 flex-row">
@@ -197,7 +228,7 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
                     <CircularActionButton
                         icon={UserIconNameEnum.Plus}
                         label={t`Close menu`}
-                        onPress={onClose}
+                        onPress={handleDismiss}
                         animatedStyle={closeButtonStyle}
                         testID={CreateTransactionMenuSelector.Close}
                     />

@@ -3,8 +3,10 @@ import { Text, View, useWindowDimensions } from 'react-native';
 
 import { TestIDPartEnum } from '../../../@generic/enum/test-id-part.enum';
 import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
+import { CREATE_MENU_LARGE_TEXT_FONT_SCALE } from '../../constant/create-menu-large-text-font-scale.constant';
 import { CREATE_MENU_MAX_FONT_SIZE_MULTIPLIER } from '../../constant/create-menu-max-font-size-multiplier.constant';
 import { CREATE_MENU_MIN_FONT_SCALE } from '../../constant/create-menu-min-font-scale.constant';
+import { CreateMenuLabelLayoutEnum } from '../../enum/create-menu-label-layout.enum';
 import { splitCreateMenuLabel } from '../../utils/split-create-menu-label.util';
 import { CreateMenuIcon } from '../create-menu-icon/create-menu-icon';
 
@@ -21,22 +23,25 @@ interface Props {
 
 const ICON_SIZE = 36;
 const LARGE_TEXT_ICON_SIZE = 32;
-const LARGE_TEXT_FONT_SCALE = 1.3;
 const LABEL_CLASSNAME = 'text-md font-semibold leading-tight text-primary';
+const TILE_CLASSNAME = 'grow flex-row items-center gap-md rounded-5xl bg-popover-surface pl-lg pr-xl';
 
 export const CreateMenuTileContent = ({ icon, label, testID, variant }: Props) => {
     const { fontScale } = useWindowDimensions();
-    const [isWrapped, setIsWrapped] = useState(false);
+    const [labelLayout, setLabelLayout] = useState(CreateMenuLabelLayoutEnum.PENDING);
 
-    const iconSize = fontScale >= LARGE_TEXT_FONT_SCALE ? LARGE_TEXT_ICON_SIZE : ICON_SIZE;
-    const lines = isWrapped ? splitCreateMenuLabel(label) : [label];
+    const isLargeText = fontScale >= CREATE_MENU_LARGE_TEXT_FONT_SCALE;
+    const iconSize = isLargeText ? LARGE_TEXT_ICON_SIZE : ICON_SIZE;
+    const tileClassName = isLargeText ? `h-[68px] py-xs ${TILE_CLASSNAME}` : `h-[64px] py-xxs ${TILE_CLASSNAME}`;
+    const lines = labelLayout === CreateMenuLabelLayoutEnum.SPLIT ? splitCreateMenuLabel(label) : [label];
+    const lineClassName = labelLayout === CreateMenuLabelLayoutEnum.PENDING ? `opacity-0 ${LABEL_CLASSNAME}` : LABEL_CLASSNAME;
 
     const handleMeasureLayout = (event: NativeSyntheticEvent<TextLayoutEventData>) => {
-        setIsWrapped(event.nativeEvent.lines.length > 1);
+        setLabelLayout(event.nativeEvent.lines.length > 1 ? CreateMenuLabelLayoutEnum.SPLIT : CreateMenuLabelLayoutEnum.SINGLE);
     };
 
     return (
-        <View className="min-h-[64px] grow flex-row items-center gap-md rounded-5xl bg-popover-surface py-xxs pl-lg pr-xl">
+        <View className={tileClassName}>
             <CreateMenuIcon icon={icon} variant={variant} size={iconSize} />
             <View className="flex-1" {...testIDProps(testID, TestIDPartEnum.LABEL)}>
                 <Text
@@ -51,7 +56,7 @@ export const CreateMenuTileContent = ({ icon, label, testID, variant }: Props) =
                 {lines.map(line => (
                     <Text
                         key={line}
-                        className={LABEL_CLASSNAME}
+                        className={lineClassName}
                         maxFontSizeMultiplier={CREATE_MENU_MAX_FONT_SIZE_MULTIPLIER}
                         numberOfLines={1}
                         adjustsFontSizeToFit
