@@ -1,5 +1,6 @@
 import {
     InstrumentRepository,
+    InstrumentMarketDataJobStatusEnum,
     InstrumentTypeEnum,
     SettingsRepository,
     SyncApplyStateRepository,
@@ -17,6 +18,7 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { ExchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
 import { InstrumentDailyMarketPriceRepository } from '../../market-data/repository/instrument-daily-market-price.repository';
+import { InstrumentMarketDataJobRepository } from '../../market-data/repository/instrument-market-data-job.repository';
 import { CRYPTO_PRICE_CARRY_DAYS, FUND_PRICE_CARRY_DAYS } from '../constant/price-carry-days.constant';
 
 import { EntryBaseValuationService } from './entry-base-valuation.service';
@@ -40,6 +42,7 @@ export class MarketPricedRevaluationService extends Context.Service<MarketPriced
             const syncApplyStateRepository = yield* SyncApplyStateRepository;
             const exchangeRatesService = yield* ExchangeRatesService;
             const instrumentDailyMarketPriceRepository = yield* InstrumentDailyMarketPriceRepository;
+            const instrumentMarketDataJobRepository = yield* InstrumentMarketDataJobRepository;
             const settingsRepository = yield* SettingsRepository;
             const instrumentRepository = yield* InstrumentRepository;
             const batchSize = 200;
@@ -63,6 +66,13 @@ export class MarketPricedRevaluationService extends Context.Service<MarketPriced
                           baseAmount: valuation.baseAmount
                       }
                     : null;
+
+            const toEstimatedUpdate: EntryBaseValuationUpdateBuilderType = row => ({
+                id: row.id,
+                baseInstrumentId: row.baseInstrumentId,
+                baseExchangeRate: null,
+                baseAmount: row.baseAmount
+            });
 
             const makeAnyValueUpdate =
                 (baseInstrumentId: number): EntryBaseValuationUpdateBuilderType =>
@@ -135,11 +145,17 @@ export class MarketPricedRevaluationService extends Context.Service<MarketPriced
                 const earliestPriceDate = yield* instrumentDailyMarketPriceRepository.findEarliestPriceDate(instrumentId);
                 const baseInstrument = yield* exchangeRatesService.getBaseInstrument();
 
+                if (!isDefined(baseInstrument)) {
+                    return;
+                }
+
+                const latestJob = yield* instrumentMarketDataJobRepository.findLatestByInstrumentAndQuote(instrumentId, baseInstrument.id);
                 const instrument = yield* instrumentRepository.findById(instrumentId);
                 const isUnsupported =
-                    isDefined(instrument) && (!isDefined(instrument.priceProvider) || !isDefined(instrument.providerInstrumentId));
+                    (isDefined(instrument) && (!isDefined(instrument.priceProvider) || !isDefined(instrument.providerInstrumentId))) ||
+                    latestJob?.status === InstrumentMarketDataJobStatusEnum.UNSUPPORTED;
 
-                if ((!isDefined(earliestPriceDate) && !isUnsupported) || !isDefined(baseInstrument)) {
+                if (!isDefined(earliestPriceDate) && !isUnsupported) {
                     return;
                 }
 
@@ -147,19 +163,12 @@ export class MarketPricedRevaluationService extends Context.Service<MarketPriced
                     afterId =>
                         transactionEntryBaseValuationRepository.findMarketPricedEntriesInRange({
                             instrumentId,
-                            fromDate: earliestPriceDate ?? '0000-01-01',
+                            ...(isDefined(earliestPriceDate) && { fromDate: earliestPriceDate }),
                             toDate: lastDay,
                             afterId,
                             limit: batchSize
                         }),
-                    isUnsupported && !isDefined(earliestPriceDate)
-                        ? row => ({
-                              id: row.id,
-                              baseInstrumentId: row.baseInstrumentId,
-                              baseExchangeRate: null,
-                              baseAmount: row.baseAmount
-                          })
-                        : makeAnyValueUpdate(baseInstrument.id),
+                    isUnsupported && !isDefined(earliestPriceDate) ? toEstimatedUpdate : makeAnyValueUpdate(baseInstrument.id),
                     () => Effect.void,
                     0
                 );
@@ -237,7 +246,8 @@ export class MarketPricedRevaluationService extends Context.Service<MarketPriced
             ExchangeRatesService.layer,
             InstrumentDailyMarketPriceRepository.layer,
             SettingsRepository.layer,
-            InstrumentRepository.layer
+            InstrumentRepository.layer,
+            InstrumentMarketDataJobRepository.layer
         ])
     );
 }

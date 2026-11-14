@@ -26,13 +26,10 @@ import { TransactionEntityTable } from '../table/transaction-entity.table';
 import type { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import type { YieldFieldsInterface } from '../interface/yield-fields.interface';
 import type { YieldTagCandidateQueryInterface } from '../interface/yield-tag-candidate-query.interface';
-
 export class TransactionYieldRepository extends Context.Service<TransactionYieldRepository>()(
     '@budgie/contracts/TransactionYieldRepository',
     {
         make: Effect.sync(() => {
-            const categorizedKinds = [YieldKindEnum.STAKING, YieldKindEnum.EARN, YieldKindEnum.DISTRIBUTION];
-
             const buildUnclassifiedYieldCondition = (query: YieldTagCandidateQueryInterface) =>
                 and(
                     transactionFilters.buildVisibleTransactionCondition(),
@@ -44,7 +41,6 @@ export class TransactionYieldRepository extends Context.Service<TransactionYield
                         ...query.externalIdPrefixes.map(prefix => like(TransactionEntityTable.externalId, `${prefix}%`))
                     )
                 );
-
             const selectCandidates = (where: SQL | undefined, limit: number) =>
                 Db.query(db =>
                     db
@@ -276,15 +272,19 @@ export class TransactionYieldRepository extends Context.Service<TransactionYield
                             )
                         ).pipe(Effect.map(Array.flatten))
                 ),
-                findYieldCategoryRepairIdsBySyncIds: (syncIds: readonly string[]) =>
-                    selectCandidates(
-                        and(
-                            transactionFilters.buildVisibleTransactionCondition(),
-                            inArray(TransactionEntityTable.syncId, [...syncIds]),
-                            inArray(TransactionEntityTable.yieldKind, categorizedKinds)
-                        ),
-                        syncIds.length
-                    ).pipe(Effect.map(rows => rows.map(row => row.id))),
+                findYieldCategoryRepairIdsBySyncIds: Effect.fn('TransactionYieldRepository.findYieldCategoryRepairIdsBySyncIds')(
+                    (externalIdPrefixes: readonly string[], syncIds: readonly string[]) =>
+                        Effect.forEach(Array.chunksOf(syncIds, 500), chunk =>
+                            Db.query(db =>
+                                db.all<Pick<typeof TransactionEntityTable.$inferSelect, 'id'>>(
+                                    sql`SELECT ${TransactionEntityTable.id} FROM ${TransactionEntityTable} WHERE ${transactionFilters.buildVisibleTransactionCondition()} AND ${inArray(TransactionEntityTable.syncId, chunk)}
+                                        AND ${inArray(TransactionEntityTable.yieldKind, [YieldKindEnum.STAKING, YieldKindEnum.EARN, YieldKindEnum.DISTRIBUTION])}
+                                        AND ${or(...externalIdPrefixes.map(prefix => like(TransactionEntityTable.externalId, `${prefix}%`)))}
+                                        AND NOT EXISTS (SELECT 1 FROM ${TransactionEntryEntityTable} WHERE ${TransactionEntryEntityTable.transactionId} = ${TransactionEntityTable.id} AND ${TransactionEntryEntityTable.categorySource} = ${CategorySourceEnum.USER})`
+                                )
+                            )
+                        ).pipe(Effect.map(chunks => Array.flatten(chunks).map(row => row.id)))
+                ),
                 fillYieldTags: (transactionId: number, fields: YieldFieldsInterface) =>
                     Db.query(db =>
                         db

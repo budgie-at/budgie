@@ -117,7 +117,8 @@ describe('market-data/crypto-strict-valuation', () => {
                     ExchangeRatesService.layer,
                     InstrumentDailyMarketPriceRepository.layer,
                     SettingsRepository.layer,
-                    InstrumentRepository.layer
+                    InstrumentRepository.layer,
+                    InstrumentMarketDataJobRepository.layer
                 ])
             );
             const historicalMarketDataLayer = Layer.effect(HistoricalMarketDataService, HistoricalMarketDataService.make).pipe(
@@ -263,6 +264,54 @@ describe('market-data/crypto-strict-valuation scenarios', () => {
                 baseAmount: 42 * PRECISION
             });
         }).pipe(Effect.provide(MarketPricedRevaluationService.layer.pipe(Layer.provideMerge(TestLayer))))
+    );
+
+    it.effect.each([InstrumentMarketDataJobStatusEnum.UNSUPPORTED, InstrumentMarketDataJobStatusEnum.FAILED])(
+        'uses the latest base-quote job status %s to correct an unpriced reward',
+        status =>
+            Effect.gen(function* () {
+                const { euro, coin, account } = yield* seedCryptoSyncAccount('DOGE');
+                const repository = yield* InstrumentMarketDataJobRepository;
+                const { entry } = yield* seedReward(account.id, '2026-08-10T09:00:00.000Z', euro.id, 42, 42 * PRECISION);
+
+                yield* repository.enqueueMany([
+                    { instrumentId: coin.id, quoteInstrumentId: euro.id, fromDate: '2026-08-10', toDate: '2026-08-10' }
+                ]);
+
+                const job = yield* repository.claimNext(3, new Date(0));
+
+                expect(job).toBeDefined();
+                if (!isDefined(job)) {
+                    return;
+                }
+
+                yield* repository.markUnsupported(job);
+                yield* testDb.$client.unsafe('UPDATE instrument_market_data_jobs SET updated_at = 1 WHERE id = ?', [job.id]);
+                if (status === InstrumentMarketDataJobStatusEnum.FAILED) {
+                    yield* repository.enqueueMany([
+                        { instrumentId: coin.id, quoteInstrumentId: euro.id, fromDate: '2026-08-11', toDate: '2026-08-11' }
+                    ]);
+                    const retryJob = yield* repository.claimNext(3, new Date(0));
+
+                    expect(retryJob).toBeDefined();
+                    if (isDefined(retryJob)) {
+                        yield* repository.markFailed(retryJob, 'temporary provider failure');
+                    }
+                }
+                yield* Effect.flatMap(MarketPricedRevaluationService, service => service.runCryptoStrictValuationStep());
+
+                expect(yield* fetchEntryValuation(testDb, entry.id)).toStrictEqual({
+                    baseInstrumentId: euro.id,
+                    baseExchangeRate: status === InstrumentMarketDataJobStatusEnum.UNSUPPORTED ? null : 42,
+                    baseAmount: 42 * PRECISION
+                });
+            }).pipe(
+                Effect.provide(
+                    Layer.mergeAll(MarketPricedRevaluationService.layer, InstrumentMarketDataJobRepository.layer).pipe(
+                        Layer.provideMerge(TestLayer)
+                    )
+                )
+            )
     );
 
     it.effect('keeps synced values intact on a device with no local prices', () =>

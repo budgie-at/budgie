@@ -160,21 +160,6 @@ describe('YieldService summary', () => {
         })
     );
 
-    it.effect('keeps local midnight boundaries identical to filtering all facts, including the DST day', () =>
-        Effect.gen(function* () {
-            const facts = [
-                { ...valued('2026-03-28', 1, 7), operatedAt: new Date(2026, 2, 28, 23, 59, 59) },
-                { ...valued('2026-03-29', 1, 11), operatedAt: new Date(2026, 2, 29) },
-                { ...valued('2026-03-29', 1, 13, { isEstimated: true }), operatedAt: new Date(2026, 2, 29, 23, 59, 59) },
-                { ...valued('2026-03-30', 1, 17), operatedAt: new Date(2026, 2, 30) },
-                tax('2026-03-29', 3)
-            ];
-            const period = yield* earnedBetween({ facts }, '2026-03-29', '2026-03-29');
-
-            expect(period).toEqual({ value: 24, isEstimated: true });
-        })
-    );
-
     it.effect('lists the groups present in the scope across all ranges, in stack order, plus first/last payout days', () =>
         Effect.gen(function* () {
             const summary = yield* summarize({

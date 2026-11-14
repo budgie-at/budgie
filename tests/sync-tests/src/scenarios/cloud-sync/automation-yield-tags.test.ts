@@ -1,4 +1,11 @@
-import { AccountTypeEnum, ExternalSourceEnum, INVESTMENTS_CATEGORY_ID, TransactionTypeEnum, YieldKindEnum } from '@budgie/contracts';
+import {
+    AccountTypeEnum,
+    CategorySourceEnum,
+    ExternalSourceEnum,
+    INVESTMENTS_CATEGORY_ID,
+    TransactionTypeEnum,
+    YieldKindEnum
+} from '@budgie/contracts';
 import { YieldTagRepairService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
@@ -107,6 +114,7 @@ describe('cloud-sync/automation-yield-tags', () => {
                     const { deviceB, cloud, seed, binance } = yield* setupDevices;
 
                     yield* seedEarnIncome(seed, binance.id, 'Mixed version', 'binance:earn:BNB:mixed');
+                    yield* testDb.$client.unsafe('UPDATE transaction_entries SET category_source = ?', [CategorySourceEnum.RULE]);
                     yield* pushDevice(testDb, cloud);
                     yield* pullWithAutomation(deviceB, cloud, 'device-b');
                     yield* deviceB.$client.unsafe('UPDATE sync_apply_state SET is_applying = 1');
@@ -125,6 +133,32 @@ describe('cloud-sync/automation-yield-tags', () => {
                     ).toEqual([{ categoryId: INVESTMENTS_CATEGORY_ID }]);
                     expect(yield* readOutboxRows(deviceB)).toEqual([]);
                 })
+        );
+
+        it.effect.each(['manual-distribution', 'user-cleared-binance'])('preserves a NULL category on the peer for %s', scenario =>
+            Effect.gen(function* () {
+                const { deviceB, cloud, seed, binance } = yield* setupDevices;
+
+                yield* seedEarnIncome(
+                    seed,
+                    binance.id,
+                    'Uncategorized income',
+                    scenario === 'manual-distribution' ? 'manual-income' : 'binance:earn:BNB:cleared'
+                );
+                yield* testDb.$client.unsafe('UPDATE transactions SET yield_kind = ?', [YieldKindEnum.DISTRIBUTION]);
+                yield* testDb.$client.unsafe('UPDATE transaction_entries SET category_id = NULL, category_source = ?', [
+                    scenario === 'user-cleared-binance' ? CategorySourceEnum.USER : CategorySourceEnum.RULE
+                ]);
+                yield* pushDevice(testDb, cloud);
+                yield* pullWithAutomation(deviceB, cloud, 'device-b');
+
+                expect(
+                    yield* deviceB.$client.unsafe<{ readonly categoryId: number | null }>(
+                        'SELECT category_id AS categoryId FROM transaction_entries'
+                    )
+                ).toEqual([{ categoryId: null }]);
+                expect(yield* readOutboxRows(deviceB)).toEqual([]);
+            })
         );
 
         it.effect('chunks a large sync id list (40000 ids) when repairing', () =>

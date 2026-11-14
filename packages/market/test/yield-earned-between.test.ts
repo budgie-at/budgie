@@ -1,5 +1,5 @@
 import { CurrencyEnum, TransactionEntityTable, YieldKindEnum, YieldRepository } from '@budgie/contracts';
-import { expect, it } from '@effect/vitest';
+import { afterEach, beforeEach, expect, it, vi } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -8,6 +8,14 @@ import { YieldService } from '../src/yield/service/yield.service';
 import { formatYieldDay } from '../src/yield/utils/format-yield-day.util';
 
 import { requireInstrumentByCode, TestLayer, testDb, testSeedService } from './test-context';
+
+beforeEach(() => {
+    vi.stubEnv('TZ', 'Europe/Kyiv');
+});
+
+afterEach(() => {
+    vi.unstubAllEnvs();
+});
 
 it.effect('matches the all-history local-day total with a bounded database query across midnight and DST', () =>
     Effect.gen(function* () {

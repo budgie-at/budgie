@@ -1,8 +1,10 @@
-import { and, asc, between, count, eq, gt, inArray, isNotNull, isNull, not, or, sql } from 'drizzle-orm';
+import { and, asc, between, count, eq, gt, gte, lte, inArray, isNotNull, isNull, not, or, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
+
+import { isDefined } from '@rnw-community/shared';
 
 import { Db } from '../../@generic/service/db.service';
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
@@ -182,7 +184,12 @@ export class TransactionEntryBaseValuationRepository extends Context.Service<Tra
                     findMarketPricedEntries(live => buildPendingCondition(live, baseInstrumentId), afterId, limit),
                 findMarketPricedEntriesInRange: (page: MarketPricedEntryPageInterface) =>
                     findMarketPricedEntries(
-                        live => and(eq(live.instrumentId, page.instrumentId), between(live.rateDate, page.fromDate, page.toDate)),
+                        live =>
+                            and(
+                                eq(live.instrumentId, page.instrumentId),
+                                ...(isDefined(page.fromDate) ? [gte(live.rateDate, page.fromDate)] : []),
+                                lte(live.rateDate, page.toDate)
+                            ),
                         page.afterId,
                         page.limit
                     ),
