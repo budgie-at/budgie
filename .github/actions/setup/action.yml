@@ -33,7 +33,7 @@ runs:
 
         - name: Restore package manager cache
           id: pm-cache
-          uses: rnw-community/mobile-ci/actions/node-pm-cache@e1b51d801ddbf75a07408822f581e387ac2783e1 # v4.13.0
+          uses: rnw-community/mobile-ci/actions/node-pm-cache@972654d8817a6e72f370a22ab9e5fb79b30df4e6 # v4.13.1
           with:
               package-manager: pnpm
 
