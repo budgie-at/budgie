@@ -6165,6 +6165,10 @@ msgstr "Se guarda en"
 msgid "Loading AI model..."
 msgstr "Cargando modelo de IA..."
 
+#: src/account/component/create-bank-search-results/create-bank-search-results.tsx
+msgid "Loading banks"
+msgstr "Cargando bancos"
+
 #: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
 msgid "Loading contacts"
 msgstr "Cargando contactos"
@@ -6862,8 +6866,8 @@ msgid "No market price yet, so value and return are unavailable."
 msgstr "Aún no hay precio de mercado, así que el valor y la rentabilidad no están disponibles."
 
 #: src/account/component/create-search-no-match/create-search-no-match.tsx
-msgid "No matches for “{query}”"
-msgstr "No hay resultados para «{query}»"
+msgid "No matches for “{query}”. Open the full list to browse by country."
+msgstr "No hay resultados para «{query}». Abre la lista completa para buscar por país."
 
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "No matching accounts"
@@ -7416,10 +7420,6 @@ msgstr "Abrir Ajustes"
 #: src/wallet-capture/component/apple-pay-capture-open-shortcuts-button/apple-pay-capture-open-shortcuts-button.tsx
 msgid "Open Shortcuts"
 msgstr "Abrir Shortcuts"
-
-#: src/account/component/create-bank-search-results/create-bank-search-results.tsx
-msgid "Open the full list to browse by country."
-msgstr "Abre la lista completa para buscar por país."
 
 #: src/household/utils/get-household-summary-labels.util.ts
 msgid "Open the invitation link again to retry."

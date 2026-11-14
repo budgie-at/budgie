@@ -15,8 +15,8 @@ import { SearchablePageList } from '../../../@generic/component/searchable-page-
 import { SearchablePage } from '../../../@generic/component/searchable-page/searchable-page';
 import { GROUPED_LIST_SIZING } from '../../../@generic/constant/grouped-list-sizing.constant';
 import { foldSearchText } from '../../../@generic/utils/fold-search-text.util';
-import { ENABLE_BANKING_COUNTRY_NAME } from '../../constant/enable-banking-country-name.constant';
 import { getDeviceRegionCode } from '../../utils/get-device-region-code.util';
+import { getEnableBankingBankSearchText } from '../../utils/get-enable-banking-bank-search-text.util';
 import { sortEnableBankingBanks } from '../../utils/sort-enable-banking-banks.util';
 import { EnableBankingBankRow } from '../enable-banking-bank-row/enable-banking-bank-row';
 
@@ -41,12 +41,7 @@ export const EnableBankingBankStep = ({ banks, isLoading, preselectedBankName, o
     const regionCode = getDeviceRegionCode();
     const matchingBanks = sortEnableBankingBanks(banks)
         .map((bank, index) => ({ ...bank, id: index }))
-        .filter(bank => {
-            const countryName = ENABLE_BANKING_COUNTRY_NAME[bank.country.toUpperCase()];
-            const countryLabel = isDefined(countryName) ? t(countryName) : '';
-
-            return bank.isSupported && foldSearchText(`${bank.name} ${bank.country} ${countryLabel}`).includes(normalizedQuery);
-        });
+        .filter(bank => bank.isSupported && getEnableBankingBankSearchText(bank, t).includes(normalizedQuery));
     const localBanks = matchingBanks.filter(bank => bank.country === regionCode);
     const otherBanks = matchingBanks.filter(bank => bank.country !== regionCode);
     const hasBothGroups = isNotEmptyArray(localBanks) && isNotEmptyArray(otherBanks);

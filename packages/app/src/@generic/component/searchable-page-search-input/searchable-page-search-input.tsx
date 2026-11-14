@@ -45,7 +45,7 @@ export const SearchablePageSearchInput = ({ search, placeholder, onSearchChange,
     return (
         <KeyboardStickyView offset={keyboardOffset} style={inputStyle} className="absolute inset-x-0">
             <View className="pt-md">
-                <View className="absolute inset-x-0 -top-[52px] -bottom-[500px]" pointerEvents="none">
+                <View className="absolute inset-x-0 -top-[60px] -bottom-[500px]" pointerEvents="none">
                     <View className="h-[44px] bg-linear-to-b from-surface/0 to-surface" />
                     <View className="flex-1 bg-surface" />
                 </View>

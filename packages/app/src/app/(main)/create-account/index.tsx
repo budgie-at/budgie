@@ -26,17 +26,18 @@ import { CreateMoreBanksCard } from '../../../account/component/create-more-bank
 import { CreateSyncCard } from '../../../account/component/create-sync-card/create-sync-card';
 import { ACCOUNT_ICON } from '../../../account/constant/account-icon.constant';
 import { ACCOUNT_KIND_TITLE } from '../../../account/constant/account-kind-title.constant';
+import { EnableBankingPublicBanksWarmup } from '../../../sync/component/enable-banking-public-banks-warmup/enable-banking-public-banks-warmup';
 
 import type { CreateAccountManualOptionInterface } from '../../../account/interface/create-account-manual-option.interface';
 import type { MessageDescriptor } from '@lingui/core';
 
 const GROUPED_STACKED_TITLE_CHROME_CONFIG = {
     ...STACKED_TITLE_CHROME_CONFIG,
-    smallTitleStart: 18,
-    largeTitleEnd: 27,
-    collapseEnd: 36,
-    topFadeHeight: 60,
-    headerBackdropHeight: 60,
+    smallTitleStart: 14,
+    largeTitleEnd: 21,
+    collapseEnd: 28,
+    topFadeHeight: 68,
+    headerBackdropHeight: 68,
     colors: {
         light: { solid: 'rgb(242,242,247)', wash: 'rgb(242,242,247)' },
         dark: { solid: 'rgb(0,0,0)', wash: 'rgb(0,0,0)' }
@@ -47,7 +48,7 @@ const GROUPED_STACKED_TITLE_CHROME_CONFIG = {
             0.25: { color: '#000000' },
             0.5: { color: '#000000' },
             0.75: { color: '#000000' },
-            0.86: { color: '#000000' },
+            0.8: { color: '#000000' },
             1: { color: 'transparent' }
         },
         bottom: {}
@@ -189,6 +190,7 @@ export default function Index() {
                     )}
 
                     <SearchListBottomSpacer />
+                    <EnableBankingPublicBanksWarmup />
                 </CollapsibleChromePage>
 
                 <SearchablePageSearchInput search={query} placeholder={t`Search banks and accounts`} onSearchChange={setQuery} />
