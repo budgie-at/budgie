@@ -1,6 +1,7 @@
 import { BudgetPeriodCloseService } from '@budgie/budget';
 import { CloudSyncService } from '@budgie/cloud-sync';
 import { SyncIdentityRepository, logAndContinue } from '@budgie/contracts';
+import { YieldTagRepairService } from '@budgie/sync';
 import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as Option from 'effect/Option';
@@ -117,7 +118,13 @@ const initializeAppServices = Effect.gen(function* () {
         )
     );
     yield* logAndContinue(onboardingService.initializeLocale());
-    yield* logAndContinue(Effect.flatMap(HistoricalMarketDataDrainerService, service => service.enqueueActiveAccounts()));
+    yield* Effect.all(
+        [
+            logAndContinue(Effect.flatMap(HistoricalMarketDataDrainerService, service => service.enqueueActiveAccounts())),
+            logAndContinue(Effect.flatMap(YieldTagRepairService, service => workload.run(service.runOnce())))
+        ],
+        { discard: true }
+    );
     yield* logAndContinue((yield* CategoryIconBackfillService).applyConfidentIcons());
 });
 

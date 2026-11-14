@@ -8,7 +8,8 @@ import {
     TransactionEntryTypeEnum,
     TransactionRepository,
     TransactionTypeEnum,
-    TransactionUpdatedByEnum
+    TransactionUpdatedByEnum,
+    TransactionYieldRepository
 } from '@budgie/contracts';
 import { TransactionTransferService } from '@budgie/ledger';
 import { TransactionRuleRepository } from '@budgie/rules';
@@ -22,6 +23,7 @@ import { INZHUR_BANK_DESCRIPTION_PATTERNS } from '../constant/inzhur-bank-descri
 import { INZHUR_BANK_FLOW_TITLES } from '../constant/inzhur-bank-flow-titles.constant';
 import { INZHUR_UNATTRIBUTED_DIVIDEND_TITLE } from '../constant/inzhur-unattributed-dividend-title.constant';
 import { InzhurOperationKindEnum } from '../enum/inzhur-operation-kind.enum';
+import { buildInzhurYieldFields } from '../utils/build-inzhur-yield-fields.util';
 import { sumSignedAccountEntries } from '../utils/sum-signed-account-entries.util';
 import { toInzhurShortName } from '../utils/to-inzhur-short-name.util';
 
@@ -39,6 +41,7 @@ export class InzhurBankFlowService extends Context.Service<InzhurBankFlowService
         const transactionRepository = yield* TransactionRepository;
         const transactionRuleRepository = yield* TransactionRuleRepository;
         const transactionTransferService = yield* TransactionTransferService;
+        const transactionYieldRepository = yield* TransactionYieldRepository;
         const inzhurSetupLookupService = yield* InzhurSetupLookupService;
         const inzhurOpeningBalanceService = yield* InzhurOpeningBalanceService;
         const inzhurCashPairingService = yield* InzhurCashPairingService;
@@ -97,6 +100,24 @@ export class InzhurBankFlowService extends Context.Service<InzhurBankFlowService
                 : [transaction.title, transaction.comment].filter(isNotEmptyString).join(' · ');
 
             yield* transactionRepository.updateById(transaction.id, { title, comment });
+        });
+
+        const tagDividend = Effect.fnUntraced(function* (transaction: TransactionWithEntriesEntityInterface, fundAccountId: number | null) {
+            const yieldFields = buildInzhurYieldFields({ type: transaction.type, fundAccountId }, true);
+
+            if (isDefined(transaction.yieldKind) || !isDefined(yieldFields)) {
+                return;
+            }
+
+            const isSourceInZone =
+                isDefined(yieldFields.yieldSourceAccountId) &&
+                isDefined(transaction.toAccountId) &&
+                (yield* transactionYieldRepository.areAccountsInSameZone(yieldFields.yieldSourceAccountId, transaction.toAccountId));
+
+            yield* transactionRepository.updateById(transaction.id, {
+                yieldKind: yieldFields.yieldKind,
+                yieldSourceAccountId: isSourceInZone ? yieldFields.yieldSourceAccountId : null
+            });
         });
 
         const convertToCash = Effect.fnUntraced(function* (
@@ -218,6 +239,7 @@ export class InzhurBankFlowService extends Context.Service<InzhurBankFlowService
                 yield* transactionRepository.touchUpdatedAt(transaction.id);
             }
 
+            yield* tagDividend(transaction, fundAccountId);
             yield* retitleDividend(transaction, fundAccountId, setup);
 
             return null;
@@ -302,6 +324,7 @@ export class InzhurBankFlowService extends Context.Service<InzhurBankFlowService
             TransactionRepository.layer,
             TransactionRuleRepository.layer,
             TransactionTransferService.layer,
+            TransactionYieldRepository.layer,
             InzhurSetupLookupService.layer,
             InzhurOpeningBalanceService.layer,
             InzhurCashPairingService.layer

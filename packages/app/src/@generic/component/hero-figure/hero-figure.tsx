@@ -21,18 +21,33 @@ interface Props {
     readonly unit?: string;
     readonly prefix?: string;
     readonly decimalPlaces?: number;
+    readonly approximate?: boolean;
     readonly testID?: string;
 }
 
 const LTR_STYLE = { direction: 'ltr' } as const;
+const APPROXIMATE_SIGN = '≈ ';
 
-export const HeroFigure = ({ amount, currencySymbol, variant, unit = '', prefix = '', decimalPlaces, testID }: Props) => {
+export const HeroFigure = ({
+    amount,
+    currencySymbol,
+    variant,
+    unit = '',
+    prefix = '',
+    decimalPlaces,
+    approximate = false,
+    testID
+}: Props) => {
     const isAmountProtected = useIsAmountProtected();
     const settingDecimalPlaces = useAtomValue(decimalPlacesAtom);
     const { decimalSeparator } = useLocaleInfo();
     const formatWhole = useFormatDigits(0);
     const { sign, whole, fraction } = splitHeroAmount(amount, decimalPlaces ?? settingDecimalPlaces, decimalSeparator);
     const wholeLabel = `${sign}${formatWhole(whole, currencySymbol)}`;
+
+    const approximateSign = approximate ? (
+        <Text className="text-[33px] font-semibold text-secondary-foreground">{APPROXIMATE_SIGN}</Text>
+    ) : null;
 
     if (isAmountProtected) {
         return (
@@ -42,6 +57,7 @@ export const HeroFigure = ({ amount, currencySymbol, variant, unit = '', prefix 
                 testID={testID}
                 className="text-8xl font-bold tracking-[0.08em] text-secondary-foreground"
             >
+                {approximateSign}
                 {PROTECTED_HERO_PLACEHOLDER}
             </Text>
         );
@@ -65,6 +81,7 @@ export const HeroFigure = ({ amount, currencySymbol, variant, unit = '', prefix 
                 testID={testID}
                 className={cn('shrink text-8xl font-bold tracking-[-0.03em] tabular-nums', FOREGROUND_COLOR_PALETTE[variant])}
             >
+                {approximateSign}
                 {wholeLabel}
             </Text>
             <Text

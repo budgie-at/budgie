@@ -7,6 +7,8 @@ import * as Layer from 'effect/Layer';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
+import { MARKET_DATA_JOB_MAX_ATTEMPTS, MARKET_DATA_JOB_STALE_LOCK_MS } from '../constant/market-data-job-retry.constant';
+
 import type { InstrumentMarketDataJobCreateEntityInterface, InstrumentMarketDataJobEntityInterface } from '@budgie/contracts';
 
 export class InstrumentMarketDataJobRepository extends Context.Service<InstrumentMarketDataJobRepository>()(
@@ -37,12 +39,36 @@ export class InstrumentMarketDataJobRepository extends Context.Service<Instrumen
                     isNull(InstrumentMarketDataJobEntityTable.deletedAt)
                 );
 
+            const buildOpenCondition = (maxAttempts: number, staleLockedBefore: Date) =>
+                and(
+                    isNull(InstrumentMarketDataJobEntityTable.deletedAt),
+                    or(
+                        buildClaimableCondition(maxAttempts, staleLockedBefore),
+                        and(
+                            eq(InstrumentMarketDataJobEntityTable.status, InstrumentMarketDataJobStatusEnum.RUNNING),
+                            gt(InstrumentMarketDataJobEntityTable.lockedAt, staleLockedBefore)
+                        )
+                    )
+                );
+
             const buildClaimOwnerCondition = (job: Pick<InstrumentMarketDataJobEntityInterface, 'id' | 'attempts'>) =>
                 and(
                     eq(InstrumentMarketDataJobEntityTable.id, job.id),
                     eq(InstrumentMarketDataJobEntityTable.status, InstrumentMarketDataJobStatusEnum.RUNNING),
                     eq(InstrumentMarketDataJobEntityTable.attempts, job.attempts)
                 );
+
+            const markFinished = (
+                job: Pick<InstrumentMarketDataJobEntityInterface, 'id' | 'attempts'>,
+                status: InstrumentMarketDataJobStatusEnum.COMPLETED | InstrumentMarketDataJobStatusEnum.UNSUPPORTED
+            ) =>
+                Db.query(db =>
+                    db
+                        .update(InstrumentMarketDataJobEntityTable)
+                        .set({ status, lockedAt: null, completedAt: new Date(), updatedAt: new Date() })
+                        .where(buildClaimOwnerCondition(job))
+                        .returning({ id: InstrumentMarketDataJobEntityTable.id })
+                ).pipe(Effect.map(isNotEmptyArray));
 
             return {
                 enqueueMany: Effect.fn('InstrumentMarketDataJobRepository.enqueueMany')(function* (
@@ -103,31 +129,35 @@ export class InstrumentMarketDataJobRepository extends Context.Service<Instrumen
                                 and(
                                     eq(InstrumentMarketDataJobEntityTable.instrumentId, instrumentId),
                                     eq(InstrumentMarketDataJobEntityTable.quoteInstrumentId, quoteInstrumentId),
-                                    isNull(InstrumentMarketDataJobEntityTable.deletedAt),
-                                    or(
-                                        buildClaimableCondition(maxAttempts, staleLockedBefore),
-                                        and(
-                                            eq(InstrumentMarketDataJobEntityTable.status, InstrumentMarketDataJobStatusEnum.RUNNING),
-                                            gt(InstrumentMarketDataJobEntityTable.lockedAt, staleLockedBefore)
-                                        )
-                                    )
+                                    buildOpenCondition(maxAttempts, staleLockedBefore)
                                 )
                             )
                             .limit(1)
                     ).pipe(Effect.map(isNotEmptyArray)),
+                hasActiveForInstruments: (instrumentIds: readonly number[]) =>
+                    isNotEmptyArray(instrumentIds)
+                        ? Effect.flatMap(DateTime.now, now =>
+                              Db.query(db =>
+                                  db
+                                      .select({ id: InstrumentMarketDataJobEntityTable.id })
+                                      .from(InstrumentMarketDataJobEntityTable)
+                                      .where(
+                                          and(
+                                              inArray(InstrumentMarketDataJobEntityTable.instrumentId, [...instrumentIds]),
+                                              buildOpenCondition(
+                                                  MARKET_DATA_JOB_MAX_ATTEMPTS,
+                                                  DateTime.toDateUtc(DateTime.subtractDuration(now, MARKET_DATA_JOB_STALE_LOCK_MS))
+                                              )
+                                          )
+                                      )
+                                      .limit(1)
+                              ).pipe(Effect.map(isNotEmptyArray))
+                          )
+                        : Effect.succeed(false),
                 markCompleted: (job: Pick<InstrumentMarketDataJobEntityInterface, 'id' | 'attempts'>) =>
-                    Db.query(db =>
-                        db
-                            .update(InstrumentMarketDataJobEntityTable)
-                            .set({
-                                status: InstrumentMarketDataJobStatusEnum.COMPLETED,
-                                lockedAt: null,
-                                completedAt: new Date(),
-                                updatedAt: new Date()
-                            })
-                            .where(buildClaimOwnerCondition(job))
-                            .returning({ id: InstrumentMarketDataJobEntityTable.id })
-                    ).pipe(Effect.map(isNotEmptyArray)),
+                    markFinished(job, InstrumentMarketDataJobStatusEnum.COMPLETED),
+                markUnsupported: (job: Pick<InstrumentMarketDataJobEntityInterface, 'id' | 'attempts'>) =>
+                    markFinished(job, InstrumentMarketDataJobStatusEnum.UNSUPPORTED),
                 markFailed: (job: Pick<InstrumentMarketDataJobEntityInterface, 'id' | 'attempts'>, errorMessage: string) =>
                     Db.query(db =>
                         db

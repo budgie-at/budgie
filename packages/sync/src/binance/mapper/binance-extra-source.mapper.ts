@@ -1,8 +1,9 @@
-import { convertFromMicroUnits } from '@budgie/contracts';
+import { YieldKindEnum, convertFromMicroUnits } from '@budgie/contracts';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { SyncTransactionTypeEnum } from '../../core/enum/sync-transaction-type.enum';
+import { BINANCE_YIELD_KIND_BY_PREFIX } from '../constant/binance-yield-kind-by-prefix.constant';
 import { BinanceEarnRewardKindEnum } from '../enum/binance-earn-reward-kind.enum';
 import { BinanceTransferSourceEnum } from '../enum/binance-transfer-source.enum';
 import { parseBinanceScaledDecimal } from '../utils/parse-binance-scaled-decimal.util';
@@ -24,6 +25,21 @@ const EARN_DATE_PART_DIGITS = 2;
 const DUST_DEFAULT_TARGET_ASSET = 'BNB';
 const DEBITED_DIVIDEND_DIRECTION = -1;
 const EARN_DIVIDEND_INFO_PATTERN = /^(flexible|locked)/iu;
+const DISTRIBUTION_DIVIDEND_INFO_PATTERN = /airdrop|launchpool|megadrop|hodler/iu;
+const STAKING_DIVIDEND_INFO_PATTERN = /staking/iu;
+const EARN_PRODUCT_DIVIDEND_INFO_PATTERN = /bnb vault|simple earn/iu;
+
+const classifyDividend = (enInfo: string): YieldKindEnum => {
+    if (DISTRIBUTION_DIVIDEND_INFO_PATTERN.test(enInfo)) {
+        return YieldKindEnum.DISTRIBUTION;
+    }
+
+    if (STAKING_DIVIDEND_INFO_PATTERN.test(enInfo)) {
+        return YieldKindEnum.STAKING;
+    }
+
+    return EARN_PRODUCT_DIVIDEND_INFO_PATTERN.test(enInfo) ? YieldKindEnum.EARN : YieldKindEnum.DISTRIBUTION;
+};
 
 const EARN_REWARD_KIND_LABELS: Record<BinanceEarnRewardKindEnum, { readonly idPrefix: string; readonly label: string }> = {
     [BinanceEarnRewardKindEnum.FLEXIBLE]: { idPrefix: 'binance:earn', label: 'Earn reward' },
@@ -73,7 +89,8 @@ export const mapBinanceEarnRewardsToTransactions = (
                 type: SyncTransactionTypeEnum.INCOME,
                 description: `Binance ${label} ${asset}`,
                 amount: convertFromMicroUnits(Number(totalMicroUnits)),
-                feeAmount: 0
+                feeAmount: 0,
+                yieldKind: BINANCE_YIELD_KIND_BY_PREFIX[`${idPrefix}:`]
             })
         );
 };
@@ -95,7 +112,8 @@ export const mapBinanceDividendToTransaction = (
               type: SyncTransactionTypeEnum.INCOME,
               description: `Binance ${dividend.asset} dividend`,
               amount,
-              feeAmount: 0
+              feeAmount: 0,
+              yieldKind: classifyDividend(dividend.enInfo ?? '')
           })
         : null;
 };

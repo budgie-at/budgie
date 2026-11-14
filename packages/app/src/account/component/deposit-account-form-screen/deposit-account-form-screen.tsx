@@ -1,7 +1,7 @@
 import { AccountTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { ReactNode } from 'react';
-import { Control } from 'react-hook-form';
+import { Control, useController } from 'react-hook-form';
 
 import { EmptyFn, isDefined } from '@rnw-community/shared';
 
@@ -11,8 +11,8 @@ import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { useAccountCreateBindings } from '../../hooks/use-account-create-bindings.hook';
 import { CreateAccountCoreFields } from '../create-account-core-fields/create-account-core-fields';
 import { CreateAccountScreen } from '../create-account-screen/create-account-screen';
-import { DepositInterestRateField } from '../deposit-interest-rate-field/deposit-interest-rate-field';
 import { DepositMaturityDateField } from '../deposit-maturity-date-field/deposit-maturity-date-field';
+import { ExpectedYieldField } from '../expected-yield-field/expected-yield-field';
 
 import type { DepositAccountFormValues } from '../../interface/deposit-account-form-values.interface';
 import type { InstrumentEntityInterface } from '@budgie/contracts';
@@ -38,6 +38,7 @@ export const DepositAccountFormScreen = (props: Props) => {
         instrumentId: 'instrumentId',
         includeInNetWorth: 'includeInNetWorth'
     });
+    const interestRate = useController({ control, name: 'interestRate' });
     const variant = ACCOUNT_COLOR[AccountTypeEnum.DEPOSIT];
     const stickyInstrument = useStickyDefinedValue(instrument);
 
@@ -57,7 +58,11 @@ export const DepositAccountFormScreen = (props: Props) => {
                 namePlaceholder={t`e.g. 12-month deposit`}
                 onInstrumentChange={onInstrumentChange}
             >
-                <DepositInterestRateField control={control} />
+                <ExpectedYieldField
+                    value={interestRate.field.value}
+                    onChange={interestRate.field.onChange}
+                    error={interestRate.fieldState.error?.message}
+                />
 
                 <DepositMaturityDateField control={control} variant={variant} />
             </CreateAccountCoreFields>

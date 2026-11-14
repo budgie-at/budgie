@@ -5,6 +5,7 @@ import { View } from 'react-native';
 import { isDefined } from '@rnw-community/shared';
 
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
+import { YieldEntryRow } from '../../../yield/component/yield-entry-row/yield-entry-row';
 import { useHryvniaInstrumentQuery } from '../../query/use-hryvnia-instrument.query';
 import { useInzhurFundCostReturnQuery } from '../../query/use-inzhur-gain.query';
 import { InzhurSelector } from '../../selector/inzhur.selector';
@@ -31,6 +32,7 @@ export const InzhurFundReturnsCard = ({ account }: Props) => {
     const netLabel = formatAmount(costReturn.dividends - costReturn.tax, symbol);
 
     const captionSegments = [t`Gross, ${netLabel} after tax`];
+    const yieldScope = { positionAccountId: account.id, instrumentId: null };
 
     return (
         <View className="self-stretch rounded-3xl bg-surface-row" style={CONTINUOUS_CORNERS} testID={InzhurSelector.FundReturns}>
@@ -41,6 +43,7 @@ export const InzhurFundReturnsCard = ({ account }: Props) => {
                 instrumentSymbol={symbol}
                 icon={UserIconNameEnum.RefreshCw}
             />
+            <YieldEntryRow scope={yieldScope} />
         </View>
     );
 };

@@ -27,6 +27,13 @@ export class SyncApplyRepository extends Context.Service<SyncApplyRepository>()(
                     [transactionId, zone]
                 )
             ).pipe(Effect.map(isNotEmptyArray)),
+        isAccountInZone: (accountLocalId: number, zone: string) =>
+            Db.query(db =>
+                db.$client.unsafe<{ readonly id: number }>(
+                    'SELECT rowid AS id FROM accounts WHERE rowid = ? AND sync_zone = ? AND deleted_at IS NULL LIMIT 1',
+                    [accountLocalId, zone]
+                )
+            ).pipe(Effect.map(isNotEmptyArray)),
         findRow: (tableName: string, syncZone: string, syncId: string) =>
             Db.query(db =>
                 db.$client.unsafe<SyncLocalRowInterface>(

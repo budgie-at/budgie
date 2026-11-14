@@ -20,6 +20,7 @@ cp "$WORKSPACE_DIR/fixtures/12.db" "$TEMP_DIR/fixtures/"
 cp "$WORKSPACE_DIR/fixtures/14.db" "$TEMP_DIR/fixtures/"
 cp "$WORKSPACE_DIR/fixtures/25.db" "$TEMP_DIR/fixtures/"
 cp "$WORKSPACE_DIR/fixtures/29.db" "$TEMP_DIR/fixtures/"
+cp "$WORKSPACE_DIR/fixtures/52-passive-income-base.db" "$TEMP_DIR/fixtures/"
 cp "$WORKSPACE_DIR/fixtures/31-debt.db" "$TEMP_DIR/fixtures/"
 cp "$WORKSPACE_DIR/fixtures/31-transaction-info.db" "$TEMP_DIR/fixtures/"
 cp "$WORKSPACE_DIR/fixtures/budget-multi-currency.db" "$TEMP_DIR/fixtures/"
@@ -117,6 +118,8 @@ for output_directory in "$TEMP_DIR/output-1" "$TEMP_DIR/output-2"; do
         42-receipt-scan.db \
         43-binance-sync-error.db \
         46-edit-form-layout.db \
+        52-passive-income.db \
+        52-passive-income-empty.db \
         budget-multi-currency.db; do
         test -f "$output_directory/$database_name"
         test "$(sqlite3 "$output_directory/$database_name" 'PRAGMA integrity_check;')" = ok

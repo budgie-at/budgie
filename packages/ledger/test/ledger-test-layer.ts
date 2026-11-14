@@ -5,13 +5,16 @@ import {
     Db,
     TransactionReceiptRepository,
     TransactionRepository,
-    TransactionTagsRepository
+    TransactionTagsRepository,
+    YieldRepository
 } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
 import { LedgerWorkload } from '../src/@generic/port/ledger-workload.port';
+import { AccountBalanceIncrementalService } from '../src/account/service/account-balance-incremental.service';
 import { AccountService } from '../src/account/service/account.service';
+import { DepositInterestService } from '../src/account/service/deposit-interest.service';
 import { ReceiptMatchService } from '../src/receipt/service/receipt-match.service';
 import { TransactionImportService } from '../src/transaction/service/transaction-import.service';
 import { TransactionTransferService } from '../src/transaction/service/transaction-transfer.service';
@@ -24,6 +27,8 @@ export const seed = Effect.gen(function* () {
 
 export const TestLayer = Layer.mergeAll(
     AccountService.layer,
+    AccountBalanceIncrementalService.layer,
+    DepositInterestService.layer,
     TransactionService.layer,
     TransferCreationService.layer,
     TransactionTransferService.layer,
@@ -33,7 +38,8 @@ export const TestLayer = Layer.mergeAll(
     TransactionReceiptRepository.layer,
     AccountRepository.layer,
     TransactionRepository.layer,
-    ReceiptMatchService.layer
+    ReceiptMatchService.layer,
+    YieldRepository.layer
 ).pipe(
     Layer.provideMerge(Layer.succeed(LedgerWorkload, LedgerWorkload.of({ runForeground: effect => effect }))),
     Layer.provideMerge(

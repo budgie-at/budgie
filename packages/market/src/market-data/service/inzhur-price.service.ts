@@ -13,6 +13,7 @@ import { InzhurPriceParseError } from '../error/inzhur-price-parse.error';
 import { InstrumentDailyMarketPriceRepository } from '../repository/instrument-daily-market-price.repository';
 
 import type { InzhurFundPriceInterface } from '../interface/inzhur-fund-price.interface';
+import type { NearestPricePointInterface } from '../interface/nearest-price-point.interface';
 import type { InstrumentDailyMarketPriceCreateEntityInterface } from '@budgie/contracts';
 
 export class InzhurPriceService extends Context.Service<InzhurPriceService>()('@budgie/market/InzhurPriceService', {
@@ -60,6 +61,30 @@ export class InzhurPriceService extends Context.Service<InzhurPriceService>()('@
             '1 minute'
         );
 
+        const findNearestPricePoint = Effect.fn('InzhurPriceService.findNearestPricePoint')(function* (
+            instrumentId: number,
+            priceDate: string
+        ) {
+            const hryvnia = yield* instrumentRepository.findByCode(CurrencyEnum.UAH);
+
+            if (!isDefined(hryvnia)) {
+                return null;
+            }
+
+            const [before, after] = yield* Effect.all([
+                instrumentDailyMarketPriceRepository.findForDateOrBefore(instrumentId, hryvnia.id, priceDate),
+                instrumentDailyMarketPriceRepository.findForDateOrAfter(instrumentId, hryvnia.id, priceDate)
+            ]);
+            const distanceInDays = (price: { readonly priceDate: string } | undefined) =>
+                isDefined(price) ? Math.abs(differenceInCalendarDays(price.priceDate, priceDate)) : Number.POSITIVE_INFINITY;
+            const nearest = distanceInDays(before) <= distanceInDays(after) ? before : after;
+            const point: NearestPricePointInterface | null = isDefined(nearest)
+                ? { price: nearest.price, distanceInDays: distanceInDays(nearest) }
+                : null;
+
+            return point;
+        });
+
         return {
             fetchPrices,
             recordTradePrices: Effect.fn('InzhurPriceService.recordTradePrices')(function* (
@@ -79,23 +104,9 @@ export class InzhurPriceService extends Context.Service<InzhurPriceService>()('@
                     );
                 }
             }),
-            findNearestPrice: Effect.fn('InzhurPriceService.findNearestPrice')(function* (instrumentId: number, priceDate: string) {
-                const hryvnia = yield* instrumentRepository.findByCode(CurrencyEnum.UAH);
-
-                if (!isDefined(hryvnia)) {
-                    return null;
-                }
-
-                const [before, after] = yield* Effect.all([
-                    instrumentDailyMarketPriceRepository.findForDateOrBefore(instrumentId, hryvnia.id, priceDate),
-                    instrumentDailyMarketPriceRepository.findForDateOrAfter(instrumentId, hryvnia.id, priceDate)
-                ]);
-                const distanceInDays = (price: { readonly priceDate: string } | undefined) =>
-                    isDefined(price) ? Math.abs(differenceInCalendarDays(price.priceDate, priceDate)) : Number.POSITIVE_INFINITY;
-                const nearest = distanceInDays(before) <= distanceInDays(after) ? before : after;
-
-                return nearest?.price ?? null;
-            })
+            findNearestPricePoint,
+            findNearestPrice: (instrumentId: number, priceDate: string) =>
+                Effect.map(findNearestPricePoint(instrumentId, priceDate), point => point?.price ?? null)
         };
     })
 }) {

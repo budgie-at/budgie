@@ -1,10 +1,13 @@
-import { and, between, count, eq, isNotNull, isNull, or, sql } from 'drizzle-orm';
+import { and, asc, between, count, eq, gt, gte, lte, inArray, isNotNull, isNull, not, or, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { Db } from '../../@generic/service/db.service';
+import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { InstrumentTypeEnum } from '../../instrument/enum/instrument-type.enum';
 import { TransactionTypeEnum } from '../../transaction/enum/transaction-type.enum';
@@ -12,48 +15,92 @@ import { TransactionEntityTable } from '../../transaction/table/transaction-enti
 import { TransactionEntryTypeEnum } from '../enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../table/transaction-entry-entity.table';
 
+import type { DB } from '../../@generic/type/db.type';
 import type { BaseValuationBucketRevaluationInterface } from '../interface/base-valuation-bucket-revaluation.interface';
 import type { BaseValuationBucketUpdateInterface } from '../interface/base-valuation-bucket-update.interface';
-import type { SQL } from 'drizzle-orm';
+import type { EntryBaseValuationUpdateInterface } from '../interface/entry-base-valuation-update.interface';
+import type { MarketPricedEntryPageInterface } from '../interface/market-priced-entry-page.interface';
+import type { SQL, SQLWrapper } from 'drizzle-orm';
+import type { SelectedFields } from 'drizzle-orm/sqlite-core';
 
 export class TransactionEntryBaseValuationRepository extends Context.Service<TransactionEntryBaseValuationRepository>()(
     '@budgie/contracts/TransactionEntryBaseValuationRepository',
     {
         make: Effect.sync(() => {
-            const buildLiveEntryCondition = () =>
-                and(
-                    isNull(TransactionEntryEntityTable.deletedAt),
-                    isNull(TransactionEntityTable.deletedAt),
-                    isNull(AccountEntityTable.deletedAt)
-                );
-            const buildPendingBaseValuationWhere = (baseInstrumentId: number) =>
-                and(
-                    or(
-                        isNull(TransactionEntryEntityTable.baseInstrumentId),
-                        sql`${TransactionEntryEntityTable.baseInstrumentId} != ${baseInstrumentId}`
-                    ),
-                    buildLiveEntryCondition()
-                );
+            const originalTransaction = alias(TransactionEntityTable, 'original_transaction');
+            const liveEntries = (db: DB) =>
+                db
+                    .select({
+                        id: TransactionEntryEntityTable.id,
+                        accountId: TransactionEntryEntityTable.accountId,
+                        amount: TransactionEntryEntityTable.amount,
+                        baseInstrumentId: TransactionEntryEntityTable.baseInstrumentId,
+                        baseExchangeRate: TransactionEntryEntityTable.baseExchangeRate,
+                        baseAmount: TransactionEntryEntityTable.baseAmount,
+                        transactionSyncId: TransactionEntityTable.syncId,
+                        accountType: AccountEntityTable.type,
+                        instrumentId: AccountEntityTable.instrumentId,
+                        operatedAt: sql`COALESCE(${originalTransaction.operatedAt}, ${TransactionEntityTable.operatedAt})`
+                            .mapWith(TransactionEntityTable.operatedAt)
+                            .as('operated_at'),
+                        rateDate:
+                            sql<string>`date(COALESCE(${originalTransaction.operatedAt}, ${TransactionEntityTable.operatedAt}), 'unixepoch')`.as(
+                                'rate_date'
+                            )
+                    })
+                    .from(TransactionEntryEntityTable)
+                    .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+                    .leftJoin(originalTransaction, eq(originalTransaction.id, TransactionEntryEntityTable.originalTransactionId))
+                    .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
+                    .where(
+                        and(
+                            isNull(TransactionEntryEntityTable.deletedAt),
+                            isNull(TransactionEntityTable.deletedAt),
+                            isNull(AccountEntityTable.deletedAt)
+                        )
+                    )
+                    .as('live_entries');
+            type LiveEntries = ReturnType<typeof liveEntries>;
+            const selectLiveEntries = <Fields extends SelectedFields>(
+                db: DB,
+                buildFields: (live: LiveEntries) => Fields,
+                buildCondition: (live: LiveEntries) => SQL | undefined
+            ) => {
+                const live = liveEntries(db);
 
-            const findBaseValuationBuckets = Effect.fnUntraced(function* (buildWhere: (rateDateSql: SQL<string>) => SQL | undefined) {
-                const originalTransaction = alias(TransactionEntityTable, 'original_transaction');
-                const rateDateSql = sql<string>`date(COALESCE(${originalTransaction.operatedAt}, ${TransactionEntityTable.operatedAt}), 'unixepoch')`;
-
-                return yield* Db.query(db =>
-                    db
-                        .select({
-                            rateDate: rateDateSql,
-                            sourceInstrumentId: AccountEntityTable.instrumentId,
-                            entryCount: count(TransactionEntryEntityTable.id)
-                        })
-                        .from(TransactionEntryEntityTable)
-                        .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
-                        .leftJoin(originalTransaction, eq(originalTransaction.id, TransactionEntryEntityTable.originalTransactionId))
-                        .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
-                        .where(buildWhere(rateDateSql))
-                        .groupBy(rateDateSql, AccountEntityTable.instrumentId)
+                return db.select(buildFields(live)).from(live).where(buildCondition(live));
+            };
+            const buildMarketPricedPredicate = (accountType: SQLWrapper, instrumentId: SQLWrapper) =>
+                sql`(${accountType} IN (${AccountTypeEnum.CRYPTO}, ${AccountTypeEnum.CRYPTO_SYNC}) OR ${instrumentId} IN (SELECT id FROM instruments WHERE type = ${InstrumentTypeEnum.FUND}))`;
+            const buildMarketPricedCondition = (live: LiveEntries) => buildMarketPricedPredicate(live.accountType, live.instrumentId);
+            const buildPendingCondition = (live: LiveEntries, baseInstrumentId: number) =>
+                or(isNull(live.baseInstrumentId), sql`${live.baseInstrumentId} != ${baseInstrumentId}`);
+            const findBaseValuationBuckets = (buildCondition: (live: LiveEntries) => SQL | undefined) =>
+                Db.query(db =>
+                    selectLiveEntries(
+                        db,
+                        live => ({ rateDate: live.rateDate, sourceInstrumentId: live.instrumentId, entryCount: count(live.id) }),
+                        live => and(buildCondition(live), not(buildMarketPricedCondition(live)))
+                    ).groupBy(sql`rate_date`, sql`instrument_id`)
                 );
-            });
+            const findMarketPricedEntries = (buildCondition: (live: LiveEntries) => SQL | undefined, afterId: number, limit: number) =>
+                Db.query(db =>
+                    selectLiveEntries(
+                        db,
+                        live => ({
+                            id: live.id,
+                            accountId: live.accountId,
+                            amount: live.amount,
+                            operatedAt: live.operatedAt,
+                            baseInstrumentId: live.baseInstrumentId,
+                            baseExchangeRate: live.baseExchangeRate,
+                            baseAmount: live.baseAmount
+                        }),
+                        live => and(buildMarketPricedCondition(live), gt(live.id, afterId), buildCondition(live))
+                    )
+                        .orderBy(asc(sql`id`))
+                        .limit(limit)
+                );
             const updateBucketEntries = (rateDate: string, sourceInstrumentId: number, assignment: SQL, condition: SQL) =>
                 Db.mutation(
                     { type: 'update', tables: ['transaction_entries'] },
@@ -72,6 +119,7 @@ export class TransactionEntryBaseValuationRepository extends Context.Service<Tra
                               AND te.deleted_at IS NULL
                               AND t.deleted_at IS NULL
                               AND a.deleted_at IS NULL
+                              AND NOT ${buildMarketPricedPredicate(sql`a.type`, sql`a.instrument_id`)}
                               AND ${condition}
                         )
                     `)
@@ -115,25 +163,77 @@ export class TransactionEntryBaseValuationRepository extends Context.Service<Tra
                     ),
 
                 findPendingBaseValuationBuckets: (baseInstrumentId: number) =>
-                    findBaseValuationBuckets(() => buildPendingBaseValuationWhere(baseInstrumentId)),
+                    findBaseValuationBuckets(live => buildPendingCondition(live, baseInstrumentId)),
                 findBaseValuationBucketsInRange: (baseInstrumentId: number, fromDate: string, toDate: string) =>
-                    findBaseValuationBuckets(rateDateSql =>
+                    findBaseValuationBuckets(live =>
                         and(
-                            eq(TransactionEntryEntityTable.baseInstrumentId, baseInstrumentId),
-                            isNotNull(TransactionEntryEntityTable.baseExchangeRate),
-                            buildLiveEntryCondition(),
-                            between(rateDateSql, fromDate, toDate)
+                            eq(live.baseInstrumentId, baseInstrumentId),
+                            isNotNull(live.baseExchangeRate),
+                            between(live.rateDate, fromDate, toDate)
                         )
                     ),
                 countPendingBaseValuationEntries: (baseInstrumentId: number) =>
                     Db.query(db =>
-                        db
-                            .select({ count: count(TransactionEntryEntityTable.id) })
-                            .from(TransactionEntryEntityTable)
-                            .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
-                            .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
-                            .where(buildPendingBaseValuationWhere(baseInstrumentId))
+                        selectLiveEntries(
+                            db,
+                            live => ({ count: count(live.id) }),
+                            live => buildPendingCondition(live, baseInstrumentId)
+                        )
                     ).pipe(Effect.map(([row]) => row.count)),
+                findPendingMarketPricedEntries: (baseInstrumentId: number, afterId: number, limit: number) =>
+                    findMarketPricedEntries(live => buildPendingCondition(live, baseInstrumentId), afterId, limit),
+                findMarketPricedEntriesInRange: (page: MarketPricedEntryPageInterface) =>
+                    findMarketPricedEntries(
+                        live =>
+                            and(
+                                eq(live.instrumentId, page.instrumentId),
+                                ...(isDefined(page.fromDate) ? [gte(live.rateDate, page.fromDate)] : []),
+                                lte(live.rateDate, page.toDate)
+                            ),
+                        page.afterId,
+                        page.limit
+                    ),
+                findMarketPricedEntriesBySyncIds: (transactionSyncIds: readonly string[], afterId: number, limit: number) =>
+                    findMarketPricedEntries(live => inArray(live.transactionSyncId, [...transactionSyncIds]), afterId, limit),
+                findMarketPricedInstrumentIds: Db.query(db =>
+                    selectLiveEntries(db, live => ({ instrumentId: live.instrumentId }), buildMarketPricedCondition).groupBy(
+                        sql`instrument_id`
+                    )
+                ).pipe(Effect.map(rows => rows.map(row => row.instrumentId))),
+                findOldestMarketPricedEntryDate: (instrumentId: number) =>
+                    Db.query(db =>
+                        selectLiveEntries(
+                            db,
+                            live => ({ rateDate: sql<string | null>`MIN(${live.rateDate})` }),
+                            live => and(buildMarketPricedCondition(live), eq(live.instrumentId, instrumentId))
+                        )
+                    ).pipe(Effect.map(([row]) => row.rateDate)),
+                findMarketPricedAccountIds: (accountIds: readonly number[]) =>
+                    Db.query(db =>
+                        db
+                            .select({ id: AccountEntityTable.id })
+                            .from(AccountEntityTable)
+                            .where(
+                                and(
+                                    inArray(AccountEntityTable.id, [...accountIds]),
+                                    buildMarketPricedPredicate(AccountEntityTable.type, AccountEntityTable.instrumentId)
+                                )
+                            )
+                    ).pipe(Effect.map(rows => rows.map(row => row.id))),
+                updateEntryBaseValuations: (updates: readonly EntryBaseValuationUpdateInterface[]) =>
+                    Db.mutation(
+                        { type: 'update', tables: ['transaction_entries'] },
+                        Effect.forEach(
+                            updates,
+                            update =>
+                                Db.query(db =>
+                                    db.run(
+                                        sql`UPDATE transaction_entries SET base_instrument_id = ${update.baseInstrumentId}, base_exchange_rate = ${update.baseExchangeRate}, base_amount = ${update.baseAmount} WHERE id = ${update.id}`
+                                    )
+                                ),
+                            { discard: true }
+                        )
+                    ),
                 updateBaseValuationBucket: (input: BaseValuationBucketUpdateInterface) =>
                     updateBucketEntries(
                         input.rateDate,

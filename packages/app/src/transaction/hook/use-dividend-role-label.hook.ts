@@ -1,5 +1,4 @@
-import { ExternalSourceEnum, InstrumentTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
-import { INZHUR_UNATTRIBUTED_DIVIDEND_TITLE } from '@budgie/sync';
+import { ExternalSourceEnum, InstrumentTypeEnum, TransactionTypeEnum, YieldKindEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
@@ -18,9 +17,8 @@ export const useDividendRoleLabel = (transaction: TransactionWithRelationsEntity
     }
 
     const bankTitle = transaction.entries.find(entry => entry.account.instrument.type !== InstrumentTypeEnum.FUND)?.account.title;
-    const isBankDividend = isDefined(transaction.fundAccountId) || transaction.title === INZHUR_UNATTRIBUTED_DIVIDEND_TITLE;
 
-    if (!isBankDividend || !isDefined(bankTitle)) {
+    if (transaction.yieldKind !== YieldKindEnum.DIVIDEND || !isDefined(bankTitle)) {
         return null;
     }
 

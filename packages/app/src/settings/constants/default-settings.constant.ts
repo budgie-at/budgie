@@ -34,5 +34,7 @@ export const DEFAULT_SETTINGS = {
     cloudSyncEnabled: true,
     lineageId: null,
     cloudUserRecordName: null,
-    householdShareEverything: false
+    householdShareEverything: false,
+    cryptoStrictValuationVersion: 0,
+    yieldTagRepairVersion: 0
 } satisfies SettingsEntityInterface;

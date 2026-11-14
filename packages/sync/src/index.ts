@@ -156,4 +156,6 @@ export type { SyncAccountContinuationChoicesInterface } from './core/interface/s
 
 export { toKyivDay } from './inzhur/utils/to-kyiv-day.util';
 
+export { YieldTagRepairService } from './core/service/yield-tag-repair.service';
+export { BankInterestDetectorService } from './core/service/bank-interest-detector.service';
 export { OwnTransferRepairService } from './core/service/own-transfer-repair.service';

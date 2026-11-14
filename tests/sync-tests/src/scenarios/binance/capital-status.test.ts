@@ -1,9 +1,7 @@
 import {
     AccountBalanceRepository,
     AccountTypeEnum,
-    SyncEntityTable,
     SyncModeEnum,
-    SyncStatusEnum,
     TransactionConsolidationTypeEnum,
     TransactionEntryEntityTable
 } from '@budgie/contracts';
@@ -17,7 +15,7 @@ import {
     buildBinance,
     fetchBinanceTransactions,
     fetchSyncById,
-    resetBinanceSyncForResync,
+    resyncBinance,
     seed,
     setupBinanceFixture,
     stubEmptyBinanceBalances,
@@ -46,18 +44,6 @@ const stubWithdrawal = (status: number | undefined, timeMs: number): void => {
     ]);
 };
 
-const syncAgain = (syncId: number) =>
-    Effect.gen(function* () {
-        const binanceSyncService = yield* BinanceSyncService;
-
-        resetBinanceSyncForResync();
-        yield* testDb
-            .update(SyncEntityTable)
-            .set({ forwardSyncedAt: new Date(Date.now() - HOUR_MS), status: SyncStatusEnum.IDLE })
-            .where(eq(SyncEntityTable.id, syncId));
-        yield* binanceSyncService.sync();
-    });
-
 const startForwardSync = () =>
     Effect.gen(function* () {
         const fixture = yield* setupBinanceFixture({ mode: SyncModeEnum.FORWARD, forwardSyncFromAt: new Date(Date.now() - HOUR_MS) });
@@ -75,7 +61,7 @@ const importedCountsAfterEachStatus = (stubHistory: typeof stubDeposit, ageMs: n
 
         for (const [index, status] of statuses.entries()) {
             stubHistory(status, timeMs);
-            yield* index === 0 ? binanceSyncService.sync() : syncAgain(sync.id);
+            yield* index === 0 ? binanceSyncService.sync() : resyncBinance(sync.id);
             counts.push((yield* fetchBinanceTransactions).length);
         }
 
@@ -186,7 +172,7 @@ describe('binance/capital-status', () => {
             expect((yield* testQueryService.findTransactionById(withdrawal.id)).consolidationParentTransactionId).not.toBeNull();
 
             stubWithdrawal(3, timeMs);
-            yield* syncAgain(sync.id);
+            yield* resyncBinance(sync.id);
 
             expect(yield* fetchBinanceTransactions).toHaveLength(0);
             expect(yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)).toHaveLength(0);

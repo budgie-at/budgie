@@ -19,6 +19,7 @@
         "clear": "rimraf dist node_modules/.cache .turbo",
         "lint": "oxlint --type-aware src",
         "test": "vitest run",
+        "bench:yield": "vitest run --config vitest.bench.config.ts",
         "ts": "node ../../scripts/typecheck.cjs --noEmit -p tsconfig.json && node ../../scripts/typecheck.cjs --noEmit -p tsconfig.test.json",
         "ts:native": "node ../../scripts/typecheck.cjs --native --noEmit -p tsconfig.json && node ../../scripts/typecheck.cjs --native --noEmit -p tsconfig.test.json"
     },

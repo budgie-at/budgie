@@ -1,0 +1,7 @@
+export enum YieldGroupEnum {
+    STAKING_EARN = 'STAKING_EARN',
+    INTEREST = 'INTEREST',
+    DIVIDENDS = 'DIVIDENDS',
+    DISTRIBUTIONS = 'DISTRIBUTIONS',
+    TAX = 'TAX'
+}

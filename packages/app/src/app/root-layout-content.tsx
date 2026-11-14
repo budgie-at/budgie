@@ -73,6 +73,45 @@ if (isDefined(initialWindowMetrics)) {
     Uniwind.updateInsets(initialWindowMetrics.insets);
 }
 
+const MORPHING_SHEET_ROUTES = [
+    'category-selector',
+    'account-selector',
+    'yield-kind',
+    'currency-selector',
+    'language-selector',
+    'resync-window-picker',
+    'deposit-close',
+    'contact-selector',
+    'security-selector',
+    'tags-selector',
+    'category-destination',
+    'tag-destination',
+    'voice-review',
+    'budget-safe-to-spend',
+    'passive-income-info',
+    'budget-limit-changes',
+    'date-picker',
+    'bank-integration-key',
+    'convert-to-transfer',
+    'convert-to-installment',
+    'convert-to-refund',
+    'icon-selector',
+    'split-entries',
+    'transaction-fee',
+    'consolidation-source',
+    'make-recurring',
+    'import-column-mapper',
+    'transaction-type-filter',
+    'date-filter',
+    'transaction-amount-filter',
+    'transaction-category-filter',
+    'transaction-account-filter',
+    'transaction-tag-filter',
+    'budget-period-summary',
+    'rule-selector',
+    'rule-mcc-selector'
+];
+
 const handleSafeAreaChange: SafeAreaListenerProps['onChange'] = ({ insets }) => {
     Uniwind.updateInsets(insets);
 };
@@ -158,6 +197,7 @@ export const RootLayoutContent = () => {
                                                                     <Stack.Screen name="(main)/securities/sell/[id]" />
                                                                     <Stack.Screen name="(main)/account/[id]/update" />
                                                                     <Stack.Screen name="(main)/currency/[id]" />
+                                                                    <Stack.Screen name="(main)/passive-income" />
                                                                     <Stack.Screen name="(main)/create-transaction/expense" />
                                                                     <Stack.Screen name="(main)/create-transaction/income" />
                                                                     <Stack.Screen name="(main)/create-transaction/transfer" />
@@ -167,114 +207,19 @@ export const RootLayoutContent = () => {
                                                                     <Stack.Screen name="(main)/transactions/[id]/transfer" />
                                                                     <Stack.Screen name="(main)/analytics/transactions" />
                                                                     <Stack.Screen name="(main)/categorize" />
-                                                                    <Stack.Screen
-                                                                        name="category-selector"
-                                                                        options={MORPHING_SHEET_OPTIONS}
-                                                                    />
-                                                                    <Stack.Screen
-                                                                        name="account-selector"
-                                                                        options={MORPHING_SHEET_OPTIONS}
-                                                                    />
-                                                                    <Stack.Screen
-                                                                        name="currency-selector"
-                                                                        options={MORPHING_SHEET_OPTIONS}
-                                                                    />
-                                                                    <Stack.Screen
-                                                                        name="language-selector"
-                                                                        options={MORPHING_SHEET_OPTIONS}
-                                                                    />
-                                                                    <Stack.Screen
-                                                                        name="resync-window-picker"
-                                                                        options={MORPHING_SHEET_OPTIONS}
-                                                                    />
-                                                                    <Stack.Screen
-                                                                        name="contact-selector"
-                                                                        options={MORPHING_SHEET_OPTIONS}
-                                                                    />
-                                                                    <Stack.Screen
-                                                                        name="security-selector"
-                                                                        options={MORPHING_SHEET_OPTIONS}
-                                                                    />
-                                                                    <Stack.Screen name="tags-selector" options={MORPHING_SHEET_OPTIONS} />
-                                                                    <Stack.Screen
-                                                                        name="category-destination"
-                                                                        options={MORPHING_SHEET_OPTIONS}
-                                                                    />
-                                                                    <Stack.Screen name="tag-destination" options={MORPHING_SHEET_OPTIONS} />
-                                                                    <Stack.Screen name="voice-review" options={MORPHING_SHEET_OPTIONS} />
-                                                                    <Stack.Screen
-                                                                        name="budget-safe-to-spend"
-                                                                        options={MORPHING_SHEET_OPTIONS}
-                                                                    />
-                                                                    <Stack.Screen
-                                                                        name="budget-limit-changes"
-                                                                        options={MORPHING_SHEET_OPTIONS}
-                                                                    />
+                                                                    {MORPHING_SHEET_ROUTES.map(name => (
+                                                                        <Stack.Screen
+                                                                            key={name}
+                                                                            name={name}
+                                                                            options={MORPHING_SHEET_OPTIONS}
+                                                                        />
+                                                                    ))}
                                                                     <Stack.Screen name="category-form" options={ENTITY_FORM_OPTIONS} />
                                                                     <Stack.Screen name="tag-form" options={ENTITY_FORM_OPTIONS} />
-                                                                    <Stack.Screen name="date-picker" options={MORPHING_SHEET_OPTIONS} />
-                                                                    <Stack.Screen
-                                                                        name="bank-integration-key"
-                                                                        options={MORPHING_SHEET_OPTIONS}
-                                                                    />
-                                                                    <Stack.Screen
-                                                                        name="convert-to-transfer"
-                                                                        options={MORPHING_SHEET_OPTIONS}
-                                                                    />
-                                                                    <Stack.Screen
-                                                                        name="convert-to-installment"
-                                                                        options={MORPHING_SHEET_OPTIONS}
-                                                                    />
-                                                                    <Stack.Screen
-                                                                        name="convert-to-refund"
-                                                                        options={MORPHING_SHEET_OPTIONS}
-                                                                    />
-                                                                    <Stack.Screen name="icon-selector" options={MORPHING_SHEET_OPTIONS} />
-                                                                    <Stack.Screen name="split-entries" options={MORPHING_SHEET_OPTIONS} />
-                                                                    <Stack.Screen name="transaction-fee" options={MORPHING_SHEET_OPTIONS} />
-                                                                    <Stack.Screen
-                                                                        name="consolidation-source"
-                                                                        options={MORPHING_SHEET_OPTIONS}
-                                                                    />
-                                                                    <Stack.Screen name="make-recurring" options={MORPHING_SHEET_OPTIONS} />
-                                                                    <Stack.Screen
-                                                                        name="import-column-mapper"
-                                                                        options={MORPHING_SHEET_OPTIONS}
-                                                                    />
                                                                     <Stack.Screen name="import-backup-pin" options={PIN_OPTIONS} />
                                                                     <Stack.Screen name="pin-setup" />
                                                                     <Stack.Screen name="add-pin" options={sheetOptions} />
-                                                                    <Stack.Screen
-                                                                        name="transaction-type-filter"
-                                                                        options={MORPHING_SHEET_OPTIONS}
-                                                                    />
-                                                                    <Stack.Screen name="date-filter" options={MORPHING_SHEET_OPTIONS} />
-                                                                    <Stack.Screen
-                                                                        name="transaction-amount-filter"
-                                                                        options={MORPHING_SHEET_OPTIONS}
-                                                                    />
-                                                                    <Stack.Screen
-                                                                        name="transaction-category-filter"
-                                                                        options={MORPHING_SHEET_OPTIONS}
-                                                                    />
-                                                                    <Stack.Screen
-                                                                        name="transaction-account-filter"
-                                                                        options={MORPHING_SHEET_OPTIONS}
-                                                                    />
-                                                                    <Stack.Screen
-                                                                        name="transaction-tag-filter"
-                                                                        options={MORPHING_SHEET_OPTIONS}
-                                                                    />
-                                                                    <Stack.Screen
-                                                                        name="budget-period-summary"
-                                                                        options={MORPHING_SHEET_OPTIONS}
-                                                                    />
                                                                     <Stack.Screen name="rule-form" />
-                                                                    <Stack.Screen name="rule-selector" options={MORPHING_SHEET_OPTIONS} />
-                                                                    <Stack.Screen
-                                                                        name="rule-mcc-selector"
-                                                                        options={MORPHING_SHEET_OPTIONS}
-                                                                    />
                                                                 </Stack>
                                                             </VoiceInputProvider>
                                                         </ModalProvider>

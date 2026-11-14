@@ -1,10 +1,13 @@
 import { buildTestDb, makeTestPlatformLayer, resetTestDb, TestSeedService } from '@budgie-at/test-kit';
-import { Db, InstrumentRepository, SettingsEntityTable } from '@budgie/contracts';
+import { Db, InstrumentRepository, PRECISION, SettingsEntityTable, TransactionEntryBaseValuationRepository } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 import * as HttpClient from 'effect/http/HttpClient';
 import * as HttpClientResponse from 'effect/http/HttpClientResponse';
 import * as Layer from 'effect/Layer';
+import * as Schema from 'effect/Schema';
 import { beforeEach } from 'vitest';
+
+import { isDefined } from '@rnw-community/shared';
 
 import { ExchangeRateRepository } from '../src/exchange-rate/repository/exchange-rate.repository';
 import { ExchangeRatesService } from '../src/exchange-rate/service/exchange-rates.service';
@@ -19,13 +22,22 @@ beforeEach(() => Effect.runPromise(resetTestDb(testDb)));
 
 export const setDefaultInstrument = (defaultInstrumentId: number) => testDb.update(SettingsEntityTable).set({ defaultInstrumentId });
 
-export const makeRoutedFakeHttpClientLayer = (resolveBody: (url: URL) => unknown) =>
+const encodeJson = Schema.encodeSync(Schema.fromJsonString(Schema.Unknown));
+
+export const makeStatusHttpClientLayer = (respond: (url: URL) => { readonly status: number; readonly body: unknown }) =>
     Layer.succeed(
         HttpClient.HttpClient,
         HttpClient.make((request, url) =>
-            Effect.succeed(HttpClientResponse.fromWeb(request, new Response(JSON.stringify(resolveBody(url)), { status: 200 })))
+            Effect.sync(() => {
+                const { status, body } = respond(url);
+
+                return HttpClientResponse.fromWeb(request, new Response(encodeJson(body), { status }));
+            })
         )
     );
+
+export const makeRoutedFakeHttpClientLayer = (resolveBody: (url: URL) => unknown) =>
+    makeStatusHttpClientLayer(url => ({ status: 200, body: resolveBody(url) }));
 
 export const makeFakeHttpClientLayer = (body: unknown) => makeRoutedFakeHttpClientLayer(() => body);
 
@@ -34,7 +46,8 @@ export const TestLayer = Layer.mergeAll(
     EntryBaseValuationService.layer,
     ExchangeRateRepository.layer,
     HistoricalExchangeRateRepository.layer,
-    InstrumentRepository.layer
+    InstrumentRepository.layer,
+    TransactionEntryBaseValuationRepository.layer
 ).pipe(Layer.provide(makeTestPlatformLayer(testDb)), Layer.provideMerge(Layer.succeed(Db, testDb)));
 
 export const makeHtmlHttpClientLayer = (html: string) =>
@@ -42,3 +55,21 @@ export const makeHtmlHttpClientLayer = (html: string) =>
         HttpClient.HttpClient,
         HttpClient.make((request, _url) => Effect.succeed(HttpClientResponse.fromWeb(request, new Response(html, { status: 200 }))))
     );
+
+export const requireInstrumentByCode = Effect.fnUntraced(function* (code: string) {
+    const instrumentRepository = yield* InstrumentRepository;
+    const instrument = yield* instrumentRepository.findByCode(code);
+
+    return isDefined(instrument) ? instrument : yield* Effect.die(new Error(`Instrument ${code} missing`));
+});
+
+export const seedPendingIncome = (accountId: number, operatedAt: string) =>
+    testSeedService.valuedIncome({
+        accountId,
+        amount: PRECISION,
+        operatedAt: new Date(operatedAt),
+        title: 'Reward',
+        baseInstrumentId: null,
+        baseExchangeRate: null,
+        baseAmount: null
+    });

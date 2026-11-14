@@ -16,5 +16,7 @@ export type TransactionUpdateInputInterface = Partial<
         | 'updatedBy'
         | 'importFingerprint'
         | 'fundAccountId'
+        | 'yieldKind'
+        | 'yieldSourceAccountId'
     >
 >;

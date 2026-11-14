@@ -191,6 +191,15 @@ SELECT
     'COINGECKO'
 FROM daily_price;
 
+INSERT OR REPLACE INTO historical_exchange_rates (source_instrument_id, target_instrument_id, rate_date, rate)
+SELECT instrument_id, quote_instrument_id, price_date, price
+FROM instrument_daily_market_prices
+WHERE instrument_id IN (SELECT instrument_id FROM overlay_coin)
+UNION ALL
+SELECT quote_instrument_id, instrument_id, price_date, 1.0 / price
+FROM instrument_daily_market_prices
+WHERE instrument_id IN (SELECT instrument_id FROM overlay_coin);
+
 DROP TABLE overlay_transaction;
 DROP TABLE overlay_coin;
 DROP TABLE overlay_locale;

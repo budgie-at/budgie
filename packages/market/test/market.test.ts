@@ -111,7 +111,7 @@ describe('base valuation', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('values a crypto amount with the stored rate and leaves it unvalued when no rate exists', () =>
+    it.effect('values a crypto amount with an old rate as an Estimated value and leaves it unvalued when no rate exists', () =>
         Effect.gen(function* () {
             const entryBaseValuationService = yield* EntryBaseValuationService;
             const historicalExchangeRateRepository = yield* HistoricalExchangeRateRepository;
@@ -142,7 +142,7 @@ describe('base valuation', () => {
                 operatedAt
             });
 
-            expect(valued).toStrictEqual({ baseInstrumentId: base.id, baseExchangeRate: 20_000, baseAmount: 10_000 * PRECISION });
+            expect(valued).toStrictEqual({ baseInstrumentId: base.id, baseExchangeRate: null, baseAmount: 10_000 * PRECISION });
             expect(unvalued).toStrictEqual({ baseInstrumentId: null, baseExchangeRate: null, baseAmount: null });
         }).pipe(Effect.provide(TestLayer))
     );

@@ -2,11 +2,12 @@ import {
     BANK_FEE_CATEGORY_ID,
     CategorySourceEnum,
     ExternalSourceEnum,
+    INVESTMENTS_CATEGORY_ID,
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
 
-import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { SyncTransactionTypeEnum } from '../enum/sync-transaction-type.enum';
 
@@ -17,6 +18,14 @@ const FEE_ENTRY_EXTERNAL_ID_SUFFIX = ':fee';
 
 const getExchangeRate = (mainAmount: number, operationAmount: number): number =>
     isPositiveNumber(operationAmount) && mainAmount !== operationAmount ? mainAmount / operationAmount : 1;
+
+const getCategorySource = (mccDefaultCategoryId: number | null, yieldCategoryId: number | null): CategorySourceEnum => {
+    if (isPositiveNumber(mccDefaultCategoryId)) {
+        return CategorySourceEnum.MCC_DEFAULT;
+    }
+
+    return isDefined(yieldCategoryId) ? CategorySourceEnum.RULE : CategorySourceEnum.USER;
+};
 
 export const mapBankTransactionToCreateInput = (
     bankTransaction: SyncTransactionInterface,
@@ -34,12 +43,15 @@ export const mapBankTransactionToCreateInput = (
     const exchangeRate = getExchangeRate(mainAmount, Math.abs(bankTransaction.operationAmount));
     const externalIdAliases = bankTransaction.legacyExternalIds ?? [];
 
+    const mccDefaultCategoryId = mccCategoryLookup?.defaultCategoryId ?? null;
+    const yieldCategoryId = isDefined(bankTransaction.yieldKind) ? INVESTMENTS_CATEGORY_ID : null;
+
     const mainEntry: TransactionEntryCreateInputInterface = {
         accountId,
         type: entryType,
         amount: mainAmount,
-        categoryId: mccCategoryLookup?.defaultCategoryId ?? null,
-        categorySource: isPositiveNumber(mccCategoryLookup?.defaultCategoryId) ? CategorySourceEnum.MCC_DEFAULT : CategorySourceEnum.USER,
+        categoryId: mccDefaultCategoryId ?? yieldCategoryId,
+        categorySource: getCategorySource(mccDefaultCategoryId, yieldCategoryId),
         mccCategoryId: mccCategoryLookup?.id ?? null,
         externalId: bankTransaction.id,
         exchangeRate,
@@ -71,6 +83,7 @@ export const mapBankTransactionToCreateInput = (
         externalSource: provider,
         fromAccountId: isIncome ? null : accountId,
         toAccountId: isIncome ? accountId : null,
+        ...(isDefined(bankTransaction.yieldKind) && { yieldKind: bankTransaction.yieldKind }),
         tagIds: [],
         entries: hasFee ? [mainEntry, feeEntry] : [mainEntry]
     };

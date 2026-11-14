@@ -1,0 +1,275 @@
+import {
+    AccountRepository,
+    AccountTypeEnum,
+    Db,
+    HOUSEHOLD_SYNC_ZONE,
+    SyncRecordEntityTable,
+    SyncRecordTypeEnum,
+    TransactionEntryTypeEnum,
+    TransactionRepository,
+    TransactionTypeEnum,
+    TransactionUpdatedByEnum,
+    YieldKindEnum
+} from '@budgie/contracts';
+import { describe, expect, it } from '@effect/vitest';
+import * as Effect from 'effect/Effect';
+
+import { TransactionService } from '../src/transaction/service/transaction.service';
+
+import { seed, TestLayer } from './ledger-test-layer';
+
+import type { TransactionCreateEntityInterface, TransactionUpdateServiceInputInterface } from '@budgie/contracts';
+
+const OPERATED_AT = new Date('2026-06-01T10:00:00.000Z');
+const AMOUNT = 1_000_000;
+
+const incomeUpdate = (
+    accountId: number,
+    extra: Partial<TransactionUpdateServiceInputInterface>
+): TransactionUpdateServiceInputInterface => ({
+    title: 'Interest',
+    comment: '',
+    type: TransactionTypeEnum.INCOME,
+    operatedAt: OPERATED_AT,
+    fromAccountId: null,
+    toAccountId: accountId,
+    exchangeRate: 1,
+    tagIds: [],
+    entries: [
+        {
+            accountId,
+            categoryId: null,
+            mccCategoryId: null,
+            amount: AMOUNT,
+            type: TransactionEntryTypeEnum.DEBIT,
+            externalId: null,
+            exchangeRate: 1,
+            toIban: null
+        }
+    ],
+    ...extra
+});
+
+const setUserYield = (incomeId: number, landingAccountId: number, yieldSourceAccountId: number) =>
+    Effect.flatMap(TransactionService, transactionService =>
+        transactionService.updateById(incomeId, incomeUpdate(landingAccountId, { yieldKind: YieldKindEnum.INTEREST, yieldSourceAccountId }))
+    );
+
+const readYield = (id: number) =>
+    Effect.flatMap(TransactionRepository, repository => repository.getByIdRaw(id)).pipe(
+        Effect.map(transaction => ({
+            yieldKind: transaction?.yieldKind ?? null,
+            yieldSourceAccountId: transaction?.yieldSourceAccountId ?? null,
+            updatedBy: transaction?.updatedBy ?? null
+        }))
+    );
+
+const seedIncomeWithDeposit = Effect.gen(function* () {
+    const testSeedService = yield* seed;
+    const bank = yield* testSeedService.account({ type: AccountTypeEnum.BANK });
+    const deposit = yield* testSeedService.account({ type: AccountTypeEnum.DEPOSIT });
+    const income = yield* testSeedService.manualExpense({
+        accountId: bank.id,
+        amount: AMOUNT,
+        operatedAt: OPERATED_AT,
+        type: TransactionTypeEnum.INCOME
+    });
+
+    return { bank, deposit, income };
+});
+
+const seedPersonalIncomeWithSharedDeposit = Effect.gen(function* () {
+    const testSeedService = yield* seed;
+    const personalBank = yield* testSeedService.account({ type: AccountTypeEnum.BANK, title: 'Personal' });
+    const sharedDeposit = yield* testSeedService.account({
+        type: AccountTypeEnum.DEPOSIT,
+        title: 'Shared deposit',
+        syncZone: HOUSEHOLD_SYNC_ZONE
+    });
+    const income = yield* testSeedService.manualExpense({
+        accountId: personalBank.id,
+        amount: AMOUNT,
+        operatedAt: OPERATED_AT,
+        type: TransactionTypeEnum.INCOME
+    });
+
+    return { personalBank, sharedDeposit, income };
+});
+
+const updateYield = (id: number, patch: Partial<Pick<TransactionCreateEntityInterface, 'yieldKind' | 'yieldSourceAccountId'>>) =>
+    Effect.flatMap(TransactionService, transactionService => transactionService.updateYield(id, patch));
+
+describe('TransactionService.updateById yield fields', () => {
+    it.effect('stores a kind and a same-zone source set by the user', () =>
+        Effect.gen(function* () {
+            const { bank, deposit, income } = yield* seedIncomeWithDeposit;
+
+            yield* setUserYield(income.id, bank.id, deposit.id);
+
+            expect(yield* readYield(income.id)).toMatchObject({ yieldKind: YieldKindEnum.INTEREST, yieldSourceAccountId: deposit.id });
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('keeps the stored yield fields when the edit does not mention them', () =>
+        Effect.gen(function* () {
+            const transactionService = yield* TransactionService;
+            const { bank, deposit, income } = yield* seedIncomeWithDeposit;
+
+            yield* setUserYield(income.id, bank.id, deposit.id);
+            yield* transactionService.updateById(income.id, incomeUpdate(bank.id, { title: 'Monthly interest' }));
+
+            expect(yield* readYield(income.id)).toMatchObject({ yieldKind: YieldKindEnum.INTEREST, yieldSourceAccountId: deposit.id });
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('nulls a source that a new landing account puts in another zone', () =>
+        Effect.gen(function* () {
+            const testSeedService = yield* seed;
+            const transactionService = yield* TransactionService;
+            const personalBank = yield* testSeedService.account({ type: AccountTypeEnum.BANK, title: 'Personal' });
+            const sharedBank = yield* testSeedService.account({
+                type: AccountTypeEnum.BANK,
+                title: 'Shared',
+                syncZone: HOUSEHOLD_SYNC_ZONE
+            });
+            const sharedDeposit = yield* testSeedService.account({
+                type: AccountTypeEnum.DEPOSIT,
+                title: 'Shared deposit',
+                syncZone: HOUSEHOLD_SYNC_ZONE
+            });
+
+            const income = yield* testSeedService.manualExpense({
+                accountId: sharedBank.id,
+                amount: AMOUNT,
+                operatedAt: OPERATED_AT,
+                type: TransactionTypeEnum.INCOME
+            });
+
+            yield* setUserYield(income.id, sharedBank.id, sharedDeposit.id);
+            yield* transactionService.updateById(income.id, incomeUpdate(personalBank.id, {}));
+
+            expect(yield* readYield(income.id)).toMatchObject({ yieldKind: YieldKindEnum.INTEREST, yieldSourceAccountId: null });
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('nulls a cross-zone source set in the same edit and marks the row as user-edited', () =>
+        Effect.gen(function* () {
+            const { personalBank, sharedDeposit, income } = yield* seedPersonalIncomeWithSharedDeposit;
+
+            yield* setUserYield(income.id, personalBank.id, sharedDeposit.id);
+
+            expect(yield* readYield(income.id)).toEqual({
+                yieldKind: YieldKindEnum.INTEREST,
+                yieldSourceAccountId: null,
+                updatedBy: TransactionUpdatedByEnum.USER
+            });
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect.each(['missing', 'archived'])('nulls a source account that is %s', state =>
+        Effect.gen(function* () {
+            const transactionService = yield* TransactionService;
+            const accountRepository = yield* AccountRepository;
+            const { bank, deposit, income } = yield* seedIncomeWithDeposit;
+
+            yield* accountRepository.archiveById(deposit.id);
+            yield* transactionService.updateById(
+                income.id,
+                incomeUpdate(bank.id, {
+                    yieldKind: YieldKindEnum.INTEREST,
+                    yieldSourceAccountId: state === 'missing' ? deposit.id + 1000 : deposit.id
+                })
+            );
+
+            expect(yield* readYield(income.id)).toMatchObject({ yieldKind: YieldKindEnum.INTEREST, yieldSourceAccountId: null });
+        }).pipe(Effect.provide(TestLayer))
+    );
+});
+
+describe('TransactionService.updateYield', () => {
+    it.effect('stores a same-zone source and kind and marks the row as user-edited', () =>
+        Effect.gen(function* () {
+            const { deposit, income } = yield* seedIncomeWithDeposit;
+
+            yield* updateYield(income.id, { yieldKind: YieldKindEnum.INTEREST, yieldSourceAccountId: deposit.id });
+
+            expect(yield* readYield(income.id)).toEqual({
+                yieldKind: YieldKindEnum.INTEREST,
+                yieldSourceAccountId: deposit.id,
+                updatedBy: TransactionUpdatedByEnum.USER
+            });
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('keeps the source when only the kind changes and drops it for NONE', () =>
+        Effect.gen(function* () {
+            const { deposit, income } = yield* seedIncomeWithDeposit;
+
+            yield* updateYield(income.id, { yieldKind: YieldKindEnum.INTEREST, yieldSourceAccountId: deposit.id });
+            yield* updateYield(income.id, { yieldKind: YieldKindEnum.EARN });
+
+            expect(yield* readYield(income.id)).toMatchObject({ yieldKind: YieldKindEnum.EARN, yieldSourceAccountId: deposit.id });
+
+            yield* updateYield(income.id, { yieldKind: YieldKindEnum.NONE });
+
+            expect(yield* readYield(income.id)).toMatchObject({ yieldKind: YieldKindEnum.NONE, yieldSourceAccountId: null });
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('nulls a cross-zone source', () =>
+        Effect.gen(function* () {
+            const { sharedDeposit, income } = yield* seedPersonalIncomeWithSharedDeposit;
+
+            yield* updateYield(income.id, { yieldKind: YieldKindEnum.INTEREST, yieldSourceAccountId: sharedDeposit.id });
+
+            expect(yield* readYield(income.id)).toMatchObject({ yieldKind: YieldKindEnum.INTEREST, yieldSourceAccountId: null });
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('normalizes a transfer to no kind and no source', () =>
+        Effect.gen(function* () {
+            const testSeedService = yield* seed;
+            const { deposit, bank } = yield* seedIncomeWithDeposit;
+            const transfer = yield* testSeedService.directTransfer({
+                exchangeRate: 1,
+                operatedAt: OPERATED_AT,
+                sourceAccountId: bank.id,
+                sourceAmount: AMOUNT,
+                sourceEntryExchangeRate: 1,
+                targetAccountId: deposit.id,
+                targetAmount: AMOUNT,
+                toIban: null
+            });
+
+            yield* updateYield(transfer.id, { yieldKind: YieldKindEnum.STAKING, yieldSourceAccountId: deposit.id });
+
+            expect(yield* readYield(transfer.id)).toMatchObject({ yieldKind: null, yieldSourceAccountId: null });
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('leaves a foreign transfer leg untouched', () =>
+        Effect.gen(function* () {
+            const { deposit, income } = yield* seedIncomeWithDeposit;
+            const stored = yield* Effect.flatMap(TransactionRepository, repository => repository.getByIdRaw(income.id));
+
+            yield* Db.query(db =>
+                db.insert(SyncRecordEntityTable).values({
+                    syncZone: stored?.syncZone ?? '',
+                    syncId: stored?.syncId ?? '',
+                    recordType: SyncRecordTypeEnum.TRANSACTION_LEG
+                })
+            );
+            yield* updateYield(income.id, { yieldKind: YieldKindEnum.INTEREST, yieldSourceAccountId: deposit.id });
+
+            expect(yield* readYield(income.id)).toMatchObject({ yieldKind: null, yieldSourceAccountId: null });
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('ignores a missing transaction', () =>
+        Effect.gen(function* () {
+            const result = yield* updateYield(9_999, { yieldKind: YieldKindEnum.INTEREST });
+
+            expect(result).toBeUndefined();
+        }).pipe(Effect.provide(TestLayer))
+    );
+});
