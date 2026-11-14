@@ -43,7 +43,7 @@ export const CreateAccountTypeTile = ({ title, description, icon, type }: Props)
             accessibilityLabel={title}
             accessibilityHint={description}
             onPress={handleNavigate}
-            className="min-w-0 basis-1/3 items-center gap-y-sm px-xxs py-xl active:opacity-70"
+            className="min-w-0 basis-1/3 md:basis-1/6 items-center gap-y-sm px-xxs py-xl active:opacity-70"
         >
             <CircleIcon
                 icon={icon}

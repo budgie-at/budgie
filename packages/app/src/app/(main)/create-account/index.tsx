@@ -148,7 +148,7 @@ export default function Index() {
 
                 {isNotEmptyArray(manualOptions) ? (
                     <GroupedListSection title={t`Add manually`} footer={manualFooter}>
-                        <View className="flex-row flex-wrap px-md">
+                        <View className="flex-row flex-wrap px-md md:flex-nowrap">
                             {manualOptions.map(option => (
                                 <CreateAccountTypeTile
                                     key={option.type}
