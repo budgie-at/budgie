@@ -79,7 +79,7 @@ test('51 manual brokerage with stocks', { tags: ['accounts'], platforms: PENDING
         await expect(core.byId(screen, 'HomeHolding.Return.YAHOO:BGTX')).toHaveText(/▲ \$200/, { timeout: 10_000 });
         await expect(core.byId(screen, 'HomeHolding.Caption.YAHOO:BGTX')).toHaveText(/^10 BGTX/);
         await core.scrollTo(ctx, 'InstitutionRow.E2E Broker');
-        await expect(core.byId(screen, 'InstitutionRow.E2E Broker')).toHaveText(/\$1,200 in 1 position/, { timeout: 10_000 });
+        await expect(core.byId(screen, 'InstitutionRow.E2E Broker')).toHaveText(/\$1,200 in BGTX/, { timeout: 10_000 });
     });
 
     await core.phase('the brokerage row opens the broker, the holding row opens the stock and sells', async () => {

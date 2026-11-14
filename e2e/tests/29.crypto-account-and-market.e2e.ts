@@ -35,7 +35,7 @@ test('29 crypto account and market', { tags: ['crypto'] }, async ({ budgie }) =>
 
     await b.phase('binance exchange row opens its institution', async () => {
         await b.scrollToCentered(ctx, 'InstitutionRow.1');
-        await expect(id('InstitutionRow.1')).toHaveText(/ in 1 asset/);
+        await expect(id('InstitutionRow.1')).toHaveText(/ in BTC/);
         await b.tapId(ctx, 'InstitutionRow.1');
         await b.expectId(ctx, 'Institution.Page', 10_000);
         await ids('AccountCard.E2E Binance BTC', 'AccountCard.Balance.E2E_Binance_BTC.2_BTC');
