@@ -12,18 +12,19 @@ import type { SecurityTradeFormValues } from '../../constant/security-trade-form
 import type { UserIconType } from '@budgie/contracts';
 
 interface Props {
-    readonly name: 'quantity' | 'price' | 'fee';
+    readonly name: 'quantity' | 'price' | 'fee' | 'total';
     readonly label: string;
     readonly icon: UserIconType;
     readonly maxDecimals?: number;
     readonly placeholder?: string;
     readonly testID: string;
+    readonly onChange?: () => void;
 }
 
-export const SecurityTradeNumberField = ({ name, label, icon, maxDecimals, placeholder = '0', testID }: Props) => {
+export const SecurityTradeNumberField = ({ name, label, icon, maxDecimals, placeholder = '0', testID, onChange }: Props) => {
     const { decimalSeparator } = useLocaleInfo();
     const { field } = useController<SecurityTradeFormValues, typeof name>({ name });
-    const formatValue = (value: number) => (isPositiveNumber(value) ? String(value).replace('.', decimalSeparator) : '');
+    const formatValue = (value: number | undefined) => (isPositiveNumber(value) ? String(value).replace('.', decimalSeparator) : '');
     const parseText = (value: string) => {
         const amount = Number(normalizeAmountDecimalSeparators(value, '.', [',']));
 
@@ -31,7 +32,7 @@ export const SecurityTradeNumberField = ({ name, label, icon, maxDecimals, place
     };
     const [text, setText] = useState(() => formatValue(field.value));
 
-    if (parseText(text) !== field.value) {
+    if (parseText(text) !== (field.value ?? 0)) {
         setText(formatValue(field.value));
     }
 
@@ -45,6 +46,7 @@ export const SecurityTradeNumberField = ({ name, label, icon, maxDecimals, place
 
         setText(value);
         field.onChange(parseText(value));
+        onChange?.();
     };
 
     const handleBlur = () => {

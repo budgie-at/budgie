@@ -4140,6 +4140,7 @@ msgid "Deposit"
 msgstr "Депозит"
 
 #: src/app/(main)/securities/buy/[id].tsx
+#: src/brokerage/component/update-security-trade/update-security-trade.tsx
 msgctxt "Brokerage funding"
 msgid "Deposit"
 msgstr "Поповнення"
@@ -10169,10 +10170,12 @@ msgstr "Усього позичено"
 msgid "Total lent"
 msgstr "Усього надано в борг"
 
+#: src/brokerage/component/security-trade-total-field/security-trade-total-field.tsx
 #: src/recurring/components/recurring-detail-stats/recurring-detail-stats.tsx
 msgid "Total paid"
 msgstr "Усього сплачено"
 
+#: src/brokerage/component/security-trade-total-field/security-trade-total-field.tsx
 #: src/recurring/components/recurring-detail-stats/recurring-detail-stats.tsx
 msgid "Total received"
 msgstr "Усього отримано"

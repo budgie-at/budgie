@@ -4141,6 +4141,7 @@ msgid "Deposit"
 msgstr "Deposit"
 
 #: src/app/(main)/securities/buy/[id].tsx
+#: src/brokerage/component/update-security-trade/update-security-trade.tsx
 msgctxt "Brokerage funding"
 msgid "Deposit"
 msgstr "Deposit"
@@ -10170,10 +10171,12 @@ msgstr "Total borrowed"
 msgid "Total lent"
 msgstr "Total lent"
 
+#: src/brokerage/component/security-trade-total-field/security-trade-total-field.tsx
 #: src/recurring/components/recurring-detail-stats/recurring-detail-stats.tsx
 msgid "Total paid"
 msgstr "Total paid"
 
+#: src/brokerage/component/security-trade-total-field/security-trade-total-field.tsx
 #: src/recurring/components/recurring-detail-stats/recurring-detail-stats.tsx
 msgid "Total received"
 msgstr "Total received"

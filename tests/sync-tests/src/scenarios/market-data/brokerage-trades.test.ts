@@ -203,4 +203,50 @@ describe('market-data/brokerage-trades', () => {
             expect(yield* fetchAccountBalance(cash.id)).toBe(-50_000_000);
         }).pipe(Effect.provide(TestLayer))
     );
+
+    it.effect('edits a buy in place to the broker total so the cost basis matches and the cash stays funded', () =>
+        Effect.gen(function* () {
+            const { dollar, brokerageService, cash } = yield* createBrokerage;
+            const accountRepository = yield* AccountRepository;
+            const positionRepository = yield* TransactionEntryPositionRepository;
+            const securityId = yield* brokerageService.buy(
+                cash.integrationId ?? 0,
+                LISTING,
+                { quantity: 21, price: 37.8571, fee: 0, operatedAt: TRADE_DAY },
+                FUNDING_TITLE
+            );
+            const [buyEntry] = yield* testDb
+                .select()
+                .from(TransactionEntryEntityTable)
+                .where(eq(TransactionEntryEntityTable.accountId, securityId));
+
+            yield* brokerageService.update(
+                buyEntry.transactionId,
+                { quantity: 21, price: 41.949, fee: 25.15, total: 906.08, operatedAt: TRADE_DAY },
+                FUNDING_TITLE
+            );
+
+            const security = yield* accountRepository.findById(securityId);
+            const entries = yield* positionRepository.findInstrumentPositionEntries(security?.instrumentId ?? 0, dollar.id);
+            const tradeEntries = yield* fetchExpenseEntries(buyEntry.transactionId);
+
+            expect(calculateInstrumentPosition(entries)).toMatchObject({ amount: 21, costBasis: 906.08 });
+            expect(tradeEntries.map(({ accountId, type, amount }) => ({ accountId, type, amount }))).toEqual(
+                expect.arrayContaining([
+                    { accountId: cash.id, type: TransactionEntryTypeEnum.CREDIT, amount: 880_930_000 },
+                    { accountId: cash.id, type: TransactionEntryTypeEnum.FEE, amount: 25_150_000 },
+                    { accountId: securityId, type: TransactionEntryTypeEnum.DEBIT, amount: 21_000_000 }
+                ])
+            );
+            expect(yield* fetchAccountBalance(securityId)).toBe(21_000_000);
+            expect(yield* fetchAccountBalance(cash.id)).toBe(0);
+
+            yield* brokerageService.sell(securityId, { quantity: 10, price: 50, fee: 0, operatedAt: new Date('2026-03-10') });
+            expect(
+                yield* brokerageService
+                    .update(buyEntry.transactionId, { quantity: 5, price: 40, fee: 0, operatedAt: TRADE_DAY }, FUNDING_TITLE)
+                    .pipe(Effect.flip)
+            ).toMatchObject({ _tag: 'InsufficientSecurityHoldingError' });
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

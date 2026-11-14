@@ -4140,6 +4140,7 @@ msgid "Deposit"
 msgstr "Termineinlage"
 
 #: src/app/(main)/securities/buy/[id].tsx
+#: src/brokerage/component/update-security-trade/update-security-trade.tsx
 msgctxt "Brokerage funding"
 msgid "Deposit"
 msgstr "Einzahlung"
@@ -10169,10 +10170,12 @@ msgstr "Gesamt geliehen"
 msgid "Total lent"
 msgstr "Gesamt verliehen"
 
+#: src/brokerage/component/security-trade-total-field/security-trade-total-field.tsx
 #: src/recurring/components/recurring-detail-stats/recurring-detail-stats.tsx
 msgid "Total paid"
 msgstr "Bezahlt gesamt"
 
+#: src/brokerage/component/security-trade-total-field/security-trade-total-field.tsx
 #: src/recurring/components/recurring-detail-stats/recurring-detail-stats.tsx
 msgid "Total received"
 msgstr "Insgesamt erhalten"

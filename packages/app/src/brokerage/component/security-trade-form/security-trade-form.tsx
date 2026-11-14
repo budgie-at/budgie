@@ -18,6 +18,7 @@ import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { DEFAULT_DECIMAL_PLACES } from '../../../i18n/constant/default-decimal-places.constant';
+import { roundHalfExpand } from '../../../market-data/utils/round-half-expand.util';
 import { SECURITY_PRICE_MAX_DECIMALS } from '../../constant/security-price-max-decimals.constant';
 import { SecurityTradeFormSchema } from '../../constant/security-trade-form-schema.constant';
 import { SecurityTradeSideEnum } from '../../enum/security-trade-side.enum';
@@ -27,6 +28,7 @@ import { SecurityTradeNumberField } from '../security-trade-number-field/securit
 import { SecurityTradePriceHint } from '../security-trade-price-hint/security-trade-price-hint';
 import { SecurityTradeQuantityHint } from '../security-trade-quantity-hint/security-trade-quantity-hint';
 import { SecurityTradeSaveFooter } from '../security-trade-save-footer/security-trade-save-footer';
+import { SecurityTradeTotalField } from '../security-trade-total-field/security-trade-total-field';
 
 import type { AppServices } from '../../../@generic/runtime/app.runtime';
 import type { SecurityTradeFormValues } from '../../constant/security-trade-form-schema.constant';
@@ -38,20 +40,21 @@ interface Props<E> {
     readonly symbol: string;
     readonly currencySymbol: string;
     readonly maxQuantity: number | null;
-    readonly suggestedPrice: ReturnType<typeof useSecurityPriceQuery>;
+    readonly suggestedPrice: Pick<ReturnType<typeof useSecurityPriceQuery>, 'isUnavailable' | 'missingRateCurrency' | 'price'>;
     readonly onSubmit: (values: SecurityTradeFormValues) => Effect.Effect<unknown, E, AppServices>;
+    readonly defaultValues?: SecurityTradeFormValues;
     readonly children?: ReactNode;
 }
 
-// eslint-disable-next-line max-lines-per-function -- Layout/form component requires many lines
+// eslint-disable-next-line max-lines-per-function, max-statements -- Form orchestration component with multiple hooks and handlers
 export const SecurityTradeForm = <E,>(props: Props<E>) => {
-    const { side, symbol, currencySymbol, maxQuantity, suggestedPrice, onSubmit, children } = props;
+    const { side, symbol, currencySymbol, maxQuantity, suggestedPrice, onSubmit, defaultValues, children } = props;
     const { t } = useLingui();
     const [operatedAt] = useState(() => new Date());
     const form = useForm<SecurityTradeFormValues>({
         mode: 'onChange',
         resolver: standardSchemaResolver(Schema.toStandardSchemaV1(SecurityTradeFormSchema)),
-        defaultValues: { quantity: 0, price: 0, fee: 0, operatedAt }
+        defaultValues: defaultValues ?? { quantity: 0, price: 0, fee: 0, total: 0, operatedAt }
     });
     const { isLoading, run } = useSingleFlight();
     const identityRef = useRef({ symbol, currencySymbol });
@@ -76,6 +79,22 @@ export const SecurityTradeForm = <E,>(props: Props<E>) => {
             form.resetField('price');
         }
     }, [form, currencySymbol, symbol, suggestedPrice.price]);
+
+    const handlePriceDriverChange = () => {
+        const { quantity, fee, total } = form.getValues();
+
+        if (isPositiveNumber(total) && isPositiveNumber(quantity)) {
+            const tradeAmount = total + (side === SecurityTradeSideEnum.BUY ? -fee : fee);
+
+            form.setValue('price', roundHalfExpand(tradeAmount / quantity, SECURITY_PRICE_MAX_DECIMALS), {
+                shouldDirty: true,
+                shouldValidate: true
+            });
+        }
+    };
+    const handlePriceChange = () => {
+        form.setValue('total', 0);
+    };
 
     const handleSave = form.handleSubmit(values =>
         run(
@@ -130,6 +149,7 @@ export const SecurityTradeForm = <E,>(props: Props<E>) => {
                                 icon={UserIconNameEnum.Hash}
                                 placeholder={t`Number of shares`}
                                 testID={BrokerageSelector.QuantityInput}
+                                onChange={handlePriceDriverChange}
                             />
                         </GroupedListSection>
                         <GroupedListSection footer={priceFooter}>
@@ -140,6 +160,7 @@ export const SecurityTradeForm = <E,>(props: Props<E>) => {
                                 maxDecimals={SECURITY_PRICE_MAX_DECIMALS}
                                 placeholder={t`Price per share`}
                                 testID={BrokerageSelector.PriceInput}
+                                onChange={handlePriceChange}
                             />
                         </GroupedListSection>
                         <GroupedListSection>
@@ -150,8 +171,10 @@ export const SecurityTradeForm = <E,>(props: Props<E>) => {
                                 maxDecimals={DEFAULT_DECIMAL_PLACES}
                                 placeholder={t`Optional`}
                                 testID={BrokerageSelector.FeeInput}
+                                onChange={handlePriceDriverChange}
                             />
                         </GroupedListSection>
+                        <SecurityTradeTotalField side={side} currencySymbol={currencySymbol} onChange={handlePriceDriverChange} />
                         <OperatedAtField testID={BrokerageSelector.DateButton} />
                     </FormLayoutGroup>
                 </FixedChromePage>
