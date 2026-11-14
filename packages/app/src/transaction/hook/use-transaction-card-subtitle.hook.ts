@@ -1,4 +1,4 @@
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { TransactionCardSelector } from '../components/transaction-card/transaction-card.selector';
 import { isUncategorizedTransaction } from '../utils/is-uncategorized-transaction.util';
@@ -15,6 +15,7 @@ export const useTransactionCardSubtitle = (transaction: TransactionWithRelations
     return {
         description: descriptionSegments.join(' · '),
         accessibilityLabel: descriptionSegments.join(', '),
+        detailSegments: [...segments.flatMap(segment => segment.split(' · ')), feeLabel, accountTitle].filter(isNotEmptyString),
         accountTitle,
         subtitleTestID: [
             isUncategorizedTransaction(transaction) ? TransactionCardSelector.UncategorizedBadge : null,
