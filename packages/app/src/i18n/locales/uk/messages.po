@@ -2417,6 +2417,14 @@ msgstr "Ордери Binance P2P недоступні: API-ключу браку
 msgid "Biometric data never leaves this phone"
 msgstr "Біометричні дані ніколи не залишають цей телефон"
 
+#: src/auth/hook/use-pin-setup.hook.ts
+msgid "Biometric unlock wasn't completed. Try again or continue without it."
+msgstr "Біометричне розблокування не завершено. Спробуйте ще раз або продовжте без нього."
+
+#: src/settings/hook/use-biometric-label.hook.ts
+msgid "Biometrics"
+msgstr "Біометрія"
+
 #: src/recurring/components/recurring-form-repeat-section/recurring-form-repeat-section.tsx
 msgid "Biweekly"
 msgstr "Раз на 2 тижні"
@@ -5133,6 +5141,10 @@ msgstr "Face ID"
 msgid "Face ID wasn't completed. Try again or continue without it."
 msgstr "Face ID не завершено. Спробуйте ще раз або продовжте без нього."
 
+#: src/auth/hook/use-pin-setup.hook.ts
+msgid "Face unlock wasn't completed. Try again or continue without it."
+msgstr "Розблокування обличчям не завершено. Спробуйте ще раз або продовжте без нього."
+
 #: src/settings/hook/use-biometric-label.hook.ts
 msgid "Facial recognition"
 msgstr "Розпізнавання обличчя"
@@ -5281,6 +5293,10 @@ msgstr "FinEye"
 #: src/settings/hook/use-biometric-label.hook.ts
 msgid "Fingerprint"
 msgstr "Відбиток пальця"
+
+#: src/auth/hook/use-pin-setup.hook.ts
+msgid "Fingerprint unlock wasn't completed. Try again or continue without it."
+msgstr "Розблокування відбитком пальця не завершено. Спробуйте ще раз або продовжте без нього."
 
 #: src/sync/component/analytics-sync-account-progress/analytics-sync-account-progress.tsx
 msgid "Finish importing this account’s history to include it in analytics."
@@ -7531,8 +7547,8 @@ msgid "Open Budgie with a touch. Your PIN stays the key to your data."
 msgstr "Відкривайте Budgie одним дотиком. PIN‑код і далі залишається ключем до ваших даних."
 
 #: src/auth/utils/get-pin-setup-meta.util.ts
-msgid "Open Budgie with Face ID or Touch ID. Your PIN stays the key to your data."
-msgstr "Відкривайте Budgie за допомогою Face ID або Touch ID. PIN‑код і далі залишається ключем до ваших даних."
+msgid "Open Budgie with your face or fingerprint. Your PIN stays the key to your data."
+msgstr "Відкривайте Budgie обличчям або відбитком пальця. PIN‑код і далі залишається ключем до ваших даних."
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Open George (Erste Bank online banking)"
@@ -7658,12 +7674,24 @@ msgid "Or import from"
 msgstr "Або імпортуйте з"
 
 #: src/auth/components/pin-unlock/pin-unlock.tsx
+msgid "Or unlock with biometrics."
+msgstr "Або розблокуйте біометрією."
+
+#: src/auth/components/pin-unlock/pin-unlock.tsx
 msgid "Or unlock with Face ID."
 msgstr "Або розблокуйте за допомогою Face ID."
 
 #: src/auth/components/pin-unlock/pin-unlock.tsx
 msgid "Or unlock with Touch ID."
 msgstr "Або розблокуйте за допомогою Touch ID."
+
+#: src/auth/components/pin-unlock/pin-unlock.tsx
+msgid "Or unlock with your face."
+msgstr "Або розблокуйте обличчям."
+
+#: src/auth/components/pin-unlock/pin-unlock.tsx
+msgid "Or unlock with your fingerprint."
+msgstr "Або розблокуйте відбитком пальця."
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Organize"
@@ -10971,9 +10999,17 @@ msgstr "Розблокуйте для перегляду"
 msgid "Unlock with {biometricLabel}"
 msgstr "Розблоковувати через {biometricLabel}"
 
+#: src/auth/components/pin-form-biometric-button/pin-form-biometric-button.tsx
+msgid "Unlock with biometrics"
+msgstr "Розблокувати біометрією"
+
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Unlock with biometrics?"
 msgstr "Розблоковувати біометрією?"
+
+#: src/auth/components/pin-form-biometric-button/pin-form-biometric-button.tsx
+msgid "Unlock with face"
+msgstr "Розблокувати обличчям"
 
 #: src/auth/components/pin-form-biometric-button/pin-form-biometric-button.tsx
 msgid "Unlock with Face ID"
@@ -10984,12 +11020,24 @@ msgid "Unlock with Face ID?"
 msgstr "Розблоковувати за допомогою Face ID?"
 
 #: src/auth/components/pin-form-biometric-button/pin-form-biometric-button.tsx
+msgid "Unlock with fingerprint"
+msgstr "Розблокувати відбитком пальця"
+
+#: src/auth/components/pin-form-biometric-button/pin-form-biometric-button.tsx
 msgid "Unlock with Touch ID"
 msgstr "Розблокувати за допомогою Touch ID"
 
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Unlock with Touch ID?"
 msgstr "Розблоковувати за допомогою Touch ID?"
+
+#: src/auth/utils/get-pin-setup-meta.util.ts
+msgid "Unlock with your face?"
+msgstr "Розблоковувати обличчям?"
+
+#: src/auth/utils/get-pin-setup-meta.util.ts
+msgid "Unlock with your fingerprint?"
+msgstr "Розблоковувати відбитком пальця?"
 
 #: src/categorize-inbox/components/categorize-inbox-payments-screen/categorize-inbox-payments-screen.tsx
 msgid "Unselected payments stay in your inbox."
@@ -11099,12 +11147,19 @@ msgstr "Використайте від 1 до {CATEGORY_TITLE_MAX_LENGTH} си�
 msgid "Use 1 to {TAG_TITLE_MAX_LENGTH} characters"
 msgstr "Використайте від 1 до {TAG_TITLE_MAX_LENGTH} символів"
 
-#: src/auth/components/biometric-configuration/biometric-configuration.tsx
-#: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
+#: src/auth/hook/use-biometric-enable-label.hook.ts
+msgid "Use biometrics"
+msgstr "Використовувати біометрію"
+
+#: src/auth/hook/use-biometric-enable-label.hook.ts
 msgid "Use Face ID"
 msgstr "Використовувати Face ID"
 
-#: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
+#: src/auth/hook/use-biometric-enable-label.hook.ts
+msgid "Use face unlock"
+msgstr "Використовувати розблокування обличчям"
+
+#: src/auth/hook/use-biometric-enable-label.hook.ts
 msgid "Use fingerprint"
 msgstr "Використати відбиток пальця"
 
@@ -11129,8 +11184,7 @@ msgstr "Використайте PIN‑код, яким запечатано ц�
 msgid "Use these only if conversions, imports or balances look wrong."
 msgstr "Використовуйте, лише якщо конвертації, імпорт чи баланси виглядають неправильно."
 
-#: src/auth/components/biometric-configuration/biometric-configuration.tsx
-#: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
+#: src/auth/hook/use-biometric-enable-label.hook.ts
 msgid "Use Touch ID"
 msgstr "Використовувати Touch ID"
 
@@ -11597,12 +11651,8 @@ msgid "Your PIN"
 msgstr "Ваш PIN‑код"
 
 #: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
-msgid "Your PIN · Face ID"
-msgstr "Ваш PIN‑код · Face ID"
-
-#: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
-msgid "Your PIN · Fingerprint"
-msgstr "Ваш PIN‑код · Відбиток пальця"
+msgid "Your PIN · {biometricLabel}"
+msgstr "Ваш PIN‑код · {biometricLabel}"
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx
 msgid "Your PIN still works any time"

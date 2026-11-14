@@ -2418,6 +2418,14 @@ msgstr "Binance P2P orders are unavailable: the API key is missing P2P read perm
 msgid "Biometric data never leaves this phone"
 msgstr "Biometric data never leaves this phone"
 
+#: src/auth/hook/use-pin-setup.hook.ts
+msgid "Biometric unlock wasn't completed. Try again or continue without it."
+msgstr "Biometric unlock wasn't completed. Try again or continue without it."
+
+#: src/settings/hook/use-biometric-label.hook.ts
+msgid "Biometrics"
+msgstr "Biometrics"
+
 #: src/recurring/components/recurring-form-repeat-section/recurring-form-repeat-section.tsx
 msgid "Biweekly"
 msgstr "Biweekly"
@@ -5134,6 +5142,10 @@ msgstr "Face ID"
 msgid "Face ID wasn't completed. Try again or continue without it."
 msgstr "Face ID wasn't completed. Try again or continue without it."
 
+#: src/auth/hook/use-pin-setup.hook.ts
+msgid "Face unlock wasn't completed. Try again or continue without it."
+msgstr "Face unlock wasn't completed. Try again or continue without it."
+
 #: src/settings/hook/use-biometric-label.hook.ts
 msgid "Facial recognition"
 msgstr "Facial recognition"
@@ -5282,6 +5294,10 @@ msgstr "FinEye"
 #: src/settings/hook/use-biometric-label.hook.ts
 msgid "Fingerprint"
 msgstr "Fingerprint"
+
+#: src/auth/hook/use-pin-setup.hook.ts
+msgid "Fingerprint unlock wasn't completed. Try again or continue without it."
+msgstr "Fingerprint unlock wasn't completed. Try again or continue without it."
 
 #: src/sync/component/analytics-sync-account-progress/analytics-sync-account-progress.tsx
 msgid "Finish importing this account’s history to include it in analytics."
@@ -7532,8 +7548,8 @@ msgid "Open Budgie with a touch. Your PIN stays the key to your data."
 msgstr "Open Budgie with a touch. Your PIN stays the key to your data."
 
 #: src/auth/utils/get-pin-setup-meta.util.ts
-msgid "Open Budgie with Face ID or Touch ID. Your PIN stays the key to your data."
-msgstr "Open Budgie with Face ID or Touch ID. Your PIN stays the key to your data."
+msgid "Open Budgie with your face or fingerprint. Your PIN stays the key to your data."
+msgstr "Open Budgie with your face or fingerprint. Your PIN stays the key to your data."
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Open George (Erste Bank online banking)"
@@ -7659,12 +7675,24 @@ msgid "Or import from"
 msgstr "Or import from"
 
 #: src/auth/components/pin-unlock/pin-unlock.tsx
+msgid "Or unlock with biometrics."
+msgstr "Or unlock with biometrics."
+
+#: src/auth/components/pin-unlock/pin-unlock.tsx
 msgid "Or unlock with Face ID."
 msgstr "Or unlock with Face ID."
 
 #: src/auth/components/pin-unlock/pin-unlock.tsx
 msgid "Or unlock with Touch ID."
 msgstr "Or unlock with Touch ID."
+
+#: src/auth/components/pin-unlock/pin-unlock.tsx
+msgid "Or unlock with your face."
+msgstr "Or unlock with your face."
+
+#: src/auth/components/pin-unlock/pin-unlock.tsx
+msgid "Or unlock with your fingerprint."
+msgstr "Or unlock with your fingerprint."
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Organize"
@@ -10972,9 +11000,17 @@ msgstr "Unlock to view"
 msgid "Unlock with {biometricLabel}"
 msgstr "Unlock with {biometricLabel}"
 
+#: src/auth/components/pin-form-biometric-button/pin-form-biometric-button.tsx
+msgid "Unlock with biometrics"
+msgstr "Unlock with biometrics"
+
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Unlock with biometrics?"
 msgstr "Unlock with biometrics?"
+
+#: src/auth/components/pin-form-biometric-button/pin-form-biometric-button.tsx
+msgid "Unlock with face"
+msgstr "Unlock with face"
 
 #: src/auth/components/pin-form-biometric-button/pin-form-biometric-button.tsx
 msgid "Unlock with Face ID"
@@ -10985,12 +11021,24 @@ msgid "Unlock with Face ID?"
 msgstr "Unlock with Face ID?"
 
 #: src/auth/components/pin-form-biometric-button/pin-form-biometric-button.tsx
+msgid "Unlock with fingerprint"
+msgstr "Unlock with fingerprint"
+
+#: src/auth/components/pin-form-biometric-button/pin-form-biometric-button.tsx
 msgid "Unlock with Touch ID"
 msgstr "Unlock with Touch ID"
 
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Unlock with Touch ID?"
 msgstr "Unlock with Touch ID?"
+
+#: src/auth/utils/get-pin-setup-meta.util.ts
+msgid "Unlock with your face?"
+msgstr "Unlock with your face?"
+
+#: src/auth/utils/get-pin-setup-meta.util.ts
+msgid "Unlock with your fingerprint?"
+msgstr "Unlock with your fingerprint?"
 
 #: src/categorize-inbox/components/categorize-inbox-payments-screen/categorize-inbox-payments-screen.tsx
 msgid "Unselected payments stay in your inbox."
@@ -11100,12 +11148,19 @@ msgstr "Use 1 to {CATEGORY_TITLE_MAX_LENGTH} characters"
 msgid "Use 1 to {TAG_TITLE_MAX_LENGTH} characters"
 msgstr "Use 1 to {TAG_TITLE_MAX_LENGTH} characters"
 
-#: src/auth/components/biometric-configuration/biometric-configuration.tsx
-#: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
+#: src/auth/hook/use-biometric-enable-label.hook.ts
+msgid "Use biometrics"
+msgstr "Use biometrics"
+
+#: src/auth/hook/use-biometric-enable-label.hook.ts
 msgid "Use Face ID"
 msgstr "Use Face ID"
 
-#: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
+#: src/auth/hook/use-biometric-enable-label.hook.ts
+msgid "Use face unlock"
+msgstr "Use face unlock"
+
+#: src/auth/hook/use-biometric-enable-label.hook.ts
 msgid "Use fingerprint"
 msgstr "Use fingerprint"
 
@@ -11130,8 +11185,7 @@ msgstr "Use the PIN this backup was sealed with. Without it, the backup can't be
 msgid "Use these only if conversions, imports or balances look wrong."
 msgstr "Use these only if conversions, imports or balances look wrong."
 
-#: src/auth/components/biometric-configuration/biometric-configuration.tsx
-#: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
+#: src/auth/hook/use-biometric-enable-label.hook.ts
 msgid "Use Touch ID"
 msgstr "Use Touch ID"
 
@@ -11598,12 +11652,8 @@ msgid "Your PIN"
 msgstr "Your PIN"
 
 #: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
-msgid "Your PIN · Face ID"
-msgstr "Your PIN · Face ID"
-
-#: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
-msgid "Your PIN · Fingerprint"
-msgstr "Your PIN · Fingerprint"
+msgid "Your PIN · {biometricLabel}"
+msgstr "Your PIN · {biometricLabel}"
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx
 msgid "Your PIN still works any time"

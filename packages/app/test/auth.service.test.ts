@@ -7,12 +7,20 @@ import { emptyFn } from '@rnw-community/shared';
 
 import { DatabaseLifecycleService } from '../src/@generic/drizzle/service/database-lifecycle.service';
 import { DatabaseRekeyService } from '../src/@generic/drizzle/service/database-rekey.service';
+import { BiometricKindEnum } from '../src/auth/enum/biometric-kind.enum';
 import { AuthService } from '../src/auth/service/auth.service';
 import { PinAttemptService } from '../src/auth/service/pin-attempt.service';
 import { WidgetSnapshotService } from '../src/widget/service/widget-snapshot.service';
 
 const biometrics = vi.hoisted(() => {
-    const defaults = { hasHardware: true, isEnrolled: true, types: [2], result: { success: true }, isNativeFailing: false };
+    const defaults = {
+        hasHardware: true,
+        isEnrolled: true,
+        types: [2],
+        result: { success: true },
+        isNativeFailing: false,
+        platform: 'ios'
+    };
 
     return { ...defaults, defaults, resetCount: 0 };
 });
@@ -23,6 +31,13 @@ vi.mock('expo-local-authentication', () => ({
     isEnrolledAsync: () => Promise.resolve(biometrics.isEnrolled),
     supportedAuthenticationTypesAsync: () => Promise.resolve(biometrics.types),
     authenticateAsync: () => (biometrics.isNativeFailing ? Promise.reject(new Error('native')) : Promise.resolve(biometrics.result))
+}));
+vi.mock('react-native', () => ({
+    Platform: {
+        get OS() {
+            return biometrics.platform;
+        }
+    }
 }));
 vi.mock('expo-secure-store', () => ({ AFTER_FIRST_UNLOCK_THIS_DEVICE_ONLY: 0 }));
 vi.mock('expo-file-system', () => import('./fixture/expo-file-system-fake'));
@@ -70,9 +85,30 @@ describe('AuthService biometric capability and prompt', () => {
             configureBiometrics({ hasHardware: false });
             const noHardware = yield* readBiometricTypes;
 
-            expect(enrolled).toEqual({ isSomeAvailable: true, isFaceIdAvailable: true, isTouchIdAvailable: false });
+            expect(enrolled).toEqual({ isSomeAvailable: true, biometricKind: BiometricKindEnum.FACE_ID });
             expect(notEnrolled.isSomeAvailable).toBe(false);
             expect(noHardware.isSomeAvailable).toBe(false);
+        }).pipe(Effect.provide(authServiceLayer))
+    );
+
+    it.effect('names the biometric with the platform term', () =>
+        Effect.gen(function* () {
+            configureBiometrics({ types: [1] });
+            const iosFingerprint = yield* readBiometricTypes;
+
+            configureBiometrics({ platform: 'android', types: [2] });
+            const androidFace = yield* readBiometricTypes;
+
+            configureBiometrics({ platform: 'android', types: [1] });
+            const androidFingerprint = yield* readBiometricTypes;
+
+            configureBiometrics({ platform: 'android', types: [1, 2] });
+            const androidBoth = yield* readBiometricTypes;
+
+            expect(iosFingerprint.biometricKind).toBe(BiometricKindEnum.TOUCH_ID);
+            expect(androidFace.biometricKind).toBe(BiometricKindEnum.FACE_UNLOCK);
+            expect(androidFingerprint.biometricKind).toBe(BiometricKindEnum.FINGERPRINT);
+            expect(androidBoth.biometricKind).toBe(BiometricKindEnum.BIOMETRICS);
         }).pipe(Effect.provide(authServiceLayer))
     );
 
