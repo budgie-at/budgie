@@ -38,14 +38,13 @@ test('17 security app lock', { tags: ['security'] }, async ({ budgie }) => {
         await b.expectId(ctx, 'SettingsPage.DataEncryption.State.On', 3_000);
     });
 
-    if (!b.isIos(ctx)) {
-        await b.phase('an incoming link stays behind the lock', async () => {
-            await b.openLink(ctx, 'budgie://');
-            await pinPage();
-            await sec.enterPin(ctx, '1234');
-            await b.expectId(ctx, 'HomePage.TotalBalance', 10_000);
-        });
-    }
+    await b.phase('a link opened while locked lands after unlock', async () => {
+        await sec.backgroundApp(ctx);
+        await b.openLink(ctx, 'budgie://');
+        await pinPage();
+        await sec.enterPin(ctx, '1234');
+        await b.expectId(ctx, 'HomePage.TotalBalance', 10_000);
+    });
 
     await b.phase('unfinished form survives a lock', async () => {
         await a.openNewAccount(ctx);

@@ -53,12 +53,17 @@ export async function exhaustPinAttempts(ctx: Ctx): Promise<void> {
 }
 
 /** subflows/security/resume-after-pin-unlock: background, relaunch, try the forgot-PIN sheet, unlock, back on `resumedScreenId`. */
-export async function resumeAfterPinUnlock(ctx: Ctx, resumedScreenId: string): Promise<void> {
-    const { screen } = ctx;
+/** Sends the app to the background and, on Android, waits until it has left the foreground, so App lock has locked it. */
+export async function backgroundApp(ctx: Ctx): Promise<void> {
     await ctx.device.home();
     if (!isIos(ctx)) {
         await expect.poll(async () => (await ctx.device.foregroundApp()).bundleId, { timeout: 10_000 }).not.toBe(BUNDLE_ID);
     }
+}
+
+export async function resumeAfterPinUnlock(ctx: Ctx, resumedScreenId: string): Promise<void> {
+    const { screen } = ctx;
+    await backgroundApp(ctx);
     // launchApp stopApp: false: bring the running app forward; app.open() would relaunch it fresh.
     await ctx.device.openApp(BUNDLE_ID);
     await expect(byText(screen, 'Enter your PIN')).toBeVisible();
