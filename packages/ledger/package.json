@@ -29,11 +29,11 @@
         "@lingui/core": "6.12.0",
         "@rnw-community/shared": "^3.0.5",
         "date-fns": "^4.4.0",
-        "effect": "4.1.2"
+        "effect": "4.1.4"
     },
     "devDependencies": {
         "@budgie-at/test-kit": "workspace:*",
-        "@effect/vitest": "4.1.2",
+        "@effect/vitest": "4.1.4",
         "@types/node": "26.6.6",
         "vitest": "5.1.0"
     }
