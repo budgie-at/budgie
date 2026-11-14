@@ -24,11 +24,14 @@ interface Props {
 export const SecurityTradeTotalField = ({ side, currencySymbol, onChange }: Props) => {
     const { t } = useLingui();
     const { decimalSeparator } = useLocaleInfo();
-    const [quantity, price, fee] = useWatch<SecurityTradeFormValues, ['quantity', 'price', 'fee']>({ name: ['quantity', 'price', 'fee'] });
+    const [quantity, price, fee, total] = useWatch<SecurityTradeFormValues, ['quantity', 'price', 'fee', 'total']>({
+        name: ['quantity', 'price', 'fee', 'total']
+    });
 
     const isBuy = side === SecurityTradeSideEnum.BUY;
     const derivedTotal = roundHalfExpand(calculateSecurityTradeTotal({ quantity, price, fee }, isBuy), DEFAULT_DECIMAL_PLACES);
-    const placeholder = isPositiveNumber(derivedTotal) ? String(derivedTotal).replace('.', decimalSeparator) : '0';
+    const isDerivedTotalShown = isPositiveNumber(derivedTotal) && !isPositiveNumber(total);
+    const placeholder = isDerivedTotalShown ? String(derivedTotal).replace('.', decimalSeparator) : '0';
     const label = isBuy ? t`Total paid` : t`Total received`;
 
     return (
