@@ -5,7 +5,7 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { ROW_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-max-font-size-multiplier.constant';
 import { cn } from '../../../@generic/utils/cn.util';
-import { AccountCardTitleLineCountContext } from '../../context/account-card-title-line-count.context';
+import { AccountCardSingleLineTitleContext } from '../../context/account-card-single-line-title.context';
 import { AccountSyncStateEnum } from '../../enum/account-sync-state.enum';
 
 interface Props {
@@ -17,7 +17,8 @@ interface Props {
 }
 
 export const AccountCardTitle = ({ title, subtitle, iban, syncState, syncStateLabel }: Props) => {
-    const titleLineCount = use(AccountCardTitleLineCountContext);
+    const isSingleLineTitle = use(AccountCardSingleLineTitleContext);
+    const titleLineCount = isSingleLineTitle ? 1 : 2;
 
     const isSyncIssue =
         syncState === AccountSyncStateEnum.SYNCING ||
@@ -33,7 +34,7 @@ export const AccountCardTitle = ({ title, subtitle, iban, syncState, syncStateLa
                 className="text-[15px] font-medium text-primary"
                 maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
                 numberOfLines={titleLineCount}
-                adjustsFontSizeToFit={titleLineCount === 1}
+                adjustsFontSizeToFit={isSingleLineTitle}
                 minimumFontScale={0.85}
                 ellipsizeMode="tail"
             >

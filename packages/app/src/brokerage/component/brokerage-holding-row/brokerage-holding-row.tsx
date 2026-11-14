@@ -13,7 +13,7 @@ import { useIsAmountProtected } from '../../../@generic/hook/use-is-amount-prote
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { AccountCardBalance } from '../../../account/component/account-card-balance/account-card-balance';
 import { AccountCardBase } from '../../../account/component/account-card-base/account-card-base';
-import { AccountCardTitleLineCountContext } from '../../../account/context/account-card-title-line-count.context';
+import { AccountCardSingleLineTitleContext } from '../../../account/context/account-card-single-line-title.context';
 import { AccountRowLeadingContext } from '../../../account/context/account-row-leading.context';
 import { useFormatInstrumentAmount } from '../../../i18n/hook/use-format-instrument-amount.hook';
 import { useFormatPercent } from '../../../i18n/hook/use-format-percent.hook';
@@ -66,7 +66,7 @@ export const BrokerageHoldingRow = ({ holding, balance, bankName, instrumentSymb
 
     return (
         <TransactionRowSurface separatorInset={64} position={position}>
-            <AccountCardTitleLineCountContext value={1}>
+            <AccountCardSingleLineTitleContext value>
                 <AccountRowLeadingContext value={leading}>
                     <AccountCardBase
                         account={displayAccount}
@@ -91,7 +91,7 @@ export const BrokerageHoldingRow = ({ holding, balance, bankName, instrumentSymb
                         ) : null}
                     </AccountCardBase>
                 </AccountRowLeadingContext>
-            </AccountCardTitleLineCountContext>
+            </AccountCardSingleLineTitleContext>
         </TransactionRowSurface>
     );
 };
