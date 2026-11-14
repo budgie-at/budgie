@@ -7,7 +7,7 @@ import { Text, View } from 'react-native';
 
 import { BankLogo } from '../../../@generic/component/bank-logo/bank-logo';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { ROW_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-max-font-size-multiplier.constant';
+import { TITLE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/title-max-font-size-multiplier.constant';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { testID } from '../../../@generic/utils/test-id.util';
@@ -28,7 +28,10 @@ interface Props {
 }
 
 const rowVariants = cva('min-h-[64px] gap-x-xl pr-lg pl-3xl active:bg-surface-fill', {
-    variants: { isStacked: { true: 'gap-y-xs py-md', false: 'flex-row items-center py-lg' } }
+    variants: { isStacked: { true: 'gap-y-xxs py-sm', false: 'flex-row items-center py-lg' } }
+});
+const trailingVariants = cva('', {
+    variants: { isStacked: { true: 'absolute top-[6px] right-[10px] h-[44px] justify-center', false: '' } }
 });
 
 export const InstitutionRow = ({ institution }: Props) => {
@@ -63,7 +66,7 @@ export const InstitutionRow = ({ institution }: Props) => {
             <View className="min-w-0 flex-1 gap-y-xxs">
                 <Text
                     className="text-[17px] font-semibold text-primary"
-                    maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
+                    maxFontSizeMultiplier={TITLE_MAX_FONT_SIZE_MULTIPLIER}
                     numberOfLines={2}
                 >
                     {title}
@@ -75,11 +78,13 @@ export const InstitutionRow = ({ institution }: Props) => {
                 )}
             </View>
 
-            {isHoldingProvider ? (
-                <InstitutionRowCash integrationId={integrationId} cash={cash} />
-            ) : (
-                <InstitutionRowTotal integrationId={integrationId} total={total} />
-            )}
+            <View className={trailingVariants({ isStacked })}>
+                {isHoldingProvider ? (
+                    <InstitutionRowCash integrationId={integrationId} cash={cash} />
+                ) : (
+                    <InstitutionRowTotal integrationId={integrationId} total={total} />
+                )}
+            </View>
         </HapticPressable>
     );
 };

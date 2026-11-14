@@ -1,6 +1,8 @@
 import { AccountTypeEnum, ExternalSourceEnum } from '@budgie/contracts';
 import { msg, plural } from '@lingui/core/macro';
 
+import { isListedSecurityType } from '../../instrument/utils/is-listed-security-type.util';
+
 import { isFiatAccount } from './is-fiat-account.util';
 
 import type { InstitutionGroupInterface } from '../interface/institution-group.interface';
@@ -12,7 +14,15 @@ export const getInstitutionRowCaption = (
     investedLabel: string
 ): string => {
     const { provider, accounts, isHoldingProvider } = institution;
-    const positionsCount = accounts.filter(account => !isFiatAccount(account)).length;
+    const positions = accounts.filter(account => !isFiatAccount(account));
+    const positionsCount = positions.length;
+
+    if (isHoldingProvider && positionsCount === 1) {
+        const [{ instrument }] = positions;
+        const positionName = isListedSecurityType(instrument.type) ? instrument.symbol : instrument.code;
+
+        return t(msg`${investedLabel} in ${positionName}`);
+    }
 
     if (isHoldingProvider && provider === ExternalSourceEnum.MANUAL) {
         return t(

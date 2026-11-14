@@ -7,7 +7,8 @@ import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
-import { ROW_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-max-font-size-multiplier.constant';
+import { FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/footnote-max-font-size-multiplier.constant';
+import { TITLE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/title-max-font-size-multiplier.constant';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { cn } from '../../../@generic/utils/cn.util';
 import { BrokerageReturnText } from '../../../brokerage/component/brokerage-return-text/brokerage-return-text';
@@ -29,7 +30,7 @@ interface Props {
 const PLACEHOLDER_PERCENT = 0.9999;
 
 const amountVariants = cva('gap-y-xxs', {
-    variants: { isStacked: { true: 'items-start', false: 'max-w-[55%] shrink-0 items-end' } }
+    variants: { isStacked: { true: 'items-start', false: 'max-w-[42%] shrink-0 items-end' } }
 });
 
 export const HomeHoldingRowAmount = ({ holding, holdingReturn, todayChange, isReturnLoading }: Props) => {
@@ -54,13 +55,13 @@ export const HomeHoldingRowAmount = ({ holding, holdingReturn, todayChange, isRe
                     adjustsFontSizeToFit
                     minimumFontScale={0.6}
                     numberOfLines={1}
-                    maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
+                    maxFontSizeMultiplier={TITLE_MAX_FONT_SIZE_MULTIPLIER}
                     testID={HomeHoldingRowSelector.Value(instrumentCode)}
                 >
                     {formatDigits(holding.value, defaultInstrument.symbol)}
                 </ProtectedText>
             ) : (
-                <Text className="text-[15px] font-medium text-secondary-foreground" maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}>
+                <Text className="text-[15px] font-medium text-secondary-foreground" maxFontSizeMultiplier={TITLE_MAX_FONT_SIZE_MULTIPLIER}>
                     <Trans>Value unavailable</Trans>
                 </Text>
             )}
@@ -74,7 +75,7 @@ export const HomeHoldingRowAmount = ({ holding, holdingReturn, todayChange, isRe
                         <HomeTodayChangeText
                             gain={null}
                             percent={todayChange}
-                            maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
+                            maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER}
                             testID={HomeHoldingRowSelector.Today(instrumentCode)}
                         />
                     ) : (
@@ -82,6 +83,7 @@ export const HomeHoldingRowAmount = ({ holding, holdingReturn, todayChange, isRe
                             gain={holdingReturn?.gain ?? holding.value}
                             percent={percent}
                             instrumentSymbol={defaultInstrument.symbol}
+                            maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER}
                             testID={HomeHoldingRowSelector.Return(instrumentCode)}
                         />
                     )}

@@ -5,7 +5,7 @@ import { Text } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { ROW_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-max-font-size-multiplier.constant';
+import { FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/footnote-max-font-size-multiplier.constant';
 import { cn } from '../../../@generic/utils/cn.util';
 import { SyncImportProgress } from '../../../sync/component/sync-import-progress/sync-import-progress';
 import { ACCOUNT_SYNC_STATE_LABEL } from '../../constant/account-sync-state-label.constant';
@@ -30,7 +30,7 @@ export const InstitutionRowDetail = ({ accounts, accountsCountLabel }: Props) =>
 
     return (
         <>
-            <Text className={cn('text-[13px]', toneClassName)} maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER} numberOfLines={2}>
+            <Text className={cn('text-[13px]', toneClassName)} maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER} numberOfLines={2}>
                 {detail}
             </Text>
             {isDefined(importProgress) ? <SyncImportProgress progress={importProgress} /> : null}

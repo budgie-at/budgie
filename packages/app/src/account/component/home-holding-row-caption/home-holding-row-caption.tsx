@@ -3,8 +3,8 @@ import { Text } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/footnote-max-font-size-multiplier.constant';
 import { PROTECTED_AMOUNT_PLACEHOLDER } from '../../../@generic/constant/protected-amount-placeholder.constant';
-import { ROW_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-max-font-size-multiplier.constant';
 import { useIsAmountProtected } from '../../../@generic/hook/use-is-amount-protected.hook';
 import { useFormatInstrumentAmount } from '../../../i18n/hook/use-format-instrument-amount.hook';
 import { useFormatPercent } from '../../../i18n/hook/use-format-percent.hook';
@@ -35,7 +35,7 @@ export const HomeHoldingRowCaption = ({ holding }: Props) => {
     return (
         <Text
             className="text-[13px] text-secondary-foreground tabular-nums"
-            maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
+            maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER}
             numberOfLines={2}
             testID={HomeHoldingRowSelector.Caption(instrument.code)}
         >

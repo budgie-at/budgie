@@ -670,6 +670,10 @@ msgstr "{installmentCount, plural, one {усього # платіж} few {усь
 msgid "{installmentCount, plural, one {Split into # payment} other {Split into # payments}}"
 msgstr "{installmentCount, plural, one {Розбити на # платіж} few {Розбити на # платежі} many {Розбити на # платежів} other {Розбити на # платежу}}"
 
+#: src/account/utils/get-institution-row-caption.util.ts
+msgid "{investedLabel} in {positionName}"
+msgstr "{investedLabel} у {positionName}"
+
 #: src/siri/service/siri-catalog.service.ts
 msgid "{label}: {formattedSpent} of {formattedLimit} spent, {formattedLeft} left."
 msgstr "{label}: витрачено {formattedSpent} з {formattedLimit}, залишилось {formattedLeft}."

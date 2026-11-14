@@ -5,7 +5,7 @@ import { Text, View } from 'react-native';
 
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { ScaledIcon } from '../../../@generic/component/scaled-icon/scaled-icon';
-import { ROW_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-max-font-size-multiplier.constant';
+import { FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/footnote-max-font-size-multiplier.constant';
 import { toTrueMinus } from '../../../@generic/utils/to-true-minus.util';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
@@ -31,13 +31,13 @@ export const InstitutionRowCash = ({ integrationId, cash }: Props) => {
                         numberOfLines={1}
                         adjustsFontSizeToFit
                         minimumFontScale={0.6}
-                        maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
+                        maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER}
                         className="text-[15px] font-medium tracking-tight tabular-nums text-secondary-foreground"
                         testID={InstitutionRowSelector.Total(integrationId)}
                     >
                         {formattedCash}
                     </ProtectedText>
-                    <Text className="text-[12px] text-secondary-foreground" maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}>
+                    <Text className="text-[12px] text-secondary-foreground" maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER}>
                         <Trans context="Brokerage cash account">Cash</Trans>
                     </Text>
                 </View>
