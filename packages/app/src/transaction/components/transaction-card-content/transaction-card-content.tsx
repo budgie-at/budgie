@@ -13,7 +13,7 @@ import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-access
 import { cn } from '../../../@generic/utils/cn.util';
 import { useTransactionCardSubtitle } from '../../hook/use-transaction-card-subtitle.hook';
 import { useTransactionRowTitle } from '../../hook/use-transaction-row-title.hook';
-import { getSecurityTrade } from '../../utils/get-security-trade.util';
+import { isAccountBrokerageTrade } from '../../utils/is-account-brokerage-trade.util';
 import { TransactionAmount } from '../transaction-amount/transaction-amount';
 import { TransactionCardIcon } from '../transaction-card-icon/transaction-card-icon';
 import { TransactionCardStackedSubtitle } from '../transaction-card-stacked-subtitle/transaction-card-stacked-subtitle';
@@ -45,7 +45,7 @@ export const TransactionCardContent = ({ transaction, accountId = null }: Props)
         isAccessibilityTextSize ||
         isNotEmptyArray(subtitleSegments) ||
         isDefined(transaction.receipt) ||
-        isDefined(getSecurityTrade(transaction));
+        isAccountBrokerageTrade(transaction, accountId);
 
     const rowTitle = isDetailPromoted ? promotableSegment : displayTitle;
     const regularTitleNode = isNotEmptyString(rowTitle) ? (

@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { ListRowDetail } from '../../../@generic/component/list-row-detail/list-row-detail';
-import { getSecurityTrade } from '../../utils/get-security-trade.util';
+import { isAccountBrokerageTrade } from '../../utils/is-account-brokerage-trade.util';
 import { TransactionReceiptMarker } from '../transaction-receipt-marker/transaction-receipt-marker';
 import { TransactionSecurityTradeDetail } from '../transaction-security-trade-detail/transaction-security-trade-detail';
 
@@ -18,10 +18,7 @@ interface Props {
 
 export const TransactionCardSubtitle = ({ transaction, accountId, segments, testID }: Props) => {
     const hasReceipt = isDefined(transaction.receipt);
-    const trade = getSecurityTrade(transaction);
-    const isBrokerageTrade = isDefined(trade) && (!isDefined(accountId) || accountId === trade.securityEntry.accountId);
-
-    if (isBrokerageTrade) {
+    if (isAccountBrokerageTrade(transaction, accountId)) {
         return <TransactionSecurityTradeDetail transaction={transaction} />;
     }
 
