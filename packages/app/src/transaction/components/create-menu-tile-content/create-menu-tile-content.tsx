@@ -27,7 +27,7 @@ const ICON_SIZE = 20;
 const LABEL_CLASSNAME = 'text-md font-semibold leading-tight text-tile-foreground';
 
 const tileFillVariants = cva<{ variant: Record<ColorPaletteVariant, ClassValue> }>(
-    'grow flex-row items-center gap-md overflow-hidden rounded-5xl bg-linear-to-br pl-lg pr-xl',
+    'grow flex-row items-center gap-md rounded-5xl bg-linear-to-br pl-lg pr-xl',
     {
         variants: {
             variant: {
@@ -63,7 +63,7 @@ export const CreateMenuTileContent = ({ icon, label, testID, variant }: Props) =
 
     return (
         <View className={tileFillVariants({ variant, className: tileHeightClassName })}>
-            <View className="absolute inset-x-0 top-0 h-1/2 bg-linear-to-b from-tile-foreground/10 to-tile-foreground/0" />
+            <View className="absolute inset-x-0 top-0 h-1/2 rounded-t-5xl bg-linear-to-b from-tile-foreground/10 to-tile-foreground/0" />
             <View className="h-[40px] w-[40px] items-center justify-center rounded-full bg-tile-foreground/20">
                 <Icon className="text-tile-foreground" icon={icon} size={ICON_SIZE} />
             </View>
