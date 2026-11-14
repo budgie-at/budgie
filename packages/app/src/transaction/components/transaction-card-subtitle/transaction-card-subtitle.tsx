@@ -1,6 +1,6 @@
 import { View } from 'react-native';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { ListRowDetail } from '../../../@generic/component/list-row-detail/list-row-detail';
 import { isAccountBrokerageTrade } from '../../utils/is-account-brokerage-trade.util';
@@ -20,10 +20,6 @@ export const TransactionCardSubtitle = ({ transaction, accountId, segments, test
     const hasReceipt = isDefined(transaction.receipt);
     if (isAccountBrokerageTrade(transaction, accountId)) {
         return <TransactionSecurityTradeDetail transaction={transaction} />;
-    }
-
-    if (!isNotEmptyArray(segments) && !hasReceipt) {
-        return null;
     }
 
     return (
