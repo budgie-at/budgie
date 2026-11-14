@@ -447,9 +447,12 @@ export class YieldService extends Context.Service<YieldService>()('@budgie/marke
             }),
 
             earnedBetween: Effect.fn('YieldService.earnedBetween')(function* (fromDay: string, lastDay: string, baseInstrumentId: number) {
-                const facts = (yield* yieldRepository.findFacts(ALL_SCOPE, baseInstrumentId))
+                const facts = (yield* yieldRepository.findFacts(ALL_SCOPE, baseInstrumentId, {
+                    from: parseISO(fromDay),
+                    to: addDays(parseISO(lastDay), 1)
+                }))
                     .map(toFact)
-                    .filter(fact => isIncome(fact) && fact.day >= fromDay && fact.day <= lastDay);
+                    .filter(isIncome);
                 const figure: YieldEstimatedFigureInterface = { value: sumYieldValues(facts), isEstimated: isYieldEstimated(facts) };
 
                 return figure;

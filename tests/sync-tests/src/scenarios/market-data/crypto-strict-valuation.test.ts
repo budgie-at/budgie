@@ -2,6 +2,7 @@ import {
     AccountRepository,
     AccountTypeEnum,
     CurrencyEnum,
+    InstrumentEntityTable,
     InstrumentMarketDataJobStatusEnum,
     InstrumentRepository,
     PRECISION,
@@ -115,7 +116,8 @@ describe('market-data/crypto-strict-valuation', () => {
                     SyncApplyStateRepository.layer,
                     ExchangeRatesService.layer,
                     InstrumentDailyMarketPriceRepository.layer,
-                    SettingsRepository.layer
+                    SettingsRepository.layer,
+                    InstrumentRepository.layer
                 ])
             );
             const historicalMarketDataLayer = Layer.effect(HistoricalMarketDataService, HistoricalMarketDataService.make).pipe(
@@ -241,6 +243,25 @@ describe('market-data/crypto-strict-valuation scenarios', () => {
 
             expect(yield* entryOf(trade.id, coinAccount.id)).toMatchObject({ baseExchangeRate: 50_000, baseAmount: 50_000 * PRECISION });
             expect(yield* entryOf(trade.id, tetherAccount.id)).toMatchObject({ baseExchangeRate: 0.92, baseAmount: 46_000 * PRECISION });
+        }).pipe(Effect.provide(MarketPricedRevaluationService.layer.pipe(Layer.provideMerge(TestLayer))))
+    );
+
+    it.effect('marks provider-unsupported rewards Estimated while preserving their stored amounts', () =>
+        Effect.gen(function* () {
+            const { euro, coin, account } = yield* seedCryptoSyncAccount('DOGE');
+            const { entry } = yield* seedReward(account.id, '2026-08-10T09:00:00.000Z', euro.id, 42, 42 * PRECISION);
+
+            yield* testDb
+                .update(InstrumentEntityTable)
+                .set({ priceProvider: null, providerInstrumentId: null })
+                .where(eq(InstrumentEntityTable.id, coin.id));
+            yield* Effect.flatMap(MarketPricedRevaluationService, service => service.runCryptoStrictValuationStep());
+
+            expect(yield* fetchEntryValuation(testDb, entry.id)).toStrictEqual({
+                baseInstrumentId: euro.id,
+                baseExchangeRate: null,
+                baseAmount: 42 * PRECISION
+            });
         }).pipe(Effect.provide(MarketPricedRevaluationService.layer.pipe(Layer.provideMerge(TestLayer))))
     );
 

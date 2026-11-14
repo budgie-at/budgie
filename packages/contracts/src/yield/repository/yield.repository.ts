@@ -1,4 +1,4 @@
-import { and, asc, eq, gt, inArray, isNotNull, isNull, ne, or, sql } from 'drizzle-orm';
+import { and, asc, eq, gt, gte, lt, inArray, isNull, or, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -21,6 +21,7 @@ import { YieldKindEnum } from '../../transaction/enum/yield-kind.enum';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { YIELD_POSITION_ACCOUNT_TYPES } from '../constant/yield-position-account-types.constant';
 
+import type { DateRangeInterface } from '../../@generic/interface/date-range.interface';
 import type { YieldPayoutQueryInterface } from '../interface/yield-payout-query.interface';
 import type { YieldPositionMovementRowInterface } from '../interface/yield-position-movement-row.interface';
 import type { YieldScopeInterface } from '../interface/yield-scope.interface';
@@ -52,10 +53,13 @@ export class YieldRepository extends Context.Service<YieldRepository>()('@budgie
         END`.mapWith(isPositiveNumber);
 
         const buildYieldKindCondition = () =>
-            and(isNotNull(TransactionEntityTable.yieldKind), ne(TransactionEntityTable.yieldKind, YieldKindEnum.NONE));
+            inArray(
+                TransactionEntityTable.yieldKind,
+                Object.values(YieldKindEnum).filter(kind => kind !== YieldKindEnum.NONE)
+            );
 
-        const buildYieldKindIndexCondition = () =>
-            sql`${TransactionEntityTable.id} IN (SELECT id FROM ${TransactionEntityTable} WHERE ${buildYieldKindCondition()})`;
+        const buildYieldKindIndexCondition = (extra: SQL[]) =>
+            sql`${TransactionEntityTable.id} IN (SELECT id FROM ${TransactionEntityTable} WHERE ${and(buildYieldKindCondition(), ...extra)})`;
 
         const buildYieldLandingEntryCondition = () =>
             or(
@@ -75,14 +79,15 @@ export class YieldRepository extends Context.Service<YieldRepository>()('@budgie
             ...(isDefined(instrumentId) ? [sql`${scopeInstrumentIdSql} = ${instrumentId}`] : [])
         ];
 
-        const buildYieldFactWhere = (scope: YieldScopeInterface, extra: SQL[] = []) =>
+        const buildYieldFactWhere = (scope: YieldScopeInterface, extra: SQL[] = [], range: SQL[] = []) =>
             and(
                 transactionFilters.buildVisibleTransactionCondition(),
-                buildYieldKindIndexCondition(),
+                buildYieldKindIndexCondition(range),
                 transactionFilters.buildPrimaryLedgerEntryCondition(),
                 buildYieldLandingEntryCondition(),
                 ...buildYieldScopeCondition(scope),
-                ...extra
+                ...extra,
+                ...range
             );
 
         const joinYieldLegs = <TQuery extends SQLiteEffectSelect>(query: TQuery) =>
@@ -108,7 +113,7 @@ export class YieldRepository extends Context.Service<YieldRepository>()('@budgie
                         .limit(1)
                 ).pipe(Effect.map(isNotEmptyArray)),
 
-            findFacts: (scope: YieldScopeInterface, baseInstrumentId: number) =>
+            findFacts: (scope: YieldScopeInterface, baseInstrumentId: number, range?: DateRangeInterface) =>
                 Db.query(db =>
                     joinYieldLegs(
                         db
@@ -129,7 +134,16 @@ export class YieldRepository extends Context.Service<YieldRepository>()('@budgie
                             .from(TransactionEntityTable)
                             .$dynamic()
                     )
-                        .where(buildYieldFactWhere(scope))
+                        .where(
+                            buildYieldFactWhere(
+                                scope,
+                                [],
+                                [
+                                    ...(isDefined(range?.from) ? [gte(TransactionEntityTable.operatedAt, range.from)] : []),
+                                    ...(isDefined(range?.to) ? [lt(TransactionEntityTable.operatedAt, range.to)] : [])
+                                ]
+                            )
+                        )
                         .orderBy(asc(TransactionEntityTable.operatedAt), asc(TransactionEntityTable.id))
                 ),
 

@@ -14,6 +14,8 @@ import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 import * as TestClock from 'effect/testing/TestClock';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { formatUtcDay } from '../src/@generic/utils/format-utc-day.util';
 import { ExchangeRateRepository } from '../src/exchange-rate/repository/exchange-rate.repository';
 import { InstrumentDailyMarketPriceRepository } from '../src/market-data/repository/instrument-daily-market-price.repository';
@@ -267,7 +269,13 @@ export const movement = (accountId: number, day: string, units: number): YieldPo
 
 const makeYieldRepositoryLayer = (world: YieldWorldInterface) =>
     Layer.mock(YieldRepository)({
-        findFacts: () => Effect.succeed([...(world.facts ?? [])]),
+        findFacts: (_scope, _baseInstrumentId, range) =>
+            Effect.succeed(
+                (world.facts ?? []).filter(
+                    fact =>
+                        (!isDefined(range?.from) || fact.operatedAt >= range.from) && (!isDefined(range?.to) || fact.operatedAt < range.to)
+                )
+            ),
         findPositions: () => Effect.succeed([...(world.positions ?? [])]),
         findPositionMovements: accountIds => Effect.succeed((world.movements ?? []).filter(row => accountIds.includes(row.accountId))),
         findPayouts: () => Effect.succeed([])
