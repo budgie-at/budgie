@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.183.1](https://github.com/budgie-at/budgie/compare/v6.183.0...v6.183.1) (2026-11-14)
+
+### Performance Improvements
+
+* **app:** leave AI native modules out of AI-disabled builds ([#2220](https://github.com/budgie-at/budgie/issues/2220)) ([4f54f26](https://github.com/budgie-at/budgie/commit/4f54f2687d0e2c4f3305cd48d0d04f7507ff487c))
+
+
 # [6.183.0](https://github.com/budgie-at/budgie/compare/v6.182.2...v6.183.0) (2026-11-14)
 
 ### Features
