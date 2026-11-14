@@ -14,7 +14,7 @@ import { defaultInstrumentAtom } from '../../../settings/constants/settings-atom
 
 interface Props {
     readonly gain: number | null;
-    readonly percent: number;
+    readonly percent: number | null;
     readonly maxFontSizeMultiplier: number;
     readonly testID: string;
 }
@@ -25,7 +25,11 @@ export const HomeTodayChangeText = ({ gain, percent, maxFontSizeMultiplier, test
     const formatGainPercent = useFormatGainPercent();
     const isStacked = useIsAccessibilityTextSize();
 
-    const change = [isDefined(gain) ? formatDigits(Math.abs(gain), defaultInstrument.symbol) : null, formatGainPercent(percent)]
+    const direction = percent ?? gain ?? 0;
+    const change = [
+        isDefined(gain) ? formatDigits(Math.abs(gain), defaultInstrument.symbol) : null,
+        isDefined(percent) ? formatGainPercent(percent) : null
+    ]
         .filter(isDefined)
         .join(' · ');
     const lineCount = isStacked ? 2 : 1;
@@ -37,7 +41,7 @@ export const HomeTodayChangeText = ({ gain, percent, maxFontSizeMultiplier, test
             className="text-[13px] font-semibold tabular-nums text-secondary-foreground"
             testID={testID}
         >
-            <Text className={getMarketMoveClassName(percent)}>{RETURN_ARROW_BY_DIRECTION[Math.sign(percent)]}</Text>
+            <Text className={getMarketMoveClassName(direction)}>{RETURN_ARROW_BY_DIRECTION[Math.sign(direction)]}</Text>
             <Trans>{change} · 24h</Trans>
         </ProtectedText>
     );

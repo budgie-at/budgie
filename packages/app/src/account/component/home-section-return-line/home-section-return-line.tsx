@@ -43,7 +43,7 @@ export const HomeSectionReturnLine = ({ sectionReturn, todayReturn, isLoading, p
                 {isToday ? (
                     <HomeTodayChangeText
                         gain={todayReturn.gain}
-                        percent={todayReturn.percent ?? 0}
+                        percent={todayReturn.percent}
                         maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER}
                         testID={testID}
                     />
