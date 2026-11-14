@@ -17,7 +17,7 @@ export const AnimatedBackdrop = ({ isVisible, onClose }: Props) => {
 
     return (
         <Animated.View
-            className="absolute inset-0 bg-black/80 dark:bg-black/85"
+            className="absolute inset-0 bg-menu-scrim"
             entering={FadeIn.duration(FADE_IN_DURATION).easing(EASE_OUT)}
             exiting={FadeOut.duration(FADE_OUT_DURATION).easing(EASE_OUT)}
             onTouchEnd={onClose}

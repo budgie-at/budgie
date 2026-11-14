@@ -22,7 +22,7 @@ export const CreateMenuChip = ({ icon, label, testID, variant, onPress }: Create
         testID={testID}
         {...createMenuButtonAccessibility(label)}
     >
-        <View className="min-h-[40px] flex-row items-center gap-md rounded-full bg-popover-surface pl-sm pr-2xl">
+        <View className="min-h-[40px] flex-row items-center gap-md rounded-full border-hairline border-popover-border bg-popover-surface pl-sm pr-2xl">
             <CreateMenuIcon icon={icon} variant={variant} size={ICON_SIZE} />
             <Text
                 className="flex-1 text-sm font-semibold text-primary"
