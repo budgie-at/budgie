@@ -83,10 +83,18 @@ export const TRANSFER_PAIR_RANKED_CANDIDATE_RANK_SQL = `            scored_pairs
                 SELECT
                     *,
                     SUM(
-                        CASE WHEN impliedRateMatch = 1 AND timeDiff <= ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS} THEN 1 ELSE 0 END
+                        CASE
+                            WHEN impliedRateMatch = 1 AND isCrossZonePair = 0 AND timeDiff <= ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
+                            THEN 1
+                            ELSE 0
+                        END
                     ) OVER (PARTITION BY expenseTransactionId) as impliedRateExpenseCandidateCount,
                     SUM(
-                        CASE WHEN impliedRateMatch = 1 AND timeDiff <= ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS} THEN 1 ELSE 0 END
+                        CASE
+                            WHEN impliedRateMatch = 1 AND isCrossZonePair = 0 AND timeDiff <= ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
+                            THEN 1
+                            ELSE 0
+                        END
                     ) OVER (PARTITION BY incomeTransactionId) as impliedRateIncomeCandidateCount
                 FROM scored_pairs
             ),
