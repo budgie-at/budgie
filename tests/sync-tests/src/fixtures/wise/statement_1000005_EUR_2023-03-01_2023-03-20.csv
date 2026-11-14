@@ -1,0 +1,4 @@
+"TransferWise ID",Date,"Date Time",Amount,Currency,Description,"Payment Reference","Running Balance","Exchange From","Exchange To","Exchange Rate","Payer Name","Payee Name","Payee Account Number",Merchant,"Card Last Four Digits","Card Holder Full Name",Attachment,Note,"Total fees","Exchange To Amount","Transaction Type","Transaction Details Type"
+TRANSFER-2000001,16-03-2023,"16-03-2023 23:50:00.000",1100.00,EUR,"Received money from Synthetic Other Bank",,1104.00,,,,"Synthetic Other Bank",,,,,,,,0,,CREDIT,TRANSFER
+CARD-2000002,16-03-2023,"16-03-2023 20:00:00.000",-4.00,EUR,"Card transaction of 4.00 EUR issued by Example Cafe",,4.00,,,,,,,"Example Cafe",0000,"Alex Example",,,0,,DEBIT,CARD
+TRANSFER-2000003,15-03-2023,"15-03-2023 09:00:00.000",1100.00,EUR,"Received money from Synthetic Other Bank",,8.00,,,,"Synthetic Other Bank",,,,,,,,0,,CREDIT,TRANSFER
