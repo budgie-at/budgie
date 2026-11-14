@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.182.2](https://github.com/budgie-at/budgie/compare/v6.182.1...v6.182.2) (2026-11-14)
+
+### Bug Fixes
+
+* **app:** block photo and video permissions on Android ([#2209](https://github.com/budgie-at/budgie/issues/2209)) ([9dbe68e](https://github.com/budgie-at/budgie/commit/9dbe68e8c12b956957ceec0c50588414a0186ec7))
+
+
 ## [6.182.1](https://github.com/budgie-at/budgie/compare/v6.182.0...v6.182.1) (2026-11-13)
 
 ### Bug Fixes
