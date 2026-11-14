@@ -33,7 +33,9 @@ export const CurrencyMarketReturnRow = ({ position, valuationRate, balance, inst
     const isAmountProtected = useIsAmountProtected();
 
     const instrumentReturn = calculateInstrumentReturn(position, valuationRate, balance);
-    const arrow = RETURN_ARROW_BY_DIRECTION[Math.sign(Math.round((instrumentReturn?.profit ?? 0) * PERCENT))];
+    const percentDirection = Math.sign(instrumentReturn?.percent ?? 0);
+    const profitDirection = Math.sign(Math.round((instrumentReturn?.profit ?? 0) * PERCENT));
+    const arrow = RETURN_ARROW_BY_DIRECTION[percentDirection === 0 ? profitDirection : percentDirection];
     const returnParts = isDefined(instrumentReturn)
         ? [
               formatMoney(Math.abs(instrumentReturn.profit), symbol),
