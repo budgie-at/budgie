@@ -13,7 +13,6 @@ import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-access
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { ACCOUNT_SYNC_STATE_LABEL } from '../../constant/account-sync-state-label.constant';
 import { ACCOUNT_TYPE_SWATCH } from '../../constant/account-type-swatch.constant';
-import { AccountCardSingleLineTitleContext } from '../../context/account-card-single-line-title.context';
 import { AccountRowLeadingContext } from '../../context/account-row-leading.context';
 import { useAccountCardMenu } from '../../hook/use-account-card-menu.hook';
 import { getAccountSyncState } from '../../utils/get-account-sync-state.util';
@@ -46,11 +45,7 @@ const leadingVariants = cva('flex-row items-center gap-x-xl', {
     variants: { isStacked: { true: '', false: 'min-w-0 flex-1' } }
 });
 const amountVariants = cva('gap-y-xxs', {
-    variants: {
-        isStacked: { true: 'items-start', false: 'shrink-0 items-end' },
-        isSingleLineTitle: { true: '', false: '' }
-    },
-    compoundVariants: [{ isStacked: false, isSingleLineTitle: false, className: 'max-w-[55%]' }]
+    variants: { isStacked: { true: 'items-start', false: 'max-w-[55%] shrink-0 items-end' } }
 });
 
 export const AccountCardBase = ({ account, balance, convertedBalance, amountLabel, subtitle, onImport, onPress, children }: Props) => {
@@ -59,7 +54,6 @@ export const AccountCardBase = ({ account, balance, convertedBalance, amountLabe
     const { t } = useLingui();
     const isStacked = useIsAccessibilityTextSize();
     const leading = use(AccountRowLeadingContext);
-    const isSingleLineTitle = use(AccountCardSingleLineTitleContext);
     const protectAmount = useProtectedAmountLabel();
     const { cardRef, isMenuOpen, menuAnchor, openMenu, closeMenu, handleCloseComplete } = useAccountCardMenu();
 
@@ -77,6 +71,7 @@ export const AccountCardBase = ({ account, balance, convertedBalance, amountLabe
     ];
     const handleAccessibilityAction = (event: AccessibilityActionEvent) =>
         accessibilityActions.find(action => action.name === event.nativeEvent.actionName)?.onAction();
+    const swatch = ACCOUNT_TYPE_SWATCH[type];
 
     return (
         <View ref={cardRef} collapsable={false}>
@@ -102,8 +97,8 @@ export const AccountCardBase = ({ account, balance, convertedBalance, amountLabe
                                 icon={icon}
                                 variant="ghost"
                                 border={false}
-                                className={ACCOUNT_TYPE_SWATCH[type].soft}
-                                iconClassName={ACCOUNT_TYPE_SWATCH[type].text}
+                                className={swatch.soft}
+                                iconClassName={swatch.text}
                             />
                             {isDefined(syncState) ? <AccountSyncBadge state={syncState} /> : null}
                         </View>
@@ -124,7 +119,7 @@ export const AccountCardBase = ({ account, balance, convertedBalance, amountLabe
                     <AccountCardTitle subtitle={subtitle} title={title} iban={iban} syncState={syncState} syncStateLabel={syncStateLabel} />
                 ) : null}
 
-                <View className={amountVariants({ isStacked, isSingleLineTitle })}>
+                <View className={amountVariants({ isStacked })}>
                     {children ?? <AccountCardBalance title={title} balance={balance} instrumentSymbol={instrument.symbol} />}
                     <AccountCardConvertedBalance instrumentId={instrument.id} convertedBalance={convertedBalance} />
                 </View>
