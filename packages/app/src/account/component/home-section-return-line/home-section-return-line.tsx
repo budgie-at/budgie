@@ -35,7 +35,7 @@ export const HomeSectionReturnLine = ({ sectionReturn, todayReturn, isLoading, p
 
     return (
         <View
-            className={cn('pl-[16px]', isEmpty && 'opacity-0')}
+            className={cn('pb-md pl-[16px]', isEmpty && 'opacity-0')}
             accessibilityElementsHidden={isEmpty}
             importantForAccessibility={importantForAccessibility}
         >
