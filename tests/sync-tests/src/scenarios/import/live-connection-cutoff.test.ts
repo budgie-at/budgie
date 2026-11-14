@@ -82,22 +82,31 @@ describe('import/live-connection-cutoff', () => {
             name: 'a 24-month depth with 30 days delivered fills the gap before the first live day',
             limitDaysAgo: 730,
             isSynced: true,
-            rows: [buildPdfRow('gap-row', noonDaysAgo(200)), buildPdfRow('boundary-day', noonDaysAgo(LIVE_FROM_DAYS_AGO))],
+            rowDaysAgo: [
+                ['gap-row', 200],
+                ['boundary-day', LIVE_FROM_DAYS_AGO]
+            ] as const,
             expected: ['gap-row']
         },
         {
             name: 'a backfill still running keeps the chosen depth as the cutoff',
             limitDaysAgo: 60,
             isSynced: false,
-            rows: [buildPdfRow('before-limit', noonDaysAgo(90)), buildPdfRow('inside-limit', noonDaysAgo(45))],
+            rowDaysAgo: [
+                ['before-limit', 90],
+                ['inside-limit', 45]
+            ] as const,
             expected: ['before-limit']
         }
-    ])('$name', ({ limitDaysAgo, isSynced, rows, expected }) =>
+    ])('$name', ({ limitDaysAgo, isSynced, rowDaysAgo, expected }) =>
         Effect.gen(function* () {
             const limit = new Date(Date.now() - limitDaysAgo * DAY_MS);
             const account = isSynced ? yield* syncLiveHistory(limit) : (yield* seedLiveAccount(limit)).account;
 
-            yield* importPdf(rows, HASH);
+            yield* importPdf(
+                rowDaysAgo.map(([id, days]) => buildPdfRow(id, noonDaysAgo(days))),
+                HASH
+            );
 
             expect(yield* fetchFileExternalIds(account.id)).toEqual(expected);
         }).pipe(Effect.provide(TestLayer))
