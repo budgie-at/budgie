@@ -55,6 +55,7 @@ msgstr "(à choisir)"
 #. placeholder {0}: accounts.length
 #. placeholder {0}: parts.length
 #. placeholder {0}: shelvedList.shelvedCount
+#: src/account/component/home-holding-row-caption/home-holding-row-caption.tsx
 #: src/account/component/shelved-accounts-page/shelved-accounts-page.tsx
 #: src/account/utils/get-institution-row-caption.util.ts
 #: src/rule/hooks/use-rule-condition-formatter.hook.ts
@@ -831,18 +832,6 @@ msgstr "{periodLabel} clôturé avec {amount} en dessous"
 msgid "{periodLabel}, spent {spentAmount} of {limitAmount}"
 msgstr "{periodLabel}, {spentAmount} dépensés sur {limitAmount}"
 
-#: src/account/utils/get-holding-places-label.util.ts
-msgid "{placesCount, plural, one {# account} other {# accounts}}"
-msgstr "{placesCount, plural, one {# compte} other {# comptes}}"
-
-#: src/account/utils/get-holding-places-label.util.ts
-msgid "{placesCount, plural, one {# broker} other {# brokers}}"
-msgstr "{placesCount, plural, one {# courtier} other {# courtiers}}"
-
-#: src/account/utils/get-holding-places-label.util.ts
-msgid "{placesCount, plural, one {# wallet} other {# wallets}}"
-msgstr "{placesCount, plural, one {# portefeuille} other {# portefeuilles}}"
-
 #: src/account/utils/get-institution-row-caption.util.ts
 msgid "{positionsCount, plural, one {{investedLabel} in # asset} other {{investedLabel} in # assets}}"
 msgstr "{positionsCount, plural, one {{investedLabel} dans # actif} other {{investedLabel} dans # actifs}}"
@@ -1404,6 +1393,10 @@ msgstr "Comptes · {accountCount}"
 #: src/sync/component/sync-accounts-step/sync-accounts-step.tsx
 msgid "Accounts · {accountsCount}"
 msgstr "Comptes · {accountsCount}"
+
+#: src/account/component/home-provider-group-label/home-provider-group-label.tsx
+msgid "Accounts · {providersCount}"
+msgstr "Comptes · {providersCount}"
 
 #: src/transaction/components/transaction-filters/transaction-filters.tsx
 msgid "Accounts ({selectedAccountsCount})"
@@ -2324,6 +2317,10 @@ msgstr "Courtier"
 #: src/sync/component/bank-integration-rename-card/bank-integration-rename-card.tsx
 msgid "Brokerage name"
 msgstr "Nom du courtier"
+
+#: src/account/component/home-provider-group-label/home-provider-group-label.tsx
+msgid "Brokers · {providersCount}"
+msgstr "Courtiers · {providersCount}"
 
 #: src/category/components/category-icon-fix-row/category-icon-fix-row.tsx
 msgid "Browse icons"
@@ -4881,6 +4878,10 @@ msgstr "Taux de change introuvable"
 #: src/transaction/components/conversion-row/conversion-row.tsx
 msgid "Exchange rate: {rateLabel}"
 msgstr "Taux de change : {rateLabel}"
+
+#: src/account/component/home-provider-group-label/home-provider-group-label.tsx
+msgid "Exchanges · {providersCount}"
+msgstr "Plateformes d’échange · {providersCount}"
 
 #: src/budget/components/budget-limit-source-field/budget-limit-source-field.tsx
 #: src/budget/components/budget-stat-row/budget-stat-row.tsx

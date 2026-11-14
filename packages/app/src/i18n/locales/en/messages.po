@@ -56,6 +56,7 @@ msgstr "(pick one)"
 #. placeholder {0}: accounts.length
 #. placeholder {0}: parts.length
 #. placeholder {0}: shelvedList.shelvedCount
+#: src/account/component/home-holding-row-caption/home-holding-row-caption.tsx
 #: src/account/component/shelved-accounts-page/shelved-accounts-page.tsx
 #: src/account/utils/get-institution-row-caption.util.ts
 #: src/rule/hooks/use-rule-condition-formatter.hook.ts
@@ -832,18 +833,6 @@ msgstr "{periodLabel} closed {amount} under"
 msgid "{periodLabel}, spent {spentAmount} of {limitAmount}"
 msgstr "{periodLabel}, spent {spentAmount} of {limitAmount}"
 
-#: src/account/utils/get-holding-places-label.util.ts
-msgid "{placesCount, plural, one {# account} other {# accounts}}"
-msgstr "{placesCount, plural, one {# account} other {# accounts}}"
-
-#: src/account/utils/get-holding-places-label.util.ts
-msgid "{placesCount, plural, one {# broker} other {# brokers}}"
-msgstr "{placesCount, plural, one {# broker} other {# brokers}}"
-
-#: src/account/utils/get-holding-places-label.util.ts
-msgid "{placesCount, plural, one {# wallet} other {# wallets}}"
-msgstr "{placesCount, plural, one {# wallet} other {# wallets}}"
-
 #: src/account/utils/get-institution-row-caption.util.ts
 msgid "{positionsCount, plural, one {{investedLabel} in # asset} other {{investedLabel} in # assets}}"
 msgstr "{positionsCount, plural, one {{investedLabel} in # asset} other {{investedLabel} in # assets}}"
@@ -1405,6 +1394,10 @@ msgstr "Accounts · {accountCount}"
 #: src/sync/component/sync-accounts-step/sync-accounts-step.tsx
 msgid "Accounts · {accountsCount}"
 msgstr "Accounts · {accountsCount}"
+
+#: src/account/component/home-provider-group-label/home-provider-group-label.tsx
+msgid "Accounts · {providersCount}"
+msgstr "Accounts · {providersCount}"
 
 #: src/transaction/components/transaction-filters/transaction-filters.tsx
 msgid "Accounts ({selectedAccountsCount})"
@@ -2325,6 +2318,10 @@ msgstr "Brokerage"
 #: src/sync/component/bank-integration-rename-card/bank-integration-rename-card.tsx
 msgid "Brokerage name"
 msgstr "Brokerage name"
+
+#: src/account/component/home-provider-group-label/home-provider-group-label.tsx
+msgid "Brokers · {providersCount}"
+msgstr "Brokers · {providersCount}"
 
 #: src/category/components/category-icon-fix-row/category-icon-fix-row.tsx
 msgid "Browse icons"
@@ -4882,6 +4879,10 @@ msgstr "Exchange rate not found"
 #: src/transaction/components/conversion-row/conversion-row.tsx
 msgid "Exchange rate: {rateLabel}"
 msgstr "Exchange rate: {rateLabel}"
+
+#: src/account/component/home-provider-group-label/home-provider-group-label.tsx
+msgid "Exchanges · {providersCount}"
+msgstr "Exchanges · {providersCount}"
 
 #: src/budget/components/budget-limit-source-field/budget-limit-source-field.tsx
 #: src/budget/components/budget-stat-row/budget-stat-row.tsx

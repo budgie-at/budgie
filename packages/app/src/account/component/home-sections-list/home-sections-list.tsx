@@ -9,19 +9,17 @@ import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from '../../../@gene
 import { useCollapsibleChromeScroll } from '../../../@generic/hook/use-collapsible-chrome-scroll.hook';
 import { useScreenChromeStickyList } from '../../../@generic/hook/use-screen-chrome-sticky-list.hook';
 import { decimalPlacesAtom, defaultInstrumentIdAtom } from '../../../settings/constants/settings-atoms.constant';
-import { TransactionRowSurface } from '../../../transaction/components/transaction-row-surface/transaction-row-surface';
 import { COLLAPSIBLE_NET_WORTH_HEADER_SCROLL_SPACER_MIN_ACCOUNT_COUNT } from '../../constant/collapsible-net-worth-header-scroll-spacer.constant';
 import { HomeAccountBalanceInterface } from '../../interface/home-account-balance.interface';
 import { HomeHoldingReturnsInterface } from '../../interface/home-holding-returns.interface';
 import { HomeSectionInterface } from '../../interface/home-section.interface';
 import { isHomeHolding } from '../../type-guard/is-home-holding.type-guard';
 import { isInstitutionGroup } from '../../type-guard/is-institution-group.type-guard';
-import { getHomeSectionItemPosition } from '../../utils/get-home-section-item-position.util';
 import { CollapsibleNetWorthHeaderScrollSpacer } from '../collapsible-net-worth-header-scroll-spacer/collapsible-net-worth-header-scroll-spacer';
 import { HomeEmptyState } from '../home-empty-state/home-empty-state';
 import { HomeSectionFooter } from '../home-section-footer/home-section-footer';
 import { HomeSectionHeader } from '../home-section-header/home-section-header';
-import { HomeSectionItem } from '../home-section-item/home-section-item';
+import { HomeSectionRow } from '../home-section-row/home-section-row';
 
 import type { ReactElement } from 'react';
 import type { SectionListProps, SectionListRenderItem } from 'react-native';
@@ -97,9 +95,13 @@ export const HomeSectionsList = ({
         section
     }) => <HomeSectionHeader section={section} holdingReturns={holdingReturns} />;
     const renderItem: SectionListRenderItem<HomeSectionInterface['data'][number], HomeSectionInterface> = ({ item, index, section }) => (
-        <TransactionRowSurface separatorInset={64} position={getHomeSectionItemPosition(section, index)}>
-            <HomeSectionItem item={item} section={section} balancesByAccountId={balancesByAccountId} holdingReturns={holdingReturns} />
-        </TransactionRowSurface>
+        <HomeSectionRow
+            item={item}
+            index={index}
+            section={section}
+            balancesByAccountId={balancesByAccountId}
+            holdingReturns={holdingReturns}
+        />
     );
 
     return (
