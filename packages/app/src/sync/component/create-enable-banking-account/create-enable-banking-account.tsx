@@ -159,6 +159,10 @@ export const CreateEnableBankingAccount = ({ connectAccountId, savedApplicationI
     };
 
     const handleStepAwareGoBack = () => {
+        if (isBusy) {
+            return;
+        }
+
         switch (step) {
             case EnableBankingSetupStepEnum.BANK:
                 if (hasConnectKey) {
