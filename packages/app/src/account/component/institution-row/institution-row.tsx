@@ -31,7 +31,7 @@ interface Props {
 }
 
 const rowVariants = cva('min-h-[64px] gap-x-xl pr-lg pl-3xl active:bg-surface-fill', {
-    variants: { isStacked: { true: 'gap-y-xxs py-sm', false: 'flex-row items-center py-lg' } }
+    variants: { isStacked: { true: 'gap-y-xs py-sm', false: 'flex-row items-center py-lg' } }
 });
 
 export const InstitutionRow = ({ institution, balancesByAccountId }: Props) => {
