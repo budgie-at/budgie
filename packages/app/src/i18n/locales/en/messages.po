@@ -10131,6 +10131,10 @@ msgstr "Top by market cap"
 msgid "Top-ups"
 msgstr "Top-ups"
 
+#: src/account/component/home-section-return-line/home-section-return-line.tsx
+msgid "total"
+msgstr "total"
+
 #: src/account/component/account-selector-card-debt-total-subtitle/account-selector-card-debt-total-subtitle.tsx
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
 #: src/account/component/debt-account-card/debt-account-card.tsx

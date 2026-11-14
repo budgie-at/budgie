@@ -1,4 +1,5 @@
 import { useAtomValue } from '@effect/atom-react/Hooks';
+import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
@@ -23,6 +24,7 @@ interface Props {
 }
 
 export const HomeSectionReturnLine = ({ sectionReturn, todayReturn, isLoading, placeholderGain, testID }: Props) => {
+    const { t } = useLingui();
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
 
     const percent = isDefined(sectionReturn) ? sectionReturn.percent : PLACEHOLDER_PERCENT;
@@ -50,6 +52,7 @@ export const HomeSectionReturnLine = ({ sectionReturn, todayReturn, isLoading, p
                         gain={sectionReturn?.gain ?? placeholderGain}
                         percent={percent}
                         instrumentSymbol={defaultInstrument.symbol}
+                        period={t`total`}
                         maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER}
                         testID={testID}
                     />

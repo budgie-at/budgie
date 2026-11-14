@@ -10130,6 +10130,10 @@ msgstr "Топ за капіталізацією"
 msgid "Top-ups"
 msgstr "Поповнення"
 
+#: src/account/component/home-section-return-line/home-section-return-line.tsx
+msgid "total"
+msgstr "загалом"
+
 #: src/account/component/account-selector-card-debt-total-subtitle/account-selector-card-debt-total-subtitle.tsx
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
 #: src/account/component/debt-account-card/debt-account-card.tsx

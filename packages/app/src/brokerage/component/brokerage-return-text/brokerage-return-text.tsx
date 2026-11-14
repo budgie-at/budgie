@@ -13,6 +13,7 @@ interface Props {
     readonly gain: number | null;
     readonly percent: number | null;
     readonly instrumentSymbol: string;
+    readonly period?: string;
     readonly className?: string;
     readonly maxFontSizeMultiplier?: number;
     readonly testID?: string;
@@ -25,6 +26,7 @@ export const BrokerageReturnText = ({
     gain,
     percent,
     instrumentSymbol,
+    period,
     className,
     maxFontSizeMultiplier = ROW_MAX_FONT_SIZE_MULTIPLIER,
     testID
@@ -37,7 +39,8 @@ export const BrokerageReturnText = ({
     const direction = isDefined(gain) ? gainDirection : percentDirection;
     const label = [
         isDefined(gain) ? formatDigits(Math.abs(gain), instrumentSymbol) : null,
-        isDefined(percent) ? formatPercent(percent) : null
+        isDefined(percent) ? formatPercent(percent) : null,
+        period
     ]
         .filter(isDefined)
         .join(' · ');
