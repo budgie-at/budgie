@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.182.2](https://github.com/budgie-at/budgie/compare/v6.182.1...v6.182.2) (2026-11-14)
+
+### Bug Fixes
+
+* **app:** block photo and video permissions on Android ([#2209](https://github.com/budgie-at/budgie/issues/2209)) ([9dbe68e](https://github.com/budgie-at/budgie/commit/9dbe68e8c12b956957ceec0c50588414a0186ec7))
+
+
+## [6.182.1](https://github.com/budgie-at/budgie/compare/v6.182.0...v6.182.1) (2026-11-13)
+
+### Bug Fixes
+
+* **app:** put expense in the bottom-right create menu tile for the thumb ([#2212](https://github.com/budgie-at/budgie/issues/2212)) ([414957b](https://github.com/budgie-at/budgie/commit/414957b5e5b36d4917f6ed17ffee4c30b6f0259c))
+
+
 # [6.182.0](https://github.com/budgie-at/budgie/compare/v6.181.3...v6.182.0) (2026-11-13)
 
 ### Features

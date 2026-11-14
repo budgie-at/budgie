@@ -2256,6 +2256,14 @@ msgstr "Les ordres P2P Binance sont indisponibles : la clé API n'a pas la permi
 msgid "Biometric data never leaves this phone"
 msgstr "Les données biométriques ne quittent jamais ce téléphone"
 
+#: src/auth/hook/use-pin-setup.hook.ts
+msgid "Biometric unlock wasn't completed. Try again or continue without it."
+msgstr "Le déverrouillage biométrique n'a pas abouti. Réessaie ou continue sans."
+
+#: src/settings/hook/use-biometric-label.hook.ts
+msgid "Biometrics"
+msgstr "Biométrie"
+
 #: src/recurring/components/recurring-form-repeat-section/recurring-form-repeat-section.tsx
 msgid "Biweekly"
 msgstr "Toutes les 2 semaines"
@@ -4930,6 +4938,10 @@ msgstr "Face ID"
 msgid "Face ID wasn't completed. Try again or continue without it."
 msgstr "Face ID n'a pas abouti. Réessaie ou continue sans."
 
+#: src/auth/hook/use-pin-setup.hook.ts
+msgid "Face unlock wasn't completed. Try again or continue without it."
+msgstr "Le déverrouillage par visage n'a pas abouti. Réessaie ou continue sans."
+
 #: src/settings/hook/use-biometric-label.hook.ts
 msgid "Facial recognition"
 msgstr "Reconnaissance faciale"
@@ -5078,6 +5090,10 @@ msgstr "FinEye"
 #: src/settings/hook/use-biometric-label.hook.ts
 msgid "Fingerprint"
 msgstr "Empreinte digitale"
+
+#: src/auth/hook/use-pin-setup.hook.ts
+msgid "Fingerprint unlock wasn't completed. Try again or continue without it."
+msgstr "Le déverrouillage par empreinte digitale n'a pas abouti. Réessaie ou continue sans."
 
 #: src/sync/component/analytics-sync-account-progress/analytics-sync-account-progress.tsx
 msgid "Finish importing this account’s history to include it in analytics."
@@ -7238,8 +7254,8 @@ msgid "Open Budgie with a touch. Your PIN stays the key to your data."
 msgstr "Ouvre Budgie d'un simple toucher. Ton code PIN reste la clé de tes données."
 
 #: src/auth/utils/get-pin-setup-meta.util.ts
-msgid "Open Budgie with Face ID or Touch ID. Your PIN stays the key to your data."
-msgstr "Ouvre Budgie avec Face ID ou Touch ID. Ton code PIN reste la clé de tes données."
+msgid "Open Budgie with your face or fingerprint. Your PIN stays the key to your data."
+msgstr "Ouvre Budgie avec ton visage ou ton empreinte digitale. Ton code PIN reste la clé de tes données."
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Open George (Erste Bank online banking)"
@@ -7361,12 +7377,24 @@ msgid "Or import from"
 msgstr "Ou importe depuis"
 
 #: src/auth/components/pin-unlock/pin-unlock.tsx
+msgid "Or unlock with biometrics."
+msgstr "Ou déverrouille par biométrie."
+
+#: src/auth/components/pin-unlock/pin-unlock.tsx
 msgid "Or unlock with Face ID."
 msgstr "Ou déverrouille avec Face ID."
 
 #: src/auth/components/pin-unlock/pin-unlock.tsx
 msgid "Or unlock with Touch ID."
 msgstr "Ou déverrouille avec Touch ID."
+
+#: src/auth/components/pin-unlock/pin-unlock.tsx
+msgid "Or unlock with your face."
+msgstr "Ou déverrouille avec ton visage."
+
+#: src/auth/components/pin-unlock/pin-unlock.tsx
+msgid "Or unlock with your fingerprint."
+msgstr "Ou déverrouille avec ton empreinte digitale."
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Organize"
@@ -10537,9 +10565,17 @@ msgstr "Déverrouillez pour afficher"
 msgid "Unlock with {biometricLabel}"
 msgstr "Déverrouiller avec {biometricLabel}"
 
+#: src/auth/components/pin-form-biometric-button/pin-form-biometric-button.tsx
+msgid "Unlock with biometrics"
+msgstr "Déverrouiller par biométrie"
+
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Unlock with biometrics?"
 msgstr "Déverrouiller par biométrie ?"
+
+#: src/auth/components/pin-form-biometric-button/pin-form-biometric-button.tsx
+msgid "Unlock with face"
+msgstr "Déverrouiller avec le visage"
 
 #: src/auth/components/pin-form-biometric-button/pin-form-biometric-button.tsx
 msgid "Unlock with Face ID"
@@ -10550,12 +10586,24 @@ msgid "Unlock with Face ID?"
 msgstr "Déverrouiller avec Face ID ?"
 
 #: src/auth/components/pin-form-biometric-button/pin-form-biometric-button.tsx
+msgid "Unlock with fingerprint"
+msgstr "Déverrouiller avec l'empreinte digitale"
+
+#: src/auth/components/pin-form-biometric-button/pin-form-biometric-button.tsx
 msgid "Unlock with Touch ID"
 msgstr "Déverrouiller avec Touch ID"
 
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Unlock with Touch ID?"
 msgstr "Déverrouiller avec Touch ID ?"
+
+#: src/auth/utils/get-pin-setup-meta.util.ts
+msgid "Unlock with your face?"
+msgstr "Déverrouiller avec ton visage ?"
+
+#: src/auth/utils/get-pin-setup-meta.util.ts
+msgid "Unlock with your fingerprint?"
+msgstr "Déverrouiller avec ton empreinte digitale ?"
 
 #: src/categorize-inbox/components/categorize-inbox-payments-screen/categorize-inbox-payments-screen.tsx
 msgid "Unselected payments stay in your inbox."
@@ -10657,12 +10705,19 @@ msgstr "Utilisez de 1 à {CATEGORY_TITLE_MAX_LENGTH} caractères"
 msgid "Use 1 to {TAG_TITLE_MAX_LENGTH} characters"
 msgstr "Utilisez de 1 à {TAG_TITLE_MAX_LENGTH} caractères"
 
-#: src/auth/components/biometric-configuration/biometric-configuration.tsx
-#: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
+#: src/auth/hook/use-biometric-enable-label.hook.ts
+msgid "Use biometrics"
+msgstr "Utiliser la biométrie"
+
+#: src/auth/hook/use-biometric-enable-label.hook.ts
 msgid "Use Face ID"
 msgstr "Utiliser Face ID"
 
-#: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
+#: src/auth/hook/use-biometric-enable-label.hook.ts
+msgid "Use face unlock"
+msgstr "Utiliser le déverrouillage par visage"
+
+#: src/auth/hook/use-biometric-enable-label.hook.ts
 msgid "Use fingerprint"
 msgstr "Utiliser l'empreinte digitale"
 
@@ -10687,8 +10742,7 @@ msgstr "Utilise le code PIN avec lequel cette sauvegarde a été scellée. Sans 
 msgid "Use these only if conversions, imports or balances look wrong."
 msgstr "À utiliser seulement si les conversions, imports ou soldes semblent faux."
 
-#: src/auth/components/biometric-configuration/biometric-configuration.tsx
-#: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
+#: src/auth/hook/use-biometric-enable-label.hook.ts
 msgid "Use Touch ID"
 msgstr "Utiliser Touch ID"
 
@@ -11152,12 +11206,8 @@ msgid "Your PIN"
 msgstr "Ton code PIN"
 
 #: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
-msgid "Your PIN · Face ID"
-msgstr "Ton code PIN · Face ID"
-
-#: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
-msgid "Your PIN · Fingerprint"
-msgstr "Ton code PIN · Empreinte digitale"
+msgid "Your PIN · {biometricLabel}"
+msgstr "Ton code PIN · {biometricLabel}"
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx
 msgid "Your PIN still works any time"
