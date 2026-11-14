@@ -23,7 +23,7 @@ export const WiseStatementImportRow = () => {
         importHandler: uri => Effect.flatMap(WiseStatementImportService, service => service.importForIntegration(uri, integration.id))
     });
 
-    const isHistoryReady = isNotEmptyArray(syncs) && !syncs.some(isInitialSyncIncomplete);
+    const isHistoryReady = isNotEmptyArray(syncs) && !syncs.some(sync => sync.enabled && isInitialSyncIncomplete(sync));
     const subtitle = isHistoryReady ? t`Wise CSV export, one file per balance` : t`Available after the first sync finishes`;
 
     return (
