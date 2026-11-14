@@ -30,6 +30,11 @@ import type { MessageDescriptor } from '@lingui/core';
 
 const GROUPED_STACKED_TITLE_CHROME_CONFIG = {
     ...STACKED_TITLE_CHROME_CONFIG,
+    smallTitleStart: 18,
+    largeTitleEnd: 27,
+    collapseEnd: 36,
+    topFadeHeight: 60,
+    headerBackdropHeight: 60,
     colors: {
         light: { solid: 'rgb(242,242,247)', wash: 'rgb(242,242,247)' },
         dark: { solid: 'rgb(0,0,0)', wash: 'rgb(0,0,0)' }
@@ -39,7 +44,8 @@ const GROUPED_STACKED_TITLE_CHROME_CONFIG = {
             0: { color: '#000000' },
             0.25: { color: '#000000' },
             0.5: { color: '#000000' },
-            0.75: { color: 'rgba(0,0,0,0.6)' },
+            0.75: { color: '#000000' },
+            0.9: { color: 'rgba(0,0,0,0.6)' },
             1: { color: 'transparent' }
         },
         bottom: {}
