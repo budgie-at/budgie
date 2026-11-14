@@ -1160,6 +1160,18 @@ msgstr "+{hiddenCategoryCount} weitere"
 msgid "+{incomeAmount} / month"
 msgstr "+{incomeAmount} / Monat"
 
+#: src/account/component/holding-provider-caption/holding-provider-caption.tsx
+msgid "<0>{investedLabel}</0> in {positionName}"
+msgstr "<0>{investedLabel}</0> in {positionName}"
+
+#: src/account/component/holding-provider-caption/holding-provider-caption.tsx
+msgid "<0>{investedLabel}</0> in {positionsCount, plural, one {# asset} other {# assets}}"
+msgstr "<0>{investedLabel}</0> in {positionsCount, plural, one {# Asset} other {# Assets}}"
+
+#: src/account/component/holding-provider-caption/holding-provider-caption.tsx
+msgid "<0>{investedLabel}</0> in {positionsCount, plural, one {# position} other {# positions}}"
+msgstr "<0>{investedLabel}</0> in {positionsCount, plural, one {# Position} other {# Positionen}}"
+
 #: src/account/component/family-section-header/family-section-header.tsx
 msgid "<0>Paused</0> · not in your total"
 msgstr "<0>Pausiert</0> · nicht in deinem Gesamtbetrag"

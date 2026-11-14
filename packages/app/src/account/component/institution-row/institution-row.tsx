@@ -7,7 +7,7 @@ import { Text, View } from 'react-native';
 
 import { BankLogo } from '../../../@generic/component/bank-logo/bank-logo';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { TITLE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/title-max-font-size-multiplier.constant';
+import { ROW_PRIMARY_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-primary-max-font-size-multiplier.constant';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { testID } from '../../../@generic/utils/test-id.util';
@@ -15,6 +15,7 @@ import { InzhurInstitutionRowDetail } from '../../../inzhur/component/inzhur-ins
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { getInstitutionRowCaption } from '../../utils/get-institution-row-caption.util';
 import { getInstitutionTitle } from '../../utils/get-institution-title.util';
+import { HoldingProviderCaption } from '../holding-provider-caption/holding-provider-caption';
 import { InstitutionRowCash } from '../institution-row-cash/institution-row-cash';
 import { InstitutionRowDetail } from '../institution-row-detail/institution-row-detail';
 import { InstitutionRowTotal } from '../institution-row-total/institution-row-total';
@@ -45,7 +46,8 @@ export const InstitutionRow = ({ institution }: Props) => {
     const handlePress = () => void router.push({ pathname: '/institution/[id]', params: { id: String(integrationId) } });
 
     const title = getInstitutionTitle(t, provider, label, groupNumber);
-    const caption = getInstitutionRowCaption(t, institution, protectAmount(total - cash, defaultInstrument.symbol));
+    const investedLabel = protectAmount(total - cash, defaultInstrument.symbol);
+    const caption = getInstitutionRowCaption(t, institution, investedLabel);
     const bankName = label ?? title;
     const cashLabel = protectAmount(cash, defaultInstrument.symbol);
     const amountLabel = isHoldingProvider ? t`${cashLabel} cash` : protectAmount(total, defaultInstrument.symbol);
@@ -66,7 +68,7 @@ export const InstitutionRow = ({ institution }: Props) => {
             <View className="min-w-0 flex-1 gap-y-xxs">
                 <Text
                     className="text-[17px] font-semibold text-primary"
-                    maxFontSizeMultiplier={TITLE_MAX_FONT_SIZE_MULTIPLIER}
+                    maxFontSizeMultiplier={ROW_PRIMARY_MAX_FONT_SIZE_MULTIPLIER}
                     numberOfLines={2}
                 >
                     {title}
@@ -74,7 +76,9 @@ export const InstitutionRow = ({ institution }: Props) => {
                 {provider === ExternalSourceEnum.INZHUR ? (
                     <InzhurInstitutionRowDetail />
                 ) : (
-                    <InstitutionRowDetail accounts={accounts} accountsCountLabel={caption} />
+                    <InstitutionRowDetail accounts={accounts}>
+                        {isHoldingProvider ? <HoldingProviderCaption institution={institution} investedLabel={investedLabel} /> : caption}
+                    </InstitutionRowDetail>
                 )}
             </View>
 

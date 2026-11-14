@@ -12,26 +12,29 @@ import { ACCOUNT_SYNC_STATE_LABEL } from '../../constant/account-sync-state-labe
 import { AccountSyncStateEnum } from '../../enum/account-sync-state.enum';
 import { getAccountSyncState } from '../../utils/get-account-sync-state.util';
 
+import type { ReactNode } from 'react';
+
 interface Props {
     readonly accounts: readonly Pick<AccountWithSyncEntityInterface, AccountAssociationEnum.SYNC>[];
-    readonly accountsCountLabel: string;
+    readonly children: ReactNode;
 }
 
 const ISSUE_STATES = [AccountSyncStateEnum.FAILED, AccountSyncStateEnum.SYNCING] as const;
 
-export const InstitutionRowDetail = ({ accounts, accountsCountLabel }: Props) => {
+export const InstitutionRowDetail = ({ accounts, children }: Props) => {
     const { t } = useLingui();
 
     const syncStates = new Set(accounts.map(account => getAccountSyncState(account.sync)));
     const issueState = ISSUE_STATES.find(state => syncStates.has(state));
-    const detail = isDefined(issueState) ? `${accountsCountLabel} · ${t(ACCOUNT_SYNC_STATE_LABEL[issueState])}` : accountsCountLabel;
+    const issueLabel = isDefined(issueState) ? ` · ${t(ACCOUNT_SYNC_STATE_LABEL[issueState])}` : null;
     const toneClassName = issueState === AccountSyncStateEnum.FAILED ? 'text-destructive-foreground' : 'text-secondary-foreground';
     const importProgress = resolveInitialSyncProgress(accounts.map(account => account.sync));
 
     return (
         <>
             <Text className={cn('text-[13px]', toneClassName)} maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER} numberOfLines={2}>
-                {detail}
+                {children}
+                {issueLabel}
             </Text>
             {isDefined(importProgress) ? <SyncImportProgress progress={importProgress} /> : null}
         </>
