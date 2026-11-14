@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.183.0](https://github.com/budgie-at/budgie/compare/v6.182.2...v6.183.0) (2026-11-14)
+
+### Features
+
+* **app:** use Android names for face and fingerprint unlock ([#2211](https://github.com/budgie-at/budgie/issues/2211)) ([37ccb15](https://github.com/budgie-at/budgie/commit/37ccb151800ec102034534aa8fe9cef5eb23e467))
+
+
 ## [6.182.2](https://github.com/budgie-at/budgie/compare/v6.182.1...v6.182.2) (2026-11-14)
 
 ### Bug Fixes
