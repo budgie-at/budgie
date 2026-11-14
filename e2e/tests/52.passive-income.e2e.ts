@@ -23,6 +23,14 @@ test('52 passive income', { tags: ['passive-income'] }, async ({ budgie }) => {
     const id = (testId: string) => b.byId(screen, testId);
     const plotValue = () => id('PassiveIncome.Plot').inputValue();
     const firstPayout = () => screen.getByTestId(/^PassiveIncome\.Payout\./u).first();
+    const expandHeader = async () => {
+        await b.scrollTo(ctx, 'PassiveIncome.Footnote', 'up');
+        const page = await id('PassiveIncome.Page').boundingBox();
+        assert.ok(page);
+        const x = page.x + 10;
+        await screen.swipe({ from: { x, y: page.y + page.height * 0.3 }, to: { x, y: page.y + page.height * 0.95 }, duration: 300 });
+        await b.expectSettledId(ctx, 'PassiveIncome.Subtitle');
+    };
 
     await budgie.start({ fixture: '52.db' });
 
@@ -61,8 +69,6 @@ test('52 passive income', { tags: ['passive-income'] }, async ({ budgie }) => {
         }
         await b.tapId(ctx, 'PassiveIncome.LegendRow.STAKING_EARN');
         await expect(id('PassiveIncome.Caption')).toContainText('Staking & Earn');
-        await b.scrollTo(ctx, 'PassiveIncome.Section.PAYOUTS');
-        await b.scrollTo(ctx, 'PassiveIncome.Plot', 'up');
         if (b.isIos(ctx)) {
             await id('PassiveIncome.Plot').swipe({ direction: 'left', momentum: 'slow' });
             await expect(id('PassiveIncome.Caption')).toContainText('Staking & Earn');
@@ -74,13 +80,13 @@ test('52 passive income', { tags: ['passive-income'] }, async ({ budgie }) => {
     await b.phase('2 position row filters to its payouts and back', async () => {
         await b.scrollTo(ctx, `PassiveIncome.Position.${ETH_ACCOUNT_ID}`);
         await b.tapId(ctx, `PassiveIncome.Position.${ETH_ACCOUNT_ID}`);
-        await b.scrollTo(ctx, 'PassiveIncome.Subtitle', 'up');
+        await expandHeader();
         await expect(id('PassiveIncome.Subtitle')).toHaveText('E2E Binance ETH');
         await b.scrollTo(ctx, 'PassiveIncome.Section.PAYOUTS');
         await firstPayout().tap();
         await b.expectId(ctx, 'TransactionInfo.Page', 10_000);
         await b.tapId(ctx, 'PageHeader.BackButton');
-        await b.scrollTo(ctx, 'PassiveIncome.ClearFilter', 'up');
+        await expandHeader();
         await b.tapId(ctx, 'PassiveIncome.ClearFilter');
         await expect(id('PassiveIncome.Subtitle')).toHaveText('All holdings');
     });
@@ -111,7 +117,7 @@ test('52 passive income', { tags: ['passive-income'] }, async ({ budgie }) => {
         await b.fillId(ctx, 'DepositClose.AmountInput', '1010');
         await expect(id('DepositClose.DeltaLine')).toContainText('Interest recorded: +');
         await b.tapId(ctx, 'DepositClose.ConfirmButton');
-        await b.expectId(ctx, 'HomePage.TotalBalance', 15_000);
+        await b.expectId(ctx, 'TabBar.Home', 15_000);
         await b.openLink(ctx, 'budgie://passive-income?range=YEAR');
         await b.scrollTo(ctx, `PassiveIncome.Position.${TERM_DEPOSIT_ID}`);
         await expect(id(`PassiveIncome.Position.${TERM_DEPOSIT_ID}`)).toContainText('10.00');
