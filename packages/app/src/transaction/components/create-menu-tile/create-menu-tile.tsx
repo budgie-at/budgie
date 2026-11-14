@@ -7,7 +7,8 @@ import type { CreateMenuItemPropsInterface } from '../../interface/create-menu-i
 import type { Ref } from 'react';
 import type { View } from 'react-native';
 
-interface Props extends CreateMenuItemPropsInterface<CreateMenuTileVariant> {
+interface Props extends CreateMenuItemPropsInterface {
+    readonly variant: CreateMenuTileVariant;
     readonly ref?: Ref<View>;
 }
 

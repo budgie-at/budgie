@@ -204,14 +204,12 @@ export const CreateTransactionMenu = ({ isOpen, onClose, triggerRef, accountId, 
                             icon={UserIconNameEnum.Repeat}
                             label={t`Recurring`}
                             testID={CreateTransactionMenuSelector.Recurring}
-                            variant="secondary"
                             onPress={handleCreateRecurring}
                         />
                         <CreateMenuChip
                             icon={UserIconNameEnum.Wallet}
                             label={t`Account`}
                             testID={CreateTransactionMenuSelector.AddAccount}
-                            variant="secondary"
                             onPress={handleCreateAccount}
                         />
                     </CreateMenuReveal>
