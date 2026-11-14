@@ -27,16 +27,19 @@ interface Props {
 export const TransactionCardContent = ({ transaction, accountId = null }: Props) => {
     const isAccessibilityTextSize = useIsAccessibilityTextSize();
     const displayTitle = useTransactionRowTitle(transaction);
-    const { detailSegments, subtitleTestID } = useTransactionCardSubtitle(transaction, accountId);
+    const { detailSegments, promotableSegment, promotedDetailSegments, subtitleTestID } = useTransactionCardSubtitle(
+        transaction,
+        accountId
+    );
 
     const isAdjustment = isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction);
     const { t } = useLingui();
     const titleLineCount = isAccessibilityTextSize ? 0 : 1;
     const adjustmentTitle = isNotEmptyString(transaction.title) ? transaction.title : t`Balance Adjustment`;
 
-    const [leadSegment, ...trailingSegments] = detailSegments;
-    const isDetailPromoted = !isAdjustment && !isAccessibilityTextSize && !isNotEmptyString(displayTitle) && isNotEmptyString(leadSegment);
-    const subtitleSegments = isDetailPromoted ? trailingSegments : detailSegments;
+    const isDetailPromoted =
+        !isAdjustment && !isAccessibilityTextSize && !isNotEmptyString(displayTitle) && isNotEmptyString(promotableSegment);
+    const subtitleSegments = isDetailPromoted ? promotedDetailSegments : detailSegments;
     const hasDetail =
         isAccessibilityTextSize ||
         isNotEmptyArray(subtitleSegments) ||
@@ -58,7 +61,7 @@ export const TransactionCardContent = ({ transaction, accountId = null }: Props)
             ellipsizeMode="tail"
             {...(isDetailPromoted && isDefined(subtitleTestID) && { testID: subtitleTestID })}
         >
-            {isDetailPromoted ? leadSegment : displayTitle}
+            {isDetailPromoted ? promotableSegment : displayTitle}
         </Text>
     );
     const detail = isAccessibilityTextSize ? (

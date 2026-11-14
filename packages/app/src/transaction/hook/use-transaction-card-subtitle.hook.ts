@@ -11,11 +11,15 @@ export const useTransactionCardSubtitle = (transaction: TransactionWithRelations
     const { segments, feeLabel, accountTitle, categoryLabel } = useTransactionSubtitleSegments(transaction, accountId);
 
     const descriptionSegments = [...segments, feeLabel].filter(isDefined);
+    const toDetailSegments = (labels: readonly string[]) =>
+        [...labels.flatMap(label => label.split(' · ')), feeLabel, accountTitle].filter(isNotEmptyString);
 
     return {
         description: descriptionSegments.join(' · '),
         accessibilityLabel: descriptionSegments.join(', '),
-        detailSegments: [...segments.flatMap(segment => segment.split(' · ')), feeLabel, accountTitle].filter(isNotEmptyString),
+        detailSegments: toDetailSegments(segments),
+        promotableSegment: segments.at(-1) ?? null,
+        promotedDetailSegments: toDetailSegments(segments.slice(0, -1)),
         accountTitle,
         subtitleTestID: [
             isUncategorizedTransaction(transaction) ? TransactionCardSelector.UncategorizedBadge : null,
