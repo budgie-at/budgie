@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.183.2](https://github.com/budgie-at/budgie/compare/v6.183.1...v6.183.2) (2026-11-14)
+
+### Bug Fixes
+
+* **app:** promote the category to the title line of untitled transaction rows ([#2218](https://github.com/budgie-at/budgie/issues/2218)) ([988fe6d](https://github.com/budgie-at/budgie/commit/988fe6df59fb8181d01dba9f0d352d016e3d1df4))
+
+
 ## [6.183.1](https://github.com/budgie-at/budgie/compare/v6.183.0...v6.183.1) (2026-11-14)
 
 ### Performance Improvements
