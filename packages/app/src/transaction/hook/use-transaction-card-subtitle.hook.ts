@@ -8,7 +8,7 @@ import { useTransactionSubtitleSegments } from './use-transaction-subtitle-segme
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 
 export const useTransactionCardSubtitle = (transaction: TransactionWithRelationsEntityInterface, accountId: number | null) => {
-    const { segments, feeLabel, accountTitle, categoryLabel } = useTransactionSubtitleSegments(transaction, accountId);
+    const { segments, feeLabel, accountTitle, categoryLabel, relationLabel } = useTransactionSubtitleSegments(transaction, accountId);
 
     const descriptionSegments = [...segments, feeLabel].filter(isDefined);
     const toDetailSegments = (labels: readonly string[]) =>
@@ -18,8 +18,8 @@ export const useTransactionCardSubtitle = (transaction: TransactionWithRelations
         description: descriptionSegments.join(' · '),
         accessibilityLabel: descriptionSegments.join(', '),
         detailSegments: toDetailSegments(segments),
-        promotableSegment: segments.at(-1) ?? null,
-        promotedDetailSegments: toDetailSegments(segments.slice(0, -1)),
+        promotableSegment: relationLabel,
+        promotedDetailSegments: toDetailSegments(segments.filter(segment => segment !== relationLabel)),
         accountTitle,
         subtitleTestID: [
             isUncategorizedTransaction(transaction) ? TransactionCardSelector.UncategorizedBadge : null,
