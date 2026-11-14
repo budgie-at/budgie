@@ -8,9 +8,11 @@ import { cn } from '../../../@generic/utils/cn.util';
 import { AccountCardSingleLineTitleContext } from '../../context/account-card-single-line-title.context';
 import { AccountSyncStateEnum } from '../../enum/account-sync-state.enum';
 
+import type { ReactNode } from 'react';
+
 interface Props {
     readonly title: string;
-    readonly subtitle?: string;
+    readonly subtitle?: ReactNode;
     readonly iban: string | null;
     readonly syncState: AccountSyncStateEnum | null;
     readonly syncStateLabel: string | null;

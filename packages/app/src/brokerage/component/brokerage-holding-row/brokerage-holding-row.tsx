@@ -19,6 +19,7 @@ import { useFormatInstrumentAmount } from '../../../i18n/hook/use-format-instrum
 import { useFormatPercent } from '../../../i18n/hook/use-format-percent.hook';
 import { isListedSecurityType } from '../../../instrument/utils/is-listed-security-type.util';
 import { TransactionRowSurface } from '../../../transaction/components/transaction-row-surface/transaction-row-surface';
+import { BrokerageHoldingCaption } from '../brokerage-holding-caption/brokerage-holding-caption';
 import { BrokerageReturnText } from '../brokerage-return-text/brokerage-return-text';
 
 import type { TransactionListRowPositionEnum } from '../../../transaction/enum/transaction-list-row-position.enum';
@@ -73,7 +74,7 @@ export const BrokerageHoldingRow = ({ holding, balance, bankName, instrumentSymb
                         balance={balance}
                         convertedBalance={null}
                         amountLabel={t`${quantityLabel}, worth ${valueLabel}`}
-                        subtitle={subtitle}
+                        subtitle={<BrokerageHoldingCaption caption={subtitle} gain={gain} instrumentSymbol={instrumentSymbol} />}
                         {...(isSecurity && { onPress: openSecurity })}
                     >
                         {isValued ? (
@@ -86,8 +87,8 @@ export const BrokerageHoldingRow = ({ holding, balance, bankName, instrumentSymb
                                 <Trans>Value unavailable</Trans>
                             </Text>
                         )}
-                        {isDefined(gain) ? (
-                            <BrokerageReturnText gain={gain} percent={gainPercent} instrumentSymbol={instrumentSymbol} />
+                        {isDefined(gainPercent) ? (
+                            <BrokerageReturnText gain={null} percent={gainPercent} instrumentSymbol={instrumentSymbol} />
                         ) : null}
                     </AccountCardBase>
                 </AccountRowLeadingContext>
