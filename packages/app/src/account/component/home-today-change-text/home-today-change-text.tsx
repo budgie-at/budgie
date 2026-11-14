@@ -1,11 +1,11 @@
 import { useAtomValue } from '@effect/atom-react/Hooks';
-import { useLingui } from '@lingui/react/macro';
+import { Trans } from '@lingui/react/macro';
+import { Text } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
-import { cn } from '../../../@generic/utils/cn.util';
 import { RETURN_ARROW_BY_DIRECTION } from '../../../brokerage/constant/return-arrow-by-direction.constant';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useFormatGainPercent } from '../../../i18n/hook/use-format-gain-percent.hook';
@@ -20,7 +20,6 @@ interface Props {
 }
 
 export const HomeTodayChangeText = ({ gain, percent, maxFontSizeMultiplier, testID }: Props) => {
-    const { t } = useLingui();
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const formatDigits = useDisplayFormatDigits();
     const formatGainPercent = useFormatGainPercent();
@@ -35,10 +34,11 @@ export const HomeTodayChangeText = ({ gain, percent, maxFontSizeMultiplier, test
         <ProtectedText
             numberOfLines={lineCount}
             maxFontSizeMultiplier={maxFontSizeMultiplier}
-            className={cn('text-[13px] font-semibold tabular-nums', getMarketMoveClassName(percent))}
+            className="text-[13px] font-semibold tabular-nums text-secondary-foreground"
             testID={testID}
         >
-            {`${RETURN_ARROW_BY_DIRECTION[Math.sign(percent)]}${t`${change} · 24h`}`}
+            <Text className={getMarketMoveClassName(percent)}>{RETURN_ARROW_BY_DIRECTION[Math.sign(percent)]}</Text>
+            <Trans>{change} · 24h</Trans>
         </ProtectedText>
     );
 };
