@@ -33,10 +33,10 @@ test('12 account archive and expense convert to transfer', { tags: ['accounts', 
         await a.openArchivedAccounts(ctx);
         await b.expectId(ctx, `ArchivedAccountCard.RestoreButton.${TARGET}`, 10_000);
         await b.tapId(ctx, `ArchivedAccountCard.RestoreButton.${TARGET}`);
-        await b.expectNoId(ctx, `ArchivedAccountCard.RestoreButton.${TARGET}`, 10_000);
         // A finger held on a toast past its timeout must not leave it on screen for good.
         await b.byId(ctx.screen, b.TOAST).longPress({ duration: 6_000 });
         await b.expectNoId(ctx, b.TOAST, 3_000);
+        await b.expectNoId(ctx, `ArchivedAccountCard.RestoreButton.${TARGET}`, 10_000);
         await b.tapId(ctx, 'TabBar.Home');
         await b.expectId(ctx, 'HomePage.TotalBalance', 10_000);
         await b.expectId(ctx, `AccountCard.${TARGET}`);

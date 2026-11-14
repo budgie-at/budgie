@@ -1,6 +1,9 @@
 {
-    "platforms": ["apple"],
+    "platforms": ["apple", "android"],
     "apple": {
         "modules": ["ReceiptScannerModule"]
+    },
+    "android": {
+        "modules": ["at.budgie.receiptscanner.ReceiptScannerModule"]
     }
 }
