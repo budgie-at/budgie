@@ -83,7 +83,7 @@ export const TransactionCardContent = ({ transaction, accountId = null }: Props)
     return (
         <ListRow
             leading={
-                <View className={cn('justify-center', !hasDetail && 'min-h-[46.33px]')}>
+                <View className={cn('justify-center', !hasDetail && 'min-h-[41px]')}>
                     <TransactionCardIcon transaction={transaction} />
                 </View>
             }
