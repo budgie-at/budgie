@@ -8,6 +8,8 @@ import {
 import { TRANSFER_PAIR_IMPLIED_RATE_TOLERANCE } from '../../../shared/constant/transfer-pair-implied-rate-tolerance.constant';
 import { buildBridgeClaimTitleConditionSql } from '../../../shared/utils/build-bridge-claim-title-condition-sql.util';
 
+const TRANSFER_PAIR_BOOKING_DAY_IMPLIED_RATE_TOLERANCE = 0.1;
+
 export const TRANSFER_PAIR_RANKED_CANDIDATE_RANK_SQL = `            scored_pairs AS (
                 SELECT
                     *,
@@ -21,7 +23,10 @@ export const TRANSFER_PAIR_RANKED_CANDIDATE_RANK_SQL = `            scored_pairs
                             AND (expenseMccGroupId IS NULL OR expenseMccGroupId = ${TRANSFER_MCC_GROUP_ID})
                             AND (incomeMccGroupId IS NULL OR incomeMccGroupId = ${TRANSFER_MCC_GROUP_ID})
                             AND expectedExchangeRate IS NOT NULL
-                            AND ABS(impliedExchangeRate - expectedExchangeRate) / expectedExchangeRate <= ${TRANSFER_PAIR_IMPLIED_RATE_TOLERANCE}
+                            AND ABS(impliedExchangeRate - expectedExchangeRate) / expectedExchangeRate <= CASE
+                                WHEN isBookingDayPair = 1 THEN ${TRANSFER_PAIR_BOOKING_DAY_IMPLIED_RATE_TOLERANCE}
+                                ELSE ${TRANSFER_PAIR_IMPLIED_RATE_TOLERANCE}
+                            END
                         THEN 1
                         ELSE 0
                     END as impliedRateMatch,
@@ -74,6 +79,25 @@ export const TRANSFER_PAIR_RANKED_CANDIDATE_RANK_SQL = `            scored_pairs
                     ) OVER (PARTITION BY incomeTransactionId) as bankRateIncomeCandidateCount
                 FROM scored_pairs_base
             ),
+            implied_rate_counted_pairs AS (
+                SELECT
+                    *,
+                    SUM(
+                        CASE
+                            WHEN impliedRateMatch = 1 AND isCrossZonePair = 0 AND timeDiff <= ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
+                            THEN 1
+                            ELSE 0
+                        END
+                    ) OVER (PARTITION BY expenseTransactionId) as impliedRateExpenseCandidateCount,
+                    SUM(
+                        CASE
+                            WHEN impliedRateMatch = 1 AND isCrossZonePair = 0 AND timeDiff <= ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
+                            THEN 1
+                            ELSE 0
+                        END
+                    ) OVER (PARTITION BY incomeTransactionId) as impliedRateIncomeCandidateCount
+                FROM scored_pairs
+            ),
             compatible_pairs AS (
                 SELECT
                     *,
@@ -93,6 +117,10 @@ export const TRANSFER_PAIR_RANKED_CANDIDATE_RANK_SQL = `            scored_pairs
                         THEN 'AUTO_CROSS_CURRENCY_OPERATION'
                         WHEN impliedRateMatch = 1
                             AND timeDiff <= ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
+                            AND (
+                                isBookingDayPair = 0
+                                OR (impliedRateExpenseCandidateCount = 1 AND impliedRateIncomeCandidateCount = 1)
+                            )
                         THEN 'AUTO_CROSS_CURRENCY_IMPLIED_RATE'
                         WHEN sameBank = 1
                             AND sameCurrency = 0
@@ -101,6 +129,7 @@ export const TRANSFER_PAIR_RANKED_CANDIDATE_RANK_SQL = `            scored_pairs
                             AND (expenseMccGroupId IS NULL OR expenseMccGroupId = ${TRANSFER_MCC_GROUP_ID})
                             AND (incomeMccGroupId IS NULL OR incomeMccGroupId = ${TRANSFER_MCC_GROUP_ID})
                             AND timeDiff <= ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
+                            AND isBookingDayPair = 0
                         THEN 'AUTO_SAME_BANK_CROSS_CURRENCY'
                         WHEN bankRateAmountMatch = 1
                             AND hasTransferMcc = 1
@@ -126,7 +155,7 @@ export const TRANSFER_PAIR_RANKED_CANDIDATE_RANK_SQL = `            scored_pairs
                         THEN 'REVIEW_CROSS_CURRENCY_OPERATION'
                         ELSE NULL
                     END as confidenceBucket
-                FROM scored_pairs
+                FROM implied_rate_counted_pairs
             ),
             ranked_pairs AS (
                 SELECT

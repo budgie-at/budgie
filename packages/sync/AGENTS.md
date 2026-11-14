@@ -94,13 +94,13 @@ Each bank provider has:
 
 ### Supported Providers
 
-| Provider       | Status        | Implementation          |
-| -------------- | ------------- | ----------------------- |
+| Provider       | Status         | Implementation          |
+| -------------- | -------------- | ----------------------- |
 | Monobank       | ✅ Implemented | Full support            |
 | Enable Banking | ✅ Implemented | On-device, per-user key |
 | Privatbank     | 📋 Planned     | -                       |
 | Revolut        | 📋 Planned     | -                       |
-| Wise           | 📋 Planned     | -                       |
+| Wise           | ✅ Implemented | Enable Banking ASPSP    |
 
 ### Provider Parser Pattern
 
@@ -334,15 +334,19 @@ export { NewProviderSyncService } from './[provider]/service/[provider]-sync.ser
 
 `makePollingSyncAccountContinuation` moves an existing account onto a live provider and back, with no per-bank code. It keeps the sync row and sets `backwardSyncLimitAt` and the forward cursor to the UTC day after the last non-deleted row, so history stays and no backward fetch runs. An empty account goes through normal history import. It refuses a different currency, two known and different IBANs, a bank account linked to another account, and a target with a live sync, which it reads from `bank_syncs` because some Monobank accounts have an empty `external_source`.
 
-Disconnecting keeps an account holding any row not from the connection and returns it to its previous provider or to `BANK`. Its rows and balance stay as they are. A later file import drops rows the connection delivered: from the start date on while connected, between the start date and the disconnect afterwards.
+Disconnecting keeps an account holding any row not from the connection and returns it to its previous provider or to `BANK`. Its rows and balance stay as they are. A later file import drops rows the connection delivered: while connected, every row from the start of the UTC day of the account's earliest live-synced row on (the start date when the connection has delivered nothing yet, the chosen history depth while its backfill still runs); after a disconnect, rows between the start date and the disconnect.
 
 The boundary has no overlap by design, and there is no content match. `connect.test.ts` pins these cases, and reconciliation corrects the balance in all of them:
 
-| Case                                                   | Result                  |
-| ------------------------------------------------------ | ----------------------- |
-| A row on the last day, absent from the imported file   | Lost, balance adjusted  |
-| A row in the file that the bank books on the next day  | Counted twice, adjusted |
-| A row booked late, dated before the start date         | Lost, balance adjusted  |
+| Case                                                  | Result                  |
+| ----------------------------------------------------- | ----------------------- |
+| A row on the last day, absent from the imported file  | Lost, balance adjusted  |
+| A row in the file that the bank books on the next day | Counted twice, adjusted |
+| A row booked late, dated before the start date        | Lost, balance adjusted  |
+
+## Wise
+
+Wise is an ASPSP inside Enable Banking, named by `WISE_ASPSP_NAME`. Each of its balances is an `ENABLE_BANKING` account of one integration, titled by `EnableBankingMapper.mapAccount` (`Wise EUR`, `Wise USD`). Enable Banking rows carry a booking day, not a time, so two balances of one connection are never paired as one bank on timing alone: a conversion pairs as a transfer when its two amounts match the market rate, while a top-up from another bank stays an income. Consolidation keys the bank by `integration_id` only to tell two connections apart. `ExternalSourceEnum.WISE` only names the create-account row that opens the Enable Banking flow with Wise preselected; no `WISE` accounts exist. `WiseStatementImportService` imports older history from Wise's per-currency CSV export onto the connection's accounts, matched by currency, through `makeFileSyncService` with provider `WISE`, so the earliest-live-day cutoff dedupes it against the live feed. `wise.test.ts` and `wise-statement-import.test.ts` carry the sync fixtures and `packages/sync/src/e2e/e2e-fake-wise.ts` the e2e fake API ones.
 
 ## Testing
 
@@ -378,6 +382,7 @@ Fixtures come from `buildMonobank` in the harness and are typed as SDK types.
 | `@liaugust/monobank-sdk` | Monobank Personal API client, schemas, and error classes |
 | `date-fns`               | Date manipulation                                        |
 | `xlsx`                   | Privatbank statement parsing                             |
+| `papaparse`              | Wise CSV statement parsing                               |
 | `@rnw-community/shared`  | Type guards                                              |
 | `effect`                 | Effects, `effect/http` transport, Schema, tagged errors  |
 | `@noble/hashes`          | Binance HMAC signing                                     |

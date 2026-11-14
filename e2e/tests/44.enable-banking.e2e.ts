@@ -10,6 +10,9 @@ const THROWAWAY_KEY = 'e2e00000-0000-4000-8000-0000000000e1.pem, txt';
 const SYNTHETIC_ACCOUNT = 'E2E Synthetic Bank E2E Current';
 const CONNECT_ACCOUNT = 'E2E Statement Account';
 const CONNECT_ACCOUNT_ID = 960;
+const WISE_EUR_ACCOUNT = 'Wise EUR';
+const WISE_USD_ACCOUNT = 'Wise USD';
+const WISE_INSTITUTION_ROW = 'InstitutionRow.96';
 
 test('44 enable banking', { tags: ['sync'], platforms: ['ios'] }, async ({ budgie }) => {
     const ctx = budgie.ctx;
@@ -72,6 +75,36 @@ test('44 enable banking', { tags: ['sync'], platforms: ['ios'] }, async ({ budgi
         await expect(
             screen.getByRole('button', { name: /^Balance Adjustment, \+€747,.*E2E Synthetic Bank E2E Current$/ }).first()
         ).toBeVisible();
+    });
+
+    await b.phase('connect Wise from its own row: both balances and the conversion as one transfer', async () => {
+        await b.openLink(ctx, 'budgie://create-account');
+        await b.scrollTo(ctx, 'CreateAccount.WISE');
+        await b.tapId(ctx, 'CreateAccount.WISE');
+        await b.expectText(ctx, 'Set up once, about 5 minutes', 10_000);
+        await b.tapId(ctx, 'CreateEnableBankingAccount.ContinueButton');
+        await pickFile('EnableBankingKeyStep.ChooseKeyFile', THROWAWAY_KEY);
+        await expect(id('EnableBankingKeyStep.ChooseKeyFile')).toHaveText(/^Key file loaded/);
+        await b.tapId(ctx, 'CreateEnableBankingAccount.ContinueButton');
+        await b.expectText(ctx, 'Choose accounts', 30_000);
+        await expect(screen.getByRole('switch', { name: /^Wise EUR, EUR/ }).first()).toBeVisible();
+        await expect(screen.getByRole('switch', { name: /^Wise USD, USD/ }).first()).toBeVisible();
+        await b.tapId(ctx, 'CreateEnableBankingAccount.ContinueButton');
+        await b.expectId(ctx, 'SyncHistoryDepthOption.FULL', 10_000);
+        await b.tapId(ctx, 'CreateEnableBankingAccount.StartSyncButton');
+        await b.expectId(ctx, 'HomePage.TotalBalance', 30_000);
+        await b.scrollTo(ctx, WISE_INSTITUTION_ROW, 'up');
+        await expect(id(WISE_INSTITUTION_ROW)).toHaveText(/^Enable Banking · Wise, .*2 accounts$/, { timeout: 90_000 });
+        await b.tapId(ctx, WISE_INSTITUTION_ROW);
+        await expect(id(`AccountCard.${WISE_EUR_ACCOUNT}`)).toHaveText(/€1,000, Up to date$/, { timeout: 90_000 });
+        await expect(id(`AccountCard.${WISE_USD_ACCOUNT}`)).toHaveText(/\$108, Up to date$/, { timeout: 90_000 });
+        await expect(id('TransactionCard.Label.E2E_Wise_Conversion')).toHaveText(
+            /^E2E Wise Conversion, €100, \$108, From Wise EUR to Wise USD$/,
+            {
+                timeout: 30_000
+            }
+        );
+        await expect(id('TransactionCard.Label.E2E_Other_Bank')).toHaveText(/^E2E Other Bank, \+€1,100,.*Wise EUR$/);
     });
 
     await b.phase('valid consent', async () => {
@@ -158,7 +191,7 @@ test('44 enable banking', { tags: ['sync'], platforms: ['ios'] }, async ({ budgi
     });
 
     await b.phase('disconnect returns a connected account with its rows and balance', async () => {
-        await openIntegration(96, 'E2E Connect Bank');
+        await openIntegration(97, 'E2E Connect Bank');
         await b.scrollTo(ctx, 'EnableBankingConnectionCard.Disconnect');
         await b.tapId(ctx, 'EnableBankingConnectionCard.Disconnect');
         await b.expectText(ctx, 'Disconnect this bank?');

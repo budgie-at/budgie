@@ -1125,9 +1125,16 @@ importers:
       effect:
         specifier: 4.1.2
         version: 4.1.2
+      papaparse:
+        specifier: ^5.7.0
+        version: 5.7.0
       xlsx:
         specifier: ^0.18.5
         version: 0.18.5
+    devDependencies:
+      '@types/papaparse':
+        specifier: ^5
+        version: 5.5.2
 
   tests/app-tests:
     devDependencies:

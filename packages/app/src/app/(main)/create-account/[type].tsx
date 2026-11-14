@@ -1,4 +1,5 @@
 import { AccountTypeEnum, ExternalSourceEnum } from '@budgie/contracts';
+import { WISE_ASPSP_NAME } from '@budgie/sync';
 import { Redirect, useLocalSearchParams } from 'expo-router';
 
 import { isNotEmptyString } from '@rnw-community/shared';
@@ -44,14 +45,21 @@ export default function CreateAccountType() {
         case ExternalSourceEnum.INZHUR:
             return <ImportInzhurStatement />;
         case ExternalSourceEnum.ENABLE_BANKING:
-            return <CreateEnableBankingAccount connectAccountId={connectAccountIdNumber} savedApplicationId={savedApplicationId ?? null} />;
+            return (
+                <CreateEnableBankingAccount
+                    connectAccountId={connectAccountIdNumber}
+                    savedApplicationId={savedApplicationId ?? null}
+                    preselectedBankName={null}
+                />
+            );
+        case ExternalSourceEnum.WISE:
+            return <CreateEnableBankingAccount connectAccountId={null} savedApplicationId={null} preselectedBankName={WISE_ASPSP_NAME} />;
         case AccountTypeEnum.SAVINGS:
         case AccountTypeEnum.BANK_SYNC:
         case AccountTypeEnum.CRYPTO_SYNC:
         case ExternalSourceEnum.MANUAL:
         case ExternalSourceEnum.REVOLUT:
         case ExternalSourceEnum.COINBASE:
-        case ExternalSourceEnum.WISE:
         case ExternalSourceEnum.CSV:
         case ExternalSourceEnum.RECEIPT:
         case ExternalSourceEnum.APPLE_PAY_AUTOMATION:

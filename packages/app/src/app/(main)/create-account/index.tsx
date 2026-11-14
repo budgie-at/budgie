@@ -83,6 +83,11 @@ export default function Index() {
                         title={t`EU banks`}
                         bankProvider={ExternalSourceEnum.ENABLE_BANKING}
                     />
+                    <CreateSyncCard
+                        description={t`Every Wise balance through Enable Banking`}
+                        title={t`Wise`}
+                        bankProvider={ExternalSourceEnum.WISE}
+                    />
                 </GroupedListSection>
 
                 <MenuSpacer />

@@ -1,7 +1,6 @@
-import { EnableBankingSyncService, SyncHistoryDepthEnum, SyncUnauthorizedError } from '@budgie/sync';
+import { EnableBankingSyncService, SyncHistoryDepthEnum } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
-import * as Schema from 'effect/Schema';
 import { router } from 'expo-router';
 import { useEffect, useEffectEvent, useState } from 'react';
 import Toast from 'react-native-toast-message';
@@ -12,16 +11,14 @@ import { BankLogo } from '../../../@generic/component/bank-logo/bank-logo';
 import { PillButton } from '../../../@generic/component/pill-button/pill-button';
 import { appAtomRegistry } from '../../../@generic/constant/app-atom-registry.constant';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
-import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { enableBankingCallbackUrlAtom } from '../../constant/enable-banking-callback-url-atom.constant';
-import { EnableBankingSetupErrorReasonEnum } from '../../enum/enable-banking-setup-error-reason.enum';
 import { EnableBankingSetupStepEnum } from '../../enum/enable-banking-setup-step.enum';
-import { EnableBankingSetupError } from '../../error/enable-banking-setup.error';
+import { useEnableBankingBankLoading } from '../../hook/use-enable-banking-bank-loading.hook';
 import { useEnableBankingCallback } from '../../hook/use-enable-banking-callback.hook';
 import { useEnableBankingKeyState } from '../../hook/use-enable-banking-key-state.hook';
-import { useExplainEnableBankingError } from '../../hook/use-explain-enable-banking-error.hook';
 import { useSyncAccountSetupFlow } from '../../hook/use-sync-account-setup-flow.hook';
 import { EnableBankingConnectionService } from '../../service/enable-banking-connection.service';
+import { getDeviceRegionCode } from '../../utils/get-device-region-code.util';
 import { EnableBankingBankStep } from '../enable-banking-bank-step/enable-banking-bank-step';
 import { EnableBankingConnectAccountStep } from '../enable-banking-connect-account-step/enable-banking-connect-account-step';
 import { EnableBankingKeyStep } from '../enable-banking-key-step/enable-banking-key-step';
@@ -41,12 +38,12 @@ import type { ReactNode } from 'react';
 interface Props {
     readonly connectAccountId: number | null;
     readonly savedApplicationId: string | null;
+    readonly preselectedBankName: string | null;
 }
 
 // eslint-disable-next-line max-lines-per-function, max-statements -- Form orchestration component with multiple hooks and handlers
-export const CreateEnableBankingAccount = ({ connectAccountId, savedApplicationId: connectApplicationId }: Props) => {
+export const CreateEnableBankingAccount = ({ connectAccountId, savedApplicationId: connectApplicationId, preselectedBankName }: Props) => {
     const { t } = useLingui();
-    const explainError = useExplainEnableBankingError();
     const hasConnectKey = isDefined(connectApplicationId);
     const [step, setStep] = useState(() => {
         if (isDefined(appAtomRegistry.get(enableBankingCallbackUrlAtom))) {
@@ -58,9 +55,13 @@ export const CreateEnableBankingAccount = ({ connectAccountId, savedApplicationI
     const [banks, setBanks] = useState<readonly EnableBankingBankInterface[]>([]);
     const [authorization, setAuthorization] = useState<EnableBankingAuthorizationInterface | null>(null);
     const [historyDepth, setHistoryDepth] = useState(SyncHistoryDepthEnum.FULL);
+    const isPreselected = (bank: EnableBankingBankInterface) => bank.name.toLocaleLowerCase() === preselectedBankName?.toLocaleLowerCase();
+    const candidateBanks = isDefined(preselectedBankName) ? banks.filter(isPreselected) : banks;
     const { isLoading: isBusy, run } = useSingleFlight();
     const { applicationId, parsedApplicationId, isKeyPicked, handleApplicationIdChange, handlePickKey, savePickedKey } =
         useEnableBankingKeyState(run, connectApplicationId);
+
+    const { loadBanks, beginAuthorization } = useEnableBankingBankLoading(connectAccountId, savePickedKey);
 
     const {
         accountSelection,
@@ -98,6 +99,12 @@ export const CreateEnableBankingAccount = ({ connectAccountId, savedApplicationI
         }
     );
 
+    const startAuthorization = (applicationId: string, bank: EnableBankingBankInterface) =>
+        Effect.gen(function* () {
+            setStep(EnableBankingSetupStepEnum.WAITING);
+            yield* beginAuthorization(applicationId, bank);
+        }).pipe(Effect.tapError(() => Effect.sync(() => void setStep(EnableBankingSetupStepEnum.BANK))));
+
     const handleContinue = () => {
         if (!isDefined(parsedApplicationId)) {
             return;
@@ -105,25 +112,24 @@ export const CreateEnableBankingAccount = ({ connectAccountId, savedApplicationI
 
         void run(
             Effect.gen(function* () {
-                yield* savePickedKey(parsedApplicationId);
-                const banks = yield* Effect.flatMap(EnableBankingSyncService, service => service.listBanks(parsedApplicationId)).pipe(
-                    Effect.mapError(error =>
-                        Schema.is(SyncUnauthorizedError)(error)
-                            ? EnableBankingSetupError.make({ reason: EnableBankingSetupErrorReasonEnum.INACTIVE_APPLICATION })
-                            : error
+                const listedBanks = yield* loadBanks(parsedApplicationId).pipe(
+                    Effect.tapError(() =>
+                        Effect.sync(() => {
+                            setStep(EnableBankingSetupStepEnum.KEY);
+                        })
                     )
                 );
-                setBanks(banks);
-                setStep(EnableBankingSetupStepEnum.BANK);
-            }).pipe(
-                Effect.tapError(() =>
-                    Effect.sync(() => {
-                        setStep(EnableBankingSetupStepEnum.KEY);
-                    })
-                ),
-                Effect.mapError(explainError),
-                toastOnFailure(t`Could not verify the application`)
-            )
+                const regionCode = getDeviceRegionCode();
+                const preselectedBanks = listedBanks.filter(bank => isPreselected(bank) && bank.isSupported);
+                const preselectedBank = preselectedBanks.find(bank => bank.country === regionCode) ?? preselectedBanks.at(0);
+                setBanks(listedBanks);
+
+                if (isDefined(preselectedBank)) {
+                    yield* startAuthorization(parsedApplicationId, preselectedBank);
+                } else {
+                    setStep(EnableBankingSetupStepEnum.BANK);
+                }
+            })
         );
     };
 
@@ -140,22 +146,7 @@ export const CreateEnableBankingAccount = ({ connectAccountId, savedApplicationI
             return;
         }
 
-        void run(
-            Effect.gen(function* () {
-                setStep(EnableBankingSetupStepEnum.WAITING);
-                yield* Effect.flatMap(EnableBankingConnectionService, connection =>
-                    connection.begin(parsedApplicationId, bank, null, connectAccountId)
-                );
-            }).pipe(
-                Effect.tapError(() =>
-                    Effect.sync(() => {
-                        setStep(EnableBankingSetupStepEnum.BANK);
-                    })
-                ),
-                Effect.mapError(explainError),
-                toastOnFailure(t`Could not start the authorization`)
-            )
-        );
+        void run(startAuthorization(parsedApplicationId, bank));
     };
 
     const handleChooseAnotherBank = () => {
@@ -168,6 +159,10 @@ export const CreateEnableBankingAccount = ({ connectAccountId, savedApplicationI
     };
 
     const handleStepAwareGoBack = () => {
+        if (isBusy) {
+            return;
+        }
+
         switch (step) {
             case EnableBankingSetupStepEnum.BANK:
                 if (hasConnectKey) {
@@ -204,7 +199,7 @@ export const CreateEnableBankingAccount = ({ connectAccountId, savedApplicationI
 
     const missingAccount = t`Missing an account? Link it to your application in Enable Banking, then connect this bank again.`;
     const parkedPreviews = authorization?.previews.filter(preview => preview.isParked) ?? [];
-    let title = t`Connect EU banks`;
+    let title = isDefined(preselectedBankName) ? t`Connect ${preselectedBankName}` : t`Connect EU banks`;
     let stepContent = <EnableBankingSetupGuide />;
     let footerButton: ReactNode = (
         <PillButton label={t`I have my key file`} onPress={handleHaveKey} testID={CreateEnableBankingAccountSelector.ContinueButton} />
@@ -285,7 +280,15 @@ export const CreateEnableBankingAccount = ({ connectAccountId, savedApplicationI
     }
 
     if (step === EnableBankingSetupStepEnum.BANK) {
-        return <EnableBankingBankStep banks={banks} isLoading={isBusy} onSelectBank={handleSelectBank} onGoBack={handleStepAwareGoBack} />;
+        return (
+            <EnableBankingBankStep
+                banks={candidateBanks}
+                isLoading={isBusy}
+                preselectedBankName={preselectedBankName}
+                onSelectBank={handleSelectBank}
+                onGoBack={handleStepAwareGoBack}
+            />
+        );
     }
 
     return (

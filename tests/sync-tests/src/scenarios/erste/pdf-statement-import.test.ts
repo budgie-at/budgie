@@ -59,7 +59,8 @@ const ersteStatementLayer = (items: PdfTextItemInterface[]) =>
         Layer.provide(
             Layer.succeed(SyncFileReader, {
                 readPdfTextItems: () => Effect.succeed(items),
-                readBytes: () => Effect.succeed(new Uint8Array())
+                readBytes: () => Effect.succeed(new Uint8Array()),
+                readText: () => Effect.succeed('')
             })
         ),
         Layer.provide(Layer.succeed(LedgerWorkload, LedgerWorkload.of({ runForeground: effect => effect }))),

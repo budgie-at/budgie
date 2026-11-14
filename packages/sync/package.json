@@ -38,6 +38,10 @@
         "date-fns": "^4.4.0",
         "drizzle-orm": "1.0.0-rc.4",
         "effect": "4.1.2",
+        "papaparse": "^5.7.0",
         "xlsx": "^0.18.5"
+    },
+    "devDependencies": {
+        "@types/papaparse": "^5"
     }
 }

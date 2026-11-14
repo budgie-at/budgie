@@ -7,6 +7,7 @@ import { RECEIPT_SCAN_ACTION } from '../receipt/constant/receipt-scan-action.con
 import { receiptScanRequestAtom } from '../receipt/constant/receipt-scan-request-atom.constant';
 import { ReceiptSourceEnum } from '../receipt/enum/receipt-source.enum';
 import { enableBankingCallbackUrlAtom } from '../sync/constant/enable-banking-callback-url-atom.constant';
+import { enableBankingSetupPathAtom } from '../sync/constant/enable-banking-setup-path-atom.constant';
 import { resolveEnableBankingCallbackUrl } from '../sync/utils/resolve-enable-banking-callback-url.util';
 
 import type { NativeIntent } from 'expo-router';
@@ -27,7 +28,7 @@ export const redirectSystemPath: NativeIntent['redirectSystemPath'] = ({ path })
     if (isDefined(enableBankingCallbackUrl)) {
         appAtomRegistry.set(enableBankingCallbackUrlAtom, enableBankingCallbackUrl);
 
-        return '/create-account/ENABLE_BANKING';
+        return appAtomRegistry.get(enableBankingSetupPathAtom) ?? '/create-account/ENABLE_BANKING';
     }
 
     return path;

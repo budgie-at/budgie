@@ -3,4 +3,5 @@ export interface FileBankSyncImportResultInterface {
     readonly parsedTransactionCount: number;
     readonly newTransactionCount: number;
     readonly existingTransactionCount: number;
+    readonly skippedTransactionCount: number;
 }

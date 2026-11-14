@@ -235,3 +235,4 @@ export {
     startHousehold
 } from './cloud/share-tests-shared';
 export type { ShareCloudsInterface } from './cloud/share-harness';
+export { freezeDateClock } from './utils/freeze-date-clock.util';

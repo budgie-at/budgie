@@ -48,7 +48,7 @@ export const buildTransferPairRankedCandidateBaseSql = scopedSql`
                     expense_account.instrument_id as expenseInstrumentId,
                     expense_instrument.type as expenseInstrumentType,
                     expense_account.external_source as expenseExternalSource,
-                    COALESCE(NULLIF(expense_account.external_source, ''), expense_tx.external_source) as expenseBankSource,
+                    CASE WHEN expense_account.external_source = '${ExternalSourceEnum.ENABLE_BANKING}' AND expense_account.integration_id IS NOT NULL THEN '${ExternalSourceEnum.ENABLE_BANKING}:' || expense_account.integration_id ELSE COALESCE(NULLIF(expense_account.external_source, ''), expense_tx.external_source) END as expenseBankSource,
                     SUBSTR(expense_account.iban, -${TRANSFER_PAIR_ACCOUNT_HINT_SUFFIX_LENGTH}) as expenseAccountHintSuffix,
                     CASE
                         WHEN expense_account.iban IS NOT NULL
@@ -113,7 +113,7 @@ export const buildTransferPairRankedCandidateBaseSql = scopedSql`
                     income_account.instrument_id as incomeInstrumentId,
                     income_instrument.type as incomeInstrumentType,
                     income_account.external_source as incomeExternalSource,
-                    COALESCE(NULLIF(income_account.external_source, ''), income_tx.external_source) as incomeBankSource,
+                    CASE WHEN income_account.external_source = '${ExternalSourceEnum.ENABLE_BANKING}' AND income_account.integration_id IS NOT NULL THEN '${ExternalSourceEnum.ENABLE_BANKING}:' || income_account.integration_id ELSE COALESCE(NULLIF(income_account.external_source, ''), income_tx.external_source) END as incomeBankSource,
                     SUBSTR(income_account.iban, -${TRANSFER_PAIR_ACCOUNT_HINT_SUFFIX_LENGTH}) as incomeAccountHintSuffix,
                     CASE
                         WHEN income_account.iban IS NOT NULL
@@ -195,7 +195,7 @@ export const buildTransferPairRankedCandidateBaseSql = scopedSql`
                             AND income_entries.incomeBankSource IS NOT NULL
                             AND income_entries.incomeBankSource != ''
                             AND expense_entries.expenseBankSource = income_entries.incomeBankSource
-                            AND expense_entries.expenseBankSource != '${ExternalSourceEnum.ENABLE_BANKING}'
+                            AND expense_entries.expenseBankSource NOT LIKE '${ExternalSourceEnum.ENABLE_BANKING}%'
                         THEN 1
                         WHEN expense_entries.expenseAccountBankHint IS NOT NULL
                             AND expense_entries.expenseAccountBankHint != ''
@@ -203,6 +203,12 @@ export const buildTransferPairRankedCandidateBaseSql = scopedSql`
                         THEN 1
                         ELSE 0
                     END as sameBank,
+                    CASE
+                        WHEN expense_entries.expenseBankSource LIKE '${ExternalSourceEnum.ENABLE_BANKING}%'
+                            OR income_entries.incomeBankSource LIKE '${ExternalSourceEnum.ENABLE_BANKING}%'
+                        THEN 1
+                        ELSE 0
+                    END as isBookingDayPair,
                     CASE
                         WHEN expense_entries.expenseInstrumentId = income_entries.incomeInstrumentId
                             AND expense_entries.expenseEntryAmount = income_entries.incomeEntryAmount
