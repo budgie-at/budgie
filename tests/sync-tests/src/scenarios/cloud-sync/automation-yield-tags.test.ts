@@ -4,6 +4,7 @@ import {
     ExternalSourceEnum,
     INVESTMENTS_CATEGORY_ID,
     TransactionTypeEnum,
+    TransactionYieldRepository,
     YieldKindEnum
 } from '@budgie/contracts';
 import { YieldTagRepairService } from '@budgie/sync';
@@ -161,7 +162,7 @@ describe('cloud-sync/automation-yield-tags', () => {
             })
         );
 
-        it.effect('chunks a large sync id list (40000 ids) when repairing', () =>
+        it.effect('chunks large sync and transaction id lists (40000 ids) when repairing', () =>
             Effect.gen(function* () {
                 const seed = new TestSeedService(testDb);
 
@@ -171,8 +172,8 @@ describe('cloud-sync/automation-yield-tags', () => {
 
                 yield* seedEarnIncome(seed, binance.id, 'Late earn', 'binance:earn:BNB:late');
 
-                const [{ syncId }] = yield* testDb.$client.unsafe<{ readonly syncId: string }>(
-                    `SELECT sync_id AS syncId FROM transactions WHERE title = 'Late earn'`
+                const [{ id, syncId }] = yield* testDb.$client.unsafe<{ readonly id: number; readonly syncId: string }>(
+                    `SELECT id, sync_id AS syncId FROM transactions WHERE title = 'Late earn'`
                 );
                 const syncIds = [...Array.from({ length: 40000 }, (_, index) => `missing-${index}`), syncId];
 
@@ -184,6 +185,17 @@ describe('cloud-sync/automation-yield-tags', () => {
                 const rows = yield* yieldKindsOf(testDb, 'Late earn');
 
                 expect(rows).toEqual([{ yieldKind: YieldKindEnum.EARN }]);
+
+                yield* testDb.$client.unsafe('UPDATE transaction_entries SET category_id = NULL');
+                yield* Effect.flatMap(TransactionYieldRepository, repository =>
+                    repository.fillMissingYieldCategory([...Array.from({ length: 40000 }, (_, index) => -index - 1), id])
+                ).pipe(Effect.provide(TransactionYieldRepository.layer), Effect.provideService(Db, testDb));
+
+                expect(
+                    yield* testDb.$client.unsafe<{ readonly categoryId: number; readonly categorySource: string }>(
+                        'SELECT category_id AS categoryId, category_source AS categorySource FROM transaction_entries'
+                    )
+                ).toEqual([{ categoryId: INVESTMENTS_CATEGORY_ID, categorySource: CategorySourceEnum.RULE }]);
             })
         );
     });

@@ -1,4 +1,4 @@
-import { type SQL, and, asc, eq, gt, gte, inArray, isNotNull, isNull, like, ne, notInArray, or, sql } from 'drizzle-orm';
+import { and, asc, eq, gt, gte, inArray, isNotNull, isNull, like, ne, notInArray, or, sql, type SQL } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
 import * as Array from 'effect/Array';
 import * as Context from 'effect/Context';
@@ -26,6 +26,7 @@ import { TransactionEntityTable } from '../table/transaction-entity.table';
 import type { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import type { YieldFieldsInterface } from '../interface/yield-fields.interface';
 import type { YieldTagCandidateQueryInterface } from '../interface/yield-tag-candidate-query.interface';
+
 export class TransactionYieldRepository extends Context.Service<TransactionYieldRepository>()(
     '@budgie/contracts/TransactionYieldRepository',
     {
@@ -60,9 +61,7 @@ export class TransactionYieldRepository extends Context.Service<TransactionYield
                 );
 
             return {
-                findDepositYieldTimeline: Effect.fn('TransactionYieldRepository.findDepositYieldTimeline')(function* (
-                    depositAccountId: number
-                ) {
+                findDepositYieldTimeline: Effect.fn('TransactionYieldRepository.findDepositYieldTimeline')(function* (accountId: number) {
                     const isInterest = sql`(${TransactionEntityTable.type} = ${TransactionTypeEnum.INCOME} AND ${TransactionEntityTable.yieldKind} = ${YieldKindEnum.INTEREST})`;
                     const [onDeposit] = yield* Db.query(db =>
                         db
@@ -72,10 +71,10 @@ export class TransactionYieldRepository extends Context.Service<TransactionYield
                                 >`MAX(CASE WHEN ${TransactionEntityTable.type} IN (${TransactionTypeEnum.ADJUSTMENT}, ${TransactionTypeEnum.TRANSFER}) OR ${isInterest} THEN ${TransactionEntityTable.operatedAt} END)`,
                                 firstPrincipalAt: sql<
                                     number | null
-                                >`MIN(CASE WHEN ${TransactionEntityTable.type} = ${TransactionTypeEnum.TRANSFER} AND ${TransactionEntityTable.toAccountId} = ${depositAccountId} THEN ${TransactionEntityTable.operatedAt} END)`,
+                                >`MIN(CASE WHEN ${TransactionEntityTable.type} = ${TransactionTypeEnum.TRANSFER} AND ${TransactionEntityTable.toAccountId} = ${accountId} THEN ${TransactionEntityTable.operatedAt} END)`,
                                 lastInterestAt: sql<
                                     number | null
-                                >`MAX(CASE WHEN ${isInterest} AND (${TransactionEntityTable.yieldSourceAccountId} = ${depositAccountId} OR ${TransactionEntityTable.toAccountId} = ${depositAccountId}) THEN ${TransactionEntityTable.operatedAt} END)`
+                                >`MAX(CASE WHEN ${isInterest} AND (${TransactionEntityTable.yieldSourceAccountId} = ${accountId} OR ${TransactionEntityTable.toAccountId} = ${accountId}) THEN ${TransactionEntityTable.operatedAt} END)`
                             })
                             .from(TransactionEntryEntityTable)
                             .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
@@ -83,7 +82,7 @@ export class TransactionYieldRepository extends Context.Service<TransactionYield
                                 and(
                                     transactionFilters.buildVisibleTransactionCondition(),
                                     transactionFilters.buildLedgerEntryCondition(),
-                                    eq(TransactionEntryEntityTable.accountId, depositAccountId)
+                                    eq(TransactionEntryEntityTable.accountId, accountId)
                                 )
                             )
                     );
@@ -98,7 +97,7 @@ export class TransactionYieldRepository extends Context.Service<TransactionYield
                             .where(
                                 and(
                                     transactionFilters.buildVisibleTransactionCondition(),
-                                    eq(TransactionEntityTable.yieldSourceAccountId, depositAccountId),
+                                    eq(TransactionEntityTable.yieldSourceAccountId, accountId),
                                     sql`EXISTS (SELECT 1 FROM ${TransactionEntryEntityTable} WHERE ${TransactionEntryEntityTable.transactionId} = ${TransactionEntityTable.id} AND ${TransactionEntryEntityTable.originalTransactionId} IS NULL AND ${TransactionEntryEntityTable.deletedAt} IS NULL)`
                                 )
                             )
@@ -201,22 +200,23 @@ export class TransactionYieldRepository extends Context.Service<TransactionYield
                                 )
                             )
                     ).pipe(Effect.map(rows => rows.map(({ id }) => id))),
-                fillMissingYieldCategory: (transactionIds: readonly number[]) =>
-                    isEmptyArray(transactionIds)
-                        ? Effect.void
-                        : Db.query(db =>
-                              db
-                                  .update(TransactionEntryEntityTable)
-                                  .set({ categoryId: INVESTMENTS_CATEGORY_ID, categorySource: CategorySourceEnum.RULE })
-                                  .where(
-                                      and(
-                                          inArray(TransactionEntryEntityTable.transactionId, [...transactionIds]),
-                                          isNull(TransactionEntryEntityTable.categoryId),
-                                          eq(TransactionEntryEntityTable.kind, TransactionEntryKindEnum.PRIMARY),
-                                          ne(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.FEE)
-                                      )
-                                  )
-                          ).pipe(Effect.asVoid),
+                fillMissingYieldCategory: Effect.fn('TransactionYieldRepository.fillMissingYieldCategory')((targetIds: readonly number[]) =>
+                    Effect.forEach(Array.chunksOf(targetIds, 500), chunk =>
+                        Db.query(db =>
+                            db
+                                .update(TransactionEntryEntityTable)
+                                .set({ categoryId: INVESTMENTS_CATEGORY_ID, categorySource: CategorySourceEnum.RULE })
+                                .where(
+                                    and(
+                                        inArray(TransactionEntryEntityTable.transactionId, chunk),
+                                        isNull(TransactionEntryEntityTable.categoryId),
+                                        eq(TransactionEntryEntityTable.kind, TransactionEntryKindEnum.PRIMARY),
+                                        ne(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.FEE)
+                                    )
+                                )
+                        )
+                    ).pipe(Effect.asVoid)
+                ),
                 areAccountsInSameZone: (firstAccountId: number, secondAccountId: number) =>
                     Db.query(db =>
                         db
