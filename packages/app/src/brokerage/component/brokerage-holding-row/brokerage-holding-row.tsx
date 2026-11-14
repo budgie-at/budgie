@@ -13,6 +13,7 @@ import { useIsAmountProtected } from '../../../@generic/hook/use-is-amount-prote
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { AccountCardBalance } from '../../../account/component/account-card-balance/account-card-balance';
 import { AccountCardBase } from '../../../account/component/account-card-base/account-card-base';
+import { AccountCardTitleLineCountContext } from '../../../account/context/account-card-title-line-count.context';
 import { AccountRowLeadingContext } from '../../../account/context/account-row-leading.context';
 import { useFormatInstrumentAmount } from '../../../i18n/hook/use-format-instrument-amount.hook';
 import { useFormatPercent } from '../../../i18n/hook/use-format-percent.hook';
@@ -65,28 +66,32 @@ export const BrokerageHoldingRow = ({ holding, balance, bankName, instrumentSymb
 
     return (
         <TransactionRowSurface separatorInset={64} position={position}>
-            <AccountRowLeadingContext value={leading}>
-                <AccountCardBase
-                    account={displayAccount}
-                    balance={balance}
-                    convertedBalance={null}
-                    amountLabel={t`${quantityLabel}, worth ${valueLabel}`}
-                    subtitle={subtitle}
-                    {...(isSecurity && { onPress: openSecurity })}
-                >
-                    {isValued ? (
-                        <AccountCardBalance title={displayAccount.title} balance={value} instrumentSymbol={instrumentSymbol} />
-                    ) : (
-                        <Text
-                            maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
-                            className="text-[15px] font-medium text-secondary-foreground"
-                        >
-                            <Trans>Value unavailable</Trans>
-                        </Text>
-                    )}
-                    {isDefined(gain) ? <BrokerageReturnText gain={gain} percent={gainPercent} instrumentSymbol={instrumentSymbol} /> : null}
-                </AccountCardBase>
-            </AccountRowLeadingContext>
+            <AccountCardTitleLineCountContext value={1}>
+                <AccountRowLeadingContext value={leading}>
+                    <AccountCardBase
+                        account={displayAccount}
+                        balance={balance}
+                        convertedBalance={null}
+                        amountLabel={t`${quantityLabel}, worth ${valueLabel}`}
+                        subtitle={subtitle}
+                        {...(isSecurity && { onPress: openSecurity })}
+                    >
+                        {isValued ? (
+                            <AccountCardBalance title={displayAccount.title} balance={value} instrumentSymbol={instrumentSymbol} />
+                        ) : (
+                            <Text
+                                maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
+                                className="text-[15px] font-medium text-secondary-foreground"
+                            >
+                                <Trans>Value unavailable</Trans>
+                            </Text>
+                        )}
+                        {isDefined(gain) ? (
+                            <BrokerageReturnText gain={gain} percent={gainPercent} instrumentSymbol={instrumentSymbol} />
+                        ) : null}
+                    </AccountCardBase>
+                </AccountRowLeadingContext>
+            </AccountCardTitleLineCountContext>
         </TransactionRowSurface>
     );
 };

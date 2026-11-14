@@ -1,9 +1,11 @@
+import { use } from 'react';
 import { Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { ROW_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-max-font-size-multiplier.constant';
 import { cn } from '../../../@generic/utils/cn.util';
+import { AccountCardTitleLineCountContext } from '../../context/account-card-title-line-count.context';
 import { AccountSyncStateEnum } from '../../enum/account-sync-state.enum';
 
 interface Props {
@@ -15,6 +17,8 @@ interface Props {
 }
 
 export const AccountCardTitle = ({ title, subtitle, iban, syncState, syncStateLabel }: Props) => {
+    const titleLineCount = use(AccountCardTitleLineCountContext);
+
     const isSyncIssue =
         syncState === AccountSyncStateEnum.SYNCING ||
         syncState === AccountSyncStateEnum.FAILED ||
@@ -28,7 +32,9 @@ export const AccountCardTitle = ({ title, subtitle, iban, syncState, syncStateLa
             <Text
                 className="text-[15px] font-medium text-primary"
                 maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
-                numberOfLines={2}
+                numberOfLines={titleLineCount}
+                adjustsFontSizeToFit={titleLineCount === 1}
+                minimumFontScale={0.85}
                 ellipsizeMode="tail"
             >
                 {title}
