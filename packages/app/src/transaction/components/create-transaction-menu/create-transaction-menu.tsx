@@ -2,7 +2,7 @@ import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
-import { useEffect, useRef, useState } from 'react';
+import { useDeferredValue, useEffect, useRef, useState } from 'react';
 import { AccessibilityInfo, StyleSheet, View, useWindowDimensions } from 'react-native';
 import Animated, {
     Easing,
@@ -21,6 +21,7 @@ import { isDefined } from '@rnw-community/shared';
 import { ReceiptScannerModule } from '../../../../modules/receipt-scanner';
 import { CircularActionButton } from '../../../@generic/component/circular-action-button/circular-action-button';
 import { EASE_OUT, MOTION_FAST_DURATION, SPRING_SETTLE } from '../../../@generic/constant/motion.constant';
+import { splashScreenHiddenAtom } from '../../../@generic/constant/splash-screen-hidden-atom.constant';
 import { useCreateActionContext } from '../../../@generic/context/create-action.context';
 import { aiSystemStatusAtom } from '../../../ai/constant/ai-system-status-atom.constant';
 import { useVoiceInputContext } from '../../../ai/context/voice-input.context';
@@ -60,15 +61,17 @@ export const CreateTransactionMenu = ({ isOpen, onClose, triggerRef, accountId, 
     const firstTileRef = useRef<View>(null);
     const shouldRestoreFocusRef = useRef(false);
     const isOpenRef = useRef(isOpen);
-    const [isCloseButtonShown, setIsCloseButtonShown] = useState(isOpen);
+    const [isPresented, setIsPresented] = useState(isOpen);
 
     const isVoiceInputEnabled = useSetting('isAiVoiceInputEnabled');
     const isAiAvailable = useAtomValue(aiSystemStatusAtom).state !== AiSystemStateEnum.DISABLED;
     const isReducedMotion = useReducedMotion();
     const progress = useSharedValue(0);
+    const isSplashScreenHidden = useAtomValue(splashScreenHiddenAtom);
+    const isMounted = useDeferredValue(isSplashScreenHidden, false) || isPresented;
 
-    if (isOpen && !isCloseButtonShown) {
-        setIsCloseButtonShown(true);
+    if (isOpen && !isPresented) {
+        setIsPresented(true);
     }
 
     const handleDismiss = () => {
@@ -117,20 +120,20 @@ export const CreateTransactionMenu = ({ isOpen, onClose, triggerRef, accountId, 
     const contextActionTestID = createAction?.testID ?? CreateTransactionMenuSelector.item(0);
     const pointerEvents = isOpen ? 'box-none' : 'none';
     const accessibilityVisibility = isOpen ? 'auto' : 'no-hide-descendants';
-    const closeButtonClassName = isCloseButtonShown ? 'opacity-100' : 'opacity-0';
+    const closeButtonClassName = isPresented ? 'opacity-100' : 'opacity-0';
     const stackGapClassName = fontScale >= CREATE_MENU_LARGE_TEXT_FONT_SCALE ? LARGE_TEXT_STACK_GAP_CLASSNAME : STACK_GAP_CLASSNAME;
 
     useEffect(() => {
         isOpenRef.current = isOpen;
 
         if (!isOpen) {
-            const hideCloseButton = () => {
-                setIsCloseButtonShown(false);
+            const endPresentation = () => {
+                setIsPresented(false);
             };
             const handleClosed = (finished?: boolean) => {
                 'worklet';
                 if (finished === true) {
-                    scheduleOnRN(hideCloseButton);
+                    scheduleOnRN(endPresentation);
                 }
             };
 
@@ -175,6 +178,10 @@ export const CreateTransactionMenu = ({ isOpen, onClose, triggerRef, accountId, 
     });
 
     const scrimStyle = useAnimatedStyle(() => ({ opacity: progress.get() }));
+
+    if (!isMounted) {
+        return null;
+    }
 
     return (
         <View
