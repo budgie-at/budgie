@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.183.3](https://github.com/budgie-at/budgie/compare/v6.183.2...v6.183.3) (2026-11-14)
+
+### Bug Fixes
+
+* root-cause the e2e flakes from the last week of CI ([#2224](https://github.com/budgie-at/budgie/issues/2224)) ([ce2906e](https://github.com/budgie-at/budgie/commit/ce2906e7c63434e489dff3390bba60e18224506b)), closes [#2214](https://github.com/budgie-at/budgie/issues/2214) [#2087](https://github.com/budgie-at/budgie/issues/2087) [#2091](https://github.com/budgie-at/budgie/issues/2091)
+
+
 ## [6.183.2](https://github.com/budgie-at/budgie/compare/v6.183.1...v6.183.2) (2026-11-14)
 
 ### Bug Fixes
