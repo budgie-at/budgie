@@ -4,12 +4,13 @@ import {
     isPositiveAdjustmentTransaction
 } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { ListRow } from '../../../@generic/component/list-row/list-row';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
+import { cn } from '../../../@generic/utils/cn.util';
 import { useTransactionCardSubtitle } from '../../hook/use-transaction-card-subtitle.hook';
 import { useTransactionRowTitle } from '../../hook/use-transaction-row-title.hook';
 import { getSecurityTrade } from '../../utils/get-security-trade.util';
@@ -46,6 +47,17 @@ export const TransactionCardContent = ({ transaction, accountId = null }: Props)
         isDefined(transaction.receipt) ||
         isDefined(getSecurityTrade(transaction));
 
+    const rowTitle = isDetailPromoted ? promotableSegment : displayTitle;
+    const regularTitleNode = isNotEmptyString(rowTitle) ? (
+        <Text
+            className="text-primary text-[17px] font-semibold"
+            numberOfLines={titleLineCount}
+            ellipsizeMode="tail"
+            {...(isDetailPromoted && isDefined(subtitleTestID) && { testID: subtitleTestID })}
+        >
+            {rowTitle}
+        </Text>
+    ) : null;
     const titleNode = isAdjustment ? (
         <Text
             className="text-primary text-[17px] font-semibold"
@@ -55,14 +67,7 @@ export const TransactionCardContent = ({ transaction, accountId = null }: Props)
             {adjustmentTitle}
         </Text>
     ) : (
-        <Text
-            className="text-primary text-[17px] font-semibold"
-            numberOfLines={titleLineCount}
-            ellipsizeMode="tail"
-            {...(isDetailPromoted && isDefined(subtitleTestID) && { testID: subtitleTestID })}
-        >
-            {isDetailPromoted ? promotableSegment : displayTitle}
-        </Text>
+        regularTitleNode
     );
     const detail = isAccessibilityTextSize ? (
         <TransactionCardStackedSubtitle transaction={transaction} accountId={accountId} />
@@ -77,7 +82,11 @@ export const TransactionCardContent = ({ transaction, accountId = null }: Props)
 
     return (
         <ListRow
-            leading={<TransactionCardIcon transaction={transaction} />}
+            leading={
+                <View className={cn('justify-center', !hasDetail && 'min-h-[46.33px]')}>
+                    <TransactionCardIcon transaction={transaction} />
+                </View>
+            }
             title={titleNode}
             trailing={<TransactionAmount transaction={transaction} accountId={accountId} />}
             {...(hasDetail && { detail })}
