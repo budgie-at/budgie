@@ -62,4 +62,16 @@ describe('enable-banking/wise-csv-parser', () => {
             expect(malformedAmount).toContain('CARD-1000020');
         })
     );
+
+    it.effect.each(['00-00-2023 13:00:00.000', '31-02-2023 13:00:00.000', '05-01-2023 24:00:00.000'])(
+        'rejects a row whose Date Time %s is not on the calendar',
+        dateTime =>
+            Effect.gen(function* () {
+                const error = yield* Effect.flip(
+                    parseStatement(readWiseStatement(WISE_STATEMENT.GBP).replace('05-01-2023 13:00:00.000', dateTime))
+                );
+
+                expect(error).toContain('CARD-1000020');
+            })
+    );
 });
