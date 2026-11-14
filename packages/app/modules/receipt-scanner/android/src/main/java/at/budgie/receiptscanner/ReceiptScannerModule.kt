@@ -2,6 +2,7 @@ package at.budgie.receiptscanner
 
 import android.app.Activity
 import android.content.Context
+import android.content.IntentSender
 import android.net.Uri
 import com.google.android.gms.tasks.Tasks
 import com.google.mlkit.vision.common.InputImage
@@ -35,7 +36,11 @@ class ReceiptScannerModule : Module() {
       GmsDocumentScanning.getClient(scannerOptions)
         .getStartScanIntent(activity)
         .addOnSuccessListener { intentSender ->
-          activity.startIntentSenderForResult(intentSender, SCAN_REQUEST_CODE, null, 0, 0, 0)
+          try {
+            activity.startIntentSenderForResult(intentSender, SCAN_REQUEST_CODE, null, 0, 0, 0)
+          } catch (_: IntentSender.SendIntentException) {
+            finishScan(emptyList())
+          }
         }
         .addOnFailureListener {
           finishScan(emptyList())
