@@ -148,14 +148,14 @@ jobs:
 
       - name: Resolve runtime versions
         id: runtime
-        uses: rnw-community/mobile-ci/actions/ota-runtime-version@e1b51d801ddbf75a07408822f581e387ac2783e1 # v4.13.0
+        uses: rnw-community/mobile-ci/actions/ota-runtime-version@972654d8817a6e72f370a22ab9e5fb79b30df4e6 # v4.13.1
         with:
           app-dir: packages/app
           platform: all
           eas-profile: production
 
       - name: Publish update
-        uses: rnw-community/mobile-ci/actions/eas-update@e1b51d801ddbf75a07408822f581e387ac2783e1 # v4.13.0
+        uses: rnw-community/mobile-ci/actions/eas-update@972654d8817a6e72f370a22ab9e5fb79b30df4e6 # v4.13.1
         with:
           app-dir: packages/app
           channel: production

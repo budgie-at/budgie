@@ -25,7 +25,7 @@ export const FloatingTabBarSurface = ({ children, backdrop }: Props) => {
                         <View className="absolute inset-x-0 bottom-full h-[20px] bg-linear-to-b from-grouped-surface/0 to-grouped-surface" />
                     </View>
                 )}
-                <View className="flex-row items-center justify-between px-lg pb-safe">{children}</View>
+                <View className="flex-row items-center justify-between px-lg pb-safe-or-[12px]">{children}</View>
             </View>
         </>
     );

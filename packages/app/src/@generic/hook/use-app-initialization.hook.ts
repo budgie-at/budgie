@@ -28,6 +28,8 @@ import { TRANSFER_CONSOLIDATION_TASK } from '../../sync/constant/transfer-consol
 import { AppDataSyncService } from '../../sync/service/app-data-sync.service';
 import { BackgroundSyncSessionService } from '../../sync/service/background-sync-session.service';
 import { WidgetSnapshotService } from '../../widget/service/widget-snapshot.service';
+import { appAtomRegistry } from '../constant/app-atom-registry.constant';
+import { splashScreenHiddenAtom } from '../constant/splash-screen-hidden-atom.constant';
 import { appRuntime } from '../runtime/app.runtime';
 import { Workload } from '../service/workload.service';
 import { waitForIdle } from '../utils/wait-for-idle.util';
@@ -126,7 +128,10 @@ const scheduleAppServicesInitialization = Effect.sleep(STARTUP_SERVICE_DELAY_MS)
     Effect.andThen(initializeAppServices.pipe(logAndContinue, Effect.forkDetach))
 );
 
-const hideSplashScreen = Effect.sleep(SPLASH_HIDE_DELAY_MS).pipe(Effect.andThen(Effect.promise(() => SplashScreen.hideAsync())));
+const hideSplashScreen = Effect.sleep(SPLASH_HIDE_DELAY_MS).pipe(
+    Effect.andThen(Effect.promise(() => SplashScreen.hideAsync())),
+    Effect.andThen(Effect.sync(() => void appAtomRegistry.set(splashScreenHiddenAtom, true)))
+);
 
 const startup = Effect.all([logAndContinue(scheduleAppServicesInitialization), logAndContinue(hideSplashScreen)], {
     concurrency: 'unbounded',

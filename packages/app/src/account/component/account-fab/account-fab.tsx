@@ -11,7 +11,7 @@ interface Props {
 }
 
 export const AccountFab = ({ isMenuOpen, onPress, ref }: Props) => (
-    <View className="absolute right-0 bottom-0 px-lg pb-safe" pointerEvents="box-none">
+    <View className="absolute right-0 bottom-0 px-lg pb-safe-or-[12px]" pointerEvents="box-none">
         <CreateTransactionTrigger ref={ref} isOpen={isMenuOpen} onPress={onPress} />
     </View>
 );
