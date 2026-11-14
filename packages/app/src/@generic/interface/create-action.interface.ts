@@ -1,11 +1,11 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 
-import type { ColorPaletteVariant } from '../type/color-palette-variant.type';
+import type { CreateMenuTileVariant } from '../type/create-menu-tile-variant.type';
 
 export interface CreateActionInterface {
     icon: UserIconNameEnum;
     label: string;
-    variant: ColorPaletteVariant;
+    variant: CreateMenuTileVariant;
     onPress: () => void;
     testID?: string;
 }

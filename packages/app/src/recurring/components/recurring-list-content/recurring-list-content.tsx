@@ -6,7 +6,11 @@ import { isDefined } from '@rnw-community/shared';
 
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { StaticChromeLegendList } from '../../../@generic/component/static-chrome-legend-list/static-chrome-legend-list';
-import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from '../../../@generic/constant/floating-tab-bar.constant';
+import {
+    FLOATING_TAB_BAR_HEIGHT,
+    FLOATING_TAB_BAR_MARGIN,
+    FLOATING_TAB_BAR_MIN_BOTTOM_INSET
+} from '../../../@generic/constant/floating-tab-bar.constant';
 import { RecurringListItemKindEnum } from '../../enum/recurring-list-item-kind.enum';
 import { useRecurringSeriesList } from '../../hook/use-recurring-series-list.hook';
 import { buildRecurringListItems } from '../../utils/build-recurring-list-items.util';
@@ -41,7 +45,9 @@ export const RecurringListContent = ({ header }: Props) => {
     const items = buildRecurringListItems(loadedSeries, expandedSections, now);
     const stickyHeaderIndices = items.flatMap((item, index) => (item.type === RecurringListItemKindEnum.HEADER ? [index] : []));
     const summary = buildRecurringSummary(loadedSeries, now);
-    const contentContainerStyle = { paddingBottom: FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + bottom };
+    const contentContainerStyle = {
+        paddingBottom: FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + Math.max(bottom, FLOATING_TAB_BAR_MIN_BOTTOM_INSET)
+    };
     const emptyState = (
         <LoadingContent isLoading={isLoading}>
             <RecurringListEmptyState />

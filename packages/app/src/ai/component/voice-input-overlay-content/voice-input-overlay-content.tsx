@@ -43,7 +43,6 @@ export const VoiceInputOverlayContent = ({ voiceInput, onRecord, onCancel }: Pro
     const showBubble = voiceInput.state === VoiceInputStateEnum.RECORDING || voiceInput.state === VoiceInputStateEnum.TRANSCRIBING;
     const hasError = voiceInput.state === VoiceInputStateEnum.ERROR && isNotEmptyString(voiceInput.data.error);
     const micContainerStyle = { paddingBottom: bottom + MIC_BOTTOM_OFFSET };
-    const closeContainerStyle = { paddingBottom: bottom };
 
     return (
         <View className="absolute inset-0" pointerEvents="box-none">
@@ -64,7 +63,7 @@ export const VoiceInputOverlayContent = ({ voiceInput, onRecord, onCancel }: Pro
                 />
             </View>
 
-            <View className="absolute right-0 bottom-0 px-lg" style={closeContainerStyle} pointerEvents="box-none">
+            <View className="absolute right-0 bottom-0 px-lg pb-safe-or-[12px]" pointerEvents="box-none">
                 <CircularActionButton
                     icon={UserIconNameEnum.Plus}
                     label={t`Close`}

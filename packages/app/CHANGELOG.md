@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.185.0](https://github.com/budgie-at/budgie/compare/v6.184.0...v6.185.0) (2026-11-14)
+
+### Features
+
+* **app:** give the create menu colour tiles ([#2227](https://github.com/budgie-at/budgie/issues/2227)) ([a4e9e61](https://github.com/budgie-at/budgie/commit/a4e9e6109a9f6c6289d0aacc4dbfcbfd16c58846))
+
+
 # [6.184.0](https://github.com/budgie-at/budgie/compare/v6.183.3...v6.184.0) (2026-11-14)
 
 ### Features
