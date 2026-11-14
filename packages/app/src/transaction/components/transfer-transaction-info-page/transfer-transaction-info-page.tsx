@@ -7,6 +7,7 @@ import { useOpenModal } from '../../../@generic/hook/use-open-modal/use-open-mod
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { useDeleteTransaction } from '../../hook/use-delete-transaction.hook';
 import { useTransferTransactionActions } from '../../hook/use-transfer-transaction-actions.hook';
+import { getSecurityTrade } from '../../utils/get-security-trade.util';
 import { getTransactionEditHref } from '../../utils/get-transaction-edit-href.util';
 import { getTransactionFeeEditHref } from '../../utils/get-transaction-fee-edit-href.util';
 import { TransactionInfoPageContent } from '../transaction-info-page-content/transaction-info-page-content';
@@ -21,7 +22,9 @@ export const TransferTransactionInfoPage = ({ transaction }: UpdateTransactionFo
     const openConsolidationSource = useOpenModal('/consolidation-source');
     const isConsolidated = isDefined(transaction.consolidationType);
     const transactionId = transaction.id;
-    const handleOpenFee = () => void router.push(getTransactionFeeEditHref(TransactionTypeEnum.TRANSFER, transactionId));
+    const editHref = getTransactionEditHref(transaction);
+    const feeEditHref = isDefined(getSecurityTrade(transaction)) ? editHref : null;
+    const handleOpenFee = () => void router.push(feeEditHref ?? getTransactionFeeEditHref(TransactionTypeEnum.TRANSFER, transactionId));
     const handleDelete = () => run(deleteTransaction(transactionId, { isConsolidated }));
     const handleConsolidationPress = () => {
         openConsolidationSource({ transactionId });
@@ -34,7 +37,7 @@ export const TransferTransactionInfoPage = ({ transaction }: UpdateTransactionFo
                 transaction={transaction}
                 onDelete={handleDelete}
                 onFeePress={handleOpenFee}
-                editHref={getTransactionEditHref(transaction)}
+                editHref={editHref}
                 actionItems={actions.items}
                 {...(isConsolidated && { onOpenSources: handleConsolidationPress })}
             />

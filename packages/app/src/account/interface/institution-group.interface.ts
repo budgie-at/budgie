@@ -7,4 +7,6 @@ export interface InstitutionGroupInterface {
     readonly groupNumber: number | null;
     readonly accounts: AccountWithSyncEntityInterface[];
     readonly total: number;
+    readonly cash: number;
+    readonly isHoldingProvider: boolean;
 }

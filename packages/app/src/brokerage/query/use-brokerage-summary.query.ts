@@ -9,6 +9,7 @@ import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { isListedSecurityType } from '../../instrument/utils/is-listed-security-type.util';
 import { useInstrumentPositionsQuery } from '../../market-data/query/use-instrument-positions.query';
 import { defaultInstrumentAtom } from '../../settings/constants/settings-atoms.constant';
+import { calculatePortfolioReturn } from '../utils/calculate-portfolio-return.util';
 
 import { brokerageCashReturnAtom } from './brokerage-cash-return.atom';
 
@@ -35,38 +36,17 @@ export const useBrokerageSummaryQuery = (
     );
 
     const getValue = (account: Pick<AccountWithSyncEntityInterface, 'id'>) => balancesByAccountId.get(account.id)?.convertedBalance ?? 0;
-    const [value, cash] = [securities, cashAccounts].map(group => group.reduce((total, account) => total + getValue(account), 0));
-    const securityGains = securities.map((account, index) => {
-        const accountBalance = balancesByAccountId.get(account.id);
-        const position = positions.at(index);
-        const costBasis = position?.costBasis;
-
-        if (
-            accountBalance?.isValued !== true ||
-            !isDefined(position) ||
-            !isDefined(costBasis) ||
-            !isPositiveNumber(accountBalance.balance)
-        ) {
-            return null;
-        }
-
-        return getValue(account) * Math.min(position.amount / accountBalance.balance, 1) - costBasis;
-    });
-    const gain = positions.reduce(
-        (total, position, index) => total + position.realizedProfitLoss + (securityGains.at(index) ?? 0),
+    const cash = cashAccounts.reduce((total, account) => total + getValue(account), 0);
+    const { gain, percent, positionReturns } = calculatePortfolioReturn(
+        securities.map((account, index) => ({
+            value: getValue(account),
+            balance: balancesByAccountId.get(account.id)?.balance ?? 0,
+            isValued: balancesByAccountId.get(account.id)?.isValued === true,
+            position: positions.at(index) ?? null
+        })),
+        cash,
         cashReturn
     );
-    const unknownBasisValue = securities.reduce((total, account, index) => {
-        const accountBalance = balancesByAccountId.get(account.id);
-        const position = positions.at(index);
-        const knownShare =
-            isDefined(securityGains.at(index)) && isDefined(position) && isPositiveNumber(accountBalance?.balance)
-                ? Math.min(position.amount / accountBalance.balance, 1)
-                : 0;
-
-        return total + getValue(account) * (1 - knownShare);
-    }, 0);
-    const moneyIn = value + cash - gain - unknownBasisValue;
     const positiveTotal = [...securities, ...cashAccounts].reduce((total, account) => total + Math.max(getValue(account), 0), 0);
     const cashLabel = t({ message: 'Cash', context: 'Brokerage cash account' });
 
@@ -74,8 +54,9 @@ export const useBrokerageSummaryQuery = (
         .map((account, index) => {
             const holdingValue = getValue(account);
             const isValued = balancesByAccountId.get(account.id)?.isValued === true;
-            const holdingGain = securityGains.at(index) ?? null;
-            const costBasis = isDefined(holdingGain) ? (positions.at(index)?.costBasis ?? null) : null;
+            const holdingReturn = positionReturns.at(index) ?? null;
+            const holdingGain = holdingReturn?.gain ?? null;
+            const costBasis = holdingReturn?.costBasis ?? null;
 
             return {
                 account,
@@ -91,7 +72,7 @@ export const useBrokerageSummaryQuery = (
 
     return {
         gain,
-        percent: isPositiveNumber(moneyIn) ? gain / moneyIn : null,
+        percent,
         holdings,
         hasSecurities: isNotEmptyArray(securities),
         isLoading: isNotEmptyArray(securities) && !isNotEmptyArray(positions),

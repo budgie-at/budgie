@@ -24,33 +24,20 @@ test('29 crypto account and market', { tags: ['crypto'] }, async ({ budgie }) =>
 
     await budgie.start({ fixture: '29.db' });
 
-    await b.phase('home crypto group', async () => {
-        await b.expectId(ctx, 'CryptoGroup.Market.BTC', 10_000);
-        await ids('CryptoGroup.Card.BTC', 'CryptoGroup.Container.BTC', 'NetWorthComposition');
-        await ids(
-            'CryptoGroup.Balance.BTC',
-            'CryptoGroup.Value.BTC',
-            'CryptoGroup.Toggle.BTC',
-            'CryptoGroup.AccountCount.BTC',
-            'CryptoGroup.Rate.BTC'
-        );
-        await b.expectId(ctx, 'CryptoGroup.Market.ETH', 10_000);
-        await ids(
-            'CryptoGroup.Card.ETH',
-            'CryptoGroup.Container.ETH',
-            'CryptoGroup.Balance.ETH',
-            'CryptoGroup.Value.ETH',
-            'CryptoGroup.Toggle.ETH',
-            'CryptoGroup.AccountCount.ETH',
-            'CryptoGroup.Rate.ETH'
-        );
-        await b.tapId(ctx, 'CryptoGroup.Toggle.BTC');
-        await b.scrollToCentre(ctx, 'AccountCard.Balance.E2E_Crypto_Vault.2_BTC');
-        await b.expectId(ctx, 'AccountCard.Balance.E2E_Crypto_Vault.2_BTC');
+    await b.phase('home crypto holdings', async () => {
+        await b.expectId(ctx, 'HomeHolding.BTC', 10_000);
+        await ids('HomeHolding.Caption.BTC', 'HomeHolding.Value.BTC', 'NetWorthComposition');
+        await expect(id('HomeHolding.Caption.BTC')).toHaveText(/^4 BTC · .*2 accounts$/);
+        await b.expectId(ctx, 'HomeHolding.ETH', 10_000);
+        await ids('HomeHolding.Caption.ETH', 'HomeHolding.Value.ETH');
+        await b.expectNoId(ctx, 'AccountCard.E2E Crypto Vault');
     });
 
-    await b.phase('binance accounts under their integration', async () => {
-        await screen.scrollUntilVisible(id('AccountCard.E2E Binance BTC'), { direction: 'down', timeout: 10_000 });
+    await b.phase('binance exchange row opens its institution', async () => {
+        await b.scrollToCentered(ctx, 'InstitutionRow.1');
+        await expect(id('InstitutionRow.1')).toHaveText(/ in BTC/);
+        await b.tapId(ctx, 'InstitutionRow.1');
+        await b.expectId(ctx, 'Institution.Page', 10_000);
         await ids('AccountCard.E2E Binance BTC', 'AccountCard.Balance.E2E_Binance_BTC.2_BTC');
     });
 
@@ -64,11 +51,13 @@ test('29 crypto account and market', { tags: ['crypto'] }, async ({ budgie }) =>
         await b.expectNoId(ctx, 'SyncTokenSection.MonobankPasteButton');
         await b.tapId(ctx, 'PageHeader.BackButton');
         await b.expectId(ctx, 'AccountDetails.Page', 3_000);
+        await b.tapId(ctx, 'PageHeader.BackButton');
+        await b.expectId(ctx, 'Institution.Page', 3_000);
         await backHome();
     });
 
     await b.phase('BTC market page', async () => {
-        await b.tapId(ctx, 'CryptoGroup.Market.BTC');
+        await b.tapId(ctx, 'HomeHolding.BTC');
         await b.expectId(ctx, 'CurrencyMarket.Header.BTC', 10_000);
         await ids('CurrencyMarket.Price.BTC', 'CurrencyMarket.Change.BTC', 'CurrencyMarket.Sparkline.BTC');
         await b.tapId(ctx, 'CurrencyMarket.Range.YEAR');
@@ -80,7 +69,7 @@ test('29 crypto account and market', { tags: ['crypto'] }, async ({ budgie }) =>
             'CurrencyMarket.Holdings.UnrealizedProfit.BTC'
         );
         await b.expectText(ctx, '4 BTC');
-        await screen.scrollUntilVisible(id('CurrencyMarket.Account.BTC.2'), { direction: 'down', timeout: 3_000 });
+        await screen.scrollUntilVisible(id('CurrencyMarket.Account.BTC.3'), { direction: 'down', timeout: 3_000 });
         await b.expectId(ctx, 'CurrencyMarket.Account.BTC.2');
         await screen.scrollUntilVisible(id('CurrencyMarket.MarketCap.BTC'), { direction: 'down', timeout: 3_000 });
         await ids('CurrencyMarket.DailyChange.BTC', 'CurrencyMarket.Volume.BTC', 'CurrencyMarket.Updated.BTC');
@@ -88,13 +77,8 @@ test('29 crypto account and market', { tags: ['crypto'] }, async ({ budgie }) =>
     });
 
     await b.phase('ETH market page', async () => {
-        await b.tapId(ctx, 'CryptoGroup.Toggle.BTC');
-        await b.expectNoId(ctx, 'AccountCard.E2E Crypto Vault', 5_000);
-        await b.expectId(ctx, 'CryptoGroup.Market.ETH', 5_000);
-        await b.expectSettledId(ctx, 'CryptoGroup.Market.ETH');
-        // The collapsed ETH row ends under the floating tab bar, whose Settings tab covers the row's centre: tap its top edge.
-        await id('CryptoGroup.Market.ETH').tap({ position: { x: 185, y: 12 } });
-        await b.expectId(ctx, 'CurrencyMarket.Header.ETH', 10_000);
+        await b.scrollToCentered(ctx, 'HomeHolding.ETH');
+        await b.tapUntil(ctx, 'HomeHolding.ETH', () => b.expectId(ctx, 'CurrencyMarket.Header.ETH', 10_000));
         await ids(
             'CurrencyMarket.Price.ETH',
             'CurrencyMarket.Sparkline.ETH',
@@ -109,12 +93,10 @@ test('29 crypto account and market', { tags: ['crypto'] }, async ({ budgie }) =>
     });
 
     await b.phase('crypto income from account details', async () => {
-        if (!(await id('AccountCard.E2E Crypto Vault').isVisible())) {
-            await b.tapId(ctx, 'CryptoGroup.Toggle.BTC');
-        }
-        await b.scrollToCentre(ctx, 'AccountCard.Balance.E2E_Crypto_Vault.2_BTC');
-        // A tap while the centring swipe still glides only stops the list: tap again if details did not open.
-        await b.tapUntil(ctx, 'AccountCard.Balance.E2E_Crypto_Vault.2_BTC', () => b.expectId(ctx, 'AccountDetails.ActionsButton', 5_000));
+        await b.scrollToCentered(ctx, 'HomeHolding.BTC');
+        await b.tapUntil(ctx, 'HomeHolding.BTC', () => b.expectId(ctx, 'CurrencyMarket.Header.BTC', 10_000));
+        await screen.scrollUntilVisible(id('CurrencyMarket.Account.BTC.2'), { direction: 'down', timeout: 3_000 });
+        await b.tapUntil(ctx, 'CurrencyMarket.Account.BTC.2', () => b.expectId(ctx, 'AccountDetails.ActionsButton', 5_000));
         await ids('AccountDetails.ConvertedValue', 'AccountDetails.MarketLink');
         await b.tapId(ctx, 'AccountDetails.MarketLink');
         await b.expectId(ctx, 'CurrencyMarket.Header.BTC', 10_000);
@@ -130,12 +112,14 @@ test('29 crypto account and market', { tags: ['crypto'] }, async ({ budgie }) =>
         await b.expectId(ctx, 'AccountDetails.ActionsButton', 10_000);
         await b.expectId(ctx, 'TransactionCard.Label.E2E_Crypto_Income', 10_000);
         await b.expectId(ctx, 'TransactionCard.Category.E2E_Crypto_Buy');
+        await b.tapId(ctx, 'PageHeader.BackButton');
+        await b.expectId(ctx, 'CurrencyMarket.Header.BTC', 10_000);
         await backHome();
     });
 
     await b.phase('updated market holdings', async () => {
-        await b.tapId(ctx, 'CryptoGroup.Market.BTC');
-        await b.expectId(ctx, 'CurrencyMarket.Header.BTC', 10_000);
+        await b.scrollToCentered(ctx, 'HomeHolding.BTC');
+        await b.tapUntil(ctx, 'HomeHolding.BTC', () => b.expectId(ctx, 'CurrencyMarket.Header.BTC', 10_000));
         await b.expectText(ctx, '5 BTC');
         await b.expectId(ctx, 'CurrencyMarket.Holdings.UnrealizedProfit.BTC');
         await backHome();

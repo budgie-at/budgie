@@ -7,7 +7,12 @@ import { HomeSectionInterface } from '../interface/home-section.interface';
 import { isCashSection } from '../type-guard/is-cash-section.type-guard';
 import { isInstitutionGroup } from '../type-guard/is-institution-group.type-guard';
 
-const isInstitution = (item: object | undefined): boolean => isDefined(item) && isInstitutionGroup(item);
+const isStandaloneInstitution = (item: object): boolean => isInstitutionGroup(item) && !item.isHoldingProvider;
+
+const isHoldingProvider = (item: object): boolean => isInstitutionGroup(item) && item.isHoldingProvider;
+
+const isSameCard = (item: object, neighbour: object | null | undefined): boolean =>
+    isDefined(neighbour) && !isStandaloneInstitution(neighbour) && isHoldingProvider(item) === isHoldingProvider(neighbour);
 
 export const getHomeSectionItemPosition = (section: HomeSectionInterface, index: number): TransactionListRowPositionEnum => {
     if (isCashSection(section)) {
@@ -15,13 +20,13 @@ export const getHomeSectionItemPosition = (section: HomeSectionInterface, index:
     }
 
     const { data } = section;
+    const item = data[index];
 
-    if (isInstitution(data[index])) {
+    if (isStandaloneInstitution(item)) {
         return TransactionListRowPositionEnum.SINGLE;
     }
 
-    const hasPrevious = index > 0 && !isInstitution(data[index - 1]);
-    const hasNext = index < data.length - 1 && !isInstitution(data[index + 1]);
+    const previous = index > 0 ? data[index - 1] : null;
 
-    return getCategorizeInboxRowPosition(hasPrevious, hasNext);
+    return getCategorizeInboxRowPosition(isSameCard(item, previous), isSameCard(item, data.at(index + 1)));
 };

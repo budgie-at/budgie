@@ -52,8 +52,11 @@ msgstr "«{title}» eliminado"
 msgid "(pick one)"
 msgstr "(elige uno)"
 
+#. placeholder {0}: accounts.length
 #. placeholder {0}: parts.length
 #. placeholder {0}: shelvedList.shelvedCount
+#: src/account/component/home-holding-row-caption/home-holding-row-caption.tsx
+#: src/account/component/institution-row/institution-row.tsx
 #: src/account/component/shelved-accounts-page/shelved-accounts-page.tsx
 #: src/rule/hooks/use-rule-condition-formatter.hook.ts
 msgid "{0, plural, one {# account} other {# accounts}}"
@@ -187,14 +190,8 @@ msgid "{accountCount, plural, one {# account} other {# accounts}}"
 msgstr "{accountCount, plural, one {# cuenta} other {# cuentas}}"
 
 #: src/account/component/accounts-group/accounts-group.tsx
-#: src/account/component/crypto-currency-group-toggle-row/crypto-currency-group-toggle-row.tsx
-#: src/account/component/institution-row/institution-row.tsx
 msgid "{accountsCount, plural, one {# account} other {# accounts}}"
 msgstr "{accountsCount, plural, one {# cuenta} other {# cuentas}}"
-
-#: src/account/component/institution-row/institution-row.tsx
-msgid "{accountsCount, plural, one {# asset} other {# assets}}"
-msgstr "{accountsCount, plural, one {# activo} other {# activos}}"
 
 #: src/market-data/component/currency-market-stale-price/currency-market-stale-price.tsx
 msgid "{ageDays, plural, one {# day old} other {# days old}}"
@@ -267,6 +264,10 @@ msgstr "{categoryName}: {threshold}% gastado"
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "{categoryName}: limit reached"
 msgstr "{categoryName}: límite alcanzado"
+
+#: src/account/component/home-today-change-text/home-today-change-text.tsx
+msgid "{change} · 24h"
+msgstr "{change} · 24 h"
 
 #: src/transaction/components/statistics-change-label/statistics-change-label.tsx
 msgid "{changePercent} less than {previousLabel}"
@@ -1127,6 +1128,18 @@ msgstr "+{hiddenCategoryCount} más"
 msgid "+{incomeAmount} / month"
 msgstr "+{incomeAmount} / mes"
 
+#: src/account/component/holding-provider-caption/holding-provider-caption.tsx
+msgid "<0>{investedLabel}</0> in {positionName}"
+msgstr "<0>{investedLabel}</0> en {positionName}"
+
+#: src/account/component/holding-provider-caption/holding-provider-caption.tsx
+msgid "<0>{investedLabel}</0> in {positionsCount, plural, one {# asset} other {# assets}}"
+msgstr "<0>{investedLabel}</0> en {positionsCount, plural, one {# activo} other {# activos}}"
+
+#: src/account/component/holding-provider-caption/holding-provider-caption.tsx
+msgid "<0>{investedLabel}</0> in {positionsCount, plural, one {# position} other {# positions}}"
+msgstr "<0>{investedLabel}</0> en {positionsCount, plural, one {# posición} other {# posiciones}}"
+
 #: src/account/component/family-section-header/family-section-header.tsx
 msgid "<0>Paused</0> · not in your total"
 msgstr "<0>En pausa</0> · no se incluye en tu total"
@@ -1143,10 +1156,6 @@ msgstr "−{changePercent} vs. {shortPreviousLabel}"
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "≈ {formattedMonths} mo"
 msgstr "≈ {formattedMonths} m."
-
-#: src/account/component/crypto-currency-group-market-link/crypto-currency-group-market-link.tsx
-msgid "1 {instrumentCode} ≈ {defaultInstrumentSymbol}{formattedRate}"
-msgstr "1 {instrumentCode} ≈ {defaultInstrumentSymbol}{formattedRate}"
 
 #: src/transaction/components/conversion-row/conversion-row.tsx
 msgid "1 {sourceCode} = {formattedRate} {destinationCode}"
@@ -1363,6 +1372,10 @@ msgstr "Cuentas · {accountCount}"
 #: src/sync/component/sync-accounts-step/sync-accounts-step.tsx
 msgid "Accounts · {accountsCount}"
 msgstr "Cuentas · {accountsCount}"
+
+#: src/account/component/home-provider-group-label/home-provider-group-label.tsx
+msgid "Accounts · {providersCount}"
+msgstr "Cuentas · {providersCount}"
 
 #: src/transaction/components/transaction-filters/transaction-filters.tsx
 msgid "Accounts ({selectedAccountsCount})"
@@ -2292,6 +2305,10 @@ msgstr "Bróker"
 msgid "Brokerage name"
 msgstr "Nombre del bróker"
 
+#: src/account/component/home-provider-group-label/home-provider-group-label.tsx
+msgid "Brokers · {providersCount}"
+msgstr "Brókeres · {providersCount}"
+
 #: src/category/components/category-icon-fix-row/category-icon-fix-row.tsx
 msgid "Browse icons"
 msgstr "Explorar iconos"
@@ -2570,6 +2587,7 @@ msgid "Cash"
 msgstr "Efectivo"
 
 #: src/account/component/institution-account-row/institution-account-row.tsx
+#: src/account/component/institution-row-cash/institution-row-cash.tsx
 #: src/brokerage/query/use-brokerage-summary.query.ts
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgctxt "Brokerage cash account"
@@ -4122,6 +4140,7 @@ msgid "Deposit"
 msgstr "Depósito"
 
 #: src/app/(main)/securities/buy/[id].tsx
+#: src/brokerage/component/update-security-trade/update-security-trade.tsx
 msgctxt "Brokerage funding"
 msgid "Deposit"
 msgstr "Depósito"
@@ -4847,6 +4866,10 @@ msgstr "Tipo de cambio no encontrado"
 #: src/transaction/components/conversion-row/conversion-row.tsx
 msgid "Exchange rate: {rateLabel}"
 msgstr "Tipo de cambio: {rateLabel}"
+
+#: src/account/component/home-provider-group-label/home-provider-group-label.tsx
+msgid "Exchanges · {providersCount}"
+msgstr "Exchanges · {providersCount}"
 
 #: src/budget/components/budget-limit-source-field/budget-limit-source-field.tsx
 #: src/budget/components/budget-stat-row/budget-stat-row.tsx
@@ -6282,10 +6305,6 @@ msgstr "¿Falta una cuenta? Vincúlala a tu aplicación en Enable Banking y vuel
 msgid "Missing categories"
 msgstr "Categorías sin asignar"
 
-#: src/account/component/crypto-currency-group-market-link/crypto-currency-group-market-link.tsx
-msgid "Missing rate"
-msgstr "Falta el tipo de cambio"
-
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "Mobile data"
 msgstr "Datos móviles"
@@ -7526,12 +7545,10 @@ msgid "Partial export"
 msgstr "Exportación parcial"
 
 #: src/brokerage/component/brokerage-gain-line/brokerage-gain-line.tsx
-#: src/brokerage/component/brokerage-institution-row-detail/brokerage-institution-row-detail.tsx
 msgid "Partial value"
 msgstr "Valor parcial"
 
 #: src/brokerage/component/brokerage-gain-line/brokerage-gain-line.tsx
-#: src/brokerage/component/brokerage-institution-row-detail/brokerage-institution-row-detail.tsx
 msgid "Partial value — some prices unavailable"
 msgstr "Valor parcial: faltan algunos precios"
 
@@ -10125,6 +10142,10 @@ msgstr "Top por capitalización"
 msgid "Top-ups"
 msgstr "Ingresos"
 
+#: src/account/component/home-section-return-line/home-section-return-line.tsx
+msgid "total"
+msgstr "total"
+
 #: src/account/component/account-selector-card-debt-total-subtitle/account-selector-card-debt-total-subtitle.tsx
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
 #: src/account/component/debt-account-card/debt-account-card.tsx
@@ -10152,10 +10173,12 @@ msgstr "Total pedido prestado"
 msgid "Total lent"
 msgstr "Total prestado"
 
+#: src/brokerage/component/security-trade-total-field/security-trade-total-field.tsx
 #: src/recurring/components/recurring-detail-stats/recurring-detail-stats.tsx
 msgid "Total paid"
 msgstr "Total pagado"
 
+#: src/brokerage/component/security-trade-total-field/security-trade-total-field.tsx
 #: src/recurring/components/recurring-detail-stats/recurring-detail-stats.tsx
 msgid "Total received"
 msgstr "Total recibido"
@@ -10734,6 +10757,7 @@ msgstr "Valor"
 msgid "value unavailable"
 msgstr "valor no disponible"
 
+#: src/account/component/home-holding-row-amount/home-holding-row-amount.tsx
 #: src/account/component/security-account-card/security-account-card.tsx
 #: src/brokerage/component/brokerage-holding-row/brokerage-holding-row.tsx
 msgid "Value unavailable"
@@ -10925,6 +10949,11 @@ msgstr "Wi-Fi"
 #: src/rule/constant/external-source.constant.ts
 msgid "Wise"
 msgstr "Wise"
+
+#: src/brokerage/component/update-security-trade/update-security-trade.tsx
+msgctxt "Brokerage funding"
+msgid "Withdrawal"
+msgstr "Retiro"
 
 #: src/inzhur/component/inzhur-operations-import-summary/inzhur-operations-import-summary.tsx
 msgid "Withdrawals"
