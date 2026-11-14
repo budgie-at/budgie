@@ -56,16 +56,11 @@ msgstr "(bitte wählen)"
 #. placeholder {0}: parts.length
 #. placeholder {0}: shelvedList.shelvedCount
 #: src/account/component/home-holding-row-caption/home-holding-row-caption.tsx
+#: src/account/component/institution-row/institution-row.tsx
 #: src/account/component/shelved-accounts-page/shelved-accounts-page.tsx
-#: src/account/utils/get-institution-row-caption.util.ts
 #: src/rule/hooks/use-rule-condition-formatter.hook.ts
 msgid "{0, plural, one {# account} other {# accounts}}"
 msgstr "{0, plural, one {# Konto} other {# Konten}}"
-
-#. placeholder {0}: accounts.length
-#: src/account/utils/get-institution-row-caption.util.ts
-msgid "{0, plural, one {# asset} other {# assets}}"
-msgstr "{0, plural, one {# Asset} other {# Assets}}"
 
 #. placeholder {0}: charges.length
 #: src/siri/service/siri-catalog.service.ts
@@ -245,10 +240,6 @@ msgstr "{assignedLabel} zugewiesen · {incomeLabel} erhalten"
 #: src/import/components/import-column-mapper-modal-content/import-column-mapper-modal-content.tsx
 msgid "{availableCount, plural, one {# column available} other {# columns available}}"
 msgstr "{availableCount, plural, one {# Spalte verfügbar} other {# Spalten verfügbar}}"
-
-#: src/account/component/institution-row/institution-row.tsx
-msgid "{cashLabel} cash"
-msgstr "{cashLabel} Cash"
 
 #: src/inzhur/component/inzhur-institution-row-detail/inzhur-institution-row-detail.tsx
 msgid "{cashLabel} cash · {fundsLabel}"
@@ -671,10 +662,6 @@ msgstr "{installmentCount, plural, one {# Zahlung insgesamt} other {# Zahlungen 
 msgid "{installmentCount, plural, one {Split into # payment} other {Split into # payments}}"
 msgstr "{installmentCount, plural, one {In # Zahlung aufteilen} other {In # Zahlungen aufteilen}}"
 
-#: src/account/utils/get-institution-row-caption.util.ts
-msgid "{investedLabel} in {positionName}"
-msgstr "{investedLabel} in {positionName}"
-
 #: src/siri/service/siri-catalog.service.ts
 msgid "{label}: {formattedSpent} of {formattedLimit} spent, {formattedLeft} left."
 msgstr "{label}: {formattedSpent} von {formattedLimit} ausgegeben, {formattedLeft} übrig."
@@ -831,14 +818,6 @@ msgstr "{periodLabel}: {amount} unter dem Limit abgeschlossen"
 #: src/budget/components/budget-history-chart/budget-history-chart.tsx
 msgid "{periodLabel}, spent {spentAmount} of {limitAmount}"
 msgstr "{periodLabel}, {spentAmount} von {limitAmount} ausgegeben"
-
-#: src/account/utils/get-institution-row-caption.util.ts
-msgid "{positionsCount, plural, one {{investedLabel} in # asset} other {{investedLabel} in # assets}}"
-msgstr "{positionsCount, plural, one {{investedLabel} in # Asset} other {{investedLabel} in # Assets}}"
-
-#: src/account/utils/get-institution-row-caption.util.ts
-msgid "{positionsCount, plural, one {{investedLabel} in # position} other {{investedLabel} in # positions}}"
-msgstr "{positionsCount, plural, one {{investedLabel} in # Position} other {{investedLabel} in # Positionen}}"
 
 #: src/budget/hooks/use-budget-forecast-labels.hook.ts
 msgid "{projectedAmount} · {gapAmount} over"

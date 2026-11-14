@@ -42,7 +42,12 @@ export const HomeSectionItem = ({ item, section, balancesByAccountId, holdingRet
     }
 
     if (isInstitutionGroup(item)) {
-        return <InstitutionRow institution={item} balancesByAccountId={balancesByAccountId} />;
+        return (
+            <InstitutionRow
+                institution={item}
+                providerReturnPercent={holdingReturns.providerReturnByIntegrationId.get(item.integrationId)}
+            />
+        );
     }
 
     if (isHomeHolding(item)) {

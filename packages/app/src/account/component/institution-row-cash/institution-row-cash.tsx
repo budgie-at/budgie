@@ -11,6 +11,8 @@ import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-di
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { InstitutionRowSelector } from '../institution-row/institution-row.selector';
 
+const CENTS_PER_UNIT = 100;
+
 interface Props {
     readonly integrationId: number;
     readonly cash: number;
@@ -21,7 +23,7 @@ export const InstitutionRowCash = ({ integrationId, cash }: Props) => {
     const formatDigits = useDisplayFormatDigits();
 
     const formattedCash = toTrueMinus(formatDigits(cash, defaultInstrument.symbol));
-    const hasCash = formattedCash.replace(/^−/u, '') !== formatDigits(0, defaultInstrument.symbol);
+    const hasCash = Math.round(cash * CENTS_PER_UNIT) !== 0;
 
     return (
         <View className="flex-row items-center gap-x-xs">
