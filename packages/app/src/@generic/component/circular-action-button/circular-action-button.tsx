@@ -28,11 +28,8 @@ export const CircularActionButton = ({ icon, label, onPress, animatedStyle, test
         collapsable={false}
         onPress={onPress}
     >
-        <Animated.View
-            className="h-full w-full items-center justify-center rounded-full bg-primary light:bg-popover-surface"
-            style={animatedStyle}
-        >
-            <Icon className="text-primary-reverse light:text-primary" icon={icon} size={ICON_SIZE} />
+        <Animated.View className="h-full w-full items-center justify-center rounded-full bg-primary" style={animatedStyle}>
+            <Icon className="text-primary-reverse" icon={icon} size={ICON_SIZE} />
         </Animated.View>
     </HapticPressable>
 );

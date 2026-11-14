@@ -5,6 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { isDefined } from '@rnw-community/shared';
 
 import { GroupedSurface } from '../../@generic/component/grouped-surface/grouped-surface';
+import { FLOATING_TAB_BAR_MIN_BOTTOM_INSET } from '../../@generic/constant/floating-tab-bar.constant';
 import { SCREEN_CHROME_CONFIG } from '../../@generic/constant/screen-chrome-config.constant';
 import { ScreenChromeStickyHeadersProvider } from '../../@generic/provider/screen-chrome-sticky-headers.provider';
 import { ScreenChromeThemeProvider } from '../../@generic/provider/screen-chrome-theme.provider';
@@ -29,6 +30,7 @@ const HOME_SCREEN_CHROME_CONFIG = {
 export default function HomePage() {
     const { activeAccountCount, balanceSummary, isLoading, sections } = useHomePageDataQuery();
     const { bottom } = useSafeAreaInsets();
+    const tabBarBottomInset = Math.max(bottom, FLOATING_TAB_BAR_MIN_BOTTOM_INSET);
     const onboardingHref = useOnboardingRedirect();
     const isOnboardingPending = useIsOnboardingPending();
 
@@ -60,7 +62,7 @@ export default function HomePage() {
                         sections={sections}
                         activeAccountCount={activeAccountCount}
                         isLoading={isLoading}
-                        bottomInset={bottom}
+                        bottomInset={tabBarBottomInset}
                         balancesByAccountId={balanceSummary.balancesByAccountId}
                         listHeaderComponent={listHeaderComponent}
                     />
