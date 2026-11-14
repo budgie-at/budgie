@@ -2,7 +2,7 @@ import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { AccessibilityInfo, StyleSheet, View, useWindowDimensions } from 'react-native';
 import Animated, {
     Easing,
@@ -28,7 +28,6 @@ import { AiSystemStateEnum } from '../../../ai/enum/ai-system-state.enum';
 import { ReceiptSourceMenu } from '../../../receipt/components/receipt-source-menu/receipt-source-menu';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { CREATE_MENU_LARGE_TEXT_FONT_SCALE } from '../../constant/create-menu-large-text-font-scale.constant';
-import { CreateMenuMountStateEnum } from '../../enum/create-menu-mount-state.enum';
 import { CreateMenuChip } from '../create-menu-chip/create-menu-chip';
 import { CreateMenuReveal } from '../create-menu-reveal/create-menu-reveal';
 import { CreateMenuTile } from '../create-menu-tile/create-menu-tile';
@@ -58,7 +57,6 @@ export const CreateTransactionMenu = ({ isOpen, onClose, triggerRef, accountId, 
     const { createAction } = useCreateActionContext();
     const { open: openVoiceInput } = useVoiceInputContext();
     const { fontScale } = useWindowDimensions();
-    const [mountState, setMountState] = useState(CreateMenuMountStateEnum.UNMOUNTED);
     const firstTileRef = useRef<View>(null);
     const shouldRestoreFocusRef = useRef(false);
     const isOpenRef = useRef(isOpen);
@@ -67,16 +65,6 @@ export const CreateTransactionMenu = ({ isOpen, onClose, triggerRef, accountId, 
     const isAiAvailable = useAtomValue(aiSystemStatusAtom).state !== AiSystemStateEnum.DISABLED;
     const isReducedMotion = useReducedMotion();
     const progress = useSharedValue(0);
-
-    if (isOpen && mountState === CreateMenuMountStateEnum.UNMOUNTED) {
-        setMountState(CreateMenuMountStateEnum.MOUNTING);
-    }
-
-    const isReady = mountState === CreateMenuMountStateEnum.READY;
-
-    const handleLayout = () => {
-        setMountState(CreateMenuMountStateEnum.READY);
-    };
 
     const handleDismiss = () => {
         shouldRestoreFocusRef.current = true;
@@ -135,10 +123,6 @@ export const CreateTransactionMenu = ({ isOpen, onClose, triggerRef, accountId, 
             return;
         }
 
-        if (!isReady) {
-            return;
-        }
-
         const focusFirstTile = () => {
             if (isOpenRef.current && isDefined(firstTileRef.current)) {
                 AccessibilityInfo.sendAccessibilityEvent(firstTileRef.current, 'focus');
@@ -153,7 +137,7 @@ export const CreateTransactionMenu = ({ isOpen, onClose, triggerRef, accountId, 
 
         Toast.hide();
         progress.set(isReducedMotion ? withTiming(1, REDUCED_MOTION_FADE_TIMING, handleOpened) : withSpring(1, OPEN_SPRING, handleOpened));
-    }, [isOpen, isReady, isReducedMotion, progress]);
+    }, [isOpen, isReducedMotion, progress]);
 
     useEffect(() => {
         if (isOpen || !shouldRestoreFocusRef.current) {
@@ -176,10 +160,6 @@ export const CreateTransactionMenu = ({ isOpen, onClose, triggerRef, accountId, 
 
     const scrimStyle = useAnimatedStyle(() => ({ opacity: progress.get() }));
 
-    if (mountState === CreateMenuMountStateEnum.UNMOUNTED) {
-        return null;
-    }
-
     return (
         <View
             style={StyleSheet.absoluteFill}
@@ -188,7 +168,6 @@ export const CreateTransactionMenu = ({ isOpen, onClose, triggerRef, accountId, 
             importantForAccessibility={accessibilityVisibility}
             accessibilityViewIsModal={isOpen}
             onAccessibilityEscape={handleDismiss}
-            onLayout={handleLayout}
         >
             <View className="absolute inset-x-0 bottom-0 gap-xl px-lg pb-safe-or-[12px]" pointerEvents="box-none">
                 <Animated.View className="absolute inset-x-0 -top-[80px] bottom-0" style={scrimStyle} pointerEvents="none">
