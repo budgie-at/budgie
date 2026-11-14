@@ -74,6 +74,7 @@ test('52 passive income', { tags: ['passive-income'] }, async ({ budgie }) => {
     await b.phase('2 position row filters to its payouts and back', async () => {
         await b.scrollTo(ctx, `PassiveIncome.Position.${ETH_ACCOUNT_ID}`);
         await b.tapId(ctx, `PassiveIncome.Position.${ETH_ACCOUNT_ID}`);
+        await b.scrollTo(ctx, 'PassiveIncome.Subtitle', 'up');
         await expect(id('PassiveIncome.Subtitle')).toHaveText('E2E Binance ETH');
         await b.scrollTo(ctx, 'PassiveIncome.Section.PAYOUTS');
         await firstPayout().tap();
