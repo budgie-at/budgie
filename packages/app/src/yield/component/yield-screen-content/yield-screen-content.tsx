@@ -38,6 +38,7 @@ export const YieldScreenContent = ({ state, hasYield }: Props) => {
                     leading={<HeaderBackButton />}
                     trailing={<YieldOpenPositionButton />}
                     expandedTitle={<YieldScreenTitle />}
+                    expandedTitlePointerEvents="box-none"
                     collapsedTitle={collapsedTitle}
                 />
             </YieldSelectionContext>
