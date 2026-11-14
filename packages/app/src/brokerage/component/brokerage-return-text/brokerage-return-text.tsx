@@ -10,7 +10,7 @@ import { getMarketMoveClassName } from '../../../market-data/utils/get-market-mo
 import { RETURN_ARROW_BY_DIRECTION } from '../../constant/return-arrow-by-direction.constant';
 
 interface Props {
-    readonly gain: number;
+    readonly gain: number | null;
     readonly percent: number | null;
     readonly instrumentSymbol: string;
     readonly className?: string;
@@ -29,8 +29,11 @@ export const BrokerageReturnText = ({
     const formatDigits = useDisplayFormatDigits();
     const formatPercent = useFormatGainPercent();
 
-    const direction = Math.sign(Math.round(gain * 100));
-    const label = [formatDigits(Math.abs(gain), instrumentSymbol), isDefined(percent) ? formatPercent(percent) : null]
+    const direction = Math.sign(Math.round((gain ?? percent ?? 0) * 100));
+    const label = [
+        isDefined(gain) ? formatDigits(Math.abs(gain), instrumentSymbol) : null,
+        isDefined(percent) ? formatPercent(percent) : null
+    ]
         .filter(isDefined)
         .join(' · ');
     const lineCount = useIsAccessibilityTextSize() ? 2 : 1;
@@ -41,7 +44,7 @@ export const BrokerageReturnText = ({
             maxFontSizeMultiplier={maxFontSizeMultiplier}
             className={cn(
                 'text-[13px] font-semibold tabular-nums',
-                getMarketMoveClassName(direction === 0 ? 0 : (percent ?? gain)),
+                getMarketMoveClassName(direction === 0 ? 0 : (percent ?? gain ?? 0)),
                 className
             )}
             testID={testID}

@@ -8,7 +8,7 @@ import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/footnote-max-font-size-multiplier.constant';
-import { TITLE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/title-max-font-size-multiplier.constant';
+import { ROW_PRIMARY_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-primary-max-font-size-multiplier.constant';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { cn } from '../../../@generic/utils/cn.util';
 import { BrokerageReturnText } from '../../../brokerage/component/brokerage-return-text/brokerage-return-text';
@@ -44,6 +44,7 @@ export const HomeHoldingRowAmount = ({ holding, holdingReturn, todayChange, isRe
     const realPercent =
         isDefined(holdingReturn) && isPositiveNumber(holdingReturn.costBasis) ? holdingReturn.gain / holdingReturn.costBasis : null;
     const percent = isDefined(holdingReturn) ? realPercent : PLACEHOLDER_PERCENT;
+    const rowGain = isDefined(percent) ? null : (holdingReturn?.gain ?? holding.value);
     const isReturnEmpty = !isReturnPending && !isDefined(holdingReturn) && !isToday;
     const importantForAccessibility = isReturnEmpty ? 'no-hide-descendants' : 'auto';
 
@@ -55,13 +56,16 @@ export const HomeHoldingRowAmount = ({ holding, holdingReturn, todayChange, isRe
                     adjustsFontSizeToFit
                     minimumFontScale={0.6}
                     numberOfLines={1}
-                    maxFontSizeMultiplier={TITLE_MAX_FONT_SIZE_MULTIPLIER}
+                    maxFontSizeMultiplier={ROW_PRIMARY_MAX_FONT_SIZE_MULTIPLIER}
                     testID={HomeHoldingRowSelector.Value(instrumentCode)}
                 >
                     {formatDigits(holding.value, defaultInstrument.symbol)}
                 </ProtectedText>
             ) : (
-                <Text className="text-[15px] font-medium text-secondary-foreground" maxFontSizeMultiplier={TITLE_MAX_FONT_SIZE_MULTIPLIER}>
+                <Text
+                    className="text-[15px] font-medium text-secondary-foreground"
+                    maxFontSizeMultiplier={ROW_PRIMARY_MAX_FONT_SIZE_MULTIPLIER}
+                >
                     <Trans>Value unavailable</Trans>
                 </Text>
             )}
@@ -80,7 +84,7 @@ export const HomeHoldingRowAmount = ({ holding, holdingReturn, todayChange, isRe
                         />
                     ) : (
                         <BrokerageReturnText
-                            gain={holdingReturn?.gain ?? holding.value}
+                            gain={rowGain}
                             percent={percent}
                             instrumentSymbol={defaultInstrument.symbol}
                             maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER}

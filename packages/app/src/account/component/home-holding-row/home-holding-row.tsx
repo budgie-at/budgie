@@ -4,7 +4,7 @@ import { Text, View } from 'react-native';
 
 import { CurrencySelectorInstrumentIcon } from '../../../@generic/component/currency-selector-instrument-icon/currency-selector-instrument-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { TITLE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/title-max-font-size-multiplier.constant';
+import { ROW_PRIMARY_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-primary-max-font-size-multiplier.constant';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { HomeHoldingRowAmount } from '../home-holding-row-amount/home-holding-row-amount';
 import { HomeHoldingRowCaption } from '../home-holding-row-caption/home-holding-row-caption';
@@ -46,9 +46,11 @@ export const HomeHoldingRow = ({ holding, holdingReturn, todayChange, isReturnLo
             <View className="min-w-0 flex-1 gap-y-xxs">
                 <Text
                     className="text-[17px] font-semibold text-primary"
-                    maxFontSizeMultiplier={TITLE_MAX_FONT_SIZE_MULTIPLIER}
+                    maxFontSizeMultiplier={ROW_PRIMARY_MAX_FONT_SIZE_MULTIPLIER}
                     ellipsizeMode="tail"
                     numberOfLines={1}
+                    adjustsFontSizeToFit
+                    minimumFontScale={0.85}
                 >
                     {instrument.name}
                 </Text>
