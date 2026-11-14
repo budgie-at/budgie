@@ -37,6 +37,7 @@ test('44 inzhur operations import', { tags: ['import'], platforms: ['ios'] }, as
     });
     await core.phase('record a first purchase of an unheld fund', async () => {
         await core.scrollTo(ctx, 'Inzhur.PendingTopUp.1.EnterButton', 'up');
+        await core.expectSettledId(ctx, 'Inzhur.PendingTopUp.1.EnterButton');
         await core.tapId(ctx, 'Inzhur.PendingTopUp.1.EnterButton');
         await core.expectId(ctx, 'Inzhur.PurchasePage');
         await core.scrollTo(ctx, 'Inzhur.PurchaseFund.Inzhur MilTech');
