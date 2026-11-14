@@ -177,7 +177,26 @@ const MONOBANK_ROUTES: ReadonlyArray<readonly [string, RegExp, FakeHandlerType]>
     ['GET', /^\/personal\/statement\/[^/]+\/\d+(\/\d+)?$/u, monobankStatement]
 ];
 
-const ENABLE_BANKING_PUBLIC_ROUTES: ReadonlyArray<readonly [string, RegExp, FakeHandlerType]> = [['GET', /^\/api\/aspsps$/u, fakeAspsps]];
+const PUBLIC_ONLY_BANKS = [
+    { name: 'N26', country: 'DE' },
+    { name: 'Revolut', country: 'LT' }
+];
+
+const fakePublicAspsps = () => ({
+    aspsps: [
+        ...fakeAspsps().aspsps,
+        ...PUBLIC_ONLY_BANKS.map(bank => ({
+            ...bank,
+            maximum_consent_validity: CONSENT_VALIDITY_SECONDS,
+            beta: false,
+            psu_types: ['personal']
+        }))
+    ]
+});
+
+const ENABLE_BANKING_PUBLIC_ROUTES: ReadonlyArray<readonly [string, RegExp, FakeHandlerType]> = [
+    ['GET', /^\/api\/aspsps$/u, fakePublicAspsps]
+];
 
 const E2E_SECURITIES = [
     { symbol: 'BGTX', currency: 'USD', shortname: 'Budgie Example', longname: 'Budgie Example Holdings', exchDisp: 'E2E Exchange' },

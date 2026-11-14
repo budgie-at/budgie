@@ -569,6 +569,24 @@ export const SCENES: Readonly<Record<string, Scene>> = {
             await b.expectId(ctx, SYNTHETIC_BANK_ROW, 15_000);
         }
     },
+    'new-account-search-revolut': {
+        run: async ctx => {
+            await searchNewAccount(ctx, 'revolut');
+            await b.expectId(ctx, 'EnableBankingBankRow.Revolut', 15_000);
+        }
+    },
+    'new-account-search-n26': {
+        run: async ctx => {
+            await searchNewAccount(ctx, 'n26');
+            await b.expectId(ctx, 'EnableBankingBankRow.N26', 15_000);
+        }
+    },
+    'new-account-search-stocks': {
+        run: async ctx => {
+            await searchNewAccount(ctx, 'stocks');
+            await b.expectId(ctx, 'CreateAccount.MoreBanks', 15_000);
+        }
+    },
     'new-account-search-empty': {
         run: async ctx => {
             await searchNewAccount(ctx, 'zzqx');
