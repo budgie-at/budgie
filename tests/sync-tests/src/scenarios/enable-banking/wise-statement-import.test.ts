@@ -65,19 +65,6 @@ describe('enable-banking/wise-statement-import', () => {
         }).pipe(Effect.provide(wiseStatementLayer))
     );
 
-    it.effect('imports a payment created the day before the first live day and booked on it once, matched by amount and direction', () =>
-        Effect.gen(function* () {
-            const { eurAccount } = yield* connectWise;
-            const eurBalanceBefore = yield* fetchAccountBalance(eurAccount.id);
-
-            const result = yield* importStatement(eurAccount, WISE_STATEMENT.STRADDLE);
-
-            expect(result).toMatchObject({ newTransactionCount: 2, skippedTransactionCount: 0 });
-            expect(yield* fetchWiseExternalIds(eurAccount)).toEqual(['CARD-2000002', 'TRANSFER-2000003']);
-            expect(yield* fetchAccountBalance(eurAccount.id)).toBe(eurBalanceBefore);
-        }).pipe(Effect.provide(wiseStatementLayer))
-    );
-
     it.effect('counts rows without a connected balance as skipped and imports nothing from a header-only file', () =>
         Effect.gen(function* () {
             const { eurAccount } = yield* connectWise;

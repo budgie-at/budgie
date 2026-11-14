@@ -2,7 +2,7 @@ import * as DateTime from 'effect/DateTime';
 
 import { SyncRecordTypeEnum } from '../../cloud-sync/enum/sync-record-type.enum';
 /* eslint-disable max-lines -- Transaction repository is the kitchen sink for tx queries + filter builders + bank-sync helpers */
-import { SQL, and, count, eq, gte, inArray, isNotNull, isNull, lt, lte, ne, notExists, or, sql } from 'drizzle-orm';
+import { SQL, and, count, eq, gte, inArray, isNotNull, isNull, lte, ne, notExists, or, sql } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -362,28 +362,6 @@ export class TransactionRepository extends Context.Service<TransactionRepository
                 selectOperatedAtTime(
                     sql<number | null>`MIN(${TransactionEntityTable.operatedAt})`,
                     and(...transactionFilters.buildAccountCondition([accountId]), eq(TransactionEntityTable.externalSource, externalSource))
-                ),
-
-            findPrimaryEntriesByAccountIdAndSourceBetween: (accountId: number, externalSource: ExternalSourceEnum, from: Date, to: Date) =>
-                Db.query(db =>
-                    db
-                        .select({ type: TransactionEntryEntityTable.type, amount: TransactionEntryEntityTable.amount })
-                        .from(TransactionEntryEntityTable)
-                        .innerJoin(TransactionEntityTable, eq(TransactionEntityTable.id, TransactionEntryEntityTable.transactionId))
-                        .where(
-                            and(
-                                eq(TransactionEntryEntityTable.accountId, accountId),
-                                transactionFilters.buildPrimaryLedgerEntryCondition(),
-                                inArray(TransactionEntryEntityTable.type, [
-                                    TransactionEntryTypeEnum.CREDIT,
-                                    TransactionEntryTypeEnum.DEBIT
-                                ]),
-                                eq(TransactionEntityTable.externalSource, externalSource),
-                                isNull(TransactionEntityTable.deletedAt),
-                                gte(TransactionEntityTable.operatedAt, from),
-                                lt(TransactionEntityTable.operatedAt, to)
-                            )
-                        )
                 ),
 
             findExternalSourcesByAccountId: (accountId: number) =>
