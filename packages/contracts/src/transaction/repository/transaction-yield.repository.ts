@@ -132,8 +132,8 @@ export class TransactionYieldRepository extends Context.Service<TransactionYield
                                     eq(AccountEntityTable.syncZone, depositAccount.syncZone),
                                     gte(TransactionEntityTable.operatedAt, since),
                                     sql`NOT EXISTS (SELECT 1 FROM ${AccountEntityTable} other WHERE other.id != ${depositAccountId} AND other.type = ${AccountTypeEnum.DEPOSIT}
-                                        AND other.instrument_id = ${depositAccount.instrumentId} AND other.sync_zone = ${depositAccount.syncZone}
-                                        AND (other.deleted_at IS NULL OR other.deleted_at > ${TransactionEntityTable.operatedAt})
+                                        AND other.instrument_id = ${depositAccount.instrumentId} AND other.sync_zone = ${depositAccount.syncZone} AND (other.deleted_at IS NULL OR other.deleted_at > ${TransactionEntityTable.operatedAt})
+                                        AND (other.is_active = 1 OR EXISTS (SELECT 1 FROM account_balances balance WHERE balance.account_id = other.id AND balance.amount != 0) OR EXISTS (SELECT 1 FROM transaction_entries movement INNER JOIN transactions moved ON moved.id = movement.transaction_id WHERE movement.account_id = other.id AND movement.deleted_at IS NULL AND moved.deleted_at IS NULL AND moved.operated_at > ${TransactionEntityTable.operatedAt}))
                                         AND (other.created_at <= ${TransactionEntityTable.operatedAt} OR EXISTS (SELECT 1 FROM ${TransactionEntityTable} principal
                                             WHERE principal.type = ${TransactionTypeEnum.TRANSFER} AND principal.to_account_id = other.id
                                             AND principal.deleted_at IS NULL AND principal.operated_at <= ${TransactionEntityTable.operatedAt})))`

@@ -8,6 +8,7 @@ import {
     TransactionRepository,
     TransactionTypeEnum,
     YieldKindEnum,
+    YieldRepository,
     convertToMicroUnits
 } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
@@ -97,16 +98,42 @@ const prefillOf = (depositAccountId: number) =>
     );
 
 describe('deposit close', () => {
-    it.effect('records the excess received as interest, then transfers it and archives the deposit', () =>
+    it.effect('records the excess received as interest, transfers it out and keeps the closed deposit history', () =>
         Effect.gen(function* () {
             const { deposit, destination } = yield* seedDeposit({ interestRate: null, principalDaysAgo: 90 });
+            const transactionRepository = yield* TransactionRepository;
+            const transactionCountBefore = (yield* transactionRepository.findByAccountIdsWithEntries([deposit.id])).length;
 
             yield* close(deposit.id, destination.id, PRINCIPAL + 250);
 
+            const facts = yield* (yield* YieldRepository).findFacts({ positionAccountId: deposit.id, instrumentId: null }, 1);
+
             expect(yield* ledgerBalanceOf(destination.id)).toBe(convertToMicroUnits(PRINCIPAL + 250));
             expect(yield* ledgerBalanceOf(deposit.id)).toBe(0);
-            expect(yield* (yield* AccountRepository).findById(deposit.id)).toBeUndefined();
+            expect(yield* (yield* AccountRepository).findById(deposit.id)).toMatchObject({ isActive: false, deletedAt: null });
+            expect((yield* transactionRepository.findByAccountIdsWithEntries([deposit.id])).length).toBe(transactionCountBefore + 2);
+            expect(facts.map(fact => [fact.yieldKind, fact.amount])).toEqual([[YieldKindEnum.INTEREST, convertToMicroUnits(250)]]);
             yield* assertStoredBalancesMatchLedger(yield* Db);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('stops a closed deposit from claiming interest that landed after it closed', () =>
+        Effect.gen(function* () {
+            const { bank, deposit } = yield* seedDeposit({ interestRate: 12, principalDaysAgo: 73 });
+            const closed = yield* seedDeposit({ interestRate: 12, principalDaysAgo: 73 });
+
+            yield* close(closed.deposit.id, closed.destination.id, PRINCIPAL);
+
+            const closedHistory = yield* (yield* TransactionRepository).findByAccountIdsWithEntries([closed.deposit.id]);
+            const closedAt = Math.max(...closedHistory.map(transaction => transaction.operatedAt.getTime()));
+            const payout = yield* seedBankInterest(bank.id, null, new Date(closedAt + DAY_MS));
+
+            expect(yield* prefillOf(deposit.id)).toMatchObject({ hasUnassignedInterest: true });
+
+            yield* Effect.flatMap(DepositInterestService, service => service.linkInterestPayouts(deposit.id));
+            const linked = yield* (yield* TransactionRepository).getByIdRaw(payout.id);
+
+            expect(linked?.yieldSourceAccountId).toBe(deposit.id);
         }).pipe(Effect.provide(TestLayer))
     );
 

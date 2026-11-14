@@ -5,6 +5,7 @@ import {
     CategorySourceEnum,
     Db,
     DebtEventRepository,
+    SettingsRepository,
     TransactionEntryCreateEntityInterface,
     TransactionEntryKindEnum,
     TransactionEntryRepository,
@@ -25,7 +26,6 @@ import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/sha
 
 import { DepositNegativeBalanceError } from '../../account/error/deposit-negative-balance.error';
 import { DepositReceivingAmountMismatchError } from '../../account/error/deposit-receiving-amount-mismatch.error';
-import { AccountArchiveService } from '../../account/service/account-archive.service';
 import { AccountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { AccountService } from '../../account/service/account.service';
 import { DepositInterestService } from '../../account/service/deposit-interest.service';
@@ -51,10 +51,10 @@ export class TransactionTransferService extends Context.Service<TransactionTrans
         const accountBalanceRepository = yield* AccountBalanceRepository;
         const accountRepository = yield* AccountRepository;
         const debtEventRepository = yield* DebtEventRepository;
+        const settingsRepository = yield* SettingsRepository;
         const transactionEntryRepository = yield* TransactionEntryRepository;
         const transactionRepository = yield* TransactionRepository;
         const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
-        const accountArchiveService = yield* AccountArchiveService;
         const accountService = yield* AccountService;
         const depositInterestService = yield* DepositInterestService;
         const exchangeRatesService = yield* ExchangeRatesService;
@@ -467,7 +467,12 @@ export class TransactionTransferService extends Context.Service<TransactionTrans
                         yield* transferCreationService.createInternalTransfer(transferInput);
                     }
 
-                    yield* accountArchiveService.archiveByIdInTransaction(depositAccountId);
+                    yield* accountRepository.updateById(depositAccountId, { isActive: false });
+
+                    const settings = yield* settingsRepository.getSettings();
+                    if (settings.defaultAccountId === depositAccountId) {
+                        yield* settingsRepository.update({ defaultAccountId: null });
+                    }
                 },
                 effect => Db.transaction(effect)
             )
@@ -479,10 +484,10 @@ export class TransactionTransferService extends Context.Service<TransactionTrans
             AccountBalanceRepository.layer,
             AccountRepository.layer,
             DebtEventRepository.layer,
+            SettingsRepository.layer,
             TransactionEntryRepository.layer,
             TransactionRepository.layer,
             AccountBalanceIncrementalService.layer,
-            AccountArchiveService.layer,
             AccountService.layer,
             DepositInterestService.layer,
             ExchangeRatesService.layer,

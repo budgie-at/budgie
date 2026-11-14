@@ -120,7 +120,10 @@ test('52 passive income', { tags: ['passive-income'] }, async ({ budgie }) => {
         await b.expectId(ctx, 'TabBar.Home', 15_000);
         await b.openLink(ctx, 'budgie://passive-income?range=YEAR');
         await b.scrollTo(ctx, `PassiveIncome.Position.${TERM_DEPOSIT_ID}`);
-        await expect(id(`PassiveIncome.Position.${TERM_DEPOSIT_ID}`)).toContainText('10.00');
+        await expect(id(`PassiveIncome.Position.${TERM_DEPOSIT_ID}`)).toHaveAccessibleName(/^E2E Term Deposit, earned \$10 since/u);
+        const closedHeader = await id('PassiveIncome.Section.CLOSED').boundingBox();
+        const closedDeposit = await id(`PassiveIncome.Position.${TERM_DEPOSIT_ID}`).boundingBox();
+        assert.ok(closedHeader && closedDeposit && closedDeposit.y > closedHeader.y);
     });
 
     await b.phase('6 large text: one-column legend and a range menu', async () => {

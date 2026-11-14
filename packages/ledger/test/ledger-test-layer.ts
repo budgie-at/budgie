@@ -5,7 +5,8 @@ import {
     Db,
     TransactionReceiptRepository,
     TransactionRepository,
-    TransactionTagsRepository
+    TransactionTagsRepository,
+    YieldRepository
 } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -37,7 +38,8 @@ export const TestLayer = Layer.mergeAll(
     TransactionReceiptRepository.layer,
     AccountRepository.layer,
     TransactionRepository.layer,
-    ReceiptMatchService.layer
+    ReceiptMatchService.layer,
+    YieldRepository.layer
 ).pipe(
     Layer.provideMerge(Layer.succeed(LedgerWorkload, LedgerWorkload.of({ runForeground: effect => effect }))),
     Layer.provideMerge(

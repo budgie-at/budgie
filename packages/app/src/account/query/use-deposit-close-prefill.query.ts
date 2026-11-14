@@ -1,4 +1,4 @@
-import { AccountEntityTable, TransactionEntityTable, TransactionEntryEntityTable } from '@budgie/contracts';
+import { AccountBalanceEntityTable, AccountEntityTable, TransactionEntityTable, TransactionEntryEntityTable } from '@budgie/contracts';
 import { DepositInterestService } from '@budgie/ledger';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
@@ -6,7 +6,7 @@ import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
 
 const depositClosePrefillAtom = databaseQueryFamily(
-    [TransactionEntityTable, TransactionEntryEntityTable, AccountEntityTable],
+    [TransactionEntityTable, TransactionEntryEntityTable, AccountEntityTable, AccountBalanceEntityTable],
     DepositInterestService,
     (service, depositAccountId: number) => service.getClosePrefill(depositAccountId)
 );
