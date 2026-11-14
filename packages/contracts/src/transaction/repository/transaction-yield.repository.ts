@@ -1,5 +1,6 @@
 import { type SQL, and, asc, eq, gt, gte, inArray, isNotNull, isNull, like, ne, notInArray, or, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
+import * as Array from 'effect/Array';
 import * as Context from 'effect/Context';
 import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
@@ -30,6 +31,8 @@ export class TransactionYieldRepository extends Context.Service<TransactionYield
     '@budgie/contracts/TransactionYieldRepository',
     {
         make: Effect.sync(() => {
+            const categorizedKinds = [YieldKindEnum.STAKING, YieldKindEnum.EARN, YieldKindEnum.DISTRIBUTION];
+
             const buildUnclassifiedYieldCondition = (query: YieldTagCandidateQueryInterface) =>
                 and(
                     transactionFilters.buildVisibleTransactionCondition(),
@@ -264,26 +267,24 @@ export class TransactionYieldRepository extends Context.Service<TransactionYield
                     ),
                 findUntaggedCandidatesAfter: (query: YieldTagCandidateQueryInterface, afterId: number, limit: number) =>
                     selectCandidates(and(buildUnclassifiedYieldCondition(query), gt(TransactionEntityTable.id, afterId)), limit),
-                findUntaggedCandidatesBySyncIds: Effect.fn('TransactionYieldRepository.findUntaggedCandidatesBySyncIds')(function* (
-                    query: YieldTagCandidateQueryInterface,
-                    syncIds: readonly string[]
-                ) {
-                    const candidates = [];
-
-                    for (let start = 0; start < syncIds.length; start += 500) {
-                        candidates.push(
-                            ...(yield* selectCandidates(
-                                and(
-                                    buildUnclassifiedYieldCondition(query),
-                                    inArray(TransactionEntityTable.syncId, syncIds.slice(start, start + 500))
-                                ),
+                findUntaggedCandidatesBySyncIds: Effect.fn('TransactionYieldRepository.findUntaggedCandidatesBySyncIds')(
+                    (query: YieldTagCandidateQueryInterface, syncIds: readonly string[]) =>
+                        Effect.forEach(Array.chunksOf(syncIds, 500), chunk =>
+                            selectCandidates(
+                                and(buildUnclassifiedYieldCondition(query), inArray(TransactionEntityTable.syncId, chunk)),
                                 500
-                            ))
-                        );
-                    }
-
-                    return candidates;
-                }),
+                            )
+                        ).pipe(Effect.map(Array.flatten))
+                ),
+                findYieldCategoryRepairIdsBySyncIds: (syncIds: readonly string[]) =>
+                    selectCandidates(
+                        and(
+                            transactionFilters.buildVisibleTransactionCondition(),
+                            inArray(TransactionEntityTable.syncId, [...syncIds]),
+                            inArray(TransactionEntityTable.yieldKind, categorizedKinds)
+                        ),
+                        syncIds.length
+                    ).pipe(Effect.map(rows => rows.map(row => row.id))),
                 fillYieldTags: (transactionId: number, fields: YieldFieldsInterface) =>
                     Db.query(db =>
                         db

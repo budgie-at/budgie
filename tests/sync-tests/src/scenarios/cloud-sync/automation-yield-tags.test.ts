@@ -1,4 +1,4 @@
-import { AccountTypeEnum, ExternalSourceEnum, TransactionTypeEnum, YieldKindEnum } from '@budgie/contracts';
+import { AccountTypeEnum, ExternalSourceEnum, INVESTMENTS_CATEGORY_ID, TransactionTypeEnum, YieldKindEnum } from '@budgie/contracts';
 import { YieldTagRepairService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
@@ -98,6 +98,33 @@ describe('cloud-sync/automation-yield-tags', () => {
                 ]);
                 expect(yield* readOutboxRows(deviceB)).toEqual([]);
             })
+        );
+
+        it.effect.each([YieldKindEnum.STAKING, YieldKindEnum.EARN, YieldKindEnum.DISTRIBUTION])(
+            'restores the category for a local %s after an older device uploads NULL',
+            yieldKind =>
+                Effect.gen(function* () {
+                    const { deviceB, cloud, seed, binance } = yield* setupDevices;
+
+                    yield* seedEarnIncome(seed, binance.id, 'Mixed version', 'binance:earn:BNB:mixed');
+                    yield* pushDevice(testDb, cloud);
+                    yield* pullWithAutomation(deviceB, cloud, 'device-b');
+                    yield* deviceB.$client.unsafe('UPDATE sync_apply_state SET is_applying = 1');
+                    yield* deviceB.$client.unsafe('UPDATE transactions SET yield_kind = ?', [yieldKind]);
+                    yield* deviceB.$client.unsafe('UPDATE sync_apply_state SET is_applying = 0');
+                    yield* testDb.$client.unsafe("UPDATE transactions SET title = 'Older edit' WHERE title = 'Mixed version'");
+                    yield* testDb.$client.unsafe('UPDATE transaction_entries SET category_id = NULL');
+                    yield* pushDevice(testDb, cloud);
+                    yield* pullWithAutomation(deviceB, cloud, 'device-b');
+
+                    expect(yield* yieldKindsOf(deviceB, 'Older edit')).toEqual([{ yieldKind }]);
+                    expect(
+                        yield* deviceB.$client.unsafe<{ readonly categoryId: number | null }>(
+                            'SELECT category_id AS categoryId FROM transaction_entries'
+                        )
+                    ).toEqual([{ categoryId: INVESTMENTS_CATEGORY_ID }]);
+                    expect(yield* readOutboxRows(deviceB)).toEqual([]);
+                })
         );
 
         it.effect('chunks a large sync id list (40000 ids) when repairing', () =>

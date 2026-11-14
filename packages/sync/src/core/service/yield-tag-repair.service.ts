@@ -107,6 +107,14 @@ export class YieldTagRepairService extends Context.Service<YieldTagRepairService
                 const candidates = yield* transactionYieldRepository.findUntaggedCandidatesBySyncIds(candidateQuery, syncIds);
 
                 yield* repairCandidates(candidates);
+
+                for (let start = 0; start < syncIds.length; start += batchSize) {
+                    const transactionIds = yield* transactionYieldRepository.findYieldCategoryRepairIdsBySyncIds(
+                        syncIds.slice(start, start + batchSize)
+                    );
+
+                    yield* syncApplyStateRepository.withoutTriggers(transactionYieldRepository.fillMissingYieldCategory(transactionIds));
+                }
             })
         };
     })
