@@ -153,6 +153,8 @@ export const useTransactionSubtitleSegments = (
         accountTitle: isDefined(fundTradeLabel) ? null : stripTransactionAccountTitlePrefix(ownAccountTitle, accountTitlePrefix),
         categoryLabel: !isDefined(counterparty) && categories.length === 1 ? (categories.at(0)?.title ?? null) : null,
         relationLabel:
-            relationSegments.filter(isNotEmptyString).at(-1) ?? (isUncategorizedTransaction(transaction) ? t`Uncategorized` : null)
+            relationSegments.filter(isNotEmptyString).at(-1) ?? (isUncategorizedTransaction(transaction) ? t`Uncategorized` : null),
+        counterpartySource: source,
+        counterpartyDestination: destination
     };
 };

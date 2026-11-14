@@ -1,3 +1,5 @@
+import { useLingui } from '@lingui/react/macro';
+
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { TransactionCardSelector } from '../components/transaction-card/transaction-card.selector';
@@ -8,8 +10,19 @@ import { useTransactionSubtitleSegments } from './use-transaction-subtitle-segme
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 
 export const useTransactionCardSubtitle = (transaction: TransactionWithRelationsEntityInterface, accountId: number | null) => {
-    const { segments, feeLabel, accountTitle, categoryLabel, relationLabel } = useTransactionSubtitleSegments(transaction, accountId);
+    const { t } = useLingui();
+    const {
+        segments,
+        feeLabel,
+        accountTitle,
+        categoryLabel,
+        relationLabel,
+        counterpartySource: source,
+        counterpartyDestination: destination
+    } = useTransactionSubtitleSegments(transaction, accountId);
 
+    const isCounterpartySplit =
+        isNotEmptyString(source) && isNotEmptyString(destination) && relationLabel === t`From ${source} to ${destination}`;
     const descriptionSegments = [...segments, feeLabel].filter(isDefined);
     const toDetailSegments = (labels: readonly string[], account: string | null) =>
         [...labels.flatMap(label => label.split(' · ')), feeLabel, account].filter(isNotEmptyString);
@@ -18,9 +31,9 @@ export const useTransactionCardSubtitle = (transaction: TransactionWithRelations
         description: descriptionSegments.join(' · '),
         accessibilityLabel: descriptionSegments.join(', '),
         detailSegments: toDetailSegments(segments, accountTitle),
-        promotableSegment: relationLabel ?? accountTitle,
+        promotableSegment: isCounterpartySplit ? t`To ${destination}` : (relationLabel ?? accountTitle),
         promotedDetailSegments: isDefined(relationLabel)
-            ? toDetailSegments(segments.slice(0, -1), accountTitle)
+            ? toDetailSegments([...segments.slice(0, -1), isCounterpartySplit ? t`From ${source}` : ''], accountTitle)
             : toDetailSegments(segments, null),
         accountTitle,
         subtitleTestID: [
