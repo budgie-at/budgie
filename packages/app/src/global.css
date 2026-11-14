@@ -68,8 +68,8 @@
     --radius-7xl: 1.714rem; /* 24px */
     --stroke-25: 0.156rem;
     --color-tile-foreground: rgb(255, 255, 255);
-    --color-destructive-tile: rgb(215, 55, 61);
-    --color-positive-tile: rgb(20, 130, 70);
+    --color-destructive-tile: rgb(203, 50, 56);
+    --color-positive-tile: rgb(18, 124, 66);
     --color-violet-tile: rgb(116, 69, 245);
     --color-cyan-tile: rgb(8, 116, 146);
     --color-default-tile: rgb(28, 104, 226);
@@ -289,8 +289,8 @@
             --color-corner: rgba(34, 34, 34, 1);
 
             --color-menu-scrim: rgba(0, 0, 0, 0.85);
-            --color-destructive-tile-deep: rgb(185, 47, 52);
-            --color-positive-tile-deep: rgb(17, 112, 60);
+            --color-destructive-tile-deep: rgb(175, 43, 48);
+            --color-positive-tile-deep: rgb(15, 107, 57);
             --color-violet-tile-deep: rgb(100, 59, 211);
             --color-cyan-tile-deep: rgb(7, 100, 126);
             --color-default-tile-deep: rgb(24, 89, 194);
