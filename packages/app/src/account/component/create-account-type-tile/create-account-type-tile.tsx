@@ -5,6 +5,7 @@ import { Text } from 'react-native';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { CreateAccountSelector } from '../../../app/(main)/create-account/create-account.selector';
+import { CREATE_ACCOUNT_TYPE_TINT } from '../../constant/create-account-type-tint.constant';
 
 interface Props {
     readonly title: string;
@@ -13,25 +14,8 @@ interface Props {
     readonly type: AccountTypeEnum;
 }
 
-const typeClassNames: Partial<Record<AccountTypeEnum, { readonly tileClassName: string; readonly glyphClassName: string }>> = {
-    [AccountTypeEnum.BANK]: { tileClassName: 'bg-[#007AFF]/15 dark:bg-[#0A84FF]/25', glyphClassName: 'text-[#007AFF] dark:text-[#0A84FF]' },
-    [AccountTypeEnum.CASH]: { tileClassName: 'bg-[#34C759]/15 dark:bg-[#30D158]/25', glyphClassName: 'text-[#248A3D] dark:text-[#30D158]' },
-    [AccountTypeEnum.CRYPTO]: {
-        tileClassName: 'bg-[#FF9500]/15 dark:bg-[#FF9F0A]/25',
-        glyphClassName: 'text-[#C93400] dark:text-[#FF9F0A]'
-    },
-    [AccountTypeEnum.STOCKS]: {
-        tileClassName: 'bg-[#FF2D55]/15 dark:bg-[#FF375F]/25',
-        glyphClassName: 'text-[#D30F45] dark:text-[#FF375F]'
-    },
-    [AccountTypeEnum.DEBT]: { tileClassName: 'bg-[#FF3B30]/15 dark:bg-[#FF453A]/25', glyphClassName: 'text-[#D70015] dark:text-[#FF453A]' },
-    [AccountTypeEnum.DEPOSIT]: {
-        tileClassName: 'bg-[#AF52DE]/15 dark:bg-[#BF5AF2]/25',
-        glyphClassName: 'text-[#8944AB] dark:text-[#BF5AF2]'
-    }
-};
-
 const LABEL_MAX_FONT_SIZE_MULTIPLIER = 1.3;
+const LABEL_MIN_FONT_SCALE = 0.8;
 
 export const CreateAccountTypeTile = ({ title, description, icon, type }: Props) => {
     const handleNavigate = () => void router.push({ pathname: '/create-account/[type]', params: { type } });
@@ -51,12 +35,14 @@ export const CreateAccountTypeTile = ({ title, description, icon, type }: Props)
                 iconSize={24}
                 radius={14}
                 border={false}
-                className={typeClassNames[type]?.tileClassName}
-                iconClassName={typeClassNames[type]?.glyphClassName}
+                className={CREATE_ACCOUNT_TYPE_TINT[type]?.tileClassName}
+                iconClassName={CREATE_ACCOUNT_TYPE_TINT[type]?.glyphClassName}
             />
             <Text
-                className="text-primary text-center text-[13px] leading-[16px] font-medium"
-                numberOfLines={2}
+                className="self-stretch text-primary text-center text-[13px] leading-[16px] font-medium"
+                numberOfLines={1}
+                adjustsFontSizeToFit
+                minimumFontScale={LABEL_MIN_FONT_SCALE}
                 maxFontSizeMultiplier={LABEL_MAX_FONT_SIZE_MULTIPLIER}
             >
                 {title}

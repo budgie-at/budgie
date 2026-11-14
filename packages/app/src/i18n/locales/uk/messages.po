@@ -1492,7 +1492,7 @@ msgstr "Додати комісію"
 msgid "Add item"
 msgstr "Додати запис"
 
-#: src/app/(main)/create-account/index.tsx
+#: src/account/component/create-account-manual-section/create-account-manual-section.tsx
 msgid "Add manually"
 msgstr "Додати вручну"
 
@@ -2138,7 +2138,7 @@ msgstr "Баланс без змін"
 msgid "Balance: {formattedBalance}"
 msgstr "Баланс: {formattedBalance}"
 
-#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+#: src/sync/component/enable-banking-accounts-step/enable-banking-accounts-step.tsx
 msgid "Balances and history come from your bank through Enable Banking."
 msgstr "Баланси та історія надходять із вашого банку через Enable Banking."
 
@@ -2596,7 +2596,7 @@ msgstr "Готівка"
 
 #: src/account/constant/account-kind-title.constant.ts
 msgid "Cash & savings"
-msgstr "Готівка та заощадження"
+msgstr "Готівка й вклади"
 
 #: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
 msgid "cash from an ATM"
@@ -3755,6 +3755,7 @@ msgid "Couldn't load iCloud backups"
 msgstr "Не вдалося завантажити резервні копії iCloud"
 
 #: src/@generic/component/searchable-page-error-state/searchable-page-error-state.tsx
+#: src/account/component/create-bank-search-results/create-bank-search-results.tsx
 #: src/transaction/components/transaction-picker-failure/transaction-picker-failure.tsx
 msgid "Couldn’t load this list"
 msgstr "Не вдалося завантажити список"
@@ -6312,7 +6313,7 @@ msgstr "Об'єднано {consolidated} з {foundPairsText}."
 msgid "Minimum amount"
 msgstr "Мінімальна сума"
 
-#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+#: src/sync/component/enable-banking-accounts-step/enable-banking-accounts-step.tsx
 msgid "Missing an account? Link it to your application in Enable Banking, then connect this bank again."
 msgstr "Бракує рахунку? Прив'яжіть його до свого застосунку в Enable Banking, а потім підключіть цей банк знову."
 
@@ -6753,6 +6754,10 @@ msgstr "Змін лімітів поки немає"
 #: src/market-data/component/currency-market-position-footer/currency-market-position-footer.tsx
 msgid "No market price yet, so value and return are unavailable."
 msgstr "Ринкової ціни ще немає, тому вартість і прибутковість недоступні."
+
+#: src/account/component/create-search-no-match/create-search-no-match.tsx
+msgid "No matches for “{query}”"
+msgstr "Немає збігів для «{query}»"
 
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "No matching accounts"
@@ -9789,7 +9794,7 @@ msgstr "Немає пов’язаних транзакцій для відоб�
 msgid "There is no “forgot PIN”."
 msgstr "Немає кнопки «забув PIN‑код»."
 
-#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+#: src/sync/component/enable-banking-accounts-step/enable-banking-accounts-step.tsx
 msgid "These accounts already exist in Budgie or use a currency Budgie does not support. To continue an existing account, open it and tap Connect to bank."
 msgstr "Ці рахунки вже є в Budgie або використовують валюту, яку Budgie не підтримує. Щоб продовжити наявний рахунок, відкрийте його й торкніться «Підключити до банку»."
 
@@ -10373,6 +10378,7 @@ msgstr "Спробуйте налаштувати фільтри, щоб поб�
 
 #: src/@generic/component/contact-selector-state/contact-selector-state.tsx
 #: src/@generic/component/searchable-page-error-state/searchable-page-error-state.tsx
+#: src/account/component/create-bank-search-results/create-bank-search-results.tsx
 #: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
 #: src/ai/component/ai-download-stopped-card/ai-download-stopped-card.tsx
 #: src/auth/components/forgot-pin-footer/forgot-pin-footer.tsx

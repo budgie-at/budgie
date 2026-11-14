@@ -2,7 +2,6 @@ import { AccountTypeEnum, ExternalSourceEnum, UserIconNameEnum } from '@budgie/c
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { useDeferredValue, useState } from 'react';
-import { View } from 'react-native';
 
 import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
@@ -14,15 +13,19 @@ import { SearchListBottomSpacer } from '../../../@generic/component/search-list-
 import { SearchablePageSearchInput } from '../../../@generic/component/searchable-page-search-input/searchable-page-search-input';
 import { StackedLargeTitle } from '../../../@generic/component/stacked-large-title/stacked-large-title';
 import { StackedSmallTitle } from '../../../@generic/component/stacked-small-title/stacked-small-title';
+import { READABLE_CONTENT_CLASSNAME } from '../../../@generic/constant/readable-content-classname.constant';
 import { STACKED_TITLE_CHROME_CONFIG } from '../../../@generic/constant/stacked-title-chrome-config.constant';
+import { CollapsibleChromeSearchProvider } from '../../../@generic/provider/collapsible-chrome-search.provider';
+import { cn } from '../../../@generic/utils/cn.util';
 import { foldSearchText } from '../../../@generic/utils/fold-search-text.util';
-import { CreateAccountTypeTile } from '../../../account/component/create-account-type-tile/create-account-type-tile';
+import { CreateAccountManualSection } from '../../../account/component/create-account-manual-section/create-account-manual-section';
 import { CreateBankSearchResults } from '../../../account/component/create-bank-search-results/create-bank-search-results';
 import { CreateMoreBanksCard } from '../../../account/component/create-more-banks-card/create-more-banks-card';
 import { CreateSyncCard } from '../../../account/component/create-sync-card/create-sync-card';
 import { ACCOUNT_ICON } from '../../../account/constant/account-icon.constant';
 import { ACCOUNT_KIND_TITLE } from '../../../account/constant/account-kind-title.constant';
 
+import type { CreateAccountManualOptionInterface } from '../../../account/interface/create-account-manual-option.interface';
 import type { MessageDescriptor } from '@lingui/core';
 
 const GROUPED_STACKED_TITLE_CHROME_CONFIG = {
@@ -55,7 +58,7 @@ const IMPORT_OPTIONS = [
     { provider: ExternalSourceEnum.INZHUR, title: msg`Inzhur`, description: msg`Excel statement from Inzhur` }
 ];
 
-const MANUAL_OPTIONS = [
+const MANUAL_OPTIONS: readonly CreateAccountManualOptionInterface[] = [
     {
         type: AccountTypeEnum.BANK,
         icon: ACCOUNT_ICON[AccountTypeEnum.BANK],
@@ -100,7 +103,8 @@ export default function Index() {
 
     const normalizedQuery = foldSearchText(useDeferredValue(query).trim());
     const isSearching = isNotEmptyString(normalizedQuery);
-    const isMatch = ({ title }: { readonly title: MessageDescriptor }) => foldSearchText(t(title)).includes(normalizedQuery);
+    const isMatch = ({ title, description }: { readonly title: MessageDescriptor; readonly description: MessageDescriptor }) =>
+        foldSearchText(`${t(title)} ${t(description)}`).includes(normalizedQuery);
     const syncOptions = SYNC_OPTIONS.filter(isMatch);
     const importOptions = IMPORT_OPTIONS.filter(isMatch);
     const manualOptions = MANUAL_OPTIONS.filter(isMatch);
@@ -108,66 +112,64 @@ export default function Index() {
     const importFooter = isSearching ? null : t`Files are read on this device and never uploaded.`;
     const manualFooter = isSearching ? null : t`Enter balances yourself. No connection needed.`;
 
+    const syncSection = isNotEmptyArray(syncOptions) ? (
+        <GroupedListSection title={t`Sync automatically`} footer={syncFooter}>
+            {syncOptions.map(option => (
+                <CreateSyncCard
+                    key={option.provider}
+                    title={t(option.title)}
+                    description={t(option.description)}
+                    bankProvider={option.provider}
+                />
+            ))}
+            {isSearching ? null : <CreateMoreBanksCard title={t`2,000+ European banks`} subtitle={t`Sign in on your bank's own page`} />}
+        </GroupedListSection>
+    ) : null;
+    const importSection = isNotEmptyArray(importOptions) ? (
+        <GroupedListSection title={t`Import statements`} footer={importFooter}>
+            {importOptions.map(option => (
+                <CreateSyncCard
+                    key={option.provider}
+                    title={t(option.title)}
+                    description={t(option.description)}
+                    bankProvider={option.provider}
+                />
+            ))}
+        </GroupedListSection>
+    ) : null;
+    const manualSection = isNotEmptyArray(manualOptions) ? (
+        <CreateAccountManualSection options={manualOptions} footer={manualFooter} />
+    ) : null;
+
     return (
         <GroupedSurface>
-            <CollapsibleChromePage
-                largeTitle={<StackedLargeTitle title={t`New Account`} />}
-                smallTitle={<StackedSmallTitle title={t`New Account`} />}
-                leading={<HeaderBackButton />}
-                contentClassName="gap-y-[24px] pt-[20px]"
-                chromeConfig={GROUPED_STACKED_TITLE_CHROME_CONFIG}
-            >
-                {isNotEmptyArray(syncOptions) ? (
-                    <GroupedListSection title={t`Sync automatically`} footer={syncFooter}>
-                        {syncOptions.map(option => (
-                            <CreateSyncCard
-                                key={option.provider}
-                                title={t(option.title)}
-                                description={t(option.description)}
-                                bankProvider={option.provider}
-                            />
-                        ))}
-                        {isSearching ? null : (
-                            <CreateMoreBanksCard title={t`2,000+ European banks`} subtitle={t`Sign in on your bank's own page`} />
-                        )}
-                    </GroupedListSection>
-                ) : null}
+            <CollapsibleChromeSearchProvider>
+                <CollapsibleChromePage
+                    largeTitle={<StackedLargeTitle title={t`New Account`} />}
+                    smallTitle={<StackedSmallTitle title={t`New Account`} />}
+                    leading={<HeaderBackButton />}
+                    contentClassName={cn('gap-y-[24px] pt-[20px]', READABLE_CONTENT_CLASSNAME)}
+                    chromeConfig={GROUPED_STACKED_TITLE_CHROME_CONFIG}
+                >
+                    {isSearching ? (
+                        <CreateBankSearchResults query={normalizedQuery}>
+                            {syncSection}
+                            {importSection}
+                            {manualSection}
+                        </CreateBankSearchResults>
+                    ) : (
+                        <>
+                            {syncSection}
+                            {importSection}
+                            {manualSection}
+                        </>
+                    )}
 
-                {isNotEmptyArray(importOptions) ? (
-                    <GroupedListSection title={t`Import statements`} footer={importFooter}>
-                        {importOptions.map(option => (
-                            <CreateSyncCard
-                                key={option.provider}
-                                title={t(option.title)}
-                                description={t(option.description)}
-                                bankProvider={option.provider}
-                            />
-                        ))}
-                    </GroupedListSection>
-                ) : null}
+                    <SearchListBottomSpacer />
+                </CollapsibleChromePage>
 
-                {isNotEmptyArray(manualOptions) ? (
-                    <GroupedListSection title={t`Add manually`} footer={manualFooter}>
-                        <View className="flex-row flex-wrap px-md md:flex-nowrap">
-                            {manualOptions.map(option => (
-                                <CreateAccountTypeTile
-                                    key={option.type}
-                                    title={t(option.title)}
-                                    description={t(option.description)}
-                                    icon={option.icon}
-                                    type={option.type}
-                                />
-                            ))}
-                        </View>
-                    </GroupedListSection>
-                ) : null}
-
-                {isSearching ? <CreateBankSearchResults query={normalizedQuery} /> : null}
-
-                <SearchListBottomSpacer />
-            </CollapsibleChromePage>
-
-            <SearchablePageSearchInput search={query} placeholder={t`Search banks and accounts`} onSearchChange={setQuery} />
+                <SearchablePageSearchInput search={query} placeholder={t`Search banks and accounts`} onSearchChange={setQuery} />
+            </CollapsibleChromeSearchProvider>
         </GroupedSurface>
     );
 }

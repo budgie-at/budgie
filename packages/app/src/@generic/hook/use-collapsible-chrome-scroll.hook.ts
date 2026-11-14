@@ -1,9 +1,12 @@
+import { useEffect, useRef } from 'react';
 import { scrollTo, useAnimatedScrollHandler, useSharedValue } from 'react-native-reanimated';
-import { scheduleOnRN } from 'react-native-worklets';
+import { scheduleOnRN, scheduleOnUI } from 'react-native-worklets';
 
 import { useCollapsibleHeaderScroll } from '@rnw-community/react-native-collapsible-header';
 import { useScreenChrome } from '@rnw-community/react-native-screen-chrome';
 import { emptyFn } from '@rnw-community/shared';
+
+import { useCollapsibleChromeSearch } from '../context/collapsible-chrome-search.context';
 
 import { useReducedMotion } from './use-reduced-motion.hook';
 
@@ -16,6 +19,8 @@ export const useCollapsibleChromeScroll = (onDragStart: () => void = emptyFn) =>
     const previousScrollOffset = useSharedValue(0);
     const scrollDirection = useSharedValue(0);
     const animateSnap = !useReducedMotion();
+    const { isSearchActive } = useCollapsibleChromeSearch();
+    const wasSearchActive = useRef(isSearchActive);
 
     const onScroll = useAnimatedScrollHandler({
         onScroll: event => {
@@ -46,6 +51,20 @@ export const useCollapsibleChromeScroll = (onDragStart: () => void = emptyFn) =>
             scrollTo(scrollReference, 0, scrollDirection.get() > 0 ? collapseEnd : collapseStart, animateSnap);
         }
     });
+
+    useEffect(() => {
+        if (wasSearchActive.current === isSearchActive) {
+            return;
+        }
+        wasSearchActive.current = isSearchActive;
+        scheduleOnUI(() => {
+            const isBelowCollapseEnd = isSearchActive ? scrollY.get() < collapseEnd : scrollY.get() <= collapseEnd;
+
+            if (isBelowCollapseEnd) {
+                scrollTo(scrollReference, 0, isSearchActive ? collapseEnd : 0, animateSnap);
+            }
+        });
+    }, [isSearchActive, scrollY, scrollReference, collapseEnd, animateSnap]);
 
     return { onScroll, scrollRef: scrollReference };
 };

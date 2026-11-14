@@ -23,7 +23,7 @@ export const GroupedListSection = ({ title, footer, children }: Props) => (
         </View>
 
         {isString(footer) ? (
-            <Text className="text-secondary-foreground px-3xl pt-md pb-md text-[13px] leading-[18px]" maxFontSizeMultiplier={2}>
+            <Text className="text-secondary-foreground px-3xl pt-md pb-md text-[13px] leading-[18px]" maxFontSizeMultiplier={1.5}>
                 {footer}
             </Text>
         ) : (

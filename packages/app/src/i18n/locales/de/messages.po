@@ -1180,7 +1180,7 @@ msgstr "1 J"
 #: src/account/component/create-bank-search-results/create-bank-search-results.tsx
 #: src/app/(main)/create-account/index.tsx
 msgid "2,000+ European banks"
-msgstr "Über 2.000 europäische Banken"
+msgstr "2.000+ europäische Banken"
 
 #: src/budget/components/budget-day-strip-key/budget-day-strip-key.tsx
 msgid "2× plan"
@@ -1492,7 +1492,7 @@ msgstr "Gebühr hinzufügen"
 msgid "Add item"
 msgstr "Eintrag hinzufügen"
 
-#: src/app/(main)/create-account/index.tsx
+#: src/account/component/create-account-manual-section/create-account-manual-section.tsx
 msgid "Add manually"
 msgstr "Manuell hinzufügen"
 
@@ -2138,7 +2138,7 @@ msgstr "Saldo unverändert"
 msgid "Balance: {formattedBalance}"
 msgstr "Saldo: {formattedBalance}"
 
-#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+#: src/sync/component/enable-banking-accounts-step/enable-banking-accounts-step.tsx
 msgid "Balances and history come from your bank through Enable Banking."
 msgstr "Salden und Verlauf kommen über Enable Banking von deiner Bank."
 
@@ -2596,7 +2596,7 @@ msgstr "Bargeld"
 
 #: src/account/constant/account-kind-title.constant.ts
 msgid "Cash & savings"
-msgstr "Bargeld & Ersparnisse"
+msgstr "Bargeld & Sparen"
 
 #: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
 msgid "cash from an ATM"
@@ -3755,6 +3755,7 @@ msgid "Couldn't load iCloud backups"
 msgstr "iCloud-Backups konnten nicht geladen werden"
 
 #: src/@generic/component/searchable-page-error-state/searchable-page-error-state.tsx
+#: src/account/component/create-bank-search-results/create-bank-search-results.tsx
 #: src/transaction/components/transaction-picker-failure/transaction-picker-failure.tsx
 msgid "Couldn’t load this list"
 msgstr "Liste konnte nicht geladen werden"
@@ -6312,7 +6313,7 @@ msgstr "{consolidated} von {foundPairsText} zusammengeführt."
 msgid "Minimum amount"
 msgstr "Mindestbetrag"
 
-#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+#: src/sync/component/enable-banking-accounts-step/enable-banking-accounts-step.tsx
 msgid "Missing an account? Link it to your application in Enable Banking, then connect this bank again."
 msgstr "Fehlt ein Konto? Verknüpfe es in Enable Banking mit deiner Anwendung und verbinde diese Bank dann erneut."
 
@@ -6753,6 +6754,10 @@ msgstr "Noch keine Limitänderungen"
 #: src/market-data/component/currency-market-position-footer/currency-market-position-footer.tsx
 msgid "No market price yet, so value and return are unavailable."
 msgstr "Noch kein Marktpreis, daher sind Wert und Rendite nicht verfügbar."
+
+#: src/account/component/create-search-no-match/create-search-no-match.tsx
+msgid "No matches for “{query}”"
+msgstr "Keine Treffer für „{query}“"
 
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "No matching accounts"
@@ -9789,7 +9794,7 @@ msgstr "Es gibt keine verknüpften Transaktionen anzuzeigen."
 msgid "There is no “forgot PIN”."
 msgstr "Es gibt kein „PIN vergessen“."
 
-#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+#: src/sync/component/enable-banking-accounts-step/enable-banking-accounts-step.tsx
 msgid "These accounts already exist in Budgie or use a currency Budgie does not support. To continue an existing account, open it and tap Connect to bank."
 msgstr "Diese Konten gibt es bereits in Budgie oder sie nutzen eine Währung, die Budgie nicht unterstützt. Um ein bestehendes Konto fortzuführen, öffne es und tippe auf Mit Bank verbinden."
 
@@ -10373,6 +10378,7 @@ msgstr "Versuchen Sie, Ihre Filter anzupassen, um mehr Ergebnisse zu sehen"
 
 #: src/@generic/component/contact-selector-state/contact-selector-state.tsx
 #: src/@generic/component/searchable-page-error-state/searchable-page-error-state.tsx
+#: src/account/component/create-bank-search-results/create-bank-search-results.tsx
 #: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
 #: src/ai/component/ai-download-stopped-card/ai-download-stopped-card.tsx
 #: src/auth/components/forgot-pin-footer/forgot-pin-footer.tsx

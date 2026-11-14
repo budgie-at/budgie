@@ -4,8 +4,10 @@ import { View } from 'react-native';
 import { CollapsibleHeaderBackdrop, ScreenChromeFrame } from '@rnw-community/react-native-screen-chrome';
 import { EmptyFn } from '@rnw-community/shared';
 
+import { READABLE_CONTENT_CLASSNAME } from '../../constant/readable-content-classname.constant';
 import { STACKED_TITLE_CHROME_CONFIG } from '../../constant/stacked-title-chrome-config.constant';
 import { ScreenChromeThemeProvider } from '../../provider/screen-chrome-theme.provider';
+import { cn } from '../../utils/cn.util';
 import { CollapsibleChromeHeader } from '../collapsible-chrome-header/collapsible-chrome-header';
 import { GoBackButton } from '../go-back-button/go-back-button';
 import { SearchablePageSearchInput } from '../searchable-page-search-input/searchable-page-search-input';
@@ -30,7 +32,7 @@ export const SearchablePage = (props: Props) => {
         <View className="flex-1">
             <ScreenChromeThemeProvider config={STACKED_TITLE_CHROME_CONFIG}>
                 <ScreenChromeFrame>
-                    <View className="flex-1 px-5xl" testID={testID}>
+                    <View className={cn('flex-1 px-5xl', READABLE_CONTENT_CLASSNAME)} testID={testID}>
                         {children}
                     </View>
 

@@ -1,4 +1,4 @@
-import { Text } from 'react-native';
+import { Text, useWindowDimensions } from 'react-native';
 import Animated, { Extrapolation, interpolate, useAnimatedStyle } from 'react-native-reanimated';
 
 import { useCollapsibleHeaderScroll } from '@rnw-community/react-native-collapsible-header';
@@ -10,10 +10,13 @@ interface Props {
 
 const LARGE_TITLE_MAX_FONT_SIZE_MULTIPLIER = 1.2;
 const SCROLL_TRACK_DISTANCE = 100;
+const BACK_BUTTON_ROW_OFFSET = -40;
+const READABLE_CONTENT_MAX_WIDTH = 720;
 
 export const StackedLargeTitle = ({ title }: Props) => {
     const { scrollY } = useCollapsibleHeaderScroll();
     const { config } = useScreenChrome();
+    const { width } = useWindowDimensions();
 
     const trackScrollStyle = useAnimatedStyle(() => ({
         transform: [
@@ -25,10 +28,13 @@ export const StackedLargeTitle = ({ title }: Props) => {
             }
         ]
     }));
-    const titleStyle = [{ height: config.headerHeight }, trackScrollStyle];
+    const titleStyle = [
+        { height: config.headerHeight, marginLeft: BACK_BUTTON_ROW_OFFSET + Math.max(0, (width - READABLE_CONTENT_MAX_WIDTH) / 2) },
+        trackScrollStyle
+    ];
 
     return (
-        <Animated.View className="-ml-[40px] justify-end pb-xs" style={titleStyle}>
+        <Animated.View className="justify-end pb-xs" style={titleStyle}>
             <Text
                 className="text-primary text-[34px] leading-[41px] font-bold"
                 accessibilityRole="header"

@@ -1493,7 +1493,7 @@ msgstr "Add fee"
 msgid "Add item"
 msgstr "Add item"
 
-#: src/app/(main)/create-account/index.tsx
+#: src/account/component/create-account-manual-section/create-account-manual-section.tsx
 msgid "Add manually"
 msgstr "Add manually"
 
@@ -2139,7 +2139,7 @@ msgstr "Balance unchanged"
 msgid "Balance: {formattedBalance}"
 msgstr "Balance: {formattedBalance}"
 
-#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+#: src/sync/component/enable-banking-accounts-step/enable-banking-accounts-step.tsx
 msgid "Balances and history come from your bank through Enable Banking."
 msgstr "Balances and history come from your bank through Enable Banking."
 
@@ -3756,6 +3756,7 @@ msgid "Couldn't load iCloud backups"
 msgstr "Couldn't load iCloud backups"
 
 #: src/@generic/component/searchable-page-error-state/searchable-page-error-state.tsx
+#: src/account/component/create-bank-search-results/create-bank-search-results.tsx
 #: src/transaction/components/transaction-picker-failure/transaction-picker-failure.tsx
 msgid "Couldn’t load this list"
 msgstr "Couldn’t load this list"
@@ -6313,7 +6314,7 @@ msgstr "Merged {consolidated} of {foundPairsText}."
 msgid "Minimum amount"
 msgstr "Minimum amount"
 
-#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+#: src/sync/component/enable-banking-accounts-step/enable-banking-accounts-step.tsx
 msgid "Missing an account? Link it to your application in Enable Banking, then connect this bank again."
 msgstr "Missing an account? Link it to your application in Enable Banking, then connect this bank again."
 
@@ -6754,6 +6755,10 @@ msgstr "No limit changes yet"
 #: src/market-data/component/currency-market-position-footer/currency-market-position-footer.tsx
 msgid "No market price yet, so value and return are unavailable."
 msgstr "No market price yet, so value and return are unavailable."
+
+#: src/account/component/create-search-no-match/create-search-no-match.tsx
+msgid "No matches for “{query}”"
+msgstr "No matches for “{query}”"
 
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "No matching accounts"
@@ -9790,7 +9795,7 @@ msgstr "There are no linked transactions to show."
 msgid "There is no “forgot PIN”."
 msgstr "There is no “forgot PIN”."
 
-#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+#: src/sync/component/enable-banking-accounts-step/enable-banking-accounts-step.tsx
 msgid "These accounts already exist in Budgie or use a currency Budgie does not support. To continue an existing account, open it and tap Connect to bank."
 msgstr "These accounts already exist in Budgie or use a currency Budgie does not support. To continue an existing account, open it and tap Connect to bank."
 
@@ -10374,6 +10379,7 @@ msgstr "Try adjusting your filters to see more results"
 
 #: src/@generic/component/contact-selector-state/contact-selector-state.tsx
 #: src/@generic/component/searchable-page-error-state/searchable-page-error-state.tsx
+#: src/account/component/create-bank-search-results/create-bank-search-results.tsx
 #: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
 #: src/ai/component/ai-download-stopped-card/ai-download-stopped-card.tsx
 #: src/auth/components/forgot-pin-footer/forgot-pin-footer.tsx
