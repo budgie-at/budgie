@@ -28,34 +28,30 @@ interface Props {
 export const TransactionCardContent = ({ transaction, accountId = null }: Props) => {
     const isAccessibilityTextSize = useIsAccessibilityTextSize();
     const displayTitle = useTransactionRowTitle(transaction);
-    const { detailSegments, promotableSegment, promotedDetailSegments, subtitleTestID } = useTransactionCardSubtitle(
-        transaction,
-        accountId
-    );
-
     const isAdjustment = isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction);
     const { t } = useLingui();
     const titleLineCount = isAccessibilityTextSize ? 0 : 1;
     const adjustmentTitle = isNotEmptyString(transaction.title) ? transaction.title : t`Balance Adjustment`;
+    const { isDetailPromoted, title, subtitleSegments, stackedSegments, accountTitle, subtitleTestID } = useTransactionCardSubtitle(
+        transaction,
+        accountId,
+        isAdjustment ? adjustmentTitle : displayTitle
+    );
 
-    const isDetailPromoted =
-        !isAdjustment && !isAccessibilityTextSize && !isNotEmptyString(displayTitle) && isNotEmptyString(promotableSegment);
-    const subtitleSegments = isDetailPromoted ? promotedDetailSegments : detailSegments;
     const hasDetail =
         isAccessibilityTextSize ||
         isNotEmptyArray(subtitleSegments) ||
         isDefined(transaction.receipt) ||
         isAccountBrokerageTrade(transaction, accountId);
 
-    const rowTitle = isDetailPromoted ? promotableSegment : displayTitle;
-    const regularTitleNode = isNotEmptyString(rowTitle) ? (
+    const regularTitleNode = isNotEmptyString(title) ? (
         <Text
             className="text-primary text-[17px] font-semibold"
             numberOfLines={titleLineCount}
             ellipsizeMode="tail"
             {...(isDetailPromoted && isDefined(subtitleTestID) && { testID: subtitleTestID })}
         >
-            {rowTitle}
+            {title}
         </Text>
     ) : null;
     const titleNode = isAdjustment ? (
@@ -70,7 +66,12 @@ export const TransactionCardContent = ({ transaction, accountId = null }: Props)
         regularTitleNode
     );
     const detail = isAccessibilityTextSize ? (
-        <TransactionCardStackedSubtitle transaction={transaction} accountId={accountId} />
+        <TransactionCardStackedSubtitle
+            transaction={transaction}
+            segments={stackedSegments}
+            accountTitle={accountTitle}
+            {...(!isDetailPromoted && isDefined(subtitleTestID) && { testID: subtitleTestID })}
+        />
     ) : (
         <TransactionCardSubtitle
             transaction={transaction}

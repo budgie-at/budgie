@@ -9,7 +9,11 @@ import { useTransactionSubtitleSegments } from './use-transaction-subtitle-segme
 
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 
-export const useTransactionCardSubtitle = (transaction: TransactionWithRelationsEntityInterface, accountId: number | null) => {
+export const useTransactionCardSubtitle = (
+    transaction: TransactionWithRelationsEntityInterface,
+    accountId: number | null,
+    title: string
+) => {
     const { t } = useLingui();
     const {
         segments,
@@ -17,24 +21,27 @@ export const useTransactionCardSubtitle = (transaction: TransactionWithRelations
         accountTitle,
         categoryLabel,
         relationLabel,
+        categoryTitles,
         counterpartySource: source,
         counterpartyDestination: destination
     } = useTransactionSubtitleSegments(transaction, accountId);
 
     const isCounterpartySplit =
         isNotEmptyString(source) && isNotEmptyString(destination) && relationLabel === t`From ${source} to ${destination}`;
-    const descriptionSegments = [...segments, feeLabel].filter(isDefined);
-    const toDetailSegments = (labels: readonly string[], account: string | null) =>
-        [...labels.flatMap(label => label.split(' · ')), feeLabel, account].filter(isNotEmptyString);
+    const promotedSegments = isDefined(relationLabel) ? [...segments.slice(0, -1), isCounterpartySplit ? t`From ${source}` : ''] : segments;
+    const toDetailSegments = (labels: readonly string[]) =>
+        [...labels.flatMap(label => label.split(' · ')), feeLabel, accountTitle].filter(isNotEmptyString);
+
+    const promotableSegment = isCounterpartySplit
+        ? t`To ${destination}`
+        : (relationLabel ?? (isNotEmptyString(categoryTitles) ? categoryTitles : null));
+    const isDetailPromoted = !isNotEmptyString(title) && isNotEmptyString(promotableSegment);
 
     return {
-        description: descriptionSegments.join(' · '),
-        accessibilityLabel: descriptionSegments.join(', '),
-        detailSegments: toDetailSegments(segments, accountTitle),
-        promotableSegment: isCounterpartySplit ? t`To ${destination}` : (relationLabel ?? accountTitle),
-        promotedDetailSegments: isDefined(relationLabel)
-            ? toDetailSegments([...segments.slice(0, -1), isCounterpartySplit ? t`From ${source}` : ''], accountTitle)
-            : toDetailSegments(segments, null),
+        isDetailPromoted,
+        title: isDetailPromoted ? promotableSegment : title,
+        subtitleSegments: toDetailSegments(isDetailPromoted ? promotedSegments : segments),
+        stackedSegments: [...(isDetailPromoted ? promotedSegments : segments), feeLabel].filter(isNotEmptyString),
         accountTitle,
         subtitleTestID: [
             isUncategorizedTransaction(transaction) ? TransactionCardSelector.UncategorizedBadge : null,

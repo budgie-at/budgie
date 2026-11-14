@@ -154,6 +154,7 @@ export const useTransactionSubtitleSegments = (
         categoryLabel: !isDefined(counterparty) && categories.length === 1 ? (categories.at(0)?.title ?? null) : null,
         relationLabel:
             relationSegments.filter(isNotEmptyString).at(-1) ?? (isUncategorizedTransaction(transaction) ? t`Uncategorized` : null),
+        categoryTitles: categories.map(category => category.title).join(', '),
         counterpartySource: source,
         counterpartyDestination: destination
     };
