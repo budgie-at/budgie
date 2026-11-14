@@ -136,7 +136,7 @@ test('51 manual brokerage with stocks', { tags: ['accounts'], platforms: PENDING
         await core.scrollTo(ctx, position);
         await core.tapUntil(ctx, position, () => core.expectId(ctx, 'CurrencyMarket.Header.BGTX', 10_000));
         await core.scrollTo(ctx, 'CurrencyMarket.Holdings.CostBasis.BGTX');
-        await expect(core.byId(screen, 'CurrencyMarket.Holdings.CostBasis.BGTX')).toHaveText(/\$660/, { timeout: 10_000 });
+        await core.expectText(ctx, '$660', 10_000);
     });
 
     await core.phase('a euro-quoted listing shows its price change in euros', async () => {
