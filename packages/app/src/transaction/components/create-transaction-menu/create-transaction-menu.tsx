@@ -169,10 +169,10 @@ export const CreateTransactionMenu = ({ isOpen, onClose, triggerRef, accountId, 
             accessibilityViewIsModal={isOpen}
             onAccessibilityEscape={handleDismiss}
         >
-            <View className="absolute inset-x-0 bottom-0 gap-xl px-lg pb-safe" pointerEvents="box-none">
+            <View className="absolute inset-x-0 bottom-0 gap-xl px-lg pb-safe-or-[12px]" pointerEvents="box-none">
                 <Animated.View className="absolute inset-x-0 -top-[80px] bottom-0" style={scrimStyle} pointerEvents="none">
-                    <View className="h-[56px] bg-linear-to-b from-menu-scrim/0 to-menu-scrim" />
-                    <View className="flex-1 bg-menu-scrim" />
+                    <View className="h-[56px] bg-linear-to-b from-grouped-surface/0 to-grouped-surface" />
+                    <View className="flex-1 bg-grouped-surface" />
                 </Animated.View>
 
                 <View className={stackGapClassName} pointerEvents="box-none">
@@ -188,7 +188,7 @@ export const CreateTransactionMenu = ({ isOpen, onClose, triggerRef, accountId, 
                             icon={UserIconNameEnum.Wallet}
                             label={t`Account`}
                             testID={CreateTransactionMenuSelector.AddAccount}
-                            variant="default"
+                            variant="secondary"
                             onPress={handleCreateAccount}
                         />
                     </CreateMenuReveal>
@@ -199,7 +199,7 @@ export const CreateTransactionMenu = ({ isOpen, onClose, triggerRef, accountId, 
                                 icon={UserIconNameEnum.ArrowLeftRight}
                                 label={t`Transfer`}
                                 testID={CreateTransactionMenuSelector.Transfer}
-                                variant="warning"
+                                variant="default"
                                 onPress={handleCreateTransfer}
                             />
                             <CreateMenuTile

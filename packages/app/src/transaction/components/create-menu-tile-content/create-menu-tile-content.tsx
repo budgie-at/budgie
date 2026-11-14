@@ -11,7 +11,7 @@ import { CREATE_MENU_MIN_FONT_SCALE } from '../../constant/create-menu-min-font-
 import { CreateMenuLabelLayoutEnum } from '../../enum/create-menu-label-layout.enum';
 import { splitCreateMenuLabel } from '../../utils/split-create-menu-label.util';
 
-import type { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
+import type { CreateMenuTileVariant } from '../../../@generic/type/create-menu-tile-variant.type';
 import type { UserIconNameEnum } from '@budgie/contracts';
 import type { ClassValue } from 'cn';
 import type { NativeSyntheticEvent, TextLayoutEventData } from 'react-native';
@@ -20,29 +20,22 @@ interface Props {
     readonly icon: UserIconNameEnum;
     readonly label: string;
     readonly testID?: string;
-    readonly variant: ColorPaletteVariant;
+    readonly variant: CreateMenuTileVariant;
 }
 
 const ICON_SIZE = 20;
 const LABEL_CLASSNAME = 'text-md font-semibold leading-tight text-tile-foreground';
 
-const tileFillVariants = cva<{ variant: Record<ColorPaletteVariant, ClassValue> }>(
+const tileFillVariants = cva<{ variant: Record<CreateMenuTileVariant, ClassValue> }>(
     'grow flex-row items-center gap-md rounded-5xl bg-linear-to-br pl-lg pr-xl',
     {
         variants: {
             variant: {
+                cyan: 'from-cyan-tile to-cyan-tile-deep',
                 default: 'from-default-tile to-default-tile-deep',
                 destructive: 'from-destructive-tile to-destructive-tile-deep',
                 positive: 'from-positive-tile to-positive-tile-deep',
-                warning: 'from-warning-tile to-warning-tile-deep',
-                'dark-warning': 'from-warning-tile to-warning-tile-deep',
-                violet: 'from-violet-tile to-violet-tile-deep',
-                cyan: 'from-cyan-tile to-cyan-tile-deep',
-                pink: 'from-neutral-tile to-neutral-tile-deep',
-                ghost: 'from-neutral-tile to-neutral-tile-deep',
-                secondary: 'from-neutral-tile to-neutral-tile-deep',
-                primary: 'from-neutral-tile to-neutral-tile-deep',
-                cta: 'from-neutral-tile to-neutral-tile-deep'
+                violet: 'from-violet-tile to-violet-tile-deep'
             }
         }
     }

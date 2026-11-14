@@ -67,6 +67,12 @@
     --radius-6xl: 1.571rem; /* 22px */
     --radius-7xl: 1.714rem; /* 24px */
     --stroke-25: 0.156rem;
+    --color-tile-foreground: rgb(255, 255, 255);
+    --color-destructive-tile: rgb(215, 55, 61);
+    --color-positive-tile: rgb(20, 130, 70);
+    --color-violet-tile: rgb(116, 69, 245);
+    --color-cyan-tile: rgb(11, 127, 158);
+    --color-default-tile: rgb(28, 104, 226);
 }
 
 @layer theme {
@@ -170,21 +176,11 @@
             --color-corner: rgba(229, 229, 229, 1);
 
             --color-menu-scrim: rgba(242, 242, 247, 0.92);
-            --color-tile-foreground: rgb(255, 255, 255);
-            --color-destructive-tile: rgb(215, 55, 61);
             --color-destructive-tile-deep: rgb(168, 31, 38);
-            --color-positive-tile: rgb(22, 136, 74);
             --color-positive-tile-deep: rgb(11, 99, 52);
-            --color-warning-tile: rgb(188, 90, 0);
-            --color-warning-tile-deep: rgb(143, 63, 0);
-            --color-violet-tile: rgb(116, 69, 245);
             --color-violet-tile-deep: rgb(76, 31, 176);
-            --color-cyan-tile: rgb(11, 127, 158);
             --color-cyan-tile-deep: rgb(6, 90, 112);
-            --color-default-tile: rgb(31, 111, 235);
             --color-default-tile-deep: rgb(20, 80, 184);
-            --color-neutral-tile: rgb(99, 99, 102);
-            --color-neutral-tile-deep: rgb(58, 58, 60);
 
             --color-chart-1: #1f6bc7;
             --color-chart-2: #d1531c;
@@ -293,21 +289,11 @@
             --color-corner: rgba(34, 34, 34, 1);
 
             --color-menu-scrim: rgba(0, 0, 0, 0.85);
-            --color-tile-foreground: rgb(255, 255, 255);
-            --color-destructive-tile: rgb(215, 55, 61);
-            --color-destructive-tile-deep: rgb(168, 31, 38);
-            --color-positive-tile: rgb(22, 136, 74);
-            --color-positive-tile-deep: rgb(11, 99, 52);
-            --color-warning-tile: rgb(188, 90, 0);
-            --color-warning-tile-deep: rgb(143, 63, 0);
-            --color-violet-tile: rgb(116, 69, 245);
-            --color-violet-tile-deep: rgb(76, 31, 176);
-            --color-cyan-tile: rgb(11, 127, 158);
-            --color-cyan-tile-deep: rgb(6, 90, 112);
-            --color-default-tile: rgb(31, 111, 235);
-            --color-default-tile-deep: rgb(20, 80, 184);
-            --color-neutral-tile: rgb(99, 99, 102);
-            --color-neutral-tile-deep: rgb(58, 58, 60);
+            --color-destructive-tile-deep: rgb(185, 47, 52);
+            --color-positive-tile-deep: rgb(17, 112, 60);
+            --color-violet-tile-deep: rgb(100, 59, 211);
+            --color-cyan-tile-deep: rgb(9, 109, 136);
+            --color-default-tile-deep: rgb(24, 89, 194);
 
             --color-chart-1: #4a95ee;
             --color-chart-2: #ef6d39;

@@ -2,11 +2,12 @@ import { HapticPressable } from '../../../@generic/component/haptic-pressable/ha
 import { createMenuButtonAccessibility } from '../../utils/create-menu-button-accessibility.util';
 import { CreateMenuTileContent } from '../create-menu-tile-content/create-menu-tile-content';
 
+import type { CreateMenuTileVariant } from '../../../@generic/type/create-menu-tile-variant.type';
 import type { CreateMenuItemPropsInterface } from '../../interface/create-menu-item-props.interface';
 import type { Ref } from 'react';
 import type { View } from 'react-native';
 
-interface Props extends CreateMenuItemPropsInterface {
+interface Props extends CreateMenuItemPropsInterface<CreateMenuTileVariant> {
     readonly ref?: Ref<View>;
 }
 
