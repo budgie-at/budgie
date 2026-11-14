@@ -91,6 +91,8 @@ test('39 categorize inbox', { tags: ['categorize'] }, async ({ budgie }) => {
         await b.tapId(ctx, 'TransactionFilters.DateChipActive');
         await b.tapId(ctx, 'TransactionFilters.DatePeriod.ALL_TIME');
         await b.tapId(ctx, 'TransactionFilters.DateApplyButton');
+        await expect(id('TransactionFilters.DateChip')).toHaveText('All time');
+        await b.expectNoId(ctx, 'MorphScrim');
         await b.tapId(ctx, 'CategoryStatisticsCard.Uncategorized');
         await b.expectId(ctx, 'CategorizeInboxPage.ShowListButton', 5_000);
         await count('1');

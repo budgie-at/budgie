@@ -5188,10 +5188,12 @@ msgstr "З {counterparty}"
 msgid "From {fromText}"
 msgstr "Від {fromText}"
 
+#: src/transaction/hook/use-transaction-card-subtitle.hook.ts
 #: src/transaction/hook/use-transaction-subtitle-segments.hook.ts
 msgid "From {source}"
 msgstr "Від {source}"
 
+#: src/transaction/hook/use-transaction-card-subtitle.hook.ts
 #: src/transaction/hook/use-transaction-subtitle-segments.hook.ts
 msgid "From {source} to {destination}"
 msgstr "З {source} на {destination}"
@@ -10063,6 +10065,7 @@ msgstr "На {cashTitle} · −{quantity}"
 msgid "To {counterparty}"
 msgstr "На {counterparty}"
 
+#: src/transaction/hook/use-transaction-card-subtitle.hook.ts
 #: src/transaction/hook/use-transaction-subtitle-segments.hook.ts
 msgid "To {destination}"
 msgstr "На {destination}"

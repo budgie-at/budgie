@@ -5188,10 +5188,12 @@ msgstr "Desde {counterparty}"
 msgid "From {fromText}"
 msgstr "Desde {fromText}"
 
+#: src/transaction/hook/use-transaction-card-subtitle.hook.ts
 #: src/transaction/hook/use-transaction-subtitle-segments.hook.ts
 msgid "From {source}"
 msgstr "De {source}"
 
+#: src/transaction/hook/use-transaction-card-subtitle.hook.ts
 #: src/transaction/hook/use-transaction-subtitle-segments.hook.ts
 msgid "From {source} to {destination}"
 msgstr "De {source} a {destination}"
@@ -10063,6 +10065,7 @@ msgstr "A {cashTitle} · −{quantity}"
 msgid "To {counterparty}"
 msgstr "A {counterparty}"
 
+#: src/transaction/hook/use-transaction-card-subtitle.hook.ts
 #: src/transaction/hook/use-transaction-subtitle-segments.hook.ts
 msgid "To {destination}"
 msgstr "A {destination}"

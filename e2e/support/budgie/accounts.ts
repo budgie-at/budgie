@@ -236,7 +236,6 @@ export interface DebtAccount {
 /** subflows/accounts/create-debt-account */
 export async function createDebtAccount(ctx: Ctx, debt: DebtAccount): Promise<void> {
     const { screen } = ctx;
-    const title = screen.getByText('Debt Account').first();
     await openNewAccount(ctx);
     await tapId(ctx, 'CreateAccount.DEBT');
     await expectId(ctx, 'AccountForm.NameInput', 3_000);
@@ -244,7 +243,7 @@ export async function createDebtAccount(ctx: Ctx, debt: DebtAccount): Promise<vo
     const amount = byId(screen, 'CreateAccount.Amount');
     await amount.clear();
     await fillAmount(amount, debt.currentBalance);
-    await title.tap();
+    await tapId(ctx, 'AccountForm.NameInput.Label');
 
     await tapFill(ctx, 'AccountForm.NameInput', debt.name);
     await tapId(ctx, 'AccountForm.NameInput.Label');
@@ -254,18 +253,20 @@ export async function createDebtAccount(ctx: Ctx, debt: DebtAccount): Promise<vo
 
     const debtTypeId = `AccountForm.DebtType.${debt.debtType}`;
     await scrollToCentre(ctx, debtTypeId);
-    await tapUntil(byId(screen, debtTypeId), () => expectId(ctx, `${debtTypeId}.Selected`, 2_000));
+    await tapId(ctx, debtTypeId);
+    await expectId(ctx, `${debtTypeId}.Selected`, 2_000);
 
     await scrollTo(ctx, 'AccountForm.TargetBalanceInput', 'up');
     const target = byId(screen, 'AccountForm.TargetBalanceInput');
     await target.clear();
     await target.fill(debt.targetBalance);
+    await target.swipe({ direction: 'down' });
+    await expectNoId(ctx, 'inputView');
 
     await scrollTo(ctx, 'AccountForm.OpeningAccountSelector', 'up');
     if (debt.fundingAccount === undefined || debt.fundingAccount === '') {
         await expectId(ctx, 'AccountForm.ManualOpeningHint');
     } else {
-        await title.tap();
         await scrollToCentre(ctx, 'AccountForm.OpeningAccountSelector', 'up');
         await tapId(ctx, 'AccountForm.OpeningAccountSelector');
         await expectId(ctx, 'AccountPickerBottomSheet.Input', 10_000);
