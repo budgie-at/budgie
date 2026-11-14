@@ -1,12 +1,19 @@
-import { ExternalSourceEnum, PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
+import {
+    AccountEntityTable,
+    ExternalSourceEnum,
+    HOUSEHOLD_SYNC_ZONE,
+    PRECISION,
+    TransactionConsolidationTypeEnum
+} from '@budgie/contracts';
 import { expect, layer } from '@effect/vitest';
+import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { seedP2pExchangeRate } from '../harness/p2p-fiat-transfer-fixture';
 import { expectSecondConsolidationRunStable, runConsolidation } from '../harness/run-consolidation';
-import { testQueryService, testSeedService, TestLayer } from '../harness/test-context';
+import { testDb, testQueryService, testSeedService, TestLayer } from '../harness/test-context';
 
 const OPERATED_AT = new Date('2026-06-23T12:00:00.000Z');
 const BOOKED_AT_NOON = OPERATED_AT;
@@ -15,10 +22,18 @@ const HALF_HOUR_LATER = new Date('2026-06-23T12:30:00.000Z');
 const USD_AMOUNT = 100 * PRECISION;
 const EUR_AMOUNT = 92 * PRECISION;
 const USD_TO_EUR_RATE = 0.9;
+const OFF_MARKET_USD_TO_EUR_RATE = 0.8;
+const SAME_ROOT_IBANS = ['BE71096123456769', 'BE71096123456770'] as const;
 
-const seedConnectionAccount = (title: string, source: ExternalSourceEnum, instrumentId: number, consent: string | null) =>
+const seedConnectionAccount = (
+    title: string,
+    source: ExternalSourceEnum,
+    instrumentId: number,
+    consent: string | null,
+    iban: string | null = null
+) =>
     Effect.gen(function* () {
-        const account = yield* testSeedService.bankSyncAccount(title, source, null, instrumentId);
+        const account = yield* testSeedService.bankSyncAccount(title, source, iban, instrumentId);
         if (isDefined(consent)) {
             yield* testSeedService.sync({ accountId: account.id, provider: source, token: consent });
         }
@@ -26,12 +41,17 @@ const seedConnectionAccount = (title: string, source: ExternalSourceEnum, instru
         return account;
     });
 
-const seedCrossCurrencyRows = (source: ExternalSourceEnum, expenseConsent: string | null, incomeConsent: string | null) =>
+const seedCrossCurrencyRows = (
+    source: ExternalSourceEnum,
+    expenseConsent: string | null,
+    incomeConsent: string | null,
+    ibans: readonly [string, string] | null = null
+) =>
     Effect.gen(function* () {
         const usd = yield* testSeedService.instrument({ code: 'USD', name: 'Dollar', symbol: '$' });
         const eur = yield* testSeedService.instrument({ code: 'EUR', name: 'Euro', symbol: '€' });
-        const usdAccount = yield* seedConnectionAccount('First balance USD', source, usd.id, expenseConsent);
-        const eurAccount = yield* seedConnectionAccount('Second balance EUR', source, eur.id, incomeConsent);
+        const usdAccount = yield* seedConnectionAccount('First balance USD', source, usd.id, expenseConsent, ibans?.[0] ?? null);
+        const eurAccount = yield* seedConnectionAccount('Second balance EUR', source, eur.id, incomeConsent, ibans?.[1] ?? null);
         const expense = yield* testSeedService.bankPairExpense(
             { externalId: 'usd-expense', operatedAt: OPERATED_AT },
             { accountId: usdAccount.id, amount: USD_AMOUNT, exchangeRate: 1, mccCategoryId: null }
@@ -44,14 +64,38 @@ const seedCrossCurrencyRows = (source: ExternalSourceEnum, expenseConsent: strin
         return { expense, income, usdAccount, eurAccount };
     });
 
+const seedMarketRateConversion = Effect.gen(function* () {
+    const rows = yield* seedCrossCurrencyRows(ExternalSourceEnum.ENABLE_BANKING, 'consent-wise', 'consent-wise');
+    yield* seedP2pExchangeRate(rows.usdAccount.instrumentId, rows.eurAccount.instrumentId, USD_TO_EUR_RATE);
+
+    return rows;
+});
+
+const seedOtherMatchingIncome = (accountId: number, externalId: string) =>
+    testSeedService.bankPairIncome(
+        { externalId, operatedAt: OPERATED_AT },
+        { accountId, amount: 91 * PRECISION, exchangeRate: 1, mccCategoryId: null }
+    );
+
 layer(TestLayer)('consolidation/enable-banking-transfer-pairing', it => {
     it.effect.each([
-        { title: 'accounts of two Enable Banking connections', expenseConsent: 'consent-a', incomeConsent: 'consent-b' },
-        { title: 'two balances of one Enable Banking connection', expenseConsent: 'consent-wise', incomeConsent: 'consent-wise' },
-        { title: 'Enable Banking accounts without a connection', expenseConsent: null, incomeConsent: null }
-    ])('never treats $title as the same bank for a USD expense and EUR income', ({ expenseConsent, incomeConsent }) =>
+        { title: 'accounts of two Enable Banking connections', expenseConsent: 'consent-a', incomeConsent: 'consent-b', ibans: null },
+        {
+            title: 'two balances of one Enable Banking connection',
+            expenseConsent: 'consent-wise',
+            incomeConsent: 'consent-wise',
+            ibans: null
+        },
+        { title: 'Enable Banking accounts without a connection', expenseConsent: null, incomeConsent: null, ibans: null },
+        { title: 'Enable Banking accounts on one IBAN root', expenseConsent: null, incomeConsent: null, ibans: SAME_ROOT_IBANS }
+    ])('never treats $title as the same bank for a USD expense and EUR income', ({ expenseConsent, incomeConsent, ibans }) =>
         Effect.gen(function* () {
-            const { expense, income } = yield* seedCrossCurrencyRows(ExternalSourceEnum.ENABLE_BANKING, expenseConsent, incomeConsent);
+            const { expense, income } = yield* seedCrossCurrencyRows(
+                ExternalSourceEnum.ENABLE_BANKING,
+                expenseConsent,
+                incomeConsent,
+                ibans
+            );
 
             expect(yield* runConsolidation()).toEqual({ found: 0, consolidated: 0 });
             for (const { id } of [expense, income]) {
@@ -62,12 +106,7 @@ layer(TestLayer)('consolidation/enable-banking-transfer-pairing', it => {
 
     it.effect('pairs a conversion between two balances of one Enable Banking connection at the market rate, never its fee', () =>
         Effect.gen(function* () {
-            const { expense, income, usdAccount, eurAccount } = yield* seedCrossCurrencyRows(
-                ExternalSourceEnum.ENABLE_BANKING,
-                'consent-wise',
-                'consent-wise'
-            );
-            yield* seedP2pExchangeRate(usdAccount.instrumentId, eurAccount.instrumentId, USD_TO_EUR_RATE);
+            const { expense, income, usdAccount, eurAccount } = yield* seedMarketRateConversion;
             yield* testSeedService.bankPairExpense(
                 { externalId: 'usd-fee', operatedAt: OPERATED_AT },
                 { accountId: usdAccount.id, amount: PRECISION, exchangeRate: 1, mccCategoryId: null }
@@ -80,6 +119,49 @@ layer(TestLayer)('consolidation/enable-banking-transfer-pairing', it => {
             expect(childIds).toHaveLength(2);
             expect(new Set(childIds)).toEqual(new Set([expense.id, income.id]));
             yield* expectSecondConsolidationRunStable();
+        })
+    );
+
+    it.effect('leaves unrelated same-day rows of one Enable Banking connection unpaired when their amounts miss the market rate', () =>
+        Effect.gen(function* () {
+            const { usdAccount, eurAccount } = yield* seedCrossCurrencyRows(
+                ExternalSourceEnum.ENABLE_BANKING,
+                'consent-wise',
+                'consent-wise'
+            );
+            yield* seedP2pExchangeRate(usdAccount.instrumentId, eurAccount.instrumentId, OFF_MARKET_USD_TO_EUR_RATE);
+
+            expect(yield* runConsolidation()).toEqual({ found: 0, consolidated: 0 });
+        })
+    );
+
+    it.effect('leaves a same-day Enable Banking conversion unpaired when two incomes match the market rate', () =>
+        Effect.gen(function* () {
+            const { eurAccount } = yield* seedMarketRateConversion;
+            yield* seedOtherMatchingIncome(eurAccount.id, 'eur-other-income');
+
+            expect(yield* runConsolidation()).toEqual({ found: 0, consolidated: 0 });
+        })
+    );
+
+    it.effect('pairs a same-day Enable Banking conversion when the other matching income lives in another sync zone', () =>
+        Effect.gen(function* () {
+            const { expense, income, eurAccount } = yield* seedMarketRateConversion;
+            const householdAccount = yield* seedConnectionAccount(
+                'Household EUR',
+                ExternalSourceEnum.ENABLE_BANKING,
+                eurAccount.instrumentId,
+                'consent-wise'
+            );
+            yield* testDb
+                .update(AccountEntityTable)
+                .set({ syncZone: HOUSEHOLD_SYNC_ZONE })
+                .where(eq(AccountEntityTable.id, householdAccount.id));
+            yield* seedOtherMatchingIncome(householdAccount.id, 'eur-household-income');
+
+            expect((yield* runConsolidation()).consolidated).toBe(1);
+            const [canonical] = yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
+            expect(new Set(yield* testQueryService.fetchChildTransactionIds(canonical.id))).toEqual(new Set([expense.id, income.id]));
         })
     );
 

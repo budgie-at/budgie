@@ -11,9 +11,23 @@ import { SyncTransactionTypeEnum } from '../../core/enum/sync-transaction-type.e
 
 import type { SyncTransactionInterface } from '../../core/interface/sync-transaction.interface';
 
+const DATE_TIME_PATTERN = /^(\d{2})-(\d{2})-(\d{4}) (\d{2}:\d{2}:\d{2}).*$/u;
+
+const toIsoDateTime = (dateTime: string): string => dateTime.replace(DATE_TIME_PATTERN, '$3-$2-$1T$4Z');
+
+const isCalendarDateTime = (dateTime: string): boolean => {
+    const isoDateTime = toIsoDateTime(dateTime);
+    const milliseconds = Date.parse(isoDateTime);
+
+    return Number.isFinite(milliseconds) && new Date(milliseconds).toISOString().startsWith(isoDateTime.slice(0, -1));
+};
+
 const WiseCsvRowSchema = Schema.Struct({
     'TransferWise ID': Schema.NonEmptyString,
-    'Date Time': Schema.String.check(Schema.isPattern(/^\d{2}-\d{2}-\d{4} \d{2}:\d{2}:\d{2}(?:\.\d{3})?$/u)),
+    'Date Time': Schema.String.check(
+        Schema.isPattern(/^\d{2}-\d{2}-\d{4} \d{2}:\d{2}:\d{2}(?:\.\d{3})?$/u),
+        Schema.makeFilter(isCalendarDateTime)
+    ),
     Amount: Schema.FiniteFromString,
     Currency: Schema.String.check(Schema.isPattern(/^[A-Z]{3}$/u)),
     Description: Schema.String,
@@ -25,11 +39,10 @@ const WiseCsvRowSchema = Schema.Struct({
 });
 
 const WISE_CSV_COLUMNS = Object.keys(WiseCsvRowSchema.fields);
-const DATE_TIME_PATTERN = /^(\d{2})-(\d{2})-(\d{4}) (\d{2}:\d{2}:\d{2}).*$/u;
 
 const decodeRow = Schema.decodeUnknownOption(WiseCsvRowSchema);
 
-const parseTime = (dateTime: string): number => Date.parse(dateTime.replace(DATE_TIME_PATTERN, '$3-$2-$1T$4Z')) / millisecondsInSecond;
+const parseTime = (dateTime: string): number => Date.parse(toIsoDateTime(dateTime)) / millisecondsInSecond;
 
 const mapRow = (row: typeof WiseCsvRowSchema.Type): SyncTransactionInterface => {
     const isIncome = row['Transaction Type'] === 'CREDIT';

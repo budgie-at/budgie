@@ -204,6 +204,12 @@ export const buildTransferPairRankedCandidateBaseSql = scopedSql`
                         ELSE 0
                     END as sameBank,
                     CASE
+                        WHEN expense_entries.expenseBankSource LIKE '${ExternalSourceEnum.ENABLE_BANKING}%'
+                            OR income_entries.incomeBankSource LIKE '${ExternalSourceEnum.ENABLE_BANKING}%'
+                        THEN 1
+                        ELSE 0
+                    END as isBookingDayPair,
+                    CASE
                         WHEN expense_entries.expenseInstrumentId = income_entries.incomeInstrumentId
                             AND expense_entries.expenseEntryAmount = income_entries.incomeEntryAmount
                         THEN 1
