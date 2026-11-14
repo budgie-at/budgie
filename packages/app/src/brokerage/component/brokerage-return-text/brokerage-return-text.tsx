@@ -18,6 +18,9 @@ interface Props {
     readonly testID?: string;
 }
 
+const CENTS_PER_UNIT = 100;
+const PERCENT_DISPLAY_STEPS = 10_000;
+
 export const BrokerageReturnText = ({
     gain,
     percent,
@@ -29,7 +32,9 @@ export const BrokerageReturnText = ({
     const formatDigits = useDisplayFormatDigits();
     const formatPercent = useFormatGainPercent();
 
-    const direction = Math.sign(Math.round((gain ?? percent ?? 0) * 100));
+    const gainDirection = Math.sign(Math.round((gain ?? 0) * CENTS_PER_UNIT));
+    const percentDirection = Math.sign(Math.round((percent ?? 0) * PERCENT_DISPLAY_STEPS));
+    const direction = isDefined(gain) ? gainDirection : percentDirection;
     const label = [
         isDefined(gain) ? formatDigits(Math.abs(gain), instrumentSymbol) : null,
         isDefined(percent) ? formatPercent(percent) : null
