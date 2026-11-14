@@ -3770,7 +3770,7 @@ msgid "Couldn't load iCloud backups"
 msgstr "No se pudieron cargar las copias de iCloud"
 
 #: src/@generic/component/searchable-page-error-state/searchable-page-error-state.tsx
-#: src/account/component/create-bank-search-results/create-bank-search-results.tsx
+#: src/account/component/create-bank-search-retry-row/create-bank-search-retry-row.tsx
 #: src/transaction/components/transaction-picker-failure/transaction-picker-failure.tsx
 msgid "Couldn’t load this list"
 msgstr "No se pudo cargar la lista"
@@ -6165,7 +6165,7 @@ msgstr "Se guarda en"
 msgid "Loading AI model..."
 msgstr "Cargando modelo de IA..."
 
-#: src/account/component/create-bank-search-results/create-bank-search-results.tsx
+#: src/account/component/create-bank-search-loading-row/create-bank-search-loading-row.tsx
 msgid "Loading banks"
 msgstr "Cargando bancos"
 
@@ -6180,6 +6180,10 @@ msgstr "Cargando progreso de la deuda"
 #: src/market-data/component/currency-market-chart-status/currency-market-chart-status.tsx
 msgid "Loading price history"
 msgstr "Cargando historial de precios"
+
+#: src/account/component/create-bank-search-retry-row/create-bank-search-retry-row.tsx
+msgid "Loads the bank list again"
+msgstr "Vuelve a cargar la lista de bancos"
 
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
 msgid "Lock Budgie with a PIN"
@@ -9260,6 +9264,7 @@ msgstr "Muestra lo que falta"
 msgid "Sign in on Wise's own page"
 msgstr "Inicia sesión en la página de Wise"
 
+#: src/account/component/create-bank-search-loading-row/create-bank-search-loading-row.tsx
 #: src/account/component/create-bank-search-results/create-bank-search-results.tsx
 #: src/app/(main)/create-account/index.tsx
 msgid "Sign in on your bank's own page"
@@ -10533,7 +10538,7 @@ msgstr "Intenta ajustar tus filtros para ver más resultados"
 
 #: src/@generic/component/contact-selector-state/contact-selector-state.tsx
 #: src/@generic/component/searchable-page-error-state/searchable-page-error-state.tsx
-#: src/account/component/create-bank-search-results/create-bank-search-results.tsx
+#: src/account/component/create-bank-search-retry-row/create-bank-search-retry-row.tsx
 #: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
 #: src/ai/component/ai-download-stopped-card/ai-download-stopped-card.tsx
 #: src/auth/components/forgot-pin-footer/forgot-pin-footer.tsx

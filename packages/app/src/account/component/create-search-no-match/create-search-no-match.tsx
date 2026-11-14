@@ -1,6 +1,6 @@
 import { useLingui } from '@lingui/react/macro';
-import { useEffect } from 'react';
-import { AccessibilityInfo, Text } from 'react-native';
+import { useEffect, useEffectEvent } from 'react';
+import { AccessibilityInfo, Platform, Text } from 'react-native';
 
 interface Props {
     readonly query: string;
@@ -12,9 +12,15 @@ export const CreateSearchNoMatch = ({ query }: Props) => {
     const { t } = useLingui();
     const message = t`No matches for “${query}”. Open the full list to browse by country.`;
 
+    const announceNoMatch = useEffectEvent(() => {
+        if (Platform.OS === 'ios') {
+            AccessibilityInfo.announceForAccessibility(message);
+        }
+    });
+
     useEffect(() => {
-        AccessibilityInfo.announceForAccessibility(message);
-    }, [message]);
+        announceNoMatch();
+    }, []);
 
     return (
         <Text
