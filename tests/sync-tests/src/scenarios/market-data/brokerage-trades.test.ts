@@ -71,12 +71,8 @@ const createTradedBrokerage = Effect.gen(function* () {
     return { ...brokerage, securityId, buyId, sellId };
 });
 
-const expectHundredDepositAt = (cashId: number, operatedAt: Date) =>
-    Effect.map(fetchBalanceAdjustments(cashId), adjustments => {
-        expect(adjustments).toEqual(
-            expect.arrayContaining([{ title: FUNDING_TITLE, amount: 100_000_000, type: TransactionEntryTypeEnum.DEBIT, operatedAt }])
-        );
-    });
+const buyTwoOnMarchEleventh = (brokerageService: Effect.Success<typeof createBrokerage>['brokerageService'], integrationId: number) =>
+    brokerageService.buy(integrationId, LISTING, { quantity: 2, price: 100, fee: 0, operatedAt: MARCH(11) }, FUNDING_TITLE);
 
 describe('market-data/brokerage-trades', () => {
     it.effect('buys and partly sells a security against brokerage cash with FIFO cost and realized return', () =>
@@ -299,17 +295,33 @@ describe('market-data/brokerage-trades', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('funds a buy moved earlier so the cash never dips below zero', () =>
+    it.effect('moves the funding with a buy moved earlier instead of duplicating it', () =>
         Effect.gen(function* () {
             const { brokerageService, cash } = yield* createBrokerage;
             const balances = yield* AccountBalanceRepository;
             const securityId = yield* brokerageService.buy(cash.integrationId ?? 0, LISTING, buyTen(10, MARCH(2)), FUNDING_TITLE);
             const [buyId] = yield* findTradeIds(securityId);
+            const cashBefore = yield* fetchAccountBalance(cash.id);
 
             yield* brokerageService.update(buyId, buyTen(10, MARCH(1)), FUNDING_TITLE);
 
-            expect(yield* balances.getMinimumLedgerBalanceFrom(cash.id, MARCH(1))).toBeGreaterThanOrEqual(0);
-            yield* expectHundredDepositAt(cash.id, new Date('2026-03-01T11:59:59.000Z'));
+            expect(yield* fetchAccountBalance(cash.id)).toBe(cashBefore);
+            expect(yield* balances.getMinimumLedgerBalanceFrom(cash.id, new Date('2026-02-28'))).toBeGreaterThanOrEqual(0);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('keeps the cash funded between the dates when a sell moves later', () =>
+        Effect.gen(function* () {
+            const { brokerageService, cash, sellId } = yield* createTradedBrokerage;
+            const balances = yield* AccountBalanceRepository;
+
+            yield* buyTwoOnMarchEleventh(brokerageService, cash.integrationId ?? 0);
+            const cashBefore = yield* fetchAccountBalance(cash.id);
+
+            yield* brokerageService.update(sellId, { quantity: 4, price: 125, fee: 0, operatedAt: MARCH(20) }, FUNDING_TITLE);
+
+            expect(yield* fetchAccountBalance(cash.id)).toBe(cashBefore);
+            expect(yield* balances.getMinimumLedgerBalanceFrom(cash.id, MARCH(2))).toBeGreaterThanOrEqual(0);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -318,16 +330,20 @@ describe('market-data/brokerage-trades', () => {
             const { brokerageService, cash, sellId } = yield* createTradedBrokerage;
             const balances = yield* AccountBalanceRepository;
 
-            yield* brokerageService.buy(
-                cash.integrationId ?? 0,
-                LISTING,
-                { quantity: 2, price: 100, fee: 0, operatedAt: MARCH(11) },
-                FUNDING_TITLE
-            );
+            yield* buyTwoOnMarchEleventh(brokerageService, cash.integrationId ?? 0);
             yield* brokerageService.update(sellId, { quantity: 4, price: 25, fee: 0, total: 100, operatedAt: MARCH(5) }, FUNDING_TITLE);
 
             expect(yield* balances.getMinimumLedgerBalanceFrom(cash.id, MARCH(2))).toBe(0);
-            yield* expectHundredDepositAt(cash.id, new Date('2026-03-05T11:59:59.000Z'));
+            expect(yield* fetchBalanceAdjustments(cash.id)).toEqual(
+                expect.arrayContaining([
+                    {
+                        title: FUNDING_TITLE,
+                        amount: 100_000_000,
+                        type: TransactionEntryTypeEnum.DEBIT,
+                        operatedAt: new Date('2026-03-05T11:59:59.000Z')
+                    }
+                ])
+            );
         }).pipe(Effect.provide(TestLayer))
     );
 
