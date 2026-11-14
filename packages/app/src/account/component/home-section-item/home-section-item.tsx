@@ -42,7 +42,7 @@ export const HomeSectionItem = ({ item, section, balancesByAccountId, holdingRet
     }
 
     if (isInstitutionGroup(item)) {
-        return <InstitutionRow institution={item} />;
+        return <InstitutionRow institution={item} balancesByAccountId={balancesByAccountId} />;
     }
 
     if (isHomeHolding(item)) {
