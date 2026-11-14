@@ -9,6 +9,7 @@ import { test } from '../support/budgie/test.ts';
 
 const ETH_ACCOUNT_ID = 501;
 const TERM_DEPOSIT_ID = 503;
+const FIRST_ETH_PAYOUT_ID = 6001;
 
 const previousMonthStart = () => {
     const now = new Date();
@@ -22,7 +23,6 @@ test('52 passive income', { tags: ['passive-income'] }, async ({ budgie }) => {
     const { screen } = ctx;
     const id = (testId: string) => b.byId(screen, testId);
     const plotValue = () => id('PassiveIncome.Plot').inputValue();
-    const firstPayout = () => screen.getByTestId(/^PassiveIncome\.Payout\./u).first();
     const expandHeader = async () => {
         await b.scrollTo(ctx, 'PassiveIncome.Footnote', 'up');
         const page = await id('PassiveIncome.Page').boundingBox();
@@ -82,8 +82,8 @@ test('52 passive income', { tags: ['passive-income'] }, async ({ budgie }) => {
         await b.tapId(ctx, `PassiveIncome.Position.${ETH_ACCOUNT_ID}`);
         await expandHeader();
         await expect(id('PassiveIncome.Subtitle')).toHaveText('E2E Binance ETH');
-        await b.scrollTo(ctx, 'PassiveIncome.Section.PAYOUTS');
-        await firstPayout().tap();
+        await b.scrollToCentre(ctx, `PassiveIncome.Payout.${FIRST_ETH_PAYOUT_ID}`);
+        await b.tapId(ctx, `PassiveIncome.Payout.${FIRST_ETH_PAYOUT_ID}`);
         await b.expectId(ctx, 'TransactionInfo.Page', 10_000);
         await b.tapId(ctx, 'PageHeader.BackButton');
         await expandHeader();
@@ -94,8 +94,8 @@ test('52 passive income', { tags: ['passive-income'] }, async ({ budgie }) => {
     await b.phase('3 transaction details yield row opens the filtered screen', async () => {
         await b.scrollTo(ctx, `PassiveIncome.Position.${ETH_ACCOUNT_ID}`);
         await b.tapId(ctx, `PassiveIncome.Position.${ETH_ACCOUNT_ID}`);
-        await b.scrollTo(ctx, 'PassiveIncome.Section.PAYOUTS');
-        await firstPayout().tap();
+        await b.scrollToCentre(ctx, `PassiveIncome.Payout.${FIRST_ETH_PAYOUT_ID}`);
+        await b.tapId(ctx, `PassiveIncome.Payout.${FIRST_ETH_PAYOUT_ID}`);
         await b.expectId(ctx, 'TransactionInfo.Row.Yield', 10_000);
         await b.tapId(ctx, 'TransactionInfo.Row.Yield');
         await expect(id('PassiveIncome.Subtitle')).toHaveText('E2E Binance ETH');
