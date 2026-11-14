@@ -2,6 +2,7 @@ import { Text } from 'react-native';
 import Animated, { Extrapolation, interpolate, useAnimatedStyle } from 'react-native-reanimated';
 
 import { useCollapsibleHeaderScroll } from '@rnw-community/react-native-collapsible-header';
+import { useScreenChrome } from '@rnw-community/react-native-screen-chrome';
 
 interface Props {
     readonly title: string;
@@ -12,6 +13,7 @@ const SCROLL_TRACK_DISTANCE = 100;
 
 export const StackedLargeTitle = ({ title }: Props) => {
     const { scrollY } = useCollapsibleHeaderScroll();
+    const { config } = useScreenChrome();
 
     const trackScrollStyle = useAnimatedStyle(() => ({
         transform: [
@@ -23,9 +25,10 @@ export const StackedLargeTitle = ({ title }: Props) => {
             }
         ]
     }));
+    const titleStyle = [{ height: config.headerHeight }, trackScrollStyle];
 
     return (
-        <Animated.View className="-ml-[40px] flex-1 justify-end pb-xs" style={trackScrollStyle}>
+        <Animated.View className="-ml-[40px] justify-end pb-xs" style={titleStyle}>
             <Text
                 className="text-primary text-[34px] leading-[41px] font-bold"
                 accessibilityRole="header"

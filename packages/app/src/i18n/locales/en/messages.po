@@ -2759,8 +2759,12 @@ msgstr "Check the spelling or try another account name."
 msgid "Check your connection and try again."
 msgstr "Check your connection and try again."
 
-#: src/account/constant/account-kind-title.constant.ts
 #: src/app/(tabs)/settings/sync-repairs.tsx
+msgid "Checking"
+msgstr "Checking"
+
+#: src/account/constant/account-kind-title.constant.ts
+msgctxt "Checking account type"
 msgid "Checking"
 msgstr "Checking"
 
@@ -6674,6 +6678,10 @@ msgstr "No archived accounts match “{search}”"
 #: src/cloud-backup/component/cloud-backup-list/cloud-backup-list.tsx
 msgid "No backups yet"
 msgstr "No backups yet"
+
+#: src/account/component/create-bank-search-results/create-bank-search-results.tsx
+msgid "No bank matches this name. Open the full list to browse by country."
+msgstr "No bank matches this name. Open the full list to browse by country."
 
 #: src/sync/component/enable-banking-bank-step/enable-banking-bank-step.tsx
 msgid "No banks found"

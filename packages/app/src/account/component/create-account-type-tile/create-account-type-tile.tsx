@@ -55,7 +55,7 @@ export const CreateAccountTypeTile = ({ title, description, icon, type }: Props)
                 iconClassName={typeClassNames[type]?.glyphClassName}
             />
             <Text
-                className="min-h-[30px] text-primary text-center text-[12px] leading-[15px] font-medium"
+                className="text-primary text-center text-[13px] leading-[16px] font-medium"
                 numberOfLines={2}
                 maxFontSizeMultiplier={LABEL_MAX_FONT_SIZE_MULTIPLIER}
             >

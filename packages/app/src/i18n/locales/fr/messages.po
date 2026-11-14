@@ -2758,10 +2758,14 @@ msgstr "Vérifiez l’orthographe ou essayez un autre nom de compte."
 msgid "Check your connection and try again."
 msgstr "Vérifiez votre connexion et réessayez."
 
-#: src/account/constant/account-kind-title.constant.ts
 #: src/app/(tabs)/settings/sync-repairs.tsx
 msgid "Checking"
 msgstr "Vérification"
+
+#: src/account/constant/account-kind-title.constant.ts
+msgctxt "Checking account type"
+msgid "Checking"
+msgstr "Compte courant"
 
 #: src/account/component/create-simple-account/create-simple-account.tsx
 msgid "Checking Account"
@@ -6673,6 +6677,10 @@ msgstr "Aucun compte archivé ne correspond à « {search} »"
 #: src/cloud-backup/component/cloud-backup-list/cloud-backup-list.tsx
 msgid "No backups yet"
 msgstr "Aucune sauvegarde pour l’instant"
+
+#: src/account/component/create-bank-search-results/create-bank-search-results.tsx
+msgid "No bank matches this name. Open the full list to browse by country."
+msgstr "Aucune banque ne correspond à ce nom. Ouvrez la liste complète pour parcourir par pays."
 
 #: src/sync/component/enable-banking-bank-step/enable-banking-bank-step.tsx
 msgid "No banks found"

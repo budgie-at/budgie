@@ -45,7 +45,7 @@ export const GroupedListRow = (props: Props) => {
     const accessory = right ?? chevron;
     const separatorClassName = isDefined(left) ? 'left-[64px]' : 'left-[16px]';
     const subtitleNode = isNotEmptyString(subtitle) ? (
-        <Text className={cn('text-secondary-foreground', GROUPED_LIST_SUBTITLE_CLASSNAME)} numberOfLines={3}>
+        <Text className={cn('text-secondary-foreground', GROUPED_LIST_SUBTITLE_CLASSNAME)} numberOfLines={3} maxFontSizeMultiplier={2}>
             {subtitle}
         </Text>
     ) : (
@@ -65,7 +65,12 @@ export const GroupedListRow = (props: Props) => {
             {left}
             <View className="min-w-0 flex-1 gap-y-xxs">
                 {isString(title) ? (
-                    <Text className={cn('text-primary', GROUPED_LIST_TITLE_CLASS_NAME)} numberOfLines={2} testID={titleTestID}>
+                    <Text
+                        className={cn('text-primary', GROUPED_LIST_TITLE_CLASS_NAME)}
+                        numberOfLines={2}
+                        maxFontSizeMultiplier={2}
+                        testID={titleTestID}
+                    >
                         {title}
                     </Text>
                 ) : (
