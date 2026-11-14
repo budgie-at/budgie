@@ -28,7 +28,7 @@ const WiseCsvRowSchema = Schema.Struct({
         Schema.isPattern(/^\d{2}-\d{2}-\d{4} \d{2}:\d{2}:\d{2}(?:\.\d{3})?$/u),
         Schema.makeFilter(isCalendarDateTime)
     ),
-    Amount: Schema.FiniteFromString,
+    Amount: Schema.String.check(Schema.isPattern(/^-?\d+(?:\.\d+)?$/u)).pipe(Schema.decodeTo(Schema.FiniteFromString)),
     Currency: Schema.String.check(Schema.isPattern(/^[A-Z]{3}$/u)),
     Description: Schema.String,
     'Payer Name': Schema.String,

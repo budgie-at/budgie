@@ -63,6 +63,14 @@ describe('enable-banking/wise-csv-parser', () => {
         })
     );
 
+    it.effect.each(['', '   ', '0x10', '1e3'])('rejects a row whose Amount %j is not a plain decimal', amount =>
+        Effect.gen(function* () {
+            const error = yield* Effect.flip(parseStatement(readWiseStatement(WISE_STATEMENT.GBP).replace('-8.00', amount)));
+
+            expect(error).toContain('CARD-1000020');
+        })
+    );
+
     it.effect('rejects a row ending in an unterminated quoted field that would swallow the lines after it', () =>
         Effect.gen(function* () {
             const [header, row] = readWiseStatement(WISE_STATEMENT.GBP).split('\n');
