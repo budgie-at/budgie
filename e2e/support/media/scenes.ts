@@ -587,6 +587,12 @@ export const SCENES: Readonly<Record<string, Scene>> = {
             await b.expectId(ctx, 'CreateAccount.MoreBanks', 15_000);
         }
     },
+    'new-account-search-deutschland': {
+        run: async ctx => {
+            await searchNewAccount(ctx, 'deutschland');
+            await b.expectId(ctx, 'CreateAccount.MoreBanks', 15_000);
+        }
+    },
     'new-account-search-empty': {
         run: async ctx => {
             await searchNewAccount(ctx, 'zzqx');
