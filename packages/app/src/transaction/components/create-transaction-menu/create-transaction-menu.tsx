@@ -4,7 +4,14 @@ import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { AccessibilityInfo, StyleSheet, View, useWindowDimensions } from 'react-native';
-import Animated, { useAnimatedStyle, useReducedMotion, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
+import Animated, {
+    ReduceMotion,
+    useAnimatedStyle,
+    useReducedMotion,
+    useSharedValue,
+    withSpring,
+    withTiming
+} from 'react-native-reanimated';
 import Toast from 'react-native-toast-message';
 import { scheduleOnRN } from 'react-native-worklets';
 
@@ -30,7 +37,7 @@ import type { RefObject } from 'react';
 
 const CLOSE_ROTATION = 45;
 const OPEN_SPRING = { ...SPRING_SETTLE, duration: 320 };
-const FADE_TIMING = { duration: MOTION_FAST_DURATION, easing: EASE_OUT };
+const FADE_TIMING = { duration: MOTION_FAST_DURATION, easing: EASE_OUT, reduceMotion: ReduceMotion.Never };
 const STACK_GAP_CLASSNAME = 'gap-xl';
 const LARGE_TEXT_STACK_GAP_CLASSNAME = 'gap-lg';
 
