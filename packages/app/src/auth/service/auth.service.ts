@@ -5,8 +5,9 @@ import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 import * as LocalAuthentication from 'expo-local-authentication';
 import * as SecureStore from 'expo-secure-store';
+import { Platform } from 'react-native';
 
-import { isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { DatabaseLifecycleOperationEnum } from '../../@generic/drizzle/enum/database-lifecycle-operation.enum';
 import { DatabaseLifecycleService } from '../../@generic/drizzle/service/database-lifecycle.service';
@@ -18,6 +19,7 @@ import { WidgetSnapshotService } from '../../widget/service/widget-snapshot.serv
 import { PIN_KEY } from '../constant/pin-key.constant';
 import { PIN_SECURE_STORE_OPTIONS } from '../constant/pin-secure-store-options.constant';
 import { SEAL_UNLOCK_GRANT_KEY } from '../constant/seal-unlock-grant-key.constant';
+import { BiometricKindEnum } from '../enum/biometric-kind.enum';
 import { BiometricTypesInterface } from '../interface/biometric-types.interface';
 
 import { PinAttemptService } from './pin-attempt.service';
@@ -30,9 +32,24 @@ export class AuthService extends Context.Service<AuthService>()('@budgie/app/Aut
         const pinAttemptService = yield* PinAttemptService;
 
         const unavailableBiometricTypes: BiometricTypesInterface = {
-            isTouchIdAvailable: false,
-            isFaceIdAvailable: false,
+            biometricKind: null,
             isSomeAvailable: false
+        };
+
+        const getBiometricKind = (hasFace: boolean, hasFingerprint: boolean): BiometricKindEnum | null => {
+            if (!hasFace && !hasFingerprint) {
+                return null;
+            }
+
+            if (Platform.OS === 'ios') {
+                return hasFace ? BiometricKindEnum.FACE_ID : BiometricKindEnum.TOUCH_ID;
+            }
+
+            if (hasFace && hasFingerprint) {
+                return BiometricKindEnum.BIOMETRICS;
+            }
+
+            return hasFace ? BiometricKindEnum.FACE_UNLOCK : BiometricKindEnum.FINGERPRINT;
         };
 
         const getPin = Effect.fn('AuthService.getPin')(function* () {
@@ -86,13 +103,13 @@ export class AuthService extends Context.Service<AuthService>()('@budgie/app/Aut
                     }
 
                     const types = yield* Effect.promise(() => LocalAuthentication.supportedAuthenticationTypesAsync());
-                    const isFaceIdAvailable = types.some(type => type === LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION);
-                    const isTouchIdAvailable = types.some(type => type === LocalAuthentication.AuthenticationType.FINGERPRINT);
+                    const hasFace = types.some(type => type === LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION);
+                    const hasFingerprint = types.some(type => type === LocalAuthentication.AuthenticationType.FINGERPRINT);
+                    const biometricKind = getBiometricKind(hasFace, hasFingerprint);
 
                     return {
-                        isSomeAvailable: isFaceIdAvailable || isTouchIdAvailable,
-                        isTouchIdAvailable,
-                        isFaceIdAvailable
+                        biometricKind,
+                        isSomeAvailable: isDefined(biometricKind)
                     };
                 },
                 Effect.catchDefect(() => Effect.succeed(unavailableBiometricTypes))

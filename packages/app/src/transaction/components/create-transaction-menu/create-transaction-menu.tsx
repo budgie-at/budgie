@@ -196,12 +196,11 @@ export const CreateTransactionMenu = ({ isOpen, onClose, triggerRef, accountId, 
                     <View className={stackGapClassName} pointerEvents="box-none">
                         <CreateMenuReveal progress={progress} order={2} className="flex-row gap-xl">
                             <CreateMenuTile
-                                ref={firstTileRef}
-                                icon={UserIconNameEnum.TrendingDown}
-                                label={t`Expense`}
-                                testID={CreateTransactionMenuSelector.Expense}
-                                variant="destructive"
-                                onPress={handleCreateExpense}
+                                icon={UserIconNameEnum.ArrowLeftRight}
+                                label={t`Transfer`}
+                                testID={CreateTransactionMenuSelector.Transfer}
+                                variant="warning"
+                                onPress={handleCreateTransfer}
                             />
                             <CreateMenuTile
                                 icon={UserIconNameEnum.TrendingUp}
@@ -213,14 +212,15 @@ export const CreateTransactionMenu = ({ isOpen, onClose, triggerRef, accountId, 
                         </CreateMenuReveal>
 
                         <CreateMenuReveal progress={progress} order={1} className="flex-row gap-xl">
-                            <CreateMenuTile
-                                icon={UserIconNameEnum.ArrowLeftRight}
-                                label={t`Transfer`}
-                                testID={CreateTransactionMenuSelector.Transfer}
-                                variant="warning"
-                                onPress={handleCreateTransfer}
-                            />
                             {isDefined(ReceiptScannerModule) ? <ReceiptSourceMenu onClose={onClose} /> : null}
+                            <CreateMenuTile
+                                ref={firstTileRef}
+                                icon={UserIconNameEnum.TrendingDown}
+                                label={t`Expense`}
+                                testID={CreateTransactionMenuSelector.Expense}
+                                variant="destructive"
+                                onPress={handleCreateExpense}
+                            />
                         </CreateMenuReveal>
                     </View>
                 </View>
