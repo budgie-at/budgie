@@ -48,8 +48,8 @@ export async function submitRuleApplyExisting(ctx: Ctx): Promise<void> {
     await tapId(ctx, 'RuleForm.Footer.SubmitButton');
     await expect(byText(ctx.screen, 'Apply to existing transactions?')).toBeVisible();
     await alertButton(ctx.screen, 'Apply').tap();
-    await expectId(ctx, 'RulesPage.Page', 10_000);
     await expect(byText(ctx.screen, 'Rule applied')).toBeVisible({ timeout: 15_000 });
+    await expectId(ctx, 'RulesPage.Page', 10_000);
 }
 
 /** subflows/rules/delete-first-rule: swipe the first card left, tap its delete action, confirm. Retries a swipe that lands while the list settles. */

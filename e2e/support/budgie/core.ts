@@ -166,7 +166,7 @@ export async function selectCategoryBySearch(ctx: Ctx, name: string): Promise<vo
     const card = byId(ctx.screen, `CategoryPickerBottomSheet.Card.${name}.Label`);
     await expect(card).toBeVisible();
     await card.tap();
-    await expect(input).toBeHidden({ timeout: 5_000 });
+    await expect(byId(ctx.screen, 'MorphScrim')).toBeHidden({ timeout: 5_000 });
 }
 
 export interface StartOptions {
