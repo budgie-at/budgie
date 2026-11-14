@@ -63,6 +63,17 @@ describe('enable-banking/wise-csv-parser', () => {
         })
     );
 
+    it.effect('rejects a row ending in an unterminated quoted field that would swallow the lines after it', () =>
+        Effect.gen(function* () {
+            const [header, row] = readWiseStatement(WISE_STATEMENT.GBP).split('\n');
+            const followingRow = row.replace('CARD-1000020', 'CARD-1000021');
+
+            const error = yield* Effect.flip(parseStatement([header, `${row},"unterminated`, followingRow, followingRow, ''].join('\n')));
+
+            expect(error).toContain('Malformed Wise statement');
+        })
+    );
+
     it.effect.each(['00-00-2023 13:00:00.000', '31-02-2023 13:00:00.000', '05-01-2023 24:00:00.000'])(
         'rejects a row whose Date Time %s is not on the calendar',
         dateTime =>

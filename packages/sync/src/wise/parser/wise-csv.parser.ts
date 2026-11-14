@@ -38,6 +38,8 @@ const WiseCsvRowSchema = Schema.Struct({
     'Transaction Type': Schema.Literals(['DEBIT', 'CREDIT'])
 });
 
+const STRUCTURAL_ERROR_TYPES: ReadonlySet<string> = new Set(['Quotes', 'FieldMismatch', 'Delimiter']);
+
 const WISE_CSV_COLUMNS = Object.keys(WiseCsvRowSchema.fields);
 
 const decodeRow = Schema.decodeUnknownOption(WiseCsvRowSchema);
@@ -71,10 +73,14 @@ const mapRow = (row: typeof WiseCsvRowSchema.Type): SyncTransactionInterface => 
 };
 
 export const parseWiseCsv = (text: string): Result.Result<ReadonlyMap<string, SyncTransactionInterface[]>, string> => {
-    const { data, meta } = Papa.parse<Record<string, string>>(text, { header: true, skipEmptyLines: true });
+    const { data, errors, meta } = Papa.parse<Record<string, string>>(text, { header: true, skipEmptyLines: true });
 
     if (!WISE_CSV_COLUMNS.every(column => meta.fields?.includes(column))) {
         return Result.fail('Not a Wise statement: the header row is missing expected columns');
+    }
+
+    if (errors.some(({ type }) => STRUCTURAL_ERROR_TYPES.has(type))) {
+        return Result.fail('Malformed Wise statement: the CSV structure is broken, for example an unterminated quoted field');
     }
 
     const transactionsByCurrency = new Map<string, SyncTransactionInterface[]>();
