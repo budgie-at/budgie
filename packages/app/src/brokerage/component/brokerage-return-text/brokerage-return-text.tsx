@@ -7,6 +7,7 @@ import { cn } from '../../../@generic/utils/cn.util';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useFormatGainPercent } from '../../../i18n/hook/use-format-gain-percent.hook';
 import { getMarketMoveClassName } from '../../../market-data/utils/get-market-move-class-name.util';
+import { RETURN_ARROW_BY_DIRECTION } from '../../constant/return-arrow-by-direction.constant';
 
 interface Props {
     readonly gain: number;
@@ -16,8 +17,6 @@ interface Props {
     readonly maxFontSizeMultiplier?: number;
     readonly testID?: string;
 }
-
-const ARROW_BY_DIRECTION: Record<number, string> = { [-1]: '▼ ', 0: '', 1: '▲ ' };
 
 export const BrokerageReturnText = ({
     gain,
@@ -47,7 +46,7 @@ export const BrokerageReturnText = ({
             )}
             testID={testID}
         >
-            {`${ARROW_BY_DIRECTION[direction]}${label}`}
+            {`${RETURN_ARROW_BY_DIRECTION[direction]}${label}`}
         </ProtectedText>
     );
 };

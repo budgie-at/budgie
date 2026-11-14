@@ -6,6 +6,7 @@ import { isDefined } from '@rnw-community/shared';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { cn } from '../../../@generic/utils/cn.util';
+import { RETURN_ARROW_BY_DIRECTION } from '../../../brokerage/constant/return-arrow-by-direction.constant';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useFormatGainPercent } from '../../../i18n/hook/use-format-gain-percent.hook';
 import { getMarketMoveClassName } from '../../../market-data/utils/get-market-move-class-name.util';
@@ -17,8 +18,6 @@ interface Props {
     readonly maxFontSizeMultiplier: number;
     readonly testID: string;
 }
-
-const ARROW_BY_DIRECTION: Record<number, string> = { [-1]: '▼ ', 0: '', 1: '▲ ' };
 
 export const HomeTodayChangeText = ({ gain, percent, maxFontSizeMultiplier, testID }: Props) => {
     const { t } = useLingui();
@@ -39,7 +38,7 @@ export const HomeTodayChangeText = ({ gain, percent, maxFontSizeMultiplier, test
             className={cn('text-[13px] font-semibold tabular-nums', getMarketMoveClassName(percent))}
             testID={testID}
         >
-            {`${ARROW_BY_DIRECTION[Math.sign(percent)]}${t`${change} · 24h`}`}
+            {`${RETURN_ARROW_BY_DIRECTION[Math.sign(percent)]}${t`${change} · 24h`}`}
         </ProtectedText>
     );
 };
