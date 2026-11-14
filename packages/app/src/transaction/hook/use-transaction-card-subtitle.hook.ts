@@ -19,7 +19,7 @@ export const useTransactionCardSubtitle = (transaction: TransactionWithRelations
         accessibilityLabel: descriptionSegments.join(', '),
         detailSegments: toDetailSegments(segments),
         promotableSegment: relationLabel,
-        promotedDetailSegments: toDetailSegments(segments.filter(segment => segment !== relationLabel)),
+        promotedDetailSegments: toDetailSegments(segments.slice(0, -1)),
         accountTitle,
         subtitleTestID: [
             isUncategorizedTransaction(transaction) ? TransactionCardSelector.UncategorizedBadge : null,
