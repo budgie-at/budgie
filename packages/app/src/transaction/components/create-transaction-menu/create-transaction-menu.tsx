@@ -5,6 +5,7 @@ import { router } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { AccessibilityInfo, StyleSheet, View, useWindowDimensions } from 'react-native';
 import Animated, {
+    Easing,
     ReduceMotion,
     useAnimatedStyle,
     useReducedMotion,
@@ -37,7 +38,8 @@ import type { RefObject } from 'react';
 
 const CLOSE_ROTATION = 45;
 const OPEN_SPRING = { ...SPRING_SETTLE, duration: 320 };
-const FADE_TIMING = { duration: MOTION_FAST_DURATION, easing: EASE_OUT, reduceMotion: ReduceMotion.Never };
+const FADE_TIMING = { duration: MOTION_FAST_DURATION, easing: EASE_OUT };
+const REDUCED_MOTION_FADE_TIMING = { duration: MOTION_FAST_DURATION, easing: Easing.out(Easing.quad), reduceMotion: ReduceMotion.Never };
 const STACK_GAP_CLASSNAME = 'gap-xl';
 const LARGE_TEXT_STACK_GAP_CLASSNAME = 'gap-lg';
 
@@ -121,7 +123,7 @@ export const CreateTransactionMenu = ({ isOpen, onClose, triggerRef, accountId, 
         isOpenRef.current = isOpen;
 
         if (!isOpen) {
-            progress.set(withTiming(0, FADE_TIMING));
+            progress.set(withTiming(0, isReducedMotion ? REDUCED_MOTION_FADE_TIMING : FADE_TIMING));
 
             return;
         }
@@ -139,7 +141,7 @@ export const CreateTransactionMenu = ({ isOpen, onClose, triggerRef, accountId, 
         };
 
         Toast.hide();
-        progress.set(isReducedMotion ? withTiming(1, FADE_TIMING, handleOpened) : withSpring(1, OPEN_SPRING, handleOpened));
+        progress.set(isReducedMotion ? withTiming(1, REDUCED_MOTION_FADE_TIMING, handleOpened) : withSpring(1, OPEN_SPRING, handleOpened));
     }, [isOpen, isReducedMotion, progress]);
 
     useEffect(() => {
