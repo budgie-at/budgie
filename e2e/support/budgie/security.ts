@@ -36,7 +36,7 @@ export async function enterPin(ctx: Ctx, pin: string): Promise<void> {
     }
 }
 
-/** Four wrong PINs (each answered "Incorrect PIN"), the fifth locks the pad; a tap while locked does nothing; the lockout clears within 45 s. */
+/** Four wrong PINs (each answered "Incorrect PIN"), the fifth locks the pad; a tap while locked does nothing; the pad re-enables within 45 s. */
 export async function exhaustPinAttempts(ctx: Ctx): Promise<void> {
     const { screen } = ctx;
     for (let i = 0; i < 4; i++) {
@@ -49,7 +49,8 @@ export async function exhaustPinAttempts(ctx: Ctx): Promise<void> {
     await expect(byId(screen, 'PinPage.Digit.1')).toBeDisabled();
     await tapId(ctx, 'PinPage.Digit.1');
     await expect(locked).toBeVisible();
-    await expect(locked).toBeHidden({ timeout: 45_000 });
+    await expect(byId(screen, 'PinPage.Digit.1')).toBeEnabled({ timeout: 45_000 });
+    await expect(locked).toBeHidden();
 }
 
 /** subflows/security/resume-after-pin-unlock: background, relaunch, try the forgot-PIN sheet, unlock, back on `resumedScreenId`. */
