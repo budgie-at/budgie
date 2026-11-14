@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useEffectEvent, useRef } from 'react';
 import { scrollTo, useAnimatedScrollHandler, useSharedValue } from 'react-native-reanimated';
 import { scheduleOnRN, scheduleOnUI } from 'react-native-worklets';
 
@@ -52,19 +52,33 @@ export const useCollapsibleChromeScroll = (onDragStart: () => void = emptyFn) =>
         }
     });
 
+    const scrollToSearchOffset = (isActive: boolean) => {
+        scheduleOnUI(() => {
+            const isBelowCollapseEnd = isActive ? scrollY.get() < collapseEnd : scrollY.get() <= collapseEnd;
+
+            if (isBelowCollapseEnd) {
+                scrollTo(scrollReference, 0, isActive ? collapseEnd : 0, animateSnap);
+            }
+        });
+    };
+
+    const handleContentSizeChange = () => {
+        if (isSearchActive) {
+            scrollToSearchOffset(true);
+        }
+    };
+
+    const syncSearchOffset = useEffectEvent(() => {
+        scrollToSearchOffset(isSearchActive);
+    });
+
     useEffect(() => {
         if (wasSearchActive.current === isSearchActive) {
             return;
         }
         wasSearchActive.current = isSearchActive;
-        scheduleOnUI(() => {
-            const isBelowCollapseEnd = isSearchActive ? scrollY.get() < collapseEnd : scrollY.get() <= collapseEnd;
+        syncSearchOffset();
+    }, [isSearchActive]);
 
-            if (isBelowCollapseEnd) {
-                scrollTo(scrollReference, 0, isSearchActive ? collapseEnd : 0, animateSnap);
-            }
-        });
-    }, [isSearchActive, scrollY, scrollReference, collapseEnd, animateSnap]);
-
-    return { onScroll, scrollRef: scrollReference };
+    return { onScroll, onContentSizeChange: handleContentSizeChange, scrollRef: scrollReference };
 };

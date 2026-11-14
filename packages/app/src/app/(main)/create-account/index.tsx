@@ -15,10 +15,12 @@ import { StackedLargeTitle } from '../../../@generic/component/stacked-large-tit
 import { StackedSmallTitle } from '../../../@generic/component/stacked-small-title/stacked-small-title';
 import { READABLE_CONTENT_CLASSNAME } from '../../../@generic/constant/readable-content-classname.constant';
 import { STACKED_TITLE_CHROME_CONFIG } from '../../../@generic/constant/stacked-title-chrome-config.constant';
+import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { CollapsibleChromeSearchProvider } from '../../../@generic/provider/collapsible-chrome-search.provider';
 import { cn } from '../../../@generic/utils/cn.util';
 import { foldSearchText } from '../../../@generic/utils/fold-search-text.util';
-import { CreateAccountManualSection } from '../../../account/component/create-account-manual-section/create-account-manual-section';
+import { CreateAccountManualRows } from '../../../account/component/create-account-manual-rows/create-account-manual-rows';
+import { CreateAccountManualTiles } from '../../../account/component/create-account-manual-tiles/create-account-manual-tiles';
 import { CreateBankSearchResults } from '../../../account/component/create-bank-search-results/create-bank-search-results';
 import { CreateMoreBanksCard } from '../../../account/component/create-more-banks-card/create-more-banks-card';
 import { CreateSyncCard } from '../../../account/component/create-sync-card/create-sync-card';
@@ -45,12 +47,14 @@ const GROUPED_STACKED_TITLE_CHROME_CONFIG = {
             0.25: { color: '#000000' },
             0.5: { color: '#000000' },
             0.75: { color: '#000000' },
-            0.9: { color: 'rgba(0,0,0,0.6)' },
+            0.86: { color: '#000000' },
             1: { color: 'transparent' }
         },
         bottom: {}
     }
 };
+
+const SEARCH_FOOTERS = { sync: null, import: null, manual: null };
 
 const SYNC_OPTIONS = [
     { provider: ExternalSourceEnum.MONOBANK, title: msg`Monobank`, description: msg`Connect with a token from the app` },
@@ -106,6 +110,7 @@ const MANUAL_OPTIONS: readonly CreateAccountManualOptionInterface[] = [
 export default function Index() {
     const { t } = useLingui();
     const [query, setQuery] = useState('');
+    const isAccessibilityTextSize = useIsAccessibilityTextSize();
 
     const normalizedQuery = foldSearchText(useDeferredValue(query).trim());
     const isSearching = isNotEmptyString(normalizedQuery);
@@ -114,12 +119,16 @@ export default function Index() {
     const syncOptions = SYNC_OPTIONS.filter(isMatch);
     const importOptions = IMPORT_OPTIONS.filter(isMatch);
     const manualOptions = MANUAL_OPTIONS.filter(isMatch);
-    const syncFooter = isSearching ? null : t`Read-only. Tokens and keys stay on this device.`;
-    const importFooter = isSearching ? null : t`Files are read on this device and never uploaded.`;
-    const manualFooter = isSearching ? null : t`Enter balances yourself. No connection needed.`;
+    const footers = isSearching
+        ? SEARCH_FOOTERS
+        : {
+              sync: t`Read-only. Tokens and keys stay on this device.`,
+              import: t`Files are read on this device and never uploaded.`,
+              manual: t`Enter balances yourself. No connection needed.`
+          };
 
     const syncSection = isNotEmptyArray(syncOptions) ? (
-        <GroupedListSection title={t`Sync automatically`} footer={syncFooter}>
+        <GroupedListSection title={t`Sync automatically`} footer={footers.sync}>
             {syncOptions.map(option => (
                 <CreateSyncCard
                     key={option.provider}
@@ -132,7 +141,7 @@ export default function Index() {
         </GroupedListSection>
     ) : null;
     const importSection = isNotEmptyArray(importOptions) ? (
-        <GroupedListSection title={t`Import statements`} footer={importFooter}>
+        <GroupedListSection title={t`Import statements`} footer={footers.import}>
             {importOptions.map(option => (
                 <CreateSyncCard
                     key={option.provider}
@@ -143,8 +152,16 @@ export default function Index() {
             ))}
         </GroupedListSection>
     ) : null;
+    const manualTypes =
+        isSearching || isAccessibilityTextSize ? (
+            <CreateAccountManualRows options={manualOptions} />
+        ) : (
+            <CreateAccountManualTiles options={manualOptions} />
+        );
     const manualSection = isNotEmptyArray(manualOptions) ? (
-        <CreateAccountManualSection options={manualOptions} footer={manualFooter} />
+        <GroupedListSection title={t`Add manually`} footer={footers.manual}>
+            {manualTypes}
+        </GroupedListSection>
     ) : null;
 
     return (
@@ -154,7 +171,7 @@ export default function Index() {
                     largeTitle={<StackedLargeTitle title={t`New Account`} />}
                     smallTitle={<StackedSmallTitle title={t`New Account`} />}
                     leading={<HeaderBackButton />}
-                    contentClassName={cn('gap-y-[24px] pt-[20px]', READABLE_CONTENT_CLASSNAME)}
+                    contentClassName={cn('gap-y-[20px] pt-[20px]', READABLE_CONTENT_CLASSNAME)}
                     chromeConfig={GROUPED_STACKED_TITLE_CHROME_CONFIG}
                 >
                     {isSearching ? (

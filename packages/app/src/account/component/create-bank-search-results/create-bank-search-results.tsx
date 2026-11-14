@@ -4,7 +4,7 @@ import { useLingui } from '@lingui/react/macro';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import { Children } from 'react';
 
-import { isNotEmptyArray } from '@rnw-community/shared';
+import { isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
@@ -37,59 +37,41 @@ export const CreateBankSearchResults = ({ query, children }: Props) => {
     const banks = sortEnableBankingBanks(
         AsyncResult.getOrElse(result, () => NO_BANKS).filter(bank => bank.isSupported && foldSearchText(bank.name).includes(query))
     ).slice(0, MAX_RESULTS);
-    const hasOptionMatches = isNotEmptyArray(Children.toArray(children));
-    const moreBanksCard = <CreateMoreBanksCard title={t`2,000+ European banks`} subtitle={t`Sign in on your bank's own page`} />;
-
-    if (isLoading || isNotEmptyArray(banks)) {
-        return (
-            <>
-                <GroupedListSection title={t`European banks`} footer={t`Read-only. You sign in on your bank's own page.`}>
-                    <LoadingContent isLoading={isLoading}>
-                        {banks.map(bank => (
-                            <EnableBankingBankRow key={`${bank.country}-${bank.name}`} bank={bank} onSelect={openEnableBankingBank} />
-                        ))}
-                        {moreBanksCard}
-                    </LoadingContent>
-                </GroupedListSection>
-                {children}
-            </>
-        );
-    }
-
-    if (AsyncResult.isFailure(result)) {
-        return (
-            <>
-                {children}
-                <GroupedListSection title={t`European banks`}>
-                    <GroupedListRow
-                        left={
-                            <CircleIcon
-                                icon={UserIconNameEnum.RotateCw}
-                                size={36}
-                                iconSize={20}
-                                radius={10}
-                                border={false}
-                                className="bg-[#8E8E93]/15 dark:bg-[#8E8E93]/25"
-                                iconClassName="text-[#636366] dark:text-[#AEAEB2]"
-                            />
-                        }
-                        title={t`Couldn’t load this list`}
-                        subtitle={t`Try again`}
-                        onPress={retry}
-                    />
-                    {moreBanksCard}
-                </GroupedListSection>
-            </>
-        );
-    }
+    const isFailure = AsyncResult.isFailure(result) && !isLoading;
+    const hasNoMatch = !isLoading && !isFailure && isEmptyArray(banks) && isEmptyArray(Children.toArray(children));
+    const browseFooter = hasNoMatch ? t`Open the full list to browse by country.` : null;
+    const footer = isNotEmptyArray(banks) ? t`Read-only through Enable Banking.` : browseFooter;
 
     return (
         <>
-            {hasOptionMatches ? null : <CreateSearchNoMatch query={query} />}
-            {children}
-            <GroupedListSection footer={t`No bank matches this name. Open the full list to browse by country.`}>
-                {moreBanksCard}
+            {hasNoMatch ? <CreateSearchNoMatch query={query} /> : null}
+            <GroupedListSection title={t`European banks`} footer={footer}>
+                <LoadingContent isLoading={isLoading}>
+                    {isFailure ? (
+                        <GroupedListRow
+                            left={
+                                <CircleIcon
+                                    icon={UserIconNameEnum.RotateCw}
+                                    size={36}
+                                    iconSize={20}
+                                    radius={10}
+                                    border={false}
+                                    className="bg-[#8E8E93]/15 dark:bg-[#8E8E93]/25"
+                                    iconClassName="text-[#636366] dark:text-[#AEAEB2]"
+                                />
+                            }
+                            title={t`Couldn’t load this list`}
+                            subtitle={t`Try again`}
+                            onPress={retry}
+                        />
+                    ) : null}
+                    {banks.map(bank => (
+                        <EnableBankingBankRow key={`${bank.country}-${bank.name}`} bank={bank} onSelect={openEnableBankingBank} />
+                    ))}
+                    <CreateMoreBanksCard title={t`2,000+ European banks`} subtitle={t`Sign in on your bank's own page`} />
+                </LoadingContent>
             </GroupedListSection>
+            {children}
         </>
     );
 };
