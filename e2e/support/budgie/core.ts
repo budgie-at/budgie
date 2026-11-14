@@ -1,4 +1,8 @@
-import { leaseIdForUdid, simlockApiFromEnv, type SimlockApi } from '@mobile-ci/e2e-simlock/exec';
+import { mkdirSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+import { exec, leaseIdForUdid, simlockApiFromEnv, type SimlockApi } from '@mobile-ci/e2e-simlock/exec';
 import {
     byId,
     done as doneOnKeyboard,
@@ -10,7 +14,7 @@ import {
 } from '@mobile-ci/e2e-simlock/steps';
 import { expect } from 'e2e';
 
-import { clearDatabase, documentsOf, ensureFixtures, seedDatabase } from './fixtures.ts';
+import { BUNDLE_ID, clearDatabase, documentsOf, ensureFixtures, seedDatabase } from './fixtures.ts';
 
 import type { Device } from '@e2e-dev/mobile';
 import type { App, Locator, Screen } from 'e2e';
@@ -162,7 +166,7 @@ export async function selectCategoryBySearch(ctx: Ctx, name: string): Promise<vo
     const card = byId(ctx.screen, `CategoryPickerBottomSheet.Card.${name}.Label`);
     await expect(card).toBeVisible();
     await card.tap();
-    await expect(input).toBeHidden({ timeout: 5_000 });
+    await expect(byId(ctx.screen, 'MorphScrim')).toBeHidden({ timeout: 5_000 });
 }
 
 export interface StartOptions {
@@ -173,6 +177,11 @@ export interface StartOptions {
 }
 
 const primed = new Set<string>();
+
+/** Lands in the uploaded `.e2e` artifact beside the run's results. */
+const DIAGNOSTICS_DIR = fileURLToPath(new URL('../../.e2e/diagnostics/', import.meta.url));
+
+const ANDROID_LAUNCH_DIAGNOSTICS = [`dumpsys activity exit-info ${BUNDLE_ID}`, 'logcat -d -b crash,main -t 2000', 'ls -l /data/anr'];
 
 /**
  * Per-test device state: fixtures staged in the app container, the test's
@@ -227,6 +236,9 @@ export class Budgie {
         });
         await phase('launch', async () => {
             await app.open();
+            if (!isIos(this.ctx)) {
+                await this.expectAndroidAppForeground(lease);
+            }
             const wait = options.wait ?? (options.fixture === undefined ? 'none' : 'balance');
             if (wait === 'none') {
                 return;
@@ -239,6 +251,26 @@ export class Budgie {
                 await expect(byId(screen, 'HomePage.TotalBalance')).toBeVisible({ timeout: 30_000 });
             }
         });
+    }
+
+    /** Fails fast when `app.open()` returned but the app did not stay in the foreground, keeping the device's own account of why. */
+    private async expectAndroidAppForeground(lease: string): Promise<void> {
+        try {
+            await expect.poll(async () => (await this.ctx.device.foregroundApp()).bundleId, { timeout: 5_000 }).toBe(BUNDLE_ID);
+        } catch {
+            const sections = await Promise.all(
+                ANDROID_LAUNCH_DIAGNOSTICS.map(async command => {
+                    const result = await exec(this.api, lease, ['shell', command], undefined, 'adb');
+                    return `$ ${command} (exit ${result.exitCode})\n${result.stdout}${result.stderr}`;
+                })
+            );
+            mkdirSync(DIAGNOSTICS_DIR, { recursive: true });
+            const file = join(DIAGNOSTICS_DIR, `android-launch-${lease}-${Date.now()}.txt`);
+            writeFileSync(file, sections.join('\n\n'));
+            throw new Error(
+                `app not foreground after launch: ${BUNDLE_ID} was not in the foreground within 5s of app.open(); device diagnostics in ${file}`
+            );
+        }
     }
 }
 

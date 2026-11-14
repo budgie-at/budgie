@@ -12,7 +12,7 @@ import * as Layer from 'effect/Layer';
 import * as Schema from 'effect/Schema';
 import * as DocumentPicker from 'expo-document-picker';
 import { File } from 'expo-file-system';
-import { Linking } from 'react-native';
+import { Linking, Platform } from 'react-native';
 
 import { emptyFn, isDefined } from '@rnw-community/shared';
 
@@ -77,7 +77,7 @@ export class EnableBankingConnectionService extends Context.Service<EnableBankin
                 pickKeyFile: Effect.fn('EnableBankingConnectionService.pickKeyFile')(function* () {
                     return yield* Effect.acquireUseRelease(
                         Effect.tryPromise({
-                            try: () => DocumentPicker.getDocumentAsync({ type: '*/*', copyToCacheDirectory: true }),
+                            try: () => DocumentPicker.getDocumentAsync({ type: '*/*', copyToCacheDirectory: Platform.OS !== 'ios' }),
                             catch: () => fail(EnableBankingSetupErrorReasonEnum.UNREADABLE_FILE)
                         }),
                         result => {

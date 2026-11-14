@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.183.3](https://github.com/budgie-at/budgie/compare/v6.183.2...v6.183.3) (2026-11-14)
+
+### Bug Fixes
+
+* root-cause the e2e flakes from the last week of CI ([#2224](https://github.com/budgie-at/budgie/issues/2224)) ([ce2906e](https://github.com/budgie-at/budgie/commit/ce2906e7c63434e489dff3390bba60e18224506b)), closes [#2214](https://github.com/budgie-at/budgie/issues/2214) [#2087](https://github.com/budgie-at/budgie/issues/2087) [#2091](https://github.com/budgie-at/budgie/issues/2091)
+
+
+## [6.183.2](https://github.com/budgie-at/budgie/compare/v6.183.1...v6.183.2) (2026-11-14)
+
+### Bug Fixes
+
+* **app:** promote the category to the title line of untitled transaction rows ([#2218](https://github.com/budgie-at/budgie/issues/2218)) ([988fe6d](https://github.com/budgie-at/budgie/commit/988fe6df59fb8181d01dba9f0d352d016e3d1df4))
+
+
+## [6.183.1](https://github.com/budgie-at/budgie/compare/v6.183.0...v6.183.1) (2026-11-14)
+
+### Performance Improvements
+
+* **app:** leave AI native modules out of AI-disabled builds ([#2220](https://github.com/budgie-at/budgie/issues/2220)) ([4f54f26](https://github.com/budgie-at/budgie/commit/4f54f2687d0e2c4f3305cd48d0d04f7507ff487c))
+
+
 # [6.183.0](https://github.com/budgie-at/budgie/compare/v6.182.2...v6.183.0) (2026-11-14)
 
 ### Features
