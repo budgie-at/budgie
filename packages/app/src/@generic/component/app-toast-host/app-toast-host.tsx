@@ -7,7 +7,11 @@ import Toast from 'react-native-toast-message';
 import { ReceiptScanToast } from '../../../receipt/components/receipt-scan-toast/receipt-scan-toast';
 import { RECEIPT_SCAN_TOAST_TYPE } from '../../../receipt/constant/receipt-scan-toast-type.constant';
 import { ACTION_TOAST_TYPE } from '../../constant/action-toast-type.constant';
-import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from '../../constant/floating-tab-bar.constant';
+import {
+    FLOATING_TAB_BAR_HEIGHT,
+    FLOATING_TAB_BAR_MARGIN,
+    FLOATING_TAB_BAR_MIN_BOTTOM_INSET
+} from '../../constant/floating-tab-bar.constant';
 import { SCREEN_CHROME_CONTENT_INSET_TOP } from '../../constant/screen-chrome-content-inset.constant';
 import { useVibration } from '../../hook/use-vibration.hook';
 import { AppToast } from '../app-toast/app-toast';
@@ -57,7 +61,11 @@ export const AppToastHost = () => {
     };
 
     const topOffset = insets.top + SCREEN_CHROME_CONTENT_INSET_TOP;
-    const tabBarBottomOffset = insets.bottom + FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + SEARCH_LIST_BOTTOM_CLEARANCE;
+    const tabBarBottomOffset =
+        Math.max(insets.bottom, FLOATING_TAB_BAR_MIN_BOTTOM_INSET) +
+        FLOATING_TAB_BAR_HEIGHT +
+        FLOATING_TAB_BAR_MARGIN +
+        SEARCH_LIST_BOTTOM_CLEARANCE;
     const bottomOffset = rootSegment === '(tabs)' ? tabBarBottomOffset : insets.bottom + FLOATING_TAB_BAR_MARGIN;
 
     return <Toast onShow={handleShow} config={APP_TOAST_CONFIG} topOffset={topOffset} bottomOffset={bottomOffset} />;

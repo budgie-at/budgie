@@ -9,7 +9,11 @@ import { isDefined, isEmptyArray } from '@rnw-community/shared';
 import { BudgieLegendList } from '../../../@generic/component/budgie-legend-list/budgie-legend-list';
 import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
 import { PopoverMenuAnchor } from '../../../@generic/component/popover-menu/popover-menu';
-import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from '../../../@generic/constant/floating-tab-bar.constant';
+import {
+    FLOATING_TAB_BAR_HEIGHT,
+    FLOATING_TAB_BAR_MARGIN,
+    FLOATING_TAB_BAR_MIN_BOTTOM_INSET
+} from '../../../@generic/constant/floating-tab-bar.constant';
 import { LegendListPositionSourceInterface } from '../../../@generic/interface/legend-list-position-source.interface';
 import { TransactionListItemKindEnum } from '../../enum/transaction-list-item-kind.enum';
 import { useTransactionListHeaderOffsets } from '../../hook/use-transaction-list-header-offsets.hook';
@@ -90,7 +94,9 @@ export const TransactionSectionsList = ({
     const { handleListRef, publishHeaderOffsets } = useTransactionListHeaderOffsets(sections, headerIndices, headerOffsets);
 
     const contentContainerStyle = {
-        paddingBottom: footerSpacerMultiplier * (FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN) + bottom,
+        paddingBottom:
+            footerSpacerMultiplier * (FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN) +
+            Math.max(bottom, FLOATING_TAB_BAR_MIN_BOTTOM_INSET),
         ...(isEmptyArray(flatData) && { flexGrow: 1 }),
         ...(isEmptyArray(flatData) && !isDefined(listHeader) && { justifyContent: 'center' as const })
     };
