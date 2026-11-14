@@ -2,7 +2,7 @@ import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { AccessibilityInfo, StyleSheet, View, useWindowDimensions } from 'react-native';
 import Animated, {
     Easing,
@@ -60,11 +60,16 @@ export const CreateTransactionMenu = ({ isOpen, onClose, triggerRef, accountId, 
     const firstTileRef = useRef<View>(null);
     const shouldRestoreFocusRef = useRef(false);
     const isOpenRef = useRef(isOpen);
+    const [isCloseButtonShown, setIsCloseButtonShown] = useState(isOpen);
 
     const isVoiceInputEnabled = useSetting('isAiVoiceInputEnabled');
     const isAiAvailable = useAtomValue(aiSystemStatusAtom).state !== AiSystemStateEnum.DISABLED;
     const isReducedMotion = useReducedMotion();
     const progress = useSharedValue(0);
+
+    if (isOpen && !isCloseButtonShown) {
+        setIsCloseButtonShown(true);
+    }
 
     const handleDismiss = () => {
         shouldRestoreFocusRef.current = true;
@@ -112,13 +117,24 @@ export const CreateTransactionMenu = ({ isOpen, onClose, triggerRef, accountId, 
     const contextActionTestID = createAction?.testID ?? CreateTransactionMenuSelector.item(0);
     const pointerEvents = isOpen ? 'box-none' : 'none';
     const accessibilityVisibility = isOpen ? 'auto' : 'no-hide-descendants';
+    const closeButtonClassName = isCloseButtonShown ? 'opacity-100' : 'opacity-0';
     const stackGapClassName = fontScale >= CREATE_MENU_LARGE_TEXT_FONT_SCALE ? LARGE_TEXT_STACK_GAP_CLASSNAME : STACK_GAP_CLASSNAME;
 
     useEffect(() => {
         isOpenRef.current = isOpen;
 
         if (!isOpen) {
-            progress.set(withTiming(0, isReducedMotion ? REDUCED_MOTION_FADE_TIMING : FADE_TIMING));
+            const hideCloseButton = () => {
+                setIsCloseButtonShown(false);
+            };
+            const handleClosed = (finished?: boolean) => {
+                'worklet';
+                if (finished === true) {
+                    scheduleOnRN(hideCloseButton);
+                }
+            };
+
+            progress.set(withTiming(0, isReducedMotion ? REDUCED_MOTION_FADE_TIMING : FADE_TIMING, handleClosed));
 
             return;
         }
@@ -155,7 +171,7 @@ export const CreateTransactionMenu = ({ isOpen, onClose, triggerRef, accountId, 
         const value = progress.get();
         const rotation = isReducedMotion ? CLOSE_ROTATION : CLOSE_ROTATION * value;
 
-        return { opacity: value > 0 ? 1 : 0, transform: [{ rotate: `${rotation}deg` }] };
+        return { transform: [{ rotate: `${rotation}deg` }] };
     });
 
     const scrimStyle = useAnimatedStyle(() => ({ opacity: progress.get() }));
@@ -246,13 +262,15 @@ export const CreateTransactionMenu = ({ isOpen, onClose, triggerRef, accountId, 
                         ) : null}
                     </CreateMenuReveal>
 
-                    <CircularActionButton
-                        icon={UserIconNameEnum.Plus}
-                        label={t`Close menu`}
-                        onPress={handleDismiss}
-                        animatedStyle={closeButtonStyle}
-                        testID={CreateTransactionMenuSelector.Close}
-                    />
+                    <View className={closeButtonClassName}>
+                        <CircularActionButton
+                            icon={UserIconNameEnum.Plus}
+                            label={t`Close menu`}
+                            onPress={handleDismiss}
+                            animatedStyle={closeButtonStyle}
+                            testID={CreateTransactionMenuSelector.Close}
+                        />
+                    </View>
                 </View>
             </View>
         </View>
