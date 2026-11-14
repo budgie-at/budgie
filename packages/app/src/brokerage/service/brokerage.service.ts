@@ -229,7 +229,7 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
                 effect => Db.transaction(effect)
             ),
             update: Effect.fn('BrokerageService.update')(
-                function* (transactionId: number, trade: SecurityTradeFormValues, fundingTitle: string) {
+                function* (transactionId: number, trade: SecurityTradeFormValues, fundingTitle: string, withdrawalTitle: string) {
                     const transaction = yield* transactionRepository.getByIdWithEntries(transactionId);
 
                     if (!isDefined(transaction)) {
@@ -246,6 +246,7 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
                     const operatedUntil = max([transaction.operatedAt, trade.operatedAt]);
                     const securityBefore = yield* accountBalanceRepository.getMinimumLedgerBalanceFrom(security.id, operatedFrom);
                     const cashBefore = yield* accountBalanceRepository.getMinimumLedgerBalanceFrom(cash.id, operatedFrom);
+                    const lateCashBefore = yield* accountBalanceRepository.getMinimumLedgerBalanceFrom(cash.id, operatedUntil);
 
                     yield* transactionService.updateById(transactionId, {
                         ...input,
@@ -263,14 +264,14 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
                     const cashAfter = yield* accountBalanceRepository.getMinimumLedgerBalanceFrom(cash.id, operatedFrom);
                     const lateCashAfter = yield* accountBalanceRepository.getMinimumLedgerBalanceFrom(cash.id, operatedUntil);
                     const shortfall = Math.min(cashBefore, 0) - cashAfter;
-                    const lateShortfall = Math.max(Math.min(cashBefore, 0) - lateCashAfter, 0);
+                    const lateShortfall = Math.max(Math.min(lateCashBefore, 0) - lateCashAfter, 0);
                     const isBrokerageCash = isDefined(security.integrationId) && cash.integrationId === security.integrationId;
 
                     if (isBrokerageCash && isPositiveNumber(shortfall)) {
                         yield* balanceAdjustmentService.create(cash.id, shortfall, subSeconds(operatedFrom, 1), fundingTitle);
 
                         if (lateShortfall < shortfall) {
-                            yield* balanceAdjustmentService.create(cash.id, lateShortfall - shortfall, operatedUntil, fundingTitle);
+                            yield* balanceAdjustmentService.create(cash.id, lateShortfall - shortfall, operatedUntil, withdrawalTitle);
                         }
 
                         yield* accountBalanceIncrementalService.updateBalancesByAccountIds([cash.id]);

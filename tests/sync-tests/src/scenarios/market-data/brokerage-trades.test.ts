@@ -12,6 +12,7 @@ import {
     UserIconNameEnum,
     convertFromMicroUnits
 } from '@budgie/contracts';
+import { BalanceAdjustmentService } from '@budgie/ledger';
 import { calculateInstrumentPosition } from '@budgie/market';
 import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
@@ -25,6 +26,7 @@ import { testDb } from '../../harness/scenario/test-db';
 const LISTING = { symbol: 'BGTX', name: 'Budgie Example Holdings', exchange: 'E2E Exchange', type: InstrumentTypeEnum.EQUITY } as const;
 const TRADE_DAY = new Date('2026-03-02T12:00:00.000Z');
 const FUNDING_TITLE = 'Deposit';
+const WITHDRAWAL_TITLE = 'Withdrawal';
 const MARCH = (day: number) => new Date(`2026-03-${String(day).padStart(2, '0')}T12:00:00.000Z`);
 
 const findTradeIds = (securityId: number) =>
@@ -250,7 +252,8 @@ describe('market-data/brokerage-trades', () => {
             yield* brokerageService.update(
                 buyEntry.transactionId,
                 { quantity: 21, price: 41.949, fee: 25.15, total: 906.08, operatedAt: TRADE_DAY },
-                FUNDING_TITLE
+                FUNDING_TITLE,
+                WITHDRAWAL_TITLE
             );
 
             const security = yield* accountRepository.findById(securityId);
@@ -271,7 +274,12 @@ describe('market-data/brokerage-trades', () => {
             yield* brokerageService.sell(securityId, { quantity: 10, price: 50, fee: 0, operatedAt: new Date('2026-03-10') });
             expect(
                 yield* brokerageService
-                    .update(buyEntry.transactionId, { quantity: 5, price: 40, fee: 0, operatedAt: TRADE_DAY }, FUNDING_TITLE)
+                    .update(
+                        buyEntry.transactionId,
+                        { quantity: 5, price: 40, fee: 0, operatedAt: TRADE_DAY },
+                        FUNDING_TITLE,
+                        WITHDRAWAL_TITLE
+                    )
                     .pipe(Effect.flip)
             ).toMatchObject({ _tag: 'InsufficientSecurityHoldingError' });
         }).pipe(Effect.provide(TestLayer))
@@ -283,12 +291,12 @@ describe('market-data/brokerage-trades', () => {
 
             expect(
                 yield* brokerageService
-                    .update(buyId, { quantity: 10, price: 100, fee: 0, operatedAt: MARCH(8) }, FUNDING_TITLE)
+                    .update(buyId, { quantity: 10, price: 100, fee: 0, operatedAt: MARCH(8) }, FUNDING_TITLE, WITHDRAWAL_TITLE)
                     .pipe(Effect.flip)
             ).toMatchObject({ _tag: 'InsufficientSecurityHoldingError' });
             expect(
                 yield* brokerageService
-                    .update(sellId, { quantity: 4, price: 125, fee: 0, operatedAt: MARCH(1) }, FUNDING_TITLE)
+                    .update(sellId, { quantity: 4, price: 125, fee: 0, operatedAt: MARCH(1) }, FUNDING_TITLE, WITHDRAWAL_TITLE)
                     .pipe(Effect.flip)
             ).toMatchObject({ _tag: 'InsufficientSecurityHoldingError' });
             expect(yield* fetchAccountBalance(securityId)).toBe(6_000_000);
@@ -303,10 +311,30 @@ describe('market-data/brokerage-trades', () => {
             const [buyId] = yield* findTradeIds(securityId);
             const cashBefore = yield* fetchAccountBalance(cash.id);
 
-            yield* brokerageService.update(buyId, buyTen(10, MARCH(1)), FUNDING_TITLE);
+            yield* brokerageService.update(buyId, buyTen(10, MARCH(1)), FUNDING_TITLE, WITHDRAWAL_TITLE);
 
             expect(yield* fetchAccountBalance(cash.id)).toBe(cashBefore);
             expect(yield* balances.getMinimumLedgerBalanceFrom(cash.id, new Date('2026-02-28'))).toBeGreaterThanOrEqual(0);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('keeps the extra funding of a buy moved earlier and raised across an existing dip', () =>
+        Effect.gen(function* () {
+            const { brokerageService, cash } = yield* createBrokerage;
+            const balanceAdjustmentService = yield* BalanceAdjustmentService;
+            const securityId = yield* brokerageService.buy(cash.integrationId ?? 0, LISTING, buyTen(10, MARCH(2)), FUNDING_TITLE);
+            const [buyId] = yield* findTradeIds(securityId);
+
+            yield* seed.manualExpense({ accountId: cash.id, amount: 50_000_000, operatedAt: new Date('2026-03-01T18:00:00.000Z') });
+            yield* balanceAdjustmentService.create(cash.id, 50_000_000, new Date('2026-03-01T20:00:00.000Z'), 'Refill');
+            yield* brokerageService.update(buyId, buyTen(15, MARCH(1)), FUNDING_TITLE, WITHDRAWAL_TITLE);
+
+            expect(yield* fetchAccountBalance(cash.id)).toBe(0);
+            expect(yield* fetchBalanceAdjustments(cash.id)).toEqual(
+                expect.arrayContaining([
+                    { title: WITHDRAWAL_TITLE, amount: 100_000_000, type: TransactionEntryTypeEnum.CREDIT, operatedAt: MARCH(2) }
+                ])
+            );
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -318,7 +346,12 @@ describe('market-data/brokerage-trades', () => {
             yield* buyTwoOnMarchEleventh(brokerageService, cash.integrationId ?? 0);
             const cashBefore = yield* fetchAccountBalance(cash.id);
 
-            yield* brokerageService.update(sellId, { quantity: 4, price: 125, fee: 0, operatedAt: MARCH(20) }, FUNDING_TITLE);
+            yield* brokerageService.update(
+                sellId,
+                { quantity: 4, price: 125, fee: 0, operatedAt: MARCH(20) },
+                FUNDING_TITLE,
+                WITHDRAWAL_TITLE
+            );
 
             expect(yield* fetchAccountBalance(cash.id)).toBe(cashBefore);
             expect(yield* balances.getMinimumLedgerBalanceFrom(cash.id, MARCH(2))).toBeGreaterThanOrEqual(0);
@@ -331,7 +364,12 @@ describe('market-data/brokerage-trades', () => {
             const balances = yield* AccountBalanceRepository;
 
             yield* buyTwoOnMarchEleventh(brokerageService, cash.integrationId ?? 0);
-            yield* brokerageService.update(sellId, { quantity: 4, price: 25, fee: 0, total: 100, operatedAt: MARCH(5) }, FUNDING_TITLE);
+            yield* brokerageService.update(
+                sellId,
+                { quantity: 4, price: 25, fee: 0, total: 100, operatedAt: MARCH(5) },
+                FUNDING_TITLE,
+                WITHDRAWAL_TITLE
+            );
 
             expect(yield* balances.getMinimumLedgerBalanceFrom(cash.id, MARCH(2))).toBe(0);
             expect(yield* fetchBalanceAdjustments(cash.id)).toEqual(
@@ -371,7 +409,8 @@ describe('market-data/brokerage-trades', () => {
             yield* brokerageService.update(
                 transfer.id,
                 { quantity: 5, price: 120, fee: 0, total: 600, operatedAt: MARCH(3) },
-                FUNDING_TITLE
+                FUNDING_TITLE,
+                WITHDRAWAL_TITLE
             );
 
             expect(yield* fetchBalanceAdjustments(bank.id)).toEqual([]);

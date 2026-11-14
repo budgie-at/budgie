@@ -10947,6 +10947,11 @@ msgstr "WLAN"
 msgid "Wise"
 msgstr "Wise"
 
+#: src/brokerage/component/update-security-trade/update-security-trade.tsx
+msgctxt "Brokerage funding"
+msgid "Withdrawal"
+msgstr "Auszahlung"
+
 #: src/inzhur/component/inzhur-operations-import-summary/inzhur-operations-import-summary.tsx
 msgid "Withdrawals"
 msgstr "Auszahlungen"
