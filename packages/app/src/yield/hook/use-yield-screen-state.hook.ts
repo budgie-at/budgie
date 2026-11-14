@@ -15,12 +15,16 @@ import type { YieldScreenStateInterface } from '../interface/yield-screen-state.
 export const useYieldScreenState = (screenKey: YieldScreenKeyInterface): YieldScreenStateInterface => {
     const [mode, setModeState] = useState(YieldChartModeEnum.BARS);
     const [selection, setSelection] = useState<number | null>(null);
-    const [isTouched, setIsTouched] = useState(false);
+    const [touchedTarget, setTouchedTarget] = useState<string | null>(null);
     const summary = AsyncResult.getOrElse(useLiveAtomValue(yieldSummaryFamily(screenKey.key)), () => null);
     const { formatRangeCaption } = useYieldDateLabels();
 
+    const { focusDay, period } = screenKey;
+    const linkTarget = [focusDay, period?.fromDay, period?.toDay].join('|');
+    const isTouched = touchedTarget === linkTarget;
+
     const selectIndex = (index: number | null) => {
-        setIsTouched(true);
+        setTouchedTarget(linkTarget);
         setSelection(index);
     };
     const cancelScrub = () => {
@@ -31,7 +35,6 @@ export const useYieldScreenState = (screenKey: YieldScreenKeyInterface): YieldSc
         setModeState(nextMode);
     };
 
-    const { focusDay } = screenKey;
     const focusIndex = isDefined(focusDay)
         ? (summary?.buckets.findIndex(bucket => bucket.start <= focusDay && focusDay <= bucket.end) ?? -1)
         : -1;
@@ -40,7 +43,7 @@ export const useYieldScreenState = (screenKey: YieldScreenKeyInterface): YieldSc
     const rangeCaption = isDefined(summary) ? formatRangeCaption(screenKey.key.range, summary.windowStart) : '';
 
     return {
-        screen: { screenKey, mode, rangeCaption, isPeriodCaption: !isTouched && isDefined(screenKey.period), setMode },
+        screen: { screenKey, mode, rangeCaption, isPeriodCaption: !isTouched && isDefined(period), setMode },
         selection: { selectedIndex: isTouched ? selection : untouchedIndex, selectIndex, cancelScrub }
     };
 };
