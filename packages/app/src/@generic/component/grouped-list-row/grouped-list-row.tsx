@@ -5,6 +5,7 @@ import { isDefined, isNotEmptyString, isString } from '@rnw-community/shared';
 
 import { GROUPED_LIST_SUBTITLE_CLASSNAME } from '../../constant/grouped-list-subtitle-class-name.constant';
 import { GROUPED_LIST_TITLE_CLASS_NAME } from '../../constant/grouped-list-title-class-name.constant';
+import { useIsAccessibilityTextSize } from '../../hook/use-is-accessibility-text-size.hook';
 import { cn } from '../../utils/cn.util';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Icon } from '../icon/icon';
@@ -39,13 +40,22 @@ interface Props {
 export const GroupedListRow = (props: Props) => {
     const { title, subtitle, left, right, titleTestID, testID, onPress, pressableProps } = props;
     const isPressable = isDefined(onPress);
+    const isAccessibilityTextSize = useIsAccessibilityTextSize();
+    const titleLines = isAccessibilityTextSize ? 3 : 2;
+    const subtitleLines = isAccessibilityTextSize ? 4 : 3;
+    const rowClassName = isAccessibilityTextSize ? 'items-start' : 'items-center';
     const Container = isPressable ? HapticPressable : View;
 
     const chevron = isPressable ? <Icon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" /> : null;
     const accessory = right ?? chevron;
+    const accessoryNode = isDefined(accessory) ? <View className="self-center">{accessory}</View> : null;
     const separatorClassName = isDefined(left) ? 'left-[64px]' : 'left-[16px]';
     const subtitleNode = isNotEmptyString(subtitle) ? (
-        <Text className={cn('text-secondary-foreground', GROUPED_LIST_SUBTITLE_CLASSNAME)} numberOfLines={3}>
+        <Text
+            className={cn('text-secondary-foreground', GROUPED_LIST_SUBTITLE_CLASSNAME)}
+            numberOfLines={subtitleLines}
+            maxFontSizeMultiplier={2}
+        >
             {subtitle}
         </Text>
     ) : (
@@ -57,7 +67,7 @@ export const GroupedListRow = (props: Props) => {
             onPress={onPress}
             {...(isPressable && { accessibilityRole: 'button' as const })}
             {...pressableProps}
-            className="min-h-[50px] flex-row items-center gap-x-xl px-3xl py-lg active:opacity-70"
+            className={cn('min-h-[50px] flex-row gap-x-xl px-3xl py-lg active:opacity-70', rowClassName)}
             {...(isPressable && { pressedScale: 1 })}
             testID={testID}
         >
@@ -65,7 +75,12 @@ export const GroupedListRow = (props: Props) => {
             {left}
             <View className="min-w-0 flex-1 gap-y-xxs">
                 {isString(title) ? (
-                    <Text className={cn('text-primary', GROUPED_LIST_TITLE_CLASS_NAME)} numberOfLines={2} testID={titleTestID}>
+                    <Text
+                        className={cn('text-primary', GROUPED_LIST_TITLE_CLASS_NAME)}
+                        numberOfLines={titleLines}
+                        maxFontSizeMultiplier={2}
+                        testID={titleTestID}
+                    >
                         {title}
                     </Text>
                 ) : (
@@ -73,7 +88,7 @@ export const GroupedListRow = (props: Props) => {
                 )}
                 {subtitleNode}
             </View>
-            {accessory}
+            {accessoryNode}
         </Container>
     );
 };

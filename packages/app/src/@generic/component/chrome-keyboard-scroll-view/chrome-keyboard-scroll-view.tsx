@@ -5,6 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { addScrollContentInset, mergeRefs, useBottomChromeInset, useScreenChrome } from '@rnw-community/react-native-screen-chrome';
 
+import { useCollapsibleChromeSearch } from '../../context/collapsible-chrome-search.context';
 import { useCollapsibleChromeScroll } from '../../hook/use-collapsible-chrome-scroll.hook';
 
 import type { ComponentProps, ReactNode, Ref } from 'react';
@@ -32,11 +33,12 @@ export const ChromeKeyboardScrollView = ({
 }: Props): ReactNode => {
     const { config } = useScreenChrome();
     const { chromeHeight, inset } = useBottomChromeInset();
-    const { onScroll, scrollRef } = useCollapsibleChromeScroll(onDragStart);
+    const { onScroll, onContentSizeChange, scrollRef } = useCollapsibleChromeScroll(onDragStart);
     const insets = useSafeAreaInsets();
     const mergedRef = mergeRefs(scrollRef, ref);
     const { height } = useWindowDimensions();
-    const snapRangeStyle = config.snapToCollapse ? { minHeight: height + config.collapseEnd } : null;
+    const { isSearchActive } = useCollapsibleChromeSearch();
+    const snapRangeStyle = config.snapToCollapse || isSearchActive ? { minHeight: height + config.collapseEnd } : null;
     const resolvedContentInsetBottom = contentInsetBottom ?? chromeHeight;
     const resolvedBottomOffset = bottomOffset ?? inset;
     const mergedContentContainerStyle = addScrollContentInset(
@@ -55,6 +57,7 @@ export const ChromeKeyboardScrollView = ({
             bottomOffset={resolvedBottomOffset}
             contentContainerStyle={mergedContentContainerStyle}
             onScroll={onScroll}
+            onContentSizeChange={onContentSizeChange}
             scrollEventThrottle={config.scrollEventThrottle}
         />
     );

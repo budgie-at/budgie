@@ -1177,6 +1177,11 @@ msgstr "1S"
 msgid "1Y"
 msgstr "1A"
 
+#: src/account/component/create-bank-search-results/create-bank-search-results.tsx
+#: src/app/(main)/create-account/index.tsx
+msgid "2,000+ European banks"
+msgstr "Más de 2000 bancos europeos"
+
 #: src/budget/components/budget-day-strip-key/budget-day-strip-key.tsx
 msgid "2× plan"
 msgstr "2× plan"
@@ -1486,6 +1491,10 @@ msgstr "Añadir comisión"
 #: src/transaction/components/split-entries-add-item-footer/split-entries-add-item-footer.tsx
 msgid "Add item"
 msgstr "Agregar elemento"
+
+#: src/app/(main)/create-account/index.tsx
+msgid "Add manually"
+msgstr "Añadir manualmente"
 
 #: src/brokerage/component/brokerage-add-position-action/brokerage-add-position-action.tsx
 #: src/brokerage/component/brokerage-empty-state/brokerage-empty-state.tsx
@@ -1979,6 +1988,11 @@ msgstr "Al último precio conocido, ≈ {rateLabel} por {instrumentCode}"
 msgid "Attach debt"
 msgstr "Vincular deuda"
 
+#: src/sync/constant/enable-banking-country-name.constant.ts
+msgctxt "Country"
+msgid "Austria"
+msgstr "Austria"
+
 #: src/sync/hook/use-explain-enable-banking-error.hook.ts
 msgid "Authorization was cancelled at your bank."
 msgstr "La autorización se canceló en tu banco."
@@ -2012,10 +2026,6 @@ msgstr "Cuentas automáticas"
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
 msgid "Automatic sync"
 msgstr "Sincronización automática"
-
-#: src/app/(main)/create-account/index.tsx
-msgid "Automatic sync with a personal token"
-msgstr "Sincronización automática con un token personal"
 
 #: src/budget/components/budget-limit-changes-row/budget-limit-changes-row.tsx
 msgid "Automatic tuning is off"
@@ -2133,7 +2143,7 @@ msgstr "Saldo sin cambios"
 msgid "Balance: {formattedBalance}"
 msgstr "Saldo: {formattedBalance}"
 
-#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+#: src/sync/component/enable-banking-accounts-step/enable-banking-accounts-step.tsx
 msgid "Balances and history come from your bank through Enable Banking."
 msgstr "Los saldos y el historial llegan de tu banco a través de Enable Banking."
 
@@ -2217,6 +2227,11 @@ msgstr "Se convierte en una transferencia a tu cartera de efectivo"
 #: src/budget/components/budget-fund-row-status/budget-fund-row-status.tsx
 msgid "Behind, {setAsideLabel} {rate} to catch up"
 msgstr "Con retraso, {setAsideLabel} {rate} para ponerse al día"
+
+#: src/sync/constant/enable-banking-country-name.constant.ts
+msgctxt "Country"
+msgid "Belgium"
+msgstr "Bélgica"
 
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "Below this amount"
@@ -2445,6 +2460,11 @@ msgstr "Integradas"
 msgid "Built-in categories are always there. Add your own to sort spending the way you think about it."
 msgstr "Las categorías integradas siempre están disponibles. Añade las tuyas para ordenar tus gastos a tu manera."
 
+#: src/sync/constant/enable-banking-country-name.constant.ts
+msgctxt "Country"
+msgid "Bulgaria"
+msgstr "Bulgaria"
+
 #: src/runway/component/runway-verdict/runway-verdict.tsx
 msgid "Burning"
 msgstr "En descenso"
@@ -2492,6 +2512,10 @@ msgstr "No se puede cambiar después"
 #: src/cloud-backup/constant/cloud-restore-failure-message.constant.ts
 msgid "Can't be read: your iCloud encrypted data was reset after this backup was made"
 msgstr "No se puede leer: tus datos cifrados de iCloud se restablecieron después de esta copia"
+
+#: src/sync/component/enable-banking-public-bank-list/enable-banking-public-bank-list.tsx
+msgid "Can't find your bank?"
+msgstr "¿No encuentras tu banco?"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx
 #: src/@generic/component/modal-form-cancel-button/modal-form-cancel-button.tsx
@@ -2555,7 +2579,7 @@ msgid "Card network code (MCC)"
 msgstr "Código de la red de tarjetas (MCC)"
 
 #: src/app/(main)/create-account/index.tsx
-msgid "Cards and everyday spending"
+msgid "Cards and daily spending"
 msgstr "Tarjetas y gastos diarios"
 
 #: src/budget/components/budget-rollover-mode-menu/budget-rollover-mode-menu.tsx
@@ -2587,15 +2611,11 @@ msgstr "Efectivo"
 
 #: src/account/constant/account-kind-title.constant.ts
 msgid "Cash & savings"
-msgstr "Efectivo y ahorros"
+msgstr "Efectivo y ahorro"
 
 #: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
 msgid "cash from an ATM"
 msgstr "efectivo de cajero"
-
-#: src/app/(main)/create-account/index.tsx
-msgid "Cash wallets and savings goals"
-msgstr "Efectivo y metas de ahorro"
 
 #: src/categorize-inbox/components/categorize-inbox-group-row-subtitle/categorize-inbox-group-row-subtitle.tsx
 msgid "Cash withdrawal"
@@ -2753,10 +2773,14 @@ msgstr "Revisa la ortografía o prueba con otro nombre de cuenta."
 msgid "Check your connection and try again."
 msgstr "Comprueba tu conexión e inténtalo de nuevo."
 
-#: src/account/constant/account-kind-title.constant.ts
 #: src/app/(tabs)/settings/sync-repairs.tsx
 msgid "Checking"
 msgstr "Comprobando"
+
+#: src/account/constant/account-kind-title.constant.ts
+msgctxt "Checking account type"
+msgid "Checking"
+msgstr "Cuenta corriente"
 
 #: src/account/component/create-simple-account/create-simple-account.tsx
 msgid "Checking Account"
@@ -3126,6 +3150,14 @@ msgstr "Conectar Monobank"
 #: src/sync/component/account-connect-bank-row/account-connect-bank-row.tsx
 msgid "Connect to bank"
 msgstr "Conectar con el banco"
+
+#: src/app/(main)/create-account/index.tsx
+msgid "Connect with a read‑only key"
+msgstr "Conectar con una clave de solo lectura"
+
+#: src/app/(main)/create-account/index.tsx
+msgid "Connect with a token from the app"
+msgstr "Conectar con un token de la app"
 
 #: src/sync/component/bank-integration-key-card/bank-integration-key-card.tsx
 #: src/sync/component/enable-banking-connection-card/enable-banking-connection-card.tsx
@@ -3738,6 +3770,7 @@ msgid "Couldn't load iCloud backups"
 msgstr "No se pudieron cargar las copias de iCloud"
 
 #: src/@generic/component/searchable-page-error-state/searchable-page-error-state.tsx
+#: src/account/component/create-bank-search-results/create-bank-search-results.tsx
 #: src/transaction/components/transaction-picker-failure/transaction-picker-failure.tsx
 msgid "Couldn’t load this list"
 msgstr "No se pudo cargar la lista"
@@ -3865,6 +3898,11 @@ msgstr "Crea tu primera cuenta para comenzar a rastrear tus finanzas"
 msgid "Credentials required"
 msgstr "Credenciales requeridas"
 
+#: src/sync/constant/enable-banking-country-name.constant.ts
+msgctxt "Country"
+msgid "Croatia"
+msgstr "Croacia"
+
 #: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 #: src/account/constant/account-kind-title.constant.ts
 #: src/account/constant/account-type.constant.ts
@@ -3930,6 +3968,16 @@ msgstr "Categorías personalizadas"
 #: src/recurring/components/recurring-form-repeat-section/recurring-form-repeat-section.tsx
 msgid "Custom schedule…"
 msgstr "Frecuencia personalizada…"
+
+#: src/sync/constant/enable-banking-country-name.constant.ts
+msgctxt "Country"
+msgid "Cyprus"
+msgstr "Chipre"
+
+#: src/sync/constant/enable-banking-country-name.constant.ts
+msgctxt "Country"
+msgid "Czechia"
+msgstr "Chequia"
 
 #: src/settings/components/theme-switch/theme-switch.tsx
 msgid "Dark"
@@ -4123,6 +4171,11 @@ msgstr "«{accountTitle}» eliminada"
 #: src/auth/components/forgot-pin-recovery-options/forgot-pin-recovery-options.tsx
 msgid "Deletes {DB_NAME} from this phone"
 msgstr "Elimina {DB_NAME} de este teléfono"
+
+#: src/sync/constant/enable-banking-country-name.constant.ts
+msgctxt "Country"
+msgid "Denmark"
+msgstr "Dinamarca"
 
 #: src/account/component/start-deposit-form/start-deposit-form.tsx
 #: src/account/constant/account-type.constant.ts
@@ -4645,6 +4698,10 @@ msgstr "Introduce todos los importes"
 msgid "Enter an amount"
 msgstr "Introduce un importe"
 
+#: src/app/(main)/create-account/index.tsx
+msgid "Enter balances yourself. No connection needed."
+msgstr "Introduce los saldos tú mismo. No hace falta conexión."
+
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Enter current PIN"
 msgstr "Ingresa el PIN actual"
@@ -4738,14 +4795,22 @@ msgstr "Erste Bank (PDF)"
 msgid "Estimated from your past transactions using your current limits."
 msgstr "Estimado a partir de tus transacciones pasadas con tus límites actuales."
 
+#: src/sync/constant/enable-banking-country-name.constant.ts
+msgctxt "Country"
+msgid "Estonia"
+msgstr "Estonia"
+
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "EU bank connected"
 msgstr "Banco de la UE conectado"
 
-#: src/app/(main)/create-account/index.tsx
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "EU banks"
 msgstr "Bancos de la UE"
+
+#: src/account/component/create-bank-search-results/create-bank-search-results.tsx
+msgid "European banks"
+msgstr "Bancos europeos"
 
 #: src/app/(main)/budget/event/[id]/index.tsx
 msgid "Event budget"
@@ -4803,10 +4868,6 @@ msgstr "Cada transacción tiene una etiqueta."
 msgid "every two weeks"
 msgstr "cada dos semanas"
 
-#: src/app/(main)/create-account/index.tsx
-msgid "Every Wise balance through Enable Banking"
-msgstr "Todos los saldos de Wise a través de Enable Banking"
-
 #: src/budget/components/budget-fund-repeat-field/budget-fund-repeat-field.tsx
 msgid "Every year"
 msgstr "Cada año"
@@ -4850,6 +4911,14 @@ msgstr "Todo sigue en este dispositivo y no se sube nada. Pero cualquiera que pu
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "Exact match, any letter case"
 msgstr "Coincidencia exacta, sin distinguir mayúsculas"
+
+#: src/app/(main)/create-account/index.tsx
+msgid "Excel statement from Inzhur"
+msgstr "Extracto de Excel de Inzhur"
+
+#: src/app/(main)/create-account/index.tsx
+msgid "Excel statement from Privat24"
+msgstr "Extracto de Excel de Privat24"
 
 #: src/account/component/start-deposit-funding-summary/start-deposit-funding-summary.tsx
 #: src/transaction/components/transaction-info-money-rows/transaction-info-money-rows.tsx
@@ -5034,6 +5103,10 @@ msgstr "Archivar {count} como {labelTitle}"
 msgid "File {merchantTitle} as {candidateTitle}"
 msgstr "Archivar {merchantTitle} como {candidateTitle}"
 
+#: src/app/(main)/create-account/index.tsx
+msgid "Files are read on this device and never uploaded."
+msgstr "Los archivos se leen en este dispositivo y nunca se suben."
+
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Fill missing currency conversions"
 msgstr "Completa las conversiones de moneda que faltan"
@@ -5087,6 +5160,11 @@ msgstr "Termina de importar el historial de esta cuenta para incluirla en los an
 msgid "Finish setting up iCloud Keychain, then try again"
 msgstr "Termina de configurar el llavero de iCloud y vuelve a intentarlo"
 
+#: src/sync/constant/enable-banking-country-name.constant.ts
+msgctxt "Country"
+msgid "Finland"
+msgstr "Finlandia"
+
 #: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
 msgid "first {formattedPaid} already paid"
 msgstr "primer pago de {formattedPaid} ya realizado"
@@ -5120,8 +5198,8 @@ msgid "Fixed amount"
 msgstr "Importe fijo"
 
 #: src/app/(main)/create-account/index.tsx
-msgid "Fixed-term savings with interest"
-msgstr "Ahorro a plazo fijo con intereses"
+msgid "Fixed term with interest"
+msgstr "Plazo fijo con intereses"
 
 #: src/budget/components/budget-details-forecast/budget-details-forecast.tsx
 msgid "Forecast"
@@ -5138,6 +5216,11 @@ msgstr "Formato"
 #: src/app/(tabs)/settings/sync-repairs.tsx
 msgid "Found"
 msgstr "Encontrados"
+
+#: src/sync/constant/enable-banking-country-name.constant.ts
+msgctxt "Country"
+msgid "France"
+msgstr "Francia"
 
 #: src/i18n/constant/languages.constant.ts
 msgid "French"
@@ -5272,6 +5355,11 @@ msgstr "Genera nombres en inglés y palabras clave de búsqueda automáticamente
 msgid "German"
 msgstr "Alemán"
 
+#: src/sync/constant/enable-banking-country-name.constant.ts
+msgctxt "Country"
+msgid "Germany"
+msgstr "Alemania"
+
 #: src/sync/component/bank-integration-key-modal-content/bank-integration-key-modal-content.tsx
 msgid "Get a new key"
 msgstr "Obtener una clave nueva"
@@ -5303,6 +5391,11 @@ msgstr "Ir directamente a Budgie"
 #: src/installment-plan/component/convert-to-installment-total/convert-to-installment-total.tsx
 msgid "Goes back to the total worked out from the payments and fee"
 msgstr "Vuelve al total calculado a partir de los pagos y la comisión"
+
+#: src/sync/constant/enable-banking-country-name.constant.ts
+msgctxt "Country"
+msgid "Greece"
+msgstr "Grecia"
 
 #: src/inzhur/component/inzhur-fund-returns-card/inzhur-fund-returns-card.tsx
 msgid "Gross, {netLabel} after tax"
@@ -5396,6 +5489,11 @@ msgstr "Cómo configurar"
 msgid "How to export"
 msgstr "Cómo exportar"
 
+#: src/sync/constant/enable-banking-country-name.constant.ts
+msgctxt "Country"
+msgid "Hungary"
+msgstr "Hungría"
+
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
 msgid "I have a Budgie backup"
 msgstr "Tengo una copia de Budgie"
@@ -5403,6 +5501,11 @@ msgstr "Tengo una copia de Budgie"
 #: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
 msgid "I have my key file"
 msgstr "Ya tengo mi archivo de clave"
+
+#: src/sync/constant/enable-banking-country-name.constant.ts
+msgctxt "Country"
+msgid "Iceland"
+msgstr "Islandia"
 
 #: src/settings/components/icloud-data-section/icloud-data-section.tsx
 msgid "iCloud"
@@ -5471,10 +5574,6 @@ msgstr "Se ignora el signo menos."
 msgid "Import"
 msgstr "Importar"
 
-#: src/app/(main)/create-account/index.tsx
-msgid "Import a PDF statement"
-msgstr "Importar un extracto PDF"
-
 #: src/sync/component/bank-integration-statements/bank-integration-statements.tsx
 msgid "Import a statement from {bank} to add your accounts."
 msgstr "Importa un extracto de {bank} para añadir tus cuentas."
@@ -5486,14 +5585,6 @@ msgstr "Importar cuentas y transacciones desde extracto PDF de Erste Bank"
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Import accounts now, or add them later in Budgie."
 msgstr "Importa cuentas ahora o añádelas más tarde en Budgie."
-
-#: src/app/(main)/create-account/index.tsx
-msgid "Import an XLSX operations export"
-msgstr "Importar una exportación de operaciones XLSX"
-
-#: src/app/(main)/create-account/index.tsx
-msgid "Import an XLSX statement"
-msgstr "Importar un extracto XLSX"
 
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "Import anyway"
@@ -5546,6 +5637,10 @@ msgstr "Importación iniciada"
 #: src/sync/component/bank-integration-statements/bank-integration-statements.tsx
 msgid "Import statement"
 msgstr "Importar extracto"
+
+#: src/app/(main)/create-account/index.tsx
+msgid "Import statements"
+msgstr "Importar extractos"
 
 #: src/settings/components/device-data-section/device-data-section.tsx
 msgid "Import, export, repair and reset"
@@ -5717,6 +5812,11 @@ msgstr "Inzhur aún no está configurado"
 msgid "Inzhur top-up waiting"
 msgstr "Ingreso en Inzhur pendiente"
 
+#: src/sync/constant/enable-banking-country-name.constant.ts
+msgctxt "Country"
+msgid "Ireland"
+msgstr "Irlanda"
+
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "is"
 msgstr "es"
@@ -5761,6 +5861,11 @@ msgstr "Cifra todo lo que hay en Budgie. Elige uno que recuerdes y que otros no 
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
 msgid "It's the only key to your file. There's no account and no copy on a server, so there's nothing to reset it from."
 msgstr "Es la única llave de tu archivo. No hay cuenta ni copia en un servidor, así que no hay desde dónde restablecerlo."
+
+#: src/sync/constant/enable-banking-country-name.constant.ts
+msgctxt "Country"
+msgid "Italy"
+msgstr "Italia"
 
 #: src/sync/component/enable-banking-disconnect-row/enable-banking-disconnect-row.tsx
 msgid "Its accounts stop syncing and are removed from your active accounts."
@@ -5938,6 +6043,11 @@ msgstr "Más adelante este mes"
 msgid "Later, next time I’m on Wi-Fi"
 msgstr "Más tarde, la próxima vez que tenga Wi-Fi"
 
+#: src/sync/constant/enable-banking-country-name.constant.ts
+msgctxt "Country"
+msgid "Latvia"
+msgstr "Letonia"
+
 #: src/ai/component/ai-embedding-status-card/ai-embedding-status-card.tsx
 msgid "Learning"
 msgstr "Aprendizaje"
@@ -5988,6 +6098,11 @@ msgstr "Menor que"
 msgid "Letter case is ignored"
 msgstr "No se distinguen mayúsculas"
 
+#: src/sync/constant/enable-banking-country-name.constant.ts
+msgctxt "Country"
+msgid "Liechtenstein"
+msgstr "Liechtenstein"
+
 #: src/settings/components/theme-switch/theme-switch.tsx
 msgid "Light"
 msgstr "Claro"
@@ -6037,6 +6152,11 @@ msgstr "Lista"
 msgid "Listening..."
 msgstr "Escuchando..."
 
+#: src/sync/constant/enable-banking-country-name.constant.ts
+msgctxt "Country"
+msgid "Lithuania"
+msgstr "Lituania"
+
 #: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
 msgid "Lives on"
 msgstr "Se guarda en"
@@ -6044,6 +6164,10 @@ msgstr "Se guarda en"
 #: src/transaction/components/suggestion-loading-indicator/suggestion-loading-indicator.tsx
 msgid "Loading AI model..."
 msgstr "Cargando modelo de IA..."
+
+#: src/account/component/create-bank-search-results/create-bank-search-results.tsx
+msgid "Loading banks"
+msgstr "Cargando bancos"
 
 #: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
 msgid "Loading contacts"
@@ -6073,6 +6197,11 @@ msgstr "Reduce los límites de categoría para continuar"
 msgid "Lowered {dateLabel} · under 80% for {count} periods"
 msgstr "Reducido el {dateLabel} · por debajo del 80% durante {count} periodos"
 
+#: src/sync/constant/enable-banking-country-name.constant.ts
+msgctxt "Country"
+msgid "Luxembourg"
+msgstr "Luxemburgo"
+
 #: src/onboarding/component/onboarding-currency-row/onboarding-currency-row.tsx
 msgid "Main currency"
 msgstr "Moneda principal"
@@ -6094,6 +6223,11 @@ msgstr "Hacer principal"
 #: src/transaction/components/transaction-info-make-recurring-row/transaction-info-make-recurring-row.tsx
 msgid "Make recurring"
 msgstr "Hacer recurrente"
+
+#: src/sync/constant/enable-banking-country-name.constant.ts
+msgctxt "Country"
+msgid "Malta"
+msgstr "Malta"
 
 #: src/budget/components/budget-details-edit-button/budget-details-edit-button.tsx
 msgid "Manage budget"
@@ -6288,7 +6422,7 @@ msgstr "Se fusionaron {consolidated} de {foundPairsText}."
 msgid "Minimum amount"
 msgstr "Importe mínimo"
 
-#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+#: src/sync/component/enable-banking-accounts-step/enable-banking-accounts-step.tsx
 msgid "Missing an account? Link it to your application in Enable Banking, then connect this bank again."
 msgstr "¿Falta una cuenta? Vincúlala a tu aplicación en Enable Banking y vuelve a conectar este banco."
 
@@ -6512,6 +6646,11 @@ msgstr "Neto"
 msgid "Net worth"
 msgstr "Patrimonio neto"
 
+#: src/sync/constant/enable-banking-country-name.constant.ts
+msgctxt "Country"
+msgid "Netherlands"
+msgstr "Países Bajos"
+
 #: src/recurring/components/recurring-form-end-section/recurring-form-end-section.tsx
 msgid "Never"
 msgstr "Nunca"
@@ -6726,6 +6865,10 @@ msgstr "Aún no hay cambios de límite"
 msgid "No market price yet, so value and return are unavailable."
 msgstr "Aún no hay precio de mercado, así que el valor y la rentabilidad no están disponibles."
 
+#: src/account/component/create-search-no-match/create-search-no-match.tsx
+msgid "No matches for “{query}”. Open the full list to browse by country."
+msgstr "No hay resultados para «{query}». Abre la lista completa para buscar por país."
+
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "No matching accounts"
 msgstr "No hay cuentas coincidentes"
@@ -6879,6 +7022,11 @@ msgstr "Las facturas no mensuales se promedian por mes."
 #: src/sync/component/file-import-review-step/file-import-review-step.tsx
 msgid "None"
 msgstr "Ninguna"
+
+#: src/sync/constant/enable-banking-country-name.constant.ts
+msgctxt "Country"
+msgid "Norway"
+msgstr "Noruega"
 
 #: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 msgid "Not all of your bank history is imported yet"
@@ -7673,6 +7821,10 @@ msgstr "PDF u hoja de cálculo de {bank}"
 msgid "PDF statement"
 msgstr "Extracto PDF"
 
+#: src/app/(main)/create-account/index.tsx
+msgid "PDF statement from George"
+msgstr "Extracto en PDF de George"
+
 #: src/household/component/household-people-section/household-people-section.tsx
 msgid "People"
 msgstr "Personas"
@@ -7834,9 +7986,19 @@ msgstr "Por favor, inténtelo de nuevo"
 msgid "Please try again later"
 msgstr "Por favor, inténtalo de nuevo más tarde"
 
+#: src/sync/constant/enable-banking-country-name.constant.ts
+msgctxt "Country"
+msgid "Poland"
+msgstr "Polonia"
+
 #: src/@generic/component/icon-picker-panel/icon-picker-panel.tsx
 msgid "Popular"
 msgstr "Populares"
+
+#: src/sync/constant/enable-banking-country-name.constant.ts
+msgctxt "Country"
+msgid "Portugal"
+msgstr "Portugal"
 
 #: src/@generic/component/amount-sign-capsule/amount-sign-capsule.tsx
 msgid "Positive"
@@ -8019,6 +8181,18 @@ msgstr "Leído en este teléfono"
 #: src/sync/component/enable-banking-key-step/enable-banking-key-step.tsx
 msgid "Read the Enable Banking Terms"
 msgstr "Leer los Términos de Enable Banking"
+
+#: src/account/component/create-bank-search-results/create-bank-search-results.tsx
+msgid "Read-only through Enable Banking."
+msgstr "Solo lectura a través de Enable Banking."
+
+#: src/sync/component/enable-banking-public-bank-list/enable-banking-public-bank-list.tsx
+msgid "Read-only through Enable Banking. You sign in on your bank's own page."
+msgstr "Solo lectura a través de Enable Banking. Inicias sesión en la página de tu banco."
+
+#: src/app/(main)/create-account/index.tsx
+msgid "Read-only. Tokens and keys stay on this device."
+msgstr "Solo lectura. Los tokens y las claves se quedan en este dispositivo."
 
 #: src/receipt/components/receipt-scan-toast/receipt-scan-toast.tsx
 msgid "Reading receipt"
@@ -8453,6 +8627,11 @@ msgstr "Ahora mismo, cualquiera que pueda desbloquear tu teléfono puede abrir B
 msgid "Rollover · {currentLabel}"
 msgstr "Traspaso · {currentLabel}"
 
+#: src/sync/constant/enable-banking-country-name.constant.ts
+msgctxt "Country"
+msgid "Romania"
+msgstr "Rumanía"
+
 #: src/rule/hooks/use-rules-list-page-actions.hook.ts
 msgid "Rule"
 msgstr "Regla"
@@ -8672,6 +8851,10 @@ msgstr "Buscar cuentas…"
 #: src/app/(tabs)/settings/archived.tsx
 msgid "Search archived accounts…"
 msgstr "Buscar cuentas archivadas…"
+
+#: src/app/(main)/create-account/index.tsx
+msgid "Search banks and accounts"
+msgstr "Buscar bancos y cuentas"
 
 #: src/rule/components/rule-mcc-selector-modal-content/rule-mcc-selector-modal-content.tsx
 msgid "Search by code or description…"
@@ -9073,6 +9256,15 @@ msgstr "Muestra u oculta sus cuentas"
 msgid "Shows what is missing"
 msgstr "Muestra lo que falta"
 
+#: src/app/(main)/create-account/index.tsx
+msgid "Sign in on Wise's own page"
+msgstr "Inicia sesión en la página de Wise"
+
+#: src/account/component/create-bank-search-results/create-bank-search-results.tsx
+#: src/app/(main)/create-account/index.tsx
+msgid "Sign in on your bank's own page"
+msgstr "Inicia sesión en la página de tu banco"
+
 #: src/household/component/household-invite-row/household-invite-row.tsx
 msgid "Sign in to iCloud to invite"
 msgstr "Inicia sesión en iCloud para invitar"
@@ -9111,6 +9303,16 @@ msgstr "Saltar"
 #: src/inzhur/component/inzhur-operations-details/inzhur-operations-details.tsx
 msgid "Skipped, not recognised"
 msgstr "Omitido, no reconocido"
+
+#: src/sync/constant/enable-banking-country-name.constant.ts
+msgctxt "Country"
+msgid "Slovakia"
+msgstr "Eslovaquia"
+
+#: src/sync/constant/enable-banking-country-name.constant.ts
+msgctxt "Country"
+msgid "Slovenia"
+msgstr "Eslovenia"
 
 #: src/categorize-inbox/components/categorize-inbox-one-offs-screen/categorize-inbox-one-offs-screen.tsx
 #: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
@@ -9175,6 +9377,11 @@ msgstr "Fuente"
 #: src/transaction/components/transaction-sources-field-icon/transaction-sources-field-icon.tsx
 msgid "Sources"
 msgstr "Fuentes"
+
+#: src/sync/constant/enable-banking-country-name.constant.ts
+msgctxt "Country"
+msgid "Spain"
+msgstr "España"
 
 #: src/i18n/constant/languages.constant.ts
 msgid "Spanish"
@@ -9352,6 +9559,11 @@ msgstr "Soporte"
 msgid "Swap accounts"
 msgstr "Intercambiar cuentas"
 
+#: src/sync/constant/enable-banking-country-name.constant.ts
+msgctxt "Country"
+msgid "Sweden"
+msgstr "Suecia"
+
 #: src/budget/components/budget-category-limit-deletable-row/budget-category-limit-deletable-row.tsx
 msgid "Swipe to remove this per-category cap from your budget."
 msgstr "Desliza para eliminar este tope por categoría de tu presupuesto."
@@ -9372,6 +9584,11 @@ msgstr "Las cuentas desactivadas dejan de sincronizarse. El historial se conserv
 msgid "Switched-off assets stop syncing. History stays."
 msgstr "Los activos desactivados dejan de sincronizarse. El historial se conserva."
 
+#: src/sync/constant/enable-banking-country-name.constant.ts
+msgctxt "Country"
+msgid "Switzerland"
+msgstr "Suiza"
+
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Sync"
 msgstr "Sincronización"
@@ -9384,6 +9601,10 @@ msgstr "Sincronizar {title}"
 #: src/cloud-sync/component/cloud-sync-row/cloud-sync-row.tsx
 msgid "Sync across devices"
 msgstr "Sincronizar entre dispositivos"
+
+#: src/app/(main)/create-account/index.tsx
+msgid "Sync automatically"
+msgstr "Sincronizar automáticamente"
 
 #: src/transaction/components/adjustment-amount-display/adjustment-amount-display.tsx
 #: src/transaction/components/adjustment-direction/adjustment-direction.tsx
@@ -9412,10 +9633,6 @@ msgstr "La sincronización está desactivada para todos los activos"
 msgid "Sync off"
 msgstr "Sincronización desactivada"
 
-#: src/app/(main)/create-account/index.tsx
-msgid "Sync or import"
-msgstr "Sincronizar o importar"
-
 #: src/sync/component/resync-account/resync-account.tsx
 #: src/sync/component/resync-window-picker-modal-content/resync-window-picker-modal-content.tsx
 msgid "Sync past transactions"
@@ -9432,10 +9649,6 @@ msgstr "Reparaciones de sincronización"
 #: src/sync/component/account-sync-problem-row/account-sync-problem-row.tsx
 msgid "Sync stopped"
 msgstr "Sincronización detenida"
-
-#: src/app/(main)/create-account/index.tsx
-msgid "Sync with a read-only API key"
-msgstr "Sincroniza con una clave API de solo lectura"
 
 #: src/sync/component/create-binance-account/create-binance-account.tsx
 msgid "Sync your Binance balances and transactions"
@@ -9736,7 +9949,7 @@ msgstr "No hay transacciones vinculadas que mostrar."
 msgid "There is no “forgot PIN”."
 msgstr "No existe «olvidé el PIN»."
 
-#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+#: src/sync/component/enable-banking-accounts-step/enable-banking-accounts-step.tsx
 msgid "These accounts already exist in Budgie or use a currency Budgie does not support. To continue an existing account, open it and tap Connect to bank."
 msgstr "Estas cuentas ya existen en Budgie o usan una moneda que Budgie no admite. Para continuar una cuenta existente, ábrela y toca Conectar con el banco."
 
@@ -10102,10 +10315,6 @@ msgstr "Token requerido"
 msgid "Token stays on this phone, sent only to Monobank."
 msgstr "El token se queda en este teléfono y solo se envía a Monobank."
 
-#: src/app/(main)/create-account/index.tsx
-msgid "Tokens and statements stay on this device."
-msgstr "Los tokens y extractos se quedan en este dispositivo."
-
 #: src/recurring/hook/use-recurring-due-label.hook.ts
 msgid "Tomorrow"
 msgstr "Mañana"
@@ -10176,14 +10385,6 @@ msgstr "Touch ID no se completó. Inténtalo de nuevo o continúa sin él."
 #: src/budget/components/budget-events-section/budget-events-section.tsx
 msgid "Track a trip or project with its own limit. Tagged expenses still count in this budget."
 msgstr "Controla un viaje o proyecto con su propio límite. Los gastos con etiqueta siguen contando en este presupuesto."
-
-#: src/app/(main)/create-account/index.tsx
-msgid "Track manually"
-msgstr "Registrar manualmente"
-
-#: src/app/(main)/create-account/index.tsx
-msgid "Trade Republic, N26 and other EU banks"
-msgstr "Trade Republic, N26 y otros bancos de la UE"
 
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Trade Republic, N26 and other EU banks, read-only."
@@ -10332,6 +10533,7 @@ msgstr "Intenta ajustar tus filtros para ver más resultados"
 
 #: src/@generic/component/contact-selector-state/contact-selector-state.tsx
 #: src/@generic/component/searchable-page-error-state/searchable-page-error-state.tsx
+#: src/account/component/create-bank-search-results/create-bank-search-results.tsx
 #: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
 #: src/ai/component/ai-download-stopped-card/ai-download-stopped-card.tsx
 #: src/auth/components/forgot-pin-footer/forgot-pin-footer.tsx
@@ -10517,6 +10719,11 @@ msgstr "Mostrar"
 msgid "Unhide {accountTitle}"
 msgstr "Mostrar {accountTitle}"
 
+#: src/sync/constant/enable-banking-country-name.constant.ts
+msgctxt "Country"
+msgid "United Kingdom"
+msgstr "Reino Unido"
+
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "Unknown card"
 msgstr "Tarjeta desconocida"
@@ -10692,6 +10899,10 @@ msgstr "Úsalas solo si las conversiones, importaciones o saldos parecen incorre
 msgid "Use Touch ID"
 msgstr "Usar Touch ID"
 
+#: src/sync/component/enable-banking-public-bank-list/enable-banking-public-bank-list.tsx
+msgid "Use your own Enable Banking key"
+msgstr "Usar tu propia clave de Enable Banking"
+
 #: src/settings/components/default-currency-selector/default-currency-selector.tsx
 msgid "Used for totals and reports"
 msgstr "Para totales e informes"
@@ -10779,8 +10990,12 @@ msgid "Waiting for your bank"
 msgstr "Esperando a tu banco"
 
 #: src/app/(main)/create-account/index.tsx
-msgid "Wallets and exchange balances"
-msgstr "Monederos y saldos de exchanges"
+msgid "Wallet cash, savings and pots"
+msgstr "Efectivo, ahorros y huchas"
+
+#: src/app/(main)/create-account/index.tsx
+msgid "Wallets you track yourself"
+msgstr "Carteras que gestionas tú"
 
 #: src/sync/component/account-sync-warning-row/account-sync-warning-row.tsx
 msgid "Warning"

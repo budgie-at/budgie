@@ -50,10 +50,18 @@ export default function CreateAccountType() {
                     connectAccountId={connectAccountIdNumber}
                     savedApplicationId={savedApplicationId ?? null}
                     preselectedBankName={null}
+                    preselectedCountry={null}
                 />
             );
         case ExternalSourceEnum.WISE:
-            return <CreateEnableBankingAccount connectAccountId={null} savedApplicationId={null} preselectedBankName={WISE_ASPSP_NAME} />;
+            return (
+                <CreateEnableBankingAccount
+                    connectAccountId={null}
+                    savedApplicationId={null}
+                    preselectedBankName={WISE_ASPSP_NAME}
+                    preselectedCountry={null}
+                />
+            );
         case AccountTypeEnum.SAVINGS:
         case AccountTypeEnum.BANK_SYNC:
         case AccountTypeEnum.CRYPTO_SYNC:

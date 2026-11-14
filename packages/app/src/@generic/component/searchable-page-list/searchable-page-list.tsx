@@ -14,7 +14,7 @@ import {
     LEGEND_LIST_STYLE,
     legendListKeyExtractor
 } from '../../constant/legend-list.constant';
-import { SCREEN_CHROME_CONTENT_INSET_TOP } from '../../constant/screen-chrome-content-inset.constant';
+import { STACKED_TITLE_CONTENT_INSET_TOP } from '../../constant/stacked-title-chrome-config.constant';
 import { useSearchInputBottom } from '../../hook/use-search-input-bottom.hook';
 import { useStickyDefinedValue } from '../../hook/use-sticky-defined-value.hook';
 import { IdInterface } from '../../interface/id.interface';
@@ -56,7 +56,7 @@ export const SearchablePageList = <T extends IdInterface>({
     const { scrollY } = useCollapsibleHeaderScroll();
     const insets = useSafeAreaInsets();
     const items = useStickyDefinedValue(data);
-    const paddingTop = insets.top + SCREEN_CHROME_CONTENT_INSET_TOP;
+    const paddingTop = insets.top + STACKED_TITLE_CONTENT_INSET_TOP;
     const paddingBottom = useSearchInputBottom() + SEARCH_LIST_BOTTOM_CLEARANCE;
 
     if (!isNotEmptyArray(items)) {

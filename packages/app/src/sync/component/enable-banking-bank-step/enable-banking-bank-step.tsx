@@ -1,7 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import * as Arr from 'effect/Array';
-import * as Order from 'effect/Order';
 import { useDeferredValue, useState } from 'react';
 import { View } from 'react-native';
 
@@ -16,10 +14,14 @@ import { SearchablePageEmptyState } from '../../../@generic/component/searchable
 import { SearchablePageList } from '../../../@generic/component/searchable-page-list/searchable-page-list';
 import { SearchablePage } from '../../../@generic/component/searchable-page/searchable-page';
 import { GROUPED_LIST_SIZING } from '../../../@generic/constant/grouped-list-sizing.constant';
+import { foldSearchText } from '../../../@generic/utils/fold-search-text.util';
 import { getDeviceRegionCode } from '../../utils/get-device-region-code.util';
+import { getEnableBankingBankSearchText } from '../../utils/get-enable-banking-bank-search-text.util';
+import { sortEnableBankingBanks } from '../../utils/sort-enable-banking-banks.util';
 import { EnableBankingBankRow } from '../enable-banking-bank-row/enable-banking-bank-row';
 
 import type { EnableBankingBankInterface } from '@budgie/sync';
+import type { ReactElement } from 'react';
 
 interface Props {
     readonly banks: readonly EnableBankingBankInterface[];
@@ -27,25 +29,19 @@ interface Props {
     readonly preselectedBankName: string | null;
     readonly onSelectBank: (bank: EnableBankingBankInterface) => void;
     readonly onGoBack: () => void;
+    readonly errorState?: ReactElement | null;
+    readonly children?: ReactElement;
 }
 
-const COMBINING_MARKS = /[̀-ͯ]/gu;
-
-const foldSearchText = (text: string): string => text.normalize('NFD').replaceAll(COMBINING_MARKS, '').toLowerCase();
-
-export const EnableBankingBankStep = ({ banks, isLoading, preselectedBankName, onSelectBank, onGoBack }: Props) => {
+export const EnableBankingBankStep = ({ banks, isLoading, preselectedBankName, onSelectBank, onGoBack, errorState, children }: Props) => {
     const { t } = useLingui();
     const [query, setQuery] = useState('');
-    const deferredQuery = useDeferredValue(query);
 
-    const normalizedQuery = foldSearchText(deferredQuery.trim());
+    const normalizedQuery = foldSearchText(useDeferredValue(query).trim());
     const regionCode = getDeviceRegionCode();
-    const matchingBanks = Arr.sort(
-        banks,
-        Order.mapInput(Order.String, (bank: EnableBankingBankInterface) => bank.name.toLocaleLowerCase())
-    )
+    const matchingBanks = sortEnableBankingBanks(banks)
         .map((bank, index) => ({ ...bank, id: index }))
-        .filter(bank => bank.isSupported && foldSearchText(`${bank.name} ${bank.country}`).includes(normalizedQuery));
+        .filter(bank => bank.isSupported && getEnableBankingBankSearchText(bank, t).includes(normalizedQuery));
     const localBanks = matchingBanks.filter(bank => bank.country === regionCode);
     const otherBanks = matchingBanks.filter(bank => bank.country !== regionCode);
     const hasBothGroups = isNotEmptyArray(localBanks) && isNotEmptyArray(otherBanks);
@@ -58,6 +54,14 @@ export const EnableBankingBankStep = ({ banks, isLoading, preselectedBankName, o
               description: t`Enable Banking cannot connect ${preselectedBankName} in any country right now.`
           }
         : { title: t`No banks found`, description: t`Try another name.` };
+
+    const emptyState = errorState ?? (
+        <LoadingContent isLoading={isLoading}>
+            <SearchablePageEmptyState icon={UserIconNameEnum.Search} title={emptyTitle} description={emptyDescription}>
+                {children}
+            </SearchablePageEmptyState>
+        </LoadingContent>
+    );
 
     const renderCard = (bank: EnableBankingBankInterface, index: number, isLast: boolean) => (
         <GroupedListItem isFirst={index === 0} isLast={isLast}>
@@ -89,12 +93,9 @@ export const EnableBankingBankStep = ({ banks, isLoading, preselectedBankName, o
             >
                 <SearchablePageList
                     data={listData}
-                    emptyState={
-                        <LoadingContent isLoading={isLoading}>
-                            <SearchablePageEmptyState icon={UserIconNameEnum.Search} title={emptyTitle} description={emptyDescription} />
-                        </LoadingContent>
-                    }
+                    emptyState={emptyState}
                     listHeader={listHeader}
+                    listFooter={children}
                     renderCard={renderCard}
                     sizing={GROUPED_LIST_SIZING}
                 />

@@ -1,7 +1,10 @@
 import { useLingui } from '@lingui/react/macro';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { BankLogo } from '../../../@generic/component/bank-logo/bank-logo';
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
+import { ENABLE_BANKING_COUNTRY_NAME } from '../../constant/enable-banking-country-name.constant';
 
 import { EnableBankingBankRowSelector } from './enable-banking-bank-row.selector';
 
@@ -19,7 +22,9 @@ export const EnableBankingBankRow = ({ bank, onSelect }: Props) => {
     const { t } = useLingui();
     const countryCode = bank.country.toUpperCase();
     const flag = String.fromCodePoint(...Array.from(countryCode, letter => letter.charCodeAt(0) + REGIONAL_INDICATOR_OFFSET));
-    const country = COUNTRY_CODE_PATTERN.test(countryCode) ? `${flag} ${countryCode}` : bank.country;
+    const countryName = ENABLE_BANKING_COUNTRY_NAME[countryCode];
+    const countryLabel = isDefined(countryName) ? t(countryName) : countryCode;
+    const country = COUNTRY_CODE_PATTERN.test(countryCode) ? `${flag} ${countryLabel}` : bank.country;
     const subtitle = bank.isBeta ? t`${country} · Beta` : country;
 
     const handlePress = () => {

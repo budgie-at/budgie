@@ -1,4 +1,5 @@
-import { readFileSync } from 'node:fs';
+import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -33,6 +34,8 @@ export interface Scene {
     readonly seed?: string;
     /** Installs the scene's own device state in place of the showcase seed (the app is launched after). */
     readonly prepare?: (media: Media, cell: Cell) => Promise<void>;
+    /** The iOS Dynamic Type size the scene launches with (`simctl ui content_size`); every other scene gets `large`, the system default. */
+    readonly contentSize?: string;
 }
 
 const rx =
@@ -52,7 +55,10 @@ async function viewport(ctx: Ctx): Promise<{ width: number; height: number }> {
     const { deviceId, client } = ctx.device.unstable_raw;
     let size = viewports.get(deviceId);
     if (size === undefined) {
-        const shot = await client.capture.screenshot({});
+        const dir = mkdtempSync(join(tmpdir(), 'budgie-viewport-'));
+        const shot = await client.capture
+            .screenshot({ path: join(dir, 'viewport.png') })
+            .finally(() => rmSync(dir, { recursive: true, force: true }));
         const width = b.isIos(ctx) ? shot.logicalWidth : shot.width;
         const height = b.isIos(ctx) ? shot.logicalHeight : shot.height;
         if (width === undefined || height === undefined) {
@@ -190,6 +196,19 @@ async function statementImport(ctx: Ctx, bank: string, file: string, rowId: stri
     );
     await i.selectFileFromAppProvider(ctx, file);
     await b.expectId(ctx, rowId, 5_000);
+}
+
+const SYNTHETIC_BANK_ROW = 'EnableBankingBankRow.E2E Synthetic Bank';
+
+/** The New Account screen, from the deep link to its first sync row. */
+const newAccount = (ctx: Ctx) => open(ctx, 'budgie://create-account', 'CreateAccount.MONOBANK');
+
+/** The New Account search field, `query` typed into it. */
+async function searchNewAccount(ctx: Ctx, query: string): Promise<void> {
+    await newAccount(ctx);
+    const field = ctx.screen.getByRole('textbox').first();
+    await field.tap();
+    await field.fill(query);
 }
 
 /**
@@ -443,6 +462,7 @@ export const SCENES: Readonly<Record<string, Scene>> = {
         run: async ctx => {
             await home(ctx);
             await a.openNewAccount(ctx);
+            await b.scrollToCentre(ctx, 'CreateAccount.MONOBANK', 'up');
             await b.tapId(ctx, 'CreateAccount.MONOBANK');
             await b.expectId(ctx, 'CreateMonobankAccount.ScrollView', 15_000);
         }
@@ -534,6 +554,62 @@ export const SCENES: Readonly<Record<string, Scene>> = {
     },
     // The AI build only (ios-e2e-ai-build.yml): the on-device model downloads before the AI item enables.
     'voice-transaction-entry-1': { smoke: false, run: ctx => openVoiceEntry(ctx, 600_000) },
+
+    // The New Account screen's polish captures: default, collapsed title, search with and without matches, largest Dynamic Type, the bank list.
+    'new-account-top': { run: newAccount },
+    'new-account-scrolled': {
+        run: async ctx => {
+            await newAccount(ctx);
+            await scrollDown(ctx, b.byId(ctx.screen, 'CreateAccount.DEPOSIT'), true);
+        }
+    },
+    'new-account-search': {
+        run: async ctx => {
+            await searchNewAccount(ctx, 'bank');
+            await b.expectId(ctx, SYNTHETIC_BANK_ROW, 15_000);
+        }
+    },
+    'new-account-search-revolut': {
+        run: async ctx => {
+            await searchNewAccount(ctx, 'revolut');
+            await b.expectId(ctx, 'EnableBankingBankRow.Revolut', 15_000);
+        }
+    },
+    'new-account-search-n26': {
+        run: async ctx => {
+            await searchNewAccount(ctx, 'n26');
+            await b.expectId(ctx, 'EnableBankingBankRow.N26', 15_000);
+        }
+    },
+    'new-account-search-stocks': {
+        run: async ctx => {
+            await searchNewAccount(ctx, 'stocks');
+            await b.expectId(ctx, 'CreateAccount.MoreBanks', 15_000);
+        }
+    },
+    'new-account-search-deutschland': {
+        run: async ctx => {
+            await searchNewAccount(ctx, 'deutschland');
+            await b.expectId(ctx, 'CreateAccount.MoreBanks', 15_000);
+        }
+    },
+    'new-account-search-empty': {
+        run: async ctx => {
+            await searchNewAccount(ctx, 'zzqx');
+            await b.expectNoId(ctx, 'CreateAccount.MONOBANK', 5_000);
+        }
+    },
+    'new-account-xxxl': { contentSize: 'accessibility-extra-extra-extra-large', run: newAccount },
+    'new-account-xxxl-tiles': {
+        contentSize: 'accessibility-extra-extra-extra-large',
+        run: async ctx => {
+            await newAccount(ctx);
+            await scrollDown(ctx, b.byId(ctx.screen, 'CreateAccount.BANK'), true);
+        }
+    },
+    'new-account-banks': {
+        run: ctx => open(ctx, 'budgie://create-account/banks', SYNTHETIC_BANK_ROW, 30_000)
+    },
 
     // Store screenshots (store-screenshots.config.json) and the landing page's App Store preview clip.
     '03-analytics': {
