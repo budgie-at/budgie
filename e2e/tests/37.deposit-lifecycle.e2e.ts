@@ -136,8 +136,8 @@ test('37 deposit lifecycle', { tags: ['accounts'], platforms: PENDING_ANDROID_PO
         await b.expectNoId(ctx, `AccountCard.${DEPOSIT}`);
     });
 
-    await b.phase('verify deposit archived', async () => {
-        await a.openArchivedAccounts(ctx);
-        await b.expectId(ctx, `ArchivedAccountCard.${DEPOSIT}`);
+    await b.phase('verify closed deposit is inactive', async () => {
+        await a.openInactiveAccounts(ctx);
+        await b.expectId(ctx, `InactiveAccountCard.${DEPOSIT}`);
     });
 });
