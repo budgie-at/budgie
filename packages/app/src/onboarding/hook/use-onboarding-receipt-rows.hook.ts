@@ -1,7 +1,9 @@
 import { useLingui } from '@lingui/react/macro';
 
+import { isNotEmptyString } from '@rnw-community/shared';
+
 import { DB_NAME } from '../../@generic/drizzle/constant/db-name.constant';
-import { useAuthContext } from '../../auth/context/auth.context';
+import { useBiometricLabel } from '../../settings/hook/use-biometric-label.hook';
 import { useSetting } from '../../settings/hook/use-setting.hook';
 
 import type { OnboardingReceiptRowInterface } from '../interface/onboarding-receipt-row.interface';
@@ -10,10 +12,9 @@ export const useOnboardingReceiptRows = (): OnboardingReceiptRowInterface[] => {
     const { t } = useLingui();
     const isPinEnabled = useSetting('isPinEnabled');
     const isBiometricEnabled = useSetting('isBiometricEnabled');
-    const { isFaceIdAvailable } = useAuthContext();
+    const biometricLabel = useBiometricLabel();
 
-    const biometricOpensWith = isFaceIdAvailable ? t`Your PIN · Face ID` : t`Your PIN · Fingerprint`;
-    const pinOpensWith = isBiometricEnabled ? biometricOpensWith : t`Your PIN`;
+    const pinOpensWith = isBiometricEnabled && isNotEmptyString(biometricLabel) ? t`Your PIN · ${biometricLabel}` : t`Your PIN`;
     const opensWith = isPinEnabled ? pinOpensWith : t`This phone’s lock`;
 
     return [
