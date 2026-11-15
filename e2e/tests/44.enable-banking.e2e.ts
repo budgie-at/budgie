@@ -36,8 +36,10 @@ test('44 enable banking', { tags: ['sync'], platforms: ['ios'] }, async ({ budgi
 
     await b.phase('setup guide and key step', async () => {
         await b.openLink(ctx, 'budgie://create-account');
-        await b.scrollTo(ctx, 'CreateAccount.ENABLE_BANKING');
-        await b.tapId(ctx, 'CreateAccount.ENABLE_BANKING');
+        await b.scrollTo(ctx, 'CreateAccount.MoreBanks');
+        await b.tapId(ctx, 'CreateAccount.MoreBanks');
+        await b.expectId(ctx, 'EnableBankingBankRow.E2E Synthetic Bank', 15_000);
+        await b.tapId(ctx, 'EnableBankingBankRow.E2E Synthetic Bank');
         await b.expectText(ctx, 'Set up once, about 5 minutes', 10_000);
         await b.tapId(ctx, 'CreateEnableBankingAccount.ContinueButton');
         await b.expectId(ctx, 'EnableBankingKeyStep.Terms', 10_000);
@@ -55,8 +57,6 @@ test('44 enable banking', { tags: ['sync'], platforms: ['ios'] }, async ({ budgi
         await expect(id('EnableBankingKeyStep.ChooseKeyFile')).toHaveText(/^Key file loaded/);
         await expect(id('CreateEnableBankingAccount.ContinueButton')).toBeEnabled();
         await b.tapId(ctx, 'CreateEnableBankingAccount.ContinueButton');
-        await b.expectId(ctx, 'EnableBankingBankRow.E2E Synthetic Bank', 15_000);
-        await b.tapId(ctx, 'EnableBankingBankRow.E2E Synthetic Bank');
         await b.expectText(ctx, 'Choose accounts', 30_000);
         const account = screen.getByRole('switch', { name: /^E2E Synthetic Bank E2E Current, EUR/ }).first();
         await expect(account).toBeVisible();

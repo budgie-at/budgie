@@ -79,7 +79,8 @@ export async function openNewAccount(ctx: Ctx): Promise<void> {
         await tapUntil(byId(screen, 'ActionButton'), () => expectId(ctx, 'ActionItem.AddAccount.Label', 5_000));
         await tapId(ctx, 'ActionItem.AddAccount.Label');
     }
-    await expectId(ctx, 'CreateAccount.BANK', 10_000);
+    await expectId(ctx, 'CreateAccount.MONOBANK', 10_000);
+    await scrollToCentre(ctx, 'CreateAccount.BANK');
 }
 
 /** subflows/accounts/open-account-details */

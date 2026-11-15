@@ -116,6 +116,7 @@ export class Media extends b.Budgie {
                 return;
             }
             await mustExec(this.api, lease, ['ui', 'appearance', cell.appearance]);
+            await mustExec(this.api, lease, ['ui', 'content_size', SCENES[cell.test ?? '']?.contentSize ?? 'large']);
             await this.writeAppDefaults('AppleLanguages', '-array', cell.locale);
             await this.writeAppDefaults('AppleLocale', '-string', cell.locale);
             // SCREENSHOT_STATUS_BAR: mobile-ci's status-bar-override, `override` unless the config turned it off.

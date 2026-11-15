@@ -16,6 +16,7 @@ import * as Clock from 'effect/Clock';
 import * as Context from 'effect/Context';
 import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
+import * as Exit from 'effect/Exit';
 import * as Layer from 'effect/Layer';
 import * as Predicate from 'effect/Predicate';
 import * as Schema from 'effect/Schema';
@@ -35,6 +36,7 @@ import { makePollingSyncAccountContinuation } from '../../core/utils/make-pollin
 import { makePollingSyncAccountSetup } from '../../core/utils/make-polling-sync-account-setup.util';
 import { makePollingSyncService } from '../../core/utils/make-polling-sync-service.util';
 import { resolveSyncProgressUpdate } from '../../core/utils/resolve-sync-progress-update.util';
+import { EnableBankingClient } from '../client/enable-banking.client';
 import { EnableBankingTokenSchema } from '../constant/enable-banking-token.schema';
 import { EnableBankingCallbackFailureEnum } from '../enum/enable-banking-callback-failure.enum';
 import { EnableBankingCallbackError } from '../error/enable-banking-callback.error';
@@ -47,6 +49,7 @@ import type { SyncHistoryDepthEnum } from '../../core/enum/sync-history-depth.en
 import type { SyncAccountInterface } from '../../core/interface/sync-account.interface';
 import type { SyncBatchResultInterface } from '../../core/interface/sync-batch-result.interface';
 import type { EnableBankingPendingAuthorizationInterface } from '../constant/enable-banking-pending-authorization.schema';
+import type { EnableBankingAspspListApiSchema } from '../interface/enable-banking-aspsp-api.schema';
 import type { EnableBankingAuthorizationResultInterface } from '../interface/enable-banking-authorization-result.interface';
 import type { EnableBankingBankInterface } from '../interface/enable-banking-bank.interface';
 import type { EnableBankingStartAuthorizationInputInterface } from '../interface/enable-banking-start-authorization-input.interface';
@@ -244,19 +247,29 @@ export class EnableBankingSyncService extends Context.Service<EnableBankingSyncS
             yield* pollingSyncService.requestSync();
         });
 
+        const toBank = (aspsp: (typeof EnableBankingAspspListApiSchema.Type)['aspsps'][number]): EnableBankingBankInterface => ({
+            name: aspsp.name,
+            country: aspsp.country,
+            maximumConsentValiditySeconds: aspsp.maximum_consent_validity,
+            isBeta: aspsp.beta === true,
+            isSupported: !isNotEmptyArray(aspsp.required_psu_headers ?? [])
+        });
+
+        const publicBanks = yield* Effect.cachedWithTTL(
+            Effect.map(new EnableBankingClient(null).getPublicAspsps(), ({ aspsps }) =>
+                aspsps.filter(aspsp => aspsp.psu_types?.includes('personal') === true).map(toBank)
+            ),
+            exit => (Exit.isSuccess(exit) ? '1 hour' : 0)
+        );
+
         return {
             ...pollingSyncService,
             listBanks: Effect.fn('EnableBankingSyncService.listBanks')(function* (applicationId: string, country: string | null = null) {
                 const { aspsps } = yield* clientService.withClient(applicationId, client => client.getAspsps(country));
 
-                return aspsps.map((aspsp): EnableBankingBankInterface => ({
-                    name: aspsp.name,
-                    country: aspsp.country,
-                    maximumConsentValiditySeconds: aspsp.maximum_consent_validity,
-                    isBeta: aspsp.beta === true,
-                    isSupported: !isNotEmptyArray(aspsp.required_psu_headers ?? [])
-                }));
+                return aspsps.map(toBank);
             }),
+            listPublicBanks: Effect.fn('EnableBankingSyncService.listPublicBanks')(() => publicBanks),
             listApplicationIds: listApplicationIds(null),
             forgetCredentials: (applicationId: string) => clientService.forgetJwt(applicationId),
             validateCredentials: Effect.fn('EnableBankingSyncService.validateCredentials')(function* (applicationId: string) {

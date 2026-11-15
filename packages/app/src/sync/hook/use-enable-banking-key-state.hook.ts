@@ -37,10 +37,14 @@ export const useEnableBankingKeyState = (run: ReturnType<typeof useSingleFlight>
 
     useEffect(() => () => void handleUnmount(), []);
 
+    const parsedApplicationId = parseEnableBankingApplicationId(applicationId);
+    const isKeyPicked = isDefined(pickedPem) || isKeySaved;
+
     return {
         applicationId,
-        parsedApplicationId: parseEnableBankingApplicationId(applicationId),
-        isKeyPicked: isDefined(pickedPem) || isKeySaved,
+        parsedApplicationId,
+        isKeyPicked,
+        isContinueDisabled: !isDefined(parsedApplicationId) || !isKeyPicked,
         handleApplicationIdChange: (value: string) => {
             if (value !== savedApplicationId) {
                 discardSavedKey(savedApplicationId);

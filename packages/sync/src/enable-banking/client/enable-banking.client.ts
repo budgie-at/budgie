@@ -42,13 +42,14 @@ export class EnableBankingClient extends BaseSyncProviderClient {
     private static readonly SERVER_ERROR_STATUS = 500;
 
     protected override readonly provider = SyncProviderEnum.ENABLE_BANKING;
-    protected override readonly baseUrl = 'https://api.enablebanking.com';
+    protected override readonly baseUrl: string;
     protected override readonly headers: Record<string, string>;
     protected override readonly retryMethods: readonly HttpMethod[] = [];
 
-    constructor(jwt: string) {
+    constructor(jwt: string | null) {
         super();
-        this.headers = { Authorization: `Bearer ${jwt}` };
+        this.baseUrl = isDefined(jwt) ? 'https://api.enablebanking.com' : 'https://enablebanking.com/api';
+        this.headers = isDefined(jwt) ? { Authorization: `Bearer ${jwt}` } : {};
     }
 
     getApplication() {
@@ -60,6 +61,10 @@ export class EnableBankingClient extends BaseSyncProviderClient {
             EnableBankingAspspListApiSchema,
             `/aspsps?psu_type=personal${isDefined(country) ? `&country=${encodeURIComponent(country)}` : ''}`
         );
+    }
+
+    getPublicAspsps() {
+        return this.fetchSanitized(EnableBankingAspspListApiSchema, '/aspsps');
     }
 
     startAuthorization(body: unknown) {
