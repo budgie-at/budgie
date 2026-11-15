@@ -55,7 +55,12 @@ export const EnableBankingBankStep = ({ banks, isLoading, preselectedBankName, o
           }
         : { title: t`No banks found`, description: t`Try another name.` };
 
-    const emptyState = errorState ?? (
+    const emptyState = isDefined(errorState) ? (
+        <>
+            {errorState}
+            {children}
+        </>
+    ) : (
         <LoadingContent isLoading={isLoading}>
             <SearchablePageEmptyState icon={UserIconNameEnum.Search} title={emptyTitle} description={emptyDescription}>
                 {children}

@@ -29,11 +29,16 @@ export const ChromeKeyboardScrollView = ({
     bottomOffset,
     ref,
     onDragStart,
+    onContentSizeChange: onCallerContentSizeChange,
     ...scrollViewProps
 }: Props): ReactNode => {
     const { config } = useScreenChrome();
     const { chromeHeight, inset } = useBottomChromeInset();
     const { onScroll, onContentSizeChange, scrollRef } = useCollapsibleChromeScroll(onDragStart);
+    const handleContentSizeChange = (contentWidth: number, contentHeight: number) => {
+        onContentSizeChange();
+        onCallerContentSizeChange?.(contentWidth, contentHeight);
+    };
     const insets = useSafeAreaInsets();
     const mergedRef = mergeRefs(scrollRef, ref);
     const { height } = useWindowDimensions();
@@ -57,7 +62,7 @@ export const ChromeKeyboardScrollView = ({
             bottomOffset={resolvedBottomOffset}
             contentContainerStyle={mergedContentContainerStyle}
             onScroll={onScroll}
-            onContentSizeChange={onContentSizeChange}
+            onContentSizeChange={handleContentSizeChange}
             scrollEventThrottle={config.scrollEventThrottle}
         />
     );

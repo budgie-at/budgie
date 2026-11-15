@@ -52,24 +52,24 @@ export const useCollapsibleChromeScroll = (onDragStart: () => void = emptyFn) =>
         }
     });
 
-    const scrollToSearchOffset = (isActive: boolean) => {
+    const scrollToSearchOffset = (isActive: boolean, isAnimated: boolean) => {
         scheduleOnUI(() => {
             const isBelowCollapseEnd = isActive ? scrollY.get() < collapseEnd : scrollY.get() <= collapseEnd;
 
             if (isBelowCollapseEnd) {
-                scrollTo(scrollReference, 0, isActive ? collapseEnd : 0, animateSnap);
+                scrollTo(scrollReference, 0, isActive ? collapseEnd : 0, isAnimated);
             }
         });
     };
 
     const handleContentSizeChange = () => {
         if (isSearchActive) {
-            scrollToSearchOffset(true);
+            scrollToSearchOffset(true, false);
         }
     };
 
     const syncSearchOffset = useEffectEvent(() => {
-        scrollToSearchOffset(isSearchActive);
+        scrollToSearchOffset(isSearchActive, animateSnap);
     });
 
     useEffect(() => {
