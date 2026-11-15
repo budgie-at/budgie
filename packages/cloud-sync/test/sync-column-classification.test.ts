@@ -52,7 +52,9 @@ const SYNCED_PROPERTIES_BY_TABLE: Readonly<Record<string, readonly string[]>> = 
         'importFingerprint',
         'consolidationParentTransactionId',
         'consolidationType',
-        'fundAccountId'
+        'fundAccountId',
+        'yieldKind',
+        'yieldSourceAccountId'
     ]
 };
 

@@ -25,18 +25,34 @@ export const fetchSourceLedger = Effect.fnUntraced(function* (source: ExternalSo
               .orderBy(asc(TransactionEntryEntityTable.id))
         : [];
 
-    return transactions.map(({ id, externalId, type, title, comment, operatedAt, fromAccountId, toAccountId, fundAccountId }) => ({
-        id,
-        externalId,
-        type,
-        title,
-        comment,
-        operatedAt,
-        fromAccountId,
-        toAccountId,
-        fundAccountId,
-        entries: entries
-            .filter(({ transactionId }) => transactionId === id)
-            .map(({ accountId, type: entryType, amount, categoryId }) => ({ accountId, type: entryType, amount, categoryId }))
-    }));
+    return transactions.map(
+        ({
+            id,
+            externalId,
+            type,
+            title,
+            comment,
+            operatedAt,
+            fromAccountId,
+            toAccountId,
+            fundAccountId,
+            yieldKind,
+            yieldSourceAccountId
+        }) => ({
+            id,
+            externalId,
+            type,
+            title,
+            comment,
+            operatedAt,
+            fromAccountId,
+            toAccountId,
+            fundAccountId,
+            yieldKind,
+            yieldSourceAccountId,
+            entries: entries
+                .filter(({ transactionId }) => transactionId === id)
+                .map(({ accountId, type: entryType, amount, categoryId }) => ({ accountId, type: entryType, amount, categoryId }))
+        })
+    );
 });

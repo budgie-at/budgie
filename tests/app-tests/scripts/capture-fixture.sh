@@ -1,6 +1,6 @@
 #!/bin/sh
 # Rebuilds one committed database fixture (29.db, 31-debt.db,
-# 31-transaction-info.db) through the real UI: e2e/media/fixtures.e2e.ts seeds
+# 31-transaction-info.db, 52-passive-income-base.db) through the real UI: e2e/media/fixtures.e2e.ts seeds
 # its staged starting fixture, creates the accounts or transactions, and
 # writes the app's database to tests/app-tests/fixtures/<name>, on a simulator
 # leased from the simlock farm. Reading the database back needs a farm worker
@@ -16,12 +16,12 @@ SCRIPT_DIR=$(CDPATH= cd -- "$(dirname "$0")" && pwd)
 PROJECT_ROOT=$(CDPATH= cd -- "$SCRIPT_DIR/../../.." && pwd)
 
 if [ "$#" -ne 1 ]; then
-    echo "Usage: $0 <fixture-name>   (29.db, 31-debt.db or 31-transaction-info.db)" >&2
+    echo "Usage: $0 <fixture-name>   (29.db, 31-debt.db, 31-transaction-info.db or 52-passive-income-base.db)" >&2
     exit 1
 fi
 
 case "$1" in
-    29.db | 31-debt.db | 31-transaction-info.db) ;;
+    29.db | 31-debt.db | 31-transaction-info.db | 52-passive-income-base.db) ;;
     *)
         echo "No fixture builder for '$1'; see e2e/media/fixtures.e2e.ts" >&2
         exit 1

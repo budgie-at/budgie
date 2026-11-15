@@ -1675,7 +1675,115 @@ const generateInzhurFixture = () => {
     `);
 };
 
+const generatePassiveIncomeFixtures = () => {
+    const sourcePath = path.join(fixturesDirectoryPath, '52-passive-income-base.db');
+    const yieldPath = path.join(outputDirectoryPath, '52-passive-income.db');
+    const emptyPath = path.join(outputDirectoryPath, '52-passive-income-empty.db');
+    const noon = days => `unixepoch(date('now', 'localtime', '${days >= 0 ? '+' : ''}${days} days') || ' 12:00:00', 'utc')`;
+    const noonAgo = column => `unixepoch(date('now', 'localtime', '-' || (${column}) || ' days') || ' 12:00:00', 'utc')`;
+    const dayAgo = column => `date('now', '-' || (${column}) || ' days')`;
+    const instrument = code => `(SELECT id FROM instruments WHERE code = '${code}')`;
+    const entryColumns = 'transaction_id, account_id, category_id, type, amount, exchange_rate, base_instrument_id, base_exchange_rate, base_amount';
+    const transactionColumns = 'id, type, title, operated_at, to_account_id, from_account_id, exchange_rate, external_id, yield_kind, yield_source_account_id';
+    const settingsSql = `UPDATE settings SET crypto_strict_valuation_version = 1;`;
+    const salarySql = `
+        INSERT INTO accounts (id, title, title_search, type, nature, instrument_id) VALUES (506, 'E2E Cash', 'e2e cash', 'CASH', 'ASSET', 1);
+        INSERT INTO transactions (${transactionColumns}) VALUES (5003, 'ADJUSTMENT', '', ${noon(-400)}, 506, NULL, 1, NULL, NULL, NULL);
+        INSERT INTO transaction_entries (${entryColumns}) VALUES (5003, 506, NULL, 'DEBIT', 10000000000, 1, 1, 1, 10000000000);
+        WITH RECURSIVE months(m) AS (SELECT 0 UNION ALL SELECT m + 1 FROM months WHERE m < 5)
+        INSERT INTO transactions (${transactionColumns})
+        SELECT 5100 + m, 'INCOME', 'E2E Salary', ${noonAgo('m * 30 + 3')}, 506, NULL, 1, NULL, NULL, NULL FROM months
+        UNION ALL SELECT 5200 + m, 'EXPENSE', 'E2E Rent', ${noonAgo('m * 30 + 5')}, NULL, 506, 1, NULL, NULL, NULL FROM months;
+        WITH RECURSIVE months(m) AS (SELECT 0 UNION ALL SELECT m + 1 FROM months WHERE m < 5)
+        INSERT INTO transaction_entries (${entryColumns})
+        SELECT 5100 + m, 506, 20, 'DEBIT', 3000000000, 1, 1, 1, 3000000000 FROM months
+        UNION ALL SELECT 5200 + m, 506, 10, 'CREDIT', 800000000, 1, 1, 1, 800000000 FROM months;
+    `;
+    const yieldSql = `
+        INSERT INTO instruments (id, type, code, name, symbol) VALUES (950, 'FUND', 'E2EREIT', 'E2E REIT Fund', 'E2EREIT');
+        INSERT INTO accounts (id, title, title_search, type, nature, instrument_id, interest_rate, deadline, is_active) VALUES
+            (501, 'E2E Binance ETH', 'e2e binance eth', 'CRYPTO', 'ASSET', ${instrument('ETH')}, NULL, NULL, 1),
+            (502, 'E2E Binance SOL', 'e2e binance sol', 'CRYPTO', 'ASSET', ${instrument('SOL')}, NULL, NULL, 1),
+            (503, 'E2E Term Deposit', 'e2e term deposit', 'DEPOSIT', 'ASSET', 1, 12, ${noon(110)}, 1),
+            (504, 'E2E Savings Deposit', 'e2e savings deposit', 'DEPOSIT', 'ASSET', 1, 10, NULL, 1),
+            (505, 'E2E REIT', 'e2e reit', 'STOCKS', 'ASSET', 950, NULL, NULL, 1),
+            (507, 'E2E Closed Deposit', 'e2e closed deposit', 'DEPOSIT', 'ASSET', 1, 9, NULL, 0);
+        INSERT INTO transactions (${transactionColumns}) VALUES
+            (5001, 'INCOME', 'E2E Opening ETH', ${noon(-400)}, 501, NULL, 1, NULL, NULL, NULL),
+            (5002, 'INCOME', 'E2E Opening SOL', ${noon(-400)}, 502, NULL, 1, NULL, NULL, NULL),
+            (5004, 'TRANSFER', 'E2E Term deposit', ${noon(-60)}, 503, 506, 1, NULL, NULL, NULL),
+            (5005, 'TRANSFER', 'E2E Savings deposit', ${noon(-200)}, 504, 506, 1, NULL, NULL, NULL),
+            (5006, 'TRANSFER', 'E2E Closed deposit', ${noon(-300)}, 507, 506, 1, NULL, NULL, NULL),
+            (5007, 'INCOME', 'E2E Closed deposit interest', ${noon(-200)}, 507, NULL, 1, NULL, 'INTEREST', NULL),
+            (5008, 'TRANSFER', 'E2E Closed deposit payout', ${noon(-150)}, 506, 507, 1, NULL, NULL, NULL),
+            (5009, 'INCOME', 'E2E REIT units', ${noon(-300)}, 505, NULL, 1, NULL, NULL, NULL);
+        INSERT INTO transaction_entries (${entryColumns}) VALUES
+            (5001, 501, NULL, 'DEBIT', 2000000, 1, 1, 2000, 4000000000),
+            (5002, 502, NULL, 'DEBIT', 50000000, 1, 1, 150, 7500000000),
+            (5004, 506, NULL, 'CREDIT', 1000000000, 1, 1, 1, 1000000000),
+            (5004, 503, NULL, 'DEBIT', 1000000000, 1, 1, 1, 1000000000),
+            (5005, 506, NULL, 'CREDIT', 2000000000, 1, 1, 1, 2000000000),
+            (5005, 504, NULL, 'DEBIT', 2000000000, 1, 1, 1, 2000000000),
+            (5006, 506, NULL, 'CREDIT', 500000000, 1, 1, 1, 500000000),
+            (5006, 507, NULL, 'DEBIT', 500000000, 1, 1, 1, 500000000),
+            (5007, 507, NULL, 'DEBIT', 20000000, 1, 1, 1, 20000000),
+            (5008, 507, NULL, 'CREDIT', 520000000, 1, 1, 1, 520000000),
+            (5008, 506, NULL, 'DEBIT', 520000000, 1, 1, 1, 520000000),
+            (5009, 505, NULL, 'DEBIT', 100000000, 1, 1, 10, 1000000000);
+        WITH RECURSIVE days(n) AS (SELECT 1 UNION ALL SELECT n + 1 FROM days WHERE n < 90)
+        INSERT INTO transactions (${transactionColumns})
+        SELECT 6000 + n, 'INCOME', 'ETH staking reward', ${noonAgo('n')}, 501, NULL, 1, 'binance:eth-staking:e2e-' || n, 'STAKING', NULL FROM days;
+        WITH RECURSIVE days(n) AS (SELECT 1 UNION ALL SELECT n + 1 FROM days WHERE n < 90)
+        INSERT INTO transaction_entries (${entryColumns})
+        SELECT 6000 + n, 501, NULL, 'DEBIT', 1000, 1, 1, CASE WHEN n BETWEEN 10 AND 13 THEN NULL ELSE 2000 END, 2000000 FROM days;
+        WITH RECURSIVE weeks(n) AS (SELECT 0 UNION ALL SELECT n + 1 FROM weeks WHERE n < 12)
+        INSERT INTO transactions (${transactionColumns})
+        SELECT 7000 + n, 'INCOME', 'SOL earn reward', ${noonAgo('n * 7 + 2')}, 502, NULL, 1, 'binance:earn:e2e-' || n, 'EARN', NULL FROM weeks;
+        WITH RECURSIVE weeks(n) AS (SELECT 0 UNION ALL SELECT n + 1 FROM weeks WHERE n < 12)
+        INSERT INTO transaction_entries (${entryColumns}) SELECT 7000 + n, 502, NULL, 'DEBIT', 50000, 1, 1, 150, 7500000 FROM weeks;
+        WITH RECURSIVE months(m) AS (SELECT 1 UNION ALL SELECT m + 1 FROM months WHERE m < 10)
+        INSERT INTO transactions (${transactionColumns})
+        SELECT 8000 + m, 'INCOME', 'E2E Savings interest', ${noonAgo('m * 30')}, 504, NULL, 1, NULL, 'INTEREST', NULL FROM months WHERE m <= 6
+        UNION ALL SELECT 9000 + m, 'INCOME', 'E2E REIT dividend', ${noonAgo('m * 30 + 1')}, 506, NULL, 1, NULL, 'DIVIDEND', 505 FROM months
+        UNION ALL SELECT 9500 + m, 'EXPENSE', 'E2E REIT tax', ${noonAgo('m * 30 + 1')}, NULL, 506, 1, NULL, 'TAX', 505 FROM months;
+        WITH RECURSIVE months(m) AS (SELECT 1 UNION ALL SELECT m + 1 FROM months WHERE m < 10)
+        INSERT INTO transaction_entries (${entryColumns})
+        SELECT 8000 + m, 504, NULL, 'DEBIT', 16400000, 1, 1, 1, 16400000 FROM months WHERE m <= 6
+        UNION ALL SELECT 9000 + m, 506, NULL, 'DEBIT', 2500000, 1, 1, 1, 2500000 FROM months
+        UNION ALL SELECT 9500 + m, 506, NULL, 'CREDIT', 450000, 1, 1, 1, 450000 FROM months;
+        WITH RECURSIVE days(n) AS (SELECT 0 UNION ALL SELECT n + 1 FROM days WHERE n < 400)
+        INSERT OR REPLACE INTO instrument_daily_market_prices (instrument_id, quote_instrument_id, price_date, price, source)
+        SELECT ${instrument('ETH')}, 1, ${dayAgo('n')}, 2000, 'coingecko.com' FROM days WHERE n NOT BETWEEN 10 AND 16
+        UNION ALL SELECT ${instrument('SOL')}, 1, ${dayAgo('n')}, 150, 'coingecko.com' FROM days
+        UNION ALL SELECT 950, ${instrument('UAH')}, ${dayAgo('n')}, 400, 'inzhur' FROM days WHERE n % 30 = 0;
+        WITH RECURSIVE days(n) AS (SELECT 0 UNION ALL SELECT n + 1 FROM days WHERE n < 400)
+        INSERT OR REPLACE INTO historical_exchange_rates (source_instrument_id, target_instrument_id, rate_date, rate)
+        SELECT ${instrument('ETH')}, 1, ${dayAgo('n')}, 2000 FROM days WHERE n NOT BETWEEN 10 AND 16
+        UNION ALL SELECT ${instrument('SOL')}, 1, ${dayAgo('n')}, 150 FROM days
+        UNION ALL SELECT ${instrument('UAH')}, 1, ${dayAgo('n')}, 0.025 FROM days;
+        DELETE FROM exchange_rates WHERE base_instrument_id IN (${instrument('ETH')}, ${instrument('SOL')}) AND quote_instrument_id = 1;
+        INSERT INTO exchange_rates (source, base_instrument_id, quote_instrument_id, rate) VALUES
+            ('coingecko.com', ${instrument('ETH')}, 1, 2000),
+            ('coingecko.com', ${instrument('SOL')}, 1, 150);
+    `;
+    const balancesSql = `
+        DELETE FROM account_balances WHERE account_id BETWEEN 501 AND 507;
+        INSERT INTO account_balances (account_id, amount)
+        SELECT e.account_id, SUM(CASE e.type WHEN 'DEBIT' THEN e.amount ELSE -e.amount END)
+        FROM transaction_entries e
+        JOIN transactions t ON t.id = e.transaction_id
+        WHERE e.account_id BETWEEN 501 AND 507 AND e.deleted_at IS NULL AND t.deleted_at IS NULL
+        GROUP BY e.account_id;
+    `;
+
+    copyFixture(sourcePath, yieldPath);
+    copyFixture(sourcePath, emptyPath);
+    runSqlite(emptyPath, `BEGIN; ${settingsSql} ${salarySql} ${balancesSql} COMMIT; VACUUM;`);
+    runSqlite(yieldPath, `BEGIN; ${settingsSql} ${salarySql} ${yieldSql} ${balancesSql} COMMIT; VACUUM;`);
+};
+
 generateInzhurFixture();
+generatePassiveIncomeFixtures();
 generateRunwayCryptoFixture();
 generateBudgetMultiCurrencyFixture();
 generateRecurringFixture();

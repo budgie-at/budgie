@@ -127,21 +127,17 @@ test('37 deposit lifecycle', { tags: ['accounts'], platforms: PENDING_ANDROID_PO
         await b.tapId(ctx, 'AccountDetails.CloseDepositButton');
         await b.expectId(ctx, 'AccountPickerBottomSheet.Input');
         await a.selectAccountFromNativePicker(ctx, 'AccountPickerBottomSheet.Option.E2E Expense Source');
-        const ask = b.byText(screen, 'Close Deposit?');
-        await expect(ask).toBeVisible({ timeout: 10_000 });
-        await b.expectText(ctx, /555/);
-        const confirm = b.alertButton(screen, 'Close Deposit');
-        await expect(confirm).toBeEnabled();
-        await confirm.tap();
-        await expect(ask).toBeHidden({ timeout: 10_000 });
+        await b.expectId(ctx, 'DepositClose.AmountInput', 10_000);
+        await expect(b.byId(ctx.screen, 'DepositClose.AmountInput')).toHaveValue(/^555(\.00)?$/);
+        await b.tapId(ctx, 'DepositClose.ConfirmButton');
         await b.expectId(ctx, 'HomePage.TotalBalance', 15_000);
         await b.expectId(ctx, 'AccountCard.Balance.E2E_Expense_Source.615');
         await b.expectId(ctx, 'HomePage.NetWorthValue.715');
         await b.expectNoId(ctx, `AccountCard.${DEPOSIT}`);
     });
 
-    await b.phase('verify deposit archived', async () => {
-        await a.openArchivedAccounts(ctx);
-        await b.expectId(ctx, `ArchivedAccountCard.${DEPOSIT}`);
+    await b.phase('verify closed deposit is inactive', async () => {
+        await a.openInactiveAccounts(ctx);
+        await b.expectId(ctx, `InactiveAccountCard.${DEPOSIT}`);
     });
 });

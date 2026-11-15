@@ -28,6 +28,7 @@
         "@budgie/consolidation": "workspace:*",
         "@budgie/contracts": "workspace:^",
         "@budgie/ledger": "workspace:*",
+        "@budgie/market": "workspace:*",
         "@budgie/recurring": "workspace:*",
         "@budgie/rules": "workspace:*",
         "@noble/hashes": "^2.4.0",

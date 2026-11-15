@@ -16,7 +16,8 @@ import {
     TransactionEntryEntityTable,
     TransactionConsolidationTypeEnum,
     TransactionEntryTypeEnum,
-    TransactionTypeEnum
+    TransactionTypeEnum,
+    YieldKindEnum
 } from '@budgie/contracts';
 import { and, asc, eq, getTableColumns, gt, gte, inArray, isNotNull, isNull, ne, or, sql } from 'drizzle-orm';
 import * as Context from 'effect/Context';
@@ -50,6 +51,7 @@ export class RecurringRepository extends Context.Service<RecurringRepository>()(
             [RecurringSeriesKindEnum.INCOME]: [
                 eq(TransactionEntityTable.type, TransactionTypeEnum.INCOME),
                 eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.DEBIT),
+                or(isNull(TransactionEntityTable.yieldKind), eq(TransactionEntityTable.yieldKind, YieldKindEnum.NONE)),
                 or(
                     isNull(TransactionEntityTable.consolidationType),
                     ne(TransactionEntityTable.consolidationType, TransactionConsolidationTypeEnum.REFUND)

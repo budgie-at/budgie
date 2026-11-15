@@ -12,6 +12,7 @@ import { RevealGate } from '../../../@generic/component/reveal-gate/reveal-gate'
 import { SCREEN_CHROME_CONFIG } from '../../../@generic/constant/screen-chrome-config.constant';
 import { getInstrumentUnitLabel } from '../../../instrument/utils/get-instrument-unit-label.util';
 import { defaultInstrumentIdAtom } from '../../../settings/constants/settings-atoms.constant';
+import { YieldEntryRow } from '../../../yield/component/yield-entry-row/yield-entry-row';
 import { useInstrumentMarketDataQuery } from '../../query/use-instrument-market-data.query';
 import { CurrencyMarketAccounts } from '../currency-market-accounts/currency-market-accounts';
 import { CurrencyMarketLargeTitle } from '../currency-market-large-title/currency-market-large-title';
@@ -65,6 +66,7 @@ export const CurrencyMarketPage = ({ instrument: storedInstrument }: Props) => {
     const chromeConfig = isDefined(surfaceColors)
         ? { ...CURRENCY_MARKET_CHROME_CONFIG, colors: { light: surfaceColors, dark: surfaceColors } }
         : CURRENCY_MARKET_CHROME_CONFIG;
+    const yieldScope = { positionAccountId: null, instrumentId: instrument.id };
 
     return (
         <GroupedSurface>
@@ -83,6 +85,8 @@ export const CurrencyMarketPage = ({ instrument: storedInstrument }: Props) => {
                     <View testID={CurrencyMarketPageSelector.Holdings(instrument.code)}>
                         <CurrencyMarketPosition instrument={instrument} latestPrice={latestPrice} />
                     </View>
+
+                    <YieldEntryRow scope={yieldScope} />
 
                     <CurrencyMarketAccounts instrument={instrument} />
 

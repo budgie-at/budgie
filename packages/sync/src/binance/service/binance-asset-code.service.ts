@@ -1,4 +1,4 @@
-import { AccountRepository, InstrumentRepository } from '@budgie/contracts';
+import { AccountRepository, BINANCE_ASSET_ALIAS, InstrumentRepository } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -11,7 +11,6 @@ export class BinanceAssetCodeService extends Context.Service<BinanceAssetCodeSer
     make: Effect.gen(function* () {
         const accountRepository = yield* AccountRepository;
         const instrumentRepository = yield* InstrumentRepository;
-        const assetAlias: Record<string, string> = { MATIC: 'POL', RNDR: 'RENDER', FTM: 'S' };
 
         return {
             resolveEligibleSoldOffBaseAssets: Effect.fn('BinanceAssetCodeService.resolveEligibleSoldOffBaseAssets')(function* (
@@ -30,12 +29,12 @@ export class BinanceAssetCodeService extends Context.Service<BinanceAssetCodeSer
 
                 return [
                     ...assetCodes,
-                    ...Object.entries(assetAlias)
+                    ...Object.entries(BINANCE_ASSET_ALIAS)
                         .filter(([, instrumentCode]) => assetCodes.has(instrumentCode))
                         .map(([binanceAssetCode]) => binanceAssetCode)
                 ];
             }),
-            resolveInstrumentCode: (asset: string): string => assetAlias[asset] ?? asset
+            resolveInstrumentCode: (asset: string): string => BINANCE_ASSET_ALIAS[asset] ?? asset
         };
     })
 }) {

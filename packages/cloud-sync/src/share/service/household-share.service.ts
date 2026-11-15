@@ -9,6 +9,7 @@ import {
     SyncRecordTypeEnum,
     SyncApplyStateRepository,
     SyncZoneRegistryRepository,
+    TransactionYieldRepository,
     generateSyncId,
     SYNC_MOVED_FROM_MARKER_PREFIX,
     SYNC_MOVED_TO_MARKER_PREFIX
@@ -40,6 +41,7 @@ export class HouseholdShareService extends Context.Service<HouseholdShareService
         const outboxRepository = yield* SyncOutboxRepository;
         const applyStateRepository = yield* SyncApplyStateRepository;
         const zoneRegistryRepository = yield* SyncZoneRegistryRepository;
+        const transactionYieldRepository = yield* TransactionYieldRepository;
 
         const isAvailable = zoneRegistryRepository.findByLabel(HOUSEHOLD_SYNC_ZONE).pipe(Effect.map(isDefined));
 
@@ -277,6 +279,7 @@ export class HouseholdShareService extends Context.Service<HouseholdShareService
             const transactionIds = yield* repository.findTransactionIdsOnAccounts(accountIds);
 
             yield* alignTransactionIds(transactionIds, memo);
+            yield* transactionYieldRepository.clearCrossZoneSources;
         });
 
         const moveSeries = Effect.fnUntraced(function* (seriesId: number, from: string, to: string, memo: LabeledMemoType) {
@@ -348,6 +351,8 @@ export class HouseholdShareService extends Context.Service<HouseholdShareService
             if (isNotEmptyArray(transactionIds)) {
                 yield* alignTransactionIds(transactionIds, new Map());
             }
+
+            yield* transactionYieldRepository.clearCrossZoneSources;
         });
 
         const applyShareEverything = Effect.fn('HouseholdShareService.applyShareEverything')(function* () {
@@ -459,7 +464,8 @@ export class HouseholdShareService extends Context.Service<HouseholdShareService
             HouseholdShareRepository.layer,
             SyncOutboxRepository.layer,
             SyncApplyStateRepository.layer,
-            SyncZoneRegistryRepository.layer
+            SyncZoneRegistryRepository.layer,
+            TransactionYieldRepository.layer
         ])
     );
 }

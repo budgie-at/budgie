@@ -23,14 +23,12 @@ interface Props {
         AccountWithInstrumentEntityInterface,
         'id' | 'type' | 'debtType' | 'integrationId' | AccountAssociationEnum.INSTRUMENT
     >;
-    readonly balance: number;
-    readonly instrumentSymbol: string;
 }
 
-export const AccountActionsMenu = ({ account, balance, instrumentSymbol }: Props) => {
+export const AccountActionsMenu = ({ account }: Props) => {
     const { t } = useLingui();
     const router = useRouter();
-    const closeAction = useDepositCloseAction(account.id, balance, instrumentSymbol);
+    const closeAction = useDepositCloseAction(account.id);
     const archiveAction = useArchiveAccount(account.id, () => void dismissAllOrReplace('/'));
     const revertAction = useRevertInstallmentPlan();
 

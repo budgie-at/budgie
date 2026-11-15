@@ -3,6 +3,7 @@ import Animated, { useAnimatedStyle, useDerivedValue, useSharedValue, withSpring
 
 import { MAX_FONT_SIZE_MULTIPLIER } from '../../constant/max-font-size-multiplier.constant';
 import { SPRING_SETTLE } from '../../constant/motion.constant';
+import { HapticPressFeedbackEnum } from '../../enum/haptic-press-feedback.enum';
 import { useReducedMotion } from '../../hook/use-reduced-motion.hook';
 import { cn } from '../../utils/cn.util';
 import { SegmentedControlItem } from '../segmented-control-item/segmented-control-item';
@@ -17,6 +18,7 @@ interface Props<T extends string> {
     readonly disabled?: boolean;
     readonly className?: string;
     readonly maxFontSizeMultiplier?: number;
+    readonly pressFeedback?: HapticPressFeedbackEnum;
 }
 
 const TRACK_PADDING = 2;
@@ -24,7 +26,15 @@ const THUMB_INSET = 2;
 const continuousCorners = { borderCurve: 'continuous' as const };
 
 export const SegmentedControl = <T extends string>(props: Props<T>) => {
-    const { segments, value, onChange, disabled = false, className, maxFontSizeMultiplier = MAX_FONT_SIZE_MULTIPLIER } = props;
+    const {
+        segments,
+        value,
+        onChange,
+        disabled = false,
+        className,
+        maxFontSizeMultiplier = MAX_FONT_SIZE_MULTIPLIER,
+        pressFeedback = HapticPressFeedbackEnum.SELECTION
+    } = props;
     const reducedMotion = useReducedMotion();
     const segmentWidth = useSharedValue(0);
     const activeIndex = segments.findIndex(segment => segment.value === value);
@@ -74,6 +84,7 @@ export const SegmentedControl = <T extends string>(props: Props<T>) => {
                     disabled={disabled}
                     onPress={onChange}
                     maxFontSizeMultiplier={maxFontSizeMultiplier}
+                    pressFeedback={pressFeedback}
                 />
             ))}
         </View>

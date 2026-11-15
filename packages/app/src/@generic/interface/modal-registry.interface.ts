@@ -26,7 +26,8 @@ import type {
     TransactionEntryTypeEnum,
     TransactionTypeEnum,
     UserIconNameEnum,
-    UserIconType
+    UserIconType,
+    YieldKindEnum
 } from '@budgie/contracts';
 import type { YahooListingInterface } from '@budgie/market';
 
@@ -42,6 +43,7 @@ export interface ModalRegistryInterface {
             readonly onlyActive?: boolean;
             readonly showDebtTotal?: boolean;
             readonly createAction?: AccountSelectorCreateActionInterface;
+            readonly syncZone?: string;
             readonly origin?: AnchoredMorphOriginInterface;
         };
         readonly result: number;
@@ -116,7 +118,19 @@ export interface ModalRegistryInterface {
         readonly params: { readonly selectedLanguage: LanguageEnum; readonly origin?: AnchoredMorphOriginInterface };
         readonly result: LanguageEnum;
     };
+    readonly '/yield-kind': {
+        readonly params: {
+            readonly transactionType: TransactionTypeEnum;
+            readonly selectedKind: YieldKindEnum | null;
+            readonly origin?: AnchoredMorphOriginInterface;
+        };
+        readonly result: YieldKindEnum;
+    };
     readonly '/resync-window-picker': { readonly params: { readonly accountId: number }; readonly result: null };
+    readonly '/deposit-close': {
+        readonly params: { readonly depositAccountId: number; readonly destinationAccountId: number };
+        readonly result: null;
+    };
     readonly '/rule-form': {
         readonly params: { readonly ruleId?: number; readonly prefillData?: RulePrefillDataInterface };
         readonly result: 'created' | 'updated' | 'deleted';

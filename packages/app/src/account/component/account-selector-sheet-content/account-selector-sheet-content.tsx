@@ -14,7 +14,7 @@ import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { AccountSelectorModalSelector } from '../../../app/account-selector-modal.selector';
 import { useSearchAccountsSortedQuery } from '../../query/use-search-accounts-sorted.query';
-import { isUntrackedOwnAccount } from '../../utils/is-untracked-own-account.util';
+import { isSelectableAccount } from '../../utils/is-selectable-account.util';
 import { AccountSelectContent } from '../account-select-content/account-select-content';
 
 import type { ModalParams } from '../../../@generic/type/modal-params.type';
@@ -42,7 +42,7 @@ export const AccountSelectorSheetContent = ({ params, onSelect, onBack, classNam
         includeTypes: params.includeAccountTypes,
         onlyActive: params.onlyActive ?? true
     });
-    const selectableAccounts = accounts.filter(account => !isUntrackedOwnAccount(account) || account.id === params.initialAccountId);
+    const selectableAccounts = accounts.filter(account => isSelectableAccount(account, params.initialAccountId, params.syncZone));
 
     const handleCreateAction = () => {
         if (!isDefined(createAction)) {

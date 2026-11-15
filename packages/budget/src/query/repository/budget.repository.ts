@@ -1,5 +1,6 @@
 import {
     AccountDebtTypeEnum,
+    AccountTypeEnum,
     AccountEntityTable,
     DebtEventDirectionEnum,
     DebtEventEntityTable,
@@ -18,10 +19,11 @@ import {
     TransactionTypeEnum,
     buildHouseholdOwnershipSql,
     SyncRecordTypeEnum,
+    YieldKindEnum,
     buildSpendingEntryCondition
 } from '@budgie/contracts';
 import { startOfDay } from 'date-fns/startOfDay';
-import { and, asc, between, eq, gte, isNull, min, ne, or, sql } from 'drizzle-orm';
+import { and, asc, between, eq, gte, isNull, min, ne, notInArray, or, sql } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -79,6 +81,15 @@ export class BudgetRepository extends Context.Service<BudgetRepository>()('@budg
                 or(
                     isNull(TransactionEntityTable.consolidationType),
                     ne(TransactionEntityTable.consolidationType, TransactionConsolidationTypeEnum.REFUND)
+                ),
+                or(
+                    isNull(TransactionEntityTable.yieldKind),
+                    notInArray(TransactionEntityTable.yieldKind, [YieldKindEnum.STAKING, YieldKindEnum.EARN, YieldKindEnum.DISTRIBUTION])
+                ),
+                or(
+                    isNull(TransactionEntityTable.yieldKind),
+                    ne(TransactionEntityTable.yieldKind, YieldKindEnum.INTEREST),
+                    ne(AccountEntityTable.type, AccountTypeEnum.DEPOSIT)
                 ),
                 between(TransactionEntityTable.operatedAt, periodStart, new Date(nextPeriodStart.getTime() - 1))
             );

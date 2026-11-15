@@ -12,6 +12,7 @@ interface Props<T extends string> {
     readonly isActive: boolean;
     readonly disabled: boolean;
     readonly maxFontSizeMultiplier?: number;
+    readonly pressFeedback: HapticPressFeedbackEnum;
     readonly onPress: (value: T) => void;
 }
 
@@ -25,7 +26,7 @@ const labelVariants = cva('text-[15px]', {
 });
 
 export const SegmentedControlItem = <T extends string>(props: Props<T>) => {
-    const { segment, isActive, disabled, onPress, maxFontSizeMultiplier = MAX_FONT_SIZE_MULTIPLIER } = props;
+    const { segment, isActive, disabled, onPress, pressFeedback, maxFontSizeMultiplier = MAX_FONT_SIZE_MULTIPLIER } = props;
     const handlePress = () => void onPress(segment.value);
 
     const isSelected = isActive && !disabled;
@@ -34,7 +35,7 @@ export const SegmentedControlItem = <T extends string>(props: Props<T>) => {
     return (
         <HapticPressable
             pressedScale={1}
-            pressFeedback={HapticPressFeedbackEnum.SELECTION}
+            pressFeedback={pressFeedback}
             accessibilityRole="tab"
             accessibilityState={accessibilityState}
             className="min-h-[44px] flex-1 items-center justify-center px-md py-sm"

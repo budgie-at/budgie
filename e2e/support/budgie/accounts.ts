@@ -156,7 +156,7 @@ export async function openArchivedAccounts(ctx: Ctx): Promise<void> {
 }
 
 /** subflows/accounts/open-inactive-accounts */
-async function openInactiveAccounts(ctx: Ctx): Promise<void> {
+export async function openInactiveAccounts(ctx: Ctx): Promise<void> {
     await openLink(ctx, 'budgie://settings/inactive');
     await expectId(ctx, 'InactiveAccountsPage.Container', 15_000);
 }
