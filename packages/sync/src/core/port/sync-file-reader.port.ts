@@ -8,5 +8,6 @@ export class SyncFileReader extends Context.Service<
     {
         readonly readPdfTextItems: (uri: string) => Effect.Effect<PdfTextItemInterface[]>;
         readonly readBytes: (uri: string) => Effect.Effect<Uint8Array>;
+        readonly readText: (uri: string) => Effect.Effect<string>;
     }
 >()('@budgie/sync/SyncFileReader') {}

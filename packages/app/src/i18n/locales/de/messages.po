@@ -755,6 +755,10 @@ msgstr "{newTransactionCount, plural, one {# Buchung importieren} other {# Buchu
 msgid "{newTransactionCount} new, {existingTransactionCount} already imported, {parsedTransactionCount} checked"
 msgstr "{newTransactionCount} neu, {existingTransactionCount} bereits importiert, {parsedTransactionCount} geprüft"
 
+#: src/sync/hook/use-quick-import.hook.ts
+msgid "{newTransactionCount} new, {existingTransactionCount} already imported, {skippedTransactionCount} skipped without a matching account"
+msgstr "{newTransactionCount} neu, {existingTransactionCount} bereits importiert, {skippedTransactionCount} ohne passendes Konto übersprungen"
+
 #: src/account/component/family-section-header/family-section-header.tsx
 #: src/household/utils/get-family-labels.util.ts
 #: src/household/utils/get-household-summary-labels.util.ts
@@ -817,6 +821,10 @@ msgstr "{periodLabel}: {amount} unter dem Limit abgeschlossen"
 #: src/budget/components/budget-history-chart/budget-history-chart.tsx
 msgid "{periodLabel}, spent {spentAmount} of {limitAmount}"
 msgstr "{periodLabel}, {spentAmount} von {limitAmount} ausgegeben"
+
+#: src/sync/component/enable-banking-bank-step/enable-banking-bank-step.tsx
+msgid "{preselectedBankName} is not available"
+msgstr "{preselectedBankName} ist nicht verfügbar"
 
 #: src/budget/hooks/use-budget-forecast-labels.hook.ts
 msgid "{projectedAmount} · {gapAmount} over"
@@ -2017,6 +2025,10 @@ msgstr "Automatische Anpassung ist aus"
 msgid "Automation"
 msgstr "Automatisierung"
 
+#: src/sync/component/wise-statement-import-row/wise-statement-import-row.tsx
+msgid "Available after the first sync finishes"
+msgstr "Verfügbar, sobald die erste Synchronisierung abgeschlossen ist"
+
 #: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 msgid "Available once the import finishes"
 msgstr "Verfügbar, sobald der Import abgeschlossen ist"
@@ -3095,6 +3107,10 @@ msgstr "Bestätige deine PIN"
 msgid "Connect"
 msgstr "Verbinden"
 
+#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+msgid "Connect {preselectedBankName}"
+msgstr "Mit {preselectedBankName} verbinden"
+
 #: src/rule/components/rules-feature-intro/rules-feature-intro.tsx
 msgid "Connect a bank"
 msgstr "Bank verbinden"
@@ -3591,8 +3607,8 @@ msgid "Could not start syncing"
 msgstr "Synchronisierung konnte nicht gestartet werden"
 
 #: src/sync/component/account-connect-bank-row/account-connect-bank-row.tsx
-#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
 #: src/sync/component/enable-banking-reauthorize-row/enable-banking-reauthorize-row.tsx
+#: src/sync/hook/use-enable-banking-bank-loading.hook.ts
 msgid "Could not start the authorization"
 msgstr "Autorisierung konnte nicht gestartet werden"
 
@@ -3709,7 +3725,7 @@ msgstr "Transaktion konnte nicht aktualisiert werden."
 msgid "Could not verify the API key permissions"
 msgstr "Die Berechtigungen des API-Schlüssels konnten nicht überprüft werden"
 
-#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+#: src/sync/hook/use-enable-banking-bank-loading.hook.ts
 msgid "Could not verify the application"
 msgstr "Anwendung konnte nicht überprüft werden"
 
@@ -4555,6 +4571,10 @@ msgstr "Leere Vorlage"
 msgid "Enable Banking"
 msgstr "Enable Banking"
 
+#: src/sync/component/enable-banking-bank-step/enable-banking-bank-step.tsx
+msgid "Enable Banking cannot connect {preselectedBankName} in any country right now."
+msgstr "Enable Banking kann {preselectedBankName} derzeit in keinem Land verbinden."
+
 #: src/sync/hook/use-explain-enable-banking-error.hook.ts
 msgid "Enable Banking rejected the redirect URL. Correct the redirect URL registered in your application so it matches the setup steps exactly."
 msgstr "Enable Banking hat die Weiterleitungs-URL abgelehnt. Korrigiere die in deiner Anwendung registrierte Weiterleitungs-URL, sodass sie genau den Einrichtungsschritten entspricht."
@@ -4790,6 +4810,10 @@ msgstr "Jede Transaktion hat einen Tag."
 #: src/budget/constant/budget-period-rate-label.constant.ts
 msgid "every two weeks"
 msgstr "alle zwei Wochen"
+
+#: src/app/(main)/create-account/index.tsx
+msgid "Every Wise balance through Enable Banking"
+msgstr "Alle Wise-Guthaben über Enable Banking"
 
 #: src/budget/components/budget-fund-repeat-field/budget-fund-repeat-field.tsx
 msgid "Every year"
@@ -5349,6 +5373,10 @@ msgstr "Ziffernblock ausblenden"
 msgid "Hide screen captures"
 msgstr "Bildschirmaufnahmen verbergen"
 
+#: src/sync/component/wise-statement-import-row/wise-statement-import-row.tsx
+msgid "History"
+msgstr "Verlauf"
+
 #: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
 msgid "History depth"
 msgstr "Verlaufstiefe"
@@ -5519,6 +5547,10 @@ msgstr "Von Inzhur importieren"
 #: src/sync/component/file-import-review-step/file-import-review-step.tsx
 msgid "Import into"
 msgstr "Importieren in"
+
+#: src/sync/component/wise-statement-import-row/wise-statement-import-row.tsx
+msgid "Import older history"
+msgstr "Älteren Verlauf importieren"
 
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Import Privatbank"
@@ -10922,9 +10954,14 @@ msgid "Wi-Fi"
 msgstr "WLAN"
 
 #: src/account/constant/bank-provider-title.constant.ts
+#: src/app/(main)/create-account/index.tsx
 #: src/rule/constant/external-source.constant.ts
 msgid "Wise"
 msgstr "Wise"
+
+#: src/sync/component/wise-statement-import-row/wise-statement-import-row.tsx
+msgid "Wise CSV export, one file per balance"
+msgstr "Wise-CSV-Export, eine Datei pro Guthaben"
 
 #: src/inzhur/component/inzhur-operations-import-summary/inzhur-operations-import-summary.tsx
 msgid "Withdrawals"

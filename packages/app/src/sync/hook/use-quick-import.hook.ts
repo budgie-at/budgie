@@ -27,7 +27,8 @@ export const useQuickImport = (config: QuickImportConfigInterface | null): Quick
     useProcessingHaptic(isImporting);
 
     const showImportDoneToast = (importResult: FileBankSyncImportResultInterface) => {
-        const hasAccounts = isPositiveNumber(importResult.accountCount);
+        const { skippedTransactionCount } = importResult;
+        const hasAccounts = isPositiveNumber(importResult.accountCount) || isPositiveNumber(skippedTransactionCount);
         const hasNewTransactions = isPositiveNumber(importResult.newTransactionCount);
 
         if (!hasAccounts) {
@@ -44,7 +45,9 @@ export const useQuickImport = (config: QuickImportConfigInterface | null): Quick
         const { newTransactionCount } = importResult;
         const { existingTransactionCount } = importResult;
         const { parsedTransactionCount } = importResult;
-        const message = t`${newTransactionCount} new, ${existingTransactionCount} already imported, ${parsedTransactionCount} checked`;
+        const message = isPositiveNumber(skippedTransactionCount)
+            ? t`${newTransactionCount} new, ${existingTransactionCount} already imported, ${skippedTransactionCount} skipped without a matching account`
+            : t`${newTransactionCount} new, ${existingTransactionCount} already imported, ${parsedTransactionCount} checked`;
 
         Toast.show({ type: 'success', text1: title, text2: message });
     };

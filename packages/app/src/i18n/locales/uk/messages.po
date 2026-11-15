@@ -755,6 +755,10 @@ msgstr "{newTransactionCount, plural, one {Імпортувати # транза
 msgid "{newTransactionCount} new, {existingTransactionCount} already imported, {parsedTransactionCount} checked"
 msgstr "{newTransactionCount} нових, {existingTransactionCount} вже імпортовано, {parsedTransactionCount} перевірено"
 
+#: src/sync/hook/use-quick-import.hook.ts
+msgid "{newTransactionCount} new, {existingTransactionCount} already imported, {skippedTransactionCount} skipped without a matching account"
+msgstr "{newTransactionCount} нових, {existingTransactionCount} уже імпортовано, {skippedTransactionCount} пропущено без відповідного рахунку"
+
 #: src/account/component/family-section-header/family-section-header.tsx
 #: src/household/utils/get-family-labels.util.ts
 #: src/household/utils/get-household-summary-labels.util.ts
@@ -817,6 +821,10 @@ msgstr "{periodLabel} завершено з {amount} під лімітом"
 #: src/budget/components/budget-history-chart/budget-history-chart.tsx
 msgid "{periodLabel}, spent {spentAmount} of {limitAmount}"
 msgstr "{periodLabel}, витрачено {spentAmount} із {limitAmount}"
+
+#: src/sync/component/enable-banking-bank-step/enable-banking-bank-step.tsx
+msgid "{preselectedBankName} is not available"
+msgstr "{preselectedBankName} недоступний"
 
 #: src/budget/hooks/use-budget-forecast-labels.hook.ts
 msgid "{projectedAmount} · {gapAmount} over"
@@ -2017,6 +2025,10 @@ msgstr "Автоматичне налаштування вимкнено"
 msgid "Automation"
 msgstr "Автоматизація"
 
+#: src/sync/component/wise-statement-import-row/wise-statement-import-row.tsx
+msgid "Available after the first sync finishes"
+msgstr "Доступно після завершення першої синхронізації"
+
 #: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 msgid "Available once the import finishes"
 msgstr "Стане доступним після завершення імпорту"
@@ -3095,6 +3107,10 @@ msgstr "Підтвердьте PIN‑код"
 msgid "Connect"
 msgstr "Підключити"
 
+#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+msgid "Connect {preselectedBankName}"
+msgstr "Підключити {preselectedBankName}"
+
 #: src/rule/components/rules-feature-intro/rules-feature-intro.tsx
 msgid "Connect a bank"
 msgstr "Підключити банк"
@@ -3591,8 +3607,8 @@ msgid "Could not start syncing"
 msgstr "Не вдалося почати синхронізацію"
 
 #: src/sync/component/account-connect-bank-row/account-connect-bank-row.tsx
-#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
 #: src/sync/component/enable-banking-reauthorize-row/enable-banking-reauthorize-row.tsx
+#: src/sync/hook/use-enable-banking-bank-loading.hook.ts
 msgid "Could not start the authorization"
 msgstr "Не вдалося почати авторизацію"
 
@@ -3709,7 +3725,7 @@ msgstr "Не вдалося оновити транзакцію."
 msgid "Could not verify the API key permissions"
 msgstr "Не вдалося перевірити дозволи API-ключа"
 
-#: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
+#: src/sync/hook/use-enable-banking-bank-loading.hook.ts
 msgid "Could not verify the application"
 msgstr "Не вдалося перевірити застосунок"
 
@@ -4555,6 +4571,10 @@ msgstr "Порожній шаблон"
 msgid "Enable Banking"
 msgstr "Enable Banking"
 
+#: src/sync/component/enable-banking-bank-step/enable-banking-bank-step.tsx
+msgid "Enable Banking cannot connect {preselectedBankName} in any country right now."
+msgstr "Enable Banking наразі не може підключити {preselectedBankName} в жодній країні."
+
 #: src/sync/hook/use-explain-enable-banking-error.hook.ts
 msgid "Enable Banking rejected the redirect URL. Correct the redirect URL registered in your application so it matches the setup steps exactly."
 msgstr "Enable Banking відхилив URL перенаправлення. Виправте URL перенаправлення, зареєстрований у вашому застосунку, щоб він точно збігався з кроками налаштування."
@@ -4790,6 +4810,10 @@ msgstr "Кожна транзакція має тег."
 #: src/budget/constant/budget-period-rate-label.constant.ts
 msgid "every two weeks"
 msgstr "кожні два тижні"
+
+#: src/app/(main)/create-account/index.tsx
+msgid "Every Wise balance through Enable Banking"
+msgstr "Усі баланси Wise через Enable Banking"
 
 #: src/budget/components/budget-fund-repeat-field/budget-fund-repeat-field.tsx
 msgid "Every year"
@@ -5349,6 +5373,10 @@ msgstr "Сховати цифрову клавіатуру"
 msgid "Hide screen captures"
 msgstr "Приховувати знімки екрана"
 
+#: src/sync/component/wise-statement-import-row/wise-statement-import-row.tsx
+msgid "History"
+msgstr "Історія"
+
 #: src/sync/component/create-enable-banking-account/create-enable-banking-account.tsx
 msgid "History depth"
 msgstr "Глибина історії"
@@ -5519,6 +5547,10 @@ msgstr "Імпорт з Inzhur"
 #: src/sync/component/file-import-review-step/file-import-review-step.tsx
 msgid "Import into"
 msgstr "Імпортувати в"
+
+#: src/sync/component/wise-statement-import-row/wise-statement-import-row.tsx
+msgid "Import older history"
+msgstr "Імпортувати старішу історію"
 
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Import Privatbank"
@@ -10922,9 +10954,14 @@ msgid "Wi-Fi"
 msgstr "Wi-Fi"
 
 #: src/account/constant/bank-provider-title.constant.ts
+#: src/app/(main)/create-account/index.tsx
 #: src/rule/constant/external-source.constant.ts
 msgid "Wise"
 msgstr "Wise"
+
+#: src/sync/component/wise-statement-import-row/wise-statement-import-row.tsx
+msgid "Wise CSV export, one file per balance"
+msgstr "CSV-експорт Wise, один файл на баланс"
 
 #: src/inzhur/component/inzhur-operations-import-summary/inzhur-operations-import-summary.tsx
 msgid "Withdrawals"

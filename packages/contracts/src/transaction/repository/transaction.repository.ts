@@ -358,6 +358,12 @@ export class TransactionRepository extends Context.Service<TransactionRepository
                 );
             }),
 
+            getEarliestTransactionTimeByAccountIdAndSource: (accountId: number, externalSource: ExternalSourceEnum) =>
+                selectOperatedAtTime(
+                    sql<number | null>`MIN(${TransactionEntityTable.operatedAt})`,
+                    and(...transactionFilters.buildAccountCondition([accountId]), eq(TransactionEntityTable.externalSource, externalSource))
+                ),
+
             findExternalSourcesByAccountId: (accountId: number) =>
                 Db.query(db =>
                     db
