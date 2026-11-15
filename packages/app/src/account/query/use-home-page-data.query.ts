@@ -20,6 +20,7 @@ import { HOLDING_SECTION_TYPES } from '../constant/holding-section-types.constan
 import { HomeSectionKindEnum } from '../enum/home-section-kind.enum';
 import { isAccountTypeSection } from '../type-guard/is-account-type-section.type-guard';
 import { isHomeHolding } from '../type-guard/is-home-holding.type-guard';
+import { isInstitutionGroup } from '../type-guard/is-institution-group.type-guard';
 import { buildHomeHoldings } from '../utils/build-home-holdings.util';
 import { getDebtProgressDisplayState } from '../utils/get-debt-progress-display-state.util';
 import { getDebtSectionKind } from '../utils/get-debt-section-kind.util';
@@ -74,11 +75,18 @@ const buildInstitutionGroups = (
         groupNumber: getIntegrationGroupNumber(integrations, integrations[index]),
         total: sumConvertedBalances(entry.accounts, balancesByAccountId),
         cash: sumConvertedBalances(entry.accounts.filter(isFiatAccount), balancesByAccountId),
-        positionCount: entry.accounts.filter(account => !isFiatAccount(account) && balancesByAccountId.get(account.id)?.balance !== 0).length,
+        positionCount: countPositions(entry.accounts, () => true),
         isHoldingProvider:
             entry.provider === ExternalSourceEnum.MANUAL || entry.accounts.every(account => account.type === AccountTypeEnum.CRYPTO_SYNC)
     }));
 };
+
+const countPositions = (
+    accounts: readonly AccountWithSyncEntityInterface[],
+    isShownInstrument: (instrumentId: number) => boolean
+): number =>
+    new Set(accounts.filter(account => !isFiatAccount(account) && isShownInstrument(account.instrument.id)).map(account => account.instrument.id))
+        .size;
 
 const isCryptoInstitution = (institution: InstitutionGroupInterface): boolean =>
     institution.accounts.every(account => account.type === AccountTypeEnum.CRYPTO_SYNC);
@@ -208,10 +216,23 @@ const addNetWorth = (
 const isShownHomeHolding = (holding: Pick<HomeHoldingInterface, 'balance' | 'value' | 'isValued'>, decimalPlaces: number): boolean =>
     holding.balance !== 0 && (!holding.isValued || Math.round(Math.abs(holding.value) * 10 ** decimalPlaces) !== 0);
 
-const withoutHiddenHoldings = (section: HomeSectionInterface, decimalPlaces: number): HomeSectionInterface =>
-    isAccountTypeSection(section)
-        ? { ...section, data: section.data.filter(item => !isHomeHolding(item) || isShownHomeHolding(item, decimalPlaces)) }
-        : section;
+const withoutHiddenHoldings = (section: HomeSectionInterface, decimalPlaces: number): HomeSectionInterface => {
+    if (!isAccountTypeSection(section)) {
+        return section;
+    }
+
+    const data = section.data.filter(item => !isHomeHolding(item) || isShownHomeHolding(item, decimalPlaces));
+    const shownInstrumentIds = new Set(data.filter(isHomeHolding).map(holding => holding.instrument.id));
+
+    return {
+        ...section,
+        data: data.map(item =>
+            isInstitutionGroup(item) && item.isHoldingProvider
+                ? { ...item, positionCount: countPositions(item.accounts, instrumentId => shownInstrumentIds.has(instrumentId)) }
+                : item
+        )
+    };
+};
 
 const isSettledDebtAccount = (
     account: Pick<AccountWithSyncEntityInterface, 'id' | 'type'>,

@@ -32,7 +32,7 @@ export const HomeHoldingRowCaption = ({ holding }: Props) => {
             className="text-[13px] text-secondary-foreground tabular-nums"
             maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER}
             numberOfLines={1}
-            ellipsizeMode="middle"
+            ellipsizeMode="tail"
             testID={HomeHoldingRowSelector.Caption(instrument.code)}
         >
             {caption}

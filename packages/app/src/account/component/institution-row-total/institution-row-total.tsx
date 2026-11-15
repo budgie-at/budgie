@@ -5,6 +5,7 @@ import { View } from 'react-native';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { ScaledIcon } from '../../../@generic/component/scaled-icon/scaled-icon';
 import { ROW_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-max-font-size-multiplier.constant';
+import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { cn } from '../../../@generic/utils/cn.util';
 import { toTrueMinus } from '../../../@generic/utils/to-true-minus.util';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
@@ -18,6 +19,7 @@ interface Props {
 
 export const InstitutionRowTotal = ({ integrationId, total }: Props) => {
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
+    const isStacked = useIsAccessibilityTextSize();
     const formatDigits = useDisplayFormatDigits();
 
     const signedTotal = toTrueMinus(formatDigits(total, defaultInstrument.symbol));
@@ -42,7 +44,7 @@ export const InstitutionRowTotal = ({ integrationId, total }: Props) => {
             >
                 {formattedTotal}
             </ProtectedText>
-            <ScaledIcon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" />
+            {isStacked ? null : <ScaledIcon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" />}
         </View>
     );
 };

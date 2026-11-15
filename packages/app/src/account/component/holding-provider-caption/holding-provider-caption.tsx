@@ -1,6 +1,5 @@
 import { ExternalSourceEnum } from '@budgie/contracts';
-import { Plural, Trans } from '@lingui/react/macro';
-import { Text } from 'react-native';
+import { Plural } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -10,34 +9,19 @@ import type { InstitutionGroupInterface } from '../../interface/institution-grou
 
 interface Props {
     readonly institution: Pick<InstitutionGroupInterface, 'provider' | 'accounts' | 'positionCount'>;
-    readonly investedLabel: string;
 }
 
-export const HoldingProviderCaption = ({ institution, investedLabel }: Props) => {
+export const HoldingProviderCaption = ({ institution }: Props) => {
     const positionName = getSinglePositionName(institution.accounts);
     const positionsCount = institution.positionCount;
 
     if (isDefined(positionName)) {
-        return (
-            <Trans>
-                <Text className="font-medium text-primary tabular-nums">{investedLabel}</Text> in {positionName}
-            </Trans>
-        );
+        return positionName;
     }
 
     if (institution.provider === ExternalSourceEnum.MANUAL) {
-        return (
-            <Trans>
-                <Text className="font-medium text-primary tabular-nums">{investedLabel}</Text> in{' '}
-                <Plural value={positionsCount} one="# position" other="# positions" />
-            </Trans>
-        );
+        return <Plural value={positionsCount} one="# position" other="# positions" />;
     }
 
-    return (
-        <Trans>
-            <Text className="font-medium text-primary tabular-nums">{investedLabel}</Text> in{' '}
-            <Plural value={positionsCount} one="# asset" other="# assets" />
-        </Trans>
-    );
+    return <Plural value={positionsCount} one="# asset" other="# assets" />;
 };

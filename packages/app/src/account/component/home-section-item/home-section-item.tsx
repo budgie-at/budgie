@@ -46,6 +46,7 @@ export const HomeSectionItem = ({ item, section, balancesByAccountId, holdingRet
             <InstitutionRow
                 institution={item}
                 providerReturnPercent={holdingReturns.providerReturnByIntegrationId.get(item.integrationId)}
+                isReturnLoading={holdingReturns.isLoading}
             />
         );
     }

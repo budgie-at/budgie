@@ -27,10 +27,12 @@ export const HomeSectionHeader = ({ section, holdingReturns }: Props) => {
         return <DebtSectionHeader sectionKind={section.kind} total={total} />;
     }
 
-    const hasReturnLine = HOLDING_SECTION_TYPES.includes(section.type) && section.data.some(isHomeHolding);
+    const isHoldingSection = HOLDING_SECTION_TYPES.includes(section.type);
+    const hasReturnLine = isHoldingSection && section.data.some(isHomeHolding);
+    const sectionTotal = isHoldingSection ? section.total : total;
 
     return (
-        <AccountSectionHeader type={section.type} total={total}>
+        <AccountSectionHeader type={section.type} total={sectionTotal}>
             {hasReturnLine ? (
                 <HomeSectionReturnLine
                     sectionReturn={holdingReturns.bySectionType.get(section.type)}
