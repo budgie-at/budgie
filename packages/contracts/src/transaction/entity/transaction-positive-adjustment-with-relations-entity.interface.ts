@@ -1,4 +1,4 @@
-import { AccountEntityInterface } from '../../account/entity/account-entity.interface';
+import { AccountWithInstrumentEntityInterface } from '../../account/entity/account-with-instrument-entity.interface';
 import { TransactionAssociationEnum } from '../enum/transaction-association.enum';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
 
@@ -8,6 +8,6 @@ export interface TransactionPositiveAdjustmentWithRelationsEntityInterface exten
     TransactionWithRelationsEntityInterface,
     TransactionAssociationEnum.TO_ACCOUNT | 'type'
 > {
-    [TransactionAssociationEnum.TO_ACCOUNT]: AccountEntityInterface;
+    [TransactionAssociationEnum.TO_ACCOUNT]: AccountWithInstrumentEntityInterface;
     type: TransactionTypeEnum.ADJUSTMENT;
 }

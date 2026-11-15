@@ -1,4 +1,5 @@
 import { BrokerageService } from '@app/brokerage/service/brokerage.service';
+import { getSecurityTrade } from '@app/transaction/utils/get-security-trade.util';
 import { sumEntryAmounts } from '@app/transaction/utils/sum-entry-amounts.util';
 import {
     AccountBalanceRepository,
@@ -6,18 +7,22 @@ import {
     ExternalSourceEnum,
     AccountTypeEnum,
     InstrumentTypeEnum,
+    LanguageEnum,
     TransactionEntryEntityTable,
     TransactionEntryPositionRepository,
     TransactionEntryTypeEnum,
+    TransactionViewRepository,
     UserIconNameEnum,
     convertFromMicroUnits
 } from '@budgie/contracts';
 import { BalanceAdjustmentService } from '@budgie/ledger';
 import { calculateInstrumentPosition } from '@budgie/market';
 import { describe, expect, it } from '@effect/vitest';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 import { HttpResponse, http } from 'msw';
+
+import { isDefined } from '@rnw-community/shared';
 
 import { fetchAccountBalance, fetchBalanceAdjustments, fetchExpenseEntries, requireInstrument, seed, TestLayer } from '../../harness';
 import { mockServer } from '../../harness/scenario/mock-server';
@@ -54,6 +59,44 @@ const createBrokerage = Effect.gen(function* () {
 
     return { dollar, brokerageService, cash };
 });
+
+const readTrade = (id: number) =>
+    Effect.flatMap(TransactionViewRepository, repository => repository.getById(id, LanguageEnum.EN)).pipe(
+        Effect.map(transaction => (isDefined(transaction) ? getSecurityTrade(transaction) : null))
+    );
+
+const buyTwentyOne = (price: number) =>
+    Effect.flatMap(createBrokerage, brokerage =>
+        Effect.map(
+            brokerage.brokerageService.buy(
+                brokerage.cash.integrationId ?? 0,
+                LISTING,
+                { quantity: 21, price, fee: 0, operatedAt: TRADE_DAY },
+                FUNDING_TITLE
+            ),
+            securityId => ({ ...brokerage, securityId })
+        )
+    );
+
+const editToBrokerTotal = (transactionId: number, securityId: number, quoteInstrumentId: number) =>
+    Effect.gen(function* () {
+        const brokerageService = yield* BrokerageService;
+        const accountRepository = yield* AccountRepository;
+        const positionRepository = yield* TransactionEntryPositionRepository;
+
+        yield* brokerageService.update(
+            transactionId,
+            { quantity: 21, price: 41.949, fee: 25.15, total: 906.08, operatedAt: TRADE_DAY },
+            FUNDING_TITLE,
+            WITHDRAWAL_TITLE
+        );
+
+        const security = yield* accountRepository.findById(securityId);
+
+        return calculateInstrumentPosition(
+            yield* positionRepository.findInstrumentPositionEntries(security?.instrumentId ?? 0, quoteInstrumentId)
+        );
+    });
 
 const buyTen = (price: number, operatedAt: Date) => ({ quantity: 10, price, fee: 0, operatedAt });
 
@@ -235,32 +278,13 @@ describe('market-data/brokerage-trades', () => {
 
     it.effect('edits a buy in place to the broker total so the cost basis matches and the cash stays funded', () =>
         Effect.gen(function* () {
-            const { dollar, brokerageService, cash } = yield* createBrokerage;
-            const accountRepository = yield* AccountRepository;
-            const positionRepository = yield* TransactionEntryPositionRepository;
-            const securityId = yield* brokerageService.buy(
-                cash.integrationId ?? 0,
-                LISTING,
-                { quantity: 21, price: 37.8571, fee: 0, operatedAt: TRADE_DAY },
-                FUNDING_TITLE
-            );
-            const [buyEntry] = yield* testDb
-                .select()
-                .from(TransactionEntryEntityTable)
-                .where(eq(TransactionEntryEntityTable.accountId, securityId));
+            const { dollar, brokerageService, cash, securityId } = yield* buyTwentyOne(37.8571);
+            const [buyId] = yield* findTradeIds(securityId);
 
-            yield* brokerageService.update(
-                buyEntry.transactionId,
-                { quantity: 21, price: 41.949, fee: 25.15, total: 906.08, operatedAt: TRADE_DAY },
-                FUNDING_TITLE,
-                WITHDRAWAL_TITLE
-            );
+            expect(yield* editToBrokerTotal(buyId, securityId, dollar.id)).toMatchObject({ amount: 21, costBasis: 906.08 });
 
-            const security = yield* accountRepository.findById(securityId);
-            const entries = yield* positionRepository.findInstrumentPositionEntries(security?.instrumentId ?? 0, dollar.id);
-            const tradeEntries = yield* fetchExpenseEntries(buyEntry.transactionId);
+            const tradeEntries = yield* fetchExpenseEntries(buyId);
 
-            expect(calculateInstrumentPosition(entries)).toMatchObject({ amount: 21, costBasis: 906.08 });
             expect(tradeEntries.map(({ accountId, type, amount }) => ({ accountId, type, amount }))).toEqual(
                 expect.arrayContaining([
                     { accountId: cash.id, type: TransactionEntryTypeEnum.CREDIT, amount: 880_930_000 },
@@ -274,14 +298,27 @@ describe('market-data/brokerage-trades', () => {
             yield* brokerageService.sell(securityId, { quantity: 10, price: 50, fee: 0, operatedAt: new Date('2026-03-10') });
             expect(
                 yield* brokerageService
-                    .update(
-                        buyEntry.transactionId,
-                        { quantity: 5, price: 40, fee: 0, operatedAt: TRADE_DAY },
-                        FUNDING_TITLE,
-                        WITHDRAWAL_TITLE
-                    )
+                    .update(buyId, { quantity: 5, price: 40, fee: 0, operatedAt: TRADE_DAY }, FUNDING_TITLE, WITHDRAWAL_TITLE)
                     .pipe(Effect.flip)
             ).toMatchObject({ _tag: 'InsufficientSecurityHoldingError' });
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('recognises a buy whose cash leg is missing as a trade and repairs it on edit to the broker total', () =>
+        Effect.gen(function* () {
+            const { dollar, cash, securityId } = yield* buyTwentyOne(0.01);
+            const [buyId] = yield* findTradeIds(securityId);
+
+            yield* testDb
+                .delete(TransactionEntryEntityTable)
+                .where(and(eq(TransactionEntryEntityTable.transactionId, buyId), eq(TransactionEntryEntityTable.accountId, cash.id)));
+
+            expect(yield* readTrade(buyId)).toMatchObject({ isBuy: true, cashInstrument: { id: dollar.id }, quantity: 21_000_000, fee: 0 });
+
+            expect(yield* editToBrokerTotal(buyId, securityId, dollar.id)).toMatchObject({ amount: 21, costBasis: 906.08 });
+            expect(yield* readTrade(buyId)).toMatchObject({ isBuy: true, fee: 25_150_000, cashFlow: -906_080_000 });
+            expect(yield* fetchAccountBalance(securityId)).toBe(21_000_000);
+            expect(yield* fetchAccountBalance(cash.id)).toBe(0);
         }).pipe(Effect.provide(TestLayer))
     );
 

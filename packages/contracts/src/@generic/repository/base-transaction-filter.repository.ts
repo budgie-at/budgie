@@ -101,8 +101,16 @@ class BaseTransactionFilterRepository {
                     }
                 }
             },
-            [TransactionAssociationEnum.FROM_ACCOUNT]: true,
-            [TransactionAssociationEnum.TO_ACCOUNT]: true
+            [TransactionAssociationEnum.FROM_ACCOUNT]: {
+                with: {
+                    [AccountAssociationEnum.INSTRUMENT]: true
+                }
+            },
+            [TransactionAssociationEnum.TO_ACCOUNT]: {
+                with: {
+                    [AccountAssociationEnum.INSTRUMENT]: true
+                }
+            }
         } as const;
     }
 
