@@ -3,6 +3,8 @@ import { cva } from 'class-variance-authority';
 import { router } from 'expo-router';
 import { Text, View } from 'react-native';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { CurrencySelectorInstrumentIcon } from '../../../@generic/component/currency-selector-instrument-icon/currency-selector-instrument-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { ScaledIcon } from '../../../@generic/component/scaled-icon/scaled-icon';
@@ -23,7 +25,7 @@ interface Props {
     readonly isReturnLoading: boolean;
 }
 
-const rowVariants = cva('min-h-[64px] flex-row gap-x-lg pr-xl pl-3xl active:bg-surface-fill', {
+const rowVariants = cva('min-h-[64px] flex-row gap-x-xl pr-xl pl-3xl active:bg-surface-fill', {
     variants: { isStacked: { true: 'items-start py-sm', false: 'items-center py-lg' } }
 });
 
@@ -33,6 +35,7 @@ export const HomeHoldingRow = ({ holding, holdingReturn, todayChange, isReturnLo
     const isStacked = useIsAccessibilityTextSize();
 
     const handlePress = () => void router.push({ pathname: '/currency/[id]', params: { id: String(instrument.id) } });
+    const accessibilityState = { busy: isReturnLoading && !isDefined(holdingReturn) && !isDefined(todayChange) };
     const amount = (
         <HomeHoldingRowAmount holding={holding} holdingReturn={holdingReturn} todayChange={todayChange} isReturnLoading={isReturnLoading} />
     );
@@ -42,6 +45,7 @@ export const HomeHoldingRow = ({ holding, holdingReturn, todayChange, isReturnLo
             pressedScale={1}
             accessible
             accessibilityRole="button"
+            accessibilityState={accessibilityState}
             onPress={handlePress}
             className={rowVariants({ isStacked })}
             testID={HomeHoldingRowSelector.Row(instrument.code)}
@@ -65,8 +69,6 @@ export const HomeHoldingRow = ({ holding, holdingReturn, todayChange, isReturnLo
             </View>
 
             {isStacked ? null : amount}
-
-            {isStacked ? null : <ScaledIcon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" />}
         </HapticPressable>
     );
 };

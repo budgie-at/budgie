@@ -1,4 +1,3 @@
-import { UserIconNameEnum } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { cva } from 'class-variance-authority';
 import { View } from 'react-native';
@@ -7,7 +6,6 @@ import { isDefined } from '@rnw-community/shared';
 
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
-import { ScaledIcon } from '../../../@generic/component/scaled-icon/scaled-icon';
 import { FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/footnote-max-font-size-multiplier.constant';
 import { ROW_PRIMARY_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-primary-max-font-size-multiplier.constant';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
@@ -26,12 +24,8 @@ interface Props {
 
 const PLACEHOLDER_PERCENT = 0.9999;
 
-const trailingVariants = cva('flex-row items-center gap-x-xl', {
-    variants: { isStacked: { true: '', false: 'max-w-[48%] shrink-0' } }
-});
-
-const amountVariants = cva('shrink gap-y-xxs', {
-    variants: { isStacked: { true: 'items-start', false: 'items-end' } }
+const amountVariants = cva('gap-y-xxs', {
+    variants: { isStacked: { true: 'items-start', false: 'max-w-[48%] shrink-0 items-end' } }
 });
 
 export const InstitutionRowHoldingTotal = ({ integrationId, total, returnPercent, isReturnLoading }: Props) => {
@@ -44,8 +38,7 @@ export const InstitutionRowHoldingTotal = ({ integrationId, total, returnPercent
     const importantForAccessibility = isReturnEmpty ? 'no-hide-descendants' : 'auto';
 
     return (
-        <View className={trailingVariants({ isStacked })}>
-            <View className={amountVariants({ isStacked })}>
+        <View className={amountVariants({ isStacked })}>
                 <ProtectedText
                     className="text-[17px] font-semibold tracking-tight tabular-nums text-primary"
                     adjustsFontSizeToFit
@@ -70,8 +63,6 @@ export const InstitutionRowHoldingTotal = ({ integrationId, total, returnPercent
                         />
                     </LoadingContent>
                 </View>
-            </View>
-            {isStacked ? null : <ScaledIcon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" />}
         </View>
     );
 };

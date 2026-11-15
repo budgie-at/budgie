@@ -139,6 +139,18 @@ const getSectionToday = (
     return { gain, percent: isPositiveNumber(total - gain) ? gain / (total - gain) : null };
 };
 
+const MIN_KNOWN_COST_BASIS_SHARE = 0.5;
+
+const isSoleProvider = (
+    holdings: readonly Pick<HomeHoldingInterface, 'accounts'>[],
+    cashProviders: readonly Pick<InstitutionGroupInterface, 'integrationId'>[]
+): boolean =>
+    cashProviders.length === 1 &&
+    holdings.every(holding => holding.accounts.every(account => account.integrationId === cashProviders[0].integrationId));
+
+const hasKnownCostBasis = (holdingReturn: HoldingReturnInterface, value: number): boolean =>
+    holdingReturn.gain + holdingReturn.costBasis >= value * MIN_KNOWN_COST_BASIS_SHARE;
+
 const sortIds = (ids: readonly number[]): number[] => [...new Set(ids)].sort((left, right) => left - right);
 
 export const useHomeHoldingReturnsQuery = (
@@ -190,7 +202,7 @@ export const useHomeHoldingReturnsQuery = (
         return isDefined(entries) ? calculateInstrumentPosition(entries, accountIds) : null;
     };
     const providerReturns = holdingSections
-        .flatMap(({ cashProviders }) => cashProviders)
+        .flatMap(({ holdings, cashProviders }) => (isSoleProvider(holdings, cashProviders) ? [] : cashProviders))
         .flatMap(institution => {
             const percent = getProviderReturnPercent(institution, balancesByAccountId, getPosition, cashReturns);
 
@@ -209,10 +221,10 @@ export const useHomeHoldingReturnsQuery = (
             cashProviders.reduce((sum, institution) => sum + institution.cash, 0),
             cashProviders.reduce((sum, institution) => sum + (cashReturns.get(institution.integrationId) ?? 0), 0)
         );
-        const holdingReturns = positions.flatMap(({ instrument }, index): [number, HoldingReturnInterface][] => {
+        const holdingReturns = positions.flatMap(({ instrument, value }, index): [number, HoldingReturnInterface][] => {
             const holdingReturn = portfolio.positionReturns[index];
 
-            return isDefined(holdingReturn) ? [[instrument.id, holdingReturn]] : [];
+            return isDefined(holdingReturn) && hasKnownCostBasis(holdingReturn, value) ? [[instrument.id, holdingReturn]] : [];
         });
         const hasReturn = isNotEmptyArray(holdingReturns) || portfolio.gain !== 0;
         const today = getSectionToday(holdings, total, todayByInstrumentId);

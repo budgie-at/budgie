@@ -5,6 +5,8 @@ import { cva } from 'class-variance-authority';
 import { router } from 'expo-router';
 import { Text, View } from 'react-native';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { BankLogo } from '../../../@generic/component/bank-logo/bank-logo';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { ScaledIcon } from '../../../@generic/component/scaled-icon/scaled-icon';
@@ -27,7 +29,7 @@ interface Props {
     readonly isReturnLoading: boolean;
 }
 
-const rowVariants = cva('min-h-[64px] flex-row gap-x-lg pr-lg pl-3xl active:bg-surface-fill', {
+const rowVariants = cva('min-h-[64px] flex-row gap-x-xl pr-xl pl-3xl active:bg-surface-fill', {
     variants: { isStacked: { true: 'items-start py-sm', false: 'items-center py-lg' } }
 });
 
@@ -43,6 +45,7 @@ export const InstitutionRow = ({ institution, providerReturnPercent, isReturnLoa
     const accountsCountLabel = t({ message: plural(accounts.length, { one: '# account', other: '# accounts' }) });
     const bankName = label ?? title;
     const rowTestID = testID(InstitutionRowSelector.Row(provider === ExternalSourceEnum.MANUAL ? bankName : integrationId));
+    const accessibilityState = { busy: isHoldingProvider && isReturnLoading && !isDefined(providerReturnPercent) };
     const trailing = (
         <InstitutionRowTrailing institution={institution} returnPercent={providerReturnPercent} isReturnLoading={isReturnLoading} />
     );
@@ -51,6 +54,7 @@ export const InstitutionRow = ({ institution, providerReturnPercent, isReturnLoa
         <HapticPressable
             pressedScale={1}
             accessibilityRole="button"
+            accessibilityState={accessibilityState}
             onPress={handlePress}
             className={rowVariants({ isStacked })}
             {...rowTestID}

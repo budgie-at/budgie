@@ -39,13 +39,11 @@ export const HomeHoldingRowAmount = ({ holding, holdingReturn, todayChange, isRe
     const formatDigits = useDisplayFormatDigits();
 
     const instrumentCode = holding.instrument.code;
-    const isToday = !isDefined(holdingReturn) && isDefined(todayChange);
-    const isReturnPending = isReturnLoading && !isDefined(holdingReturn) && !isToday;
     const realPercent =
         isDefined(holdingReturn) && isPositiveNumber(holdingReturn.costBasis) ? holdingReturn.gain / holdingReturn.costBasis : null;
-    const percent = isDefined(holdingReturn) ? realPercent : PLACEHOLDER_PERCENT;
-    const rowGain = isDefined(percent) ? null : (holdingReturn?.gain ?? holding.value);
-    const isReturnEmpty = !isReturnPending && !isDefined(holdingReturn) && !isToday;
+    const isToday = !isDefined(realPercent) && isDefined(todayChange);
+    const isReturnPending = isReturnLoading && !isDefined(holdingReturn) && !isToday;
+    const isReturnEmpty = !isReturnPending && !isDefined(realPercent) && !isToday;
     const importantForAccessibility = isReturnEmpty ? 'no-hide-descendants' : 'auto';
 
     return (
@@ -84,8 +82,8 @@ export const HomeHoldingRowAmount = ({ holding, holdingReturn, todayChange, isRe
                         />
                     ) : (
                         <BrokerageReturnText
-                            gain={rowGain}
-                            percent={percent}
+                            gain={null}
+                            percent={realPercent ?? PLACEHOLDER_PERCENT}
                             instrumentSymbol={defaultInstrument.symbol}
                             maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER}
                             testID={HomeHoldingRowSelector.Return(instrumentCode)}
