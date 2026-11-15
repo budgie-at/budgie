@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.187.0](https://github.com/budgie-at/budgie/compare/v6.186.0...v6.187.0) (2026-11-15)
+
+### Features
+
+* passive income tracking for staking, dividends and interest ([#2208](https://github.com/budgie-at/budgie/issues/2208)) ([c2d38d3](https://github.com/budgie-at/budgie/commit/c2d38d3a22db6a26058fbdb29a42cd4fd2b419b6))
+
+
+# [6.186.0](https://github.com/budgie-at/budgie/compare/v6.185.0...v6.186.0) (2026-11-15)
+
+### Features
+
+* sync Wise through Enable Banking ([#2173](https://github.com/budgie-at/budgie/issues/2173)) ([ebb9706](https://github.com/budgie-at/budgie/commit/ebb97069a26ac3096619470d0f1d1fefec0b8439))
+
+
 ## [6.181.3](https://github.com/budgie-at/budgie/compare/v6.181.2...v6.181.3) (2026-11-13)
 
 ### Bug Fixes

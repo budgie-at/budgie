@@ -4,5 +4,6 @@ export const BANK_PROVIDER_LOGO_SLUG: Partial<Readonly<Record<ExternalSourceEnum
     [ExternalSourceEnum.BINANCE]: 'binance',
     [ExternalSourceEnum.ERSTE]: 'erste-bank',
     [ExternalSourceEnum.MONOBANK]: 'monobank',
-    [ExternalSourceEnum.PRIVATBANK]: 'privatbank'
+    [ExternalSourceEnum.PRIVATBANK]: 'privatbank',
+    [ExternalSourceEnum.WISE]: 'wise'
 };

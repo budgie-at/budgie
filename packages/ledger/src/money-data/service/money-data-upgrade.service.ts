@@ -1,6 +1,5 @@
 import { Db, TransactionEntryBaseValuationRepository, YIELD_TO_UI } from '@budgie/contracts';
-import { EntryBaseValuationService, ExchangeRatesService } from '@budgie/market';
-import { parseISO } from 'date-fns/parseISO';
+import { EntryBaseValuationService, ExchangeRatesService, MarketPricedRevaluationService } from '@budgie/market';
 import * as Arr from 'effect/Array';
 import * as Cause from 'effect/Cause';
 import * as Context from 'effect/Context';
@@ -22,6 +21,7 @@ export class MoneyDataUpgradeService extends Context.Service<MoneyDataUpgradeSer
         const exchangeRatesService = yield* ExchangeRatesService;
         const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
         const entryBaseValuationService = yield* EntryBaseValuationService;
+        const marketPricedRevaluationService = yield* MarketPricedRevaluationService;
         const reactivity = yield* Reactivity.Reactivity;
         const bucketBatchSize = 25;
         const initialSnapshot: MoneyDataUpgradeRuntimeSnapshotInterface = {
@@ -38,22 +38,24 @@ export class MoneyDataUpgradeService extends Context.Service<MoneyDataUpgradeSer
             update: (snapshot: MoneyDataUpgradeRuntimeSnapshotInterface) => MoneyDataUpgradeRuntimeSnapshotInterface
         ): Effect.Effect<void> => SubscriptionRef.update(progress, update);
 
-        const sumBucketEntries = (buckets: readonly PendingBaseValuationBucketInterface[]): number =>
-            buckets.reduce((total, bucket) => total + bucket.entryCount, 0);
+        const countProcessed = (entryCount: number): Effect.Effect<void> =>
+            updateProgress(snapshot => ({
+                ...snapshot,
+                pendingEntryCount: Math.max(snapshot.pendingEntryCount - entryCount, 0),
+                processedEntryCount: snapshot.processedEntryCount + entryCount
+            }));
 
         const valuePendingEntryBucket = Effect.fnUntraced(function* (
             bucket: PendingBaseValuationBucketInterface,
             baseInstrumentId: number
         ) {
-            const operatedAt = parseISO(bucket.rateDate);
-
             const baseExchangeRate =
                 bucket.sourceInstrumentId === baseInstrumentId
                     ? 1
-                    : yield* entryBaseValuationService.resolveHistoricalBaseExchangeRateOrNull(
+                    : yield* entryBaseValuationService.resolveHistoricalBaseExchangeRateForDay(
                           bucket.sourceInstrumentId,
                           baseInstrumentId,
-                          operatedAt
+                          bucket.rateDate
                       );
 
             yield* transactionEntryBaseValuationRepository.updateBaseValuationBucket({
@@ -63,11 +65,7 @@ export class MoneyDataUpgradeService extends Context.Service<MoneyDataUpgradeSer
                 baseExchangeRate
             });
 
-            yield* updateProgress(snapshot => ({
-                ...snapshot,
-                pendingEntryCount: Math.max(snapshot.pendingEntryCount - bucket.entryCount, 0),
-                processedEntryCount: snapshot.processedEntryCount + bucket.entryCount
-            }));
+            yield* countProcessed(bucket.entryCount);
         });
 
         const valuePendingEntryBatch = Effect.fn('MoneyDataUpgradeService.valuePendingEntryBatch')(function* (
@@ -89,7 +87,7 @@ export class MoneyDataUpgradeService extends Context.Service<MoneyDataUpgradeSer
             }
 
             const buckets = yield* transactionEntryBaseValuationRepository.findPendingBaseValuationBuckets(baseInstrument.id);
-            const totalEntryCount = sumBucketEntries(buckets);
+            const totalEntryCount = yield* transactionEntryBaseValuationRepository.countPendingBaseValuationEntries(baseInstrument.id);
 
             yield* updateProgress(snapshot => ({
                 ...snapshot,
@@ -100,6 +98,7 @@ export class MoneyDataUpgradeService extends Context.Service<MoneyDataUpgradeSer
             yield* Effect.forEach(Arr.chunksOf(buckets, bucketBatchSize), batch => valuePendingEntryBatch(batch, baseInstrument.id), {
                 discard: true
             });
+            yield* marketPricedRevaluationService.valuePendingEntries(baseInstrument.id, countProcessed);
             yield* transactionEntryBaseValuationRepository.rebaseSecurityTradeCosts(baseInstrument.id);
             yield* updateProgress(snapshot => ({ ...snapshot, isUpdatingBalances: true }));
 
@@ -167,7 +166,8 @@ export class MoneyDataUpgradeService extends Context.Service<MoneyDataUpgradeSer
             TransactionEntryBaseValuationRepository.layer,
             ExchangeRatesService.layer,
             AccountBalanceIncrementalService.layer,
-            EntryBaseValuationService.layer
+            EntryBaseValuationService.layer,
+            MarketPricedRevaluationService.layer
         ])
     );
 }

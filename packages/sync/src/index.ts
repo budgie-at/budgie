@@ -63,6 +63,7 @@ export { EnableBankingCallbackError } from './enable-banking/error/enable-bankin
 export { EnableBankingCallbackFailureEnum } from './enable-banking/enum/enable-banking-callback-failure.enum';
 export { EnableBankingErrorCodeEnum } from './enable-banking/enum/enable-banking-error-code.enum';
 export { EnableBankingTokenSchema } from './enable-banking/constant/enable-banking-token.schema';
+export { WISE_ASPSP_NAME } from './enable-banking/constant/wise-aspsp-name.constant';
 export { EnableBankingPendingAuthorizationSchema } from './enable-banking/constant/enable-banking-pending-authorization.schema';
 export type { EnableBankingPendingAuthorizationInterface } from './enable-banking/constant/enable-banking-pending-authorization.schema';
 export type { EnableBankingAuthorizationResultInterface } from './enable-banking/interface/enable-banking-authorization-result.interface';
@@ -111,6 +112,9 @@ export { BinanceSyncService } from './binance/service/binance-sync.service';
 
 export { ErsteSyncService } from './erste/service/erste-sync.service';
 
+export { WiseStatementImportService } from './wise/service/wise-statement-import.service';
+export { parseWiseCsv } from './wise/parser/wise-csv.parser';
+
 export { InzhurOperationsImportService } from './inzhur/service/inzhur-operations-import.service';
 export type { InzhurOperationsImportSummaryInterface } from './inzhur/interface/inzhur-operations-import-summary.interface';
 export type { InzhurOperationsFundSummaryInterface } from './inzhur/interface/inzhur-operations-fund-summary.interface';
@@ -156,4 +160,6 @@ export type { SyncAccountContinuationChoicesInterface } from './core/interface/s
 
 export { toKyivDay } from './inzhur/utils/to-kyiv-day.util';
 
+export { YieldTagRepairService } from './core/service/yield-tag-repair.service';
+export { BankInterestDetectorService } from './core/service/bank-interest-detector.service';
 export { OwnTransferRepairService } from './core/service/own-transfer-repair.service';

@@ -6,6 +6,7 @@ import {
     SyncRepository,
     TransactionEntryTypeEnum,
     TransactionRepository,
+    TransactionYieldRepository,
     convertFromMicroUnits,
     convertToMicroUnits
 } from '@budgie/contracts';
@@ -32,6 +33,7 @@ import { inzhurOperationsPlanner } from '../planner/inzhur-operations.planner';
 import { inzhurQuantityResolver } from '../planner/inzhur-quantity.resolver';
 import { buildInzhurTradeEntries } from '../utils/build-inzhur-trade-entries.util';
 import { buildInzhurTransactionInput } from '../utils/build-inzhur-transaction-input.util';
+import { buildInzhurYieldFields } from '../utils/build-inzhur-yield-fields.util';
 import { findLowestDayEndBalance } from '../utils/find-lowest-day-end-balance.util';
 import { getKyivDayStart } from '../utils/get-kyiv-day-start.util';
 import { isInzhurPeriod } from '../utils/is-inzhur-period.util';
@@ -62,6 +64,7 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
             const syncRepository = yield* SyncRepository;
             const transactionRepository = yield* TransactionRepository;
             const transactionService = yield* TransactionService;
+            const transactionYieldRepository = yield* TransactionYieldRepository;
             const transferCreationService = yield* TransferCreationService;
             const inzhurPriceService = yield* InzhurPriceService;
             const inzhurBankFlowService = yield* InzhurBankFlowService;
@@ -133,15 +136,15 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
                     };
                 });
 
-            const buildIncomeOrTaxInput = (
+            const buildIncomeOrTaxInput = Effect.fnUntraced(function* (
                 action: InzhurPlannedActionInterface,
-                cashAccountId: number,
+                cashAccount: AccountEntityInterface,
                 fundAccount: AccountEntityInterface
-            ) => {
+            ) {
                 const isDividend = action.kind === InzhurOperationKindEnum.DIVIDEND;
                 const entry = {
                     ...buildPrimaryEntry(
-                        cashAccountId,
+                        cashAccount.id,
                         isDividend ? TransactionEntryTypeEnum.DEBIT : TransactionEntryTypeEnum.CREDIT,
                         action.cashAmount,
                         action.externalId
@@ -149,12 +152,20 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
                     categoryId: isDividend ? INVESTMENTS_CATEGORY_ID : TAXES_CATEGORY_ID
                 };
                 const title = `${toInzhurShortName(fundAccount.title)} ${isDividend ? 'dividends' : 'dividend tax'}`;
+                const input = buildInzhurTransactionInput(title, action.externalId, action.occurredAt, [entry]);
+                const yieldFields = buildInzhurYieldFields({ type: input.type, fundAccountId: fundAccount.id }, false);
+                const isSourceInZone =
+                    isDefined(yieldFields) && (yield* transactionYieldRepository.areAccountsInSameZone(fundAccount.id, cashAccount.id));
 
                 return {
-                    ...buildInzhurTransactionInput(title, action.externalId, action.occurredAt, [entry]),
-                    fundAccountId: fundAccount.id
+                    ...input,
+                    fundAccountId: fundAccount.id,
+                    ...(isDefined(yieldFields) && {
+                        yieldKind: yieldFields.yieldKind,
+                        yieldSourceAccountId: isSourceInZone ? yieldFields.yieldSourceAccountId : null
+                    })
                 };
-            };
+            });
 
             const readPriceMap = Effect.fnUntraced(function* (
                 actions: readonly InzhurPlannedActionInterface[],
@@ -386,13 +397,18 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
                         return isDefined(account) && isDefined(quantity) ? [buildTradeInput(action, account, quantity.microUnits)] : [];
                     })
                 ];
-                const incomeInputs = newActions
-                    .filter(action => action.kind === InzhurOperationKindEnum.DIVIDEND || action.kind === InzhurOperationKindEnum.TAX)
-                    .flatMap(action => {
+                const incomeInputs = yield* Effect.forEach(
+                    newActions.filter(
+                        action => action.kind === InzhurOperationKindEnum.DIVIDEND || action.kind === InzhurOperationKindEnum.TAX
+                    ),
+                    action => {
                         const account = accountByFund.get(action.fundName ?? '');
 
-                        return isDefined(account) ? [buildIncomeOrTaxInput(action, cashAccountId, account)] : [];
-                    });
+                        return isDefined(account)
+                            ? Effect.map(buildIncomeOrTaxInput(action, setup.cashAccount, account), input => [input])
+                            : Effect.succeed([]);
+                    }
+                ).pipe(Effect.map(inputs => inputs.flat()));
 
                 for (const { stored } of amendedTrades) {
                     yield* transactionService.purgeById(stored.id);
@@ -488,6 +504,7 @@ export class InzhurOperationsImportService extends Context.Service<InzhurOperati
             AccountBalanceRepository.layer,
             SyncRepository.layer,
             TransactionRepository.layer,
+            TransactionYieldRepository.layer,
             TransactionService.layer,
             TransferCreationService.layer,
             InzhurPriceService.layer,

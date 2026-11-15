@@ -1,0 +1,8 @@
+"TransferWise ID",Date,"Date Time",Amount,Currency,Description,"Payment Reference","Running Balance","Exchange From","Exchange To","Exchange Rate","Payer Name","Payee Name","Payee Account Number",Merchant,"Card Last Four Digits","Card Holder Full Name",Attachment,Note,"Total fees","Exchange To Amount","Transaction Type","Transaction Details Type"
+CARD-1000008,17-03-2023,"17-03-2023 09:00:00.000",-4.00,EUR,"Card transaction of 4.00 EUR issued by Example Cafe",,96.00,,,,,,,"Example Cafe",0000,"Alex Example",,,0,,DEBIT,CARD
+BALANCE-1000005,10-02-2023,"10-02-2023 12:00:00.000",92.00,EUR,"Converted 100.00 USD to 92.00 EUR",,100.00,USD,EUR,0.92,,,,,,,,,0,92.00,CREDIT,CONVERSION
+FEE-TRANSFER-1000003,20-01-2023,"20-01-2023 08:30:00.000",-0.60,EUR,"Fee for transfer: TRANSFER-1000003",,8.00,,,,,"Alex Example",,,,,,,0,,DEBIT,TRANSFER
+TRANSFER-1000003,20-01-2023,"20-01-2023 08:30:00.000",-50.00,EUR,"Sent money to Alex Example",Rent,8.60,,,,,"Alex Example",GB00TEST00000000000000,,,,,,0.60,,DEBIT,TRANSFER
+CARD-1000002,05-12-2022,"05-12-2022 10:15:00.000",12.50,EUR,"Refund from Example Shop",,58.60,,,,,,,"Example Shop",0000,"Alex Example",,,0,,CREDIT,CARD
+CARD-1000011,15-11-2022,"15-11-2022 18:45:00.000",-12.50,EUR,"Card transaction of 12.50 EUR issued by Example Shop",,46.10,,,,,,,"Example Shop",0000,"Alex Example",,,0,,DEBIT,CARD
+TRANSFER-1000001,01-11-2022,"01-11-2022 07:00:00.000",500.00,EUR,"Received money from Alex Example",,500.00,,,,"Alex Example",,,,,,,,0,,CREDIT,DEPOSIT

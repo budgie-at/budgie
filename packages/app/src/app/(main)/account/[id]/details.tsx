@@ -19,6 +19,7 @@ import { AccountDetailsMenuControls } from '../../../../account/component/accoun
 import { AccountDetailsNavBalance } from '../../../../account/component/account-details-nav-balance/account-details-nav-balance';
 import { AccountDetailsStaticTitle } from '../../../../account/component/account-details-static-title/account-details-static-title';
 import { AccountDetailsTitle } from '../../../../account/component/account-details-title/account-details-title';
+import { AccountDetailsYieldEntry } from '../../../../account/component/account-details-yield-entry/account-details-yield-entry';
 import { AccountValueHeroBalance } from '../../../../account/component/account-value-hero-balance/account-value-hero-balance';
 import { DebtAccountBalance } from '../../../../account/component/debt-account-balance/debt-account-balance';
 import { DepositDetailsCard } from '../../../../account/component/deposit-details-card/deposit-details-card';
@@ -53,9 +54,7 @@ export default function AccountDetails() {
     }
 
     const instrumentSymbol = account.instrument.symbol;
-    const headerTrailing = isUntrackedOwnAccount(account) ? null : (
-        <AccountActionsMenu account={account} balance={balance} instrumentSymbol={instrumentSymbol} />
-    );
+    const headerTrailing = isUntrackedOwnAccount(account) ? null : <AccountActionsMenu account={account} />;
 
     const accountSummary =
         account.type === AccountTypeEnum.DEBT ? (
@@ -87,6 +86,8 @@ export default function AccountDetails() {
                         />
                     </CollapsibleChromeScrollFade>
                 ) : null}
+
+                <AccountDetailsYieldEntry accountId={id} />
             </View>
         );
 

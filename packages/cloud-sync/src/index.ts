@@ -118,6 +118,7 @@ export { CloudSyncEventKindEnum } from './engine/enum/cloud-sync-event-kind.enum
 export { CLOUD_SYNC_RECORDS } from './engine/constant/cloud-sync-records.constant';
 export { SyncAutomationService } from './automation/service/sync-automation.service';
 export { SyncAutomationEmbeddingBoost } from './automation/port/sync-automation-embedding-boost.port';
+export { SyncAutomationYieldTagRepair } from './automation/port/sync-automation-yield-tag-repair.port';
 export { HouseholdRoleEnum } from './household/enum/household-role.enum';
 export { HouseholdJoinStatusEnum } from './household/enum/household-join-status.enum';
 export { syncAccountBalanceRefresherLayer } from './apply/layer/sync-account-balance-refresher.layer';

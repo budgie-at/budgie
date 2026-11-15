@@ -10,6 +10,9 @@ export { AccountArchiveService } from './account/service/account-archive.service
 export { AccountBalanceIncrementalService } from './account/service/account-balance-incremental.service';
 export { AccountService } from './account/service/account.service';
 export { BalanceAdjustmentService } from './account/service/balance-adjustment.service';
+export { DepositCloseAmountInvalidError } from './account/error/deposit-close-amount-invalid.error';
+export type { DepositClosePrefillInterface } from './account/interface/deposit-close-prefill.interface';
+export { DepositInterestService } from './account/service/deposit-interest.service';
 export { AccountTransferConversionService } from './account/service/account-transfer-conversion.service';
 export { DebtAccountService } from './account/service/debt-account.service';
 

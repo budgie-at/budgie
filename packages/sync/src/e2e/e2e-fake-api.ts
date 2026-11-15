@@ -1,8 +1,10 @@
 import { isDefined } from '@rnw-community/shared';
 
 import { HTTP_STATUS_UNAUTHORIZED } from '../core/constant/http-status.constant';
+import { WISE_ASPSP_NAME } from '../enable-banking/constant/wise-aspsp-name.constant';
 
-import type { ClientInfo, StatementItem } from '@liaugust/monobank-sdk';
+import { MONOBANK_CLIENT_INFO, monobankStatement } from './e2e-fake-monobank';
+import { WISE_ACCOUNTS, WISE_CODE, WISE_SESSION } from './e2e-fake-wise';
 
 type FakeHandlerType = (body: string, url: string) => unknown;
 
@@ -10,18 +12,24 @@ const REQUEST_PATTERN = /^https:\/\/([^/?#]+)([^?#]*)/u;
 const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
 const ISO_DATE_LENGTH = 10;
 const NINETY_DAYS = 90;
-const MILLISECONDS_PER_SECOND = 1000;
-const SECONDS_PER_HOUR = 3600;
 const SECONDS_PER_DAY = 86_400;
-const UAH_NUMERIC_CODE = 980;
 const REJECTED_TOKEN_PATTERN = /^e2e-rejected/u;
 
 const SYNTHETIC_BANK = 'E2E Synthetic Bank';
 const CONNECT_BANK = 'E2E Connect Bank';
 const CONNECT_CODE = 'e2e-connect-code';
 const CONNECT_SESSION = 'e2e-connect-session';
+const CONSENT_VALIDITY_SECONDS = NINETY_DAYS * 24 * 60 * 60;
+const AUTH_CODE_BY_BANK = new Map([
+    [CONNECT_BANK, CONNECT_CODE],
+    [WISE_ASPSP_NAME, WISE_CODE]
+]);
+
+const consentValidUntil = (): string => new Date(Date.now() + (NINETY_DAYS - 1) * MILLISECONDS_PER_DAY).toISOString();
 
 const dayAgo = (days: number): string => new Date(Date.now() - days * MILLISECONDS_PER_DAY).toISOString().slice(0, ISO_DATE_LENGTH);
+
+const wiseAccountOf = (url: string) => WISE_ACCOUNTS.find(({ uid }) => REQUEST_PATTERN.exec(url)?.[2].split('/')[2] === uid);
 
 const ENABLE_BANKING_ROUTES: ReadonlyArray<readonly [string, RegExp, FakeHandlerType]> = [
     [
@@ -38,25 +46,49 @@ const ENABLE_BANKING_ROUTES: ReadonlyArray<readonly [string, RegExp, FakeHandler
         'GET',
         /^\/aspsps$/u,
         () => ({
-            aspsps: [SYNTHETIC_BANK, CONNECT_BANK].map(name => ({
-                name,
-                country: 'DE',
-                maximum_consent_validity: NINETY_DAYS * 24 * 60 * 60,
-                beta: false
-            }))
+            aspsps: [
+                ...[SYNTHETIC_BANK, CONNECT_BANK].map(name => ({
+                    name,
+                    country: 'DE',
+                    maximum_consent_validity: CONSENT_VALIDITY_SECONDS,
+                    beta: false
+                })),
+                { name: WISE_ASPSP_NAME, country: 'GB', maximum_consent_validity: CONSENT_VALIDITY_SECONDS, beta: false },
+                {
+                    name: WISE_ASPSP_NAME,
+                    country: 'DE',
+                    maximum_consent_validity: CONSENT_VALIDITY_SECONDS,
+                    beta: false,
+                    required_psu_headers: ['psu-ip-address']
+                }
+            ]
         })
     ],
     [
         'POST',
         /^\/auth$/u,
         body => ({
-            url: `budgie://enable-banking/callback?code=${body.includes(CONNECT_BANK) ? CONNECT_CODE : 'e2e-code'}&state=${/"state":"([^"]+)"/u.exec(body)?.[1] ?? ''}`
+            url: `budgie://enable-banking/callback?code=${[...AUTH_CODE_BY_BANK].find(([bank]) => body.includes(`"${bank}"`))?.[1] ?? 'e2e-code'}&state=${/"state":"([^"]+)"/u.exec(body)?.[1] ?? ''}`
         })
     ],
     [
         'POST',
         /^\/sessions$/u,
         body => {
+            if (body.includes(WISE_CODE)) {
+                return {
+                    session_id: WISE_SESSION,
+                    accounts: WISE_ACCOUNTS.map(({ currency, hash, iban }) => ({
+                        ...(isDefined(iban) && { account_id: iban }),
+                        cash_account_type: 'CACC',
+                        currency,
+                        identification_hash: hash
+                    })),
+                    aspsp: { name: WISE_ASPSP_NAME, country: 'GB' },
+                    access: { valid_until: consentValidUntil() }
+                };
+            }
+
             const isConnectBank = body.includes(CONNECT_CODE);
 
             return {
@@ -71,7 +103,7 @@ const ENABLE_BANKING_ROUTES: ReadonlyArray<readonly [string, RegExp, FakeHandler
                     }
                 ],
                 aspsp: { name: isConnectBank ? CONNECT_BANK : SYNTHETIC_BANK, country: 'DE' },
-                access: { valid_until: new Date(Date.now() + (NINETY_DAYS - 1) * MILLISECONDS_PER_DAY).toISOString() }
+                access: { valid_until: consentValidUntil() }
             };
         }
     ],
@@ -82,6 +114,14 @@ const ENABLE_BANKING_ROUTES: ReadonlyArray<readonly [string, RegExp, FakeHandler
     ],
     [
         'GET',
+        new RegExp(`^/sessions/${WISE_SESSION}$`, 'u'),
+        () => ({
+            status: 'AUTHORIZED',
+            accounts_data: WISE_ACCOUNTS.map(({ uid, hash }) => ({ uid, identification_hash: hash }))
+        })
+    ],
+    [
+        'GET',
         /^\/sessions\/[^/]+$/u,
         () => ({ status: 'AUTHORIZED', accounts_data: [{ uid: 'e2e-uid-1', identification_hash: 'e2e-hash-1' }] })
     ],
@@ -89,13 +129,27 @@ const ENABLE_BANKING_ROUTES: ReadonlyArray<readonly [string, RegExp, FakeHandler
     [
         'GET',
         /^\/accounts\/[^/]+\/balances$/u,
-        () => ({ balances: [{ balance_amount: { amount: '1234.56', currency: 'EUR' }, balance_type: 'CLBD' }] })
+        (_body, url) => {
+            const account = wiseAccountOf(url);
+
+            return {
+                balances: [
+                    {
+                        balance_amount: { amount: account?.balance ?? '1234.56', currency: account?.currency ?? 'EUR' },
+                        balance_type: 'CLBD'
+                    }
+                ]
+            };
+        }
     ],
     [
         'GET',
         /^\/accounts\/[^/]+\/transactions$/u,
-        () => ({
-            transactions: [
+        (_body, url) => ({
+            transactions: wiseAccountOf(url)?.transactions.map(({ daysAgo, ...transaction }) => ({
+                ...transaction,
+                booking_date: dayAgo(daysAgo)
+            })) ?? [
                 {
                     entry_reference: 'e2e-tx-1',
                     transaction_amount: { amount: '12.50', currency: 'EUR' },
@@ -117,65 +171,6 @@ const ENABLE_BANKING_ROUTES: ReadonlyArray<readonly [string, RegExp, FakeHandler
         })
     ]
 ];
-
-const MONOBANK_CLIENT_INFO = {
-    clientId: 'e2e-client',
-    name: 'E2E Client',
-    accounts: [
-        {
-            id: 'e2e-mono-card',
-            sendId: 'e2e-send',
-            balance: 150_000,
-            creditLimit: 0,
-            currencyCode: UAH_NUMERIC_CODE,
-            cashbackType: 'UAH',
-            iban: 'UA213223130000026007233566001',
-            maskedPan: ['537541******1234'],
-            type: 'black'
-        }
-    ],
-    jars: [
-        {
-            id: 'e2e-mono-jar',
-            sendId: 'e2e-jar-send',
-            title: 'E2E Jar',
-            description: 'E2E Jar',
-            balance: 50_000,
-            goal: null,
-            currencyCode: UAH_NUMERIC_CODE
-        }
-    ]
-} satisfies ClientInfo;
-
-const monobankStatement = (): StatementItem[] => {
-    const nowSeconds = Math.floor(Date.now() / MILLISECONDS_PER_SECOND);
-    const item = { currencyCode: UAH_NUMERIC_CODE, commissionRate: 0, cashbackAmount: 0, hold: false };
-
-    return [
-        {
-            ...item,
-            id: 'e2e-mono-tx-1',
-            time: nowSeconds - SECONDS_PER_HOUR,
-            description: 'E2E Grocery',
-            mcc: 5411,
-            originalMcc: 5411,
-            amount: -25_000,
-            operationAmount: -25_000,
-            balance: 150_000
-        },
-        {
-            ...item,
-            id: 'e2e-mono-tx-2',
-            time: nowSeconds - 2 * SECONDS_PER_HOUR,
-            description: 'E2E Salary',
-            mcc: 4829,
-            originalMcc: 4829,
-            amount: 100_000,
-            operationAmount: 100_000,
-            balance: 175_000
-        }
-    ];
-};
 
 const MONOBANK_ROUTES: ReadonlyArray<readonly [string, RegExp, FakeHandlerType]> = [
     ['GET', /^\/personal\/client-info$/u, () => MONOBANK_CLIENT_INFO],

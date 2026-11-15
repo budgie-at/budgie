@@ -66,6 +66,12 @@ import { transactionsAtom } from '@app/transaction/query/use-get-transactions.qu
 import { uncategorizedTransactionCountAtom } from '@app/transaction/query/use-get-uncategorized-transaction-count.query';
 import { uncategorizedTransactionsAtom } from '@app/transaction/query/use-get-uncategorized-transactions.query';
 import { similarStatsAtom } from '@app/transaction/query/use-transaction-info-similar-stats.query';
+import { hasYieldAtom } from '@app/yield/constant/has-yield-atom.constant';
+import { hasYieldFamily } from '@app/yield/constant/has-yield-family-atom.constant';
+import { yieldPayoutsFamily } from '@app/yield/constant/yield-payouts-family-atom.constant';
+import { yieldPeriodEarnedFamily } from '@app/yield/constant/yield-period-earned-family-atom.constant';
+import { yieldPriceJobsFamily } from '@app/yield/constant/yield-price-jobs-family-atom.constant';
+import { yieldSummaryFamily } from '@app/yield/constant/yield-summary-family-atom.constant';
 import {
     AccountDebtTypeEnum,
     AccountEntityTable,
@@ -80,10 +86,13 @@ import {
     LanguageEnum,
     PERSONAL_SYNC_ZONE,
     RunwayDriverDimensionEnum,
-    TransactionTypeEnum
+    TransactionEntityTable,
+    TransactionTypeEnum,
+    YieldKindEnum
 } from '@budgie/contracts';
 import * as schema from '@budgie/contracts/schema';
 import { AccountService } from '@budgie/ledger';
+import { YieldRangeEnum } from '@budgie/market';
 import { describe, expect, it } from '@effect/vitest';
 import { eq, getTableColumns, getTableName, sql } from 'drizzle-orm';
 import * as Clock from 'effect/Clock';
@@ -92,7 +101,7 @@ import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import * as AtomRegistry from 'effect/reactivity/AtomRegistry';
 import * as TestClock from 'effect/testing/TestClock';
 
-import { seed, seedLedgerBalance, testDb, TestClockLayer } from '../../harness';
+import { seed, seedDailyPrice, seedLedgerBalance, testDb, TestClockLayer } from '../../harness';
 import { liveAtomClock, liveStatements, testAtomRuntime } from '../../harness/scenario/test-runtime';
 
 import type { SQLiteTable } from 'drizzle-orm/sqlite-core';
@@ -121,6 +130,13 @@ const BUDGET_KEY = {
     endsAtMs: null,
     dayStart: NOW
 };
+const YIELD_KEY = {
+    range: YieldRangeEnum.ALL,
+    positionAccountId: null,
+    instrumentId: null,
+    group: null,
+    baseInstrumentId: BASE_INSTRUMENT_ID
+};
 const FLUSH_WAIT = '120 millis';
 const tablesByName = new Map<string, SQLiteTable>(Object.values(schema).map(table => [getTableName(table), table]));
 
@@ -142,7 +158,18 @@ const seedFixture = Effect.gen(function* () {
     yield* seed.transactionTag(expense.id, tag.id);
     yield* seedLedgerBalance(account.id, 100_000_000);
 
-    return { account, installmentAccount, integrationId: integration.id, category, tag, expense };
+    const yieldCoin = yield* seed.instrument({ code: 'LIVEY', name: 'Live yield', symbol: 'LIVEY', type: InstrumentTypeEnum.CRYPTO });
+    const yieldWallet = yield* seed.account({ title: 'Live yield wallet', type: AccountTypeEnum.CRYPTO_SYNC, instrumentId: yieldCoin.id });
+    const reward = yield* seed.manualExpense({
+        accountId: yieldWallet.id,
+        amount: 1_000_000,
+        operatedAt: new Date(NOW),
+        type: TransactionTypeEnum.INCOME
+    });
+
+    yield* testDb.update(TransactionEntityTable).set({ yieldKind: YieldKindEnum.STAKING }).where(eq(TransactionEntityTable.id, reward.id));
+
+    return { account, installmentAccount, integrationId: integration.id, category, tag, expense, yieldCoin, yieldWallet };
 });
 
 const liveAtoms = ({
@@ -151,7 +178,9 @@ const liveAtoms = ({
     integrationId,
     category,
     tag,
-    expense
+    expense,
+    yieldCoin,
+    yieldWallet
 }: Effect.Success<typeof seedFixture>): Record<string, LiveAtom> => ({
     accountBalance: accountBalanceAtom(account.id),
     archivedAccountBalance: archivedAccountBalanceAtom(account.id),
@@ -235,7 +264,13 @@ const liveAtoms = ({
         accountId: account.id,
         categoryId: category.id,
         months: 6
-    })
+    }),
+    hasYield: hasYieldAtom,
+    hasYieldFor: hasYieldFamily({ positionAccountId: yieldWallet.id, instrumentId: null }),
+    yieldSummary: yieldSummaryFamily(YIELD_KEY),
+    yieldPayouts: yieldPayoutsFamily([YIELD_KEY, false, EN, 20]),
+    yieldPriceJobs: yieldPriceJobsFamily([yieldCoin.id]),
+    yieldPeriodEarned: yieldPeriodEarnedFamily(['2000-01-01', '2100-01-01', BASE_INSTRUMENT_ID])
 });
 
 const readTables = (statements: readonly string[]) =>
@@ -321,6 +356,32 @@ describe('generic/live-atom-refresh', () => {
                 expect(mounted.filter(({ isSuccess }) => !isSuccess).map(({ name }) => name)).toEqual([]);
                 expect(mounted.filter(({ reads }) => reads.size === 0).map(({ name }) => name)).toEqual([]);
                 expect(staleReads).toEqual([]);
+            })
+        ).pipe(Effect.provide(TestClockLayer))
+    );
+
+    it.effect('recomputes the yield summary after a price-only write', () =>
+        withLiveRegistry(registry =>
+            Effect.gen(function* () {
+                const { yieldCoin } = yield* inLiveRuntime(registry, seedFixture);
+                const read = Effect.andThen(
+                    TestClock.adjust(FLUSH_WAIT),
+                    AtomRegistry.getResult(registry, yieldSummaryFamily(YIELD_KEY), { suspendOnWaiting: true })
+                );
+
+                yield* TestClock.setTime(NOW);
+                registry.mount(yieldSummaryFamily(YIELD_KEY));
+                const before = yield* read;
+
+                yield* inLiveRuntime(
+                    registry,
+                    seedDailyPrice(yieldCoin.id, BASE_INSTRUMENT_ID, new Date(NOW).toISOString().slice(0, 10), 2)
+                );
+                const after = yield* read;
+
+                expect(after).not.toBe(before);
+                expect(before.cryptoRewardsToday?.value).toBe(0);
+                expect(after.cryptoRewardsToday?.value).toBe(2);
             })
         ).pipe(Effect.provide(TestClockLayer))
     );

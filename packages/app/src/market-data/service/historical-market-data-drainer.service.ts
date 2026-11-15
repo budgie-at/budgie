@@ -1,5 +1,5 @@
 import { AccountRepository } from '@budgie/contracts';
-import { HistoricalMarketDataService } from '@budgie/market';
+import { HistoricalMarketDataService, MarketPricedRevaluationService } from '@budgie/market';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -18,6 +18,7 @@ export class HistoricalMarketDataDrainerService extends Context.Service<Historic
             const workload = yield* Workload;
             const accountRepository = yield* AccountRepository;
             const historicalMarketDataService = yield* HistoricalMarketDataService;
+            const marketPricedRevaluationService = yield* MarketPricedRevaluationService;
             const drainDelayMs = 500;
             const drainKey = 'historical-market-data';
 
@@ -51,6 +52,7 @@ export class HistoricalMarketDataDrainerService extends Context.Service<Historic
                         Effect.andThen(waitForIdle),
                         Effect.andThen(drainNextJob()),
                         Effect.repeat({ while: shouldContinue => shouldContinue }),
+                        Effect.andThen(workload.run(marketPricedRevaluationService.runCryptoStrictValuationStep())),
                         Effect.catch(Effect.logError)
                     )
                 );
@@ -72,6 +74,6 @@ export class HistoricalMarketDataDrainerService extends Context.Service<Historic
     }
 ) {
     static readonly layer = Layer.effect(HistoricalMarketDataDrainerService, HistoricalMarketDataDrainerService.make).pipe(
-        Layer.provide([Workload.layer, AccountRepository.layer, HistoricalMarketDataService.layer])
+        Layer.provide([Workload.layer, AccountRepository.layer, HistoricalMarketDataService.layer, MarketPricedRevaluationService.layer])
     );
 }

@@ -3,7 +3,7 @@ import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
-import { useIsFocused } from 'expo-router';
+import { useIsFocused, usePathname } from 'expo-router';
 import { useEffect, useEffectEvent } from 'react';
 
 import { isDefined } from '@rnw-community/shared';
@@ -11,6 +11,7 @@ import { isDefined } from '@rnw-community/shared';
 import { appAtomRegistry } from '../../@generic/constant/app-atom-registry.constant';
 import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
 import { enableBankingCallbackUrlAtom } from '../constant/enable-banking-callback-url-atom.constant';
+import { enableBankingSetupPathAtom } from '../constant/enable-banking-setup-path-atom.constant';
 import { EnableBankingConnectionService } from '../service/enable-banking-connection.service';
 
 import { useExplainEnableBankingError } from './use-explain-enable-banking-error.hook';
@@ -27,6 +28,7 @@ export const useEnableBankingCallback = (
     const explainError = useExplainEnableBankingError();
     const callbackUrl = useAtomValue(enableBankingCallbackUrlAtom);
     const isFocused = useIsFocused();
+    const pathname = usePathname();
 
     const handleCallback = useEffectEvent((url: string) =>
         run(
@@ -53,6 +55,14 @@ export const useEnableBankingCallback = (
             )
         )
     );
+
+    useEffect(() => {
+        if (isFocused) {
+            appAtomRegistry.set(enableBankingSetupPathAtom, pathname);
+        }
+    }, [isFocused, pathname]);
+
+    useEffect(() => () => void appAtomRegistry.set(enableBankingSetupPathAtom, null), []);
 
     useEffect(() => {
         if (isFocused && !isLoading && isDefined(callbackUrl) && appAtomRegistry.get(enableBankingCallbackUrlAtom) === callbackUrl) {

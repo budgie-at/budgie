@@ -1,0 +1,5 @@
+"TransferWise ID",Date,"Date Time",Amount,Currency,Description,"Payment Reference","Running Balance","Exchange From","Exchange To","Exchange Rate","Payer Name","Payee Name","Payee Account Number",Merchant,"Card Last Four Digits","Card Holder Full Name",Attachment,Note,"Total fees","Exchange To Amount","Transaction Type","Transaction Details Type"
+CARD-1000012,19-03-2023,"19-03-2023 15:00:00.000",-3.00,USD,"Card transaction of 3.00 USD issued by Example Cafe",,195.50,,,,,,,"Example Cafe",0000,"Alex Example",,,0,,DEBIT,CARD
+FEE-BALANCE-1000005,10-02-2023,"10-02-2023 12:00:00.000",-1.50,USD,"Fee for transaction: BALANCE-1000005",,198.50,,,,,,,,,,,,0,,DEBIT,CONVERSION
+BALANCE-1000005,10-02-2023,"10-02-2023 12:00:00.000",-100.00,USD,"Converted 101.50 USD to 92.00 EUR (fee: 1.50 USD)",,200.00,USD,EUR,0.92,,,,,,,,,1.50,92.00,DEBIT,CONVERSION
+TRANSFER-1000004,01-12-2022,"01-12-2022 11:00:00.000",300.00,USD,"Received money from Alex Example",,300.00,,,,"Alex Example",,,,,,,,0,,CREDIT,DEPOSIT

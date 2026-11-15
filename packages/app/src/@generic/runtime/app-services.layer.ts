@@ -37,6 +37,7 @@ import {
     TransactionEntryPositionRepository,
     TransactionEntryRepository,
     TransactionRepository,
+    TransactionYieldRepository,
     TransactionConsolidationRepository,
     TransactionReceiptRepository,
     TransactionDayNetAmountRepository,
@@ -44,7 +45,8 @@ import {
     TransactionTagsRepository,
     SyncIdentityRepository,
     SyncRecordRepository,
-    SyncZoneRegistryRepository
+    SyncZoneRegistryRepository,
+    YieldRepository
 } from '@budgie/contracts';
 import { ExporterService, ImporterService } from '@budgie/import-export';
 import {
@@ -55,6 +57,7 @@ import {
     BalanceAdjustmentService,
     CategoryService,
     DebtAccountService,
+    DepositInterestService,
     InstallmentPlanService,
     LedgerWorkload,
     MoneyDataUpgradeService,
@@ -74,7 +77,8 @@ import {
     HistoricalExchangeRateRepository,
     InstrumentDailyMarketPriceRepository,
     InstrumentMarketDataJobRepository,
-    YahooMarketDataService
+    YahooMarketDataService,
+    YieldService
 } from '@budgie/market';
 import { RecurringRefreshService, RecurringService } from '@budgie/recurring';
 import { RuleEngineService, RuleMatcherService, RuleRepository, RuleService, TransactionRuleRepository } from '@budgie/rules';
@@ -82,6 +86,7 @@ import {
     AtmCashMoveService,
     BinanceSyncService,
     ErsteSyncService,
+    WiseStatementImportService,
     ExternalAccountService,
     AccountReissueMergeService,
     InzhurGainService,
@@ -95,6 +100,7 @@ import {
     SyncOperationMetadataService,
     SyncProviderRegistryService,
     SyncRepairService,
+    YieldTagRepairService,
     transferConsolidationBankFlowLayer,
     OwnTransferRepairService,
     UnpairedOwnCardTransferRepairService
@@ -260,6 +266,7 @@ export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     ExternalAccountService.layer,
     AccountReissueMergeService.layer,
     SyncRepairService.layer,
+    YieldTagRepairService.layer,
     OwnTransferRepairService.layer,
     SyncOperationMetadataService.layer,
     PrivatbankCategoryMatcherService.layer,
@@ -267,6 +274,7 @@ export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     BinanceSyncService.layer,
     EnableBankingConnectionService.layer,
     ErsteSyncService.layer,
+    WiseStatementImportService.layer,
     PrivatbankSyncService.layer,
     SyncProviderRegistryService.layer,
     InzhurSetupService.layer,
@@ -274,6 +282,8 @@ export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     InzhurManualPurchaseService.layer,
     InzhurGainService.layer,
     InvestmentReturnRepository.layer,
+    YieldRepository.layer,
+    YieldService.layer,
     ResyncService.layer,
     AppDataSyncService.layer,
     BackgroundSyncSessionService.layer,
@@ -284,6 +294,7 @@ export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     BudgetFundSuggestionService.layer,
     OnboardingService.layer,
     TransactionRepository.layer,
+    TransactionYieldRepository.layer,
     TransactionConsolidationRepository.layer,
     TransactionViewRepository.layer,
     TransactionDayNetAmountRepository.layer,
@@ -301,6 +312,7 @@ export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     TransactionImportService.layer,
     RefundConsolidationService.layer,
     TransactionTransferService.layer,
+    DepositInterestService.layer,
     TransferCreationService.layer,
     TransactionService.layer,
     WalletCaptureNativeService.layer,

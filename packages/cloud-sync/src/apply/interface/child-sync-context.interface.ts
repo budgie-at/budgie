@@ -6,4 +6,5 @@ export interface ChildSyncContextInterface {
     readonly unitIds: Map<string, number>;
     readonly baseRows: ReadonlyMap<string, SyncRowInterface>;
     readonly isGated: boolean;
+    readonly isParentTimingUnchanged: boolean;
 }

@@ -28,6 +28,7 @@ import { TransactionInfoRefundSummary } from '../transaction-info-refund-summary
 import { TransactionInfoScrollView } from '../transaction-info-scroll-view/transaction-info-scroll-view';
 import { TransactionInfoSimilarCard } from '../transaction-info-similar-card/transaction-info-similar-card';
 import { TransactionInfoTagsSection } from '../transaction-info-tags-section/transaction-info-tags-section';
+import { TransactionInfoYieldRow } from '../transaction-info-yield-row/transaction-info-yield-row';
 
 import type { TransactionActionsMenuItemInterface } from '../../interface/transaction-actions-menu-item.interface';
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
@@ -76,6 +77,7 @@ export const TransactionInfoPageContent = ({ transaction, editHref, actionItems,
                             <TransactionInfoMoneyRows transaction={transaction} onFeePress={handleFeePress} />
                             {isRefundPurchase ? <TransactionInfoRefundSummary transaction={transaction} /> : null}
                             <TransactionInfoCategoryRows transaction={transaction} />
+                            <TransactionInfoYieldRow transaction={transaction} />
                             <TransactionInfoTagsSection transaction={transaction} />
                         </TransactionInfoGroup>
 

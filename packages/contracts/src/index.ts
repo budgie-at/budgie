@@ -131,6 +131,7 @@ export { TagRepository } from './tag/repository/tag.repository';
 
 export { InstrumentTypeEnum } from './instrument/enum/instrument-type.enum';
 export { InstrumentPriceProviderEnum } from './instrument/enum/instrument-price-provider.enum';
+export { BINANCE_ASSET_ALIAS } from './instrument/constant/binance-asset-alias.constant';
 export { InstrumentMarketDataJobStatusEnum } from './instrument-market-data-job/enum/instrument-market-data-job-status.enum';
 
 export { InstrumentEntityTable } from './instrument/table/instrument-entity.table';
@@ -190,6 +191,10 @@ export { TransactionTypeEnum } from './transaction/enum/transaction-type.enum';
 export { TransactionUpdatedByEnum } from './transaction/enum/transaction-updated-by.enum';
 export { TransactionConsolidationTypeEnum } from './transaction/enum/transaction-consolidation-type.enum';
 export { TransactionAssociationEnum } from './transaction/enum/transaction-association.enum';
+export { YieldKindEnum } from './transaction/enum/yield-kind.enum';
+export type { YieldFieldsInterface } from './transaction/interface/yield-fields.interface';
+export type { YieldTagCandidateInterface } from './transaction/interface/yield-tag-candidate.interface';
+export { normalizeYieldFields } from './transaction/utils/normalize-yield-fields.util';
 
 export { DEFAULT_TRANSACTION_FILTER } from './transaction/constant/default-transaction-filter.constant';
 export { TRANSFER_PAIR_TIME_WINDOW_SECONDS } from './transaction/constant/transfer-pair-time-window.constant';
@@ -233,6 +238,7 @@ export { insertTransactionTag } from './transaction-tags/utils/insert-transactio
 export type { TransactionTagsEntityInterface } from './transaction-tags/entity/transaction-tags-entity.interface';
 export type { TransactionTagsCreateEntityInterface } from './transaction-tags/entity/transaction-tags-create-entity.interface';
 
+export { TransactionYieldRepository } from './transaction/repository/transaction-yield.repository';
 export { TransactionTagsRepository } from './transaction-tags/repository/transaction-tags.repository';
 export { TransactionReceiptEntityTable } from './transaction-receipt/table/transaction-receipt-entity.table';
 
@@ -294,6 +300,8 @@ export type { TransactionEntryWithRelationsEntityInterface } from './transaction
 export type { TransactionEntryCreateEntityInterface } from './transaction-entry/entity/transaction-entry-create-entity.interface';
 export type { InstrumentPositionEntryRowInterface } from './transaction-entry/interface/instrument-position-entry-row.interface';
 export type { PendingBaseValuationBucketInterface } from './transaction-entry/interface/pending-base-valuation-bucket.interface';
+export type { MarketPricedEntryRowInterface } from './transaction-entry/interface/market-priced-entry-row.interface';
+export type { EntryBaseValuationUpdateInterface } from './transaction-entry/interface/entry-base-valuation-update.interface';
 
 export { TransactionEntryBaseValuationRepository } from './transaction-entry/repository/transaction-entry-base-valuation.repository';
 export { TransactionEntryRepository } from './transaction-entry/repository/transaction-entry.repository';
@@ -316,6 +324,13 @@ export { SettingsRepository } from './settings/repository/settings.repository';
 
 export { StatisticsRepository } from './statistics/repository/statistics.repository';
 export { InvestmentReturnRepository } from './investment-return/repository/investment-return.repository';
+export { YieldRepository } from './yield/repository/yield.repository';
+export { YIELD_POSITION_ACCOUNT_TYPES } from './yield/constant/yield-position-account-types.constant';
+export type { YieldScopeInterface } from './yield/interface/yield-scope.interface';
+export type { YieldFactRowInterface } from './yield/interface/yield-fact-row.interface';
+export type { YieldPositionRowInterface } from './yield/interface/yield-position-row.interface';
+export type { YieldPositionMovementRowInterface } from './yield/interface/yield-position-movement-row.interface';
+export type { YieldPayoutQueryInterface } from './yield/interface/yield-payout-query.interface';
 export type { LedgerMovementInterface } from './investment-return/interface/ledger-movement.interface';
 
 export type { StatisticsFilterInterface } from './statistics/interface/statistics-filter.interface';

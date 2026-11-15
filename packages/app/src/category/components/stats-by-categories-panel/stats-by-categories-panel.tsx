@@ -10,6 +10,7 @@ import { EntranceReveal } from '../../../@generic/component/entrance-reveal/entr
 import { getChartSwatches } from '../../../@generic/utils/get-chart-swatches.util';
 import { StatisticsShareBar } from '../../../transaction/components/statistics-share-bar/statistics-share-bar';
 import { StatisticsSpendingHero } from '../../../transaction/components/statistics-spending-hero/statistics-spending-hero';
+import { PassiveIncomeAnalyticsCard } from '../../../yield/component/passive-income-analytics-card/passive-income-analytics-card';
 import { CategoryStatInterface } from '../../interface/category-stat.interface';
 import { CategoriesFeatureIntro } from '../categories-feature-intro/categories-feature-intro';
 import { StatsByCategories } from '../stats-by-categories/stats-by-categories';
@@ -63,6 +64,8 @@ export const StatsByCategoriesPanel = ({ filters, incomeByCategory, expenseByCat
                     {hasExpenseStats ? <StatisticsShareBar segments={segments} other={other} onOtherPress={handleShowAllSpending} /> : null}
                 </StatisticsSpendingHero>
             </EntranceReveal>
+
+            <PassiveIncomeAnalyticsCard date={filters.date} />
 
             {hasExpenseStats ? (
                 <EntranceReveal step={2}>

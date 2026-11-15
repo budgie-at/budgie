@@ -1,6 +1,6 @@
 {
     "name": "@budgie/market",
-    "version": "6.181.3",
+    "version": "6.187.0",
     "private": true,
     "description": "Exchange rates, market data and base valuation services",
     "sideEffects": false,
@@ -19,6 +19,7 @@
         "clear": "rimraf dist node_modules/.cache .turbo",
         "lint": "oxlint --type-aware src",
         "test": "vitest run",
+        "bench:yield": "vitest run --config vitest.bench.config.ts",
         "ts": "node ../../scripts/typecheck.cjs --noEmit -p tsconfig.json && node ../../scripts/typecheck.cjs --noEmit -p tsconfig.test.json",
         "ts:native": "node ../../scripts/typecheck.cjs --native --noEmit -p tsconfig.json && node ../../scripts/typecheck.cjs --native --noEmit -p tsconfig.test.json"
     },
