@@ -17,6 +17,7 @@ import {
     generateSyncId
 } from '@budgie/contracts';
 import {
+    AccountArchiveService,
     AccountBalanceIncrementalService,
     AccountService,
     BalanceAdjustmentService,
@@ -54,6 +55,7 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
         const accountRepository = yield* AccountRepository;
         const accountBalanceRepository = yield* AccountBalanceRepository;
         const accountService = yield* AccountService;
+        const accountArchiveService = yield* AccountArchiveService;
         const balanceAdjustmentService = yield* BalanceAdjustmentService;
         const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
         const bankIntegrationRepository = yield* BankIntegrationRepository;
@@ -77,11 +79,26 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
             toIban: null
         });
 
-        const findCashAccount = Effect.fnUntraced(function* ({ integrationId, instrument }: AccountWithInstrumentEntityInterface) {
+        const findActiveCashAccount = Effect.fnUntraced(function* ({ integrationId, instrument }: AccountWithInstrumentEntityInterface) {
             const accounts = isDefined(integrationId) ? yield* accountRepository.findByIntegrationId(integrationId) : [];
-            const cashAccount = findBrokerageCashAccount(accounts, instrument.quoteInstrumentId);
 
-            return cashAccount ?? (yield* Effect.die(new Error('Brokerage cash account not found')));
+            return findBrokerageCashAccount(accounts, instrument.quoteInstrumentId);
+        });
+
+        const findCashAccount = Effect.fnUntraced(function* (security: AccountWithInstrumentEntityInterface) {
+            return (yield* findActiveCashAccount(security)) ?? (yield* Effect.die(new Error('Brokerage cash account not found')));
+        });
+
+        const restoreTradeCashAccount = Effect.fnUntraced(function* (security: AccountWithInstrumentEntityInterface, storedCashId: number) {
+            const activeCashAccount = yield* findActiveCashAccount(security);
+
+            if (isDefined(activeCashAccount)) {
+                return activeCashAccount;
+            }
+
+            yield* accountArchiveService.restoreById(storedCashId);
+
+            return (yield* accountRepository.findById(storedCashId)) ?? (yield* Effect.die(new Error('Brokerage cash account not found')));
         });
 
         const buildTradeInput = Effect.fnUntraced(function* (
@@ -240,8 +257,9 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
                     const to = yield* accountRepository.findById(transaction.toAccountId ?? 0);
                     const isSell = isDefined(from) && isSecurityInstrumentType(from.instrument.type);
                     const [storedSecurity, storedCash] = isSell ? [from, to] : [to, from];
+                    const storedCashId = (isSell ? transaction.toAccountId : transaction.fromAccountId) ?? 0;
                     const security = storedSecurity ?? (yield* Effect.die(new Error('Security account not found')));
-                    const cash = storedCash ?? (yield* findCashAccount(security));
+                    const cash = storedCash ?? (yield* restoreTradeCashAccount(security, storedCashId));
                     const input = yield* buildTradeInput(security, cash, trade, isSell);
                     const tags = yield* transactionTagsRepository.findByTransactionId(transactionId);
                     const operatedFrom = min([transaction.operatedAt, trade.operatedAt]);
@@ -289,6 +307,7 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
             AccountBalanceRepository.layer,
             AccountRepository.layer,
             AccountService.layer,
+            AccountArchiveService.layer,
             BalanceAdjustmentService.layer,
             AccountBalanceIncrementalService.layer,
             BankIntegrationRepository.layer,
