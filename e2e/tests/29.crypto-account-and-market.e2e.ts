@@ -71,7 +71,7 @@ test('29 crypto account and market', { tags: ['crypto'] }, async ({ budgie }) =>
         await b.expectText(ctx, '4 BTC');
         await screen.scrollUntilVisible(id('CurrencyMarket.Account.BTC.3'), { direction: 'down', timeout: 3_000 });
         await b.expectId(ctx, 'CurrencyMarket.Account.BTC.2');
-        await screen.scrollUntilVisible(id('CurrencyMarket.MarketCap.BTC'), { direction: 'down', timeout: 3_000 });
+        await b.scrollTo(ctx, 'CurrencyMarket.MarketCap.BTC');
         await ids('CurrencyMarket.DailyChange.BTC', 'CurrencyMarket.Volume.BTC', 'CurrencyMarket.Updated.BTC');
         await backHome();
     });
