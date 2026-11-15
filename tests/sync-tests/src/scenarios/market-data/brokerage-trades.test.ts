@@ -362,6 +362,32 @@ describe('market-data/brokerage-trades', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
+    it.effect('edits a sell whose security account was archived by restoring that security account', () =>
+        Effect.gen(function* () {
+            const { brokerageService, cash, securityId, sellId } = yield* createTradedBrokerage;
+            const accountArchiveService = yield* AccountArchiveService;
+            const accountRepository = yield* AccountRepository;
+
+            yield* accountArchiveService.archiveById(securityId);
+            yield* brokerageService.update(
+                sellId,
+                { quantity: 4, price: 150, fee: 0, operatedAt: MARCH(5) },
+                FUNDING_TITLE,
+                WITHDRAWAL_TITLE
+            );
+
+            expect(yield* accountRepository.findById(securityId)).toMatchObject({ id: securityId, deletedAt: null });
+            expect((yield* fetchExpenseEntries(sellId)).map(({ accountId, type, amount }) => ({ accountId, type, amount }))).toEqual(
+                expect.arrayContaining([
+                    { accountId: securityId, type: TransactionEntryTypeEnum.CREDIT, amount: 4_000_000 },
+                    { accountId: cash.id, type: TransactionEntryTypeEnum.DEBIT, amount: 600_000_000 }
+                ])
+            );
+            expect(yield* fetchAccountBalance(securityId)).toBe(6_000_000);
+            expect(yield* fetchAccountBalance(cash.id)).toBe(600_000_000);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
     it.effect('rejects an edited date that leaves the holding negative in between', () =>
         Effect.gen(function* () {
             const { brokerageService, securityId, buyId, sellId } = yield* createTradedBrokerage;
