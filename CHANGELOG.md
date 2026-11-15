@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.188.0](https://github.com/budgie-at/budgie/compare/v6.187.0...v6.188.0) (2026-11-15)
+
+### Features
+
+* **app:** group New Account by provider type and list Enable Banking banks before setup ([#2193](https://github.com/budgie-at/budgie/issues/2193)) ([229a507](https://github.com/budgie-at/budgie/commit/229a507046c4ddbd08e371ca37371c2ede9d1b8c)), closes [#2199](https://github.com/budgie-at/budgie/issues/2199)
+
+
 # [6.187.0](https://github.com/budgie-at/budgie/compare/v6.186.0...v6.187.0) (2026-11-15)
 
 ### Features
