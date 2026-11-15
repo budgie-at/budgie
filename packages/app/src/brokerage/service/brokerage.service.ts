@@ -236,10 +236,12 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
                         return yield* Effect.die(new Error('Trade transaction not found'));
                     }
 
-                    const from = yield* findSecurityAccount(transaction.fromAccountId ?? 0);
-                    const to = yield* findSecurityAccount(transaction.toAccountId ?? 0);
-                    const isSell = isSecurityInstrumentType(from.instrument.type);
-                    const [security, cash] = isSell ? [from, to] : [to, from];
+                    const from = yield* accountRepository.findById(transaction.fromAccountId ?? 0);
+                    const to = yield* accountRepository.findById(transaction.toAccountId ?? 0);
+                    const isSell = isDefined(from) && isSecurityInstrumentType(from.instrument.type);
+                    const [storedSecurity, storedCash] = isSell ? [from, to] : [to, from];
+                    const security = storedSecurity ?? (yield* Effect.die(new Error('Security account not found')));
+                    const cash = storedCash ?? (yield* findCashAccount(security));
                     const input = yield* buildTradeInput(security, cash, trade, isSell);
                     const tags = yield* transactionTagsRepository.findByTransactionId(transactionId);
                     const operatedFrom = min([transaction.operatedAt, trade.operatedAt]);
