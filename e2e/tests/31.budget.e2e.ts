@@ -36,6 +36,7 @@ test('31 budget', { tags: ['budget'], platforms: PENDING_ANDROID_PORT }, async (
     };
     const toggle = async (switchId: string, from: string, to: string) => {
         await expect(id(switchId)).toHaveValue(from, { timeout: 3_000 });
+        await b.scrollToCentre(ctx, switchId);
         await b.tapId(ctx, switchId);
         try {
             await expect(id(switchId)).toHaveValue(to, { timeout: 3_000 });

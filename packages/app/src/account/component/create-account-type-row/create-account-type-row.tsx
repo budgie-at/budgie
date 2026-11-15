@@ -3,18 +3,17 @@ import { router } from 'expo-router';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
-import { TONAL_DISC_BACKGROUND } from '../../../@generic/constant/tonal-disc-background.constant';
 import { CreateAccountSelector } from '../../../app/(main)/create-account/create-account.selector';
-import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
+import { CREATE_ACCOUNT_TYPE_TINT } from '../../constant/create-account-type-tint.constant';
 
 interface Props {
     readonly title: string;
-    readonly icon: UserIconNameEnum;
     readonly description: string;
+    readonly icon: UserIconNameEnum;
     readonly type: AccountTypeEnum;
 }
 
-export const CreateAccountCard = ({ title, description, type, icon }: Props) => {
+export const CreateAccountTypeRow = ({ title, description, icon, type }: Props) => {
     const handleNavigate = () => void router.push({ pathname: '/create-account/[type]', params: { type } });
 
     return (
@@ -23,12 +22,12 @@ export const CreateAccountCard = ({ title, description, type, icon }: Props) => 
             left={
                 <CircleIcon
                     icon={icon}
-                    variant={ACCOUNT_COLOR[type]}
                     size={36}
-                    iconSize={18}
-                    radius={18}
+                    iconSize={20}
+                    radius={10}
                     border={false}
-                    className={TONAL_DISC_BACKGROUND[ACCOUNT_COLOR[type]]}
+                    className={CREATE_ACCOUNT_TYPE_TINT[type]?.tileClassName}
+                    iconClassName={CREATE_ACCOUNT_TYPE_TINT[type]?.glyphClassName}
                 />
             }
             title={title}

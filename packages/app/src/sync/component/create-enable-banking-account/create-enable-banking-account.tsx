@@ -7,7 +7,6 @@ import Toast from 'react-native-toast-message';
 
 import { isDefined, isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
 
-import { BankLogo } from '../../../@generic/component/bank-logo/bank-logo';
 import { PillButton } from '../../../@generic/component/pill-button/pill-button';
 import { appAtomRegistry } from '../../../@generic/constant/app-atom-registry.constant';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
@@ -19,14 +18,13 @@ import { useEnableBankingKeyState } from '../../hook/use-enable-banking-key-stat
 import { useSyncAccountSetupFlow } from '../../hook/use-sync-account-setup-flow.hook';
 import { EnableBankingConnectionService } from '../../service/enable-banking-connection.service';
 import { getDeviceRegionCode } from '../../utils/get-device-region-code.util';
+import { EnableBankingAccountsStep } from '../enable-banking-accounts-step/enable-banking-accounts-step';
 import { EnableBankingBankStep } from '../enable-banking-bank-step/enable-banking-bank-step';
 import { EnableBankingConnectAccountStep } from '../enable-banking-connect-account-step/enable-banking-connect-account-step';
 import { EnableBankingKeyStep } from '../enable-banking-key-step/enable-banking-key-step';
 import { EnableBankingSetupGuide } from '../enable-banking-setup-guide/enable-banking-setup-guide';
 import { EnableBankingWaitingStep } from '../enable-banking-waiting-step/enable-banking-waiting-step';
-import { SyncAccountsStep } from '../sync-accounts-step/sync-accounts-step';
 import { SyncHistoryStep } from '../sync-history-step/sync-history-step';
-import { SyncParkedAccountsSection } from '../sync-parked-accounts-section/sync-parked-accounts-section';
 import { SyncSetupPage } from '../sync-setup-page/sync-setup-page';
 
 import { CreateEnableBankingAccountSelector } from './create-enable-banking-account.selector';
@@ -39,10 +37,16 @@ interface Props {
     readonly connectAccountId: number | null;
     readonly savedApplicationId: string | null;
     readonly preselectedBankName: string | null;
+    readonly preselectedCountry: string | null;
 }
 
 // eslint-disable-next-line max-lines-per-function, max-statements -- Form orchestration component with multiple hooks and handlers
-export const CreateEnableBankingAccount = ({ connectAccountId, savedApplicationId: connectApplicationId, preselectedBankName }: Props) => {
+export const CreateEnableBankingAccount = ({
+    connectAccountId,
+    savedApplicationId: connectApplicationId,
+    preselectedBankName,
+    preselectedCountry
+}: Props) => {
     const { t } = useLingui();
     const hasConnectKey = isDefined(connectApplicationId);
     const [step, setStep] = useState(() => {
@@ -55,10 +59,11 @@ export const CreateEnableBankingAccount = ({ connectAccountId, savedApplicationI
     const [banks, setBanks] = useState<readonly EnableBankingBankInterface[]>([]);
     const [authorization, setAuthorization] = useState<EnableBankingAuthorizationInterface | null>(null);
     const [historyDepth, setHistoryDepth] = useState(SyncHistoryDepthEnum.FULL);
-    const isPreselected = (bank: EnableBankingBankInterface) => bank.name.toLocaleLowerCase() === preselectedBankName?.toLocaleLowerCase();
+    const isPreselected = (bank: EnableBankingBankInterface) =>
+        bank.name.toLocaleLowerCase() === preselectedBankName?.toLocaleLowerCase() && bank.country === (preselectedCountry ?? bank.country);
     const candidateBanks = isDefined(preselectedBankName) ? banks.filter(isPreselected) : banks;
     const { isLoading: isBusy, run } = useSingleFlight();
-    const { applicationId, parsedApplicationId, isKeyPicked, handleApplicationIdChange, handlePickKey, savePickedKey } =
+    const { applicationId, parsedApplicationId, isKeyPicked, isContinueDisabled, handleApplicationIdChange, handlePickKey, savePickedKey } =
         useEnableBankingKeyState(run, connectApplicationId);
 
     const { loadBanks, beginAuthorization } = useEnableBankingBankLoading(connectAccountId, savePickedKey);
@@ -187,8 +192,6 @@ export const CreateEnableBankingAccount = ({ connectAccountId, savedApplicationI
         }
     };
 
-    const isContinueDisabled = !isDefined(parsedApplicationId) || !isKeyPicked;
-
     const handleShowHistory = () => {
         setStep(EnableBankingSetupStepEnum.HISTORY);
     };
@@ -197,8 +200,6 @@ export const CreateEnableBankingAccount = ({ connectAccountId, savedApplicationI
         setStep(EnableBankingSetupStepEnum.KEY);
     };
 
-    const missingAccount = t`Missing an account? Link it to your application in Enable Banking, then connect this bank again.`;
-    const parkedPreviews = authorization?.previews.filter(preview => preview.isParked) ?? [];
     let title = isDefined(preselectedBankName) ? t`Connect ${preselectedBankName}` : t`Connect EU banks`;
     let stepContent = <EnableBankingSetupGuide />;
     let footerButton: ReactNode = (
@@ -233,20 +234,7 @@ export const CreateEnableBankingAccount = ({ connectAccountId, savedApplicationI
             break;
         case EnableBankingSetupStepEnum.ACCOUNTS:
             title = t`Choose accounts`;
-            stepContent = (
-                <>
-                    <SyncAccountsStep
-                        {...accountSelection}
-                        logo={<BankLogo bankName={authorization?.bankName} size={36} />}
-                        footer={`${t`Balances and history come from your bank through Enable Banking.`} ${missingAccount}`}
-                        emptyDescription={missingAccount}
-                    />
-                    <SyncParkedAccountsSection
-                        previews={parkedPreviews}
-                        footer={t`These accounts already exist in Budgie or use a currency Budgie does not support. To continue an existing account, open it and tap Connect to bank.`}
-                    />
-                </>
-            );
+            stepContent = <EnableBankingAccountsStep accountSelection={accountSelection} authorization={authorization} />;
             footerButton = isEmptyArray(accountSelection.accountPreviews) ? null : (
                 <PillButton
                     label={t`Continue`}

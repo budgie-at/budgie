@@ -39,7 +39,7 @@ export const CircleIcon = (props: Props) => {
     const style: ViewStyle = { width: size, height: size, borderRadius: radius };
 
     return (
-        <View className={cn(wrapperVariants({ variant, border }), className)} style={style}>
+        <View className={cn(wrapperVariants({ variant, border }), 'shrink-0', className)} style={style}>
             <Icon className={cn(iconVariants({ variant }), iconClassName)} icon={icon} size={iconSize} />
         </View>
     );
