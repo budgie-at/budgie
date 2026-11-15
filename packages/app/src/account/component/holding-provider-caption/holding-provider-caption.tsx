@@ -5,18 +5,17 @@ import { Text } from 'react-native';
 import { isDefined } from '@rnw-community/shared';
 
 import { getSinglePositionName } from '../../utils/get-single-position-name.util';
-import { isFiatAccount } from '../../utils/is-fiat-account.util';
 
 import type { InstitutionGroupInterface } from '../../interface/institution-group.interface';
 
 interface Props {
-    readonly institution: Pick<InstitutionGroupInterface, 'provider' | 'accounts'>;
+    readonly institution: Pick<InstitutionGroupInterface, 'provider' | 'accounts' | 'positionCount'>;
     readonly investedLabel: string;
 }
 
 export const HoldingProviderCaption = ({ institution, investedLabel }: Props) => {
     const positionName = getSinglePositionName(institution.accounts);
-    const positionsCount = institution.accounts.filter(account => !isFiatAccount(account)).length;
+    const positionsCount = institution.positionCount;
 
     if (isDefined(positionName)) {
         return (

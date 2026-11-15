@@ -52,8 +52,6 @@ export const HomeHoldingRow = ({ holding, holdingReturn, todayChange, isReturnLo
                         maxFontSizeMultiplier={ROW_PRIMARY_MAX_FONT_SIZE_MULTIPLIER}
                         ellipsizeMode="tail"
                         numberOfLines={1}
-                        adjustsFontSizeToFit
-                        minimumFontScale={0.85}
                     >
                         {instrument.name}
                     </Text>
