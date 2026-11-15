@@ -35,9 +35,10 @@ export const HomeHoldingRow = ({ holding, holdingReturn, todayChange, isReturnLo
     const isStacked = useIsAccessibilityTextSize();
 
     const handlePress = () => void router.push({ pathname: '/currency/[id]', params: { id: String(instrument.id) } });
-    const accessibilityState = { busy: isReturnLoading && !isDefined(holdingReturn) && !isDefined(todayChange) };
+    const isReturnPending = isReturnLoading && !isDefined(holdingReturn) && !isDefined(todayChange);
+    const accessibilityState = { busy: isReturnPending };
     const amount = (
-        <HomeHoldingRowAmount holding={holding} holdingReturn={holdingReturn} todayChange={todayChange} isReturnLoading={isReturnLoading} />
+        <HomeHoldingRowAmount holding={holding} holdingReturn={holdingReturn} todayChange={todayChange} isReturnPending={isReturnPending} />
     );
 
     return (

@@ -151,6 +151,17 @@ const isSoleProvider = (
 const hasKnownCostBasis = (holdingReturn: HoldingReturnInterface, value: number): boolean =>
     holdingReturn.gain + holdingReturn.costBasis >= value * MIN_KNOWN_COST_BASIS_SHARE;
 
+const withoutSoleHoldings = (
+    todayByInstrumentId: ReadonlyMap<number, number>,
+    holdingSections: readonly { readonly holdings: readonly Pick<HomeHoldingInterface, 'instrument'>[] }[]
+): ReadonlyMap<number, number> => {
+    const soleInstrumentIds = new Set(
+        holdingSections.flatMap(({ holdings }) => (holdings.length === 1 ? holdings.map(holding => holding.instrument.id) : []))
+    );
+
+    return new Map([...todayByInstrumentId].filter(([instrumentId]) => !soleInstrumentIds.has(instrumentId)));
+};
+
 const sortIds = (ids: readonly number[]): number[] => [...new Set(ids)].sort((left, right) => left - right);
 
 export const useHomeHoldingReturnsQuery = (
@@ -229,13 +240,13 @@ export const useHomeHoldingReturnsQuery = (
         const hasReturn = isNotEmptyArray(holdingReturns) || portfolio.gain !== 0;
         const today = getSectionToday(holdings, total, todayByInstrumentId);
 
-        return { type, portfolio, hasReturn, today, holdingReturns: new Map(holdingReturns) };
+        return { type, portfolio, hasReturn, today, holdingReturns: new Map(holdings.length > 1 ? holdingReturns : []) };
     });
 
     return {
         holdingsBySectionType: new Map(results.map(({ type, holdingReturns }) => [type, holdingReturns])),
         bySectionType: new Map(results.flatMap(({ type, portfolio, hasReturn }) => (hasReturn ? [[type, portfolio] as const] : []))),
-        todayByInstrumentId,
+        todayByInstrumentId: withoutSoleHoldings(todayByInstrumentId, holdingSections),
         providerReturnByIntegrationId: new Map(providerReturns),
         todayBySectionType: new Map(results.flatMap(({ type, today }) => (isDefined(today) ? [[type, today] as const] : []))),
         isLoading:

@@ -6,16 +6,16 @@ import type { InstitutionGroupInterface } from '../../interface/institution-grou
 interface Props {
     readonly institution: Pick<InstitutionGroupInterface, 'integrationId' | 'total' | 'isHoldingProvider'>;
     readonly returnPercent: number | undefined;
-    readonly isReturnLoading: boolean;
+    readonly isReturnPending: boolean;
 }
 
-export const InstitutionRowTrailing = ({ institution, returnPercent, isReturnLoading }: Props) =>
+export const InstitutionRowTrailing = ({ institution, returnPercent, isReturnPending }: Props) =>
     institution.isHoldingProvider ? (
         <InstitutionRowHoldingTotal
             integrationId={institution.integrationId}
             total={institution.total}
             returnPercent={returnPercent}
-            isReturnLoading={isReturnLoading}
+            isReturnPending={isReturnPending}
         />
     ) : (
         <InstitutionRowTotal integrationId={institution.integrationId} total={institution.total} />

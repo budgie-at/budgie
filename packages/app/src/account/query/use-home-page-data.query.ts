@@ -18,20 +18,18 @@ import { decimalPlacesAtom, defaultInstrumentIdAtom } from '../../settings/const
 import { ACCOUNT_CONVERTED_BALANCE_TABLES } from '../constant/account-balance-tables.constant';
 import { HOLDING_SECTION_TYPES } from '../constant/holding-section-types.constant';
 import { HomeSectionKindEnum } from '../enum/home-section-kind.enum';
-import { isAccountTypeSection } from '../type-guard/is-account-type-section.type-guard';
-import { isHomeHolding } from '../type-guard/is-home-holding.type-guard';
-import { isInstitutionGroup } from '../type-guard/is-institution-group.type-guard';
 import { buildHomeHoldings } from '../utils/build-home-holdings.util';
+import { buildInstitutionGroups } from '../utils/build-institution-groups.util';
 import { getDebtProgressDisplayState } from '../utils/get-debt-progress-display-state.util';
 import { getDebtSectionKind } from '../utils/get-debt-section-kind.util';
-import { getIntegrationGroupNumber } from '../utils/get-integration-group-number.util';
+import { hideEmptyHomeHoldings } from '../utils/hide-empty-home-holdings.util';
 import { isFiatAccount } from '../utils/is-fiat-account.util';
 import { resolveBankProviderGroup } from '../utils/resolve-bank-provider-group.util';
+import { sumConvertedBalances } from '../utils/sum-converted-balances.util';
 
 import type { DebtSectionInterface } from '../interface/debt-section.interface';
 import type { HomeAccountBalanceSummaryInterface } from '../interface/home-account-balance-summary.interface';
 import type { HomeAccountBalanceInterface } from '../interface/home-account-balance.interface';
-import type { HomeHoldingInterface } from '../interface/home-holding.interface';
 import type { HomeSectionInterface } from '../interface/home-section.interface';
 import type { InstitutionGroupInterface } from '../interface/institution-group.interface';
 import type { AccountWithSyncEntityInterface } from '@budgie/contracts';
@@ -48,45 +46,6 @@ const createHomeAccountBalanceSummary = () => ({
     debtSectionTotals: new Map<DebtSectionInterface['kind'], number>(),
     netWorth: 0
 });
-
-const sumConvertedBalances = (
-    accounts: readonly Pick<AccountWithSyncEntityInterface, 'id'>[],
-    balancesByAccountId: ReadonlyMap<number, HomeAccountBalanceInterface>
-): number => accounts.reduce((total, account) => total + (balancesByAccountId.get(account.id)?.convertedBalance ?? 0), 0);
-
-const buildInstitutionGroups = (
-    providerAccounts: AccountWithSyncEntityInterface[],
-    integrationProviders: ReadonlyMap<number, ExternalSourceEnum>,
-    integrationLabels: ReadonlyMap<number, string | null>,
-    balancesByAccountId: ReadonlyMap<number, HomeAccountBalanceInterface>
-): InstitutionGroupInterface[] => {
-    const entries = [...groupBy(providerAccounts, account => account.integrationId)].flatMap(([integrationId, accounts]) => {
-        const provider = resolveBankProviderGroup(integrationId, integrationProviders)?.provider;
-
-        return isDefined(provider) && isDefined(integrationId)
-            ? [{ provider, integrationId, label: integrationLabels.get(integrationId) ?? null, accounts }]
-            : [];
-    });
-
-    const integrations = entries.map(({ integrationId, provider, label }) => ({ id: integrationId, provider, label }));
-
-    return entries.map((entry, index) => ({
-        ...entry,
-        groupNumber: getIntegrationGroupNumber(integrations, integrations[index]),
-        total: sumConvertedBalances(entry.accounts, balancesByAccountId),
-        cash: sumConvertedBalances(entry.accounts.filter(isFiatAccount), balancesByAccountId),
-        positionCount: countPositions(entry.accounts, () => true),
-        isHoldingProvider:
-            entry.provider === ExternalSourceEnum.MANUAL || entry.accounts.every(account => account.type === AccountTypeEnum.CRYPTO_SYNC)
-    }));
-};
-
-const countPositions = (
-    accounts: readonly AccountWithSyncEntityInterface[],
-    isShownInstrument: (instrumentId: number) => boolean
-): number =>
-    new Set(accounts.filter(account => !isFiatAccount(account) && isShownInstrument(account.instrument.id)).map(account => account.instrument.id))
-        .size;
 
 const isCryptoInstitution = (institution: InstitutionGroupInterface): boolean =>
     institution.accounts.every(account => account.type === AccountTypeEnum.CRYPTO_SYNC);
@@ -213,27 +172,6 @@ const addNetWorth = (
     }
 };
 
-const isShownHomeHolding = (holding: Pick<HomeHoldingInterface, 'balance' | 'value' | 'isValued'>, decimalPlaces: number): boolean =>
-    holding.balance !== 0 && (!holding.isValued || Math.round(Math.abs(holding.value) * 10 ** decimalPlaces) !== 0);
-
-const withoutHiddenHoldings = (section: HomeSectionInterface, decimalPlaces: number): HomeSectionInterface => {
-    if (!isAccountTypeSection(section)) {
-        return section;
-    }
-
-    const data = section.data.filter(item => !isHomeHolding(item) || isShownHomeHolding(item, decimalPlaces));
-    const shownInstrumentIds = new Set(data.filter(isHomeHolding).map(holding => holding.instrument.id));
-
-    return {
-        ...section,
-        data: data.map(item =>
-            isInstitutionGroup(item) && item.isHoldingProvider
-                ? { ...item, positionCount: countPositions(item.accounts, instrumentId => shownInstrumentIds.has(instrumentId)) }
-                : item
-        )
-    };
-};
-
 const isSettledDebtAccount = (
     account: Pick<AccountWithSyncEntityInterface, 'id' | 'type'>,
     balanceSummary: Pick<HomeAccountBalanceSummaryInterface, 'balancesByAccountId'>,
@@ -322,7 +260,7 @@ export const useHomePageDataQuery = () => {
         data.flatMap(row => (isDefined(row.account.integrationId) ? [[row.account.integrationId, row.integrationLabel] as const] : []))
     );
     const sections = buildHomePageSections(displayedAccounts, integrationProviders, integrationLabels, balanceSummary).map(section =>
-        withoutHiddenHoldings(section, decimalPlaces)
+        hideEmptyHomeHoldings(section, decimalPlaces)
     );
 
     return {

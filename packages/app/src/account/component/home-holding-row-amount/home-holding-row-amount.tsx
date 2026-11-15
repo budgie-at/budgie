@@ -1,20 +1,17 @@
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { Trans } from '@lingui/react/macro';
-import { cva } from 'class-variance-authority';
-import { Text, View } from 'react-native';
+import { Text } from 'react-native';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
-import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/footnote-max-font-size-multiplier.constant';
 import { ROW_PRIMARY_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-primary-max-font-size-multiplier.constant';
-import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
-import { cn } from '../../../@generic/utils/cn.util';
 import { BrokerageReturnText } from '../../../brokerage/component/brokerage-return-text/brokerage-return-text';
-import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
+import { HomeAmountColumn } from '../home-amount-column/home-amount-column';
+import { HomeAmountValue } from '../home-amount-value/home-amount-value';
 import { HomeHoldingRowSelector } from '../home-holding-row/home-holding-row.selector';
+import { HomeReturnSlot } from '../home-return-slot/home-return-slot';
 import { HomeTodayChangeText } from '../home-today-change-text/home-today-change-text';
 
 import type { HoldingReturnInterface } from '../../interface/holding-return.interface';
@@ -24,41 +21,24 @@ interface Props {
     readonly holding: Pick<HomeHoldingInterface, 'instrument' | 'value' | 'isValued'>;
     readonly holdingReturn: HoldingReturnInterface | undefined;
     readonly todayChange: number | undefined;
-    readonly isReturnLoading: boolean;
+    readonly isReturnPending: boolean;
 }
 
 const PLACEHOLDER_PERCENT = 0.9999;
 
-const amountVariants = cva('gap-y-xxs', {
-    variants: { isStacked: { true: 'items-start', false: 'max-w-[42%] shrink-0 items-end' } }
-});
-
-export const HomeHoldingRowAmount = ({ holding, holdingReturn, todayChange, isReturnLoading }: Props) => {
-    const isStacked = useIsAccessibilityTextSize();
+export const HomeHoldingRowAmount = ({ holding, holdingReturn, todayChange, isReturnPending }: Props) => {
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
-    const formatDigits = useDisplayFormatDigits();
 
     const instrumentCode = holding.instrument.code;
     const realPercent =
         isDefined(holdingReturn) && isPositiveNumber(holdingReturn.costBasis) ? holdingReturn.gain / holdingReturn.costBasis : null;
     const isToday = !isDefined(realPercent) && isDefined(todayChange);
-    const isReturnPending = isReturnLoading && !isDefined(holdingReturn) && !isToday;
     const isReturnEmpty = !isReturnPending && !isDefined(realPercent) && !isToday;
-    const importantForAccessibility = isReturnEmpty ? 'no-hide-descendants' : 'auto';
 
     return (
-        <View className={amountVariants({ isStacked })}>
+        <HomeAmountColumn>
             {holding.isValued ? (
-                <ProtectedText
-                    className="text-[17px] font-semibold tracking-tight tabular-nums text-primary"
-                    adjustsFontSizeToFit
-                    minimumFontScale={0.6}
-                    numberOfLines={1}
-                    maxFontSizeMultiplier={ROW_PRIMARY_MAX_FONT_SIZE_MULTIPLIER}
-                    testID={HomeHoldingRowSelector.Value(instrumentCode)}
-                >
-                    {formatDigits(holding.value, defaultInstrument.symbol)}
-                </ProtectedText>
+                <HomeAmountValue amount={holding.value} testID={HomeHoldingRowSelector.Value(instrumentCode)} />
             ) : (
                 <Text
                     className="text-[15px] font-medium text-secondary-foreground"
@@ -67,30 +47,24 @@ export const HomeHoldingRowAmount = ({ holding, holdingReturn, todayChange, isRe
                     <Trans>Value unavailable</Trans>
                 </Text>
             )}
-            <View
-                className={cn(isReturnEmpty && 'opacity-0')}
-                accessibilityElementsHidden={isReturnEmpty}
-                importantForAccessibility={importantForAccessibility}
-            >
-                <LoadingContent isLoading={isReturnPending} loadingIndicator={null}>
-                    {isToday ? (
-                        <HomeTodayChangeText
-                            gain={null}
-                            percent={todayChange}
-                            maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER}
-                            testID={HomeHoldingRowSelector.Today(instrumentCode)}
-                        />
-                    ) : (
-                        <BrokerageReturnText
-                            gain={null}
-                            percent={realPercent ?? PLACEHOLDER_PERCENT}
-                            instrumentSymbol={defaultInstrument.symbol}
-                            maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER}
-                            testID={HomeHoldingRowSelector.Return(instrumentCode)}
-                        />
-                    )}
-                </LoadingContent>
-            </View>
-        </View>
+            <HomeReturnSlot isPending={isReturnPending} isEmpty={isReturnEmpty}>
+                {isToday ? (
+                    <HomeTodayChangeText
+                        gain={null}
+                        percent={todayChange}
+                        maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER}
+                        testID={HomeHoldingRowSelector.Today(instrumentCode)}
+                    />
+                ) : (
+                    <BrokerageReturnText
+                        gain={null}
+                        percent={realPercent ?? PLACEHOLDER_PERCENT}
+                        instrumentSymbol={defaultInstrument.symbol}
+                        maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER}
+                        testID={HomeHoldingRowSelector.Return(instrumentCode)}
+                    />
+                )}
+            </HomeReturnSlot>
+        </HomeAmountColumn>
     );
 };

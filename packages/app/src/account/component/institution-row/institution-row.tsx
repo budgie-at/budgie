@@ -45,9 +45,10 @@ export const InstitutionRow = ({ institution, providerReturnPercent, isReturnLoa
     const accountsCountLabel = t({ message: plural(accounts.length, { one: '# account', other: '# accounts' }) });
     const bankName = label ?? title;
     const rowTestID = testID(InstitutionRowSelector.Row(provider === ExternalSourceEnum.MANUAL ? bankName : integrationId));
-    const accessibilityState = { busy: isHoldingProvider && isReturnLoading && !isDefined(providerReturnPercent) };
+    const isReturnPending = isHoldingProvider && isReturnLoading && !isDefined(providerReturnPercent);
+    const accessibilityState = { busy: isReturnPending };
     const trailing = (
-        <InstitutionRowTrailing institution={institution} returnPercent={providerReturnPercent} isReturnLoading={isReturnLoading} />
+        <InstitutionRowTrailing institution={institution} returnPercent={providerReturnPercent} isReturnPending={isReturnPending} />
     );
 
     return (
