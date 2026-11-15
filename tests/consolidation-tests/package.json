@@ -15,15 +15,15 @@
         "@budgie/contracts": "workspace:^",
         "@budgie/ledger": "workspace:*",
         "@budgie/sync": "workspace:*",
-        "@effect/sql-sqlite-node": "4.1.2",
-        "@effect/vitest": "4.1.2",
+        "@effect/sql-sqlite-node": "4.1.4",
+        "@effect/vitest": "4.1.4",
         "@rnw-community/shared": "^3.0.5",
         "drizzle-orm": "1.0.0-rc.4",
         "vitest": "5.1.0"
     },
     "devDependencies": {
         "@types/node": "26.6.6",
-        "effect": "4.1.2",
+        "effect": "4.1.4",
         "typescript": "npm:@typescript/typescript6@6.0.2"
     }
 }
