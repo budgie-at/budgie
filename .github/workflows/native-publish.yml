@@ -51,6 +51,7 @@ jobs:
       asc-key-path: asc_api_key.p8
       google-key-path: google-service-account.json
       install-command: pnpm install --frozen-lockfile
+      build-command: pnpm build
       install-cache-paths: |
           node_modules/.pnpm/llama.rn@*/node_modules/llama.rn/android/src/main/jniLibs
           node_modules/.pnpm/llama.rn@*/node_modules/llama.rn/ios/rnllama.xcframework
