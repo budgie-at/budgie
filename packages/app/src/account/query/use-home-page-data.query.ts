@@ -3,6 +3,7 @@ import {
     AccountTypeEnum,
     BankIntegrationEntityTable,
     DebtEventEntityTable,
+    ExternalSourceEnum,
     convertFromMicroUnits
 } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
@@ -15,10 +16,13 @@ import { databaseQueryFamily } from '../../@generic/utils/database-query-family.
 import { groupBy } from '../../@generic/utils/group-by.util';
 import { decimalPlacesAtom, defaultInstrumentIdAtom } from '../../settings/constants/settings-atoms.constant';
 import { ACCOUNT_CONVERTED_BALANCE_TABLES } from '../constant/account-balance-tables.constant';
+import { HOLDING_SECTION_TYPES } from '../constant/holding-section-types.constant';
 import { HomeSectionKindEnum } from '../enum/home-section-kind.enum';
+import { buildHomeHoldings } from '../utils/build-home-holdings.util';
 import { getDebtProgressDisplayState } from '../utils/get-debt-progress-display-state.util';
 import { getDebtSectionKind } from '../utils/get-debt-section-kind.util';
 import { getIntegrationGroupNumber } from '../utils/get-integration-group-number.util';
+import { isFiatAccount } from '../utils/is-fiat-account.util';
 import { resolveBankProviderGroup } from '../utils/resolve-bank-provider-group.util';
 
 import type { DebtSectionInterface } from '../interface/debt-section.interface';
@@ -26,7 +30,7 @@ import type { HomeAccountBalanceSummaryInterface } from '../interface/home-accou
 import type { HomeAccountBalanceInterface } from '../interface/home-account-balance.interface';
 import type { HomeSectionInterface } from '../interface/home-section.interface';
 import type { InstitutionGroupInterface } from '../interface/institution-group.interface';
-import type { AccountWithSyncEntityInterface, ExternalSourceEnum } from '@budgie/contracts';
+import type { AccountWithSyncEntityInterface } from '@budgie/contracts';
 
 export const homeAccountRowsAtom = databaseQueryFamily(
     [...ACCOUNT_CONVERTED_BALANCE_TABLES, DebtEventEntityTable, BankIntegrationEntityTable],
@@ -65,7 +69,10 @@ const buildInstitutionGroups = (
     return entries.map((entry, index) => ({
         ...entry,
         groupNumber: getIntegrationGroupNumber(integrations, integrations[index]),
-        total: sumConvertedBalances(entry.accounts, balancesByAccountId)
+        total: sumConvertedBalances(entry.accounts, balancesByAccountId),
+        cash: sumConvertedBalances(entry.accounts.filter(isFiatAccount), balancesByAccountId),
+        isHoldingProvider:
+            entry.provider === ExternalSourceEnum.MANUAL || entry.accounts.every(account => account.type === AccountTypeEnum.CRYPTO_SYNC)
     }));
 };
 
@@ -116,22 +123,27 @@ const buildHomePageSections = (
 
     const typeSections = [...sectionTypes].map(type => {
         const accounts = typeGroups.get(type) ?? [];
-        const accountItems =
-            type === AccountTypeEnum.CRYPTO
-                ? [...groupBy(accounts, account => account.instrument.id).values()].map(group => ({
-                      instrument: group[0].instrument,
-                      accounts: group
-                  }))
-                : accounts;
-
         const typeInstitutions = institutionsByType.get(type) ?? [];
         const institutionsTotal = typeInstitutions.reduce((sum, institution) => sum + institution.total, 0);
+        const total = sumConvertedBalances(accounts, balancesByAccountId) + institutionsTotal;
+        const isHoldingSection = HOLDING_SECTION_TYPES.includes(type);
+        const holdingProviders = typeInstitutions
+            .filter(institution => institution.isHoldingProvider)
+            .sort((left, right) => right.cash - left.cash);
+        const holdingAccounts = [...accounts, ...holdingProviders.flatMap(institution => institution.accounts)].filter(
+            account => isHoldingSection && !isFiatAccount(account)
+        );
 
         return {
             kind: HomeSectionKindEnum.ACCOUNT_TYPE as const,
             type,
-            total: sumConvertedBalances(accounts, balancesByAccountId) + institutionsTotal,
-            data: [...typeInstitutions, ...accountItems]
+            total,
+            data: [
+                ...buildHomeHoldings(holdingAccounts, balancesByAccountId, total),
+                ...holdingProviders,
+                ...typeInstitutions.filter(institution => !institution.isHoldingProvider),
+                ...accounts.filter(account => !isHoldingSection || isFiatAccount(account))
+            ]
         };
     });
 

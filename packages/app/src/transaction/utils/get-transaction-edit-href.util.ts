@@ -9,8 +9,16 @@ import {
 } from '@budgie/contracts';
 import { type Href } from 'expo-router';
 
+import { isDefined } from '@rnw-community/shared';
+
+import { getSecurityTrade } from './get-security-trade.util';
+
 export const getTransactionEditHref = (transaction: TransactionWithRelationsEntityInterface): Href | null => {
     const params = { id: String(transaction.id) };
+
+    if (isDefined(getSecurityTrade(transaction))) {
+        return { pathname: '/transactions/[id]/trade/edit', params };
+    }
 
     if (isTransferTransaction(transaction) || transaction.type === TransactionTypeEnum.DEBT) {
         return { pathname: '/transactions/[id]/transfer/edit', params };

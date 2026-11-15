@@ -9,6 +9,7 @@ export const BrokerageSelector = {
     QuantityInput: 'Brokerage.QuantityInput',
     PriceInput: 'Brokerage.PriceInput',
     FeeInput: 'Brokerage.FeeInput',
+    TotalInput: 'Brokerage.TotalInput',
     DateButton: 'Brokerage.DateButton',
     SaveButton: 'Brokerage.SaveButton',
     SellButton: 'Brokerage.SellButton',

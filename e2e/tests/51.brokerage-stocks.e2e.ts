@@ -74,15 +74,21 @@ test('51 manual brokerage with stocks', { tags: ['accounts'], platforms: PENDING
         await expect(core.byId(screen, 'Brokerage.GainLine')).toHaveText(/▲ \$200/, { timeout: 10_000 });
         await core.tapId(ctx, 'PageHeader.BackButton');
         await core.expectId(ctx, 'HomePage.TotalBalance', 10_000);
+        await core.scrollTo(ctx, 'HomeHolding.YAHOO:BGTX', 'up');
+        await expect(core.byId(screen, 'HomeHolding.Value.YAHOO:BGTX')).toHaveText(/\$1,200/, { timeout: 10_000 });
+        await expect(core.byId(screen, 'HomeHolding.Return.YAHOO:BGTX')).toHaveText(/▲ 20\.00%/, { timeout: 10_000 });
+        await expect(core.byId(screen, 'HomeHolding.Caption.YAHOO:BGTX')).toHaveText(/^10 BGTX/);
         await core.scrollTo(ctx, 'InstitutionRow.E2E Broker');
-        await expect(core.byId(screen, 'InstitutionRow.E2E Broker')).toHaveText(/\$1,200/, { timeout: 10_000 });
+        await expect(core.byId(screen, 'InstitutionRow.E2E Broker')).toHaveText(/\$1,200 in BGTX/, { timeout: 10_000 });
     });
 
-    await core.phase('sell part of the position', async () => {
+    await core.phase('the brokerage row opens the broker, the holding row opens the stock and sells', async () => {
         await core.tapId(ctx, 'InstitutionRow.E2E Broker');
         await core.expectId(ctx, 'Institution.Page', 10_000);
-        await core.scrollTo(ctx, position);
-        await core.tapUntil(ctx, position, () => core.expectId(ctx, 'CurrencyMarket.Header.BGTX', 10_000));
+        await core.tapId(ctx, 'PageHeader.BackButton');
+        await core.expectId(ctx, 'HomePage.TotalBalance', 10_000);
+        await core.scrollToCentered(ctx, 'HomeHolding.YAHOO:BGTX');
+        await core.tapUntil(ctx, 'HomeHolding.YAHOO:BGTX', () => core.expectId(ctx, 'CurrencyMarket.Header.BGTX', 10_000));
         await core.expectText(ctx, '10 BGTX', 10_000);
         await core.expectText(ctx, '$1,200', 10_000);
         const heldIn = screen.getByRole('button', { name: /^E2E Broker/ }).first();
@@ -110,6 +116,27 @@ test('51 manual brokerage with stocks', { tags: ['accounts'], platforms: PENDING
         await core.expectText(ctx, '6 BGTX');
         await core.scrollTo(ctx, 'CurrencyMarket.Holdings.RealizedProfit.BGTX');
         await core.expectText(ctx, '+$100', 10_000);
+    });
+
+    await core.phase('editing the buy to the broker total moves the cost basis', async () => {
+        await core.openLink(ctx, 'budgie://institution/1');
+        await core.expectId(ctx, 'Institution.Page', 10_000);
+        const buy = screen.getByRole('button', { name: /^Buy BGTX, \$1,000/ }).first();
+        await scrollTo(screen, buy);
+        await buy.tap();
+        await core.expectId(ctx, 'TransactionInfo.Page', 10_000);
+        await core.tapId(ctx, 'TransactionInfo.EditButton');
+        await core.expectId(ctx, 'Brokerage.TradePage', 10_000);
+        await expect(core.byId(screen, 'Brokerage.TotalInput')).toHaveValue('1000');
+        await replaceDigits('Brokerage.TotalInput', '1100');
+        await expect(core.byId(screen, 'Brokerage.PriceInput')).toHaveValue('110');
+        await saveTrade('TransactionInfo.Page');
+        await core.openLink(ctx, 'budgie://institution/1');
+        await core.expectId(ctx, 'Institution.Page', 10_000);
+        await core.scrollTo(ctx, position);
+        await core.tapUntil(ctx, position, () => core.expectId(ctx, 'CurrencyMarket.Header.BGTX', 10_000));
+        await core.scrollTo(ctx, 'CurrencyMarket.Holdings.CostBasis.BGTX');
+        await core.expectText(ctx, '$660', 10_000);
     });
 
     await core.phase('a euro-quoted listing shows its price change in euros', async () => {
