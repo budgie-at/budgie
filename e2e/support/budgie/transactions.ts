@@ -168,6 +168,7 @@ export async function deleteTransaction(ctx: Ctx): Promise<void> {
     await scrollTo(ctx, 'TransactionActionsMenu.DeleteButton');
     await tapId(ctx, 'TransactionActionsMenu.DeleteButton');
     await confirmDeleteDialog(ctx);
+    await expect(byId(ctx.screen, 'TransactionsPage.Container').or(byId(ctx.screen, 'HomePage.TotalBalance')).first()).toBeVisible();
 }
 
 /** Taps a transaction card's label and waits for its info page (the flows' `tapOn` + `extendedWaitUntil TransactionInfo.Page`). */

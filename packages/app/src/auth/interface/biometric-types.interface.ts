@@ -1,5 +1,6 @@
+import { BiometricKindEnum } from '../enum/biometric-kind.enum';
+
 export interface BiometricTypesInterface {
-    readonly isFaceIdAvailable: boolean;
+    readonly biometricKind: BiometricKindEnum | null;
     readonly isSomeAvailable: boolean;
-    readonly isTouchIdAvailable: boolean;
 }

@@ -8,6 +8,7 @@ import { useSingleFlight } from '../../@generic/hook/use-single-flight.hook';
 import { useVibration } from '../../@generic/hook/use-vibration.hook';
 import { PIN_LENGTH } from '../constant/pin-length.constant';
 import { useAuthContext } from '../context/auth.context';
+import { BiometricKindEnum } from '../enum/biometric-kind.enum';
 import { PinSetupActionTypeEnum } from '../enum/pin-setup-action-type.enum';
 import { PinSetupModeEnum } from '../enum/pin-setup-mode.enum';
 import { PinSetupStepEnum } from '../enum/pin-setup-step.enum';
@@ -46,7 +47,7 @@ const reducer = (state: PinSetupStateInterface, action: PinSetupActionInterface)
 // eslint-disable-next-line max-lines-per-function, max-statements -- Form orchestration hook with multiple state fields and handlers
 export const usePinSetup = (mode: PinSetupModeEnum) => {
     const { t } = useLingui();
-    const { isFaceIdAvailable, isSomeAvailable } = useAuthContext();
+    const { biometricKind, isSomeAvailable } = useAuthContext();
     const { clearError, error: pinError, isLockedOut, reportIncorrectPin } = usePinError();
     const [hapticNotification] = useVibration();
 
@@ -103,6 +104,14 @@ export const usePinSetup = (mode: PinSetupModeEnum) => {
             dispatch({ type: PinSetupActionTypeEnum.NEW_PIN_REQUESTED });
         });
 
+    const biometricErrors: Record<BiometricKindEnum, string> = {
+        [BiometricKindEnum.FACE_ID]: t`Face ID wasn't completed. Try again or continue without it.`,
+        [BiometricKindEnum.TOUCH_ID]: t`Touch ID wasn't completed. Try again or continue without it.`,
+        [BiometricKindEnum.FACE_UNLOCK]: t`Face unlock wasn't completed. Try again or continue without it.`,
+        [BiometricKindEnum.FINGERPRINT]: t`Fingerprint unlock wasn't completed. Try again or continue without it.`,
+        [BiometricKindEnum.BIOMETRICS]: t`Biometric unlock wasn't completed. Try again or continue without it.`
+    };
+
     const saveFailedMessage =
         step === PinSetupStepEnum.BIOMETRIC ? t`Couldn't save your PIN. Try again.` : t`Couldn't save your PIN. Enter it again to retry.`;
 
@@ -113,9 +122,7 @@ export const usePinSetup = (mode: PinSetupModeEnum) => {
             if (isBiometricEnabled && isSomeAvailable && !(yield* authService.authenticateWithBiometrics())) {
                 dispatch({
                     type: PinSetupActionTypeEnum.ERROR_REPORTED,
-                    error: isFaceIdAvailable
-                        ? t`Face ID wasn't completed. Try again or continue without it.`
-                        : t`Touch ID wasn't completed. Try again or continue without it.`
+                    error: biometricErrors[biometricKind ?? BiometricKindEnum.BIOMETRICS]
                 });
 
                 return;

@@ -3,6 +3,62 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.185.0](https://github.com/budgie-at/budgie/compare/v6.184.0...v6.185.0) (2026-11-14)
+
+### Features
+
+* **app:** give the create menu colour tiles ([#2227](https://github.com/budgie-at/budgie/issues/2227)) ([a4e9e61](https://github.com/budgie-at/budgie/commit/a4e9e6109a9f6c6289d0aacc4dbfcbfd16c58846))
+
+
+# [6.184.0](https://github.com/budgie-at/budgie/compare/v6.183.3...v6.184.0) (2026-11-14)
+
+### Features
+
+* **app:** add Android receipt scanner with ML Kit ([#2210](https://github.com/budgie-at/budgie/issues/2210)) ([8afe255](https://github.com/budgie-at/budgie/commit/8afe255742ea244d61e1cea9284c6c97587ffac0))
+
+
+## [6.183.3](https://github.com/budgie-at/budgie/compare/v6.183.2...v6.183.3) (2026-11-14)
+
+### Bug Fixes
+
+* root-cause the e2e flakes from the last week of CI ([#2224](https://github.com/budgie-at/budgie/issues/2224)) ([ce2906e](https://github.com/budgie-at/budgie/commit/ce2906e7c63434e489dff3390bba60e18224506b)), closes [#2214](https://github.com/budgie-at/budgie/issues/2214) [#2087](https://github.com/budgie-at/budgie/issues/2087) [#2091](https://github.com/budgie-at/budgie/issues/2091)
+
+
+## [6.183.2](https://github.com/budgie-at/budgie/compare/v6.183.1...v6.183.2) (2026-11-14)
+
+### Bug Fixes
+
+* **app:** promote the category to the title line of untitled transaction rows ([#2218](https://github.com/budgie-at/budgie/issues/2218)) ([988fe6d](https://github.com/budgie-at/budgie/commit/988fe6df59fb8181d01dba9f0d352d016e3d1df4))
+
+
+## [6.183.1](https://github.com/budgie-at/budgie/compare/v6.183.0...v6.183.1) (2026-11-14)
+
+### Performance Improvements
+
+* **app:** leave AI native modules out of AI-disabled builds ([#2220](https://github.com/budgie-at/budgie/issues/2220)) ([4f54f26](https://github.com/budgie-at/budgie/commit/4f54f2687d0e2c4f3305cd48d0d04f7507ff487c))
+
+
+# [6.183.0](https://github.com/budgie-at/budgie/compare/v6.182.2...v6.183.0) (2026-11-14)
+
+### Features
+
+* **app:** use Android names for face and fingerprint unlock ([#2211](https://github.com/budgie-at/budgie/issues/2211)) ([37ccb15](https://github.com/budgie-at/budgie/commit/37ccb151800ec102034534aa8fe9cef5eb23e467))
+
+
+## [6.182.2](https://github.com/budgie-at/budgie/compare/v6.182.1...v6.182.2) (2026-11-14)
+
+### Bug Fixes
+
+* **app:** block photo and video permissions on Android ([#2209](https://github.com/budgie-at/budgie/issues/2209)) ([9dbe68e](https://github.com/budgie-at/budgie/commit/9dbe68e8c12b956957ceec0c50588414a0186ec7))
+
+
+## [6.182.1](https://github.com/budgie-at/budgie/compare/v6.182.0...v6.182.1) (2026-11-13)
+
+### Bug Fixes
+
+* **app:** put expense in the bottom-right create menu tile for the thumb ([#2212](https://github.com/budgie-at/budgie/issues/2212)) ([414957b](https://github.com/budgie-at/budgie/commit/414957b5e5b36d4917f6ed17ffee4c30b6f0259c))
+
+
 # [6.182.0](https://github.com/budgie-at/budgie/compare/v6.181.3...v6.182.0) (2026-11-13)
 
 ### Features

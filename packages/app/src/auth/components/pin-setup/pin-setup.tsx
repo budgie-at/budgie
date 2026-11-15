@@ -37,11 +37,11 @@ interface Props {
 }
 
 export const PinSetup = ({ mode }: Props) => {
-    const { isFaceIdAvailable, isTouchIdAvailable, isSomeAvailable } = useAuthContext();
+    const { biometricKind, isSomeAvailable } = useAuthContext();
     const { t } = useLingui();
 
     const { state, addDigit, deleteDigit, restartNewPin, saveAndContinue } = usePinSetup(mode);
-    const { title, description, icon, iconVariant } = getPinSetupMeta(mode, state.step, isFaceIdAvailable, isTouchIdAvailable);
+    const { title, description, icon, iconVariant } = getPinSetupMeta(mode, state.step, biometricKind);
 
     const steps = getSetupSteps(mode, isSomeAvailable);
     const currentStepIndex = steps.indexOf(state.step);

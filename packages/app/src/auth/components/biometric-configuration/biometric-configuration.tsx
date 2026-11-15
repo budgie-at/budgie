@@ -14,6 +14,7 @@ import { PIN_ERROR_FADE_DURATION_MS, PIN_STEP_FADE_DURATION_MS } from '../../con
 import { useAuthContext } from '../../context/auth.context';
 import { PinSetupModeEnum } from '../../enum/pin-setup-mode.enum';
 import { PinSetupStepEnum } from '../../enum/pin-setup-step.enum';
+import { useBiometricEnableLabel } from '../../hook/use-biometric-enable-label.hook';
 import { getPinSetupMeta } from '../../utils/get-pin-setup-meta.util';
 import { BiometricBenefitRow } from '../biometric-benefit-row/biometric-benefit-row';
 import { PinFormSelector } from '../pin-form/pin-form.selector';
@@ -30,14 +31,9 @@ const ERROR_ENTERING = FadeIn.duration(PIN_ERROR_FADE_DURATION_MS).easing(EASE_O
 
 export const BiometricConfiguration = ({ isLoading, error, onSubmit }: Props) => {
     const { t } = useLingui();
-    const { isFaceIdAvailable, isTouchIdAvailable } = useAuthContext();
-    const { title, description, icon, iconVariant } = getPinSetupMeta(
-        PinSetupModeEnum.CREATE,
-        PinSetupStepEnum.BIOMETRIC,
-        isFaceIdAvailable,
-        isTouchIdAvailable
-    );
-    const enableLabel = isFaceIdAvailable ? t`Use Face ID` : t`Use Touch ID`;
+    const { biometricKind } = useAuthContext();
+    const { title, description, icon, iconVariant } = getPinSetupMeta(PinSetupModeEnum.CREATE, PinSetupStepEnum.BIOMETRIC, biometricKind);
+    const enableLabel = useBiometricEnableLabel();
 
     const benefits = [
         { icon: UserIconNameEnum.Zap, text: t`Unlock quickly without typing your PIN` },

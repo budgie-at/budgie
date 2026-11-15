@@ -36,7 +36,7 @@ export async function enterPin(ctx: Ctx, pin: string): Promise<void> {
     }
 }
 
-/** Four wrong PINs (each answered "Incorrect PIN"), the fifth locks the pad; a tap while locked does nothing; the lockout clears within 45 s. */
+/** Four wrong PINs (each answered "Incorrect PIN"), the fifth locks the pad; a tap while locked does nothing; the pad re-enables within 45 s. */
 export async function exhaustPinAttempts(ctx: Ctx): Promise<void> {
     const { screen } = ctx;
     for (let i = 0; i < 4; i++) {
@@ -49,16 +49,22 @@ export async function exhaustPinAttempts(ctx: Ctx): Promise<void> {
     await expect(byId(screen, 'PinPage.Digit.1')).toBeDisabled();
     await tapId(ctx, 'PinPage.Digit.1');
     await expect(locked).toBeVisible();
-    await expect(locked).toBeHidden({ timeout: 45_000 });
+    await expect(byId(screen, 'PinPage.Digit.1')).toBeEnabled({ timeout: 45_000 });
+    await expect(locked).toBeHidden();
 }
 
 /** subflows/security/resume-after-pin-unlock: background, relaunch, try the forgot-PIN sheet, unlock, back on `resumedScreenId`. */
-export async function resumeAfterPinUnlock(ctx: Ctx, resumedScreenId: string): Promise<void> {
-    const { screen } = ctx;
+/** Sends the app to the background and, on Android, waits until it has left the foreground, so App lock has locked it. */
+export async function backgroundApp(ctx: Ctx): Promise<void> {
     await ctx.device.home();
     if (!isIos(ctx)) {
         await expect.poll(async () => (await ctx.device.foregroundApp()).bundleId, { timeout: 10_000 }).not.toBe(BUNDLE_ID);
     }
+}
+
+export async function resumeAfterPinUnlock(ctx: Ctx, resumedScreenId: string): Promise<void> {
+    const { screen } = ctx;
+    await backgroundApp(ctx);
     // launchApp stopApp: false: bring the running app forward; app.open() would relaunch it fresh.
     await ctx.device.openApp(BUNDLE_ID);
     await expect(byText(screen, 'Enter your PIN')).toBeVisible();

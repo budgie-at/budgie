@@ -3,7 +3,6 @@ import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { Redirect } from 'expo-router';
 import { useState } from 'react';
-import { Platform } from 'react-native';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
@@ -13,7 +12,10 @@ import { GroupedListSection } from '../../../@generic/component/grouped-list-sec
 import { GroupedListSwitchRow } from '../../../@generic/component/grouped-list-switch-row/grouped-list-switch-row';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
+import { BIOMETRIC_KIND_ICON } from '../../../auth/constant/biometric-kind-icon.constant';
 import { useAuthContext } from '../../../auth/context/auth.context';
+import { BiometricKindEnum } from '../../../auth/enum/biometric-kind.enum';
+import { useBiometricEnableLabel } from '../../../auth/hook/use-biometric-enable-label.hook';
 import { AuthService } from '../../../auth/service/auth.service';
 import { ONBOARDING_STEP_ORDER } from '../../constant/onboarding-step-order.constant';
 import { ONBOARDING_STEP_ROUTE } from '../../constant/onboarding-step-route.constant';
@@ -35,7 +37,8 @@ export const OnboardingSeal = () => {
 
     const { pin } = useOnboardingPinContext();
     const { goBack } = useOnboardingNavigation();
-    const { isSomeAvailable, isFaceIdAvailable } = useAuthContext();
+    const { isSomeAvailable, biometricKind } = useAuthContext();
+    const biometricLabel = useBiometricEnableLabel();
 
     const handleBiometricChange = (isEnabled: boolean) => {
         if (isSealing) {
@@ -79,8 +82,7 @@ export const OnboardingSeal = () => {
         return <Redirect href={ONBOARDING_STEP_ROUTE[OnboardingStepEnum.PIN]} />;
     }
 
-    const biometricLabel = isFaceIdAvailable ? t`Use Face ID` : Platform.select({ ios: t`Use Touch ID`, default: t`Use fingerprint` });
-    const biometricIcon = isFaceIdAvailable ? UserIconNameEnum.ScanFace : UserIconNameEnum.Fingerprint;
+    const biometricIcon = BIOMETRIC_KIND_ICON[biometricKind ?? BiometricKindEnum.BIOMETRICS];
     const biometricFooter = isSomeAvailable ? t`You’ll still need the PIN after a restart.` : null;
     const noResetSentence = t`If you forget it, nobody can open this file, including you and us.`;
 

@@ -1,42 +1,36 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { msg } from '@lingui/core/macro';
 
+import { BIOMETRIC_KIND_ICON } from '../constant/biometric-kind-icon.constant';
+import { BiometricKindEnum } from '../enum/biometric-kind.enum';
 import { PinSetupModeEnum } from '../enum/pin-setup-mode.enum';
 import { PinSetupStepEnum } from '../enum/pin-setup-step.enum';
+import { BiometricSetupCopyInterface } from '../interface/biometric-setup-copy.interface';
 
-const getBiometricTitleAndDescription = (isFaceIdAvailable: boolean, isTouchIdAvailable: boolean) => {
-    if (isFaceIdAvailable && !isTouchIdAvailable) {
-        return {
-            title: msg`Unlock with Face ID?`,
-            description: msg`Open Budgie with a glance. Your PIN stays the key to your data.`,
-            icon: UserIconNameEnum.ScanFace,
-            iconVariant: 'positive' as const
-        };
-    }
-
-    if (isTouchIdAvailable && !isFaceIdAvailable) {
-        return {
-            title: msg`Unlock with Touch ID?`,
-            description: msg`Open Budgie with a touch. Your PIN stays the key to your data.`,
-            icon: UserIconNameEnum.Fingerprint,
-            iconVariant: 'positive' as const
-        };
-    }
-
-    return {
+const BIOMETRIC_SETUP_COPY: Record<BiometricKindEnum, BiometricSetupCopyInterface> = {
+    [BiometricKindEnum.FACE_ID]: {
+        title: msg`Unlock with Face ID?`,
+        description: msg`Open Budgie with a glance. Your PIN stays the key to your data.`
+    },
+    [BiometricKindEnum.TOUCH_ID]: {
+        title: msg`Unlock with Touch ID?`,
+        description: msg`Open Budgie with a touch. Your PIN stays the key to your data.`
+    },
+    [BiometricKindEnum.FACE_UNLOCK]: {
+        title: msg`Unlock with your face?`,
+        description: msg`Open Budgie with a glance. Your PIN stays the key to your data.`
+    },
+    [BiometricKindEnum.FINGERPRINT]: {
+        title: msg`Unlock with your fingerprint?`,
+        description: msg`Open Budgie with a touch. Your PIN stays the key to your data.`
+    },
+    [BiometricKindEnum.BIOMETRICS]: {
         title: msg`Unlock with biometrics?`,
-        description: msg`Open Budgie with Face ID or Touch ID. Your PIN stays the key to your data.`,
-        icon: UserIconNameEnum.ScanFace,
-        iconVariant: 'positive' as const
-    };
+        description: msg`Open Budgie with your face or fingerprint. Your PIN stays the key to your data.`
+    }
 };
 
-export const getPinSetupMeta = (
-    mode: PinSetupModeEnum,
-    step: PinSetupStepEnum,
-    isFaceIdAvailable: boolean,
-    isTouchIdAvailable: boolean
-) => {
+export const getPinSetupMeta = (mode: PinSetupModeEnum, step: PinSetupStepEnum, biometricKind: BiometricKindEnum | null) => {
     if (mode === PinSetupModeEnum.DISABLE) {
         return {
             title: msg`Turn off app lock`,
@@ -76,5 +70,11 @@ export const getPinSetupMeta = (
         };
     }
 
-    return getBiometricTitleAndDescription(isFaceIdAvailable, isTouchIdAvailable);
+    const kind = biometricKind ?? BiometricKindEnum.BIOMETRICS;
+
+    return {
+        ...BIOMETRIC_SETUP_COPY[kind],
+        icon: BIOMETRIC_KIND_ICON[kind],
+        iconVariant: 'positive' as const
+    };
 };

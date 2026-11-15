@@ -1,19 +1,21 @@
 import { useLingui } from '@lingui/react/macro';
-import { Platform } from 'react-native';
+
+import { isDefined } from '@rnw-community/shared';
 
 import { useAuthContext } from '../../auth/context/auth.context';
+import { BiometricKindEnum } from '../../auth/enum/biometric-kind.enum';
 
 export const useBiometricLabel = (): string | null => {
     const { t } = useLingui();
-    const { isFaceIdAvailable, isTouchIdAvailable } = useAuthContext();
+    const { biometricKind } = useAuthContext();
 
-    if (isFaceIdAvailable) {
-        return Platform.OS === 'ios' ? t`Face ID` : t`Facial recognition`;
-    }
+    const labels: Record<BiometricKindEnum, string> = {
+        [BiometricKindEnum.FACE_ID]: t`Face ID`,
+        [BiometricKindEnum.TOUCH_ID]: t`Touch ID`,
+        [BiometricKindEnum.FACE_UNLOCK]: t`Facial recognition`,
+        [BiometricKindEnum.FINGERPRINT]: t`Fingerprint`,
+        [BiometricKindEnum.BIOMETRICS]: t`Biometrics`
+    };
 
-    if (isTouchIdAvailable) {
-        return Platform.OS === 'ios' ? t`Touch ID` : t`Fingerprint`;
-    }
-
-    return null;
+    return isDefined(biometricKind) ? labels[biometricKind] : null;
 };

@@ -19,7 +19,7 @@ interface Props {
 
 export const AuthProvider = ({ children }: Props) => {
     const settingsLoading = useAtomValue(isSettingsLoadingAtom);
-    const { isFaceIdAvailable, isTouchIdAvailable, isSomeAvailable } = useBiometricAvailability();
+    const { biometricKind, isSomeAvailable } = useBiometricAvailability();
     const isPinEnabled = useSetting('isPinEnabled');
 
     const [isUnlocked, setIsUnlocked] = useState(hasFreshSealUnlockGrant);
@@ -53,8 +53,7 @@ export const AuthProvider = ({ children }: Props) => {
     const value: AuthContextInterface = {
         isUnlocked,
         setIsUnlocked,
-        isFaceIdAvailable,
-        isTouchIdAvailable,
+        biometricKind,
         isSomeAvailable,
         isPinEnabled
     };
