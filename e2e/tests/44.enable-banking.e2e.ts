@@ -94,7 +94,7 @@ test('44 enable banking', { tags: ['sync'], platforms: ['ios'] }, async ({ budgi
         await b.tapId(ctx, 'CreateEnableBankingAccount.StartSyncButton');
         await b.expectId(ctx, 'HomePage.TotalBalance', 30_000);
         await b.scrollTo(ctx, WISE_INSTITUTION_ROW, 'up');
-        await expect(id(WISE_INSTITUTION_ROW)).toHaveText(/^Enable Banking · Wise, .*2 accounts$/, { timeout: 90_000 });
+        await expect(id(WISE_INSTITUTION_ROW)).toHaveText(/^Enable Banking · Wise, .*2 accounts, \$/, { timeout: 90_000 });
         await b.tapId(ctx, WISE_INSTITUTION_ROW);
         await expect(id(`AccountCard.${WISE_EUR_ACCOUNT}`)).toHaveText(/€1,000, Up to date$/, { timeout: 90_000 });
         await expect(id(`AccountCard.${WISE_USD_ACCOUNT}`)).toHaveText(/\$108, Up to date$/, { timeout: 90_000 });
