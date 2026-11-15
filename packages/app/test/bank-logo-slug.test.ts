@@ -18,7 +18,7 @@ it('resolves every listed bank name to its logo', () => {
 
 it('maps every provider to an existing logo', () => {
     expect(Object.values(BANK_PROVIDER_LOGO_SLUG).every(slug => slug in BANK_LOGO_NAMES)).toBe(true);
-    expect(Object.keys(BANK_PROVIDER_LOGO_SLUG).toSorted()).toStrictEqual(['BINANCE', 'ERSTE', 'MONOBANK', 'PRIVATBANK']);
+    expect(Object.keys(BANK_PROVIDER_LOGO_SLUG).toSorted()).toStrictEqual(['BINANCE', 'ERSTE', 'MONOBANK', 'PRIVATBANK', 'WISE']);
 });
 
 it('keeps logo files and names in step', () => {

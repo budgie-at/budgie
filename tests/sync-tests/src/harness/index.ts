@@ -243,3 +243,4 @@ export { seedHistoricalRate } from './seed/seed-historical-rate';
 export { fetchEntryValuation } from './db/fetch-entry-valuation';
 export { readIsApplying } from './db/read-is-applying';
 export { onMarketDevice, readOnlyEntryId, seedCryptoSyncAccountOn, useEuroBase } from './cloud/market-device-harness';
+export { freezeDateClock } from './utils/freeze-date-clock.util';

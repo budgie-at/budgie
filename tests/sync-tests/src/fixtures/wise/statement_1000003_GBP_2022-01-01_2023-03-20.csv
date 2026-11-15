@@ -1,0 +1,2 @@
+"TransferWise ID",Date,"Date Time",Amount,Currency,Description,"Payment Reference","Running Balance","Exchange From","Exchange To","Exchange Rate","Payer Name","Payee Name","Payee Account Number",Merchant,"Card Last Four Digits","Card Holder Full Name",Attachment,Note,"Total fees","Exchange To Amount","Transaction Type","Transaction Details Type"
+CARD-1000020,05-01-2023,"05-01-2023 13:00:00.000",-8.00,GBP,"Card transaction of 8.00 GBP issued by Example Cafe",,92.00,,,,,,,"Example Cafe",0000,"Alex Example",,,0,,DEBIT,CARD

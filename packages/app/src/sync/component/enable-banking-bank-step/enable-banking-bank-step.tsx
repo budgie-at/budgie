@@ -2,11 +2,10 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import * as Arr from 'effect/Array';
 import * as Order from 'effect/Order';
-import { getLocales } from 'expo-localization';
 import { useDeferredValue, useState } from 'react';
 import { View } from 'react-native';
 
-import { isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { GroupedListItem } from '../../../@generic/component/grouped-list-item/grouped-list-item';
 import { GroupedListSectionTitle } from '../../../@generic/component/grouped-list-section-title/grouped-list-section-title';
@@ -17,6 +16,7 @@ import { SearchablePageEmptyState } from '../../../@generic/component/searchable
 import { SearchablePageList } from '../../../@generic/component/searchable-page-list/searchable-page-list';
 import { SearchablePage } from '../../../@generic/component/searchable-page/searchable-page';
 import { GROUPED_LIST_SIZING } from '../../../@generic/constant/grouped-list-sizing.constant';
+import { getDeviceRegionCode } from '../../utils/get-device-region-code.util';
 import { EnableBankingBankRow } from '../enable-banking-bank-row/enable-banking-bank-row';
 
 import type { EnableBankingBankInterface } from '@budgie/sync';
@@ -24,6 +24,7 @@ import type { EnableBankingBankInterface } from '@budgie/sync';
 interface Props {
     readonly banks: readonly EnableBankingBankInterface[];
     readonly isLoading: boolean;
+    readonly preselectedBankName: string | null;
     readonly onSelectBank: (bank: EnableBankingBankInterface) => void;
     readonly onGoBack: () => void;
 }
@@ -32,13 +33,13 @@ const COMBINING_MARKS = /[̀-ͯ]/gu;
 
 const foldSearchText = (text: string): string => text.normalize('NFD').replaceAll(COMBINING_MARKS, '').toLowerCase();
 
-export const EnableBankingBankStep = ({ banks, isLoading, onSelectBank, onGoBack }: Props) => {
+export const EnableBankingBankStep = ({ banks, isLoading, preselectedBankName, onSelectBank, onGoBack }: Props) => {
     const { t } = useLingui();
     const [query, setQuery] = useState('');
     const deferredQuery = useDeferredValue(query);
 
     const normalizedQuery = foldSearchText(deferredQuery.trim());
-    const regionCode = getLocales().at(0)?.regionCode?.toUpperCase();
+    const regionCode = getDeviceRegionCode();
     const matchingBanks = Arr.sort(
         banks,
         Order.mapInput(Order.String, (bank: EnableBankingBankInterface) => bank.name.toLocaleLowerCase())
@@ -49,6 +50,14 @@ export const EnableBankingBankStep = ({ banks, isLoading, onSelectBank, onGoBack
     const otherBanks = matchingBanks.filter(bank => bank.country !== regionCode);
     const hasBothGroups = isNotEmptyArray(localBanks) && isNotEmptyArray(otherBanks);
     const listData = hasBothGroups ? otherBanks : matchingBanks;
+
+    const isPreselectedBankMissing = isDefined(preselectedBankName) && !banks.some(bank => bank.isSupported);
+    const { title: emptyTitle, description: emptyDescription } = isPreselectedBankMissing
+        ? {
+              title: t`${preselectedBankName} is not available`,
+              description: t`Enable Banking cannot connect ${preselectedBankName} in any country right now.`
+          }
+        : { title: t`No banks found`, description: t`Try another name.` };
 
     const renderCard = (bank: EnableBankingBankInterface, index: number, isLast: boolean) => (
         <GroupedListItem isFirst={index === 0} isLast={isLast}>
@@ -82,11 +91,7 @@ export const EnableBankingBankStep = ({ banks, isLoading, onSelectBank, onGoBack
                     data={listData}
                     emptyState={
                         <LoadingContent isLoading={isLoading}>
-                            <SearchablePageEmptyState
-                                icon={UserIconNameEnum.Search}
-                                title={t`No banks found`}
-                                description={t`Try another name.`}
-                            />
+                            <SearchablePageEmptyState icon={UserIconNameEnum.Search} title={emptyTitle} description={emptyDescription} />
                         </LoadingContent>
                     }
                     listHeader={listHeader}
