@@ -11,12 +11,8 @@ import { LanguageEnum } from '../../@generic/enum/language.enum';
 import { transactionFilters } from '../../@generic/repository/base-transaction-filter.repository';
 import { Db } from '../../@generic/service/db.service';
 import { buildCategoryTranslationJoinCondition } from '../../@generic/utils/build-category-translation-join-condition.util';
-import {
-    getDirectExchangeRateSql,
-    getHistoricalExchangeRateSql,
-    getInverseExchangeRateSql,
-    getInverseHistoricalExchangeRateSql
-} from '../../@generic/utils/get-exchange-rate-sql.util';
+import { buildConversionRateSql } from '../../@generic/utils/build-conversion-rate-sql.util';
+import { buildEntryBaseValueSql } from '../../@generic/utils/build-entry-base-value-sql.util';
 import { roundToMinorUnitSql } from '../../@generic/utils/round-to-minor-unit-sql.util';
 import { CRYPTO_ACCOUNT_TYPES } from '../../account/constant/crypto-account-types.constant';
 import { LIQUID_ACCOUNT_TYPES } from '../../account/constant/liquid-account-types.constant';
@@ -92,23 +88,6 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
                 transactionFilters.buildFilterWhere(filters),
                 ...(isNotEmptyArray(filters.excludedCategoryIds) ? [buildExcludedCategoryCondition(db, filters.excludedCategoryIds)] : [])
             );
-
-        const buildConversionRateSql = (defaultInstrumentId: number, instrumentIdRef: SQL) =>
-            sql`COALESCE(
-            ${getDirectExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
-            ${getInverseExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
-            ${getHistoricalExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
-            ${getInverseHistoricalExchangeRateSql(defaultInstrumentId, instrumentIdRef)}
-        )`;
-
-        const buildEntryBaseValueSql = (defaultInstrumentId: number) =>
-            roundToMinorUnitSql(sql`CASE
-            WHEN ${TransactionEntryEntityTable.baseInstrumentId} = ${defaultInstrumentId}
-            THEN ${TransactionEntryEntityTable.baseAmount}
-            WHEN ${AccountEntityTable.instrumentId} = ${defaultInstrumentId}
-            THEN ${TransactionEntryEntityTable.amount}
-            ELSE ROUND(${TransactionEntryEntityTable.amount} * ${buildConversionRateSql(defaultInstrumentId, sql.raw('accounts.instrument_id'))})
-        END`);
 
         const buildCorrelatedEntryBaseValueSql = (defaultInstrumentId: number, entryAlias: string, accountAlias: string) =>
             sql<number>`CASE

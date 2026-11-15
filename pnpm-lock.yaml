@@ -760,6 +760,9 @@ importers:
       '@budgie/ledger':
         specifier: workspace:*
         version: link:../ledger
+      '@budgie/market':
+        specifier: workspace:*
+        version: link:../market
       '@budgie/recurring':
         specifier: workspace:*
         version: link:../recurring

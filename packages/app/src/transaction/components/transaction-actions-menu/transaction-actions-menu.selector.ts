@@ -10,6 +10,7 @@ export const TransactionActionsMenuSelector = {
     ConvertToInstallmentButton: 'TransactionActionsMenu.ConvertToInstallmentButton',
     AttachDebtSettlementButton: 'TransactionActionsMenu.AttachDebtSettlementButton',
     DetachDebtSettlementButton: 'TransactionActionsMenu.DetachDebtSettlementButton',
+    MarkPassiveIncomeButton: 'TransactionActionsMenu.MarkPassiveIncomeButton',
     RevertButton: 'TransactionActionsMenu.RevertButton',
     DeleteButton: 'TransactionActionsMenu.DeleteButton'
 } as const;

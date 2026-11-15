@@ -2,6 +2,7 @@ import { TransactionEmbeddingRepository } from '@budgie/categorization';
 import { buildConsolidationScopeFromTransactions } from '@budgie/consolidation';
 import { Db, SettingsRepository, SyncRecordTypeEnum, TransactionRepository } from '@budgie/contracts';
 import { TransferConsolidationService } from '@budgie/ledger';
+import { MarketPricedRevaluationService } from '@budgie/market';
 import { RecurringService } from '@budgie/recurring';
 import { RuleEngineService } from '@budgie/rules';
 import * as Cause from 'effect/Cause';
@@ -13,6 +14,7 @@ import * as Layer from 'effect/Layer';
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { SyncAutomationEmbeddingBoost } from '../port/sync-automation-embedding-boost.port';
+import { SyncAutomationYieldTagRepair } from '../port/sync-automation-yield-tag-repair.port';
 
 import type { SyncApplyResultInterface } from '../../apply/interface/sync-apply-result.interface';
 import type { SyncAutomationResultInterface } from '../interface/sync-automation-result.interface';
@@ -29,6 +31,8 @@ export class SyncAutomationService extends Context.Service<SyncAutomationService
         const transactionEmbeddingRepository = yield* TransactionEmbeddingRepository;
         const embeddingBoost = yield* SyncAutomationEmbeddingBoost;
         const transactionRepository = yield* TransactionRepository;
+        const marketPricedRevaluationService = yield* MarketPricedRevaluationService;
+        const yieldTagRepair = yield* SyncAutomationYieldTagRepair;
 
         const settle = <A, E>(effect: Effect.Effect<A, E, Db>, fallback: A) =>
             Effect.catchCause(effect, cause =>
@@ -47,11 +51,15 @@ export class SyncAutomationService extends Context.Service<SyncAutomationService
         return {
             afterApply: Effect.fn('SyncAutomationService.afterApply')(function* (result: SyncApplyResultInterface) {
                 const touchedSyncIds = result.touchedRows[TRANSACTIONS_TABLE] ?? [];
+
+                yield* settleVoid(marketPricedRevaluationService.revalueTransactions(touchedSyncIds));
+
                 const hasDeletedTransactions = isNotEmptyArray(result.deleted[SyncRecordTypeEnum.TRANSACTION] ?? []);
                 const hasSeriesChange = isNotEmptyArray(result.touchedRows[RECURRING_SERIES_TABLE] ?? []) || isNotEmptyArray(result.merged);
                 const consolidated = yield* settle(consolidate(touchedSyncIds), 0);
                 const survivorIds = (yield* transactionRepository.findLiveIdsBySyncIds(touchedSyncIds)).map(({ id }) => id);
 
+                yield* settleVoid(yieldTagRepair(touchedSyncIds));
                 yield* settleVoid(ruleEngine.applyCreateSafeRulesToTransactionIds(survivorIds));
 
                 const settings = yield* settingsRepository.find;
@@ -84,6 +92,7 @@ export class SyncAutomationService extends Context.Service<SyncAutomationService
             TransferConsolidationService.layer,
             RuleEngineService.layer,
             RecurringService.layer,
+            MarketPricedRevaluationService.layer,
             SettingsRepository.layer,
             TransactionRepository.layer,
             TransactionEmbeddingRepository.layer

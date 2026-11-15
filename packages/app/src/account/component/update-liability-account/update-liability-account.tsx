@@ -19,6 +19,7 @@ import { useAccountUpdateBindings } from '../../hooks/use-account-update-binding
 import { useLiabilityAccountForm } from '../../hooks/use-liability-account-form.hook';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
 import { UpdateAccountScreen } from '../create-account-screen/update-account-screen';
+import { ExpectedYieldField } from '../expected-yield-field/expected-yield-field';
 
 interface Props {
     readonly account: AccountWithInstrumentEntityInterface;
@@ -29,7 +30,17 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
     const { balance } = useAccountBalanceQuery(account.id);
 
     const formValues = {
-        ...Struct.pick(account, ['externalId', 'iban', 'type', 'icon', 'title', 'instrumentId', 'includeInNetWorth', 'isActive']),
+        ...Struct.pick(account, [
+            'externalId',
+            'iban',
+            'type',
+            'icon',
+            'title',
+            'instrumentId',
+            'interestRate',
+            'includeInNetWorth',
+            'isActive'
+        ]),
         currentBalance: balance
     };
 
@@ -47,6 +58,7 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
         }),
         instrumentId: useController({ control, name: 'instrumentId' })
     };
+    const interestRate = useController({ control, name: 'interestRate' });
     const stickyInstrument = useStickyDefinedValue(instrument);
     const isBankManaged = account.externalSource !== ExternalSourceEnum.INZHUR;
     const isSyncedAccount = account.type === AccountTypeEnum.BANK_SYNC || account.type === AccountTypeEnum.CRYPTO_SYNC;
@@ -87,6 +99,13 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
             onSubmit={handleSubmit}
         >
             {currencyField}
+            {account.type === AccountTypeEnum.SAVINGS ? (
+                <ExpectedYieldField
+                    value={interestRate.field.value ?? null}
+                    onChange={interestRate.field.onChange}
+                    error={interestRate.fieldState.error?.message}
+                />
+            ) : null}
             {isBankManaged && isSyncedAccount ? <AccountSyncCard accountId={account.id} /> : null}
             {isBankManaged && (account.type === AccountTypeEnum.BANK || account.type === AccountTypeEnum.BANK_SYNC) ? (
                 <AccountConnectBankRow accountId={account.id} />

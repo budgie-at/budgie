@@ -10,6 +10,7 @@ import { cloudSyncSafetyCopyLayer } from './cloud-sync-safety-copy.layer';
 import { cloudSyncStateStoreLayer } from './cloud-sync-state-store.layer';
 import { cloudSyncTransportLayer } from './cloud-sync-transport.layer';
 import { syncAutomationEmbeddingBoostLayer } from './sync-automation-embedding-boost.layer';
+import { syncAutomationYieldTagRepairLayer } from './sync-automation-yield-tag-repair.layer';
 
 const cloudSyncPortsLayer = Layer.mergeAll(
     cloudSyncTransportLayer,
@@ -18,7 +19,7 @@ const cloudSyncPortsLayer = Layer.mergeAll(
     cloudSyncInstallIdLayer,
     cloudSyncDatabaseChangesLayer,
     cloudSyncHostLayer,
-    SyncAutomationService.layer.pipe(Layer.provide(syncAutomationEmbeddingBoostLayer))
+    SyncAutomationService.layer.pipe(Layer.provide([syncAutomationEmbeddingBoostLayer, syncAutomationYieldTagRepairLayer]))
 );
 
 export const cloudSyncLayer = IS_CLOUD_BACKUP_SUPPORTED

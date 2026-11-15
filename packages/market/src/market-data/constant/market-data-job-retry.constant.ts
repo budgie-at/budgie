@@ -1,0 +1,3 @@
+export const MARKET_DATA_JOB_MAX_ATTEMPTS = 3;
+
+export const MARKET_DATA_JOB_STALE_LOCK_MS = 5 * 60 * 1000;

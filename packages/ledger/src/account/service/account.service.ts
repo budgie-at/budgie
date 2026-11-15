@@ -16,6 +16,7 @@ import { isDefined, isNotEmptyArray, isNumber } from '@rnw-community/shared';
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
 
 import { BalanceAdjustmentService } from './balance-adjustment.service';
+import { DepositInterestService } from './deposit-interest.service';
 
 import type {
     AccountEntityInterface,
@@ -30,6 +31,7 @@ export class AccountService extends Context.Service<AccountService>()('@budgie/l
         const accountBalanceRepository = yield* AccountBalanceRepository;
         const settingsRepository = yield* SettingsRepository;
         const balanceAdjustmentService = yield* BalanceAdjustmentService;
+        const depositInterestService = yield* DepositInterestService;
 
         const adjustBalanceTo = Effect.fn('AccountService.adjustBalanceTo')(function* (
             accountId: number,
@@ -119,15 +121,37 @@ export class AccountService extends Context.Service<AccountService>()('@budgie/l
             ),
             createDeposit: (input: DepositAccountCreateInputInterface) => createWithBalance(input, AccountNatureEnum.ASSET),
             updateById: (id: number, input: Partial<Omit<LiabilityAccountCreateInputInterface, 'type'>>) => updateWithBalance(id, input),
-            updateDepositById: (
-                id: number,
-                input: Partial<
-                    Pick<
-                        DepositAccountCreateInputInterface,
-                        'title' | 'icon' | 'currentBalance' | 'interestRate' | 'deadline' | 'includeInNetWorth' | 'isActive'
+            updateDepositById: Effect.fn('AccountService.updateDepositById')(
+                function* (
+                    id: number,
+                    {
+                        currentBalance,
+                        ...input
+                    }: Partial<
+                        Pick<
+                            DepositAccountCreateInputInterface,
+                            'title' | 'icon' | 'currentBalance' | 'interestRate' | 'deadline' | 'includeInNetWorth' | 'isActive'
+                        >
                     >
-                >
-            ) => updateWithBalance(id, input),
+                ) {
+                    const updatedAccount = isNotEmptyArray(Object.keys(input))
+                        ? yield* accountRepository.updateById(id, input)
+                        : yield* orFail(id, accountRepository.findById(id));
+
+                    if (!isNumber(currentBalance)) {
+                        return updatedAccount;
+                    }
+
+                    if (isDefined(updatedAccount.integrationId)) {
+                        yield* adjustBalanceTo(updatedAccount.id, currentBalance);
+                    } else {
+                        yield* depositInterestService.recordGrowth(updatedAccount.id, currentBalance);
+                    }
+
+                    return updatedAccount;
+                },
+                effect => Db.transaction(effect)
+            ),
             activateById: Effect.fn('AccountService.activateById')(
                 function* (id: number) {
                     yield* accountRepository.updateById(id, { isActive: true });
@@ -152,6 +176,12 @@ export class AccountService extends Context.Service<AccountService>()('@budgie/l
     })
 }) {
     static readonly layer = Layer.effect(AccountService, AccountService.make).pipe(
-        Layer.provide([AccountRepository.layer, AccountBalanceRepository.layer, SettingsRepository.layer, BalanceAdjustmentService.layer])
+        Layer.provide([
+            AccountRepository.layer,
+            AccountBalanceRepository.layer,
+            SettingsRepository.layer,
+            BalanceAdjustmentService.layer,
+            DepositInterestService.layer
+        ])
     );
 }

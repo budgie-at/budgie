@@ -25,6 +25,9 @@ export const TransactionInfoPageSelector = {
         Receipt: 'TransactionInfo.Row.Receipt',
         SplitEntry: (index: number) => `TransactionInfo.Row.SplitEntry.${index}` as const,
         Tags: 'TransactionInfo.Row.Tags',
-        ToAccount: 'TransactionInfo.Row.ToAccount'
+        ToAccount: 'TransactionInfo.Row.ToAccount',
+        Yield: 'TransactionInfo.Row.Yield',
+        YieldKind: 'TransactionInfo.Row.YieldKind',
+        YieldSource: 'TransactionInfo.Row.YieldSource'
     }
 } as const;

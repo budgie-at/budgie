@@ -32,6 +32,7 @@ import * as Effect from 'effect/Effect';
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import type { SeedBankPairEntryInputType } from '../interface/seed-bank-pair-entry-input.type';
+import type { SeedValuedIncomeInputInterface } from '../interface/seed-valued-income-input.interface';
 import type {
     AccountCreateEntityInterface,
     AccountEntityInterface,
@@ -60,7 +61,8 @@ export class TestSeedService {
                     code: input.code ?? 'UAH',
                     name: input.name ?? 'Hryvnia',
                     symbol: input.symbol ?? '₴',
-                    type: input.type ?? InstrumentTypeEnum.FIAT
+                    type: input.type ?? InstrumentTypeEnum.FIAT,
+                    quoteInstrumentId: input.quoteInstrumentId ?? null
                 } satisfies InstrumentCreateEntityInterface)
                 .returning();
 
@@ -68,7 +70,7 @@ export class TestSeedService {
         });
     }
 
-    account(input: Partial<AccountCreateEntityInterface & Pick<AccountEntityInterface, 'createdAt'>> = {}) {
+    account(input: Partial<AccountCreateEntityInterface & Pick<AccountEntityInterface, 'createdAt' | 'syncZone'>> = {}) {
         return Effect.gen({ self: this }, function* () {
             const rows = yield* this.database
                 .insert(AccountEntityTable)
@@ -92,7 +94,8 @@ export class TestSeedService {
                     targetBaseAmount: input.targetBaseAmount ?? null,
                     includeInNetWorth: input.includeInNetWorth ?? true,
                     isActive: input.isActive ?? true,
-                    ...(isDefined(input.createdAt) && { createdAt: input.createdAt })
+                    ...(isDefined(input.createdAt) && { createdAt: input.createdAt }),
+                    ...(isDefined(input.syncZone) && { syncZone: input.syncZone })
                 } satisfies AccountCreateEntityInterface)
                 .returning();
 
@@ -480,6 +483,25 @@ export class TestSeedService {
             TestSeedService.requireInserted(entryRows, 'transaction_entries');
 
             return transaction;
+        });
+    }
+
+    valuedIncome(input: SeedValuedIncomeInputInterface) {
+        return Effect.gen({ self: this }, function* () {
+            const transaction = yield* this.manualExpense({
+                accountId: input.accountId,
+                amount: input.amount,
+                operatedAt: input.operatedAt,
+                title: input.title,
+                type: TransactionTypeEnum.INCOME
+            });
+            const rows = yield* this.database
+                .update(TransactionEntryEntityTable)
+                .set({ baseInstrumentId: input.baseInstrumentId, baseExchangeRate: input.baseExchangeRate, baseAmount: input.baseAmount })
+                .where(eq(TransactionEntryEntityTable.transactionId, transaction.id))
+                .returning();
+
+            return { transaction, entry: TestSeedService.requireInserted(rows, 'transaction_entries') };
         });
     }
 

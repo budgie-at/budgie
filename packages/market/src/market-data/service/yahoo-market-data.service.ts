@@ -1,4 +1,7 @@
 import { Db, InstrumentPriceProviderEnum, InstrumentRepository, InstrumentTypeEnum } from '@budgie/contracts';
+import { addDays } from 'date-fns/addDays';
+import { format } from 'date-fns/format';
+import { parseISO } from 'date-fns/parseISO';
 import { subDays } from 'date-fns/subDays';
 import * as Context from 'effect/Context';
 import * as DateTime from 'effect/DateTime';
@@ -14,6 +17,11 @@ import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 import { ExchangeRateRepository } from '../../exchange-rate/repository/exchange-rate.repository';
 
 import type { YahooListingInterface } from '../interface/yahoo-listing.interface';
+import type {
+    InstrumentDailyMarketPriceCreateEntityInterface,
+    InstrumentEntityInterface,
+    InstrumentMarketDataJobEntityInterface
+} from '@budgie/contracts';
 
 export class YahooMarketDataService extends Context.Service<YahooMarketDataService>()('@budgie/market/YahooMarketDataService', {
     make: Effect.gen(function* () {
@@ -86,6 +94,34 @@ export class YahooMarketDataService extends Context.Service<YahooMarketDataServi
 
         return {
             chart,
+            fetchDailyPrices: Effect.fn('YahooMarketDataService.fetchDailyPrices')(function* (
+                instrument: Pick<InstrumentEntityInterface, 'id' | 'code' | 'providerInstrumentId'>,
+                job: Pick<InstrumentMarketDataJobEntityInterface, 'quoteInstrumentId' | 'fromDate' | 'toDate'>
+            ) {
+                const data = yield* chart(
+                    instrument.providerInstrumentId ?? instrument.code,
+                    parseISO(job.fromDate),
+                    addDays(parseISO(job.toDate), 1)
+                );
+
+                return (data?.timestamp ?? []).flatMap((timestamp, index): InstrumentDailyMarketPriceCreateEntityInterface[] => {
+                    const price = data?.indicators.quote.at(0)?.close.at(index);
+
+                    return isPositiveNumber(price)
+                        ? [
+                              {
+                                  instrumentId: instrument.id,
+                                  quoteInstrumentId: job.quoteInstrumentId,
+                                  priceDate: format(timestamp * 1000, 'yyyy-MM-dd'),
+                                  price,
+                                  marketCap: null,
+                                  volume: null,
+                                  source: 'yahoo.com'
+                              }
+                          ]
+                        : [];
+                });
+            }),
             quote: Effect.fn('YahooMarketDataService.quote')(function* (symbol: string) {
                 const data = yield* recentChart(symbol);
                 const price = data?.meta.regularMarketPrice ?? data?.indicators.quote.at(0)?.close.findLast(isPositiveNumber);
