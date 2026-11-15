@@ -7,6 +7,7 @@ import {
     CategorySourceEnum,
     Db,
     ExternalSourceEnum,
+    InstrumentTypeEnum,
     TransactionEntryKindEnum,
     TransactionEntryTypeEnum,
     TransactionRepository,
@@ -17,6 +18,7 @@ import {
     generateSyncId
 } from '@budgie/contracts';
 import {
+    AccountArchiveService,
     AccountBalanceIncrementalService,
     AccountService,
     BalanceAdjustmentService,
@@ -54,6 +56,7 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
         const accountRepository = yield* AccountRepository;
         const accountBalanceRepository = yield* AccountBalanceRepository;
         const accountService = yield* AccountService;
+        const accountArchiveService = yield* AccountArchiveService;
         const balanceAdjustmentService = yield* BalanceAdjustmentService;
         const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
         const bankIntegrationRepository = yield* BankIntegrationRepository;
@@ -77,11 +80,39 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
             toIban: null
         });
 
+        const findIntegrationAccounts = (integrationId: number | null) =>
+            isDefined(integrationId) ? accountRepository.findByIntegrationId(integrationId) : Effect.succeed([]);
+
         const findCashAccount = Effect.fnUntraced(function* ({ integrationId, instrument }: AccountWithInstrumentEntityInterface) {
-            const accounts = isDefined(integrationId) ? yield* accountRepository.findByIntegrationId(integrationId) : [];
+            const accounts = yield* findIntegrationAccounts(integrationId);
             const cashAccount = findBrokerageCashAccount(accounts, instrument.quoteInstrumentId);
 
             return cashAccount ?? (yield* Effect.die(new Error('Brokerage cash account not found')));
+        });
+
+        const findOrRestoreAccount = Effect.fnUntraced(function* (accountId: number) {
+            const active = yield* accountRepository.findById(accountId);
+
+            if (isDefined(active)) {
+                return active;
+            }
+
+            yield* accountArchiveService.restoreById(accountId);
+
+            return yield* accountRepository.findById(accountId);
+        });
+
+        const findTradeCashAccount = Effect.fnUntraced(function* (
+            security: AccountWithInstrumentEntityInterface,
+            storedCashId: number,
+            cashInstrumentId: number | null
+        ) {
+            const stored = yield* findOrRestoreAccount(storedCashId);
+            const replacement = (yield* findIntegrationAccounts(security.integrationId)).find(
+                account => account.instrumentId === cashInstrumentId && account.instrument.type === InstrumentTypeEnum.FIAT
+            );
+
+            return stored ?? replacement ?? (yield* Effect.die(new Error('Brokerage cash account not found')));
         });
 
         const buildTradeInput = Effect.fnUntraced(function* (
@@ -236,10 +267,19 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
                         return yield* Effect.die(new Error('Trade transaction not found'));
                     }
 
-                    const from = yield* findSecurityAccount(transaction.fromAccountId ?? 0);
-                    const to = yield* findSecurityAccount(transaction.toAccountId ?? 0);
-                    const isSell = isSecurityInstrumentType(from.instrument.type);
-                    const [security, cash] = isSell ? [from, to] : [to, from];
+                    const from = yield* accountRepository.findByIdIncludingArchived(transaction.fromAccountId ?? 0);
+                    const isSell = isDefined(from) && isSecurityInstrumentType(from.instrument.type);
+                    const [storedSecurityId, storedCashId] = isSell
+                        ? [transaction.fromAccountId, transaction.toAccountId]
+                        : [transaction.toAccountId, transaction.fromAccountId];
+                    const security = yield* findOrRestoreAccount(storedSecurityId ?? 0);
+
+                    if (!isDefined(security) || !isSecurityInstrumentType(security.instrument.type)) {
+                        return yield* Effect.die(new Error('Security account not found'));
+                    }
+
+                    const cashInstrumentId = transaction.entries.find(entry => entry.accountId === security.id)?.quotedInstrumentId ?? null;
+                    const cash = yield* findTradeCashAccount(security, storedCashId ?? 0, cashInstrumentId);
                     const input = yield* buildTradeInput(security, cash, trade, isSell);
                     const tags = yield* transactionTagsRepository.findByTransactionId(transactionId);
                     const operatedFrom = min([transaction.operatedAt, trade.operatedAt]);
@@ -287,6 +327,7 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
             AccountBalanceRepository.layer,
             AccountRepository.layer,
             AccountService.layer,
+            AccountArchiveService.layer,
             BalanceAdjustmentService.layer,
             AccountBalanceIncrementalService.layer,
             BankIntegrationRepository.layer,

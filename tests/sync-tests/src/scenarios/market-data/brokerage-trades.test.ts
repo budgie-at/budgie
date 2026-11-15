@@ -1,4 +1,5 @@
 import { BrokerageService } from '@app/brokerage/service/brokerage.service';
+import { getSecurityTrade } from '@app/transaction/utils/get-security-trade.util';
 import { sumEntryAmounts } from '@app/transaction/utils/sum-entry-amounts.util';
 import {
     AccountBalanceRepository,
@@ -6,18 +7,22 @@ import {
     ExternalSourceEnum,
     AccountTypeEnum,
     InstrumentTypeEnum,
+    LanguageEnum,
     TransactionEntryEntityTable,
     TransactionEntryPositionRepository,
     TransactionEntryTypeEnum,
+    TransactionViewRepository,
     UserIconNameEnum,
     convertFromMicroUnits
 } from '@budgie/contracts';
-import { BalanceAdjustmentService } from '@budgie/ledger';
+import { AccountArchiveService, AccountService, BalanceAdjustmentService } from '@budgie/ledger';
 import { calculateInstrumentPosition } from '@budgie/market';
 import { describe, expect, it } from '@effect/vitest';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 import { HttpResponse, http } from 'msw';
+
+import { isDefined } from '@rnw-community/shared';
 
 import { fetchAccountBalance, fetchBalanceAdjustments, fetchExpenseEntries, requireInstrument, seed, TestLayer } from '../../harness';
 import { mockServer } from '../../harness/scenario/mock-server';
@@ -54,6 +59,44 @@ const createBrokerage = Effect.gen(function* () {
 
     return { dollar, brokerageService, cash };
 });
+
+const readTrade = (id: number) =>
+    Effect.flatMap(TransactionViewRepository, repository => repository.getById(id, LanguageEnum.EN)).pipe(
+        Effect.map(transaction => (isDefined(transaction) ? getSecurityTrade(transaction) : null))
+    );
+
+const buyTwentyOne = (price: number) =>
+    Effect.flatMap(createBrokerage, brokerage =>
+        Effect.map(
+            brokerage.brokerageService.buy(
+                brokerage.cash.integrationId ?? 0,
+                LISTING,
+                { quantity: 21, price, fee: 0, operatedAt: TRADE_DAY },
+                FUNDING_TITLE
+            ),
+            securityId => ({ ...brokerage, securityId })
+        )
+    );
+
+const editToBrokerTotal = (transactionId: number, securityId: number, quoteInstrumentId: number) =>
+    Effect.gen(function* () {
+        const brokerageService = yield* BrokerageService;
+        const accountRepository = yield* AccountRepository;
+        const positionRepository = yield* TransactionEntryPositionRepository;
+
+        yield* brokerageService.update(
+            transactionId,
+            { quantity: 21, price: 41.949, fee: 25.15, total: 906.08, operatedAt: TRADE_DAY },
+            FUNDING_TITLE,
+            WITHDRAWAL_TITLE
+        );
+
+        const security = yield* accountRepository.findById(securityId);
+
+        return calculateInstrumentPosition(
+            yield* positionRepository.findInstrumentPositionEntries(security?.instrumentId ?? 0, quoteInstrumentId)
+        );
+    });
 
 const buyTen = (price: number, operatedAt: Date) => ({ quantity: 10, price, fee: 0, operatedAt });
 
@@ -235,32 +278,13 @@ describe('market-data/brokerage-trades', () => {
 
     it.effect('edits a buy in place to the broker total so the cost basis matches and the cash stays funded', () =>
         Effect.gen(function* () {
-            const { dollar, brokerageService, cash } = yield* createBrokerage;
-            const accountRepository = yield* AccountRepository;
-            const positionRepository = yield* TransactionEntryPositionRepository;
-            const securityId = yield* brokerageService.buy(
-                cash.integrationId ?? 0,
-                LISTING,
-                { quantity: 21, price: 37.8571, fee: 0, operatedAt: TRADE_DAY },
-                FUNDING_TITLE
-            );
-            const [buyEntry] = yield* testDb
-                .select()
-                .from(TransactionEntryEntityTable)
-                .where(eq(TransactionEntryEntityTable.accountId, securityId));
+            const { dollar, brokerageService, cash, securityId } = yield* buyTwentyOne(37.8571);
+            const [buyId] = yield* findTradeIds(securityId);
 
-            yield* brokerageService.update(
-                buyEntry.transactionId,
-                { quantity: 21, price: 41.949, fee: 25.15, total: 906.08, operatedAt: TRADE_DAY },
-                FUNDING_TITLE,
-                WITHDRAWAL_TITLE
-            );
+            expect(yield* editToBrokerTotal(buyId, securityId, dollar.id)).toMatchObject({ amount: 21, costBasis: 906.08 });
 
-            const security = yield* accountRepository.findById(securityId);
-            const entries = yield* positionRepository.findInstrumentPositionEntries(security?.instrumentId ?? 0, dollar.id);
-            const tradeEntries = yield* fetchExpenseEntries(buyEntry.transactionId);
+            const tradeEntries = yield* fetchExpenseEntries(buyId);
 
-            expect(calculateInstrumentPosition(entries)).toMatchObject({ amount: 21, costBasis: 906.08 });
             expect(tradeEntries.map(({ accountId, type, amount }) => ({ accountId, type, amount }))).toEqual(
                 expect.arrayContaining([
                     { accountId: cash.id, type: TransactionEntryTypeEnum.CREDIT, amount: 880_930_000 },
@@ -274,14 +298,93 @@ describe('market-data/brokerage-trades', () => {
             yield* brokerageService.sell(securityId, { quantity: 10, price: 50, fee: 0, operatedAt: new Date('2026-03-10') });
             expect(
                 yield* brokerageService
-                    .update(
-                        buyEntry.transactionId,
-                        { quantity: 5, price: 40, fee: 0, operatedAt: TRADE_DAY },
-                        FUNDING_TITLE,
-                        WITHDRAWAL_TITLE
-                    )
+                    .update(buyId, { quantity: 5, price: 40, fee: 0, operatedAt: TRADE_DAY }, FUNDING_TITLE, WITHDRAWAL_TITLE)
                     .pipe(Effect.flip)
             ).toMatchObject({ _tag: 'InsufficientSecurityHoldingError' });
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('recognises a buy whose cash leg is missing as a trade and repairs it on edit to the broker total', () =>
+        Effect.gen(function* () {
+            const { dollar, cash, securityId } = yield* buyTwentyOne(0.01);
+            const [buyId] = yield* findTradeIds(securityId);
+
+            yield* testDb
+                .delete(TransactionEntryEntityTable)
+                .where(and(eq(TransactionEntryEntityTable.transactionId, buyId), eq(TransactionEntryEntityTable.accountId, cash.id)));
+
+            expect(yield* readTrade(buyId)).toMatchObject({ isBuy: true, cashInstrument: { id: dollar.id }, quantity: 21_000_000, fee: 0 });
+
+            expect(yield* editToBrokerTotal(buyId, securityId, dollar.id)).toMatchObject({ amount: 21, costBasis: 906.08 });
+            expect(yield* readTrade(buyId)).toMatchObject({ isBuy: true, fee: 25_150_000, cashFlow: -906_080_000 });
+            expect(yield* fetchAccountBalance(securityId)).toBe(21_000_000);
+            expect(yield* fetchAccountBalance(cash.id)).toBe(0);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('edits a buy whose cash account was archived by restoring that account even when another cash account is active', () =>
+        Effect.gen(function* () {
+            const { dollar, cash, securityId } = yield* buyTwentyOne(37.8571);
+            const accountArchiveService = yield* AccountArchiveService;
+            const accountRepository = yield* AccountRepository;
+            const accountService = yield* AccountService;
+            const [buyId] = yield* findTradeIds(securityId);
+
+            yield* accountArchiveService.archiveById(cash.id);
+
+            const otherCash = yield* accountService.create({
+                title: 'Broker cash',
+                type: AccountTypeEnum.STOCKS,
+                icon: UserIconNameEnum.ChartLine,
+                instrumentId: dollar.id,
+                currentBalance: 0,
+                includeInNetWorth: true,
+                isActive: true,
+                externalSource: ExternalSourceEnum.MANUAL,
+                integrationId: cash.integrationId
+            });
+
+            expect(yield* readTrade(buyId)).toMatchObject({ isBuy: true, cashInstrument: { id: dollar.id }, quantity: 21_000_000 });
+            expect(yield* editToBrokerTotal(buyId, securityId, dollar.id)).toMatchObject({ amount: 21, costBasis: 906.08 });
+            expect(yield* accountRepository.findById(cash.id)).toMatchObject({ id: cash.id, deletedAt: null });
+            expect(
+                (yield* fetchExpenseEntries(buyId))
+                    .filter(entry => entry.accountId !== securityId)
+                    .map(({ accountId, type, amount }) => ({ accountId, type, amount }))
+            ).toEqual([
+                { accountId: cash.id, type: TransactionEntryTypeEnum.CREDIT, amount: 880_930_000 },
+                { accountId: cash.id, type: TransactionEntryTypeEnum.FEE, amount: 25_150_000 }
+            ]);
+            expect(yield* readTrade(buyId)).toMatchObject({ fee: 25_150_000, cashFlow: -906_080_000 });
+            expect(yield* fetchAccountBalance(securityId)).toBe(21_000_000);
+            expect(yield* fetchAccountBalance(cash.id)).toBe(0);
+            expect(yield* fetchAccountBalance(otherCash.id)).toBe(0);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('edits a sell whose security account was archived by restoring that security account', () =>
+        Effect.gen(function* () {
+            const { brokerageService, cash, securityId, sellId } = yield* createTradedBrokerage;
+            const accountArchiveService = yield* AccountArchiveService;
+            const accountRepository = yield* AccountRepository;
+
+            yield* accountArchiveService.archiveById(securityId);
+            yield* brokerageService.update(
+                sellId,
+                { quantity: 4, price: 150, fee: 0, operatedAt: MARCH(5) },
+                FUNDING_TITLE,
+                WITHDRAWAL_TITLE
+            );
+
+            expect(yield* accountRepository.findById(securityId)).toMatchObject({ id: securityId, deletedAt: null });
+            expect((yield* fetchExpenseEntries(sellId)).map(({ accountId, type, amount }) => ({ accountId, type, amount }))).toEqual(
+                expect.arrayContaining([
+                    { accountId: securityId, type: TransactionEntryTypeEnum.CREDIT, amount: 4_000_000 },
+                    { accountId: cash.id, type: TransactionEntryTypeEnum.DEBIT, amount: 600_000_000 }
+                ])
+            );
+            expect(yield* fetchAccountBalance(securityId)).toBe(6_000_000);
+            expect(yield* fetchAccountBalance(cash.id)).toBe(600_000_000);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -385,9 +488,14 @@ describe('market-data/brokerage-trades', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('edits a trade funded from a non-brokerage account without inventing a deposit', () =>
+    it.effect.each([
+        { name: 'active', isArchived: false },
+        { name: 'archived', isArchived: true }
+    ])('edits a trade funded from an $name non-brokerage account without inventing a deposit', ({ isArchived }) =>
         Effect.gen(function* () {
             const { dollar, brokerageService, cash } = yield* createBrokerage;
+            const accountArchiveService = yield* AccountArchiveService;
+            const accountRepository = yield* AccountRepository;
             const securityId = yield* brokerageService.buy(
                 cash.integrationId ?? 0,
                 LISTING,
@@ -406,6 +514,10 @@ describe('market-data/brokerage-trades', () => {
                 toIban: null
             });
 
+            if (isArchived) {
+                yield* accountArchiveService.archiveById(bank.id);
+            }
+
             yield* brokerageService.update(
                 transfer.id,
                 { quantity: 5, price: 120, fee: 0, total: 600, operatedAt: MARCH(3) },
@@ -416,6 +528,7 @@ describe('market-data/brokerage-trades', () => {
             expect(yield* fetchBalanceAdjustments(bank.id)).toEqual([]);
             expect(yield* fetchBalanceAdjustments(cash.id)).toHaveLength(1);
             expect(yield* fetchAccountBalance(bank.id)).toBe(-600_000_000);
+            expect(yield* accountRepository.findById(bank.id)).toMatchObject({ id: bank.id, deletedAt: null });
         }).pipe(Effect.provide(TestLayer))
     );
 });
