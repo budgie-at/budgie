@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.189.0](https://github.com/budgie-at/budgie/compare/v6.188.0...v6.189.0) (2026-11-15)
+
+### Features
+
+* **app:** group home investments and crypto by asset ([#2207](https://github.com/budgie-at/budgie/issues/2207)) ([d4d31fb](https://github.com/budgie-at/budgie/commit/d4d31fbd2894524914a30c2afb8737ed8e501435)), closes [#2214](https://github.com/budgie-at/budgie/issues/2214)
+
+
 # [6.188.0](https://github.com/budgie-at/budgie/compare/v6.187.0...v6.188.0) (2026-11-15)
 
 ### Features
