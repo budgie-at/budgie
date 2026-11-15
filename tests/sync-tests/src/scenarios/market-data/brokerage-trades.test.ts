@@ -322,34 +322,17 @@ describe('market-data/brokerage-trades', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('edits a buy whose cash account was archived by restoring it, or against the brokerage active cash account', () =>
+    it.effect('edits a buy whose cash account was archived by restoring that account even when another cash account is active', () =>
         Effect.gen(function* () {
             const { dollar, cash, securityId } = yield* buyTwentyOne(37.8571);
             const accountArchiveService = yield* AccountArchiveService;
             const accountRepository = yield* AccountRepository;
             const accountService = yield* AccountService;
             const [buyId] = yield* findTradeIds(securityId);
-            const fetchCashLegs = () =>
-                Effect.map(fetchExpenseEntries(buyId), entries =>
-                    entries
-                        .filter(entry => entry.accountId !== securityId)
-                        .map(({ accountId, type, amount }) => ({ accountId, type, amount }))
-                );
 
             yield* accountArchiveService.archiveById(cash.id);
 
-            expect(yield* readTrade(buyId)).toMatchObject({ isBuy: true, cashInstrument: { id: dollar.id }, quantity: 21_000_000 });
-            expect(yield* editToBrokerTotal(buyId, securityId, dollar.id)).toMatchObject({ amount: 21, costBasis: 906.08 });
-            expect(yield* accountRepository.findById(cash.id)).toMatchObject({ id: cash.id, deletedAt: null });
-            expect(yield* fetchCashLegs()).toEqual([
-                { accountId: cash.id, type: TransactionEntryTypeEnum.CREDIT, amount: 880_930_000 },
-                { accountId: cash.id, type: TransactionEntryTypeEnum.FEE, amount: 25_150_000 }
-            ]);
-            expect(yield* fetchAccountBalance(cash.id)).toBe(0);
-
-            yield* accountArchiveService.archiveById(cash.id);
-
-            const replacement = yield* accountService.create({
+            const otherCash = yield* accountService.create({
                 title: 'Broker cash',
                 type: AccountTypeEnum.STOCKS,
                 icon: UserIconNameEnum.ChartLine,
@@ -361,15 +344,21 @@ describe('market-data/brokerage-trades', () => {
                 integrationId: cash.integrationId
             });
 
+            expect(yield* readTrade(buyId)).toMatchObject({ isBuy: true, cashInstrument: { id: dollar.id }, quantity: 21_000_000 });
             expect(yield* editToBrokerTotal(buyId, securityId, dollar.id)).toMatchObject({ amount: 21, costBasis: 906.08 });
-            expect(yield* readTrade(buyId)).toMatchObject({ cashInstrument: { id: dollar.id }, fee: 25_150_000, cashFlow: -906_080_000 });
-            expect(yield* fetchAccountBalance(securityId)).toBe(21_000_000);
-            expect(yield* fetchAccountBalance(replacement.id)).toBe(0);
-            expect(yield* accountRepository.findById(cash.id)).toBeUndefined();
-            expect(yield* fetchCashLegs()).toEqual([
-                { accountId: replacement.id, type: TransactionEntryTypeEnum.CREDIT, amount: 880_930_000 },
-                { accountId: replacement.id, type: TransactionEntryTypeEnum.FEE, amount: 25_150_000 }
+            expect(yield* accountRepository.findById(cash.id)).toMatchObject({ id: cash.id, deletedAt: null });
+            expect(
+                (yield* fetchExpenseEntries(buyId))
+                    .filter(entry => entry.accountId !== securityId)
+                    .map(({ accountId, type, amount }) => ({ accountId, type, amount }))
+            ).toEqual([
+                { accountId: cash.id, type: TransactionEntryTypeEnum.CREDIT, amount: 880_930_000 },
+                { accountId: cash.id, type: TransactionEntryTypeEnum.FEE, amount: 25_150_000 }
             ]);
+            expect(yield* readTrade(buyId)).toMatchObject({ fee: 25_150_000, cashFlow: -906_080_000 });
+            expect(yield* fetchAccountBalance(securityId)).toBe(21_000_000);
+            expect(yield* fetchAccountBalance(cash.id)).toBe(0);
+            expect(yield* fetchAccountBalance(otherCash.id)).toBe(0);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -473,9 +462,14 @@ describe('market-data/brokerage-trades', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('edits a trade funded from a non-brokerage account without inventing a deposit', () =>
+    it.effect.each([
+        { name: 'active', isArchived: false },
+        { name: 'archived', isArchived: true }
+    ])('edits a trade funded from an $name non-brokerage account without inventing a deposit', ({ isArchived }) =>
         Effect.gen(function* () {
             const { dollar, brokerageService, cash } = yield* createBrokerage;
+            const accountArchiveService = yield* AccountArchiveService;
+            const accountRepository = yield* AccountRepository;
             const securityId = yield* brokerageService.buy(
                 cash.integrationId ?? 0,
                 LISTING,
@@ -494,6 +488,10 @@ describe('market-data/brokerage-trades', () => {
                 toIban: null
             });
 
+            if (isArchived) {
+                yield* accountArchiveService.archiveById(bank.id);
+            }
+
             yield* brokerageService.update(
                 transfer.id,
                 { quantity: 5, price: 120, fee: 0, total: 600, operatedAt: MARCH(3) },
@@ -504,6 +502,7 @@ describe('market-data/brokerage-trades', () => {
             expect(yield* fetchBalanceAdjustments(bank.id)).toEqual([]);
             expect(yield* fetchBalanceAdjustments(cash.id)).toHaveLength(1);
             expect(yield* fetchAccountBalance(bank.id)).toBe(-600_000_000);
+            expect(yield* accountRepository.findById(bank.id)).toMatchObject({ id: bank.id, deletedAt: null });
         }).pipe(Effect.provide(TestLayer))
     );
 });
