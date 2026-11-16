@@ -103,7 +103,7 @@ test('44 enable banking', { tags: ['sync'], platforms: ['ios'] }, async ({ budgi
         await expect(id(`AccountCard.${WISE_EUR_ACCOUNT}`)).toHaveText(/€1,000, Up to date$/, { timeout: 90_000 });
         await expect(id(`AccountCard.${WISE_USD_ACCOUNT}`)).toHaveText(/\$108, Up to date$/, { timeout: 90_000 });
         await expect(id('TransactionCard.Label.E2E_Wise_Conversion')).toHaveText(
-            /^E2E Wise Conversion, €100, \$108, From Wise EUR to Wise USD$/,
+            /^E2E Wise Conversion, €100, From Wise EUR to Wise USD, \$108$/,
             {
                 timeout: 30_000
             }
