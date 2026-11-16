@@ -39,6 +39,7 @@ const UNKNOWN_CARD_INCOME_TITLE = 'Зі своєї картки *9999';
 const OWN_CARD_AMOUNT = 10_000_000_000;
 const OWN_CARD_FEE_AMOUNT = 25_000_000;
 const NEAR_LEG_AMOUNT_GAP = 200_000_000;
+const SMALL_LEG_AMOUNT = 100_000_000;
 const OWN_CARD_OPERATED_AT = new Date('2026-03-04T09:15:00.000Z');
 const ARCHIVED_BEFORE_INCOME_AT = new Date('2026-03-01T09:15:00.000Z');
 const CONVERSION_FAILURE_MESSAGE = 'conversion failed';
@@ -693,23 +694,23 @@ describe('privatbank/own-card-transfer-repair', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('imports a small incoming own-card row next to a larger repaired leg', () =>
+    it.effect('imports a separate ₴10 incoming own-card row beside a ₴100 repaired leg', () =>
         Effect.gen(function* () {
             const unpairedOwnCardTransferRepairService = yield* UnpairedOwnCardTransferRepairService;
             const liveCard = yield* seedPrivatbankCard('1234');
             const archivedCard = yield* seedPrivatbankCard('4321');
             const outgoing = yield* seed.bankPairExpense(
                 { externalId: 'privatbank-own-card-outgoing', operatedAt: OWN_CARD_OPERATED_AT },
-                { accountId: liveCard.id, amount: OWN_CARD_AMOUNT }
+                { accountId: liveCard.id, amount: SMALL_LEG_AMOUNT }
             );
             const card = archivedCard.externalId ?? '';
 
             yield* seed.updateTransaction(outgoing.id, { externalSource: ExternalSourceEnum.PRIVATBANK, title: 'На мою картку *4321' });
             yield* archiveAccount(archivedCard.id);
             yield* unpairedOwnCardTransferRepairService.repair();
-            yield* importCardRows(card, [buildOwnCardRow(card, convertFromMicroUnits(OWN_CARD_AMOUNT / 10), 'Зі своєї картки *1234')]);
+            yield* importCardRows(card, [buildOwnCardRow(card, convertFromMicroUnits(SMALL_LEG_AMOUNT / 10), 'Зі своєї картки *1234')]);
 
-            expect(yield* fetchAccountBalance(archivedCard.id)).toBe(OWN_CARD_AMOUNT + OWN_CARD_AMOUNT / 10);
+            expect(yield* fetchAccountBalance(archivedCard.id)).toBe(SMALL_LEG_AMOUNT + SMALL_LEG_AMOUNT / 10);
         }).pipe(Effect.provide(TestLayer))
     );
 
