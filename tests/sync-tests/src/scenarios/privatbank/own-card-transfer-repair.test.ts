@@ -16,7 +16,7 @@ import { and, eq, isNull } from 'drizzle-orm';
 import * as Cause from 'effect/Cause';
 import * as Effect from 'effect/Effect';
 
-import { fetchAccountBalance, seed, testDb, TestLayer, testQueryService } from '../../harness';
+import { fetchAccountBalance, fetchCachedBalanceAmount, seed, testDb, TestLayer, testQueryService } from '../../harness';
 import {
     buildOwnCardRow,
     buildOwnCardStatementClient,
@@ -118,12 +118,15 @@ const fetchLiveExpensesFromAccount = (accountId: number) =>
             )
         );
 
-const expectArchivedCardRestoredWithTransferOnly = Effect.fnUntraced(function* (archivedCard: AccountEntityInterface) {
+const expectArchivedCardRestoredWithTransferOnly = Effect.fnUntraced(function* (
+    archivedCard: AccountEntityInterface,
+    otherOutflowAmount: number
+) {
     const cardAccounts = yield* (yield* AccountRepository).findByExternalIds([archivedCard.externalId ?? '']);
 
     expect(cardAccounts.map(account => account.id)).toEqual([archivedCard.id]);
     expect(yield* fetchLiveExpensesFromAccount(archivedCard.id)).toHaveLength(0);
-    expect(yield* fetchAccountBalance(archivedCard.id)).toBe(-OWN_CARD_AMOUNT);
+    expect(yield* fetchAccountBalance(archivedCard.id)).toBe(-OWN_CARD_AMOUNT - otherOutflowAmount);
 });
 
 const toUah = (microUnits: number): number => microUnits / 1_000_000;
@@ -508,17 +511,35 @@ describe('privatbank/own-card-transfer-repair', () => {
     it.effect('restores the archived card on a statement import without duplicating the repaired transfer leg', () =>
         Effect.gen(function* () {
             const unpairedOwnCardTransferRepairService = yield* UnpairedOwnCardTransferRepairService;
+            const accountBalanceRepository = yield* AccountBalanceRepository;
             const { archivedCard } = yield* seedArchivedOwnCardScenario();
+            const savings = yield* seed.account({ title: 'Savings' });
+            const savingsTransfer = yield* seed.bankPairExpense(
+                { externalId: 'privatbank-savings-transfer', operatedAt: ARCHIVED_BEFORE_INCOME_AT },
+                { accountId: archivedCard.id, amount: OWN_CARD_FEE_AMOUNT }
+            );
             const statement = buildOwnCardStatementClient([
                 buildOwnCardRow(archivedCard.externalId ?? '', -OWN_CARD_AMOUNT / 1_000_000, OWN_CARD_EXPENSE_TITLE)
             ]);
 
+            yield* testDb.update(AccountEntityTable).set({ deletedAt: null }).where(eq(AccountEntityTable.id, archivedCard.id));
+            yield* (yield* TransactionTransferService).convertExpenseToTransfer({
+                id: savingsTransfer.id,
+                accountId: savings.id,
+                customExchangeRate: 1,
+                feeEntries: []
+            });
+            yield* (yield* AccountArchiveService).archiveById(archivedCard.id);
             yield* unpairedOwnCardTransferRepairService.repair();
             yield* (yield* makeOwnCardStatementService(statement)).executeImportForSelectedAccounts('statement.xlsx', [
                 archivedCard.externalId ?? ''
             ]);
 
-            yield* expectArchivedCardRestoredWithTransferOnly(archivedCard);
+            yield* expectArchivedCardRestoredWithTransferOnly(archivedCard, OWN_CARD_FEE_AMOUNT);
+            expect(yield* fetchCachedBalanceAmount(savings.id)).toBe(
+                (yield* accountBalanceRepository.getLedgerBalances([savings.id])).get(savings.id)
+            );
+            expect(yield* fetchCachedBalanceAmount(savings.id)).toBe(OWN_CARD_FEE_AMOUNT);
         }).pipe(Effect.provide(TestLayer))
     );
 
