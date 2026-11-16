@@ -27,16 +27,34 @@ export class PrivatbankFileClient {
         );
         const latestTime = Math.max(...balancedRows.map(row => row.date.getTime()));
         const latestRows = balancedRows.filter(row => row.date.getTime() === latestTime);
-        const [snapshotRow] = [...latestRows.filter(row => !this.isFollowedBySameTimeRow(row, latestRows)), ...latestRows];
+        const terminalRows = latestRows.filter(row => !latestRows.some(other => other !== row && this.isBookedBefore(row, other)));
+        const [terminalRow] = terminalRows;
 
-        return isDefined(snapshotRow) ? { at: snapshotRow.date, balance: convertToMicroUnits(snapshotRow.endBalance) } : null;
+        if (terminalRows.length !== 1 || !isDefined(terminalRow)) {
+            return null;
+        }
+
+        return {
+            at: terminalRow.date,
+            balance: convertToMicroUnits(terminalRow.endBalance),
+            precedingSameSecondBalances: this.collectPrecedingBalances(terminalRow, latestRows)
+        };
     }
 
-    private isFollowedBySameTimeRow(row: PrivatbankRowInterface, sameTimeRows: PrivatbankRowInterface[]): boolean {
-        return sameTimeRows.some(
-            other =>
-                other !== row &&
-                convertToMicroUnits(other.endBalance) - convertToMicroUnits(other.cardAmount) === convertToMicroUnits(row.endBalance)
-        );
+    private isBookedBefore(row: PrivatbankRowInterface, next: PrivatbankRowInterface): boolean {
+        return convertToMicroUnits(next.endBalance) - convertToMicroUnits(next.cardAmount) === convertToMicroUnits(row.endBalance);
+    }
+
+    private collectPrecedingBalances(terminalRow: PrivatbankRowInterface, sameSecondRows: PrivatbankRowInterface[]): number[] {
+        const chain = [terminalRow];
+        let previousRow = sameSecondRows.find(row => !chain.includes(row) && this.isBookedBefore(row, terminalRow));
+
+        while (isDefined(previousRow)) {
+            chain.push(previousRow);
+            const currentRow: PrivatbankRowInterface = previousRow;
+            previousRow = sameSecondRows.find(row => !chain.includes(row) && this.isBookedBefore(row, currentRow));
+        }
+
+        return chain.slice(1).map(row => convertToMicroUnits(row.endBalance));
     }
 }

@@ -44,12 +44,16 @@ export class SyncBalanceReconciliationService extends Context.Service<SyncBalanc
                     snapshot: SyncBalanceSnapshotInterface
                 ) {
                     const sync = yield* syncRepository.getByAccountId(accountId);
-                    if (
-                        sync?.provider !== provider ||
-                        sync.mode !== SyncModeEnum.FORWARD ||
-                        isDefined(sync.setupBalance) ||
-                        (isDefined(sync.reconciledAt) && sync.reconciledAt > snapshot.at)
-                    ) {
+                    if (sync?.provider !== provider || sync.mode !== SyncModeEnum.FORWARD || isDefined(sync.setupBalance)) {
+                        return;
+                    }
+
+                    const { reconciledAt, reconciledBalance } = sync;
+                    const isAnchorExtended =
+                        reconciledAt?.getTime() === snapshot.at.getTime() &&
+                        isDefined(reconciledBalance) &&
+                        (snapshot.precedingSameSecondBalances ?? []).includes(reconciledBalance);
+                    if (isDefined(reconciledAt) && reconciledAt >= snapshot.at && !isAnchorExtended) {
                         return;
                     }
 

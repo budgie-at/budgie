@@ -3,6 +3,8 @@ import {
     AccountTypeEnum,
     Db,
     ExternalSourceEnum,
+    SyncRepository,
+    TransactionEntryRepository,
     TransactionEntryTypeEnum,
     TransactionRepository,
     TransactionTypeEnum
@@ -20,6 +22,7 @@ import { matchUnconsolidatedTransferLegs } from '../utils/match-unconsolidated-t
 
 import type { AccountReissueCandidateInterface } from '../interface/account-reissue-candidate.interface';
 import type { ArchivedAccountDuplicateCandidateInterface } from '../interface/archived-account-duplicate-candidate.interface';
+import type { TransactionWithEntriesEntityInterface } from '@budgie/contracts';
 
 export class AccountReissueMergeService extends Context.Service<AccountReissueMergeService>()('@budgie/sync/AccountReissueMergeService', {
     make: Effect.gen(function* () {
@@ -28,6 +31,8 @@ export class AccountReissueMergeService extends Context.Service<AccountReissueMe
         const accountArchiveService = yield* AccountArchiveService;
         const transactionRepository = yield* TransactionRepository;
         const transactionService = yield* TransactionService;
+        const transactionEntryRepository = yield* TransactionEntryRepository;
+        const syncRepository = yield* SyncRepository;
 
         const buildBankRowsSql = (accountColumn: string): string => String.raw`
             SELECT sync.account_id, sync.provider, tx.operated_at, TRIM(tx.title) AS title
@@ -166,7 +171,55 @@ export class AccountReissueMergeService extends Context.Service<AccountReissueMe
                 )
             );
 
-        const findImportedTransferLegDuplicateIds = Effect.fnUntraced(function* (
+        const isDeletableOneSidedRow = Effect.fnUntraced(function* (
+            transaction: TransactionWithEntriesEntityInterface | undefined,
+            accountId: number
+        ) {
+            if (
+                !isDefined(transaction) ||
+                isDefined(transaction.consolidationType) ||
+                isDefined(transaction.consolidationParentTransactionId) ||
+                transaction.entries.some(entry => entry.accountId !== accountId)
+            ) {
+                return false;
+            }
+
+            return !(yield* transactionRepository.isForeignTransferLeg(transaction.id));
+        });
+
+        const findSharedExternalIdDuplicateIds = Effect.fnUntraced(function* (
+            liveAccountId: number,
+            archivedAccountId: number,
+            externalSource: ExternalSourceEnum
+        ) {
+            const liveExternalIds = yield* transactionRepository.findIdMapByExternalSource(externalSource, [liveAccountId]);
+            const archivedExternalIds = yield* transactionRepository.findIdMapByExternalSource(externalSource, [archivedAccountId]);
+            const pairs = [...archivedExternalIds].flatMap(([externalId, archivedTransactionId]) => {
+                const liveTransactionId = liveExternalIds.get(externalId);
+
+                return isDefined(liveTransactionId) && liveTransactionId !== archivedTransactionId
+                    ? [{ archivedTransactionId, liveTransactionId }]
+                    : [];
+            });
+            const transactions = new Map(
+                (yield* transactionRepository.findByIds(pairs.flatMap(pair => [pair.archivedTransactionId, pair.liveTransactionId]))).map(
+                    transaction => [transaction.id, transaction]
+                )
+            );
+            const duplicateIds = yield* Effect.forEach(pairs, ({ archivedTransactionId, liveTransactionId }) =>
+                Effect.gen(function* () {
+                    if (yield* isDeletableOneSidedRow(transactions.get(archivedTransactionId), archivedAccountId)) {
+                        return archivedTransactionId;
+                    }
+
+                    return (yield* isDeletableOneSidedRow(transactions.get(liveTransactionId), liveAccountId)) ? liveTransactionId : null;
+                })
+            );
+
+            return duplicateIds.filter(isDefined);
+        });
+
+        const findImportedTransferLegDuplicates = Effect.fnUntraced(function* (
             liveAccountId: number,
             archivedAccountId: number,
             externalSource: ExternalSourceEnum,
@@ -194,6 +247,7 @@ export class AccountReissueMergeService extends Context.Service<AccountReissueMe
                     ? [
                           {
                               transactionId: transaction.id,
+                              externalIds: [transaction.externalId].filter(isDefined),
                               title: transaction.title,
                               isIncome,
                               isKnown: entry.accountId === archivedAccountId,
@@ -204,39 +258,58 @@ export class AccountReissueMergeService extends Context.Service<AccountReissueMe
                     : [];
             });
 
-            return [...matchUnconsolidatedTransferLegs(candidates, legs, isPrivatbankOwnCardTransferTitle)].map(
-                ({ transactionId }) => transactionId
+            return [...matchUnconsolidatedTransferLegs(candidates, legs, isPrivatbankOwnCardTransferTitle)];
+        });
+
+        const dropReplacedSyncAdjustments = Effect.fnUntraced(function* (liveAccountId: number, archivedAccountId: number) {
+            const [liveSync, archivedSync] = yield* Effect.all([
+                syncRepository.getByAccountId(liveAccountId),
+                syncRepository.getByAccountId(archivedAccountId)
+            ]);
+            if (!isDefined(liveSync) || !isDefined(archivedSync)) {
+                return;
+            }
+
+            yield* Effect.forEach(
+                [archivedSync.balanceAdjustmentTransactionId, archivedSync.reconciliationTransactionId].filter(isDefined),
+                transactionId => transactionService.purgeById(transactionId),
+                { discard: true }
             );
         });
 
         const mergeArchivedDuplicate = Effect.fnUntraced(
             function* (candidate: ArchivedAccountDuplicateCandidateInterface) {
                 const { archivedAccountId, externalSource, liveAccountId } = candidate;
-                const liveExternalIds = yield* transactionRepository.findIdMapByExternalSource(externalSource, [liveAccountId]);
 
                 yield* accountArchiveService.restoreById(archivedAccountId);
 
-                const restoredExternalIds = yield* transactionRepository.findIdMapByExternalSource(externalSource, [archivedAccountId]);
-                const restoredDuplicateIds = [...restoredExternalIds]
-                    .filter(
-                        ([externalId, transactionId]) =>
-                            liveExternalIds.has(externalId) && liveExternalIds.get(externalId) !== transactionId
-                    )
-                    .map(([, transactionId]) => transactionId);
-                const legDuplicateIds = yield* findImportedTransferLegDuplicateIds(
+                const sharedExternalIdDuplicateIds = yield* findSharedExternalIdDuplicateIds(
+                    liveAccountId,
+                    archivedAccountId,
+                    externalSource
+                );
+                const legDuplicates = yield* findImportedTransferLegDuplicates(
                     liveAccountId,
                     archivedAccountId,
                     externalSource,
-                    new Set(restoredDuplicateIds)
+                    new Set(sharedExternalIdDuplicateIds)
                 );
 
                 yield* Effect.forEach(
-                    [...restoredDuplicateIds, ...legDuplicateIds],
+                    [...sharedExternalIdDuplicateIds, ...legDuplicates.map(([{ transactionId }]) => transactionId)],
                     transactionId => transactionService.deleteById(transactionId),
-                    {
-                        discard: true
-                    }
+                    { discard: true }
                 );
+                yield* Effect.forEach(
+                    legDuplicates.flatMap(([{ externalIds }, leg]) => {
+                        const [externalId] = externalIds;
+
+                        return isDefined(externalId) && !isDefined(leg.entryExternalId) ? [{ externalId, leg }] : [];
+                    }),
+                    ({ externalId, leg }) => transactionEntryRepository.updateById(leg.entryId, { externalId }),
+                    { discard: true }
+                );
+                yield* dropReplacedSyncAdjustments(liveAccountId, archivedAccountId);
                 yield* reassignReferences(archivedAccountId, liveAccountId);
                 yield* accountRepository.deleteById(liveAccountId);
                 yield* accountRepository.updateById(archivedAccountId, {
@@ -319,6 +392,8 @@ export class AccountReissueMergeService extends Context.Service<AccountReissueMe
             AccountBalanceIncrementalService.layer,
             AccountArchiveService.layer,
             TransactionRepository.layer,
+            TransactionEntryRepository.layer,
+            SyncRepository.layer,
             TransactionService.layer
         ])
     );

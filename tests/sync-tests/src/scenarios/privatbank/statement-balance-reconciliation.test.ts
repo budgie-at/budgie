@@ -94,4 +94,25 @@ describe('privatbank/statement-balance-reconciliation', () => {
             expect(yield* fetchAccountBalance(accountId)).toBe(100_000_000);
         }).pipe(Effect.provide(TestLayer))
     );
+
+    it.effect('keeps the complete same-second statement balance when a subset of it is imported later', () =>
+        Effect.gen(function* () {
+            const bookedFirst = buildRow(-30, 150, SECOND_OUTFLOW_AT);
+            const bookedLast = buildRow(-50, 100, SECOND_OUTFLOW_AT);
+            yield* importStatement(new PrivatbankFileClient([bookedLast, bookedFirst]));
+            const accountId = yield* importStatement(new PrivatbankFileClient([bookedFirst]));
+
+            expect(yield* fetchAccountBalance(accountId)).toBe(100_000_000);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('skips reconciliation when the newest second has no single last booked row', () =>
+        Effect.gen(function* () {
+            const accountId = yield* importStatement(
+                new PrivatbankFileClient([buildRow(-10, 90, SECOND_OUTFLOW_AT), buildRow(10, 100, SECOND_OUTFLOW_AT)])
+            );
+
+            expect(yield* fetchAccountBalance(accountId)).toBe(0);
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

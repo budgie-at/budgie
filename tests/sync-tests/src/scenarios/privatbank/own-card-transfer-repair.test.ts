@@ -10,7 +10,7 @@ import {
     TransactionUpdatedByEnum
 } from '@budgie/contracts';
 import { AccountArchiveService, TransactionTransferService } from '@budgie/ledger';
-import { SyncRepairService, UnpairedOwnCardTransferRepairService } from '@budgie/sync';
+import { privatbankTransactionMapper, SyncRepairService, UnpairedOwnCardTransferRepairService } from '@budgie/sync';
 import { describe, expect, it, vi } from '@effect/vitest';
 import { and, eq, isNull } from 'drizzle-orm';
 import * as Cause from 'effect/Cause';
@@ -24,6 +24,7 @@ import {
 } from '../../harness/file-sync/privatbank-own-card-statement';
 
 import type { AccountEntityInterface, TransactionEntityInterface } from '@budgie/contracts';
+import type { PrivatbankRowInterface } from '@budgie/sync';
 
 const OWN_CARD_INCOME_TITLE = 'Зі своєї картки *4321';
 const OWN_CARD_EXPENSE_TITLE = 'На мою картку *1234';
@@ -123,6 +124,28 @@ const expectArchivedCardRestoredWithTransferOnly = Effect.fnUntraced(function* (
     expect(cardAccounts.map(account => account.id)).toEqual([archivedCard.id]);
     expect(yield* fetchLiveExpensesFromAccount(archivedCard.id)).toHaveLength(0);
     expect(yield* fetchAccountBalance(archivedCard.id)).toBe(-OWN_CARD_AMOUNT);
+});
+
+const toUah = (microUnits: number): number => microUnits / 1_000_000;
+
+const repairThenImportArchivedCardRows = Effect.fnUntraced(function* (buildRows: (card: string) => PrivatbankRowInterface[]) {
+    const unpairedOwnCardTransferRepairService = yield* UnpairedOwnCardTransferRepairService;
+    const { archivedCard } = yield* seedArchivedOwnCardScenario();
+    const card = archivedCard.externalId ?? '';
+
+    yield* unpairedOwnCardTransferRepairService.repair();
+    yield* (yield* makeOwnCardStatementService(buildOwnCardStatementClient(buildRows(card)))).executeImportForSelectedAccounts(
+        'statement.xlsx',
+        [card]
+    );
+
+    return { archivedCard, card };
+});
+
+const importCardRows = Effect.fnUntraced(function* (card: string, rows: PrivatbankRowInterface[]) {
+    yield* (yield* makeOwnCardStatementService(buildOwnCardStatementClient(rows))).executeImportForSelectedAccounts('statement.xlsx', [
+        card
+    ]);
 });
 
 const expectNothingLeftToRepair = Effect.fnUntraced(function* () {
@@ -572,6 +595,69 @@ describe('privatbank/own-card-transfer-repair', () => {
 
             expect(yield* fetchLiveExpensesFromAccount(archivedCard.id)).toHaveLength(1);
             expect(yield* fetchAccountBalance(archivedCard.id)).toBe(-OWN_CARD_AMOUNT - (OWN_CARD_AMOUNT - NEAR_LEG_AMOUNT_GAP));
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('imports a separate own-card row far larger than the repaired leg', () =>
+        Effect.gen(function* () {
+            const { archivedCard } = yield* repairThenImportArchivedCardRows(card => [
+                buildOwnCardRow(card, -toUah(OWN_CARD_AMOUNT * 10), OWN_CARD_EXPENSE_TITLE)
+            ]);
+
+            expect(yield* fetchLiveExpensesFromAccount(archivedCard.id)).toHaveLength(1);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('imports a separate own-card row smaller than the repaired leg', () =>
+        Effect.gen(function* () {
+            const { archivedCard } = yield* repairThenImportArchivedCardRows(card => [
+                buildOwnCardRow(card, -toUah(OWN_CARD_AMOUNT / 10), OWN_CARD_EXPENSE_TITLE)
+            ]);
+
+            expect(yield* fetchLiveExpensesFromAccount(archivedCard.id)).toHaveLength(1);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('lets an already imported row keep its leg so a new own-card row is imported', () =>
+        Effect.gen(function* () {
+            const unpairedOwnCardTransferRepairService = yield* UnpairedOwnCardTransferRepairService;
+            const { archivedCard } = yield* seedArchivedOwnCardScenario();
+            const card = archivedCard.externalId ?? '';
+            const knownRow = buildOwnCardRow(card, -toUah(OWN_CARD_AMOUNT + OWN_CARD_FEE_AMOUNT), OWN_CARD_EXPENSE_TITLE);
+            const newRow = buildOwnCardRow(card, -toUah(OWN_CARD_AMOUNT), OWN_CARD_EXPENSE_TITLE);
+
+            yield* unpairedOwnCardTransferRepairService.repair();
+            const knownExpense = yield* seed.bankPairExpense(
+                { externalId: privatbankTransactionMapper(knownRow).id, operatedAt: OWN_CARD_OPERATED_AT },
+                { accountId: archivedCard.id, amount: OWN_CARD_AMOUNT + OWN_CARD_FEE_AMOUNT }
+            );
+            yield* seed.updateTransaction(knownExpense.id, {
+                externalSource: ExternalSourceEnum.PRIVATBANK,
+                title: OWN_CARD_EXPENSE_TITLE
+            });
+            yield* importCardRows(card, [knownRow, newRow]);
+
+            expect(yield* fetchLiveExpensesFromAccount(archivedCard.id)).toHaveLength(2);
+            expect(yield* fetchAccountBalance(archivedCard.id)).toBe(-OWN_CARD_AMOUNT * 3 - OWN_CARD_FEE_AMOUNT);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('keeps a skipped row on its leg so a later own-card row is imported and the skipped row stays out', () =>
+        Effect.gen(function* () {
+            const claimingRow = (card: string) => buildOwnCardRow(card, -toUah(OWN_CARD_AMOUNT), OWN_CARD_EXPENSE_TITLE);
+            const { archivedCard, card } = yield* repairThenImportArchivedCardRows(currentCard => [claimingRow(currentCard)]);
+            const laterRow = buildOwnCardRow(
+                card,
+                -toUah(OWN_CARD_AMOUNT + NEAR_LEG_AMOUNT_GAP),
+                OWN_CARD_EXPENSE_TITLE,
+                new Date(OWN_CARD_OPERATED_AT.getTime() + 3_600_000)
+            );
+
+            yield* importCardRows(card, [laterRow]);
+            yield* importCardRows(card, [claimingRow(card), laterRow]);
+
+            expect(yield* fetchLiveExpensesFromAccount(archivedCard.id)).toHaveLength(1);
+            expect(yield* fetchAccountBalance(archivedCard.id)).toBe(-OWN_CARD_AMOUNT - (OWN_CARD_AMOUNT + NEAR_LEG_AMOUNT_GAP));
         }).pipe(Effect.provide(TestLayer))
     );
 });

@@ -1,4 +1,4 @@
-import { AccountRepository, convertToMicroUnits, SyncModeEnum, TransactionRepository } from '@budgie/contracts';
+import { AccountRepository, convertToMicroUnits, SyncModeEnum, TransactionEntryRepository, TransactionRepository } from '@budgie/contracts';
 import { AccountArchiveService } from '@budgie/ledger';
 import { millisecondsInSecond } from 'date-fns/constants';
 import * as Context from 'effect/Context';
@@ -22,6 +22,7 @@ export class FileImportAccountService extends Context.Service<FileImportAccountS
     make: Effect.gen(function* () {
         const accountRepository = yield* AccountRepository;
         const transactionRepository = yield* TransactionRepository;
+        const transactionEntryRepository = yield* TransactionEntryRepository;
         const accountArchiveService = yield* AccountArchiveService;
 
         return {
@@ -77,7 +78,7 @@ export class FileImportAccountService extends Context.Service<FileImportAccountS
 
                 return true;
             }),
-            findTransferLegDuplicates: Effect.fn('FileImportAccountService.findTransferLegDuplicates')(function* (
+            claimTransferLegDuplicates: Effect.fn('FileImportAccountService.claimTransferLegDuplicates')(function* (
                 accountId: number,
                 definition: Pick<FileSyncServiceDefinitionInterface, 'hasTransferLegEvidence' | 'provider'>,
                 transactions: SyncTransactionInterface[],
@@ -85,6 +86,7 @@ export class FileImportAccountService extends Context.Service<FileImportAccountS
             ) {
                 const candidates = transactions.map(transaction => ({
                     transaction,
+                    externalIds: [transaction.id, ...(transaction.legacyExternalIds ?? [])],
                     title: transaction.description,
                     isIncome: transaction.type === SyncTransactionTypeEnum.INCOME,
                     isKnown: isKnownSyncTransaction(transaction, existingTransactionIdMap),
@@ -97,15 +99,20 @@ export class FileImportAccountService extends Context.Service<FileImportAccountS
                 }
 
                 const legs = yield* transactionRepository.findUnconsolidatedTransferLegs(accountId, definition.provider);
+                const matches = [...matchUnconsolidatedTransferLegs(candidates, legs, hasTransferLegEvidence)];
 
-                return new Set(
-                    [...matchUnconsolidatedTransferLegs(candidates, legs, hasTransferLegEvidence)].map(({ transaction }) => transaction)
+                yield* Effect.forEach(
+                    matches.filter(([, leg]) => !isDefined(leg.entryExternalId)),
+                    ([{ transaction }, leg]) => transactionEntryRepository.updateById(leg.entryId, { externalId: transaction.id }),
+                    { discard: true }
                 );
+
+                return new Set(matches.map(([{ transaction }]) => transaction));
             })
         };
     })
 }) {
     static readonly layer = Layer.effect(FileImportAccountService, FileImportAccountService.make).pipe(
-        Layer.provide([AccountRepository.layer, TransactionRepository.layer, AccountArchiveService.layer])
+        Layer.provide([AccountRepository.layer, TransactionRepository.layer, TransactionEntryRepository.layer, AccountArchiveService.layer])
     );
 }

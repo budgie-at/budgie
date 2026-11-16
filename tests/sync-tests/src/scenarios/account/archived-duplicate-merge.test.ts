@@ -7,14 +7,17 @@ import {
     RecurringSeriesKindEnum,
     RecurringSeriesStatusEnum,
     RecurringSeriesUserStateEnum,
+    SyncModeEnum,
+    SyncRepository,
     TransactionEntityTable
 } from '@budgie/contracts';
+import { AccountArchiveService, BalanceAdjustmentService, TransactionTransferService } from '@budgie/ledger';
 import { SyncRepairService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
-import { seed, testDb, TestLayer, testQueryService } from '../../harness';
+import { fetchAccountBalance, seed, testDb, TestLayer, testQueryService } from '../../harness';
 import {
     buildOwnCardRow,
     buildOwnCardStatementClient,
@@ -41,7 +44,10 @@ const seedArchivedDuplicate = Effect.gen(function* () {
         { externalId: 'monobank-purchase', operatedAt: OPERATED_AT },
         { accountId: liveCard.id, amount: 1_000_000 }
     );
-    yield* testDb.update(TransactionEntityTable).set({ fundAccountId: liveCard.id }).where(eq(TransactionEntityTable.id, purchase.id));
+    yield* testDb
+        .update(TransactionEntityTable)
+        .set({ fundAccountId: liveCard.id, yieldSourceAccountId: liveCard.id })
+        .where(eq(TransactionEntityTable.id, purchase.id));
     const [series] = yield* testDb
         .insert(RecurringSeriesEntityTable)
         .values({
@@ -95,7 +101,66 @@ describe('account/archived-duplicate-merge', () => {
             expect(accounts.map(account => account.id)).toEqual([archivedCard.id]);
             expect(movedPurchase.fromAccountId).toBe(archivedCard.id);
             expect(movedPurchase.fundAccountId).toBe(archivedCard.id);
+            expect(movedPurchase.yieldSourceAccountId).toBe(archivedCard.id);
             expect(yield* fetchSeriesAccountId(series.id)).toBe(archivedCard.id);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('keeps an archived transfer with a leg on another account and drops the one-sided live copy', () =>
+        Effect.gen(function* () {
+            const syncRepairService = yield* SyncRepairService;
+            const archivedCard = yield* seedMonobankCard();
+            const savings = yield* seed.account({ title: 'Savings' });
+            const archivedTransfer = yield* seed.bankPairExpense(
+                { externalId: 'monobank-shared-transfer', operatedAt: OPERATED_AT },
+                { accountId: archivedCard.id, amount: 1_000_000 }
+            );
+
+            yield* (yield* TransactionTransferService).convertExpenseToTransfer({
+                id: archivedTransfer.id,
+                accountId: savings.id,
+                customExchangeRate: 1,
+                feeEntries: []
+            });
+            yield* (yield* AccountArchiveService).archiveById(archivedCard.id);
+            const liveCard = yield* seedMonobankCard();
+            const liveCopy = yield* seed.bankPairExpense(
+                { externalId: 'monobank-shared-transfer', operatedAt: OPERATED_AT },
+                { accountId: liveCard.id, amount: 1_000_000 }
+            );
+
+            yield* syncRepairService.removeDuplicates();
+
+            expect((yield* testQueryService.findTransactionById(archivedTransfer.id)).deletedAt).toBeNull();
+            expect((yield* testQueryService.findTransactionById(liveCopy.id)).deletedAt).not.toBeNull();
+            expect(yield* fetchAccountBalance(savings.id)).toBe(1_000_000);
+            expect(yield* fetchAccountBalance(archivedCard.id)).toBe(-1_000_000);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('keeps only the surviving sync setup adjustment when both cards had one', () =>
+        Effect.gen(function* () {
+            const syncRepository = yield* SyncRepository;
+            const balanceAdjustmentService = yield* BalanceAdjustmentService;
+            const { archivedCard, liveCard } = yield* seedArchivedDuplicate;
+            const seedSetupBalance = (accountId: number, setupBalance: number) =>
+                Effect.gen(function* () {
+                    const sync = yield* syncRepository.create({
+                        accountId,
+                        provider: ExternalSourceEnum.MONOBANK,
+                        enabled: true,
+                        mode: SyncModeEnum.FORWARD
+                    });
+                    const adjustmentId = yield* balanceAdjustmentService.create(accountId, setupBalance, OPERATED_AT);
+
+                    yield* syncRepository.update(sync.id, { setupBalance, balanceAdjustmentTransactionId: adjustmentId });
+                });
+
+            yield* seedSetupBalance(archivedCard.id, 5_000_000);
+            yield* seedSetupBalance(liveCard.id, 7_000_000);
+            yield* (yield* SyncRepairService).removeDuplicates();
+
+            expect(yield* fetchAccountBalance(archivedCard.id)).toBe(6_000_000);
         }).pipe(Effect.provide(TestLayer))
     );
 });

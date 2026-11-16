@@ -108,7 +108,7 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
             !isDelivered(transaction.time * millisecondsInSecond) &&
             (isKnownSyncTransaction(transaction, existingTransactionIdMap) || !isKnownSyncTransaction(transaction, deletedExternalIds));
         const importableTransactions = client.getTransactions(bankAccount.id).filter(isImportable);
-        const transferLegDuplicates = yield* fileImportAccountService.findTransferLegDuplicates(
+        const transferLegDuplicates = yield* fileImportAccountService.claimTransferLegDuplicates(
             account.id,
             definition,
             importableTransactions,

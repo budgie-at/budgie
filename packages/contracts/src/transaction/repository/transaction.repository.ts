@@ -361,6 +361,8 @@ export class TransactionRepository extends Context.Service<TransactionRepository
                     db
                         .select({
                             transactionId: TransactionEntityTable.id,
+                            entryId: TransactionEntryEntityTable.id,
+                            entryExternalId: TransactionEntryEntityTable.externalId,
                             operatedAt: TransactionEntityTable.operatedAt,
                             entryType: TransactionEntryEntityTable.type,
                             amount: TransactionEntryEntityTable.amount,
@@ -380,8 +382,7 @@ export class TransactionRepository extends Context.Service<TransactionRepository
                             and(
                                 eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id),
                                 transactionFilters.buildPrimaryLedgerEntryCondition(),
-                                eq(TransactionEntryEntityTable.accountId, accountId),
-                                isNull(TransactionEntryEntityTable.externalId)
+                                eq(TransactionEntryEntityTable.accountId, accountId)
                             )
                         )
                         .where(
