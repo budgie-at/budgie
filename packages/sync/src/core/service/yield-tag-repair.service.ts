@@ -15,6 +15,8 @@ import { BINANCE_YIELD_KIND_BY_PREFIX } from '../../binance/constant/binance-yie
 import { INZHUR_UNATTRIBUTED_DIVIDEND_TITLE } from '../../inzhur/constant/inzhur-unattributed-dividend-title.constant';
 import { buildInzhurYieldFields } from '../../inzhur/utils/build-inzhur-yield-fields.util';
 
+import { BankInterestDetectorService } from './bank-interest-detector.service';
+
 import type { YieldFieldsInterface, YieldTagCandidateInterface } from '@budgie/contracts';
 
 export class YieldTagRepairService extends Context.Service<YieldTagRepairService>()('@budgie/sync/YieldTagRepairService', {
@@ -22,7 +24,8 @@ export class YieldTagRepairService extends Context.Service<YieldTagRepairService
         const transactionYieldRepository = yield* TransactionYieldRepository;
         const settingsRepository = yield* SettingsRepository;
         const syncApplyStateRepository = yield* SyncApplyStateRepository;
-        const yieldTagRepairVersion = 1;
+        const bankInterestDetectorService = yield* BankInterestDetectorService;
+        const yieldTagRepairVersion = 2;
         const batchSize = 200;
         const candidateQuery = {
             externalIdPrefixes: Object.keys(BINANCE_YIELD_KIND_BY_PREFIX),
@@ -101,6 +104,7 @@ export class YieldTagRepairService extends Context.Service<YieldTagRepairService
                 }
 
                 yield* repairAll();
+                yield* bankInterestDetectorService.tag(null);
                 yield* settingsRepository.update({ yieldTagRepairVersion });
             }),
             repairBySyncIds: Effect.fn('YieldTagRepairService.repairBySyncIds')(function* (syncIds: readonly string[]) {
@@ -119,6 +123,11 @@ export class YieldTagRepairService extends Context.Service<YieldTagRepairService
     })
 }) {
     static readonly layer = Layer.effect(YieldTagRepairService, YieldTagRepairService.make).pipe(
-        Layer.provide([TransactionYieldRepository.layer, SettingsRepository.layer, SyncApplyStateRepository.layer])
+        Layer.provide([
+            TransactionYieldRepository.layer,
+            SettingsRepository.layer,
+            SyncApplyStateRepository.layer,
+            BankInterestDetectorService.layer
+        ])
     );
 }

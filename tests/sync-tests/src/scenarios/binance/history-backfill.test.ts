@@ -207,6 +207,34 @@ describe('binance/history-backfill', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
+    it.effect('backfills flexible earn rewards older than the forward cursor once, without duplicates', () =>
+        Effect.gen(function* () {
+            const binanceSyncService = yield* BinanceSyncService;
+            const nowMs = Date.now();
+            const rewards = [
+                buildBinance.earnReward({ asset: 'USDT', rewards: '1', time: nowMs - 300 * DAY_MS }),
+                buildBinance.earnReward({ asset: 'USDT', rewards: '1', time: nowMs - 200 * DAY_MS })
+            ];
+
+            const { sync, token } = yield* setupBinanceFixture({
+                asset: 'USDT',
+                mode: SyncModeEnum.FORWARD,
+                forwardSyncedAt: new Date(nowMs - 5 * 60 * 1000)
+            });
+            binanceStub.earnRewards(rewards, []);
+
+            yield* binanceSyncService.sync();
+
+            expect(yield* countTransactions()).toBe(2);
+            expect((yield* fetchHistoryProgress(token))['EARN'].tailAt).toBeLessThan(nowMs - 1800 * DAY_MS);
+
+            binanceStub.earnRewards(rewards, []);
+            yield* resyncBinance(sync.id);
+
+            expect(yield* countTransactions()).toBe(2);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
     it.effect('requests adjacent history windows without sharing a boundary millisecond', () =>
         Effect.gen(function* () {
             const binanceSyncService = yield* BinanceSyncService;
