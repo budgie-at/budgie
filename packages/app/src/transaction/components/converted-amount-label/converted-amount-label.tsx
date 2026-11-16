@@ -4,6 +4,7 @@ import { Text } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { ROW_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-max-font-size-multiplier.constant';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { useConvertedAmount } from '../../hook/use-converted-amount.hook';
@@ -26,7 +27,10 @@ export const ConvertedAmountLabel = ({ instrumentId, amount, baseAmount }: Props
     }
 
     return (
-        <Text className="text-[13px] text-secondary-foreground text-right tabular-nums">
+        <Text
+            className="text-[13px] leading-[18px] text-secondary-foreground text-right tabular-nums"
+            maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
+        >
             {formatDigits(convertFromMicroUnits(convertedAmount), defaultInstrument.symbol)}
         </Text>
     );

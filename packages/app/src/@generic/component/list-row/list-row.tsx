@@ -12,11 +12,13 @@ interface Props {
     readonly title: ReactNode;
     readonly trailing?: ReactNode;
     readonly detail?: ReactNode;
+    readonly trailingDetail?: ReactNode;
 }
 
-export const ListRow = ({ leading, title, trailing, detail }: Props) => {
+export const ListRow = ({ leading, title, trailing, detail, trailingDetail }: Props) => {
     const isAccessibilityTextSize = useIsAccessibilityTextSize();
     const alignmentClassName = isDefined(detail) ? 'items-start' : 'items-center';
+    const hasSecondLine = isDefined(detail) || isDefined(trailingDetail);
 
     if (isAccessibilityTextSize) {
         return (
@@ -26,7 +28,12 @@ export const ListRow = ({ leading, title, trailing, detail }: Props) => {
                     {title}
                     {detail}
                 </View>
-                {isDefined(trailing) ? <View className="flex-row">{trailing}</View> : null}
+                {isDefined(trailing) ? (
+                    <View className="items-end self-stretch">
+                        {trailing}
+                        {trailingDetail}
+                    </View>
+                ) : null}
             </View>
         );
     }
@@ -35,11 +42,16 @@ export const ListRow = ({ leading, title, trailing, detail }: Props) => {
         <View className={cn('min-h-11 flex-row gap-x-xl', alignmentClassName)}>
             {leading}
             <View className="min-w-0 flex-1 gap-y-xxs">
-                <View className="flex-row items-baseline gap-x-md">
+                <View className="flex-row items-start gap-x-xl">
                     <View className="min-w-0 flex-1">{title}</View>
                     {trailing}
                 </View>
-                {detail}
+                {hasSecondLine ? (
+                    <View className="flex-row items-start gap-x-xl">
+                        <View className="min-w-0 flex-1">{detail}</View>
+                        {trailingDetail}
+                    </View>
+                ) : null}
             </View>
         </View>
     );

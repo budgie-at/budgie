@@ -1,5 +1,4 @@
 import { DebtEventAssociationEnum, InstrumentTypeEnum, convertFromMicroUnits } from '@budgie/contracts';
-import { useAtomValue } from '@effect/atom-react/Hooks';
 import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
 
@@ -7,12 +6,10 @@ import { isDefined } from '@rnw-community/shared';
 
 import { MoneyText } from '../../../@generic/component/money-text/money-text';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
+import { ROW_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-max-font-size-multiplier.constant';
 import { MoneyTextVariantEnum } from '../../../@generic/enum/money-text-variant.enum';
 import { useFormatInstrumentAmount } from '../../../i18n/hook/use-format-instrument-amount.hook';
 import { isSecurityInstrumentType } from '../../../instrument/utils/is-security-instrument-type.util';
-import { defaultInstrumentIdAtom } from '../../../settings/constants/settings-atoms.constant';
-import { ConvertedAmountLabel } from '../converted-amount-label/converted-amount-label';
-import { DebtSettlementConvertedAmountLabel } from '../debt-settlement-converted-amount-label/debt-settlement-converted-amount-label';
 import { TransactionFundEntryAmount } from '../transaction-fund-entry-amount/transaction-fund-entry-amount';
 
 import type { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
@@ -32,7 +29,6 @@ const transactionAmountVariants = cva('text-[17px] font-semibold tracking-tight 
 });
 
 export const TransactionEntryAmount = ({ debtEvent, entry, variant, sign, testID }: Props) => {
-    const defaultInstrumentId = useAtomValue(defaultInstrumentIdAtom);
     const formatDigits = useFormatInstrumentAmount();
 
     if (isSecurityInstrumentType(entry.account.instrument.type)) {
@@ -41,7 +37,6 @@ export const TransactionEntryAmount = ({ debtEvent, entry, variant, sign, testID
 
     const amount = convertFromMicroUnits(entry.amount);
     const formattedAmount = formatDigits(amount, entry.account.instrument.symbol, entry.account.instrument.type);
-    const isCrossCurrency = entry.account.instrument.id !== defaultInstrumentId;
     const debtConversionEvent =
         isDefined(debtEvent) && debtEvent[DebtEventAssociationEnum.DEBT_ACCOUNT].instrument.id !== entry.account.instrument.id
             ? debtEvent
@@ -53,18 +48,10 @@ export const TransactionEntryAmount = ({ debtEvent, entry, variant, sign, testID
               debtConversionEvent[DebtEventAssociationEnum.DEBT_ACCOUNT].instrument.type
           )}`
         : null;
-    const convertedAmountLabel = isCrossCurrency ? (
-        <ConvertedAmountLabel instrumentId={entry.account.instrument.id} amount={entry.amount} baseAmount={entry.baseAmount} />
-    ) : null;
-    const secondaryAmountLabel = isDefined(debtConversionEvent) ? (
-        <DebtSettlementConvertedAmountLabel debtEvent={debtConversionEvent} />
-    ) : (
-        convertedAmountLabel
-    );
 
     return (
         <View
-            className="shrink-0 items-end gap-y-xxs"
+            className="shrink-0 items-end"
             testID={testID}
             {...(isDefined(debtConversionAccessibilityLabel) && {
                 accessibilityLabel: debtConversionAccessibilityLabel,
@@ -80,9 +67,11 @@ export const TransactionEntryAmount = ({ debtEvent, entry, variant, sign, testID
                     tone={variant}
                 />
             ) : (
-                <Text className={transactionAmountVariants({ variant })}>{`${sign}${formattedAmount}`}</Text>
+                <Text
+                    className={transactionAmountVariants({ variant })}
+                    maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
+                >{`${sign}${formattedAmount}`}</Text>
             )}
-            {secondaryAmountLabel}
         </View>
     );
 };
