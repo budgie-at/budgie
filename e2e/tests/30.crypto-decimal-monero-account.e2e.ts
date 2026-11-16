@@ -17,7 +17,7 @@ test('30 crypto decimal monero account', { tags: ['accounts'] }, async ({ budgie
     await b.phase('home holding', async () => {
         await b.expectId(ctx, 'HomeHolding.XMR', 10_000);
         await b.expectId(ctx, 'HomeHolding.Value.XMR');
-        await expect(b.byId(ctx.screen, 'HomeHolding.Caption.XMR')).toHaveText(/^22\.123456 XMR/);
+        await expect(b.byId(ctx.screen, 'HomeHolding.Caption.XMR')).toHaveText(/^22\.1235 XMR$/);
     });
 
     await b.phase('market holdings', async () => {

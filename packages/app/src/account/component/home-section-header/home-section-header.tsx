@@ -17,29 +17,24 @@ interface Props {
 }
 
 export const HomeSectionHeader = ({ section, holdingReturns }: Props) => {
-    const total = section.data.length === 1 ? null : section.total;
-
     if (section.kind === HomeSectionKindEnum.FAMILY) {
-        return <FamilySectionHeader total={total} />;
+        return <FamilySectionHeader total={section.total} />;
     }
 
     if (isDebtSection(section)) {
-        return <DebtSectionHeader sectionKind={section.kind} total={total} />;
+        return <DebtSectionHeader sectionKind={section.kind} total={section.total} />;
     }
 
     const hasReturnLine = HOLDING_SECTION_TYPES.includes(section.type) && section.data.some(isHomeHolding);
+    const returnLine = hasReturnLine ? (
+        <HomeSectionReturnLine
+            sectionReturn={holdingReturns.bySectionType.get(section.type)}
+            todayReturn={holdingReturns.todayBySectionType.get(section.type)}
+            isLoading={holdingReturns.isLoading}
+            placeholderGain={section.total}
+            testID={HomeSectionHeaderSelector.Return(section.type)}
+        />
+    ) : null;
 
-    return (
-        <AccountSectionHeader type={section.type} total={total}>
-            {hasReturnLine ? (
-                <HomeSectionReturnLine
-                    sectionReturn={holdingReturns.bySectionType.get(section.type)}
-                    todayReturn={holdingReturns.todayBySectionType.get(section.type)}
-                    isLoading={holdingReturns.isLoading}
-                    placeholderGain={section.total}
-                    testID={HomeSectionHeaderSelector.Return(section.type)}
-                />
-            ) : null}
-        </AccountSectionHeader>
-    );
+    return <AccountSectionHeader type={section.type} total={section.total} totalAccessory={returnLine} />;
 };

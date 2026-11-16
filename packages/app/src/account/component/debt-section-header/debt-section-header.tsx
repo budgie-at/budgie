@@ -9,7 +9,7 @@ import { AccountSectionHeaderFrame } from '../account-section-header-frame/accou
 
 interface Props {
     readonly sectionKind: HomeSectionKindEnum.DEBT_YOU_OWE | HomeSectionKindEnum.DEBT_OWED_TO_YOU;
-    readonly total: number | null;
+    readonly total: number;
 }
 
 const DEBT_SECTION_KIND_LABEL: Record<HomeSectionKindEnum.DEBT_YOU_OWE | HomeSectionKindEnum.DEBT_OWED_TO_YOU, MessageDescriptor> = {

@@ -63,7 +63,6 @@ msgstr "(à choisir)"
 #. placeholder {0}: accounts.length
 #. placeholder {0}: parts.length
 #. placeholder {0}: shelvedList.shelvedCount
-#: src/account/component/home-holding-row-caption/home-holding-row-caption.tsx
 #: src/account/component/institution-row/institution-row.tsx
 #: src/account/component/shelved-accounts-page/shelved-accounts-page.tsx
 #: src/rule/hooks/use-rule-condition-formatter.hook.ts
@@ -1242,18 +1241,6 @@ msgstr "+{hiddenCategoryCount} de plus"
 msgid "+{incomeAmount} / month"
 msgstr "+{incomeAmount} / mois"
 
-#: src/account/component/holding-provider-caption/holding-provider-caption.tsx
-msgid "<0>{investedLabel}</0> in {positionName}"
-msgstr "<0>{investedLabel}</0> en {positionName}"
-
-#: src/account/component/holding-provider-caption/holding-provider-caption.tsx
-msgid "<0>{investedLabel}</0> in {positionsCount, plural, one {# asset} other {# assets}}"
-msgstr "<0>{investedLabel}</0> dans {positionsCount, plural, one {# actif} other {# actifs}}"
-
-#: src/account/component/holding-provider-caption/holding-provider-caption.tsx
-msgid "<0>{investedLabel}</0> in {positionsCount, plural, one {# position} other {# positions}}"
-msgstr "<0>{investedLabel}</0> dans {positionsCount, plural, one {# position} other {# positions}}"
-
 #: src/account/component/family-section-header/family-section-header.tsx
 msgid "<0>Paused</0> · not in your total"
 msgstr "<0>En pause</0> · non compté dans votre total"
@@ -1519,10 +1506,6 @@ msgstr "Comptes · {accountCount}"
 #: src/sync/component/sync-accounts-step/sync-accounts-step.tsx
 msgid "Accounts · {accountsCount}"
 msgstr "Comptes · {accountsCount}"
-
-#: src/account/component/home-provider-group-label/home-provider-group-label.tsx
-msgid "Accounts · {providersCount}"
-msgstr "Comptes · {providersCount}"
 
 #: src/transaction/components/transaction-filters/transaction-filters.tsx
 msgid "Accounts ({selectedAccountsCount})"
@@ -2513,10 +2496,6 @@ msgstr "Courtier"
 msgid "Brokerage name"
 msgstr "Nom du courtier"
 
-#: src/account/component/home-provider-group-label/home-provider-group-label.tsx
-msgid "Brokers · {providersCount}"
-msgstr "Courtiers · {providersCount}"
-
 #: src/category/components/category-icon-fix-row/category-icon-fix-row.tsx
 msgid "Browse icons"
 msgstr "Parcourir les icônes"
@@ -2803,7 +2782,6 @@ msgid "Cash"
 msgstr "Espèces"
 
 #: src/account/component/institution-account-row/institution-account-row.tsx
-#: src/account/component/institution-row-cash/institution-row-cash.tsx
 #: src/brokerage/query/use-brokerage-summary.query.ts
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgctxt "Brokerage cash account"
@@ -5198,10 +5176,6 @@ msgstr "Taux de change introuvable"
 #: src/transaction/components/conversion-row/conversion-row.tsx
 msgid "Exchange rate: {rateLabel}"
 msgstr "Taux de change : {rateLabel}"
-
-#: src/account/component/home-provider-group-label/home-provider-group-label.tsx
-msgid "Exchanges · {providersCount}"
-msgstr "Plateformes d’échange · {providersCount}"
 
 #: src/yield/hook/use-yield-rate-text.hook.ts
 msgid "excl. distributions"
@@ -7820,6 +7794,10 @@ msgstr "Ouvrez l'app Inzhur"
 #: src/cloud-backup/component/cloud-backup-list/cloud-backup-list.tsx
 msgid "Open the Settings app and sign in to your Apple Account. Backups from your iPhone and iPad appear here."
 msgstr "Ouvrez l’app Réglages et connectez-vous à votre compte Apple. Les sauvegardes de votre iPhone et iPad apparaîtront ici."
+
+#: src/account/component/account-details-institution-link/account-details-institution-link.tsx
+msgid "Opens all holdings and trades at this provider"
+msgstr "Ouvre tous les actifs et opérations chez ce fournisseur"
 
 #: src/account/component/family-section-header/family-section-header.tsx
 msgid "Opens Family settings"

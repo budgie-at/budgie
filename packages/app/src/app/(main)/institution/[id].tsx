@@ -7,6 +7,7 @@ import { RevealGate } from '../../../@generic/component/reveal-gate/reveal-gate'
 import { IdParamInterface } from '../../../@generic/interface/id-param.interface';
 import { InstitutionDetailsPage } from '../../../account/component/institution-details-page/institution-details-page';
 import { useHomePageDataQuery } from '../../../account/query/use-home-page-data.query';
+import { isAccountTypeSection } from '../../../account/type-guard/is-account-type-section.type-guard';
 import { isInstitutionGroup } from '../../../account/type-guard/is-institution-group.type-guard';
 import { BankIntegrationRouteGuard } from '../../../sync/component/bank-integration-route-guard/bank-integration-route-guard';
 
@@ -17,7 +18,7 @@ export default function Institution() {
     const { sections, balanceSummary, isLoading } = useHomePageDataQuery();
     const institution =
         sections
-            .flatMap(section => section.data)
+            .flatMap(section => (isAccountTypeSection(section) ? [...section.data, ...section.holdingProviders] : section.data))
             .filter(isInstitutionGroup)
             .find(group => group.integrationId === id) ?? null;
 

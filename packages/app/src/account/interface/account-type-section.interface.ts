@@ -9,5 +9,7 @@ export interface AccountTypeSectionInterface {
     readonly kind: HomeSectionKindEnum.ACCOUNT_TYPE;
     readonly type: AccountTypeEnum;
     readonly total: number;
+    readonly hiddenHoldings: HomeHoldingInterface[];
+    readonly holdingProviders: InstitutionGroupInterface[];
     readonly data: Array<AccountWithSyncEntityInterface | HomeHoldingInterface | InstitutionGroupInterface>;
 }

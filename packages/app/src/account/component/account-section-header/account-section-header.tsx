@@ -11,11 +11,11 @@ import type { ReactNode } from 'react';
 
 interface Props {
     readonly type: AccountTypeEnum;
-    readonly total: number | null;
-    readonly children?: ReactNode;
+    readonly total: number;
+    readonly totalAccessory?: ReactNode;
 }
 
-export const AccountSectionHeader = ({ type, total, children }: Props) => {
+export const AccountSectionHeader = ({ type, total, totalAccessory }: Props) => {
     const { t } = useLingui();
 
     return (
@@ -23,8 +23,7 @@ export const AccountSectionHeader = ({ type, total, children }: Props) => {
             title={t(ACCOUNT_TYPE[type])}
             total={total}
             leading={<View className={cn('size-[8px] rounded-full', ACCOUNT_TYPE_SWATCH[type].fill)} />}
-        >
-            {children}
-        </AccountSectionHeaderFrame>
+            totalAccessory={totalAccessory}
+        />
     );
 };
