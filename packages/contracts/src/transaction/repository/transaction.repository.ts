@@ -354,6 +354,37 @@ export class TransactionRepository extends Context.Service<TransactionRepository
 
             findByIdsWithRefundConsolidationHistory: (ids: number[]) => findByIdsWithEntriesWhere(ids, NOT_DELETED_ENTRY_RELATION_WHERE),
 
+            findUnconsolidatedTransferLegs: (accountId: number, externalSource: ExternalSourceEnum) =>
+                Db.query(db =>
+                    db
+                        .select({
+                            transactionId: TransactionEntityTable.id,
+                            operatedAt: TransactionEntityTable.operatedAt,
+                            entryType: TransactionEntryEntityTable.type,
+                            amount: TransactionEntryEntityTable.amount
+                        })
+                        .from(TransactionEntityTable)
+                        .innerJoin(
+                            TransactionEntryEntityTable,
+                            and(
+                                eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id),
+                                transactionFilters.buildPrimaryLedgerEntryCondition(),
+                                eq(TransactionEntryEntityTable.accountId, accountId),
+                                isNull(TransactionEntryEntityTable.externalId)
+                            )
+                        )
+                        .where(
+                            and(
+                                transactionFilters.buildVisibleTransactionCondition(),
+                                eq(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER),
+                                eq(TransactionEntityTable.externalSource, externalSource),
+                                isNotNull(TransactionEntityTable.externalId),
+                                isNull(TransactionEntityTable.consolidationType),
+                                or(eq(TransactionEntityTable.fromAccountId, accountId), eq(TransactionEntityTable.toAccountId, accountId))
+                            )
+                        )
+                ),
+
             findIdMapByExternalSource: Effect.fn('TransactionRepository.findIdMapByExternalSource')(function* (
                 externalSource: ExternalSourceEnum,
                 accountIds?: readonly number[]

@@ -1,5 +1,5 @@
 import { buildConsolidationScopeFromTransactions } from '@budgie/consolidation';
-import { AccountRepository, BankIntegrationRepository, Db, SyncModeEnum, SyncRepository, TransactionRepository } from '@budgie/contracts';
+import { AccountRepository, BankIntegrationRepository, Db, SyncModeEnum, SyncRepository } from '@budgie/contracts';
 import { AccountBalanceIncrementalService, TransactionImportService, TransactionService } from '@budgie/ledger';
 import { RuleEngineService } from '@budgie/rules';
 import { millisecondsInSecond } from 'date-fns/constants';
@@ -9,6 +9,8 @@ import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/sha
 
 import { SyncWorkload } from '../port/sync-workload.port';
 import { AccountReissueMergeService } from '../service/account-reissue-merge.service';
+import { FileImportAccountService } from '../service/file-import-account.service';
+import { SyncBalanceReconciliationService } from '../service/sync-balance-reconciliation.service';
 import { SyncOperationMetadataService } from '../service/sync-operation-metadata.service';
 
 import { buildFileSyncImportReview } from './build-file-sync-import-review.util';
@@ -23,20 +25,21 @@ import type { FileSyncServiceDefinitionInterface } from '../interface/file-sync-
 import type { ImportContextInterface } from '../interface/import-context.interface';
 import type { SyncAccountInterface } from '../interface/sync-account.interface';
 import type { SyncTransactionInterface } from '../interface/sync-transaction.interface';
-import type { AccountEntityInterface, SyncEntityInterface } from '@budgie/contracts';
+import type { AccountEntityInterface } from '@budgie/contracts';
 
 export const makeFileSyncService = Effect.fnUntraced(function* (definition: FileSyncServiceDefinitionInterface) {
     const syncWorkload = yield* SyncWorkload;
     const accountRepository = yield* AccountRepository;
     const bankIntegrationRepository = yield* BankIntegrationRepository;
     const syncRepository = yield* SyncRepository;
-    const transactionRepository = yield* TransactionRepository;
     const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
     const transactionImportService = yield* TransactionImportService;
     const transactionService = yield* TransactionService;
     const syncOperationMetadataService = yield* SyncOperationMetadataService;
     const ruleEngineService = yield* RuleEngineService;
     const accountReissueMergeService = yield* AccountReissueMergeService;
+    const fileImportAccountService = yield* FileImportAccountService;
+    const syncBalanceReconciliationService = yield* SyncBalanceReconciliationService;
     const syncService = yield* makeSyncService(definition);
     const resolveMccCategoryLookupKey =
         definition.resolveMccCategoryLookupKey ?? ((transaction: SyncTransactionInterface) => transaction.category ?? '');
@@ -82,47 +85,35 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
         yield* accountRepository.updateById(account.id, { integrationId: integration.id });
     });
 
-    const resolveIsDelivered = Effect.fnUntraced(function* (accountId: number, sync: SyncEntityInterface | undefined) {
-        if (!isDefined(sync)) {
-            return () => false;
-        }
-
-        const { backwardSyncLimitAt, forwardSyncFromAt, mode, provider } = sync;
-        if (provider === definition.provider) {
-            return (timeMs: number) =>
-                isDefined(backwardSyncLimitAt) &&
-                isDefined(forwardSyncFromAt) &&
-                timeMs >= backwardSyncLimitAt.getTime() &&
-                timeMs < forwardSyncFromAt.getTime();
-        }
-
-        if (mode === SyncModeEnum.BACKWARD) {
-            return (timeMs: number) => !isDefined(backwardSyncLimitAt) || timeMs >= backwardSyncLimitAt.getTime();
-        }
-
-        const earliestLiveAt = yield* transactionRepository.getEarliestTransactionTimeByAccountIdAndSource(accountId, provider);
-        const earliestDeliveredAt = earliestLiveAt ?? forwardSyncFromAt;
-
-        return (timeMs: number) =>
-            isDefined(earliestDeliveredAt) &&
-            timeMs >= Date.UTC(earliestDeliveredAt.getUTCFullYear(), earliestDeliveredAt.getUTCMonth(), earliestDeliveredAt.getUTCDate());
-    });
-
     const importAccountTransactions = Effect.fnUntraced(function* (
         client: FileBasedSyncClientInterface,
         bankAccount: SyncAccountInterface,
         context: ImportContextInterface
     ) {
+        const existingAccount = yield* syncService.findExistingSyncAccount(bankAccount);
+        const isRestored = !isDefined(existingAccount) && (yield* fileImportAccountService.restoreArchivedAccount(bankAccount, definition));
         const account = yield* syncService.getOrCreateSyncAccount(bankAccount);
         yield* createBankSyncRecord(account.id);
         yield* linkFileImportIntegration(account);
         const sync = yield* syncRepository.getByAccountId(account.id);
-        const isDelivered = yield* resolveIsDelivered(account.id, sync);
+        const isDelivered = yield* fileImportAccountService.resolveIsDelivered(account.id, definition.provider, sync);
+        const snapshot = client.getBalanceSnapshot?.(bankAccount.id);
+        if (isDefined(snapshot)) {
+            yield* syncBalanceReconciliationService.reconcileStatement(account.id, definition.provider, snapshot);
+        }
+        const [existingTransactionIdMap, deletedExternalIds] = isRestored
+            ? yield* transactionService.findKnownExternalIds(definition.provider)
+            : [context.existingTransactionIdMap, context.deletedExternalIds];
         const isImportable = (transaction: SyncTransactionInterface) =>
             !isDelivered(transaction.time * millisecondsInSecond) &&
-            (isKnownSyncTransaction(transaction, context.existingTransactionIdMap) ||
-                !isKnownSyncTransaction(transaction, context.deletedExternalIds));
-        const transactions = client.getTransactions(bankAccount.id).filter(isImportable);
+            (isKnownSyncTransaction(transaction, existingTransactionIdMap) || !isKnownSyncTransaction(transaction, deletedExternalIds));
+        const importableTransactions = client.getTransactions(bankAccount.id).filter(isImportable);
+        const transferLegDuplicates = yield* fileImportAccountService.findTransferLegDuplicates(
+            account.id,
+            definition.provider,
+            importableTransactions.filter(transaction => !isKnownSyncTransaction(transaction, existingTransactionIdMap))
+        );
+        const transactions = importableTransactions.filter(transaction => !transferLegDuplicates.has(transaction));
         if (!isNotEmptyArray(transactions)) {
             return {
                 newTransactions: [],
@@ -141,7 +132,7 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
             }),
             transactions
         );
-        const imported = transactionImportService.prepareImportedInputs(transactionInputs, context.existingTransactionIdMap);
+        const imported = transactionImportService.prepareImportedInputs(transactionInputs, existingTransactionIdMap);
         const wasNotPreviouslyImported = ({ externalId }: { externalId: string | null }) =>
             !isDefined(externalId) || !imported.externalIdMap.has(externalId);
         const newInputs = imported.transactionInputs.filter(wasNotPreviouslyImported);

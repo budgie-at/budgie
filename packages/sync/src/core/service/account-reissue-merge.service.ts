@@ -1,5 +1,13 @@
-import { AccountRepository, Db, ExternalSourceEnum } from '@budgie/contracts';
-import { AccountBalanceIncrementalService } from '@budgie/ledger';
+import {
+    AccountRepository,
+    AccountTypeEnum,
+    Db,
+    ExternalSourceEnum,
+    TransactionEntryTypeEnum,
+    TransactionRepository,
+    TransactionTypeEnum
+} from '@budgie/contracts';
+import { AccountArchiveService, AccountBalanceIncrementalService, TransactionService } from '@budgie/ledger';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -7,13 +15,18 @@ import * as Layer from 'effect/Layer';
 import { isDefined } from '@rnw-community/shared';
 
 import { PRIVATBANK_CARD_REISSUE_EVIDENCE_SQL } from '../../privatbank/constant/privatbank-card-reissue-evidence-sql.constant';
+import { matchUnconsolidatedTransferLegs } from '../utils/match-unconsolidated-transfer-legs.util';
 
 import type { AccountReissueCandidateInterface } from '../interface/account-reissue-candidate.interface';
+import type { ArchivedAccountDuplicateCandidateInterface } from '../interface/archived-account-duplicate-candidate.interface';
 
 export class AccountReissueMergeService extends Context.Service<AccountReissueMergeService>()('@budgie/sync/AccountReissueMergeService', {
     make: Effect.gen(function* () {
         const accountRepository = yield* AccountRepository;
         const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
+        const accountArchiveService = yield* AccountArchiveService;
+        const transactionRepository = yield* TransactionRepository;
+        const transactionService = yield* TransactionService;
 
         const buildBankRowsSql = (accountColumn: string): string => String.raw`
             SELECT sync.account_id, sync.provider, tx.operated_at, TRIM(tx.title) AS title
@@ -63,6 +76,40 @@ export class AccountReissueMergeService extends Context.Service<AccountReissueMe
             ORDER BY successor.first_at, successor.account_id
         `;
 
+        const buildSameCardCountSql = (deletedCondition: string): string => String.raw`
+            SELECT COUNT(*) FROM accounts same_card
+            WHERE same_card.deleted_at ${deletedCondition}
+                AND same_card.is_external = 0
+                AND same_card.type = '${AccountTypeEnum.BANK_SYNC}'
+                AND same_card.external_source = live.external_source
+                AND same_card.external_id = live.external_id
+        `;
+
+        const archivedDuplicatesSql = String.raw`
+            SELECT
+                live.id AS liveAccountId,
+                archived.id AS archivedAccountId,
+                live.external_source AS externalSource,
+                COALESCE(live.integration_id, archived.integration_id) AS integrationId,
+                MAX(live.is_active, archived.is_active) AS isActive
+            FROM accounts live
+            INNER JOIN accounts archived ON
+                archived.id != live.id
+                AND archived.deleted_at IS NOT NULL
+                AND archived.is_external = 0
+                AND archived.type = live.type
+                AND archived.external_source = live.external_source
+                AND archived.instrument_id = live.instrument_id
+                AND archived.external_id = live.external_id
+            WHERE live.deleted_at IS NULL
+                AND live.is_external = 0
+                AND live.type = '${AccountTypeEnum.BANK_SYNC}'
+                AND live.external_id IS NOT NULL
+                AND (${buildSameCardCountSql('IS NOT NULL')}) = 1
+                AND (${buildSameCardCountSql('IS NULL')}) = 1
+            ORDER BY live.id
+        `;
+
         const reassignReferencesSql = [
             'UPDATE transactions SET from_account_id = ? WHERE from_account_id = ?',
             'UPDATE transactions SET to_account_id = ? WHERE to_account_id = ?',
@@ -90,6 +137,89 @@ export class AccountReissueMergeService extends Context.Service<AccountReissueMe
                 : null;
         };
 
+        const reassignReferences = (targetAccountId: number, sourceAccountId: number) =>
+            Db.mutation(
+                {
+                    type: 'update',
+                    tables: [
+                        'transactions',
+                        'transaction_entries',
+                        'debt_events',
+                        'rule_actions',
+                        'rule_conditions',
+                        'settings',
+                        'accounts',
+                        'account_external_ids',
+                        'bank_syncs',
+                        'account_balances'
+                    ]
+                },
+                Effect.forEach(
+                    reassignReferencesSql,
+                    statement => Db.query(db => db.$client.unsafe(statement, [targetAccountId, sourceAccountId]).raw),
+                    { discard: true }
+                )
+            );
+
+        const findImportedTransferLegDuplicateIds = Effect.fnUntraced(function* (
+            liveAccountId: number,
+            archivedAccountId: number,
+            externalSource: ExternalSourceEnum
+        ) {
+            const legs = yield* transactionRepository.findUnconsolidatedTransferLegs(archivedAccountId, externalSource);
+            const candidates = (yield* transactionRepository.findByAccountIdsWithEntries([liveAccountId])).flatMap(transaction => {
+                const isIncome = transaction.type === TransactionTypeEnum.INCOME;
+                const entryType = isIncome ? TransactionEntryTypeEnum.DEBIT : TransactionEntryTypeEnum.CREDIT;
+                const entry = transaction.entries.find(item => item.accountId === liveAccountId && item.type === entryType);
+                const isImportedRow =
+                    (isIncome || transaction.type === TransactionTypeEnum.EXPENSE) &&
+                    transaction.externalSource === externalSource &&
+                    !isDefined(transaction.consolidationType);
+
+                return isImportedRow && isDefined(entry)
+                    ? [{ transactionId: transaction.id, isIncome, operatedAt: transaction.operatedAt, amount: entry.amount }]
+                    : [];
+            });
+
+            return [...matchUnconsolidatedTransferLegs(candidates, legs)].map(({ transactionId }) => transactionId);
+        });
+
+        const mergeArchivedDuplicate = Effect.fnUntraced(
+            function* (candidate: ArchivedAccountDuplicateCandidateInterface) {
+                const { archivedAccountId, externalSource, liveAccountId } = candidate;
+                const liveExternalIds = yield* transactionRepository.findIdMapByExternalSource(externalSource, [liveAccountId]);
+
+                yield* accountArchiveService.restoreById(archivedAccountId);
+
+                const restoredExternalIds = yield* transactionRepository.findIdMapByExternalSource(externalSource, [archivedAccountId]);
+                const restoredDuplicateIds = [...restoredExternalIds]
+                    .filter(
+                        ([externalId, transactionId]) =>
+                            liveExternalIds.has(externalId) && liveExternalIds.get(externalId) !== transactionId
+                    )
+                    .map(([, transactionId]) => transactionId);
+                const legDuplicateIds = yield* findImportedTransferLegDuplicateIds(liveAccountId, archivedAccountId, externalSource);
+
+                yield* Effect.forEach(
+                    [...restoredDuplicateIds, ...legDuplicateIds],
+                    transactionId => transactionService.deleteById(transactionId),
+                    {
+                        discard: true
+                    }
+                );
+                yield* reassignReferences(archivedAccountId, liveAccountId);
+                yield* accountRepository.deleteById(liveAccountId);
+                yield* accountRepository.updateById(archivedAccountId, {
+                    integrationId: candidate.integrationId,
+                    isActive: candidate.isActive === 1
+                });
+                yield* accountBalanceIncrementalService.updateBalancesByAccountIds([archivedAccountId]);
+            },
+            effect => Db.transaction(effect)
+        );
+
+        const findArchivedDuplicates = Db.query(db => db.$client.unsafe<ArchivedAccountDuplicateCandidateInterface>(archivedDuplicatesSql));
+
         const findUnambiguousCandidates = Effect.fnUntraced(function* () {
             const candidates = yield* Db.query(db => db.$client.unsafe<AccountReissueCandidateInterface>(candidatesSql));
             const isUnambiguous = (candidate: AccountReissueCandidateInterface): boolean =>
@@ -110,28 +240,7 @@ export class AccountReissueMergeService extends Context.Service<AccountReissueMe
                 const { predecessorAccountId, successorAccountId } = candidate;
                 const mergedTitle = resolveMergedTitle(candidate);
 
-                yield* Db.mutation(
-                    {
-                        type: 'update',
-                        tables: [
-                            'transactions',
-                            'transaction_entries',
-                            'debt_events',
-                            'rule_actions',
-                            'rule_conditions',
-                            'settings',
-                            'accounts',
-                            'account_external_ids',
-                            'bank_syncs',
-                            'account_balances'
-                        ]
-                    },
-                    Effect.forEach(
-                        reassignReferencesSql,
-                        statement => Db.query(db => db.$client.unsafe(statement, [predecessorAccountId, successorAccountId]).raw),
-                        { discard: true }
-                    )
-                );
+                yield* reassignReferences(predecessorAccountId, successorAccountId);
                 yield* accountRepository.deleteById(successorAccountId);
 
                 if (isDefined(candidate.predecessorExternalId) && candidate.predecessorExternalId !== candidate.externalId) {
@@ -151,9 +260,14 @@ export class AccountReissueMergeService extends Context.Service<AccountReissueMe
         );
 
         return {
-            countCandidates: Effect.map(findUnambiguousCandidates(), candidates => candidates.length),
+            countCandidates: Effect.map(
+                Effect.all([findArchivedDuplicates, findUnambiguousCandidates()]),
+                ([archivedDuplicates, candidates]) => archivedDuplicates.length + candidates.length
+            ),
             mergeReissuedAccounts: Effect.fn('AccountReissueMergeService.mergeReissuedAccounts')(function* () {
-                let mergedCount = 0;
+                const archivedDuplicates = yield* findArchivedDuplicates;
+                yield* Effect.forEach(archivedDuplicates, mergeArchivedDuplicate, { discard: true });
+                let mergedCount = archivedDuplicates.length;
                 let [candidate] = yield* findUnambiguousCandidates();
 
                 while (isDefined(candidate)) {
@@ -168,6 +282,12 @@ export class AccountReissueMergeService extends Context.Service<AccountReissueMe
     })
 }) {
     static readonly layer = Layer.effect(AccountReissueMergeService, AccountReissueMergeService.make).pipe(
-        Layer.provide([AccountRepository.layer, AccountBalanceIncrementalService.layer])
+        Layer.provide([
+            AccountRepository.layer,
+            AccountBalanceIncrementalService.layer,
+            AccountArchiveService.layer,
+            TransactionRepository.layer,
+            TransactionService.layer
+        ])
     );
 }

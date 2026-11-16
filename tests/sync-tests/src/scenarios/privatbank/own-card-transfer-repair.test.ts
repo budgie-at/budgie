@@ -1,6 +1,7 @@
 import {
     AccountBalanceRepository,
     AccountEntityTable,
+    AccountRepository,
     AccountTypeEnum,
     ExternalSourceEnum,
     TransactionEntityTable,
@@ -9,13 +10,18 @@ import {
     TransactionUpdatedByEnum
 } from '@budgie/contracts';
 import { AccountArchiveService, TransactionTransferService } from '@budgie/ledger';
-import { UnpairedOwnCardTransferRepairService } from '@budgie/sync';
+import { SyncRepairService, UnpairedOwnCardTransferRepairService } from '@budgie/sync';
 import { describe, expect, it, vi } from '@effect/vitest';
 import { and, eq, isNull } from 'drizzle-orm';
 import * as Cause from 'effect/Cause';
 import * as Effect from 'effect/Effect';
 
-import { seed, testDb, TestLayer, testQueryService } from '../../harness';
+import { fetchAccountBalance, seed, testDb, TestLayer, testQueryService } from '../../harness';
+import {
+    buildOwnCardRow,
+    buildOwnCardStatementClient,
+    makeOwnCardStatementService
+} from '../../harness/file-sync/privatbank-own-card-statement';
 
 import type { AccountEntityInterface, TransactionEntityInterface } from '@budgie/contracts';
 
@@ -97,6 +103,26 @@ const seedArchivedCardWithMask = (externalId: string | null, iban: string) =>
 
         return archivedCard;
     });
+
+const fetchLiveExpensesFromAccount = (accountId: number) =>
+    testDb
+        .select()
+        .from(TransactionEntityTable)
+        .where(
+            and(
+                eq(TransactionEntityTable.type, TransactionTypeEnum.EXPENSE),
+                eq(TransactionEntityTable.fromAccountId, accountId),
+                isNull(TransactionEntityTable.deletedAt)
+            )
+        );
+
+const expectArchivedCardRestoredWithTransferOnly = Effect.fnUntraced(function* (archivedCard: AccountEntityInterface) {
+    const cardAccounts = yield* (yield* AccountRepository).findByExternalIds([archivedCard.externalId ?? '']);
+
+    expect(cardAccounts.map(account => account.id)).toEqual([archivedCard.id]);
+    expect(yield* fetchLiveExpensesFromAccount(archivedCard.id)).toHaveLength(0);
+    expect(yield* fetchAccountBalance(archivedCard.id)).toBe(-OWN_CARD_AMOUNT);
+});
 
 const expectNothingLeftToRepair = Effect.fnUntraced(function* () {
     const unpairedOwnCardTransferRepairService = yield* UnpairedOwnCardTransferRepairService;
@@ -443,6 +469,71 @@ describe('privatbank/own-card-transfer-repair', () => {
             expect(healed.toAccountId).toBe(liveCard.id);
             expect((yield* accountBalanceRepository.getLedgerBalances([liveCard.id])).get(liveCard.id)).toBe(liveBalanceBefore);
             yield* expectNothingLeftToRepair();
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('skips an own-card income whose card mask also belongs to a live account', () =>
+        Effect.gen(function* () {
+            yield* seedArchivedOwnCardScenario();
+            yield* seedPrivatbankCard('4321');
+
+            yield* expectNothingLeftToRepair();
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('restores the archived card on a statement import without duplicating the repaired transfer leg', () =>
+        Effect.gen(function* () {
+            const unpairedOwnCardTransferRepairService = yield* UnpairedOwnCardTransferRepairService;
+            const { archivedCard } = yield* seedArchivedOwnCardScenario();
+            const statement = buildOwnCardStatementClient([
+                buildOwnCardRow(archivedCard.externalId ?? '', -OWN_CARD_AMOUNT / 1_000_000, OWN_CARD_EXPENSE_TITLE)
+            ]);
+
+            yield* unpairedOwnCardTransferRepairService.repair();
+            yield* (yield* makeOwnCardStatementService(statement)).executeImportForSelectedAccounts('statement.xlsx', [
+                archivedCard.externalId ?? ''
+            ]);
+
+            yield* expectArchivedCardRestoredWithTransferOnly(archivedCard);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('folds a live duplicate of an archived card into it through the sync repairs', () =>
+        Effect.gen(function* () {
+            const unpairedOwnCardTransferRepairService = yield* UnpairedOwnCardTransferRepairService;
+            const syncRepairService = yield* SyncRepairService;
+            const accountArchiveService = yield* AccountArchiveService;
+            const { archivedCard } = yield* seedArchivedOwnCardScenario();
+            const archivedPurchase = yield* seed.bankPairExpense(
+                { externalId: 'privatbank-shared-purchase', operatedAt: ARCHIVED_BEFORE_INCOME_AT },
+                { accountId: archivedCard.id, amount: OWN_CARD_FEE_AMOUNT }
+            );
+
+            yield* seed.updateTransaction(archivedPurchase.id, { externalSource: ExternalSourceEnum.PRIVATBANK });
+            yield* testDb.update(AccountEntityTable).set({ deletedAt: null }).where(eq(AccountEntityTable.id, archivedCard.id));
+            yield* accountArchiveService.archiveById(archivedCard.id);
+            yield* unpairedOwnCardTransferRepairService.repair();
+
+            const duplicateCard = yield* seedPrivatbankCard('4321');
+            const duplicatePurchase = yield* seed.bankPairExpense(
+                { externalId: 'privatbank-shared-purchase', operatedAt: ARCHIVED_BEFORE_INCOME_AT },
+                { accountId: duplicateCard.id, amount: OWN_CARD_FEE_AMOUNT }
+            );
+
+            yield* seed.updateTransaction(duplicatePurchase.id, { externalSource: ExternalSourceEnum.PRIVATBANK });
+            yield* seedOwnCardCounterpartExpense(duplicateCard.id);
+
+            expect((yield* syncRepairService.previewDuplicates()).duplicateTransactionCount).toBeGreaterThan(0);
+            yield* syncRepairService.removeDuplicates();
+
+            const cardAccounts = yield* (yield* AccountRepository).findByExternalIds([archivedCard.externalId ?? '']);
+
+            expect(cardAccounts.map(account => account.id)).toEqual([archivedCard.id]);
+            expect((yield* fetchLiveExpensesFromAccount(archivedCard.id)).map(transaction => transaction.externalId)).toEqual([
+                'privatbank-shared-purchase'
+            ]);
+            expect(yield* fetchAccountBalance(archivedCard.id)).toBe(-OWN_CARD_AMOUNT - OWN_CARD_FEE_AMOUNT);
+            expect((yield* syncRepairService.previewDuplicates()).duplicateTransactionCount).toBe(0);
         }).pipe(Effect.provide(TestLayer))
     );
 });

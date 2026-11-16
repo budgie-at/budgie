@@ -1,6 +1,5 @@
 import {
     Db,
-    PRECISION,
     TRANSFER_PAIR_TIME_WINDOW_SECONDS,
     TransactionEntityTable,
     TransactionRepository,
@@ -15,6 +14,8 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { OWN_TRANSFER_AMOUNT_TOLERANCE } from '../../core/constant/own-transfer-amount-tolerance.constant';
+
 import type { UnpairedOwnCardTransferCandidateInterface } from '../interface/unpaired-own-card-transfer-candidate.interface';
 
 export class UnpairedOwnCardTransferRepairService extends Context.Service<UnpairedOwnCardTransferRepairService>()(
@@ -23,7 +24,6 @@ export class UnpairedOwnCardTransferRepairService extends Context.Service<Unpair
         make: Effect.gen(function* () {
             const transactionRepository = yield* TransactionRepository;
             const transactionTransferService = yield* TransactionTransferService;
-            const counterpartAmountTolerance = 500 * PRECISION;
 
             const buildCardMaskPredicate = (accountAlias: string): string => String.raw`
                     (
@@ -61,7 +61,7 @@ export class UnpairedOwnCardTransferRepairService extends Context.Service<Unpair
                                     OR (transactions.type = 'EXPENSE' AND superseded_tx.type = 'INCOME' AND superseded_tx.to_account_id = counterpart_account.id)
                                 )
                                 AND ABS(superseded_tx.operated_at - transactions.operated_at) <= ${TRANSFER_PAIR_TIME_WINDOW_SECONDS}
-                                AND superseded_entry.amount >= transaction_entries.amount - ${counterpartAmountTolerance}
+                                AND superseded_entry.amount >= transaction_entries.amount - ${OWN_TRANSFER_AMOUNT_TOLERANCE}
                         ) superseded_candidate
                         ORDER BY superseded_candidate.distance
                         LIMIT 1
@@ -97,6 +97,14 @@ export class UnpairedOwnCardTransferRepairService extends Context.Service<Unpair
                             AND (${sql.raw(buildCardMaskPredicate('archived_account'))})
                     ) = 1
                     AND NOT EXISTS (
+                        SELECT 1 FROM accounts live_account
+                        WHERE live_account.deleted_at IS NULL
+                            AND live_account.is_external = 0
+                            AND live_account.id != own_account.id
+                            AND live_account.type = 'BANK_SYNC'
+                            AND (${sql.raw(buildCardMaskPredicate('live_account'))})
+                    )
+                    AND NOT EXISTS (
                         SELECT 1 FROM transactions counterpart_tx
                         INNER JOIN transaction_entries counterpart_entry ON
                             counterpart_entry.transaction_id = counterpart_tx.id
@@ -110,7 +118,7 @@ export class UnpairedOwnCardTransferRepairService extends Context.Service<Unpair
                                 OR (transactions.type = 'EXPENSE' AND counterpart_tx.type = 'INCOME' AND counterpart_tx.to_account_id = counterpart_account.id)
                             )
                             AND ABS(counterpart_tx.operated_at - transactions.operated_at) <= ${TRANSFER_PAIR_TIME_WINDOW_SECONDS}
-                            AND counterpart_entry.amount >= transaction_entries.amount - ${counterpartAmountTolerance}
+                            AND counterpart_entry.amount >= transaction_entries.amount - ${OWN_TRANSFER_AMOUNT_TOLERANCE}
                     )
             `;
 

@@ -1,4 +1,4 @@
-import { ExternalSourceEnum, LanguageEnum, TransactionEntityTable, TransactionViewRepository } from '@budgie/contracts';
+import { AccountRepository, ExternalSourceEnum, LanguageEnum, TransactionEntityTable, TransactionViewRepository } from '@budgie/contracts';
 import { AccountArchiveService, TransactionService } from '@budgie/ledger';
 import { describe, expect, it } from '@effect/vitest';
 import { and, eq, isNull } from 'drizzle-orm';
@@ -38,7 +38,7 @@ describe('privatbank/deleted-transaction-reimport', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('imports the statement again into a new account after the old account was archived', () =>
+    it.effect('restores the archived account without duplicates when the statement is imported again', () =>
         Effect.gen(function* () {
             const accountArchiveService = yield* AccountArchiveService;
             const accountId = yield* seedPrivatbankAccount;
@@ -59,8 +59,9 @@ describe('privatbank/deleted-transaction-reimport', () => {
                 );
             expect(liveTransactions).toHaveLength(review.parsedTransactionCount);
             expect(
-                liveTransactions.every(transaction => transaction.fromAccountId !== accountId && transaction.toAccountId !== accountId)
+                liveTransactions.every(transaction => transaction.fromAccountId === accountId || transaction.toAccountId === accountId)
             ).toBe(true);
+            expect((yield* (yield* AccountRepository).findByIdIncludingArchived(accountId))?.deletedAt).toBeNull();
         }).pipe(Effect.provide(TestLayer))
     );
 });

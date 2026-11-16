@@ -87,6 +87,8 @@ export type { InitialSyncProgressInterface } from './core/interface/initial-sync
 export { SyncHistoryDepthEnum } from './core/enum/sync-history-depth.enum';
 export { ResyncService } from './core/service/resync.service';
 export { SyncOperationMetadataService } from './core/service/sync-operation-metadata.service';
+export { SyncBalanceReconciliationService } from './core/service/sync-balance-reconciliation.service';
+export { FileImportAccountService } from './core/service/file-import-account.service';
 export { SyncProviderRegistryService } from './core/service/sync-provider-registry.service';
 export { SyncRepairService } from './core/service/sync-repair.service';
 export { ExternalAccountService } from './core/service/external-account.service';
