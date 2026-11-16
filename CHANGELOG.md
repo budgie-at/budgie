@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.191.0](https://github.com/budgie-at/budgie/compare/v6.190.0...v6.191.0) (2026-11-16)
+
+### Features
+
+* **app:** show only assets on Home with inline section returns ([#2245](https://github.com/budgie-at/budgie/issues/2245)) ([c12bc19](https://github.com/budgie-at/budgie/commit/c12bc19f1641eb03500d3dbc833d2939f74e4ac7))
+
+
 # [6.190.0](https://github.com/budgie-at/budgie/compare/v6.189.1...v6.190.0) (2026-11-16)
 
 ### Features
