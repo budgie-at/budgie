@@ -26,11 +26,11 @@ const hasStatementDate = (items: PdfTextItemInterface[]): boolean =>
         return isValid(new Date(year, month - 1, day, hours, minutes));
     });
 
-const findNewBalance = (items: PdfTextItemInterface[]): number => {
+const findNewBalance = (items: PdfTextItemInterface[]): number | null => {
     const balanceItem = items.find(item => item.text.startsWith(ERSTE_NEW_BALANCE_PREFIX));
     const match = isDefined(balanceItem) ? AMOUNT_ONLY_REGEX.exec(balanceItem.text.slice(ERSTE_NEW_BALANCE_PREFIX.length).trim()) : null;
 
-    return isDefined(match) ? parseErsteAmount(match[1], match[2] === '-') : 0;
+    return isDefined(match) ? parseErsteAmount(match[1], match[2] === '-') : null;
 };
 
 export const extractErsteAccountInfo = (items: PdfTextItemInterface[]): Result.Result<ErsteAccountInfoInterface, string> => {

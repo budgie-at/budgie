@@ -8,6 +8,7 @@ import * as Layer from 'effect/Layer';
 
 import {
     expectAtmCashWithdrawalConsolidation,
+    fetchAccountBalance,
     fetchExpenseEntries,
     requireInstrument,
     seed,
@@ -156,6 +157,14 @@ describe('erste/pdf-statement-import', () => {
                     new Date(2026, 0, 17, 12)
                 ]
             ]);
+        }).pipe(Effect.provide(ersteStatementLayer(statementItems)))
+    );
+
+    it.effect('reconciles the account balance to the statement closing balance', () =>
+        Effect.gen(function* () {
+            const [transaction] = yield* importStatement;
+
+            expect(yield* fetchAccountBalance(transaction.fromAccountId ?? 0)).toBe(2_475_020_000);
         }).pipe(Effect.provide(ersteStatementLayer(statementItems)))
     );
 

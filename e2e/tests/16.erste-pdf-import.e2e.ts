@@ -16,7 +16,7 @@ test('16 erste pdf import', { tags: ['import'], platforms: ['ios'] }, async ({ b
         await b.byId(screen, CARD).longPress();
         await b.tapId(ctx, 'AccountCardMenu.ImportButton');
         await i.selectFileFromAppProvider(ctx, file);
-        await b.expectId(ctx, 'AccountCard.Balance.Erste_EUR._3_412', 60_000);
+        await b.expectId(ctx, 'AccountCard.Balance.Erste_EUR.9_958', 60_000);
     };
     const editArealis = async () => {
         await b.scrollTo(ctx, 'TransactionCard.Label.AREALIS_GmbH');
@@ -32,7 +32,7 @@ test('16 erste pdf import', { tags: ['import'], platforms: ['ios'] }, async ({ b
         await b.tapId(ctx, 'CreateAccount.ERSTE');
         await i.importStatementFromPicker(ctx, 'erste-statement-008, pdf', 'SyncAccountSelection.Row.Erste_EUR');
         await b.scrollTo(ctx, CARD);
-        await b.expectId(ctx, 'AccountCard.Balance.Erste_EUR._478');
+        await b.expectId(ctx, 'AccountCard.Balance.Erste_EUR.12_892');
         await b.tapId(ctx, CARD);
         await b.expectId(ctx, 'AccountDetails.ActionsButton', 10_000);
         await b.expectId(ctx, 'TransactionCard.Label.Sample_Counterparty', 20_000);
@@ -56,7 +56,7 @@ test('16 erste pdf import', { tags: ['import'], platforms: ['ios'] }, async ({ b
         await b.expectId(ctx, 'AccountDetails.ActionsButton', 10_000);
         await b.tapId(ctx, 'PageHeader.BackButton');
         await b.expectId(ctx, CARD, 10_000);
-        await b.expectId(ctx, 'AccountCard.Balance.Erste_EUR._3_412');
+        await b.expectId(ctx, 'AccountCard.Balance.Erste_EUR.9_958');
         await quickImport('erste-statement-009, pdf');
         await b.tapId(ctx, CARD);
         await editArealis();

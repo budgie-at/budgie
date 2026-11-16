@@ -69,6 +69,7 @@ export const makeSyncService = Effect.fnUntraced(function* (
 
     return {
         findAccountsByExternalId,
+        findExistingSyncAccount,
         excludeExternalAccounts: Effect.fn('AbstractSyncService.excludeExternalAccounts')(function* (accounts: SyncAccountInterface[]) {
             const externalAccounts = yield* accountRepository.findExternal;
             const aliases = yield* accountRepository.findExternalIdAliases(accounts.map(account => account.id));

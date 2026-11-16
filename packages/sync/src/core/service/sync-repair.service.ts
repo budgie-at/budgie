@@ -38,11 +38,11 @@ export class SyncRepairService extends Context.Service<SyncRepairService>()('@bu
         const buildPlaceholders = (ids: readonly number[]): string => ids.map(() => '?').join(',');
 
         const buildPreviewFromCandidates = (
-            candidates: readonly SyncDuplicateCandidateRowInterface[],
+            candidateSources: readonly ExternalSourceEnum[],
             consolidationRepairCount: number
         ): SyncDuplicateRepairPreviewInterface => {
             const sourceCounts: ReadonlyArray<readonly [ExternalSourceEnum, number]> = [
-                ...candidates.map(candidate => [candidate.externalSource, 1] as const),
+                ...candidateSources.map(externalSource => [externalSource, 1] as const),
                 [ExternalSourceEnum.PRIVATBANK, consolidationRepairCount]
             ];
             const countBySource = sourceCounts.reduce(
@@ -52,7 +52,7 @@ export class SyncRepairService extends Context.Service<SyncRepairService>()('@bu
             );
 
             return {
-                duplicateTransactionCount: candidates.length + consolidationRepairCount,
+                duplicateTransactionCount: candidateSources.length + consolidationRepairCount,
                 sources: [...countBySource].map(([externalSource, duplicateTransactionCount]) => ({
                     externalSource,
                     duplicateTransactionCount
@@ -98,6 +98,7 @@ export class SyncRepairService extends Context.Service<SyncRepairService>()('@bu
         });
 
         const repairConsolidationDuplicates = Effect.fnUntraced(function* () {
+            const archivedDuplicateMergeCount = yield* accountReissueMergeService.mergeArchivedDuplicates();
             const reissueMergeCount = yield* accountReissueMergeService.mergeReissuedAccounts();
             const incomeDuplicateRepairCount = yield* consolidationCoordinatorService.repairExistingTransferIncomeDuplicates();
             const bridgeClaimRepairCount = yield* consolidationCoordinatorService.repairBridgeClaimedTransferPairs();
@@ -106,6 +107,7 @@ export class SyncRepairService extends Context.Service<SyncRepairService>()('@bu
             const ownCardTransferRepairCount = yield* unpairedOwnCardTransferRepairService.repair();
 
             return (
+                archivedDuplicateMergeCount +
                 reissueMergeCount +
                 incomeDuplicateRepairCount +
                 bridgeClaimRepairCount +
@@ -145,7 +147,13 @@ export class SyncRepairService extends Context.Service<SyncRepairService>()('@bu
                 (yield* externalAccountService.countCandidates()) +
                 (yield* unpairedOwnCardTransferRepairService.countCandidates());
 
-            return buildPreviewFromCandidates(candidates, consolidationRepairCount);
+            return buildPreviewFromCandidates(
+                [
+                    ...candidates.map(candidate => candidate.externalSource),
+                    ...(yield* accountReissueMergeService.findArchivedDuplicateSources)
+                ],
+                consolidationRepairCount
+            );
         });
 
         const removeDuplicatesInner = Effect.fnUntraced(function* () {
