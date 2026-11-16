@@ -59,7 +59,7 @@ export const ImportColumnMapField = ({ control, name, label, headers, selectedHe
             onPress={handleOpen}
             testID={ImportColumnMapperSelector.Row(name)}
             right={
-                <View className="max-w-[55%] flex-row items-center gap-x-md">
+                <View className="shrink flex-row items-center gap-x-md">
                     {showColumnName ? (
                         <Text className={valueClassName} numberOfLines={1} ellipsizeMode="tail">
                             {displayValue}

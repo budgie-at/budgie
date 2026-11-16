@@ -26,7 +26,7 @@ export const AiSystemStatusBanner = () => {
         <GroupedListRow
             title={t`On-device AI`}
             left={<GroupedListIcon icon={icon} />}
-            right={<Text className="max-w-[60%] text-[17px] text-secondary-foreground">{umbrella.statusText}</Text>}
+            right={<Text className="text-right text-[17px] text-secondary-foreground">{umbrella.statusText}</Text>}
         />
     );
 };

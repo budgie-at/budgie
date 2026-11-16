@@ -48,7 +48,7 @@ export const GroupedListRow = (props: Props) => {
 
     const chevron = isPressable ? <Icon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" /> : null;
     const accessory = right ?? chevron;
-    const accessoryNode = isDefined(accessory) ? <View className="self-center">{accessory}</View> : null;
+    const accessoryNode = isDefined(accessory) ? <View className="max-w-[50%] shrink self-center">{accessory}</View> : null;
     const separatorClassName = isDefined(left) ? 'left-[64px]' : 'left-[16px]';
     const subtitleNode = isNotEmptyString(subtitle) ? (
         <Text
