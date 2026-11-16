@@ -61,16 +61,6 @@ const getInstitutionSectionType = (institution: InstitutionGroupInterface): Acco
     return isInvestmentInstitution(institution) ? AccountTypeEnum.STOCKS : AccountTypeEnum.BANK;
 };
 
-const getShownProviderCashAccounts = (
-    institution: Pick<InstitutionGroupInterface, 'accounts'>,
-    balancesByAccountId: ReadonlyMap<number, HomeAccountBalanceInterface>
-): AccountWithSyncEntityInterface[] => {
-    const cashAccounts = institution.accounts.filter(isFiatAccount);
-    const hasPositions = cashAccounts.length < institution.accounts.length;
-
-    return cashAccounts.filter(account => !hasPositions || balancesByAccountId.get(account.id)?.balance !== 0);
-};
-
 const buildHomePageSections = (
     activeAccounts: AccountWithSyncEntityInterface[],
     integrationProviders: ReadonlyMap<number, ExternalSourceEnum>,
@@ -125,7 +115,7 @@ const buildHomePageSections = (
                 ...buildHomeHoldings(holdingAccounts, balancesByAccountId),
                 ...typeInstitutions.filter(institution => !institution.isHoldingProvider),
                 ...accounts.filter(account => !isHoldingSection || isFiatAccount(account)),
-                ...holdingProviders.flatMap(institution => getShownProviderCashAccounts(institution, balancesByAccountId))
+                ...holdingProviders.flatMap(institution => institution.accounts.filter(isFiatAccount))
             ]
         };
     });
@@ -272,7 +262,7 @@ export const useHomePageDataQuery = () => {
         data.flatMap(row => (isDefined(row.account.integrationId) ? [[row.account.integrationId, row.integrationLabel] as const] : []))
     );
     const sections = buildHomePageSections(displayedAccounts, integrationProviders, integrationLabels, balanceSummary).map(section =>
-        hideEmptyHomeHoldings(section, decimalPlaces)
+        hideEmptyHomeHoldings(section, balanceSummary.balancesByAccountId, decimalPlaces)
     );
 
     return {
