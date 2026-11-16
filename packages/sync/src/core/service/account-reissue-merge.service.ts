@@ -270,6 +270,13 @@ export class AccountReissueMergeService extends Context.Service<AccountReissueMe
                 return;
             }
 
+            yield* syncRepository.update(archivedSync.id, {
+                setupBalance: null,
+                balanceAdjustmentTransactionId: null,
+                reconciledAt: null,
+                reconciledBalance: null,
+                reconciliationTransactionId: null
+            });
             yield* Effect.forEach(
                 [archivedSync.balanceAdjustmentTransactionId, archivedSync.reconciliationTransactionId].filter(isDefined),
                 transactionId => transactionService.purgeById(transactionId),

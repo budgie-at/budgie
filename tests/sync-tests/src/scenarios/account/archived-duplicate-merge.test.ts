@@ -9,15 +9,22 @@ import {
     RecurringSeriesUserStateEnum,
     SyncModeEnum,
     SyncRepository,
-    TransactionEntityTable
+    AccountBalanceRepository,
+    TransactionEntityTable,
+    TransactionTypeEnum
 } from '@budgie/contracts';
-import { AccountArchiveService, BalanceAdjustmentService, TransactionTransferService } from '@budgie/ledger';
+import {
+    AccountArchiveService,
+    AccountBalanceIncrementalService,
+    BalanceAdjustmentService,
+    TransactionTransferService
+} from '@budgie/ledger';
 import { SyncRepairService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
-import { eq } from 'drizzle-orm';
+import { and, eq, isNull, or } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
-import { fetchAccountBalance, seed, testDb, TestLayer, testQueryService } from '../../harness';
+import { fetchAccountBalance, fetchCachedBalanceAmount, seed, testDb, TestLayer, testQueryService } from '../../harness';
 import {
     buildOwnCardRow,
     buildOwnCardStatementClient,
@@ -161,6 +168,56 @@ describe('account/archived-duplicate-merge', () => {
             yield* (yield* SyncRepairService).removeDuplicates();
 
             expect(yield* fetchAccountBalance(archivedCard.id)).toBe(6_000_000);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('keeps only the surviving reconciliation adjustment when both cards were reconciled', () =>
+        Effect.gen(function* () {
+            const syncRepository = yield* SyncRepository;
+            const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
+            const { archivedCard, liveCard } = yield* seedArchivedDuplicate;
+            const reconciledAt = new Date(OPERATED_AT.getTime() + 86_400_000);
+            const setArchived = (deletedAt: Date | null) =>
+                testDb.update(AccountEntityTable).set({ deletedAt }).where(eq(AccountEntityTable.id, archivedCard.id));
+            const seedReconciledSync = (accountId: number, reconciledBalance: number) =>
+                Effect.gen(function* () {
+                    const sync = yield* syncRepository.create({
+                        accountId,
+                        provider: ExternalSourceEnum.MONOBANK,
+                        enabled: true,
+                        mode: SyncModeEnum.FORWARD
+                    });
+
+                    yield* syncRepository.update(sync.id, { reconciledAt, reconciledBalance });
+                    yield* accountBalanceIncrementalService.updateBalancesByAccountIds([accountId]);
+                });
+
+            yield* setArchived(null);
+            yield* seedReconciledSync(archivedCard.id, 5_000_000);
+            yield* setArchived(new Date());
+            yield* seedReconciledSync(liveCard.id, 7_000_000);
+            yield* (yield* SyncRepairService).removeDuplicates();
+
+            const adjustments = yield* testDb
+                .select()
+                .from(TransactionEntityTable)
+                .where(
+                    and(
+                        eq(TransactionEntityTable.type, TransactionTypeEnum.ADJUSTMENT),
+                        isNull(TransactionEntityTable.deletedAt),
+                        or(
+                            eq(TransactionEntityTable.fromAccountId, archivedCard.id),
+                            eq(TransactionEntityTable.toAccountId, archivedCard.id)
+                        )
+                    )
+                );
+            const survivingSync = yield* syncRepository.getByAccountId(archivedCard.id);
+            const ledgerBalance = (yield* (yield* AccountBalanceRepository).getLedgerBalances([archivedCard.id])).get(archivedCard.id);
+
+            expect(adjustments.map(adjustment => adjustment.id)).toEqual([survivingSync?.reconciliationTransactionId]);
+            expect(survivingSync?.reconciledBalance).toBe(7_000_000);
+            expect(yield* fetchCachedBalanceAmount(archivedCard.id)).toBe(7_000_000);
+            expect(ledgerBalance).toBe(7_000_000);
         }).pipe(Effect.provide(TestLayer))
     );
 });
