@@ -189,7 +189,9 @@ test('44 enable banking', { tags: ['sync'], platforms: ['ios'] }, async ({ budgi
         await expect(screen.getByRole('button', { name: /^E2E Coffee, €12,.*E2E Statement Account(, \$[\d,.]+)?$/ }).first()).toBeVisible({
             timeout: 15_000
         });
-        const manualPurchase = screen.getByRole('button', { name: /^E2E Manual Purchase, €7,.*E2E Statement Account(, \$[\d,.]+)?$/ }).first();
+        const manualPurchase = screen
+            .getByRole('button', { name: /^E2E Manual Purchase, €7,.*E2E Statement Account(, \$[\d,.]+)?$/ })
+            .first();
         await screen.scrollUntilVisible(manualPurchase, { direction: 'down', timeout: 15_000 });
         await expect(manualPurchase).toBeVisible();
     });
