@@ -3,19 +3,12 @@ import { millisecondsInSecond } from 'date-fns/constants';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { OWN_TRANSFER_AMOUNT_TOLERANCE } from '../constant/own-transfer-amount-tolerance.constant';
-
 import type { TransferLegEvidenceType } from '../interface/transfer-leg-evidence.type';
 import type { TransferLegMatchCandidateInterface } from '../interface/transfer-leg-match-candidate.interface';
 import type { UnconsolidatedTransferLegInterface } from '../interface/unconsolidated-transfer-leg.interface';
 
 const getDistance = (candidate: TransferLegMatchCandidateInterface, leg: UnconsolidatedTransferLegInterface): number =>
     Math.abs(leg.operatedAt.getTime() - candidate.operatedAt.getTime());
-
-const isWithinFeeTolerance = (candidate: TransferLegMatchCandidateInterface, leg: UnconsolidatedTransferLegInterface): boolean =>
-    candidate.isIncome
-        ? candidate.amount <= leg.amount && candidate.amount >= leg.amount - OWN_TRANSFER_AMOUNT_TOLERANCE
-        : candidate.amount >= leg.amount && candidate.amount <= leg.amount + OWN_TRANSFER_AMOUNT_TOLERANCE;
 
 const isMatchingPair = (
     candidate: TransferLegMatchCandidateInterface,
@@ -29,7 +22,7 @@ const isMatchingPair = (
     return (
         leg.entryType === (candidate.isIncome ? TransactionEntryTypeEnum.DEBIT : TransactionEntryTypeEnum.CREDIT) &&
         getDistance(candidate, leg) <= TRANSFER_PAIR_TIME_WINDOW_SECONDS * millisecondsInSecond &&
-        isWithinFeeTolerance(candidate, leg) &&
+        candidate.amounts.includes(leg.amount) &&
         hasEvidence(candidate.title, leg)
     );
 };
@@ -43,8 +36,8 @@ export const matchUnconsolidatedTransferLegs = <T extends TransferLegMatchCandid
         .flatMap(candidate => legs.filter(leg => isMatchingPair(candidate, leg, hasEvidence)).map(leg => ({ candidate, leg })))
         .sort(
             (left, right) =>
+                Number(isDefined(right.leg.entryExternalId)) - Number(isDefined(left.leg.entryExternalId)) ||
                 Number(right.candidate.isKnown) - Number(left.candidate.isKnown) ||
-                Math.abs(left.candidate.amount - left.leg.amount) - Math.abs(right.candidate.amount - right.leg.amount) ||
                 getDistance(left.candidate, left.leg) - getDistance(right.candidate, right.leg)
         );
     const matches = new Map<T, UnconsolidatedTransferLegInterface>();

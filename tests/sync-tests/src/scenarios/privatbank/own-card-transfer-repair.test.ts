@@ -1,5 +1,6 @@
 import {
     AccountBalanceRepository,
+    convertFromMicroUnits,
     AccountEntityTable,
     AccountRepository,
     AccountTypeEnum,
@@ -10,7 +11,12 @@ import {
     TransactionUpdatedByEnum
 } from '@budgie/contracts';
 import { AccountArchiveService, TransactionTransferService } from '@budgie/ledger';
-import { privatbankTransactionMapper, SyncRepairService, UnpairedOwnCardTransferRepairService } from '@budgie/sync';
+import {
+    isPrivatbankOwnCardTransferTitle,
+    privatbankTransactionMapper,
+    SyncRepairService,
+    UnpairedOwnCardTransferRepairService
+} from '@budgie/sync';
 import { describe, expect, it, vi } from '@effect/vitest';
 import { and, eq, isNull } from 'drizzle-orm';
 import * as Cause from 'effect/Cause';
@@ -128,8 +134,6 @@ const expectArchivedCardRestoredWithTransferOnly = Effect.fnUntraced(function* (
     expect(yield* fetchLiveExpensesFromAccount(archivedCard.id)).toHaveLength(0);
     expect(yield* fetchAccountBalance(archivedCard.id)).toBe(-OWN_CARD_AMOUNT - otherOutflowAmount);
 });
-
-const toUah = (microUnits: number): number => microUnits / 1_000_000;
 
 const repairThenImportArchivedCardRows = Effect.fnUntraced(function* (buildRows: (card: string) => PrivatbankRowInterface[]) {
     const unpairedOwnCardTransferRepairService = yield* UnpairedOwnCardTransferRepairService;
@@ -519,7 +523,7 @@ describe('privatbank/own-card-transfer-repair', () => {
                 { accountId: archivedCard.id, amount: OWN_CARD_FEE_AMOUNT }
             );
             const statement = buildOwnCardStatementClient([
-                buildOwnCardRow(archivedCard.externalId ?? '', -OWN_CARD_AMOUNT / 1_000_000, OWN_CARD_EXPENSE_TITLE)
+                buildOwnCardRow(archivedCard.externalId ?? '', -convertFromMicroUnits(OWN_CARD_AMOUNT), OWN_CARD_EXPENSE_TITLE)
             ]);
 
             yield* testDb.update(AccountEntityTable).set({ deletedAt: null }).where(eq(AccountEntityTable.id, archivedCard.id));
@@ -587,7 +591,7 @@ describe('privatbank/own-card-transfer-repair', () => {
             const unpairedOwnCardTransferRepairService = yield* UnpairedOwnCardTransferRepairService;
             const { archivedCard } = yield* seedArchivedOwnCardScenario();
             const statement = buildOwnCardStatementClient([
-                buildOwnCardRow(archivedCard.externalId ?? '', -(OWN_CARD_AMOUNT - OWN_CARD_FEE_AMOUNT) / 1_000_000, 'Amazon')
+                buildOwnCardRow(archivedCard.externalId ?? '', -convertFromMicroUnits(OWN_CARD_AMOUNT - OWN_CARD_FEE_AMOUNT), 'Amazon')
             ]);
 
             yield* unpairedOwnCardTransferRepairService.repair();
@@ -604,8 +608,12 @@ describe('privatbank/own-card-transfer-repair', () => {
             const unpairedOwnCardTransferRepairService = yield* UnpairedOwnCardTransferRepairService;
             const { archivedCard } = yield* seedArchivedOwnCardScenario();
             const card = archivedCard.externalId ?? '';
-            const smallerTransfer = buildOwnCardRow(card, -(OWN_CARD_AMOUNT - NEAR_LEG_AMOUNT_GAP) / 1_000_000, OWN_CARD_EXPENSE_TITLE);
-            const matchingTransfer = buildOwnCardRow(card, -OWN_CARD_AMOUNT / 1_000_000, OWN_CARD_EXPENSE_TITLE);
+            const smallerTransfer = buildOwnCardRow(
+                card,
+                -convertFromMicroUnits(OWN_CARD_AMOUNT - NEAR_LEG_AMOUNT_GAP),
+                OWN_CARD_EXPENSE_TITLE
+            );
+            const matchingTransfer = buildOwnCardRow(card, -convertFromMicroUnits(OWN_CARD_AMOUNT), OWN_CARD_EXPENSE_TITLE);
             const rows = isReversed ? [matchingTransfer, smallerTransfer] : [smallerTransfer, matchingTransfer];
 
             yield* unpairedOwnCardTransferRepairService.repair();
@@ -622,7 +630,7 @@ describe('privatbank/own-card-transfer-repair', () => {
     it.effect('imports a separate own-card row far larger than the repaired leg', () =>
         Effect.gen(function* () {
             const { archivedCard } = yield* repairThenImportArchivedCardRows(card => [
-                buildOwnCardRow(card, -toUah(OWN_CARD_AMOUNT * 10), OWN_CARD_EXPENSE_TITLE)
+                buildOwnCardRow(card, -convertFromMicroUnits(OWN_CARD_AMOUNT * 10), OWN_CARD_EXPENSE_TITLE)
             ]);
 
             expect(yield* fetchLiveExpensesFromAccount(archivedCard.id)).toHaveLength(1);
@@ -632,7 +640,7 @@ describe('privatbank/own-card-transfer-repair', () => {
     it.effect('imports a separate own-card row smaller than the repaired leg', () =>
         Effect.gen(function* () {
             const { archivedCard } = yield* repairThenImportArchivedCardRows(card => [
-                buildOwnCardRow(card, -toUah(OWN_CARD_AMOUNT / 10), OWN_CARD_EXPENSE_TITLE)
+                buildOwnCardRow(card, -convertFromMicroUnits(OWN_CARD_AMOUNT / 10), OWN_CARD_EXPENSE_TITLE)
             ]);
 
             expect(yield* fetchLiveExpensesFromAccount(archivedCard.id)).toHaveLength(1);
@@ -644,8 +652,11 @@ describe('privatbank/own-card-transfer-repair', () => {
             const unpairedOwnCardTransferRepairService = yield* UnpairedOwnCardTransferRepairService;
             const { archivedCard } = yield* seedArchivedOwnCardScenario();
             const card = archivedCard.externalId ?? '';
-            const knownRow = buildOwnCardRow(card, -toUah(OWN_CARD_AMOUNT + OWN_CARD_FEE_AMOUNT), OWN_CARD_EXPENSE_TITLE);
-            const newRow = buildOwnCardRow(card, -toUah(OWN_CARD_AMOUNT), OWN_CARD_EXPENSE_TITLE);
+            const knownRow = {
+                ...buildOwnCardRow(card, -convertFromMicroUnits(OWN_CARD_AMOUNT + OWN_CARD_FEE_AMOUNT), OWN_CARD_EXPENSE_TITLE),
+                operationAmount: convertFromMicroUnits(OWN_CARD_AMOUNT)
+            };
+            const newRow = buildOwnCardRow(card, -convertFromMicroUnits(OWN_CARD_AMOUNT), OWN_CARD_EXPENSE_TITLE);
 
             yield* unpairedOwnCardTransferRepairService.repair();
             const knownExpense = yield* seed.bankPairExpense(
@@ -665,11 +676,11 @@ describe('privatbank/own-card-transfer-repair', () => {
 
     it.effect('keeps a skipped row on its leg so a later own-card row is imported and the skipped row stays out', () =>
         Effect.gen(function* () {
-            const claimingRow = (card: string) => buildOwnCardRow(card, -toUah(OWN_CARD_AMOUNT), OWN_CARD_EXPENSE_TITLE);
+            const claimingRow = (card: string) => buildOwnCardRow(card, -convertFromMicroUnits(OWN_CARD_AMOUNT), OWN_CARD_EXPENSE_TITLE);
             const { archivedCard, card } = yield* repairThenImportArchivedCardRows(currentCard => [claimingRow(currentCard)]);
             const laterRow = buildOwnCardRow(
                 card,
-                -toUah(OWN_CARD_AMOUNT + NEAR_LEG_AMOUNT_GAP),
+                -convertFromMicroUnits(OWN_CARD_AMOUNT),
                 OWN_CARD_EXPENSE_TITLE,
                 new Date(OWN_CARD_OPERATED_AT.getTime() + 3_600_000)
             );
@@ -678,7 +689,83 @@ describe('privatbank/own-card-transfer-repair', () => {
             yield* importCardRows(card, [claimingRow(card), laterRow]);
 
             expect(yield* fetchLiveExpensesFromAccount(archivedCard.id)).toHaveLength(1);
-            expect(yield* fetchAccountBalance(archivedCard.id)).toBe(-OWN_CARD_AMOUNT - (OWN_CARD_AMOUNT + NEAR_LEG_AMOUNT_GAP));
+            expect(yield* fetchAccountBalance(archivedCard.id)).toBe(-OWN_CARD_AMOUNT * 2);
         }).pipe(Effect.provide(TestLayer))
     );
+
+    it.effect('imports a small incoming own-card row next to a larger repaired leg', () =>
+        Effect.gen(function* () {
+            const unpairedOwnCardTransferRepairService = yield* UnpairedOwnCardTransferRepairService;
+            const liveCard = yield* seedPrivatbankCard('1234');
+            const archivedCard = yield* seedPrivatbankCard('4321');
+            const outgoing = yield* seed.bankPairExpense(
+                { externalId: 'privatbank-own-card-outgoing', operatedAt: OWN_CARD_OPERATED_AT },
+                { accountId: liveCard.id, amount: OWN_CARD_AMOUNT }
+            );
+            const card = archivedCard.externalId ?? '';
+
+            yield* seed.updateTransaction(outgoing.id, { externalSource: ExternalSourceEnum.PRIVATBANK, title: 'На мою картку *4321' });
+            yield* archiveAccount(archivedCard.id);
+            yield* unpairedOwnCardTransferRepairService.repair();
+            yield* importCardRows(card, [buildOwnCardRow(card, convertFromMicroUnits(OWN_CARD_AMOUNT / 10), 'Зі своєї картки *1234')]);
+
+            expect(yield* fetchAccountBalance(archivedCard.id)).toBe(OWN_CARD_AMOUNT + OWN_CARD_AMOUNT / 10);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('skips a sender row whose operation amount equals the leg while its card amount carries the fee', () =>
+        Effect.gen(function* () {
+            const { archivedCard } = yield* repairThenImportArchivedCardRows(card => [
+                {
+                    ...buildOwnCardRow(card, -convertFromMicroUnits(OWN_CARD_AMOUNT + OWN_CARD_FEE_AMOUNT), OWN_CARD_EXPENSE_TITLE),
+                    operationAmount: convertFromMicroUnits(OWN_CARD_AMOUNT)
+                }
+            ]);
+
+            expect(yield* fetchLiveExpensesFromAccount(archivedCard.id)).toHaveLength(0);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('lets a persisted leg claim win over a closer unclaimed leg', () =>
+        Effect.gen(function* () {
+            const unpairedOwnCardTransferRepairService = yield* UnpairedOwnCardTransferRepairService;
+            const { archivedCard, liveCard } = yield* seedArchivedOwnCardScenario();
+            const card = archivedCard.externalId ?? '';
+            const atOffset = (minutes: number) => new Date(OWN_CARD_OPERATED_AT.getTime() + minutes * 60_000);
+            const claimedIncome = yield* seed.bankPairIncome(
+                { externalId: 'privatbank-claimed-income', operatedAt: atOffset(180) },
+                { accountId: liveCard.id, amount: OWN_CARD_AMOUNT }
+            );
+            const claimingRow = buildOwnCardRow(card, -convertFromMicroUnits(OWN_CARD_AMOUNT), OWN_CARD_EXPENSE_TITLE, atOffset(5));
+            const realCounterpart = buildOwnCardRow(card, -convertFromMicroUnits(OWN_CARD_AMOUNT), OWN_CARD_EXPENSE_TITLE, atOffset(60));
+
+            yield* seed.updateTransaction(claimedIncome.id, {
+                externalSource: ExternalSourceEnum.PRIVATBANK,
+                title: OWN_CARD_INCOME_TITLE
+            });
+            yield* unpairedOwnCardTransferRepairService.repair();
+            yield* testDb
+                .update(TransactionEntryEntityTable)
+                .set({ externalId: privatbankTransactionMapper(claimingRow).id })
+                .where(
+                    and(
+                        eq(TransactionEntryEntityTable.transactionId, claimedIncome.id),
+                        eq(TransactionEntryEntityTable.accountId, archivedCard.id)
+                    )
+                );
+            yield* importCardRows(card, [claimingRow, realCounterpart]);
+
+            expect(yield* fetchLiveExpensesFromAccount(archivedCard.id)).toHaveLength(0);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it('requires a non-empty counterpart card ending in the own-card title evidence', () => {
+        const title = 'На мою картку *1234';
+
+        expect(isPrivatbankOwnCardTransferTitle(title, { counterpartExternalId: '', counterpartIban: null })).toBe(false);
+        expect(isPrivatbankOwnCardTransferTitle(title, { counterpartExternalId: '', counterpartIban: 'UA00PRIVATBANK1234' })).toBe(true);
+        expect(isPrivatbankOwnCardTransferTitle(title, { counterpartExternalId: '4000 **** **** 9999', counterpartIban: null })).toBe(
+            false
+        );
+    });
 });

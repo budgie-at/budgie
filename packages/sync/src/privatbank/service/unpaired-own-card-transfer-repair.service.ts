@@ -1,5 +1,6 @@
 import {
     Db,
+    PRECISION,
     TRANSFER_PAIR_TIME_WINDOW_SECONDS,
     TransactionEntityTable,
     TransactionRepository,
@@ -14,7 +15,6 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { OWN_TRANSFER_AMOUNT_TOLERANCE } from '../../core/constant/own-transfer-amount-tolerance.constant';
 import { PRIVATBANK_OWN_CARD_TITLE_PHRASES } from '../constant/privatbank-own-card-title-phrases.constant';
 
 import type { UnpairedOwnCardTransferCandidateInterface } from '../interface/unpaired-own-card-transfer-candidate.interface';
@@ -25,6 +25,7 @@ export class UnpairedOwnCardTransferRepairService extends Context.Service<Unpair
         make: Effect.gen(function* () {
             const transactionRepository = yield* TransactionRepository;
             const transactionTransferService = yield* TransactionTransferService;
+            const counterpartAmountTolerance = 500 * PRECISION;
 
             const buildCardMaskPredicate = (accountAlias: string): string => String.raw`
                     (
@@ -66,7 +67,7 @@ export class UnpairedOwnCardTransferRepairService extends Context.Service<Unpair
                                     OR (transactions.type = 'EXPENSE' AND superseded_tx.type = 'INCOME' AND superseded_tx.to_account_id = counterpart_account.id)
                                 )
                                 AND ABS(superseded_tx.operated_at - transactions.operated_at) <= ${TRANSFER_PAIR_TIME_WINDOW_SECONDS}
-                                AND superseded_entry.amount >= transaction_entries.amount - ${OWN_TRANSFER_AMOUNT_TOLERANCE}
+                                AND superseded_entry.amount >= transaction_entries.amount - ${counterpartAmountTolerance}
                         ) superseded_candidate
                         ORDER BY superseded_candidate.distance
                         LIMIT 1
@@ -123,7 +124,7 @@ export class UnpairedOwnCardTransferRepairService extends Context.Service<Unpair
                                 OR (transactions.type = 'EXPENSE' AND counterpart_tx.type = 'INCOME' AND counterpart_tx.to_account_id = counterpart_account.id)
                             )
                             AND ABS(counterpart_tx.operated_at - transactions.operated_at) <= ${TRANSFER_PAIR_TIME_WINDOW_SECONDS}
-                            AND counterpart_entry.amount >= transaction_entries.amount - ${OWN_TRANSFER_AMOUNT_TOLERANCE}
+                            AND counterpart_entry.amount >= transaction_entries.amount - ${counterpartAmountTolerance}
                     )
             `;
 

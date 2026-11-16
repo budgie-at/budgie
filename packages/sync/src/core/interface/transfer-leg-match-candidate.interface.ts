@@ -4,5 +4,5 @@ export interface TransferLegMatchCandidateInterface {
     readonly isIncome: boolean;
     readonly isKnown: boolean;
     readonly operatedAt: Date;
-    readonly amount: number;
+    readonly amounts: readonly number[];
 }

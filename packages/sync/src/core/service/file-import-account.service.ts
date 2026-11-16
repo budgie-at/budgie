@@ -91,7 +91,10 @@ export class FileImportAccountService extends Context.Service<FileImportAccountS
                     isIncome: transaction.type === SyncTransactionTypeEnum.INCOME,
                     isKnown: isKnownSyncTransaction(transaction, existingTransactionIdMap),
                     operatedAt: new Date(transaction.time * millisecondsInSecond),
-                    amount: convertToMicroUnits(Math.abs(transaction.amount))
+                    amounts: [
+                        convertToMicroUnits(Math.abs(transaction.amount)),
+                        convertToMicroUnits(Math.abs(transaction.amount) - transaction.feeAmount)
+                    ]
                 }));
                 const { hasTransferLegEvidence } = definition;
                 if (!isDefined(hasTransferLegEvidence) || candidates.every(({ isKnown }) => isKnown)) {

@@ -194,13 +194,29 @@ export class AccountReissueMergeService extends Context.Service<AccountReissueMe
         ) {
             const liveExternalIds = yield* transactionRepository.findIdMapByExternalSource(externalSource, [liveAccountId]);
             const archivedExternalIds = yield* transactionRepository.findIdMapByExternalSource(externalSource, [archivedAccountId]);
-            const pairs = [...archivedExternalIds].flatMap(([externalId, archivedTransactionId]) => {
-                const liveTransactionId = liveExternalIds.get(externalId);
-
-                return isDefined(liveTransactionId) && liveTransactionId !== archivedTransactionId
+            const liveEntries = yield* transactionEntryRepository.findByExternalIdsAndAccountId(
+                [...archivedExternalIds.keys()],
+                liveAccountId
+            );
+            const archivedEntries = yield* transactionEntryRepository.findByExternalIdsAndAccountId(
+                [...liveExternalIds.keys()],
+                archivedAccountId
+            );
+            const liveTransactionIdByEntryExternalId = new Map(liveEntries.map(entry => [entry.externalId, entry.transactionId]));
+            const pairs = [
+                ...[...archivedExternalIds].map(([externalId, archivedTransactionId]) => ({
+                    archivedTransactionId,
+                    liveTransactionId: liveExternalIds.get(externalId) ?? liveTransactionIdByEntryExternalId.get(externalId)
+                })),
+                ...archivedEntries.map(entry => ({
+                    archivedTransactionId: entry.transactionId,
+                    liveTransactionId: isDefined(entry.externalId) ? liveExternalIds.get(entry.externalId) : null
+                }))
+            ].flatMap(({ archivedTransactionId, liveTransactionId }) =>
+                isDefined(liveTransactionId) && liveTransactionId !== archivedTransactionId
                     ? [{ archivedTransactionId, liveTransactionId }]
-                    : [];
-            });
+                    : []
+            );
             const transactions = new Map(
                 (yield* transactionRepository.findByIds(pairs.flatMap(pair => [pair.archivedTransactionId, pair.liveTransactionId]))).map(
                     transaction => [transaction.id, transaction]
@@ -216,7 +232,7 @@ export class AccountReissueMergeService extends Context.Service<AccountReissueMe
                 })
             );
 
-            return duplicateIds.filter(isDefined);
+            return [...new Set(duplicateIds.filter(isDefined))];
         });
 
         const findImportedTransferLegDuplicates = Effect.fnUntraced(function* (
@@ -252,7 +268,7 @@ export class AccountReissueMergeService extends Context.Service<AccountReissueMe
                               isIncome,
                               isKnown: entry.accountId === archivedAccountId,
                               operatedAt: transaction.operatedAt,
-                              amount: entry.amount
+                              amounts: [entry.amount]
                           }
                       ]
                     : [];
@@ -371,7 +387,9 @@ export class AccountReissueMergeService extends Context.Service<AccountReissueMe
 
         return {
             countCandidates: Effect.map(findUnambiguousCandidates(), candidates => candidates.length),
-            countArchivedDuplicates: Effect.map(findArchivedDuplicates, archivedDuplicates => archivedDuplicates.length),
+            findArchivedDuplicateSources: Effect.map(findArchivedDuplicates, archivedDuplicates =>
+                archivedDuplicates.map(archivedDuplicate => archivedDuplicate.externalSource)
+            ),
             mergeArchivedDuplicates: Effect.fn('AccountReissueMergeService.mergeArchivedDuplicates')(function* () {
                 const archivedDuplicates = yield* findArchivedDuplicates;
                 yield* Effect.forEach(archivedDuplicates, mergeArchivedDuplicate, { discard: true });

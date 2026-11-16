@@ -115,4 +115,17 @@ describe('privatbank/statement-balance-reconciliation', () => {
             expect(yield* fetchAccountBalance(accountId)).toBe(0);
         }).pipe(Effect.provide(TestLayer))
     );
+
+    it.effect('re-anchors when a repeated balance in the same second hides the stored anchor behind another predecessor', () =>
+        Effect.gen(function* () {
+            const first = buildRow(-30, 150, SECOND_OUTFLOW_AT);
+            const second = buildRow(-50, 100, SECOND_OUTFLOW_AT);
+            const third = buildRow(50, 150, SECOND_OUTFLOW_AT);
+            const fourth = buildRow(-20, 130, SECOND_OUTFLOW_AT);
+            yield* importStatement(new PrivatbankFileClient([second, first]));
+            const accountId = yield* importStatement(new PrivatbankFileClient([fourth, first, third, second]));
+
+            expect(yield* fetchAccountBalance(accountId)).toBe(130_000_000);
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

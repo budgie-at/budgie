@@ -46,15 +46,20 @@ export class PrivatbankFileClient {
     }
 
     private collectPrecedingBalances(terminalRow: PrivatbankRowInterface, sameSecondRows: PrivatbankRowInterface[]): number[] {
-        const chain = [terminalRow];
-        let previousRow = sameSecondRows.find(row => !chain.includes(row) && this.isBookedBefore(row, terminalRow));
+        const reachedRows = new Set([terminalRow]);
+        const pendingRows = [terminalRow];
 
-        while (isDefined(previousRow)) {
-            chain.push(previousRow);
-            const currentRow: PrivatbankRowInterface = previousRow;
-            previousRow = sameSecondRows.find(row => !chain.includes(row) && this.isBookedBefore(row, currentRow));
+        for (let currentRow = pendingRows.pop(); isDefined(currentRow); currentRow = pendingRows.pop()) {
+            for (const row of sameSecondRows) {
+                if (!reachedRows.has(row) && this.isBookedBefore(row, currentRow)) {
+                    reachedRows.add(row);
+                    pendingRows.push(row);
+                }
+            }
         }
 
-        return chain.slice(1).map(row => convertToMicroUnits(row.endBalance));
+        reachedRows.delete(terminalRow);
+
+        return [...reachedRows].map(row => convertToMicroUnits(row.endBalance));
     }
 }

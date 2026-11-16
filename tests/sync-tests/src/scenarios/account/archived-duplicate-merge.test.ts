@@ -11,6 +11,7 @@ import {
     SyncRepository,
     AccountBalanceRepository,
     TransactionEntityTable,
+    TransactionEntryEntityTable,
     TransactionTypeEnum
 } from '@budgie/contracts';
 import {
@@ -99,7 +100,10 @@ describe('account/archived-duplicate-merge', () => {
             const syncRepairService = yield* SyncRepairService;
             const { archivedCard, purchase, series } = yield* seedArchivedDuplicate;
 
-            expect((yield* syncRepairService.previewDuplicates()).duplicateTransactionCount).toBe(1);
+            expect(yield* syncRepairService.previewDuplicates()).toEqual({
+                duplicateTransactionCount: 1,
+                sources: [{ externalSource: ExternalSourceEnum.MONOBANK, duplicateTransactionCount: 1 }]
+            });
             yield* syncRepairService.removeDuplicates();
 
             const accounts = yield* (yield* AccountRepository).findByExternalIds([MONOBANK_CARD]);
@@ -218,6 +222,47 @@ describe('account/archived-duplicate-merge', () => {
             expect(survivingSync?.reconciledBalance).toBe(7_000_000);
             expect(yield* fetchCachedBalanceAmount(archivedCard.id)).toBe(7_000_000);
             expect(ledgerBalance).toBe(7_000_000);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('drops an archived one-sided row whose external id sits on a live transfer entry', () =>
+        Effect.gen(function* () {
+            const archivedCard = yield* seedMonobankCard();
+            const savings = yield* seed.account({ title: 'Savings' });
+            const archivedRow = yield* seed.bankPairExpense(
+                { externalId: 'monobank-entry-shared', operatedAt: OPERATED_AT },
+                { accountId: archivedCard.id, amount: 1_000_000 }
+            );
+
+            yield* (yield* AccountArchiveService).archiveById(archivedCard.id);
+            const liveCard = yield* seedMonobankCard();
+            const liveTransfer = yield* seed.bankPairExpense(
+                { externalId: 'monobank-live-transfer', operatedAt: OPERATED_AT },
+                { accountId: liveCard.id, amount: 1_000_000 }
+            );
+
+            yield* (yield* TransactionTransferService).convertExpenseToTransfer({
+                id: liveTransfer.id,
+                accountId: savings.id,
+                customExchangeRate: 1,
+                feeEntries: []
+            });
+            yield* testDb.update(TransactionEntityTable).set({ externalId: null }).where(eq(TransactionEntityTable.id, liveTransfer.id));
+            yield* testDb
+                .update(TransactionEntryEntityTable)
+                .set({ externalId: 'monobank-entry-shared' })
+                .where(
+                    and(
+                        eq(TransactionEntryEntityTable.transactionId, liveTransfer.id),
+                        eq(TransactionEntryEntityTable.accountId, liveCard.id)
+                    )
+                );
+            yield* (yield* SyncRepairService).removeDuplicates();
+
+            expect((yield* testQueryService.findTransactionById(archivedRow.id)).deletedAt).not.toBeNull();
+            expect((yield* testQueryService.findTransactionById(liveTransfer.id)).deletedAt).toBeNull();
+            expect(yield* fetchAccountBalance(archivedCard.id)).toBe(-1_000_000);
+            expect(yield* fetchAccountBalance(savings.id)).toBe(1_000_000);
         }).pipe(Effect.provide(TestLayer))
     );
 });
