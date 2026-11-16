@@ -31,6 +31,7 @@ const THIRD_PARTY_CARD_TITLE = 'Переказ на картку';
 const UNKNOWN_CARD_INCOME_TITLE = 'Зі своєї картки *9999';
 const OWN_CARD_AMOUNT = 10_000_000_000;
 const OWN_CARD_FEE_AMOUNT = 25_000_000;
+const NEAR_LEG_AMOUNT_GAP = 200_000_000;
 const OWN_CARD_OPERATED_AT = new Date('2026-03-04T09:15:00.000Z');
 const ARCHIVED_BEFORE_INCOME_AT = new Date('2026-03-01T09:15:00.000Z');
 const CONVERSION_FAILURE_MESSAGE = 'conversion failed';
@@ -534,6 +535,43 @@ describe('privatbank/own-card-transfer-repair', () => {
             ]);
             expect(yield* fetchAccountBalance(archivedCard.id)).toBe(-OWN_CARD_AMOUNT - OWN_CARD_FEE_AMOUNT);
             expect((yield* syncRepairService.previewDuplicates()).duplicateTransactionCount).toBe(0);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('imports a purchase that sits near a repaired transfer leg without own-card evidence', () =>
+        Effect.gen(function* () {
+            const unpairedOwnCardTransferRepairService = yield* UnpairedOwnCardTransferRepairService;
+            const { archivedCard } = yield* seedArchivedOwnCardScenario();
+            const statement = buildOwnCardStatementClient([
+                buildOwnCardRow(archivedCard.externalId ?? '', -(OWN_CARD_AMOUNT - OWN_CARD_FEE_AMOUNT) / 1_000_000, 'Amazon')
+            ]);
+
+            yield* unpairedOwnCardTransferRepairService.repair();
+            yield* (yield* makeOwnCardStatementService(statement)).executeImportForSelectedAccounts('statement.xlsx', [
+                archivedCard.externalId ?? ''
+            ]);
+
+            expect((yield* fetchLiveExpensesFromAccount(archivedCard.id)).map(transaction => transaction.title)).toEqual(['Amazon']);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect.each([false, true])('skips only the own-card row that matches the repaired leg (reversed: %s)', isReversed =>
+        Effect.gen(function* () {
+            const unpairedOwnCardTransferRepairService = yield* UnpairedOwnCardTransferRepairService;
+            const { archivedCard } = yield* seedArchivedOwnCardScenario();
+            const card = archivedCard.externalId ?? '';
+            const smallerTransfer = buildOwnCardRow(card, -(OWN_CARD_AMOUNT - NEAR_LEG_AMOUNT_GAP) / 1_000_000, OWN_CARD_EXPENSE_TITLE);
+            const matchingTransfer = buildOwnCardRow(card, -OWN_CARD_AMOUNT / 1_000_000, OWN_CARD_EXPENSE_TITLE);
+            const rows = isReversed ? [matchingTransfer, smallerTransfer] : [smallerTransfer, matchingTransfer];
+
+            yield* unpairedOwnCardTransferRepairService.repair();
+            yield* (yield* makeOwnCardStatementService(buildOwnCardStatementClient(rows))).executeImportForSelectedAccounts(
+                'statement.xlsx',
+                [card]
+            );
+
+            expect(yield* fetchLiveExpensesFromAccount(archivedCard.id)).toHaveLength(1);
+            expect(yield* fetchAccountBalance(archivedCard.id)).toBe(-OWN_CARD_AMOUNT - (OWN_CARD_AMOUNT - NEAR_LEG_AMOUNT_GAP));
         }).pipe(Effect.provide(TestLayer))
     );
 });

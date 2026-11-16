@@ -15,6 +15,7 @@ import * as Layer from 'effect/Layer';
 import { isDefined } from '@rnw-community/shared';
 
 import { PRIVATBANK_CARD_REISSUE_EVIDENCE_SQL } from '../../privatbank/constant/privatbank-card-reissue-evidence-sql.constant';
+import { isPrivatbankOwnCardTransferTitle } from '../../privatbank/utils/is-privatbank-own-card-transfer-title.util';
 import { matchUnconsolidatedTransferLegs } from '../utils/match-unconsolidated-transfer-legs.util';
 
 import type { AccountReissueCandidateInterface } from '../interface/account-reissue-candidate.interface';
@@ -113,6 +114,9 @@ export class AccountReissueMergeService extends Context.Service<AccountReissueMe
         const reassignReferencesSql = [
             'UPDATE transactions SET from_account_id = ? WHERE from_account_id = ?',
             'UPDATE transactions SET to_account_id = ? WHERE to_account_id = ?',
+            'UPDATE transactions SET fund_account_id = ? WHERE fund_account_id = ?',
+            'UPDATE transactions SET yield_source_account_id = ? WHERE yield_source_account_id = ?',
+            'UPDATE recurring_series SET account_id = ? WHERE account_id = ?',
             'UPDATE transaction_entries SET account_id = ? WHERE account_id = ?',
             'UPDATE debt_events SET debt_account_id = ? WHERE debt_account_id = ?',
             'UPDATE rule_actions SET account_id = ? WHERE account_id = ?',
@@ -151,7 +155,8 @@ export class AccountReissueMergeService extends Context.Service<AccountReissueMe
                         'accounts',
                         'account_external_ids',
                         'bank_syncs',
-                        'account_balances'
+                        'account_balances',
+                        'recurring_series'
                     ]
                 },
                 Effect.forEach(
@@ -164,24 +169,44 @@ export class AccountReissueMergeService extends Context.Service<AccountReissueMe
         const findImportedTransferLegDuplicateIds = Effect.fnUntraced(function* (
             liveAccountId: number,
             archivedAccountId: number,
-            externalSource: ExternalSourceEnum
+            externalSource: ExternalSourceEnum,
+            supersededTransactionIds: ReadonlySet<number>
         ) {
+            if (externalSource !== ExternalSourceEnum.PRIVATBANK) {
+                return [];
+            }
+
             const legs = yield* transactionRepository.findUnconsolidatedTransferLegs(archivedAccountId, externalSource);
-            const candidates = (yield* transactionRepository.findByAccountIdsWithEntries([liveAccountId])).flatMap(transaction => {
+            const transactions = yield* transactionRepository.findByAccountIdsWithEntries([liveAccountId, archivedAccountId]);
+            const candidates = transactions.flatMap(transaction => {
                 const isIncome = transaction.type === TransactionTypeEnum.INCOME;
                 const entryType = isIncome ? TransactionEntryTypeEnum.DEBIT : TransactionEntryTypeEnum.CREDIT;
-                const entry = transaction.entries.find(item => item.accountId === liveAccountId && item.type === entryType);
+                const entry = transaction.entries.find(
+                    item => [liveAccountId, archivedAccountId].includes(item.accountId) && item.type === entryType
+                );
                 const isImportedRow =
                     (isIncome || transaction.type === TransactionTypeEnum.EXPENSE) &&
                     transaction.externalSource === externalSource &&
-                    !isDefined(transaction.consolidationType);
+                    !isDefined(transaction.consolidationType) &&
+                    !supersededTransactionIds.has(transaction.id);
 
                 return isImportedRow && isDefined(entry)
-                    ? [{ transactionId: transaction.id, isIncome, operatedAt: transaction.operatedAt, amount: entry.amount }]
+                    ? [
+                          {
+                              transactionId: transaction.id,
+                              title: transaction.title,
+                              isIncome,
+                              isKnown: entry.accountId === archivedAccountId,
+                              operatedAt: transaction.operatedAt,
+                              amount: entry.amount
+                          }
+                      ]
                     : [];
             });
 
-            return [...matchUnconsolidatedTransferLegs(candidates, legs)].map(({ transactionId }) => transactionId);
+            return [...matchUnconsolidatedTransferLegs(candidates, legs, isPrivatbankOwnCardTransferTitle)].map(
+                ({ transactionId }) => transactionId
+            );
         });
 
         const mergeArchivedDuplicate = Effect.fnUntraced(
@@ -198,7 +223,12 @@ export class AccountReissueMergeService extends Context.Service<AccountReissueMe
                             liveExternalIds.has(externalId) && liveExternalIds.get(externalId) !== transactionId
                     )
                     .map(([, transactionId]) => transactionId);
-                const legDuplicateIds = yield* findImportedTransferLegDuplicateIds(liveAccountId, archivedAccountId, externalSource);
+                const legDuplicateIds = yield* findImportedTransferLegDuplicateIds(
+                    liveAccountId,
+                    archivedAccountId,
+                    externalSource,
+                    new Set(restoredDuplicateIds)
+                );
 
                 yield* Effect.forEach(
                     [...restoredDuplicateIds, ...legDuplicateIds],
@@ -260,14 +290,16 @@ export class AccountReissueMergeService extends Context.Service<AccountReissueMe
         );
 
         return {
-            countCandidates: Effect.map(
-                Effect.all([findArchivedDuplicates, findUnambiguousCandidates()]),
-                ([archivedDuplicates, candidates]) => archivedDuplicates.length + candidates.length
-            ),
-            mergeReissuedAccounts: Effect.fn('AccountReissueMergeService.mergeReissuedAccounts')(function* () {
+            countCandidates: Effect.map(findUnambiguousCandidates(), candidates => candidates.length),
+            countArchivedDuplicates: Effect.map(findArchivedDuplicates, archivedDuplicates => archivedDuplicates.length),
+            mergeArchivedDuplicates: Effect.fn('AccountReissueMergeService.mergeArchivedDuplicates')(function* () {
                 const archivedDuplicates = yield* findArchivedDuplicates;
                 yield* Effect.forEach(archivedDuplicates, mergeArchivedDuplicate, { discard: true });
-                let mergedCount = archivedDuplicates.length;
+
+                return archivedDuplicates.length;
+            }),
+            mergeReissuedAccounts: Effect.fn('AccountReissueMergeService.mergeReissuedAccounts')(function* () {
+                let mergedCount = 0;
                 let [candidate] = yield* findUnambiguousCandidates();
 
                 while (isDefined(candidate)) {

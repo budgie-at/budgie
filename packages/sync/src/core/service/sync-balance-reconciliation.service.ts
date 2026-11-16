@@ -48,7 +48,7 @@ export class SyncBalanceReconciliationService extends Context.Service<SyncBalanc
                         sync?.provider !== provider ||
                         sync.mode !== SyncModeEnum.FORWARD ||
                         isDefined(sync.setupBalance) ||
-                        (isDefined(sync.reconciledAt) && sync.reconciledAt >= snapshot.at)
+                        (isDefined(sync.reconciledAt) && sync.reconciledAt > snapshot.at)
                     ) {
                         return;
                     }

@@ -15,6 +15,7 @@ import * as Layer from 'effect/Layer';
 import { isDefined } from '@rnw-community/shared';
 
 import { OWN_TRANSFER_AMOUNT_TOLERANCE } from '../../core/constant/own-transfer-amount-tolerance.constant';
+import { PRIVATBANK_OWN_CARD_TITLE_PHRASES } from '../constant/privatbank-own-card-title-phrases.constant';
 
 import type { UnpairedOwnCardTransferCandidateInterface } from '../interface/unpaired-own-card-transfer-candidate.interface';
 
@@ -36,6 +37,10 @@ export class UnpairedOwnCardTransferRepairService extends Context.Service<Unpair
                         AND SUBSTR(${accountAlias}.iban, -4) = SUBSTR(transactions.title, INSTR(transactions.title, '*') + 1, 4)
                     )
                 `;
+
+            const ownCardTitlePredicate = PRIVATBANK_OWN_CARD_TITLE_PHRASES.map(phrase => `transactions.title LIKE '%${phrase}%'`).join(
+                ' OR '
+            );
 
             const candidatesSql = sql`
                 SELECT
@@ -86,7 +91,7 @@ export class UnpairedOwnCardTransferRepairService extends Context.Service<Unpair
                     AND transactions.type IN ('INCOME', 'EXPENSE')
                     AND (transactions.from_account_id IS NULL OR transactions.to_account_id IS NULL)
                     AND INSTR(transactions.title, '*') > 0
-                    AND (transactions.title LIKE '%своєї картки%' OR transactions.title LIKE '%свою картку%' OR transactions.title LIKE '%мою картку%')
+                    AND (${sql.raw(ownCardTitlePredicate)})
                     AND transaction_entries.amount > 0
                     AND (
                         SELECT COUNT(*) FROM accounts archived_account

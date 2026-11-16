@@ -26,6 +26,7 @@ export { MONOBANK_RATE_LIMIT_MS } from './monobank/constant/monobank-rate-limit-
 export { PrivatbankFileClient } from './privatbank/client/privatbank-file.client';
 export { privatbankAccountMapper } from './privatbank/mapper/privatbank-account.mapper';
 export { privatbankTransactionMapper } from './privatbank/mapper/privatbank-transaction.mapper';
+export { isPrivatbankOwnCardTransferTitle } from './privatbank/utils/is-privatbank-own-card-transfer-title.util';
 export { parsePrivatbankXlsx } from './privatbank/utils/parse-privatbank-xlsx.util';
 export type { PrivatbankRowInterface } from './privatbank/interface/privatbank-row.interface';
 

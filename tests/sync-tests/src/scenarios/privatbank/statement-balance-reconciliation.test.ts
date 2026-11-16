@@ -83,4 +83,15 @@ describe('privatbank/statement-balance-reconciliation', () => {
             expect(yield* fetchAccountBalance(accountId)).toBe(-200_000_000);
         }).pipe(Effect.provide(TestLayer))
     );
+
+    it.effect('re-anchors to a longer statement whose last row shares the anchor second', () =>
+        Effect.gen(function* () {
+            const bookedFirst = buildRow(-30, 150, SECOND_OUTFLOW_AT);
+            const bookedLast = buildRow(-50, 100, SECOND_OUTFLOW_AT);
+            yield* importStatement(new PrivatbankFileClient([bookedFirst]));
+            const accountId = yield* importStatement(new PrivatbankFileClient([bookedLast, bookedFirst]));
+
+            expect(yield* fetchAccountBalance(accountId)).toBe(100_000_000);
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

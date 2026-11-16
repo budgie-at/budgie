@@ -110,8 +110,9 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
         const importableTransactions = client.getTransactions(bankAccount.id).filter(isImportable);
         const transferLegDuplicates = yield* fileImportAccountService.findTransferLegDuplicates(
             account.id,
-            definition.provider,
-            importableTransactions.filter(transaction => !isKnownSyncTransaction(transaction, existingTransactionIdMap))
+            definition,
+            importableTransactions,
+            existingTransactionIdMap
         );
         const transactions = importableTransactions.filter(transaction => !transferLegDuplicates.has(transaction));
         if (!isNotEmptyArray(transactions)) {

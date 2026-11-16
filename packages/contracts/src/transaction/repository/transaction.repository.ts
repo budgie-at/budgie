@@ -3,6 +3,7 @@ import * as DateTime from 'effect/DateTime';
 import { SyncRecordTypeEnum } from '../../cloud-sync/enum/sync-record-type.enum';
 /* eslint-disable max-lines -- Transaction repository is the kitchen sink for tx queries + filter builders + bank-sync helpers */
 import { SQL, and, count, eq, gte, inArray, isNotNull, isNull, lte, ne, notExists, or, sql } from 'drizzle-orm';
+import { alias } from 'drizzle-orm/sqlite-core';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -31,6 +32,7 @@ import type { PotentialExpenseDuplicateInputInterface } from '../interface/poten
 
 export class TransactionRepository extends Context.Service<TransactionRepository>()('@budgie/contracts/TransactionRepository', {
     make: Effect.sync(() => {
+        const TransferCounterpartAccountTable = alias(AccountEntityTable, 'transfer_counterpart_account');
         const NOT_DELETED_ENTRY_RELATION_WHERE = { deletedAt: { isNull: true } } as const;
         const ENTRIES_WITH_MCC_CATEGORY_RELATIONS = {
             [TransactionAssociationEnum.ENTRIES]: {
@@ -361,9 +363,18 @@ export class TransactionRepository extends Context.Service<TransactionRepository
                             transactionId: TransactionEntityTable.id,
                             operatedAt: TransactionEntityTable.operatedAt,
                             entryType: TransactionEntryEntityTable.type,
-                            amount: TransactionEntryEntityTable.amount
+                            amount: TransactionEntryEntityTable.amount,
+                            counterpartExternalId: TransferCounterpartAccountTable.externalId,
+                            counterpartIban: TransferCounterpartAccountTable.iban
                         })
                         .from(TransactionEntityTable)
+                        .innerJoin(
+                            TransferCounterpartAccountTable,
+                            eq(
+                                TransferCounterpartAccountTable.id,
+                                sql`CASE WHEN ${TransactionEntityTable.fromAccountId} = ${accountId} THEN ${TransactionEntityTable.toAccountId} ELSE ${TransactionEntityTable.fromAccountId} END`
+                            )
+                        )
                         .innerJoin(
                             TransactionEntryEntityTable,
                             and(

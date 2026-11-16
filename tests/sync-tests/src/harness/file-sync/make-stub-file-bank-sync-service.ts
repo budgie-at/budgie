@@ -9,7 +9,12 @@ export const makeStubFileBankSyncService = (
     provider: ExternalSourceEnum,
     client: FileBasedSyncClientInterface,
     mccCategoryIdMap: Map<string, MccCategoryLookupInterface | null> = new Map(),
-    overrides: Partial<Pick<FileSyncServiceDefinitionInterface, 'generateAccountTitle' | 'parseFile' | 'resolveMccCategoryIdMap'>> = {}
+    overrides: Partial<
+        Pick<
+            FileSyncServiceDefinitionInterface,
+            'generateAccountTitle' | 'hasTransferLegEvidence' | 'parseFile' | 'resolveMccCategoryIdMap'
+        >
+    > = {}
 ) =>
     makeFileSyncService({
         provider,

@@ -5,4 +5,6 @@ export interface UnconsolidatedTransferLegInterface {
     readonly operatedAt: Date;
     readonly entryType: TransactionEntryTypeEnum;
     readonly amount: number;
+    readonly counterpartExternalId: string | null;
+    readonly counterpartIban: string | null;
 }

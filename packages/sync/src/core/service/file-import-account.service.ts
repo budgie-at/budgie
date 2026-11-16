@@ -5,12 +5,14 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { SyncTransactionTypeEnum } from '../enum/sync-transaction-type.enum';
+import { isKnownSyncTransaction } from '../utils/is-known-sync-transaction.util';
 import { matchUnconsolidatedTransferLegs } from '../utils/match-unconsolidated-transfer-legs.util';
 import { resolveMatchableIban } from '../utils/resolve-matchable-iban.util';
 
+import type { FileSyncServiceDefinitionInterface } from '../interface/file-sync-service-definition.interface';
 import type { SyncAccountInterface } from '../interface/sync-account.interface';
 import type { SyncServiceDefinitionInterface } from '../interface/sync-service-definition.interface';
 import type { SyncTransactionInterface } from '../interface/sync-transaction.interface';
@@ -77,22 +79,28 @@ export class FileImportAccountService extends Context.Service<FileImportAccountS
             }),
             findTransferLegDuplicates: Effect.fn('FileImportAccountService.findTransferLegDuplicates')(function* (
                 accountId: number,
-                provider: ExternalSourceEnum,
-                newTransactions: SyncTransactionInterface[]
+                definition: Pick<FileSyncServiceDefinitionInterface, 'hasTransferLegEvidence' | 'provider'>,
+                transactions: SyncTransactionInterface[],
+                existingTransactionIdMap: ReadonlyMap<string, number>
             ) {
-                if (!isNotEmptyArray(newTransactions)) {
-                    return new Set<SyncTransactionInterface>();
-                }
-
-                const legs = yield* transactionRepository.findUnconsolidatedTransferLegs(accountId, provider);
-                const candidates = newTransactions.map(transaction => ({
+                const candidates = transactions.map(transaction => ({
                     transaction,
+                    title: transaction.description,
                     isIncome: transaction.type === SyncTransactionTypeEnum.INCOME,
+                    isKnown: isKnownSyncTransaction(transaction, existingTransactionIdMap),
                     operatedAt: new Date(transaction.time * millisecondsInSecond),
                     amount: convertToMicroUnits(Math.abs(transaction.amount))
                 }));
+                const { hasTransferLegEvidence } = definition;
+                if (!isDefined(hasTransferLegEvidence) || candidates.every(({ isKnown }) => isKnown)) {
+                    return new Set<SyncTransactionInterface>();
+                }
 
-                return new Set([...matchUnconsolidatedTransferLegs(candidates, legs)].map(({ transaction }) => transaction));
+                const legs = yield* transactionRepository.findUnconsolidatedTransferLegs(accountId, definition.provider);
+
+                return new Set(
+                    [...matchUnconsolidatedTransferLegs(candidates, legs, hasTransferLegEvidence)].map(({ transaction }) => transaction)
+                );
             })
         };
     })
