@@ -341,7 +341,7 @@ msgid "{count, plural, one {{formattedAmount} rolled over across # category} oth
 msgstr "{count, plural, one {{formattedAmount} trasladados a # categoría} other {{formattedAmount} trasladados a # categorías}}"
 
 #. js-lingui-explicit-id
-#: src/yield/hook/use-yield-range-sentence.hook.ts
+#: src/yield/hook/use-yield-hero-sentence.hook.ts
 msgid "passive-income.hero.sentence"
 msgstr "{count, plural, one {{trend, select, up {Ganaste {amount} antes de impuestos {rangeCaption}, {rate} al año en {count} posición, {change} más.} down {Ganaste {amount} antes de impuestos {rangeCaption}, {rate} al año en {count} posición, {change} menos.} new {Ganaste {amount} antes de impuestos {rangeCaption}, {rate} al año en {count} posición, nuevo en este periodo.} other {Ganaste {amount} antes de impuestos {rangeCaption}, {rate} al año en {count} posición.}}} other {{trend, select, up {Ganaste {amount} antes de impuestos {rangeCaption}, {rate} al año en {count} posiciones, {change} más.} down {Ganaste {amount} antes de impuestos {rangeCaption}, {rate} al año en {count} posiciones, {change} menos.} new {Ganaste {amount} antes de impuestos {rangeCaption}, {rate} al año en {count} posiciones, nuevo en este periodo.} other {Ganaste {amount} antes de impuestos {rangeCaption}, {rate} al año en {count} posiciones.}}} many {{trend, select, up {Ganaste {amount} antes de impuestos {rangeCaption}, {rate} al año en {count} posiciones, {change} más.} down {Ganaste {amount} antes de impuestos {rangeCaption}, {rate} al año en {count} posiciones, {change} menos.} new {Ganaste {amount} antes de impuestos {rangeCaption}, {rate} al año en {count} posiciones, nuevo en este periodo.} other {Ganaste {amount} antes de impuestos {rangeCaption}, {rate} al año en {count} posiciones.}}}}"
 
@@ -5680,9 +5680,7 @@ msgstr "Cuentas ocultas"
 msgid "Hidden accounts stay off Home. Their totals and net worth settings don’t change."
 msgstr "Las cuentas ocultas no aparecen en Inicio. Sus ajustes de totales y patrimonio neto no cambian."
 
-#: src/yield/hook/use-yield-plot-accessibility.hook.ts
-#: src/yield/hook/use-yield-range-sentence.hook.ts
-#: src/yield/hook/use-yield-scrub-amounts.hook.ts
+#: src/yield/hook/use-yield-spoken-amount.hook.ts
 msgid "hidden amount"
 msgstr "importe oculto"
 
@@ -6010,7 +6008,7 @@ msgstr "Incluye las cuentas que añadas después. Empieza cuando inicies sesión
 msgid "Includes crypto"
 msgstr "Incluye criptomonedas"
 
-#: src/yield/hook/use-yield-range-sentence.hook.ts
+#: src/yield/hook/use-yield-hero-sentence.hook.ts
 #: src/yield/hook/use-yield-scrub-sentence.hook.ts
 msgid "Includes estimated values."
 msgstr "Incluye valores estimados."
@@ -7345,7 +7343,7 @@ msgstr "Sin pagos próximos"
 msgid "No upcoming payments"
 msgstr "Sin pagos próximos"
 
-#: src/yield/hook/use-yield-range-sentence.hook.ts
+#: src/yield/hook/use-yield-hero-sentence.hook.ts
 msgid "no yield yet"
 msgstr "aún sin rendimiento"
 

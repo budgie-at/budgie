@@ -341,7 +341,7 @@ msgid "{count, plural, one {{formattedAmount} rolled over across # category} oth
 msgstr "{count, plural, one {{formattedAmount} auf # Kategorie übertragen} other {{formattedAmount} auf # Kategorien übertragen}}"
 
 #. js-lingui-explicit-id
-#: src/yield/hook/use-yield-range-sentence.hook.ts
+#: src/yield/hook/use-yield-hero-sentence.hook.ts
 msgid "passive-income.hero.sentence"
 msgstr "{count, plural, one {{trend, select, up {{amount} vor Steuern {rangeCaption} verdient, {rate} pro Jahr über {count} Anlage, {change} mehr.} down {{amount} vor Steuern {rangeCaption} verdient, {rate} pro Jahr über {count} Anlage, {change} weniger.} new {{amount} vor Steuern {rangeCaption} verdient, {rate} pro Jahr über {count} Anlage, neu in diesem Zeitraum.} other {{amount} vor Steuern {rangeCaption} verdient, {rate} pro Jahr über {count} Anlage.}}} other {{trend, select, up {{amount} vor Steuern {rangeCaption} verdient, {rate} pro Jahr über {count} Anlagen, {change} mehr.} down {{amount} vor Steuern {rangeCaption} verdient, {rate} pro Jahr über {count} Anlagen, {change} weniger.} new {{amount} vor Steuern {rangeCaption} verdient, {rate} pro Jahr über {count} Anlagen, neu in diesem Zeitraum.} other {{amount} vor Steuern {rangeCaption} verdient, {rate} pro Jahr über {count} Anlagen.}}}}"
 
@@ -5680,9 +5680,7 @@ msgstr "Ausgeblendete Konten"
 msgid "Hidden accounts stay off Home. Their totals and net worth settings don’t change."
 msgstr "Ausgeblendete Konten erscheinen nicht auf der Startseite. Ihre Einstellungen für Summen und Nettovermögen bleiben unverändert."
 
-#: src/yield/hook/use-yield-plot-accessibility.hook.ts
-#: src/yield/hook/use-yield-range-sentence.hook.ts
-#: src/yield/hook/use-yield-scrub-amounts.hook.ts
+#: src/yield/hook/use-yield-spoken-amount.hook.ts
 msgid "hidden amount"
 msgstr "verborgener Betrag"
 
@@ -6010,7 +6008,7 @@ msgstr "Gilt auch für später hinzugefügte Konten. Startet, wenn du dich bei i
 msgid "Includes crypto"
 msgstr "Inklusive Krypto"
 
-#: src/yield/hook/use-yield-range-sentence.hook.ts
+#: src/yield/hook/use-yield-hero-sentence.hook.ts
 #: src/yield/hook/use-yield-scrub-sentence.hook.ts
 msgid "Includes estimated values."
 msgstr "Enthält geschätzte Werte."
@@ -7345,7 +7343,7 @@ msgstr "Keine anstehende Zahlung"
 msgid "No upcoming payments"
 msgstr "Keine anstehenden Zahlungen"
 
-#: src/yield/hook/use-yield-range-sentence.hook.ts
+#: src/yield/hook/use-yield-hero-sentence.hook.ts
 msgid "no yield yet"
 msgstr "noch keine Rendite"
 

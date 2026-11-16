@@ -341,7 +341,7 @@ msgid "{count, plural, one {{formattedAmount} rolled over across # category} oth
 msgstr "{count, plural, one {{formattedAmount} reportés sur # catégorie} other {{formattedAmount} reportés sur # catégories}}"
 
 #. js-lingui-explicit-id
-#: src/yield/hook/use-yield-range-sentence.hook.ts
+#: src/yield/hook/use-yield-hero-sentence.hook.ts
 msgid "passive-income.hero.sentence"
 msgstr "{count, plural, one {{trend, select, up {{amount} gagnés avant impôt {rangeCaption}, {rate} par an sur {count} position, {change} de plus.} down {{amount} gagnés avant impôt {rangeCaption}, {rate} par an sur {count} position, {change} de moins.} new {{amount} gagnés avant impôt {rangeCaption}, {rate} par an sur {count} position, nouveau sur cette période.} other {{amount} gagnés avant impôt {rangeCaption}, {rate} par an sur {count} position.}}} other {{trend, select, up {{amount} gagnés avant impôt {rangeCaption}, {rate} par an sur {count} positions, {change} de plus.} down {{amount} gagnés avant impôt {rangeCaption}, {rate} par an sur {count} positions, {change} de moins.} new {{amount} gagnés avant impôt {rangeCaption}, {rate} par an sur {count} positions, nouveau sur cette période.} other {{amount} gagnés avant impôt {rangeCaption}, {rate} par an sur {count} positions.}}} many {{trend, select, up {{amount} gagnés avant impôt {rangeCaption}, {rate} par an sur {count} positions, {change} de plus.} down {{amount} gagnés avant impôt {rangeCaption}, {rate} par an sur {count} positions, {change} de moins.} new {{amount} gagnés avant impôt {rangeCaption}, {rate} par an sur {count} positions, nouveau sur cette période.} other {{amount} gagnés avant impôt {rangeCaption}, {rate} par an sur {count} positions.}}}}"
 
@@ -5680,9 +5680,7 @@ msgstr "Comptes masqués"
 msgid "Hidden accounts stay off Home. Their totals and net worth settings don’t change."
 msgstr "Les comptes masqués n’apparaissent pas sur l’accueil. Leurs réglages de totaux et de patrimoine net ne changent pas."
 
-#: src/yield/hook/use-yield-plot-accessibility.hook.ts
-#: src/yield/hook/use-yield-range-sentence.hook.ts
-#: src/yield/hook/use-yield-scrub-amounts.hook.ts
+#: src/yield/hook/use-yield-spoken-amount.hook.ts
 msgid "hidden amount"
 msgstr "montant masqué"
 
@@ -6010,7 +6008,7 @@ msgstr "Inclut les comptes ajoutés plus tard. Démarre quand vous vous connecte
 msgid "Includes crypto"
 msgstr "Inclut les cryptos"
 
-#: src/yield/hook/use-yield-range-sentence.hook.ts
+#: src/yield/hook/use-yield-hero-sentence.hook.ts
 #: src/yield/hook/use-yield-scrub-sentence.hook.ts
 msgid "Includes estimated values."
 msgstr "Comprend des valeurs estimées."
@@ -7345,7 +7343,7 @@ msgstr "Aucun paiement à venir"
 msgid "No upcoming payments"
 msgstr "Aucun paiement à venir"
 
-#: src/yield/hook/use-yield-range-sentence.hook.ts
+#: src/yield/hook/use-yield-hero-sentence.hook.ts
 msgid "no yield yet"
 msgstr "pas encore de rendement"
 

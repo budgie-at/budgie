@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -6,11 +6,11 @@ import { CollapsibleChromeLegendList } from '../../../@generic/component/collaps
 import { CollapsibleChromePinnedBar } from '../../../@generic/component/collapsible-chrome-pinned-bar/collapsible-chrome-pinned-bar';
 import { FLOATING_TAB_BAR_HEIGHT } from '../../../@generic/constant/floating-tab-bar.constant';
 import { CollapsibleChromeCollapseDistanceContext } from '../../../@generic/context/collapsible-chrome-collapse-distance.context';
+import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
 import { getCollapsibleChromePinDistance } from '../../../@generic/utils/get-collapsible-chrome-pin-distance.util';
 import { YieldPayoutsScrollContext } from '../../context/yield-payouts-scroll.context';
 import { YieldListItemKindEnum } from '../../enum/yield-list-item-kind.enum';
 import { useYieldListItems } from '../../hook/use-yield-list-items.hook';
-import { useYieldPayoutsScroll } from '../../hook/use-yield-payouts-scroll.hook';
 import { YieldBreakdown } from '../yield-breakdown/yield-breakdown';
 import { YieldChartCard } from '../yield-chart-card/yield-chart-card';
 import { YieldHero } from '../yield-hero/yield-hero';
@@ -21,6 +21,7 @@ import { YieldSectionHeader } from '../yield-section-header/yield-section-header
 import { YieldSkeletonRow } from '../yield-skeleton-row/yield-skeleton-row';
 
 import type { YieldListItemType } from '../../type/yield-list-item.type';
+import type { LegendListRef } from '@legendapp/list/react-native';
 import type { LayoutChangeEvent } from 'react-native';
 
 const keyExtractor = (item: YieldListItemType) => item.id;
@@ -33,10 +34,11 @@ const CONTENT_STYLE = { paddingBottom: FLOATING_TAB_BAR_HEIGHT };
 
 export const YieldScreenList = () => {
     const items = useYieldListItems();
-    const { listRef, requestPayoutsScroll } = useYieldPayoutsScroll(items);
     const [rangeY, setRangeY] = useState(0);
     const [pinnedHeight, setPinnedHeight] = useState(0);
+    const listRef = useRef<LegendListRef>(null);
     const { top } = useSafeAreaInsets();
+    const isReducedMotion = useReducedMotion();
 
     const renderItem = ({ item }: { item: YieldListItemType }) => {
         switch (item.kind) {
@@ -51,6 +53,8 @@ export const YieldScreenList = () => {
                 return <YieldSkeletonRow />;
         }
     };
+
+    const handlePayoutsScroll = () => void listRef.current?.scrollToIndex({ index: 0, viewPosition: 0, animated: !isReducedMotion });
 
     const handleRangeLayout = (event: LayoutChangeEvent) => void setRangeY(event.nativeEvent.layout.y);
 
@@ -70,7 +74,7 @@ export const YieldScreenList = () => {
 
     return (
         <>
-            <YieldPayoutsScrollContext value={requestPayoutsScroll}>
+            <YieldPayoutsScrollContext value={handlePayoutsScroll}>
                 <CollapsibleChromeCollapseDistanceContext value={getCollapsibleChromePinDistance(rangeY, top)}>
                     <CollapsibleChromeLegendList
                         ref={listRef}

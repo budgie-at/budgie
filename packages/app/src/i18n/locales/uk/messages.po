@@ -341,7 +341,7 @@ msgid "{count, plural, one {{formattedAmount} rolled over across # category} oth
 msgstr "{count, plural, one {{formattedAmount} перенесено на # категорію} few {{formattedAmount} перенесено на # категорії} many {{formattedAmount} перенесено на # категорій} other {{formattedAmount} перенесено на # категорії}}"
 
 #. js-lingui-explicit-id
-#: src/yield/hook/use-yield-range-sentence.hook.ts
+#: src/yield/hook/use-yield-hero-sentence.hook.ts
 msgid "passive-income.hero.sentence"
 msgstr "{count, plural, one {{trend, select, up {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} активі, на {change} більше.} down {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} активі, на {change} менше.} new {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} активі, нове за цей період.} other {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} активі.}}} few {{trend, select, up {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} активах, на {change} більше.} down {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} активах, на {change} менше.} new {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} активах, нове за цей період.} other {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} активах.}}} many {{trend, select, up {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} активах, на {change} більше.} down {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} активах, на {change} менше.} new {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} активах, нове за цей період.} other {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} активах.}}} other {{trend, select, up {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} активу, на {change} більше.} down {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} активу, на {change} менше.} new {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} активу, нове за цей період.} other {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} активу.}}}}"
 
@@ -5680,9 +5680,7 @@ msgstr "Приховані рахунки"
 msgid "Hidden accounts stay off Home. Their totals and net worth settings don’t change."
 msgstr "Приховані рахунки не показуються на головній. Їхні налаштування підсумків і чистих активів не змінюються."
 
-#: src/yield/hook/use-yield-plot-accessibility.hook.ts
-#: src/yield/hook/use-yield-range-sentence.hook.ts
-#: src/yield/hook/use-yield-scrub-amounts.hook.ts
+#: src/yield/hook/use-yield-spoken-amount.hook.ts
 msgid "hidden amount"
 msgstr "прихована сума"
 
@@ -6010,7 +6008,7 @@ msgstr "Включає рахунки, додані пізніше. Почнет
 msgid "Includes crypto"
 msgstr "Включно з криптовалютою"
 
-#: src/yield/hook/use-yield-range-sentence.hook.ts
+#: src/yield/hook/use-yield-hero-sentence.hook.ts
 #: src/yield/hook/use-yield-scrub-sentence.hook.ts
 msgid "Includes estimated values."
 msgstr "Враховано оцінені значення."
@@ -7345,7 +7343,7 @@ msgstr "Немає наступного платежу"
 msgid "No upcoming payments"
 msgstr "Немає майбутніх платежів"
 
-#: src/yield/hook/use-yield-range-sentence.hook.ts
+#: src/yield/hook/use-yield-hero-sentence.hook.ts
 msgid "no yield yet"
 msgstr "доходу ще немає"
 
