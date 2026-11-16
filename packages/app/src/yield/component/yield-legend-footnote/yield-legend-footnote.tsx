@@ -12,6 +12,7 @@ import { defaultInstrumentAtom } from '../../../settings/constants/settings-atom
 import { yieldPriceJobsFamily } from '../../constant/yield-price-jobs-family-atom.constant';
 import { yieldSummaryFamily } from '../../constant/yield-summary-family-atom.constant';
 import { YieldScreenContext } from '../../context/yield-screen.context';
+import { useYieldFootnoteFocus } from '../../hook/use-yield-footnote-focus.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 import { YieldLegendRetry } from '../yield-legend-retry/yield-legend-retry';
 
@@ -26,6 +27,7 @@ export const YieldLegendFootnote = () => {
     const isUpdatingPrices = AsyncResult.getOrElse(useLiveAtomValue(yieldPriceJobsFamily(summary?.instrumentIds ?? [])), () => false);
 
     const isFailure = AsyncResult.isFailure(result);
+    const footnoteRef = useYieldFootnoteFocus(isFailure);
 
     if (!isFailure && (!isDefined(summary) || !summary.hasYield)) {
         return null;
@@ -33,11 +35,16 @@ export const YieldLegendFootnote = () => {
 
     const tax = formatAmount(summary?.tax ?? 0, symbol);
     const taxPart = isPositiveNumber(summary?.tax) ? t`Tax withheld ${tax}` : '';
-    const estimatePart = summary?.earned.isEstimated === true ? t`≈ includes estimates` : '';
-    const details = [taxPart, estimatePart].filter(isNotEmptyString).join(' · ');
+    const details = [taxPart, summary?.earned.isEstimated === true ? t`≈ includes estimates` : ''].filter(isNotEmptyString).join(' · ');
 
     return (
-        <View className="h-[20px] justify-center" testID={PassiveIncomeSelector.Footnote} accessibilityLiveRegion="polite">
+        <View
+            ref={footnoteRef}
+            accessible={!isFailure}
+            className="h-[20px] justify-center"
+            testID={PassiveIncomeSelector.Footnote}
+            accessibilityLiveRegion="polite"
+        >
             {isFailure ? (
                 <YieldLegendRetry />
             ) : (

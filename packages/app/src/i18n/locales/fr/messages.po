@@ -342,7 +342,7 @@ msgid "{count, plural, one {{formattedAmount} rolled over across # category} oth
 msgstr "{count, plural, one {{formattedAmount} reportés sur # catégorie} other {{formattedAmount} reportés sur # catégories}}"
 
 #. js-lingui-explicit-id
-#: src/yield/hook/use-yield-hero-sentence.hook.ts
+#: src/yield/hook/use-yield-range-sentence.hook.ts
 msgid "passive-income.hero.sentence"
 msgstr "{count, plural, one {{trend, select, up {{amount} gagnés avant impôt {rangeCaption}, {rate} par an sur {count} position, {change} de plus.} down {{amount} gagnés avant impôt {rangeCaption}, {rate} par an sur {count} position, {change} de moins.} new {{amount} gagnés avant impôt {rangeCaption}, {rate} par an sur {count} position, nouveau sur cette période.} other {{amount} gagnés avant impôt {rangeCaption}, {rate} par an sur {count} position.}}} other {{trend, select, up {{amount} gagnés avant impôt {rangeCaption}, {rate} par an sur {count} positions, {change} de plus.} down {{amount} gagnés avant impôt {rangeCaption}, {rate} par an sur {count} positions, {change} de moins.} new {{amount} gagnés avant impôt {rangeCaption}, {rate} par an sur {count} positions, nouveau sur cette période.} other {{amount} gagnés avant impôt {rangeCaption}, {rate} par an sur {count} positions.}}} many {{trend, select, up {{amount} gagnés avant impôt {rangeCaption}, {rate} par an sur {count} positions, {change} de plus.} down {{amount} gagnés avant impôt {rangeCaption}, {rate} par an sur {count} positions, {change} de moins.} new {{amount} gagnés avant impôt {rangeCaption}, {rate} par an sur {count} positions, nouveau sur cette période.} other {{amount} gagnés avant impôt {rangeCaption}, {rate} par an sur {count} positions.}}}}"
 
@@ -876,6 +876,14 @@ msgstr "{percent} % utilisé"
 #: src/yield/hook/use-yield-plot-accessibility.hook.ts
 msgid "{period}, {total}: {parts}"
 msgstr "{period}, {total} : {parts}"
+
+#: src/yield/hook/use-yield-scrub-sentence.hook.ts
+msgid "{period}: earned {amountText} before tax, {netText} after tax."
+msgstr "{period} : {amountText} gagnés avant impôts, {netText} après impôts."
+
+#: src/yield/hook/use-yield-scrub-sentence.hook.ts
+msgid "{period}: earned {amountText} before tax."
+msgstr "{period} : {amountText} gagnés avant impôts."
 
 #: src/inzhur/component/inzhur-operations-period-header/inzhur-operations-period-header.tsx
 msgid "{periodFrom} – {periodTo}"
@@ -3491,6 +3499,10 @@ msgstr "Copie le jeton et colle-le ci-dessous"
 msgid "Cost basis"
 msgstr "Coût d'acquisition"
 
+#: src/market-data/component/currency-market-cost-basis-row/currency-market-cost-basis-row.tsx
+msgid "Cost basis includes estimates"
+msgstr "Le prix de revient inclut des estimations"
+
 #: src/recurring/components/make-recurring-sheet/make-recurring-sheet.tsx
 msgid "Could not add to recurring payment."
 msgstr "Impossible d'ajouter au paiement récurrent."
@@ -4749,6 +4761,10 @@ msgstr "Chaque semaine par rapport à votre allocation hebdomadaire de {allowanc
 msgid "Earn"
 msgstr "Earn"
 
+#: src/yield/hook/use-yield-scrub-sentence.hook.ts
+msgid "Earned {amountText} before tax through {throughDay}."
+msgstr "{amountText} gagnés avant impôts jusqu’au {throughDay}."
+
 #: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
 msgid "Earned {caption}: {windowStart} – {today}. The change compares the same number of periods just before, with the last one cut to the same point."
 msgstr "Gagné {caption} : {windowStart} – {today}. La variation compare le même nombre de périodes juste avant, la dernière étant tronquée au même point."
@@ -5690,8 +5706,9 @@ msgstr "Comptes masqués"
 msgid "Hidden accounts stay off Home. Their totals and net worth settings don’t change."
 msgstr "Les comptes masqués n’apparaissent pas sur l’accueil. Leurs réglages de totaux et de patrimoine net ne changent pas."
 
-#: src/yield/hook/use-yield-hero-sentence.hook.ts
 #: src/yield/hook/use-yield-plot-accessibility.hook.ts
+#: src/yield/hook/use-yield-range-sentence.hook.ts
+#: src/yield/hook/use-yield-scrub-amounts.hook.ts
 msgid "hidden amount"
 msgstr "montant masqué"
 
@@ -6019,7 +6036,8 @@ msgstr "Inclut les comptes ajoutés plus tard. Démarre quand vous vous connecte
 msgid "Includes crypto"
 msgstr "Inclut les cryptos"
 
-#: src/yield/hook/use-yield-hero-sentence.hook.ts
+#: src/yield/hook/use-yield-range-sentence.hook.ts
+#: src/yield/hook/use-yield-scrub-sentence.hook.ts
 msgid "Includes estimated values."
 msgstr "Comprend des valeurs estimées."
 
@@ -7353,7 +7371,7 @@ msgstr "Aucun paiement à venir"
 msgid "No upcoming payments"
 msgstr "Aucun paiement à venir"
 
-#: src/yield/hook/use-yield-hero-sentence.hook.ts
+#: src/yield/hook/use-yield-range-sentence.hook.ts
 msgid "no yield yet"
 msgstr "pas encore de rendement"
 
@@ -7719,6 +7737,10 @@ msgstr "Seulement si la catégorie manque"
 msgid "Only you hold the key."
 msgstr "Vous seul en avez la clé."
 
+#: src/yield/component/yield-open-position-button/yield-open-position-button.tsx
+msgid "Open {scopeTitle}"
+msgstr "Ouvrir {scopeTitle}"
+
 #: src/sync/component/enable-banking-setup-guide/enable-banking-setup-guide.tsx
 msgid "Open <0>API applications</0>, then <1>Add a new application</1>."
 msgstr "Ouvrez <0>API applications</0>, puis <1>Add a new application</1>."
@@ -7758,10 +7780,6 @@ msgstr "Ouvre Budgie avec ton visage ou ton empreinte digitale. Ton code PIN res
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Open George (Erste Bank online banking)"
 msgstr "Ouvrez George (banque en ligne Erste Bank)"
-
-#: src/yield/component/yield-open-position-button/yield-open-position-button.tsx
-msgid "Open holding"
-msgstr "Ouvrir la position"
 
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Open its statement and choose a date range that covers your full history"

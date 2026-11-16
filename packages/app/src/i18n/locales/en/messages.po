@@ -343,7 +343,7 @@ msgid "{count, plural, one {{formattedAmount} rolled over across # category} oth
 msgstr "{count, plural, one {{formattedAmount} rolled over across # category} other {{formattedAmount} rolled over across # categories}}"
 
 #. js-lingui-explicit-id
-#: src/yield/hook/use-yield-hero-sentence.hook.ts
+#: src/yield/hook/use-yield-range-sentence.hook.ts
 msgid "passive-income.hero.sentence"
 msgstr "{count, plural, one {{trend, select, up {Earned {amount} before tax {rangeCaption}, {rate} a year across {count} holding, up {change}.} down {Earned {amount} before tax {rangeCaption}, {rate} a year across {count} holding, down {change}.} new {Earned {amount} before tax {rangeCaption}, {rate} a year across {count} holding, new this period.} other {Earned {amount} before tax {rangeCaption}, {rate} a year across {count} holding.}}} other {{trend, select, up {Earned {amount} before tax {rangeCaption}, {rate} a year across {count} holdings, up {change}.} down {Earned {amount} before tax {rangeCaption}, {rate} a year across {count} holdings, down {change}.} new {Earned {amount} before tax {rangeCaption}, {rate} a year across {count} holdings, new this period.} other {Earned {amount} before tax {rangeCaption}, {rate} a year across {count} holdings.}}}}"
 
@@ -877,6 +877,14 @@ msgstr "{percent}% used"
 #: src/yield/hook/use-yield-plot-accessibility.hook.ts
 msgid "{period}, {total}: {parts}"
 msgstr "{period}, {total}: {parts}"
+
+#: src/yield/hook/use-yield-scrub-sentence.hook.ts
+msgid "{period}: earned {amountText} before tax, {netText} after tax."
+msgstr "{period}: earned {amountText} before tax, {netText} after tax."
+
+#: src/yield/hook/use-yield-scrub-sentence.hook.ts
+msgid "{period}: earned {amountText} before tax."
+msgstr "{period}: earned {amountText} before tax."
 
 #: src/inzhur/component/inzhur-operations-period-header/inzhur-operations-period-header.tsx
 msgid "{periodFrom} – {periodTo}"
@@ -3492,6 +3500,10 @@ msgstr "Copy the token and paste it below"
 msgid "Cost basis"
 msgstr "Cost basis"
 
+#: src/market-data/component/currency-market-cost-basis-row/currency-market-cost-basis-row.tsx
+msgid "Cost basis includes estimates"
+msgstr "Cost basis includes estimates"
+
 #: src/recurring/components/make-recurring-sheet/make-recurring-sheet.tsx
 msgid "Could not add to recurring payment."
 msgstr "Could not add to recurring payment."
@@ -4750,6 +4762,10 @@ msgstr "Each week against your {allowanceLabel} weekly allowance"
 msgid "Earn"
 msgstr "Earn"
 
+#: src/yield/hook/use-yield-scrub-sentence.hook.ts
+msgid "Earned {amountText} before tax through {throughDay}."
+msgstr "Earned {amountText} before tax through {throughDay}."
+
 #: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
 msgid "Earned {caption}: {windowStart} – {today}. The change compares the same number of periods just before, with the last one cut to the same point."
 msgstr "Earned {caption}: {windowStart} – {today}. The change compares the same number of periods just before, with the last one cut to the same point."
@@ -5691,8 +5707,9 @@ msgstr "Hidden accounts"
 msgid "Hidden accounts stay off Home. Their totals and net worth settings don’t change."
 msgstr "Hidden accounts stay off Home. Their totals and net worth settings don’t change."
 
-#: src/yield/hook/use-yield-hero-sentence.hook.ts
 #: src/yield/hook/use-yield-plot-accessibility.hook.ts
+#: src/yield/hook/use-yield-range-sentence.hook.ts
+#: src/yield/hook/use-yield-scrub-amounts.hook.ts
 msgid "hidden amount"
 msgstr "hidden amount"
 
@@ -6020,7 +6037,8 @@ msgstr "Includes accounts you add later. Starts when you sign in to iCloud."
 msgid "Includes crypto"
 msgstr "Includes crypto"
 
-#: src/yield/hook/use-yield-hero-sentence.hook.ts
+#: src/yield/hook/use-yield-range-sentence.hook.ts
+#: src/yield/hook/use-yield-scrub-sentence.hook.ts
 msgid "Includes estimated values."
 msgstr "Includes estimated values."
 
@@ -7354,7 +7372,7 @@ msgstr "No upcoming payment"
 msgid "No upcoming payments"
 msgstr "No upcoming payments"
 
-#: src/yield/hook/use-yield-hero-sentence.hook.ts
+#: src/yield/hook/use-yield-range-sentence.hook.ts
 msgid "no yield yet"
 msgstr "no yield yet"
 
@@ -7720,6 +7738,10 @@ msgstr "Only when a category is missing"
 msgid "Only you hold the key."
 msgstr "Only you hold the key."
 
+#: src/yield/component/yield-open-position-button/yield-open-position-button.tsx
+msgid "Open {scopeTitle}"
+msgstr "Open {scopeTitle}"
+
 #: src/sync/component/enable-banking-setup-guide/enable-banking-setup-guide.tsx
 msgid "Open <0>API applications</0>, then <1>Add a new application</1>."
 msgstr "Open <0>API applications</0>, then <1>Add a new application</1>."
@@ -7759,10 +7781,6 @@ msgstr "Open Budgie with your face or fingerprint. Your PIN stays the key to you
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Open George (Erste Bank online banking)"
 msgstr "Open George (Erste Bank online banking)"
-
-#: src/yield/component/yield-open-position-button/yield-open-position-button.tsx
-msgid "Open holding"
-msgstr "Open holding"
 
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Open its statement and choose a date range that covers your full history"

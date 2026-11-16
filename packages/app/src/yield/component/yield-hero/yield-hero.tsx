@@ -1,6 +1,6 @@
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
-import { use } from 'react';
+import { use, useState } from 'react';
 import { View } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 
@@ -9,6 +9,7 @@ import { isDefined } from '@rnw-community/shared';
 import { HeroFigure } from '../../../@generic/component/hero-figure/hero-figure';
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { MOTION_FAST_DURATION } from '../../../@generic/constant/motion.constant';
+import { HeroFigureScaleContext } from '../../../@generic/context/hero-figure-scale.context';
 import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { yieldSummaryFamily } from '../../constant/yield-summary-family-atom.constant';
@@ -22,13 +23,16 @@ import { YieldHeroCaption } from '../yield-hero-caption/yield-hero-caption';
 import { YieldHeroInfoButton } from '../yield-hero-info-button/yield-hero-info-button';
 import { YieldHeroLine } from '../yield-hero-line/yield-hero-line';
 
+import type { HeroFigureScaleInterface } from '../../../@generic/interface/hero-figure-scale.interface';
+
 export const YieldHero = () => {
     const { screenKey, mode, rangeCaption } = use(YieldScreenContext);
     const { selectedIndex } = use(YieldSelectionContext);
     const summary = AsyncResult.getOrElse(useLiveAtomValue(yieldSummaryFamily(screenKey.key)), () => null);
     const { symbol } = useAtomValue(defaultInstrumentAtom);
 
-    const sentence = useYieldHeroSentence(summary, rangeCaption);
+    const [rangeFigure, setRangeFigure] = useState<HeroFigureScaleInterface | null>(null);
+
     const bucket = isDefined(selectedIndex) ? (summary?.buckets.at(selectedIndex) ?? null) : null;
     const runningTotal =
         buildYieldRunningTotal(summary?.buckets.slice(0, (selectedIndex ?? -1) + 1).map(item => item.total) ?? []).at(-1) ?? 0;
@@ -36,6 +40,15 @@ export const YieldHero = () => {
     const amount = isDefined(bucket) ? scrubAmount : (summary?.earned.value ?? 0);
     const figureKey = isDefined(bucket) ? 'scrub' : 'total';
     const isApproximate = isDefined(bucket) ? bucket.isEstimated : (summary?.earned.isEstimated ?? false);
+    const sentence = useYieldHeroSentence(summary, rangeCaption, bucket, scrubAmount);
+    const figureScale = {
+        locked: isDefined(bucket) ? rangeFigure : null,
+        onMeasured: (measured: HeroFigureScaleInterface) => {
+            setRangeFigure(previous =>
+                previous?.scale === measured.scale && previous.labelLength === measured.labelLength ? previous : measured
+            );
+        }
+    };
 
     return (
         <View className="gap-y-xs" accessible accessibilityLabel={sentence} testID={PassiveIncomeSelector.Hero}>
@@ -45,15 +58,17 @@ export const YieldHero = () => {
             </View>
 
             <LoadingContent isLoading={!isDefined(summary)}>
-                <Animated.View key={figureKey} entering={FadeIn.duration(MOTION_FAST_DURATION)}>
-                    <HeroFigure
-                        amount={amount}
-                        currencySymbol={symbol}
-                        variant="default"
-                        approximate={isApproximate}
-                        testID={PassiveIncomeSelector.Earned}
-                    />
-                </Animated.View>
+                <HeroFigureScaleContext.Provider value={figureScale}>
+                    <Animated.View key={figureKey} entering={FadeIn.duration(MOTION_FAST_DURATION)}>
+                        <HeroFigure
+                            amount={amount}
+                            currencySymbol={symbol}
+                            variant="default"
+                            approximate={isApproximate}
+                            testID={PassiveIncomeSelector.Earned}
+                        />
+                    </Animated.View>
+                </HeroFigureScaleContext.Provider>
             </LoadingContent>
 
             {isDefined(summary) ? <YieldHeroLine summary={summary} bucket={bucket} /> : <View className="min-h-[22px]" />}

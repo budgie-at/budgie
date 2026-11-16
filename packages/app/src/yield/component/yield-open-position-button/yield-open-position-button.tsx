@@ -8,11 +8,13 @@ import { isDefined } from '@rnw-community/shared';
 
 import { Icon } from '../../../@generic/component/icon/icon';
 import { YieldScreenContext } from '../../context/yield-screen.context';
+import { useYieldScopeTitle } from '../../hook/use-yield-scope-title.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 
 export const YieldOpenPositionButton = () => {
     const { t } = useLingui();
     const { screenKey } = use(YieldScreenContext);
+    const scopeTitle = useYieldScopeTitle();
 
     const { positionAccountId, instrumentId } = screenKey.key;
     const isVisible = isDefined(screenKey.scopeId) && screenKey.from !== screenKey.scopeId;
@@ -34,7 +36,7 @@ export const YieldOpenPositionButton = () => {
             {isVisible ? (
                 <Pressable
                     accessibilityRole="button"
-                    accessibilityLabel={t`Open holding`}
+                    accessibilityLabel={t`Open ${scopeTitle}`}
                     onPress={handlePress}
                     testID={PassiveIncomeSelector.OpenPosition}
                 >

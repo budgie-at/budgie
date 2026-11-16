@@ -342,7 +342,7 @@ msgid "{count, plural, one {{formattedAmount} rolled over across # category} oth
 msgstr "{count, plural, one {{formattedAmount} перенесено на # категорію} few {{formattedAmount} перенесено на # категорії} many {{formattedAmount} перенесено на # категорій} other {{formattedAmount} перенесено на # категорії}}"
 
 #. js-lingui-explicit-id
-#: src/yield/hook/use-yield-hero-sentence.hook.ts
+#: src/yield/hook/use-yield-range-sentence.hook.ts
 msgid "passive-income.hero.sentence"
 msgstr "{count, plural, one {{trend, select, up {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} активі, на {change} більше.} down {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} активі, на {change} менше.} new {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} активі, нове за цей період.} other {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} активі.}}} few {{trend, select, up {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} активах, на {change} більше.} down {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} активах, на {change} менше.} new {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} активах, нове за цей період.} other {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} активах.}}} many {{trend, select, up {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} активах, на {change} більше.} down {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} активах, на {change} менше.} new {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} активах, нове за цей період.} other {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} активах.}}} other {{trend, select, up {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} активу, на {change} більше.} down {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} активу, на {change} менше.} new {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} активу, нове за цей період.} other {Зароблено {amount} до податків {rangeCaption}, {rate} річних у {count} активу.}}}}"
 
@@ -876,6 +876,14 @@ msgstr "використано {percent}%"
 #: src/yield/hook/use-yield-plot-accessibility.hook.ts
 msgid "{period}, {total}: {parts}"
 msgstr "{period}, {total}: {parts}"
+
+#: src/yield/hook/use-yield-scrub-sentence.hook.ts
+msgid "{period}: earned {amountText} before tax, {netText} after tax."
+msgstr "{period}: зароблено {amountText} до сплати податків, {netText} після податків."
+
+#: src/yield/hook/use-yield-scrub-sentence.hook.ts
+msgid "{period}: earned {amountText} before tax."
+msgstr "{period}: зароблено {amountText} до сплати податків."
 
 #: src/inzhur/component/inzhur-operations-period-header/inzhur-operations-period-header.tsx
 msgid "{periodFrom} – {periodTo}"
@@ -3491,6 +3499,10 @@ msgstr "Скопіюйте токен і вставте його нижче"
 msgid "Cost basis"
 msgstr "Собівартість"
 
+#: src/market-data/component/currency-market-cost-basis-row/currency-market-cost-basis-row.tsx
+msgid "Cost basis includes estimates"
+msgstr "Собівартість включає оцінки"
+
 #: src/recurring/components/make-recurring-sheet/make-recurring-sheet.tsx
 msgid "Could not add to recurring payment."
 msgstr "Не вдалося додати до регулярного платежу."
@@ -4749,6 +4761,10 @@ msgstr "Кожен тиждень порівняно з вашим тижнев�
 msgid "Earn"
 msgstr "Earn"
 
+#: src/yield/hook/use-yield-scrub-sentence.hook.ts
+msgid "Earned {amountText} before tax through {throughDay}."
+msgstr "Зароблено {amountText} до сплати податків станом на {throughDay}."
+
 #: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
 msgid "Earned {caption}: {windowStart} – {today}. The change compares the same number of periods just before, with the last one cut to the same point."
 msgstr "Зароблено {caption}: {windowStart} – {today}. Зміна порівнює таку саму кількість періодів одразу перед цим, а останній обрізається до тієї ж точки."
@@ -5690,8 +5706,9 @@ msgstr "Приховані рахунки"
 msgid "Hidden accounts stay off Home. Their totals and net worth settings don’t change."
 msgstr "Приховані рахунки не показуються на головній. Їхні налаштування підсумків і чистих активів не змінюються."
 
-#: src/yield/hook/use-yield-hero-sentence.hook.ts
 #: src/yield/hook/use-yield-plot-accessibility.hook.ts
+#: src/yield/hook/use-yield-range-sentence.hook.ts
+#: src/yield/hook/use-yield-scrub-amounts.hook.ts
 msgid "hidden amount"
 msgstr "прихована сума"
 
@@ -6019,7 +6036,8 @@ msgstr "Включає рахунки, додані пізніше. Почнет
 msgid "Includes crypto"
 msgstr "Включно з криптовалютою"
 
-#: src/yield/hook/use-yield-hero-sentence.hook.ts
+#: src/yield/hook/use-yield-range-sentence.hook.ts
+#: src/yield/hook/use-yield-scrub-sentence.hook.ts
 msgid "Includes estimated values."
 msgstr "Враховано оцінені значення."
 
@@ -7353,7 +7371,7 @@ msgstr "Немає наступного платежу"
 msgid "No upcoming payments"
 msgstr "Немає майбутніх платежів"
 
-#: src/yield/hook/use-yield-hero-sentence.hook.ts
+#: src/yield/hook/use-yield-range-sentence.hook.ts
 msgid "no yield yet"
 msgstr "доходу ще немає"
 
@@ -7719,6 +7737,10 @@ msgstr "Лише якщо категорії немає"
 msgid "Only you hold the key."
 msgstr "Ключ лише у вас."
 
+#: src/yield/component/yield-open-position-button/yield-open-position-button.tsx
+msgid "Open {scopeTitle}"
+msgstr "Відкрити {scopeTitle}"
+
 #: src/sync/component/enable-banking-setup-guide/enable-banking-setup-guide.tsx
 msgid "Open <0>API applications</0>, then <1>Add a new application</1>."
 msgstr "Відкрийте <0>API applications</0>, потім <1>Add a new application</1>."
@@ -7758,10 +7780,6 @@ msgstr "Відкривайте Budgie обличчям або відбитком
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Open George (Erste Bank online banking)"
 msgstr "Відкрийте George (онлайн-банкінг Erste Bank)"
-
-#: src/yield/component/yield-open-position-button/yield-open-position-button.tsx
-msgid "Open holding"
-msgstr "Відкрити актив"
 
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Open its statement and choose a date range that covers your full history"

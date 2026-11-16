@@ -1,18 +1,15 @@
-import { useAtomValue } from '@effect/atom-react/Hooks';
 import { Text, View } from 'react-native';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { useLocaleInfo } from '../../../i18n/hook/use-locale-info.hook';
-import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
 import { FOREGROUND_COLOR_PALETTE } from '../../constant/foreground-color-palette.constant';
+import { HERO_FIGURE_METRICS } from '../../constant/hero-figure-metrics.constant';
 import { MAX_FONT_SIZE_MULTIPLIER } from '../../constant/max-font-size-multiplier.constant';
 import { PROTECTED_HERO_PLACEHOLDER } from '../../constant/protected-hero-placeholder.constant';
+import { useHeroFigureLayout } from '../../hook/use-hero-figure-layout.hook';
 import { useIsAmountProtected } from '../../hook/use-is-amount-protected.hook';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { cn } from '../../utils/cn.util';
-import { splitHeroAmount } from '../../utils/split-hero-amount.util';
 
 interface Props {
     readonly amount: number;
@@ -39,14 +36,16 @@ export const HeroFigure = ({
     testID
 }: Props) => {
     const isAmountProtected = useIsAmountProtected();
-    const settingDecimalPlaces = useAtomValue(decimalPlacesAtom);
-    const { decimalSeparator } = useLocaleInfo();
-    const formatWhole = useFormatDigits(0);
-    const { sign, whole, fraction } = splitHeroAmount(amount, decimalPlaces ?? settingDecimalPlaces, decimalSeparator);
-    const wholeLabel = `${sign}${formatWhole(whole, currencySymbol)}`;
+    const { isLocked, wholeLabel, fraction, figureSize, handleTextLayout } = useHeroFigureLayout(amount, currencySymbol, decimalPlaces);
+
+    const figureStyle = { fontSize: figureSize, lineHeight: figureSize };
+    const approximateStyle = { fontSize: figureSize * HERO_FIGURE_METRICS.approximateRatio };
+    const fractionStyle = { fontSize: figureSize * HERO_FIGURE_METRICS.fractionRatio };
 
     const approximateSign = approximate ? (
-        <Text className="text-[33px] font-semibold text-secondary-foreground">{APPROXIMATE_SIGN}</Text>
+        <Text style={approximateStyle} className="font-semibold text-secondary-foreground">
+            {APPROXIMATE_SIGN}
+        </Text>
     ) : null;
 
     if (isAmountProtected) {
@@ -55,7 +54,8 @@ export const HeroFigure = ({
                 numberOfLines={1}
                 maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
                 testID={testID}
-                className="text-8xl font-bold tracking-[0.08em] text-secondary-foreground"
+                style={figureStyle}
+                className="font-bold tracking-[0.08em] text-secondary-foreground"
             >
                 {approximateSign}
                 {PROTECTED_HERO_PLACEHOLDER}
@@ -74,21 +74,22 @@ export const HeroFigure = ({
                 </Text>
             ) : null}
             <Text
-                adjustsFontSizeToFit
+                adjustsFontSizeToFit={!isLocked}
                 numberOfLines={1}
-                minimumFontScale={0.5}
+                minimumFontScale={HERO_FIGURE_METRICS.floorScale}
                 maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
                 testID={testID}
-                className={cn('shrink text-8xl font-bold tracking-[-0.03em] tabular-nums', FOREGROUND_COLOR_PALETTE[variant])}
+                style={figureStyle}
+                onTextLayout={handleTextLayout}
+                className={cn('shrink font-bold tracking-[-0.03em] tabular-nums', FOREGROUND_COLOR_PALETTE[variant])}
             >
                 {approximateSign}
                 {wholeLabel}
-            </Text>
-            <Text
-                maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
-                className="ml-[2px] text-2xl font-semibold tabular-nums text-secondary-foreground"
-            >
-                {fraction}
+                {isNotEmptyString(fraction) ? (
+                    <Text style={fractionStyle} className="font-semibold tabular-nums text-secondary-foreground">
+                        {fraction}
+                    </Text>
+                ) : null}
             </Text>
             {isNotEmptyString(unit) ? (
                 <Text maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER} className="ml-sm text-xl font-medium text-secondary-foreground">

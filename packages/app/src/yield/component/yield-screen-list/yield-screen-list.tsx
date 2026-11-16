@@ -7,8 +7,10 @@ import { CollapsibleChromePinnedBar } from '../../../@generic/component/collapsi
 import { FLOATING_TAB_BAR_HEIGHT } from '../../../@generic/constant/floating-tab-bar.constant';
 import { CollapsibleChromeCollapseDistanceContext } from '../../../@generic/context/collapsible-chrome-collapse-distance.context';
 import { getCollapsibleChromePinDistance } from '../../../@generic/utils/get-collapsible-chrome-pin-distance.util';
+import { YieldPayoutsScrollContext } from '../../context/yield-payouts-scroll.context';
 import { YieldListItemKindEnum } from '../../enum/yield-list-item-kind.enum';
 import { useYieldListItems } from '../../hook/use-yield-list-items.hook';
+import { useYieldPayoutsScroll } from '../../hook/use-yield-payouts-scroll.hook';
 import { YieldBreakdown } from '../yield-breakdown/yield-breakdown';
 import { YieldChartCard } from '../yield-chart-card/yield-chart-card';
 import { YieldHero } from '../yield-hero/yield-hero';
@@ -31,6 +33,7 @@ const CONTENT_STYLE = { paddingBottom: FLOATING_TAB_BAR_HEIGHT };
 
 export const YieldScreenList = () => {
     const items = useYieldListItems();
+    const { listRef, requestPayoutsScroll } = useYieldPayoutsScroll(items);
     const [rangeY, setRangeY] = useState(0);
     const [pinnedHeight, setPinnedHeight] = useState(0);
     const { top } = useSafeAreaInsets();
@@ -67,17 +70,20 @@ export const YieldScreenList = () => {
 
     return (
         <>
-            <CollapsibleChromeCollapseDistanceContext value={getCollapsibleChromePinDistance(rangeY, top)}>
-                <CollapsibleChromeLegendList
-                    data={items}
-                    renderItem={renderItem}
-                    keyExtractor={keyExtractor}
-                    getItemType={getItemType}
-                    estimatedItemSize={ESTIMATED_ITEM_SIZE}
-                    ListHeaderComponent={listHeader}
-                    contentContainerStyle={CONTENT_STYLE}
-                />
-            </CollapsibleChromeCollapseDistanceContext>
+            <YieldPayoutsScrollContext value={requestPayoutsScroll}>
+                <CollapsibleChromeCollapseDistanceContext value={getCollapsibleChromePinDistance(rangeY, top)}>
+                    <CollapsibleChromeLegendList
+                        ref={listRef}
+                        data={items}
+                        renderItem={renderItem}
+                        keyExtractor={keyExtractor}
+                        getItemType={getItemType}
+                        estimatedItemSize={ESTIMATED_ITEM_SIZE}
+                        ListHeaderComponent={listHeader}
+                        contentContainerStyle={CONTENT_STYLE}
+                    />
+                </CollapsibleChromeCollapseDistanceContext>
+            </YieldPayoutsScrollContext>
 
             <CollapsibleChromePinnedBar anchorY={rangeY} onHeightChange={setPinnedHeight}>
                 <YieldRangeControl />
