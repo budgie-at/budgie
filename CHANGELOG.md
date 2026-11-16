@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.191.2](https://github.com/budgie-at/budgie/compare/v6.191.1...v6.191.2) (2026-11-16)
+
+### Bug Fixes
+
+* **app:** lay out transaction rows as a two-line grid ([#2252](https://github.com/budgie-at/budgie/issues/2252)) ([bfeae14](https://github.com/budgie-at/budgie/commit/bfeae1430f8019b2c2c71f34f538ab7aca6d2dd5))
+
+
 ## [6.191.1](https://github.com/budgie-at/budgie/compare/v6.191.0...v6.191.1) (2026-11-16)
 
 ### Bug Fixes
