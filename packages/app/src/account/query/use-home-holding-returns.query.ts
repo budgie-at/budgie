@@ -16,28 +16,22 @@ import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/sha
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
-import { calculatePortfolioReturn } from '../../brokerage/utils/calculate-portfolio-return.util';
 import { getMarketDailyChange } from '../../market-data/utils/get-market-daily-change.util';
 import { isMarketPriceStale } from '../../market-data/utils/is-market-price-stale.util';
 import { defaultInstrumentIdAtom } from '../../settings/constants/settings-atoms.constant';
 import { isAccountTypeSection } from '../type-guard/is-account-type-section.type-guard';
 import { isHomeHolding } from '../type-guard/is-home-holding.type-guard';
-import { isInstitutionGroup } from '../type-guard/is-institution-group.type-guard';
 import { getHomeSectionPortfolio } from '../utils/get-home-section-portfolio.util';
 import { getSuppressedHomeReturns } from '../utils/get-suppressed-home-returns.util';
-import { hasKnownCostBasis } from '../utils/has-known-cost-basis.util';
 import { isFiatAccount } from '../utils/is-fiat-account.util';
 
 import type { PortfolioReturnInterface } from '../../brokerage/interface/portfolio-return.interface';
 import type { AccountTypeSectionInterface } from '../interface/account-type-section.interface';
 import type { DailyChangeInterface } from '../interface/daily-change.interface';
-import type { HomeAccountBalanceInterface } from '../interface/home-account-balance.interface';
 import type { HomeHoldingReturnsInterface } from '../interface/home-holding-returns.interface';
 import type { HomeHoldingSectionInterface } from '../interface/home-holding-section.interface';
 import type { HomeHoldingInterface } from '../interface/home-holding.interface';
 import type { HomeSectionInterface } from '../interface/home-section.interface';
-import type { InstitutionGroupInterface } from '../interface/institution-group.interface';
-import type { InstrumentPositionInterface } from '@budgie/market';
 
 const getCashKey = (providerCashAccountIds: readonly (readonly [number, readonly number[]])[]): string =>
     providerCashAccountIds.map(([integrationId, cashAccountIds]) => `${integrationId}:${cashAccountIds.join('-')}`).join();
@@ -88,25 +82,6 @@ const homeDailyChangesAtom = databaseQueryFamily(
         )
 );
 
-const getProviderReturnPercent = (
-    institution: Pick<InstitutionGroupInterface, 'integrationId' | 'accounts' | 'cash'>,
-    balancesByAccountId: ReadonlyMap<number, HomeAccountBalanceInterface>,
-    getPosition: (instrumentId: number, accountIds: readonly number[]) => InstrumentPositionInterface | null,
-    cashReturns: ReadonlyMap<number, number>
-): number | null => {
-    const positions = institution.accounts
-        .filter(account => !isFiatAccount(account))
-        .map(account => ({
-            value: balancesByAccountId.get(account.id)?.convertedBalance ?? 0,
-            balance: balancesByAccountId.get(account.id)?.balance ?? 0,
-            isValued: balancesByAccountId.get(account.id)?.isValued === true,
-            position: getPosition(account.instrument.id, [account.id])
-        }));
-    const portfolio = calculatePortfolioReturn(positions, institution.cash, cashReturns.get(institution.integrationId) ?? 0);
-
-    return portfolio.positionReturns.some(isDefined) && hasKnownCostBasis(positions, portfolio.positionReturns) ? portfolio.percent : null;
-};
-
 const getFreshDailyChanges = (
     dailyChangePairs: readonly (readonly [number, number])[],
     dailyChanges: ReadonlyMap<string, DailyChangeInterface>
@@ -145,21 +120,15 @@ const toHoldingSection = (section: AccountTypeSectionInterface): HomeHoldingSect
     total: section.total,
     holdings: section.data.filter(isHomeHolding),
     returnHoldings: [...section.data.filter(isHomeHolding), ...section.hiddenHoldings],
-    cashProviders:
-        section.type === AccountTypeEnum.STOCKS
-            ? section.data.filter(isInstitutionGroup).filter(institution => institution.isHoldingProvider)
-            : []
+    cashProviders: section.type === AccountTypeEnum.STOCKS ? section.holdingProviders : []
 });
 
 const sortIds = (ids: readonly number[]): number[] => [...new Set(ids)].sort((left, right) => left - right);
 
-export const useHomeHoldingReturnsQuery = (
-    sections: readonly HomeSectionInterface[],
-    balancesByAccountId: ReadonlyMap<number, HomeAccountBalanceInterface>
-): HomeHoldingReturnsInterface => {
+export const useHomeHoldingReturnsQuery = (sections: readonly HomeSectionInterface[]): HomeHoldingReturnsInterface => {
     const defaultInstrumentId = useAtomValue(defaultInstrumentIdAtom);
     const holdingSections = sections.filter(isAccountTypeSection).map(toHoldingSection);
-    const suppressed = getSuppressedHomeReturns(holdingSections);
+    const suppressedInstrumentIds = getSuppressedHomeReturns(holdingSections);
     const instrumentIds = sortIds(holdingSections.flatMap(({ returnHoldings }) => returnHoldings.map(holding => holding.instrument.id)));
     const shownInstrumentIds = sortIds(holdingSections.flatMap(({ holdings }) => holdings.map(holding => holding.instrument.id)));
     const providerCashAccountIds = holdingSections
@@ -193,21 +162,10 @@ export const useHomeHoldingReturnsQuery = (
 
         return isDefined(entries) ? calculateInstrumentPosition(entries, accountIds) : null;
     };
-    const providerReturnIntegrationIds = holdingSections.flatMap(({ cashProviders }) =>
-        cashProviders.flatMap(institution => (suppressed.integrationIds.has(institution.integrationId) ? [] : [institution.integrationId]))
-    );
-    const providerReturns = holdingSections
-        .flatMap(({ cashProviders }) => cashProviders)
-        .filter(institution => providerReturnIntegrationIds.includes(institution.integrationId))
-        .flatMap(institution => {
-            const percent = getProviderReturnPercent(institution, balancesByAccountId, getPosition, cashReturns);
-
-            return isDefined(percent) ? [[institution.integrationId, percent] as const] : [];
-        });
     const results = holdingSections.map(holdingSection => ({
         type: holdingSection.type,
         today: getSectionToday(holdingSection.holdings, holdingSection.total, todayByInstrumentId),
-        ...getHomeSectionPortfolio(holdingSection, getPosition, cashReturns, suppressed.instrumentIds)
+        ...getHomeSectionPortfolio(holdingSection, getPosition, cashReturns, suppressedInstrumentIds)
     }));
 
     const isLoading =
@@ -218,14 +176,12 @@ export const useHomeHoldingReturnsQuery = (
     return {
         holdingsBySectionType: new Map(results.map(({ type, holdingReturns }) => [type, holdingReturns])),
         bySectionType: new Map(results.flatMap(({ type, portfolio, hasReturn }) => (hasReturn ? [[type, portfolio] as const] : []))),
-        todayByInstrumentId: new Map([...todayByInstrumentId].filter(([instrumentId]) => !suppressed.instrumentIds.has(instrumentId))),
-        providerReturnByIntegrationId: new Map(providerReturns),
+        todayByInstrumentId: new Map([...todayByInstrumentId].filter(([instrumentId]) => !suppressedInstrumentIds.has(instrumentId))),
         todayBySectionType: new Map(results.flatMap(({ type, today }) => (isDefined(today) ? [[type, today] as const] : []))),
         isLoading,
         loadingInstrumentIds: new Set(
-            isLoading ? shownInstrumentIds.filter(instrumentId => !suppressed.instrumentIds.has(instrumentId)) : []
+            isLoading ? shownInstrumentIds.filter(instrumentId => !suppressedInstrumentIds.has(instrumentId)) : []
         ),
-        loadingIntegrationIds: new Set(isLoading ? providerReturnIntegrationIds : []),
-        suppressed
+        suppressedInstrumentIds
     };
 };

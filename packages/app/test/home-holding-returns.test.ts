@@ -11,7 +11,6 @@ import { getSuppressedHomeReturns } from '../src/account/utils/get-suppressed-ho
 import { hasKnownCostBasis } from '../src/account/utils/has-known-cost-basis.util';
 import { hideEmptyHomeHoldings } from '../src/account/utils/hide-empty-home-holdings.util';
 import { resolveHomeReturnSlotState } from '../src/account/utils/resolve-home-return-slot-state.util';
-import { summarizeHoldingPositions } from '../src/account/utils/summarize-holding-positions.util';
 import { calculatePortfolioReturn } from '../src/brokerage/utils/calculate-portfolio-return.util';
 import { DEFAULT_INSTRUMENT } from '../src/settings/constants/default-instrument.constant';
 
@@ -43,7 +42,14 @@ it.effect('keeps a sold-out holding for returns while hiding its row', () =>
         const held = holdingOf(10, 'AAA', 1, 150);
         const soldOut = holdingOf(11, 'BBB', 0, 0);
         const section = hideEmptyHomeHoldings(
-            { kind: HomeSectionKindEnum.ACCOUNT_TYPE, type: AccountTypeEnum.STOCKS, total: 150, hiddenHoldings: [], data: [held, soldOut] },
+            {
+                kind: HomeSectionKindEnum.ACCOUNT_TYPE,
+                type: AccountTypeEnum.STOCKS,
+                total: 150,
+                hiddenHoldings: [],
+                holdingProviders: [],
+                data: [held, soldOut]
+            },
             2
         );
 
@@ -73,48 +79,14 @@ it.effect('shows an aggregate return only when known cost basis covers half the 
     })
 );
 
-it.effect('names the single visible position and counts only visible ones', () =>
+it.effect('suppresses the return of a sole holding in its section', () =>
     Effect.sync(() => {
-        const accounts = [
-            { instrument: instrumentOf(20, 'FDUSD') },
-            { instrument: instrumentOf(21, 'ETH') },
-            { instrument: instrumentOf(21, 'ETH') },
-            { instrument: DEFAULT_INSTRUMENT }
-        ];
-
-        expect(summarizeHoldingPositions(accounts, () => false)).toEqual({ positionCount: 0, positionName: null });
-        expect(summarizeHoldingPositions(accounts, instrumentId => instrumentId === 21)).toEqual({ positionCount: 1, positionName: 'ETH' });
-        expect(summarizeHoldingPositions(accounts, () => true)).toEqual({ positionCount: 2, positionName: null });
-        expect(summarizeHoldingPositions([{ instrument: instrumentOf(30, 'YAHOO:AAPL', InstrumentTypeEnum.EQUITY) }], () => true)).toEqual({
-            positionCount: 1,
-            positionName: 'YAHOO:AAPL'
-        });
-    })
-);
-
-it.effect('decides suppressed returns from structure alone', () =>
-    Effect.sync(() => {
-        const brokerAccount = { integrationId: 7 };
         const suppressed = getSuppressedHomeReturns([
-            { holdings: [{ instrument: instrumentOf(1, 'BTC'), accounts: [{ integrationId: null }] }], cashProviders: [] },
-            {
-                holdings: [
-                    { instrument: instrumentOf(2, 'AAPL'), accounts: [brokerAccount] },
-                    { instrument: instrumentOf(3, 'TSLA'), accounts: [brokerAccount] }
-                ],
-                cashProviders: [{ integrationId: 7 }]
-            },
-            {
-                holdings: [
-                    { instrument: instrumentOf(4, 'VWCE'), accounts: [{ integrationId: 8 }] },
-                    { instrument: instrumentOf(5, 'MSFT'), accounts: [{ integrationId: 9 }] }
-                ],
-                cashProviders: [{ integrationId: 8 }, { integrationId: 9 }]
-            }
+            { holdings: [{ instrument: instrumentOf(1, 'BTC') }] },
+            { holdings: [{ instrument: instrumentOf(2, 'AAPL') }, { instrument: instrumentOf(3, 'TSLA') }] }
         ]);
 
-        expect([...suppressed.instrumentIds]).toEqual([1]);
-        expect([...suppressed.integrationIds]).toEqual([7]);
+        expect([...suppressed]).toEqual([1]);
     })
 );
 

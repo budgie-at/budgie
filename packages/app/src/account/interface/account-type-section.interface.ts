@@ -10,5 +10,6 @@ export interface AccountTypeSectionInterface {
     readonly type: AccountTypeEnum;
     readonly total: number;
     readonly hiddenHoldings: HomeHoldingInterface[];
+    readonly holdingProviders: InstitutionGroupInterface[];
     readonly data: Array<AccountWithSyncEntityInterface | HomeHoldingInterface | InstitutionGroupInterface>;
 }

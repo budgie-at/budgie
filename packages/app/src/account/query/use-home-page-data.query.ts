@@ -61,6 +61,16 @@ const getInstitutionSectionType = (institution: InstitutionGroupInterface): Acco
     return isInvestmentInstitution(institution) ? AccountTypeEnum.STOCKS : AccountTypeEnum.BANK;
 };
 
+const getShownProviderCashAccounts = (
+    institution: Pick<InstitutionGroupInterface, 'accounts'>,
+    balancesByAccountId: ReadonlyMap<number, HomeAccountBalanceInterface>
+): AccountWithSyncEntityInterface[] => {
+    const cashAccounts = institution.accounts.filter(isFiatAccount);
+    const hasPositions = cashAccounts.length < institution.accounts.length;
+
+    return cashAccounts.filter(account => !hasPositions || balancesByAccountId.get(account.id)?.balance !== 0);
+};
+
 const buildHomePageSections = (
     activeAccounts: AccountWithSyncEntityInterface[],
     integrationProviders: ReadonlyMap<number, ExternalSourceEnum>,
@@ -110,11 +120,12 @@ const buildHomePageSections = (
             type,
             total,
             hiddenHoldings: [],
+            holdingProviders,
             data: [
                 ...buildHomeHoldings(holdingAccounts, balancesByAccountId),
-                ...holdingProviders,
                 ...typeInstitutions.filter(institution => !institution.isHoldingProvider),
-                ...accounts.filter(account => !isHoldingSection || isFiatAccount(account))
+                ...accounts.filter(account => !isHoldingSection || isFiatAccount(account)),
+                ...holdingProviders.flatMap(institution => getShownProviderCashAccounts(institution, balancesByAccountId))
             ]
         };
     });

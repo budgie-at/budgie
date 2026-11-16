@@ -33,10 +33,14 @@ test('29 crypto account and market', { tags: ['crypto'] }, async ({ budgie }) =>
         await b.expectNoId(ctx, 'AccountCard.E2E Crypto Vault');
     });
 
-    await b.phase('binance exchange row opens its institution', async () => {
-        await b.scrollToCentered(ctx, 'InstitutionRow.1');
-        await expect(id('InstitutionRow.1')).toHaveText(/BTC[\s\S]*\$5,000/);
-        await b.tapId(ctx, 'InstitutionRow.1');
+    await b.phase('binance exchange opens from its BTC account', async () => {
+        await b.expectNoId(ctx, 'InstitutionRow.1');
+        await b.scrollToCentered(ctx, 'HomeHolding.BTC');
+        await b.tapUntil(ctx, 'HomeHolding.BTC', () => b.expectId(ctx, 'CurrencyMarket.Header.BTC', 10_000));
+        await b.scrollTo(ctx, 'CurrencyMarket.Account.BTC.3');
+        await b.tapUntil(ctx, 'CurrencyMarket.Account.BTC.3', () => b.expectId(ctx, 'AccountDetails.Page', 5_000));
+        await expect(id('AccountDetails.InstitutionLink')).toHaveText(/Binance/, { timeout: 10_000 });
+        await b.tapId(ctx, 'AccountDetails.InstitutionLink');
         await b.expectId(ctx, 'Institution.Page', 10_000);
         await ids('AccountCard.E2E Binance BTC', 'AccountCard.Balance.E2E_Binance_BTC.2_BTC');
     });
@@ -53,6 +57,10 @@ test('29 crypto account and market', { tags: ['crypto'] }, async ({ budgie }) =>
         await b.expectId(ctx, 'AccountDetails.Page', 3_000);
         await b.tapId(ctx, 'PageHeader.BackButton');
         await b.expectId(ctx, 'Institution.Page', 3_000);
+        await b.tapId(ctx, 'PageHeader.BackButton');
+        await b.expectId(ctx, 'AccountDetails.Page', 3_000);
+        await b.tapId(ctx, 'PageHeader.BackButton');
+        await b.expectId(ctx, 'CurrencyMarket.Header.BTC', 3_000);
         await backHome();
     });
 
