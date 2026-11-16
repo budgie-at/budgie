@@ -2,6 +2,7 @@ import { InstrumentTypeEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { Text, View } from 'react-native';
 
 import { MoneyText } from '../../../@generic/component/money-text/money-text';
+import { ROW_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-max-font-size-multiplier.constant';
 import { MoneyTextVariantEnum } from '../../../@generic/enum/money-text-variant.enum';
 import { useFormatInstrumentAmount } from '../../../i18n/hook/use-format-instrument-amount.hook';
 
@@ -37,10 +38,18 @@ export const TransactionTransferAmount = ({ fromEntry, toEntry, accountId, testI
                     tone="primary"
                 />
             ) : (
-                <Text className="text-[17px] font-semibold tracking-tight text-right text-primary tabular-nums">{`${sign}${formatEntry(primaryEntry)}`}</Text>
+                <Text
+                    className="text-[17px] font-semibold tracking-tight text-right text-primary tabular-nums"
+                    maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
+                >{`${sign}${formatEntry(primaryEntry)}`}</Text>
             )}
             {isCrossCurrency ? (
-                <Text className="text-secondary-foreground text-[13px] text-right tabular-nums">{formatEntry(secondaryEntry)}</Text>
+                <Text
+                    className="text-[13px] leading-[18px] text-secondary-foreground text-right tabular-nums"
+                    maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
+                >
+                    {formatEntry(secondaryEntry)}
+                </Text>
             ) : null}
         </View>
     );

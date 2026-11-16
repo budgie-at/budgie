@@ -7,6 +7,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { MoneyText } from '../../../@generic/component/money-text/money-text';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
+import { ROW_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-max-font-size-multiplier.constant';
 import { MoneyTextVariantEnum } from '../../../@generic/enum/money-text-variant.enum';
 import { useFormatInstrumentAmount } from '../../../i18n/hook/use-format-instrument-amount.hook';
 import { isSecurityInstrumentType } from '../../../instrument/utils/is-security-instrument-type.util';
@@ -80,7 +81,10 @@ export const TransactionEntryAmount = ({ debtEvent, entry, variant, sign, testID
                     tone={variant}
                 />
             ) : (
-                <Text className={transactionAmountVariants({ variant })}>{`${sign}${formattedAmount}`}</Text>
+                <Text
+                    className={transactionAmountVariants({ variant })}
+                    maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
+                >{`${sign}${formattedAmount}`}</Text>
             )}
             {secondaryAmountLabel}
         </View>

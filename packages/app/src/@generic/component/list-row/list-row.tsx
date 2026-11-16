@@ -26,7 +26,7 @@ export const ListRow = ({ leading, title, trailing, detail }: Props) => {
                     {title}
                     {detail}
                 </View>
-                {isDefined(trailing) ? <View className="flex-row">{trailing}</View> : null}
+                {isDefined(trailing) ? <View className="self-stretch">{trailing}</View> : null}
             </View>
         );
     }
@@ -34,12 +34,12 @@ export const ListRow = ({ leading, title, trailing, detail }: Props) => {
     return (
         <View className={cn('min-h-11 flex-row gap-x-xl', alignmentClassName)}>
             {leading}
-            <View className="min-w-0 flex-1 gap-y-xxs">
-                <View className="flex-row items-baseline gap-x-md">
-                    <View className="min-w-0 flex-1">{title}</View>
-                    {trailing}
+            <View className="min-w-0 flex-1 flex-row items-start gap-x-xl">
+                <View className="min-w-0 flex-1 gap-y-xxs">
+                    {title}
+                    {detail}
                 </View>
-                {detail}
+                {trailing}
             </View>
         </View>
     );

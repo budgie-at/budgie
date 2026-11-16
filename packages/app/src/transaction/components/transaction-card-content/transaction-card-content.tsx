@@ -9,6 +9,7 @@ import { Text, View } from 'react-native';
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { ListRow } from '../../../@generic/component/list-row/list-row';
+import { ROW_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-max-font-size-multiplier.constant';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { cn } from '../../../@generic/utils/cn.util';
 import { useTransactionCardSubtitle } from '../../hook/use-transaction-card-subtitle.hook';
@@ -30,7 +31,7 @@ export const TransactionCardContent = ({ transaction, accountId = null }: Props)
     const displayTitle = useTransactionRowTitle(transaction);
     const isAdjustment = isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction);
     const { t } = useLingui();
-    const titleLineCount = isAccessibilityTextSize ? 0 : 1;
+    const titleLineCount = isAccessibilityTextSize ? 3 : 1;
     const adjustmentTitle = isNotEmptyString(transaction.title) ? transaction.title : t`Balance Adjustment`;
     const { isDetailPromoted, title, subtitleSegments, stackedSegments, accountTitle, subtitleTestID } = useTransactionCardSubtitle(
         transaction,
@@ -48,6 +49,7 @@ export const TransactionCardContent = ({ transaction, accountId = null }: Props)
         <Text
             className="text-primary text-[17px] font-semibold"
             numberOfLines={titleLineCount}
+            maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
             ellipsizeMode="tail"
             {...(isDetailPromoted && isDefined(subtitleTestID) && { testID: subtitleTestID })}
         >
@@ -58,6 +60,7 @@ export const TransactionCardContent = ({ transaction, accountId = null }: Props)
         <Text
             className="text-primary text-[17px] font-semibold"
             numberOfLines={titleLineCount}
+            maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
             testID={TransactionCardSelector.AdjustmentBadge}
         >
             {adjustmentTitle}
