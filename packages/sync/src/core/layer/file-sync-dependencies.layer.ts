@@ -10,6 +10,8 @@ import { RuleEngineService } from '@budgie/rules';
 import * as Layer from 'effect/Layer';
 
 import { AccountReissueMergeService } from '../service/account-reissue-merge.service';
+import { FileImportAccountService } from '../service/file-import-account.service';
+import { SyncBalanceReconciliationService } from '../service/sync-balance-reconciliation.service';
 import { SyncOperationMetadataService } from '../service/sync-operation-metadata.service';
 
 export const fileSyncDependenciesLayer = Layer.mergeAll(
@@ -24,5 +26,7 @@ export const fileSyncDependenciesLayer = Layer.mergeAll(
     TransactionService.layer,
     SyncOperationMetadataService.layer,
     RuleEngineService.layer,
-    AccountReissueMergeService.layer
+    AccountReissueMergeService.layer,
+    FileImportAccountService.layer,
+    SyncBalanceReconciliationService.layer
 );

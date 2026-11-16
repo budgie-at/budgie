@@ -1,6 +1,7 @@
+import { convertFromMicroUnits } from '@budgie/contracts';
+
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { SyncAccountBalanceStateEnum } from '../enum/sync-account-balance-state.enum';
 import { SyncTransactionTypeEnum } from '../enum/sync-transaction-type.enum';
 
 import { isKnownSyncTransaction } from './is-known-sync-transaction.util';
@@ -18,23 +19,6 @@ const toReviewTransaction = (transaction: SyncTransactionInterface, currencyCode
     signedAmount: transaction.type === SyncTransactionTypeEnum.INCOME ? Math.abs(transaction.amount) : -Math.abs(transaction.amount),
     currencyCode
 });
-
-const resolveClosingBalance = (bankAccount: SyncAccountInterface, transactions: SyncTransactionInterface[]): number | null => {
-    if (bankAccount.balanceState !== SyncAccountBalanceStateEnum.REPRESENTABLE) {
-        return null;
-    }
-
-    if (bankAccount.balance !== 0) {
-        return bankAccount.balance;
-    }
-
-    const latestTransaction = transactions.reduce<SyncTransactionInterface | null>(
-        (latest, transaction) => (!isDefined(latest) || transaction.time > latest.time ? transaction : latest),
-        null
-    );
-
-    return isDefined(latestTransaction) && latestTransaction.balance !== 0 ? latestTransaction.balance : null;
-};
 
 export const buildFileSyncImportReview = (
     client: FileBasedSyncClientInterface,
@@ -59,11 +43,15 @@ export const buildFileSyncImportReview = (
         sampleTransactions: sortedByRecency
             .slice(0, 3)
             .map(({ transaction, currencyCode }) => toReviewTransaction(transaction, currencyCode)),
-        accounts: bankAccounts.map(bankAccount => ({
-            externalId: bankAccount.id,
-            title: bankAccount.title ?? bankAccount.iban ?? bankAccount.id,
-            currencyCode: bankAccount.currencyCode,
-            closingBalance: resolveClosingBalance(bankAccount, client.getTransactions(bankAccount.id))
-        }))
+        accounts: bankAccounts.map(bankAccount => {
+            const snapshot = client.getBalanceSnapshot?.(bankAccount.id);
+
+            return {
+                externalId: bankAccount.id,
+                title: bankAccount.title ?? bankAccount.iban ?? bankAccount.id,
+                currencyCode: bankAccount.currencyCode,
+                closingBalance: isDefined(snapshot) ? convertFromMicroUnits(snapshot.balance) : null
+            };
+        })
     };
 };

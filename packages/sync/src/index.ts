@@ -26,6 +26,7 @@ export { MONOBANK_RATE_LIMIT_MS } from './monobank/constant/monobank-rate-limit-
 export { PrivatbankFileClient } from './privatbank/client/privatbank-file.client';
 export { privatbankAccountMapper } from './privatbank/mapper/privatbank-account.mapper';
 export { privatbankTransactionMapper } from './privatbank/mapper/privatbank-transaction.mapper';
+export { isPrivatbankOwnCardTransferTitle } from './privatbank/utils/is-privatbank-own-card-transfer-title.util';
 export { parsePrivatbankXlsx } from './privatbank/utils/parse-privatbank-xlsx.util';
 export type { PrivatbankRowInterface } from './privatbank/interface/privatbank-row.interface';
 
@@ -87,6 +88,8 @@ export type { InitialSyncProgressInterface } from './core/interface/initial-sync
 export { SyncHistoryDepthEnum } from './core/enum/sync-history-depth.enum';
 export { ResyncService } from './core/service/resync.service';
 export { SyncOperationMetadataService } from './core/service/sync-operation-metadata.service';
+export { SyncBalanceReconciliationService } from './core/service/sync-balance-reconciliation.service';
+export { FileImportAccountService } from './core/service/file-import-account.service';
 export { SyncProviderRegistryService } from './core/service/sync-provider-registry.service';
 export { SyncRepairService } from './core/service/sync-repair.service';
 export { ExternalAccountService } from './core/service/external-account.service';

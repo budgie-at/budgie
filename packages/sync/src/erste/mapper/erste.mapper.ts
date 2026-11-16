@@ -1,6 +1,7 @@
+import { convertToMicroUnits } from '@budgie/contracts';
 import { getUnixTime } from 'date-fns/getUnixTime';
 
-import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { SyncAccountBalanceStateEnum } from '../../core/enum/sync-account-balance-state.enum';
 import { SyncAccountTypeEnum } from '../../core/enum/sync-account-type.enum';
@@ -64,7 +65,7 @@ export const mapErsteAccount = (account: ErsteAccountInfoInterface): SyncAccount
     provider: SyncProviderEnum.ERSTE,
     currencyCode: 'EUR',
     currencyCodeNumeric: CURRENCY_CODE_EUR,
-    balance: account.newBalance,
+    balance: account.newBalance ?? 0,
     balanceState: SyncAccountBalanceStateEnum.REPRESENTABLE,
     creditLimit: 0,
     type: SyncAccountTypeEnum.CHECKING,
@@ -97,5 +98,16 @@ export const mapErsteTransaction = (row: ErsteRowInterface, iban: string): SyncT
         hold: false,
         category: '',
         feeAmount: 0
+    };
+};
+
+export const mapErsteBalanceSnapshot = (account: ErsteAccountInfoInterface, rows: ErsteRowInterface[]) => {
+    if (!isDefined(account.newBalance) || !isNotEmptyArray(rows)) {
+        return null;
+    }
+
+    return {
+        at: new Date(Math.max(...rows.map(row => row.date.getTime()))),
+        balance: convertToMicroUnits(account.newBalance)
     };
 };

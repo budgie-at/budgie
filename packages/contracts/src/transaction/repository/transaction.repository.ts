@@ -3,6 +3,7 @@ import * as DateTime from 'effect/DateTime';
 import { SyncRecordTypeEnum } from '../../cloud-sync/enum/sync-record-type.enum';
 /* eslint-disable max-lines -- Transaction repository is the kitchen sink for tx queries + filter builders + bank-sync helpers */
 import { SQL, and, count, eq, gte, inArray, isNotNull, isNull, lte, ne, notExists, or, sql } from 'drizzle-orm';
+import { alias } from 'drizzle-orm/sqlite-core';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -31,6 +32,7 @@ import type { PotentialExpenseDuplicateInputInterface } from '../interface/poten
 
 export class TransactionRepository extends Context.Service<TransactionRepository>()('@budgie/contracts/TransactionRepository', {
     make: Effect.sync(() => {
+        const TransferCounterpartAccountTable = alias(AccountEntityTable, 'transfer_counterpart_account');
         const NOT_DELETED_ENTRY_RELATION_WHERE = { deletedAt: { isNull: true } } as const;
         const ENTRIES_WITH_MCC_CATEGORY_RELATIONS = {
             [TransactionAssociationEnum.ENTRIES]: {
@@ -353,6 +355,47 @@ export class TransactionRepository extends Context.Service<TransactionRepository
             findByIds: (ids: number[]) => findByIdsWithEntriesWhere(ids, transactionFilters.ledgerEntryFilter),
 
             findByIdsWithRefundConsolidationHistory: (ids: number[]) => findByIdsWithEntriesWhere(ids, NOT_DELETED_ENTRY_RELATION_WHERE),
+
+            findUnconsolidatedTransferLegs: (accountId: number, externalSource: ExternalSourceEnum) =>
+                Db.query(db =>
+                    db
+                        .select({
+                            transactionId: TransactionEntityTable.id,
+                            entryId: TransactionEntryEntityTable.id,
+                            entryExternalId: TransactionEntryEntityTable.externalId,
+                            operatedAt: TransactionEntityTable.operatedAt,
+                            entryType: TransactionEntryEntityTable.type,
+                            amount: TransactionEntryEntityTable.amount,
+                            counterpartExternalId: TransferCounterpartAccountTable.externalId,
+                            counterpartIban: TransferCounterpartAccountTable.iban
+                        })
+                        .from(TransactionEntityTable)
+                        .innerJoin(
+                            TransferCounterpartAccountTable,
+                            eq(
+                                TransferCounterpartAccountTable.id,
+                                sql`CASE WHEN ${TransactionEntityTable.fromAccountId} = ${accountId} THEN ${TransactionEntityTable.toAccountId} ELSE ${TransactionEntityTable.fromAccountId} END`
+                            )
+                        )
+                        .innerJoin(
+                            TransactionEntryEntityTable,
+                            and(
+                                eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id),
+                                transactionFilters.buildPrimaryLedgerEntryCondition(),
+                                eq(TransactionEntryEntityTable.accountId, accountId)
+                            )
+                        )
+                        .where(
+                            and(
+                                transactionFilters.buildVisibleTransactionCondition(),
+                                eq(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER),
+                                eq(TransactionEntityTable.externalSource, externalSource),
+                                isNotNull(TransactionEntityTable.externalId),
+                                isNull(TransactionEntityTable.consolidationType),
+                                or(eq(TransactionEntityTable.fromAccountId, accountId), eq(TransactionEntityTable.toAccountId, accountId))
+                            )
+                        )
+                ),
 
             findIdMapByExternalSource: Effect.fn('TransactionRepository.findIdMapByExternalSource')(function* (
                 externalSource: ExternalSourceEnum,

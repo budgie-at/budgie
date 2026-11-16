@@ -4,6 +4,7 @@ import type { SyncAccountInterface } from './sync-account.interface';
 import type { SyncError } from './sync-error.type';
 import type { SyncServiceDefinitionInterface } from './sync-service-definition.interface';
 import type { SyncTransactionInterface } from './sync-transaction.interface';
+import type { TransferLegEvidenceType } from './transfer-leg-evidence.type';
 import type { Db, DbError, MccCategoryLookupInterface } from '@budgie/contracts';
 import type * as Effect from 'effect/Effect';
 
@@ -14,4 +15,5 @@ export interface FileSyncServiceDefinitionInterface extends SyncServiceDefinitio
         bankAccounts: SyncAccountInterface[]
     ) => Effect.Effect<Map<string, MccCategoryLookupInterface | null>, DbError, Db>;
     readonly resolveMccCategoryLookupKey?: (transaction: SyncTransactionInterface) => string;
+    readonly hasTransferLegEvidence?: TransferLegEvidenceType;
 }
