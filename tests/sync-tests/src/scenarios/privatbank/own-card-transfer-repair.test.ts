@@ -760,13 +760,17 @@ describe('privatbank/own-card-transfer-repair', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it('requires a non-empty counterpart card ending in the own-card title evidence', () => {
-        const title = 'На мою картку *1234';
+    it.effect('requires a non-empty counterpart card ending in the own-card title evidence', () =>
+        Effect.sync(() => {
+            const title = 'На мою картку *1234';
 
-        expect(isPrivatbankOwnCardTransferTitle(title, { counterpartExternalId: '', counterpartIban: null })).toBe(false);
-        expect(isPrivatbankOwnCardTransferTitle(title, { counterpartExternalId: '', counterpartIban: 'UA00PRIVATBANK1234' })).toBe(true);
-        expect(isPrivatbankOwnCardTransferTitle(title, { counterpartExternalId: '4000 **** **** 9999', counterpartIban: null })).toBe(
-            false
-        );
-    });
+            expect(isPrivatbankOwnCardTransferTitle(title, { counterpartExternalId: '', counterpartIban: null })).toBe(false);
+            expect(isPrivatbankOwnCardTransferTitle(title, { counterpartExternalId: '', counterpartIban: 'UA00PRIVATBANK1234' })).toBe(
+                true
+            );
+            expect(isPrivatbankOwnCardTransferTitle(title, { counterpartExternalId: '4000 **** **** 9999', counterpartIban: null })).toBe(
+                false
+            );
+        })
+    );
 });

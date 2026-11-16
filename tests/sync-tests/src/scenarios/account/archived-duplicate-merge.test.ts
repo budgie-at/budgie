@@ -7,6 +7,7 @@ import {
     RecurringSeriesKindEnum,
     RecurringSeriesStatusEnum,
     RecurringSeriesUserStateEnum,
+    SyncEntityTable,
     SyncModeEnum,
     SyncRepository,
     AccountBalanceRepository,
@@ -24,6 +25,8 @@ import { SyncRepairService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import { and, eq, isNull, or } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
+
+import { isDefined } from '@rnw-community/shared';
 
 import { fetchAccountBalance, fetchCachedBalanceAmount, seed, testDb, TestLayer, testQueryService } from '../../harness';
 import {
@@ -79,6 +82,54 @@ const fetchSeriesAccountId = (seriesId: number) =>
         testDb.select().from(RecurringSeriesEntityTable).where(eq(RecurringSeriesEntityTable.id, seriesId)),
         rows => rows.at(0)?.accountId
     );
+
+const mergeReconciledDuplicate = Effect.fnUntraced(function* (liveReconciledBalance: number | null) {
+    const syncRepository = yield* SyncRepository;
+    const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
+    const { archivedCard, liveCard } = yield* seedArchivedDuplicate;
+    const reconciledAt = new Date(OPERATED_AT.getTime() + 86_400_000);
+    const setArchived = (deletedAt: Date | null) =>
+        testDb.update(AccountEntityTable).set({ deletedAt }).where(eq(AccountEntityTable.id, archivedCard.id));
+    const createSync = (accountId: number) =>
+        syncRepository.create({ accountId, provider: ExternalSourceEnum.MONOBANK, enabled: true, mode: SyncModeEnum.FORWARD });
+    const seedReconciledSync = (accountId: number, reconciledBalance: number) =>
+        Effect.gen(function* () {
+            const sync = yield* createSync(accountId);
+
+            yield* syncRepository.update(sync.id, { reconciledAt, reconciledBalance });
+            yield* accountBalanceIncrementalService.updateBalancesByAccountIds([accountId]);
+        });
+
+    yield* setArchived(null);
+    yield* seedReconciledSync(archivedCard.id, 5_000_000);
+    yield* setArchived(new Date());
+    if (isDefined(liveReconciledBalance)) {
+        yield* seedReconciledSync(liveCard.id, liveReconciledBalance);
+    } else {
+        const deletedSync = yield* createSync(liveCard.id);
+
+        yield* testDb.update(SyncEntityTable).set({ deletedAt: new Date() }).where(eq(SyncEntityTable.id, deletedSync.id));
+    }
+    yield* (yield* SyncRepairService).removeDuplicates();
+
+    const adjustments = yield* testDb
+        .select()
+        .from(TransactionEntityTable)
+        .where(
+            and(
+                eq(TransactionEntityTable.type, TransactionTypeEnum.ADJUSTMENT),
+                isNull(TransactionEntityTable.deletedAt),
+                or(eq(TransactionEntityTable.fromAccountId, archivedCard.id), eq(TransactionEntityTable.toAccountId, archivedCard.id))
+            )
+        );
+
+    return {
+        adjustmentIds: adjustments.map(adjustment => adjustment.id),
+        cachedBalance: yield* fetchCachedBalanceAmount(archivedCard.id),
+        ledgerBalance: (yield* (yield* AccountBalanceRepository).getLedgerBalances([archivedCard.id])).get(archivedCard.id),
+        survivingSync: yield* syncRepository.getByAccountId(archivedCard.id)
+    };
+});
 
 describe('account/archived-duplicate-merge', () => {
     it.effect('leaves an archived duplicate of another provider alone on a file import', () =>
@@ -177,51 +228,23 @@ describe('account/archived-duplicate-merge', () => {
 
     it.effect('keeps only the surviving reconciliation adjustment when both cards were reconciled', () =>
         Effect.gen(function* () {
-            const syncRepository = yield* SyncRepository;
-            const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
-            const { archivedCard, liveCard } = yield* seedArchivedDuplicate;
-            const reconciledAt = new Date(OPERATED_AT.getTime() + 86_400_000);
-            const setArchived = (deletedAt: Date | null) =>
-                testDb.update(AccountEntityTable).set({ deletedAt }).where(eq(AccountEntityTable.id, archivedCard.id));
-            const seedReconciledSync = (accountId: number, reconciledBalance: number) =>
-                Effect.gen(function* () {
-                    const sync = yield* syncRepository.create({
-                        accountId,
-                        provider: ExternalSourceEnum.MONOBANK,
-                        enabled: true,
-                        mode: SyncModeEnum.FORWARD
-                    });
+            const { adjustmentIds, cachedBalance, ledgerBalance, survivingSync } = yield* mergeReconciledDuplicate(7_000_000);
 
-                    yield* syncRepository.update(sync.id, { reconciledAt, reconciledBalance });
-                    yield* accountBalanceIncrementalService.updateBalancesByAccountIds([accountId]);
-                });
-
-            yield* setArchived(null);
-            yield* seedReconciledSync(archivedCard.id, 5_000_000);
-            yield* setArchived(new Date());
-            yield* seedReconciledSync(liveCard.id, 7_000_000);
-            yield* (yield* SyncRepairService).removeDuplicates();
-
-            const adjustments = yield* testDb
-                .select()
-                .from(TransactionEntityTable)
-                .where(
-                    and(
-                        eq(TransactionEntityTable.type, TransactionTypeEnum.ADJUSTMENT),
-                        isNull(TransactionEntityTable.deletedAt),
-                        or(
-                            eq(TransactionEntityTable.fromAccountId, archivedCard.id),
-                            eq(TransactionEntityTable.toAccountId, archivedCard.id)
-                        )
-                    )
-                );
-            const survivingSync = yield* syncRepository.getByAccountId(archivedCard.id);
-            const ledgerBalance = (yield* (yield* AccountBalanceRepository).getLedgerBalances([archivedCard.id])).get(archivedCard.id);
-
-            expect(adjustments.map(adjustment => adjustment.id)).toEqual([survivingSync?.reconciliationTransactionId]);
+            expect(adjustmentIds).toEqual([survivingSync?.reconciliationTransactionId]);
             expect(survivingSync?.reconciledBalance).toBe(7_000_000);
-            expect(yield* fetchCachedBalanceAmount(archivedCard.id)).toBe(7_000_000);
+            expect(cachedBalance).toBe(7_000_000);
             expect(ledgerBalance).toBe(7_000_000);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('keeps the archived card live reconciled sync when the duplicate only has a soft-deleted sync', () =>
+        Effect.gen(function* () {
+            const { adjustmentIds, cachedBalance, ledgerBalance, survivingSync } = yield* mergeReconciledDuplicate(null);
+
+            expect(adjustmentIds).toEqual([survivingSync?.reconciliationTransactionId]);
+            expect(survivingSync?.reconciledBalance).toBe(5_000_000);
+            expect(cachedBalance).toBe(5_000_000);
+            expect(ledgerBalance).toBe(5_000_000);
         }).pipe(Effect.provide(TestLayer))
     );
 

@@ -129,8 +129,8 @@ export class AccountReissueMergeService extends Context.Service<AccountReissueMe
             'UPDATE settings SET default_account_id = ? WHERE default_account_id = ?',
             'UPDATE accounts SET parent_id = ? WHERE parent_id = ?',
             'UPDATE account_external_ids SET account_id = ? WHERE account_id = ?',
-            'DELETE FROM bank_syncs WHERE account_id = ? AND EXISTS (SELECT 1 FROM bank_syncs WHERE account_id = ?)',
-            'UPDATE bank_syncs SET account_id = ? WHERE account_id = ?',
+            'DELETE FROM bank_syncs WHERE account_id = ? AND EXISTS (SELECT 1 FROM bank_syncs WHERE account_id = ? AND deleted_at IS NULL)',
+            'UPDATE bank_syncs SET account_id = ? WHERE account_id = ? AND deleted_at IS NULL',
             'DELETE FROM account_balances WHERE account_id IN (?, ?)'
         ];
 
