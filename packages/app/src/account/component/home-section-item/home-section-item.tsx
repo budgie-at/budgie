@@ -25,12 +25,7 @@ interface Props {
 }
 
 export const HomeSectionItem = ({ item, section, balancesByAccountId, holdingReturns }: Props) => {
-    if (
-        isInstitutionGroup(item) &&
-        item.accounts.length === 1 &&
-        item.accounts[0].type !== AccountTypeEnum.STOCKS &&
-        !item.isHoldingProvider
-    ) {
+    if (isInstitutionGroup(item) && item.accounts.length === 1 && item.accounts[0].type !== AccountTypeEnum.STOCKS) {
         const [account] = item.accounts;
         const bankName = item.label ?? account.title;
 
@@ -42,14 +37,7 @@ export const HomeSectionItem = ({ item, section, balancesByAccountId, holdingRet
     }
 
     if (isInstitutionGroup(item)) {
-        return (
-            <InstitutionRow
-                institution={item}
-                providerReturnPercent={holdingReturns.providerReturnByIntegrationId.get(item.integrationId)}
-                isReturnLoading={holdingReturns.loadingIntegrationIds.has(item.integrationId)}
-                isReturnSuppressed={holdingReturns.suppressed.integrationIds.has(item.integrationId)}
-            />
-        );
+        return <InstitutionRow institution={item} />;
     }
 
     if (isHomeHolding(item)) {
@@ -59,7 +47,7 @@ export const HomeSectionItem = ({ item, section, balancesByAccountId, holdingRet
                 holdingReturn={holdingReturns.holdingsBySectionType.get(section.type)?.get(item.instrument.id)}
                 todayChange={holdingReturns.todayByInstrumentId.get(item.instrument.id)}
                 isReturnLoading={holdingReturns.loadingInstrumentIds.has(item.instrument.id)}
-                isReturnSuppressed={holdingReturns.suppressed.instrumentIds.has(item.instrument.id)}
+                isReturnSuppressed={holdingReturns.suppressedInstrumentIds.has(item.instrument.id)}
             />
         ) : null;
     }

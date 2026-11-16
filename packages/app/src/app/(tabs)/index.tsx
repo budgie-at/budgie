@@ -30,7 +30,7 @@ const HOME_SCREEN_CHROME_CONFIG = {
 
 export default function HomePage() {
     const { activeAccountCount, balanceSummary, isLoading, sections } = useHomePageDataQuery();
-    const holdingReturns = useHomeHoldingReturnsQuery(sections, balanceSummary.balancesByAccountId);
+    const holdingReturns = useHomeHoldingReturnsQuery(sections);
     const { bottom } = useSafeAreaInsets();
     const tabBarBottomInset = Math.max(bottom, FLOATING_TAB_BAR_MIN_BOTTOM_INSET);
     const onboardingHref = useOnboardingRedirect();

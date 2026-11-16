@@ -5,8 +5,6 @@ import { cva } from 'class-variance-authority';
 import { router } from 'expo-router';
 import { Text, View } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
-
 import { BankLogo } from '../../../@generic/component/bank-logo/bank-logo';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { ScaledIcon } from '../../../@generic/component/scaled-icon/scaled-icon';
@@ -15,9 +13,8 @@ import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-access
 import { testID } from '../../../@generic/utils/test-id.util';
 import { InzhurInstitutionRowDetail } from '../../../inzhur/component/inzhur-institution-row-detail/inzhur-institution-row-detail';
 import { getInstitutionTitle } from '../../utils/get-institution-title.util';
-import { HoldingProviderCaption } from '../holding-provider-caption/holding-provider-caption';
 import { InstitutionRowDetail } from '../institution-row-detail/institution-row-detail';
-import { InstitutionRowTrailing } from '../institution-row-trailing/institution-row-trailing';
+import { InstitutionRowTotal } from '../institution-row-total/institution-row-total';
 
 import { InstitutionRowSelector } from './institution-row.selector';
 
@@ -25,17 +22,14 @@ import type { InstitutionGroupInterface } from '../../interface/institution-grou
 
 interface Props {
     readonly institution: InstitutionGroupInterface;
-    readonly providerReturnPercent: number | undefined;
-    readonly isReturnLoading: boolean;
-    readonly isReturnSuppressed: boolean;
 }
 
 const rowVariants = cva('min-h-[64px] flex-row gap-x-xl pr-xl pl-3xl active:bg-surface-fill', {
     variants: { isStacked: { true: 'items-start py-sm', false: 'items-center py-lg' } }
 });
 
-export const InstitutionRow = ({ institution, providerReturnPercent, isReturnLoading, isReturnSuppressed }: Props) => {
-    const { integrationId, provider, label, groupNumber, accounts, isHoldingProvider } = institution;
+export const InstitutionRow = ({ institution }: Props) => {
+    const { integrationId, provider, label, groupNumber, accounts, total } = institution;
 
     const { t } = useLingui();
     const isStacked = useIsAccessibilityTextSize();
@@ -45,23 +39,13 @@ export const InstitutionRow = ({ institution, providerReturnPercent, isReturnLoa
     const title = getInstitutionTitle(t, provider, label, groupNumber);
     const accountsCountLabel = t({ message: plural(accounts.length, { one: '# account', other: '# accounts' }) });
     const bankName = label ?? title;
-    const rowTestID = testID(InstitutionRowSelector.Row(provider === ExternalSourceEnum.MANUAL ? bankName : integrationId));
-    const isReturnPending = isHoldingProvider && isReturnLoading && !isDefined(providerReturnPercent);
-    const accessibilityState = { busy: isReturnPending };
-    const trailing = (
-        <InstitutionRowTrailing
-            institution={institution}
-            returnPercent={providerReturnPercent}
-            isReturnPending={isReturnPending}
-            isReturnSuppressed={isReturnSuppressed}
-        />
-    );
+    const rowTestID = testID(InstitutionRowSelector.Row(integrationId));
+    const trailing = <InstitutionRowTotal integrationId={integrationId} total={total} />;
 
     return (
         <HapticPressable
             pressedScale={1}
             accessibilityRole="button"
-            accessibilityState={accessibilityState}
             onPress={handlePress}
             className={rowVariants({ isStacked })}
             {...rowTestID}
@@ -82,9 +66,7 @@ export const InstitutionRow = ({ institution, providerReturnPercent, isReturnLoa
                 {provider === ExternalSourceEnum.INZHUR ? (
                     <InzhurInstitutionRowDetail />
                 ) : (
-                    <InstitutionRowDetail accounts={accounts}>
-                        {isHoldingProvider ? <HoldingProviderCaption institution={institution} /> : accountsCountLabel}
-                    </InstitutionRowDetail>
+                    <InstitutionRowDetail accounts={accounts}>{accountsCountLabel}</InstitutionRowDetail>
                 )}
                 {isStacked ? trailing : null}
             </View>

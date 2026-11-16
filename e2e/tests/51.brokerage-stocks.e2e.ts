@@ -50,9 +50,10 @@ test('51 manual brokerage with stocks', { tags: ['accounts'], platforms: PENDING
         await core.fillId(ctx, 'AccountForm.NameInput', 'E2E Broker');
         await core.tapId(ctx, 'AccountForm.NameInput.Label');
         await core.tapUntil(ctx, 'AccountForm.SubmitButton', () => core.expectId(ctx, 'HomePage.TotalBalance', 15_000));
-        await core.scrollTo(ctx, 'InstitutionRow.E2E Broker');
-        await core.expectSettledId(ctx, 'InstitutionRow.E2E Broker');
-        await core.tapId(ctx, 'InstitutionRow.E2E Broker');
+        await core.scrollTo(ctx, 'AccountCard.E2E Broker');
+        await core.expectSettledId(ctx, 'AccountCard.E2E Broker');
+        await core.tapUntil(ctx, 'AccountCard.E2E Broker', () => core.expectId(ctx, 'AccountDetails.Page', 5_000));
+        await core.tapId(ctx, 'AccountDetails.InstitutionLink');
         await core.expectId(ctx, 'Institution.Page', 10_000);
         await core.expectText(ctx, 'No positions yet');
     });
@@ -73,21 +74,18 @@ test('51 manual brokerage with stocks', { tags: ['accounts'], platforms: PENDING
         await core.scrollTo(ctx, 'Brokerage.GainLine', 'up');
         await expect(core.byId(screen, 'Brokerage.GainLine')).toHaveText(/▲ \$200/, { timeout: 10_000 });
         await core.tapId(ctx, 'PageHeader.BackButton');
+        await core.expectId(ctx, 'AccountDetails.Page', 10_000);
+        await core.tapId(ctx, 'PageHeader.BackButton');
         await core.expectId(ctx, 'HomePage.TotalBalance', 10_000);
         await core.scrollTo(ctx, 'HomeHolding.YAHOO:BGTX', 'up');
         await expect(core.byId(screen, 'HomeHolding.Value.YAHOO:BGTX')).toHaveText(/\$1,200/, { timeout: 10_000 });
         await expect(core.byId(screen, 'HomeSection.Return.STOCKS')).toHaveText(/▲ \$200 · 20\.00%/, { timeout: 10_000 });
         await core.expectNoId(ctx, 'HomeHolding.Return.YAHOO:BGTX');
         await expect(core.byId(screen, 'HomeHolding.Caption.YAHOO:BGTX')).toHaveText(/^10 BGTX/);
-        await core.scrollTo(ctx, 'InstitutionRow.E2E Broker');
-        await expect(core.byId(screen, 'InstitutionRow.E2E Broker')).toHaveText(/BGTX[\s\S]*\$1,200/, { timeout: 10_000 });
+        await core.expectNoId(ctx, 'AccountCard.E2E Broker');
     });
 
-    await core.phase('the brokerage row opens the broker, the holding row opens the stock and sells', async () => {
-        await core.tapId(ctx, 'InstitutionRow.E2E Broker');
-        await core.expectId(ctx, 'Institution.Page', 10_000);
-        await core.tapId(ctx, 'PageHeader.BackButton');
-        await core.expectId(ctx, 'HomePage.TotalBalance', 10_000);
+    await core.phase('the holding opens the stock, its account opens the broker and sells', async () => {
         await core.scrollToCentered(ctx, 'HomeHolding.YAHOO:BGTX');
         await core.tapUntil(ctx, 'HomeHolding.YAHOO:BGTX', () => core.expectId(ctx, 'CurrencyMarket.Header.BGTX', 10_000));
         await core.expectText(ctx, '10 BGTX', 10_000);
@@ -95,6 +93,11 @@ test('51 manual brokerage with stocks', { tags: ['accounts'], platforms: PENDING
         const heldIn = screen.getByRole('button', { name: /^E2E Broker/ }).first();
         await scrollTo(screen, heldIn);
         await heldIn.tap();
+        await core.expectId(ctx, 'AccountDetails.Page', 10_000);
+        await expect(core.byId(screen, 'AccountDetails.InstitutionLink')).toHaveText(/E2E Broker/, { timeout: 10_000 });
+        await core.tapId(ctx, 'AccountDetails.InstitutionLink');
+        await core.expectId(ctx, 'Institution.Page', 10_000);
+        await core.tapId(ctx, 'PageHeader.BackButton');
         await core.expectId(ctx, 'AccountDetails.Page', 10_000);
         await core.tapUntil(ctx, 'AccountDetails.ActionsButton', () => core.expectId(ctx, 'Brokerage.SellButton', 5_000));
         await core.tapId(ctx, 'Brokerage.SellButton');

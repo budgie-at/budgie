@@ -3,6 +3,7 @@ export const AccountDetailsSelector = {
     Balance: 'AccountDetails.Balance',
     ConvertedValue: 'AccountDetails.ConvertedValue',
     MarketLink: 'AccountDetails.MarketLink',
+    InstitutionLink: 'AccountDetails.InstitutionLink',
     ActionsButton: 'AccountDetails.ActionsButton',
     EditButton: 'AccountDetails.EditButton',
     RevertInstallmentPlanButton: 'AccountDetails.RevertInstallmentPlanButton',

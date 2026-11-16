@@ -16,10 +16,14 @@ test('53 home holdings hide empty assets', { tags: ['crypto'] }, async ({ budgie
         await b.expectNoId(ctx, 'HomeHolding.FDUSD');
     });
 
-    await b.phase('the exchange counts only the assets it shows', async () => {
-        await b.scrollToCentered(ctx, 'InstitutionRow.1');
-        await expect(b.byId(screen, 'InstitutionRow.1')).toHaveText(/2 assets/);
-        await b.tapId(ctx, 'InstitutionRow.1');
+    await b.phase('Home lists assets only and reaches the exchange through an asset', async () => {
+        await b.expectNoId(ctx, 'InstitutionRow.1');
+        await b.scrollToCentered(ctx, 'HomeHolding.ETH');
+        await b.tapUntil(ctx, 'HomeHolding.ETH', () => b.expectId(ctx, 'CurrencyMarket.Header.ETH', 10_000));
+        await b.scrollTo(ctx, 'CurrencyMarket.Account.ETH.7');
+        await b.tapUntil(ctx, 'CurrencyMarket.Account.ETH.7', () => b.expectId(ctx, 'AccountDetails.Page', 5_000));
+        await expect(b.byId(screen, 'AccountDetails.InstitutionLink')).toHaveText(/Binance/, { timeout: 10_000 });
+        await b.tapId(ctx, 'AccountDetails.InstitutionLink');
         await b.expectId(ctx, 'Institution.Page', 10_000);
         await b.expectId(ctx, 'AccountCard.E2E Binance DOT');
     });

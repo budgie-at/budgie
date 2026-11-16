@@ -1,6 +1,8 @@
-import { AccountAssociationEnum, AccountWithInstrumentEntityInterface } from '@budgie/contracts';
+import { AccountAssociationEnum, AccountTypeEnum, AccountWithInstrumentEntityInterface, ExternalSourceEnum } from '@budgie/contracts';
 import { View } from 'react-native';
 import Animated from 'react-native-reanimated';
+
+import { isDefined } from '@rnw-community/shared';
 
 import { CollapsibleChromeScrollFade } from '../../../@generic/component/collapsible-chrome-scroll-fade/collapsible-chrome-scroll-fade';
 import { MOTION_FADE_IN, MOTION_FADE_OUT, MOTION_LAYOUT } from '../../../@generic/constant/motion.constant';
@@ -15,6 +17,7 @@ import { isUntrackedOwnAccount } from '../../utils/is-untracked-own-account.util
 import { AccountDetailsAutomaticNotice } from '../account-details-automatic-notice/account-details-automatic-notice';
 import { AccountDetailsConvertedValue } from '../account-details-converted-value/account-details-converted-value';
 import { AccountDetailsHiddenPill } from '../account-details-hidden-pill/account-details-hidden-pill';
+import { AccountDetailsInstitutionLink } from '../account-details-institution-link/account-details-institution-link';
 import { AccountDetailsMarketLink } from '../account-details-market-link/account-details-market-link';
 import { AccountDetailsMonthChips } from '../account-details-month-chips/account-details-month-chips';
 import { AccountDetailsStatusLine } from '../account-details-status-line/account-details-status-line';
@@ -22,7 +25,16 @@ import { AccountDetailsStatusLine } from '../account-details-status-line/account
 interface Props {
     readonly account: Pick<
         AccountWithInstrumentEntityInterface,
-        'id' | 'iban' | 'isActive' | 'externalId' | 'title' | 'type' | 'instrumentId' | 'externalSource' | AccountAssociationEnum.INSTRUMENT
+        | 'id'
+        | 'iban'
+        | 'isActive'
+        | 'externalId'
+        | 'title'
+        | 'type'
+        | 'instrumentId'
+        | 'externalSource'
+        | 'integrationId'
+        | AccountAssociationEnum.INSTRUMENT
     >;
     readonly balance: number;
 }
@@ -31,6 +43,7 @@ const BALANCE_SLOT_STYLE = { height: ACCOUNT_DETAILS_HERO_BALANCE_HEIGHT };
 
 export const AccountDetailsHero = ({ account, balance }: Props) => {
     const isAutomatic = isUntrackedOwnAccount(account);
+    const isHoldingProviderAccount = account.externalSource === ExternalSourceEnum.MANUAL || account.type === AccountTypeEnum.CRYPTO_SYNC;
 
     return (
         <View className="items-center gap-y-lg pb-md">
@@ -48,6 +61,10 @@ export const AccountDetailsHero = ({ account, balance }: Props) => {
 
                     <AccountDetailsMarketLink instrument={account.instrument} />
                 </>
+            ) : null}
+
+            {isDefined(account.integrationId) && isHoldingProviderAccount ? (
+                <AccountDetailsInstitutionLink integrationId={account.integrationId} />
             ) : null}
 
             {isInzhurFundAccount(account) ? (
