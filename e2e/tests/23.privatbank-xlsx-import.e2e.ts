@@ -21,7 +21,7 @@ test('23 privatbank xlsx import', { tags: ['import'], platforms: ['ios'] }, asyn
         // A re-import leaves the balance as it was, so only its result toast tells that the import has finished.
         await b.expectText(ctx, /already imported/, 20_000);
         await b.expectNoId(ctx, b.TOAST, 8_000);
-        await b.expectId(ctx, 'AccountCard.Balance.Privatbank_1234.547', 5_000);
+        await b.expectId(ctx, 'AccountCard.Balance.Privatbank_1234.1_747', 5_000);
         await b.tapId(ctx, CARD);
     };
 
@@ -41,7 +41,7 @@ test('23 privatbank xlsx import', { tags: ['import'], platforms: ['ios'] }, asyn
             await b.expectText(ctx, 'Deselect all', 3_000);
         });
         await b.scrollTo(ctx, CARD);
-        await b.expectId(ctx, 'AccountCard.Balance.Privatbank_1234.747');
+        await b.expectId(ctx, 'AccountCard.Balance.Privatbank_1234.1_747');
         await b.tapId(ctx, CARD);
         await b.expectId(ctx, 'AccountDetails.ActionsButton', 10_000);
         await b.expectId(ctx, 'TransactionCard.Label.E2E_Privatbank_Market', 20_000);
@@ -73,7 +73,7 @@ test('23 privatbank xlsx import', { tags: ['import'], platforms: ['ios'] }, asyn
         await b.expectId(ctx, 'AccountDetails.ActionsButton', 10_000);
         await b.tapId(ctx, 'PageHeader.BackButton');
         await b.expectId(ctx, CARD, 10_000);
-        await b.expectId(ctx, 'AccountCard.Balance.Privatbank_1234.547');
+        await b.expectId(ctx, 'AccountCard.Balance.Privatbank_1234.1_747');
         await quickImport();
         await b.scrollTo(ctx, 'TransactionCard.Label.E2E_Privatbank_Coffee');
         await b.tapId(ctx, 'TransactionCard.Label.E2E_Privatbank_Coffee');
@@ -88,6 +88,6 @@ test('23 privatbank xlsx import', { tags: ['import'], platforms: ['ios'] }, asyn
         await a.updateAccountBalance(ctx, '600');
         await b.expectId(ctx, 'AccountCard.Balance.Privatbank_1234.600', 15_000);
         await a.openAccountDetails(ctx, NAME);
-        await a.assertAdjustmentTransaction(ctx, '53');
+        await a.assertAdjustmentTransaction(ctx, '1147');
     });
 });

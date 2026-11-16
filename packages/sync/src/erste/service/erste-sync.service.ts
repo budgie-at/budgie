@@ -16,7 +16,7 @@ import { fileSyncDependenciesLayer } from '../../core/layer/file-sync-dependenci
 import { SyncFileReader } from '../../core/port/sync-file-reader.port';
 import { generateDefaultSyncAccountTitle } from '../../core/utils/generate-default-sync-account-title.util';
 import { makeFileSyncService } from '../../core/utils/make-file-sync-service.util';
-import { mapErsteAccount, mapErsteTransaction } from '../mapper/erste.mapper';
+import { mapErsteAccount, mapErsteBalanceSnapshot, mapErsteTransaction } from '../mapper/erste.mapper';
 import { parseErste } from '../parser/erste.parser';
 
 export class ErsteSyncService extends Context.Service<ErsteSyncService>()('@budgie/sync/ErsteSyncService', {
@@ -40,7 +40,8 @@ export class ErsteSyncService extends Context.Service<ErsteSyncService>()('@budg
                 return {
                     client: {
                         getAccounts: () => bankAccounts,
-                        getTransactions: () => transactions.map(row => mapErsteTransaction(row, account.iban))
+                        getTransactions: () => transactions.map(row => mapErsteTransaction(row, account.iban)),
+                        getBalanceSnapshot: () => mapErsteBalanceSnapshot(account, transactions)
                     },
                     bankAccounts
                 };

@@ -1,6 +1,7 @@
 import { AccountTypeEnum, ExternalSourceEnum, TransactionEntityTable } from '@budgie/contracts';
 import {
     generateDefaultSyncAccountTitle,
+    isPrivatbankOwnCardTransferTitle,
     SyncAccountBalanceStateEnum,
     SyncAccountTypeEnum,
     SyncProviderEnum,
@@ -73,7 +74,10 @@ export const makeOwnCardStatementService = (client: FileBasedSyncClientInterface
             ExternalSourceEnum.PRIVATBANK,
             client,
             new Map([['Перекази', { id: transferMcc.id, defaultCategoryId: null }]]),
-            { generateAccountTitle: account => generateDefaultSyncAccountTitle('Privatbank', account) }
+            {
+                generateAccountTitle: account => generateDefaultSyncAccountTitle('Privatbank', account),
+                hasTransferLegEvidence: isPrivatbankOwnCardTransferTitle
+            }
         );
     });
 
