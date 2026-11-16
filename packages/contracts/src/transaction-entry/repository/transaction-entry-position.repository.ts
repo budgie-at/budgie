@@ -85,7 +85,10 @@ export class TransactionEntryPositionRepository extends Context.Service<Transact
                             THEN ${TransactionEntryEntityTable.baseAmount}
                             ELSE NULL
                         END
-                    `
+                    `,
+                                isEstimated: sql<boolean>`${TransactionEntryEntityTable.baseExchangeRate} IS NULL
+                                    AND ${TransactionEntryEntityTable.baseInstrumentId} = ${baseInstrumentId}
+                                    AND ${TransactionEntityTable.type} != ${TransactionTypeEnum.ADJUSTMENT}`.mapWith(Boolean)
                             })
                             .from(TransactionEntryEntityTable)
                             .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))

@@ -9,7 +9,13 @@ const sell = (amount: number) => ({ type: TransactionEntryTypeEnum.CREDIT, amoun
 
 describe('calculateInstrumentPosition', () => {
     it('returns an empty position without entries', () => {
-        expect(calculateInstrumentPosition([])).toStrictEqual({ realizedProfitLoss: 0, amount: 0, costBasis: null, averageCost: null });
+        expect(calculateInstrumentPosition([])).toStrictEqual({
+            realizedProfitLoss: 0,
+            amount: 0,
+            costBasis: null,
+            averageCost: null,
+            hasEstimatedCostBasis: false
+        });
     });
 
     it('sums the cost of every open lot', () => {
@@ -17,14 +23,21 @@ describe('calculateInstrumentPosition', () => {
             realizedProfitLoss: 0,
             amount: 3,
             costBasis: 180,
-            averageCost: 60
+            averageCost: 60,
+            hasEstimatedCostBasis: false
         });
     });
 
     it('consumes the oldest lots first and prorates a partially sold lot', () => {
         const entries = [buy(2 * PRECISION, 100 * PRECISION), buy(4 * PRECISION, 400 * PRECISION), sell(3 * PRECISION)];
 
-        expect(calculateInstrumentPosition(entries)).toStrictEqual({ realizedProfitLoss: 0, amount: 3, costBasis: 300, averageCost: 100 });
+        expect(calculateInstrumentPosition(entries)).toStrictEqual({
+            realizedProfitLoss: 0,
+            amount: 3,
+            costBasis: 300,
+            averageCost: 100,
+            hasEstimatedCostBasis: false
+        });
     });
 
     it('removes a lot sold exactly and ignores sells beyond the open amount', () => {
@@ -32,11 +45,12 @@ describe('calculateInstrumentPosition', () => {
             realizedProfitLoss: 0,
             amount: 0,
             costBasis: null,
-            averageCost: null
+            averageCost: null,
+            hasEstimatedCostBasis: false
         });
         expect(
             calculateInstrumentPosition([buy(PRECISION, 50 * PRECISION), sell(5 * PRECISION), buy(PRECISION, 70 * PRECISION)])
-        ).toStrictEqual({ realizedProfitLoss: 0, amount: 1, costBasis: 70, averageCost: 70 });
+        ).toStrictEqual({ realizedProfitLoss: 0, amount: 1, costBasis: 70, averageCost: 70, hasEstimatedCostBasis: false });
     });
 
     it('costs only the open lots with a known purchase price', () => {
@@ -44,27 +58,49 @@ describe('calculateInstrumentPosition', () => {
             realizedProfitLoss: 0,
             amount: 1,
             costBasis: 50,
-            averageCost: 50
+            averageCost: 50,
+            hasEstimatedCostBasis: false
         });
         expect(calculateInstrumentPosition([buy(PRECISION, null)])).toStrictEqual({
             realizedProfitLoss: 0,
             amount: 0,
             costBasis: null,
-            averageCost: null
+            averageCost: null,
+            hasEstimatedCostBasis: false
         });
         expect(calculateInstrumentPosition([buy(PRECISION, null), buy(PRECISION, 50 * PRECISION), sell(PRECISION)])).toStrictEqual({
             realizedProfitLoss: 0,
             amount: 1,
             costBasis: 50,
-            averageCost: 50
+            averageCost: 50,
+            hasEstimatedCostBasis: false
         });
     });
 
     it('skips empty lots while consuming and does not mutate earlier results', () => {
         const entries = [buy(0, 0), buy(2 * PRECISION, 80 * PRECISION), sell(PRECISION)];
 
-        expect(calculateInstrumentPosition(entries)).toStrictEqual({ realizedProfitLoss: 0, amount: 1, costBasis: 40, averageCost: 40 });
-        expect(calculateInstrumentPosition(entries)).toStrictEqual({ realizedProfitLoss: 0, amount: 1, costBasis: 40, averageCost: 40 });
+        expect(calculateInstrumentPosition(entries)).toStrictEqual({
+            realizedProfitLoss: 0,
+            amount: 1,
+            costBasis: 40,
+            averageCost: 40,
+            hasEstimatedCostBasis: false
+        });
+        expect(calculateInstrumentPosition(entries)).toStrictEqual({
+            realizedProfitLoss: 0,
+            amount: 1,
+            costBasis: 40,
+            averageCost: 40,
+            hasEstimatedCostBasis: false
+        });
+    });
+
+    it('flags a cost basis that includes an estimated lot until that lot is sold', () => {
+        const estimated = { ...buy(PRECISION, 50 * PRECISION), isEstimated: true };
+
+        expect(calculateInstrumentPosition([estimated, buy(PRECISION, 70 * PRECISION)]).hasEstimatedCostBasis).toBe(true);
+        expect(calculateInstrumentPosition([estimated, buy(PRECISION, 70 * PRECISION), sell(PRECISION)]).hasEstimatedCostBasis).toBe(false);
     });
 
     it('reports the open amount after a partial sell', () => {
@@ -76,7 +112,8 @@ describe('calculateInstrumentPosition', () => {
             realizedProfitLoss: 0,
             amount: 0,
             costBasis: null,
-            averageCost: null
+            averageCost: null,
+            hasEstimatedCostBasis: false
         });
     });
 });
