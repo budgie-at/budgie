@@ -109,6 +109,7 @@ const buildHomePageSections = (
             kind: HomeSectionKindEnum.ACCOUNT_TYPE as const,
             type,
             total,
+            hiddenHoldings: [],
             data: [
                 ...buildHomeHoldings(holdingAccounts, balancesByAccountId),
                 ...holdingProviders,

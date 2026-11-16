@@ -3,16 +3,14 @@ import { Plural } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { getSinglePositionName } from '../../utils/get-single-position-name.util';
-
 import type { InstitutionGroupInterface } from '../../interface/institution-group.interface';
 
 interface Props {
-    readonly institution: Pick<InstitutionGroupInterface, 'provider' | 'accounts' | 'positionCount'>;
+    readonly institution: Pick<InstitutionGroupInterface, 'provider' | 'positionCount' | 'positionName'>;
 }
 
 export const HoldingProviderCaption = ({ institution }: Props) => {
-    const positionName = getSinglePositionName(institution.accounts);
+    const { positionName } = institution;
     const positionsCount = institution.positionCount;
 
     if (isDefined(positionName)) {

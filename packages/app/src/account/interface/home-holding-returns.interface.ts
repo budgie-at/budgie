@@ -9,4 +9,6 @@ export interface HomeHoldingReturnsInterface {
     readonly providerReturnByIntegrationId: ReadonlyMap<number, number>;
     readonly todayBySectionType: ReadonlyMap<AccountTypeEnum, Pick<PortfolioReturnInterface, 'gain' | 'percent'>>;
     readonly isLoading: boolean;
+    readonly loadingInstrumentIds: ReadonlySet<number>;
+    readonly loadingIntegrationIds: ReadonlySet<number>;
 }

@@ -2,7 +2,7 @@ import { isAccountTypeSection } from '../type-guard/is-account-type-section.type
 import { isHomeHolding } from '../type-guard/is-home-holding.type-guard';
 import { isInstitutionGroup } from '../type-guard/is-institution-group.type-guard';
 
-import { countHoldingPositions } from './count-holding-positions.util';
+import { summarizeHoldingPositions } from './summarize-holding-positions.util';
 
 import type { HomeHoldingInterface } from '../interface/home-holding.interface';
 import type { HomeSectionInterface } from '../interface/home-section.interface';
@@ -16,13 +16,15 @@ export const hideEmptyHomeHoldings = (section: HomeSectionInterface, decimalPlac
     }
 
     const data = section.data.filter(item => !isHomeHolding(item) || isShownHomeHolding(item, decimalPlaces));
+    const hiddenHoldings = section.data.filter(isHomeHolding).filter(holding => !isShownHomeHolding(holding, decimalPlaces));
     const shownInstrumentIds = new Set(data.filter(isHomeHolding).map(holding => holding.instrument.id));
 
     return {
         ...section,
+        hiddenHoldings,
         data: data.map(item =>
             isInstitutionGroup(item) && item.isHoldingProvider
-                ? { ...item, positionCount: countHoldingPositions(item.accounts, instrumentId => shownInstrumentIds.has(instrumentId)) }
+                ? { ...item, ...summarizeHoldingPositions(item.accounts, instrumentId => shownInstrumentIds.has(instrumentId)) }
                 : item
         )
     };

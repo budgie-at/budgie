@@ -4,11 +4,11 @@ import { isDefined } from '@rnw-community/shared';
 
 import { groupBy } from '../../@generic/utils/group-by.util';
 
-import { countHoldingPositions } from './count-holding-positions.util';
 import { getIntegrationGroupNumber } from './get-integration-group-number.util';
 import { isFiatAccount } from './is-fiat-account.util';
 import { resolveBankProviderGroup } from './resolve-bank-provider-group.util';
 import { sumConvertedBalances } from './sum-converted-balances.util';
+import { summarizeHoldingPositions } from './summarize-holding-positions.util';
 
 import type { HomeAccountBalanceInterface } from '../interface/home-account-balance.interface';
 import type { InstitutionGroupInterface } from '../interface/institution-group.interface';
@@ -35,7 +35,7 @@ export const buildInstitutionGroups = (
         groupNumber: getIntegrationGroupNumber(integrations, integrations[index]),
         total: sumConvertedBalances(entry.accounts, balancesByAccountId),
         cash: sumConvertedBalances(entry.accounts.filter(isFiatAccount), balancesByAccountId),
-        positionCount: countHoldingPositions(entry.accounts, () => true),
+        ...summarizeHoldingPositions(entry.accounts, () => true),
         isHoldingProvider:
             entry.provider === ExternalSourceEnum.MANUAL || entry.accounts.every(account => account.type === AccountTypeEnum.CRYPTO_SYNC)
     }));

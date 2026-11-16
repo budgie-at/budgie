@@ -9,5 +9,6 @@ export interface InstitutionGroupInterface {
     readonly total: number;
     readonly cash: number;
     readonly positionCount: number;
+    readonly positionName: string | null;
     readonly isHoldingProvider: boolean;
 }
