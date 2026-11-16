@@ -6,7 +6,6 @@ import { isDefined } from '@rnw-community/shared';
 
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { StickySectionHeaderBackdrop } from '../../../@generic/component/sticky-section-header-backdrop/sticky-section-header-backdrop';
-import { FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/footnote-max-font-size-multiplier.constant';
 import { TITLE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/title-max-font-size-multiplier.constant';
 import { cn } from '../../../@generic/utils/cn.util';
 import { toTrueMinus } from '../../../@generic/utils/to-true-minus.util';
@@ -45,8 +44,8 @@ export const AccountSectionHeaderFrame = ({ title, total, totalClassName, leadin
                 </View>
                 {isDefined(formattedTotal) ? (
                     <ProtectedText
-                        maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER}
-                        className={cn('text-[15px] font-medium text-secondary-foreground tabular-nums', totalClassName)}
+                        maxFontSizeMultiplier={TITLE_MAX_FONT_SIZE_MULTIPLIER}
+                        className={cn('text-[17px] font-semibold text-primary tabular-nums', totalClassName)}
                     >
                         {formattedTotal}
                     </ProtectedText>

@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.189.1](https://github.com/budgie-at/budgie/compare/v6.189.0...v6.189.1) (2026-11-15)
+
+### Bug Fixes
+
+* **app:** edit a security buy whose cash leg is missing ([#2238](https://github.com/budgie-at/budgie/issues/2238)) ([d182c2c](https://github.com/budgie-at/budgie/commit/d182c2cd7c0dc2b2d0846e634685dc51eea9cde9))
+
+
 # [6.187.0](https://github.com/budgie-at/budgie/compare/v6.186.0...v6.187.0) (2026-11-15)
 
 ### Features

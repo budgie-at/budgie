@@ -7,15 +7,28 @@ import {
     CategorySourceEnum,
     Db,
     ExternalSourceEnum,
+    InstrumentTypeEnum,
     TransactionEntryKindEnum,
     TransactionEntryTypeEnum,
+    TransactionRepository,
+    TransactionTagsRepository,
     TransactionTypeEnum,
     UserIconNameEnum,
     convertToMicroUnits,
     generateSyncId
 } from '@budgie/contracts';
-import { AccountService, BalanceAdjustmentService, TransferCreationService } from '@budgie/ledger';
+import {
+    AccountArchiveService,
+    AccountBalanceIncrementalService,
+    AccountService,
+    BalanceAdjustmentService,
+    TransactionService,
+    TransferCreationService
+} from '@budgie/ledger';
 import { EntryBaseValuationService, YahooMarketDataService } from '@budgie/market';
+import { max } from 'date-fns/max';
+import { min } from 'date-fns/min';
+import { subSeconds } from 'date-fns/subSeconds';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -23,6 +36,7 @@ import * as Layer from 'effect/Layer';
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { DEFAULT_DECIMAL_PLACES } from '../../i18n/constant/default-decimal-places.constant';
+import { isSecurityInstrumentType } from '../../instrument/utils/is-security-instrument-type.util';
 import { HistoricalMarketDataDrainerService } from '../../market-data/service/historical-market-data-drainer.service';
 import { roundHalfExpand } from '../../market-data/utils/round-half-expand.util';
 import { InsufficientSecurityHoldingError } from '../error/insufficient-security-holding.error';
@@ -32,6 +46,7 @@ import type { SecurityTradeFormValues } from '../constant/security-trade-form-sc
 import type {
     AccountWithInstrumentEntityInterface,
     LiabilityAccountCreateInputInterface,
+    TransactionCreateInputInterface,
     TransactionEntryCreateInputInterface
 } from '@budgie/contracts';
 import type { YahooListingInterface } from '@budgie/market';
@@ -41,9 +56,14 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
         const accountRepository = yield* AccountRepository;
         const accountBalanceRepository = yield* AccountBalanceRepository;
         const accountService = yield* AccountService;
+        const accountArchiveService = yield* AccountArchiveService;
         const balanceAdjustmentService = yield* BalanceAdjustmentService;
+        const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
         const bankIntegrationRepository = yield* BankIntegrationRepository;
         const transferCreationService = yield* TransferCreationService;
+        const transactionService = yield* TransactionService;
+        const transactionRepository = yield* TransactionRepository;
+        const transactionTagsRepository = yield* TransactionTagsRepository;
         const entryBaseValuationService = yield* EntryBaseValuationService;
         const yahooMarketDataService = yield* YahooMarketDataService;
         const historicalMarketDataDrainerService = yield* HistoricalMarketDataDrainerService;
@@ -60,29 +80,50 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
             toIban: null
         });
 
+        const findIntegrationAccounts = (integrationId: number | null) =>
+            isDefined(integrationId) ? accountRepository.findByIntegrationId(integrationId) : Effect.succeed([]);
+
         const findCashAccount = Effect.fnUntraced(function* ({ integrationId, instrument }: AccountWithInstrumentEntityInterface) {
-            const accounts = isDefined(integrationId) ? yield* accountRepository.findByIntegrationId(integrationId) : [];
+            const accounts = yield* findIntegrationAccounts(integrationId);
             const cashAccount = findBrokerageCashAccount(accounts, instrument.quoteInstrumentId);
 
             return cashAccount ?? (yield* Effect.die(new Error('Brokerage cash account not found')));
         });
 
-        const recordTrade = Effect.fnUntraced(function* (
-            security: AccountWithInstrumentEntityInterface,
-            trade: SecurityTradeFormValues,
-            fundingTitle: string | null
-        ) {
-            const isSell = !isDefined(fundingTitle);
-            const cash = yield* findCashAccount(security);
-            const cashAmount = roundHalfExpand(trade.quantity * trade.price, DEFAULT_DECIMAL_PLACES);
-            const fee = roundHalfExpand(trade.fee, DEFAULT_DECIMAL_PLACES);
-            const minimumCashBalance = isSell ? 0 : yield* accountBalanceRepository.getMinimumLedgerBalanceFrom(cash.id, trade.operatedAt);
-            const shortfall = isSell ? 0 : convertToMicroUnits(cashAmount + fee) - Math.max(minimumCashBalance, 0);
+        const findOrRestoreAccount = Effect.fnUntraced(function* (accountId: number) {
+            const active = yield* accountRepository.findById(accountId);
 
-            if (isPositiveNumber(shortfall)) {
-                yield* balanceAdjustmentService.create(cash.id, shortfall, trade.operatedAt, fundingTitle ?? '');
+            if (isDefined(active)) {
+                return active;
             }
 
+            yield* accountArchiveService.restoreById(accountId);
+
+            return yield* accountRepository.findById(accountId);
+        });
+
+        const findTradeCashAccount = Effect.fnUntraced(function* (
+            security: AccountWithInstrumentEntityInterface,
+            storedCashId: number,
+            cashInstrumentId: number | null
+        ) {
+            const stored = yield* findOrRestoreAccount(storedCashId);
+            const replacement = (yield* findIntegrationAccounts(security.integrationId)).find(
+                account => account.instrumentId === cashInstrumentId && account.instrument.type === InstrumentTypeEnum.FIAT
+            );
+
+            return stored ?? replacement ?? (yield* Effect.die(new Error('Brokerage cash account not found')));
+        });
+
+        const buildTradeInput = Effect.fnUntraced(function* (
+            security: AccountWithInstrumentEntityInterface,
+            cash: AccountWithInstrumentEntityInterface,
+            trade: SecurityTradeFormValues,
+            isSell: boolean
+        ) {
+            const fee = roundHalfExpand(trade.fee, DEFAULT_DECIMAL_PLACES);
+            const cashTotal = isPositiveNumber(trade.total) ? trade.total + (isSell ? fee : -fee) : trade.quantity * trade.price;
+            const cashAmount = roundHalfExpand(cashTotal, DEFAULT_DECIMAL_PLACES);
             const quantityMicroUnits = convertToMicroUnits(trade.quantity);
             const { baseInstrumentId, baseAmount } = yield* entryBaseValuationService.valueMicroUnitEntry({
                 accountId: cash.id,
@@ -106,24 +147,23 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
                   ]
                 : [];
             const [fromEntry, toEntry] = isSell ? [securityEntry, cashEntry] : [cashEntry, securityEntry];
+            const input: TransactionCreateInputInterface = {
+                amount: fromEntry.amount,
+                title: security.instrument.symbol,
+                comment: '',
+                type: TransactionTypeEnum.TRANSFER,
+                exchangeRate: 1,
+                operatedAt: trade.operatedAt,
+                externalId: null,
+                updatedBy: null,
+                externalSource: ExternalSourceEnum.MANUAL,
+                fromAccountId: fromEntry.accountId,
+                toAccountId: toEntry.accountId,
+                tagIds: [],
+                entries: [fromEntry, toEntry, ...feeEntries]
+            };
 
-            yield* transferCreationService.createSyncedTransfers([
-                {
-                    amount: fromEntry.amount,
-                    title: security.instrument.symbol,
-                    comment: '',
-                    type: TransactionTypeEnum.TRANSFER,
-                    exchangeRate: 1,
-                    operatedAt: trade.operatedAt,
-                    externalId: null,
-                    updatedBy: null,
-                    externalSource: ExternalSourceEnum.MANUAL,
-                    fromAccountId: fromEntry.accountId,
-                    toAccountId: toEntry.accountId,
-                    tagIds: [],
-                    entries: [fromEntry, toEntry, ...feeEntries]
-                }
-            ]);
+            return input;
         });
 
         const findSecurityAccount = Effect.fnUntraced(function* (accountId: number) {
@@ -176,8 +216,19 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
                             }));
 
                         const security = yield* findSecurityAccount(account.id);
+                        const cash = yield* findCashAccount(security);
+                        const input = yield* buildTradeInput(security, cash, trade, false);
+                        const cashOutflow = input.entries
+                            .filter(entry => entry.accountId === cash.id)
+                            .reduce((total, entry) => total + entry.amount, 0);
+                        const minimumCashBalance = yield* accountBalanceRepository.getMinimumLedgerBalanceFrom(cash.id, trade.operatedAt);
+                        const shortfall = convertToMicroUnits(cashOutflow) - Math.max(minimumCashBalance, 0);
 
-                        yield* recordTrade(security, trade, fundingTitle);
+                        if (isPositiveNumber(shortfall)) {
+                            yield* balanceAdjustmentService.create(cash.id, shortfall, trade.operatedAt, fundingTitle);
+                        }
+
+                        yield* transferCreationService.createSyncedTransfers([input]);
 
                         return account.id;
                     })
@@ -195,14 +246,76 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
             sell: Effect.fn('BrokerageService.sell')(
                 function* (accountId: number, trade: SecurityTradeFormValues) {
                     const security = yield* findSecurityAccount(accountId);
-
                     const holding = yield* accountBalanceRepository.getMinimumLedgerBalanceFrom(accountId, trade.operatedAt);
 
                     if (convertToMicroUnits(trade.quantity) > holding) {
                         return yield* InsufficientSecurityHoldingError.make();
                     }
 
-                    yield* recordTrade(security, trade, null);
+                    const cash = yield* findCashAccount(security);
+                    const input = yield* buildTradeInput(security, cash, trade, true);
+
+                    yield* transferCreationService.createSyncedTransfers([input]);
+                },
+                effect => Db.transaction(effect)
+            ),
+            update: Effect.fn('BrokerageService.update')(
+                function* (transactionId: number, trade: SecurityTradeFormValues, fundingTitle: string, withdrawalTitle: string) {
+                    const transaction = yield* transactionRepository.getByIdWithEntries(transactionId);
+
+                    if (!isDefined(transaction)) {
+                        return yield* Effect.die(new Error('Trade transaction not found'));
+                    }
+
+                    const from = yield* accountRepository.findByIdIncludingArchived(transaction.fromAccountId ?? 0);
+                    const isSell = isDefined(from) && isSecurityInstrumentType(from.instrument.type);
+                    const [storedSecurityId, storedCashId] = isSell
+                        ? [transaction.fromAccountId, transaction.toAccountId]
+                        : [transaction.toAccountId, transaction.fromAccountId];
+                    const security = yield* findOrRestoreAccount(storedSecurityId ?? 0);
+
+                    if (!isDefined(security) || !isSecurityInstrumentType(security.instrument.type)) {
+                        return yield* Effect.die(new Error('Security account not found'));
+                    }
+
+                    const cashInstrumentId = transaction.entries.find(entry => entry.accountId === security.id)?.quotedInstrumentId ?? null;
+                    const cash = yield* findTradeCashAccount(security, storedCashId ?? 0, cashInstrumentId);
+                    const input = yield* buildTradeInput(security, cash, trade, isSell);
+                    const tags = yield* transactionTagsRepository.findByTransactionId(transactionId);
+                    const operatedFrom = min([transaction.operatedAt, trade.operatedAt]);
+                    const operatedUntil = max([transaction.operatedAt, trade.operatedAt]);
+                    const securityBefore = yield* accountBalanceRepository.getMinimumLedgerBalanceFrom(security.id, operatedFrom);
+                    const cashBefore = yield* accountBalanceRepository.getMinimumLedgerBalanceFrom(cash.id, operatedFrom);
+                    const lateCashBefore = yield* accountBalanceRepository.getMinimumLedgerBalanceFrom(cash.id, operatedUntil);
+
+                    yield* transactionService.updateById(transactionId, {
+                        ...input,
+                        title: transaction.title,
+                        comment: transaction.comment,
+                        tagIds: tags.map(tag => tag.tagId)
+                    });
+
+                    const securityAfter = yield* accountBalanceRepository.getMinimumLedgerBalanceFrom(security.id, operatedFrom);
+
+                    if (securityAfter < Math.min(securityBefore, 0)) {
+                        return yield* InsufficientSecurityHoldingError.make();
+                    }
+
+                    const cashAfter = yield* accountBalanceRepository.getMinimumLedgerBalanceFrom(cash.id, operatedFrom);
+                    const lateCashAfter = yield* accountBalanceRepository.getMinimumLedgerBalanceFrom(cash.id, operatedUntil);
+                    const shortfall = Math.min(cashBefore, 0) - cashAfter;
+                    const lateShortfall = Math.max(Math.min(lateCashBefore, 0) - lateCashAfter, 0);
+                    const isBrokerageCash = isDefined(security.integrationId) && cash.integrationId === security.integrationId;
+
+                    if (isBrokerageCash && isPositiveNumber(shortfall)) {
+                        yield* balanceAdjustmentService.create(cash.id, shortfall, subSeconds(operatedFrom, 1), fundingTitle);
+
+                        if (lateShortfall < shortfall) {
+                            yield* balanceAdjustmentService.create(cash.id, lateShortfall - shortfall, operatedUntil, withdrawalTitle);
+                        }
+
+                        yield* accountBalanceIncrementalService.updateBalancesByAccountIds([cash.id]);
+                    }
                 },
                 effect => Db.transaction(effect)
             )
@@ -214,9 +327,14 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
             AccountBalanceRepository.layer,
             AccountRepository.layer,
             AccountService.layer,
+            AccountArchiveService.layer,
             BalanceAdjustmentService.layer,
+            AccountBalanceIncrementalService.layer,
             BankIntegrationRepository.layer,
             TransferCreationService.layer,
+            TransactionService.layer,
+            TransactionRepository.layer,
+            TransactionTagsRepository.layer,
             EntryBaseValuationService.layer,
             YahooMarketDataService.layer,
             HistoricalMarketDataDrainerService.layer

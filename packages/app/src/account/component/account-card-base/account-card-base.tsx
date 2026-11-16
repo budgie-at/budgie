@@ -32,7 +32,7 @@ interface Props {
     readonly balance: number;
     readonly convertedBalance: number | null;
     readonly amountLabel?: string;
-    readonly subtitle?: string;
+    readonly subtitle?: ReactNode;
     readonly onImport?: EmptyFn;
     readonly onPress?: EmptyFn;
     readonly children?: ReactNode;

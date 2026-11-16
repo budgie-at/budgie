@@ -2,12 +2,13 @@ import { AccountTypeEnum, AccountWithSyncEntityInterface } from '@budgie/contrac
 
 import { HomeSectionKindEnum } from '../enum/home-section-kind.enum';
 
-import { CryptoCurrencyGroupInterface } from './crypto-currency-group.interface';
+import { HomeHoldingInterface } from './home-holding.interface';
 import { InstitutionGroupInterface } from './institution-group.interface';
 
 export interface AccountTypeSectionInterface {
     readonly kind: HomeSectionKindEnum.ACCOUNT_TYPE;
     readonly type: AccountTypeEnum;
     readonly total: number;
-    readonly data: Array<AccountWithSyncEntityInterface | CryptoCurrencyGroupInterface | InstitutionGroupInterface>;
+    readonly hiddenHoldings: HomeHoldingInterface[];
+    readonly data: Array<AccountWithSyncEntityInterface | HomeHoldingInterface | InstitutionGroupInterface>;
 }

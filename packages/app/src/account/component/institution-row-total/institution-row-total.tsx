@@ -1,9 +1,7 @@
-import { UserIconNameEnum } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { View } from 'react-native';
 
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
-import { ScaledIcon } from '../../../@generic/component/scaled-icon/scaled-icon';
 import { ROW_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-max-font-size-multiplier.constant';
 import { cn } from '../../../@generic/utils/cn.util';
 import { toTrueMinus } from '../../../@generic/utils/to-true-minus.util';
@@ -31,7 +29,7 @@ export const InstitutionRowTotal = ({ integrationId, total }: Props) => {
     );
 
     return (
-        <View className="flex-row items-center gap-x-xs">
+        <View>
             <ProtectedText
                 numberOfLines={1}
                 adjustsFontSizeToFit
@@ -42,7 +40,6 @@ export const InstitutionRowTotal = ({ integrationId, total }: Props) => {
             >
                 {formattedTotal}
             </ProtectedText>
-            <ScaledIcon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" />
         </View>
     );
 };

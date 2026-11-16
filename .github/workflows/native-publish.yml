@@ -34,10 +34,10 @@ jobs:
     needs: assert-ai
     permissions:
       contents: read
-    uses: rnw-community/mobile-ci/.github/workflows/native-publish.yml@972654d8817a6e72f370a22ab9e5fb79b30df4e6 # v4.13.1
+    uses: rnw-community/mobile-ci/.github/workflows/native-publish.yml@94e78d391732050f1daf02d1906708f04c5b5a71 # v4.13.2
     with:
       control-runner-labels: '["ubuntu-latest"]'
-      lint-runner-labels: '["self-hosted","trf-linux-amd64-4x8"]'
+      lint-runner-labels: '["ubuntu-latest"]'
       enable-ios: ${{ contains(inputs.platforms, 'ios') }}
       enable-android: ${{ contains(inputs.platforms, 'android') }}
       ios-runner-labels: '["self-hosted","macOS","ARM64","macos-maestro"]'
@@ -51,6 +51,7 @@ jobs:
       asc-key-path: asc_api_key.p8
       google-key-path: google-service-account.json
       install-command: pnpm install --frozen-lockfile
+      build-command: pnpm build
       install-cache-paths: |
           node_modules/.pnpm/llama.rn@*/node_modules/llama.rn/android/src/main/jniLibs
           node_modules/.pnpm/llama.rn@*/node_modules/llama.rn/ios/rnllama.xcframework
