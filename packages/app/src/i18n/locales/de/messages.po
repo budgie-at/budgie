@@ -2069,6 +2069,12 @@ msgstr "Konto archivieren"
 msgid "Archive accounts you no longer use from their edit screen. Their history is kept so you can restore them."
 msgstr "Archiviere Konten, die du nicht mehr nutzt, über ihren Bearbeitungsbildschirm. Ihr Verlauf bleibt erhalten, damit du sie wiederherstellen kannst."
 
+#: src/account/component/account-actions-menu/account-actions-menu.tsx
+#: src/account/component/archive-account/archive-account.tsx
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
+msgid "Archive brokerage"
+msgstr "Depot archivieren"
+
 #: src/account/component/archived-account-card/archived-account-card.tsx
 msgid "Archived"
 msgstr "Archiviert"
@@ -2487,6 +2493,10 @@ msgstr "Deine Daten werden aus iCloud geholt…"
 #: src/app/(main)/create-account/index.tsx
 msgid "Brokerage"
 msgstr "Depot"
+
+#: src/account/hooks/use-archive-account.hook.ts
+msgid "Brokerage archived"
+msgstr "Depot archiviert"
 
 #: src/sync/component/bank-integration-rename-card/bank-integration-rename-card.tsx
 msgid "Brokerage name"
@@ -3484,6 +3494,10 @@ msgstr "Regel konnte nicht auf vorhandene Transaktionen angewendet werden"
 #: src/account/hooks/use-archive-account.hook.ts
 msgid "Could not archive account."
 msgstr "Konto konnte nicht archiviert werden."
+
+#: src/account/hooks/use-archive-account.hook.ts
+msgid "Could not archive brokerage."
+msgstr "Depot konnte nicht archiviert werden."
 
 #: ../ledger/src/transaction/service/transaction-debt-settlement.service.ts
 #: src/account/hook/use-attach-debt-selector.hook.ts

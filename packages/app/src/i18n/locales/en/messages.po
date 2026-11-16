@@ -2070,6 +2070,12 @@ msgstr "Archive account"
 msgid "Archive accounts you no longer use from their edit screen. Their history is kept so you can restore them."
 msgstr "Archive accounts you no longer use from their edit screen. Their history is kept so you can restore them."
 
+#: src/account/component/account-actions-menu/account-actions-menu.tsx
+#: src/account/component/archive-account/archive-account.tsx
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
+msgid "Archive brokerage"
+msgstr "Archive brokerage"
+
 #: src/account/component/archived-account-card/archived-account-card.tsx
 msgid "Archived"
 msgstr "Archived"
@@ -2488,6 +2494,10 @@ msgstr "Bringing your data from iCloud…"
 #: src/app/(main)/create-account/index.tsx
 msgid "Brokerage"
 msgstr "Brokerage"
+
+#: src/account/hooks/use-archive-account.hook.ts
+msgid "Brokerage archived"
+msgstr "Brokerage archived"
 
 #: src/sync/component/bank-integration-rename-card/bank-integration-rename-card.tsx
 msgid "Brokerage name"
@@ -3485,6 +3495,10 @@ msgstr "Could not apply rule to existing transactions"
 #: src/account/hooks/use-archive-account.hook.ts
 msgid "Could not archive account."
 msgstr "Could not archive account."
+
+#: src/account/hooks/use-archive-account.hook.ts
+msgid "Could not archive brokerage."
+msgstr "Could not archive brokerage."
 
 #: ../ledger/src/transaction/service/transaction-debt-settlement.service.ts
 #: src/account/hook/use-attach-debt-selector.hook.ts

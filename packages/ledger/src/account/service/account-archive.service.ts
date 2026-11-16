@@ -97,6 +97,21 @@ export class AccountArchiveService extends Context.Service<AccountArchiveService
 
                 yield* ledgerWorkload.runForeground(Db.transaction(archiveByIdInTransaction(id)));
             }),
+            archiveByIntegrationId: Effect.fn('AccountArchiveService.archiveByIntegrationId')(function* (integrationId: number) {
+                yield* YIELD_TO_UI;
+
+                return yield* ledgerWorkload.runForeground(
+                    Db.transaction(
+                        Effect.gen(function* () {
+                            const accounts = yield* accountRepository.findByIntegrationId(integrationId);
+
+                            yield* Effect.forEach(accounts, account => archiveByIdInTransaction(account.id), { discard: true });
+
+                            return accounts.map(account => account.id);
+                        })
+                    )
+                );
+            }),
             markExternalById: Effect.fn('AccountArchiveService.markExternalById')(function* (id: number) {
                 yield* YIELD_TO_UI;
 
