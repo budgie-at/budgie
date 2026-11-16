@@ -1,5 +1,6 @@
 import type { PortfolioReturnInterface } from '../../brokerage/interface/portfolio-return.interface';
 import type { HoldingReturnInterface } from './holding-return.interface';
+import type { SuppressedHomeReturnsInterface } from './suppressed-home-returns.interface';
 import type { AccountTypeEnum } from '@budgie/contracts';
 
 export interface HomeHoldingReturnsInterface {
@@ -9,4 +10,7 @@ export interface HomeHoldingReturnsInterface {
     readonly providerReturnByIntegrationId: ReadonlyMap<number, number>;
     readonly todayBySectionType: ReadonlyMap<AccountTypeEnum, Pick<PortfolioReturnInterface, 'gain' | 'percent'>>;
     readonly isLoading: boolean;
+    readonly loadingInstrumentIds: ReadonlySet<number>;
+    readonly loadingIntegrationIds: ReadonlySet<number>;
+    readonly suppressed: SuppressedHomeReturnsInterface;
 }

@@ -1,44 +1,25 @@
 import { ExternalSourceEnum } from '@budgie/contracts';
-import { Plural, Trans } from '@lingui/react/macro';
-import { Text } from 'react-native';
+import { Plural } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
-
-import { getSinglePositionName } from '../../utils/get-single-position-name.util';
-import { isFiatAccount } from '../../utils/is-fiat-account.util';
 
 import type { InstitutionGroupInterface } from '../../interface/institution-group.interface';
 
 interface Props {
-    readonly institution: Pick<InstitutionGroupInterface, 'provider' | 'accounts'>;
-    readonly investedLabel: string;
+    readonly institution: Pick<InstitutionGroupInterface, 'provider' | 'positionCount' | 'positionName'>;
 }
 
-export const HoldingProviderCaption = ({ institution, investedLabel }: Props) => {
-    const positionName = getSinglePositionName(institution.accounts);
-    const positionsCount = institution.accounts.filter(account => !isFiatAccount(account)).length;
+export const HoldingProviderCaption = ({ institution }: Props) => {
+    const { positionName } = institution;
+    const positionsCount = institution.positionCount;
 
     if (isDefined(positionName)) {
-        return (
-            <Trans>
-                <Text className="font-medium text-primary tabular-nums">{investedLabel}</Text> in {positionName}
-            </Trans>
-        );
+        return positionName;
     }
 
     if (institution.provider === ExternalSourceEnum.MANUAL) {
-        return (
-            <Trans>
-                <Text className="font-medium text-primary tabular-nums">{investedLabel}</Text> in{' '}
-                <Plural value={positionsCount} one="# position" other="# positions" />
-            </Trans>
-        );
+        return <Plural value={positionsCount} one="# position" other="# positions" />;
     }
 
-    return (
-        <Trans>
-            <Text className="font-medium text-primary tabular-nums">{investedLabel}</Text> in{' '}
-            <Plural value={positionsCount} one="# asset" other="# assets" />
-        </Trans>
-    );
+    return <Plural value={positionsCount} one="# asset" other="# assets" />;
 };

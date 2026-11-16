@@ -46,6 +46,8 @@ export const HomeSectionItem = ({ item, section, balancesByAccountId, holdingRet
             <InstitutionRow
                 institution={item}
                 providerReturnPercent={holdingReturns.providerReturnByIntegrationId.get(item.integrationId)}
+                isReturnLoading={holdingReturns.loadingIntegrationIds.has(item.integrationId)}
+                isReturnSuppressed={holdingReturns.suppressed.integrationIds.has(item.integrationId)}
             />
         );
     }
@@ -56,7 +58,8 @@ export const HomeSectionItem = ({ item, section, balancesByAccountId, holdingRet
                 holding={item}
                 holdingReturn={holdingReturns.holdingsBySectionType.get(section.type)?.get(item.instrument.id)}
                 todayChange={holdingReturns.todayByInstrumentId.get(item.instrument.id)}
-                isReturnLoading={holdingReturns.isLoading}
+                isReturnLoading={holdingReturns.loadingInstrumentIds.has(item.instrument.id)}
+                isReturnSuppressed={holdingReturns.suppressed.instrumentIds.has(item.instrument.id)}
             />
         ) : null;
     }

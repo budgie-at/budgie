@@ -3,6 +3,8 @@ import { cva } from 'class-variance-authority';
 import { router } from 'expo-router';
 import { Text, View } from 'react-native';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { CurrencySelectorInstrumentIcon } from '../../../@generic/component/currency-selector-instrument-icon/currency-selector-instrument-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { ScaledIcon } from '../../../@generic/component/scaled-icon/scaled-icon';
@@ -21,24 +23,37 @@ interface Props {
     readonly holdingReturn: HoldingReturnInterface | undefined;
     readonly todayChange: number | undefined;
     readonly isReturnLoading: boolean;
+    readonly isReturnSuppressed: boolean;
 }
 
-const rowVariants = cva('min-h-[64px] gap-x-lg pr-xl pl-3xl active:bg-surface-fill', {
-    variants: { isStacked: { true: 'gap-y-xs py-sm', false: 'flex-row items-center py-lg' } }
+const rowVariants = cva('min-h-[64px] flex-row gap-x-xl pr-xl pl-3xl active:bg-surface-fill', {
+    variants: { isStacked: { true: 'items-start py-sm', false: 'items-center py-lg' } }
 });
 
-export const HomeHoldingRow = ({ holding, holdingReturn, todayChange, isReturnLoading }: Props) => {
+export const HomeHoldingRow = ({ holding, holdingReturn, todayChange, isReturnLoading, isReturnSuppressed }: Props) => {
     const { instrument } = holding;
 
     const isStacked = useIsAccessibilityTextSize();
 
     const handlePress = () => void router.push({ pathname: '/currency/[id]', params: { id: String(instrument.id) } });
+    const isReturnPending = isReturnLoading && !isDefined(holdingReturn) && !isDefined(todayChange);
+    const accessibilityState = { busy: isReturnPending };
+    const amount = (
+        <HomeHoldingRowAmount
+            holding={holding}
+            holdingReturn={holdingReturn}
+            todayChange={todayChange}
+            isReturnPending={isReturnPending}
+            isReturnSuppressed={isReturnSuppressed}
+        />
+    );
 
     return (
         <HapticPressable
             pressedScale={1}
             accessible
             accessibilityRole="button"
+            accessibilityState={accessibilityState}
             onPress={handlePress}
             className={rowVariants({ isStacked })}
             testID={HomeHoldingRowSelector.Row(instrument.code)}
@@ -52,24 +67,16 @@ export const HomeHoldingRow = ({ holding, holdingReturn, todayChange, isReturnLo
                         maxFontSizeMultiplier={ROW_PRIMARY_MAX_FONT_SIZE_MULTIPLIER}
                         ellipsizeMode="tail"
                         numberOfLines={1}
-                        adjustsFontSizeToFit
-                        minimumFontScale={0.85}
                     >
                         {instrument.name}
                     </Text>
                     {isStacked ? <ScaledIcon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" /> : null}
                 </View>
                 <HomeHoldingRowCaption holding={holding} />
+                {isStacked ? amount : null}
             </View>
 
-            <HomeHoldingRowAmount
-                holding={holding}
-                holdingReturn={holdingReturn}
-                todayChange={todayChange}
-                isReturnLoading={isReturnLoading}
-            />
-
-            {isStacked ? null : <ScaledIcon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" />}
+            {isStacked ? null : amount}
         </HapticPressable>
     );
 };

@@ -640,6 +640,37 @@ const generateRunwayCryptoFixture = () => {
     );
 };
 
+const generateHomeHoldingsFixture = () => {
+    const now = Math.floor(Date.now() / 1000);
+    const sourcePath = path.join(outputDirectoryPath, '29.db');
+    const targetPath = path.join(outputDirectoryPath, '53-home-holdings.db');
+
+    copyFixture(sourcePath, targetPath);
+    runSqlite(
+        targetPath,
+        `
+        BEGIN;
+
+        INSERT INTO accounts (id, created_at, updated_at, icon, "order", title, title_search, type, nature, instrument_id, external_id, external_source, integration_id, include_in_net_worth, is_active)
+        VALUES
+            (5, ${now}, ${now}, 'Coins', 5, 'E2E Binance DOT', 'e2e binance dot', 'CRYPTO_SYNC', 'LIABILITY', 79, 'SPOT:DOT', 'BINANCE', 1, 1, 1),
+            (6, ${now}, ${now}, 'Coins', 6, 'E2E Binance FDUSD', 'e2e binance fdusd', 'CRYPTO_SYNC', 'LIABILITY', 160, 'FUNDING:FDUSD', 'BINANCE', 1, 1, 1),
+            (7, ${now}, ${now}, 'Coins', 7, 'E2E Binance ETH', 'e2e binance eth', 'CRYPTO_SYNC', 'LIABILITY', 35, 'SPOT:ETH', 'BINANCE', 1, 1, 1);
+
+        INSERT INTO account_balances (account_id, created_at, updated_at, amount)
+        VALUES (5, ${now}, ${now}, 0), (6, ${now}, ${now}, 2534), (7, ${now}, ${now}, 1500000);
+
+        INSERT INTO exchange_rates (created_at, updated_at, source, base_instrument_id, quote_instrument_id, rate)
+        VALUES
+            (${now}, ${now}, 'coingecko.com', 79, 1, 4.12),
+            (${now}, ${now}, 'coingecko.com', 160, 1, 1.0);
+
+        COMMIT;
+        VACUUM;
+        `
+    );
+};
+
 const generateBudgetMultiCurrencyFixture = () => {
     const sourcePath = path.join(fixturesDirectoryPath, 'budget-multi-currency.db');
     const targetPath = path.join(outputDirectoryPath, 'budget-multi-currency.db');
@@ -1785,6 +1816,7 @@ const generatePassiveIncomeFixtures = () => {
 generateInzhurFixture();
 generatePassiveIncomeFixtures();
 generateRunwayCryptoFixture();
+generateHomeHoldingsFixture();
 generateBudgetMultiCurrencyFixture();
 generateRecurringFixture();
 generateConsolidationFixture();

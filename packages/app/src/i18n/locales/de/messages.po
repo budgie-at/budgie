@@ -63,7 +63,6 @@ msgstr "(bitte wählen)"
 #. placeholder {0}: accounts.length
 #. placeholder {0}: parts.length
 #. placeholder {0}: shelvedList.shelvedCount
-#: src/account/component/home-holding-row-caption/home-holding-row-caption.tsx
 #: src/account/component/institution-row/institution-row.tsx
 #: src/account/component/shelved-accounts-page/shelved-accounts-page.tsx
 #: src/rule/hooks/use-rule-condition-formatter.hook.ts
@@ -893,6 +892,14 @@ msgstr "{periodLabel}: {amount} unter dem Limit abgeschlossen"
 msgid "{periodLabel}, spent {spentAmount} of {limitAmount}"
 msgstr "{periodLabel}, {spentAmount} von {limitAmount} ausgegeben"
 
+#: src/account/component/holding-provider-caption/holding-provider-caption.tsx
+msgid "{positionsCount, plural, one {# asset} other {# assets}}"
+msgstr "{positionsCount, plural, one {# Asset} other {# Assets}}"
+
+#: src/account/component/holding-provider-caption/holding-provider-caption.tsx
+msgid "{positionsCount, plural, one {# position} other {# positions}}"
+msgstr "{positionsCount, plural, one {# Position} other {# Positionen}}"
+
 #: src/sync/component/enable-banking-bank-step/enable-banking-bank-step.tsx
 msgid "{preselectedBankName} is not available"
 msgstr "{preselectedBankName} ist nicht verfügbar"
@@ -1233,18 +1240,6 @@ msgstr "+{hiddenCategoryCount} weitere"
 #: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
 msgid "+{incomeAmount} / month"
 msgstr "+{incomeAmount} / Monat"
-
-#: src/account/component/holding-provider-caption/holding-provider-caption.tsx
-msgid "<0>{investedLabel}</0> in {positionName}"
-msgstr "<0>{investedLabel}</0> in {positionName}"
-
-#: src/account/component/holding-provider-caption/holding-provider-caption.tsx
-msgid "<0>{investedLabel}</0> in {positionsCount, plural, one {# asset} other {# assets}}"
-msgstr "<0>{investedLabel}</0> in {positionsCount, plural, one {# Asset} other {# Assets}}"
-
-#: src/account/component/holding-provider-caption/holding-provider-caption.tsx
-msgid "<0>{investedLabel}</0> in {positionsCount, plural, one {# position} other {# positions}}"
-msgstr "<0>{investedLabel}</0> in {positionsCount, plural, one {# Position} other {# Positionen}}"
 
 #: src/account/component/family-section-header/family-section-header.tsx
 msgid "<0>Paused</0> · not in your total"
@@ -2795,7 +2790,6 @@ msgid "Cash"
 msgstr "Bargeld"
 
 #: src/account/component/institution-account-row/institution-account-row.tsx
-#: src/account/component/institution-row-cash/institution-row-cash.tsx
 #: src/brokerage/query/use-brokerage-summary.query.ts
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgctxt "Brokerage cash account"
