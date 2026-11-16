@@ -20,15 +20,13 @@ export const TransactionTransferAmount = ({ fromEntry, toEntry, accountId, testI
 
     const isIncoming = accountId === toEntry.account.id;
     const primaryEntry = isIncoming ? toEntry : fromEntry;
-    const secondaryEntry = isIncoming ? fromEntry : toEntry;
 
     const sign = isIncoming ? '+' : '';
     const formatEntry = (entry: AggregatedTransactionEntryInterface) =>
         formatDigits(convertFromMicroUnits(entry.amount), entry.account.instrument.symbol, entry.account.instrument.type);
-    const isCrossCurrency = primaryEntry.account.instrument.id !== secondaryEntry.account.instrument.id;
 
     return (
-        <View className="shrink-0 gap-y-xxs items-end" testID={testID}>
+        <View className="shrink-0 items-end" testID={testID}>
             {primaryEntry.account.instrument.type === InstrumentTypeEnum.FIAT ? (
                 <MoneyText
                     amount={convertFromMicroUnits(primaryEntry.amount)}
@@ -43,14 +41,6 @@ export const TransactionTransferAmount = ({ fromEntry, toEntry, accountId, testI
                     maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
                 >{`${sign}${formatEntry(primaryEntry)}`}</Text>
             )}
-            {isCrossCurrency ? (
-                <Text
-                    className="text-[13px] leading-[18px] text-secondary-foreground text-right tabular-nums"
-                    maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
-                >
-                    {formatEntry(secondaryEntry)}
-                </Text>
-            ) : null}
         </View>
     );
 };

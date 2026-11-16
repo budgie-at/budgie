@@ -18,6 +18,8 @@ export const DebtSettlementConvertedAmountLabel = ({ debtEvent }: Props) => {
         <Text
             className="text-[13px] leading-[18px] text-secondary-foreground text-right tabular-nums"
             maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
+            accessibilityElementsHidden
+            importantForAccessibility="no-hide-descendants"
         >
             {formatDigits(convertFromMicroUnits(debtEvent.amount), debtInstrument.symbol)}
         </Text>

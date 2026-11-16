@@ -20,6 +20,7 @@ import { TransactionCardIcon } from '../transaction-card-icon/transaction-card-i
 import { TransactionCardStackedSubtitle } from '../transaction-card-stacked-subtitle/transaction-card-stacked-subtitle';
 import { TransactionCardSubtitle } from '../transaction-card-subtitle/transaction-card-subtitle';
 import { TransactionCardSelector } from '../transaction-card/transaction-card.selector';
+import { TransactionSecondaryAmount } from '../transaction-secondary-amount/transaction-secondary-amount';
 
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
@@ -93,6 +94,7 @@ export const TransactionCardContent = ({ transaction, accountId = null }: Props)
             }
             title={titleNode}
             trailing={<TransactionAmount transaction={transaction} accountId={accountId} />}
+            trailingDetail={<TransactionSecondaryAmount transaction={transaction} accountId={accountId} />}
             {...(hasDetail && { detail })}
         />
     );
