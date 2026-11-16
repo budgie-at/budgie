@@ -7,15 +7,17 @@ interface Props {
     readonly institution: Pick<InstitutionGroupInterface, 'integrationId' | 'total' | 'isHoldingProvider'>;
     readonly returnPercent: number | undefined;
     readonly isReturnPending: boolean;
+    readonly isReturnSuppressed: boolean;
 }
 
-export const InstitutionRowTrailing = ({ institution, returnPercent, isReturnPending }: Props) =>
+export const InstitutionRowTrailing = ({ institution, returnPercent, isReturnPending, isReturnSuppressed }: Props) =>
     institution.isHoldingProvider ? (
         <InstitutionRowHoldingTotal
             integrationId={institution.integrationId}
             total={institution.total}
             returnPercent={returnPercent}
             isReturnPending={isReturnPending}
+            isReturnSuppressed={isReturnSuppressed}
         />
     ) : (
         <InstitutionRowTotal integrationId={institution.integrationId} total={institution.total} />

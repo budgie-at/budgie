@@ -23,6 +23,7 @@ import { defaultInstrumentIdAtom } from '../../settings/constants/settings-atoms
 import { isAccountTypeSection } from '../type-guard/is-account-type-section.type-guard';
 import { isHomeHolding } from '../type-guard/is-home-holding.type-guard';
 import { isInstitutionGroup } from '../type-guard/is-institution-group.type-guard';
+import { getHomeSectionPortfolio } from '../utils/get-home-section-portfolio.util';
 import { getSuppressedHomeReturns } from '../utils/get-suppressed-home-returns.util';
 import { hasKnownCostBasis } from '../utils/has-known-cost-basis.util';
 import { isFiatAccount } from '../utils/is-fiat-account.util';
@@ -30,9 +31,9 @@ import { isFiatAccount } from '../utils/is-fiat-account.util';
 import type { PortfolioReturnInterface } from '../../brokerage/interface/portfolio-return.interface';
 import type { AccountTypeSectionInterface } from '../interface/account-type-section.interface';
 import type { DailyChangeInterface } from '../interface/daily-change.interface';
-import type { HoldingReturnInterface } from '../interface/holding-return.interface';
 import type { HomeAccountBalanceInterface } from '../interface/home-account-balance.interface';
 import type { HomeHoldingReturnsInterface } from '../interface/home-holding-returns.interface';
+import type { HomeHoldingSectionInterface } from '../interface/home-holding-section.interface';
 import type { HomeHoldingInterface } from '../interface/home-holding.interface';
 import type { HomeSectionInterface } from '../interface/home-section.interface';
 import type { InstitutionGroupInterface } from '../interface/institution-group.interface';
@@ -139,7 +140,7 @@ const getSectionToday = (
     return { gain, percent: isPositiveNumber(total - gain) ? gain / (total - gain) : null };
 };
 
-const toHoldingSection = (section: AccountTypeSectionInterface) => ({
+const toHoldingSection = (section: AccountTypeSectionInterface): HomeHoldingSectionInterface => ({
     type: section.type,
     total: section.total,
     holdings: section.data.filter(isHomeHolding),
@@ -149,36 +150,6 @@ const toHoldingSection = (section: AccountTypeSectionInterface) => ({
             ? section.data.filter(isInstitutionGroup).filter(institution => institution.isHoldingProvider)
             : []
 });
-
-const getSectionPortfolio = (
-    { returnHoldings, cashProviders }: ReturnType<typeof toHoldingSection>,
-    getPosition: (instrumentId: number, accountIds: readonly number[]) => InstrumentPositionInterface | null,
-    cashReturns: ReadonlyMap<number, number>,
-    suppressedInstrumentIds: ReadonlySet<number>
-) => {
-    const positions = returnHoldings.map(holding => ({
-        ...holding,
-        position: getPosition(
-            holding.instrument.id,
-            holding.accounts.map(account => account.id)
-        )
-    }));
-    const portfolio = calculatePortfolioReturn(
-        positions,
-        cashProviders.reduce((sum, institution) => sum + institution.cash, 0),
-        cashProviders.reduce((sum, institution) => sum + (cashReturns.get(institution.integrationId) ?? 0), 0)
-    );
-    const holdingReturns = positions.flatMap(({ instrument, value }, index): [number, HoldingReturnInterface][] => {
-        const holdingReturn = portfolio.positionReturns[index];
-
-        return isDefined(holdingReturn) && !suppressedInstrumentIds.has(instrument.id) && hasKnownCostBasis([{ value }], [holdingReturn])
-            ? [[instrument.id, holdingReturn]]
-            : [];
-    });
-    const hasReturn = hasKnownCostBasis(positions, portfolio.positionReturns) && (isNotEmptyArray(holdingReturns) || portfolio.gain !== 0);
-
-    return { portfolio, hasReturn, holdingReturns: new Map(holdingReturns) };
-};
 
 const sortIds = (ids: readonly number[]): number[] => [...new Set(ids)].sort((left, right) => left - right);
 
@@ -236,7 +207,7 @@ export const useHomeHoldingReturnsQuery = (
     const results = holdingSections.map(holdingSection => ({
         type: holdingSection.type,
         today: getSectionToday(holdingSection.holdings, holdingSection.total, todayByInstrumentId),
-        ...getSectionPortfolio(holdingSection, getPosition, cashReturns, suppressed.instrumentIds)
+        ...getHomeSectionPortfolio(holdingSection, getPosition, cashReturns, suppressed.instrumentIds)
     }));
 
     const isLoading =
@@ -254,6 +225,7 @@ export const useHomeHoldingReturnsQuery = (
         loadingInstrumentIds: new Set(
             isLoading ? shownInstrumentIds.filter(instrumentId => !suppressed.instrumentIds.has(instrumentId)) : []
         ),
-        loadingIntegrationIds: new Set(isLoading ? providerReturnIntegrationIds : [])
+        loadingIntegrationIds: new Set(isLoading ? providerReturnIntegrationIds : []),
+        suppressed
     };
 };

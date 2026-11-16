@@ -22,11 +22,12 @@ interface Props {
     readonly holdingReturn: HoldingReturnInterface | undefined;
     readonly todayChange: number | undefined;
     readonly isReturnPending: boolean;
+    readonly isReturnSuppressed: boolean;
 }
 
 const PLACEHOLDER_PERCENT = 0.9999;
 
-export const HomeHoldingRowAmount = ({ holding, holdingReturn, todayChange, isReturnPending }: Props) => {
+export const HomeHoldingRowAmount = ({ holding, holdingReturn, todayChange, isReturnPending, isReturnSuppressed }: Props) => {
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
 
     const instrumentCode = holding.instrument.code;
@@ -47,7 +48,7 @@ export const HomeHoldingRowAmount = ({ holding, holdingReturn, todayChange, isRe
                     <Trans>Value unavailable</Trans>
                 </Text>
             )}
-            <HomeReturnSlot isPending={isReturnPending} isEmpty={isReturnEmpty}>
+            <HomeReturnSlot isSuppressed={isReturnSuppressed} isPending={isReturnPending} isEmpty={isReturnEmpty}>
                 {isToday ? (
                     <HomeTodayChangeText
                         gain={null}

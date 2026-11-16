@@ -23,13 +23,14 @@ interface Props {
     readonly holdingReturn: HoldingReturnInterface | undefined;
     readonly todayChange: number | undefined;
     readonly isReturnLoading: boolean;
+    readonly isReturnSuppressed: boolean;
 }
 
 const rowVariants = cva('min-h-[64px] flex-row gap-x-xl pr-xl pl-3xl active:bg-surface-fill', {
     variants: { isStacked: { true: 'items-start py-sm', false: 'items-center py-lg' } }
 });
 
-export const HomeHoldingRow = ({ holding, holdingReturn, todayChange, isReturnLoading }: Props) => {
+export const HomeHoldingRow = ({ holding, holdingReturn, todayChange, isReturnLoading, isReturnSuppressed }: Props) => {
     const { instrument } = holding;
 
     const isStacked = useIsAccessibilityTextSize();
@@ -38,7 +39,13 @@ export const HomeHoldingRow = ({ holding, holdingReturn, todayChange, isReturnLo
     const isReturnPending = isReturnLoading && !isDefined(holdingReturn) && !isDefined(todayChange);
     const accessibilityState = { busy: isReturnPending };
     const amount = (
-        <HomeHoldingRowAmount holding={holding} holdingReturn={holdingReturn} todayChange={todayChange} isReturnPending={isReturnPending} />
+        <HomeHoldingRowAmount
+            holding={holding}
+            holdingReturn={holdingReturn}
+            todayChange={todayChange}
+            isReturnPending={isReturnPending}
+            isReturnSuppressed={isReturnSuppressed}
+        />
     );
 
     return (

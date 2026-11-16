@@ -27,13 +27,14 @@ interface Props {
     readonly institution: InstitutionGroupInterface;
     readonly providerReturnPercent: number | undefined;
     readonly isReturnLoading: boolean;
+    readonly isReturnSuppressed: boolean;
 }
 
 const rowVariants = cva('min-h-[64px] flex-row gap-x-xl pr-xl pl-3xl active:bg-surface-fill', {
     variants: { isStacked: { true: 'items-start py-sm', false: 'items-center py-lg' } }
 });
 
-export const InstitutionRow = ({ institution, providerReturnPercent, isReturnLoading }: Props) => {
+export const InstitutionRow = ({ institution, providerReturnPercent, isReturnLoading, isReturnSuppressed }: Props) => {
     const { integrationId, provider, label, groupNumber, accounts, isHoldingProvider } = institution;
 
     const { t } = useLingui();
@@ -48,7 +49,12 @@ export const InstitutionRow = ({ institution, providerReturnPercent, isReturnLoa
     const isReturnPending = isHoldingProvider && isReturnLoading && !isDefined(providerReturnPercent);
     const accessibilityState = { busy: isReturnPending };
     const trailing = (
-        <InstitutionRowTrailing institution={institution} returnPercent={providerReturnPercent} isReturnPending={isReturnPending} />
+        <InstitutionRowTrailing
+            institution={institution}
+            returnPercent={providerReturnPercent}
+            isReturnPending={isReturnPending}
+            isReturnSuppressed={isReturnSuppressed}
+        />
     );
 
     return (

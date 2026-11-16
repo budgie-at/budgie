@@ -15,11 +15,12 @@ interface Props {
     readonly total: number;
     readonly returnPercent: number | undefined;
     readonly isReturnPending: boolean;
+    readonly isReturnSuppressed: boolean;
 }
 
 const PLACEHOLDER_PERCENT = 0.9999;
 
-export const InstitutionRowHoldingTotal = ({ integrationId, total, returnPercent, isReturnPending }: Props) => {
+export const InstitutionRowHoldingTotal = ({ integrationId, total, returnPercent, isReturnPending, isReturnSuppressed }: Props) => {
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
 
     const isReturnEmpty = !isReturnPending && !isDefined(returnPercent);
@@ -27,7 +28,7 @@ export const InstitutionRowHoldingTotal = ({ integrationId, total, returnPercent
     return (
         <HomeAmountColumn>
             <HomeAmountValue amount={total} testID={InstitutionRowSelector.Total(integrationId)} />
-            <HomeReturnSlot isPending={isReturnPending} isEmpty={isReturnEmpty}>
+            <HomeReturnSlot isSuppressed={isReturnSuppressed} isPending={isReturnPending} isEmpty={isReturnEmpty}>
                 <BrokerageReturnText
                     gain={null}
                     percent={returnPercent ?? PLACEHOLDER_PERCENT}
