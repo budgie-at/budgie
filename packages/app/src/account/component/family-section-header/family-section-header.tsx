@@ -17,7 +17,7 @@ import { defaultInstrumentAtom } from '../../../settings/constants/settings-atom
 import { AccountSectionHeaderFrame } from '../account-section-header-frame/account-section-header-frame';
 
 interface Props {
-    readonly total: number | null;
+    readonly total: number;
 }
 
 const navigateToFamily = () => void router.push('/settings/family');
@@ -36,7 +36,7 @@ export const FamilySectionHeader = ({ total }: Props) => {
         title,
         t`Shared with you`,
         t`Not counted in your total`,
-        isDefined(total) ? protectAmount(total, defaultInstrument.symbol) : null,
+        protectAmount(total, defaultInstrument.symbol),
         isAvailable ? null : t`Paused, balances may be out of date. Sign in to iCloud to update`
     ]
         .filter(isDefined)
