@@ -893,14 +893,6 @@ msgstr "{periodLabel} closed {amount} under"
 msgid "{periodLabel}, spent {spentAmount} of {limitAmount}"
 msgstr "{periodLabel}, spent {spentAmount} of {limitAmount}"
 
-#: src/account/component/holding-provider-caption/holding-provider-caption.tsx
-msgid "{positionsCount, plural, one {# asset} other {# assets}}"
-msgstr "{positionsCount, plural, one {# asset} other {# assets}}"
-
-#: src/account/component/holding-provider-caption/holding-provider-caption.tsx
-msgid "{positionsCount, plural, one {# position} other {# positions}}"
-msgstr "{positionsCount, plural, one {# position} other {# positions}}"
-
 #: src/sync/component/enable-banking-bank-step/enable-banking-bank-step.tsx
 msgid "{preselectedBankName} is not available"
 msgstr "{preselectedBankName} is not available"
@@ -1507,10 +1499,6 @@ msgstr "Accounts · {accountCount}"
 #: src/sync/component/sync-accounts-step/sync-accounts-step.tsx
 msgid "Accounts · {accountsCount}"
 msgstr "Accounts · {accountsCount}"
-
-#: src/account/component/home-provider-group-label/home-provider-group-label.tsx
-msgid "Accounts · {providersCount}"
-msgstr "Accounts · {providersCount}"
 
 #: src/transaction/components/transaction-filters/transaction-filters.tsx
 msgid "Accounts ({selectedAccountsCount})"
@@ -2510,10 +2498,6 @@ msgstr "Brokerage archived"
 #: src/sync/component/bank-integration-rename-card/bank-integration-rename-card.tsx
 msgid "Brokerage name"
 msgstr "Brokerage name"
-
-#: src/account/component/home-provider-group-label/home-provider-group-label.tsx
-msgid "Brokers · {providersCount}"
-msgstr "Brokers · {providersCount}"
 
 #: src/category/components/category-icon-fix-row/category-icon-fix-row.tsx
 msgid "Browse icons"
@@ -5192,10 +5176,6 @@ msgstr "Exchange rate not found"
 msgid "Exchange rate: {rateLabel}"
 msgstr "Exchange rate: {rateLabel}"
 
-#: src/account/component/home-provider-group-label/home-provider-group-label.tsx
-msgid "Exchanges · {providersCount}"
-msgstr "Exchanges · {providersCount}"
-
 #: src/yield/hook/use-yield-rate-text.hook.ts
 msgid "excl. distributions"
 msgstr "excl. distributions"
@@ -7811,6 +7791,10 @@ msgstr "Open the Inzhur app"
 #: src/cloud-backup/component/cloud-backup-list/cloud-backup-list.tsx
 msgid "Open the Settings app and sign in to your Apple Account. Backups from your iPhone and iPad appear here."
 msgstr "Open the Settings app and sign in to your Apple Account. Backups from your iPhone and iPad appear here."
+
+#: src/account/component/account-details-institution-link/account-details-institution-link.tsx
+msgid "Opens all holdings and trades at this provider"
+msgstr "Opens all holdings and trades at this provider"
 
 #: src/account/component/family-section-header/family-section-header.tsx
 msgid "Opens Family settings"

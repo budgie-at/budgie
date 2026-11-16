@@ -6,12 +6,12 @@ import { HomeReturnSlotStateEnum } from '../src/account/enum/home-return-slot-st
 import { HomeSectionKindEnum } from '../src/account/enum/home-section-kind.enum';
 import { isAccountTypeSection } from '../src/account/type-guard/is-account-type-section.type-guard';
 import { isHomeHolding } from '../src/account/type-guard/is-home-holding.type-guard';
+import { getHiddenProviderCashAccountIds } from '../src/account/utils/get-hidden-provider-cash-account-ids.util';
 import { getHomeSectionPortfolio } from '../src/account/utils/get-home-section-portfolio.util';
 import { getSuppressedHomeReturns } from '../src/account/utils/get-suppressed-home-returns.util';
 import { hasKnownCostBasis } from '../src/account/utils/has-known-cost-basis.util';
 import { hideEmptyHomeHoldings } from '../src/account/utils/hide-empty-home-holdings.util';
 import { resolveHomeReturnSlotState } from '../src/account/utils/resolve-home-return-slot-state.util';
-import { summarizeHoldingPositions } from '../src/account/utils/summarize-holding-positions.util';
 import { calculatePortfolioReturn } from '../src/brokerage/utils/calculate-portfolio-return.util';
 import { DEFAULT_INSTRUMENT } from '../src/settings/constants/default-instrument.constant';
 
@@ -43,7 +43,15 @@ it.effect('keeps a sold-out holding for returns while hiding its row', () =>
         const held = holdingOf(10, 'AAA', 1, 150);
         const soldOut = holdingOf(11, 'BBB', 0, 0);
         const section = hideEmptyHomeHoldings(
-            { kind: HomeSectionKindEnum.ACCOUNT_TYPE, type: AccountTypeEnum.STOCKS, total: 150, hiddenHoldings: [], data: [held, soldOut] },
+            {
+                kind: HomeSectionKindEnum.ACCOUNT_TYPE,
+                type: AccountTypeEnum.STOCKS,
+                total: 150,
+                hiddenHoldings: [],
+                holdingProviders: [],
+                data: [held, soldOut]
+            },
+            new Map(),
             2
         );
 
@@ -73,48 +81,14 @@ it.effect('shows an aggregate return only when known cost basis covers half the 
     })
 );
 
-it.effect('names the single visible position and counts only visible ones', () =>
+it.effect('suppresses the return of a sole holding in its section', () =>
     Effect.sync(() => {
-        const accounts = [
-            { instrument: instrumentOf(20, 'FDUSD') },
-            { instrument: instrumentOf(21, 'ETH') },
-            { instrument: instrumentOf(21, 'ETH') },
-            { instrument: DEFAULT_INSTRUMENT }
-        ];
-
-        expect(summarizeHoldingPositions(accounts, () => false)).toEqual({ positionCount: 0, positionName: null });
-        expect(summarizeHoldingPositions(accounts, instrumentId => instrumentId === 21)).toEqual({ positionCount: 1, positionName: 'ETH' });
-        expect(summarizeHoldingPositions(accounts, () => true)).toEqual({ positionCount: 2, positionName: null });
-        expect(summarizeHoldingPositions([{ instrument: instrumentOf(30, 'YAHOO:AAPL', InstrumentTypeEnum.EQUITY) }], () => true)).toEqual({
-            positionCount: 1,
-            positionName: 'YAHOO:AAPL'
-        });
-    })
-);
-
-it.effect('decides suppressed returns from structure alone', () =>
-    Effect.sync(() => {
-        const brokerAccount = { integrationId: 7 };
         const suppressed = getSuppressedHomeReturns([
-            { holdings: [{ instrument: instrumentOf(1, 'BTC'), accounts: [{ integrationId: null }] }], cashProviders: [] },
-            {
-                holdings: [
-                    { instrument: instrumentOf(2, 'AAPL'), accounts: [brokerAccount] },
-                    { instrument: instrumentOf(3, 'TSLA'), accounts: [brokerAccount] }
-                ],
-                cashProviders: [{ integrationId: 7 }]
-            },
-            {
-                holdings: [
-                    { instrument: instrumentOf(4, 'VWCE'), accounts: [{ integrationId: 8 }] },
-                    { instrument: instrumentOf(5, 'MSFT'), accounts: [{ integrationId: 9 }] }
-                ],
-                cashProviders: [{ integrationId: 8 }, { integrationId: 9 }]
-            }
+            { holdings: [{ instrument: instrumentOf(1, 'BTC') }] },
+            { holdings: [{ instrument: instrumentOf(2, 'AAPL') }, { instrument: instrumentOf(3, 'TSLA') }] }
         ]);
 
-        expect([...suppressed.instrumentIds]).toEqual([1]);
-        expect([...suppressed.integrationIds]).toEqual([7]);
+        expect([...suppressed]).toEqual([1]);
     })
 );
 
@@ -142,5 +116,54 @@ it.effect('keeps a return slot through loading unless the return is structurally
         expect(resolveHomeReturnSlotState(false, true, false, false)).toBe(HomeReturnSlotStateEnum.SHOWN);
         expect(resolveHomeReturnSlotState(true, true, true, true)).toBe(HomeReturnSlotStateEnum.ABSENT);
         expect(resolveHomeReturnSlotState(true, false, false, true)).toBe(HomeReturnSlotStateEnum.RESERVED);
+    })
+);
+
+it.effect('keeps a broker cash row as the entry point until the broker shows a position', () =>
+    Effect.sync(() => {
+        const cash = { id: 1, instrument: instrumentOf(1, 'USD', InstrumentTypeEnum.FIAT) };
+        const security = { id: 2, instrument: instrumentOf(30, 'YAHOO:BGTX', InstrumentTypeEnum.EQUITY) };
+        const balanceOf = (balance: number, convertedBalance: number) => ({ balance, convertedBalance, isValued: true });
+        const hiddenFor = (accounts: readonly (typeof cash)[], balances: [number, ReturnType<typeof balanceOf>][]) => [
+            ...getHiddenProviderCashAccountIds([{ accounts }], new Map(balances), 2)
+        ];
+
+        expect(hiddenFor([cash], [[1, balanceOf(0, 0)]])).toEqual([]);
+        expect(
+            hiddenFor(
+                [cash, security],
+                [
+                    [1, balanceOf(0, 0)],
+                    [2, balanceOf(0, 0)]
+                ]
+            )
+        ).toEqual([]);
+        expect(
+            hiddenFor(
+                [cash, security],
+                [
+                    [1, balanceOf(0, 0)],
+                    [2, balanceOf(0.000001, 0.001)]
+                ]
+            )
+        ).toEqual([]);
+        expect(
+            hiddenFor(
+                [cash, security],
+                [
+                    [1, balanceOf(0, 0)],
+                    [2, balanceOf(10, 1200)]
+                ]
+            )
+        ).toEqual([1]);
+        expect(
+            hiddenFor(
+                [cash, security],
+                [
+                    [1, balanceOf(50, 50)],
+                    [2, balanceOf(10, 1200)]
+                ]
+            )
+        ).toEqual([]);
     })
 );

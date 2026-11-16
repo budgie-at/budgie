@@ -110,11 +110,12 @@ const buildHomePageSections = (
             type,
             total,
             hiddenHoldings: [],
+            holdingProviders,
             data: [
                 ...buildHomeHoldings(holdingAccounts, balancesByAccountId),
-                ...holdingProviders,
                 ...typeInstitutions.filter(institution => !institution.isHoldingProvider),
-                ...accounts.filter(account => !isHoldingSection || isFiatAccount(account))
+                ...accounts.filter(account => !isHoldingSection || isFiatAccount(account)),
+                ...holdingProviders.flatMap(institution => institution.accounts.filter(isFiatAccount))
             ]
         };
     });
@@ -261,7 +262,7 @@ export const useHomePageDataQuery = () => {
         data.flatMap(row => (isDefined(row.account.integrationId) ? [[row.account.integrationId, row.integrationLabel] as const] : []))
     );
     const sections = buildHomePageSections(displayedAccounts, integrationProviders, integrationLabels, balanceSummary).map(section =>
-        hideEmptyHomeHoldings(section, decimalPlaces)
+        hideEmptyHomeHoldings(section, balanceSummary.balancesByAccountId, decimalPlaces)
     );
 
     return {
