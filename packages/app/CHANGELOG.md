@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.191.7](https://github.com/budgie-at/budgie/compare/v6.191.6...v6.191.7) (2026-11-17)
+
+### Bug Fixes
+
+* **app:** let a manual brokerage be archived and deleted ([#2243](https://github.com/budgie-at/budgie/issues/2243)) ([3ba98fe](https://github.com/budgie-at/budgie/commit/3ba98fe451bb9037d4b6707d5c6743c06c67cf2d))
+
+
 ## [6.191.6](https://github.com/budgie-at/budgie/compare/v6.191.5...v6.191.6) (2026-11-17)
 
 ### Bug Fixes
