@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.191.3](https://github.com/budgie-at/budgie/compare/v6.191.2...v6.191.3) (2026-11-17)
+
+### Bug Fixes
+
+* **app:** keep crypto and investments headers on one line ([#2254](https://github.com/budgie-at/budgie/issues/2254)) ([1da6999](https://github.com/budgie-at/budgie/commit/1da69994a3903fce5f82ba34ba91e53438a53124))
+
+
 ## [6.191.2](https://github.com/budgie-at/budgie/compare/v6.191.1...v6.191.2) (2026-11-16)
 
 ### Bug Fixes
