@@ -7,7 +7,7 @@ import { isHomeHolding } from '../../type-guard/is-home-holding.type-guard';
 import { AccountSectionHeader } from '../account-section-header/account-section-header';
 import { DebtSectionHeader } from '../debt-section-header/debt-section-header';
 import { FamilySectionHeader } from '../family-section-header/family-section-header';
-import { HomeSectionReturnLine } from '../home-section-return-line/home-section-return-line';
+import { HomeSectionReturnPill } from '../home-section-return-pill/home-section-return-pill';
 
 import { HomeSectionHeaderSelector } from './home-section-header.selector';
 
@@ -25,16 +25,15 @@ export const HomeSectionHeader = ({ section, holdingReturns }: Props) => {
         return <DebtSectionHeader sectionKind={section.kind} total={section.total} />;
     }
 
-    const hasReturnLine = HOLDING_SECTION_TYPES.includes(section.type) && section.data.some(isHomeHolding);
-    const returnLine = hasReturnLine ? (
-        <HomeSectionReturnLine
+    const hasReturnPill = HOLDING_SECTION_TYPES.includes(section.type) && section.data.some(isHomeHolding);
+    const returnPill = hasReturnPill ? (
+        <HomeSectionReturnPill
             sectionReturn={holdingReturns.bySectionType.get(section.type)}
             todayReturn={holdingReturns.todayBySectionType.get(section.type)}
             isLoading={holdingReturns.isLoading}
-            placeholderGain={section.total}
             testID={HomeSectionHeaderSelector.Return(section.type)}
         />
     ) : null;
 
-    return <AccountSectionHeader type={section.type} total={section.total} totalAccessory={returnLine} />;
+    return <AccountSectionHeader type={section.type} total={section.total} totalAccessory={returnPill} />;
 };

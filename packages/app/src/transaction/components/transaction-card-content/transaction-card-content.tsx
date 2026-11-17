@@ -9,6 +9,7 @@ import { Text, View } from 'react-native';
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { ListRow } from '../../../@generic/component/list-row/list-row';
+import { ROW_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-max-font-size-multiplier.constant';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { cn } from '../../../@generic/utils/cn.util';
 import { useTransactionCardSubtitle } from '../../hook/use-transaction-card-subtitle.hook';
@@ -19,6 +20,7 @@ import { TransactionCardIcon } from '../transaction-card-icon/transaction-card-i
 import { TransactionCardStackedSubtitle } from '../transaction-card-stacked-subtitle/transaction-card-stacked-subtitle';
 import { TransactionCardSubtitle } from '../transaction-card-subtitle/transaction-card-subtitle';
 import { TransactionCardSelector } from '../transaction-card/transaction-card.selector';
+import { TransactionSecondaryAmount } from '../transaction-secondary-amount/transaction-secondary-amount';
 
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
@@ -30,7 +32,7 @@ export const TransactionCardContent = ({ transaction, accountId = null }: Props)
     const displayTitle = useTransactionRowTitle(transaction);
     const isAdjustment = isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction);
     const { t } = useLingui();
-    const titleLineCount = isAccessibilityTextSize ? 0 : 1;
+    const titleLineCount = isAccessibilityTextSize ? 3 : 1;
     const adjustmentTitle = isNotEmptyString(transaction.title) ? transaction.title : t`Balance Adjustment`;
     const { isDetailPromoted, title, subtitleSegments, stackedSegments, accountTitle, subtitleTestID } = useTransactionCardSubtitle(
         transaction,
@@ -48,6 +50,7 @@ export const TransactionCardContent = ({ transaction, accountId = null }: Props)
         <Text
             className="text-primary text-[17px] font-semibold"
             numberOfLines={titleLineCount}
+            maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
             ellipsizeMode="tail"
             {...(isDetailPromoted && isDefined(subtitleTestID) && { testID: subtitleTestID })}
         >
@@ -58,6 +61,7 @@ export const TransactionCardContent = ({ transaction, accountId = null }: Props)
         <Text
             className="text-primary text-[17px] font-semibold"
             numberOfLines={titleLineCount}
+            maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
             testID={TransactionCardSelector.AdjustmentBadge}
         >
             {adjustmentTitle}
@@ -90,6 +94,7 @@ export const TransactionCardContent = ({ transaction, accountId = null }: Props)
             }
             title={titleNode}
             trailing={<TransactionAmount transaction={transaction} accountId={accountId} />}
+            trailingDetail={<TransactionSecondaryAmount transaction={transaction} accountId={accountId} />}
             {...(hasDetail && { detail })}
         />
     );
