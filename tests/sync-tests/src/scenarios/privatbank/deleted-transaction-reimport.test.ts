@@ -1,4 +1,11 @@
-import { AccountRepository, ExternalSourceEnum, LanguageEnum, TransactionEntityTable, TransactionViewRepository } from '@budgie/contracts';
+import {
+    AccountEntityTable,
+    AccountRepository,
+    ExternalSourceEnum,
+    LanguageEnum,
+    TransactionEntityTable,
+    TransactionViewRepository
+} from '@budgie/contracts';
 import { AccountArchiveService, TransactionService } from '@budgie/ledger';
 import { describe, expect, it } from '@effect/vitest';
 import { and, eq, isNull } from 'drizzle-orm';
@@ -38,13 +45,19 @@ describe('privatbank/deleted-transaction-reimport', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('restores the archived account without duplicates when the statement is imported again', () =>
+    it.effect.each([
+        ['', false],
+        [' that predates its provider column', true]
+    ])('restores the archived account%s without duplicates when the statement is imported again', ([, hasNoProvider]) =>
         Effect.gen(function* () {
             const accountArchiveService = yield* AccountArchiveService;
             const accountId = yield* seedPrivatbankAccount;
             const syncService = yield* makeStubFileBankSyncService(ExternalSourceEnum.PRIVATBANK, new StubPrivatbankFileClient());
 
             yield* syncService.executeImportForSelectedAccounts(PRIVATBANK_STATEMENT_URI, [PRIVATBANK_CARD_ID]);
+            if (hasNoProvider) {
+                yield* testDb.update(AccountEntityTable).set({ externalSource: null }).where(eq(AccountEntityTable.id, accountId));
+            }
             yield* accountArchiveService.archiveById(accountId);
 
             const review = yield* syncService.reviewImport(PRIVATBANK_STATEMENT_URI, [PRIVATBANK_CARD_ID]);
@@ -61,7 +74,9 @@ describe('privatbank/deleted-transaction-reimport', () => {
             expect(
                 liveTransactions.every(transaction => transaction.fromAccountId === accountId || transaction.toAccountId === accountId)
             ).toBe(true);
-            expect((yield* (yield* AccountRepository).findByIdIncludingArchived(accountId))?.deletedAt).toBeNull();
+            const restoredAccount = yield* (yield* AccountRepository).findByIdIncludingArchived(accountId);
+            expect(restoredAccount?.deletedAt).toBeNull();
+            expect(restoredAccount?.externalSource).toBe(ExternalSourceEnum.PRIVATBANK);
         }).pipe(Effect.provide(TestLayer))
     );
 });

@@ -2,5 +2,5 @@ import type { UnconsolidatedTransferLegInterface } from './unconsolidated-transf
 
 export type TransferLegEvidenceType = (
     title: string,
-    leg: Pick<UnconsolidatedTransferLegInterface, 'counterpartExternalId' | 'counterpartIban'>
+    leg: Pick<UnconsolidatedTransferLegInterface, 'counterpartAliasExternalIds' | 'counterpartExternalId' | 'counterpartIban'>
 ) => boolean;

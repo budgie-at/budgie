@@ -3420,7 +3420,6 @@ msgstr "Konvertierung fehlgeschlagen"
 msgid "Conversions"
 msgstr "Umwandlungen"
 
-#: src/money-data/component/money-data-upgrade-status-card/money-data-upgrade-status-card.tsx
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 #: src/transaction/hook/use-convert-to-refund-action.hook.ts
 msgid "Convert"
@@ -5223,10 +5222,6 @@ msgstr "Ausgabe, Einnahme oder Überweisung"
 #: src/transaction/hook/use-transaction-filter-page-title.hook.ts
 msgid "Expenses"
 msgstr "Ausgaben"
-
-#: src/export/components/export-csv/export-csv.tsx
-msgid "Export"
-msgstr "Exportieren"
 
 #: src/export/components/export-csv/export-csv.tsx
 msgid "Export CSV"
@@ -9051,7 +9046,6 @@ msgid "Resume"
 msgstr "Fortsetzen"
 
 #: src/ai/component/ai-model-storage/ai-model-storage.tsx
-#: src/money-data/component/money-data-upgrade-status-card/money-data-upgrade-status-card.tsx
 #: src/sync/component/bank-integration-new-accounts/bank-integration-new-accounts.tsx
 msgid "Retry"
 msgstr "Erneut versuchen"

@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.191.4](https://github.com/budgie-at/budgie/compare/v6.191.3...v6.191.4) (2026-11-17)
+
+### Bug Fixes
+
+* **sync:** merge deleted cards that predate the provider column ([#2255](https://github.com/budgie-at/budgie/issues/2255)) ([04997e2](https://github.com/budgie-at/budgie/commit/04997e2933f137b514db401ec0a0fb72de9ab413))
+
+
 ## [6.191.1](https://github.com/budgie-at/budgie/compare/v6.191.0...v6.191.1) (2026-11-16)
 
 ### Bug Fixes
