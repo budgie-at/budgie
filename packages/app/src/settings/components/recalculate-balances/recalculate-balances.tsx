@@ -6,8 +6,7 @@ import Toast from 'react-native-toast-message';
 
 import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
 import { useConfirmedSettingsAction } from '../../hook/use-confirmed-settings-action.hook';
-import { SettingsPillButton } from '../settings-pill-button/settings-pill-button';
-import { SettingsRow } from '../settings-row/settings-row';
+import { SettingsActionRow } from '../settings-action-row/settings-action-row';
 
 export const RecalculateBalances = () => {
     const { t } = useLingui();
@@ -31,13 +30,12 @@ export const RecalculateBalances = () => {
     const handlePress = () => void handleRecalculate();
 
     return (
-        <SettingsRow
-            {...(!isLoading && { onPress: handlePress })}
+        <SettingsActionRow
+            onPress={handlePress}
             title={t`Rebuild balances`}
             subtitle={t`Recalculate from transactions`}
             icon={UserIconNameEnum.Calculator}
-            variant="ghost"
-            right={<SettingsPillButton label={t`Rebuild`} variant="secondary" isLoading={isLoading} />}
+            isLoading={isLoading}
             testID={SettingsPageSelector.RecalculateBalancesCard}
         />
     );
