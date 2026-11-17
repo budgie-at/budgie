@@ -37,23 +37,42 @@ interface Props {
     >;
 }
 
+const DEFAULT_TEXT_LAYOUT = {
+    rowClassName: 'items-center',
+    leftClassName: '',
+    contentClassName: '',
+    textClassName: 'min-w-0 flex-1',
+    accessoryClassName: 'shrink',
+    titleLines: 2,
+    subtitleLines: 3
+} as const;
+
+const ACCESSIBILITY_TEXT_LAYOUT = {
+    rowClassName: 'items-start',
+    leftClassName: 'pt-[4px]',
+    contentClassName: 'flex-wrap gap-y-xs',
+    textClassName: 'min-w-[210px] grow basis-[210px]',
+    accessoryClassName: 'max-w-full',
+    titleLines: 3,
+    subtitleLines: 4
+} as const;
+
 export const GroupedListRow = (props: Props) => {
     const { title, subtitle, left, right, titleTestID, testID, onPress, pressableProps } = props;
     const isPressable = isDefined(onPress);
     const isAccessibilityTextSize = useIsAccessibilityTextSize();
-    const titleLines = isAccessibilityTextSize ? 3 : 2;
-    const subtitleLines = isAccessibilityTextSize ? 4 : 3;
-    const rowClassName = isAccessibilityTextSize ? 'items-start' : 'items-center';
+    const layout = isAccessibilityTextSize ? ACCESSIBILITY_TEXT_LAYOUT : DEFAULT_TEXT_LAYOUT;
     const Container = isPressable ? HapticPressable : View;
 
     const chevron = isPressable ? <Icon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" /> : null;
     const accessory = right ?? chevron;
-    const accessoryNode = isDefined(accessory) ? <View className="self-center">{accessory}</View> : null;
+    const leftNode = isDefined(left) ? <View className={layout.leftClassName}>{left}</View> : null;
+    const accessoryNode = isDefined(accessory) ? <View className={layout.accessoryClassName}>{accessory}</View> : null;
     const separatorClassName = isDefined(left) ? 'left-[64px]' : 'left-[16px]';
     const subtitleNode = isNotEmptyString(subtitle) ? (
         <Text
             className={cn('text-secondary-foreground', GROUPED_LIST_SUBTITLE_CLASSNAME)}
-            numberOfLines={subtitleLines}
+            numberOfLines={layout.subtitleLines}
             maxFontSizeMultiplier={2}
         >
             {subtitle}
@@ -67,28 +86,30 @@ export const GroupedListRow = (props: Props) => {
             onPress={onPress}
             {...(isPressable && { accessibilityRole: 'button' as const })}
             {...pressableProps}
-            className={cn('min-h-[50px] flex-row gap-x-xl px-3xl py-lg active:opacity-70', rowClassName)}
+            className={cn('min-h-[50px] flex-row gap-x-xl px-3xl py-lg active:opacity-70', layout.rowClassName)}
             {...(isPressable && { pressedScale: 1 })}
             testID={testID}
         >
             <View className={cn('absolute top-0 right-0 h-hairline bg-surface-separator', separatorClassName)} pointerEvents="none" />
-            {left}
-            <View className="min-w-0 flex-1 gap-y-xxs">
-                {isString(title) ? (
-                    <Text
-                        className={cn('text-primary', GROUPED_LIST_TITLE_CLASS_NAME)}
-                        numberOfLines={titleLines}
-                        maxFontSizeMultiplier={2}
-                        testID={titleTestID}
-                    >
-                        {title}
-                    </Text>
-                ) : (
-                    title
-                )}
-                {subtitleNode}
+            {leftNode}
+            <View className={cn('min-w-0 flex-1 flex-row items-center gap-x-xl', layout.contentClassName)}>
+                <View className={cn('gap-y-xxs', layout.textClassName)}>
+                    {isString(title) ? (
+                        <Text
+                            className={cn('text-primary', GROUPED_LIST_TITLE_CLASS_NAME)}
+                            numberOfLines={layout.titleLines}
+                            maxFontSizeMultiplier={2}
+                            testID={titleTestID}
+                        >
+                            {title}
+                        </Text>
+                    ) : (
+                        title
+                    )}
+                    {subtitleNode}
+                </View>
+                {accessoryNode}
             </View>
-            {accessoryNode}
         </Container>
     );
 };

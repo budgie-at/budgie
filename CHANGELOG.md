@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.191.5](https://github.com/budgie-at/budgie/compare/v6.191.4...v6.191.5) (2026-11-17)
+
+### Bug Fixes
+
+* **app:** keep settings row values on one line and mark action rows ([#2257](https://github.com/budgie-at/budgie/issues/2257)) ([729ad10](https://github.com/budgie-at/budgie/commit/729ad100e3c147ea7a7631b4b12f82fe58752b90)), closes [#2240](https://github.com/budgie-at/budgie/issues/2240) [#2241](https://github.com/budgie-at/budgie/issues/2241)
+
+
+## [6.191.4](https://github.com/budgie-at/budgie/compare/v6.191.3...v6.191.4) (2026-11-17)
+
+### Bug Fixes
+
+* **sync:** merge deleted cards that predate the provider column ([#2255](https://github.com/budgie-at/budgie/issues/2255)) ([04997e2](https://github.com/budgie-at/budgie/commit/04997e2933f137b514db401ec0a0fb72de9ab413))
+
+
 ## [6.191.3](https://github.com/budgie-at/budgie/compare/v6.191.2...v6.191.3) (2026-11-17)
 
 ### Bug Fixes

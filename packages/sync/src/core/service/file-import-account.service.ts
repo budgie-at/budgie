@@ -1,4 +1,11 @@
-import { AccountRepository, convertToMicroUnits, SyncModeEnum, TransactionEntryRepository, TransactionRepository } from '@budgie/contracts';
+import {
+    AccountRepository,
+    convertToMicroUnits,
+    SyncModeEnum,
+    SyncRepository,
+    TransactionEntryRepository,
+    TransactionRepository
+} from '@budgie/contracts';
 import { AccountArchiveService } from '@budgie/ledger';
 import { millisecondsInSecond } from 'date-fns/constants';
 import * as Context from 'effect/Context';
@@ -24,6 +31,7 @@ export class FileImportAccountService extends Context.Service<FileImportAccountS
         const transactionRepository = yield* TransactionRepository;
         const transactionEntryRepository = yield* TransactionEntryRepository;
         const accountArchiveService = yield* AccountArchiveService;
+        const syncRepository = yield* SyncRepository;
 
         return {
             resolveIsDelivered: Effect.fn('FileImportAccountService.resolveIsDelivered')(function* (
@@ -60,14 +68,18 @@ export class FileImportAccountService extends Context.Service<FileImportAccountS
                 bankAccount: SyncAccountInterface,
                 definition: Pick<SyncServiceDefinitionInterface, 'accountType' | 'provider'>
             ) {
-                const archivedAccounts = (yield* accountRepository.findIncludingArchivedByExternalKeys(
+                const accounts = yield* accountRepository.findIncludingArchivedByExternalKeys(
                     [bankAccount.id, resolveMatchableIban(bankAccount.iban)].filter(isDefined)
-                )).filter(
-                    account =>
-                        isDefined(account.deletedAt) &&
-                        !account.isExternal &&
-                        account.type === definition.accountType &&
-                        account.externalSource === definition.provider
+                );
+                const archivedAccounts = yield* Effect.filter(accounts, account =>
+                    isDefined(account.deletedAt) && !account.isExternal && account.type === definition.accountType
+                        ? Effect.map(
+                              isDefined(account.externalSource)
+                                  ? Effect.succeed(account.externalSource)
+                                  : Effect.map(syncRepository.getByAccountId(account.id), sync => sync?.provider),
+                              provider => provider === definition.provider
+                          )
+                        : Effect.succeed(false)
                 );
                 const [archivedAccount] = archivedAccounts;
                 if (archivedAccounts.length !== 1 || !isDefined(archivedAccount)) {
@@ -75,6 +87,7 @@ export class FileImportAccountService extends Context.Service<FileImportAccountS
                 }
 
                 yield* accountArchiveService.restoreById(archivedAccount.id);
+                yield* accountRepository.updateById(archivedAccount.id, { externalSource: definition.provider });
 
                 return true;
             }),
@@ -116,6 +129,12 @@ export class FileImportAccountService extends Context.Service<FileImportAccountS
     })
 }) {
     static readonly layer = Layer.effect(FileImportAccountService, FileImportAccountService.make).pipe(
-        Layer.provide([AccountRepository.layer, TransactionRepository.layer, TransactionEntryRepository.layer, AccountArchiveService.layer])
+        Layer.provide([
+            AccountRepository.layer,
+            TransactionRepository.layer,
+            TransactionEntryRepository.layer,
+            AccountArchiveService.layer,
+            SyncRepository.layer
+        ])
     );
 }

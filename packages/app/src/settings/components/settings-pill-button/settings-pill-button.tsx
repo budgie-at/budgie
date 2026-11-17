@@ -5,6 +5,7 @@ import { isDefined } from '@rnw-community/shared';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { HapticPressFeedbackEnum } from '../../../@generic/enum/haptic-press-feedback.enum';
+import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { cn } from '../../../@generic/utils/cn.util';
 
 import type { AccessibilityProps } from 'react-native';
@@ -42,10 +43,15 @@ export const SettingsPillButton = (props: Props) => {
     const disabled = isDisabled || isLoading;
     const accessibilityState = { busy: isLoading, disabled };
     const minWidthClassName = size === 'sm' ? 'min-w-[76px] min-h-[28px] px-lg' : 'min-w-[92px] min-h-[30px] px-xl';
+    const accessibilitySizeClassName = useIsAccessibilityTextSize() ? 'min-h-[44px] py-sm' : 'py-xs';
     const labelSizeClassName = size === 'sm' ? 'text-[14px]' : 'text-[15px]';
     const content = (
         <LoadingContent isLoading={isLoading}>
-            <Text className={cn('text-center font-semibold', labelSizeClassName, labelClassName)} numberOfLines={2}>
+            <Text
+                className={cn('text-center font-semibold', labelSizeClassName, labelClassName)}
+                numberOfLines={2}
+                maxFontSizeMultiplier={1.6}
+            >
                 {label}
             </Text>
         </LoadingContent>
@@ -54,7 +60,13 @@ export const SettingsPillButton = (props: Props) => {
     if (!isDefined(onPress) && !isDisabled) {
         return (
             <View
-                className={cn('items-center justify-center rounded-full py-xs', minWidthClassName, backgroundClassName, className)}
+                className={cn(
+                    'items-center justify-center rounded-full',
+                    minWidthClassName,
+                    accessibilitySizeClassName,
+                    backgroundClassName,
+                    className
+                )}
                 style={CONTINUOUS_CORNERS}
                 testID={testID}
                 importantForAccessibility="no-hide-descendants"
@@ -68,8 +80,9 @@ export const SettingsPillButton = (props: Props) => {
     return (
         <HapticPressable
             className={cn(
-                'items-center justify-center rounded-full py-xs active:opacity-70',
+                'items-center justify-center rounded-full active:opacity-70',
                 minWidthClassName,
+                accessibilitySizeClassName,
                 backgroundClassName,
                 className,
                 isDisabled && 'opacity-40'

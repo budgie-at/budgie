@@ -168,6 +168,27 @@ describe('account/archived-duplicate-merge', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
+    it.effect('folds the live duplicate into an archived account that predates its provider column', () =>
+        Effect.gen(function* () {
+            const { archivedCard, liveCard } = yield* seedArchivedDuplicate;
+
+            yield* (yield* SyncRepository).create({
+                accountId: archivedCard.id,
+                provider: ExternalSourceEnum.MONOBANK,
+                enabled: true,
+                mode: SyncModeEnum.FORWARD
+            });
+            yield* testDb.update(AccountEntityTable).set({ externalSource: null }).where(eq(AccountEntityTable.id, archivedCard.id));
+            yield* (yield* SyncRepairService).removeDuplicates();
+
+            const survivingAccount = yield* (yield* AccountRepository).findByIdIncludingArchived(archivedCard.id);
+
+            expect(survivingAccount?.deletedAt).toBeNull();
+            expect(survivingAccount?.externalSource).toBe(ExternalSourceEnum.MONOBANK);
+            expect(yield* (yield* AccountRepository).findByIdIncludingArchived(liveCard.id)).toBeUndefined();
+        }).pipe(Effect.provide(TestLayer))
+    );
+
     it.effect('keeps an archived transfer with a leg on another account and drops the one-sided live copy', () =>
         Effect.gen(function* () {
             const syncRepairService = yield* SyncRepairService;

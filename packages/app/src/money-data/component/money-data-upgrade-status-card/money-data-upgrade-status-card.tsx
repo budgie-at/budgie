@@ -6,7 +6,7 @@ import { TestIDPartEnum } from '../../../@generic/enum/test-id-part.enum';
 import { cn } from '../../../@generic/utils/cn.util';
 import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
 import { AiProgressBar } from '../../../settings/components/ai-progress-bar/ai-progress-bar';
-import { SettingsPillButton } from '../../../settings/components/settings-pill-button/settings-pill-button';
+import { SettingsActionRow } from '../../../settings/components/settings-action-row/settings-action-row';
 import { SettingsRow } from '../../../settings/components/settings-row/settings-row';
 import { MoneyDataUpgradeProgressStateEnum } from '../../enum/money-data-upgrade-progress-state.enum';
 import { useMoneyDataUpgradeStatus } from '../../hook/use-money-data-upgrade-status.hook';
@@ -30,7 +30,6 @@ export const MoneyDataUpgradeStatusCard = ({ testID }: Props) => {
     const isComplete = snapshot.state === MoneyDataUpgradeProgressStateEnum.COMPLETE;
     const isActionable = !isWorking && !isComplete;
     const statusText = isComplete ? t`All past amounts are converted` : snapshot.statusText;
-    const actionLabel = snapshot.state === MoneyDataUpgradeProgressStateEnum.ERROR ? t`Retry` : t`Convert`;
     const stateClassName = STATE_TEXT_CLASS[snapshot.state];
     const handlePress = () => void handlePrimaryAction();
     const percent = (
@@ -39,8 +38,31 @@ export const MoneyDataUpgradeStatusCard = ({ testID }: Props) => {
         </Text>
     );
     const progress = isWorking ? <AiProgressBar progress={snapshot.percent} /> : null;
-    const accessory = isActionable ? <SettingsPillButton label={actionLabel} variant="secondary" /> : percent;
     const statusClassName = isWorking ? 'text-secondary-foreground' : stateClassName;
+    const subtitle = (
+        <View className="gap-y-sm">
+            <Text
+                numberOfLines={2}
+                {...testIDProps(testID, TestIDPartEnum.STATUS, snapshot.state)}
+                className={cn('text-[13px] leading-[18px]', statusClassName)}
+            >
+                {statusText}
+            </Text>
+            {progress}
+        </View>
+    );
+
+    if (isActionable) {
+        return (
+            <SettingsActionRow
+                icon={UserIconNameEnum.History}
+                title={snapshot.title}
+                subtitle={subtitle}
+                onPress={handlePress}
+                testID={testID}
+            />
+        );
+    }
 
     return (
         <SettingsRow
@@ -48,20 +70,8 @@ export const MoneyDataUpgradeStatusCard = ({ testID }: Props) => {
             variant="ghost"
             title={snapshot.title}
             testID={testID}
-            {...(isActionable && { onPress: handlePress })}
-            right={accessory}
-            subtitle={
-                <View className="gap-y-sm">
-                    <Text
-                        numberOfLines={2}
-                        {...testIDProps(testID, TestIDPartEnum.STATUS, snapshot.state)}
-                        className={cn('text-[13px] leading-[18px]', statusClassName)}
-                    >
-                        {statusText}
-                    </Text>
-                    {progress}
-                </View>
-            }
+            right={percent}
+            subtitle={subtitle}
         />
     );
 };

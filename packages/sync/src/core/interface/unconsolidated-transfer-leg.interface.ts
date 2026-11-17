@@ -9,4 +9,5 @@ export interface UnconsolidatedTransferLegInterface {
     readonly amount: number;
     readonly counterpartExternalId: string | null;
     readonly counterpartIban: string | null;
+    readonly counterpartAliasExternalIds: readonly string[];
 }

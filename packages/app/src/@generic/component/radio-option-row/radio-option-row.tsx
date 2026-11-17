@@ -20,7 +20,7 @@ interface Props {
 export const RadioOptionRow = ({ label, isSelected, onPress, description, children, testID }: Props) => {
     const indicatorClassName = isSelected ? 'border-[6px] border-primary' : 'border-[1.5px] border-secondary-foreground';
 
-    const accessibilityState = { selected: isSelected };
+    const accessibilityState = { checked: isSelected };
 
     return (
         <View className="gap-y-md py-md">

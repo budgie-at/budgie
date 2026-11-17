@@ -98,7 +98,6 @@ export class SyncRepairService extends Context.Service<SyncRepairService>()('@bu
         });
 
         const repairConsolidationDuplicates = Effect.fnUntraced(function* () {
-            const archivedDuplicateMergeCount = yield* accountReissueMergeService.mergeArchivedDuplicates();
             const reissueMergeCount = yield* accountReissueMergeService.mergeReissuedAccounts();
             const incomeDuplicateRepairCount = yield* consolidationCoordinatorService.repairExistingTransferIncomeDuplicates();
             const bridgeClaimRepairCount = yield* consolidationCoordinatorService.repairBridgeClaimedTransferPairs();
@@ -107,7 +106,6 @@ export class SyncRepairService extends Context.Service<SyncRepairService>()('@bu
             const ownCardTransferRepairCount = yield* unpairedOwnCardTransferRepairService.repair();
 
             return (
-                archivedDuplicateMergeCount +
                 reissueMergeCount +
                 incomeDuplicateRepairCount +
                 bridgeClaimRepairCount +
@@ -157,7 +155,11 @@ export class SyncRepairService extends Context.Service<SyncRepairService>()('@bu
         });
 
         const removeDuplicatesInner = Effect.fnUntraced(function* () {
-            const duplicateResult = yield* Db.transaction(removeDuplicatesInTransaction());
+            const archivedDuplicateMergeCount = yield* accountReissueMergeService.mergeArchivedDuplicates();
+            const duplicateResult = {
+                repairedTransactionCount:
+                    archivedDuplicateMergeCount + (yield* Db.transaction(removeDuplicatesInTransaction())).repairedTransactionCount
+            } satisfies SyncDuplicateRepairResultInterface;
             const consolidationRepairCount = yield* repairConsolidationDuplicates().pipe(
                 Effect.onError(() => Effect.ignoreCause(rebuildBalancesWhenNeeded(duplicateResult)))
             );

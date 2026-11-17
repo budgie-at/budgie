@@ -58,7 +58,7 @@ export const ImportPresetPicker = ({ selectedPreset, detectedPreset, onPresetSel
                 testID={ImportPresetPickerSelector.Toggle}
                 pressableProps={toggleProps}
                 right={
-                    <View className="max-w-[60%] flex-row items-center gap-x-xs">
+                    <View className="max-w-[160px] shrink flex-row items-center gap-x-xs">
                         <Text className="shrink text-secondary-foreground text-[17px]" numberOfLines={1}>
                             {selectedValue}
                         </Text>
