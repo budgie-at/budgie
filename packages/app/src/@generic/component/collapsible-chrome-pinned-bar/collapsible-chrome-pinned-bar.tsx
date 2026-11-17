@@ -1,4 +1,4 @@
-import Animated, { Extrapolation, interpolate, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
+import Animated, { Extrapolation, interpolate, useAnimatedStyle, useDerivedValue, useSharedValue } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useCollapsibleHeaderScroll } from '@rnw-community/react-native-collapsible-header';
@@ -30,9 +30,16 @@ export const CollapsibleChromePinnedBar = ({ anchorY, onHeightChange, pinnedFoot
     const animatedStyle = useAnimatedStyle(() => ({
         transform: [{ translateY: pinnedTop + Math.max(pinDistance - scrollY.get(), 0) }]
     }));
+    const pinnedProgress = useDerivedValue(() =>
+        interpolate(scrollY.get(), [pinDistance - EDGE_FADE_DISTANCE, pinDistance], [0, 1], Extrapolation.CLAMP)
+    );
     const pinnedEdgeAnimatedStyle = useAnimatedStyle(() => ({
         top: height.get(),
-        opacity: interpolate(scrollY.get(), [pinDistance - EDGE_FADE_DISTANCE, pinDistance], [0, 1], Extrapolation.CLAMP)
+        opacity: pinnedProgress.get()
+    }));
+    const pinnedFillAnimatedStyle = useAnimatedStyle(() => ({
+        height: pinnedTop,
+        opacity: pinnedProgress.get()
     }));
 
     const handleLayout = (event: LayoutChangeEvent) => {
@@ -42,6 +49,8 @@ export const CollapsibleChromePinnedBar = ({ anchorY, onHeightChange, pinnedFoot
 
     return (
         <Animated.View className="absolute inset-x-0 top-0 bg-surface px-5xl py-md" style={animatedStyle} onLayout={handleLayout}>
+            <Animated.View className="absolute inset-x-0 bottom-full bg-surface" style={pinnedFillAnimatedStyle} pointerEvents="none" />
+
             {children}
 
             <Animated.View className="absolute inset-x-0 -mt-px" style={pinnedEdgeAnimatedStyle} pointerEvents="none">
