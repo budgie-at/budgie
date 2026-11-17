@@ -9,9 +9,9 @@ import { useProtectedAmountLabel } from '../../@generic/hook/use-protected-amoun
 import { useFormatPercent } from '../../i18n/hook/use-format-percent.hook';
 import { defaultInstrumentAtom } from '../../settings/constants/settings-atoms.constant';
 import { YieldScreenContext } from '../context/yield-screen.context';
-import { YieldChartModeEnum } from '../enum/yield-chart-mode.enum';
 import { YieldHeroLineKindEnum } from '../enum/yield-hero-line-kind.enum';
 import { resolveYieldHeroLineKind } from '../utils/resolve-yield-hero-line-kind.util';
+import { selectYieldScrubbedBuckets } from '../utils/select-yield-scrubbed-buckets.util';
 
 import { useYieldRateText } from './use-yield-rate-text.hook';
 
@@ -25,8 +25,7 @@ export const useYieldHeroLineText = (summary: YieldSummaryInterface, bucket: Yie
     const rateText = useYieldRateText(summary.annualYield, screenKey.key.range);
     const { symbol } = useAtomValue(defaultInstrumentAtom);
 
-    const bucketIndex = isDefined(bucket) ? summary.buckets.indexOf(bucket) : -1;
-    const scrubbedBuckets = summary.buckets.slice(mode === YieldChartModeEnum.RUNNING_TOTAL ? 0 : bucketIndex, bucketIndex + 1);
+    const scrubbedBuckets = selectYieldScrubbedBuckets(summary.buckets, isDefined(bucket) ? summary.buckets.indexOf(bucket) : null, mode);
     const bucketTax = scrubbedBuckets.reduce((sum, item) => sum + item.amounts[YieldGroupEnum.TAX], 0);
     const scrubbedTotal = scrubbedBuckets.reduce((sum, item) => sum + item.total, 0);
     const kind = resolveYieldHeroLineKind({

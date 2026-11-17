@@ -15,10 +15,9 @@ import { defaultInstrumentAtom } from '../../../settings/constants/settings-atom
 import { yieldSummaryFamily } from '../../constant/yield-summary-family-atom.constant';
 import { YieldScreenContext } from '../../context/yield-screen.context';
 import { YieldSelectionContext } from '../../context/yield-selection.context';
-import { YieldChartModeEnum } from '../../enum/yield-chart-mode.enum';
 import { useYieldHeroSentence } from '../../hook/use-yield-hero-sentence.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
-import { buildYieldRunningTotal } from '../../utils/build-yield-running-total.util';
+import { selectYieldScrubbedBuckets } from '../../utils/select-yield-scrubbed-buckets.util';
 import { YieldHeroCaption } from '../yield-hero-caption/yield-hero-caption';
 import { YieldHeroInfoButton } from '../yield-hero-info-button/yield-hero-info-button';
 import { YieldHeroLine } from '../yield-hero-line/yield-hero-line';
@@ -30,9 +29,7 @@ export const YieldHero = () => {
     const { symbol } = useAtomValue(defaultInstrumentAtom);
 
     const bucket = isDefined(selectedIndex) ? (summary?.buckets.at(selectedIndex) ?? null) : null;
-    const runningTotal =
-        buildYieldRunningTotal(summary?.buckets.slice(0, (selectedIndex ?? -1) + 1).map(item => item.total) ?? []).at(-1) ?? 0;
-    const scrubAmount = mode === YieldChartModeEnum.RUNNING_TOTAL ? runningTotal : (bucket?.total ?? 0);
+    const scrubAmount = selectYieldScrubbedBuckets(summary?.buckets ?? [], selectedIndex, mode).reduce((sum, item) => sum + item.total, 0);
     const amount = isDefined(bucket) ? scrubAmount : (summary?.earned.value ?? 0);
     const figureKey = isDefined(bucket) ? 'scrub' : 'total';
     const isApproximate = isDefined(bucket) ? bucket.isEstimated : (summary?.earned.isEstimated ?? false);
