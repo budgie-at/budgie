@@ -34,7 +34,7 @@ jobs:
     needs: assert-ai
     permissions:
       contents: read
-    uses: rnw-community/mobile-ci/.github/workflows/native-publish.yml@94e78d391732050f1daf02d1906708f04c5b5a71 # v4.13.2
+    uses: rnw-community/mobile-ci/.github/workflows/native-publish.yml@6573897f76180036df9d44017b07161a431f36b5 # v4.18.0
     with:
       control-runner-labels: '["ubuntu-latest"]'
       lint-runner-labels: '["ubuntu-latest"]'
