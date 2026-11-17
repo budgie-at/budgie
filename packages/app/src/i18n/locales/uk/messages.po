@@ -1303,6 +1303,7 @@ msgid "2× plan"
 msgstr "2× план"
 
 #: src/account/component/account-details-market-link/account-details-market-link.tsx
+#: src/account/component/home-section-return-pill/home-section-return-pill.tsx
 msgid "24h"
 msgstr "24 год"
 
@@ -4542,6 +4543,10 @@ msgstr "Готово"
 msgid "Double-tap to seal"
 msgstr "Торкніться двічі, щоб запечатати"
 
+#: src/account/component/home-section-return-pill/home-section-return-pill.tsx
+msgid "down {change}"
+msgstr "знизився на {change}"
+
 #: src/account/component/account-details-market-link/account-details-market-link.tsx
 msgid "down {changeShare} on {staleDate}"
 msgstr "знизилась на {changeShare} {staleDate}"
@@ -6437,6 +6442,10 @@ msgstr "Литва"
 msgid "Lives on"
 msgstr "Зберігається на"
 
+#: src/account/component/home-section-return-pill/home-section-return-pill.tsx
+msgid "loading"
+msgstr "завантаження"
+
 #: src/transaction/components/suggestion-loading-indicator/suggestion-loading-indicator.tsx
 msgid "Loading AI model..."
 msgstr "Завантаження моделі ШІ..."
@@ -8071,6 +8080,10 @@ msgstr "Пасивний дохід з’являється тут, коли в�
 #: src/yield/component/yield-entry-row-content/yield-entry-row-content.tsx
 msgid "Passive income, {subtitle}"
 msgstr "Пасивний дохід, {subtitle}"
+
+#: src/account/component/home-section-return-pill/home-section-return-pill.tsx
+msgid "Past 24 hours, {spokenChange}"
+msgstr "За 24 години: {spokenChange}"
 
 #: src/market-data/component/currency-market-overview/currency-market-overview.tsx
 msgid "Past 3 months"
@@ -10831,10 +10844,6 @@ msgstr "Топ за капіталізацією"
 msgid "Top-ups"
 msgstr "Поповнення"
 
-#: src/account/component/home-section-return-line/home-section-return-line.tsx
-msgid "total"
-msgstr "загалом"
-
 #: src/account/component/account-selector-card-debt-total-subtitle/account-selector-card-debt-total-subtitle.tsx
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
 #: src/account/component/debt-account-card/debt-account-card.tsx
@@ -10875,6 +10884,10 @@ msgstr "Усього отримано"
 #: src/brokerage/component/brokerage-gain-line/brokerage-gain-line.tsx
 msgid "Total return"
 msgstr "Загальна прибутковість"
+
+#: src/account/component/home-section-return-pill/home-section-return-pill.tsx
+msgid "Total return, {spokenChange}"
+msgstr "Загальна дохідність: {spokenChange}"
 
 #: src/settings/hook/use-biometric-label.hook.ts
 msgid "Touch ID"
@@ -11180,6 +11193,10 @@ msgstr "Недоступно"
 msgid "Uncategorized"
 msgstr "Без категорії"
 
+#: src/account/component/home-section-return-pill/home-section-return-pill.tsx
+msgid "unchanged"
+msgstr "без змін"
+
 #: src/budget/components/budget-history-legend/budget-history-legend.tsx
 msgid "Under limit"
 msgstr "У межах ліміту"
@@ -11312,6 +11329,10 @@ msgstr "Поки модель не готова, категорії визнач
 #: src/yield/constant/yield-unavailable-label.constant.ts
 msgid "Unusually high · balance history may be incomplete"
 msgstr "Незвично високо · історія балансу може бути неповною"
+
+#: src/account/component/home-section-return-pill/home-section-return-pill.tsx
+msgid "up {change}"
+msgstr "зріс на {change}"
 
 #: src/account/component/account-details-market-link/account-details-market-link.tsx
 msgid "up {changeShare} on {staleDate}"
