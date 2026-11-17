@@ -14,6 +14,7 @@ import { transactionFilters } from '../../@generic/repository/base-transaction-f
 import { Db } from '../../@generic/service/db.service';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
+import { AccountExternalIdEntityTable } from '../../account/table/account-external-id-entity.table';
 import { PERSONAL_SYNC_ZONE } from '../../cloud-sync/constant/personal-sync-zone.constant';
 import { TransactionEntryAssociationEnum } from '../../transaction-entry/enum/transaction-entry-association.enum';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
@@ -356,10 +357,14 @@ export class TransactionRepository extends Context.Service<TransactionRepository
 
             findByIdsWithRefundConsolidationHistory: (ids: number[]) => findByIdsWithEntriesWhere(ids, NOT_DELETED_ENTRY_RELATION_WHERE),
 
-            findUnconsolidatedTransferLegs: (accountId: number, externalSource: ExternalSourceEnum) =>
-                Db.query(db =>
+            findUnconsolidatedTransferLegs: Effect.fn('TransactionRepository.findUnconsolidatedTransferLegs')(function* (
+                accountId: number,
+                externalSource: ExternalSourceEnum
+            ) {
+                const legs = yield* Db.query(db =>
                     db
                         .select({
+                            counterpartAccountId: TransferCounterpartAccountTable.id,
                             transactionId: TransactionEntityTable.id,
                             entryId: TransactionEntryEntityTable.id,
                             entryExternalId: TransactionEntryEntityTable.externalId,
@@ -395,7 +400,31 @@ export class TransactionRepository extends Context.Service<TransactionRepository
                                 or(eq(TransactionEntityTable.fromAccountId, accountId), eq(TransactionEntityTable.toAccountId, accountId))
                             )
                         )
-                ),
+                );
+                const aliases = isNotEmptyArray(legs)
+                    ? yield* Db.query(db =>
+                          db
+                              .select({
+                                  accountId: AccountExternalIdEntityTable.accountId,
+                                  externalId: AccountExternalIdEntityTable.externalId
+                              })
+                              .from(AccountExternalIdEntityTable)
+                              .where(
+                                  inArray(
+                                      AccountExternalIdEntityTable.accountId,
+                                      legs.map(leg => leg.counterpartAccountId)
+                                  )
+                              )
+                      )
+                    : [];
+
+                return legs.map(({ counterpartAccountId, ...leg }) => ({
+                    ...leg,
+                    counterpartAliasExternalIds: aliases
+                        .filter(item => item.accountId === counterpartAccountId)
+                        .map(item => item.externalId)
+                }));
+            }),
 
             findIdMapByExternalSource: Effect.fn('TransactionRepository.findIdMapByExternalSource')(function* (
                 externalSource: ExternalSourceEnum,

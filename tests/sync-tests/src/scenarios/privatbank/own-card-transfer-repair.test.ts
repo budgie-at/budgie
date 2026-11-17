@@ -1,5 +1,6 @@
 import {
     AccountBalanceRepository,
+    AccountExternalIdEntityTable,
     convertFromMicroUnits,
     AccountEntityTable,
     AccountRepository,
@@ -587,6 +588,43 @@ describe('privatbank/own-card-transfer-repair', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
+    it.effect('drops restored copies of a repaired transfer titled with the counterpart earlier card number', () =>
+        Effect.gen(function* () {
+            const syncRepairService = yield* SyncRepairService;
+            const liveCard = yield* seedPrivatbankCard('1234');
+            const archivedCard = yield* seedPrivatbankCard('4321');
+
+            yield* testDb.insert(AccountExternalIdEntityTable).values({ accountId: liveCard.id, externalId: '5168 **** **** 8522' });
+            yield* Effect.forEach(['privatbank-old-id', 'privatbank-new-id'], externalId =>
+                Effect.gen(function* () {
+                    const expense = yield* seed.bankPairExpense(
+                        { externalId, operatedAt: OWN_CARD_OPERATED_AT },
+                        { accountId: archivedCard.id, amount: OWN_CARD_AMOUNT }
+                    );
+
+                    yield* seed.updateTransaction(expense.id, {
+                        externalSource: ExternalSourceEnum.PRIVATBANK,
+                        title: 'На мою картку *8522'
+                    });
+                })
+            );
+            yield* (yield* AccountArchiveService).archiveById(archivedCard.id);
+            const income = yield* seedOwnCardIncome(liveCard.id);
+            yield* (yield* TransactionTransferService).convertIncomeToTransfer({
+                id: income.id,
+                accountId: archivedCard.id,
+                customExchangeRate: 1,
+                feeEntries: []
+            });
+            yield* seedPrivatbankCard('4321');
+            yield* syncRepairService.removeDuplicates();
+
+            expect(yield* fetchLiveExpensesFromAccount(archivedCard.id)).toHaveLength(0);
+            expect(yield* fetchAccountBalance(archivedCard.id)).toBe(-OWN_CARD_AMOUNT);
+            expect(yield* fetchAccountBalance(liveCard.id)).toBe(OWN_CARD_AMOUNT);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
     it.effect('imports a purchase that sits near a repaired transfer leg without own-card evidence', () =>
         Effect.gen(function* () {
             const unpairedOwnCardTransferRepairService = yield* UnpairedOwnCardTransferRepairService;
@@ -760,17 +798,17 @@ describe('privatbank/own-card-transfer-repair', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('requires a non-empty counterpart card ending in the own-card title evidence', () =>
+    it.effect('matches the own-card title against the counterpart card or one of its earlier card numbers', () =>
         Effect.sync(() => {
             const title = 'На мою картку *1234';
+            const hasEvidence = (counterpartExternalId: string, counterpartIban: string | null, counterpartAliasExternalIds: string[]) =>
+                isPrivatbankOwnCardTransferTitle(title, { counterpartAliasExternalIds, counterpartExternalId, counterpartIban });
 
-            expect(isPrivatbankOwnCardTransferTitle(title, { counterpartExternalId: '', counterpartIban: null })).toBe(false);
-            expect(isPrivatbankOwnCardTransferTitle(title, { counterpartExternalId: '', counterpartIban: 'UA00PRIVATBANK1234' })).toBe(
-                true
-            );
-            expect(isPrivatbankOwnCardTransferTitle(title, { counterpartExternalId: '4000 **** **** 9999', counterpartIban: null })).toBe(
-                false
-            );
+            expect(hasEvidence('', null, [])).toBe(false);
+            expect(hasEvidence('', 'UA00PRIVATBANK1234', [])).toBe(true);
+            expect(hasEvidence('4000 **** **** 9999', null, [])).toBe(false);
+            expect(hasEvidence('4000 **** **** 9999', null, ['5168 **** **** 1234'])).toBe(true);
+            expect(hasEvidence('4000 **** **** 9999', null, [''])).toBe(false);
         })
     );
 });

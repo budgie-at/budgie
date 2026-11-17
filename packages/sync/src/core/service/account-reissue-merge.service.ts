@@ -82,12 +82,21 @@ export class AccountReissueMergeService extends Context.Service<AccountReissueMe
             ORDER BY successor.first_at, successor.account_id
         `;
 
+        const buildProviderSql = (alias: string): string => String.raw`
+            COALESCE(${alias}.external_source, (
+                SELECT provider_sync.provider FROM bank_syncs provider_sync
+                WHERE provider_sync.account_id = ${alias}.id
+                ORDER BY provider_sync.deleted_at IS NOT NULL, provider_sync.id DESC
+                LIMIT 1
+            ))
+        `;
+
         const buildSameCardCountSql = (deletedCondition: string): string => String.raw`
             SELECT COUNT(*) FROM accounts same_card
             WHERE same_card.deleted_at ${deletedCondition}
                 AND same_card.is_external = 0
                 AND same_card.type = '${AccountTypeEnum.BANK_SYNC}'
-                AND same_card.external_source = live.external_source
+                AND ${buildProviderSql('same_card')} = ${buildProviderSql('live')}
                 AND same_card.external_id = live.external_id
         `;
 
@@ -95,7 +104,7 @@ export class AccountReissueMergeService extends Context.Service<AccountReissueMe
             SELECT
                 live.id AS liveAccountId,
                 archived.id AS archivedAccountId,
-                live.external_source AS externalSource,
+                ${buildProviderSql('live')} AS externalSource,
                 COALESCE(live.integration_id, archived.integration_id) AS integrationId,
                 MAX(live.is_active, archived.is_active) AS isActive
             FROM accounts live
@@ -104,7 +113,7 @@ export class AccountReissueMergeService extends Context.Service<AccountReissueMe
                 AND archived.deleted_at IS NOT NULL
                 AND archived.is_external = 0
                 AND archived.type = live.type
-                AND archived.external_source = live.external_source
+                AND ${buildProviderSql('archived')} = ${buildProviderSql('live')}
                 AND archived.instrument_id = live.instrument_id
                 AND archived.external_id = live.external_id
             WHERE live.deleted_at IS NULL
@@ -242,7 +251,7 @@ export class AccountReissueMergeService extends Context.Service<AccountReissueMe
             supersededTransactionIds: ReadonlySet<number>
         ) {
             if (externalSource !== ExternalSourceEnum.PRIVATBANK) {
-                return [];
+                return { copyIds: [], matches: [] };
             }
 
             const legs = yield* transactionRepository.findUnconsolidatedTransferLegs(archivedAccountId, externalSource);
@@ -266,7 +275,7 @@ export class AccountReissueMergeService extends Context.Service<AccountReissueMe
                               externalIds: [transaction.externalId].filter(isDefined),
                               title: transaction.title,
                               isIncome,
-                              isKnown: entry.accountId === archivedAccountId,
+                              isKnown: false,
                               operatedAt: transaction.operatedAt,
                               amounts: [entry.amount]
                           }
@@ -274,7 +283,22 @@ export class AccountReissueMergeService extends Context.Service<AccountReissueMe
                     : [];
             });
 
-            return [...matchUnconsolidatedTransferLegs(candidates, legs, isPrivatbankOwnCardTransferTitle)];
+            const matches = [...matchUnconsolidatedTransferLegs(candidates, legs, isPrivatbankOwnCardTransferTitle)];
+            const matchedCandidates = new Set(matches.map(([candidate]) => candidate));
+            const copyIds = candidates
+                .filter(
+                    candidate =>
+                        !matchedCandidates.has(candidate) &&
+                        [...matchedCandidates].some(
+                            matched =>
+                                matched.title === candidate.title &&
+                                matched.operatedAt.getTime() === candidate.operatedAt.getTime() &&
+                                matched.amounts[0] === candidate.amounts[0]
+                        )
+                )
+                .map(candidate => candidate.transactionId);
+
+            return { copyIds, matches };
         });
 
         const dropReplacedSyncAdjustments = Effect.fnUntraced(function* (liveAccountId: number, archivedAccountId: number) {
@@ -319,12 +343,16 @@ export class AccountReissueMergeService extends Context.Service<AccountReissueMe
                 );
 
                 yield* Effect.forEach(
-                    [...sharedExternalIdDuplicateIds, ...legDuplicates.map(([{ transactionId }]) => transactionId)],
+                    [
+                        ...sharedExternalIdDuplicateIds,
+                        ...legDuplicates.copyIds,
+                        ...legDuplicates.matches.map(([{ transactionId }]) => transactionId)
+                    ],
                     transactionId => transactionService.deleteById(transactionId),
                     { discard: true }
                 );
                 yield* Effect.forEach(
-                    legDuplicates.flatMap(([{ externalIds }, leg]) => {
+                    legDuplicates.matches.flatMap(([{ externalIds }, leg]) => {
                         const [externalId] = externalIds;
 
                         return isDefined(externalId) && !isDefined(leg.entryExternalId) ? [{ externalId, leg }] : [];
@@ -336,6 +364,7 @@ export class AccountReissueMergeService extends Context.Service<AccountReissueMe
                 yield* reassignReferences(archivedAccountId, liveAccountId);
                 yield* accountRepository.deleteById(liveAccountId);
                 yield* accountRepository.updateById(archivedAccountId, {
+                    externalSource,
                     integrationId: candidate.integrationId,
                     isActive: candidate.isActive === 1
                 });
