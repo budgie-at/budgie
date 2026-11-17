@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.191.9](https://github.com/budgie-at/budgie/compare/v6.191.8...v6.191.9) (2026-11-17)
+
+### Bug Fixes
+
+* **app:** keep manual brokerage cash funded by one reconciler ([#2262](https://github.com/budgie-at/budgie/issues/2262)) ([2d3a2f8](https://github.com/budgie-at/budgie/commit/2d3a2f89b96cec9bf994e8d179ba2ec2987104c6))
+
+
 ## [6.191.4](https://github.com/budgie-at/budgie/compare/v6.191.3...v6.191.4) (2026-11-17)
 
 ### Bug Fixes
