@@ -21,13 +21,22 @@ export const useArchiveAccount = (accountId: number, onArchived: EmptyFn) => {
     const { account } = useGetAccountByIdQuery(accountId);
     const shareStatusResult = useLiveAtomValue(householdAccountShareAtom(accountId));
     const isBrokerageCash = account?.externalSource === ExternalSourceEnum.MANUAL && account.instrument.type === InstrumentTypeEnum.FIAT;
-    const isArchivable = isDefined(account) && isAccountArchivable(shareStatusResult) && !isBrokerageCash;
+    const isArchivable = isDefined(account) && isAccountArchivable(shareStatusResult);
     const isShareLoading = AsyncResult.isInitial(shareStatusResult);
     const defaultAccountId = useSetting('defaultAccountId');
 
     const accountTitle = account?.title ?? '';
     const isDefaultAccount = defaultAccountId === accountId;
-    const restore = Effect.flatMap(AccountArchiveService, accountArchiveService => accountArchiveService.restoreById(accountId));
+    const archive = Effect.flatMap(AccountArchiveService, accountArchiveService =>
+        isBrokerageCash && isDefined(account.integrationId)
+            ? accountArchiveService.archiveByIntegrationId(account.integrationId)
+            : accountArchiveService.archiveById(accountId).pipe(Effect.as([accountId]))
+    );
+    const restore = (archivedAccountIds: readonly number[]) =>
+        Effect.flatMap(AccountArchiveService, accountArchiveService =>
+            Effect.forEach(archivedAccountIds, archivedAccountId => accountArchiveService.restoreById(archivedAccountId), { discard: true })
+        );
+    const accountSuccessText = isNotEmptyString(accountTitle) ? t`Archived “${accountTitle}”` : t`Account archived`;
 
     const handleArchive = () => {
         if (!isArchivable) {
@@ -35,14 +44,15 @@ export const useArchiveAccount = (accountId: number, onArchived: EmptyFn) => {
         }
 
         void runWithFeedback({
-            action: Effect.flatMap(AccountArchiveService, accountArchiveService => accountArchiveService.archiveById(accountId)).pipe(
-                Effect.tap(() => Effect.sync(onArchived))
-            ),
-            successText: isNotEmptyString(accountTitle) ? t`Archived “${accountTitle}”` : t`Account archived`,
-            errorText: t`Could not archive account.`,
-            undo: isDefaultAccount ? restore.pipe(Effect.andThen(updateSettingsMutation({ defaultAccountId: accountId }))) : restore
+            action: archive.pipe(Effect.tap(() => Effect.sync(onArchived))),
+            successText: isBrokerageCash ? t`Brokerage archived` : accountSuccessText,
+            errorText: isBrokerageCash ? t`Could not archive brokerage.` : t`Could not archive account.`,
+            undo: archivedAccountIds =>
+                isDefaultAccount
+                    ? restore(archivedAccountIds).pipe(Effect.andThen(updateSettingsMutation({ defaultAccountId: accountId })))
+                    : restore(archivedAccountIds)
         });
     };
 
-    return { handleArchive, isLoading, isArchivable, isShareLoading };
+    return { handleArchive, isLoading, isArchivable, isShareLoading, isBrokerageCash };
 };

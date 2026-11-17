@@ -13,12 +13,16 @@ interface Props {
 
 export const ArchiveAccount = ({ accountId }: Props) => {
     const { t } = useLingui();
-    const { handleArchive, isLoading, isArchivable, isShareLoading } = useArchiveAccount(accountId, () => void dismissAllOrReplace('/'));
+    const { handleArchive, isLoading, isArchivable, isShareLoading, isBrokerageCash } = useArchiveAccount(
+        accountId,
+        () => void dismissAllOrReplace('/')
+    );
+    const label = isBrokerageCash ? t`Archive brokerage` : t`Archive account`;
 
     return isArchivable || isShareLoading ? (
         <LoadingContent isLoading={isShareLoading}>
             <GroupedListActionRow
-                label={t`Archive account`}
+                label={label}
                 icon={UserIconNameEnum.Archive}
                 onPress={handleArchive}
                 isDisabled={false}

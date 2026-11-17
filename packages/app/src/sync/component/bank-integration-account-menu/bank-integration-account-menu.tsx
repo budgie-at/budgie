@@ -27,7 +27,7 @@ interface Props {
 export const BankIntegrationAccountMenu = ({ accountId, rowTestID, title, children }: Props) => {
     const { t } = useLingui();
     const router = useRouter();
-    const { handleArchive, isLoading, isArchivable } = useArchiveAccount(accountId, emptyFn);
+    const { handleArchive, isLoading, isArchivable, isBrokerageCash } = useArchiveAccount(accountId, emptyFn);
     const { isLoading: isMarkingExternal, run: runMarkExternal } = useSingleFlight();
 
     const handleDetails = () => void router.navigate({ pathname: '/account/[id]/details', params: { id: String(accountId) } });
@@ -54,6 +54,15 @@ export const BankIntegrationAccountMenu = ({ accountId, rowTestID, title, childr
         );
 
     const isBusy = isLoading || isMarkingExternal;
+    const archiveLabel = isBrokerageCash ? t`Archive brokerage` : t`Archive`;
+    const externalItem = isBrokerageCash ? null : (
+        <ActionsMenuItem
+            icon={UserIconNameEnum.ArrowUpRight}
+            label={t`External account`}
+            onPress={handleMarkExternal}
+            {...testID(rowTestID, TestIDPartEnum.MENU, TestIDPartEnum.EXTERNAL)}
+        />
+    );
     const triggerTestID = testID(rowTestID, TestIDPartEnum.MENU).testID;
 
     return (
@@ -80,15 +89,10 @@ export const BankIntegrationAccountMenu = ({ accountId, rowTestID, title, childr
             />
             {isArchivable ? (
                 <>
-                    <ActionsMenuItem
-                        icon={UserIconNameEnum.ArrowUpRight}
-                        label={t`External account`}
-                        onPress={handleMarkExternal}
-                        {...testID(rowTestID, TestIDPartEnum.MENU, TestIDPartEnum.EXTERNAL)}
-                    />
+                    {externalItem}
                     <ActionsMenuItem
                         icon={UserIconNameEnum.Archive}
-                        label={t`Archive`}
+                        label={archiveLabel}
                         onPress={handleArchive}
                         variant="destructive"
                         {...testID(rowTestID, TestIDPartEnum.MENU, TestIDPartEnum.ARCHIVE)}

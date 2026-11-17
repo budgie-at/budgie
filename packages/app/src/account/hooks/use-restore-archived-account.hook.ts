@@ -23,7 +23,7 @@ export const useRestoreArchivedAccount = (account: Pick<AccountEntityInterface, 
             successText: account.isActive ? t`“${accountTitle}” is back on Home` : t`“${accountTitle}” is back in Hidden accounts`,
             errorText: t`Could not restore account.`,
             undo: isArchivable
-                ? Effect.flatMap(AccountArchiveService, accountArchiveService => accountArchiveService.archiveById(account.id))
+                ? () => Effect.flatMap(AccountArchiveService, accountArchiveService => accountArchiveService.archiveById(account.id))
                 : null
         });
 
