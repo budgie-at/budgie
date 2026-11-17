@@ -20,6 +20,8 @@ jobs:
         permissions:
             actions: write
             checks: read
+            contents: read
+            pull-requests: read
         steps:
             - uses: rnw-community/mobile-ci/actions/rerun-infra-failures@6573897f76180036df9d44017b07161a431f36b5 # v4.18.0
               with:
