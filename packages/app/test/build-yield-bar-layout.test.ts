@@ -38,7 +38,7 @@ const full = (
     estimatedAmounts: { ...amounts(0, 0), [YieldGroupEnum.DIVIDENDS]: estimatedDividends }
 });
 
-const axisOf100 = { step: 50, top: 100, bottom: 0, gridlines: [0, 50, 100] };
+const axisOf100 = { top: 100, bottom: 0 };
 
 const VISIBLE = [YieldGroupEnum.STAKING_EARN, YieldGroupEnum.INTEREST];
 
@@ -48,7 +48,7 @@ it('stacks visible groups bottom to top with a 2 pt gap and rounds only the top 
         visibleGroups: VISIBLE,
         width: 112,
         height: 200,
-        axis: { step: 50, top: 100, bottom: 0, gridlines: [0, 50, 100] }
+        axis: { top: 100, bottom: 0 }
     });
     const [staking] = layout.groups[YieldGroupEnum.STAKING_EARN];
     const [interest] = layout.groups[YieldGroupEnum.INTEREST];
@@ -64,7 +64,7 @@ it('merges a segment under 3 pt into the one above and draws tax below zero', ()
         visibleGroups: VISIBLE,
         width: 112,
         height: 240,
-        axis: { step: 100, top: 100, bottom: -20, gridlines: [-20, 0, 100] }
+        axis: { top: 100, bottom: -20 }
     });
 
     expect(layout.groups[YieldGroupEnum.STAKING_EARN][0]?.height).toBe(0);
@@ -78,14 +78,14 @@ it('draws a 1 pt tick for an empty bucket and 1 pt gaps on narrow bars', () => {
         visibleGroups: VISIBLE,
         width: 300,
         height: 200,
-        axis: { step: 10, top: 20, bottom: 0, gridlines: [0, 10, 20] }
+        axis: { top: 20, bottom: 0 }
     });
     const empty = buildYieldBarLayout({
         buckets: [bucket(0, 0)],
         visibleGroups: VISIBLE,
         width: 112,
         height: 200,
-        axis: { step: 1, top: 1, bottom: 0, gridlines: [0, 1] }
+        axis: { top: 1, bottom: 0 }
     });
 
     expect(narrow.groups[YieldGroupEnum.STAKING_EARN][0]?.height).toBe(99);
@@ -99,7 +99,7 @@ it('splits a segment into its priced part and its estimated part on top', () => 
         visibleGroups: [YieldGroupEnum.STAKING_EARN],
         width: 112,
         height: 200,
-        axis: { step: 50, top: 100, bottom: 0, gridlines: [0, 50, 100] }
+        axis: { top: 100, bottom: 0 }
     });
 
     expect(layout.groups[YieldGroupEnum.STAKING_EARN][0]).toMatchObject({ y: 100, height: 100, radius: 0 });

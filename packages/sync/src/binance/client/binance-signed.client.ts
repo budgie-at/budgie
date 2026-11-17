@@ -546,7 +546,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
 
     private readonly walkWindowsBackward = Effect.fnUntraced(function* <T>(
         this: BinanceSignedClient,
-        periodMs: number,
+        resolveWindowStartMs: (windowEndMs: number) => number,
         startTimeMs: number,
         endTimeMs: number,
         fetchOneWindow: (windowStartMs: number, windowEndMs: number) => Effect.Effect<readonly T[], SyncError, HttpClient.HttpClient>
@@ -556,7 +556,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         let isWalkDeferred = false;
 
         while (!isWalkDeferred && windowEndMs >= startTimeMs) {
-            const windowStartMs = Math.max(startTimeMs, windowEndMs - periodMs);
+            const windowStartMs = Math.max(startTimeMs, resolveWindowStartMs(windowEndMs));
             const windowRecords = yield* this.fetchWindowOrDefer(fetchOneWindow, windowStartMs, windowEndMs);
             isWalkDeferred = !isDefined(windowRecords);
             records.push(...(windowRecords ?? []));
@@ -699,7 +699,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             chunkEndMs: number
         ) => Effect.Effect<{ readonly rows: readonly T[]; readonly isTruncated: boolean }, SyncError, HttpClient.HttpClient>
     ) =>
-        this.walkWindowsBackward(periodMs, startTimeMs, endTimeMs, (windowStartMs, windowEndMs) =>
+        this.walkWindowsBackward(this.fixedPeriodWindowStart(periodMs), startTimeMs, endTimeMs, (windowStartMs, windowEndMs) =>
             this.fetchSplittingWindow(fetchChunk, windowStartMs, windowEndMs)
         );
 
@@ -713,7 +713,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             windowEndMs: number
         ) => Effect.Effect<{ readonly rows: readonly T[]; readonly hasMore: boolean }, SyncError, HttpClient.HttpClient>
     ) =>
-        this.walkWindowsBackward(periodMs, startTimeMs, endTimeMs, (windowStartMs, windowEndMs) =>
+        this.walkWindowsBackward(this.fixedPeriodWindowStart(periodMs), startTimeMs, endTimeMs, (windowStartMs, windowEndMs) =>
             this.collectPages(page => fetchPage(page, windowStartMs, windowEndMs))
         );
 
@@ -749,31 +749,35 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
 
     private fetchConvertTransfers(startTimeMs: number, endTimeMs: number) {
         return Effect.map(
-            this.walkWindowsBackward(CONVERT_MAX_PERIOD_MS, startTimeMs, endTimeMs, (windowStartMs, windowEndMs) =>
-                Effect.gen({ self: this }, function* () {
-                    const convertFlows = yield* this.fetchSplittingWindow(
-                        (chunkStartMs, chunkEndMs) =>
-                            this.signedRequest(BinanceConvertTradeFlowApiSchema, CONVERT_TRADE_FLOW_ENDPOINT, 'GET', {
-                                startTime: chunkStartMs,
-                                endTime: chunkEndMs,
-                                limit: CONVERT_ROWS_PER_PAGE
-                            }).pipe(Effect.map(chunk => ({ rows: chunk.list, isTruncated: chunk.moreData }))),
-                        windowStartMs,
-                        windowEndMs
-                    );
-                    const convertTransfers = convertFlows
-                        .filter(flow => flow.orderStatus === CONVERT_SUCCESS_STATUS)
-                        .map(flow => mapBinanceConvertToTransfer(flow))
-                        .filter(isDefined);
-                    this.noteTouchedAssets(this.collectTransferAssets(convertTransfers));
-                    const universalTransfers = yield* this.skipWhenUnavailable(
-                        BinanceHistorySourceEnum.CONVERT,
-                        [],
-                        this.fetchUniversalTransferWindow(windowStartMs, windowEndMs)
-                    );
+            this.walkWindowsBackward(
+                this.fixedPeriodWindowStart(CONVERT_MAX_PERIOD_MS),
+                startTimeMs,
+                endTimeMs,
+                (windowStartMs, windowEndMs) =>
+                    Effect.gen({ self: this }, function* () {
+                        const convertFlows = yield* this.fetchSplittingWindow(
+                            (chunkStartMs, chunkEndMs) =>
+                                this.signedRequest(BinanceConvertTradeFlowApiSchema, CONVERT_TRADE_FLOW_ENDPOINT, 'GET', {
+                                    startTime: chunkStartMs,
+                                    endTime: chunkEndMs,
+                                    limit: CONVERT_ROWS_PER_PAGE
+                                }).pipe(Effect.map(chunk => ({ rows: chunk.list, isTruncated: chunk.moreData }))),
+                            windowStartMs,
+                            windowEndMs
+                        );
+                        const convertTransfers = convertFlows
+                            .filter(flow => flow.orderStatus === CONVERT_SUCCESS_STATUS)
+                            .map(flow => mapBinanceConvertToTransfer(flow))
+                            .filter(isDefined);
+                        this.noteTouchedAssets(this.collectTransferAssets(convertTransfers));
+                        const universalTransfers = yield* this.skipWhenUnavailable(
+                            BinanceHistorySourceEnum.CONVERT,
+                            [],
+                            this.fetchUniversalTransferWindow(windowStartMs, windowEndMs)
+                        );
 
-                    return [...convertTransfers, ...universalTransfers];
-                })
+                        return [...convertTransfers, ...universalTransfers];
+                    })
             ),
             transfers => [...new Map(transfers.map(transfer => [transfer.externalId, transfer])).values()]
         );
@@ -909,19 +913,23 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         startTimeMs: number,
         endTimeMs: number
     ): Effect.Effect<T[], SyncError, HttpClient.HttpClient> {
-        return this.walkWindowsBackward(CAPITAL_HISTORY_MAX_PERIOD_MS, startTimeMs, endTimeMs, (windowStartMs, windowEndMs) =>
-            this.cached(
-                cache,
-                `${wallet}:${endpoint}:${windowStartMs}-${windowEndMs}`,
-                this.collectPages(page =>
-                    this.signedRequest(schema, endpoint, 'GET', {
-                        startTime: windowStartMs,
-                        endTime: windowEndMs,
-                        limit: MAX_TRANSACTIONS_PER_WINDOW,
-                        offset: (page - 1) * MAX_TRANSACTIONS_PER_WINDOW
-                    }).pipe(Effect.map(rows => ({ rows, hasMore: rows.length === MAX_TRANSACTIONS_PER_WINDOW })))
+        return this.walkWindowsBackward(
+            this.fixedPeriodWindowStart(CAPITAL_HISTORY_MAX_PERIOD_MS),
+            startTimeMs,
+            endTimeMs,
+            (windowStartMs, windowEndMs) =>
+                this.cached(
+                    cache,
+                    `${wallet}:${endpoint}:${windowStartMs}-${windowEndMs}`,
+                    this.collectPages(page =>
+                        this.signedRequest(schema, endpoint, 'GET', {
+                            startTime: windowStartMs,
+                            endTime: windowEndMs,
+                            limit: MAX_TRANSACTIONS_PER_WINDOW,
+                            offset: (page - 1) * MAX_TRANSACTIONS_PER_WINDOW
+                        }).pipe(Effect.map(rows => ({ rows, hasMore: rows.length === MAX_TRANSACTIONS_PER_WINDOW })))
+                    )
                 )
-            )
         );
     }
 
@@ -1098,8 +1106,9 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         return {
             wallet: BinanceWalletEnum.SPOT,
             fetch: (startTimeMs: number, endTimeMs: number) =>
-                Effect.map(this.fetchRewards(source, startTimeMs - (startTimeMs % MILLISECONDS_PER_DAY), endTimeMs), rewards =>
-                    this.emptySources({ rewards: [{ kind: this.rewardSources[source].kind, rewards }] })
+                Effect.map(
+                    this.fetchRewards(source, startTimeMs - (startTimeMs % MILLISECONDS_PER_DAY), this.resolveRewardEndMs(endTimeMs)),
+                    rewards => this.emptySources({ rewards: [{ kind: this.rewardSources[source].kind, rewards }] })
                 )
         };
     }
@@ -1109,10 +1118,29 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         const rewards = this.cached(
             this.earnRewardCache,
             `${source}:${startTimeMs}-${endTimeMs}`,
-            this.walkPagedWindows(EARN_REWARD_MAX_PERIOD_MS, startTimeMs, endTimeMs, fetchPage)
+            this.walkWindowsBackward(
+                windowEndMs => this.ceilToUtcDay(windowEndMs - EARN_REWARD_MAX_PERIOD_MS),
+                startTimeMs,
+                endTimeMs,
+                (windowStartMs, windowEndMs) => this.collectPages(page => fetchPage(page, windowStartMs, windowEndMs))
+            )
         );
 
         return isOptional ? this.skipWhenUnavailable(source, [], rewards) : rewards;
+    }
+
+    private resolveRewardEndMs(endTimeMs: number): number {
+        const dayEndMs = this.ceilToUtcDay(endTimeMs) - 1;
+
+        return Math.min(dayEndMs, Math.max(endTimeMs, this.runEndTimeMs ?? dayEndMs));
+    }
+
+    private ceilToUtcDay(timeMs: number): number {
+        return Math.ceil(timeMs / MILLISECONDS_PER_DAY) * MILLISECONDS_PER_DAY;
+    }
+
+    private fixedPeriodWindowStart(periodMs: number): (windowEndMs: number) => number {
+        return windowEndMs => windowEndMs - periodMs;
     }
 
     private fetchDividends(startTimeMs: number, endTimeMs: number) {

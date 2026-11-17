@@ -1,31 +1,36 @@
-import { useAtomValue } from '@effect/atom-react/Hooks';
 import { plural, select } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { useIsAmountProtected } from '../../@generic/hook/use-is-amount-protected.hook';
-import { useProtectedAmountLabel } from '../../@generic/hook/use-protected-amount-label.hook';
-import { defaultInstrumentAtom } from '../../settings/constants/settings-atoms.constant';
-
 import { useFormatYieldRate } from './use-format-yield-rate.hook';
 import { useYieldHeroTrend } from './use-yield-hero-trend.hook';
+import { useYieldScrubSentence } from './use-yield-scrub-sentence.hook';
+import { useYieldSpokenAmount } from './use-yield-spoken-amount.hook';
 
-import type { YieldSummaryInterface } from '@budgie/market';
+import type { YieldBucketInterface, YieldSummaryInterface } from '@budgie/market';
 
-export const useYieldHeroSentence = (summary: YieldSummaryInterface | null, rangeCaption: string): string => {
+export const useYieldHeroSentence = (
+    summary: YieldSummaryInterface | null,
+    rangeCaption: string,
+    bucket: YieldBucketInterface | null,
+    scrubAmount: number
+): string => {
     const { t } = useLingui();
     const formatRate = useFormatYieldRate();
-    const formatAmount = useProtectedAmountLabel();
-    const isAmountProtected = useIsAmountProtected();
+    const amountOf = useYieldSpokenAmount();
     const { trend, change, isEstimated } = useYieldHeroTrend(summary);
-    const { symbol } = useAtomValue(defaultInstrumentAtom);
+    const scrubSentence = useYieldScrubSentence(summary, bucket, scrubAmount);
+
+    if (isDefined(scrubSentence)) {
+        return scrubSentence;
+    }
 
     if (!isDefined(summary)) {
         return rangeCaption;
     }
 
-    const amount = isAmountProtected ? t`hidden amount` : formatAmount(summary.earned.value, symbol);
+    const amount = amountOf(summary.earned.value);
     const rate = isDefined(summary.annualYield.rate) ? formatRate(summary.annualYield.rate) : t`no yield yet`;
     const count = summary.annualYield.holdingCount;
     const sentence = t({

@@ -35,7 +35,8 @@ const positionOf = (amount: number, costBasis: number | null, realizedProfitLoss
     amount,
     costBasis,
     realizedProfitLoss,
-    averageCost: null
+    averageCost: null,
+    hasEstimatedCostBasis: false
 });
 
 it.effect('keeps a sold-out holding for returns while hiding its row', () =>

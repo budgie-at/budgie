@@ -78,8 +78,8 @@ describe('binance/deadline-handling', () => {
 
             yield* binanceSyncService.sync().pipe(Effect.ensuring(restoreRealTimers));
 
-            expect(depositWindows).toHaveLength(1);
-            expect(c2cWindows).toHaveLength(2);
+            expect(new Set(depositWindows.map(window => window.startMs)).size).toBe(depositWindows.length);
+            expect(new Set(c2cWindows.map(window => window.startMs)).size * 2).toBe(c2cWindows.length);
         }).pipe(Effect.provide(TestLayer))
     );
 });

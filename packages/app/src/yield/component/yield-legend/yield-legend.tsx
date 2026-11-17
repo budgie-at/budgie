@@ -12,6 +12,7 @@ import { yieldSummaryFamily } from '../../constant/yield-summary-family-atom.con
 import { YieldScreenContext } from '../../context/yield-screen.context';
 import { YieldSelectionContext } from '../../context/yield-selection.context';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
+import { selectYieldScrubbedBuckets } from '../../utils/select-yield-scrubbed-buckets.util';
 import { YieldLegendRow } from '../yield-legend-row/yield-legend-row';
 
 import type { YieldGroupEnum } from '@budgie/market';
@@ -22,7 +23,7 @@ const TWO_COLUMNS = 2;
 export const YieldLegend = () => {
     const { t } = useLingui();
     const isLargeText = useIsLargeText();
-    const { screenKey } = use(YieldScreenContext);
+    const { screenKey, mode } = use(YieldScreenContext);
     const { selectedIndex, cancelScrub } = use(YieldSelectionContext);
     const summary = AsyncResult.getOrElse(useLiveAtomValue(yieldSummaryFamily(screenKey.key)), () => null);
 
@@ -31,13 +32,17 @@ export const YieldLegend = () => {
         router.setParams({ group: screenKey.key.group === group ? '' : group });
     };
 
-    const bucket = isDefined(selectedIndex) ? summary?.buckets.at(selectedIndex) : null;
+    const scrubbedBuckets = selectYieldScrubbedBuckets(summary?.buckets ?? [], selectedIndex, mode);
+    const rows = (summary?.groups ?? []).map(({ group, total }) => ({
+        group,
+        total: isDefined(selectedIndex) ? scrubbedBuckets.reduce((sum, item) => sum + item.amounts[group], 0) : total
+    }));
     const columns = isLargeText ? ONE_COLUMN : TWO_COLUMNS;
 
     return (
         <View className="flex-row flex-wrap" accessibilityLabel={t`Passive income by kind`} testID={PassiveIncomeSelector.Legend(columns)}>
-            {(summary?.groups ?? []).map(({ group, total }) => (
-                <YieldLegendRow key={group} group={group} total={bucket?.amounts[group] ?? total} onPress={handlePress} />
+            {rows.map(({ group, total }) => (
+                <YieldLegendRow key={group} group={group} total={total} onPress={handlePress} />
             ))}
         </View>
     );

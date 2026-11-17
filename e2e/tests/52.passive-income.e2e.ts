@@ -47,8 +47,7 @@ test('52 passive income', { tags: ['passive-income'] }, async ({ budgie }) => {
             assert.ok((await plotValue()).includes(heroFigure));
             assert.match(await plotValue(), /so far/u);
         }
-        await expect(id('PassiveIncome.Hero')).toHaveAccessibleName(/^Earned .*% a year across \d+ holdings?/u);
-        await expect(id('PassiveIncome.Hero')).toHaveAccessibleName(/new this period/u);
+        await expect(id('PassiveIncome.Hero')).toHaveAccessibleName(/so far: earned .* before tax/u);
         await b.scrollTo(ctx, 'PassiveIncome.NetAfterTax');
         await b.tapId(ctx, 'PassiveIncome.Mode.RUNNING_TOTAL');
         await expect(id('PassiveIncome.ChartTitle')).toHaveText('Running total');
@@ -75,6 +74,8 @@ test('52 passive income', { tags: ['passive-income'] }, async ({ budgie }) => {
         }
         await b.tapId(ctx, 'PassiveIncome.LegendRow.STAKING_EARN');
         await expect(id('PassiveIncome.Caption')).toContainText('Earned');
+        await expect(id('PassiveIncome.Hero')).toHaveAccessibleName(/^Earned .*% a year across \d+ holdings?/u);
+        await expect(id('PassiveIncome.Hero')).toHaveAccessibleName(/new this period/u);
     });
 
     await b.phase('2 position row filters to its payouts and back', async () => {

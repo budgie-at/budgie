@@ -171,7 +171,8 @@ describe('market-data/brokerage-trades', () => {
                 amount: 6,
                 costBasis: 603,
                 averageCost: 100.5,
-                realizedProfitLoss: 98
+                realizedProfitLoss: 98,
+                hasEstimatedCostBasis: false
             });
             yield* brokerageService.sell(securityId, { quantity: 6, price: 125, fee: 0, operatedAt: new Date('2026-03-10') });
             expect(

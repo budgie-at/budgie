@@ -1,15 +1,14 @@
-import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
+import { use } from 'react';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { useIsAmountProtected } from '../../@generic/hook/use-is-amount-protected.hook';
-import { useProtectedAmountLabel } from '../../@generic/hook/use-protected-amount-label.hook';
-import { defaultInstrumentAtom } from '../../settings/constants/settings-atoms.constant';
 import { YIELD_GROUP_LABEL } from '../constant/yield-group-label.constant';
+import { YieldPayoutsScrollContext } from '../context/yield-payouts-scroll.context';
 
 import { useYieldDateLabels } from './use-yield-date-labels.hook';
+import { useYieldSpokenAmount } from './use-yield-spoken-amount.hook';
 
 import type { YieldSummaryInterface } from '@budgie/market';
 import type { AccessibilityActionEvent } from 'react-native';
@@ -23,15 +22,12 @@ export const useYieldPlotAccessibility = (
 ) => {
     const { t } = useLingui();
     const { formatPeriod } = useYieldDateLabels();
-    const formatAmount = useProtectedAmountLabel();
-    const isAmountProtected = useIsAmountProtected();
-    const { symbol } = useAtomValue(defaultInstrumentAtom);
+    const amountOf = useYieldSpokenAmount();
+    const requestPayoutsScroll = use(YieldPayoutsScrollContext);
 
     const buckets = summary?.buckets ?? [];
     const currentIndex = Math.min(selectedIndex ?? buckets.length - 1, buckets.length - 1);
     const bucket = buckets.at(currentIndex);
-    const hidden = t`hidden amount`;
-    const amountOf = (value: number) => (isAmountProtected ? hidden : formatAmount(value, symbol));
     const parts = (summary?.groups ?? [])
         .map(({ group }) => {
             const label = t(YIELD_GROUP_LABEL[group]);
@@ -48,6 +44,7 @@ export const useYieldPlotAccessibility = (
 
         if (actionName.startsWith(PAYOUTS_ACTION_PREFIX)) {
             router.setParams({ group: actionName.slice(PAYOUTS_ACTION_PREFIX.length) });
+            requestPayoutsScroll();
 
             return;
         }

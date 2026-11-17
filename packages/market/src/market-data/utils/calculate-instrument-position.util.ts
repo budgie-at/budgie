@@ -14,7 +14,7 @@ const consumeLots = (lots: readonly InstrumentPositionLotInterface[], amount: nu
         const consumedAmount = Math.min(lot.amount, Math.max(0, remainingAmount));
         const consumedCost = isDefined(lot.baseAmount) ? (lot.baseAmount * consumedAmount) / lot.amount : null;
         if (isPositiveNumber(consumedAmount)) {
-            consumed.push({ amount: consumedAmount, baseAmount: consumedCost, order: lot.order });
+            consumed.push({ amount: consumedAmount, baseAmount: consumedCost, order: lot.order, isEstimated: lot.isEstimated });
         }
         if (lot.amount > consumedAmount) {
             remaining.push({
@@ -58,7 +58,9 @@ export const calculateInstrumentPosition = (
                     ? lots
                           .map(lot => ({ ...lot, amount: (lot.amount * Math.max(0, nextQuantity)) / quantity }))
                           .filter(lot => isPositiveNumber(lot.amount))
-                    : [{ amount: Math.max(0, nextQuantity), baseAmount: 0, order }].filter(lot => isPositiveNumber(lot.amount))
+                    : [{ amount: Math.max(0, nextQuantity), baseAmount: 0, order, isEstimated: false }].filter(lot =>
+                          isPositiveNumber(lot.amount)
+                      )
             );
         } else if (entry.type === TransactionEntryTypeEnum.DEBIT) {
             accountLots.set(
@@ -67,7 +69,8 @@ export const calculateInstrumentPosition = (
                     .concat({
                         amount: entry.amount,
                         baseAmount: isDefined(entry.baseAmount) ? entry.baseAmount + (entry.feeBaseAmount ?? 0) : null,
-                        order
+                        order,
+                        isEstimated: entry.isEstimated === true
                     })
                     .filter(lot => isPositiveNumber(lot.amount))
             );
@@ -96,6 +99,7 @@ export const calculateInstrumentPosition = (
         amount: convertFromMicroUnits(amountMicro),
         realizedProfitLoss: convertFromMicroUnits(realizedProfitLossMicro),
         costBasis: isDefined(costBasisMicro) ? convertFromMicroUnits(costBasisMicro) : null,
-        averageCost: isDefined(costBasisMicro) && isPositiveNumber(amountMicro) ? costBasisMicro / amountMicro : null
+        averageCost: isDefined(costBasisMicro) && isPositiveNumber(amountMicro) ? costBasisMicro / amountMicro : null,
+        hasEstimatedCostBasis: lots.some(lot => lot.isEstimated)
     };
 };

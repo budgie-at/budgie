@@ -63,12 +63,14 @@ export const YieldLegendRow = ({ group, total, onPress }: Props) => {
             className={rowClassName}
         >
             <View className={cn('h-[10px] w-[10px] rounded-full', dotClassName)} />
-            <Text numberOfLines={1} className="flex-1 text-sm text-primary">
-                {label}
-            </Text>
-            <Text numberOfLines={1} className="text-sm font-semibold tabular-nums text-primary">
-                {amount}
-            </Text>
+            <View className="flex-1">
+                <Text numberOfLines={1} className="text-sm text-primary">
+                    {label}
+                </Text>
+                <Text numberOfLines={1} className="text-sm font-semibold tabular-nums text-primary">
+                    {amount}
+                </Text>
+            </View>
         </HapticPressable>
     );
 };

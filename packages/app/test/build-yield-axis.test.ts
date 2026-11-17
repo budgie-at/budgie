@@ -2,37 +2,30 @@ import { expect, it } from '@effect/vitest';
 
 import { buildYieldAxis } from '../src/yield/utils/build-yield-axis.util';
 
-it.each([
-    [612, 0, { step: 500, top: 1000, bottom: 0, gridlines: [0, 500, 1000] }],
-    [38, 0, { step: 20, top: 40, bottom: 0, gridlines: [0, 20, 40] }],
-    [50, 0, { step: 25, top: 50, bottom: 0, gridlines: [0, 25, 50] }],
-    [100, -12, { step: 100, top: 100, bottom: -100, gridlines: [-100, 0, 100] }],
-    [0, 0, { step: 1, top: 1, bottom: 0, gridlines: [0, 1] }]
-])('steps (%d, %d) at a nice value with zero on a gridline', (max, min, expected) => {
-    expect(buildYieldAxis(max, min)).toEqual(expected);
+const HEIGHT = 200;
+const LABEL_HEADROOM = 20;
+
+const peakY = (peak: number, top: number, bottom: number) =>
+    (top * HEIGHT) / (top - bottom) - (peak / top) * ((top * HEIGHT) / (top - bottom));
+
+it('leaves room for the peak label above the highest bar', () => {
+    const axis = buildYieldAxis(4_800_000, 0, HEIGHT);
+
+    expect(axis.bottom).toBe(-0);
+    expect(peakY(4_800_000, axis.top, axis.bottom)).toBeCloseTo(LABEL_HEADROOM, 9);
 });
 
-it('survives tiny values without gridline drift', () => {
-    const axis = buildYieldAxis(0.0003, 0);
+it('reaches below zero exactly as deep as the tax and keeps the peak headroom', () => {
+    const axis = buildYieldAxis(100, 30, HEIGHT);
 
-    expect(axis.step).toBeCloseTo(0.0002, 12);
-    expect(axis.top).toBeCloseTo(0.0004, 12);
-    expect(axis.gridlines).toHaveLength(3);
-});
-
-it('handles huge values', () => {
-    expect(buildYieldAxis(1e12, 0)).toEqual({ step: 5e11, top: 1e12, bottom: 0, gridlines: [0, 5e11, 1e12] });
-});
-
-it('extends below zero when tax exceeds earned', () => {
-    expect(buildYieldAxis(10, -50)).toEqual({ step: 50, top: 50, bottom: -50, gridlines: [-50, 0, 50] });
+    expect(axis.bottom).toBe(-30);
+    expect(peakY(100, axis.top, axis.bottom)).toBeCloseTo(LABEL_HEADROOM, 9);
 });
 
 it.each([
+    [0, 0],
     [Number.NaN, 0],
-    [10, Number.NaN],
-    [Number.POSITIVE_INFINITY, 0],
-    [0, Number.NEGATIVE_INFINITY]
-])('falls back to the empty axis for (%d, %d)', (max, min) => {
-    expect(buildYieldAxis(max, min)).toEqual({ step: 1, top: 1, bottom: 0, gridlines: [0, 1] });
+    [Number.POSITIVE_INFINITY, 0]
+])('falls back to a unit axis for (%d, %d)', (max, depth) => {
+    expect(buildYieldAxis(max, depth, HEIGHT)).toEqual({ top: 1, bottom: -depth });
 });

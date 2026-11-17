@@ -14,7 +14,7 @@ import {
     TransactionUpdatedByEnum,
     YieldKindEnum
 } from '@budgie/contracts';
-import { INZHUR_UNATTRIBUTED_DIVIDEND_TITLE, YieldTagRepairService } from '@budgie/sync';
+import { BankInterestDetectorService, INZHUR_UNATTRIBUTED_DIVIDEND_TITLE, YieldTagRepairService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
@@ -54,6 +54,7 @@ const repair = Effect.flatMap(YieldTagRepairService, service => service.runOnce(
 
 const failingRepairLayer = Layer.mergeAll(
     SettingsRepository.layer,
+    BankInterestDetectorService.layer,
     SyncApplyStateRepository.layer,
     Layer.effect(
         TransactionYieldRepository,
@@ -120,7 +121,7 @@ describe('sync/yield-tag-repair', () => {
             expect(yield* readTag(rows.tax.id)).toMatchObject({ yieldKind: YieldKindEnum.TAX, yieldSourceAccountId: rows.fund.id });
             expect(yield* readTag(rows.unattributed.id)).toMatchObject({ yieldKind: YieldKindEnum.DIVIDEND, yieldSourceAccountId: null });
             expect(yield* readOutboxRows(testDb)).toEqual([]);
-            expect((yield* (yield* SettingsRepository).getSettings()).yieldTagRepairVersion).toBe(1);
+            expect((yield* (yield* SettingsRepository).getSettings()).yieldTagRepairVersion).toBe(2);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -232,7 +233,36 @@ describe('sync/yield-tag-repair', () => {
             expect((yield* readTag(rows.earn.id)).yieldKind).toBe(YieldKindEnum.EARN);
             expect((yield* readTag(rows.staking.id)).yieldKind).toBe(YieldKindEnum.STAKING);
             expect((yield* readTag(rows.dividend.id)).yieldKind).toBe(YieldKindEnum.DIVIDEND);
-            expect((yield* (yield* SettingsRepository).getSettings()).yieldTagRepairVersion).toBe(1);
+            expect((yield* (yield* SettingsRepository).getSettings()).yieldTagRepairVersion).toBe(2);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('tags old bank interest once on a device already at version 1, without touching the outbox', () =>
+        Effect.gen(function* () {
+            const bank = yield* seed.account({
+                title: 'Mono',
+                type: AccountTypeEnum.BANK_SYNC,
+                externalSource: ExternalSourceEnum.MONOBANK
+            });
+            const interest = yield* seedIncome(bank.id, {
+                externalId: 'mono:interest-july',
+                externalSource: ExternalSourceEnum.MONOBANK,
+                title: 'Відсотки за липень'
+            });
+            const salary = yield* seedIncome(bank.id, {
+                externalId: 'mono:salary',
+                externalSource: ExternalSourceEnum.MONOBANK,
+                title: 'Salary ACME'
+            });
+
+            yield* (yield* SettingsRepository).update({ yieldTagRepairVersion: 1 });
+            yield* clearOutbox;
+            yield* repair;
+
+            expect((yield* readTag(interest.id)).yieldKind).toBe(YieldKindEnum.INTEREST);
+            expect(yield* readOutboxRows(testDb)).toEqual([]);
+            expect((yield* readTag(salary.id)).yieldKind).toBeNull();
+            expect((yield* (yield* SettingsRepository).getSettings()).yieldTagRepairVersion).toBe(2);
         }).pipe(Effect.provide(TestLayer))
     );
 });

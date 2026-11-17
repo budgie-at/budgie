@@ -36,7 +36,7 @@ export const YieldChartRunningTotal = ({ width, summary }: Props) => {
 
     const cumulative = buildYieldRunningTotal(summary.buckets.map(bucket => bucket.total));
     const prior = isDefined(summary.priorTotals) ? buildYieldRunningTotal(summary.priorTotals) : null;
-    const axis = buildYieldAxis(Math.max(0, ...cumulative, ...(prior ?? [])), 0);
+    const axis = buildYieldAxis(Math.max(0, ...cumulative, ...(prior ?? [])), 0, YIELD_PLOT_HEIGHT);
     const paths = buildYieldRunningPaths({
         cumulative,
         prior,

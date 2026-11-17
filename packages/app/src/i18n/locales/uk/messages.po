@@ -876,6 +876,14 @@ msgstr "використано {percent}%"
 msgid "{period}, {total}: {parts}"
 msgstr "{period}, {total}: {parts}"
 
+#: src/yield/hook/use-yield-scrub-sentence.hook.ts
+msgid "{period}: earned {amountText} before tax, {netText} after tax."
+msgstr "{period}: зароблено {amountText} до сплати податків, {netText} після податків."
+
+#: src/yield/hook/use-yield-scrub-sentence.hook.ts
+msgid "{period}: earned {amountText} before tax."
+msgstr "{period}: зароблено {amountText} до сплати податків."
+
 #: src/inzhur/component/inzhur-operations-period-header/inzhur-operations-period-header.tsx
 msgid "{periodFrom} – {periodTo}"
 msgstr "{periodFrom} – {periodTo}"
@@ -3469,6 +3477,10 @@ msgstr "Скопіюйте токен і вставте його нижче"
 msgid "Cost basis"
 msgstr "Собівартість"
 
+#: src/market-data/component/currency-market-cost-basis-row/currency-market-cost-basis-row.tsx
+msgid "Cost basis includes estimates"
+msgstr "Собівартість включає оцінки"
+
 #: src/recurring/components/make-recurring-sheet/make-recurring-sheet.tsx
 msgid "Could not add to recurring payment."
 msgstr "Не вдалося додати до регулярного платежу."
@@ -4731,6 +4743,10 @@ msgstr "Кожен тиждень порівняно з вашим тижнев�
 msgid "Earn"
 msgstr "Earn"
 
+#: src/yield/hook/use-yield-scrub-sentence.hook.ts
+msgid "Earned {amountText} before tax through {throughDay}."
+msgstr "Зароблено {amountText} до сплати податків станом на {throughDay}."
+
 #: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
 msgid "Earned {caption}: {windowStart} – {today}. The change compares the same number of periods just before, with the last one cut to the same point."
 msgstr "Зароблено {caption}: {windowStart} – {today}. Зміна порівнює таку саму кількість періодів одразу перед цим, а останній обрізається до тієї ж точки."
@@ -5664,8 +5680,7 @@ msgstr "Приховані рахунки"
 msgid "Hidden accounts stay off Home. Their totals and net worth settings don’t change."
 msgstr "Приховані рахунки не показуються на головній. Їхні налаштування підсумків і чистих активів не змінюються."
 
-#: src/yield/hook/use-yield-hero-sentence.hook.ts
-#: src/yield/hook/use-yield-plot-accessibility.hook.ts
+#: src/yield/hook/use-yield-spoken-amount.hook.ts
 msgid "hidden amount"
 msgstr "прихована сума"
 
@@ -5994,6 +6009,7 @@ msgid "Includes crypto"
 msgstr "Включно з криптовалютою"
 
 #: src/yield/hook/use-yield-hero-sentence.hook.ts
+#: src/yield/hook/use-yield-scrub-sentence.hook.ts
 msgid "Includes estimated values."
 msgstr "Враховано оцінені значення."
 
@@ -7696,6 +7712,10 @@ msgstr "Лише якщо категорії немає"
 #: src/onboarding/component/onboarding-welcome-hero/onboarding-welcome-hero.tsx
 msgid "Only you hold the key."
 msgstr "Ключ лише у вас."
+
+#: src/yield/component/yield-open-position-button/yield-open-position-button.tsx
+msgid "Open {scopeTitle}"
+msgstr "Відкрити {scopeTitle}"
 
 #: src/sync/component/enable-banking-setup-guide/enable-banking-setup-guide.tsx
 msgid "Open <0>API applications</0>, then <1>Add a new application</1>."

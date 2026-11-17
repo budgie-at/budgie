@@ -68,12 +68,6 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
         const createOnly = { enqueueExistingConsolidation: false, updateExistingAmounts: false };
         const updateExisting = { enqueueExistingConsolidation: false, updateExistingAmounts: true };
         const consolidateExisting = { enqueueExistingConsolidation: true, updateExistingAmounts: false };
-        const newHistorySources = new Set([
-            BinanceHistorySourceEnum.LOCKED_EARN,
-            BinanceHistorySourceEnum.ETH_STAKING,
-            BinanceHistorySourceEnum.DIVIDEND,
-            BinanceHistorySourceEnum.DUST
-        ]);
         const decodeCredentials = Schema.decodeUnknownEffect(Schema.fromJsonString(BinanceCredentialsSchema));
         const headOverlapSeconds = forwardOverlapHours * 60 * 60;
         const freshRunState = (deadlineAtMs: number, startedAtMs: number): BinanceRunStateInterface => ({
@@ -261,9 +255,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             const integration = yield* databaseLock.withPermit(syncIntegrationTokenService.getOrCreateIntegration(provider, token));
             const progress = yield* databaseLock.withPermit(binanceHistoryProgressService.find(integration.id, source));
             const lookbackSeconds = getUnixTime(HISTORY_STARTED_AT);
-            const isBackfillPending = isDefined(progress)
-                ? Math.floor(progress.tailAt / 1000) > lookbackSeconds
-                : isFiat || newHistorySources.has(source) || sync.mode === SyncModeEnum.BACKWARD || !isDefined(sync.forwardSyncedAt);
+            const isBackfillPending = !isDefined(progress) || Math.floor(progress.tailAt / 1000) > lookbackSeconds;
 
             const client = getRunSignedClient(token);
 
