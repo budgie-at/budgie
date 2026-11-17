@@ -7754,6 +7754,10 @@ msgstr "Open Budgie with your face or fingerprint. Your PIN stays the key to you
 msgid "Open George (Erste Bank online banking)"
 msgstr "Open George (Erste Bank online banking)"
 
+#: src/yield/component/yield-open-position-button/yield-open-position-button.tsx
+msgid "Open holding"
+msgstr "Open holding"
+
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Open its statement and choose a date range that covers your full history"
 msgstr "Open its statement and choose a date range that covers your full history"

@@ -104,7 +104,7 @@ export class YieldTagRepairService extends Context.Service<YieldTagRepairService
                 }
 
                 yield* repairAll();
-                yield* bankInterestDetectorService.tag(null);
+                yield* syncApplyStateRepository.withoutTriggers(bankInterestDetectorService.tag(null));
                 yield* settingsRepository.update({ yieldTagRepairVersion });
             }),
             repairBySyncIds: Effect.fn('YieldTagRepairService.repairBySyncIds')(function* (syncIds: readonly string[]) {

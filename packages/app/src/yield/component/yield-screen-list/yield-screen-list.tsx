@@ -2,6 +2,8 @@ import { useRef, useState } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { SCREEN_CHROME_HEADER_LAYOUT_METRICS, getScreenChromeHeaderMetrics } from '@rnw-community/react-native-screen-chrome';
+
 import { CollapsibleChromeLegendList } from '../../../@generic/component/collapsible-chrome-legend-list/collapsible-chrome-legend-list';
 import { CollapsibleChromePinnedBar } from '../../../@generic/component/collapsible-chrome-pinned-bar/collapsible-chrome-pinned-bar';
 import { FLOATING_TAB_BAR_HEIGHT } from '../../../@generic/constant/floating-tab-bar.constant';
@@ -54,7 +56,13 @@ export const YieldScreenList = () => {
         }
     };
 
-    const handlePayoutsScroll = () => void listRef.current?.scrollToIndex({ index: 0, viewPosition: 0, animated: !isReducedMotion });
+    const handlePayoutsScroll = () =>
+        void listRef.current?.scrollToIndex({
+            index: 0,
+            viewPosition: 0,
+            viewOffset: getScreenChromeHeaderMetrics(SCREEN_CHROME_HEADER_LAYOUT_METRICS.slotSize, top) + pinnedHeight,
+            animated: !isReducedMotion
+        });
 
     const handleRangeLayout = (event: LayoutChangeEvent) => void setRangeY(event.nativeEvent.layout.y);
 

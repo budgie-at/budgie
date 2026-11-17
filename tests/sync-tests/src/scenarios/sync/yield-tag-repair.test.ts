@@ -237,7 +237,7 @@ describe('sync/yield-tag-repair', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('tags old bank interest once on a device already at version 1', () =>
+    it.effect('tags old bank interest once on a device already at version 1, without touching the outbox', () =>
         Effect.gen(function* () {
             const bank = yield* seed.account({
                 title: 'Mono',
@@ -256,9 +256,11 @@ describe('sync/yield-tag-repair', () => {
             });
 
             yield* (yield* SettingsRepository).update({ yieldTagRepairVersion: 1 });
+            yield* clearOutbox;
             yield* repair;
 
             expect((yield* readTag(interest.id)).yieldKind).toBe(YieldKindEnum.INTEREST);
+            expect(yield* readOutboxRows(testDb)).toEqual([]);
             expect((yield* readTag(salary.id)).yieldKind).toBeNull();
             expect((yield* (yield* SettingsRepository).getSettings()).yieldTagRepairVersion).toBe(2);
         }).pipe(Effect.provide(TestLayer))
