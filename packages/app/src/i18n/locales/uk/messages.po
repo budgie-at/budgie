@@ -4394,8 +4394,12 @@ msgstr "Данія"
 msgid "Deposit"
 msgstr "Депозит"
 
+#: src/@generic/hook/use-app-initialization.hook.ts
 #: src/app/(main)/securities/buy/[id].tsx
+#: src/app/(main)/securities/sell/[id].tsx
 #: src/brokerage/component/update-security-trade/update-security-trade.tsx
+#: src/rule/constant/external-source.constant.ts
+#: src/transaction/hook/use-delete-transaction.hook.ts
 msgctxt "Brokerage funding"
 msgid "Deposit"
 msgstr "Поповнення"
@@ -11711,11 +11715,6 @@ msgstr "Wise"
 #: src/sync/component/wise-statement-import-row/wise-statement-import-row.tsx
 msgid "Wise CSV export, one file per balance"
 msgstr "CSV-експорт Wise, один файл на баланс"
-
-#: src/brokerage/component/update-security-trade/update-security-trade.tsx
-msgctxt "Brokerage funding"
-msgid "Withdrawal"
-msgstr "Виведення"
 
 #: src/inzhur/component/inzhur-operations-import-summary/inzhur-operations-import-summary.tsx
 msgid "Withdrawals"

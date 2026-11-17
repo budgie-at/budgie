@@ -43,12 +43,7 @@ export const UpdateSecurityTrade = ({ transaction }: UpdateTransactionFormPropsI
 
     const handleSubmit = (values: SecurityTradeFormValues) =>
         Effect.flatMap(BrokerageService, brokerageService =>
-            brokerageService.update(
-                transaction.id,
-                values,
-                t({ message: 'Deposit', context: 'Brokerage funding' }),
-                t({ message: 'Withdrawal', context: 'Brokerage funding' })
-            )
+            brokerageService.update(transaction.id, values, t({ message: 'Deposit', context: 'Brokerage funding' }))
         );
 
     return (

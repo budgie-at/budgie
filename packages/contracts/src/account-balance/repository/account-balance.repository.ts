@@ -1,5 +1,5 @@
 /* eslint-disable max-lines -- File owns the account-balance ledger and valuation SQL pipeline that must stay together */
-import { type SQL, type SQLWrapper, and, eq, inArray, isNull, lte, not, notInArray, sql } from 'drizzle-orm';
+import { type SQL, type SQLWrapper, and, asc, eq, inArray, isNull, lte, not, notInArray, sql } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -207,6 +207,28 @@ export class AccountBalanceRepository extends Context.Service<AccountBalanceRepo
                     )
                 `)
             ).pipe(Effect.map(row => row.balance)),
+        getLedgerMovements: (accountId: number) =>
+            Db.query(db =>
+                db
+                    .select({
+                        transactionId: TransactionEntityTable.id,
+                        operatedAt: TransactionEntityTable.operatedAt,
+                        externalSource: TransactionEntityTable.externalSource,
+                        amount: getTransactionsSumSql().mapWith(Number)
+                    })
+                    .from(TransactionEntryEntityTable)
+                    .innerJoin(TransactionEntityTable, eq(TransactionEntityTable.id, TransactionEntryEntityTable.transactionId))
+                    .where(
+                        and(
+                            eq(TransactionEntryEntityTable.accountId, accountId),
+                            isNull(TransactionEntryEntityTable.deletedAt),
+                            transactionFilters.buildVisibleTransactionCondition(),
+                            transactionFilters.buildRefundAwareLedgerEntryCondition()
+                        )
+                    )
+                    .groupBy(TransactionEntityTable.id)
+                    .orderBy(asc(TransactionEntityTable.operatedAt), asc(TransactionEntityTable.id))
+            ),
         getLedgerBalanceUntil: (accountId: number, operatedUntil: Date) =>
             Db.query(db =>
                 db
