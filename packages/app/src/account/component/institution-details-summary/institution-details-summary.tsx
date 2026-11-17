@@ -16,6 +16,7 @@ import { SyncImportProgress } from '../../../sync/component/sync-import-progress
 import { ACCOUNT_DETAILS_HERO_BALANCE_HEIGHT } from '../../constant/account-details-hero-balance-height.constant';
 import { InstitutionAccounts } from '../institution-accounts/institution-accounts';
 import { InstitutionConnectionRow } from '../institution-connection-row/institution-connection-row';
+import { InstitutionStatementRow } from '../institution-statement-row/institution-statement-row';
 
 import type { HomeAccountBalanceInterface } from '../../interface/home-account-balance.interface';
 import type { InstitutionGroupInterface } from '../../interface/institution-group.interface';
@@ -46,6 +47,7 @@ export const InstitutionDetailsSummary = ({ institution, balancesByAccountId }: 
             </View>
             {isInzhur ? <InzhurInstitutionChart /> : null}
             <InstitutionConnectionRow syncs={syncs} />
+            <InstitutionStatementRow syncs={syncs} />
             {isDefined(progress) ? <SyncImportProgress progress={progress} /> : null}
             {isInzhur ? <InzhurPendingTopUps /> : null}
             {isInzhur ? <InzhurImportStatementAction /> : null}

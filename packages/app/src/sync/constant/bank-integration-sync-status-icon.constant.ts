@@ -5,6 +5,7 @@ import { BankIntegrationSyncStatusEnum } from '../enum/bank-integration-sync-sta
 export const BANK_INTEGRATION_SYNC_STATUS_ICON: Record<BankIntegrationSyncStatusEnum, UserIconNameEnum> = {
     [BankIntegrationSyncStatusEnum.NEEDS_ATTENTION]: UserIconNameEnum.CircleAlert,
     [BankIntegrationSyncStatusEnum.KEY_REJECTED]: UserIconNameEnum.KeyRound,
+    [BankIntegrationSyncStatusEnum.NEEDS_STATEMENT]: UserIconNameEnum.FileUp,
     [BankIntegrationSyncStatusEnum.SYNCING]: UserIconNameEnum.RefreshCw,
     [BankIntegrationSyncStatusEnum.PAUSED]: UserIconNameEnum.CirclePause,
     [BankIntegrationSyncStatusEnum.UP_TO_DATE]: UserIconNameEnum.CircleCheck

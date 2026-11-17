@@ -22,7 +22,9 @@ import { isBankIntegrationSyncStale } from '../../utils/is-bank-integration-sync
 import { BankIntegrationImportStatus } from '../bank-integration-import-status/bank-integration-import-status';
 
 interface Props {
-    readonly syncs: Array<Pick<SyncEntityInterface, 'enabled' | 'status' | 'mode' | 'forwardSyncedAt'>>;
+    readonly syncs: Array<
+        Pick<SyncEntityInterface, 'enabled' | 'status' | 'mode' | 'forwardSyncedAt' | 'provider' | 'reconciledAt' | 'setupBalance'>
+    >;
 }
 
 export const BankIntegrationStatusLine = ({ syncs }: Props) => {
@@ -43,6 +45,7 @@ export const BankIntegrationStatusLine = ({ syncs }: Props) => {
                 other: 'Sync failed for # accounts'
             })
         }),
+        [BankIntegrationSyncStatusEnum.NEEDS_STATEMENT]: t`Import a statement to confirm the balance`,
         [BankIntegrationSyncStatusEnum.SYNCING]: t`Syncing…`,
         [BankIntegrationSyncStatusEnum.PAUSED]:
             integration.provider === ExternalSourceEnum.BINANCE ? t`Sync is off for all assets` : t`Sync is off for all accounts`,
@@ -58,7 +61,7 @@ export const BankIntegrationStatusLine = ({ syncs }: Props) => {
         icon: isStale ? UserIconNameEnum.Clock : BANK_INTEGRATION_SYNC_STATUS_ICON[status]
     };
 
-    if (capabilities.supportsFileImport) {
+    if (capabilities.supportsFileImport && status !== BankIntegrationSyncStatusEnum.NEEDS_STATEMENT) {
         return <BankIntegrationImportStatus lastSyncedAt={lastSyncedAt} />;
     }
 

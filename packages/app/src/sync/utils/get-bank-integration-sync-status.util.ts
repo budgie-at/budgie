@@ -1,13 +1,16 @@
 import { SyncEntityInterface, SyncStatusEnum } from '@budgie/contracts';
 
-import { isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { AccountSyncStateEnum } from '../../account/enum/account-sync-state.enum';
 import { getAccountSyncState } from '../../account/utils/get-account-sync-state.util';
+import { STATEMENT_IMPORT_PROVIDERS } from '../constant/statement-import-providers.constant';
 import { BankIntegrationSyncStatusEnum } from '../enum/bank-integration-sync-status.enum';
 
 export const getBankIntegrationSyncStatus = (
-    syncs: Array<Pick<SyncEntityInterface, 'enabled' | 'status' | 'mode' | 'forwardSyncedAt'>>,
+    syncs: Array<
+        Pick<SyncEntityInterface, 'enabled' | 'status' | 'mode' | 'forwardSyncedAt' | 'provider' | 'reconciledAt' | 'setupBalance'>
+    >,
     isKeyRejected: boolean
 ): BankIntegrationSyncStatusEnum => {
     const states = syncs.map(getAccountSyncState);
@@ -22,6 +25,18 @@ export const getBankIntegrationSyncStatus = (
 
     if (states.includes(AccountSyncStateEnum.SYNCING)) {
         return BankIntegrationSyncStatusEnum.SYNCING;
+    }
+
+    const isUnanchored = syncs.some(
+        sync =>
+            sync.enabled &&
+            STATEMENT_IMPORT_PROVIDERS.some(provider => provider === sync.provider) &&
+            !isDefined(sync.reconciledAt) &&
+            !isDefined(sync.setupBalance)
+    );
+
+    if (isUnanchored) {
+        return BankIntegrationSyncStatusEnum.NEEDS_STATEMENT;
     }
 
     if (isNotEmptyArray(states) && states.every(state => state === AccountSyncStateEnum.DISABLED)) {

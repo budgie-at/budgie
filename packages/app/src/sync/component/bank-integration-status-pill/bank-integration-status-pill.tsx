@@ -15,12 +15,15 @@ import { getBankIntegrationSyncStatus } from '../../utils/get-bank-integration-s
 import { getLatestForwardSyncedAt } from '../../utils/get-latest-forward-synced-at.util';
 
 interface Props {
-    readonly syncs: Array<Pick<SyncEntityInterface, 'enabled' | 'status' | 'mode' | 'forwardSyncedAt'>>;
+    readonly syncs: Array<
+        Pick<SyncEntityInterface, 'enabled' | 'status' | 'mode' | 'forwardSyncedAt' | 'provider' | 'reconciledAt' | 'setupBalance'>
+    >;
 }
 
 const STATUS_VARIANT: Record<BankIntegrationSyncStatusEnum, MetaPillVariant> = {
     [BankIntegrationSyncStatusEnum.NEEDS_ATTENTION]: 'destructive',
     [BankIntegrationSyncStatusEnum.KEY_REJECTED]: 'destructive',
+    [BankIntegrationSyncStatusEnum.NEEDS_STATEMENT]: 'warning',
     [BankIntegrationSyncStatusEnum.SYNCING]: 'warning',
     [BankIntegrationSyncStatusEnum.PAUSED]: 'default',
     [BankIntegrationSyncStatusEnum.UP_TO_DATE]: 'positive'
@@ -39,6 +42,7 @@ export const BankIntegrationStatusPill = ({ syncs }: Props) => {
     const statusLabels: Record<BankIntegrationSyncStatusEnum, string> = {
         [BankIntegrationSyncStatusEnum.NEEDS_ATTENTION]: t`Needs attention`,
         [BankIntegrationSyncStatusEnum.KEY_REJECTED]: t`Key rejected`,
+        [BankIntegrationSyncStatusEnum.NEEDS_STATEMENT]: t`Balance unconfirmed`,
         [BankIntegrationSyncStatusEnum.SYNCING]: t`Syncing…`,
         [BankIntegrationSyncStatusEnum.PAUSED]: t`Paused`,
         [BankIntegrationSyncStatusEnum.UP_TO_DATE]: upToDateLabel

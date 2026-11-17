@@ -1,6 +1,7 @@
 export enum BankIntegrationSyncStatusEnum {
     NEEDS_ATTENTION = 'NEEDS_ATTENTION',
     KEY_REJECTED = 'KEY_REJECTED',
+    NEEDS_STATEMENT = 'NEEDS_STATEMENT',
     SYNCING = 'SYNCING',
     PAUSED = 'PAUSED',
     UP_TO_DATE = 'UP_TO_DATE'
