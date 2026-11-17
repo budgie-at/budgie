@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.191.8](https://github.com/budgie-at/budgie/compare/v6.191.7...v6.191.8) (2026-11-17)
+
+### Bug Fixes
+
+* **app:** ask for a statement when a bank balance has no statement anchor ([#2261](https://github.com/budgie-at/budgie/issues/2261)) ([7388655](https://github.com/budgie-at/budgie/commit/7388655691345dc994e0f2cdd9143afc9b37feaa))
+
+
 ## [6.191.7](https://github.com/budgie-at/budgie/compare/v6.191.6...v6.191.7) (2026-11-17)
 
 ### Bug Fixes
