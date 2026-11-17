@@ -9,10 +9,9 @@ import { minuteClockAtom } from '../../../@generic/constant/minute-clock-atom.co
 import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
 import { useBackupActions } from '../../../export/hook/use-backup-actions.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
-import { SettingsRowAccessoryKindEnum } from '../../enum/settings-row-accessory-kind.enum';
 import { useSetting } from '../../hook/use-setting.hook';
+import { SettingsActionRow } from '../settings-action-row/settings-action-row';
 import { SettingsPillButton } from '../settings-pill-button/settings-pill-button';
-import { SettingsRowAccessory } from '../settings-row-accessory/settings-row-accessory';
 import { SettingsRow } from '../settings-row/settings-row';
 import { SettingsWarningSubtitle } from '../settings-warning-subtitle/settings-warning-subtitle';
 
@@ -47,13 +46,12 @@ export const BackupRow = () => {
                     />
                 }
             />
-            <SettingsRow
+            <SettingsActionRow
                 icon={UserIconNameEnum.Share}
-                variant="ghost"
                 title={t`Share a backup file`}
                 subtitle={t`Save it to Files or send it`}
-                {...(!isLoading && { onPress: handleShare })}
-                right={<SettingsRowAccessory kind={SettingsRowAccessoryKindEnum.ACTION} isLoading={isLoading} />}
+                onPress={handleShare}
+                isLoading={isLoading}
                 testID={SettingsPageSelector.DataBackupShareButton}
             />
         </>

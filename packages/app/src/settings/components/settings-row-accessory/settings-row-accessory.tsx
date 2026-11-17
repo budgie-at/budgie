@@ -27,12 +27,17 @@ export const SettingsRowAccessory = ({ value, kind = SettingsRowAccessoryKindEnu
     return (
         <LoadingContent
             isLoading={isLoading}
-            containerClassName="max-w-[50%] shrink"
-            className="min-h-[20px] min-w-[20px] items-end justify-center"
+            containerClassName="shrink"
+            className="min-h-[20px] min-w-[20px] shrink items-end justify-center"
         >
-            <View className="flex-row items-center gap-x-xs">
+            <View className="shrink flex-row items-center gap-x-xs">
                 {isNotEmptyString(value) ? (
-                    <Text className="shrink text-secondary-foreground text-right text-[17px]" testID={testID}>
+                    <Text
+                        className="shrink text-secondary-foreground text-right text-[17px]"
+                        numberOfLines={1}
+                        maxFontSizeMultiplier={1.6}
+                        testID={testID}
+                    >
                         {value}
                     </Text>
                 ) : null}
