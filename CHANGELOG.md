@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.191.6](https://github.com/budgie-at/budgie/compare/v6.191.5...v6.191.6) (2026-11-17)
+
+### Bug Fixes
+
+* **app:** cover the header band when transaction filters pin ([#2256](https://github.com/budgie-at/budgie/issues/2256)) ([92ab659](https://github.com/budgie-at/budgie/commit/92ab65972991488a116860ad92df8c3ec42a44ac))
+
+
+## [6.191.5](https://github.com/budgie-at/budgie/compare/v6.191.4...v6.191.5) (2026-11-17)
+
+### Bug Fixes
+
+* **app:** keep settings row values on one line and mark action rows ([#2257](https://github.com/budgie-at/budgie/issues/2257)) ([729ad10](https://github.com/budgie-at/budgie/commit/729ad100e3c147ea7a7631b4b12f82fe58752b90)), closes [#2240](https://github.com/budgie-at/budgie/issues/2240) [#2241](https://github.com/budgie-at/budgie/issues/2241)
+
+
 ## [6.191.4](https://github.com/budgie-at/budgie/compare/v6.191.3...v6.191.4) (2026-11-17)
 
 ### Bug Fixes
