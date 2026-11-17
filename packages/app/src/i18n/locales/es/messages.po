@@ -1329,6 +1329,10 @@ msgstr "3M"
 msgid "A balanced starter budget with common categories"
 msgstr "Un presupuesto inicial equilibrado con categorías comunes"
 
+#: src/account/component/institution-statement-row/institution-statement-row.tsx
+msgid "A bank statement hasn't confirmed this balance yet"
+msgstr "Un extracto bancario aún no ha confirmado este saldo"
+
 #: src/rule/components/rule-action-phrase/rule-action-phrase.tsx
 msgid "a category"
 msgstr "una categoría"
@@ -2314,6 +2318,10 @@ msgstr "Signo del saldo"
 #: src/transaction/hook/use-adjustment-balance.hook.ts
 msgid "Balance unchanged"
 msgstr "Saldo sin cambios"
+
+#: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
+msgid "Balance unconfirmed"
+msgstr "Saldo sin confirmar"
 
 #: src/account/component/account-details-hero-balance/account-details-hero-balance.tsx
 msgid "Balance: {formattedBalance}"
@@ -5839,9 +5847,17 @@ msgstr "Se ignora el signo menos."
 msgid "Import"
 msgstr "Importar"
 
+#: src/account/component/institution-statement-row/institution-statement-row.tsx
+msgid "Import a statement"
+msgstr "Importar un extracto"
+
 #: src/sync/component/bank-integration-statements/bank-integration-statements.tsx
 msgid "Import a statement from {bank} to add your accounts."
 msgstr "Importa un extracto de {bank} para añadir tus cuentas."
+
+#: src/sync/component/bank-integration-status-line/bank-integration-status-line.tsx
+msgid "Import a statement to confirm the balance"
+msgstr "Importa un extracto para confirmar el saldo"
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Import accounts and transactions from Erste Bank PDF statement"

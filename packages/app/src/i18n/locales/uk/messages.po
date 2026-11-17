@@ -1329,6 +1329,10 @@ msgstr "3 міс."
 msgid "A balanced starter budget with common categories"
 msgstr "Збалансований стартовий бюджет із поширеними категоріями"
 
+#: src/account/component/institution-statement-row/institution-statement-row.tsx
+msgid "A bank statement hasn't confirmed this balance yet"
+msgstr "Виписка банку ще не підтвердила цей баланс"
+
 #: src/rule/components/rule-action-phrase/rule-action-phrase.tsx
 msgid "a category"
 msgstr "категорію"
@@ -2314,6 +2318,10 @@ msgstr "Знак балансу"
 #: src/transaction/hook/use-adjustment-balance.hook.ts
 msgid "Balance unchanged"
 msgstr "Баланс без змін"
+
+#: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
+msgid "Balance unconfirmed"
+msgstr "Баланс не підтверджено"
 
 #: src/account/component/account-details-hero-balance/account-details-hero-balance.tsx
 msgid "Balance: {formattedBalance}"
@@ -5839,9 +5847,17 @@ msgstr "Знак мінус ігнорується."
 msgid "Import"
 msgstr "Імпорт"
 
+#: src/account/component/institution-statement-row/institution-statement-row.tsx
+msgid "Import a statement"
+msgstr "Імпортуйте виписку"
+
 #: src/sync/component/bank-integration-statements/bank-integration-statements.tsx
 msgid "Import a statement from {bank} to add your accounts."
 msgstr "Імпортуйте виписку з {bank}, щоб додати свої рахунки."
+
+#: src/sync/component/bank-integration-status-line/bank-integration-status-line.tsx
+msgid "Import a statement to confirm the balance"
+msgstr "Імпортуйте виписку, щоб підтвердити баланс"
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Import accounts and transactions from Erste Bank PDF statement"
