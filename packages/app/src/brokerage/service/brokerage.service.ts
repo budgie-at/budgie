@@ -7,7 +7,6 @@ import {
     CategorySourceEnum,
     Db,
     ExternalSourceEnum,
-    InstrumentTypeEnum,
     TransactionEntryKindEnum,
     TransactionEntryTypeEnum,
     TransactionRepository,
@@ -40,6 +39,7 @@ import { HistoricalMarketDataDrainerService } from '../../market-data/service/hi
 import { roundHalfExpand } from '../../market-data/utils/round-half-expand.util';
 import { InsufficientSecurityHoldingError } from '../error/insufficient-security-holding.error';
 import { findBrokerageCashAccount } from '../utils/find-brokerage-cash-account.util';
+import { isBrokerageCashAccount } from '../utils/is-brokerage-cash-account.util';
 
 import type { SecurityTradeFormValues } from '../constant/security-trade-form-schema.constant';
 import type { BrokerageFundingDepositInterface } from '../interface/brokerage-funding-deposit.interface';
@@ -109,7 +109,7 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
         ) {
             const stored = yield* findOrRestoreAccount(storedCashId);
             const replacement = (yield* findIntegrationAccounts(security.integrationId)).find(
-                account => account.instrumentId === cashInstrumentId && account.instrument.type === InstrumentTypeEnum.FIAT
+                account => account.instrumentId === cashInstrumentId && isBrokerageCashAccount(account)
             );
 
             return stored ?? replacement ?? (yield* Effect.die(new Error('Brokerage cash account not found')));
@@ -224,9 +224,7 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
                     integration => integration.provider === ExternalSourceEnum.MANUAL
                 );
                 const accounts = yield* Effect.forEach(integrations, integration => accountRepository.findByIntegrationId(integration.id));
-                const cashAccounts = accounts
-                    .flat()
-                    .filter(account => account.type === AccountTypeEnum.STOCKS && account.instrument.type === InstrumentTypeEnum.FIAT);
+                const cashAccounts = accounts.flat().filter(isBrokerageCashAccount);
 
                 yield* Effect.forEach(cashAccounts, account => reconcileCash(account.id, fundingTitle), { discard: true });
             },
@@ -371,7 +369,11 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
                         return yield* InsufficientSecurityHoldingError.make();
                     }
 
-                    if (isDefined(security.integrationId) && cash.integrationId === security.integrationId) {
+                    if (
+                        isBrokerageCashAccount(cash) &&
+                        isDefined(security.integrationId) &&
+                        cash.integrationId === security.integrationId
+                    ) {
                         yield* reconcileCash(cash.id, fundingTitle);
                     }
                 },

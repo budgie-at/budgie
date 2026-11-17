@@ -735,6 +735,33 @@ describe('market-data/brokerage-trades', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
+    it.effect('never funds a plain deposit account that shares the brokerage integration', () =>
+        Effect.gen(function* () {
+            const { dollar, brokerageService, cash } = yield* createBrokerage;
+            const accountService = yield* AccountService;
+            const balanceAdjustmentService = yield* BalanceAdjustmentService;
+            const deposit = yield* accountService.create({
+                title: 'Savings deposit',
+                type: AccountTypeEnum.DEPOSIT,
+                icon: UserIconNameEnum.ChartLine,
+                instrumentId: dollar.id,
+                currentBalance: 0,
+                includeInNetWorth: true,
+                isActive: true,
+                externalSource: ExternalSourceEnum.MANUAL,
+                integrationId: cash.integrationId
+            });
+
+            yield* balanceAdjustmentService.create(deposit.id, -100_000_000, MARCH(1), 'Correction');
+            yield* brokerageService.buy(cash.integrationId ?? 0, LISTING, buyTen(100, MARCH(2)), FUNDING_TITLE);
+            yield* brokerageService.reconcileFunding(FUNDING_TITLE);
+
+            expect(yield* fetchAccountBalance(deposit.id)).toBe(-100_000_000);
+            expect(yield* fetchAccountBalance(cash.id)).toBe(0);
+            expect(yield* fetchBalanceAdjustments(deposit.id)).toHaveLength(1);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
     it.effect('funds an ordinary transfer out of brokerage cash', () =>
         Effect.gen(function* () {
             const { dollar, brokerageService, cash } = yield* createBrokerage;
