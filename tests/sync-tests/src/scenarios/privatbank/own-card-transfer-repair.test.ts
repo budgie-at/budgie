@@ -588,7 +588,14 @@ describe('privatbank/own-card-transfer-repair', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('drops restored copies of a repaired transfer titled with the counterpart earlier card number', () =>
+    it.effect.each([
+        {
+            name: 'drops restored copies of a repaired transfer titled with the counterpart earlier card number',
+            offsetMs: 0,
+            keptExpenseCount: 0
+        },
+        { name: 'keeps a restored own-card row an hour away from the repaired transfer', offsetMs: 3_600_000, keptExpenseCount: 1 }
+    ])('$name', ({ keptExpenseCount, offsetMs }) =>
         Effect.gen(function* () {
             const syncRepairService = yield* SyncRepairService;
             const liveCard = yield* seedPrivatbankCard('1234');
@@ -598,7 +605,7 @@ describe('privatbank/own-card-transfer-repair', () => {
             yield* Effect.forEach(['privatbank-old-id', 'privatbank-new-id'], externalId =>
                 Effect.gen(function* () {
                     const expense = yield* seed.bankPairExpense(
-                        { externalId, operatedAt: OWN_CARD_OPERATED_AT },
+                        { externalId, operatedAt: new Date(OWN_CARD_OPERATED_AT.getTime() + offsetMs) },
                         { accountId: archivedCard.id, amount: OWN_CARD_AMOUNT }
                     );
 
@@ -619,8 +626,8 @@ describe('privatbank/own-card-transfer-repair', () => {
             yield* seedPrivatbankCard('4321');
             yield* syncRepairService.removeDuplicates();
 
-            expect(yield* fetchLiveExpensesFromAccount(archivedCard.id)).toHaveLength(0);
-            expect(yield* fetchAccountBalance(archivedCard.id)).toBe(-OWN_CARD_AMOUNT);
+            expect(yield* fetchLiveExpensesFromAccount(archivedCard.id)).toHaveLength(keptExpenseCount);
+            expect(yield* fetchAccountBalance(archivedCard.id)).toBe(-OWN_CARD_AMOUNT * (keptExpenseCount + 1));
             expect(yield* fetchAccountBalance(liveCard.id)).toBe(OWN_CARD_AMOUNT);
         }).pipe(Effect.provide(TestLayer))
     );

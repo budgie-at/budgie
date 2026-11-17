@@ -244,6 +244,8 @@ export class AccountReissueMergeService extends Context.Service<AccountReissueMe
             return [...new Set(duplicateIds.filter(isDefined))];
         });
 
+        const archivedCardCopyMaxGapMs = 60_000;
+
         const findImportedTransferLegDuplicates = Effect.fnUntraced(function* (
             liveAccountId: number,
             archivedAccountId: number,
@@ -276,6 +278,7 @@ export class AccountReissueMergeService extends Context.Service<AccountReissueMe
                               title: transaction.title,
                               isIncome,
                               isKnown: false,
+                              isOnArchivedCard: entry.accountId === archivedAccountId,
                               operatedAt: transaction.operatedAt,
                               amounts: [entry.amount]
                           }
@@ -283,7 +286,12 @@ export class AccountReissueMergeService extends Context.Service<AccountReissueMe
                     : [];
             });
 
-            const matches = [...matchUnconsolidatedTransferLegs(candidates, legs, isPrivatbankOwnCardTransferTitle)];
+            const matches = [...matchUnconsolidatedTransferLegs(candidates, legs, isPrivatbankOwnCardTransferTitle)].filter(
+                ([candidate, leg]) =>
+                    !candidate.isOnArchivedCard ||
+                    isDefined(leg.entryExternalId) ||
+                    Math.abs(leg.operatedAt.getTime() - candidate.operatedAt.getTime()) <= archivedCardCopyMaxGapMs
+            );
             const matchedCandidates = new Set(matches.map(([candidate]) => candidate));
             const copyIds = candidates
                 .filter(

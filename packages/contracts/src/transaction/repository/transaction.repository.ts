@@ -410,10 +410,7 @@ export class TransactionRepository extends Context.Service<TransactionRepository
                               })
                               .from(AccountExternalIdEntityTable)
                               .where(
-                                  inArray(
-                                      AccountExternalIdEntityTable.accountId,
-                                      legs.map(leg => leg.counterpartAccountId)
-                                  )
+                                  inArray(AccountExternalIdEntityTable.accountId, [...new Set(legs.map(leg => leg.counterpartAccountId))])
                               )
                       )
                     : [];
