@@ -68,12 +68,16 @@ test('44 enable banking', { tags: ['sync'], platforms: ['ios'] }, async ({ budgi
         await b.scrollTo(ctx, `AccountCard.${SYNTHETIC_ACCOUNT}`);
         await expect(id(`AccountCard.${SYNTHETIC_ACCOUNT}`)).toHaveText(/€1,235, Up to date$/, { timeout: 90_000 });
         await b.openLink(ctx, 'budgie://transactions');
-        await expect(screen.getByRole('button', { name: /^E2E Coffee, €12,.*E2E Synthetic Bank E2E Current$/ }).first()).toBeVisible({
+        await expect(
+            screen.getByRole('button', { name: /^E2E Coffee, €12,.*E2E Synthetic Bank E2E Current, \$[\d,.]+$/ }).first()
+        ).toBeVisible({
             timeout: 15_000
         });
-        await expect(screen.getByRole('button', { name: /^E2E Employer, \+€500,.*E2E Synthetic Bank E2E Current$/ }).first()).toBeVisible();
         await expect(
-            screen.getByRole('button', { name: /^Balance Adjustment, \+€747,.*E2E Synthetic Bank E2E Current$/ }).first()
+            screen.getByRole('button', { name: /^E2E Employer, \+€500,.*E2E Synthetic Bank E2E Current, \$[\d,.]+$/ }).first()
+        ).toBeVisible();
+        await expect(
+            screen.getByRole('button', { name: /^Balance Adjustment, \+€747,.*E2E Synthetic Bank E2E Current, \$[\d,.]+$/ }).first()
         ).toBeVisible();
     });
 
@@ -99,12 +103,12 @@ test('44 enable banking', { tags: ['sync'], platforms: ['ios'] }, async ({ budgi
         await expect(id(`AccountCard.${WISE_EUR_ACCOUNT}`)).toHaveText(/€1,000, Up to date$/, { timeout: 90_000 });
         await expect(id(`AccountCard.${WISE_USD_ACCOUNT}`)).toHaveText(/\$108, Up to date$/, { timeout: 90_000 });
         await expect(id('TransactionCard.Label.E2E_Wise_Conversion')).toHaveText(
-            /^E2E Wise Conversion, €100, \$108, From Wise EUR to Wise USD$/,
+            /^E2E Wise Conversion, €100, From Wise EUR to Wise USD, \$108$/,
             {
                 timeout: 30_000
             }
         );
-        await expect(id('TransactionCard.Label.E2E_Other_Bank')).toHaveText(/^E2E Other Bank, \+€1,100,.*Wise EUR$/);
+        await expect(id('TransactionCard.Label.E2E_Other_Bank')).toHaveText(/^E2E Other Bank, \+€1,100,.*Wise EUR, \$[\d,.]+$/);
     });
 
     await b.phase('valid consent', async () => {
@@ -182,10 +186,12 @@ test('44 enable banking', { tags: ['sync'], platforms: ['ios'] }, async ({ budgi
         await b.scrollTo(ctx, `AccountCard.${CONNECT_ACCOUNT}`);
         await expect(id(`AccountCard.${CONNECT_ACCOUNT}`)).toHaveText(/€1,235, Up to date$/, { timeout: 90_000 });
         await b.openLink(ctx, 'budgie://transactions');
-        await expect(screen.getByRole('button', { name: /^E2E Coffee, €12,.*E2E Statement Account$/ }).first()).toBeVisible({
+        await expect(screen.getByRole('button', { name: /^E2E Coffee, €12,.*E2E Statement Account(, \$[\d,.]+)?$/ }).first()).toBeVisible({
             timeout: 15_000
         });
-        const manualPurchase = screen.getByRole('button', { name: /^E2E Manual Purchase, €7,.*E2E Statement Account$/ }).first();
+        const manualPurchase = screen
+            .getByRole('button', { name: /^E2E Manual Purchase, €7,.*E2E Statement Account(, \$[\d,.]+)?$/ })
+            .first();
         await screen.scrollUntilVisible(manualPurchase, { direction: 'down', timeout: 15_000 });
         await expect(manualPurchase).toBeVisible();
     });

@@ -135,7 +135,9 @@ test('31 debt settlement attachments', { tags: ['debt'], platforms: PENDING_ANDR
 
     await b.phase('extra lending raises the lent total', async () => {
         await attachFromList('E2E_Lent_Debt_Extra_Lending', LENT);
-        await expect(id(card('E2E_Lent_Debt_Extra_Lending'))).toHaveText(/, From E2E EUR Debt Funding Account$/, { timeout: 10_000 });
+        await expect(id(card('E2E_Lent_Debt_Extra_Lending'))).toHaveText(/, From E2E EUR Debt Funding Account, \$[\d,.]+$/, {
+            timeout: 10_000
+        });
         await home();
         await balances(LENT, ['OutstandingAmount.13405_933', 'PaidAmount.2094_067', 'TotalAmount.15500', 'Percentage.13_51']);
         await exitAccountDetailsToHome(ctx);

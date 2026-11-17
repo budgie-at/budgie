@@ -1303,6 +1303,7 @@ msgid "2× plan"
 msgstr "2× plan"
 
 #: src/account/component/account-details-market-link/account-details-market-link.tsx
+#: src/account/component/home-section-return-pill/home-section-return-pill.tsx
 msgid "24h"
 msgstr "24 h"
 
@@ -4556,6 +4557,10 @@ msgstr "Terminé"
 msgid "Double-tap to seal"
 msgstr "Touche deux fois pour sceller"
 
+#: src/account/component/home-section-return-pill/home-section-return-pill.tsx
+msgid "down {change}"
+msgstr "en baisse de {change}"
+
 #: src/account/component/account-details-market-link/account-details-market-link.tsx
 msgid "down {changeShare} on {staleDate}"
 msgstr "en baisse de {changeShare} le {staleDate}"
@@ -6451,6 +6456,10 @@ msgstr "Lituanie"
 msgid "Lives on"
 msgstr "Stocké sur"
 
+#: src/account/component/home-section-return-pill/home-section-return-pill.tsx
+msgid "loading"
+msgstr "chargement"
+
 #: src/transaction/components/suggestion-loading-indicator/suggestion-loading-indicator.tsx
 msgid "Loading AI model..."
 msgstr "Chargement du modèle d'IA..."
@@ -8085,6 +8094,10 @@ msgstr "Les revenus passifs apparaissent ici lorsque vous gagnez des récompense
 #: src/yield/component/yield-entry-row-content/yield-entry-row-content.tsx
 msgid "Passive income, {subtitle}"
 msgstr "Revenus passifs, {subtitle}"
+
+#: src/account/component/home-section-return-pill/home-section-return-pill.tsx
+msgid "Past 24 hours, {spokenChange}"
+msgstr "Dernières 24 heures : {spokenChange}"
 
 #: src/market-data/component/currency-market-overview/currency-market-overview.tsx
 msgid "Past 3 months"
@@ -10845,10 +10858,6 @@ msgstr "Top par capitalisation"
 msgid "Top-ups"
 msgstr "Dépôts"
 
-#: src/account/component/home-section-return-line/home-section-return-line.tsx
-msgid "total"
-msgstr "total"
-
 #: src/account/component/account-selector-card-debt-total-subtitle/account-selector-card-debt-total-subtitle.tsx
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
 #: src/account/component/debt-account-card/debt-account-card.tsx
@@ -10889,6 +10898,10 @@ msgstr "Total reçu"
 #: src/brokerage/component/brokerage-gain-line/brokerage-gain-line.tsx
 msgid "Total return"
 msgstr "Rendement total"
+
+#: src/account/component/home-section-return-pill/home-section-return-pill.tsx
+msgid "Total return, {spokenChange}"
+msgstr "Rendement total : {spokenChange}"
 
 #: src/settings/hook/use-biometric-label.hook.ts
 msgid "Touch ID"
@@ -11194,6 +11207,10 @@ msgstr "Indisponible"
 msgid "Uncategorized"
 msgstr "Non catégorisé"
 
+#: src/account/component/home-section-return-pill/home-section-return-pill.tsx
+msgid "unchanged"
+msgstr "inchangé"
+
 #: src/budget/components/budget-history-legend/budget-history-legend.tsx
 msgid "Under limit"
 msgstr "Sous la limite"
@@ -11326,6 +11343,10 @@ msgstr "Tant que le modèle n’est pas prêt, les catégories viennent de règl
 #: src/yield/constant/yield-unavailable-label.constant.ts
 msgid "Unusually high · balance history may be incomplete"
 msgstr "Anormalement élevé · l'historique des soldes est peut-être incomplet"
+
+#: src/account/component/home-section-return-pill/home-section-return-pill.tsx
+msgid "up {change}"
+msgstr "en hausse de {change}"
 
 #: src/account/component/account-details-market-link/account-details-market-link.tsx
 msgid "up {changeShare} on {staleDate}"

@@ -41,10 +41,14 @@ test('45 monobank sync', { tags: ['sync'], platforms: PENDING_ANDROID_PORT }, as
 
     await b.phase('transactions and balance arrive', async () => {
         await b.openLink(ctx, 'budgie://transactions');
-        await expect(screen.getByRole('button', { name: new RegExp(`^E2E Grocery, ₴250,.*${card}$`, 'u') }).first()).toBeVisible({
+        await expect(
+            screen.getByRole('button', { name: new RegExp(`^E2E Grocery, ₴250,.*${card}, \\$[\\d,.]+$`, 'u') }).first()
+        ).toBeVisible({
             timeout: 180_000
         });
-        await expect(screen.getByRole('button', { name: new RegExp(`^E2E Salary, \\+₴1,000,.*${card}$`, 'u') }).first()).toBeVisible();
+        await expect(
+            screen.getByRole('button', { name: new RegExp(`^E2E Salary, \\+₴1,000,.*${card}, \\$[\\d,.]+$`, 'u') }).first()
+        ).toBeVisible();
         await b.tapId(ctx, 'TabBar.Home');
         await b.scrollTo(ctx, `AccountCard.${card}`);
         await expect(b.byId(screen, `AccountCard.${card}`)).toHaveText(/₴1,500, Up to date$/);
