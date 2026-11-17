@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.191.4](https://github.com/budgie-at/budgie/compare/v6.191.3...v6.191.4) (2026-11-17)
+
+**Note:** Version bump only for package @budgie/cloud-sync
+
+
+
+
+
 ## [6.191.1](https://github.com/budgie-at/budgie/compare/v6.191.0...v6.191.1) (2026-11-16)
 
 **Note:** Version bump only for package @budgie/cloud-sync
