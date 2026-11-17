@@ -10,7 +10,6 @@ import { useIsAmountProtected } from '../../../@generic/hook/use-is-amount-prote
 import { cn } from '../../../@generic/utils/cn.util';
 import { RETURN_ARROW_BY_DIRECTION } from '../../../brokerage/constant/return-arrow-by-direction.constant';
 import { useFormatGainPercent } from '../../../i18n/hook/use-format-gain-percent.hook';
-import { NEUTRAL_CHANGE_SHARE } from '../../../market-data/constant/neutral-change-share.constant';
 
 import type { PortfolioReturnInterface } from '../../../brokerage/interface/portfolio-return.interface';
 
@@ -22,6 +21,7 @@ interface Props {
 }
 
 const PLACEHOLDER_PERCENT = 9.9999;
+const PERCENT_DISPLAY_STEPS = 10_000;
 
 const PILL_CLASS_BY_DIRECTION: Readonly<Record<number, string>> = {
     [-1]: 'bg-destructive-background',
@@ -48,7 +48,7 @@ export const HomeSectionReturnPill = ({ sectionReturn, todayReturn, isLoading, t
         return null;
     }
 
-    const direction = isAmountProtected || Math.abs(percent ?? 0) < NEUTRAL_CHANGE_SHARE ? 0 : Math.sign(percent ?? 0);
+    const direction = isAmountProtected ? 0 : Math.sign(Math.round((percent ?? 0) * PERCENT_DISPLAY_STEPS));
     const change = formatGainPercent(percent ?? PLACEHOLDER_PERCENT);
     const spokenChange = isPending ? t`loading` : { [-1]: t`down ${change}`, 0: t`unchanged`, 1: t`up ${change}` }[direction];
     const spokenLabel = isToday ? t`Past 24 hours, ${spokenChange}` : t`Total return, ${spokenChange}`;
@@ -65,7 +65,7 @@ export const HomeSectionReturnPill = ({ sectionReturn, todayReturn, isLoading, t
 
     return (
         <View
-            accessible
+            accessible={!isAmountProtected}
             accessibilityLabel={spokenLabel}
             className={cn('shrink-0 flex-row items-center rounded-full px-[7px] py-[2px]', PILL_CLASS_BY_DIRECTION[direction])}
             style={continuousBorder}
