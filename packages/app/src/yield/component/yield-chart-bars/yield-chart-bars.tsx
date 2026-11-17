@@ -38,7 +38,7 @@ export const YieldChartBars = ({ width, summary }: Props) => {
     const visibleGroups = isDefined(group) ? [group] : [...YIELD_STACK_GROUPS];
     const totals = summary.buckets.map(bucket => visibleGroups.reduce((sum, visible) => sum + bucket.amounts[visible], 0));
     const taxDepth = Math.max(0, ...summary.buckets.map(bucket => bucket.amounts[YieldGroupEnum.TAX]));
-    const axis = { ...buildYieldAxis(Math.max(0, ...totals), 0), bottom: -taxDepth };
+    const axis = buildYieldAxis(Math.max(0, ...totals), taxDepth, YIELD_PLOT_HEIGHT);
     const layout = buildYieldBarLayout({ buckets: summary.buckets, visibleGroups, width, height: YIELD_PLOT_HEIGHT, axis });
     const values = useYieldBarGeometry(layout);
     const pathSize = summary.buckets.length * VALUES_PER_RECT;
