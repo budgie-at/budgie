@@ -14,7 +14,7 @@ import { CreateErsteAccount } from '../../../sync/component/create-erste-account
 import { CreateMonobankAccount } from '../../../sync/component/create-monobank-account/create-monobank-account';
 import { CreatePrivatbankAccount } from '../../../sync/component/create-privatbank-account/create-privatbank-account';
 
-type AccountRouteType = AccountTypeEnum | ExternalSourceEnum;
+type AccountRouteType = AccountTypeEnum | Exclude<ExternalSourceEnum, ExternalSourceEnum.BROKERAGE_FUNDING>;
 
 export default function CreateAccountType() {
     const { type, connectAccountId, savedApplicationId } = useLocalSearchParams<{

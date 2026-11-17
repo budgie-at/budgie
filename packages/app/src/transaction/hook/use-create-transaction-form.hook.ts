@@ -13,6 +13,8 @@ import { isDefined } from '@rnw-community/shared';
 import { useSingleFlight } from '../../@generic/hook/use-single-flight.hook';
 import { useVibration } from '../../@generic/hook/use-vibration.hook';
 import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
+import { BROKERAGE_FUNDING_TITLE } from '../../brokerage/constant/brokerage-funding-title.constant';
+import { BrokerageService } from '../../brokerage/service/brokerage.service';
 import { attachReceipt } from '../../receipt/utils/attach-receipt.util';
 import { RecurringRefreshModeEnum } from '../../recurring/enum/recurring-refresh-mode.enum';
 import { scheduleRecurringRefresh } from '../../recurring/utils/schedule-recurring-refresh.util';
@@ -56,14 +58,15 @@ export const useCreateTransactionForm = ({
     });
 
     const persist = (data: TransactionCreateInputInterface) =>
-        isDefined(receipt)
-            ? Db.transaction(
-                  Effect.tap(
+        Db.transaction(
+            (isDefined(receipt)
+                ? Effect.tap(
                       onSubmit({ ...data, externalId: receipt.fingerprint, externalSource: ExternalSourceEnum.RECEIPT }),
                       transaction => attachReceipt(receipt, transaction.id)
                   )
-              )
-            : onSubmit(data);
+                : onSubmit(data)
+            ).pipe(Effect.tap(() => Effect.flatMap(BrokerageService, service => service.reconcileFunding(t(BROKERAGE_FUNDING_TITLE)))))
+        );
 
     const handleSubmit = (data: TransactionCreateInputInterface) =>
         run(

@@ -11,5 +11,6 @@ export enum ExternalSourceEnum {
     APPLE_PAY_AUTOMATION = 'APPLE_PAY_AUTOMATION',
     CSV = 'CSV',
     RECEIPT = 'RECEIPT',
-    INZHUR = 'INZHUR'
+    INZHUR = 'INZHUR',
+    BROKERAGE_FUNDING = 'BROKERAGE_FUNDING'
 }

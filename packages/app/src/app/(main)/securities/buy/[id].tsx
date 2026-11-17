@@ -9,6 +9,7 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 import { useGetAccountsByIntegrationIdQuery } from '../../../../account/query/use-get-accounts-by-integration-id.query';
 import { SecurityPickerRow } from '../../../../brokerage/component/security-picker-row/security-picker-row';
 import { SecurityTradeForm } from '../../../../brokerage/component/security-trade-form/security-trade-form';
+import { BROKERAGE_FUNDING_TITLE } from '../../../../brokerage/constant/brokerage-funding-title.constant';
 import { SecurityTradeSideEnum } from '../../../../brokerage/enum/security-trade-side.enum';
 import { useSecurityPriceQuery } from '../../../../brokerage/query/use-security-price.query';
 import { BrokerageService } from '../../../../brokerage/service/brokerage.service';
@@ -37,7 +38,7 @@ export default function BuySecurity() {
     const handleSubmit = (values: SecurityTradeFormValues) =>
         isDefined(listing)
             ? Effect.flatMap(BrokerageService, brokerageService =>
-                  brokerageService.buy(integrationId, listing, values, t({ message: 'Deposit', context: 'Brokerage funding' }))
+                  brokerageService.buy(integrationId, listing, values, t(BROKERAGE_FUNDING_TITLE))
               )
             : Effect.void;
 

@@ -4395,8 +4395,7 @@ msgstr "Denmark"
 msgid "Deposit"
 msgstr "Deposit"
 
-#: src/app/(main)/securities/buy/[id].tsx
-#: src/brokerage/component/update-security-trade/update-security-trade.tsx
+#: src/brokerage/constant/brokerage-funding-title.constant.ts
 msgctxt "Brokerage funding"
 msgid "Deposit"
 msgstr "Deposit"
@@ -11712,11 +11711,6 @@ msgstr "Wise"
 #: src/sync/component/wise-statement-import-row/wise-statement-import-row.tsx
 msgid "Wise CSV export, one file per balance"
 msgstr "Wise CSV export, one file per balance"
-
-#: src/brokerage/component/update-security-trade/update-security-trade.tsx
-msgctxt "Brokerage funding"
-msgid "Withdrawal"
-msgstr "Withdrawal"
 
 #: src/inzhur/component/inzhur-operations-import-summary/inzhur-operations-import-summary.tsx
 msgid "Withdrawals"
