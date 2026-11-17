@@ -32,7 +32,7 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { DEFAULT_DECIMAL_PLACES } from '../../i18n/constant/default-decimal-places.constant';
 import { isSecurityInstrumentType } from '../../instrument/utils/is-security-instrument-type.util';
@@ -186,21 +186,28 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
             const movements = yield* accountBalanceRepository.getLedgerMovements(cashAccountId);
             const fundings = movements.filter(movement => movement.externalSource === ExternalSourceEnum.BROKERAGE_FUNDING);
             const deposits = planFunding(movements.filter(movement => movement.externalSource !== ExternalSourceEnum.BROKERAGE_FUNDING));
-            const isFunded =
-                fundings.length === deposits.length &&
-                deposits.every(
-                    (deposit, index) =>
-                        deposit.amount === fundings.at(index)?.amount &&
-                        deposit.operatedAt.getTime() === fundings.at(index)?.operatedAt.getTime()
+            const staleFundings = [...fundings];
+            const missingDeposits = deposits.filter(deposit => {
+                const index = staleFundings.findIndex(
+                    funding => funding.amount === deposit.amount && funding.operatedAt.getTime() === deposit.operatedAt.getTime()
                 );
 
-            if (isFunded) {
+                if (index < 0) {
+                    return true;
+                }
+
+                staleFundings.splice(index, 1);
+
+                return false;
+            });
+
+            if (isEmptyArray(staleFundings) && isEmptyArray(missingDeposits)) {
                 return;
             }
 
-            yield* Effect.forEach(fundings, funding => transactionRepository.deleteById(funding.transactionId), { discard: true });
+            yield* Effect.forEach(staleFundings, funding => transactionRepository.deleteById(funding.transactionId), { discard: true });
             yield* Effect.forEach(
-                deposits,
+                missingDeposits,
                 deposit =>
                     balanceAdjustmentService.createFromSource(cashAccountId, deposit.amount, deposit.operatedAt, {
                         title: fundingTitle,
@@ -210,6 +217,21 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
             );
             yield* accountBalanceIncrementalService.updateBalancesByAccountIds([cashAccountId]);
         });
+
+        const reconcileFunding = Effect.fn('BrokerageService.reconcileFunding')(
+            function* (fundingTitle: string) {
+                const integrations = (yield* bankIntegrationRepository.findActive).filter(
+                    integration => integration.provider === ExternalSourceEnum.MANUAL
+                );
+                const accounts = yield* Effect.forEach(integrations, integration => accountRepository.findByIntegrationId(integration.id));
+                const cashAccounts = accounts
+                    .flat()
+                    .filter(account => account.type === AccountTypeEnum.STOCKS && account.instrument.type === InstrumentTypeEnum.FIAT);
+
+                yield* Effect.forEach(cashAccounts, account => reconcileCash(account.id, fundingTitle), { discard: true });
+            },
+            effect => Db.transaction(effect)
+        );
 
         const findSecurityAccount = Effect.fnUntraced(function* (accountId: number) {
             const account = yield* accountRepository.findById(accountId);
@@ -297,17 +319,16 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
                 },
                 effect => Db.transaction(effect)
             ),
-            reconcileFunding: Effect.fn('BrokerageService.reconcileFunding')(
-                function* (fundingTitle: string) {
-                    const integrations = (yield* bankIntegrationRepository.findActive).filter(
-                        integration => integration.provider === ExternalSourceEnum.MANUAL
-                    );
-                    const accounts = yield* Effect.forEach(integrations, integration =>
-                        accountRepository.findByIntegrationId(integration.id)
-                    );
-                    const cashAccounts = accounts.flat().filter(account => account.instrument.type === InstrumentTypeEnum.FIAT);
+            reconcileFunding,
+            adoptFunding: Effect.fn('BrokerageService.adoptFunding')(
+                function* (transactionId: number, fundingTitle: string) {
+                    const transaction = yield* transactionRepository.getByIdRaw(transactionId);
 
-                    yield* Effect.forEach(cashAccounts, account => reconcileCash(account.id, fundingTitle), { discard: true });
+                    if (transaction?.externalSource === ExternalSourceEnum.BROKERAGE_FUNDING) {
+                        yield* transactionRepository.updateById(transactionId, { externalSource: null });
+                    }
+
+                    yield* reconcileFunding(fundingTitle);
                 },
                 effect => Db.transaction(effect)
             ),

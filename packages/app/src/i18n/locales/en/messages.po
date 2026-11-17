@@ -4395,12 +4395,7 @@ msgstr "Denmark"
 msgid "Deposit"
 msgstr "Deposit"
 
-#: src/@generic/hook/use-app-initialization.hook.ts
-#: src/app/(main)/securities/buy/[id].tsx
-#: src/app/(main)/securities/sell/[id].tsx
-#: src/brokerage/component/update-security-trade/update-security-trade.tsx
-#: src/rule/constant/external-source.constant.ts
-#: src/transaction/hook/use-delete-transaction.hook.ts
+#: src/brokerage/constant/brokerage-funding-title.constant.ts
 msgctxt "Brokerage funding"
 msgid "Deposit"
 msgstr "Deposit"

@@ -8,6 +8,7 @@ import { isDefined } from '@rnw-community/shared';
 import { useAccountBalanceQuery } from '../../../account/query/use-account-balance.query';
 import { roundHalfExpand } from '../../../market-data/utils/round-half-expand.util';
 import { getSecurityTrade } from '../../../transaction/utils/get-security-trade.util';
+import { BROKERAGE_FUNDING_TITLE } from '../../constant/brokerage-funding-title.constant';
 import { SECURITY_PRICE_MAX_DECIMALS } from '../../constant/security-price-max-decimals.constant';
 import { SecurityTradeSideEnum } from '../../enum/security-trade-side.enum';
 import { BrokerageService } from '../../service/brokerage.service';
@@ -42,9 +43,7 @@ export const UpdateSecurityTrade = ({ transaction }: UpdateTransactionFormPropsI
     };
 
     const handleSubmit = (values: SecurityTradeFormValues) =>
-        Effect.flatMap(BrokerageService, brokerageService =>
-            brokerageService.update(transaction.id, values, t({ message: 'Deposit', context: 'Brokerage funding' }))
-        );
+        Effect.flatMap(BrokerageService, brokerageService => brokerageService.update(transaction.id, values, t(BROKERAGE_FUNDING_TITLE)));
 
     return (
         <SecurityTradeForm

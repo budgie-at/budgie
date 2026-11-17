@@ -16,6 +16,7 @@ import {
     TransactionEntryPositionRepository,
     TransactionEntryTypeEnum,
     TransactionRepository,
+    TransactionTypeEnum,
     TransactionViewRepository,
     UserIconNameEnum,
     convertFromMicroUnits
@@ -40,7 +41,17 @@ const TRADE_DAY = new Date('2026-03-02T12:00:00.000Z');
 const FUNDING_TITLE = 'Deposit';
 const MARCH = (day: number) => new Date(`2026-03-${String(day).padStart(2, '0')}T12:00:00.000Z`);
 const justBefore = (date: Date) => new Date(date.getTime() - 1_000);
-const FUNDING_MIGRATION = '20261117202013_brokerage_funding_marker';
+const LEGACY_CASH_CREATED_AT = 1_794_548_699;
+const fundingIds = Effect.map(
+    testDb
+        .select({ id: TransactionEntityTable.id })
+        .from(TransactionEntityTable)
+        .where(eq(TransactionEntityTable.externalSource, ExternalSourceEnum.BROKERAGE_FUNDING)),
+    rows => rows.map(row => row.id)
+);
+const replayFundingMigration = testDb.$client.unsafe(
+    readFileSync(resolve(process.cwd(), '../../packages/app/drizzle/20261117202013_brokerage_funding_marker/migration.sql'), 'utf8')
+).raw;
 
 const findTradeIds = (securityId: number) =>
     Effect.map(testDb.select().from(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.accountId, securityId)), entries =>
@@ -70,6 +81,13 @@ const createBrokerageWithBalance = (currentBalance: number) =>
     });
 
 const createBrokerage = createBrokerageWithBalance(0);
+
+const createLegacyBrokerage = Effect.tap(createBrokerageWithBalance(800), ({ cash }) =>
+    Effect.andThen(
+        testDb.$client.unsafe(`UPDATE transactions SET created_at = ${LEGACY_CASH_CREATED_AT} WHERE to_account_id = ${cash.id}`).raw,
+        testDb.$client.unsafe(`UPDATE accounts SET created_at = ${LEGACY_CASH_CREATED_AT} WHERE id = ${cash.id}`).raw
+    )
+);
 
 const readTrade = (id: number) =>
     Effect.flatMap(TransactionViewRepository, repository => repository.getById(id, LanguageEnum.EN)).pipe(
@@ -604,20 +622,10 @@ describe('market-data/brokerage-trades', () => {
 
     it.effect('repairs a legacy brokerage with an opening balance and stacked funding into one deposit before the backdated buy', () =>
         Effect.gen(function* () {
-            const { brokerageService, cash } = yield* createBrokerageWithBalance(800);
+            const { brokerageService, cash } = yield* createLegacyBrokerage;
             const balanceAdjustmentService = yield* BalanceAdjustmentService;
             const transactionRepository = yield* TransactionRepository;
-            const fundingIds = Effect.map(
-                testDb
-                    .select({ id: TransactionEntityTable.id })
-                    .from(TransactionEntityTable)
-                    .where(eq(TransactionEntityTable.externalSource, ExternalSourceEnum.BROKERAGE_FUNDING)),
-                rows => rows.map(row => row.id)
-            );
 
-            yield* testDb.$client.unsafe(
-                `UPDATE accounts SET created_at = (SELECT created_at FROM transactions WHERE to_account_id = ${cash.id}) WHERE id = ${cash.id}`
-            ).raw;
             yield* brokerageService.buy(
                 cash.integrationId ?? 0,
                 LISTING,
@@ -625,10 +633,11 @@ describe('market-data/brokerage-trades', () => {
                 FUNDING_TITLE
             );
             yield* Effect.forEach(yield* fundingIds, id => transactionRepository.deleteById(id), { discard: true });
-            yield* balanceAdjustmentService.create(cash.id, 570_000, justBefore(TRADE_DAY), FUNDING_TITLE);
+            const stackedId = yield* balanceAdjustmentService.create(cash.id, 570_000, justBefore(TRADE_DAY), FUNDING_TITLE);
             yield* testDb.$client.unsafe(
-                readFileSync(resolve(process.cwd(), '../../packages/app/drizzle', FUNDING_MIGRATION, 'migration.sql'), 'utf8')
+                `UPDATE transactions SET created_at = (SELECT MAX(created_at) FROM transaction_entries WHERE account_id = ${cash.id} AND type = '${TransactionEntryTypeEnum.FEE}') WHERE id = ${stackedId}`
             ).raw;
+            yield* replayFundingMigration;
             expect(yield* fundingIds).toHaveLength(2);
 
             yield* brokerageService.reconcileFunding(FUNDING_TITLE);
@@ -638,6 +647,113 @@ describe('market-data/brokerage-trades', () => {
             expect(yield* fundingIds).toEqual(repairedIds);
             expect(yield* fetchBalanceAdjustments(cash.id)).toEqual([
                 { title: FUNDING_TITLE, amount: 931_250_000, type: TransactionEntryTypeEnum.DEBIT, operatedAt: justBefore(TRADE_DAY) }
+            ]);
+            expect(yield* fetchAccountBalance(cash.id)).toBe(0);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('keeps an opening balance of a brokerage created outside the starting-balance release as user money', () =>
+        Effect.gen(function* () {
+            const { cash } = yield* createBrokerageWithBalance(800);
+
+            yield* replayFundingMigration;
+
+            expect(yield* fundingIds).toEqual([]);
+            expect(yield* fetchAccountBalance(cash.id)).toBe(800_000_000);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect.each([
+        { name: 'no trade', tradeDay: null },
+        { name: 'only a later trade', tradeDay: new Date(Date.now() + 86_400_000) }
+    ])('keeps a legacy opening balance with $name as user money', ({ tradeDay }) =>
+        Effect.gen(function* () {
+            const { brokerageService, cash } = yield* createLegacyBrokerage;
+
+            if (isDefined(tradeDay)) {
+                yield* brokerageService.buy(cash.integrationId ?? 0, LISTING, buyTen(50, tradeDay), FUNDING_TITLE);
+            }
+
+            yield* replayFundingMigration;
+
+            expect(yield* fundingIds).toEqual([]);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('keeps earlier funding deposits untouched when a later buy needs its own', () =>
+        Effect.gen(function* () {
+            const { brokerageService, cash } = yield* createBrokerage;
+
+            yield* brokerageService.buy(cash.integrationId ?? 0, LISTING, buyTen(100, MARCH(2)), FUNDING_TITLE);
+            const earlierIds = yield* fundingIds;
+            yield* brokerageService.buy(cash.integrationId ?? 0, LISTING, buyTen(100, MARCH(11)), FUNDING_TITLE);
+
+            expect(yield* fundingIds).toEqual([...earlierIds, expect.any(Number)]);
+            expect(yield* fetchAccountBalance(cash.id)).toBe(0);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('keeps a user deposit made at the same moment as a buy but saved separately', () =>
+        Effect.gen(function* () {
+            const { brokerageService, cash } = yield* createBrokerage;
+            const balanceAdjustmentService = yield* BalanceAdjustmentService;
+            const depositId = yield* balanceAdjustmentService.create(cash.id, 2_000_000_000, TRADE_DAY, 'Top up');
+
+            yield* brokerageService.buy(cash.integrationId ?? 0, LISTING, buyTen(100, TRADE_DAY), FUNDING_TITLE);
+            yield* testDb.$client.unsafe(`UPDATE transactions SET created_at = created_at - 100 WHERE id = ${depositId}`).raw;
+            yield* replayFundingMigration;
+
+            expect(yield* fundingIds).toEqual([]);
+            expect(yield* fetchAccountBalance(cash.id)).toBe(1_000_000_000);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('hands a hand-edited funding deposit to the user and funds the remaining dip', () =>
+        Effect.gen(function* () {
+            const { brokerageService, cash } = yield* createBrokerage;
+            const transactionService = yield* TransactionService;
+
+            yield* brokerageService.buy(cash.integrationId ?? 0, LISTING, buyTen(100, MARCH(2)), FUNDING_TITLE);
+            const [fundingId] = yield* fundingIds;
+            yield* transactionService.updateById(fundingId, {
+                type: TransactionTypeEnum.ADJUSTMENT,
+                fromAccountId: null,
+                toAccountId: cash.id,
+                tagIds: [],
+                entries: [{ accountId: cash.id, type: TransactionEntryTypeEnum.DEBIT, amount: 400, categoryId: null, mccCategoryId: null }]
+            });
+            yield* brokerageService.adoptFunding(fundingId, FUNDING_TITLE);
+
+            expect(yield* fundingIds).not.toContain(fundingId);
+            expect(yield* fetchBalanceAdjustments(cash.id)).toEqual(
+                expect.arrayContaining([
+                    { title: FUNDING_TITLE, amount: 400_000_000, type: TransactionEntryTypeEnum.DEBIT, operatedAt: justBefore(MARCH(2)) },
+                    { title: FUNDING_TITLE, amount: 600_000_000, type: TransactionEntryTypeEnum.DEBIT, operatedAt: justBefore(MARCH(2)) }
+                ])
+            );
+            expect(yield* fetchAccountBalance(cash.id)).toBe(0);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('funds an ordinary transfer out of brokerage cash', () =>
+        Effect.gen(function* () {
+            const { dollar, brokerageService, cash } = yield* createBrokerage;
+            const bank = yield* seed.account({ title: 'Bank', instrumentId: dollar.id });
+
+            yield* seed.directTransfer({
+                exchangeRate: 1,
+                operatedAt: MARCH(3),
+                sourceAccountId: cash.id,
+                sourceAmount: 50_000_000,
+                sourceEntryExchangeRate: 1,
+                targetAccountId: bank.id,
+                targetAmount: 50_000_000,
+                toIban: null
+            });
+            yield* brokerageService.reconcileFunding(FUNDING_TITLE);
+
+            expect(yield* fetchBalanceAdjustments(cash.id)).toEqual([
+                { title: FUNDING_TITLE, amount: 50_000_000, type: TransactionEntryTypeEnum.DEBIT, operatedAt: justBefore(MARCH(3)) }
             ]);
             expect(yield* fetchAccountBalance(cash.id)).toBe(0);
         }).pipe(Effect.provide(TestLayer))

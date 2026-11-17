@@ -11,6 +11,7 @@ import { useGetAccountByIdQuery } from '../../../../account/query/use-get-accoun
 import { useGetAccountsByIntegrationIdQuery } from '../../../../account/query/use-get-accounts-by-integration-id.query';
 import { SecurityHoldingRow } from '../../../../brokerage/component/security-holding-row/security-holding-row';
 import { SecurityTradeForm } from '../../../../brokerage/component/security-trade-form/security-trade-form';
+import { BROKERAGE_FUNDING_TITLE } from '../../../../brokerage/constant/brokerage-funding-title.constant';
 import { SecurityTradeSideEnum } from '../../../../brokerage/enum/security-trade-side.enum';
 import { useSecurityPriceQuery } from '../../../../brokerage/query/use-security-price.query';
 import { BrokerageService } from '../../../../brokerage/service/brokerage.service';
@@ -30,9 +31,7 @@ export default function SellSecurity() {
     const currencySymbol = suggestedPrice.cash?.instrument.symbol ?? '';
 
     const handleSubmit = (values: SecurityTradeFormValues) =>
-        Effect.flatMap(BrokerageService, brokerageService =>
-            brokerageService.sell(accountId, values, t({ message: 'Deposit', context: 'Brokerage funding' }))
-        );
+        Effect.flatMap(BrokerageService, brokerageService => brokerageService.sell(accountId, values, t(BROKERAGE_FUNDING_TITLE)));
 
     return (
         <SecurityTradeForm
