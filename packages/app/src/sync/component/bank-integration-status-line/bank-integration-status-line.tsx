@@ -61,7 +61,7 @@ export const BankIntegrationStatusLine = ({ syncs }: Props) => {
         icon: isStale ? UserIconNameEnum.Clock : BANK_INTEGRATION_SYNC_STATUS_ICON[status]
     };
 
-    if (capabilities.supportsFileImport) {
+    if (capabilities.supportsFileImport && status !== BankIntegrationSyncStatusEnum.NEEDS_STATEMENT) {
         return <BankIntegrationImportStatus lastSyncedAt={lastSyncedAt} />;
     }
 

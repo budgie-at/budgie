@@ -1331,8 +1331,8 @@ msgid "A balanced starter budget with common categories"
 msgstr "A balanced starter budget with common categories"
 
 #: src/account/component/institution-statement-row/institution-statement-row.tsx
-msgid "A bank statement hasn't confirmed this balance yet"
-msgstr "A bank statement hasn't confirmed this balance yet"
+msgid "A bank statement has not confirmed this balance yet"
+msgstr "A bank statement has not confirmed this balance yet"
 
 #: src/rule/components/rule-action-phrase/rule-action-phrase.tsx
 msgid "a category"

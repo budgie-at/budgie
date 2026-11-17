@@ -1,5 +1,5 @@
 import { SyncEntityInterface, UserIconNameEnum } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { Text } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
@@ -35,7 +35,9 @@ export const InstitutionStatementRow = ({ syncs }: Props) => {
             <SettingsRow
                 title={t`Import a statement`}
                 subtitle={
-                    <Text className="text-secondary-foreground text-[15px]">{t`A bank statement hasn't confirmed this balance yet`}</Text>
+                    <Text className="text-secondary-foreground text-[15px]">
+                        <Trans>A bank statement has not confirmed this balance yet</Trans>
+                    </Text>
                 }
                 icon={UserIconNameEnum.FileUp}
                 variant="default"
