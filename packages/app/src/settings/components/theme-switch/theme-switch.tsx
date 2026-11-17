@@ -4,12 +4,12 @@ import { View } from 'react-native';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
+import { RadioOptionRow } from '../../../@generic/component/radio-option-row/radio-option-row';
 import { SegmentedTabs } from '../../../@generic/component/segmented-tabs/segmented-tabs';
 import { TONAL_DISC_BACKGROUND } from '../../../@generic/constant/tonal-disc-background.constant';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { useSetting } from '../../hook/use-setting.hook';
 import { runSettingsUpdate } from '../../utils/run-settings-update.util';
-import { ThemeOptionRow } from '../theme-option-row/theme-option-row';
 
 interface Props {
     readonly testID: string;
@@ -26,16 +26,17 @@ export const ThemeSwitch = ({ testID }: Props) => {
         { value: ThemeEnum.DARK, label: t`Dark` }
     ];
     const handleChange = (next: ThemeEnum) => void runSettingsUpdate({ theme: next });
-    const optionRows = options.map(option => (
-        <ThemeOptionRow
-            key={option.value}
-            value={option.value}
-            label={option.label}
-            isSelected={option.value === theme}
-            onSelect={handleChange}
-        />
-    ));
-    const picker = isAccessibilityTextSize ? optionRows : <SegmentedTabs options={options} value={theme} onChange={handleChange} />;
+    const handleSystemPress = () => void handleChange(ThemeEnum.SYSTEM);
+    const handleLightPress = () => void handleChange(ThemeEnum.LIGHT);
+    const handleDarkPress = () => void handleChange(ThemeEnum.DARK);
+    const radioRows = (
+        <>
+            <RadioOptionRow label={t`Automatic`} isSelected={theme === ThemeEnum.SYSTEM} onPress={handleSystemPress} />
+            <RadioOptionRow label={t`Light`} isSelected={theme === ThemeEnum.LIGHT} onPress={handleLightPress} />
+            <RadioOptionRow label={t`Dark`} isSelected={theme === ThemeEnum.DARK} onPress={handleDarkPress} />
+        </>
+    );
+    const picker = isAccessibilityTextSize ? radioRows : <SegmentedTabs options={options} value={theme} onChange={handleChange} />;
 
     return (
         <GroupedListRow

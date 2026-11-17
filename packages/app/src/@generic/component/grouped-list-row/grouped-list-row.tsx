@@ -42,7 +42,7 @@ const DEFAULT_TEXT_LAYOUT = {
     leftClassName: '',
     contentClassName: '',
     textClassName: 'min-w-0 flex-1',
-    accessoryClassName: 'max-w-[40%] shrink',
+    accessoryClassName: 'shrink',
     titleLines: 2,
     subtitleLines: 3
 } as const;
@@ -66,6 +66,7 @@ export const GroupedListRow = (props: Props) => {
 
     const chevron = isPressable ? <Icon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" /> : null;
     const accessory = right ?? chevron;
+    const leftNode = isDefined(left) ? <View className={layout.leftClassName}>{left}</View> : null;
     const accessoryNode = isDefined(accessory) ? <View className={layout.accessoryClassName}>{accessory}</View> : null;
     const separatorClassName = isDefined(left) ? 'left-[64px]' : 'left-[16px]';
     const subtitleNode = isNotEmptyString(subtitle) ? (
@@ -90,7 +91,7 @@ export const GroupedListRow = (props: Props) => {
             testID={testID}
         >
             <View className={cn('absolute top-0 right-0 h-hairline bg-surface-separator', separatorClassName)} pointerEvents="none" />
-            <View className={layout.leftClassName}>{left}</View>
+            {leftNode}
             <View className={cn('min-w-0 flex-1 flex-row items-center gap-x-xl', layout.contentClassName)}>
                 <View className={cn('gap-y-xxs', layout.textClassName)}>
                     {isString(title) ? (

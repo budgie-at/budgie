@@ -21,6 +21,7 @@ interface Props {
 export const SettingsActionRow = ({ icon, title, subtitle, isLoading = false, onPress, testID }: Props) => {
     const isAccessibilityTextSize = useIsAccessibilityTextSize();
     const titleLines = isAccessibilityTextSize ? 3 : 2;
+    const pressableProps = { disabled: isLoading, accessibilityState: { busy: isLoading, disabled: isLoading } };
 
     return (
         <GroupedListRow
@@ -32,7 +33,8 @@ export const SettingsActionRow = ({ icon, title, subtitle, isLoading = false, on
             }
             subtitle={subtitle}
             right={<SettingsRowAccessory kind={SettingsRowAccessoryKindEnum.ACTION} isLoading={isLoading} />}
-            {...(!isLoading && { onPress })}
+            onPress={onPress}
+            pressableProps={pressableProps}
             testID={testID}
         />
     );
