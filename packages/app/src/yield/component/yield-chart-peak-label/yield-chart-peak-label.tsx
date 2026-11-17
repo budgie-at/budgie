@@ -18,6 +18,7 @@ interface Props {
 }
 
 const PEAK_LABEL_OFFSET = 16;
+const AXIS_LABEL_CLEARANCE = 44;
 
 export const YieldChartPeakLabel = ({ totals, layout, axis }: Props) => {
     const isAmountProtected = useIsAmountProtected();
@@ -33,7 +34,7 @@ export const YieldChartPeakLabel = ({ totals, layout, axis }: Props) => {
     const peakIndex = totals.indexOf(peakTotal);
     const peakLabel = isAmountProtected ? PROTECTED_AMOUNT_PLACEHOLDER : formatCompact(peakTotal, symbol);
     const peakStyle = {
-        left: (layout.xs.at(peakIndex) ?? 0) - layout.barWidth,
+        left: Math.max((layout.xs.at(peakIndex) ?? 0) - layout.barWidth, AXIS_LABEL_CLEARANCE),
         top: Math.max(layout.zeroY - (peakTotal / axis.top) * layout.zeroY - PEAK_LABEL_OFFSET, 0)
     };
 

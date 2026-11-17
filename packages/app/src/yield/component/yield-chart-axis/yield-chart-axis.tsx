@@ -29,7 +29,6 @@ export const YieldChartAxis = ({ axis, width, height }: Props) => {
     const { symbol } = useAtomValue(defaultInstrumentAtom);
 
     const zeroY = (axis.top * height) / (axis.top - axis.bottom);
-    const labelX = width - LABEL_INSET;
     const zeroLabelY = zeroY - LABEL_BASELINE_OFFSET;
 
     return (
@@ -47,18 +46,18 @@ export const YieldChartAxis = ({ axis, width, height }: Props) => {
             {isAmountProtected ? null : (
                 <>
                     <StyledSvgText
-                        x={labelX}
+                        x={LABEL_INSET}
                         y={zeroLabelY}
-                        textAnchor="end"
+                        textAnchor="start"
                         fontSize={LABEL_FONT_SIZE}
                         fillClassName="accent-secondary-foreground"
                     >
                         {formatCompact(0, symbol)}
                     </StyledSvgText>
                     <StyledSvgText
-                        x={labelX}
+                        x={LABEL_INSET}
                         y={TOP_LABEL_BASELINE}
-                        textAnchor="end"
+                        textAnchor="start"
                         fontSize={LABEL_FONT_SIZE}
                         fillClassName="accent-secondary-foreground"
                     >
