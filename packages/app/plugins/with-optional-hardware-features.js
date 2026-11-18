@@ -5,9 +5,7 @@ const OPTIONAL_FEATURES = ['android.hardware.screen.portrait', 'android.hardware
 module.exports = config =>
     withAndroidManifest(config, mod => {
         const manifest = mod.modResults.manifest;
-        const features = (manifest['uses-feature'] ?? []).filter(
-            feature => !OPTIONAL_FEATURES.includes(feature.$['android:name'])
-        );
+        const features = (manifest['uses-feature'] ?? []).filter(feature => !OPTIONAL_FEATURES.includes(feature.$?.['android:name']));
 
         manifest['uses-feature'] = [
             ...features,

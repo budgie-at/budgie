@@ -132,7 +132,11 @@ const getExpoConfig = ({ config }) => ({
         }
     },
     android: {
-        blockedPermissions: ['android.permission.READ_MEDIA_IMAGES', 'android.permission.READ_MEDIA_VIDEO', 'com.google.android.gms.permission.AD_ID'],
+        blockedPermissions: [
+            'android.permission.READ_MEDIA_IMAGES',
+            'android.permission.READ_MEDIA_VIDEO',
+            'com.google.android.gms.permission.AD_ID'
+        ],
         adaptiveIcon: {
             foregroundImage: './assets/icons/adaptive-icon.png',
             monochromeImage: './assets/icons/adaptive-icon.png',
