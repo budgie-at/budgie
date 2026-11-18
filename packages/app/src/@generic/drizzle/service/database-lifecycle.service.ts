@@ -32,7 +32,7 @@ export class DatabaseLifecycleService extends Context.Service<DatabaseLifecycleS
         const semaphore = yield* Semaphore.make(1);
         const closeLock = yield* Semaphore.make(1);
         const isClosed = yield* Ref.make(false);
-        const inFlightOperations = new Map<DatabaseLifecycleOperationEnum, Fiber.Fiber<void, unknown>>();
+        const inFlightOperations = new Map<DatabaseLifecycleOperationEnum, Fiber.Fiber<void, Error>>();
 
         const closeHandle = Effect.fnUntraced(function* () {
             if (yield* Ref.get(isClosed)) {
@@ -43,7 +43,9 @@ export class DatabaseLifecycleService extends Context.Service<DatabaseLifecycleS
             yield* Ref.set(isClosed, true);
         });
 
-        const runExclusively = Effect.fn('DatabaseLifecycleService.runExclusively')(function* <E>(work: Effect.Effect<void, E, Db>) {
+        const runExclusively = Effect.fn('DatabaseLifecycleService.runExclusively')(function* <E extends Error>(
+            work: Effect.Effect<void, E, Db>
+        ) {
             const cloudSyncService = yield* Effect.serviceOption(CloudSyncService);
             const resumeCloudSync =
                 Option.isSome(cloudSyncService) && (yield* cloudSyncService.value.stop())
@@ -67,7 +69,7 @@ export class DatabaseLifecycleService extends Context.Service<DatabaseLifecycleS
         });
 
         return {
-            run: Effect.fn('DatabaseLifecycleService.run')(function* <E>(
+            run: Effect.fn('DatabaseLifecycleService.run')(function* <E extends Error>(
                 operation: DatabaseLifecycleOperationEnum,
                 work: Effect.Effect<void, E, Db>
             ) {

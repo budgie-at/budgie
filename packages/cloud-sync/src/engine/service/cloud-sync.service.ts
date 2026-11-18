@@ -108,7 +108,7 @@ export class CloudSyncService extends Context.Service<CloudSyncService>()('@budg
             }
         });
 
-        const forkConsumer = <A, E, R, R2>(stream: Stream.Stream<A, E, R>, handle: (event: A) => Effect.Effect<unknown, unknown, R2>) =>
+        const forkConsumer = <A, E, R, E2, R2>(stream: Stream.Stream<A, E, R>, handle: (event: A) => Effect.Effect<unknown, E2, R2>) =>
             FiberSet.run(
                 consumers,
                 Stream.runForEach(stream, event => logAndContinue(handle(event)))
