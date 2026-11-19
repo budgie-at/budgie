@@ -28,13 +28,13 @@ import { RecurringRepository } from '../repository/recurring.repository';
 import { resolveKeyedRows } from '../series/recurring-adoption';
 import { buildDetectedSchedule } from '../series/recurring-detected-schedule';
 import { matchRecurringTransactions } from '../series/recurring-matcher';
-import { cadencePeriodDays, cadenceToleranceDays, nearestCycleDate } from '../series/recurring-schedule';
+import { cadencePeriodDays, cadenceWindowDays, nearestCycle, nearestCycleDate } from '../series/recurring-schedule';
 import { detectRecurringSeries, identity, isSeriesActive } from '../series/recurring-series';
-import { nearestCycle } from '../series/recurring-stream';
 import { chargeKey } from '../utils/charge-key.util';
 
 import type { RecurringChargeInterface } from '../interface/recurring-charge.interface';
 import type { RecurringMatchSeriesInterface } from '../interface/recurring-match-series.interface';
+import type { RecurringScheduleInterface } from '../interface/recurring-schedule.interface';
 import type { RecurringSeriesRowInterface } from '../interface/recurring-series-row.interface';
 import type { RecurringSeriesInterface } from '../interface/recurring-series.interface';
 import type {
@@ -83,6 +83,16 @@ export class RecurringRefreshService extends Context.Service<RecurringRefreshSer
 
         const pairKey = (seriesId: number, value: number): string => `${seriesId}:${value}`;
 
+        const occupiedCycles = (
+            row: Pick<RecurringSeriesEntityInterface, 'id'> & RecurringScheduleInterface,
+            links: readonly RecurringSeriesTransactionEntityInterface[]
+        ): Set<number> =>
+            new Set(
+                links
+                    .filter(link => link.seriesId === row.id && !link.isExcluded)
+                    .map(link => nearestCycleDate(row, link.cycleDate).cycleDate.getTime())
+            );
+
         const recurringRepository = yield* RecurringRepository;
         const settingsRepository = yield* SettingsRepository;
         const permit = yield* Semaphore.make(1);
@@ -111,7 +121,7 @@ export class RecurringRefreshService extends Context.Service<RecurringRefreshSer
                     !link.isExcluded &&
                     (!isDefined(row) ||
                         !isDefined(charge) ||
-                        Math.abs(differenceInCalendarDays(charge.operatedAt, link.cycleDate)) > cadenceToleranceDays(row))
+                        Math.abs(differenceInCalendarDays(charge.operatedAt, link.cycleDate)) > cadenceWindowDays(row))
                 );
             });
             const deletedAt = yield* DateTime.nowAsDate;
@@ -222,7 +232,6 @@ export class RecurringRefreshService extends Context.Service<RecurringRefreshSer
             const excludedOnly = new Set(
                 links.filter(link => link.isExcluded && !liveByTransaction.has(link.transactionId)).map(link => link.transactionId)
             );
-            const occupied = new Set(liveLinks.map(link => pairKey(link.seriesId, link.cycleDate.getTime())));
             const since = subMonths(now, RECURRING_HISTORY_MONTHS);
             const charges = (yield* Effect.forEach(RECURRING_TRACKED_KINDS, kind =>
                 recurringRepository.findCharges(defaultInstrumentId, since, kind)
@@ -240,7 +249,7 @@ export class RecurringRefreshService extends Context.Service<RecurringRefreshSer
                     if (
                         isDefined(owner) &&
                         isSameStream(owner, series) &&
-                        nearestCycle(new Date(series.anchorTimestamp), new Date(event.timestamp), series).deviation <= series.toleranceDays
+                        nearestCycle(new Date(series.anchorTimestamp), new Date(event.timestamp), series).deviation <= series.windowDays
                     ) {
                         counts.set(owner.id, (counts.get(owner.id) ?? 0) + 1);
                     }
@@ -296,8 +305,7 @@ export class RecurringRefreshService extends Context.Service<RecurringRefreshSer
                             isUserOwned(row) &&
                             liveLinks.some(
                                 link =>
-                                    link.seriesId === row.id &&
-                                    nearestCycleDate(row, link.cycleDate).deviationDays > cadenceToleranceDays(row)
+                                    link.seriesId === row.id && nearestCycleDate(row, link.cycleDate).deviationDays > cadenceWindowDays(row)
                             )
                     )
                     .map(row => row.id)
@@ -321,16 +329,17 @@ export class RecurringRefreshService extends Context.Service<RecurringRefreshSer
                 const isAdopted = isDefined(matchedRow) && !overlapIndexes.has(index) && !everLinkedSeriesIds.has(matchedRow.id);
                 const stored = yield* store(series, matchedRow, resolveAdoption(isAdopted, keyedIndexes.has(index)), now);
                 storedIds.add(stored.id);
+                const occupied = occupiedCycles(stored, liveLinks);
                 for (const event of series.events) {
                     const date = startOfDay(event.timestamp);
                     const cycle = nearestCycleDate(stored, date);
                     const isFree =
                         !liveByTransaction.has(event.transactionId) &&
                         !excludedPairs.has(pairKey(stored.id, event.transactionId)) &&
-                        !occupied.has(pairKey(stored.id, cycle.cycleDate.getTime())) &&
-                        cycle.deviationDays <= cadenceToleranceDays(stored);
+                        !occupied.has(cycle.cycleDate.getTime()) &&
+                        cycle.deviationDays <= cadenceWindowDays(stored);
                     if (isFree) {
-                        occupied.add(pairKey(stored.id, cycle.cycleDate.getTime()));
+                        occupied.add(cycle.cycleDate.getTime());
                         liveByTransaction.set(event.transactionId, stored.id);
                         linkInputs.push({
                             seriesId: stored.id,
@@ -369,14 +378,14 @@ export class RecurringRefreshService extends Context.Service<RecurringRefreshSer
                     return {
                         isVariable: amounts.length > 1 && Math.max(...amounts) > Math.min(...amounts) * RECURRING_AMOUNT_RATIO,
                         series: row,
-                        userIdentities: new Set(
+                        linkedIdentities: new Set(
                             rowLinks
-                                .filter(link => link.matchedBy === RecurringMatchSourceEnum.USER && !link.isExcluded)
+                                .filter(link => !link.isExcluded)
                                 .map(link => linkedCharges.get(chargeKey(row.kind, link.transactionId)))
                                 .filter(isDefined)
                                 .map(charge => identity(charge))
                         ),
-                        occupiedCycles: new Set(rowLinks.filter(link => !link.isExcluded).map(link => link.cycleDate.getTime())),
+                        occupiedCycles: occupiedCycles(row, rowLinks),
                         excludedTransactionIds: new Set(rowLinks.filter(link => link.isExcluded).map(link => link.transactionId))
                     };
                 });

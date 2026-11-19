@@ -2,11 +2,16 @@ import { addDays } from 'date-fns/addDays';
 import { addMonths } from 'date-fns/addMonths';
 import { differenceInCalendarDays } from 'date-fns/differenceInCalendarDays';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isEmptyArray } from '@rnw-community/shared';
 
+import { nearestCycle } from './recurring-schedule';
 import { PRICE_CHANGE_RATIO } from './recurring-series';
 
+import type { RecurringSeriesEventInterface } from '../interface/recurring-series-event.interface';
 import type { RecurringSeriesInterface } from '../interface/recurring-series.interface';
+import type { RecurringStreamInterface } from '../interface/recurring-stream.interface';
+
+const CONTINUATION_AMOUNT_RATIO = 2;
 
 const hasSameCadence = (previous: RecurringSeriesInterface, next: RecurringSeriesInterface): boolean =>
     previous.kind === next.kind &&
@@ -34,9 +39,9 @@ const continuesSeries = (previous: RecurringSeriesInterface, next: RecurringSeri
 
     return (
         gapDays > 0 &&
-        gapDays <= previous.periodDays + previous.toleranceDays &&
+        gapDays <= previous.periodDays + previous.windowDays &&
         isWithinPriceChange(previous, next) &&
-        Math.abs(differenceInCalendarDays(nextDate, expectedNextDate(previous, previousEvent.timestamp))) <= previous.toleranceDays
+        Math.abs(differenceInCalendarDays(nextDate, expectedNextDate(previous, previousEvent.timestamp))) <= previous.windowDays
     );
 };
 
@@ -82,4 +87,36 @@ export const continueRecurringSeries = (series: readonly RecurringSeriesInterfac
         ...chains.map(chain => chain.map(index => series[index]).reduce(mergeContinuedSeries)),
         ...series.filter((_item, index) => !consumed.has(index))
     ];
+};
+
+const continueEvents = (
+    events: readonly RecurringSeriesEventInterface[],
+    placed: readonly { readonly event: RecurringSeriesEventInterface; readonly cycle: number }[],
+    cycle: number
+): readonly RecurringSeriesEventInterface[] => {
+    const latestAmount = events[events.length - 1].nativeAmount;
+    const [candidate, ...others] = placed.filter(
+        item =>
+            item.cycle === cycle &&
+            item.event.nativeAmount * CONTINUATION_AMOUNT_RATIO >= latestAmount &&
+            item.event.nativeAmount <= latestAmount * CONTINUATION_AMOUNT_RATIO
+    );
+
+    return isDefined(candidate) && isEmptyArray(others) ? continueEvents([...events, candidate.event], placed, cycle - 1) : events;
+};
+
+export const continueRecurringStream = (
+    stream: RecurringStreamInterface,
+    candidates: readonly RecurringSeriesEventInterface[]
+): RecurringStreamInterface => {
+    const anchor = new Date(stream.anchorTimestamp);
+    const latest = stream.events[stream.events.length - 1];
+    const placed = candidates
+        .map(event => ({ event, ...nearestCycle(anchor, new Date(event.timestamp), stream.cadence) }))
+        .filter(item => item.deviation <= stream.cadence.toleranceDays);
+
+    return {
+        ...stream,
+        events: continueEvents(stream.events, placed, nearestCycle(anchor, new Date(latest.timestamp), stream.cadence).cycle - 1)
+    };
 };

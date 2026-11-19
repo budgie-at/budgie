@@ -1,9 +1,15 @@
-import { PRECISION, RecurringSeriesKindEnum } from '@budgie/contracts';
+import { PRECISION, RecurringSeriesKindEnum, RecurringSeriesUserStateEnum } from '@budgie/contracts';
 import { expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { RECURRING_ACTIVE_CONFIDENCE } from '../src/constant/recurring-active-confidence.constant';
+import { RecurringAlertEnum } from '../src/enum/recurring-alert.enum';
+import { resolveRecurringAlert } from '../src/series/recurring-alert';
 import { detectRecurringSeries, isSeriesActive } from '../src/series/recurring-series';
+
+import { buildReadModels } from './test-models';
 
 import type { RecurringChargeInterface } from '../src/interface/recurring-charge.interface';
 import type { RecurringSeriesInterface } from '../src/interface/recurring-series.interface';
@@ -66,14 +72,22 @@ const cumulativeVisits = (title: string, gaps: readonly number[], amounts: reado
         charge(daysAgo(gaps.slice(index).reduce((total, gap) => total + gap, 0)), amounts[index % amounts.length], title)
     );
 
-const describeSeries = (series: RecurringSeriesInterface): string =>
+const withIban = (charges: readonly RecurringChargeInterface[], iban: string) => charges.map(item => ({ ...item, counterpartyIban: iban }));
+
+const asIncome = (charges: readonly RecurringChargeInterface[]) => charges.map(item => ({ ...item, kind: RecurringSeriesKindEnum.INCOME }));
+
+const describeSeries = (series: RecurringSeriesInterface, charges: readonly RecurringChargeInterface[]): string =>
     [
         series.confidence >= RECURRING_ACTIVE_CONFIDENCE ? 'active' : 'possible',
         series.periodMonths === null ? `every ${series.periodDays} days` : CADENCE_NAMES[series.periodMonths],
-        ...(isSeriesActive(series, NOW) ? [] : ['ended'])
+        ...(isSeriesActive(series, NOW) ? [] : ['ended']),
+        ...buildReadModels([series], charges, RecurringSeriesUserStateEnum.CONFIRMED)
+            .map(model => resolveRecurringAlert(model, NOW))
+            .filter(alert => alert === RecurringAlertEnum.OVERDUE)
+            .map(alert => alert.toLowerCase())
     ].join(' ');
 
-const CASES: readonly (readonly [string, readonly RecurringChargeInterface[], readonly string[]])[] = [
+const CASES: readonly (readonly [string, readonly RecurringChargeInterface[], readonly string[], (readonly number[])?])[] = [
     [
         'drugstore habit with seventeen irregular visits is not recurring',
         cumulativeVisits(
@@ -196,13 +210,135 @@ const CASES: readonly (readonly [string, readonly RecurringChargeInterface[], re
         'price change of 26 percent mid stream keeps only the current price stream',
         monthly('TRANSIT PASS', [5, 6, 4, 6, 5, 7, 5, 6, 4, 6, 5], [33, 33, 33, 33, 33, 33, 41.7, 41.7, 41.7, 41.7, 41.7]),
         ['active monthly']
+    ],
+    [
+        'old title-only feed continued by the same title with an IBAN is one monthly stream',
+        [
+            ...monthly('ACME PROPERTY GMBH', [5, 5, 5, 5, 5, 5, 5, 5], [950], 2),
+            ...withIban(monthly('ACME PROPERTY GMBH', [5, 5], [950]), 'AT110000000000000001')
+        ],
+        ['active monthly']
+    ],
+    [
+        'truncated company suffix continued by the full suffix with an IBAN is one monthly stream',
+        [
+            ...monthly('NORDPARK GARAGEN GMBH & CO K', [1, 1, 1, 1, 1, 1, 1], [208], 1),
+            ...withIban(monthly('NORDPARK GARAGEN GMBH & CO KG', [2], [208]), 'AT110000000000000002')
+        ],
+        ['active monthly']
+    ],
+    [
+        'salary whose title dropped its reference word is one monthly income',
+        asIncome([
+            ...monthly('EMPLOYER GMBH GEHALT', [25, 24, 25, 27, 25, 26, 23, 25, 25], [2495.55], 2),
+            ...monthly('EMPLOYER GMBH', [23], [2495.55], 1)
+        ]),
+        ['active monthly']
+    ],
+    [
+        'single token title does not merge with a longer title',
+        [...monthly('STREAMCO', [3, 3, 3, 3, 3, 3], [9.99], 2), ...monthly('STREAMCO PLUS', [3, 3], [9.99])],
+        ['active monthly ended']
+    ],
+    [
+        'generic title shared by five IBANs does not merge payees',
+        ['01', '02', '03', '04', '05'].flatMap((suffix, index) =>
+            withIban([charge(monthDay(index, 10), 50, 'TRANSFER PAYMENT')], `AT1200000000000000${suffix}`)
+        ),
+        []
+    ],
+    [
+        'institution that rotated its IBAN keeps one monthly stream',
+        [
+            ...withIban(monthly('CITY INSURANCE AG', [1, 1, 1, 1, 1, 1], [39.33], 2), 'AT130000000000000001'),
+            ...withIban(monthly('CITY INSURANCE AG', [1, 1], [39.33]), 'AT130000000000000002')
+        ],
+        ['active monthly']
+    ],
+    [
+        'rent income wandering over the 7th to the 17th for ten months is monthly',
+        asIncome(monthly('TENANT PAYMENT', [7, 15, 11, 17, 9, 13, 8, 16, 12, 10], [1527])),
+        ['active monthly']
+    ],
+    [
+        'rent income wandering over the 7th to the 17th for four months is not active',
+        asIncome(monthly('TENANT PAYMENT', [7, 15, 11, 17], [1527])),
+        []
+    ],
+    [
+        'three visits about six months apart with one two weeks off schedule are not a series',
+        [
+            charge(monthDay(16, 3), 2128.64, 'FOOD COURIER'),
+            charge(monthDay(10, 18), 2303.09, 'FOOD COURIER'),
+            charge(monthDay(4, 5), 2323.51, 'FOOD COURIER')
+        ],
+        []
+    ],
+    [
+        'three charges about two months apart with one a week off schedule are not a series',
+        [
+            charge(monthDay(4, 12), 47.1, 'CLOUD HOSTING'),
+            charge(monthDay(2, 12), 46.7, 'CLOUD HOSTING'),
+            charge(monthDay(0, 19), 47.13, 'CLOUD HOSTING')
+        ],
+        []
+    ],
+    [
+        'weekly payments jittering by two days are not recurring',
+        [0, 2, -2, 1, -1, 2, 0, -2, 1, 2, -1, 0, 2, -2, 1, -2].map((jitter, index) =>
+            charge(daysAgo(index * 7 + jitter + 3), 25, 'CLEANER MARIA')
+        ),
+        []
+    ],
+    [
+        'two weekly payments jittering by three days are not recurring',
+        [0, 3, -3, 2, -2, 3, 0, -3, 2, 3, -2, 0].map((jitter, index) => charge(daysAgo(index * 14 + jitter + 4), 40, 'TUTOR OLGA')),
+        []
+    ],
+    [
+        'step price change with one candidate per cycle continues one stream at the new price',
+        monthly('MEDIA STORE', [9, 10, 8, 10, 10, 9, 10, 8], [335.87, 335.87, 335.87, 335.87, 337.39, 335.87, 382.43, 391.24]),
+        ['active monthly'],
+        [387]
+    ],
+    [
+        'one off combined charge on schedule continues the stream at the usual price',
+        monthly('HOSTING INC', [10, 10, 12, 10, 11, 10, 11], [18.02, 18.22, 18.14, 18.06, 19.46, 18.22, 35.19]),
+        ['active monthly'],
+        [19]
+    ],
+    [
+        'persistent drop to half the amount continues one quarterly stream at the new amount',
+        asIncome(quarterly('BANK BONUS', 7, 28, [4.1, 4.1, 4.1, 4.1, 4.1, 2.12, 2.12])),
+        ['active quarterly'],
+        [2]
+    ],
+    [
+        'busy payee with two candidates per cycle does not continue an ended subscription',
+        [
+            ...monthly('SUPERSTORE', [15, 15, 15, 15, 15, 15], [9.99], 3),
+            ...[
+                [2, 13, 12.5],
+                [2, 17, 8.4],
+                [1, 14, 11],
+                [1, 16, 15.3],
+                [0, 13, 9.1],
+                [0, 16, 13.2]
+            ].map(([monthsAgo, day, amount]) => charge(monthDay(monthsAgo, day), amount, 'SUPERSTORE'))
+        ],
+        ['active monthly ended']
     ]
 ];
 
-for (const [name, charges, expected] of CASES) {
+for (const [name, charges, expected, amounts] of CASES) {
     it.effect(name, () =>
         Effect.sync(() => {
-            expect(detectRecurringSeries(charges).map(describeSeries)).toEqual(expected);
+            const detected = detectRecurringSeries(charges);
+
+            expect(detected.map(series => describeSeries(series, charges))).toEqual(expected);
+            if (isDefined(amounts)) {
+                expect(detected.map(series => Math.round(series.nativeAmount / PRECISION))).toEqual(amounts);
+            }
         })
     );
 }

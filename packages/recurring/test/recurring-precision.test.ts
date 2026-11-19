@@ -80,7 +80,7 @@ it.effect('includes overdue expense forecasts from the monthly headline', () =>
     Effect.sync(() => {
         const data = calendarFromCharges(
             [5, 36, 64, 95].map(day => charge(day)),
-            new Date(2026, 4, 12)
+            new Date(2026, 4, 13)
         );
         expect(data.forecastedEntriesByDay.get(5)?.[0].alert).toBe(RecurringAlertEnum.OVERDUE);
         expect(data.forecastedTotalAmount).toBe(12);

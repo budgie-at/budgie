@@ -47,7 +47,7 @@ const entry = (
         defaultAmount: 12 * PRECISION,
         ...overrides
     },
-    userIdentities: new Set(),
+    linkedIdentities: new Set(),
     occupiedCycles: new Set(),
     excludedTransactionIds: new Set(),
     ...extras
@@ -153,25 +153,25 @@ it.effect('matches an empty merchant key by title and learns the key from the fi
     })
 );
 
-it.effect('matches by the identity of a user-linked transaction', () =>
+it.effect('matches by the identity of a linked transaction', () =>
     Effect.sync(() => {
         const matches = matchRecurringTransactions(
             [charge(1, June(5), 12, 'NETFLIX INTERNATIONAL')],
-            [entry(1, { merchantKey: 'EXPENSE|1|STREAMING' }, { userIdentities: new Set(['EXPENSE|1|NETFLIX INTERNATIONAL']) })]
+            [entry(1, { merchantKey: 'EXPENSE|1|STREAMING' }, { linkedIdentities: new Set(['EXPENSE|1|NETFLIX INTERNATIONAL']) })]
         );
 
         expect(matches).toHaveLength(1);
     })
 );
 
-it.effect('applies custom cadence tolerance for every 5 weeks and every 4 months', () =>
+it.effect('applies the custom cadence window for every 5 weeks and every 4 months', () =>
     Effect.sync(() => {
         const fiveWeeks = entry(1, { cadenceUnit: RecurringCadenceUnitEnum.WEEK, cadenceInterval: 5, anchorDate: new Date(2026, 4, 1) });
         const fourMonths = entry(2, { cadenceUnit: RecurringCadenceUnitEnum.MONTH, cadenceInterval: 4, anchorDate: new Date(2026, 0, 10) });
-        const fiveWeeksNear = matchRecurringTransactions([charge(1, new Date(2026, 5, 9, 12), 12)], [fiveWeeks]);
-        const fiveWeeksFar = matchRecurringTransactions([charge(2, new Date(2026, 5, 10, 12), 12)], [fiveWeeks]);
-        const fourMonthsNear = matchRecurringTransactions([charge(3, new Date(2026, 4, 18, 12), 12)], [fourMonths]);
-        const fourMonthsFar = matchRecurringTransactions([charge(4, new Date(2026, 4, 19, 12), 12)], [fourMonths]);
+        const fiveWeeksNear = matchRecurringTransactions([charge(1, new Date(2026, 5, 12, 12), 12)], [fiveWeeks]);
+        const fiveWeeksFar = matchRecurringTransactions([charge(2, new Date(2026, 5, 13, 12), 12)], [fiveWeeks]);
+        const fourMonthsNear = matchRecurringTransactions([charge(3, new Date(2026, 4, 22, 12), 12)], [fourMonths]);
+        const fourMonthsFar = matchRecurringTransactions([charge(4, new Date(2026, 4, 23, 12), 12)], [fourMonths]);
 
         expect(fiveWeeksNear).toHaveLength(1);
         expect(fiveWeeksFar).toEqual([]);

@@ -1,12 +1,11 @@
 import { PRECISION } from '@budgie/contracts';
-import { addDays } from 'date-fns/addDays';
-import { addMonths } from 'date-fns/addMonths';
-import { differenceInCalendarDays } from 'date-fns/differenceInCalendarDays';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { RECURRING_ACTIVE_CONFIDENCE } from '../constant/recurring-active-confidence.constant';
 import { CADENCES } from '../constant/recurring-cadences.constant';
+
+import { calendarDay, nearestCycle } from './recurring-schedule';
 
 import type { RecurringCadenceInterface } from '../interface/recurring-cadence.interface';
 import type { RecurringSeriesEventInterface } from '../interface/recurring-series-event.interface';
@@ -17,7 +16,9 @@ const RESTART_PERIODS = 2;
 const ANCHOR_CANDIDATES = 6;
 const FIXED_PURITY = 0.75;
 const VARIABLE_PURITY = 0.8;
+const JITTERY_PURITY = 0.9;
 const MINIMUM_COVERAGE = 0.75;
+const JITTERY_COVERAGE = 0.85;
 const GAP_FREE_CYCLES = 5;
 const VARIABLE_AMOUNT_RATIO = 10;
 const EXACT_AMOUNT_RATIO = 1.02;
@@ -26,6 +27,7 @@ const BUSY_MERCHANT_RATIO = 3;
 const YEARLY_MONTHS = 12;
 const MINIMUM_CYCLES = 3;
 const MINIMUM_YEARLY_CYCLES = 2;
+const MINIMUM_JITTERY_CYCLES = 4;
 const EXTRA_CYCLES = 6;
 const POSSIBLE_CONFIDENCE = 30;
 const POSSIBLE_RANGE = RECURRING_ACTIVE_CONFIDENCE - POSSIBLE_CONFIDENCE - 1;
@@ -45,59 +47,49 @@ export const median = (values: readonly number[]): number => {
     return sorted.length % 2 === 1 ? sorted[middle] : (sorted[middle - 1] + sorted[middle]) / 2;
 };
 
-const monthIndex = (timestamp: number): number => {
-    const date = new Date(timestamp);
-
-    return date.getFullYear() * 12 + date.getMonth();
-};
-
-export const nearestCycle = (anchor: Date, date: Date, cadence: Pick<RecurringCadenceInterface, 'periodMonths' | 'periodDays'>) => {
-    const estimatedCycle = isDefined(cadence.periodMonths)
-        ? Math.round((monthIndex(anchor.getTime()) - monthIndex(date.getTime())) / cadence.periodMonths)
-        : Math.round(differenceInCalendarDays(anchor, date) / cadence.periodDays);
-
-    return (isDefined(cadence.periodMonths) ? [estimatedCycle - 1, estimatedCycle, estimatedCycle + 1] : [estimatedCycle])
-        .map(cycle => {
-            const expected = isDefined(cadence.periodMonths)
-                ? addMonths(anchor, -cycle * cadence.periodMonths)
-                : addDays(anchor, -cycle * cadence.periodDays);
-
-            return { cycle, deviation: Math.abs(differenceInCalendarDays(date, expected)) };
-        })
-        .reduce((closest, candidate) => (candidate.deviation < closest.deviation ? candidate : closest));
-};
-
 const currentRun = (events: readonly RecurringSeriesEventInterface[], cadence: RecurringCadenceInterface) => {
     const restartIndex = events.findLastIndex(
         (event, index) =>
             index > 0 &&
-            differenceInCalendarDays(event.timestamp, events[index - 1].timestamp) >
+            calendarDay(new Date(event.timestamp)) - calendarDay(new Date(events[index - 1].timestamp)) >
                 cadence.periodDays * RESTART_PERIODS + cadence.toleranceDays
     );
 
     return events.slice(Math.max(0, restartIndex));
 };
 
-const placeEvents = (events: readonly RecurringSeriesEventInterface[], anchorTimestamp: number, cadence: RecurringCadenceInterface) =>
-    events.map(event => ({ event, ...nearestCycle(new Date(anchorTimestamp), new Date(event.timestamp), cadence) }));
+const jitteryCycles = (cadence: RecurringCadenceInterface, isVariable: boolean): number | null =>
+    isVariable ? cadence.jitteryVariableCycles : cadence.jitteryFixedCycles;
 
-const pickAnchor = (run: readonly RecurringSeriesEventInterface[], cadence: RecurringCadenceInterface): number => {
+const fitWindowDays = (cadence: RecurringCadenceInterface, isVariable: boolean): number =>
+    isDefined(jitteryCycles(cadence, isVariable)) ? cadence.windowDays : cadence.toleranceDays;
+
+const placeEvents = (events: readonly RecurringSeriesEventInterface[], anchorTimestamp: number, cadence: RecurringCadenceInterface) => {
+    const anchor = new Date(anchorTimestamp);
+
+    return events.map(event => ({ event, ...nearestCycle(anchor, new Date(event.timestamp), cadence) }));
+};
+
+const pickAnchor = (run: readonly RecurringSeriesEventInterface[], cadence: RecurringCadenceInterface, isVariable: boolean): number => {
     const candidates = run.slice(-ANCHOR_CANDIDATES);
 
     return candidates
         .map(candidate => {
             const deviations = placeEvents(candidates, candidate.timestamp, cadence)
                 .map(placed => placed.deviation)
-                .filter(deviation => deviation <= cadence.toleranceDays);
+                .filter(deviation => deviation <= fitWindowDays(cadence, isVariable));
 
             return {
                 timestamp: candidate.timestamp,
-                onTime: deviations.length,
+                onTime: deviations.filter(deviation => deviation <= cadence.toleranceDays).length,
+                inWindow: deviations.length,
                 deviation: deviations.reduce((total, deviation) => total + deviation, 0)
             };
         })
         .reduce((best, candidate) =>
-            candidate.onTime > best.onTime || (candidate.onTime === best.onTime && candidate.deviation <= best.deviation) ? candidate : best
+            (candidate.onTime - best.onTime || candidate.inWindow - best.inWindow || best.deviation - candidate.deviation) >= 0
+                ? candidate
+                : best
         ).timestamp;
 };
 
@@ -108,10 +100,10 @@ const acceptEvents = (
     isVariable: boolean
 ) => {
     const placed = placeEvents(run, anchorTimestamp, cadence);
-    const onTime = placed.filter(item => item.deviation <= cadence.toleranceDays);
-    const typicalAmount = median(onTime.map(item => item.event.nativeAmount));
+    const inWindow = placed.filter(item => item.deviation <= fitWindowDays(cadence, isVariable));
+    const typicalAmount = median(inWindow.map(item => item.event.nativeAmount));
     const bestByCycle = new Map<number, (typeof placed)[number]>();
-    for (const item of onTime) {
+    for (const item of inWindow) {
         const current = bestByCycle.get(item.cycle);
         const isTypical =
             !isVariable ||
@@ -125,7 +117,7 @@ const acceptEvents = (
     return placed.map(item => ({ ...item, isAccepted: bestByCycle.get(item.cycle) === item }));
 };
 
-const longestStream = (placed: ReturnType<typeof acceptEvents>, purity: number): ReturnType<typeof acceptEvents> => {
+const longestStream = (placed: ReturnType<typeof acceptEvents>, purity: number, coverage: number): ReturnType<typeof acceptEvents> => {
     const latestIndex = placed.findLastIndex(item => item.isAccepted);
     const latest = placed.at(latestIndex);
     if (!isDefined(latest) || !latest.isAccepted || placed.slice(latestIndex + 1).some(item => item.cycle !== latest.cycle)) {
@@ -145,13 +137,16 @@ const longestStream = (placed: ReturnType<typeof acceptEvents>, purity: number):
             placed[index - 1]?.cycle !== item.cycle &&
             isCycleAccepted &&
             accepted / (accepted + outliers) >= purity &&
-            accepted / spannedCycles >= MINIMUM_COVERAGE &&
+            accepted / spannedCycles >= coverage &&
             (accepted >= GAP_FREE_CYCLES || accepted === spannedCycles);
         start = isValid ? index : start;
     }
 
     return placed.slice(start).filter(item => item.isAccepted);
 };
+
+const isJittery = (stream: ReturnType<typeof acceptEvents>, cadence: RecurringCadenceInterface): boolean =>
+    stream.some(item => item.deviation > cadence.toleranceDays);
 
 const requiredCycles = (
     stream: ReturnType<typeof acceptEvents>,
@@ -174,11 +169,19 @@ const requiredCycles = (
         Math.max(...amounts) <= Math.min(...amounts) * EXACT_AMOUNT_RATIO &&
         Math.max(...stream.map(item => item.deviation)) <= Math.ceil(cadence.toleranceDays / 2);
     const isYearly = cadence.periodMonths === YEARLY_MONTHS;
-    const activeCycles = isLoose
-        ? cadence.variableCycles
-        : Math.max(isYearly ? MINIMUM_YEARLY_CYCLES : MINIMUM_CYCLES, cadence.fixedCycles - Number(isExact || context.hasIban));
+    const jittery = isJittery(stream, cadence) ? jitteryCycles(cadence, context.isVariable) : null;
+    const discount = Number(!isDefined(jittery) && !isLoose && (isExact || context.hasIban));
+    const activeCycles = Math.max(
+        isYearly ? MINIMUM_YEARLY_CYCLES : MINIMUM_CYCLES,
+        (jittery ?? (isLoose ? cadence.variableCycles : cadence.fixedCycles)) - discount
+    );
 
-    return { activeCycles, possibleCycles: Math.max(isYearly && !isLoose ? MINIMUM_YEARLY_CYCLES : MINIMUM_CYCLES, activeCycles - 1) };
+    const minimumPossible = Math.max(
+        isYearly && !isLoose ? MINIMUM_YEARLY_CYCLES : MINIMUM_CYCLES,
+        isDefined(jittery) ? MINIMUM_JITTERY_CYCLES : 0
+    );
+
+    return { activeCycles, possibleCycles: Math.min(activeCycles, Math.max(minimumPossible, activeCycles - 1)) };
 };
 
 const scoreStream = (
@@ -192,9 +195,13 @@ const scoreStream = (
     }
     const amounts = stream.map(item => item.event.nativeAmount);
     const meanDeviation = stream.reduce((total, item) => total + item.deviation, 0) / stream.length;
-    const spread = Math.max(...amounts) / Math.max(Math.min(...amounts), 1) - 1;
     const { activeCycles, possibleCycles } = requiredCycles(stream, anchorTimestamp, cadence, context);
-    if (stream.length < possibleCycles || (context.isVariable && meanDeviation > cadence.toleranceDays / 2)) {
+    const isActive = stream.length >= activeCycles && (stream.length > MINIMUM_YEARLY_CYCLES || context.isIsolatedPair);
+    if (
+        stream.length < possibleCycles ||
+        (context.isVariable && meanDeviation > (isJittery(stream, cadence) ? cadence.windowDays : cadence.toleranceDays) / 2) ||
+        (!isActive && stream.length === MINIMUM_CYCLES && stream.some(item => item.deviation >= cadence.toleranceDays))
+    ) {
         return null;
     }
     const coverage = stream.length / (stream[0].cycle - stream[stream.length - 1].cycle + 1);
@@ -202,9 +209,9 @@ const scoreStream = (
         EXTRA_WEIGHT * clampUnit((stream.length - activeCycles) / EXTRA_CYCLES) +
         COVERAGE_WEIGHT * clampUnit((coverage - MINIMUM_COVERAGE) / (1 - MINIMUM_COVERAGE)) +
         REGULARITY_WEIGHT * clampUnit(1 - meanDeviation / cadence.toleranceDays) +
-        EXACTNESS_WEIGHT * (context.isVariable ? 0 : clampUnit(1 - spread / EXACT_SPREAD)) +
+        EXACTNESS_WEIGHT *
+            (context.isVariable ? 0 : clampUnit(1 - (Math.max(...amounts) / Math.max(Math.min(...amounts), 1) - 1) / EXACT_SPREAD)) +
         IBAN_WEIGHT * Number(context.hasIban);
-    const isActive = stream.length >= activeCycles && (stream.length > MINIMUM_YEARLY_CYCLES || context.isIsolatedPair);
 
     return isActive
         ? RECURRING_ACTIVE_CONFIDENCE + Math.round(ACTIVE_RANGE * quality)
@@ -244,11 +251,11 @@ const fitCadence = (
     context: RecurringStreamContextInterface
 ): RecurringStreamInterface | null => {
     const run = currentRun(events, cadence);
-    const anchorTimestamp = pickAnchor(run, cadence);
-    const stream = longestStream(
-        acceptEvents(run, anchorTimestamp, cadence, context.isVariable),
-        context.isVariable ? VARIABLE_PURITY : FIXED_PURITY
-    );
+    const anchorTimestamp = pickAnchor(run, cadence, context.isVariable);
+    const placed = acceptEvents(run, anchorTimestamp, cadence, context.isVariable);
+    const purity = context.isVariable ? VARIABLE_PURITY : FIXED_PURITY;
+    const loose = longestStream(placed, purity, MINIMUM_COVERAGE);
+    const stream = isJittery(loose, cadence) ? longestStream(placed, JITTERY_PURITY, JITTERY_COVERAGE) : loose;
     const confidence = scoreStream(stream, anchorTimestamp, cadence, context);
 
     return isDefined(confidence) && !isHarmonic(stream, anchorTimestamp, cadence, context.merchantEvents)
@@ -260,6 +267,9 @@ export const fitRecurringStream = (
     events: readonly RecurringSeriesEventInterface[],
     context: RecurringStreamContextInterface
 ): RecurringStreamInterface | null => {
+    if (events.length < MINIMUM_YEARLY_CYCLES) {
+        return null;
+    }
     for (const cadence of CADENCES) {
         const stream = fitCadence(events, cadence, context);
         if (isDefined(stream)) {

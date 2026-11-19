@@ -11,7 +11,8 @@ import {
     RecurringSeriesKindEnum,
     RecurringSeriesSourceEnum,
     RecurringSeriesUserStateEnum,
-    TransactionEntityTable
+    TransactionEntityTable,
+    TransactionEntryEntityTable
 } from '@budgie/contracts';
 import { beforeEach, expect, layer } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
@@ -54,6 +55,28 @@ const expectReadWithoutDetection = Effect.gen(function* () {
 
     expect(data.forecastedEntriesByDay.size).toBe(0);
     expect(yield* (yield* repository).findAllSeries).toEqual([]);
+});
+
+const PAYEE_IBAN = 'AT611904300234573201';
+
+const setIban = (transactionId: number) =>
+    Db.query(database =>
+        database
+            .update(TransactionEntryEntityTable)
+            .set({ toIban: PAYEE_IBAN })
+            .where(eq(TransactionEntryEntityTable.transactionId, transactionId))
+    );
+
+const seedKeyFlip = Effect.fnUntraced(function* (userState: RecurringSeriesUserStateEnum) {
+    const seed = yield* seedCharges();
+    yield* seedMonthlyCharges(seed, 'NETFLIX', [6, 5, 4, 3], 5, 12);
+    yield* detectAt(NOW);
+    const [series] = yield* (yield* repository).findAllSeries;
+    yield* setUserState(series.id, userState);
+    yield* Effect.forEach([2, 1, 0], monthsAgo => Effect.flatMap(seed('NETFLIX', monthsAgo, 5, 12), setIban), { discard: true });
+    yield* detectAt(NOW);
+
+    return { seed, series };
 });
 
 beforeEach(() => Effect.runPromise(resetTestDb(testDb)));
@@ -353,6 +376,28 @@ layer(TestLayer)('recurringRefreshService', it => {
 
             expect(rows.map(row => [row.id, row.userState])).toEqual([[series.id, RecurringSeriesUserStateEnum.DISMISSED]]);
             expect(yield* service.listSeries(NOW)).toEqual([]);
+        })
+    );
+
+    it.effect('keeps the row id of a suggestion whose payee key flips from its title to an IBAN and matches both keys', () =>
+        Effect.gen(function* () {
+            const { seed, series } = yield* seedKeyFlip(RecurringSeriesUserStateEnum.SUGGESTED);
+            yield* seed('NETFLIX', -1, 5, 12);
+            yield* (yield* refreshService).matchRecent(new Date(2026, 6, 8, 12));
+            const rows = yield* (yield* repository).findAllSeries;
+
+            expect(rows.map(row => [row.id, row.merchantKey])).toEqual([[series.id, `EXPENSE|1|${PAYEE_IBAN}|${12 * PRECISION}`]]);
+            expect((yield* liveLinks).filter(link => link.seriesId === series.id && !link.isExcluded)).toHaveLength(8);
+        })
+    );
+
+    it.effect('keeps a dismissed stream dismissed when its payee key flips from its title to an IBAN', () =>
+        Effect.gen(function* () {
+            const { series } = yield* seedKeyFlip(RecurringSeriesUserStateEnum.DISMISSED);
+            const rows = yield* (yield* repository).findAllSeries;
+
+            expect(rows.map(row => [row.id, row.userState])).toEqual([[series.id, RecurringSeriesUserStateEnum.DISMISSED]]);
+            expect(yield* Effect.flatMap(RecurringService, service => service.listSeries(NOW))).toEqual([]);
         })
     );
 

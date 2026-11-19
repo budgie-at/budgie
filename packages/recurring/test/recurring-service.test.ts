@@ -565,10 +565,10 @@ layer(TestLayer)('recurringService', it => {
             'a weekly stream does not inherit a confirmed monthly row with its key',
             RecurringSeriesUserStateEnum.CONFIRMED,
             [
-                [0, 7],
-                [0, 14],
-                [0, 21],
-                [0, 28]
+                [0, 6],
+                [0, 13],
+                [0, 20],
+                [0, 27]
             ],
             ['true|Old bill|CONFIRMED', 'false|BILLING|SUGGESTED']
         ],
@@ -851,7 +851,7 @@ layer(TestLayer)('recurringService', it => {
         })
     );
 
-    it.effect('rejects an unproven large price change', () =>
+    it.effect('continues through an unproven large price change at the proven amount and flags it', () =>
         Effect.gen(function* () {
             const seed = yield* seedCharges();
             yield* Effect.forEach([6, 5, 4, 3, 2], monthsAgo => seed('WIENER LINIEN', monthsAgo, 20, 33), { discard: true });
@@ -859,7 +859,9 @@ layer(TestLayer)('recurringService', it => {
 
             const data = yield* calendar(JULY);
 
-            expect(data.forecastedEntriesByDay.size).toBe(0);
+            expect(data.forecastedEntriesByDay.get(20)?.map(entry => [entry.latestAmount, entry.alert])).toEqual([
+                [33 * PRECISION, RecurringAlertEnum.PRICE_CHANGE]
+            ]);
         })
     );
 

@@ -4,7 +4,7 @@ import * as Effect from 'effect/Effect';
 
 import {
     cadencePeriodDays,
-    cadenceToleranceDays,
+    cadenceWindowDays,
     monthlyEquivalent,
     nearestCycleDate,
     nextOccurrences,
@@ -70,14 +70,14 @@ it.effect('never yields occurrences before the anchor or after endsAt', () =>
     })
 );
 
-it.effect('derives tolerance from the nearest standard cadence', () =>
+it.effect('derives the cycle window from the nearest standard cadence', () =>
     Effect.sync(() => {
-        expect(cadenceToleranceDays({ cadenceUnit: RecurringCadenceUnitEnum.WEEK, cadenceInterval: 1 })).toBe(1);
-        expect(cadenceToleranceDays({ cadenceUnit: RecurringCadenceUnitEnum.WEEK, cadenceInterval: 2 })).toBe(2);
-        expect(cadenceToleranceDays({ cadenceUnit: RecurringCadenceUnitEnum.MONTH, cadenceInterval: 1 })).toBe(4);
-        expect(cadenceToleranceDays({ cadenceUnit: RecurringCadenceUnitEnum.WEEK, cadenceInterval: 5 })).toBe(4);
-        expect(cadenceToleranceDays({ cadenceUnit: RecurringCadenceUnitEnum.MONTH, cadenceInterval: 4 })).toBe(8);
-        expect(cadenceToleranceDays({ cadenceUnit: RecurringCadenceUnitEnum.YEAR, cadenceInterval: 1 })).toBe(10);
+        expect(cadenceWindowDays({ cadenceUnit: RecurringCadenceUnitEnum.WEEK, cadenceInterval: 1 })).toBe(2);
+        expect(cadenceWindowDays({ cadenceUnit: RecurringCadenceUnitEnum.WEEK, cadenceInterval: 2 })).toBe(4);
+        expect(cadenceWindowDays({ cadenceUnit: RecurringCadenceUnitEnum.MONTH, cadenceInterval: 1 })).toBe(7);
+        expect(cadenceWindowDays({ cadenceUnit: RecurringCadenceUnitEnum.WEEK, cadenceInterval: 5 })).toBe(7);
+        expect(cadenceWindowDays({ cadenceUnit: RecurringCadenceUnitEnum.MONTH, cadenceInterval: 4 })).toBe(12);
+        expect(cadenceWindowDays({ cadenceUnit: RecurringCadenceUnitEnum.YEAR, cadenceInterval: 1 })).toBe(14);
         expect(cadencePeriodDays({ cadenceUnit: RecurringCadenceUnitEnum.WEEK, cadenceInterval: 5 })).toBe(35);
     })
 );

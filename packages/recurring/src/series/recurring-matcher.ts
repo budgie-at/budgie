@@ -9,7 +9,7 @@ import { RECURRING_AMOUNT_RATIO } from '../constant/recurring-amount-ratio.const
 import { matchesRecurringTitle } from '../utils/matches-recurring-title.util';
 import { normalizeRecurringDescription } from '../utils/normalize-recurring-description.util';
 
-import { cadenceToleranceDays, nearestCycleDate } from './recurring-schedule';
+import { cadenceWindowDays, nearestCycleDate } from './recurring-schedule';
 import { description, identity } from './recurring-series';
 
 import type { RecurringChargeInterface } from '../interface/recurring-charge.interface';
@@ -30,7 +30,7 @@ const matchesMerchant = (
     if (isNotEmptyString(merchantKey)) {
         return (
             isNotEmptyString(chargeIdentity) &&
-            (merchantIdentityOf(merchantKey) === chargeIdentity || entry.userIdentities.has(chargeIdentity))
+            (merchantIdentityOf(merchantKey) === chargeIdentity || entry.linkedIdentities.has(chargeIdentity))
         );
     }
     const title = normalizeRecurringDescription(entry.series.title);
@@ -61,7 +61,7 @@ const rankCandidates = (
         .map(entry => ({ entry, cycle: nearestCycleDate(entry.series, operatedDay) }))
         .filter(
             ({ entry, cycle }) =>
-                cycle.deviationDays <= cadenceToleranceDays(entry.series) &&
+                cycle.deviationDays <= cadenceWindowDays(entry.series) &&
                 (!isDefined(entry.series.endsAt) || differenceInCalendarDays(cycle.cycleDate, entry.series.endsAt) <= 0)
         )
         .map(candidate => ({ ...candidate, gap: Math.abs(candidate.entry.series.defaultAmount - charge.defaultAmount) }))
