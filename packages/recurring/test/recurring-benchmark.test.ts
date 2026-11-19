@@ -1,5 +1,6 @@
 import { PRECISION, RecurringSeriesKindEnum, RecurringSeriesUserStateEnum } from '@budgie/contracts';
 import { expect, it } from '@effect/vitest';
+import { startOfDay } from 'date-fns/startOfDay';
 import * as Effect from 'effect/Effect';
 
 import { isDefined } from '@rnw-community/shared';
@@ -87,7 +88,13 @@ const describeSeries = (series: RecurringSeriesInterface, charges: readonly Recu
             .map(alert => alert.toLowerCase())
     ].join(' ');
 
-const CASES: readonly (readonly [string, readonly RecurringChargeInterface[], readonly string[], (readonly number[])?])[] = [
+const CASES: readonly (readonly [
+    string,
+    readonly RecurringChargeInterface[],
+    readonly string[],
+    (readonly number[])?,
+    (readonly Date[])?
+])[] = [
     [
         'drugstore habit with seventeen irregular visits is not recurring',
         cumulativeVisits(
@@ -314,6 +321,57 @@ const CASES: readonly (readonly [string, readonly RecurringChargeInterface[], re
         [2]
     ],
     [
+        'two IBANs charging at the same time under one shared title stay two monthly streams',
+        [
+            ...withIban(monthly('SEPA DIRECT DEBIT', [5, 5, 5, 5, 5, 5, 5, 5], [100]), 'AT140000000000000001'),
+            ...withIban(monthly('SEPA DIRECT DEBIT', [15, 15, 15, 15, 15, 15, 15, 15], [100]), 'AT140000000000000002')
+        ],
+        ['active monthly', 'active monthly']
+    ],
+    [
+        'yearly pair with an IBAN nine days apart in day of year is at most possible',
+        withIban([charge(monthDay(12, 3), 80, 'TREE MARKET'), charge(monthDay(0, 12), 80, 'TREE MARKET')], 'AT150000000000000001'),
+        ['possible yearly']
+    ],
+    [
+        'exact yearly pair with an IBAN is yearly',
+        withIban([charge(monthDay(12, 12), 69.99, 'GAME NETWORK'), charge(monthDay(0, 12), 69.99, 'GAME NETWORK')], 'AT150000000000000002'),
+        ['active yearly']
+    ],
+    [
+        'rent paid on the 8th for ten months and then eleven days late stays monthly until its last on-time payment',
+        [...monthly('RENT TOWER', [8, 8, 8, 8, 8, 8, 8, 8, 8, 8], [800], 1), charge(monthDay(0, 19), 800, 'RENT TOWER')],
+        ['active monthly overdue'],
+        [800],
+        [monthDay(1, 8)]
+    ],
+    [
+        'rent paid once late continues with the next on-time payment',
+        [
+            ...monthly('RENT TOWER', [8, 8, 8, 8, 8, 8, 8, 8, 8, 8], [800], 2),
+            charge(monthDay(1, 19), 800, 'RENT TOWER'),
+            charge(monthDay(0, 8), 800, 'RENT TOWER')
+        ],
+        ['active monthly'],
+        [800],
+        [monthDay(0, 8)]
+    ],
+    [
+        'four on-time rent payments and a fifth twelve days late are not an active series yet',
+        [...monthly('RENT TOWER', [8, 8, 8, 8], [800], 2), charge(monthDay(1, 20), 800, 'RENT TOWER')],
+        []
+    ],
+    [
+        'four on-time rent payments, one twelve days late and two more on time are active',
+        [
+            ...monthly('RENT TOWER', [8, 8, 8, 8], [800], 3),
+            charge(monthDay(2, 20), 800, 'RENT TOWER'),
+            charge(monthDay(1, 8), 800, 'RENT TOWER'),
+            charge(monthDay(0, 8), 800, 'RENT TOWER')
+        ],
+        ['active monthly']
+    ],
+    [
         'busy payee with two candidates per cycle does not continue an ended subscription',
         [
             ...monthly('SUPERSTORE', [15, 15, 15, 15, 15, 15], [9.99], 3),
@@ -330,7 +388,7 @@ const CASES: readonly (readonly [string, readonly RecurringChargeInterface[], re
     ]
 ];
 
-for (const [name, charges, expected, amounts] of CASES) {
+for (const [name, charges, expected, amounts, lastSeen] of CASES) {
     it.effect(name, () =>
         Effect.sync(() => {
             const detected = detectRecurringSeries(charges);
@@ -338,6 +396,9 @@ for (const [name, charges, expected, amounts] of CASES) {
             expect(detected.map(series => describeSeries(series, charges))).toEqual(expected);
             if (isDefined(amounts)) {
                 expect(detected.map(series => Math.round(series.nativeAmount / PRECISION))).toEqual(amounts);
+            }
+            if (isDefined(lastSeen)) {
+                expect(detected.map(series => series.lastSeenTimestamp)).toEqual(lastSeen.map(date => startOfDay(date).getTime()));
             }
         })
     );

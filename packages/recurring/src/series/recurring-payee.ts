@@ -11,7 +11,10 @@ import type { RecurringChargeInterface } from '../interface/recurring-charge.int
 const GENERIC_TITLE_IBANS = 3;
 const MINIMUM_PREFIX_TOKENS = 2;
 
-const makeUnion = () => {
+const isSequential = ([firstStart, firstEnd]: readonly number[], [secondStart, secondEnd]: readonly number[]): boolean =>
+    firstEnd < secondStart || secondEnd < firstStart;
+
+const makeUnion = (spans: Map<string, readonly number[]>) => {
     const parents = new Map<string, string>();
     const find = (node: string): string => {
         const parent = parents.get(node) ?? node;
@@ -27,16 +30,17 @@ const makeUnion = () => {
     return {
         find,
         join: (first: string, second: string) => {
-            parents.set(find(first), find(second));
+            const [firstRoot, secondRoot] = [find(first), find(second)];
+            const [firstSpan, secondSpan] = [spans.get(firstRoot) ?? [], spans.get(secondRoot) ?? []];
+            if (firstRoot !== secondRoot && isSequential(firstSpan, secondSpan)) {
+                parents.set(firstRoot, secondRoot);
+                spans.set(secondRoot, [Math.min(firstSpan[0], secondSpan[0]), Math.max(firstSpan[1], secondSpan[1])]);
+            }
         }
     };
 };
 
-const isSequential = ([firstStart, firstEnd]: readonly number[], [secondStart, secondEnd]: readonly number[]): boolean =>
-    firstEnd < secondStart || secondEnd < firstStart;
-
-const joinCompatibleTitles = (spans: ReadonlyMap<string, readonly number[]>, join: (first: string, second: string) => void): void => {
-    const titles = [...spans.keys()];
+const joinCompatibleTitles = (titles: readonly string[], join: (first: string, second: string) => void): void => {
     const shorterByHead = Arr.groupBy(
         titles.filter(title => title.includes(' ')),
         title => `${title.split(' ').length}|${title.slice(0, title.lastIndexOf(' '))}`
@@ -45,8 +49,7 @@ const joinCompatibleTitles = (spans: ReadonlyMap<string, readonly number[]>, joi
         const tokens = title.split(' ');
         for (let length = MINIMUM_PREFIX_TOKENS; length <= tokens.length; length += 1) {
             for (const shorter of shorterByHead[`${length}|${tokens.slice(0, length - 1).join(' ')}`] ?? []) {
-                const isCompatible = shorter !== title && tokens[length - 1].startsWith(shorter.slice(shorter.lastIndexOf(' ') + 1));
-                if (isCompatible && isSequential(spans.get(shorter) ?? [], spans.get(title) ?? [])) {
+                if (shorter !== title && tokens[length - 1].startsWith(shorter.slice(shorter.lastIndexOf(' ') + 1))) {
                     join(shorter, title);
                 }
             }
@@ -56,29 +59,40 @@ const joinCompatibleTitles = (spans: ReadonlyMap<string, readonly number[]>, joi
 
 export const groupRecurringPayees = (charges: readonly RecurringChargeInterface[]): RecurringChargeInterface[][] => {
     const titleOf = new Map(charges.map(charge => [charge, normalizeRecurringDescription(description(charge))]));
-    const hasIban = (charge: RecurringChargeInterface): boolean => isNotEmptyString(charge.counterpartyIban);
-    const titleNode = (charge: RecurringChargeInterface): string => `T|${charge.kind}|${charge.instrumentId}|${titleOf.get(charge)}`;
-    const ownNode = (charge: RecurringChargeInterface): string => (hasIban(charge) ? `I|${identity(charge)}` : titleNode(charge));
-    const ibanCounts = new Map(
-        Object.entries(Arr.groupBy(charges.filter(hasIban), titleNode)).map(([node, group]) => [node, new Set(group.map(identity)).size])
+    const titleNode = (charge: RecurringChargeInterface): string => `${charge.kind}|${charge.instrumentId}|${titleOf.get(charge)}`;
+    const ownNode = (charge: RecurringChargeInterface): string =>
+        isNotEmptyString(charge.counterpartyIban) ? `I|${identity(charge)}` : titleNode(charge);
+    const payees = Arr.groupBy(charges, ownNode);
+    const payeesByTitle = new Map(
+        Object.entries(
+            Arr.groupBy(
+                charges.filter(charge => isNotEmptyString(titleOf.get(charge))),
+                titleNode
+            )
+        )
+            .map(([title, group]) => [title, [...new Set(group.map(ownNode))]] as const)
+            .filter(([title, nodes]) => nodes.filter(node => node !== title).length <= GENERIC_TITLE_IBANS)
     );
-    const bridging = charges.filter(
-        charge => isNotEmptyString(titleOf.get(charge)) && (ibanCounts.get(titleNode(charge)) ?? 0) <= GENERIC_TITLE_IBANS
-    );
-    const { find, join } = makeUnion();
-    for (const charge of bridging) {
-        join(ownNode(charge), titleNode(charge));
-    }
-    joinCompatibleTitles(
+    const { find, join } = makeUnion(
         new Map(
-            Object.entries(Arr.groupBy(bridging, titleNode)).map(([node, group]) => {
+            Object.entries(payees).map(([node, group]) => {
                 const times = group.map(charge => charge.operatedAt.getTime());
 
                 return [node, [Math.min(...times), Math.max(...times)]];
             })
-        ),
-        join
+        )
     );
+    const joinTitles = (first: string, second: string): void => {
+        for (const firstNode of payeesByTitle.get(first) ?? []) {
+            for (const secondNode of payeesByTitle.get(second) ?? []) {
+                join(firstNode, secondNode);
+            }
+        }
+    };
+    for (const title of payeesByTitle.keys()) {
+        joinTitles(title, title);
+    }
+    joinCompatibleTitles([...payeesByTitle.keys()], joinTitles);
 
     return Object.values(Arr.groupBy(charges, charge => find(ownNode(charge))));
 };

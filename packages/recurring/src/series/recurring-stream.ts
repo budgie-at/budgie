@@ -19,7 +19,7 @@ const VARIABLE_PURITY = 0.8;
 const JITTERY_PURITY = 0.9;
 const MINIMUM_COVERAGE = 0.75;
 const JITTERY_COVERAGE = 0.85;
-const GAP_FREE_CYCLES = 5;
+const CLEAN_EVIDENCE_EVENTS = 5;
 const VARIABLE_AMOUNT_RATIO = 10;
 const EXACT_AMOUNT_RATIO = 1.02;
 const EXACT_SPREAD = 0.1;
@@ -120,11 +120,13 @@ const acceptEvents = (
 const longestStream = (placed: ReturnType<typeof acceptEvents>, purity: number, coverage: number): ReturnType<typeof acceptEvents> => {
     const latestIndex = placed.findLastIndex(item => item.isAccepted);
     const latest = placed.at(latestIndex);
-    if (!isDefined(latest) || !latest.isAccepted || placed.slice(latestIndex + 1).some(item => item.cycle !== latest.cycle)) {
+    if (!isDefined(latest) || !latest.isAccepted) {
         return [];
     }
+    const acceptedCycles = new Set(placed.filter(item => item.isAccepted).map(item => item.cycle));
     let accepted = 0;
     let outliers = placed.length - 1 - latestIndex;
+    let strayOutliers = placed.slice(latestIndex + 1).filter(item => !acceptedCycles.has(item.cycle)).length;
     let start = placed.length;
     let isCycleAccepted = false;
     for (let index = latestIndex; index >= 0; index -= 1) {
@@ -132,13 +134,14 @@ const longestStream = (placed: ReturnType<typeof acceptEvents>, purity: number, 
         isCycleAccepted = (index < latestIndex && placed[index + 1].cycle === item.cycle && isCycleAccepted) || item.isAccepted;
         accepted += Number(item.isAccepted);
         outliers += Number(!item.isAccepted);
+        strayOutliers += Number(!acceptedCycles.has(item.cycle));
         const spannedCycles = item.cycle - latest.cycle + 1;
         const isValid =
             placed[index - 1]?.cycle !== item.cycle &&
             isCycleAccepted &&
             accepted / (accepted + outliers) >= purity &&
             accepted / spannedCycles >= coverage &&
-            (accepted >= GAP_FREE_CYCLES || accepted === spannedCycles);
+            (accepted >= CLEAN_EVIDENCE_EVENTS || (accepted === spannedCycles && strayOutliers === 0));
         start = isValid ? index : start;
     }
 
@@ -170,7 +173,7 @@ const requiredCycles = (
         Math.max(...stream.map(item => item.deviation)) <= Math.ceil(cadence.toleranceDays / 2);
     const isYearly = cadence.periodMonths === YEARLY_MONTHS;
     const jittery = isJittery(stream, cadence) ? jitteryCycles(cadence, context.isVariable) : null;
-    const discount = Number(!isDefined(jittery) && !isLoose && (isExact || context.hasIban));
+    const discount = Number(!isDefined(jittery) && !isLoose && (isExact || (context.hasIban && !isYearly)));
     const activeCycles = Math.max(
         isYearly ? MINIMUM_YEARLY_CYCLES : MINIMUM_CYCLES,
         (jittery ?? (isLoose ? cadence.variableCycles : cadence.fixedCycles)) - discount

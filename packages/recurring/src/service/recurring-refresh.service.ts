@@ -136,7 +136,8 @@ export class RecurringRefreshService extends Context.Service<RecurringRefreshSer
         const dropUnstoredSuggestions = Effect.fnUntraced(function* (
             rows: readonly RecurringSeriesEntityInterface[],
             links: readonly RecurringSeriesTransactionEntityInterface[],
-            storedIds: ReadonlySet<number>
+            storedIds: ReadonlySet<number>,
+            everLinkedSeriesIds: ReadonlySet<number>
         ) {
             const sinkingFundSeriesIds = yield* recurringRepository.findSinkingFundSeriesIds;
             const userLinkedIds = new Set(
@@ -149,6 +150,8 @@ export class RecurringRefreshService extends Context.Service<RecurringRefreshSer
                             row.source === RecurringSeriesSourceEnum.DETECTED &&
                             row.userState === RecurringSeriesUserStateEnum.SUGGESTED &&
                             !storedIds.has(row.id) &&
+                            (everLinkedSeriesIds.has(row.id) || !row.merchantKey.startsWith(`${row.kind}|`)) &&
+                            !isDefined(row.reminderDaysBefore) &&
                             !userLinkedIds.has(row.id) &&
                             !sinkingFundSeriesIds.has(row.id)
                     )
@@ -351,7 +354,7 @@ export class RecurringRefreshService extends Context.Service<RecurringRefreshSer
                 }
             }
             yield* recurringRepository.upsertAutoLinks(linkInputs);
-            yield* dropUnstoredSuggestions(rows, links, storedIds);
+            yield* dropUnstoredSuggestions(rows, links, storedIds, everLinkedSeriesIds);
         });
 
         const buildMatchSeries = (

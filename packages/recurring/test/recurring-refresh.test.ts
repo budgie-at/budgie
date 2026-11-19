@@ -467,4 +467,34 @@ layer(TestLayer)('recurringRefreshService', it => {
             expect((yield* items.findLinks).some(link => link.seriesId === legacy.id)).toBe(false);
         })
     );
+
+    it.effect('keeps synced suggestions it never linked and suggestions with a reminder, and drops bare-key leftovers', () =>
+        Effect.gen(function* () {
+            const items = yield* repository;
+            const seed = yield* seedCharges();
+            const [transactionId] = yield* seedMonthlyCharges(seed, 'CORNER SHOP', [2], 9, 7);
+            const saved = (merchantKey: string, title: string) =>
+                seedSavedSeries({
+                    merchantKey,
+                    title,
+                    amount: 7 * PRECISION,
+                    userState: RecurringSeriesUserStateEnum.SUGGESTED,
+                    lastSeenAt: new Date(2026, 3, 9)
+                });
+            yield* saved(`EXPENSE|1|SYNCED PAYEE|${7 * PRECISION}`, 'Synced');
+            yield* saved('BARE PAYEE', 'Bare');
+            const reminded = yield* saved(`EXPENSE|1|CORNER SHOP|${7 * PRECISION}`, 'Reminded');
+            yield* items.updateSeries(reminded.id, { reminderDaysBefore: 2 });
+            yield* items.insertLink({
+                seriesId: reminded.id,
+                transactionId,
+                cycleDate: new Date(2026, 3, 9),
+                matchedBy: RecurringMatchSourceEnum.AUTO
+            });
+
+            yield* detectAt(NOW);
+
+            expect((yield* items.findAllSeries).map(row => row.title).sort()).toEqual(['Reminded', 'Synced']);
+        })
+    );
 });

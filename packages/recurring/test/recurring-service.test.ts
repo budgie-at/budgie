@@ -1571,6 +1571,40 @@ layer(TestLayer)('recurringService', it => {
         })
     );
 
+    it.effect('serves a suggested detected row only once this device has linked it or the user confirmed it', () =>
+        Effect.gen(function* () {
+            const service = yield* RecurringService;
+            const saved = yield* seedSavedSeries({
+                merchantKey: 'EXPENSE|1|NETFLIX',
+                title: 'Netflix',
+                amount: 12 * PRECISION,
+                userState: RecurringSeriesUserStateEnum.SUGGESTED,
+                lastSeenAt: new Date(2026, 5, 5)
+            });
+
+            expect(yield* service.listSeries(NOW)).toEqual([]);
+            expect(allEntries(yield* service.calendar(2026, 6, NOW))).toEqual([]);
+
+            yield* setUserState(saved.id, RecurringSeriesUserStateEnum.CONFIRMED);
+
+            expect((yield* service.listSeries(NOW)).map(item => item.id)).toEqual([saved.id]);
+            expect(allEntries(yield* service.calendar(2026, 6, NOW)).map(entry => entry.seriesId)).toEqual([saved.id]);
+        })
+    );
+
+    it.effect('serves a suggested series created by detection from its linked charges', () =>
+        Effect.gen(function* () {
+            const seed = yield* seedCharges();
+            yield* seedMonthly(seed, 'NETFLIX', 20, 12);
+            yield* detectAt(NOW);
+            const service = yield* RecurringService;
+            const [item] = yield* service.listSeries(NOW);
+
+            expect(item).toMatchObject({ title: 'NETFLIX', userState: RecurringSeriesUserStateEnum.SUGGESTED });
+            expect(item.linkedCount).toBeGreaterThan(0);
+        })
+    );
+
     it.effect('persists income series separately and keeps the expense repository view expense-only', () =>
         Effect.gen(function* () {
             yield* seedSalaryAndNetflix();

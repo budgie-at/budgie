@@ -68,7 +68,16 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
                     })
             }));
 
-            return { models, defaultInstrumentId, language };
+            return {
+                models: models.filter(
+                    ({ series, links }) =>
+                        series.source !== RecurringSeriesSourceEnum.DETECTED ||
+                        series.userState !== RecurringSeriesUserStateEnum.SUGGESTED ||
+                        links.some(({ link }) => !link.isExcluded)
+                ),
+                defaultInstrumentId,
+                language
+            };
         });
 
         const loadReadyModels = Effect.fnUntraced(function* (now: Date) {
