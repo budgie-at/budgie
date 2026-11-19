@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.191.11](https://github.com/budgie-at/budgie/compare/v6.191.10...v6.191.11) (2026-11-19)
+
+### Bug Fixes
+
+* **app:** mark portrait and wifi hardware features optional on Android ([1f366c0](https://github.com/budgie-at/budgie/commit/1f366c00f4d6f300b73143856cb934a26b429f7f))
+* **app:** wrap blocked permissions and guard attribute-less uses-feature ([3d45fd8](https://github.com/budgie-at/budgie/commit/3d45fd81c5d73eaaceeefc1ba2672027e125f661))
+
+
 ## [6.191.10](https://github.com/budgie-at/budgie/compare/v6.191.9...v6.191.10) (2026-11-18)
 
 **Note:** Version bump only for package @budgie-at/app
