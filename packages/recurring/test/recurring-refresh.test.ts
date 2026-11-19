@@ -1,8 +1,12 @@
 import { resetTestDb } from '@budgie-at/test-kit';
 import {
+    BudgetEntityTable,
+    BudgetPeriodEnum,
+    BudgetSinkingFundEntityTable,
     Db,
     PRECISION,
     RecurringCadenceUnitEnum,
+    RecurringSeriesEntityTable,
     RecurringMatchSourceEnum,
     RecurringSeriesKindEnum,
     RecurringSeriesSourceEnum,
@@ -26,8 +30,10 @@ import {
     seedCharges,
     seedDetectedSeries,
     seedMonthlyCharges,
+    seedSavedSeries,
     setUserState,
-    testDb
+    testDb,
+    testSeedService
 } from './test-context';
 
 const SIX_MONTHS = [6, 5, 4, 3, 2, 1] as const;
@@ -266,7 +272,7 @@ layer(TestLayer)('recurringRefreshService', it => {
                 reminderDaysBefore: 3
             });
 
-            yield* seedMonthlyCharges(seed, 'NETFLIX', [1, 0], 5, 14);
+            yield* seedMonthlyCharges(seed, 'NETFLIX', [1, 0], 5, 13);
             yield* detectAt(NOW);
             const [after] = yield* (yield* repository).findAllSeries;
 
@@ -279,7 +285,7 @@ layer(TestLayer)('recurringRefreshService', it => {
                 anchorDate: series.anchorDate,
                 userState: RecurringSeriesUserStateEnum.CONFIRMED
             });
-            expect(after.amount).toBe(14 * PRECISION);
+            expect(after.amount).toBe(13 * PRECISION);
         })
     );
 
@@ -325,6 +331,95 @@ layer(TestLayer)('recurringRefreshService', it => {
                 matchedBy: RecurringMatchSourceEnum.USER
             });
             expect(links.filter(link => link.transactionId === ids[0])).toHaveLength(1);
+        })
+    );
+
+    it.effect('keeps a dismissed stream dismissed when the detector assigns it another cadence', () =>
+        Effect.gen(function* () {
+            const service = yield* RecurringService;
+            const seed = yield* seedCharges();
+            yield* seedMonthlyCharges(seed, 'NETFLIX', SIX_MONTHS, 5, 12);
+            yield* detectAt(NOW);
+            const [series] = yield* (yield* repository).findAllSeries;
+            yield* Db.query(database =>
+                database
+                    .update(RecurringSeriesEntityTable)
+                    .set({ userState: RecurringSeriesUserStateEnum.DISMISSED, cadenceInterval: 2, periodDays: 61 })
+                    .where(eq(RecurringSeriesEntityTable.id, series.id))
+            );
+
+            yield* detectAt(NOW);
+            const rows = yield* (yield* repository).findAllSeries;
+
+            expect(rows.map(row => [row.id, row.userState])).toEqual([[series.id, RecurringSeriesUserStateEnum.DISMISSED]]);
+            expect(yield* service.listSeries(NOW)).toEqual([]);
+        })
+    );
+
+    it.effect('drops detected suggestions it no longer finds and keeps owned, dismissed, user-linked and budgeted rows', () =>
+        Effect.gen(function* () {
+            const items = yield* repository;
+            const seed = yield* seedCharges();
+            yield* seedMonthlyCharges(seed, 'NETFLIX', SIX_MONTHS, 5, 12);
+            const [autoLinked, userLinked] = yield* seedMonthlyCharges(seed, 'CORNER SHOP', [4, 2], 9, 7);
+            const saved = (title: string, userState: RecurringSeriesUserStateEnum) =>
+                seedSavedSeries({
+                    merchantKey: title.toUpperCase(),
+                    title,
+                    amount: 7 * PRECISION,
+                    userState,
+                    lastSeenAt: new Date(2026, 3, 9)
+                });
+            const legacy = yield* saved('Corner shop', RecurringSeriesUserStateEnum.SUGGESTED);
+            yield* saved('Gym', RecurringSeriesUserStateEnum.CONFIRMED);
+            yield* saved('Bakery', RecurringSeriesUserStateEnum.DISMISSED);
+            const withUserLink = yield* saved('Market', RecurringSeriesUserStateEnum.SUGGESTED);
+            const budgeted = yield* saved('Insurance', RecurringSeriesUserStateEnum.SUGGESTED);
+            yield* items.insertLink({
+                seriesId: legacy.id,
+                transactionId: autoLinked,
+                cycleDate: new Date(2026, 1, 9),
+                matchedBy: RecurringMatchSourceEnum.AUTO
+            });
+            yield* items.insertLink({
+                seriesId: withUserLink.id,
+                transactionId: userLinked,
+                cycleDate: new Date(2026, 3, 9),
+                matchedBy: RecurringMatchSourceEnum.USER
+            });
+            const { id: categoryId } = yield* testSeedService.category('Insurance');
+            yield* Db.query(database =>
+                database
+                    .insert(BudgetEntityTable)
+                    .values({
+                        name: 'Main',
+                        period: BudgetPeriodEnum.MONTHLY,
+                        periodStartDay: 1,
+                        useLastDayOfMonth: false,
+                        overallLimit: 100 * PRECISION,
+                        otherLimit: 10 * PRECISION,
+                        instrumentId: DEFAULT_INSTRUMENT_ID
+                    })
+                    .returning()
+            ).pipe(
+                Effect.flatMap(([budget]) =>
+                    Db.query(database =>
+                        database.insert(BudgetSinkingFundEntityTable).values({
+                            budgetId: budget.id,
+                            name: 'Insurance',
+                            categoryId,
+                            targetAmount: 7 * PRECISION,
+                            dueAt: new Date(2026, 11, 1),
+                            recurringSeriesId: budgeted.id
+                        })
+                    )
+                )
+            );
+
+            yield* detectAt(NOW);
+
+            expect((yield* items.findAllSeries).map(row => row.title).sort()).toEqual(['Bakery', 'Gym', 'Insurance', 'Market', 'NETFLIX']);
+            expect((yield* items.findLinks).some(link => link.seriesId === legacy.id)).toBe(false);
         })
     );
 });

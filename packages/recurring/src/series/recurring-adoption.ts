@@ -5,7 +5,8 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { normalizeRecurringDescription } from '../utils/normalize-recurring-description.util';
 
-import { legacyLabel, nearestCycle } from './recurring-series';
+import { legacyLabel } from './recurring-series';
+import { nearestCycle } from './recurring-stream';
 
 import type { RecurringChargeInterface } from '../interface/recurring-charge.interface';
 import type { RecurringSeriesInterface } from '../interface/recurring-series.interface';

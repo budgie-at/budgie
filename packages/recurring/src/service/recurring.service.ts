@@ -20,7 +20,7 @@ import { RECURRING_TRACKED_KINDS } from '../constant/recurring-tracked-kinds.con
 import { RecurringSeriesNotFoundError } from '../error/recurring-series-not-found.error';
 import { RecurringTransactionNotFoundError } from '../error/recurring-transaction-not-found.error';
 import { RecurringRepository } from '../repository/recurring.repository';
-import { isCycleCovered, resolveRecurringAlert, resolveRecurringPriceChange } from '../series/recurring-alert';
+import { findOverdueCycle, isCycleCovered, resolveRecurringAlert, resolveRecurringPriceChange } from '../series/recurring-alert';
 import { merchantIdentityOf } from '../series/recurring-matcher';
 import { projectRecurringMonth } from '../series/recurring-projection';
 import { cadencePeriodDays, monthlyEquivalent, nearestCycleDate, nextOccurrences } from '../series/recurring-schedule';
@@ -89,6 +89,7 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
         ): RecurringSeriesListItemInterface => {
             const { series } = model;
             const isActive = isSeriesActiveNow(series, now);
+            const nextDate = findOverdueCycle(model, now) ?? upcomingDates(model, now, 1).at(0) ?? null;
 
             return {
                 id: series.id,
@@ -100,7 +101,7 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
                 confidence: series.confidence,
                 cadenceUnit: series.cadenceUnit,
                 cadenceInterval: series.cadenceInterval,
-                nextDate: isActive ? (upcomingDates(model, now, 1)[0] ?? null) : null,
+                nextDate: isActive ? nextDate : null,
                 amount: series.defaultAmount,
                 nativeAmount: series.amount,
                 monthlyEquivalent: Math.round(monthlyEquivalent({ ...series, amount: series.defaultAmount })),

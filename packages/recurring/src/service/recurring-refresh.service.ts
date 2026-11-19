@@ -19,17 +19,18 @@ import * as Semaphore from 'effect/Semaphore';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { RECURRING_ACTIVE_CONFIDENCE } from '../constant/recurring-active-confidence.constant';
 import { RECURRING_AMOUNT_RATIO } from '../constant/recurring-amount-ratio.constant';
 import { RECURRING_HISTORY_MONTHS } from '../constant/recurring-history-months.constant';
 import { RECURRING_TRACKED_KINDS } from '../constant/recurring-tracked-kinds.constant';
 import { RecurringAdoptionEnum } from '../enum/recurring-adoption.enum';
 import { RecurringRepository } from '../repository/recurring.repository';
 import { resolveKeyedRows } from '../series/recurring-adoption';
-import { scoreDetectedSeries } from '../series/recurring-confidence';
 import { buildDetectedSchedule } from '../series/recurring-detected-schedule';
 import { matchRecurringTransactions } from '../series/recurring-matcher';
 import { cadencePeriodDays, cadenceToleranceDays, nearestCycleDate } from '../series/recurring-schedule';
-import { detectRecurringSeries, identity, isSeriesActive, nearestCycle } from '../series/recurring-series';
+import { detectRecurringSeries, identity, isSeriesActive } from '../series/recurring-series';
+import { nearestCycle } from '../series/recurring-stream';
 import { chargeKey } from '../utils/charge-key.util';
 
 import type { RecurringChargeInterface } from '../interface/recurring-charge.interface';
@@ -55,9 +56,13 @@ export class RecurringRefreshService extends Context.Service<RecurringRefreshSer
             row.source === RecurringSeriesSourceEnum.MANUAL || row.userState === RecurringSeriesUserStateEnum.CONFIRMED;
 
         const STREAM_PERIOD_RATIO = 1.25;
+        const STORED_HISTORY_MONTHS = 12;
         const VARIABLE_CHARGE_COUNT = 3;
 
         const isSameStream = (owner: RecurringSeriesEntityInterface, series: RecurringSeriesInterface): boolean => {
+            if (owner.userState === RecurringSeriesUserStateEnum.DISMISSED) {
+                return true;
+            }
             if (isUserOwned(owner)) {
                 const ownerPeriod = cadencePeriodDays(owner);
 
@@ -118,12 +123,43 @@ export class RecurringRefreshService extends Context.Service<RecurringRefreshSer
             return new Set(invalid.map(link => link.id));
         });
 
+        const dropUnstoredSuggestions = Effect.fnUntraced(function* (
+            rows: readonly RecurringSeriesEntityInterface[],
+            links: readonly RecurringSeriesTransactionEntityInterface[],
+            storedIds: ReadonlySet<number>
+        ) {
+            const sinkingFundSeriesIds = yield* recurringRepository.findSinkingFundSeriesIds;
+            const userLinkedIds = new Set(
+                links.filter(link => link.matchedBy === RecurringMatchSourceEnum.USER && !link.isExcluded).map(link => link.seriesId)
+            );
+            const droppedIds = new Set(
+                rows
+                    .filter(
+                        row =>
+                            row.source === RecurringSeriesSourceEnum.DETECTED &&
+                            row.userState === RecurringSeriesUserStateEnum.SUGGESTED &&
+                            !storedIds.has(row.id) &&
+                            !userLinkedIds.has(row.id) &&
+                            !sinkingFundSeriesIds.has(row.id)
+                    )
+                    .map(row => row.id)
+            );
+            const deletedAt = yield* DateTime.nowAsDate;
+            yield* recurringRepository.setLinksDeletedAt(
+                links
+                    .filter(link => droppedIds.has(link.seriesId) && link.matchedBy === RecurringMatchSourceEnum.AUTO)
+                    .map(link => link.id),
+                deletedAt
+            );
+            yield* Effect.forEach(droppedIds, seriesId => recurringRepository.setSeriesDeletedAt(seriesId, deletedAt), { discard: true });
+        });
+
         const observedFacts = (series: RecurringSeriesInterface, now: Date) => ({
             amount: series.nativeAmount,
             instrumentId: series.instrumentId,
             status: isSeriesActive(series, now) ? RecurringSeriesStatusEnum.ACTIVE : RecurringSeriesStatusEnum.ENDED,
-            lastSeenAt: new Date(series.anchorTimestamp),
-            confidence: scoreDetectedSeries(series)
+            lastSeenAt: new Date(series.lastSeenTimestamp),
+            confidence: series.confidence
         });
 
         const structuralFacts = (series: RecurringSeriesInterface) => ({
@@ -273,11 +309,18 @@ export class RecurringRefreshService extends Context.Service<RecurringRefreshSer
                     return isDefined(owner) && isUserOwned(owner) && (isSameStream(owner, series) || correctedScheduleIds.has(owner.id));
                 }).length >
                 series.events.length / 2;
-            const storable = [...detected.entries()].filter(([index, series]) => resolved.has(index) || !isOwnedByUser(series));
+            const isCurrent = (series: RecurringSeriesInterface): boolean =>
+                new Date(series.lastSeenTimestamp) >= subMonths(now, STORED_HISTORY_MONTHS) &&
+                (series.confidence >= RECURRING_ACTIVE_CONFIDENCE || isSeriesActive(series, now));
+            const storable = [...detected.entries()].filter(
+                ([index, series]) => isCurrent(series) && (resolved.has(index) || !isOwnedByUser(series))
+            );
+            const storedIds = new Set<number>();
             for (const [index, series] of storable) {
                 const matchedRow = resolved.get(index) ?? null;
                 const isAdopted = isDefined(matchedRow) && !overlapIndexes.has(index) && !everLinkedSeriesIds.has(matchedRow.id);
                 const stored = yield* store(series, matchedRow, resolveAdoption(isAdopted, keyedIndexes.has(index)), now);
+                storedIds.add(stored.id);
                 for (const event of series.events) {
                     const date = startOfDay(event.timestamp);
                     const cycle = nearestCycleDate(stored, date);
@@ -299,6 +342,7 @@ export class RecurringRefreshService extends Context.Service<RecurringRefreshSer
                 }
             }
             yield* recurringRepository.upsertAutoLinks(linkInputs);
+            yield* dropUnstoredSuggestions(rows, links, storedIds);
         });
 
         const buildMatchSeries = (

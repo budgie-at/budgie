@@ -3,7 +3,6 @@ import { expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
 import { RECURRING_ACTIVE_CONFIDENCE } from '../src/constant/recurring-active-confidence.constant';
-import { scoreDetectedSeries, scoreRecurringConfidence } from '../src/series/recurring-confidence';
 import { detectRecurringSeries } from '../src/series/recurring-series';
 
 import type { RecurringChargeInterface } from '../src/interface/recurring-charge.interface';
@@ -30,44 +29,33 @@ const monthlyCharges = (amounts: readonly number[], counterpartyIban: string | n
 const confidenceOf = (charges: readonly RecurringChargeInterface[]): number => {
     const [series] = detectRecurringSeries(charges);
 
-    return scoreDetectedSeries(series);
+    return series.confidence;
 };
 
-it.effect('keeps three regular fixed monthly charges without an IBAN possible', () =>
+it.effect('keeps three regular monthly charges with a drifting amount and no IBAN possible', () =>
     Effect.sync(() => {
-        expect(confidenceOf(monthlyCharges([12, 12, 12]))).toBeLessThan(RECURRING_ACTIVE_CONFIDENCE);
+        expect(confidenceOf(monthlyCharges([12, 12.5, 12.9]))).toBeLessThan(RECURRING_ACTIVE_CONFIDENCE);
     })
 );
 
-it.effect('activates four or more regular fixed monthly charges', () =>
+it.effect('activates three exact monthly charges and four or more regular fixed monthly charges', () =>
     Effect.sync(() => {
-        expect(confidenceOf(monthlyCharges([12, 12, 12, 12]))).toBeGreaterThanOrEqual(RECURRING_ACTIVE_CONFIDENCE);
+        expect(confidenceOf(monthlyCharges([12, 12, 12]))).toBeGreaterThanOrEqual(RECURRING_ACTIVE_CONFIDENCE);
+        expect(confidenceOf(monthlyCharges([12, 12.5, 12.9, 12.4]))).toBeGreaterThanOrEqual(RECURRING_ACTIVE_CONFIDENCE);
         expect(confidenceOf(monthlyCharges([12, 12, 12, 12, 12, 12]))).toBeGreaterThanOrEqual(RECURRING_ACTIVE_CONFIDENCE);
     })
 );
 
 it.effect('activates three regular charges that share an IBAN identity', () =>
     Effect.sync(() => {
-        expect(confidenceOf(monthlyCharges([12, 12, 12], IBAN))).toBeGreaterThanOrEqual(RECURRING_ACTIVE_CONFIDENCE);
+        expect(confidenceOf(monthlyCharges([12, 12.5, 12.9], IBAN))).toBeGreaterThanOrEqual(RECURRING_ACTIVE_CONFIDENCE);
     })
 );
 
-it.effect('activates a variable amount series with four regular cycles and demotes it after a missed cycle', () =>
+it.effect('activates a variable amount series with six regular cycles and rejects it after a missed cycle', () =>
     Effect.sync(() => {
-        expect(confidenceOf(monthlyCharges([80, 95, 110, 120]))).toBeGreaterThanOrEqual(RECURRING_ACTIVE_CONFIDENCE);
-        expect(
-            scoreRecurringConfidence({
-                periodDays: 30,
-                cycleCount: 4,
-                meanDeviationDays: 0,
-                toleranceDays: 4,
-                minimumAmount: 80,
-                maximumAmount: 120,
-                hasIban: false,
-                isVariable: true,
-                missedCycles: 1
-            })
-        ).toBeLessThan(RECURRING_ACTIVE_CONFIDENCE);
+        expect(confidenceOf(monthlyCharges([80, 95, 110, 120, 70, 130]))).toBeGreaterThanOrEqual(RECURRING_ACTIVE_CONFIDENCE);
+        expect(confidenceOf(monthlyCharges([80, 95, 110, 120, 70]))).toBeLessThan(RECURRING_ACTIVE_CONFIDENCE);
         const withMissedCycle = [0, 1, 3, 4].map(month => charge(new Date(2026, month, 5, 12), 80 + month * 15));
         expect(detectRecurringSeries(withMissedCycle)).toEqual([]);
     })
@@ -94,18 +82,8 @@ it.effect('lowers confidence for jittery timing and uneven amounts', () =>
 
 it.effect('keeps irregular yearly observations possible', () =>
     Effect.sync(() => {
-        expect(
-            scoreRecurringConfidence({
-                periodDays: 365,
-                cycleCount: 2,
-                meanDeviationDays: 10,
-                toleranceDays: 10,
-                minimumAmount: 99,
-                maximumAmount: 120,
-                hasIban: false,
-                isVariable: false,
-                missedCycles: 0
-            })
-        ).toBeLessThan(RECURRING_ACTIVE_CONFIDENCE);
+        expect(confidenceOf([charge(new Date(2025, 0, 5, 12), 99), charge(new Date(2026, 0, 15, 12), 105)])).toBeLessThan(
+            RECURRING_ACTIVE_CONFIDENCE
+        );
     })
 );

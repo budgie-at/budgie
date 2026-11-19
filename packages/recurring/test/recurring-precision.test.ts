@@ -185,6 +185,8 @@ it.effect('projects weekly and biweekly dates across Vienna daylight saving time
         for (const [dates, expected] of [
             [
                 [
+                    [2025, 7, 24],
+                    [2025, 8, 7],
                     [2025, 8, 21],
                     [2025, 9, 5],
                     [2025, 9, 19]
@@ -193,6 +195,9 @@ it.effect('projects weekly and biweekly dates across Vienna daylight saving time
             ],
             [
                 [
+                    [2025, 8, 14],
+                    [2025, 8, 21],
+                    [2025, 8, 28],
                     [2025, 9, 5],
                     [2025, 9, 12],
                     [2025, 9, 19]

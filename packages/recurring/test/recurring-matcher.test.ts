@@ -113,6 +113,16 @@ it.effect('links at most one charge per series cycle', () =>
     })
 );
 
+it.effect('links the lowest id of interchangeable twins and nothing for distinguishable ties', () =>
+    Effect.sync(() => {
+        const twins = matchRecurringTransactions([charge(9, June(5), 12), charge(4, June(5), 12)], [entry(1)]);
+        const otherAccount = matchRecurringTransactions([charge(9, June(5), 12), charge(4, June(5), 12, 'NETFLIX', 2)], [entry(1)]);
+
+        expect(twins.map(match => match.transactionId)).toEqual([4]);
+        expect(otherAccount).toEqual([]);
+    })
+);
+
 it.effect('respects excluded pairs, the account restriction and endsAt', () =>
     Effect.sync(() => {
         const excluded = matchRecurringTransactions([charge(1, June(5), 12)], [entry(1, {}, { excludedTransactionIds: new Set([1]) })]);

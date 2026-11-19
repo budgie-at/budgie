@@ -4,6 +4,7 @@ import {
     buildSpendingEntryCondition,
     RecurringSeriesKindEnum,
     AccountEntityTable,
+    BudgetSinkingFundEntityTable,
     transactionFilters,
     CategoryEntityTable,
     DefaultCategoryTranslationEntityTable,
@@ -205,6 +206,12 @@ export class RecurringRepository extends Context.Service<RecurringRepository>()(
                             )
                         )
                 ),
+            findSinkingFundSeriesIds: Db.query(db =>
+                db
+                    .selectDistinct({ seriesId: BudgetSinkingFundEntityTable.recurringSeriesId })
+                    .from(BudgetSinkingFundEntityTable)
+                    .where(isNotNull(BudgetSinkingFundEntityTable.recurringSeriesId))
+            ).pipe(Effect.map(rows => new Set(rows.map(row => row.seriesId)))),
             findEverLinkedSeriesIds: Db.query(db =>
                 db.selectDistinct({ seriesId: RecurringSeriesTransactionEntityTable.seriesId }).from(RecurringSeriesTransactionEntityTable)
             ).pipe(Effect.map(rows => new Set(rows.map(row => row.seriesId)))),

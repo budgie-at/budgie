@@ -10,7 +10,7 @@ import { RecurringAlertEnum } from '../enum/recurring-alert.enum';
 
 import { cadencePeriodDays, cadenceToleranceDays, cycleDateAt } from './recurring-schedule';
 import { PRICE_CHANGE_RATIO } from './recurring-series';
-import { countsInForecasts, isSeriesEnded } from './recurring-state';
+import { isSeriesActiveNow } from './recurring-state';
 
 import type { RecurringChargeInterface } from '../interface/recurring-charge.interface';
 import type { RecurringLinkedChargeInterface } from '../interface/recurring-linked-charge.interface';
@@ -93,13 +93,17 @@ const isEnding = (model: RecurringReadModelInterface, now: Date): boolean =>
     differenceInCalendarDays(model.series.endsAt, startOfDay(now)) >= 0 &&
     differenceInCalendarDays(model.series.endsAt, startOfDay(now)) <= Math.ceil(cadencePeriodDays(model.series));
 
+export const findOverdueCycle = (model: RecurringReadModelInterface, now: Date): Date | null => {
+    const latestPastCycle = isSeriesActiveNow(model.series, now) ? findLatestPastCycle(model, now) : null;
+
+    return isDefined(latestPastCycle) && !isCycleCovered(model, latestPastCycle) ? latestPastCycle : null;
+};
+
 export const resolveRecurringAlert = (model: RecurringReadModelInterface, now: Date): RecurringAlertEnum | null => {
-    if (!countsInForecasts(model.series) || isSeriesEnded(model.series, now)) {
+    if (!isSeriesActiveNow(model.series, now)) {
         return null;
     }
-    const latestPastCycle = findLatestPastCycle(model, now);
-
-    if (isDefined(latestPastCycle) && !isCycleCovered(model, latestPastCycle)) {
+    if (isDefined(findOverdueCycle(model, now))) {
         return RecurringAlertEnum.OVERDUE;
     }
     if (hasPriceChange(model, now)) {

@@ -1,5 +1,6 @@
 import { RecurringSeriesSourceEnum, RecurringSeriesUserStateEnum } from '@budgie/contracts';
 import { differenceInCalendarDays } from 'date-fns/differenceInCalendarDays';
+import { isSameDay } from 'date-fns/isSameDay';
 import { startOfDay } from 'date-fns/startOfDay';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
@@ -67,6 +68,9 @@ const rankCandidates = (
         .sort((first, second) => first.gap - second.gap);
 };
 
+const isInterchangeable = (first: RecurringChargeInterface, second: RecurringChargeInterface): boolean =>
+    isSameDay(first.operatedAt, second.operatedAt) && first.nativeAmount === second.nativeAmount && first.accountId === second.accountId;
+
 export const matchRecurringTransactions = (
     charges: readonly RecurringChargeInterface[],
     entries: readonly RecurringMatchSeriesInterface[]
@@ -95,11 +99,13 @@ export const matchRecurringTransactions = (
 
     return [...groups.values()]
         .flatMap(group => {
-            const sorted = [...group].sort((first, second) => first.gap - second.gap);
-            const [closest] = sorted;
-            const runnerUp = sorted.at(1);
+            const closestGap = Math.min(...group.map(item => item.gap));
+            const tied = group
+                .filter(item => item.gap === closestGap)
+                .sort((first, second) => first.charge.transactionId - second.charge.transactionId);
+            const [closest] = tied;
 
-            return closest.gap === runnerUp?.gap ? [] : [closest];
+            return tied.every(item => isInterchangeable(item.charge, closest.charge)) ? [closest] : [];
         })
         .sort((first, second) => first.charge.operatedAt.getTime() - second.charge.operatedAt.getTime())
         .map(({ charge, seriesId, cycleDate }) => {

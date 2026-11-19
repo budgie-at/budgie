@@ -42,6 +42,7 @@ const continuesSeries = (previous: RecurringSeriesInterface, next: RecurringSeri
 
 const mergeContinuedSeries = (previous: RecurringSeriesInterface, next: RecurringSeriesInterface): RecurringSeriesInterface => ({
     ...next,
+    confidence: Math.max(previous.confidence, next.confidence),
     labels: [...new Set([...previous.labels, ...next.labels])],
     events: [...previous.events, ...next.events].sort((first, second) => first.timestamp - second.timestamp)
 });
