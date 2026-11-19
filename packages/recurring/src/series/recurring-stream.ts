@@ -123,10 +123,9 @@ const longestStream = (placed: ReturnType<typeof acceptEvents>, purity: number, 
     if (!isDefined(latest) || !latest.isAccepted) {
         return [];
     }
-    const acceptedCycles = new Set(placed.filter(item => item.isAccepted).map(item => item.cycle));
+    const hasLaterOutlier = placed.slice(latestIndex + 1).some(item => item.cycle !== latest.cycle);
     let accepted = 0;
     let outliers = placed.length - 1 - latestIndex;
-    let strayOutliers = placed.slice(latestIndex + 1).filter(item => !acceptedCycles.has(item.cycle)).length;
     let start = placed.length;
     let isCycleAccepted = false;
     for (let index = latestIndex; index >= 0; index -= 1) {
@@ -134,14 +133,13 @@ const longestStream = (placed: ReturnType<typeof acceptEvents>, purity: number, 
         isCycleAccepted = (index < latestIndex && placed[index + 1].cycle === item.cycle && isCycleAccepted) || item.isAccepted;
         accepted += Number(item.isAccepted);
         outliers += Number(!item.isAccepted);
-        strayOutliers += Number(!acceptedCycles.has(item.cycle));
         const spannedCycles = item.cycle - latest.cycle + 1;
         const isValid =
             placed[index - 1]?.cycle !== item.cycle &&
             isCycleAccepted &&
             accepted / (accepted + outliers) >= purity &&
             accepted / spannedCycles >= coverage &&
-            (accepted >= CLEAN_EVIDENCE_EVENTS || (accepted === spannedCycles && strayOutliers === 0));
+            (accepted >= CLEAN_EVIDENCE_EVENTS || (accepted === spannedCycles && !hasLaterOutlier));
         start = isValid ? index : start;
     }
 

@@ -4,6 +4,7 @@ import {
     BudgetPeriodEnum,
     BudgetSinkingFundEntityTable,
     Db,
+    LanguageEnum,
     PRECISION,
     RecurringCadenceUnitEnum,
     RecurringSeriesEntityTable,
@@ -19,7 +20,7 @@ import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { RecurringRefreshService, RecurringService } from '../src/index';
+import { buildRecurringActiveCondition, RecurringRefreshService, RecurringService } from '../src/index';
 import { RecurringRepository } from '../src/repository/recurring.repository';
 
 import {
@@ -44,6 +45,21 @@ const withFreshLaunch = Effect.provide(Layer.fresh(Layer.merge(RecurringService.
 const refreshService = Effect.service(RecurringRefreshService);
 
 const repository = Effect.service(RecurringRepository);
+
+const seedYearlySeries = (title: string, userState: RecurringSeriesUserStateEnum) =>
+    seedSavedSeries({
+        merchantKey: title.toUpperCase(),
+        title,
+        amount: 12 * PRECISION,
+        userState,
+        lastSeenAt: new Date(2026, 0, 9),
+        periodDays: 365
+    });
+
+const linkSeries = (seriesId: number, transactionId: number) =>
+    Effect.flatMap(repository, items =>
+        items.insertLink({ seriesId, transactionId, cycleDate: new Date(2026, 0, 9), matchedBy: RecurringMatchSourceEnum.AUTO })
+    );
 
 const liveLinks = Effect.flatMap(repository, items => items.findLinks);
 
@@ -495,6 +511,23 @@ layer(TestLayer)('recurringRefreshService', it => {
             yield* detectAt(NOW);
 
             expect((yield* items.findAllSeries).map(row => row.title).sort()).toEqual(['Reminded', 'Synced']);
+        })
+    );
+
+    it.effect('counts a suggested detected series as active only with a live link, and a confirmed one without links', () =>
+        Effect.gen(function* () {
+            const seed = yield* seedCharges();
+            const [transactionId] = yield* seedMonthlyCharges(seed, 'CORNER SHOP', [2], 9, 7);
+            const linked = yield* seedYearlySeries('Linked', RecurringSeriesUserStateEnum.SUGGESTED);
+            yield* seedYearlySeries('Unlinked', RecurringSeriesUserStateEnum.SUGGESTED);
+            yield* seedYearlySeries('Confirmed', RecurringSeriesUserStateEnum.CONFIRMED);
+            yield* linkSeries(linked.id, transactionId);
+
+            const active = yield* Effect.flatMap(repository, items =>
+                items.findSeriesRows(DEFAULT_INSTRUMENT_ID, LanguageEnum.EN, buildRecurringActiveCondition())
+            );
+
+            expect(active.map(row => row.title).sort()).toEqual(['Confirmed', 'Linked']);
         })
     );
 });
