@@ -4,7 +4,12 @@ const MIN_VISIBLE_HEIGHT = 0.5;
 const VALUES_PER_RECT = 2;
 const HALF = 2;
 
-export const buildYieldBarsPath = (values: readonly number[], offset: number, rects: readonly YieldBarRectInterface[]): string => {
+export const buildYieldBarsPath = (
+    values: readonly number[],
+    offset: number,
+    rects: readonly YieldBarRectInterface[],
+    isInProgress: boolean
+): string => {
     'worklet';
 
     const commands: (string | number)[] = [];
@@ -13,7 +18,7 @@ export const buildYieldBarsPath = (values: readonly number[], offset: number, re
         const y = values[offset + index * VALUES_PER_RECT] ?? 0;
         const height = values[offset + index * VALUES_PER_RECT + 1] ?? 0;
 
-        if (height > MIN_VISIBLE_HEIGHT) {
+        if (height > MIN_VISIBLE_HEIGHT && rect.isInProgress === isInProgress) {
             const radius = Math.min(rect.radius, height, rect.width / HALF);
             const right = rect.x + rect.width;
 

@@ -6,6 +6,7 @@ export interface YieldListPayoutItemInterface {
     readonly kind: YieldListItemKindEnum.PAYOUT;
     readonly id: string;
     readonly transaction: TransactionWithRelationsEntityInterface;
+    readonly tax: TransactionWithRelationsEntityInterface | null;
     readonly isUnassigned: boolean;
     readonly position: TransactionListRowPositionEnum;
 }

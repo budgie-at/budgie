@@ -8,7 +8,6 @@ import { isDefined } from '@rnw-community/shared';
 
 import { Icon } from '../../../@generic/component/icon/icon';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
-import { cn } from '../../../@generic/utils/cn.util';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { TransactionRowSurface } from '../../../transaction/components/transaction-row-surface/transaction-row-surface';
 import { useYieldPositionRateText } from '../../hook/use-yield-position-rate-text.hook';
@@ -39,9 +38,6 @@ interface Props {
     readonly rowPosition: TransactionListRowPositionEnum;
 }
 
-const RATE_CLASSNAME = 'text-[13px] tabular-nums text-right';
-const RATED_CLASSNAME = 'text-secondary-foreground';
-const UNRATED_CLASSNAME = 'text-secondary-foreground/60';
 const SEPARATOR_INSET = 64;
 
 export const YieldPositionRow = ({ position, rangeCaption, rowPosition }: Props) => {
@@ -58,12 +54,11 @@ export const YieldPositionRow = ({ position, rangeCaption, rowPosition }: Props)
     const earned = formatAmount(position.earned, symbol);
     const wholeBalance = isCrypto && isDefined(position.annualYield.rate) ? t` on whole balance` : '';
     const accessibilityLabel = t`${title}, earned ${earned} ${rangeCaption}, ${rateText}${wholeBalance}`;
-    const rateClassName = cn(RATE_CLASSNAME, isDefined(position.annualYield.rate) ? RATED_CLASSNAME : UNRATED_CLASSNAME);
     const trailing = (
         <View className="flex-row items-center gap-x-sm">
             <View className="shrink items-end">
                 <Text className="text-[17px] font-semibold tabular-nums text-primary">{earned}</Text>
-                <Text className={rateClassName} numberOfLines={2}>
+                <Text className="text-right text-[13px] tabular-nums text-secondary-foreground" numberOfLines={2}>
                     {rateText}
                 </Text>
             </View>

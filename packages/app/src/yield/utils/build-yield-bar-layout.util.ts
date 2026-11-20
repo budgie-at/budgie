@@ -62,7 +62,6 @@ export const buildYieldBarLayout = ({
     const zeroY = axis.top * scale;
     const xs = buckets.map((_, index) => MARKET_CHART_PADDING_X + slot * (index + 0.5));
     const groups = buildGroupRecord();
-    const estimated = buildGroupRecord();
     const tax: YieldBarRectInterface[] = [];
 
     buckets.forEach((bucket, index) => {
@@ -79,34 +78,24 @@ export const buildYieldBarLayout = ({
             const segment = heights.at(groupIndex) ?? 0;
             const isTop = groupIndex === topIndex;
             const drawn = isTop ? segment : Math.max(segment - gap, 0);
-            const ratio = bucket.amounts[group] > 0 ? Math.min(Math.max(bucket.estimatedAmounts[group] / bucket.amounts[group], 0), 1) : 0;
-            const estimatedHeight = drawn * ratio;
-            const pricedHeight = drawn - estimatedHeight;
-            const top = bottom - drawn;
 
             groups[group].push({
                 x: left,
-                y: top + estimatedHeight,
+                y: bottom - drawn,
                 width: barWidth,
-                height: pricedHeight,
-                radius: buildRadius(pricedHeight, isTop && estimatedHeight === 0)
-            });
-            estimated[group].push({
-                x: left,
-                y: top,
-                width: barWidth,
-                height: estimatedHeight,
-                radius: buildRadius(estimatedHeight, isTop)
+                height: drawn,
+                radius: buildRadius(drawn, isTop),
+                isInProgress: bucket.isInProgress
             });
             bottom -= segment;
         });
 
         tax.push(
             topIndex < 0 && taxHeight === 0
-                ? { x: left, y: zeroY - TICK_HEIGHT, width: barWidth, height: TICK_HEIGHT, radius: 0 }
-                : { x: left, y: zeroY, width: barWidth, height: taxHeight, radius: 0 }
+                ? { x: left, y: zeroY - TICK_HEIGHT, width: barWidth, height: TICK_HEIGHT, radius: 0, isInProgress: bucket.isInProgress }
+                : { x: left, y: zeroY, width: barWidth, height: taxHeight, radius: 0, isInProgress: bucket.isInProgress }
         );
     });
 
-    return { xs, slot, barWidth, zeroY, groups, estimated, tax };
+    return { xs, slot, barWidth, zeroY, scale, groups, tax };
 };

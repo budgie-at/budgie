@@ -86,7 +86,7 @@ export class YieldService extends Context.Service<YieldService>()('@budgie/marke
         const RANGE_COUNT: Readonly<Record<YieldRangeEnum, number>> = {
             [YieldRangeEnum.MONTH]: 30,
             [YieldRangeEnum.QUARTER]: 13,
-            [YieldRangeEnum.YEAR]: 13,
+            [YieldRangeEnum.YEAR]: 12,
             [YieldRangeEnum.ALL]: 0
         };
         const BUCKET_START: Readonly<Record<YieldBucketUnitEnum, (date: Date) => Date>> = {
@@ -254,6 +254,18 @@ export class YieldService extends Context.Service<YieldService>()('@budgie/marke
                 : { kind: YieldDeltaKindEnum.CHANGE, ratio: (earned - prior) / prior };
         };
 
+        const computeScopedRunRate = (contexts: readonly YieldPositionContextInterface[], group: YieldGroupEnum | null) => {
+            if (!isDefined(group)) {
+                return yieldHoldingService.runRate(contexts);
+            }
+
+            return group === YieldGroupEnum.DISTRIBUTIONS
+                ? null
+                : yieldHoldingService.runRate(
+                      contexts.filter(context => context.facts.some(fact => isIncome(fact) && fact.group === group))
+                  );
+        };
+
         const summarizePosition = (
             context: YieldPositionContextInterface,
             isInWindow: (fact: YieldFactInterface) => boolean
@@ -417,7 +429,7 @@ export class YieldService extends Context.Service<YieldService>()('@budgie/marke
                         contexts,
                         incomeFacts.some(fact => fact.kind === YieldKindEnum.DISTRIBUTION && fact.day >= yieldWindowStart)
                     ),
-                    runRate: yieldHoldingService.runRate(contexts),
+                    runRate: computeScopedRunRate(contexts, key.group),
                     cryptoRewardsToday: yield* computeCryptoRewardsToday(rangeIncome, key.baseInstrumentId),
                     vsRate: isDefined(key.positionAccountId)
                         ? (positions.find(position => position.accountId === key.positionAccountId)?.vsRate ?? null)

@@ -1,6 +1,7 @@
 import { useAnimatedProps } from 'react-native-reanimated';
 
 import { AnimatedStyledPath } from '../../../@generic/component/animated-styled-path/animated-styled-path';
+import { YIELD_IN_PROGRESS_DASH, YIELD_IN_PROGRESS_FILL_OPACITY } from '../../constant/yield-in-progress.constant';
 import { buildYieldBarsPath } from '../../utils/build-yield-bars-path.util';
 
 import type { YieldBarRectInterface } from '../../interface/yield-bar-rect.interface';
@@ -13,21 +14,23 @@ interface Props {
     readonly offset: number;
     readonly rects: readonly YieldBarRectInterface[];
     readonly fillClassName: string;
-    readonly fillOpacity?: number;
-    readonly strokeClassName?: string;
+    readonly isInProgress?: boolean;
     readonly strokeWidth?: number;
 }
 
-export const YieldChartBarPath = ({ values, offset, rects, fillClassName, fillOpacity = 1, strokeClassName, strokeWidth = 0 }: Props) => {
-    const animatedProps = useAnimatedProps(() => ({ [PATH_PROP]: buildYieldBarsPath(values.get(), offset, rects) }));
+const SOLID_PAINT = { fillOpacity: 1, strokeWidth: 0 } as const;
 
-    return (
-        <AnimatedStyledPath
-            animatedProps={animatedProps}
-            fillClassName={fillClassName}
-            fillOpacity={fillOpacity}
-            strokeClassName={strokeClassName}
-            strokeWidth={strokeWidth}
-        />
-    );
+export const YieldChartBarPath = ({ values, offset, rects, fillClassName, isInProgress = false, strokeWidth = 1 }: Props) => {
+    const animatedProps = useAnimatedProps(() => ({ [PATH_PROP]: buildYieldBarsPath(values.get(), offset, rects, isInProgress) }));
+
+    const paint = isInProgress
+        ? {
+              fillOpacity: YIELD_IN_PROGRESS_FILL_OPACITY,
+              strokeClassName: fillClassName,
+              strokeWidth,
+              strokeDasharray: YIELD_IN_PROGRESS_DASH
+          }
+        : SOLID_PAINT;
+
+    return <AnimatedStyledPath animatedProps={animatedProps} fillClassName={fillClassName} {...paint} />;
 };

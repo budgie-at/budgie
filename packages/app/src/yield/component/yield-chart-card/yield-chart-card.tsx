@@ -14,6 +14,7 @@ import { YieldChartModeControl } from '../yield-chart-mode-control/yield-chart-m
 import { YieldChartPlot } from '../yield-chart-plot/yield-chart-plot';
 import { YieldLegendEstimatedRow } from '../yield-legend-estimated-row/yield-legend-estimated-row';
 import { YieldLegendFootnote } from '../yield-legend-footnote/yield-legend-footnote';
+import { YieldLegendRunning } from '../yield-legend-running/yield-legend-running';
 import { YieldLegend } from '../yield-legend/yield-legend';
 
 const HEADER_CLASSNAME = 'min-h-[32px] gap-y-[8px]';
@@ -50,11 +51,11 @@ export const YieldChartCard = () => {
 
             <YieldChartPlot />
 
-            <YieldLegend />
-
-            <YieldLegendEstimatedRow />
+            {mode === YieldChartModeEnum.BARS ? <YieldLegend /> : <YieldLegendRunning />}
 
             <YieldLegendFootnote />
+
+            <YieldLegendEstimatedRow />
         </View>
     );
 };

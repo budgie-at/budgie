@@ -43,8 +43,7 @@ export const TransactionInfoYieldRow = ({ transaction }: Props) => {
         <>
             <TransactionInfoRow
                 icon={UserIconNameEnum.Sprout}
-                label={t`Passive income`}
-                value={t`View history`}
+                value={t`Passive income history`}
                 testID={TransactionInfoPageSelector.Row.Yield}
                 onPress={handleOpenScreen}
             />

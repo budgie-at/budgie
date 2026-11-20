@@ -32,7 +32,7 @@ export const YieldHeroInfoButton = () => {
             accessibilityRole="button"
             accessibilityLabel={t`About these figures`}
             onPress={handlePress}
-            className="-my-[13px] h-[44px] w-[44px] items-center justify-center"
+            className="-my-[13px] -ml-[8px] h-[44px] w-[44px] items-center justify-center"
             testID={PassiveIncomeSelector.Info}
         >
             <Icon icon={UserIconNameEnum.Info} size={18} className="text-secondary-foreground" />

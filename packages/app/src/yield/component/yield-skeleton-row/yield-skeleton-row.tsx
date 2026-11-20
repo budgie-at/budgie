@@ -19,17 +19,17 @@ export const YieldSkeletonRow = ({ rowPosition }: Props) => {
         <TransactionRowSurface position={rowPosition} separatorInset={SEPARATOR_INSET}>
             <Animated.View
                 style={pulseStyle}
-                className="min-h-[60px] flex-row items-center gap-x-xl px-3xl py-lg"
+                className="min-h-[56px] flex-row items-center gap-x-xl px-3xl py-lg"
                 pointerEvents="none"
                 accessibilityElementsHidden
                 importantForAccessibility="no-hide-descendants"
             >
-                <View className="size-[36px] rounded-full bg-secondary-corner/50" />
+                <View className="size-[36px] rounded-full bg-secondary-corner" />
                 <View className="flex-1 gap-y-sm">
-                    <View className="h-[14px] w-7/12 rounded-full bg-secondary-corner/50" />
-                    <View className="h-[12px] w-4/12 rounded-full bg-secondary-corner/50" />
+                    <View className="h-[14px] w-7/12 rounded-full bg-secondary-corner" />
+                    <View className="h-[12px] w-4/12 rounded-full bg-secondary-corner" />
                 </View>
-                <View className="h-[14px] w-[56px] rounded-full bg-secondary-corner/50" />
+                <View className="h-[14px] w-[56px] rounded-full bg-secondary-corner" />
             </Animated.View>
         </TransactionRowSurface>
     );

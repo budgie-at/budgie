@@ -25,7 +25,7 @@ describe('YieldService summary', () => {
         })
     );
 
-    it.effect('builds 30 days, 13 weeks, 13 months, and months, quarters or years for All', () =>
+    it.effect('builds 30 days, 13 weeks, 12 months, and months, quarters or years for All', () =>
         Effect.gen(function* () {
             const recent = { facts: [valued('2026-03-10', 1, 1)] };
             const month = yield* summarize(recent, { range: YieldRangeEnum.MONTH });
@@ -36,7 +36,7 @@ describe('YieldService summary', () => {
             const allYears = yield* summarize({ facts: [valued('2014-01-10', 1, 1)] }, { range: YieldRangeEnum.ALL });
             const summaries = [month, quarter, year, allMonths, allQuarters, allYears];
 
-            expect(summaries.map(summary => summary.buckets.length)).toEqual([30, 13, 13, 9, 20, 13]);
+            expect(summaries.map(summary => summary.buckets.length)).toEqual([30, 13, 12, 9, 20, 13]);
             expect(summaries.map(summary => summary.bucketUnit)).toEqual([
                 YieldBucketUnitEnum.DAY,
                 YieldBucketUnitEnum.WEEK,
@@ -48,10 +48,10 @@ describe('YieldService summary', () => {
             expect([month.windowStart, quarter.windowStart, year.windowStart, allMonths.windowStart]).toEqual([
                 '2026-10-15',
                 '2026-08-17',
-                '2025-11-01',
+                '2025-12-01',
                 '2026-03-01'
             ]);
-            expect(year.buckets.at(0)).toMatchObject({ start: '2025-11-01', end: '2025-11-30', isInProgress: false });
+            expect(year.buckets.at(0)).toMatchObject({ start: '2025-12-01', end: '2025-12-31', isInProgress: false });
             expect(year.buckets.at(-1)).toMatchObject({ start: '2026-11-01', end: '2026-11-13', isInProgress: true });
         })
     );
@@ -62,7 +62,7 @@ describe('YieldService summary', () => {
                 facts: [valued('2026-03-10', 1, 100), interest('2026-03-20', 10), tax('2026-03-21', 3, DEPOSIT_ACCOUNT_ID)]
             });
 
-            expect(summary.buckets.at(4)).toMatchObject({
+            expect(summary.buckets.at(3)).toMatchObject({
                 start: '2026-03-01',
                 total: 110,
                 isEstimated: false,
@@ -77,15 +77,15 @@ describe('YieldService summary', () => {
         })
     );
 
-    it.effect('compares 1Y Earned with the prior 13 months cut to the same elapsed fraction, with no overlap', () =>
+    it.effect('compares 1Y Earned with the prior 12 months cut to the same elapsed fraction, with no overlap', () =>
         Effect.gen(function* () {
             const change = yield* summarize({
-                facts: [valued('2025-10-05', 1, 50), valued('2025-10-20', 1, 30), valued('2026-03-10', 1, 100)]
+                facts: [valued('2025-11-05', 1, 20), valued('2025-11-10', 1, 30), valued('2026-03-10', 1, 100)]
             });
             const fresh = yield* summarize({ facts: [valued('2026-03-10', 1, 100)] });
-            const dropped = yield* summarize({ facts: [valued('2025-10-05', 1, 50)] });
+            const dropped = yield* summarize({ facts: [valued('2025-11-05', 1, 50)] });
             const quiet = yield* summarize({ facts: [valued('2023-01-01', 1, 50)] });
-            const boundary = yield* summarize({ facts: [valued('2025-10-05', 1, 50), valued('2025-11-01', 1, 20)] });
+            const boundary = yield* summarize({ facts: [valued('2025-11-05', 1, 50), valued('2025-12-01', 1, 20)] });
 
             expect(change.delta).toEqual({ kind: YieldDeltaKindEnum.CHANGE, ratio: 1 });
             expect(change.priorTotals?.at(-1)).toBe(50);
@@ -127,7 +127,7 @@ describe('YieldService summary', () => {
                 { group: YieldGroupEnum.STAKING_EARN, total: 30 },
                 { group: YieldGroupEnum.INTEREST, total: 10 }
             ]);
-            expect(isolated.buckets.at(4)?.total).toBe(10);
+            expect(isolated.buckets.at(3)?.total).toBe(10);
         })
     );
 
@@ -137,7 +137,7 @@ describe('YieldService summary', () => {
             const priced = yield* summarize({ facts: [valued('2026-03-10', 1, 96), valued('2026-03-11', 1, 4, { isEstimated: true })] });
 
             expect([estimated.earned.isEstimated, priced.earned.isEstimated]).toEqual([true, false]);
-            expect(estimated.buckets.at(4)?.isEstimated).toBe(true);
+            expect(estimated.buckets.at(3)?.isEstimated).toBe(true);
         })
     );
 

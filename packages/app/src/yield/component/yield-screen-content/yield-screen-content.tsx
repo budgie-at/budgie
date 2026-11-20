@@ -6,7 +6,6 @@ import { YieldScreenContext } from '../../context/yield-screen.context';
 import { YieldSelectionContext } from '../../context/yield-selection.context';
 import { YieldCollapsedTitle } from '../yield-collapsed-title/yield-collapsed-title';
 import { YieldEmptyState } from '../yield-empty-state/yield-empty-state';
-import { YieldOpenPositionButton } from '../yield-open-position-button/yield-open-position-button';
 import { YieldScreenList } from '../yield-screen-list/yield-screen-list';
 import { YieldScreenTitle } from '../yield-screen-title/yield-screen-title';
 
@@ -26,7 +25,6 @@ export const YieldScreenContent = ({ state, hasYield }: Props) => (
 
             <CollapsibleChromeHeader
                 leading={<HeaderBackButton />}
-                trailing={<YieldOpenPositionButton />}
                 expandedTitle={<YieldScreenTitle />}
                 expandedTitlePointerEvents="box-none"
                 collapsedTitle={<YieldCollapsedTitle />}

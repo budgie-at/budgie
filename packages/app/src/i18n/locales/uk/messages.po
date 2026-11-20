@@ -423,6 +423,10 @@ msgstr "{country} · Бета"
 msgid "{currencyName} · from your region"
 msgstr "{currencyName} · з вашого регіону"
 
+#: src/yield/component/yield-legend-running/yield-legend-running.tsx
+msgid "{currentLabel}, {currentAmount}"
+msgstr "{currentLabel}, {currentAmount}"
+
 #: src/budget/components/budget-upcoming-charge-row/budget-upcoming-charge-row.tsx
 msgid "{dateLabel}, {kindLabel}"
 msgstr "{dateLabel}, {kindLabel}"
@@ -608,8 +612,8 @@ msgid "{formattedRate} a year"
 msgstr "{formattedRate} на рік"
 
 #: src/yield/hook/use-yield-rate-text.hook.ts
-msgid "{formattedRate} yield · last 12 months"
-msgstr "{formattedRate} дохідності · останні 12 місяців"
+msgid "{formattedRate} annual yield"
+msgstr "{formattedRate} річної дохідності"
 
 #: src/transaction/components/split-entries-remainder/split-entries-remainder.tsx
 msgid "{formattedRemaining} left to assign"
@@ -681,8 +685,8 @@ msgid "{hiddenCount, plural, one {Show # more} other {Show # more}}"
 msgstr "{hiddenCount, plural, one {Показати ще #} few {Показати ще #} many {Показати ще #} other {Показати ще #}}"
 
 #: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
-msgid "{holdingCount, plural, one {Yield uses the last 365 days across # holding. Crypto yield is measured on your whole balance, staked or not.} other {Yield uses the last 365 days across # holdings. Crypto yield is measured on your whole balance, staked or not.}}"
-msgstr "{holdingCount, plural, one {Дохідність використовує останні 365 днів за # активом. Дохідність крипти вимірюється на весь ваш баланс, у стейкінгу чи ні.} few {Дохідність використовує останні 365 днів за # активами. Дохідність крипти вимірюється на весь ваш баланс, у стейкінгу чи ні.} many {Дохідність використовує останні 365 днів за # активами. Дохідність крипти вимірюється на весь ваш баланс, у стейкінгу чи ні.} other {Дохідність використовує останні 365 днів за # активу. Дохідність крипти вимірюється на весь ваш баланс, у стейкінгу чи ні.}}"
+msgid "{holdingCount, plural, one {The last 365 days across # holding. Crypto is measured on your whole balance, staked or not. Distributions count as income, not yield. Holdings marked “Not in yield” are left out.} other {The last 365 days across # holdings. Crypto is measured on your whole balance, staked or not. Distributions count as income, not yield. Holdings marked “Not in yield” are left out.}}"
+msgstr "{holdingCount, plural, one {Останні 365 днів по # активу. Криптовалюту оцінюють за всім вашим балансом, у стейкінгу чи ні. Виплати враховуються як дохід, а не дохідність. Активи з позначкою «Не в дохідності» не враховуються.} few {Останні 365 днів по # активах. Криптовалюту оцінюють за всім вашим балансом, у стейкінгу чи ні. Виплати враховуються як дохід, а не дохідність. Активи з позначкою «Не в дохідності» не враховуються.} many {Останні 365 днів по # активах. Криптовалюту оцінюють за всім вашим балансом, у стейкінгу чи ні. Виплати враховуються як дохід, а не дохідність. Активи з позначкою «Не в дохідності» не враховуються.} other {Останні 365 днів по # активу. Криптовалюту оцінюють за всім вашим балансом, у стейкінгу чи ні. Виплати враховуються як дохід, а не дохідність. Активи з позначкою «Не в дохідності» не враховуються.}}"
 
 #: src/app/(main)/import-csv.tsx
 msgid "{importedCount} imported, {failedCount} failed"
@@ -784,6 +788,10 @@ msgstr "{month} ’{year}"
 #: src/runway/component/runway-history-bar-label/runway-history-bar-label.tsx
 msgid "{month}, out {expenseAmount}, in {incomeAmount}"
 msgstr "{month}, витрати {expenseAmount}, доходи {incomeAmount}"
+
+#: src/yield/component/yield-month-header/yield-month-header.tsx
+msgid "{monthLabel} · {totalLabel}"
+msgstr "{monthLabel} · {totalLabel}"
 
 #: src/transaction/components/statistics-trend-bars/statistics-trend-bars.tsx
 msgid "{monthLabel}: {amountLabel}"
@@ -905,10 +913,6 @@ msgstr "{periodLabel} завершено з перевитратою {amount}"
 msgid "{periodLabel} closed {amount} under"
 msgstr "{periodLabel} завершено з {amount} під лімітом"
 
-#: src/yield/hook/use-yield-in-progress-text.hook.ts
-msgid "{periodLabel} is in progress"
-msgstr "{periodLabel} ще триває"
-
 #: src/budget/components/budget-history-chart/budget-history-chart.tsx
 msgid "{periodLabel}, spent {spentAmount} of {limitAmount}"
 msgstr "{periodLabel}, витрачено {spentAmount} із {limitAmount}"
@@ -916,6 +920,10 @@ msgstr "{periodLabel}, витрачено {spentAmount} із {limitAmount}"
 #: src/sync/component/enable-banking-bank-step/enable-banking-bank-step.tsx
 msgid "{preselectedBankName} is not available"
 msgstr "{preselectedBankName} недоступний"
+
+#: src/yield/component/yield-legend-running/yield-legend-running.tsx
+msgid "{priorLabel}, {priorAmount}"
+msgstr "{priorLabel}, {priorAmount}"
 
 #: src/budget/hooks/use-budget-forecast-labels.hook.ts
 msgid "{projectedAmount} · {gapAmount} over"
@@ -1107,6 +1115,10 @@ msgstr "{subject}: зростання з {fromLabel} до {toLabel} з {sinceLab
 msgid "{taggedCount, plural, one {# tagged this session} other {# tagged this session}}"
 msgstr "{taggedCount, plural, one {# з тегом за цей сеанс} few {# з тегами за цей сеанс} many {# з тегами за цей сеанс} other {# з тегами за цей сеанс}}"
 
+#: src/yield/component/yield-payout-row/yield-payout-row.tsx
+msgid "{taxAmount} tax"
+msgstr "податок {taxAmount}"
+
 #: src/siri/service/siri-catalog.service.ts
 msgid "{title} {formattedAmount} on {formattedDate}"
 msgstr "{title} {formattedAmount}, {formattedDate}"
@@ -1265,12 +1277,20 @@ msgid "≈ {formattedMonths} mo"
 msgstr "≈ {formattedMonths} міс."
 
 #: src/yield/hook/use-yield-rate-text.hook.ts
-msgid "≈ {formattedRate} yield · last 12 months"
-msgstr "≈ {formattedRate} дохідності · останні 12 місяців"
+msgid "≈ {formattedRate} annual yield"
+msgstr "≈ {formattedRate} річної дохідності"
+
+#: src/yield/component/yield-legend-estimated-row/yield-legend-estimated-row.tsx
+msgid "≈ Includes estimated prices"
+msgstr "≈ Включає орієнтовні ціни"
 
 #: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
-msgid "≈ includes estimated values"
-msgstr "≈ містить орієнтовні значення"
+msgid "≈ includes estimated values."
+msgstr "≈ включає орієнтовні значення."
+
+#: src/yield/hook/use-yield-in-progress-text.hook.ts
+msgid "◌ {periodLabel} so far"
+msgstr "◌ {periodLabel} досі"
 
 #: src/transaction/components/conversion-row/conversion-row.tsx
 msgid "1 {sourceCode} = {formattedRate} {destinationCode}"
@@ -1279,6 +1299,14 @@ msgstr "1 {sourceCode} = {formattedRate} {destinationCode}"
 #: src/recurring/utils/build-recurring-reminder-segments.util.ts
 msgid "1 day"
 msgstr "1 день"
+
+#: src/yield/component/yield-range-control/yield-range-control.tsx
+msgid "1 month"
+msgstr "1 місяць"
+
+#: src/yield/component/yield-range-control/yield-range-control.tsx
+msgid "1 year"
+msgstr "1 рік"
 
 #: src/inzhur/component/inzhur-performance-chart/inzhur-performance-chart.tsx
 #: src/market-data/component/currency-market-range-control/currency-market-range-control.tsx
@@ -1320,6 +1348,10 @@ msgstr "Зміна за 24 год · {staleDate}"
 #: src/recurring/utils/build-recurring-reminder-segments.util.ts
 msgid "3 days"
 msgstr "3 дні"
+
+#: src/yield/component/yield-range-control/yield-range-control.tsx
+msgid "3 months"
+msgstr "3 місяці"
 
 #: src/inzhur/component/inzhur-performance-chart/inzhur-performance-chart.tsx
 #: src/market-data/component/currency-market-range-control/currency-market-range-control.tsx
@@ -1814,7 +1846,13 @@ msgstr "Усі обов’язкові поля зіставлено. Торкн
 msgid "All shared"
 msgstr "Усі спільні"
 
+#: src/yield/hook/use-yield-analytics-period-label.hook.ts
+msgid "all time"
+msgstr "весь час"
+
 #: src/i18n/hook/use-format-date-range.hook.ts
+#: src/yield/component/passive-income-analytics-card-content/passive-income-analytics-card-content.tsx
+#: src/yield/component/yield-range-control/yield-range-control.tsx
 msgid "All time"
 msgstr "Весь час"
 
@@ -2122,10 +2160,6 @@ msgstr "По {rateLabel} за {instrumentCode}"
 msgid "At ≈ {rateLabel} per {instrumentCode}"
 msgstr "За ≈ {rateLabel} за {instrumentCode}"
 
-#: src/yield/component/yield-breakdown-run-rate/yield-breakdown-run-rate.tsx
-msgid "At current balances and rates"
-msgstr "За поточними балансами та ставками"
-
 #: src/market-data/component/currency-market-position/currency-market-position.tsx
 msgid "At last known price"
 msgstr "За останньою відомою ціною"
@@ -2141,6 +2175,10 @@ msgstr "За останньою відомою ціною, {rateLabel} за {ins
 #: src/market-data/component/currency-market-value-row/currency-market-value-row.tsx
 msgid "At last known price, ≈ {rateLabel} per {instrumentCode}"
 msgstr "За останньою відомою ціною, ≈ {rateLabel} за {instrumentCode}"
+
+#: src/yield/component/yield-breakdown-run-rate/yield-breakdown-run-rate.tsx
+msgid "At today’s balances and rates"
+msgstr "За сьогоднішніми балансами та ставками"
 
 #: src/categorize-inbox/components/categorize-inbox-group-attach-debt-option/categorize-inbox-group-attach-debt-option.tsx
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
@@ -4167,10 +4205,6 @@ msgctxt "Country"
 msgid "Czechia"
 msgstr "Чехія"
 
-#: src/yield/component/passive-income-analytics-card-content/passive-income-analytics-card-content.tsx
-msgid "Daily income · last 30 days"
-msgstr "Щоденний дохід · останні 30 днів"
-
 #: src/settings/components/theme-switch/theme-switch.tsx
 msgid "Dark"
 msgstr "Темна"
@@ -4493,10 +4527,6 @@ msgstr "Розподіл"
 msgid "Distributions"
 msgstr "Розподіли"
 
-#: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
-msgid "Distributions count as income but not in the yield. Holdings marked “Not in yield” are left out of the yield and of “Next 12 months”."
-msgstr "Виплати враховуються як дохід, але не в дохідності. Активи з позначкою «Не в дохідності» виключені з дохідності та з «Наступних 12 місяців»."
-
 #: src/yield/constant/yield-kind-label.constant.ts
 msgid "Dividend"
 msgstr "Дивіденд"
@@ -4733,21 +4763,21 @@ msgstr "Кожен тиждень порівняно з вашим тижнев�
 msgid "Earn"
 msgstr "Earn"
 
+#: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
+msgid "Earned"
+msgstr "Зароблено"
+
 #: src/yield/hook/use-yield-scrub-sentence.hook.ts
 msgid "Earned {amountText} before tax through {throughDay}."
 msgstr "Зароблено {amountText} до сплати податків станом на {throughDay}."
 
 #: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
-msgid "Earned {caption}. The change compares the same number of periods just before, with the last one cut to the same point."
-msgstr "Зароблено {caption}. Зміна порівнює таку саму кількість періодів одразу до цього, а останній обрізається до тієї ж точки."
+msgid "Earned {caption}. The change compares the same number of periods just before. Before tax; valued at the day’s opening price, or the latest earlier price, marked ≈."
+msgstr "Зароблено {caption}. Зміна порівнює таку саму кількість періодів одразу перед цим. До сплати податку; оцінено за ціною відкриття дня або останньою попередньою ціною, позначено ≈."
 
 #: src/yield/component/yield-hero-caption/yield-hero-caption.tsx
 msgid "Earned {rangeCaption}"
 msgstr "Зароблено {rangeCaption}"
-
-#: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
-msgid "Earned is before tax. Rewards are valued at the day’s opening price. When that day has no price, the latest earlier price is used and the figure is marked ≈."
-msgstr "Заробіток вказано до оподаткування. Винагороди оцінюються за ціною відкриття дня. Якщо на цей день немає ціни, береться остання попередня ціна, а суму позначено ≈."
 
 #: src/yield/component/yield-hero-caption/yield-hero-caption.tsx
 msgid "Earned through {throughDay}"
@@ -5033,9 +5063,9 @@ msgstr "Erste Bank (PDF)"
 msgid "Estimated from your past transactions using your current limits."
 msgstr "Оцінено за твоїми минулими транзакціями з поточними лімітами."
 
-#: src/yield/component/yield-legend-estimated-row/yield-legend-estimated-row.tsx
-msgid "Estimated price"
-msgstr "Орієнтовна ціна"
+#: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
+msgid "Estimates"
+msgstr "Оцінки"
 
 #: src/sync/constant/enable-banking-country-name.constant.ts
 msgctxt "Country"
@@ -5381,6 +5411,10 @@ msgstr "Фільтри"
 msgid "Filters · {activeCount}"
 msgstr "Фільтри · {activeCount}"
 
+#: src/yield/component/yield-legend-row/yield-legend-row.tsx
+msgid "Filters the screen by this kind"
+msgstr "Фільтрує екран за цим видом"
+
 #: src/brokerage/component/security-selector-modal-content/security-selector-modal-content.tsx
 msgid "Find a stock or ETF"
 msgstr "Знайдіть акцію або ETF"
@@ -5724,6 +5758,10 @@ msgstr "Утримуйте, щоб запечатати цим PIN‑кодом"
 msgid "Holdings · {holdingsCount}"
 msgstr "Активи · {holdingsCount}"
 
+#: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
+msgid "Holdings marked “Not in yield” are left out of “Projected next 12 months”."
+msgstr "Активи з позначкою «Не в дохідності» не враховуються в «Прогноз на наступні 12 місяців»."
+
 #: src/app/(tabs)/settings/index.tsx
 msgid "Home screen"
 msgstr "Головний екран"
@@ -5927,16 +5965,13 @@ msgid "Imports off"
 msgstr "Імпорт вимкнено"
 
 #: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
+#: src/yield/hook/use-yield-analytics-period-label.hook.ts
 msgid "in {month}"
 msgstr "у {month}"
 
 #: src/rule/components/rule-summary-conditions/rule-summary-conditions.tsx
 msgid "in account currency"
 msgstr "у валюті рахунку"
-
-#: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
-msgid "In Analytics, the small bars are scaled to each period."
-msgstr "В Аналітиці малі стовпчики масштабуються до кожного періоду."
 
 #: src/@generic/component/amount-sign-capsule/amount-sign-capsule.tsx
 msgid "In credit"
@@ -5954,9 +5989,13 @@ msgstr "У Командах додайте автоматизацію «Тран
 msgid "in the last 30 days"
 msgstr "за останні 30 днів"
 
-#: src/yield/component/passive-income-analytics-card-content/passive-income-analytics-card-content.tsx
+#: src/yield/hook/use-yield-analytics-period-label.hook.ts
 msgid "in the selected period"
 msgstr "за вибраний період"
+
+#: src/yield/hook/use-yield-analytics-period-label.hook.ts
+msgid "in the week of {dayLabel}"
+msgstr "протягом тижня {dayLabel}"
 
 #: src/sync/component/enable-banking-bank-step/enable-banking-bank-step.tsx
 msgid "In your country"
@@ -6258,11 +6297,20 @@ msgstr "Остання {statementDate}"
 msgid "Last 1 month"
 msgstr "Останній 1 місяць"
 
+#: src/yield/component/passive-income-analytics-card-content/passive-income-analytics-card-content.tsx
+msgid "Last 12 months"
+msgstr "Останні 12 місяців"
+
+#: src/yield/component/passive-income-analytics-card-content/passive-income-analytics-card-content.tsx
+msgid "Last 13 weeks"
+msgstr "Останні 13 тижнів"
+
 #: src/sync/component/sync-history-step/sync-history-step.tsx
 msgid "Last 3 months"
 msgstr "Останні 3 місяці"
 
 #: src/sync/component/resync-window-option-row/resync-window-option-row.tsx
+#: src/yield/component/passive-income-analytics-card-content/passive-income-analytics-card-content.tsx
 msgid "Last 30 days"
 msgstr "Останні 30 днів"
 
@@ -6806,14 +6854,6 @@ msgstr "Місячний бюджет"
 msgid "Monthly history"
 msgstr "Місячна історія"
 
-#: src/yield/component/passive-income-analytics-card-content/passive-income-analytics-card-content.tsx
-msgid "Monthly income · all time"
-msgstr "Щомісячний дохід · за весь час"
-
-#: src/yield/component/passive-income-analytics-card-content/passive-income-analytics-card-content.tsx
-msgid "Monthly income · last 12 months"
-msgstr "Щомісячний дохід · останні 12 місяців"
-
 #: src/recurring/components/recurring-form-custom-cadence/recurring-form-custom-cadence.tsx
 msgid "Months"
 msgstr "Місяці"
@@ -7027,10 +7067,6 @@ msgstr "Новий переказ"
 #: src/installment-plan/component/installment-plan-next-payment/installment-plan-next-payment.tsx
 msgid "Next {formattedNextAmount} · {nextDate}"
 msgstr "Наступний {formattedNextAmount} · {nextDate}"
-
-#: src/yield/component/yield-breakdown-run-rate/yield-breakdown-run-rate.tsx
-msgid "Next 12 months"
-msgstr "Наступні 12 місяців"
 
 #: src/recurring/components/recurring-list-section-header/recurring-list-section-header.tsx
 msgid "Next 7 days"
@@ -7611,6 +7647,10 @@ msgstr "Давніші"
 msgid "On"
 msgstr "Увімк."
 
+#: src/yield/hook/use-yield-analytics-period-label.hook.ts
+msgid "on {dayLabel}"
+msgstr "{dayLabel}"
+
 #: src/transaction/components/transaction-info-installment-terms/transaction-info-installment-terms.tsx
 msgid "On {nextDate} · Monthly"
 msgstr "{nextDate} · Щомісяця"
@@ -7728,7 +7768,7 @@ msgstr "Лише якщо категорії немає"
 msgid "Only you hold the key."
 msgstr "Ключ лише у вас."
 
-#: src/yield/component/yield-open-position-button/yield-open-position-button.tsx
+#: src/yield/component/yield-open-position-row/yield-open-position-row.tsx
 msgid "Open {scopeTitle}"
 msgstr "Відкрити {scopeTitle}"
 
@@ -7772,7 +7812,7 @@ msgstr "Відкривайте Budgie обличчям або відбитком
 msgid "Open George (Erste Bank online banking)"
 msgstr "Відкрийте George (онлайн-банкінг Erste Bank)"
 
-#: src/yield/component/yield-open-position-button/yield-open-position-button.tsx
+#: src/yield/component/yield-open-position-row/yield-open-position-row.tsx
 msgid "Open holding"
 msgstr "Відкрити актив"
 
@@ -8082,7 +8122,6 @@ msgstr "Часткова вартість"
 msgid "Partial value — some prices unavailable"
 msgstr "Неповна вартість — деяких цін немає"
 
-#: src/transaction/components/transaction-info-yield-row/transaction-info-yield-row.tsx
 #: src/yield/component/passive-income-analytics-card-content/passive-income-analytics-card-content.tsx
 #: src/yield/component/yield-collapsed-title/yield-collapsed-title.tsx
 #: src/yield/component/yield-entry-row-content/yield-entry-row-content.tsx
@@ -8097,6 +8136,10 @@ msgstr "Пасивний дохід за типом"
 #: src/yield/hook/use-yield-plot-accessibility.hook.ts
 msgid "Passive income chart"
 msgstr "Графік пасивного доходу"
+
+#: src/transaction/components/transaction-info-yield-row/transaction-info-yield-row.tsx
+msgid "Passive income history"
+msgstr "Історія пасивного доходу"
 
 #: src/yield/component/yield-entry-row-content/yield-entry-row-content.tsx
 msgid "Passive income, {subtitle}"
@@ -8530,9 +8573,9 @@ msgstr "Ціни станом на {priceDate}"
 msgid "Primary"
 msgstr "Основний"
 
-#: src/yield/component/yield-chart-running-total/yield-chart-running-total.tsx
-msgid "prior {priorAmount}"
-msgstr "раніше {priorAmount}"
+#: src/yield/component/yield-legend-running/yield-legend-running.tsx
+msgid "Prior period"
+msgstr "Попередній період"
 
 #: src/settings/components/support-settings-rows/support-settings-rows.tsx
 msgid "Privacy policy"
@@ -8567,9 +8610,17 @@ msgstr "Приватний рахунок {ownerName}"
 msgid "Private by design"
 msgstr "Приватність за задумом"
 
+#: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
+msgid "Projected"
+msgstr "Прогноз"
+
 #: src/budget/components/budget-category-forecast/budget-category-forecast.tsx
 msgid "Projected {overAmount} over"
 msgstr "Прогноз: перевищення на {overAmount}"
+
+#: src/yield/component/yield-breakdown-run-rate/yield-breakdown-run-rate.tsx
+msgid "Projected next 12 months"
+msgstr "Прогноз на наступні 12 місяців"
 
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Projected spend"
@@ -8865,6 +8916,10 @@ msgstr "Прибрати фільтр {label}"
 msgid "Remove {name}?"
 msgstr "Видалити {name}?"
 
+#: src/yield/component/yield-scope-filter-chip/yield-scope-filter-chip.tsx
+msgid "Remove {scopeTitle} filter"
+msgstr "Прибрати фільтр {scopeTitle}"
+
 #: src/rule/components/rule-action-row/rule-action-row.tsx
 msgid "Remove action {position}"
 msgstr "Видалити дію {position}"
@@ -9092,7 +9147,7 @@ msgid "Revolut"
 msgstr "Revolut"
 
 #: src/yield/component/yield-breakdown-crypto-today/yield-breakdown-crypto-today.tsx
-msgid "Rewards valued today"
+msgid "Rewards at today’s price"
 msgstr "Винагороди за сьогоднішньою ціною"
 
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
@@ -9141,6 +9196,10 @@ msgstr "Правила працюють з імпортованими транз
 #: src/yield/component/yield-chart-mode-control/yield-chart-mode-control.tsx
 msgid "Running total"
 msgstr "Наростаючий підсумок"
+
+#: src/yield/component/yield-legend-running/yield-legend-running.tsx
+msgid "Running total legend"
+msgstr "Легенда сукупного підсумку"
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Runs in the background, and much slower while the app is closed."
@@ -9687,10 +9746,6 @@ msgstr "Показати всі суми"
 #: src/@generic/component/date-filter-sheet-content/date-filter-sheet-content.tsx
 msgid "Show all dates"
 msgstr "Показати всі дати"
-
-#: src/yield/component/yield-screen-title/yield-screen-title.tsx
-msgid "Show all holdings"
-msgstr "Показати всі активи"
 
 #: src/transaction/components/statistics-share-bar/statistics-share-bar.tsx
 msgid "Show breakdown"
@@ -10611,6 +10666,7 @@ msgid "This key is password protected. Use the .pem file as downloaded from Enab
 msgstr "Цей ключ захищено паролем. Використайте файл .pem у тому вигляді, в якому його завантажено з Enable Banking."
 
 #: src/budget/constant/budget-period-this-label.constant.ts
+#: src/yield/hook/use-yield-analytics-period-label.hook.ts
 msgid "this month"
 msgstr "цього місяця"
 
@@ -10630,6 +10686,10 @@ msgstr "Цього місяця: витрачено {formattedExpense}, дохі
 #: src/rule/hooks/use-rule-text-value-meta.hook.ts
 msgid "This pattern isn't valid yet"
 msgstr "Цей шаблон поки некоректний"
+
+#: src/yield/component/yield-legend-running/yield-legend-running.tsx
+msgid "This period"
+msgstr "Цей період"
 
 #: src/household/component/household-remove-button/household-remove-button.tsx
 msgid "this person"
@@ -10688,6 +10748,7 @@ msgid "This top-up is no longer waiting for a purchase"
 msgstr "Це поповнення більше не очікує покупки"
 
 #: src/budget/constant/budget-period-this-label.constant.ts
+#: src/yield/hook/use-yield-analytics-period-label.hook.ts
 msgid "this week"
 msgstr "цього тижня"
 
@@ -10820,6 +10881,10 @@ msgstr "До сплати"
 #: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 msgid "To set aside this period"
 msgstr "Відкласти в цьому періоді"
+
+#: src/yield/hook/use-yield-analytics-period-label.hook.ts
+msgid "today"
+msgstr "сьогодні"
 
 #: src/@generic/constant/date-period.constant.ts
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
@@ -11513,10 +11578,6 @@ msgstr "Вартість недоступна"
 msgid "View"
 msgstr "Переглянути"
 
-#: src/transaction/components/transaction-info-yield-row/transaction-info-yield-row.tsx
-msgid "View history"
-msgstr "Переглянути історію"
-
 #: src/transaction/components/transaction-info-recurring-row/transaction-info-recurring-row.tsx
 msgid "View recurring"
 msgstr "Переглянути регулярний"
@@ -11545,6 +11606,22 @@ msgstr "Голосові нотатки"
 #: src/market-data/component/currency-market-stats/currency-market-stats.tsx
 msgid "Volume (24h)"
 msgstr "Обсяг (24 год)"
+
+#: src/yield/hook/use-yield-analytics-takeaway.hook.ts
+msgid "vs prior 12 months"
+msgstr "проти попередніх 12 місяців"
+
+#: src/yield/hook/use-yield-analytics-takeaway.hook.ts
+msgid "vs prior 13 weeks"
+msgstr "проти попередніх 13 тижнів"
+
+#: src/yield/hook/use-yield-analytics-takeaway.hook.ts
+msgid "vs prior 30 days"
+msgstr "проти попередніх 30 днів"
+
+#: src/yield/hook/use-yield-analytics-takeaway.hook.ts
+msgid "vs prior period"
+msgstr "проти попереднього періоду"
 
 #: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
@@ -11621,10 +11698,6 @@ msgstr "Щотижня"
 #: src/budget/constant/budget-period-title-label.constant.ts
 msgid "Weekly budget"
 msgstr "Тижневий бюджет"
-
-#: src/yield/component/passive-income-analytics-card-content/passive-income-analytics-card-content.tsx
-msgid "Weekly income · last 13 weeks"
-msgstr "Щотижневий дохід · останні 13 тижнів"
 
 #: src/recurring/components/recurring-form-custom-cadence/recurring-form-custom-cadence.tsx
 msgid "Weeks"
@@ -11767,6 +11840,10 @@ msgstr "Роки"
 #: src/transaction/query/use-get-transaction-sections.query.ts
 msgid "Yesterday"
 msgstr "Вчора"
+
+#: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
+msgid "Yield"
+msgstr "Дохідність"
 
 #: src/yield/component/yield-breakdown-vs-rate/yield-breakdown-vs-rate.tsx
 msgid "Yield vs expected"

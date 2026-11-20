@@ -2,7 +2,7 @@ import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/footnote-max-font-size-multiplier.constant';
+import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { cn } from '../../../@generic/utils/cn.util';
 import { MARKET_CHART_PADDING_X } from '../../../market-data/constant/market-chart-padding-x.constant';
 import { useYieldDateLabels } from '../../hook/use-yield-date-labels.hook';
@@ -16,6 +16,8 @@ interface Props {
 }
 
 const MAX_TICKS = 4;
+const MAX_ACCESSIBILITY_TICKS = 2;
+const TICK_MAX_FONT_SIZE_MULTIPLIER = 1.3;
 const TICK_WIDTH = 64;
 const HALF_SLOT = 0.5;
 const HALF = 2;
@@ -23,9 +25,10 @@ const MONTHS_PER_YEAR = 12;
 
 export const YieldChartTicks = ({ buckets, unit, width }: Props) => {
     const { formatTick } = useYieldDateLabels();
+    const isAccessibilityText = useIsAccessibilityTextSize();
 
     const slot = Math.max(width - MARKET_CHART_PADDING_X * 2, 1) / Math.max(buckets.length, 1);
-    const tickCount = Math.min(MAX_TICKS, buckets.length);
+    const tickCount = Math.min(isAccessibilityText ? MAX_ACCESSIBILITY_TICKS : MAX_TICKS, buckets.length);
     const lastIndex = buckets.length - 1;
     const firstYear = buckets.at(0)?.start.slice(0, 4);
     const lastYear = buckets.at(-1)?.start.slice(0, 4);
@@ -57,7 +60,7 @@ export const YieldChartTicks = ({ buckets, unit, width }: Props) => {
                 <Text
                     key={tick.key}
                     numberOfLines={1}
-                    maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER}
+                    maxFontSizeMultiplier={TICK_MAX_FONT_SIZE_MULTIPLIER}
                     className={cn('absolute w-[64px] text-[12px] leading-[16px] tabular-nums text-secondary-foreground', tick.className)}
                     style={tick.style}
                 >

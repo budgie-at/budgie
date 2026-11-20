@@ -1,13 +1,10 @@
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
-
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { SheetSurface } from '../../../@generic/component/sheet-surface/sheet-surface';
 import { SheetTitleRow } from '../../../@generic/component/sheet-title-row/sheet-title-row';
 import { useMorphingSheetCommit } from '../../../@generic/hook/use-morphing-sheet-commit.hook';
-import { YIELD_GROUP_LABEL } from '../../constant/yield-group-label.constant';
 import { buildYieldKindSections } from '../../utils/build-yield-kind-sections.util';
 import { YieldKindOptionRow } from '../yield-kind-option-row/yield-kind-option-row';
 
@@ -31,10 +28,7 @@ export const YieldKindSelectorContent = ({ params, onCommit }: Props) => {
             </View>
             <View className="gap-y-xl px-3xl pb-xl">
                 {sections.map(section => (
-                    <GroupedListSection
-                        key={section.group ?? 'none'}
-                        {...(isDefined(section.group) && { title: t(YIELD_GROUP_LABEL[section.group]) })}
-                    >
+                    <GroupedListSection key={section.kinds.join('-')}>
                         {section.kinds.map(kind => (
                             <YieldKindOptionRow key={kind} kind={kind} isSelected={params.selectedKind === kind} onSelect={commit} />
                         ))}

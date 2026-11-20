@@ -44,8 +44,11 @@ export const YieldLegendRow = ({ group, total, isFullWidth, onPress }: Props) =>
         'flex-row',
         'items-center',
         'gap-x-sm',
+        'rounded-full',
+        'px-sm',
         'py-xs',
         isFullWidth ? 'w-full' : 'w-1/2',
+        isSelected && 'bg-secondary-background',
         isDimmed && 'opacity-40'
     );
     const accessibilityState = { selected: isSelected };
@@ -57,6 +60,7 @@ export const YieldLegendRow = ({ group, total, isFullWidth, onPress }: Props) =>
             accessibilityRole="button"
             accessibilityState={accessibilityState}
             accessibilityLabel={t`${label}, ${amount}`}
+            accessibilityHint={t`Filters the screen by this kind`}
             pressFeedback={HapticPressFeedbackEnum.SELECTION}
             onPress={handlePress}
             testID={PassiveIncomeSelector.LegendRow(group)}

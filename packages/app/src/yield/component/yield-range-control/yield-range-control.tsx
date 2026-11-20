@@ -1,6 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { YieldRangeEnum } from '@budgie/market';
 import { useAtomSet } from '@effect/atom-react/Hooks';
+import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { use } from 'react';
@@ -17,6 +18,13 @@ import { YieldScreenContext } from '../../context/yield-screen.context';
 import { YieldSelectionContext } from '../../context/yield-selection.context';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 import { YieldRangeMenuItem } from '../yield-range-menu-item/yield-range-menu-item';
+
+const MENU_LABEL = {
+    [YieldRangeEnum.MONTH]: msg`1 month`,
+    [YieldRangeEnum.QUARTER]: msg`3 months`,
+    [YieldRangeEnum.YEAR]: msg`1 year`,
+    [YieldRangeEnum.ALL]: msg`All time`
+};
 
 export const YieldRangeControl = () => {
     const { t } = useLingui();
@@ -36,7 +44,7 @@ export const YieldRangeControl = () => {
         label: t(YIELD_RANGE_LABEL[range]),
         testID: PassiveIncomeSelector.Range(range)
     }));
-    const currentLabel = segments.find(segment => segment.value === screenKey.key.range)?.label ?? '';
+    const currentLabel = t(MENU_LABEL[screenKey.key.range]);
 
     if (isLargeText) {
         return (
@@ -55,7 +63,7 @@ export const YieldRangeControl = () => {
                     <YieldRangeMenuItem
                         key={segment.value}
                         range={segment.value}
-                        label={segment.label}
+                        label={t(MENU_LABEL[segment.value])}
                         isCurrent={segment.value === screenKey.key.range}
                         onSelect={handleChange}
                     />

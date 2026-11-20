@@ -1,18 +1,22 @@
-import { TransactionTypeEnum, YieldKindEnum } from '@budgie/contracts';
+import { TransactionTypeEnum, YieldKindEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { YieldPositionSectionEnum } from '@budgie/market';
 import { format } from 'date-fns/format';
 
-import { isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { TransactionListRowPositionEnum } from '../../transaction/enum/transaction-list-row-position.enum';
 import { YieldListItemKindEnum } from '../enum/yield-list-item-kind.enum';
 import { YieldListSectionEnum } from '../enum/yield-list-section.enum';
 
+import { getYieldPayoutEntry } from './get-yield-payout-entry.util';
+
+import type { YieldPayoutFoldInterface } from '../interface/yield-payout-fold.interface';
 import type { YieldListItemType } from '../type/yield-list-item.type';
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import type { YieldPositionSummaryInterface } from '@budgie/market';
 
 const DAY_KEY_FORMAT = 'yyyy-MM-dd';
+const MONTH_KEY_FORMAT = 'yyyy-MM';
 
 const toSection = (section: YieldListSectionEnum): YieldListItemType => ({
     kind: YieldListItemKindEnum.SECTION,
@@ -37,52 +41,69 @@ const toPayoutAccountId = (transaction: TransactionWithRelationsEntityInterface)
 
 const isTax = (transaction: TransactionWithRelationsEntityInterface): boolean => transaction.yieldKind === YieldKindEnum.TAX;
 
-const groupByDay = (payouts: readonly TransactionWithRelationsEntityInterface[]): TransactionWithRelationsEntityInterface[][] => {
-    const days = new Map<string, TransactionWithRelationsEntityInterface[]>();
+const groupBy = <T>(values: readonly T[], toKey: (value: T) => string): T[][] => {
+    const groups = new Map<string, T[]>();
 
-    for (const transaction of payouts) {
-        const day = format(transaction.operatedAt, DAY_KEY_FORMAT);
+    for (const value of values) {
+        const key = toKey(value);
 
-        days.set(day, [...(days.get(day) ?? []), transaction]);
+        groups.set(key, [...(groups.get(key) ?? []), value]);
     }
 
-    return [...days.values()];
+    return [...groups.values()];
 };
 
-const taxAfterIncome = (day: readonly TransactionWithRelationsEntityInterface[]): TransactionWithRelationsEntityInterface[] => {
+const foldTaxIntoIncome = (day: readonly TransactionWithRelationsEntityInterface[]): YieldPayoutFoldInterface[] => {
     const taxes = day.filter(isTax);
-    const incomes = day.filter(transaction => !isTax(transaction));
     const claimed = new Set<number>();
 
-    const ordered = incomes.flatMap(income => {
-        const matching = taxes.filter(tax => !claimed.has(tax.id) && toPayoutAccountId(tax) === toPayoutAccountId(income));
+    const folded = day
+        .filter(transaction => !isTax(transaction))
+        .map((income): YieldPayoutFoldInterface => {
+            const tax = taxes.find(candidate => !claimed.has(candidate.id) && toPayoutAccountId(candidate) === toPayoutAccountId(income));
 
-        matching.forEach(tax => claimed.add(tax.id));
+            if (isDefined(tax)) {
+                claimed.add(tax.id);
+            }
 
-        return [income, ...matching];
-    });
+            return { transaction: income, tax: tax ?? null };
+        });
 
-    return [...ordered, ...taxes.filter(tax => !claimed.has(tax.id))];
+    return [
+        ...folded,
+        ...taxes.filter(tax => !claimed.has(tax.id)).map((tax): YieldPayoutFoldInterface => ({ transaction: tax, tax: null }))
+    ];
 };
 
+const toMonthTotal = (rows: readonly YieldPayoutFoldInterface[]): number =>
+    convertFromMicroUnits(
+        rows.reduce(
+            (total, { transaction }) => (isTax(transaction) ? total : total + Math.abs(getYieldPayoutEntry(transaction)?.baseAmount ?? 0)),
+            0
+        )
+    );
+
 const toPayouts = (payouts: readonly TransactionWithRelationsEntityInterface[], isUnassigned: boolean): YieldListItemType[] =>
-    groupByDay(payouts).flatMap((day): YieldListItemType[] => {
-        const ordered = taxAfterIncome(day);
-        const [first] = ordered;
+    groupBy(groupBy(payouts, transaction => format(transaction.operatedAt, DAY_KEY_FORMAT)).flatMap(foldTaxIntoIncome), ({ transaction }) =>
+        format(transaction.operatedAt, MONTH_KEY_FORMAT)
+    ).flatMap((rows): YieldListItemType[] => {
+        const [{ transaction: first }] = rows;
         const header: YieldListItemType = {
-            kind: YieldListItemKindEnum.DATE,
-            id: `date-${format(first.operatedAt, DAY_KEY_FORMAT)}-${isUnassigned}`,
-            date: first.operatedAt
+            kind: YieldListItemKindEnum.MONTH,
+            id: `month-${format(first.operatedAt, MONTH_KEY_FORMAT)}-${isUnassigned}`,
+            month: first.operatedAt,
+            total: toMonthTotal(rows)
         };
-        const rows = ordered.map((transaction, index): YieldListItemType => ({
+        const items = rows.map(({ transaction, tax }, index): YieldListItemType => ({
             kind: YieldListItemKindEnum.PAYOUT,
             id: `payout-${transaction.id}`,
             transaction,
+            tax,
             isUnassigned,
-            position: toRowPosition(index, ordered.length)
+            position: toRowPosition(index, rows.length)
         }));
 
-        return [header, ...rows];
+        return [header, ...items];
     });
 
 const toPositions = (positions: readonly YieldPositionSummaryInterface[], rangeCaption: string): YieldListItemType[] =>

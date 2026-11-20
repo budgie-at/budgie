@@ -6,6 +6,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hook';
 import { cn } from '../../../@generic/utils/cn.util';
+import { YIELD_AXIS_GUTTER } from '../../constant/yield-axis-gutter.constant';
 import { yieldSummaryFamily } from '../../constant/yield-summary-family-atom.constant';
 import { YieldScreenContext } from '../../context/yield-screen.context';
 import { useYieldSummary } from '../../hook/use-yield-summary.hook';
@@ -25,12 +26,12 @@ export const YieldChartPlot = () => {
     const { screenKey } = use(YieldScreenContext);
     const result = useLiveAtomValue(yieldSummaryFamily(screenKey.key));
     const summary = useYieldSummary();
-    const [width, setWidth] = useState(windowWidth - CARD_INSET);
+    const [width, setWidth] = useState(windowWidth - CARD_INSET - YIELD_AXIS_GUTTER);
 
     const dataBucketCount = summary?.buckets.filter(bucket => bucket.total > 0).length ?? 0;
     const isFailure = AsyncResult.isFailure(result);
 
-    const handleLayout = (event: LayoutChangeEvent) => void setWidth(event.nativeEvent.layout.width);
+    const handleLayout = (event: LayoutChangeEvent) => void setWidth(event.nativeEvent.layout.width - YIELD_AXIS_GUTTER);
 
     if (isDefined(summary) && dataBucketCount < MIN_DATA_BUCKETS) {
         return <YieldChartSummary summary={summary} />;

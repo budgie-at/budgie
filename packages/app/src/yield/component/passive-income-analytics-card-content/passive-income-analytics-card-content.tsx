@@ -14,6 +14,8 @@ import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hoo
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { yieldSummaryFamily } from '../../constant/yield-summary-family-atom.constant';
+import { useYieldAnalyticsPeriodLabel } from '../../hook/use-yield-analytics-period-label.hook';
+import { useYieldAnalyticsTakeaway } from '../../hook/use-yield-analytics-takeaway.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 import { YieldChartMini } from '../yield-chart-mini/yield-chart-mini';
 
@@ -40,6 +42,9 @@ export const PassiveIncomeAnalyticsCardContent = ({ earned, focus, period }: Pro
         () => null
     );
 
+    const periodLabel = useYieldAnalyticsPeriodLabel(focus, period);
+    const takeaway = useYieldAnalyticsTakeaway(summary, focus.range);
+
     const handlePress = () =>
         void router.push({
             pathname: '/passive-income',
@@ -52,18 +57,18 @@ export const PassiveIncomeAnalyticsCardContent = ({ earned, focus, period }: Pro
     const approximate = earned.isEstimated ? '≈ ' : '';
     const amount = formatAmount(earned.value, symbol);
     const title = t`Passive income`;
-    const periodLabel = t`in the selected period`;
     const chartTitles: Record<YieldRangeEnum, string> = {
-        [YieldRangeEnum.MONTH]: t`Daily income · last 30 days`,
-        [YieldRangeEnum.QUARTER]: t`Weekly income · last 13 weeks`,
-        [YieldRangeEnum.YEAR]: t`Monthly income · last 12 months`,
-        [YieldRangeEnum.ALL]: t`Monthly income · all time`
+        [YieldRangeEnum.MONTH]: t`Last 30 days`,
+        [YieldRangeEnum.QUARTER]: t`Last 13 weeks`,
+        [YieldRangeEnum.YEAR]: t`Last 12 months`,
+        [YieldRangeEnum.ALL]: t`All time`
     };
+    const accessibilityLabel = `${title}, ${approximate}${amount} ${periodLabel}${isDefined(takeaway) ? `, ${takeaway}` : ''}`;
 
     return (
         <HapticPressable
             accessibilityRole="button"
-            accessibilityLabel={`${title}, ${approximate}${amount} ${periodLabel}`}
+            accessibilityLabel={accessibilityLabel}
             onPress={handlePress}
             testID={PassiveIncomeSelector.AnalyticsCard}
             className="gap-y-md rounded-3xl bg-surface-row p-[16px]"
@@ -90,6 +95,11 @@ export const PassiveIncomeAnalyticsCardContent = ({ earned, focus, period }: Pro
             ) : (
                 <View className="h-[32px]" />
             )}
+            {isDefined(takeaway) ? (
+                <Text className="text-xs font-medium tabular-nums text-secondary-foreground" maxFontSizeMultiplier={1.5}>
+                    {takeaway}
+                </Text>
+            ) : null}
         </HapticPressable>
     );
 };

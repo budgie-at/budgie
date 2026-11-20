@@ -1,0 +1,2 @@
+export const YIELD_IN_PROGRESS_FILL_OPACITY = 0.4;
+export const YIELD_IN_PROGRESS_DASH = '3 2';

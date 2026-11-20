@@ -12,7 +12,7 @@ const command = (letter: string, x: number, y: number) => [letter, x, y].join(' 
 export const buildYieldRunningPaths = ({
     cumulative,
     prior,
-    estimated,
+    inProgress,
     axisTop,
     width,
     height
@@ -29,11 +29,11 @@ export const buildYieldRunningPaths = ({
 
     return {
         solid: segmentIndices
-            .filter(index => estimated.at(index) !== true)
+            .filter(index => inProgress.at(index) !== true)
             .map(segment)
             .join(' '),
         dashed: segmentIndices
-            .filter(index => estimated.at(index) === true)
+            .filter(index => inProgress.at(index) === true)
             .map(segment)
             .join(' '),
         area: [

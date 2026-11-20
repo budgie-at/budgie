@@ -31,7 +31,7 @@ export const HeroFigureText = ({ size, whole, fraction, approximate, className, 
             {...props}
         >
             {approximate ? (
-                <Text style={approximateStyle} className="font-semibold text-secondary-foreground">
+                <Text style={approximateStyle} className="font-semibold tabular-nums text-secondary-foreground">
                     {APPROXIMATE_SIGN}
                 </Text>
             ) : null}

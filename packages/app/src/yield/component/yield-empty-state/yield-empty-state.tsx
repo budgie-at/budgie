@@ -25,9 +25,9 @@ export const YieldEmptyState = () => {
                 descriptionClassName="text-center"
             />
             <Button content={t`Connect an exchange`} leftIcon={UserIconNameEnum.Link} onPress={handleConnect} variant="cta" />
-            <Button content={t`Add a deposit`} leftIcon={UserIconNameEnum.PiggyBank} onPress={handleAddDeposit} variant="secondary" />
+            <Button content={t`Add a deposit`} leftIcon={UserIconNameEnum.PiggyBank} onPress={handleAddDeposit} variant="positive" />
             <HapticPressable onPress={handleExplain} accessibilityRole="link" className="min-h-[44px] items-center justify-center">
-                <Text className="text-[15px] light:text-cash-action dark:text-default-foreground">
+                <Text className="text-[15px] text-positive-action">
                     <Trans>How it&apos;s calculated</Trans>
                 </Text>
             </HapticPressable>

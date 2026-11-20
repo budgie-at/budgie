@@ -18,5 +18,5 @@ export const useYieldRateText = ({ rate, reason, isEstimated }: YieldCombinedYie
 
     const formattedRate = formatRate(rate);
 
-    return isEstimated ? t`≈ ${formattedRate} yield · last 12 months` : t`${formattedRate} yield · last 12 months`;
+    return isEstimated ? t`≈ ${formattedRate} annual yield` : t`${formattedRate} annual yield`;
 };

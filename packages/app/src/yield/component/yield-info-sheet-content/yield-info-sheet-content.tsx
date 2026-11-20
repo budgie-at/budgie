@@ -1,5 +1,5 @@
 import { plural } from '@lingui/core/macro';
-import { Trans, useLingui } from '@lingui/react/macro';
+import { useLingui } from '@lingui/react/macro';
 import { parseISO } from 'date-fns/parseISO';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import { Text, View } from 'react-native';
@@ -15,6 +15,7 @@ import { yieldSummaryFamily } from '../../constant/yield-summary-family-atom.con
 import { useYieldDateLabels } from '../../hook/use-yield-date-labels.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 import { groupYieldEstimateCauses } from '../../utils/group-yield-estimate-causes.util';
+import { YieldInfoSheetBlock } from '../yield-info-sheet-block/yield-info-sheet-block';
 
 import type { YieldScreenKeyInterface } from '../../interface/yield-screen-key.interface';
 
@@ -29,14 +30,15 @@ export const YieldInfoSheetContent = ({ screenKey }: Props) => {
     const summary = AsyncResult.getOrElse(useLiveAtomValue(yieldSummaryFamily(screenKey.key)), () => null);
 
     const caption = isDefined(summary) ? formatRangeCaption(screenKey.key.range, summary.windowStart) : '';
-    const periodText = t`Earned ${caption}. The change compares the same number of periods just before, with the last one cut to the same point.`;
+    const earnedText = t`Earned ${caption}. The change compares the same number of periods just before. Before tax; valued at the day’s opening price, or the latest earlier price, marked ≈.`;
     const holdingCount = summary?.annualYield.holdingCount ?? 0;
     const yieldText = t({
         message: plural(holdingCount, {
-            one: 'Yield uses the last 365 days across # holding. Crypto yield is measured on your whole balance, staked or not.',
-            other: 'Yield uses the last 365 days across # holdings. Crypto yield is measured on your whole balance, staked or not.'
+            one: 'The last 365 days across # holding. Crypto is measured on your whole balance, staked or not. Distributions count as income, not yield. Holdings marked “Not in yield” are left out.',
+            other: 'The last 365 days across # holdings. Crypto is measured on your whole balance, staked or not. Distributions count as income, not yield. Holdings marked “Not in yield” are left out.'
         })
     });
+    const projectedText = t`Holdings marked “Not in yield” are left out of “Projected next 12 months”.`;
     const causes = groupYieldEstimateCauses(summary?.estimateCauses ?? []).map(cause => {
         const days = t({ message: plural(cause.dayCount, { one: '# day', other: '# days' }) });
         const { instrumentCode } = cause;
@@ -54,35 +56,20 @@ export const YieldInfoSheetContent = ({ screenKey }: Props) => {
             contentClassName="gap-y-lg px-3xl pb-3xl"
             testID={PassiveIncomeSelector.InfoSheet}
         >
-            <Text className="text-md text-primary">{periodText}</Text>
-            <Text className="text-md text-primary">
-                <Trans>
-                    Earned is before tax. Rewards are valued at the day’s opening price. When that day has no price, the latest earlier
-                    price is used and the figure is marked ≈.
-                </Trans>
-            </Text>
-            <Text className="text-md text-primary">{yieldText}</Text>
-            <Text className="text-md text-primary">
-                <Trans>
-                    Distributions count as income but not in the yield. Holdings marked “Not in yield” are left out of the yield and of
-                    “Next 12 months”.
-                </Trans>
-            </Text>
-            <Text className="text-md text-primary">
-                <Trans>In Analytics, the small bars are scaled to each period.</Trans>
-            </Text>
-            {isNotEmptyArray(causes) ? (
-                <View className="gap-y-xs">
-                    <Text className="text-md font-semibold text-primary">
-                        <Trans>≈ includes estimated values</Trans>
-                    </Text>
-                    {causes.map(cause => (
-                        <Text key={cause} className="text-sm text-secondary-foreground">
-                            {cause}
-                        </Text>
-                    ))}
-                </View>
-            ) : null}
+            <YieldInfoSheetBlock title={t`Earned`} body={earnedText} />
+            <YieldInfoSheetBlock title={t`Yield`} body={yieldText} />
+            <YieldInfoSheetBlock title={t`Projected`} body={projectedText} />
+            <YieldInfoSheetBlock title={t`Estimates`} body={t`≈ includes estimated values.`}>
+                {isNotEmptyArray(causes) ? (
+                    <View className="gap-y-xs">
+                        {causes.map(cause => (
+                            <Text key={cause} className="text-sm text-secondary-foreground">
+                                {cause}
+                            </Text>
+                        ))}
+                    </View>
+                ) : null}
+            </YieldInfoSheetBlock>
         </ScrollableSheetCard>
     );
 };

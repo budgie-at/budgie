@@ -82,7 +82,7 @@ it.effect('lists active, closed and unassigned sections in order', () =>
             'position-1',
             `section-${YieldListSectionEnum.UNASSIGNED}`
         ]);
-        expect(items.slice(-2).map(item => item.kind)).toEqual([YieldListItemKindEnum.DATE, YieldListItemKindEnum.PAYOUT]);
+        expect(items.slice(-2).map(item => item.kind)).toEqual([YieldListItemKindEnum.MONTH, YieldListItemKindEnum.PAYOUT]);
         expect(items.at(-1)).toMatchObject({ kind: YieldListItemKindEnum.PAYOUT, isUnassigned: true });
     })
 );
@@ -97,30 +97,48 @@ it.effect('omits empty sections', () =>
     })
 );
 
-it.effect('groups payouts under date headers with each tax right after its dividend', () =>
+it.effect('groups payouts by month with the income total and folds each tax into its dividend', () =>
     Effect.sync(() => {
-        const nextDay = new Date('2026-10-05T00:00:00Z');
+        const firstDay = new Date('2026-10-10T12:00:00Z');
+        const sameMonth = new Date('2026-10-05T12:00:00Z');
+        const previousMonth = new Date('2026-09-20T12:00:00Z');
         const items = buildYieldListItems(
             [position(1, YieldPositionSectionEnum.ACTIVE)],
-            [payout(3, YieldKindEnum.TAX), payout(4), payout(5, null, nextDay)],
+            [
+                payout(3, YieldKindEnum.TAX, firstDay),
+                payout(4, null, firstDay),
+                payout(5, null, sameMonth),
+                payout(6, YieldKindEnum.TAX, sameMonth),
+                payout(7, null, previousMonth)
+            ],
             'caption',
             true
         );
 
         expect(items.map(item => item.kind)).toEqual([
             YieldListItemKindEnum.SECTION,
-            YieldListItemKindEnum.DATE,
+            YieldListItemKindEnum.MONTH,
             YieldListItemKindEnum.PAYOUT,
             YieldListItemKindEnum.PAYOUT,
-            YieldListItemKindEnum.DATE,
+            YieldListItemKindEnum.MONTH,
             YieldListItemKindEnum.PAYOUT
         ]);
         expect(items.filter(item => item.kind === YieldListItemKindEnum.PAYOUT).map(item => item.id)).toEqual([
             'payout-4',
-            'payout-3',
-            'payout-5'
+            'payout-5',
+            'payout-7'
         ]);
-        expect(items.at(-1)).toMatchObject({ isUnassigned: false });
+        expect(items.at(2)).toMatchObject({ tax: { id: 3 } });
+        expect(items.at(3)).toMatchObject({ tax: { id: 6 } });
+        expect(items.at(-1)).toMatchObject({ isUnassigned: false, tax: null });
         expect(buildYieldListItems([position(1, YieldPositionSectionEnum.ACTIVE)], [], 'caption', true)).toEqual([]);
+    })
+);
+
+it.effect('keeps unmatched tax as its own row', () =>
+    Effect.sync(() => {
+        const items = buildYieldListItems([], [payout(3, YieldKindEnum.TAX)], 'caption', true);
+
+        expect(items.filter(item => item.kind === YieldListItemKindEnum.PAYOUT)).toMatchObject([{ id: 'payout-3', tax: null }]);
     })
 );

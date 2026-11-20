@@ -34,30 +34,32 @@ export const YieldHero = () => {
     const sentence = useYieldHeroSentence(summary, rangeCaption, bucket, scrubAmount);
     const figureLock = isDefined(summary) ? { amount: summary.earned.value, approximate: summary.earned.isEstimated } : null;
 
+    if (!isDefined(summary)) {
+        return <YieldHeroSkeleton />;
+    }
+
     return (
         <View className="gap-y-xs" accessible accessibilityLabel={sentence} testID={PassiveIncomeSelector.Hero}>
-            <View className="min-h-[18px] flex-row items-start justify-between gap-x-xs">
-                <View className="flex-1">{isDefined(summary) ? <YieldHeroCaption summary={summary} bucket={bucket} /> : null}</View>
+            <View className="min-h-[18px] flex-row items-center">
+                <View className="shrink">
+                    <YieldHeroCaption summary={summary} bucket={bucket} />
+                </View>
                 <YieldHeroInfoButton />
             </View>
 
-            {isDefined(summary) ? (
-                <HeroFigureLockContext value={figureLock}>
-                    <Animated.View key={figureKey} entering={FadeIn.duration(MOTION_FAST_DURATION)}>
-                        <HeroFigure
-                            amount={amount}
-                            currencySymbol={symbol}
-                            variant="primary"
-                            approximate={isApproximate}
-                            testID={PassiveIncomeSelector.Earned}
-                        />
-                    </Animated.View>
-                </HeroFigureLockContext>
-            ) : (
-                <YieldHeroSkeleton />
-            )}
+            <HeroFigureLockContext value={figureLock}>
+                <Animated.View key={figureKey} entering={FadeIn.duration(MOTION_FAST_DURATION)}>
+                    <HeroFigure
+                        amount={amount}
+                        currencySymbol={symbol}
+                        variant="primary"
+                        approximate={isApproximate}
+                        testID={PassiveIncomeSelector.Earned}
+                    />
+                </Animated.View>
+            </HeroFigureLockContext>
 
-            {isDefined(summary) ? <YieldHeroLine summary={summary} bucket={bucket} /> : <View className="min-h-[22px]" />}
+            <YieldHeroLine summary={summary} bucket={bucket} />
         </View>
     );
 };

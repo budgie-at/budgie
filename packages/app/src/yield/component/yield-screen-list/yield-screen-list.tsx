@@ -16,8 +16,9 @@ import { YieldListItemKindEnum } from '../../enum/yield-list-item-kind.enum';
 import { useYieldListItems } from '../../hook/use-yield-list-items.hook';
 import { YieldBreakdown } from '../yield-breakdown/yield-breakdown';
 import { YieldChartCard } from '../yield-chart-card/yield-chart-card';
-import { YieldDateHeader } from '../yield-date-header/yield-date-header';
+import { YieldFilterChipRow } from '../yield-filter-chip-row/yield-filter-chip-row';
 import { YieldHero } from '../yield-hero/yield-hero';
+import { YieldMonthHeader } from '../yield-month-header/yield-month-header';
 import { YieldPayoutRow } from '../yield-payout-row/yield-payout-row';
 import { YieldPositionRow } from '../yield-position-row/yield-position-row';
 import { YieldRangeControl } from '../yield-range-control/yield-range-control';
@@ -32,7 +33,9 @@ const keyExtractor = (item: YieldListItemType) => item.id;
 
 const getItemType = (item: YieldListItemType) => item.kind;
 
-const ESTIMATED_ITEM_SIZE = 60;
+const ESTIMATED_ITEM_SIZE = 56;
+
+const PINNED_HAIRLINE = <View className="h-hairline bg-surface-separator" />;
 
 const CONTENT_STYLE = { paddingBottom: FLOATING_TAB_BAR_HEIGHT };
 
@@ -49,12 +52,19 @@ export const YieldScreenList = () => {
         switch (item.kind) {
             case YieldListItemKindEnum.SECTION:
                 return <YieldSectionHeader section={item.section} />;
-            case YieldListItemKindEnum.DATE:
-                return <YieldDateHeader date={item.date} />;
+            case YieldListItemKindEnum.MONTH:
+                return <YieldMonthHeader month={item.month} total={item.total} />;
             case YieldListItemKindEnum.POSITION:
                 return <YieldPositionRow position={item.position} rangeCaption={item.rangeCaption} rowPosition={item.rowPosition} />;
             case YieldListItemKindEnum.PAYOUT:
-                return <YieldPayoutRow transaction={item.transaction} isUnassigned={item.isUnassigned} rowPosition={item.position} />;
+                return (
+                    <YieldPayoutRow
+                        transaction={item.transaction}
+                        tax={item.tax}
+                        isUnassigned={item.isUnassigned}
+                        rowPosition={item.position}
+                    />
+                );
             case YieldListItemKindEnum.SKELETON:
             default:
                 return <YieldSkeletonRow rowPosition={item.position} />;
@@ -75,6 +85,7 @@ export const YieldScreenList = () => {
     const spacerStyle = { height: pinnedHeight };
     const listHeader = (
         <View className={listHeaderClassName}>
+            <YieldFilterChipRow />
             <View style={spacerStyle} onLayout={handleRangeLayout} />
             <View className="gap-y-[24px] pt-md">
                 <YieldHero />
@@ -101,7 +112,7 @@ export const YieldScreenList = () => {
                 </CollapsibleChromeCollapseDistanceContext>
             </YieldPayoutsScrollContext>
 
-            <CollapsibleChromePinnedBar anchorY={rangeY} onHeightChange={setPinnedHeight}>
+            <CollapsibleChromePinnedBar anchorY={rangeY} onHeightChange={setPinnedHeight} pinnedFooter={PINNED_HAIRLINE}>
                 <YieldRangeControl />
             </CollapsibleChromePinnedBar>
         </>

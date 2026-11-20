@@ -16,10 +16,9 @@ export const YieldLegendEstimatedRow = () => {
     }
 
     return (
-        <View accessible testID={PassiveIncomeSelector.LegendRow(ESTIMATED_KEY)} className="flex-row items-center gap-x-xs">
-            <View className="h-[8px] w-[8px] rounded-full border-[1.5px] border-secondary-foreground bg-secondary-foreground/25" />
-            <Text className="text-[13px] text-secondary-foreground">
-                <Trans>Estimated price</Trans>
+        <View accessible testID={PassiveIncomeSelector.LegendRow(ESTIMATED_KEY)}>
+            <Text className="text-xs text-secondary-foreground">
+                <Trans>≈ Includes estimated prices</Trans>
             </Text>
         </View>
     );

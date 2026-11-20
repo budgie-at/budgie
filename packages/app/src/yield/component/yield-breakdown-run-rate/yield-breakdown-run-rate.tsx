@@ -21,8 +21,8 @@ export const YieldBreakdownRunRate = ({ runRate }: Props) => {
 
     return (
         <YieldBreakdownRow
-            title={t`Next 12 months`}
-            subtitle={t`At current balances and rates`}
+            title={t`Projected next 12 months`}
+            subtitle={t`At today’s balances and rates`}
             value={t`≈ ${amount}`}
             testID={PassiveIncomeSelector.RunRate}
         />

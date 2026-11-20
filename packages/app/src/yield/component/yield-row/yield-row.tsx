@@ -22,7 +22,7 @@ export const YieldRow = ({ left, title, subtitle, trailing, accessibilityLabel, 
         pressedScale={1}
         accessibilityRole="button"
         accessibilityLabel={accessibilityLabel}
-        className="min-h-[60px] flex-row items-center gap-x-xl bg-grouped-surface-row px-3xl py-lg active:opacity-70"
+        className="min-h-[56px] flex-row items-center gap-x-xl bg-grouped-surface-row px-3xl py-lg active:opacity-70"
         onPress={onPress}
         testID={testID}
     >
