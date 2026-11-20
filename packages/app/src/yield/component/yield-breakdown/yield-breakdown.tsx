@@ -18,6 +18,7 @@ import { YieldBreakdownRunRate } from '../yield-breakdown-run-rate/yield-breakdo
 import { YieldBreakdownSkeleton } from '../yield-breakdown-skeleton/yield-breakdown-skeleton';
 import { YieldBreakdownTax } from '../yield-breakdown-tax/yield-breakdown-tax';
 import { YieldBreakdownVsRate } from '../yield-breakdown-vs-rate/yield-breakdown-vs-rate';
+import { YieldBreakdownYieldRate } from '../yield-breakdown-yield-rate/yield-breakdown-yield-rate';
 import { YieldOpenPositionRow } from '../yield-open-position-row/yield-open-position-row';
 
 const DAYS_PER_MONTH = 30.4375;
@@ -34,11 +35,11 @@ export const YieldBreakdown = () => {
     }
 
     const rangeName = t(YIELD_RANGE_NAME[screenKey.key.range]);
-    const { runRate, cryptoRewardsToday, vsRate } = summary;
+    const { runRate, cryptoRewardsToday, vsRate, annualYield } = summary;
     const hasOpenRow = isDefined(screenKey.scopeId) && screenKey.from !== screenKey.scopeId;
     const monthCount = Math.round(differenceInDays(parseISO(summary.today), parseISO(summary.windowStart)) / DAYS_PER_MONTH);
     const monthlyAverage = summary.earned.value / monthCount;
-    const hasTotalsRows = summary.hasYield;
+    const hasTotalsRows = summary.hasYield && summary.payoutCount !== 1;
     const hasOutlookRow = isDefined(runRate);
 
     if (!hasOpenRow && !hasTotalsRows && !hasOutlookRow) {
@@ -65,6 +66,9 @@ export const YieldBreakdown = () => {
                             {isPositiveNumber(summary.tax) ? <YieldBreakdownTax tax={summary.tax} /> : null}
                             {isPositiveNumber(summary.tax) ? <YieldBreakdownNet net={summary.net} /> : null}
                             {monthCount >= MIN_AVERAGE_MONTHS ? <YieldBreakdownMonthlyAverage average={monthlyAverage} /> : null}
+                            {isDefined(annualYield.rate) ? (
+                                <YieldBreakdownYieldRate rate={annualYield.rate} isEstimated={annualYield.isEstimated} />
+                            ) : null}
                             {isDefined(cryptoRewardsToday) ? <YieldBreakdownCryptoToday rewards={cryptoRewardsToday} /> : null}
                             {isDefined(vsRate) ? <YieldBreakdownVsRate vsRate={vsRate} /> : null}
                         </GroupedListSection>

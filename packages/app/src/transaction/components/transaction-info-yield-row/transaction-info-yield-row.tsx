@@ -33,8 +33,10 @@ export const TransactionInfoYieldRow = ({ transaction }: Props) => {
     const canLandingHoldPosition =
         isDefined(landing) && (YIELD_POSITION_ACCOUNT_TYPES.includes(landing.type) || landing.instrument.type === InstrumentTypeEnum.FUND);
     const positionId = transaction.yieldSourceAccountId ?? (canLandingHoldPosition ? landing.id : null);
-    const kindLabel = t(YIELD_KIND_LABEL[kind]);
     const sourceTitle = source?.title ?? null;
+    const landingTitle = canLandingHoldPosition ? landing.title : null;
+    const positionTitle = sourceTitle ?? landingTitle;
+    const openLabel = isDefined(positionTitle) ? t`All ${positionTitle} income` : t`See all passive income`;
 
     const handleOpenScreen = () =>
         void router.push({ pathname: '/passive-income', params: isDefined(positionId) ? { position: String(positionId) } : {} });
@@ -44,7 +46,7 @@ export const TransactionInfoYieldRow = ({ transaction }: Props) => {
             <TransactionInfoRow
                 icon={UserIconNameEnum.Tag}
                 label={t`Kind`}
-                value={kindLabel}
+                value={t(YIELD_KIND_LABEL[kind])}
                 testID={TransactionInfoPageSelector.Row.YieldKind}
                 onPress={openKindPicker}
             />
@@ -55,7 +57,7 @@ export const TransactionInfoYieldRow = ({ transaction }: Props) => {
             />
             <TransactionInfoRow
                 icon={UserIconNameEnum.Sprout}
-                value={t`See all passive income`}
+                value={openLabel}
                 testID={TransactionInfoPageSelector.Row.Yield}
                 onPress={handleOpenScreen}
             />

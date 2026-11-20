@@ -3,12 +3,15 @@ import { use } from 'react';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { YIELD_STACK_GROUPS } from '../constant/yield-stack-groups.constant';
 import { YieldScreenContext } from '../context/yield-screen.context';
 import { YieldSelectionContext } from '../context/yield-selection.context';
 import { selectYieldScrubbedBuckets } from '../utils/select-yield-scrubbed-buckets.util';
 
 import { useYieldRoundParts } from './use-yield-round-parts.hook';
 import { useYieldSummary } from './use-yield-summary.hook';
+
+const rankOf = (group: YieldGroupEnum): number => YIELD_STACK_GROUPS.findIndex(stacked => stacked === group);
 
 export const useYieldLegendRows = () => {
     const { mode } = use(YieldScreenContext);
@@ -26,9 +29,8 @@ export const useYieldLegendRows = () => {
         : (summary?.earned.value ?? 0);
     const roundedTotals = roundParts(rawTotals, displayedTotal);
     const rows = groups
-        .map(({ group, total }, index) => ({ group, total: roundedTotals.at(index) ?? 0, order: total }))
-        .sort((left, right) => right.order - left.order)
-        .map(({ group, total }) => ({ group, total }));
+        .map(({ group }, index) => ({ group, total: roundedTotals.at(index) ?? 0 }))
+        .sort((left, right) => rankOf(left.group) - rankOf(right.group));
     const taxTotal = isDefined(selectedIndex)
         ? scrubbedBuckets.reduce((sum, item) => sum + item.amounts[YieldGroupEnum.TAX], 0)
         : (summary?.tax ?? 0);

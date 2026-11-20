@@ -15,11 +15,12 @@ const LINE_MAX_FONT_SIZE_MULTIPLIER = 2;
 
 export const YieldHeroDelta = ({ summary }: Props) => {
     const { screenKey } = use(YieldScreenContext);
-    const { label, tone } = useYieldDeltaLabel(summary, screenKey.key.range);
+    const { label, caption, tone } = useYieldDeltaLabel(summary, screenKey.key.range);
 
     return (
         <YieldDeltaPill
             label={label}
+            caption={caption}
             tone={tone}
             testID={PassiveIncomeSelector.Delta}
             maxFontSizeMultiplier={LINE_MAX_FONT_SIZE_MULTIPLIER}

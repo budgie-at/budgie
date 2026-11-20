@@ -983,6 +983,10 @@ msgstr "{quantityLabel}, вартість {valueLabel}"
 msgid "{quotePriceLabel} ≈ {defaultPriceLabel}"
 msgstr "{quotePriceLabel} ≈ {defaultPriceLabel}"
 
+#: src/yield/hook/use-yield-hero-line-text.hook.ts
+msgid "{rangeNet} after tax · −{rangeTax} tax"
+msgstr "{rangeNet} після податків · −{rangeTax} податку"
+
 #: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
 msgid "{rate, plural, =1 {about once a week} =2 {about twice a week} other {about # a week}}"
 msgstr "{rate, plural, =1 {приблизно раз на тиждень} =2 {приблизно двічі на тиждень} one {близько # на тиждень} few {близько # на тиждень} many {близько # на тиждень} other {близько # на тиждень}}"
@@ -1097,24 +1101,12 @@ msgid "{shareLabel} of spending"
 msgstr "{shareLabel} витрат"
 
 #: src/yield/hook/use-yield-delta-label.hook.ts
-msgid "{sign}{amount} · {sign}{change} vs previous 3 months"
-msgstr "{sign}{amount} · {sign}{change} порівняно з попередніми 3 місяцями"
-
-#: src/yield/hook/use-yield-delta-label.hook.ts
-msgid "{sign}{amount} · {sign}{change} vs previous 30 days"
-msgstr "{sign}{amount} · {sign}{change} проти попередніх 30 днів"
-
-#: src/yield/hook/use-yield-delta-label.hook.ts
-msgid "{sign}{amount} · {sign}{change} vs previous period"
-msgstr "{sign}{amount} · {sign}{change} порівняно з попереднім періодом"
-
-#: src/yield/hook/use-yield-delta-label.hook.ts
-msgid "{sign}{amount} · {sign}{change} vs previous year"
-msgstr "{sign}{amount} · {sign}{change} порівняно з попереднім роком"
+msgid "{sign}{amount} · {sign}{change}"
+msgstr "{sign}{amount} · {sign}{change}"
 
 #: src/yield/component/yield-hero-scrub-delta-chip/yield-hero-scrub-delta-chip.tsx
-msgid "{sign}{amount} vs {previousLabel}"
-msgstr "{sign}{amount} проти {previousLabel}"
+msgid "{sign}{amount} · {sign}{percent}"
+msgstr "{sign}{amount} · {sign}{percent}"
 
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "{similarCount, plural, one {# similar · last 6 months} other {# similar · last 6 months}}"
@@ -1317,6 +1309,10 @@ msgstr "≈ {amount}"
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "≈ {formattedMonths} mo"
 msgstr "≈ {formattedMonths} міс."
+
+#: src/yield/component/yield-breakdown-yield-rate/yield-breakdown-yield-rate.tsx
+msgid "≈ {formattedRate}"
+msgstr "≈ {formattedRate}"
 
 #: src/yield/hook/use-yield-rate-text.hook.ts
 msgid "≈ {formattedRate} yield · last 12 months"
@@ -1839,6 +1835,10 @@ msgstr "ШІ вимкнено"
 #: src/yield/constant/yield-range-label.constant.ts
 msgid "All"
 msgstr "Усі"
+
+#: src/transaction/components/transaction-info-yield-row/transaction-info-yield-row.tsx
+msgid "All {positionTitle} income"
+msgstr "Увесь дохід від {positionTitle}"
 
 #: src/categorize-inbox/components/categorize-inbox-group-choose-payments-option/categorize-inbox-group-choose-payments-option.tsx
 msgid "All {total}"
@@ -3367,6 +3367,10 @@ msgstr "Коментар"
 msgid "Common"
 msgstr "Поширені"
 
+#: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
+msgid "Comparison"
+msgstr "Порівняння"
+
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Comparison: {label}"
 msgstr "Порівняння: {label}"
@@ -4848,6 +4852,10 @@ msgstr "Зароблено за {bucketPeriod}"
 #: src/yield/component/yield-section-header/yield-section-header.tsx
 msgid "Earned in range"
 msgstr "Зароблено за період"
+
+#: src/yield/hook/use-yield-entry-subtitle.hook.ts
+msgid "Earned in the last 12 months"
+msgstr "Зароблено за останні 12 місяців"
 
 #: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
 msgid "Earned minus tax withheld."
@@ -6397,10 +6405,6 @@ msgstr "Остання {statementDate}"
 msgid "Last 1 month"
 msgstr "Останній 1 місяць"
 
-#: src/yield/hook/use-yield-entry-subtitle.hook.ts
-msgid "last 12 months"
-msgstr "останні 12 місяців"
-
 #: src/yield/constant/yield-range-name.constant.ts
 #: src/yield/constant/yield-range-period-label.constant.ts
 msgid "Last 12 months"
@@ -7279,12 +7283,9 @@ msgid "No categories match “{trimmedSearch}”"
 msgstr "Немає категорій, що відповідають «{trimmedSearch}»"
 
 #: src/transaction/hook/use-adjustment-balance.hook.ts
+#: src/yield/component/yield-hero-scrub-delta-chip/yield-hero-scrub-delta-chip.tsx
 msgid "No change"
 msgstr "Без змін"
-
-#: src/yield/component/yield-hero-scrub-delta-chip/yield-hero-scrub-delta-chip.tsx
-msgid "No change vs {previousLabel}"
-msgstr "Без змін проти {previousLabel}"
 
 #: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
 msgid "No contacts on this device"
@@ -8672,12 +8673,10 @@ msgid "previous period"
 msgstr "попереднього періоду"
 
 #: src/transaction/components/statistics-period-control/statistics-period-control.tsx
-#: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
 #: src/yield/hook/use-yield-prior-label.hook.ts
 msgid "Previous period"
 msgstr "Попередній період"
 
-#: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
 #: src/yield/hook/use-yield-prior-label.hook.ts
 msgid "Previous year"
 msgstr "Попередній рік"
@@ -10584,10 +10583,6 @@ msgstr "URL умов використання"
 msgid "The .pem file you saved"
 msgstr "Збережений файл .pem"
 
-#: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
-msgid "The 12 months before this range."
-msgstr "12 місяців перед цим діапазоном."
-
 #: src/sync/component/enable-banking-connect-account-step/enable-banking-connect-account-step.tsx
 msgid "The account keeps its history and syncs forward from the day after its last transaction."
 msgstr "Рахунок зберігає історію й синхронізується з наступного дня після останньої транзакції."
@@ -11803,6 +11798,26 @@ msgstr "Голосові нотатки"
 msgid "Volume (24h)"
 msgstr "Обсяг (24 год)"
 
+#: src/yield/component/yield-hero-scrub-previous-chip/yield-hero-scrub-previous-chip.tsx
+msgid "vs {previousLabel}"
+msgstr "проти {previousLabel}"
+
+#: src/yield/hook/use-yield-comparison-phrase.hook.ts
+msgid "vs previous 3 months"
+msgstr "проти попередніх 3 місяців"
+
+#: src/yield/hook/use-yield-comparison-phrase.hook.ts
+msgid "vs previous 30 days"
+msgstr "проти попередніх 30 днів"
+
+#: src/yield/hook/use-yield-comparison-phrase.hook.ts
+msgid "vs previous period"
+msgstr "проти попереднього періоду"
+
+#: src/yield/hook/use-yield-comparison-phrase.hook.ts
+msgid "vs previous year"
+msgstr "проти попереднього року"
+
 #: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
 msgid "Waiting"
@@ -12032,6 +12047,10 @@ msgstr "Вчора"
 #: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
 msgid "Yield"
 msgstr "Дохідність"
+
+#: src/yield/component/yield-breakdown-yield-rate/yield-breakdown-yield-rate.tsx
+msgid "Yield · last 12 months"
+msgstr "Дохідність · останні 12 місяців"
 
 #: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
 msgid "Yield uses the last 12 months across holdings with a rate. Crypto is measured on your whole balance, staked or not. Fund payouts aren’t counted in yield."

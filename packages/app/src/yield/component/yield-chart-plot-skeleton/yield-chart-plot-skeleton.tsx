@@ -42,12 +42,12 @@ const GRID_LINES = Array.from({ length: GRID_INTERVALS + 1 }, (_, index) => {
 
     return {
         id: isZero ? 'zero' : `tick-${index}`,
-        style: { top: Math.max((ZERO_Y * index) / GRID_INTERVALS, 1) },
+        style: { top: (ZERO_Y * index) / GRID_INTERVALS },
         className: isZero ? 'bg-primary opacity-40' : 'bg-primary opacity-[0.08]'
     };
 });
 const LABEL_HEIGHT = 8;
-const LABEL_CENTER_OFFSET = 8;
+const LABEL_CENTER_OFFSET = 12;
 const AXIS_LABELS = GRID_LINES.map(({ id, style }) => ({ id, style: { top: style.top - LABEL_CENTER_OFFSET, height: LABEL_HEIGHT } }));
 const FRAME_STYLE = { height: YIELD_PLOT_HEIGHT + YIELD_LABEL_BAND };
 const PLOT_STYLE = { marginTop: YIELD_LABEL_BAND, height: YIELD_PLOT_HEIGHT };

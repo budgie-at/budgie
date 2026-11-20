@@ -24,6 +24,7 @@ export const PassiveIncomeSelector = {
     TaxWithheld: 'PassiveIncome.TaxWithheld',
     NetAfterTax: 'PassiveIncome.NetAfterTax',
     MonthlyAverage: 'PassiveIncome.MonthlyAverage',
+    YieldRate: 'PassiveIncome.YieldRate',
     RunRate: 'PassiveIncome.RunRate',
     CryptoToday: 'PassiveIncome.CryptoToday',
     VsRate: 'PassiveIncome.VsRate',

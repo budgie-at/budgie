@@ -10,6 +10,7 @@ import { YIELD_TREND_ARROW } from '../constant/yield-trend-arrow.constant';
 import { YieldHeroTrendEnum } from '../enum/yield-hero-trend.enum';
 import { roundYieldDelta } from '../utils/round-yield-delta.util';
 
+import { useYieldComparisonPhrase } from './use-yield-comparison-phrase.hook';
 import { useYieldHeroTrend } from './use-yield-hero-trend.hook';
 
 import type { YieldSummaryInterface } from '@budgie/market';
@@ -35,13 +36,9 @@ export const useYieldDeltaLabel = (
     const amount = formatAmount(Math.abs(roundYieldDelta(earned, priorTotal, decimalPlaces)), symbol);
 
     const sign = trend === YieldHeroTrendEnum.DOWN ? '−' : '+';
-    const comparisons: Record<YieldRangeEnum, string> = {
-        [YieldRangeEnum.MONTH]: t`${sign}${amount} · ${sign}${change} vs previous 30 days`,
-        [YieldRangeEnum.QUARTER]: t`${sign}${amount} · ${sign}${change} vs previous 3 months`,
-        [YieldRangeEnum.YEAR]: t`${sign}${amount} · ${sign}${change} vs previous year`,
-        [YieldRangeEnum.ALL]: t`${sign}${amount} · ${sign}${change} vs previous period`
-    };
-    const comparison = summary?.delta?.kind === YieldDeltaKindEnum.NEW ? t`New this period` : comparisons[range];
+    const comparison = useYieldComparisonPhrase(range);
+    const isNew = summary?.delta?.kind === YieldDeltaKindEnum.NEW;
+    const label = isNew ? t`New this period` : `${YIELD_TREND_ARROW[trend]}${t`${sign}${amount} · ${sign}${change}`}`;
 
-    return { label: `${YIELD_TREND_ARROW[trend]}${comparison}`, trend, tone };
+    return { label, caption: isNew ? '' : comparison, trend, tone };
 };

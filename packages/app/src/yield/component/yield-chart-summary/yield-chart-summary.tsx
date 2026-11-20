@@ -36,26 +36,24 @@ export const YieldChartSummary = ({ summary }: Props) => {
         isEmpty && 'gap-y-sm',
         isEmpty && 'px-3xl',
         isEmpty && 'py-xl',
-        isSingle && '-my-[6px]'
+        isSingle && '-mb-[6px]'
     );
 
     return (
         <View className={containerClassName} testID={PassiveIncomeSelector.PlotSummary}>
             {isEmpty ? <YieldChartSummaryText summary={summary} /> : null}
+            {isEmpty ? null : (
+                <Text
+                    className="text-md font-semibold text-primary"
+                    maxFontSizeMultiplier={TITLE_MAX_FONT_SIZE_MULTIPLIER}
+                    testID={PassiveIncomeSelector.ChartTitle}
+                >
+                    {title}
+                </Text>
+            )}
             {isSingle ? <YieldChartSinglePayout /> : null}
-            {isEmpty || isSingle ? null : (
-                <>
-                    <Text
-                        className="text-md font-semibold text-primary"
-                        maxFontSizeMultiplier={TITLE_MAX_FONT_SIZE_MULTIPLIER}
-                        testID={PassiveIncomeSelector.ChartTitle}
-                    >
-                        {title}
-                    </Text>
-                    {filledBuckets.map(bucket => (
-                        <YieldChartSummaryRow key={bucket.start} summary={summary} bucket={bucket} />
-                    ))}
-                </>
+            {filledBuckets.map(bucket =>
+                isEmpty || isSingle ? null : <YieldChartSummaryRow key={bucket.start} summary={summary} bucket={bucket} />
             )}
             {isSeeAllTimeVisible ? <YieldChartSeeAllTime /> : null}
         </View>

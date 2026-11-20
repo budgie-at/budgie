@@ -30,7 +30,7 @@ export const buildYieldSummaryAxis = (
         const cumulative = buildYieldRunningTotal(summary.buckets.map(bucket => bucket.total));
         const prior = isDefined(summary.priorTotals) ? buildYieldRunningTotal(summary.priorTotals) : [];
 
-        return reserveNegativeBand(buildYieldAxis(Math.max(0, ...cumulative, ...prior) * RUNNING_HEADROOM, 0));
+        return buildYieldAxis(Math.max(0, ...cumulative, ...prior) * RUNNING_HEADROOM, 0);
     }
 
     const visibleGroups = isDefined(group) ? [group] : YIELD_STACK_GROUPS;

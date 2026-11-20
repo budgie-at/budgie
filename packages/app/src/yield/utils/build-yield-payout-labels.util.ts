@@ -6,6 +6,7 @@ import type { YieldPayoutLabelsInputInterface } from '../interface/yield-payout-
 
 export const buildYieldPayoutLabels = ({
     isMerged,
+    isScoped,
     positionTitle,
     sourceTitle,
     baseTitle,
@@ -15,19 +16,20 @@ export const buildYieldPayoutLabels = ({
 }: YieldPayoutLabelsInputInterface) => {
     if (isMerged) {
         return {
-            title: positionTitle ?? (isNotEmptyString(sourceTitle) ? sourceTitle : baseTitle),
+            title: isScoped ? kindLabel : (positionTitle ?? (isNotEmptyString(sourceTitle) ? sourceTitle : baseTitle)),
             subtitle: joinYieldSubtitle([countLabel, dayLabel])
         };
     }
 
+    if (isScoped) {
+        return { title: kindLabel, subtitle: dayLabel };
+    }
+
     if (isNotEmptyString(positionTitle)) {
-        return {
-            title: positionTitle,
-            subtitle: joinYieldSubtitle([kindLabel, dayLabel, sourceTitle === positionTitle ? null : sourceTitle])
-        };
+        return { title: positionTitle, subtitle: joinYieldSubtitle([kindLabel, dayLabel]) };
     }
 
     const isKindInTitle = baseTitle.toLowerCase().includes(kindLabel.toLowerCase());
 
-    return { title: baseTitle, subtitle: joinYieldSubtitle([dayLabel, isKindInTitle ? null : kindLabel, sourceTitle]) };
+    return { title: baseTitle, subtitle: joinYieldSubtitle([isKindInTitle ? null : kindLabel, dayLabel]) };
 };

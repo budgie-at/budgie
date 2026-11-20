@@ -13,6 +13,7 @@ import { YieldSelectionContext } from '../../context/yield-selection.context';
 import { useYieldLegendAmounts } from '../../hook/use-yield-legend-amounts.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 import { YieldLegendEntry } from '../yield-legend-entry/yield-legend-entry';
+import { YieldLegendRowSelection } from '../yield-legend-row-selection/yield-legend-row-selection';
 
 import type { YieldGroupEnum } from '@budgie/market';
 
@@ -40,18 +41,9 @@ export const YieldLegendRow = ({ group, total, share, isCompact, onPress }: Prop
     const isEmpty = isDefined(selectedIndex) && !isPositiveNumber(total);
     const { exact: exactAmount, amount, share: formattedShare } = useYieldLegendAmounts(total, share, isCompact, isEmpty);
     const label = t(YIELD_GROUP_LABEL[group]);
-    const shareText = hasFilter && !isEmpty ? formattedShare : null;
+    const shareText = isEmpty ? null : formattedShare;
     const amountClassName = isDimmed ? DIMMED_AMOUNT_CLASSNAME : AMOUNT_CLASSNAME;
-    const rowClassName = cn(
-        'w-full',
-        'flex-row',
-        'items-center',
-        'gap-x-[8px]',
-        'rounded-full',
-        'px-sm',
-        'py-xs',
-        isSelected && 'bg-secondary-background'
-    );
+    const rowClassName = cn('w-full', 'flex-row', 'items-center', 'gap-x-[8px]', 'rounded-[12px]', 'px-sm', 'py-xs');
     const accessibilityState = { selected: isSelected };
 
     const handlePress = () => void onPress(group);
@@ -69,6 +61,7 @@ export const YieldLegendRow = ({ group, total, share, isCompact, onPress }: Prop
             style={ROW_STYLE}
             hitSlop={ROW_HIT_SLOP}
         >
+            {isSelected ? <YieldLegendRowSelection group={group} /> : null}
             <YieldLegendEntry
                 group={group}
                 label={label}

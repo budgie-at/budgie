@@ -35,7 +35,7 @@ export const useYieldAnalyticsCardText = (
     const formatAmount = useProtectedAmountLabel();
     const { symbol } = useAtomValue(defaultInstrumentAtom);
     const periodText = useYieldAnalyticsPeriodText(summary, focus, period);
-    const { label, trend, tone } = useYieldDeltaLabel(summary, focus.range);
+    const { label, caption: comparison, trend, tone } = useYieldDeltaLabel(summary, focus.range);
 
     const isFocused = isDefined(focus.focusDay);
     const headline = isFocused && isDefined(summary) ? summary.earned : earned;
@@ -45,7 +45,7 @@ export const useYieldAnalyticsCardText = (
         ? `${earned.isEstimated ? ESTIMATED_PREFIX : ''}${formatAmount(earned.value, symbol)} ${periodText}`
         : null;
     const isTrending = trend === YieldHeroTrendEnum.UP || trend === YieldHeroTrendEnum.DOWN;
-    const visibleTakeaway = isFocused && isTrending ? label : null;
+    const visibleTakeaway = isFocused && isTrending ? `${label} ${comparison}` : null;
     const title = t`Passive income`;
     const spoken = [`${title}, ${headlineText} ${caption}`, focusedText, visibleTakeaway].filter(isDefined).join(', ');
 

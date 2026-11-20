@@ -13,7 +13,6 @@ import { useYieldBarGeometry } from '../../hook/use-yield-bar-geometry.hook';
 import { useYieldChartAxis } from '../../hook/use-yield-chart-axis.hook';
 import { buildYieldBarLayers } from '../../utils/build-yield-bar-layers.util';
 import { buildYieldBarLayout } from '../../utils/build-yield-bar-layout.util';
-import { buildYieldStackOrder } from '../../utils/build-yield-stack-order.util';
 import { YieldChartBarLabel } from '../yield-chart-bar-label/yield-chart-bar-label';
 import { YieldChartBarPath } from '../yield-chart-bar-path/yield-chart-bar-path';
 import { YieldChartBarRule } from '../yield-chart-bar-rule/yield-chart-bar-rule';
@@ -36,11 +35,9 @@ export const YieldChartBars = ({ width, summary }: Props) => {
     const axis = useYieldChartAxis(summary);
 
     const { group } = screenKey.key;
-    const stackOrder = buildYieldStackOrder(summary.groups);
     const layout = buildYieldBarLayout({
         buckets: summary.buckets,
         visibleGroups: isDefined(group) ? [group] : YIELD_STACK_GROUPS,
-        stackOrder,
         width,
         height: YIELD_PLOT_HEIGHT,
         axis

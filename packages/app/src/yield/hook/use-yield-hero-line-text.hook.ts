@@ -28,12 +28,22 @@ export const useYieldHeroLineText = (summary: YieldSummaryInterface, bucket: Yie
     const share = formatPercent(summary.share ?? 0);
     const { net, tax } = formatNet(scrubbedTotal, bucketTax);
     const scrubText = isPositiveNumber(bucketTax) ? t`${net} after tax · −${tax} tax` : t`No tax withheld`;
+    const { net: rangeNet, tax: rangeTax } = formatNet(summary.earned.value, summary.tax);
+    const rangeText = isPositiveNumber(summary.tax) ? t`${rangeNet} after tax · −${rangeTax} tax` : t`No tax withheld`;
     const texts: Record<YieldHeroLineKindEnum, string> = {
         [YieldHeroLineKindEnum.SCRUB_NET]: scrubText,
+        [YieldHeroLineKindEnum.RANGE_NET]: rangeText,
         [YieldHeroLineKindEnum.SHARE]: t`${share} of your passive income`,
         [YieldHeroLineKindEnum.RATE]: rateText,
         [YieldHeroLineKindEnum.UNAVAILABLE]: rateText
     };
 
-    return texts[resolveYieldHeroLineKind({ isScrubbing: isDefined(bucket), group: screenKey.key.group, rate: summary.annualYield.rate })];
+    return texts[
+        resolveYieldHeroLineKind({
+            isScrubbing: isDefined(bucket),
+            group: screenKey.key.group,
+            range: screenKey.key.range,
+            rate: summary.annualYield.rate
+        })
+    ];
 };

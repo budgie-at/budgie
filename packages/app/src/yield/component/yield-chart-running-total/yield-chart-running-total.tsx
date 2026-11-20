@@ -68,7 +68,7 @@ export const YieldChartRunningTotal = ({ width, summary }: Props) => {
 
     return (
         <YieldChartFrame axis={axis} width={width} label={label}>
-            <YieldChartRunningArea path={paths.area} width={width} fadeStartX={paths.areaFadeStartX} fadeEndX={paths.endX} />
+            <YieldChartRunningArea path={paths.area} />
             <StyledPath
                 d={paths.prior}
                 strokeClassName="accent-secondary-foreground"

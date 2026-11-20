@@ -18,6 +18,7 @@ interface Props {
 }
 
 const SVG_HEIGHT = YIELD_PLOT_HEIGHT + YIELD_LABEL_BAND;
+const SVG_RENDER_HEIGHT = SVG_HEIGHT + 1;
 const LABELS_OFFSET = { top: YIELD_LABEL_BAND, height: YIELD_PLOT_HEIGHT };
 
 export const YieldChartFrame = ({ axis, width, children, label = null }: Props) => {
@@ -28,7 +29,7 @@ export const YieldChartFrame = ({ axis, width, children, label = null }: Props) 
 
     return (
         <View style={containerStyle}>
-            <Svg width={width} height={SVG_HEIGHT}>
+            <Svg width={width} height={SVG_RENDER_HEIGHT}>
                 <G y={YIELD_LABEL_BAND}>
                     <YieldChartAxis axis={axis} width={width} height={YIELD_PLOT_HEIGHT} />
                     {children}

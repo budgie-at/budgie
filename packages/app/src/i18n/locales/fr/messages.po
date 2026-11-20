@@ -983,6 +983,10 @@ msgstr "{quantityLabel}, valeur {valueLabel}"
 msgid "{quotePriceLabel} ≈ {defaultPriceLabel}"
 msgstr "{quotePriceLabel} ≈ {defaultPriceLabel}"
 
+#: src/yield/hook/use-yield-hero-line-text.hook.ts
+msgid "{rangeNet} after tax · −{rangeTax} tax"
+msgstr "{rangeNet} après impôts · −{rangeTax} d’impôts"
+
 #: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
 msgid "{rate, plural, =1 {about once a week} =2 {about twice a week} other {about # a week}}"
 msgstr "{rate, plural, =1 {environ une fois par semaine} =2 {environ deux fois par semaine} other {environ # par semaine}}"
@@ -1097,24 +1101,12 @@ msgid "{shareLabel} of spending"
 msgstr "{shareLabel} des dépenses"
 
 #: src/yield/hook/use-yield-delta-label.hook.ts
-msgid "{sign}{amount} · {sign}{change} vs previous 3 months"
-msgstr "{sign}{amount} · {sign}{change} par rapport aux 3 mois précédents"
-
-#: src/yield/hook/use-yield-delta-label.hook.ts
-msgid "{sign}{amount} · {sign}{change} vs previous 30 days"
-msgstr "{sign}{amount} · {sign}{change} vs les 30 jours précédents"
-
-#: src/yield/hook/use-yield-delta-label.hook.ts
-msgid "{sign}{amount} · {sign}{change} vs previous period"
-msgstr "{sign}{amount} · {sign}{change} par rapport à la période précédente"
-
-#: src/yield/hook/use-yield-delta-label.hook.ts
-msgid "{sign}{amount} · {sign}{change} vs previous year"
-msgstr "{sign}{amount} · {sign}{change} par rapport à l’année précédente"
+msgid "{sign}{amount} · {sign}{change}"
+msgstr "{sign}{amount} · {sign}{change}"
 
 #: src/yield/component/yield-hero-scrub-delta-chip/yield-hero-scrub-delta-chip.tsx
-msgid "{sign}{amount} vs {previousLabel}"
-msgstr "{sign}{amount} vs {previousLabel}"
+msgid "{sign}{amount} · {sign}{percent}"
+msgstr "{sign}{amount} · {sign}{percent}"
 
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "{similarCount, plural, one {# similar · last 6 months} other {# similar · last 6 months}}"
@@ -1317,6 +1309,10 @@ msgstr "≈ {amount}"
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "≈ {formattedMonths} mo"
 msgstr "≈ {formattedMonths} mois"
+
+#: src/yield/component/yield-breakdown-yield-rate/yield-breakdown-yield-rate.tsx
+msgid "≈ {formattedRate}"
+msgstr "≈ {formattedRate}"
 
 #: src/yield/hook/use-yield-rate-text.hook.ts
 msgid "≈ {formattedRate} yield · last 12 months"
@@ -1839,6 +1835,10 @@ msgstr "IA désactivée"
 #: src/yield/constant/yield-range-label.constant.ts
 msgid "All"
 msgstr "Tous"
+
+#: src/transaction/components/transaction-info-yield-row/transaction-info-yield-row.tsx
+msgid "All {positionTitle} income"
+msgstr "Tous les revenus de {positionTitle}"
 
 #: src/categorize-inbox/components/categorize-inbox-group-choose-payments-option/categorize-inbox-group-choose-payments-option.tsx
 msgid "All {total}"
@@ -3367,6 +3367,10 @@ msgstr "Commentaire"
 msgid "Common"
 msgstr "Courantes"
 
+#: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
+msgid "Comparison"
+msgstr "Comparaison"
+
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Comparison: {label}"
 msgstr "Comparaison : {label}"
@@ -4848,6 +4852,10 @@ msgstr "Gagné en {bucketPeriod}"
 #: src/yield/component/yield-section-header/yield-section-header.tsx
 msgid "Earned in range"
 msgstr "Gagné sur la période"
+
+#: src/yield/hook/use-yield-entry-subtitle.hook.ts
+msgid "Earned in the last 12 months"
+msgstr "Gagné ces 12 derniers mois"
 
 #: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
 msgid "Earned minus tax withheld."
@@ -6397,10 +6405,6 @@ msgstr "Dernier {statementDate}"
 msgid "Last 1 month"
 msgstr "1 dernier mois"
 
-#: src/yield/hook/use-yield-entry-subtitle.hook.ts
-msgid "last 12 months"
-msgstr "12 derniers mois"
-
 #: src/yield/constant/yield-range-name.constant.ts
 #: src/yield/constant/yield-range-period-label.constant.ts
 msgid "Last 12 months"
@@ -7279,12 +7283,9 @@ msgid "No categories match “{trimmedSearch}”"
 msgstr "Aucune catégorie ne correspond à « {trimmedSearch} »"
 
 #: src/transaction/hook/use-adjustment-balance.hook.ts
+#: src/yield/component/yield-hero-scrub-delta-chip/yield-hero-scrub-delta-chip.tsx
 msgid "No change"
 msgstr "Aucun changement"
-
-#: src/yield/component/yield-hero-scrub-delta-chip/yield-hero-scrub-delta-chip.tsx
-msgid "No change vs {previousLabel}"
-msgstr "Aucun changement vs {previousLabel}"
 
 #: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
 msgid "No contacts on this device"
@@ -8672,12 +8673,10 @@ msgid "previous period"
 msgstr "période précédente"
 
 #: src/transaction/components/statistics-period-control/statistics-period-control.tsx
-#: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
 #: src/yield/hook/use-yield-prior-label.hook.ts
 msgid "Previous period"
 msgstr "Période précédente"
 
-#: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
 #: src/yield/hook/use-yield-prior-label.hook.ts
 msgid "Previous year"
 msgstr "Année précédente"
@@ -10584,10 +10583,6 @@ msgstr "URL des conditions d'utilisation"
 msgid "The .pem file you saved"
 msgstr "Le fichier .pem que vous avez enregistré"
 
-#: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
-msgid "The 12 months before this range."
-msgstr "Les 12 mois précédant cette plage."
-
 #: src/sync/component/enable-banking-connect-account-step/enable-banking-connect-account-step.tsx
 msgid "The account keeps its history and syncs forward from the day after its last transaction."
 msgstr "Le compte conserve son historique et se synchronise à partir du lendemain de sa dernière transaction."
@@ -11803,6 +11798,26 @@ msgstr "Notes vocales"
 msgid "Volume (24h)"
 msgstr "Volume (24 h)"
 
+#: src/yield/component/yield-hero-scrub-previous-chip/yield-hero-scrub-previous-chip.tsx
+msgid "vs {previousLabel}"
+msgstr "vs {previousLabel}"
+
+#: src/yield/hook/use-yield-comparison-phrase.hook.ts
+msgid "vs previous 3 months"
+msgstr "vs les 3 mois précédents"
+
+#: src/yield/hook/use-yield-comparison-phrase.hook.ts
+msgid "vs previous 30 days"
+msgstr "vs les 30 jours précédents"
+
+#: src/yield/hook/use-yield-comparison-phrase.hook.ts
+msgid "vs previous period"
+msgstr "vs la période précédente"
+
+#: src/yield/hook/use-yield-comparison-phrase.hook.ts
+msgid "vs previous year"
+msgstr "vs l’année précédente"
+
 #: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
 msgid "Waiting"
@@ -12032,6 +12047,10 @@ msgstr "Hier"
 #: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
 msgid "Yield"
 msgstr "Rendement"
+
+#: src/yield/component/yield-breakdown-yield-rate/yield-breakdown-yield-rate.tsx
+msgid "Yield · last 12 months"
+msgstr "Rendement · 12 derniers mois"
 
 #: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
 msgid "Yield uses the last 12 months across holdings with a rate. Crypto is measured on your whole balance, staked or not. Fund payouts aren’t counted in yield."

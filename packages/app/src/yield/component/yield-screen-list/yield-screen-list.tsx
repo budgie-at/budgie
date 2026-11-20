@@ -34,6 +34,7 @@ const keyExtractor = (item: YieldListItemType) => item.id;
 const getItemType = (item: YieldListItemType) => item.kind;
 
 const ESTIMATED_ITEM_SIZE = 56;
+const LIST_BOTTOM_CLEARANCE = 16;
 
 const PINNED_HAIRLINE = (
     <View>
@@ -47,7 +48,7 @@ export const YieldScreenList = () => {
     const [rangeY, setRangeY] = useState(0);
     const [pinnedHeight, setPinnedHeight] = useState(0);
     const listRef = useRef<LegendListRef>(null);
-    const { top } = useSafeAreaInsets();
+    const { top, bottom } = useSafeAreaInsets();
     const isReducedMotion = useReducedMotion();
     const isAccessibilityText = useIsAccessibilityTextSize();
 
@@ -92,6 +93,7 @@ export const YieldScreenList = () => {
 
     const listHeaderClassName = isAccessibilityText ? 'pt-[16px] pb-[24px]' : 'pb-[24px]';
     const spacerStyle = { height: pinnedHeight };
+    const contentContainerStyle = { paddingBottom: bottom + LIST_BOTTOM_CLEARANCE };
     const listHeader = (
         <View className={listHeaderClassName}>
             <View style={spacerStyle} onLayout={handleRangeLayout} />
@@ -114,6 +116,7 @@ export const YieldScreenList = () => {
                         keyExtractor={keyExtractor}
                         getItemType={getItemType}
                         estimatedItemSize={ESTIMATED_ITEM_SIZE}
+                        contentContainerStyle={contentContainerStyle}
                         ListHeaderComponent={listHeader}
                     />
                 </CollapsibleChromeCollapseDistanceContext>

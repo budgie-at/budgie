@@ -32,5 +32,5 @@ export const useYieldEntrySubtitle = (
 
     return isDefined(accruing)
         ? { subtitle: t`Accruing ${accruingAmount}`, earned: '' }
-        : { subtitle: joinYieldSubtitle([yieldText, t`last 12 months`]), earned };
+        : { subtitle: joinYieldSubtitle([t`Earned in the last 12 months`, yieldText]), earned };
 };

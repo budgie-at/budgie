@@ -6,7 +6,7 @@ import { useSkeletonPulseStyle } from '../../../@generic/hook/use-skeleton-pulse
 import { YIELD_HERO_CAPTION_HEIGHT, YIELD_HERO_LINE_MIN_HEIGHT } from '../../constant/yield-hero-metrics.constant';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 
-const FIGURE_BAR_RATIO = 0.7;
+const FIGURE_BAR_RATIO = 0.9;
 const BUSY_STATE = { busy: true };
 const CAPTION_STYLE = { minHeight: YIELD_HERO_CAPTION_HEIGHT };
 const INFO_STYLE = { width: YIELD_HERO_CAPTION_HEIGHT, height: YIELD_HERO_CAPTION_HEIGHT };
@@ -33,7 +33,7 @@ export const YieldHeroSkeleton = () => {
                 <View className="rounded-full bg-secondary-corner" style={INFO_STYLE} />
             </View>
             <View className="gap-y-xs">
-                <View className="justify-center" style={FIGURE_STYLE}>
+                <View style={FIGURE_STYLE}>
                     <View className="w-[180px] rounded-xl bg-secondary-corner" style={FIGURE_BAR_STYLE} />
                 </View>
                 <View className="justify-center" style={LINE_STYLE}>

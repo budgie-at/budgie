@@ -15,9 +15,9 @@ interface Props {
 const MINI_CHART_HEIGHT = 32;
 const MIN_BAR_HEIGHT = 1;
 const BAR_CLASSNAME = 'flex-1 rounded-[2px]';
-const FOCUSED_CLASSNAME = 'bg-yield-staking';
+const FOCUSED_CLASSNAME = 'bg-positive-action/55';
 const NEUTRAL_CLASSNAME = 'bg-secondary-foreground';
-const IN_PROGRESS_FOCUSED_CLASSNAME = 'border-[1.5px] border-dashed border-yield-staking bg-yield-staking/45 dark:bg-yield-staking/70';
+const IN_PROGRESS_FOCUSED_CLASSNAME = 'border-[1.5px] border-dashed border-positive-action bg-positive-action/25';
 const IN_PROGRESS_NEUTRAL_CLASSNAME =
     'border-[1.5px] border-dashed border-secondary-foreground bg-secondary-foreground/45 dark:bg-secondary-foreground/70';
 
