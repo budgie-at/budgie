@@ -7,9 +7,11 @@ import type { YieldEstimateCauseInterface } from './yield-estimate-cause.interfa
 import type { YieldEstimatedFigureInterface } from './yield-estimated-figure.interface';
 import type { YieldGroupTotalInterface } from './yield-group-total.interface';
 import type { YieldPositionSummaryInterface } from './yield-position-summary.interface';
+import type { YieldQueryKeyInterface } from './yield-query-key.interface';
 import type { YieldVsRateInterface } from './yield-vs-rate.interface';
 
 export interface YieldSummaryInterface {
+    readonly key: YieldQueryKeyInterface;
     readonly hasYield: boolean;
     readonly windowStart: string;
     readonly today: string;

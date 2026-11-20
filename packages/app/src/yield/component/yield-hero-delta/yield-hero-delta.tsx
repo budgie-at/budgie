@@ -26,5 +26,14 @@ export const YieldHeroDelta = ({ summary }: Props) => {
     const rangeShort = t(YIELD_RANGE_LABEL[screenKey.key.range]);
     const label = summary.delta?.kind === YieldDeltaKindEnum.NEW ? t`New this period` : t`${sign}${change} vs prior ${rangeShort}`;
 
-    return <MetaPill label={label} testID={PassiveIncomeSelector.Delta} maxFontSizeMultiplier={LINE_MAX_FONT_SIZE_MULTIPLIER} />;
+    const variant = trend === YieldHeroTrendEnum.DOWN ? 'default' : 'positive';
+
+    return (
+        <MetaPill
+            label={label}
+            variant={variant}
+            testID={PassiveIncomeSelector.Delta}
+            maxFontSizeMultiplier={LINE_MAX_FONT_SIZE_MULTIPLIER}
+        />
+    );
 };

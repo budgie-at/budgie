@@ -28,7 +28,7 @@ export const YieldHeroPeriodCaption = ({ period }: Props) => {
     const amount = formatAmount(earned?.value ?? 0, symbol);
 
     return (
-        <Text testID={PassiveIncomeSelector.Caption} numberOfLines={1} className="text-[13px] text-secondary-foreground">
+        <Text testID={PassiveIncomeSelector.Caption} numberOfLines={3} className="text-[13px] text-secondary-foreground">
             {t`${label}: ${amount}`}
         </Text>
     );

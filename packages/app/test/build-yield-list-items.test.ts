@@ -1,4 +1,4 @@
-import { AccountTypeEnum, InstrumentTypeEnum, PERSONAL_SYNC_ZONE, TransactionTypeEnum } from '@budgie/contracts';
+import { AccountTypeEnum, InstrumentTypeEnum, PERSONAL_SYNC_ZONE, TransactionTypeEnum, YieldKindEnum } from '@budgie/contracts';
 import { YieldPositionSectionEnum } from '@budgie/market';
 import { expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
@@ -32,7 +32,7 @@ const position = (accountId: number, section: YieldPositionSectionEnum): YieldPo
     vsRate: null
 });
 
-const payout = (id: number): TransactionWithRelationsEntityInterface => ({
+const payout = (id: number, yieldKind: YieldKindEnum | null = null, operatedAt = TIMESTAMP): TransactionWithRelationsEntityInterface => ({
     id,
     createdAt: TIMESTAMP,
     updatedAt: TIMESTAMP,
@@ -42,7 +42,7 @@ const payout = (id: number): TransactionWithRelationsEntityInterface => ({
     type: TransactionTypeEnum.INCOME,
     title: 'Payout',
     externalId: null,
-    operatedAt: TIMESTAMP,
+    operatedAt,
     comment: '',
     toAccountId: null,
     fromAccountId: null,
@@ -54,7 +54,7 @@ const payout = (id: number): TransactionWithRelationsEntityInterface => ({
     consolidationParentTransactionId: null,
     consolidationType: null,
     fundAccountId: null,
-    yieldKind: null,
+    yieldKind,
     yieldSourceAccountId: null,
     operatedWeekday: 4,
     operatedMinuteOfDay: 0,
@@ -75,14 +75,14 @@ it.effect('lists active, closed and unassigned sections in order', () =>
             false
         );
 
-        expect(items.map(item => item.id)).toEqual([
+        expect(items.slice(0, 5).map(item => item.id)).toEqual([
             `section-${YieldListSectionEnum.ACTIVE}`,
             'position-2',
             `section-${YieldListSectionEnum.CLOSED}`,
             'position-1',
-            `section-${YieldListSectionEnum.UNASSIGNED}`,
-            'payout-9'
+            `section-${YieldListSectionEnum.UNASSIGNED}`
         ]);
+        expect(items.slice(-2).map(item => item.kind)).toEqual([YieldListItemKindEnum.DATE, YieldListItemKindEnum.PAYOUT]);
         expect(items.at(-1)).toMatchObject({ kind: YieldListItemKindEnum.PAYOUT, isUnassigned: true });
     })
 );
@@ -97,11 +97,28 @@ it.effect('omits empty sections', () =>
     })
 );
 
-it.effect('shows only the payouts section in payout mode', () =>
+it.effect('groups payouts under date headers with each tax right after its dividend', () =>
     Effect.sync(() => {
-        const items = buildYieldListItems([position(1, YieldPositionSectionEnum.ACTIVE)], [payout(3), payout(4)], 'caption', true);
+        const nextDay = new Date('2026-10-05T00:00:00Z');
+        const items = buildYieldListItems(
+            [position(1, YieldPositionSectionEnum.ACTIVE)],
+            [payout(3, YieldKindEnum.TAX), payout(4), payout(5, null, nextDay)],
+            'caption',
+            true
+        );
 
-        expect(items.map(item => item.id)).toEqual([`section-${YieldListSectionEnum.PAYOUTS}`, 'payout-3', 'payout-4']);
+        expect(items.map(item => item.kind)).toEqual([
+            YieldListItemKindEnum.DATE,
+            YieldListItemKindEnum.PAYOUT,
+            YieldListItemKindEnum.PAYOUT,
+            YieldListItemKindEnum.DATE,
+            YieldListItemKindEnum.PAYOUT
+        ]);
+        expect(items.filter(item => item.kind === YieldListItemKindEnum.PAYOUT).map(item => item.id)).toEqual([
+            'payout-4',
+            'payout-3',
+            'payout-5'
+        ]);
         expect(items.at(-1)).toMatchObject({ isUnassigned: false });
         expect(buildYieldListItems([position(1, YieldPositionSectionEnum.ACTIVE)], [], 'caption', true)).toEqual([]);
     })

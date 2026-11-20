@@ -25,6 +25,7 @@ import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/sha
 
 import { findLastIndexOnOrBefore } from '../../@generic/utils/find-last-index-on-or-before.util';
 import { formatUtcDay } from '../../@generic/utils/format-utc-day.util';
+import { YIELD_GROUP_BY_KIND } from '../constant/yield-group-by-kind.constant';
 import { YIELD_WINDOW_DAYS } from '../constant/yield-window-days.constant';
 import { YieldBucketUnitEnum } from '../enum/yield-bucket-unit.enum';
 import { YieldDeltaKindEnum } from '../enum/yield-delta-kind.enum';
@@ -72,15 +73,6 @@ export class YieldService extends Context.Service<YieldService>()('@budgie/marke
             YieldGroupEnum.DIVIDENDS,
             YieldGroupEnum.DISTRIBUTIONS
         ];
-        const GROUP_BY_KIND: Readonly<Record<YieldKindEnum, YieldGroupEnum | null>> = {
-            [YieldKindEnum.STAKING]: YieldGroupEnum.STAKING_EARN,
-            [YieldKindEnum.EARN]: YieldGroupEnum.STAKING_EARN,
-            [YieldKindEnum.INTEREST]: YieldGroupEnum.INTEREST,
-            [YieldKindEnum.DIVIDEND]: YieldGroupEnum.DIVIDENDS,
-            [YieldKindEnum.DISTRIBUTION]: YieldGroupEnum.DISTRIBUTIONS,
-            [YieldKindEnum.TAX]: YieldGroupEnum.TAX,
-            [YieldKindEnum.NONE]: null
-        };
         const SECTION_ORDER: Readonly<Record<YieldPositionSectionEnum, number>> = {
             [YieldPositionSectionEnum.ACTIVE]: 0,
             [YieldPositionSectionEnum.CLOSED]: 1
@@ -120,7 +112,7 @@ export class YieldService extends Context.Service<YieldService>()('@budgie/marke
         };
 
         const isIncome = (fact: YieldFactInterface) => fact.kind !== YieldKindEnum.TAX;
-        const kindsOf = (group: YieldGroupEnum) => Object.values(YieldKindEnum).filter(kind => GROUP_BY_KIND[kind] === group);
+        const kindsOf = (group: YieldGroupEnum) => Object.values(YieldKindEnum).filter(kind => YIELD_GROUP_BY_KIND[kind] === group);
         const buildEmptyAmounts = (): Record<YieldGroupEnum, number> => ({
             [YieldGroupEnum.STAKING_EARN]: 0,
             [YieldGroupEnum.INTEREST]: 0,
@@ -134,7 +126,7 @@ export class YieldService extends Context.Service<YieldService>()('@budgie/marke
 
             return {
                 kind: row.yieldKind,
-                group: GROUP_BY_KIND[row.yieldKind],
+                group: YIELD_GROUP_BY_KIND[row.yieldKind],
                 day: formatYieldDay(row.operatedAt),
                 priceDay: formatUtcDay(row.operatedAt),
                 units: sign * convertFromMicroUnits(row.amount),
@@ -408,6 +400,7 @@ export class YieldService extends Context.Service<YieldService>()('@budgie/marke
                     .map(context => summarizePosition(context, isInWindow))
                     .sort((left, right) => SECTION_ORDER[left.section] - SECTION_ORDER[right.section] || right.earned - left.earned);
                 const summary: YieldSummaryInterface = {
+                    key,
                     hasYield: isNotEmptyArray(facts),
                     windowStart: window.startDay,
                     today: todayDay,

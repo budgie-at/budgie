@@ -35,7 +35,6 @@ export const TransactionInfoYieldRow = ({ transaction }: Props) => {
     const positionId = transaction.yieldSourceAccountId ?? (canLandingHoldPosition ? landing.id : null);
     const kindLabel = t(YIELD_KIND_LABEL[kind]);
     const sourceTitle = source?.title ?? null;
-    const value = isDefined(sourceTitle) ? t`${kindLabel} · from ${sourceTitle}` : kindLabel;
 
     const handleOpenScreen = () =>
         void router.push({ pathname: '/passive-income', params: isDefined(positionId) ? { position: String(positionId) } : {} });
@@ -45,7 +44,7 @@ export const TransactionInfoYieldRow = ({ transaction }: Props) => {
             <TransactionInfoRow
                 icon={UserIconNameEnum.Sprout}
                 label={t`Passive income`}
-                value={value}
+                value={t`View history`}
                 testID={TransactionInfoPageSelector.Row.Yield}
                 onPress={handleOpenScreen}
             />

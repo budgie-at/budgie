@@ -1,11 +1,13 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { YieldRangeEnum } from '@budgie/market';
 import { useAtomSet } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { use } from 'react';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { ActionsMenu } from '../../../@generic/component/actions-menu/actions-menu';
+import { Icon } from '../../../@generic/component/icon/icon';
 import { SegmentedControl } from '../../../@generic/component/segmented-control/segmented-control';
 import { HapticPressFeedbackEnum } from '../../../@generic/enum/haptic-press-feedback.enum';
 import { useIsLargeText } from '../../../@generic/hook/use-is-large-text.hook';
@@ -42,10 +44,21 @@ export const YieldRangeControl = () => {
                 accessibilityLabel={t`Range, ${currentLabel}`}
                 triggerTestID={PassiveIncomeSelector.RangeMenu}
                 triggerClassName="min-h-[44px] items-center justify-center rounded-3xl bg-grouped-surface-row px-3xl"
-                trigger={<Text className="text-md font-semibold text-primary">{currentLabel}</Text>}
+                trigger={
+                    <View className="flex-row items-center gap-x-xs">
+                        <Text className="text-md font-semibold text-primary">{currentLabel}</Text>
+                        <Icon icon={UserIconNameEnum.ChevronDown} size={16} className="text-secondary-foreground" />
+                    </View>
+                }
             >
                 {segments.map(segment => (
-                    <YieldRangeMenuItem key={segment.value} range={segment.value} label={segment.label} onSelect={handleChange} />
+                    <YieldRangeMenuItem
+                        key={segment.value}
+                        range={segment.value}
+                        label={segment.label}
+                        isCurrent={segment.value === screenKey.key.range}
+                        onSelect={handleChange}
+                    />
                 ))}
             </ActionsMenu>
         );

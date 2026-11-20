@@ -10,6 +10,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
+import { Icon } from '../../../@generic/component/icon/icon';
 import { PRESENCE_ENTERING } from '../../../@generic/constant/presence-motion.constant';
 import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hook';
 import { defaultInstrumentIdAtom } from '../../../settings/constants/settings-atoms.constant';
@@ -55,8 +56,7 @@ export const YieldEntryRowContent = ({ scope }: Props) => {
                     left={<GroupedListIcon icon={UserIconNameEnum.Sprout} />}
                     title={t`Passive income`}
                     subtitle={subtitle}
-                    trailing=""
-                    secondary=""
+                    trailing={<Icon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" />}
                     accessibilityLabel={t`Passive income, ${subtitle}`}
                     onPress={handlePress}
                     testID={PassiveIncomeSelector.EntryRow}

@@ -13,7 +13,7 @@ export const useYieldPositionRateText = ({ rate, reason, isEstimated }: YieldAnn
     const formatRate = useFormatYieldRate();
 
     if (!isDefined(rate)) {
-        return isDefined(reason) ? t(YIELD_UNAVAILABLE_LABEL[reason]) : '—';
+        return isDefined(reason) ? t(YIELD_UNAVAILABLE_LABEL[reason]) : t`Not in yield`;
     }
 
     const formattedRate = formatRate(rate);

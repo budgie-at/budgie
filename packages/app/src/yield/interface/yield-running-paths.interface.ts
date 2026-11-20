@@ -3,6 +3,8 @@ export interface YieldRunningPathsInterface {
     readonly dashed: string;
     readonly area: string;
     readonly prior: string;
+    readonly xs: readonly number[];
+    readonly ys: readonly number[];
     readonly endX: number;
     readonly endY: number;
     readonly priorEndY: number | null;

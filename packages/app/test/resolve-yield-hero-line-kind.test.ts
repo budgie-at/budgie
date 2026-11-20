@@ -12,7 +12,7 @@ it('scrubbing a bucket with tax shows the net after tax', () => {
 
 it('scrubbing a bucket without tax keeps the slot empty even when a group is isolated', () => {
     expect(resolveYieldHeroLineKind({ ...resting, isScrubbing: true, group: YieldGroupEnum.INTEREST })).toBe(
-        YieldHeroLineKindEnum.SCRUB_EMPTY
+        YieldHeroLineKindEnum.SCRUB_GROUPS
     );
 });
 

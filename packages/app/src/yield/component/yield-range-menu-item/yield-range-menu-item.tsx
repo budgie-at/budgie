@@ -8,13 +8,14 @@ import type { YieldRangeEnum } from '@budgie/market';
 interface Props {
     readonly range: YieldRangeEnum;
     readonly label: string;
+    readonly isCurrent: boolean;
     readonly onSelect: (range: YieldRangeEnum) => void;
 }
 
-export const YieldRangeMenuItem = ({ range, label, onSelect }: Props) => {
+export const YieldRangeMenuItem = ({ range, label, isCurrent, onSelect }: Props) => {
     const handlePress = () => void onSelect(range);
 
-    return (
-        <ActionsMenuItem icon={UserIconNameEnum.Calendar} label={label} onPress={handlePress} testID={PassiveIncomeSelector.Range(range)} />
-    );
+    const icon = isCurrent ? UserIconNameEnum.Check : UserIconNameEnum.Calendar;
+
+    return <ActionsMenuItem icon={icon} label={label} onPress={handlePress} testID={PassiveIncomeSelector.Range(range)} />;
 };

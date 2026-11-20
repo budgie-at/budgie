@@ -11,6 +11,7 @@ import { CHROME_TITLE_TEXT_PROPS } from '../../../@generic/constant/chrome-title
 import { YieldScreenContext } from '../../context/yield-screen.context';
 import { useYieldScopeTitle } from '../../hook/use-yield-scope-title.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
+import { YieldKindFilterChip } from '../yield-kind-filter-chip/yield-kind-filter-chip';
 
 const CLEAR_HIT_SLOP = 14;
 
@@ -29,8 +30,8 @@ export const YieldScreenTitle = () => {
             <Text testID={PassiveIncomeSelector.Title} className="text-3xl font-semibold text-primary" {...CHROME_TITLE_TEXT_PROPS}>
                 <Trans>Passive income</Trans>
             </Text>
-            <View className="h-[20px] flex-row items-center gap-x-xs">
-                <Text testID={PassiveIncomeSelector.Subtitle} className="text-xs text-secondary-foreground" numberOfLines={1}>
+            <View className="min-h-[20px] flex-row items-center gap-x-xs">
+                <Text testID={PassiveIncomeSelector.Subtitle} className="shrink text-xs text-secondary-foreground">
                     {subtitle}
                 </Text>
                 {isFiltered ? (
@@ -45,6 +46,7 @@ export const YieldScreenTitle = () => {
                     </Pressable>
                 ) : null}
             </View>
+            {isDefined(screenKey.key.group) ? <YieldKindFilterChip group={screenKey.key.group} /> : null}
         </View>
     );
 };

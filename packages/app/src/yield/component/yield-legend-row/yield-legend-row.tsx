@@ -1,14 +1,12 @@
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { use } from 'react';
-import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { HapticPressFeedbackEnum } from '../../../@generic/enum/haptic-press-feedback.enum';
 import { useIsIncreaseContrast } from '../../../@generic/hook/use-is-increase-contrast.hook';
-import { useIsLargeText } from '../../../@generic/hook/use-is-large-text.hook';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { cn } from '../../../@generic/utils/cn.util';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
@@ -16,20 +14,23 @@ import { YIELD_GROUP_COLOR } from '../../constant/yield-group-color.constant';
 import { YIELD_GROUP_LABEL } from '../../constant/yield-group-label.constant';
 import { YieldScreenContext } from '../../context/yield-screen.context';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
+import { YieldLegendEntry } from '../yield-legend-entry/yield-legend-entry';
 
 import type { YieldGroupEnum } from '@budgie/market';
+
+const AMOUNT_CLASSNAME = 'text-sm font-semibold tabular-nums text-primary';
 
 interface Props {
     readonly group: YieldGroupEnum;
     readonly total: number;
+    readonly isFullWidth: boolean;
     readonly onPress: (group: YieldGroupEnum) => void;
 }
 
-export const YieldLegendRow = ({ group, total, onPress }: Props) => {
+export const YieldLegendRow = ({ group, total, isFullWidth, onPress }: Props) => {
     const { t } = useLingui();
     const { screenKey } = use(YieldScreenContext);
     const isIncreaseContrast = useIsIncreaseContrast();
-    const isLargeText = useIsLargeText();
     const formatAmount = useProtectedAmountLabel();
     const { symbol } = useAtomValue(defaultInstrumentAtom);
 
@@ -44,8 +45,7 @@ export const YieldLegendRow = ({ group, total, onPress }: Props) => {
         'items-center',
         'gap-x-sm',
         'py-xs',
-        isLargeText && 'w-full',
-        !isLargeText && 'w-1/2',
+        isFullWidth ? 'w-full' : 'w-1/2',
         isDimmed && 'opacity-40'
     );
     const accessibilityState = { selected: isSelected };
@@ -62,15 +62,7 @@ export const YieldLegendRow = ({ group, total, onPress }: Props) => {
             testID={PassiveIncomeSelector.LegendRow(group)}
             className={rowClassName}
         >
-            <View className={cn('h-[10px] w-[10px] rounded-full', dotClassName)} />
-            <View className="flex-1">
-                <Text numberOfLines={1} className="text-sm text-primary">
-                    {label}
-                </Text>
-                <Text numberOfLines={1} className="text-sm font-semibold tabular-nums text-primary">
-                    {amount}
-                </Text>
-            </View>
+            <YieldLegendEntry dotClassName={dotClassName} label={label} amount={amount} amountClassName={AMOUNT_CLASSNAME} />
         </HapticPressable>
     );
 };

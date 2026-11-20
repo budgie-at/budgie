@@ -1,3 +1,4 @@
+import { plural } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { parseISO } from 'date-fns/parseISO';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
@@ -13,6 +14,7 @@ import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { yieldSummaryFamily } from '../../constant/yield-summary-family-atom.constant';
 import { useYieldDateLabels } from '../../hook/use-yield-date-labels.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
+import { groupYieldEstimateCauses } from '../../utils/group-yield-estimate-causes.util';
 
 import type { YieldScreenKeyInterface } from '../../interface/yield-screen-key.interface';
 
@@ -22,22 +24,27 @@ interface Props {
 
 export const YieldInfoSheetContent = ({ screenKey }: Props) => {
     const { t } = useLingui();
-    const { formatDayAndMonthAndYear } = useFormatDate();
+    const { formatMonthAndDay } = useFormatDate();
     const { formatRangeCaption } = useYieldDateLabels();
     const summary = AsyncResult.getOrElse(useLiveAtomValue(yieldSummaryFamily(screenKey.key)), () => null);
 
-    const windowStart = isDefined(summary) ? formatDayAndMonthAndYear(parseISO(summary.windowStart)) : '';
-    const today = isDefined(summary) ? formatDayAndMonthAndYear(parseISO(summary.today)) : '';
     const caption = isDefined(summary) ? formatRangeCaption(screenKey.key.range, summary.windowStart) : '';
-    const periodText = t`Earned ${caption}: ${windowStart} – ${today}. The change compares the same number of periods just before, with the last one cut to the same point.`;
-    const causes = (summary?.estimateCauses ?? []).map(cause => {
+    const periodText = t`Earned ${caption}. The change compares the same number of periods just before, with the last one cut to the same point.`;
+    const holdingCount = summary?.annualYield.holdingCount ?? 0;
+    const yieldText = t({
+        message: plural(holdingCount, {
+            one: 'Yield uses the last 365 days across # holding. Crypto yield is measured on your whole balance, staked or not.',
+            other: 'Yield uses the last 365 days across # holdings. Crypto yield is measured on your whole balance, staked or not.'
+        })
+    });
+    const causes = groupYieldEstimateCauses(summary?.estimateCauses ?? []).map(cause => {
+        const days = t({ message: plural(cause.dayCount, { one: '# day', other: '# days' }) });
         const { instrumentCode } = cause;
-        const day = formatDayAndMonthAndYear(parseISO(cause.day));
-        const sourceDay = isDefined(cause.sourceDay) ? formatDayAndMonthAndYear(parseISO(cause.sourceDay)) : '';
+        const sourceDay = isDefined(cause.sourceDay) ? formatMonthAndDay(parseISO(cause.sourceDay)) : null;
 
-        return isDefined(cause.sourceDay)
-            ? t`No price for ${instrumentCode} on ${day} · estimated from ${sourceDay}`
-            : t`No price for ${instrumentCode} on ${day} · estimated from the latest rate`;
+        return isDefined(sourceDay)
+            ? t`${instrumentCode}: ${days} estimated from the ${sourceDay} price`
+            : t`${instrumentCode}: ${days} estimated from the latest rate`;
     });
 
     return (
@@ -50,17 +57,15 @@ export const YieldInfoSheetContent = ({ screenKey }: Props) => {
             <Text className="text-md text-primary">{periodText}</Text>
             <Text className="text-md text-primary">
                 <Trans>
-                    Earned is before tax. Rewards are valued at the day’s opening price, using the most recent price within 3 days (fund
-                    prices within 31 days).
+                    Earned is before tax. Rewards are valued at the day’s opening price. When that day has no price, the latest earlier
+                    price is used and the figure is marked ≈.
                 </Trans>
             </Text>
-            <Text className="text-md text-primary">
-                <Trans>Annual yield uses the last 365 days. Crypto yield is measured on your whole balance, staked or not.</Trans>
-            </Text>
+            <Text className="text-md text-primary">{yieldText}</Text>
             <Text className="text-md text-primary">
                 <Trans>
-                    Distributions count as income but not in the yield. Holdings shown with “—” are left out of the yield and of “At this
-                    pace”.
+                    Distributions count as income but not in the yield. Holdings marked “Not in yield” are left out of the yield and of
+                    “Next 12 months”.
                 </Trans>
             </Text>
             <Text className="text-md text-primary">

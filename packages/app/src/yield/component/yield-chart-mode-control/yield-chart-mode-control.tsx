@@ -11,6 +11,7 @@ import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 
 const HIT_SLOP = 6;
 const ICON_SIZE = 16;
+const PILL_CLASSNAME = 'bg-surface-row-opaque dark:bg-grouped-surface-fill';
 
 export const YieldChartModeControl = () => {
     const { t } = useLingui();
@@ -32,7 +33,7 @@ export const YieldChartModeControl = () => {
                 hitSlop={HIT_SLOP}
                 onPress={handleBars}
                 testID={PassiveIncomeSelector.Mode(YieldChartModeEnum.BARS)}
-                className={cn('w-[40px] items-center justify-center rounded-full', isBars && 'bg-surface-row-opaque')}
+                className={cn('w-[40px] items-center justify-center rounded-full', isBars && PILL_CLASSNAME)}
             >
                 <Icon icon={UserIconNameEnum.ChartColumn} size={ICON_SIZE} className="text-primary" />
             </Pressable>
@@ -43,7 +44,7 @@ export const YieldChartModeControl = () => {
                 hitSlop={HIT_SLOP}
                 onPress={handleRunning}
                 testID={PassiveIncomeSelector.Mode(YieldChartModeEnum.RUNNING_TOTAL)}
-                className={cn('w-[40px] items-center justify-center rounded-full', !isBars && 'bg-surface-row-opaque')}
+                className={cn('w-[40px] items-center justify-center rounded-full', !isBars && PILL_CLASSNAME)}
             >
                 <Icon icon={UserIconNameEnum.ChartLine} size={ICON_SIZE} className="text-primary" />
             </Pressable>

@@ -15,6 +15,7 @@ import { YieldListItemKindEnum } from '../../enum/yield-list-item-kind.enum';
 import { useYieldListItems } from '../../hook/use-yield-list-items.hook';
 import { YieldBreakdown } from '../yield-breakdown/yield-breakdown';
 import { YieldChartCard } from '../yield-chart-card/yield-chart-card';
+import { YieldDateHeader } from '../yield-date-header/yield-date-header';
 import { YieldHero } from '../yield-hero/yield-hero';
 import { YieldPayoutRow } from '../yield-payout-row/yield-payout-row';
 import { YieldPositionRow } from '../yield-position-row/yield-position-row';
@@ -46,13 +47,15 @@ export const YieldScreenList = () => {
         switch (item.kind) {
             case YieldListItemKindEnum.SECTION:
                 return <YieldSectionHeader section={item.section} />;
+            case YieldListItemKindEnum.DATE:
+                return <YieldDateHeader date={item.date} />;
             case YieldListItemKindEnum.POSITION:
-                return <YieldPositionRow position={item.position} rangeCaption={item.rangeCaption} />;
+                return <YieldPositionRow position={item.position} rangeCaption={item.rangeCaption} rowPosition={item.rowPosition} />;
             case YieldListItemKindEnum.PAYOUT:
-                return <YieldPayoutRow transaction={item.transaction} isUnassigned={item.isUnassigned} />;
+                return <YieldPayoutRow transaction={item.transaction} isUnassigned={item.isUnassigned} rowPosition={item.position} />;
             case YieldListItemKindEnum.SKELETON:
             default:
-                return <YieldSkeletonRow />;
+                return <YieldSkeletonRow rowPosition={item.position} />;
         }
     };
 
@@ -68,14 +71,12 @@ export const YieldScreenList = () => {
 
     const spacerStyle = { height: pinnedHeight };
     const listHeader = (
-        <View className="pb-[32px]">
+        <View className="pb-[24px]">
             <View style={spacerStyle} onLayout={handleRangeLayout} />
             <View className="gap-y-[24px] pt-md">
                 <YieldHero />
-                <View className="gap-y-[16px]">
-                    <YieldChartCard />
-                    <YieldBreakdown />
-                </View>
+                <YieldChartCard />
+                <YieldBreakdown />
             </View>
         </View>
     );

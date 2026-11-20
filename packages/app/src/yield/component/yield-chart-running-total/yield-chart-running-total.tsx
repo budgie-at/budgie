@@ -1,5 +1,6 @@
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { Trans } from '@lingui/react/macro';
+import { use } from 'react';
 import { Text, View } from 'react-native';
 import Svg from 'react-native-svg';
 
@@ -10,10 +11,12 @@ import { FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/fo
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { YIELD_PLOT_HEIGHT } from '../../constant/yield-plot-height.constant';
+import { YieldSelectionContext } from '../../context/yield-selection.context';
 import { buildYieldAxis } from '../../utils/build-yield-axis.util';
 import { buildYieldRunningPaths } from '../../utils/build-yield-running-paths.util';
 import { buildYieldRunningTotal } from '../../utils/build-yield-running-total.util';
 import { YieldChartAxis } from '../yield-chart-axis/yield-chart-axis';
+import { YieldChartRunningCursor } from '../yield-chart-running-cursor/yield-chart-running-cursor';
 
 import type { YieldSummaryInterface } from '@budgie/market';
 
@@ -32,6 +35,7 @@ const LABEL_OFFSET = 18;
 
 export const YieldChartRunningTotal = ({ width, summary }: Props) => {
     const formatAmount = useProtectedAmountLabel();
+    const { selectedIndex } = use(YieldSelectionContext);
     const { symbol } = useAtomValue(defaultInstrumentAtom);
 
     const cumulative = buildYieldRunningTotal(summary.buckets.map(bucket => bucket.total));
@@ -45,9 +49,11 @@ export const YieldChartRunningTotal = ({ width, summary }: Props) => {
         width,
         height: YIELD_PLOT_HEIGHT
     });
-    const endAmount = formatAmount(cumulative.at(-1) ?? 0, symbol);
     const priorAmount = formatAmount(prior?.at(-1) ?? 0, symbol);
-    const isPriorLabelVisible = isDefined(paths.priorEndY) && Math.abs(paths.priorEndY - paths.endY) >= LABEL_MIN_GAP;
+    const cursorX = isDefined(selectedIndex) ? paths.xs.at(selectedIndex) : null;
+    const cursorY = isDefined(selectedIndex) ? paths.ys.at(selectedIndex) : null;
+    const isScrubbing = isDefined(cursorX) && isDefined(cursorY);
+    const isPriorLabelVisible = !isScrubbing && isDefined(paths.priorEndY) && Math.abs(paths.priorEndY - paths.endY) >= LABEL_MIN_GAP;
     const endStyle = { top: Math.max(paths.endY - LABEL_OFFSET, 0), right: 0 };
     const priorStyle = { top: Math.max((paths.priorEndY ?? 0) - LABEL_OFFSET, 0), right: 0 };
 
@@ -65,15 +71,18 @@ export const YieldChartRunningTotal = ({ width, summary }: Props) => {
                 />
                 <StyledPath d={paths.solid} strokeClassName="accent-primary" strokeWidth={LINE_WIDTH} fill="none" />
                 <StyledPath d={paths.dashed} strokeClassName="accent-primary" strokeWidth={LINE_WIDTH} strokeDasharray={DASH} fill="none" />
+                {isScrubbing ? <YieldChartRunningCursor x={cursorX} y={cursorY} /> : null}
             </Svg>
 
-            <Text
-                maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER}
-                className="absolute text-[11px] font-semibold tabular-nums text-primary"
-                style={endStyle}
-            >
-                {endAmount}
-            </Text>
+            {isScrubbing ? null : (
+                <Text
+                    maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER}
+                    className="absolute text-[11px] font-semibold tabular-nums text-primary"
+                    style={endStyle}
+                >
+                    {formatAmount(cumulative.at(-1) ?? 0, symbol)}
+                </Text>
+            )}
 
             {isPriorLabelVisible ? (
                 <Text

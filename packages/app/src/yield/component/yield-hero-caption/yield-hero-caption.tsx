@@ -40,7 +40,7 @@ export const YieldHeroCaption = ({ summary, bucket }: Props) => {
     const caption = isDefined(bucket) ? scrubCaption : restingCaption;
 
     return (
-        <Text testID={PassiveIncomeSelector.Caption} numberOfLines={1} className="text-[13px] text-secondary-foreground">
+        <Text testID={PassiveIncomeSelector.Caption} numberOfLines={3} className="text-[13px] text-secondary-foreground">
             {caption}
         </Text>
     );

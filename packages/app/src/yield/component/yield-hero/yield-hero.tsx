@@ -1,5 +1,4 @@
 import { useAtomValue } from '@effect/atom-react/Hooks';
-import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import { use } from 'react';
 import { View } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
@@ -7,25 +6,24 @@ import Animated, { FadeIn } from 'react-native-reanimated';
 import { isDefined } from '@rnw-community/shared';
 
 import { HeroFigure } from '../../../@generic/component/hero-figure/hero-figure';
-import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { MOTION_FAST_DURATION } from '../../../@generic/constant/motion.constant';
 import { HeroFigureLockContext } from '../../../@generic/context/hero-figure-lock.context';
-import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
-import { yieldSummaryFamily } from '../../constant/yield-summary-family-atom.constant';
 import { YieldScreenContext } from '../../context/yield-screen.context';
 import { YieldSelectionContext } from '../../context/yield-selection.context';
 import { useYieldHeroSentence } from '../../hook/use-yield-hero-sentence.hook';
+import { useYieldSummary } from '../../hook/use-yield-summary.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 import { selectYieldScrubbedBuckets } from '../../utils/select-yield-scrubbed-buckets.util';
 import { YieldHeroCaption } from '../yield-hero-caption/yield-hero-caption';
 import { YieldHeroInfoButton } from '../yield-hero-info-button/yield-hero-info-button';
 import { YieldHeroLine } from '../yield-hero-line/yield-hero-line';
+import { YieldHeroSkeleton } from '../yield-hero-skeleton/yield-hero-skeleton';
 
 export const YieldHero = () => {
-    const { screenKey, mode, rangeCaption } = use(YieldScreenContext);
+    const { mode, rangeCaption } = use(YieldScreenContext);
     const { selectedIndex } = use(YieldSelectionContext);
-    const summary = AsyncResult.getOrElse(useLiveAtomValue(yieldSummaryFamily(screenKey.key)), () => null);
+    const summary = useYieldSummary();
     const { symbol } = useAtomValue(defaultInstrumentAtom);
 
     const bucket = isDefined(selectedIndex) ? (summary?.buckets.at(selectedIndex) ?? null) : null;
@@ -38,24 +36,26 @@ export const YieldHero = () => {
 
     return (
         <View className="gap-y-xs" accessible accessibilityLabel={sentence} testID={PassiveIncomeSelector.Hero}>
-            <View className="min-h-[18px] flex-row items-center justify-between gap-x-xs">
+            <View className="min-h-[18px] flex-row items-start justify-between gap-x-xs">
                 <View className="flex-1">{isDefined(summary) ? <YieldHeroCaption summary={summary} bucket={bucket} /> : null}</View>
                 <YieldHeroInfoButton />
             </View>
 
-            <LoadingContent isLoading={!isDefined(summary)}>
+            {isDefined(summary) ? (
                 <HeroFigureLockContext value={figureLock}>
                     <Animated.View key={figureKey} entering={FadeIn.duration(MOTION_FAST_DURATION)}>
                         <HeroFigure
                             amount={amount}
                             currencySymbol={symbol}
-                            variant="default"
+                            variant="primary"
                             approximate={isApproximate}
                             testID={PassiveIncomeSelector.Earned}
                         />
                     </Animated.View>
                 </HeroFigureLockContext>
-            </LoadingContent>
+            ) : (
+                <YieldHeroSkeleton />
+            )}
 
             {isDefined(summary) ? <YieldHeroLine summary={summary} bucket={bucket} /> : <View className="min-h-[22px]" />}
         </View>

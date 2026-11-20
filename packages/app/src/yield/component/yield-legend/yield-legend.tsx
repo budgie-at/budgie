@@ -1,21 +1,20 @@
+import { YieldGroupEnum } from '@budgie/market';
 import { useLingui } from '@lingui/react/macro';
-import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import { router } from 'expo-router';
 import { use } from 'react';
 import { View } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { useIsLargeText } from '../../../@generic/hook/use-is-large-text.hook';
-import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hook';
-import { yieldSummaryFamily } from '../../constant/yield-summary-family-atom.constant';
 import { YieldScreenContext } from '../../context/yield-screen.context';
 import { YieldSelectionContext } from '../../context/yield-selection.context';
+import { useYieldSummary } from '../../hook/use-yield-summary.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 import { selectYieldScrubbedBuckets } from '../../utils/select-yield-scrubbed-buckets.util';
+import { YieldLegendEstimatedRow } from '../yield-legend-estimated-row/yield-legend-estimated-row';
 import { YieldLegendRow } from '../yield-legend-row/yield-legend-row';
-
-import type { YieldGroupEnum } from '@budgie/market';
+import { YieldLegendTaxRow } from '../yield-legend-tax-row/yield-legend-tax-row';
 
 const ONE_COLUMN = 1;
 const TWO_COLUMNS = 2;
@@ -25,7 +24,7 @@ export const YieldLegend = () => {
     const isLargeText = useIsLargeText();
     const { screenKey, mode } = use(YieldScreenContext);
     const { selectedIndex, cancelScrub } = use(YieldSelectionContext);
-    const summary = AsyncResult.getOrElse(useLiveAtomValue(yieldSummaryFamily(screenKey.key)), () => null);
+    const summary = useYieldSummary();
 
     const handlePress = (group: YieldGroupEnum) => {
         cancelScrub();
@@ -37,13 +36,22 @@ export const YieldLegend = () => {
         group,
         total: isDefined(selectedIndex) ? scrubbedBuckets.reduce((sum, item) => sum + item.amounts[group], 0) : total
     }));
+    const taxRowTotal = isDefined(selectedIndex)
+        ? scrubbedBuckets.reduce((sum, item) => sum + item.amounts[YieldGroupEnum.TAX], 0)
+        : (summary?.tax ?? 0);
+    const hasTax = isPositiveNumber(summary?.tax);
+    const hasEstimated = summary?.buckets.some(bucket => bucket.isEstimated) === true;
     const columns = isLargeText ? ONE_COLUMN : TWO_COLUMNS;
+    const itemCount = rows.length + Number(hasTax) + Number(hasEstimated);
+    const isFullWidthAt = (position: number) => isLargeText || (itemCount % TWO_COLUMNS === 1 && position === itemCount - 1);
 
     return (
         <View className="flex-row flex-wrap" accessibilityLabel={t`Passive income by kind`} testID={PassiveIncomeSelector.Legend(columns)}>
-            {rows.map(({ group, total }) => (
-                <YieldLegendRow key={group} group={group} total={total} onPress={handlePress} />
+            {rows.map(({ group, total }, position) => (
+                <YieldLegendRow key={group} group={group} total={total} isFullWidth={isFullWidthAt(position)} onPress={handlePress} />
             ))}
+            {hasTax ? <YieldLegendTaxRow total={taxRowTotal} isFullWidth={isFullWidthAt(rows.length)} /> : null}
+            {hasEstimated ? <YieldLegendEstimatedRow isFullWidth={isFullWidthAt(itemCount - 1)} /> : null}
         </View>
     );
 };

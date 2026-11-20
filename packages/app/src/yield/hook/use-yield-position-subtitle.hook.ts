@@ -12,7 +12,7 @@ import type { YieldPositionSummaryInterface } from '@budgie/market';
 export const useYieldPositionSubtitle = (
     position: Pick<
         YieldPositionSummaryInterface,
-        'accountType' | 'instrumentType' | 'instrumentCode' | 'earned' | 'rewardUnits' | 'tax' | 'accruing' | 'interestRate' | 'deadline'
+        'accountType' | 'instrumentType' | 'instrumentCode' | 'earned' | 'rewardUnits' | 'tax' | 'accruing' | 'deadline'
     >
 ): string => {
     const { t } = useLingui();

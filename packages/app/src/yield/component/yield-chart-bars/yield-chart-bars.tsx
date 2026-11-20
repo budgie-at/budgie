@@ -16,6 +16,7 @@ import { buildYieldBarLayout } from '../../utils/build-yield-bar-layout.util';
 import { YieldChartAxis } from '../yield-chart-axis/yield-chart-axis';
 import { YieldChartBarPath } from '../yield-chart-bar-path/yield-chart-bar-path';
 import { YieldChartDim } from '../yield-chart-dim/yield-chart-dim';
+import { YieldChartInProgressDim } from '../yield-chart-in-progress-dim/yield-chart-in-progress-dim';
 import { YieldChartPeakLabel } from '../yield-chart-peak-label/yield-chart-peak-label';
 
 import type { YieldSummaryInterface } from '@budgie/market';
@@ -58,6 +59,7 @@ export const YieldChartBars = ({ width, summary }: Props) => {
                         fillClassName={layer.fillClassName}
                     />
                 ))}
+                <YieldChartInProgressDim buckets={summary.buckets} xs={layout.xs} barWidth={layout.barWidth} />
                 <YieldChartDim xs={layout.xs} slot={layout.slot} width={width} />
                 {layers.estimated.map(layer => (
                     <YieldChartBarPath

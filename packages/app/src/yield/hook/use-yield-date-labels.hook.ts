@@ -1,5 +1,6 @@
 import { YieldBucketUnitEnum, YieldRangeEnum } from '@budgie/market';
 import { useLingui } from '@lingui/react/macro';
+import { format } from 'date-fns/format';
 import { getQuarter } from 'date-fns/getQuarter';
 import { parseISO } from 'date-fns/parseISO';
 
@@ -37,8 +38,18 @@ export const useYieldDateLabels = () => {
         [YieldBucketUnitEnum.YEAR]: formatYear
     };
 
-    const formatTick = (bucket: Pick<YieldBucketInterface, 'start' | 'isInProgress'>, unit: YieldBucketUnitEnum) =>
-        bucket.isInProgress ? t`so far` : tickFormatters[unit](parseISO(bucket.start));
+    const formatTick = (bucket: Pick<YieldBucketInterface, 'start'>, unit: YieldBucketUnitEnum, isYearVisible = false) => {
+        const date = parseISO(bucket.start);
+
+        if (isYearVisible && unit === YieldBucketUnitEnum.MONTH) {
+            const month = formatShortMonth(date);
+            const year = format(date, 'yy');
+
+            return t`${month} ’${year}`;
+        }
+
+        return tickFormatters[unit](date);
+    };
 
     const formatPeriod = (bucket: Pick<YieldBucketInterface, 'start' | 'isInProgress'>, unit: YieldBucketUnitEnum) => {
         const label = periodFormatters[unit](parseISO(bucket.start));

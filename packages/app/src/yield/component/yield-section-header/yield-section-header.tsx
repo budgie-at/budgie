@@ -14,20 +14,19 @@ interface Props {
 const SECTION_TITLE: Readonly<Record<YieldListSectionEnum, MessageDescriptor>> = {
     [YieldListSectionEnum.ACTIVE]: msg`Active`,
     [YieldListSectionEnum.CLOSED]: msg`Closed`,
-    [YieldListSectionEnum.UNASSIGNED]: msg`Not linked to a holding`,
-    [YieldListSectionEnum.PAYOUTS]: msg`Payouts`
+    [YieldListSectionEnum.UNASSIGNED]: msg`Not linked to a holding`
 };
 
 export const YieldSectionHeader = ({ section }: Props) => {
     const { t } = useLingui();
 
     return (
-        <View className="gap-y-xxs bg-surface px-3xl pt-3xl pb-sm" testID={PassiveIncomeSelector.Section(section)}>
-            <Text accessibilityRole="header" className="text-xs font-semibold uppercase text-secondary-foreground">
+        <View className="gap-y-xxs px-3xl pt-3xl pb-sm" testID={PassiveIncomeSelector.Section(section)}>
+            <Text accessibilityRole="header" className="text-[17px] font-semibold text-primary">
                 {t(SECTION_TITLE[section])}
             </Text>
             {section === YieldListSectionEnum.UNASSIGNED ? (
-                <Text className="text-xs text-secondary-foreground">
+                <Text className="text-[13px] leading-[18px] text-secondary-foreground">
                     <Trans>Payouts we couldn’t match to a deposit or exchange asset</Trans>
                 </Text>
             ) : null}

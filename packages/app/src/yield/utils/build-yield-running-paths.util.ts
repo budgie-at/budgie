@@ -43,6 +43,8 @@ export const buildYieldRunningPaths = ({
             'Z'
         ].join(' '),
         prior: isDefined(prior) ? prior.map((value, index) => command(index === 0 ? 'M' : 'L', xOf(index), yOf(value))).join(' ') : '',
+        xs: cumulative.map((_, index) => xOf(index)),
+        ys: cumulative.map(yOf),
         endX: xOf(lastIndex),
         endY: yOf(cumulative.at(-1) ?? 0),
         priorEndY: isDefined(prior) ? yOf(prior.at(-1) ?? 0) : null

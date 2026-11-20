@@ -1,4 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
+import { YieldRangeEnum } from '@budgie/market';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
@@ -51,6 +52,12 @@ export const PassiveIncomeAnalyticsCardContent = ({ earned, focus, period }: Pro
     const approximate = earned.isEstimated ? '≈ ' : '';
     const amount = formatAmount(earned.value, symbol);
     const title = t`Passive income · ${approximate}${amount}`;
+    const chartTitles: Record<YieldRangeEnum, string> = {
+        [YieldRangeEnum.MONTH]: t`Daily income · last 30 days`,
+        [YieldRangeEnum.QUARTER]: t`Weekly income · last 13 weeks`,
+        [YieldRangeEnum.YEAR]: t`Monthly income · last 12 months`,
+        [YieldRangeEnum.ALL]: t`Monthly income · all time`
+    };
 
     return (
         <HapticPressable
@@ -65,7 +72,14 @@ export const PassiveIncomeAnalyticsCardContent = ({ earned, focus, period }: Pro
                 <Text className="text-md font-semibold text-primary">{title}</Text>
                 <Icon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" />
             </View>
-            {isDefined(summary) ? <YieldChartMini buckets={summary.buckets} focusDay={focus.focusDay} /> : <View className="h-[32px]" />}
+            <Text className="text-xs text-secondary-foreground" maxFontSizeMultiplier={1.5}>
+                {chartTitles[focus.range]}
+            </Text>
+            {isDefined(summary) ? (
+                <YieldChartMini buckets={summary.buckets} focusDay={focus.focusDay} range={focus.range} />
+            ) : (
+                <View className="h-[32px]" />
+            )}
         </HapticPressable>
     );
 };
