@@ -15,10 +15,10 @@ interface Props {
 const MINI_CHART_HEIGHT = 32;
 const MIN_BAR_HEIGHT = 1;
 const BAR_CLASSNAME = 'flex-1 rounded-[2px]';
-const FOCUSED_CLASSNAME = 'bg-primary';
+const FOCUSED_CLASSNAME = 'bg-yield-staking';
 const NEUTRAL_CLASSNAME = 'bg-secondary-foreground';
-const FOCUSED_IN_PROGRESS_CLASSNAME = 'border border-dashed border-primary bg-primary/40';
-const NEUTRAL_IN_PROGRESS_CLASSNAME = 'border border-dashed border-secondary-foreground bg-secondary-foreground/40';
+const FOCUSED_IN_PROGRESS_CLASSNAME = 'bg-yield-staking/35';
+const NEUTRAL_IN_PROGRESS_CLASSNAME = 'bg-secondary-foreground/35';
 
 export const YieldChartMiniBar = ({ bucket, max, focusDay }: Props) => {
     const share = isPositiveNumber(max) ? bucket.total / max : 0;

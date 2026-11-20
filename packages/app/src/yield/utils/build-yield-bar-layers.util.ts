@@ -6,6 +6,9 @@ import { YIELD_STACK_GROUPS } from '../constant/yield-stack-groups.constant';
 import type { YieldBarLayerInterface } from '../interface/yield-bar-layer.interface';
 import type { YieldBarLayoutInterface } from '../interface/yield-bar-layout.interface';
 
+const TAX_FILL_CLASSNAME = 'accent-secondary-foreground';
+const TAX_FILL_OPACITY = 0.45;
+
 export const buildYieldBarLayers = (
     layout: YieldBarLayoutInterface,
     pathSize: number,
@@ -18,13 +21,15 @@ export const buildYieldBarLayers = (
         group,
         offset: index * pathSize,
         rects: layout.groups[group],
-        fillClassName: fillOf(group)
+        fillClassName: fillOf(group),
+        fillOpacity: 1
     }));
     const tax: YieldBarLayerInterface = {
         group: YieldGroupEnum.TAX,
         offset: stackSize * pathSize,
         rects: layout.tax,
-        fillClassName: fillOf(YieldGroupEnum.TAX)
+        fillClassName: TAX_FILL_CLASSNAME,
+        fillOpacity: TAX_FILL_OPACITY
     };
 
     return [...stacked, tax];

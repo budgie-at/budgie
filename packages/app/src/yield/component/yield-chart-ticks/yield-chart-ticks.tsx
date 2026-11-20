@@ -5,6 +5,7 @@ import { isDefined } from '@rnw-community/shared';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { cn } from '../../../@generic/utils/cn.util';
 import { MARKET_CHART_PADDING_X } from '../../../market-data/constant/market-chart-padding-x.constant';
+import { YIELD_PLOT_BOTTOM_GAP } from '../../constant/yield-label-band.constant';
 import { useYieldDateLabels } from '../../hook/use-yield-date-labels.hook';
 
 import type { YieldBucketInterface, YieldBucketUnitEnum } from '@budgie/market';
@@ -15,6 +16,7 @@ interface Props {
     readonly width: number;
 }
 
+const TICKS_STYLE = { marginTop: YIELD_PLOT_BOTTOM_GAP };
 const MAX_TICKS = 4;
 const MAX_ACCESSIBILITY_TICKS = 2;
 const TICK_MAX_FONT_SIZE_MULTIPLIER = 1.3;
@@ -28,14 +30,13 @@ export const YieldChartTicks = ({ buckets, unit, width }: Props) => {
     const isAccessibilityText = useIsAccessibilityTextSize();
 
     const slot = Math.max(width - MARKET_CHART_PADDING_X * 2, 1) / Math.max(buckets.length, 1);
-    const tickCount = Math.min(isAccessibilityText ? MAX_ACCESSIBILITY_TICKS : MAX_TICKS, buckets.length);
+    const maxTicks = isAccessibilityText ? MAX_ACCESSIBILITY_TICKS : MAX_TICKS;
+    const step = Math.max(Math.ceil(buckets.length / maxTicks), 1);
     const lastIndex = buckets.length - 1;
     const firstYear = buckets.at(0)?.start.slice(0, 4);
     const lastYear = buckets.at(-1)?.start.slice(0, 4);
-    const isYearVisible = buckets.length > MONTHS_PER_YEAR && firstYear !== lastYear;
-    const indices = [
-        ...new Set(Array.from({ length: tickCount }, (_, order) => Math.round((order * lastIndex) / Math.max(tickCount - 1, 1))))
-    ];
+    const isYearVisible = buckets.length >= MONTHS_PER_YEAR && firstYear !== lastYear;
+    const indices = Array.from({ length: Math.floor(lastIndex / step) + 1 }, (_, order) => lastIndex - order * step).reverse();
     const ticks = indices
         .map(index => ({ index, bucket: buckets.at(index) }))
         .filter(tick => isDefined(tick.bucket))
@@ -44,18 +45,18 @@ export const YieldChartTicks = ({ buckets, unit, width }: Props) => {
             const minLeft = MARKET_CHART_PADDING_X;
             const maxLeft = width - MARKET_CHART_PADDING_X - TICK_WIDTH;
             const isStart = centred < minLeft;
-            const isEnd = centred > maxLeft;
+            const isEnd = index === lastIndex || centred > maxLeft;
 
             return {
                 key: bucket?.start ?? String(index),
                 label: isDefined(bucket) ? formatTick(bucket, unit, isYearVisible) : '',
                 className: cn(isStart && 'text-left', isEnd && 'text-right', !isStart && !isEnd && 'text-center'),
-                style: { left: Math.min(Math.max(centred, minLeft), maxLeft) }
+                style: { left: index === lastIndex ? maxLeft : Math.min(Math.max(centred, minLeft), maxLeft) }
             };
         });
 
     return (
-        <View className="mt-xs h-[16px] w-full">
+        <View className="h-[16px] w-full" style={TICKS_STYLE}>
             {ticks.map(tick => (
                 <Text
                     key={tick.key}

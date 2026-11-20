@@ -8,10 +8,11 @@ interface Props {
     readonly height: number;
 }
 
-const GRID_DASH = '2 4';
+const GRID_WIDTH = 0.5;
+const GRID_OPACITY = 0.08;
 const GRID_TOP = 1;
 const LINE_WIDTH = 1;
-const MID_OPACITY = 0.5;
+const ZERO_OPACITY = 0.4;
 const HALF = 2;
 
 export const YieldChartAxis = ({ axis, width, height }: Props) => {
@@ -20,25 +21,32 @@ export const YieldChartAxis = ({ axis, width, height }: Props) => {
 
     return (
         <>
-            <StyledLine x1={0} y1={zeroY} x2={width} y2={zeroY} strokeClassName="accent-secondary-foreground" strokeWidth={LINE_WIDTH} />
+            <StyledLine
+                x1={0}
+                y1={zeroY}
+                x2={width}
+                y2={zeroY}
+                strokeClassName="accent-primary"
+                strokeWidth={LINE_WIDTH}
+                strokeOpacity={ZERO_OPACITY}
+            />
             <StyledLine
                 x1={0}
                 y1={midY}
                 x2={width}
                 y2={midY}
-                strokeClassName="accent-secondary-foreground"
-                strokeWidth={LINE_WIDTH}
-                strokeDasharray={GRID_DASH}
-                strokeOpacity={MID_OPACITY}
+                strokeClassName="accent-primary"
+                strokeWidth={GRID_WIDTH}
+                strokeOpacity={GRID_OPACITY}
             />
             <StyledLine
                 x1={0}
                 y1={GRID_TOP}
                 x2={width}
                 y2={GRID_TOP}
-                strokeClassName="accent-secondary-foreground"
-                strokeWidth={LINE_WIDTH}
-                strokeDasharray={GRID_DASH}
+                strokeClassName="accent-primary"
+                strokeWidth={GRID_WIDTH}
+                strokeOpacity={GRID_OPACITY}
             />
         </>
     );

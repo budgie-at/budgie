@@ -3,8 +3,8 @@ import { expect, it } from '@effect/vitest';
 import { buildYieldBarsPath } from '../src/yield/utils/build-yield-bars-path.util';
 
 const rects = [
-    { x: 10, y: 0, width: 20, height: 0, radius: 4, isInProgress: false },
-    { x: 40, y: 0, width: 20, height: 0, radius: 4, isInProgress: false }
+    { x: 10, y: 0, width: 20, height: 0, radius: 4, bottomRadius: 0, isInProgress: false },
+    { x: 40, y: 0, width: 20, height: 0, radius: 4, bottomRadius: 0, isInProgress: false }
 ];
 
 it('skips rects whose animated height is not visible and rounds the top of the rest', () => {
@@ -21,8 +21,8 @@ it('joins several visible rects into one path', () => {
 
 it('draws only the rects that match the requested in-progress state', () => {
     const mixed = [
-        { x: 10, y: 0, width: 20, height: 0, radius: 4, isInProgress: false },
-        { x: 40, y: 0, width: 20, height: 0, radius: 4, isInProgress: true }
+        { x: 10, y: 0, width: 20, height: 0, radius: 4, bottomRadius: 0, isInProgress: false },
+        { x: 40, y: 0, width: 20, height: 0, radius: 4, bottomRadius: 0, isInProgress: true }
     ];
 
     expect(buildYieldBarsPath([80, 20, 50, 50], 0, mixed, true).split('Z').length).toBe(2);

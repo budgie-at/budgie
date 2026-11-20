@@ -16,7 +16,6 @@ import { YieldListItemKindEnum } from '../../enum/yield-list-item-kind.enum';
 import { useYieldListItems } from '../../hook/use-yield-list-items.hook';
 import { YieldBreakdown } from '../yield-breakdown/yield-breakdown';
 import { YieldChartCard } from '../yield-chart-card/yield-chart-card';
-import { YieldFilterChipRow } from '../yield-filter-chip-row/yield-filter-chip-row';
 import { YieldHero } from '../yield-hero/yield-hero';
 import { YieldMonthHeader } from '../yield-month-header/yield-month-header';
 import { YieldPayoutRow } from '../yield-payout-row/yield-payout-row';
@@ -35,7 +34,12 @@ const getItemType = (item: YieldListItemType) => item.kind;
 
 const ESTIMATED_ITEM_SIZE = 56;
 
-const PINNED_HAIRLINE = <View className="h-hairline bg-surface-separator" />;
+const PINNED_HAIRLINE = (
+    <View>
+        <View className="h-hairline bg-surface-separator" />
+        <View className="h-[22px] bg-linear-to-b from-surface to-surface/0" />
+    </View>
+);
 
 const CONTENT_STYLE = { paddingBottom: FLOATING_TAB_BAR_HEIGHT };
 
@@ -61,6 +65,8 @@ export const YieldScreenList = () => {
                     <YieldPayoutRow
                         transaction={item.transaction}
                         tax={item.tax}
+                        siblings={item.siblings}
+                        isFullDate={item.isFullDate}
                         isUnassigned={item.isUnassigned}
                         rowPosition={item.position}
                     />
@@ -85,7 +91,6 @@ export const YieldScreenList = () => {
     const spacerStyle = { height: pinnedHeight };
     const listHeader = (
         <View className={listHeaderClassName}>
-            <YieldFilterChipRow />
             <View style={spacerStyle} onLayout={handleRangeLayout} />
             <View className="gap-y-[24px] pt-md">
                 <YieldHero />

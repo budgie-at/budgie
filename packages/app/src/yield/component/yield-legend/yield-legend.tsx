@@ -40,15 +40,21 @@ export const YieldLegend = () => {
         : (summary?.tax ?? 0);
     const hasTax = isPositiveNumber(summary?.tax);
     const columns = isLargeText ? ONE_COLUMN : TWO_COLUMNS;
-    const itemCount = rows.length + Number(hasTax);
+    const itemCount = rows.length;
     const isFullWidthAt = (position: number) => isLargeText || (itemCount % TWO_COLUMNS === 1 && position === itemCount - 1);
 
     return (
-        <View className="flex-row flex-wrap" accessibilityLabel={t`Passive income by kind`} testID={PassiveIncomeSelector.Legend(columns)}>
-            {rows.map(({ group, total }, position) => (
-                <YieldLegendRow key={group} group={group} total={total} isFullWidth={isFullWidthAt(position)} onPress={handlePress} />
-            ))}
-            {hasTax ? <YieldLegendTaxRow total={taxRowTotal} isFullWidth={isFullWidthAt(rows.length)} /> : null}
+        <View>
+            <View
+                className="flex-row flex-wrap"
+                accessibilityLabel={t`Passive income by kind`}
+                testID={PassiveIncomeSelector.Legend(columns)}
+            >
+                {rows.map(({ group, total }, position) => (
+                    <YieldLegendRow key={group} group={group} total={total} isFullWidth={isFullWidthAt(position)} onPress={handlePress} />
+                ))}
+            </View>
+            {hasTax ? <YieldLegendTaxRow total={taxRowTotal} /> : null}
         </View>
     );
 };

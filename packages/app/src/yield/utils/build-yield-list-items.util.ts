@@ -66,13 +66,42 @@ const foldTaxIntoIncome = (day: readonly TransactionWithRelationsEntityInterface
                 claimed.add(tax.id);
             }
 
-            return { transaction: income, tax: tax ?? null };
+            return { transaction: income, tax: tax ?? null, siblings: [] };
         });
 
     return [
         ...folded,
-        ...taxes.filter(tax => !claimed.has(tax.id)).map((tax): YieldPayoutFoldInterface => ({ transaction: tax, tax: null }))
+        ...taxes.filter(tax => !claimed.has(tax.id)).map((tax): YieldPayoutFoldInterface => ({ transaction: tax, tax: null, siblings: [] }))
     ];
+};
+
+const MERGE_THRESHOLD = 3;
+
+const toMergeKey = ({ transaction, tax }: YieldPayoutFoldInterface): string =>
+    isDefined(tax) || isTax(transaction)
+        ? `single-${transaction.id}`
+        : `${toPayoutAccountId(transaction)}|${transaction.yieldKind}|${transaction.yieldSourceAccountId}|${transaction.title}`;
+
+const mergeRepeatedPayouts = (rows: readonly YieldPayoutFoldInterface[]): YieldPayoutFoldInterface[] => {
+    const groups = groupBy(rows, toMergeKey);
+    const emitted = new Set<string>();
+
+    return rows.flatMap((row): YieldPayoutFoldInterface[] => {
+        const key = toMergeKey(row);
+        const group = groups.find(candidate => toMergeKey(candidate[0]) === key) ?? [];
+
+        if (group.length < MERGE_THRESHOLD) {
+            return [row];
+        }
+
+        if (emitted.has(key)) {
+            return [];
+        }
+
+        emitted.add(key);
+
+        return [{ transaction: group[0].transaction, tax: null, siblings: group.map(({ transaction }) => transaction) }];
+    });
 };
 
 const toMonthTotal = (rows: readonly YieldPayoutFoldInterface[]): number =>
@@ -94,16 +123,19 @@ const toPayouts = (payouts: readonly TransactionWithRelationsEntityInterface[], 
             month: first.operatedAt,
             total: toMonthTotal(rows)
         };
-        const items = rows.map(({ transaction, tax }, index): YieldListItemType => ({
+        const merged = mergeRepeatedPayouts(rows);
+        const items = merged.map(({ transaction, tax, siblings }, index): YieldListItemType => ({
             kind: YieldListItemKindEnum.PAYOUT,
             id: `payout-${transaction.id}`,
             transaction,
             tax,
+            siblings,
+            isFullDate: merged.length === 1,
             isUnassigned,
-            position: toRowPosition(index, rows.length)
+            position: toRowPosition(index, merged.length)
         }));
 
-        return [header, ...items];
+        return merged.length === 1 ? items : [header, ...items];
     });
 
 const toPositions = (positions: readonly YieldPositionSummaryInterface[], rangeCaption: string): YieldListItemType[] =>

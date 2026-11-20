@@ -7,6 +7,7 @@ interface Props {
     readonly y: number;
 }
 
+const GUIDE_OVERSHOOT = 4;
 const RULE_OPACITY = 0.6;
 const DOT_RADIUS = 4;
 const RING_WIDTH = 2;
@@ -16,7 +17,7 @@ export const YieldChartRunningCursor = ({ x, y }: Props) => (
     <>
         <StyledLine
             x1={x}
-            y1={0}
+            y1={-GUIDE_OVERSHOOT}
             x2={x}
             y2={YIELD_PLOT_HEIGHT}
             strokeClassName="accent-primary"

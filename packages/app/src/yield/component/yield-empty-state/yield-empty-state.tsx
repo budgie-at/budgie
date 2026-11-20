@@ -20,15 +20,15 @@ export const YieldEmptyState = () => {
             <EmptyState
                 icon={UserIconNameEnum.Sprout}
                 title={t`No passive income yet`}
-                titleClassName="text-center"
+                titleClassName="text-center text-xl font-semibold text-primary"
                 description={t`Staking rewards, dividends and interest show up here.`}
-                descriptionClassName="text-center"
+                descriptionClassName="text-center text-[15px] text-secondary-foreground"
             />
             <Button content={t`Connect an exchange`} leftIcon={UserIconNameEnum.Link} onPress={handleConnect} variant="cta" />
             <Button content={t`Add a deposit`} leftIcon={UserIconNameEnum.PiggyBank} onPress={handleAddDeposit} variant="positive" />
             <HapticPressable onPress={handleExplain} accessibilityRole="link" className="min-h-[44px] items-center justify-center">
                 <Text className="text-[15px] text-positive-action">
-                    <Trans>How it&apos;s calculated</Trans>
+                    <Trans>How it’s calculated</Trans>
                 </Text>
             </HapticPressable>
         </View>

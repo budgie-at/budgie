@@ -31,11 +31,11 @@ export const ActionsMenu = ({
     hitSlop = DEFAULT_HIT_SLOP,
     triggerSize
 }: Props) => {
-    const { anchor, closeMenu, handleCloseComplete, handleToggleMenu, isMenuOpen } = usePopoverMenuAnchor(triggerSize);
+    const { anchor, frameRef, closeMenu, handleCloseComplete, handleToggleMenu, isMenuOpen } = usePopoverMenuAnchor(triggerSize);
 
     return (
         <ActionsMenuContext value={closeMenu}>
-            <View collapsable={false} testID={triggerTestID}>
+            <View ref={frameRef} collapsable={false} testID={triggerTestID}>
                 <HapticPressable
                     className={triggerClassName}
                     onPress={handleToggleMenu}

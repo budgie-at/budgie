@@ -14,16 +14,13 @@ interface Props {
     readonly unit: YieldBucketUnitEnum;
     readonly amount: number;
     readonly x: number;
-    readonly y: number;
     readonly plotWidth: number;
 }
 
 const LABEL_WIDTH = 160;
-const LABEL_HEIGHT = 16;
-const LABEL_GAP = 8;
 const HALF = 2;
 
-export const YieldChartScrubLabel = ({ bucket, unit, amount, x, y, plotWidth }: Props) => {
+export const YieldChartScrubLabel = ({ bucket, unit, amount, x, plotWidth }: Props) => {
     const { formatTick } = useYieldDateLabels();
     const formatAmount = useProtectedAmountLabel();
     const { symbol } = useAtomValue(defaultInstrumentAtom);
@@ -32,7 +29,7 @@ export const YieldChartScrubLabel = ({ bucket, unit, amount, x, y, plotWidth }: 
     const maxLeft = Math.max(plotWidth - LABEL_WIDTH, 0);
     const isStart = centred < 0;
     const isEnd = centred > maxLeft;
-    const style = { left: Math.min(Math.max(centred, 0), maxLeft), top: Math.max(y - LABEL_HEIGHT - LABEL_GAP, 0) };
+    const style = { left: Math.min(Math.max(centred, 0), maxLeft), top: 0 };
     const alignClassName = cn(isStart && 'text-left', isEnd && 'text-right', !isStart && !isEnd && 'text-center');
 
     return (

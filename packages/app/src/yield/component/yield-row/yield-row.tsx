@@ -27,7 +27,7 @@ export const YieldRow = ({ left, title, subtitle, trailing, accessibilityLabel, 
         testID={testID}
     >
         {left}
-        <View className="min-w-0 flex-1 gap-y-xxs">
+        <View className="min-w-0 flex-1 gap-y-xxs pr-sm">
             <Text className="text-[17px] text-primary" numberOfLines={2} maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}>
                 {title}
             </Text>

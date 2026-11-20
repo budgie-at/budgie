@@ -25,8 +25,7 @@ export const YieldChartBarsScrubLabel = ({ summary, totals, layout }: Props) => 
         return null;
     }
 
-    const y = layout.zeroY - total * layout.scale;
     const plotWidth = layout.slot * summary.buckets.length;
 
-    return <YieldChartScrubLabel bucket={bucket} unit={summary.bucketUnit} amount={total} x={x} y={y} plotWidth={plotWidth} />;
+    return <YieldChartScrubLabel bucket={bucket} unit={summary.bucketUnit} amount={total} x={x} plotWidth={plotWidth} />;
 };

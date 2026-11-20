@@ -246,10 +246,6 @@ msgstr "{approximate}{formattedRate} a year"
 msgid "{approxTransactions, plural, one {about # transaction} other {about # transactions}}"
 msgstr "{approxTransactions, plural, one {about # transaction} other {about # transactions}}"
 
-#: src/yield/component/yield-breakdown-crypto-today/yield-breakdown-crypto-today.tsx
-msgid "{arrival} when received"
-msgstr "{arrival} when received"
-
 #: src/budget/components/budget-allocation-block/budget-allocation-block.tsx
 msgid "{assignedLabel} assigned · {incomeLabel} expected"
 msgstr "{assignedLabel} assigned · {incomeLabel} expected"
@@ -261,6 +257,10 @@ msgstr "{assignedLabel} assigned · {incomeLabel} received"
 #: src/import/components/import-column-mapper-modal-content/import-column-mapper-modal-content.tsx
 msgid "{availableCount, plural, one {# column available} other {# columns available}}"
 msgstr "{availableCount, plural, one {# column available} other {# columns available}}"
+
+#: src/yield/hook/use-yield-payout-row-text.hook.ts
+msgid "{baseTitle} · {payoutCount} payouts"
+msgstr "{baseTitle} · {payoutCount} payouts"
 
 #: src/inzhur/component/inzhur-institution-row-detail/inzhur-institution-row-detail.tsx
 msgid "{cashLabel} cash · {fundsLabel}"
@@ -572,6 +572,10 @@ msgstr "{first} matched from sample values."
 msgid "{first}, {second} and {third} matched from sample values."
 msgstr "{first}, {second} and {third} matched from sample values."
 
+#: src/yield/hook/use-yield-payout-row-text.hook.ts
+msgid "{firstDay} – {lastDay}"
+msgstr "{firstDay} – {lastDay}"
+
 #: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
 msgid "{firstMonth}–{lastMonth}"
 msgstr "{firstMonth}–{lastMonth}"
@@ -613,8 +617,8 @@ msgid "{formattedRate} a year"
 msgstr "{formattedRate} a year"
 
 #: src/yield/hook/use-yield-rate-text.hook.ts
-msgid "{formattedRate} annual yield"
-msgstr "{formattedRate} annual yield"
+msgid "{formattedRate} yield · last 365 days"
+msgstr "{formattedRate} yield · last 365 days"
 
 #: src/transaction/components/split-entries-remainder/split-entries-remainder.tsx
 msgid "{formattedRemaining} left to assign"
@@ -681,13 +685,17 @@ msgstr "{held} held"
 msgid "{heldQuantity, plural, one {Only # share held} other {Only # shares held}}"
 msgstr "{heldQuantity, plural, one {Only # share held} other {Only # shares held}}"
 
+#: src/yield/hook/use-yield-scrub-groups-text.hook.ts
+msgid "{hiddenCount, plural, one {+# more} other {+# more}}"
+msgstr "{hiddenCount, plural, one {+# more} other {+# more}}"
+
 #: src/@generic/component/collapsible-stats-section/collapsible-stats-section.tsx
 msgid "{hiddenCount, plural, one {Show # more} other {Show # more}}"
 msgstr "{hiddenCount, plural, one {Show # more} other {Show # more}}"
 
 #: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
-msgid "{holdingCount, plural, one {The last 365 days across # holding. Crypto is measured on your whole balance, staked or not. Distributions count as income, not yield. Holdings marked “Not in yield” are left out.} other {The last 365 days across # holdings. Crypto is measured on your whole balance, staked or not. Distributions count as income, not yield. Holdings marked “Not in yield” are left out.}}"
-msgstr "{holdingCount, plural, one {The last 365 days across # holding. Crypto is measured on your whole balance, staked or not. Distributions count as income, not yield. Holdings marked “Not in yield” are left out.} other {The last 365 days across # holdings. Crypto is measured on your whole balance, staked or not. Distributions count as income, not yield. Holdings marked “Not in yield” are left out.}}"
+msgid "{holdingCount, plural, one {Yield uses the last 365 days across the # holding that has a rate. Crypto is measured on your whole balance, staked or not. Distributions count as income, not yield. Holdings marked “Excluded from yield” are left out.} other {Yield uses the last 365 days across the # holdings that have a rate. Crypto is measured on your whole balance, staked or not. Distributions count as income, not yield. Holdings marked “Excluded from yield” are left out.}}"
+msgstr "{holdingCount, plural, one {Yield uses the last 365 days across the # holding that has a rate. Crypto is measured on your whole balance, staked or not. Distributions count as income, not yield. Holdings marked “Excluded from yield” are left out.} other {Yield uses the last 365 days across the # holdings that have a rate. Crypto is measured on your whole balance, staked or not. Distributions count as income, not yield. Holdings marked “Excluded from yield” are left out.}}"
 
 #: src/app/(main)/import-csv.tsx
 msgid "{importedCount} imported, {failedCount} failed"
@@ -791,8 +799,8 @@ msgid "{month}, out {expenseAmount}, in {incomeAmount}"
 msgstr "{month}, out {expenseAmount}, in {incomeAmount}"
 
 #: src/yield/component/yield-month-header/yield-month-header.tsx
-msgid "{monthLabel} · {totalLabel}"
-msgstr "{monthLabel} · {totalLabel}"
+msgid "{monthLabel} · {totalLabel} earned"
+msgstr "{monthLabel} · {totalLabel} earned"
 
 #: src/transaction/components/statistics-trend-bars/statistics-trend-bars.tsx
 msgid "{monthLabel}: {amountLabel}"
@@ -913,6 +921,10 @@ msgstr "{periodLabel} closed {amount} over"
 #: src/budget/components/budget-period-recap-card/budget-period-recap-card.tsx
 msgid "{periodLabel} closed {amount} under"
 msgstr "{periodLabel} closed {amount} under"
+
+#: src/yield/hook/use-yield-in-progress-text.hook.ts
+msgid "{periodLabel} so far"
+msgstr "{periodLabel} so far"
 
 #: src/budget/components/budget-history-chart/budget-history-chart.tsx
 msgid "{periodLabel}, spent {spentAmount} of {limitAmount}"
@@ -1116,7 +1128,7 @@ msgstr "{subject} rose from {fromLabel} to {toLabel} since {sinceLabel}"
 msgid "{taggedCount, plural, one {# tagged this session} other {# tagged this session}}"
 msgstr "{taggedCount, plural, one {# tagged this session} other {# tagged this session}}"
 
-#: src/yield/component/yield-payout-row/yield-payout-row.tsx
+#: src/yield/hook/use-yield-payout-row-text.hook.ts
 msgid "{taxAmount} tax"
 msgstr "{taxAmount} tax"
 
@@ -1278,20 +1290,16 @@ msgid "≈ {formattedMonths} mo"
 msgstr "≈ {formattedMonths} mo"
 
 #: src/yield/hook/use-yield-rate-text.hook.ts
-msgid "≈ {formattedRate} annual yield"
-msgstr "≈ {formattedRate} annual yield"
+msgid "≈ {formattedRate} yield · last 365 days"
+msgstr "≈ {formattedRate} yield · last 365 days"
 
 #: src/yield/component/yield-legend-estimated-row/yield-legend-estimated-row.tsx
 msgid "≈ Includes estimated prices"
 msgstr "≈ Includes estimated prices"
 
 #: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
-msgid "≈ includes estimated values."
-msgstr "≈ includes estimated values."
-
-#: src/yield/hook/use-yield-in-progress-text.hook.ts
-msgid "◌ {periodLabel} so far"
-msgstr "◌ {periodLabel} so far"
+msgid "≈ means the price was estimated."
+msgstr "≈ means the price was estimated."
 
 #: src/transaction/components/conversion-row/conversion-row.tsx
 msgid "1 {sourceCode} = {formattedRate} {destinationCode}"
@@ -3279,6 +3287,7 @@ msgstr "Close menu"
 
 #: src/account/component/archived-account-trailing/archived-account-trailing.tsx
 #: src/yield/component/yield-section-header/yield-section-header.tsx
+#: src/yield/hook/use-yield-position-rate-text.hook.ts
 msgid "Closed"
 msgstr "Closed"
 
@@ -4780,6 +4789,10 @@ msgstr "Earned {caption}. The change compares the same number of periods just be
 msgid "Earned {rangeCaption}"
 msgstr "Earned {rangeCaption}"
 
+#: src/yield/component/yield-section-header/yield-section-header.tsx
+msgid "earned in {rangeLabel}"
+msgstr "earned in {rangeLabel}"
+
 #: src/yield/component/yield-hero-caption/yield-hero-caption.tsx
 msgid "Earned through {throughDay}"
 msgstr "Earned through {throughDay}"
@@ -5206,6 +5219,14 @@ msgstr "Exchange rate not found"
 msgid "Exchange rate: {rateLabel}"
 msgstr "Exchange rate: {rateLabel}"
 
+#: src/yield/constant/yield-kind-description.constant.ts
+msgid "Exchange savings products · shown under Staking & Earn"
+msgstr "Exchange savings products · shown under Staking & Earn"
+
+#: src/yield/hook/use-yield-position-rate-text.hook.ts
+msgid "Excluded from yield"
+msgstr "Excluded from yield"
+
 #: src/budget/components/budget-limit-source-field/budget-limit-source-field.tsx
 #: src/budget/components/budget-stat-row/budget-stat-row.tsx
 msgid "Expected income"
@@ -5574,6 +5595,10 @@ msgstr "From currency"
 msgid "From one amount to another"
 msgstr "From one amount to another"
 
+#: src/yield/constant/yield-kind-description.constant.ts
+msgid "From savings and deposits"
+msgstr "From savings and deposits"
+
 #: src/recurring/components/recurring-series-form-fields/recurring-series-form-fields.tsx
 msgid "From transaction"
 msgstr "From transaction"
@@ -5597,6 +5622,10 @@ msgstr "Fully funded"
 #: src/inzhur/component/inzhur-purchase-fund-field/inzhur-purchase-fund-field.tsx
 msgid "Fund"
 msgstr "Fund"
+
+#: src/yield/constant/yield-kind-description.constant.ts
+msgid "Fund payouts, counted as income, not yield"
+msgstr "Fund payouts, counted as income, not yield"
 
 #: src/account/component/start-deposit-funding-summary/start-deposit-funding-summary.tsx
 msgid "Funding account"
@@ -5760,16 +5789,16 @@ msgid "Holdings · {holdingsCount}"
 msgstr "Holdings · {holdingsCount}"
 
 #: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
-msgid "Holdings marked “Not in yield” are left out of “Projected next 12 months”."
-msgstr "Holdings marked “Not in yield” are left out of “Projected next 12 months”."
+msgid "Holdings marked “Excluded from yield” are left out of “Projected next 12 months”."
+msgstr "Holdings marked “Excluded from yield” are left out of “Projected next 12 months”."
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Home screen"
 msgstr "Home screen"
 
 #: src/yield/component/yield-empty-state/yield-empty-state.tsx
-msgid "How it's calculated"
-msgstr "How it's calculated"
+msgid "How it’s calculated"
+msgstr "How it’s calculated"
 
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "How to compare"
@@ -6092,6 +6121,7 @@ msgstr "Installment plan"
 
 #: src/yield/constant/yield-group-label.constant.ts
 #: src/yield/constant/yield-kind-label.constant.ts
+#: src/yield/hook/use-yield-position-subtitle.hook.ts
 msgid "Interest"
 msgstr "Interest"
 
@@ -7437,6 +7467,10 @@ msgstr "Not backed up to iCloud yet"
 msgid "Not counted as income"
 msgstr "Not counted as income"
 
+#: src/yield/constant/yield-kind-description.constant.ts
+msgid "Not counted as passive income"
+msgstr "Not counted as passive income"
+
 #: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
 msgid "Not counted as spending"
 msgstr "Not counted as spending"
@@ -7484,10 +7518,6 @@ msgstr "Not enough price history"
 #: src/brokerage/component/security-trade-form/security-trade-form.tsx
 msgid "Not enough shares held on the trade date"
 msgstr "Not enough shares held on the trade date"
-
-#: src/yield/hook/use-yield-position-rate-text.hook.ts
-msgid "Not in yield"
-msgstr "Not in yield"
 
 #: src/transaction/components/transaction-info-yield-source-row/transaction-info-yield-source-row.tsx
 msgid "Not linked"
@@ -8095,6 +8125,10 @@ msgstr "Paid"
 msgid "Paid {paidAmount} · {paidCount} of {installmentCount}"
 msgstr "Paid {paidAmount} · {paidCount} of {installmentCount}"
 
+#: src/yield/constant/yield-kind-description.constant.ts
+msgid "Paid by stocks or ETFs"
+msgstr "Paid by stocks or ETFs"
+
 #: src/transaction/components/transaction-info-debt-progress/transaction-info-debt-progress.tsx
 msgid "Paid to date: {paid}"
 msgstr "Paid to date: {paid}"
@@ -8127,6 +8161,7 @@ msgstr "Partial value — some prices unavailable"
 #: src/yield/component/yield-collapsed-title/yield-collapsed-title.tsx
 #: src/yield/component/yield-entry-row-content/yield-entry-row-content.tsx
 #: src/yield/component/yield-screen-title/yield-screen-title.tsx
+#: src/yield/hook/use-yield-position-subtitle.hook.ts
 msgid "Passive income"
 msgstr "Passive income"
 
@@ -9147,9 +9182,13 @@ msgstr "Review sync settings"
 msgid "Revolut"
 msgstr "Revolut"
 
+#: src/yield/constant/yield-kind-description.constant.ts
+msgid "Rewards for staking crypto · shown under Staking & Earn"
+msgstr "Rewards for staking crypto · shown under Staking & Earn"
+
 #: src/yield/component/yield-breakdown-crypto-today/yield-breakdown-crypto-today.tsx
-msgid "Rewards at today’s price"
-msgstr "Rewards at today’s price"
+msgid "Rewards now worth"
+msgstr "Rewards now worth"
 
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
 msgid "Right now anyone who can unlock your phone can open Budgie. With a PIN, the file itself is encrypted and only opens with it."
@@ -9898,6 +9937,10 @@ msgstr "Smart suggestions"
 msgid "SmartBudget"
 msgstr "SmartBudget"
 
+#: src/yield/hook/use-yield-analytics-period-text.hook.ts
+msgid "so far {periodLabel}"
+msgstr "so far {periodLabel}"
+
 #: src/inzhur/component/inzhur-operations-fund-row/inzhur-operations-fund-row.tsx
 msgid "Sold {soldLabel}"
 msgstr "Sold {soldLabel}"
@@ -10400,6 +10443,10 @@ msgstr "Tax {taxLabel}"
 #: src/yield/constant/yield-kind-label.constant.ts
 msgid "Tax withheld"
 msgstr "Tax withheld"
+
+#: src/yield/constant/yield-kind-description.constant.ts
+msgid "Tax withheld from a payout"
+msgstr "Tax withheld from a payout"
 
 #: src/account/constant/account-kind-title.constant.ts
 msgid "Term deposit"
@@ -11667,6 +11714,10 @@ msgstr "Wallets you track yourself"
 msgid "Warning"
 msgstr "Warning"
 
+#: src/yield/hook/use-yield-position-rate-text.hook.ts
+msgid "Was {approximate}{formattedRate} a year"
+msgstr "Was {approximate}{formattedRate} a year"
+
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "We never see your PIN, and there’s no account to reset it through. {noResetSentence}"
 msgstr "We never see your PIN, and there’s no account to reset it through. {noResetSentence}"
@@ -11703,6 +11754,10 @@ msgstr "Weekly budget"
 #: src/recurring/components/recurring-form-custom-cadence/recurring-form-custom-cadence.tsx
 msgid "Weeks"
 msgstr "Weeks"
+
+#: src/yield/component/yield-breakdown-crypto-today/yield-breakdown-crypto-today.tsx
+msgid "Were {arrival} when received"
+msgstr "Were {arrival} when received"
 
 #: src/inzhur/hook/use-format-inzhur-pending-top-up.hook.ts
 msgid "What did you buy?"

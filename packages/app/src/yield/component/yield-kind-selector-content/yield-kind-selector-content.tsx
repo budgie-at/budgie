@@ -24,9 +24,9 @@ export const YieldKindSelectorContent = ({ params, onCommit }: Props) => {
     return (
         <SheetSurface className="flex-none pt-lg" contentClassName="flex-none">
             <View className="px-xl pb-lg">
-                <SheetTitleRow title={t`Kind`} />
+                <SheetTitleRow title={t`Kind`} trailing={<View />} />
             </View>
-            <View className="gap-y-xl px-3xl pb-xl">
+            <View className="gap-y-xl px-3xl pb-[32px]">
                 {sections.map(section => (
                     <GroupedListSection key={section.kinds.join('-')}>
                         {section.kinds.map(kind => (

@@ -13,7 +13,6 @@ const MIN_SEGMENT_HEIGHT = 3;
 const SEGMENT_GAP = 2;
 const NARROW_SEGMENT_GAP = 1;
 const NARROW_BAR_WIDTH = 8;
-const TICK_HEIGHT = 1;
 
 const buildGroupRecord = (): Record<YieldGroupEnum, YieldBarRectInterface[]> => ({
     [YieldGroupEnum.STAKING_EARN]: [],
@@ -85,16 +84,21 @@ export const buildYieldBarLayout = ({
                 width: barWidth,
                 height: drawn,
                 radius: buildRadius(drawn, isTop),
+                bottomRadius: 0,
                 isInProgress: bucket.isInProgress
             });
             bottom -= segment;
         });
 
-        tax.push(
-            topIndex < 0 && taxHeight === 0
-                ? { x: left, y: zeroY - TICK_HEIGHT, width: barWidth, height: TICK_HEIGHT, radius: 0, isInProgress: bucket.isInProgress }
-                : { x: left, y: zeroY, width: barWidth, height: taxHeight, radius: 0, isInProgress: bucket.isInProgress }
-        );
+        tax.push({
+            x: left,
+            y: zeroY,
+            width: barWidth,
+            height: taxHeight,
+            radius: 0,
+            bottomRadius: buildRadius(taxHeight, true),
+            isInProgress: bucket.isInProgress
+        });
     });
 
     return { xs, slot, barWidth, zeroY, scale, groups, tax };

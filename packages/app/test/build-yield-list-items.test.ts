@@ -82,7 +82,7 @@ it.effect('lists active, closed and unassigned sections in order', () =>
             'position-1',
             `section-${YieldListSectionEnum.UNASSIGNED}`
         ]);
-        expect(items.slice(-2).map(item => item.kind)).toEqual([YieldListItemKindEnum.MONTH, YieldListItemKindEnum.PAYOUT]);
+        expect(items.slice(-1).map(item => item.kind)).toEqual([YieldListItemKindEnum.PAYOUT]);
         expect(items.at(-1)).toMatchObject({ kind: YieldListItemKindEnum.PAYOUT, isUnassigned: true });
     })
 );
@@ -120,7 +120,6 @@ it.effect('groups payouts by month with the income total and folds each tax into
             YieldListItemKindEnum.MONTH,
             YieldListItemKindEnum.PAYOUT,
             YieldListItemKindEnum.PAYOUT,
-            YieldListItemKindEnum.MONTH,
             YieldListItemKindEnum.PAYOUT
         ]);
         expect(items.filter(item => item.kind === YieldListItemKindEnum.PAYOUT).map(item => item.id)).toEqual([
@@ -140,5 +139,24 @@ it.effect('keeps unmatched tax as its own row', () =>
         const items = buildYieldListItems([], [payout(3, YieldKindEnum.TAX)], 'caption', true);
 
         expect(items.filter(item => item.kind === YieldListItemKindEnum.PAYOUT)).toMatchObject([{ id: 'payout-3', tax: null }]);
+    })
+);
+
+it.effect('merges three or more payouts sharing a source and kind into one row', () =>
+    Effect.sync(() => {
+        const days = [10, 11, 12].map(day => new Date(`2026-10-${day}T12:00:00Z`));
+        const items = buildYieldListItems(
+            [],
+            [...days.map((day, index) => payout(index + 1, null, day)), payout(9, null, new Date('2026-10-13T12:00:00Z'))].map(
+                (item, index) => (index === 3 ? { ...item, title: 'Other' } : item)
+            ),
+            'caption',
+            true
+        );
+        const payouts = items.filter(item => item.kind === YieldListItemKindEnum.PAYOUT);
+
+        expect(payouts).toHaveLength(2);
+        expect(payouts.at(0)).toMatchObject({ siblings: [{ id: 1 }, { id: 2 }, { id: 3 }] });
+        expect(payouts.at(1)).toMatchObject({ siblings: [] });
     })
 );

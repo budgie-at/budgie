@@ -7,8 +7,13 @@ import { isDefined } from '@rnw-community/shared';
 import { CHROME_TITLE_TEXT_PROPS } from '../../../@generic/constant/chrome-title-text-props.constant';
 import { YieldScreenContext } from '../../context/yield-screen.context';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
+import { YieldFilterChipRow } from '../yield-filter-chip-row/yield-filter-chip-row';
 
-export const YieldScreenTitle = () => {
+interface Props {
+    readonly hasYield: boolean;
+}
+
+export const YieldScreenTitle = ({ hasYield }: Props) => {
     const { screenKey } = use(YieldScreenContext);
 
     const isFiltered = isDefined(screenKey.scopeId) || isDefined(screenKey.key.group);
@@ -18,8 +23,9 @@ export const YieldScreenTitle = () => {
             <Text testID={PassiveIncomeSelector.Title} className="text-3xl font-semibold text-primary" {...CHROME_TITLE_TEXT_PROPS}>
                 <Trans>Passive income</Trans>
             </Text>
-            {isFiltered ? null : (
-                <Text testID={PassiveIncomeSelector.Subtitle} className="text-sm text-secondary-foreground">
+            {isFiltered && hasYield ? <YieldFilterChipRow /> : null}
+            {isFiltered || !hasYield ? null : (
+                <Text testID={PassiveIncomeSelector.Subtitle} className="text-sm text-secondary-foreground" maxFontSizeMultiplier={1.6}>
                     <Trans>All holdings</Trans>
                 </Text>
             )}

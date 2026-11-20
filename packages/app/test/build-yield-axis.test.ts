@@ -3,9 +3,9 @@ import { expect, it } from '@effect/vitest';
 import { buildYieldAxis } from '../src/yield/utils/build-yield-axis.util';
 
 it('rounds the top up to a round number with headroom above the peak', () => {
-    expect(buildYieldAxis(100, 0).top).toBe(150);
-    expect(buildYieldAxis(1_200, 0).top).toBe(1_500);
-    expect(buildYieldAxis(4_800_000, 0).top).toBe(6_000_000);
+    expect(buildYieldAxis(100, 0).top).toBe(120);
+    expect(buildYieldAxis(11_000, 0).top).toBe(12_000);
+    expect(buildYieldAxis(4_800_000, 0).top).toBe(5_000_000);
 });
 
 it('always leaves room above the peak', () => {

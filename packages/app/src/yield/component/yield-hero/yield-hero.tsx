@@ -40,15 +40,12 @@ export const YieldHero = () => {
 
     return (
         <View className="gap-y-xs" accessible accessibilityLabel={sentence} testID={PassiveIncomeSelector.Hero}>
-            <View className="min-h-[18px] flex-row items-center">
-                <View className="shrink">
-                    <YieldHeroCaption summary={summary} bucket={bucket} />
-                </View>
+            <YieldHeroCaption summary={summary} bucket={bucket}>
                 <YieldHeroInfoButton />
-            </View>
+            </YieldHeroCaption>
 
             <HeroFigureLockContext value={figureLock}>
-                <Animated.View key={figureKey} entering={FadeIn.duration(MOTION_FAST_DURATION)}>
+                <Animated.View key={figureKey} entering={FadeIn.duration(MOTION_FAST_DURATION)} className="px-xs">
                     <HeroFigure
                         amount={amount}
                         currencySymbol={symbol}

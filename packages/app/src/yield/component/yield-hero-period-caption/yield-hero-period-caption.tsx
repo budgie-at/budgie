@@ -12,12 +12,14 @@ import { yieldPeriodEarnedFamily } from '../../constant/yield-period-earned-fami
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 
 import type { YieldPeriodInterface } from '../../interface/yield-period.interface';
+import type { ReactNode } from 'react';
 
 interface Props {
     readonly period: YieldPeriodInterface;
+    readonly children?: ReactNode;
 }
 
-export const YieldHeroPeriodCaption = ({ period }: Props) => {
+export const YieldHeroPeriodCaption = ({ period, children }: Props) => {
     const { t } = useLingui();
     const formatDateRange = useFormatDateRange();
     const formatAmount = useProtectedAmountLabel();
@@ -30,6 +32,7 @@ export const YieldHeroPeriodCaption = ({ period }: Props) => {
     return (
         <Text testID={PassiveIncomeSelector.Caption} numberOfLines={3} className="text-[13px] text-secondary-foreground">
             {t`${label}: ${amount}`}
+            {children}
         </Text>
     );
 };

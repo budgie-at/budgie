@@ -6,4 +6,5 @@ export interface YieldBarLayerInterface {
     readonly offset: number;
     readonly rects: readonly YieldBarRectInterface[];
     readonly fillClassName: string;
+    readonly fillOpacity: number;
 }

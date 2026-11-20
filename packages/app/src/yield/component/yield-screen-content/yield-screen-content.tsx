@@ -25,7 +25,7 @@ export const YieldScreenContent = ({ state, hasYield }: Props) => (
 
             <CollapsibleChromeHeader
                 leading={<HeaderBackButton />}
-                expandedTitle={<YieldScreenTitle />}
+                expandedTitle={<YieldScreenTitle hasYield={hasYield} />}
                 expandedTitlePointerEvents="box-none"
                 collapsedTitle={<YieldCollapsedTitle />}
             />

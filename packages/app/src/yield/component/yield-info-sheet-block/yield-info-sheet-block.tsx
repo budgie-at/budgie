@@ -11,7 +11,7 @@ interface Props {
 export const YieldInfoSheetBlock = ({ title, body, children }: Props) => (
     <View className="gap-y-xs">
         <Text className="text-[15px] font-semibold leading-[20px] text-primary">{title}</Text>
-        <Text className="text-[15px] leading-[20px] text-secondary-foreground">{body}</Text>
+        <Text className="text-[15px] leading-[20px] text-primary">{body}</Text>
         {children}
     </View>
 );

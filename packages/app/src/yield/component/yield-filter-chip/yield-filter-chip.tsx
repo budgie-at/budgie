@@ -18,17 +18,17 @@ export const YieldFilterChip = ({ label, accessibilityLabel, onPress, testID, la
         accessibilityRole="button"
         accessibilityLabel={accessibilityLabel}
         onPress={onPress}
-        className="min-h-[44px] max-w-full shrink justify-center"
+        className="min-h-[44px] min-w-[44px] max-w-full shrink justify-center"
         testID={testID}
     >
         <View
-            className="min-h-[32px] shrink flex-row items-center gap-x-xs rounded-full border border-secondary-corner bg-secondary-background px-md py-xs"
+            className="min-h-[36px] shrink flex-row items-center gap-x-xs rounded-full border border-secondary-corner bg-secondary-background px-md py-xs"
             style={continuousBorder}
         >
             <Text testID={labelTestID} numberOfLines={1} className="shrink text-sm font-semibold text-primary" maxFontSizeMultiplier={2}>
                 {label}
             </Text>
-            <Icon icon={UserIconNameEnum.X} size={12} className="text-secondary-foreground" />
+            <Icon icon={UserIconNameEnum.X} size={16} className="text-secondary-foreground" />
         </View>
     </Pressable>
 );

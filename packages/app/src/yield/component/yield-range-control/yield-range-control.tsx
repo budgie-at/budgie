@@ -51,6 +51,7 @@ export const YieldRangeControl = () => {
             <ActionsMenu
                 accessibilityLabel={t`Range, ${currentLabel}`}
                 triggerTestID={PassiveIncomeSelector.RangeMenu}
+                triggerSize={44}
                 triggerClassName="min-h-[44px] items-center justify-center rounded-3xl bg-grouped-surface-row px-3xl"
                 trigger={
                     <View className="flex-row items-center gap-x-xs">

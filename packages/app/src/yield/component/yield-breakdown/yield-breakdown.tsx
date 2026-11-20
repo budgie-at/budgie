@@ -1,4 +1,5 @@
 import { use } from 'react';
+import { View } from 'react-native';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
@@ -20,24 +21,28 @@ export const YieldBreakdown = () => {
     }
 
     const { runRate, cryptoRewardsToday, vsRate } = summary;
-    const hasRows =
-        isPositiveNumber(summary.tax) ||
-        isDefined(runRate) ||
-        isDefined(cryptoRewardsToday) ||
-        isDefined(vsRate) ||
-        isDefined(screenKey.scopeId);
+    const hasOpenRow = isDefined(screenKey.scopeId) && screenKey.from !== screenKey.scopeId;
+    const hasSummaryRows = isPositiveNumber(summary.tax) || isDefined(runRate) || isDefined(cryptoRewardsToday) || isDefined(vsRate);
 
-    if (!hasRows) {
+    if (!hasOpenRow && !hasSummaryRows) {
         return null;
     }
 
     return (
-        <GroupedListSection>
-            <YieldOpenPositionRow />
-            {isPositiveNumber(summary.tax) ? <YieldBreakdownNet net={summary.net} /> : null}
-            {isDefined(runRate) ? <YieldBreakdownRunRate runRate={runRate} /> : null}
-            {isDefined(cryptoRewardsToday) ? <YieldBreakdownCryptoToday rewards={cryptoRewardsToday} /> : null}
-            {isDefined(vsRate) ? <YieldBreakdownVsRate vsRate={vsRate} /> : null}
-        </GroupedListSection>
+        <View className="gap-y-[12px]">
+            {hasOpenRow ? (
+                <GroupedListSection>
+                    <YieldOpenPositionRow />
+                </GroupedListSection>
+            ) : null}
+            {hasSummaryRows ? (
+                <GroupedListSection>
+                    {isPositiveNumber(summary.tax) ? <YieldBreakdownNet net={summary.net} /> : null}
+                    {isDefined(runRate) ? <YieldBreakdownRunRate runRate={runRate} /> : null}
+                    {isDefined(cryptoRewardsToday) ? <YieldBreakdownCryptoToday rewards={cryptoRewardsToday} /> : null}
+                    {isDefined(vsRate) ? <YieldBreakdownVsRate vsRate={vsRate} /> : null}
+                </GroupedListSection>
+            ) : null}
+        </View>
     );
 };

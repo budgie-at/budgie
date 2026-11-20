@@ -14,10 +14,13 @@ import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hoo
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { yieldSummaryFamily } from '../../constant/yield-summary-family-atom.constant';
-import { useYieldAnalyticsPeriodLabel } from '../../hook/use-yield-analytics-period-label.hook';
+import { YieldHeroTrendEnum } from '../../enum/yield-hero-trend.enum';
+import { useYieldAnalyticsPeriodText } from '../../hook/use-yield-analytics-period-text.hook';
 import { useYieldAnalyticsTakeaway } from '../../hook/use-yield-analytics-takeaway.hook';
+import { useYieldHeroTrend } from '../../hook/use-yield-hero-trend.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 import { YieldChartMini } from '../yield-chart-mini/yield-chart-mini';
+import { YieldDeltaPill } from '../yield-delta-pill/yield-delta-pill';
 
 import type { YieldAnalyticsFocusInterface } from '../../interface/yield-analytics-focus.interface';
 import type { YieldPeriodInterface } from '../../interface/yield-period.interface';
@@ -42,8 +45,9 @@ export const PassiveIncomeAnalyticsCardContent = ({ earned, focus, period }: Pro
         () => null
     );
 
-    const periodLabel = useYieldAnalyticsPeriodLabel(focus, period);
+    const periodText = useYieldAnalyticsPeriodText(summary, focus, period);
     const takeaway = useYieldAnalyticsTakeaway(summary, focus.range);
+    const { trend } = useYieldHeroTrend(summary);
 
     const handlePress = () =>
         void router.push({
@@ -63,7 +67,7 @@ export const PassiveIncomeAnalyticsCardContent = ({ earned, focus, period }: Pro
         [YieldRangeEnum.YEAR]: t`Last 12 months`,
         [YieldRangeEnum.ALL]: t`All time`
     };
-    const accessibilityLabel = `${title}, ${approximate}${amount} ${periodLabel}${isDefined(takeaway) ? `, ${takeaway}` : ''}`;
+    const accessibilityLabel = `${title}, ${approximate}${amount} ${periodText}${isDefined(takeaway) ? `, ${takeaway}` : ''}`;
 
     return (
         <HapticPressable
@@ -84,7 +88,7 @@ export const PassiveIncomeAnalyticsCardContent = ({ earned, focus, period }: Pro
                         {approximate}
                         {amount}
                     </Text>
-                    {` ${periodLabel}`}
+                    {` ${periodText}`}
                 </Text>
                 <Text className="text-xs text-secondary-foreground" maxFontSizeMultiplier={1.5}>
                     {chartTitles[focus.range]}
@@ -96,9 +100,7 @@ export const PassiveIncomeAnalyticsCardContent = ({ earned, focus, period }: Pro
                 <View className="h-[32px]" />
             )}
             {isDefined(takeaway) ? (
-                <Text className="text-xs font-medium tabular-nums text-secondary-foreground" maxFontSizeMultiplier={1.5}>
-                    {takeaway}
-                </Text>
+                <YieldDeltaPill label={takeaway} isPositive={trend !== YieldHeroTrendEnum.DOWN} maxFontSizeMultiplier={1.5} />
             ) : null}
         </HapticPressable>
     );

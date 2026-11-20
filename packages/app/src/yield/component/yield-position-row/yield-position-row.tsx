@@ -1,4 +1,5 @@
 import { InstrumentTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { YieldPositionSectionEnum } from '@budgie/market';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
@@ -33,6 +34,7 @@ interface Props {
         | 'annualYield'
         | 'accruing'
         | 'deadline'
+        | 'section'
     >;
     readonly rangeCaption: string;
     readonly rowPosition: TransactionListRowPositionEnum;
@@ -45,7 +47,7 @@ export const YieldPositionRow = ({ position, rangeCaption, rowPosition }: Props)
     const formatAmount = useProtectedAmountLabel();
     const { symbol } = useAtomValue(defaultInstrumentAtom);
     const subtitle = useYieldPositionSubtitle(position);
-    const rateText = useYieldPositionRateText(position.annualYield);
+    const rateText = useYieldPositionRateText(position.annualYield, position.section === YieldPositionSectionEnum.CLOSED);
 
     const handlePress = () => void router.setParams({ position: String(position.accountId), instrument: '', group: '' });
 

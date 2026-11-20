@@ -31,7 +31,8 @@ export const YieldChartAxisLabels = ({ axis, width, height }: Props) => {
     const labels = [
         { key: 'top', y: 0, text: format(axis.top) },
         { key: 'mid', y: zeroY / HALF, text: format(axis.top / HALF) },
-        { key: 'zero', y: zeroY, text: ZERO_LABEL }
+        { key: 'zero', y: zeroY, text: ZERO_LABEL },
+        ...(axis.bottom < 0 ? [{ key: 'bottom', y: height, text: `−${format(-axis.bottom)}` }] : [])
     ].map(({ key, y, text }) => ({
         key,
         text,

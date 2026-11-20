@@ -1,5 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
@@ -32,7 +32,7 @@ export const YieldRangeMenuItem = ({ range, label, isCurrent, onSelect }: Props)
             testID={PassiveIncomeSelector.Range(range)}
         >
             <Text className="shrink text-base font-medium text-primary">{label}</Text>
-            {isCurrent ? <Icon icon={UserIconNameEnum.Check} size={20} className="text-primary" /> : null}
+            {isCurrent ? <Icon icon={UserIconNameEnum.Check} size={20} className="text-primary" /> : <View className="h-[20px] w-[20px]" />}
         </HapticPressable>
     );
 };

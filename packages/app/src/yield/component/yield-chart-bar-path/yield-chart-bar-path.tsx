@@ -14,23 +14,30 @@ interface Props {
     readonly offset: number;
     readonly rects: readonly YieldBarRectInterface[];
     readonly fillClassName: string;
+    readonly fillOpacity?: number;
     readonly isInProgress?: boolean;
     readonly strokeWidth?: number;
 }
 
-const SOLID_PAINT = { fillOpacity: 1, strokeWidth: 0 } as const;
-
-export const YieldChartBarPath = ({ values, offset, rects, fillClassName, isInProgress = false, strokeWidth = 1 }: Props) => {
+export const YieldChartBarPath = ({
+    values,
+    offset,
+    rects,
+    fillClassName,
+    fillOpacity = 1,
+    isInProgress = false,
+    strokeWidth = 1
+}: Props) => {
     const animatedProps = useAnimatedProps(() => ({ [PATH_PROP]: buildYieldBarsPath(values.get(), offset, rects, isInProgress) }));
 
     const paint = isInProgress
         ? {
-              fillOpacity: YIELD_IN_PROGRESS_FILL_OPACITY,
+              fillOpacity: YIELD_IN_PROGRESS_FILL_OPACITY * fillOpacity,
               strokeClassName: fillClassName,
               strokeWidth,
               strokeDasharray: YIELD_IN_PROGRESS_DASH
           }
-        : SOLID_PAINT;
+        : { fillOpacity, strokeWidth: 0 };
 
     return <AnimatedStyledPath animatedProps={animatedProps} fillClassName={fillClassName} {...paint} />;
 };

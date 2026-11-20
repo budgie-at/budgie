@@ -65,7 +65,7 @@ it('merges a segment under 3 pt into the one above and draws tax below zero', ()
     expect(layout.tax[0]).toMatchObject({ y: 200, height: 40 });
 });
 
-it('draws a 1 pt tick for an empty bucket and 1 pt gaps on narrow bars', () => {
+it('draws nothing for an empty bucket and 1 pt gaps on narrow bars', () => {
     const narrow = buildYieldBarLayout({
         buckets: Array.from({ length: 30 }, () => bucket(10, 10)),
         visibleGroups: VISIBLE,
@@ -83,7 +83,7 @@ it('draws a 1 pt tick for an empty bucket and 1 pt gaps on narrow bars', () => {
 
     expect(narrow.groups[YieldGroupEnum.STAKING_EARN][0]?.height).toBe(99);
     expect(empty.groups[YieldGroupEnum.STAKING_EARN][0]?.height).toBe(0);
-    expect(empty.tax[0]).toMatchObject({ y: 199, height: 1 });
+    expect(empty.tax[0]).toMatchObject({ y: 200, height: 0 });
 });
 
 it('merges on the drawn height so no visible segment is shorter than 3 pt', () => {

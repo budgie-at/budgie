@@ -23,8 +23,8 @@ export const YieldBreakdownCryptoToday = ({ rewards }: Props) => {
 
     return (
         <YieldBreakdownRow
-            title={t`Rewards at today’s price`}
-            subtitle={t`${arrival} when received`}
+            title={t`Rewards now worth`}
+            subtitle={t`Were ${arrival} when received`}
             value={value}
             testID={PassiveIncomeSelector.CryptoToday}
         />

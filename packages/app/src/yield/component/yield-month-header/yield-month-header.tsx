@@ -24,7 +24,7 @@ export const YieldMonthHeader = ({ month, total }: Props) => {
     return (
         <View className="px-3xl pt-xl pb-sm">
             <Text accessibilityRole="header" className="text-[15px] font-semibold tabular-nums text-secondary-foreground">
-                {t`${monthLabel} · ${totalLabel}`}
+                {t`${monthLabel} · ${totalLabel} earned`}
             </Text>
         </View>
     );

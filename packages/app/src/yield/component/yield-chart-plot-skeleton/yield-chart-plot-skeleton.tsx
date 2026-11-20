@@ -26,7 +26,7 @@ export const YieldChartPlotSkeleton = () => {
     return (
         <Animated.View
             style={pulseStyle}
-            className="h-[200px] flex-row items-end gap-x-xs"
+            className="h-[220px] flex-row pt-[20px] items-end gap-x-xs"
             pointerEvents="none"
             accessibilityState={BUSY_STATE}
             importantForAccessibility="no-hide-descendants"

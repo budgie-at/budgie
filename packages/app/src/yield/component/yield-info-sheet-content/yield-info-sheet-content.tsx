@@ -34,11 +34,11 @@ export const YieldInfoSheetContent = ({ screenKey }: Props) => {
     const holdingCount = summary?.annualYield.holdingCount ?? 0;
     const yieldText = t({
         message: plural(holdingCount, {
-            one: 'The last 365 days across # holding. Crypto is measured on your whole balance, staked or not. Distributions count as income, not yield. Holdings marked “Not in yield” are left out.',
-            other: 'The last 365 days across # holdings. Crypto is measured on your whole balance, staked or not. Distributions count as income, not yield. Holdings marked “Not in yield” are left out.'
+            one: 'Yield uses the last 365 days across the # holding that has a rate. Crypto is measured on your whole balance, staked or not. Distributions count as income, not yield. Holdings marked “Excluded from yield” are left out.',
+            other: 'Yield uses the last 365 days across the # holdings that have a rate. Crypto is measured on your whole balance, staked or not. Distributions count as income, not yield. Holdings marked “Excluded from yield” are left out.'
         })
     });
-    const projectedText = t`Holdings marked “Not in yield” are left out of “Projected next 12 months”.`;
+    const projectedText = t`Holdings marked “Excluded from yield” are left out of “Projected next 12 months”.`;
     const causes = groupYieldEstimateCauses(summary?.estimateCauses ?? []).map(cause => {
         const days = t({ message: plural(cause.dayCount, { one: '# day', other: '# days' }) });
         const { instrumentCode } = cause;
@@ -59,11 +59,11 @@ export const YieldInfoSheetContent = ({ screenKey }: Props) => {
             <YieldInfoSheetBlock title={t`Earned`} body={earnedText} />
             <YieldInfoSheetBlock title={t`Yield`} body={yieldText} />
             <YieldInfoSheetBlock title={t`Projected`} body={projectedText} />
-            <YieldInfoSheetBlock title={t`Estimates`} body={t`≈ includes estimated values.`}>
+            <YieldInfoSheetBlock title={t`Estimates`} body={t`≈ means the price was estimated.`}>
                 {isNotEmptyArray(causes) ? (
                     <View className="gap-y-xs">
                         {causes.map(cause => (
-                            <Text key={cause} className="text-sm text-secondary-foreground">
+                            <Text key={cause} className="text-[15px] leading-[20px] text-secondary-foreground">
                                 {cause}
                             </Text>
                         ))}
