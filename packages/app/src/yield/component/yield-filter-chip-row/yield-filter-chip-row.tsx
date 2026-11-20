@@ -17,7 +17,7 @@ export const YieldFilterChipRow = () => {
     }
 
     return (
-        <View className="-my-[12px] -ml-[40px] min-h-[44px] flex-row flex-wrap items-center gap-x-sm">
+        <View className="h-[32px] flex-row items-center gap-x-sm">
             {isDefined(screenKey.scopeId) ? <YieldScopeFilterChip /> : null}
             {isDefined(group) ? <YieldKindFilterChip group={group} /> : null}
         </View>

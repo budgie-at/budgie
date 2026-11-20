@@ -18,7 +18,7 @@ const BAR_CLASSNAME = 'flex-1 rounded-[2px]';
 const FOCUSED_CLASSNAME = 'bg-yield-staking';
 const NEUTRAL_CLASSNAME = 'bg-secondary-foreground';
 const IN_PROGRESS_CLASSNAME =
-    'border border-dashed border-secondary-foreground/70 bg-secondary-foreground/35 dark:bg-secondary-foreground/55';
+    'border-[1.5px] border-dashed border-secondary-foreground/70 bg-secondary-foreground/40 dark:bg-secondary-foreground/55';
 
 export const YieldChartMiniBar = ({ bucket, max, focusDay }: Props) => {
     const share = isPositiveNumber(max) ? bucket.total / max : 0;

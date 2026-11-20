@@ -1,3 +1,4 @@
+import { YieldGroupEnum } from '@budgie/market';
 import { use } from 'react';
 
 import { isDefined } from '@rnw-community/shared';
@@ -23,6 +24,7 @@ interface Props {
 }
 
 const VALUES_PER_RECT = 2;
+const SELECTED_TAX_FILL_OPACITY = 0.75;
 
 export const YieldChartBars = ({ width, summary }: Props) => {
     const { screenKey } = use(YieldScreenContext);
@@ -47,7 +49,11 @@ export const YieldChartBars = ({ width, summary }: Props) => {
         [false, true].flatMap(isInProgress =>
             layers.map(layer => ({
                 key: `${key}-${isInProgress}-${layer.group}`,
-                layer: { ...layer, opacityScale },
+                layer: {
+                    ...layer,
+                    opacityScale,
+                    ...(key === 'selected' && layer.group === YieldGroupEnum.TAX && { fillOpacity: SELECTED_TAX_FILL_OPACITY })
+                },
                 isInProgress,
                 visibleBuckets
             }))

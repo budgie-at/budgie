@@ -17,30 +17,31 @@ import { YieldLegendEntry } from '../yield-legend-entry/yield-legend-entry';
 import type { YieldGroupEnum } from '@budgie/market';
 
 const ROW_STYLE = { minHeight: YIELD_LEGEND_ROW_HEIGHT };
-const EMPTY_AMOUNT = '—';
 const AMOUNT_CLASSNAME = 'text-right text-sm font-semibold tabular-nums text-primary';
+const DIMMED_AMOUNT_CLASSNAME = 'text-right text-sm tabular-nums text-secondary-foreground';
+const ROW_HIT_SLOP = { top: 6, bottom: 6 };
 
 interface Props {
     readonly group: YieldGroupEnum;
     readonly total: number;
     readonly share: number;
-    readonly compactThreshold: number;
+    readonly divisor: number;
     readonly onPress: (group: YieldGroupEnum) => void;
 }
 
-export const YieldLegendRow = ({ group, total, share, compactThreshold, onPress }: Props) => {
+export const YieldLegendRow = ({ group, total, share, divisor, onPress }: Props) => {
     const { t } = useLingui();
     const { screenKey } = use(YieldScreenContext);
     const { selectedIndex } = use(YieldSelectionContext);
 
+    const hasFilter = isDefined(screenKey.key.group);
     const isSelected = screenKey.key.group === group;
-    const isDimmed = isDefined(screenKey.key.group) && !isSelected;
-    const amounts = useYieldLegendAmounts(total, share, compactThreshold);
-    const label = t(YIELD_GROUP_LABEL[group]);
+    const isDimmed = hasFilter && !isSelected;
     const isEmpty = isDefined(selectedIndex) && !isPositiveNumber(total);
-    const exactAmount = isEmpty ? EMPTY_AMOUNT : amounts.exact;
-    const amount = isEmpty ? EMPTY_AMOUNT : amounts.amount;
-    const shareText = isDimmed && !isEmpty ? amounts.share : null;
+    const { exact: exactAmount, amount, share: formattedShare } = useYieldLegendAmounts(total, share, divisor, isEmpty);
+    const label = t(YIELD_GROUP_LABEL[group]);
+    const shareText = hasFilter && !isEmpty ? formattedShare : null;
+    const amountClassName = isDimmed ? DIMMED_AMOUNT_CLASSNAME : AMOUNT_CLASSNAME;
     const rowClassName = cn(
         'w-full',
         'flex-row',
@@ -66,12 +67,13 @@ export const YieldLegendRow = ({ group, total, share, compactThreshold, onPress 
             testID={PassiveIncomeSelector.LegendRow(group)}
             className={rowClassName}
             style={ROW_STYLE}
+            hitSlop={ROW_HIT_SLOP}
         >
             <YieldLegendEntry
                 group={group}
                 label={label}
                 amount={amount}
-                amountClassName={AMOUNT_CLASSNAME}
+                amountClassName={amountClassName}
                 share={shareText}
                 isMuted={isDimmed}
                 isEmpty={isEmpty}

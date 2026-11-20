@@ -9,6 +9,7 @@ import type { MessageDescriptor } from '@lingui/core';
 
 interface Props {
     readonly section: YieldListSectionEnum;
+    readonly hasTax: boolean;
 }
 
 const SECTION_TITLE: Readonly<Record<YieldListSectionEnum, MessageDescriptor>> = {
@@ -18,7 +19,7 @@ const SECTION_TITLE: Readonly<Record<YieldListSectionEnum, MessageDescriptor>> =
     [YieldListSectionEnum.PAYOUTS]: msg`Payouts`
 };
 
-export const YieldSectionHeader = ({ section }: Props) => {
+export const YieldSectionHeader = ({ section, hasTax }: Props) => {
     const { t } = useLingui();
 
     return (
@@ -33,6 +34,11 @@ export const YieldSectionHeader = ({ section }: Props) => {
                     </Text>
                 ) : null}
             </View>
+            {section === YieldListSectionEnum.PAYOUTS && hasTax ? (
+                <Text className="text-[13px] leading-[18px] text-secondary-foreground">
+                    <Trans>Amounts before tax</Trans>
+                </Text>
+            ) : null}
             {section === YieldListSectionEnum.UNASSIGNED ? (
                 <Text className="text-[13px] leading-[18px] text-secondary-foreground">
                     <Trans>Payouts we couldn’t match to a deposit or exchange asset</Trans>

@@ -26,6 +26,8 @@ const MENU_LABEL = {
     [YieldRangeEnum.ALL]: msg`All time`
 };
 
+const RANGE_MAX_FONT_SIZE_MULTIPLIER = 1.4;
+
 export const YieldRangeControl = () => {
     const { t } = useLingui();
     const isLargeText = useIsLargeText();
@@ -48,28 +50,32 @@ export const YieldRangeControl = () => {
 
     if (isLargeText) {
         return (
-            <ActionsMenu
-                accessibilityLabel={t`Range, ${currentLabel}`}
-                triggerTestID={PassiveIncomeSelector.RangeMenu}
-                triggerSize={44}
-                triggerClassName="min-h-[44px] items-center justify-center rounded-3xl bg-grouped-surface-row px-3xl"
-                trigger={
-                    <View className="flex-row items-center gap-x-xs">
-                        <Text className="text-md font-semibold text-primary">{currentLabel}</Text>
-                        <Icon icon={UserIconNameEnum.ChevronDown} size={16} className="text-secondary-foreground" />
-                    </View>
-                }
-            >
-                {segments.map(segment => (
-                    <YieldRangeMenuItem
-                        key={segment.value}
-                        range={segment.value}
-                        label={t(MENU_LABEL[segment.value])}
-                        isCurrent={segment.value === screenKey.key.range}
-                        onSelect={handleChange}
-                    />
-                ))}
-            </ActionsMenu>
+            <View className="items-start">
+                <ActionsMenu
+                    accessibilityLabel={t`Range, ${currentLabel}`}
+                    triggerTestID={PassiveIncomeSelector.RangeMenu}
+                    triggerSize={44}
+                    triggerClassName="min-h-[44px] items-center justify-center rounded-full bg-grouped-surface-row px-3xl"
+                    trigger={
+                        <View className="flex-row items-center gap-x-xs">
+                            <Text className="text-md font-semibold text-primary" maxFontSizeMultiplier={RANGE_MAX_FONT_SIZE_MULTIPLIER}>
+                                {currentLabel}
+                            </Text>
+                            <Icon icon={UserIconNameEnum.ChevronDown} size={16} className="text-secondary-foreground" />
+                        </View>
+                    }
+                >
+                    {segments.map(segment => (
+                        <YieldRangeMenuItem
+                            key={segment.value}
+                            range={segment.value}
+                            label={t(MENU_LABEL[segment.value])}
+                            isCurrent={segment.value === screenKey.key.range}
+                            onSelect={handleChange}
+                        />
+                    ))}
+                </ActionsMenu>
+            </View>
         );
     }
 

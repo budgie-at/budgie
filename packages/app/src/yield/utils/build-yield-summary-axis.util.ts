@@ -2,6 +2,8 @@ import { YieldGroupEnum } from '@budgie/market';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { YIELD_NEGATIVE_BAND } from '../constant/yield-negative-band.constant';
+import { YIELD_PLOT_HEIGHT } from '../constant/yield-plot-height.constant';
 import { YIELD_STACK_GROUPS } from '../constant/yield-stack-groups.constant';
 import { YieldChartModeEnum } from '../enum/yield-chart-mode.enum';
 
@@ -11,11 +13,11 @@ import { buildYieldRunningTotal } from './build-yield-running-total.util';
 import type { YieldAxisInterface } from '../interface/yield-axis.interface';
 import type { YieldSummaryInterface } from '@budgie/market';
 
-const NEGATIVE_RESERVE = 0.12;
+const POSITIVE_BAND = YIELD_PLOT_HEIGHT - YIELD_NEGATIVE_BAND;
 
 const reserveNegativeBand = (axis: YieldAxisInterface): YieldAxisInterface => ({
     ...axis,
-    bottom: -Math.max(axis.top * NEGATIVE_RESERVE, axis.depth)
+    bottom: -((axis.top * YIELD_NEGATIVE_BAND) / POSITIVE_BAND)
 });
 
 export const buildYieldSummaryAxis = (

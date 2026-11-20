@@ -57,7 +57,7 @@ export const YieldScreenList = () => {
     const renderItem = ({ item }: { item: YieldListItemType }) => {
         switch (item.kind) {
             case YieldListItemKindEnum.SECTION:
-                return <YieldSectionHeader section={item.section} />;
+                return <YieldSectionHeader section={item.section} hasTax={item.hasTax} />;
             case YieldListItemKindEnum.MONTH:
                 return <YieldMonthHeader month={item.month} total={item.total} />;
             case YieldListItemKindEnum.POSITION:
@@ -69,6 +69,7 @@ export const YieldScreenList = () => {
                         tax={item.tax}
                         siblings={item.siblings}
                         isUnassigned={item.isUnassigned}
+                        dateFormat={item.dateFormat}
                         rowPosition={item.position}
                     />
                 );

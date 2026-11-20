@@ -1,5 +1,6 @@
 import { isNotEmptyString } from '@rnw-community/shared';
 
-const SEGMENT_SEPARATOR = ' ·\u00A0';
+import { YIELD_SUBTITLE_SEPARATOR } from '../constant/yield-subtitle-separator.constant';
 
-export const joinYieldSubtitle = (parts: readonly (string | null)[]): string => parts.filter(isNotEmptyString).join(SEGMENT_SEPARATOR);
+export const joinYieldSubtitle = (parts: readonly (string | null)[]): string =>
+    parts.filter(isNotEmptyString).join(YIELD_SUBTITLE_SEPARATOR);

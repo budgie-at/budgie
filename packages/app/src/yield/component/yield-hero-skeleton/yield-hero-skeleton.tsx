@@ -6,10 +6,12 @@ import { useSkeletonPulseStyle } from '../../../@generic/hook/use-skeleton-pulse
 import { YIELD_HERO_CAPTION_HEIGHT, YIELD_HERO_LINE_MIN_HEIGHT } from '../../constant/yield-hero-metrics.constant';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 
+const FIGURE_BAR_RATIO = 0.7;
 const BUSY_STATE = { busy: true };
-const CAPTION_STYLE = { height: YIELD_HERO_CAPTION_HEIGHT };
-const FIGURE_STYLE = { height: HERO_FIGURE_METRICS.fontSize };
-const FIGURE_BAR_STYLE = { height: Math.round(HERO_FIGURE_METRICS.fontSize * 0.8) };
+const CAPTION_STYLE = { minHeight: YIELD_HERO_CAPTION_HEIGHT };
+const INFO_STYLE = { width: YIELD_HERO_CAPTION_HEIGHT, height: YIELD_HERO_CAPTION_HEIGHT };
+const FIGURE_STYLE = { height: HERO_FIGURE_METRICS.fontSize, lineHeight: HERO_FIGURE_METRICS.fontSize };
+const FIGURE_BAR_STYLE = { height: Math.round(HERO_FIGURE_METRICS.fontSize * FIGURE_BAR_RATIO) };
 const LINE_STYLE = { minHeight: YIELD_HERO_LINE_MIN_HEIGHT };
 
 export const YieldHeroSkeleton = () => {
@@ -24,14 +26,22 @@ export const YieldHeroSkeleton = () => {
             importantForAccessibility="no-hide-descendants"
             testID={PassiveIncomeSelector.Hero}
         >
-            <View className="justify-center" style={CAPTION_STYLE}>
-                <View className="h-[12px] w-[140px] rounded-full bg-secondary-corner" />
+            <View className="flex-row items-center gap-x-[4px]">
+                <View className="shrink justify-center" style={CAPTION_STYLE}>
+                    <View className="h-[13px] w-[140px] rounded-full bg-secondary-corner" />
+                </View>
+                <View className="rounded-full bg-secondary-corner" style={INFO_STYLE} />
             </View>
-            <View className="justify-center px-xs" style={FIGURE_STYLE}>
-                <View className="w-[180px] rounded-xl bg-secondary-corner" style={FIGURE_BAR_STYLE} />
-            </View>
-            <View className="justify-center" style={LINE_STYLE}>
-                <View className="h-[14px] w-[200px] rounded-full bg-secondary-corner" />
+            <View className="gap-y-xs">
+                <View className="justify-center px-xs" style={FIGURE_STYLE}>
+                    <View className="w-[180px] rounded-xl bg-secondary-corner" style={FIGURE_BAR_STYLE} />
+                </View>
+                <View className="justify-center" style={LINE_STYLE}>
+                    <View className="h-[20px] justify-center">
+                        <View className="h-[14px] w-[200px] rounded-full bg-secondary-corner" />
+                    </View>
+                    <View className="mt-[8px] h-[22px] w-[180px] rounded-full bg-secondary-corner" />
+                </View>
             </View>
         </Animated.View>
     );

@@ -5,4 +5,5 @@ export interface YieldListSectionItemInterface {
     readonly kind: YieldListItemKindEnum.SECTION;
     readonly id: string;
     readonly section: YieldListSectionEnum;
+    readonly hasTax: boolean;
 }

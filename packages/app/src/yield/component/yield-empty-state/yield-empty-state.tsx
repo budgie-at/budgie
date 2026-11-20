@@ -22,10 +22,26 @@ export const YieldEmptyState = () => {
                 title={t`No passive income yet`}
                 titleClassName="text-center text-xl font-semibold text-primary"
                 description={t`Staking rewards, dividends and interest appear here once you have them.`}
-                descriptionClassName="text-center text-[15px] text-secondary-foreground"
+                descriptionClassName="max-w-[300px] text-center text-[15px] text-secondary-foreground"
             />
-            <Button content={t`Connect an exchange`} leftIcon={UserIconNameEnum.Link} onPress={handleConnect} variant="cta" />
-            <Button content={t`Add a deposit`} leftIcon={UserIconNameEnum.PiggyBank} onPress={handleAddDeposit} variant="ghost" />
+            <View className="max-w-full items-center gap-y-xs">
+                <Button
+                    variant="cta"
+                    size="sm"
+                    leftIcon={UserIconNameEnum.Link}
+                    content={t`Connect an exchange`}
+                    onPress={handleConnect}
+                    className="max-w-full rounded-full px-5xl"
+                />
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    leftIcon={UserIconNameEnum.PiggyBank}
+                    content={t`Add a deposit`}
+                    onPress={handleAddDeposit}
+                    className="border-0 bg-transparent"
+                />
+            </View>
             <HapticPressable onPress={handleExplain} accessibilityRole="link" className="min-h-[44px] items-center justify-center">
                 <Text className="text-[15px] text-positive-action">
                     <Trans>About these figures</Trans>

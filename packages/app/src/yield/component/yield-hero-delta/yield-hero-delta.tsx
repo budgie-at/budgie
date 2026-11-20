@@ -28,7 +28,14 @@ export const YieldHeroDelta = ({ summary }: Props) => {
         [YieldRangeEnum.YEAR]: t`${sign}${change} vs previous year`,
         [YieldRangeEnum.ALL]: t`${sign}${change} vs previous period`
     };
-    const label = summary.delta?.kind === YieldDeltaKindEnum.NEW ? t`New this period` : comparisons[screenKey.key.range];
+    const arrows: Record<YieldHeroTrendEnum, string> = {
+        [YieldHeroTrendEnum.UP]: '▲ ',
+        [YieldHeroTrendEnum.DOWN]: '▼ ',
+        [YieldHeroTrendEnum.NEW]: '',
+        [YieldHeroTrendEnum.NONE]: ''
+    };
+    const comparison = summary.delta?.kind === YieldDeltaKindEnum.NEW ? t`New this period` : comparisons[screenKey.key.range];
+    const label = `${arrows[trend]}${comparison}`;
 
     return (
         <YieldDeltaPill

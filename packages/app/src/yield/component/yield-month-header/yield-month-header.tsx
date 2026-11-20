@@ -1,5 +1,6 @@
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
+import { isThisMonth } from 'date-fns/isThisMonth';
 import { isThisYear } from 'date-fns/isThisYear';
 import { Text, View } from 'react-native';
 
@@ -22,7 +23,8 @@ export const YieldMonthHeader = ({ month, total }: Props) => {
 
     const monthLabel = isThisYear(month) ? formatFullMonth(month) : formatFullMonthAndYear(month);
     const totalLabel = formatAmount(total ?? 0, symbol);
-    const headerLabel = isDefined(total) ? t`${monthLabel} · ${totalLabel} before tax` : monthLabel;
+    const periodLabel = isThisMonth(month) ? t`${monthLabel} so far` : monthLabel;
+    const headerLabel = isDefined(total) ? t`${periodLabel} · ${totalLabel}` : periodLabel;
 
     return (
         <View className="px-3xl pt-xl pb-sm">

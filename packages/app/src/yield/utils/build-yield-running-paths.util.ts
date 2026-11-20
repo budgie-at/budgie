@@ -1,4 +1,4 @@
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { MARKET_CHART_PADDING_X } from '../../market-data/constant/market-chart-padding-x.constant';
 
@@ -29,6 +29,8 @@ export const buildYieldRunningPaths = ({
         );
     const segmentIndices = cumulative.map((_, index) => index).slice(1);
     const lastIndex = cumulative.length - 1;
+    const lastFullIndex = inProgress.findLastIndex(isInProgress => !isInProgress);
+    const areaIndices = cumulative.map((_, index) => index).filter(index => index <= Math.min(lastFullIndex, lastIndex));
 
     return {
         solid: segmentIndices
@@ -39,15 +41,18 @@ export const buildYieldRunningPaths = ({
             .filter(index => inProgress.at(index) === true)
             .map(segment)
             .join(' '),
-        area: [
-            command('M', xOf(0), zeroY),
-            ...cumulative.map((value, index) => command('L', xOf(index), yOf(value))),
-            command('L', xOf(lastIndex), zeroY),
-            'Z'
-        ].join(' '),
+        area: isNotEmptyArray(areaIndices)
+            ? [
+                  command('M', xOf(0), zeroY),
+                  ...areaIndices.map(index => command('L', xOf(index), yOf(cumulative.at(index) ?? 0))),
+                  command('L', xOf(areaIndices.length - 1), zeroY),
+                  'Z'
+              ].join(' ')
+            : '',
         prior: isDefined(prior) ? prior.map((value, index) => command(index === 0 ? 'M' : 'L', xOf(index), yOf(value))).join(' ') : '',
         xs: cumulative.map((_, index) => xOf(index)),
         ys: cumulative.map(yOf),
+        priorYs: isDefined(prior) ? prior.map(yOf) : [],
         endX: xOf(lastIndex),
         endY: yOf(cumulative.at(-1) ?? 0),
         priorEndY: isDefined(prior) ? yOf(prior.at(-1) ?? 0) : null

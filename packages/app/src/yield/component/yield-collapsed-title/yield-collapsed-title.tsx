@@ -28,8 +28,8 @@ export const YieldCollapsedTitle = () => {
     const handleClear = () => void router.setParams({ position: '', instrument: '', group: '', focus: '' });
 
     return (
-        <View className="items-center">
-            <Text className="text-center text-lg font-semibold text-primary" {...CHROME_TITLE_TEXT_PROPS}>
+        <View className="flex-row items-center justify-center gap-x-sm">
+            <Text className="shrink-0 text-center text-lg font-semibold text-primary" {...CHROME_TITLE_TEXT_PROPS}>
                 <Trans>Passive income</Trans>
             </Text>
             {isNotEmptyArray(scopes) ? (

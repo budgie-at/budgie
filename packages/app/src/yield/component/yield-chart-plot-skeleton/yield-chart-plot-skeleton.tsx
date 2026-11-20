@@ -2,11 +2,14 @@ import { View } from 'react-native';
 import Animated from 'react-native-reanimated';
 
 import { useSkeletonPulseStyle } from '../../../@generic/hook/use-skeleton-pulse-style/use-skeleton-pulse-style.hook';
+import { cn } from '../../../@generic/utils/cn.util';
+import { MARKET_CHART_PADDING_X } from '../../../market-data/constant/market-chart-padding-x.constant';
 import { YIELD_AXIS_GUTTER } from '../../constant/yield-axis-gutter.constant';
 import { YIELD_CHART_TICKS_HEIGHT } from '../../constant/yield-chart-ticks-height.constant';
 import { YIELD_FOOTNOTE_HEIGHT } from '../../constant/yield-footnote-height.constant';
 import { YIELD_LABEL_BAND, YIELD_PLOT_BOTTOM_GAP } from '../../constant/yield-label-band.constant';
 import { YIELD_LEGEND_ROW_HEIGHT } from '../../constant/yield-legend-row-height.constant';
+import { YIELD_NEGATIVE_BAND } from '../../constant/yield-negative-band.constant';
 import { YIELD_PLOT_HEIGHT } from '../../constant/yield-plot-height.constant';
 
 const BARS = [
@@ -26,9 +29,21 @@ const BARS = [
 
 const LEGEND_ROWS = ['first', 'second', 'third', 'fourth', 'fifth'] as const;
 const TICKS = ['a', 'b', 'c', 'd'] as const;
-const PLOT_STYLE = { height: YIELD_PLOT_HEIGHT + YIELD_LABEL_BAND, paddingRight: YIELD_AXIS_GUTTER, paddingTop: YIELD_LABEL_BAND };
-const BARS_STYLE = { height: YIELD_PLOT_HEIGHT };
-const TICKS_STYLE = { height: YIELD_CHART_TICKS_HEIGHT, marginTop: YIELD_PLOT_BOTTOM_GAP, paddingRight: YIELD_AXIS_GUTTER };
+const ZERO_Y = YIELD_PLOT_HEIGHT - YIELD_NEGATIVE_BAND;
+const GRID_LINES = [
+    { id: 'top', style: { top: 1 }, className: 'bg-primary opacity-[0.08]' },
+    { id: 'mid', style: { top: ZERO_Y / 2 }, className: 'bg-primary opacity-[0.08]' },
+    { id: 'zero', style: { top: ZERO_Y }, className: 'bg-primary opacity-40' }
+] as const;
+const LABEL_HEIGHT = 8;
+const LABEL_CENTER_OFFSET = 8;
+const AXIS_LABELS = GRID_LINES.map(({ id, style }) => ({ id, style: { top: style.top - LABEL_CENTER_OFFSET, height: LABEL_HEIGHT } }));
+const FRAME_STYLE = { height: YIELD_PLOT_HEIGHT + YIELD_LABEL_BAND };
+const PLOT_STYLE = { marginTop: YIELD_LABEL_BAND, height: YIELD_PLOT_HEIGHT };
+const BARS_STYLE = { height: ZERO_Y, paddingHorizontal: MARKET_CHART_PADDING_X };
+const SLOT_STYLE = { height: ZERO_Y };
+const GUTTER_STYLE = { width: YIELD_AXIS_GUTTER, marginTop: YIELD_LABEL_BAND, height: YIELD_PLOT_HEIGHT };
+const TICKS_ROW_STYLE = { height: YIELD_CHART_TICKS_HEIGHT, marginTop: YIELD_PLOT_BOTTOM_GAP, paddingRight: YIELD_AXIS_GUTTER };
 const LEGEND_ROW_STYLE = { height: YIELD_LEGEND_ROW_HEIGHT };
 const FOOTNOTE_STYLE = { height: YIELD_FOOTNOTE_HEIGHT };
 
@@ -46,14 +61,30 @@ export const YieldChartPlotSkeleton = () => {
             importantForAccessibility="no-hide-descendants"
         >
             <View>
-                <View style={PLOT_STYLE}>
-                    <View className="flex-row items-end gap-x-xs" style={BARS_STYLE}>
-                        {BARS.map(bar => (
-                            <View key={bar.id} className="flex-1 rounded-t-md bg-secondary-corner" style={bar.style} />
+                <View className="flex-row" style={FRAME_STYLE}>
+                    <View className="flex-1" style={PLOT_STYLE}>
+                        {GRID_LINES.map(line => (
+                            <View key={line.id} className={cn('absolute right-0 left-0 h-hairline', line.className)} style={line.style} />
+                        ))}
+                        <View className="flex-row" style={BARS_STYLE}>
+                            {BARS.map(bar => (
+                                <View key={bar.id} className="flex-1 items-center justify-end" style={SLOT_STYLE}>
+                                    <View className="w-[60%] rounded-t-sm bg-secondary-corner" style={bar.style} />
+                                </View>
+                            ))}
+                        </View>
+                    </View>
+                    <View style={GUTTER_STYLE}>
+                        {AXIS_LABELS.map(label => (
+                            <View
+                                key={label.id}
+                                className="absolute right-0 w-[28px] rounded-full bg-secondary-corner"
+                                style={label.style}
+                            />
                         ))}
                     </View>
                 </View>
-                <View className="flex-row items-center justify-between" style={TICKS_STYLE}>
+                <View className="flex-row items-center justify-between" style={TICKS_ROW_STYLE}>
                     {TICKS.map(tick => (
                         <View key={tick} className="h-[10px] w-[32px] rounded-full bg-secondary-corner" />
                     ))}

@@ -13,7 +13,6 @@ import { MORPHING_SHEET_DESTINATION_HEIGHT_RATIO } from '../../../@generic/const
 import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { yieldSummaryFamily } from '../../constant/yield-summary-family-atom.constant';
-import { useYieldDateLabels } from '../../hook/use-yield-date-labels.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 import { groupYieldEstimateCauses } from '../../utils/group-yield-estimate-causes.util';
 import { YieldInfoSheetBlock } from '../yield-info-sheet-block/yield-info-sheet-block';
@@ -30,13 +29,11 @@ export const YieldInfoSheetContent = ({ screenKey }: Props) => {
     const { t } = useLingui();
     const { bottom } = useSafeAreaInsets();
     const { formatMonthAndDay } = useFormatDate();
-    const { formatRangeCaption } = useYieldDateLabels();
     const summary = AsyncResult.getOrElse(useLiveAtomValue(yieldSummaryFamily(screenKey.key)), () => null);
 
-    const caption = isDefined(summary) ? formatRangeCaption(screenKey.key.range, summary.windowStart) : '';
-    const earnedText = t`Earned ${caption}. The % compares this range with the same length of time just before it. Before tax; valued at the day’s opening price, or the latest earlier price.`;
-    const yieldText = t`Yield uses the last 365 days across holdings with a rate. Crypto is measured on your whole balance, staked or not. Distributions count as income, not yield. Holdings marked “Income only” are left out.`;
-    const projectedText = t`At today’s balances and rates. Holdings left out of yield are not projected.`;
+    const earnedText = t`Income before tax. Crypto is valued at that day’s opening price.`;
+    const yieldText = t`Yield uses the last 12 months across holdings with a rate. Crypto is measured on your whole balance, staked or not. Fund payouts aren’t counted in yield.`;
+    const outlookText = t`At today’s balances and rates. Holdings left out of yield are not projected.`;
     const bottomSpacerStyle = { height: bottom + BOTTOM_PADDING };
     const causes = groupYieldEstimateCauses(summary?.estimateCauses ?? []).map(cause => {
         const days = t({ message: plural(cause.dayCount, { one: '# day', other: '# days' }) });
@@ -61,7 +58,10 @@ export const YieldInfoSheetContent = ({ screenKey }: Props) => {
         >
             <YieldInfoSheetBlock title={t`Earned`} body={earnedText} />
             <YieldInfoSheetBlock title={t`Yield`} body={yieldText} />
-            <YieldInfoSheetBlock title={t`Projected`} body={projectedText} />
+            <YieldInfoSheetBlock title={t`Outlook`} body={outlookText} />
+            <YieldInfoSheetBlock title={t`Tax withheld`} body={t`Tax taken at source before payouts reach you.`} />
+            <YieldInfoSheetBlock title={t`Net after tax`} body={t`Earned minus tax withheld.`} />
+            <YieldInfoSheetBlock title={t`So far`} body={t`The current period isn’t over yet.`} />
             <YieldInfoSheetBlock title={t`Estimates`} body={t`≈ marks an estimate: a projection, or a value using an estimated price.`}>
                 {isNotEmptyArray(causes) ? (
                     <View className="gap-y-xs">

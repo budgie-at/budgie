@@ -14,7 +14,7 @@ const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 const pillVariants = cva('max-w-full flex-row items-center rounded-full border px-sm py-[2px]', {
     variants: {
         tone: {
-            [YieldDeltaToneEnum.POSITIVE]: 'border-positive-corner bg-positive-background dark:border-[#30D158]/30 dark:bg-[#30D158]/16',
+            [YieldDeltaToneEnum.POSITIVE]: 'border-yield-delta-positive-corner bg-yield-delta-positive-background',
             [YieldDeltaToneEnum.NEGATIVE]: 'border-destructive-corner bg-destructive-background',
             [YieldDeltaToneEnum.NEUTRAL]: 'border-secondary-corner bg-secondary-background'
         }
@@ -23,8 +23,8 @@ const pillVariants = cva('max-w-full flex-row items-center rounded-full border p
 const labelVariants = cva('shrink text-xs font-semibold', {
     variants: {
         tone: {
-            [YieldDeltaToneEnum.POSITIVE]: 'text-positive-foreground dark:text-[#30D158]',
-            [YieldDeltaToneEnum.NEGATIVE]: 'text-destructive-foreground',
+            [YieldDeltaToneEnum.POSITIVE]: 'text-yield-delta-positive',
+            [YieldDeltaToneEnum.NEGATIVE]: 'text-yield-delta-negative',
             [YieldDeltaToneEnum.NEUTRAL]: 'text-secondary-foreground'
         }
     }

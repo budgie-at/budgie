@@ -1,5 +1,7 @@
 import { YieldGroupEnum } from '@budgie/market';
 
+import { isPositiveNumber } from '@rnw-community/shared';
+
 import { MARKET_CHART_PADDING_X } from '../../market-data/constant/market-chart-padding-x.constant';
 import { YIELD_STACK_GROUPS } from '../constant/yield-stack-groups.constant';
 
@@ -70,7 +72,9 @@ export const buildYieldBarLayout = ({
             gap
         );
         const topIndex = heights.findLastIndex(segment => segment > 0);
-        const taxHeight = Math.min(bucket.amounts[YieldGroupEnum.TAX] * scale, height - zeroY);
+        const taxHeight = isPositiveNumber(axis.depth)
+            ? Math.min(bucket.amounts[YieldGroupEnum.TAX] / axis.depth, 1) * (height - zeroY)
+            : 0;
         let bottom = zeroY;
 
         YIELD_STACK_GROUPS.forEach((group, groupIndex) => {

@@ -6,10 +6,11 @@ import { isDefined } from '@rnw-community/shared';
 
 import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hook';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
-import { TransactionListRowPositionEnum } from '../../../transaction/enum/transaction-list-row-position.enum';
+import { YIELD_INLINE_ROW_CLASSNAME } from '../../constant/yield-inline-row-class-name.constant';
 import { yieldPayoutsFamily } from '../../constant/yield-payouts-family-atom.constant';
 import { YieldScreenContext } from '../../context/yield-screen.context';
-import { YieldPayoutRow } from '../yield-payout-row/yield-payout-row';
+import { YieldPayoutDateFormatEnum } from '../../enum/yield-payout-date-format.enum';
+import { YieldPayoutRowContent } from '../yield-payout-row-content/yield-payout-row-content';
 
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 
@@ -31,12 +32,13 @@ export const YieldChartSinglePayout = () => {
     }
 
     return (
-        <YieldPayoutRow
+        <YieldPayoutRowContent
             transaction={income}
             tax={tax}
             siblings={NO_SIBLINGS}
             isUnassigned={false}
-            rowPosition={TransactionListRowPositionEnum.SINGLE}
+            dateFormat={YieldPayoutDateFormatEnum.DAY_MONTH}
+            className={YIELD_INLINE_ROW_CLASSNAME}
         />
     );
 };

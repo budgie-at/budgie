@@ -4,6 +4,7 @@ import { useCSSVariable } from 'uniwind';
 
 import { isDefined, isString } from '@rnw-community/shared';
 
+import { StyledCircle } from '../../../@generic/component/styled-circle/styled-circle';
 import { StyledPath } from '../../../@generic/component/styled-path/styled-path';
 import { YIELD_PLOT_HEIGHT } from '../../constant/yield-plot-height.constant';
 import { YieldSelectionContext } from '../../context/yield-selection.context';
@@ -26,6 +27,7 @@ const PRIOR_WIDTH = 1.5;
 const AREA_TOP_OPACITY = 0.12;
 const AREA_FALLBACK_OPACITY = 0.08;
 const DASH = '4 4';
+const PRIOR_DOT_RADIUS = 2.25;
 const AREA_GRADIENT_ID = 'yield-running-total-area';
 const LINE_CLASSNAME = 'accent-positive-action';
 
@@ -48,10 +50,22 @@ export const YieldChartRunningTotal = ({ width, summary }: Props) => {
     const cursorX = isDefined(selectedIndex) ? paths.xs.at(selectedIndex) : null;
     const cursorY = isDefined(selectedIndex) ? paths.ys.at(selectedIndex) : null;
     const priorAmount = isDefined(selectedIndex) ? (prior?.at(selectedIndex) ?? null) : null;
+    const zeroY = (axis.top * YIELD_PLOT_HEIGHT) / (axis.top - axis.bottom);
     const isScrubbing = isDefined(cursorX) && isDefined(cursorY);
 
+    const priorY = isDefined(selectedIndex) ? paths.priorYs.at(selectedIndex) : null;
+    const scrubbedBucket = isDefined(selectedIndex) ? summary.buckets.at(selectedIndex) : null;
+
     const label =
-        isScrubbing && isDefined(priorAmount) ? <YieldChartScrubLabel priorAmount={priorAmount} x={cursorX} plotWidth={width} /> : null;
+        isScrubbing && isDefined(priorAmount) && isDefined(scrubbedBucket) ? (
+            <YieldChartScrubLabel
+                end={scrubbedBucket.end}
+                amount={cumulative.at(selectedIndex ?? 0) ?? 0}
+                priorAmount={priorAmount}
+                x={cursorX}
+                plotWidth={width}
+            />
+        ) : null;
 
     return (
         <YieldChartFrame axis={axis} width={width} label={label}>
@@ -77,7 +91,17 @@ export const YieldChartRunningTotal = ({ width, summary }: Props) => {
             />
             <StyledPath d={paths.solid} strokeClassName={LINE_CLASSNAME} strokeWidth={LINE_WIDTH} fill="none" />
             <StyledPath d={paths.dashed} strokeClassName={LINE_CLASSNAME} strokeWidth={LINE_WIDTH} strokeDasharray={DASH} fill="none" />
-            {isScrubbing ? <YieldChartRunningCursor x={cursorX} y={cursorY} /> : null}
+            {isScrubbing && isDefined(priorY) ? (
+                <StyledCircle
+                    cx={cursorX}
+                    cy={priorY}
+                    r={PRIOR_DOT_RADIUS}
+                    fillClassName="accent-surface-row-opaque"
+                    strokeClassName="accent-secondary-foreground"
+                    strokeWidth={PRIOR_WIDTH}
+                />
+            ) : null}
+            {isScrubbing ? <YieldChartRunningCursor x={cursorX} y={cursorY} zeroY={zeroY} /> : null}
         </YieldChartFrame>
     );
 };

@@ -8,18 +8,18 @@ import { useYieldLegendAmounts } from '../../hook/use-yield-legend-amounts.hook'
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 import { YieldLegendEntry } from '../yield-legend-entry/yield-legend-entry';
 
-const ROW_CLASSNAME = 'min-h-[44px] w-full flex-row items-center gap-x-[8px] px-sm py-xs';
+const ROW_CLASSNAME = 'min-h-[32px] w-full flex-row items-center gap-x-[8px] px-sm py-xs';
 const AMOUNT_CLASSNAME = 'text-right text-sm tabular-nums text-secondary-foreground';
 const EMPTY_AMOUNT = '—';
 
 interface Props {
     readonly total: number;
-    readonly compactThreshold: number;
+    readonly divisor: number;
 }
 
-export const YieldLegendTaxRow = ({ total, compactThreshold }: Props) => {
+export const YieldLegendTaxRow = ({ total, divisor }: Props) => {
     const { t } = useLingui();
-    const amounts = useYieldLegendAmounts(total, 0, compactThreshold);
+    const amounts = useYieldLegendAmounts(total, 0, divisor);
 
     const isEmpty = !isPositiveNumber(total);
     const label = t`Tax withheld`;

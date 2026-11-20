@@ -1,5 +1,5 @@
 import { AccountTypeEnum, InstrumentTypeEnum, YieldKindEnum } from '@budgie/contracts';
-import { YIELD_GROUP_BY_KIND } from '@budgie/market';
+import { YIELD_GROUP_BY_KIND, YieldGroupEnum } from '@budgie/market';
 import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
@@ -23,6 +23,10 @@ export const useYieldPositionKindLabel = ({
         return t(YIELD_KIND_LABEL[kind]);
     }
 
+    if (group === YieldGroupEnum.DISTRIBUTIONS) {
+        return t`Fund payouts`;
+    }
+
     if (isDefined(group)) {
         return t(YIELD_GROUP_LABEL[group]);
     }
@@ -35,5 +39,5 @@ export const useYieldPositionKindLabel = ({
         return t`Interest`;
     }
 
-    return instrumentType === InstrumentTypeEnum.FUND ? t`Distributions` : t`Dividends`;
+    return instrumentType === InstrumentTypeEnum.FUND ? t`Fund payouts` : t`Dividends`;
 };

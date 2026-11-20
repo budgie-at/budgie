@@ -25,7 +25,10 @@ export const useYieldLegendRows = () => {
         ? scrubbedBuckets.reduce((sum, item) => sum + item.total, 0)
         : (summary?.earned.value ?? 0);
     const roundedTotals = roundParts(rawTotals, displayedTotal);
-    const rows = groups.map(({ group }, index) => ({ group, total: roundedTotals.at(index) ?? 0 }));
+    const rows = groups
+        .map(({ group, total }, index) => ({ group, total: roundedTotals.at(index) ?? 0, order: total }))
+        .sort((left, right) => right.order - left.order)
+        .map(({ group, total }) => ({ group, total }));
     const taxTotal = isDefined(selectedIndex)
         ? scrubbedBuckets.reduce((sum, item) => sum + item.amounts[YieldGroupEnum.TAX], 0)
         : (summary?.tax ?? 0);

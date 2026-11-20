@@ -7,6 +7,7 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 import { TransactionListRowPositionEnum } from '../../transaction/enum/transaction-list-row-position.enum';
 import { YieldListItemKindEnum } from '../enum/yield-list-item-kind.enum';
 import { YieldListSectionEnum } from '../enum/yield-list-section.enum';
+import { YieldPayoutDateFormatEnum } from '../enum/yield-payout-date-format.enum';
 
 import { getYieldPayoutEntry } from './get-yield-payout-entry.util';
 
@@ -18,10 +19,11 @@ import type { YieldPositionSummaryInterface } from '@budgie/market';
 const DAY_KEY_FORMAT = 'yyyy-MM-dd';
 const MONTH_KEY_FORMAT = 'yyyy-MM';
 
-const toSection = (section: YieldListSectionEnum): YieldListItemType => ({
+const toSection = (section: YieldListSectionEnum, hasTax = false): YieldListItemType => ({
     kind: YieldListItemKindEnum.SECTION,
     id: `section-${section}`,
-    section
+    section,
+    hasTax
 });
 
 const toRowPosition = (index: number, count: number): TransactionListRowPositionEnum => {
@@ -118,33 +120,58 @@ const toRowDisplayedAmount = ({ transaction, siblings }: YieldPayoutFoldInterfac
 const toMonthTotal = (rows: readonly YieldPayoutFoldInterface[]): number =>
     rows.reduce((total, row) => total + toRowDisplayedAmount(row), 0);
 
-const toPayouts = (payouts: readonly TransactionWithRelationsEntityInterface[], isUnassigned: boolean): YieldListItemType[] =>
-    groupBy(groupBy(payouts, transaction => format(transaction.operatedAt, DAY_KEY_FORMAT)).flatMap(foldTaxIntoIncome), ({ transaction }) =>
-        format(transaction.operatedAt, MONTH_KEY_FORMAT)
-    ).flatMap((rows): YieldListItemType[] => {
-        const [{ transaction: first }] = rows;
-        const merged = mergeRepeatedPayouts(rows).sort(
+const toPayoutItem = (
+    { transaction, tax, siblings }: YieldPayoutFoldInterface,
+    isUnassigned: boolean,
+    position: TransactionListRowPositionEnum,
+    dateFormat: YieldPayoutDateFormatEnum
+): YieldListItemType => ({
+    kind: YieldListItemKindEnum.PAYOUT,
+    id: `payout-${transaction.id}`,
+    transaction,
+    tax,
+    siblings,
+    isUnassigned,
+    dateFormat,
+    position
+});
+
+const toPayouts = (payouts: readonly TransactionWithRelationsEntityInterface[], isUnassigned: boolean): YieldListItemType[] => {
+    const months = groupBy(
+        groupBy(payouts, transaction => format(transaction.operatedAt, DAY_KEY_FORMAT)).flatMap(foldTaxIntoIncome),
+        ({ transaction }) => format(transaction.operatedAt, MONTH_KEY_FORMAT)
+    ).map(rows =>
+        mergeRepeatedPayouts(rows).sort(
             (left, right) =>
                 toRowDisplayedAmount(right) - toRowDisplayedAmount(left) || left.transaction.title.localeCompare(right.transaction.title)
+        )
+    );
+
+    if (months.every(rows => rows.length <= 1)) {
+        const rows = months.flat();
+
+        return rows.map((row, index) =>
+            toPayoutItem(row, isUnassigned, toRowPosition(index, rows.length), YieldPayoutDateFormatEnum.DAY_MONTH_YEAR)
         );
+    }
+
+    return months.flatMap((merged): YieldListItemType[] => {
+        const first = merged[0].transaction;
         const header: YieldListItemType = {
             kind: YieldListItemKindEnum.MONTH,
             id: `month-${format(first.operatedAt, MONTH_KEY_FORMAT)}-${isUnassigned}`,
             month: first.operatedAt,
             total: merged.length === 1 ? null : toMonthTotal(merged)
         };
-        const items = merged.map(({ transaction, tax, siblings }, index): YieldListItemType => ({
-            kind: YieldListItemKindEnum.PAYOUT,
-            id: `payout-${transaction.id}`,
-            transaction,
-            tax,
-            siblings,
-            isUnassigned,
-            position: toRowPosition(index, merged.length)
-        }));
 
-        return [header, ...items];
+        return [
+            header,
+            ...merged.map((row, index) =>
+                toPayoutItem(row, isUnassigned, toRowPosition(index, merged.length), YieldPayoutDateFormatEnum.DAY_MONTH)
+            )
+        ];
     });
+};
 
 const toPositions = (positions: readonly YieldPositionSummaryInterface[], rangeCaption: string): YieldListItemType[] =>
     positions.map((position, index) => ({
@@ -159,18 +186,21 @@ export const buildYieldListItems = (
     positions: readonly YieldPositionSummaryInterface[],
     payouts: readonly TransactionWithRelationsEntityInterface[],
     rangeCaption: string,
-    isPayoutMode: boolean
+    unassigned: readonly TransactionWithRelationsEntityInterface[] | null
 ): YieldListItemType[] => {
-    if (isPayoutMode) {
-        return isNotEmptyArray(payouts) ? [toSection(YieldListSectionEnum.PAYOUTS), ...toPayouts(payouts, false)] : [];
+    if (!isDefined(unassigned)) {
+        return isNotEmptyArray(payouts) ? [toSection(YieldListSectionEnum.PAYOUTS, payouts.some(isTax)), ...toPayouts(payouts, false)] : [];
     }
 
     const active = positions.filter(position => position.section === YieldPositionSectionEnum.ACTIVE);
     const closed = positions.filter(position => position.section === YieldPositionSectionEnum.CLOSED);
+    const unassignedIds = new Set(unassigned.map(({ id }) => id));
+    const assigned = payouts.filter(({ id }) => !unassignedIds.has(id));
 
     return [
         ...(isNotEmptyArray(active) ? [toSection(YieldListSectionEnum.ACTIVE), ...toPositions(active, rangeCaption)] : []),
         ...(isNotEmptyArray(closed) ? [toSection(YieldListSectionEnum.CLOSED), ...toPositions(closed, rangeCaption)] : []),
-        ...(isNotEmptyArray(payouts) ? [toSection(YieldListSectionEnum.UNASSIGNED), ...toPayouts(payouts, true)] : [])
+        ...(isNotEmptyArray(unassigned) ? [toSection(YieldListSectionEnum.UNASSIGNED), ...toPayouts(unassigned, true)] : []),
+        ...(isNotEmptyArray(assigned) ? [toSection(YieldListSectionEnum.PAYOUTS, assigned.some(isTax)), ...toPayouts(assigned, false)] : [])
     ];
 };

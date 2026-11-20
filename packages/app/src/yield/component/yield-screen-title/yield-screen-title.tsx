@@ -17,17 +17,15 @@ export const YieldScreenTitle = ({ hasYield }: Props) => {
     const { screenKey } = use(YieldScreenContext);
 
     const isFiltered = isDefined(screenKey.scopeId) || isDefined(screenKey.key.group);
+    const hasChip = isFiltered && hasYield;
+    const containerClassName = hasChip ? 'gap-y-xs pt-[36px]' : 'gap-y-xs';
 
     return (
-        <View className="gap-y-xs">
+        <View className={containerClassName}>
             <Text testID={PassiveIncomeSelector.Title} className="text-3xl font-semibold text-primary" {...CHROME_TITLE_TEXT_PROPS}>
                 <Trans>Passive income</Trans>
             </Text>
-            {isFiltered && hasYield ? (
-                <View className="pt-[6px]">
-                    <YieldFilterChipRow />
-                </View>
-            ) : null}
+            {hasChip ? <YieldFilterChipRow /> : null}
             {isFiltered || !hasYield ? null : (
                 <Text testID={PassiveIncomeSelector.Subtitle} className="text-sm text-secondary-foreground" maxFontSizeMultiplier={1.6}>
                     <Trans>All holdings</Trans>

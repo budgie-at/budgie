@@ -9,18 +9,21 @@ import type { TransactionListRowPositionEnum } from '../../../transaction/enum/t
 
 interface Props {
     readonly rowPosition: TransactionListRowPositionEnum;
+    readonly minHeight?: number;
 }
 
 const SEPARATOR_INSET = 64;
+const DEFAULT_MIN_HEIGHT = 56;
 
-export const YieldSkeletonRow = ({ rowPosition }: Props) => {
+export const YieldSkeletonRow = ({ rowPosition, minHeight = DEFAULT_MIN_HEIGHT }: Props) => {
     const pulseStyle = useSkeletonPulseStyle();
+    const rowStyle = [pulseStyle, { minHeight }];
 
     return (
         <TransactionRowSurface position={rowPosition} separatorInset={SEPARATOR_INSET} className={getYieldRowBorderClassName(rowPosition)}>
             <Animated.View
-                style={pulseStyle}
-                className="min-h-[56px] flex-row items-center gap-x-xl px-3xl py-lg"
+                style={rowStyle}
+                className="flex-row items-center gap-x-xl px-3xl py-lg"
                 pointerEvents="none"
                 accessibilityElementsHidden
                 importantForAccessibility="no-hide-descendants"

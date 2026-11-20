@@ -1,5 +1,6 @@
+import { YieldGroupEnum } from '@budgie/market';
 import { cva } from 'class-variance-authority';
-import { Text, View } from 'react-native';
+import { Text, View, useWindowDimensions } from 'react-native';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
@@ -8,10 +9,10 @@ import { useIsIncreaseContrast } from '../../../@generic/hook/use-is-increase-co
 import { cn } from '../../../@generic/utils/cn.util';
 import { YIELD_GROUP_COLOR } from '../../constant/yield-group-color.constant';
 
-import type { YieldGroupEnum } from '@budgie/market';
+import type { YieldGroupEnum as YieldGroupType } from '@budgie/market';
 
 interface Props {
-    readonly group: YieldGroupEnum;
+    readonly group: YieldGroupType;
     readonly label: string;
     readonly amount: string;
     readonly amountClassName: string;
@@ -20,7 +21,11 @@ interface Props {
     readonly isEmpty?: boolean;
 }
 
-const labelVariants = cva('flex-1 shrink text-sm', {
+const LABEL_LINE_HEIGHT = 20;
+const DOT_SIZE = 10;
+const HALF = 2;
+
+const labelVariants = cva('flex-1 shrink text-sm leading-[20px]', {
     variants: {
         isEmpty: { true: 'text-secondary-foreground', false: 'text-primary' },
         isMuted: { true: 'opacity-40', false: '' }
@@ -33,16 +38,20 @@ const amountsVariants = cva('shrink-0 flex-row items-baseline justify-end gap-x-
 export const YieldLegendEntry = ({ group, label, amount, amountClassName, share, isMuted = false, isEmpty = false }: Props) => {
     const isIncreaseContrast = useIsIncreaseContrast();
     const isAccessibilityText = useIsAccessibilityTextSize();
+    const { fontScale } = useWindowDimensions();
 
+    const isTax = group === YieldGroupEnum.TAX;
     const dotClassName = cn(
-        YIELD_GROUP_COLOR[group][isIncreaseContrast ? 'backgroundContrast' : 'background'],
+        isTax ? 'bg-secondary-foreground/45' : YIELD_GROUP_COLOR[group][isIncreaseContrast ? 'backgroundContrast' : 'background'],
         (isMuted || isEmpty) && 'opacity-40'
     );
     const labelClassName = labelVariants({ isEmpty, isMuted });
     const amountsClassName = amountsVariants({ isAccessibilityText });
+    const shapeClassName = isTax ? 'rounded-[2px]' : 'rounded-full';
+    const dotStyle = isAccessibilityText ? { marginTop: Math.max((LABEL_LINE_HEIGHT * fontScale - DOT_SIZE) / HALF, 0) } : null;
     const dot = (
-        <View className="w-[12px] items-center">
-            <View className={cn('h-[10px] w-[10px] rounded-full', dotClassName)} />
+        <View className="w-[12px] items-center" style={dotStyle}>
+            <View className={cn('h-[10px] w-[10px]', shapeClassName, dotClassName)} />
         </View>
     );
     const amounts = (

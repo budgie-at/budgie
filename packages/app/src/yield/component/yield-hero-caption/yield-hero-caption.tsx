@@ -11,6 +11,7 @@ import { YIELD_HERO_CAPTION_HEIGHT } from '../../constant/yield-hero-metrics.con
 import { YieldScreenContext } from '../../context/yield-screen.context';
 import { YieldChartModeEnum } from '../../enum/yield-chart-mode.enum';
 import { useYieldDateLabels } from '../../hook/use-yield-date-labels.hook';
+import { useYieldSinceDate } from '../../hook/use-yield-since-date.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 import { YieldHeroPeriodCaption } from '../yield-hero-period-caption/yield-hero-period-caption';
 
@@ -26,7 +27,8 @@ const CAPTION_STYLE = { minHeight: YIELD_HERO_CAPTION_HEIGHT };
 
 export const YieldHeroCaption = ({ summary, bucket }: Props) => {
     const { t } = useLingui();
-    const { screenKey, mode, rangeCaption, isPeriodCaption } = use(YieldScreenContext);
+    const { screenKey, mode, isPeriodCaption } = use(YieldScreenContext);
+    const sinceDate = useYieldSinceDate(summary);
     const { formatPeriod } = useYieldDateLabels();
     const { formatDayAndMonthAndYear } = useFormatDate();
 
@@ -39,7 +41,7 @@ export const YieldHeroCaption = ({ summary, bucket }: Props) => {
     const groupLabel = isDefined(group) ? t(YIELD_GROUP_LABEL[group]) : '';
     const throughDay = isDefined(bucket) ? formatDayAndMonthAndYear(parseISO(bucket.end)) : '';
     const bucketPeriod = isDefined(bucket) ? formatPeriod(bucket, summary.bucketUnit) : '';
-    const restingCaption = isDefined(group) ? [groupLabel, rangeCaption].join(' ') : t`Earned ${rangeCaption}`;
+    const restingCaption = isDefined(group) ? t`${groupLabel} since ${sinceDate}` : t`Earned since ${sinceDate}`;
     const scrubCaption = mode === YieldChartModeEnum.RUNNING_TOTAL ? t`Earned through ${throughDay}` : bucketPeriod;
     const caption = isDefined(bucket) ? scrubCaption : restingCaption;
 

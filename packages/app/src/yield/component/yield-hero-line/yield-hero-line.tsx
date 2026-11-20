@@ -10,6 +10,7 @@ import { YieldScreenContext } from '../../context/yield-screen.context';
 import { useYieldHeroLineText } from '../../hook/use-yield-hero-line-text.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 import { YieldHeroDelta } from '../yield-hero-delta/yield-hero-delta';
+import { YieldHeroNoDelta } from '../yield-hero-no-delta/yield-hero-no-delta';
 
 import type { YieldBucketInterface, YieldSummaryInterface } from '@budgie/market';
 
@@ -34,7 +35,7 @@ export const YieldHeroLine = ({ summary, bucket }: Props) => {
         summary.delta?.kind === YieldDeltaKindEnum.NEW && isDefined(summary.firstYieldDay) && summary.firstYieldDay >= summary.windowStart;
     const isDeltaMeaningful = isDefined(summary.delta) && (summary.delta.kind !== YieldDeltaKindEnum.NEW || isNewHolding);
     const hasDelta = isDeltaMeaningful && screenKey.key.range !== YieldRangeEnum.ALL;
-    const isDeltaVisible = hasDelta && !isDefined(bucket);
+    const isDeltaVisible = !isDefined(bucket);
     const isLineHidden = !isNotEmptyString(text) && !isDeltaVisible;
     const lineClassName = lineVariants({ isHidden: isLineHidden });
     const deltaClassName = deltaVariants({ isHidden: !isDeltaVisible });
@@ -50,11 +51,9 @@ export const YieldHeroLine = ({ summary, bucket }: Props) => {
             >
                 {text}
             </Text>
-            {hasDelta ? (
-                <View className={deltaClassName} importantForAccessibility={deltaAccessibility}>
-                    <YieldHeroDelta summary={summary} />
-                </View>
-            ) : null}
+            <View className={deltaClassName} importantForAccessibility={deltaAccessibility}>
+                {hasDelta ? <YieldHeroDelta summary={summary} /> : <YieldHeroNoDelta />}
+            </View>
         </View>
     );
 };

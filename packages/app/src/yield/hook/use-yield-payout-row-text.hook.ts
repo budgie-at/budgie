@@ -9,6 +9,7 @@ import { useFormatDate } from '../../i18n/hook/use-format-date.hook';
 import { getTransactionDisplayTitle } from '../../transaction/utils/get-transaction-display-title.util';
 import { YIELD_KIND_LABEL } from '../constant/yield-kind-label.constant';
 import { YieldScreenContext } from '../context/yield-screen.context';
+import { YieldPayoutDateFormatEnum } from '../enum/yield-payout-date-format.enum';
 import { formatYieldDayRange } from '../utils/format-yield-day-range.util';
 import { joinYieldSubtitle } from '../utils/join-yield-subtitle.util';
 
@@ -19,11 +20,12 @@ import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts'
 export const useYieldPayoutRowText = (
     transaction: TransactionWithRelationsEntityInterface,
     tax: TransactionWithRelationsEntityInterface | null,
-    siblings: readonly TransactionWithRelationsEntityInterface[]
+    siblings: readonly TransactionWithRelationsEntityInterface[],
+    dateFormat: YieldPayoutDateFormatEnum
 ) => {
     const { t } = useLingui();
     const { screenKey } = use(YieldScreenContext);
-    const { formatMonthAndDay } = useFormatDate();
+    const { formatMonthAndDay, formatDayAndMonthAndYear } = useFormatDate();
     const formatPayoutAmount = useFormatYieldPayoutAmount();
 
     const kind = transaction.yieldKind ?? YieldKindEnum.NONE;
@@ -36,7 +38,7 @@ export const useYieldPayoutRowText = (
     const baseTitle = getTransactionDisplayTitle(transaction) || kindLabel;
     const dayLabel = isMerged
         ? formatYieldDayRange(siblings.at(-1)?.operatedAt ?? transaction.operatedAt, transaction.operatedAt, formatMonthAndDay)
-        : formatMonthAndDay(transaction.operatedAt);
+        : (dateFormat === YieldPayoutDateFormatEnum.DAY_MONTH_YEAR ? formatDayAndMonthAndYear : formatMonthAndDay)(transaction.operatedAt);
 
     const countLabel = t({ message: plural(siblings.length, { one: '# payout', other: '# payouts' }) });
 

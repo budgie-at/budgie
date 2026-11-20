@@ -3,6 +3,7 @@ import Animated from 'react-native-reanimated';
 
 import { useSkeletonPulseStyle } from '../../../@generic/hook/use-skeleton-pulse-style/use-skeleton-pulse-style.hook';
 import { TransactionListRowPositionEnum } from '../../../transaction/enum/transaction-list-row-position.enum';
+import { YIELD_BREAKDOWN_ROW_MIN_HEIGHT } from '../../constant/yield-breakdown-row-min-height.constant';
 import { YieldSkeletonRow } from '../yield-skeleton-row/yield-skeleton-row';
 
 const BUSY_STATE = { busy: true };
@@ -16,8 +17,8 @@ export const YieldBreakdownSkeleton = () => {
                 <View className="h-[14px] w-[72px] rounded-full bg-secondary-corner" />
             </Animated.View>
             <View className="rounded-3xl dark:border-hairline dark:border-surface-separator">
-                <YieldSkeletonRow rowPosition={TransactionListRowPositionEnum.FIRST} />
-                <YieldSkeletonRow rowPosition={TransactionListRowPositionEnum.LAST} />
+                <YieldSkeletonRow rowPosition={TransactionListRowPositionEnum.FIRST} minHeight={YIELD_BREAKDOWN_ROW_MIN_HEIGHT} />
+                <YieldSkeletonRow rowPosition={TransactionListRowPositionEnum.LAST} minHeight={YIELD_BREAKDOWN_ROW_MIN_HEIGHT} />
             </View>
         </View>
     );
