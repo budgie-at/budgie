@@ -2,7 +2,10 @@ import { View } from 'react-native';
 import Animated from 'react-native-reanimated';
 
 import { useSkeletonPulseStyle } from '../../../@generic/hook/use-skeleton-pulse-style/use-skeleton-pulse-style.hook';
-import { YIELD_LABEL_BAND } from '../../constant/yield-label-band.constant';
+import { YIELD_AXIS_GUTTER } from '../../constant/yield-axis-gutter.constant';
+import { YIELD_CHART_TICKS_HEIGHT } from '../../constant/yield-chart-ticks-height.constant';
+import { YIELD_FOOTNOTE_HEIGHT } from '../../constant/yield-footnote-height.constant';
+import { YIELD_LABEL_BAND, YIELD_PLOT_BOTTOM_GAP } from '../../constant/yield-label-band.constant';
 import { YIELD_LEGEND_ROW_HEIGHT } from '../../constant/yield-legend-row-height.constant';
 import { YIELD_PLOT_HEIGHT } from '../../constant/yield-plot-height.constant';
 
@@ -22,13 +25,12 @@ const BARS = [
 ] as const;
 
 const LEGEND_ROWS = ['first', 'second', 'third', 'fourth', 'fifth'] as const;
-const AXIS_GUTTER = 40;
-const TICKS_HEIGHT = 16;
-const FOOTNOTE_HEIGHT = 20;
-const PLOT_STYLE = { height: YIELD_PLOT_HEIGHT + YIELD_LABEL_BAND + TICKS_HEIGHT, paddingRight: AXIS_GUTTER, paddingTop: YIELD_LABEL_BAND };
+const TICKS = ['a', 'b', 'c', 'd'] as const;
+const PLOT_STYLE = { height: YIELD_PLOT_HEIGHT + YIELD_LABEL_BAND, paddingRight: YIELD_AXIS_GUTTER, paddingTop: YIELD_LABEL_BAND };
 const BARS_STYLE = { height: YIELD_PLOT_HEIGHT };
+const TICKS_STYLE = { height: YIELD_CHART_TICKS_HEIGHT, marginTop: YIELD_PLOT_BOTTOM_GAP, paddingRight: YIELD_AXIS_GUTTER };
 const LEGEND_ROW_STYLE = { height: YIELD_LEGEND_ROW_HEIGHT };
-const FOOTNOTE_STYLE = { height: FOOTNOTE_HEIGHT };
+const FOOTNOTE_STYLE = { height: YIELD_FOOTNOTE_HEIGHT };
 
 const BUSY_STATE = { busy: true };
 
@@ -43,10 +45,17 @@ export const YieldChartPlotSkeleton = () => {
             accessibilityState={BUSY_STATE}
             importantForAccessibility="no-hide-descendants"
         >
-            <View style={PLOT_STYLE}>
-                <View className="flex-row items-end gap-x-xs" style={BARS_STYLE}>
-                    {BARS.map(bar => (
-                        <View key={bar.id} className="flex-1 rounded-t-md bg-secondary-corner" style={bar.style} />
+            <View>
+                <View style={PLOT_STYLE}>
+                    <View className="flex-row items-end gap-x-xs" style={BARS_STYLE}>
+                        {BARS.map(bar => (
+                            <View key={bar.id} className="flex-1 rounded-t-md bg-secondary-corner" style={bar.style} />
+                        ))}
+                    </View>
+                </View>
+                <View className="flex-row items-center justify-between" style={TICKS_STYLE}>
+                    {TICKS.map(tick => (
+                        <View key={tick} className="h-[10px] w-[32px] rounded-full bg-secondary-corner" />
                     ))}
                 </View>
             </View>

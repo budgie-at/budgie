@@ -4,5 +4,5 @@ export interface YieldListMonthItemInterface {
     readonly kind: YieldListItemKindEnum.MONTH;
     readonly id: string;
     readonly month: Date;
-    readonly total: number;
+    readonly total: number | null;
 }

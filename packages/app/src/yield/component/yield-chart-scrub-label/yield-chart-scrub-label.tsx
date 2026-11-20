@@ -2,32 +2,23 @@ import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { Text } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
-
 import { FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/footnote-max-font-size-multiplier.constant';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { cn } from '../../../@generic/utils/cn.util';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
-import { useYieldDateLabels } from '../../hook/use-yield-date-labels.hook';
-
-import type { YieldBucketInterface, YieldBucketUnitEnum } from '@budgie/market';
 
 interface Props {
-    readonly bucket: Pick<YieldBucketInterface, 'start'>;
-    readonly unit: YieldBucketUnitEnum;
-    readonly amount: number;
-    readonly priorAmount?: number | null;
+    readonly priorAmount: number;
     readonly x: number;
     readonly plotWidth: number;
 }
 
 const LABEL_WIDTH = 220;
-const LABEL_TOP = 4;
+const LABEL_TOP = 0;
 const HALF = 2;
 
-export const YieldChartScrubLabel = ({ bucket, unit, amount, priorAmount = null, x, plotWidth }: Props) => {
+export const YieldChartScrubLabel = ({ priorAmount, x, plotWidth }: Props) => {
     const { t } = useLingui();
-    const { formatTick } = useYieldDateLabels();
     const formatAmount = useProtectedAmountLabel();
     const { symbol } = useAtomValue(defaultInstrumentAtom);
 
@@ -38,9 +29,8 @@ export const YieldChartScrubLabel = ({ bucket, unit, amount, priorAmount = null,
     const style = { left: Math.min(Math.max(centred, 0), maxLeft), top: LABEL_TOP };
     const alignClassName = cn(isStart && 'text-left', isEnd && 'text-right', !isStart && !isEnd && 'text-center');
 
-    const prior = isDefined(priorAmount) ? formatAmount(priorAmount, symbol) : '';
-    const base = `${formatTick(bucket, unit, true)} · ${formatAmount(amount, symbol)}`;
-    const text = isDefined(priorAmount) ? `${base} · ${t`prior ${prior}`}` : base;
+    const prior = formatAmount(priorAmount, symbol);
+    const text = t`prior ${prior}`;
 
     return (
         <Text

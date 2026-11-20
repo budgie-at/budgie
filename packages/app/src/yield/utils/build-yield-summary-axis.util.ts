@@ -11,6 +11,13 @@ import { buildYieldRunningTotal } from './build-yield-running-total.util';
 import type { YieldAxisInterface } from '../interface/yield-axis.interface';
 import type { YieldSummaryInterface } from '@budgie/market';
 
+const NEGATIVE_RESERVE = 0.12;
+
+const reserveNegativeBand = (axis: YieldAxisInterface): YieldAxisInterface => ({
+    ...axis,
+    bottom: -Math.max(axis.top * NEGATIVE_RESERVE, axis.depth)
+});
+
 export const buildYieldSummaryAxis = (
     summary: Pick<YieldSummaryInterface, 'buckets' | 'priorTotals'>,
     group: YieldGroupEnum | null,
@@ -20,12 +27,12 @@ export const buildYieldSummaryAxis = (
         const cumulative = buildYieldRunningTotal(summary.buckets.map(bucket => bucket.total));
         const prior = isDefined(summary.priorTotals) ? buildYieldRunningTotal(summary.priorTotals) : [];
 
-        return buildYieldAxis(Math.max(0, ...cumulative, ...prior), 0);
+        return reserveNegativeBand(buildYieldAxis(Math.max(0, ...cumulative, ...prior), 0));
     }
 
     const visibleGroups = isDefined(group) ? [group] : YIELD_STACK_GROUPS;
     const totals = summary.buckets.map(bucket => visibleGroups.reduce((sum, visible) => sum + bucket.amounts[visible], 0));
     const taxDepth = Math.max(0, ...summary.buckets.map(bucket => bucket.amounts[YieldGroupEnum.TAX]));
 
-    return buildYieldAxis(Math.max(0, ...totals), taxDepth);
+    return reserveNegativeBand(buildYieldAxis(Math.max(0, ...totals), taxDepth));
 };

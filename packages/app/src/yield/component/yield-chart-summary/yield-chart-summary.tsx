@@ -8,6 +8,7 @@ import { cn } from '../../../@generic/utils/cn.util';
 import { YieldScreenContext } from '../../context/yield-screen.context';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 import { YieldChartSeeAllTime } from '../yield-chart-see-all-time/yield-chart-see-all-time';
+import { YieldChartSinglePayout } from '../yield-chart-single-payout/yield-chart-single-payout';
 import { YieldChartSummaryRow } from '../yield-chart-summary-row/yield-chart-summary-row';
 import { YieldChartSummaryText } from '../yield-chart-summary-text/yield-chart-summary-text';
 
@@ -25,6 +26,7 @@ export const YieldChartSummary = ({ summary }: Props) => {
 
     const count = summary.payoutCount;
     const isEmpty = count === 0;
+    const isSingle = count === 1;
     const isSeeAllTimeVisible = isEmpty && screenKey.key.range !== YieldRangeEnum.ALL;
     const title = t({ id: 'passive-income.payouts.title', message: plural(count, { one: '# payout', other: '# payouts' }) });
     const filledBuckets = summary.buckets.filter(bucket => bucket.total > 0);
@@ -32,9 +34,9 @@ export const YieldChartSummary = ({ summary }: Props) => {
 
     return (
         <View className={containerClassName} testID={PassiveIncomeSelector.PlotSummary}>
-            {isEmpty ? (
-                <YieldChartSummaryText summary={summary} />
-            ) : (
+            {isEmpty ? <YieldChartSummaryText summary={summary} /> : null}
+            {isSingle ? <YieldChartSinglePayout /> : null}
+            {isEmpty || isSingle ? null : (
                 <>
                     <Text
                         className="text-md font-semibold text-primary"

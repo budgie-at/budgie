@@ -3,7 +3,7 @@ import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { use } from 'react';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { useProtectedAmountLabel } from '../../@generic/hook/use-protected-amount-label.hook';
 import { useFormatPercent } from '../../i18n/hook/use-format-percent.hook';
@@ -28,19 +28,16 @@ export const useYieldHeroLineText = (summary: YieldSummaryInterface, bucket: Yie
     const scrubbedBuckets = selectYieldScrubbedBuckets(summary.buckets, isDefined(bucket) ? summary.buckets.indexOf(bucket) : null, mode);
     const bucketTax = scrubbedBuckets.reduce((sum, item) => sum + item.amounts[YieldGroupEnum.TAX], 0);
     const scrubbedTotal = scrubbedBuckets.reduce((sum, item) => sum + item.total, 0);
-    const kind = resolveYieldHeroLineKind({
-        isScrubbing: isDefined(bucket),
-        group: screenKey.key.group,
-        rate: summary.annualYield.rate
-    });
     const share = formatPercent(summary.share ?? 0);
     const net = formatAmount(scrubbedTotal - bucketTax, symbol);
+    const tax = formatAmount(bucketTax, symbol);
+    const scrubText = isPositiveNumber(bucketTax) ? t`${net} after tax · −${tax} tax` : t`No tax withheld`;
     const texts: Record<YieldHeroLineKindEnum, string> = {
-        [YieldHeroLineKindEnum.SCRUB_NET]: t`${net} after tax`,
+        [YieldHeroLineKindEnum.SCRUB_NET]: scrubText,
         [YieldHeroLineKindEnum.SHARE]: t`${share} of your passive income`,
         [YieldHeroLineKindEnum.RATE]: rateText,
         [YieldHeroLineKindEnum.UNAVAILABLE]: rateText
     };
 
-    return texts[kind];
+    return texts[resolveYieldHeroLineKind({ isScrubbing: isDefined(bucket), group: screenKey.key.group, rate: summary.annualYield.rate })];
 };

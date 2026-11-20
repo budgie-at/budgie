@@ -23,9 +23,16 @@ export const YieldSectionHeader = ({ section }: Props) => {
 
     return (
         <View className="gap-y-xxs px-3xl pt-3xl pb-sm" testID={PassiveIncomeSelector.Section(section)}>
-            <Text accessibilityRole="header" className="text-[17px] font-semibold text-primary">
-                {t(SECTION_TITLE[section])}
-            </Text>
+            <View className="flex-row items-baseline justify-between gap-x-sm">
+                <Text accessibilityRole="header" className="text-[17px] font-semibold text-primary">
+                    {t(SECTION_TITLE[section])}
+                </Text>
+                {section === YieldListSectionEnum.ACTIVE ? (
+                    <Text numberOfLines={1} className="shrink text-[13px] text-secondary-foreground">
+                        <Trans>Earned in range</Trans>
+                    </Text>
+                ) : null}
+            </View>
             {section === YieldListSectionEnum.UNASSIGNED ? (
                 <Text className="text-[13px] leading-[18px] text-secondary-foreground">
                     <Trans>Payouts we couldn’t match to a deposit or exchange asset</Trans>

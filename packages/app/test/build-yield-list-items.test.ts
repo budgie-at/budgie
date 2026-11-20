@@ -158,7 +158,15 @@ it.effect('merges three or more payouts sharing a source and kind into one row',
         const payouts = items.filter(item => item.kind === YieldListItemKindEnum.PAYOUT);
 
         expect(payouts).toHaveLength(2);
-        expect(payouts.at(0)).toMatchObject({ siblings: [{ id: 1 }, { id: 2 }, { id: 3 }] });
-        expect(payouts.at(1)).toMatchObject({ siblings: [] });
+        expect(payouts.at(0)).toMatchObject({ siblings: [] });
+        expect(payouts.at(1)).toMatchObject({ siblings: [{ id: 1 }, { id: 2 }, { id: 3 }] });
+    })
+);
+
+it.effect('omits the month total when a month has a single row', () =>
+    Effect.sync(() => {
+        const items = buildYieldListItems([], [payout(1)], 'caption', true);
+
+        expect(items.find(item => item.kind === YieldListItemKindEnum.MONTH)).toMatchObject({ total: null });
     })
 );

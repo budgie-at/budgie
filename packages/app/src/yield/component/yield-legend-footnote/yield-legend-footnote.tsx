@@ -1,58 +1,40 @@
-import { useLingui } from '@lingui/react/macro';
-import * as AsyncResult from 'effect/reactivity/AsyncResult';
-import { use } from 'react';
 import { Text, View } from 'react-native';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
-
-import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hook';
-import { yieldPriceJobsFamily } from '../../constant/yield-price-jobs-family-atom.constant';
-import { yieldSummaryFamily } from '../../constant/yield-summary-family-atom.constant';
-import { YieldScreenContext } from '../../context/yield-screen.context';
+import { YIELD_FOOTNOTE_HEIGHT } from '../../constant/yield-footnote-height.constant';
 import { useYieldFootnoteFocus } from '../../hook/use-yield-footnote-focus.hook';
-import { useYieldInProgressText } from '../../hook/use-yield-in-progress-text.hook';
-import { useYieldSummary } from '../../hook/use-yield-summary.hook';
+import { useYieldFootnoteState } from '../../hook/use-yield-footnote-state.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
+import { YieldLegendEstimatedRow } from '../yield-legend-estimated-row/yield-legend-estimated-row';
 import { YieldLegendInProgressSwatch } from '../yield-legend-in-progress-swatch/yield-legend-in-progress-swatch';
 import { YieldLegendRetry } from '../yield-legend-retry/yield-legend-retry';
 
+const FOOTNOTE_STYLE = { minHeight: YIELD_FOOTNOTE_HEIGHT };
+
 export const YieldLegendFootnote = () => {
-    const { t } = useLingui();
-    const { screenKey } = use(YieldScreenContext);
-    const result = useLiveAtomValue(yieldSummaryFamily(screenKey.key));
-
-    const summary = useYieldSummary();
-    const isUpdatingPrices = AsyncResult.getOrElse(useLiveAtomValue(yieldPriceJobsFamily(summary?.instrumentIds ?? [])), () => false);
-
-    const isFailure = AsyncResult.isFailure(result);
+    const { isFailure, isEstimated, hasDetails, hasSwatch, details } = useYieldFootnoteState();
     const footnoteRef = useYieldFootnoteFocus(isFailure);
-    const inProgressText = useYieldInProgressText();
 
-    const hasInProgress = isNotEmptyString(inProgressText);
-
-    if (!isFailure && (!isDefined(summary) || !summary.hasYield || (!isUpdatingPrices && !hasInProgress))) {
+    if (!isFailure && !hasDetails && !isEstimated) {
         return null;
     }
 
-    const details = isUpdatingPrices ? t`Updating prices…` : inProgressText;
-    const hasSwatch = !isUpdatingPrices && hasInProgress;
-
     return (
-        <View
-            ref={footnoteRef}
-            accessible={!isFailure}
-            className="min-h-[20px] flex-row items-center gap-x-xs"
-            testID={PassiveIncomeSelector.Footnote}
-            accessibilityLiveRegion="polite"
-        >
-            {isFailure ? (
-                <YieldLegendRetry />
-            ) : (
-                <>
-                    {hasSwatch ? <YieldLegendInProgressSwatch /> : null}
-                    <Text className="text-xs text-secondary-foreground">{details}</Text>
-                </>
-            )}
+        <View className="flex-row flex-wrap items-center gap-x-md gap-y-xs">
+            {isFailure || hasDetails ? (
+                <View
+                    ref={footnoteRef}
+                    accessible={!isFailure}
+                    className="shrink flex-row items-center gap-x-xs"
+                    style={FOOTNOTE_STYLE}
+                    testID={PassiveIncomeSelector.Footnote}
+                    accessibilityLiveRegion="polite"
+                >
+                    {isFailure ? <YieldLegendRetry /> : null}
+                    {hasSwatch && !isFailure ? <YieldLegendInProgressSwatch /> : null}
+                    {isFailure ? null : <Text className="text-xs text-secondary-foreground">{details}</Text>}
+                </View>
+            ) : null}
+            {isEstimated ? <YieldLegendEstimatedRow /> : null}
         </View>
     );
 };

@@ -12,11 +12,11 @@ export const buildYieldAxis = (maxValue: number, depthBelowZero: number): YieldA
     const padded = Math.max(maxValue, 0) * HEADROOM;
 
     if (!Number.isFinite(padded) || !isPositiveNumber(padded)) {
-        return { top: EMPTY_TOP, bottom: -depthBelowZero };
+        return { top: EMPTY_TOP, bottom: -depthBelowZero, depth: depthBelowZero };
     }
 
     const magnitude = 10 ** Math.floor(Math.log10(padded));
     const step = NICE_STEPS.find(candidate => (candidate * magnitude) / STEP_SCALE >= padded) ?? LARGEST_STEP;
 
-    return { top: (step * magnitude) / STEP_SCALE, bottom: -depthBelowZero };
+    return { top: (step * magnitude) / STEP_SCALE, bottom: -depthBelowZero, depth: depthBelowZero };
 };

@@ -123,12 +123,15 @@ const toPayouts = (payouts: readonly TransactionWithRelationsEntityInterface[], 
         format(transaction.operatedAt, MONTH_KEY_FORMAT)
     ).flatMap((rows): YieldListItemType[] => {
         const [{ transaction: first }] = rows;
-        const merged = mergeRepeatedPayouts(rows);
+        const merged = mergeRepeatedPayouts(rows).sort(
+            (left, right) =>
+                toRowDisplayedAmount(right) - toRowDisplayedAmount(left) || left.transaction.title.localeCompare(right.transaction.title)
+        );
         const header: YieldListItemType = {
             kind: YieldListItemKindEnum.MONTH,
             id: `month-${format(first.operatedAt, MONTH_KEY_FORMAT)}-${isUnassigned}`,
             month: first.operatedAt,
-            total: toMonthTotal(merged)
+            total: merged.length === 1 ? null : toMonthTotal(merged)
         };
         const items = merged.map(({ transaction, tax, siblings }, index): YieldListItemType => ({
             kind: YieldListItemKindEnum.PAYOUT,

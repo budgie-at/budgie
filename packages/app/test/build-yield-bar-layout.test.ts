@@ -31,7 +31,7 @@ const full = (staking: number, interest: number, dividends: number, distribution
     amounts: { ...amounts(staking, interest), [YieldGroupEnum.DIVIDENDS]: dividends, [YieldGroupEnum.DISTRIBUTIONS]: distributions }
 });
 
-const axisOf100 = { top: 100, bottom: 0 };
+const axisOf100 = { top: 100, bottom: 0, depth: 0 };
 
 const VISIBLE = [YieldGroupEnum.STAKING_EARN, YieldGroupEnum.INTEREST];
 
@@ -41,7 +41,7 @@ it('stacks visible groups bottom to top with a 2 pt gap and rounds only the top 
         visibleGroups: VISIBLE,
         width: 112,
         height: 200,
-        axis: { top: 100, bottom: 0 }
+        axis: { top: 100, bottom: 0, depth: 0 }
     });
     const [staking] = layout.groups[YieldGroupEnum.STAKING_EARN];
     const [interest] = layout.groups[YieldGroupEnum.INTEREST];
@@ -57,7 +57,7 @@ it('merges a segment under 3 pt into the one above and draws tax below zero', ()
         visibleGroups: VISIBLE,
         width: 112,
         height: 240,
-        axis: { top: 100, bottom: -20 }
+        axis: { top: 100, bottom: -20, depth: 20 }
     });
 
     expect(layout.groups[YieldGroupEnum.STAKING_EARN][0]?.height).toBe(0);
@@ -71,14 +71,14 @@ it('draws nothing for an empty bucket and 1 pt gaps on narrow bars', () => {
         visibleGroups: VISIBLE,
         width: 300,
         height: 200,
-        axis: { top: 20, bottom: 0 }
+        axis: { top: 20, bottom: 0, depth: 0 }
     });
     const empty = buildYieldBarLayout({
         buckets: [bucket(0, 0)],
         visibleGroups: VISIBLE,
         width: 112,
         height: 200,
-        axis: { top: 1, bottom: 0 }
+        axis: { top: 1, bottom: 0, depth: 0 }
     });
 
     expect(narrow.groups[YieldGroupEnum.STAKING_EARN][0]?.height).toBe(99);

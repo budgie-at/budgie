@@ -1,20 +1,25 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { YieldRangeEnum } from '@budgie/market';
 import { useAtomSet } from '@effect/atom-react/Hooks';
-import { Trans } from '@lingui/react/macro';
+import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { use } from 'react';
-import { Text } from 'react-native';
 
-import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { TransactionRowSurface } from '../../../transaction/components/transaction-row-surface/transaction-row-surface';
+import { TransactionListRowPositionEnum } from '../../../transaction/enum/transaction-list-row-position.enum';
 import { yieldRangeAtom } from '../../constant/yield-range-atom.constant';
 import { YieldSelectionContext } from '../../context/yield-selection.context';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
+import { getYieldRowBorderClassName } from '../../utils/get-yield-row-border-class-name.util';
+import { YieldRow } from '../yield-row/yield-row';
 
 export const YieldOlderPayoutsRow = () => {
+    const { t } = useLingui();
     const setRange = useAtomSet(yieldRangeAtom);
     const { cancelScrub } = use(YieldSelectionContext);
+
+    const title = t`Older payouts · All time`;
 
     const handlePress = () => {
         cancelScrub();
@@ -23,16 +28,20 @@ export const YieldOlderPayoutsRow = () => {
     };
 
     return (
-        <HapticPressable
-            accessibilityRole="button"
-            onPress={handlePress}
-            className="min-h-[44px] flex-row items-center justify-center gap-x-xs px-3xl pt-lg active:opacity-70"
-            testID={PassiveIncomeSelector.OlderPayouts}
+        <TransactionRowSurface
+            position={TransactionListRowPositionEnum.SINGLE}
+            separatorInset={0}
+            className={getYieldRowBorderClassName(TransactionListRowPositionEnum.SINGLE)}
         >
-            <Text className="text-[15px] text-secondary-foreground">
-                <Trans>Older payouts · All time</Trans>
-            </Text>
-            <Icon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" />
-        </HapticPressable>
+            <YieldRow
+                left={null}
+                title={title}
+                subtitle=""
+                trailing={<Icon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" />}
+                accessibilityLabel={title}
+                onPress={handlePress}
+                testID={PassiveIncomeSelector.OlderPayouts}
+            />
+        </TransactionRowSurface>
     );
 };

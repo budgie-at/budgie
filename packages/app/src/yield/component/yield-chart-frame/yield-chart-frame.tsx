@@ -14,13 +14,13 @@ interface Props {
     readonly axis: YieldAxisInterface;
     readonly width: number;
     readonly children: ReactNode;
-    readonly label: ReactNode;
+    readonly label?: ReactNode;
 }
 
 const SVG_HEIGHT = YIELD_PLOT_HEIGHT + YIELD_LABEL_BAND;
 const LABELS_OFFSET = { top: YIELD_LABEL_BAND, height: YIELD_PLOT_HEIGHT };
 
-export const YieldChartFrame = ({ axis, width, children, label }: Props) => {
+export const YieldChartFrame = ({ axis, width, children, label = null }: Props) => {
     const { labels, gutter } = useYieldAxisLabels(axis);
 
     const containerStyle = { width: width + gutter, height: SVG_HEIGHT };

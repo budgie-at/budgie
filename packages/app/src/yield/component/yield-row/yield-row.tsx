@@ -36,7 +36,7 @@ export const YieldRow = ({ left, title, subtitle, trailing, accessibilityLabel, 
             {isNotEmptyString(subtitle) ? (
                 <Text
                     className="text-[13px] leading-[18px] text-secondary-foreground"
-                    numberOfLines={2}
+                    numberOfLines={1}
                     maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
                 >
                     {subtitle}

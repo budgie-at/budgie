@@ -41,26 +41,17 @@ export const YieldChartRunningTotal = ({ width, summary }: Props) => {
         prior,
         inProgress: summary.buckets.map(bucket => bucket.isInProgress),
         axisTop: axis.top,
+        axisBottom: axis.bottom,
         width,
         height: YIELD_PLOT_HEIGHT
     });
-    const selectedBucket = isDefined(selectedIndex) ? summary.buckets.at(selectedIndex) : null;
     const cursorX = isDefined(selectedIndex) ? paths.xs.at(selectedIndex) : null;
     const cursorY = isDefined(selectedIndex) ? paths.ys.at(selectedIndex) : null;
-    const cursorAmount = isDefined(selectedIndex) ? cumulative.at(selectedIndex) : null;
     const priorAmount = isDefined(selectedIndex) ? (prior?.at(selectedIndex) ?? null) : null;
-    const isScrubbing = isDefined(selectedBucket) && isDefined(cursorX) && isDefined(cursorY) && isDefined(cursorAmount);
+    const isScrubbing = isDefined(cursorX) && isDefined(cursorY);
 
-    const label = isScrubbing ? (
-        <YieldChartScrubLabel
-            bucket={selectedBucket}
-            unit={summary.bucketUnit}
-            amount={cursorAmount}
-            priorAmount={priorAmount}
-            x={cursorX}
-            plotWidth={width}
-        />
-    ) : null;
+    const label =
+        isScrubbing && isDefined(priorAmount) ? <YieldChartScrubLabel priorAmount={priorAmount} x={cursorX} plotWidth={width} /> : null;
 
     return (
         <YieldChartFrame axis={axis} width={width} label={label}>

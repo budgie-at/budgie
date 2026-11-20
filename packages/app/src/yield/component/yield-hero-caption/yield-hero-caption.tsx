@@ -7,6 +7,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { YIELD_GROUP_LABEL } from '../../constant/yield-group-label.constant';
+import { YIELD_HERO_CAPTION_HEIGHT } from '../../constant/yield-hero-metrics.constant';
 import { YieldScreenContext } from '../../context/yield-screen.context';
 import { YieldChartModeEnum } from '../../enum/yield-chart-mode.enum';
 import { useYieldDateLabels } from '../../hook/use-yield-date-labels.hook';
@@ -21,6 +22,7 @@ interface Props {
 }
 
 const CAPTION_MAX_FONT_SIZE_MULTIPLIER = 1.5;
+const CAPTION_STYLE = { minHeight: YIELD_HERO_CAPTION_HEIGHT };
 
 export const YieldHeroCaption = ({ summary, bucket }: Props) => {
     const { t } = useLingui();
@@ -45,6 +47,7 @@ export const YieldHeroCaption = ({ summary, bucket }: Props) => {
         <Text
             testID={PassiveIncomeSelector.Caption}
             numberOfLines={2}
+            style={CAPTION_STYLE}
             maxFontSizeMultiplier={CAPTION_MAX_FONT_SIZE_MULTIPLIER}
             className="text-[13px] text-secondary-foreground"
         >

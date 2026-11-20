@@ -3,9 +3,22 @@ import { YieldDeltaKindEnum } from '@budgie/market';
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { useFormatPercent } from '../../i18n/hook/use-format-percent.hook';
+import { YieldDeltaToneEnum } from '../enum/yield-delta-tone.enum';
 import { YieldHeroTrendEnum } from '../enum/yield-hero-trend.enum';
 
 import type { YieldDeltaInterface, YieldSummaryInterface } from '@budgie/market';
+
+const NEUTRAL_RATIO = 0.02;
+
+const resolveTone = (delta: YieldDeltaInterface | null): YieldDeltaToneEnum => {
+    const ratio = delta?.ratio ?? 0;
+
+    if (delta?.kind !== YieldDeltaKindEnum.NEW && Math.abs(ratio) < NEUTRAL_RATIO) {
+        return YieldDeltaToneEnum.NEUTRAL;
+    }
+
+    return ratio < 0 ? YieldDeltaToneEnum.NEGATIVE : YieldDeltaToneEnum.POSITIVE;
+};
 
 const resolveTrend = (delta: YieldDeltaInterface | null): YieldHeroTrendEnum => {
     if (!isDefined(delta)) {
@@ -32,6 +45,7 @@ export const useYieldHeroTrend = (summary: Pick<YieldSummaryInterface, 'delta' |
 
     return {
         trend: resolveTrend(delta),
+        tone: resolveTone(delta),
         change: formatPercent(Math.abs(delta?.ratio ?? 0)),
         isEstimated: summary?.earned.isEstimated === true
     };

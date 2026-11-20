@@ -19,7 +19,7 @@ const LINE_MAX_FONT_SIZE_MULTIPLIER = 2;
 export const YieldHeroDelta = ({ summary }: Props) => {
     const { t } = useLingui();
     const { screenKey } = use(YieldScreenContext);
-    const { trend, change } = useYieldHeroTrend(summary);
+    const { trend, tone, change } = useYieldHeroTrend(summary);
 
     const sign = trend === YieldHeroTrendEnum.DOWN ? '−' : '+';
     const comparisons: Record<YieldRangeEnum, string> = {
@@ -33,7 +33,7 @@ export const YieldHeroDelta = ({ summary }: Props) => {
     return (
         <YieldDeltaPill
             label={label}
-            isPositive={trend !== YieldHeroTrendEnum.DOWN}
+            tone={tone}
             testID={PassiveIncomeSelector.Delta}
             maxFontSizeMultiplier={LINE_MAX_FONT_SIZE_MULTIPLIER}
         />

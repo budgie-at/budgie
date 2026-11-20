@@ -7,6 +7,7 @@ import { View } from 'react-native';
 import { isPositiveNumber } from '@rnw-community/shared';
 
 import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hook';
+import { MILLION, THOUSAND } from '../../../i18n/constant/compact-thresholds.constant';
 import { yieldSummaryFamily } from '../../constant/yield-summary-family-atom.constant';
 import { YieldScreenContext } from '../../context/yield-screen.context';
 import { YieldSelectionContext } from '../../context/yield-selection.context';
@@ -37,14 +38,22 @@ export const YieldLegend = () => {
     );
     const sharedRows = rows.map(row => ({ ...row, share: row.total / rowsTotal }));
     const hasTax = isPositiveNumber(unfiltered?.tax);
+    const compactThreshold = [...rows.map(row => row.total), taxTotal].some(total => total >= MILLION) ? THOUSAND : MILLION;
 
     return (
         <View>
             <View className="-mx-sm" accessibilityLabel={t`Passive income by kind`} testID={PassiveIncomeSelector.Legend(ONE_COLUMN)}>
                 {sharedRows.map(({ group, total, share }) => (
-                    <YieldLegendRow key={group} group={group} total={total} share={share} onPress={handlePress} />
+                    <YieldLegendRow
+                        key={group}
+                        group={group}
+                        total={total}
+                        share={share}
+                        compactThreshold={compactThreshold}
+                        onPress={handlePress}
+                    />
                 ))}
-                {hasTax ? <YieldLegendTaxRow total={taxTotal} /> : null}
+                {hasTax ? <YieldLegendTaxRow total={taxTotal} compactThreshold={compactThreshold} /> : null}
             </View>
         </View>
     );

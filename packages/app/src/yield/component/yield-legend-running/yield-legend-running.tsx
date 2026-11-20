@@ -10,6 +10,7 @@ import { defaultInstrumentAtom } from '../../../settings/constants/settings-atom
 import { YieldSelectionContext } from '../../context/yield-selection.context';
 import { useYieldSummary } from '../../hook/use-yield-summary.hook';
 import { buildYieldRunningTotal } from '../../utils/build-yield-running-total.util';
+import { YieldLegendFootnote } from '../yield-legend-footnote/yield-legend-footnote';
 import { YieldLegendLineSwatch } from '../yield-legend-line-swatch/yield-legend-line-swatch';
 
 const AMOUNT_CLASSNAME = 'text-sm font-semibold tabular-nums text-primary';
@@ -53,6 +54,7 @@ export const YieldLegendRunning = () => {
                     <Text className={AMOUNT_CLASSNAME}>{priorAmount}</Text>
                 </View>
             ) : null}
+            <YieldLegendFootnote />
         </View>
     );
 };

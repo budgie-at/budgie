@@ -3,6 +3,7 @@ export interface YieldRunningPathsInputInterface {
     readonly prior: readonly number[] | null;
     readonly inProgress: readonly boolean[];
     readonly axisTop: number;
+    readonly axisBottom: number;
     readonly width: number;
     readonly height: number;
 }

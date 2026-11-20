@@ -14,13 +14,13 @@ export const buildYieldAxisLabels = (
 ): readonly YieldAxisLabelInterface[] => {
     const zeroY = (axis.top * height) / (axis.top - axis.bottom);
     const bottomDistance = height - zeroY;
-    const hasBottom = axis.bottom < 0 && bottomDistance >= LABEL_HEIGHT + LABEL_GAP;
+    const hasBottom = axis.depth > 0 && bottomDistance >= LABEL_HEIGHT + LABEL_GAP;
     const isMidVisible = zeroY >= LABEL_HEIGHT * HALF;
     const candidates = [
         { key: 'top', y: 0, text: format(axis.top), isVisible: true },
         { key: 'mid', y: zeroY / HALF, text: format(axis.top / HALF), isVisible: isMidVisible },
         { key: 'zero', y: zeroY, text: ZERO_LABEL, isVisible: true },
-        { key: 'bottom', y: height, text: `${MINUS}${format(-axis.bottom)}`, isVisible: hasBottom }
+        { key: 'bottom', y: height, text: `${MINUS}${format(axis.depth)}`, isVisible: hasBottom }
     ];
 
     return candidates.filter(({ isVisible }) => isVisible).map(({ key, y, text }) => ({ key, y, text }));

@@ -11,7 +11,6 @@ import { Icon } from '../../../@generic/component/icon/icon';
 import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { yieldSummaryFamily } from '../../constant/yield-summary-family-atom.constant';
-import { YieldHeroTrendEnum } from '../../enum/yield-hero-trend.enum';
 import { useYieldAnalyticsCardText } from '../../hook/use-yield-analytics-card-text.hook';
 import { useYieldHeroTrend } from '../../hook/use-yield-hero-trend.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
@@ -45,7 +44,7 @@ export const PassiveIncomeAnalyticsCardContent = ({ earned, focus, period }: Pro
         focus,
         period
     );
-    const { trend } = useYieldHeroTrend(summary);
+    const { tone } = useYieldHeroTrend(summary);
 
     const handlePress = () =>
         void router.push({
@@ -85,9 +84,7 @@ export const PassiveIncomeAnalyticsCardContent = ({ earned, focus, period }: Pro
             ) : (
                 <View className="h-[32px]" />
             )}
-            {isDefined(takeaway) ? (
-                <YieldDeltaPill label={takeaway} isPositive={trend !== YieldHeroTrendEnum.DOWN} maxFontSizeMultiplier={1.5} />
-            ) : null}
+            {isDefined(takeaway) ? <YieldDeltaPill label={takeaway} tone={tone} maxFontSizeMultiplier={1.5} /> : null}
         </HapticPressable>
     );
 };

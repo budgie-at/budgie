@@ -8,6 +8,7 @@ import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hoo
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { useFormatDateRange } from '../../../i18n/hook/use-format-date-range.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
+import { YIELD_HERO_CAPTION_HEIGHT } from '../../constant/yield-hero-metrics.constant';
 import { yieldPeriodEarnedFamily } from '../../constant/yield-period-earned-family-atom.constant';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 
@@ -18,6 +19,7 @@ interface Props {
 }
 
 const CAPTION_MAX_FONT_SIZE_MULTIPLIER = 1.5;
+const CAPTION_STYLE = { minHeight: YIELD_HERO_CAPTION_HEIGHT };
 
 export const YieldHeroPeriodCaption = ({ period }: Props) => {
     const { t } = useLingui();
@@ -33,6 +35,7 @@ export const YieldHeroPeriodCaption = ({ period }: Props) => {
         <Text
             testID={PassiveIncomeSelector.Caption}
             numberOfLines={2}
+            style={CAPTION_STYLE}
             maxFontSizeMultiplier={CAPTION_MAX_FONT_SIZE_MULTIPLIER}
             className="text-[13px] text-secondary-foreground"
         >

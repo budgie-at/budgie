@@ -53,7 +53,11 @@ export const YieldEntryRowContent = ({ scope }: Props) => {
         return null;
     }
 
-    const icon = isDefined(entryGroup) ? <YieldGroupIcon group={entryGroup} /> : <GroupedListIcon icon={UserIconNameEnum.Sprout} />;
+    const icon = isDefined(entryGroup) ? (
+        <YieldGroupIcon group={entryGroup} icon={UserIconNameEnum.Sprout} />
+    ) : (
+        <GroupedListIcon icon={UserIconNameEnum.Sprout} />
+    );
 
     return (
         <Animated.View entering={PRESENCE_ENTERING}>

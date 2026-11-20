@@ -40,7 +40,12 @@ export const useYieldListItems = (): readonly YieldListItemType[] => {
         return SKELETON_ITEMS;
     }
 
-    const items = buildYieldListItems(summary.positions, payouts, rangeCaption, isPayoutMode);
+    const items = buildYieldListItems(
+        summary.positions,
+        summary.payoutCount === 1 && !isPayoutMode ? [] : payouts,
+        rangeCaption,
+        isPayoutMode
+    );
     const hasOlderPayouts = isDefined(summary.firstYieldDay) && summary.firstYieldDay < summary.windowStart;
 
     if (isDefined(payoutLimit) && payouts.length >= payoutLimit) {

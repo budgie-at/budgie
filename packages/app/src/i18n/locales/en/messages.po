@@ -736,11 +736,8 @@ msgstr "{instrumentCode}: {days} estimated from the latest rate"
 msgid "passive-income.chart.so-far"
 msgstr "{label} so far"
 
-#: src/yield/component/yield-legend-tax-row/yield-legend-tax-row.tsx
-msgid "{label}, {amount}"
-msgstr "{label}, {amount}"
-
 #: src/yield/component/yield-legend-row/yield-legend-row.tsx
+#: src/yield/component/yield-legend-tax-row/yield-legend-tax-row.tsx
 msgid "{label}, {exactAmount}"
 msgstr "{label}, {exactAmount}"
 
@@ -808,8 +805,8 @@ msgid "{month}, out {expenseAmount}, in {incomeAmount}"
 msgstr "{month}, out {expenseAmount}, in {incomeAmount}"
 
 #: src/yield/component/yield-month-header/yield-month-header.tsx
-msgid "{monthLabel} · {totalLabel}"
-msgstr "{monthLabel} · {totalLabel}"
+msgid "{monthLabel} · {totalLabel} before tax"
+msgstr "{monthLabel} · {totalLabel} before tax"
 
 #: src/transaction/components/statistics-trend-bars/statistics-trend-bars.tsx
 msgid "{monthLabel}: {amountLabel}"
@@ -840,8 +837,8 @@ msgid "{name} raised to {amountLabel}"
 msgstr "{name} raised to {amountLabel}"
 
 #: src/yield/hook/use-yield-hero-line-text.hook.ts
-msgid "{net} after tax"
-msgstr "{net} after tax"
+msgid "{net} after tax · −{tax} tax"
+msgstr "{net} after tax · −{tax} tax"
 
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "{newAccountCount, plural, one {Add # account in {currencyCode}} other {Add # accounts in {currencyCode}}}"
@@ -1232,10 +1229,6 @@ msgstr "{transferCount} now transfers"
 msgid "{unitPrice} each"
 msgstr "{unitPrice} each"
 
-#: src/yield/hook/use-yield-position-subtitle.hook.ts
-msgid "{units} {instrumentCode} earned"
-msgstr "{units} {instrumentCode} earned"
-
 #: src/inzhur/component/inzhur-operations-details/inzhur-operations-details.tsx
 msgid "{unmatchedBankCount, plural, one {# bank payment to Inzhur has no matching row in the file} other {# bank payments to Inzhur have no matching row in the file}}"
 msgstr "{unmatchedBankCount, plural, one {# bank payment to Inzhur has no matching row in the file} other {# bank payments to Inzhur have no matching row in the file}}"
@@ -1291,6 +1284,10 @@ msgstr "+{incomeAmount} / month"
 msgid "<0>Paused</0> · not in your total"
 msgstr "<0>Paused</0> · not in your total"
 
+#: src/yield/component/yield-breakdown-tax/yield-breakdown-tax.tsx
+msgid "−{amount}"
+msgstr "−{amount}"
+
 #: src/budget/components/budget-limit-row/budget-limit-row.tsx
 msgid "−{carriedLabel} carried"
 msgstr "−{carriedLabel} carried"
@@ -1300,6 +1297,7 @@ msgid "−{changePercent} vs {shortPreviousLabel}"
 msgstr "−{changePercent} vs {shortPreviousLabel}"
 
 #: src/yield/component/yield-breakdown-crypto-today/yield-breakdown-crypto-today.tsx
+#: src/yield/component/yield-breakdown-earned/yield-breakdown-earned.tsx
 #: src/yield/component/yield-breakdown-run-rate/yield-breakdown-run-rate.tsx
 msgid "≈ {amount}"
 msgstr "≈ {amount}"
@@ -1473,6 +1471,7 @@ msgstr "About a minute"
 msgid "about once a day"
 msgstr "about once a day"
 
+#: src/yield/component/yield-empty-state/yield-empty-state.tsx
 #: src/yield/component/yield-hero-info-button/yield-hero-info-button.tsx
 #: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
 msgid "About these figures"
@@ -1571,14 +1570,9 @@ msgstr "Accounts ({selectedAccountsCount})"
 msgid "Accounts you sync appear here."
 msgstr "Accounts you sync appear here."
 
-#: src/yield/hook/use-yield-deposit-subtitle.hook.ts
 #: src/yield/hook/use-yield-entry-subtitle.hook.ts
 msgid "Accruing {accruingAmount}"
 msgstr "Accruing {accruingAmount}"
-
-#: src/yield/hook/use-yield-deposit-subtitle.hook.ts
-msgid "Accruing {accruingAmount} · pays {maturity}"
-msgstr "Accruing {accruingAmount} · pays {maturity}"
 
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
 msgid "Action: {label}"
@@ -2471,6 +2465,11 @@ msgstr "Based on your regular income. None detected yet."
 #: src/categorize-inbox/components/categorize-inbox-group-move-to-cash-option/categorize-inbox-group-move-to-cash-option.tsx
 msgid "Becomes a transfer to your cash wallet"
 msgstr "Becomes a transfer to your cash wallet"
+
+#: src/yield/component/yield-breakdown-earned/yield-breakdown-earned.tsx
+#: src/yield/component/yield-breakdown-monthly-average/yield-breakdown-monthly-average.tsx
+msgid "Before tax"
+msgstr "Before tax"
 
 #: src/budget/components/budget-fund-row-status/budget-fund-row-status.tsx
 msgid "Behind, {setAsideLabel} {rate} to catch up"
@@ -4211,10 +4210,6 @@ msgstr "CSV files"
 msgid "CSV import"
 msgstr "CSV import"
 
-#: src/yield/component/yield-chart-mode-control/yield-chart-mode-control.tsx
-msgid "Cumulative"
-msgstr "Cumulative"
-
 #: src/import/utils/get-import-match-description.util.ts
 msgid "currency"
 msgstr "currency"
@@ -4819,6 +4814,7 @@ msgstr "Each week against your {allowanceLabel} weekly allowance"
 msgid "Earn"
 msgstr "Earn"
 
+#: src/yield/component/yield-breakdown-earned/yield-breakdown-earned.tsx
 #: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
 msgid "Earned"
 msgstr "Earned"
@@ -4834,6 +4830,10 @@ msgstr "Earned {caption}. The % compares this range with the same length of time
 #: src/yield/component/yield-hero-caption/yield-hero-caption.tsx
 msgid "Earned {rangeCaption}"
 msgstr "Earned {rangeCaption}"
+
+#: src/yield/component/yield-section-header/yield-section-header.tsx
+msgid "Earned in range"
+msgstr "Earned in range"
 
 #: src/yield/component/yield-hero-caption/yield-hero-caption.tsx
 msgid "Earned through {throughDay}"
@@ -5830,10 +5830,6 @@ msgstr "Holdings · {holdingsCount}"
 msgid "Home screen"
 msgstr "Home screen"
 
-#: src/yield/component/yield-empty-state/yield-empty-state.tsx
-msgid "How it’s calculated"
-msgstr "How it’s calculated"
-
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "How to compare"
 msgstr "How to compare"
@@ -6760,10 +6756,6 @@ msgstr "Matches when the text appears anywhere, ignoring letter case."
 msgid "Matches when the text appears nowhere."
 msgstr "Matches when the text appears nowhere."
 
-#: src/yield/hook/use-yield-deposit-subtitle.hook.ts
-msgid "Matures {maturity}"
-msgstr "Matures {maturity}"
-
 #: src/account/component/deposit-details-card/deposit-details-card.tsx
 msgid "Maturity Date"
 msgstr "Maturity Date"
@@ -6915,11 +6907,11 @@ msgstr "Month"
 #: src/recurring/components/recurring-form-repeat-section/recurring-form-repeat-section.tsx
 #: src/recurring/hook/use-recurring-cadence-label.hook.ts
 #: src/transaction/components/transaction-info-installment-terms/transaction-info-installment-terms.tsx
-#: src/yield/component/yield-chart-mode-control/yield-chart-mode-control.tsx
 msgid "Monthly"
 msgstr "Monthly"
 
 #: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
+#: src/yield/component/yield-breakdown-monthly-average/yield-breakdown-monthly-average.tsx
 msgid "Monthly average"
 msgstr "Monthly average"
 
@@ -7449,6 +7441,10 @@ msgstr "No tags match “{trimmedSearch}”"
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx
 msgid "No tags yet"
 msgstr "No tags yet"
+
+#: src/yield/hook/use-yield-hero-line-text.hook.ts
+msgid "No tax withheld"
+msgstr "No tax withheld"
 
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "No thanks"
@@ -8112,6 +8108,10 @@ msgstr "Other options"
 msgid "Other own accounts"
 msgstr "Other own accounts"
 
+#: src/yield/component/yield-breakdown/yield-breakdown.tsx
+msgid "Outlook"
+msgstr "Outlook"
+
 #: src/transaction/components/transaction-info-debt-progress/transaction-info-debt-progress.tsx
 msgid "Outstanding"
 msgstr "Outstanding"
@@ -8395,7 +8395,7 @@ msgstr "PDF statement from George"
 msgid "People"
 msgstr "People"
 
-#: src/yield/component/yield-chart-card/yield-chart-card.tsx
+#: src/yield/component/yield-chart-mode-control/yield-chart-mode-control.tsx
 msgid "Per day"
 msgstr "Per day"
 
@@ -8403,19 +8403,19 @@ msgstr "Per day"
 msgid "per month"
 msgstr "per month"
 
-#: src/yield/component/yield-chart-card/yield-chart-card.tsx
+#: src/yield/component/yield-chart-mode-control/yield-chart-mode-control.tsx
 msgid "Per month"
 msgstr "Per month"
 
-#: src/yield/component/yield-chart-card/yield-chart-card.tsx
+#: src/yield/component/yield-chart-mode-control/yield-chart-mode-control.tsx
 msgid "Per quarter"
 msgstr "Per quarter"
 
-#: src/yield/component/yield-chart-card/yield-chart-card.tsx
+#: src/yield/component/yield-chart-mode-control/yield-chart-mode-control.tsx
 msgid "Per week"
 msgstr "Per week"
 
-#: src/yield/component/yield-chart-card/yield-chart-card.tsx
+#: src/yield/component/yield-chart-mode-control/yield-chart-mode-control.tsx
 msgid "Per year"
 msgstr "Per year"
 
@@ -9282,7 +9282,7 @@ msgstr "Rules"
 msgid "Rules work on imported transactions"
 msgstr "Rules work on imported transactions"
 
-#: src/yield/component/yield-chart-card/yield-chart-card.tsx
+#: src/yield/component/yield-chart-mode-control/yield-chart-mode-control.tsx
 msgid "Running total"
 msgstr "Running total"
 
@@ -10492,6 +10492,7 @@ msgstr "Tap to select"
 msgid "Tax {taxLabel}"
 msgstr "Tax {taxLabel}"
 
+#: src/yield/component/yield-breakdown-tax/yield-breakdown-tax.tsx
 #: src/yield/component/yield-legend-tax-row/yield-legend-tax-row.tsx
 #: src/yield/constant/yield-group-label.constant.ts
 #: src/yield/constant/yield-kind-label.constant.ts
@@ -11588,7 +11589,7 @@ msgstr "Updated today"
 msgid "Updated yesterday"
 msgstr "Updated yesterday"
 
-#: src/yield/component/yield-legend-footnote/yield-legend-footnote.tsx
+#: src/yield/hook/use-yield-footnote-state.hook.ts
 msgid "Updating prices…"
 msgstr "Updating prices…"
 

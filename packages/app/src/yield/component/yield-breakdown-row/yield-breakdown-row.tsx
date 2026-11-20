@@ -9,13 +9,15 @@ interface Props {
     readonly testID: string;
 }
 
+const VALUE_CLASSNAME = 'text-right text-[17px] font-semibold tabular-nums text-primary';
+
 export const YieldBreakdownRow = ({ title, value, subtitle, testID }: Props) => (
     <GroupedListRow
         title={title}
         subtitle={subtitle}
         testID={testID}
         right={
-            <Text className="text-right text-[17px] font-semibold tabular-nums text-primary" maxFontSizeMultiplier={2}>
+            <Text className={VALUE_CLASSNAME} maxFontSizeMultiplier={2}>
                 {value}
             </Text>
         }

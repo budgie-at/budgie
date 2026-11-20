@@ -1,10 +1,11 @@
 import { YieldDeltaKindEnum, YieldRangeEnum } from '@budgie/market';
+import { cva } from 'class-variance-authority';
 import { use } from 'react';
 import { Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-import { cn } from '../../../@generic/utils/cn.util';
+import { YIELD_HERO_LINE_MIN_HEIGHT } from '../../constant/yield-hero-metrics.constant';
 import { YieldScreenContext } from '../../context/yield-screen.context';
 import { useYieldHeroLineText } from '../../hook/use-yield-hero-line-text.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
@@ -19,6 +20,11 @@ interface Props {
 
 const LINE_MAX_FONT_SIZE_MULTIPLIER = 2;
 const LINE_COUNT = 2;
+const LINE_STYLE = { minHeight: YIELD_HERO_LINE_MIN_HEIGHT };
+
+const lineVariants = cva('justify-center', { variants: { isHidden: { true: 'opacity-0', false: '' } } });
+const deltaVariants = cva('mt-[8px] items-start', { variants: { isHidden: { true: 'opacity-0', false: '' } } });
+const deltaAccessibilityModes: Record<string, 'auto' | 'no-hide-descendants'> = { true: 'auto', false: 'no-hide-descendants' };
 
 export const YieldHeroLine = ({ summary, bucket }: Props) => {
     const { screenKey } = use(YieldScreenContext);
@@ -27,27 +33,28 @@ export const YieldHeroLine = ({ summary, bucket }: Props) => {
     const isNewHolding =
         summary.delta?.kind === YieldDeltaKindEnum.NEW && isDefined(summary.firstYieldDay) && summary.firstYieldDay >= summary.windowStart;
     const isDeltaMeaningful = isDefined(summary.delta) && (summary.delta.kind !== YieldDeltaKindEnum.NEW || isNewHolding);
-    const isDeltaVisible = isDeltaMeaningful && screenKey.key.range !== YieldRangeEnum.ALL && !isDefined(bucket);
-    const lineClassName = cn(
-        'min-h-[44px]',
-        'flex-row',
-        'flex-wrap',
-        'items-center',
-        'gap-x-sm',
-        !isNotEmptyString(text) && !isDeltaVisible && 'opacity-0'
-    );
+    const hasDelta = isDeltaMeaningful && screenKey.key.range !== YieldRangeEnum.ALL;
+    const isDeltaVisible = hasDelta && !isDefined(bucket);
+    const isLineHidden = !isNotEmptyString(text) && !isDeltaVisible;
+    const lineClassName = lineVariants({ isHidden: isLineHidden });
+    const deltaClassName = deltaVariants({ isHidden: !isDeltaVisible });
+    const deltaAccessibility = deltaAccessibilityModes[String(isDeltaVisible)];
 
     return (
-        <View className={lineClassName}>
+        <View className={lineClassName} style={LINE_STYLE}>
             <Text
                 testID={PassiveIncomeSelector.YieldLine}
                 maxFontSizeMultiplier={LINE_MAX_FONT_SIZE_MULTIPLIER}
                 numberOfLines={LINE_COUNT}
-                className="shrink text-[15px] tabular-nums text-secondary-foreground"
+                className="text-[15px] tabular-nums text-secondary-foreground"
             >
                 {text}
             </Text>
-            {isDeltaVisible ? <YieldHeroDelta summary={summary} /> : null}
+            {hasDelta ? (
+                <View className={deltaClassName} importantForAccessibility={deltaAccessibility}>
+                    <YieldHeroDelta summary={summary} />
+                </View>
+            ) : null}
         </View>
     );
 };

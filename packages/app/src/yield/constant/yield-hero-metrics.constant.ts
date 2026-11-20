@@ -1,0 +1,2 @@
+export const YIELD_HERO_CAPTION_HEIGHT = 18;
+export const YIELD_HERO_LINE_MIN_HEIGHT = 44;

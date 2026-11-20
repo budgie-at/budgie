@@ -10,6 +10,7 @@ it('draws in-progress buckets dashed, the rest solid, and the prior path by buck
         prior: [0, 40, 80],
         inProgress: [false, false, true],
         axisTop: 100,
+        axisBottom: 0,
         width: 112,
         height: 100
     });
@@ -29,6 +30,7 @@ it('leaves the prior path empty without a prior series', () => {
         prior: null,
         inProgress: [false, false],
         axisTop: 10,
+        axisBottom: 0,
         width: 112,
         height: 100
     });

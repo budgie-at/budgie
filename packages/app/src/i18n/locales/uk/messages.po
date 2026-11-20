@@ -735,11 +735,8 @@ msgstr "{instrumentCode}: {days} оцінено за останнім курсо
 msgid "passive-income.chart.so-far"
 msgstr "{label} наразі"
 
-#: src/yield/component/yield-legend-tax-row/yield-legend-tax-row.tsx
-msgid "{label}, {amount}"
-msgstr "{label}, {amount}"
-
 #: src/yield/component/yield-legend-row/yield-legend-row.tsx
+#: src/yield/component/yield-legend-tax-row/yield-legend-tax-row.tsx
 msgid "{label}, {exactAmount}"
 msgstr "{label}, {exactAmount}"
 
@@ -807,8 +804,8 @@ msgid "{month}, out {expenseAmount}, in {incomeAmount}"
 msgstr "{month}, витрати {expenseAmount}, доходи {incomeAmount}"
 
 #: src/yield/component/yield-month-header/yield-month-header.tsx
-msgid "{monthLabel} · {totalLabel}"
-msgstr "{monthLabel} · {totalLabel}"
+msgid "{monthLabel} · {totalLabel} before tax"
+msgstr "{monthLabel} · {totalLabel} до оподаткування"
 
 #: src/transaction/components/statistics-trend-bars/statistics-trend-bars.tsx
 msgid "{monthLabel}: {amountLabel}"
@@ -839,8 +836,8 @@ msgid "{name} raised to {amountLabel}"
 msgstr "{name} підвищено до {amountLabel}"
 
 #: src/yield/hook/use-yield-hero-line-text.hook.ts
-msgid "{net} after tax"
-msgstr "{net} після податку"
+msgid "{net} after tax · −{tax} tax"
+msgstr "{net} після податків · −{tax} податку"
 
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "{newAccountCount, plural, one {Add # account in {currencyCode}} other {Add # accounts in {currencyCode}}}"
@@ -1231,10 +1228,6 @@ msgstr "Тепер переказів: {transferCount}"
 msgid "{unitPrice} each"
 msgstr "{unitPrice} за штуку"
 
-#: src/yield/hook/use-yield-position-subtitle.hook.ts
-msgid "{units} {instrumentCode} earned"
-msgstr "{units} {instrumentCode} зароблено"
-
 #: src/inzhur/component/inzhur-operations-details/inzhur-operations-details.tsx
 msgid "{unmatchedBankCount, plural, one {# bank payment to Inzhur has no matching row in the file} other {# bank payments to Inzhur have no matching row in the file}}"
 msgstr "{unmatchedBankCount, plural, one {# банківський платіж до Inzhur не має відповідного рядка у файлі} few {# банківські платежі до Inzhur не мають відповідного рядка у файлі} many {# банківських платежів до Inzhur не мають відповідного рядка у файлі} other {# банківського платежу до Inzhur не мають відповідного рядка у файлі}}"
@@ -1290,6 +1283,10 @@ msgstr "+{incomeAmount} / міс."
 msgid "<0>Paused</0> · not in your total"
 msgstr "<0>Призупинено</0> · не враховується у підсумку"
 
+#: src/yield/component/yield-breakdown-tax/yield-breakdown-tax.tsx
+msgid "−{amount}"
+msgstr "−{amount}"
+
 #: src/budget/components/budget-limit-row/budget-limit-row.tsx
 msgid "−{carriedLabel} carried"
 msgstr "−{carriedLabel} перенесено"
@@ -1299,6 +1296,7 @@ msgid "−{changePercent} vs {shortPreviousLabel}"
 msgstr "−{changePercent} до {shortPreviousLabel}"
 
 #: src/yield/component/yield-breakdown-crypto-today/yield-breakdown-crypto-today.tsx
+#: src/yield/component/yield-breakdown-earned/yield-breakdown-earned.tsx
 #: src/yield/component/yield-breakdown-run-rate/yield-breakdown-run-rate.tsx
 msgid "≈ {amount}"
 msgstr "≈ {amount}"
@@ -1472,6 +1470,7 @@ msgstr "Близько хвилини"
 msgid "about once a day"
 msgstr "приблизно раз на день"
 
+#: src/yield/component/yield-empty-state/yield-empty-state.tsx
 #: src/yield/component/yield-hero-info-button/yield-hero-info-button.tsx
 #: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
 msgid "About these figures"
@@ -1570,14 +1569,9 @@ msgstr "Рахунки ({selectedAccountsCount})"
 msgid "Accounts you sync appear here."
 msgstr "Рахунки, які ви синхронізуєте, з’являться тут."
 
-#: src/yield/hook/use-yield-deposit-subtitle.hook.ts
 #: src/yield/hook/use-yield-entry-subtitle.hook.ts
 msgid "Accruing {accruingAmount}"
 msgstr "Нараховується {accruingAmount}"
-
-#: src/yield/hook/use-yield-deposit-subtitle.hook.ts
-msgid "Accruing {accruingAmount} · pays {maturity}"
-msgstr "Нараховується {accruingAmount} · виплата {maturity}"
 
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
 msgid "Action: {label}"
@@ -2470,6 +2464,11 @@ msgstr "На основі вашого регулярного доходу. По
 #: src/categorize-inbox/components/categorize-inbox-group-move-to-cash-option/categorize-inbox-group-move-to-cash-option.tsx
 msgid "Becomes a transfer to your cash wallet"
 msgstr "Стане переказом до вашого гаманця готівки"
+
+#: src/yield/component/yield-breakdown-earned/yield-breakdown-earned.tsx
+#: src/yield/component/yield-breakdown-monthly-average/yield-breakdown-monthly-average.tsx
+msgid "Before tax"
+msgstr "До оподаткування"
 
 #: src/budget/components/budget-fund-row-status/budget-fund-row-status.tsx
 msgid "Behind, {setAsideLabel} {rate} to catch up"
@@ -4210,10 +4209,6 @@ msgstr "Файли CSV"
 msgid "CSV import"
 msgstr "Імпорт CSV"
 
-#: src/yield/component/yield-chart-mode-control/yield-chart-mode-control.tsx
-msgid "Cumulative"
-msgstr "Накопичено"
-
 #: src/import/utils/get-import-match-description.util.ts
 msgid "currency"
 msgstr "валюта"
@@ -4818,6 +4813,7 @@ msgstr "Кожен тиждень порівняно з вашим тижнев�
 msgid "Earn"
 msgstr "Earn"
 
+#: src/yield/component/yield-breakdown-earned/yield-breakdown-earned.tsx
 #: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
 msgid "Earned"
 msgstr "Зароблено"
@@ -4833,6 +4829,10 @@ msgstr "Зароблено {caption}. Відсоток порівнює цей �
 #: src/yield/component/yield-hero-caption/yield-hero-caption.tsx
 msgid "Earned {rangeCaption}"
 msgstr "Зароблено {rangeCaption}"
+
+#: src/yield/component/yield-section-header/yield-section-header.tsx
+msgid "Earned in range"
+msgstr "Зароблено за період"
 
 #: src/yield/component/yield-hero-caption/yield-hero-caption.tsx
 msgid "Earned through {throughDay}"
@@ -5829,10 +5829,6 @@ msgstr "Активи · {holdingsCount}"
 msgid "Home screen"
 msgstr "Головний екран"
 
-#: src/yield/component/yield-empty-state/yield-empty-state.tsx
-msgid "How it’s calculated"
-msgstr "Як це розраховується"
-
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "How to compare"
 msgstr "Як порівнювати"
@@ -6759,10 +6755,6 @@ msgstr "Збігається, коли текст трапляється буд�
 msgid "Matches when the text appears nowhere."
 msgstr "Збігається, коли текст ніде не трапляється."
 
-#: src/yield/hook/use-yield-deposit-subtitle.hook.ts
-msgid "Matures {maturity}"
-msgstr "Погашення {maturity}"
-
 #: src/account/component/deposit-details-card/deposit-details-card.tsx
 msgid "Maturity Date"
 msgstr "Дата погашення"
@@ -6914,11 +6906,11 @@ msgstr "Місяць"
 #: src/recurring/components/recurring-form-repeat-section/recurring-form-repeat-section.tsx
 #: src/recurring/hook/use-recurring-cadence-label.hook.ts
 #: src/transaction/components/transaction-info-installment-terms/transaction-info-installment-terms.tsx
-#: src/yield/component/yield-chart-mode-control/yield-chart-mode-control.tsx
 msgid "Monthly"
 msgstr "Щомісяця"
 
 #: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
+#: src/yield/component/yield-breakdown-monthly-average/yield-breakdown-monthly-average.tsx
 msgid "Monthly average"
 msgstr "У середньому на місяць"
 
@@ -7448,6 +7440,10 @@ msgstr "Немає тегів за запитом «{trimmedSearch}»"
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx
 msgid "No tags yet"
 msgstr "Ще немає тегів"
+
+#: src/yield/hook/use-yield-hero-line-text.hook.ts
+msgid "No tax withheld"
+msgstr "Податок не утримано"
 
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "No thanks"
@@ -8111,6 +8107,10 @@ msgstr "Інші варіанти"
 msgid "Other own accounts"
 msgstr "Інші власні рахунки"
 
+#: src/yield/component/yield-breakdown/yield-breakdown.tsx
+msgid "Outlook"
+msgstr "Прогноз"
+
 #: src/transaction/components/transaction-info-debt-progress/transaction-info-debt-progress.tsx
 msgid "Outstanding"
 msgstr "Залишок боргу"
@@ -8394,7 +8394,7 @@ msgstr "PDF-виписка від George"
 msgid "People"
 msgstr "Люди"
 
-#: src/yield/component/yield-chart-card/yield-chart-card.tsx
+#: src/yield/component/yield-chart-mode-control/yield-chart-mode-control.tsx
 msgid "Per day"
 msgstr "За день"
 
@@ -8402,19 +8402,19 @@ msgstr "За день"
 msgid "per month"
 msgstr "на місяць"
 
-#: src/yield/component/yield-chart-card/yield-chart-card.tsx
+#: src/yield/component/yield-chart-mode-control/yield-chart-mode-control.tsx
 msgid "Per month"
 msgstr "За місяць"
 
-#: src/yield/component/yield-chart-card/yield-chart-card.tsx
+#: src/yield/component/yield-chart-mode-control/yield-chart-mode-control.tsx
 msgid "Per quarter"
 msgstr "За квартал"
 
-#: src/yield/component/yield-chart-card/yield-chart-card.tsx
+#: src/yield/component/yield-chart-mode-control/yield-chart-mode-control.tsx
 msgid "Per week"
 msgstr "За тиждень"
 
-#: src/yield/component/yield-chart-card/yield-chart-card.tsx
+#: src/yield/component/yield-chart-mode-control/yield-chart-mode-control.tsx
 msgid "Per year"
 msgstr "За рік"
 
@@ -9281,7 +9281,7 @@ msgstr "Правила"
 msgid "Rules work on imported transactions"
 msgstr "Правила працюють з імпортованими транзакціями"
 
-#: src/yield/component/yield-chart-card/yield-chart-card.tsx
+#: src/yield/component/yield-chart-mode-control/yield-chart-mode-control.tsx
 msgid "Running total"
 msgstr "Наростаючий підсумок"
 
@@ -10491,6 +10491,7 @@ msgstr "Торкніться для вибору"
 msgid "Tax {taxLabel}"
 msgstr "Податок {taxLabel}"
 
+#: src/yield/component/yield-breakdown-tax/yield-breakdown-tax.tsx
 #: src/yield/component/yield-legend-tax-row/yield-legend-tax-row.tsx
 #: src/yield/constant/yield-group-label.constant.ts
 #: src/yield/constant/yield-kind-label.constant.ts
@@ -11587,7 +11588,7 @@ msgstr "Оновлено сьогодні"
 msgid "Updated yesterday"
 msgstr "Оновлено вчора"
 
-#: src/yield/component/yield-legend-footnote/yield-legend-footnote.tsx
+#: src/yield/hook/use-yield-footnote-state.hook.ts
 msgid "Updating prices…"
 msgstr "Оновлення цін…"
 

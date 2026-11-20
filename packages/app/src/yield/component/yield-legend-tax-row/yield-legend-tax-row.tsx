@@ -1,13 +1,10 @@
 import { YieldGroupEnum } from '@budgie/market';
-import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
-import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
-import { cn } from '../../../@generic/utils/cn.util';
-import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
+import { useYieldLegendAmounts } from '../../hook/use-yield-legend-amounts.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 import { YieldLegendEntry } from '../yield-legend-entry/yield-legend-entry';
 
@@ -17,26 +14,32 @@ const EMPTY_AMOUNT = '—';
 
 interface Props {
     readonly total: number;
+    readonly compactThreshold: number;
 }
 
-export const YieldLegendTaxRow = ({ total }: Props) => {
+export const YieldLegendTaxRow = ({ total, compactThreshold }: Props) => {
     const { t } = useLingui();
-    const formatAmount = useProtectedAmountLabel();
-    const { symbol } = useAtomValue(defaultInstrumentAtom);
+    const amounts = useYieldLegendAmounts(total, 0, compactThreshold);
 
     const isEmpty = !isPositiveNumber(total);
     const label = t`Tax withheld`;
-    const amount = isEmpty ? EMPTY_AMOUNT : `−${formatAmount(total, symbol)}`;
-    const rowClassName = cn(ROW_CLASSNAME, isEmpty && 'opacity-40');
+    const amount = isEmpty ? EMPTY_AMOUNT : `−${amounts.amount}`;
+    const exactAmount = isEmpty ? EMPTY_AMOUNT : `−${amounts.exact}`;
 
     return (
         <View
             accessible
-            accessibilityLabel={t`${label}, ${amount}`}
+            accessibilityLabel={t`${label}, ${exactAmount}`}
             testID={PassiveIncomeSelector.LegendRow(YieldGroupEnum.TAX)}
-            className={rowClassName}
+            className={ROW_CLASSNAME}
         >
-            <YieldLegendEntry group={YieldGroupEnum.TAX} label={label} amount={amount} amountClassName={AMOUNT_CLASSNAME} isMuted={false} />
+            <YieldLegendEntry
+                group={YieldGroupEnum.TAX}
+                label={label}
+                amount={amount}
+                amountClassName={AMOUNT_CLASSNAME}
+                isEmpty={isEmpty}
+            />
         </View>
     );
 };

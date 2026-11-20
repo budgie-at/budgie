@@ -17,8 +17,7 @@ const MIN_BAR_HEIGHT = 1;
 const BAR_CLASSNAME = 'flex-1 rounded-[2px]';
 const FOCUSED_CLASSNAME = 'bg-yield-staking';
 const NEUTRAL_CLASSNAME = 'bg-secondary-foreground';
-const FOCUSED_IN_PROGRESS_CLASSNAME = 'border border-dashed border-yield-staking/70 bg-yield-staking/35 dark:bg-yield-staking/55';
-const NEUTRAL_IN_PROGRESS_CLASSNAME =
+const IN_PROGRESS_CLASSNAME =
     'border border-dashed border-secondary-foreground/70 bg-secondary-foreground/35 dark:bg-secondary-foreground/55';
 
 export const YieldChartMiniBar = ({ bucket, max, focusDay }: Props) => {
@@ -26,8 +25,7 @@ export const YieldChartMiniBar = ({ bucket, max, focusDay }: Props) => {
     const isFocused = !isDefined(focusDay) || (bucket.start <= focusDay && focusDay <= bucket.end);
     const style = { height: Math.max(share * MINI_CHART_HEIGHT, MIN_BAR_HEIGHT) };
     const fillClassName = isFocused ? FOCUSED_CLASSNAME : NEUTRAL_CLASSNAME;
-    const inProgressClassName = isFocused ? FOCUSED_IN_PROGRESS_CLASSNAME : NEUTRAL_IN_PROGRESS_CLASSNAME;
-    const barClassName = cn(BAR_CLASSNAME, bucket.isInProgress ? inProgressClassName : fillClassName);
+    const barClassName = cn(BAR_CLASSNAME, bucket.isInProgress ? IN_PROGRESS_CLASSNAME : fillClassName);
 
     return <View className={barClassName} style={style} />;
 };

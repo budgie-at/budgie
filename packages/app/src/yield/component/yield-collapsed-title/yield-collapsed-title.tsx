@@ -1,19 +1,16 @@
-import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { use } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { Icon } from '../../../@generic/component/icon/icon';
 import { CHROME_TITLE_TEXT_PROPS } from '../../../@generic/constant/chrome-title-text-props.constant';
 import { YIELD_GROUP_LABEL } from '../../constant/yield-group-label.constant';
 import { YieldScreenContext } from '../../context/yield-screen.context';
 import { useYieldScopeTitle } from '../../hook/use-yield-scope-title.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
-
-const HIT_SLOP = { top: 16, bottom: 16, left: 16, right: 16 };
+import { YieldFilterChip } from '../yield-filter-chip/yield-filter-chip';
 
 export const YieldCollapsedTitle = () => {
     const { t } = useLingui();
@@ -36,19 +33,12 @@ export const YieldCollapsedTitle = () => {
                 <Trans>Passive income</Trans>
             </Text>
             {isNotEmptyArray(scopes) ? (
-                <Pressable
-                    accessibilityRole="button"
+                <YieldFilterChip
+                    label={scopeText}
                     accessibilityLabel={accessibilityLabel}
                     onPress={handleClear}
-                    hitSlop={HIT_SLOP}
-                    className="min-h-[44px] min-w-[44px] -my-[14px] flex-row items-center justify-center gap-x-xxs active:opacity-70"
                     testID={PassiveIncomeSelector.ClearFilter}
-                >
-                    <Text className="shrink text-center text-xs text-secondary-foreground" {...CHROME_TITLE_TEXT_PROPS}>
-                        {scopeText}
-                    </Text>
-                    <Icon icon={UserIconNameEnum.X} size={16} className="text-secondary-foreground" />
-                </Pressable>
+                />
             ) : null}
         </View>
     );

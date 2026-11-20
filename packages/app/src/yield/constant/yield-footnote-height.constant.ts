@@ -1,0 +1,1 @@
+export const YIELD_FOOTNOTE_HEIGHT = 20;

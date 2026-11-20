@@ -13,7 +13,6 @@ import { useYieldChartAxis } from '../../hook/use-yield-chart-axis.hook';
 import { buildYieldBarLayers } from '../../utils/build-yield-bar-layers.util';
 import { buildYieldBarLayout } from '../../utils/build-yield-bar-layout.util';
 import { YieldChartBarPath } from '../yield-chart-bar-path/yield-chart-bar-path';
-import { YieldChartBarsScrubLabel } from '../yield-chart-bars-scrub-label/yield-chart-bars-scrub-label';
 import { YieldChartFrame } from '../yield-chart-frame/yield-chart-frame';
 
 import type { YieldSummaryInterface } from '@budgie/market';
@@ -33,7 +32,6 @@ export const YieldChartBars = ({ width, summary }: Props) => {
 
     const { group } = screenKey.key;
     const visibleGroups = isDefined(group) ? [group] : [...YIELD_STACK_GROUPS];
-    const totals = summary.buckets.map(bucket => visibleGroups.reduce((sum, visible) => sum + bucket.amounts[visible], 0));
     const layout = buildYieldBarLayout({ buckets: summary.buckets, visibleGroups, width, height: YIELD_PLOT_HEIGHT, axis });
     const values = useYieldBarGeometry(layout);
     const layers = buildYieldBarLayers(layout, summary.buckets.length * VALUES_PER_RECT, isIncreaseContrast);
@@ -57,7 +55,7 @@ export const YieldChartBars = ({ width, summary }: Props) => {
     );
 
     return (
-        <YieldChartFrame axis={axis} width={width} label={<YieldChartBarsScrubLabel summary={summary} totals={totals} layout={layout} />}>
+        <YieldChartFrame axis={axis} width={width}>
             {paths.map(({ key, layer, isInProgress, visibleBuckets }) => (
                 <YieldChartBarPath key={key} values={values} layer={layer} isInProgress={isInProgress} visibleBuckets={visibleBuckets} />
             ))}
