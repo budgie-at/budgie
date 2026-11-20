@@ -4,11 +4,12 @@ import type { YieldAxisInterface } from '../interface/yield-axis.interface';
 
 const EMPTY_TOP = 1;
 const EMPTY_STEP = 0.5;
-const STEP_FACTORS = [1, 2, 2.5, 5] as const;
+const STEP_FACTORS = [1, 2, 2.5, 3, 4, 5] as const;
 const MIN_INTERVALS = 2;
-const MAX_INTERVALS = 3;
+const MAX_INTERVALS = 5;
 const EPSILON = 1e-9;
 const PRECISION = 12;
+const MAX_PEAK_SHARE = 0.9;
 
 export const buildYieldAxis = (maxValue: number, depthBelowZero: number): YieldAxisInterface => {
     const peak = Math.max(maxValue, 0);
@@ -21,7 +22,7 @@ export const buildYieldAxis = (maxValue: number, depthBelowZero: number): YieldA
     const fits = [exponent - 1, exponent, exponent + 1].flatMap(power =>
         STEP_FACTORS.flatMap(factor => {
             const step = Number((factor * 10 ** power).toPrecision(PRECISION));
-            const intervals = Math.ceil(peak / step - EPSILON);
+            const intervals = Math.ceil(peak / (step * MAX_PEAK_SHARE) - EPSILON);
 
             return intervals >= MIN_INTERVALS && intervals <= MAX_INTERVALS
                 ? [{ step, top: Number((step * intervals).toPrecision(PRECISION)) }]

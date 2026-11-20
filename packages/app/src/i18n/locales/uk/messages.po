@@ -1096,21 +1096,25 @@ msgstr "{shareLabel} доходів"
 msgid "{shareLabel} of spending"
 msgstr "{shareLabel} витрат"
 
-#: src/yield/component/yield-hero-delta/yield-hero-delta.tsx
+#: src/yield/hook/use-yield-delta-label.hook.ts
 msgid "{sign}{amount} · {sign}{change} vs previous 3 months"
 msgstr "{sign}{amount} · {sign}{change} порівняно з попередніми 3 місяцями"
 
-#: src/yield/component/yield-hero-delta/yield-hero-delta.tsx
-msgid "{sign}{amount} · {sign}{change} vs previous month"
-msgstr "{sign}{amount} · {sign}{change} порівняно з попереднім місяцем"
+#: src/yield/hook/use-yield-delta-label.hook.ts
+msgid "{sign}{amount} · {sign}{change} vs previous 30 days"
+msgstr "{sign}{amount} · {sign}{change} проти попередніх 30 днів"
 
-#: src/yield/component/yield-hero-delta/yield-hero-delta.tsx
+#: src/yield/hook/use-yield-delta-label.hook.ts
 msgid "{sign}{amount} · {sign}{change} vs previous period"
 msgstr "{sign}{amount} · {sign}{change} порівняно з попереднім періодом"
 
-#: src/yield/component/yield-hero-delta/yield-hero-delta.tsx
+#: src/yield/hook/use-yield-delta-label.hook.ts
 msgid "{sign}{amount} · {sign}{change} vs previous year"
 msgstr "{sign}{amount} · {sign}{change} порівняно з попереднім роком"
+
+#: src/yield/component/yield-hero-scrub-delta-chip/yield-hero-scrub-delta-chip.tsx
+msgid "{sign}{amount} vs {previousLabel}"
+msgstr "{sign}{amount} проти {previousLabel}"
 
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "{similarCount, plural, one {# similar · last 6 months} other {# similar · last 6 months}}"
@@ -1876,6 +1880,7 @@ msgstr "Усі обов’язкові поля зіставлено. Торкн
 msgid "All shared"
 msgstr "Усі спільні"
 
+#: src/yield/hook/use-yield-analytics-card-text.hook.ts
 #: src/yield/hook/use-yield-analytics-period-label.hook.ts
 msgid "all time"
 msgstr "весь час"
@@ -1884,7 +1889,6 @@ msgstr "весь час"
 #: src/yield/component/yield-range-control/yield-range-control.tsx
 #: src/yield/constant/yield-range-name.constant.ts
 #: src/yield/constant/yield-range-period-label.constant.ts
-#: src/yield/hook/use-yield-analytics-card-text.hook.ts
 msgid "All time"
 msgstr "Весь час"
 
@@ -6067,6 +6071,15 @@ msgstr "У запасі, за сьогоднішніми цінами"
 msgid "In Shortcuts, add a Transaction automation. Pick cards and Run Immediately."
 msgstr "У Командах додайте автоматизацію «Транзакція». Виберіть картки та «Запускати негайно»."
 
+#: src/yield/hook/use-yield-analytics-card-text.hook.ts
+msgid "in the last 12 months"
+msgstr "за останні 12 місяців"
+
+#: src/yield/hook/use-yield-analytics-card-text.hook.ts
+msgid "in the last 13 weeks"
+msgstr "за останні 13 тижнів"
+
+#: src/yield/hook/use-yield-analytics-card-text.hook.ts
 #: src/yield/hook/use-yield-date-labels.hook.ts
 msgid "in the last 30 days"
 msgstr "за останні 30 днів"
@@ -6390,13 +6403,8 @@ msgstr "останні 12 місяців"
 
 #: src/yield/constant/yield-range-name.constant.ts
 #: src/yield/constant/yield-range-period-label.constant.ts
-#: src/yield/hook/use-yield-analytics-card-text.hook.ts
 msgid "Last 12 months"
 msgstr "Останні 12 місяців"
-
-#: src/yield/hook/use-yield-analytics-card-text.hook.ts
-msgid "Last 13 weeks"
-msgstr "Останні 13 тижнів"
 
 #: src/sync/component/sync-history-step/sync-history-step.tsx
 #: src/yield/constant/yield-range-name.constant.ts
@@ -6407,7 +6415,6 @@ msgstr "Останні 3 місяці"
 #: src/sync/component/resync-window-option-row/resync-window-option-row.tsx
 #: src/yield/constant/yield-range-name.constant.ts
 #: src/yield/constant/yield-range-period-label.constant.ts
-#: src/yield/hook/use-yield-analytics-card-text.hook.ts
 msgid "Last 30 days"
 msgstr "Останні 30 днів"
 
@@ -7151,7 +7158,7 @@ msgstr "Нове відкладення"
 msgid "New tag"
 msgstr "Новий тег"
 
-#: src/yield/component/yield-hero-delta/yield-hero-delta.tsx
+#: src/yield/hook/use-yield-delta-label.hook.ts
 msgid "New this period"
 msgstr "Новий у цьому періоді"
 
@@ -7274,6 +7281,10 @@ msgstr "Немає категорій, що відповідають «{trimmedS
 #: src/transaction/hook/use-adjustment-balance.hook.ts
 msgid "No change"
 msgstr "Без змін"
+
+#: src/yield/component/yield-hero-scrub-delta-chip/yield-hero-scrub-delta-chip.tsx
+msgid "No change vs {previousLabel}"
+msgstr "Без змін проти {previousLabel}"
 
 #: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
 msgid "No contacts on this device"
@@ -8265,24 +8276,9 @@ msgstr "Неповна вартість — деяких цін немає"
 #: src/yield/component/yield-collapsed-title/yield-collapsed-title.tsx
 #: src/yield/component/yield-entry-row-content/yield-entry-row-content.tsx
 #: src/yield/component/yield-screen-title/yield-screen-title.tsx
+#: src/yield/hook/use-yield-analytics-card-text.hook.ts
 msgid "Passive income"
 msgstr "Пасивний дохід"
-
-#: src/yield/hook/use-yield-analytics-card-text.hook.ts
-msgid "Passive income · all time"
-msgstr "Пасивний дохід · весь час"
-
-#: src/yield/hook/use-yield-analytics-card-text.hook.ts
-msgid "Passive income · last 12 months"
-msgstr "Пасивний дохід · останні 12 місяців"
-
-#: src/yield/hook/use-yield-analytics-card-text.hook.ts
-msgid "Passive income · last 13 weeks"
-msgstr "Пасивний дохід · останні 13 тижнів"
-
-#: src/yield/hook/use-yield-analytics-card-text.hook.ts
-msgid "Passive income · last 30 days"
-msgstr "Пасивний дохід · останні 30 днів"
 
 #: src/yield/component/yield-legend/yield-legend.tsx
 msgid "Passive income by kind"
@@ -10588,6 +10584,10 @@ msgstr "URL умов використання"
 msgid "The .pem file you saved"
 msgstr "Збережений файл .pem"
 
+#: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
+msgid "The 12 months before this range."
+msgstr "12 місяців перед цим діапазоном."
+
 #: src/sync/component/enable-banking-connect-account-step/enable-banking-connect-account-step.tsx
 msgid "The account keeps its history and syncs forward from the day after its last transaction."
 msgstr "Рахунок зберігає історію й синхронізується з наступного дня після останньої транзакції."
@@ -11675,8 +11675,8 @@ msgid "Updated yesterday"
 msgstr "Оновлено вчора"
 
 #: src/yield/component/yield-hero-prices-status/yield-hero-prices-status.tsx
-msgid "Updating prices…"
-msgstr "Оновлення цін…"
+msgid "Updating"
+msgstr "Оновлення"
 
 #: src/auth/components/pin-sealing-state/pin-sealing-state.tsx
 msgid "Updating your PIN"
@@ -11802,22 +11802,6 @@ msgstr "Голосові нотатки"
 #: src/market-data/component/currency-market-stats/currency-market-stats.tsx
 msgid "Volume (24h)"
 msgstr "Обсяг (24 год)"
-
-#: src/yield/hook/use-yield-analytics-takeaway.hook.ts
-msgid "vs previous 3 months"
-msgstr "порівняно з попередніми 3 місяцями"
-
-#: src/yield/hook/use-yield-analytics-takeaway.hook.ts
-msgid "vs previous month"
-msgstr "порівняно з попереднім місяцем"
-
-#: src/yield/hook/use-yield-analytics-takeaway.hook.ts
-msgid "vs previous period"
-msgstr "порівняно з попереднім періодом"
-
-#: src/yield/hook/use-yield-analytics-takeaway.hook.ts
-msgid "vs previous year"
-msgstr "порівняно з попереднім роком"
 
 #: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx

@@ -36,11 +36,16 @@ const TICKS = TICK_INDICES.map(index => ({
     style: { left: `${((index + 0.5) / BARS.length) * 100}%` as const, marginLeft: -TICK_WIDTH / 2, width: TICK_WIDTH }
 }));
 const ZERO_Y = YIELD_PLOT_HEIGHT - YIELD_NEGATIVE_BAND;
-const GRID_LINES = [
-    { id: 'top', style: { top: 1 }, className: 'bg-primary opacity-[0.08]' },
-    { id: 'mid', style: { top: ZERO_Y / 2 }, className: 'bg-primary opacity-[0.08]' },
-    { id: 'zero', style: { top: ZERO_Y }, className: 'bg-primary opacity-40' }
-] as const;
+const GRID_INTERVALS = 3;
+const GRID_LINES = Array.from({ length: GRID_INTERVALS + 1 }, (_, index) => {
+    const isZero = index === GRID_INTERVALS;
+
+    return {
+        id: isZero ? 'zero' : `tick-${index}`,
+        style: { top: Math.max((ZERO_Y * index) / GRID_INTERVALS, 1) },
+        className: isZero ? 'bg-primary opacity-40' : 'bg-primary opacity-[0.08]'
+    };
+});
 const LABEL_HEIGHT = 8;
 const LABEL_CENTER_OFFSET = 8;
 const AXIS_LABELS = GRID_LINES.map(({ id, style }) => ({ id, style: { top: style.top - LABEL_CENTER_OFFSET, height: LABEL_HEIGHT } }));

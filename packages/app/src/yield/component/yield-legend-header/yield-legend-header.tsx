@@ -1,4 +1,5 @@
 import { useLingui } from '@lingui/react/macro';
+import { cva } from 'class-variance-authority';
 import { parseISO } from 'date-fns/parseISO';
 import { use } from 'react';
 import { Text, View } from 'react-native';
@@ -7,6 +8,7 @@ import Animated, { FadeIn } from 'react-native-reanimated';
 import { isDefined } from '@rnw-community/shared';
 
 import { EASE_OUT } from '../../../@generic/constant/motion.constant';
+import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { YIELD_LEGEND_HEADER_HEIGHT } from '../../constant/yield-legend-header-height.constant';
@@ -24,6 +26,9 @@ interface Props {
 }
 
 const HEADER_STYLE = { minHeight: YIELD_LEGEND_HEADER_HEIGHT };
+const headerVariants = cva('flex-row items-baseline justify-between gap-x-md', {
+    variants: { isAccessibilityText: { true: 'pt-[8px]', false: '' } }
+});
 const CROSS_FADE_DURATION = 150;
 const MAX_FONT_SIZE_MULTIPLIER = 1.5;
 
@@ -33,6 +38,7 @@ export const YieldLegendHeader = ({ hint = null }: Props) => {
     const { selectedIndex } = use(YieldSelectionContext);
     const summary = useYieldSummary();
     const reducedMotion = useReducedMotion();
+    const isAccessibilityText = useIsAccessibilityTextSize();
     const { formatPeriod } = useYieldDateLabels();
     const { formatDayAndMonthAndYear } = useFormatDate();
 
@@ -44,7 +50,7 @@ export const YieldLegendHeader = ({ hint = null }: Props) => {
     const entering = FadeIn.duration(reducedMotion ? 0 : CROSS_FADE_DURATION).easing(EASE_OUT);
 
     return (
-        <View className="flex-row items-baseline justify-between gap-x-md" style={HEADER_STYLE}>
+        <View className={headerVariants({ isAccessibilityText })} style={HEADER_STYLE}>
             <Animated.View key={text} entering={entering} className="min-w-0 shrink">
                 <Text className="text-[13px] text-secondary-foreground" maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER} numberOfLines={1}>
                     {text}

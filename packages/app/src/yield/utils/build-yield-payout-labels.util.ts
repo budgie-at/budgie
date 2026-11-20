@@ -21,7 +21,10 @@ export const buildYieldPayoutLabels = ({
     }
 
     if (isNotEmptyString(positionTitle)) {
-        return { title: positionTitle, subtitle: joinYieldSubtitle([kindLabel, dayLabel, sourceTitle]) };
+        return {
+            title: positionTitle,
+            subtitle: joinYieldSubtitle([kindLabel, dayLabel, sourceTitle === positionTitle ? null : sourceTitle])
+        };
     }
 
     const isKindInTitle = baseTitle.toLowerCase().includes(kindLabel.toLowerCase());

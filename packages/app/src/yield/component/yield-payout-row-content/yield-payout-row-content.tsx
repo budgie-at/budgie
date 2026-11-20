@@ -1,5 +1,6 @@
 import { TransactionTypeEnum } from '@budgie/contracts';
 import { router } from 'expo-router';
+import { use } from 'react';
 import { View } from 'react-native';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
@@ -7,6 +8,7 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 import { cn } from '../../../@generic/utils/cn.util';
 import { getTransactionHref } from '../../../transaction/utils/get-transaction-href.util';
 import { YIELD_SOURCE_FOCUS } from '../../constant/yield-source-focus.constant';
+import { YieldScreenContext } from '../../context/yield-screen.context';
 import { useYieldPayoutRowText } from '../../hook/use-yield-payout-row-text.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 import { YieldPayoutIcon } from '../yield-payout-icon/yield-payout-icon';
@@ -21,6 +23,7 @@ interface Props extends YieldPayoutRowPropsInterface {
     readonly className?: string;
 }
 
+const SUBTITLE_LINES = 1;
 const AMOUNT_CLASSNAME = 'text-[17px] font-semibold tabular-nums';
 const TAX_CLASSNAME = 'text-secondary-foreground';
 const INCOME_CLASSNAME = 'text-primary';
@@ -33,14 +36,13 @@ export const YieldPayoutRowContent = ({ transaction, tax, siblings, isUnassigned
         dateFormat
     );
 
+    const { screenKey } = use(YieldScreenContext);
+
     const sourceAccountId = transaction.yieldSourceAccountId;
-    const hasChevron = !isMerged || isDefined(sourceAccountId);
 
     const handlePress = () => {
-        if (isMerged) {
-            if (isDefined(sourceAccountId)) {
-                router.setParams({ position: String(sourceAccountId), instrument: '', group: '' });
-            }
+        if (isMerged && isDefined(sourceAccountId) && !isDefined(screenKey.key.positionAccountId)) {
+            router.setParams({ position: String(sourceAccountId), instrument: '', group: '' });
 
             return;
         }
@@ -60,7 +62,7 @@ export const YieldPayoutRowContent = ({ transaction, tax, siblings, isUnassigned
     const trailing = (
         <View className="flex-row items-center gap-x-sm">
             <YieldPayoutTrailing amount={trailingText} amountClassName={amountClassName} taxText={taxText} />
-            {hasChevron ? <YieldRowChevron /> : null}
+            <YieldRowChevron />
         </View>
     );
 
@@ -69,7 +71,7 @@ export const YieldPayoutRowContent = ({ transaction, tax, siblings, isUnassigned
             left={<YieldPayoutIcon kind={kind} cryptoCode={cryptoCode} />}
             title={title}
             className={rowClassName}
-            subtitle={<YieldRowSubtitle subtitle={subtitle} />}
+            subtitle={<YieldRowSubtitle subtitle={subtitle} lines={SUBTITLE_LINES} />}
             trailing={trailing}
             accessibilityLabel={[title, subtitle, trailingText, taxText].filter(isNotEmptyString).join(', ')}
             onPress={handlePress}

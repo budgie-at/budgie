@@ -1097,21 +1097,25 @@ msgstr "{shareLabel} of income"
 msgid "{shareLabel} of spending"
 msgstr "{shareLabel} of spending"
 
-#: src/yield/component/yield-hero-delta/yield-hero-delta.tsx
+#: src/yield/hook/use-yield-delta-label.hook.ts
 msgid "{sign}{amount} · {sign}{change} vs previous 3 months"
 msgstr "{sign}{amount} · {sign}{change} vs previous 3 months"
 
-#: src/yield/component/yield-hero-delta/yield-hero-delta.tsx
-msgid "{sign}{amount} · {sign}{change} vs previous month"
-msgstr "{sign}{amount} · {sign}{change} vs previous month"
+#: src/yield/hook/use-yield-delta-label.hook.ts
+msgid "{sign}{amount} · {sign}{change} vs previous 30 days"
+msgstr "{sign}{amount} · {sign}{change} vs previous 30 days"
 
-#: src/yield/component/yield-hero-delta/yield-hero-delta.tsx
+#: src/yield/hook/use-yield-delta-label.hook.ts
 msgid "{sign}{amount} · {sign}{change} vs previous period"
 msgstr "{sign}{amount} · {sign}{change} vs previous period"
 
-#: src/yield/component/yield-hero-delta/yield-hero-delta.tsx
+#: src/yield/hook/use-yield-delta-label.hook.ts
 msgid "{sign}{amount} · {sign}{change} vs previous year"
 msgstr "{sign}{amount} · {sign}{change} vs previous year"
+
+#: src/yield/component/yield-hero-scrub-delta-chip/yield-hero-scrub-delta-chip.tsx
+msgid "{sign}{amount} vs {previousLabel}"
+msgstr "{sign}{amount} vs {previousLabel}"
 
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "{similarCount, plural, one {# similar · last 6 months} other {# similar · last 6 months}}"
@@ -1877,6 +1881,7 @@ msgstr "All required fields matched. Tap a field to change it."
 msgid "All shared"
 msgstr "All shared"
 
+#: src/yield/hook/use-yield-analytics-card-text.hook.ts
 #: src/yield/hook/use-yield-analytics-period-label.hook.ts
 msgid "all time"
 msgstr "all time"
@@ -1885,7 +1890,6 @@ msgstr "all time"
 #: src/yield/component/yield-range-control/yield-range-control.tsx
 #: src/yield/constant/yield-range-name.constant.ts
 #: src/yield/constant/yield-range-period-label.constant.ts
-#: src/yield/hook/use-yield-analytics-card-text.hook.ts
 msgid "All time"
 msgstr "All time"
 
@@ -6068,6 +6072,15 @@ msgstr "In runway, at today's prices"
 msgid "In Shortcuts, add a Transaction automation. Pick cards and Run Immediately."
 msgstr "In Shortcuts, add a Transaction automation. Pick cards and Run Immediately."
 
+#: src/yield/hook/use-yield-analytics-card-text.hook.ts
+msgid "in the last 12 months"
+msgstr "in the last 12 months"
+
+#: src/yield/hook/use-yield-analytics-card-text.hook.ts
+msgid "in the last 13 weeks"
+msgstr "in the last 13 weeks"
+
+#: src/yield/hook/use-yield-analytics-card-text.hook.ts
 #: src/yield/hook/use-yield-date-labels.hook.ts
 msgid "in the last 30 days"
 msgstr "in the last 30 days"
@@ -6391,13 +6404,8 @@ msgstr "last 12 months"
 
 #: src/yield/constant/yield-range-name.constant.ts
 #: src/yield/constant/yield-range-period-label.constant.ts
-#: src/yield/hook/use-yield-analytics-card-text.hook.ts
 msgid "Last 12 months"
 msgstr "Last 12 months"
-
-#: src/yield/hook/use-yield-analytics-card-text.hook.ts
-msgid "Last 13 weeks"
-msgstr "Last 13 weeks"
 
 #: src/sync/component/sync-history-step/sync-history-step.tsx
 #: src/yield/constant/yield-range-name.constant.ts
@@ -6408,7 +6416,6 @@ msgstr "Last 3 months"
 #: src/sync/component/resync-window-option-row/resync-window-option-row.tsx
 #: src/yield/constant/yield-range-name.constant.ts
 #: src/yield/constant/yield-range-period-label.constant.ts
-#: src/yield/hook/use-yield-analytics-card-text.hook.ts
 msgid "Last 30 days"
 msgstr "Last 30 days"
 
@@ -7152,7 +7159,7 @@ msgstr "New set aside"
 msgid "New tag"
 msgstr "New tag"
 
-#: src/yield/component/yield-hero-delta/yield-hero-delta.tsx
+#: src/yield/hook/use-yield-delta-label.hook.ts
 msgid "New this period"
 msgstr "New this period"
 
@@ -7275,6 +7282,10 @@ msgstr "No categories match “{trimmedSearch}”"
 #: src/transaction/hook/use-adjustment-balance.hook.ts
 msgid "No change"
 msgstr "No change"
+
+#: src/yield/component/yield-hero-scrub-delta-chip/yield-hero-scrub-delta-chip.tsx
+msgid "No change vs {previousLabel}"
+msgstr "No change vs {previousLabel}"
 
 #: src/@generic/component/contact-selector-empty/contact-selector-empty.tsx
 msgid "No contacts on this device"
@@ -8266,24 +8277,9 @@ msgstr "Partial value — some prices unavailable"
 #: src/yield/component/yield-collapsed-title/yield-collapsed-title.tsx
 #: src/yield/component/yield-entry-row-content/yield-entry-row-content.tsx
 #: src/yield/component/yield-screen-title/yield-screen-title.tsx
+#: src/yield/hook/use-yield-analytics-card-text.hook.ts
 msgid "Passive income"
 msgstr "Passive income"
-
-#: src/yield/hook/use-yield-analytics-card-text.hook.ts
-msgid "Passive income · all time"
-msgstr "Passive income · all time"
-
-#: src/yield/hook/use-yield-analytics-card-text.hook.ts
-msgid "Passive income · last 12 months"
-msgstr "Passive income · last 12 months"
-
-#: src/yield/hook/use-yield-analytics-card-text.hook.ts
-msgid "Passive income · last 13 weeks"
-msgstr "Passive income · last 13 weeks"
-
-#: src/yield/hook/use-yield-analytics-card-text.hook.ts
-msgid "Passive income · last 30 days"
-msgstr "Passive income · last 30 days"
 
 #: src/yield/component/yield-legend/yield-legend.tsx
 msgid "Passive income by kind"
@@ -10589,6 +10585,10 @@ msgstr "Terms URL"
 msgid "The .pem file you saved"
 msgstr "The .pem file you saved"
 
+#: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
+msgid "The 12 months before this range."
+msgstr "The 12 months before this range."
+
 #: src/sync/component/enable-banking-connect-account-step/enable-banking-connect-account-step.tsx
 msgid "The account keeps its history and syncs forward from the day after its last transaction."
 msgstr "The account keeps its history and syncs forward from the day after its last transaction."
@@ -11676,8 +11676,8 @@ msgid "Updated yesterday"
 msgstr "Updated yesterday"
 
 #: src/yield/component/yield-hero-prices-status/yield-hero-prices-status.tsx
-msgid "Updating prices…"
-msgstr "Updating prices…"
+msgid "Updating"
+msgstr "Updating"
 
 #: src/auth/components/pin-sealing-state/pin-sealing-state.tsx
 msgid "Updating your PIN"
@@ -11803,22 +11803,6 @@ msgstr "Voice notes"
 #: src/market-data/component/currency-market-stats/currency-market-stats.tsx
 msgid "Volume (24h)"
 msgstr "Volume (24h)"
-
-#: src/yield/hook/use-yield-analytics-takeaway.hook.ts
-msgid "vs previous 3 months"
-msgstr "vs previous 3 months"
-
-#: src/yield/hook/use-yield-analytics-takeaway.hook.ts
-msgid "vs previous month"
-msgstr "vs previous month"
-
-#: src/yield/hook/use-yield-analytics-takeaway.hook.ts
-msgid "vs previous period"
-msgstr "vs previous period"
-
-#: src/yield/hook/use-yield-analytics-takeaway.hook.ts
-msgid "vs previous year"
-msgstr "vs previous year"
 
 #: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx

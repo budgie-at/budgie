@@ -12,6 +12,7 @@ import type { YieldBarRectInterface } from '../interface/yield-bar-rect.interfac
 const BAR_WIDTH_SHARE = 0.6;
 const BAR_RADIUS = 4;
 const MIN_SEGMENT_HEIGHT = 3;
+const MIN_TAX_HEIGHT = 3;
 const SEGMENT_GAP = 2;
 const NARROW_SEGMENT_GAP = 1;
 const NARROW_BAR_WIDTH = 8;
@@ -73,9 +74,8 @@ export const buildYieldBarLayout = ({
             gap
         );
         const topIndex = heights.findLastIndex(segment => segment > 0);
-        const taxHeight = isPositiveNumber(axis.depth)
-            ? Math.min(bucket.amounts[YieldGroupEnum.TAX] / axis.depth, 1) * (height - zeroY)
-            : 0;
+        const taxAmount = bucket.amounts[YieldGroupEnum.TAX];
+        const taxHeight = isPositiveNumber(taxAmount) ? Math.min(Math.max(taxAmount * scale, MIN_TAX_HEIGHT), height - zeroY) : 0;
         let bottom = zeroY;
 
         stackOrder.forEach((group, groupIndex) => {

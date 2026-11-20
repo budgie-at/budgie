@@ -1,6 +1,7 @@
 import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
 
+import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { YieldDeltaToneEnum } from '../../enum/yield-delta-tone.enum';
 
 interface Props {
@@ -30,12 +31,24 @@ const labelVariants = cva('shrink text-xs font-semibold', {
     }
 });
 
-export const YieldDeltaPill = ({ label, tone, testID, maxFontSizeMultiplier }: Props) => (
-    <View className="flex-row">
-        <View testID={testID} className={pillVariants({ tone })} style={CONTINUOUS_CORNERS}>
-            <Text className={labelVariants({ tone })} numberOfLines={1} ellipsizeMode="tail" maxFontSizeMultiplier={maxFontSizeMultiplier}>
-                {label}
-            </Text>
+const ACCESSIBILITY_LINES = 2;
+
+export const YieldDeltaPill = ({ label, tone, testID, maxFontSizeMultiplier }: Props) => {
+    const isAccessibilityText = useIsAccessibilityTextSize();
+    const numberOfLines = isAccessibilityText ? ACCESSIBILITY_LINES : 1;
+
+    return (
+        <View className="flex-row">
+            <View testID={testID} className={pillVariants({ tone })} style={CONTINUOUS_CORNERS}>
+                <Text
+                    className={labelVariants({ tone })}
+                    numberOfLines={numberOfLines}
+                    ellipsizeMode="tail"
+                    maxFontSizeMultiplier={maxFontSizeMultiplier}
+                >
+                    {label}
+                </Text>
+            </View>
         </View>
-    </View>
-);
+    );
+};

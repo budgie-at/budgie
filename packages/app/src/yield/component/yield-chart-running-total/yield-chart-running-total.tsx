@@ -26,7 +26,8 @@ interface Props {
 const LINE_WIDTH = 2;
 const PRIOR_WIDTH = 1.5;
 const DASH = '4 4';
-const PRIOR_DOT_RADIUS = 2.25;
+const PRIOR_DOT_RADIUS = 3.2;
+const PRIOR_RING_WIDTH = 2;
 const LINE_CLASSNAME = 'accent-positive-action';
 
 export const YieldChartRunningTotal = ({ width, summary }: Props) => {
@@ -77,17 +78,17 @@ export const YieldChartRunningTotal = ({ width, summary }: Props) => {
             />
             <StyledPath d={paths.solid} strokeClassName={LINE_CLASSNAME} strokeWidth={LINE_WIDTH} fill="none" />
             <StyledPath d={paths.dashed} strokeClassName={LINE_CLASSNAME} strokeWidth={LINE_WIDTH} strokeDasharray={DASH} fill="none" />
+            {isScrubbing ? <YieldChartRunningCursor x={cursorX} y={cursorY} zeroY={zeroY} /> : null}
             {isScrubbing && isDefined(priorY) ? (
                 <StyledCircle
                     cx={cursorX}
                     cy={priorY}
                     r={PRIOR_DOT_RADIUS}
-                    fillClassName="accent-surface-row-opaque"
-                    strokeClassName="accent-secondary-foreground"
-                    strokeWidth={PRIOR_WIDTH}
+                    fillClassName="accent-secondary-foreground"
+                    strokeClassName="accent-surface-row-opaque"
+                    strokeWidth={PRIOR_RING_WIDTH}
                 />
             ) : null}
-            {isScrubbing ? <YieldChartRunningCursor x={cursorX} y={cursorY} zeroY={zeroY} /> : null}
         </YieldChartFrame>
     );
 };

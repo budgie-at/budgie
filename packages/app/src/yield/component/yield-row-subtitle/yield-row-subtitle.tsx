@@ -17,7 +17,7 @@ export const YieldRowSubtitle = ({ subtitle, lines = DEFAULT_SUBTITLE_LINES }: P
     const [isStacked, setIsStacked] = useState(false);
 
     const handleTextLayout = (event: NativeSyntheticEvent<TextLayoutEventData>) => {
-        if (event.nativeEvent.lines.length > 1) {
+        if (lines > 1 && event.nativeEvent.lines.length > 1) {
             setIsStacked(true);
         }
     };

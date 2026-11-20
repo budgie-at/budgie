@@ -142,3 +142,16 @@ it('flags the rects of an in-progress bucket', () => {
     expect(layout.groups[YieldGroupEnum.STAKING_EARN].map(rect => rect.isInProgress)).toEqual([false, true]);
     expect(layout.tax.map(rect => rect.isInProgress)).toEqual([false, true]);
 });
+
+it('scales tax like income with a 3 pt floor, capped to the negative band', () => {
+    const axis = { top: 100, bottom: -50, depth: 0, step: 1 };
+    const layout = buildYieldBarLayout({
+        buckets: [bucket(60, 40, 10), bucket(60, 40, 0.5), bucket(60, 40, 80)],
+        visibleGroups: VISIBLE,
+        width: 168,
+        height: 150,
+        axis
+    });
+
+    expect(layout.tax.map(rect => rect.height)).toEqual([10, 3, 50]);
+});

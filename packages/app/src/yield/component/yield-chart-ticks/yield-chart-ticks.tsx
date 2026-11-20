@@ -4,6 +4,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { MARKET_CHART_PADDING_X } from '../../../market-data/constant/market-chart-padding-x.constant';
+import { YIELD_AXIS_GUTTER } from '../../constant/yield-axis-gutter.constant';
 import { YIELD_CHART_TICKS_HEIGHT } from '../../constant/yield-chart-ticks-height.constant';
 import { YIELD_PLOT_BOTTOM_GAP } from '../../constant/yield-label-band.constant';
 import { useYieldDateLabels } from '../../hook/use-yield-date-labels.hook';
@@ -27,6 +28,7 @@ export const YieldChartTicks = ({ buckets, unit, width }: Props) => {
     const { formatTick } = useYieldDateLabels();
     const isAccessibilityText = useIsAccessibilityTextSize();
 
+    const labelRight = width + YIELD_AXIS_GUTTER;
     const slot = Math.max(width - MARKET_CHART_PADDING_X * 2, 1) / Math.max(buckets.length, 1);
     const maxTicks = isAccessibilityText ? MAX_ACCESSIBILITY_TICKS : MAX_TICKS;
     const firstYear = buckets.at(0)?.start.slice(0, 4);
@@ -50,7 +52,7 @@ export const YieldChartTicks = ({ buckets, unit, width }: Props) => {
     return (
         <View className="w-full" style={TICKS_STYLE}>
             {ticks.map(tick => (
-                <YieldChartTick key={tick.key} label={tick.label} centre={tick.centre} plotWidth={width} />
+                <YieldChartTick key={tick.key} label={tick.label} centre={tick.centre} plotWidth={labelRight} />
             ))}
         </View>
     );

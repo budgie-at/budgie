@@ -10,7 +10,6 @@ import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hoo
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { yieldSummaryFamily } from '../../constant/yield-summary-family-atom.constant';
 import { useYieldAnalyticsCardText } from '../../hook/use-yield-analytics-card-text.hook';
-import { useYieldHeroTrend } from '../../hook/use-yield-hero-trend.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 import { YieldChartMini } from '../yield-chart-mini/yield-chart-mini';
 import { YieldDeltaPill } from '../yield-delta-pill/yield-delta-pill';
@@ -37,13 +36,12 @@ export const PassiveIncomeAnalyticsCardContent = ({ earned, focus, period }: Pro
         () => null
     );
 
-    const { title, headlineText, caption, focusedText, takeaway, accessibilityLabel } = useYieldAnalyticsCardText(
+    const { title, headlineText, caption, focusedText, takeaway, tone, accessibilityLabel } = useYieldAnalyticsCardText(
         summary,
         earned,
         focus,
         period
     );
-    const { tone } = useYieldHeroTrend(summary);
 
     const handlePress = () =>
         void router.push({

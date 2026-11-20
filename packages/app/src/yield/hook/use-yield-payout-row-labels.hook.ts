@@ -37,7 +37,8 @@ export const useYieldPayoutRowLabels = (
         isMerged,
         positionTitle: isScoped
             ? null
-            : (summary?.positions.find(position => position.accountId === transaction.yieldSourceAccountId)?.title ?? null),
+            : (summary?.positions.find(position => position.accountId === (transaction.yieldSourceAccountId ?? account?.id))?.title ??
+              null),
         sourceTitle: isScoped ? '' : (account?.title ?? ''),
         baseTitle: getTransactionDisplayTitle(transaction) || kindLabel,
         kindLabel,

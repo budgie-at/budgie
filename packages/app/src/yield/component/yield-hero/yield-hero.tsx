@@ -47,6 +47,7 @@ export const YieldHero = () => {
                     <YieldHeroCaption summary={summary} bucket={bucket} />
                 </View>
                 <YieldHeroInfoButton />
+                <YieldHeroPricesStatus summary={summary} />
             </View>
 
             <View accessible accessibilityLabel={sentence} className="gap-y-xs">
@@ -64,8 +65,6 @@ export const YieldHero = () => {
 
                 <YieldHeroLine summary={summary} bucket={bucket} />
             </View>
-
-            <YieldHeroPricesStatus summary={summary} />
         </View>
     );
 };
