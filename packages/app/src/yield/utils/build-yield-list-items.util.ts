@@ -104,38 +104,43 @@ const mergeRepeatedPayouts = (rows: readonly YieldPayoutFoldInterface[]): YieldP
     });
 };
 
+const toRowDisplayedAmount = ({ transaction, siblings }: YieldPayoutFoldInterface): number => {
+    if (isTax(transaction)) {
+        return 0;
+    }
+
+    const sources: readonly TransactionWithRelationsEntityInterface[] = isNotEmptyArray(siblings) ? siblings : [transaction];
+    const baseAmounts = sources.map(source => getYieldPayoutEntry(source)?.baseAmount ?? 0);
+
+    return Math.round(Math.abs(convertFromMicroUnits(baseAmounts.reduce((total, amount) => total + amount, 0))));
+};
+
 const toMonthTotal = (rows: readonly YieldPayoutFoldInterface[]): number =>
-    convertFromMicroUnits(
-        rows.reduce(
-            (total, { transaction }) => (isTax(transaction) ? total : total + Math.abs(getYieldPayoutEntry(transaction)?.baseAmount ?? 0)),
-            0
-        )
-    );
+    rows.reduce((total, row) => total + toRowDisplayedAmount(row), 0);
 
 const toPayouts = (payouts: readonly TransactionWithRelationsEntityInterface[], isUnassigned: boolean): YieldListItemType[] =>
     groupBy(groupBy(payouts, transaction => format(transaction.operatedAt, DAY_KEY_FORMAT)).flatMap(foldTaxIntoIncome), ({ transaction }) =>
         format(transaction.operatedAt, MONTH_KEY_FORMAT)
     ).flatMap((rows): YieldListItemType[] => {
         const [{ transaction: first }] = rows;
+        const merged = mergeRepeatedPayouts(rows);
         const header: YieldListItemType = {
             kind: YieldListItemKindEnum.MONTH,
             id: `month-${format(first.operatedAt, MONTH_KEY_FORMAT)}-${isUnassigned}`,
             month: first.operatedAt,
-            total: toMonthTotal(rows)
+            total: toMonthTotal(merged)
         };
-        const merged = mergeRepeatedPayouts(rows);
         const items = merged.map(({ transaction, tax, siblings }, index): YieldListItemType => ({
             kind: YieldListItemKindEnum.PAYOUT,
             id: `payout-${transaction.id}`,
             transaction,
             tax,
             siblings,
-            isFullDate: merged.length === 1,
             isUnassigned,
             position: toRowPosition(index, merged.length)
         }));
 
-        return merged.length === 1 ? items : [header, ...items];
+        return [header, ...items];
     });
 
 const toPositions = (positions: readonly YieldPositionSummaryInterface[], rangeCaption: string): YieldListItemType[] =>

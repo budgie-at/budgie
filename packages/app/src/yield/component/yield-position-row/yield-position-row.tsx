@@ -14,6 +14,7 @@ import { TransactionRowSurface } from '../../../transaction/components/transacti
 import { useYieldPositionRateText } from '../../hook/use-yield-position-rate-text.hook';
 import { useYieldPositionSubtitle } from '../../hook/use-yield-position-subtitle.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
+import { getYieldRowBorderClassName } from '../../utils/get-yield-row-border-class-name.util';
 import { YieldPositionIcon } from '../yield-position-icon/yield-position-icon';
 import { YieldRow } from '../yield-row/yield-row';
 
@@ -28,6 +29,7 @@ interface Props {
         | 'accountType'
         | 'instrumentCode'
         | 'instrumentType'
+        | 'kind'
         | 'earned'
         | 'rewardUnits'
         | 'tax'
@@ -69,7 +71,7 @@ export const YieldPositionRow = ({ position, rangeCaption, rowPosition }: Props)
     );
 
     return (
-        <TransactionRowSurface position={rowPosition} separatorInset={SEPARATOR_INSET}>
+        <TransactionRowSurface position={rowPosition} separatorInset={SEPARATOR_INSET} className={getYieldRowBorderClassName(rowPosition)}>
             <YieldRow
                 left={<YieldPositionIcon position={position} />}
                 title={title}

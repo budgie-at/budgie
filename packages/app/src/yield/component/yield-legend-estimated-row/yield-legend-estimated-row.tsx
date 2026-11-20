@@ -1,17 +1,16 @@
 import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
+import { useYieldIsEstimated } from '../../hook/use-yield-is-estimated.hook';
 import { useYieldSummary } from '../../hook/use-yield-summary.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 
 const ESTIMATED_KEY = 'ESTIMATED';
 
 export const YieldLegendEstimatedRow = () => {
-    const summary = useYieldSummary();
+    const isEstimated = useYieldIsEstimated(useYieldSummary());
 
-    const hasEstimated = summary?.buckets.some(bucket => bucket.isEstimated) === true;
-
-    if (!hasEstimated) {
+    if (!isEstimated) {
         return null;
     }
 

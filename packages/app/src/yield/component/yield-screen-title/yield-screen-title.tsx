@@ -23,7 +23,11 @@ export const YieldScreenTitle = ({ hasYield }: Props) => {
             <Text testID={PassiveIncomeSelector.Title} className="text-3xl font-semibold text-primary" {...CHROME_TITLE_TEXT_PROPS}>
                 <Trans>Passive income</Trans>
             </Text>
-            {isFiltered && hasYield ? <YieldFilterChipRow /> : null}
+            {isFiltered && hasYield ? (
+                <View className="pt-[6px]">
+                    <YieldFilterChipRow />
+                </View>
+            ) : null}
             {isFiltered || !hasYield ? null : (
                 <Text testID={PassiveIncomeSelector.Subtitle} className="text-sm text-secondary-foreground" maxFontSizeMultiplier={1.6}>
                     <Trans>All holdings</Trans>

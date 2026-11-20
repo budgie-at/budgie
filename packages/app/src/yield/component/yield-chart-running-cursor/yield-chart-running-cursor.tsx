@@ -20,7 +20,7 @@ export const YieldChartRunningCursor = ({ x, y }: Props) => (
             y1={-GUIDE_OVERSHOOT}
             x2={x}
             y2={YIELD_PLOT_HEIGHT}
-            strokeClassName="accent-primary"
+            strokeClassName="accent-positive-action"
             strokeWidth={1}
             strokeOpacity={RULE_OPACITY}
         />
@@ -28,7 +28,7 @@ export const YieldChartRunningCursor = ({ x, y }: Props) => (
             cx={x}
             cy={y}
             r={DOT_OUTER_RADIUS}
-            fillClassName="accent-primary"
+            fillClassName="accent-positive-action"
             strokeClassName="accent-surface-row-opaque"
             strokeWidth={RING_WIDTH}
         />

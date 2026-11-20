@@ -1,7 +1,7 @@
 import type { YieldPositionSectionEnum } from '../enum/yield-position-section.enum';
 import type { YieldAnnualYieldInterface } from './yield-annual-yield.interface';
 import type { YieldVsRateInterface } from './yield-vs-rate.interface';
-import type { AccountTypeEnum, InstrumentTypeEnum } from '@budgie/contracts';
+import type { AccountTypeEnum, InstrumentTypeEnum, YieldKindEnum } from '@budgie/contracts';
 
 export interface YieldPositionSummaryInterface {
     readonly accountId: number;
@@ -10,6 +10,7 @@ export interface YieldPositionSummaryInterface {
     readonly instrumentCode: string;
     readonly instrumentSymbol: string;
     readonly instrumentType: InstrumentTypeEnum;
+    readonly kind: YieldKindEnum | null;
     readonly section: YieldPositionSectionEnum;
     readonly earned: number;
     readonly isEarnedEstimated: boolean;

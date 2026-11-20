@@ -18,6 +18,9 @@ const BARS = [
     { id: 'l', style: { height: '60%' } }
 ] as const;
 
+const LEGEND_ROWS = ['first', 'second'] as const;
+const LEGEND_COLUMNS = ['left', 'right'] as const;
+
 const BUSY_STATE = { busy: true };
 
 export const YieldChartPlotSkeleton = () => {
@@ -26,14 +29,26 @@ export const YieldChartPlotSkeleton = () => {
     return (
         <Animated.View
             style={pulseStyle}
-            className="h-[220px] flex-row pt-[20px] items-end gap-x-xs"
+            className="gap-y-[12px]"
             pointerEvents="none"
             accessibilityState={BUSY_STATE}
             importantForAccessibility="no-hide-descendants"
         >
-            {BARS.map(bar => (
-                <View key={bar.id} className="flex-1 rounded-t-md bg-secondary-corner/40" style={bar.style} />
-            ))}
+            <View className="h-[220px] flex-row items-end gap-x-xs pt-[20px]">
+                {BARS.map(bar => (
+                    <View key={bar.id} className="flex-1 rounded-t-md bg-secondary-corner" style={bar.style} />
+                ))}
+            </View>
+            <View>
+                {LEGEND_ROWS.map(row => (
+                    <View key={row} className="min-h-[44px] flex-row items-center gap-x-xl">
+                        {LEGEND_COLUMNS.map(column => (
+                            <View key={column} className="h-[14px] flex-1 rounded-full bg-secondary-corner" />
+                        ))}
+                    </View>
+                ))}
+            </View>
+            <View className="h-[14px] w-7/12 rounded-full bg-secondary-corner" />
         </Animated.View>
     );
 };

@@ -1,4 +1,4 @@
-import type { YieldBarRectInterface } from '../interface/yield-bar-rect.interface';
+import type { YieldBarLayerInterface } from '../interface/yield-bar-layer.interface';
 
 const MIN_VISIBLE_HEIGHT = 0.5;
 const VALUES_PER_RECT = 2;
@@ -6,19 +6,22 @@ const HALF = 2;
 
 export const buildYieldBarsPath = (
     values: readonly number[],
-    offset: number,
-    rects: readonly YieldBarRectInterface[],
-    isInProgress: boolean
+    layer: Pick<YieldBarLayerInterface, 'offset' | 'rects'>,
+    isInProgress: boolean,
+    visibleBuckets: readonly boolean[] | null = null
 ): string => {
     'worklet';
 
+    const { offset, rects } = layer;
     const commands: (string | number)[] = [];
 
     rects.forEach((rect, index) => {
         const y = values[offset + index * VALUES_PER_RECT] ?? 0;
         const height = values[offset + index * VALUES_PER_RECT + 1] ?? 0;
 
-        if (height > MIN_VISIBLE_HEIGHT && rect.isInProgress === isInProgress) {
+        const isIncluded = visibleBuckets?.[index] ?? true;
+
+        if (height > MIN_VISIBLE_HEIGHT && rect.isInProgress === isInProgress && isIncluded) {
             const radius = Math.min(rect.radius, height, rect.width / HALF);
             const bottomRadius = Math.min(rect.bottomRadius, height, rect.width / HALF);
             const right = rect.x + rect.width;

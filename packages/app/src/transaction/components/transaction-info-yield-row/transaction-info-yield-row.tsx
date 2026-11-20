@@ -42,12 +42,6 @@ export const TransactionInfoYieldRow = ({ transaction }: Props) => {
     return (
         <>
             <TransactionInfoRow
-                icon={UserIconNameEnum.Sprout}
-                value={t`Passive income history`}
-                testID={TransactionInfoPageSelector.Row.Yield}
-                onPress={handleOpenScreen}
-            />
-            <TransactionInfoRow
                 icon={UserIconNameEnum.Tag}
                 label={t`Kind`}
                 value={kindLabel}
@@ -58,6 +52,12 @@ export const TransactionInfoYieldRow = ({ transaction }: Props) => {
                 sourceTitle={sourceTitle}
                 hasSourceCandidates={hasSourceCandidates}
                 onOpenPicker={openSourcePicker}
+            />
+            <TransactionInfoRow
+                icon={UserIconNameEnum.Sprout}
+                value={t`Passive income history`}
+                testID={TransactionInfoPageSelector.Row.Yield}
+                onPress={handleOpenScreen}
             />
         </>
     );

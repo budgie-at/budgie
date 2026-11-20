@@ -4,7 +4,6 @@ import { Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-import { useIsLargeText } from '../../../@generic/hook/use-is-large-text.hook';
 import { cn } from '../../../@generic/utils/cn.util';
 import { YieldScreenContext } from '../../context/yield-screen.context';
 import { useYieldHeroLineText } from '../../hook/use-yield-hero-line-text.hook';
@@ -19,18 +18,15 @@ interface Props {
 }
 
 const LINE_MAX_FONT_SIZE_MULTIPLIER = 2;
-const LARGE_TEXT_LINES = 2;
-const SINGLE_LINE = 1;
+const LINE_COUNT = 2;
 
 export const YieldHeroLine = ({ summary, bucket }: Props) => {
     const { screenKey } = use(YieldScreenContext);
-    const isLargeText = useIsLargeText();
     const text = useYieldHeroLineText(summary, bucket);
 
     const isDeltaVisible = isDefined(summary.delta) && screenKey.key.range !== YieldRangeEnum.ALL && !isDefined(bucket);
-    const lineCount = isLargeText ? LARGE_TEXT_LINES : SINGLE_LINE;
     const lineClassName = cn(
-        'min-h-[22px]',
+        'min-h-[44px]',
         'flex-row',
         'flex-wrap',
         'items-center',
@@ -43,7 +39,7 @@ export const YieldHeroLine = ({ summary, bucket }: Props) => {
             <Text
                 testID={PassiveIncomeSelector.YieldLine}
                 maxFontSizeMultiplier={LINE_MAX_FONT_SIZE_MULTIPLIER}
-                numberOfLines={lineCount}
+                numberOfLines={LINE_COUNT}
                 className="shrink text-[15px] tabular-nums text-secondary-foreground"
             >
                 {text}

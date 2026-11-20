@@ -1,7 +1,7 @@
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import { use } from 'react';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { useSetting } from '../../settings/hook/use-setting.hook';
@@ -20,9 +20,10 @@ const PAYOUT_LIMIT = 200;
 
 const SKELETON_ITEMS: readonly YieldListItemType[] = [
     { kind: YieldListItemKindEnum.SKELETON, id: 'skeleton-1', position: TransactionListRowPositionEnum.FIRST },
-    { kind: YieldListItemKindEnum.SKELETON, id: 'skeleton-2', position: TransactionListRowPositionEnum.MIDDLE },
-    { kind: YieldListItemKindEnum.SKELETON, id: 'skeleton-3', position: TransactionListRowPositionEnum.LAST }
+    { kind: YieldListItemKindEnum.SKELETON, id: 'skeleton-2', position: TransactionListRowPositionEnum.LAST }
 ];
+
+const OLDER_ITEM: YieldListItemType = { kind: YieldListItemKindEnum.OLDER, id: 'older-payouts' };
 
 export const useYieldListItems = (): readonly YieldListItemType[] => {
     const language = useSetting('language');
@@ -37,5 +38,8 @@ export const useYieldListItems = (): readonly YieldListItemType[] => {
         return SKELETON_ITEMS;
     }
 
-    return buildYieldListItems(summary.positions, payouts, rangeCaption, isPayoutMode);
+    const items = buildYieldListItems(summary.positions, payouts, rangeCaption, isPayoutMode);
+    const hasOlderPayouts = isDefined(summary.firstYieldDay) && summary.firstYieldDay < summary.windowStart;
+
+    return hasOlderPayouts && isNotEmptyArray(payouts) ? [...items, OLDER_ITEM] : items;
 };

@@ -70,7 +70,7 @@ export const buildYieldBarLayout = ({
             gap
         );
         const topIndex = heights.findLastIndex(segment => segment > 0);
-        const taxHeight = bucket.amounts[YieldGroupEnum.TAX] * scale;
+        const taxHeight = Math.min(bucket.amounts[YieldGroupEnum.TAX] * scale, height - zeroY);
         let bottom = zeroY;
 
         YIELD_STACK_GROUPS.forEach((group, groupIndex) => {

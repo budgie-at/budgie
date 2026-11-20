@@ -3,6 +3,7 @@ import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { CryptoCurrencyIcon } from '../../../@generic/component/crypto-currency-icon/crypto-currency-icon';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { useIsIncreaseContrast } from '../../../@generic/hook/use-is-increase-contrast.hook';
 import { cn } from '../../../@generic/utils/cn.util';
@@ -13,11 +14,16 @@ import type { YieldKindEnum } from '@budgie/contracts';
 
 interface Props {
     readonly kind: YieldKindEnum;
+    readonly cryptoCode: string | null;
 }
 
-export const YieldPayoutIcon = ({ kind }: Props) => {
+export const YieldPayoutIcon = ({ kind, cryptoCode }: Props) => {
     const isIncreaseContrast = useIsIncreaseContrast();
     const group = YIELD_GROUP_BY_KIND[kind];
+
+    if (isDefined(cryptoCode)) {
+        return <CryptoCurrencyIcon code={cryptoCode} size={36} />;
+    }
 
     if (!isDefined(group)) {
         return null;

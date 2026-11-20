@@ -10,6 +10,7 @@ import { defaultInstrumentAtom } from '../../../settings/constants/settings-atom
 import { YieldSelectionContext } from '../../context/yield-selection.context';
 import { useYieldSummary } from '../../hook/use-yield-summary.hook';
 import { buildYieldRunningTotal } from '../../utils/build-yield-running-total.util';
+import { YieldLegendLineSwatch } from '../yield-legend-line-swatch/yield-legend-line-swatch';
 
 const AMOUNT_CLASSNAME = 'text-sm font-semibold tabular-nums text-primary';
 
@@ -37,7 +38,7 @@ export const YieldLegendRunning = () => {
                 accessibilityLabel={t`${currentLabel}, ${currentAmount}`}
                 className="min-h-[24px] flex-row items-center gap-x-xs"
             >
-                <View className="h-[2px] w-[16px] bg-primary" />
+                <YieldLegendLineSwatch strokeClassName="accent-positive-action" strokeWidth={2} />
                 <Text className="text-sm text-primary">{currentLabel}</Text>
                 <Text className={AMOUNT_CLASSNAME}>{currentAmount}</Text>
             </View>
@@ -47,7 +48,7 @@ export const YieldLegendRunning = () => {
                     accessibilityLabel={t`${priorLabel}, ${priorAmount}`}
                     className="min-h-[24px] flex-row items-center gap-x-xs"
                 >
-                    <View className="h-[1px] w-[16px] bg-secondary-foreground" />
+                    <YieldLegendLineSwatch strokeClassName="accent-secondary-foreground" strokeWidth={1.5} dash="4 3" />
                     <Text className="text-sm text-primary">{priorLabel}</Text>
                     <Text className={AMOUNT_CLASSNAME}>{priorAmount}</Text>
                 </View>

@@ -1,4 +1,5 @@
 import type { YieldListMonthItemInterface } from '../interface/yield-list-month-item.interface';
+import type { YieldListOlderItemInterface } from '../interface/yield-list-older-item.interface';
 import type { YieldListPayoutItemInterface } from '../interface/yield-list-payout-item.interface';
 import type { YieldListPositionItemInterface } from '../interface/yield-list-position-item.interface';
 import type { YieldListSectionItemInterface } from '../interface/yield-list-section-item.interface';
@@ -9,4 +10,5 @@ export type YieldListItemType =
     | YieldListMonthItemInterface
     | YieldListPositionItemInterface
     | YieldListPayoutItemInterface
+    | YieldListOlderItemInterface
     | YieldListSkeletonItemInterface;

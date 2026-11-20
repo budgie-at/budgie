@@ -17,7 +17,7 @@ export const useYieldPositionRateText = ({ rate, reason, isEstimated }: YieldAnn
     }
 
     if (!isDefined(rate)) {
-        return isDefined(reason) ? t(YIELD_UNAVAILABLE_LABEL[reason]) : t`Excluded from yield`;
+        return isDefined(reason) ? t(YIELD_UNAVAILABLE_LABEL[reason]) : t`No yield`;
     }
 
     const formattedRate = formatRate(rate);

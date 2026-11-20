@@ -177,7 +177,14 @@ describe('yield/positions', () => {
             const interest = yield* seedIncome(deposit.id, 1, YieldKindEnum.INTEREST);
             const dividend = yield* seedIncome(deposit.id, 2, YieldKindEnum.DIVIDEND);
             const unassigned = yield* seedIncome(card.id, 3, YieldKindEnum.INTEREST);
-            const query = { scope: ALL, kinds: null, isUnassignedOnly: false, limit: 10, language: LanguageEnum.EN };
+            const query = {
+                scope: ALL,
+                kinds: null,
+                isUnassignedOnly: false,
+                range: { from: null, to: null },
+                limit: 10,
+                language: LanguageEnum.EN
+            };
 
             expect((yield* repository.findPayouts(query)).map(transaction => transaction.id)).toEqual([
                 unassigned.id,

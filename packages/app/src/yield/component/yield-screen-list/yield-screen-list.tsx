@@ -18,6 +18,7 @@ import { YieldBreakdown } from '../yield-breakdown/yield-breakdown';
 import { YieldChartCard } from '../yield-chart-card/yield-chart-card';
 import { YieldHero } from '../yield-hero/yield-hero';
 import { YieldMonthHeader } from '../yield-month-header/yield-month-header';
+import { YieldOlderPayoutsRow } from '../yield-older-payouts-row/yield-older-payouts-row';
 import { YieldPayoutRow } from '../yield-payout-row/yield-payout-row';
 import { YieldPositionRow } from '../yield-position-row/yield-position-row';
 import { YieldRangeControl } from '../yield-range-control/yield-range-control';
@@ -66,11 +67,12 @@ export const YieldScreenList = () => {
                         transaction={item.transaction}
                         tax={item.tax}
                         siblings={item.siblings}
-                        isFullDate={item.isFullDate}
                         isUnassigned={item.isUnassigned}
                         rowPosition={item.position}
                     />
                 );
+            case YieldListItemKindEnum.OLDER:
+                return <YieldOlderPayoutsRow />;
             case YieldListItemKindEnum.SKELETON:
             default:
                 return <YieldSkeletonRow rowPosition={item.position} />;

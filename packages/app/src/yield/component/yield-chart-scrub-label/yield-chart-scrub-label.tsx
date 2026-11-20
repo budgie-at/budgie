@@ -1,5 +1,8 @@
 import { useAtomValue } from '@effect/atom-react/Hooks';
+import { useLingui } from '@lingui/react/macro';
 import { Text } from 'react-native';
+
+import { isDefined } from '@rnw-community/shared';
 
 import { FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/footnote-max-font-size-multiplier.constant';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
@@ -13,14 +16,17 @@ interface Props {
     readonly bucket: Pick<YieldBucketInterface, 'start'>;
     readonly unit: YieldBucketUnitEnum;
     readonly amount: number;
+    readonly priorAmount?: number | null;
     readonly x: number;
     readonly plotWidth: number;
 }
 
-const LABEL_WIDTH = 160;
+const LABEL_WIDTH = 220;
+const LABEL_TOP = 4;
 const HALF = 2;
 
-export const YieldChartScrubLabel = ({ bucket, unit, amount, x, plotWidth }: Props) => {
+export const YieldChartScrubLabel = ({ bucket, unit, amount, priorAmount = null, x, plotWidth }: Props) => {
+    const { t } = useLingui();
     const { formatTick } = useYieldDateLabels();
     const formatAmount = useProtectedAmountLabel();
     const { symbol } = useAtomValue(defaultInstrumentAtom);
@@ -29,18 +35,22 @@ export const YieldChartScrubLabel = ({ bucket, unit, amount, x, plotWidth }: Pro
     const maxLeft = Math.max(plotWidth - LABEL_WIDTH, 0);
     const isStart = centred < 0;
     const isEnd = centred > maxLeft;
-    const style = { left: Math.min(Math.max(centred, 0), maxLeft), top: 0 };
+    const style = { left: Math.min(Math.max(centred, 0), maxLeft), top: LABEL_TOP };
     const alignClassName = cn(isStart && 'text-left', isEnd && 'text-right', !isStart && !isEnd && 'text-center');
+
+    const prior = isDefined(priorAmount) ? formatAmount(priorAmount, symbol) : '';
+    const base = `${formatTick(bucket, unit, true)} · ${formatAmount(amount, symbol)}`;
+    const text = isDefined(priorAmount) ? `${base} · ${t`prior ${prior}`}` : base;
 
     return (
         <Text
             pointerEvents="none"
             numberOfLines={1}
             maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER}
-            className={cn('absolute w-[160px] text-[12px] font-semibold leading-[16px] tabular-nums text-primary', alignClassName)}
+            className={cn('absolute w-[220px] text-[12px] font-semibold leading-[16px] tabular-nums text-primary', alignClassName)}
             style={style}
         >
-            {`${formatTick(bucket, unit, true)} · ${formatAmount(amount, symbol)}`}
+            {text}
         </Text>
     );
 };

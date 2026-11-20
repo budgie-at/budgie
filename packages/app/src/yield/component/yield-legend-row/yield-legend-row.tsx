@@ -18,7 +18,7 @@ import { YieldLegendEntry } from '../yield-legend-entry/yield-legend-entry';
 import type { YieldGroupEnum } from '@budgie/market';
 
 const EMPTY_AMOUNT = '—';
-const AMOUNT_CLASSNAME = 'text-sm font-semibold tabular-nums text-primary';
+const AMOUNT_CLASSNAME = 'text-right text-sm font-semibold tabular-nums text-primary';
 
 interface Props {
     readonly group: YieldGroupEnum;

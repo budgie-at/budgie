@@ -8,7 +8,6 @@ export interface YieldListPayoutItemInterface {
     readonly transaction: TransactionWithRelationsEntityInterface;
     readonly tax: TransactionWithRelationsEntityInterface | null;
     readonly siblings: readonly TransactionWithRelationsEntityInterface[];
-    readonly isFullDate: boolean;
     readonly isUnassigned: boolean;
     readonly position: TransactionListRowPositionEnum;
 }

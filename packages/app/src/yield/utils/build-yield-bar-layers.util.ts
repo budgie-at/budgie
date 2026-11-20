@@ -22,14 +22,16 @@ export const buildYieldBarLayers = (
         offset: index * pathSize,
         rects: layout.groups[group],
         fillClassName: fillOf(group),
-        fillOpacity: 1
+        fillOpacity: 1,
+        opacityScale: 1
     }));
     const tax: YieldBarLayerInterface = {
         group: YieldGroupEnum.TAX,
         offset: stackSize * pathSize,
         rects: layout.tax,
         fillClassName: TAX_FILL_CLASSNAME,
-        fillOpacity: TAX_FILL_OPACITY
+        fillOpacity: TAX_FILL_OPACITY,
+        opacityScale: 1
     };
 
     return [...stacked, tax];

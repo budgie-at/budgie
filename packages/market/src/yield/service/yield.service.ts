@@ -282,6 +282,7 @@ export class YieldService extends Context.Service<YieldService>()('@budgie/marke
                 instrumentCode: row.instrumentCode,
                 instrumentSymbol: row.instrumentSymbol,
                 instrumentType: row.instrumentType,
+                kind: context.facts.filter(isIncome).at(-1)?.kind ?? null,
                 section: isOpen ? YieldPositionSectionEnum.ACTIVE : YieldPositionSectionEnum.CLOSED,
                 earned: sumYieldValues(income),
                 isEarnedEstimated: isYieldEstimated(income),
@@ -463,14 +464,27 @@ export class YieldService extends Context.Service<YieldService>()('@budgie/marke
                 return figure;
             }),
 
-            findPayouts: (key: YieldQueryKeyInterface, isUnassignedOnly: boolean, language: LanguageEnum, limit: number) =>
-                yieldRepository.findPayouts({
+            findPayouts: Effect.fn('YieldService.findPayouts')(function* (
+                key: YieldQueryKeyInterface,
+                isUnassignedOnly: boolean,
+                language: LanguageEnum,
+                limit: number
+            ) {
+                const now = yield* DateTime.nowAsDate;
+                const today = startOfDay(now);
+
+                return yield* yieldRepository.findPayouts({
                     scope: { positionAccountId: key.positionAccountId, instrumentId: key.instrumentId },
                     kinds: isDefined(key.group) ? kindsOf(key.group) : null,
                     isUnassignedOnly,
+                    range: {
+                        from: key.range === YieldRangeEnum.ALL ? null : buildWindow(key.range, today, null).origin,
+                        to: addDays(today, 1)
+                    },
                     limit,
                     language
-                })
+                });
+            })
         };
     })
 }) {

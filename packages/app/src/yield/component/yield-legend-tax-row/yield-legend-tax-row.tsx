@@ -12,7 +12,8 @@ import { defaultInstrumentAtom } from '../../../settings/constants/settings-atom
 import { YIELD_GROUP_COLOR } from '../../constant/yield-group-color.constant';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 
-const ROW_CLASSNAME = 'min-h-[32px] flex-row items-center gap-x-[8px] px-sm';
+const ROW_CLASSNAME = 'min-h-[32px] flex-row items-center gap-x-[8px]';
+const EMPTY_AMOUNT = '—';
 
 interface Props {
     readonly total: number;
@@ -24,17 +25,16 @@ export const YieldLegendTaxRow = ({ total }: Props) => {
     const formatAmount = useProtectedAmountLabel();
     const { symbol } = useAtomValue(defaultInstrumentAtom);
 
-    const isHidden = !isPositiveNumber(total);
+    const isEmpty = !isPositiveNumber(total);
     const label = t`Tax withheld`;
-    const amount = `−${formatAmount(total, symbol)}`;
-    const text = isHidden ? label : `${label} · ${amount}`;
-    const rowClassName = cn(ROW_CLASSNAME, isHidden && 'opacity-0');
+    const amount = isEmpty ? EMPTY_AMOUNT : `−${formatAmount(total, symbol)}`;
+    const text = `${label} · ${amount}`;
+    const rowClassName = cn(ROW_CLASSNAME, isEmpty && 'opacity-40');
     const dotClassName = YIELD_GROUP_COLOR[YieldGroupEnum.TAX][isIncreaseContrast ? 'backgroundContrast' : 'background'];
 
     return (
         <View
-            accessible={!isHidden}
-            aria-hidden={isHidden}
+            accessible
             accessibilityLabel={t`${label}, ${amount}`}
             testID={PassiveIncomeSelector.LegendRow(YieldGroupEnum.TAX)}
             className={rowClassName}

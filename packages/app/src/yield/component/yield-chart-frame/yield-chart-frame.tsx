@@ -1,9 +1,9 @@
 import { View } from 'react-native';
 import Svg, { G } from 'react-native-svg';
 
-import { YIELD_AXIS_GUTTER } from '../../constant/yield-axis-gutter.constant';
 import { YIELD_LABEL_BAND } from '../../constant/yield-label-band.constant';
 import { YIELD_PLOT_HEIGHT } from '../../constant/yield-plot-height.constant';
+import { useYieldAxisLabels } from '../../hook/use-yield-axis-labels.hook';
 import { YieldChartAxisLabels } from '../yield-chart-axis-labels/yield-chart-axis-labels';
 import { YieldChartAxis } from '../yield-chart-axis/yield-chart-axis';
 
@@ -21,8 +21,10 @@ const SVG_HEIGHT = YIELD_PLOT_HEIGHT + YIELD_LABEL_BAND;
 const LABELS_OFFSET = { top: YIELD_LABEL_BAND, height: YIELD_PLOT_HEIGHT };
 
 export const YieldChartFrame = ({ axis, width, children, label }: Props) => {
-    const containerStyle = { width: width + YIELD_AXIS_GUTTER, height: SVG_HEIGHT };
-    const labelsStyle = { ...LABELS_OFFSET, width: width + YIELD_AXIS_GUTTER };
+    const { labels, gutter } = useYieldAxisLabels(axis);
+
+    const containerStyle = { width: width + gutter, height: SVG_HEIGHT };
+    const labelsStyle = { ...LABELS_OFFSET, width: width + gutter };
 
     return (
         <View style={containerStyle}>
@@ -34,7 +36,7 @@ export const YieldChartFrame = ({ axis, width, children, label }: Props) => {
             </Svg>
 
             <View pointerEvents="none" className="absolute left-0" style={labelsStyle}>
-                <YieldChartAxisLabels axis={axis} width={width} height={YIELD_PLOT_HEIGHT} />
+                <YieldChartAxisLabels labels={labels} width={width} gutter={gutter} />
             </View>
 
             {label}

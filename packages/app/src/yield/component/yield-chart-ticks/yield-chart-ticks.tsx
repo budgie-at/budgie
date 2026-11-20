@@ -3,7 +3,6 @@ import { Text, View } from 'react-native';
 import { isDefined } from '@rnw-community/shared';
 
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
-import { cn } from '../../../@generic/utils/cn.util';
 import { MARKET_CHART_PADDING_X } from '../../../market-data/constant/market-chart-padding-x.constant';
 import { YIELD_PLOT_BOTTOM_GAP } from '../../constant/yield-label-band.constant';
 import { useYieldDateLabels } from '../../hook/use-yield-date-labels.hook';
@@ -21,6 +20,8 @@ const MAX_TICKS = 4;
 const MAX_ACCESSIBILITY_TICKS = 2;
 const TICK_MAX_FONT_SIZE_MULTIPLIER = 1.3;
 const TICK_WIDTH = 64;
+const EDGE_SPILL = 24;
+const TEXT_HALF_WIDTH = 22;
 const HALF_SLOT = 0.5;
 const HALF = 2;
 const MONTHS_PER_YEAR = 12;
@@ -42,16 +43,14 @@ export const YieldChartTicks = ({ buckets, unit, width }: Props) => {
         .filter(tick => isDefined(tick.bucket))
         .map(({ index, bucket }) => {
             const centred = MARKET_CHART_PADDING_X + slot * (index + HALF_SLOT) - TICK_WIDTH / HALF;
-            const minLeft = MARKET_CHART_PADDING_X;
-            const maxLeft = width - MARKET_CHART_PADDING_X - TICK_WIDTH;
-            const isStart = centred < minLeft;
-            const isEnd = index === lastIndex || centred > maxLeft;
+            const minLeft = -(TICK_WIDTH / HALF - TEXT_HALF_WIDTH);
+            const maxLeft = width - TICK_WIDTH + EDGE_SPILL;
+            const isOverflowing = centred < minLeft || centred > maxLeft;
 
             return {
                 key: bucket?.start ?? String(index),
-                label: isDefined(bucket) ? formatTick(bucket, unit, isYearVisible) : '',
-                className: cn(isStart && 'text-left', isEnd && 'text-right', !isStart && !isEnd && 'text-center'),
-                style: { left: index === lastIndex ? maxLeft : Math.min(Math.max(centred, minLeft), maxLeft) }
+                label: isDefined(bucket) ? formatTick(bucket, unit, isYearVisible && !isOverflowing) : '',
+                style: { left: Math.min(Math.max(centred, minLeft), maxLeft) }
             };
         });
 
@@ -62,7 +61,7 @@ export const YieldChartTicks = ({ buckets, unit, width }: Props) => {
                     key={tick.key}
                     numberOfLines={1}
                     maxFontSizeMultiplier={TICK_MAX_FONT_SIZE_MULTIPLIER}
-                    className={cn('absolute w-[64px] text-[12px] leading-[16px] tabular-nums text-secondary-foreground', tick.className)}
+                    className="absolute w-[64px] text-center text-[12px] leading-[16px] tabular-nums text-secondary-foreground"
                     style={tick.style}
                 >
                     {tick.label}

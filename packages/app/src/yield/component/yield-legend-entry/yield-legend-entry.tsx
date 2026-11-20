@@ -24,14 +24,12 @@ export const YieldLegendEntry = ({ group, label, amount, amountClassName, isDotM
             <View className="w-[12px] items-center">
                 <View className={cn('h-[10px] w-[10px] rounded-full', dotClassName)} />
             </View>
-            <View className="flex-1">
-                <Text numberOfLines={1} className="text-sm text-primary">
-                    {label}
-                </Text>
-                <Text numberOfLines={1} className={amountClassName}>
-                    {amount}
-                </Text>
-            </View>
+            <Text numberOfLines={1} className="shrink text-sm text-primary">
+                {label}
+            </Text>
+            <Text numberOfLines={1} className={cn('ml-auto', amountClassName)}>
+                {amount}
+            </Text>
         </>
     );
 };

@@ -220,12 +220,23 @@ export class YieldRepository extends Context.Service<YieldRepository>()('@budgie
                                     joinYieldLegs(
                                         db.select({ id: TransactionEntityTable.id }).from(TransactionEntityTable).$dynamic()
                                     ).where(
-                                        buildYieldFactWhere(query.scope, [
-                                            ...(isNotEmptyArray(query.kinds)
-                                                ? [inArray(TransactionEntityTable.yieldKind, [...query.kinds])]
-                                                : []),
-                                            ...(query.isUnassignedOnly ? [sql`${positionAccountIdSql} IS NULL`] : [])
-                                        ])
+                                        buildYieldFactWhere(
+                                            query.scope,
+                                            [
+                                                ...(isNotEmptyArray(query.kinds)
+                                                    ? [inArray(TransactionEntityTable.yieldKind, [...query.kinds])]
+                                                    : []),
+                                                ...(query.isUnassignedOnly ? [sql`${positionAccountIdSql} IS NULL`] : [])
+                                            ],
+                                            [
+                                                ...(isDefined(query.range.from)
+                                                    ? [gte(TransactionEntityTable.operatedAt, query.range.from)]
+                                                    : []),
+                                                ...(isDefined(query.range.to)
+                                                    ? [lt(TransactionEntityTable.operatedAt, query.range.to)]
+                                                    : [])
+                                            ]
+                                        )
                                     )
                                 )
                         },

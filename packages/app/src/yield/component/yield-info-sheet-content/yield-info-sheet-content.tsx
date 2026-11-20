@@ -3,11 +3,12 @@ import { useLingui } from '@lingui/react/macro';
 import { parseISO } from 'date-fns/parseISO';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import { Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { FormsheetHeader } from '../../../@generic/component/formsheet-header/formsheet-header';
 import { ScrollableSheetCard } from '../../../@generic/component/scrollable-sheet-card/scrollable-sheet-card';
+import { SheetTitleRow } from '../../../@generic/component/sheet-title-row/sheet-title-row';
 import { MORPHING_SHEET_DESTINATION_HEIGHT_RATIO } from '../../../@generic/constant/morphing-sheet-height-ratio.constant';
 import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
@@ -23,8 +24,11 @@ interface Props {
     readonly screenKey: YieldScreenKeyInterface;
 }
 
+const BOTTOM_PADDING = 24;
+
 export const YieldInfoSheetContent = ({ screenKey }: Props) => {
     const { t } = useLingui();
+    const { bottom } = useSafeAreaInsets();
     const { formatMonthAndDay } = useFormatDate();
     const { formatRangeCaption } = useYieldDateLabels();
     const summary = AsyncResult.getOrElse(useLiveAtomValue(yieldSummaryFamily(screenKey.key)), () => null);
@@ -34,11 +38,12 @@ export const YieldInfoSheetContent = ({ screenKey }: Props) => {
     const holdingCount = summary?.annualYield.holdingCount ?? 0;
     const yieldText = t({
         message: plural(holdingCount, {
-            one: 'Yield uses the last 365 days across the # holding that has a rate. Crypto is measured on your whole balance, staked or not. Distributions count as income, not yield. Holdings marked “Excluded from yield” are left out.',
-            other: 'Yield uses the last 365 days across the # holdings that have a rate. Crypto is measured on your whole balance, staked or not. Distributions count as income, not yield. Holdings marked “Excluded from yield” are left out.'
+            one: 'Yield uses the last 365 days across the # holding that has a rate. Crypto is measured on your whole balance, staked or not. Distributions count as income, not yield. Holdings marked “No yield” are left out.',
+            other: 'Yield uses the last 365 days across the # holdings that have a rate. Crypto is measured on your whole balance, staked or not. Distributions count as income, not yield. Holdings marked “No yield” are left out.'
         })
     });
-    const projectedText = t`Holdings marked “Excluded from yield” are left out of “Projected next 12 months”.`;
+    const projectedText = t`At today’s balances and rates. Holdings left out of yield are not projected.`;
+    const bottomSpacerStyle = { height: bottom + BOTTOM_PADDING };
     const causes = groupYieldEstimateCauses(summary?.estimateCauses ?? []).map(cause => {
         const days = t({ message: plural(cause.dayCount, { one: '# day', other: '# days' }) });
         const { instrumentCode } = cause;
@@ -51,9 +56,13 @@ export const YieldInfoSheetContent = ({ screenKey }: Props) => {
 
     return (
         <ScrollableSheetCard
-            header={<FormsheetHeader size="md" title={t`About these figures`} />}
+            header={
+                <View className="px-xl pb-lg">
+                    <SheetTitleRow title={t`About these figures`} trailing={<View />} />
+                </View>
+            }
             ratio={MORPHING_SHEET_DESTINATION_HEIGHT_RATIO}
-            contentClassName="gap-y-lg px-3xl pb-3xl"
+            contentClassName="gap-y-lg px-3xl"
             testID={PassiveIncomeSelector.InfoSheet}
         >
             <YieldInfoSheetBlock title={t`Earned`} body={earnedText} />
@@ -70,6 +79,7 @@ export const YieldInfoSheetContent = ({ screenKey }: Props) => {
                     </View>
                 ) : null}
             </YieldInfoSheetBlock>
+            <View style={bottomSpacerStyle} />
         </ScrollableSheetCard>
     );
 };

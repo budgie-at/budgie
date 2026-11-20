@@ -19,6 +19,7 @@ const position = (accountId: number, section: YieldPositionSectionEnum): YieldPo
     instrumentCode: 'EUR',
     instrumentSymbol: '€',
     instrumentType: InstrumentTypeEnum.FIAT,
+    kind: null,
     section,
     earned: 0,
     isEarnedEstimated: false,
@@ -120,6 +121,7 @@ it.effect('groups payouts by month with the income total and folds each tax into
             YieldListItemKindEnum.MONTH,
             YieldListItemKindEnum.PAYOUT,
             YieldListItemKindEnum.PAYOUT,
+            YieldListItemKindEnum.MONTH,
             YieldListItemKindEnum.PAYOUT
         ]);
         expect(items.filter(item => item.kind === YieldListItemKindEnum.PAYOUT).map(item => item.id)).toEqual([

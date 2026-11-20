@@ -1,6 +1,5 @@
+import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
-
-import { MetaPill } from '../../../@generic/component/meta-pill/meta-pill';
 
 interface Props {
     readonly label: string;
@@ -10,28 +9,34 @@ interface Props {
 }
 
 const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
-
-export const YieldDeltaPill = ({ label, isPositive, testID, maxFontSizeMultiplier }: Props) => {
-    if (!isPositive) {
-        return <MetaPill label={label} testID={testID} maxFontSizeMultiplier={maxFontSizeMultiplier} />;
+const pillVariants = cva('max-w-full flex-row items-center rounded-full border px-sm py-[2px]', {
+    variants: {
+        isPositive: {
+            true: 'border-positive-corner bg-positive-background dark:border-[#30D158]/30 dark:bg-[#30D158]/16',
+            false: 'border-secondary-corner bg-secondary-background'
+        }
     }
+});
+const labelVariants = cva('shrink text-xs font-semibold', {
+    variants: {
+        isPositive: {
+            true: 'text-positive-foreground dark:text-[#30D158]',
+            false: 'text-destructive-foreground'
+        }
+    }
+});
 
-    return (
-        <View className="flex-row">
-            <View
-                testID={testID}
-                className="max-w-full flex-row items-center rounded-full border border-positive-corner bg-positive-background px-sm py-[2px] dark:border-[#30D158]/30 dark:bg-[#30D158]/16"
-                style={CONTINUOUS_CORNERS}
+export const YieldDeltaPill = ({ label, isPositive, testID, maxFontSizeMultiplier }: Props) => (
+    <View className="flex-row">
+        <View testID={testID} className={pillVariants({ isPositive })} style={CONTINUOUS_CORNERS}>
+            <Text
+                className={labelVariants({ isPositive })}
+                numberOfLines={1}
+                ellipsizeMode="tail"
+                maxFontSizeMultiplier={maxFontSizeMultiplier}
             >
-                <Text
-                    className="shrink text-xs font-semibold text-positive-foreground dark:text-[#30D158]"
-                    numberOfLines={1}
-                    ellipsizeMode="tail"
-                    maxFontSizeMultiplier={maxFontSizeMultiplier}
-                >
-                    {label}
-                </Text>
-            </View>
+                {label}
+            </Text>
         </View>
-    );
-};
+    </View>
+);

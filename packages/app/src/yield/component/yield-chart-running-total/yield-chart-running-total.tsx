@@ -1,11 +1,13 @@
 import { use } from 'react';
+import { Defs, LinearGradient, Stop } from 'react-native-svg';
+import { useCSSVariable } from 'uniwind';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isString } from '@rnw-community/shared';
 
 import { StyledPath } from '../../../@generic/component/styled-path/styled-path';
 import { YIELD_PLOT_HEIGHT } from '../../constant/yield-plot-height.constant';
 import { YieldSelectionContext } from '../../context/yield-selection.context';
-import { buildYieldAxis } from '../../utils/build-yield-axis.util';
+import { useYieldChartAxis } from '../../hook/use-yield-chart-axis.hook';
 import { buildYieldRunningPaths } from '../../utils/build-yield-running-paths.util';
 import { buildYieldRunningTotal } from '../../utils/build-yield-running-total.util';
 import { YieldChartFrame } from '../yield-chart-frame/yield-chart-frame';
@@ -21,15 +23,19 @@ interface Props {
 
 const LINE_WIDTH = 2;
 const PRIOR_WIDTH = 1.5;
-const AREA_OPACITY = 0.08;
+const AREA_TOP_OPACITY = 0.12;
+const AREA_FALLBACK_OPACITY = 0.08;
 const DASH = '4 4';
+const AREA_GRADIENT_ID = 'yield-running-total-area';
+const LINE_CLASSNAME = 'accent-positive-action';
 
 export const YieldChartRunningTotal = ({ width, summary }: Props) => {
     const { selectedIndex } = use(YieldSelectionContext);
+    const lineColor = useCSSVariable('--color-positive-action');
 
     const cumulative = buildYieldRunningTotal(summary.buckets.map(bucket => bucket.total));
     const prior = isDefined(summary.priorTotals) ? buildYieldRunningTotal(summary.priorTotals) : null;
-    const axis = buildYieldAxis(Math.max(0, ...cumulative, ...(prior ?? [])), 0);
+    const axis = useYieldChartAxis(summary);
     const paths = buildYieldRunningPaths({
         cumulative,
         prior,
@@ -42,15 +48,35 @@ export const YieldChartRunningTotal = ({ width, summary }: Props) => {
     const cursorX = isDefined(selectedIndex) ? paths.xs.at(selectedIndex) : null;
     const cursorY = isDefined(selectedIndex) ? paths.ys.at(selectedIndex) : null;
     const cursorAmount = isDefined(selectedIndex) ? cumulative.at(selectedIndex) : null;
+    const priorAmount = isDefined(selectedIndex) ? (prior?.at(selectedIndex) ?? null) : null;
     const isScrubbing = isDefined(selectedBucket) && isDefined(cursorX) && isDefined(cursorY) && isDefined(cursorAmount);
 
     const label = isScrubbing ? (
-        <YieldChartScrubLabel bucket={selectedBucket} unit={summary.bucketUnit} amount={cursorAmount} x={cursorX} plotWidth={width} />
+        <YieldChartScrubLabel
+            bucket={selectedBucket}
+            unit={summary.bucketUnit}
+            amount={cursorAmount}
+            priorAmount={priorAmount}
+            x={cursorX}
+            plotWidth={width}
+        />
     ) : null;
 
     return (
         <YieldChartFrame axis={axis} width={width} label={label}>
-            <StyledPath d={paths.area} fillClassName="accent-primary" fillOpacity={AREA_OPACITY} />
+            <Defs>
+                {isString(lineColor) ? (
+                    <LinearGradient id={AREA_GRADIENT_ID} x1="0" y1="0" x2="0" y2="1">
+                        <Stop offset="0" stopColor={lineColor} stopOpacity={AREA_TOP_OPACITY} />
+                        <Stop offset="1" stopColor={lineColor} stopOpacity={0} />
+                    </LinearGradient>
+                ) : null}
+            </Defs>
+            {isString(lineColor) ? (
+                <StyledPath d={paths.area} fill={`url(#${AREA_GRADIENT_ID})`} />
+            ) : (
+                <StyledPath d={paths.area} fillClassName={LINE_CLASSNAME} fillOpacity={AREA_FALLBACK_OPACITY} />
+            )}
             <StyledPath
                 d={paths.prior}
                 strokeClassName="accent-secondary-foreground"
@@ -58,8 +84,8 @@ export const YieldChartRunningTotal = ({ width, summary }: Props) => {
                 strokeDasharray={DASH}
                 fill="none"
             />
-            <StyledPath d={paths.solid} strokeClassName="accent-primary" strokeWidth={LINE_WIDTH} fill="none" />
-            <StyledPath d={paths.dashed} strokeClassName="accent-primary" strokeWidth={LINE_WIDTH} strokeDasharray={DASH} fill="none" />
+            <StyledPath d={paths.solid} strokeClassName={LINE_CLASSNAME} strokeWidth={LINE_WIDTH} fill="none" />
+            <StyledPath d={paths.dashed} strokeClassName={LINE_CLASSNAME} strokeWidth={LINE_WIDTH} strokeDasharray={DASH} fill="none" />
             {isScrubbing ? <YieldChartRunningCursor x={cursorX} y={cursorY} /> : null}
         </YieldChartFrame>
     );

@@ -29,5 +29,5 @@ export const useYieldEntrySubtitle = (
     const yieldText = isDefined(yieldRate) ? t`${formattedRate} a year` : unavailable;
     const accruingAmount = formatAmount(accruing ?? 0, symbol);
 
-    return isDefined(accruing) ? t`Accruing ${accruingAmount}` : t`${earned} past year · ${yieldText}`;
+    return isDefined(accruing) ? t`Accruing ${accruingAmount}` : t`${earned} last 12 months · ${yieldText}`;
 };

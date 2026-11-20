@@ -7,7 +7,9 @@ import { YieldDeltaKindEnum } from '../src/yield/enum/yield-delta-kind.enum';
 import { YieldGroupEnum } from '../src/yield/enum/yield-group.enum';
 import { YieldRangeEnum } from '../src/yield/enum/yield-range.enum';
 
-import { DEPOSIT_ACCOUNT_ID, earnedBetween, interest, summarize, tax, valued } from './yield-test-kit';
+import { DEPOSIT_ACCOUNT_ID, earnedBetween, findPayouts, interest, summarize, tax, valued } from './yield-test-kit';
+
+import type { YieldPayoutQueryInterface } from '@budgie/contracts';
 
 const total = (values: readonly number[] | null) => (values ?? []).reduce((sum, value) => sum + value, 0);
 
@@ -180,6 +182,22 @@ describe('YieldService summary', () => {
                 firstYieldDay: '2024-02-01',
                 lastPayoutDay: '2026-04-01'
             });
+        })
+    );
+});
+
+describe('YieldService payouts window', () => {
+    it.effect('limits payouts to the range window and leaves All unbounded', () =>
+        Effect.gen(function* () {
+            const payoutQueries: YieldPayoutQueryInterface[] = [];
+
+            yield* findPayouts({ payoutQueries }, { range: YieldRangeEnum.YEAR });
+            yield* findPayouts({ payoutQueries }, { range: YieldRangeEnum.ALL });
+
+            expect(payoutQueries.map(query => query.range)).toEqual([
+                { from: new Date(2025, 11, 1), to: new Date(2026, 10, 14) },
+                { from: null, to: new Date(2026, 10, 14) }
+            ]);
         })
     );
 });

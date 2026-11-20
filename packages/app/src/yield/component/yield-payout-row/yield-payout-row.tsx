@@ -9,6 +9,7 @@ import { getTransactionHref } from '../../../transaction/utils/get-transaction-h
 import { YIELD_SOURCE_FOCUS } from '../../constant/yield-source-focus.constant';
 import { useYieldPayoutRowText } from '../../hook/use-yield-payout-row-text.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
+import { getYieldRowBorderClassName } from '../../utils/get-yield-row-border-class-name.util';
 import { YieldPayoutIcon } from '../yield-payout-icon/yield-payout-icon';
 import { YieldPayoutTrailing } from '../yield-payout-trailing/yield-payout-trailing';
 import { YieldRow } from '../yield-row/yield-row';
@@ -20,7 +21,6 @@ interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
     readonly siblings: readonly TransactionWithRelationsEntityInterface[];
     readonly tax: TransactionWithRelationsEntityInterface | null;
-    readonly isFullDate: boolean;
     readonly isUnassigned: boolean;
     readonly rowPosition: TransactionListRowPositionEnum;
 }
@@ -30,8 +30,8 @@ const AMOUNT_CLASSNAME = 'text-[17px] font-semibold tabular-nums';
 const TAX_CLASSNAME = 'text-secondary-foreground';
 const INCOME_CLASSNAME = 'text-primary';
 
-export const YieldPayoutRow = ({ transaction, tax, siblings, isFullDate, isUnassigned, rowPosition }: Props) => {
-    const { kind, isTax, isMerged, title, subtitle, trailingText, taxText } = useYieldPayoutRowText(transaction, tax, siblings, isFullDate);
+export const YieldPayoutRow = ({ transaction, tax, siblings, isUnassigned, rowPosition }: Props) => {
+    const { kind, cryptoCode, isTax, isMerged, title, subtitle, trailingText, taxText } = useYieldPayoutRowText(transaction, tax, siblings);
 
     const handlePress = () => {
         if (isMerged) {
@@ -47,13 +47,15 @@ export const YieldPayoutRow = ({ transaction, tax, siblings, isFullDate, isUnass
         router.push(getTransactionHref(transaction));
     };
 
+    const rowClassName = cn(isMerged && 'min-h-[64px]');
     const amountClassName = cn(AMOUNT_CLASSNAME, isTax ? TAX_CLASSNAME : INCOME_CLASSNAME);
 
     return (
-        <TransactionRowSurface position={rowPosition} separatorInset={SEPARATOR_INSET}>
+        <TransactionRowSurface position={rowPosition} separatorInset={SEPARATOR_INSET} className={getYieldRowBorderClassName(rowPosition)}>
             <YieldRow
-                left={<YieldPayoutIcon kind={kind} />}
+                left={<YieldPayoutIcon kind={kind} cryptoCode={cryptoCode} />}
                 title={title}
+                className={rowClassName}
                 subtitle={subtitle}
                 trailing={<YieldPayoutTrailing amount={trailingText} amountClassName={amountClassName} taxText={taxText} />}
                 accessibilityLabel={[title, subtitle, trailingText, taxText].filter(isNotEmptyString).join(', ')}

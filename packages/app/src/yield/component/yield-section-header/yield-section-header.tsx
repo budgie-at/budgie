@@ -3,7 +3,7 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { use } from 'react';
 import { Text, View } from 'react-native';
 
-import { YIELD_RANGE_LABEL } from '../../constant/yield-range-label.constant';
+import { YIELD_RANGE_NAME } from '../../constant/yield-range-name.constant';
 import { YieldScreenContext } from '../../context/yield-screen.context';
 import { YieldListSectionEnum } from '../../enum/yield-list-section.enum';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
@@ -26,7 +26,7 @@ export const YieldSectionHeader = ({ section }: Props) => {
     const { screenKey } = use(YieldScreenContext);
 
     const isPositionSection = section === YieldListSectionEnum.ACTIVE || section === YieldListSectionEnum.CLOSED;
-    const rangeLabel = t(YIELD_RANGE_LABEL[screenKey.key.range]);
+    const rangeName = t(YIELD_RANGE_NAME[screenKey.key.range]);
 
     return (
         <View className="gap-y-xxs px-3xl pt-3xl pb-sm" testID={PassiveIncomeSelector.Section(section)}>
@@ -36,7 +36,7 @@ export const YieldSectionHeader = ({ section }: Props) => {
                 </Text>
                 {isPositionSection ? (
                     <Text className="text-[13px] text-secondary-foreground" maxFontSizeMultiplier={1.6}>
-                        {t`earned in ${rangeLabel}`}
+                        {rangeName}
                     </Text>
                 ) : null}
             </View>

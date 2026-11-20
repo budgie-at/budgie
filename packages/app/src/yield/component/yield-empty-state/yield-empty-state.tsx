@@ -21,11 +21,11 @@ export const YieldEmptyState = () => {
                 icon={UserIconNameEnum.Sprout}
                 title={t`No passive income yet`}
                 titleClassName="text-center text-xl font-semibold text-primary"
-                description={t`Staking rewards, dividends and interest show up here.`}
+                description={t`Staking rewards, dividends and interest appear here once you have them.`}
                 descriptionClassName="text-center text-[15px] text-secondary-foreground"
             />
             <Button content={t`Connect an exchange`} leftIcon={UserIconNameEnum.Link} onPress={handleConnect} variant="cta" />
-            <Button content={t`Add a deposit`} leftIcon={UserIconNameEnum.PiggyBank} onPress={handleAddDeposit} variant="positive" />
+            <Button content={t`Add a deposit`} leftIcon={UserIconNameEnum.PiggyBank} onPress={handleAddDeposit} variant="secondary" />
             <HapticPressable onPress={handleExplain} accessibilityRole="link" className="min-h-[44px] items-center justify-center">
                 <Text className="text-[15px] text-positive-action">
                     <Trans>How it’s calculated</Trans>

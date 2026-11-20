@@ -14,15 +14,15 @@ import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 import { YieldHeroPeriodCaption } from '../yield-hero-period-caption/yield-hero-period-caption';
 
 import type { YieldBucketInterface, YieldSummaryInterface } from '@budgie/market';
-import type { ReactNode } from 'react';
 
 interface Props {
     readonly summary: YieldSummaryInterface;
     readonly bucket: YieldBucketInterface | null;
-    readonly children?: ReactNode;
 }
 
-export const YieldHeroCaption = ({ summary, bucket, children }: Props) => {
+const CAPTION_MAX_FONT_SIZE_MULTIPLIER = 1.5;
+
+export const YieldHeroCaption = ({ summary, bucket }: Props) => {
     const { t } = useLingui();
     const { screenKey, mode, rangeCaption, isPeriodCaption } = use(YieldScreenContext);
     const { formatPeriod } = useYieldDateLabels();
@@ -31,7 +31,7 @@ export const YieldHeroCaption = ({ summary, bucket, children }: Props) => {
     const { group } = screenKey.key;
 
     if (isPeriodCaption && isDefined(screenKey.period)) {
-        return <YieldHeroPeriodCaption period={screenKey.period}>{children}</YieldHeroPeriodCaption>;
+        return <YieldHeroPeriodCaption period={screenKey.period} />;
     }
 
     const groupLabel = isDefined(group) ? t(YIELD_GROUP_LABEL[group]) : '';
@@ -42,9 +42,13 @@ export const YieldHeroCaption = ({ summary, bucket, children }: Props) => {
     const caption = isDefined(bucket) ? scrubCaption : restingCaption;
 
     return (
-        <Text testID={PassiveIncomeSelector.Caption} numberOfLines={3} className="text-[13px] text-secondary-foreground">
+        <Text
+            testID={PassiveIncomeSelector.Caption}
+            numberOfLines={2}
+            maxFontSizeMultiplier={CAPTION_MAX_FONT_SIZE_MULTIPLIER}
+            className="text-[13px] text-secondary-foreground"
+        >
             {caption}
-            {children}
         </Text>
     );
 };

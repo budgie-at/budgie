@@ -7,4 +7,5 @@ export interface YieldBarLayerInterface {
     readonly rects: readonly YieldBarRectInterface[];
     readonly fillClassName: string;
     readonly fillOpacity: number;
+    readonly opacityScale: number;
 }

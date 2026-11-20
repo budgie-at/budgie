@@ -12,6 +12,7 @@ import { defaultInstrumentAtom } from '../../../settings/constants/settings-atom
 import { YieldScreenContext } from '../../context/yield-screen.context';
 import { YieldSelectionContext } from '../../context/yield-selection.context';
 import { useYieldHeroSentence } from '../../hook/use-yield-hero-sentence.hook';
+import { useYieldIsEstimated } from '../../hook/use-yield-is-estimated.hook';
 import { useYieldSummary } from '../../hook/use-yield-summary.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 import { selectYieldScrubbedBuckets } from '../../utils/select-yield-scrubbed-buckets.util';
@@ -30,7 +31,7 @@ export const YieldHero = () => {
     const scrubAmount = selectYieldScrubbedBuckets(summary?.buckets ?? [], selectedIndex, mode).reduce((sum, item) => sum + item.total, 0);
     const amount = isDefined(bucket) ? scrubAmount : (summary?.earned.value ?? 0);
     const figureKey = isDefined(bucket) ? 'scrub' : 'total';
-    const isApproximate = isDefined(bucket) ? bucket.isEstimated : (summary?.earned.isEstimated ?? false);
+    const isApproximate = useYieldIsEstimated(summary);
     const sentence = useYieldHeroSentence(summary, rangeCaption, bucket, scrubAmount);
     const figureLock = isDefined(summary) ? { amount: summary.earned.value, approximate: summary.earned.isEstimated } : null;
 
@@ -39,24 +40,29 @@ export const YieldHero = () => {
     }
 
     return (
-        <View className="gap-y-xs" accessible accessibilityLabel={sentence} testID={PassiveIncomeSelector.Hero}>
-            <YieldHeroCaption summary={summary} bucket={bucket}>
+        <View className="gap-y-xs" testID={PassiveIncomeSelector.Hero}>
+            <View className="flex-row items-center gap-x-[4px]">
+                <View className="shrink">
+                    <YieldHeroCaption summary={summary} bucket={bucket} />
+                </View>
                 <YieldHeroInfoButton />
-            </YieldHeroCaption>
+            </View>
 
-            <HeroFigureLockContext value={figureLock}>
-                <Animated.View key={figureKey} entering={FadeIn.duration(MOTION_FAST_DURATION)} className="px-xs">
-                    <HeroFigure
-                        amount={amount}
-                        currencySymbol={symbol}
-                        variant="primary"
-                        approximate={isApproximate}
-                        testID={PassiveIncomeSelector.Earned}
-                    />
-                </Animated.View>
-            </HeroFigureLockContext>
+            <View accessible accessibilityLabel={sentence} className="gap-y-xs">
+                <HeroFigureLockContext value={figureLock}>
+                    <Animated.View key={figureKey} entering={FadeIn.duration(MOTION_FAST_DURATION)} className="px-xs">
+                        <HeroFigure
+                            amount={amount}
+                            currencySymbol={symbol}
+                            variant="primary"
+                            approximate={isApproximate}
+                            testID={PassiveIncomeSelector.Earned}
+                        />
+                    </Animated.View>
+                </HeroFigureLockContext>
 
-            <YieldHeroLine summary={summary} bucket={bucket} />
+                <YieldHeroLine summary={summary} bucket={bucket} />
+            </View>
         </View>
     );
 };

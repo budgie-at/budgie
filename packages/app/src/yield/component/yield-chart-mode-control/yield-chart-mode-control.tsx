@@ -25,29 +25,31 @@ export const YieldChartModeControl = () => {
     const handleRunning = () => void setMode(YieldChartModeEnum.RUNNING_TOTAL);
 
     return (
-        <View className="h-[32px] flex-row rounded-full bg-grouped-surface-row p-[2px]">
-            <Pressable
-                accessibilityRole="button"
-                accessibilityLabel={t`Per period`}
-                accessibilityState={barsState}
-                hitSlop={HIT_SLOP}
-                onPress={handleBars}
-                testID={PassiveIncomeSelector.Mode(YieldChartModeEnum.BARS)}
-                className={cn('w-[40px] items-center justify-center rounded-full', isBars && PILL_CLASSNAME)}
-            >
-                <Icon icon={UserIconNameEnum.ChartColumn} size={ICON_SIZE} className="text-primary" />
-            </Pressable>
-            <Pressable
-                accessibilityRole="button"
-                accessibilityLabel={t`Running total`}
-                accessibilityState={runningState}
-                hitSlop={HIT_SLOP}
-                onPress={handleRunning}
-                testID={PassiveIncomeSelector.Mode(YieldChartModeEnum.RUNNING_TOTAL)}
-                className={cn('w-[40px] items-center justify-center rounded-full', !isBars && PILL_CLASSNAME)}
-            >
-                <Icon icon={UserIconNameEnum.ChartLine} size={ICON_SIZE} className="text-primary" />
-            </Pressable>
+        <View className="h-[44px] shrink-0 justify-center">
+            <View className="h-[32px] flex-row rounded-full bg-grouped-surface-row p-[2px]">
+                <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel={t`Per period`}
+                    accessibilityState={barsState}
+                    hitSlop={HIT_SLOP}
+                    onPress={handleBars}
+                    testID={PassiveIncomeSelector.Mode(YieldChartModeEnum.BARS)}
+                    className={cn('w-[40px] items-center justify-center rounded-full', isBars && PILL_CLASSNAME)}
+                >
+                    <Icon icon={UserIconNameEnum.ChartColumn} size={ICON_SIZE} className="text-primary" />
+                </Pressable>
+                <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel={t`Running total`}
+                    accessibilityState={runningState}
+                    hitSlop={HIT_SLOP}
+                    onPress={handleRunning}
+                    testID={PassiveIncomeSelector.Mode(YieldChartModeEnum.RUNNING_TOTAL)}
+                    className={cn('w-[40px] items-center justify-center rounded-full', !isBars && PILL_CLASSNAME)}
+                >
+                    <Icon icon={UserIconNameEnum.ChartLine} size={ICON_SIZE} className="text-primary" />
+                </Pressable>
+            </View>
         </View>
     );
 };
