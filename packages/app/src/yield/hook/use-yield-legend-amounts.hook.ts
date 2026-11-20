@@ -9,7 +9,7 @@ import { useFormatYieldCompactAmount } from './use-format-yield-compact-amount.h
 
 const EMPTY_AMOUNT = '—';
 
-export const useYieldLegendAmounts = (total: number, share: number, divisor: number, isEmpty = false) => {
+export const useYieldLegendAmounts = (total: number, share: number, isCompact: boolean, isEmpty = false) => {
     const isAmountProtected = useIsAmountProtected();
     const formatAmount = useProtectedAmountLabel();
     const formatCompact = useFormatYieldCompactAmount();
@@ -17,7 +17,7 @@ export const useYieldLegendAmounts = (total: number, share: number, divisor: num
     const { symbol } = useAtomValue(defaultInstrumentAtom);
 
     const exact = isEmpty ? EMPTY_AMOUNT : formatAmount(total, symbol);
-    const compact = isAmountProtected || isEmpty ? exact : formatCompact(total, divisor, symbol);
+    const compact = isAmountProtected || isEmpty || !isCompact ? exact : formatCompact(total, symbol);
 
     return { exact, amount: compact, share: formatPercent(share) };
 };

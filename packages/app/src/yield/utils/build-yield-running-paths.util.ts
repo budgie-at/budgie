@@ -30,7 +30,9 @@ export const buildYieldRunningPaths = ({
     const segmentIndices = cumulative.map((_, index) => index).slice(1);
     const lastIndex = cumulative.length - 1;
     const lastFullIndex = inProgress.findLastIndex(isInProgress => !isInProgress);
-    const areaIndices = cumulative.map((_, index) => index).filter(index => index <= Math.min(lastFullIndex, lastIndex));
+    const hasArea = lastFullIndex >= 0;
+    const areaIndices = hasArea ? cumulative.map((_, index) => index) : [];
+    const hasFade = hasArea && lastFullIndex < lastIndex;
 
     return {
         solid: segmentIndices
@@ -45,10 +47,11 @@ export const buildYieldRunningPaths = ({
             ? [
                   command('M', xOf(0), zeroY),
                   ...areaIndices.map(index => command('L', xOf(index), yOf(cumulative.at(index) ?? 0))),
-                  command('L', xOf(areaIndices.length - 1), zeroY),
+                  command('L', xOf(lastIndex), zeroY),
                   'Z'
               ].join(' ')
             : '',
+        areaFadeStartX: hasFade ? xOf(lastFullIndex) : null,
         prior: isDefined(prior) ? prior.map((value, index) => command(index === 0 ? 'M' : 'L', xOf(index), yOf(value))).join(' ') : '',
         xs: cumulative.map((_, index) => xOf(index)),
         ys: cumulative.map(yOf),

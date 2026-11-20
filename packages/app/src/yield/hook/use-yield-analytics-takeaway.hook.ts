@@ -1,6 +1,7 @@
 import { YieldRangeEnum } from '@budgie/market';
 import { useLingui } from '@lingui/react/macro';
 
+import { YIELD_TREND_ARROW } from '../constant/yield-trend-arrow.constant';
 import { YieldHeroTrendEnum } from '../enum/yield-hero-trend.enum';
 
 import { useYieldHeroTrend } from './use-yield-hero-trend.hook';
@@ -22,8 +23,8 @@ export const useYieldAnalyticsTakeaway = (
     };
 
     if (trend === YieldHeroTrendEnum.UP) {
-        return `+${change} ${priorLabels[range]}`;
+        return `${YIELD_TREND_ARROW[trend]}+${change} ${priorLabels[range]}`;
     }
 
-    return trend === YieldHeroTrendEnum.DOWN ? `−${change} ${priorLabels[range]}` : null;
+    return trend === YieldHeroTrendEnum.DOWN ? `${YIELD_TREND_ARROW[trend]}−${change} ${priorLabels[range]}` : null;
 };

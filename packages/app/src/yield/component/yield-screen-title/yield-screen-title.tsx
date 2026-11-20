@@ -18,10 +18,9 @@ export const YieldScreenTitle = ({ hasYield }: Props) => {
 
     const isFiltered = isDefined(screenKey.scopeId) || isDefined(screenKey.key.group);
     const hasChip = isFiltered && hasYield;
-    const containerClassName = hasChip ? 'gap-y-xs pt-[36px]' : 'gap-y-xs';
 
     return (
-        <View className={containerClassName}>
+        <View className="gap-y-xs">
             <Text testID={PassiveIncomeSelector.Title} className="text-3xl font-semibold text-primary" {...CHROME_TITLE_TEXT_PROPS}>
                 <Trans>Passive income</Trans>
             </Text>

@@ -1,1 +1,1 @@
-export const YIELD_LEGEND_ROW_HEIGHT = 32;
+export const YIELD_LEGEND_ROW_HEIGHT = 40;

@@ -6,8 +6,10 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 import { TransactionListRowPositionEnum } from '../../transaction/enum/transaction-list-row-position.enum';
 import { YieldScreenContext } from '../context/yield-screen.context';
 import { YieldListItemKindEnum } from '../enum/yield-list-item-kind.enum';
+import { YieldListSectionEnum } from '../enum/yield-list-section.enum';
 import { buildYieldListItems } from '../utils/build-yield-list-items.util';
 
+import { useYieldHasWithheldTax } from './use-yield-has-withheld-tax.hook';
 import { useYieldPayouts } from './use-yield-payouts.hook';
 import { useYieldSummary } from './use-yield-summary.hook';
 
@@ -27,6 +29,7 @@ export const useYieldListItems = (): readonly YieldListItemType[] => {
     const { key } = screenKey;
     const isPayoutMode = isDefined(key.positionAccountId) || isDefined(key.instrumentId) || isDefined(key.group);
     const summary = useYieldSummary();
+    const hasWithheldTax = useYieldHasWithheldTax();
     const payoutLimit = key.range === YieldRangeEnum.ALL ? ALL_TIME_PAYOUT_LIMIT : null;
     const { payouts, unassigned, isLoading } = useYieldPayouts(isPayoutMode, payoutLimit);
 
@@ -40,6 +43,10 @@ export const useYieldListItems = (): readonly YieldListItemType[] => {
         isSinglePayoutInCard ? [] : payouts,
         rangeCaption,
         isSinglePayoutInCard ? [] : unassigned
+    ).map(item =>
+        hasWithheldTax && item.kind === YieldListItemKindEnum.SECTION && item.section === YieldListSectionEnum.PAYOUTS
+            ? { ...item, hasTax: true }
+            : item
     );
     const hasOlderPayouts = isDefined(summary.firstYieldDay) && summary.firstYieldDay < summary.windowStart;
 

@@ -19,17 +19,17 @@ import type { YieldGroupEnum } from '@budgie/market';
 const ROW_STYLE = { minHeight: YIELD_LEGEND_ROW_HEIGHT };
 const AMOUNT_CLASSNAME = 'text-right text-sm font-semibold tabular-nums text-primary';
 const DIMMED_AMOUNT_CLASSNAME = 'text-right text-sm tabular-nums text-secondary-foreground';
-const ROW_HIT_SLOP = { top: 6, bottom: 6 };
+const ROW_HIT_SLOP = { top: 2, bottom: 2 };
 
 interface Props {
     readonly group: YieldGroupEnum;
     readonly total: number;
     readonly share: number;
-    readonly divisor: number;
+    readonly isCompact: boolean;
     readonly onPress: (group: YieldGroupEnum) => void;
 }
 
-export const YieldLegendRow = ({ group, total, share, divisor, onPress }: Props) => {
+export const YieldLegendRow = ({ group, total, share, isCompact, onPress }: Props) => {
     const { t } = useLingui();
     const { screenKey } = use(YieldScreenContext);
     const { selectedIndex } = use(YieldSelectionContext);
@@ -38,7 +38,7 @@ export const YieldLegendRow = ({ group, total, share, divisor, onPress }: Props)
     const isSelected = screenKey.key.group === group;
     const isDimmed = hasFilter && !isSelected;
     const isEmpty = isDefined(selectedIndex) && !isPositiveNumber(total);
-    const { exact: exactAmount, amount, share: formattedShare } = useYieldLegendAmounts(total, share, divisor, isEmpty);
+    const { exact: exactAmount, amount, share: formattedShare } = useYieldLegendAmounts(total, share, isCompact, isEmpty);
     const label = t(YIELD_GROUP_LABEL[group]);
     const shareText = hasFilter && !isEmpty ? formattedShare : null;
     const amountClassName = isDimmed ? DIMMED_AMOUNT_CLASSNAME : AMOUNT_CLASSNAME;

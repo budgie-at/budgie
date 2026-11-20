@@ -11,7 +11,7 @@ import { resolveYieldHeroLineKind } from '../utils/resolve-yield-hero-line-kind.
 import { selectYieldScrubbedBuckets } from '../utils/select-yield-scrubbed-buckets.util';
 
 import { useYieldFormatNet } from './use-yield-format-net.hook';
-import { useYieldHeroRateText } from './use-yield-hero-rate-text.hook';
+import { useYieldRateText } from './use-yield-rate-text.hook';
 
 import type { YieldBucketInterface, YieldSummaryInterface } from '@budgie/market';
 
@@ -20,7 +20,7 @@ export const useYieldHeroLineText = (summary: YieldSummaryInterface, bucket: Yie
     const { screenKey, mode } = use(YieldScreenContext);
     const formatPercent = useFormatPercent();
     const formatNet = useYieldFormatNet();
-    const rateText = useYieldHeroRateText(summary.annualYield);
+    const rateText = useYieldRateText(summary.annualYield);
 
     const scrubbedBuckets = selectYieldScrubbedBuckets(summary.buckets, isDefined(bucket) ? summary.buckets.indexOf(bucket) : null, mode);
     const bucketTax = scrubbedBuckets.reduce((sum, item) => sum + item.amounts[YieldGroupEnum.TAX], 0);

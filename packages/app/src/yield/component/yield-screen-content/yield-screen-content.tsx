@@ -28,6 +28,7 @@ export const YieldScreenContent = ({ state, hasYield }: Props) => (
                 expandedTitle={<YieldScreenTitle hasYield={hasYield} />}
                 expandedTitlePointerEvents="box-none"
                 collapsedTitle={<YieldCollapsedTitle />}
+                collapsedTitlePointerEvents="box-none"
             />
         </YieldSelectionContext>
     </YieldScreenContext>

@@ -33,10 +33,9 @@ export const YieldChartBarPath = ({ values, layer, isInProgress, visibleBuckets 
     const isDark = theme === 'dark';
     const isTax = layer.group === YieldGroupEnum.TAX;
     const baseFill = isDark && isTax ? Math.max(layer.fillOpacity, YIELD_TAX_DARK_FILL_OPACITY) : layer.fillOpacity;
-    const inProgressScale = isTax ? 1 : YIELD_IN_PROGRESS_FILL_OPACITY;
     const paint = isInProgress
         ? {
-              fillOpacity: inProgressScale * baseFill * layer.opacityScale,
+              fillOpacity: YIELD_IN_PROGRESS_FILL_OPACITY * layer.opacityScale,
               strokeClassName: layer.fillClassName,
               strokeOpacity: layer.opacityScale,
               strokeWidth: IN_PROGRESS_STROKE,

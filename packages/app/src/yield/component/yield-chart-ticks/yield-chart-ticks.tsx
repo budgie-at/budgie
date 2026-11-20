@@ -22,7 +22,6 @@ const TICKS_STYLE = { marginTop: YIELD_PLOT_BOTTOM_GAP, height: YIELD_CHART_TICK
 const MAX_TICKS = 4;
 const MAX_ACCESSIBILITY_TICKS = 2;
 const HALF_SLOT = 0.5;
-const MONTHS_PER_YEAR = 12;
 
 export const YieldChartTicks = ({ buckets, unit, width }: Props) => {
     const { formatTick } = useYieldDateLabels();
@@ -32,8 +31,8 @@ export const YieldChartTicks = ({ buckets, unit, width }: Props) => {
     const maxTicks = isAccessibilityText ? MAX_ACCESSIBILITY_TICKS : MAX_TICKS;
     const firstYear = buckets.at(0)?.start.slice(0, 4);
     const lastYear = buckets.at(-1)?.start.slice(0, 4);
-    const isYearVisible = buckets.length >= MONTHS_PER_YEAR && firstYear !== lastYear;
-    const { indices, isSparse } = buildYieldTickIndices(buckets, unit, slot, maxTicks);
+    const isYearVisible = firstYear !== lastYear;
+    const { indices } = buildYieldTickIndices(buckets, unit, slot, maxTicks);
     const ticks = indices.flatMap(index => {
         const bucket = buckets.at(index);
 
@@ -41,7 +40,7 @@ export const YieldChartTicks = ({ buckets, unit, width }: Props) => {
             ? [
                   {
                       key: bucket.start,
-                      label: formatTick(bucket, unit, !isSparse && isYearVisible),
+                      label: formatTick(bucket, unit, isYearVisible),
                       centre: MARKET_CHART_PADDING_X + slot * (index + HALF_SLOT)
                   }
               ]

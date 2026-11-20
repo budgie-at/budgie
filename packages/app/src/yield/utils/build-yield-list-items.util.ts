@@ -117,6 +117,9 @@ const toRowDisplayedAmount = ({ transaction, siblings }: YieldPayoutFoldInterfac
     return Math.round(Math.abs(convertFromMicroUnits(baseAmounts.reduce((total, amount) => total + amount, 0))));
 };
 
+const toRowLastDate = ({ transaction, siblings }: YieldPayoutFoldInterface): number =>
+    Math.max(transaction.operatedAt.getTime(), ...siblings.map(sibling => sibling.operatedAt.getTime()));
+
 const toMonthTotal = (rows: readonly YieldPayoutFoldInterface[]): number =>
     rows.reduce((total, row) => total + toRowDisplayedAmount(row), 0);
 
@@ -142,8 +145,7 @@ const toPayouts = (payouts: readonly TransactionWithRelationsEntityInterface[], 
         ({ transaction }) => format(transaction.operatedAt, MONTH_KEY_FORMAT)
     ).map(rows =>
         mergeRepeatedPayouts(rows).sort(
-            (left, right) =>
-                toRowDisplayedAmount(right) - toRowDisplayedAmount(left) || left.transaction.title.localeCompare(right.transaction.title)
+            (left, right) => toRowLastDate(right) - toRowLastDate(left) || left.transaction.title.localeCompare(right.transaction.title)
         )
     );
 

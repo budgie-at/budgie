@@ -7,7 +7,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { Icon } from '../../../@generic/component/icon/icon';
 import { TransactionRowSurface } from '../../../transaction/components/transaction-row-surface/transaction-row-surface';
-import { useFormatYieldHoldingAmount } from '../../hook/use-format-yield-holding-amount.hook';
+import { useFormatYieldFigureAmount } from '../../hook/use-format-yield-figure-amount.hook';
 import { useYieldPositionSubtitle } from '../../hook/use-yield-position-subtitle.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 import { getYieldRowBorderClassName } from '../../utils/get-yield-row-border-class-name.util';
@@ -42,7 +42,7 @@ const SEPARATOR_INSET = 64;
 
 export const YieldPositionRow = ({ position, rangeCaption, rowPosition }: Props) => {
     const { t } = useLingui();
-    const formatAmount = useFormatYieldHoldingAmount();
+    const formatAmount = useFormatYieldFigureAmount();
     const subtitle = useYieldPositionSubtitle(position);
 
     const handlePress = () => void router.setParams({ position: String(position.accountId), instrument: '', group: '' });

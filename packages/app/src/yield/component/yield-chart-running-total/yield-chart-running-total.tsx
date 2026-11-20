@@ -1,17 +1,18 @@
+import { parseISO } from 'date-fns/parseISO';
 import { use } from 'react';
-import { Defs, LinearGradient, Stop } from 'react-native-svg';
-import { useCSSVariable } from 'uniwind';
 
-import { isDefined, isString } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { StyledCircle } from '../../../@generic/component/styled-circle/styled-circle';
 import { StyledPath } from '../../../@generic/component/styled-path/styled-path';
+import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { YIELD_PLOT_HEIGHT } from '../../constant/yield-plot-height.constant';
 import { YieldSelectionContext } from '../../context/yield-selection.context';
 import { useYieldChartAxis } from '../../hook/use-yield-chart-axis.hook';
 import { buildYieldRunningPaths } from '../../utils/build-yield-running-paths.util';
 import { buildYieldRunningTotal } from '../../utils/build-yield-running-total.util';
 import { YieldChartFrame } from '../yield-chart-frame/yield-chart-frame';
+import { YieldChartRunningArea } from '../yield-chart-running-area/yield-chart-running-area';
 import { YieldChartRunningCursor } from '../yield-chart-running-cursor/yield-chart-running-cursor';
 import { YieldChartScrubLabel } from '../yield-chart-scrub-label/yield-chart-scrub-label';
 
@@ -24,16 +25,13 @@ interface Props {
 
 const LINE_WIDTH = 2;
 const PRIOR_WIDTH = 1.5;
-const AREA_TOP_OPACITY = 0.12;
-const AREA_FALLBACK_OPACITY = 0.08;
 const DASH = '4 4';
 const PRIOR_DOT_RADIUS = 2.25;
-const AREA_GRADIENT_ID = 'yield-running-total-area';
 const LINE_CLASSNAME = 'accent-positive-action';
 
 export const YieldChartRunningTotal = ({ width, summary }: Props) => {
     const { selectedIndex } = use(YieldSelectionContext);
-    const lineColor = useCSSVariable('--color-positive-action');
+    const { formatMonthAndDay } = useFormatDate();
 
     const cumulative = buildYieldRunningTotal(summary.buckets.map(bucket => bucket.total));
     const prior = isDefined(summary.priorTotals) ? buildYieldRunningTotal(summary.priorTotals) : null;
@@ -57,9 +55,9 @@ export const YieldChartRunningTotal = ({ width, summary }: Props) => {
     const scrubbedBucket = isDefined(selectedIndex) ? summary.buckets.at(selectedIndex) : null;
 
     const label =
-        isScrubbing && isDefined(priorAmount) && isDefined(scrubbedBucket) ? (
+        isScrubbing && isDefined(scrubbedBucket) ? (
             <YieldChartScrubLabel
-                end={scrubbedBucket.end}
+                title={formatMonthAndDay(parseISO(scrubbedBucket.end))}
                 amount={cumulative.at(selectedIndex ?? 0) ?? 0}
                 priorAmount={priorAmount}
                 x={cursorX}
@@ -69,19 +67,7 @@ export const YieldChartRunningTotal = ({ width, summary }: Props) => {
 
     return (
         <YieldChartFrame axis={axis} width={width} label={label}>
-            <Defs>
-                {isString(lineColor) ? (
-                    <LinearGradient id={AREA_GRADIENT_ID} x1="0" y1="0" x2="0" y2="1">
-                        <Stop offset="0" stopColor={lineColor} stopOpacity={AREA_TOP_OPACITY} />
-                        <Stop offset="1" stopColor={lineColor} stopOpacity={0} />
-                    </LinearGradient>
-                ) : null}
-            </Defs>
-            {isString(lineColor) ? (
-                <StyledPath d={paths.area} fill={`url(#${AREA_GRADIENT_ID})`} />
-            ) : (
-                <StyledPath d={paths.area} fillClassName={LINE_CLASSNAME} fillOpacity={AREA_FALLBACK_OPACITY} />
-            )}
+            <YieldChartRunningArea path={paths.area} width={width} fadeStartX={paths.areaFadeStartX} fadeEndX={paths.endX} />
             <StyledPath
                 d={paths.prior}
                 strokeClassName="accent-secondary-foreground"

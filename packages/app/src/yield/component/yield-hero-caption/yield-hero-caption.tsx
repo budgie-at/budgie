@@ -42,7 +42,7 @@ export const YieldHeroCaption = ({ summary, bucket }: Props) => {
     const throughDay = isDefined(bucket) ? formatDayAndMonthAndYear(parseISO(bucket.end)) : '';
     const bucketPeriod = isDefined(bucket) ? formatPeriod(bucket, summary.bucketUnit) : '';
     const restingCaption = isDefined(group) ? t`${groupLabel} since ${sinceDate}` : t`Earned since ${sinceDate}`;
-    const scrubCaption = mode === YieldChartModeEnum.RUNNING_TOTAL ? t`Earned through ${throughDay}` : bucketPeriod;
+    const scrubCaption = mode === YieldChartModeEnum.RUNNING_TOTAL ? t`Earned through ${throughDay}` : t`Earned in ${bucketPeriod}`;
     const caption = isDefined(bucket) ? scrubCaption : restingCaption;
 
     return (

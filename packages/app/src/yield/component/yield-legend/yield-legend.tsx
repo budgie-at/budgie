@@ -8,12 +8,12 @@ import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hook';
 import { MILLION } from '../../../i18n/constant/compact-thresholds.constant';
+import { YIELD_LEGEND_HINT_HEIGHT } from '../../constant/yield-legend-header-height.constant';
 import { yieldSummaryFamily } from '../../constant/yield-summary-family-atom.constant';
 import { YieldScreenContext } from '../../context/yield-screen.context';
 import { YieldSelectionContext } from '../../context/yield-selection.context';
 import { useYieldLegendRows } from '../../hook/use-yield-legend-rows.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
-import { pickYieldCompactDivisor } from '../../utils/pick-yield-compact-divisor.util';
 import { YieldLegendHeader } from '../yield-legend-header/yield-legend-header';
 import { YieldLegendRow } from '../yield-legend-row/yield-legend-row';
 import { YieldLegendTaxRow } from '../yield-legend-tax-row/yield-legend-tax-row';
@@ -22,6 +22,8 @@ import type { YieldGroupEnum } from '@budgie/market';
 
 const ONE_COLUMN = 1;
 const FOOTER_MAX_FONT_SIZE_MULTIPLIER = 1.5;
+const MIN_KINDS_FOR_HINT = 2;
+const HINT_STYLE = { minHeight: YIELD_LEGEND_HINT_HEIGHT };
 
 export const YieldLegend = () => {
     const { t } = useLingui();
@@ -41,24 +43,30 @@ export const YieldLegend = () => {
     );
     const sharedRows = rows.map(row => ({ ...row, share: row.total / rowsTotal }));
     const hasTax = isPositiveNumber(unfiltered?.tax);
-    const divisor = pickYieldCompactDivisor(Math.max(taxTotal, ...rows.map(row => row.total)), MILLION);
+    const isCompact = Math.max(taxTotal, ...rows.map(row => row.total)) >= MILLION;
 
     const isFilterActive = isDefined(screenKey.key.group);
+    const isHintVisible = !isDefined(screenKey.scopeId) && (unfiltered?.groups.length ?? 0) >= MIN_KINDS_FOR_HINT;
+    const hint = isFilterActive ? t`Tap again to show all` : t`Tap a kind to filter`;
 
     return (
         <View className="gap-y-xs">
             <YieldLegendHeader />
             <View className="-mx-sm" accessibilityLabel={t`Passive income by kind`} testID={PassiveIncomeSelector.Legend(ONE_COLUMN)}>
                 {sharedRows.map(({ group, total, share }) => (
-                    <YieldLegendRow key={group} group={group} total={total} share={share} divisor={divisor} onPress={handlePress} />
+                    <YieldLegendRow key={group} group={group} total={total} share={share} isCompact={isCompact} onPress={handlePress} />
                 ))}
-                {hasTax ? <YieldLegendTaxRow total={taxTotal} divisor={divisor} /> : null}
+                {hasTax ? <YieldLegendTaxRow total={taxTotal} isCompact={isCompact} /> : null}
             </View>
-            {isFilterActive ? null : (
-                <Text className="text-[13px] text-secondary-foreground" maxFontSizeMultiplier={FOOTER_MAX_FONT_SIZE_MULTIPLIER}>
-                    {t`Tap a kind to filter`}
+            {isHintVisible ? (
+                <Text
+                    className="text-[13px] leading-[18px] text-secondary-foreground"
+                    style={HINT_STYLE}
+                    maxFontSizeMultiplier={FOOTER_MAX_FONT_SIZE_MULTIPLIER}
+                >
+                    {hint}
                 </Text>
-            )}
+            ) : null}
         </View>
     );
 };

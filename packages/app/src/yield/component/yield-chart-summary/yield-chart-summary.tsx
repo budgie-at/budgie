@@ -30,7 +30,14 @@ export const YieldChartSummary = ({ summary }: Props) => {
     const isSeeAllTimeVisible = isEmpty && screenKey.key.range !== YieldRangeEnum.ALL;
     const title = t({ id: 'passive-income.payouts.title', message: plural(count, { one: '# payout', other: '# payouts' }) });
     const filledBuckets = summary.buckets.filter(bucket => bucket.total > 0);
-    const containerClassName = cn('gap-y-xs', isEmpty && 'items-center', isEmpty && 'gap-y-sm', isEmpty && 'px-3xl', isEmpty && 'py-xl');
+    const containerClassName = cn(
+        'gap-y-xs',
+        isEmpty && 'items-center',
+        isEmpty && 'gap-y-sm',
+        isEmpty && 'px-3xl',
+        isEmpty && 'py-xl',
+        isSingle && '-my-[6px]'
+    );
 
     return (
         <View className={containerClassName} testID={PassiveIncomeSelector.PlotSummary}>

@@ -4,8 +4,8 @@ import { formatYieldCompactAmount } from '../utils/format-yield-compact-amount.u
 export const useFormatYieldCompactAmount = () => {
     const { intl } = useI18nContext();
 
-    return (value: number, divisor: number, symbol: string) =>
-        formatYieldCompactAmount(value, divisor, symbol, (absolute, maximumFractionDigits) =>
-            intl.formatNumber(absolute, { maximumFractionDigits })
+    return (value: number, symbol: string) =>
+        formatYieldCompactAmount(value, symbol, (absolute, fractionDigits) =>
+            intl.formatNumber(absolute, { minimumFractionDigits: fractionDigits, maximumFractionDigits: fractionDigits })
         );
 };

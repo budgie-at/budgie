@@ -5,7 +5,6 @@ import { isDefined } from '@rnw-community/shared';
 
 import { PROTECTED_AMOUNT_PLACEHOLDER } from '../../@generic/constant/protected-amount-placeholder.constant';
 import { useIsAmountProtected } from '../../@generic/hook/use-is-amount-protected.hook';
-import { THOUSAND } from '../../i18n/constant/compact-thresholds.constant';
 import { defaultInstrumentAtom } from '../../settings/constants/settings-atoms.constant';
 import { YIELD_AXIS_GUTTER } from '../constant/yield-axis-gutter.constant';
 import { YIELD_PLOT_HEIGHT } from '../constant/yield-plot-height.constant';
@@ -13,7 +12,6 @@ import { YIELD_STACK_GROUPS } from '../constant/yield-stack-groups.constant';
 import { YieldChartModeEnum } from '../enum/yield-chart-mode.enum';
 import { buildYieldAxisLabels } from '../utils/build-yield-axis-labels.util';
 import { buildYieldSummaryAxis } from '../utils/build-yield-summary-axis.util';
-import { pickYieldCompactDivisor } from '../utils/pick-yield-compact-divisor.util';
 
 import { useFormatYieldCompactAmount } from './use-format-yield-compact-amount.hook';
 import { useYieldSummary } from './use-yield-summary.hook';
@@ -31,13 +29,10 @@ export const useYieldAxisLabels = (axis: YieldAxisInterface) => {
     const { fontScale } = useWindowDimensions();
     const summary = useYieldSummary();
 
-    const buildLabels = (target: YieldAxisInterface) => {
-        const divisor = pickYieldCompactDivisor(target.top, THOUSAND);
-
-        return buildYieldAxisLabels(target, YIELD_PLOT_HEIGHT, value =>
-            isAmountProtected ? PROTECTED_AMOUNT_PLACEHOLDER : formatCompact(value, divisor, symbol)
+    const buildLabels = (target: YieldAxisInterface) =>
+        buildYieldAxisLabels(target, YIELD_PLOT_HEIGHT, value =>
+            isAmountProtected ? PROTECTED_AMOUNT_PLACEHOLDER : formatCompact(value, symbol)
         );
-    };
     const labels = buildLabels(axis);
     const stableAxes = isDefined(summary)
         ? Object.values(YieldChartModeEnum).flatMap(mode =>

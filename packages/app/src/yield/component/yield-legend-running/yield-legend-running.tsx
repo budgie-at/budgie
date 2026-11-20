@@ -8,6 +8,7 @@ import { isDefined } from '@rnw-community/shared';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { YieldSelectionContext } from '../../context/yield-selection.context';
+import { useYieldPriorLabel } from '../../hook/use-yield-prior-label.hook';
 import { useYieldSummary } from '../../hook/use-yield-summary.hook';
 import { buildYieldRunningTotal } from '../../utils/build-yield-running-total.util';
 import { YieldLegendFootnote } from '../yield-legend-footnote/yield-legend-footnote';
@@ -31,7 +32,7 @@ export const YieldLegendRunning = () => {
     const currentAmount = `${approximate}${formatAmount(cumulative.at(index) ?? 0, symbol)}`;
     const priorAmount = formatAmount(prior?.at(index) ?? prior?.at(-1) ?? 0, symbol);
     const currentLabel = t`This period`;
-    const priorLabel = t`Prior period`;
+    const priorLabel = useYieldPriorLabel();
 
     return (
         <View className="items-start gap-y-xs" accessibilityLabel={t`Running total legend`}>

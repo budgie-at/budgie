@@ -1,8 +1,6 @@
-import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 
-import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
-import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
+import { useFormatYieldFigureAmount } from '../../hook/use-format-yield-figure-amount.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 import { YieldBreakdownRow } from '../yield-breakdown-row/yield-breakdown-row';
 
@@ -14,11 +12,10 @@ interface Props {
 
 export const YieldBreakdownCryptoToday = ({ rewards }: Props) => {
     const { t } = useLingui();
-    const formatAmount = useProtectedAmountLabel();
-    const { symbol } = useAtomValue(defaultInstrumentAtom);
+    const formatAmount = useFormatYieldFigureAmount();
 
-    const amount = formatAmount(rewards.value, symbol);
-    const arrival = formatAmount(rewards.arrivalValue, symbol);
+    const amount = formatAmount(rewards.value);
+    const arrival = formatAmount(rewards.arrivalValue);
     const value = rewards.isEstimated ? t`≈ ${amount}` : amount;
 
     return (

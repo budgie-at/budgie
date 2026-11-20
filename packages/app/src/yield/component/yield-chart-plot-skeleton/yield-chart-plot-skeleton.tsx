@@ -8,6 +8,7 @@ import { YIELD_AXIS_GUTTER } from '../../constant/yield-axis-gutter.constant';
 import { YIELD_CHART_TICKS_HEIGHT } from '../../constant/yield-chart-ticks-height.constant';
 import { YIELD_FOOTNOTE_HEIGHT } from '../../constant/yield-footnote-height.constant';
 import { YIELD_LABEL_BAND, YIELD_PLOT_BOTTOM_GAP } from '../../constant/yield-label-band.constant';
+import { YIELD_LEGEND_HEADER_HEIGHT, YIELD_LEGEND_HINT_HEIGHT } from '../../constant/yield-legend-header-height.constant';
 import { YIELD_LEGEND_ROW_HEIGHT } from '../../constant/yield-legend-row-height.constant';
 import { YIELD_NEGATIVE_BAND } from '../../constant/yield-negative-band.constant';
 import { YIELD_PLOT_HEIGHT } from '../../constant/yield-plot-height.constant';
@@ -45,6 +46,8 @@ const SLOT_STYLE = { height: ZERO_Y };
 const GUTTER_STYLE = { width: YIELD_AXIS_GUTTER, marginTop: YIELD_LABEL_BAND, height: YIELD_PLOT_HEIGHT };
 const TICKS_ROW_STYLE = { height: YIELD_CHART_TICKS_HEIGHT, marginTop: YIELD_PLOT_BOTTOM_GAP, paddingRight: YIELD_AXIS_GUTTER };
 const LEGEND_ROW_STYLE = { height: YIELD_LEGEND_ROW_HEIGHT };
+const LEGEND_HEADER_STYLE = { height: YIELD_LEGEND_HEADER_HEIGHT };
+const LEGEND_HINT_STYLE = { height: YIELD_LEGEND_HINT_HEIGHT };
 const FOOTNOTE_STYLE = { height: YIELD_FOOTNOTE_HEIGHT };
 
 const BUSY_STATE = { busy: true };
@@ -90,7 +93,10 @@ export const YieldChartPlotSkeleton = () => {
                     ))}
                 </View>
             </View>
-            <View>
+            <View className="gap-y-xs">
+                <View className="justify-center" style={LEGEND_HEADER_STYLE}>
+                    <View className="h-[12px] w-[96px] rounded-full bg-secondary-corner" />
+                </View>
                 {LEGEND_ROWS.map(row => (
                     <View key={row} className="flex-row items-center gap-x-[8px]" style={LEGEND_ROW_STYLE}>
                         <View className="size-[10px] rounded-full bg-secondary-corner" />
@@ -98,6 +104,9 @@ export const YieldChartPlotSkeleton = () => {
                         <View className="h-[14px] w-[56px] rounded-full bg-secondary-corner" />
                     </View>
                 ))}
+                <View className="justify-center" style={LEGEND_HINT_STYLE}>
+                    <View className="h-[12px] w-[128px] rounded-full bg-secondary-corner" />
+                </View>
             </View>
             <View className="justify-center" style={FOOTNOTE_STYLE}>
                 <View className="h-[12px] w-7/12 rounded-full bg-secondary-corner" />

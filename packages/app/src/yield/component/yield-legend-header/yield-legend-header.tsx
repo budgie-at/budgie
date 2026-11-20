@@ -9,6 +9,7 @@ import { isDefined } from '@rnw-community/shared';
 import { EASE_OUT } from '../../../@generic/constant/motion.constant';
 import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
+import { YIELD_LEGEND_HEADER_HEIGHT } from '../../constant/yield-legend-header-height.constant';
 import { YIELD_RANGE_PERIOD_LABEL } from '../../constant/yield-range-period-label.constant';
 import { YieldScreenContext } from '../../context/yield-screen.context';
 import { YieldSelectionContext } from '../../context/yield-selection.context';
@@ -16,8 +17,7 @@ import { YieldChartModeEnum } from '../../enum/yield-chart-mode.enum';
 import { useYieldDateLabels } from '../../hook/use-yield-date-labels.hook';
 import { useYieldSummary } from '../../hook/use-yield-summary.hook';
 
-const HEADER_HEIGHT = 18;
-const HEADER_STYLE = { minHeight: HEADER_HEIGHT };
+const HEADER_STYLE = { minHeight: YIELD_LEGEND_HEADER_HEIGHT };
 const CROSS_FADE_DURATION = 150;
 const MAX_FONT_SIZE_MULTIPLIER = 1.5;
 

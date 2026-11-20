@@ -13,7 +13,9 @@ import { useYieldBarGeometry } from '../../hook/use-yield-bar-geometry.hook';
 import { useYieldChartAxis } from '../../hook/use-yield-chart-axis.hook';
 import { buildYieldBarLayers } from '../../utils/build-yield-bar-layers.util';
 import { buildYieldBarLayout } from '../../utils/build-yield-bar-layout.util';
+import { YieldChartBarLabel } from '../yield-chart-bar-label/yield-chart-bar-label';
 import { YieldChartBarPath } from '../yield-chart-bar-path/yield-chart-bar-path';
+import { YieldChartBarRule } from '../yield-chart-bar-rule/yield-chart-bar-rule';
 import { YieldChartFrame } from '../yield-chart-frame/yield-chart-frame';
 
 import type { YieldSummaryInterface } from '@budgie/market';
@@ -60,8 +62,11 @@ export const YieldChartBars = ({ width, summary }: Props) => {
         )
     );
 
+    const label = isDefined(selectedIndex) ? <YieldChartBarLabel summary={summary} index={selectedIndex} width={width} /> : null;
+
     return (
-        <YieldChartFrame axis={axis} width={width}>
+        <YieldChartFrame axis={axis} width={width} label={label}>
+            {isDefined(selectedIndex) ? <YieldChartBarRule index={selectedIndex} count={summary.buckets.length} width={width} /> : null}
             {paths.map(({ key, layer, isInProgress, visibleBuckets }) => (
                 <YieldChartBarPath key={key} values={values} layer={layer} isInProgress={isInProgress} visibleBuckets={visibleBuckets} />
             ))}

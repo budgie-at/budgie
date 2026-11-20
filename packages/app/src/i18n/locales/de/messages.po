@@ -246,10 +246,6 @@ msgstr "{applied, plural, one {# passende Transaktion aktualisiert} other {# pas
 msgid "{approximate}{formattedRate} a year"
 msgstr "{approximate}{formattedRate} pro Jahr"
 
-#: src/yield/hook/use-yield-position-rate-text.hook.ts
-msgid "{approximate}{formattedRate}/yr"
-msgstr "{approximate}{formattedRate}/Jahr"
-
 #: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 msgid "{approxTransactions, plural, one {about # transaction} other {about # transactions}}"
 msgstr "{approxTransactions, plural, one {etwa # Transaktion} other {etwa # Transaktionen}}"
@@ -990,10 +986,6 @@ msgstr "{quotePriceLabel} ≈ {defaultPriceLabel}"
 #: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
 msgid "{rate, plural, =1 {about once a week} =2 {about twice a week} other {about # a week}}"
 msgstr "{rate, plural, =1 {etwa einmal pro Woche} =2 {etwa zweimal pro Woche} other {etwa # pro Woche}}"
-
-#: src/yield/hook/use-yield-hero-rate-text.hook.ts
-msgid "{rate} yield"
-msgstr "{rate} Rendite"
 
 #: src/inzhur/component/inzhur-operations-import-summary/inzhur-operations-import-summary.tsx
 msgid "{recordedLabel}, {alreadyLabel}. You can edit any entry like a normal transaction."
@@ -4845,6 +4837,10 @@ msgstr "Verdient"
 msgid "Earned {amountText} before tax through {throughDay}."
 msgstr "{amountText} verdient vor Steuern bis {throughDay}."
 
+#: src/yield/component/yield-hero-caption/yield-hero-caption.tsx
+msgid "Earned in {bucketPeriod}"
+msgstr "Verdient im {bucketPeriod}"
+
 #: src/yield/component/yield-section-header/yield-section-header.tsx
 msgid "Earned in range"
 msgstr "Im Zeitraum verdient"
@@ -7383,6 +7379,18 @@ msgstr "Kein passives Einkommen {caption} · letzte Auszahlung {lastPayout}"
 msgid "No passive income yet"
 msgstr "Noch kein passives Einkommen"
 
+#: src/yield/component/yield-hero-no-delta/yield-hero-no-delta.tsx
+msgid "No payouts in previous 3 months"
+msgstr "Keine Auszahlungen in den vorherigen 3 Monaten"
+
+#: src/yield/component/yield-hero-no-delta/yield-hero-no-delta.tsx
+msgid "No payouts in previous 30 days"
+msgstr "Keine Auszahlungen in den vorherigen 30 Tagen"
+
+#: src/yield/component/yield-hero-no-delta/yield-hero-no-delta.tsx
+msgid "No payouts in previous year"
+msgstr "Keine Auszahlungen im Vorjahr"
+
 #: src/brokerage/component/brokerage-empty-state/brokerage-empty-state.tsx
 msgid "No positions yet"
 msgstr "Noch keine Positionen"
@@ -8653,8 +8661,14 @@ msgid "previous period"
 msgstr "Vorperiode"
 
 #: src/transaction/components/statistics-period-control/statistics-period-control.tsx
+#: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
+#: src/yield/hook/use-yield-prior-label.hook.ts
 msgid "Previous period"
 msgstr "Vorheriger Zeitraum"
+
+#: src/yield/hook/use-yield-prior-label.hook.ts
+msgid "Previous year"
+msgstr "Vorjahr"
 
 #: src/inzhur/component/inzhur-fund-chart/inzhur-fund-chart.tsx
 msgid "Price"
@@ -8696,15 +8710,6 @@ msgstr "Preise vom {priceDate}"
 #: src/tag/components/tag-selector-row/tag-selector-row.tsx
 msgid "Primary"
 msgstr "Primär"
-
-#: src/yield/component/yield-chart-scrub-label/yield-chart-scrub-label.tsx
-#: src/yield/component/yield-legend-running/yield-legend-running.tsx
-msgid "Prior period"
-msgstr "Vorheriger Zeitraum"
-
-#: src/yield/component/yield-chart-scrub-label/yield-chart-scrub-label.tsx
-msgid "Prior year"
-msgstr "Vorjahr"
 
 #: src/settings/components/support-settings-rows/support-settings-rows.tsx
 msgid "Privacy policy"
@@ -10499,6 +10504,10 @@ msgstr "Tippe auf einen Vorschlag, um ihn für diese Kategorie zu verwenden."
 msgid "Tap a value to copy it."
 msgstr "Tippe auf einen Wert, um ihn zu kopieren."
 
+#: src/yield/component/yield-legend/yield-legend.tsx
+msgid "Tap again to show all"
+msgstr "Erneut tippen, um alle zu zeigen"
+
 #: src/ai/component/voice-review-empty-state/voice-review-empty-state.tsx
 msgid "Tap re-record to try again"
 msgstr "Auf 'Erneut aufnehmen' tippen, um es erneut zu versuchen"
@@ -10651,6 +10660,10 @@ msgstr "Erstattung und Kauf werden wieder zu einzelnen Einträgen."
 #: src/rule/utils/show-rule-application-toast.util.ts
 msgid "The rule was saved but no existing transactions needed updating."
 msgstr "Die Regel wurde gespeichert, aber keine vorhandenen Transaktionen mussten aktualisiert werden."
+
+#: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
+msgid "The same length of time just before this range."
+msgstr "Der gleiche Zeitraum unmittelbar vor diesem Bereich."
 
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "The selected Budgie account is archived or no longer exists."
@@ -11157,10 +11170,6 @@ msgstr "Verfolge eine Reise oder ein Projekt mit eigenem Limit. Getaggte Ausgabe
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Trade Republic, N26 and other EU banks, read-only."
 msgstr "Trade Republic, N26 und andere EU-Banken, nur Lesezugriff."
-
-#: src/yield/hook/use-yield-hero-rate-text.hook.ts
-msgid "Trailing 12-month yield {rate}"
-msgstr "Rendite der letzten 12 Monate {rate}"
 
 #: ../ledger/src/transaction/service/transaction-debt-settlement.service.ts
 msgid "Transaction already has a debt attachment"
@@ -11840,10 +11849,6 @@ msgstr "Warnung"
 #: src/yield/hook/use-yield-position-rate-text.hook.ts
 msgid "was {approximate}{formattedRate} a year"
 msgstr "war {approximate}{formattedRate} pro Jahr"
-
-#: src/yield/hook/use-yield-position-rate-text.hook.ts
-msgid "was {approximate}{formattedRate}/yr"
-msgstr "war {approximate}{formattedRate}/Jahr"
 
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "We never see your PIN, and there’s no account to reset it through. {noResetSentence}"

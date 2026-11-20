@@ -1,21 +1,34 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { use } from 'react';
-import { Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
+import Animated, { useAnimatedProps } from 'react-native-reanimated';
 
+import { useCollapsibleHeaderScroll } from '@rnw-community/react-native-collapsible-header';
+import { useScreenChrome } from '@rnw-community/react-native-screen-chrome';
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
+import { Icon } from '../../../@generic/component/icon/icon';
 import { CHROME_TITLE_TEXT_PROPS } from '../../../@generic/constant/chrome-title-text-props.constant';
+import { testID } from '../../../@generic/utils/test-id.util';
 import { YIELD_GROUP_LABEL } from '../../constant/yield-group-label.constant';
 import { YieldScreenContext } from '../../context/yield-screen.context';
 import { useYieldScopeTitle } from '../../hook/use-yield-scope-title.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
-import { YieldFilterChip } from '../yield-filter-chip/yield-filter-chip';
+
+const CLEAR_BUTTON_STYLE = { right: -56 };
 
 export const YieldCollapsedTitle = () => {
     const { t } = useLingui();
     const { screenKey } = use(YieldScreenContext);
     const scopeTitle = useYieldScopeTitle();
+    const { config } = useScreenChrome();
+    const { scrollY } = useCollapsibleHeaderScroll();
+
+    const clearButtonAnimatedProps = useAnimatedProps(() => ({
+        pointerEvents: scrollY.get() >= config.smallTitleStart ? ('box-none' as const) : ('none' as const)
+    }));
 
     const { group } = screenKey.key;
     const scopes = [isDefined(screenKey.scopeId) ? scopeTitle : null, isDefined(group) ? t(YIELD_GROUP_LABEL[group]) : null].filter(
@@ -27,19 +40,37 @@ export const YieldCollapsedTitle = () => {
 
     const handleClear = () => void router.setParams({ position: '', instrument: '', group: '', focus: '' });
 
-    return (
-        <View className="flex-row items-center justify-center gap-x-sm">
-            <Text className="shrink-0 text-center text-lg font-semibold text-primary" {...CHROME_TITLE_TEXT_PROPS}>
+    if (!isNotEmptyArray(scopes)) {
+        return (
+            <Text className="text-center text-lg font-semibold text-primary" {...CHROME_TITLE_TEXT_PROPS}>
                 <Trans>Passive income</Trans>
             </Text>
-            {isNotEmptyArray(scopes) ? (
-                <YieldFilterChip
-                    label={scopeText}
+        );
+    }
+
+    return (
+        <View className="items-center self-stretch">
+            <Text className="text-center text-[17px] font-semibold text-primary" {...CHROME_TITLE_TEXT_PROPS}>
+                {scopeText}
+            </Text>
+            <Text className="text-center text-xs text-secondary-foreground" {...CHROME_TITLE_TEXT_PROPS}>
+                <Trans>Passive income</Trans>
+            </Text>
+            <Animated.View
+                className="absolute top-1/2 -mt-[22px] h-[44px] w-[44px]"
+                style={CLEAR_BUTTON_STYLE}
+                animatedProps={clearButtonAnimatedProps}
+            >
+                <Pressable
+                    accessibilityRole="button"
                     accessibilityLabel={accessibilityLabel}
                     onPress={handleClear}
-                    testID={PassiveIncomeSelector.ClearFilter}
-                />
-            ) : null}
+                    className="h-[44px] w-[44px] items-center justify-center"
+                    {...testID(PassiveIncomeSelector.ClearFilter, 'collapsed')}
+                >
+                    <Icon icon={UserIconNameEnum.X} size={20} className="text-primary" />
+                </Pressable>
+            </Animated.View>
         </View>
     );
 };

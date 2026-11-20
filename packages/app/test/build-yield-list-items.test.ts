@@ -217,3 +217,15 @@ it.effect('lists assigned payouts under their own section when unfiltered', () =
         expect(items.at(-1)).toMatchObject({ id: 'payout-1', isUnassigned: false });
     })
 );
+
+it.effect('sorts rows newest first by their last payout date, merged rows included', () =>
+    Effect.sync(() => {
+        const merged = [1, 2, 3].map(index => payout(index, null, new Date(`2026-10-0${index}T12:00:00Z`)));
+        const single = { ...payout(9, null, new Date('2026-10-02T18:00:00Z')), title: 'Other' };
+        const items = buildYieldListItems([], [...merged, single], 'caption', null);
+        const payouts = items.filter(item => item.kind === YieldListItemKindEnum.PAYOUT);
+
+        expect(payouts.map(item => item.id)).toEqual(['payout-1', 'payout-9']);
+        expect(payouts.at(0)).toMatchObject({ siblings: [{ id: 1 }, { id: 2 }, { id: 3 }] });
+    })
+);

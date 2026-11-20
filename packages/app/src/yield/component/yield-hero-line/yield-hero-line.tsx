@@ -52,7 +52,7 @@ export const YieldHeroLine = ({ summary, bucket }: Props) => {
                 {text}
             </Text>
             <View className={deltaClassName} importantForAccessibility={deltaAccessibility}>
-                {hasDelta ? <YieldHeroDelta summary={summary} /> : <YieldHeroNoDelta />}
+                {hasDelta ? <YieldHeroDelta summary={summary} /> : <YieldHeroNoDelta summary={summary} />}
             </View>
         </View>
     );

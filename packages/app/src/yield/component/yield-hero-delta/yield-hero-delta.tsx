@@ -2,6 +2,7 @@ import { YieldDeltaKindEnum, YieldRangeEnum } from '@budgie/market';
 import { useLingui } from '@lingui/react/macro';
 import { use } from 'react';
 
+import { YIELD_TREND_ARROW } from '../../constant/yield-trend-arrow.constant';
 import { YieldScreenContext } from '../../context/yield-screen.context';
 import { YieldHeroTrendEnum } from '../../enum/yield-hero-trend.enum';
 import { useYieldHeroTrend } from '../../hook/use-yield-hero-trend.hook';
@@ -28,14 +29,8 @@ export const YieldHeroDelta = ({ summary }: Props) => {
         [YieldRangeEnum.YEAR]: t`${sign}${change} vs previous year`,
         [YieldRangeEnum.ALL]: t`${sign}${change} vs previous period`
     };
-    const arrows: Record<YieldHeroTrendEnum, string> = {
-        [YieldHeroTrendEnum.UP]: '▲ ',
-        [YieldHeroTrendEnum.DOWN]: '▼ ',
-        [YieldHeroTrendEnum.NEW]: '',
-        [YieldHeroTrendEnum.NONE]: ''
-    };
     const comparison = summary.delta?.kind === YieldDeltaKindEnum.NEW ? t`New this period` : comparisons[screenKey.key.range];
-    const label = `${arrows[trend]}${comparison}`;
+    const label = `${YIELD_TREND_ARROW[trend]}${comparison}`;
 
     return (
         <YieldDeltaPill

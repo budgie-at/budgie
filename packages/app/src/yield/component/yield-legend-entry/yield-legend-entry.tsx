@@ -21,6 +21,7 @@ interface Props {
     readonly isEmpty?: boolean;
 }
 
+const LEGEND_MAX_FONT_SIZE_MULTIPLIER = 1.6;
 const LABEL_LINE_HEIGHT = 20;
 const DOT_SIZE = 10;
 const HALF = 2;
@@ -28,7 +29,7 @@ const HALF = 2;
 const labelVariants = cva('flex-1 shrink text-sm leading-[20px]', {
     variants: {
         isEmpty: { true: 'text-secondary-foreground', false: 'text-primary' },
-        isMuted: { true: 'opacity-40', false: '' }
+        isMuted: { true: 'text-secondary-foreground', false: '' }
     }
 });
 const amountsVariants = cva('shrink-0 flex-row items-baseline justify-end gap-x-xs', {
@@ -43,7 +44,8 @@ export const YieldLegendEntry = ({ group, label, amount, amountClassName, share,
     const isTax = group === YieldGroupEnum.TAX;
     const dotClassName = cn(
         isTax ? 'bg-secondary-foreground/45' : YIELD_GROUP_COLOR[group][isIncreaseContrast ? 'backgroundContrast' : 'background'],
-        (isMuted || isEmpty) && 'opacity-40'
+        isMuted && 'opacity-50',
+        isEmpty && 'opacity-40'
     );
     const labelClassName = labelVariants({ isEmpty, isMuted });
     const amountsClassName = amountsVariants({ isAccessibilityText });
@@ -57,11 +59,19 @@ export const YieldLegendEntry = ({ group, label, amount, amountClassName, share,
     const amounts = (
         <View className={amountsClassName}>
             {isNotEmptyString(share) ? (
-                <Text numberOfLines={1} className="text-right text-sm tabular-nums text-secondary-foreground">
+                <Text
+                    numberOfLines={1}
+                    className="text-right text-sm tabular-nums text-secondary-foreground"
+                    maxFontSizeMultiplier={LEGEND_MAX_FONT_SIZE_MULTIPLIER}
+                >
                     {share} ·
                 </Text>
             ) : null}
-            <Text numberOfLines={1} className={cn('text-right', amountClassName, isEmpty && 'text-secondary-foreground')}>
+            <Text
+                numberOfLines={1}
+                className={cn('text-right', amountClassName, isEmpty && 'text-secondary-foreground')}
+                maxFontSizeMultiplier={LEGEND_MAX_FONT_SIZE_MULTIPLIER}
+            >
                 {amount}
             </Text>
         </View>
@@ -72,7 +82,9 @@ export const YieldLegendEntry = ({ group, label, amount, amountClassName, share,
             <View className="flex-1 gap-y-xs">
                 <View className="flex-row items-start gap-x-[8px]">
                     {dot}
-                    <Text className={labelClassName}>{label}</Text>
+                    <Text className={labelClassName} maxFontSizeMultiplier={LEGEND_MAX_FONT_SIZE_MULTIPLIER}>
+                        {label}
+                    </Text>
                 </View>
                 {amounts}
             </View>
@@ -82,7 +94,9 @@ export const YieldLegendEntry = ({ group, label, amount, amountClassName, share,
     return (
         <>
             {dot}
-            <Text className={labelClassName}>{label}</Text>
+            <Text className={labelClassName} maxFontSizeMultiplier={LEGEND_MAX_FONT_SIZE_MULTIPLIER}>
+                {label}
+            </Text>
             {amounts}
         </>
     );
