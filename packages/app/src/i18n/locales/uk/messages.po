@@ -117,7 +117,7 @@ msgid "{0, plural, one {# payment} other {# payments}}"
 msgstr "{0, plural, one {# платіж} few {# платежі} many {# платежів} other {# платежу}}"
 
 #. placeholder {0}: siblings.length
-#: src/yield/hook/use-yield-payout-row-text.hook.ts
+#: src/yield/hook/use-yield-payout-row-labels.hook.ts
 msgid "{0, plural, one {# payout} other {# payouts}}"
 msgstr "{0, plural, one {# виплата} few {# виплати} many {# виплат} other {# виплати}}"
 
@@ -1097,20 +1097,20 @@ msgid "{shareLabel} of spending"
 msgstr "{shareLabel} витрат"
 
 #: src/yield/component/yield-hero-delta/yield-hero-delta.tsx
-msgid "{sign}{change} vs previous 3 months"
-msgstr "{sign}{change} порівняно з попередніми 3 місяцями"
+msgid "{sign}{amount} · {sign}{change} vs previous 3 months"
+msgstr "{sign}{amount} · {sign}{change} порівняно з попередніми 3 місяцями"
 
 #: src/yield/component/yield-hero-delta/yield-hero-delta.tsx
-msgid "{sign}{change} vs previous month"
-msgstr "{sign}{change} порівняно з попереднім місяцем"
+msgid "{sign}{amount} · {sign}{change} vs previous month"
+msgstr "{sign}{amount} · {sign}{change} порівняно з попереднім місяцем"
 
 #: src/yield/component/yield-hero-delta/yield-hero-delta.tsx
-msgid "{sign}{change} vs previous period"
-msgstr "{sign}{change} порівняно з попереднім періодом"
+msgid "{sign}{amount} · {sign}{change} vs previous period"
+msgstr "{sign}{amount} · {sign}{change} порівняно з попереднім періодом"
 
 #: src/yield/component/yield-hero-delta/yield-hero-delta.tsx
-msgid "{sign}{change} vs previous year"
-msgstr "{sign}{change} порівняно з попереднім роком"
+msgid "{sign}{amount} · {sign}{change} vs previous year"
+msgstr "{sign}{amount} · {sign}{change} порівняно з попереднім роком"
 
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "{similarCount, plural, one {# similar · last 6 months} other {# similar · last 6 months}}"
@@ -8265,9 +8265,24 @@ msgstr "Неповна вартість — деяких цін немає"
 #: src/yield/component/yield-collapsed-title/yield-collapsed-title.tsx
 #: src/yield/component/yield-entry-row-content/yield-entry-row-content.tsx
 #: src/yield/component/yield-screen-title/yield-screen-title.tsx
-#: src/yield/hook/use-yield-analytics-card-text.hook.ts
 msgid "Passive income"
 msgstr "Пасивний дохід"
+
+#: src/yield/hook/use-yield-analytics-card-text.hook.ts
+msgid "Passive income · all time"
+msgstr "Пасивний дохід · весь час"
+
+#: src/yield/hook/use-yield-analytics-card-text.hook.ts
+msgid "Passive income · last 12 months"
+msgstr "Пасивний дохід · останні 12 місяців"
+
+#: src/yield/hook/use-yield-analytics-card-text.hook.ts
+msgid "Passive income · last 13 weeks"
+msgstr "Пасивний дохід · останні 13 тижнів"
+
+#: src/yield/hook/use-yield-analytics-card-text.hook.ts
+msgid "Passive income · last 30 days"
+msgstr "Пасивний дохід · останні 30 днів"
 
 #: src/yield/component/yield-legend/yield-legend.tsx
 msgid "Passive income by kind"
@@ -8666,6 +8681,7 @@ msgstr "попереднього періоду"
 msgid "Previous period"
 msgstr "Попередній період"
 
+#: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
 #: src/yield/hook/use-yield-prior-label.hook.ts
 msgid "Previous year"
 msgstr "Попередній рік"
@@ -11658,7 +11674,7 @@ msgstr "Оновлено сьогодні"
 msgid "Updated yesterday"
 msgstr "Оновлено вчора"
 
-#: src/yield/hook/use-yield-footnote-state.hook.ts
+#: src/yield/component/yield-hero-prices-status/yield-hero-prices-status.tsx
 msgid "Updating prices…"
 msgstr "Оновлення цін…"
 

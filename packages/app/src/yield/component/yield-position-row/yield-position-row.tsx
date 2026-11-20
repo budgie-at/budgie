@@ -1,17 +1,18 @@
-import { InstrumentTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { InstrumentTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { Icon } from '../../../@generic/component/icon/icon';
 import { TransactionRowSurface } from '../../../transaction/components/transaction-row-surface/transaction-row-surface';
 import { useFormatYieldFigureAmount } from '../../hook/use-format-yield-figure-amount.hook';
 import { useYieldPositionSubtitle } from '../../hook/use-yield-position-subtitle.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 import { getYieldRowBorderClassName } from '../../utils/get-yield-row-border-class-name.util';
 import { YieldPositionIcon } from '../yield-position-icon/yield-position-icon';
+import { YieldRowChevron } from '../yield-row-chevron/yield-row-chevron';
+import { YieldRowSubtitle } from '../yield-row-subtitle/yield-row-subtitle';
 import { YieldRow } from '../yield-row/yield-row';
 
 import type { TransactionListRowPositionEnum } from '../../../transaction/enum/transaction-list-row-position.enum';
@@ -39,6 +40,7 @@ interface Props {
 }
 
 const SEPARATOR_INSET = 64;
+const SUBTITLE_LINES = 1;
 
 export const YieldPositionRow = ({ position, rangeCaption, rowPosition }: Props) => {
     const { t } = useLingui();
@@ -55,7 +57,7 @@ export const YieldPositionRow = ({ position, rangeCaption, rowPosition }: Props)
     const trailing = (
         <View className="flex-row items-center gap-x-sm">
             <Text className="text-[17px] font-semibold tabular-nums text-primary">{earned}</Text>
-            <Icon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" />
+            <YieldRowChevron />
         </View>
     );
 
@@ -64,7 +66,7 @@ export const YieldPositionRow = ({ position, rangeCaption, rowPosition }: Props)
             <YieldRow
                 left={<YieldPositionIcon position={position} />}
                 title={title}
-                subtitle={subtitle}
+                subtitle={<YieldRowSubtitle subtitle={subtitle} lines={SUBTITLE_LINES} />}
                 trailing={trailing}
                 accessibilityLabel={accessibilityLabel}
                 onPress={handlePress}

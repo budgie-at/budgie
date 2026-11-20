@@ -118,7 +118,7 @@ msgid "{0, plural, one {# payment} other {# payments}}"
 msgstr "{0, plural, one {# payment} other {# payments}}"
 
 #. placeholder {0}: siblings.length
-#: src/yield/hook/use-yield-payout-row-text.hook.ts
+#: src/yield/hook/use-yield-payout-row-labels.hook.ts
 msgid "{0, plural, one {# payout} other {# payouts}}"
 msgstr "{0, plural, one {# payout} other {# payouts}}"
 
@@ -1098,20 +1098,20 @@ msgid "{shareLabel} of spending"
 msgstr "{shareLabel} of spending"
 
 #: src/yield/component/yield-hero-delta/yield-hero-delta.tsx
-msgid "{sign}{change} vs previous 3 months"
-msgstr "{sign}{change} vs previous 3 months"
+msgid "{sign}{amount} · {sign}{change} vs previous 3 months"
+msgstr "{sign}{amount} · {sign}{change} vs previous 3 months"
 
 #: src/yield/component/yield-hero-delta/yield-hero-delta.tsx
-msgid "{sign}{change} vs previous month"
-msgstr "{sign}{change} vs previous month"
+msgid "{sign}{amount} · {sign}{change} vs previous month"
+msgstr "{sign}{amount} · {sign}{change} vs previous month"
 
 #: src/yield/component/yield-hero-delta/yield-hero-delta.tsx
-msgid "{sign}{change} vs previous period"
-msgstr "{sign}{change} vs previous period"
+msgid "{sign}{amount} · {sign}{change} vs previous period"
+msgstr "{sign}{amount} · {sign}{change} vs previous period"
 
 #: src/yield/component/yield-hero-delta/yield-hero-delta.tsx
-msgid "{sign}{change} vs previous year"
-msgstr "{sign}{change} vs previous year"
+msgid "{sign}{amount} · {sign}{change} vs previous year"
+msgstr "{sign}{amount} · {sign}{change} vs previous year"
 
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "{similarCount, plural, one {# similar · last 6 months} other {# similar · last 6 months}}"
@@ -8266,9 +8266,24 @@ msgstr "Partial value — some prices unavailable"
 #: src/yield/component/yield-collapsed-title/yield-collapsed-title.tsx
 #: src/yield/component/yield-entry-row-content/yield-entry-row-content.tsx
 #: src/yield/component/yield-screen-title/yield-screen-title.tsx
-#: src/yield/hook/use-yield-analytics-card-text.hook.ts
 msgid "Passive income"
 msgstr "Passive income"
+
+#: src/yield/hook/use-yield-analytics-card-text.hook.ts
+msgid "Passive income · all time"
+msgstr "Passive income · all time"
+
+#: src/yield/hook/use-yield-analytics-card-text.hook.ts
+msgid "Passive income · last 12 months"
+msgstr "Passive income · last 12 months"
+
+#: src/yield/hook/use-yield-analytics-card-text.hook.ts
+msgid "Passive income · last 13 weeks"
+msgstr "Passive income · last 13 weeks"
+
+#: src/yield/hook/use-yield-analytics-card-text.hook.ts
+msgid "Passive income · last 30 days"
+msgstr "Passive income · last 30 days"
 
 #: src/yield/component/yield-legend/yield-legend.tsx
 msgid "Passive income by kind"
@@ -8667,6 +8682,7 @@ msgstr "previous period"
 msgid "Previous period"
 msgstr "Previous period"
 
+#: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
 #: src/yield/hook/use-yield-prior-label.hook.ts
 msgid "Previous year"
 msgstr "Previous year"
@@ -11659,7 +11675,7 @@ msgstr "Updated today"
 msgid "Updated yesterday"
 msgstr "Updated yesterday"
 
-#: src/yield/hook/use-yield-footnote-state.hook.ts
+#: src/yield/component/yield-hero-prices-status/yield-hero-prices-status.tsx
 msgid "Updating prices…"
 msgstr "Updating prices…"
 

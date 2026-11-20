@@ -11,7 +11,6 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
-import { Icon } from '../../../@generic/component/icon/icon';
 import { PRESENCE_ENTERING } from '../../../@generic/constant/presence-motion.constant';
 import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hook';
 import { defaultInstrumentIdAtom } from '../../../settings/constants/settings-atoms.constant';
@@ -19,6 +18,8 @@ import { yieldSummaryFamily } from '../../constant/yield-summary-family-atom.con
 import { useYieldEntrySubtitle } from '../../hook/use-yield-entry-subtitle.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 import { YieldGroupIcon } from '../yield-group-icon/yield-group-icon';
+import { YieldRowChevron } from '../yield-row-chevron/yield-row-chevron';
+import { YieldRowSubtitle } from '../yield-row-subtitle/yield-row-subtitle';
 import { YieldRow } from '../yield-row/yield-row';
 
 import type { YieldScopeInterface } from '@budgie/contracts';
@@ -65,13 +66,13 @@ export const YieldEntryRowContent = ({ scope }: Props) => {
                 <YieldRow
                     left={icon}
                     title={t`Passive income`}
-                    subtitle={subtitle}
+                    subtitle={<YieldRowSubtitle subtitle={subtitle} />}
                     trailing={
                         <View className="flex-row items-center gap-x-sm">
                             {isNotEmptyString(earned) ? (
                                 <Text className="text-[17px] font-semibold tabular-nums text-primary">{earned}</Text>
                             ) : null}
-                            <Icon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" />
+                            <YieldRowChevron />
                         </View>
                     }
                     accessibilityLabel={t`Passive income, ${subtitle}`}

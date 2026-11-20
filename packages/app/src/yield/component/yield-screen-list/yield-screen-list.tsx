@@ -6,7 +6,6 @@ import { SCREEN_CHROME_HEADER_LAYOUT_METRICS, getScreenChromeHeaderMetrics } fro
 
 import { CollapsibleChromeLegendList } from '../../../@generic/component/collapsible-chrome-legend-list/collapsible-chrome-legend-list';
 import { CollapsibleChromePinnedBar } from '../../../@generic/component/collapsible-chrome-pinned-bar/collapsible-chrome-pinned-bar';
-import { FLOATING_TAB_BAR_HEIGHT } from '../../../@generic/constant/floating-tab-bar.constant';
 import { CollapsibleChromeCollapseDistanceContext } from '../../../@generic/context/collapsible-chrome-collapse-distance.context';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
@@ -42,8 +41,6 @@ const PINNED_HAIRLINE = (
         <View className="h-[22px] bg-linear-to-b from-surface to-surface/0" />
     </View>
 );
-
-const CONTENT_STYLE = { paddingBottom: FLOATING_TAB_BAR_HEIGHT };
 
 export const YieldScreenList = () => {
     const items = useYieldListItems();
@@ -118,7 +115,6 @@ export const YieldScreenList = () => {
                         getItemType={getItemType}
                         estimatedItemSize={ESTIMATED_ITEM_SIZE}
                         ListHeaderComponent={listHeader}
-                        contentContainerStyle={CONTENT_STYLE}
                     />
                 </CollapsibleChromeCollapseDistanceContext>
             </YieldPayoutsScrollContext>

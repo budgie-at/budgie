@@ -37,7 +37,7 @@ export const YieldChartSinglePayout = () => {
             tax={tax}
             siblings={NO_SIBLINGS}
             isUnassigned={false}
-            dateFormat={YieldPayoutDateFormatEnum.DAY_MONTH}
+            dateFormat={YieldPayoutDateFormatEnum.DAY_MONTH_YEAR}
             className={YIELD_INLINE_ROW_CLASSNAME}
         />
     );

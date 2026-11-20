@@ -1,4 +1,3 @@
-import { UserIconNameEnum } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import { router } from 'expo-router';
@@ -7,7 +6,6 @@ import { Text, View } from 'react-native';
 import { isDefined } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { Icon } from '../../../@generic/component/icon/icon';
 import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { yieldSummaryFamily } from '../../constant/yield-summary-family-atom.constant';
@@ -16,6 +14,7 @@ import { useYieldHeroTrend } from '../../hook/use-yield-hero-trend.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 import { YieldChartMini } from '../yield-chart-mini/yield-chart-mini';
 import { YieldDeltaPill } from '../yield-delta-pill/yield-delta-pill';
+import { YieldRowChevron } from '../yield-row-chevron/yield-row-chevron';
 
 import type { YieldAnalyticsFocusInterface } from '../../interface/yield-analytics-focus.interface';
 import type { YieldPeriodInterface } from '../../interface/yield-period.interface';
@@ -66,7 +65,7 @@ export const PassiveIncomeAnalyticsCardContent = ({ earned, focus, period }: Pro
         >
             <View className="flex-row items-center justify-between">
                 <Text className="text-md font-semibold text-primary">{title}</Text>
-                <Icon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" />
+                <YieldRowChevron />
             </View>
             <View className="gap-y-xxs">
                 <Text className="text-xs text-secondary-foreground" maxFontSizeMultiplier={1.5}>

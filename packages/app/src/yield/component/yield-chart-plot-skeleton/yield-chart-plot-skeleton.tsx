@@ -8,7 +8,7 @@ import { YIELD_AXIS_GUTTER } from '../../constant/yield-axis-gutter.constant';
 import { YIELD_CHART_TICKS_HEIGHT } from '../../constant/yield-chart-ticks-height.constant';
 import { YIELD_FOOTNOTE_HEIGHT } from '../../constant/yield-footnote-height.constant';
 import { YIELD_LABEL_BAND, YIELD_PLOT_BOTTOM_GAP } from '../../constant/yield-label-band.constant';
-import { YIELD_LEGEND_HEADER_HEIGHT, YIELD_LEGEND_HINT_HEIGHT } from '../../constant/yield-legend-header-height.constant';
+import { YIELD_LEGEND_HEADER_HEIGHT } from '../../constant/yield-legend-header-height.constant';
 import { YIELD_LEGEND_ROW_HEIGHT } from '../../constant/yield-legend-row-height.constant';
 import { YIELD_NEGATIVE_BAND } from '../../constant/yield-negative-band.constant';
 import { YIELD_PLOT_HEIGHT } from '../../constant/yield-plot-height.constant';
@@ -29,7 +29,12 @@ const BARS = [
 ] as const;
 
 const LEGEND_ROWS = ['first', 'second', 'third', 'fourth', 'fifth'] as const;
-const TICKS = ['a', 'b', 'c', 'd'] as const;
+const TICK_INDICES = [2, 5, 8, 11] as const;
+const TICK_WIDTH = 32;
+const TICKS = TICK_INDICES.map(index => ({
+    id: index,
+    style: { left: `${((index + 0.5) / BARS.length) * 100}%` as const, marginLeft: -TICK_WIDTH / 2, width: TICK_WIDTH }
+}));
 const ZERO_Y = YIELD_PLOT_HEIGHT - YIELD_NEGATIVE_BAND;
 const GRID_LINES = [
     { id: 'top', style: { top: 1 }, className: 'bg-primary opacity-[0.08]' },
@@ -45,9 +50,9 @@ const BARS_STYLE = { height: ZERO_Y, paddingHorizontal: MARKET_CHART_PADDING_X }
 const SLOT_STYLE = { height: ZERO_Y };
 const GUTTER_STYLE = { width: YIELD_AXIS_GUTTER, marginTop: YIELD_LABEL_BAND, height: YIELD_PLOT_HEIGHT };
 const TICKS_ROW_STYLE = { height: YIELD_CHART_TICKS_HEIGHT, marginTop: YIELD_PLOT_BOTTOM_GAP, paddingRight: YIELD_AXIS_GUTTER };
+const TICKS_TRACK_STYLE = { marginHorizontal: MARKET_CHART_PADDING_X, height: YIELD_CHART_TICKS_HEIGHT };
 const LEGEND_ROW_STYLE = { height: YIELD_LEGEND_ROW_HEIGHT };
 const LEGEND_HEADER_STYLE = { height: YIELD_LEGEND_HEADER_HEIGHT };
-const LEGEND_HINT_STYLE = { height: YIELD_LEGEND_HINT_HEIGHT };
 const FOOTNOTE_STYLE = { height: YIELD_FOOTNOTE_HEIGHT };
 
 const BUSY_STATE = { busy: true };
@@ -87,25 +92,31 @@ export const YieldChartPlotSkeleton = () => {
                         ))}
                     </View>
                 </View>
-                <View className="flex-row items-center justify-between" style={TICKS_ROW_STYLE}>
-                    {TICKS.map(tick => (
-                        <View key={tick} className="h-[10px] w-[32px] rounded-full bg-secondary-corner" />
-                    ))}
+                <View style={TICKS_ROW_STYLE}>
+                    <View style={TICKS_TRACK_STYLE}>
+                        {TICKS.map(tick => (
+                            <View
+                                key={tick.id}
+                                className="absolute top-[3px] h-[10px] rounded-full bg-secondary-corner"
+                                style={tick.style}
+                            />
+                        ))}
+                    </View>
                 </View>
             </View>
             <View className="gap-y-xs">
-                <View className="justify-center" style={LEGEND_HEADER_STYLE}>
+                <View className="flex-row items-center justify-between" style={LEGEND_HEADER_STYLE}>
                     <View className="h-[12px] w-[96px] rounded-full bg-secondary-corner" />
+                    <View className="h-[12px] w-[112px] rounded-full bg-secondary-corner" />
                 </View>
-                {LEGEND_ROWS.map(row => (
-                    <View key={row} className="flex-row items-center gap-x-[8px]" style={LEGEND_ROW_STYLE}>
-                        <View className="size-[10px] rounded-full bg-secondary-corner" />
-                        <View className="h-[14px] flex-1 rounded-full bg-secondary-corner" />
-                        <View className="h-[14px] w-[56px] rounded-full bg-secondary-corner" />
-                    </View>
-                ))}
-                <View className="justify-center" style={LEGEND_HINT_STYLE}>
-                    <View className="h-[12px] w-[128px] rounded-full bg-secondary-corner" />
+                <View>
+                    {LEGEND_ROWS.map(row => (
+                        <View key={row} className="flex-row items-center gap-x-[8px]" style={LEGEND_ROW_STYLE}>
+                            <View className="size-[10px] rounded-full bg-secondary-corner" />
+                            <View className="h-[14px] flex-1 rounded-full bg-secondary-corner" />
+                            <View className="h-[14px] w-[56px] rounded-full bg-secondary-corner" />
+                        </View>
+                    ))}
                 </View>
             </View>
             <View className="justify-center" style={FOOTNOTE_STYLE}>

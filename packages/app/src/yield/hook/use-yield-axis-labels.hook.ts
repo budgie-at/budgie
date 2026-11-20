@@ -13,7 +13,7 @@ import { YieldChartModeEnum } from '../enum/yield-chart-mode.enum';
 import { buildYieldAxisLabels } from '../utils/build-yield-axis-labels.util';
 import { buildYieldSummaryAxis } from '../utils/build-yield-summary-axis.util';
 
-import { useFormatYieldCompactAmount } from './use-format-yield-compact-amount.hook';
+import { useFormatYieldAxisAmount } from './use-format-yield-axis-amount.hook';
 import { useYieldSummary } from './use-yield-summary.hook';
 
 import type { YieldAxisInterface } from '../interface/yield-axis.interface';
@@ -24,14 +24,14 @@ const MAX_FONT_SCALE = 1.3;
 
 export const useYieldAxisLabels = (axis: YieldAxisInterface) => {
     const isAmountProtected = useIsAmountProtected();
-    const formatCompact = useFormatYieldCompactAmount();
+    const formatAxisAmount = useFormatYieldAxisAmount();
     const { symbol } = useAtomValue(defaultInstrumentAtom);
     const { fontScale } = useWindowDimensions();
     const summary = useYieldSummary();
 
     const buildLabels = (target: YieldAxisInterface) =>
         buildYieldAxisLabels(target, YIELD_PLOT_HEIGHT, value =>
-            isAmountProtected ? PROTECTED_AMOUNT_PLACEHOLDER : formatCompact(value, symbol)
+            isAmountProtected ? PROTECTED_AMOUNT_PLACEHOLDER : formatAxisAmount(value, symbol)
         );
     const labels = buildLabels(axis);
     const stableAxes = isDefined(summary)

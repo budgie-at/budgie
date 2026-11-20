@@ -3,16 +3,15 @@ import { expect, it } from '@effect/vitest';
 import { buildYieldAxisLabels } from '../src/yield/utils/build-yield-axis-labels.util';
 
 const format = (value: number) => `$${value}`;
-const keysOf = (top: number, bottom: number) => buildYieldAxisLabels({ top, bottom, depth: -bottom }, 200, format).map(label => label.key);
+const labelsOf = (top: number, step: number, bottom: number) => buildYieldAxisLabels({ top, bottom, depth: -bottom, step }, 200, format);
 
-it('shows top, mid and zero labels and never a negative label', () => {
-    expect(keysOf(100, 0)).toEqual(['top', 'mid', 'zero']);
-    expect(keysOf(1400, -73)).toEqual(['top', 'mid', 'zero']);
-    expect(keysOf(100, -40)).toEqual(['top', 'mid', 'zero']);
+it('labels every step from the top down to zero', () => {
+    expect(labelsOf(1500, 500, 0).map(label => label.text)).toEqual(['$1500', '$1000', '$500', '$0']);
+    expect(labelsOf(100, 50, -40).map(label => label.key)).toEqual(['top', 'tick-1', 'zero']);
 });
 
 it('places zero at a fixed y when the negative band is a fixed pixel height', () => {
-    const labels = buildYieldAxisLabels({ top: 176, bottom: -24, depth: 10 }, 200, format);
+    const labels = labelsOf(176, 88, -24);
 
     expect(labels.find(label => label.key === 'zero')?.y).toBeCloseTo(176, 6);
 });

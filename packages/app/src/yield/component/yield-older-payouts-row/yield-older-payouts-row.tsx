@@ -1,17 +1,16 @@
-import { UserIconNameEnum } from '@budgie/contracts';
 import { YieldRangeEnum } from '@budgie/market';
 import { useAtomSet } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { use } from 'react';
 
-import { Icon } from '../../../@generic/component/icon/icon';
 import { TransactionRowSurface } from '../../../transaction/components/transaction-row-surface/transaction-row-surface';
 import { TransactionListRowPositionEnum } from '../../../transaction/enum/transaction-list-row-position.enum';
 import { yieldRangeAtom } from '../../constant/yield-range-atom.constant';
 import { YieldSelectionContext } from '../../context/yield-selection.context';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 import { getYieldRowBorderClassName } from '../../utils/get-yield-row-border-class-name.util';
+import { YieldRowChevron } from '../yield-row-chevron/yield-row-chevron';
 import { YieldRow } from '../yield-row/yield-row';
 
 export const YieldOlderPayoutsRow = () => {
@@ -36,8 +35,8 @@ export const YieldOlderPayoutsRow = () => {
             <YieldRow
                 left={null}
                 title={title}
-                subtitle=""
-                trailing={<Icon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" />}
+                subtitle={null}
+                trailing={<YieldRowChevron />}
                 accessibilityLabel={title}
                 onPress={handlePress}
                 testID={PassiveIncomeSelector.OlderPayouts}

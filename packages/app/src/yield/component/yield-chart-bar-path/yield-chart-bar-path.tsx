@@ -4,6 +4,7 @@ import { useUniwind } from 'uniwind';
 
 import { AnimatedStyledPath } from '../../../@generic/component/animated-styled-path/animated-styled-path';
 import {
+    YIELD_IN_PROGRESS_DARK_FILL_OPACITY,
     YIELD_IN_PROGRESS_DASH,
     YIELD_IN_PROGRESS_FILL_OPACITY,
     YIELD_TAX_DARK_FILL_OPACITY
@@ -33,9 +34,10 @@ export const YieldChartBarPath = ({ values, layer, isInProgress, visibleBuckets 
     const isDark = theme === 'dark';
     const isTax = layer.group === YieldGroupEnum.TAX;
     const baseFill = isDark && isTax ? Math.max(layer.fillOpacity, YIELD_TAX_DARK_FILL_OPACITY) : layer.fillOpacity;
+    const inProgressFill = isDark ? YIELD_IN_PROGRESS_DARK_FILL_OPACITY : YIELD_IN_PROGRESS_FILL_OPACITY;
     const paint = isInProgress
         ? {
-              fillOpacity: YIELD_IN_PROGRESS_FILL_OPACITY * layer.opacityScale,
+              fillOpacity: inProgressFill * layer.opacityScale,
               strokeClassName: layer.fillClassName,
               strokeOpacity: layer.opacityScale,
               strokeWidth: IN_PROGRESS_STROKE,

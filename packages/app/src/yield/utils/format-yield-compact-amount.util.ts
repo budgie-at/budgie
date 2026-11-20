@@ -1,13 +1,8 @@
-import { BILLION, MILLION, THOUSAND, TRILLION } from '../../i18n/constant/compact-thresholds.constant';
+import { THOUSAND } from '../../i18n/constant/compact-thresholds.constant';
+import { YIELD_COMPACT_SUFFIX_BY_DIVISOR } from '../constant/yield-compact-suffix.constant';
 
 import { pickYieldCompactDivisor } from './pick-yield-compact-divisor.util';
 
-const SUFFIX_BY_DIVISOR = new Map<number, string>([
-    [THOUSAND, 'K'],
-    [MILLION, 'M'],
-    [BILLION, 'B'],
-    [TRILLION, 'T']
-]);
 const TWO_DECIMALS_BELOW = 10;
 const ONE_DECIMAL_BELOW = 100;
 
@@ -32,7 +27,7 @@ export const formatYieldCompactAmount = (
     const divisor = pickYieldCompactDivisor(absolute, THOUSAND);
     const scaled = absolute / divisor;
     const sign = value < 0 ? '−' : '';
-    const suffix = SUFFIX_BY_DIVISOR.get(divisor) ?? '';
+    const suffix = YIELD_COMPACT_SUFFIX_BY_DIVISOR.get(divisor) ?? '';
 
     return `${sign}${symbol}${formatNumber(scaled, resolveDigits(scaled, divisor))}${suffix}`;
 };

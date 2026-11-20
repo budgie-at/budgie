@@ -1,6 +1,6 @@
 import { YieldGroupEnum } from '@budgie/market';
 import { cva } from 'class-variance-authority';
-import { Text, View, useWindowDimensions } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
@@ -22,9 +22,6 @@ interface Props {
 }
 
 const LEGEND_MAX_FONT_SIZE_MULTIPLIER = 1.6;
-const LABEL_LINE_HEIGHT = 20;
-const DOT_SIZE = 10;
-const HALF = 2;
 
 const labelVariants = cva('flex-1 shrink text-sm leading-[20px]', {
     variants: {
@@ -33,13 +30,12 @@ const labelVariants = cva('flex-1 shrink text-sm leading-[20px]', {
     }
 });
 const amountsVariants = cva('shrink-0 flex-row items-baseline justify-end gap-x-xs', {
-    variants: { isAccessibilityText: { true: 'self-end', false: '' } }
+    variants: { isAccessibilityText: { true: 'ml-[20px] self-start', false: '' } }
 });
 
 export const YieldLegendEntry = ({ group, label, amount, amountClassName, share, isMuted = false, isEmpty = false }: Props) => {
     const isIncreaseContrast = useIsIncreaseContrast();
     const isAccessibilityText = useIsAccessibilityTextSize();
-    const { fontScale } = useWindowDimensions();
 
     const isTax = group === YieldGroupEnum.TAX;
     const dotClassName = cn(
@@ -50,9 +46,8 @@ export const YieldLegendEntry = ({ group, label, amount, amountClassName, share,
     const labelClassName = labelVariants({ isEmpty, isMuted });
     const amountsClassName = amountsVariants({ isAccessibilityText });
     const shapeClassName = isTax ? 'rounded-[2px]' : 'rounded-full';
-    const dotStyle = isAccessibilityText ? { marginTop: Math.max((LABEL_LINE_HEIGHT * fontScale - DOT_SIZE) / HALF, 0) } : null;
     const dot = (
-        <View className="w-[12px] items-center" style={dotStyle}>
+        <View className="w-[12px] items-center">
             <View className={cn('h-[10px] w-[10px]', shapeClassName, dotClassName)} />
         </View>
     );
@@ -80,7 +75,7 @@ export const YieldLegendEntry = ({ group, label, amount, amountClassName, share,
     if (isAccessibilityText) {
         return (
             <View className="flex-1 gap-y-xs">
-                <View className="flex-row items-start gap-x-[8px]">
+                <View className="flex-row items-center gap-x-[8px]">
                     {dot}
                     <Text className={labelClassName} maxFontSizeMultiplier={LEGEND_MAX_FONT_SIZE_MULTIPLIER}>
                         {label}

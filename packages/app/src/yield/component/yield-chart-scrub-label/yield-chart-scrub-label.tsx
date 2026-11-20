@@ -1,6 +1,6 @@
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useState } from 'react';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -21,31 +21,35 @@ interface Props {
 }
 
 const LABEL_TOP = 0;
-const ESTIMATED_WIDTH = 220;
+const WRAPPER_SPANS = 2;
+const HALF = 2;
 
 export const YieldChartScrubLabel = ({ title, amount, priorAmount, x, plotWidth }: Props) => {
     const formatAmount = useProtectedAmountLabel();
     const { symbol } = useAtomValue(defaultInstrumentAtom);
     const priorLabel = useYieldPriorLabel();
-    const [measuredWidth, setMeasuredWidth] = useState(ESTIMATED_WIDTH);
+    const [measuredWidth, setMeasuredWidth] = useState<number | null>(null);
 
-    const style = { left: clampYieldLabelLeft(x, measuredWidth, 0, plotWidth), top: LABEL_TOP };
+    const wrapperStyle = { left: x - plotWidth, width: plotWidth * WRAPPER_SPANS, top: LABEL_TOP };
+    const shift = isDefined(measuredWidth) ? clampYieldLabelLeft(x, measuredWidth, 0, plotWidth) - (x - measuredWidth / HALF) : 0;
+    const style = { transform: [{ translateX: shift }] };
     const current = `${title} · ${formatAmount(amount, symbol)}`;
     const prior = isDefined(priorAmount) ? `  ${priorLabel} ${formatAmount(priorAmount, symbol)}` : null;
 
     const handleLayout = (event: LayoutChangeEvent) => void setMeasuredWidth(event.nativeEvent.layout.width);
 
     return (
-        <Text
-            pointerEvents="none"
-            numberOfLines={1}
-            maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER}
-            className="absolute text-[13px] font-semibold leading-[16px] tabular-nums text-primary"
-            style={style}
-            onLayout={handleLayout}
-        >
-            {current}
-            {isDefined(prior) ? <Text className="text-secondary-foreground">{prior}</Text> : null}
-        </Text>
+        <View pointerEvents="none" className="absolute items-center" style={wrapperStyle}>
+            <Text
+                numberOfLines={1}
+                maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER}
+                className="text-[13px] font-semibold leading-[16px] tabular-nums text-primary"
+                style={style}
+                onLayout={handleLayout}
+            >
+                {current}
+                {isDefined(prior) ? <Text className="text-secondary-foreground">{prior}</Text> : null}
+            </Text>
+        </View>
     );
 };

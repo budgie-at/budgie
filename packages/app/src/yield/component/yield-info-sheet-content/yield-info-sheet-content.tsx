@@ -1,3 +1,4 @@
+import { YieldRangeEnum } from '@budgie/market';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { parseISO } from 'date-fns/parseISO';
@@ -31,6 +32,7 @@ export const YieldInfoSheetContent = ({ screenKey }: Props) => {
     const { formatMonthAndDay } = useFormatDate();
     const summary = AsyncResult.getOrElse(useLiveAtomValue(yieldSummaryFamily(screenKey.key)), () => null);
 
+    const priorLabel = screenKey.key.range === YieldRangeEnum.YEAR ? t`Previous year` : t`Previous period`;
     const earnedText = t`Income before tax. Crypto is valued at that day’s opening price.`;
     const yieldText = t`Yield uses the last 12 months across holdings with a rate. Crypto is measured on your whole balance, staked or not. Fund payouts aren’t counted in yield.`;
     const outlookText = t`At today’s balances and rates. Holdings left out of yield are not projected.`;
@@ -62,7 +64,7 @@ export const YieldInfoSheetContent = ({ screenKey }: Props) => {
             <YieldInfoSheetBlock title={t`Tax withheld`} body={t`Tax taken at source before payouts reach you.`} />
             <YieldInfoSheetBlock title={t`Net after tax`} body={t`Earned minus tax withheld.`} />
             <YieldInfoSheetBlock title={t`So far`} body={t`The current period isn’t over yet.`} />
-            <YieldInfoSheetBlock title={t`Previous period`} body={t`The same length of time just before this range.`} />
+            <YieldInfoSheetBlock title={priorLabel} body={t`The same length of time just before this range.`} />
             <YieldInfoSheetBlock title={t`Estimates`} body={t`≈ marks an estimate: a projection, or a value using an estimated price.`}>
                 {isNotEmptyArray(causes) ? (
                     <View className="gap-y-xs">

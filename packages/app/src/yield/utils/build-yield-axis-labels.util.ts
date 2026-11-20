@@ -2,8 +2,6 @@ import type { YieldAxisLabelInterface } from '../interface/yield-axis-label.inte
 import type { YieldAxisInterface } from '../interface/yield-axis.interface';
 
 const LABEL_HEIGHT = 14;
-const HALF = 2;
-const ZERO_LABEL = '0';
 
 export const buildYieldAxisLabels = (
     axis: YieldAxisInterface,
@@ -11,12 +9,13 @@ export const buildYieldAxisLabels = (
     format: (value: number) => string
 ): readonly YieldAxisLabelInterface[] => {
     const zeroY = (axis.top * height) / (axis.top - axis.bottom);
-    const isMidVisible = zeroY >= LABEL_HEIGHT * HALF;
-    const candidates = [
-        { key: 'top', y: 0, text: format(axis.top), isVisible: true },
-        { key: 'mid', y: zeroY / HALF, text: format(axis.top / HALF), isVisible: isMidVisible },
-        { key: 'zero', y: zeroY, text: ZERO_LABEL, isVisible: true }
-    ];
+    const intervals = Math.max(Math.round(axis.top / axis.step), 1);
+    const isSpaced = zeroY / intervals >= LABEL_HEIGHT;
+    const ticks = Array.from({ length: intervals }, (_, index) => {
+        const level = intervals - index;
 
-    return candidates.filter(({ isVisible }) => isVisible).map(({ key, y, text }) => ({ key, y, text }));
+        return { key: index === 0 ? 'top' : `tick-${level}`, y: (zeroY * index) / intervals, text: format(axis.step * level) };
+    }).filter(({ key }) => key === 'top' || isSpaced);
+
+    return [...ticks, { key: 'zero', y: zeroY, text: format(0) }];
 };

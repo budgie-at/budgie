@@ -8,11 +8,12 @@ import type { NativeSyntheticEvent, TextLayoutEventData } from 'react-native';
 
 interface Props {
     readonly subtitle: string;
+    readonly lines?: number;
 }
 
-const SUBTITLE_LINES = 2;
+const DEFAULT_SUBTITLE_LINES = 2;
 
-export const YieldRowSubtitle = ({ subtitle }: Props) => {
+export const YieldRowSubtitle = ({ subtitle, lines = DEFAULT_SUBTITLE_LINES }: Props) => {
     const [isStacked, setIsStacked] = useState(false);
 
     const handleTextLayout = (event: NativeSyntheticEvent<TextLayoutEventData>) => {
@@ -26,7 +27,7 @@ export const YieldRowSubtitle = ({ subtitle }: Props) => {
     return (
         <Text
             className="text-[13px] leading-[18px] text-secondary-foreground"
-            numberOfLines={SUBTITLE_LINES}
+            numberOfLines={lines}
             maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
             onTextLayout={handleTextLayout}
         >

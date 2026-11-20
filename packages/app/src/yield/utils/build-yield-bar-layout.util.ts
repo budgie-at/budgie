@@ -52,6 +52,7 @@ const buildRadius = (height: number, isTop: boolean) => (isTop && height > 0 ? M
 export const buildYieldBarLayout = ({
     buckets,
     visibleGroups,
+    stackOrder = YIELD_STACK_GROUPS,
     width,
     height,
     axis
@@ -68,7 +69,7 @@ export const buildYieldBarLayout = ({
     buckets.forEach((bucket, index) => {
         const left = (xs.at(index) ?? 0) - barWidth / 2;
         const heights = mergeSmallSegments(
-            YIELD_STACK_GROUPS.map(group => (visibleGroups.includes(group) ? bucket.amounts[group] * scale : 0)),
+            stackOrder.map(group => (visibleGroups.includes(group) && isPositiveNumber(bucket.total) ? bucket.amounts[group] * scale : 0)),
             gap
         );
         const topIndex = heights.findLastIndex(segment => segment > 0);
@@ -77,7 +78,7 @@ export const buildYieldBarLayout = ({
             : 0;
         let bottom = zeroY;
 
-        YIELD_STACK_GROUPS.forEach((group, groupIndex) => {
+        stackOrder.forEach((group, groupIndex) => {
             const segment = heights.at(groupIndex) ?? 0;
             const isTop = groupIndex === topIndex;
             const drawn = isTop ? segment : Math.max(segment - gap, 0);

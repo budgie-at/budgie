@@ -1,18 +1,15 @@
 import { Text, View } from 'react-native';
 
-import { isNotEmptyString } from '@rnw-community/shared';
-
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { ROW_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-max-font-size-multiplier.constant';
 import { cn } from '../../../@generic/utils/cn.util';
-import { YieldRowSubtitle } from '../yield-row-subtitle/yield-row-subtitle';
 
 import type { ReactNode } from 'react';
 
 interface Props {
     readonly left: ReactNode;
     readonly title: string;
-    readonly subtitle: string;
+    readonly subtitle: ReactNode;
     readonly trailing: ReactNode;
     readonly accessibilityLabel: string;
     readonly onPress: () => void;
@@ -36,7 +33,7 @@ export const YieldRow = ({ left, title, subtitle, trailing, accessibilityLabel, 
             <Text className="text-[17px] text-primary" numberOfLines={TITLE_LINES} maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}>
                 {title}
             </Text>
-            {isNotEmptyString(subtitle) ? <YieldRowSubtitle subtitle={subtitle} /> : null}
+            {subtitle}
         </View>
         <View className="shrink-0 items-end">{trailing}</View>
     </HapticPressable>

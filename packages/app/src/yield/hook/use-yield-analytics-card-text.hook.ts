@@ -24,6 +24,13 @@ const CHART_CAPTION: Readonly<Record<YieldRangeEnum, MessageDescriptor>> = {
     [YieldRangeEnum.ALL]: msg`All time`
 };
 
+const CARD_TITLE: Readonly<Record<YieldRangeEnum, MessageDescriptor>> = {
+    [YieldRangeEnum.MONTH]: msg`Passive income · last 30 days`,
+    [YieldRangeEnum.QUARTER]: msg`Passive income · last 13 weeks`,
+    [YieldRangeEnum.YEAR]: msg`Passive income · last 12 months`,
+    [YieldRangeEnum.ALL]: msg`Passive income · all time`
+};
+
 export const useYieldAnalyticsCardText = (
     summary: YieldSummaryInterface | null,
     earned: YieldEstimatedFigureInterface,
@@ -44,7 +51,7 @@ export const useYieldAnalyticsCardText = (
         ? `${earned.isEstimated ? ESTIMATED_PREFIX : ''}${formatAmount(earned.value, symbol)} ${periodText}`
         : null;
     const visibleTakeaway = isFocused ? takeaway : null;
-    const title = t`Passive income`;
+    const title = t(CARD_TITLE[focus.range]);
     const spoken = [`${title}, ${headlineText} ${caption}`, focusedText, visibleTakeaway].filter(isDefined).join(', ');
     const accessibilityLabel = `${spoken}. ${t`Opens Passive income`}`;
 

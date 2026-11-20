@@ -19,6 +19,7 @@ import { selectYieldScrubbedBuckets } from '../../utils/select-yield-scrubbed-bu
 import { YieldHeroCaption } from '../yield-hero-caption/yield-hero-caption';
 import { YieldHeroInfoButton } from '../yield-hero-info-button/yield-hero-info-button';
 import { YieldHeroLine } from '../yield-hero-line/yield-hero-line';
+import { YieldHeroPricesStatus } from '../yield-hero-prices-status/yield-hero-prices-status';
 import { YieldHeroSkeleton } from '../yield-hero-skeleton/yield-hero-skeleton';
 
 export const YieldHero = () => {
@@ -50,7 +51,7 @@ export const YieldHero = () => {
 
             <View accessible accessibilityLabel={sentence} className="gap-y-xs">
                 <HeroFigureLockContext value={figureLock}>
-                    <Animated.View key={figureKey} entering={FadeIn.duration(MOTION_FAST_DURATION)} className="px-xs">
+                    <Animated.View key={figureKey} entering={FadeIn.duration(MOTION_FAST_DURATION)} className="pr-[16px]">
                         <HeroFigure
                             amount={amount}
                             currencySymbol={symbol}
@@ -63,6 +64,8 @@ export const YieldHero = () => {
 
                 <YieldHeroLine summary={summary} bucket={bucket} />
             </View>
+
+            <YieldHeroPricesStatus summary={summary} />
         </View>
     );
 };
