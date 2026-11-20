@@ -1,27 +1,25 @@
 import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
-import { cn } from '../../../@generic/utils/cn.util';
+import { useYieldSummary } from '../../hook/use-yield-summary.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 
 const ESTIMATED_KEY = 'ESTIMATED';
 
-const ROW_CLASSNAME = 'min-h-[44px] flex-row items-center gap-x-sm py-xs';
-const FULL_WIDTH_CLASSNAME = 'w-full';
-const HALF_WIDTH_CLASSNAME = 'w-1/2';
+export const YieldLegendEstimatedRow = () => {
+    const summary = useYieldSummary();
 
-interface Props {
-    readonly isFullWidth: boolean;
-}
+    const hasEstimated = summary?.buckets.some(bucket => bucket.isEstimated) === true;
 
-export const YieldLegendEstimatedRow = ({ isFullWidth }: Props) => {
-    const rowClassName = cn(ROW_CLASSNAME, isFullWidth ? FULL_WIDTH_CLASSNAME : HALF_WIDTH_CLASSNAME);
+    if (!hasEstimated) {
+        return null;
+    }
 
     return (
-        <View accessible testID={PassiveIncomeSelector.LegendRow(ESTIMATED_KEY)} className={rowClassName}>
-            <View className="h-[10px] w-[10px] rounded-full border-[1.5px] border-secondary-foreground bg-secondary-foreground/25" />
-            <Text numberOfLines={1} className="flex-1 text-sm text-primary">
-                <Trans>Estimated</Trans>
+        <View accessible testID={PassiveIncomeSelector.LegendRow(ESTIMATED_KEY)} className="flex-row items-center gap-x-xs">
+            <View className="h-[8px] w-[8px] rounded-full border-[1.5px] border-secondary-foreground bg-secondary-foreground/25" />
+            <Text className="text-[13px] text-secondary-foreground">
+                <Trans>Estimated price</Trans>
             </Text>
         </View>
     );

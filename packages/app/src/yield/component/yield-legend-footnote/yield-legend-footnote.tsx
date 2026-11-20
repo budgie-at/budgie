@@ -9,17 +9,15 @@ import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hoo
 import { yieldPriceJobsFamily } from '../../constant/yield-price-jobs-family-atom.constant';
 import { yieldSummaryFamily } from '../../constant/yield-summary-family-atom.constant';
 import { YieldScreenContext } from '../../context/yield-screen.context';
-import { YieldChartModeEnum } from '../../enum/yield-chart-mode.enum';
-import { useYieldDateLabels } from '../../hook/use-yield-date-labels.hook';
 import { useYieldFootnoteFocus } from '../../hook/use-yield-footnote-focus.hook';
+import { useYieldInProgressText } from '../../hook/use-yield-in-progress-text.hook';
 import { useYieldSummary } from '../../hook/use-yield-summary.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 import { YieldLegendRetry } from '../yield-legend-retry/yield-legend-retry';
 
 export const YieldLegendFootnote = () => {
     const { t } = useLingui();
-    const { screenKey, mode } = use(YieldScreenContext);
-    const { formatTick } = useYieldDateLabels();
+    const { screenKey } = use(YieldScreenContext);
     const result = useLiveAtomValue(yieldSummaryFamily(screenKey.key));
 
     const summary = useYieldSummary();
@@ -27,14 +25,12 @@ export const YieldLegendFootnote = () => {
 
     const isFailure = AsyncResult.isFailure(result);
     const footnoteRef = useYieldFootnoteFocus(isFailure);
+    const inProgressText = useYieldInProgressText();
 
     if (!isFailure && (!isDefined(summary) || !summary.hasYield)) {
         return null;
     }
 
-    const inProgressBucket = summary?.buckets.find(bucket => bucket.isInProgress);
-    const periodLabel = isDefined(summary) && isDefined(inProgressBucket) ? formatTick(inProgressBucket, summary.bucketUnit) : '';
-    const inProgressText = mode === YieldChartModeEnum.BARS && isDefined(inProgressBucket) ? t`${periodLabel} is in progress` : '';
     const details = isUpdatingPrices ? t`Updating prices…` : inProgressText;
 
     return (

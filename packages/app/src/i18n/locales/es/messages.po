@@ -905,7 +905,7 @@ msgstr "{periodLabel} cerró con {amount} por encima"
 msgid "{periodLabel} closed {amount} under"
 msgstr "{periodLabel} cerró con {amount} por debajo"
 
-#: src/yield/component/yield-legend-footnote/yield-legend-footnote.tsx
+#: src/yield/hook/use-yield-in-progress-text.hook.ts
 msgid "{periodLabel} is in progress"
 msgstr "{periodLabel} está en curso"
 
@@ -5029,13 +5029,13 @@ msgstr "Erste Bank"
 msgid "Erste Bank (PDF)"
 msgstr "Erste Bank (PDF)"
 
-#: src/yield/component/yield-legend-estimated-row/yield-legend-estimated-row.tsx
-msgid "Estimated"
-msgstr "Estimado"
-
 #: src/budget/components/budget-period-summary/budget-period-summary.tsx
 msgid "Estimated from your past transactions using your current limits."
 msgstr "Estimado a partir de tus transacciones pasadas con tus límites actuales."
+
+#: src/yield/component/yield-legend-estimated-row/yield-legend-estimated-row.tsx
+msgid "Estimated price"
+msgstr "Precio estimado"
 
 #: src/sync/constant/enable-banking-country-name.constant.ts
 msgctxt "Country"
@@ -5953,6 +5953,10 @@ msgstr "En Atajos, añade una automatización de Transacción. Elige tarjetas y 
 #: src/yield/hook/use-yield-date-labels.hook.ts
 msgid "in the last 30 days"
 msgstr "en los últimos 30 días"
+
+#: src/yield/component/passive-income-analytics-card-content/passive-income-analytics-card-content.tsx
+msgid "in the selected period"
+msgstr "en el período seleccionado"
 
 #: src/sync/component/enable-banking-bank-step/enable-banking-bank-step.tsx
 msgid "In your country"
@@ -8079,15 +8083,12 @@ msgid "Partial value — some prices unavailable"
 msgstr "Valor parcial: faltan algunos precios"
 
 #: src/transaction/components/transaction-info-yield-row/transaction-info-yield-row.tsx
+#: src/yield/component/passive-income-analytics-card-content/passive-income-analytics-card-content.tsx
+#: src/yield/component/yield-collapsed-title/yield-collapsed-title.tsx
 #: src/yield/component/yield-entry-row-content/yield-entry-row-content.tsx
-#: src/yield/component/yield-screen-content/yield-screen-content.tsx
 #: src/yield/component/yield-screen-title/yield-screen-title.tsx
 msgid "Passive income"
 msgstr "Ingresos pasivos"
-
-#: src/yield/component/passive-income-analytics-card-content/passive-income-analytics-card-content.tsx
-msgid "Passive income · {approximate}{amount}"
-msgstr "Ingresos pasivos · {approximate}{amount}"
 
 #: src/yield/component/yield-legend/yield-legend.tsx
 msgid "Passive income by kind"
@@ -8232,6 +8233,10 @@ msgstr "Pagos por mes"
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
 msgid "Payments this rule already changed stay as they are."
 msgstr "Los pagos que esta regla ya cambió se quedan como están."
+
+#: src/yield/component/yield-section-header/yield-section-header.tsx
+msgid "Payouts"
+msgstr "Pagos"
 
 #: src/account/component/deposit-close-link-payouts-button/deposit-close-link-payouts-button.tsx
 msgid "Payouts already recorded? Link them"

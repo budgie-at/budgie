@@ -12,7 +12,6 @@ import { YieldSelectionContext } from '../../context/yield-selection.context';
 import { useYieldSummary } from '../../hook/use-yield-summary.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 import { selectYieldScrubbedBuckets } from '../../utils/select-yield-scrubbed-buckets.util';
-import { YieldLegendEstimatedRow } from '../yield-legend-estimated-row/yield-legend-estimated-row';
 import { YieldLegendRow } from '../yield-legend-row/yield-legend-row';
 import { YieldLegendTaxRow } from '../yield-legend-tax-row/yield-legend-tax-row';
 
@@ -40,9 +39,8 @@ export const YieldLegend = () => {
         ? scrubbedBuckets.reduce((sum, item) => sum + item.amounts[YieldGroupEnum.TAX], 0)
         : (summary?.tax ?? 0);
     const hasTax = isPositiveNumber(summary?.tax);
-    const hasEstimated = summary?.buckets.some(bucket => bucket.isEstimated) === true;
     const columns = isLargeText ? ONE_COLUMN : TWO_COLUMNS;
-    const itemCount = rows.length + Number(hasTax) + Number(hasEstimated);
+    const itemCount = rows.length + Number(hasTax);
     const isFullWidthAt = (position: number) => isLargeText || (itemCount % TWO_COLUMNS === 1 && position === itemCount - 1);
 
     return (
@@ -51,7 +49,6 @@ export const YieldLegend = () => {
                 <YieldLegendRow key={group} group={group} total={total} isFullWidth={isFullWidthAt(position)} onPress={handlePress} />
             ))}
             {hasTax ? <YieldLegendTaxRow total={taxRowTotal} isFullWidth={isFullWidthAt(rows.length)} /> : null}
-            {hasEstimated ? <YieldLegendEstimatedRow isFullWidth={isFullWidthAt(itemCount - 1)} /> : null}
         </View>
     );
 };

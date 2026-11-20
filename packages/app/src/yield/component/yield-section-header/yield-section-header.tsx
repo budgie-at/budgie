@@ -14,7 +14,8 @@ interface Props {
 const SECTION_TITLE: Readonly<Record<YieldListSectionEnum, MessageDescriptor>> = {
     [YieldListSectionEnum.ACTIVE]: msg`Active`,
     [YieldListSectionEnum.CLOSED]: msg`Closed`,
-    [YieldListSectionEnum.UNASSIGNED]: msg`Not linked to a holding`
+    [YieldListSectionEnum.UNASSIGNED]: msg`Not linked to a holding`,
+    [YieldListSectionEnum.PAYOUTS]: msg`Payouts`
 };
 
 export const YieldSectionHeader = ({ section }: Props) => {

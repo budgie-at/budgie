@@ -30,7 +30,7 @@ export const YieldScreenTitle = () => {
             <Text testID={PassiveIncomeSelector.Title} className="text-3xl font-semibold text-primary" {...CHROME_TITLE_TEXT_PROPS}>
                 <Trans>Passive income</Trans>
             </Text>
-            <View className="min-h-[20px] flex-row items-center gap-x-xs">
+            <View className="flex-row items-center gap-x-xs">
                 <Text testID={PassiveIncomeSelector.Subtitle} className="shrink text-xs text-secondary-foreground">
                     {subtitle}
                 </Text>

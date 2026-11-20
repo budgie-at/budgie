@@ -1,5 +1,6 @@
 export enum YieldListSectionEnum {
     ACTIVE = 'ACTIVE',
     CLOSED = 'CLOSED',
-    UNASSIGNED = 'UNASSIGNED'
+    UNASSIGNED = 'UNASSIGNED',
+    PAYOUTS = 'PAYOUTS'
 }

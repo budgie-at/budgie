@@ -8,6 +8,7 @@ import { CollapsibleChromeLegendList } from '../../../@generic/component/collaps
 import { CollapsibleChromePinnedBar } from '../../../@generic/component/collapsible-chrome-pinned-bar/collapsible-chrome-pinned-bar';
 import { FLOATING_TAB_BAR_HEIGHT } from '../../../@generic/constant/floating-tab-bar.constant';
 import { CollapsibleChromeCollapseDistanceContext } from '../../../@generic/context/collapsible-chrome-collapse-distance.context';
+import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
 import { getCollapsibleChromePinDistance } from '../../../@generic/utils/get-collapsible-chrome-pin-distance.util';
 import { YieldPayoutsScrollContext } from '../../context/yield-payouts-scroll.context';
@@ -42,6 +43,7 @@ export const YieldScreenList = () => {
     const listRef = useRef<LegendListRef>(null);
     const { top } = useSafeAreaInsets();
     const isReducedMotion = useReducedMotion();
+    const isAccessibilityText = useIsAccessibilityTextSize();
 
     const renderItem = ({ item }: { item: YieldListItemType }) => {
         switch (item.kind) {
@@ -69,9 +71,10 @@ export const YieldScreenList = () => {
 
     const handleRangeLayout = (event: LayoutChangeEvent) => void setRangeY(event.nativeEvent.layout.y);
 
+    const listHeaderClassName = isAccessibilityText ? 'pt-[16px] pb-[24px]' : 'pb-[24px]';
     const spacerStyle = { height: pinnedHeight };
     const listHeader = (
-        <View className="pb-[24px]">
+        <View className={listHeaderClassName}>
             <View style={spacerStyle} onLayout={handleRangeLayout} />
             <View className="gap-y-[24px] pt-md">
                 <YieldHero />

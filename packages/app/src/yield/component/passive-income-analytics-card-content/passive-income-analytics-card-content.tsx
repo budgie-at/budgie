@@ -51,7 +51,8 @@ export const PassiveIncomeAnalyticsCardContent = ({ earned, focus, period }: Pro
 
     const approximate = earned.isEstimated ? '≈ ' : '';
     const amount = formatAmount(earned.value, symbol);
-    const title = t`Passive income · ${approximate}${amount}`;
+    const title = t`Passive income`;
+    const periodLabel = t`in the selected period`;
     const chartTitles: Record<YieldRangeEnum, string> = {
         [YieldRangeEnum.MONTH]: t`Daily income · last 30 days`,
         [YieldRangeEnum.QUARTER]: t`Weekly income · last 13 weeks`,
@@ -62,7 +63,7 @@ export const PassiveIncomeAnalyticsCardContent = ({ earned, focus, period }: Pro
     return (
         <HapticPressable
             accessibilityRole="button"
-            accessibilityLabel={title}
+            accessibilityLabel={`${title}, ${approximate}${amount} ${periodLabel}`}
             onPress={handlePress}
             testID={PassiveIncomeSelector.AnalyticsCard}
             className="gap-y-md rounded-3xl bg-surface-row p-[16px]"
@@ -72,9 +73,18 @@ export const PassiveIncomeAnalyticsCardContent = ({ earned, focus, period }: Pro
                 <Text className="text-md font-semibold text-primary">{title}</Text>
                 <Icon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" />
             </View>
-            <Text className="text-xs text-secondary-foreground" maxFontSizeMultiplier={1.5}>
-                {chartTitles[focus.range]}
-            </Text>
+            <View className="gap-y-xxs">
+                <Text className="text-xs text-secondary-foreground" maxFontSizeMultiplier={1.5}>
+                    <Text className="text-lg font-semibold tabular-nums text-primary">
+                        {approximate}
+                        {amount}
+                    </Text>
+                    {` ${periodLabel}`}
+                </Text>
+                <Text className="text-xs text-secondary-foreground" maxFontSizeMultiplier={1.5}>
+                    {chartTitles[focus.range]}
+                </Text>
+            </View>
             {isDefined(summary) ? (
                 <YieldChartMini buckets={summary.buckets} focusDay={focus.focusDay} range={focus.range} />
             ) : (

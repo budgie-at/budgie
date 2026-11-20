@@ -12,6 +12,7 @@ import { useYieldSummary } from '../../hook/use-yield-summary.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 import { YieldChartModeControl } from '../yield-chart-mode-control/yield-chart-mode-control';
 import { YieldChartPlot } from '../yield-chart-plot/yield-chart-plot';
+import { YieldLegendEstimatedRow } from '../yield-legend-estimated-row/yield-legend-estimated-row';
 import { YieldLegendFootnote } from '../yield-legend-footnote/yield-legend-footnote';
 import { YieldLegend } from '../yield-legend/yield-legend';
 
@@ -50,6 +51,8 @@ export const YieldChartCard = () => {
             <YieldChartPlot />
 
             <YieldLegend />
+
+            <YieldLegendEstimatedRow />
 
             <YieldLegendFootnote />
         </View>

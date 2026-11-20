@@ -108,6 +108,7 @@ it.effect('groups payouts under date headers with each tax right after its divid
         );
 
         expect(items.map(item => item.kind)).toEqual([
+            YieldListItemKindEnum.SECTION,
             YieldListItemKindEnum.DATE,
             YieldListItemKindEnum.PAYOUT,
             YieldListItemKindEnum.PAYOUT,

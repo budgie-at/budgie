@@ -101,7 +101,7 @@ export const buildYieldListItems = (
     isPayoutMode: boolean
 ): YieldListItemType[] => {
     if (isPayoutMode) {
-        return toPayouts(payouts, false);
+        return isNotEmptyArray(payouts) ? [toSection(YieldListSectionEnum.PAYOUTS), ...toPayouts(payouts, false)] : [];
     }
 
     const active = positions.filter(position => position.section === YieldPositionSectionEnum.ACTIVE);
