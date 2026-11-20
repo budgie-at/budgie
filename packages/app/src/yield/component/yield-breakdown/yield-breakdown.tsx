@@ -11,6 +11,7 @@ import { useYieldSummary } from '../../hook/use-yield-summary.hook';
 import { YieldBreakdownCryptoToday } from '../yield-breakdown-crypto-today/yield-breakdown-crypto-today';
 import { YieldBreakdownNet } from '../yield-breakdown-net/yield-breakdown-net';
 import { YieldBreakdownRunRate } from '../yield-breakdown-run-rate/yield-breakdown-run-rate';
+import { YieldBreakdownSkeleton } from '../yield-breakdown-skeleton/yield-breakdown-skeleton';
 import { YieldBreakdownVsRate } from '../yield-breakdown-vs-rate/yield-breakdown-vs-rate';
 import { YieldOpenPositionRow } from '../yield-open-position-row/yield-open-position-row';
 
@@ -22,7 +23,7 @@ export const YieldBreakdown = () => {
     const { screenKey } = use(YieldScreenContext);
 
     if (!isDefined(summary)) {
-        return null;
+        return <YieldBreakdownSkeleton />;
     }
 
     const rangeName = t(YIELD_RANGE_NAME[screenKey.key.range]);
@@ -35,7 +36,7 @@ export const YieldBreakdown = () => {
     }
 
     return (
-        <View className="gap-y-[12px]">
+        <View className="gap-y-[24px]">
             {hasOpenRow ? (
                 <View className={CARD_BORDER_CLASSNAME}>
                     <GroupedListSection>
@@ -44,8 +45,8 @@ export const YieldBreakdown = () => {
                 </View>
             ) : null}
             {hasSummaryRows ? (
-                <View className="gap-y-xs">
-                    <Text className="px-3xl text-[13px] text-secondary-foreground" maxFontSizeMultiplier={1.6}>
+                <View className="gap-y-[8px]">
+                    <Text accessibilityRole="header" className="px-3xl text-[17px] font-semibold text-primary" maxFontSizeMultiplier={1.6}>
                         {t`Totals · ${rangeName}`}
                     </Text>
                     <View className={CARD_BORDER_CLASSNAME}>

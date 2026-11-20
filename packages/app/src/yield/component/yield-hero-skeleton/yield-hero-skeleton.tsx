@@ -24,7 +24,7 @@ export const YieldHeroSkeleton = () => {
             <View className="h-[65px] justify-center">
                 <View className="h-[48px] w-[180px] rounded-xl bg-secondary-corner" />
             </View>
-            <View className="h-[22px] justify-center">
+            <View className="h-[44px] justify-center">
                 <View className="h-[14px] w-[200px] rounded-full bg-secondary-corner" />
             </View>
         </Animated.View>

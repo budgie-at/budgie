@@ -34,14 +34,8 @@ export const YieldInfoSheetContent = ({ screenKey }: Props) => {
     const summary = AsyncResult.getOrElse(useLiveAtomValue(yieldSummaryFamily(screenKey.key)), () => null);
 
     const caption = isDefined(summary) ? formatRangeCaption(screenKey.key.range, summary.windowStart) : '';
-    const earnedText = t`Earned ${caption}. The change compares the same number of periods just before. Before tax; valued at the day’s opening price, or the latest earlier price, marked ≈.`;
-    const holdingCount = summary?.annualYield.holdingCount ?? 0;
-    const yieldText = t({
-        message: plural(holdingCount, {
-            one: 'Yield uses the last 365 days across the # holding that has a rate. Crypto is measured on your whole balance, staked or not. Distributions count as income, not yield. Holdings marked “No yield” are left out.',
-            other: 'Yield uses the last 365 days across the # holdings that have a rate. Crypto is measured on your whole balance, staked or not. Distributions count as income, not yield. Holdings marked “No yield” are left out.'
-        })
-    });
+    const earnedText = t`Earned ${caption}. The % compares this range with the same length of time just before it. Before tax; valued at the day’s opening price, or the latest earlier price.`;
+    const yieldText = t`Yield uses the last 365 days across holdings with a rate. Crypto is measured on your whole balance, staked or not. Distributions count as income, not yield. Holdings marked “Income only” are left out.`;
     const projectedText = t`At today’s balances and rates. Holdings left out of yield are not projected.`;
     const bottomSpacerStyle = { height: bottom + BOTTOM_PADDING };
     const causes = groupYieldEstimateCauses(summary?.estimateCauses ?? []).map(cause => {
@@ -68,7 +62,7 @@ export const YieldInfoSheetContent = ({ screenKey }: Props) => {
             <YieldInfoSheetBlock title={t`Earned`} body={earnedText} />
             <YieldInfoSheetBlock title={t`Yield`} body={yieldText} />
             <YieldInfoSheetBlock title={t`Projected`} body={projectedText} />
-            <YieldInfoSheetBlock title={t`Estimates`} body={t`≈ means the price was estimated.`}>
+            <YieldInfoSheetBlock title={t`Estimates`} body={t`≈ marks an estimate: a projection, or a value using an estimated price.`}>
                 {isNotEmptyArray(causes) ? (
                     <View className="gap-y-xs">
                         {causes.map(cause => (

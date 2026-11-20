@@ -1,5 +1,4 @@
 import { InstrumentTypeEnum, UserIconNameEnum } from '@budgie/contracts';
-import { YieldPositionSectionEnum } from '@budgie/market';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
@@ -11,7 +10,6 @@ import { Icon } from '../../../@generic/component/icon/icon';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { TransactionRowSurface } from '../../../transaction/components/transaction-row-surface/transaction-row-surface';
-import { useYieldPositionRateText } from '../../hook/use-yield-position-rate-text.hook';
 import { useYieldPositionSubtitle } from '../../hook/use-yield-position-subtitle.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 import { getYieldRowBorderClassName } from '../../utils/get-yield-row-border-class-name.util';
@@ -49,7 +47,6 @@ export const YieldPositionRow = ({ position, rangeCaption, rowPosition }: Props)
     const formatAmount = useProtectedAmountLabel();
     const { symbol } = useAtomValue(defaultInstrumentAtom);
     const subtitle = useYieldPositionSubtitle(position);
-    const rateText = useYieldPositionRateText(position.annualYield, position.section === YieldPositionSectionEnum.CLOSED);
 
     const handlePress = () => void router.setParams({ position: String(position.accountId), instrument: '', group: '' });
 
@@ -57,15 +54,10 @@ export const YieldPositionRow = ({ position, rangeCaption, rowPosition }: Props)
     const isCrypto = position.instrumentType === InstrumentTypeEnum.CRYPTO;
     const earned = formatAmount(position.earned, symbol);
     const wholeBalance = isCrypto && isDefined(position.annualYield.rate) ? t` on whole balance` : '';
-    const accessibilityLabel = t`${title}, earned ${earned} ${rangeCaption}, ${rateText}${wholeBalance}`;
+    const accessibilityLabel = t`${title}, earned ${earned} ${rangeCaption}, ${subtitle}${wholeBalance}`;
     const trailing = (
         <View className="flex-row items-center gap-x-sm">
-            <View className="shrink items-end">
-                <Text className="text-[17px] font-semibold tabular-nums text-primary">{earned}</Text>
-                <Text className="text-right text-[13px] tabular-nums text-secondary-foreground" numberOfLines={2}>
-                    {rateText}
-                </Text>
-            </View>
+            <Text className="text-[17px] font-semibold tabular-nums text-primary">{earned}</Text>
             <Icon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" />
         </View>
     );

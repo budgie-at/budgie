@@ -1,0 +1,1 @@
+export const YIELD_LEGEND_ROW_HEIGHT = 44;

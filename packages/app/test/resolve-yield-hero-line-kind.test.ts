@@ -4,15 +4,15 @@ import { expect, it } from '@effect/vitest';
 import { YieldHeroLineKindEnum } from '../src/yield/enum/yield-hero-line-kind.enum';
 import { resolveYieldHeroLineKind } from '../src/yield/utils/resolve-yield-hero-line-kind.util';
 
-const resting = { isScrubbing: false, bucketTax: 0, group: null, rate: 0.042 } as const;
+const resting = { isScrubbing: false, group: null, rate: 0.042 } as const;
 
-it('scrubbing a bucket with tax shows the net after tax', () => {
-    expect(resolveYieldHeroLineKind({ ...resting, isScrubbing: true, bucketTax: 12 })).toBe(YieldHeroLineKindEnum.SCRUB_NET);
+it('scrubbing always shows the net after tax', () => {
+    expect(resolveYieldHeroLineKind({ ...resting, isScrubbing: true })).toBe(YieldHeroLineKindEnum.SCRUB_NET);
 });
 
-it('scrubbing a bucket without tax keeps the slot empty even when a group is isolated', () => {
+it('scrubbing with an isolated group still shows the net after tax', () => {
     expect(resolveYieldHeroLineKind({ ...resting, isScrubbing: true, group: YieldGroupEnum.INTEREST })).toBe(
-        YieldHeroLineKindEnum.SCRUB_GROUPS
+        YieldHeroLineKindEnum.SCRUB_NET
     );
 });
 

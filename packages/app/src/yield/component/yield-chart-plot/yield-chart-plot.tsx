@@ -9,9 +9,6 @@ import { YieldScreenContext } from '../../context/yield-screen.context';
 import { useYieldSummary } from '../../hook/use-yield-summary.hook';
 import { YieldChartPlotContent } from '../yield-chart-plot-content/yield-chart-plot-content';
 import { YieldChartPlotSkeleton } from '../yield-chart-plot-skeleton/yield-chart-plot-skeleton';
-import { YieldChartSummary } from '../yield-chart-summary/yield-chart-summary';
-
-const MIN_DATA_BUCKETS = 3;
 
 export const YieldChartPlot = () => {
     const { screenKey } = use(YieldScreenContext);
@@ -20,10 +17,6 @@ export const YieldChartPlot = () => {
 
     if (!isDefined(summary)) {
         return <YieldChartPlotSkeleton />;
-    }
-
-    if (summary.buckets.filter(bucket => bucket.total > 0).length < MIN_DATA_BUCKETS) {
-        return <YieldChartSummary summary={summary} />;
     }
 
     return <YieldChartPlotContent summary={summary} isFailure={AsyncResult.isFailure(result)} />;

@@ -4,5 +4,6 @@ export enum YieldListItemKindEnum {
     POSITION = 'POSITION',
     PAYOUT = 'PAYOUT',
     OLDER = 'OLDER',
+    TRUNCATED = 'TRUNCATED',
     SKELETON = 'SKELETON'
 }

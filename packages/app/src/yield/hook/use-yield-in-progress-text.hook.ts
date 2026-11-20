@@ -1,3 +1,4 @@
+import { YieldBucketUnitEnum } from '@budgie/market';
 import { useLingui } from '@lingui/react/macro';
 import { use } from 'react';
 
@@ -29,5 +30,5 @@ export const useYieldInProgressText = (): string => {
 
     const periodLabel = formatTick(inProgressBucket, summary.bucketUnit);
 
-    return t`${periodLabel} so far`;
+    return summary.bucketUnit === YieldBucketUnitEnum.WEEK ? t`Week of ${periodLabel} so far` : t`${periodLabel} so far`;
 };

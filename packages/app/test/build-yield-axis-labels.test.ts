@@ -9,8 +9,12 @@ it('shows every label when there is no tax depth', () => {
     expect(keysOf(100, 0)).toEqual(['top', 'mid', 'zero']);
 });
 
-it('drops the zero label when the negative label would sit on it', () => {
-    expect(keysOf(100, -4)).toEqual(['top', 'mid', 'bottom']);
+it('keeps zero and drops the negative label when it would sit on the zero label', () => {
+    expect(keysOf(100, -4)).toEqual(['top', 'mid', 'zero']);
+});
+
+it('keeps zero for the real fixture where tax depth is tiny against the top', () => {
+    expect(keysOf(1400, -73)).toEqual(['top', 'mid', 'zero']);
 });
 
 it('keeps zero and drops the negative label when the domain is tiny', () => {

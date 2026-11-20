@@ -15,10 +15,10 @@ export const useYieldAnalyticsTakeaway = (
     const { trend, change } = useYieldHeroTrend(summary);
 
     const priorLabels: Record<YieldRangeEnum, string> = {
-        [YieldRangeEnum.MONTH]: t`vs prior 30 days`,
-        [YieldRangeEnum.QUARTER]: t`vs prior 13 weeks`,
-        [YieldRangeEnum.YEAR]: t`vs prior 12 months`,
-        [YieldRangeEnum.ALL]: t`vs prior period`
+        [YieldRangeEnum.MONTH]: t`vs previous month`,
+        [YieldRangeEnum.QUARTER]: t`vs previous 3 months`,
+        [YieldRangeEnum.YEAR]: t`vs previous year`,
+        [YieldRangeEnum.ALL]: t`vs previous period`
     };
 
     if (trend === YieldHeroTrendEnum.UP) {

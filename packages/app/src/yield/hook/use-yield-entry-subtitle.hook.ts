@@ -6,6 +6,7 @@ import { isDefined } from '@rnw-community/shared';
 import { useProtectedAmountLabel } from '../../@generic/hook/use-protected-amount-label.hook';
 import { defaultInstrumentAtom } from '../../settings/constants/settings-atoms.constant';
 import { YIELD_UNAVAILABLE_LABEL } from '../constant/yield-unavailable-label.constant';
+import { joinYieldSubtitle } from '../utils/join-yield-subtitle.util';
 
 import { useFormatYieldRate } from './use-format-yield-rate.hook';
 
@@ -14,7 +15,7 @@ import type { YieldSummaryInterface } from '@budgie/market';
 export const useYieldEntrySubtitle = (
     summary: Pick<YieldSummaryInterface, 'annualYield' | 'earned' | 'positions'> | null,
     isAccount: boolean
-): string => {
+): { readonly subtitle: string; readonly earned: string } => {
     const { t } = useLingui();
     const { symbol } = useAtomValue(defaultInstrumentAtom);
     const formatAmount = useProtectedAmountLabel();
@@ -29,5 +30,7 @@ export const useYieldEntrySubtitle = (
     const yieldText = isDefined(yieldRate) ? t`${formattedRate} a year` : unavailable;
     const accruingAmount = formatAmount(accruing ?? 0, symbol);
 
-    return isDefined(accruing) ? t`Accruing ${accruingAmount}` : t`${earned} last 12 months · ${yieldText}`;
+    return isDefined(accruing)
+        ? { subtitle: t`Accruing ${accruingAmount}`, earned: '' }
+        : { subtitle: joinYieldSubtitle([yieldText, t`last 12 months`]), earned };
 };

@@ -13,7 +13,7 @@ import { YieldScreenContext } from '../../context/yield-screen.context';
 import { useYieldScopeTitle } from '../../hook/use-yield-scope-title.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 
-const HIT_SLOP = { top: 8, bottom: 8, left: 12, right: 12 };
+const HIT_SLOP = { top: 16, bottom: 16, left: 16, right: 16 };
 
 export const YieldCollapsedTitle = () => {
     const { t } = useLingui();
@@ -41,13 +41,13 @@ export const YieldCollapsedTitle = () => {
                     accessibilityLabel={accessibilityLabel}
                     onPress={handleClear}
                     hitSlop={HIT_SLOP}
-                    className="min-h-[44px] -my-[14px] flex-row items-center justify-center gap-x-xxs active:opacity-70"
+                    className="min-h-[44px] min-w-[44px] -my-[14px] flex-row items-center justify-center gap-x-xxs active:opacity-70"
                     testID={PassiveIncomeSelector.ClearFilter}
                 >
                     <Text className="shrink text-center text-xs text-secondary-foreground" {...CHROME_TITLE_TEXT_PROPS}>
                         {scopeText}
                     </Text>
-                    <Icon icon={UserIconNameEnum.X} size={12} className="text-secondary-foreground" />
+                    <Icon icon={UserIconNameEnum.X} size={16} className="text-secondary-foreground" />
                 </Pressable>
             ) : null}
         </View>

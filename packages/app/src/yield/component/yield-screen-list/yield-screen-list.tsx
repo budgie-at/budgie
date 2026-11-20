@@ -24,6 +24,7 @@ import { YieldPositionRow } from '../yield-position-row/yield-position-row';
 import { YieldRangeControl } from '../yield-range-control/yield-range-control';
 import { YieldSectionHeader } from '../yield-section-header/yield-section-header';
 import { YieldSkeletonRow } from '../yield-skeleton-row/yield-skeleton-row';
+import { YieldTruncatedPayoutsRow } from '../yield-truncated-payouts-row/yield-truncated-payouts-row';
 
 import type { YieldListItemType } from '../../type/yield-list-item.type';
 import type { LegendListRef } from '@legendapp/list/react-native';
@@ -73,6 +74,8 @@ export const YieldScreenList = () => {
                 );
             case YieldListItemKindEnum.OLDER:
                 return <YieldOlderPayoutsRow />;
+            case YieldListItemKindEnum.TRUNCATED:
+                return <YieldTruncatedPayoutsRow count={item.count} />;
             case YieldListItemKindEnum.SKELETON:
             default:
                 return <YieldSkeletonRow rowPosition={item.position} />;

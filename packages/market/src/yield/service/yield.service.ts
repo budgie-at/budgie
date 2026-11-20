@@ -468,7 +468,7 @@ export class YieldService extends Context.Service<YieldService>()('@budgie/marke
                 key: YieldQueryKeyInterface,
                 isUnassignedOnly: boolean,
                 language: LanguageEnum,
-                limit: number
+                limit: number | null
             ) {
                 const now = yield* DateTime.nowAsDate;
                 const today = startOfDay(now);

@@ -2,7 +2,7 @@ import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { YIELD_UNAVAILABLE_LABEL } from '../constant/yield-unavailable-label.constant';
+import { YIELD_INLINE_UNAVAILABLE_LABEL } from '../constant/yield-inline-unavailable-label.constant';
 
 import { useFormatYieldRate } from './use-format-yield-rate.hook';
 
@@ -13,15 +13,15 @@ export const useYieldPositionRateText = ({ rate, reason, isEstimated }: YieldAnn
     const formatRate = useFormatYieldRate();
 
     if (isClosed && !isDefined(rate)) {
-        return t`Closed`;
+        return t`closed`;
     }
 
     if (!isDefined(rate)) {
-        return isDefined(reason) ? t(YIELD_UNAVAILABLE_LABEL[reason]) : t`No yield`;
+        return isDefined(reason) ? t(YIELD_INLINE_UNAVAILABLE_LABEL[reason]) : t`income only`;
     }
 
     const formattedRate = formatRate(rate);
     const approximate = isEstimated ? '≈ ' : '';
 
-    return isClosed ? t`Was ${approximate}${formattedRate} a year` : t`${approximate}${formattedRate} a year`;
+    return isClosed ? t`was ${approximate}${formattedRate} a year` : t`${approximate}${formattedRate} a year`;
 };

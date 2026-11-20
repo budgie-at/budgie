@@ -11,23 +11,21 @@ interface Props {
     readonly label: string;
     readonly amount: string;
     readonly amountClassName: string;
-    readonly isDotMuted: boolean;
+    readonly isMuted: boolean;
 }
 
-export const YieldLegendEntry = ({ group, label, amount, amountClassName, isDotMuted }: Props) => {
+export const YieldLegendEntry = ({ group, label, amount, amountClassName, isMuted }: Props) => {
     const isIncreaseContrast = useIsIncreaseContrast();
 
-    const dotClassName = cn(YIELD_GROUP_COLOR[group][isIncreaseContrast ? 'backgroundContrast' : 'background'], isDotMuted && 'opacity-60');
+    const dotClassName = cn(YIELD_GROUP_COLOR[group][isIncreaseContrast ? 'backgroundContrast' : 'background'], isMuted && 'opacity-40');
 
     return (
         <>
             <View className="w-[12px] items-center">
                 <View className={cn('h-[10px] w-[10px] rounded-full', dotClassName)} />
             </View>
-            <Text numberOfLines={1} className="shrink text-sm text-primary">
-                {label}
-            </Text>
-            <Text numberOfLines={1} className={cn('ml-auto', amountClassName)}>
+            <Text className={cn('flex-1 shrink text-sm text-primary', isMuted && 'opacity-40')}>{label}</Text>
+            <Text numberOfLines={1} className={cn('shrink-0 text-right', amountClassName)}>
                 {amount}
             </Text>
         </>

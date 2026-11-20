@@ -241,7 +241,7 @@ export class YieldRepository extends Context.Service<YieldRepository>()('@budgie
                                 )
                         },
                         orderBy: (transaction, { desc }) => [desc(transaction.operatedAt), desc(transaction.id)],
-                        limit: query.limit
+                        ...(isDefined(query.limit) && { limit: query.limit })
                     })
                 )
         };

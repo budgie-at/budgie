@@ -29,6 +29,7 @@ export const PassiveIncomeSelector = {
     Payout: (transactionId: number) => `PassiveIncome.Payout.${transactionId}` as const,
     EmptyState: 'PassiveIncome.EmptyState',
     OlderPayouts: 'PassiveIncome.OlderPayouts',
+    TruncatedPayouts: 'PassiveIncome.TruncatedPayouts',
     EntryRow: 'PassiveIncome.EntryRow',
     AnalyticsCard: 'PassiveIncome.AnalyticsCard',
     InfoSheet: 'PassiveIncome.InfoSheet',

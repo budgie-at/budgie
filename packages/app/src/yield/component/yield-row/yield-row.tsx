@@ -29,8 +29,8 @@ export const YieldRow = ({ left, title, subtitle, trailing, accessibilityLabel, 
         testID={testID}
     >
         {left}
-        <View className="min-w-0 flex-1 gap-y-xxs pr-sm">
-            <Text className="text-[17px] text-primary" numberOfLines={1} maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}>
+        <View className="min-w-0 flex-1 gap-y-xxs">
+            <Text className="text-[17px] text-primary" numberOfLines={2} maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}>
                 {title}
             </Text>
             {isNotEmptyString(subtitle) ? (
@@ -43,6 +43,6 @@ export const YieldRow = ({ left, title, subtitle, trailing, accessibilityLabel, 
                 </Text>
             ) : null}
         </View>
-        <View className="w-[40%] shrink-0 items-end">{trailing}</View>
+        <View className="shrink-0 items-end">{trailing}</View>
     </HapticPressable>
 );

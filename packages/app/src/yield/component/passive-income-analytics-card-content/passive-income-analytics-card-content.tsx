@@ -1,7 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { YieldRangeEnum } from '@budgie/market';
 import { useAtomValue } from '@effect/atom-react/Hooks';
-import { useLingui } from '@lingui/react/macro';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import { router } from 'expo-router';
 import { Text, View } from 'react-native';
@@ -11,12 +9,10 @@ import { isDefined } from '@rnw-community/shared';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hook';
-import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { yieldSummaryFamily } from '../../constant/yield-summary-family-atom.constant';
 import { YieldHeroTrendEnum } from '../../enum/yield-hero-trend.enum';
-import { useYieldAnalyticsPeriodText } from '../../hook/use-yield-analytics-period-text.hook';
-import { useYieldAnalyticsTakeaway } from '../../hook/use-yield-analytics-takeaway.hook';
+import { useYieldAnalyticsCardText } from '../../hook/use-yield-analytics-card-text.hook';
 import { useYieldHeroTrend } from '../../hook/use-yield-hero-trend.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 import { YieldChartMini } from '../yield-chart-mini/yield-chart-mini';
@@ -35,9 +31,7 @@ interface Props {
 const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 
 export const PassiveIncomeAnalyticsCardContent = ({ earned, focus, period }: Props) => {
-    const { t } = useLingui();
-    const { id: baseInstrumentId, symbol } = useAtomValue(defaultInstrumentAtom);
-    const formatAmount = useProtectedAmountLabel();
+    const { id: baseInstrumentId } = useAtomValue(defaultInstrumentAtom);
     const summary = AsyncResult.getOrElse(
         useLiveAtomValue(
             yieldSummaryFamily({ range: focus.range, positionAccountId: null, instrumentId: null, group: null, baseInstrumentId })
@@ -45,8 +39,12 @@ export const PassiveIncomeAnalyticsCardContent = ({ earned, focus, period }: Pro
         () => null
     );
 
-    const periodText = useYieldAnalyticsPeriodText(summary, focus, period);
-    const takeaway = useYieldAnalyticsTakeaway(summary, focus.range);
+    const { title, headlineText, caption, focusedText, takeaway, accessibilityLabel } = useYieldAnalyticsCardText(
+        summary,
+        earned,
+        focus,
+        period
+    );
     const { trend } = useYieldHeroTrend(summary);
 
     const handlePress = () =>
@@ -57,17 +55,6 @@ export const PassiveIncomeAnalyticsCardContent = ({ earned, focus, period }: Pro
                 ...(isDefined(focus.focusDay) ? { focus: focus.focusDay } : { periodFrom: period.fromDay, periodTo: period.toDay })
             }
         });
-
-    const approximate = earned.isEstimated ? '≈ ' : '';
-    const amount = formatAmount(earned.value, symbol);
-    const title = t`Passive income`;
-    const chartTitles: Record<YieldRangeEnum, string> = {
-        [YieldRangeEnum.MONTH]: t`Last 30 days`,
-        [YieldRangeEnum.QUARTER]: t`Last 13 weeks`,
-        [YieldRangeEnum.YEAR]: t`Last 12 months`,
-        [YieldRangeEnum.ALL]: t`All time`
-    };
-    const accessibilityLabel = `${title}, ${approximate}${amount} ${periodText}${isDefined(takeaway) ? `, ${takeaway}` : ''}`;
 
     return (
         <HapticPressable
@@ -84,15 +71,14 @@ export const PassiveIncomeAnalyticsCardContent = ({ earned, focus, period }: Pro
             </View>
             <View className="gap-y-xxs">
                 <Text className="text-xs text-secondary-foreground" maxFontSizeMultiplier={1.5}>
-                    <Text className="text-lg font-semibold tabular-nums text-primary">
-                        {approximate}
-                        {amount}
+                    <Text className="text-lg font-semibold tabular-nums text-primary">{headlineText}</Text>
+                    {` ${caption}`}
+                </Text>
+                {isDefined(focusedText) ? (
+                    <Text className="text-[13px] tabular-nums text-secondary-foreground" maxFontSizeMultiplier={1.5}>
+                        {focusedText}
                     </Text>
-                    {` ${periodText}`}
-                </Text>
-                <Text className="text-xs text-secondary-foreground" maxFontSizeMultiplier={1.5}>
-                    {chartTitles[focus.range]}
-                </Text>
+                ) : null}
             </View>
             {isDefined(summary) ? (
                 <YieldChartMini buckets={summary.buckets} focusDay={focus.focusDay} range={focus.range} />

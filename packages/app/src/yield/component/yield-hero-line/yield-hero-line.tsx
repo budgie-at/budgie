@@ -1,4 +1,4 @@
-import { YieldRangeEnum } from '@budgie/market';
+import { YieldDeltaKindEnum, YieldRangeEnum } from '@budgie/market';
 import { use } from 'react';
 import { Text, View } from 'react-native';
 
@@ -24,7 +24,10 @@ export const YieldHeroLine = ({ summary, bucket }: Props) => {
     const { screenKey } = use(YieldScreenContext);
     const text = useYieldHeroLineText(summary, bucket);
 
-    const isDeltaVisible = isDefined(summary.delta) && screenKey.key.range !== YieldRangeEnum.ALL && !isDefined(bucket);
+    const isNewHolding =
+        summary.delta?.kind === YieldDeltaKindEnum.NEW && isDefined(summary.firstYieldDay) && summary.firstYieldDay >= summary.windowStart;
+    const isDeltaMeaningful = isDefined(summary.delta) && (summary.delta.kind !== YieldDeltaKindEnum.NEW || isNewHolding);
+    const isDeltaVisible = isDeltaMeaningful && screenKey.key.range !== YieldRangeEnum.ALL && !isDefined(bucket);
     const lineClassName = cn(
         'min-h-[44px]',
         'flex-row',

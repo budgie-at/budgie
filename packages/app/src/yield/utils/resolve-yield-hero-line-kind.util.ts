@@ -1,12 +1,12 @@
-import { isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { YieldHeroLineKindEnum } from '../enum/yield-hero-line-kind.enum';
 
 import type { YieldHeroLineInputInterface } from '../interface/yield-hero-line-input.interface';
 
-export const resolveYieldHeroLineKind = ({ isScrubbing, bucketTax, group, rate }: YieldHeroLineInputInterface): YieldHeroLineKindEnum => {
+export const resolveYieldHeroLineKind = ({ isScrubbing, group, rate }: YieldHeroLineInputInterface): YieldHeroLineKindEnum => {
     if (isScrubbing) {
-        return isPositiveNumber(bucketTax) ? YieldHeroLineKindEnum.SCRUB_NET : YieldHeroLineKindEnum.SCRUB_GROUPS;
+        return YieldHeroLineKindEnum.SCRUB_NET;
     }
 
     if (isDefined(group)) {

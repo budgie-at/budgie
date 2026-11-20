@@ -2,6 +2,9 @@ import { View } from 'react-native';
 import Animated from 'react-native-reanimated';
 
 import { useSkeletonPulseStyle } from '../../../@generic/hook/use-skeleton-pulse-style/use-skeleton-pulse-style.hook';
+import { YIELD_LABEL_BAND } from '../../constant/yield-label-band.constant';
+import { YIELD_LEGEND_ROW_HEIGHT } from '../../constant/yield-legend-row-height.constant';
+import { YIELD_PLOT_HEIGHT } from '../../constant/yield-plot-height.constant';
 
 const BARS = [
     { id: 'a', style: { height: '40%' } },
@@ -18,8 +21,14 @@ const BARS = [
     { id: 'l', style: { height: '60%' } }
 ] as const;
 
-const LEGEND_ROWS = ['first', 'second'] as const;
-const LEGEND_COLUMNS = ['left', 'right'] as const;
+const LEGEND_ROWS = ['first', 'second', 'third', 'fourth', 'fifth'] as const;
+const AXIS_GUTTER = 40;
+const TICKS_HEIGHT = 16;
+const FOOTNOTE_HEIGHT = 20;
+const PLOT_STYLE = { height: YIELD_PLOT_HEIGHT + YIELD_LABEL_BAND + TICKS_HEIGHT, paddingRight: AXIS_GUTTER, paddingTop: YIELD_LABEL_BAND };
+const BARS_STYLE = { height: YIELD_PLOT_HEIGHT };
+const LEGEND_ROW_STYLE = { height: YIELD_LEGEND_ROW_HEIGHT };
+const FOOTNOTE_STYLE = { height: FOOTNOTE_HEIGHT };
 
 const BUSY_STATE = { busy: true };
 
@@ -34,21 +43,25 @@ export const YieldChartPlotSkeleton = () => {
             accessibilityState={BUSY_STATE}
             importantForAccessibility="no-hide-descendants"
         >
-            <View className="h-[220px] flex-row items-end gap-x-xs pt-[20px]">
-                {BARS.map(bar => (
-                    <View key={bar.id} className="flex-1 rounded-t-md bg-secondary-corner" style={bar.style} />
-                ))}
+            <View style={PLOT_STYLE}>
+                <View className="flex-row items-end gap-x-xs" style={BARS_STYLE}>
+                    {BARS.map(bar => (
+                        <View key={bar.id} className="flex-1 rounded-t-md bg-secondary-corner" style={bar.style} />
+                    ))}
+                </View>
             </View>
             <View>
                 {LEGEND_ROWS.map(row => (
-                    <View key={row} className="min-h-[44px] flex-row items-center gap-x-xl">
-                        {LEGEND_COLUMNS.map(column => (
-                            <View key={column} className="h-[14px] flex-1 rounded-full bg-secondary-corner" />
-                        ))}
+                    <View key={row} className="flex-row items-center gap-x-[8px]" style={LEGEND_ROW_STYLE}>
+                        <View className="size-[10px] rounded-full bg-secondary-corner" />
+                        <View className="h-[14px] flex-1 rounded-full bg-secondary-corner" />
+                        <View className="h-[14px] w-[56px] rounded-full bg-secondary-corner" />
                     </View>
                 ))}
             </View>
-            <View className="h-[14px] w-7/12 rounded-full bg-secondary-corner" />
+            <View className="justify-center" style={FOOTNOTE_STYLE}>
+                <View className="h-[12px] w-7/12 rounded-full bg-secondary-corner" />
+            </View>
         </Animated.View>
     );
 };

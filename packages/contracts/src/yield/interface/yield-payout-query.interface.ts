@@ -8,6 +8,6 @@ export interface YieldPayoutQueryInterface {
     readonly kinds: readonly YieldKindEnum[] | null;
     readonly isUnassignedOnly: boolean;
     readonly range: DateRangeInterface;
-    readonly limit: number;
+    readonly limit: number | null;
     readonly language: LanguageEnum;
 }

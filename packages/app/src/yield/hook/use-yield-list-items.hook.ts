@@ -1,3 +1,4 @@
+import { YieldRangeEnum } from '@budgie/market';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import { use } from 'react';
 
@@ -16,7 +17,7 @@ import { useYieldSummary } from './use-yield-summary.hook';
 import type { YieldListItemType } from '../type/yield-list-item.type';
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 
-const PAYOUT_LIMIT = 200;
+const ALL_TIME_PAYOUT_LIMIT = 1000;
 
 const SKELETON_ITEMS: readonly YieldListItemType[] = [
     { kind: YieldListItemKindEnum.SKELETON, id: 'skeleton-1', position: TransactionListRowPositionEnum.FIRST },
@@ -31,7 +32,8 @@ export const useYieldListItems = (): readonly YieldListItemType[] => {
     const { key } = screenKey;
     const isPayoutMode = isDefined(key.positionAccountId) || isDefined(key.instrumentId) || isDefined(key.group);
     const summary = useYieldSummary();
-    const payoutsResult = useLiveAtomValue(yieldPayoutsFamily([key, !isPayoutMode, language, PAYOUT_LIMIT]));
+    const payoutLimit = key.range === YieldRangeEnum.ALL ? ALL_TIME_PAYOUT_LIMIT : null;
+    const payoutsResult = useLiveAtomValue(yieldPayoutsFamily([key, !isPayoutMode, language, payoutLimit]));
     const payouts = AsyncResult.getOrElse(payoutsResult, (): TransactionWithRelationsEntityInterface[] => []);
 
     if (!isDefined(summary) || AsyncResult.isInitial(payoutsResult)) {
@@ -40,6 +42,10 @@ export const useYieldListItems = (): readonly YieldListItemType[] => {
 
     const items = buildYieldListItems(summary.positions, payouts, rangeCaption, isPayoutMode);
     const hasOlderPayouts = isDefined(summary.firstYieldDay) && summary.firstYieldDay < summary.windowStart;
+
+    if (isDefined(payoutLimit) && payouts.length >= payoutLimit) {
+        return [...items, { kind: YieldListItemKindEnum.TRUNCATED, id: 'truncated-payouts', count: payouts.length }];
+    }
 
     return hasOlderPayouts && isNotEmptyArray(payouts) ? [...items, OLDER_ITEM] : items;
 };

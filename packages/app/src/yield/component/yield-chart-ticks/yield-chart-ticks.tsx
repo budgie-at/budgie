@@ -6,6 +6,7 @@ import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-access
 import { MARKET_CHART_PADDING_X } from '../../../market-data/constant/market-chart-padding-x.constant';
 import { YIELD_PLOT_BOTTOM_GAP } from '../../constant/yield-label-band.constant';
 import { useYieldDateLabels } from '../../hook/use-yield-date-labels.hook';
+import { buildYieldTickIndices } from '../../utils/build-yield-tick-indices.util';
 
 import type { YieldBucketInterface, YieldBucketUnitEnum } from '@budgie/market';
 
@@ -21,6 +22,7 @@ const MAX_ACCESSIBILITY_TICKS = 2;
 const TICK_MAX_FONT_SIZE_MULTIPLIER = 1.3;
 const TICK_WIDTH = 64;
 const EDGE_SPILL = 24;
+const LEFT_SPILL = 12;
 const TEXT_HALF_WIDTH = 22;
 const HALF_SLOT = 0.5;
 const HALF = 2;
@@ -32,24 +34,22 @@ export const YieldChartTicks = ({ buckets, unit, width }: Props) => {
 
     const slot = Math.max(width - MARKET_CHART_PADDING_X * 2, 1) / Math.max(buckets.length, 1);
     const maxTicks = isAccessibilityText ? MAX_ACCESSIBILITY_TICKS : MAX_TICKS;
-    const step = Math.max(Math.ceil(buckets.length / maxTicks), 1);
-    const lastIndex = buckets.length - 1;
     const firstYear = buckets.at(0)?.start.slice(0, 4);
     const lastYear = buckets.at(-1)?.start.slice(0, 4);
     const isYearVisible = buckets.length >= MONTHS_PER_YEAR && firstYear !== lastYear;
-    const indices = Array.from({ length: Math.floor(lastIndex / step) + 1 }, (_, order) => lastIndex - order * step).reverse();
+    const { indices, isSparse } = buildYieldTickIndices(buckets, unit, slot, maxTicks);
     const ticks = indices
         .map(index => ({ index, bucket: buckets.at(index) }))
         .filter(tick => isDefined(tick.bucket))
         .map(({ index, bucket }) => {
             const centred = MARKET_CHART_PADDING_X + slot * (index + HALF_SLOT) - TICK_WIDTH / HALF;
-            const minLeft = -(TICK_WIDTH / HALF - TEXT_HALF_WIDTH);
+            const minLeft = -(TICK_WIDTH / HALF - TEXT_HALF_WIDTH) - LEFT_SPILL;
             const maxLeft = width - TICK_WIDTH + EDGE_SPILL;
             const isOverflowing = centred < minLeft || centred > maxLeft;
 
             return {
                 key: bucket?.start ?? String(index),
-                label: isDefined(bucket) ? formatTick(bucket, unit, isYearVisible && !isOverflowing) : '',
+                label: isDefined(bucket) ? formatTick(bucket, unit, !isSparse && isYearVisible && !isOverflowing) : '',
                 style: { left: Math.min(Math.max(centred, minLeft), maxLeft) }
             };
         });

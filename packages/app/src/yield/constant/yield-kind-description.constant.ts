@@ -10,5 +10,5 @@ export const YIELD_KIND_DESCRIPTION: Readonly<Record<YieldKindEnum, MessageDescr
     [YieldKindEnum.DIVIDEND]: msg`Paid by stocks and ETFs`,
     [YieldKindEnum.INTEREST]: msg`Savings and deposits`,
     [YieldKindEnum.TAX]: msg`Tax withheld from a payout`,
-    [YieldKindEnum.NONE]: msg`Not counted as passive income`
+    [YieldKindEnum.NONE]: msg`Excluded from all passive income totals`
 };
