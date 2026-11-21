@@ -845,8 +845,8 @@ msgid "{net} after tax · no tax"
 msgstr "{net} after tax · no tax"
 
 #: src/yield/hook/use-yield-range-net-text.hook.ts
-msgid "{netText} · {formattedRate} a year"
-msgstr "{netText} · {formattedRate} a year"
+msgid "{netText} · {formattedRate} annual yield"
+msgstr "{netText} · {formattedRate} annual yield"
 
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "{newAccountCount, plural, one {Add # account in {currencyCode}} other {Add # accounts in {currencyCode}}}"
@@ -1342,10 +1342,6 @@ msgstr "1 month"
 #: src/yield/component/yield-range-control/yield-range-control.tsx
 msgid "1 year"
 msgstr "1 year"
-
-#: src/yield/hook/use-yield-prior-label.hook.ts
-msgid "12 months before"
-msgstr "12 months before"
 
 #: src/inzhur/component/inzhur-performance-chart/inzhur-performance-chart.tsx
 #: src/market-data/component/currency-market-range-control/currency-market-range-control.tsx
@@ -8694,6 +8690,10 @@ msgstr "Preparing conversions"
 #: src/onboarding/component/onboarding-hold-to-seal-button/onboarding-hold-to-seal-button.tsx
 msgid "Press and hold to seal"
 msgstr "Press and hold to seal"
+
+#: src/yield/hook/use-yield-prior-label.hook.ts
+msgid "Previous 12 months"
+msgstr "Previous 12 months"
 
 #: src/onboarding/component/onboarding-keyboard-controls/onboarding-keyboard-controls.tsx
 msgid "Previous field"
