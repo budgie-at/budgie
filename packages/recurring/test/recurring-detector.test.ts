@@ -2,6 +2,7 @@ import { PRECISION, RecurringSeriesKindEnum } from '@budgie/contracts';
 import { expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
+import { RECURRING_ACTIVE_CONFIDENCE } from '../src/constant/recurring-active-confidence.constant';
 import { detectRecurringSeries, isSeriesActive, legacyLabel } from '../src/series/recurring-series';
 
 import type { RecurringChargeInterface } from '../src/interface/recurring-charge.interface';
@@ -106,11 +107,13 @@ it.effect('marks a proven sequential price band handoff', () =>
     })
 );
 
-it.effect('rejects two-event annual evidence inside a busy identity', () =>
+it.effect('keeps two-event annual evidence inside a busy identity below the active confidence', () =>
     Effect.sync(() => {
         const annual = [5, 370].map(day => charge(day, 80, 'MARKET'));
-        expect(detectRecurringSeries(annual)).toHaveLength(1);
-        expect(detectRecurringSeries([...annual, charge(155, 12, 'MARKET')])).toEqual([]);
+        expect(detectRecurringSeries(annual).map(series => series.confidence >= RECURRING_ACTIVE_CONFIDENCE)).toEqual([true]);
+        expect(
+            detectRecurringSeries([...annual, charge(155, 12, 'MARKET')]).map(series => series.confidence >= RECURRING_ACTIVE_CONFIDENCE)
+        ).toEqual([false]);
     })
 );
 
@@ -154,7 +157,7 @@ it.effect('keeps a calendar cycle posted just after the month boundary', () =>
     })
 );
 
-it.effect('rejects two charges assigned to the same calendar cycle', () =>
+it.effect('never assigns two charges to the same calendar cycle', () =>
     Effect.sync(() => {
         const charges = [
             new Date(2026, 0, 28, 12),
@@ -163,7 +166,8 @@ it.effect('rejects two charges assigned to the same calendar cycle', () =>
             new Date(2026, 2, 28, 12),
             new Date(2026, 3, 28, 12)
         ].map((operatedAt, index) => ({ ...charge(index + 1, 25, 'CALENDAR'), operatedAt }));
-        expect(detectRecurringSeries(charges)).toEqual([]);
+        const [series] = detectRecurringSeries(charges);
+        expect(series.events.map(event => new Date(event.timestamp).getDate())).toEqual([28, 28, 28, 28]);
     })
 );
 
@@ -189,10 +193,10 @@ it.effect('accepts variable bills only with strong recent timing', () =>
 it.effect('lets current variable evidence supersede an old fixed-price phase', () =>
     Effect.sync(() => {
         const oldFixed = [5, 36, 64].map(day => charge(day, 40, 'ENERGY'));
-        const currentVariable = [125, 156, 184, 215].map((day, index) => charge(day, 55 + index * 7, 'ENERGY'));
+        const currentVariable = [125, 156, 184, 215, 246, 276].map((day, index) => charge(day, 55 + index * 7, 'ENERGY'));
         const series = detectRecurringSeries([...oldFixed, ...currentVariable]);
         expect(series).toHaveLength(1);
-        expect(series[0].anchorTimestamp).toBe(new Date(2026, 0, 215).getTime());
+        expect(series[0].lastSeenTimestamp).toBe(new Date(2026, 0, 276).getTime());
     })
 );
 

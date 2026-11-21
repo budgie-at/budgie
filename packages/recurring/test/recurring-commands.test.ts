@@ -153,7 +153,8 @@ layer(TestLayer)('recurringService commands', it => {
             });
             expect(calendar.forecastedEntriesByDay.get(5)?.map(entry => entry.latestAmount)).toEqual([12 * PRECISION]);
             expect(item).toMatchObject({ id: created.id, isActive: true, amount: 12 * PRECISION, nativeAmount: 12 * PRECISION });
-            expect(item.nextDate).toEqual(new Date(2026, 6, 5));
+            expect(item.alert).toBe(RecurringAlertEnum.OVERDUE);
+            expect(item.nextDate).toEqual(new Date(2026, 5, 5));
             expect(item.monthlyEquivalent).toBe(12 * PRECISION);
         })
     );
@@ -432,6 +433,7 @@ layer(TestLayer)('recurringService commands', it => {
             const failure = yield* Effect.flip(service.getSeriesDetail(9999, NOW));
 
             expect(alertOf(overdue.id)).toBe(RecurringAlertEnum.OVERDUE);
+            expect(items.find(item => item.id === overdue.id)?.nextDate).toEqual(new Date(2026, 5, 3));
             expect(alertOf(ending.id)).toBe(RecurringAlertEnum.ENDING);
             expect(alertOf(drift.id)).toBe(RecurringAlertEnum.PRICE_CHANGE);
             expect(detail.history).toMatchObject([{ transactionId: cheap, amount: 16 * PRECISION, isExcluded: false }]);

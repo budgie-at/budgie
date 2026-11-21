@@ -16,7 +16,7 @@ export interface RecurringMatchSeriesInterface {
         | 'endsAt'
     > & { readonly defaultAmount: number };
     readonly isVariable?: boolean;
-    readonly userIdentities: ReadonlySet<string>;
+    readonly linkedIdentities: ReadonlySet<string>;
     readonly occupiedCycles: ReadonlySet<number>;
     readonly excludedTransactionIds: ReadonlySet<number>;
 }

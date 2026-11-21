@@ -1,20 +1,26 @@
 import { resetTestDb } from '@budgie-at/test-kit';
 import {
+    BudgetEntityTable,
+    BudgetPeriodEnum,
+    BudgetSinkingFundEntityTable,
     Db,
+    LanguageEnum,
     PRECISION,
     RecurringCadenceUnitEnum,
+    RecurringSeriesEntityTable,
     RecurringMatchSourceEnum,
     RecurringSeriesKindEnum,
     RecurringSeriesSourceEnum,
     RecurringSeriesUserStateEnum,
-    TransactionEntityTable
+    TransactionEntityTable,
+    TransactionEntryEntityTable
 } from '@budgie/contracts';
 import { beforeEach, expect, layer } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { RecurringRefreshService, RecurringService } from '../src/index';
+import { buildRecurringActiveCondition, RecurringRefreshService, RecurringService } from '../src/index';
 import { RecurringRepository } from '../src/repository/recurring.repository';
 
 import {
@@ -26,8 +32,10 @@ import {
     seedCharges,
     seedDetectedSeries,
     seedMonthlyCharges,
+    seedSavedSeries,
     setUserState,
-    testDb
+    testDb,
+    testSeedService
 } from './test-context';
 
 const SIX_MONTHS = [6, 5, 4, 3, 2, 1] as const;
@@ -37,6 +45,21 @@ const withFreshLaunch = Effect.provide(Layer.fresh(Layer.merge(RecurringService.
 const refreshService = Effect.service(RecurringRefreshService);
 
 const repository = Effect.service(RecurringRepository);
+
+const seedYearlySeries = (title: string, userState: RecurringSeriesUserStateEnum) =>
+    seedSavedSeries({
+        merchantKey: title.toUpperCase(),
+        title,
+        amount: 12 * PRECISION,
+        userState,
+        lastSeenAt: new Date(2026, 0, 9),
+        periodDays: 365
+    });
+
+const linkSeries = (seriesId: number, transactionId: number) =>
+    Effect.flatMap(repository, items =>
+        items.insertLink({ seriesId, transactionId, cycleDate: new Date(2026, 0, 9), matchedBy: RecurringMatchSourceEnum.AUTO })
+    );
 
 const liveLinks = Effect.flatMap(repository, items => items.findLinks);
 
@@ -48,6 +71,28 @@ const expectReadWithoutDetection = Effect.gen(function* () {
 
     expect(data.forecastedEntriesByDay.size).toBe(0);
     expect(yield* (yield* repository).findAllSeries).toEqual([]);
+});
+
+const PAYEE_IBAN = 'AT611904300234573201';
+
+const setIban = (transactionId: number) =>
+    Db.query(database =>
+        database
+            .update(TransactionEntryEntityTable)
+            .set({ toIban: PAYEE_IBAN })
+            .where(eq(TransactionEntryEntityTable.transactionId, transactionId))
+    );
+
+const seedKeyFlip = Effect.fnUntraced(function* (userState: RecurringSeriesUserStateEnum) {
+    const seed = yield* seedCharges();
+    yield* seedMonthlyCharges(seed, 'NETFLIX', [6, 5, 4, 3], 5, 12);
+    yield* detectAt(NOW);
+    const [series] = yield* (yield* repository).findAllSeries;
+    yield* setUserState(series.id, userState);
+    yield* Effect.forEach([2, 1, 0], monthsAgo => Effect.flatMap(seed('NETFLIX', monthsAgo, 5, 12), setIban), { discard: true });
+    yield* detectAt(NOW);
+
+    return { seed, series };
 });
 
 beforeEach(() => Effect.runPromise(resetTestDb(testDb)));
@@ -266,7 +311,7 @@ layer(TestLayer)('recurringRefreshService', it => {
                 reminderDaysBefore: 3
             });
 
-            yield* seedMonthlyCharges(seed, 'NETFLIX', [1, 0], 5, 14);
+            yield* seedMonthlyCharges(seed, 'NETFLIX', [1, 0], 5, 13);
             yield* detectAt(NOW);
             const [after] = yield* (yield* repository).findAllSeries;
 
@@ -279,7 +324,7 @@ layer(TestLayer)('recurringRefreshService', it => {
                 anchorDate: series.anchorDate,
                 userState: RecurringSeriesUserStateEnum.CONFIRMED
             });
-            expect(after.amount).toBe(14 * PRECISION);
+            expect(after.amount).toBe(13 * PRECISION);
         })
     );
 
@@ -325,6 +370,164 @@ layer(TestLayer)('recurringRefreshService', it => {
                 matchedBy: RecurringMatchSourceEnum.USER
             });
             expect(links.filter(link => link.transactionId === ids[0])).toHaveLength(1);
+        })
+    );
+
+    it.effect('keeps a dismissed stream dismissed when the detector assigns it another cadence', () =>
+        Effect.gen(function* () {
+            const service = yield* RecurringService;
+            const seed = yield* seedCharges();
+            yield* seedMonthlyCharges(seed, 'NETFLIX', SIX_MONTHS, 5, 12);
+            yield* detectAt(NOW);
+            const [series] = yield* (yield* repository).findAllSeries;
+            yield* Db.query(database =>
+                database
+                    .update(RecurringSeriesEntityTable)
+                    .set({ userState: RecurringSeriesUserStateEnum.DISMISSED, cadenceInterval: 2, periodDays: 61 })
+                    .where(eq(RecurringSeriesEntityTable.id, series.id))
+            );
+
+            yield* detectAt(NOW);
+            const rows = yield* (yield* repository).findAllSeries;
+
+            expect(rows.map(row => [row.id, row.userState])).toEqual([[series.id, RecurringSeriesUserStateEnum.DISMISSED]]);
+            expect(yield* service.listSeries(NOW)).toEqual([]);
+        })
+    );
+
+    it.effect('keeps the row id of a suggestion whose payee key flips from its title to an IBAN and matches both keys', () =>
+        Effect.gen(function* () {
+            const { seed, series } = yield* seedKeyFlip(RecurringSeriesUserStateEnum.SUGGESTED);
+            yield* seed('NETFLIX', -1, 5, 12);
+            yield* (yield* refreshService).matchRecent(new Date(2026, 6, 8, 12));
+            const rows = yield* (yield* repository).findAllSeries;
+
+            expect(rows.map(row => [row.id, row.merchantKey])).toEqual([[series.id, `EXPENSE|1|${PAYEE_IBAN}|${12 * PRECISION}`]]);
+            expect((yield* liveLinks).filter(link => link.seriesId === series.id && !link.isExcluded)).toHaveLength(8);
+        })
+    );
+
+    it.effect('keeps a dismissed stream dismissed when its payee key flips from its title to an IBAN', () =>
+        Effect.gen(function* () {
+            const { series } = yield* seedKeyFlip(RecurringSeriesUserStateEnum.DISMISSED);
+            const rows = yield* (yield* repository).findAllSeries;
+
+            expect(rows.map(row => [row.id, row.userState])).toEqual([[series.id, RecurringSeriesUserStateEnum.DISMISSED]]);
+            expect(yield* Effect.flatMap(RecurringService, service => service.listSeries(NOW))).toEqual([]);
+        })
+    );
+
+    it.effect('drops detected suggestions it no longer finds and keeps owned, dismissed, user-linked and budgeted rows', () =>
+        Effect.gen(function* () {
+            const items = yield* repository;
+            const seed = yield* seedCharges();
+            yield* seedMonthlyCharges(seed, 'NETFLIX', SIX_MONTHS, 5, 12);
+            const [autoLinked, userLinked] = yield* seedMonthlyCharges(seed, 'CORNER SHOP', [4, 2], 9, 7);
+            const saved = (title: string, userState: RecurringSeriesUserStateEnum) =>
+                seedSavedSeries({
+                    merchantKey: title.toUpperCase(),
+                    title,
+                    amount: 7 * PRECISION,
+                    userState,
+                    lastSeenAt: new Date(2026, 3, 9)
+                });
+            const legacy = yield* saved('Corner shop', RecurringSeriesUserStateEnum.SUGGESTED);
+            yield* saved('Gym', RecurringSeriesUserStateEnum.CONFIRMED);
+            yield* saved('Bakery', RecurringSeriesUserStateEnum.DISMISSED);
+            const withUserLink = yield* saved('Market', RecurringSeriesUserStateEnum.SUGGESTED);
+            const budgeted = yield* saved('Insurance', RecurringSeriesUserStateEnum.SUGGESTED);
+            yield* items.insertLink({
+                seriesId: legacy.id,
+                transactionId: autoLinked,
+                cycleDate: new Date(2026, 1, 9),
+                matchedBy: RecurringMatchSourceEnum.AUTO
+            });
+            yield* items.insertLink({
+                seriesId: withUserLink.id,
+                transactionId: userLinked,
+                cycleDate: new Date(2026, 3, 9),
+                matchedBy: RecurringMatchSourceEnum.USER
+            });
+            const { id: categoryId } = yield* testSeedService.category('Insurance');
+            yield* Db.query(database =>
+                database
+                    .insert(BudgetEntityTable)
+                    .values({
+                        name: 'Main',
+                        period: BudgetPeriodEnum.MONTHLY,
+                        periodStartDay: 1,
+                        useLastDayOfMonth: false,
+                        overallLimit: 100 * PRECISION,
+                        otherLimit: 10 * PRECISION,
+                        instrumentId: DEFAULT_INSTRUMENT_ID
+                    })
+                    .returning()
+            ).pipe(
+                Effect.flatMap(([budget]) =>
+                    Db.query(database =>
+                        database.insert(BudgetSinkingFundEntityTable).values({
+                            budgetId: budget.id,
+                            name: 'Insurance',
+                            categoryId,
+                            targetAmount: 7 * PRECISION,
+                            dueAt: new Date(2026, 11, 1),
+                            recurringSeriesId: budgeted.id
+                        })
+                    )
+                )
+            );
+
+            yield* detectAt(NOW);
+
+            expect((yield* items.findAllSeries).map(row => row.title).sort()).toEqual(['Bakery', 'Gym', 'Insurance', 'Market', 'NETFLIX']);
+            expect((yield* items.findLinks).some(link => link.seriesId === legacy.id)).toBe(false);
+        })
+    );
+
+    it.effect('keeps synced suggestions it never linked and suggestions with a reminder, and drops bare-key leftovers', () =>
+        Effect.gen(function* () {
+            const items = yield* repository;
+            const seed = yield* seedCharges();
+            const [transactionId] = yield* seedMonthlyCharges(seed, 'CORNER SHOP', [2], 9, 7);
+            const saved = (merchantKey: string, title: string) =>
+                seedSavedSeries({
+                    merchantKey,
+                    title,
+                    amount: 7 * PRECISION,
+                    userState: RecurringSeriesUserStateEnum.SUGGESTED,
+                    lastSeenAt: new Date(2026, 3, 9)
+                });
+            yield* saved(`EXPENSE|1|SYNCED PAYEE|${7 * PRECISION}`, 'Synced');
+            yield* saved('BARE PAYEE', 'Bare');
+            const reminded = yield* saved(`EXPENSE|1|CORNER SHOP|${7 * PRECISION}`, 'Reminded');
+            yield* items.updateSeries(reminded.id, { reminderDaysBefore: 2 });
+            yield* items.insertLink({
+                seriesId: reminded.id,
+                transactionId,
+                cycleDate: new Date(2026, 3, 9),
+                matchedBy: RecurringMatchSourceEnum.AUTO
+            });
+
+            yield* detectAt(NOW);
+
+            expect((yield* items.findAllSeries).map(row => row.title).sort()).toEqual(['Reminded', 'Synced']);
+        })
+    );
+
+    it.effect('counts a suggested detected series as active only with a live link, and a confirmed one without links', () =>
+        Effect.gen(function* () {
+            const seed = yield* seedCharges();
+            const [transactionId] = yield* seedMonthlyCharges(seed, 'CORNER SHOP', [2], 9, 7);
+            const linked = yield* seedYearlySeries('Linked', RecurringSeriesUserStateEnum.SUGGESTED);
+            yield* seedYearlySeries('Unlinked', RecurringSeriesUserStateEnum.SUGGESTED);
+            yield* seedYearlySeries('Confirmed', RecurringSeriesUserStateEnum.CONFIRMED);
+            yield* linkSeries(linked.id, transactionId);
+
+            const active = yield* Effect.flatMap(repository, items =>
+                items.findSeriesRows(DEFAULT_INSTRUMENT_ID, LanguageEnum.EN, buildRecurringActiveCondition())
+            );
+
+            expect(active.map(row => row.title).sort()).toEqual(['Confirmed', 'Linked']);
         })
     );
 });

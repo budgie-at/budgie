@@ -5,7 +5,8 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { normalizeRecurringDescription } from '../utils/normalize-recurring-description.util';
 
-import { legacyLabel, nearestCycle } from './recurring-series';
+import { nearestCycle } from './recurring-schedule';
+import { legacyLabel } from './recurring-series';
 
 import type { RecurringChargeInterface } from '../interface/recurring-charge.interface';
 import type { RecurringSeriesInterface } from '../interface/recurring-series.interface';
@@ -86,7 +87,7 @@ const matchesHistoricalCadence = (
         events.slice(1).every((event, index) => {
             const cycle = nearestCycle(new Date(event.timestamp), new Date(events[index].timestamp), series);
 
-            return cycle.cycle === 1 && cycle.deviation <= series.toleranceDays;
+            return cycle.cycle === 1 && cycle.deviation <= series.windowDays;
         })
     );
 };
@@ -118,7 +119,7 @@ const createCycleMatcher = (charges: readonly RecurringChargeInterface[]) => {
                 (!isQualifiedIdentity(row.merchantKey) &&
                     isDefined(series.periodMonths) &&
                     matchesHistoricalCadence(series, row, getHistory(series)))) &&
-            nearestCycle(new Date(series.anchorTimestamp), row.lastSeenAt, series).deviation <= series.toleranceDays;
+            nearestCycle(new Date(series.anchorTimestamp), row.lastSeenAt, series).deviation <= series.windowDays;
         matches.set(row.id, result);
         cycleMatches.set(series, matches);
 

@@ -565,10 +565,10 @@ layer(TestLayer)('recurringService', it => {
             'a weekly stream does not inherit a confirmed monthly row with its key',
             RecurringSeriesUserStateEnum.CONFIRMED,
             [
-                [0, 7],
-                [0, 14],
-                [0, 21],
-                [0, 28]
+                [0, 6],
+                [0, 13],
+                [0, 20],
+                [0, 27]
             ],
             ['true|Old bill|CONFIRMED', 'false|BILLING|SUGGESTED']
         ],
@@ -851,7 +851,7 @@ layer(TestLayer)('recurringService', it => {
         })
     );
 
-    it.effect('rejects an unproven large price change', () =>
+    it.effect('continues through an unproven large price change at the proven amount and flags it', () =>
         Effect.gen(function* () {
             const seed = yield* seedCharges();
             yield* Effect.forEach([6, 5, 4, 3, 2], monthsAgo => seed('WIENER LINIEN', monthsAgo, 20, 33), { discard: true });
@@ -859,7 +859,9 @@ layer(TestLayer)('recurringService', it => {
 
             const data = yield* calendar(JULY);
 
-            expect(data.forecastedEntriesByDay.size).toBe(0);
+            expect(data.forecastedEntriesByDay.get(20)?.map(entry => [entry.latestAmount, entry.alert])).toEqual([
+                [33 * PRECISION, RecurringAlertEnum.PRICE_CHANGE]
+            ]);
         })
     );
 
@@ -1566,6 +1568,40 @@ layer(TestLayer)('recurringService', it => {
             expect(incomeTitles).not.toContain('NETFLIX');
             expect(allEntries(expenseData).map(entry => entry.title)).not.toContain('ACME SALARY');
             expect(forecastedAmounts(incomeData, 1)).toEqual([3000 * PRECISION]);
+        })
+    );
+
+    it.effect('serves a suggested detected row only once this device has linked it or the user confirmed it', () =>
+        Effect.gen(function* () {
+            const service = yield* RecurringService;
+            const saved = yield* seedSavedSeries({
+                merchantKey: 'EXPENSE|1|NETFLIX',
+                title: 'Netflix',
+                amount: 12 * PRECISION,
+                userState: RecurringSeriesUserStateEnum.SUGGESTED,
+                lastSeenAt: new Date(2026, 5, 5)
+            });
+
+            expect(yield* service.listSeries(NOW)).toEqual([]);
+            expect(allEntries(yield* service.calendar(2026, 6, NOW))).toEqual([]);
+
+            yield* setUserState(saved.id, RecurringSeriesUserStateEnum.CONFIRMED);
+
+            expect((yield* service.listSeries(NOW)).map(item => item.id)).toEqual([saved.id]);
+            expect(allEntries(yield* service.calendar(2026, 6, NOW)).map(entry => entry.seriesId)).toEqual([saved.id]);
+        })
+    );
+
+    it.effect('serves a suggested series created by detection from its linked charges', () =>
+        Effect.gen(function* () {
+            const seed = yield* seedCharges();
+            yield* seedMonthly(seed, 'NETFLIX', 20, 12);
+            yield* detectAt(NOW);
+            const service = yield* RecurringService;
+            const [item] = yield* service.listSeries(NOW);
+
+            expect(item).toMatchObject({ title: 'NETFLIX', userState: RecurringSeriesUserStateEnum.SUGGESTED });
+            expect(item.linkedCount).toBeGreaterThan(0);
         })
     );
 
