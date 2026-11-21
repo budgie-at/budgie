@@ -181,8 +181,17 @@ jobs:
               with:
                   skip-llama-postinstall: 'true'
 
+            - name: Runner diagnostics
+              run: |
+                  node -e "const os=require('node:os');console.log('availableParallelism',os.availableParallelism(),'cpus',os.cpus().length,'totalmem',Math.round(os.totalmem()/1048576))"
+                  cat /sys/fs/cgroup/cpu.max /sys/fs/cgroup/memory.max 2>&1 || true
+                  nproc
+                  free -m
+
             - name: Unit tests
-              run: pnpm test --concurrency=2 ${{ matrix.filters }} ${{ matrix.args }}
+              run: |
+                  (while sleep 15; do echo "MEM $(free -m | sed -n 2p)"; done) &
+                  pnpm test --concurrency=2 ${{ matrix.filters }} ${{ matrix.args }}
 
     e2e-script-tests:
         if: needs.detect-mobile-impact.outputs.e2e-scripts == 'true'
