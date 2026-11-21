@@ -20,7 +20,8 @@ const seedAccount = (title: string, externalSource: ExternalSourceEnum | null, i
 
 const seedInterbankFeeTransfer = (
     sourceAccountExternalSource: ExternalSourceEnum | null = ExternalSourceEnum.MONOBANK,
-    targetAccountExternalSource: ExternalSourceEnum | null = ExternalSourceEnum.PRIVATBANK
+    targetAccountExternalSource: ExternalSourceEnum | null = ExternalSourceEnum.PRIVATBANK,
+    incomeDelaySeconds = 61 * 60
 ) =>
     Effect.gen(function* () {
         const operatedAt = new Date(2026, 4, 20, 18, 39, 0);
@@ -36,7 +37,7 @@ const seedInterbankFeeTransfer = (
             }
         );
         const income = yield* testSeedService.bankPairIncome(
-            { externalId: 'interbank-fee-income', operatedAt: new Date(operatedAt.getTime() + 61 * 60 * 1000) },
+            { externalId: 'interbank-fee-income', operatedAt: new Date(operatedAt.getTime() + incomeDelaySeconds * 1000) },
             {
                 accountId: targetAccount.id,
                 amount: INCOME_AMOUNT,
@@ -102,6 +103,41 @@ layer(TestLayer)('consolidation/interbank-hinted-fee-transfer', it => {
 
     it.effect('uses transaction bank sources when imported accounts do not carry bank sources', () =>
         expectSeededInterbankFeeTransferConsolidates(null, null)
+    );
+
+    it.effect('pairs back-to-back identical interbank fee transfers by time instead of rejecting them as ambiguous', () =>
+        Effect.gen(function* () {
+            const { expense, income, sourceAccount, targetAccount, transferMcc } = yield* seedInterbankFeeTransfer(
+                ExternalSourceEnum.MONOBANK,
+                ExternalSourceEnum.PRIVATBANK,
+                1
+            );
+            const repeatedAt = new Date(expense.operatedAt.getTime() + 2 * 60 * 1000);
+            const repeatedExpense = yield* testSeedService.bankPairExpense(
+                { externalId: 'interbank-fee-repeated-expense', operatedAt: repeatedAt },
+                { accountId: sourceAccount.id, amount: EXPENSE_AMOUNT, mccCategoryId: transferMcc.id }
+            );
+            const repeatedIncome = yield* testSeedService.bankPairIncome(
+                { externalId: 'interbank-fee-repeated-income', operatedAt: new Date(income.operatedAt.getTime() + 2 * 60 * 1000) },
+                { accountId: targetAccount.id, amount: INCOME_AMOUNT, mccCategoryId: transferMcc.id }
+            );
+
+            yield* testSeedService.updateTransaction(repeatedExpense.id, { externalSource: ExternalSourceEnum.MONOBANK });
+            yield* testSeedService.updateTransaction(repeatedIncome.id, { externalSource: ExternalSourceEnum.PRIVATBANK });
+
+            const result = yield* runConsolidation();
+            const parentOf = (transactionId: number) =>
+                Effect.map(
+                    testQueryService.fetchTransactionById(transactionId),
+                    transaction => transaction.consolidationParentTransactionId
+                );
+
+            expect(result.consolidated).toBe(2);
+            expect(yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toHaveLength(2);
+            expect(yield* parentOf(expense.id)).toBe(yield* parentOf(income.id));
+            expect(yield* parentOf(repeatedExpense.id)).toBe(yield* parentOf(repeatedIncome.id));
+            expect(yield* parentOf(expense.id)).not.toBe(yield* parentOf(repeatedExpense.id));
+        })
     );
 
     it.effect('leaves an interbank transfer unconsolidated when another fee-sized income competes for the same expense', () =>
