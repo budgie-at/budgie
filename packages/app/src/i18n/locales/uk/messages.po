@@ -7647,7 +7647,7 @@ msgstr "Недостатньо часток на дату операції"
 
 #: src/yield/hook/use-yield-position-rate-text.hook.ts
 msgid "not in yield"
-msgstr ""
+msgstr "не входить у дохідність"
 
 #: src/transaction/components/transaction-info-yield-source-row/transaction-info-yield-source-row.tsx
 msgid "Not linked"

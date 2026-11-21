@@ -7647,7 +7647,7 @@ msgstr "Am Handelsdatum sind nicht genügend Anteile vorhanden"
 
 #: src/yield/hook/use-yield-position-rate-text.hook.ts
 msgid "not in yield"
-msgstr ""
+msgstr "nicht in der Rendite"
 
 #: src/transaction/components/transaction-info-yield-source-row/transaction-info-yield-source-row.tsx
 msgid "Not linked"

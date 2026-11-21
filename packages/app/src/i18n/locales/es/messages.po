@@ -7647,7 +7647,7 @@ msgstr "No hay suficientes participaciones en la fecha de la operación"
 
 #: src/yield/hook/use-yield-position-rate-text.hook.ts
 msgid "not in yield"
-msgstr ""
+msgstr "no incluido en la rentabilidad"
 
 #: src/transaction/components/transaction-info-yield-source-row/transaction-info-yield-source-row.tsx
 msgid "Not linked"
