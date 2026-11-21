@@ -1,5 +1,5 @@
 import { plural } from '@lingui/core/macro';
-import { useLingui } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { parseISO } from 'date-fns/parseISO';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import { Text, View } from 'react-native';
@@ -32,8 +32,8 @@ export const YieldInfoSheetContent = ({ screenKey }: Props) => {
     const summary = AsyncResult.getOrElse(useLiveAtomValue(yieldSummaryFamily(screenKey.key)), () => null);
 
     const earnedText = t`Income before tax. Crypto is valued at that day’s opening price.`;
-    const yieldText = t`Yield uses the last 12 months across holdings with a rate. Crypto is measured on your whole balance, staked or not. Distributions aren’t counted in yield.`;
-    const outlookText = t`At today’s balances and rates. Holdings left out of yield are not projected.`;
+    const yieldText = t`Earned over the last 12 months divided by the balance that earned it. Holdings without a rate are left out. Crypto uses your whole balance, staked or not. Distributions aren’t counted.`;
+    const outlookText = t`What the next 12 months would earn if balances and rates stay the same. Distributions aren’t projected.`;
     const bottomSpacerStyle = { height: bottom + BOTTOM_PADDING };
     const causes = groupYieldEstimateCauses(summary?.estimateCauses ?? []).map(cause => {
         const days = t({ message: plural(cause.dayCount, { one: '# day', other: '# days' }) });
@@ -56,9 +56,10 @@ export const YieldInfoSheetContent = ({ screenKey }: Props) => {
             contentClassName="gap-y-lg px-3xl"
             testID={PassiveIncomeSelector.InfoSheet}
         >
+            <Text accessibilityRole="header" className="text-[13px] font-semibold text-secondary-foreground">
+                <Trans>Figures</Trans>
+            </Text>
             <YieldInfoSheetBlock title={t`Earned`} body={earnedText} />
-            <YieldInfoSheetBlock title={t`Yield`} body={yieldText} />
-            <YieldInfoSheetBlock title={t`Outlook`} body={outlookText} />
             <YieldInfoSheetBlock title={t`Tax withheld`} body={t`Tax taken at source before payouts reach you.`} />
             <YieldInfoSheetBlock title={t`Net after tax`} body={t`Earned minus tax withheld.`} />
             <YieldInfoSheetBlock title={t`So far`} body={t`The current period isn’t over yet.`} />
@@ -66,6 +67,11 @@ export const YieldInfoSheetContent = ({ screenKey }: Props) => {
                 title={t`Comparison`}
                 body={t`The same length of time just before this range.\nChanges under 2% are shown as flat.`}
             />
+            <Text accessibilityRole="header" className="pt-md text-[13px] font-semibold text-secondary-foreground">
+                <Trans>Rates and estimates</Trans>
+            </Text>
+            <YieldInfoSheetBlock title={t`Yield`} body={yieldText} />
+            <YieldInfoSheetBlock title={t`Outlook`} body={outlookText} />
             <YieldInfoSheetBlock title={t`Estimates`} body={t`≈ marks an estimate: a projection, or a value using an estimated price.`}>
                 {isNotEmptyArray(causes) ? (
                     <View className="gap-y-xs">

@@ -2248,10 +2248,6 @@ msgstr "За сьогоднішніми балансами та ставками
 msgid "At today’s balances and rates · excludes distributions"
 msgstr "За сьогоднішніми балансами та ставками · без виплат фондів"
 
-#: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
-msgid "At today’s balances and rates. Holdings left out of yield are not projected."
-msgstr "За сьогоднішніми балансами та ставками. Активи, виключені з дохідності, не прогнозуються."
-
 #: src/categorize-inbox/components/categorize-inbox-group-attach-debt-option/categorize-inbox-group-attach-debt-option.tsx
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
@@ -4889,6 +4885,10 @@ msgstr "Зароблено за період"
 msgid "Earned minus tax withheld."
 msgstr "Зароблено мінус утриманий податок."
 
+#: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
+msgid "Earned over the last 12 months divided by the balance that earned it. Holdings without a rate are left out. Crypto uses your whole balance, staked or not. Distributions aren’t counted."
+msgstr "Дохід за останні 12 місяців, поділений на баланс, який його приніс. Позиції без ставки не враховуються. Для криптовалюти береться весь баланс, у стейкінгу чи ні. Виплати фондів не враховуються."
+
 #: src/yield/component/yield-hero-caption/yield-hero-caption.tsx
 msgid "Earned since {sinceDate}"
 msgstr "Зароблено з {sinceDate}"
@@ -5479,6 +5479,10 @@ msgstr "Менше місяців"
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 msgid "Field: {label}"
 msgstr "Поле: {label}"
+
+#: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
+msgid "Figures"
+msgstr "Показники"
 
 #: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
 msgid "File"
@@ -8841,6 +8845,10 @@ msgstr "Період, {currentLabel}"
 msgid "Rank"
 msgstr "Рейтинг"
 
+#: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
+msgid "Rates and estimates"
+msgstr "Ставки й оцінки"
+
 #: src/auth/components/pin-sealing-state/pin-sealing-state.tsx
 msgid "Re-encrypting your data. Keep Budgie open, it restarts when finished."
 msgstr "Повторно шифруємо ваші дані. Не закривайте Budgie, після завершення застосунок перезапуститься."
@@ -11971,6 +11979,10 @@ msgstr "Що це?"
 msgid "What it does"
 msgstr "Що вона робить"
 
+#: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
+msgid "What the next 12 months would earn if balances and rates stay the same. Distributions aren’t projected."
+msgstr "Скільки принесуть наступні 12 місяців, якщо баланси й ставки не зміняться. Виплати фондів не прогнозуються."
+
 #: src/runway/component/runway-drivers/runway-drivers.tsx
 msgid "What's driving it"
 msgstr "Що на це впливає"
@@ -12100,10 +12112,6 @@ msgstr "Дохідність"
 #: src/yield/component/yield-breakdown-yield-rate/yield-breakdown-yield-rate.tsx
 msgid "Yield · last 12 months"
 msgstr "Дохідність · останні 12 місяців"
-
-#: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
-msgid "Yield uses the last 12 months across holdings with a rate. Crypto is measured on your whole balance, staked or not. Distributions aren’t counted in yield."
-msgstr "Дохідність враховує останні 12 місяців за позиціями зі ставкою. Криптовалюта вимірюється за всім вашим балансом, у стейкінгу чи ні. Виплати фондів не враховуються в дохідності."
 
 #: src/yield/component/yield-breakdown-vs-rate/yield-breakdown-vs-rate.tsx
 msgid "Yield vs expected"

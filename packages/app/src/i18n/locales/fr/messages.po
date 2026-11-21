@@ -2248,10 +2248,6 @@ msgstr "Aux soldes et taux d’aujourd’hui"
 msgid "At today’s balances and rates · excludes distributions"
 msgstr "Aux soldes et taux d’aujourd’hui · hors distributions"
 
-#: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
-msgid "At today’s balances and rates. Holdings left out of yield are not projected."
-msgstr "Selon les soldes et taux d’aujourd’hui. Les positions exclues du rendement ne sont pas projetées."
-
 #: src/categorize-inbox/components/categorize-inbox-group-attach-debt-option/categorize-inbox-group-attach-debt-option.tsx
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
@@ -4889,6 +4885,10 @@ msgstr "Gagné sur la période"
 msgid "Earned minus tax withheld."
 msgstr "Gagné moins l’impôt retenu."
 
+#: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
+msgid "Earned over the last 12 months divided by the balance that earned it. Holdings without a rate are left out. Crypto uses your whole balance, staked or not. Distributions aren’t counted."
+msgstr "Gains des 12 derniers mois divisés par le solde qui les a générés. Les positions sans taux sont exclues. Les cryptos utilisent tout votre solde, staké ou non. Les distributions ne sont pas comptées."
+
 #: src/yield/component/yield-hero-caption/yield-hero-caption.tsx
 msgid "Earned since {sinceDate}"
 msgstr "Gagné depuis le {sinceDate}"
@@ -5479,6 +5479,10 @@ msgstr "Moins de mois"
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 msgid "Field: {label}"
 msgstr "Champ : {label}"
+
+#: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
+msgid "Figures"
+msgstr "Chiffres"
 
 #: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
 msgid "File"
@@ -8841,6 +8845,10 @@ msgstr "Période, {currentLabel}"
 msgid "Rank"
 msgstr "Rang"
 
+#: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
+msgid "Rates and estimates"
+msgstr "Taux et estimations"
+
 #: src/auth/components/pin-sealing-state/pin-sealing-state.tsx
 msgid "Re-encrypting your data. Keep Budgie open, it restarts when finished."
 msgstr "Rechiffrement de tes données. Garde Budgie ouvert, l'app redémarre une fois terminé."
@@ -11971,6 +11979,10 @@ msgstr "Qu’est-ce que c’est ?"
 msgid "What it does"
 msgstr "Ce qu’elle fait"
 
+#: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
+msgid "What the next 12 months would earn if balances and rates stay the same. Distributions aren’t projected."
+msgstr "Ce que rapporteraient les 12 prochains mois si les soldes et les taux restent identiques. Les distributions ne sont pas projetées."
+
 #: src/runway/component/runway-drivers/runway-drivers.tsx
 msgid "What's driving it"
 msgstr "Ce qui le pousse"
@@ -12100,10 +12112,6 @@ msgstr "Rendement"
 #: src/yield/component/yield-breakdown-yield-rate/yield-breakdown-yield-rate.tsx
 msgid "Yield · last 12 months"
 msgstr "Rendement · 12 derniers mois"
-
-#: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
-msgid "Yield uses the last 12 months across holdings with a rate. Crypto is measured on your whole balance, staked or not. Distributions aren’t counted in yield."
-msgstr "Le rendement utilise les 12 derniers mois sur les positions ayant un taux. Les cryptos sont mesurées sur l’ensemble de votre solde, staké ou non. Les distributions de fonds ne sont pas comptées dans le rendement."
 
 #: src/yield/component/yield-breakdown-vs-rate/yield-breakdown-vs-rate.tsx
 msgid "Yield vs expected"
