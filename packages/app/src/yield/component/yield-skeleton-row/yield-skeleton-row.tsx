@@ -3,6 +3,7 @@ import Animated from 'react-native-reanimated';
 
 import { useSkeletonPulseStyle } from '../../../@generic/hook/use-skeleton-pulse-style/use-skeleton-pulse-style.hook';
 import { TransactionRowSurface } from '../../../transaction/components/transaction-row-surface/transaction-row-surface';
+import { YIELD_ROW_SEPARATOR_INSET } from '../../constant/yield-row-separator-inset.constant';
 import { getYieldRowBorderClassName } from '../../utils/get-yield-row-border-class-name.util';
 
 import type { TransactionListRowPositionEnum } from '../../../transaction/enum/transaction-list-row-position.enum';
@@ -12,7 +13,6 @@ interface Props {
     readonly minHeight?: number;
 }
 
-const SEPARATOR_INSET = 64;
 const DEFAULT_MIN_HEIGHT = 56;
 
 export const YieldSkeletonRow = ({ rowPosition, minHeight = DEFAULT_MIN_HEIGHT }: Props) => {
@@ -20,7 +20,11 @@ export const YieldSkeletonRow = ({ rowPosition, minHeight = DEFAULT_MIN_HEIGHT }
     const rowStyle = [pulseStyle, { minHeight }];
 
     return (
-        <TransactionRowSurface position={rowPosition} separatorInset={SEPARATOR_INSET} className={getYieldRowBorderClassName(rowPosition)}>
+        <TransactionRowSurface
+            position={rowPosition}
+            separatorInset={YIELD_ROW_SEPARATOR_INSET}
+            className={getYieldRowBorderClassName(rowPosition)}
+        >
             <Animated.View
                 style={rowStyle}
                 className="flex-row items-center gap-x-xl px-3xl py-lg"

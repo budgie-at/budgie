@@ -69,7 +69,7 @@ export const YieldEntryRowContent = ({ scope }: Props) => {
                 <YieldRow
                     left={icon}
                     title={t`Passive income`}
-                    subtitle={<YieldRowSubtitle subtitle={subtitle} lines={1} />}
+                    subtitle={<YieldRowSubtitle subtitle={subtitle} />}
                     trailing={trailing}
                     accessibilityLabel={t`Passive income, ${subtitle}`}
                     onPress={handlePress}

@@ -21,7 +21,6 @@ interface Props extends YieldPayoutRowPropsInterface {
     readonly className?: string;
 }
 
-const SUBTITLE_LINES = 1;
 const AMOUNT_CLASSNAME = 'text-[17px] font-semibold tabular-nums';
 const TAX_CLASSNAME = 'text-secondary-foreground';
 const INCOME_CLASSNAME = 'text-primary';
@@ -64,7 +63,7 @@ export const YieldPayoutRowContent = ({ transaction, tax, siblings, isUnassigned
             left={<YieldPayoutIcon kind={kind} cryptoCode={cryptoCode} />}
             title={title}
             className={rowClassName}
-            subtitle={<YieldRowSubtitle subtitle={subtitle} lines={SUBTITLE_LINES} />}
+            subtitle={<YieldRowSubtitle subtitle={subtitle} />}
             trailing={trailing}
             accessibilityLabel={[title, subtitle, trailingText, taxText].filter(isNotEmptyString).join(', ')}
             onPress={handlePress}

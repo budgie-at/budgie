@@ -1,4 +1,5 @@
 import { TransactionRowSurface } from '../../../transaction/components/transaction-row-surface/transaction-row-surface';
+import { YIELD_ROW_SEPARATOR_INSET } from '../../constant/yield-row-separator-inset.constant';
 import { getYieldRowBorderClassName } from '../../utils/get-yield-row-border-class-name.util';
 import { YieldPayoutRowContent } from '../yield-payout-row-content/yield-payout-row-content';
 
@@ -9,10 +10,12 @@ interface Props extends YieldPayoutRowPropsInterface {
     readonly rowPosition: TransactionListRowPositionEnum;
 }
 
-const SEPARATOR_INSET = 64;
-
 export const YieldPayoutRow = ({ rowPosition, ...content }: Props) => (
-    <TransactionRowSurface position={rowPosition} separatorInset={SEPARATOR_INSET} className={getYieldRowBorderClassName(rowPosition)}>
+    <TransactionRowSurface
+        position={rowPosition}
+        separatorInset={YIELD_ROW_SEPARATOR_INSET}
+        className={getYieldRowBorderClassName(rowPosition)}
+    >
         <YieldPayoutRowContent {...content} />
     </TransactionRowSurface>
 );
