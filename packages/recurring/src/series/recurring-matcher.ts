@@ -27,7 +27,7 @@ const matchesMerchant = (
     charge: RecurringChargeInterface,
     chargeIdentity: string
 ): boolean => {
-    if (!isNotEmptyString(description(charge))) {
+    if (!isNotEmptyString(chargeIdentity)) {
         return isDefined(charge.categoryId) && entry.series.categoryId === charge.categoryId;
     }
     if (isNotEmptyString(merchantKey)) {

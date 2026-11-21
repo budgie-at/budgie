@@ -230,5 +230,6 @@ it.effect('links an untitled payment to the series of its category', () =>
         expect(matchRecurringTransactions([untitled], [family]).map(match => match.seriesId)).toEqual([1]);
         expect(matchRecurringTransactions([{ ...untitled, categoryId: 8 }], [family])).toEqual([]);
         expect(matchRecurringTransactions([{ ...untitled, categoryId: null }], [family])).toEqual([]);
+        expect(matchRecurringTransactions([{ ...untitled, counterpartyIban: 'AT611904300234573201' }], [family])).toEqual([]);
     })
 );
