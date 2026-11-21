@@ -835,12 +835,12 @@ msgid "{name} raised to {amountLabel}"
 msgstr "{name} subió a {amountLabel}"
 
 #: src/yield/hook/use-yield-hero-line-text.hook.ts
-msgid "{net} after tax · {tax} tax"
-msgstr "{net} después de impuestos · {tax} de impuestos"
+msgid "{net} · no tax withheld"
+msgstr "{net} · sin retención de impuestos"
 
 #: src/yield/hook/use-yield-hero-line-text.hook.ts
-msgid "{net} after tax · no tax"
-msgstr "{net} después de impuestos · sin impuestos"
+msgid "{net} after tax · {tax} tax"
+msgstr "{net} después de impuestos · {tax} de impuestos"
 
 #: src/yield/hook/use-yield-range-net-text.hook.ts
 msgid "{netText} · {formattedRate} annual yield"

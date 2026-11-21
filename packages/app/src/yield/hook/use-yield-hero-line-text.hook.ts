@@ -29,7 +29,7 @@ export const useYieldHeroLineText = (summary: YieldSummaryInterface, bucket: Yie
     const groupShare = rows.find(row => row.group === screenKey.key.group)?.share;
     const share = formatPercent(groupShare ?? summary.share ?? 0);
     const { net, tax } = formatNet(scrubbedTotal, bucketTax);
-    const scrubText = isPositiveNumber(bucketTax) ? t`${net} after tax · ${tax} tax` : t`${net} after tax · no tax`;
+    const scrubText = isPositiveNumber(bucketTax) ? t`${net} after tax · ${tax} tax` : t`${net} · no tax withheld`;
     const rangeText = useYieldRangeNetText(summary);
     const texts: Record<YieldHeroLineKindEnum, string> = {
         [YieldHeroLineKindEnum.SCRUB_NET]: scrubText,
