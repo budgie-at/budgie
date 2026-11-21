@@ -1,6 +1,7 @@
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { use } from 'react';
+import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -9,7 +10,16 @@ import { useYieldScopeTitle } from '../../hook/use-yield-scope-title.hook';
 import { useYieldSummary } from '../../hook/use-yield-summary.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 import { YieldFilterChip } from '../yield-filter-chip/yield-filter-chip';
-import { YieldScopeChipAvatar } from '../yield-scope-chip-avatar/yield-scope-chip-avatar';
+import { YieldPositionIcon } from '../yield-position-icon/yield-position-icon';
+
+const AVATAR_SIZE = 16;
+const SOURCE_SIZE = 36;
+const SCALED_STYLE = {
+    width: SOURCE_SIZE,
+    height: SOURCE_SIZE,
+    margin: (AVATAR_SIZE - SOURCE_SIZE) / 2,
+    transform: [{ scale: AVATAR_SIZE / SOURCE_SIZE }]
+};
 
 export const YieldScopeFilterChip = () => {
     const { t } = useLingui();
@@ -22,7 +32,13 @@ export const YieldScopeFilterChip = () => {
         ? summary?.positions.find(candidate => candidate.accountId === positionAccountId)
         : summary?.positions.at(0);
     const accessibilityLabel = t`Remove ${scopeTitle} filter`;
-    const avatar = isDefined(position) ? <YieldScopeChipAvatar position={position} /> : null;
+    const avatar = isDefined(position) ? (
+        <View className="size-[16px]" accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+            <View style={SCALED_STYLE}>
+                <YieldPositionIcon position={position} />
+            </View>
+        </View>
+    ) : null;
 
     const handleClear = () => void router.setParams({ position: '', instrument: '', focus: '' });
 

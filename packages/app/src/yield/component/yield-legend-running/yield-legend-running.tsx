@@ -2,7 +2,7 @@ import { YieldRangeEnum } from '@budgie/market';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { use } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -14,9 +14,7 @@ import { useYieldSummary } from '../../hook/use-yield-summary.hook';
 import { buildYieldRunningTotal } from '../../utils/build-yield-running-total.util';
 import { YieldLegendFootnote } from '../yield-legend-footnote/yield-legend-footnote';
 import { YieldLegendHeader } from '../yield-legend-header/yield-legend-header';
-import { YieldLegendLineSwatch } from '../yield-legend-line-swatch/yield-legend-line-swatch';
-
-const AMOUNT_CLASSNAME = 'text-sm font-semibold tabular-nums text-primary';
+import { YieldLegendRunningRow } from '../yield-legend-running-row/yield-legend-running-row';
 
 export const YieldLegendRunning = () => {
     const { t } = useLingui();
@@ -39,25 +37,21 @@ export const YieldLegendRunning = () => {
         <View className="gap-y-xs" accessibilityLabel={t`Running total legend`}>
             <YieldLegendHeader title={t`Running total`} />
             <View className="gap-y-xs">
-                <View
-                    accessible
+                <YieldLegendRunningRow
+                    label={currentLabel}
+                    amount={currentAmount}
                     accessibilityLabel={t`${currentLabel}, ${currentAmount}`}
-                    className="min-h-[24px] flex-row items-center gap-x-[8px]"
-                >
-                    <YieldLegendLineSwatch strokeClassName="accent-positive-action" strokeWidth={2} />
-                    <Text className="flex-1 text-sm text-primary">{currentLabel}</Text>
-                    <Text className={AMOUNT_CLASSNAME}>{currentAmount}</Text>
-                </View>
+                    strokeClassName="accent-positive-action"
+                    strokeWidth={2}
+                />
                 {isDefined(prior) ? (
-                    <View
-                        accessible
+                    <YieldLegendRunningRow
+                        label={priorLabel}
+                        amount={priorAmount}
                         accessibilityLabel={t`${priorLabel}, ${priorAmount}`}
-                        className="min-h-[24px] flex-row items-center gap-x-[8px]"
-                    >
-                        <YieldLegendLineSwatch strokeClassName="accent-secondary-foreground/60" strokeWidth={1.5} />
-                        <Text className="flex-1 text-sm text-primary">{priorLabel}</Text>
-                        <Text className={AMOUNT_CLASSNAME}>{priorAmount}</Text>
-                    </View>
+                        strokeClassName="accent-secondary-foreground/60"
+                        strokeWidth={1.5}
+                    />
                 ) : null}
             </View>
             <YieldLegendFootnote />

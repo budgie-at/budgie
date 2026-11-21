@@ -206,7 +206,7 @@ msgstr "{accountCount, plural, one {# cuenta} other {# cuentas}}"
 msgid "{accountsCount, plural, one {# account} other {# accounts}}"
 msgstr "{accountsCount, plural, one {# cuenta} other {# cuentas}}"
 
-#: src/yield/component/yield-breakdown-vs-rate/yield-breakdown-vs-rate.tsx
+#: src/yield/hook/use-yield-breakdown-rows.hook.ts
 msgid "{actual} vs {expected}"
 msgstr "{actual} vs {expected}"
 
@@ -250,7 +250,7 @@ msgstr "{approximate}{formattedRate} al año"
 msgid "{approxTransactions, plural, one {about # transaction} other {about # transactions}}"
 msgstr "{approxTransactions, plural, one {unas # transacción} other {unas # transacciones}}"
 
-#: src/yield/component/yield-breakdown-crypto-today/yield-breakdown-crypto-today.tsx
+#: src/yield/hook/use-yield-breakdown-rows.hook.ts
 msgid "{arrival} when received"
 msgstr "{arrival} al recibirse"
 
@@ -362,11 +362,6 @@ msgstr "{count, plural, one {# transacción existente coincide con esta regla.} 
 #: src/installment-plan/component/installment-count-chip/installment-count-chip.tsx
 msgid "{count, plural, one {# month} other {# months}}"
 msgstr "{count, plural, one {# mes} other {# meses}}"
-
-#. js-lingui-explicit-id
-#: src/yield/component/yield-chart-summary-text/yield-chart-summary-text.tsx
-msgid "passive-income.payouts.summary"
-msgstr "{count, plural, one {# pago · {amount} · {lastPayout}} other {# pagos · {amount} · {lastPayout}} many {# pagos · {amount} · {lastPayout}}}"
 
 #. js-lingui-explicit-id
 #: src/yield/component/yield-chart-summary/yield-chart-summary.tsx
@@ -1290,7 +1285,7 @@ msgstr "+{incomeAmount} / mes"
 msgid "<0>Paused</0> · not in your total"
 msgstr "<0>En pausa</0> · no se incluye en tu total"
 
-#: src/yield/component/yield-breakdown-tax/yield-breakdown-tax.tsx
+#: src/yield/hook/use-yield-breakdown-rows.hook.ts
 msgid "−{amount}"
 msgstr "−{amount}"
 
@@ -1302,8 +1297,8 @@ msgstr "−{carriedLabel} arrastrados"
 msgid "−{changePercent} vs {shortPreviousLabel}"
 msgstr "−{changePercent} vs. {shortPreviousLabel}"
 
-#: src/yield/component/yield-breakdown-crypto-today/yield-breakdown-crypto-today.tsx
 #: src/yield/component/yield-breakdown-run-rate/yield-breakdown-run-rate.tsx
+#: src/yield/hook/use-yield-breakdown-rows.hook.ts
 msgid "≈ {amount}"
 msgstr "≈ {amount}"
 
@@ -1312,7 +1307,7 @@ msgstr "≈ {amount}"
 msgid "≈ {formattedMonths} mo"
 msgstr "≈ {formattedMonths} m."
 
-#: src/yield/component/yield-breakdown-yield-rate/yield-breakdown-yield-rate.tsx
+#: src/yield/hook/use-yield-breakdown-rows.hook.ts
 msgid "≈ {formattedRate}"
 msgstr "≈ {formattedRate}"
 
@@ -1476,7 +1471,7 @@ msgstr "Alrededor de un minuto"
 msgid "about once a day"
 msgstr "aproximadamente una vez al día"
 
-#: src/yield/component/yield-hero-scrub-previous-chip/yield-hero-scrub-previous-chip.tsx
+#: src/yield/hook/use-yield-scrub-caption.hook.ts
 msgid "about the same as {previousLabel}"
 msgstr "casi igual que {previousLabel}"
 
@@ -1496,11 +1491,11 @@ msgstr "casi igual que los 30 días anteriores"
 msgid "about the same as previous period"
 msgstr "casi igual que el periodo anterior"
 
-#: src/yield/component/yield-hero-scrub-delta/yield-hero-scrub-delta.tsx
+#: src/yield/hook/use-yield-scrub-caption.hook.ts
 msgid "about the same as this point last period"
 msgstr "más o menos igual que en el mismo punto del periodo anterior"
 
-#: src/yield/component/yield-hero-scrub-delta/yield-hero-scrub-delta.tsx
+#: src/yield/hook/use-yield-scrub-caption.hook.ts
 msgid "about the same as this point last year"
 msgstr "más o menos igual que en el mismo punto del año pasado"
 
@@ -2507,7 +2502,7 @@ msgstr "Se convierte en una transferencia a tu cartera de efectivo"
 msgid "before tax"
 msgstr "antes de impuestos"
 
-#: src/yield/component/yield-breakdown-monthly-average/yield-breakdown-monthly-average.tsx
+#: src/yield/hook/use-yield-breakdown-rows.hook.ts
 msgid "Before tax"
 msgstr "Antes de impuestos"
 
@@ -4229,7 +4224,7 @@ msgstr "Cripto"
 msgid "Crypto Account"
 msgstr "Cuenta cripto"
 
-#: src/yield/component/yield-breakdown-crypto-today/yield-breakdown-crypto-today.tsx
+#: src/yield/hook/use-yield-breakdown-rows.hook.ts
 msgid "Crypto rewards at today’s prices"
 msgstr "Recompensas cripto a precios de hoy"
 
@@ -6973,7 +6968,7 @@ msgid "Monthly"
 msgstr "Mensualmente"
 
 #: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
-#: src/yield/component/yield-breakdown-monthly-average/yield-breakdown-monthly-average.tsx
+#: src/yield/hook/use-yield-breakdown-rows.hook.ts
 msgid "Monthly average"
 msgstr "Promedio mensual"
 
@@ -7120,8 +7115,8 @@ msgstr "Por revisar"
 msgid "Net"
 msgstr "Neto"
 
-#: src/yield/component/yield-breakdown-net/yield-breakdown-net.tsx
 #: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
+#: src/yield/hook/use-yield-breakdown-rows.hook.ts
 msgid "Net after tax"
 msgstr "Neto después de impuestos"
 
@@ -10599,10 +10594,10 @@ msgstr "Impuesto {taxLabel}"
 msgid "Tax taken at source before payouts reach you."
 msgstr "Impuesto retenido en origen antes de que los pagos lleguen a ti."
 
-#: src/yield/component/yield-breakdown-tax/yield-breakdown-tax.tsx
 #: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
 #: src/yield/constant/yield-group-label.constant.ts
 #: src/yield/constant/yield-kind-label.constant.ts
+#: src/yield/hook/use-yield-breakdown-rows.hook.ts
 msgid "Tax withheld"
 msgstr "Impuesto retenido"
 
@@ -11839,7 +11834,7 @@ msgstr "Notas de voz"
 msgid "Volume (24h)"
 msgstr "Volumen (24 h)"
 
-#: src/yield/component/yield-hero-scrub-previous-chip/yield-hero-scrub-previous-chip.tsx
+#: src/yield/hook/use-yield-scrub-caption.hook.ts
 msgid "vs {previousLabel}"
 msgstr "frente a {previousLabel}"
 
@@ -11859,11 +11854,11 @@ msgstr "frente a los 30 días anteriores"
 msgid "vs previous period"
 msgstr "frente al periodo anterior"
 
-#: src/yield/component/yield-hero-scrub-delta/yield-hero-scrub-delta.tsx
+#: src/yield/hook/use-yield-scrub-caption.hook.ts
 msgid "vs same point last period"
 msgstr "vs mismo punto del periodo anterior"
 
-#: src/yield/component/yield-hero-scrub-delta/yield-hero-scrub-delta.tsx
+#: src/yield/hook/use-yield-scrub-caption.hook.ts
 msgid "vs same point last year"
 msgstr "vs mismo punto del año pasado"
 
@@ -12101,11 +12096,11 @@ msgstr "Ayer"
 msgid "Yield"
 msgstr "Rendimiento"
 
-#: src/yield/component/yield-breakdown-yield-rate/yield-breakdown-yield-rate.tsx
+#: src/yield/hook/use-yield-breakdown-rows.hook.ts
 msgid "Yield · last 12 months"
 msgstr "Rendimiento · últimos 12 meses"
 
-#: src/yield/component/yield-breakdown-vs-rate/yield-breakdown-vs-rate.tsx
+#: src/yield/hook/use-yield-breakdown-rows.hook.ts
 msgid "Yield vs expected"
 msgstr "Rendimiento vs. esperado"
 

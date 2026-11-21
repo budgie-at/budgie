@@ -3,14 +3,15 @@ import { Text, View } from 'react-native';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { ROW_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-max-font-size-multiplier.constant';
 import { cn } from '../../../@generic/utils/cn.util';
+import { YieldRowChevron } from '../yield-row-chevron/yield-row-chevron';
 
 import type { ReactNode } from 'react';
 
 interface Props {
-    readonly left: ReactNode;
+    readonly left?: ReactNode;
     readonly title: string;
-    readonly subtitle: ReactNode;
-    readonly trailing: ReactNode;
+    readonly subtitle?: ReactNode;
+    readonly trailing?: ReactNode;
     readonly accessibilityLabel: string;
     readonly onPress: () => void;
     readonly testID: string;
@@ -35,6 +36,9 @@ export const YieldRow = ({ left, title, subtitle, trailing, accessibilityLabel, 
             </Text>
             {subtitle}
         </View>
-        <View className="shrink-0 items-end">{trailing}</View>
+        <View className="shrink-0 flex-row items-center gap-x-sm">
+            {trailing}
+            <YieldRowChevron />
+        </View>
     </HapticPressable>
 );

@@ -1,30 +1,20 @@
 import { YieldRangeEnum } from '@budgie/market';
-import { useAtomSet } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
-import { router } from 'expo-router';
-import { use } from 'react';
 
 import { TransactionRowSurface } from '../../../transaction/components/transaction-row-surface/transaction-row-surface';
 import { TransactionListRowPositionEnum } from '../../../transaction/enum/transaction-list-row-position.enum';
-import { yieldRangeAtom } from '../../constant/yield-range-atom.constant';
-import { YieldSelectionContext } from '../../context/yield-selection.context';
+import { useYieldRangeChange } from '../../hook/use-yield-range-change.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 import { getYieldRowBorderClassName } from '../../utils/get-yield-row-border-class-name.util';
-import { YieldRowChevron } from '../yield-row-chevron/yield-row-chevron';
 import { YieldRow } from '../yield-row/yield-row';
 
 export const YieldOlderPayoutsRow = () => {
     const { t } = useLingui();
-    const setRange = useAtomSet(yieldRangeAtom);
-    const { cancelScrub } = use(YieldSelectionContext);
+    const changeRange = useYieldRangeChange();
 
     const title = t`Older payouts · All time`;
 
-    const handlePress = () => {
-        cancelScrub();
-        setRange(YieldRangeEnum.ALL);
-        router.setParams({ range: YieldRangeEnum.ALL, focus: '' });
-    };
+    const handlePress = () => void changeRange(YieldRangeEnum.ALL);
 
     return (
         <TransactionRowSurface
@@ -32,15 +22,7 @@ export const YieldOlderPayoutsRow = () => {
             separatorInset={0}
             className={getYieldRowBorderClassName(TransactionListRowPositionEnum.SINGLE)}
         >
-            <YieldRow
-                left={null}
-                title={title}
-                subtitle={null}
-                trailing={<YieldRowChevron />}
-                accessibilityLabel={title}
-                onPress={handlePress}
-                testID={PassiveIncomeSelector.OlderPayouts}
-            />
+            <YieldRow title={title} accessibilityLabel={title} onPress={handlePress} testID={PassiveIncomeSelector.OlderPayouts} />
         </TransactionRowSurface>
     );
 };

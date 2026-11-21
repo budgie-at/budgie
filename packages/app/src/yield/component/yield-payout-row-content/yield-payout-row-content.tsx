@@ -1,7 +1,6 @@
 import { TransactionTypeEnum } from '@budgie/contracts';
 import { router } from 'expo-router';
 import { use } from 'react';
-import { View } from 'react-native';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
@@ -13,7 +12,6 @@ import { useYieldPayoutRowText } from '../../hook/use-yield-payout-row-text.hook
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 import { YieldPayoutIcon } from '../yield-payout-icon/yield-payout-icon';
 import { YieldPayoutTrailing } from '../yield-payout-trailing/yield-payout-trailing';
-import { YieldRowChevron } from '../yield-row-chevron/yield-row-chevron';
 import { YieldRowSubtitle } from '../yield-row-subtitle/yield-row-subtitle';
 import { YieldRow } from '../yield-row/yield-row';
 
@@ -59,12 +57,7 @@ export const YieldPayoutRowContent = ({ transaction, tax, siblings, isUnassigned
     const rowClassName = cn(isMerged && 'min-h-[64px]', className);
     const amountClassName = cn(AMOUNT_CLASSNAME, isTax ? TAX_CLASSNAME : INCOME_CLASSNAME);
 
-    const trailing = (
-        <View className="flex-row items-center gap-x-sm">
-            <YieldPayoutTrailing amount={trailingText} amountClassName={amountClassName} taxText={taxText} />
-            <YieldRowChevron />
-        </View>
-    );
+    const trailing = <YieldPayoutTrailing amount={trailingText} amountClassName={amountClassName} taxText={taxText} />;
 
     return (
         <YieldRow

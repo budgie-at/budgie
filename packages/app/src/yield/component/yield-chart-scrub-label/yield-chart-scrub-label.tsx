@@ -14,14 +14,13 @@ interface Props {
     readonly plotWidth: number;
 }
 
-const LABEL_TOP = 0;
 const WRAPPER_SPANS = 2;
 const HALF = 2;
 
 export const YieldChartScrubLabel = ({ title, x, plotWidth }: Props) => {
     const [measuredWidth, setMeasuredWidth] = useState<number | null>(null);
 
-    const wrapperStyle = { left: x - plotWidth, width: plotWidth * WRAPPER_SPANS, top: LABEL_TOP };
+    const wrapperStyle = { left: x - plotWidth, width: plotWidth * WRAPPER_SPANS, top: 0 };
     const shift = isDefined(measuredWidth) ? clampYieldLabelLeft(x, measuredWidth, 0, plotWidth) - (x - measuredWidth / HALF) : 0;
     const style = { transform: [{ translateX: shift }] };
 

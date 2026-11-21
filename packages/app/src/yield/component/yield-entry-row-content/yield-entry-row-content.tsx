@@ -4,7 +4,7 @@ import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import { router } from 'expo-router';
-import { Text, View } from 'react-native';
+import { Text } from 'react-native';
 import Animated from 'react-native-reanimated';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
@@ -18,7 +18,6 @@ import { yieldSummaryFamily } from '../../constant/yield-summary-family-atom.con
 import { useYieldEntrySubtitle } from '../../hook/use-yield-entry-subtitle.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 import { YieldGroupIcon } from '../yield-group-icon/yield-group-icon';
-import { YieldRowChevron } from '../yield-row-chevron/yield-row-chevron';
 import { YieldRowSubtitle } from '../yield-row-subtitle/yield-row-subtitle';
 import { YieldRow } from '../yield-row/yield-row';
 
@@ -60,6 +59,10 @@ export const YieldEntryRowContent = ({ scope }: Props) => {
         <GroupedListIcon icon={UserIconNameEnum.Sprout} />
     );
 
+    const trailing = isNotEmptyString(earned) ? (
+        <Text className="text-[17px] font-semibold tabular-nums text-primary">{earned}</Text>
+    ) : null;
+
     return (
         <Animated.View entering={PRESENCE_ENTERING}>
             <GroupedListSection>
@@ -67,14 +70,7 @@ export const YieldEntryRowContent = ({ scope }: Props) => {
                     left={icon}
                     title={t`Passive income`}
                     subtitle={<YieldRowSubtitle subtitle={subtitle} lines={1} />}
-                    trailing={
-                        <View className="flex-row items-center gap-x-sm">
-                            {isNotEmptyString(earned) ? (
-                                <Text className="text-[17px] font-semibold tabular-nums text-primary">{earned}</Text>
-                            ) : null}
-                            <YieldRowChevron />
-                        </View>
-                    }
+                    trailing={trailing}
                     accessibilityLabel={t`Passive income, ${subtitle}`}
                     onPress={handlePress}
                     testID={PassiveIncomeSelector.EntryRow}

@@ -8,19 +8,20 @@ interface Props {
     readonly value: string;
     readonly subtitle?: string;
     readonly testID: string;
+    readonly valueClassName?: string;
 }
 
 const ROW_STYLE = { style: { minHeight: YIELD_BREAKDOWN_ROW_MIN_HEIGHT } };
 const VALUE_CLASSNAME = 'text-right text-[17px] font-semibold tabular-nums text-primary';
 
-export const YieldBreakdownRow = ({ title, value, subtitle, testID }: Props) => (
+export const YieldBreakdownRow = ({ title, value, subtitle, testID, valueClassName = VALUE_CLASSNAME }: Props) => (
     <GroupedListRow
         title={title}
         subtitle={subtitle}
         testID={testID}
         pressableProps={ROW_STYLE}
         right={
-            <Text className={VALUE_CLASSNAME} maxFontSizeMultiplier={2}>
+            <Text className={valueClassName} maxFontSizeMultiplier={2}>
                 {value}
             </Text>
         }

@@ -206,7 +206,7 @@ msgstr "{accountCount, plural, one {# рахунок} few {# рахунки} man
 msgid "{accountsCount, plural, one {# account} other {# accounts}}"
 msgstr "{accountsCount, plural, one {# рахунок} few {# рахунки} many {# рахунків} other {# рахунка}}"
 
-#: src/yield/component/yield-breakdown-vs-rate/yield-breakdown-vs-rate.tsx
+#: src/yield/hook/use-yield-breakdown-rows.hook.ts
 msgid "{actual} vs {expected}"
 msgstr "{actual} проти {expected}"
 
@@ -250,7 +250,7 @@ msgstr "{approximate}{formattedRate} на рік"
 msgid "{approxTransactions, plural, one {about # transaction} other {about # transactions}}"
 msgstr "{approxTransactions, plural, one {близько # транзакції} few {близько # транзакцій} many {близько # транзакцій} other {близько # транзакції}}"
 
-#: src/yield/component/yield-breakdown-crypto-today/yield-breakdown-crypto-today.tsx
+#: src/yield/hook/use-yield-breakdown-rows.hook.ts
 msgid "{arrival} when received"
 msgstr "{arrival} після отримання"
 
@@ -362,11 +362,6 @@ msgstr "{count, plural, one {# наявна транзакція відпові�
 #: src/installment-plan/component/installment-count-chip/installment-count-chip.tsx
 msgid "{count, plural, one {# month} other {# months}}"
 msgstr "{count, plural, one {# місяць} few {# місяці} many {# місяців} other {# місяця}}"
-
-#. js-lingui-explicit-id
-#: src/yield/component/yield-chart-summary-text/yield-chart-summary-text.tsx
-msgid "passive-income.payouts.summary"
-msgstr "{count, plural, one {# виплата · {amount} · {lastPayout}} few {# виплати · {amount} · {lastPayout}} many {# виплат · {amount} · {lastPayout}} other {# виплати · {amount} · {lastPayout}}}"
 
 #. js-lingui-explicit-id
 #: src/yield/component/yield-chart-summary/yield-chart-summary.tsx
@@ -1290,7 +1285,7 @@ msgstr "+{incomeAmount} / міс."
 msgid "<0>Paused</0> · not in your total"
 msgstr "<0>Призупинено</0> · не враховується у підсумку"
 
-#: src/yield/component/yield-breakdown-tax/yield-breakdown-tax.tsx
+#: src/yield/hook/use-yield-breakdown-rows.hook.ts
 msgid "−{amount}"
 msgstr "−{amount}"
 
@@ -1302,8 +1297,8 @@ msgstr "−{carriedLabel} перенесено"
 msgid "−{changePercent} vs {shortPreviousLabel}"
 msgstr "−{changePercent} до {shortPreviousLabel}"
 
-#: src/yield/component/yield-breakdown-crypto-today/yield-breakdown-crypto-today.tsx
 #: src/yield/component/yield-breakdown-run-rate/yield-breakdown-run-rate.tsx
+#: src/yield/hook/use-yield-breakdown-rows.hook.ts
 msgid "≈ {amount}"
 msgstr "≈ {amount}"
 
@@ -1312,7 +1307,7 @@ msgstr "≈ {amount}"
 msgid "≈ {formattedMonths} mo"
 msgstr "≈ {formattedMonths} міс."
 
-#: src/yield/component/yield-breakdown-yield-rate/yield-breakdown-yield-rate.tsx
+#: src/yield/hook/use-yield-breakdown-rows.hook.ts
 msgid "≈ {formattedRate}"
 msgstr "≈ {formattedRate}"
 
@@ -1476,7 +1471,7 @@ msgstr "Близько хвилини"
 msgid "about once a day"
 msgstr "приблизно раз на день"
 
-#: src/yield/component/yield-hero-scrub-previous-chip/yield-hero-scrub-previous-chip.tsx
+#: src/yield/hook/use-yield-scrub-caption.hook.ts
 msgid "about the same as {previousLabel}"
 msgstr "приблизно як {previousLabel}"
 
@@ -1496,11 +1491,11 @@ msgstr "приблизно як попередні 30 днів"
 msgid "about the same as previous period"
 msgstr "приблизно як попередній період"
 
-#: src/yield/component/yield-hero-scrub-delta/yield-hero-scrub-delta.tsx
+#: src/yield/hook/use-yield-scrub-caption.hook.ts
 msgid "about the same as this point last period"
 msgstr "приблизно як на цей момент попереднього періоду"
 
-#: src/yield/component/yield-hero-scrub-delta/yield-hero-scrub-delta.tsx
+#: src/yield/hook/use-yield-scrub-caption.hook.ts
 msgid "about the same as this point last year"
 msgstr "приблизно як на цей момент минулого року"
 
@@ -2507,7 +2502,7 @@ msgstr "Стане переказом до вашого гаманця готі�
 msgid "before tax"
 msgstr "до оподаткування"
 
-#: src/yield/component/yield-breakdown-monthly-average/yield-breakdown-monthly-average.tsx
+#: src/yield/hook/use-yield-breakdown-rows.hook.ts
 msgid "Before tax"
 msgstr "До оподаткування"
 
@@ -4229,7 +4224,7 @@ msgstr "Криптовалюта"
 msgid "Crypto Account"
 msgstr "Крипторахунок"
 
-#: src/yield/component/yield-breakdown-crypto-today/yield-breakdown-crypto-today.tsx
+#: src/yield/hook/use-yield-breakdown-rows.hook.ts
 msgid "Crypto rewards at today’s prices"
 msgstr "Криптовинагороди за сьогоднішніми цінами"
 
@@ -6973,7 +6968,7 @@ msgid "Monthly"
 msgstr "Щомісяця"
 
 #: src/recurring/components/recurring-summary-card/recurring-summary-card.tsx
-#: src/yield/component/yield-breakdown-monthly-average/yield-breakdown-monthly-average.tsx
+#: src/yield/hook/use-yield-breakdown-rows.hook.ts
 msgid "Monthly average"
 msgstr "У середньому на місяць"
 
@@ -7120,8 +7115,8 @@ msgstr "Потребують перевірки"
 msgid "Net"
 msgstr "Чистий"
 
-#: src/yield/component/yield-breakdown-net/yield-breakdown-net.tsx
 #: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
+#: src/yield/hook/use-yield-breakdown-rows.hook.ts
 msgid "Net after tax"
 msgstr "Чистий дохід після податку"
 
@@ -10599,10 +10594,10 @@ msgstr "Податок {taxLabel}"
 msgid "Tax taken at source before payouts reach you."
 msgstr "Податок, утриманий біля джерела до надходження виплат."
 
-#: src/yield/component/yield-breakdown-tax/yield-breakdown-tax.tsx
 #: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
 #: src/yield/constant/yield-group-label.constant.ts
 #: src/yield/constant/yield-kind-label.constant.ts
+#: src/yield/hook/use-yield-breakdown-rows.hook.ts
 msgid "Tax withheld"
 msgstr "Утриманий податок"
 
@@ -11839,7 +11834,7 @@ msgstr "Голосові нотатки"
 msgid "Volume (24h)"
 msgstr "Обсяг (24 год)"
 
-#: src/yield/component/yield-hero-scrub-previous-chip/yield-hero-scrub-previous-chip.tsx
+#: src/yield/hook/use-yield-scrub-caption.hook.ts
 msgid "vs {previousLabel}"
 msgstr "проти {previousLabel}"
 
@@ -11859,11 +11854,11 @@ msgstr "проти попередніх 30 днів"
 msgid "vs previous period"
 msgstr "проти попереднього періоду"
 
-#: src/yield/component/yield-hero-scrub-delta/yield-hero-scrub-delta.tsx
+#: src/yield/hook/use-yield-scrub-caption.hook.ts
 msgid "vs same point last period"
 msgstr "порівняно з тим самим моментом попереднього періоду"
 
-#: src/yield/component/yield-hero-scrub-delta/yield-hero-scrub-delta.tsx
+#: src/yield/hook/use-yield-scrub-caption.hook.ts
 msgid "vs same point last year"
 msgstr "порівняно з тим самим моментом минулого року"
 
@@ -12101,11 +12096,11 @@ msgstr "Вчора"
 msgid "Yield"
 msgstr "Дохідність"
 
-#: src/yield/component/yield-breakdown-yield-rate/yield-breakdown-yield-rate.tsx
+#: src/yield/hook/use-yield-breakdown-rows.hook.ts
 msgid "Yield · last 12 months"
 msgstr "Дохідність · останні 12 місяців"
 
-#: src/yield/component/yield-breakdown-vs-rate/yield-breakdown-vs-rate.tsx
+#: src/yield/hook/use-yield-breakdown-rows.hook.ts
 msgid "Yield vs expected"
 msgstr "Дохідність проти очікуваної"
 

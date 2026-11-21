@@ -7,7 +7,8 @@ import { isDefined } from '@rnw-community/shared';
 import { CHROME_TITLE_TEXT_PROPS } from '../../../@generic/constant/chrome-title-text-props.constant';
 import { YieldScreenContext } from '../../context/yield-screen.context';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
-import { YieldFilterChipRow } from '../yield-filter-chip-row/yield-filter-chip-row';
+import { YieldKindFilterChip } from '../yield-kind-filter-chip/yield-kind-filter-chip';
+import { YieldScopeFilterChip } from '../yield-scope-filter-chip/yield-scope-filter-chip';
 
 interface Props {
     readonly hasYield: boolean;
@@ -16,7 +17,8 @@ interface Props {
 export const YieldScreenTitle = ({ hasYield }: Props) => {
     const { screenKey } = use(YieldScreenContext);
 
-    const isFiltered = isDefined(screenKey.scopeId) || isDefined(screenKey.key.group);
+    const { group } = screenKey.key;
+    const isFiltered = isDefined(screenKey.scopeId) || isDefined(group);
     const hasChip = isFiltered && hasYield;
     const isSubtitleVisible = !isFiltered && hasYield;
 
@@ -30,7 +32,12 @@ export const YieldScreenTitle = ({ hasYield }: Props) => {
                 <Trans>Passive income</Trans>
             </Text>
             <View className="min-h-[36px] justify-center">
-                {hasChip ? <YieldFilterChipRow /> : null}
+                {hasChip ? (
+                    <View className="h-[36px] flex-row items-center gap-x-sm">
+                        {isDefined(screenKey.scopeId) ? <YieldScopeFilterChip /> : null}
+                        {isDefined(group) ? <YieldKindFilterChip group={group} /> : null}
+                    </View>
+                ) : null}
                 {isSubtitleVisible ? (
                     <Text testID={PassiveIncomeSelector.Subtitle} className="text-sm text-secondary-foreground" maxFontSizeMultiplier={1.6}>
                         <Trans>All holdings</Trans>

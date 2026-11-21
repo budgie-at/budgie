@@ -38,7 +38,7 @@ const labelVariants = cva('shrink text-xs font-semibold tabular-nums', {
     }
 });
 
-export const YieldDeltaPill = ({ label, tone, caption = '', testID, maxFontSizeMultiplier }: Props) => {
+export const YieldDeltaPill = ({ label, tone, caption = '', testID, maxFontSizeMultiplier = 2 }: Props) => {
     const isAccessibilityText = useIsAccessibilityTextSize();
 
     const className = labelVariants({ tone });

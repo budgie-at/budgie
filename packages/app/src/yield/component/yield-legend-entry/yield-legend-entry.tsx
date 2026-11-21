@@ -5,23 +5,21 @@ import { Text, View } from 'react-native';
 import { isNotEmptyString } from '@rnw-community/shared';
 
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
-import { useIsIncreaseContrast } from '../../../@generic/hook/use-is-increase-contrast.hook';
 import { cn } from '../../../@generic/utils/cn.util';
-import { YIELD_GROUP_COLOR } from '../../constant/yield-group-color.constant';
-
-import type { YieldGroupEnum as YieldGroupType } from '@budgie/market';
+import { useYieldGroupColor } from '../../hook/use-yield-group-color.hook';
 
 interface Props {
-    readonly group: YieldGroupType;
+    readonly group: YieldGroupEnum;
     readonly label: string;
     readonly amount: string;
-    readonly amountClassName: string;
     readonly share?: string | null;
     readonly isMuted?: boolean;
     readonly isEmpty?: boolean;
 }
 
 const LEGEND_MAX_FONT_SIZE_MULTIPLIER = 1.6;
+const AMOUNT_CLASSNAME = 'text-right text-sm font-semibold tabular-nums text-primary';
+const MUTED_AMOUNT_CLASSNAME = 'text-right text-sm tabular-nums text-secondary-foreground';
 
 const labelVariants = cva('flex-1 shrink text-sm leading-[20px]', {
     variants: {
@@ -33,16 +31,13 @@ const amountsVariants = cva('shrink-0 flex-row items-baseline justify-end gap-x-
     variants: { isAccessibilityText: { true: 'ml-[20px] self-start', false: '' } }
 });
 
-export const YieldLegendEntry = ({ group, label, amount, amountClassName, share, isMuted = false, isEmpty = false }: Props) => {
-    const isIncreaseContrast = useIsIncreaseContrast();
+export const YieldLegendEntry = ({ group, label, amount, share, isMuted = false, isEmpty = false }: Props) => {
+    const { background } = useYieldGroupColor(group);
     const isAccessibilityText = useIsAccessibilityTextSize();
 
     const isTax = group === YieldGroupEnum.TAX;
-    const dotClassName = cn(
-        isTax ? 'bg-secondary-foreground/70' : YIELD_GROUP_COLOR[group][isIncreaseContrast ? 'backgroundContrast' : 'background'],
-        isMuted && 'opacity-60',
-        isEmpty && 'opacity-40'
-    );
+    const dotClassName = cn(isTax ? 'bg-secondary-foreground/70' : background, isMuted && 'opacity-60', isEmpty && 'opacity-40');
+    const amountClassName = isMuted ? MUTED_AMOUNT_CLASSNAME : AMOUNT_CLASSNAME;
     const labelClassName = labelVariants({ isEmpty, isMuted });
     const amountsClassName = amountsVariants({ isAccessibilityText });
     const shapeClassName = isTax ? 'rounded-[2px]' : 'rounded-full';
@@ -64,7 +59,7 @@ export const YieldLegendEntry = ({ group, label, amount, amountClassName, share,
             ) : null}
             <Text
                 numberOfLines={1}
-                className={cn('text-right', amountClassName, isEmpty && 'text-secondary-foreground')}
+                className={cn(amountClassName, isEmpty && 'text-secondary-foreground')}
                 maxFontSizeMultiplier={LEGEND_MAX_FONT_SIZE_MULTIPLIER}
             >
                 {amount}

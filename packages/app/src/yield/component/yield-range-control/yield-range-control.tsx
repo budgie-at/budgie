@@ -1,9 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { YieldRangeEnum } from '@budgie/market';
-import { useAtomSet } from '@effect/atom-react/Hooks';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
-import { router } from 'expo-router';
 import { use } from 'react';
 import { Text, View } from 'react-native';
 
@@ -12,10 +10,9 @@ import { Icon } from '../../../@generic/component/icon/icon';
 import { SegmentedControl } from '../../../@generic/component/segmented-control/segmented-control';
 import { HapticPressFeedbackEnum } from '../../../@generic/enum/haptic-press-feedback.enum';
 import { useIsLargeText } from '../../../@generic/hook/use-is-large-text.hook';
-import { yieldRangeAtom } from '../../constant/yield-range-atom.constant';
 import { YIELD_RANGE_LABEL } from '../../constant/yield-range-label.constant';
 import { YieldScreenContext } from '../../context/yield-screen.context';
-import { YieldSelectionContext } from '../../context/yield-selection.context';
+import { useYieldRangeChange } from '../../hook/use-yield-range-change.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 import { YieldRangeMenuItem } from '../yield-range-menu-item/yield-range-menu-item';
 
@@ -31,15 +28,8 @@ const RANGE_MAX_FONT_SIZE_MULTIPLIER = 1.4;
 export const YieldRangeControl = () => {
     const { t } = useLingui();
     const isLargeText = useIsLargeText();
-    const setRange = useAtomSet(yieldRangeAtom);
+    const handleChange = useYieldRangeChange();
     const { screenKey } = use(YieldScreenContext);
-    const { cancelScrub } = use(YieldSelectionContext);
-
-    const handleChange = (range: YieldRangeEnum) => {
-        cancelScrub();
-        setRange(range);
-        router.setParams({ range, focus: '' });
-    };
 
     const segments = Object.values(YieldRangeEnum).map(range => ({
         value: range,
@@ -65,12 +55,12 @@ export const YieldRangeControl = () => {
                         </View>
                     }
                 >
-                    {segments.map(segment => (
+                    {Object.values(YieldRangeEnum).map(range => (
                         <YieldRangeMenuItem
-                            key={segment.value}
-                            range={segment.value}
-                            label={t(MENU_LABEL[segment.value])}
-                            isCurrent={segment.value === screenKey.key.range}
+                            key={range}
+                            range={range}
+                            label={t(MENU_LABEL[range])}
+                            isCurrent={range === screenKey.key.range}
                             onSelect={handleChange}
                         />
                     ))}

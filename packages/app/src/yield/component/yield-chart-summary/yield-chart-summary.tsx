@@ -21,6 +21,7 @@ interface Props {
 }
 
 const TITLE_MAX_FONT_SIZE_MULTIPLIER = 1.4;
+const EMPTY_CLASSNAME = 'items-center gap-y-sm px-3xl py-xl';
 
 export const YieldChartSummary = ({ summary }: Props) => {
     const { t } = useLingui();
@@ -33,19 +34,14 @@ export const YieldChartSummary = ({ summary }: Props) => {
     const isSeeAllTimeVisible = (isEmpty || (isSingle && hasOlderPayouts)) && screenKey.key.range !== YieldRangeEnum.ALL;
     const title = t({ id: 'passive-income.payouts.title', message: plural(count, { one: '# payout', other: '# payouts' }) });
     const filledBuckets = summary.buckets.filter(bucket => bucket.total > 0);
-    const containerClassName = cn(
-        'gap-y-xs',
-        isEmpty && 'items-center',
-        isEmpty && 'gap-y-sm',
-        isEmpty && 'px-3xl',
-        isEmpty && 'py-xl',
-        isSingle && '-mb-[6px]'
-    );
+    const isMultiple = count > 1;
+    const containerClassName = cn('gap-y-xs', isEmpty && EMPTY_CLASSNAME, isSingle && '-mb-[6px]');
 
     return (
         <View className={containerClassName} testID={PassiveIncomeSelector.PlotSummary}>
-            {isEmpty ? <YieldChartSummaryText summary={summary} /> : null}
-            {isEmpty ? null : (
+            {isEmpty ? (
+                <YieldChartSummaryText summary={summary} />
+            ) : (
                 <Text
                     className="text-md font-semibold tabular-nums text-primary"
                     maxFontSizeMultiplier={TITLE_MAX_FONT_SIZE_MULTIPLIER}
@@ -55,9 +51,7 @@ export const YieldChartSummary = ({ summary }: Props) => {
                 </Text>
             )}
             {isSingle ? <YieldChartSinglePayout /> : null}
-            {filledBuckets.map(bucket =>
-                isEmpty || isSingle ? null : <YieldChartSummaryRow key={bucket.start} summary={summary} bucket={bucket} />
-            )}
+            {isMultiple ? filledBuckets.map(bucket => <YieldChartSummaryRow key={bucket.start} summary={summary} bucket={bucket} />) : null}
             {isSeeAllTimeVisible ? <YieldChartSeeAllTime /> : null}
         </View>
     );

@@ -16,10 +16,6 @@ export const YieldOpenPositionRow = () => {
 
     const { positionAccountId, instrumentId } = screenKey.key;
 
-    if (!isDefined(screenKey.scopeId) || screenKey.from === screenKey.scopeId) {
-        return null;
-    }
-
     const title = isNotEmptyString(scopeTitle) ? t`Open ${scopeTitle}` : t`Open holding`;
 
     const handlePress = () => {

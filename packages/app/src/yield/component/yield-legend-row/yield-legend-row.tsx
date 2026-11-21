@@ -1,5 +1,6 @@
 import { useLingui } from '@lingui/react/macro';
 import { use } from 'react';
+import { View } from 'react-native';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
@@ -10,16 +11,16 @@ import { YIELD_GROUP_LABEL } from '../../constant/yield-group-label.constant';
 import { YIELD_LEGEND_ROW_HEIGHT } from '../../constant/yield-legend-row-height.constant';
 import { YieldScreenContext } from '../../context/yield-screen.context';
 import { YieldSelectionContext } from '../../context/yield-selection.context';
+import { useYieldGroupColor } from '../../hook/use-yield-group-color.hook';
 import { useYieldLegendAmounts } from '../../hook/use-yield-legend-amounts.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 import { YieldLegendEntry } from '../yield-legend-entry/yield-legend-entry';
-import { YieldLegendRowSelection } from '../yield-legend-row-selection/yield-legend-row-selection';
 
 import type { YieldGroupEnum } from '@budgie/market';
 
 const ROW_STYLE = { minHeight: YIELD_LEGEND_ROW_HEIGHT };
-const AMOUNT_CLASSNAME = 'text-right text-sm font-semibold tabular-nums text-primary';
-const DIMMED_AMOUNT_CLASSNAME = 'text-right text-sm tabular-nums text-secondary-foreground';
+const ROW_CLASSNAME = 'w-full flex-row items-center gap-x-[8px] rounded-[12px] px-sm py-xs';
+const SELECTION_CLASSNAME = 'absolute inset-y-0 inset-x-[2px] rounded-[12px] opacity-10';
 const ROW_HIT_SLOP = { top: 2, bottom: 2 };
 
 interface Props {
@@ -40,10 +41,10 @@ export const YieldLegendRow = ({ group, total, share, isCompact, onPress }: Prop
     const isDimmed = hasFilter && !isSelected;
     const isEmpty = isDefined(selectedIndex) && !isPositiveNumber(total);
     const { exact: exactAmount, amount, share: formattedShare } = useYieldLegendAmounts(total, share ?? 0, isCompact, isEmpty);
+    const { background } = useYieldGroupColor(group);
     const label = t(YIELD_GROUP_LABEL[group]);
     const shareText = isEmpty || !isDefined(share) ? null : formattedShare;
-    const amountClassName = isDimmed ? DIMMED_AMOUNT_CLASSNAME : AMOUNT_CLASSNAME;
-    const rowClassName = cn('w-full', 'flex-row', 'items-center', 'gap-x-[8px]', 'rounded-[12px]', 'px-sm', 'py-xs');
+    const selectionClassName = cn(SELECTION_CLASSNAME, background);
     const accessibilityState = { selected: isSelected };
 
     const handlePress = () => void onPress(group);
@@ -57,20 +58,12 @@ export const YieldLegendRow = ({ group, total, share, isCompact, onPress }: Prop
             pressFeedback={HapticPressFeedbackEnum.SELECTION}
             onPress={handlePress}
             testID={PassiveIncomeSelector.LegendRow(group)}
-            className={rowClassName}
+            className={ROW_CLASSNAME}
             style={ROW_STYLE}
             hitSlop={ROW_HIT_SLOP}
         >
-            {isSelected ? <YieldLegendRowSelection group={group} /> : null}
-            <YieldLegendEntry
-                group={group}
-                label={label}
-                amount={amount}
-                amountClassName={amountClassName}
-                share={shareText}
-                isMuted={isDimmed}
-                isEmpty={isEmpty}
-            />
+            {isSelected ? <View pointerEvents="none" className={selectionClassName} /> : null}
+            <YieldLegendEntry group={group} label={label} amount={amount} share={shareText} isMuted={isDimmed} isEmpty={isEmpty} />
         </HapticPressable>
     );
 };
