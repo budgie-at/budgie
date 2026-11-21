@@ -130,14 +130,16 @@ export class SyncApplyUnitService extends Context.Service<SyncApplyUnitService>(
         const resolveKeptColumns = (
             hasOutbox: boolean,
             kept: readonly string[],
-            isRefundMarkerRaised: boolean,
+            isRefundMarkerMissingOnServer: boolean,
             descriptor: SyncTableDescriptorInterface
         ): string[] | null => {
+            const markerColumns = isRefundMarkerMissingOnServer ? [getSyncColumnName(descriptor, refundMarkerProperty)] : [];
+
             if (hasOutbox) {
-                return [...new Set(kept)].sort();
+                return [...new Set([...kept, ...markerColumns])].sort();
             }
 
-            return isRefundMarkerRaised ? [getSyncColumnName(descriptor, refundMarkerProperty)] : null;
+            return isNotEmptyArray(markerColumns) ? markerColumns : null;
         };
 
         const readChangedColumns = (changedColumns: string): readonly string[] =>
@@ -397,7 +399,12 @@ export class SyncApplyUnitService extends Context.Service<SyncApplyUnitService>(
                     }
                 }
 
-                keptColumns = resolveKeptColumns(isDefined(outbox), kept, mergedCells !== normalizedCells, parentDescriptor);
+                keptColumns = resolveKeptColumns(
+                    isDefined(outbox),
+                    kept,
+                    mergedCells[refundMarkerProperty] === 1 && serverParentCells[refundMarkerProperty] !== 1,
+                    parentDescriptor
+                );
             } else {
                 for (const row of decoded.rows) {
                     yield* childApplyService.insertRow(row, resolutions, unitIds);
