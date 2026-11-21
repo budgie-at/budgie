@@ -41,7 +41,7 @@ export const StatisticsTrendBars = ({ points, currentMonth, currencySymbol }: Pr
     const averageAmount = activePoints.reduce((sum, point) => sum + point.amount, 0) / Math.max(activePoints.length, 1);
     const averageLineStyle = { top: STATISTICS_TREND_PLOT_HEIGHT * (1 - (maxAmount > 0 ? averageAmount / maxAmount : 0)) };
     const baselineStyle = { top: STATISTICS_TREND_PLOT_HEIGHT };
-    const selectedPoint = points.find(point => isDefined(selectedMonth) && isSameMonth(point.month, selectedMonth));
+    const selectedPoint = points.find(point => isSameMonth(point.month, selectedMonth ?? currentMonth));
     const averageLabel = t({ message: plural(activePoints.length, { one: 'Average · # month', other: 'Average · # months' }) });
     const readoutLabel = isDefined(selectedPoint) ? formatFullMonthAndYear(selectedPoint.month) : averageLabel;
     const readoutAmountLabel = formatProtectedAmount(convertFromMicroUnits(selectedPoint?.amount ?? averageAmount), currencySymbol);
@@ -69,9 +69,8 @@ export const StatisticsTrendBars = ({ points, currentMonth, currencySymbol }: Pr
                         const amountLabel = formatProtectedAmount(convertFromMicroUnits(point.amount), currencySymbol);
                         const scaledRatio = maxAmount > 0 ? point.amount / maxAmount : 0;
                         const ratio = isAmountProtected ? PROTECTED_BAR_RATIO : scaledRatio;
-                        const isSelected = isDefined(selectedMonth) && isSameMonth(point.month, selectedMonth);
-                        const isHighlighted = isSelected || (!isDefined(selectedMonth) && isSameMonth(point.month, currentMonth));
-                        const handlePress = () => void setSelectedMonth(isSelected ? null : point.month);
+                        const isSelected = point === selectedPoint;
+                        const handlePress = () => void setSelectedMonth(point.month);
 
                         return (
                             <StatisticsTrendBar
@@ -80,7 +79,6 @@ export const StatisticsTrendBars = ({ points, currentMonth, currencySymbol }: Pr
                                 accessibilityLabel={t`${monthLabel}: ${amountLabel}`}
                                 ratio={ratio}
                                 isSelected={isSelected}
-                                isHighlighted={isHighlighted}
                                 staggerIndex={index}
                                 onPress={handlePress}
                             />
