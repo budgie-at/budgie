@@ -1,5 +1,7 @@
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
+import * as Predicate from 'effect/Predicate';
+import * as Schema from 'effect/Schema';
 
 import {
     Db,
@@ -33,6 +35,18 @@ const seedBaseline = Effect.gen(function* () {
 
     return { deviceB, cloud, transaction };
 });
+
+const PayloadJson = Schema.fromJsonString(Schema.Unknown);
+
+const omitMarker = (value: unknown): unknown => {
+    if (Array.isArray(value)) {
+        return value.map(omitMarker);
+    }
+
+    return Predicate.isObject(value)
+        ? Object.fromEntries(Object.entries(value).flatMap(([key, child]) => (key === MARKER_FIELD ? [] : [[key, omitMarker(child)]])))
+        : value;
+};
 
 const markLocally = testDb.$client.unsafe(`UPDATE transactions SET ${MARKER_COLUMN} = 1`);
 
@@ -76,8 +90,8 @@ describe('cloud-sync/apply-refund-marker', () => {
                     `SELECT payload FROM sync_record WHERE sync_zone = ? AND sync_id = ?`,
                     [transaction.syncZone, transaction.syncId]
                 );
-                const legacyPayload = JSON.stringify(
-                    JSON.parse(stored.payload, (key: string, value: unknown) => (key === MARKER_FIELD ? undefined : value))
+                const legacyPayload = yield* Effect.flatMap(Schema.decodeEffect(PayloadJson)(stored.payload), payload =>
+                    Schema.encodeEffect(PayloadJson)(omitMarker(payload))
                 );
 
                 yield* testDb.$client.unsafe(`UPDATE sync_record SET payload = ? WHERE sync_zone = ? AND sync_id = ?`, [
