@@ -899,6 +899,28 @@ layer(TestLayer)('recurringService', it => {
         })
     );
 
+    it.effect('loads every part of an untitled payment when one part has a category and skips uncategorized ones', () =>
+        Effect.gen(function* () {
+            const { id: accountId } = yield* testSeedService.account({ instrumentId: DEFAULT_INSTRUMENT_ID, type: AccountTypeEnum.CASH });
+            const { id: categoryId } = yield* testSeedService.category('Family');
+            const operatedAt = new Date(2026, JUNE, 9, 12);
+            yield* testSeedService.manualExpense({
+                accountId,
+                amount: 1000 * PRECISION,
+                operatedAt,
+                entries: [
+                    { amount: 600 * PRECISION, categoryId },
+                    { amount: 400 * PRECISION, categoryId: null }
+                ]
+            });
+            yield* testSeedService.manualExpense({ accountId, amount: 50 * PRECISION, operatedAt });
+            const charges = yield* Effect.flatMap(RecurringRepository, repository =>
+                repository.findCharges(DEFAULT_INSTRUMENT_ID, new Date(2025, 0, 1))
+            );
+            expect(charges.map(charge => [charge.nativeAmount, charge.categoryId])).toEqual([[1000 * PRECISION, categoryId]]);
+        })
+    );
+
     it.effect('rejects irregular cash-account shopping through the generic recurring rule', () =>
         Effect.gen(function* () {
             const seed = yield* seedCharges({ type: AccountTypeEnum.CASH });

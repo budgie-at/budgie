@@ -8,6 +8,7 @@ export interface RecurringMatchSeriesInterface {
         | 'kind'
         | 'merchantKey'
         | 'title'
+        | 'categoryId'
         | 'accountId'
         | 'userState'
         | 'cadenceUnit'

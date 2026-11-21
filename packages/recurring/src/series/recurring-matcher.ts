@@ -27,6 +27,9 @@ const matchesMerchant = (
     charge: RecurringChargeInterface,
     chargeIdentity: string
 ): boolean => {
+    if (!isNotEmptyString(chargeIdentity)) {
+        return isDefined(charge.categoryId) && entry.series.categoryId === charge.categoryId;
+    }
     if (isNotEmptyString(merchantKey)) {
         return (
             isNotEmptyString(chargeIdentity) &&
@@ -45,18 +48,23 @@ const rankCandidates = (
 ) => {
     const chargeIdentity = identity(charge);
     const operatedDay = startOfDay(charge.operatedAt);
+    const payeeSeries = entries.filter(
+        entry =>
+            entry.series.kind === charge.kind &&
+            !entry.excludedTransactionIds.has(charge.transactionId) &&
+            (!isDefined(entry.series.accountId) || entry.series.accountId === charge.accountId) &&
+            matchesMerchant(entry, merchantKeys.get(entry.series.id) ?? '', charge, chargeIdentity)
+    );
 
-    return entries
+    return payeeSeries
         .filter(
             entry =>
-                ((entry.series.source === RecurringSeriesSourceEnum.DETECTED && entry.isVariable === true) ||
-                    Math.max(entry.series.defaultAmount, charge.defaultAmount) <=
-                        Math.min(entry.series.defaultAmount, charge.defaultAmount) *
-                            (entry.series.source === RecurringSeriesSourceEnum.MANUAL ? MANUAL_AMOUNT_RATIO : RECURRING_AMOUNT_RATIO)) &&
-                entry.series.kind === charge.kind &&
-                !entry.excludedTransactionIds.has(charge.transactionId) &&
-                (!isDefined(entry.series.accountId) || entry.series.accountId === charge.accountId) &&
-                matchesMerchant(entry, merchantKeys.get(entry.series.id) ?? '', charge, chargeIdentity)
+                (entry.series.source === RecurringSeriesSourceEnum.DETECTED && entry.isVariable === true) ||
+                Math.max(entry.series.defaultAmount, charge.defaultAmount) <=
+                    Math.min(entry.series.defaultAmount, charge.defaultAmount) *
+                        (payeeSeries.length === 1 || entry.series.source === RecurringSeriesSourceEnum.MANUAL
+                            ? MANUAL_AMOUNT_RATIO
+                            : RECURRING_AMOUNT_RATIO)
         )
         .map(entry => ({ entry, cycle: nearestCycleDate(entry.series, operatedDay) }))
         .filter(
