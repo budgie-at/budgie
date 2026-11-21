@@ -2,6 +2,7 @@ import {
     Db,
     DebtEventRepository,
     ExternalSourceEnum,
+    REFUND_TITLE_PREFIXES,
     TransactionConsolidationTypeEnum,
     TransactionEntryTypeEnum,
     TransactionRepository,
@@ -33,6 +34,7 @@ import type {
     IbanBridgeCanonicalDuplicateCandidateInterface,
     IbanBridgeCanonicalSupersessionCandidateInterface,
     RefundCandidateInterface,
+    TransactionEntryEntityInterface,
     TransactionWithEntriesEntityInterface
 } from '@budgie/contracts';
 
@@ -48,6 +50,55 @@ export class ConsolidationRepairExecutorService extends Context.Service<Consolid
             const debtEventRepository = yield* DebtEventRepository;
             const transactionReceiptRepository = yield* TransactionReceiptRepository;
             const millisecondsInSecond = 1000;
+
+            const sumAmounts = (entries: readonly TransactionEntryEntityInterface[]): number =>
+                entries.reduce((total, entry) => total + entry.amount, 0);
+
+            const findLiveEntry = (expense: TransactionWithEntriesEntityInterface, type: TransactionEntryTypeEnum, accountId: number) =>
+                expense.entries.find(
+                    entry => entry.type === type && entry.accountId === accountId && !isDefined(entry.originalTransactionId)
+                );
+
+            const hasFreshRefundCapacity = Effect.fnUntraced(function* (candidate: RefundCandidateInterface) {
+                const [expense] = yield* transactionRepository.findByIdsWithRefundConsolidationHistory([candidate.expenseTransactionId]);
+                const refunds = yield* transactionRepository.findByIds(candidate.refundIncomeTransactionIds);
+
+                if (
+                    !isDefined(expense) ||
+                    (isDefined(expense.consolidationType) && expense.consolidationType !== TransactionConsolidationTypeEnum.REFUND) ||
+                    refunds.some(refund => isDefined(refund.consolidationParentTransactionId) || refund.refundAutoPairDisabled)
+                ) {
+                    return false;
+                }
+
+                const absorbedEntries = expense.entries.filter(
+                    entry => entry.type === TransactionEntryTypeEnum.DEBIT && isDefined(entry.originalTransactionId)
+                );
+                const absorbedSources = yield* transactionRepository.findByIds([
+                    ...new Set(absorbedEntries.map(entry => entry.originalTransactionId).filter(isDefined))
+                ]);
+                const feeSourceIds = new Set(
+                    absorbedSources
+                        .filter(source => REFUND_TITLE_PREFIXES.rejectedPaymentFee.some(prefix => source.title.trim().startsWith(prefix)))
+                        .map(source => source.id)
+                );
+                const absorbedFee = sumAmounts(absorbedEntries.filter(entry => feeSourceIds.has(entry.originalTransactionId ?? 0)));
+                const absorbedTotal = sumAmounts(absorbedEntries);
+
+                if (candidate.confidenceBucket === 'AUTO_REFUND_REJECTED_PAYMENT_FEE_TITLE') {
+                    const feeEntry = findLiveEntry(expense, TransactionEntryTypeEnum.FEE, candidate.accountId);
+
+                    return isDefined(feeEntry) && absorbedFee + candidate.refundsTotal <= feeEntry.amount;
+                }
+
+                if (candidate.confidenceBucket === 'AUTO_REFUND_PRIVATBANK_ORIGINAL_AMOUNT') {
+                    return absorbedTotal === 0;
+                }
+
+                const creditEntry = findLiveEntry(expense, TransactionEntryTypeEnum.CREDIT, candidate.accountId);
+
+                return isDefined(creditEntry) && absorbedTotal - absorbedFee + candidate.refundsTotal <= creditEntry.amount;
+            });
 
             const isUntouchedIbanBridgeCanonical = (transaction: TransactionWithEntriesEntityInterface): boolean => {
                 const isIbanBridgeConsolidation =
@@ -404,7 +455,8 @@ export class ConsolidationRepairExecutorService extends Context.Service<Consolid
                         if (
                             !(yield* consolidationEligibilityService.areCandidatesStillEligible(sourceTransactionIds, [
                                 candidate.expenseTransactionId
-                            ]))
+                            ])) ||
+                            !(yield* hasFreshRefundCapacity(candidate))
                         ) {
                             return false;
                         }

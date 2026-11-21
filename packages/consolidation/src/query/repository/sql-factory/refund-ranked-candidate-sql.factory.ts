@@ -83,9 +83,8 @@ const buildExpenseEntriesSql = (
                 ) AS feeAmount,
                 CASE WHEN expense_tx.consolidation_type IS NULL THEN 0 ELSE COALESCE((
                     SELECT SUM(absorbed_entry.amount)
-                    FROM transaction_entries absorbed_entry
+                    FROM transaction_entries absorbed_entry INDEXED BY transaction_entries_transaction_idx
                     WHERE absorbed_entry.transaction_id = expense_tx.id
-                        AND absorbed_entry.account_id = expense_entry.account_id
                         AND absorbed_entry.deleted_at IS NULL
                         AND absorbed_entry.original_transaction_id IS NOT NULL
                         AND absorbed_entry.type = '${TransactionEntryTypeEnum.DEBIT}'
