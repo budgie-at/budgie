@@ -1,4 +1,5 @@
 import { readFileSync } from 'node:fs';
+import { availableParallelism } from 'node:os';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -155,6 +156,12 @@ export const createTestInlineShimPlugin = (): TestInlineShimPluginInterface => (
     }
 });
 
+const resolveShuffleSeed = () => {
+    const configuredSeed = Number(process.env['VITEST_SEED']);
+
+    return Number.isInteger(configuredSeed) && configuredSeed > 0 ? configuredSeed : Date.now() % 2_147_483_647;
+};
+
 export const createTestVitestConfig = (rootDir: string, setupFile: string) => {
     const here = (relative: string) => resolve(rootDir, relative);
 
@@ -170,13 +177,14 @@ export const createTestVitestConfig = (rootDir: string, setupFile: string) => {
             server: { deps: { inline: [/@effect\/sql-sqlite-react-native/u] } },
             environment: 'node',
             globalSetup: [resolve(import.meta.dirname, 'test-temporary-directory.global-setup.ts')],
-            setupFiles: [here(setupFile)],
+            setupFiles: [resolve(import.meta.dirname, 'fresh-modules.setup.ts'), here(setupFile)],
             isolate: false,
+            sequence: { shuffle: { files: true, tests: true }, seed: resolveShuffleSeed() },
             clearMocks: true,
             restoreMocks: true,
             include: ['src/scenarios/**/*.test.ts'],
             pool: 'forks',
-            maxWorkers: 4,
+            maxWorkers: availableParallelism(),
             testTimeout: 20_000
         }
     };

@@ -1,7 +1,6 @@
 import {
     AccountBalanceRepository,
     AccountTypeEnum,
-    SyncModeEnum,
     TransactionConsolidationTypeEnum,
     TransactionEntryEntityTable
 } from '@budgie/contracts';
@@ -10,98 +9,18 @@ import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
+import { fetchBinanceTransactions, resyncBinance, seed, testDb, testQueryService, TestLayer } from '../../harness';
 import {
-    binanceStub,
-    buildBinance,
-    fetchBinanceTransactions,
-    fetchSyncById,
-    resyncBinance,
-    seed,
-    setupBinanceFixture,
-    stubEmptyBinanceBalances,
-    testDb,
-    TestLayer,
-    testQueryService
-} from '../../harness';
+    DAY_MS,
+    HOUR_MS,
+    importedCountsAfterEachStatus,
+    pendingAnchorAfterFirstSync,
+    startForwardSync,
+    stubDeposit,
+    stubWithdrawal
+} from '../../harness/binance/capital-status-fixture';
 
-const HOUR_MS = 60 * 60 * 1000;
-const DAY_MS = 24 * HOUR_MS;
-
-const stubDeposit = (status: number | undefined, timeMs: number): void => {
-    binanceStub.deposits([buildBinance.deposit({ id: 'dep-1', coin: 'BTC', amount: '2', insertTime: timeMs, status })]);
-};
-
-const stubWithdrawal = (status: number | undefined, timeMs: number): void => {
-    binanceStub.withdrawals([
-        buildBinance.withdrawal({
-            id: 'wd-1',
-            coin: 'BTC',
-            amount: '1',
-            transactionFee: '0.1',
-            applyTime: new Date(timeMs).toISOString(),
-            status
-        })
-    ]);
-};
-
-const startForwardSync = () =>
-    Effect.gen(function* () {
-        const fixture = yield* setupBinanceFixture({ mode: SyncModeEnum.FORWARD, forwardSyncFromAt: new Date(Date.now() - HOUR_MS) });
-        stubEmptyBinanceBalances();
-
-        return fixture;
-    });
-
-const importedCountsAfterEachStatus = (stubHistory: typeof stubDeposit, ageMs: number, statuses: readonly (number | undefined)[]) =>
-    Effect.gen(function* () {
-        const binanceSyncService = yield* BinanceSyncService;
-        const { sync } = yield* startForwardSync();
-        const timeMs = Date.now() - ageMs;
-        const counts: number[] = [];
-
-        for (const [index, status] of statuses.entries()) {
-            stubHistory(status, timeMs);
-            yield* index === 0 ? binanceSyncService.sync() : resyncBinance(sync.id);
-            counts.push((yield* fetchBinanceTransactions).length);
-        }
-
-        return counts;
-    });
-
-const pendingAnchorAfterFirstSync = (stubHistory: typeof stubDeposit, ageMs: number) =>
-    Effect.gen(function* () {
-        const binanceSyncService = yield* BinanceSyncService;
-        const { sync } = yield* startForwardSync();
-        stubHistory(0, Date.now() - ageMs);
-
-        yield* binanceSyncService.sync();
-
-        return (yield* fetchSyncById(sync.id)).binanceCapitalPendingFromAt;
-    });
-
-describe('binance/capital-status', () => {
-    it.effect.each([
-        { label: 'pending deposit', stubHistory: stubDeposit, statuses: [0], counts: [0] },
-        { label: 'rejected deposit', stubHistory: stubDeposit, statuses: [2], counts: [0] },
-        { label: 'wrong deposit', stubHistory: stubDeposit, statuses: [7], counts: [0] },
-        { label: 'deposit waiting for user confirmation', stubHistory: stubDeposit, statuses: [8], counts: [0] },
-        { label: 'successful deposit', stubHistory: stubDeposit, statuses: [1], counts: [1] },
-        { label: 'credited deposit that cannot withdraw', stubHistory: stubDeposit, statuses: [6], counts: [1] },
-        { label: 'withdrawal with email sent', stubHistory: stubWithdrawal, statuses: [0], counts: [0] },
-        { label: 'withdrawal awaiting approval', stubHistory: stubWithdrawal, statuses: [2], counts: [0] },
-        { label: 'cancelled withdrawal', stubHistory: stubWithdrawal, statuses: [1], counts: [0] },
-        { label: 'rejected withdrawal', stubHistory: stubWithdrawal, statuses: [3], counts: [0] },
-        { label: 'processing withdrawal', stubHistory: stubWithdrawal, statuses: [4], counts: [0] },
-        { label: 'failed withdrawal', stubHistory: stubWithdrawal, statuses: [5], counts: [0] },
-        { label: 'completed withdrawal', stubHistory: stubWithdrawal, statuses: [6], counts: [1] },
-        { label: 'deposit without a status', stubHistory: stubDeposit, statuses: [undefined], counts: [0] },
-        { label: 'withdrawal without a status', stubHistory: stubWithdrawal, statuses: [undefined], counts: [0] }
-    ])('imports a $label only when it is final-success', ({ stubHistory, statuses, counts }) =>
-        Effect.gen(function* () {
-            expect(yield* importedCountsAfterEachStatus(stubHistory, HOUR_MS / 2, statuses)).toEqual(counts);
-        }).pipe(Effect.provide(TestLayer))
-    );
-
+describe('binance/capital-status-lifecycle', () => {
     it.effect.each([
         { label: 'deposit', stubHistory: stubDeposit, pending: 0, completed: 1 },
         { label: 'withdrawal', stubHistory: stubWithdrawal, pending: 4, completed: 6 }
@@ -156,7 +75,7 @@ describe('binance/capital-status', () => {
             const binanceSyncService = yield* BinanceSyncService;
             const atmCashMoveService = yield* AtmCashMoveService;
             const accountBalanceRepository = yield* AccountBalanceRepository;
-            const { sync, instrument } = yield* startForwardSync();
+            const { sync, instrument } = yield* startForwardSync;
             const cashAccount = yield* seed.account({ title: 'Cash', type: AccountTypeEnum.CASH, instrumentId: instrument.id });
             const timeMs = Date.now() - HOUR_MS / 2;
 

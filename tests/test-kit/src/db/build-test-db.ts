@@ -8,6 +8,7 @@ import * as Reactivity from 'effect/reactivity/Reactivity';
 
 import { makeTestDatabase } from './make-test-database';
 import { snapshotTestDb } from './reset-test-db';
+import { registerTestDatabaseDisposer } from './test-database-disposer';
 import { acquireTestDatabasePath } from './test-database-file';
 
 export const makeTestDbLayer = (sourceDatabasePath: string | null) =>
@@ -29,5 +30,10 @@ export const makeTestDbLayer = (sourceDatabasePath: string | null) =>
         }).pipe(Effect.orDie)
     ).pipe(Layer.provide(Reactivity.layer));
 
-export const buildTestDb = (sourceDatabasePath: string | null = null) =>
-    ManagedRuntime.make(makeTestDbLayer(sourceDatabasePath)).runPromise(Db);
+export const buildTestDb = async (sourceDatabasePath: string | null = null) => {
+    const runtime = ManagedRuntime.make(makeTestDbLayer(sourceDatabasePath));
+
+    registerTestDatabaseDisposer(() => runtime.dispose());
+
+    return runtime.runPromise(Db);
+};
