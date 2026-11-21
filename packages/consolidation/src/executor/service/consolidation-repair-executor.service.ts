@@ -126,7 +126,10 @@ export class ConsolidationRepairExecutorService extends Context.Service<Consolid
 
                 const ceiling = candidate.confidenceBucket === 'AUTO_REFUND_REJECTED_PAYMENT_FEE_TITLE' ? feeAmount : creditEntry.amount;
 
-                return refundTotal <= ceiling && absorbedTotal + refundTotal <= creditEntry.amount + feeAmount;
+                return (
+                    openRefunds.every(({ entry }) => entry.amount <= ceiling) &&
+                    absorbedTotal + refundTotal <= creditEntry.amount + feeAmount
+                );
             });
 
             const isUntouchedIbanBridgeCanonical = (transaction: TransactionWithEntriesEntityInterface): boolean => {
