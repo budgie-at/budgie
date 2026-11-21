@@ -38,12 +38,12 @@ export const YieldLegendRunning = () => {
 
     return (
         <View className="gap-y-xs" accessibilityLabel={t`Running total legend`}>
-            <YieldLegendHeader />
+            <YieldLegendHeader title={t`Running total`} />
             <View className="gap-y-xs">
                 <View
                     accessible
                     accessibilityLabel={t`${currentLabel}, ${currentAmount}`}
-                    className="min-h-[24px] flex-row items-center gap-x-sm"
+                    className="min-h-[24px] flex-row items-center gap-x-[8px]"
                 >
                     <YieldLegendLineSwatch strokeClassName="accent-positive-action" strokeWidth={2} />
                     <Text className="flex-1 text-sm text-primary">{currentLabel}</Text>
@@ -53,7 +53,7 @@ export const YieldLegendRunning = () => {
                     <View
                         accessible
                         accessibilityLabel={t`${priorLabel}, ${priorAmount}`}
-                        className="min-h-[24px] flex-row items-center gap-x-sm"
+                        className="min-h-[24px] flex-row items-center gap-x-[8px]"
                     >
                         <YieldLegendLineSwatch strokeClassName="accent-secondary-foreground" strokeWidth={1.5} dash="4 3" />
                         <Text className="flex-1 text-sm text-primary">{priorLabel}</Text>

@@ -1502,6 +1502,14 @@ msgstr "casi igual que los 30 días anteriores"
 msgid "about the same as previous period"
 msgstr "casi igual que el periodo anterior"
 
+#: src/yield/component/yield-hero-scrub-delta/yield-hero-scrub-delta.tsx
+msgid "about the same as this point last period"
+msgstr "más o menos igual que en el mismo punto del periodo anterior"
+
+#: src/yield/component/yield-hero-scrub-delta/yield-hero-scrub-delta.tsx
+msgid "about the same as this point last year"
+msgstr "más o menos igual que en el mismo punto del año pasado"
+
 #: src/yield/component/yield-empty-state/yield-empty-state.tsx
 #: src/yield/component/yield-hero-info-button/yield-hero-info-button.tsx
 #: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
@@ -2239,6 +2247,10 @@ msgstr "Al último precio conocido, ≈ {rateLabel} por {instrumentCode}"
 #: src/yield/component/yield-breakdown-run-rate/yield-breakdown-run-rate.tsx
 msgid "At today’s balances and rates"
 msgstr "Con los saldos y tasas de hoy"
+
+#: src/yield/component/yield-breakdown-run-rate/yield-breakdown-run-rate.tsx
+msgid "At today’s balances and rates · excludes distributions"
+msgstr "Con los saldos y tasas de hoy · sin distribuciones"
 
 #: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
 msgid "At today’s balances and rates. Holdings left out of yield are not projected."
@@ -9348,6 +9360,7 @@ msgid "Rules work on imported transactions"
 msgstr "Las reglas funcionan con transacciones importadas"
 
 #: src/yield/component/yield-chart-mode-control/yield-chart-mode-control.tsx
+#: src/yield/component/yield-legend-running/yield-legend-running.tsx
 msgid "Running total"
 msgstr "Total acumulado"
 
@@ -11845,6 +11858,14 @@ msgstr "frente a los 30 días anteriores"
 #: src/yield/hook/use-yield-comparison-phrase.hook.ts
 msgid "vs previous period"
 msgstr "frente al periodo anterior"
+
+#: src/yield/component/yield-hero-scrub-delta/yield-hero-scrub-delta.tsx
+msgid "vs same point last period"
+msgstr "vs mismo punto del periodo anterior"
+
+#: src/yield/component/yield-hero-scrub-delta/yield-hero-scrub-delta.tsx
+msgid "vs same point last year"
+msgstr "vs mismo punto del año pasado"
 
 #: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx

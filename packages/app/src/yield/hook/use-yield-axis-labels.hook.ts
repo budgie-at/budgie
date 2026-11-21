@@ -22,6 +22,7 @@ import type { YieldAxisInterface } from '../interface/yield-axis.interface';
 const GLYPH_WIDTH = 6.4;
 const GUTTER_PADDING = 8;
 const MAX_FONT_SCALE = 1.3;
+const TAX_LABEL_OFFSET = 14;
 
 export const useYieldAxisLabels = (axis: YieldAxisInterface) => {
     const { t } = useLingui();
@@ -35,8 +36,10 @@ export const useYieldAxisLabels = (axis: YieldAxisInterface) => {
         buildYieldAxisLabels(target, YIELD_PLOT_HEIGHT, value =>
             isAmountProtected ? PROTECTED_AMOUNT_PLACEHOLDER : formatAxisAmount(value, symbol)
         );
-    const taxLabels = isPositiveNumber(axis.depth) ? [{ key: 'tax', y: YIELD_PLOT_HEIGHT, text: t`Tax` }] : [];
-    const labels = [...buildLabels(axis), ...taxLabels];
+    const axisLabels = buildLabels(axis);
+    const zeroY = axisLabels.find(({ key }) => key === 'zero')?.y ?? YIELD_PLOT_HEIGHT;
+    const taxLabels = isPositiveNumber(axis.depth) ? [{ key: 'tax', y: zeroY + TAX_LABEL_OFFSET, text: t`Tax` }] : [];
+    const labels = [...axisLabels, ...taxLabels];
     const stableAxes = isDefined(summary)
         ? Object.values(YieldChartModeEnum).flatMap(mode =>
               [null, ...YIELD_STACK_GROUPS].map(group => buildYieldSummaryAxis(summary, group, mode))

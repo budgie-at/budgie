@@ -23,6 +23,7 @@ import type { ReactNode } from 'react';
 
 interface Props {
     readonly hint?: ReactNode;
+    readonly title?: string;
 }
 
 const HEADER_STYLE = { minHeight: YIELD_LEGEND_HEADER_HEIGHT };
@@ -32,7 +33,7 @@ const headerVariants = cva('flex-row items-baseline justify-between gap-x-md', {
 const CROSS_FADE_DURATION = 150;
 const MAX_FONT_SIZE_MULTIPLIER = 1.5;
 
-export const YieldLegendHeader = ({ hint = null }: Props) => {
+export const YieldLegendHeader = ({ hint = null, title }: Props) => {
     const { t } = useLingui();
     const { screenKey, mode } = use(YieldScreenContext);
     const { selectedIndex } = use(YieldSelectionContext);
@@ -46,7 +47,7 @@ export const YieldLegendHeader = ({ hint = null }: Props) => {
     const throughDay = isDefined(bucket) ? formatDayAndMonthAndYear(parseISO(bucket.end)) : '';
     const period = isDefined(bucket) && isDefined(summary) ? formatPeriod(bucket, summary.bucketUnit) : '';
     const scrubText = mode === YieldChartModeEnum.RUNNING_TOTAL ? t`Through ${throughDay}` : period;
-    const text = isDefined(bucket) ? scrubText : t(YIELD_RANGE_PERIOD_LABEL[screenKey.key.range]);
+    const text = isDefined(bucket) ? scrubText : (title ?? t(YIELD_RANGE_PERIOD_LABEL[screenKey.key.range]));
     const entering = FadeIn.duration(reducedMotion ? 0 : CROSS_FADE_DURATION).easing(EASE_OUT);
 
     return (

@@ -16,7 +16,7 @@ export const YieldLegendInProgressSwatch = () => {
 
     return (
         <View importantForAccessibility="no-hide-descendants" className="w-[12px] items-center">
-            <View className="size-[10px] rounded-[2px] border-[1px] border-secondary-foreground/70 bg-secondary-foreground/30" />
+            <View className="size-[11px] rounded-[2px] border-[1.5px] border-dashed border-secondary-foreground bg-secondary-foreground/20" />
         </View>
     );
 };

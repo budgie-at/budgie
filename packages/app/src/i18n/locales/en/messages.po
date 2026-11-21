@@ -1503,6 +1503,14 @@ msgstr "about the same as previous 30 days"
 msgid "about the same as previous period"
 msgstr "about the same as previous period"
 
+#: src/yield/component/yield-hero-scrub-delta/yield-hero-scrub-delta.tsx
+msgid "about the same as this point last period"
+msgstr "about the same as this point last period"
+
+#: src/yield/component/yield-hero-scrub-delta/yield-hero-scrub-delta.tsx
+msgid "about the same as this point last year"
+msgstr "about the same as this point last year"
+
 #: src/yield/component/yield-empty-state/yield-empty-state.tsx
 #: src/yield/component/yield-hero-info-button/yield-hero-info-button.tsx
 #: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
@@ -2240,6 +2248,10 @@ msgstr "At last known price, ≈ {rateLabel} per {instrumentCode}"
 #: src/yield/component/yield-breakdown-run-rate/yield-breakdown-run-rate.tsx
 msgid "At today’s balances and rates"
 msgstr "At today’s balances and rates"
+
+#: src/yield/component/yield-breakdown-run-rate/yield-breakdown-run-rate.tsx
+msgid "At today’s balances and rates · excludes distributions"
+msgstr "At today’s balances and rates · excludes distributions"
 
 #: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
 msgid "At today’s balances and rates. Holdings left out of yield are not projected."
@@ -9349,6 +9361,7 @@ msgid "Rules work on imported transactions"
 msgstr "Rules work on imported transactions"
 
 #: src/yield/component/yield-chart-mode-control/yield-chart-mode-control.tsx
+#: src/yield/component/yield-legend-running/yield-legend-running.tsx
 msgid "Running total"
 msgstr "Running total"
 
@@ -11846,6 +11859,14 @@ msgstr "vs previous 30 days"
 #: src/yield/hook/use-yield-comparison-phrase.hook.ts
 msgid "vs previous period"
 msgstr "vs previous period"
+
+#: src/yield/component/yield-hero-scrub-delta/yield-hero-scrub-delta.tsx
+msgid "vs same point last period"
+msgstr "vs same point last period"
+
+#: src/yield/component/yield-hero-scrub-delta/yield-hero-scrub-delta.tsx
+msgid "vs same point last year"
+msgstr "vs same point last year"
 
 #: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx

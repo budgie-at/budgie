@@ -19,7 +19,7 @@ export const YieldLegendFootnote = () => {
     }
 
     return (
-        <View className="flex-row flex-wrap items-center gap-x-md gap-y-xs">
+        <View className="gap-y-xs">
             {isFailure || hasDetails ? (
                 <View
                     ref={footnoteRef}
