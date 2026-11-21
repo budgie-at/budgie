@@ -7606,10 +7606,6 @@ msgstr "Не враховується в чистих активах"
 msgid "Not counted in totals yet"
 msgstr "Поки не враховано в підсумках"
 
-#: src/yield/hook/use-yield-position-rate-text.hook.ts
-msgid "not counted in yield"
-msgstr "не враховується в дохідності"
-
 #: src/account/component/family-section-header/family-section-header.tsx
 msgid "Not counted in your total"
 msgstr "Не враховується у вашому підсумку"
@@ -7648,6 +7644,10 @@ msgstr "Недостатньо історії цін"
 #: src/brokerage/component/security-trade-form/security-trade-form.tsx
 msgid "Not enough shares held on the trade date"
 msgstr "Недостатньо часток на дату операції"
+
+#: src/yield/hook/use-yield-position-rate-text.hook.ts
+msgid "not in yield"
+msgstr ""
 
 #: src/transaction/components/transaction-info-yield-source-row/transaction-info-yield-source-row.tsx
 msgid "Not linked"

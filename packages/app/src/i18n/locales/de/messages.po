@@ -7606,10 +7606,6 @@ msgstr "Nicht im Nettovermögen enthalten"
 msgid "Not counted in totals yet"
 msgstr "Noch nicht in den Summen enthalten"
 
-#: src/yield/hook/use-yield-position-rate-text.hook.ts
-msgid "not counted in yield"
-msgstr "nicht in der Rendite enthalten"
-
 #: src/account/component/family-section-header/family-section-header.tsx
 msgid "Not counted in your total"
 msgstr "Zählt nicht zu deinem Gesamtbetrag"
@@ -7648,6 +7644,10 @@ msgstr "Nicht genug Kurshistorie"
 #: src/brokerage/component/security-trade-form/security-trade-form.tsx
 msgid "Not enough shares held on the trade date"
 msgstr "Am Handelsdatum sind nicht genügend Anteile vorhanden"
+
+#: src/yield/hook/use-yield-position-rate-text.hook.ts
+msgid "not in yield"
+msgstr ""
 
 #: src/transaction/components/transaction-info-yield-source-row/transaction-info-yield-source-row.tsx
 msgid "Not linked"

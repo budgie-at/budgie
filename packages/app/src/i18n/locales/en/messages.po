@@ -7607,10 +7607,6 @@ msgstr "Not counted in net worth"
 msgid "Not counted in totals yet"
 msgstr "Not counted in totals yet"
 
-#: src/yield/hook/use-yield-position-rate-text.hook.ts
-msgid "not counted in yield"
-msgstr "not counted in yield"
-
 #: src/account/component/family-section-header/family-section-header.tsx
 msgid "Not counted in your total"
 msgstr "Not counted in your total"
@@ -7649,6 +7645,10 @@ msgstr "Not enough price history"
 #: src/brokerage/component/security-trade-form/security-trade-form.tsx
 msgid "Not enough shares held on the trade date"
 msgstr "Not enough shares held on the trade date"
+
+#: src/yield/hook/use-yield-position-rate-text.hook.ts
+msgid "not in yield"
+msgstr "not in yield"
 
 #: src/transaction/components/transaction-info-yield-source-row/transaction-info-yield-source-row.tsx
 msgid "Not linked"

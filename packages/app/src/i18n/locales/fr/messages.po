@@ -7606,10 +7606,6 @@ msgstr "Non compté dans le patrimoine net"
 msgid "Not counted in totals yet"
 msgstr "Pas encore compté dans les totaux"
 
-#: src/yield/hook/use-yield-position-rate-text.hook.ts
-msgid "not counted in yield"
-msgstr "non compté dans le rendement"
-
 #: src/account/component/family-section-header/family-section-header.tsx
 msgid "Not counted in your total"
 msgstr "Non compté dans votre total"
@@ -7648,6 +7644,10 @@ msgstr "Historique de prix insuffisant"
 #: src/brokerage/component/security-trade-form/security-trade-form.tsx
 msgid "Not enough shares held on the trade date"
 msgstr "Nombre de parts insuffisant à la date de l’opération"
+
+#: src/yield/hook/use-yield-position-rate-text.hook.ts
+msgid "not in yield"
+msgstr ""
 
 #: src/transaction/components/transaction-info-yield-source-row/transaction-info-yield-source-row.tsx
 msgid "Not linked"
