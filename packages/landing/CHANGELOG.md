@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.191.14](https://github.com/budgie-at/budgie/compare/v6.191.13...v6.191.14) (2026-11-21)
+
+### Performance Improvements
+
+* **landing:** stop viewport prefetch of footer links ([#2271](https://github.com/budgie-at/budgie/issues/2271)) ([e2268b6](https://github.com/budgie-at/budgie/commit/e2268b61daa17494155ebd788a892eba45e39032))
+
+
 ## [6.191.10](https://github.com/budgie-at/budgie/compare/v6.191.9...v6.191.10) (2026-11-18)
 
 **Note:** Version bump only for package @budgie-at/landing
