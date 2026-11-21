@@ -195,6 +195,17 @@ const CASES: readonly (readonly [
         [charge(monthDay(12, 3), 80, 'TREE MARKET'), charge(monthDay(0, 12), 80, 'TREE MARKET')],
         ['possible yearly']
     ],
+    [
+        'utility with a second meter and a settlement bill keeps a three-bill quarterly stream after a price change',
+        [
+            ...quarterly('CITY POWER', 2, 21, [702], 9),
+            ...quarterly('CITY POWER', 3, 27, [535]),
+            ...quarterly('CITY POWER', 2, 22, [377], 2),
+            charge(monthDay(5, 5), 773.29, 'CITY POWER'),
+            charge(monthDay(5, 5), 206.72, 'CITY POWER')
+        ],
+        ['active quarterly']
+    ],
     ['quarterly charge of 0.06 is not a bill', quarterly('CAPITAL TAX', 8, 30, [0.06]), []],
     ['three exact monthly charges are active through exactness', monthly('CLOUD DRIVE', [7, 7, 7], [4.99]), ['active monthly']],
     [
