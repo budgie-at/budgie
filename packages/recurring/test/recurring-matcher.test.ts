@@ -38,6 +38,7 @@ const entry = (
         kind: RecurringSeriesKindEnum.EXPENSE,
         merchantKey: 'EXPENSE|1|NETFLIX',
         title: 'Streaming',
+        categoryId: null,
         accountId: null,
         userState: RecurringSeriesUserStateEnum.CONFIRMED,
         cadenceUnit: RecurringCadenceUnitEnum.MONTH,
@@ -196,5 +197,38 @@ it.effect('allows manual utility drift while rejecting unrelated purchases even 
         expect(matchRecurringTransactions([charge(1, June(5), 95, 'EVN')], [utility])).toHaveLength(1);
         expect(matchRecurringTransactions([charge(2, June(5), 150, 'EVN')], [utility])).toHaveLength(1);
         expect(matchRecurringTransactions([charge(3, June(5), 200, 'EVN')], [{ ...utility, isVariable: true }])).toEqual([]);
+    })
+);
+
+it.effect('links a payment of a different amount when the payee has one series and keeps the tight limit between siblings', () =>
+    Effect.sync(() => {
+        const detected = { source: RecurringSeriesSourceEnum.DETECTED, defaultAmount: 1000 * PRECISION };
+        expect(matchRecurringTransactions([charge(1, June(9), 1200)], [entry(1, detected)])).toHaveLength(1);
+        expect(matchRecurringTransactions([charge(2, June(9), 2500)], [entry(1, detected)])).toEqual([]);
+        expect(
+            matchRecurringTransactions(
+                [charge(3, June(5), 4.5)],
+                [
+                    entry(1, { source: RecurringSeriesSourceEnum.DETECTED, defaultAmount: 3 * PRECISION }),
+                    entry(2, { source: RecurringSeriesSourceEnum.DETECTED, defaultAmount: 11 * PRECISION })
+                ]
+            )
+        ).toEqual([]);
+    })
+);
+
+it.effect('links an untitled payment to the series of its category', () =>
+    Effect.sync(() => {
+        const untitled = { ...charge(1, June(13), 1200, ''), categoryId: 7 };
+        const family = entry(1, {
+            source: RecurringSeriesSourceEnum.DETECTED,
+            merchantKey: 'EXPENSE|1|MAMA|1000000000',
+            categoryId: 7,
+            anchorDate: new Date(2026, 4, 9),
+            defaultAmount: 1000 * PRECISION
+        });
+        expect(matchRecurringTransactions([untitled], [family]).map(match => match.seriesId)).toEqual([1]);
+        expect(matchRecurringTransactions([{ ...untitled, categoryId: 8 }], [family])).toEqual([]);
+        expect(matchRecurringTransactions([{ ...untitled, categoryId: null }], [family])).toEqual([]);
     })
 );

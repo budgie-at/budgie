@@ -108,7 +108,11 @@ export class RecurringRepository extends Context.Service<RecurringRepository>()(
                                 transactionFilters.buildNonDebtAccountCondition(),
                                 ...(historical ? [] : [buildSpendingEntryCondition(), eq(AccountEntityTable.isActive, true)]),
                                 gt(TransactionEntryEntityTable.amount, 0),
-                                or(ne(TransactionEntityTable.title, ''), ne(TransactionEntityTable.comment, '')),
+                                or(
+                                    ne(TransactionEntityTable.title, ''),
+                                    ne(TransactionEntityTable.comment, ''),
+                                    isNotNull(TransactionEntryEntityTable.categoryId)
+                                ),
                                 filter
                             )
                         );
