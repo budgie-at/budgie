@@ -17,7 +17,7 @@ export const buildYieldPayoutLabels = ({
     if (isMerged) {
         return {
             title: isScoped ? kindLabel : (positionTitle ?? (isNotEmptyString(sourceTitle) ? sourceTitle : baseTitle)),
-            subtitle: joinYieldSubtitle([countLabel, dayLabel])
+            subtitle: joinYieldSubtitle([isScoped ? null : kindLabel, countLabel, dayLabel])
         };
     }
 

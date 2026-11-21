@@ -629,10 +629,6 @@ msgstr "{formattedDifference} у межах ліміту"
 msgid "{formattedRate} a year"
 msgstr "{formattedRate} на рік"
 
-#: src/yield/hook/use-yield-rate-text.hook.ts
-msgid "{formattedRate} yield · last 12 months"
-msgstr "{formattedRate} дохідності · останні 12 місяців"
-
 #: src/transaction/components/split-entries-remainder/split-entries-remainder.tsx
 msgid "{formattedRemaining} left to assign"
 msgstr "{formattedRemaining} залишилось розподілити"
@@ -843,6 +839,10 @@ msgstr "{name} підвищено до {amountLabel}"
 msgid "{net} after tax · −{tax} tax"
 msgstr "{net} після податків · −{tax} податку"
 
+#: src/yield/hook/use-yield-range-net-text.hook.ts
+msgid "{netText} · {formattedRate} yield"
+msgstr "{netText} · дохідність {formattedRate}"
+
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "{newAccountCount, plural, one {Add # account in {currencyCode}} other {Add # accounts in {currencyCode}}}"
 msgstr "{newAccountCount, plural, one {Додати # рахунок у {currencyCode}} few {Додати # рахунки у {currencyCode}} many {Додати # рахунків у {currencyCode}} other {Додати # рахунку у {currencyCode}}}"
@@ -983,9 +983,9 @@ msgstr "{quantityLabel}, вартість {valueLabel}"
 msgid "{quotePriceLabel} ≈ {defaultPriceLabel}"
 msgstr "{quotePriceLabel} ≈ {defaultPriceLabel}"
 
-#: src/yield/hook/use-yield-hero-line-text.hook.ts
-msgid "{rangeNet} after tax · −{rangeTax} tax"
-msgstr "{rangeNet} після податків · −{rangeTax} податку"
+#: src/yield/hook/use-yield-range-net-text.hook.ts
+msgid "{rangeNet} after tax"
+msgstr "{rangeNet} після податку"
 
 #: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
 msgid "{rate, plural, =1 {about once a week} =2 {about twice a week} other {about # a week}}"
@@ -1313,10 +1313,6 @@ msgstr "≈ {formattedMonths} міс."
 #: src/yield/component/yield-breakdown-yield-rate/yield-breakdown-yield-rate.tsx
 msgid "≈ {formattedRate}"
 msgstr "≈ {formattedRate}"
-
-#: src/yield/hook/use-yield-rate-text.hook.ts
-msgid "≈ {formattedRate} yield · last 12 months"
-msgstr "≈ {formattedRate} дохідності · останні 12 місяців"
 
 #: src/yield/component/yield-legend-estimated-row/yield-legend-estimated-row.tsx
 msgid "≈ Includes estimated prices"
@@ -2005,10 +2001,6 @@ msgstr "Витрачена сума"
 msgid "Amount to set aside"
 msgstr "Сума, яку відкласти"
 
-#: src/yield/component/yield-section-header/yield-section-header.tsx
-msgid "Amounts before tax"
-msgstr "Суми до сплати податку"
-
 #: src/rule/components/rule-action-phrase/rule-action-phrase.tsx
 msgid "an account"
 msgstr "рахунок"
@@ -2481,6 +2473,10 @@ msgstr "На основі вашого регулярного доходу. По
 #: src/categorize-inbox/components/categorize-inbox-group-move-to-cash-option/categorize-inbox-group-move-to-cash-option.tsx
 msgid "Becomes a transfer to your cash wallet"
 msgstr "Стане переказом до вашого гаманця готівки"
+
+#: src/yield/component/yield-section-header/yield-section-header.tsx
+msgid "before tax"
+msgstr "до оподаткування"
 
 #: src/yield/component/yield-breakdown-earned/yield-breakdown-earned.tsx
 msgid "Before tax"
@@ -4853,10 +4849,6 @@ msgstr "Зароблено за {bucketPeriod}"
 msgid "Earned in range"
 msgstr "Зароблено за період"
 
-#: src/yield/hook/use-yield-entry-subtitle.hook.ts
-msgid "Earned in the last 12 months"
-msgstr "Зароблено за останні 12 місяців"
-
 #: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
 msgid "Earned minus tax withheld."
 msgstr "Зароблено мінус утриманий податок."
@@ -6144,6 +6136,10 @@ msgstr "Включає рахунки, додані пізніше. Почнет
 msgid "Includes crypto"
 msgstr "Включно з криптовалютою"
 
+#: src/yield/component/yield-hero-line/yield-hero-line.tsx
+msgid "Includes estimated prices"
+msgstr "Включає оціночні ціни"
+
 #: src/yield/hook/use-yield-hero-sentence.hook.ts
 #: src/yield/hook/use-yield-scrub-sentence.hook.ts
 msgid "Includes estimated values."
@@ -6407,6 +6403,7 @@ msgstr "Останній 1 місяць"
 
 #: src/yield/constant/yield-range-name.constant.ts
 #: src/yield/constant/yield-range-period-label.constant.ts
+#: src/yield/hook/use-yield-entry-subtitle.hook.ts
 msgid "Last 12 months"
 msgstr "Останні 12 місяців"
 
@@ -7497,6 +7494,7 @@ msgid "No tags yet"
 msgstr "Ще немає тегів"
 
 #: src/yield/hook/use-yield-hero-line-text.hook.ts
+#: src/yield/hook/use-yield-range-net-text.hook.ts
 msgid "No tax withheld"
 msgstr "Податок не утримано"
 
@@ -9878,6 +9876,10 @@ msgstr "Shortcuts недоступний на цьому пристрої."
 #: src/account/component/deposit-close-delta-line/deposit-close-delta-line.tsx
 msgid "Shortfall: −{formattedDelta}"
 msgstr "Недоотримано: −{formattedDelta}"
+
+#: src/yield/component/yield-collapsed-title/yield-collapsed-title.tsx
+msgid "Show all"
+msgstr "Показати все"
 
 #: src/account/component/institution-accounts/institution-accounts.tsx
 msgid "Show all {accountsCount} accounts"

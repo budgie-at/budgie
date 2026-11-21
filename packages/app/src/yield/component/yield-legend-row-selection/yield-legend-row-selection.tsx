@@ -15,10 +15,5 @@ export const YieldLegendRowSelection = ({ group }: Props) => {
 
     const background = YIELD_GROUP_COLOR[group][isIncreaseContrast ? 'backgroundContrast' : 'background'];
 
-    return (
-        <>
-            <View pointerEvents="none" className={cn('absolute inset-0 rounded-[12px] opacity-10', background)} />
-            <View pointerEvents="none" className={cn('absolute top-[6px] bottom-[6px] left-0 w-[2px] rounded-full', background)} />
-        </>
-    );
+    return <View pointerEvents="none" className={cn('absolute inset-y-0 inset-x-[2px] rounded-[12px] opacity-10', background)} />;
 };

@@ -17,7 +17,7 @@ import { YieldLegendFootnote } from '../yield-legend-footnote/yield-legend-footn
 import { YieldLegendHeader } from '../yield-legend-header/yield-legend-header';
 import { YieldLegendLineSwatch } from '../yield-legend-line-swatch/yield-legend-line-swatch';
 
-const rowVariants = cva('flex-row gap-x-md gap-y-xs', { variants: { isAccessibilityText: { true: 'flex-wrap', false: '' } } });
+const rowVariants = cva('flex-row items-center gap-x-sm gap-y-xs', { variants: { isAccessibilityText: { true: 'flex-wrap', false: '' } } });
 const AMOUNT_CLASSNAME = 'text-sm font-semibold tabular-nums text-primary';
 
 export const YieldLegendRunning = () => {
@@ -65,8 +65,8 @@ export const YieldLegendRunning = () => {
                         <Text className={AMOUNT_CLASSNAME}>{priorAmount}</Text>
                     </View>
                 ) : null}
+                <YieldLegendFootnote />
             </View>
-            <YieldLegendFootnote />
         </View>
     );
 };

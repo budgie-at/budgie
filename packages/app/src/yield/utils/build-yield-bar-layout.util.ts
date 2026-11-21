@@ -11,6 +11,9 @@ import type { YieldBarRectInterface } from '../interface/yield-bar-rect.interfac
 
 const BAR_WIDTH_SHARE = 0.6;
 const BAR_RADIUS = 4;
+const NARROW_BAR_RADIUS = 2;
+const MIN_BAR_WIDTH = 6;
+const SLOT_GUTTER = 1;
 const MIN_SEGMENT_HEIGHT = 3;
 const MIN_TAX_HEIGHT = 3;
 const SEGMENT_GAP = 2;
@@ -48,7 +51,7 @@ const mergeSmallSegments = (heights: readonly number[], gap: number) => {
     });
 };
 
-const buildRadius = (height: number, isTop: boolean) => (isTop && height > 0 ? Math.min(BAR_RADIUS, height) : 0);
+const buildRadius = (height: number, isTop: boolean, maxRadius: number) => (isTop && height > 0 ? Math.min(maxRadius, height) : 0);
 
 export const buildYieldBarLayout = ({
     buckets,
@@ -58,7 +61,8 @@ export const buildYieldBarLayout = ({
     axis
 }: YieldBarLayoutInputInterface): YieldBarLayoutInterface => {
     const slot = Math.max(width - MARKET_CHART_PADDING_X * 2, 1) / Math.max(buckets.length, 1);
-    const barWidth = slot * BAR_WIDTH_SHARE;
+    const barWidth = Math.max(slot * BAR_WIDTH_SHARE, Math.min(MIN_BAR_WIDTH, slot - SLOT_GUTTER));
+    const barRadius = barWidth < NARROW_BAR_WIDTH ? NARROW_BAR_RADIUS : BAR_RADIUS;
     const gap = barWidth < NARROW_BAR_WIDTH ? NARROW_SEGMENT_GAP : SEGMENT_GAP;
     const scale = height / (axis.top - axis.bottom);
     const zeroY = axis.top * scale;
@@ -68,13 +72,14 @@ export const buildYieldBarLayout = ({
 
     buckets.forEach((bucket, index) => {
         const left = (xs.at(index) ?? 0) - barWidth / 2;
-        const heights = mergeSmallSegments(
+        const merged = mergeSmallSegments(
             YIELD_STACK_GROUPS.map(group =>
                 visibleGroups.includes(group) && isPositiveNumber(bucket.total) ? bucket.amounts[group] * scale : 0
             ),
             gap
         );
-        const topIndex = heights.findLastIndex(segment => segment > 0);
+        const topIndex = merged.findLastIndex(segment => segment > 0);
+        const heights = merged.map((segment, groupIndex) => (groupIndex === topIndex ? Math.max(segment, MIN_SEGMENT_HEIGHT) : segment));
         const taxAmount = bucket.amounts[YieldGroupEnum.TAX];
         const taxHeight = isPositiveNumber(taxAmount) ? Math.min(Math.max(taxAmount * scale, MIN_TAX_HEIGHT), height - zeroY) : 0;
         let bottom = zeroY;
@@ -89,7 +94,7 @@ export const buildYieldBarLayout = ({
                 y: bottom - drawn,
                 width: barWidth,
                 height: drawn,
-                radius: buildRadius(drawn, isTop),
+                radius: buildRadius(drawn, isTop, barRadius),
                 bottomRadius: 0,
                 isInProgress: bucket.isInProgress
             });
@@ -102,7 +107,7 @@ export const buildYieldBarLayout = ({
             width: barWidth,
             height: taxHeight,
             radius: 0,
-            bottomRadius: buildRadius(taxHeight, true),
+            bottomRadius: 0,
             isInProgress: bucket.isInProgress
         });
     });

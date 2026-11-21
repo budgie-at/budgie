@@ -112,7 +112,7 @@ it('caps the radius at the segment height and gives empty rects no radius', () =
     const tiny = buildYieldBarLayout({ buckets: [bucket(2, 0)], visibleGroups: VISIBLE, width: 112, height: 100, axis: axisOf100 });
     const empty = buildYieldBarLayout({ buckets: [bucket(0, 0)], visibleGroups: VISIBLE, width: 112, height: 100, axis: axisOf100 });
 
-    expect(tiny.groups[YieldGroupEnum.STAKING_EARN][0]).toMatchObject({ height: 2, radius: 2 });
+    expect(tiny.groups[YieldGroupEnum.STAKING_EARN][0]).toMatchObject({ height: 3, radius: 3 });
     expect(empty.groups[YieldGroupEnum.STAKING_EARN][0]?.radius).toBe(0);
 });
 

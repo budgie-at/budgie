@@ -23,10 +23,16 @@ export const YieldSectionHeader = ({ section, hasTax }: Props) => {
     const { t } = useLingui();
 
     return (
-        <View className="gap-y-xxs px-3xl pt-3xl pb-sm" testID={PassiveIncomeSelector.Section(section)}>
+        <View className="gap-y-xxs px-3xl pt-[32px] pb-sm" testID={PassiveIncomeSelector.Section(section)}>
             <View className="flex-row items-baseline justify-between gap-x-sm">
                 <Text accessibilityRole="header" className="text-[17px] font-semibold text-primary">
                     {t(SECTION_TITLE[section])}
+                    {section === YieldListSectionEnum.PAYOUTS && hasTax ? (
+                        <Text className="text-[13px] font-normal text-secondary-foreground">
+                            {' · '}
+                            <Trans>before tax</Trans>
+                        </Text>
+                    ) : null}
                 </Text>
                 {section === YieldListSectionEnum.ACTIVE ? (
                     <Text numberOfLines={1} className="shrink text-[13px] text-secondary-foreground">
@@ -34,11 +40,6 @@ export const YieldSectionHeader = ({ section, hasTax }: Props) => {
                     </Text>
                 ) : null}
             </View>
-            {section === YieldListSectionEnum.PAYOUTS && hasTax ? (
-                <Text className="text-[13px] leading-[18px] text-secondary-foreground">
-                    <Trans>Amounts before tax</Trans>
-                </Text>
-            ) : null}
             {section === YieldListSectionEnum.UNASSIGNED ? (
                 <Text className="text-[13px] leading-[18px] text-secondary-foreground">
                     <Trans>Payouts we couldn’t match to a deposit or exchange asset</Trans>

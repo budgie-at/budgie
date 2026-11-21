@@ -4,11 +4,13 @@ import { View } from 'react-native';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
+import { YIELD_LEGEND_ROW_HEIGHT } from '../../constant/yield-legend-row-height.constant';
 import { useYieldLegendAmounts } from '../../hook/use-yield-legend-amounts.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 import { YieldLegendEntry } from '../yield-legend-entry/yield-legend-entry';
 
-const ROW_CLASSNAME = 'min-h-[40px] w-full flex-row items-center gap-x-[8px] px-sm py-xs';
+const ROW_CLASSNAME = 'w-full flex-row items-center gap-x-[8px] rounded-[12px] px-sm py-xs';
+const ROW_STYLE = { minHeight: YIELD_LEGEND_ROW_HEIGHT };
 const AMOUNT_CLASSNAME = 'text-right text-sm tabular-nums text-secondary-foreground';
 const EMPTY_AMOUNT = '—';
 
@@ -32,6 +34,7 @@ export const YieldLegendTaxRow = ({ total, isCompact }: Props) => {
             accessibilityLabel={t`${label}, ${exactAmount}`}
             testID={PassiveIncomeSelector.LegendRow(YieldGroupEnum.TAX)}
             className={ROW_CLASSNAME}
+            style={ROW_STYLE}
         >
             <YieldLegendEntry
                 group={YieldGroupEnum.TAX}

@@ -66,7 +66,7 @@ export const YieldEntryRowContent = ({ scope }: Props) => {
                 <YieldRow
                     left={icon}
                     title={t`Passive income`}
-                    subtitle={<YieldRowSubtitle subtitle={subtitle} />}
+                    subtitle={<YieldRowSubtitle subtitle={subtitle} lines={1} />}
                     trailing={
                         <View className="flex-row items-center gap-x-sm">
                             {isNotEmptyString(earned) ? (

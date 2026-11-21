@@ -28,20 +28,15 @@ export const YieldLegend = () => {
     const { screenKey } = use(YieldScreenContext);
     const { cancelScrub } = use(YieldSelectionContext);
     const unfiltered = AsyncResult.getOrElse(useLiveAtomValue(yieldSummaryFamily({ ...screenKey.key, group: null })), () => null);
-    const { rows, taxTotal } = useYieldLegendRows();
+    const { rows: sharedRows, taxTotal } = useYieldLegendRows();
 
     const handlePress = (group: YieldGroupEnum) => {
         cancelScrub();
         router.setParams({ group: screenKey.key.group === group ? '' : group });
     };
 
-    const rowsTotal = Math.max(
-        rows.reduce((sum, row) => sum + row.total, 0),
-        1
-    );
-    const sharedRows = rows.map(row => ({ ...row, share: row.total / rowsTotal }));
     const hasTax = isPositiveNumber(unfiltered?.tax);
-    const isCompact = Math.max(taxTotal, ...rows.map(row => row.total)) >= MILLION;
+    const isCompact = Math.max(taxTotal, ...sharedRows.map(row => row.total)) >= MILLION;
 
     const isFilterActive = isDefined(screenKey.key.group);
     const isHintVisible = !isDefined(screenKey.scopeId) && (unfiltered?.groups.length ?? 0) >= MIN_KINDS_FOR_HINT;

@@ -1,4 +1,3 @@
-import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { use } from 'react';
@@ -9,7 +8,6 @@ import { useCollapsibleHeaderScroll } from '@rnw-community/react-native-collapsi
 import { useScreenChrome } from '@rnw-community/react-native-screen-chrome';
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { Icon } from '../../../@generic/component/icon/icon';
 import { CHROME_TITLE_TEXT_PROPS } from '../../../@generic/constant/chrome-title-text-props.constant';
 import { testID } from '../../../@generic/utils/test-id.util';
 import { YIELD_GROUP_LABEL } from '../../constant/yield-group-label.constant';
@@ -17,7 +15,7 @@ import { YieldScreenContext } from '../../context/yield-screen.context';
 import { useYieldScopeTitle } from '../../hook/use-yield-scope-title.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 
-const CLEAR_BUTTON_STYLE = { right: -56 };
+const CLEAR_BUTTON_STYLE = { right: -72 };
 
 export const YieldCollapsedTitle = () => {
     const { t } = useLingui();
@@ -57,7 +55,7 @@ export const YieldCollapsedTitle = () => {
                 <Trans>Passive income</Trans>
             </Text>
             <Animated.View
-                className="absolute top-1/2 -mt-[22px] h-[44px] w-[44px]"
+                className="absolute top-1/2 -mt-[22px] h-[44px] min-w-[44px]"
                 style={CLEAR_BUTTON_STYLE}
                 animatedProps={clearButtonAnimatedProps}
             >
@@ -65,10 +63,12 @@ export const YieldCollapsedTitle = () => {
                     accessibilityRole="button"
                     accessibilityLabel={accessibilityLabel}
                     onPress={handleClear}
-                    className="h-[44px] w-[44px] items-center justify-center"
+                    className="h-[44px] min-w-[44px] items-center justify-center"
                     {...testID(PassiveIncomeSelector.ClearFilter, 'collapsed')}
                 >
-                    <Icon icon={UserIconNameEnum.X} size={20} className="text-primary" />
+                    <Text className="text-[15px] font-medium text-positive-action" numberOfLines={1} maxFontSizeMultiplier={1.4}>
+                        <Trans>Show all</Trans>
+                    </Text>
                 </Pressable>
             </Animated.View>
         </View>

@@ -20,8 +20,12 @@ export const YieldScreenTitle = ({ hasYield }: Props) => {
     const hasChip = isFiltered && hasYield;
 
     return (
-        <View className="grow justify-start gap-y-xs">
-            <Text testID={PassiveIncomeSelector.Title} className="text-3xl font-semibold text-primary" {...CHROME_TITLE_TEXT_PROPS}>
+        <View className="grow shrink-0 justify-start gap-y-xs">
+            <Text
+                testID={PassiveIncomeSelector.Title}
+                className="shrink-0 text-3xl font-semibold text-primary"
+                {...CHROME_TITLE_TEXT_PROPS}
+            >
                 <Trans>Passive income</Trans>
             </Text>
             {hasChip ? <YieldFilterChipRow /> : null}

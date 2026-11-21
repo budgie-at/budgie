@@ -91,7 +91,7 @@ export const YieldScreenList = () => {
 
     const handleRangeLayout = (event: LayoutChangeEvent) => void setRangeY(event.nativeEvent.layout.y);
 
-    const listHeaderClassName = isAccessibilityText ? 'pt-[16px] pb-[24px]' : 'pb-[24px]';
+    const listHeaderClassName = isAccessibilityText ? 'pt-[16px]' : '';
     const spacerStyle = { height: pinnedHeight };
     const contentContainerStyle = { paddingBottom: bottom + LIST_BOTTOM_CLEARANCE };
     const listHeader = (

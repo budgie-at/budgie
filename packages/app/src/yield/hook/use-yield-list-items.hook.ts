@@ -37,12 +37,12 @@ export const useYieldListItems = (): readonly YieldListItemType[] => {
         return SKELETON_ITEMS;
     }
 
-    const isSinglePayoutInCard = summary.payoutCount === 1 && !isPayoutMode;
+    const isSinglePayoutInCard = summary.payoutCount === 1;
     const items = buildYieldListItems(
         summary.positions,
         isSinglePayoutInCard ? [] : payouts,
         rangeCaption,
-        isSinglePayoutInCard ? [] : unassigned
+        isSinglePayoutInCard && isDefined(unassigned) ? [] : unassigned
     ).map(item =>
         hasWithheldTax && item.kind === YieldListItemKindEnum.SECTION && item.section === YieldListSectionEnum.PAYOUTS
             ? { ...item, hasTax: true }

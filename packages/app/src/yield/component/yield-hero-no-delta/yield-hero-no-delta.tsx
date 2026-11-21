@@ -1,11 +1,12 @@
 import { YieldRangeEnum } from '@budgie/market';
 import { useLingui } from '@lingui/react/macro';
 import { use } from 'react';
-import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { YieldScreenContext } from '../../context/yield-screen.context';
+import { YieldDeltaToneEnum } from '../../enum/yield-delta-tone.enum';
+import { YieldDeltaPill } from '../yield-delta-pill/yield-delta-pill';
 
 import type { YieldSummaryInterface } from '@budgie/market';
 
@@ -30,13 +31,5 @@ export const YieldHeroNoDelta = ({ summary }: Props) => {
     };
     const text = hasEarlierPeriod ? previousPeriods[range] : t`No earlier period to compare`;
 
-    return (
-        <View className="flex-row">
-            <View className="flex-row items-center border-y border-transparent py-[2px]">
-                <Text className="text-xs text-secondary-foreground" numberOfLines={1} maxFontSizeMultiplier={LINE_MAX_FONT_SIZE_MULTIPLIER}>
-                    {text}
-                </Text>
-            </View>
-        </View>
-    );
+    return <YieldDeltaPill label={text} tone={YieldDeltaToneEnum.NEUTRAL} maxFontSizeMultiplier={LINE_MAX_FONT_SIZE_MULTIPLIER} />;
 };

@@ -25,7 +25,7 @@ const ROW_HIT_SLOP = { top: 2, bottom: 2 };
 interface Props {
     readonly group: YieldGroupEnum;
     readonly total: number;
-    readonly share: number;
+    readonly share: number | null;
     readonly isCompact: boolean;
     readonly onPress: (group: YieldGroupEnum) => void;
 }
@@ -39,9 +39,9 @@ export const YieldLegendRow = ({ group, total, share, isCompact, onPress }: Prop
     const isSelected = screenKey.key.group === group;
     const isDimmed = hasFilter && !isSelected;
     const isEmpty = isDefined(selectedIndex) && !isPositiveNumber(total);
-    const { exact: exactAmount, amount, share: formattedShare } = useYieldLegendAmounts(total, share, isCompact, isEmpty);
+    const { exact: exactAmount, amount, share: formattedShare } = useYieldLegendAmounts(total, share ?? 0, isCompact, isEmpty);
     const label = t(YIELD_GROUP_LABEL[group]);
-    const shareText = isEmpty ? null : formattedShare;
+    const shareText = isEmpty || !isDefined(share) ? null : formattedShare;
     const amountClassName = isDimmed ? DIMMED_AMOUNT_CLASSNAME : AMOUNT_CLASSNAME;
     const rowClassName = cn('w-full', 'flex-row', 'items-center', 'gap-x-[8px]', 'rounded-[12px]', 'px-sm', 'py-xs');
     const accessibilityState = { selected: isSelected };

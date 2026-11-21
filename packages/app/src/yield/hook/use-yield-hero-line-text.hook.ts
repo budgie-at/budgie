@@ -11,7 +11,7 @@ import { resolveYieldHeroLineKind } from '../utils/resolve-yield-hero-line-kind.
 import { selectYieldScrubbedBuckets } from '../utils/select-yield-scrubbed-buckets.util';
 
 import { useYieldFormatNet } from './use-yield-format-net.hook';
-import { useYieldRateText } from './use-yield-rate-text.hook';
+import { useYieldRangeNetText } from './use-yield-range-net-text.hook';
 
 import type { YieldBucketInterface, YieldSummaryInterface } from '@budgie/market';
 
@@ -20,7 +20,6 @@ export const useYieldHeroLineText = (summary: YieldSummaryInterface, bucket: Yie
     const { screenKey, mode } = use(YieldScreenContext);
     const formatPercent = useFormatPercent();
     const formatNet = useYieldFormatNet();
-    const rateText = useYieldRateText(summary.annualYield);
 
     const scrubbedBuckets = selectYieldScrubbedBuckets(summary.buckets, isDefined(bucket) ? summary.buckets.indexOf(bucket) : null, mode);
     const bucketTax = scrubbedBuckets.reduce((sum, item) => sum + item.amounts[YieldGroupEnum.TAX], 0);
@@ -28,22 +27,12 @@ export const useYieldHeroLineText = (summary: YieldSummaryInterface, bucket: Yie
     const share = formatPercent(summary.share ?? 0);
     const { net, tax } = formatNet(scrubbedTotal, bucketTax);
     const scrubText = isPositiveNumber(bucketTax) ? t`${net} after tax · −${tax} tax` : t`No tax withheld`;
-    const { net: rangeNet, tax: rangeTax } = formatNet(summary.earned.value, summary.tax);
-    const rangeText = isPositiveNumber(summary.tax) ? t`${rangeNet} after tax · −${rangeTax} tax` : t`No tax withheld`;
+    const rangeText = useYieldRangeNetText(summary);
     const texts: Record<YieldHeroLineKindEnum, string> = {
         [YieldHeroLineKindEnum.SCRUB_NET]: scrubText,
         [YieldHeroLineKindEnum.RANGE_NET]: rangeText,
-        [YieldHeroLineKindEnum.SHARE]: t`${share} of your passive income`,
-        [YieldHeroLineKindEnum.RATE]: rateText,
-        [YieldHeroLineKindEnum.UNAVAILABLE]: rateText
+        [YieldHeroLineKindEnum.SHARE]: t`${share} of your passive income`
     };
 
-    return texts[
-        resolveYieldHeroLineKind({
-            isScrubbing: isDefined(bucket),
-            group: screenKey.key.group,
-            range: screenKey.key.range,
-            rate: summary.annualYield.rate
-        })
-    ];
+    return texts[resolveYieldHeroLineKind({ isScrubbing: isDefined(bucket), group: screenKey.key.group })];
 };
