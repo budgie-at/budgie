@@ -32,6 +32,8 @@ import m0030 from './20261112194935_tired_justin_hammer/migration.sql';
 import m0031 from './20261113201257_passive_income_yield/migration.sql';
 import m0032 from './20261113201302_yield_outbox_triggers/migration.sql';
 import m0033 from './20261117202013_brokerage_funding_marker/migration.sql';
+import m0034 from './20261121093343_refund_auto_pair_disabled/migration.sql';
+import m0035 from './20261121093354_refund_auto_pair_outbox_triggers/migration.sql';
 
   export default {
     migrations: {
@@ -68,7 +70,9 @@ import m0033 from './20261117202013_brokerage_funding_marker/migration.sql';
 "20261112194935_tired_justin_hammer": m0030,
 "20261113201257_passive_income_yield": m0031,
 "20261113201302_yield_outbox_triggers": m0032,
-"20261117202013_brokerage_funding_marker": m0033
+"20261117202013_brokerage_funding_marker": m0033,
+"20261121093343_refund_auto_pair_disabled": m0034,
+"20261121093354_refund_auto_pair_outbox_triggers": m0035
 }
   }
   
