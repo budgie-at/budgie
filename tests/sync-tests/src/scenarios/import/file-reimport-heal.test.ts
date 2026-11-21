@@ -199,6 +199,20 @@ describe('import/file-reimport-heal', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
+    it.effect('keeps the refund open to automatic pairing after a re-import detaches it', () =>
+        Effect.gen(function* () {
+            const { refundId } = yield* importConsolidatedRefund();
+
+            yield* deleteEntriesOf(refundId);
+            yield* importStatement([buildExpenseRow(), buildRefundRow()]);
+
+            expect(yield* testQueryService.findTransactionById(refundId)).toMatchObject({
+                consolidationParentTransactionId: null,
+                refundAutoPairDisabled: false
+            });
+        }).pipe(Effect.provide(TestLayer))
+    );
+
     it.effect('applies a bank-changed amount and keeps the user category', () =>
         Effect.gen(function* () {
             const account = yield* seedCard();

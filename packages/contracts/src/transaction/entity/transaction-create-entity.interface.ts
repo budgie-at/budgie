@@ -7,6 +7,7 @@ export type TransactionCreateEntityInterface = PartialByKeysType<
     | 'consolidationParentTransactionId'
     | 'consolidationType'
     | 'needsEmbedding'
+    | 'refundAutoPairDisabled'
     | 'importFingerprint'
     | 'fundAccountId'
     | 'yieldKind'

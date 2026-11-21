@@ -54,7 +54,8 @@ const SYNCED_PROPERTIES_BY_TABLE: Readonly<Record<string, readonly string[]>> = 
         'consolidationType',
         'fundAccountId',
         'yieldKind',
-        'yieldSourceAccountId'
+        'yieldSourceAccountId',
+        'refundAutoPairDisabled'
     ]
 };
 

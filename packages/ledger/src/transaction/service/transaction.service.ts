@@ -199,6 +199,13 @@ export class TransactionService extends Context.Service<TransactionService>()('@
                 },
                 effect => Db.transaction(effect)
             ),
+            revertConsolidationByUser: Effect.fn('TransactionService.revertConsolidationByUser')(
+                function* (id: number) {
+                    yield* unconsolidationService.revertByUser(id);
+                    yield* accountBalanceIncrementalService.updateAllBalances(true);
+                },
+                effect => Db.transaction(effect)
+            ),
             findIdMapByExternalSource: (externalSource: ExternalSourceEnum, accountIds?: readonly number[]) =>
                 transactionRepository.findIdMapByExternalSource(externalSource, accountIds),
             findKnownExternalIds: (externalSource: ExternalSourceEnum) =>
