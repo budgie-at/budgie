@@ -9,7 +9,7 @@ import { decimalPlacesAtom, defaultInstrumentAtom } from '../../settings/constan
 import { YIELD_TREND_ARROW } from '../constant/yield-trend-arrow.constant';
 import { YieldDeltaToneEnum } from '../enum/yield-delta-tone.enum';
 import { YieldHeroTrendEnum } from '../enum/yield-hero-trend.enum';
-import { roundYieldDelta } from '../utils/round-yield-delta.util';
+import { roundYieldDifference } from '../utils/round-yield-difference.util';
 
 import { useYieldComparisonPhrase } from './use-yield-comparison-phrase.hook';
 import { useYieldHeroTrend } from './use-yield-hero-trend.hook';
@@ -33,7 +33,7 @@ export const useYieldDeltaLabel = (
     const priorTotal = isDefined(priorTotals)
         ? priorTotals.reduce((sum, total) => sum + total, 0)
         : earned / Math.max(1 + (summary?.delta?.ratio ?? 0), MIN_PRIOR_RATIO);
-    const amount = formatAmount(Math.abs(roundYieldDelta(earned, priorTotal, decimalPlaces)), symbol);
+    const amount = formatAmount(Math.abs(roundYieldDifference(earned, priorTotal, decimalPlaces)), symbol);
 
     const sign = trend === YieldHeroTrendEnum.DOWN ? '−' : '+';
     const comparison = useYieldComparisonPhrase(range, tone);

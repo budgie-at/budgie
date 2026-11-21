@@ -1,6 +1,8 @@
 import { InstrumentTypeEnum, YieldKindEnum } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
+import { format } from 'date-fns/format';
+import { isSameMonth } from 'date-fns/isSameMonth';
 import { use } from 'react';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
@@ -11,13 +13,18 @@ import { YIELD_KIND_LABEL } from '../constant/yield-kind-label.constant';
 import { YieldScreenContext } from '../context/yield-screen.context';
 import { YieldPayoutDateFormatEnum } from '../enum/yield-payout-date-format.enum';
 import { buildYieldPayoutLabels } from '../utils/build-yield-payout-labels.util';
-import { formatYieldDayRange } from '../utils/format-yield-day-range.util';
 import { getYieldPayoutAccount } from '../utils/get-yield-payout-account.util';
 
 import { useFormatYieldPayoutAmount } from './use-format-yield-payout-amount.hook';
 import { useYieldSummary } from './use-yield-summary.hook';
 
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
+
+const formatYieldDayRange = (first: Date, last: Date, formatMonthAndDay: (date: Date) => string): string => {
+    const lastDay = isSameMonth(first, last) ? format(last, 'd') : formatMonthAndDay(last);
+
+    return `${formatMonthAndDay(first)}–${lastDay}`.replaceAll(' ', ' ');
+};
 
 export const useYieldPayoutRowText = (
     transaction: TransactionWithRelationsEntityInterface,

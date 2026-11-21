@@ -8,7 +8,7 @@ import { YIELD_NEUTRAL_RATIO } from '../constant/yield-neutral-ratio.constant';
 import { YIELD_TREND_ARROW } from '../constant/yield-trend-arrow.constant';
 import { YieldDeltaToneEnum } from '../enum/yield-delta-tone.enum';
 import { YieldHeroTrendEnum } from '../enum/yield-hero-trend.enum';
-import { roundYieldDelta } from '../utils/round-yield-delta.util';
+import { roundYieldDifference } from '../utils/round-yield-difference.util';
 
 const DIRECTION_TREND: Readonly<Record<number, YieldHeroTrendEnum>> = {
     1: YieldHeroTrendEnum.UP,
@@ -29,7 +29,7 @@ export const useYieldScrubDeltaFigures = (current: number, previous: number) => 
     const { symbol } = useAtomValue(defaultInstrumentAtom);
     const decimalPlaces = useAtomValue(decimalPlacesAtom);
 
-    const change = roundYieldDelta(current, previous, decimalPlaces);
+    const change = roundYieldDifference(current, previous, decimalPlaces);
     const direction = Math.sign(change);
     const amount = formatAmount(Math.abs(change), symbol);
     const sign = DIRECTION_SIGN[direction];
