@@ -165,7 +165,15 @@ const buildIncomeEntriesSql = (
             INNER JOIN accounts income_account ON income_account.id = income_entry.account_id
             WHERE income_tx.deleted_at IS NULL
                 AND income_tx.consolidation_parent_transaction_id IS NULL
+                AND income_tx.consolidation_type IS NULL
                 AND income_tx.type = '${TransactionTypeEnum.INCOME}'
+                AND NOT EXISTS (
+                    SELECT 1
+                    FROM transaction_entries income_sibling_entry INDEXED BY transaction_entries_transaction_idx
+                    WHERE income_sibling_entry.transaction_id = income_tx.id
+                        AND income_sibling_entry.deleted_at IS NULL
+                        AND income_sibling_entry.id != income_entry.id
+                )
                 ${buildConsolidationScanScopeSql(scope, 'income_tx.operated_at')}
         )
     )
