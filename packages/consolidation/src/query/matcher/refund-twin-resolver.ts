@@ -10,7 +10,15 @@ class RefundTwinResolver {
         const visitedNodes = new Set<string>();
 
         for (const edge of edges) {
-            this.getNodes(edge).forEach(node => edgesByNode.set(node, [...(edgesByNode.get(node) ?? []), edge]));
+            for (const node of this.getNodes(edge)) {
+                const nodeEdges = edgesByNode.get(node);
+
+                if (isDefined(nodeEdges)) {
+                    nodeEdges.push(edge);
+                } else {
+                    edgesByNode.set(node, [edge]);
+                }
+            }
         }
 
         return edges.map(edge => this.collectComponent(edge, edgesByNode, visitedNodes)).filter(component => isNotEmptyArray(component));
@@ -45,12 +53,18 @@ class RefundTwinResolver {
         const componentEdges = new Set<RefundEdgeRowInterface>();
         const pendingNodes = this.getNodes(seedEdge).filter(node => !visitedNodes.has(node));
 
-        while (isNotEmptyArray(pendingNodes)) {
-            const node = pendingNodes.pop() ?? '';
+        pendingNodes.forEach(node => visitedNodes.add(node));
 
-            visitedNodes.add(node);
-            (edgesByNode.get(node) ?? []).forEach(edge => componentEdges.add(edge));
-            pendingNodes.push(...[...componentEdges].flatMap(edge => this.getNodes(edge)).filter(next => !visitedNodes.has(next)));
+        while (isNotEmptyArray(pendingNodes)) {
+            for (const edge of edgesByNode.get(pendingNodes.pop() ?? '') ?? []) {
+                componentEdges.add(edge);
+                this.getNodes(edge)
+                    .filter(next => !visitedNodes.has(next))
+                    .forEach(next => {
+                        visitedNodes.add(next);
+                        pendingNodes.push(next);
+                    });
+            }
         }
 
         return [...componentEdges];
