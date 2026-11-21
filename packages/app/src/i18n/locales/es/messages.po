@@ -2245,8 +2245,8 @@ msgid "At today’s balances and rates"
 msgstr "Con los saldos y tasas de hoy"
 
 #: src/yield/component/yield-breakdown-run-rate/yield-breakdown-run-rate.tsx
-msgid "At today’s balances and rates · excludes distributions"
-msgstr "Con los saldos y tasas de hoy · sin distribuciones"
+msgid "At today’s balances and rates, excluding distributions"
+msgstr "Con los saldos y tasas de hoy, sin distribuciones"
 
 #: src/categorize-inbox/components/categorize-inbox-group-attach-debt-option/categorize-inbox-group-attach-debt-option.tsx
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx

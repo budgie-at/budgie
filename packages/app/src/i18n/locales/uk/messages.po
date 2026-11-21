@@ -2245,8 +2245,8 @@ msgid "At today’s balances and rates"
 msgstr "За сьогоднішніми балансами та ставками"
 
 #: src/yield/component/yield-breakdown-run-rate/yield-breakdown-run-rate.tsx
-msgid "At today’s balances and rates · excludes distributions"
-msgstr "За сьогоднішніми балансами та ставками · без виплат фондів"
+msgid "At today’s balances and rates, excluding distributions"
+msgstr "За сьогоднішніми балансами та ставками, без виплат фондів"
 
 #: src/categorize-inbox/components/categorize-inbox-group-attach-debt-option/categorize-inbox-group-attach-debt-option.tsx
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
