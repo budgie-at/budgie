@@ -108,5 +108,28 @@ describe('cloud-sync/apply-refund-marker', () => {
                 expect(yield* hasPendingMarker).toBe(true);
             })
         );
+        it.effect('keeps a synced refund marker when a peer that never saw it uploads an unrelated edit', () =>
+            Effect.gen(function* () {
+                const { deviceB, cloud, transaction } = yield* seedBaseline;
+
+                yield* markLocally;
+                yield* pushDevice(testDb, cloud);
+                cloud.omitField(transaction.syncZone, transaction.syncId, MARKER_FIELD);
+                yield* pullDevice(deviceB, cloud, DEVICE_B);
+
+                expect(yield* readMarker(deviceB)).toBe(0);
+
+                yield* editTitleAsUser(deviceB);
+                yield* pushDevice(deviceB, cloud);
+                yield* pullDevice(testDb, cloud, DEVICE_A);
+
+                expect(yield* readMarker(testDb)).toBe(1);
+
+                yield* pushDevice(testDb, cloud);
+                yield* pullDevice(deviceB, cloud, DEVICE_B);
+
+                expect(yield* readMarker(deviceB)).toBe(1);
+            })
+        );
     });
 });

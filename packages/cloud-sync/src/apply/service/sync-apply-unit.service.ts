@@ -115,6 +115,15 @@ export class SyncApplyUnitService extends Context.Service<SyncApplyUnitService>(
                 : merged;
         };
 
+        const refundMarkerProperty = 'refundAutoPairDisabled';
+
+        const isRefundMarkerLowered = (
+            recordType: SyncRecordTypeEnum,
+            local: Readonly<Record<string, SyncCellType>>,
+            merged: Readonly<Record<string, SyncCellType>>
+        ): boolean =>
+            recordType === SyncRecordTypeEnum.TRANSACTION && local[refundMarkerProperty] === 1 && merged[refundMarkerProperty] !== 1;
+
         const readChangedColumns = (changedColumns: string): readonly string[] =>
             Option.getOrElse(Schema.decodeOption(columnListSchema)(changedColumns), () => []);
 
@@ -335,7 +344,9 @@ export class SyncApplyUnitService extends Context.Service<SyncApplyUnitService>(
                     localChanged: changedProperties,
                     authorship: SYNC_AUTHORSHIP_COLUMNS[parentTable] ?? null
                 });
-                const mergedCells = normalizeMergedYield(decoded.recordType, result.merged);
+                const normalizedCells = normalizeMergedYield(decoded.recordType, result.merged);
+                const isRefundMarkerKept = isRefundMarkerLowered(decoded.recordType, localCells, normalizedCells);
+                const mergedCells = isRefundMarkerKept ? { ...normalizedCells, [refundMarkerProperty]: 1 } : normalizedCells;
                 const updates = diffSyncCells(parentDescriptor, mergedCells, localCells);
                 const kept = [
                     ...Object.keys(serverParentCells).filter(property => mergedCells[property] !== (serverParentCells[property] ?? null)),
@@ -371,7 +382,11 @@ export class SyncApplyUnitService extends Context.Service<SyncApplyUnitService>(
                     }
                 }
 
-                keptColumns = isDefined(outbox) ? [...new Set(kept)].sort() : null;
+                keptColumns = isDefined(outbox)
+                    ? [...new Set(kept)].sort()
+                    : isRefundMarkerKept
+                      ? [getSyncColumnName(parentDescriptor, refundMarkerProperty)]
+                      : null;
             } else {
                 for (const row of decoded.rows) {
                     yield* childApplyService.insertRow(row, resolutions, unitIds);
