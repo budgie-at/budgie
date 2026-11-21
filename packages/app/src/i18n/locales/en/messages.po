@@ -4231,6 +4231,10 @@ msgstr "Crypto"
 msgid "Crypto Account"
 msgstr "Crypto Account"
 
+#: src/yield/component/yield-breakdown-crypto-today/yield-breakdown-crypto-today.tsx
+msgid "Crypto rewards at today’s prices"
+msgstr "Crypto rewards at today’s prices"
+
 #: src/yield/constant/yield-kind-description.constant.ts
 msgid "Crypto staking rewards"
 msgstr "Crypto staking rewards"
@@ -9318,10 +9322,6 @@ msgstr "Review sync settings"
 #: src/rule/constant/external-source.constant.ts
 msgid "Revolut"
 msgstr "Revolut"
-
-#: src/yield/component/yield-breakdown-crypto-today/yield-breakdown-crypto-today.tsx
-msgid "Rewards at today’s prices"
-msgstr "Rewards at today’s prices"
 
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
 msgid "Right now anyone who can unlock your phone can open Budgie. With a PIN, the file itself is encrypted and only opens with it."
