@@ -81,22 +81,28 @@ export class RefundPairRepository extends Context.Service<RefundPairRepository>(
                     const key = `${edge.expenseTransactionId}:${bucket}`;
                     const existing = candidates.get(key);
 
-                    if (isAutoRefundConfidenceBucket(bucket)) {
+                    if (isDefined(existing)) {
+                        existing.refundIncomeTransactionIds.push(edge.refundTransactionId);
+                        candidates.set(key, { ...existing, refundsTotal: existing.refundsTotal + edge.refundAmount });
+                    } else if (isAutoRefundConfidenceBucket(bucket)) {
                         candidates.set(key, {
                             accountId: edge.accountId,
                             confidenceBucket: bucket,
                             expenseEntryAmount: edge.expenseAmount,
                             expenseTransactionId: edge.expenseTransactionId,
                             matchType: autoMatchTypes[bucket],
-                            refundIncomeTransactionIds: [...(existing?.refundIncomeTransactionIds ?? []), edge.refundTransactionId].sort(
-                                (left, right) => left - right
-                            ),
-                            refundsTotal: (existing?.refundsTotal ?? 0) + edge.refundAmount
+                            refundIncomeTransactionIds: [edge.refundTransactionId],
+                            refundsTotal: edge.refundAmount
                         });
                     }
                 }
 
-                return [...candidates.values()].sort((left, right) => left.expenseTransactionId - right.expenseTransactionId);
+                return [...candidates.values()]
+                    .map(candidate => ({
+                        ...candidate,
+                        refundIncomeTransactionIds: candidate.refundIncomeTransactionIds.sort((left, right) => left - right)
+                    }))
+                    .sort((left, right) => left.expenseTransactionId - right.expenseTransactionId);
             }),
             findReviewCandidates: Effect.fn('RefundPairRepository.findReviewCandidates')(function* () {
                 const edges = yield* findEdges(null);

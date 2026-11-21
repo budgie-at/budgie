@@ -4,6 +4,7 @@ import { expect, layer } from '@effect/vitest';
 import * as Clock from 'effect/Clock';
 import * as Effect from 'effect/Effect';
 
+import { seedTitledTransaction } from '../harness/seed-titled-transaction';
 import { testSeedService, TestLayer } from '../harness/test-context';
 
 const SCALE_TWIN_COUNT = 50;
@@ -13,16 +14,15 @@ const SCALE_STEP_MS = 60 * 1000;
 const SCALE_REFUND_OFFSET_MS = 2 * 60 * 60 * 1000;
 const SCALE_BUDGET_MS = 2000;
 
-const seedSide = Effect.fnUntraced(function* (accountId: number, isRefund: boolean, index: number) {
-    const externalId = `scale-${isRefund ? 'refund' : 'charge'}-${index}`;
-    const operatedAt = new Date(SCALE_START.getTime() + index * SCALE_STEP_MS + (isRefund ? SCALE_REFUND_OFFSET_MS : 0));
-    const entry = { accountId, amount: SCALE_AMOUNT };
-    const transaction = isRefund
-        ? yield* testSeedService.bankPairIncome({ externalId, operatedAt }, entry)
-        : yield* testSeedService.bankPairExpense({ externalId, operatedAt }, entry);
-
-    yield* testSeedService.updateTransaction(transaction.id, { title: isRefund ? 'Скасування. JointLens' : 'JointLens' });
-});
+const seedSide = (accountId: number, isRefund: boolean, index: number) =>
+    seedTitledTransaction({
+        accountId,
+        amount: SCALE_AMOUNT,
+        externalId: `scale-${isRefund ? 'refund' : 'charge'}-${index}`,
+        isRefund,
+        operatedAt: new Date(SCALE_START.getTime() + index * SCALE_STEP_MS + (isRefund ? SCALE_REFUND_OFFSET_MS : 0)),
+        title: isRefund ? 'Скасування. JointLens' : 'JointLens'
+    });
 
 layer(TestLayer)('consolidation/refund-pair-matcher-scale', it => {
     it.effect('matches fifty identical charges against fifty identical refunds quickly', () =>

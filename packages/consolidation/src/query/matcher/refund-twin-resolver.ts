@@ -31,18 +31,20 @@ class RefundTwinResolver {
         const refunds = [...new Map(component.map(edge => [edge.refundTransactionId, edge])).values()].sort(
             refundEdgeMetrics.compareRefunds
         );
-        const pairs = expenses.map((expense, index) =>
-            component.find(
-                edge =>
-                    edge.expenseTransactionId === expense.expenseTransactionId &&
-                    edge.refundTransactionId === refunds.at(index)?.refundTransactionId
-            )
-        );
         const isInterchangeable = component.every(
             edge => edge.refundHasTags === 0 && isDefined(edge.refundBaseAmount) && edge.refundBaseAmount === component[0].refundBaseAmount
         );
 
-        return expenses.length === refunds.length && isInterchangeable && pairs.every(isDefined) ? pairs.filter(isDefined) : [];
+        if (expenses.length !== refunds.length || !isInterchangeable) {
+            return [];
+        }
+
+        const edgeByPair = new Map(component.map(edge => [`${edge.expenseTransactionId}:${edge.refundTransactionId}`, edge]));
+        const pairs = expenses.map((expense, index) =>
+            edgeByPair.get(`${expense.expenseTransactionId}:${refunds[index].refundTransactionId}`)
+        );
+
+        return pairs.every(isDefined) ? pairs.filter(isDefined) : [];
     }
 
     private collectComponent(
