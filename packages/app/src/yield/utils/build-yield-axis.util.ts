@@ -9,7 +9,7 @@ const MIN_INTERVALS = 3;
 const MAX_INTERVALS = 5;
 const EPSILON = 1e-9;
 const PRECISION = 12;
-const HEADROOM = 1.06;
+const HEADROOM = 1.02;
 
 export const buildYieldAxis = (maxValue: number, depthBelowZero: number): YieldAxisInterface => {
     const peak = Math.max(maxValue, 0);

@@ -23,10 +23,6 @@ export const useYieldPositionKindLabel = ({
         return t(YIELD_KIND_LABEL[kind]);
     }
 
-    if (group === YieldGroupEnum.DISTRIBUTIONS) {
-        return t`Fund payouts`;
-    }
-
     if (isDefined(group)) {
         return t(YIELD_GROUP_LABEL[group]);
     }
@@ -39,5 +35,5 @@ export const useYieldPositionKindLabel = ({
         return t`Interest`;
     }
 
-    return instrumentType === InstrumentTypeEnum.FUND ? t`Fund payouts` : t`Dividends`;
+    return t(YIELD_GROUP_LABEL[instrumentType === InstrumentTypeEnum.FUND ? YieldGroupEnum.DISTRIBUTIONS : YieldGroupEnum.DIVIDENDS]);
 };

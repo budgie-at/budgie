@@ -18,6 +18,7 @@ export const YieldScreenTitle = ({ hasYield }: Props) => {
 
     const isFiltered = isDefined(screenKey.scopeId) || isDefined(screenKey.key.group);
     const hasChip = isFiltered && hasYield;
+    const isSubtitleVisible = !isFiltered && hasYield;
 
     return (
         <View className="grow shrink-0 justify-start gap-y-xs">
@@ -28,14 +29,14 @@ export const YieldScreenTitle = ({ hasYield }: Props) => {
             >
                 <Trans>Passive income</Trans>
             </Text>
-            {hasChip ? <YieldFilterChipRow /> : null}
-            {isFiltered || !hasYield ? null : (
-                <View className="min-h-[36px] justify-center">
+            <View className="min-h-[36px] justify-center">
+                {hasChip ? <YieldFilterChipRow /> : null}
+                {isSubtitleVisible ? (
                     <Text testID={PassiveIncomeSelector.Subtitle} className="text-sm text-secondary-foreground" maxFontSizeMultiplier={1.6}>
                         <Trans>All holdings</Trans>
                     </Text>
-                </View>
-            )}
+                ) : null}
+            </View>
         </View>
     );
 };

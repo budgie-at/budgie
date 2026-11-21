@@ -7,6 +7,7 @@ import { isDefined } from '@rnw-community/shared';
 import { useProtectedAmountLabel } from '../../@generic/hook/use-protected-amount-label.hook';
 import { decimalPlacesAtom, defaultInstrumentAtom } from '../../settings/constants/settings-atoms.constant';
 import { YIELD_TREND_ARROW } from '../constant/yield-trend-arrow.constant';
+import { YieldDeltaToneEnum } from '../enum/yield-delta-tone.enum';
 import { YieldHeroTrendEnum } from '../enum/yield-hero-trend.enum';
 import { roundYieldDelta } from '../utils/round-yield-delta.util';
 
@@ -37,7 +38,9 @@ export const useYieldDeltaLabel = (
     const sign = trend === YieldHeroTrendEnum.DOWN ? '−' : '+';
     const comparison = useYieldComparisonPhrase(range, tone);
     const isNew = summary?.delta?.kind === YieldDeltaKindEnum.NEW;
-    const label = isNew ? t`New this period` : `${YIELD_TREND_ARROW[trend]}${t`${sign}${amount} · ${sign}${change}`}`;
+    const changeLabel =
+        tone === YieldDeltaToneEnum.NEUTRAL ? `${sign}${change}` : `${YIELD_TREND_ARROW[trend]}${t`${sign}${amount} · ${sign}${change}`}`;
+    const label = isNew ? t`New this period` : changeLabel;
 
     return { label, caption: isNew ? '' : comparison, trend, tone };
 };

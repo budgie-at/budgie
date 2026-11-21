@@ -13,7 +13,6 @@ import { buildYieldRunningTotal } from './build-yield-running-total.util';
 import type { YieldAxisInterface } from '../interface/yield-axis.interface';
 import type { YieldSummaryInterface } from '@budgie/market';
 
-const RUNNING_HEADROOM = 1.08;
 const POSITIVE_BAND = YIELD_PLOT_HEIGHT - YIELD_NEGATIVE_BAND;
 
 const reserveNegativeBand = (axis: YieldAxisInterface): YieldAxisInterface => ({
@@ -30,7 +29,7 @@ export const buildYieldSummaryAxis = (
         const cumulative = buildYieldRunningTotal(summary.buckets.map(bucket => bucket.total));
         const prior = isDefined(summary.priorTotals) ? buildYieldRunningTotal(summary.priorTotals) : [];
 
-        return buildYieldAxis(Math.max(0, ...cumulative, ...prior) * RUNNING_HEADROOM, 0);
+        return buildYieldAxis(Math.max(0, ...cumulative, ...prior), 0);
     }
 
     const visibleGroups = isDefined(group) ? [group] : YIELD_STACK_GROUPS;

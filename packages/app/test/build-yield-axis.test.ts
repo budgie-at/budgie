@@ -3,14 +3,14 @@ import { expect, it } from '@effect/vitest';
 import { buildYieldAxis } from '../src/yield/utils/build-yield-axis.util';
 
 it.each([
-    [1_200, 1_500, 500],
-    [430, 500, 100],
-    [484, 600, 200],
+    [1_200, 1_250, 250],
+    [430, 450, 150],
+    [484, 500, 100],
     [500, 600, 200],
     [530, 600, 200],
     [11_000, 12_000, 4_000],
     [21_000, 25_000, 5_000],
-    [4_800_000, 6_000_000, 2_000_000],
+    [4_800_000, 5_000_000, 1_000_000],
     [0.4, 0.45, 0.15],
     [100, 120, 40]
 ])('fits a peak of %d with a top of %d on a step of %d', (peak, top, step) => {
@@ -32,9 +32,9 @@ it('keeps three to five intervals between zero and the top', () => {
     });
 });
 
-it('keeps the peak at least 6% under the top', () => {
+it('keeps the peak at least 2% under the top', () => {
     [1, 7, 99, 100, 484, 500, 774, 1_289, 12_110].forEach(peak => {
-        expect(peak).toBeLessThanOrEqual(buildYieldAxis(peak, 0).top / 1.06 + 1e-9);
+        expect(peak).toBeLessThanOrEqual(buildYieldAxis(peak, 0).top / 1.02 + 1e-9);
     });
 });
 

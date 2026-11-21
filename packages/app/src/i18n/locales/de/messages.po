@@ -844,8 +844,8 @@ msgid "{net} after tax · no tax"
 msgstr "{net} nach Steuern · keine Steuern"
 
 #: src/yield/hook/use-yield-range-net-text.hook.ts
-msgid "{netText} · {formattedRate} a year"
-msgstr "{netText} · {formattedRate} pro Jahr"
+msgid "{netText} · {formattedRate} a year"
+msgstr "{netText} · {formattedRate} pro Jahr"
 
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "{newAccountCount, plural, one {Add # account in {currencyCode}} other {Add # accounts in {currencyCode}}}"
@@ -4627,7 +4627,6 @@ msgstr "Dividende"
 #: src/inzhur/component/inzhur-fund-returns-card/inzhur-fund-returns-card.tsx
 #: src/inzhur/component/inzhur-operations-import-summary/inzhur-operations-import-summary.tsx
 #: src/yield/constant/yield-group-label.constant.ts
-#: src/yield/hook/use-yield-position-kind-label.hook.ts
 msgid "Dividends"
 msgstr "Dividenden"
 
@@ -5707,10 +5706,6 @@ msgstr "Vollständig finanziert"
 #: src/inzhur/component/inzhur-purchase-fund-field/inzhur-purchase-fund-field.tsx
 msgid "Fund"
 msgstr "Fonds"
-
-#: src/yield/hook/use-yield-position-kind-label.hook.ts
-msgid "Fund payouts"
-msgstr "Fondsausschüttungen"
 
 #: src/yield/constant/yield-kind-description.constant.ts
 msgid "Fund payouts, not counted in yield"
