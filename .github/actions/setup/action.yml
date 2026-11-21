@@ -9,7 +9,7 @@ inputs:
         description: Skip the llama.rn native artifact download during install.
         default: 'false'
     cache-node-modules:
-        description: Cache every workspace node_modules and skip the install on an exact key hit.
+        description: Restore every workspace node_modules and skip the install on an exact key hit. Saved only off pull requests, because the runner fleet's cache is read-only for pull request refs.
         default: 'false'
 
 outputs:
@@ -43,7 +43,7 @@ runs:
               LOCK_HASH: ${{ hashFiles('pnpm-lock.yaml', 'pnpm-workspace.yaml', 'scripts/after-install.cjs', 'patches/**') }}
               RUNNER_OS_NAME: ${{ runner.os }}
               RUNNER_ARCH_NAME: ${{ runner.arch }}
-          run: echo "key=node-modules-v2-${RUNNER_OS_NAME}-${RUNNER_ARCH_NAME}-node$(node --version)-pnpm$(pnpm --version)-llama${LLAMA_SKIP}-${LOCK_HASH}" >> "$GITHUB_OUTPUT"
+          run: echo "key=node-modules-v1-${RUNNER_OS_NAME}-${RUNNER_ARCH_NAME}-node$(node --version)-pnpm$(pnpm --version)-llama${LLAMA_SKIP}-${LOCK_HASH}" >> "$GITHUB_OUTPUT"
 
         - name: Restore node_modules
           id: nm-cache
@@ -71,7 +71,7 @@ runs:
           run: pnpm install --frozen-lockfile
 
         - name: Save node_modules
-          if: inputs.cache-node-modules == 'true' && steps.nm-cache.outputs.cache-hit != 'true'
+          if: inputs.cache-node-modules == 'true' && steps.nm-cache.outputs.cache-hit != 'true' && github.event_name != 'pull_request'
           uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
           continue-on-error: true
           with:

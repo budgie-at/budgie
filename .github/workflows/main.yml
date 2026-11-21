@@ -18,6 +18,31 @@ permissions:
   contents: read
 
 jobs:
+  seed-node-modules:
+    name: Seed node_modules cache (${{ matrix.copy }})
+    runs-on: [self-hosted, linux-portable-4x8]
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        copy: [1, 2, 3]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !/packages/app/fastlane/screenshots/**/*.png
+            !/tests/app-tests/fixtures/*.db
+
+      - uses: ./.github/actions/setup
+        with:
+          skip-llama-postinstall: 'true'
+          cache-node-modules: 'true'
+
   release:
     name: Publish a release
     runs-on: [self-hosted, linux-portable-2x4]

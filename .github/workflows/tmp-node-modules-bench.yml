@@ -1,0 +1,42 @@
+name: Tmp node_modules bench
+on:
+  push:
+    branches:
+      - ci/cache-node-modules
+permissions:
+  contents: read
+jobs:
+  seed:
+    name: seed ${{ matrix.copy }}
+    runs-on: [self-hosted, linux-portable-4x8]
+    strategy:
+      fail-fast: false
+      matrix:
+        copy: [1, 2, 3, 4]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          filter: blob:none
+      - uses: ./.github/actions/setup
+        with:
+          skip-llama-postinstall: 'true'
+          cache-node-modules: 'true'
+  warm:
+    name: warm ${{ matrix.copy }}
+    needs: [seed]
+    runs-on: [self-hosted, linux-portable-4x8]
+    strategy:
+      fail-fast: false
+      matrix:
+        copy: [1, 2, 3, 4]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          filter: blob:none
+      - uses: ./.github/actions/setup
+        with:
+          skip-llama-postinstall: 'true'
+          cache-node-modules: 'true'
+      - run: pnpm i18n:check && pnpm ts && git diff --exit-code
