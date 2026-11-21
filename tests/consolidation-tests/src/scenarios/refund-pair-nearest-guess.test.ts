@@ -27,6 +27,15 @@ const AMAZON_FIRST_EXPENSE_OPERATED_AT = new Date(NEAREST_YEAR, 3, 1, 10, 0, 0);
 const AMAZON_SECOND_EXPENSE_OPERATED_AT = new Date(NEAREST_YEAR, 3, 5, 10, 0, 0);
 const AMAZON_REFUND_DELAY_SECONDS = 4 * DAY_SECONDS;
 
+const BOLT_TITLE = 'Bolt';
+const BOLT_REFUND_TITLE = 'Скасування. Bolt';
+const BOLT_FARE_AMOUNT = convertToMicroUnits(186);
+const BOLT_MISMATCH_AMOUNT = convertToMicroUnits(420);
+const BOLT_FIRST_FARE_OPERATED_AT = new Date(NEAREST_YEAR, 2, 1, 8, 0, 0);
+const BOLT_SECOND_FARE_OPERATED_AT = new Date(NEAREST_YEAR, 2, 2, 8, 0, 0);
+const BOLT_MISMATCH_OPERATED_AT = new Date(NEAREST_YEAR, 2, 5, 8, 0, 0);
+const BOLT_REFUND_DELAY_SECONDS = 4 * DAY_SECONDS;
+
 const DECATHLON_TITLE = 'Decathlon';
 const DECATHLON_REFUND_TITLE = 'Скасування. Decathlon';
 const DECATHLON_REFUND_AMOUNT = convertToMicroUnits(150);
@@ -108,6 +117,36 @@ layer(TestLayer)('consolidation/refund-pair-nearest-guess', it => {
                 expenseOperatedAt: AMAZON_SECOND_EXPENSE_OPERATED_AT,
                 refundDelaySeconds: AMAZON_REFUND_DELAY_SECONDS,
                 externalIdPrefix: 'amazon-second'
+            });
+        })
+    );
+
+    it.effect('prefers an earlier exact-amount charge over a closer mismatched charge when guessing', () =>
+        Effect.gen(function* () {
+            const account = yield* testSeedService.account({ externalId: 'mono-card' });
+
+            yield* Effect.forEach(
+                [
+                    { amount: BOLT_FARE_AMOUNT, operatedAt: BOLT_FIRST_FARE_OPERATED_AT, prefix: 'bolt-first' },
+                    { amount: BOLT_MISMATCH_AMOUNT, operatedAt: BOLT_MISMATCH_OPERATED_AT, prefix: 'bolt-mismatch' }
+                ],
+                ({ amount, operatedAt, prefix }) =>
+                    seedExpenseWithoutRefund({
+                        accountId: account.id,
+                        title: BOLT_TITLE,
+                        expenseAmount: amount,
+                        expenseOperatedAt: operatedAt,
+                        externalIdPrefix: prefix
+                    })
+            );
+            yield* expectSolePairing(account.id, {
+                title: BOLT_TITLE,
+                expenseAmount: BOLT_FARE_AMOUNT,
+                refundAmounts: [BOLT_FARE_AMOUNT],
+                refundTitle: BOLT_REFUND_TITLE,
+                expenseOperatedAt: BOLT_SECOND_FARE_OPERATED_AT,
+                refundDelaySeconds: BOLT_REFUND_DELAY_SECONDS,
+                externalIdPrefix: 'bolt-second'
             });
         })
     );

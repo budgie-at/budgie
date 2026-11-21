@@ -80,7 +80,12 @@ export class RefundPairRepository extends Context.Service<RefundPairRepository>(
             bucketPriority[left.confidenceBucket] - bucketPriority[right.confidenceBucket] ||
             getTimeDiff(left) - getTimeDiff(right) ||
             compareRefunds(left, right);
+        const isExactAmount = (edge: RefundEdgeRowInterface): boolean =>
+            edge.confidenceBucket === privatbankBucket
+                ? edge.refundOriginalMinorAmount === edge.expenseOriginalMinorAmount
+                : edge.refundAmount === edge.expenseAmount;
         const compareNearest = (left: RefundEdgeRowInterface, right: RefundEdgeRowInterface): number =>
+            Number(!isExactAmount(left)) - Number(!isExactAmount(right)) ||
             getTimeDiff(left) - getTimeDiff(right) ||
             Math.abs(left.expenseAmount - left.refundAmount) - Math.abs(right.expenseAmount - right.refundAmount) ||
             compareExpenses(left, right);

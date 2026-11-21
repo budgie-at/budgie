@@ -85,52 +85,54 @@ layer(TestLayer)('consolidation/refund-pair-localized-exact-amount', it => {
         })
     );
 
-    it.effect('guesses the nearest preceding covering charge when identical fare twins make the exact match ambiguous', () =>
-        Effect.gen(function* () {
-            const refundPairRepository = yield* RefundPairRepository;
-            const account = yield* testSeedService.account({ externalId: 'mono-card' });
+    it.effect(
+        'guesses the nearest exact-amount twin over a closer mismatched charge when identical fare twins make the match ambiguous',
+        () =>
+            Effect.gen(function* () {
+                const refundPairRepository = yield* RefundPairRepository;
+                const account = yield* testSeedService.account({ externalId: 'mono-card' });
 
-            yield* seedExpenseWithoutRefund({
-                accountId: account.id,
-                title: TWIN_TITLE,
-                expenseAmount: TWIN_AMOUNT,
-                expenseOperatedAt: TWIN_FIRST_EXPENSE_OPERATED_AT,
-                externalIdPrefix: 'twin-first'
-            });
-            const mismatchExpense = yield* seedExpenseWithoutRefund({
-                accountId: account.id,
-                title: TWIN_TITLE,
-                expenseAmount: TWIN_MISMATCH_AMOUNT,
-                expenseOperatedAt: TWIN_MISMATCH_EXPENSE_OPERATED_AT,
-                externalIdPrefix: 'twin-mismatch'
-            });
-            const { refunds } = yield* testSeedService.refundedExpense({
-                accountId: account.id,
-                title: TWIN_TITLE,
-                expenseAmount: TWIN_AMOUNT,
-                refundAmounts: [TWIN_AMOUNT],
-                refundTitle: TWIN_REFUND_TITLE,
-                expenseOperatedAt: TWIN_SECOND_EXPENSE_OPERATED_AT,
-                refundDelaySeconds: TWIN_SECOND_REFUND_DELAY_SECONDS,
-                externalIdPrefix: 'twin-second'
-            });
+                yield* seedExpenseWithoutRefund({
+                    accountId: account.id,
+                    title: TWIN_TITLE,
+                    expenseAmount: TWIN_AMOUNT,
+                    expenseOperatedAt: TWIN_FIRST_EXPENSE_OPERATED_AT,
+                    externalIdPrefix: 'twin-first'
+                });
+                yield* seedExpenseWithoutRefund({
+                    accountId: account.id,
+                    title: TWIN_TITLE,
+                    expenseAmount: TWIN_MISMATCH_AMOUNT,
+                    expenseOperatedAt: TWIN_MISMATCH_EXPENSE_OPERATED_AT,
+                    externalIdPrefix: 'twin-mismatch'
+                });
+                const { expense: secondExpense, refunds } = yield* testSeedService.refundedExpense({
+                    accountId: account.id,
+                    title: TWIN_TITLE,
+                    expenseAmount: TWIN_AMOUNT,
+                    refundAmounts: [TWIN_AMOUNT],
+                    refundTitle: TWIN_REFUND_TITLE,
+                    expenseOperatedAt: TWIN_SECOND_EXPENSE_OPERATED_AT,
+                    refundDelaySeconds: TWIN_SECOND_REFUND_DELAY_SECONDS,
+                    externalIdPrefix: 'twin-second'
+                });
 
-            const autoCandidates = yield* refundPairRepository.findCandidates();
-            const reviewCandidates = yield* refundPairRepository.findReviewCandidates();
+                const autoCandidates = yield* refundPairRepository.findCandidates();
+                const reviewCandidates = yield* refundPairRepository.findReviewCandidates();
 
-            expect(reviewCandidates).toHaveLength(0);
-            expect(autoCandidates).toEqual([
-                expect.objectContaining({
-                    confidenceBucket: 'AUTO_REFUND_LOCALIZED_REFUND_TITLE',
-                    expenseTransactionId: mismatchExpense.expense.id,
-                    refundIncomeTransactionIds: [refunds[0].id]
-                })
-            ]);
+                expect(reviewCandidates).toHaveLength(0);
+                expect(autoCandidates).toEqual([
+                    expect.objectContaining({
+                        confidenceBucket: 'AUTO_REFUND_LOCALIZED_REFUND_TITLE',
+                        expenseTransactionId: secondExpense.id,
+                        refundIncomeTransactionIds: [refunds[0].id]
+                    })
+                ]);
 
-            const result = yield* runConsolidation();
+                const result = yield* runConsolidation();
 
-            expect(result.consolidated).toBe(1);
-        })
+                expect(result.consolidated).toBe(1);
+            })
     );
 
     it.effect('auto-consolidates balanced identical twins where every charge has its own exact-amount cancellation', () =>
