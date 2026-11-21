@@ -5,10 +5,15 @@ env:
     PR_NUMBER: ${{ github.event.pull_request.number }}
 
 concurrency:
-    group: pr-${{ github.event.pull_request.number || github.ref }}
+    # A queue entry has no PR number and a unique ref, so it never shares a
+    # group with a pull request or another entry, and is never cancelled.
+    group: ${{ github.event_name == 'merge_group' && format('merge-group-{0}', github.ref) || format('pr-{0}', github.event.pull_request.number || github.ref) }}
     cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
-on: pull_request
+on:
+    pull_request:
+    merge_group:
+        types: [checks_requested]
 
 permissions:
     contents: read
@@ -32,6 +37,13 @@ jobs:
                   script: |
                       let mobile = true;
                       let e2eScripts = true;
+
+                      if (context.eventName === 'merge_group') {
+                        core.info('merge_group: no pull request to inspect; running the full suite.');
+                        core.setOutput('mobile', 'true');
+                        core.setOutput('e2e-scripts', 'true');
+                        return;
+                      }
 
                       try {
                         const files = await github.paginate(github.rest.pulls.listFiles, {
@@ -106,6 +118,7 @@ jobs:
 
             - name: Read current PR title
               id: current-pr
+              if: github.event_name == 'pull_request'
               uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
               with:
                   script: |
@@ -117,6 +130,7 @@ jobs:
                       core.setOutput('title', data.title);
 
             - name: Lint the PR Title
+              if: github.event_name == 'pull_request'
               env:
                   PR_TITLE: ${{ steps.current-pr.outputs.title }}
               run: printf '%s\n' "$PR_TITLE" | node_modules/.bin/commitlint
@@ -231,7 +245,7 @@ jobs:
               run: npm ci && npm run simlock:install && npm run ts
 
     assert-ai-ota:
-        if: needs.detect-mobile-impact.outputs.mobile == 'true'
+        if: github.event_name == 'pull_request' && needs.detect-mobile-impact.outputs.mobile == 'true'
         needs: [detect-mobile-impact]
         name: Assert AI is enabled (OTA preview)
         permissions:
@@ -239,7 +253,7 @@ jobs:
         uses: ./.github/workflows/assert-ai.yml
 
     ota-preview:
-        if: needs.detect-mobile-impact.outputs.mobile == 'true'
+        if: github.event_name == 'pull_request' && needs.detect-mobile-impact.outputs.mobile == 'true'
         needs: [detect-mobile-impact, assert-ai-ota]
         name: OTA preview
         permissions:
@@ -262,7 +276,8 @@ jobs:
             prune-keep: '100'
 
     fingerprint-guard:
-        if: needs.detect-mobile-impact.outputs.mobile == 'true'
+        # Needs a pull_request event: the reusable workflow fails any other one.
+        if: github.event_name == 'pull_request' && needs.detect-mobile-impact.outputs.mobile == 'true'
         needs: [detect-mobile-impact]
         name: Native runtime fingerprint
         permissions:
@@ -419,7 +434,7 @@ jobs:
 
     store-screenshots-gallery:
         name: Store screenshots gallery
-        if: github.event.pull_request.head.repo.full_name == github.repository
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
         runs-on: [self-hosted, linux-portable-2x4]
         timeout-minutes: 10
         permissions:
