@@ -4230,10 +4230,6 @@ msgstr "Crypto"
 msgid "Crypto Account"
 msgstr "Compte crypto"
 
-#: src/yield/component/yield-breakdown-crypto-today/yield-breakdown-crypto-today.tsx
-msgid "Crypto rewards today"
-msgstr "Récompenses crypto aujourd’hui"
-
 #: src/yield/constant/yield-kind-description.constant.ts
 msgid "Crypto staking rewards"
 msgstr "Récompenses de staking crypto"
@@ -5316,10 +5312,6 @@ msgid "Exchange rate: {rateLabel}"
 msgstr "Taux de change : {rateLabel}"
 
 #: src/yield/constant/yield-kind-description.constant.ts
-msgid "Exchange savings products"
-msgstr "Produits d’épargne des plateformes d’échange"
-
-#: src/yield/constant/yield-kind-description.constant.ts
 msgid "Excluded from all passive income totals"
 msgstr "Exclu de tous les totaux des revenus passifs"
 
@@ -5602,6 +5594,10 @@ msgstr "Montant fixe"
 #: src/app/(main)/create-account/index.tsx
 msgid "Fixed term with interest"
 msgstr "Dépôt à terme avec intérêts"
+
+#: src/yield/constant/yield-kind-description.constant.ts
+msgid "Flexible savings on exchanges"
+msgstr "Épargne flexible sur les plateformes"
 
 #: src/budget/components/budget-details-forecast/budget-details-forecast.tsx
 msgid "Forecast"
@@ -7610,6 +7606,10 @@ msgstr "Non compté dans le patrimoine net"
 msgid "Not counted in totals yet"
 msgstr "Pas encore compté dans les totaux"
 
+#: src/yield/hook/use-yield-position-rate-text.hook.ts
+msgid "not counted in yield"
+msgstr "non compté dans le rendement"
+
 #: src/account/component/family-section-header/family-section-header.tsx
 msgid "Not counted in your total"
 msgstr "Non compté dans votre total"
@@ -7648,10 +7648,6 @@ msgstr "Historique de prix insuffisant"
 #: src/brokerage/component/security-trade-form/security-trade-form.tsx
 msgid "Not enough shares held on the trade date"
 msgstr "Nombre de parts insuffisant à la date de l’opération"
-
-#: src/yield/hook/use-yield-position-rate-text.hook.ts
-msgid "not in yield"
-msgstr "hors rendement"
 
 #: src/transaction/components/transaction-info-yield-source-row/transaction-info-yield-source-row.tsx
 msgid "Not linked"
@@ -9321,6 +9317,10 @@ msgstr "Vérifier les paramètres de synchronisation"
 #: src/rule/constant/external-source.constant.ts
 msgid "Revolut"
 msgstr "Revolut"
+
+#: src/yield/component/yield-breakdown-crypto-today/yield-breakdown-crypto-today.tsx
+msgid "Rewards at today’s prices"
+msgstr "Récompenses aux prix du jour"
 
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
 msgid "Right now anyone who can unlock your phone can open Budgie. With a PIN, the file itself is encrypted and only opens with it."

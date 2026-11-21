@@ -5,7 +5,7 @@ import type { MessageDescriptor } from '@lingui/core';
 
 export const YIELD_KIND_DESCRIPTION: Readonly<Record<YieldKindEnum, MessageDescriptor>> = {
     [YieldKindEnum.STAKING]: msg`Crypto staking rewards`,
-    [YieldKindEnum.EARN]: msg`Exchange savings products`,
+    [YieldKindEnum.EARN]: msg`Flexible savings on exchanges`,
     [YieldKindEnum.DISTRIBUTION]: msg`From property and income funds, not counted in yield`,
     [YieldKindEnum.DIVIDEND]: msg`Paid by stocks and dividend ETFs`,
     [YieldKindEnum.INTEREST]: msg`Savings and deposits`,

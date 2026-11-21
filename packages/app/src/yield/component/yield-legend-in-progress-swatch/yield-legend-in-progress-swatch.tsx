@@ -9,7 +9,7 @@ import { YieldScreenContext } from '../../context/yield-screen.context';
 import { YieldChartModeEnum } from '../../enum/yield-chart-mode.enum';
 import { YieldLegendLineSwatch } from '../yield-legend-line-swatch/yield-legend-line-swatch';
 
-const DOT_DASH = '1 3';
+const DOT_DASH = '3 3';
 const SQUARE_SIZE = 10;
 const SQUARE_INSET = 0.6;
 const SQUARE_INNER_SIZE = 8.8;

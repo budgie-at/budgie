@@ -4230,10 +4230,6 @@ msgstr "Криптовалюта"
 msgid "Crypto Account"
 msgstr "Крипторахунок"
 
-#: src/yield/component/yield-breakdown-crypto-today/yield-breakdown-crypto-today.tsx
-msgid "Crypto rewards today"
-msgstr "Крипто-винагороди сьогодні"
-
 #: src/yield/constant/yield-kind-description.constant.ts
 msgid "Crypto staking rewards"
 msgstr "Винагороди за стейкінг криптовалюти"
@@ -5316,10 +5312,6 @@ msgid "Exchange rate: {rateLabel}"
 msgstr "Курс обміну: {rateLabel}"
 
 #: src/yield/constant/yield-kind-description.constant.ts
-msgid "Exchange savings products"
-msgstr "Накопичувальні продукти бірж"
-
-#: src/yield/constant/yield-kind-description.constant.ts
 msgid "Excluded from all passive income totals"
 msgstr "Виключено з усіх підсумків пасивного доходу"
 
@@ -5602,6 +5594,10 @@ msgstr "Фіксована сума"
 #: src/app/(main)/create-account/index.tsx
 msgid "Fixed term with interest"
 msgstr "Строковий депозит із відсотками"
+
+#: src/yield/constant/yield-kind-description.constant.ts
+msgid "Flexible savings on exchanges"
+msgstr "Гнучкі заощадження на біржах"
 
 #: src/budget/components/budget-details-forecast/budget-details-forecast.tsx
 msgid "Forecast"
@@ -7610,6 +7606,10 @@ msgstr "Не враховується в чистих активах"
 msgid "Not counted in totals yet"
 msgstr "Поки не враховано в підсумках"
 
+#: src/yield/hook/use-yield-position-rate-text.hook.ts
+msgid "not counted in yield"
+msgstr "не враховується в дохідності"
+
 #: src/account/component/family-section-header/family-section-header.tsx
 msgid "Not counted in your total"
 msgstr "Не враховується у вашому підсумку"
@@ -7648,10 +7648,6 @@ msgstr "Недостатньо історії цін"
 #: src/brokerage/component/security-trade-form/security-trade-form.tsx
 msgid "Not enough shares held on the trade date"
 msgstr "Недостатньо часток на дату операції"
-
-#: src/yield/hook/use-yield-position-rate-text.hook.ts
-msgid "not in yield"
-msgstr "не входить у дохідність"
 
 #: src/transaction/components/transaction-info-yield-source-row/transaction-info-yield-source-row.tsx
 msgid "Not linked"
@@ -9321,6 +9317,10 @@ msgstr "Переглянути налаштування синхронізаці
 #: src/rule/constant/external-source.constant.ts
 msgid "Revolut"
 msgstr "Revolut"
+
+#: src/yield/component/yield-breakdown-crypto-today/yield-breakdown-crypto-today.tsx
+msgid "Rewards at today’s prices"
+msgstr "Винагороди за сьогоднішніми цінами"
 
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
 msgid "Right now anyone who can unlock your phone can open Budgie. With a PIN, the file itself is encrypted and only opens with it."

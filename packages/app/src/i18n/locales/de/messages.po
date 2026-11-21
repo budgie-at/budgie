@@ -4230,10 +4230,6 @@ msgstr "Krypto"
 msgid "Crypto Account"
 msgstr "Kryptokonto"
 
-#: src/yield/component/yield-breakdown-crypto-today/yield-breakdown-crypto-today.tsx
-msgid "Crypto rewards today"
-msgstr "Krypto-Erträge heute"
-
 #: src/yield/constant/yield-kind-description.constant.ts
 msgid "Crypto staking rewards"
 msgstr "Krypto-Staking-Belohnungen"
@@ -5316,10 +5312,6 @@ msgid "Exchange rate: {rateLabel}"
 msgstr "Wechselkurs: {rateLabel}"
 
 #: src/yield/constant/yield-kind-description.constant.ts
-msgid "Exchange savings products"
-msgstr "Sparprodukte von Börsen"
-
-#: src/yield/constant/yield-kind-description.constant.ts
 msgid "Excluded from all passive income totals"
 msgstr "Aus allen Summen des passiven Einkommens ausgeschlossen"
 
@@ -5602,6 +5594,10 @@ msgstr "Fester Betrag"
 #: src/app/(main)/create-account/index.tsx
 msgid "Fixed term with interest"
 msgstr "Festgeld mit Zinsen"
+
+#: src/yield/constant/yield-kind-description.constant.ts
+msgid "Flexible savings on exchanges"
+msgstr "Flexibles Sparen an Börsen"
 
 #: src/budget/components/budget-details-forecast/budget-details-forecast.tsx
 msgid "Forecast"
@@ -7610,6 +7606,10 @@ msgstr "Nicht im Nettovermögen enthalten"
 msgid "Not counted in totals yet"
 msgstr "Noch nicht in den Summen enthalten"
 
+#: src/yield/hook/use-yield-position-rate-text.hook.ts
+msgid "not counted in yield"
+msgstr "nicht in der Rendite enthalten"
+
 #: src/account/component/family-section-header/family-section-header.tsx
 msgid "Not counted in your total"
 msgstr "Zählt nicht zu deinem Gesamtbetrag"
@@ -7648,10 +7648,6 @@ msgstr "Nicht genug Kurshistorie"
 #: src/brokerage/component/security-trade-form/security-trade-form.tsx
 msgid "Not enough shares held on the trade date"
 msgstr "Am Handelsdatum sind nicht genügend Anteile vorhanden"
-
-#: src/yield/hook/use-yield-position-rate-text.hook.ts
-msgid "not in yield"
-msgstr "nicht in der Rendite"
 
 #: src/transaction/components/transaction-info-yield-source-row/transaction-info-yield-source-row.tsx
 msgid "Not linked"
@@ -9321,6 +9317,10 @@ msgstr "Synchronisierungseinstellungen prüfen"
 #: src/rule/constant/external-source.constant.ts
 msgid "Revolut"
 msgstr "Revolut"
+
+#: src/yield/component/yield-breakdown-crypto-today/yield-breakdown-crypto-today.tsx
+msgid "Rewards at today’s prices"
+msgstr "Erträge zu heutigen Preisen"
 
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
 msgid "Right now anyone who can unlock your phone can open Budgie. With a PIN, the file itself is encrypted and only opens with it."

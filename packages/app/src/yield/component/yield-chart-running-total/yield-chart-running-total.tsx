@@ -25,7 +25,7 @@ interface Props {
 
 const LINE_WIDTH = 2;
 const PRIOR_WIDTH = 1.5;
-const DASH = '4 4';
+const DASH = '3 3';
 const PRIOR_DOT_RADIUS = 3.2;
 const PRIOR_RING_WIDTH = 2;
 const LINE_CLASSNAME = 'accent-positive-action';
@@ -66,7 +66,7 @@ export const YieldChartRunningTotal = ({ width, summary }: Props) => {
                 d={paths.prior}
                 strokeClassName="accent-secondary-foreground"
                 strokeWidth={PRIOR_WIDTH}
-                strokeDasharray={DASH}
+                strokeOpacity={0.6}
                 fill="none"
             />
             <StyledPath d={paths.solid} strokeClassName={LINE_CLASSNAME} strokeWidth={LINE_WIDTH} fill="none" />
