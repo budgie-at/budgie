@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.191.12](https://github.com/budgie-at/budgie/compare/v6.191.11...v6.191.12) (2026-11-21)
+
+### Bug Fixes
+
+* **app:** show highlighted month in trend chart readout ([#2267](https://github.com/budgie-at/budgie/issues/2267)) ([23d8d0b](https://github.com/budgie-at/budgie/commit/23d8d0becea3bde776994ac2001a5878d595296d))
+
+
 ## [6.191.11](https://github.com/budgie-at/budgie/compare/v6.191.10...v6.191.11) (2026-11-19)
 
 ### Bug Fixes
