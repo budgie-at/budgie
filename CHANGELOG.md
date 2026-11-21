@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.192.2](https://github.com/budgie-at/budgie/compare/v6.192.1...v6.192.2) (2026-11-21)
+
+### Bug Fixes
+
+* **recurring:** link untitled and varied payments to a payee's only series ([#2274](https://github.com/budgie-at/budgie/issues/2274)) ([12536b0](https://github.com/budgie-at/budgie/commit/12536b0a4a2bc77b14bbf68b52bdc0fe9f7e981f))
+
+
 ## [6.192.1](https://github.com/budgie-at/budgie/compare/v6.192.0...v6.192.1) (2026-11-21)
 
 ### Bug Fixes
