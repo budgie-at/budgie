@@ -18,6 +18,9 @@ const EXECUTION_REFUND_AMOUNT = convertToMicroUnits(80);
 const EXECUTION_EDITED_REFUND_AMOUNT = convertToMicroUnits(120);
 const EXECUTION_FEE_TITLED_AMOUNT = convertToMicroUnits(60);
 const EXECUTION_EXPENSE_OPERATED_AT = new Date(2026, 6, 1, 10, 0, 0);
+const EXECUTION_FEE_AMOUNT = convertToMicroUnits(20);
+const EXECUTION_FEE_REFUND_AMOUNT = convertToMicroUnits(10);
+const EXECUTION_EDITED_FEE_REFUND_AMOUNT = convertToMicroUnits(15);
 
 const scanRefund = Effect.gen(function* () {
     const refundPairRepository = yield* RefundPairRepository;
@@ -89,6 +92,38 @@ layer(TestLayer)('consolidation/refund-pair-execution-guards', it => {
                 .set({ type: TransactionTypeEnum.TRANSFER })
                 .where(eq(TransactionEntityTable.id, refund.id));
             yield* expectRefused(candidate, refund.id);
+        })
+    );
+
+    it.effect('refuses scanned fee refunds whose live total grew past the fee before execution', () =>
+        Effect.gen(function* () {
+            const account = yield* testSeedService.account({ externalId: 'privat-card' });
+            const { expense, refunds } = yield* testSeedService.refundedExpense({
+                accountId: account.id,
+                title: EXECUTION_TITLE,
+                refundTitle: REJECTED_PAYMENT_FEE_TITLE,
+                expenseAmount: EXECUTION_EXPENSE_AMOUNT,
+                expenseFeeAmount: EXECUTION_FEE_AMOUNT,
+                refundAmounts: [EXECUTION_FEE_REFUND_AMOUNT, EXECUTION_FEE_REFUND_AMOUNT],
+                expenseOperatedAt: EXECUTION_EXPENSE_OPERATED_AT,
+                refundDelaySeconds: 60,
+                externalIdPrefix: 'execution-fee-group'
+            });
+            const candidate: RefundCandidateInterface = {
+                accountId: account.id,
+                confidenceBucket: 'AUTO_REFUND_REJECTED_PAYMENT_FEE_TITLE',
+                expenseEntryAmount: EXECUTION_EXPENSE_AMOUNT,
+                expenseTransactionId: expense.id,
+                matchType: 'rejected-payment-fee-title',
+                refundIncomeTransactionIds: refunds.map(refund => refund.id),
+                refundsTotal: EXECUTION_FEE_REFUND_AMOUNT * refunds.length
+            };
+
+            yield* testDb
+                .update(TransactionEntryEntityTable)
+                .set({ amount: EXECUTION_EDITED_FEE_REFUND_AMOUNT })
+                .where(eq(TransactionEntryEntityTable.transactionId, refunds[1].id));
+            yield* expectRefused(candidate, refunds[0].id);
         })
     );
 });

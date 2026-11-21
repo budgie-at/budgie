@@ -124,12 +124,12 @@ export class ConsolidationRepairExecutorService extends Context.Service<Consolid
                     );
                 }
 
-                const ceiling = candidate.confidenceBucket === 'AUTO_REFUND_REJECTED_PAYMENT_FEE_TITLE' ? feeAmount : creditEntry.amount;
+                const isWithinBucketCeiling =
+                    candidate.confidenceBucket === 'AUTO_REFUND_REJECTED_PAYMENT_FEE_TITLE'
+                        ? refundTotal <= feeAmount
+                        : openRefunds.every(({ entry }) => entry.amount <= creditEntry.amount);
 
-                return (
-                    openRefunds.every(({ entry }) => entry.amount <= ceiling) &&
-                    absorbedTotal + refundTotal <= creditEntry.amount + feeAmount
-                );
+                return isWithinBucketCeiling && absorbedTotal + refundTotal <= creditEntry.amount + feeAmount;
             });
 
             const isUntouchedIbanBridgeCanonical = (transaction: TransactionWithEntriesEntityInterface): boolean => {
