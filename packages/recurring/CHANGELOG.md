@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.192.0](https://github.com/budgie-at/budgie/compare/v6.191.14...v6.192.0) (2026-11-21)
+
+### Features
+
+* **recurring:** detect fixed costs from evidence-based streams ([#2270](https://github.com/budgie-at/budgie/issues/2270)) ([9c47cf3](https://github.com/budgie-at/budgie/commit/9c47cf312f6eeaefc90069605b7d8f7a583865f0))
+
+
 ## [6.191.9](https://github.com/budgie-at/budgie/compare/v6.191.8...v6.191.9) (2026-11-17)
 
 **Note:** Version bump only for package @budgie/recurring
