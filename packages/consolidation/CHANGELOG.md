@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.193.0](https://github.com/budgie-at/budgie/compare/v6.192.2...v6.193.0) (2026-11-21)
+
+### Features
+
+* **consolidation:** pair refunds by forced match, balanced twins or nearest guess ([#2275](https://github.com/budgie-at/budgie/issues/2275)) ([0b98d15](https://github.com/budgie-at/budgie/commit/0b98d152f506655f654a760afc79591518036307))
+
+
 ## [6.191.13](https://github.com/budgie-at/budgie/compare/v6.191.12...v6.191.13) (2026-11-21)
 
 ### Bug Fixes
