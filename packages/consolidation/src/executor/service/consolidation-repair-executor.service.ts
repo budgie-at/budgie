@@ -13,7 +13,7 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { IBAN_BRIDGE_CHAIN_FX_TOLERANCE } from '../../shared/constant/iban-bridge-chain-fx-tolerance.constant';
 import { isPrivatbankSameOriginalAmount } from '../../shared/utils/is-privatbank-same-original-amount.util';
@@ -73,9 +73,16 @@ export class ConsolidationRepairExecutorService extends Context.Service<Consolid
                 const expense = transactions.find(transaction => transaction.id === candidate.expenseTransactionId);
                 const refunds = transactions.filter(transaction => candidate.refundIncomeTransactionIds.includes(transaction.id));
                 const openRefunds = refunds.filter(isOpenRefundIncome).flatMap(refund => {
-                    const entry = findLiveEntry(refund, TransactionEntryTypeEnum.DEBIT, candidate.accountId);
+                    const [entry, ...siblingEntries] = refund.entries;
+                    const isSoleLiveDebit =
+                        isDefined(entry) &&
+                        isEmptyArray(siblingEntries) &&
+                        entry.type === TransactionEntryTypeEnum.DEBIT &&
+                        entry.accountId === candidate.accountId &&
+                        !isDefined(entry.originalTransactionId) &&
+                        isPositiveNumber(entry.amount);
 
-                    return isDefined(entry) ? [{ entry, source: refund.externalSource ?? null }] : [];
+                    return isSoleLiveDebit ? [{ entry, source: refund.externalSource ?? null }] : [];
                 });
                 const creditEntry = isDefined(expense)
                     ? findLiveEntry(expense, TransactionEntryTypeEnum.CREDIT, candidate.accountId)
@@ -117,24 +124,18 @@ export class ConsolidationRepairExecutorService extends Context.Service<Consolid
                     return false;
                 }
 
+                const isFeeGroup = candidate.confidenceBucket === 'AUTO_REFUND_REJECTED_PAYMENT_FEE_TITLE';
+
                 if (
-                    openRefunds.filter(({ entry, source }) => isPrivatbankSameOriginalAmount(source, entry, expenseSource, creditEntry))
-                        .length > 1
+                    !isFeeGroup &&
+                    openRefunds.some(({ entry, source }) => isPrivatbankSameOriginalAmount(source, entry, expenseSource, creditEntry))
                 ) {
-                    return false;
+                    return openRefunds.length === 1 && absorbedTotal === 0;
                 }
 
-                if (candidate.confidenceBucket === 'AUTO_REFUND_PRIVATBANK_ORIGINAL_AMOUNT') {
-                    return (
-                        absorbedTotal === 0 &&
-                        openRefunds.every(({ entry, source }) => isPrivatbankSameOriginalAmount(source, entry, expenseSource, creditEntry))
-                    );
-                }
-
-                const isWithinBucketCeiling =
-                    candidate.confidenceBucket === 'AUTO_REFUND_REJECTED_PAYMENT_FEE_TITLE'
-                        ? refundTotal <= feeAmount
-                        : openRefunds.every(({ entry }) => entry.amount <= creditEntry.amount);
+                const isWithinBucketCeiling = isFeeGroup
+                    ? refundTotal <= feeAmount
+                    : openRefunds.every(({ entry }) => entry.amount <= creditEntry.amount);
 
                 return isWithinBucketCeiling && absorbedTotal + refundTotal <= creditEntry.amount + feeAmount;
             });

@@ -5,7 +5,6 @@ import type { RefundReviewCandidateInterface } from '@budgie/contracts';
 
 class RefundEdgeMetrics {
     private static readonly feeBucket = 'AUTO_REFUND_REJECTED_PAYMENT_FEE_TITLE';
-    private static readonly privatbankBucket = 'AUTO_REFUND_PRIVATBANK_ORIGINAL_AMOUNT';
     private static readonly bucketPriority: Record<RefundReviewCandidateInterface['confidenceBucket'], number> = {
         AUTO_REFUND_EXACT_TITLE: 1,
         AUTO_REFUND_LOCALIZED_REFUND_TITLE: 2,
@@ -45,8 +44,8 @@ class RefundEdgeMetrics {
         return edge.confidenceBucket === RefundEdgeMetrics.feeBucket;
     }
 
-    isPrivatbankBucket(edge: RefundEdgeRowInterface): boolean {
-        return edge.confidenceBucket === RefundEdgeMetrics.privatbankBucket;
+    isOriginalAmountReversal(edge: RefundEdgeRowInterface): boolean {
+        return edge.isPrivatbankOriginalMatch === 1 && !this.isFeeBucket(edge);
     }
 
     getCapacity(edge: RefundEdgeRowInterface): number {
@@ -54,7 +53,7 @@ class RefundEdgeMetrics {
             return 0;
         }
 
-        if (this.isPrivatbankBucket(edge)) {
+        if (this.isOriginalAmountReversal(edge)) {
             return edge.expenseAbsorbedAmount === 0 ? edge.expenseOriginalMinorAmount : 0;
         }
 
@@ -70,7 +69,7 @@ class RefundEdgeMetrics {
     }
 
     getMeasure(edge: RefundEdgeRowInterface): number {
-        return this.isPrivatbankBucket(edge) ? edge.refundOriginalMinorAmount : edge.refundAmount;
+        return this.isOriginalAmountReversal(edge) ? edge.refundOriginalMinorAmount : edge.refundAmount;
     }
 
     getShortfall(edge: RefundEdgeRowInterface): number {

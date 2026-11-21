@@ -130,6 +130,32 @@ layer(TestLayer)('consolidation/refund-pair-privatbank-closure', it => {
         })
     );
 
+    it.effect('closes an expense when a falling-rate reversal and a later refund are both open in the same run', () =>
+        Effect.gen(function* () {
+            const { account, expense, refund } = yield* seedPrivatbankPair(CLOSURE_FALLING_RATE, 2);
+            const lateRefund = yield* seedTitledTransaction({
+                accountId: account.id,
+                externalId: 'closure-same-run-late-refund',
+                operatedAt: atDay(5),
+                amount: CLOSURE_LATE_REFUND_AMOUNT,
+                title: CLOSURE_TITLE,
+                isRefund: true
+            });
+
+            yield* runConsolidation();
+            yield* expectClosedByReversal(expense.id, refund.id, lateRefund.id);
+        })
+    );
+
+    it.effect('auto-consolidates a merchant-titled rising-rate original-amount reversal', () =>
+        Effect.gen(function* () {
+            const { expense, refund } = yield* seedPrivatbankPair(CLOSURE_RISING_RATE, 2);
+
+            expect((yield* runConsolidation()).consolidated).toBe(1);
+            expect((yield* testQueryService.fetchTransactionById(refund.id)).consolidationParentTransactionId).toBe(expense.id);
+        })
+    );
+
     it.effect('lists a late rising-rate original-amount refund for review exactly as the manual picker offers it', () =>
         Effect.gen(function* () {
             const refundPairRepository = yield* RefundPairRepository;
