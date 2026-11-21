@@ -8308,6 +8308,7 @@ msgstr "Teilwert"
 msgid "Partial value — some prices unavailable"
 msgstr "Teilwert – einige Kurse fehlen"
 
+#: src/transaction/components/transaction-info-yield-row/transaction-info-yield-row.tsx
 #: src/yield/component/yield-collapsed-title/yield-collapsed-title.tsx
 #: src/yield/component/yield-entry-row-content/yield-entry-row-content.tsx
 #: src/yield/component/yield-screen-title/yield-screen-title.tsx
@@ -10206,8 +10207,8 @@ msgid "Staking & Earn"
 msgstr "Staking & Earn"
 
 #: src/yield/component/yield-empty-state/yield-empty-state.tsx
-msgid "Staking rewards, dividends and interest appear here once you have them."
-msgstr "Staking-Belohnungen, Dividenden und Zinsen erscheinen hier, sobald du welche hast."
+msgid "Staking rewards, dividends, distributions and interest appear here once you have them."
+msgstr "Staking-Erträge, Dividenden, Ausschüttungen und Zinsen erscheinen hier, sobald du welche hast."
 
 #: src/account/component/start-deposit-form/start-deposit-form.tsx
 #: src/transaction/components/transaction-list-start-deposit-menu-item/transaction-list-start-deposit-menu-item.tsx

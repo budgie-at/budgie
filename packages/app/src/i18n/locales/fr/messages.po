@@ -8308,6 +8308,7 @@ msgstr "Valeur partielle"
 msgid "Partial value — some prices unavailable"
 msgstr "Valeur partielle — certains cours manquent"
 
+#: src/transaction/components/transaction-info-yield-row/transaction-info-yield-row.tsx
 #: src/yield/component/yield-collapsed-title/yield-collapsed-title.tsx
 #: src/yield/component/yield-entry-row-content/yield-entry-row-content.tsx
 #: src/yield/component/yield-screen-title/yield-screen-title.tsx
@@ -10206,8 +10207,8 @@ msgid "Staking & Earn"
 msgstr "Staking et Earn"
 
 #: src/yield/component/yield-empty-state/yield-empty-state.tsx
-msgid "Staking rewards, dividends and interest appear here once you have them."
-msgstr "Les récompenses de staking, dividendes et intérêts apparaîtront ici dès que vous en aurez."
+msgid "Staking rewards, dividends, distributions and interest appear here once you have them."
+msgstr "Les récompenses de staking, dividendes, distributions et intérêts apparaissent ici dès que vous en avez."
 
 #: src/account/component/start-deposit-form/start-deposit-form.tsx
 #: src/transaction/components/transaction-list-start-deposit-menu-item/transaction-list-start-deposit-menu-item.tsx

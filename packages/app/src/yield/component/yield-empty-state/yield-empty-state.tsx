@@ -21,7 +21,7 @@ export const YieldEmptyState = () => {
                 icon={UserIconNameEnum.Sprout}
                 title={t`No passive income yet`}
                 titleClassName="text-center text-xl font-semibold text-primary"
-                description={t`Staking rewards, dividends and interest appear here once you have them.`}
+                description={t`Staking rewards, dividends, distributions and interest appear here once you have them.`}
                 descriptionClassName="max-w-[300px] text-center text-[15px] text-secondary-foreground"
             />
             <View className="max-w-full items-center gap-y-xs">
