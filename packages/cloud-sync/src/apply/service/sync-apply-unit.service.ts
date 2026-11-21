@@ -337,9 +337,10 @@ export class SyncApplyUnitService extends Context.Service<SyncApplyUnitService>(
                 });
                 const mergedCells = normalizeMergedYield(decoded.recordType, result.merged);
                 const updates = diffSyncCells(parentDescriptor, mergedCells, localCells);
-                const kept = Object.keys(serverParentCells)
-                    .filter(property => mergedCells[property] !== (serverParentCells[property] ?? null))
-                    .map(property => getSyncColumnName(parentDescriptor, property));
+                const kept = [
+                    ...Object.keys(serverParentCells).filter(property => mergedCells[property] !== (serverParentCells[property] ?? null)),
+                    ...[...changedProperties].filter(property => !(property in serverParentCells))
+                ].map(property => getSyncColumnName(parentDescriptor, property));
 
                 if (isNotEmptyArray(Object.keys(updates))) {
                     yield* repository.updateRow(parentTable, parentLocalId, updates);
