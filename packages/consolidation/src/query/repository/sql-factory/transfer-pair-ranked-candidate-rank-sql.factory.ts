@@ -163,7 +163,8 @@ export const TRANSFER_PAIR_RANKED_CANDIDATE_RANK_SQL = `            scored_pairs
                                 WHEN 'REVIEW_CROSS_CURRENCY_OPERATION' THEN 9
                                 ELSE 99
                             END,
-                            timeDiff
+                            timeDiff,
+                            incomeTransactionId
                     ) as expenseRank,
                     ROW_NUMBER() OVER (
                         PARTITION BY incomeTransactionId
@@ -180,7 +181,8 @@ export const TRANSFER_PAIR_RANKED_CANDIDATE_RANK_SQL = `            scored_pairs
                                 WHEN 'REVIEW_CROSS_CURRENCY_OPERATION' THEN 9
                                 ELSE 99
                             END,
-                            timeDiff
+                            timeDiff,
+                            expenseTransactionId
                     ) as incomeRank
                 FROM compatible_pairs
                 WHERE confidenceBucket IS NOT NULL

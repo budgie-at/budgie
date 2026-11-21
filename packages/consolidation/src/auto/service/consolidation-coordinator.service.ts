@@ -247,6 +247,7 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
                 p2pFiatTransferFamily,
                 makeConsolidationFamilyStrategy({
                     findCandidates: scope => consolidationCandidateRepository.findTransferPairCandidates(scope),
+                    shouldRepeatAfterSuccessfulPass: true,
                     consolidateCandidate: candidate =>
                         consolidationExecutorService.consolidateTransfer({
                             sourceTransactionIds: getTransferPairSourceTransactionIds(candidate),

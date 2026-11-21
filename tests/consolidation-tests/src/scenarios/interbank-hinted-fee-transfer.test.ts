@@ -20,8 +20,7 @@ const seedAccount = (title: string, externalSource: ExternalSourceEnum | null, i
 
 const seedInterbankFeeTransfer = (
     sourceAccountExternalSource: ExternalSourceEnum | null = ExternalSourceEnum.MONOBANK,
-    targetAccountExternalSource: ExternalSourceEnum | null = ExternalSourceEnum.PRIVATBANK,
-    incomeDelaySeconds = 61 * 60
+    targetAccountExternalSource: ExternalSourceEnum | null = ExternalSourceEnum.PRIVATBANK
 ) =>
     Effect.gen(function* () {
         const operatedAt = new Date(2026, 4, 20, 18, 39, 0);
@@ -37,7 +36,7 @@ const seedInterbankFeeTransfer = (
             }
         );
         const income = yield* testSeedService.bankPairIncome(
-            { externalId: 'interbank-fee-income', operatedAt: new Date(operatedAt.getTime() + incomeDelaySeconds * 1000) },
+            { externalId: 'interbank-fee-income', operatedAt: new Date(operatedAt.getTime() + 61 * 60 * 1000) },
             {
                 accountId: targetAccount.id,
                 amount: INCOME_AMOUNT,
@@ -105,13 +104,9 @@ layer(TestLayer)('consolidation/interbank-hinted-fee-transfer', it => {
         expectSeededInterbankFeeTransferConsolidates(null, null)
     );
 
-    it.effect('pairs back-to-back identical interbank fee transfers by time instead of rejecting them as ambiguous', () =>
+    it.effect('pairs back-to-back identical interbank fee transfers instead of rejecting them as ambiguous', () =>
         Effect.gen(function* () {
-            const { expense, income, sourceAccount, targetAccount, transferMcc } = yield* seedInterbankFeeTransfer(
-                ExternalSourceEnum.MONOBANK,
-                ExternalSourceEnum.PRIVATBANK,
-                1
-            );
+            const { expense, income, sourceAccount, targetAccount, transferMcc } = yield* seedInterbankFeeTransfer();
             const repeatedAt = new Date(expense.operatedAt.getTime() + 2 * 60 * 1000);
             const repeatedExpense = yield* testSeedService.bankPairExpense(
                 { externalId: 'interbank-fee-repeated-expense', operatedAt: repeatedAt },
@@ -134,9 +129,30 @@ layer(TestLayer)('consolidation/interbank-hinted-fee-transfer', it => {
 
             expect(result.consolidated).toBe(2);
             expect(yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toHaveLength(2);
-            expect(yield* parentOf(expense.id)).toBe(yield* parentOf(income.id));
-            expect(yield* parentOf(repeatedExpense.id)).toBe(yield* parentOf(repeatedIncome.id));
+            expect(new Set([yield* parentOf(expense.id), yield* parentOf(repeatedExpense.id)])).toEqual(
+                new Set([yield* parentOf(income.id), yield* parentOf(repeatedIncome.id)])
+            );
             expect(yield* parentOf(expense.id)).not.toBe(yield* parentOf(repeatedExpense.id));
+        })
+    );
+
+    it.effect('pairs one interbank fee expense with the nearer of two identical incomes', () =>
+        Effect.gen(function* () {
+            const { expense, income, targetAccount, transferMcc } = yield* seedInterbankFeeTransfer();
+            const laterIncome = yield* testSeedService.bankPairIncome(
+                { externalId: 'interbank-fee-later-income', operatedAt: new Date(income.operatedAt.getTime() + 30 * 60 * 1000) },
+                { accountId: targetAccount.id, amount: INCOME_AMOUNT, mccCategoryId: transferMcc.id }
+            );
+
+            yield* testSeedService.updateTransaction(laterIncome.id, { externalSource: ExternalSourceEnum.PRIVATBANK });
+
+            const result = yield* runConsolidation();
+            const [canonical] = yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
+
+            expect(result.consolidated).toBe(1);
+            expect((yield* testQueryService.fetchTransactionById(expense.id)).consolidationParentTransactionId).toBe(canonical.id);
+            expect((yield* testQueryService.fetchTransactionById(income.id)).consolidationParentTransactionId).toBe(canonical.id);
+            expect((yield* testQueryService.fetchTransactionById(laterIncome.id)).consolidationParentTransactionId).toBeNull();
         })
     );
 

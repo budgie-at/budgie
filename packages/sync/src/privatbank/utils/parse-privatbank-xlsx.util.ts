@@ -5,11 +5,31 @@ import { getErrorMessage, isNotEmptyArray, isNotEmptyString } from '@rnw-communi
 
 import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
 import { SyncInvalidResponseError } from '../../core/error/sync-invalid-response.error';
-import { convertKyivWallClockToUtc } from '../../core/utils/convert-kyiv-wall-clock-to-utc.util';
 
 import type { PrivatbankRowInterface } from '../interface/privatbank-row.interface';
 
 const DATA_START_ROW_INDEX = 2;
+
+const MARCH_MONTH_INDEX = 2;
+const OCTOBER_MONTH_INDEX = 9;
+const KYIV_DST_SWITCH_UTC_HOUR = 1;
+const KYIV_STANDARD_OFFSET_MILLISECONDS = 2 * 60 * 60 * 1000;
+const KYIV_DAYLIGHT_SAVING_OFFSET_MILLISECONDS = 3 * 60 * 60 * 1000;
+
+const findLastSundayUtc = (year: number, monthIndex: number): number => {
+    const lastDayOfMonth = new Date(Date.UTC(year, monthIndex + 1, 0));
+
+    return Date.UTC(year, monthIndex, lastDayOfMonth.getUTCDate() - lastDayOfMonth.getUTCDay(), KYIV_DST_SWITCH_UTC_HOUR);
+};
+
+const resolveKyivUtcOffsetMilliseconds = (wallClockTime: number, year: number): number => {
+    const daylightSavingCandidate = wallClockTime - KYIV_DAYLIGHT_SAVING_OFFSET_MILLISECONDS;
+
+    return daylightSavingCandidate >= findLastSundayUtc(year, MARCH_MONTH_INDEX) &&
+        daylightSavingCandidate < findLastSundayUtc(year, OCTOBER_MONTH_INDEX)
+        ? KYIV_DAYLIGHT_SAVING_OFFSET_MILLISECONDS
+        : KYIV_STANDARD_OFFSET_MILLISECONDS;
+};
 
 const createParseError = (message: string): SyncInvalidResponseError =>
     SyncInvalidResponseError.make({ provider: SyncProviderEnum.PRIVATBANK, message });
@@ -26,7 +46,8 @@ const parsePrivatbankDates = (
     const [day, month, year] = datePart.split('.').map(Number);
     const [hours, minutes, seconds] = timePart.split(':').map(Number);
 
-    const date = convertKyivWallClockToUtc(new Date(Date.UTC(year, month - 1, day, hours, minutes, seconds)));
+    const wallClockTime = Date.UTC(year, month - 1, day, hours, minutes, seconds);
+    const date = new Date(wallClockTime - resolveKyivUtcOffsetMilliseconds(wallClockTime, year));
 
     return Number.isNaN(date.getTime())
         ? Effect.fail(createParseError(`Failed to parse Privatbank date: "${dateString}"`))

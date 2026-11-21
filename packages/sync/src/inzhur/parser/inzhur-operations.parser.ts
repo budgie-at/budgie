@@ -1,11 +1,12 @@
 import { convertToMicroUnits } from '@budgie/contracts';
+import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
+import * as Option from 'effect/Option';
 import * as Result from 'effect/Result';
 import { read, utils } from 'xlsx';
 
 import { isPositiveNumber, getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString, isNumber, isString } from '@rnw-community/shared';
 
-import { convertKyivWallClockToUtc } from '../../core/utils/convert-kyiv-wall-clock-to-utc.util';
 import { INZHUR_OPERATION_EXTERNAL_ID_PREFIX } from '../constant/inzhur-operation-external-id-prefix.constant';
 import { InzhurOperationKindEnum } from '../enum/inzhur-operation-kind.enum';
 import { InzhurStatementInvalidError } from '../error/inzhur-statement-invalid.error';
@@ -37,6 +38,7 @@ class InzhurOperationsParser {
 
     private static readonly SHEET_NAME = 'Виписка по операціям';
     private static readonly HEADER = ['дата', 'тип операції', 'вид цінного паперу', 'дебет', 'кредит'];
+    private static readonly TIME_ZONE = 'Europe/Kyiv';
     private static readonly NO_FUND_MARKER = '-';
 
     parse(bytes: Uint8Array): Effect.Effect<InzhurOperationsExportInterface, InzhurStatementInvalidError> {
@@ -177,7 +179,20 @@ class InzhurOperationsParser {
         const millisecondsPerSecond = 1000;
         const local = new Date(Math.round((value - excelEpochOffsetDays) * secondsPerDay) * millisecondsPerSecond);
 
-        return Math.round(convertKyivWallClockToUtc(local).getTime() / millisecondsPerSecond);
+        return Option.match(
+            DateTime.makeZoned(
+                {
+                    year: local.getUTCFullYear(),
+                    month: local.getUTCMonth() + 1,
+                    day: local.getUTCDate(),
+                    hour: local.getUTCHours(),
+                    minute: local.getUTCMinutes(),
+                    second: local.getUTCSeconds()
+                },
+                { timeZone: InzhurOperationsParser.TIME_ZONE, adjustForTimeZone: true }
+            ),
+            { onNone: () => null, onSome: zoned => Math.round(DateTime.toEpochMillis(zoned) / millisecondsPerSecond) }
+        );
     }
 
     private countUnrecognised(types: readonly string[]) {
