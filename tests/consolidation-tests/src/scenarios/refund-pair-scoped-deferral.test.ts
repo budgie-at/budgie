@@ -9,6 +9,7 @@ import { testQueryService, testSeedService, TestLayer } from '../harness/test-co
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 const MINUTE_MS = 60 * 1000;
+const HOUR_MS = 60 * MINUTE_MS;
 const DEFERRAL_START = new Date(2026, 9, 1, 10, 0, 0);
 const DEFERRAL_TITLE = 'Uniqlo';
 const COVER_AMOUNT = convertToMicroUnits(100);
@@ -44,12 +45,14 @@ layer(TestLayer)('consolidation/refund-pair-scoped-deferral', it => {
     );
 
     it.effect(
-        'defers a dense chain of identical charges past the scope end without overflowing',
+        'defers an in-scope refund chained to a dense run of charges past the scope end without overflowing',
         () =>
             Effect.gen(function* () {
                 const refundPairRepository = yield* RefundPairRepository;
                 const account = yield* testSeedService.account({ externalId: 'mono-card' });
                 const indexes = Array.from({ length: DENSE_COUNT }, (_, index) => index);
+                const inScopeCharge = yield* seedSide(account.id, false, 'dense-in-scope-charge', atOffset(0), DENSE_AMOUNT);
+                const inScopeRefund = yield* seedSide(account.id, true, 'dense-in-scope-refund', atOffset(HOUR_MS), DENSE_AMOUNT);
 
                 yield* Effect.forEach(indexes, index =>
                     seedSide(account.id, false, `dense-charge-${index}`, atOffset(2 * DAY_MS + index * MINUTE_MS), DENSE_AMOUNT)
@@ -58,7 +61,15 @@ layer(TestLayer)('consolidation/refund-pair-scoped-deferral', it => {
                     seedSide(account.id, true, `dense-refund-${index}`, atOffset(3 * DAY_MS + index * MINUTE_MS), DENSE_AMOUNT)
                 );
 
-                expect(yield* refundPairRepository.findCandidates(firstDayScope([]))).toEqual([]);
+                const scopedRefundIds = (yield* refundPairRepository.findCandidates(
+                    firstDayScope([inScopeCharge.id, inScopeRefund.id])
+                )).flatMap(candidate => candidate.refundIncomeTransactionIds);
+                const fullRunRefundIds = (yield* refundPairRepository.findCandidates()).flatMap(
+                    candidate => candidate.refundIncomeTransactionIds
+                );
+
+                expect(scopedRefundIds).not.toContain(inScopeRefund.id);
+                expect(fullRunRefundIds).toContain(inScopeRefund.id);
             }),
         DENSE_TIMEOUT_MS
     );
