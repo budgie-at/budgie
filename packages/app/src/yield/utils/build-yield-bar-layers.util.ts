@@ -7,7 +7,7 @@ import type { YieldBarLayerInterface } from '../interface/yield-bar-layer.interf
 import type { YieldBarLayoutInterface } from '../interface/yield-bar-layout.interface';
 
 const TAX_FILL_CLASSNAME = 'accent-secondary-foreground';
-const TAX_FILL_OPACITY = 0.45;
+const TAX_FILL_OPACITY = 0.7;
 
 export const buildYieldBarLayers = (
     layout: YieldBarLayoutInterface,

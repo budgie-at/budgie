@@ -36,12 +36,7 @@ const getItemType = (item: YieldListItemType) => item.kind;
 const ESTIMATED_ITEM_SIZE = 56;
 const LIST_BOTTOM_CLEARANCE = 16;
 
-const PINNED_HAIRLINE = (
-    <View>
-        <View className="h-hairline bg-surface-separator" />
-        <View className="h-[22px] bg-linear-to-b from-surface to-surface/0" />
-    </View>
-);
+const PINNED_HAIRLINE = <View className="h-hairline bg-surface-separator" />;
 
 export const YieldScreenList = () => {
     const items = useYieldListItems();

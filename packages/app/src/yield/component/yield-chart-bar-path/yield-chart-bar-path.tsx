@@ -1,4 +1,3 @@
-import { YieldGroupEnum } from '@budgie/market';
 import { useAnimatedProps } from 'react-native-reanimated';
 import { useUniwind } from 'uniwind';
 
@@ -6,8 +5,7 @@ import { AnimatedStyledPath } from '../../../@generic/component/animated-styled-
 import {
     YIELD_IN_PROGRESS_DARK_FILL_OPACITY,
     YIELD_IN_PROGRESS_DASH,
-    YIELD_IN_PROGRESS_FILL_OPACITY,
-    YIELD_TAX_DARK_FILL_OPACITY
+    YIELD_IN_PROGRESS_FILL_OPACITY
 } from '../../constant/yield-in-progress.constant';
 import { buildYieldBarsPath } from '../../utils/build-yield-bars-path.util';
 
@@ -16,7 +14,6 @@ import type { SharedValue } from 'react-native-reanimated';
 
 const PATH_PROP = 'd';
 const IN_PROGRESS_STROKE = 1.5;
-const TAX_STROKE = 1;
 
 interface Props {
     readonly values: SharedValue<number[]>;
@@ -32,8 +29,6 @@ export const YieldChartBarPath = ({ values, layer, isInProgress, visibleBuckets 
     }));
 
     const isDark = theme === 'dark';
-    const isTax = layer.group === YieldGroupEnum.TAX;
-    const baseFill = isDark && isTax ? Math.max(layer.fillOpacity, YIELD_TAX_DARK_FILL_OPACITY) : layer.fillOpacity;
     const inProgressFill = isDark ? YIELD_IN_PROGRESS_DARK_FILL_OPACITY : YIELD_IN_PROGRESS_FILL_OPACITY;
     const paint = isInProgress
         ? {
@@ -44,10 +39,8 @@ export const YieldChartBarPath = ({ values, layer, isInProgress, visibleBuckets 
               strokeDasharray: YIELD_IN_PROGRESS_DASH
           }
         : {
-              fillOpacity: baseFill * layer.opacityScale,
-              strokeClassName: layer.fillClassName,
-              strokeOpacity: layer.opacityScale,
-              strokeWidth: isTax ? TAX_STROKE : 0
+              fillOpacity: layer.fillOpacity * layer.opacityScale,
+              strokeWidth: 0
           };
 
     return <AnimatedStyledPath animatedProps={animatedProps} fillClassName={layer.fillClassName} {...paint} />;

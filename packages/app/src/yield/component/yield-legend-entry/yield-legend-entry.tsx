@@ -39,7 +39,7 @@ export const YieldLegendEntry = ({ group, label, amount, amountClassName, share,
 
     const isTax = group === YieldGroupEnum.TAX;
     const dotClassName = cn(
-        isTax ? 'bg-secondary-foreground/45' : YIELD_GROUP_COLOR[group][isIncreaseContrast ? 'backgroundContrast' : 'background'],
+        isTax ? 'bg-secondary-foreground/70' : YIELD_GROUP_COLOR[group][isIncreaseContrast ? 'backgroundContrast' : 'background'],
         isMuted && 'opacity-60',
         isEmpty && 'opacity-40'
     );
