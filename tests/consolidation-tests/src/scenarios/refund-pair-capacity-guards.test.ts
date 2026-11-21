@@ -4,6 +4,8 @@ import { TransactionService } from '@budgie/ledger';
 import { expect, layer } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
+import { isDefined } from '@rnw-community/shared';
+
 import {
     REJECTED_PAYMENT_FEE_TITLE,
     REJECTED_PAYMENT_HIGH_FEE_FEE_AMOUNT,
@@ -184,6 +186,43 @@ layer(TestLayer)('consolidation/refund-pair-capacity-guards', it => {
             yield* transactionService.revertConsolidationByUser(expense.id);
 
             expect(yield* refundPairRepository.findReviewCandidates()).toEqual([]);
+        })
+    );
+
+    it.effect('tracks the fee pool within a run so a duplicate fee refund cannot crowd out the principal refund', () =>
+        Effect.gen(function* () {
+            const account = yield* testSeedService.account({ externalId: 'mono-card' });
+            const seedShopExpense = (externalIdPrefix: string, day: number, expenseFeeAmount?: number) =>
+                testSeedService.refundedExpense({
+                    accountId: account.id,
+                    title: 'Shop',
+                    expenseAmount: GUARD_EXPENSE_AMOUNT,
+                    refundAmounts: [],
+                    expenseOperatedAt: atDay(GUARD_EXPENSE_OPERATED_AT, day),
+                    externalIdPrefix,
+                    ...(isDefined(expenseFeeAmount) && { expenseFeeAmount })
+                });
+            const seedRefund = (externalId: string, day: number, amount: number, title: string) =>
+                seedTitledTransaction({
+                    accountId: account.id,
+                    externalId,
+                    operatedAt: atDay(GUARD_EXPENSE_OPERATED_AT, day),
+                    amount,
+                    title,
+                    isRefund: true
+                });
+
+            yield* seedShopExpense('fee-pool-other', 0);
+            const { expense: target } = yield* seedShopExpense('fee-pool-target', 5, PRIVATBANK_FEE_AMOUNT);
+            const feeRefunds = yield* Effect.forEach([6, 7], day =>
+                seedRefund(`fee-pool-fee-${day}`, day, PRIVATBANK_FEE_AMOUNT, REJECTED_PAYMENT_FEE_TITLE)
+            );
+            const principalRefund = yield* seedRefund('fee-pool-principal', 10, GUARD_EXPENSE_AMOUNT, 'Shop');
+
+            yield* runConsolidation();
+
+            expect(yield* fetchParentId(principalRefund.id)).toBe(target.id);
+            expect((yield* Effect.forEach(feeRefunds, refund => fetchParentId(refund.id))).filter(isDefined)).toEqual([target.id]);
         })
     );
 });

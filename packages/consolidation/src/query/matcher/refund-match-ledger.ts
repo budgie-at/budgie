@@ -4,6 +4,7 @@ import type { RefundEdgeRowInterface } from '../interface/refund-edge-row.interf
 
 export class RefundMatchLedger {
     private readonly usedByExpenseId = new Map<number, number>();
+    private readonly feeUsedByExpenseId = new Map<number, number>();
     private readonly closedExpenseIds = new Set<number>();
     private readonly assignmentByRefundId = new Map<number, RefundEdgeRowInterface>();
     private readonly unsafeRefundIds = new Set<number>();
@@ -40,7 +41,14 @@ export class RefundMatchLedger {
         this.assignmentByRefundId.set(edge.refundTransactionId, edge);
         this.usedByExpenseId.set(edge.expenseTransactionId, (this.usedByExpenseId.get(edge.expenseTransactionId) ?? 0) + edge.refundAmount);
 
-        if (edge.isPrivatbankOriginalMatch === 1) {
+        if (refundEdgeMetrics.isFeeBucket(edge)) {
+            this.feeUsedByExpenseId.set(
+                edge.expenseTransactionId,
+                (this.feeUsedByExpenseId.get(edge.expenseTransactionId) ?? 0) + edge.refundAmount
+            );
+        }
+
+        if (refundEdgeMetrics.isOriginalAmountReversal(edge)) {
             this.closedExpenseIds.add(edge.expenseTransactionId);
         }
     }
@@ -50,12 +58,14 @@ export class RefundMatchLedger {
             return 0;
         }
 
-        if (refundEdgeMetrics.isPrivatbankBucket(edge)) {
+        if (refundEdgeMetrics.isOriginalAmountReversal(edge)) {
             return this.isTouched(edge.expenseTransactionId) ? 0 : refundEdgeMetrics.getCapacity(edge);
         }
 
+        const feeUsed = refundEdgeMetrics.isFeeBucket(edge) ? (this.feeUsedByExpenseId.get(edge.expenseTransactionId) ?? 0) : 0;
+
         return Math.min(
-            refundEdgeMetrics.getCapacity(edge),
+            refundEdgeMetrics.getCapacity(edge) - feeUsed,
             refundEdgeMetrics.getOutflow(edge) - edge.expenseAbsorbedAmount - (this.usedByExpenseId.get(edge.expenseTransactionId) ?? 0)
         );
     }
