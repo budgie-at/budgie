@@ -23,7 +23,7 @@ export const YieldSectionHeader = ({ section, hasTax }: Props) => {
     const { t } = useLingui();
 
     return (
-        <View className="gap-y-xxs px-3xl pt-[32px] pb-sm" testID={PassiveIncomeSelector.Section(section)}>
+        <View className="gap-y-xxs px-3xl pt-[24px] pb-[8px]" testID={PassiveIncomeSelector.Section(section)}>
             <View className="flex-row items-baseline justify-between gap-x-sm">
                 <Text accessibilityRole="header" className="text-[17px] font-semibold text-primary">
                     {t(SECTION_TITLE[section])}

@@ -18,7 +18,13 @@ export const YieldChartSeeAllTime = () => {
     };
 
     return (
-        <Pressable accessibilityRole="button" hitSlop={SEE_ALL_HIT_SLOP} onPress={handlePress} testID={PassiveIncomeSelector.SeeAllTime}>
+        <Pressable
+            accessibilityRole="button"
+            className="min-h-[44px] justify-center"
+            hitSlop={SEE_ALL_HIT_SLOP}
+            onPress={handlePress}
+            testID={PassiveIncomeSelector.SeeAllTime}
+        >
             <Text className="text-md font-semibold text-positive-action">
                 <Trans>See all time</Trans>
             </Text>

@@ -10573,6 +10573,10 @@ msgstr "Tap to retry"
 msgid "Tap to select"
 msgstr "Tap to select"
 
+#: src/yield/hook/use-yield-axis-labels.hook.ts
+msgid "Tax"
+msgstr "Tax"
+
 #: src/inzhur/component/inzhur-operations-income-row/inzhur-operations-income-row.tsx
 msgid "Tax {taxLabel}"
 msgstr "Tax {taxLabel}"
@@ -12081,8 +12085,8 @@ msgid "Yield · last 12 months"
 msgstr "Yield · last 12 months"
 
 #: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
-msgid "Yield uses the last 12 months across holdings with a rate. Crypto is measured on your whole balance, staked or not. Fund payouts aren’t counted in yield."
-msgstr "Yield uses the last 12 months across holdings with a rate. Crypto is measured on your whole balance, staked or not. Fund payouts aren’t counted in yield."
+msgid "Yield uses the last 12 months across holdings with a rate. Crypto is measured on your whole balance, staked or not. Distributions aren’t counted in yield."
+msgstr "Yield uses the last 12 months across holdings with a rate. Crypto is measured on your whole balance, staked or not. Distributions aren’t counted in yield."
 
 #: src/yield/component/yield-breakdown-vs-rate/yield-breakdown-vs-rate.tsx
 msgid "Yield vs expected"

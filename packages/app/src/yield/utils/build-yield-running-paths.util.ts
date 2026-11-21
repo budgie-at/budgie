@@ -52,7 +52,6 @@ export const buildYieldRunningPaths = ({
         xs: cumulative.map((_, index) => xOf(index)),
         ys: cumulative.map(yOf),
         priorYs: isDefined(prior) ? prior.map(yOf) : [],
-        endX: xOf(lastIndex),
         endY: yOf(cumulative.at(-1) ?? 0),
         priorEndY: isDefined(prior) ? yOf(prior.at(-1) ?? 0) : null
     };

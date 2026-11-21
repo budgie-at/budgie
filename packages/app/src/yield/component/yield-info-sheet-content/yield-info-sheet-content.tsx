@@ -32,7 +32,7 @@ export const YieldInfoSheetContent = ({ screenKey }: Props) => {
     const summary = AsyncResult.getOrElse(useLiveAtomValue(yieldSummaryFamily(screenKey.key)), () => null);
 
     const earnedText = t`Income before tax. Crypto is valued at that day’s opening price.`;
-    const yieldText = t`Yield uses the last 12 months across holdings with a rate. Crypto is measured on your whole balance, staked or not. Fund payouts aren’t counted in yield.`;
+    const yieldText = t`Yield uses the last 12 months across holdings with a rate. Crypto is measured on your whole balance, staked or not. Distributions aren’t counted in yield.`;
     const outlookText = t`At today’s balances and rates. Holdings left out of yield are not projected.`;
     const bottomSpacerStyle = { height: bottom + BOTTOM_PADDING };
     const causes = groupYieldEstimateCauses(summary?.estimateCauses ?? []).map(cause => {

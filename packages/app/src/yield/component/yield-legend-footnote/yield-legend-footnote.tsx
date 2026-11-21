@@ -24,14 +24,14 @@ export const YieldLegendFootnote = () => {
                 <View
                     ref={footnoteRef}
                     accessible={!isFailure}
-                    className="shrink flex-row items-center gap-x-xs"
+                    className="shrink flex-row items-center gap-x-[8px]"
                     style={FOOTNOTE_STYLE}
                     testID={PassiveIncomeSelector.Footnote}
                     accessibilityLiveRegion="polite"
                 >
                     {isFailure ? <YieldLegendRetry /> : null}
                     {hasSwatch && !isFailure ? <YieldLegendInProgressSwatch /> : null}
-                    {isFailure ? null : <Text className="text-xs text-secondary-foreground">{details}</Text>}
+                    {isFailure ? null : <Text className="text-sm text-secondary-foreground">{details}</Text>}
                 </View>
             ) : null}
             {isEstimated ? <YieldLegendEstimatedRow /> : null}

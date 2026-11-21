@@ -39,7 +39,7 @@ export const useYieldDeltaLabel = (
     const comparison = useYieldComparisonPhrase(range, tone);
     const isNew = summary?.delta?.kind === YieldDeltaKindEnum.NEW;
     const changeLabel =
-        tone === YieldDeltaToneEnum.NEUTRAL ? `${sign}${change}` : `${YIELD_TREND_ARROW[trend]}${t`${sign}${amount} · ${sign}${change}`}`;
+        tone === YieldDeltaToneEnum.NEUTRAL ? `${sign}${change} ·` : `${YIELD_TREND_ARROW[trend]}${t`${sign}${amount} · ${sign}${change}`}`;
     const label = isNew ? t`New this period` : changeLabel;
 
     return { label, caption: isNew ? '' : comparison, trend, tone };

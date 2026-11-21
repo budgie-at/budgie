@@ -10572,6 +10572,10 @@ msgstr "Торкніться, щоб повторити"
 msgid "Tap to select"
 msgstr "Торкніться для вибору"
 
+#: src/yield/hook/use-yield-axis-labels.hook.ts
+msgid "Tax"
+msgstr "Податок"
+
 #: src/inzhur/component/inzhur-operations-income-row/inzhur-operations-income-row.tsx
 msgid "Tax {taxLabel}"
 msgstr "Податок {taxLabel}"
@@ -12080,7 +12084,7 @@ msgid "Yield · last 12 months"
 msgstr "Дохідність · останні 12 місяців"
 
 #: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
-msgid "Yield uses the last 12 months across holdings with a rate. Crypto is measured on your whole balance, staked or not. Fund payouts aren’t counted in yield."
+msgid "Yield uses the last 12 months across holdings with a rate. Crypto is measured on your whole balance, staked or not. Distributions aren’t counted in yield."
 msgstr "Дохідність враховує останні 12 місяців за позиціями зі ставкою. Криптовалюта вимірюється за всім вашим балансом, у стейкінгу чи ні. Виплати фондів не враховуються в дохідності."
 
 #: src/yield/component/yield-breakdown-vs-rate/yield-breakdown-vs-rate.tsx

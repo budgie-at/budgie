@@ -1,7 +1,8 @@
 import { useAtomValue } from '@effect/atom-react/Hooks';
+import { useLingui } from '@lingui/react/macro';
 import { useWindowDimensions } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { PROTECTED_AMOUNT_PLACEHOLDER } from '../../@generic/constant/protected-amount-placeholder.constant';
 import { useIsAmountProtected } from '../../@generic/hook/use-is-amount-protected.hook';
@@ -23,6 +24,7 @@ const GUTTER_PADDING = 8;
 const MAX_FONT_SCALE = 1.3;
 
 export const useYieldAxisLabels = (axis: YieldAxisInterface) => {
+    const { t } = useLingui();
     const isAmountProtected = useIsAmountProtected();
     const formatAxisAmount = useFormatYieldAxisAmount();
     const { symbol } = useAtomValue(defaultInstrumentAtom);
@@ -33,7 +35,8 @@ export const useYieldAxisLabels = (axis: YieldAxisInterface) => {
         buildYieldAxisLabels(target, YIELD_PLOT_HEIGHT, value =>
             isAmountProtected ? PROTECTED_AMOUNT_PLACEHOLDER : formatAxisAmount(value, symbol)
         );
-    const labels = buildLabels(axis);
+    const taxLabels = isPositiveNumber(axis.depth) ? [{ key: 'tax', y: YIELD_PLOT_HEIGHT, text: t`Tax` }] : [];
+    const labels = [...buildLabels(axis), ...taxLabels];
     const stableAxes = isDefined(summary)
         ? Object.values(YieldChartModeEnum).flatMap(mode =>
               [null, ...YIELD_STACK_GROUPS].map(group => buildYieldSummaryAxis(summary, group, mode))

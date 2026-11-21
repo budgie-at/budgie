@@ -1,7 +1,7 @@
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import { use } from 'react';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { yieldSummaryFamily } from '../constant/yield-summary-family-atom.constant';
@@ -16,14 +16,15 @@ export const useYieldFootnoteState = () => {
     const result = useLiveAtomValue(yieldSummaryFamily(screenKey.key));
     const summary = useYieldSummary();
     const inProgressText = useYieldInProgressText();
-    const isEstimated = useYieldIsEstimated(summary);
+    const isMaterialEstimate = useYieldIsEstimated(summary);
 
     const hasInProgress = isNotEmptyString(inProgressText);
+    const hasEstimatedPrice = summary?.buckets.some(bucket => Object.values(bucket.estimatedAmounts).some(isPositiveNumber)) === true;
     const hasDetails = isDefined(summary) && summary.hasYield && hasInProgress;
 
     return {
         isFailure: AsyncResult.isFailure(result),
-        isEstimated,
+        isEstimated: isMaterialEstimate || hasEstimatedPrice,
         hasDetails,
         hasSwatch: hasInProgress,
         details: inProgressText

@@ -1,6 +1,6 @@
 import { YieldGroupEnum } from '@budgie/market';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { YIELD_NEGATIVE_BAND } from '../constant/yield-negative-band.constant';
 import { YIELD_PLOT_HEIGHT } from '../constant/yield-plot-height.constant';
@@ -36,5 +36,7 @@ export const buildYieldSummaryAxis = (
     const totals = summary.buckets.map(bucket => visibleGroups.reduce((sum, visible) => sum + bucket.amounts[visible], 0));
     const taxDepth = Math.max(0, ...summary.buckets.map(bucket => bucket.amounts[YieldGroupEnum.TAX]));
 
-    return reserveNegativeBand(buildYieldAxis(Math.max(0, ...totals), taxDepth));
+    const axis = buildYieldAxis(Math.max(0, ...totals), taxDepth);
+
+    return isPositiveNumber(taxDepth) ? reserveNegativeBand(axis) : axis;
 };
