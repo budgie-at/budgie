@@ -11,7 +11,6 @@ import { YIELD_RANGE_NAME } from '../../constant/yield-range-name.constant';
 import { YieldScreenContext } from '../../context/yield-screen.context';
 import { useYieldSummary } from '../../hook/use-yield-summary.hook';
 import { YieldBreakdownCryptoToday } from '../yield-breakdown-crypto-today/yield-breakdown-crypto-today';
-import { YieldBreakdownEarned } from '../yield-breakdown-earned/yield-breakdown-earned';
 import { YieldBreakdownMonthlyAverage } from '../yield-breakdown-monthly-average/yield-breakdown-monthly-average';
 import { YieldBreakdownNet } from '../yield-breakdown-net/yield-breakdown-net';
 import { YieldBreakdownRunRate } from '../yield-breakdown-run-rate/yield-breakdown-run-rate';
@@ -39,10 +38,17 @@ export const YieldBreakdown = () => {
     const hasOpenRow = isDefined(screenKey.scopeId) && screenKey.from !== screenKey.scopeId;
     const monthCount = Math.round(differenceInDays(parseISO(summary.today), parseISO(summary.windowStart)) / DAYS_PER_MONTH);
     const monthlyAverage = summary.earned.value / monthCount;
-    const hasTotalsRows = summary.hasYield && summary.payoutCount !== 1;
-    const hasOutlookRow = isDefined(runRate);
+    const hasYieldRow = isDefined(annualYield.rate) && isDefined(screenKey.key.group);
+    const hasTotalsRows =
+        summary.hasYield &&
+        summary.payoutCount !== 1 &&
+        (isPositiveNumber(summary.tax) ||
+            monthCount >= MIN_AVERAGE_MONTHS ||
+            hasYieldRow ||
+            isDefined(cryptoRewardsToday) ||
+            isDefined(vsRate));
 
-    if (!hasOpenRow && !hasTotalsRows && !hasOutlookRow) {
+    if (!hasOpenRow && !hasTotalsRows && !isDefined(runRate)) {
         return null;
     }
 
@@ -62,11 +68,10 @@ export const YieldBreakdown = () => {
                     </Text>
                     <View className={CARD_BORDER_CLASSNAME}>
                         <GroupedListSection>
-                            <YieldBreakdownEarned earned={summary.earned.value} isEstimated={summary.earned.isEstimated} />
                             {isPositiveNumber(summary.tax) ? <YieldBreakdownTax tax={summary.tax} /> : null}
                             {isPositiveNumber(summary.tax) ? <YieldBreakdownNet net={summary.net} /> : null}
                             {monthCount >= MIN_AVERAGE_MONTHS ? <YieldBreakdownMonthlyAverage average={monthlyAverage} /> : null}
-                            {isDefined(annualYield.rate) ? (
+                            {hasYieldRow && isDefined(annualYield.rate) ? (
                                 <YieldBreakdownYieldRate rate={annualYield.rate} isEstimated={annualYield.isEstimated} />
                             ) : null}
                             {isDefined(cryptoRewardsToday) ? <YieldBreakdownCryptoToday rewards={cryptoRewardsToday} /> : null}

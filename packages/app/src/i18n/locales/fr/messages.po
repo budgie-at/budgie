@@ -1303,7 +1303,6 @@ msgid "−{changePercent} vs {shortPreviousLabel}"
 msgstr "−{changePercent} vs {shortPreviousLabel}"
 
 #: src/yield/component/yield-breakdown-crypto-today/yield-breakdown-crypto-today.tsx
-#: src/yield/component/yield-breakdown-earned/yield-breakdown-earned.tsx
 #: src/yield/component/yield-breakdown-run-rate/yield-breakdown-run-rate.tsx
 msgid "≈ {amount}"
 msgstr "≈ {amount}"
@@ -2509,7 +2508,6 @@ msgstr "Devient un virement vers votre portefeuille espèces"
 msgid "before tax"
 msgstr "avant impôts"
 
-#: src/yield/component/yield-breakdown-earned/yield-breakdown-earned.tsx
 #: src/yield/component/yield-breakdown-monthly-average/yield-breakdown-monthly-average.tsx
 msgid "Before tax"
 msgstr "Avant impôts"
@@ -4863,7 +4861,6 @@ msgstr "Chaque semaine par rapport à votre allocation hebdomadaire de {allowanc
 msgid "Earn"
 msgstr "Earn"
 
-#: src/yield/component/yield-breakdown-earned/yield-breakdown-earned.tsx
 #: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
 msgid "Earned"
 msgstr "Gagné"
