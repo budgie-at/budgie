@@ -14,5 +14,12 @@ export const YieldBreakdownMonthlyAverage = ({ average }: Props) => {
 
     const amount = formatAmount(average);
 
-    return <YieldBreakdownRow title={t`Monthly average`} value={amount} testID={PassiveIncomeSelector.MonthlyAverage} />;
+    return (
+        <YieldBreakdownRow
+            title={t`Monthly average`}
+            subtitle={t`Before tax`}
+            value={amount}
+            testID={PassiveIncomeSelector.MonthlyAverage}
+        />
+    );
 };

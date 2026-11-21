@@ -836,12 +836,16 @@ msgid "{name} raised to {amountLabel}"
 msgstr "{name} підвищено до {amountLabel}"
 
 #: src/yield/hook/use-yield-hero-line-text.hook.ts
-msgid "{net} after tax · −{tax} tax"
-msgstr "{net} після податків · −{tax} податку"
+msgid "{net} after tax · {tax} tax"
+msgstr "{net} після податків · {tax} податку"
+
+#: src/yield/hook/use-yield-hero-line-text.hook.ts
+msgid "{net} after tax · no tax"
+msgstr "{net} після податків · без податку"
 
 #: src/yield/hook/use-yield-range-net-text.hook.ts
-msgid "{netText} · {formattedRate} yield"
-msgstr "{netText} · дохідність {formattedRate}"
+msgid "{netText} · {formattedRate} a year"
+msgstr "{netText} · {formattedRate} на рік"
 
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "{newAccountCount, plural, one {Add # account in {currencyCode}} other {Add # accounts in {currencyCode}}}"
@@ -2499,6 +2503,7 @@ msgid "before tax"
 msgstr "до оподаткування"
 
 #: src/yield/component/yield-breakdown-earned/yield-breakdown-earned.tsx
+#: src/yield/component/yield-breakdown-monthly-average/yield-breakdown-monthly-average.tsx
 msgid "Before tax"
 msgstr "До оподаткування"
 
@@ -7513,7 +7518,6 @@ msgstr "Немає тегів за запитом «{trimmedSearch}»"
 msgid "No tags yet"
 msgstr "Ще немає тегів"
 
-#: src/yield/hook/use-yield-hero-line-text.hook.ts
 #: src/yield/hook/use-yield-range-net-text.hook.ts
 msgid "No tax withheld"
 msgstr "Податок не утримано"
@@ -10982,6 +10986,10 @@ msgstr "Це видалить ваш бюджет. Ви можете будь-к
 #: src/budget/constant/budget-period-this-label.constant.ts
 msgid "this year"
 msgstr "цього року"
+
+#: src/yield/component/yield-legend-running/yield-legend-running.tsx
+msgid "This year"
+msgstr "Цей рік"
 
 #: src/@generic/constant/date-period.constant.ts
 msgid "This Year"

@@ -4,6 +4,8 @@ import { useLingui } from '@lingui/react/macro';
 import { use } from 'react';
 import { Text, View } from 'react-native';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { cn } from '../../../@generic/utils/cn.util';
 import { YieldScreenContext } from '../../context/yield-screen.context';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
@@ -27,7 +29,8 @@ export const YieldChartSummary = ({ summary }: Props) => {
     const count = summary.payoutCount;
     const isEmpty = count === 0;
     const isSingle = count === 1;
-    const isSeeAllTimeVisible = isEmpty && screenKey.key.range !== YieldRangeEnum.ALL;
+    const hasOlderPayouts = isDefined(summary.firstYieldDay) && summary.firstYieldDay < summary.windowStart;
+    const isSeeAllTimeVisible = (isEmpty || (isSingle && hasOlderPayouts)) && screenKey.key.range !== YieldRangeEnum.ALL;
     const title = t({ id: 'passive-income.payouts.title', message: plural(count, { one: '# payout', other: '# payouts' }) });
     const filledBuckets = summary.buckets.filter(bucket => bucket.total > 0);
     const containerClassName = cn(

@@ -11,6 +11,7 @@ import { resolveYieldHeroLineKind } from '../utils/resolve-yield-hero-line-kind.
 import { selectYieldScrubbedBuckets } from '../utils/select-yield-scrubbed-buckets.util';
 
 import { useYieldFormatNet } from './use-yield-format-net.hook';
+import { useYieldLegendRows } from './use-yield-legend-rows.hook';
 import { useYieldRangeNetText } from './use-yield-range-net-text.hook';
 
 import type { YieldBucketInterface, YieldSummaryInterface } from '@budgie/market';
@@ -20,13 +21,15 @@ export const useYieldHeroLineText = (summary: YieldSummaryInterface, bucket: Yie
     const { screenKey, mode } = use(YieldScreenContext);
     const formatPercent = useFormatPercent();
     const formatNet = useYieldFormatNet();
+    const { rows } = useYieldLegendRows();
 
     const scrubbedBuckets = selectYieldScrubbedBuckets(summary.buckets, isDefined(bucket) ? summary.buckets.indexOf(bucket) : null, mode);
     const bucketTax = scrubbedBuckets.reduce((sum, item) => sum + item.amounts[YieldGroupEnum.TAX], 0);
     const scrubbedTotal = scrubbedBuckets.reduce((sum, item) => sum + item.total, 0);
-    const share = formatPercent(summary.share ?? 0);
+    const groupShare = rows.find(row => row.group === screenKey.key.group)?.share;
+    const share = formatPercent(groupShare ?? summary.share ?? 0);
     const { net, tax } = formatNet(scrubbedTotal, bucketTax);
-    const scrubText = isPositiveNumber(bucketTax) ? t`${net} after tax · −${tax} tax` : t`No tax withheld`;
+    const scrubText = isPositiveNumber(bucketTax) ? t`${net} after tax · ${tax} tax` : t`${net} after tax · no tax`;
     const rangeText = useYieldRangeNetText(summary);
     const texts: Record<YieldHeroLineKindEnum, string> = {
         [YieldHeroLineKindEnum.SCRUB_NET]: scrubText,

@@ -15,7 +15,7 @@ import { YieldScreenContext } from '../../context/yield-screen.context';
 import { useYieldScopeTitle } from '../../hook/use-yield-scope-title.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 
-const CLEAR_BUTTON_STYLE = { right: -72 };
+const CLEAR_BUTTON_STYLE = { right: -56 };
 
 export const YieldCollapsedTitle = () => {
     const { t } = useLingui();

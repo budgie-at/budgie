@@ -54,5 +54,5 @@ export const useYieldListItems = (): readonly YieldListItemType[] => {
         return [...items, { kind: YieldListItemKindEnum.TRUNCATED, id: 'truncated-payouts', count: payouts.length }];
     }
 
-    return hasOlderPayouts && isNotEmptyArray(payouts) ? [...items, OLDER_ITEM] : items;
+    return hasOlderPayouts && !isSinglePayoutInCard && isNotEmptyArray(payouts) ? [...items, OLDER_ITEM] : items;
 };

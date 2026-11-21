@@ -20,5 +20,5 @@ export const useYieldRangeNetText = ({
     const netText = isPositiveNumber(tax) ? t`${rangeNet} after tax` : t`No tax withheld`;
     const formattedRate = isDefined(annualYield.rate) ? formatRate(annualYield.rate) : '';
 
-    return isDefined(annualYield.rate) ? t`${netText} · ${formattedRate} yield` : netText;
+    return isDefined(annualYield.rate) ? t`${netText} · ${formattedRate} a year` : netText;
 };

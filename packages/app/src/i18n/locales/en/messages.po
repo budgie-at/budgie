@@ -837,12 +837,16 @@ msgid "{name} raised to {amountLabel}"
 msgstr "{name} raised to {amountLabel}"
 
 #: src/yield/hook/use-yield-hero-line-text.hook.ts
-msgid "{net} after tax · −{tax} tax"
-msgstr "{net} after tax · −{tax} tax"
+msgid "{net} after tax · {tax} tax"
+msgstr "{net} after tax · {tax} tax"
+
+#: src/yield/hook/use-yield-hero-line-text.hook.ts
+msgid "{net} after tax · no tax"
+msgstr "{net} after tax · no tax"
 
 #: src/yield/hook/use-yield-range-net-text.hook.ts
-msgid "{netText} · {formattedRate} yield"
-msgstr "{netText} · {formattedRate} yield"
+msgid "{netText} · {formattedRate} a year"
+msgstr "{netText} · {formattedRate} a year"
 
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "{newAccountCount, plural, one {Add # account in {currencyCode}} other {Add # accounts in {currencyCode}}}"
@@ -2500,6 +2504,7 @@ msgid "before tax"
 msgstr "before tax"
 
 #: src/yield/component/yield-breakdown-earned/yield-breakdown-earned.tsx
+#: src/yield/component/yield-breakdown-monthly-average/yield-breakdown-monthly-average.tsx
 msgid "Before tax"
 msgstr "Before tax"
 
@@ -7514,7 +7519,6 @@ msgstr "No tags match “{trimmedSearch}”"
 msgid "No tags yet"
 msgstr "No tags yet"
 
-#: src/yield/hook/use-yield-hero-line-text.hook.ts
 #: src/yield/hook/use-yield-range-net-text.hook.ts
 msgid "No tax withheld"
 msgstr "No tax withheld"
@@ -10983,6 +10987,10 @@ msgstr "This will remove your budget. You can create a new one anytime."
 #: src/budget/constant/budget-period-this-label.constant.ts
 msgid "this year"
 msgstr "this year"
+
+#: src/yield/component/yield-legend-running/yield-legend-running.tsx
+msgid "This year"
+msgstr "This year"
 
 #: src/@generic/constant/date-period.constant.ts
 msgid "This Year"
