@@ -11,6 +11,7 @@ import {
 } from '../harness/rejected-payment-fixture';
 import { runConsolidation } from '../harness/run-consolidation';
 import { seedPrivatbankTransaction } from '../harness/seed-privatbank-transaction';
+import { seedTitledTransaction } from '../harness/seed-titled-transaction';
 import { testQueryService, testSeedService, TestLayer } from '../harness/test-context';
 
 const GUARD_YEAR = 2026;
@@ -31,20 +32,6 @@ const PRIVATBANK_FEE_EXPENSE_AMOUNT = convertToMicroUnits(100);
 const PRIVATBANK_START = new Date(GUARD_YEAR, 5, 1, 10, 0, 0);
 
 const atDay = (start: Date, day: number): Date => new Date(start.getTime() + day * DAY_MS);
-
-const seedTitledIncome = Effect.fnUntraced(function* (
-    accountId: number,
-    externalId: string,
-    operatedAt: Date,
-    amount: number,
-    title: string
-) {
-    const income = yield* testSeedService.bankPairIncome({ externalId, operatedAt }, { accountId, amount });
-
-    yield* testSeedService.updateTransaction(income.id, { title });
-
-    return income;
-});
 
 const fetchParentId = (transactionId: number) =>
     Effect.map(testQueryService.fetchTransactionById(transactionId), transaction => transaction.consolidationParentTransactionId);
@@ -71,13 +58,14 @@ layer(TestLayer)('consolidation/refund-pair-capacity-guards', it => {
                 expenseTransactionId: expense.id,
                 refundIncomeTransactionId: refunds[0].id
             });
-            const autoRefund = yield* seedTitledIncome(
-                account.id,
-                'cross-account-auto',
-                atDay(GUARD_EXPENSE_OPERATED_AT, 3),
-                GUARD_AUTO_REFUND_AMOUNT,
-                GUARD_TITLE
-            );
+            const autoRefund = yield* seedTitledTransaction({
+                accountId: account.id,
+                externalId: 'cross-account-auto',
+                operatedAt: atDay(GUARD_EXPENSE_OPERATED_AT, 3),
+                amount: GUARD_AUTO_REFUND_AMOUNT,
+                title: GUARD_TITLE,
+                isRefund: true
+            });
 
             expect(yield* refundPairRepository.findCandidates()).toEqual([]);
             expect((yield* runConsolidation()).consolidated).toBe(0);
@@ -100,13 +88,14 @@ layer(TestLayer)('consolidation/refund-pair-capacity-guards', it => {
                 externalIdPrefix: 'scanned'
             });
             const [candidate] = yield* refundPairRepository.findCandidates();
-            const manualRefund = yield* seedTitledIncome(
-                account.id,
-                'scanned-manual',
-                atDay(GUARD_EXPENSE_OPERATED_AT, 2),
-                GUARD_AUTO_REFUND_AMOUNT,
-                'Manual refund'
-            );
+            const manualRefund = yield* seedTitledTransaction({
+                accountId: account.id,
+                externalId: 'scanned-manual',
+                operatedAt: atDay(GUARD_EXPENSE_OPERATED_AT, 2),
+                amount: GUARD_AUTO_REFUND_AMOUNT,
+                title: 'Manual refund',
+                isRefund: true
+            });
 
             yield* refundConsolidationService.convertToRefund({
                 expenseTransactionId: expense.id,
@@ -157,13 +146,14 @@ layer(TestLayer)('consolidation/refund-pair-capacity-guards', it => {
                 originalAmount: PRIVATBANK_ORIGINAL_AMOUNT,
                 title: PRIVATBANK_REFUND_TITLE
             });
-            const feeRefund = yield* seedTitledIncome(
-                account.id,
-                'privat-fee-refund',
-                atDay(PRIVATBANK_START, 12),
-                PRIVATBANK_FEE_AMOUNT,
-                REJECTED_PAYMENT_FEE_TITLE
-            );
+            const feeRefund = yield* seedTitledTransaction({
+                accountId: account.id,
+                externalId: 'privat-fee-refund',
+                operatedAt: atDay(PRIVATBANK_START, 12),
+                amount: PRIVATBANK_FEE_AMOUNT,
+                title: REJECTED_PAYMENT_FEE_TITLE,
+                isRefund: true
+            });
 
             yield* runConsolidation();
 

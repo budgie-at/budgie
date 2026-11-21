@@ -115,16 +115,18 @@ class RefundCandidateMatcher {
 
     private markUnsafe(context: RefundMatchContextInterface, refundTransactionIds: readonly number[]): void {
         const pendingIds = [...refundTransactionIds];
+        const expandedExpenseIds = new Set<number>();
 
         while (isNotEmptyArray(pendingIds)) {
             const refundTransactionId = pendingIds.pop() ?? 0;
 
             if (context.ledger.markUnsafe(refundTransactionId)) {
-                pendingIds.push(
-                    ...(context.refundEdgeListById.get(refundTransactionId) ?? [])
-                        .filter(refundEdgeMetrics.isAuto)
-                        .flatMap(edge => this.getExpenseEdges(context, edge).map(expenseEdge => expenseEdge.refundTransactionId))
-                );
+                for (const edge of (context.refundEdgeListById.get(refundTransactionId) ?? []).filter(refundEdgeMetrics.isAuto)) {
+                    if (!expandedExpenseIds.has(edge.expenseTransactionId)) {
+                        expandedExpenseIds.add(edge.expenseTransactionId);
+                        this.getExpenseEdges(context, edge).forEach(expenseEdge => pendingIds.push(expenseEdge.refundTransactionId));
+                    }
+                }
             }
         }
     }
@@ -141,7 +143,9 @@ class RefundCandidateMatcher {
                             edges[0].refundOperatedAt - REFUND_MANUAL_REVIEW_TIME_WINDOW_SECONDS < window.loadedFrom ||
                             edges.some(
                                 edge =>
-                                    refundEdgeMetrics.isAuto(edge) && edge.expenseOperatedAt + REFUND_TIME_WINDOW_SECONDS > window.loadedTo
+                                    refundEdgeMetrics.isAuto(edge) &&
+                                    refundEdgeMetrics.isCovering(edge) &&
+                                    edge.expenseOperatedAt + REFUND_TIME_WINDOW_SECONDS > window.loadedTo
                             )
                     )
                     .map(edges => edges[0].refundTransactionId)
@@ -229,13 +233,25 @@ class RefundCandidateMatcher {
         for (const edges of context.autoRefundEdgeLists.filter(list => !context.ledger.isUnsafe(list[0].refundTransactionId))) {
             const nearestEdge = edges
                 .filter(edge => refundEdgeMetrics.isAuto(edge) && context.ledger.canAssign(edge))
-                .sort(refundEdgeMetrics.compareNearest)
+                .sort((left, right) => this.compareNearest(context, left, right))
                 .at(0);
 
             if (isDefined(nearestEdge)) {
                 context.ledger.assign(nearestEdge);
             }
         }
+    }
+
+    private compareNearest(context: RefundMatchContextInterface, left: RefundEdgeRowInterface, right: RefundEdgeRowInterface): number {
+        const leftGap = context.ledger.getRemaining(left) - refundEdgeMetrics.getMeasure(left);
+        const rightGap = context.ledger.getRemaining(right) - refundEdgeMetrics.getMeasure(right);
+
+        return (
+            Number(leftGap !== 0) - Number(rightGap !== 0) ||
+            refundEdgeMetrics.getTimeDiff(left) - refundEdgeMetrics.getTimeDiff(right) ||
+            leftGap - rightGap ||
+            refundEdgeMetrics.compareExpenses(left, right)
+        );
     }
 
     private isEmitted(window: RefundMatchWindowInterface | null, edge: RefundEdgeRowInterface): boolean {

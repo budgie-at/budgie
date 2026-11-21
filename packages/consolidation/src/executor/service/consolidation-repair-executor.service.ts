@@ -2,7 +2,6 @@ import {
     Db,
     DebtEventRepository,
     ExternalSourceEnum,
-    REFUND_TITLE_PREFIXES,
     TransactionConsolidationTypeEnum,
     TransactionEntryTypeEnum,
     TransactionRepository,
@@ -17,6 +16,7 @@ import * as Layer from 'effect/Layer';
 import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { IBAN_BRIDGE_CHAIN_FX_TOLERANCE } from '../../shared/constant/iban-bridge-chain-fx-tolerance.constant';
+import { isPrivatbankSameOriginalAmount } from '../../shared/utils/is-privatbank-same-original-amount.util';
 import { buildIbanBridgeChainCanonicalInput } from '../utils/build-iban-bridge-chain-canonical-input.util';
 
 import { ConsolidationEligibilityService } from './consolidation-eligibility.service';
@@ -54,19 +54,39 @@ export class ConsolidationRepairExecutorService extends Context.Service<Consolid
             const sumAmounts = (entries: readonly TransactionEntryEntityInterface[]): number =>
                 entries.reduce((total, entry) => total + entry.amount, 0);
 
-            const findLiveEntry = (expense: TransactionWithEntriesEntityInterface, type: TransactionEntryTypeEnum, accountId: number) =>
-                expense.entries.find(
+            const findLiveEntry = (transaction: TransactionWithEntriesEntityInterface, type: TransactionEntryTypeEnum, accountId: number) =>
+                transaction.entries.find(
                     entry => entry.type === type && entry.accountId === accountId && !isDefined(entry.originalTransactionId)
                 );
 
+            const isOpenRefundIncome = (refund: TransactionWithEntriesEntityInterface): boolean =>
+                refund.type === TransactionTypeEnum.INCOME &&
+                !isDefined(refund.consolidationType) &&
+                !isDefined(refund.consolidationParentTransactionId) &&
+                !refund.refundAutoPairDisabled;
+
             const hasFreshRefundCapacity = Effect.fnUntraced(function* (candidate: RefundCandidateInterface) {
-                const [expense] = yield* transactionRepository.findByIdsWithRefundConsolidationHistory([candidate.expenseTransactionId]);
-                const refunds = yield* transactionRepository.findByIds(candidate.refundIncomeTransactionIds);
+                const transactions = yield* transactionRepository.findByIdsWithRefundConsolidationHistory([
+                    candidate.expenseTransactionId,
+                    ...candidate.refundIncomeTransactionIds
+                ]);
+                const expense = transactions.find(transaction => transaction.id === candidate.expenseTransactionId);
+                const refunds = transactions.filter(transaction => candidate.refundIncomeTransactionIds.includes(transaction.id));
+                const openRefunds = refunds.filter(isOpenRefundIncome).flatMap(refund => {
+                    const entry = findLiveEntry(refund, TransactionEntryTypeEnum.DEBIT, candidate.accountId);
+
+                    return isDefined(entry) ? [{ entry, source: refund.externalSource ?? null }] : [];
+                });
+                const creditEntry = isDefined(expense)
+                    ? findLiveEntry(expense, TransactionEntryTypeEnum.CREDIT, candidate.accountId)
+                    : null;
 
                 if (
                     !isDefined(expense) ||
+                    !isDefined(creditEntry) ||
+                    expense.type !== TransactionTypeEnum.EXPENSE ||
                     (isDefined(expense.consolidationType) && expense.consolidationType !== TransactionConsolidationTypeEnum.REFUND) ||
-                    refunds.some(refund => isDefined(refund.consolidationParentTransactionId) || refund.refundAutoPairDisabled)
+                    openRefunds.length !== candidate.refundIncomeTransactionIds.length
                 ) {
                     return false;
                 }
@@ -74,30 +94,39 @@ export class ConsolidationRepairExecutorService extends Context.Service<Consolid
                 const absorbedEntries = expense.entries.filter(
                     entry => entry.type === TransactionEntryTypeEnum.DEBIT && isDefined(entry.originalTransactionId)
                 );
-                const absorbedSources = yield* transactionRepository.findByIds([
-                    ...new Set(absorbedEntries.map(entry => entry.originalTransactionId).filter(isDefined))
-                ]);
-                const feeSourceIds = new Set(
-                    absorbedSources
-                        .filter(source => REFUND_TITLE_PREFIXES.rejectedPaymentFee.some(prefix => source.title.trim().startsWith(prefix)))
-                        .map(source => source.id)
+                const absorbedSources = new Map(
+                    (yield* transactionRepository.findByIds(
+                        absorbedEntries.map(entry => entry.originalTransactionId).filter(isDefined)
+                    )).map(source => [source.id, source.externalSource ?? null])
                 );
-                const absorbedFee = sumAmounts(absorbedEntries.filter(entry => feeSourceIds.has(entry.originalTransactionId ?? 0)));
+                const expenseSource = expense.externalSource ?? null;
                 const absorbedTotal = sumAmounts(absorbedEntries);
+                const refundTotal = sumAmounts(openRefunds.map(({ entry }) => entry));
+                const feeAmount = findLiveEntry(expense, TransactionEntryTypeEnum.FEE, candidate.accountId)?.amount ?? 0;
 
-                if (candidate.confidenceBucket === 'AUTO_REFUND_REJECTED_PAYMENT_FEE_TITLE') {
-                    const feeEntry = findLiveEntry(expense, TransactionEntryTypeEnum.FEE, candidate.accountId);
-
-                    return isDefined(feeEntry) && absorbedFee + candidate.refundsTotal <= feeEntry.amount;
+                if (
+                    absorbedEntries.some(entry =>
+                        isPrivatbankSameOriginalAmount(
+                            absorbedSources.get(entry.originalTransactionId ?? 0) ?? null,
+                            entry,
+                            expenseSource,
+                            creditEntry
+                        )
+                    )
+                ) {
+                    return false;
                 }
 
                 if (candidate.confidenceBucket === 'AUTO_REFUND_PRIVATBANK_ORIGINAL_AMOUNT') {
-                    return absorbedTotal === 0;
+                    return (
+                        absorbedTotal === 0 &&
+                        openRefunds.every(({ entry, source }) => isPrivatbankSameOriginalAmount(source, entry, expenseSource, creditEntry))
+                    );
                 }
 
-                const creditEntry = findLiveEntry(expense, TransactionEntryTypeEnum.CREDIT, candidate.accountId);
+                const ceiling = candidate.confidenceBucket === 'AUTO_REFUND_REJECTED_PAYMENT_FEE_TITLE' ? feeAmount : creditEntry.amount;
 
-                return isDefined(creditEntry) && absorbedTotal - absorbedFee + candidate.refundsTotal <= creditEntry.amount;
+                return refundTotal <= ceiling && absorbedTotal + refundTotal <= creditEntry.amount + feeAmount;
             });
 
             const isUntouchedIbanBridgeCanonical = (transaction: TransactionWithEntriesEntityInterface): boolean => {

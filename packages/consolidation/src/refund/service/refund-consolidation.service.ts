@@ -1,7 +1,5 @@
 import {
     Db,
-    ExternalSourceEnum,
-    PRECISION,
     TransactionConsolidationTypeEnum,
     TransactionEntryRepository,
     TransactionEntryTypeEnum,
@@ -17,8 +15,8 @@ import * as Layer from 'effect/Layer';
 import { isDefined } from '@rnw-community/shared';
 
 import { RefundPairRepository } from '../../query/repository/refund-pair.repository';
-import { REFUND_ORIGINAL_CURRENCY_RATE_TOLERANCE } from '../../shared/constant/refund-original-currency-rate-tolerance.constant';
 import { consolidationCopySourceTransactionTags } from '../../shared/utils/consolidation-copy-source-transaction-tags.util';
+import { isPrivatbankSameOriginalAmount } from '../../shared/utils/is-privatbank-same-original-amount.util';
 import { RefundAlreadyConsolidatedError } from '../error/refund-already-consolidated.error';
 import { RefundExceedsExpenseError } from '../error/refund-exceeds-expense.error';
 import { RefundNotFromIncomeError } from '../error/refund-not-from-income.error';
@@ -57,31 +55,19 @@ export class RefundConsolidationService extends Context.Service<RefundConsolidat
                     .filter(entry => isDefined(entry.originalTransactionId) && entry.type === TransactionEntryTypeEnum.DEBIT)
                     .reduce((total, entry) => total + entry.amount, 0);
 
-            const getOriginalMinorAmount = (entry: TransactionEntryEntityInterface): number =>
-                Math.round(entry.amount / entry.exchangeRate / (PRECISION / 100));
-
-            const isSameOriginalCurrency = (
-                refundIncomeEntry: TransactionEntryEntityInterface,
-                expenseEntry: TransactionEntryEntityInterface
-            ): boolean =>
-                (!isDefined(refundIncomeEntry.operationInstrumentId) ||
-                    !isDefined(expenseEntry.operationInstrumentId) ||
-                    refundIncomeEntry.operationInstrumentId === expenseEntry.operationInstrumentId) &&
-                Math.abs(refundIncomeEntry.exchangeRate / expenseEntry.exchangeRate - 1) <= REFUND_ORIGINAL_CURRENCY_RATE_TOLERANCE;
-
             const isPrivatbankForeignCurrencyFullRefund = (
                 refundIncomeTransaction: TransactionWithEntriesEntityInterface,
                 expenseTransaction: TransactionWithEntriesEntityInterface,
                 refundIncomeEntry: TransactionEntryEntityInterface,
                 expenseEntry: TransactionEntryEntityInterface
             ): boolean =>
-                refundIncomeTransaction.externalSource === ExternalSourceEnum.PRIVATBANK &&
-                expenseTransaction.externalSource === ExternalSourceEnum.PRIVATBANK &&
                 getExistingRefundAmount(expenseTransaction.entries) === 0 &&
-                refundIncomeEntry.exchangeRate !== 1 &&
-                expenseEntry.exchangeRate !== 1 &&
-                isSameOriginalCurrency(refundIncomeEntry, expenseEntry) &&
-                getOriginalMinorAmount(refundIncomeEntry) === getOriginalMinorAmount(expenseEntry);
+                isPrivatbankSameOriginalAmount(
+                    refundIncomeTransaction.externalSource ?? null,
+                    refundIncomeEntry,
+                    expenseTransaction.externalSource ?? null,
+                    expenseEntry
+                );
 
             const validateRefundIncomePair = Effect.fnUntraced(function* (
                 refundIncomeTransaction: TransactionWithEntriesEntityInterface,

@@ -88,7 +88,29 @@ const buildExpenseEntriesSql = (
                         AND absorbed_entry.deleted_at IS NULL
                         AND absorbed_entry.original_transaction_id IS NOT NULL
                         AND absorbed_entry.type = '${TransactionEntryTypeEnum.DEBIT}'
-                ), 0) END AS absorbedAmount
+                ), 0) END AS absorbedAmount,
+                expense_tx.consolidation_type IS NOT NULL AND EXISTS (
+                    SELECT 1
+                    FROM transaction_entries closing_entry INDEXED BY transaction_entries_transaction_idx
+                    INNER JOIN transactions closing_tx ON closing_tx.id = closing_entry.original_transaction_id
+                    WHERE closing_entry.transaction_id = expense_tx.id
+                        AND closing_entry.deleted_at IS NULL
+                        AND closing_entry.type = '${TransactionEntryTypeEnum.DEBIT}'
+                        AND ${buildPrivatbankSameOriginalAmountSql(
+                            {
+                                amount: 'closing_entry.amount',
+                                exchangeRate: 'closing_entry.exchange_rate',
+                                externalSource: 'closing_tx.external_source',
+                                operationInstrumentId: 'closing_entry.operation_instrument_id'
+                            },
+                            {
+                                amount: 'expense_entry.amount',
+                                exchangeRate: 'expense_entry.exchange_rate',
+                                externalSource: 'expense_tx.external_source',
+                                operationInstrumentId: 'expense_entry.operation_instrument_id'
+                            }
+                        )}
+                ) AS isClosed
             FROM transactions expense_tx INDEXED BY transactions_visible_type_operated_idx
             INNER JOIN transaction_entries expense_entry INDEXED BY transaction_entries_live_transaction_account_amount_idx
                 ON expense_entry.transaction_id = expense_tx.id
@@ -156,7 +178,8 @@ const buildCompatiblePairsSql = (): string => `
             exp.operatedAt AS expenseOperatedAt, exp.autoNormTitle AS expenseAutoNormTitle, inc.autoNormTitle AS refundAutoNormTitle,
             exp.accountId AS accountId,
             exp.amount AS expenseAmount, exp.absorbedAmount AS expenseAbsorbedAmount,
-            exp.feeAmount AS feeAmount, exp.originalMinorAmount AS expenseOriginalMinorAmount,
+            exp.feeAmount AS feeAmount, exp.originalMinorAmount AS expenseOriginalMinorAmount, exp.isClosed AS isExpenseClosed,
+            ${buildPrivatbankSameOriginalAmountSql(buildPrivatbankRefundEntryColumns('inc'), buildPrivatbankRefundEntryColumns('exp'))} AS isPrivatbankOriginalMatch,
             inc.txId AS refundTransactionId, inc.syncId AS refundSyncId,
             inc.operatedAt AS refundOperatedAt, inc.isAutoPairDisabled AS isRefundAutoPairDisabled,
             inc.hasTags AS refundHasTags, inc.baseAmount AS refundBaseAmount,
