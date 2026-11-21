@@ -285,9 +285,21 @@ export class TransactionImportService extends Context.Service<TransactionImportS
             return updated;
         });
 
+        const needsRematch = (
+            input: TransactionCreateInputInterface,
+            existingTransaction: TransactionWithEntriesEntityInterface,
+            refreshMode: ImportedTransactionRefreshModeEnum
+        ): boolean =>
+            refreshMode === ImportedTransactionRefreshModeEnum.APPLY_BANK_CHANGE ||
+            (refreshMode === ImportedTransactionRefreshModeEnum.KEEP_APP_VALUES &&
+                !isDefined(existingTransaction.consolidationType) &&
+                !isDefined(existingTransaction.consolidationParentTransactionId) &&
+                existingTransaction.operatedAt.getTime() !== input.operatedAt.getTime());
+
         const updateImportedTransactions = Effect.fnUntraced(function* (
             updateParams: readonly ImportedUpdateParamInterface[],
-            refilledTransactions: TransactionEntityInterface[]
+            refilledTransactions: TransactionEntityInterface[],
+            rematchTransactions: TransactionEntityInterface[]
         ) {
             const existingTransactionsMap = yield* getTransactionsMap(updateParams.map(({ transactionId }) => transactionId));
             const existingTransactions = [...existingTransactionsMap.values()];
@@ -330,6 +342,11 @@ export class TransactionImportService extends Context.Service<TransactionImportS
             refilledTransactions.push(
                 ...updatedTransactions.filter((_transaction, index) => refreshModes[index] === ImportedTransactionRefreshModeEnum.REFILL)
             );
+            rematchTransactions.push(
+                ...updatedTransactions.filter((_transaction, index) =>
+                    needsRematch(refreshParams[index].input, refreshParams[index].existingTransaction, refreshModes[index])
+                )
+            );
 
             return new Map(updatedTransactions.map((transaction): [number, TransactionEntityInterface] => [transaction.id, transaction]));
         });
@@ -337,13 +354,18 @@ export class TransactionImportService extends Context.Service<TransactionImportS
         const processImportedBatchInner = Effect.fnUntraced(function* (
             batch: TransactionCreateInputInterface[],
             existingTransactionIdMap: Map<string, number>,
-            refilledTransactions: TransactionEntityInterface[]
+            refilledTransactions: TransactionEntityInterface[],
+            rematchTransactions: TransactionEntityInterface[]
         ) {
             const partition = partitionImportedBatch(batch, existingTransactionIdMap);
 
             yield* transactionDepositSafetyService.assertNoDepositExpenseInputs(partition.newInputs);
 
-            const updatedTransactionsMap = yield* updateImportedTransactions(partition.updateParams, refilledTransactions);
+            const updatedTransactionsMap = yield* updateImportedTransactions(
+                partition.updateParams,
+                refilledTransactions,
+                rematchTransactions
+            );
             const createdTransactions = yield* transactionBatchCreateService.create(
                 partition.newInputs.map(input => ({
                     ...input,
@@ -367,22 +389,23 @@ export class TransactionImportService extends Context.Service<TransactionImportS
                 const batchSize = options.batchSize ?? TRANSACTION_BATCH_SIZE;
                 const shouldUpdateBalances = options.shouldUpdateBalances ?? true;
                 const refilledTransactions: TransactionEntityInterface[] = [];
+                const rematchTransactions: TransactionEntityInterface[] = [];
 
                 if (!isNotEmptyArray(prepared.transactionInputs)) {
-                    return { transactions: [], refilledTransactions } satisfies ImportedUpsertResultInterface;
+                    return { transactions: [], refilledTransactions, rematchTransactions } satisfies ImportedUpsertResultInterface;
                 }
 
                 const stampedInputs = stampForDeferredEmbedding(prepared.transactionInputs);
 
                 const transactions = yield* processInputWithBatches(stampedInputs, batchSize, batch =>
-                    processImportedBatchInner(batch, prepared.externalIdMap, refilledTransactions)
+                    processImportedBatchInner(batch, prepared.externalIdMap, refilledTransactions, rematchTransactions)
                 );
 
                 if (shouldUpdateBalances && isNotEmptyArray(transactions)) {
                     yield* accountBalanceIncrementalService.updateBalancesByAccountIds(getEntryAccountIds(stampedInputs));
                 }
 
-                return { transactions, refilledTransactions } satisfies ImportedUpsertResultInterface;
+                return { transactions, refilledTransactions, rematchTransactions } satisfies ImportedUpsertResultInterface;
             },
             effect => Db.transaction(effect)
         );
