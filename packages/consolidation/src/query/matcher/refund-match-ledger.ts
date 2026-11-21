@@ -55,11 +55,15 @@ export class RefundMatchLedger {
     private getRemaining(edge: RefundEdgeRowInterface): number {
         const capacity = refundEdgeMetrics.getCapacity(edge);
 
+        if (this.closedExpenseIds.has(edge.expenseTransactionId)) {
+            return 0;
+        }
+
         if (refundEdgeMetrics.isFeeBucket(edge)) {
             return capacity - (this.feeUsed.get(edge.expenseTransactionId) ?? 0);
         }
 
-        if (refundEdgeMetrics.isPrivatbankBucket(edge) || this.closedExpenseIds.has(edge.expenseTransactionId)) {
+        if (refundEdgeMetrics.isPrivatbankBucket(edge)) {
             return this.isTouched(edge.expenseTransactionId) ? 0 : capacity;
         }
 

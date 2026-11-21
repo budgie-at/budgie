@@ -17,6 +17,16 @@ const SECOND_EXPENSE_DAY = 20;
 const FIRST_REFUND_DAY = 25;
 const SECOND_REFUND_DAY = 35;
 
+const CHAIN_CHARGE_AMOUNT = convertToMicroUnits(12);
+const CHAIN_PARTIAL_REFUND_AMOUNT = convertToMicroUnits(10);
+const CHAIN_TITLE = 'Lime';
+const CHAIN_CHARGE_DAYS = [0, 4];
+const CHAIN_REFUNDS = [
+    { day: 19, amount: CHAIN_PARTIAL_REFUND_AMOUNT },
+    { day: 28, amount: CHAIN_PARTIAL_REFUND_AMOUNT },
+    { day: 32, amount: CHAIN_CHARGE_AMOUNT }
+];
+
 const atDay = (day: number): Date => new Date(PARITY_START.getTime() + day * DAY_MS);
 
 const seedChain = Effect.gen(function* () {
@@ -49,10 +59,35 @@ const seedChain = Effect.gen(function* () {
     return { expenses: [firstExpense, secondExpense], refunds: [firstRefund, secondRefund] };
 });
 
+const seedTitledSide = Effect.fnUntraced(function* (accountId: number, isRefund: boolean, day: number, amount: number) {
+    const externalId = `chain-${isRefund ? 'refund' : 'charge'}-${day}`;
+    const entry = { accountId, amount };
+    const transaction = isRefund
+        ? yield* testSeedService.bankPairIncome({ externalId, operatedAt: atDay(day) }, entry)
+        : yield* testSeedService.bankPairExpense({ externalId, operatedAt: atDay(day) }, entry);
+
+    yield* testSeedService.updateTransaction(transaction.id, { title: CHAIN_TITLE });
+
+    return { day, id: transaction.id };
+});
+
 const fetchRefundParents = (refundIds: readonly number[]) =>
     Effect.forEach(refundIds, refundId =>
         Effect.map(testQueryService.fetchTransactionById(refundId), refund => refund.consolidationParentTransactionId)
     );
+
+const expectScopedRunMatchesFullRun = Effect.fnUntraced(function* (
+    refundIds: readonly number[],
+    fullRunParents: ReadonlyArray<number | null>
+) {
+    const scopedParents = yield* fetchRefundParents(refundIds);
+
+    expect(scopedParents.filter((parentId, index) => isDefined(parentId) && parentId !== fullRunParents[index])).toEqual([]);
+
+    yield* runConsolidation();
+
+    expect(yield* fetchRefundParents(refundIds)).toEqual(fullRunParents);
+});
 
 layer(TestLayer)('consolidation/refund-pair-scoped-parity', it => {
     it.effect.each([
@@ -72,13 +107,24 @@ layer(TestLayer)('consolidation/refund-pair-scoped-parity', it => {
                 transactionIds: [...expenses, ...refunds].filter(({ day }) => day >= fromDay && day <= toDay).map(({ id }) => id)
             });
 
-            const scopedParents = yield* fetchRefundParents(refundIds);
+            yield* expectScopedRunMatchesFullRun(refundIds, fullRunParents);
+        })
+    );
 
-            expect(scopedParents.filter((parentId, index) => isDefined(parentId) && parentId !== fullRunParents[index])).toEqual([]);
+    it.effect('never pairs a refund differently from the full run when a later refund beyond the loaded rows claims a charge', () =>
+        Effect.gen(function* () {
+            const account = yield* testSeedService.account({ externalId: 'mono-card' });
+            const charges = yield* Effect.forEach(CHAIN_CHARGE_DAYS, day => seedTitledSide(account.id, false, day, CHAIN_CHARGE_AMOUNT));
+            const refunds = yield* Effect.forEach(CHAIN_REFUNDS, ({ day, amount }) => seedTitledSide(account.id, true, day, amount));
+            const refundIds = refunds.map(refund => refund.id);
 
-            yield* runConsolidation();
+            yield* runConsolidation({
+                operatedAtFrom: atDay(-1),
+                operatedAtTo: atDay(1),
+                transactionIds: charges.filter(({ day }) => day === 0).map(({ id }) => id)
+            });
 
-            expect(yield* fetchRefundParents(refundIds)).toEqual(fullRunParents);
+            yield* expectScopedRunMatchesFullRun(refundIds, [charges[0].id, null, charges[1].id]);
         })
     );
 });

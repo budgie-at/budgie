@@ -34,8 +34,9 @@ class RefundCandidateMatcher {
         return {
             assignments: context.ledger.assignments.filter(edge => this.isEmitted(context.window, edge)),
             reviewEdges: context.refundEdgeLists
-                .filter(edges => !context.ledger.isAssigned(edges[0].refundTransactionId) && refundEdgeMetrics.isCovering(edges[0]))
-                .map(edges => edges[0])
+                .filter(edges => !context.ledger.isAssigned(edges[0].refundTransactionId))
+                .map(edges => edges.find(edge => refundEdgeMetrics.isManuallySelectable(edge)))
+                .filter(isDefined)
         };
     }
 
@@ -43,14 +44,10 @@ class RefundCandidateMatcher {
         rows: readonly RefundEdgeRowInterface[],
         scope: ConsolidationScanScopeInterface | null
     ): RefundMatchContextInterface {
-        const refundEdgeLists = [
-            ...this.groupSorted(
-                rows.filter(edge => refundEdgeMetrics.getCapacity(edge) > 0),
-                edge => edge.refundTransactionId,
-                refundEdgeMetrics.compareRefundRank
-            ).values()
-        ].sort((left, right) => refundEdgeMetrics.compareRefunds(left[0], right[0]));
-        const autoRefundEdgeLists = refundEdgeLists.filter(edges => edges[0].isRefundAutoPairDisabled === 0);
+        const refundEdgeLists = this.groupRefundEdges(rows);
+        const autoRefundEdgeLists = this.groupRefundEdges(
+            rows.filter(edge => edge.isRefundAutoPairDisabled === 0 && refundEdgeMetrics.getCapacity(edge) > 0)
+        );
         const expenseEdgeLists = this.groupSorted(
             autoRefundEdgeLists.flat(),
             edge => edge.expenseTransactionId,
@@ -66,6 +63,12 @@ class RefundCandidateMatcher {
             ledger: new RefundMatchLedger(),
             window: isDefined(scope) ? this.buildWindow(scope) : null
         };
+    }
+
+    private groupRefundEdges(rows: readonly RefundEdgeRowInterface[]): RefundEdgeRowInterface[][] {
+        return [...this.groupSorted(rows, edge => edge.refundTransactionId, refundEdgeMetrics.compareRefundRank).values()].sort(
+            (left, right) => refundEdgeMetrics.compareRefunds(left[0], right[0])
+        );
     }
 
     private buildWindow(scope: ConsolidationScanScopeInterface): RefundMatchWindowInterface {
@@ -88,10 +91,18 @@ class RefundCandidateMatcher {
         const groups = new Map<number, RefundEdgeRowInterface[]>();
 
         for (const edge of edges) {
-            groups.set(getKey(edge), [...(groups.get(getKey(edge)) ?? []), edge]);
+            const group = groups.get(getKey(edge));
+
+            if (isDefined(group)) {
+                group.push(edge);
+            } else {
+                groups.set(getKey(edge), [edge]);
+            }
         }
 
-        return new Map([...groups].map(([key, group]) => [key, group.sort(compare)]));
+        groups.forEach(group => group.sort(compare));
+
+        return groups;
     }
 
     private getExpenseEdges(context: RefundMatchContextInterface, edge: RefundEdgeRowInterface): readonly RefundEdgeRowInterface[] {
@@ -125,7 +136,14 @@ class RefundCandidateMatcher {
             this.markUnsafe(
                 context,
                 context.autoRefundEdgeLists
-                    .filter(edges => edges[0].refundOperatedAt - REFUND_MANUAL_REVIEW_TIME_WINDOW_SECONDS < window.loadedFrom)
+                    .filter(
+                        edges =>
+                            edges[0].refundOperatedAt - REFUND_MANUAL_REVIEW_TIME_WINDOW_SECONDS < window.loadedFrom ||
+                            edges.some(
+                                edge =>
+                                    refundEdgeMetrics.isAuto(edge) && edge.expenseOperatedAt + REFUND_TIME_WINDOW_SECONDS > window.loadedTo
+                            )
+                    )
                     .map(edges => edges[0].refundTransactionId)
             );
         }
@@ -187,7 +205,10 @@ class RefundCandidateMatcher {
     private assignTwins(context: RefundMatchContextInterface): void {
         const twinComponents = refundTwinResolver.findComponents(
             context.autoRefundEdgeLists
-                .filter(edges => !context.ledger.isAssigned(edges[0].refundTransactionId))
+                .filter(
+                    edges =>
+                        !context.ledger.isAssigned(edges[0].refundTransactionId) && !context.ledger.isUnsafe(edges[0].refundTransactionId)
+                )
                 .flat()
                 .filter(
                     edge =>
@@ -199,32 +220,9 @@ class RefundCandidateMatcher {
                 )
         );
 
-        this.markUnsafe(
-            context,
-            twinComponents
-                .filter(component => this.isNearLoadedBoundary(context, component))
-                .flatMap(component => component.map(edge => edge.refundTransactionId))
-        );
-
-        for (const edge of twinComponents
-            .filter(component => !this.isNearLoadedBoundary(context, component))
-            .flatMap(component => refundTwinResolver.findBijection(component))) {
+        for (const edge of twinComponents.flatMap(component => refundTwinResolver.findBijection(component))) {
             context.ledger.assign(edge);
         }
-    }
-
-    private isNearLoadedBoundary(context: RefundMatchContextInterface, component: readonly RefundEdgeRowInterface[]): boolean {
-        const { window } = context;
-
-        return (
-            isDefined(window) &&
-            component.some(
-                edge =>
-                    edge.expenseOperatedAt > window.loadedTo - REFUND_TIME_WINDOW_SECONDS ||
-                    edge.refundOperatedAt < window.loadedFrom + REFUND_TIME_WINDOW_SECONDS ||
-                    context.ledger.isUnsafe(edge.refundTransactionId)
-            )
-        );
     }
 
     private assignNearest(context: RefundMatchContextInterface): void {

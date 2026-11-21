@@ -40,9 +40,9 @@ class RefundEdgeMetrics {
         this.compareRefunds(left, right);
 
     readonly compareNearest = (left: RefundEdgeRowInterface, right: RefundEdgeRowInterface): number =>
-        Number(!this.isExactAmount(left)) - Number(!this.isExactAmount(right)) ||
+        Number(this.getShortfall(left) !== 0) - Number(this.getShortfall(right) !== 0) ||
         this.getTimeDiff(left) - this.getTimeDiff(right) ||
-        Math.abs(left.expenseAmount - left.refundAmount) - Math.abs(right.expenseAmount - right.refundAmount) ||
+        Math.abs(this.getShortfall(left)) - Math.abs(this.getShortfall(right)) ||
         this.compareExpenses(left, right);
 
     readonly isAuto = (edge: RefundEdgeRowInterface): boolean => isAutoRefundConfidenceBucket(edge.confidenceBucket);
@@ -75,14 +75,16 @@ class RefundEdgeMetrics {
         return this.getCapacity(edge) - this.getMeasure(edge);
     }
 
-    isCovering(edge: RefundEdgeRowInterface): boolean {
-        return this.getShortfall(edge) >= 0;
+    isManuallySelectable(edge: RefundEdgeRowInterface): boolean {
+        if (this.isPrivatbankBucket(edge)) {
+            return edge.expenseAbsorbedAmount === 0;
+        }
+
+        return edge.refundAmount <= edge.expenseAmount - edge.expenseAbsorbedAmount;
     }
 
-    private isExactAmount(edge: RefundEdgeRowInterface): boolean {
-        return this.isPrivatbankBucket(edge)
-            ? edge.refundOriginalMinorAmount === edge.expenseOriginalMinorAmount
-            : edge.refundAmount === edge.expenseAmount;
+    isCovering(edge: RefundEdgeRowInterface): boolean {
+        return this.getShortfall(edge) >= 0;
     }
 
     private getTimeDiff(edge: RefundEdgeRowInterface): number {
