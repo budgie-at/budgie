@@ -117,6 +117,13 @@ export class ConsolidationRepairExecutorService extends Context.Service<Consolid
                     return false;
                 }
 
+                if (
+                    openRefunds.filter(({ entry, source }) => isPrivatbankSameOriginalAmount(source, entry, expenseSource, creditEntry))
+                        .length > 1
+                ) {
+                    return false;
+                }
+
                 if (candidate.confidenceBucket === 'AUTO_REFUND_PRIVATBANK_ORIGINAL_AMOUNT') {
                     return (
                         absorbedTotal === 0 &&

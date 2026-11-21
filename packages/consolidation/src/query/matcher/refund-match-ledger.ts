@@ -40,7 +40,7 @@ export class RefundMatchLedger {
         this.assignmentByRefundId.set(edge.refundTransactionId, edge);
         this.usedByExpenseId.set(edge.expenseTransactionId, (this.usedByExpenseId.get(edge.expenseTransactionId) ?? 0) + edge.refundAmount);
 
-        if (refundEdgeMetrics.isPrivatbankBucket(edge)) {
+        if (edge.isPrivatbankOriginalMatch === 1) {
             this.closedExpenseIds.add(edge.expenseTransactionId);
         }
     }

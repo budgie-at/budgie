@@ -18,6 +18,10 @@ const CLOSURE_RISING_RATE = 52;
 const CLOSURE_LATE_REFUND_AMOUNT = convertToMicroUnits(20);
 const CLOSURE_START = new Date(2026, 7, 1, 10, 0, 0);
 
+const SAME_TITLE_ORIGINAL_AMOUNT = 2;
+const SAME_TITLE_REVERSAL_RATE = 49;
+const SAME_TITLE_SMALL_REFUND_AMOUNT = convertToMicroUnits(1);
+
 const atDay = (day: number): Date => new Date(CLOSURE_START.getTime() + day * DAY_MS);
 
 const seedPrivatbankPair = Effect.fnUntraced(function* (refundRate: number, refundDay: number) {
@@ -44,7 +48,63 @@ const seedPrivatbankPair = Effect.fnUntraced(function* (refundRate: number, refu
     return { account, expense, refund };
 });
 
+const seedSameTitleReversal = Effect.fnUntraced(function* () {
+    const account = yield* testSeedService.account({ externalId: 'privat-card', externalSource: ExternalSourceEnum.PRIVATBANK });
+    const seedPrivatbankSide = (isRefund: boolean, exchangeRate: number, day: number) =>
+        seedPrivatbankTransaction({
+            accountId: account.id,
+            exchangeRate,
+            externalId: `same-title-${isRefund ? 'reversal' : 'expense'}`,
+            isRefund,
+            operatedAt: atDay(day),
+            originalAmount: SAME_TITLE_ORIGINAL_AMOUNT,
+            title: CLOSURE_TITLE
+        });
+    const expense = yield* seedPrivatbankSide(false, CLOSURE_EXPENSE_RATE, 0);
+    const reversal = yield* seedPrivatbankSide(true, SAME_TITLE_REVERSAL_RATE, 1);
+
+    return { account, expense, reversal };
+});
+
+const seedSmallSameTitleRefund = (accountId: number) =>
+    seedTitledTransaction({
+        accountId,
+        externalId: 'same-title-small-refund',
+        operatedAt: atDay(3),
+        amount: SAME_TITLE_SMALL_REFUND_AMOUNT,
+        title: CLOSURE_TITLE,
+        isRefund: true
+    });
+
+const expectClosedByReversal = Effect.fnUntraced(function* (expenseId: number, reversalId: number, smallRefundId: number) {
+    expect((yield* testQueryService.fetchTransactionById(reversalId)).consolidationParentTransactionId).toBe(expenseId);
+    expect((yield* testQueryService.fetchTransactionById(smallRefundId)).consolidationParentTransactionId).toBeNull();
+});
+
 layer(TestLayer)('consolidation/refund-pair-privatbank-closure', it => {
+    it.effect('closes an expense when a same-title original-amount reversal pairs in the same run as a later small refund', () =>
+        Effect.gen(function* () {
+            const { account, expense, reversal } = yield* seedSameTitleReversal();
+            const smallRefund = yield* seedSmallSameTitleRefund(account.id);
+
+            yield* runConsolidation();
+            yield* expectClosedByReversal(expense.id, reversal.id, smallRefund.id);
+        })
+    );
+
+    it.effect('closes an expense when a same-title original-amount reversal paired in an earlier run', () =>
+        Effect.gen(function* () {
+            const { account, expense, reversal } = yield* seedSameTitleReversal();
+
+            yield* runConsolidation();
+            const smallRefund = yield* seedSmallSameTitleRefund(account.id);
+
+            yield* rebuildStoredBalances;
+            yield* runConsolidation();
+            yield* expectClosedByReversal(expense.id, reversal.id, smallRefund.id);
+        })
+    );
+
     it.effect('keeps an expense closed after a falling-rate original-amount reversal so a later refund stays unpaired', () =>
         Effect.gen(function* () {
             const { account, expense, refund } = yield* seedPrivatbankPair(CLOSURE_FALLING_RATE, 2);
