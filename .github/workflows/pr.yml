@@ -100,6 +100,7 @@ jobs:
             - uses: ./.github/actions/setup
               with:
                   skip-llama-postinstall: 'true'
+                  cache-node-modules: 'true'
 
             - name: Lingui catalogs are up to date
               run: pnpm i18n:check
@@ -180,6 +181,7 @@ jobs:
             - uses: ./.github/actions/setup
               with:
                   skip-llama-postinstall: 'true'
+                  cache-node-modules: 'true'
 
             - name: Unit tests
               run: pnpm test --concurrency=2 ${{ matrix.filters }} ${{ matrix.args }}

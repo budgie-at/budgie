@@ -8,6 +8,9 @@ inputs:
     skip-llama-postinstall:
         description: Skip the llama.rn native artifact download during install.
         default: 'false'
+    cache-node-modules:
+        description: Cache every workspace node_modules and skip the install on an exact key hit.
+        default: 'false'
 
 outputs:
     cache-hit:
@@ -31,14 +34,50 @@ runs:
           with:
               node-version: ${{ inputs.node-version }}
 
+        - name: Resolve node_modules cache key
+          id: nm-key
+          if: inputs.cache-node-modules == 'true'
+          shell: bash
+          env:
+              LLAMA_SKIP: ${{ inputs.skip-llama-postinstall }}
+              LOCK_HASH: ${{ hashFiles('pnpm-lock.yaml', 'pnpm-workspace.yaml', 'scripts/after-install.cjs', 'patches/**') }}
+              RUNNER_OS_NAME: ${{ runner.os }}
+              RUNNER_ARCH_NAME: ${{ runner.arch }}
+          run: echo "key=node-modules-v1-${RUNNER_OS_NAME}-${RUNNER_ARCH_NAME}-node$(node --version)-pnpm$(pnpm --version)-llama${LLAMA_SKIP}-${LOCK_HASH}" >> "$GITHUB_OUTPUT"
+
+        - name: Restore node_modules
+          id: nm-cache
+          if: inputs.cache-node-modules == 'true'
+          uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+          with:
+              path: |
+                  node_modules
+                  packages/*/node_modules
+                  tests/*/node_modules
+              key: ${{ steps.nm-key.outputs.key }}
+
         - name: Restore package manager cache
           id: pm-cache
+          if: steps.nm-cache.outputs.cache-hit != 'true'
           uses: rnw-community/mobile-ci/actions/node-pm-cache@6573897f76180036df9d44017b07161a431f36b5 # v4.18.0
           with:
               package-manager: pnpm
 
         - name: Install dependencies
+          if: steps.nm-cache.outputs.cache-hit != 'true'
           shell: bash
           env:
               RNLLAMA_SKIP_POSTINSTALL: ${{ inputs.skip-llama-postinstall == 'true' && '1' || '' }}
           run: pnpm install --frozen-lockfile
+
+        - name: Save node_modules
+          if: inputs.cache-node-modules == 'true' && steps.nm-cache.outputs.cache-hit != 'true'
+          uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+          timeout-minutes: 10
+          continue-on-error: true
+          with:
+              path: |
+                  node_modules
+                  packages/*/node_modules
+                  tests/*/node_modules
+              key: ${{ steps.nm-key.outputs.key }}
