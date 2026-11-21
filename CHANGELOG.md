@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.191.13](https://github.com/budgie-at/budgie/compare/v6.191.12...v6.191.13) (2026-11-21)
+
+### Bug Fixes
+
+* pair repeated interbank fee transfers and read Privatbank Kyiv times without Intl ([#2268](https://github.com/budgie-at/budgie/issues/2268)) ([ba47b0b](https://github.com/budgie-at/budgie/commit/ba47b0b6062a2a45c15d850c9055cd7a8ede15e0))
+
+
 ## [6.191.12](https://github.com/budgie-at/budgie/compare/v6.191.11...v6.191.12) (2026-11-21)
 
 ### Bug Fixes
