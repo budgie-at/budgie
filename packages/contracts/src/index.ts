@@ -269,13 +269,10 @@ export type { IbanBridgeChainTransferCandidateInterface } from './transaction/in
 export type { IbanBridgeTransferCandidateInterface } from './transaction/interface/iban-bridge-transfer-candidate.interface';
 export type { RefundAutoConfidenceBucket } from './transaction/interface/refund-auto-confidence-bucket.type';
 export type { RefundCandidateBaseInterface } from './transaction/interface/refund-candidate-base.interface';
-export type { RefundCandidateBaseRowInterface } from './transaction/interface/refund-candidate-base-row.interface';
 export type { RefundCandidateInterface } from './transaction/interface/refund-candidate.interface';
-export type { RefundCandidateRowInterface } from './transaction/interface/refund-candidate-row.interface';
 export type { RefundableExpenseCandidateInterface } from './transaction/interface/refundable-expense-candidate.interface';
 export type { RefundableExpenseCandidateRowInterface } from './transaction/interface/refundable-expense-candidate-row.interface';
 export type { RefundReviewCandidateInterface } from './transaction/interface/refund-review-candidate.interface';
-export type { RefundReviewCandidateRowInterface } from './transaction/interface/refund-review-candidate-row.interface';
 
 export { isIncomeTransaction } from './transaction/type-guard/is-income-transaction.type-guard';
 export { isExpenseTransaction } from './transaction/type-guard/is-expense-transaction.type-guard';

@@ -32,6 +32,8 @@ const TWIN_FIRST_EXPENSE_OPERATED_AT = new Date(TWIN_YEAR, 1, 10, 8, 0, 0);
 const TWIN_SECOND_EXPENSE_OPERATED_AT = new Date(TWIN_YEAR, 1, 10, 20, 0, 0);
 const TWIN_MISMATCH_EXPENSE_OPERATED_AT = new Date(TWIN_YEAR, 1, 10, 20, 30, 0);
 const TWIN_SECOND_REFUND_DELAY_SECONDS = 60 * 60;
+const BALANCED_TWIN_FIRST_REFUND_DELAY_SECONDS = 13 * 60 * 60;
+const BALANCED_TWIN_SECOND_REFUND_DELAY_SECONDS = 60 * 60 + 2;
 
 layer(TestLayer)('consolidation/refund-pair-localized-exact-amount', it => {
     it.effect('auto-consolidates a localized refund to its unique exact-amount candidate over a closer-in-time mismatch', () =>
@@ -83,7 +85,7 @@ layer(TestLayer)('consolidation/refund-pair-localized-exact-amount', it => {
         })
     );
 
-    it.effect('does not auto-consolidate when two candidates share an exact amount match (identical fare twins)', () =>
+    it.effect('guesses the nearest preceding covering charge when identical fare twins make the exact match ambiguous', () =>
         Effect.gen(function* () {
             const refundPairRepository = yield* RefundPairRepository;
             const account = yield* testSeedService.account({ externalId: 'mono-card' });
@@ -95,14 +97,14 @@ layer(TestLayer)('consolidation/refund-pair-localized-exact-amount', it => {
                 expenseOperatedAt: TWIN_FIRST_EXPENSE_OPERATED_AT,
                 externalIdPrefix: 'twin-first'
             });
-            yield* seedExpenseWithoutRefund({
+            const mismatchExpense = yield* seedExpenseWithoutRefund({
                 accountId: account.id,
                 title: TWIN_TITLE,
                 expenseAmount: TWIN_MISMATCH_AMOUNT,
                 expenseOperatedAt: TWIN_MISMATCH_EXPENSE_OPERATED_AT,
                 externalIdPrefix: 'twin-mismatch'
             });
-            const { expense: secondExpense, refunds } = yield* testSeedService.refundedExpense({
+            const { refunds } = yield* testSeedService.refundedExpense({
                 accountId: account.id,
                 title: TWIN_TITLE,
                 expenseAmount: TWIN_AMOUNT,
@@ -116,18 +118,49 @@ layer(TestLayer)('consolidation/refund-pair-localized-exact-amount', it => {
             const autoCandidates = yield* refundPairRepository.findCandidates();
             const reviewCandidates = yield* refundPairRepository.findReviewCandidates();
 
-            expect(autoCandidates).toHaveLength(0);
-            expect(reviewCandidates).toEqual([
+            expect(reviewCandidates).toHaveLength(0);
+            expect(autoCandidates).toEqual([
                 expect.objectContaining({
                     confidenceBucket: 'AUTO_REFUND_LOCALIZED_REFUND_TITLE',
-                    expenseTransactionId: secondExpense.id,
+                    expenseTransactionId: mismatchExpense.expense.id,
                     refundIncomeTransactionIds: [refunds[0].id]
                 })
             ]);
 
             const result = yield* runConsolidation();
 
-            expect(result.consolidated).toBe(0);
+            expect(result.consolidated).toBe(1);
+        })
+    );
+
+    it.effect('auto-consolidates balanced identical twins where every charge has its own exact-amount cancellation', () =>
+        Effect.gen(function* () {
+            const account = yield* testSeedService.account({ externalId: 'mono-card' });
+            const twins = yield* Effect.forEach(
+                [
+                    { expenseOperatedAt: TWIN_FIRST_EXPENSE_OPERATED_AT, refundDelaySeconds: BALANCED_TWIN_FIRST_REFUND_DELAY_SECONDS },
+                    { expenseOperatedAt: TWIN_SECOND_EXPENSE_OPERATED_AT, refundDelaySeconds: BALANCED_TWIN_SECOND_REFUND_DELAY_SECONDS }
+                ],
+                (twin, index) =>
+                    testSeedService.refundedExpense({
+                        ...twin,
+                        accountId: account.id,
+                        title: TWIN_TITLE,
+                        expenseAmount: TWIN_AMOUNT,
+                        refundAmounts: [TWIN_AMOUNT],
+                        refundTitle: TWIN_REFUND_TITLE,
+                        externalIdPrefix: `balanced-twin-${index}`
+                    })
+            );
+
+            const result = yield* runConsolidation();
+            const expenseIds = twins.map(({ expense }) => expense.id);
+            const refundParentIds = yield* Effect.forEach(twins, ({ refunds }) =>
+                Effect.map(testQueryService.fetchTransactionById(refunds[0].id), refund => refund.consolidationParentTransactionId)
+            );
+
+            expect(result.consolidated).toBe(2);
+            expect(new Set(refundParentIds)).toEqual(new Set(expenseIds));
         })
     );
 });
