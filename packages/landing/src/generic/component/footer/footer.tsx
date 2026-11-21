@@ -7,6 +7,8 @@ import { BranchUp } from 'reicon-react';
 import { getCurrentYear } from '../../utils/get-current-year.util';
 import { Logo } from '../logo/logo';
 
+const linkClassName = 'text-muted-foreground hover:text-foreground transition-colors';
+
 interface Props {
     lang: string;
 }
@@ -20,7 +22,11 @@ export const Footer = async ({ lang }: Props) => {
             <div className="container flex flex-col gap-8 py-10 lg:py-16">
                 <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
                     <div className="space-y-4">
-                        <Link className="flex items-center gap-2 font-bold hover:opacity-80 transition-opacity" href={`/${lang}`}>
+                        <Link
+                            prefetch={false}
+                            className="flex items-center gap-2 font-bold hover:opacity-80 transition-opacity"
+                            href={`/${lang}`}
+                        >
                             <Logo />
 
                             <span>
@@ -36,10 +42,7 @@ export const Footer = async ({ lang }: Props) => {
                         </p>
 
                         <div className="flex gap-4">
-                            <Link
-                                className="text-muted-foreground hover:text-foreground transition-colors"
-                                href="https://github.com/budgie-at/budgie"
-                            >
+                            <Link className={linkClassName} href="https://github.com/budgie-at/budgie">
                                 <BranchUp className="size-5" />
 
                                 <span className="sr-only">
@@ -47,7 +50,7 @@ export const Footer = async ({ lang }: Props) => {
                                 </span>
                             </Link>
 
-                            <Link className="text-muted-foreground hover:text-foreground transition-colors" href="https://x.com/budgie_at">
+                            <Link className={linkClassName} href="https://x.com/budgie_at">
                                 <svg
                                     className="size-5"
                                     fill="none"
@@ -77,17 +80,17 @@ export const Footer = async ({ lang }: Props) => {
 
                         <ul className="space-y-2 text-sm">
                             <li>
-                                <Link className="text-muted-foreground hover:text-foreground transition-colors" href={`/${lang}#features`}>
+                                <Link prefetch={false} className={linkClassName} href={`/${lang}#features`}>
                                     <Trans>Features</Trans>
                                 </Link>
                             </li>
                             <li>
-                                <Link className="text-muted-foreground hover:text-foreground transition-colors" href={`/${lang}#faq`}>
+                                <Link prefetch={false} className={linkClassName} href={`/${lang}#faq`}>
                                     <Trans>FAQ</Trans>
                                 </Link>
                             </li>
                             <li>
-                                <Link className="text-muted-foreground hover:text-foreground transition-colors" href={`/${lang}#waitlist`}>
+                                <Link prefetch={false} className={linkClassName} href={`/${lang}#waitlist`}>
                                     <Trans>Join Waitlist</Trans>
                                 </Link>
                             </li>
@@ -101,47 +104,32 @@ export const Footer = async ({ lang }: Props) => {
 
                         <ul className="space-y-2 text-sm">
                             <li>
-                                <Link
-                                    className="text-muted-foreground hover:text-foreground transition-colors"
-                                    href={`/${lang}/offline-first`}
-                                >
+                                <Link prefetch={false} className={linkClassName} href={`/${lang}/offline-first`}>
                                     <Trans>Offline-First</Trans>
                                 </Link>
                             </li>
                             <li>
-                                <Link
-                                    className="text-muted-foreground hover:text-foreground transition-colors"
-                                    href={`/${lang}/features/monobank-sync`}
-                                >
+                                <Link prefetch={false} className={linkClassName} href={`/${lang}/features/monobank-sync`}>
                                     <Trans>Bank Sync</Trans>
                                 </Link>
                             </li>
                             <li>
-                                <Link
-                                    className="text-muted-foreground hover:text-foreground transition-colors"
-                                    href={`/${lang}/features/ai-auto-categorization`}
-                                >
+                                <Link prefetch={false} className={linkClassName} href={`/${lang}/features/ai-auto-categorization`}>
                                     <Trans>AI Categorization</Trans>
                                 </Link>
                             </li>
                             <li>
-                                <Link
-                                    className="text-muted-foreground hover:text-foreground transition-colors"
-                                    href={`/${lang}/features/voice-transaction-entry`}
-                                >
+                                <Link prefetch={false} className={linkClassName} href={`/${lang}/features/voice-transaction-entry`}>
                                     <Trans>Voice Entry</Trans>
                                 </Link>
                             </li>
                             <li>
-                                <Link
-                                    className="text-muted-foreground hover:text-foreground transition-colors"
-                                    href={`/${lang}/features/net-worth-tracker`}
-                                >
+                                <Link prefetch={false} className={linkClassName} href={`/${lang}/features/net-worth-tracker`}>
                                     <Trans>Net Worth</Trans>
                                 </Link>
                             </li>
                             <li>
-                                <Link className="text-muted-foreground hover:text-foreground transition-colors" href={`/${lang}/features`}>
+                                <Link prefetch={false} className={linkClassName} href={`/${lang}/features`}>
                                     <Trans>All Features</Trans>
                                 </Link>
                             </li>
@@ -155,44 +143,32 @@ export const Footer = async ({ lang }: Props) => {
 
                         <ul className="space-y-2 text-sm">
                             <li>
-                                <Link className="text-muted-foreground hover:text-foreground transition-colors" href={`/${lang}/blog`}>
+                                <Link prefetch={false} className={linkClassName} href={`/${lang}/blog`}>
                                     <Trans>Blog</Trans>
                                 </Link>
                             </li>
                             <li>
-                                <Link className="text-muted-foreground hover:text-foreground transition-colors" href={`/${lang}/changelog`}>
+                                <Link prefetch={false} className={linkClassName} href={`/${lang}/changelog`}>
                                     <Trans>Changelog</Trans>
                                 </Link>
                             </li>
                             <li>
-                                <Link
-                                    className="text-muted-foreground hover:text-foreground transition-colors"
-                                    href="https://github.com/budgie-at/budgie"
-                                >
+                                <Link className={linkClassName} href="https://github.com/budgie-at/budgie">
                                     <Trans>Source Code</Trans>
                                 </Link>
                             </li>
                             <li>
-                                <Link
-                                    className="text-muted-foreground hover:text-foreground transition-colors"
-                                    href={`/${lang}/blog/ynab-alternatives-privacy`}
-                                >
+                                <Link prefetch={false} className={linkClassName} href={`/${lang}/blog/ynab-alternatives-privacy`}>
                                     <Trans>YNAB Alternatives</Trans>
                                 </Link>
                             </li>
                             <li>
-                                <Link
-                                    className="text-muted-foreground hover:text-foreground transition-colors"
-                                    href={`/${lang}/blog/mint-shutdown-private-alternative`}
-                                >
+                                <Link prefetch={false} className={linkClassName} href={`/${lang}/blog/mint-shutdown-private-alternative`}>
                                     <Trans>Mint Alternatives</Trans>
                                 </Link>
                             </li>
                             <li>
-                                <Link
-                                    className="text-muted-foreground hover:text-foreground transition-colors"
-                                    href={`/${lang}/blog/cloud-budgeting-privacy-risks`}
-                                >
+                                <Link prefetch={false} className={linkClassName} href={`/${lang}/blog/cloud-budgeting-privacy-risks`}>
                                     <Trans>Privacy Guide</Trans>
                                 </Link>
                             </li>
@@ -206,26 +182,17 @@ export const Footer = async ({ lang }: Props) => {
 
                         <ul className="space-y-2 text-sm">
                             <li>
-                                <Link
-                                    className="text-muted-foreground hover:text-foreground transition-colors"
-                                    href={`/${lang}/legal/privacy-policy`}
-                                >
+                                <Link prefetch={false} className={linkClassName} href={`/${lang}/legal/privacy-policy`}>
                                     <Trans>Privacy Policy</Trans>
                                 </Link>
                             </li>
                             <li>
-                                <Link
-                                    className="text-muted-foreground hover:text-foreground transition-colors"
-                                    href={`/${lang}/legal/terms-of-service`}
-                                >
+                                <Link prefetch={false} className={linkClassName} href={`/${lang}/legal/terms-of-service`}>
                                     <Trans>Terms of Service</Trans>
                                 </Link>
                             </li>
                             <li>
-                                <Link
-                                    className="text-muted-foreground hover:text-foreground transition-colors"
-                                    href={`/${lang}/legal/license`}
-                                >
+                                <Link prefetch={false} className={linkClassName} href={`/${lang}/legal/license`}>
                                     <Trans>License</Trans>
                                 </Link>
                             </li>
@@ -240,6 +207,7 @@ export const Footer = async ({ lang }: Props) => {
 
                     <div className="flex flex-wrap justify-center gap-x-4 gap-y-2">
                         <Link
+                            prefetch={false}
                             className="text-xs text-muted-foreground hover:text-foreground transition-colors"
                             href={`/${lang}/legal/privacy-policy`}
                         >
@@ -247,6 +215,7 @@ export const Footer = async ({ lang }: Props) => {
                         </Link>
 
                         <Link
+                            prefetch={false}
                             className="text-xs text-muted-foreground hover:text-foreground transition-colors"
                             href={`/${lang}/legal/terms-of-service`}
                         >
@@ -254,6 +223,7 @@ export const Footer = async ({ lang }: Props) => {
                         </Link>
 
                         <Link
+                            prefetch={false}
                             className="text-xs text-muted-foreground hover:text-foreground transition-colors"
                             href={`/${lang}/legal/license`}
                         >
