@@ -33,6 +33,7 @@ import { SyncChildApplyService } from './sync-child-apply.service';
 
 import type { SyncRowReferenceInterface } from '../../mapping/interface/sync-row-reference.interface';
 import type { SyncRowInterface } from '../../mapping/interface/sync-row.interface';
+import type { SyncTableDescriptorInterface } from '../../mapping/interface/sync-table-descriptor.interface';
 import type { SyncApplyItemInterface } from '../interface/sync-apply-item.interface';
 import type { SyncApplyUnitInterface } from '../interface/sync-apply-unit.interface';
 import type { SyncPreResolutionInterface } from '../interface/sync-pre-resolution.interface';
@@ -117,12 +118,27 @@ export class SyncApplyUnitService extends Context.Service<SyncApplyUnitService>(
 
         const refundMarkerProperty = 'refundAutoPairDisabled';
 
-        const isRefundMarkerLowered = (
+        const raiseRefundMarker = (
             recordType: SyncRecordTypeEnum,
             local: Readonly<Record<string, SyncCellType>>,
             merged: Readonly<Record<string, SyncCellType>>
-        ): boolean =>
-            recordType === SyncRecordTypeEnum.TRANSACTION && local[refundMarkerProperty] === 1 && merged[refundMarkerProperty] !== 1;
+        ): Readonly<Record<string, SyncCellType>> =>
+            recordType === SyncRecordTypeEnum.TRANSACTION && local[refundMarkerProperty] === 1 && merged[refundMarkerProperty] !== 1
+                ? { ...merged, [refundMarkerProperty]: 1 }
+                : merged;
+
+        const resolveKeptColumns = (
+            hasOutbox: boolean,
+            kept: readonly string[],
+            isRefundMarkerRaised: boolean,
+            descriptor: SyncTableDescriptorInterface
+        ): string[] | null => {
+            if (hasOutbox) {
+                return [...new Set(kept)].sort();
+            }
+
+            return isRefundMarkerRaised ? [getSyncColumnName(descriptor, refundMarkerProperty)] : null;
+        };
 
         const readChangedColumns = (changedColumns: string): readonly string[] =>
             Option.getOrElse(Schema.decodeOption(columnListSchema)(changedColumns), () => []);
@@ -345,8 +361,7 @@ export class SyncApplyUnitService extends Context.Service<SyncApplyUnitService>(
                     authorship: SYNC_AUTHORSHIP_COLUMNS[parentTable] ?? null
                 });
                 const normalizedCells = normalizeMergedYield(decoded.recordType, result.merged);
-                const isRefundMarkerKept = isRefundMarkerLowered(decoded.recordType, localCells, normalizedCells);
-                const mergedCells = isRefundMarkerKept ? { ...normalizedCells, [refundMarkerProperty]: 1 } : normalizedCells;
+                const mergedCells = raiseRefundMarker(decoded.recordType, localCells, normalizedCells);
                 const updates = diffSyncCells(parentDescriptor, mergedCells, localCells);
                 const kept = [
                     ...Object.keys(serverParentCells).filter(property => mergedCells[property] !== (serverParentCells[property] ?? null)),
@@ -382,11 +397,7 @@ export class SyncApplyUnitService extends Context.Service<SyncApplyUnitService>(
                     }
                 }
 
-                keptColumns = isDefined(outbox)
-                    ? [...new Set(kept)].sort()
-                    : isRefundMarkerKept
-                      ? [getSyncColumnName(parentDescriptor, refundMarkerProperty)]
-                      : null;
+                keptColumns = resolveKeptColumns(isDefined(outbox), kept, mergedCells !== normalizedCells, parentDescriptor);
             } else {
                 for (const row of decoded.rows) {
                     yield* childApplyService.insertRow(row, resolutions, unitIds);
