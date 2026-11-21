@@ -42,13 +42,9 @@ export const useYieldLegendRows = () => {
               0
           )
         : [];
-    const sharedRows = rows.map((row, index) => ({
+
+    return rows.map((row, index) => ({
         ...row,
         share: rows.length > 1 ? (shares.at(index) ?? 0) / PERCENT : null
     }));
-    const taxTotal = isDefined(selectedIndex)
-        ? scrubbedBuckets.reduce((sum, item) => sum + item.amounts[YieldGroupEnum.TAX], 0)
-        : (summary?.tax ?? 0);
-
-    return { rows: sharedRows, taxTotal };
 };

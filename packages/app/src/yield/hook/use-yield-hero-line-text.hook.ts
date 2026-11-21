@@ -21,7 +21,7 @@ export const useYieldHeroLineText = (summary: YieldSummaryInterface, bucket: Yie
     const { screenKey, mode } = use(YieldScreenContext);
     const formatPercent = useFormatPercent();
     const formatNet = useYieldFormatNet();
-    const { rows } = useYieldLegendRows();
+    const rows = useYieldLegendRows();
 
     const scrubbedBuckets = selectYieldScrubbedBuckets(summary.buckets, isDefined(bucket) ? summary.buckets.indexOf(bucket) : null, mode);
     const bucketTax = scrubbedBuckets.reduce((sum, item) => sum + item.amounts[YieldGroupEnum.TAX], 0);

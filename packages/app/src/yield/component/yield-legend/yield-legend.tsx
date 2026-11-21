@@ -4,7 +4,7 @@ import { router } from 'expo-router';
 import { use } from 'react';
 import { Text, View } from 'react-native';
 
-import { isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hook';
 import { MILLION } from '../../../i18n/constant/compact-thresholds.constant';
@@ -15,7 +15,6 @@ import { useYieldLegendRows } from '../../hook/use-yield-legend-rows.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 import { YieldLegendHeader } from '../yield-legend-header/yield-legend-header';
 import { YieldLegendRow } from '../yield-legend-row/yield-legend-row';
-import { YieldLegendTaxRow } from '../yield-legend-tax-row/yield-legend-tax-row';
 
 import type { YieldGroupEnum } from '@budgie/market';
 
@@ -28,15 +27,14 @@ export const YieldLegend = () => {
     const { screenKey } = use(YieldScreenContext);
     const { cancelScrub } = use(YieldSelectionContext);
     const unfiltered = AsyncResult.getOrElse(useLiveAtomValue(yieldSummaryFamily({ ...screenKey.key, group: null })), () => null);
-    const { rows: sharedRows, taxTotal } = useYieldLegendRows();
+    const sharedRows = useYieldLegendRows();
 
     const handlePress = (group: YieldGroupEnum) => {
         cancelScrub();
         router.setParams({ group: screenKey.key.group === group ? '' : group });
     };
 
-    const hasTax = isPositiveNumber(unfiltered?.tax);
-    const isCompact = Math.max(taxTotal, ...sharedRows.map(row => row.total)) >= MILLION;
+    const isCompact = Math.max(...sharedRows.map(row => row.total)) >= MILLION;
 
     const isFilterActive = isDefined(screenKey.key.group);
     const isHintVisible = !isDefined(screenKey.scopeId) && (unfiltered?.groups.length ?? 0) >= MIN_KINDS_FOR_HINT;
@@ -54,7 +52,6 @@ export const YieldLegend = () => {
                 {sharedRows.map(({ group, total, share }) => (
                     <YieldLegendRow key={group} group={group} total={total} share={share} isCompact={isCompact} onPress={handlePress} />
                 ))}
-                {hasTax ? <YieldLegendTaxRow total={taxTotal} isCompact={isCompact} /> : null}
             </View>
         </View>
     );

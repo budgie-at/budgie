@@ -48,7 +48,6 @@ export const YieldChartRunningTotal = ({ width, summary }: Props) => {
     });
     const cursorX = isDefined(selectedIndex) ? paths.xs.at(selectedIndex) : null;
     const cursorY = isDefined(selectedIndex) ? paths.ys.at(selectedIndex) : null;
-    const priorAmount = isDefined(selectedIndex) ? (prior?.at(selectedIndex) ?? null) : null;
     const zeroY = (axis.top * YIELD_PLOT_HEIGHT) / (axis.top - axis.bottom);
     const isScrubbing = isDefined(cursorX) && isDefined(cursorY);
 
@@ -57,13 +56,7 @@ export const YieldChartRunningTotal = ({ width, summary }: Props) => {
 
     const label =
         isScrubbing && isDefined(scrubbedBucket) ? (
-            <YieldChartScrubLabel
-                title={formatMonthAndDay(parseISO(scrubbedBucket.end))}
-                amount={cumulative.at(selectedIndex ?? 0) ?? 0}
-                priorAmount={priorAmount}
-                x={cursorX}
-                plotWidth={width}
-            />
+            <YieldChartScrubLabel title={formatMonthAndDay(parseISO(scrubbedBucket.end))} x={cursorX} plotWidth={width} />
         ) : null;
 
     return (

@@ -737,7 +737,6 @@ msgid "passive-income.chart.so-far"
 msgstr "{label} so far"
 
 #: src/yield/component/yield-legend-row/yield-legend-row.tsx
-#: src/yield/component/yield-legend-tax-row/yield-legend-tax-row.tsx
 msgid "{label}, {exactAmount}"
 msgstr "{label}, {exactAmount}"
 
@@ -7427,16 +7426,16 @@ msgid "No passive income yet"
 msgstr "No passive income yet"
 
 #: src/yield/component/yield-hero-no-delta/yield-hero-no-delta.tsx
+msgid "No payouts in previous 12 months"
+msgstr "No payouts in previous 12 months"
+
+#: src/yield/component/yield-hero-no-delta/yield-hero-no-delta.tsx
 msgid "No payouts in previous 3 months"
 msgstr "No payouts in previous 3 months"
 
 #: src/yield/component/yield-hero-no-delta/yield-hero-no-delta.tsx
 msgid "No payouts in previous 30 days"
 msgstr "No payouts in previous 30 days"
-
-#: src/yield/component/yield-hero-no-delta/yield-hero-no-delta.tsx
-msgid "No payouts in previous year"
-msgstr "No payouts in previous year"
 
 #: src/brokerage/component/brokerage-empty-state/brokerage-empty-state.tsx
 msgid "No positions yet"
@@ -10610,7 +10609,6 @@ msgstr "Tax taken at source before payouts reach you."
 
 #: src/yield/component/yield-breakdown-tax/yield-breakdown-tax.tsx
 #: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
-#: src/yield/component/yield-legend-tax-row/yield-legend-tax-row.tsx
 #: src/yield/constant/yield-group-label.constant.ts
 #: src/yield/constant/yield-kind-label.constant.ts
 msgid "Tax withheld"

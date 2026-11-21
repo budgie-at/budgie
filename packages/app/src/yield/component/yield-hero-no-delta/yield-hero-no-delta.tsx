@@ -1,12 +1,11 @@
 import { YieldRangeEnum } from '@budgie/market';
 import { useLingui } from '@lingui/react/macro';
 import { use } from 'react';
+import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { YieldScreenContext } from '../../context/yield-screen.context';
-import { YieldDeltaToneEnum } from '../../enum/yield-delta-tone.enum';
-import { YieldDeltaPill } from '../yield-delta-pill/yield-delta-pill';
 
 import type { YieldSummaryInterface } from '@budgie/market';
 
@@ -26,10 +25,16 @@ export const YieldHeroNoDelta = ({ summary }: Props) => {
     const previousPeriods: Record<YieldRangeEnum, string> = {
         [YieldRangeEnum.MONTH]: t`No payouts in previous 30 days`,
         [YieldRangeEnum.QUARTER]: t`No payouts in previous 3 months`,
-        [YieldRangeEnum.YEAR]: t`No payouts in previous year`,
+        [YieldRangeEnum.YEAR]: t`No payouts in previous 12 months`,
         [YieldRangeEnum.ALL]: t`No earlier period to compare`
     };
     const text = hasEarlierPeriod ? previousPeriods[range] : t`No earlier period to compare`;
 
-    return <YieldDeltaPill label={text} tone={YieldDeltaToneEnum.NEUTRAL} maxFontSizeMultiplier={LINE_MAX_FONT_SIZE_MULTIPLIER} />;
+    return (
+        <View className="min-h-[22px] justify-center">
+            <Text className="text-[13px] text-secondary-foreground" maxFontSizeMultiplier={LINE_MAX_FONT_SIZE_MULTIPLIER}>
+                {text}
+            </Text>
+        </View>
+    );
 };

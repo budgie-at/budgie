@@ -18,8 +18,6 @@ export const YieldChartBarLabel = ({ summary, index, width }: Props) => {
     return bucket ? (
         <YieldChartScrubLabel
             title={formatPeriod(bucket, summary.bucketUnit)}
-            amount={bucket.total}
-            priorAmount={null}
             x={getYieldBarCenterX(index, summary.buckets.length, width)}
             plotWidth={width}
         />
