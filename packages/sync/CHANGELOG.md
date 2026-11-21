@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.192.1](https://github.com/budgie-at/budgie/compare/v6.192.0...v6.192.1) (2026-11-21)
+
+### Bug Fixes
+
+* **sync:** consolidate rows a file re-import corrects ([#2273](https://github.com/budgie-at/budgie/issues/2273)) ([e5cd257](https://github.com/budgie-at/budgie/commit/e5cd2577273b71bb6cee5b02ff975e4694c1a504))
+
+
 ## [6.191.13](https://github.com/budgie-at/budgie/compare/v6.191.12...v6.191.13) (2026-11-21)
 
 ### Bug Fixes
