@@ -6,5 +6,6 @@ export interface YieldPayoutLabelsInputInterface {
     readonly baseTitle: string;
     readonly kindLabel: string;
     readonly dayLabel: string;
+    readonly fullDayLabel: string;
     readonly countLabel: string;
 }

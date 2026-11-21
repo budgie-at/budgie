@@ -52,7 +52,11 @@ export const YieldLegendHeader = ({ hint = null }: Props) => {
     return (
         <View className={headerVariants({ isAccessibilityText })} style={HEADER_STYLE}>
             <Animated.View key={text} entering={entering} className="min-w-0 shrink">
-                <Text className="text-[13px] text-secondary-foreground" maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER} numberOfLines={1}>
+                <Text
+                    className="text-[13px] tabular-nums text-secondary-foreground"
+                    maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
+                    numberOfLines={1}
+                >
                     {text}
                 </Text>
             </Animated.View>

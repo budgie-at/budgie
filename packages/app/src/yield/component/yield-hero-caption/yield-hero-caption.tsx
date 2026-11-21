@@ -51,7 +51,7 @@ export const YieldHeroCaption = ({ summary, bucket }: Props) => {
             numberOfLines={2}
             style={CAPTION_STYLE}
             maxFontSizeMultiplier={CAPTION_MAX_FONT_SIZE_MULTIPLIER}
-            className="text-[13px] text-secondary-foreground"
+            className="text-[13px] tabular-nums text-secondary-foreground"
         >
             {caption}
         </Text>

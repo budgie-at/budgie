@@ -27,16 +27,15 @@ export const useYieldDeltaLabel = (
     const { symbol } = useAtomValue(defaultInstrumentAtom);
     const decimalPlaces = useAtomValue(decimalPlacesAtom);
 
-    const ratio = summary?.delta?.ratio ?? 0;
     const earned = summary?.earned.value ?? 0;
     const priorTotals = summary?.priorTotals ?? null;
     const priorTotal = isDefined(priorTotals)
         ? priorTotals.reduce((sum, total) => sum + total, 0)
-        : earned / Math.max(1 + ratio, MIN_PRIOR_RATIO);
+        : earned / Math.max(1 + (summary?.delta?.ratio ?? 0), MIN_PRIOR_RATIO);
     const amount = formatAmount(Math.abs(roundYieldDelta(earned, priorTotal, decimalPlaces)), symbol);
 
     const sign = trend === YieldHeroTrendEnum.DOWN ? '−' : '+';
-    const comparison = useYieldComparisonPhrase(range);
+    const comparison = useYieldComparisonPhrase(range, tone);
     const isNew = summary?.delta?.kind === YieldDeltaKindEnum.NEW;
     const label = isNew ? t`New this period` : `${YIELD_TREND_ARROW[trend]}${t`${sign}${amount} · ${sign}${change}`}`;
 

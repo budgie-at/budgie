@@ -62,7 +62,10 @@ export const YieldInfoSheetContent = ({ screenKey }: Props) => {
             <YieldInfoSheetBlock title={t`Tax withheld`} body={t`Tax taken at source before payouts reach you.`} />
             <YieldInfoSheetBlock title={t`Net after tax`} body={t`Earned minus tax withheld.`} />
             <YieldInfoSheetBlock title={t`So far`} body={t`The current period isn’t over yet.`} />
-            <YieldInfoSheetBlock title={t`Comparison`} body={t`The same length of time just before this range.`} />
+            <YieldInfoSheetBlock
+                title={t`Comparison`}
+                body={t`The same length of time just before this range.\nChanges under 2% are shown as flat.`}
+            />
             <YieldInfoSheetBlock title={t`Estimates`} body={t`≈ marks an estimate: a projection, or a value using an estimated price.`}>
                 {isNotEmptyArray(causes) ? (
                     <View className="gap-y-xs">

@@ -46,6 +46,7 @@ export const useYieldPayoutRowLabels = (
         dayLabel: isMerged
             ? formatYieldDayRange(siblings.at(-1)?.operatedAt ?? transaction.operatedAt, transaction.operatedAt, formatMonthAndDay)
             : formatDay(transaction.operatedAt),
+        fullDayLabel: formatDayAndMonthAndYear(transaction.operatedAt),
         countLabel: t({ message: plural(siblings.length, { one: '# payout', other: '# payouts' }) })
     });
 };

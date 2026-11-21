@@ -17,5 +17,12 @@ export const YieldHeroScrubPreviousChip = ({ bucket, previous, unit }: Props) =>
 
     const previousLabel = formatTick(previous, unit);
 
-    return <YieldHeroScrubDeltaChip current={bucket.total} previous={previous.total} comparison={t`vs ${previousLabel}`} />;
+    return (
+        <YieldHeroScrubDeltaChip
+            current={bucket.total}
+            previous={previous.total}
+            comparison={t`vs ${previousLabel}`}
+            flatComparison={t`about the same as ${previousLabel}`}
+        />
+    );
 };

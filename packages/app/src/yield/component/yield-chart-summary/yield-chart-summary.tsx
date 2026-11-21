@@ -44,7 +44,7 @@ export const YieldChartSummary = ({ summary }: Props) => {
             {isEmpty ? <YieldChartSummaryText summary={summary} /> : null}
             {isEmpty ? null : (
                 <Text
-                    className="text-md font-semibold text-primary"
+                    className="text-md font-semibold tabular-nums text-primary"
                     maxFontSizeMultiplier={TITLE_MAX_FONT_SIZE_MULTIPLIER}
                     testID={PassiveIncomeSelector.ChartTitle}
                 >

@@ -28,7 +28,7 @@ const pillVariants = cva('max-w-full border', {
         }
     }
 });
-const labelVariants = cva('shrink text-xs font-semibold', {
+const labelVariants = cva('shrink text-xs font-semibold tabular-nums', {
     variants: {
         tone: {
             [YieldDeltaToneEnum.POSITIVE]: 'text-yield-delta-positive',

@@ -37,10 +37,10 @@ export const YieldChartMini = ({ buckets, focusDay, range }: Props) => {
             </View>
             {isDefined(firstBucket) && isDefined(lastBucket) ? (
                 <View className="flex-row justify-between">
-                    <Text className="text-[11px] text-secondary-foreground" maxFontSizeMultiplier={1.5}>
+                    <Text className="text-[11px] tabular-nums text-secondary-foreground" maxFontSizeMultiplier={1.5}>
                         {formatLabel(parseISO(firstBucket.start))}
                     </Text>
-                    <Text className="text-[11px] text-secondary-foreground" maxFontSizeMultiplier={1.5}>
+                    <Text className="text-[11px] tabular-nums text-secondary-foreground" maxFontSizeMultiplier={1.5}>
                         {formatLabel(parseISO(lastBucket.start))}
                     </Text>
                 </View>

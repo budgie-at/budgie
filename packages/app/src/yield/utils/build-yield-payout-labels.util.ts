@@ -12,6 +12,7 @@ export const buildYieldPayoutLabels = ({
     baseTitle,
     kindLabel,
     dayLabel,
+    fullDayLabel,
     countLabel
 }: YieldPayoutLabelsInputInterface) => {
     if (isMerged) {
@@ -22,7 +23,7 @@ export const buildYieldPayoutLabels = ({
     }
 
     if (isScoped) {
-        return { title: kindLabel, subtitle: dayLabel };
+        return { title: fullDayLabel, subtitle: kindLabel };
     }
 
     if (isNotEmptyString(positionTitle)) {

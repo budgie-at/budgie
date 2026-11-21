@@ -1104,7 +1104,7 @@ msgstr "{shareLabel} del gasto"
 msgid "{sign}{amount} · {sign}{change}"
 msgstr "{sign}{amount} · {sign}{change}"
 
-#: src/yield/component/yield-hero-scrub-delta-chip/yield-hero-scrub-delta-chip.tsx
+#: src/yield/hook/use-yield-scrub-delta-figures.hook.ts
 msgid "{sign}{amount} · {sign}{percent}"
 msgstr "{sign}{amount} · {sign}{percent}"
 
@@ -1473,6 +1473,26 @@ msgstr "Alrededor de un minuto"
 #: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
 msgid "about once a day"
 msgstr "aproximadamente una vez al día"
+
+#: src/yield/component/yield-hero-scrub-previous-chip/yield-hero-scrub-previous-chip.tsx
+msgid "about the same as {previousLabel}"
+msgstr "casi igual que {previousLabel}"
+
+#: src/yield/hook/use-yield-comparison-phrase.hook.ts
+msgid "about the same as previous 3 months"
+msgstr "casi igual que los 3 meses anteriores"
+
+#: src/yield/hook/use-yield-comparison-phrase.hook.ts
+msgid "about the same as previous 30 days"
+msgstr "casi igual que los 30 días anteriores"
+
+#: src/yield/hook/use-yield-comparison-phrase.hook.ts
+msgid "about the same as previous period"
+msgstr "casi igual que el periodo anterior"
+
+#: src/yield/hook/use-yield-comparison-phrase.hook.ts
+msgid "about the same as previous year"
+msgstr "casi igual que el año anterior"
 
 #: src/yield/component/yield-empty-state/yield-empty-state.tsx
 #: src/yield/component/yield-hero-info-button/yield-hero-info-button.tsx
@@ -7280,7 +7300,7 @@ msgid "No categories match “{trimmedSearch}”"
 msgstr "Ninguna categoría coincide con «{trimmedSearch}»"
 
 #: src/transaction/hook/use-adjustment-balance.hook.ts
-#: src/yield/component/yield-hero-scrub-delta-chip/yield-hero-scrub-delta-chip.tsx
+#: src/yield/hook/use-yield-scrub-delta-figures.hook.ts
 msgid "No change"
 msgstr "Sin cambios"
 
@@ -10675,8 +10695,10 @@ msgid "The rule was saved but no existing transactions needed updating."
 msgstr "La regla se guardó, pero ninguna transacción existente necesitaba actualizarse."
 
 #: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
-msgid "The same length of time just before this range."
-msgstr "El mismo lapso de tiempo justo antes de este rango."
+msgid "The same length of time just before this range.\n"
+"Changes under 2% are shown as flat."
+msgstr "El mismo lapso de tiempo justo antes de este rango.\n"
+"Los cambios inferiores al 2 % se muestran como estables."
 
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "The selected Budgie account is archived or no longer exists."
