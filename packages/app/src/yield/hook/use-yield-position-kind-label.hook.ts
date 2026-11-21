@@ -17,9 +17,8 @@ export const useYieldPositionKindLabel = ({
     const { t } = useLingui();
 
     const group = isDefined(kind) ? YIELD_GROUP_BY_KIND[kind] : null;
-    const isRated = accountType === AccountTypeEnum.DEPOSIT || accountType === AccountTypeEnum.SAVINGS;
 
-    if (isDefined(kind) && (kind === YieldKindEnum.STAKING || kind === YieldKindEnum.EARN)) {
+    if (kind === YieldKindEnum.STAKING || kind === YieldKindEnum.EARN) {
         return t(YIELD_KIND_LABEL[kind]);
     }
 
@@ -30,6 +29,8 @@ export const useYieldPositionKindLabel = ({
     if (instrumentType === InstrumentTypeEnum.CRYPTO) {
         return t`Staking`;
     }
+
+    const isRated = accountType === AccountTypeEnum.DEPOSIT || accountType === AccountTypeEnum.SAVINGS;
 
     if (isRated) {
         return t`Interest`;

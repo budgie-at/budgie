@@ -1,15 +1,16 @@
 import { YieldGroupEnum } from '@budgie/market';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { use } from 'react';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
+import { decimalPlacesAtom } from '../../settings/constants/settings-atoms.constant';
 import { YIELD_STACK_GROUPS } from '../constant/yield-stack-groups.constant';
 import { YieldScreenContext } from '../context/yield-screen.context';
 import { YieldSelectionContext } from '../context/yield-selection.context';
 import { roundYieldParts } from '../utils/round-yield-parts.util';
-import { selectYieldScrubbedBuckets } from '../utils/select-yield-scrubbed-buckets.util';
+import { sumYieldScrubbedBuckets } from '../utils/sum-yield-scrubbed-buckets.util';
 
-import { useYieldRoundParts } from './use-yield-round-parts.hook';
 import { useYieldSummary } from './use-yield-summary.hook';
 
 const PERCENT = 100;
@@ -20,17 +21,14 @@ export const useYieldLegendRows = () => {
     const { mode } = use(YieldScreenContext);
     const { selectedIndex } = use(YieldSelectionContext);
     const summary = useYieldSummary();
-    const roundParts = useYieldRoundParts();
+    const decimalPlaces = useAtomValue(decimalPlacesAtom);
 
-    const scrubbedBuckets = selectYieldScrubbedBuckets(summary?.buckets ?? [], selectedIndex, mode);
+    const scrubbed = sumYieldScrubbedBuckets(summary?.buckets ?? [], selectedIndex, mode);
     const groups = summary?.groups ?? [];
-    const rawTotals = groups.map(({ group, total }) =>
-        isDefined(selectedIndex) ? scrubbedBuckets.reduce((sum, item) => sum + item.amounts[group], 0) : total
-    );
-    const displayedTotal = isDefined(selectedIndex)
-        ? scrubbedBuckets.reduce((sum, item) => sum + item.total, 0)
-        : (summary?.earned.value ?? 0);
-    const roundedTotals = roundParts(rawTotals, displayedTotal);
+    const rawTotals = groups.map(({ group, total }) => (isDefined(selectedIndex) ? scrubbed.amountOf(group) : total));
+    const displayedTotal = isDefined(selectedIndex) ? scrubbed.total : (summary?.earned.value ?? 0);
+    const rawSum = rawTotals.reduce((accumulated, part) => accumulated + part, 0);
+    const roundedTotals = roundYieldParts(rawTotals, Math.abs(rawSum - displayedTotal) <= 1 ? displayedTotal : rawSum, decimalPlaces);
     const rows = groups
         .map(({ group }, index) => ({ group, total: roundedTotals.at(index) ?? 0 }))
         .sort((left, right) => rankOf(left.group) - rankOf(right.group));

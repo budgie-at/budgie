@@ -79,6 +79,11 @@ export class YieldRepository extends Context.Service<YieldRepository>()('@budgie
             ...(isDefined(instrumentId) ? [sql`${scopeInstrumentIdSql} = ${instrumentId}`] : [])
         ];
 
+        const buildOperatedAtRange = (range?: DateRangeInterface) => [
+            ...(isDefined(range?.from) ? [gte(TransactionEntityTable.operatedAt, range.from)] : []),
+            ...(isDefined(range?.to) ? [lt(TransactionEntityTable.operatedAt, range.to)] : [])
+        ];
+
         const buildYieldFactWhere = (scope: YieldScopeInterface, extra: SQL[] = [], range: SQL[] = []) =>
             and(
                 transactionFilters.buildVisibleTransactionCondition(),
@@ -134,16 +139,7 @@ export class YieldRepository extends Context.Service<YieldRepository>()('@budgie
                             .from(TransactionEntityTable)
                             .$dynamic()
                     )
-                        .where(
-                            buildYieldFactWhere(
-                                scope,
-                                [],
-                                [
-                                    ...(isDefined(range?.from) ? [gte(TransactionEntityTable.operatedAt, range.from)] : []),
-                                    ...(isDefined(range?.to) ? [lt(TransactionEntityTable.operatedAt, range.to)] : [])
-                                ]
-                            )
-                        )
+                        .where(buildYieldFactWhere(scope, [], buildOperatedAtRange(range)))
                         .orderBy(asc(TransactionEntityTable.operatedAt), asc(TransactionEntityTable.id))
                 ),
 
@@ -228,14 +224,7 @@ export class YieldRepository extends Context.Service<YieldRepository>()('@budgie
                                                     : []),
                                                 ...(query.isUnassignedOnly ? [sql`${positionAccountIdSql} IS NULL`] : [])
                                             ],
-                                            [
-                                                ...(isDefined(query.range.from)
-                                                    ? [gte(TransactionEntityTable.operatedAt, query.range.from)]
-                                                    : []),
-                                                ...(isDefined(query.range.to)
-                                                    ? [lt(TransactionEntityTable.operatedAt, query.range.to)]
-                                                    : [])
-                                            ]
+                                            buildOperatedAtRange(query.range)
                                         )
                                     )
                                 )

@@ -254,18 +254,6 @@ export class YieldService extends Context.Service<YieldService>()('@budgie/marke
                 : { kind: YieldDeltaKindEnum.CHANGE, ratio: (earned - prior) / prior };
         };
 
-        const computeScopedRunRate = (contexts: readonly YieldPositionContextInterface[], group: YieldGroupEnum | null) => {
-            if (!isDefined(group)) {
-                return yieldHoldingService.runRate(contexts);
-            }
-
-            return group === YieldGroupEnum.DISTRIBUTIONS
-                ? null
-                : yieldHoldingService.runRate(
-                      contexts.filter(context => context.facts.some(fact => isIncome(fact) && fact.group === group))
-                  );
-        };
-
         const summarizePosition = (
             context: YieldPositionContextInterface,
             isInWindow: (fact: YieldFactInterface) => boolean
@@ -430,7 +418,14 @@ export class YieldService extends Context.Service<YieldService>()('@budgie/marke
                         contexts,
                         incomeFacts.some(fact => fact.kind === YieldKindEnum.DISTRIBUTION && fact.day >= yieldWindowStart)
                     ),
-                    runRate: computeScopedRunRate(contexts, key.group),
+                    runRate:
+                        key.group === YieldGroupEnum.DISTRIBUTIONS
+                            ? null
+                            : yieldHoldingService.runRate(
+                                  isDefined(key.group)
+                                      ? contexts.filter(context => context.facts.some(fact => isIncome(fact) && fact.group === key.group))
+                                      : contexts
+                              ),
                     cryptoRewardsToday: yield* computeCryptoRewardsToday(rangeIncome, key.baseInstrumentId),
                     vsRate: isDefined(key.positionAccountId)
                         ? (positions.find(position => position.accountId === key.positionAccountId)?.vsRate ?? null)

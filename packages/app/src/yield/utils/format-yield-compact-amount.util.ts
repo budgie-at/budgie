@@ -1,8 +1,13 @@
-import { THOUSAND } from '../../i18n/constant/compact-thresholds.constant';
-import { YIELD_COMPACT_SUFFIX_BY_DIVISOR } from '../constant/yield-compact-suffix.constant';
+import { BILLION, MILLION, THOUSAND, TRILLION } from '../../i18n/constant/compact-thresholds.constant';
 
 import { pickYieldCompactDivisor } from './pick-yield-compact-divisor.util';
 
+const YIELD_COMPACT_SUFFIX_BY_DIVISOR = new Map<number, string>([
+    [THOUSAND, 'K'],
+    [MILLION, 'M'],
+    [BILLION, 'B'],
+    [TRILLION, 'T']
+]);
 const TWO_DECIMALS_BELOW = 10;
 const ONE_DECIMAL_BELOW = 100;
 

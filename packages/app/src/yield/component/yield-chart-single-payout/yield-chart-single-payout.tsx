@@ -6,7 +6,6 @@ import { isDefined } from '@rnw-community/shared';
 
 import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hook';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
-import { YIELD_INLINE_ROW_CLASSNAME } from '../../constant/yield-inline-row-class-name.constant';
 import { yieldPayoutsFamily } from '../../constant/yield-payouts-family-atom.constant';
 import { YieldScreenContext } from '../../context/yield-screen.context';
 import { YieldPayoutDateFormatEnum } from '../../enum/yield-payout-date-format.enum';
@@ -14,6 +13,7 @@ import { YieldPayoutRowContent } from '../yield-payout-row-content/yield-payout-
 
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 
+const YIELD_INLINE_ROW_CLASSNAME = 'min-h-0 bg-transparent px-0 py-0';
 const NO_SIBLINGS: readonly TransactionWithRelationsEntityInterface[] = [];
 
 export const YieldChartSinglePayout = () => {

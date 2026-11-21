@@ -4,18 +4,12 @@ import { clampYieldLabelLeft } from '../src/yield/utils/clamp-yield-label-left.u
 
 const PLOT_WIDTH = 270;
 
-it('centres a label that fits', () => {
-    expect(clampYieldLabelLeft(135, 40, 0, PLOT_WIDTH)).toBe(115);
-});
-
-it('aligns the right edge to the plot edge for a label near the end', () => {
-    const left = clampYieldLabelLeft(PLOT_WIDTH - 4, 40, 0, PLOT_WIDTH);
-
-    expect(left + 40).toBe(PLOT_WIDTH);
-});
-
-it('aligns the left edge to the plot edge for a label near the start', () => {
-    expect(clampYieldLabelLeft(6, 38, 0, PLOT_WIDTH)).toBe(0);
+it.each([
+    [135, 40, 115],
+    [PLOT_WIDTH - 4, 40, PLOT_WIDTH - 40],
+    [6, 38, 0]
+])('clamps a label centred at %d with width %d to left %d', (centre, labelWidth, expected) => {
+    expect(clampYieldLabelLeft(centre, labelWidth, 0, PLOT_WIDTH)).toBe(expected);
 });
 
 it('never overflows either edge across the plot', () => {

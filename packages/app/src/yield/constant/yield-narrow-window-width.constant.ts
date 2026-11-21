@@ -1,1 +1,0 @@
-export const YIELD_NARROW_WINDOW_WIDTH = 375;

@@ -3,7 +3,6 @@ import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { YIELD_MIN_DATA_BUCKETS } from '../../constant/yield-min-data-buckets.constant';
 import { YieldScreenContext } from '../../context/yield-screen.context';
 import { YieldChartModeEnum } from '../../enum/yield-chart-mode.enum';
 import { useYieldSummary } from '../../hook/use-yield-summary.hook';
@@ -14,6 +13,7 @@ import { YieldLegendFootnote } from '../yield-legend-footnote/yield-legend-footn
 import { YieldLegendRunning } from '../yield-legend-running/yield-legend-running';
 import { YieldLegend } from '../yield-legend/yield-legend';
 
+const YIELD_MIN_DATA_BUCKETS = 3;
 const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 
 export const YieldChartCard = () => {

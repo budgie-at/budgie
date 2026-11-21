@@ -10,7 +10,6 @@ import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-am
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { YieldScreenContext } from '../../context/yield-screen.context';
 import { YieldSelectionContext } from '../../context/yield-selection.context';
-import { useYieldPriorLabel } from '../../hook/use-yield-prior-label.hook';
 import { useYieldSummary } from '../../hook/use-yield-summary.hook';
 import { buildYieldRunningTotal } from '../../utils/build-yield-running-total.util';
 import { YieldLegendFootnote } from '../yield-legend-footnote/yield-legend-footnote';
@@ -34,7 +33,7 @@ export const YieldLegendRunning = () => {
     const currentAmount = `${approximate}${formatAmount(cumulative.at(index) ?? 0, symbol)}`;
     const priorAmount = formatAmount(prior?.at(index) ?? prior?.at(-1) ?? 0, symbol);
     const currentLabel = screenKey.key.range === YieldRangeEnum.YEAR ? t`Last 12 months` : t`This period`;
-    const priorLabel = useYieldPriorLabel();
+    const priorLabel = screenKey.key.range === YieldRangeEnum.YEAR ? t`Previous 12 months` : t`Previous period`;
 
     return (
         <View className="gap-y-xs" accessibilityLabel={t`Running total legend`}>

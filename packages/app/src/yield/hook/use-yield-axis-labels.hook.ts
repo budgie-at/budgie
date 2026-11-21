@@ -13,8 +13,9 @@ import { YIELD_STACK_GROUPS } from '../constant/yield-stack-groups.constant';
 import { YieldChartModeEnum } from '../enum/yield-chart-mode.enum';
 import { buildYieldAxisLabels } from '../utils/build-yield-axis-labels.util';
 import { buildYieldSummaryAxis } from '../utils/build-yield-summary-axis.util';
+import { formatYieldAxisAmount } from '../utils/format-yield-axis-amount.util';
 
-import { useFormatYieldAxisAmount } from './use-format-yield-axis-amount.hook';
+import { useFormatYieldNumber } from './use-format-yield-number.hook';
 import { useYieldSummary } from './use-yield-summary.hook';
 
 import type { YieldAxisInterface } from '../interface/yield-axis.interface';
@@ -27,14 +28,14 @@ const TAX_LABEL_OFFSET = 14;
 export const useYieldAxisLabels = (axis: YieldAxisInterface) => {
     const { t } = useLingui();
     const isAmountProtected = useIsAmountProtected();
-    const formatAxisAmount = useFormatYieldAxisAmount();
+    const formatNumber = useFormatYieldNumber();
     const { symbol } = useAtomValue(defaultInstrumentAtom);
     const { fontScale } = useWindowDimensions();
     const summary = useYieldSummary();
 
     const buildLabels = (target: YieldAxisInterface) =>
         buildYieldAxisLabels(target, YIELD_PLOT_HEIGHT, value =>
-            isAmountProtected ? PROTECTED_AMOUNT_PLACEHOLDER : formatAxisAmount(value, symbol)
+            isAmountProtected ? PROTECTED_AMOUNT_PLACEHOLDER : formatYieldAxisAmount(value, symbol, formatNumber)
         );
     const axisLabels = buildLabels(axis);
     const zeroY = axisLabels.find(({ key }) => key === 'zero')?.y ?? YIELD_PLOT_HEIGHT;

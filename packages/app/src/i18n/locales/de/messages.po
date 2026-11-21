@@ -117,7 +117,7 @@ msgid "{0, plural, one {# payment} other {# payments}}"
 msgstr "{0, plural, one {# Zahlung} other {# Zahlungen}}"
 
 #. placeholder {0}: siblings.length
-#: src/yield/hook/use-yield-payout-row-labels.hook.ts
+#: src/yield/hook/use-yield-payout-row-text.hook.ts
 msgid "{0, plural, one {# payout} other {# payouts}}"
 msgstr "{0, plural, one {# Auszahlung} other {# Auszahlungen}}"
 
@@ -937,7 +937,7 @@ msgstr "{periodLabel}: {amount} über dem Limit abgeschlossen"
 msgid "{periodLabel} closed {amount} under"
 msgstr "{periodLabel}: {amount} unter dem Limit abgeschlossen"
 
-#: src/yield/hook/use-yield-in-progress-text.hook.ts
+#: src/yield/hook/use-yield-footnote-state.hook.ts
 msgid "{periodLabel} so far"
 msgstr "{periodLabel} bisher"
 
@@ -1914,7 +1914,6 @@ msgstr "Gesamtzeitraum"
 #: src/i18n/hook/use-format-date-range.hook.ts
 #: src/yield/component/yield-range-control/yield-range-control.tsx
 #: src/yield/constant/yield-range-name.constant.ts
-#: src/yield/constant/yield-range-period-label.constant.ts
 msgid "All time"
 msgstr "Gesamter Zeitraum"
 
@@ -2299,7 +2298,7 @@ msgstr "Automatische Anpassung ist aus"
 msgid "Automation"
 msgstr "Automatisierung"
 
-#: src/yield/constant/yield-inline-unavailable-label.constant.ts
+#: src/yield/hook/use-yield-position-rate-text.hook.ts
 msgid "available after 4 weeks"
 msgstr "verfügbar nach 4 Wochen"
 
@@ -2311,7 +2310,7 @@ msgstr "Verfügbar nach 4 Wochen"
 msgid "Available after the first sync finishes"
 msgstr "Verfügbar, sobald die erste Synchronisierung abgeschlossen ist"
 
-#: src/yield/constant/yield-inline-unavailable-label.constant.ts
+#: src/yield/hook/use-yield-position-rate-text.hook.ts
 msgid "available after the second payout"
 msgstr "verfügbar nach der zweiten Ausschüttung"
 
@@ -4234,7 +4233,7 @@ msgstr "Kryptokonto"
 msgid "Crypto rewards at today’s prices"
 msgstr "Krypto-Erträge zu heutigen Preisen"
 
-#: src/yield/constant/yield-kind-description.constant.ts
+#: src/yield/component/yield-kind-option-row/yield-kind-option-row.tsx
 msgid "Crypto staking rewards"
 msgstr "Krypto-Staking-Belohnungen"
 
@@ -5315,7 +5314,7 @@ msgstr "Wechselkurs nicht gefunden"
 msgid "Exchange rate: {rateLabel}"
 msgstr "Wechselkurs: {rateLabel}"
 
-#: src/yield/constant/yield-kind-description.constant.ts
+#: src/yield/component/yield-kind-option-row/yield-kind-option-row.tsx
 msgid "Excluded from all passive income totals"
 msgstr "Aus allen Summen des passiven Einkommens ausgeschlossen"
 
@@ -5599,7 +5598,7 @@ msgstr "Fester Betrag"
 msgid "Fixed term with interest"
 msgstr "Festgeld mit Zinsen"
 
-#: src/yield/constant/yield-kind-description.constant.ts
+#: src/yield/component/yield-kind-option-row/yield-kind-option-row.tsx
 msgid "Flexible savings on exchanges"
 msgstr "Flexibles Sparen an Börsen"
 
@@ -5695,7 +5694,7 @@ msgstr "Ausgangswährung"
 msgid "From one amount to another"
 msgstr "Von einem Betrag bis zu einem anderen"
 
-#: src/yield/constant/yield-kind-description.constant.ts
+#: src/yield/component/yield-kind-option-row/yield-kind-option-row.tsx
 msgid "From property and income funds, not counted in yield"
 msgstr "Aus Immobilien- und Ertragsfonds, nicht in der Rendite enthalten"
 
@@ -6435,20 +6434,17 @@ msgstr "Letzter 1 Monat"
 
 #: src/yield/component/yield-legend-running/yield-legend-running.tsx
 #: src/yield/constant/yield-range-name.constant.ts
-#: src/yield/constant/yield-range-period-label.constant.ts
 #: src/yield/hook/use-yield-entry-subtitle.hook.ts
 msgid "Last 12 months"
 msgstr "Letzte 12 Monate"
 
 #: src/sync/component/sync-history-step/sync-history-step.tsx
 #: src/yield/constant/yield-range-name.constant.ts
-#: src/yield/constant/yield-range-period-label.constant.ts
 msgid "Last 3 months"
 msgstr "Letzte 3 Monate"
 
 #: src/sync/component/resync-window-option-row/resync-window-option-row.tsx
 #: src/yield/constant/yield-range-name.constant.ts
-#: src/yield/constant/yield-range-period-label.constant.ts
 msgid "Last 30 days"
 msgstr "Letzte 30 Tage"
 
@@ -7292,7 +7288,7 @@ msgstr "Keine archivierten Konten passen zu „{search}“"
 msgid "No backups yet"
 msgstr "Noch keine Sicherungen"
 
-#: src/yield/constant/yield-inline-unavailable-label.constant.ts
+#: src/yield/hook/use-yield-position-rate-text.hook.ts
 msgid "no balance to measure"
 msgstr "kein Guthaben zum Messen"
 
@@ -7637,7 +7633,7 @@ msgstr "Nicht genügend freier Speicherplatz, um dieses Backup zu entpacken."
 msgid "Not enough history yet"
 msgstr "Noch nicht genug Verlauf"
 
-#: src/yield/constant/yield-inline-unavailable-label.constant.ts
+#: src/yield/hook/use-yield-position-rate-text.hook.ts
 msgid "not enough price history"
 msgstr "zu wenig Kursverlauf"
 
@@ -8272,7 +8268,7 @@ msgstr "Bezahlt"
 msgid "Paid {paidAmount} · {paidCount} of {installmentCount}"
 msgstr "Bezahlt {paidAmount} · {paidCount} von {installmentCount}"
 
-#: src/yield/constant/yield-kind-description.constant.ts
+#: src/yield/component/yield-kind-option-row/yield-kind-option-row.tsx
 msgid "Paid by stocks and dividend ETFs"
 msgstr "Gezahlt von Aktien und Dividenden-ETFs"
 
@@ -8691,7 +8687,7 @@ msgstr "Umrechnungen werden vorbereitet"
 msgid "Press and hold to seal"
 msgstr "Gedrückt halten zum Versiegeln"
 
-#: src/yield/hook/use-yield-prior-label.hook.ts
+#: src/yield/component/yield-legend-running/yield-legend-running.tsx
 msgid "Previous 12 months"
 msgstr "Vorherige 12 Monate"
 
@@ -8708,7 +8704,7 @@ msgid "previous period"
 msgstr "Vorperiode"
 
 #: src/transaction/components/statistics-period-control/statistics-period-control.tsx
-#: src/yield/hook/use-yield-prior-label.hook.ts
+#: src/yield/component/yield-legend-running/yield-legend-running.tsx
 msgid "Previous period"
 msgstr "Vorheriger Zeitraum"
 
@@ -9507,7 +9503,7 @@ msgstr "Ersparnisse"
 msgid "Savings Account"
 msgstr "Sparkonto"
 
-#: src/yield/constant/yield-kind-description.constant.ts
+#: src/yield/component/yield-kind-option-row/yield-kind-option-row.tsx
 msgid "Savings and deposits"
 msgstr "Sparguthaben und Einlagen"
 
@@ -10085,7 +10081,7 @@ msgstr "SmartBudget"
 msgid "So far"
 msgstr "Bisher"
 
-#: src/yield/hook/use-yield-analytics-period-text.hook.ts
+#: src/yield/hook/use-yield-analytics-period-label.hook.ts
 msgid "so far {periodLabel}"
 msgstr "bisher {periodLabel}"
 
@@ -10610,7 +10606,7 @@ msgstr "Steuer, die an der Quelle abgezogen wird, bevor Auszahlungen bei dir ank
 msgid "Tax withheld"
 msgstr "Einbehaltene Steuer"
 
-#: src/yield/constant/yield-kind-description.constant.ts
+#: src/yield/component/yield-kind-option-row/yield-kind-option-row.tsx
 msgid "Tax withheld from a payout"
 msgstr "Einbehaltene Steuer auf eine Auszahlung"
 
@@ -11648,7 +11644,7 @@ msgstr "Bis {toLabel}"
 msgid "Until the model is ready, categories come from simple rules on this phone. If a download arrives damaged, Budgie deletes it and waits for you to retry."
 msgstr "Bis das Modell bereit ist, stammen Kategorien aus einfachen Regeln auf diesem Telefon. Ist ein Download beschädigt, löscht Budgie ihn und wartet, bis du es erneut versuchst."
 
-#: src/yield/constant/yield-inline-unavailable-label.constant.ts
+#: src/yield/hook/use-yield-position-rate-text.hook.ts
 msgid "unusually high · balance history may be incomplete"
 msgstr "ungewöhnlich hoch · Saldoverlauf evtl. unvollständig"
 
@@ -11942,7 +11938,7 @@ msgstr "Woche {currentWeek} von {totalWeeks}. {overLabel}."
 msgid "Week of {day}"
 msgstr "Woche ab {day}"
 
-#: src/yield/hook/use-yield-in-progress-text.hook.ts
+#: src/yield/hook/use-yield-footnote-state.hook.ts
 msgid "Week of {periodLabel} so far"
 msgstr "Woche vom {periodLabel} bisher"
 

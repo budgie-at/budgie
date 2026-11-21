@@ -9,7 +9,7 @@ import { useProtectedAmountLabel } from '../../@generic/hook/use-protected-amoun
 import { defaultInstrumentAtom } from '../../settings/constants/settings-atoms.constant';
 import { YieldHeroTrendEnum } from '../enum/yield-hero-trend.enum';
 
-import { useYieldAnalyticsPeriodText } from './use-yield-analytics-period-text.hook';
+import { useYieldAnalyticsPeriodLabel } from './use-yield-analytics-period-label.hook';
 import { useYieldDeltaLabel } from './use-yield-delta-label.hook';
 
 import type { YieldAnalyticsFocusInterface } from '../interface/yield-analytics-focus.interface';
@@ -34,7 +34,7 @@ export const useYieldAnalyticsCardText = (
     const { t } = useLingui();
     const formatAmount = useProtectedAmountLabel();
     const { symbol } = useAtomValue(defaultInstrumentAtom);
-    const periodText = useYieldAnalyticsPeriodText(summary, focus, period);
+    const periodText = useYieldAnalyticsPeriodLabel(summary, focus, period);
     const { label, caption: comparison, trend, tone } = useYieldDeltaLabel(summary, focus.range);
 
     const isFocused = isDefined(focus.focusDay);

@@ -1,13 +1,19 @@
+import { UserIconNameEnum } from '@budgie/contracts';
+import { YieldGroupEnum } from '@budgie/market';
 import { View } from 'react-native';
 
 import { Icon } from '../../../@generic/component/icon/icon';
 import { useIsIncreaseContrast } from '../../../@generic/hook/use-is-increase-contrast.hook';
 import { cn } from '../../../@generic/utils/cn.util';
 import { YIELD_GROUP_COLOR } from '../../constant/yield-group-color.constant';
-import { YIELD_GROUP_ICON } from '../../constant/yield-group-icon.constant';
 
-import type { UserIconNameEnum } from '@budgie/contracts';
-import type { YieldGroupEnum } from '@budgie/market';
+const YIELD_GROUP_ICON: Readonly<Record<YieldGroupEnum, UserIconNameEnum>> = {
+    [YieldGroupEnum.STAKING_EARN]: UserIconNameEnum.Layers,
+    [YieldGroupEnum.INTEREST]: UserIconNameEnum.Percent,
+    [YieldGroupEnum.DIVIDENDS]: UserIconNameEnum.ChartPie,
+    [YieldGroupEnum.DISTRIBUTIONS]: UserIconNameEnum.HandCoins,
+    [YieldGroupEnum.TAX]: UserIconNameEnum.Receipt
+};
 
 interface Props {
     readonly group: YieldGroupEnum;

@@ -34,8 +34,7 @@ export const TransactionInfoYieldRow = ({ transaction }: Props) => {
         isDefined(landing) && (YIELD_POSITION_ACCOUNT_TYPES.includes(landing.type) || landing.instrument.type === InstrumentTypeEnum.FUND);
     const positionId = transaction.yieldSourceAccountId ?? (canLandingHoldPosition ? landing.id : null);
     const sourceTitle = source?.title ?? null;
-    const landingTitle = canLandingHoldPosition ? landing.title : null;
-    const positionTitle = sourceTitle ?? landingTitle;
+    const positionTitle = sourceTitle ?? (canLandingHoldPosition ? landing.title : null);
     const openLabel = isDefined(positionTitle) ? t`All ${positionTitle} income` : t`See all passive income`;
 
     const handleOpenScreen = () =>

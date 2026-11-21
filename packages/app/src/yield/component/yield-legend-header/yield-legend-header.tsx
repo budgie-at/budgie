@@ -12,7 +12,7 @@ import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-access
 import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { YIELD_LEGEND_HEADER_HEIGHT } from '../../constant/yield-legend-header-height.constant';
-import { YIELD_RANGE_PERIOD_LABEL } from '../../constant/yield-range-period-label.constant';
+import { YIELD_RANGE_NAME } from '../../constant/yield-range-name.constant';
 import { YieldScreenContext } from '../../context/yield-screen.context';
 import { YieldSelectionContext } from '../../context/yield-selection.context';
 import { YieldChartModeEnum } from '../../enum/yield-chart-mode.enum';
@@ -47,7 +47,7 @@ export const YieldLegendHeader = ({ hint = null, title }: Props) => {
     const throughDay = isDefined(bucket) ? formatDayAndMonthAndYear(parseISO(bucket.end)) : '';
     const period = isDefined(bucket) && isDefined(summary) ? formatPeriod(bucket, summary.bucketUnit) : '';
     const scrubText = mode === YieldChartModeEnum.RUNNING_TOTAL ? t`Through ${throughDay}` : period;
-    const text = isDefined(bucket) ? scrubText : (title ?? t(YIELD_RANGE_PERIOD_LABEL[screenKey.key.range]));
+    const text = isDefined(bucket) ? scrubText : (title ?? t(YIELD_RANGE_NAME[screenKey.key.range]));
     const entering = FadeIn.duration(reducedMotion ? 0 : CROSS_FADE_DURATION).easing(EASE_OUT);
 
     return (

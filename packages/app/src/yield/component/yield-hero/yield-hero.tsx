@@ -15,7 +15,7 @@ import { useYieldHeroSentence } from '../../hook/use-yield-hero-sentence.hook';
 import { useYieldIsEstimated } from '../../hook/use-yield-is-estimated.hook';
 import { useYieldSummary } from '../../hook/use-yield-summary.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
-import { selectYieldScrubbedBuckets } from '../../utils/select-yield-scrubbed-buckets.util';
+import { sumYieldScrubbedBuckets } from '../../utils/sum-yield-scrubbed-buckets.util';
 import { YieldHeroCaption } from '../yield-hero-caption/yield-hero-caption';
 import { YieldHeroInfoButton } from '../yield-hero-info-button/yield-hero-info-button';
 import { YieldHeroLine } from '../yield-hero-line/yield-hero-line';
@@ -29,7 +29,7 @@ export const YieldHero = () => {
     const { symbol } = useAtomValue(defaultInstrumentAtom);
 
     const bucket = isDefined(selectedIndex) ? (summary?.buckets.at(selectedIndex) ?? null) : null;
-    const scrubAmount = selectYieldScrubbedBuckets(summary?.buckets ?? [], selectedIndex, mode).reduce((sum, item) => sum + item.total, 0);
+    const scrubAmount = sumYieldScrubbedBuckets(summary?.buckets ?? [], selectedIndex, mode).total;
     const amount = isDefined(bucket) ? scrubAmount : (summary?.earned.value ?? 0);
     const figureKey = isDefined(bucket) ? 'scrub' : 'total';
     const isApproximate = useYieldIsEstimated(summary);
