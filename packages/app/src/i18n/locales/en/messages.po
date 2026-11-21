@@ -1343,6 +1343,10 @@ msgstr "1 month"
 msgid "1 year"
 msgstr "1 year"
 
+#: src/yield/hook/use-yield-prior-label.hook.ts
+msgid "12 months before"
+msgstr "12 months before"
+
 #: src/inzhur/component/inzhur-performance-chart/inzhur-performance-chart.tsx
 #: src/market-data/component/currency-market-range-control/currency-market-range-control.tsx
 #: src/yield/constant/yield-range-label.constant.ts
@@ -1484,6 +1488,10 @@ msgid "about the same as {previousLabel}"
 msgstr "about the same as {previousLabel}"
 
 #: src/yield/hook/use-yield-comparison-phrase.hook.ts
+msgid "about the same as previous 12 months"
+msgstr "about the same as previous 12 months"
+
+#: src/yield/hook/use-yield-comparison-phrase.hook.ts
 msgid "about the same as previous 3 months"
 msgstr "about the same as previous 3 months"
 
@@ -1494,10 +1502,6 @@ msgstr "about the same as previous 30 days"
 #: src/yield/hook/use-yield-comparison-phrase.hook.ts
 msgid "about the same as previous period"
 msgstr "about the same as previous period"
-
-#: src/yield/hook/use-yield-comparison-phrase.hook.ts
-msgid "about the same as previous year"
-msgstr "about the same as previous year"
 
 #: src/yield/component/yield-empty-state/yield-empty-state.tsx
 #: src/yield/component/yield-hero-info-button/yield-hero-info-button.tsx
@@ -5684,6 +5688,10 @@ msgstr "From currency"
 msgid "From one amount to another"
 msgstr "From one amount to another"
 
+#: src/yield/constant/yield-kind-description.constant.ts
+msgid "From property and income funds, not counted in yield"
+msgstr "From property and income funds, not counted in yield"
+
 #: src/recurring/components/recurring-series-form-fields/recurring-series-form-fields.tsx
 msgid "From transaction"
 msgstr "From transaction"
@@ -5707,10 +5715,6 @@ msgstr "Fully funded"
 #: src/inzhur/component/inzhur-purchase-fund-field/inzhur-purchase-fund-field.tsx
 msgid "Fund"
 msgstr "Fund"
-
-#: src/yield/constant/yield-kind-description.constant.ts
-msgid "Fund payouts, not counted in yield"
-msgstr "Fund payouts, not counted in yield"
 
 #: src/account/component/start-deposit-funding-summary/start-deposit-funding-summary.tsx
 msgid "Funding account"
@@ -6422,6 +6426,7 @@ msgstr "Last {statementDate}"
 msgid "Last 1 month"
 msgstr "Last 1 month"
 
+#: src/yield/component/yield-legend-running/yield-legend-running.tsx
 #: src/yield/constant/yield-range-name.constant.ts
 #: src/yield/constant/yield-range-period-label.constant.ts
 #: src/yield/hook/use-yield-entry-subtitle.hook.ts
@@ -8261,8 +8266,8 @@ msgid "Paid {paidAmount} · {paidCount} of {installmentCount}"
 msgstr "Paid {paidAmount} · {paidCount} of {installmentCount}"
 
 #: src/yield/constant/yield-kind-description.constant.ts
-msgid "Paid by stocks and ETFs"
-msgstr "Paid by stocks and ETFs"
+msgid "Paid by stocks and dividend ETFs"
+msgstr "Paid by stocks and dividend ETFs"
 
 #: src/transaction/components/transaction-info-debt-progress/transaction-info-debt-progress.tsx
 msgid "Paid to date: {paid}"
@@ -8694,10 +8699,6 @@ msgstr "previous period"
 #: src/yield/hook/use-yield-prior-label.hook.ts
 msgid "Previous period"
 msgstr "Previous period"
-
-#: src/yield/hook/use-yield-prior-label.hook.ts
-msgid "Previous year"
-msgstr "Previous year"
 
 #: src/inzhur/component/inzhur-fund-chart/inzhur-fund-chart.tsx
 msgid "Price"
@@ -10987,10 +10988,6 @@ msgstr "This will remove your budget. You can create a new one anytime."
 msgid "this year"
 msgstr "this year"
 
-#: src/yield/component/yield-legend-running/yield-legend-running.tsx
-msgid "This year"
-msgstr "This year"
-
 #: src/@generic/constant/date-period.constant.ts
 msgid "This Year"
 msgstr "This Year"
@@ -11835,6 +11832,10 @@ msgid "vs {previousLabel}"
 msgstr "vs {previousLabel}"
 
 #: src/yield/hook/use-yield-comparison-phrase.hook.ts
+msgid "vs previous 12 months"
+msgstr "vs previous 12 months"
+
+#: src/yield/hook/use-yield-comparison-phrase.hook.ts
 msgid "vs previous 3 months"
 msgstr "vs previous 3 months"
 
@@ -11845,10 +11846,6 @@ msgstr "vs previous 30 days"
 #: src/yield/hook/use-yield-comparison-phrase.hook.ts
 msgid "vs previous period"
 msgstr "vs previous period"
-
-#: src/yield/hook/use-yield-comparison-phrase.hook.ts
-msgid "vs previous year"
-msgstr "vs previous year"
 
 #: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx

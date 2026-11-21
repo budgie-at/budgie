@@ -33,7 +33,7 @@ export const YieldLegendRunning = () => {
     const approximate = summary?.buckets.slice(0, index + 1).some(bucket => bucket.isEstimated) === true ? '≈ ' : '';
     const currentAmount = `${approximate}${formatAmount(cumulative.at(index) ?? 0, symbol)}`;
     const priorAmount = formatAmount(prior?.at(index) ?? prior?.at(-1) ?? 0, symbol);
-    const currentLabel = screenKey.key.range === YieldRangeEnum.YEAR ? t`This year` : t`This period`;
+    const currentLabel = screenKey.key.range === YieldRangeEnum.YEAR ? t`Last 12 months` : t`This period`;
     const priorLabel = useYieldPriorLabel();
 
     return (

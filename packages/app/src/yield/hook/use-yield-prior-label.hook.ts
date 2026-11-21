@@ -8,5 +8,5 @@ export const useYieldPriorLabel = (): string => {
     const { t } = useLingui();
     const { screenKey } = use(YieldScreenContext);
 
-    return screenKey.key.range === YieldRangeEnum.YEAR ? t`Previous year` : t`Previous period`;
+    return screenKey.key.range === YieldRangeEnum.YEAR ? t`12 months before` : t`Previous period`;
 };

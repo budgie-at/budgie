@@ -9,13 +9,13 @@ export const useYieldComparisonPhrase = (range: YieldRangeEnum, tone: YieldDelta
     const phrases: Record<YieldRangeEnum, string> = {
         [YieldRangeEnum.MONTH]: t`vs previous 30 days`,
         [YieldRangeEnum.QUARTER]: t`vs previous 3 months`,
-        [YieldRangeEnum.YEAR]: t`vs previous year`,
+        [YieldRangeEnum.YEAR]: t`vs previous 12 months`,
         [YieldRangeEnum.ALL]: t`vs previous period`
     };
     const flatPhrases: Record<YieldRangeEnum, string> = {
         [YieldRangeEnum.MONTH]: t`about the same as previous 30 days`,
         [YieldRangeEnum.QUARTER]: t`about the same as previous 3 months`,
-        [YieldRangeEnum.YEAR]: t`about the same as previous year`,
+        [YieldRangeEnum.YEAR]: t`about the same as previous 12 months`,
         [YieldRangeEnum.ALL]: t`about the same as previous period`
     };
 

@@ -1342,6 +1342,10 @@ msgstr "1 місяць"
 msgid "1 year"
 msgstr "1 рік"
 
+#: src/yield/hook/use-yield-prior-label.hook.ts
+msgid "12 months before"
+msgstr "12 місяців до того"
+
 #: src/inzhur/component/inzhur-performance-chart/inzhur-performance-chart.tsx
 #: src/market-data/component/currency-market-range-control/currency-market-range-control.tsx
 #: src/yield/constant/yield-range-label.constant.ts
@@ -1483,6 +1487,10 @@ msgid "about the same as {previousLabel}"
 msgstr "приблизно як {previousLabel}"
 
 #: src/yield/hook/use-yield-comparison-phrase.hook.ts
+msgid "about the same as previous 12 months"
+msgstr "приблизно як за попередні 12 місяців"
+
+#: src/yield/hook/use-yield-comparison-phrase.hook.ts
 msgid "about the same as previous 3 months"
 msgstr "приблизно як попередні 3 місяці"
 
@@ -1493,10 +1501,6 @@ msgstr "приблизно як попередні 30 днів"
 #: src/yield/hook/use-yield-comparison-phrase.hook.ts
 msgid "about the same as previous period"
 msgstr "приблизно як попередній період"
-
-#: src/yield/hook/use-yield-comparison-phrase.hook.ts
-msgid "about the same as previous year"
-msgstr "приблизно як попередній рік"
 
 #: src/yield/component/yield-empty-state/yield-empty-state.tsx
 #: src/yield/component/yield-hero-info-button/yield-hero-info-button.tsx
@@ -5683,6 +5687,10 @@ msgstr "Валюта джерела"
 msgid "From one amount to another"
 msgstr "Від однієї суми до іншої"
 
+#: src/yield/constant/yield-kind-description.constant.ts
+msgid "From property and income funds, not counted in yield"
+msgstr "Від фондів нерухомості та дохідних фондів, не враховується в дохідності"
+
 #: src/recurring/components/recurring-series-form-fields/recurring-series-form-fields.tsx
 msgid "From transaction"
 msgstr "З транзакції"
@@ -5706,10 +5714,6 @@ msgstr "Повністю накопичено"
 #: src/inzhur/component/inzhur-purchase-fund-field/inzhur-purchase-fund-field.tsx
 msgid "Fund"
 msgstr "Фонд"
-
-#: src/yield/constant/yield-kind-description.constant.ts
-msgid "Fund payouts, not counted in yield"
-msgstr "Виплати фондів, не враховуються в дохідності"
 
 #: src/account/component/start-deposit-funding-summary/start-deposit-funding-summary.tsx
 msgid "Funding account"
@@ -6421,6 +6425,7 @@ msgstr "Остання {statementDate}"
 msgid "Last 1 month"
 msgstr "Останній 1 місяць"
 
+#: src/yield/component/yield-legend-running/yield-legend-running.tsx
 #: src/yield/constant/yield-range-name.constant.ts
 #: src/yield/constant/yield-range-period-label.constant.ts
 #: src/yield/hook/use-yield-entry-subtitle.hook.ts
@@ -8260,8 +8265,8 @@ msgid "Paid {paidAmount} · {paidCount} of {installmentCount}"
 msgstr "Сплачено {paidAmount} · {paidCount} з {installmentCount}"
 
 #: src/yield/constant/yield-kind-description.constant.ts
-msgid "Paid by stocks and ETFs"
-msgstr "Виплачують акції та ETF"
+msgid "Paid by stocks and dividend ETFs"
+msgstr "Виплачують акції та дивідендні ETF"
 
 #: src/transaction/components/transaction-info-debt-progress/transaction-info-debt-progress.tsx
 msgid "Paid to date: {paid}"
@@ -8693,10 +8698,6 @@ msgstr "попереднього періоду"
 #: src/yield/hook/use-yield-prior-label.hook.ts
 msgid "Previous period"
 msgstr "Попередній період"
-
-#: src/yield/hook/use-yield-prior-label.hook.ts
-msgid "Previous year"
-msgstr "Попередній рік"
 
 #: src/inzhur/component/inzhur-fund-chart/inzhur-fund-chart.tsx
 msgid "Price"
@@ -10986,10 +10987,6 @@ msgstr "Це видалить ваш бюджет. Ви можете будь-к
 msgid "this year"
 msgstr "цього року"
 
-#: src/yield/component/yield-legend-running/yield-legend-running.tsx
-msgid "This year"
-msgstr "Цей рік"
-
 #: src/@generic/constant/date-period.constant.ts
 msgid "This Year"
 msgstr "Цього року"
@@ -11834,6 +11831,10 @@ msgid "vs {previousLabel}"
 msgstr "проти {previousLabel}"
 
 #: src/yield/hook/use-yield-comparison-phrase.hook.ts
+msgid "vs previous 12 months"
+msgstr "порівняно з попередніми 12 місяцями"
+
+#: src/yield/hook/use-yield-comparison-phrase.hook.ts
 msgid "vs previous 3 months"
 msgstr "проти попередніх 3 місяців"
 
@@ -11844,10 +11845,6 @@ msgstr "проти попередніх 30 днів"
 #: src/yield/hook/use-yield-comparison-phrase.hook.ts
 msgid "vs previous period"
 msgstr "проти попереднього періоду"
-
-#: src/yield/hook/use-yield-comparison-phrase.hook.ts
-msgid "vs previous year"
-msgstr "проти попереднього року"
 
 #: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
