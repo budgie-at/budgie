@@ -92,6 +92,7 @@ test('52 passive income', { tags: ['passive-income'] }, async ({ budgie }) => {
     });
 
     await b.phase('3 transaction details yield row opens the filtered screen', async () => {
+        await b.scrollTo(ctx, 'PassiveIncome.NetAfterTax');
         await b.scrollTo(ctx, `PassiveIncome.Position.${ETH_ACCOUNT_ID}`);
         await b.tapId(ctx, `PassiveIncome.Position.${ETH_ACCOUNT_ID}`);
         await b.scrollToCentre(ctx, `PassiveIncome.Payout.${FIRST_ETH_PAYOUT_ID}`);
