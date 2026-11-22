@@ -623,7 +623,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     isolateSourceFailure<E, R>(effect: Effect.Effect<number, E, R>) {
         return effect.pipe(
             Effect.catchIf(
-                error => Schema.is(SyncNetworkError)(error) || Schema.is(SyncInvalidResponseError)(error),
+                error => BinanceSignedClient.isSourceFailure(error),
                 error => this.recordSourceFailure(error)
             )
         );
@@ -729,20 +729,30 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         windowStartMs: number,
         windowEndMs: number
     ): Effect.Effect<readonly T[] | null, SyncError, HttpClient.HttpClient> {
-        return fetchOneWindow(windowStartMs, windowEndMs).pipe(
-            Effect.catchTag('SyncDeferredError', error =>
-                Effect.flatMap(Effect.service(PartialWalkSource), source =>
-                    isDefined(source)
-                        ? Effect.sync(() => {
-                              this.deferredFrontierMsBySource.set(
-                                  source,
-                                  Math.max(this.deferredFrontierMsBySource.get(source) ?? windowEndMs, windowEndMs)
-                              );
+        const stopWalk = (error: SyncError) =>
+            Effect.flatMap(Effect.service(PartialWalkSource), source =>
+                isDefined(source)
+                    ? Effect.sync(() => {
+                          this.deferredFrontierMsBySource.set(
+                              source,
+                              Math.max(this.deferredFrontierMsBySource.get(source) ?? windowEndMs, windowEndMs)
+                          );
 
-                              return null;
-                          })
-                        : Effect.fail(error)
-                )
+                          return null;
+                      })
+                    : Effect.fail(error)
+            );
+
+        return fetchOneWindow(windowStartMs, windowEndMs).pipe(
+            Effect.catchTag('SyncDeferredError', stopWalk),
+            Effect.catchIf(
+                error => BinanceSignedClient.isSourceFailure(error),
+                error =>
+                    Effect.flatMap(Effect.service(PartialWalkSource), source =>
+                        isDefined(source) && this.isSourceUnavailable(source, error)
+                            ? Effect.fail(error)
+                            : Effect.tap(stopWalk(error), () => this.recordSourceFailure(error))
+                    )
             )
         );
     }
@@ -1446,5 +1456,9 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
 
     private sign(query: string, apiSecret: string): string {
         return bytesToHex(hmac(sha256, utf8ToBytes(apiSecret), utf8ToBytes(query)));
+    }
+
+    private static isSourceFailure<E>(error: E): error is E & (SyncNetworkError | SyncInvalidResponseError) {
+        return Schema.is(SyncNetworkError)(error) || Schema.is(SyncInvalidResponseError)(error);
     }
 }

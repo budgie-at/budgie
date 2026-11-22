@@ -7,7 +7,7 @@ import { TransactionListRowPositionEnum } from '../src/transaction/enum/transact
 import { YieldListItemKindEnum } from '../src/yield/enum/yield-list-item-kind.enum';
 import { YieldListSectionEnum } from '../src/yield/enum/yield-list-section.enum';
 import { YieldPayoutDateFormatEnum } from '../src/yield/enum/yield-payout-date-format.enum';
-import { buildYieldListItems } from '../src/yield/utils/build-yield-list-items.util';
+import { buildYieldListItems, buildYieldPayoutItems } from '../src/yield/utils/build-yield-list-items.util';
 
 import { buildAccountWithInstrument } from './fixture/account-with-instrument';
 import { buildPrimaryEntry } from './fixture/transaction-entry';
@@ -41,6 +41,11 @@ const position = (accountId: number, section: YieldPositionSectionEnum): YieldPo
 
 const payout = (id: number, yieldKind: YieldKindEnum | null = null, operatedAt = TIMESTAMP): TransactionWithRelationsEntityInterface =>
     buildTransaction({ id, yieldKind, operatedAt });
+
+const assignedPayout = (id: number, operatedAt: Date): TransactionWithRelationsEntityInterface => ({
+    ...payout(id, null, operatedAt),
+    yieldSourceAccountId: 5
+});
 
 it.effect('lists active, closed and unassigned sections in order', () =>
     Effect.sync(() => {
@@ -124,7 +129,7 @@ it.effect('merges three or more payouts sharing a source and kind into one row',
         const days = [10, 11, 12].map(day => new Date(`2026-10-${day}T12:00:00Z`));
         const items = buildYieldListItems(
             [],
-            [...days.map((day, index) => payout(index + 1, null, day)), payout(9, null, new Date('2026-10-13T12:00:00Z'))].map(
+            [...days.map((day, index) => assignedPayout(index + 1, day)), assignedPayout(9, new Date('2026-10-13T12:00:00Z'))].map(
                 (item, index) => (index === 3 ? { ...item, title: 'Other' } : item)
             ),
             'caption',
@@ -195,12 +200,46 @@ it.effect('lists assigned payouts under their own section when unfiltered', () =
 
 it.effect('sorts rows newest first by their last payout date, merged rows included', () =>
     Effect.sync(() => {
-        const merged = [1, 2, 3].map(index => payout(index, null, new Date(`2026-10-0${index}T12:00:00Z`)));
+        const merged = [1, 2, 3].map(index => assignedPayout(index, new Date(`2026-10-0${index}T12:00:00Z`)));
         const single = { ...payout(9, null, new Date('2026-10-02T18:00:00Z')), title: 'Other' };
         const items = buildYieldListItems([], [...merged, single], 'caption', null);
         const payouts = items.filter(item => item.kind === YieldListItemKindEnum.PAYOUT);
 
         expect(payouts.map(item => item.id)).toEqual(['payout-1', 'payout-9']);
+        expect(payouts.at(0)).toMatchObject({ siblings: [{ id: 1 }, { id: 2 }, { id: 3 }] });
+    })
+);
+
+const repeatedAssigned = (): TransactionWithRelationsEntityInterface[] =>
+    [10, 11, 12].map((day, index) => assignedPayout(index + 1, new Date(`2026-10-${day}T12:00:00Z`)));
+
+it.effect('lists repeated payouts individually on a position page', () =>
+    Effect.sync(() => {
+        const items = buildYieldPayoutItems(repeatedAssigned(), false);
+        const payouts = items.filter(item => item.kind === YieldListItemKindEnum.PAYOUT);
+
+        expect(payouts.map(item => item.id)).toEqual(['payout-3', 'payout-2', 'payout-1']);
+        expect(payouts.every(item => item.siblings.length === 0)).toBe(true);
+    })
+);
+
+it.effect('lists repeated unassigned payouts individually', () =>
+    Effect.sync(() => {
+        const unassigned = [10, 11, 12].map((day, index) => payout(index + 1, null, new Date(`2026-10-${day}T12:00:00Z`)));
+        const items = buildYieldListItems([], [], 'caption', unassigned);
+        const payouts = items.filter(item => item.kind === YieldListItemKindEnum.PAYOUT);
+
+        expect(payouts).toHaveLength(3);
+        expect(payouts.every(item => item.siblings.length === 0)).toBe(true);
+    })
+);
+
+it.effect('merges repeated assigned payouts in the unscoped list', () =>
+    Effect.sync(() => {
+        const items = buildYieldListItems([], repeatedAssigned(), 'caption', []);
+        const payouts = items.filter(item => item.kind === YieldListItemKindEnum.PAYOUT);
+
+        expect(payouts).toHaveLength(1);
         expect(payouts.at(0)).toMatchObject({ siblings: [{ id: 1 }, { id: 2 }, { id: 3 }] });
     })
 );
@@ -232,5 +271,21 @@ it.effect('keeps cents in the month total instead of rounding each payout', () =
 
         expect(totals[0]).toBeCloseTo(1.2, 9);
         expect(totals[1]).toBeCloseTo(0.8, 9);
+    })
+);
+
+it.effect('leaves the month total empty when a payout has no base amount', () =>
+    Effect.sync(() => {
+        const first = smallPayout(1, new Date('2026-10-10T12:00:00Z'));
+        const second = smallPayout(2, new Date('2026-10-09T12:00:00Z'));
+        const noBase = { ...second, entries: second.entries.map(entry => ({ ...entry, baseAmount: null })) };
+        const previous = [smallPayout(3, new Date('2026-09-10T12:00:00Z')), smallPayout(4, new Date('2026-09-09T12:00:00Z'))];
+        const totals = (payouts: TransactionWithRelationsEntityInterface[]) =>
+            buildYieldListItems([], payouts, 'caption', null).flatMap(item =>
+                item.kind === YieldListItemKindEnum.MONTH ? [item.total] : []
+            );
+
+        expect(totals([first, second, ...previous])).toEqual([expect.any(Number), expect.any(Number)]);
+        expect(totals([first, noBase, ...previous])).toEqual([null, expect.any(Number)]);
     })
 );

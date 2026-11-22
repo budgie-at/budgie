@@ -2360,6 +2360,12 @@ msgstr "Avg {averageCost} per {instrumentCode}"
 msgid "Avg {averageCost} per {instrumentCode} · known for {coveredAmount} of {totalAmount}"
 msgstr "Avg {averageCost} per {instrumentCode} · known for {coveredAmount} of {totalAmount}"
 
+#. Compact suffix for billions in amounts, e.g. $1.5B
+#: src/yield/hook/use-yield-compact-suffix.hook.ts
+msgctxt "compact number suffix"
+msgid "B"
+msgstr "B"
+
 #: src/@generic/component/selector-modal-search-header/selector-modal-search-header.tsx
 #: src/@generic/hook/use-morphing-sheet-back.hook.ts
 #: src/transaction/components/transaction-fee-step/transaction-fee-step.tsx
@@ -6398,6 +6404,12 @@ msgstr "Joining {ownerDisplayName}'s family…"
 msgid "Joining the family…"
 msgstr "Joining the family…"
 
+#. Compact suffix for thousands in amounts, e.g. $1.5K
+#: src/yield/hook/use-yield-compact-suffix.hook.ts
+msgctxt "compact number suffix"
+msgid "K"
+msgstr "K"
+
 #: src/ai/hook/use-ai-model-download-actions.hook.ts
 msgid "Keep"
 msgstr "Keep"
@@ -6723,6 +6735,12 @@ msgstr "Lowered {dateLabel} · under 80% for {count} periods"
 msgctxt "Country"
 msgid "Luxembourg"
 msgstr "Luxembourg"
+
+#. Compact suffix for millions in amounts, e.g. $1.5M
+#: src/yield/hook/use-yield-compact-suffix.hook.ts
+msgctxt "compact number suffix"
+msgid "M"
+msgstr "M"
 
 #: src/onboarding/component/onboarding-currency-row/onboarding-currency-row.tsx
 msgid "Main currency"
@@ -10528,6 +10546,12 @@ msgstr "Syncing resumes for all accounts once you update the key."
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Syncing…"
 msgstr "Syncing…"
+
+#. Compact suffix for trillions in amounts, e.g. $1.5T
+#: src/yield/hook/use-yield-compact-suffix.hook.ts
+msgctxt "compact number suffix"
+msgid "T"
+msgstr "T"
 
 #: src/app/(tabs)/settings/tags.tsx
 #: src/budget/components/budget-event-tag-field/budget-event-tag-field.tsx

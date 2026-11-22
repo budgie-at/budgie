@@ -128,7 +128,18 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
         const getRunSignedClient = (token: string): BinanceSignedClient => getTokenRun(token).signedClient;
 
         const deferIfWalkDeferred = (token: string, source: BinanceHistorySourceEnum) =>
-            Effect.suspend(() => (isDefined(getRunSignedClient(token).getDeferredFrontierMs(source)) ? markRunDeferred : Effect.void));
+            Effect.suspend(() => {
+                const client = getRunSignedClient(token);
+                const isWalkDeferred = isDefined(client.getDeferredFrontierMs(source));
+
+                if (isWalkDeferred && client.hasSourceFailure()) {
+                    run = { ...run, providerSourceFailed: true };
+
+                    return Effect.void;
+                }
+
+                return isWalkDeferred ? markRunDeferred : Effect.void;
+            });
 
         const fetchExchangeAccounts = Effect.fnUntraced(function* (token: string) {
             const cachedExchangeAccounts = getTokenRun(token).exchangeAccounts;
@@ -271,7 +282,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             let committedCount = 0;
             if (isDefined(progress)) {
                 committedCount += yield* fetchRange(resolveHeadStartSeconds(progress.headAt), null);
-                if (isRunDeferred() || client.isSourceSkipped(source)) {
+                if (isRunDeferred() || client.isSourceSkipped(source) || isDefined(client.getDeferredFrontierMs(source))) {
                     return committedCount;
                 }
                 yield* databaseLock.withPermit(

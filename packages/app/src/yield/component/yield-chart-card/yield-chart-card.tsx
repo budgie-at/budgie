@@ -24,6 +24,7 @@ export const YieldChartCard = () => {
     const isRunning = !isCompact && mode === YieldChartModeEnum.RUNNING_TOTAL;
     const legend = mode === YieldChartModeEnum.BARS ? <YieldLegend /> : <YieldLegendRunning />;
     const loadedLegend = isDefined(summary) ? legend : null;
+    const hasLegendFootnote = isRunning && isDefined(summary);
 
     return (
         <View
@@ -42,7 +43,7 @@ export const YieldChartCard = () => {
                 </>
             )}
 
-            {isRunning ? null : <YieldLegendFootnote />}
+            {hasLegendFootnote ? null : <YieldLegendFootnote />}
         </View>
     );
 };

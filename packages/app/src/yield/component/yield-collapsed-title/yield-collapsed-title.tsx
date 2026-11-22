@@ -15,8 +15,6 @@ import { YieldScreenContext } from '../../context/yield-screen.context';
 import { useYieldScopeTitle } from '../../hook/use-yield-scope-title.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 
-const CLEAR_BUTTON_STYLE = { right: -56 };
-
 export const YieldCollapsedTitle = () => {
     const { t } = useLingui();
     const { screenKey } = use(YieldScreenContext);
@@ -47,30 +45,24 @@ export const YieldCollapsedTitle = () => {
     }
 
     return (
-        <View className="items-center self-stretch">
-            <Text className="text-center text-[17px] font-semibold text-primary" {...CHROME_TITLE_TEXT_PROPS}>
-                {scopeText}
-            </Text>
-            <Text className="text-center text-xs text-secondary-foreground" {...CHROME_TITLE_TEXT_PROPS}>
-                <Trans>Passive income</Trans>
-            </Text>
-            <Animated.View
-                className="absolute top-1/2 -mt-[22px] h-[44px] min-w-[44px]"
-                style={CLEAR_BUTTON_STYLE}
-                animatedProps={clearButtonAnimatedProps}
-            >
+        <View className="flex-row items-center self-stretch">
+            <View className="flex-1 items-center">
+                <Text className="text-center text-[17px] font-semibold text-primary" {...CHROME_TITLE_TEXT_PROPS}>
+                    {scopeText}
+                </Text>
+                <Text className="text-center text-xs text-secondary-foreground" {...CHROME_TITLE_TEXT_PROPS}>
+                    <Trans>Passive income</Trans>
+                </Text>
+            </View>
+            <Animated.View className="h-[44px] min-w-[44px] shrink-0" animatedProps={clearButtonAnimatedProps}>
                 <Pressable
                     accessibilityRole="button"
                     accessibilityLabel={accessibilityLabel}
                     onPress={handleClear}
-                    className="h-[44px] min-w-[44px] items-center justify-center"
+                    className="h-[44px] min-w-[44px] items-center justify-center px-[4px]"
                     {...testID(PassiveIncomeSelector.ClearFilter, 'collapsed')}
                 >
-                    <Text
-                        className="max-w-[60px] text-[15px] font-medium text-positive-action"
-                        numberOfLines={1}
-                        maxFontSizeMultiplier={1.4}
-                    >
+                    <Text className="text-[15px] font-medium text-positive-action" numberOfLines={1} maxFontSizeMultiplier={1.4}>
                         <Trans>Show all</Trans>
                     </Text>
                 </Pressable>

@@ -8,6 +8,7 @@ import { defaultInstrumentAtom } from '../../settings/constants/settings-atoms.c
 import { formatYieldCompactAmount } from '../utils/format-yield-compact-amount.util';
 
 import { useFormatYieldNumber } from './use-format-yield-number.hook';
+import { useYieldCompactSuffix } from './use-yield-compact-suffix.hook';
 
 const YIELD_NARROW_WINDOW_WIDTH = 375;
 
@@ -16,10 +17,11 @@ export const useFormatYieldFigureAmount = () => {
     const isAmountProtected = useIsAmountProtected();
     const formatAmount = useProtectedAmountLabel();
     const formatNumber = useFormatYieldNumber();
+    const suffixOf = useYieldCompactSuffix();
     const { symbol } = useAtomValue(defaultInstrumentAtom);
 
     return (amount: number): string =>
         width <= YIELD_NARROW_WINDOW_WIDTH && !isAmountProtected && Math.abs(amount) >= HUNDRED_THOUSAND
-            ? formatYieldCompactAmount(amount, symbol, formatNumber)
+            ? formatYieldCompactAmount(amount, symbol, formatNumber, suffixOf)
             : formatAmount(amount, symbol);
 };

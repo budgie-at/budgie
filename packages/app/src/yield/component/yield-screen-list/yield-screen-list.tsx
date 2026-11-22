@@ -76,13 +76,18 @@ export const YieldScreenList = () => {
         }
     };
 
-    const handlePayoutsScroll = () =>
+    const handlePayoutsScroll = () => {
+        if (!items.some(item => item.kind === YieldListItemKindEnum.PAYOUT)) {
+            return;
+        }
+
         void listRef.current?.scrollToIndex({
             index: 0,
             viewPosition: 0,
             viewOffset: getScreenChromeHeaderMetrics(SCREEN_CHROME_HEADER_LAYOUT_METRICS.slotSize, top) + pinnedHeight,
             animated: !isReducedMotion
         });
+    };
 
     const handleRangeLayout = (event: LayoutChangeEvent) => void setRangeY(event.nativeEvent.layout.y);
 

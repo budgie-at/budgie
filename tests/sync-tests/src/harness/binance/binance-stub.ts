@@ -164,6 +164,7 @@ const respondForApiKey =
 interface ServeOptions {
     readonly onServed?: () => void;
     readonly failTimes?: number;
+    readonly failAfter?: number;
 }
 
 const serveWith = (options: ServeOptions | undefined, respond: (info: { readonly request: Request }) => Response) => {
@@ -173,7 +174,11 @@ const serveWith = (options: ServeOptions | undefined, respond: (info: { readonly
         servedCount += 1;
         options?.onServed?.();
 
-        return servedCount <= (options?.failTimes ?? 0) ? new HttpResponse(null, { status: SERVER_ERROR_STATUS }) : respond(info);
+        const failAfter = options?.failAfter ?? 0;
+
+        return servedCount > failAfter && servedCount <= failAfter + (options?.failTimes ?? 0)
+            ? new HttpResponse(null, { status: SERVER_ERROR_STATUS })
+            : respond(info);
     };
 };
 

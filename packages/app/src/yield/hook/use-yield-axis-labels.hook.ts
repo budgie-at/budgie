@@ -16,6 +16,7 @@ import { buildYieldSummaryAxis } from '../utils/build-yield-summary-axis.util';
 import { formatYieldAxisAmount } from '../utils/format-yield-axis-amount.util';
 
 import { useFormatYieldNumber } from './use-format-yield-number.hook';
+import { useYieldCompactSuffix } from './use-yield-compact-suffix.hook';
 import { useYieldSummary } from './use-yield-summary.hook';
 
 import type { YieldAxisInterface } from '../interface/yield-axis.interface';
@@ -29,18 +30,18 @@ export const useYieldAxisLabels = (axis: YieldAxisInterface) => {
     const { t } = useLingui();
     const isAmountProtected = useIsAmountProtected();
     const formatNumber = useFormatYieldNumber();
+    const suffixOf = useYieldCompactSuffix();
     const { symbol } = useAtomValue(defaultInstrumentAtom);
     const { fontScale } = useWindowDimensions();
     const summary = useYieldSummary();
 
     const buildLabels = (target: YieldAxisInterface) =>
         buildYieldAxisLabels(target, YIELD_PLOT_HEIGHT, value =>
-            isAmountProtected ? PROTECTED_AMOUNT_PLACEHOLDER : formatYieldAxisAmount(value, symbol, formatNumber)
+            isAmountProtected ? PROTECTED_AMOUNT_PLACEHOLDER : formatYieldAxisAmount(value, symbol, formatNumber, suffixOf)
         );
     const axisLabels = buildLabels(axis);
     const zeroY = axisLabels.find(({ key }) => key === 'zero')?.y ?? YIELD_PLOT_HEIGHT;
-    const taxLabels = axis.bottom < 0 ? [{ key: 'tax', y: zeroY + TAX_LABEL_OFFSET, text: t`Tax` }] : [];
-    const labels = [...axisLabels, ...taxLabels];
+    const labels = [...axisLabels, ...(axis.bottom < 0 ? [{ key: 'tax', y: zeroY + TAX_LABEL_OFFSET, text: t`Tax` }] : [])];
     const stableAxes = isDefined(summary)
         ? Object.values(YieldChartModeEnum).flatMap(mode =>
               [null, ...YIELD_STACK_GROUPS].map(group => buildYieldSummaryAxis(summary, group, mode))

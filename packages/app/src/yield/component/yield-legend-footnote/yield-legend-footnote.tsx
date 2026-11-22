@@ -16,6 +16,8 @@ const FOOTNOTE_STYLE = { minHeight: YIELD_FOOTNOTE_HEIGHT };
 export const YieldLegendFootnote = () => {
     const { isFailure, isEstimated, details } = useYieldFootnoteState();
     const footnoteRef = useYieldFootnoteFocus(isFailure);
+    const hasDetailsRow = isFailure || isDefined(details);
+    const estimatedRef = hasDetailsRow ? null : footnoteRef;
 
     if (!isFailure && !isDefined(details) && !isEstimated) {
         return null;
@@ -23,7 +25,7 @@ export const YieldLegendFootnote = () => {
 
     return (
         <View className="gap-y-xs">
-            {isFailure || isDefined(details) ? (
+            {hasDetailsRow ? (
                 <View
                     ref={footnoteRef}
                     accessible={!isFailure}
@@ -38,7 +40,7 @@ export const YieldLegendFootnote = () => {
                 </View>
             ) : null}
             {isEstimated ? (
-                <View accessible className="pl-[20px]" testID={PassiveIncomeSelector.LegendRow(ESTIMATED_KEY)}>
+                <View ref={estimatedRef} accessible className="pl-[20px]" testID={PassiveIncomeSelector.LegendRow(ESTIMATED_KEY)}>
                     <Text className="text-sm text-secondary-foreground">
                         <Trans>≈ Includes estimated prices</Trans>
                     </Text>

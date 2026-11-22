@@ -6,6 +6,9 @@ import { isDefined } from '@rnw-community/shared';
 
 import { YIELD_GROUP_LABEL } from '../constant/yield-group-label.constant';
 import { YieldPayoutsScrollContext } from '../context/yield-payouts-scroll.context';
+import { YieldScreenContext } from '../context/yield-screen.context';
+import { YieldSelectionContext } from '../context/yield-selection.context';
+import { sumYieldScrubbedBuckets } from '../utils/sum-yield-scrubbed-buckets.util';
 
 import { useYieldDateLabels } from './use-yield-date-labels.hook';
 import { useYieldSpokenAmount } from './use-yield-spoken-amount.hook';
@@ -24,25 +27,29 @@ export const useYieldPlotAccessibility = (
     const { formatPeriod } = useYieldDateLabels();
     const amountOf = useYieldSpokenAmount();
     const requestPayoutsScroll = use(YieldPayoutsScrollContext);
+    const { mode } = use(YieldScreenContext);
+    const { cancelScrub } = use(YieldSelectionContext);
 
     const buckets = summary?.buckets ?? [];
     const currentIndex = Math.min(selectedIndex ?? buckets.length - 1, buckets.length - 1);
     const bucket = buckets.at(currentIndex);
+    const scrubbed = sumYieldScrubbedBuckets(buckets, currentIndex, mode);
     const parts = (summary?.groups ?? [])
         .map(({ group }) => {
             const label = t(YIELD_GROUP_LABEL[group]);
-            const amount = amountOf(bucket?.amounts[group] ?? 0);
+            const amount = amountOf(scrubbed.amountOf(group));
 
             return t`${label}: ${amount}`;
         })
         .join(', ');
     const period = isDefined(bucket) && isDefined(summary) ? formatPeriod(bucket, summary.bucketUnit) : '';
-    const total = amountOf(bucket?.total ?? 0);
+    const total = amountOf(scrubbed.total);
 
     const handleAccessibilityAction = (event: AccessibilityActionEvent) => {
         const { actionName } = event.nativeEvent;
 
         if (actionName.startsWith(PAYOUTS_ACTION_PREFIX)) {
+            cancelScrub();
             router.setParams({ group: actionName.slice(PAYOUTS_ACTION_PREFIX.length) });
             requestPayoutsScroll();
 

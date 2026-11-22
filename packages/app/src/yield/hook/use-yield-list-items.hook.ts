@@ -8,7 +8,7 @@ import { TransactionListRowPositionEnum } from '../../transaction/enum/transacti
 import { YieldScreenContext } from '../context/yield-screen.context';
 import { YieldListItemKindEnum } from '../enum/yield-list-item-kind.enum';
 import { YieldListSectionEnum } from '../enum/yield-list-section.enum';
-import { buildYieldListItems } from '../utils/build-yield-list-items.util';
+import { buildYieldListItems, buildYieldPayoutItems } from '../utils/build-yield-list-items.util';
 
 import { useYieldHasWithheldTax } from './use-yield-has-withheld-tax.hook';
 import { useYieldPayouts } from './use-yield-payouts.hook';
@@ -30,11 +30,17 @@ export const useYieldListItems = (): readonly YieldListItemType[] => {
         screenKey: { key },
         rangeCaption
     } = use(YieldScreenContext);
-    const isPayoutMode = isDefined(key.positionAccountId) || isDefined(key.instrumentId) || isDefined(key.group);
     const summary = useYieldSettledSummary();
     const hasWithheldTax = useYieldHasWithheldTax();
     const isAllTime = key.range === YieldRangeEnum.ALL;
-    const { payouts: fetchedPayouts, unassigned, isLoading } = useYieldPayouts(isPayoutMode, isAllTime ? ALL_TIME_PAYOUT_LIMIT + 1 : null);
+    const {
+        payouts: fetchedPayouts,
+        unassigned,
+        isLoading
+    } = useYieldPayouts(
+        isDefined(key.positionAccountId) || isDefined(key.instrumentId) || isDefined(key.group),
+        isAllTime ? ALL_TIME_PAYOUT_LIMIT + 1 : null
+    );
 
     if (!isDefined(summary) || isLoading) {
         return SKELETON_ITEMS;
@@ -43,11 +49,16 @@ export const useYieldListItems = (): readonly YieldListItemType[] => {
     const isTruncated = isAllTime && fetchedPayouts.length > ALL_TIME_PAYOUT_LIMIT;
     const payouts = isTruncated ? fetchedPayouts.slice(0, ALL_TIME_PAYOUT_LIMIT) : fetchedPayouts;
     const isSinglePayoutInCard = summary.payoutCount === 1;
-    const items = buildYieldListItems(
-        summary.positions,
-        isSinglePayoutInCard ? [] : payouts,
-        rangeCaption,
-        isSinglePayoutInCard && isDefined(unassigned) ? [] : unassigned
+    const visiblePayouts = isSinglePayoutInCard ? [] : payouts;
+    const items = (
+        isDefined(key.positionAccountId)
+            ? buildYieldPayoutItems(visiblePayouts, false)
+            : buildYieldListItems(
+                  summary.positions,
+                  visiblePayouts,
+                  rangeCaption,
+                  isSinglePayoutInCard && isDefined(unassigned) ? [] : unassigned
+              )
     ).map(item =>
         hasWithheldTax && item.kind === YieldListItemKindEnum.SECTION && item.section === YieldListSectionEnum.PAYOUTS
             ? { ...item, hasTax: true }

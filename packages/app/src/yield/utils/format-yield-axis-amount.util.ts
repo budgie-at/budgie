@@ -11,5 +11,6 @@ const resolveShortestDigits = (scaled: number): number =>
 export const formatYieldAxisAmount = (
     value: number,
     symbol: string,
-    formatNumber: (absolute: number, fractionDigits: number) => string
-): string => formatYieldCompactAmount(value, symbol, scaled => formatNumber(scaled, resolveShortestDigits(scaled)));
+    formatNumber: (absolute: number, fractionDigits: number) => string,
+    suffixOf: (divisor: number) => string
+): string => formatYieldCompactAmount(value, symbol, scaled => formatNumber(scaled, resolveShortestDigits(scaled)), suffixOf);

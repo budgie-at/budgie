@@ -18,7 +18,7 @@ const PERCENT = 100;
 const rankOf = (group: YieldGroupEnum): number => YIELD_STACK_GROUPS.findIndex(stacked => stacked === group);
 
 export const useYieldLegendRows = () => {
-    const { mode } = use(YieldScreenContext);
+    const { mode, screenKey } = use(YieldScreenContext);
     const { selectedIndex } = use(YieldSelectionContext);
     const summary = useYieldSummary();
     const decimalPlaces = useAtomValue(decimalPlacesAtom);
@@ -28,7 +28,8 @@ export const useYieldLegendRows = () => {
     const rawTotals = groups.map(({ group, total }) => (isDefined(selectedIndex) ? scrubbed.amountOf(group) : total));
     const displayedTotal = isDefined(selectedIndex) ? scrubbed.total : (summary?.earned.value ?? 0);
     const rawSum = rawTotals.reduce((accumulated, part) => accumulated + part, 0);
-    const roundedTotals = roundYieldParts(rawTotals, Math.abs(rawSum - displayedTotal) <= 1 ? displayedTotal : rawSum, decimalPlaces);
+    const roundingTarget = !isDefined(screenKey.key.group) && Math.abs(rawSum - displayedTotal) <= 1 ? displayedTotal : rawSum;
+    const roundedTotals = roundYieldParts(rawTotals, roundingTarget, decimalPlaces);
     const rows = groups
         .map(({ group }, index) => ({ group, total: roundedTotals.at(index) ?? 0 }))
         .sort((left, right) => rankOf(left.group) - rankOf(right.group));

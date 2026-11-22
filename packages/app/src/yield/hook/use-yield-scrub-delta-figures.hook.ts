@@ -35,10 +35,11 @@ export const useYieldScrubDeltaFigures = (current: number, previous: number) => 
     const sign = DIRECTION_SIGN[direction];
     const percent = formatPercent(Math.abs(change) / Math.abs(previous));
     const figures = previous === 0 ? `${sign}${amount}` : t`${sign}${amount} · ${sign}${percent}`;
-    const isFlat = previous !== 0 && Math.abs(change) / Math.abs(previous) < YIELD_NEUTRAL_RATIO;
+    const isFlat = direction === 0 || (previous !== 0 && Math.abs(change) / Math.abs(previous) < YIELD_NEUTRAL_RATIO);
+    const arrow = isFlat ? '' : YIELD_TREND_ARROW[DIRECTION_TREND[direction]];
 
     return {
-        label: direction === 0 ? t`No change` : `${YIELD_TREND_ARROW[DIRECTION_TREND[direction]]}${figures}`,
+        label: direction === 0 ? t`No change` : `${arrow}${figures}`,
         tone: isFlat ? YieldDeltaToneEnum.NEUTRAL : DIRECTION_TONE[direction],
         isFlat
     };

@@ -5,6 +5,13 @@ import { formatYieldCompactAmount } from '../src/yield/utils/format-yield-compac
 import { pickYieldCompactDivisor } from '../src/yield/utils/pick-yield-compact-divisor.util';
 
 const formatNumber = (absolute: number, digits: number) => absolute.toFixed(digits);
+const suffixOf = (divisor: number) =>
+    new Map([
+        [1_000, 'K'],
+        [1_000_000, 'M'],
+        [1_000_000_000, 'B'],
+        [1_000_000_000_000, 'T']
+    ]).get(divisor) ?? '';
 
 it.each([
     [500, '$500'],
@@ -18,7 +25,7 @@ it.each([
     [0.002, '$0.002'],
     [0.0005, '$0.0005']
 ])('formats the axis tick %d as the shortest exact form %s', (value, expected) => {
-    expect(formatYieldAxisAmount(value, '$', formatNumber)).toBe(expected);
+    expect(formatYieldAxisAmount(value, '$', formatNumber, suffixOf)).toBe(expected);
 });
 
 it.each([
@@ -33,7 +40,7 @@ it.each([
     [2.5, '$2.50'],
     [999_800, '$1.00M']
 ])('formats the compact amount %d as %s', (value, expected) => {
-    expect(formatYieldCompactAmount(value, '$', formatNumber)).toBe(expected);
+    expect(formatYieldCompactAmount(value, '$', formatNumber, suffixOf)).toBe(expected);
 });
 
 it('does not pick a unit below the threshold', () => {

@@ -79,34 +79,36 @@ const foldTaxIntoIncome = (day: readonly TransactionWithRelationsEntityInterface
 
 const MERGE_THRESHOLD = 3;
 
-const toMergeKey = ({ transaction, tax }: YieldPayoutFoldInterface): string =>
-    isDefined(tax) || isTax(transaction)
+const toMergeKey = ({ transaction, tax }: YieldPayoutFoldInterface, canMerge: boolean): string =>
+    !canMerge || isDefined(tax) || isTax(transaction) || !isDefined(transaction.yieldSourceAccountId)
         ? `single-${transaction.id}`
         : `${toPayoutAccountId(transaction)}|${transaction.yieldKind}|${transaction.yieldSourceAccountId}|${transaction.title}`;
 
-const mergeRepeatedPayouts = (rows: readonly YieldPayoutFoldInterface[]): YieldPayoutFoldInterface[] =>
-    groupBy(rows, toMergeKey).flatMap((group): YieldPayoutFoldInterface[] =>
+const mergeRepeatedPayouts = (rows: readonly YieldPayoutFoldInterface[], canMerge: boolean): YieldPayoutFoldInterface[] =>
+    groupBy(rows, row => toMergeKey(row, canMerge)).flatMap((group): YieldPayoutFoldInterface[] =>
         group.length < MERGE_THRESHOLD
             ? group
             : [{ transaction: group[0].transaction, tax: null, siblings: group.map(({ transaction }) => transaction) }]
     );
 
-const toRowDisplayedAmount = ({ transaction, siblings }: YieldPayoutFoldInterface): number => {
-    if (isTax(transaction)) {
-        return 0;
-    }
+const toRowSources = ({ transaction, siblings }: YieldPayoutFoldInterface): readonly TransactionWithRelationsEntityInterface[] =>
+    isNotEmptyArray(siblings) ? siblings : [transaction];
 
-    const sources: readonly TransactionWithRelationsEntityInterface[] = isNotEmptyArray(siblings) ? siblings : [transaction];
-    const baseAmounts = sources.map(source => getYieldPayoutEntry(source)?.baseAmount ?? 0);
+const toRowBaseAmounts = (row: YieldPayoutFoldInterface): (number | null)[] =>
+    toRowSources(row).map(source => {
+        const entry = getYieldPayoutEntry(source);
 
-    return Math.abs(convertFromMicroUnits(baseAmounts.reduce((total, amount) => total + amount, 0)));
-};
+        return isDefined(entry) ? entry.baseAmount : 0;
+    });
 
 const toRowLastDate = ({ transaction, siblings }: YieldPayoutFoldInterface): number =>
     Math.max(transaction.operatedAt.getTime(), ...siblings.map(sibling => sibling.operatedAt.getTime()));
 
-const toMonthTotal = (rows: readonly YieldPayoutFoldInterface[]): number =>
-    rows.reduce((total, row) => total + toRowDisplayedAmount(row), 0);
+const toMonthTotal = (rows: readonly YieldPayoutFoldInterface[]): number | null => {
+    const baseAmounts = rows.filter(({ transaction }) => !isTax(transaction)).flatMap(toRowBaseAmounts);
+
+    return baseAmounts.every(isDefined) ? Math.abs(convertFromMicroUnits(baseAmounts.reduce((total, amount) => total + amount, 0))) : null;
+};
 
 const toPayoutItem = (
     { transaction, tax, siblings }: YieldPayoutFoldInterface,
@@ -124,12 +126,16 @@ const toPayoutItem = (
     position
 });
 
-const toPayouts = (payouts: readonly TransactionWithRelationsEntityInterface[], isUnassigned: boolean): YieldListItemType[] => {
+const toPayouts = (
+    payouts: readonly TransactionWithRelationsEntityInterface[],
+    isUnassigned: boolean,
+    canMerge: boolean
+): YieldListItemType[] => {
     const months = groupBy(
         groupBy(payouts, transaction => format(transaction.operatedAt, DAY_KEY_FORMAT)).flatMap(foldTaxIntoIncome),
         ({ transaction }) => format(transaction.operatedAt, MONTH_KEY_FORMAT)
     ).map(rows =>
-        mergeRepeatedPayouts(rows).sort(
+        mergeRepeatedPayouts(rows, canMerge).sort(
             (left, right) => toRowLastDate(right) - toRowLastDate(left) || left.transaction.title.localeCompare(right.transaction.title)
         )
     );
@@ -169,6 +175,12 @@ const toPositions = (positions: readonly YieldPositionSummaryInterface[], rangeC
         rowPosition: toRowPosition(index, positions.length)
     }));
 
+export const buildYieldPayoutItems = (
+    payouts: readonly TransactionWithRelationsEntityInterface[],
+    canMerge: boolean
+): YieldListItemType[] =>
+    isNotEmptyArray(payouts) ? [toSection(YieldListSectionEnum.PAYOUTS, payouts.some(isTax)), ...toPayouts(payouts, false, canMerge)] : [];
+
 export const buildYieldListItems = (
     positions: readonly YieldPositionSummaryInterface[],
     payouts: readonly TransactionWithRelationsEntityInterface[],
@@ -176,7 +188,7 @@ export const buildYieldListItems = (
     unassigned: readonly TransactionWithRelationsEntityInterface[] | null
 ): YieldListItemType[] => {
     if (!isDefined(unassigned)) {
-        return isNotEmptyArray(payouts) ? [toSection(YieldListSectionEnum.PAYOUTS, payouts.some(isTax)), ...toPayouts(payouts, false)] : [];
+        return buildYieldPayoutItems(payouts, true);
     }
 
     const active = positions.filter(position => position.section === YieldPositionSectionEnum.ACTIVE);
@@ -187,7 +199,7 @@ export const buildYieldListItems = (
     return [
         ...(isNotEmptyArray(active) ? [toSection(YieldListSectionEnum.ACTIVE), ...toPositions(active, rangeCaption)] : []),
         ...(isNotEmptyArray(closed) ? [toSection(YieldListSectionEnum.CLOSED), ...toPositions(closed, rangeCaption)] : []),
-        ...(isNotEmptyArray(unassigned) ? [toSection(YieldListSectionEnum.UNASSIGNED), ...toPayouts(unassigned, true)] : []),
-        ...(isNotEmptyArray(assigned) ? [toSection(YieldListSectionEnum.PAYOUTS, assigned.some(isTax)), ...toPayouts(assigned, false)] : [])
+        ...(isNotEmptyArray(unassigned) ? [toSection(YieldListSectionEnum.UNASSIGNED), ...toPayouts(unassigned, true, false)] : []),
+        ...buildYieldPayoutItems(assigned, true)
     ];
 };

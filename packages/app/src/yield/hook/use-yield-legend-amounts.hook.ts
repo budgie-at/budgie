@@ -7,6 +7,7 @@ import { defaultInstrumentAtom } from '../../settings/constants/settings-atoms.c
 import { formatYieldCompactAmount } from '../utils/format-yield-compact-amount.util';
 
 import { useFormatYieldNumber } from './use-format-yield-number.hook';
+import { useYieldCompactSuffix } from './use-yield-compact-suffix.hook';
 
 const EMPTY_AMOUNT = '—';
 
@@ -14,11 +15,12 @@ export const useYieldLegendAmounts = (total: number, share: number, isCompact: b
     const isAmountProtected = useIsAmountProtected();
     const formatAmount = useProtectedAmountLabel();
     const formatNumber = useFormatYieldNumber();
+    const suffixOf = useYieldCompactSuffix();
     const formatPercent = useFormatPercent();
     const { symbol } = useAtomValue(defaultInstrumentAtom);
 
     const exact = isEmpty ? EMPTY_AMOUNT : formatAmount(total, symbol);
-    const compact = isAmountProtected || isEmpty || !isCompact ? exact : formatYieldCompactAmount(total, symbol, formatNumber);
+    const compact = isAmountProtected || isEmpty || !isCompact ? exact : formatYieldCompactAmount(total, symbol, formatNumber, suffixOf);
 
     return { exact, amount: compact, share: formatPercent(share) };
 };
