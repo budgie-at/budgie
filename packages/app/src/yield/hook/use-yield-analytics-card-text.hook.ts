@@ -56,6 +56,7 @@ export const useYieldAnalyticsCardText = (
         focusedText,
         takeaway: visibleTakeaway,
         tone,
-        accessibilityLabel: `${spoken}. ${t`Opens Passive income`}`
+        accessibilityLabel: spoken,
+        accessibilityHint: t`Opens Passive income`
     };
 };

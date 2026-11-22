@@ -36,7 +36,7 @@ export const PassiveIncomeAnalyticsCardContent = ({ earned, focus, period }: Pro
         () => null
     );
 
-    const { title, headlineText, caption, focusedText, takeaway, tone, accessibilityLabel } = useYieldAnalyticsCardText(
+    const { title, headlineText, caption, focusedText, takeaway, tone, accessibilityLabel, accessibilityHint } = useYieldAnalyticsCardText(
         summary,
         earned,
         focus,
@@ -56,6 +56,7 @@ export const PassiveIncomeAnalyticsCardContent = ({ earned, focus, period }: Pro
         <HapticPressable
             accessibilityRole="button"
             accessibilityLabel={accessibilityLabel}
+            accessibilityHint={accessibilityHint}
             onPress={handlePress}
             testID={PassiveIncomeSelector.AnalyticsCard}
             className="gap-y-md rounded-3xl bg-surface-row p-[16px]"

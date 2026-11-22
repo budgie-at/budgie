@@ -5,6 +5,7 @@ import { use } from 'react';
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
+import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
 import { YieldScreenContext } from '../../context/yield-screen.context';
 import { useYieldScopeTitle } from '../../hook/use-yield-scope-title.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
@@ -15,6 +16,7 @@ export const YieldOpenPositionRow = () => {
     const scopeTitle = useYieldScopeTitle();
 
     const { positionAccountId, instrumentId } = screenKey.key;
+    const { account } = useGetAccountByIdQuery(positionAccountId ?? 0);
 
     const title = isNotEmptyString(scopeTitle) ? t`Open ${scopeTitle}` : t`Open holding`;
 
@@ -29,6 +31,10 @@ export const YieldOpenPositionRow = () => {
             router.push({ pathname: '/currency/[id]', params: { id: String(instrumentId) } });
         }
     };
+
+    if (isDefined(positionAccountId) && !isDefined(account)) {
+        return null;
+    }
 
     return <GroupedListRow title={title} onPress={handlePress} testID={PassiveIncomeSelector.OpenPosition} />;
 };

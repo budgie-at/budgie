@@ -731,8 +731,12 @@ msgid "passive-income.chart.so-far"
 msgstr "{label} hasta ahora"
 
 #: src/yield/component/yield-legend-row/yield-legend-row.tsx
-msgid "{label}, {exactAmount}"
-msgstr "{label}, {exactAmount}"
+msgid "{label}, {spokenAmount}"
+msgstr "{label}, {spokenAmount}"
+
+#: src/yield/component/yield-legend-row/yield-legend-row.tsx
+msgid "{label}, {spokenAmount}, {shareText}"
+msgstr "{label}, {spokenAmount}, {shareText}"
 
 #: src/yield/component/yield-hero-period-caption/yield-hero-period-caption.tsx
 #: src/yield/hook/use-yield-plot-accessibility.hook.ts
@@ -4863,17 +4867,33 @@ msgstr "Ganado"
 msgid "Earned {amountText} before tax through {throughDay}."
 msgstr "Ganado {amountText} antes de impuestos hasta {throughDay}."
 
-#: src/yield/component/yield-hero-caption/yield-hero-caption.tsx
-msgid "Earned in {bucketPeriod}"
-msgstr "Ganado en {bucketPeriod}"
+#: src/yield/hook/use-yield-date-labels.hook.ts
+msgid "Earned in {month}"
+msgstr "Ganado en {month}"
+
+#: src/yield/hook/use-yield-date-labels.hook.ts
+msgid "Earned in {quarter}"
+msgstr "Ganado en {quarter}"
+
+#: src/yield/hook/use-yield-date-labels.hook.ts
+msgid "Earned in {year}"
+msgstr "Ganado en {year}"
 
 #: src/yield/component/yield-section-header/yield-section-header.tsx
 msgid "Earned in range"
 msgstr "Ganado en el periodo"
 
+#: src/yield/hook/use-yield-date-labels.hook.ts
+msgid "Earned in the week of {weekStart}"
+msgstr "Ganado en la semana del {weekStart}"
+
 #: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
 msgid "Earned minus tax withheld."
 msgstr "Ganado menos el impuesto retenido."
+
+#: src/yield/hook/use-yield-date-labels.hook.ts
+msgid "Earned on {day}"
+msgstr "Ganado el {day}"
 
 #: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
 msgid "Earned over the last 12 months divided by the balance that earned it. Holdings without a rate are left out. Crypto uses your whole balance, staked or not. Distributions aren’t counted."
@@ -7352,6 +7372,10 @@ msgstr "Aún no hay ninguna posición que vincular"
 msgid "No icons found"
 msgstr "No se encontraron iconos"
 
+#: src/yield/component/yield-legend-row/yield-legend-row.tsx
+msgid "no income"
+msgstr "sin ingresos"
+
 #: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
 msgid "No income in this view"
 msgstr "No hay ingresos en esta vista"
@@ -9122,6 +9146,11 @@ msgstr "Eliminar comisión"
 #: src/transaction/components/transaction-fee-remove-button/transaction-fee-remove-button.tsx
 msgid "Remove fee?"
 msgstr "¿Eliminar comisión?"
+
+#: src/yield/component/yield-collapsed-title/yield-collapsed-title.tsx
+#: src/yield/component/yield-scope-filter-chip/yield-scope-filter-chip.tsx
+msgid "Remove filter"
+msgstr "Quitar el filtro"
 
 #: src/transaction/components/split-entries-step/split-entries-step.tsx
 #: src/transaction/hook/use-split-entries-submit.hook.ts

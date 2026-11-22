@@ -731,8 +731,12 @@ msgid "passive-income.chart.so-far"
 msgstr "{label} à ce jour"
 
 #: src/yield/component/yield-legend-row/yield-legend-row.tsx
-msgid "{label}, {exactAmount}"
-msgstr "{label}, {exactAmount}"
+msgid "{label}, {spokenAmount}"
+msgstr "{label}, {spokenAmount}"
+
+#: src/yield/component/yield-legend-row/yield-legend-row.tsx
+msgid "{label}, {spokenAmount}, {shareText}"
+msgstr "{label}, {spokenAmount}, {shareText}"
 
 #: src/yield/component/yield-hero-period-caption/yield-hero-period-caption.tsx
 #: src/yield/hook/use-yield-plot-accessibility.hook.ts
@@ -4863,17 +4867,33 @@ msgstr "Gagné"
 msgid "Earned {amountText} before tax through {throughDay}."
 msgstr "{amountText} gagnés avant impôts jusqu’au {throughDay}."
 
-#: src/yield/component/yield-hero-caption/yield-hero-caption.tsx
-msgid "Earned in {bucketPeriod}"
-msgstr "Gagné en {bucketPeriod}"
+#: src/yield/hook/use-yield-date-labels.hook.ts
+msgid "Earned in {month}"
+msgstr "Gagné en {month}"
+
+#: src/yield/hook/use-yield-date-labels.hook.ts
+msgid "Earned in {quarter}"
+msgstr "Gagné en {quarter}"
+
+#: src/yield/hook/use-yield-date-labels.hook.ts
+msgid "Earned in {year}"
+msgstr "Gagné en {year}"
 
 #: src/yield/component/yield-section-header/yield-section-header.tsx
 msgid "Earned in range"
 msgstr "Gagné sur la période"
 
+#: src/yield/hook/use-yield-date-labels.hook.ts
+msgid "Earned in the week of {weekStart}"
+msgstr "Gagné la semaine du {weekStart}"
+
 #: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
 msgid "Earned minus tax withheld."
 msgstr "Gagné moins l’impôt retenu."
+
+#: src/yield/hook/use-yield-date-labels.hook.ts
+msgid "Earned on {day}"
+msgstr "Gagné le {day}"
 
 #: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
 msgid "Earned over the last 12 months divided by the balance that earned it. Holdings without a rate are left out. Crypto uses your whole balance, staked or not. Distributions aren’t counted."
@@ -7352,6 +7372,10 @@ msgstr "Aucune position à lier pour le moment"
 msgid "No icons found"
 msgstr "Aucune icône trouvée"
 
+#: src/yield/component/yield-legend-row/yield-legend-row.tsx
+msgid "no income"
+msgstr "aucun revenu"
+
 #: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
 msgid "No income in this view"
 msgstr "Aucun revenu dans cette vue"
@@ -9122,6 +9146,11 @@ msgstr "Supprimer les frais"
 #: src/transaction/components/transaction-fee-remove-button/transaction-fee-remove-button.tsx
 msgid "Remove fee?"
 msgstr "Supprimer les frais ?"
+
+#: src/yield/component/yield-collapsed-title/yield-collapsed-title.tsx
+#: src/yield/component/yield-scope-filter-chip/yield-scope-filter-chip.tsx
+msgid "Remove filter"
+msgstr "Retirer le filtre"
 
 #: src/transaction/components/split-entries-step/split-entries-step.tsx
 #: src/transaction/hook/use-split-entries-submit.hook.ts

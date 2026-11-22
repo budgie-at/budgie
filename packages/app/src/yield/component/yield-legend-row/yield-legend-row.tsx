@@ -2,7 +2,7 @@ import { useLingui } from '@lingui/react/macro';
 import { use } from 'react';
 import { View } from 'react-native';
 
-import { isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { HapticPressFeedbackEnum } from '../../../@generic/enum/haptic-press-feedback.enum';
@@ -36,15 +36,15 @@ export const YieldLegendRow = ({ group, total, share, isCompact, onPress }: Prop
     const { screenKey } = use(YieldScreenContext);
     const { selectedIndex } = use(YieldSelectionContext);
 
-    const hasFilter = isDefined(screenKey.key.group);
     const isSelected = screenKey.key.group === group;
-    const isDimmed = hasFilter && !isSelected;
+    const isDimmed = isDefined(screenKey.key.group) && !isSelected;
     const isEmpty = isDefined(selectedIndex) && !isPositiveNumber(total);
     const { exact: exactAmount, amount, share: formattedShare } = useYieldLegendAmounts(total, share ?? 0, isCompact, isEmpty);
     const { background } = useYieldGroupColor(group);
     const label = t(YIELD_GROUP_LABEL[group]);
     const shareText = isEmpty || !isDefined(share) ? null : formattedShare;
-    const selectionClassName = cn(SELECTION_CLASSNAME, background);
+    const spokenAmount = isEmpty ? t`no income` : exactAmount;
+    const accessibilityLabel = isNotEmptyString(shareText) ? t`${label}, ${spokenAmount}, ${shareText}` : t`${label}, ${spokenAmount}`;
     const accessibilityState = { selected: isSelected };
 
     const handlePress = () => void onPress(group);
@@ -53,7 +53,7 @@ export const YieldLegendRow = ({ group, total, share, isCompact, onPress }: Prop
         <HapticPressable
             accessibilityRole="button"
             accessibilityState={accessibilityState}
-            accessibilityLabel={t`${label}, ${exactAmount}`}
+            accessibilityLabel={accessibilityLabel}
             accessibilityHint={t`Filters the screen by this kind`}
             pressFeedback={HapticPressFeedbackEnum.SELECTION}
             onPress={handlePress}
@@ -62,7 +62,7 @@ export const YieldLegendRow = ({ group, total, share, isCompact, onPress }: Prop
             style={ROW_STYLE}
             hitSlop={ROW_HIT_SLOP}
         >
-            {isSelected ? <View pointerEvents="none" className={selectionClassName} /> : null}
+            {isSelected ? <View pointerEvents="none" className={cn(SELECTION_CLASSNAME, background)} /> : null}
             <YieldLegendEntry group={group} label={label} amount={amount} share={shareText} isMuted={isDimmed} isEmpty={isEmpty} />
         </HapticPressable>
     );

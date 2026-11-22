@@ -6,7 +6,7 @@ import Animated, { useAnimatedProps } from 'react-native-reanimated';
 
 import { useCollapsibleHeaderScroll } from '@rnw-community/react-native-collapsible-header';
 import { useScreenChrome } from '@rnw-community/react-native-screen-chrome';
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { CHROME_TITLE_TEXT_PROPS } from '../../../@generic/constant/chrome-title-text-props.constant';
 import { testID } from '../../../@generic/utils/test-id.util';
@@ -34,7 +34,7 @@ export const YieldCollapsedTitle = () => {
     );
 
     const scopeText = scopes.join(' · ');
-    const accessibilityLabel = t`Remove ${scopeText} filter`;
+    const accessibilityLabel = isNotEmptyString(scopeText) ? t`Remove ${scopeText} filter` : t`Remove filter`;
 
     const handleClear = () => void router.setParams({ position: '', instrument: '', group: '', focus: '' });
 
@@ -66,7 +66,11 @@ export const YieldCollapsedTitle = () => {
                     className="h-[44px] min-w-[44px] items-center justify-center"
                     {...testID(PassiveIncomeSelector.ClearFilter, 'collapsed')}
                 >
-                    <Text className="text-[15px] font-medium text-positive-action" numberOfLines={1} maxFontSizeMultiplier={1.4}>
+                    <Text
+                        className="max-w-[60px] text-[15px] font-medium text-positive-action"
+                        numberOfLines={1}
+                        maxFontSizeMultiplier={1.4}
+                    >
                         <Trans>Show all</Trans>
                     </Text>
                 </Pressable>

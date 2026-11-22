@@ -366,7 +366,7 @@ msgstr "{count, plural, one {# Monat} other {# Monate}}"
 #. js-lingui-explicit-id
 #: src/yield/component/yield-chart-summary/yield-chart-summary.tsx
 msgid "passive-income.payouts.title"
-msgstr "{count, plural, one {# Ausschüttung} other {# Ausschüttungen}}"
+msgstr "{count, plural, one {# Auszahlung} other {# Auszahlungen}}"
 
 #: src/category/hooks/use-move-and-delete-category.hook.ts
 msgid "{count, plural, one {# transaction moves to “{targetTitle}”. “{sourceTitle}” will be deleted.} other {# transactions move to “{targetTitle}”. “{sourceTitle}” will be deleted.}}"
@@ -406,7 +406,7 @@ msgstr "{count, plural, one {# Transaktion nach „{targetTitle}“ verschieben 
 
 #: src/yield/component/yield-truncated-payouts-row/yield-truncated-payouts-row.tsx
 msgid "{count, plural, one {Showing the latest # payout} other {Showing the latest # payouts}}"
-msgstr "{count, plural, one {Die letzte Ausschüttung wird angezeigt} other {Die letzten # Ausschüttungen werden angezeigt}}"
+msgstr "{count, plural, one {Die letzte Auszahlung wird angezeigt} other {Die letzten # Auszahlungen werden angezeigt}}"
 
 #: src/categorize-inbox/components/categorize-inbox-payments-bar/categorize-inbox-payments-bar.tsx
 msgid "{count, plural, one {Use # payment} other {Use # payments}}"
@@ -731,8 +731,12 @@ msgid "passive-income.chart.so-far"
 msgstr "{label} bisher"
 
 #: src/yield/component/yield-legend-row/yield-legend-row.tsx
-msgid "{label}, {exactAmount}"
-msgstr "{label}, {exactAmount}"
+msgid "{label}, {spokenAmount}"
+msgstr "{label}, {spokenAmount}"
+
+#: src/yield/component/yield-legend-row/yield-legend-row.tsx
+msgid "{label}, {spokenAmount}, {shareText}"
+msgstr "{label}, {spokenAmount}, {shareText}"
 
 #: src/yield/component/yield-hero-period-caption/yield-hero-period-caption.tsx
 #: src/yield/hook/use-yield-plot-accessibility.hook.ts
@@ -1080,7 +1084,7 @@ msgstr "{setAsideLabel} zurückzulegen {thisPeriod}"
 
 #: src/yield/hook/use-yield-hero-line-text.hook.ts
 msgid "{share} of your passive income"
-msgstr "{share} Ihres passiven Einkommens"
+msgstr "{share} deines passiven Einkommens"
 
 #: src/household/utils/get-household-summary-labels.util.ts
 msgid "{sharedCount, plural, one {# shared account} other {# shared accounts}}"
@@ -2307,7 +2311,7 @@ msgstr "Verfügbar, sobald die erste Synchronisierung abgeschlossen ist"
 
 #: src/yield/hook/use-yield-position-rate-text.hook.ts
 msgid "available after the second payout"
-msgstr "verfügbar nach der zweiten Ausschüttung"
+msgstr "verfügbar nach der zweiten Auszahlung"
 
 #: src/yield/constant/yield-unavailable-label.constant.ts
 msgid "Available after the second payout"
@@ -4863,17 +4867,33 @@ msgstr "Verdient"
 msgid "Earned {amountText} before tax through {throughDay}."
 msgstr "{amountText} verdient vor Steuern bis {throughDay}."
 
-#: src/yield/component/yield-hero-caption/yield-hero-caption.tsx
-msgid "Earned in {bucketPeriod}"
-msgstr "Verdient im {bucketPeriod}"
+#: src/yield/hook/use-yield-date-labels.hook.ts
+msgid "Earned in {month}"
+msgstr "Verdient im {month}"
+
+#: src/yield/hook/use-yield-date-labels.hook.ts
+msgid "Earned in {quarter}"
+msgstr "Verdient im {quarter}"
+
+#: src/yield/hook/use-yield-date-labels.hook.ts
+msgid "Earned in {year}"
+msgstr "Verdient {year}"
 
 #: src/yield/component/yield-section-header/yield-section-header.tsx
 msgid "Earned in range"
 msgstr "Im Zeitraum verdient"
 
+#: src/yield/hook/use-yield-date-labels.hook.ts
+msgid "Earned in the week of {weekStart}"
+msgstr "Verdient in der Woche vom {weekStart}"
+
 #: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
 msgid "Earned minus tax withheld."
 msgstr "Verdient abzüglich einbehaltener Steuern."
+
+#: src/yield/hook/use-yield-date-labels.hook.ts
+msgid "Earned on {day}"
+msgstr "Verdient am {day}"
 
 #: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
 msgid "Earned over the last 12 months divided by the balance that earned it. Holdings without a rate are left out. Crypto uses your whole balance, staked or not. Distributions aren’t counted."
@@ -7352,6 +7372,10 @@ msgstr "Noch keine Anlage zum Verknüpfen"
 msgid "No icons found"
 msgstr "Keine Symbole gefunden"
 
+#: src/yield/component/yield-legend-row/yield-legend-row.tsx
+msgid "no income"
+msgstr "kein Einkommen"
+
 #: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
 msgid "No income in this view"
 msgstr "Keine Einnahmen in dieser Ansicht"
@@ -9122,6 +9146,11 @@ msgstr "Gebühr entfernen"
 #: src/transaction/components/transaction-fee-remove-button/transaction-fee-remove-button.tsx
 msgid "Remove fee?"
 msgstr "Gebühr entfernen?"
+
+#: src/yield/component/yield-collapsed-title/yield-collapsed-title.tsx
+#: src/yield/component/yield-scope-filter-chip/yield-scope-filter-chip.tsx
+msgid "Remove filter"
+msgstr "Filter entfernen"
 
 #: src/transaction/components/split-entries-step/split-entries-step.tsx
 #: src/transaction/hook/use-split-entries-submit.hook.ts

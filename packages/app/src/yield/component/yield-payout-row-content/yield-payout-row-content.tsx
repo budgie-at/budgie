@@ -37,8 +37,10 @@ export const YieldPayoutRowContent = ({ transaction, tax, siblings, isUnassigned
 
     const sourceAccountId = transaction.yieldSourceAccountId;
 
+    const canDrillDown = isMerged && isDefined(sourceAccountId) && !isDefined(screenKey.key.positionAccountId);
+
     const handlePress = () => {
-        if (isMerged && isDefined(sourceAccountId) && !isDefined(screenKey.key.positionAccountId)) {
+        if (canDrillDown) {
             router.setParams({ position: String(sourceAccountId), instrument: '', group: '' });
 
             return;
@@ -53,6 +55,7 @@ export const YieldPayoutRowContent = ({ transaction, tax, siblings, isUnassigned
         router.push(getTransactionHref(transaction));
     };
 
+    const onPress = isMerged && !canDrillDown ? null : handlePress;
     const rowClassName = cn(isMerged && 'min-h-[64px]', className);
     const amountClassName = cn(AMOUNT_CLASSNAME, isTax ? TAX_CLASSNAME : INCOME_CLASSNAME);
 
@@ -66,7 +69,7 @@ export const YieldPayoutRowContent = ({ transaction, tax, siblings, isUnassigned
             subtitle={<YieldRowSubtitle subtitle={subtitle} />}
             trailing={trailing}
             accessibilityLabel={[title, subtitle, trailingText, taxText].filter(isNotEmptyString).join(', ')}
-            onPress={handlePress}
+            onPress={onPress}
             testID={PassiveIncomeSelector.Payout(transaction.id)}
         />
     );

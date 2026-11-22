@@ -24,7 +24,7 @@ export const YieldHeroCaption = ({ summary, bucket }: Props) => {
     const { t } = useLingui();
     const { screenKey, mode, isPeriodCaption } = use(YieldScreenContext);
     const sinceDate = useYieldSinceDate(summary);
-    const { formatPeriod } = useYieldDateLabels();
+    const { formatEarnedCaption } = useYieldDateLabels();
     const { formatDayAndMonthAndYear } = useFormatDate();
 
     const { group } = screenKey.key;
@@ -35,9 +35,9 @@ export const YieldHeroCaption = ({ summary, bucket }: Props) => {
 
     const groupLabel = isDefined(group) ? t(YIELD_GROUP_LABEL[group]) : '';
     const throughDay = isDefined(bucket) ? formatDayAndMonthAndYear(parseISO(bucket.end)) : '';
-    const bucketPeriod = isDefined(bucket) ? formatPeriod(bucket, summary.bucketUnit) : '';
+    const earnedCaption = isDefined(bucket) ? formatEarnedCaption(bucket, summary.bucketUnit) : '';
     const restingCaption = isDefined(group) ? t`${groupLabel} since ${sinceDate}` : t`Earned since ${sinceDate}`;
-    const scrubCaption = mode === YieldChartModeEnum.RUNNING_TOTAL ? t`Earned through ${throughDay}` : t`Earned in ${bucketPeriod}`;
+    const scrubCaption = mode === YieldChartModeEnum.RUNNING_TOTAL ? t`Earned through ${throughDay}` : earnedCaption;
     const caption = isDefined(bucket) ? scrubCaption : restingCaption;
 
     return <YieldHeroCaptionText>{caption}</YieldHeroCaptionText>;

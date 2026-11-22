@@ -57,6 +57,25 @@ export const useYieldDateLabels = () => {
         return bucket.isInProgress ? t({ id: 'passive-income.chart.so-far', message: `${label} so far` }) : label;
     };
 
+    const formatEarnedCaption = (bucket: Pick<YieldBucketInterface, 'start' | 'isInProgress'>, unit: YieldBucketUnitEnum) => {
+        const date = parseISO(bucket.start);
+        const day = formatDayAndMonthAndYear(date);
+        const weekStart = formatMonthAndDay(date);
+        const month = formatMonthAndYear(date);
+        const year = formatYear(date);
+        const quarter = formatQuarter(date);
+        const captions: Record<YieldBucketUnitEnum, string> = {
+            [YieldBucketUnitEnum.DAY]: t`Earned on ${day}`,
+            [YieldBucketUnitEnum.WEEK]: t`Earned in the week of ${weekStart}`,
+            [YieldBucketUnitEnum.MONTH]: t`Earned in ${month}`,
+            [YieldBucketUnitEnum.QUARTER]: t`Earned in ${quarter}`,
+            [YieldBucketUnitEnum.YEAR]: t`Earned in ${year}`
+        };
+        const label = captions[unit];
+
+        return bucket.isInProgress ? t({ id: 'passive-income.chart.so-far', message: `${label} so far` }) : label;
+    };
+
     const formatRangeCaption = (range: YieldRangeEnum, windowStart: string) => {
         const start = parseISO(windowStart);
         const day = formatMonthAndDay(start);
@@ -72,5 +91,5 @@ export const useYieldDateLabels = () => {
         return captions[range];
     };
 
-    return { formatTick, formatPeriod, formatRangeCaption };
+    return { formatTick, formatPeriod, formatEarnedCaption, formatRangeCaption };
 };

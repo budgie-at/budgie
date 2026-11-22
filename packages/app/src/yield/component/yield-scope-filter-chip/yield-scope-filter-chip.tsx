@@ -3,7 +3,7 @@ import { router } from 'expo-router';
 import { use } from 'react';
 import { View } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { YieldScreenContext } from '../../context/yield-screen.context';
 import { useYieldScopeTitle } from '../../hook/use-yield-scope-title.hook';
@@ -31,7 +31,7 @@ export const YieldScopeFilterChip = () => {
     const position = isDefined(positionAccountId)
         ? summary?.positions.find(candidate => candidate.accountId === positionAccountId)
         : summary?.positions.at(0);
-    const accessibilityLabel = t`Remove ${scopeTitle} filter`;
+    const accessibilityLabel = isNotEmptyString(scopeTitle) ? t`Remove ${scopeTitle} filter` : t`Remove filter`;
     const avatar = isDefined(position) ? (
         <View className="size-[16px]" accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
             <View style={SCALED_STYLE}>

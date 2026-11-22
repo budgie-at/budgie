@@ -731,8 +731,12 @@ msgid "passive-income.chart.so-far"
 msgstr "{label} наразі"
 
 #: src/yield/component/yield-legend-row/yield-legend-row.tsx
-msgid "{label}, {exactAmount}"
-msgstr "{label}, {exactAmount}"
+msgid "{label}, {spokenAmount}"
+msgstr "{label}, {spokenAmount}"
+
+#: src/yield/component/yield-legend-row/yield-legend-row.tsx
+msgid "{label}, {spokenAmount}, {shareText}"
+msgstr "{label}, {spokenAmount}, {shareText}"
 
 #: src/yield/component/yield-hero-period-caption/yield-hero-period-caption.tsx
 #: src/yield/hook/use-yield-plot-accessibility.hook.ts
@@ -2238,7 +2242,7 @@ msgstr "За сьогоднішніми балансами та ставками
 
 #: src/yield/component/yield-breakdown-run-rate/yield-breakdown-run-rate.tsx
 msgid "At today’s balances and rates, excluding distributions"
-msgstr "За сьогоднішніми балансами та ставками, без виплат фондів"
+msgstr "За сьогоднішніми балансами та ставками, без розподілів"
 
 #: src/categorize-inbox/components/categorize-inbox-group-attach-debt-option/categorize-inbox-group-attach-debt-option.tsx
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
@@ -4863,21 +4867,37 @@ msgstr "Зароблено"
 msgid "Earned {amountText} before tax through {throughDay}."
 msgstr "Зароблено {amountText} до сплати податків станом на {throughDay}."
 
-#: src/yield/component/yield-hero-caption/yield-hero-caption.tsx
-msgid "Earned in {bucketPeriod}"
-msgstr "Зароблено за {bucketPeriod}"
+#: src/yield/hook/use-yield-date-labels.hook.ts
+msgid "Earned in {month}"
+msgstr "Зароблено за {month}"
+
+#: src/yield/hook/use-yield-date-labels.hook.ts
+msgid "Earned in {quarter}"
+msgstr "Зароблено за {quarter}"
+
+#: src/yield/hook/use-yield-date-labels.hook.ts
+msgid "Earned in {year}"
+msgstr "Зароблено за {year}"
 
 #: src/yield/component/yield-section-header/yield-section-header.tsx
 msgid "Earned in range"
 msgstr "Зароблено за період"
 
+#: src/yield/hook/use-yield-date-labels.hook.ts
+msgid "Earned in the week of {weekStart}"
+msgstr "Зароблено за тиждень з {weekStart}"
+
 #: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
 msgid "Earned minus tax withheld."
 msgstr "Зароблено мінус утриманий податок."
 
+#: src/yield/hook/use-yield-date-labels.hook.ts
+msgid "Earned on {day}"
+msgstr "Зароблено {day}"
+
 #: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
 msgid "Earned over the last 12 months divided by the balance that earned it. Holdings without a rate are left out. Crypto uses your whole balance, staked or not. Distributions aren’t counted."
-msgstr "Дохід за останні 12 місяців, поділений на баланс, який його приніс. Позиції без ставки не враховуються. Для криптовалюти береться весь баланс, у стейкінгу чи ні. Виплати фондів не враховуються."
+msgstr "Дохід за останні 12 місяців, поділений на баланс, який його приніс. Позиції без ставки не враховуються. Для криптовалюти береться весь баланс, у стейкінгу чи ні. Розподіли не враховуються."
 
 #: src/yield/component/yield-hero-caption/yield-hero-caption.tsx
 msgid "Earned since {sinceDate}"
@@ -7352,6 +7372,10 @@ msgstr "Ще немає активу для зв’язування"
 msgid "No icons found"
 msgstr "Іконки не знайдено"
 
+#: src/yield/component/yield-legend-row/yield-legend-row.tsx
+msgid "no income"
+msgstr "немає доходу"
+
 #: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
 msgid "No income in this view"
 msgstr "У цьому поданні немає доходів"
@@ -9123,6 +9147,11 @@ msgstr "Видалити комісію"
 msgid "Remove fee?"
 msgstr "Видалити комісію?"
 
+#: src/yield/component/yield-collapsed-title/yield-collapsed-title.tsx
+#: src/yield/component/yield-scope-filter-chip/yield-scope-filter-chip.tsx
+msgid "Remove filter"
+msgstr "Прибрати фільтр"
+
 #: src/transaction/components/split-entries-step/split-entries-step.tsx
 #: src/transaction/hook/use-split-entries-submit.hook.ts
 msgid "Remove split"
@@ -10195,7 +10224,7 @@ msgstr "Стейкінг і Earn"
 
 #: src/yield/component/yield-empty-state/yield-empty-state.tsx
 msgid "Staking rewards, dividends, distributions and interest appear here once you have them."
-msgstr "Винагороди за стейкінг, дивіденди, виплати фондів і відсотки з’являться тут, щойно вони у вас будуть."
+msgstr "Винагороди за стейкінг, дивіденди, розподіли і відсотки з’являться тут, щойно вони у вас будуть."
 
 #: src/account/component/start-deposit-form/start-deposit-form.tsx
 #: src/transaction/components/transaction-list-start-deposit-menu-item/transaction-list-start-deposit-menu-item.tsx
@@ -11968,7 +11997,7 @@ msgstr "Що вона робить"
 
 #: src/yield/component/yield-info-sheet-content/yield-info-sheet-content.tsx
 msgid "What the next 12 months would earn if balances and rates stay the same. Distributions aren’t projected."
-msgstr "Скільки принесуть наступні 12 місяців, якщо баланси й ставки не зміняться. Виплати фондів не прогнозуються."
+msgstr "Скільки принесуть наступні 12 місяців, якщо баланси й ставки не зміняться. Розподіли не прогнозуються."
 
 #: src/runway/component/runway-drivers/runway-drivers.tsx
 msgid "What's driving it"
