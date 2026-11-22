@@ -114,7 +114,7 @@ const toRowDisplayedAmount = ({ transaction, siblings }: YieldPayoutFoldInterfac
     const sources: readonly TransactionWithRelationsEntityInterface[] = isNotEmptyArray(siblings) ? siblings : [transaction];
     const baseAmounts = sources.map(source => getYieldPayoutEntry(source)?.baseAmount ?? 0);
 
-    return Math.round(Math.abs(convertFromMicroUnits(baseAmounts.reduce((total, amount) => total + amount, 0))));
+    return Math.abs(convertFromMicroUnits(baseAmounts.reduce((total, amount) => total + amount, 0)));
 };
 
 const toRowLastDate = ({ transaction, siblings }: YieldPayoutFoldInterface): number =>

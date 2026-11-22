@@ -29,7 +29,9 @@ export const useYieldBreakdownRows = (summary: YieldSummaryInterface | null): re
     }
 
     const { tax, net, cryptoRewardsToday, vsRate, annualYield } = summary;
-    const monthCount = Math.round(differenceInDays(parseISO(summary.today), parseISO(summary.windowStart)) / DAYS_PER_MONTH);
+    const averageStart =
+        isDefined(summary.firstYieldDay) && summary.firstYieldDay > summary.windowStart ? summary.firstYieldDay : summary.windowStart;
+    const monthCount = Math.round(differenceInDays(parseISO(summary.today), parseISO(averageStart)) / DAYS_PER_MONTH);
     const rate = isDefined(screenKey.key.group) ? annualYield.rate : null;
 
     return [

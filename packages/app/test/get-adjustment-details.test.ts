@@ -1,19 +1,17 @@
 import {
-    AccountDebtTypeEnum,
-    AccountNatureEnum,
     AccountTypeEnum,
     CategorySourceEnum,
-    InstrumentTypeEnum,
     PERSONAL_SYNC_ZONE,
     SyncModeEnum,
     TransactionEntryKindEnum,
     TransactionEntryTypeEnum,
-    TransactionTypeEnum,
-    UserIconNameEnum
+    TransactionTypeEnum
 } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 
 import { getAdjustmentDetails } from '../src/transaction/utils/get-adjustment-details.util';
+
+import { buildAccountWithInstrument } from './fixture/account-with-instrument';
 
 import type { AccountWithInstrumentEntityInterface, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 
@@ -24,50 +22,8 @@ const AMOUNT = 25_000_000;
 const TIMESTAMP = new Date('2026-10-01T00:00:00Z');
 
 const buildAccount = (type: AccountTypeEnum): AccountWithInstrumentEntityInterface => ({
-    id: 1,
-    createdAt: TIMESTAMP,
-    updatedAt: TIMESTAMP,
-    deletedAt: null,
-    syncId: 'account-sync-id',
-    syncZone: PERSONAL_SYNC_ZONE,
-    icon: UserIconNameEnum.Home,
-    parentId: null,
-    order: 0,
-    title: 'Account',
-    titleSearch: 'account',
-    type,
-    nature: AccountNatureEnum.ASSET,
-    debtType: AccountDebtTypeEnum.LENT,
-    instrumentId: 1,
-    externalId: null,
-    contactId: null,
-    deadline: null,
-    targetBalance: 0,
-    targetBaseInstrumentId: null,
-    targetBaseExchangeRate: null,
-    targetBaseAmount: null,
-    interestRate: null,
-    installmentCount: null,
-    externalSource: null,
-    integrationId: null,
-    iban: null,
-    includeInNetWorth: true,
-    isActive: true,
-    isExternal: false,
-    instrument: {
-        id: 1,
-        createdAt: TIMESTAMP,
-        updatedAt: TIMESTAMP,
-        deletedAt: null,
-        type: InstrumentTypeEnum.FIAT,
-        code: 'EUR',
-        name: 'Euro',
-        symbol: '€',
-        priceProvider: null,
-        providerInstrumentId: null,
-        quoteInstrumentId: null,
-        marketCapRank: null
-    }
+    ...buildAccountWithInstrument(1, type, 'Account'),
+    syncId: 'account-sync-id'
 });
 
 const buildAdjustment = (accountType: AccountTypeEnum): TransactionWithRelationsEntityInterface => {

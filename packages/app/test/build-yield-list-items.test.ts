@@ -1,4 +1,13 @@
-import { AccountTypeEnum, InstrumentTypeEnum, PERSONAL_SYNC_ZONE, TransactionTypeEnum, YieldKindEnum } from '@budgie/contracts';
+import {
+    AccountTypeEnum,
+    CategorySourceEnum,
+    InstrumentTypeEnum,
+    PERSONAL_SYNC_ZONE,
+    TransactionEntryKindEnum,
+    TransactionEntryTypeEnum,
+    TransactionTypeEnum,
+    YieldKindEnum
+} from '@budgie/contracts';
 import { YieldPositionSectionEnum } from '@budgie/market';
 import { expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
@@ -8,6 +17,8 @@ import { YieldListItemKindEnum } from '../src/yield/enum/yield-list-item-kind.en
 import { YieldListSectionEnum } from '../src/yield/enum/yield-list-section.enum';
 import { YieldPayoutDateFormatEnum } from '../src/yield/enum/yield-payout-date-format.enum';
 import { buildYieldListItems } from '../src/yield/utils/build-yield-list-items.util';
+
+import { buildAccountWithInstrument } from './fixture/account-with-instrument';
 
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import type { YieldPositionSummaryInterface } from '@budgie/market';
@@ -227,5 +238,69 @@ it.effect('sorts rows newest first by their last payout date, merged rows includ
 
         expect(payouts.map(item => item.id)).toEqual(['payout-1', 'payout-9']);
         expect(payouts.at(0)).toMatchObject({ siblings: [{ id: 1 }, { id: 2 }, { id: 3 }] });
+    })
+);
+
+const PAYOUT_ACCOUNT = buildAccountWithInstrument(5, AccountTypeEnum.DEPOSIT, 'Deposit');
+
+const smallPayout = (id: number, operatedAt: Date): TransactionWithRelationsEntityInterface => ({
+    ...payout(id, null, operatedAt),
+    title: `Payout ${id}`,
+    toAccount: PAYOUT_ACCOUNT,
+    entries: [
+        {
+            id,
+            createdAt: TIMESTAMP,
+            updatedAt: TIMESTAMP,
+            deletedAt: null,
+            syncId: `entry-${id}`,
+            syncZone: PERSONAL_SYNC_ZONE,
+            type: TransactionEntryTypeEnum.CREDIT,
+            kind: TransactionEntryKindEnum.PRIMARY,
+            accountId: PAYOUT_ACCOUNT.id,
+            categoryId: null,
+            categorySource: CategorySourceEnum.USER,
+            mccCategoryId: null,
+            sequence: 0,
+            transactionId: id,
+            amount: 400_000,
+            externalId: null,
+            exchangeRate: 1,
+            baseInstrumentId: null,
+            baseExchangeRate: null,
+            baseAmount: 400_000,
+            quotedInstrumentId: null,
+            quotedAmount: null,
+            quotedUnitPrice: null,
+            operationInstrumentId: null,
+            operationAmount: null,
+            toIban: null,
+            providerBalance: null,
+            originalTransactionId: null,
+            account: PAYOUT_ACCOUNT,
+            category: null,
+            mccCategory: null
+        }
+    ]
+});
+
+it.effect('keeps cents in the month total instead of rounding each payout', () =>
+    Effect.sync(() => {
+        const items = buildYieldListItems(
+            [],
+            [
+                smallPayout(1, new Date('2026-10-10T12:00:00Z')),
+                smallPayout(2, new Date('2026-10-11T12:00:00Z')),
+                smallPayout(3, new Date('2026-10-12T12:00:00Z')),
+                smallPayout(4, new Date('2026-09-12T12:00:00Z')),
+                smallPayout(5, new Date('2026-09-13T12:00:00Z'))
+            ],
+            'caption',
+            null
+        );
+        const totals = items.flatMap(item => (item.kind === YieldListItemKindEnum.MONTH ? [item.total] : []));
+
+        expect(totals[0]).toBeCloseTo(1.2, 9);
+        expect(totals[1]).toBeCloseTo(0.8, 9);
     })
 );

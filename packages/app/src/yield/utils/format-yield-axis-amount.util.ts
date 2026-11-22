@@ -1,6 +1,6 @@
 import { formatYieldCompactAmount } from './format-yield-compact-amount.util';
 
-const MAX_FRACTION_DIGITS = 2;
+const MAX_FRACTION_DIGITS = 8;
 const EPSILON = 1e-9;
 
 const resolveShortestDigits = (scaled: number): number =>

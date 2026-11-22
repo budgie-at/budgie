@@ -397,6 +397,9 @@ export class YieldService extends Context.Service<YieldService>()('@budgie/marke
                 const priorTotals =
                     key.range === YieldRangeEnum.ALL ? null : buildPriorTotals(window, incomeFacts.filter(matchesGroup), todayDay);
                 const contexts = yield* yieldHoldingService.loadContexts(facts, scope, key.baseInstrumentId, todayDay);
+                const groupContexts = isDefined(key.group)
+                    ? contexts.filter(context => context.facts.some(fact => isIncome(fact) && fact.group === key.group))
+                    : contexts;
                 const positions = contexts
                     .map(context => summarizePosition(context, isInWindow))
                     .sort((left, right) => SECTION_ORDER[left.section] - SECTION_ORDER[right.section] || right.earned - left.earned);
@@ -415,17 +418,12 @@ export class YieldService extends Context.Service<YieldService>()('@budgie/marke
                     share: isDefined(key.group) && isPositiveNumber(allEarned) ? earned / allEarned : null,
                     delta: buildDelta(earned, priorTotals),
                     annualYield: yieldHoldingService.combineYield(
-                        contexts,
-                        incomeFacts.some(fact => fact.kind === YieldKindEnum.DISTRIBUTION && fact.day >= yieldWindowStart)
+                        groupContexts,
+                        incomeFacts.some(
+                            fact => matchesGroup(fact) && fact.kind === YieldKindEnum.DISTRIBUTION && fact.day >= yieldWindowStart
+                        )
                     ),
-                    runRate:
-                        key.group === YieldGroupEnum.DISTRIBUTIONS
-                            ? null
-                            : yieldHoldingService.runRate(
-                                  isDefined(key.group)
-                                      ? contexts.filter(context => context.facts.some(fact => isIncome(fact) && fact.group === key.group))
-                                      : contexts
-                              ),
+                    runRate: key.group === YieldGroupEnum.DISTRIBUTIONS ? null : yieldHoldingService.runRate(groupContexts),
                     cryptoRewardsToday: yield* computeCryptoRewardsToday(rangeIncome, key.baseInstrumentId),
                     vsRate: isDefined(key.positionAccountId)
                         ? (positions.find(position => position.accountId === key.positionAccountId)?.vsRate ?? null)

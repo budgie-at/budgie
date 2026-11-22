@@ -1,3 +1,4 @@
+import { YieldKindEnum } from '@budgie/contracts';
 import { YieldRangeEnum } from '@budgie/market';
 import { use } from 'react';
 
@@ -11,7 +12,7 @@ import { buildYieldListItems } from '../utils/build-yield-list-items.util';
 
 import { useYieldHasWithheldTax } from './use-yield-has-withheld-tax.hook';
 import { useYieldPayouts } from './use-yield-payouts.hook';
-import { useYieldSummary } from './use-yield-summary.hook';
+import { useYieldSettledSummary } from './use-yield-settled-summary.hook';
 
 import type { YieldListItemType } from '../type/yield-list-item.type';
 
@@ -25,18 +26,22 @@ const SKELETON_ITEMS: readonly YieldListItemType[] = [
 const OLDER_ITEM: YieldListItemType = { kind: YieldListItemKindEnum.OLDER, id: 'older-payouts' };
 
 export const useYieldListItems = (): readonly YieldListItemType[] => {
-    const { screenKey, rangeCaption } = use(YieldScreenContext);
-    const { key } = screenKey;
+    const {
+        screenKey: { key },
+        rangeCaption
+    } = use(YieldScreenContext);
     const isPayoutMode = isDefined(key.positionAccountId) || isDefined(key.instrumentId) || isDefined(key.group);
-    const summary = useYieldSummary();
+    const summary = useYieldSettledSummary();
     const hasWithheldTax = useYieldHasWithheldTax();
-    const payoutLimit = key.range === YieldRangeEnum.ALL ? ALL_TIME_PAYOUT_LIMIT : null;
-    const { payouts, unassigned, isLoading } = useYieldPayouts(isPayoutMode, payoutLimit);
+    const isAllTime = key.range === YieldRangeEnum.ALL;
+    const { payouts: fetchedPayouts, unassigned, isLoading } = useYieldPayouts(isPayoutMode, isAllTime ? ALL_TIME_PAYOUT_LIMIT + 1 : null);
 
     if (!isDefined(summary) || isLoading) {
         return SKELETON_ITEMS;
     }
 
+    const isTruncated = isAllTime && fetchedPayouts.length > ALL_TIME_PAYOUT_LIMIT;
+    const payouts = isTruncated ? fetchedPayouts.slice(0, ALL_TIME_PAYOUT_LIMIT) : fetchedPayouts;
     const isSinglePayoutInCard = summary.payoutCount === 1;
     const items = buildYieldListItems(
         summary.positions,
@@ -48,11 +53,22 @@ export const useYieldListItems = (): readonly YieldListItemType[] => {
             ? { ...item, hasTax: true }
             : item
     );
-    const hasOlderPayouts = isDefined(summary.firstYieldDay) && summary.firstYieldDay < summary.windowStart;
 
-    if (isDefined(payoutLimit) && payouts.length >= payoutLimit) {
-        return [...items, { kind: YieldListItemKindEnum.TRUNCATED, id: 'truncated-payouts', count: payouts.length }];
+    if (isTruncated) {
+        return [
+            ...items,
+            {
+                kind: YieldListItemKindEnum.TRUNCATED,
+                id: 'truncated-payouts',
+                count: payouts.filter(payout => payout.yieldKind !== YieldKindEnum.TAX).length
+            }
+        ];
     }
 
-    return hasOlderPayouts && !isSinglePayoutInCard && isNotEmptyArray(payouts) ? [...items, OLDER_ITEM] : items;
+    return isDefined(summary.firstYieldDay) &&
+        summary.firstYieldDay < summary.windowStart &&
+        !isSinglePayoutInCard &&
+        isNotEmptyArray(payouts)
+        ? [...items, OLDER_ITEM]
+        : items;
 };

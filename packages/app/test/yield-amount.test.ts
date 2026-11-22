@@ -14,7 +14,9 @@ it.each([
     [20_000, '$20K'],
     [1_500_000, '$1.5M'],
     [2.5, '$2.5'],
-    [250, '$250']
+    [250, '$250'],
+    [0.002, '$0.002'],
+    [0.0005, '$0.0005']
 ])('formats the axis tick %d as the shortest exact form %s', (value, expected) => {
     expect(formatYieldAxisAmount(value, '$', formatNumber)).toBe(expected);
 });
