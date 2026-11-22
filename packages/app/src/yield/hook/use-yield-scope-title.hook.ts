@@ -4,11 +4,11 @@ import { isDefined } from '@rnw-community/shared';
 
 import { YieldScreenContext } from '../context/yield-screen.context';
 
-import { useYieldSummary } from './use-yield-summary.hook';
+import { useYieldSettledSummary } from './use-yield-settled-summary.hook';
 
 export const useYieldScopeTitle = (): string => {
     const { screenKey } = use(YieldScreenContext);
-    const summary = useYieldSummary();
+    const summary = useYieldSettledSummary();
 
     const { positionAccountId } = screenKey.key;
     const positionTitle = summary?.positions.find(position => position.accountId === positionAccountId)?.title;

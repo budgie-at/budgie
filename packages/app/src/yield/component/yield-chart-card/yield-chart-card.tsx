@@ -6,6 +6,7 @@ import { isDefined } from '@rnw-community/shared';
 import { YieldScreenContext } from '../../context/yield-screen.context';
 import { YieldChartModeEnum } from '../../enum/yield-chart-mode.enum';
 import { useYieldSummary } from '../../hook/use-yield-summary.hook';
+import { isYieldSummaryCompact } from '../../utils/is-yield-summary-compact.util';
 import { YieldChartModeControl } from '../yield-chart-mode-control/yield-chart-mode-control';
 import { YieldChartPlot } from '../yield-chart-plot/yield-chart-plot';
 import { YieldChartSummary } from '../yield-chart-summary/yield-chart-summary';
@@ -13,16 +14,16 @@ import { YieldLegendFootnote } from '../yield-legend-footnote/yield-legend-footn
 import { YieldLegendRunning } from '../yield-legend-running/yield-legend-running';
 import { YieldLegend } from '../yield-legend/yield-legend';
 
-const YIELD_MIN_DATA_BUCKETS = 3;
 const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 
 export const YieldChartCard = () => {
     const { mode } = use(YieldScreenContext);
     const summary = useYieldSummary();
 
-    const isCompact = isDefined(summary) && summary.buckets.filter(bucket => bucket.total > 0).length < YIELD_MIN_DATA_BUCKETS;
+    const isCompact = isYieldSummaryCompact(summary);
     const isRunning = !isCompact && mode === YieldChartModeEnum.RUNNING_TOTAL;
     const legend = mode === YieldChartModeEnum.BARS ? <YieldLegend /> : <YieldLegendRunning />;
+    const loadedLegend = isDefined(summary) ? legend : null;
 
     return (
         <View
@@ -37,7 +38,7 @@ export const YieldChartCard = () => {
 
                     <YieldChartPlot />
 
-                    {legend}
+                    {loadedLegend}
                 </>
             )}
 
