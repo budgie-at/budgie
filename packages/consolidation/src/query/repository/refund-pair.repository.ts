@@ -1,36 +1,56 @@
-import { Db } from '@budgie/contracts';
+import { Db, REFUND_TIME_WINDOW_SECONDS } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { REFUND_AUTO_CANDIDATES_SQL, REFUND_REVIEW_CANDIDATES_SQL } from './sql-factory/refund-ranked-candidate-sql.factory';
+import { isDefined } from '@rnw-community/shared';
+
+import { REFUND_MANUAL_REVIEW_TIME_WINDOW_SECONDS } from '../constant/refund-manual-review-time-window.constant';
+import { refundCandidateMatcher } from '../matcher/refund-candidate-matcher';
+import { isAutoRefundConfidenceBucket } from '../type-guard/is-auto-refund-confidence-bucket.type-guard';
+
+import { buildRefundEdgeSql } from './sql-factory/refund-ranked-candidate-sql.factory';
 import {
     REFUNDABLE_EXPENSE_CANDIDATES_SQL,
     buildRefundableExpenseCandidateParams
 } from './sql-factory/refundable-expense-candidate-sql.factory';
 
+import type { RefundEdgeRowInterface } from '../interface/refund-edge-row.interface';
 import type {
     ConsolidationScanScopeInterface,
     LanguageEnum,
-    RefundCandidateBaseInterface,
-    RefundCandidateBaseRowInterface,
+    RefundAutoConfidenceBucket,
     RefundCandidateInterface,
-    RefundCandidateRowInterface,
     RefundReviewCandidateInterface,
-    RefundReviewCandidateRowInterface,
     RefundableExpenseCandidateInterface,
     RefundableExpenseCandidateRowInterface
 } from '@budgie/contracts';
 
 export class RefundPairRepository extends Context.Service<RefundPairRepository>()('@budgie/consolidation/RefundPairRepository', {
     make: Effect.sync(() => {
-        const mapCandidateBaseRow = (row: RefundCandidateBaseRowInterface): RefundCandidateBaseInterface => ({
-            accountId: row.accountId,
-            expenseTransactionId: row.expenseTransactionId,
-            expenseEntryAmount: row.expenseEntryAmount,
-            refundIncomeTransactionIds: row.refundIncomeTransactionIds.split(',').map(item => Number(item)),
-            refundsTotal: row.refundsTotal
-        });
+        const autoMatchTypes: Record<RefundAutoConfidenceBucket, RefundCandidateInterface['matchType']> = {
+            AUTO_REFUND_EXACT_TITLE: 'exact-title',
+            AUTO_REFUND_LOCALIZED_REFUND_TITLE: 'localized-refund-title',
+            AUTO_REFUND_REJECTED_PAYMENT_PRINCIPAL_TITLE: 'rejected-payment-principal-title',
+            AUTO_REFUND_REJECTED_PAYMENT_FEE_TITLE: 'rejected-payment-fee-title',
+            AUTO_REFUND_PRIVATBANK_ORIGINAL_AMOUNT: 'privatbank-original-amount'
+        };
+        const findEdges = (scope: ConsolidationScanScopeInterface | null) =>
+            Db.query(db =>
+                db.$client.unsafe<RefundEdgeRowInterface>(
+                    buildRefundEdgeSql(
+                        isDefined(scope)
+                            ? {
+                                  ...scope,
+                                  operatedAtFrom: new Date(
+                                      scope.operatedAtFrom.getTime() - REFUND_MANUAL_REVIEW_TIME_WINDOW_SECONDS * 1000
+                                  ),
+                                  operatedAtTo: new Date(scope.operatedAtTo.getTime() + REFUND_TIME_WINDOW_SECONDS * 1000)
+                              }
+                            : null
+                    )
+                )
+            );
 
         const mapRefundableExpenseCandidateRow = (row: RefundableExpenseCandidateRowInterface): RefundableExpenseCandidateInterface => ({
             id: row.id,
@@ -52,21 +72,50 @@ export class RefundPairRepository extends Context.Service<RefundPairRepository>(
             findCandidates: Effect.fn('RefundPairRepository.findCandidates')(function* (
                 scope: ConsolidationScanScopeInterface | null = null
             ) {
-                const rows = yield* Db.query(db => db.$client.unsafe<RefundCandidateRowInterface>(REFUND_AUTO_CANDIDATES_SQL(scope)));
+                const edges = yield* findEdges(scope);
+                const { assignments } = refundCandidateMatcher.match(edges, scope);
+                const candidates = new Map<string, RefundCandidateInterface>();
 
-                return rows.map((row): RefundCandidateInterface => ({
-                    ...mapCandidateBaseRow(row),
-                    confidenceBucket: row.confidenceBucket,
-                    matchType: row.matchType
-                }));
+                for (const edge of assignments) {
+                    const bucket = edge.confidenceBucket;
+                    const key = `${edge.expenseTransactionId}:${bucket}`;
+                    const existing = candidates.get(key);
+
+                    if (isDefined(existing)) {
+                        existing.refundIncomeTransactionIds.push(edge.refundTransactionId);
+                        candidates.set(key, { ...existing, refundsTotal: existing.refundsTotal + edge.refundAmount });
+                    } else if (isAutoRefundConfidenceBucket(bucket)) {
+                        candidates.set(key, {
+                            accountId: edge.accountId,
+                            confidenceBucket: bucket,
+                            expenseEntryAmount: edge.expenseAmount,
+                            expenseTransactionId: edge.expenseTransactionId,
+                            matchType: autoMatchTypes[bucket],
+                            refundIncomeTransactionIds: [edge.refundTransactionId],
+                            refundsTotal: edge.refundAmount
+                        });
+                    }
+                }
+
+                return [...candidates.values()]
+                    .map(candidate => ({
+                        ...candidate,
+                        refundIncomeTransactionIds: candidate.refundIncomeTransactionIds.sort((left, right) => left - right)
+                    }))
+                    .sort((left, right) => left.expenseTransactionId - right.expenseTransactionId);
             }),
             findReviewCandidates: Effect.fn('RefundPairRepository.findReviewCandidates')(function* () {
-                const rows = yield* Db.query(db => db.$client.unsafe<RefundReviewCandidateRowInterface>(REFUND_REVIEW_CANDIDATES_SQL));
+                const edges = yield* findEdges(null);
+                const { reviewEdges } = refundCandidateMatcher.match(edges, null);
 
-                return rows.map((row): RefundReviewCandidateInterface => ({
-                    ...mapCandidateBaseRow(row),
-                    confidenceBucket: row.confidenceBucket,
-                    matchType: row.matchType
+                return reviewEdges.map((edge): RefundReviewCandidateInterface => ({
+                    accountId: edge.accountId,
+                    confidenceBucket: edge.confidenceBucket,
+                    expenseEntryAmount: edge.expenseAmount,
+                    expenseTransactionId: edge.expenseTransactionId,
+                    matchType: edge.matchType,
+                    refundIncomeTransactionIds: [edge.refundTransactionId],
+                    refundsTotal: edge.refundAmount
                 }));
             }),
             findRefundableExpenseCandidates: Effect.fn('RefundPairRepository.findRefundableExpenseCandidates')(function* (

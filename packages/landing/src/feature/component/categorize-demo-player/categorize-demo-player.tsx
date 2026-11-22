@@ -55,13 +55,11 @@ const writeCount = (panel: HTMLElement, done: number) => {
 };
 
 const buildCountTicks = (panel: HTMLElement): (readonly [number, number])[] =>
-    [...panel.querySelectorAll<HTMLElement>('.cdemo-card[data-count]')].reduce<(readonly [number, number])[]>(
-        (ticks, card, index) => [
-            ...ticks,
-            [ACCEPT_AT_MS + index * CARD_EXIT_STAGGER_MS, (ticks.at(-1)?.[1] ?? 0) + Number(card.dataset.count)]
-        ],
-        []
-    );
+    [...panel.querySelectorAll<HTMLElement>('.cdemo-card[data-count]')].reduce<(readonly [number, number])[]>((ticks, card, index) => {
+        ticks.push([ACCEPT_AT_MS + index * CARD_EXIT_STAGGER_MS, (ticks.at(-1)?.[1] ?? 0) + Number(card.dataset.count)]);
+
+        return ticks;
+    }, []);
 
 const collapseRawRows = (panel: HTMLElement) => {
     panel.querySelectorAll<HTMLElement>('[data-cdemo-dy]').forEach(row => {

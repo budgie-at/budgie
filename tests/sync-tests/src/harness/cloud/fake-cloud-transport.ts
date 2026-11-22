@@ -36,6 +36,21 @@ export class FakeCloudTransport {
         });
     }
 
+    omitField(zone: string, recordName: string, field: string): void {
+        const change = this.changes.get(`${zone}|${recordName}`);
+
+        if (change === undefined) {
+            return;
+        }
+
+        const record: unknown = JSON.parse(JSON.stringify(change.record), (key: string, value: unknown) =>
+            key === field ? undefined : value
+        );
+
+        this.version += 1;
+        this.changes.set(`${zone}|${recordName}`, { ...change, version: this.version, record });
+    }
+
     remove(recordType: string, zone: string, recordName: string): void {
         this.version += 1;
         this.changes.set(`${zone}|${recordName}`, { version: this.version, zone, recordName, recordType, record: null });

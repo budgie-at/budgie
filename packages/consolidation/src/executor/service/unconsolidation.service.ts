@@ -2,6 +2,7 @@ import {
     CategorySourceEnum,
     MccCategoryRepository,
     SettingsRepository,
+    Db,
     DebtEventRepository,
     ExternalSourceEnum,
     TransactionReceiptRepository,
@@ -106,31 +107,45 @@ export class UnconsolidationService extends Context.Service<UnconsolidationServi
             }
         });
 
+        const unconsolidateById = Effect.fn('UnconsolidationService.unconsolidateById')(function* (transactionId: number) {
+            const canonical = yield* transactionRepository.getByIdRaw(transactionId);
+
+            if (!isDefined(canonical?.consolidationType)) {
+                return;
+            }
+
+            if (canonical.consolidationType === TransactionConsolidationTypeEnum.MANUAL_EXPENSE_DUPLICATE) {
+                yield* restoreManualExpenseDuplicateUserData(transactionId);
+            }
+
+            yield* transactionEntryRepository.moveBackToOriginalTransactions(transactionId);
+            yield* transactionConsolidationRepository.clearConsolidationParent(transactionId);
+
+            if (isPreExistingCanonical(canonical)) {
+                yield* transactionConsolidationRepository.setConsolidationType(transactionId, null);
+
+                return;
+            }
+
+            yield* transactionTagsRepository.deleteByTransactionId(transactionId);
+            yield* transactionEntryRepository.deleteLedgerByTransactionId(transactionId);
+            yield* transactionRepository.deleteById(transactionId);
+        });
+
         return {
-            unconsolidateById: Effect.fn('UnconsolidationService.unconsolidateById')(function* (transactionId: number) {
-                const canonical = yield* transactionRepository.getByIdRaw(transactionId);
+            unconsolidateById,
+            revertByUser: Effect.fn('UnconsolidationService.revertByUser')(
+                function* (transactionId: number) {
+                    const canonical = yield* transactionRepository.getByIdRaw(transactionId);
 
-                if (!isDefined(canonical?.consolidationType)) {
-                    return;
-                }
+                    if (canonical?.consolidationType === TransactionConsolidationTypeEnum.REFUND) {
+                        yield* transactionConsolidationRepository.disableRefundAutoPairingForChildren(transactionId);
+                    }
 
-                if (canonical.consolidationType === TransactionConsolidationTypeEnum.MANUAL_EXPENSE_DUPLICATE) {
-                    yield* restoreManualExpenseDuplicateUserData(transactionId);
-                }
-
-                yield* transactionEntryRepository.moveBackToOriginalTransactions(transactionId);
-                yield* transactionConsolidationRepository.clearConsolidationParent(transactionId);
-
-                if (isPreExistingCanonical(canonical)) {
-                    yield* transactionConsolidationRepository.setConsolidationType(transactionId, null);
-
-                    return;
-                }
-
-                yield* transactionTagsRepository.deleteByTransactionId(transactionId);
-                yield* transactionEntryRepository.deleteLedgerByTransactionId(transactionId);
-                yield* transactionRepository.deleteById(transactionId);
-            })
+                    yield* unconsolidateById(transactionId);
+                },
+                effect => Db.transaction(effect)
+            )
         };
     })
 }) {

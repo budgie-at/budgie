@@ -1,5 +1,6 @@
 import { RecurringSeriesSourceEnum, RecurringSeriesUserStateEnum } from '@budgie/contracts';
 import { differenceInCalendarDays } from 'date-fns/differenceInCalendarDays';
+import { isSameDay } from 'date-fns/isSameDay';
 import { startOfDay } from 'date-fns/startOfDay';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
@@ -8,7 +9,7 @@ import { RECURRING_AMOUNT_RATIO } from '../constant/recurring-amount-ratio.const
 import { matchesRecurringTitle } from '../utils/matches-recurring-title.util';
 import { normalizeRecurringDescription } from '../utils/normalize-recurring-description.util';
 
-import { cadenceToleranceDays, nearestCycleDate } from './recurring-schedule';
+import { cadenceWindowDays, nearestCycleDate } from './recurring-schedule';
 import { description, identity } from './recurring-series';
 
 import type { RecurringChargeInterface } from '../interface/recurring-charge.interface';
@@ -26,10 +27,13 @@ const matchesMerchant = (
     charge: RecurringChargeInterface,
     chargeIdentity: string
 ): boolean => {
+    if (!isNotEmptyString(chargeIdentity)) {
+        return isDefined(charge.categoryId) && entry.series.categoryId === charge.categoryId;
+    }
     if (isNotEmptyString(merchantKey)) {
         return (
             isNotEmptyString(chargeIdentity) &&
-            (merchantIdentityOf(merchantKey) === chargeIdentity || entry.userIdentities.has(chargeIdentity))
+            (merchantIdentityOf(merchantKey) === chargeIdentity || entry.linkedIdentities.has(chargeIdentity))
         );
     }
     const title = normalizeRecurringDescription(entry.series.title);
@@ -44,28 +48,36 @@ const rankCandidates = (
 ) => {
     const chargeIdentity = identity(charge);
     const operatedDay = startOfDay(charge.operatedAt);
+    const payeeSeries = entries.filter(
+        entry =>
+            entry.series.kind === charge.kind &&
+            !entry.excludedTransactionIds.has(charge.transactionId) &&
+            (!isDefined(entry.series.accountId) || entry.series.accountId === charge.accountId) &&
+            matchesMerchant(entry, merchantKeys.get(entry.series.id) ?? '', charge, chargeIdentity)
+    );
 
-    return entries
+    return payeeSeries
         .filter(
             entry =>
-                ((entry.series.source === RecurringSeriesSourceEnum.DETECTED && entry.isVariable === true) ||
-                    Math.max(entry.series.defaultAmount, charge.defaultAmount) <=
-                        Math.min(entry.series.defaultAmount, charge.defaultAmount) *
-                            (entry.series.source === RecurringSeriesSourceEnum.MANUAL ? MANUAL_AMOUNT_RATIO : RECURRING_AMOUNT_RATIO)) &&
-                entry.series.kind === charge.kind &&
-                !entry.excludedTransactionIds.has(charge.transactionId) &&
-                (!isDefined(entry.series.accountId) || entry.series.accountId === charge.accountId) &&
-                matchesMerchant(entry, merchantKeys.get(entry.series.id) ?? '', charge, chargeIdentity)
+                (entry.series.source === RecurringSeriesSourceEnum.DETECTED && entry.isVariable === true) ||
+                Math.max(entry.series.defaultAmount, charge.defaultAmount) <=
+                    Math.min(entry.series.defaultAmount, charge.defaultAmount) *
+                        (payeeSeries.length === 1 || entry.series.source === RecurringSeriesSourceEnum.MANUAL
+                            ? MANUAL_AMOUNT_RATIO
+                            : RECURRING_AMOUNT_RATIO)
         )
         .map(entry => ({ entry, cycle: nearestCycleDate(entry.series, operatedDay) }))
         .filter(
             ({ entry, cycle }) =>
-                cycle.deviationDays <= cadenceToleranceDays(entry.series) &&
+                cycle.deviationDays <= cadenceWindowDays(entry.series) &&
                 (!isDefined(entry.series.endsAt) || differenceInCalendarDays(cycle.cycleDate, entry.series.endsAt) <= 0)
         )
         .map(candidate => ({ ...candidate, gap: Math.abs(candidate.entry.series.defaultAmount - charge.defaultAmount) }))
         .sort((first, second) => first.gap - second.gap);
 };
+
+const isInterchangeable = (first: RecurringChargeInterface, second: RecurringChargeInterface): boolean =>
+    isSameDay(first.operatedAt, second.operatedAt) && first.nativeAmount === second.nativeAmount && first.accountId === second.accountId;
 
 export const matchRecurringTransactions = (
     charges: readonly RecurringChargeInterface[],
@@ -95,11 +107,13 @@ export const matchRecurringTransactions = (
 
     return [...groups.values()]
         .flatMap(group => {
-            const sorted = [...group].sort((first, second) => first.gap - second.gap);
-            const [closest] = sorted;
-            const runnerUp = sorted.at(1);
+            const closestGap = Math.min(...group.map(item => item.gap));
+            const tied = group
+                .filter(item => item.gap === closestGap)
+                .sort((first, second) => first.charge.transactionId - second.charge.transactionId);
+            const [closest] = tied;
 
-            return closest.gap === runnerUp?.gap ? [] : [closest];
+            return tied.every(item => isInterchangeable(item.charge, closest.charge)) ? [closest] : [];
         })
         .sort((first, second) => first.charge.operatedAt.getTime() - second.charge.operatedAt.getTime())
         .map(({ charge, seriesId, cycleDate }) => {

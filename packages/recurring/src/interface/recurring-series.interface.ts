@@ -11,5 +11,7 @@ export interface RecurringSeriesInterface extends RecurringCadenceInterface {
     readonly title: string;
     readonly categoryId: number | null;
     readonly anchorTimestamp: number;
+    readonly lastSeenTimestamp: number;
+    readonly confidence: number;
     readonly events: readonly RecurringSeriesEventInterface[];
 }

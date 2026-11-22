@@ -40,6 +40,7 @@ export const TransactionEntityTable = sqliteTable(
         consolidationType: text('consolidation_type', {
             enum: convertEnumToDrizzleEnum(TransactionConsolidationTypeEnum)
         }).$type<TransactionConsolidationTypeEnum>(),
+        refundAutoPairDisabled: int('refund_auto_pair_disabled', { mode: 'boolean' }).notNull().default(false),
         fundAccountId: int('fund_account_id', { mode: 'number' }).references(() => AccountEntityTable.id, { onDelete: 'set null' }),
         yieldKind: text('yield_kind', { enum: convertEnumToDrizzleEnum(YieldKindEnum) }).$type<YieldKindEnum>(),
         yieldSourceAccountId: int('yield_source_account_id', { mode: 'number' }).references(() => AccountEntityTable.id, {

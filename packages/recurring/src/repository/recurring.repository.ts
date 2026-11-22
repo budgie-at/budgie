@@ -4,6 +4,7 @@ import {
     buildSpendingEntryCondition,
     RecurringSeriesKindEnum,
     AccountEntityTable,
+    BudgetSinkingFundEntityTable,
     transactionFilters,
     CategoryEntityTable,
     DefaultCategoryTranslationEntityTable,
@@ -76,6 +77,11 @@ export class RecurringRepository extends Context.Service<RecurringRepository>()(
             }));
         };
 
+        const categorizedTransactions = sql`${TransactionEntityTable.id} IN (
+            SELECT ${TransactionEntryEntityTable.transactionId} FROM ${TransactionEntryEntityTable}
+            WHERE ${TransactionEntryEntityTable.categoryId} IS NOT NULL AND ${TransactionEntryEntityTable.deletedAt} IS NULL
+        )`;
+
         const queryCharges =
             (historical: boolean, defaultInstrumentId: number | null, kind: RecurringSeriesKindEnum) => (filter: SQL | undefined) =>
                 Db.query(db => {
@@ -107,7 +113,7 @@ export class RecurringRepository extends Context.Service<RecurringRepository>()(
                                 transactionFilters.buildNonDebtAccountCondition(),
                                 ...(historical ? [] : [buildSpendingEntryCondition(), eq(AccountEntityTable.isActive, true)]),
                                 gt(TransactionEntryEntityTable.amount, 0),
-                                or(ne(TransactionEntityTable.title, ''), ne(TransactionEntityTable.comment, '')),
+                                or(ne(TransactionEntityTable.title, ''), ne(TransactionEntityTable.comment, ''), categorizedTransactions),
                                 filter
                             )
                         );
@@ -205,6 +211,12 @@ export class RecurringRepository extends Context.Service<RecurringRepository>()(
                             )
                         )
                 ),
+            findSinkingFundSeriesIds: Db.query(db =>
+                db
+                    .selectDistinct({ seriesId: BudgetSinkingFundEntityTable.recurringSeriesId })
+                    .from(BudgetSinkingFundEntityTable)
+                    .where(isNotNull(BudgetSinkingFundEntityTable.recurringSeriesId))
+            ).pipe(Effect.map(rows => new Set(rows.map(row => row.seriesId)))),
             findEverLinkedSeriesIds: Db.query(db =>
                 db.selectDistinct({ seriesId: RecurringSeriesTransactionEntityTable.seriesId }).from(RecurringSeriesTransactionEntityTable)
             ).pipe(Effect.map(rows => new Set(rows.map(row => row.seriesId)))),

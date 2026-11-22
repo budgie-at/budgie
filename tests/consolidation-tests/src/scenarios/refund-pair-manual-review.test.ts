@@ -123,7 +123,7 @@ layer(TestLayer)('consolidation/refund-pair-manual-review', it => {
         })
     );
 
-    it.effect('surfaces a gated-out localized-refund-title candidate for manual review when multiple expenses compete', () =>
+    it.effect('pairs a localized-refund-title refund with the nearest charge when multiple expenses compete', () =>
         Effect.gen(function* () {
             const refundPairRepository = yield* RefundPairRepository;
             const account = yield* testSeedService.account({ externalId: 'mono-card' });
@@ -149,8 +149,8 @@ layer(TestLayer)('consolidation/refund-pair-manual-review', it => {
             const autoCandidates = yield* refundPairRepository.findCandidates();
             const reviewCandidates = yield* refundPairRepository.findReviewCandidates();
 
-            expect(autoCandidates).toHaveLength(0);
-            expect(reviewCandidates).toEqual([
+            expect(reviewCandidates).toHaveLength(0);
+            expect(autoCandidates).toEqual([
                 {
                     confidenceBucket: 'AUTO_REFUND_LOCALIZED_REFUND_TITLE',
                     matchType: 'localized-refund-title',

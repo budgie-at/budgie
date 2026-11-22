@@ -1,4 +1,5 @@
 import { SyncRecordRepository, TransactionEntryBaseValuationRepository } from '@budgie/contracts';
+import { getTableColumns } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -151,6 +152,8 @@ export class SyncChildApplyService extends Context.Service<SyncChildApplyService
                     }
                 } else if (column.property in row.values) {
                     cells[column.property] = normalizeSyncCell(row.values[column.property]);
+                } else if (!column.isNullable) {
+                    cells[column.property] = normalizeSyncCell(getTableColumns(descriptor.table)[column.property]?.default);
                 }
             }
 

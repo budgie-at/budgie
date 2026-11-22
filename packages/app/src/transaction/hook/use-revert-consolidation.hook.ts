@@ -25,7 +25,7 @@ export const useRevertConsolidation = (transactionId: number, onSuccess?: EmptyF
                         isDestructive: true
                     },
                     t`Could not separate transactions.`,
-                    transactionService => transactionService.unconsolidateById(transactionId)
+                    transactionService => transactionService.revertConsolidationByUser(transactionId)
                 );
 
                 if (isReverted) {

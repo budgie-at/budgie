@@ -3,6 +3,46 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.193.0](https://github.com/budgie-at/budgie/compare/v6.192.2...v6.193.0) (2026-11-21)
+
+**Note:** Version bump only for package @budgie/import-export
+
+
+
+
+
+## [6.192.1](https://github.com/budgie-at/budgie/compare/v6.192.0...v6.192.1) (2026-11-21)
+
+**Note:** Version bump only for package @budgie/import-export
+
+
+
+
+
+## [6.191.13](https://github.com/budgie-at/budgie/compare/v6.191.12...v6.191.13) (2026-11-21)
+
+**Note:** Version bump only for package @budgie/import-export
+
+
+
+
+
+## [6.191.9](https://github.com/budgie-at/budgie/compare/v6.191.8...v6.191.9) (2026-11-17)
+
+**Note:** Version bump only for package @budgie/import-export
+
+
+
+
+
+## [6.191.7](https://github.com/budgie-at/budgie/compare/v6.191.6...v6.191.7) (2026-11-17)
+
+**Note:** Version bump only for package @budgie/import-export
+
+
+
+
+
 ## [6.191.4](https://github.com/budgie-at/budgie/compare/v6.191.3...v6.191.4) (2026-11-17)
 
 **Note:** Version bump only for package @budgie/import-export

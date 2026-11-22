@@ -119,6 +119,7 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
             return {
                 newTransactions: [],
                 refilledTransactions: [],
+                rematchTransactions: [],
                 ruleTransactionInputs: [],
                 deferredRuleTransactionIds: [],
                 deferredRuleTransactionInputs: [],
@@ -144,10 +145,11 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
             transactionInputs: imported.transactionInputs.map(input => ruledInputs.get(input) ?? input)
         };
 
-        const { transactions: upsertedTransactions, refilledTransactions } = yield* transactionImportService.bulkUpsertPreparedImported(
-            prepared,
-            { shouldUpdateBalances: false }
-        );
+        const {
+            transactions: upsertedTransactions,
+            refilledTransactions,
+            rematchTransactions
+        } = yield* transactionImportService.bulkUpsertPreparedImported(prepared, { shouldUpdateBalances: false });
 
         if (isNotEmptyArray(upsertedTransactions)) {
             yield* accountBalanceIncrementalService.updateBalancesByAccountIds([account.id]);
@@ -166,6 +168,7 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
         return {
             newTransactions,
             refilledTransactions: pairedRefills.map(({ transaction }) => transaction),
+            rematchTransactions,
             ruleTransactionInputs: [...ruled.transactionInputs, ...pairedRefills.map(({ input }) => input)],
             deferredRuleTransactionIds: [
                 ...ruled.postCreateIndexes.map(index => newTransactions[index]?.id).filter(isDefined),
@@ -192,7 +195,11 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
         );
         const mergedAccountCount = yield* accountReissueMergeService.mergeReissuedAccounts();
 
-        const transactionsToProcess = accountImportResults.flatMap(result => [...result.newTransactions, ...result.refilledTransactions]);
+        const transactionsToProcess = accountImportResults.flatMap(result => [
+            ...result.newTransactions,
+            ...result.refilledTransactions,
+            ...result.rematchTransactions
+        ]);
         if (isPositiveNumber(mergedAccountCount)) {
             const mergedAccounts = yield* syncService.findAccountsByExternalId(bankAccounts.map(account => account.id));
 

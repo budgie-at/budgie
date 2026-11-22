@@ -70,6 +70,7 @@ const payout = (id: number, yieldKind: YieldKindEnum | null = null, operatedAt =
     fundAccountId: null,
     yieldKind,
     yieldSourceAccountId: null,
+    refundAutoPairDisabled: false,
     operatedWeekday: 4,
     operatedMinuteOfDay: 0,
     entries: [],

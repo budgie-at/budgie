@@ -1,4 +1,4 @@
-import { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
+import { Db, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import { TransactionService } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
@@ -12,6 +12,8 @@ import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useEmbeddingGenerator } from '../../../ai/hook/use-embedding-generator.hook';
+import { BROKERAGE_FUNDING_TITLE } from '../../../brokerage/constant/brokerage-funding-title.constant';
+import { BrokerageService } from '../../../brokerage/service/brokerage.service';
 import { useAdjustmentInput } from '../../hook/use-adjustment-input.hook';
 import { useTransactionKeypadEditing } from '../../hook/use-transaction-keypad-editing.hook';
 import { buildAdjustmentUpdateInput } from '../../utils/build-adjustment-update-input.util';
@@ -61,10 +63,20 @@ export const UpdateAdjustmentTransaction = ({ transaction, transactionId, sync }
         return run(
             Effect.gen(function* () {
                 const transactionService = yield* TransactionService;
+                const brokerageService = yield* BrokerageService;
 
-                yield* transactionService.updateById(
-                    transactionId,
-                    buildAdjustmentUpdateInput({ ...transaction, comment: input.comment }, details, input.numericValue, input.isIncrease)
+                yield* Db.transaction(
+                    transactionService
+                        .updateById(
+                            transactionId,
+                            buildAdjustmentUpdateInput(
+                                { ...transaction, comment: input.comment },
+                                details,
+                                input.numericValue,
+                                input.isIncrease
+                            )
+                        )
+                        .pipe(Effect.andThen(brokerageService.adoptFunding(transactionId, t(BROKERAGE_FUNDING_TITLE))))
                 );
                 markForEmbedding(transactionId);
                 goBackOrReplace('/');

@@ -213,7 +213,7 @@ layer(TestLayer)('consolidation/refund-pair-competing-refunds expense fill order
 });
 
 layer(TestLayer)('consolidation/refund-pair-competing-refunds rejected best match', it => {
-    it.effect('does not auto-consolidate a worse-ranked sole-candidate refund when the expense best match is rejected', () =>
+    it.effect('pairs the nearest exact-title refund and reviews the worse-ranked sole-candidate refund it displaces', () =>
         Effect.gen(function* () {
             const refundPairRepository = yield* RefundPairRepository;
             const account = yield* testSeedService.account({ externalId: 'mono-card' });
@@ -239,28 +239,25 @@ layer(TestLayer)('consolidation/refund-pair-competing-refunds rejected best matc
             const autoCandidates = yield* refundPairRepository.findCandidates();
             const reviewCandidates = yield* refundPairRepository.findReviewCandidates();
 
-            expect(autoCandidates).toHaveLength(0);
-            expect(reviewCandidates).toEqual(
-                expect.arrayContaining([
-                    expect.objectContaining({
-                        confidenceBucket: 'AUTO_REFUND_EXACT_TITLE',
-                        expenseTransactionId: targetExpense.id,
-                        refundIncomeTransactionIds: [refunds[0].id]
-                    }),
-                    expect.objectContaining({
-                        confidenceBucket: 'AUTO_REFUND_REJECTED_PAYMENT_PRINCIPAL_TITLE',
-                        expenseTransactionId: targetExpense.id,
-                        refundIncomeTransactionIds: [refunds[1].id]
-                    })
-                ])
-            );
+            expectSoleGroup(autoCandidates, {
+                confidenceBucket: 'AUTO_REFUND_EXACT_TITLE',
+                expenseTransactionId: targetExpense.id,
+                refundIncomeTransactionIds: [refunds[0].id]
+            });
+            expectSoleGroup(reviewCandidates, {
+                confidenceBucket: 'AUTO_REFUND_REJECTED_PAYMENT_PRINCIPAL_TITLE',
+                expenseTransactionId: targetExpense.id,
+                refundIncomeTransactionIds: [refunds[1].id]
+            });
 
             const result = yield* runConsolidation();
 
-            expect(result.consolidated).toBe(0);
-            expect((yield* testQueryService.fetchTransactionById(targetExpense.id)).consolidationType).toBeNull();
-            expect((yield* testQueryService.fetchTransactionById(refunds[0].id)).consolidationParentTransactionId).toBeNull();
-            expect((yield* testQueryService.fetchTransactionById(refunds[1].id)).consolidationParentTransactionId).toBeNull();
+            expect(result.consolidated).toBe(1);
+            yield* expectRefundOutcome(
+                targetExpense.id,
+                refunds.map(refund => refund.id),
+                [targetExpense.id, null]
+            );
         })
     );
 });

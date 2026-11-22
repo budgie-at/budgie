@@ -136,7 +136,7 @@ layer(TestLayer)('consolidation/refund-pair-missed-refund-matches', it => {
         })
     );
 
-    it.effect('keeps an exact-title refund for review when two identical expenses match its exact amount', () =>
+    it.effect('pairs an exact-title refund with the nearest of two identical expenses matching its exact amount', () =>
         Effect.gen(function* () {
             const account = yield* testSeedService.account({ externalId: 'privat-card' });
 
@@ -147,7 +147,7 @@ layer(TestLayer)('consolidation/refund-pair-missed-refund-matches', it => {
                 expenseOperatedAt: PAYPAL_FIRST_EXPENSE_OPERATED_AT,
                 externalIdPrefix: 'paypal-first'
             });
-            const { refunds } = yield* testSeedService.refundedExpense({
+            const { expense, refunds } = yield* testSeedService.refundedExpense({
                 accountId: account.id,
                 title: PAYPAL_TITLE,
                 expenseAmount: PAYPAL_AMOUNT,
@@ -159,11 +159,15 @@ layer(TestLayer)('consolidation/refund-pair-missed-refund-matches', it => {
 
             const { autoCandidates, reviewCandidates } = yield* findRefundCandidates();
 
-            expect(autoCandidates).toHaveLength(0);
-            expectCandidateGroups(reviewCandidates, [
-                { confidenceBucket: 'AUTO_REFUND_EXACT_TITLE', refundIncomeTransactionIds: [refunds[0].id] }
+            expect(reviewCandidates).toHaveLength(0);
+            expectCandidateGroups(autoCandidates, [
+                {
+                    confidenceBucket: 'AUTO_REFUND_EXACT_TITLE',
+                    expenseTransactionId: expense.id,
+                    refundIncomeTransactionIds: [refunds[0].id]
+                }
             ]);
-            expect((yield* runConsolidation()).consolidated).toBe(0);
+            expect((yield* runConsolidation()).consolidated).toBe(1);
         })
     );
 
@@ -238,7 +242,7 @@ layer(TestLayer)('consolidation/refund-pair-missed-refund-matches', it => {
         })
     );
 
-    it.effect('reviews each ambiguous refund against the closest covering expense instead of the nearest in time', () =>
+    it.effect('pairs each partial refund with its closest covering expense instead of the nearest in time', () =>
         Effect.gen(function* () {
             const account = yield* testSeedService.account({ externalId: 'mono-card' });
             const smallExpense = yield* seedExpenseWithoutRefund({
@@ -261,8 +265,8 @@ layer(TestLayer)('consolidation/refund-pair-missed-refund-matches', it => {
 
             const { autoCandidates, reviewCandidates } = yield* findRefundCandidates();
 
-            expect(autoCandidates).toHaveLength(0);
-            expectCandidateGroups(reviewCandidates, [
+            expect(reviewCandidates).toHaveLength(0);
+            expectCandidateGroups(autoCandidates, [
                 { expenseTransactionId: smallExpense.expense.id, refundIncomeTransactionIds: [refunds[0].id] },
                 { expenseTransactionId: largeExpense.id, refundIncomeTransactionIds: [refunds[1].id] }
             ]);

@@ -11,6 +11,8 @@ import { useSingleFlight } from '../../@generic/hook/use-single-flight.hook';
 import { useVibration } from '../../@generic/hook/use-vibration.hook';
 import { goBackOrReplace } from '../../@generic/utils/go-back-or-replace.util';
 import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
+import { BROKERAGE_FUNDING_TITLE } from '../../brokerage/constant/brokerage-funding-title.constant';
+import { BrokerageService } from '../../brokerage/service/brokerage.service';
 import { attachReceipt } from '../../receipt/utils/attach-receipt.util';
 import { RecurringRefreshModeEnum } from '../../recurring/enum/recurring-refresh-mode.enum';
 import { scheduleRecurringRefresh } from '../../recurring/utils/schedule-recurring-refresh.util';
@@ -55,8 +57,16 @@ export const useUpdateTransactionForm = ({
         run(
             Effect.gen(function* () {
                 const transactionService = yield* TransactionService;
+                const brokerageService = yield* BrokerageService;
 
-                yield* Db.transaction(Effect.andThen(transactionService.updateById(id, data), attachReceipt(receipt, id)));
+                yield* Db.transaction(
+                    transactionService
+                        .updateById(id, data)
+                        .pipe(
+                            Effect.andThen(attachReceipt(receipt, id)),
+                            Effect.andThen(brokerageService.adoptFunding(id, t(BROKERAGE_FUNDING_TITLE)))
+                        )
+                );
                 yield* scheduleRecurringRefresh(RecurringRefreshModeEnum.RECENT);
                 onAfterSubmit?.(data);
                 hapticNotification(NotificationFeedbackType.Success);

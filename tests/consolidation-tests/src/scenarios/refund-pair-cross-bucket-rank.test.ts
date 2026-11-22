@@ -2,10 +2,12 @@ import { PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
 import { expect, layer } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { expectRefundNotConsolidated } from '../harness/expect-refund-outcome';
+import { expectRefundOutcome } from '../harness/expect-refund-outcome';
 import { fetchRankedRefundCandidates } from '../harness/fetch-ranked-refund-candidates';
 import { runConsolidation } from '../harness/run-consolidation';
 import { testQueryService, testSeedService, TestLayer } from '../harness/test-context';
+
+import type { RefundCandidateInterface } from '@budgie/contracts';
 
 const CROSS_BUCKET_YEAR = 2026;
 const CROSS_BUCKET_REFUND_DELAY_SECONDS = 2 * 60 * 60;
@@ -70,6 +72,13 @@ const seedShadowedRefund = (input: {
         return { shadowExpense, matchedExpense: matched.expense, refunds: matched.refunds };
     });
 
+const expectSoleAutoPairing = Effect.fnUntraced(function* (expected: Partial<RefundCandidateInterface>) {
+    const { auto, review } = yield* fetchRankedRefundCandidates();
+
+    expect(auto).toEqual([expect.objectContaining(expected)]);
+    expect(review).toHaveLength(0);
+});
+
 layer(TestLayer)('consolidation/refund-pair-cross-bucket-rank', it => {
     it.effect('auto-consolidates the unique localized exact-amount match shadowed by an exact-title candidate of another expense', () =>
         Effect.gen(function* () {
@@ -83,17 +92,12 @@ layer(TestLayer)('consolidation/refund-pair-cross-bucket-rank', it => {
                 refundTitle: UBER_REVERSAL_TITLE
             });
 
-            const { auto, review } = yield* fetchRankedRefundCandidates();
-
-            expect(auto).toEqual([
-                expect.objectContaining({
-                    confidenceBucket: 'AUTO_REFUND_LOCALIZED_REFUND_TITLE',
-                    expenseTransactionId: matchedExpense.id,
-                    refundIncomeTransactionIds: [refunds[0].id],
-                    refundsTotal: UBER_REFUND_AMOUNT
-                })
-            ]);
-            expect(review).toHaveLength(0);
+            yield* expectSoleAutoPairing({
+                confidenceBucket: 'AUTO_REFUND_LOCALIZED_REFUND_TITLE',
+                expenseTransactionId: matchedExpense.id,
+                refundIncomeTransactionIds: [refunds[0].id],
+                refundsTotal: UBER_REFUND_AMOUNT
+            });
 
             const result = yield* runConsolidation();
 
@@ -106,47 +110,45 @@ layer(TestLayer)('consolidation/refund-pair-cross-bucket-rank', it => {
         })
     );
 
-    it.effect('surfaces an ambiguous localized candidate for review instead of dropping the refund behind an exact-title shadow', () =>
-        Effect.gen(function* () {
-            const account = yield* testSeedService.account({ externalId: 'mono-card' });
-            yield* testSeedService.refundedExpense({
-                accountId: account.id,
-                title: LIME_TITLE,
-                expenseAmount: LIME_REFUND_AMOUNT,
-                refundAmounts: [],
-                expenseOperatedAt: LIME_TWIN_EXPENSE_OPERATED_AT,
-                externalIdPrefix: 'lime-twin'
-            });
-            const { matchedExpense, refunds } = yield* seedShadowedRefund({
-                accountId: account.id,
-                shadowTitle: LIME_REVERSAL_TITLE,
-                shadowAmount: LIME_SHADOW_AMOUNT,
-                shadowOperatedAt: LIME_SHADOW_EXPENSE_OPERATED_AT,
-                matchedTitle: LIME_TITLE,
-                matchedAmount: LIME_REFUND_AMOUNT,
-                matchedOperatedAt: LIME_MATCHED_EXPENSE_OPERATED_AT,
-                refundTitle: LIME_REVERSAL_TITLE
-            });
+    it.effect(
+        'pairs an ambiguous localized refund with the nearest covering charge instead of dropping it behind an exact-title shadow',
+        () =>
+            Effect.gen(function* () {
+                const account = yield* testSeedService.account({ externalId: 'mono-card' });
+                yield* testSeedService.refundedExpense({
+                    accountId: account.id,
+                    title: LIME_TITLE,
+                    expenseAmount: LIME_REFUND_AMOUNT,
+                    refundAmounts: [],
+                    expenseOperatedAt: LIME_TWIN_EXPENSE_OPERATED_AT,
+                    externalIdPrefix: 'lime-twin'
+                });
+                const { matchedExpense, refunds } = yield* seedShadowedRefund({
+                    accountId: account.id,
+                    shadowTitle: LIME_REVERSAL_TITLE,
+                    shadowAmount: LIME_SHADOW_AMOUNT,
+                    shadowOperatedAt: LIME_SHADOW_EXPENSE_OPERATED_AT,
+                    matchedTitle: LIME_TITLE,
+                    matchedAmount: LIME_REFUND_AMOUNT,
+                    matchedOperatedAt: LIME_MATCHED_EXPENSE_OPERATED_AT,
+                    refundTitle: LIME_REVERSAL_TITLE
+                });
 
-            const { auto, review } = yield* fetchRankedRefundCandidates();
-
-            expect(auto).toHaveLength(0);
-            expect(review).toEqual([
-                expect.objectContaining({
+                yield* expectSoleAutoPairing({
                     confidenceBucket: 'AUTO_REFUND_LOCALIZED_REFUND_TITLE',
                     expenseTransactionId: matchedExpense.id,
                     refundIncomeTransactionIds: [refunds[0].id],
                     refundsTotal: LIME_REFUND_AMOUNT
-                })
-            ]);
+                });
 
-            yield* expectRefundNotConsolidated(refunds[0].id);
-        })
+                yield* runConsolidation();
+                yield* expectRefundOutcome(matchedExpense.id, [refunds[0].id], [matchedExpense.id]);
+            })
     );
 });
 
 layer(TestLayer)('consolidation/refund-pair-cross-bucket-rank exact-title precedence', it => {
-    it.effect('keeps an equally exact-amount exact-title candidate ahead of a localized alternative', () =>
+    it.effect('pairs the nearest equally exact-amount exact-title charge over an earlier localized alternative', () =>
         Effect.gen(function* () {
             const { matchedExpense, refunds, shadowExpense } = yield* seedShadowedRefund({
                 shadowTitle: SPOTIFY_REVERSAL_TITLE,
@@ -158,18 +160,14 @@ layer(TestLayer)('consolidation/refund-pair-cross-bucket-rank exact-title preced
                 refundTitle: SPOTIFY_TITLE
             });
 
-            const { auto, review } = yield* fetchRankedRefundCandidates();
+            yield* expectSoleAutoPairing({
+                confidenceBucket: 'AUTO_REFUND_EXACT_TITLE',
+                expenseTransactionId: matchedExpense.id,
+                refundIncomeTransactionIds: [refunds[0].id]
+            });
 
-            expect(auto).toHaveLength(0);
-            expect(review).toEqual([
-                expect.objectContaining({
-                    confidenceBucket: 'AUTO_REFUND_EXACT_TITLE',
-                    expenseTransactionId: matchedExpense.id,
-                    refundIncomeTransactionIds: [refunds[0].id]
-                })
-            ]);
-
-            yield* expectRefundNotConsolidated(refunds[0].id);
+            yield* runConsolidation();
+            yield* expectRefundOutcome(matchedExpense.id, [refunds[0].id], [matchedExpense.id]);
             expect((yield* testQueryService.fetchTransactionById(shadowExpense.id)).consolidationType).toBeNull();
         })
     );

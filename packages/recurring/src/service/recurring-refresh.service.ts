@@ -19,21 +19,22 @@ import * as Semaphore from 'effect/Semaphore';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { RECURRING_ACTIVE_CONFIDENCE } from '../constant/recurring-active-confidence.constant';
 import { RECURRING_AMOUNT_RATIO } from '../constant/recurring-amount-ratio.constant';
 import { RECURRING_HISTORY_MONTHS } from '../constant/recurring-history-months.constant';
 import { RECURRING_TRACKED_KINDS } from '../constant/recurring-tracked-kinds.constant';
 import { RecurringAdoptionEnum } from '../enum/recurring-adoption.enum';
 import { RecurringRepository } from '../repository/recurring.repository';
 import { resolveKeyedRows } from '../series/recurring-adoption';
-import { scoreDetectedSeries } from '../series/recurring-confidence';
 import { buildDetectedSchedule } from '../series/recurring-detected-schedule';
 import { matchRecurringTransactions } from '../series/recurring-matcher';
-import { cadencePeriodDays, cadenceToleranceDays, nearestCycleDate } from '../series/recurring-schedule';
-import { detectRecurringSeries, identity, isSeriesActive, nearestCycle } from '../series/recurring-series';
+import { cadencePeriodDays, cadenceWindowDays, nearestCycle, nearestCycleDate } from '../series/recurring-schedule';
+import { detectRecurringSeries, identity, isSeriesActive } from '../series/recurring-series';
 import { chargeKey } from '../utils/charge-key.util';
 
 import type { RecurringChargeInterface } from '../interface/recurring-charge.interface';
 import type { RecurringMatchSeriesInterface } from '../interface/recurring-match-series.interface';
+import type { RecurringScheduleInterface } from '../interface/recurring-schedule.interface';
 import type { RecurringSeriesRowInterface } from '../interface/recurring-series-row.interface';
 import type { RecurringSeriesInterface } from '../interface/recurring-series.interface';
 import type {
@@ -55,9 +56,13 @@ export class RecurringRefreshService extends Context.Service<RecurringRefreshSer
             row.source === RecurringSeriesSourceEnum.MANUAL || row.userState === RecurringSeriesUserStateEnum.CONFIRMED;
 
         const STREAM_PERIOD_RATIO = 1.25;
+        const STORED_HISTORY_MONTHS = 12;
         const VARIABLE_CHARGE_COUNT = 3;
 
         const isSameStream = (owner: RecurringSeriesEntityInterface, series: RecurringSeriesInterface): boolean => {
+            if (owner.userState === RecurringSeriesUserStateEnum.DISMISSED) {
+                return true;
+            }
             if (isUserOwned(owner)) {
                 const ownerPeriod = cadencePeriodDays(owner);
 
@@ -77,6 +82,16 @@ export class RecurringRefreshService extends Context.Service<RecurringRefreshSer
         };
 
         const pairKey = (seriesId: number, value: number): string => `${seriesId}:${value}`;
+
+        const occupiedCycles = (
+            row: Pick<RecurringSeriesEntityInterface, 'id'> & RecurringScheduleInterface,
+            links: readonly RecurringSeriesTransactionEntityInterface[]
+        ): Set<number> =>
+            new Set(
+                links
+                    .filter(link => link.seriesId === row.id && !link.isExcluded)
+                    .map(link => nearestCycleDate(row, link.cycleDate).cycleDate.getTime())
+            );
 
         const recurringRepository = yield* RecurringRepository;
         const settingsRepository = yield* SettingsRepository;
@@ -106,7 +121,7 @@ export class RecurringRefreshService extends Context.Service<RecurringRefreshSer
                     !link.isExcluded &&
                     (!isDefined(row) ||
                         !isDefined(charge) ||
-                        Math.abs(differenceInCalendarDays(charge.operatedAt, link.cycleDate)) > cadenceToleranceDays(row))
+                        Math.abs(differenceInCalendarDays(charge.operatedAt, link.cycleDate)) > cadenceWindowDays(row))
                 );
             });
             const deletedAt = yield* DateTime.nowAsDate;
@@ -118,12 +133,46 @@ export class RecurringRefreshService extends Context.Service<RecurringRefreshSer
             return new Set(invalid.map(link => link.id));
         });
 
+        const dropUnstoredSuggestions = Effect.fnUntraced(function* (
+            rows: readonly RecurringSeriesEntityInterface[],
+            links: readonly RecurringSeriesTransactionEntityInterface[],
+            storedIds: ReadonlySet<number>,
+            everLinkedSeriesIds: ReadonlySet<number>
+        ) {
+            const sinkingFundSeriesIds = yield* recurringRepository.findSinkingFundSeriesIds;
+            const userLinkedIds = new Set(
+                links.filter(link => link.matchedBy === RecurringMatchSourceEnum.USER && !link.isExcluded).map(link => link.seriesId)
+            );
+            const droppedIds = new Set(
+                rows
+                    .filter(
+                        row =>
+                            row.source === RecurringSeriesSourceEnum.DETECTED &&
+                            row.userState === RecurringSeriesUserStateEnum.SUGGESTED &&
+                            !storedIds.has(row.id) &&
+                            (everLinkedSeriesIds.has(row.id) || !row.merchantKey.startsWith(`${row.kind}|`)) &&
+                            !isDefined(row.reminderDaysBefore) &&
+                            !userLinkedIds.has(row.id) &&
+                            !sinkingFundSeriesIds.has(row.id)
+                    )
+                    .map(row => row.id)
+            );
+            const deletedAt = yield* DateTime.nowAsDate;
+            yield* recurringRepository.setLinksDeletedAt(
+                links
+                    .filter(link => droppedIds.has(link.seriesId) && link.matchedBy === RecurringMatchSourceEnum.AUTO)
+                    .map(link => link.id),
+                deletedAt
+            );
+            yield* Effect.forEach(droppedIds, seriesId => recurringRepository.setSeriesDeletedAt(seriesId, deletedAt), { discard: true });
+        });
+
         const observedFacts = (series: RecurringSeriesInterface, now: Date) => ({
             amount: series.nativeAmount,
             instrumentId: series.instrumentId,
             status: isSeriesActive(series, now) ? RecurringSeriesStatusEnum.ACTIVE : RecurringSeriesStatusEnum.ENDED,
-            lastSeenAt: new Date(series.anchorTimestamp),
-            confidence: scoreDetectedSeries(series)
+            lastSeenAt: new Date(series.lastSeenTimestamp),
+            confidence: series.confidence
         });
 
         const structuralFacts = (series: RecurringSeriesInterface) => ({
@@ -186,7 +235,6 @@ export class RecurringRefreshService extends Context.Service<RecurringRefreshSer
             const excludedOnly = new Set(
                 links.filter(link => link.isExcluded && !liveByTransaction.has(link.transactionId)).map(link => link.transactionId)
             );
-            const occupied = new Set(liveLinks.map(link => pairKey(link.seriesId, link.cycleDate.getTime())));
             const since = subMonths(now, RECURRING_HISTORY_MONTHS);
             const charges = (yield* Effect.forEach(RECURRING_TRACKED_KINDS, kind =>
                 recurringRepository.findCharges(defaultInstrumentId, since, kind)
@@ -204,7 +252,7 @@ export class RecurringRefreshService extends Context.Service<RecurringRefreshSer
                     if (
                         isDefined(owner) &&
                         isSameStream(owner, series) &&
-                        nearestCycle(new Date(series.anchorTimestamp), new Date(event.timestamp), series).deviation <= series.toleranceDays
+                        nearestCycle(new Date(series.anchorTimestamp), new Date(event.timestamp), series).deviation <= series.windowDays
                     ) {
                         counts.set(owner.id, (counts.get(owner.id) ?? 0) + 1);
                     }
@@ -260,8 +308,7 @@ export class RecurringRefreshService extends Context.Service<RecurringRefreshSer
                             isUserOwned(row) &&
                             liveLinks.some(
                                 link =>
-                                    link.seriesId === row.id &&
-                                    nearestCycleDate(row, link.cycleDate).deviationDays > cadenceToleranceDays(row)
+                                    link.seriesId === row.id && nearestCycleDate(row, link.cycleDate).deviationDays > cadenceWindowDays(row)
                             )
                     )
                     .map(row => row.id)
@@ -273,21 +320,29 @@ export class RecurringRefreshService extends Context.Service<RecurringRefreshSer
                     return isDefined(owner) && isUserOwned(owner) && (isSameStream(owner, series) || correctedScheduleIds.has(owner.id));
                 }).length >
                 series.events.length / 2;
-            const storable = [...detected.entries()].filter(([index, series]) => resolved.has(index) || !isOwnedByUser(series));
+            const isCurrent = (series: RecurringSeriesInterface): boolean =>
+                new Date(series.lastSeenTimestamp) >= subMonths(now, STORED_HISTORY_MONTHS) &&
+                (series.confidence >= RECURRING_ACTIVE_CONFIDENCE || isSeriesActive(series, now));
+            const storable = [...detected.entries()].filter(
+                ([index, series]) => isCurrent(series) && (resolved.has(index) || !isOwnedByUser(series))
+            );
+            const storedIds = new Set<number>();
             for (const [index, series] of storable) {
                 const matchedRow = resolved.get(index) ?? null;
                 const isAdopted = isDefined(matchedRow) && !overlapIndexes.has(index) && !everLinkedSeriesIds.has(matchedRow.id);
                 const stored = yield* store(series, matchedRow, resolveAdoption(isAdopted, keyedIndexes.has(index)), now);
+                storedIds.add(stored.id);
+                const occupied = occupiedCycles(stored, liveLinks);
                 for (const event of series.events) {
                     const date = startOfDay(event.timestamp);
                     const cycle = nearestCycleDate(stored, date);
                     const isFree =
                         !liveByTransaction.has(event.transactionId) &&
                         !excludedPairs.has(pairKey(stored.id, event.transactionId)) &&
-                        !occupied.has(pairKey(stored.id, cycle.cycleDate.getTime())) &&
-                        cycle.deviationDays <= cadenceToleranceDays(stored);
+                        !occupied.has(cycle.cycleDate.getTime()) &&
+                        cycle.deviationDays <= cadenceWindowDays(stored);
                     if (isFree) {
-                        occupied.add(pairKey(stored.id, cycle.cycleDate.getTime()));
+                        occupied.add(cycle.cycleDate.getTime());
                         liveByTransaction.set(event.transactionId, stored.id);
                         linkInputs.push({
                             seriesId: stored.id,
@@ -299,6 +354,7 @@ export class RecurringRefreshService extends Context.Service<RecurringRefreshSer
                 }
             }
             yield* recurringRepository.upsertAutoLinks(linkInputs);
+            yield* dropUnstoredSuggestions(rows, links, storedIds, everLinkedSeriesIds);
         });
 
         const buildMatchSeries = (
@@ -325,14 +381,14 @@ export class RecurringRefreshService extends Context.Service<RecurringRefreshSer
                     return {
                         isVariable: amounts.length > 1 && Math.max(...amounts) > Math.min(...amounts) * RECURRING_AMOUNT_RATIO,
                         series: row,
-                        userIdentities: new Set(
+                        linkedIdentities: new Set(
                             rowLinks
-                                .filter(link => link.matchedBy === RecurringMatchSourceEnum.USER && !link.isExcluded)
+                                .filter(link => !link.isExcluded)
                                 .map(link => linkedCharges.get(chargeKey(row.kind, link.transactionId)))
                                 .filter(isDefined)
                                 .map(charge => identity(charge))
                         ),
-                        occupiedCycles: new Set(rowLinks.filter(link => !link.isExcluded).map(link => link.cycleDate.getTime())),
+                        occupiedCycles: occupiedCycles(row, rowLinks),
                         excludedTransactionIds: new Set(rowLinks.filter(link => link.isExcluded).map(link => link.transactionId))
                     };
                 });

@@ -47,6 +47,7 @@ const buildAdjustment = (accountType: AccountTypeEnum): TransactionWithRelations
         externalSource: null,
         updatedBy: null,
         needsEmbedding: false,
+        refundAutoPairDisabled: false,
         importFingerprint: null,
         consolidationParentTransactionId: null,
         consolidationType: null,

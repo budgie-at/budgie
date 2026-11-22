@@ -2,6 +2,7 @@ import { BudgetPeriodCloseService } from '@budgie/budget';
 import { CloudSyncService } from '@budgie/cloud-sync';
 import { SyncIdentityRepository, logAndContinue } from '@budgie/contracts';
 import { YieldTagRepairService } from '@budgie/sync';
+import { i18n } from '@lingui/core';
 import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as Option from 'effect/Option';
@@ -14,6 +15,8 @@ import { emptyFn } from '@rnw-community/shared';
 
 import { ACCOUNT_BALANCE_INCREMENTAL_TASK } from '../../account/constant/account-balance-incremental-task.constant';
 import { AuthService } from '../../auth/service/auth.service';
+import { BROKERAGE_FUNDING_TITLE } from '../../brokerage/constant/brokerage-funding-title.constant';
+import { BrokerageService } from '../../brokerage/service/brokerage.service';
 import { BudgetAlertMonitorService } from '../../budget/service/budget-alert-monitor.service';
 import { CategoryIconBackfillService } from '../../category/service/category-icon-backfill.service';
 import { CloudBackupTriggerService } from '../../cloud-backup/service/cloud-backup-trigger.service';
@@ -123,7 +126,10 @@ const initializeAppServices = Effect.gen(function* () {
     yield* Effect.all(
         [
             logAndContinue(Effect.flatMap(HistoricalMarketDataDrainerService, service => service.enqueueActiveAccounts())),
-            logAndContinue(Effect.flatMap(YieldTagRepairService, service => workload.run(service.runOnce())))
+            logAndContinue(Effect.flatMap(YieldTagRepairService, service => workload.run(service.runOnce()))),
+            logAndContinue(
+                Effect.flatMap(BrokerageService, service => workload.run(service.reconcileFunding(i18n._(BROKERAGE_FUNDING_TITLE))))
+            )
         ],
         { discard: true }
     );

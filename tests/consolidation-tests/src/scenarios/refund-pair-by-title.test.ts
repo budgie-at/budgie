@@ -130,7 +130,7 @@ layer(TestLayer)('consolidation/refund-pair-by-title', it => {
         })
     );
 
-    it.effect('does not auto-consolidate one refund when multiple same-title expenses can claim it', () =>
+    it.effect('pairs one refund with the nearest preceding same-title expense when several can claim it', () =>
         Effect.gen(function* () {
             const account = yield* testSeedService.account({ externalId: 'mono-card' });
             yield* testSeedService.refundedExpense({
@@ -140,7 +140,7 @@ layer(TestLayer)('consolidation/refund-pair-by-title', it => {
                 externalIdPrefix: 'first',
                 expenseOperatedAt: FIRST_LIME_OPERATED_AT
             });
-            yield* testSeedService.refundedExpense({
+            const second = yield* testSeedService.refundedExpense({
                 accountId: account.id,
                 expenseAmount: APPLE_STORE_AMOUNT,
                 refundAmounts: [APPLE_STORE_AMOUNT],
@@ -149,7 +149,10 @@ layer(TestLayer)('consolidation/refund-pair-by-title', it => {
             });
 
             const result = yield* runConsolidation();
-            expect(result.consolidated).toBe(0);
+            expect(result.consolidated).toBe(1);
+            expect((yield* testQueryService.fetchTransactionById(second.refunds[0].id)).consolidationParentTransactionId).toBe(
+                second.expense.id
+            );
         })
     );
 });

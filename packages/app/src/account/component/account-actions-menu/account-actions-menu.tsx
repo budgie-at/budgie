@@ -38,6 +38,7 @@ export const AccountActionsMenu = ({ account }: Props) => {
 
     const isBusy = closeAction.isLoading || archiveAction.isLoading || revertAction.isLoading;
     const isBrokeragePosition = isDefined(account.integrationId) && isListedSecurityType(account.instrument.type);
+    const archiveLabel = archiveAction.isBrokerageCash ? t`Archive brokerage` : t`Archive`;
     const isInstallmentPlan = account.type === AccountTypeEnum.DEBT && account.debtType === AccountDebtTypeEnum.INSTALLMENT;
 
     const typeSpecificItem =
@@ -52,7 +53,7 @@ export const AccountActionsMenu = ({ account }: Props) => {
         ) : (
             <ActionsMenuItem
                 icon={UserIconNameEnum.Archive}
-                label={t`Archive`}
+                label={archiveLabel}
                 onPress={archiveAction.handleArchive}
                 testID={AccountDetailsSelector.ArchiveMenuButton}
             />

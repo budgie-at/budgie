@@ -7,7 +7,6 @@ import {
 } from '@budgie/sync';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
-import * as Exit from 'effect/Exit';
 import * as Layer from 'effect/Layer';
 import * as Schema from 'effect/Schema';
 import * as DocumentPicker from 'expo-document-picker';
@@ -125,7 +124,7 @@ export class EnableBankingConnectionService extends Context.Service<EnableBankin
                         if (!application.redirectUrls.includes(ENABLE_BANKING_RELAY_URL)) {
                             return yield* fail(EnableBankingSetupErrorReasonEnum.REDIRECT_URL_MISSING);
                         }
-                    }).pipe(Effect.onExit(exit => (Exit.isSuccess(exit) ? Effect.void : restorePrevious)));
+                    }).pipe(Effect.onError(() => restorePrevious));
                 }),
                 discardUnusedKey: Effect.fn('EnableBankingConnectionService.discardUnusedKey')(function* (applicationId: string) {
                     const pending = yield* secureStore.readPending();

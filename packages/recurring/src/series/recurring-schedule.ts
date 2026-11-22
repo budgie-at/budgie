@@ -10,8 +10,10 @@ import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 import { CADENCES } from '../constant/recurring-cadences.constant';
 import { DAYS_PER_MONTH } from '../constant/recurring-days-per-month.constant';
 
+import type { RecurringCadenceInterface } from '../interface/recurring-cadence.interface';
 import type { RecurringScheduleInterface } from '../interface/recurring-schedule.interface';
 
+const DAY_MS = 86_400_000;
 const WEEKS_PER_YEAR = 52;
 const MONTHS_PER_YEAR = 12;
 const UNIT_PERIOD_DAYS: Record<RecurringCadenceUnitEnum, number> = {
@@ -30,15 +32,43 @@ const UNIT_ADDERS: Record<RecurringCadenceUnitEnum, (date: Date, amount: number)
     [RecurringCadenceUnitEnum.YEAR]: addYears
 };
 
+const monthIndex = (date: Date): number => date.getFullYear() * MONTHS_PER_YEAR + date.getMonth();
+
+const utcDay = (year: number, month: number, day: number): number => Date.UTC(year, month, day) / DAY_MS;
+
+export const calendarDay = (date: Date): number => utcDay(date.getFullYear(), date.getMonth(), date.getDate());
+
+const shiftMonths = (anchor: Date, months: number): number => {
+    const month = anchor.getMonth() + months;
+    const monthLength = utcDay(anchor.getFullYear(), month + 1, 1) - utcDay(anchor.getFullYear(), month, 1);
+
+    return utcDay(anchor.getFullYear(), month, Math.min(anchor.getDate(), monthLength));
+};
+
+export const nearestCycle = (anchor: Date, date: Date, cadence: Pick<RecurringCadenceInterface, 'periodMonths' | 'periodDays'>) => {
+    const day = calendarDay(date);
+    const { periodMonths } = cadence;
+    if (!isDefined(periodMonths)) {
+        const cycle = Math.round((calendarDay(anchor) - day) / cadence.periodDays);
+
+        return { cycle, deviation: Math.abs(day - (calendarDay(anchor) - cycle * cadence.periodDays)) };
+    }
+    const estimatedCycle = Math.round((monthIndex(anchor) - monthIndex(date)) / periodMonths);
+
+    return [estimatedCycle - 1, estimatedCycle, estimatedCycle + 1]
+        .map(cycle => ({ cycle, deviation: Math.abs(day - shiftMonths(anchor, -cycle * periodMonths)) }))
+        .reduce((closest, candidate) => (candidate.deviation < closest.deviation ? candidate : closest));
+};
+
 export const cadencePeriodDays = (schedule: Pick<RecurringScheduleInterface, 'cadenceUnit' | 'cadenceInterval'>): number =>
     UNIT_PERIOD_DAYS[schedule.cadenceUnit] * schedule.cadenceInterval;
 
-export const cadenceToleranceDays = (schedule: Pick<RecurringScheduleInterface, 'cadenceUnit' | 'cadenceInterval'>): number => {
+export const cadenceWindowDays = (schedule: Pick<RecurringScheduleInterface, 'cadenceUnit' | 'cadenceInterval'>): number => {
     const periodDays = cadencePeriodDays(schedule);
 
     return CADENCES.reduce((nearest, cadence) =>
         Math.abs(cadence.periodDays - periodDays) < Math.abs(nearest.periodDays - periodDays) ? cadence : nearest
-    ).toleranceDays;
+    ).windowDays;
 };
 
 export const cycleDateAt = (schedule: RecurringScheduleInterface, cycle: number): Date =>
