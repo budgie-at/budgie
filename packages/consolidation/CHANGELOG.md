@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.193.0](https://github.com/budgie-at/budgie/compare/v6.192.2...v6.193.0) (2026-11-21)
+
+### Features
+
+* **consolidation:** pair refunds by forced match, balanced twins or nearest guess ([#2275](https://github.com/budgie-at/budgie/issues/2275)) ([0b98d15](https://github.com/budgie-at/budgie/commit/0b98d152f506655f654a760afc79591518036307))
+
+
+## [6.191.13](https://github.com/budgie-at/budgie/compare/v6.191.12...v6.191.13) (2026-11-21)
+
+### Bug Fixes
+
+* pair repeated interbank fee transfers and read Privatbank Kyiv times without Intl ([#2268](https://github.com/budgie-at/budgie/issues/2268)) ([ba47b0b](https://github.com/budgie-at/budgie/commit/ba47b0b6062a2a45c15d850c9055cd7a8ede15e0))
+
+
+## [6.191.9](https://github.com/budgie-at/budgie/compare/v6.191.8...v6.191.9) (2026-11-17)
+
+**Note:** Version bump only for package @budgie/consolidation
+
+
+
+
+
 ## [6.191.4](https://github.com/budgie-at/budgie/compare/v6.191.3...v6.191.4) (2026-11-17)
 
 **Note:** Version bump only for package @budgie/consolidation

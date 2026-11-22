@@ -8,7 +8,6 @@ import {
 
 import { isDefined } from '@rnw-community/shared';
 
-import { scoreDetectedSeries } from '../src/series/recurring-confidence';
 import { buildDetectedSchedule } from '../src/series/recurring-detected-schedule';
 
 import type { RecurringChargeInterface } from '../src/interface/recurring-charge.interface';
@@ -38,14 +37,14 @@ export const buildReadModels = (
             userState,
             title: series.title,
             categoryId: series.categoryId,
-            lastSeenAt: new Date(series.anchorTimestamp),
+            lastSeenAt: new Date(series.lastSeenTimestamp),
             source: RecurringSeriesSourceEnum.DETECTED,
             accountId: null,
             ...buildDetectedSchedule(series),
             instrumentId: series.instrumentId,
             endsAt: null,
             reminderDaysBefore: null,
-            confidence: scoreDetectedSeries(series),
+            confidence: series.confidence,
             defaultAmount: series.nativeAmount,
             categoryTitle: null,
             categoryIcon: null

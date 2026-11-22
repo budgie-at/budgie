@@ -33,6 +33,7 @@ import { SyncChildApplyService } from './sync-child-apply.service';
 
 import type { SyncRowReferenceInterface } from '../../mapping/interface/sync-row-reference.interface';
 import type { SyncRowInterface } from '../../mapping/interface/sync-row.interface';
+import type { SyncTableDescriptorInterface } from '../../mapping/interface/sync-table-descriptor.interface';
 import type { SyncApplyItemInterface } from '../interface/sync-apply-item.interface';
 import type { SyncApplyUnitInterface } from '../interface/sync-apply-unit.interface';
 import type { SyncPreResolutionInterface } from '../interface/sync-pre-resolution.interface';
@@ -113,6 +114,32 @@ export class SyncApplyUnitService extends Context.Service<SyncApplyUnitService>(
             return recordType === SyncRecordTypeEnum.TRANSACTION && isTransactionType(type)
                 ? { ...merged, ...normalizeYieldFields(type, isYieldKind(yieldKind) ? yieldKind : null, yieldSourceAccountId ?? null) }
                 : merged;
+        };
+
+        const refundMarkerProperty = 'refundAutoPairDisabled';
+
+        const raiseRefundMarker = (
+            recordType: SyncRecordTypeEnum,
+            local: Readonly<Record<string, SyncCellType>>,
+            merged: Readonly<Record<string, SyncCellType>>
+        ): Readonly<Record<string, SyncCellType>> =>
+            recordType === SyncRecordTypeEnum.TRANSACTION && local[refundMarkerProperty] === 1 && merged[refundMarkerProperty] !== 1
+                ? { ...merged, [refundMarkerProperty]: 1 }
+                : merged;
+
+        const resolveKeptColumns = (
+            hasOutbox: boolean,
+            kept: readonly string[],
+            isRefundMarkerMissingOnServer: boolean,
+            descriptor: SyncTableDescriptorInterface
+        ): string[] | null => {
+            const markerColumns = isRefundMarkerMissingOnServer ? [getSyncColumnName(descriptor, refundMarkerProperty)] : [];
+
+            if (hasOutbox) {
+                return [...new Set([...kept, ...markerColumns])].sort();
+            }
+
+            return isNotEmptyArray(markerColumns) ? markerColumns : null;
         };
 
         const readChangedColumns = (changedColumns: string): readonly string[] =>
@@ -335,11 +362,13 @@ export class SyncApplyUnitService extends Context.Service<SyncApplyUnitService>(
                     localChanged: changedProperties,
                     authorship: SYNC_AUTHORSHIP_COLUMNS[parentTable] ?? null
                 });
-                const mergedCells = normalizeMergedYield(decoded.recordType, result.merged);
+                const normalizedCells = normalizeMergedYield(decoded.recordType, result.merged);
+                const mergedCells = raiseRefundMarker(decoded.recordType, localCells, normalizedCells);
                 const updates = diffSyncCells(parentDescriptor, mergedCells, localCells);
-                const kept = Object.keys(serverParentCells)
-                    .filter(property => mergedCells[property] !== (serverParentCells[property] ?? null))
-                    .map(property => getSyncColumnName(parentDescriptor, property));
+                const kept = [
+                    ...Object.keys(serverParentCells).filter(property => mergedCells[property] !== (serverParentCells[property] ?? null)),
+                    ...[...changedProperties].filter(property => !(property in serverParentCells))
+                ].map(property => getSyncColumnName(parentDescriptor, property));
 
                 if (isNotEmptyArray(Object.keys(updates))) {
                     yield* repository.updateRow(parentTable, parentLocalId, updates);
@@ -370,7 +399,12 @@ export class SyncApplyUnitService extends Context.Service<SyncApplyUnitService>(
                     }
                 }
 
-                keptColumns = isDefined(outbox) ? [...new Set(kept)].sort() : null;
+                keptColumns = resolveKeptColumns(
+                    isDefined(outbox),
+                    kept,
+                    mergedCells[refundMarkerProperty] === 1 && serverParentCells[refundMarkerProperty] !== 1,
+                    parentDescriptor
+                );
             } else {
                 for (const row of decoded.rows) {
                     yield* childApplyService.insertRow(row, resolutions, unitIds);

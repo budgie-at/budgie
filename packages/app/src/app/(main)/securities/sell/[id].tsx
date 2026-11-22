@@ -1,4 +1,5 @@
 import { InstrumentPriceProviderEnum } from '@budgie/contracts';
+import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { useLocalSearchParams } from 'expo-router';
 
@@ -10,6 +11,7 @@ import { useGetAccountByIdQuery } from '../../../../account/query/use-get-accoun
 import { useGetAccountsByIntegrationIdQuery } from '../../../../account/query/use-get-accounts-by-integration-id.query';
 import { SecurityHoldingRow } from '../../../../brokerage/component/security-holding-row/security-holding-row';
 import { SecurityTradeForm } from '../../../../brokerage/component/security-trade-form/security-trade-form';
+import { BROKERAGE_FUNDING_TITLE } from '../../../../brokerage/constant/brokerage-funding-title.constant';
 import { SecurityTradeSideEnum } from '../../../../brokerage/enum/security-trade-side.enum';
 import { useSecurityPriceQuery } from '../../../../brokerage/query/use-security-price.query';
 import { BrokerageService } from '../../../../brokerage/service/brokerage.service';
@@ -17,6 +19,7 @@ import { BrokerageService } from '../../../../brokerage/service/brokerage.servic
 import type { SecurityTradeFormValues } from '../../../../brokerage/constant/security-trade-form-schema.constant';
 
 export default function SellSecurity() {
+    const { t } = useLingui();
     const accountId = Number(useLocalSearchParams<IdParamInterface>().id);
 
     const { account } = useGetAccountByIdQuery(accountId);
@@ -28,7 +31,7 @@ export default function SellSecurity() {
     const currencySymbol = suggestedPrice.cash?.instrument.symbol ?? '';
 
     const handleSubmit = (values: SecurityTradeFormValues) =>
-        Effect.flatMap(BrokerageService, brokerageService => brokerageService.sell(accountId, values));
+        Effect.flatMap(BrokerageService, brokerageService => brokerageService.sell(accountId, values, t(BROKERAGE_FUNDING_TITLE)));
 
     return (
         <SecurityTradeForm

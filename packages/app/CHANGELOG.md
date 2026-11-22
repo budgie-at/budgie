@@ -3,6 +3,89 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.193.0](https://github.com/budgie-at/budgie/compare/v6.192.2...v6.193.0) (2026-11-21)
+
+### Features
+
+* **consolidation:** pair refunds by forced match, balanced twins or nearest guess ([#2275](https://github.com/budgie-at/budgie/issues/2275)) ([0b98d15](https://github.com/budgie-at/budgie/commit/0b98d152f506655f654a760afc79591518036307))
+
+
+## [6.192.2](https://github.com/budgie-at/budgie/compare/v6.192.1...v6.192.2) (2026-11-21)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
+## [6.192.1](https://github.com/budgie-at/budgie/compare/v6.192.0...v6.192.1) (2026-11-21)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
+# [6.192.0](https://github.com/budgie-at/budgie/compare/v6.191.14...v6.192.0) (2026-11-21)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
+## [6.191.13](https://github.com/budgie-at/budgie/compare/v6.191.12...v6.191.13) (2026-11-21)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
+## [6.191.12](https://github.com/budgie-at/budgie/compare/v6.191.11...v6.191.12) (2026-11-21)
+
+### Bug Fixes
+
+* **app:** show highlighted month in trend chart readout ([#2267](https://github.com/budgie-at/budgie/issues/2267)) ([23d8d0b](https://github.com/budgie-at/budgie/commit/23d8d0becea3bde776994ac2001a5878d595296d))
+
+
+## [6.191.11](https://github.com/budgie-at/budgie/compare/v6.191.10...v6.191.11) (2026-11-19)
+
+### Bug Fixes
+
+* **app:** mark portrait and wifi hardware features optional on Android ([1f366c0](https://github.com/budgie-at/budgie/commit/1f366c00f4d6f300b73143856cb934a26b429f7f))
+* **app:** wrap blocked permissions and guard attribute-less uses-feature ([3d45fd8](https://github.com/budgie-at/budgie/commit/3d45fd81c5d73eaaceeefc1ba2672027e125f661))
+
+
+## [6.191.10](https://github.com/budgie-at/budgie/compare/v6.191.9...v6.191.10) (2026-11-18)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
+## [6.191.9](https://github.com/budgie-at/budgie/compare/v6.191.8...v6.191.9) (2026-11-17)
+
+### Bug Fixes
+
+* **app:** keep manual brokerage cash funded by one reconciler ([#2262](https://github.com/budgie-at/budgie/issues/2262)) ([2d3a2f8](https://github.com/budgie-at/budgie/commit/2d3a2f89b96cec9bf994e8d179ba2ec2987104c6))
+
+
+## [6.191.8](https://github.com/budgie-at/budgie/compare/v6.191.7...v6.191.8) (2026-11-17)
+
+### Bug Fixes
+
+* **app:** ask for a statement when a bank balance has no statement anchor ([#2261](https://github.com/budgie-at/budgie/issues/2261)) ([7388655](https://github.com/budgie-at/budgie/commit/7388655691345dc994e0f2cdd9143afc9b37feaa))
+
+
+## [6.191.7](https://github.com/budgie-at/budgie/compare/v6.191.6...v6.191.7) (2026-11-17)
+
+### Bug Fixes
+
+* **app:** let a manual brokerage be archived and deleted ([#2243](https://github.com/budgie-at/budgie/issues/2243)) ([3ba98fe](https://github.com/budgie-at/budgie/commit/3ba98fe451bb9037d4b6707d5c6743c06c67cf2d))
+
+
 ## [6.191.6](https://github.com/budgie-at/budgie/compare/v6.191.5...v6.191.6) (2026-11-17)
 
 ### Bug Fixes

@@ -1337,6 +1337,10 @@ msgstr "3M"
 msgid "A balanced starter budget with common categories"
 msgstr "Un presupuesto inicial equilibrado con categorías comunes"
 
+#: src/account/component/institution-statement-row/institution-statement-row.tsx
+msgid "A bank statement has not confirmed this balance yet"
+msgstr "Un extracto bancario aún no ha confirmado este saldo"
+
 #: src/rule/components/rule-action-phrase/rule-action-phrase.tsx
 msgid "a category"
 msgstr "una categoría"
@@ -2074,6 +2078,12 @@ msgstr "Archivar cuenta"
 msgid "Archive accounts you no longer use from their edit screen. Their history is kept so you can restore them."
 msgstr "Archiva las cuentas que ya no usas desde su pantalla de edición. Su historial se conserva para que puedas restaurarlas."
 
+#: src/account/component/account-actions-menu/account-actions-menu.tsx
+#: src/account/component/archive-account/archive-account.tsx
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
+msgid "Archive brokerage"
+msgstr "Archivar bróker"
+
 #: src/account/component/archived-account-card/archived-account-card.tsx
 msgid "Archived"
 msgstr "Archivada"
@@ -2317,6 +2327,10 @@ msgstr "Signo del saldo"
 msgid "Balance unchanged"
 msgstr "Saldo sin cambios"
 
+#: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
+msgid "Balance unconfirmed"
+msgstr "Saldo sin confirmar"
+
 #: src/account/component/account-details-hero-balance/account-details-hero-balance.tsx
 msgid "Balance: {formattedBalance}"
 msgstr "Saldo: {formattedBalance}"
@@ -2492,6 +2506,10 @@ msgstr "Trayendo tus datos desde iCloud…"
 #: src/app/(main)/create-account/index.tsx
 msgid "Brokerage"
 msgstr "Bróker"
+
+#: src/account/hooks/use-archive-account.hook.ts
+msgid "Brokerage archived"
+msgstr "Bróker archivado"
 
 #: src/sync/component/bank-integration-rename-card/bank-integration-rename-card.tsx
 msgid "Brokerage name"
@@ -3493,6 +3511,10 @@ msgstr "No se pudo aplicar la regla a las transacciones existentes"
 msgid "Could not archive account."
 msgstr "No se pudo archivar la cuenta."
 
+#: src/account/hooks/use-archive-account.hook.ts
+msgid "Could not archive brokerage."
+msgstr "No se pudo archivar el bróker."
+
 #: ../ledger/src/transaction/service/transaction-debt-settlement.service.ts
 #: src/account/hook/use-attach-debt-selector.hook.ts
 #: src/categorize-inbox/hook/use-categorize-inbox-actions.hook.ts
@@ -4384,8 +4406,7 @@ msgstr "Dinamarca"
 msgid "Deposit"
 msgstr "Depósito"
 
-#: src/app/(main)/securities/buy/[id].tsx
-#: src/brokerage/component/update-security-trade/update-security-trade.tsx
+#: src/brokerage/constant/brokerage-funding-title.constant.ts
 msgctxt "Brokerage funding"
 msgid "Deposit"
 msgstr "Depósito"
@@ -5840,9 +5861,17 @@ msgstr "Se ignora el signo menos."
 msgid "Import"
 msgstr "Importar"
 
+#: src/account/component/institution-statement-row/institution-statement-row.tsx
+msgid "Import a statement"
+msgstr "Importar un extracto"
+
 #: src/sync/component/bank-integration-statements/bank-integration-statements.tsx
 msgid "Import a statement from {bank} to add your accounts."
 msgstr "Importa un extracto de {bank} para añadir tus cuentas."
+
+#: src/sync/component/bank-integration-status-line/bank-integration-status-line.tsx
+msgid "Import a statement to confirm the balance"
+msgstr "Importa un extracto para confirmar el saldo"
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Import accounts and transactions from Erste Bank PDF statement"
@@ -11701,11 +11730,6 @@ msgstr "Wise"
 #: src/sync/component/wise-statement-import-row/wise-statement-import-row.tsx
 msgid "Wise CSV export, one file per balance"
 msgstr "Exportación CSV de Wise, un archivo por saldo"
-
-#: src/brokerage/component/update-security-trade/update-security-trade.tsx
-msgctxt "Brokerage funding"
-msgid "Withdrawal"
-msgstr "Retiro"
 
 #: src/inzhur/component/inzhur-operations-import-summary/inzhur-operations-import-summary.tsx
 msgid "Withdrawals"

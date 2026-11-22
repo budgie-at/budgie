@@ -218,6 +218,14 @@ export class TransactionConsolidationRepository extends Context.Service<Transact
                     );
                 }),
 
+                disableRefundAutoPairingForChildren: (canonicalTransactionId: number) =>
+                    Db.query(db =>
+                        db
+                            .update(TransactionEntityTable)
+                            .set({ refundAutoPairDisabled: true })
+                            .where(eq(TransactionEntityTable.consolidationParentTransactionId, canonicalTransactionId))
+                    ),
+
                 clearConsolidationParent: (canonicalTransactionId: number) =>
                     Db.query(db =>
                         db

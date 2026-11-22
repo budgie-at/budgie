@@ -9,6 +9,7 @@ import { TRANSFER_PAIR_IMPLIED_RATE_TOLERANCE } from '../../../shared/constant/t
 import { buildBridgeClaimTitleConditionSql } from '../../../shared/utils/build-bridge-claim-title-condition-sql.util';
 
 const TRANSFER_PAIR_BOOKING_DAY_IMPLIED_RATE_TOLERANCE = 0.1;
+const INTERBANK_HINTED_FEE_CANDIDATE_SQL = `interbankHintedFeeAmountMatch = 1 AND timeDiff <= ${TRANSFER_PAIR_INTERBANK_HINTED_FEE_TIME_WINDOW_SECONDS}`;
 
 export const TRANSFER_PAIR_RANKED_CANDIDATE_RANK_SQL = `            scored_pairs AS (
                 SELECT
@@ -41,22 +42,10 @@ export const TRANSFER_PAIR_RANKED_CANDIDATE_RANK_SQL = `            scored_pairs
                         WHEN ${buildBridgeClaimTitleConditionSql('incomeTransactionTitle', 'incomeCurrency')} THEN 1
                         ELSE 0
                     END as isBridgeClaimedIncome,
-                    SUM(
-                        CASE
-                            WHEN interbankHintedFeeAmountMatch = 1
-                                AND timeDiff <= ${TRANSFER_PAIR_INTERBANK_HINTED_FEE_TIME_WINDOW_SECONDS}
-                            THEN 1
-                            ELSE 0
-                        END
-                    ) OVER (PARTITION BY expenseTransactionId) as interbankExpenseCandidateCount,
-                    SUM(
-                        CASE
-                            WHEN interbankHintedFeeAmountMatch = 1
-                                AND timeDiff <= ${TRANSFER_PAIR_INTERBANK_HINTED_FEE_TIME_WINDOW_SECONDS}
-                            THEN 1
-                            ELSE 0
-                        END
-                    ) OVER (PARTITION BY incomeTransactionId) as interbankIncomeCandidateCount,
+                    MIN(CASE WHEN ${INTERBANK_HINTED_FEE_CANDIDATE_SQL} THEN incomeAccountId || ':' || incomeEntryAmount END) OVER (PARTITION BY expenseTransactionId) as interbankExpenseCounterpartMinKey,
+                    MAX(CASE WHEN ${INTERBANK_HINTED_FEE_CANDIDATE_SQL} THEN incomeAccountId || ':' || incomeEntryAmount END) OVER (PARTITION BY expenseTransactionId) as interbankExpenseCounterpartMaxKey,
+                    MIN(CASE WHEN ${INTERBANK_HINTED_FEE_CANDIDATE_SQL} THEN expenseAccountId || ':' || expenseEntryAmount END) OVER (PARTITION BY incomeTransactionId) as interbankIncomeCounterpartMinKey,
+                    MAX(CASE WHEN ${INTERBANK_HINTED_FEE_CANDIDATE_SQL} THEN expenseAccountId || ':' || expenseEntryAmount END) OVER (PARTITION BY incomeTransactionId) as interbankIncomeCounterpartMaxKey,
                     SUM(
                         CASE
                             WHEN bankRateAmountMatch = 1
@@ -145,10 +134,9 @@ export const TRANSFER_PAIR_RANKED_CANDIDATE_RANK_SQL = `            scored_pairs
                             AND hintedFeeAmountMatch = 1
                             AND timeDiff <= ${TRANSFER_PAIR_SAME_BANK_HINTED_FEE_TIME_WINDOW_SECONDS}
                         THEN 'AUTO_SAME_BANK_HINTED_FEE'
-                        WHEN interbankHintedFeeAmountMatch = 1
-                            AND timeDiff <= ${TRANSFER_PAIR_INTERBANK_HINTED_FEE_TIME_WINDOW_SECONDS}
-                            AND interbankExpenseCandidateCount = 1
-                            AND interbankIncomeCandidateCount = 1
+                        WHEN ${INTERBANK_HINTED_FEE_CANDIDATE_SQL}
+                            AND interbankExpenseCounterpartMinKey = interbankExpenseCounterpartMaxKey
+                            AND interbankIncomeCounterpartMinKey = interbankIncomeCounterpartMaxKey
                         THEN 'AUTO_INTERBANK_HINTED_FEE'
                         WHEN hasTransferMcc = 1
                             AND operationAmountMatch = 1
@@ -175,7 +163,8 @@ export const TRANSFER_PAIR_RANKED_CANDIDATE_RANK_SQL = `            scored_pairs
                                 WHEN 'REVIEW_CROSS_CURRENCY_OPERATION' THEN 9
                                 ELSE 99
                             END,
-                            timeDiff
+                            timeDiff,
+                            incomeTransactionId
                     ) as expenseRank,
                     ROW_NUMBER() OVER (
                         PARTITION BY incomeTransactionId
@@ -192,7 +181,8 @@ export const TRANSFER_PAIR_RANKED_CANDIDATE_RANK_SQL = `            scored_pairs
                                 WHEN 'REVIEW_CROSS_CURRENCY_OPERATION' THEN 9
                                 ELSE 99
                             END,
-                            timeDiff
+                            timeDiff,
+                            expenseTransactionId
                     ) as incomeRank
                 FROM compatible_pairs
                 WHERE confidenceBucket IS NOT NULL

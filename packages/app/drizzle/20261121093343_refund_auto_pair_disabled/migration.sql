@@ -1,0 +1,1 @@
+ALTER TABLE `transactions` ADD `refund_auto_pair_disabled` integer DEFAULT false NOT NULL;

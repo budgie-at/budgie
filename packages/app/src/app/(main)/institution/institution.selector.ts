@@ -4,5 +4,6 @@ export const InstitutionSelector = {
     SettingsRow: 'Institution.SettingsRow',
     Accounts: 'Institution.Accounts',
     ShowAllAccounts: 'Institution.ShowAllAccounts',
-    Hero: 'Institution.Hero'
+    Hero: 'Institution.Hero',
+    StatementRow: 'Institution.StatementRow'
 } as const;

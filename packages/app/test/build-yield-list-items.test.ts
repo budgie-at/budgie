@@ -56,6 +56,7 @@ const payout = (id: number): TransactionWithRelationsEntityInterface => ({
     fundAccountId: null,
     yieldKind: null,
     yieldSourceAccountId: null,
+    refundAutoPairDisabled: false,
     operatedWeekday: 4,
     operatedMinuteOfDay: 0,
     entries: [],

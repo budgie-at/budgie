@@ -20,7 +20,8 @@ export class BankInterestDetectorService extends Context.Service<BankInterestDet
                 ExternalSourceEnum.RECEIPT,
                 ExternalSourceEnum.COINBASE,
                 ExternalSourceEnum.BINANCE,
-                ExternalSourceEnum.INZHUR
+                ExternalSourceEnum.INZHUR,
+                ExternalSourceEnum.BROKERAGE_FUNDING
             ]);
             const bankSources = Object.values(ExternalSourceEnum).filter(source => !nonBankSources.has(source));
             const interestKeywords: Record<LanguageEnum, readonly string[]> = {

@@ -31,10 +31,10 @@ const buildPrivatbankBankAccount = (): SyncAccountInterface => ({
     type: SyncAccountTypeEnum.CARD
 });
 
-const buildPrivatbankTransaction = (): SyncTransactionInterface =>
+const buildPrivatbankTransaction = (date = new Date('2026-01-13T09:42:53.000Z')): SyncTransactionInterface =>
     privatbankTransactionMapper({
         rawDate: '13.01.2026 11:42:53',
-        date: new Date('2026-01-13T09:42:53.000Z'),
+        date,
         deviceLocalDate: new Date('2026-01-13T09:42:53.000Z'),
         category: PRIVATBANK_TRANSFER_CATEGORY,
         card: PRIVATBANK_CARD_ID,
@@ -71,6 +71,15 @@ const seedPrivatbankAccount = () =>
         })
     );
 
+const expectImportedTransactionConsolidationEnqueued = Effect.gen(function* () {
+    const [transaction] = yield* testDb
+        .select()
+        .from(TransactionEntityTable)
+        .where(eq(TransactionEntityTable.externalSource, ExternalSourceEnum.PRIVATBANK));
+
+    yield* expectFileImportConsolidationEnqueued(transaction.id);
+});
+
 describe('consolidation/privatbank-file-import-triggers-consolidation', () => {
     it.effect('enqueues consolidation after a Privatbank file import introduces new transactions', () =>
         Effect.gen(function* () {
@@ -79,12 +88,7 @@ describe('consolidation/privatbank-file-import-triggers-consolidation', () => {
 
             yield* syncService.executeImportForSelectedAccounts(PRIVATBANK_STATEMENT_URI, [PRIVATBANK_CARD_ID]);
 
-            const [transaction] = yield* testDb
-                .select()
-                .from(TransactionEntityTable)
-                .where(eq(TransactionEntityTable.externalSource, ExternalSourceEnum.PRIVATBANK));
-
-            yield* expectFileImportConsolidationEnqueued(transaction.id);
+            yield* expectImportedTransactionConsolidationEnqueued;
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -101,6 +105,26 @@ describe('consolidation/privatbank-file-import-triggers-consolidation', () => {
             yield* syncService.executeImportForSelectedAccounts(PRIVATBANK_STATEMENT_URI, [PRIVATBANK_CARD_ID]);
 
             expect(enqueue).not.toHaveBeenCalled();
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('enqueues consolidation when a re-import corrects the time of an already imported transaction', () =>
+        Effect.gen(function* () {
+            const transferConsolidationDrainerService = yield* TransferConsolidationDrainerService;
+            const enqueue = vi.mocked(transferConsolidationDrainerService.enqueue);
+            yield* seedPrivatbankAccount();
+
+            yield* (yield* buildPrivatbankSyncService([
+                buildPrivatbankTransaction(new Date('2026-01-13T11:42:53.000Z'))
+            ])).executeImportForSelectedAccounts(PRIVATBANK_STATEMENT_URI, [PRIVATBANK_CARD_ID]);
+            enqueue.mockClear();
+
+            yield* (yield* buildPrivatbankSyncService([buildPrivatbankTransaction()])).executeImportForSelectedAccounts(
+                PRIVATBANK_STATEMENT_URI,
+                [PRIVATBANK_CARD_ID]
+            );
+
+            yield* expectImportedTransactionConsolidationEnqueued;
         }).pipe(Effect.provide(TestLayer))
     );
 });

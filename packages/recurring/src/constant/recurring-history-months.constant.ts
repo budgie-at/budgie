@@ -1,1 +1,1 @@
-export const RECURRING_HISTORY_MONTHS = 24;
+export const RECURRING_HISTORY_MONTHS = 36;

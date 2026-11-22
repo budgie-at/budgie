@@ -30,7 +30,7 @@ export class BalanceAdjustmentService extends Context.Service<BalanceAdjustmentS
             accountId: number,
             delta: number,
             operatedAt: Date,
-            metadata: Pick<TransactionCreateEntityInterface, 'title' | 'comment'>
+            metadata: Pick<TransactionCreateEntityInterface, 'title' | 'comment' | 'externalSource'>
         ) {
             const isIncome = isPositiveNumber(delta);
             const amount = Math.abs(delta);
@@ -40,7 +40,6 @@ export class BalanceAdjustmentService extends Context.Service<BalanceAdjustmentS
                 type: TransactionTypeEnum.ADJUSTMENT,
                 ...metadata,
                 externalId: null,
-                externalSource: null,
                 operatedAt,
                 exchangeRate: valuation.baseExchangeRate ?? 1,
                 fromAccountId: isIncome ? null : accountId,
@@ -103,7 +102,8 @@ export class BalanceAdjustmentService extends Context.Service<BalanceAdjustmentS
                     ? null
                     : yield* create(accountId, targetAmount, operatedAt, {
                           title: adjustment?.title ?? '',
-                          comment: adjustment?.comment ?? ''
+                          comment: adjustment?.comment ?? '',
+                          externalSource: null
                       });
 
             yield* syncRepository.update(sync.id, { reconciliationTransactionId: nextTransactionId });
@@ -111,7 +111,13 @@ export class BalanceAdjustmentService extends Context.Service<BalanceAdjustmentS
 
         return {
             create: (accountId: number, delta: number, operatedAt: Date, title: string = '') =>
-                create(accountId, delta, operatedAt, { title, comment: '' }),
+                create(accountId, delta, operatedAt, { title, comment: '', externalSource: null }),
+            createFromSource: (
+                accountId: number,
+                delta: number,
+                operatedAt: Date,
+                metadata: Pick<TransactionCreateEntityInterface, 'title' | 'externalSource'>
+            ) => create(accountId, delta, operatedAt, { ...metadata, comment: '' }),
             rebaseReconciliations: Effect.fn('BalanceAdjustmentService.rebaseReconciliations')(function* (accountIds: number[]) {
                 const reconciledSyncs = yield* syncRepository.findReconciledByAccountIds(accountIds);
                 yield* Effect.forEach(reconciledSyncs, rebase, { discard: true });

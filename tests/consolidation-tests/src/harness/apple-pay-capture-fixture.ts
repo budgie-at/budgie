@@ -171,6 +171,7 @@ const buildBankSyncTransaction = (input: ApplePayBankExpenseInputInterface): Syn
         case ExternalSourceEnum.CSV:
         case ExternalSourceEnum.RECEIPT:
         case ExternalSourceEnum.INZHUR:
+        case ExternalSourceEnum.BROKERAGE_FUNDING:
         default:
             return buildMonobankLikeTransaction(input);
     }

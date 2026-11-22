@@ -20,7 +20,7 @@ export const useShelvedAccountAction = () => {
     const { isLoading, run } = useSingleFlight();
     const fallbackErrorText = t`Something went wrong. Please try again later.`;
 
-    const showFeedback = ({ successText, undo }: ShelvedAccountFeedbackInterface) => {
+    const showFeedback = <A>({ successText, undo }: ShelvedAccountFeedbackInterface<A>, result: A) => {
         if (!isDefined(undo)) {
             showSuccessToast(successText);
 
@@ -30,14 +30,14 @@ export const useShelvedAccountAction = () => {
         notify(NotificationFeedbackType.Success);
         showActionToast(successText, {
             label: t`Undo`,
-            onPress: () => void appRuntime.runFork(logAndContinue(undo.pipe(toastOnFailure(t`Could not undo.`, fallbackErrorText))))
+            onPress: () => void appRuntime.runFork(logAndContinue(undo(result).pipe(toastOnFailure(t`Could not undo.`, fallbackErrorText))))
         });
     };
 
-    const runWithFeedback = (feedback: ShelvedAccountFeedbackInterface) =>
+    const runWithFeedback = <A>(feedback: ShelvedAccountFeedbackInterface<A>) =>
         void run(
             feedback.action.pipe(
-                Effect.tap(() => Effect.sync(() => void showFeedback(feedback))),
+                Effect.tap(result => Effect.sync(() => void showFeedback(feedback, result))),
                 toastOnFailure(feedback.errorText, fallbackErrorText)
             )
         );

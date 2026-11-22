@@ -80,7 +80,7 @@ it.effect('includes overdue expense forecasts from the monthly headline', () =>
     Effect.sync(() => {
         const data = calendarFromCharges(
             [5, 36, 64, 95].map(day => charge(day)),
-            new Date(2026, 4, 12)
+            new Date(2026, 4, 13)
         );
         expect(data.forecastedEntriesByDay.get(5)?.[0].alert).toBe(RecurringAlertEnum.OVERDUE);
         expect(data.forecastedTotalAmount).toBe(12);
@@ -185,6 +185,8 @@ it.effect('projects weekly and biweekly dates across Vienna daylight saving time
         for (const [dates, expected] of [
             [
                 [
+                    [2025, 7, 24],
+                    [2025, 8, 7],
                     [2025, 8, 21],
                     [2025, 9, 5],
                     [2025, 9, 19]
@@ -193,6 +195,9 @@ it.effect('projects weekly and biweekly dates across Vienna daylight saving time
             ],
             [
                 [
+                    [2025, 8, 14],
+                    [2025, 8, 21],
+                    [2025, 8, 28],
                     [2025, 9, 5],
                     [2025, 9, 12],
                     [2025, 9, 19]

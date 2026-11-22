@@ -441,7 +441,15 @@ export class SyncApplyService extends Context.Service<SyncApplyService>()('@budg
                     } else {
                         const changedColumns = yield* stringifySyncJson(keptColumns);
 
-                        yield* outboxRepository.replaceChangedColumns(decision.syncZone, decision.syncId, changedColumns);
+                        yield* isDefined(pending)
+                            ? outboxRepository.replaceChangedColumns(decision.syncZone, decision.syncId, changedColumns)
+                            : outboxRepository.enqueue({
+                                  recordType: decision.recordType,
+                                  syncZone: decision.syncZone,
+                                  syncId: decision.syncId,
+                                  operation: SyncOutboxOperationEnum.SAVE,
+                                  changedColumns
+                              });
                     }
                 }
 

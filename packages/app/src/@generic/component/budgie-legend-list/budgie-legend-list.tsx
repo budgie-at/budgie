@@ -11,7 +11,7 @@ export const BudgieLegendList = <TItem,>({
     recycleItems,
     showsVerticalScrollIndicator,
     ...props
-}: LegendListProps<TItem> & { readonly ref?: Ref<LegendListRef> }) => (
+}: Omit<LegendListProps<TItem>, 'extraData'> & { readonly extraData?: unknown; readonly ref?: Ref<LegendListRef> }) => (
     <LegendList
         {...props}
         extraData={extraData ?? props.renderItem}

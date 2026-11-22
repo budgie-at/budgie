@@ -8,9 +8,9 @@ import { isDefined, isEmptyArray } from '@rnw-community/shared';
 import { RECURRING_AMOUNT_RATIO } from '../constant/recurring-amount-ratio.constant';
 import { RecurringAlertEnum } from '../enum/recurring-alert.enum';
 
-import { cadencePeriodDays, cadenceToleranceDays, cycleDateAt } from './recurring-schedule';
+import { cadencePeriodDays, cadenceWindowDays, cycleDateAt } from './recurring-schedule';
 import { PRICE_CHANGE_RATIO } from './recurring-series';
-import { countsInForecasts, isSeriesEnded } from './recurring-state';
+import { isSeriesActiveNow } from './recurring-state';
 
 import type { RecurringChargeInterface } from '../interface/recurring-charge.interface';
 import type { RecurringLinkedChargeInterface } from '../interface/recurring-linked-charge.interface';
@@ -21,29 +21,29 @@ const PRICE_CHANGE_ALERT_DAYS = 183;
 const PREVIOUS_AMOUNT_COUNT = 3;
 
 export const isCycleCovered = (model: RecurringReadModelInterface, cycleDate: Date): boolean => {
-    const tolerance = cadenceToleranceDays(model.series);
+    const windowDays = cadenceWindowDays(model.series);
 
     return (
         (model.series.source === RecurringSeriesSourceEnum.DETECTED &&
             isEmptyArray(model.links) &&
-            Math.abs(differenceInCalendarDays(model.series.lastSeenAt, cycleDate)) <= tolerance) ||
+            Math.abs(differenceInCalendarDays(model.series.lastSeenAt, cycleDate)) <= windowDays) ||
         model.links.some(
             ({ link, charge }) =>
                 !link.isExcluded &&
-                (isSameDay(link.cycleDate, cycleDate) || Math.abs(differenceInCalendarDays(charge.operatedAt, cycleDate)) <= tolerance)
+                (isSameDay(link.cycleDate, cycleDate) || Math.abs(differenceInCalendarDays(charge.operatedAt, cycleDate)) <= windowDays)
         )
     );
 };
 
 const findLatestPastCycle = (model: RecurringReadModelInterface, now: Date): Date | null => {
     const today = startOfDay(now);
-    const tolerance = cadenceToleranceDays(model.series);
+    const windowDays = cadenceWindowDays(model.series);
     let cycle = Math.floor(differenceInCalendarDays(today, model.series.anchorDate) / cadencePeriodDays(model.series)) + 1;
 
     while (cycle >= 0) {
         const cycleDate = cycleDateAt(model.series, cycle);
 
-        if (differenceInCalendarDays(today, cycleDate) > tolerance) {
+        if (differenceInCalendarDays(today, cycleDate) > windowDays) {
             return isDefined(model.series.endsAt) && differenceInCalendarDays(cycleDate, model.series.endsAt) > 0 ? null : cycleDate;
         }
         cycle -= 1;
@@ -93,13 +93,17 @@ const isEnding = (model: RecurringReadModelInterface, now: Date): boolean =>
     differenceInCalendarDays(model.series.endsAt, startOfDay(now)) >= 0 &&
     differenceInCalendarDays(model.series.endsAt, startOfDay(now)) <= Math.ceil(cadencePeriodDays(model.series));
 
+export const findOverdueCycle = (model: RecurringReadModelInterface, now: Date): Date | null => {
+    const latestPastCycle = isSeriesActiveNow(model.series, now) ? findLatestPastCycle(model, now) : null;
+
+    return isDefined(latestPastCycle) && !isCycleCovered(model, latestPastCycle) ? latestPastCycle : null;
+};
+
 export const resolveRecurringAlert = (model: RecurringReadModelInterface, now: Date): RecurringAlertEnum | null => {
-    if (!countsInForecasts(model.series) || isSeriesEnded(model.series, now)) {
+    if (!isSeriesActiveNow(model.series, now)) {
         return null;
     }
-    const latestPastCycle = findLatestPastCycle(model, now);
-
-    if (isDefined(latestPastCycle) && !isCycleCovered(model, latestPastCycle)) {
+    if (isDefined(findOverdueCycle(model, now))) {
         return RecurringAlertEnum.OVERDUE;
     }
     if (hasPriceChange(model, now)) {

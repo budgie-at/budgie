@@ -7,7 +7,7 @@ import { isDefined } from '@rnw-community/shared';
 import { RecurringAlertEnum } from '../enum/recurring-alert.enum';
 
 import { findPriceChange, hasPriceChange, isCycleCovered, resolveRecurringAlert } from './recurring-alert';
-import { cadencePeriodDays, cadenceToleranceDays, monthlyEquivalent, occurrencesInRange } from './recurring-schedule';
+import { cadencePeriodDays, cadenceWindowDays, monthlyEquivalent, occurrencesInRange } from './recurring-schedule';
 import { countsInForecasts, isSeriesEnded } from './recurring-state';
 
 import type { RecurringCalendarDataInterface } from '../interface/recurring-calendar-data.interface';
@@ -61,9 +61,9 @@ const projectSeries = (model: RecurringReadModelInterface, year: number, month: 
             )
         );
     const monthsFromNow = (year - now.getFullYear()) * 12 + month - now.getMonth();
-    const tolerance = cadenceToleranceDays(model.series);
+    const windowDays = cadenceWindowDays(model.series);
     const forecastAlert = (date: Date): RecurringAlertEnum | null => {
-        if (differenceInCalendarDays(today, date) > tolerance) {
+        if (differenceInCalendarDays(today, date) > windowDays) {
             return RecurringAlertEnum.OVERDUE;
         }
 

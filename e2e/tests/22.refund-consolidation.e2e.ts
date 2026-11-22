@@ -90,10 +90,11 @@ test('22 refund consolidation', { tags: ['transactions'], platforms: PENDING_AND
             .first();
         await screen.scrollUntilVisible(full, { direction: 'down', timeout: 20_000 });
         await expect(full).toBeVisible();
-        await b.expectNoId(ctx, 'TransactionCard.Amount.3');
         await b.expectNoId(ctx, 'TransactionCard.Amount.5');
+        await b.scrollTo(ctx, 'TransactionCard.Amount.3');
+        await b.expectId(ctx, 'TransactionCard.Amount.3');
         await b.scrollTo(ctx, card('Ambiguous'));
-        await b.expectId(ctx, 'TransactionCard.Amount.8');
+        await b.expectNoId(ctx, 'TransactionCard.Amount.8');
         await b.expectId(ctx, card('Ambiguous'));
     });
 
@@ -111,7 +112,7 @@ test('22 refund consolidation', { tags: ['transactions'], platforms: PENDING_AND
         await b.tapId(ctx, 'PageHeader.BackButton');
         await b.tapId(ctx, 'TabBar.Analytics');
         await b.expectId(ctx, 'AnalyticsPage.Container', 10_000);
-        await b.scrollTo(ctx, 'CategoryStatisticsCard.Amount.Restaurants_Cafes.80000000');
-        await b.expectId(ctx, 'CategoryStatisticsCard.Amount.Restaurants_Cafes.80000000');
+        await b.scrollTo(ctx, 'CategoryStatisticsCard.Amount.Restaurants_Cafes.120000000');
+        await b.expectId(ctx, 'CategoryStatisticsCard.Amount.Restaurants_Cafes.120000000');
     });
 });

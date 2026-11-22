@@ -1337,6 +1337,10 @@ msgstr "3 M"
 msgid "A balanced starter budget with common categories"
 msgstr "Ein ausgewogenes Startbudget mit gängigen Kategorien"
 
+#: src/account/component/institution-statement-row/institution-statement-row.tsx
+msgid "A bank statement has not confirmed this balance yet"
+msgstr "Ein Kontoauszug hat diesen Kontostand noch nicht bestätigt"
+
 #: src/rule/components/rule-action-phrase/rule-action-phrase.tsx
 msgid "a category"
 msgstr "eine Kategorie"
@@ -2074,6 +2078,12 @@ msgstr "Konto archivieren"
 msgid "Archive accounts you no longer use from their edit screen. Their history is kept so you can restore them."
 msgstr "Archiviere Konten, die du nicht mehr nutzt, über ihren Bearbeitungsbildschirm. Ihr Verlauf bleibt erhalten, damit du sie wiederherstellen kannst."
 
+#: src/account/component/account-actions-menu/account-actions-menu.tsx
+#: src/account/component/archive-account/archive-account.tsx
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
+msgid "Archive brokerage"
+msgstr "Depot archivieren"
+
 #: src/account/component/archived-account-card/archived-account-card.tsx
 msgid "Archived"
 msgstr "Archiviert"
@@ -2317,6 +2327,10 @@ msgstr "Vorzeichen des Saldos"
 msgid "Balance unchanged"
 msgstr "Saldo unverändert"
 
+#: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
+msgid "Balance unconfirmed"
+msgstr "Kontostand unbestätigt"
+
 #: src/account/component/account-details-hero-balance/account-details-hero-balance.tsx
 msgid "Balance: {formattedBalance}"
 msgstr "Saldo: {formattedBalance}"
@@ -2492,6 +2506,10 @@ msgstr "Deine Daten werden aus iCloud geholt…"
 #: src/app/(main)/create-account/index.tsx
 msgid "Brokerage"
 msgstr "Depot"
+
+#: src/account/hooks/use-archive-account.hook.ts
+msgid "Brokerage archived"
+msgstr "Depot archiviert"
 
 #: src/sync/component/bank-integration-rename-card/bank-integration-rename-card.tsx
 msgid "Brokerage name"
@@ -3493,6 +3511,10 @@ msgstr "Regel konnte nicht auf vorhandene Transaktionen angewendet werden"
 msgid "Could not archive account."
 msgstr "Konto konnte nicht archiviert werden."
 
+#: src/account/hooks/use-archive-account.hook.ts
+msgid "Could not archive brokerage."
+msgstr "Depot konnte nicht archiviert werden."
+
 #: ../ledger/src/transaction/service/transaction-debt-settlement.service.ts
 #: src/account/hook/use-attach-debt-selector.hook.ts
 #: src/categorize-inbox/hook/use-categorize-inbox-actions.hook.ts
@@ -4384,8 +4406,7 @@ msgstr "Dänemark"
 msgid "Deposit"
 msgstr "Termineinlage"
 
-#: src/app/(main)/securities/buy/[id].tsx
-#: src/brokerage/component/update-security-trade/update-security-trade.tsx
+#: src/brokerage/constant/brokerage-funding-title.constant.ts
 msgctxt "Brokerage funding"
 msgid "Deposit"
 msgstr "Einzahlung"
@@ -5840,9 +5861,17 @@ msgstr "Das Minuszeichen wird ignoriert."
 msgid "Import"
 msgstr "Importieren"
 
+#: src/account/component/institution-statement-row/institution-statement-row.tsx
+msgid "Import a statement"
+msgstr "Kontoauszug importieren"
+
 #: src/sync/component/bank-integration-statements/bank-integration-statements.tsx
 msgid "Import a statement from {bank} to add your accounts."
 msgstr "Importiere einen Kontoauszug von {bank}, um deine Konten hinzuzufügen."
+
+#: src/sync/component/bank-integration-status-line/bank-integration-status-line.tsx
+msgid "Import a statement to confirm the balance"
+msgstr "Importiere einen Kontoauszug, um den Kontostand zu bestätigen"
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Import accounts and transactions from Erste Bank PDF statement"
@@ -11701,11 +11730,6 @@ msgstr "Wise"
 #: src/sync/component/wise-statement-import-row/wise-statement-import-row.tsx
 msgid "Wise CSV export, one file per balance"
 msgstr "Wise-CSV-Export, eine Datei pro Guthaben"
-
-#: src/brokerage/component/update-security-trade/update-security-trade.tsx
-msgctxt "Brokerage funding"
-msgid "Withdrawal"
-msgstr "Auszahlung"
 
 #: src/inzhur/component/inzhur-operations-import-summary/inzhur-operations-import-summary.tsx
 msgid "Withdrawals"
