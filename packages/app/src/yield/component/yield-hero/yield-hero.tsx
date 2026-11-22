@@ -38,7 +38,7 @@ export const YieldHero = () => {
     }
 
     return (
-        <View className="gap-y-xs" testID={PassiveIncomeSelector.Hero}>
+        <View className="gap-y-xs">
             <View className="flex-row items-center gap-x-[4px]">
                 <View className="shrink">
                     <YieldHeroCaption summary={summary} bucket={bucket} />
@@ -47,7 +47,7 @@ export const YieldHero = () => {
                 <YieldHeroPricesStatus summary={summary} />
             </View>
 
-            <View accessible accessibilityLabel={sentence} className="gap-y-xs">
+            <View accessible accessibilityLabel={sentence} className="gap-y-xs" testID={PassiveIncomeSelector.Hero}>
                 <HeroFigureLockContext value={figureLock}>
                     <View className="pr-[16px]">
                         <HeroFigure

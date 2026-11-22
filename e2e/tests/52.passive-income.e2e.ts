@@ -40,7 +40,8 @@ test('52 passive income', { tags: ['passive-income'] }, async ({ budgie }) => {
         const cardText = (await id('PassiveIncome.AnalyticsCard').textContent()) ?? '';
         await b.tapId(ctx, 'PassiveIncome.AnalyticsCard');
         await b.expectId(ctx, 'PassiveIncome.Hero', 15_000);
-        const heroFigure = cardText.match(/[^\s\d]?\d[\d,.]*/u)?.[0] ?? '';
+        const [, , bucketText = ''] = cardText.split(', ');
+        const heroFigure = bucketText.match(/[^\s\d]?\d[\d,.]*/u)?.[0] ?? '';
         assert.ok(heroFigure.length > 0);
         await expect(id('PassiveIncome.Caption')).toContainText('so far');
         if (b.isIos(ctx)) {
