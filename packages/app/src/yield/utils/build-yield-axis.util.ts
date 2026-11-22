@@ -15,7 +15,7 @@ export const buildYieldAxis = (maxValue: number, depthBelowZero: number): YieldA
     const peak = Math.max(maxValue, 0);
 
     if (!Number.isFinite(peak) || !isPositiveNumber(peak)) {
-        return { top: EMPTY_TOP, bottom: -depthBelowZero, depth: depthBelowZero, step: EMPTY_STEP };
+        return { top: EMPTY_TOP, bottom: -depthBelowZero, step: EMPTY_STEP };
     }
 
     const exponent = Math.floor(Math.log10(peak));
@@ -33,5 +33,5 @@ export const buildYieldAxis = (maxValue: number, depthBelowZero: number): YieldA
         fit.top < tightest.top || (fit.top === tightest.top && fit.step > tightest.step) ? fit : tightest
     );
 
-    return { top: best.top, bottom: -depthBelowZero, depth: depthBelowZero, step: best.step };
+    return { top: best.top, bottom: -depthBelowZero, step: best.step };
 };

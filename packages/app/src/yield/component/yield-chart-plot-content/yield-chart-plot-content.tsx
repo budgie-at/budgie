@@ -8,8 +8,8 @@ import { cn } from '../../../@generic/utils/cn.util';
 import { YieldScreenContext } from '../../context/yield-screen.context';
 import { YieldChartModeEnum } from '../../enum/yield-chart-mode.enum';
 import { useYieldAxisLabels } from '../../hook/use-yield-axis-labels.hook';
-import { useYieldChartAxis } from '../../hook/use-yield-chart-axis.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
+import { buildYieldSummaryAxis } from '../../utils/build-yield-summary-axis.util';
 import { YieldChartBars } from '../yield-chart-bars/yield-chart-bars';
 import { YieldChartRunningTotal } from '../yield-chart-running-total/yield-chart-running-total';
 import { YieldChartScrubArea } from '../yield-chart-scrub-area/yield-chart-scrub-area';
@@ -30,18 +30,19 @@ const CROSS_FADE = FadeIn.duration(CROSS_FADE_DURATION).easing(EASE_OUT);
 export const YieldChartPlotContent = ({ summary, isFailure }: Props) => {
     const { width: windowWidth } = useWindowDimensions();
     const [outerWidth, setOuterWidth] = useState(windowWidth - CARD_INSET);
-    const { gutter } = useYieldAxisLabels(useYieldChartAxis(summary));
     const { screenKey, mode } = use(YieldScreenContext);
     const reducedMotion = useReducedMotion();
 
+    const axis = buildYieldSummaryAxis(summary, screenKey.key.group, mode);
+    const { gutter } = useYieldAxisLabels(axis);
     const width = outerWidth - gutter;
     const { range, group } = screenKey.key;
     const plotKey = reducedMotion ? `${range}-${group}-${mode}-${summary.buckets.length}` : `${range}-${mode}-${summary.buckets.length}`;
     const chart =
         mode === YieldChartModeEnum.BARS ? (
-            <YieldChartBars width={width} summary={summary} />
+            <YieldChartBars width={width} summary={summary} axis={axis} />
         ) : (
-            <YieldChartRunningTotal width={width} summary={summary} />
+            <YieldChartRunningTotal width={width} summary={summary} axis={axis} />
         );
     const body = (
         <>

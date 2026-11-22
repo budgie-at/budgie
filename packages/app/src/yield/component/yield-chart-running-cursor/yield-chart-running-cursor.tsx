@@ -1,5 +1,5 @@
 import { StyledCircle } from '../../../@generic/component/styled-circle/styled-circle';
-import { StyledLine } from '../../../@generic/component/styled-line/styled-line';
+import { YieldChartScrubRule } from '../yield-chart-scrub-rule/yield-chart-scrub-rule';
 
 interface Props {
     readonly x: number;
@@ -7,14 +7,13 @@ interface Props {
     readonly zeroY: number;
 }
 
-const RULE_OPACITY = 0.6;
 const DOT_RADIUS = 4;
 const RING_WIDTH = 2;
 const DOT_OUTER_RADIUS = DOT_RADIUS + RING_WIDTH / 2;
 
 export const YieldChartRunningCursor = ({ x, y, zeroY }: Props) => (
     <>
-        <StyledLine x1={x} y1={0} x2={x} y2={zeroY} strokeClassName="accent-positive-action" strokeWidth={1} strokeOpacity={RULE_OPACITY} />
+        <YieldChartScrubRule x={x} height={zeroY} strokeClassName="accent-positive-action" />
         <StyledCircle
             cx={x}
             cy={y}

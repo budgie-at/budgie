@@ -1,13 +1,4 @@
-import {
-    AccountTypeEnum,
-    CategorySourceEnum,
-    InstrumentTypeEnum,
-    PERSONAL_SYNC_ZONE,
-    TransactionEntryKindEnum,
-    TransactionEntryTypeEnum,
-    TransactionTypeEnum,
-    YieldKindEnum
-} from '@budgie/contracts';
+import { AccountTypeEnum, InstrumentTypeEnum, YieldKindEnum } from '@budgie/contracts';
 import { YieldPositionSectionEnum } from '@budgie/market';
 import { expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
@@ -19,6 +10,8 @@ import { YieldPayoutDateFormatEnum } from '../src/yield/enum/yield-payout-date-f
 import { buildYieldListItems } from '../src/yield/utils/build-yield-list-items.util';
 
 import { buildAccountWithInstrument } from './fixture/account-with-instrument';
+import { buildPrimaryEntry } from './fixture/transaction-entry';
+import { buildTransaction } from './fixture/transaction-with-relations';
 
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import type { YieldPositionSummaryInterface } from '@budgie/market';
@@ -46,40 +39,8 @@ const position = (accountId: number, section: YieldPositionSectionEnum): YieldPo
     vsRate: null
 });
 
-const payout = (id: number, yieldKind: YieldKindEnum | null = null, operatedAt = TIMESTAMP): TransactionWithRelationsEntityInterface => ({
-    id,
-    createdAt: TIMESTAMP,
-    updatedAt: TIMESTAMP,
-    deletedAt: null,
-    syncId: `transaction-${id}`,
-    syncZone: PERSONAL_SYNC_ZONE,
-    type: TransactionTypeEnum.INCOME,
-    title: 'Payout',
-    externalId: null,
-    operatedAt,
-    comment: '',
-    toAccountId: null,
-    fromAccountId: null,
-    exchangeRate: 1,
-    externalSource: null,
-    updatedBy: null,
-    needsEmbedding: false,
-    importFingerprint: null,
-    consolidationParentTransactionId: null,
-    consolidationType: null,
-    fundAccountId: null,
-    yieldKind,
-    yieldSourceAccountId: null,
-    refundAutoPairDisabled: false,
-    operatedWeekday: 4,
-    operatedMinuteOfDay: 0,
-    entries: [],
-    debtEvents: [],
-    fromAccount: null,
-    toAccount: null,
-    receipt: null,
-    transactionTags: []
-});
+const payout = (id: number, yieldKind: YieldKindEnum | null = null, operatedAt = TIMESTAMP): TransactionWithRelationsEntityInterface =>
+    buildTransaction({ id, yieldKind, operatedAt });
 
 it.effect('lists active, closed and unassigned sections in order', () =>
     Effect.sync(() => {
@@ -210,10 +171,12 @@ it.effect('keeps month headers without a total for single-row months beside a bu
     })
 );
 
-it.effect('flags the payouts section when any payout carries tax', () =>
+it.effect.each([
+    { yieldKind: YieldKindEnum.TAX, hasTax: true },
+    { yieldKind: null, hasTax: false }
+])('flags the payouts section hasTax=$hasTax for a payout of kind $yieldKind', ({ yieldKind, hasTax }) =>
     Effect.sync(() => {
-        expect(buildYieldListItems([], [payout(1, YieldKindEnum.TAX)], 'caption', null).at(0)).toMatchObject({ hasTax: true });
-        expect(buildYieldListItems([], [payout(1)], 'caption', null).at(0)).toMatchObject({ hasTax: false });
+        expect(buildYieldListItems([], [payout(1, yieldKind)], 'caption', null).at(0)).toMatchObject({ hasTax });
     })
 );
 
@@ -248,41 +211,7 @@ const smallPayout = (id: number, operatedAt: Date): TransactionWithRelationsEnti
     ...payout(id, null, operatedAt),
     title: `Payout ${id}`,
     toAccount: PAYOUT_ACCOUNT,
-    entries: [
-        {
-            id,
-            createdAt: TIMESTAMP,
-            updatedAt: TIMESTAMP,
-            deletedAt: null,
-            syncId: `entry-${id}`,
-            syncZone: PERSONAL_SYNC_ZONE,
-            type: TransactionEntryTypeEnum.CREDIT,
-            kind: TransactionEntryKindEnum.PRIMARY,
-            accountId: PAYOUT_ACCOUNT.id,
-            categoryId: null,
-            categorySource: CategorySourceEnum.USER,
-            mccCategoryId: null,
-            sequence: 0,
-            transactionId: id,
-            amount: 400_000,
-            externalId: null,
-            exchangeRate: 1,
-            baseInstrumentId: null,
-            baseExchangeRate: null,
-            baseAmount: 400_000,
-            quotedInstrumentId: null,
-            quotedAmount: null,
-            quotedUnitPrice: null,
-            operationInstrumentId: null,
-            operationAmount: null,
-            toIban: null,
-            providerBalance: null,
-            originalTransactionId: null,
-            account: PAYOUT_ACCOUNT,
-            category: null,
-            mccCategory: null
-        }
-    ]
+    entries: [buildPrimaryEntry({ id, accountId: PAYOUT_ACCOUNT.id, account: PAYOUT_ACCOUNT })]
 });
 
 it.effect('keeps cents in the month total instead of rounding each payout', () =>

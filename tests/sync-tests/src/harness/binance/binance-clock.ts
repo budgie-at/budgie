@@ -12,4 +12,15 @@ export const advanceClock = (durationMs: number) => (): void => {
 
 export const jumpPastDeadline = advanceClock(DEADLINE_JUMP_MS);
 
+export const deferAtRequest = (requestNumber: number) => {
+    let servedCount = 0;
+
+    return (): void => {
+        servedCount += 1;
+        if (servedCount === requestNumber) {
+            jumpPastDeadline();
+        }
+    };
+};
+
 export const restoreRealTimers = Effect.sync(() => vi.useRealTimers());

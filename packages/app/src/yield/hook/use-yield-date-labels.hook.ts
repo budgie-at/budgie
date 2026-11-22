@@ -38,6 +38,9 @@ export const useYieldDateLabels = () => {
         [YieldBucketUnitEnum.YEAR]: formatYear
     };
 
+    const withSoFar = (label: string, isInProgress: boolean) =>
+        isInProgress ? t({ id: 'passive-income.chart.so-far', message: `${label} so far` }) : label;
+
     const formatTick = (bucket: Pick<YieldBucketInterface, 'start'>, unit: YieldBucketUnitEnum, isYearVisible = false) => {
         const date = parseISO(bucket.start);
 
@@ -54,7 +57,7 @@ export const useYieldDateLabels = () => {
     const formatPeriod = (bucket: Pick<YieldBucketInterface, 'start' | 'isInProgress'>, unit: YieldBucketUnitEnum) => {
         const label = periodFormatters[unit](parseISO(bucket.start));
 
-        return bucket.isInProgress ? t({ id: 'passive-income.chart.so-far', message: `${label} so far` }) : label;
+        return withSoFar(label, bucket.isInProgress);
     };
 
     const formatEarnedCaption = (bucket: Pick<YieldBucketInterface, 'start' | 'isInProgress'>, unit: YieldBucketUnitEnum) => {
@@ -73,7 +76,7 @@ export const useYieldDateLabels = () => {
         };
         const label = captions[unit];
 
-        return bucket.isInProgress ? t({ id: 'passive-income.chart.so-far', message: `${label} so far` }) : label;
+        return withSoFar(label, bucket.isInProgress);
     };
 
     const formatRangeCaption = (range: YieldRangeEnum, windowStart: string) => {

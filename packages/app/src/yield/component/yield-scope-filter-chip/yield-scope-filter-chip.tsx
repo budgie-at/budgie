@@ -1,9 +1,8 @@
-import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { use } from 'react';
 import { View } from 'react-native';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { YieldScreenContext } from '../../context/yield-screen.context';
 import { useYieldScopeTitle } from '../../hook/use-yield-scope-title.hook';
@@ -22,7 +21,6 @@ const SCALED_STYLE = {
 };
 
 export const YieldScopeFilterChip = () => {
-    const { t } = useLingui();
     const { screenKey } = use(YieldScreenContext);
     const scopeTitle = useYieldScopeTitle();
     const summary = useYieldSummary();
@@ -31,7 +29,6 @@ export const YieldScopeFilterChip = () => {
     const position = isDefined(positionAccountId)
         ? summary?.positions.find(candidate => candidate.accountId === positionAccountId)
         : summary?.positions.at(0);
-    const accessibilityLabel = isNotEmptyString(scopeTitle) ? t`Remove ${scopeTitle} filter` : t`Remove filter`;
     const avatar = isDefined(position) ? (
         <View className="size-[16px]" accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
             <View style={SCALED_STYLE}>
@@ -45,7 +42,6 @@ export const YieldScopeFilterChip = () => {
     return (
         <YieldFilterChip
             label={scopeTitle}
-            accessibilityLabel={accessibilityLabel}
             leading={avatar}
             onPress={handleClear}
             testID={PassiveIncomeSelector.ClearFilter}

@@ -1,11 +1,10 @@
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { MARKET_CHART_PADDING_X } from '../../market-data/constant/market-chart-padding-x.constant';
+import { getYieldBarCenterX } from './get-yield-bar-center-x.util';
+import { getYieldZeroY } from './get-yield-zero-y.util';
 
 import type { YieldRunningPathsInputInterface } from '../interface/yield-running-paths-input.interface';
 import type { YieldRunningPathsInterface } from '../interface/yield-running-paths.interface';
-
-const HALF_SLOT = 0.5;
 
 const command = (letter: string, x: number, y: number) => [letter, x, y].join(' ');
 
@@ -18,10 +17,9 @@ export const buildYieldRunningPaths = ({
     width,
     height
 }: YieldRunningPathsInputInterface): YieldRunningPathsInterface => {
-    const slot = Math.max(width - MARKET_CHART_PADDING_X * 2, 1) / Math.max(cumulative.length, 1);
-    const xOf = (index: number) => MARKET_CHART_PADDING_X + slot * (index + HALF_SLOT);
+    const xOf = (index: number) => getYieldBarCenterX(index, cumulative.length, width);
     const scale = height / (axisTop - axisBottom);
-    const zeroY = axisTop * scale;
+    const zeroY = getYieldZeroY({ top: axisTop, bottom: axisBottom }, height);
     const yOf = (value: number) => zeroY - value * scale;
     const segment = (index: number) =>
         [command('M', xOf(index - 1), yOf(cumulative.at(index - 1) ?? 0)), command('L', xOf(index), yOf(cumulative.at(index) ?? 0))].join(
@@ -51,8 +49,6 @@ export const buildYieldRunningPaths = ({
         prior: isDefined(prior) ? prior.map((value, index) => command(index === 0 ? 'M' : 'L', xOf(index), yOf(value))).join(' ') : '',
         xs: cumulative.map((_, index) => xOf(index)),
         ys: cumulative.map(yOf),
-        priorYs: isDefined(prior) ? prior.map(yOf) : [],
-        endY: yOf(cumulative.at(-1) ?? 0),
-        priorEndY: isDefined(prior) ? yOf(prior.at(-1) ?? 0) : null
+        priorYs: isDefined(prior) ? prior.map(yOf) : []
     };
 };

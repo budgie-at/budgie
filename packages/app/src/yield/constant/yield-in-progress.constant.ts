@@ -1,4 +1,0 @@
-export const YIELD_IN_PROGRESS_FILL_OPACITY = 0.45;
-export const YIELD_IN_PROGRESS_DARK_FILL_OPACITY = 0.7;
-export const YIELD_IN_PROGRESS_DASH = '3 2';
-export const YIELD_DIMMED_OPACITY = 0.55;

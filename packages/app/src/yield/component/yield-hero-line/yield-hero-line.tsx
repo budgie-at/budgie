@@ -8,10 +8,11 @@ import { isDefined } from '@rnw-community/shared';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { YIELD_HERO_LINE_MIN_HEIGHT } from '../../constant/yield-hero-metrics.constant';
 import { YieldScreenContext } from '../../context/yield-screen.context';
+import { useYieldDeltaLabel } from '../../hook/use-yield-delta-label.hook';
 import { useYieldHeroLineText } from '../../hook/use-yield-hero-line-text.hook';
 import { useYieldIsEstimated } from '../../hook/use-yield-is-estimated.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
-import { YieldHeroDelta } from '../yield-hero-delta/yield-hero-delta';
+import { YieldDeltaPill } from '../yield-delta-pill/yield-delta-pill';
 import { YieldHeroNoDelta } from '../yield-hero-no-delta/yield-hero-no-delta';
 import { YieldHeroScrubDelta } from '../yield-hero-scrub-delta/yield-hero-scrub-delta';
 
@@ -32,12 +33,19 @@ export const YieldHeroLine = ({ summary, bucket }: Props) => {
     const isEstimated = useYieldIsEstimated(summary);
     const isAccessibilityText = useIsAccessibilityTextSize();
 
-    const isNewHolding =
-        summary.delta?.kind === YieldDeltaKindEnum.NEW && isDefined(summary.firstYieldDay) && summary.firstYieldDay >= summary.windowStart;
-    const isDeltaMeaningful = isDefined(summary.delta) && (summary.delta.kind !== YieldDeltaKindEnum.NEW || isNewHolding);
-    const hasDelta = isDeltaMeaningful && screenKey.key.range !== YieldRangeEnum.ALL;
+    const { label, caption, tone } = useYieldDeltaLabel(summary, screenKey.key.range);
+
+    const hasDelta =
+        isDefined(summary.delta) &&
+        screenKey.key.range !== YieldRangeEnum.ALL &&
+        (summary.delta.kind !== YieldDeltaKindEnum.NEW ||
+            (isDefined(summary.firstYieldDay) && summary.firstYieldDay >= summary.windowStart));
     const lineText = isAccessibilityText ? text.replace(' · ', '\n') : text;
-    const delta = hasDelta ? <YieldHeroDelta summary={summary} /> : <YieldHeroNoDelta summary={summary} />;
+    const delta = hasDelta ? (
+        <YieldDeltaPill label={label} caption={caption} tone={tone} testID={PassiveIncomeSelector.Delta} />
+    ) : (
+        <YieldHeroNoDelta summary={summary} />
+    );
 
     return (
         <View className="justify-center" style={LINE_STYLE}>

@@ -1,11 +1,9 @@
 import { YieldRangeEnum } from '@budgie/market';
 import { useLingui } from '@lingui/react/macro';
 
-import { TransactionRowSurface } from '../../../transaction/components/transaction-row-surface/transaction-row-surface';
-import { TransactionListRowPositionEnum } from '../../../transaction/enum/transaction-list-row-position.enum';
 import { useYieldRangeChange } from '../../hook/use-yield-range-change.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
-import { getYieldRowBorderClassName } from '../../utils/get-yield-row-border-class-name.util';
+import { YieldRowSurface } from '../yield-row-surface/yield-row-surface';
 import { YieldRow } from '../yield-row/yield-row';
 
 export const YieldOlderPayoutsRow = () => {
@@ -17,12 +15,8 @@ export const YieldOlderPayoutsRow = () => {
     const handlePress = () => void changeRange(YieldRangeEnum.ALL);
 
     return (
-        <TransactionRowSurface
-            position={TransactionListRowPositionEnum.SINGLE}
-            separatorInset={0}
-            className={getYieldRowBorderClassName(TransactionListRowPositionEnum.SINGLE)}
-        >
+        <YieldRowSurface>
             <YieldRow title={title} accessibilityLabel={title} onPress={handlePress} testID={PassiveIncomeSelector.OlderPayouts} />
-        </TransactionRowSurface>
+        </YieldRowSurface>
     );
 };

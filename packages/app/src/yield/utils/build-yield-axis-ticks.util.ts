@@ -1,11 +1,13 @@
+import { YIELD_AXIS_LABEL_HEIGHT } from '../constant/yield-axis-label-height.constant';
+
+import { getYieldZeroY } from './get-yield-zero-y.util';
+
 import type { YieldAxisInterface } from '../interface/yield-axis.interface';
 
-const LABEL_HEIGHT = 14;
-
 export const buildYieldAxisTicks = (axis: YieldAxisInterface, height: number) => {
-    const zeroY = (axis.top * height) / (axis.top - axis.bottom);
+    const zeroY = getYieldZeroY(axis, height);
     const intervals = Math.max(Math.round(axis.top / axis.step), 1);
-    const isSpaced = zeroY / intervals >= LABEL_HEIGHT;
+    const isSpaced = zeroY / intervals >= YIELD_AXIS_LABEL_HEIGHT;
 
     return {
         zeroY,

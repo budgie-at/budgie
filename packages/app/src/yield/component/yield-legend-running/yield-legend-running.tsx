@@ -11,7 +11,7 @@ import { defaultInstrumentAtom } from '../../../settings/constants/settings-atom
 import { YieldScreenContext } from '../../context/yield-screen.context';
 import { YieldSelectionContext } from '../../context/yield-selection.context';
 import { useYieldSummary } from '../../hook/use-yield-summary.hook';
-import { buildYieldRunningTotal } from '../../utils/build-yield-running-total.util';
+import { buildYieldSummaryRunningTotals } from '../../utils/build-yield-summary-running-totals.util';
 import { YieldLegendFootnote } from '../yield-legend-footnote/yield-legend-footnote';
 import { YieldLegendHeader } from '../yield-legend-header/yield-legend-header';
 import { YieldLegendRunningRow } from '../yield-legend-running-row/yield-legend-running-row';
@@ -24,8 +24,7 @@ export const YieldLegendRunning = () => {
     const { symbol } = useAtomValue(defaultInstrumentAtom);
     const summary = useYieldSummary();
 
-    const cumulative = buildYieldRunningTotal(summary?.buckets.map(bucket => bucket.total) ?? []);
-    const prior = isDefined(summary?.priorTotals) ? buildYieldRunningTotal(summary.priorTotals) : null;
+    const { cumulative, prior } = buildYieldSummaryRunningTotals(summary ?? { buckets: [], priorTotals: null });
     const index = selectedIndex ?? cumulative.length - 1;
     const approximate = summary?.buckets.slice(0, index + 1).some(bucket => bucket.isEstimated) === true ? '≈ ' : '';
     const currentAmount = `${approximate}${formatAmount(cumulative.at(index) ?? 0, symbol)}`;

@@ -15,24 +15,17 @@ interface Props {
     readonly group: YieldGroupEnum;
 }
 
-const DOT_CLASSNAME = 'size-[8px] rounded-full';
-
 export const YieldKindFilterChip = ({ group }: Props) => {
     const { t } = useLingui();
     const { background } = useYieldGroupColor(group);
 
     const label = t(YIELD_GROUP_LABEL[group]);
-    const accessibilityLabel = t`Remove ${label} filter`;
-
-    const dotClassName = cn(DOT_CLASSNAME, background);
-
     const handleClear = () => void router.setParams({ group: '' });
 
     return (
         <YieldFilterChip
             label={label}
-            accessibilityLabel={accessibilityLabel}
-            leading={<View className={dotClassName} />}
+            leading={<View className={cn('size-[8px] rounded-full', background)} />}
             onPress={handleClear}
             {...testID(PassiveIncomeSelector.ClearFilter, 'kind')}
         />

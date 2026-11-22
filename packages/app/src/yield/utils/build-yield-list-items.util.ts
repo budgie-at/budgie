@@ -84,27 +84,12 @@ const toMergeKey = ({ transaction, tax }: YieldPayoutFoldInterface): string =>
         ? `single-${transaction.id}`
         : `${toPayoutAccountId(transaction)}|${transaction.yieldKind}|${transaction.yieldSourceAccountId}|${transaction.title}`;
 
-const mergeRepeatedPayouts = (rows: readonly YieldPayoutFoldInterface[]): YieldPayoutFoldInterface[] => {
-    const groups = groupBy(rows, toMergeKey);
-    const emitted = new Set<string>();
-
-    return rows.flatMap((row): YieldPayoutFoldInterface[] => {
-        const key = toMergeKey(row);
-        const group = groups.find(candidate => toMergeKey(candidate[0]) === key) ?? [];
-
-        if (group.length < MERGE_THRESHOLD) {
-            return [row];
-        }
-
-        if (emitted.has(key)) {
-            return [];
-        }
-
-        emitted.add(key);
-
-        return [{ transaction: group[0].transaction, tax: null, siblings: group.map(({ transaction }) => transaction) }];
-    });
-};
+const mergeRepeatedPayouts = (rows: readonly YieldPayoutFoldInterface[]): YieldPayoutFoldInterface[] =>
+    groupBy(rows, toMergeKey).flatMap((group): YieldPayoutFoldInterface[] =>
+        group.length < MERGE_THRESHOLD
+            ? group
+            : [{ transaction: group[0].transaction, tax: null, siblings: group.map(({ transaction }) => transaction) }]
+    );
 
 const toRowDisplayedAmount = ({ transaction, siblings }: YieldPayoutFoldInterface): number => {
     if (isTax(transaction)) {

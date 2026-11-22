@@ -6,6 +6,4 @@ export interface YieldRunningPathsInterface {
     readonly xs: readonly number[];
     readonly ys: readonly number[];
     readonly priorYs: readonly number[];
-    readonly endY: number;
-    readonly priorEndY: number | null;
 }

@@ -5,14 +5,11 @@ import { Text } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { TransactionRowSurface } from '../../../transaction/components/transaction-row-surface/transaction-row-surface';
-import { YIELD_ROW_SEPARATOR_INSET } from '../../constant/yield-row-separator-inset.constant';
 import { useFormatYieldFigureAmount } from '../../hook/use-format-yield-figure-amount.hook';
 import { useYieldPositionSubtitle } from '../../hook/use-yield-position-subtitle.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
-import { getYieldRowBorderClassName } from '../../utils/get-yield-row-border-class-name.util';
 import { YieldPositionIcon } from '../yield-position-icon/yield-position-icon';
-import { YieldRowSubtitle } from '../yield-row-subtitle/yield-row-subtitle';
+import { YieldRowSurface } from '../yield-row-surface/yield-row-surface';
 import { YieldRow } from '../yield-row/yield-row';
 
 import type { TransactionListRowPositionEnum } from '../../../transaction/enum/transaction-list-row-position.enum';
@@ -54,20 +51,16 @@ export const YieldPositionRow = ({ position, rangeCaption, rowPosition }: Props)
     const trailing = <Text className="text-[17px] font-semibold tabular-nums text-primary">{earned}</Text>;
 
     return (
-        <TransactionRowSurface
-            position={rowPosition}
-            separatorInset={YIELD_ROW_SEPARATOR_INSET}
-            className={getYieldRowBorderClassName(rowPosition)}
-        >
+        <YieldRowSurface position={rowPosition}>
             <YieldRow
                 left={<YieldPositionIcon position={position} />}
                 title={title}
-                subtitle={<YieldRowSubtitle subtitle={subtitle} />}
+                subtitle={subtitle}
                 trailing={trailing}
                 accessibilityLabel={accessibilityLabel}
                 onPress={handlePress}
                 testID={PassiveIncomeSelector.Position(position.accountId)}
             />
-        </TransactionRowSurface>
+        </YieldRowSurface>
     );
 };

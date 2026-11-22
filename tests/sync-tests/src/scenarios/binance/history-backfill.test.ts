@@ -9,6 +9,7 @@ import {
     advanceClock,
     binanceStub,
     buildBinance,
+    deferAtRequest,
     fetchBinanceTransactions,
     fetchHistoryProgress,
     jumpPastDeadline,
@@ -34,17 +35,6 @@ interface BackfillSource {
     readonly needsBtcAccount: boolean;
     readonly stub: (timesMs: readonly number[], windows: TimeWindow[], onServed: () => void) => void;
 }
-
-const deferAtRequest = (requestNumber: number) => {
-    let servedCount = 0;
-
-    return (): void => {
-        servedCount += 1;
-        if (servedCount === requestNumber) {
-            jumpPastDeadline();
-        }
-    };
-};
 
 const SOURCES: readonly BackfillSource[] = [
     {

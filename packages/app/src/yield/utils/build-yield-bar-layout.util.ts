@@ -2,8 +2,11 @@ import { YieldGroupEnum } from '@budgie/market';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
-import { MARKET_CHART_PADDING_X } from '../../market-data/constant/market-chart-padding-x.constant';
 import { YIELD_STACK_GROUPS } from '../constant/yield-stack-groups.constant';
+
+import { getYieldBarCenterX } from './get-yield-bar-center-x.util';
+import { getYieldSlotWidth } from './get-yield-slot-width.util';
+import { getYieldZeroY } from './get-yield-zero-y.util';
 
 import type { YieldBarLayoutInputInterface } from '../interface/yield-bar-layout-input.interface';
 import type { YieldBarLayoutInterface } from '../interface/yield-bar-layout.interface';
@@ -60,18 +63,17 @@ export const buildYieldBarLayout = ({
     height,
     axis
 }: YieldBarLayoutInputInterface): YieldBarLayoutInterface => {
-    const slot = Math.max(width - MARKET_CHART_PADDING_X * 2, 1) / Math.max(buckets.length, 1);
+    const slot = getYieldSlotWidth(width, buckets.length);
     const barWidth = Math.max(slot * BAR_WIDTH_SHARE, Math.min(MIN_BAR_WIDTH, slot - SLOT_GUTTER));
     const barRadius = barWidth < NARROW_BAR_WIDTH ? NARROW_BAR_RADIUS : BAR_RADIUS;
     const gap = barWidth < NARROW_BAR_WIDTH ? NARROW_SEGMENT_GAP : SEGMENT_GAP;
     const scale = height / (axis.top - axis.bottom);
-    const zeroY = axis.top * scale;
-    const xs = buckets.map((_, index) => MARKET_CHART_PADDING_X + slot * (index + 0.5));
+    const zeroY = getYieldZeroY(axis, height);
     const groups = buildGroupRecord();
     const tax: YieldBarRectInterface[] = [];
 
     buckets.forEach((bucket, index) => {
-        const left = (xs.at(index) ?? 0) - barWidth / 2;
+        const left = getYieldBarCenterX(index, buckets.length, width) - barWidth / 2;
         const merged = mergeSmallSegments(
             YIELD_STACK_GROUPS.map(group =>
                 visibleGroups.includes(group) && isPositiveNumber(bucket.total) ? bucket.amounts[group] * scale : 0
@@ -95,7 +97,6 @@ export const buildYieldBarLayout = ({
                 width: barWidth,
                 height: drawn,
                 radius: buildRadius(drawn, isTop, barRadius),
-                bottomRadius: 0,
                 isInProgress: bucket.isInProgress
             });
             bottom -= segment;
@@ -107,10 +108,9 @@ export const buildYieldBarLayout = ({
             width: barWidth,
             height: taxHeight,
             radius: 0,
-            bottomRadius: 0,
             isInProgress: bucket.isInProgress
         });
     });
 
-    return { xs, slot, barWidth, zeroY, scale, groups, tax };
+    return { zeroY, groups, tax };
 };

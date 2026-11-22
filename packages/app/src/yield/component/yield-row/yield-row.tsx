@@ -12,7 +12,7 @@ import type { ReactNode } from 'react';
 interface Props {
     readonly left?: ReactNode;
     readonly title: string;
-    readonly subtitle?: ReactNode;
+    readonly subtitle?: string;
     readonly trailing?: ReactNode;
     readonly accessibilityLabel: string;
     readonly onPress: (() => void) | null;
@@ -42,7 +42,15 @@ export const YieldRow = ({ left, title, subtitle, trailing, accessibilityLabel, 
                 <Text className="text-[17px] text-primary" numberOfLines={TITLE_LINES} maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}>
                     {title}
                 </Text>
-                {subtitle}
+                {isDefined(subtitle) ? (
+                    <Text
+                        className="text-[13px] leading-[18px] text-secondary-foreground"
+                        numberOfLines={1}
+                        maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
+                    >
+                        {subtitle}
+                    </Text>
+                ) : null}
             </View>
             <View className="shrink-0 flex-row items-center gap-x-sm">
                 {trailing}

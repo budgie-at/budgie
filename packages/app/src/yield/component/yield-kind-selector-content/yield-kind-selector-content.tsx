@@ -28,8 +28,8 @@ export const YieldKindSelectorContent = ({ params, onCommit }: Props) => {
             </View>
             <View className="gap-y-xl px-3xl pb-[32px]">
                 {sections.map(section => (
-                    <GroupedListSection key={section.kinds.join('-')}>
-                        {section.kinds.map(kind => (
+                    <GroupedListSection key={section.join('-')}>
+                        {section.map(kind => (
                             <YieldKindOptionRow key={kind} kind={kind} isSelected={params.selectedKind === kind} onSelect={commit} />
                         ))}
                     </GroupedListSection>

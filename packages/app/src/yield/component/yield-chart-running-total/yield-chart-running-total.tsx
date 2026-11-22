@@ -8,19 +8,21 @@ import { StyledPath } from '../../../@generic/component/styled-path/styled-path'
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { YIELD_PLOT_HEIGHT } from '../../constant/yield-plot-height.constant';
 import { YieldSelectionContext } from '../../context/yield-selection.context';
-import { useYieldChartAxis } from '../../hook/use-yield-chart-axis.hook';
 import { buildYieldRunningPaths } from '../../utils/build-yield-running-paths.util';
-import { buildYieldRunningTotal } from '../../utils/build-yield-running-total.util';
+import { buildYieldSummaryRunningTotals } from '../../utils/build-yield-summary-running-totals.util';
+import { getYieldZeroY } from '../../utils/get-yield-zero-y.util';
+import { YieldChartFloatingLabel } from '../yield-chart-floating-label/yield-chart-floating-label';
 import { YieldChartFrame } from '../yield-chart-frame/yield-chart-frame';
 import { YieldChartRunningArea } from '../yield-chart-running-area/yield-chart-running-area';
 import { YieldChartRunningCursor } from '../yield-chart-running-cursor/yield-chart-running-cursor';
-import { YieldChartScrubLabel } from '../yield-chart-scrub-label/yield-chart-scrub-label';
 
+import type { YieldAxisInterface } from '../../interface/yield-axis.interface';
 import type { YieldSummaryInterface } from '@budgie/market';
 
 interface Props {
     readonly width: number;
     readonly summary: YieldSummaryInterface;
+    readonly axis: YieldAxisInterface;
 }
 
 const LINE_WIDTH = 2;
@@ -30,13 +32,11 @@ const PRIOR_DOT_RADIUS = 3.2;
 const PRIOR_RING_WIDTH = 2;
 const LINE_CLASSNAME = 'accent-positive-action';
 
-export const YieldChartRunningTotal = ({ width, summary }: Props) => {
+export const YieldChartRunningTotal = ({ width, summary, axis }: Props) => {
     const { selectedIndex } = use(YieldSelectionContext);
     const { formatMonthAndDay } = useFormatDate();
 
-    const cumulative = buildYieldRunningTotal(summary.buckets.map(bucket => bucket.total));
-    const prior = isDefined(summary.priorTotals) ? buildYieldRunningTotal(summary.priorTotals) : null;
-    const axis = useYieldChartAxis(summary);
+    const { cumulative, prior } = buildYieldSummaryRunningTotals(summary);
     const paths = buildYieldRunningPaths({
         cumulative,
         prior,
@@ -48,7 +48,7 @@ export const YieldChartRunningTotal = ({ width, summary }: Props) => {
     });
     const cursorX = isDefined(selectedIndex) ? paths.xs.at(selectedIndex) : null;
     const cursorY = isDefined(selectedIndex) ? paths.ys.at(selectedIndex) : null;
-    const zeroY = (axis.top * YIELD_PLOT_HEIGHT) / (axis.top - axis.bottom);
+    const zeroY = getYieldZeroY(axis, YIELD_PLOT_HEIGHT);
     const isScrubbing = isDefined(cursorX) && isDefined(cursorY);
 
     const priorY = isDefined(selectedIndex) ? paths.priorYs.at(selectedIndex) : null;
@@ -56,7 +56,7 @@ export const YieldChartRunningTotal = ({ width, summary }: Props) => {
 
     const label =
         isScrubbing && isDefined(scrubbedBucket) ? (
-            <YieldChartScrubLabel title={formatMonthAndDay(parseISO(scrubbedBucket.end))} x={cursorX} plotWidth={width} />
+            <YieldChartFloatingLabel text={formatMonthAndDay(parseISO(scrubbedBucket.end))} centre={cursorX} plotWidth={width} />
         ) : null;
 
     return (

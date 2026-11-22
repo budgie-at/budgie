@@ -47,5 +47,5 @@ it.each([
     [Number.NaN, 0],
     [Number.POSITIVE_INFINITY, 0]
 ])('falls back to a unit axis for (%d, %d)', (max, depth) => {
-    expect(buildYieldAxis(max, depth)).toEqual({ top: 1, bottom: -depth, depth, step: 0.5 });
+    expect(buildYieldAxis(max, depth)).toEqual({ top: 1, bottom: -depth, step: 0.5 });
 });

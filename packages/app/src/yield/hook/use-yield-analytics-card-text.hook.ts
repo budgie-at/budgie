@@ -38,12 +38,11 @@ export const useYieldAnalyticsCardText = (
     const { label, caption: comparison, trend, tone } = useYieldDeltaLabel(summary, focus.range);
 
     const isFocused = isDefined(focus.focusDay);
-    const headline = isFocused && isDefined(summary) ? summary.earned : earned;
-    const headlineText = `${headline.isEstimated ? ESTIMATED_PREFIX : ''}${formatAmount(headline.value, symbol)}`;
+    const formatFigure = (figure: YieldEstimatedFigureInterface) =>
+        `${figure.isEstimated ? ESTIMATED_PREFIX : ''}${formatAmount(figure.value, symbol)}`;
+    const headlineText = formatFigure(isFocused && isDefined(summary) ? summary.earned : earned);
     const caption = isFocused ? t(RANGE_CAPTION[focus.range]) : periodText;
-    const focusedText = isFocused
-        ? `${earned.isEstimated ? ESTIMATED_PREFIX : ''}${formatAmount(earned.value, symbol)} ${periodText}`
-        : null;
+    const focusedText = isFocused ? `${formatFigure(earned)} ${periodText}` : null;
     const isTrending = trend === YieldHeroTrendEnum.UP || trend === YieldHeroTrendEnum.DOWN;
     const visibleTakeaway = isFocused && isTrending ? `${label} ${comparison}` : null;
     const title = t`Passive income`;

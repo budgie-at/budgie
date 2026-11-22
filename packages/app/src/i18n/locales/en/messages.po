@@ -1316,7 +1316,7 @@ msgstr "≈ {formattedMonths} mo"
 msgid "≈ {formattedRate}"
 msgstr "≈ {formattedRate}"
 
-#: src/yield/component/yield-legend-estimated-row/yield-legend-estimated-row.tsx
+#: src/yield/component/yield-legend-footnote/yield-legend-footnote.tsx
 msgid "≈ Includes estimated prices"
 msgstr "≈ Includes estimated prices"
 
@@ -9125,7 +9125,7 @@ msgstr "Remove"
 msgid "Remove {categoryTitle} entry"
 msgstr "Remove {categoryTitle} entry"
 
-#: src/yield/component/yield-kind-filter-chip/yield-kind-filter-chip.tsx
+#: src/yield/component/yield-filter-chip/yield-filter-chip.tsx
 msgid "Remove {label} filter"
 msgstr "Remove {label} filter"
 
@@ -9136,10 +9136,6 @@ msgstr "Remove {name}?"
 #: src/yield/component/yield-collapsed-title/yield-collapsed-title.tsx
 msgid "Remove {scopeText} filter"
 msgstr "Remove {scopeText} filter"
-
-#: src/yield/component/yield-scope-filter-chip/yield-scope-filter-chip.tsx
-msgid "Remove {scopeTitle} filter"
-msgstr "Remove {scopeTitle} filter"
 
 #: src/rule/components/rule-action-row/rule-action-row.tsx
 msgid "Remove action {position}"
@@ -9178,7 +9174,7 @@ msgid "Remove fee?"
 msgstr "Remove fee?"
 
 #: src/yield/component/yield-collapsed-title/yield-collapsed-title.tsx
-#: src/yield/component/yield-scope-filter-chip/yield-scope-filter-chip.tsx
+#: src/yield/component/yield-filter-chip/yield-filter-chip.tsx
 msgid "Remove filter"
 msgstr "Remove filter"
 

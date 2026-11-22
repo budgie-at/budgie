@@ -18,7 +18,6 @@ import { yieldSummaryFamily } from '../../constant/yield-summary-family-atom.con
 import { useYieldEntrySubtitle } from '../../hook/use-yield-entry-subtitle.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 import { YieldGroupIcon } from '../yield-group-icon/yield-group-icon';
-import { YieldRowSubtitle } from '../yield-row-subtitle/yield-row-subtitle';
 import { YieldRow } from '../yield-row/yield-row';
 
 import type { YieldScopeInterface } from '@budgie/contracts';
@@ -69,7 +68,7 @@ export const YieldEntryRowContent = ({ scope }: Props) => {
                 <YieldRow
                     left={icon}
                     title={t`Passive income`}
-                    subtitle={<YieldRowSubtitle subtitle={subtitle} />}
+                    subtitle={subtitle}
                     trailing={trailing}
                     accessibilityLabel={t`Passive income, ${subtitle}`}
                     onPress={handlePress}

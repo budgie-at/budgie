@@ -43,14 +43,7 @@ export const YieldBreakdown = () => {
             {hasTotalsRows ? (
                 <YieldBreakdownSection title={t`Totals · ${rangeName}`}>
                     {rows.map(row => (
-                        <YieldBreakdownRow
-                            key={row.testID}
-                            title={row.title}
-                            subtitle={row.subtitle}
-                            value={row.value}
-                            testID={row.testID}
-                            valueClassName={row.valueClassName}
-                        />
+                        <YieldBreakdownRow key={row.testID} {...row} />
                     ))}
                 </YieldBreakdownSection>
             ) : null}

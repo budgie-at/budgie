@@ -14,11 +14,11 @@ const months = (firstYear: number, firstMonth: number, count: number) =>
 it('aligns long monthly ranges to January and July', () => {
     const buckets = months(2025, 1, 20);
 
-    expect(buildYieldTickIndices(buckets, YieldBucketUnitEnum.MONTH, 10, 4).indices).toEqual([0, 6, 12, 18]);
+    expect(buildYieldTickIndices(buckets, YieldBucketUnitEnum.MONTH, 10, 4)).toEqual([0, 6, 12, 18]);
 });
 
 it('keeps even spacing for a single year of months', () => {
     const buckets = months(2025, 12, 12);
 
-    expect(buildYieldTickIndices(buckets, YieldBucketUnitEnum.MONTH, 10, 4).indices).toEqual([2, 5, 8, 11]);
+    expect(buildYieldTickIndices(buckets, YieldBucketUnitEnum.MONTH, 10, 4)).toEqual([2, 5, 8, 11]);
 });

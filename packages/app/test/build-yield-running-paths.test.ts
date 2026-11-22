@@ -20,7 +20,6 @@ it('draws in-progress buckets dashed, the rest solid, and the prior path by buck
     expect(points(paths.prior).map(([, y]) => y)).toEqual([100, 60, 20]);
     expect(points(paths.dashed).at(0)?.at(0)).toBeCloseTo(56, 6);
     expect(paths.area.endsWith('Z')).toBe(true);
-    expect([paths.endY, paths.priorEndY]).toEqual([0, 20]);
 });
 
 it('leaves the prior path empty without a prior series', () => {
@@ -35,6 +34,5 @@ it('leaves the prior path empty without a prior series', () => {
     });
 
     expect(paths.prior).toBe('');
-    expect(paths.priorEndY).toBeNull();
     expect(paths.dashed).toBe('');
 });

@@ -23,34 +23,13 @@ export const buildYieldBarsPath = (
 
         if (height > MIN_VISIBLE_HEIGHT && rect.isInProgress === isInProgress && isIncluded) {
             const radius = Math.min(rect.radius, height, rect.width / HALF);
-            const bottomRadius = Math.min(rect.bottomRadius, height, rect.width / HALF);
             const right = rect.x + rect.width;
             const bottom = y + height;
-
-            const tail =
-                bottomRadius > 0
-                    ? [
-                          'V',
-                          bottom - bottomRadius,
-                          'Q',
-                          right,
-                          bottom,
-                          right - bottomRadius,
-                          bottom,
-                          'H',
-                          rect.x + bottomRadius,
-                          'Q',
-                          rect.x,
-                          bottom,
-                          rect.x,
-                          bottom - bottomRadius
-                      ]
-                    : ['V', bottom];
 
             commands.push(
                 'M',
                 rect.x,
-                bottom - bottomRadius,
+                bottom,
                 'V',
                 y + radius,
                 'Q',
@@ -65,7 +44,8 @@ export const buildYieldBarsPath = (
                 y,
                 right,
                 y + radius,
-                ...tail,
+                'V',
+                bottom,
                 'Z'
             );
         }

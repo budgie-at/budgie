@@ -25,9 +25,8 @@ export const buildYieldTickIndices = (
 
     if (isSparse) {
         const spacing = unit === YieldBucketUnitEnum.MONTH ? MONTH_SPACING : DAY_SPACING;
-        const indices = funded.filter((index, order) => order === 0 || (index - (funded.at(order - 1) ?? index)) * slot >= spacing);
 
-        return { indices, isSparse };
+        return funded.filter((index, order) => order === 0 || (index - (funded.at(order - 1) ?? index)) * slot >= spacing);
     }
 
     if (unit === YieldBucketUnitEnum.MONTH && buckets.length > MONTHS_PER_YEAR) {
@@ -38,13 +37,12 @@ export const buildYieldTickIndices = (
         ).find(candidate => candidate.length >= MIN_CALENDAR_TICKS && candidate.length <= maxTicks);
 
         if (isNotEmptyArray(calendarIndices)) {
-            return { indices: calendarIndices, isSparse };
+            return calendarIndices;
         }
     }
 
     const step = Math.max(Math.ceil(buckets.length / maxTicks), 1);
     const lastIndex = buckets.length - 1;
-    const indices = Array.from({ length: Math.floor(lastIndex / step) + 1 }, (_, order) => lastIndex - order * step).reverse();
 
-    return { indices, isSparse };
+    return Array.from({ length: Math.floor(lastIndex / step) + 1 }, (_, order) => lastIndex - order * step).reverse();
 };

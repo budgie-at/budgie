@@ -3,7 +3,7 @@ import { expect, it } from '@effect/vitest';
 import { buildYieldAxisLabels } from '../src/yield/utils/build-yield-axis-labels.util';
 
 const format = (value: number) => `$${value}`;
-const labelsOf = (top: number, step: number, bottom: number) => buildYieldAxisLabels({ top, bottom, depth: -bottom, step }, 200, format);
+const labelsOf = (top: number, step: number, bottom: number) => buildYieldAxisLabels({ top, bottom, step }, 200, format);
 
 it('labels every step from the top down to zero', () => {
     expect(labelsOf(1500, 500, 0).map(label => label.text)).toEqual(['$1500', '$1000', '$500', '$0']);

@@ -1,17 +1,11 @@
-import {
-    AccountTypeEnum,
-    CategorySourceEnum,
-    PERSONAL_SYNC_ZONE,
-    SyncModeEnum,
-    TransactionEntryKindEnum,
-    TransactionEntryTypeEnum,
-    TransactionTypeEnum
-} from '@budgie/contracts';
+import { AccountTypeEnum, SyncModeEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 
 import { getAdjustmentDetails } from '../src/transaction/utils/get-adjustment-details.util';
 
 import { buildAccountWithInstrument } from './fixture/account-with-instrument';
+import { buildPrimaryEntry } from './fixture/transaction-entry';
+import { buildTransaction } from './fixture/transaction-with-relations';
 
 import type { AccountWithInstrumentEntityInterface, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 
@@ -19,7 +13,6 @@ type SyncInput = NonNullable<Parameters<typeof getAdjustmentDetails>[1]>;
 
 const OPERATED_AT = new Date('2026-10-10T12:00:00Z');
 const AMOUNT = 25_000_000;
-const TIMESTAMP = new Date('2026-10-01T00:00:00Z');
 
 const buildAccount = (type: AccountTypeEnum): AccountWithInstrumentEntityInterface => ({
     ...buildAccountWithInstrument(1, type, 'Account'),
@@ -29,74 +22,29 @@ const buildAccount = (type: AccountTypeEnum): AccountWithInstrumentEntityInterfa
 const buildAdjustment = (accountType: AccountTypeEnum): TransactionWithRelationsEntityInterface => {
     const account = buildAccount(accountType);
 
-    return {
+    return buildTransaction({
         id: 7,
-        createdAt: TIMESTAMP,
-        updatedAt: TIMESTAMP,
-        deletedAt: null,
         syncId: 'transaction-sync-id',
-        syncZone: PERSONAL_SYNC_ZONE,
         type: TransactionTypeEnum.ADJUSTMENT,
         title: 'Balance adjustment',
-        externalId: null,
         operatedAt: OPERATED_AT,
-        comment: '',
         toAccountId: account.id,
-        fromAccountId: null,
-        exchangeRate: 1,
-        externalSource: null,
-        updatedBy: null,
-        needsEmbedding: false,
-        refundAutoPairDisabled: false,
-        importFingerprint: null,
-        consolidationParentTransactionId: null,
-        consolidationType: null,
-        fundAccountId: null,
-        yieldKind: null,
-        yieldSourceAccountId: null,
         operatedWeekday: 6,
         operatedMinuteOfDay: 720,
         entries: [
-            {
+            buildPrimaryEntry({
                 id: 1,
-                createdAt: TIMESTAMP,
-                updatedAt: TIMESTAMP,
-                deletedAt: null,
                 syncId: 'entry-sync-id',
-                syncZone: PERSONAL_SYNC_ZONE,
                 type: TransactionEntryTypeEnum.DEBIT,
-                kind: TransactionEntryKindEnum.PRIMARY,
                 accountId: account.id,
-                categoryId: null,
-                categorySource: CategorySourceEnum.USER,
-                mccCategoryId: null,
-                sequence: 0,
                 transactionId: 7,
                 amount: AMOUNT,
-                externalId: null,
-                exchangeRate: 1,
-                baseInstrumentId: null,
-                baseExchangeRate: null,
                 baseAmount: null,
-                quotedInstrumentId: null,
-                quotedAmount: null,
-                quotedUnitPrice: null,
-                operationInstrumentId: null,
-                operationAmount: null,
-                toIban: null,
-                providerBalance: null,
-                originalTransactionId: null,
-                account,
-                category: null,
-                mccCategory: null
-            }
+                account
+            })
         ],
-        debtEvents: [],
-        fromAccount: null,
-        toAccount: account,
-        receipt: null,
-        transactionTags: []
-    };
+        toAccount: account
+    });
 };
 
 const buildSync = (overrides: Partial<SyncInput>): SyncInput => ({

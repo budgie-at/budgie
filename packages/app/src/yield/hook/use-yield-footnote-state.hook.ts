@@ -35,13 +35,11 @@ export const useYieldFootnoteState = () => {
                 ? isPositiveNumber(bucket.estimatedAmounts[group])
                 : Object.values(bucket.estimatedAmounts).some(isPositiveNumber)
         ) === true;
-    const hasDetails = isDefined(summary) && summary.hasYield && hasInProgress;
+    const hasDetails = hasInProgress && summary.hasYield;
 
     return {
         isFailure: AsyncResult.isFailure(result),
         isEstimated: isMaterialEstimate || hasEstimatedPrice,
-        hasDetails,
-        hasSwatch: hasInProgress,
-        details: hasInProgress ? inProgressText : ''
+        details: hasDetails ? inProgressText : null
     };
 };

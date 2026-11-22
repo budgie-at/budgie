@@ -7,7 +7,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hook';
-import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
+import { defaultInstrumentIdAtom } from '../../../settings/constants/settings-atoms.constant';
 import { yieldSummaryFamily } from '../../constant/yield-summary-family-atom.constant';
 import { useYieldAnalyticsCardText } from '../../hook/use-yield-analytics-card-text.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
@@ -28,7 +28,7 @@ interface Props {
 const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 
 export const PassiveIncomeAnalyticsCardContent = ({ earned, focus, period }: Props) => {
-    const { id: baseInstrumentId } = useAtomValue(defaultInstrumentAtom);
+    const baseInstrumentId = useAtomValue(defaultInstrumentIdAtom);
     const summary = AsyncResult.getOrElse(
         useLiveAtomValue(
             yieldSummaryFamily({ range: focus.range, positionAccountId: null, instrumentId: null, group: null, baseInstrumentId })

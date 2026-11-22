@@ -1,5 +1,7 @@
 import { Text } from 'react-native';
 
+import { YIELD_AXIS_LABEL_HEIGHT } from '../../constant/yield-axis-label-height.constant';
+
 import type { YieldAxisLabelInterface } from '../../interface/yield-axis-label.interface';
 
 interface Props {
@@ -8,14 +10,13 @@ interface Props {
     readonly gutter: number;
 }
 
-const LABEL_HEIGHT = 14;
 const AXIS_MAX_FONT_SIZE_MULTIPLIER = 1.3;
 const LABEL_RULE_GAP = 1;
 
 export const YieldChartAxisLabels = ({ labels, width, gutter }: Props) => (
     <>
         {labels.map(({ key, y, text }) => {
-            const style = { left: width, width: gutter, top: y - LABEL_HEIGHT - LABEL_RULE_GAP };
+            const style = { left: width, width: gutter, top: y - YIELD_AXIS_LABEL_HEIGHT - LABEL_RULE_GAP };
 
             return (
                 <Text

@@ -2,7 +2,7 @@ import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { useWindowDimensions } from 'react-native';
 
-import { isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { PROTECTED_AMOUNT_PLACEHOLDER } from '../../@generic/constant/protected-amount-placeholder.constant';
 import { useIsAmountProtected } from '../../@generic/hook/use-is-amount-protected.hook';
@@ -39,7 +39,7 @@ export const useYieldAxisLabels = (axis: YieldAxisInterface) => {
         );
     const axisLabels = buildLabels(axis);
     const zeroY = axisLabels.find(({ key }) => key === 'zero')?.y ?? YIELD_PLOT_HEIGHT;
-    const taxLabels = isPositiveNumber(axis.depth) ? [{ key: 'tax', y: zeroY + TAX_LABEL_OFFSET, text: t`Tax` }] : [];
+    const taxLabels = axis.bottom < 0 ? [{ key: 'tax', y: zeroY + TAX_LABEL_OFFSET, text: t`Tax` }] : [];
     const labels = [...axisLabels, ...taxLabels];
     const stableAxes = isDefined(summary)
         ? Object.values(YieldChartModeEnum).flatMap(mode =>
