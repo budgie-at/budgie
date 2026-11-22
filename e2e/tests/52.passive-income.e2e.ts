@@ -50,7 +50,6 @@ test('52 passive income', { tags: ['passive-income'] }, async ({ budgie }) => {
         await b.tapId(ctx, 'PassiveIncome.Mode.RUNNING_TOTAL');
         await expect(id('PassiveIncome.Mode.RUNNING_TOTAL')).toBeSelected();
         await b.tapId(ctx, 'PassiveIncome.Mode.BARS');
-        await b.scrollTo(ctx, 'PassiveIncome.NetAfterTax');
     });
 
     await b.phase('1b focus, tap, legend isolate and scrub', async () => {
@@ -78,6 +77,7 @@ test('52 passive income', { tags: ['passive-income'] }, async ({ budgie }) => {
     });
 
     await b.phase('2 position row filters to its payouts and back', async () => {
+        await b.scrollTo(ctx, 'PassiveIncome.NetAfterTax');
         await b.scrollTo(ctx, `PassiveIncome.Position.${ETH_ACCOUNT_ID}`);
         await b.tapId(ctx, `PassiveIncome.Position.${ETH_ACCOUNT_ID}`);
         await expandHeader();
