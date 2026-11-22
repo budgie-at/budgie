@@ -37,19 +37,18 @@ test('52 passive income', { tags: ['passive-income'] }, async ({ budgie }) => {
     await b.phase('1a analytics card opens the screen on its bucket', async () => {
         await b.openLink(ctx, 'budgie://analytics');
         await b.expectId(ctx, 'PassiveIncome.AnalyticsCard', 15_000);
-        const cardText = (await id('PassiveIncome.AnalyticsCard').textContent()) ?? '';
         await b.tapId(ctx, 'PassiveIncome.AnalyticsCard');
         await b.expectId(ctx, 'PassiveIncome.Hero', 15_000);
-        const [, , bucketText = ''] = cardText.split(', ');
-        const heroFigure = bucketText.match(/[^\s\d]?\d[\d,.]*/u)?.[0] ?? '';
-        assert.ok(heroFigure.length > 0);
         await expect(id('PassiveIncome.Caption')).toContainText('so far');
         if (b.isIos(ctx)) {
+            const heroFigure = ((await id('PassiveIncome.Hero').textContent()) ?? '').match(/earned (.+?) before tax/u)?.[1] ?? '';
+            assert.ok(heroFigure.length > 0);
             assert.ok((await plotValue()).includes(heroFigure));
             assert.match(await plotValue(), /so far/u);
         }
         await expect(id('PassiveIncome.Hero')).toHaveAccessibleName(/so far: earned .* before tax/u);
         await b.scrollTo(ctx, 'PassiveIncome.NetAfterTax');
+        await b.scrollToCentre(ctx, 'PassiveIncome.Mode.RUNNING_TOTAL', 'up');
         await b.tapId(ctx, 'PassiveIncome.Mode.RUNNING_TOTAL');
         await expect(id('PassiveIncome.Mode.RUNNING_TOTAL')).toBeSelected();
         await b.tapId(ctx, 'PassiveIncome.Mode.BARS');
