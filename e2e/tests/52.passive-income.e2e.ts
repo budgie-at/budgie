@@ -47,11 +47,10 @@ test('52 passive income', { tags: ['passive-income'] }, async ({ budgie }) => {
             assert.match(await plotValue(), /so far/u);
         }
         await expect(id('PassiveIncome.Hero')).toHaveAccessibleName(/so far: earned .* before tax/u);
-        await b.scrollTo(ctx, 'PassiveIncome.NetAfterTax');
-        await b.scrollToCentre(ctx, 'PassiveIncome.Mode.RUNNING_TOTAL', 'up');
         await b.tapId(ctx, 'PassiveIncome.Mode.RUNNING_TOTAL');
         await expect(id('PassiveIncome.Mode.RUNNING_TOTAL')).toBeSelected();
         await b.tapId(ctx, 'PassiveIncome.Mode.BARS');
+        await b.scrollTo(ctx, 'PassiveIncome.NetAfterTax');
     });
 
     await b.phase('1b focus, tap, legend isolate and scrub', async () => {
