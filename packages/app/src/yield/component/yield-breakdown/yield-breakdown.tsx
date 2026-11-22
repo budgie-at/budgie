@@ -1,52 +1,63 @@
-import * as AsyncResult from 'effect/reactivity/AsyncResult';
+import { useLingui } from '@lingui/react/macro';
 import { use } from 'react';
 import { View } from 'react-native';
 
-import { isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { useIsLargeText } from '../../../@generic/hook/use-is-large-text.hook';
-import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hook';
-import { cn } from '../../../@generic/utils/cn.util';
-import { yieldSummaryFamily } from '../../constant/yield-summary-family-atom.constant';
+import { YIELD_RANGE_NAME } from '../../constant/yield-range-name.constant';
 import { YieldScreenContext } from '../../context/yield-screen.context';
-import { YieldBreakdownCryptoToday } from '../yield-breakdown-crypto-today/yield-breakdown-crypto-today';
-import { YieldBreakdownNet } from '../yield-breakdown-net/yield-breakdown-net';
+import { useYieldBreakdownRows } from '../../hook/use-yield-breakdown-rows.hook';
+import { useYieldSummary } from '../../hook/use-yield-summary.hook';
+import { YieldBreakdownRow } from '../yield-breakdown-row/yield-breakdown-row';
 import { YieldBreakdownRunRate } from '../yield-breakdown-run-rate/yield-breakdown-run-rate';
-import { YieldBreakdownVsRate } from '../yield-breakdown-vs-rate/yield-breakdown-vs-rate';
+import { YieldBreakdownSection } from '../yield-breakdown-section/yield-breakdown-section';
+import { YieldBreakdownSkeleton } from '../yield-breakdown-skeleton/yield-breakdown-skeleton';
+import { YieldOpenPositionRow } from '../yield-open-position-row/yield-open-position-row';
 
 export const YieldBreakdown = () => {
-    const isLargeText = useIsLargeText();
+    const { t } = useLingui();
+    const summary = useYieldSummary();
     const { screenKey } = use(YieldScreenContext);
-    const summary = AsyncResult.getOrElse(useLiveAtomValue(yieldSummaryFamily(screenKey.key)), () => null);
+    const rows = useYieldBreakdownRows(summary);
 
     if (!isDefined(summary)) {
+        return <YieldBreakdownSkeleton />;
+    }
+
+    const rangeName = t(YIELD_RANGE_NAME[screenKey.key.range]);
+    const { runRate } = summary;
+    const hasOpenRow = isDefined(screenKey.scopeId) && screenKey.from !== screenKey.scopeId;
+    const hasTotalsRows = isNotEmptyArray(rows);
+
+    if (!hasOpenRow && !hasTotalsRows && !isDefined(runRate)) {
         return null;
     }
 
-    const { runRate, cryptoRewardsToday, vsRate } = summary;
-    const cellClassName = cn('pb-md', isLargeText ? 'w-full' : 'w-1/2');
-
     return (
-        <View className="flex-row flex-wrap">
-            {isPositiveNumber(summary.tax) ? (
-                <View className={cellClassName}>
-                    <YieldBreakdownNet net={summary.net} />
-                </View>
+        <View className="gap-y-[24px]">
+            {hasOpenRow ? (
+                <YieldBreakdownSection>
+                    <YieldOpenPositionRow />
+                </YieldBreakdownSection>
+            ) : null}
+            {hasTotalsRows ? (
+                <YieldBreakdownSection title={t`Totals · ${rangeName}`}>
+                    {rows.map(row => (
+                        <YieldBreakdownRow
+                            key={row.testID}
+                            title={row.title}
+                            subtitle={row.subtitle}
+                            value={row.value}
+                            testID={row.testID}
+                            valueClassName={row.valueClassName}
+                        />
+                    ))}
+                </YieldBreakdownSection>
             ) : null}
             {isDefined(runRate) ? (
-                <View className={cellClassName}>
+                <YieldBreakdownSection title={t`Outlook`}>
                     <YieldBreakdownRunRate runRate={runRate} />
-                </View>
-            ) : null}
-            {isDefined(cryptoRewardsToday) ? (
-                <View className={cellClassName}>
-                    <YieldBreakdownCryptoToday rewards={cryptoRewardsToday} />
-                </View>
-            ) : null}
-            {isDefined(vsRate) ? (
-                <View className={cellClassName}>
-                    <YieldBreakdownVsRate vsRate={vsRate} />
-                </View>
+                </YieldBreakdownSection>
             ) : null}
         </View>
     );

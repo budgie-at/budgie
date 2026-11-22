@@ -19,6 +19,7 @@ export { findLastIndexOnOrBefore } from './@generic/utils/find-last-index-on-or-
 export { formatUtcDay } from './@generic/utils/format-utc-day.util';
 export { CRYPTO_PRICE_CARRY_DAYS, FUND_PRICE_CARRY_DAYS } from './valuation/constant/price-carry-days.constant';
 export { YieldService } from './yield/service/yield.service';
+export { YIELD_GROUP_BY_KIND } from './yield/constant/yield-group-by-kind.constant';
 export { YieldRangeEnum } from './yield/enum/yield-range.enum';
 export { YieldGroupEnum } from './yield/enum/yield-group.enum';
 export { YieldBucketUnitEnum } from './yield/enum/yield-bucket-unit.enum';

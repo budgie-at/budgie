@@ -9,6 +9,7 @@ import { PRESENCE_ENTERING, PRESENCE_EXITING, PRESENCE_LAYOUT } from '../../../@
 import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hook';
 import { useToday } from '../../../@generic/hook/use-today.hook';
 import { defaultInstrumentIdAtom } from '../../../settings/constants/settings-atoms.constant';
+import { YIELD_ALL_TIME_START } from '../../constant/yield-all-time-start.constant';
 import { yieldPeriodEarnedFamily } from '../../constant/yield-period-earned-family-atom.constant';
 import { resolveYieldAnalyticsFocus } from '../../utils/resolve-yield-analytics-focus.util';
 import { PassiveIncomeAnalyticsCardContent } from '../passive-income-analytics-card-content/passive-income-analytics-card-content';
@@ -20,14 +21,13 @@ interface Props {
 }
 
 const DAY_FORMAT = 'yyyy-MM-dd';
-const ALL_TIME_START = '0001-01-01';
 
 export const PassiveIncomeAnalyticsCard = ({ date }: Props) => {
     const baseInstrumentId = useAtomValue(defaultInstrumentIdAtom);
     const today = useToday();
     const focus = resolveYieldAnalyticsFocus(date, today);
     const period = {
-        fromDay: isDefined(date?.from) ? format(date.from, DAY_FORMAT) : ALL_TIME_START,
+        fromDay: isDefined(date?.from) ? format(date.from, DAY_FORMAT) : YIELD_ALL_TIME_START,
         toDay: format(date?.to ?? today, DAY_FORMAT)
     };
     const earned = AsyncResult.getOrElse(

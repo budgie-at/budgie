@@ -1,18 +1,21 @@
+import { plural } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { parseISO } from 'date-fns/parseISO';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import { Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { FormsheetHeader } from '../../../@generic/component/formsheet-header/formsheet-header';
 import { ScrollableSheetCard } from '../../../@generic/component/scrollable-sheet-card/scrollable-sheet-card';
+import { SheetTitleRow } from '../../../@generic/component/sheet-title-row/sheet-title-row';
 import { MORPHING_SHEET_DESTINATION_HEIGHT_RATIO } from '../../../@generic/constant/morphing-sheet-height-ratio.constant';
 import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { yieldSummaryFamily } from '../../constant/yield-summary-family-atom.constant';
-import { useYieldDateLabels } from '../../hook/use-yield-date-labels.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
+import { groupYieldEstimateCauses } from '../../utils/group-yield-estimate-causes.util';
+import { YieldInfoSheetBlock } from '../yield-info-sheet-block/yield-info-sheet-block';
 
 import type { YieldScreenKeyInterface } from '../../interface/yield-screen-key.interface';
 
@@ -20,64 +23,67 @@ interface Props {
     readonly screenKey: YieldScreenKeyInterface;
 }
 
+const BOTTOM_PADDING = 8;
+
 export const YieldInfoSheetContent = ({ screenKey }: Props) => {
     const { t } = useLingui();
-    const { formatDayAndMonthAndYear } = useFormatDate();
-    const { formatRangeCaption } = useYieldDateLabels();
+    const { bottom } = useSafeAreaInsets();
+    const { formatMonthAndDay } = useFormatDate();
     const summary = AsyncResult.getOrElse(useLiveAtomValue(yieldSummaryFamily(screenKey.key)), () => null);
 
-    const windowStart = isDefined(summary) ? formatDayAndMonthAndYear(parseISO(summary.windowStart)) : '';
-    const today = isDefined(summary) ? formatDayAndMonthAndYear(parseISO(summary.today)) : '';
-    const caption = isDefined(summary) ? formatRangeCaption(screenKey.key.range, summary.windowStart) : '';
-    const periodText = t`Earned ${caption}: ${windowStart} – ${today}. The change compares the same number of periods just before, with the last one cut to the same point.`;
-    const causes = (summary?.estimateCauses ?? []).map(cause => {
+    const earnedText = t`Income before tax. Crypto is valued at that day’s opening price.`;
+    const yieldText = t`Earned over the last 12 months divided by the balance that earned it. Holdings without a rate are left out. Crypto uses your whole balance, staked or not. Distributions aren’t counted.`;
+    const outlookText = t`What the next 12 months would earn if balances and rates stay the same. Distributions aren’t projected.`;
+    const bottomSpacerStyle = { height: bottom + BOTTOM_PADDING };
+    const causes = groupYieldEstimateCauses(summary?.estimateCauses ?? []).map(cause => {
+        const days = t({ message: plural(cause.dayCount, { one: '# day', other: '# days' }) });
         const { instrumentCode } = cause;
-        const day = formatDayAndMonthAndYear(parseISO(cause.day));
-        const sourceDay = isDefined(cause.sourceDay) ? formatDayAndMonthAndYear(parseISO(cause.sourceDay)) : '';
+        const sourceDay = isDefined(cause.sourceDay) ? formatMonthAndDay(parseISO(cause.sourceDay)) : null;
 
-        return isDefined(cause.sourceDay)
-            ? t`No price for ${instrumentCode} on ${day} · estimated from ${sourceDay}`
-            : t`No price for ${instrumentCode} on ${day} · estimated from the latest rate`;
+        return isDefined(sourceDay)
+            ? t`${instrumentCode}: ${days} estimated from the ${sourceDay} price`
+            : t`${instrumentCode}: ${days} estimated from the latest rate`;
     });
 
     return (
         <ScrollableSheetCard
-            header={<FormsheetHeader size="md" title={t`About these figures`} />}
+            header={
+                <View className="px-xl pb-lg">
+                    <SheetTitleRow title={t`About these figures`} trailing={<View />} />
+                </View>
+            }
             ratio={MORPHING_SHEET_DESTINATION_HEIGHT_RATIO}
-            contentClassName="gap-y-lg px-3xl pb-3xl"
+            contentClassName="gap-y-lg px-3xl"
             testID={PassiveIncomeSelector.InfoSheet}
         >
-            <Text className="text-md text-primary">{periodText}</Text>
-            <Text className="text-md text-primary">
-                <Trans>
-                    Earned is before tax. Rewards are valued at the day’s opening price, using the most recent price within 3 days (fund
-                    prices within 31 days).
-                </Trans>
+            <Text accessibilityRole="header" className="text-[13px] font-semibold text-secondary-foreground">
+                <Trans>Figures</Trans>
             </Text>
-            <Text className="text-md text-primary">
-                <Trans>Annual yield uses the last 365 days. Crypto yield is measured on your whole balance, staked or not.</Trans>
+            <YieldInfoSheetBlock title={t`Earned`} body={earnedText} />
+            <YieldInfoSheetBlock title={t`Tax withheld`} body={t`Tax taken at source before payouts reach you.`} />
+            <YieldInfoSheetBlock title={t`Net after tax`} body={t`Earned minus tax withheld.`} />
+            <YieldInfoSheetBlock title={t`So far`} body={t`The current period isn’t over yet.`} />
+            <YieldInfoSheetBlock
+                title={t`Comparison`}
+                body={t`The same length of time just before this range.\nChanges under 2% are shown as flat.`}
+            />
+            <Text accessibilityRole="header" className="pt-md text-[13px] font-semibold text-secondary-foreground">
+                <Trans>Rates and estimates</Trans>
             </Text>
-            <Text className="text-md text-primary">
-                <Trans>
-                    Distributions count as income but not in the yield. Holdings shown with “—” are left out of the yield and of “At this
-                    pace”.
-                </Trans>
-            </Text>
-            <Text className="text-md text-primary">
-                <Trans>In Analytics, the small bars are scaled to each period.</Trans>
-            </Text>
-            {isNotEmptyArray(causes) ? (
-                <View className="gap-y-xs">
-                    <Text className="text-md font-semibold text-primary">
-                        <Trans>≈ includes estimated values</Trans>
-                    </Text>
-                    {causes.map(cause => (
-                        <Text key={cause} className="text-sm text-secondary-foreground">
-                            {cause}
-                        </Text>
-                    ))}
-                </View>
-            ) : null}
+            <YieldInfoSheetBlock title={t`Yield`} body={yieldText} />
+            <YieldInfoSheetBlock title={t`Outlook`} body={outlookText} />
+            <YieldInfoSheetBlock title={t`Estimates`} body={t`≈ marks an estimate: a projection, or a value using an estimated price.`}>
+                {isNotEmptyArray(causes) ? (
+                    <View className="gap-y-xs">
+                        {causes.map(cause => (
+                            <Text key={cause} className="text-[15px] leading-[20px] text-secondary-foreground">
+                                {cause}
+                            </Text>
+                        ))}
+                    </View>
+                ) : null}
+            </YieldInfoSheetBlock>
+            <View style={bottomSpacerStyle} />
         </ScrollableSheetCard>
     );
 };

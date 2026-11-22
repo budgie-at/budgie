@@ -50,7 +50,7 @@ test('52 passive income', { tags: ['passive-income'] }, async ({ budgie }) => {
         await expect(id('PassiveIncome.Hero')).toHaveAccessibleName(/so far: earned .* before tax/u);
         await b.scrollTo(ctx, 'PassiveIncome.NetAfterTax');
         await b.tapId(ctx, 'PassiveIncome.Mode.RUNNING_TOTAL');
-        await expect(id('PassiveIncome.ChartTitle')).toHaveText('Running total');
+        await expect(id('PassiveIncome.Mode.RUNNING_TOTAL')).toBeSelected();
         await b.tapId(ctx, 'PassiveIncome.Mode.BARS');
     });
 

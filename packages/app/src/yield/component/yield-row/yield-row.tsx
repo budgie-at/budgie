@@ -1,46 +1,53 @@
-import { UserIconNameEnum } from '@budgie/contracts';
 import { Text, View } from 'react-native';
 
-import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
-import { Icon } from '../../../@generic/component/icon/icon';
+import { emptyFn, isDefined } from '@rnw-community/shared';
+
+import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { ROW_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-max-font-size-multiplier.constant';
+import { cn } from '../../../@generic/utils/cn.util';
+import { YieldRowChevron } from '../yield-row-chevron/yield-row-chevron';
 
 import type { ReactNode } from 'react';
 
 interface Props {
-    readonly left: ReactNode;
+    readonly left?: ReactNode;
     readonly title: string;
-    readonly subtitle: string;
-    readonly trailing: string;
-    readonly secondary: string;
+    readonly subtitle?: ReactNode;
+    readonly trailing?: ReactNode;
     readonly accessibilityLabel: string;
-    readonly onPress: () => void;
+    readonly onPress: (() => void) | null;
     readonly testID: string;
+    readonly className?: string;
 }
 
-export const YieldRow = ({ left, title, subtitle, trailing, secondary, accessibilityLabel, onPress, testID }: Props) => {
-    const pressableProps = { accessibilityLabel };
+const TITLE_LINES = 2;
 
-    const accessory = (
-        <View className="flex-row items-center gap-x-sm">
-            <View className="items-end">
-                <Text className="text-md font-semibold tabular-nums text-primary">{trailing}</Text>
-                <Text className="text-xs tabular-nums text-secondary-foreground">{secondary}</Text>
-            </View>
-            <Icon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" />
-        </View>
-    );
+export const YieldRow = ({ left, title, subtitle, trailing, accessibilityLabel, onPress, testID, className }: Props) => {
+    const isPressable = isDefined(onPress);
+    const accessibilityRole = isPressable ? 'button' : 'text';
+    const handlePress = onPress ?? emptyFn;
 
     return (
-        <View className="min-h-[60px] bg-grouped-surface-row">
-            <GroupedListRow
-                left={left}
-                title={title}
-                subtitle={subtitle}
-                onPress={onPress}
-                testID={testID}
-                pressableProps={pressableProps}
-                right={accessory}
-            />
-        </View>
+        <HapticPressable
+            pressedScale={1}
+            accessibilityRole={accessibilityRole}
+            disabled={!isPressable}
+            accessibilityLabel={accessibilityLabel}
+            className={cn('min-h-[56px] flex-row items-center gap-x-xl bg-grouped-surface-row px-3xl py-lg active:opacity-70', className)}
+            onPress={handlePress}
+            testID={testID}
+        >
+            {left}
+            <View className="min-w-0 flex-1 gap-y-xxs">
+                <Text className="text-[17px] text-primary" numberOfLines={TITLE_LINES} maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}>
+                    {title}
+                </Text>
+                {subtitle}
+            </View>
+            <View className="shrink-0 flex-row items-center gap-x-sm">
+                {trailing}
+                {isPressable ? <YieldRowChevron /> : null}
+            </View>
+        </HapticPressable>
     );
 };

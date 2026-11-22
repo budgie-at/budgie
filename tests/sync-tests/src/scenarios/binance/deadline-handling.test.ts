@@ -82,4 +82,19 @@ describe('binance/deadline-handling', () => {
             expect(new Set(c2cWindows.map(window => window.startMs)).size * 2).toBe(c2cWindows.length);
         }).pipe(Effect.provide(TestLayer))
     );
+
+    it.effect('stops walking history windows once the run deadline passes', () =>
+        Effect.gen(function* () {
+            const binanceSyncService = yield* BinanceSyncService;
+            const depositWindows: TimeWindow[] = [];
+
+            yield* setupStaleForwardFixture();
+            binanceStub.deposits([], depositWindows, { onServed: jumpPastDeadline });
+            binanceStub.c2cOrders([], [], []);
+
+            yield* binanceSyncService.sync(Date.now() + RUN_DEADLINE_MS).pipe(Effect.ensuring(restoreRealTimers));
+
+            expect(depositWindows).toHaveLength(1);
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

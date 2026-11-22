@@ -25,6 +25,7 @@ import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/sha
 
 import { findLastIndexOnOrBefore } from '../../@generic/utils/find-last-index-on-or-before.util';
 import { formatUtcDay } from '../../@generic/utils/format-utc-day.util';
+import { YIELD_GROUP_BY_KIND } from '../constant/yield-group-by-kind.constant';
 import { YIELD_WINDOW_DAYS } from '../constant/yield-window-days.constant';
 import { YieldBucketUnitEnum } from '../enum/yield-bucket-unit.enum';
 import { YieldDeltaKindEnum } from '../enum/yield-delta-kind.enum';
@@ -72,15 +73,6 @@ export class YieldService extends Context.Service<YieldService>()('@budgie/marke
             YieldGroupEnum.DIVIDENDS,
             YieldGroupEnum.DISTRIBUTIONS
         ];
-        const GROUP_BY_KIND: Readonly<Record<YieldKindEnum, YieldGroupEnum | null>> = {
-            [YieldKindEnum.STAKING]: YieldGroupEnum.STAKING_EARN,
-            [YieldKindEnum.EARN]: YieldGroupEnum.STAKING_EARN,
-            [YieldKindEnum.INTEREST]: YieldGroupEnum.INTEREST,
-            [YieldKindEnum.DIVIDEND]: YieldGroupEnum.DIVIDENDS,
-            [YieldKindEnum.DISTRIBUTION]: YieldGroupEnum.DISTRIBUTIONS,
-            [YieldKindEnum.TAX]: YieldGroupEnum.TAX,
-            [YieldKindEnum.NONE]: null
-        };
         const SECTION_ORDER: Readonly<Record<YieldPositionSectionEnum, number>> = {
             [YieldPositionSectionEnum.ACTIVE]: 0,
             [YieldPositionSectionEnum.CLOSED]: 1
@@ -94,7 +86,7 @@ export class YieldService extends Context.Service<YieldService>()('@budgie/marke
         const RANGE_COUNT: Readonly<Record<YieldRangeEnum, number>> = {
             [YieldRangeEnum.MONTH]: 30,
             [YieldRangeEnum.QUARTER]: 13,
-            [YieldRangeEnum.YEAR]: 13,
+            [YieldRangeEnum.YEAR]: 12,
             [YieldRangeEnum.ALL]: 0
         };
         const BUCKET_START: Readonly<Record<YieldBucketUnitEnum, (date: Date) => Date>> = {
@@ -120,7 +112,7 @@ export class YieldService extends Context.Service<YieldService>()('@budgie/marke
         };
 
         const isIncome = (fact: YieldFactInterface) => fact.kind !== YieldKindEnum.TAX;
-        const kindsOf = (group: YieldGroupEnum) => Object.values(YieldKindEnum).filter(kind => GROUP_BY_KIND[kind] === group);
+        const kindsOf = (group: YieldGroupEnum) => Object.values(YieldKindEnum).filter(kind => YIELD_GROUP_BY_KIND[kind] === group);
         const buildEmptyAmounts = (): Record<YieldGroupEnum, number> => ({
             [YieldGroupEnum.STAKING_EARN]: 0,
             [YieldGroupEnum.INTEREST]: 0,
@@ -134,7 +126,7 @@ export class YieldService extends Context.Service<YieldService>()('@budgie/marke
 
             return {
                 kind: row.yieldKind,
-                group: GROUP_BY_KIND[row.yieldKind],
+                group: YIELD_GROUP_BY_KIND[row.yieldKind],
                 day: formatYieldDay(row.operatedAt),
                 priceDay: formatUtcDay(row.operatedAt),
                 units: sign * convertFromMicroUnits(row.amount),
@@ -278,6 +270,7 @@ export class YieldService extends Context.Service<YieldService>()('@budgie/marke
                 instrumentCode: row.instrumentCode,
                 instrumentSymbol: row.instrumentSymbol,
                 instrumentType: row.instrumentType,
+                kind: context.facts.filter(isIncome).at(-1)?.kind ?? null,
                 section: isOpen ? YieldPositionSectionEnum.ACTIVE : YieldPositionSectionEnum.CLOSED,
                 earned: sumYieldValues(income),
                 isEarnedEstimated: isYieldEstimated(income),
@@ -404,10 +397,14 @@ export class YieldService extends Context.Service<YieldService>()('@budgie/marke
                 const priorTotals =
                     key.range === YieldRangeEnum.ALL ? null : buildPriorTotals(window, incomeFacts.filter(matchesGroup), todayDay);
                 const contexts = yield* yieldHoldingService.loadContexts(facts, scope, key.baseInstrumentId, todayDay);
+                const groupContexts = isDefined(key.group)
+                    ? contexts.filter(context => context.facts.some(fact => isIncome(fact) && fact.group === key.group))
+                    : contexts;
                 const positions = contexts
                     .map(context => summarizePosition(context, isInWindow))
                     .sort((left, right) => SECTION_ORDER[left.section] - SECTION_ORDER[right.section] || right.earned - left.earned);
                 const summary: YieldSummaryInterface = {
+                    key,
                     hasYield: isNotEmptyArray(facts),
                     windowStart: window.startDay,
                     today: todayDay,
@@ -421,10 +418,12 @@ export class YieldService extends Context.Service<YieldService>()('@budgie/marke
                     share: isDefined(key.group) && isPositiveNumber(allEarned) ? earned / allEarned : null,
                     delta: buildDelta(earned, priorTotals),
                     annualYield: yieldHoldingService.combineYield(
-                        contexts,
-                        incomeFacts.some(fact => fact.kind === YieldKindEnum.DISTRIBUTION && fact.day >= yieldWindowStart)
+                        groupContexts,
+                        incomeFacts.some(
+                            fact => matchesGroup(fact) && fact.kind === YieldKindEnum.DISTRIBUTION && fact.day >= yieldWindowStart
+                        )
                     ),
-                    runRate: yieldHoldingService.runRate(contexts),
+                    runRate: key.group === YieldGroupEnum.DISTRIBUTIONS ? null : yieldHoldingService.runRate(groupContexts),
                     cryptoRewardsToday: yield* computeCryptoRewardsToday(rangeIncome, key.baseInstrumentId),
                     vsRate: isDefined(key.positionAccountId)
                         ? (positions.find(position => position.accountId === key.positionAccountId)?.vsRate ?? null)
@@ -458,14 +457,27 @@ export class YieldService extends Context.Service<YieldService>()('@budgie/marke
                 return figure;
             }),
 
-            findPayouts: (key: YieldQueryKeyInterface, isUnassignedOnly: boolean, language: LanguageEnum, limit: number) =>
-                yieldRepository.findPayouts({
+            findPayouts: Effect.fn('YieldService.findPayouts')(function* (
+                key: YieldQueryKeyInterface,
+                isUnassignedOnly: boolean,
+                language: LanguageEnum,
+                limit: number | null
+            ) {
+                const now = yield* DateTime.nowAsDate;
+                const today = startOfDay(now);
+
+                return yield* yieldRepository.findPayouts({
                     scope: { positionAccountId: key.positionAccountId, instrumentId: key.instrumentId },
                     kinds: isDefined(key.group) ? kindsOf(key.group) : null,
                     isUnassignedOnly,
+                    range: {
+                        from: key.range === YieldRangeEnum.ALL ? null : buildWindow(key.range, today, null).origin,
+                        to: addDays(today, 1)
+                    },
                     limit,
                     language
-                })
+                });
+            })
         };
     })
 }) {

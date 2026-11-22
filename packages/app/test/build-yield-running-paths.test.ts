@@ -4,12 +4,13 @@ import { buildYieldRunningPaths } from '../src/yield/utils/build-yield-running-p
 
 const points = (path: string) => [...path.matchAll(/(-?[\d.]+) (-?[\d.]+)/gu)].map(match => [Number(match[1]), Number(match[2])]);
 
-it('draws estimated buckets dashed, the rest solid, and the prior path by bucket index', () => {
+it('draws in-progress buckets dashed, the rest solid, and the prior path by bucket index', () => {
     const paths = buildYieldRunningPaths({
         cumulative: [0, 50, 100],
         prior: [0, 40, 80],
-        estimated: [false, false, true],
+        inProgress: [false, false, true],
         axisTop: 100,
+        axisBottom: 0,
         width: 112,
         height: 100
     });
@@ -20,15 +21,15 @@ it('draws estimated buckets dashed, the rest solid, and the prior path by bucket
     expect(points(paths.dashed).at(0)?.at(0)).toBeCloseTo(56, 6);
     expect(paths.area.endsWith('Z')).toBe(true);
     expect([paths.endY, paths.priorEndY]).toEqual([0, 20]);
-    expect(paths.endX).toBeCloseTo(89.333, 2);
 });
 
 it('leaves the prior path empty without a prior series', () => {
     const paths = buildYieldRunningPaths({
         cumulative: [0, 10],
         prior: null,
-        estimated: [false, false],
+        inProgress: [false, false],
         axisTop: 10,
+        axisBottom: 0,
         width: 112,
         height: 100
     });

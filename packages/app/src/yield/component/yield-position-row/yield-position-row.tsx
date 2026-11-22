@@ -1,19 +1,21 @@
-import { AccountTypeEnum, InstrumentTypeEnum, UserIconNameEnum } from '@budgie/contracts';
-import { useAtomValue } from '@effect/atom-react/Hooks';
+import { InstrumentTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
+import { Text } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { CryptoCurrencyIcon } from '../../../@generic/component/crypto-currency-icon/crypto-currency-icon';
-import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
-import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
-import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
-import { useYieldPositionRateText } from '../../hook/use-yield-position-rate-text.hook';
+import { TransactionRowSurface } from '../../../transaction/components/transaction-row-surface/transaction-row-surface';
+import { YIELD_ROW_SEPARATOR_INSET } from '../../constant/yield-row-separator-inset.constant';
+import { useFormatYieldFigureAmount } from '../../hook/use-format-yield-figure-amount.hook';
 import { useYieldPositionSubtitle } from '../../hook/use-yield-position-subtitle.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
+import { getYieldRowBorderClassName } from '../../utils/get-yield-row-border-class-name.util';
+import { YieldPositionIcon } from '../yield-position-icon/yield-position-icon';
+import { YieldRowSubtitle } from '../yield-row-subtitle/yield-row-subtitle';
 import { YieldRow } from '../yield-row/yield-row';
 
+import type { TransactionListRowPositionEnum } from '../../../transaction/enum/transaction-list-row-position.enum';
 import type { YieldPositionSummaryInterface } from '@budgie/market';
 
 interface Props {
@@ -24,51 +26,48 @@ interface Props {
         | 'accountType'
         | 'instrumentCode'
         | 'instrumentType'
+        | 'kind'
         | 'earned'
         | 'rewardUnits'
         | 'tax'
         | 'annualYield'
         | 'accruing'
-        | 'interestRate'
         | 'deadline'
+        | 'section'
     >;
     readonly rangeCaption: string;
+    readonly rowPosition: TransactionListRowPositionEnum;
 }
 
-const CRYPTO_ICON_SIZE = 32;
-
-export const YieldPositionRow = ({ position, rangeCaption }: Props) => {
+export const YieldPositionRow = ({ position, rangeCaption, rowPosition }: Props) => {
     const { t } = useLingui();
-    const formatAmount = useProtectedAmountLabel();
-    const { symbol } = useAtomValue(defaultInstrumentAtom);
+    const formatAmount = useFormatYieldFigureAmount();
     const subtitle = useYieldPositionSubtitle(position);
-    const secondary = useYieldPositionRateText(position.annualYield);
 
     const handlePress = () => void router.setParams({ position: String(position.accountId), instrument: '', group: '' });
 
     const { title } = position;
     const isCrypto = position.instrumentType === InstrumentTypeEnum.CRYPTO;
-    const isRated = position.accountType === AccountTypeEnum.DEPOSIT || position.accountType === AccountTypeEnum.SAVINGS;
-    const earned = formatAmount(position.earned, symbol);
+    const earned = formatAmount(position.earned);
     const wholeBalance = isCrypto && isDefined(position.annualYield.rate) ? t` on whole balance` : '';
-    const accessibilityLabel = t`${title}, earned ${earned} ${rangeCaption}, ${secondary}${wholeBalance}`;
-    const accountIcon = isRated ? UserIconNameEnum.PiggyBank : UserIconNameEnum.Landmark;
-    const left = isCrypto ? (
-        <CryptoCurrencyIcon code={position.instrumentCode} size={CRYPTO_ICON_SIZE} />
-    ) : (
-        <GroupedListIcon icon={accountIcon} />
-    );
+    const accessibilityLabel = t`${title}, earned ${earned} ${rangeCaption}, ${subtitle}${wholeBalance}`;
+    const trailing = <Text className="text-[17px] font-semibold tabular-nums text-primary">{earned}</Text>;
 
     return (
-        <YieldRow
-            left={left}
-            title={title}
-            subtitle={subtitle}
-            trailing={earned}
-            secondary={secondary}
-            accessibilityLabel={accessibilityLabel}
-            onPress={handlePress}
-            testID={PassiveIncomeSelector.Position(position.accountId)}
-        />
+        <TransactionRowSurface
+            position={rowPosition}
+            separatorInset={YIELD_ROW_SEPARATOR_INSET}
+            className={getYieldRowBorderClassName(rowPosition)}
+        >
+            <YieldRow
+                left={<YieldPositionIcon position={position} />}
+                title={title}
+                subtitle={<YieldRowSubtitle subtitle={subtitle} />}
+                trailing={trailing}
+                accessibilityLabel={accessibilityLabel}
+                onPress={handlePress}
+                testID={PassiveIncomeSelector.Position(position.accountId)}
+            />
+        </TransactionRowSurface>
     );
 };

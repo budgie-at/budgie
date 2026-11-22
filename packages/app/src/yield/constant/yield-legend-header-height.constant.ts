@@ -1,0 +1,1 @@
+export const YIELD_LEGEND_HEADER_HEIGHT = 18;

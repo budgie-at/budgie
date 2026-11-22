@@ -1,10 +1,14 @@
-import { useAtomValue } from '@effect/atom-react/Hooks';
+import { YieldGroupEnum } from '@budgie/market';
 import { useLingui } from '@lingui/react/macro';
+import { use } from 'react';
 
-import { StatCell } from '../../../@generic/component/stat-cell/stat-cell';
-import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
-import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
+import { isDefined } from '@rnw-community/shared';
+
+import { YieldScreenContext } from '../../context/yield-screen.context';
+import { useFormatYieldFigureAmount } from '../../hook/use-format-yield-figure-amount.hook';
+import { useYieldSummary } from '../../hook/use-yield-summary.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
+import { YieldBreakdownRow } from '../yield-breakdown-row/yield-breakdown-row';
 
 import type { YieldEstimatedFigureInterface } from '@budgie/market';
 
@@ -14,11 +18,17 @@ interface Props {
 
 export const YieldBreakdownRunRate = ({ runRate }: Props) => {
     const { t } = useLingui();
-    const formatAmount = useProtectedAmountLabel();
-    const { symbol } = useAtomValue(defaultInstrumentAtom);
+    const formatAmount = useFormatYieldFigureAmount();
+    const summary = useYieldSummary();
+    const { screenKey } = use(YieldScreenContext);
 
-    const amount = formatAmount(runRate.value, symbol);
-    const value = runRate.isEstimated ? t`≈ ${amount} a year` : t`${amount} a year`;
+    const amount = formatAmount(runRate.value);
+    const hasDistributions =
+        !isDefined(screenKey.key.group) &&
+        summary?.groups.some(({ group, total }) => group === YieldGroupEnum.DISTRIBUTIONS && total > 0) === true;
+    const subtitle = hasDistributions ? t`At today’s balances and rates, excluding distributions` : t`At today’s balances and rates`;
 
-    return <StatCell label={t`At this pace`} value={value} variant="default" testID={PassiveIncomeSelector.RunRate} />;
+    return (
+        <YieldBreakdownRow title={t`Next 12 months`} subtitle={subtitle} value={t`≈ ${amount}`} testID={PassiveIncomeSelector.RunRate} />
+    );
 };

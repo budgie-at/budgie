@@ -1,6 +1,4 @@
-import { UserIconNameEnum } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
-import { useLingui } from '@lingui/react/macro';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import { router } from 'expo-router';
 import { Text, View } from 'react-native';
@@ -8,13 +6,14 @@ import { Text, View } from 'react-native';
 import { isDefined } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { Icon } from '../../../@generic/component/icon/icon';
 import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hook';
-import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { yieldSummaryFamily } from '../../constant/yield-summary-family-atom.constant';
+import { useYieldAnalyticsCardText } from '../../hook/use-yield-analytics-card-text.hook';
 import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
 import { YieldChartMini } from '../yield-chart-mini/yield-chart-mini';
+import { YieldDeltaPill } from '../yield-delta-pill/yield-delta-pill';
+import { YieldRowChevron } from '../yield-row-chevron/yield-row-chevron';
 
 import type { YieldAnalyticsFocusInterface } from '../../interface/yield-analytics-focus.interface';
 import type { YieldPeriodInterface } from '../../interface/yield-period.interface';
@@ -29,14 +28,19 @@ interface Props {
 const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 
 export const PassiveIncomeAnalyticsCardContent = ({ earned, focus, period }: Props) => {
-    const { t } = useLingui();
-    const { id: baseInstrumentId, symbol } = useAtomValue(defaultInstrumentAtom);
-    const formatAmount = useProtectedAmountLabel();
+    const { id: baseInstrumentId } = useAtomValue(defaultInstrumentAtom);
     const summary = AsyncResult.getOrElse(
         useLiveAtomValue(
             yieldSummaryFamily({ range: focus.range, positionAccountId: null, instrumentId: null, group: null, baseInstrumentId })
         ),
         () => null
+    );
+
+    const { title, headlineText, caption, focusedText, takeaway, tone, accessibilityLabel, accessibilityHint } = useYieldAnalyticsCardText(
+        summary,
+        earned,
+        focus,
+        period
     );
 
     const handlePress = () =>
@@ -48,14 +52,11 @@ export const PassiveIncomeAnalyticsCardContent = ({ earned, focus, period }: Pro
             }
         });
 
-    const approximate = earned.isEstimated ? '≈ ' : '';
-    const amount = formatAmount(earned.value, symbol);
-    const title = t`Passive income · ${approximate}${amount}`;
-
     return (
         <HapticPressable
             accessibilityRole="button"
-            accessibilityLabel={title}
+            accessibilityLabel={accessibilityLabel}
+            accessibilityHint={accessibilityHint}
             onPress={handlePress}
             testID={PassiveIncomeSelector.AnalyticsCard}
             className="gap-y-md rounded-3xl bg-surface-row p-[16px]"
@@ -63,9 +64,25 @@ export const PassiveIncomeAnalyticsCardContent = ({ earned, focus, period }: Pro
         >
             <View className="flex-row items-center justify-between">
                 <Text className="text-md font-semibold text-primary">{title}</Text>
-                <Icon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" />
+                <YieldRowChevron />
             </View>
-            {isDefined(summary) ? <YieldChartMini buckets={summary.buckets} focusDay={focus.focusDay} /> : <View className="h-[32px]" />}
+            <View className="gap-y-xxs">
+                <Text className="text-xs text-secondary-foreground" maxFontSizeMultiplier={1.5}>
+                    <Text className="text-lg font-semibold tabular-nums text-primary">{headlineText}</Text>
+                    {` ${caption}`}
+                </Text>
+                {isDefined(focusedText) ? (
+                    <Text className="text-[13px] tabular-nums text-secondary-foreground" maxFontSizeMultiplier={1.5}>
+                        {focusedText}
+                    </Text>
+                ) : null}
+            </View>
+            {isDefined(summary) ? (
+                <YieldChartMini buckets={summary.buckets} focusDay={focus.focusDay} range={focus.range} />
+            ) : (
+                <View className="h-[32px]" />
+            )}
+            {isDefined(takeaway) ? <YieldDeltaPill label={takeaway} tone={tone} maxFontSizeMultiplier={1.5} /> : null}
         </HapticPressable>
     );
 };

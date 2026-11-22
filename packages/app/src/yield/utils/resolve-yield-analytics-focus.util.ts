@@ -15,7 +15,7 @@ import type { YieldAnalyticsFocusInterface } from '../interface/yield-analytics-
 import type { DateRangeInterface } from '@budgie/contracts';
 
 const WEEK_OPTIONS = { weekStartsOn: 1 } as const;
-const MAX_MONTHS_BACK = 12;
+const MAX_MONTHS_BACK = 11;
 const MAX_WEEKS_BACK = 12;
 const MAX_DAYS_BACK = 29;
 const UNFOCUSED: YieldAnalyticsFocusInterface = { range: YieldRangeEnum.YEAR, focusDay: null };

@@ -6,7 +6,7 @@ export interface YieldBarLayoutInterface {
     readonly slot: number;
     readonly barWidth: number;
     readonly zeroY: number;
+    readonly scale: number;
     readonly groups: Readonly<Record<YieldGroupEnum, readonly YieldBarRectInterface[]>>;
-    readonly estimated: Readonly<Record<YieldGroupEnum, readonly YieldBarRectInterface[]>>;
     readonly tax: readonly YieldBarRectInterface[];
 }

@@ -12,11 +12,7 @@ import type { YieldBarLayoutInterface } from '../interface/yield-bar-layout.inte
 const GROW_DURATION = 300;
 const MORPH_DURATION = 220;
 
-const listRects = (layout: YieldBarLayoutInterface) => [
-    ...YIELD_STACK_GROUPS.flatMap(group => layout.groups[group]),
-    ...YIELD_STACK_GROUPS.flatMap(group => layout.estimated[group]),
-    ...layout.tax
-];
+const listRects = (layout: YieldBarLayoutInterface) => [...YIELD_STACK_GROUPS.flatMap(group => layout.groups[group]), ...layout.tax];
 
 export const useYieldBarGeometry = (layout: YieldBarLayoutInterface) => {
     const reducedMotion = useReducedMotion();

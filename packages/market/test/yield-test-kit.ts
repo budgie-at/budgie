@@ -3,6 +3,7 @@ import {
     AccountTypeEnum,
     InstrumentRepository,
     InstrumentTypeEnum,
+    LanguageEnum,
     PRECISION,
     TransactionTypeEnum,
     YieldKindEnum,
@@ -34,6 +35,7 @@ import type {
     InstrumentDailyMarketPriceEntityInterface,
     InstrumentEntityInterface,
     YieldFactRowInterface,
+    YieldPayoutQueryInterface,
     YieldPositionMovementRowInterface,
     YieldPositionRowInterface
 } from '@budgie/contracts';
@@ -68,6 +70,7 @@ export interface YieldWorldInterface {
     >[];
     readonly latestRates?: readonly ExchangeRateEntityInterface[];
     readonly instruments?: readonly InstrumentEntityInterface[];
+    readonly payoutQueries?: YieldPayoutQueryInterface[];
 }
 
 export const dailyPrices = (
@@ -278,7 +281,11 @@ const makeYieldRepositoryLayer = (world: YieldWorldInterface) =>
             ),
         findPositions: () => Effect.succeed([...(world.positions ?? [])]),
         findPositionMovements: accountIds => Effect.succeed((world.movements ?? []).filter(row => accountIds.includes(row.accountId))),
-        findPayouts: () => Effect.succeed([])
+        findPayouts: query => {
+            world.payoutQueries?.push(query);
+
+            return Effect.succeed([]);
+        }
     });
 
 const key = (overrides: Partial<YieldQueryKeyInterface> = {}): YieldQueryKeyInterface => ({
@@ -304,6 +311,13 @@ export const summarize = (world: YieldWorldInterface, overrides: Partial<YieldQu
         yield* TestClock.setTime(TODAY.getTime());
 
         return yield* (yield* YieldService).summarize(key(overrides));
+    }).pipe(Effect.provide(makeYieldLayer(world)));
+
+export const findPayouts = (world: YieldWorldInterface, overrides: Partial<YieldQueryKeyInterface> = {}) =>
+    Effect.gen(function* () {
+        yield* TestClock.setTime(TODAY.getTime());
+
+        return yield* (yield* YieldService).findPayouts(key(overrides), false, LanguageEnum.EN, 200);
     }).pipe(Effect.provide(makeYieldLayer(world)));
 
 export const earnedBetween = (world: YieldWorldInterface, fromDay: string, toDay: string) =>

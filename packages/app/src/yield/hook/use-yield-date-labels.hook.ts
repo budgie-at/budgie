@@ -1,5 +1,6 @@
 import { YieldBucketUnitEnum, YieldRangeEnum } from '@budgie/market';
 import { useLingui } from '@lingui/react/macro';
+import { format } from 'date-fns/format';
 import { getQuarter } from 'date-fns/getQuarter';
 import { parseISO } from 'date-fns/parseISO';
 
@@ -37,11 +38,40 @@ export const useYieldDateLabels = () => {
         [YieldBucketUnitEnum.YEAR]: formatYear
     };
 
-    const formatTick = (bucket: Pick<YieldBucketInterface, 'start' | 'isInProgress'>, unit: YieldBucketUnitEnum) =>
-        bucket.isInProgress ? t`so far` : tickFormatters[unit](parseISO(bucket.start));
+    const formatTick = (bucket: Pick<YieldBucketInterface, 'start'>, unit: YieldBucketUnitEnum, isYearVisible = false) => {
+        const date = parseISO(bucket.start);
+
+        if (isYearVisible && unit === YieldBucketUnitEnum.MONTH) {
+            const month = formatShortMonth(date);
+            const year = format(date, 'yy');
+
+            return t`${month} ’${year}`;
+        }
+
+        return tickFormatters[unit](date);
+    };
 
     const formatPeriod = (bucket: Pick<YieldBucketInterface, 'start' | 'isInProgress'>, unit: YieldBucketUnitEnum) => {
         const label = periodFormatters[unit](parseISO(bucket.start));
+
+        return bucket.isInProgress ? t({ id: 'passive-income.chart.so-far', message: `${label} so far` }) : label;
+    };
+
+    const formatEarnedCaption = (bucket: Pick<YieldBucketInterface, 'start' | 'isInProgress'>, unit: YieldBucketUnitEnum) => {
+        const date = parseISO(bucket.start);
+        const day = formatDayAndMonthAndYear(date);
+        const weekStart = formatMonthAndDay(date);
+        const month = formatMonthAndYear(date);
+        const year = formatYear(date);
+        const quarter = formatQuarter(date);
+        const captions: Record<YieldBucketUnitEnum, string> = {
+            [YieldBucketUnitEnum.DAY]: t`Earned on ${day}`,
+            [YieldBucketUnitEnum.WEEK]: t`Earned in the week of ${weekStart}`,
+            [YieldBucketUnitEnum.MONTH]: t`Earned in ${month}`,
+            [YieldBucketUnitEnum.QUARTER]: t`Earned in ${quarter}`,
+            [YieldBucketUnitEnum.YEAR]: t`Earned in ${year}`
+        };
+        const label = captions[unit];
 
         return bucket.isInProgress ? t({ id: 'passive-income.chart.so-far', message: `${label} so far` }) : label;
     };
@@ -61,5 +91,5 @@ export const useYieldDateLabels = () => {
         return captions[range];
     };
 
-    return { formatTick, formatPeriod, formatRangeCaption };
+    return { formatTick, formatPeriod, formatEarnedCaption, formatRangeCaption };
 };

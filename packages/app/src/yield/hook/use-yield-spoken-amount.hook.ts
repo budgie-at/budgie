@@ -3,13 +3,16 @@ import { useLingui } from '@lingui/react/macro';
 
 import { useIsAmountProtected } from '../../@generic/hook/use-is-amount-protected.hook';
 import { useProtectedAmountLabel } from '../../@generic/hook/use-protected-amount-label.hook';
-import { defaultInstrumentAtom } from '../../settings/constants/settings-atoms.constant';
+import { decimalPlacesAtom, defaultInstrumentAtom } from '../../settings/constants/settings-atoms.constant';
+import { roundYieldDifference } from '../utils/round-yield-difference.util';
 
 export const useYieldSpokenAmount = () => {
     const { t } = useLingui();
     const formatAmount = useProtectedAmountLabel();
     const isAmountProtected = useIsAmountProtected();
     const { symbol } = useAtomValue(defaultInstrumentAtom);
+    const decimalPlaces = useAtomValue(decimalPlacesAtom);
 
-    return (value: number) => (isAmountProtected ? t`hidden amount` : formatAmount(value, symbol));
+    return (value: number, tax = 0) =>
+        isAmountProtected ? t`hidden amount` : formatAmount(roundYieldDifference(value, tax, decimalPlaces), symbol);
 };

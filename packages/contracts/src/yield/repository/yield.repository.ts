@@ -79,6 +79,11 @@ export class YieldRepository extends Context.Service<YieldRepository>()('@budgie
             ...(isDefined(instrumentId) ? [sql`${scopeInstrumentIdSql} = ${instrumentId}`] : [])
         ];
 
+        const buildOperatedAtRange = (range?: DateRangeInterface) => [
+            ...(isDefined(range?.from) ? [gte(TransactionEntityTable.operatedAt, range.from)] : []),
+            ...(isDefined(range?.to) ? [lt(TransactionEntityTable.operatedAt, range.to)] : [])
+        ];
+
         const buildYieldFactWhere = (scope: YieldScopeInterface, extra: SQL[] = [], range: SQL[] = []) =>
             and(
                 transactionFilters.buildVisibleTransactionCondition(),
@@ -134,16 +139,7 @@ export class YieldRepository extends Context.Service<YieldRepository>()('@budgie
                             .from(TransactionEntityTable)
                             .$dynamic()
                     )
-                        .where(
-                            buildYieldFactWhere(
-                                scope,
-                                [],
-                                [
-                                    ...(isDefined(range?.from) ? [gte(TransactionEntityTable.operatedAt, range.from)] : []),
-                                    ...(isDefined(range?.to) ? [lt(TransactionEntityTable.operatedAt, range.to)] : [])
-                                ]
-                            )
-                        )
+                        .where(buildYieldFactWhere(scope, [], buildOperatedAtRange(range)))
                         .orderBy(asc(TransactionEntityTable.operatedAt), asc(TransactionEntityTable.id))
                 ),
 
@@ -220,17 +216,21 @@ export class YieldRepository extends Context.Service<YieldRepository>()('@budgie
                                     joinYieldLegs(
                                         db.select({ id: TransactionEntityTable.id }).from(TransactionEntityTable).$dynamic()
                                     ).where(
-                                        buildYieldFactWhere(query.scope, [
-                                            ...(isNotEmptyArray(query.kinds)
-                                                ? [inArray(TransactionEntityTable.yieldKind, [...query.kinds])]
-                                                : []),
-                                            ...(query.isUnassignedOnly ? [sql`${positionAccountIdSql} IS NULL`] : [])
-                                        ])
+                                        buildYieldFactWhere(
+                                            query.scope,
+                                            [
+                                                ...(isNotEmptyArray(query.kinds)
+                                                    ? [inArray(TransactionEntityTable.yieldKind, [...query.kinds])]
+                                                    : []),
+                                                ...(query.isUnassignedOnly ? [sql`${positionAccountIdSql} IS NULL`] : [])
+                                            ],
+                                            buildOperatedAtRange(query.range)
+                                        )
                                     )
                                 )
                         },
                         orderBy: (transaction, { desc }) => [desc(transaction.operatedAt), desc(transaction.id)],
-                        limit: query.limit
+                        ...(isDefined(query.limit) && { limit: query.limit })
                     })
                 )
         };

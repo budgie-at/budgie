@@ -31,7 +31,7 @@ export const useYieldScrubSentence = (
 
     const amountText = amountOf(scrubAmount);
     const bucketTax = bucket.amounts[YieldGroupEnum.TAX];
-    const netText = amountOf(bucket.total - bucketTax);
+    const netText = amountOf(bucket.total, bucketTax);
     const period = formatPeriod(bucket, summary.bucketUnit);
     const throughDay = formatDayAndMonthAndYear(parseISO(bucket.end));
     const barsSentence = isPositiveNumber(bucketTax)

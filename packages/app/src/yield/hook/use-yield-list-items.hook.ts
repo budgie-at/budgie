@@ -1,38 +1,74 @@
-import * as AsyncResult from 'effect/reactivity/AsyncResult';
+import { YieldKindEnum } from '@budgie/contracts';
+import { YieldRangeEnum } from '@budgie/market';
 import { use } from 'react';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
-import { useSetting } from '../../settings/hook/use-setting.hook';
-import { yieldPayoutsFamily } from '../constant/yield-payouts-family-atom.constant';
-import { yieldSummaryFamily } from '../constant/yield-summary-family-atom.constant';
+import { TransactionListRowPositionEnum } from '../../transaction/enum/transaction-list-row-position.enum';
 import { YieldScreenContext } from '../context/yield-screen.context';
 import { YieldListItemKindEnum } from '../enum/yield-list-item-kind.enum';
+import { YieldListSectionEnum } from '../enum/yield-list-section.enum';
 import { buildYieldListItems } from '../utils/build-yield-list-items.util';
 
+import { useYieldHasWithheldTax } from './use-yield-has-withheld-tax.hook';
+import { useYieldPayouts } from './use-yield-payouts.hook';
+import { useYieldSettledSummary } from './use-yield-settled-summary.hook';
+
 import type { YieldListItemType } from '../type/yield-list-item.type';
-import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 
-const PAYOUT_LIMIT = 200;
+const ALL_TIME_PAYOUT_LIMIT = 1000;
 
-const SKELETON_ITEMS: readonly YieldListItemType[] = ['skeleton-1', 'skeleton-2', 'skeleton-3'].map(id => ({
-    kind: YieldListItemKindEnum.SKELETON,
-    id
-}));
+const SKELETON_ITEMS: readonly YieldListItemType[] = [
+    { kind: YieldListItemKindEnum.SKELETON, id: 'skeleton-1', position: TransactionListRowPositionEnum.FIRST },
+    { kind: YieldListItemKindEnum.SKELETON, id: 'skeleton-2', position: TransactionListRowPositionEnum.LAST }
+];
+
+const OLDER_ITEM: YieldListItemType = { kind: YieldListItemKindEnum.OLDER, id: 'older-payouts' };
 
 export const useYieldListItems = (): readonly YieldListItemType[] => {
-    const language = useSetting('language');
-    const { screenKey, rangeCaption } = use(YieldScreenContext);
-    const { key } = screenKey;
+    const {
+        screenKey: { key },
+        rangeCaption
+    } = use(YieldScreenContext);
     const isPayoutMode = isDefined(key.positionAccountId) || isDefined(key.instrumentId) || isDefined(key.group);
-    const summary = AsyncResult.getOrElse(useLiveAtomValue(yieldSummaryFamily(key)), () => null);
-    const payoutsResult = useLiveAtomValue(yieldPayoutsFamily([key, !isPayoutMode, language, PAYOUT_LIMIT]));
-    const payouts = AsyncResult.getOrElse(payoutsResult, (): TransactionWithRelationsEntityInterface[] => []);
+    const summary = useYieldSettledSummary();
+    const hasWithheldTax = useYieldHasWithheldTax();
+    const isAllTime = key.range === YieldRangeEnum.ALL;
+    const { payouts: fetchedPayouts, unassigned, isLoading } = useYieldPayouts(isPayoutMode, isAllTime ? ALL_TIME_PAYOUT_LIMIT + 1 : null);
 
-    if (!isDefined(summary) || AsyncResult.isInitial(payoutsResult)) {
+    if (!isDefined(summary) || isLoading) {
         return SKELETON_ITEMS;
     }
 
-    return buildYieldListItems(summary.positions, payouts, rangeCaption, isPayoutMode);
+    const isTruncated = isAllTime && fetchedPayouts.length > ALL_TIME_PAYOUT_LIMIT;
+    const payouts = isTruncated ? fetchedPayouts.slice(0, ALL_TIME_PAYOUT_LIMIT) : fetchedPayouts;
+    const isSinglePayoutInCard = summary.payoutCount === 1;
+    const items = buildYieldListItems(
+        summary.positions,
+        isSinglePayoutInCard ? [] : payouts,
+        rangeCaption,
+        isSinglePayoutInCard && isDefined(unassigned) ? [] : unassigned
+    ).map(item =>
+        hasWithheldTax && item.kind === YieldListItemKindEnum.SECTION && item.section === YieldListSectionEnum.PAYOUTS
+            ? { ...item, hasTax: true }
+            : item
+    );
+
+    if (isTruncated) {
+        return [
+            ...items,
+            {
+                kind: YieldListItemKindEnum.TRUNCATED,
+                id: 'truncated-payouts',
+                count: payouts.filter(payout => payout.yieldKind !== YieldKindEnum.TAX).length
+            }
+        ];
+    }
+
+    return isDefined(summary.firstYieldDay) &&
+        summary.firstYieldDay < summary.windowStart &&
+        !isSinglePayoutInCard &&
+        isNotEmptyArray(payouts)
+        ? [...items, OLDER_ITEM]
+        : items;
 };

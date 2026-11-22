@@ -4,33 +4,35 @@ import { YIELD_GROUP_COLOR } from '../constant/yield-group-color.constant';
 import { YIELD_STACK_GROUPS } from '../constant/yield-stack-groups.constant';
 
 import type { YieldBarLayerInterface } from '../interface/yield-bar-layer.interface';
-import type { YieldBarLayersInterface } from '../interface/yield-bar-layers.interface';
 import type { YieldBarLayoutInterface } from '../interface/yield-bar-layout.interface';
+
+const TAX_FILL_CLASSNAME = 'accent-secondary-foreground';
+const TAX_FILL_OPACITY = 0.7;
 
 export const buildYieldBarLayers = (
     layout: YieldBarLayoutInterface,
     pathSize: number,
     isIncreaseContrast: boolean
-): YieldBarLayersInterface => {
+): readonly YieldBarLayerInterface[] => {
     const fillOf = (group: YieldGroupEnum) =>
         isIncreaseContrast ? YIELD_GROUP_COLOR[group].accentContrast : YIELD_GROUP_COLOR[group].accent;
     const stackSize = YIELD_STACK_GROUPS.length;
-    const stacked = (rectsOf: (group: YieldGroupEnum) => YieldBarLayerInterface['rects'], firstSlot: number) =>
-        YIELD_STACK_GROUPS.map((group, index): YieldBarLayerInterface => ({
-            group,
-            offset: (firstSlot + index) * pathSize,
-            rects: rectsOf(group),
-            fillClassName: fillOf(group)
-        }));
+    const stacked = YIELD_STACK_GROUPS.map((group, index): YieldBarLayerInterface => ({
+        group,
+        offset: index * pathSize,
+        rects: layout.groups[group],
+        fillClassName: fillOf(group),
+        fillOpacity: 1,
+        opacityScale: 1
+    }));
     const tax: YieldBarLayerInterface = {
         group: YieldGroupEnum.TAX,
-        offset: stackSize * 2 * pathSize,
+        offset: stackSize * pathSize,
         rects: layout.tax,
-        fillClassName: fillOf(YieldGroupEnum.TAX)
+        fillClassName: TAX_FILL_CLASSNAME,
+        fillOpacity: TAX_FILL_OPACITY,
+        opacityScale: 1
     };
 
-    return {
-        solid: [...stacked(group => layout.groups[group], 0), tax],
-        estimated: stacked(group => layout.estimated[group], stackSize)
-    };
+    return [...stacked, tax];
 };
