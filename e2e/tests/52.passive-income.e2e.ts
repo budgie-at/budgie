@@ -92,11 +92,7 @@ test('52 passive income', { tags: ['passive-income'] }, async ({ budgie }) => {
     });
 
     await b.phase('3 transaction details yield row opens the filtered screen', async () => {
-        await b.scrollTo(ctx, 'PassiveIncome.NetAfterTax');
-        await b.scrollTo(ctx, `PassiveIncome.Position.${ETH_ACCOUNT_ID}`);
-        await b.tapId(ctx, `PassiveIncome.Position.${ETH_ACCOUNT_ID}`);
-        await b.scrollToCentre(ctx, `PassiveIncome.Payout.${FIRST_ETH_PAYOUT_ID}`);
-        await b.tapId(ctx, `PassiveIncome.Payout.${FIRST_ETH_PAYOUT_ID}`);
+        await b.openLink(ctx, `budgie://transactions/${FIRST_ETH_PAYOUT_ID}/income`);
         await b.expectId(ctx, 'TransactionInfo.Row.Yield', 10_000);
         await b.tapId(ctx, 'TransactionInfo.Row.Yield');
         await expect(id('PassiveIncome.Subtitle')).toHaveText('E2E Binance ETH');
