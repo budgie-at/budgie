@@ -91,31 +91,6 @@ test('52 passive income', { tags: ['passive-income'] }, async ({ budgie }) => {
         await expect(id('PassiveIncome.Subtitle')).toHaveText('All holdings');
     });
 
-    await b.phase('4 closing a deposit records its interest', async () => {
-        if (!b.isIos(ctx)) {
-            return;
-        }
-
-        await b.openLink(ctx, `budgie://account/${TERM_DEPOSIT_ID}/details`);
-        await b.expectId(ctx, 'AccountDetails.Page', 10_000);
-        await b.tapId(ctx, 'AccountDetails.ActionsButton');
-        await b.expectId(ctx, 'AccountDetails.CloseDepositButton', 3_000);
-        await b.tapId(ctx, 'AccountDetails.CloseDepositButton');
-        await b.expectId(ctx, 'AccountPickerBottomSheet.Input', 10_000);
-        await a.selectAccountFromNativePicker(ctx, 'AccountPickerBottomSheet.Option.E2E Cash');
-        await b.expectId(ctx, 'DepositClose.AmountInput', 10_000);
-        await b.fillId(ctx, 'DepositClose.AmountInput', '1010');
-        await expect(id('DepositClose.DeltaLine')).toContainText('Interest recorded: +');
-        await b.tapId(ctx, 'DepositClose.ConfirmButton');
-        await b.expectId(ctx, 'TabBar.Home', 15_000);
-        await b.openLink(ctx, 'budgie://passive-income?range=YEAR');
-        await b.scrollTo(ctx, `PassiveIncome.Position.${TERM_DEPOSIT_ID}`);
-        await expect(id(`PassiveIncome.Position.${TERM_DEPOSIT_ID}`)).toHaveAccessibleName(/^E2E Term Deposit, earned \$10 since/u);
-        const closedHeader = await id('PassiveIncome.Section.CLOSED').boundingBox();
-        const closedDeposit = await id(`PassiveIncome.Position.${TERM_DEPOSIT_ID}`).boundingBox();
-        assert.ok(closedHeader && closedDeposit && closedDeposit.y > closedHeader.y);
-    });
-
     await b.phase('6 large text: one-column legend and a range menu', async () => {
         if (!b.isIos(ctx)) {
             return;
@@ -144,6 +119,35 @@ test('52 passive income from transaction details', { tags: ['passive-income'] },
         await b.expectId(ctx, 'TransactionInfo.Row.Yield', 10_000);
         await b.tapId(ctx, 'TransactionInfo.Row.Yield');
         await expect(b.byId(ctx.screen, 'PassiveIncome.Subtitle')).toHaveText('E2E Binance ETH', { timeout: 15_000 });
+    });
+});
+
+test('52 passive income closed deposit', { tags: ['passive-income'], platforms: ['ios'] }, async ({ budgie }) => {
+    const ctx = budgie.ctx;
+
+    await budgie.start({ fixture: '52.db' });
+
+    await b.phase('4 closing a deposit records its interest', async () => {
+        await b.openLink(ctx, `budgie://account/${TERM_DEPOSIT_ID}/details`);
+        await b.expectId(ctx, 'AccountDetails.Page', 10_000);
+        await b.tapId(ctx, 'AccountDetails.ActionsButton');
+        await b.expectId(ctx, 'AccountDetails.CloseDepositButton', 3_000);
+        await b.tapId(ctx, 'AccountDetails.CloseDepositButton');
+        await b.expectId(ctx, 'AccountPickerBottomSheet.Input', 10_000);
+        await a.selectAccountFromNativePicker(ctx, 'AccountPickerBottomSheet.Option.E2E Cash');
+        await b.expectId(ctx, 'DepositClose.AmountInput', 10_000);
+        await b.fillId(ctx, 'DepositClose.AmountInput', '1010');
+        await expect(b.byId(ctx.screen, 'DepositClose.DeltaLine')).toContainText('Interest recorded: +');
+        await b.tapId(ctx, 'DepositClose.ConfirmButton');
+        await b.expectId(ctx, 'TabBar.Home', 15_000);
+        await b.openLink(ctx, 'budgie://passive-income?range=YEAR');
+        await b.scrollTo(ctx, `PassiveIncome.Position.${TERM_DEPOSIT_ID}`);
+        await expect(b.byId(ctx.screen, `PassiveIncome.Position.${TERM_DEPOSIT_ID}`)).toHaveAccessibleName(
+            /^E2E Term Deposit, earned \$10 since/u
+        );
+        const closedHeader = await b.byId(ctx.screen, 'PassiveIncome.Section.CLOSED').boundingBox();
+        const closedDeposit = await b.byId(ctx.screen, `PassiveIncome.Position.${TERM_DEPOSIT_ID}`).boundingBox();
+        assert.ok(closedHeader && closedDeposit && closedDeposit.y > closedHeader.y);
     });
 });
 
