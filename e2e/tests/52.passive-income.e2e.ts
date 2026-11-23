@@ -91,14 +91,6 @@ test('52 passive income', { tags: ['passive-income'] }, async ({ budgie }) => {
         await expect(id('PassiveIncome.Subtitle')).toHaveText('All holdings');
     });
 
-    await b.phase('3 transaction details yield row opens the filtered screen', async () => {
-        await b.openLink(ctx, `budgie://transactions/${FIRST_ETH_PAYOUT_ID}/income`);
-        await b.expectId(ctx, 'TransactionInfo.Row.Yield', 10_000);
-        await b.tapId(ctx, 'TransactionInfo.Row.Yield');
-        await expandHeader();
-        await expect(id('PassiveIncome.Subtitle')).toHaveText('E2E Binance ETH');
-    });
-
     await b.phase('4 closing a deposit records its interest', async () => {
         if (!b.isIos(ctx)) {
             return;
@@ -139,6 +131,19 @@ test('52 passive income', { tags: ['passive-income'] }, async ({ budgie }) => {
         } finally {
             await mustExec(budgie.api, lease, ['ui', 'content_size', 'large']);
         }
+    });
+});
+
+test('52 passive income from transaction details', { tags: ['passive-income'] }, async ({ budgie }) => {
+    const ctx = budgie.ctx;
+
+    await budgie.start({ fixture: '52.db' });
+
+    await b.phase('3 transaction details yield row opens the filtered screen', async () => {
+        await b.openLink(ctx, `budgie://transactions/${FIRST_ETH_PAYOUT_ID}/income`);
+        await b.expectId(ctx, 'TransactionInfo.Row.Yield', 10_000);
+        await b.tapId(ctx, 'TransactionInfo.Row.Yield');
+        await expect(b.byId(ctx.screen, 'PassiveIncome.Subtitle')).toHaveText('E2E Binance ETH', { timeout: 15_000 });
     });
 });
 
