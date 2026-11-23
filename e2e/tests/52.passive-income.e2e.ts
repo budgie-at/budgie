@@ -95,6 +95,7 @@ test('52 passive income', { tags: ['passive-income'] }, async ({ budgie }) => {
         await b.openLink(ctx, `budgie://transactions/${FIRST_ETH_PAYOUT_ID}/income`);
         await b.expectId(ctx, 'TransactionInfo.Row.Yield', 10_000);
         await b.tapId(ctx, 'TransactionInfo.Row.Yield');
+        await expandHeader();
         await expect(id('PassiveIncome.Subtitle')).toHaveText('E2E Binance ETH');
     });
 
