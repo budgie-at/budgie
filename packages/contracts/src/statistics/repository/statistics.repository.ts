@@ -431,20 +431,26 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
                 Db.query(db => {
                     const refundEntry = alias(TransactionEntryEntityTable, 'netted_refund_entry');
                     const refundTransaction = alias(TransactionEntityTable, 'refund_transaction');
-                    const nettedInPeriodTransactionIds = db
+                    const refundOperatedCondition = buildOperatedWithinCondition(refundTransaction.operatedAt, filters.date);
+                    const purchaseOperatedCondition = buildOperatedWithinCondition(TransactionEntityTable.operatedAt, filters.date);
+                    const allNettedRefundTransactionIds = db
                         .select({ transactionId: refundEntry.transactionId })
                         .from(refundEntry)
                         .innerJoin(refundTransaction, eq(refundEntry.originalTransactionId, refundTransaction.id))
-                        .where(
-                            and(
-                                eq(refundEntry.type, TransactionEntryTypeEnum.DEBIT),
-                                isNull(refundEntry.deletedAt),
-                                or(
-                                    buildOperatedWithinCondition(refundTransaction.operatedAt, filters.date),
-                                    buildOperatedWithinCondition(TransactionEntityTable.operatedAt, filters.date)
-                                )
-                            )
-                        );
+                        .where(and(eq(refundEntry.type, TransactionEntryTypeEnum.DEBIT), isNull(refundEntry.deletedAt)));
+                    const refundPeriodTransactionIds = isDefined(refundOperatedCondition)
+                        ? db
+                              .select({ transactionId: refundEntry.transactionId })
+                              .from(refundEntry)
+                              .innerJoin(refundTransaction, eq(refundEntry.originalTransactionId, refundTransaction.id))
+                              .where(
+                                  and(
+                                      eq(refundEntry.type, TransactionEntryTypeEnum.DEBIT),
+                                      isNull(refundEntry.deletedAt),
+                                      refundOperatedCondition
+                                  )
+                              )
+                        : null;
 
                     return db
                         .select({
@@ -468,7 +474,10 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
                                               : isNull(TransactionEntryEntityTable.categoryId)
                                       ]
                                     : []),
-                                inArray(TransactionEntityTable.id, nettedInPeriodTransactionIds)
+                                inArray(TransactionEntityTable.id, allNettedRefundTransactionIds),
+                                ...(isDefined(purchaseOperatedCondition) && isDefined(refundPeriodTransactionIds)
+                                    ? [or(purchaseOperatedCondition, inArray(TransactionEntityTable.id, refundPeriodTransactionIds))]
+                                    : [])
                             )
                         );
                 }),

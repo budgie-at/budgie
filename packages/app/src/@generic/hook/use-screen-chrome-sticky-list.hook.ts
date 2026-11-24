@@ -3,33 +3,40 @@ import { useSharedValue } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useScreenChrome } from '@rnw-community/react-native-screen-chrome';
+import { isDefined } from '@rnw-community/shared';
 
 import { StickySectionHeaderBackdrop } from '../component/sticky-section-header-backdrop/sticky-section-header-backdrop';
 import { ScreenChromeStickyHeadersContext } from '../context/screen-chrome-sticky-headers.context';
 import { getScreenChromeStickyLine } from '../utils/get-screen-chrome-sticky-line.util';
 
-import type { ScreenChromeStickyHeaderInterface } from '../interface/screen-chrome-sticky-header.interface';
+import type { ScreenChromeStickyHeaderSourceInterface } from '../interface/screen-chrome-sticky-header-source.interface';
 import type { LegendListMetrics, LegendListRef } from '@legendapp/list/react-native';
 
+const areNumberArraysEqual = (left: readonly number[], right: readonly number[]) =>
+    left.length === right.length && left.every((value, index) => value === right[index]);
+
 export const useScreenChromeStickyList = (
-    headers: readonly ScreenChromeStickyHeaderInterface[],
+    source: ScreenChromeStickyHeaderSourceInterface,
     contentInsetTop: number,
-    headerHeightAboveList: number,
-    horizontalInset: number
+    headerHeightAboveList: number
 ) => {
     const context = use(ScreenChromeStickyHeadersContext);
     const { config } = useScreenChrome();
     const { top } = useSafeAreaInsets();
     const listRef = useRef<Pick<LegendListRef, 'getState'> | null>(null);
     const headerHeight = useSharedValue(0);
+    const lastPublishedRef = useRef<Pick<
+        ScreenChromeStickyHeaderSourceInterface,
+        'indices' | 'horizontalInset' | 'contentKey' | 'extraContentKey'
+    > | null>(null);
 
     const publish = () => {
         const state = listRef.current?.getState();
 
         context?.metrics.set(
-            headers.map(header => ({
-                offset: (state?.positionAtIndex(header.index) ?? Number.POSITIVE_INFINITY) + headerHeight.get() + contentInsetTop,
-                height: state?.sizeAtIndex(header.index) ?? 0
+            source.indices.map(index => ({
+                offset: (state?.positionAtIndex(index) ?? Number.POSITIVE_INFINITY) + headerHeight.get() + contentInsetTop,
+                height: state?.sizeAtIndex(index) ?? 0
             }))
         );
     };
@@ -40,15 +47,43 @@ export const useScreenChromeStickyList = (
         headerHeight.set(metrics.headerSize);
         publish();
     };
-    const publishLayout = useEffectEvent(publish);
+    const syncSource = useEffectEvent(() => {
+        context?.viewportTop.set(top + headerHeightAboveList);
+        const previous = lastPublishedRef.current;
+        const isSameSource =
+            isDefined(previous) &&
+            previous.horizontalInset === source.horizontalInset &&
+            previous.contentKey === source.contentKey &&
+            previous.extraContentKey === source.extraContentKey &&
+            areNumberArraysEqual(previous.indices, source.indices);
+
+        if (!isSameSource) {
+            lastPublishedRef.current = {
+                indices: source.indices,
+                horizontalInset: source.horizontalInset,
+                contentKey: source.contentKey,
+                extraContentKey: source.extraContentKey
+            };
+            context?.setSource(source);
+            publish();
+        }
+    });
 
     useEffect(() => {
-        context?.setSource({ headers, horizontalInset });
-        context?.viewportTop.set(top + headerHeightAboveList);
-        publishLayout();
-    }, [context, headers, top, contentInsetTop, headerHeightAboveList, horizontalInset]);
+        syncSource();
+    }, [
+        context,
+        source.horizontalInset,
+        source.contentKey,
+        source.extraContentKey,
+        source.indices,
+        top,
+        contentInsetTop,
+        headerHeightAboveList
+    ]);
 
     const handleUnmount = useEffectEvent(() => {
+        lastPublishedRef.current = null;
         context?.setSource(null);
         context?.metrics.set([]);
     });

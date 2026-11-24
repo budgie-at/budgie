@@ -1,4 +1,4 @@
-import { isSameMonth } from 'date-fns';
+import { isSameMonth } from 'date-fns/isSameMonth';
 
 import { isDefined } from '@rnw-community/shared';
 

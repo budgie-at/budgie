@@ -1,10 +1,11 @@
 import { TranslationLlmService } from '@budgie/ai';
-import { CategoryRepository, TagRepository } from '@budgie/contracts';
+import { CategoryEntityTable, CategoryRepository, TagEntityTable, TagRepository } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
 import { appAtomRegistry } from '../../@generic/constant/app-atom-registry.constant';
+import { DatabaseChangeService } from '../../@generic/drizzle/service/database-change.service';
 import { Workload } from '../../@generic/service/workload.service';
 import { translationDrainerSnapshotAtom } from '../constant/ai-snapshot-atoms.constant';
 import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
@@ -24,6 +25,7 @@ export class TranslationDrainerService extends Context.Service<TranslationDraine
         const translationLlmService = yield* TranslationLlmService;
         const translationProgressStore = yield* TranslationProgressStore;
         const aiModelResidencyService = yield* AiModelResidencyService;
+        const databaseChangeService = yield* DatabaseChangeService;
 
         const translateRow = (
             row: Pick<CategoryEntityInterface, 'id' | 'title'>,
@@ -68,7 +70,8 @@ export class TranslationDrainerService extends Context.Service<TranslationDraine
                     translationProgressStore.refresh(),
                     () => appAtomRegistry.get(translationProgressStore.snapshot).pending
                 ),
-                afterBatch: Effect.void
+                afterBatch: Effect.void,
+                wakeStream: databaseChangeService.watchTables([CategoryEntityTable, TagEntityTable])
             },
             aiModelResidencyService
         );
@@ -81,6 +84,7 @@ export class TranslationDrainerService extends Context.Service<TranslationDraine
             TranslationLlmService.layer.pipe(Layer.provide(ChatService.invokerLayer)),
             TranslationProgressStore.layer,
             AiModelResidencyService.layer,
+            DatabaseChangeService.layer,
             Workload.layer
         ])
     );

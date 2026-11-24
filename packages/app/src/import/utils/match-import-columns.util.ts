@@ -1,5 +1,6 @@
 import { CurrencyEnum, LanguageEnum } from '@budgie/contracts';
-import { isValid, parse } from 'date-fns';
+import { isValid } from 'date-fns/isValid';
+import { parse } from 'date-fns/parse';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 

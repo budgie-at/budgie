@@ -1,4 +1,4 @@
-import { Db, TransactionCreateInputInterface, TransactionCreateInputSchema } from '@budgie/contracts';
+import { Db, ExternalSourceEnum, TransactionCreateInputInterface, TransactionCreateInputSchema } from '@budgie/contracts';
 import { ReceiptMatchInputInterface, TransactionService } from '@budgie/ledger';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useLingui } from '@lingui/react/macro';
@@ -6,6 +6,8 @@ import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
 import { NotificationFeedbackType } from 'expo-haptics';
 import { useForm } from 'react-hook-form';
+
+import { isPositiveNumber } from '@rnw-community/shared';
 
 import { useSingleFlight } from '../../@generic/hook/use-single-flight.hook';
 import { useVibration } from '../../@generic/hook/use-vibration.hook';
@@ -58,14 +60,21 @@ export const useUpdateTransactionForm = ({
             Effect.gen(function* () {
                 const transactionService = yield* TransactionService;
                 const brokerageService = yield* BrokerageService;
+                const accountIds = [
+                    transaction.fromAccountId,
+                    transaction.toAccountId,
+                    ...transaction.entries.map(entry => entry.accountId),
+                    data.fromAccountId,
+                    data.toAccountId,
+                    ...data.entries.map(entry => entry.accountId)
+                ].filter(isPositiveNumber);
+                const fundingEffect =
+                    transaction.externalSource === ExternalSourceEnum.BROKERAGE_FUNDING
+                        ? brokerageService.adoptFunding(id, t(BROKERAGE_FUNDING_TITLE), accountIds)
+                        : brokerageService.reconcileFunding(t(BROKERAGE_FUNDING_TITLE), accountIds);
 
                 yield* Db.transaction(
-                    transactionService
-                        .updateById(id, data)
-                        .pipe(
-                            Effect.andThen(attachReceipt(receipt, id)),
-                            Effect.andThen(brokerageService.adoptFunding(id, t(BROKERAGE_FUNDING_TITLE)))
-                        )
+                    transactionService.updateById(id, data).pipe(Effect.andThen(attachReceipt(receipt, id)), Effect.andThen(fundingEffect))
                 );
                 yield* scheduleRecurringRefresh(RecurringRefreshModeEnum.RECENT);
                 onAfterSubmit?.(data);

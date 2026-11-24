@@ -1,6 +1,9 @@
-import type { ScreenChromeStickyHeaderInterface } from './screen-chrome-sticky-header.interface';
+import type { ReactNode } from 'react';
 
 export interface ScreenChromeStickyHeaderSourceInterface {
-    readonly headers: readonly ScreenChromeStickyHeaderInterface[];
+    readonly indices: readonly number[];
     readonly horizontalInset: number;
+    readonly contentKey: unknown;
+    readonly extraContentKey?: unknown;
+    readonly renderHeader: (position: number) => ReactNode;
 }

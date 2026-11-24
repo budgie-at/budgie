@@ -66,12 +66,14 @@ export class DatabaseMaintenanceService extends Context.Service<DatabaseMaintena
 
         return {
             compact: Effect.fn('DatabaseMaintenanceService.compact')(function* () {
+                const { $primary } = yield* Db;
                 const vectorExit = yield* Effect.forEach(vectorTableNames, compactVectorTable, { discard: true }).pipe(
                     withFileTempStore,
                     Effect.exit
                 );
 
                 yield* withFileTempStore(vacuumWhenFragmented());
+                yield* $primary.$client.unsafe('PRAGMA optimize').raw;
                 yield* vectorExit;
             })
         };

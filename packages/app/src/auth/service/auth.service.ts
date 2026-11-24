@@ -90,19 +90,19 @@ export class AuthService extends Context.Service<AuthService>()('@budgie/app/Aut
             }),
             getBiometricTypes: Effect.fn('AuthService.getBiometricTypes')(
                 function* () {
-                    const hasHardware = yield* Effect.promise(() => LocalAuthentication.hasHardwareAsync());
+                    const [hasHardware, isEnrolled, types] = yield* Effect.all(
+                        [
+                            Effect.promise(() => LocalAuthentication.hasHardwareAsync()),
+                            Effect.promise(() => LocalAuthentication.isEnrolledAsync()),
+                            Effect.promise(() => LocalAuthentication.supportedAuthenticationTypesAsync())
+                        ],
+                        { concurrency: 'unbounded' }
+                    );
 
-                    if (!hasHardware) {
+                    if (!hasHardware || !isEnrolled) {
                         return unavailableBiometricTypes;
                     }
 
-                    const isEnrolled = yield* Effect.promise(() => LocalAuthentication.isEnrolledAsync());
-
-                    if (!isEnrolled) {
-                        return unavailableBiometricTypes;
-                    }
-
-                    const types = yield* Effect.promise(() => LocalAuthentication.supportedAuthenticationTypesAsync());
                     const hasFace = types.some(type => type === LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION);
                     const hasFingerprint = types.some(type => type === LocalAuthentication.AuthenticationType.FINGERPRINT);
                     const biometricKind = getBiometricKind(hasFace, hasFingerprint);

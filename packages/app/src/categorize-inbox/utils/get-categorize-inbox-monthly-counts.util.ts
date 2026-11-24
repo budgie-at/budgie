@@ -1,4 +1,7 @@
-import { differenceInCalendarMonths, isSameMonth, startOfMonth, subMonths } from 'date-fns';
+import { differenceInCalendarMonths } from 'date-fns/differenceInCalendarMonths';
+import { isSameMonth } from 'date-fns/isSameMonth';
+import { startOfMonth } from 'date-fns/startOfMonth';
+import { subMonths } from 'date-fns/subMonths';
 
 import { isEmptyArray } from '@rnw-community/shared';
 

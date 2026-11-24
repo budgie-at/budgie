@@ -1,5 +1,6 @@
 import { InstrumentTypeEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
+import { Suspense } from 'react';
 import { Text, View } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 
@@ -9,8 +10,8 @@ import circleFlags from '../../../../assets/flags/circle-flags.json';
 import { isListedSecurityType } from '../../../instrument/utils/is-listed-security-type.util';
 import { GlyphSizeEnum } from '../../enum/glyph-size.enum';
 import { getGlyphSize } from '../../utils/get-glyph-size.util';
-import { CryptoCurrencyIcon } from '../crypto-currency-icon/crypto-currency-icon';
 import { InstrumentMonogram } from '../instrument-monogram/instrument-monogram';
+import { LazyCryptoCurrencyIcon } from '../lazy-crypto-currency-icon/lazy-crypto-currency-icon';
 
 const CIRCLE_FLAGS: Readonly<Record<string, string>> = circleFlags;
 
@@ -33,7 +34,11 @@ interface Props {
 
 export const CurrencySelectorInstrumentIcon = ({ code, symbol, type, size = 48 }: Props) => {
     if (type === InstrumentTypeEnum.CRYPTO) {
-        return <CryptoCurrencyIcon code={code} size={size} className="bg-surface-disc" />;
+        return (
+            <Suspense fallback={null}>
+                <LazyCryptoCurrencyIcon code={code} size={size} className="bg-surface-disc" />
+            </Suspense>
+        );
     }
 
     if (isListedSecurityType(type)) {

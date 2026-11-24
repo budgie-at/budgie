@@ -3,15 +3,15 @@ import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 
 import { ScreenChromeStickyHeadersContext } from '../../context/screen-chrome-sticky-headers.context';
 
-import type { ScreenChromeStickyHeaderInterface } from '../../interface/screen-chrome-sticky-header.interface';
+import type { ReactNode } from 'react';
 
 interface Props {
-    readonly header: ScreenChromeStickyHeaderInterface;
     readonly position: number;
     readonly horizontalInset: number;
+    readonly children: ReactNode;
 }
 
-export const ScreenChromeStickyHeaderRow = ({ header, position, horizontalInset }: Props) => {
+export const ScreenChromeStickyHeaderRow = ({ position, horizontalInset, children }: Props) => {
     const context = use(ScreenChromeStickyHeadersContext);
     const state = context?.state;
     const style = useAnimatedStyle(() => ({
@@ -23,5 +23,5 @@ export const ScreenChromeStickyHeaderRow = ({ header, position, horizontalInset 
         transform: [{ translateY: state?.get().translateY ?? 0 }]
     }));
 
-    return <Animated.View style={style}>{header.content}</Animated.View>;
+    return <Animated.View style={style}>{children}</Animated.View>;
 };

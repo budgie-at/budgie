@@ -1,4 +1,9 @@
-import { addDays, addMonths, differenceInCalendarDays, differenceInCalendarMonths, endOfMonth, startOfMonth } from 'date-fns';
+import { addDays } from 'date-fns/addDays';
+import { addMonths } from 'date-fns/addMonths';
+import { differenceInCalendarDays } from 'date-fns/differenceInCalendarDays';
+import { differenceInCalendarMonths } from 'date-fns/differenceInCalendarMonths';
+import { endOfMonth } from 'date-fns/endOfMonth';
+import { startOfMonth } from 'date-fns/startOfMonth';
 
 import { isDefined } from '@rnw-community/shared';
 

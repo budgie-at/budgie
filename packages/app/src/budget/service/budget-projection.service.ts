@@ -77,10 +77,12 @@ export class BudgetProjectionService extends Context.Service<BudgetProjectionSer
         const loadRecurring = Effect.fnUntraced(function* (window: BudgetPeriodWindowInterface, now: Date, budgetInstrumentId: number) {
             const { defaultInstrumentId } = yield* settingsRepository.getSettings();
             const rate = yield* findRate(defaultInstrumentId, budgetInstrumentId);
-            const calendars = yield* Effect.forEach(buildPeriodMonths(window), month =>
-                Effect.map(recurringService.calendar(month.getFullYear(), month.getMonth(), now), calendar => ({ month, calendar }))
+            const periodMonths = buildPeriodMonths(window);
+            const calendars = yield* recurringService.calendarMonths(
+                periodMonths.map(month => ({ year: month.getFullYear(), month: month.getMonth() })),
+                now
             );
-            const postedEntries = calendars.flatMap(({ calendar }) => [...calendar.entriesByDay.values()].flat());
+            const postedEntries = calendars.flatMap(calendar => [...calendar.entriesByDay.values()].flat());
 
             return {
                 seriesIdByTransactionId: new Map(
@@ -88,12 +90,24 @@ export class BudgetProjectionService extends Context.Service<BudgetProjectionSer
                         isDefined(entry.latestTransactionId) ? [[entry.latestTransactionId, entry.seriesId] as const] : []
                     )
                 ),
-                charges: calendars.flatMap(({ month, calendar }) => toRecurringCharges(month, calendar, rate))
+                charges: calendars.flatMap((calendar, index) => toRecurringCharges(periodMonths[index], calendar, rate))
             };
         });
 
         const loadInstallmentCharges = Effect.fnUntraced(function* (budgetInstrumentId: number) {
             const accounts = yield* accountRepository.getAllActiveAccounts;
+            const rateByInstrumentId = new Map<number | null, number>();
+            const resolveRate = Effect.fnUntraced(function* (fromInstrumentId: number | null) {
+                const cached = rateByInstrumentId.get(fromInstrumentId);
+                if (isDefined(cached)) {
+                    return cached;
+                }
+
+                const rate = yield* findRate(fromInstrumentId, budgetInstrumentId);
+                rateByInstrumentId.set(fromInstrumentId, rate);
+
+                return rate;
+            });
             const charges = yield* Effect.forEach(
                 accounts.filter(account => account.debtType === AccountDebtTypeEnum.INSTALLMENT),
                 Effect.fnUntraced(function* (account) {
@@ -103,7 +117,7 @@ export class BudgetProjectionService extends Context.Service<BudgetProjectionSer
                         return [];
                     }
 
-                    const rate = yield* findRate(schedule.instrumentId, budgetInstrumentId);
+                    const rate = yield* resolveRate(schedule.instrumentId);
                     const charge: BudgetUpcomingChargeInterface = {
                         date: schedule.nextDueAt,
                         amount: Math.round(schedule.nextAmount * rate),
@@ -157,11 +171,17 @@ export class BudgetProjectionService extends Context.Service<BudgetProjectionSer
         ) {
             const { defaultInstrumentId } = yield* settingsRepository.getSettings();
             const rate = yield* findRate(defaultInstrumentId, budgetInstrumentId);
-            const months = yield* Effect.forEach(buildPeriodMonths(window), month =>
-                Effect.map(recurringService.incomeCalendar(month.getFullYear(), month.getMonth(), now), calendar => ({ month, calendar }))
+            const periodMonths = buildPeriodMonths(window);
+            const calendars = yield* recurringService.incomeCalendarMonths(
+                periodMonths.map(month => ({ year: month.getFullYear(), month: month.getMonth() })),
+                now
             );
 
-            return computeExpectedIncome(months, window, rate);
+            return computeExpectedIncome(
+                periodMonths.map((month, index) => ({ month, calendar: calendars[index] })),
+                window,
+                rate
+            );
         });
 
         const loadIncome = Effect.fnUntraced(function* (

@@ -159,12 +159,15 @@ export const useBudgetForm = ({ defaultInstrumentId, editingId, templateKind = n
             keepErrors: true
         }
     });
-    const watchedFormValues = ReactHookForm.useWatch({ control: form.control, compute: values => values });
+    const isFormSynced = ReactHookForm.useWatch({
+        control: form.control,
+        compute: values => !(isEditing || hasAsyncTemplate) || areBudgetFormValuesEqual(values, formValues)
+    });
     const isFormSyncing =
         (isEditing || hasAsyncTemplate) &&
         !form.formState.isDirty &&
         isEmptyArray(Object.keys(form.getValues(void 0, { dirtyFields: true }))) &&
-        !areBudgetFormValuesEqual(watchedFormValues, formValues);
+        !isFormSynced;
 
     const handlePeriodChange = (period: BudgetPeriodEnum) => {
         const anchor = defaultPeriodAnchorDate(period, today);

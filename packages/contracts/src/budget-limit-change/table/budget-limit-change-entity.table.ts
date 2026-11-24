@@ -1,4 +1,5 @@
-import { int, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { sql } from 'drizzle-orm';
+import { index, int, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 import { convertEnumToDrizzleEnum } from '../../@generic/utils/convert-enum-to-drizzle-enum.util';
 import { withBaseEntityTableColumns } from '../../@generic/utils/with-base-entity-table-columns.util';
@@ -24,5 +25,10 @@ export const BudgetLimitChangeEntityTable = sqliteTable(
         periodsObserved: int('periods_observed').notNull(),
         periodStart: int('period_start', { mode: 'timestamp' }).notNull()
     }),
-    table => [syncIdentityUniqueIndex('budget_limit_changes', table)]
+    table => [
+        syncIdentityUniqueIndex('budget_limit_changes', table),
+        index('budget_limit_changes_budget_idx')
+            .on(table.budgetId)
+            .where(sql`${table.deletedAt} IS NULL`)
+    ]
 );

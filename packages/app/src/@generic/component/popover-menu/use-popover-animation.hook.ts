@@ -30,7 +30,7 @@ const reducer = (state: PopoverAnimationStateInterface, action: PopoverAnimation
 
 export const usePopoverAnimation = (isOpen: boolean, onCloseComplete?: EmptyFn) => {
     const reducedMotion = useReducedMotion();
-    const progress = useSharedValue(isOpen ? 1 : 0);
+    const progress = useSharedValue(0);
     const [{ previousIsOpen, isClosing, isDismissing }, dispatch] = useReducer(reducer, {
         previousIsOpen: isOpen,
         isClosing: false,

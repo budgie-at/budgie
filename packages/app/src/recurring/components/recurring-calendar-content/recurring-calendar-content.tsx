@@ -9,6 +9,7 @@ import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/sha
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
 import { useToday } from '../../../@generic/hook/use-today.hook';
+import { getCachedDateTimeFormat } from '../../../@generic/utils/date/get-cached-date-time-format.util';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useLocaleInfo } from '../../../i18n/hook/use-locale-info.hook';
@@ -125,7 +126,7 @@ export const RecurringCalendarContent = ({ header }: Props) => {
                 {hasSelectedDay ? (
                     <RecurringCalendarEntryList
                         headerTestID={RecurringCalendarSelector.SelectedDayHeader(selectedDay)}
-                        title={new Intl.DateTimeFormat(languageTag, { weekday: 'short', month: 'short', day: 'numeric' }).format(
+                        title={getCachedDateTimeFormat(languageTag, { weekday: 'short', month: 'short', day: 'numeric' }).format(
                             new Date(displayYear, displayMonth, selectedDay)
                         )}
                         formattedTotal={selectedDayTotal}

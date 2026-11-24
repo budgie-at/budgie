@@ -337,8 +337,9 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
                 transactionIds: readonly number[]
             ) {
                 const candidates = yield* consolidationCandidateRepository.findAtmCashWithdrawalCandidates(null);
+                const transactionIdSet = new Set(transactionIds);
 
-                return candidates.filter(candidate => transactionIds.includes(candidate.transactionId));
+                return candidates.filter(candidate => transactionIdSet.has(candidate.transactionId));
             });
 
             const consolidate = Effect.fn('ConsolidationCoordinatorService.consolidate')(function* (

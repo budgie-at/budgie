@@ -24,11 +24,7 @@ export const AuthProvider = ({ children }: Props) => {
 
     const [isUnlocked, setIsUnlocked] = useState(hasFreshSealUnlockGrant);
 
-    const shouldAutoUnlock = !settingsLoading && !isPinEnabled;
-
-    if (shouldAutoUnlock && !isUnlocked) {
-        setIsUnlocked(true);
-    }
+    const effectiveIsUnlocked = isUnlocked || (!settingsLoading && !isPinEnabled);
 
     useEffect(() => {
         appRuntime.runFork(logAndContinue(Effect.flatMap(AuthService, authService => authService.consumeSealUnlockGrant())));
@@ -51,7 +47,7 @@ export const AuthProvider = ({ children }: Props) => {
     }, [isPinEnabled]);
 
     const value: AuthContextInterface = {
-        isUnlocked,
+        isUnlocked: effectiveIsUnlocked,
         setIsUnlocked,
         biometricKind,
         isSomeAvailable,

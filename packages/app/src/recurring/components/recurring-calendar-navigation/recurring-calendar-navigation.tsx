@@ -5,6 +5,7 @@ import { scheduleOnRN } from 'react-native-worklets';
 
 import { useToday } from '../../../@generic/hook/use-today.hook';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
+import { getCachedDateTimeFormat } from '../../../@generic/utils/date/get-cached-date-time-format.util';
 import { useLocaleInfo } from '../../../i18n/hook/use-locale-info.hook';
 import { RecurringCalendarToolbar } from '../recurring-calendar-toolbar/recurring-calendar-toolbar';
 
@@ -22,7 +23,7 @@ export const RecurringCalendarNavigation = ({ displayMonth, displayYear, onChang
     const currentMonth = now.getMonth();
     const currentYear = now.getFullYear();
 
-    const monthLabel = new Intl.DateTimeFormat(languageTag, { month: 'long', year: 'numeric' }).format(
+    const monthLabel = getCachedDateTimeFormat(languageTag, { month: 'long', year: 'numeric' }).format(
         new Date(displayYear, displayMonth, 1)
     );
 

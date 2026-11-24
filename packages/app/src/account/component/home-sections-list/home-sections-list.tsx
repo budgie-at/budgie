@@ -1,20 +1,19 @@
-import { useAtomValue } from '@effect/atom-react/Hooks';
-import { SectionList } from '@legendapp/list/section-list';
-import Animated from 'react-native-reanimated';
+import { AnimatedLegendList } from '@legendapp/list/reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useScreenChrome, useScreenChromeScrollProps } from '@rnw-community/react-native-screen-chrome';
+import { isDefined } from '@rnw-community/shared';
 
 import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from '../../../@generic/constant/floating-tab-bar.constant';
 import { useCollapsibleChromeScroll } from '../../../@generic/hook/use-collapsible-chrome-scroll.hook';
 import { useScreenChromeStickyList } from '../../../@generic/hook/use-screen-chrome-sticky-list.hook';
-import { decimalPlacesAtom, defaultInstrumentIdAtom } from '../../../settings/constants/settings-atoms.constant';
 import { COLLAPSIBLE_NET_WORTH_HEADER_SCROLL_SPACER_MIN_ACCOUNT_COUNT } from '../../constant/collapsible-net-worth-header-scroll-spacer.constant';
+import { HomeListItemKindEnum } from '../../enum/home-list-item-kind.enum';
 import { HomeAccountBalanceInterface } from '../../interface/home-account-balance.interface';
 import { HomeHoldingReturnsInterface } from '../../interface/home-holding-returns.interface';
 import { HomeSectionInterface } from '../../interface/home-section.interface';
-import { isHomeHolding } from '../../type-guard/is-home-holding.type-guard';
-import { isInstitutionGroup } from '../../type-guard/is-institution-group.type-guard';
+import { HomeListItemType } from '../../type/home-list-item.type';
+import { buildHomeListItems } from '../../utils/build-home-list-items.util';
 import { CollapsibleNetWorthHeaderScrollSpacer } from '../collapsible-net-worth-header-scroll-spacer/collapsible-net-worth-header-scroll-spacer';
 import { HomeEmptyState } from '../home-empty-state/home-empty-state';
 import { HomeSectionFooter } from '../home-section-footer/home-section-footer';
@@ -22,21 +21,13 @@ import { HomeSectionHeader } from '../home-section-header/home-section-header';
 import { HomeSectionRow } from '../home-section-row/home-section-row';
 
 import type { ReactElement } from 'react';
-import type { SectionListProps, SectionListRenderItem } from 'react-native';
 
-const AnimatedSectionList = Animated.createAnimatedComponent(SectionList<HomeSectionInterface['data'][number], HomeSectionInterface>);
 const LIST_HORIZONTAL_PADDING = 16;
-const renderSectionFooter: SectionListProps<HomeSectionInterface['data'][number], HomeSectionInterface>['renderSectionFooter'] = ({
-    section
-}) => <HomeSectionFooter section={section} />;
+const HOME_ROW_ESTIMATED_ITEM_SIZE = 68;
 
-const keyExtractor = (item: HomeSectionInterface['data'][number]): string => {
-    if (isInstitutionGroup(item)) {
-        return `institution-${item.integrationId}`;
-    }
+const keyExtractor = (item: HomeListItemType) => item.id;
 
-    return isHomeHolding(item) ? `holding-${item.instrument.id}` : String(item.id);
-};
+const getItemType = (item: HomeListItemType) => item.type;
 
 interface Props {
     readonly sections: HomeSectionInterface[];
@@ -48,17 +39,8 @@ interface Props {
     readonly listHeaderComponent?: ReactElement;
 }
 
-export const HomeSectionsList = ({
-    sections,
-    activeAccountCount,
-    isLoading,
-    bottomInset,
-    balancesByAccountId,
-    holdingReturns,
-    listHeaderComponent
-}: Props) => {
-    const decimalPlaces = useAtomValue(decimalPlacesAtom);
-    const defaultInstrumentId = useAtomValue(defaultInstrumentIdAtom);
+export const HomeSectionsList = (props: Props) => {
+    const { sections, activeAccountCount, isLoading, bottomInset, balancesByAccountId, holdingReturns, listHeaderComponent } = props;
     const { top } = useSafeAreaInsets();
     const { config } = useScreenChrome();
     const { onScroll } = useCollapsibleChromeScroll();
@@ -80,38 +62,51 @@ export const HomeSectionsList = ({
 
     const listEmptyComponent = isLoading || activeAccountCount > 0 ? null : HomeEmptyState;
 
-    const headers = sections.map((section, index) => ({
-        index: sections.slice(0, index).reduce((count, previous) => count + previous.data.length + 2, 0),
-        content: <HomeSectionHeader section={section} holdingReturns={holdingReturns} />
-    }));
+    const { items, headerIndices } = buildHomeListItems(sections);
+    const renderStickyHeader = (position: number) => {
+        const section = sections.at(position);
+
+        return isDefined(section) ? <HomeSectionHeader section={section} holdingReturns={holdingReturns} /> : null;
+    };
+    const stickySource = {
+        indices: headerIndices,
+        horizontalInset: LIST_HORIZONTAL_PADDING,
+        contentKey: sections,
+        extraContentKey: holdingReturns,
+        renderHeader: renderStickyHeader
+    };
     const { handleListRef, onMetricsChange, publish, stickyHeaderConfig } = useScreenChromeStickyList(
-        headers,
+        stickySource,
         config.headerHeight - collapsedHeaderHeight,
-        collapsedHeaderHeight,
-        LIST_HORIZONTAL_PADDING
+        collapsedHeaderHeight
     );
 
-    const renderSectionHeader: SectionListProps<HomeSectionInterface['data'][number], HomeSectionInterface>['renderSectionHeader'] = ({
-        section
-    }) => <HomeSectionHeader section={section} holdingReturns={holdingReturns} />;
-    const renderItem: SectionListRenderItem<HomeSectionInterface['data'][number], HomeSectionInterface> = ({ item, index, section }) => (
-        <HomeSectionRow
-            item={item}
-            index={index}
-            section={section}
-            balancesByAccountId={balancesByAccountId}
-            holdingReturns={holdingReturns}
-        />
-    );
+    const renderItem = ({ item }: { item: HomeListItemType }) => {
+        if (item.type === HomeListItemKindEnum.HEADER) {
+            return <HomeSectionHeader section={item.section} holdingReturns={holdingReturns} />;
+        }
+
+        return item.type === HomeListItemKindEnum.FOOTER ? (
+            <HomeSectionFooter section={item.section} />
+        ) : (
+            <HomeSectionRow
+                item={item.item}
+                index={item.index}
+                section={item.section}
+                balancesByAccountId={balancesByAccountId}
+                holdingReturns={holdingReturns}
+            />
+        );
+    };
 
     return (
-        <AnimatedSectionList
-            key={`${defaultInstrumentId}-${decimalPlaces}`}
-            sections={sections}
-            renderSectionHeader={renderSectionHeader}
+        <AnimatedLegendList
+            data={items}
             renderItem={renderItem}
-            renderSectionFooter={renderSectionFooter}
             keyExtractor={keyExtractor}
+            getItemType={getItemType}
+            estimatedItemSize={HOME_ROW_ESTIMATED_ITEM_SIZE}
+            stickyHeaderIndices={headerIndices}
             extraData={holdingReturns}
             refScrollView={refScrollView}
             ref={handleListRef}
@@ -120,7 +115,6 @@ export const HomeSectionsList = ({
             onViewableItemsChanged={publish}
             stickyHeaderConfig={stickyHeaderConfig}
             showsVerticalScrollIndicator={false}
-            stickySectionHeadersEnabled
             recycleItems
             ListHeaderComponent={listHeaderComponent}
             ListFooterComponent={listFooterComponent}

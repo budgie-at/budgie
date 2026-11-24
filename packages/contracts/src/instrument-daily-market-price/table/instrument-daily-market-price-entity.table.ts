@@ -18,6 +18,9 @@ export const InstrumentDailyMarketPriceEntityTable = sqliteTable(
         unique().on(table.instrumentId, table.quoteInstrumentId, table.priceDate),
         index('instrument_daily_market_prices_lookup_idx')
             .on(table.instrumentId, table.quoteInstrumentId, sql`${table.priceDate} DESC`)
+            .where(sql`${table.deletedAt} IS NULL`),
+        index('instrument_daily_market_prices_inst_date_idx')
+            .on(table.instrumentId, sql`${table.priceDate} DESC`)
             .where(sql`${table.deletedAt} IS NULL`)
     ]
 );

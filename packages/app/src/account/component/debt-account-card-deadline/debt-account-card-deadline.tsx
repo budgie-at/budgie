@@ -1,6 +1,6 @@
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
-import { differenceInCalendarDays } from 'date-fns';
+import { differenceInCalendarDays } from 'date-fns/differenceInCalendarDays';
 import { Text, View } from 'react-native';
 
 import { cn } from '../../../@generic/utils/cn.util';

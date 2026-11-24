@@ -1,6 +1,8 @@
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import * as Effect from 'effect/Effect';
 import { ReactNode, useEffect } from 'react';
 
+import { splashScreenHiddenAtom } from '../../@generic/constant/splash-screen-hidden-atom.constant';
 import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { useSetting } from '../../settings/hook/use-setting.hook';
 import { AiCoordinatorService } from '../service/ai-coordinator.service';
@@ -11,6 +13,7 @@ interface Props {
 }
 
 export const AiProvider = ({ children }: Props) => {
+    const isSplashScreenHidden = useAtomValue(splashScreenHiddenAtom);
     const isAiEnabled = useSetting('isAiEnabled');
     const isAiVoiceInputEnabled = useSetting('isAiVoiceInputEnabled');
     const isAiSuggestionsEnabled = useSetting('isAiSuggestionsEnabled');
@@ -24,10 +27,14 @@ export const AiProvider = ({ children }: Props) => {
     }, [isAiWifiOnly]);
 
     useEffect(() => {
+        if (!isSplashScreenHidden) {
+            return;
+        }
+
         appRuntime.runFork(
             Effect.flatMap(AiCoordinatorService, coordinator => coordinator.restart()).pipe(Effect.tapCause(Effect.logError))
         );
-    }, [isAiEnabled, isAiVoiceInputEnabled, isAiSuggestionsEnabled, isAiTranslationsEnabled]);
+    }, [isSplashScreenHidden, isAiEnabled, isAiVoiceInputEnabled, isAiSuggestionsEnabled, isAiTranslationsEnabled]);
 
     useEffect(
         () => () => {

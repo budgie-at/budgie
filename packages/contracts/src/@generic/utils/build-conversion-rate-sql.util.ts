@@ -10,9 +10,9 @@ import {
 import type { SQL } from 'drizzle-orm';
 
 export const buildConversionRateSql = (defaultInstrumentId: number, instrumentIdRef: SQL) =>
-    sql`COALESCE(
+    sql`CASE WHEN ${instrumentIdRef} = ${defaultInstrumentId} THEN 1.0 ELSE COALESCE(
             ${getDirectExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
             ${getInverseExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
             ${getHistoricalExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
             ${getInverseHistoricalExchangeRateSql(defaultInstrumentId, instrumentIdRef)}
-        )`;
+        ) END`;

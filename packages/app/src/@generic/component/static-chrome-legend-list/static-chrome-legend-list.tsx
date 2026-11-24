@@ -13,6 +13,7 @@ import type { RefCallback } from 'react';
 
 const MAINTAIN_VISIBLE_CONTENT_POSITION = { data: false, size: true };
 const CONTENT_INSET_TOP = 12;
+const EMPTY_INDICES: readonly number[] = [];
 
 export const StaticChromeLegendList = <TItem,>({
     contentContainerStyle,
@@ -26,33 +27,38 @@ export const StaticChromeLegendList = <TItem,>({
     const horizontalStyle = useResolveClassNames('px-5xl');
     const horizontalInset = horizontalStyle.paddingHorizontal ?? horizontalStyle.paddingLeft;
     const extraData: unknown = props.extraData;
-    const headers = (props.stickyHeaderIndices ?? []).flatMap(index => {
-        const item = data?.[index];
+    const stickyHeaderIndices = props.stickyHeaderIndices ?? EMPTY_INDICES;
+    const renderStickyHeader = (position: number) => {
+        const index = stickyHeaderIndices.at(position);
+        const item = isDefined(index) ? data?.at(index) : null;
 
-        return isDefined(item) && isDefined(data) && isDefined(renderItem)
-            ? [
-                  {
-                      index,
-                      content: (
-                          <StickyHeaderRow
-                              renderItem={renderItem}
-                              item={item}
-                              index={index}
-                              data={data}
-                              extraData={extraData}
-                              type={props.getItemType?.(item, index)}
-                          />
-                      )
-                  }
-              ]
-            : [];
-    });
+        return isDefined(index) && isDefined(item) && isDefined(data) && isDefined(renderItem) ? (
+            <StickyHeaderRow
+                renderItem={renderItem}
+                item={item}
+                index={index}
+                data={data}
+                extraData={extraData}
+                type={props.getItemType?.(item, index)}
+            />
+        ) : null;
+    };
     const {
         handleListRef: setList,
         onMetricsChange,
         publish,
         stickyHeaderConfig
-    } = useScreenChromeStickyList(headers, CONTENT_INSET_TOP, config.headerHeight, isNumber(horizontalInset) ? horizontalInset : 0);
+    } = useScreenChromeStickyList(
+        {
+            indices: stickyHeaderIndices,
+            horizontalInset: isNumber(horizontalInset) ? horizontalInset : 0,
+            contentKey: data,
+            extraContentKey: extraData,
+            renderHeader: renderStickyHeader
+        },
+        CONTENT_INSET_TOP,
+        config.headerHeight
+    );
     const { ref: refScrollView, ...scrollProps } = useScreenChromeScrollProps({
         includeTopSafeArea: false,
         contentInsetTop: CONTENT_INSET_TOP,

@@ -110,7 +110,8 @@ export const getExchangeRateWithHistoricalFallbackSql = (
     defaultInstrumentId: number | SQL,
     instrumentIdRef: SQL | SQLWrapper | number
 ): SQL =>
-    sql`CASE WHEN (SELECT quote_instrument_id FROM ${InstrumentEntityTable} WHERE ${InstrumentEntityTable.id} = ${instrumentIdRef}) IS NOT NULL
+    sql`CASE WHEN ${instrumentIdRef} = ${defaultInstrumentId} THEN 1.0
+        WHEN (SELECT quote_instrument_id FROM ${InstrumentEntityTable} WHERE ${InstrumentEntityTable.id} = ${instrumentIdRef}) IS NOT NULL
         THEN ${getQuotedExchangeRateSql(defaultInstrumentId, instrumentIdRef)}
         ELSE COALESCE(${getStoredExchangeRateSql(defaultInstrumentId, instrumentIdRef)}, ${getMarketPriceExchangeRateSql(defaultInstrumentId, instrumentIdRef)})
     END`;

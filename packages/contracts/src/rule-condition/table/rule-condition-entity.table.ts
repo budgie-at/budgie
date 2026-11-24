@@ -1,5 +1,5 @@
 import { sql } from 'drizzle-orm';
-import { check, int, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { check, index, int, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 import { convertEnumToDrizzleEnum } from '../../@generic/utils/convert-enum-to-drizzle-enum.util';
 import { withBaseEntityTableColumns } from '../../@generic/utils/with-base-entity-table-columns.util';
@@ -27,6 +27,9 @@ export const RuleConditionEntityTable = sqliteTable(
     }),
     table => [
         syncIdentityUniqueIndex('rule_conditions', table),
+        index('rule_conditions_rule_idx')
+            .on(table.ruleId)
+            .where(sql`${table.deletedAt} IS NULL`),
         check('rule_condition_between_requires_secondary_value', sql`operator != 'BETWEEN' OR secondary_value IS NOT NULL`)
     ]
 );

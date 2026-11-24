@@ -1,5 +1,5 @@
 import { TransactionFilterInterface, TransactionTypeEnum } from '@budgie/contracts';
-import { format } from 'date-fns';
+import { format } from 'date-fns/format';
 import { useRouter } from 'expo-router';
 
 import { isDefined } from '@rnw-community/shared';

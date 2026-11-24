@@ -21,12 +21,20 @@ export class InzhurStatementReminderService extends Context.Service<InzhurStatem
         make: Effect.gen(function* () {
             const inzhurSetupService = yield* InzhurSetupService;
             const storageKey = '@budgie:inzhur-statement-reminder';
-            const storage = yield* Effect.acquireRelease(
-                Effect.sync(() => new Storage({ name: 'inzhur-statement-reminder.sqlite' })),
-                reminderStorage =>
-                    Effect.sync(() => {
-                        reminderStorage.closeSync();
-                    })
+            let storageInstance: Storage | null = null;
+            const getStorage = (): Storage => {
+                if (!isDefined(storageInstance)) {
+                    storageInstance = new Storage({ name: 'inzhur-statement-reminder.sqlite' });
+                }
+
+                return storageInstance;
+            };
+
+            yield* Effect.addFinalizer(() =>
+                Effect.sync(() => {
+                    storageInstance?.closeSync();
+                    storageInstance = null;
+                })
             );
 
             const remind = Effect.fn('InzhurStatementReminderService.remind')(function* () {
@@ -38,7 +46,7 @@ export class InzhurStatementReminderService extends Context.Service<InzhurStatem
                 }
 
                 const remindedStatementDate = yield* Effect.tryPromise({
-                    try: () => storage.getItem(storageKey),
+                    try: () => getStorage().getItem(storageKey),
                     catch: cause => NativeCallError.make({ cause })
                 });
 
@@ -61,7 +69,7 @@ export class InzhurStatementReminderService extends Context.Service<InzhurStatem
                     })
                 );
                 yield* Effect.tryPromise({
-                    try: () => storage.setItem(storageKey, reminder.lastStatementDate),
+                    try: () => getStorage().setItem(storageKey, reminder.lastStatementDate),
                     catch: cause => NativeCallError.make({ cause })
                 });
             });

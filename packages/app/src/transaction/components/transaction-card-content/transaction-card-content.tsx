@@ -1,4 +1,5 @@
 import {
+    TransactionConsolidationTypeEnum,
     TransactionWithRelationsEntityInterface,
     isNegativeAdjustmentTransaction,
     isPositiveAdjustmentTransaction
@@ -17,6 +18,7 @@ import { useTransactionRowTitle } from '../../hook/use-transaction-row-title.hoo
 import { isAccountBrokerageTrade } from '../../utils/is-account-brokerage-trade.util';
 import { TransactionAmount } from '../transaction-amount/transaction-amount';
 import { TransactionCardIcon } from '../transaction-card-icon/transaction-card-icon';
+import { TransactionCardRefundedDetail } from '../transaction-card-refunded-detail/transaction-card-refunded-detail';
 import { TransactionCardStackedSubtitle } from '../transaction-card-stacked-subtitle/transaction-card-stacked-subtitle';
 import { TransactionCardSubtitle } from '../transaction-card-subtitle/transaction-card-subtitle';
 import { TransactionCardSelector } from '../transaction-card/transaction-card.selector';
@@ -40,7 +42,9 @@ export const TransactionCardContent = ({ transaction, accountId = null }: Props)
         isAdjustment ? adjustmentTitle : displayTitle
     );
 
+    const isRefund = transaction.consolidationType === TransactionConsolidationTypeEnum.REFUND;
     const hasDetail =
+        isRefund ||
         isAccessibilityTextSize ||
         isNotEmptyArray(subtitleSegments) ||
         isDefined(transaction.receipt) ||
@@ -69,7 +73,7 @@ export const TransactionCardContent = ({ transaction, accountId = null }: Props)
     ) : (
         regularTitleNode
     );
-    const detail = isAccessibilityTextSize ? (
+    const regularDetail = isAccessibilityTextSize ? (
         <TransactionCardStackedSubtitle
             transaction={transaction}
             segments={stackedSegments}
@@ -83,6 +87,18 @@ export const TransactionCardContent = ({ transaction, accountId = null }: Props)
             segments={subtitleSegments}
             {...(!isDetailPromoted && isDefined(subtitleTestID) && { testID: subtitleTestID })}
         />
+    );
+    const detail = isRefund ? (
+        <TransactionCardRefundedDetail
+            transaction={transaction}
+            accountId={accountId}
+            subtitleSegments={subtitleSegments}
+            stackedSegments={stackedSegments}
+            accountTitle={accountTitle}
+            {...(!isDetailPromoted && isDefined(subtitleTestID) && { testID: subtitleTestID })}
+        />
+    ) : (
+        regularDetail
     );
 
     return (

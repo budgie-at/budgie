@@ -1,16 +1,14 @@
 import { DatePeriodEnum, DateRangeInterface } from '@budgie/contracts';
-import {
-    endOfDay,
-    endOfMonth,
-    endOfWeek,
-    endOfYear,
-    startOfDay,
-    startOfMonth,
-    startOfWeek,
-    startOfYear,
-    subMonths,
-    subWeeks
-} from 'date-fns';
+import { endOfDay } from 'date-fns/endOfDay';
+import { endOfMonth } from 'date-fns/endOfMonth';
+import { endOfWeek } from 'date-fns/endOfWeek';
+import { endOfYear } from 'date-fns/endOfYear';
+import { startOfDay } from 'date-fns/startOfDay';
+import { startOfMonth } from 'date-fns/startOfMonth';
+import { startOfWeek } from 'date-fns/startOfWeek';
+import { startOfYear } from 'date-fns/startOfYear';
+import { subMonths } from 'date-fns/subMonths';
+import { subWeeks } from 'date-fns/subWeeks';
 
 const WEEK_OPTIONS = { weekStartsOn: 1 } as const;
 

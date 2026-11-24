@@ -1,3 +1,5 @@
+// This file is required for Expo/React Native SQLite migrations - https://orm.drizzle.team/quick-sqlite/expo
+
 import m0000 from './20261001084501_baseline/migration.sql';
 import m0001 from './20261002214604_recurring_series/migration.sql';
 import m0002 from './20261004064254_transaction_import_fingerprint/migration.sql';
@@ -34,6 +36,7 @@ import m0032 from './20261113201302_yield_outbox_triggers/migration.sql';
 import m0033 from './20261117202013_brokerage_funding_marker/migration.sql';
 import m0034 from './20261121093343_refund_auto_pair_disabled/migration.sql';
 import m0035 from './20261121093354_refund_auto_pair_outbox_triggers/migration.sql';
+import m0036 from './20261124142946_perf_indexes/migration.sql';
 
   export default {
     migrations: {
@@ -72,7 +75,8 @@ import m0035 from './20261121093354_refund_auto_pair_outbox_triggers/migration.s
 "20261113201302_yield_outbox_triggers": m0032,
 "20261117202013_brokerage_funding_marker": m0033,
 "20261121093343_refund_auto_pair_disabled": m0034,
-"20261121093354_refund_auto_pair_outbox_triggers": m0035
+"20261121093354_refund_auto_pair_outbox_triggers": m0035,
+"20261124142946_perf_indexes": m0036
 }
   }
   

@@ -1,9 +1,11 @@
 import { EmbeddingIndexService } from '@budgie/categorization';
+import { TransactionEntityTable, TransactionEntryEntityTable, TransactionTagsEntityTable } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
 import { appAtomRegistry } from '../../@generic/constant/app-atom-registry.constant';
+import { DatabaseChangeService } from '../../@generic/drizzle/service/database-change.service';
 import { Workload } from '../../@generic/service/workload.service';
 import { commentEmbeddingDrainerSnapshotAtom, merchantEmbeddingDrainerSnapshotAtom } from '../constant/ai-snapshot-atoms.constant';
 import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
@@ -24,6 +26,12 @@ export class EmbeddingDrainerService extends Context.Service<EmbeddingDrainerSer
         const embeddingIndexService = yield* EmbeddingIndexService;
         const embeddingProgressStore = yield* EmbeddingProgressStore;
         const aiModelResidencyService = yield* AiModelResidencyService;
+        const databaseChangeService = yield* DatabaseChangeService;
+        const wakeStream = databaseChangeService.watchTables([
+            TransactionEntityTable,
+            TransactionEntryEntityTable,
+            TransactionTagsEntityTable
+        ]);
         const clearStaleFlagsOnce = yield* Effect.ignore(embeddingIndexService.clearStaleFlags, { log: true }).pipe(
             Effect.forkDetach,
             Effect.cached
@@ -40,7 +48,8 @@ export class EmbeddingDrainerService extends Context.Service<EmbeddingDrainerSer
                     snapshot,
                     fetchPending: index.next,
                     countPending: index.countPending,
-                    afterBatch: index.flush.pipe(Effect.andThen(embeddingProgressStore.refresh()))
+                    afterBatch: index.flush.pipe(Effect.andThen(embeddingProgressStore.refresh())),
+                    wakeStream
                 },
                 aiModelResidencyService
             );
@@ -76,6 +85,7 @@ export class EmbeddingDrainerService extends Context.Service<EmbeddingDrainerSer
             EmbeddingIndexService.layer.pipe(Layer.provide(LocalEmbeddingService.invokerLayer)),
             EmbeddingProgressStore.layer,
             AiModelResidencyService.layer,
+            DatabaseChangeService.layer,
             Workload.layer
         ])
     );

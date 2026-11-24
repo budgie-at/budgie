@@ -1,5 +1,6 @@
 import { DateRangeInterface } from '@budgie/contracts';
-import { endOfDay, startOfDay } from 'date-fns';
+import { endOfDay } from 'date-fns/endOfDay';
+import { startOfDay } from 'date-fns/startOfDay';
 import { ImpactFeedbackStyle } from 'expo-haptics';
 import { DateType } from 'react-native-ui-datepicker';
 

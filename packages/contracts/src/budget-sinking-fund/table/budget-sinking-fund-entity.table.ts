@@ -1,4 +1,5 @@
-import { int, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { sql } from 'drizzle-orm';
+import { index, int, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 import { withBaseEntityTableColumns } from '../../@generic/utils/with-base-entity-table-columns.util';
 import { BudgetEntityTable } from '../../budget/table/budget-entity.table';
@@ -27,5 +28,10 @@ export const BudgetSinkingFundEntityTable = sqliteTable(
         fundedAmount: int('funded_amount').notNull().default(0),
         lastFundedPeriodStart: int('last_funded_period_start', { mode: 'timestamp' })
     }),
-    table => [syncIdentityUniqueIndex('budget_sinking_funds', table)]
+    table => [
+        syncIdentityUniqueIndex('budget_sinking_funds', table),
+        index('budget_sinking_funds_budget_idx')
+            .on(table.budgetId)
+            .where(sql`${table.deletedAt} IS NULL`)
+    ]
 );

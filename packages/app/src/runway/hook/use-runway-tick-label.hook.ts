@@ -1,5 +1,5 @@
 import { useLingui } from '@lingui/react/macro';
-import { addMonths } from 'date-fns';
+import { addMonths } from 'date-fns/addMonths';
 
 import { useFormatDate } from '../../i18n/hook/use-format-date.hook';
 import { RUNWAY_HORIZON_MONTHS } from '../constant/runway-horizon-months.constant';

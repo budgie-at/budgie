@@ -19,7 +19,12 @@ import {
 } from '@budgie/contracts';
 import { EntryBaseValuationService } from '@budgie/market';
 import { t } from '@lingui/core/macro';
-import { addDays, differenceInCalendarMonths, endOfDay, max, startOfDay, subDays } from 'date-fns';
+import { addDays } from 'date-fns/addDays';
+import { differenceInCalendarMonths } from 'date-fns/differenceInCalendarMonths';
+import { endOfDay } from 'date-fns/endOfDay';
+import { max } from 'date-fns/max';
+import { startOfDay } from 'date-fns/startOfDay';
+import { subDays } from 'date-fns/subDays';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';

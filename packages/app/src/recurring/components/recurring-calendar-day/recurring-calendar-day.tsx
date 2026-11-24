@@ -8,6 +8,7 @@ import { HapticPressable } from '../../../@generic/component/haptic-pressable/ha
 import { HapticPressFeedbackEnum } from '../../../@generic/enum/haptic-press-feedback.enum';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { cn } from '../../../@generic/utils/cn.util';
+import { getCachedDateTimeFormat } from '../../../@generic/utils/date/get-cached-date-time-format.util';
 import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
 import { useLocaleInfo } from '../../../i18n/hook/use-locale-info.hook';
 import { RECURRING_CALENDAR_CELL_STYLE } from '../../constant/recurring-calendar-cell-style.constant';
@@ -61,7 +62,7 @@ export const RecurringCalendarDay = (props: Props) => {
     const actualDots = Math.min(entryCount, isPositiveNumber(forecastedCount) ? MAX_DOTS - 1 : MAX_DOTS);
     const dayTestID = isCurrentMonth ? RecurringCalendarSelector.CurrentMonthDay(dayOfMonth) : null;
 
-    const formattedDate = new Intl.DateTimeFormat(languageTag, { dateStyle: 'full' }).format(day.date);
+    const formattedDate = getCachedDateTimeFormat(languageTag, { dateStyle: 'full' }).format(day.date);
     const accessibilityLabel = isLoading ? formattedDate : t`${formattedDate}. Paid: ${entryCount}. Still to pay: ${forecastedCount}.`;
     const accessibilityState = { selected: isSelected, disabled: day.isDisabled, busy: isLoading };
     const handlePress = () => {

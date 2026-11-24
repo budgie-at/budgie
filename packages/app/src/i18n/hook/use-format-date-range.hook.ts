@@ -1,5 +1,9 @@
 import { useLingui } from '@lingui/react/macro';
-import { differenceInCalendarMonths, endOfYear, isSameDay, isSameYear, startOfYear } from 'date-fns';
+import { differenceInCalendarMonths } from 'date-fns/differenceInCalendarMonths';
+import { endOfYear } from 'date-fns/endOfYear';
+import { isSameDay } from 'date-fns/isSameDay';
+import { isSameYear } from 'date-fns/isSameYear';
+import { startOfYear } from 'date-fns/startOfYear';
 
 import { isDefined } from '@rnw-community/shared';
 

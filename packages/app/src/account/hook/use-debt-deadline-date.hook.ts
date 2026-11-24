@@ -1,5 +1,7 @@
 import { useAtomRefresh, useAtomValue } from '@effect/atom-react/Hooks';
-import { addDays, isSameDay, startOfDay } from 'date-fns';
+import { addDays } from 'date-fns/addDays';
+import { isSameDay } from 'date-fns/isSameDay';
+import { startOfDay } from 'date-fns/startOfDay';
 import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as Fiber from 'effect/Fiber';
