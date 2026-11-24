@@ -26,7 +26,9 @@ export const useCategorizeInboxLastWriteState = (
 ): Pick<CategorizeInboxContextValueInterface, 'lastWrite' | 'lastWriteState'> => {
     const language = useSetting('language');
     const { enabledRules } = useGetEnabledRulesQuery();
-    const transactionIds = isDefined(lastWrite) ? [...new Set(toCategorizeInboxTransactionIds(lastWrite.assignments))] : [];
+    const transactionIds = isDefined(lastWrite)
+        ? [...new Set(toCategorizeInboxTransactionIds(lastWrite.assignments))].sort((left, right) => left - right)
+        : [];
     const result = useLiveAtomValue(
         isNotEmptyArray(transactionIds) ? filedTransactionsAtom([transactionIds, language]) : noFiledTransactionsAtom
     );

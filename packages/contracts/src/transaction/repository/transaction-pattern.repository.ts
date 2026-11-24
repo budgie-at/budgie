@@ -60,18 +60,33 @@ export class TransactionPatternRepository extends Context.Service<TransactionPat
                 groupColumn: PatternGroupColumn
             ) {
                 const titleSource = getTitleSource(groupColumn);
-                const amountRows = yield* Db.query(db =>
-                    db
+                const amountRows = yield* Db.query(db => {
+                    const rankedAmounts = db.$with('ranked_amounts').as(
+                        db
+                            .select({
+                                categoryId: TransactionEntryEntityTable.categoryId,
+                                title: sql<string>`${titleSource}`.as('pattern_title'),
+                                amount: TransactionEntryEntityTable.amount,
+                                rowNumber:
+                                    sql<number>`ROW_NUMBER() OVER (PARTITION BY ${TransactionEntryEntityTable.categoryId}, ${titleSource} ORDER BY ${TransactionEntityTable.operatedAt} DESC, ${TransactionEntityTable.id} DESC)`.as(
+                                        'row_number'
+                                    )
+                            })
+                            .from(TransactionEntityTable)
+                            .innerJoin(TransactionEntryEntityTable, TRANSACTION_ENTRY_JOIN_CONDITION)
+                            .where(buildPatternLookupWhere(patterns, groupColumn))
+                    );
+
+                    return db
+                        .with(rankedAmounts)
                         .select({
-                            categoryId: TransactionEntryEntityTable.categoryId,
-                            title: titleSource,
-                            amount: TransactionEntryEntityTable.amount
+                            categoryId: rankedAmounts.categoryId,
+                            title: rankedAmounts.title,
+                            amount: rankedAmounts.amount
                         })
-                        .from(TransactionEntityTable)
-                        .innerJoin(TransactionEntryEntityTable, TRANSACTION_ENTRY_JOIN_CONDITION)
-                        .where(buildPatternLookupWhere(patterns, groupColumn))
-                        .orderBy(TransactionEntityTable.operatedAt, desc(TransactionEntityTable.id))
-                );
+                        .from(rankedAmounts)
+                        .where(eq(rankedAmounts.rowNumber, 1));
+                });
 
                 return new Map(amountRows.map(row => [`${row.categoryId}-${row.title}`, row.amount]));
             });

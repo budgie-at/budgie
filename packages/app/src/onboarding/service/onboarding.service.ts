@@ -67,17 +67,18 @@ export class OnboardingService extends Context.Service<OnboardingService>()('@bu
 
                 yield* settingsRepository.update({ defaultInstrumentId: instrumentId, language });
             }),
-            provisionAccounts: Effect.fn('OnboardingService.provisionAccounts')(function* (
-                accounts: readonly OnboardingAccountOptionInterface[]
-            ) {
-                const { defaultInstrumentId } = yield* settingsRepository.getSettings();
-                const instrumentId = defaultInstrumentId ?? DEFAULT_INSTRUMENT.id;
-                const existingAccounts = yield* accountRepository.getAllActiveAccounts;
-                const existingTypes = new Set(existingAccounts.map(existingAccount => existingAccount.type));
-                const accountsToCreate = accounts.filter(account => !existingTypes.has(account.type));
+            provisionAccounts: Effect.fn('OnboardingService.provisionAccounts')(
+                function* (accounts: readonly OnboardingAccountOptionInterface[]) {
+                    const { defaultInstrumentId } = yield* settingsRepository.getSettings();
+                    const instrumentId = defaultInstrumentId ?? DEFAULT_INSTRUMENT.id;
+                    const existingAccounts = yield* accountRepository.getAllActiveAccounts;
+                    const existingTypes = new Set(existingAccounts.map(existingAccount => existingAccount.type));
+                    const accountsToCreate = accounts.filter(account => !existingTypes.has(account.type));
 
-                yield* Effect.forEach(accountsToCreate, account => createOnboardingAccount(account, instrumentId), { discard: true });
-            }),
+                    yield* Effect.forEach(accountsToCreate, account => createOnboardingAccount(account, instrumentId), { discard: true });
+                },
+                effect => Db.transaction(effect)
+            ),
             saveBalances: (balances: OnboardingBalanceInputInterface[]) =>
                 Db.transaction(
                     Effect.forEach(

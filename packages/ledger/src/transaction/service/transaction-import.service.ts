@@ -32,7 +32,12 @@ import { TransactionDepositSafetyService } from './transaction-deposit-safety.se
 import type { ImportedBatchPreparationInterface } from '../interface/imported-batch-preparation.interface';
 import type { ImportedUpsertResultInterface } from '../interface/imported-upsert-result.interface';
 import type { TransactionImportOptionsInterface } from '../interface/transaction-import-options.interface';
-import type { TransactionCreateInputInterface, TransactionEntityInterface, TransactionWithEntriesEntityInterface } from '@budgie/contracts';
+import type {
+    TransactionCreateInputInterface,
+    TransactionEntityInterface,
+    TransactionEntryCreateEntityInterface,
+    TransactionWithEntriesEntityInterface
+} from '@budgie/contracts';
 
 export class TransactionImportService extends Context.Service<TransactionImportService>()('@budgie/ledger/TransactionImportService', {
     make: Effect.gen(function* () {
@@ -212,15 +217,14 @@ export class TransactionImportService extends Context.Service<TransactionImportS
             );
         });
 
-        const refreshImportedTransactionEntries = Effect.fnUntraced(function* (
+        const buildRefreshedImportedTransactionEntries = Effect.fnUntraced(function* (
             input: TransactionCreateInputInterface,
             existingTransaction: TransactionWithEntriesEntityInterface
         ) {
-            const transactionId = existingTransaction.id;
             const refreshedEntriesResult = yield* refreshedImportedEntriesService.build({
                 existingEntries: existingTransaction.entries,
                 inputEntries: input.entries,
-                transactionId,
+                transactionId: existingTransaction.id,
                 input
             });
 
@@ -228,32 +232,20 @@ export class TransactionImportService extends Context.Service<TransactionImportS
                 refreshedEntriesResult.status !== RefreshedImportedEntriesStatusEnum.REFRESHED ||
                 !isDefined(refreshedEntriesResult.entries)
             ) {
-                return;
+                return null;
             }
 
-            yield* transactionEntryRepository.deleteLedgerByTransactionId(transactionId);
-            yield* transactionEntryRepository.bulkCreate([...refreshedEntriesResult.entries]);
+            return [...refreshedEntriesResult.entries];
         });
 
-        const replaceImportedTransactionEntries = Effect.fnUntraced(function* (
-            input: TransactionCreateInputInterface,
-            existingTransaction: TransactionWithEntriesEntityInterface
-        ) {
-            const transactionId = existingTransaction.id;
-            const entries = yield* refreshedImportedEntriesService.rebuild(transactionId, input, existingTransaction.entries);
-
-            yield* transactionEntryRepository.deleteLedgerByTransactionId(transactionId);
-            yield* transactionEntryRepository.bulkCreate(entries);
-        });
-
-        const writeImportedTransactionEntries = (
+        const prepareImportedTransactionEntries = (
             refreshMode: ImportedTransactionRefreshModeEnum,
             input: TransactionCreateInputInterface,
             existingTransaction: TransactionWithEntriesEntityInterface
         ) =>
             refreshMode === ImportedTransactionRefreshModeEnum.KEEP_APP_VALUES
-                ? refreshImportedTransactionEntries(input, existingTransaction)
-                : replaceImportedTransactionEntries(input, existingTransaction);
+                ? buildRefreshedImportedTransactionEntries(input, existingTransaction)
+                : refreshedImportedEntriesService.rebuild(existingTransaction.id, input, existingTransaction.entries);
 
         const updateImportedTransaction = Effect.fnUntraced(function* (
             input: TransactionCreateInputInterface,
@@ -262,7 +254,8 @@ export class TransactionImportService extends Context.Service<TransactionImportS
         ) {
             const importFingerprint = importedBatchNormalizerService.buildImportFingerprint(input);
             const shouldKeepAppValues = refreshMode === ImportedTransactionRefreshModeEnum.KEEP_APP_VALUES;
-            const updated = yield* transactionRepository.updateById(existingTransaction.id, {
+
+            return yield* transactionRepository.updateById(existingTransaction.id, {
                 title: input.title,
                 comment: isNotEmptyString(existingTransaction.comment) ? existingTransaction.comment : input.comment,
                 operatedAt: input.operatedAt,
@@ -279,10 +272,6 @@ export class TransactionImportService extends Context.Service<TransactionImportS
                     exchangeRate: input.exchangeRate
                 })
             });
-
-            yield* writeImportedTransactionEntries(refreshMode, input, existingTransaction);
-
-            return updated;
         });
 
         const needsRematch = (
@@ -332,6 +321,26 @@ export class TransactionImportService extends Context.Service<TransactionImportS
             const updatedTransactions = yield* Effect.forEach(refreshParams, ({ input, existingTransaction }, index) =>
                 updateImportedTransaction(input, existingTransaction, refreshModes[index])
             );
+            const replacementEntriesByTransactionId = new Map<number, TransactionEntryCreateEntityInterface[]>();
+
+            for (const [index, { input, existingTransaction }] of refreshParams.entries()) {
+                const entries = yield* prepareImportedTransactionEntries(refreshModes[index], input, existingTransaction);
+
+                if (isDefined(entries)) {
+                    replacementEntriesByTransactionId.set(existingTransaction.id, entries);
+                }
+            }
+
+            const replacementTransactionIds = [...replacementEntriesByTransactionId.keys()];
+            const replacementEntries = [...replacementEntriesByTransactionId.values()].flat();
+
+            if (isNotEmptyArray(replacementTransactionIds)) {
+                yield* transactionEntryRepository.deleteLedgerByTransactionIds(replacementTransactionIds);
+            }
+
+            if (isNotEmptyArray(replacementEntries)) {
+                yield* transactionEntryRepository.bulkCreate(replacementEntries);
+            }
 
             yield* transactionDebtSettlementService.resyncTransactions(
                 refreshParams

@@ -1,9 +1,9 @@
-import { ExternalSourceEnum, LanguageEnum, TransactionRepository, TransactionYieldRepository, YieldKindEnum } from '@budgie/contracts';
+import { Db, ExternalSourceEnum, LanguageEnum, TransactionRepository, TransactionYieldRepository, YieldKindEnum } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined, isEmptyArray } from '@rnw-community/shared';
+import { isDefined, isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
 
 import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 
@@ -61,14 +61,31 @@ export class BankInterestDetectorService extends Context.Service<BankInterestDet
                         scope?.transactionIds ?? null
                     )).filter(candidate => keywordPattern.test([candidate.title, candidate.comment].filter(isDefined).join(' ')));
 
-                    for (const candidate of candidates) {
-                        yield* transactionRepository.updateById(candidate.id, {
-                            yieldKind: YieldKindEnum.INTEREST,
-                            yieldSourceAccountId: yield* resolveSource(candidate.integrationId, candidate.syncZone)
-                        });
+                    if (!isNotEmptyArray(candidates)) {
+                        return;
                     }
 
-                    yield* transactionYieldRepository.fillMissingYieldCategory(candidates.map(({ id }) => id));
+                    yield* Db.transaction(
+                        Effect.gen(function* () {
+                            const sourceAccountByKey = new Map<string, number | null>();
+
+                            for (const candidate of candidates) {
+                                const sourceKey = `${candidate.integrationId ?? ''}|${candidate.syncZone}`;
+                                const yieldSourceAccountId = sourceAccountByKey.has(sourceKey)
+                                    ? (sourceAccountByKey.get(sourceKey) ?? null)
+                                    : yield* resolveSource(candidate.integrationId, candidate.syncZone);
+
+                                sourceAccountByKey.set(sourceKey, yieldSourceAccountId);
+
+                                yield* transactionRepository.updateById(candidate.id, {
+                                    yieldKind: YieldKindEnum.INTEREST,
+                                    yieldSourceAccountId
+                                });
+                            }
+
+                            yield* transactionYieldRepository.fillMissingYieldCategory(candidates.map(({ id }) => id));
+                        })
+                    );
                 })
             };
         })

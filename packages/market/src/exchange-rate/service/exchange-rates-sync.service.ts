@@ -43,6 +43,7 @@ export class ExchangeRatesSyncService extends Context.Service<ExchangeRatesSyncS
         const coingeckoSimplePriceApiUrl = 'https://api.coingecko.com/api/v3/simple/price';
         const exchangeRateApiUrl = 'https://api.exchangerate-api.com/v4/latest';
         const cryptoRateSyncBatchSize = 40;
+        const yahooSyncConcurrency = 4;
         const fetchTimeoutMs = 5000;
         const syncCooldownMs = 5 * 60 * 1000;
         const exchangeRateApiResponseSchema = Schema.Struct({
@@ -101,29 +102,32 @@ export class ExchangeRatesSyncService extends Context.Service<ExchangeRatesSyncS
         const syncFiatRates = Effect.fn('ExchangeRatesSyncService.syncFiatRates')(function* (baseInstrument: InstrumentEntityInterface) {
             const instruments = yield* instrumentRepository.findByType(InstrumentTypeEnum.FIAT);
             const euroInstrument = yield* instrumentRepository.findByCode(CurrencyEnum.EUR);
-            const { latestInputs, historicalInputs } = yield* fetchJson(
+            const apiData = yield* fetchJson(
                 `${exchangeRateApiUrl}/${baseInstrument.code}`,
                 exchangeRateApiResponseSchema,
                 fetchTimeoutMs
             ).pipe(
-                Effect.map(apiData => ({
-                    latestInputs: buildLatestFiatRateInputs(baseInstrument, instruments, apiData.rates),
-                    historicalInputs: buildHistoricalEuroRateInputs(euroInstrument, instruments, apiData.rates, apiData.date)
-                })),
-                Effect.orElseSucceed(() => ({
-                    latestInputs: buildLatestFiatRateInputs(baseInstrument, instruments, { USD: 1 }),
-                    historicalInputs: []
-                }))
+                Effect.tapCause(Effect.logError),
+                Effect.orElseSucceed(() => null)
             );
 
-            yield* Db.transaction(
-                Effect.all(
-                    [exchangeRateRepository.bulkUpsert(latestInputs), historicalExchangeRateRepository.bulkUpsert(historicalInputs)],
-                    {
-                        discard: true
-                    }
-                )
-            );
+            if (!isDefined(apiData)) {
+                return false;
+            }
+
+            const latestInputs = buildLatestFiatRateInputs(baseInstrument, instruments, apiData.rates);
+            const historicalInputs = buildHistoricalEuroRateInputs(euroInstrument, instruments, apiData.rates, apiData.date);
+
+            if (isNotEmptyArray(latestInputs) || isNotEmptyArray(historicalInputs)) {
+                yield* Db.transaction(
+                    Effect.all(
+                        [exchangeRateRepository.bulkUpsert(latestInputs), historicalExchangeRateRepository.bulkUpsert(historicalInputs)],
+                        { discard: true }
+                    )
+                );
+            }
+
+            return true;
         });
 
         const syncCryptoRateBatch = Effect.fn('ExchangeRatesSyncService.syncCryptoRateBatch')(function* (
@@ -133,7 +137,7 @@ export class ExchangeRatesSyncService extends Context.Service<ExchangeRatesSyncS
             const providerInstrumentIds = [...new Set(instruments.map(instrument => instrument.providerInstrumentId).filter(isDefined))];
 
             if (!isNotEmptyArray(providerInstrumentIds)) {
-                return;
+                return false;
             }
 
             const quoteCode = baseInstrument.code.toLowerCase();
@@ -147,7 +151,13 @@ export class ExchangeRatesSyncService extends Context.Service<ExchangeRatesSyncS
                 return isPositiveNumber(price) ? buildRatePairInputs(instrument.id, baseInstrument.id, price, 'coingecko.com') : [];
             });
 
+            if (!isNotEmptyArray(inputs)) {
+                return false;
+            }
+
             yield* Db.transaction(exchangeRateRepository.bulkUpsert(inputs));
+
+            return true;
         });
 
         const syncCryptoRates = Effect.fn('ExchangeRatesSyncService.syncCryptoRates')(function* (
@@ -157,12 +167,11 @@ export class ExchangeRatesSyncService extends Context.Service<ExchangeRatesSyncS
                 InstrumentTypeEnum.CRYPTO,
                 InstrumentPriceProviderEnum.COINGECKO
             );
-
-            yield* Effect.forEach(
-                Arr.chunksOf(instruments, cryptoRateSyncBatchSize),
-                batch => syncCryptoRateBatch(baseInstrument, batch).pipe(Effect.andThen(Effect.sleep(1))),
-                { discard: true }
+            const batchResults = yield* Effect.forEach(Arr.chunksOf(instruments, cryptoRateSyncBatchSize), batch =>
+                syncCryptoRateBatch(baseInstrument, batch).pipe(Effect.tap(() => Effect.sleep(1)))
             );
+
+            return batchResults.some(Boolean);
         });
 
         const syncYahooRates = Effect.fnUntraced(function* () {
@@ -173,7 +182,7 @@ export class ExchangeRatesSyncService extends Context.Service<ExchangeRatesSyncS
                     isDefined(instrument.quoteInstrumentId) &&
                     accounts.some(account => account.instrumentId === instrument.id)
             );
-            yield* Effect.forEach(
+            const rateBatches = yield* Effect.forEach(
                 instruments,
                 Effect.fnUntraced(function* (instrument) {
                     const now = yield* DateTime.nowAsDate;
@@ -181,14 +190,22 @@ export class ExchangeRatesSyncService extends Context.Service<ExchangeRatesSyncS
                         .chart(instrument.providerInstrumentId ?? instrument.code, subDays(now, 7), now)
                         .pipe(Effect.orElseSucceed(() => null));
                     const price = data?.meta.regularMarketPrice;
-                    if (!isPositiveNumber(price) || !isDefined(instrument.quoteInstrumentId)) {
-                        return;
-                    }
-                    const inputs = buildRatePairInputs(instrument.id, instrument.quoteInstrumentId, price, 'yahoo.com');
-                    yield* Db.transaction(exchangeRateRepository.bulkUpsert(inputs));
+
+                    return isPositiveNumber(price) && isDefined(instrument.quoteInstrumentId)
+                        ? buildRatePairInputs(instrument.id, instrument.quoteInstrumentId, price, 'yahoo.com')
+                        : [];
                 }),
-                { discard: true }
+                { concurrency: yahooSyncConcurrency }
             );
+            const allInputs = rateBatches.flat();
+
+            if (!isNotEmptyArray(allInputs)) {
+                return false;
+            }
+
+            yield* Db.transaction(exchangeRateRepository.bulkUpsert(allInputs));
+
+            return true;
         });
 
         return {
@@ -206,12 +223,15 @@ export class ExchangeRatesSyncService extends Context.Service<ExchangeRatesSyncS
                         return;
                     }
 
-                    yield* syncFiatRates(baseInstrument);
+                    const fiatSucceeded = yield* syncFiatRates(baseInstrument);
                     yield* Effect.sleep(1);
-                    yield* syncCryptoRates(baseInstrument);
-                    yield* syncYahooRates();
-                    const syncedAtMs = yield* Clock.currentTimeMillis;
-                    yield* Ref.set(lastSyncedAtMs, syncedAtMs);
+                    const cryptoSucceeded = yield* syncCryptoRates(baseInstrument);
+                    const yahooSucceeded = yield* syncYahooRates();
+
+                    if (fiatSucceeded || cryptoSucceeded || yahooSucceeded) {
+                        const syncedAtMs = yield* Clock.currentTimeMillis;
+                        yield* Ref.set(lastSyncedAtMs, syncedAtMs);
+                    }
                 },
                 syncPermit.withPermitsIfAvailable(1),
                 Effect.asVoid

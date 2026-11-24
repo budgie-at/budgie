@@ -13,7 +13,7 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { PRIVATBANK_OWN_CARD_TITLE_PHRASES } from '../constant/privatbank-own-card-title-phrases.constant';
 
@@ -66,7 +66,7 @@ export class UnpairedOwnCardTransferRepairService extends Context.Service<Unpair
                                     (transactions.type = 'INCOME' AND superseded_tx.type = 'EXPENSE' AND superseded_tx.from_account_id = counterpart_account.id)
                                     OR (transactions.type = 'EXPENSE' AND superseded_tx.type = 'INCOME' AND superseded_tx.to_account_id = counterpart_account.id)
                                 )
-                                AND ABS(superseded_tx.operated_at - transactions.operated_at) <= ${TRANSFER_PAIR_TIME_WINDOW_SECONDS}
+                                AND superseded_tx.operated_at BETWEEN transactions.operated_at - ${TRANSFER_PAIR_TIME_WINDOW_SECONDS} AND transactions.operated_at + ${TRANSFER_PAIR_TIME_WINDOW_SECONDS}
                                 AND superseded_entry.amount >= transaction_entries.amount - ${counterpartAmountTolerance}
                         ) superseded_candidate
                         ORDER BY superseded_candidate.distance
@@ -123,7 +123,7 @@ export class UnpairedOwnCardTransferRepairService extends Context.Service<Unpair
                                 (transactions.type = 'INCOME' AND counterpart_tx.type = 'EXPENSE' AND counterpart_tx.from_account_id = counterpart_account.id)
                                 OR (transactions.type = 'EXPENSE' AND counterpart_tx.type = 'INCOME' AND counterpart_tx.to_account_id = counterpart_account.id)
                             )
-                            AND ABS(counterpart_tx.operated_at - transactions.operated_at) <= ${TRANSFER_PAIR_TIME_WINDOW_SECONDS}
+                            AND counterpart_tx.operated_at BETWEEN transactions.operated_at - ${TRANSFER_PAIR_TIME_WINDOW_SECONDS} AND transactions.operated_at + ${TRANSFER_PAIR_TIME_WINDOW_SECONDS}
                             AND counterpart_entry.amount >= transaction_entries.amount - ${counterpartAmountTolerance}
                     )
             `;
@@ -158,8 +158,8 @@ export class UnpairedOwnCardTransferRepairService extends Context.Service<Unpair
                 repair: Effect.fn('UnpairedOwnCardTransferRepairService.repair')(function* () {
                     const candidates = yield* findCandidates();
 
-                    for (const candidate of candidates) {
-                        yield* convertCandidate(candidate);
+                    if (isNotEmptyArray(candidates)) {
+                        yield* Db.transaction(Effect.forEach(candidates, convertCandidate, { discard: true }));
                     }
 
                     return candidates.length;

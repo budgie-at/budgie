@@ -1,14 +1,20 @@
 import {
+    AccountEntityTable,
     CategoryEntityTable,
     DEFAULT_TRANSACTION_FILTER,
     DefaultCategoryTranslationEntityTable,
+    ExchangeRateEntityTable,
+    HistoricalExchangeRateEntityTable,
     RUNWAY_WINDOW_MONTHS,
     RunwayDriverDimensionEnum,
     StatisticsRepository,
-    TagEntityTable
+    TagEntityTable,
+    TransactionEntityTable,
+    TransactionEntryEntityTable
 } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
+import * as Atom from 'effect/reactivity/Atom';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { useToday } from '../../@generic/hook/use-today.hook';
@@ -23,8 +29,10 @@ import { fillRunwaySeriesMonths } from '../utils/fill-runway-series-months.util'
 import type { UseRunwayQueryParams } from '../interface/use-runway-query-params.interface';
 import type { LanguageEnum } from '@budgie/contracts';
 
+const emptyRunwayDriverSeriesAtom = Atom.make(AsyncResult.success([]));
+
 export const runwaySeriesAtom = databaseQueryFamily(
-    STATISTICS_TABLES,
+    [TransactionEntityTable, TransactionEntryEntityTable, AccountEntityTable, ExchangeRateEntityTable, HistoricalExchangeRateEntityTable],
     StatisticsRepository,
     (statisticsRepository, [defaultInstrumentId, isCryptoIncluded]: readonly [number, boolean]) =>
         statisticsRepository.getRunwaySeriesQuery(DEFAULT_TRANSACTION_FILTER, defaultInstrumentId, RUNWAY_WINDOW_MONTHS, isCryptoIncluded)
@@ -52,10 +60,13 @@ export const useRunwayQuery = (params: UseRunwayQueryParams) => {
     const language = useSetting('language');
     const isCryptoIncluded = useSetting('isRunwayCryptoIncluded');
     const defaultInstrumentId = useAtomValue(defaultInstrumentIdAtom);
+    const isCategoryDimension = dimension === RunwayDriverDimensionEnum.CATEGORY;
     const seriesResult = useLiveAtomValue(runwaySeriesAtom([defaultInstrumentId, isCryptoIncluded]));
     const driverResult = useLiveAtomValue(runwayDriverSeriesAtom([defaultInstrumentId, dimension, language, isCryptoIncluded]));
     const categoryDriverResult = useLiveAtomValue(
-        runwayDriverSeriesAtom([defaultInstrumentId, RunwayDriverDimensionEnum.CATEGORY, language, isCryptoIncluded])
+        isCategoryDimension
+            ? emptyRunwayDriverSeriesAtom
+            : runwayDriverSeriesAtom([defaultInstrumentId, RunwayDriverDimensionEnum.CATEGORY, language, isCryptoIncluded])
     );
     const today = useToday();
     const seriesRows = fillRunwaySeriesMonths(
@@ -67,14 +78,13 @@ export const useRunwayQuery = (params: UseRunwayQueryParams) => {
         seriesRows,
         isAllIn
     );
-    const categoryBreakdown =
-        dimension === RunwayDriverDimensionEnum.CATEGORY
-            ? breakdown
-            : aggregateRunwayDrivers(
-                  AsyncResult.getOrElse(categoryDriverResult, () => []),
-                  seriesRows,
-                  isAllIn
-              );
+    const categoryBreakdown = isCategoryDimension
+        ? breakdown
+        : aggregateRunwayDrivers(
+              AsyncResult.getOrElse(categoryDriverResult, () => []),
+              seriesRows,
+              isAllIn
+          );
     const computation = computeRunway({
         series: seriesRows,
         liquid,

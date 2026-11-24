@@ -597,6 +597,19 @@ export class TransactionRepository extends Context.Service<TransactionRepository
 
             deleteById: (id: number) => Db.query(db => db.delete(TransactionEntityTable).where(eq(TransactionEntityTable.id, id))),
 
+            findAllWithMccCategoryAfter: (limit: number, cursorId: number | null) =>
+                Db.query(db =>
+                    db.query.TransactionEntityTable.findMany({
+                        with: ENTRIES_WITH_MCC_CATEGORY_RELATIONS,
+                        orderBy: (transaction, { desc }) => [desc(transaction.id)],
+                        limit,
+                        where: {
+                            deletedAt: { isNull: true },
+                            ...(isDefined(cursorId) && { id: { lt: cursorId } })
+                        }
+                    })
+                ),
+
             findAllWithMccCategoryOffset: (limit: number, offset: number) =>
                 Db.query(db =>
                     db.query.TransactionEntityTable.findMany({

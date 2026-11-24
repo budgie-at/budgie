@@ -1,10 +1,13 @@
 import { MccCategoryEntityTable, MccCategoryRepository } from '@budgie/contracts';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
+import * as Atom from 'effect/reactivity/Atom';
 
-import { isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isPositiveNumber } from '@rnw-community/shared';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
+
+const noMccCategoryAtom = Atom.make(AsyncResult.success(null));
 
 export const mccCategoryByIdAtom = databaseQueryFamily(
     [MccCategoryEntityTable],
@@ -13,10 +16,10 @@ export const mccCategoryByIdAtom = databaseQueryFamily(
 );
 
 export const useGetMccCategoryByIdQuery = (id: number | null) => {
-    const shouldFetch = isDefined(id) && isPositiveNumber(id);
-    const result = useLiveAtomValue(mccCategoryByIdAtom(id ?? 0));
+    const shouldQuery = isPositiveNumber(id);
+    const result = useLiveAtomValue(shouldQuery ? mccCategoryByIdAtom(id) : noMccCategoryAtom);
 
-    if (!shouldFetch) {
+    if (!shouldQuery) {
         return { isLoading: false, mccCategory: null };
     }
 

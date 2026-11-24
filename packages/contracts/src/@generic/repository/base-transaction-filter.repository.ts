@@ -1,4 +1,4 @@
-import { SQL, and, eq, gte, inArray, isNotNull, isNull, lte, ne, notInArray, or } from 'drizzle-orm';
+import { SQL, and, eq, exists, gte, inArray, isNotNull, isNull, lte, ne, notExists, or, sql } from 'drizzle-orm';
 import { QueryBuilder } from 'drizzle-orm/sqlite-core';
 
 import { isDefined, isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
@@ -163,9 +163,11 @@ class BaseTransactionFilterRepository {
     }
 
     buildUntaggedCondition() {
-        return notInArray(
-            TransactionEntityTable.id,
-            this.queryBuilder.select({ transactionId: TransactionTagsEntityTable.transactionId }).from(TransactionTagsEntityTable)
+        return notExists(
+            this.queryBuilder
+                .select({ one: sql`1` })
+                .from(TransactionTagsEntityTable)
+                .where(eq(TransactionTagsEntityTable.transactionId, TransactionEntityTable.id))
         );
     }
 
@@ -211,13 +213,13 @@ class BaseTransactionFilterRepository {
             return undefined;
         }
 
-        return inArray(
-            TransactionEntityTable.id,
+        return exists(
             this.queryBuilder
-                .select({ transactionId: TransactionEntryEntityTable.transactionId })
+                .select({ one: sql`1` })
                 .from(TransactionEntryEntityTable)
                 .where(
                     and(
+                        eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id),
                         this.buildPrimaryLedgerEntryCondition(),
                         inArray(TransactionEntryEntityTable.type, [TransactionEntryTypeEnum.CREDIT, TransactionEntryTypeEnum.DEBIT]),
                         ...amountParts

@@ -1,7 +1,8 @@
 import { AccountBalanceRepository, AccountEntityTable, DebtEventEntityTable } from '@budgie/contracts';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
+import * as Atom from 'effect/reactivity/Atom';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
@@ -18,21 +19,24 @@ const EMPTY_DEBT_ACCOUNT_PROGRESS_SUMMARY: DebtAccountProgressSummaryInterface =
     totalAmount: 0
 };
 
+const emptyDebtAccountProgressAtom = Atom.make(AsyncResult.success([]));
+
 export const debtAccountProgressAtom = databaseQueryFamily(
     [AccountEntityTable, DebtEventEntityTable],
     AccountBalanceRepository,
     (accountBalanceRepository, accountId: number) => accountBalanceRepository.getDebtAccountProgressByAccountId(accountId)
 );
 
-export const useDebtAccountProgressSummaryQuery = (accountId: number): DebtAccountProgressSummaryInterface | null => {
-    const result = useLiveAtomValue(debtAccountProgressAtom(accountId));
+export const useDebtAccountProgressSummaryQuery = (accountId: number | null): DebtAccountProgressSummaryInterface | null => {
+    const shouldQuery = isPositiveNumber(accountId);
+    const result = useLiveAtomValue(shouldQuery ? debtAccountProgressAtom(accountId) : emptyDebtAccountProgressAtom);
     const row = AsyncResult.getOrElse(result, () => []).at(0);
     const outstandingAmount = useCachedMicroUnitQuery(row?.outstandingAmount);
     const overpaidAmount = useCachedMicroUnitQuery(row?.overpaidAmount);
     const paidAmount = useCachedMicroUnitQuery(row?.paidAmount);
     const totalAmount = useCachedMicroUnitQuery(row?.totalAmount);
 
-    if (AsyncResult.isInitial(result)) {
+    if (!shouldQuery || AsyncResult.isInitial(result)) {
         return null;
     }
 

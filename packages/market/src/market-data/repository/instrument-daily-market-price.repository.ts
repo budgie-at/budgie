@@ -1,10 +1,10 @@
 import { Db, InstrumentDailyMarketPriceEntityTable } from '@budgie/contracts';
-import { and, count, eq, isNull, min } from 'drizzle-orm';
+import { and, asc, count, desc, eq, isNull, lte, min, or, sql } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isNotEmptyArray } from '@rnw-community/shared';
+import { isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
 
 import { bulkUpsert } from '../../@generic/utils/bulk-upsert.util';
 
@@ -104,6 +104,50 @@ export class InstrumentDailyMarketPriceRepository extends Context.Service<Instru
                             limit
                         })
                     ),
+                findRecentForPairs: (pairs: readonly (readonly [number, number])[], limit: number) => {
+                    if (isEmptyArray(pairs)) {
+                        return Effect.succeed([]);
+                    }
+
+                    const pairCondition = or(
+                        ...pairs.map(([instrumentId, quoteInstrumentId]) =>
+                            and(
+                                eq(InstrumentDailyMarketPriceEntityTable.instrumentId, instrumentId),
+                                eq(InstrumentDailyMarketPriceEntityTable.quoteInstrumentId, quoteInstrumentId)
+                            )
+                        )
+                    );
+
+                    return Db.query(db => {
+                        const rankedPrices = db.$with('ranked_prices').as(
+                            db
+                                .select({
+                                    instrumentId: InstrumentDailyMarketPriceEntityTable.instrumentId,
+                                    quoteInstrumentId: InstrumentDailyMarketPriceEntityTable.quoteInstrumentId,
+                                    priceDate: InstrumentDailyMarketPriceEntityTable.priceDate,
+                                    price: InstrumentDailyMarketPriceEntityTable.price,
+                                    rowNumber:
+                                        sql<number>`ROW_NUMBER() OVER (PARTITION BY ${InstrumentDailyMarketPriceEntityTable.instrumentId}, ${InstrumentDailyMarketPriceEntityTable.quoteInstrumentId} ORDER BY ${InstrumentDailyMarketPriceEntityTable.priceDate} DESC)`.as(
+                                            'row_number'
+                                        )
+                                })
+                                .from(InstrumentDailyMarketPriceEntityTable)
+                                .where(and(isNull(InstrumentDailyMarketPriceEntityTable.deletedAt), pairCondition))
+                        );
+
+                        return db
+                            .with(rankedPrices)
+                            .select({
+                                instrumentId: rankedPrices.instrumentId,
+                                quoteInstrumentId: rankedPrices.quoteInstrumentId,
+                                priceDate: rankedPrices.priceDate,
+                                price: rankedPrices.price
+                            })
+                            .from(rankedPrices)
+                            .where(lte(rankedPrices.rowNumber, limit))
+                            .orderBy(asc(rankedPrices.instrumentId), asc(rankedPrices.quoteInstrumentId), desc(rankedPrices.priceDate));
+                    });
+                },
                 countByInstrumentAndQuote: (instrumentId: number, quoteInstrumentId: number) =>
                     Db.query(db =>
                         db

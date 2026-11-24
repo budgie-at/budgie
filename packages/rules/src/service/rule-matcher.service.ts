@@ -37,6 +37,12 @@ export class RuleMatcherService extends Context.Service<RuleMatcherService>()('@
         const transactionRuleRepository = yield* TransactionRuleRepository;
 
         const UNSUPPORTED_SQL_REGEX_TOKEN_PATTERN = /[\\^$.*+?()[\]{}|]/u;
+        const TEXT_CONDITION_FIELDS = new Set<RuleConditionFieldEnum>([
+            RuleConditionFieldEnum.TITLE,
+            RuleConditionFieldEnum.COMMENT,
+            RuleConditionFieldEnum.TRANSACTION_TYPE,
+            RuleConditionFieldEnum.EXTERNAL_SOURCE
+        ]);
 
         const filterMatchingIds = (
             transactions: TransactionWithEntriesMccCategoryEntityInterface[],
@@ -62,13 +68,14 @@ export class RuleMatcherService extends Context.Service<RuleMatcherService>()('@
         const forEachTransactionBatch = Effect.fnUntraced(function* (
             callback: (transactions: TransactionWithEntriesMccCategoryEntityInterface[]) => void
         ) {
-            let offset = 0;
+            let cursorId: number | null = null;
             let hasMore = true;
 
             while (hasMore) {
                 yield* YIELD_TO_UI;
 
-                const transactions = yield* transactionRepository.findAllWithMccCategoryOffset(RULE_SET_BATCH_SIZE, offset);
+                const transactions: TransactionWithEntriesMccCategoryEntityInterface[] =
+                    yield* transactionRepository.findAllWithMccCategoryAfter(RULE_SET_BATCH_SIZE, cursorId);
 
                 if (!isNotEmptyArray(transactions)) {
                     break;
@@ -77,7 +84,7 @@ export class RuleMatcherService extends Context.Service<RuleMatcherService>()('@
                 callback(transactions);
 
                 hasMore = transactions.length >= RULE_SET_BATCH_SIZE;
-                offset += RULE_SET_BATCH_SIZE;
+                cursorId = transactions.at(-1)?.id ?? null;
             }
         });
 
@@ -120,7 +127,7 @@ export class RuleMatcherService extends Context.Service<RuleMatcherService>()('@
 
         const escapeSqlLikeValue = (value: string): string => value.replaceAll('\\', '\\\\').replaceAll('%', '\\%').replaceAll('_', '\\_');
 
-        const buildRegexSql = (column: Column | SQL, value: string): SQL | null => {
+        const buildRegexSql = (textColumn: Column | SQL, value: string): SQL | null => {
             const tokens = getFlexibleRegexTokens(value);
 
             if (!isDefined(tokens)) {
@@ -129,46 +136,43 @@ export class RuleMatcherService extends Context.Service<RuleMatcherService>()('@
 
             const pattern = `%${tokens.map(token => escapeSqlLikeValue(token)).join('%')}%`;
 
-            return sql`CAST(${column} AS TEXT) LIKE ${pattern} ESCAPE '\\'`;
+            return sql`${textColumn} LIKE ${pattern} ESCAPE '\\'`;
         };
 
-        const buildOperatorSql = (
-            column: Column | SQL,
-            operator: RuleConditionOperatorEnum,
-            value: string,
-            secondaryValue: string | null
-        ): SQL | null => {
-            switch (operator) {
+        const buildOperatorSql = (column: Column | SQL, condition: RuleConditionInputInterface): SQL | null => {
+            const textColumn = TEXT_CONDITION_FIELDS.has(condition.field) ? column : sql`CAST(${column} AS TEXT)`;
+
+            switch (condition.operator) {
                 case RuleConditionOperatorEnum.CONTAINS:
-                    return sql`CAST(${column} AS TEXT) LIKE ${`%${escapeSqlLikeValue(value)}%`} ESCAPE '\\'`;
+                    return sql`${textColumn} LIKE ${`%${escapeSqlLikeValue(condition.value)}%`} ESCAPE '\\'`;
                 case RuleConditionOperatorEnum.NOT_CONTAINS:
-                    return sql`CAST(${column} AS TEXT) NOT LIKE ${`%${escapeSqlLikeValue(value)}%`} ESCAPE '\\'`;
+                    return sql`${textColumn} NOT LIKE ${`%${escapeSqlLikeValue(condition.value)}%`} ESCAPE '\\'`;
                 case RuleConditionOperatorEnum.EQUALS:
-                    return sql`CAST(${column} AS TEXT) COLLATE NOCASE = ${value}`;
+                    return sql`${textColumn} COLLATE NOCASE = ${condition.value}`;
                 case RuleConditionOperatorEnum.NOT_EQUALS:
-                    return sql`CAST(${column} AS TEXT) COLLATE NOCASE != ${value}`;
+                    return sql`${textColumn} COLLATE NOCASE != ${condition.value}`;
                 case RuleConditionOperatorEnum.GREATER_THAN:
-                    return sql`${column} > ${Number(value)}`;
+                    return sql`${column} > ${Number(condition.value)}`;
                 case RuleConditionOperatorEnum.LESS_THAN:
-                    return sql`${column} < ${Number(value)}`;
+                    return sql`${column} < ${Number(condition.value)}`;
                 case RuleConditionOperatorEnum.BETWEEN: {
-                    if (!isNotEmptyString(secondaryValue)) {
+                    if (!isNotEmptyString(condition.secondaryValue)) {
                         return null;
                     }
 
-                    const gteClause = sql`${column} >= ${Number(value)}`;
-                    const lteClause = sql`${column} <= ${Number(secondaryValue)}`;
+                    const gteClause = sql`${column} >= ${Number(condition.value)}`;
+                    const lteClause = sql`${column} <= ${Number(condition.secondaryValue)}`;
 
                     return and(gteClause, lteClause) ?? null;
                 }
                 case RuleConditionOperatorEnum.IN: {
-                    const inValues = value.split(',').map(item => item.trim());
+                    const inValues = condition.value.split(',').map(item => item.trim());
                     const placeholders = inValues.map(item => sql`${item}`);
 
-                    return sql`CAST(${column} AS TEXT) COLLATE NOCASE IN (${sql.join(placeholders, sql`, `)})`;
+                    return sql`${textColumn} COLLATE NOCASE IN (${sql.join(placeholders, sql`, `)})`;
                 }
                 case RuleConditionOperatorEnum.MATCHES_REGEX:
-                    return buildRegexSql(column, value);
+                    return buildRegexSql(textColumn, condition.value);
                 default:
                     return null;
             }
@@ -181,7 +185,7 @@ export class RuleMatcherService extends Context.Service<RuleMatcherService>()('@
                 return null;
             }
 
-            return buildOperatorSql(column, condition.operator, condition.value, condition.secondaryValue);
+            return buildOperatorSql(column, condition);
         };
 
         const buildRuleConditionsWhere = (conditions: RuleConditionInputInterface[], conditionMatchType: RuleConditionMatchTypeEnum) => {

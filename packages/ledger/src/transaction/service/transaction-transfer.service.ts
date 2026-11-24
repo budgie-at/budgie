@@ -214,68 +214,80 @@ export class TransactionTransferService extends Context.Service<TransactionTrans
             );
         });
 
+        const convertToTransferWithoutBalanceSync = Effect.fnUntraced(function* (
+            params: ConvertToTransferParamsInterface,
+            direction: 'expense' | 'income',
+            counterAmount: number | null
+        ) {
+            const conversion = yield* buildTransferConversion(direction, params, counterAmount);
+            const debtEvent = yield* debtEventRepository.findByTransactionId(params.id);
+            const updated = yield* transactionRepository.updateById(params.id, {
+                type: conversion.transactionType,
+                fromAccountId: conversion.fromAccountId,
+                toAccountId: conversion.toAccountId,
+                exchangeRate: conversion.exchangeRate
+            });
+
+            const [creditValuation, debitValuation] = yield* Effect.all(
+                [
+                    entryBaseValuationService.valueMicroUnitEntry({
+                        accountId: conversion.creditAccountId,
+                        amount: conversion.creditAmount,
+                        operatedAt: conversion.operatedAt
+                    }),
+                    entryBaseValuationService.valueMicroUnitEntry({
+                        accountId: conversion.debitAccountId,
+                        amount: conversion.debitAmount,
+                        operatedAt: conversion.operatedAt
+                    })
+                ],
+                { concurrency: 'unbounded' }
+            );
+            const feeEntries = yield* buildConversionFeeEntries(params, conversion);
+
+            yield* debtEventRepository.deleteByTransactionId(params.id);
+            yield* transactionEntryRepository.deleteByTransactionId(params.id);
+            const isExpense = direction === 'expense';
+
+            yield* transactionEntryRepository.bulkCreate([
+                {
+                    ...buildTransferEntryCreateEntity({
+                        transactionId: params.id,
+                        accountId: conversion.creditAccountId,
+                        type: TransactionEntryTypeEnum.CREDIT,
+                        amount: conversion.creditAmount,
+                        valuation: creditValuation
+                    }),
+                    ...(isExpense && conversion.operation)
+                },
+                {
+                    ...buildTransferEntryCreateEntity({
+                        transactionId: params.id,
+                        accountId: conversion.debitAccountId,
+                        type: TransactionEntryTypeEnum.DEBIT,
+                        amount: conversion.debitAmount,
+                        valuation: debitValuation
+                    }),
+                    ...(!isExpense && conversion.operation)
+                },
+                ...feeEntries
+            ]);
+
+            const affectedAccountIds = [
+                conversion.creditAccountId,
+                conversion.debitAccountId,
+                ...feeEntries.map(entry => entry.accountId),
+                ...(isDefined(debtEvent) ? [debtEvent.debtAccountId] : [])
+            ];
+
+            return { updated, affectedAccountIds };
+        });
+
         const convertToTransfer = Effect.fnUntraced(
             function* (params: ConvertToTransferParamsInterface, direction: 'expense' | 'income', counterAmount: number | null) {
-                const conversion = yield* buildTransferConversion(direction, params, counterAmount);
-                const debtEvent = yield* debtEventRepository.findByTransactionId(params.id);
-                const updated = yield* transactionRepository.updateById(params.id, {
-                    type: conversion.transactionType,
-                    fromAccountId: conversion.fromAccountId,
-                    toAccountId: conversion.toAccountId,
-                    exchangeRate: conversion.exchangeRate
-                });
+                const { updated, affectedAccountIds } = yield* convertToTransferWithoutBalanceSync(params, direction, counterAmount);
 
-                const [creditValuation, debitValuation] = yield* Effect.all(
-                    [
-                        entryBaseValuationService.valueMicroUnitEntry({
-                            accountId: conversion.creditAccountId,
-                            amount: conversion.creditAmount,
-                            operatedAt: conversion.operatedAt
-                        }),
-                        entryBaseValuationService.valueMicroUnitEntry({
-                            accountId: conversion.debitAccountId,
-                            amount: conversion.debitAmount,
-                            operatedAt: conversion.operatedAt
-                        })
-                    ],
-                    { concurrency: 'unbounded' }
-                );
-                const feeEntries = yield* buildConversionFeeEntries(params, conversion);
-
-                yield* debtEventRepository.deleteByTransactionId(params.id);
-                yield* transactionEntryRepository.deleteByTransactionId(params.id);
-                const isExpense = direction === 'expense';
-
-                yield* transactionEntryRepository.bulkCreate([
-                    {
-                        ...buildTransferEntryCreateEntity({
-                            transactionId: params.id,
-                            accountId: conversion.creditAccountId,
-                            type: TransactionEntryTypeEnum.CREDIT,
-                            amount: conversion.creditAmount,
-                            valuation: creditValuation
-                        }),
-                        ...(isExpense && conversion.operation)
-                    },
-                    {
-                        ...buildTransferEntryCreateEntity({
-                            transactionId: params.id,
-                            accountId: conversion.debitAccountId,
-                            type: TransactionEntryTypeEnum.DEBIT,
-                            amount: conversion.debitAmount,
-                            valuation: debitValuation
-                        }),
-                        ...(!isExpense && conversion.operation)
-                    },
-                    ...feeEntries
-                ]);
-
-                yield* accountBalanceIncrementalService.updateBalancesByAccountIds([
-                    conversion.creditAccountId,
-                    conversion.debitAccountId,
-                    ...feeEntries.map(entry => entry.accountId),
-                    ...(isDefined(debtEvent) ? [debtEvent.debtAccountId] : [])
-                ]);
+                yield* accountBalanceIncrementalService.updateBalancesByAccountIds(affectedAccountIds);
 
                 return updated;
             },
@@ -336,14 +348,13 @@ export class TransactionTransferService extends Context.Service<TransactionTrans
             return isDefined(account) && account.type !== AccountTypeEnum.DEBT;
         });
 
-        const convertToTransferAccount = Effect.fn('TransactionTransferService.convertToTransferAccount')(function* (
-            transactionId: number,
-            targetAccountId: number
-        ) {
+        const convertToTransferAccountWithoutBalanceSync = Effect.fn(
+            'TransactionTransferService.convertToTransferAccountWithoutBalanceSync'
+        )(function* (transactionId: number, targetAccountId: number) {
             const transaction = yield* transactionRepository.getByIdWithEntries(transactionId);
 
             if (!isDefined(transaction) || isDefined(transaction.consolidationType)) {
-                return false;
+                return null;
             }
 
             const isExpense = transaction.type === TransactionTypeEnum.EXPENSE;
@@ -355,7 +366,7 @@ export class TransactionTransferService extends Context.Service<TransactionTrans
                 getTransactionCategoryEntries(transaction.entries).length === 1;
 
             if (!isConvertible) {
-                return false;
+                return null;
             }
 
             const [isSourceTransferAccount, isTargetTransferAccount, debtEvent] = yield* Effect.all([
@@ -365,28 +376,56 @@ export class TransactionTransferService extends Context.Service<TransactionTrans
             ]);
 
             if (!isSourceTransferAccount || !isTargetTransferAccount || isDefined(debtEvent)) {
-                return false;
+                return null;
             }
 
-            yield* convertToTransfer(
+            const { affectedAccountIds } = yield* convertToTransferWithoutBalanceSync(
                 { id: transactionId, accountId: targetAccountId, customExchangeRate: 0, feeEntries: [] },
                 isExpense ? 'expense' : 'income',
                 null
             );
 
-            return true;
+            return affectedAccountIds;
         });
+
+        const convertToTransferAccount = Effect.fn('TransactionTransferService.convertToTransferAccount')(
+            function* (transactionId: number, targetAccountId: number) {
+                const affectedAccountIds = yield* convertToTransferAccountWithoutBalanceSync(transactionId, targetAccountId);
+
+                if (!isDefined(affectedAccountIds)) {
+                    return false;
+                }
+
+                yield* accountBalanceIncrementalService.updateBalancesByAccountIds(affectedAccountIds);
+
+                return true;
+            },
+            effect => Db.transaction(effect)
+        );
 
         return {
             convertToTransferAccount,
+            convertToTransferAccountWithoutBalanceSync,
             convertManyToTransferAccount: Effect.fn('TransactionTransferService.convertManyToTransferAccount')(
                 function* (transactionIds: readonly number[], targetAccountId: number) {
                     const convertedIds: number[] = [];
+                    const affectedAccountIds = new Set<number>();
 
                     for (const transactionId of transactionIds) {
-                        if (yield* convertToTransferAccount(transactionId, targetAccountId)) {
+                        const accountIds = yield* convertToTransferAccountWithoutBalanceSync(transactionId, targetAccountId);
+
+                        if (isDefined(accountIds)) {
                             convertedIds.push(transactionId);
+                            for (const accountId of accountIds) {
+                                affectedAccountIds.add(accountId);
+                            }
                         }
+                    }
+
+                    const uniqueAccountIds = [...affectedAccountIds];
+
+                    if (isNotEmptyArray(uniqueAccountIds)) {
+                        yield* accountBalanceIncrementalService.updateBalancesByAccountIds(uniqueAccountIds);
                     }
 
                     return convertedIds;

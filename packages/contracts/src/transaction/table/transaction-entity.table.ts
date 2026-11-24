@@ -115,6 +115,10 @@ export const TransactionEntityTable = sqliteTable(
             .where(sql`${table.needsEmbedding} = 1 AND ${table.deletedAt} IS NULL AND ${table.title} = '' AND ${table.comment} != ''`),
         index('transactions_pending_embedding_idx')
             .on(table.id)
-            .where(sql`${table.needsEmbedding} = 1 AND ${table.deletedAt} IS NULL`)
+            .where(sql`${table.needsEmbedding} = 1 AND ${table.deletedAt} IS NULL`),
+        index('transactions_sync_id_idx').on(table.syncId),
+        index('transactions_external_source_deleted_idx')
+            .on(table.externalSource, table.deletedAt)
+            .where(sql`${table.externalSource} IS NOT NULL`)
     ]
 );

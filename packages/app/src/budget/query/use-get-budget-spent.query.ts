@@ -1,19 +1,16 @@
 import {
     AccountEntityTable,
-    BudgetKindEnum,
-    BudgetLimitSourceEnum,
-    BudgetPeriodEnum,
     BudgetSinkingFundEntityTable,
     ExchangeRateEntityTable,
-    PERSONAL_SYNC_ZONE,
     SettingsEntityTable,
-    SyncRecordEntityTable,
     SyncOutboxEntityTable,
+    SyncRecordEntityTable,
     TransactionEntityTable,
     TransactionEntryEntityTable,
     TransactionTagsEntityTable
 } from '@budgie/contracts';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
+import * as Atom from 'effect/reactivity/Atom';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
@@ -25,7 +22,6 @@ import { fromBudgetProjectionKey } from '../utils/from-budget-projection-key.uti
 import { toBudgetProjectionKey } from '../utils/to-budget-projection-key.util';
 
 import type { BudgetProjectionKeyInterface } from '../interface/budget-projection-key.interface';
-import type { BudgetProjectionSourceInterface } from '../interface/budget-projection-source.interface';
 import type { BudgetSpentInterface } from '@budgie/budget';
 import type { BudgetEntityInterface } from '@budgie/contracts';
 
@@ -36,22 +32,7 @@ interface UseGetBudgetSpentResult {
 
 const EMPTY_SPENT: BudgetSpentInterface = { spentOverall: 0, spentByCategory: [] };
 
-const NO_BUDGET: BudgetProjectionSourceInterface = {
-    id: 0,
-    kind: BudgetKindEnum.MAIN,
-    period: BudgetPeriodEnum.MONTHLY,
-    periodStartDay: 1,
-    useLastDayOfMonth: false,
-    periodAnchorDate: null,
-    startsAt: null,
-    endsAt: null,
-    limitSource: BudgetLimitSourceEnum.FIXED,
-    instrumentId: 0,
-    overallLimit: 0,
-    otherLimit: 0,
-    tagId: null,
-    syncZone: PERSONAL_SYNC_ZONE
-};
+const emptyBudgetSpentAtom = Atom.make(AsyncResult.success(EMPTY_SPENT));
 
 export const budgetSpentAtom = databaseQueryFamily(
     [
@@ -73,14 +54,14 @@ export const budgetSpentAtom = databaseQueryFamily(
 export const useGetBudgetSpentQuery = (budget: BudgetEntityInterface | null): UseGetBudgetSpentResult => {
     const today = useToday();
     const dayStart = new Date(today).setHours(0, 0, 0, 0);
-    const spentKey = toBudgetProjectionKey(isDefined(budget) ? budget : NO_BUDGET, dayStart);
-    const result = useLiveAtomValue(budgetSpentAtom(spentKey));
+    const shouldQuery = isDefined(budget) && isPositiveNumber(budget.id) && isPositiveNumber(budget.instrumentId);
+    const result = useLiveAtomValue(shouldQuery ? budgetSpentAtom(toBudgetProjectionKey(budget, dayStart)) : emptyBudgetSpentAtom);
 
     if (!isDefined(budget) || AsyncResult.isInitial(result)) {
         return { spent: EMPTY_SPENT, isLoading: true };
     }
 
-    if (!isPositiveNumber(budget.instrumentId)) {
+    if (!shouldQuery) {
         return { spent: EMPTY_SPENT, isLoading: false };
     }
 

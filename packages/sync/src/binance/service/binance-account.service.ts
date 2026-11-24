@@ -1,5 +1,14 @@
-import { AccountBalanceRepository, AccountRepository, AccountTypeEnum, InstrumentRepository, convertToMicroUnits } from '@budgie/contracts';
+import {
+    AccountBalanceRepository,
+    AccountEntityTable,
+    AccountRepository,
+    AccountTypeEnum,
+    Db,
+    InstrumentRepository,
+    convertToMicroUnits
+} from '@budgie/contracts';
 import { AccountService } from '@budgie/ledger';
+import { inArray } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -153,10 +162,16 @@ export class BinanceAccountService extends Context.Service<BinanceAccountService
             }),
             attachOrphanAccounts: Effect.fn('BinanceAccountService.attachOrphanAccounts')(function* (integrationId: number) {
                 const accounts = yield* accountRepository.findByExternalSource(BINANCE_ACCOUNT_DEFINITION.provider);
-                yield* Effect.forEach(
-                    accounts.filter(account => account.type === AccountTypeEnum.CRYPTO_SYNC && !isDefined(account.integrationId)),
-                    account => accountRepository.updateById(account.id, { integrationId }),
-                    { concurrency: 'unbounded', discard: true }
+                const orphanAccountIds = accounts
+                    .filter(account => account.type === AccountTypeEnum.CRYPTO_SYNC && !isDefined(account.integrationId))
+                    .map(account => account.id);
+
+                if (!isNotEmptyArray(orphanAccountIds)) {
+                    return;
+                }
+
+                yield* Db.query(db =>
+                    db.update(AccountEntityTable).set({ integrationId }).where(inArray(AccountEntityTable.id, orphanAccountIds))
                 );
             }),
             findAnchorableBalances,
@@ -190,9 +205,18 @@ export class BinanceAccountService extends Context.Service<BinanceAccountService
                 exchangeAccounts: SyncAccountInterface[],
                 integrationId: number
             ) {
-                for (const { account, balance } of yield* findAnchorableBalances(exchangeAccounts, integrationId)) {
-                    yield* anchorAccountBalance(account.id, balance);
+                const anchorableBalances = yield* findAnchorableBalances(exchangeAccounts, integrationId);
+
+                if (!isNotEmptyArray(anchorableBalances)) {
+                    return;
                 }
+
+                yield* accountBalanceRepository.bulkUpsert(
+                    anchorableBalances.map(({ account, balance }) => ({
+                        accountId: account.id,
+                        amount: convertToMicroUnits(balance)
+                    }))
+                );
             }),
             setupAccount: Effect.fn('BinanceAccountService.setupAccount')(function* (
                 resolvableAccount: BinanceResolvableAccountInterface,

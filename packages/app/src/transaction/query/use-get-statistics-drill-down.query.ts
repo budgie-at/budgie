@@ -7,6 +7,7 @@ import {
 } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { endOfMonth } from 'date-fns/endOfMonth';
+import { format } from 'date-fns/format';
 import { fromUnixTime } from 'date-fns/fromUnixTime';
 import { isBefore } from 'date-fns/isBefore';
 import { startOfMonth } from 'date-fns/startOfMonth';
@@ -15,7 +16,7 @@ import * as Effect from 'effect/Effect';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import { useState } from 'react';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
@@ -29,6 +30,17 @@ import type { StatisticsDrillDownSummaryInterface } from '../interface/statistic
 import type { TransactionFilterInterface } from '@budgie/contracts';
 
 const TREND_MONTH_COUNT = 6;
+
+const normalizeNumberIds = (ids: number[] | null): number[] | null =>
+    isNotEmptyArray(ids) ? [...new Set(ids)].sort((left, right) => left - right) : ids;
+
+const normalizeFilters = (filters: TransactionFilterInterface): TransactionFilterInterface => ({
+    ...filters,
+    accountIds: normalizeNumberIds(filters.accountIds),
+    categoryIds: normalizeNumberIds(filters.categoryIds),
+    tagIds: normalizeNumberIds(filters.tagIds),
+    types: isNotEmptyArray(filters.types) ? [...new Set(filters.types)].sort() : filters.types
+});
 
 const statisticsDrillDownAtom = databaseQueryFamily(
     [...STATISTICS_TABLES, CategoryEntityTable, DefaultCategoryTranslationEntityTable, TagEntityTable],
@@ -58,6 +70,18 @@ const statisticsDrillDownAtom = databaseQueryFamily(
                 loadBreakdown(filters),
                 rows => rows.find(row => row.id === key.entityId) ?? { id: key.entityId, amount: 0, transactionCount: 0 }
             );
+        const firstTrendMonth = key.trendMonths.at(0);
+        const lastTrendMonth = key.trendMonths.at(-1);
+        const trendFilters: TransactionFilterInterface = {
+            ...key.filters,
+            date:
+                isDefined(firstTrendMonth) && isDefined(lastTrendMonth)
+                    ? { from: startOfMonth(firstTrendMonth), to: endOfMonth(lastTrendMonth) }
+                    : null
+        };
+        const loadTrend = isCategory
+            ? statisticsRepository.getCategoryMonthlyTrendQuery(trendFilters, key.entityId, key.type, key.defaultInstrumentId)
+            : statisticsRepository.getTagMonthlyTrendQuery(trendFilters, key.entityId, key.type, key.defaultInstrumentId);
 
         return Effect.all({
             entity: findEntity(key.filters),
@@ -65,18 +89,18 @@ const statisticsDrillDownAtom = databaseQueryFamily(
             refunds: isIncome
                 ? Effect.succeed([])
                 : statisticsRepository.getNettedRefundsQuery(entityFilters(key.filters), key.defaultInstrumentId),
-            trend: Effect.forEach(key.trendMonths, month =>
-                Effect.map(findEntity({ ...key.filters, date: { from: startOfMonth(month), to: endOfMonth(month) } }), entity => ({
-                    month,
-                    amount: entity.amount
-                }))
-            )
+            trendRows: loadTrend
         }).pipe(
-            Effect.map(({ entity, totals, trend, refunds }) => {
+            Effect.map(({ entity, totals, trendRows, refunds }) => {
                 const total = totals.at(0);
                 const base = isIncome ? (total?.income ?? 0) : (total?.expense ?? 0);
                 const refund = refunds.at(0);
                 const purchasedAt = refund?.purchasedAt ?? null;
+                const trendByMonthKey = new Map(trendRows.map(row => [row.month, row.amount]));
+                const trend = key.trendMonths.map(month => ({
+                    month,
+                    amount: trendByMonthKey.get(format(month, 'yyyy-MM')) ?? 0
+                }));
 
                 return {
                     amount: entity.amount,
@@ -105,9 +129,12 @@ export const useGetStatisticsDrillDownQuery = (
     const language = useSetting('language');
     const defaultInstrumentId = useAtomValue(defaultInstrumentIdAtom);
     const [now] = useState(() => new Date());
-    const referenceMonth = startOfMonth(filters.date?.to ?? now);
+    const normalizedFilters = normalizeFilters(filters);
+    const referenceMonth = startOfMonth(normalizedFilters.date?.to ?? now);
     const trendMonths = Array.from({ length: TREND_MONTH_COUNT }, (_, index) => subMonths(referenceMonth, TREND_MONTH_COUNT - 1 - index));
-    const result = useLiveAtomValue(statisticsDrillDownAtom({ kind, entityId, type, filters, trendMonths, defaultInstrumentId, language }));
+    const result = useLiveAtomValue(
+        statisticsDrillDownAtom({ kind, entityId, type, filters: normalizedFilters, trendMonths, defaultInstrumentId, language })
+    );
 
     return {
         summary: AsyncResult.getOrElse(result, (): StatisticsDrillDownSummaryInterface => ({

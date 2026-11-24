@@ -1,4 +1,5 @@
 import {
+    Db,
     InstrumentRepository,
     InstrumentMarketDataJobStatusEnum,
     InstrumentTypeEnum,
@@ -26,7 +27,6 @@ import { EntryBaseValuationService } from './entry-base-valuation.service';
 import type { EntryBaseValuationUpdateBuilderType } from '../type/entry-base-valuation-update-builder.type';
 import type {
     AccountNotFoundError,
-    Db,
     DbError,
     EntryBaseValuationUpdateInterface,
     InstrumentMarketDataJobEntityInterface,
@@ -96,8 +96,8 @@ export class MarketPricedRevaluationService extends Context.Service<MarketPriced
                 });
 
                 if (isNotEmptyArray(updates)) {
-                    yield* syncApplyStateRepository.withoutTriggers(
-                        transactionEntryBaseValuationRepository.updateEntryBaseValuations(updates)
+                    yield* Db.transaction(
+                        syncApplyStateRepository.withoutTriggers(transactionEntryBaseValuationRepository.updateEntryBaseValuations(updates))
                     );
                 }
 

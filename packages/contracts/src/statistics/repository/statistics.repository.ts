@@ -1,5 +1,5 @@
 /* eslint-disable max-lines -- File owns the single multi-stage statistics SQL aggregation pipeline that must stay together */
-import { SQL, and, desc, eq, getTableColumns, gte, inArray, isNotNull, isNull, lte, ne, notInArray, or, sql } from 'drizzle-orm';
+import { SQL, and, desc, eq, exists, getTableColumns, gte, inArray, isNotNull, isNull, lte, ne, notInArray, or, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -67,13 +67,13 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
                 );
 
         const buildExcludedCategoryCondition = (db: DB, categoryIds: number[]) =>
-            inArray(
-                TransactionEntityTable.id,
+            exists(
                 db
-                    .select({ transactionId: TransactionEntryEntityTable.transactionId })
+                    .select({ one: sql`1` })
                     .from(TransactionEntryEntityTable)
                     .where(
                         and(
+                            eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id),
                             or(
                                 isNull(TransactionEntryEntityTable.categoryId),
                                 notInArray(TransactionEntryEntityTable.categoryId, categoryIds)
@@ -180,17 +180,10 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
                 .orderBy(desc(amountSql));
         };
 
-        const buildIncomeBreakdownWhere = (db: DB, filters: TransactionFilterInterface) =>
+        const buildIncomeBreakdownWhere = (filters: TransactionFilterInterface) =>
             and(
-                inArray(
-                    TransactionEntityTable.id,
-                    db
-                        .selectDistinct({ transactionId: TransactionEntityTable.id })
-                        .from(TransactionEntityTable)
-                        .where(
-                            and(transactionFilters.buildFilterWhere(filters), eq(TransactionEntityTable.type, TransactionTypeEnum.INCOME))
-                        )
-                ),
+                transactionFilters.buildFilterWhere(filters),
+                eq(TransactionEntityTable.type, TransactionTypeEnum.INCOME),
                 transactionFilters.buildPrimaryLedgerEntryCondition(),
                 transactionFilters.buildNonDebtAccountCondition(),
                 buildSpendingEntryCondition()
@@ -328,6 +321,25 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
                 .orderBy(monthSql, desc(amountSql));
         };
 
+        const buildMonthlyTrendBaseQuery = (
+            db: DB,
+            filters: TransactionFilterInterface,
+            type: TransactionTypeEnum.INCOME | TransactionTypeEnum.EXPENSE,
+            defaultInstrumentId: number
+        ) => {
+            const monthSql = buildRunwayMonthSql();
+            const baseWhere =
+                type === TransactionTypeEnum.INCOME ? buildIncomeBreakdownWhere(filters) : buildExpenseBreakdownWhere(filters);
+            const query = buildLedgerEntriesQuery(db, {
+                month: monthSql.as('month'),
+                amount: buildRefundAwareBaseAmountSql(defaultInstrumentId).as('amount')
+            })
+                .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+                .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id));
+
+            return { query, baseWhere, monthSql };
+        };
+
         return {
             getTransactions: (filters: StatisticsFilterInterface, limit: number, language: LanguageEnum) =>
                 Db.query(db => {
@@ -407,13 +419,13 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
                 ),
 
             getIncomeByCategoryQuery: (filters: TransactionFilterInterface, defaultInstrumentId: number, language: LanguageEnum) =>
-                Db.query(db => buildCategoryBreakdownQuery(db, defaultInstrumentId, language, buildIncomeBreakdownWhere(db, filters))),
+                Db.query(db => buildCategoryBreakdownQuery(db, defaultInstrumentId, language, buildIncomeBreakdownWhere(filters))),
 
             getExpenseByCategoryQuery: (filters: TransactionFilterInterface, defaultInstrumentId: number, language: LanguageEnum) =>
                 Db.query(db => buildCategoryBreakdownQuery(db, defaultInstrumentId, language, buildExpenseBreakdownWhere(filters))),
 
             getIncomeByTagQuery: (filters: TransactionFilterInterface, defaultInstrumentId: number) =>
-                Db.query(db => buildTagBreakdownQuery(db, defaultInstrumentId, buildIncomeBreakdownWhere(db, filters))),
+                Db.query(db => buildTagBreakdownQuery(db, defaultInstrumentId, buildIncomeBreakdownWhere(filters))),
 
             getExpenseByTagQuery: (filters: TransactionFilterInterface, defaultInstrumentId: number) =>
                 Db.query(db =>
@@ -426,6 +438,47 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
                         )
                     )
                 ),
+
+            getCategoryMonthlyTrendQuery: (
+                filters: TransactionFilterInterface,
+                categoryId: number,
+                type: TransactionTypeEnum.INCOME | TransactionTypeEnum.EXPENSE,
+                defaultInstrumentId: number
+            ) =>
+                Db.query(db => {
+                    const { query, baseWhere, monthSql } = buildMonthlyTrendBaseQuery(
+                        db,
+                        { ...filters, categoryIds: null },
+                        type,
+                        defaultInstrumentId
+                    );
+
+                    return query
+                        .where(and(baseWhere, eq(TransactionEntryEntityTable.categoryId, categoryId)))
+                        .groupBy(monthSql)
+                        .orderBy(monthSql);
+                }),
+
+            getTagMonthlyTrendQuery: (
+                filters: TransactionFilterInterface,
+                tagId: number,
+                type: TransactionTypeEnum.INCOME | TransactionTypeEnum.EXPENSE,
+                defaultInstrumentId: number
+            ) =>
+                Db.query(db => {
+                    const { query, baseWhere, monthSql } = buildMonthlyTrendBaseQuery(
+                        db,
+                        { ...filters, tagIds: null },
+                        type,
+                        defaultInstrumentId
+                    );
+
+                    return query
+                        .innerJoin(TransactionTagsEntityTable, eq(TransactionEntityTable.id, TransactionTagsEntityTable.transactionId))
+                        .where(and(baseWhere, eq(TransactionTagsEntityTable.tagId, tagId)))
+                        .groupBy(monthSql)
+                        .orderBy(monthSql);
+                }),
 
             getNettedRefundsQuery: (filters: TransactionFilterInterface, defaultInstrumentId: number) =>
                 Db.query(db => {

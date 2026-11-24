@@ -1,4 +1,5 @@
-import { int, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core';
+import { sql } from 'drizzle-orm';
+import { index, int, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core';
 
 import { CURRENT_TIMESTAMP } from '../../@generic/constant/current-timestamp.constant';
 import { syncIdentityUniqueIndex } from '../../cloud-sync/utils/sync-identity-unique-index.util';
@@ -20,6 +21,9 @@ export const TransactionReceiptEntityTable = sqliteTable(
     },
     table => [
         syncIdentityUniqueIndex('transaction_receipts', table),
-        uniqueIndex('transaction_receipts_zone_fingerprint_idx').on(table.syncZone, table.fingerprint)
+        uniqueIndex('transaction_receipts_zone_fingerprint_idx').on(table.syncZone, table.fingerprint),
+        index('transaction_receipts_merchant_vat_idx')
+            .on(table.merchantVatId)
+            .where(sql`${table.merchantVatId} IS NOT NULL`)
     ]
 );

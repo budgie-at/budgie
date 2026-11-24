@@ -3,6 +3,8 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
+import { isEmptyArray } from '@rnw-community/shared';
+
 import { ConsolidationExecutorService } from '../../executor/service/consolidation-executor.service';
 import { ConsolidationMutationService } from '../../executor/service/consolidation-mutation.service';
 import { ConsolidationRepairExecutorService } from '../../executor/service/consolidation-repair-executor.service';
@@ -336,6 +338,10 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
             const findAtmCashWithdrawalCandidates = Effect.fn('ConsolidationCoordinatorService.findAtmCashWithdrawalCandidates')(function* (
                 transactionIds: readonly number[]
             ) {
+                if (isEmptyArray(transactionIds)) {
+                    return [];
+                }
+
                 const candidates = yield* consolidationCandidateRepository.findAtmCashWithdrawalCandidates(null);
                 const transactionIdSet = new Set(transactionIds);
 

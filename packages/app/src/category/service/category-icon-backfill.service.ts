@@ -1,4 +1,4 @@
-import { CategoryIconSourceEnum, CategoryRepository } from '@budgie/contracts';
+import { CategoryIconSourceEnum, CategoryRepository, Db } from '@budgie/contracts';
 import { CategoryService } from '@budgie/ledger';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -25,17 +25,20 @@ export class CategoryIconBackfillService extends Context.Service<CategoryIconBac
                 }
 
                 const entries = yield* iconSearchService.load();
+                const updates = categories.flatMap(category => {
+                    const icon = iconSearchService.findConfidentIcon(entries, getCategoryIconTerms(category));
 
-                yield* Effect.forEach(
-                    categories,
-                    category => {
-                        const icon = iconSearchService.findConfidentIcon(entries, getCategoryIconTerms(category));
+                    return isDefined(icon) && icon !== category.icon ? [{ id: category.id, icon }] : [];
+                });
 
-                        return isDefined(icon) && icon !== category.icon
-                            ? categoryService.updateIcon(category.id, icon, CategoryIconSourceEnum.AUTO)
-                            : Effect.void;
-                    },
-                    { discard: true }
+                if (isEmptyArray(updates)) {
+                    return;
+                }
+
+                yield* Db.transaction(
+                    Effect.forEach(updates, ({ id, icon }) => categoryService.updateIcon(id, icon, CategoryIconSourceEnum.AUTO), {
+                        discard: true
+                    })
                 );
             })
         };

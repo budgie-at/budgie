@@ -16,6 +16,7 @@ import {
     TransactionEntryEntityTable
 } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
+import { startOfDay } from 'date-fns/startOfDay';
 import * as Effect from 'effect/Effect';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import * as Atom from 'effect/reactivity/Atom';
@@ -50,6 +51,8 @@ const SUGGESTED_TEMPLATE_CONFIG: BudgetSuggestedTemplateConfigInterface = {
 };
 
 const emptyResolutionAtom = Atom.make(AsyncResult.success(EMPTY_RESOLUTION));
+
+const notReadyResolutionAtom = Atom.make(AsyncResult.success(NOT_READY_RESOLUTION));
 
 export const suggestedBudgetTemplateAtom = Atom.family((key: { readonly nowTimestamp: number; readonly baseInstrumentId: number }) => {
     const now = new Date(key.nowTimestamp);
@@ -93,11 +96,11 @@ const selectResolutionAtom = (
     currencyCode: string
 ) => {
     if (kind === BudgetTemplateKindEnum.SUGGESTED) {
-        return suggestedBudgetTemplateAtom(suggestedKey);
+        return isPositiveNumber(suggestedKey.baseInstrumentId) ? suggestedBudgetTemplateAtom(suggestedKey) : emptyResolutionAtom;
     }
 
     if (kind === BudgetTemplateKindEnum.GENERIC) {
-        return genericBudgetTemplateAtom(currencyCode);
+        return isNotEmptyString(currencyCode) ? genericBudgetTemplateAtom(currencyCode) : notReadyResolutionAtom;
     }
 
     return emptyResolutionAtom;
@@ -106,21 +109,11 @@ const selectResolutionAtom = (
 export const useBudgetTemplateDraft = (kind: BudgetTemplateKindEnum | null): BudgetTemplateResolutionInterface => {
     const defaultInstrumentId = useSetting('defaultInstrumentId');
     const baseInstrumentId = isPositiveNumber(defaultInstrumentId) ? defaultInstrumentId : 0;
-    const [nowTimestamp] = useState(() => Date.now());
-    const { instrument } = useGetInstrumentByIdQuery(baseInstrumentId);
+    const [nowTimestamp] = useState(() => startOfDay(new Date()).getTime());
+    const { instrument } = useGetInstrumentByIdQuery(kind === BudgetTemplateKindEnum.GENERIC ? baseInstrumentId : 0);
     const currencyCode = isDefined(instrument) ? instrument.code : '';
-    const isSuggested = kind === BudgetTemplateKindEnum.SUGGESTED;
-    const isGeneric = kind === BudgetTemplateKindEnum.GENERIC;
     const resolutionAtom = selectResolutionAtom(kind, { nowTimestamp, baseInstrumentId }, currencyCode);
     const result = useAtomValue(resolutionAtom);
-
-    if (isSuggested && !isPositiveNumber(baseInstrumentId)) {
-        return EMPTY_RESOLUTION;
-    }
-
-    if (isGeneric && !isNotEmptyString(currencyCode)) {
-        return NOT_READY_RESOLUTION;
-    }
 
     return AsyncResult.getOrElse(result, () => NOT_READY_RESOLUTION);
 };

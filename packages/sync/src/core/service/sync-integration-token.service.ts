@@ -140,25 +140,24 @@ export class SyncIntegrationTokenService extends Context.Service<SyncIntegration
                 findIntegrationByClientId: (provider: ExternalSourceEnum, externalClientId: string) =>
                     bankIntegrationRepository.findByProviderAndClientId(provider, externalClientId),
                 getOrCreateIntegration,
-                updateAccountToken: Effect.fn('SyncIntegrationTokenService.updateAccountToken')(function* (
-                    provider: ExternalSourceEnum,
-                    accountId: number,
-                    token: string
-                ) {
-                    const sync = yield* syncRepository.getByAccountId(accountId);
-                    if (!isDefined(sync)) {
-                        return yield* Effect.die(new Error('Sync not found'));
-                    }
+                updateAccountToken: Effect.fn('SyncIntegrationTokenService.updateAccountToken')(
+                    function* (provider: ExternalSourceEnum, accountId: number, token: string) {
+                        const sync = yield* syncRepository.getByAccountId(accountId);
+                        if (!isDefined(sync)) {
+                            return yield* Effect.die(new Error('Sync not found'));
+                        }
 
-                    const account = yield* accountRepository.findById(accountId);
-                    if (!isDefined(account)) {
-                        return yield* Effect.die(new Error('Account not found'));
-                    }
+                        const account = yield* accountRepository.findById(accountId);
+                        if (!isDefined(account)) {
+                            return yield* Effect.die(new Error('Account not found'));
+                        }
 
-                    const integrationId = yield* applyAccountIntegrationToken(provider, account, token);
+                        const integrationId = yield* applyAccountIntegrationToken(provider, account, token);
 
-                    return yield* resetIntegrationSyncs(provider, integrationId, false);
-                }),
+                        return yield* resetIntegrationSyncs(provider, integrationId, false);
+                    },
+                    effect => Db.transaction(effect)
+                ),
                 ensureTokenAvailable,
                 updateIntegrationToken: Effect.fn('SyncIntegrationTokenService.updateIntegrationToken')(
                     function* (integrationId: number, token: string) {
