@@ -34,6 +34,7 @@ import { BackgroundSyncSessionService } from '../../sync/service/background-sync
 import { WidgetSnapshotService } from '../../widget/service/widget-snapshot.service';
 import { appAtomRegistry } from '../constant/app-atom-registry.constant';
 import { splashScreenHiddenAtom } from '../constant/splash-screen-hidden-atom.constant';
+import { DatabaseMaintenanceService } from '../drizzle/service/database-maintenance.service';
 import { appRuntime } from '../runtime/app.runtime';
 import { Workload } from '../service/workload.service';
 import { waitForIdle } from '../utils/wait-for-idle.util';
@@ -129,7 +130,8 @@ const initializeAppServices = Effect.gen(function* () {
             logAndContinue(Effect.flatMap(YieldTagRepairService, service => workload.run(service.runOnce()))),
             logAndContinue(
                 Effect.flatMap(BrokerageService, service => workload.run(service.reconcileFunding(i18n._(BROKERAGE_FUNDING_TITLE))))
-            )
+            ),
+            logAndContinue(Effect.flatMap(DatabaseMaintenanceService, service => workload.run(service.compact())))
         ],
         { discard: true }
     );

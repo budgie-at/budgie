@@ -30,7 +30,7 @@ it.effect('accepts PKCS#8 and PKCS#1 keys and signs RS256 like node crypto', () 
 
         for (const pem of [pkcs8Pem, pkcs1Pem]) {
             const normalizedPem = yield* parseEnableBankingPem(pem);
-            const signature = signRs256(normalizedPem, signingInput);
+            const signature = yield* signRs256(normalizedPem, signingInput);
 
             expect(createVerify('RSA-SHA256').update(signingInput).verify(publicKey, Buffer.from(signature, 'base64url'))).toBe(true);
             expect(signature).toMatch(/^[\w-]+$/u);

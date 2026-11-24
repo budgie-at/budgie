@@ -6,7 +6,11 @@ import {
     TransactionTypeEnum
 } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
-import { endOfMonth, fromUnixTime, isBefore, startOfMonth, subMonths } from 'date-fns';
+import { endOfMonth } from 'date-fns/endOfMonth';
+import { fromUnixTime } from 'date-fns/fromUnixTime';
+import { isBefore } from 'date-fns/isBefore';
+import { startOfMonth } from 'date-fns/startOfMonth';
+import { subMonths } from 'date-fns/subMonths';
 import * as Effect from 'effect/Effect';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import { useState } from 'react';

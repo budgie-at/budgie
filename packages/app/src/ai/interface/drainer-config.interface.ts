@@ -4,6 +4,7 @@ import type { DrainerSnapshotInterface } from './drainer-snapshot.interface';
 import type { Db } from '@budgie/contracts';
 import type * as Effect from 'effect/Effect';
 import type * as Atom from 'effect/reactivity/Atom';
+import type * as Stream from 'effect/Stream';
 
 export interface DrainerConfigInterface<E> {
     readonly subsystem: AiSubsystemNameEnum;
@@ -15,4 +16,5 @@ export interface DrainerConfigInterface<E> {
     readonly countPending: Effect.Effect<number, E, Db>;
     readonly afterBatch: Effect.Effect<void, E, Db>;
     readonly snapshot: Atom.Writable<DrainerSnapshotInterface>;
+    readonly wakeStream?: Stream.Stream<unknown>;
 }

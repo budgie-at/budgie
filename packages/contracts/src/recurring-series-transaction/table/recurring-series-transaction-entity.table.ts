@@ -1,5 +1,5 @@
 import { sql } from 'drizzle-orm';
-import { int, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core';
+import { index, int, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core';
 
 import { convertEnumToDrizzleEnum } from '../../@generic/utils/convert-enum-to-drizzle-enum.util';
 import { withBaseEntityTableColumns } from '../../@generic/utils/with-base-entity-table-columns.util';
@@ -26,6 +26,9 @@ export const RecurringSeriesTransactionEntityTable = sqliteTable(
         uniqueIndex('recurring_series_transaction_series_transaction_unq').on(table.seriesId, table.transactionId),
         uniqueIndex('recurring_series_transaction_live_transaction_unq')
             .on(table.transactionId)
-            .where(sql`${table.isExcluded} = 0 AND ${table.deletedAt} IS NULL`)
+            .where(sql`${table.isExcluded} = 0 AND ${table.deletedAt} IS NULL`),
+        index('recurring_series_transaction_series_idx')
+            .on(table.seriesId)
+            .where(sql`${table.deletedAt} IS NULL`)
     ]
 );

@@ -1,5 +1,5 @@
 import { sql } from 'drizzle-orm';
-import { check, int, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core';
+import { check, index, int, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core';
 
 import { convertEnumToDrizzleEnum } from '../../@generic/utils/convert-enum-to-drizzle-enum.util';
 import { withBaseEntityTableColumns } from '../../@generic/utils/with-base-entity-table-columns.util';
@@ -26,6 +26,9 @@ export const RuleActionEntityTable = sqliteTable(
     }),
     table => [
         uniqueIndex('rule_actions_sync_identity_unq').on(table.syncZone, table.syncId),
+        index('rule_actions_rule_idx')
+            .on(table.ruleId)
+            .where(sql`${table.deletedAt} IS NULL`),
         check('rule_action_set_category_requires_category_id', sql`type != 'SET_CATEGORY' OR category_id IS NOT NULL`),
         check('rule_action_add_tag_requires_tag_id', sql`type != 'ADD_TAG' OR tag_id IS NOT NULL`),
         check('rule_action_convert_to_transfer_requires_account_id', sql`type != 'CONVERT_TO_TRANSFER' OR account_id IS NOT NULL`)

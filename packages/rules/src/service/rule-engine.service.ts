@@ -42,105 +42,61 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
         const ruleMatcherService = yield* RuleMatcherService;
         const transactionTransferService = yield* TransactionTransferService;
 
-        const applySetCategoryAction = Effect.fn('RuleEngineService.applySetCategoryAction')(function* (
-            transactionId: number,
-            action: RuleActionEntityInterface,
-            appliedExclusiveActions: Set<RuleActionTypeEnum>
-        ) {
-            if (!isDefined(action.categoryId) || appliedExclusiveActions.has(RuleActionTypeEnum.SET_CATEGORY)) {
-                return;
-            }
-
-            appliedExclusiveActions.add(RuleActionTypeEnum.SET_CATEGORY);
-            const categorizedIds = yield* transactionRuleRepository.setCategoryByTransactionIds([transactionId], action.categoryId);
-
-            if (isNotEmptyArray(categorizedIds)) {
-                yield* transactionRepository.touchUpdatedAt(transactionId);
-            }
-        });
-
-        const applyAddTagAction = Effect.fn('RuleEngineService.applyAddTagAction')(function* (
-            transactionId: number,
-            action: RuleActionEntityInterface
-        ) {
-            if (!isDefined(action.tagId)) {
-                return;
-            }
-
-            const taggedIds = yield* transactionTagsRepository.addTagByTransactionIds([transactionId], action.tagId, TagSourceEnum.RULE);
-
-            if (isNotEmptyArray(taggedIds)) {
-                yield* transactionRepository.touchUpdatedAt(transactionId);
-            }
-        });
-
-        const applyRuleAction = Effect.fnUntraced(function* (
-            transactionId: number,
-            action: RuleActionEntityInterface,
-            appliedExclusiveActions: Set<RuleActionTypeEnum>
-        ) {
-            switch (action.type) {
-                case RuleActionTypeEnum.SET_CATEGORY:
-                    yield* applySetCategoryAction(transactionId, action, appliedExclusiveActions);
-                    break;
-
-                case RuleActionTypeEnum.ADD_TAG:
-                    yield* applyAddTagAction(transactionId, action);
-                    break;
-
-                case RuleActionTypeEnum.CONVERT_TO_TRANSFER:
-                    if (
-                        isDefined(action.accountId) &&
-                        !appliedExclusiveActions.has(RuleActionTypeEnum.CONVERT_TO_TRANSFER) &&
-                        (yield* transactionTransferService.convertToTransferAccount(transactionId, action.accountId))
-                    ) {
-                        appliedExclusiveActions.add(RuleActionTypeEnum.CONVERT_TO_TRANSFER);
-                    }
-                    break;
-
-                default:
-                    break;
-            }
-        });
-
-        const applyRuleActions = Effect.fnUntraced(function* (
-            transactionId: number,
-            actions: RuleActionEntityInterface[],
-            appliedExclusiveActions: Set<RuleActionTypeEnum>
-        ) {
-            const sortedActions = [...actions].sort((actionA, actionB) => {
-                if (actionA.type === RuleActionTypeEnum.CONVERT_TO_TRANSFER) {
-                    return 1;
-                }
-
-                if (actionB.type === RuleActionTypeEnum.CONVERT_TO_TRANSFER) {
-                    return -1;
-                }
-
-                return 0;
-            });
-            for (const action of sortedActions) {
-                yield* applyRuleAction(transactionId, action, appliedExclusiveActions);
-            }
-        });
-
-        const applyMatchingRulesSequentially = Effect.fn('RuleEngineService.applyMatchingRulesSequentially')(function* (
-            transactionId: number,
-            matchingRules: RuleWithRelationsEntityInterface[]
-        ) {
-            const appliedExclusiveActions = new Set<RuleActionTypeEnum>();
-
-            for (const rule of matchingRules) {
-                yield* applyRuleActions(transactionId, rule.actions, appliedExclusiveActions);
-            }
-        });
+        const pushBatchId = (map: Map<number, number[]>, key: number, transactionId: number): void => {
+            const ids = map.get(key) ?? [];
+            ids.push(transactionId);
+            map.set(key, ids);
+        };
 
         const applyMatchedRulesInBatch = Effect.fn('RuleEngineService.applyMatchedRulesInBatch')(
             function* (matches: RuleTransactionMatchInterface[]) {
+                const transactionIdsByCategory = new Map<number, number[]>();
+                const transactionIdsByTag = new Map<number, number[]>();
+                const transferAccountIdsByTransaction = new Map<number, number[]>();
+
                 for (const match of matches) {
-                    yield* applyMatchingRulesSequentially(match.transactionId, match.matchingRules);
-                    yield* transactionRepository.updateById(match.transactionId, { updatedBy: TransactionUpdatedByEnum.RULE });
+                    const outcomes = extractRuleActionOutcomes(match.matchingRules);
+
+                    if (isDefined(outcomes.categoryId)) {
+                        pushBatchId(transactionIdsByCategory, outcomes.categoryId, match.transactionId);
+                    }
+
+                    for (const tagId of outcomes.tagIds) {
+                        pushBatchId(transactionIdsByTag, tagId, match.transactionId);
+                    }
+
+                    const transferAccountIds = match.matchingRules.flatMap(rule =>
+                        rule.actions
+                            .filter(action => action.type === RuleActionTypeEnum.CONVERT_TO_TRANSFER && isDefined(action.accountId))
+                            .map(action => action.accountId)
+                            .filter(isDefined)
+                    );
+
+                    if (isNotEmptyArray(transferAccountIds)) {
+                        transferAccountIdsByTransaction.set(match.transactionId, transferAccountIds);
+                    }
                 }
+
+                for (const [categoryId, transactionIds] of transactionIdsByCategory) {
+                    yield* transactionRuleRepository.setCategoryByTransactionIds(transactionIds, categoryId);
+                }
+
+                for (const [tagId, transactionIds] of transactionIdsByTag) {
+                    yield* transactionTagsRepository.addTagByTransactionIds(transactionIds, tagId, TagSourceEnum.RULE);
+                }
+
+                for (const [transactionId, accountIds] of transferAccountIdsByTransaction) {
+                    for (const accountId of accountIds) {
+                        if (yield* transactionTransferService.convertToTransferAccount(transactionId, accountId)) {
+                            break;
+                        }
+                    }
+                }
+
+                yield* transactionRepository.touchUpdatedByIds(
+                    matches.map(match => match.transactionId),
+                    TransactionUpdatedByEnum.RULE
+                );
             },
             effect => Db.transaction(effect)
         );

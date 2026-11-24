@@ -15,10 +15,11 @@ export const makeConsolidationFamilyStrategy = <Candidate>(definition: Consolida
 
     const isCandidateRunnable = (
         candidate: Candidate,
-        { blockedSourceTransactionIds, scope }: ConsolidationFamilyRunContextInterface
+        blockedSourceTransactionIds: ReadonlySet<number>,
+        scopeTransactionIds: ReadonlySet<number> | null
     ): boolean =>
-        (!isDefined(scope) ||
-            getScopeTransactionIds(candidate).some(scopeTransactionId => scope.transactionIds.includes(scopeTransactionId))) &&
+        (!isDefined(scopeTransactionIds) ||
+            getScopeTransactionIds(candidate).some(scopeTransactionId => scopeTransactionIds.has(scopeTransactionId))) &&
         definition.getSourceTransactionIds(candidate).every(sourceTransactionId => !blockedSourceTransactionIds.has(sourceTransactionId));
 
     const buildBlockedSourceTransactionIds = (candidates: readonly Candidate[]): number[] =>
@@ -27,7 +28,10 @@ export const makeConsolidationFamilyStrategy = <Candidate>(definition: Consolida
     const buildRunnableCandidates = Effect.fnUntraced(function* (context: ConsolidationFamilyRunContextInterface) {
         const candidates = yield* definition.findCandidates(context.scope);
         yield* CONSOLIDATION_YIELD;
-        const runnableCandidates = candidates.filter(candidate => isCandidateRunnable(candidate, context));
+        const scopeTransactionIds = isDefined(context.scope) ? new Set(context.scope.transactionIds) : null;
+        const runnableCandidates = candidates.filter(candidate =>
+            isCandidateRunnable(candidate, context.blockedSourceTransactionIds, scopeTransactionIds)
+        );
         yield* CONSOLIDATION_YIELD;
 
         return runnableCandidates;

@@ -163,13 +163,30 @@ export class CategoryRepository extends Context.Service<CategoryRepository>()('@
                       )
                     : baseFilter;
 
-                return Db.query(db =>
-                    buildLocalizedCategoryBaseQuery(db, language)
-                        .leftJoin(TransactionEntryEntityTable, eq(CategoryEntityTable.id, TransactionEntryEntityTable.categoryId))
+                return Db.query(db => {
+                    const entryCounts = db.$with('category_entry_counts').as(
+                        db
+                            .select({
+                                categoryId: TransactionEntryEntityTable.categoryId,
+                                entryCount: count(TransactionEntryEntityTable.id).as('entry_count')
+                            })
+                            .from(TransactionEntryEntityTable)
+                            .where(isNull(TransactionEntryEntityTable.deletedAt))
+                            .groupBy(TransactionEntryEntityTable.categoryId)
+                    );
+
+                    return db
+                        .with(entryCounts)
+                        .select({
+                            ...getTableColumns(CategoryEntityTable),
+                            title: sql<string>`COALESCE(${DefaultCategoryTranslationEntityTable.title}, ${CategoryEntityTable.title})`
+                        })
+                        .from(CategoryEntityTable)
+                        .leftJoin(DefaultCategoryTranslationEntityTable, buildCategoryTranslationJoinCondition(language))
+                        .leftJoin(entryCounts, eq(CategoryEntityTable.id, entryCounts.categoryId))
                         .where(searchFilter)
-                        .groupBy(CategoryEntityTable.id)
-                        .orderBy(sql`COUNT(${TransactionEntryEntityTable.id}) DESC`)
-                );
+                        .orderBy(sql`COALESCE(${entryCounts.entryCount}, 0) DESC`);
+                });
             },
             count: (includeDefault: boolean) =>
                 Db.query(db =>

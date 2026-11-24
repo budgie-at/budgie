@@ -1,6 +1,6 @@
 import { plural } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { addMonths } from 'date-fns';
+import { addMonths } from 'date-fns/addMonths';
 import { Text, View } from 'react-native';
 
 import { ConvertToInstallmentModalSelector } from '../../../app/convert-to-installment-modal.selector';

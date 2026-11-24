@@ -1,4 +1,4 @@
-import { isThisYear } from 'date-fns';
+import { isThisYear } from 'date-fns/isThisYear';
 
 import { useI18nContext } from '../../i18n/context/i18n.context';
 

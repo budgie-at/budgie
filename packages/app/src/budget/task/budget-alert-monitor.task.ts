@@ -1,5 +1,3 @@
-import { BudgetPeriodCloseService } from '@budgie/budget';
-import { logAndContinue } from '@budgie/contracts';
 import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as BackgroundTask from 'expo-background-task';
@@ -7,11 +5,18 @@ import * as TaskManager from 'expo-task-manager';
 
 import { runBackgroundTask } from '../../@generic/utils/run-background-task.util';
 import { BudgetBackgroundTaskNameEnum } from '../enum/budget-background-task-name.enum';
-import { BudgetAlertMonitorService } from '../service/budget-alert-monitor.service';
 
 TaskManager.defineTask(BudgetBackgroundTaskNameEnum.ALERT_MONITOR, () =>
-    runBackgroundTask(
+    runBackgroundTask(() =>
         Effect.gen(function* () {
+            const [{ BudgetPeriodCloseService }, { logAndContinue }, { BudgetAlertMonitorService }] = yield* Effect.all(
+                [
+                    Effect.promise(() => import('@budgie/budget')),
+                    Effect.promise(() => import('@budgie/contracts')),
+                    Effect.promise(() => import('../service/budget-alert-monitor.service'))
+                ],
+                { concurrency: 'unbounded' }
+            );
             const budgetPeriodCloseService = yield* BudgetPeriodCloseService;
             const budgetAlertMonitorService = yield* BudgetAlertMonitorService;
 

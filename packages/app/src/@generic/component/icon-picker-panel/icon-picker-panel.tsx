@@ -1,6 +1,6 @@
 import { UserIconNameEnum, UserIconType, isEmojiIcon } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { useRef, useState } from 'react';
+import { useDeferredValue, useRef, useState } from 'react';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
@@ -28,6 +28,7 @@ interface Props {
 export const IconPickerPanel = ({ selectedIcon, keywords = [], excludedIcons, onSelect }: Props) => {
     const { t } = useLingui();
     const [search, setSearch] = useState('');
+    const deferredSearch = useDeferredValue(search);
     const listRef = useRef<LegendListRef>(null);
     const { entries, isLoading, isFailure, retry } = useIconSearchCatalog();
 
@@ -36,7 +37,8 @@ export const IconPickerPanel = ({ selectedIcon, keywords = [], excludedIcons, on
         void listRef.current?.scrollToOffset({ offset: 0, animated: false });
     };
 
-    const isSearching = isNotEmptyString(search.trim());
+    const deferredQuery = deferredSearch.trim();
+    const isSearching = isNotEmptyString(deferredQuery);
     const selectedCatalogIcon = isDefined(selectedIcon) && !isEmojiIcon(selectedIcon) ? resolveReiconIcon(selectedIcon) : selectedIcon;
     const popularEntries = [
         entries.find(entry => entry.icon === selectedCatalogIcon),
@@ -44,7 +46,9 @@ export const IconPickerPanel = ({ selectedIcon, keywords = [], excludedIcons, on
     ]
         .filter(isDefined)
         .slice(0, ICON_SELECTOR_COLUMNS);
-    const matches = isSearching ? iconSearchService.rank(entries, [search]) : entries.filter(entry => !popularEntries.includes(entry));
+    const matches = isSearching
+        ? iconSearchService.rank(entries, [deferredQuery])
+        : entries.filter(entry => !popularEntries.includes(entry));
     const rows = buildIconSelectorRows([
         { id: IconSelectorSectionEnum.POPULAR, title: t`Popular`, entries: isSearching ? [] : popularEntries },
         { id: IconSelectorSectionEnum.ICONS, title: t`Icons`, entries: matches.filter(({ icon }) => !isEmojiIcon(icon)) },
@@ -66,7 +70,7 @@ export const IconPickerPanel = ({ selectedIcon, keywords = [], excludedIcons, on
                 rows={rows}
                 selectedIcon={selectedCatalogIcon}
                 onSelect={onSelect}
-                emptyState={<IconSelectorEmptyState query={search.trim()} isFailure={isFailure} isLoading={isLoading} onRetry={retry} />}
+                emptyState={<IconSelectorEmptyState query={deferredQuery} isFailure={isFailure} isLoading={isLoading} onRetry={retry} />}
             />
         </SheetSurface>
     );

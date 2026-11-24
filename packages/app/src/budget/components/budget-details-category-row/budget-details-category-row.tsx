@@ -4,13 +4,14 @@ import { router } from 'expo-router';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
 import { BudgetDetailsLimitRow } from '../budget-details-limit-row/budget-details-limit-row';
 
 import type { BudgetProjectionScopeInterface } from '@budgie/budget';
+import type { CategoryEntityInterface } from '@budgie/contracts';
 
 interface Props {
     readonly categoryId: number;
+    readonly category: Pick<CategoryEntityInterface, 'title' | 'icon'> | null;
     readonly scope: BudgetProjectionScopeInterface;
     readonly periodStart: Date;
     readonly periodEnd: Date;
@@ -20,8 +21,7 @@ interface Props {
 }
 
 export const BudgetDetailsCategoryRow = (props: Props) => {
-    const { categoryId, scope, periodStart, periodEnd, currencySymbol, carriedAmount, staggerIndex } = props;
-    const { category } = useGetCategoryByIdQuery(categoryId);
+    const { categoryId, category, scope, periodStart, periodEnd, currencySymbol, carriedAmount, staggerIndex } = props;
     const title = isDefined(category) ? category.title : '';
     const icon = isDefined(category) ? category.icon : UserIconNameEnum.Shapes;
     const highlightTarget = { scope: BudgetAlertScopeEnum.CATEGORY, categoryId };

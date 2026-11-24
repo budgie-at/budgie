@@ -1,6 +1,6 @@
 /* eslint-disable max-lines -- approved by Vitalii Yehorov: receipt parsing is one cohesive pipeline */
 import { convertToMicroUnits, CurrencyEnum, LanguageEnum } from '@budgie/contracts';
-import { format } from 'date-fns';
+import { format } from 'date-fns/format';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 

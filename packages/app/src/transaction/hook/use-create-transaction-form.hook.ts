@@ -8,7 +8,7 @@ import { NotificationFeedbackType } from 'expo-haptics';
 import { router } from 'expo-router';
 import { useForm } from 'react-hook-form';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { useSingleFlight } from '../../@generic/hook/use-single-flight.hook';
 import { useVibration } from '../../@generic/hook/use-vibration.hook';
@@ -57,16 +57,23 @@ export const useCreateTransactionForm = ({
         }
     });
 
-    const persist = (data: TransactionCreateInputInterface) =>
-        Db.transaction(
+    const persist = (data: TransactionCreateInputInterface) => {
+        const accountIds = [data.fromAccountId, data.toAccountId, ...data.entries.map(entry => entry.accountId)].filter(isPositiveNumber);
+
+        return Db.transaction(
             (isDefined(receipt)
                 ? Effect.tap(
                       onSubmit({ ...data, externalId: receipt.fingerprint, externalSource: ExternalSourceEnum.RECEIPT }),
                       transaction => attachReceipt(receipt, transaction.id)
                   )
                 : onSubmit(data)
-            ).pipe(Effect.tap(() => Effect.flatMap(BrokerageService, service => service.reconcileFunding(t(BROKERAGE_FUNDING_TITLE)))))
+            ).pipe(
+                Effect.tap(() =>
+                    Effect.flatMap(BrokerageService, service => service.reconcileFunding(t(BROKERAGE_FUNDING_TITLE), accountIds))
+                )
+            )
         );
+    };
 
     const handleSubmit = (data: TransactionCreateInputInterface) =>
         run(

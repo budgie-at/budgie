@@ -52,6 +52,17 @@ class IconSearchService {
         'various'
     ]);
 
+    private static readonly ES_PLURAL_REGEX = /(?:s|x|z|ch|sh)es$/u;
+    private static readonly NON_WORD_CHAR_REGEX = /[^\p{L}\p{N}]+/u;
+    private static readonly DIGIT_REGEX = /\d/u;
+    private static readonly READABLE_DIGIT_REGEX = /(?<=\p{L})(\d+)\b/gu;
+    private static readonly EMOJI_MODIFIER_REGEX = /[\u{1F3FB}-\u{1F3FF}]|\u{FE0F}|\u{200D}[\u{2640}\u{2642}]/gu;
+    private static readonly ICON_FAMILY_REGEX = /^(?:reicon:)?[A-Z][a-z]*/u;
+    private static readonly PIPE_CHAR_CODE = '|'.charCodeAt(0);
+    private static readonly SPACE_CHAR_CODE = ' '.charCodeAt(0);
+    private static readonly LOWER_A_CHAR_CODE = 'a'.charCodeAt(0);
+    private static readonly LOWER_Z_CHAR_CODE = 'z'.charCodeAt(0);
+
     private static readonly FALLBACK_ICONS: readonly UserIconType[] = [
         UserIconNameEnum.Folder,
         UserIconNameEnum.Briefcase,
@@ -65,17 +76,28 @@ class IconSearchService {
     ].map(resolveReiconIcon);
 
     readonly load = Effect.fn('IconSearchService.load')(function* (this: IconSearchService) {
-        const { default: index } = yield* Effect.promise(() => import('../constant/icon-search-index.json'));
-        const translations: Record<string, string> = index.translations;
-        const icons = index.icons.flatMap(([icon, keywords]) =>
-            isUserIcon(icon) && isNotEmptyString(keywords) ? [{ icon, keywords }] : []
-        );
-        const labels = new Set(icons.map(({ keywords }) => this.toReadableName(keywords.split(/\|/u)[0])));
+        if (isDefined(this.cachedEntries)) {
+            return this.cachedEntries;
+        }
 
-        return icons.map(({ icon, keywords }) => this.createEntry(icon, keywords, translations, labels));
+        const loadPromise =
+            this.loadPromise ??
+            import('../constant/icon-search-index.json').then(({ default: index }) => {
+                const entries = this.buildEntries(index.icons, index.translations);
+                this.cachedEntries = entries;
+
+                return entries;
+            });
+
+        this.loadPromise = loadPromise;
+
+        return yield* Effect.promise(() => loadPromise);
     });
 
+    private cachedEntries: IconSearchEntryInterface[] | null = null;
+    private loadPromise: Promise<IconSearchEntryInterface[]> | null = null;
     private readonly tokenIndexes = new WeakMap<readonly IconSearchEntryInterface[], IconSearchTokenIndexInterface>();
+    private readonly translationSeenWords = new Set<string>();
 
     rank(entries: readonly IconSearchEntryInterface[], terms: readonly string[]): IconSearchEntryInterface[] {
         return this.score(entries, terms, true).map(({ entry }) => entry);
@@ -123,10 +145,32 @@ class IconSearchService {
         });
     }
 
+    private buildEntries(rawIcons: readonly (readonly string[])[], translations: Record<string, string>): IconSearchEntryInterface[] {
+        const labels = new Set<string>();
+        const icons: [UserIconType, string][] = [];
+
+        for (const [icon, keywords] of rawIcons) {
+            if (isUserIcon(icon) && isNotEmptyString(keywords)) {
+                const firstPipe = keywords.indexOf('|');
+                const primaryName = firstPipe >= 0 ? keywords.slice(0, firstPipe) : keywords;
+                labels.add(this.toReadableName(primaryName));
+                icons.push([icon, keywords]);
+            }
+        }
+
+        const entries: IconSearchEntryInterface[] = [];
+
+        for (const [icon, keywords] of icons) {
+            entries.push(this.createEntry(icon, keywords, translations, labels));
+        }
+
+        return entries;
+    }
+
     private getFamily(icon: UserIconType): string {
         return isEmojiIcon(icon)
-            ? icon.replaceAll(/[\u{1F3FB}-\u{1F3FF}]|\u{FE0F}|\u{200D}[\u{2640}\u{2642}]/gu, '')
-            : (/^(?:reicon:)?[A-Z][a-z]*/u.exec(icon)?.[0] ?? icon);
+            ? icon.replaceAll(IconSearchService.EMOJI_MODIFIER_REGEX, '')
+            : (IconSearchService.ICON_FAMILY_REGEX.exec(icon)?.[0] ?? icon);
     }
 
     private score(entries: readonly IconSearchEntryInterface[], terms: readonly string[], allowPrefix: boolean) {
@@ -154,23 +198,61 @@ class IconSearchService {
             .sort((first, second) => second.score - first.score);
     }
 
+    private extractFirstToken(value: string): string {
+        for (let index = 0; index < value.length; index += 1) {
+            const code = value.charCodeAt(index);
+
+            if (code === IconSearchService.PIPE_CHAR_CODE || code === IconSearchService.SPACE_CHAR_CODE) {
+                return value.slice(0, index);
+            }
+        }
+
+        return value;
+    }
+
     private findCandidates(entries: readonly IconSearchEntryInterface[], variants: readonly string[]): IconSearchEntryInterface[] {
         const { tokens, postings } = this.getTokenIndex(entries);
         const isCandidate = new Uint8Array(entries.length);
 
-        variants.forEach(variant => {
-            const [prefix] = variant.split(/[| ]/u);
+        for (const variant of variants) {
+            const prefix = this.extractFirstToken(variant);
             const start = this.countTokensBefore(tokens, token => token < prefix);
             const end = this.countTokensBefore(tokens, token => token < prefix || token.startsWith(prefix));
 
-            tokens.slice(start, end).forEach(token =>
-                postings.get(token)?.forEach(entryIndex => {
-                    isCandidate[entryIndex] = 1;
-                })
-            );
-        });
+            for (let tokenIndex = start; tokenIndex < end; tokenIndex += 1) {
+                const posting = postings.get(tokens[tokenIndex]);
 
-        return entries.filter((_entry, entryIndex) => isCandidate[entryIndex] === 1);
+                if (isDefined(posting)) {
+                    for (const entryIndex of posting) {
+                        isCandidate[entryIndex] = 1;
+                    }
+                }
+            }
+        }
+
+        const candidates: IconSearchEntryInterface[] = [];
+
+        for (let entryIndex = 0; entryIndex < entries.length; entryIndex += 1) {
+            if (isCandidate[entryIndex] === 1) {
+                candidates.push(entries[entryIndex]);
+            }
+        }
+
+        return candidates;
+    }
+
+    private addTokenPosting(postings: Map<string, number[]>, token: string, entryIndex: number): void {
+        const entryIndexes = postings.get(token);
+
+        if (!isDefined(entryIndexes)) {
+            postings.set(token, [entryIndex]);
+
+            return;
+        }
+
+        if (entryIndexes[entryIndexes.length - 1] !== entryIndex) {
+            entryIndexes.push(entryIndex);
+        }
     }
 
     private getTokenIndex(entries: readonly IconSearchEntryInterface[]): IconSearchTokenIndexInterface {
@@ -182,17 +264,19 @@ class IconSearchService {
 
         const postings = new Map<string, number[]>();
 
-        entries.forEach(({ keywords }, entryIndex) => {
-            new Set(keywords.split(/[| ]/u)).forEach(token => {
-                const entryIndexes = postings.get(token);
+        for (let entryIndex = 0; entryIndex < entries.length; entryIndex += 1) {
+            const { keywords } = entries[entryIndex];
+            let tokenStart = 0;
 
-                if (isDefined(entryIndexes)) {
-                    entryIndexes.push(entryIndex);
-                } else {
-                    postings.set(token, [entryIndex]);
+            for (let index = 0; index <= keywords.length; index += 1) {
+                const code = index < keywords.length ? keywords.charCodeAt(index) : IconSearchService.PIPE_CHAR_CODE;
+
+                if (code === IconSearchService.PIPE_CHAR_CODE || code === IconSearchService.SPACE_CHAR_CODE) {
+                    this.addTokenPosting(postings, keywords.slice(tokenStart, index), entryIndex);
+                    tokenStart = index + 1;
                 }
-            });
-        });
+            }
+        }
 
         const index = { tokens: [...postings.keys()].sort(), postings };
         this.tokenIndexes.set(entries, index);
@@ -218,7 +302,7 @@ class IconSearchService {
     }
 
     private toWeightedWords(term: string) {
-        const words = term.split(/[^\p{L}\p{N}]+/u).filter(isNotEmptyString);
+        const words = term.split(IconSearchService.NON_WORD_CHAR_REGEX).filter(isNotEmptyString);
         const meaningfulWords = words.filter(word => !IconSearchService.GENERIC_WORDS.has(word));
         const candidateWords = isNotEmptyArray(meaningfulWords) ? meaningfulWords : words;
         const scoredWords = words.length < 2 ? [] : candidateWords;
@@ -233,7 +317,17 @@ class IconSearchService {
     }
 
     private scoreWord(entry: IconSearchEntryInterface, variants: readonly string[], allowPrefix: boolean): number {
-        return Math.max(...variants.map(variant => this.scoreVariant(entry, variant, allowPrefix)));
+        let best = 0;
+
+        for (const variant of variants) {
+            const current = this.scoreVariant(entry, variant, allowPrefix);
+
+            if (current > best) {
+                best = current;
+            }
+        }
+
+        return best;
     }
 
     private toVariants(term: string): string[] {
@@ -245,7 +339,7 @@ class IconSearchService {
             return [term, `${term.slice(0, -3)}y`];
         }
 
-        if (/(?:s|x|z|ch|sh)es$/u.test(term)) {
+        if (IconSearchService.ES_PLURAL_REGEX.test(term)) {
             return [term, term.slice(0, -2)];
         }
 
@@ -258,42 +352,93 @@ class IconSearchService {
         translations: Record<string, string>,
         labels: Set<string>
     ): IconSearchEntryInterface {
-        const [nameKeywords, otherKeywords = ''] = keywords.split('||');
+        const separatorIndex = keywords.indexOf('||');
+        const nameKeywords = separatorIndex >= 0 ? keywords.slice(0, separatorIndex) : keywords;
+        const otherKeywords = separatorIndex >= 0 ? keywords.slice(separatorIndex + 2) : '';
         const name = `|${this.withTranslations(icon, nameKeywords, translations)}|`;
 
         return {
             icon,
-            label: this.toDistinctLabel(nameKeywords.split('|'), labels),
+            label: this.toDistinctLabel(nameKeywords, labels),
             name,
             keywords: `${name}${this.withTranslations(icon, otherKeywords, translations)}|`
         };
     }
 
-    private toDistinctLabel([primaryName = '', ...aliases]: readonly string[], labels: Set<string>): string {
+    private toDistinctLabel(nameKeywords: string, labels: Set<string>): string {
+        const firstPipe = nameKeywords.indexOf('|');
+        const primaryName = firstPipe >= 0 ? nameKeywords.slice(0, firstPipe) : nameKeywords;
         const label = this.toReadableName(primaryName);
-        const alias = /\d/u.test(primaryName)
-            ? aliases.map(candidate => this.toReadableName(candidate)).find(candidate => !/\d/u.test(candidate) && !labels.has(candidate))
-            : void 0;
 
-        if (isDefined(alias)) {
-            labels.add(alias);
+        if (firstPipe < 0 || !IconSearchService.DIGIT_REGEX.test(primaryName)) {
+            return label;
         }
 
-        return alias ?? label;
+        let start = firstPipe + 1;
+
+        while (start <= nameKeywords.length) {
+            const nextPipe = nameKeywords.indexOf('|', start);
+            const end = nextPipe >= 0 ? nextPipe : nameKeywords.length;
+            const candidate = this.toReadableName(nameKeywords.slice(start, end));
+
+            if (!IconSearchService.DIGIT_REGEX.test(candidate) && !labels.has(candidate)) {
+                labels.add(candidate);
+
+                return candidate;
+            }
+
+            if (nextPipe < 0) {
+                break;
+            }
+
+            start = nextPipe + 1;
+        }
+
+        return label;
     }
 
     private toReadableName(name: string): string {
-        const readable = name.replaceAll(/(?<=\p{L})(\d+)\b/gu, ' $1').trim();
+        const readable = (
+            IconSearchService.DIGIT_REGEX.test(name) ? name.replaceAll(IconSearchService.READABLE_DIGIT_REGEX, ' $1') : name
+        ).trim();
 
         return `${readable.charAt(0).toUpperCase()}${readable.slice(1)}`;
     }
 
-    private withTranslations(icon: UserIconType, keywords: string, translations: Record<string, string>): string {
-        const translatedKeywords = isEmojiIcon(icon)
-            ? []
-            : [...new Set(keywords.split(/[^a-z]+/u))].map(word => translations[word]).filter(isDefined);
+    private appendWordTranslation(word: string, translations: Record<string, string>): string {
+        const translated = translations[word];
 
-        return [keywords, ...translatedKeywords].join('|');
+        if (!isDefined(translated) || this.translationSeenWords.has(word)) {
+            return '';
+        }
+
+        this.translationSeenWords.add(word);
+
+        return `|${translated}`;
+    }
+
+    private withTranslations(icon: UserIconType, keywords: string, translations: Record<string, string>): string {
+        if (isEmojiIcon(icon) || !isNotEmptyString(keywords)) {
+            return keywords;
+        }
+
+        this.translationSeenWords.clear();
+        let result = keywords;
+        let wordStart = -1;
+
+        for (let index = 0; index <= keywords.length; index += 1) {
+            const code = index < keywords.length ? keywords.charCodeAt(index) : 0;
+            const isLowerAscii = code >= IconSearchService.LOWER_A_CHAR_CODE && code <= IconSearchService.LOWER_Z_CHAR_CODE;
+
+            if (isLowerAscii && wordStart < 0) {
+                wordStart = index;
+            } else if (!isLowerAscii && wordStart >= 0) {
+                result += this.appendWordTranslation(keywords.slice(wordStart, index), translations);
+                wordStart = -1;
+            }
+        }
+
+        return result;
     }
 
     private scoreVariant({ name, keywords }: IconSearchEntryInterface, term: string, allowPrefix: boolean): number {
@@ -324,10 +469,6 @@ class IconSearchService {
 
         if (!allowPrefix || term.length < IconSearchService.MIN_PREFIX_LENGTH) {
             return 0;
-        }
-
-        if (this.hasPrefix(name, term)) {
-            return IconSearchService.NAME_PREFIX_SCORE;
         }
 
         return this.hasPrefix(keywords, term) ? IconSearchService.PREFIX_SCORE : 0;

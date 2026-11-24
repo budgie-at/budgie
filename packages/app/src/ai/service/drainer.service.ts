@@ -10,7 +10,7 @@ import * as Stream from 'effect/Stream';
 import * as SubscriptionRef from 'effect/SubscriptionRef';
 import { AppState } from 'react-native';
 
-import { isEmptyArray } from '@rnw-community/shared';
+import { isDefined, isEmptyArray } from '@rnw-community/shared';
 
 import { appAtomRegistry } from '../../@generic/constant/app-atom-registry.constant';
 import { Workload } from '../../@generic/service/workload.service';
@@ -112,11 +112,14 @@ export const makeDrainer = Effect.fnUntraced(function* <E>(
     });
 
     const processRows = Effect.fnUntraced(function* (rows: Effect.Effect<void, E, Db>[], retry: Effect.Effect<void, never, Db>) {
-        for (const row of rows) {
+        for (const [index, row] of rows.entries()) {
             if (!(yield* isSafe) || readState() === DrainerStateEnum.ERROR) {
                 return;
             }
             yield* runRow(row, retry);
+            if ((index + 1) % config.yieldEveryRows === 0 && index + 1 < rows.length) {
+                yield* YIELD_TO_UI;
+            }
         }
     });
 
@@ -136,10 +139,21 @@ export const makeDrainer = Effect.fnUntraced(function* <E>(
         });
     });
 
+    const waitForNextCycle = Effect.fnUntraced(function* (delay: number) {
+        if (isDefined(config.wakeStream) && delay === idleIntervalMs && appAtomRegistry.get(snapshot).pending === 0) {
+            yield* Stream.runHead(config.wakeStream);
+            yield* Effect.sleep(config.relaxedIntervalMs);
+
+            return;
+        }
+
+        yield* Effect.sleep(delay);
+    });
+
     const drain = Effect.fn('Drainer.drain')(function* (retry: Effect.Effect<void, never, Db>) {
         let delay = relaxedDelay();
         while (yield* canSchedule) {
-            yield* Effect.sleep(delay);
+            yield* waitForNextCycle(delay);
             yield* waitForIdle;
             if (!(yield* canSchedule)) {
                 return;

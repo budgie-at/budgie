@@ -10,12 +10,10 @@ import { CollapsibleChromePage } from '../../../@generic/component/collapsible-c
 import { GoBackButton } from '../../../@generic/component/go-back-button/go-back-button';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
-import { PillButtonFooter } from '../../../@generic/component/pill-button-footer/pill-button-footer';
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
 import { BudgetSelector } from '../../budget.selector';
 import { BudgetTemplateKindEnum } from '../../enum/budget-template-kind.enum';
 import { useBudgetForm } from '../../hooks/use-budget-form.hook';
-import { resolveBudgetSaveBlocker } from '../../utils/resolve-budget-save-blocker.util';
 import { BudgetAutoTuneField } from '../budget-auto-tune-field/budget-auto-tune-field';
 import { BudgetDeleteRow } from '../budget-delete-row/budget-delete-row';
 import { BudgetInlineCategoryLimits } from '../budget-inline-category-limits/budget-inline-category-limits';
@@ -25,6 +23,7 @@ import { BudgetPageState } from '../budget-page-state/budget-page-state';
 import { BudgetPeriodField } from '../budget-period-field/budget-period-field';
 import { BudgetSetupProgressContent } from '../budget-setup-progress-content/budget-setup-progress-content';
 import { BudgetSetupProgress } from '../budget-setup-progress/budget-setup-progress';
+import { BudgetSetupSaveFooter } from '../budget-setup-save-footer/budget-setup-save-footer';
 import { BudgetShareField } from '../budget-share-field/budget-share-field';
 import { BudgetStartsOnField } from '../budget-starts-on-field/budget-starts-on-field';
 
@@ -41,25 +40,13 @@ export const BudgetSetupForm = ({ defaultInstrumentId, editingId, templateKind }
     const scrollViewRef = useRef<KeyboardAwareScrollViewRef | null>(null);
     const budgetForm = useBudgetForm({ defaultInstrumentId, editingId, templateKind });
     const { form, isEditing, isLoading, isError, isSubmitting, isUnavailable, budget } = budgetForm;
-    const { instrumentId, saveBlocker: watchedSaveBlocker } = useWatch({
-        control: form.control,
-        compute: values => {
-            const resolvedInstrumentId = isPositiveNumber(values.instrumentId) ? values.instrumentId : defaultInstrumentId;
-
-            return {
-                instrumentId: resolvedInstrumentId,
-                saveBlocker: resolveBudgetSaveBlocker({ ...values, instrumentId: resolvedInstrumentId })
-            };
-        }
-    });
+    const watchedInstrumentId = useWatch({ control: form.control, name: 'instrumentId' });
+    const instrumentId = isPositiveNumber(watchedInstrumentId) ? watchedInstrumentId : defaultInstrumentId;
     const { instrument } = useGetInstrumentByIdQuery(instrumentId);
-    const saveBlocker = isLoading ? null : watchedSaveBlocker;
     const currencySymbol = isDefined(instrument) ? instrument.symbol : '';
     const handleCategoryAdded = () => scrollViewRef.current?.scrollToEnd({ animated: true });
     const scrollViewProps = { ref: scrollViewRef };
     const [headerTitle, submitLabel] = isEditing ? [t`Edit budget`, t`Save changes`] : [t`Create budget`, t`Create budget`];
-    const isSaveDisabled = isLoading || isDefined(saveBlocker);
-    const saveLabel = isDefined(saveBlocker) ? t(saveBlocker) : submitLabel;
     const hasProgress = isEditing && (!isDefined(budget) || budget.limitSource === BudgetLimitSourceEnum.FIXED);
 
     return isUnavailable ? (
@@ -72,12 +59,11 @@ export const BudgetSetupForm = ({ defaultInstrumentId, editingId, templateKind }
                 contentClassName="gap-y-7xl"
                 scrollViewProps={scrollViewProps}
                 footer={
-                    <PillButtonFooter
-                        label={saveLabel}
-                        accessibilityLabel={submitLabel}
-                        isLoading={isSubmitting}
-                        isDisabled={isSaveDisabled}
-                        testID={BudgetSelector.SetupSaveButton}
+                    <BudgetSetupSaveFooter
+                        defaultInstrumentId={defaultInstrumentId}
+                        submitLabel={submitLabel}
+                        isFormLoading={isLoading}
+                        isSubmitting={isSubmitting}
                         onPress={budgetForm.handleSubmit}
                     />
                 }

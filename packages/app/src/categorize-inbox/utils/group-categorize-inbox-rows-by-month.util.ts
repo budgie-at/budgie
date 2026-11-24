@@ -1,4 +1,5 @@
-import { format, startOfMonth } from 'date-fns';
+import { format } from 'date-fns/format';
+import { startOfMonth } from 'date-fns/startOfMonth';
 
 import type { CategorizeInboxMonthGroupInterface } from '../interface/categorize-inbox-month-group.interface';
 import type { CategorizeInboxRowInterface } from '@budgie/categorization';

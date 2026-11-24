@@ -23,10 +23,9 @@ export const syncRequestSignerLayer = Layer.effect(
                     return yield* SyncUnauthorizedError.make({ provider, message: 'signing-key-missing' });
                 }
 
-                return yield* Effect.try({
-                    try: () => signRs256(pem, signingInput),
-                    catch: () => SyncUnauthorizedError.make({ provider, message: 'signing-key-unusable' })
-                });
+                return yield* signRs256(pem, signingInput).pipe(
+                    Effect.mapError(() => SyncUnauthorizedError.make({ provider, message: 'signing-key-unusable' }))
+                );
             }),
             deleteKey: Effect.fn('SyncRequestSigner.deleteKey')(function* (keyId: string) {
                 yield* secureStore

@@ -6,7 +6,7 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined, isEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isEmptyArray, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { NO_FUND_COVERED } from '../../fund/constant/no-fund-covered.constant';
 import { BudgetSinkingFundRepository } from '../../fund/repository/budget-sinking-fund.repository';
@@ -42,8 +42,6 @@ import type {
     BudgetSinkingFundEntityInterface
 } from '@budgie/contracts';
 
-const REFRESH_PERIOD_COUNT = 3;
-
 export class BudgetPeriodCloseService extends Context.Service<BudgetPeriodCloseService>()('@budgie/budget/BudgetPeriodCloseService', {
     make: Effect.gen(function* () {
         const budgetRepository = yield* BudgetRepository;
@@ -52,6 +50,7 @@ export class BudgetPeriodCloseService extends Context.Service<BudgetPeriodCloseS
         const budgetLimitChangeRepository = yield* BudgetLimitChangeRepository;
         const budgetFundSpendService = yield* BudgetFundSpendService;
         const budgetSinkingFundRepository = yield* BudgetSinkingFundRepository;
+        const refreshPeriodCount = 3;
         const maxFundSettlements = 12;
 
         const computeStoredCarryIn = (snapshot: BudgetPeriodSnapshotWithCategoriesEntityInterface): BudgetCarryOutsInterface => ({
@@ -150,69 +149,114 @@ export class BudgetPeriodCloseService extends Context.Service<BudgetPeriodCloseS
             });
         };
 
-        const refreshPeriod = Effect.fnUntraced(function* (
-            budget: Pick<BudgetEntityInterface, 'instrumentId' | 'syncZone'>,
+        const refreshPeriod = (
+            budget: Pick<BudgetEntityInterface, 'instrumentId'>,
             snapshot: BudgetPeriodSnapshotWithCategoriesEntityInterface,
-            carryIn: BudgetCarryOutsInterface
-        ) {
-            const entries = yield* budgetRepository.findBudgetSpentEntries(
-                snapshot.periodStart,
-                addMilliseconds(snapshot.periodEnd, 1),
-                budget.instrumentId,
-                budget.syncZone
-            );
-            const spent = computeSpent(entries, budget.instrumentId);
+            carryIn: BudgetCarryOutsInterface,
+            entries: Effect.Success<ReturnType<typeof budgetRepository.findBudgetSpentEntries>>
+        ) => {
+            const startMs = snapshot.periodStart.getTime();
+            const endMs = snapshot.periodEnd.getTime();
+            const periodEntries = entries.filter(entry => entry.operatedAt.getTime() >= startMs && entry.operatedAt.getTime() <= endMs);
+            const spent = computeSpent(periodEntries, budget.instrumentId);
             const storedFundCovered = {
                 byCategory: new Map(snapshot.categories.map(category => [category.categoryId, category.fundCovered])),
                 other: snapshot.otherFundCovered
             };
             const rows = buildPeriodSnapshotRows(snapshot.categories, spent, carryIn, storedFundCovered);
 
-            const categoryChanges = snapshot.categories.flatMap((category, index) => {
+            const categoryUpdates = snapshot.categories.flatMap((category, index) => {
                 const row = rows.categories[index];
 
                 return isDefined(row) && (row.spent !== category.spent || row.carriedIn !== category.carriedIn)
                     ? [{ id: category.id, spent: row.spent, carriedIn: row.carriedIn }]
                     : [];
             });
-
-            if (
+            const snapshotUpdate =
                 snapshot.overallSpent !== rows.overallSpent ||
                 snapshot.otherSpent !== rows.otherSpent ||
                 snapshot.otherCarriedIn !== rows.otherCarriedIn
-            ) {
-                yield* budgetPeriodSnapshotRepository.updateSnapshot(snapshot.id, {
-                    overallSpent: rows.overallSpent,
+                    ? {
+                          id: snapshot.id,
+                          input: {
+                              overallSpent: rows.overallSpent,
+                              otherSpent: rows.otherSpent,
+                              otherCarriedIn: rows.otherCarriedIn
+                          }
+                      }
+                    : null;
+
+            return {
+                snapshotUpdate,
+                categoryUpdates,
+                carryOuts: computeSnapshotCarryOuts({
+                    ...snapshot,
                     otherSpent: rows.otherSpent,
-                    otherCarriedIn: rows.otherCarriedIn
-                });
-            }
+                    otherCarriedIn: rows.otherCarriedIn,
+                    categories: rows.categories
+                })
+            };
+        };
 
-            yield* Effect.forEach(
-                categoryChanges,
-                change =>
-                    budgetPeriodSnapshotRepository.updateCategorySnapshot(change.id, { spent: change.spent, carriedIn: change.carriedIn }),
-                { discard: true }
-            );
-
-            return computeSnapshotCarryOuts({
-                ...snapshot,
-                otherSpent: rows.otherSpent,
-                otherCarriedIn: rows.otherCarriedIn,
-                categories: rows.categories
-            });
-        });
-
-        const refreshRecentPeriods = Effect.fnUntraced(function* (budget: Pick<BudgetEntityInterface, 'id' | 'instrumentId' | 'syncZone'>) {
-            const recentSnapshots = yield* budgetPeriodSnapshotRepository.findRecent(budget.id, REFRESH_PERIOD_COUNT);
+        const refreshRecentPeriods = Effect.fnUntraced(function* (
+            budget: Pick<BudgetEntityInterface, 'id' | 'instrumentId' | 'syncZone'>,
+            recentSnapshots: readonly BudgetPeriodSnapshotWithCategoriesEntityInterface[]
+        ) {
             const refreshable = recentSnapshots.filter(snapshot => !snapshot.isReconstructed).reverse();
 
+            if (isEmptyArray(refreshable)) {
+                return;
+            }
+
+            const periodStart = min(refreshable.map(snapshot => snapshot.periodStart));
+            const nextPeriodStart = addMilliseconds(
+                refreshable.reduce(
+                    (latest, snapshot) => (snapshot.periodEnd.getTime() > latest.getTime() ? snapshot.periodEnd : latest),
+                    refreshable[0].periodEnd
+                ),
+                1
+            );
+            const entries = yield* budgetRepository.findBudgetSpentEntries(
+                periodStart,
+                nextPeriodStart,
+                budget.instrumentId,
+                budget.syncZone
+            );
+            const snapshotUpdates: {
+                readonly id: number;
+                readonly input: { readonly overallSpent: number; readonly otherSpent: number; readonly otherCarriedIn: number };
+            }[] = [];
+            const categoryUpdates: { readonly id: number; readonly spent: number; readonly carriedIn: number }[] = [];
+            let previousCarryOuts: BudgetCarryOutsInterface | null = null;
+
+            for (const snapshot of refreshable) {
+                const result = refreshPeriod(budget, snapshot, previousCarryOuts ?? computeStoredCarryIn(snapshot), entries);
+                previousCarryOuts = result.carryOuts;
+
+                if (isDefined(result.snapshotUpdate)) {
+                    snapshotUpdates.push(result.snapshotUpdate);
+                }
+
+                if (isNotEmptyArray(result.categoryUpdates)) {
+                    categoryUpdates.push(...result.categoryUpdates);
+                }
+            }
+
+            if (isEmptyArray(snapshotUpdates) && isEmptyArray(categoryUpdates)) {
+                return;
+            }
+
             yield* Db.transaction(
-                Effect.reduce(
-                    refreshable,
-                    (): BudgetCarryOutsInterface | null => null,
-                    (previousCarryOuts, snapshot) => refreshPeriod(budget, snapshot, previousCarryOuts ?? computeStoredCarryIn(snapshot))
-                )
+                Effect.gen(function* () {
+                    yield* Effect.forEach(snapshotUpdates, ({ id, input }) => budgetPeriodSnapshotRepository.updateSnapshot(id, input), {
+                        discard: true
+                    });
+                    yield* Effect.forEach(
+                        categoryUpdates,
+                        ({ id, spent, carriedIn }) => budgetPeriodSnapshotRepository.updateCategorySnapshot(id, { spent, carriedIn }),
+                        { discard: true }
+                    );
+                })
             );
         });
 
@@ -290,10 +334,12 @@ export class BudgetPeriodCloseService extends Context.Service<BudgetPeriodCloseS
             originals: readonly BudgetSinkingFundEntityInterface[],
             states: readonly BudgetFundCloseStateInterface[]
         ) {
+            const originalById = new Map(originals.map(original => [original.id, original]));
+
             yield* Effect.forEach(
                 states,
                 Effect.fnUntraced(function* ({ fund, isFinished }) {
-                    const original = originals.find(candidate => candidate.id === fund.id);
+                    const original = originalById.get(fund.id);
 
                     if (isFinished) {
                         yield* budgetSinkingFundRepository.delete(fund.id);
@@ -383,58 +429,69 @@ export class BudgetPeriodCloseService extends Context.Service<BudgetPeriodCloseS
         });
 
         return {
-            closeDuePeriods: Effect.fn('BudgetPeriodCloseService.closeDuePeriods')(
-                function* (now: Date) {
-                    const budget = yield* budgetRepository.findMain;
+            closeDuePeriods: Effect.fn('BudgetPeriodCloseService.closeDuePeriods')(function* (now: Date) {
+                const budget = yield* budgetRepository.findMain;
 
-                    if (!isDefined(budget) || !isPositiveNumber(budget.instrumentId)) {
-                        return;
-                    }
+                if (!isDefined(budget) || !isPositiveNumber(budget.instrumentId)) {
+                    return;
+                }
 
-                    const [latestSnapshot] = yield* budgetPeriodSnapshotRepository.findRecent(budget.id, 1);
-                    const latestPeriodStart = isDefined(latestSnapshot) ? latestSnapshot.periodStart : null;
-                    const earliestOperatedAt = yield* budgetRepository.findEarliestOperatedAt;
-                    const windows = computeClosedPeriods(budget, now, latestPeriodStart, earliestOperatedAt);
-                    const categoryLimits = yield* budgetCategoryLimitRepository.getByBudget(budget.id);
+                const recentSnapshots = yield* budgetPeriodSnapshotRepository.findRecent(budget.id, refreshPeriodCount);
+                const [latestSnapshot] = recentSnapshots;
+                const latestPeriodStart = isDefined(latestSnapshot) ? latestSnapshot.periodStart : null;
+                const earliestOperatedAt = yield* budgetRepository.findEarliestOperatedAt;
+                const windows = computeClosedPeriods(budget, now, latestPeriodStart, earliestOperatedAt);
 
-                    const snapshotPeriod = makeSnapshotPeriod(budget, categoryLimits, !isDefined(latestSnapshot));
-                    const originalFunds = yield* budgetSinkingFundRepository.getByBudget(budget.id);
-                    const [firstWindow] = windows;
-                    const initialStates = yield* Effect.forEach(originalFunds, fund =>
-                        Effect.map(
-                            isDefined(firstWindow) ? loadPriorConsumption(budget, fund, firstWindow) : Effect.succeed(0),
-                            consumed => ({ fund, consumed, isFinished: false })
-                        )
-                    );
+                if (isEmptyArray(windows)) {
+                    yield* refreshRecentPeriods(budget, recentSnapshots);
 
-                    const closed = yield* Effect.reduce(
-                        windows,
-                        () => ({ carryIn: computeSnapshotCarryOuts(latestSnapshot), states: initialStates }),
-                        (accumulator, window) =>
-                            Effect.map(
-                                snapshotPeriod(
-                                    window,
-                                    accumulator.carryIn,
-                                    accumulator.states.filter(state => !state.isFinished).map(state => state.fund)
-                                ),
-                                ({ carryOuts, draws }) => ({
-                                    carryIn: carryOuts,
-                                    states: advanceFundsThroughWindow(accumulator.states, budget, window, draws)
-                                })
-                            )
-                    );
+                    return;
+                }
 
-                    yield* refreshRecentPeriods(budget);
-                    yield* persistFunds(originalFunds, closed.states);
+                yield* Db.transaction(
+                    Effect.gen(function* () {
+                        const categoryLimits = yield* budgetCategoryLimitRepository.getByBudget(budget.id);
+                        const snapshotPeriod = makeSnapshotPeriod(budget, categoryLimits, !isDefined(latestSnapshot));
+                        const originalFunds = yield* budgetSinkingFundRepository.getByBudget(budget.id);
+                        const [firstWindow] = windows;
+                        const initialStates = yield* Effect.forEach(originalFunds, fund =>
+                            Effect.map(loadPriorConsumption(budget, fund, firstWindow), consumed => ({
+                                fund,
+                                consumed,
+                                isFinished: false
+                            }))
+                        );
 
-                    const lastClosedWindow = windows.at(-1);
+                        const closed = yield* Effect.reduce(
+                            windows,
+                            () => ({ carryIn: computeSnapshotCarryOuts(latestSnapshot), states: initialStates }),
+                            (accumulator, window) =>
+                                Effect.map(
+                                    snapshotPeriod(
+                                        window,
+                                        accumulator.carryIn,
+                                        accumulator.states.filter(state => !state.isFinished).map(state => state.fund)
+                                    ),
+                                    ({ carryOuts, draws }) => ({
+                                        carryIn: carryOuts,
+                                        states: advanceFundsThroughWindow(accumulator.states, budget, window, draws)
+                                    })
+                                )
+                        );
 
-                    if (isDefined(lastClosedWindow)) {
-                        yield* tuneLimits(budget, categoryLimits, lastClosedWindow, now);
-                    }
-                },
-                effect => Db.transaction(effect)
-            )
+                        const updatedSnapshots = yield* budgetPeriodSnapshotRepository.findRecent(budget.id, refreshPeriodCount);
+
+                        yield* refreshRecentPeriods(budget, updatedSnapshots);
+                        yield* persistFunds(originalFunds, closed.states);
+
+                        const lastClosedWindow = windows.at(-1);
+
+                        if (isDefined(lastClosedWindow)) {
+                            yield* tuneLimits(budget, categoryLimits, lastClosedWindow, now);
+                        }
+                    })
+                );
+            })
         };
     })
 }) {

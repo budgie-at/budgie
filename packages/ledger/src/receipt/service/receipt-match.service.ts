@@ -6,7 +6,8 @@ import {
     TransactionReceiptRepository,
     TransactionRepository
 } from '@budgie/contracts';
-import { addDays, subDays } from 'date-fns';
+import { addDays } from 'date-fns/addDays';
+import { subDays } from 'date-fns/subDays';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';

@@ -40,7 +40,6 @@ import { fillRunwaySeriesMonths } from '../../runway/utils/fill-runway-series-mo
 import { DEFAULT_INSTRUMENT } from '../../settings/constants/default-instrument.constant';
 
 import type { WidgetAccountTypeTotalInterface } from '../interface/widget-account-type-total.interface';
-import type { WidgetBudgetCategoryInterface } from '../interface/widget-budget-category.interface';
 import type { WidgetBudgetStatInterface } from '../interface/widget-budget-stat.interface';
 import type { WidgetBudgetStatsInputInterface } from '../interface/widget-budget-stats-input.interface';
 import type { WidgetNetWorthSnapshotInterface } from '../interface/widget-net-worth-snapshot.interface';
@@ -70,9 +69,35 @@ export class WidgetSnapshotBuilderService extends Context.Service<WidgetSnapshot
             const compactAmountThreshold = 100;
             const abbreviatedAmountThreshold = 100_000;
             const categoryTone = { green: 'positive', yellow: 'warning', red: 'destructive' } as const;
+            const createFormatters = (locale: string, decimalPlaces: number) => ({
+                percentFormatter: new Intl.NumberFormat(locale, { style: 'percent', maximumFractionDigits: 0 }),
+                decimalFormatter: new Intl.NumberFormat(locale, {
+                    style: 'decimal',
+                    minimumFractionDigits: decimalPlaces,
+                    maximumFractionDigits: decimalPlaces
+                }),
+                compactFormatter: new Intl.NumberFormat(locale, { notation: 'compact', maximumFractionDigits: 1 }),
+                plainNumberFormatter: new Intl.NumberFormat(locale),
+                periodDateFormatter: new Intl.DateTimeFormat(locale, { month: 'short', day: 'numeric' })
+            });
+            const formatterCache = new Map<string, ReturnType<typeof createFormatters>>();
+
+            const getFormatters = (locale: string, decimalPlaces: number) => {
+                const key = `${locale}:${decimalPlaces}`;
+                const cached = formatterCache.get(key);
+
+                if (isDefined(cached)) {
+                    return cached;
+                }
+
+                const created = createFormatters(locale, decimalPlaces);
+                formatterCache.set(key, created);
+
+                return created;
+            };
 
             const formatPercent = (ratio: number, context: WidgetSnapshotContextInterface): string =>
-                new Intl.NumberFormat(context.locale, { style: 'percent', maximumFractionDigits: 0 }).format(ratio);
+                getFormatters(context.locale, context.decimalPlaces).percentFormatter.format(ratio);
 
             const formatWithSymbol = (value: number, symbol: string, context: WidgetSnapshotContextInterface): string => {
                 if (context.isMasked) {
@@ -80,11 +105,7 @@ export class WidgetSnapshotBuilderService extends Context.Service<WidgetSnapshot
                 }
 
                 return formatSymbolAmount(value, symbol, absolute =>
-                    new Intl.NumberFormat(context.locale, {
-                        style: 'decimal',
-                        minimumFractionDigits: context.decimalPlaces,
-                        maximumFractionDigits: context.decimalPlaces
-                    }).format(absolute)
+                    getFormatters(context.locale, context.decimalPlaces).decimalFormatter.format(absolute)
                 );
             };
 
@@ -122,7 +143,7 @@ export class WidgetSnapshotBuilderService extends Context.Service<WidgetSnapshot
                 }
 
                 return formatSymbolAmount(value, symbol, absolute =>
-                    new Intl.NumberFormat(context.locale, { notation: 'compact', maximumFractionDigits: 1 }).format(absolute)
+                    getFormatters(context.locale, context.decimalPlaces).compactFormatter.format(absolute)
                 );
             };
 
@@ -178,31 +199,16 @@ export class WidgetSnapshotBuilderService extends Context.Service<WidgetSnapshot
                     return context.i18n._(msg`+${formattedNet} / mo`);
                 }
 
-                const formattedMonths = new Intl.NumberFormat(context.locale).format(Math.round(computation.runwayMonths ?? 0));
+                const formattedMonths = getFormatters(context.locale, context.decimalPlaces).plainNumberFormatter.format(
+                    Math.round(computation.runwayMonths ?? 0)
+                );
 
                 return context.i18n._(msg`≈ ${formattedMonths} mo`);
             };
 
-            const buildBudgetCategory = Effect.fn('WidgetSnapshotBuilderService.buildBudgetCategory')(function* (
-                categoryId: number,
-                progressRatio: number,
-                context: WidgetSnapshotContextInterface
-            ) {
-                const categories = yield* categoryRepository.findById(categoryId, context.language);
-                const category = categories.at(0);
-                const budgetCategory: WidgetBudgetCategoryInterface = {
-                    title: isDefined(category) ? category.title : context.i18n._(msg`Category`),
-                    formattedProgress: formatPercent(progressRatio, context),
-                    ratio: Math.min(Math.max(progressRatio, 0), 1),
-                    limitRatio: progressRatio > 1 ? 1 / progressRatio : null,
-                    tone: categoryTone[resolveBudgetBarTone(progressRatio)]
-                };
-
-                return budgetCategory;
-            });
-
             const buildBudgetCategories = Effect.fn('WidgetSnapshotBuilderService.buildBudgetCategories')(function* (
                 categoryProjections: readonly BudgetCategoryProjectionInterface[],
+                syncZone: string,
                 context: WidgetSnapshotContextInterface
             ) {
                 const ranked = categoryProjections
@@ -215,13 +221,35 @@ export class WidgetSnapshotBuilderService extends Context.Service<WidgetSnapshot
                     .sort((first, second) => second.progressRatio - first.progressRatio || second.spent - first.spent)
                     .slice(0, topCategoryCount);
 
-                return yield* Effect.forEach(ranked, entry => buildBudgetCategory(entry.categoryId, entry.progressRatio, context), {
-                    concurrency: 'unbounded'
-                });
+                if (isEmptyArray(ranked)) {
+                    return [];
+                }
+
+                const categories = yield* categoryRepository.findAllNonSystemLocalized(context.language, syncZone);
+                const titleByCategoryId = new Map(categories.map(category => [category.id, category.title]));
+
+                return yield* Effect.forEach(
+                    ranked,
+                    Effect.fnUntraced(function* ({ categoryId, progressRatio }) {
+                        const cachedTitle = titleByCategoryId.get(categoryId);
+                        const title = isDefined(cachedTitle)
+                            ? cachedTitle
+                            : ((yield* categoryRepository.findById(categoryId, context.language)).at(0)?.title ??
+                              context.i18n._(msg`Category`));
+
+                        return {
+                            title,
+                            formattedProgress: formatPercent(progressRatio, context),
+                            ratio: Math.min(Math.max(progressRatio, 0), 1),
+                            limitRatio: progressRatio > 1 ? 1 / progressRatio : null,
+                            tone: categoryTone[resolveBudgetBarTone(progressRatio)]
+                        };
+                    })
+                );
             });
 
             const formatPeriod = (start: Date, end: Date, context: WidgetSnapshotContextInterface): string => {
-                const formatter = new Intl.DateTimeFormat(context.locale, { month: 'short', day: 'numeric' });
+                const formatter = getFormatters(context.locale, context.decimalPlaces).periodDateFormatter;
 
                 return `${formatter.format(start)} – ${formatter.format(end)}`;
             };
@@ -376,7 +404,7 @@ export class WidgetSnapshotBuilderService extends Context.Service<WidgetSnapshot
                 const limitAmount = convertFromMicroUnits(projection.overall.limit);
                 const progressRatio = isPositiveNumber(limitAmount) ? spentAmount / limitAmount : 1;
                 const periodEnd = getInclusiveEnd(nextPeriodStart);
-                const categories = context.isMasked ? [] : yield* buildBudgetCategories(projection.categories, context);
+                const categories = context.isMasked ? [] : yield* buildBudgetCategories(projection.categories, budget.syncZone, context);
                 const formattedLimit = formatCompactWithSymbol(limitAmount, symbol, context);
                 const isOverLimit = spentAmount > limitAmount;
                 const formattedSpentAmount = formatCompactWithSymbol(spentAmount, symbol, context);

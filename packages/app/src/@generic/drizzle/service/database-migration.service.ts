@@ -8,7 +8,6 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined } from '@rnw-community/shared';
 
-import bundledMigrations from '../../../../drizzle/migrations';
 import { DatabaseOpenError } from '../error/database-open.error';
 import { isSupportedMigrationCreatedAt } from '../utils/is-supported-migration-created-at.util';
 import { readLastMigrationCreatedAt } from '../utils/read-last-migration-created-at.util';
@@ -18,22 +17,9 @@ import type * as SqlClient from 'effect/sql/SqlClient';
 
 export class DatabaseMigrationService extends Context.Service<DatabaseMigrationService>()('@budgie/app/DatabaseMigrationService', {
     make: Effect.sync(() => {
-        const migrations: Readonly<Record<string, () => string[]>> = bundledMigrations.migrations;
-        const localMigrations: MigrationMeta[] = Object.keys(migrations)
-            .sort()
-            .map(name => ({
-                name,
-                get sql() {
-                    return migrations[name]();
-                },
-                bps: true,
-                folderMillis: formatToMillis(name.slice(0, 14)),
-                hash: ''
-            }));
-        const [baselineMigration] = localMigrations;
-
         const recordBaselineOnLatestLegacyDatabase = Effect.fn('DatabaseMigrationService.recordBaselineOnLatestLegacyDatabase')(function* (
-            client: SqlClient.SqlClient
+            client: SqlClient.SqlClient,
+            baselineMigration: MigrationMeta
         ) {
             const lastCreatedAt = yield* readLastMigrationCreatedAt(client);
 
@@ -62,8 +48,22 @@ export class DatabaseMigrationService extends Context.Service<DatabaseMigrationS
         return {
             migrate: Effect.fn('DatabaseMigrationService.migrate')(function* () {
                 const db = yield* Db;
+                const { default: bundledMigrations } = yield* Effect.promise(() => import('../../../../drizzle/migrations'));
+                const migrations: Readonly<Record<string, () => string[]>> = bundledMigrations.migrations;
+                const localMigrations: MigrationMeta[] = Object.keys(migrations)
+                    .sort()
+                    .map(name => ({
+                        name,
+                        get sql() {
+                            return migrations[name]();
+                        },
+                        bps: true,
+                        folderMillis: formatToMillis(name.slice(0, 14)),
+                        hash: ''
+                    }));
+                const [baselineMigration] = localMigrations;
 
-                yield* recordBaselineOnLatestLegacyDatabase(db.$client);
+                yield* recordBaselineOnLatestLegacyDatabase(db.$client, baselineMigration);
                 yield* migrate(localMigrations, db.$primary._.session);
             })
         };

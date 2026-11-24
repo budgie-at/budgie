@@ -1,7 +1,7 @@
 import { convertFromMicroUnits } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
-import { isSameMonth } from 'date-fns';
+import { isSameMonth } from 'date-fns/isSameMonth';
 import { useState } from 'react';
 import { Text, View } from 'react-native';
 

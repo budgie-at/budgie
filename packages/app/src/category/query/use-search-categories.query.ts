@@ -7,6 +7,7 @@ import {
 } from '@budgie/contracts';
 import { useAtomRefresh, useAtomValue } from '@effect/atom-react/Hooks';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
+import { useDeferredValue } from 'react';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
@@ -22,8 +23,9 @@ export const searchCategoriesAtom = databaseQueryFamily(
 );
 
 export const useSearchCategoriesQuery = (search: string, includeDefault: boolean, syncZone: string = PERSONAL_SYNC_ZONE) => {
+    const deferredSearch = useDeferredValue(search);
     const language = useSetting('language');
-    const atom = searchCategoriesAtom([search, includeDefault, language, syncZone]);
+    const atom = searchCategoriesAtom([deferredSearch, includeDefault, language, syncZone]);
     const result = useLiveAtomValue(atom);
     const currentResult = useAtomValue(atom);
     const retry = useAtomRefresh(atom);
@@ -31,7 +33,7 @@ export const useSearchCategoriesQuery = (search: string, includeDefault: boolean
     return {
         categories: AsyncResult.getOrElse(result, () => null),
         isLoading: AsyncResult.isInitial(result),
-        isSearchPending: AsyncResult.isInitial(currentResult),
+        isSearchPending: search !== deferredSearch || AsyncResult.isInitial(currentResult),
         isFailure: AsyncResult.isFailure(result),
         retry
     };

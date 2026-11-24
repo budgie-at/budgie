@@ -12,6 +12,10 @@ export const resolveBankTransactionSyncIds = Effect.fnUntraced(function* (
     accountRepository: typeof AccountRepository.Service,
     transactionRepository: typeof TransactionRepository.Service
 ) {
+    if (!inputs.some(input => isNotEmptyString(input.externalId) && isNotEmptyString(input.externalSource))) {
+        return inputs.map(() => null);
+    }
+
     const accounts = yield* accountRepository.findByIds(getEntryAccountIds(inputs));
     const accountExternalIdById = new Map(accounts.map(account => [account.id, account.externalId]));
     const derivedSyncIds = new Set<string>();
@@ -28,6 +32,9 @@ export const resolveBankTransactionSyncIds = Effect.fnUntraced(function* (
 
         return syncId;
     });
+    if (derivedSyncIds.size === 0) {
+        return resolvedSyncIds;
+    }
     const claimedSyncIds = yield* transactionRepository.findClaimedPersonalSyncIds([...derivedSyncIds]);
 
     return resolvedSyncIds.map(syncId => (isDefined(syncId) && !claimedSyncIds.has(syncId) ? syncId : null));

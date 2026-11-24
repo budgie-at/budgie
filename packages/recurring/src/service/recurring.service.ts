@@ -14,7 +14,7 @@ import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 import * as Option from 'effect/Option';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { RECURRING_TRACKED_KINDS } from '../constant/recurring-tracked-kinds.constant';
 import { RecurringSeriesNotFoundError } from '../error/recurring-series-not-found.error';
@@ -57,15 +57,19 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
             const links = yield* recurringRepository.findLinks;
             const charges = yield* recurringRepository.findLinkedCharges(defaultInstrumentId);
             const chargeByKey = new Map(charges.map(charge => [chargeKey(charge.kind, charge.transactionId), charge]));
+            const linksBySeriesId = new Map<number, (typeof links)[number][]>();
+            for (const link of links) {
+                const seriesLinks = linksBySeriesId.get(link.seriesId) ?? [];
+                seriesLinks.push(link);
+                linksBySeriesId.set(link.seriesId, seriesLinks);
+            }
             const models: RecurringReadModelInterface[] = rows.map(series => ({
                 series: { ...series, defaultAmount: Math.round(series.defaultAmount) },
-                links: links
-                    .filter(link => link.seriesId === series.id)
-                    .flatMap(link => {
-                        const charge = chargeByKey.get(chargeKey(series.kind, link.transactionId));
+                links: (linksBySeriesId.get(series.id) ?? []).flatMap(link => {
+                    const charge = chargeByKey.get(chargeKey(series.kind, link.transactionId));
 
-                        return isDefined(charge) ? [{ link, charge }] : [];
-                    })
+                    return isDefined(charge) ? [{ link, charge }] : [];
+                })
             }));
 
             return {
@@ -84,6 +88,20 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
             yield* refreshService.ensureInitial(now);
 
             return yield* loadModels();
+        });
+
+        const projectCalendarMonths = Effect.fnUntraced(function* (
+            months: readonly { readonly year: number; readonly month: number }[],
+            now: Date,
+            kind: RecurringSeriesKindEnum
+        ) {
+            if (isEmptyArray(months)) {
+                return [];
+            }
+
+            const { models } = yield* loadReadyModels(now);
+
+            return months.map(({ year, month }) => projectRecurringMonth(models, year, month, now, kind));
         });
 
         const upcomingDates = (model: RecurringReadModelInterface, now: Date, count: number): Date[] =>
@@ -203,15 +221,27 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
 
         return {
             calendar: Effect.fn('RecurringService.calendar')(function* (year: number, month: number, now: Date) {
-                const { models } = yield* loadReadyModels(now);
+                const [result] = yield* projectCalendarMonths([{ year, month }], now, RecurringSeriesKindEnum.EXPENSE);
 
-                return projectRecurringMonth(models, year, month, now, RecurringSeriesKindEnum.EXPENSE);
+                return result;
+            }),
+            calendarMonths: Effect.fn('RecurringService.calendarMonths')(function* (
+                months: readonly { readonly year: number; readonly month: number }[],
+                now: Date
+            ) {
+                return yield* projectCalendarMonths(months, now, RecurringSeriesKindEnum.EXPENSE);
             }),
             detect: (now: Date) => refreshService.detect(now),
             incomeCalendar: Effect.fn('RecurringService.incomeCalendar')(function* (year: number, month: number, now: Date) {
-                const { models } = yield* loadReadyModels(now);
+                const [result] = yield* projectCalendarMonths([{ year, month }], now, RecurringSeriesKindEnum.INCOME);
 
-                return projectRecurringMonth(models, year, month, now, RecurringSeriesKindEnum.INCOME);
+                return result;
+            }),
+            incomeCalendarMonths: Effect.fn('RecurringService.incomeCalendarMonths')(function* (
+                months: readonly { readonly year: number; readonly month: number }[],
+                now: Date
+            ) {
+                return yield* projectCalendarMonths(months, now, RecurringSeriesKindEnum.INCOME);
             }),
             listSeries: Effect.fn('RecurringService.listSeries')(function* (now: Date) {
                 const { models, defaultInstrumentId } = yield* loadReadyModels(now);

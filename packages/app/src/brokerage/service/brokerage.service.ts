@@ -218,18 +218,30 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
             yield* accountBalanceIncrementalService.updateBalancesByAccountIds([cashAccountId]);
         });
 
-        const reconcileFunding = Effect.fn('BrokerageService.reconcileFunding')(
-            function* (fundingTitle: string) {
-                const integrations = (yield* bankIntegrationRepository.findActive).filter(
-                    integration => integration.provider === ExternalSourceEnum.MANUAL
-                );
-                const accounts = yield* Effect.forEach(integrations, integration => accountRepository.findByIntegrationId(integration.id));
-                const cashAccounts = accounts.flat().filter(isBrokerageCashAccount);
+        const reconcileFunding = Effect.fn('BrokerageService.reconcileFunding')(function* (
+            fundingTitle: string,
+            accountIds?: readonly number[]
+        ) {
+            const integrations = (yield* bankIntegrationRepository.findActive).filter(
+                integration => integration.provider === ExternalSourceEnum.MANUAL
+            );
 
-                yield* Effect.forEach(cashAccounts, account => reconcileCash(account.id, fundingTitle), { discard: true });
-            },
-            effect => Db.transaction(effect)
-        );
+            if (isEmptyArray(integrations)) {
+                return;
+            }
+
+            const accounts = yield* Effect.forEach(integrations, integration => accountRepository.findByIntegrationId(integration.id));
+            const accountIdSet = isDefined(accountIds) ? new Set(accountIds) : null;
+            const cashAccounts = accounts
+                .flat()
+                .filter(account => isBrokerageCashAccount(account) && (!isDefined(accountIdSet) || accountIdSet.has(account.id)));
+
+            if (isEmptyArray(cashAccounts)) {
+                return;
+            }
+
+            yield* Db.transaction(Effect.forEach(cashAccounts, account => reconcileCash(account.id, fundingTitle), { discard: true }));
+        });
 
         const findSecurityAccount = Effect.fnUntraced(function* (accountId: number) {
             const account = yield* accountRepository.findById(accountId);
@@ -319,14 +331,14 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
             ),
             reconcileFunding,
             adoptFunding: Effect.fn('BrokerageService.adoptFunding')(
-                function* (transactionId: number, fundingTitle: string) {
+                function* (transactionId: number, fundingTitle: string, accountIds?: readonly number[]) {
                     const transaction = yield* transactionRepository.getByIdRaw(transactionId);
 
                     if (transaction?.externalSource === ExternalSourceEnum.BROKERAGE_FUNDING) {
                         yield* transactionRepository.updateById(transactionId, { externalSource: null });
                     }
 
-                    yield* reconcileFunding(fundingTitle);
+                    yield* reconcileFunding(fundingTitle, accountIds);
                 },
                 effect => Db.transaction(effect)
             ),

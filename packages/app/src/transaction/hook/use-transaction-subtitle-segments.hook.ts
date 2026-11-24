@@ -20,7 +20,6 @@ import { isUncategorizedTransaction } from '../utils/is-uncategorized-transactio
 import { stripTransactionAccountTitlePrefix } from '../utils/strip-transaction-account-title-prefix.util';
 
 import { useFundTradeLabel } from './use-fund-trade-label.hook';
-import { useRefundedLabel } from './use-refunded-label.hook';
 import { useTransactionFeeLabel } from './use-transaction-fee-label.hook';
 
 import type { TransactionCounterpartyInterface } from '../interface/transaction-counterparty.interface';
@@ -96,7 +95,6 @@ export const useTransactionSubtitleSegments = (
     accountId: number | null
 ): TransactionSubtitleSegmentsInterface => {
     const { t } = useLingui();
-    const refundedLabel = useRefundedLabel(transaction);
     const feeLabel = useTransactionFeeLabel(transaction);
     const scopedCategoryIds = useContext(StatisticsCategoryIdsContext);
     const accountTitlePrefix = useContext(TransactionAccountTitlePrefixContext);
@@ -140,7 +138,6 @@ export const useTransactionSubtitleSegments = (
 
     return {
         segments: [
-            refundedLabel,
             (isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction)) &&
             !isDefined(fundTradeLabel) &&
             !isNotEmptyString(transaction.title)

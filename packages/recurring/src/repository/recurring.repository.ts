@@ -124,6 +124,12 @@ export class RecurringRepository extends Context.Service<RecurringRepository>()(
             WHERE ${RecurringSeriesTransactionEntityTable.deletedAt} IS NULL
         )`;
 
+        const updateSeriesDeletedAt = (condition: SQL | undefined, deletedAt: Date | null) =>
+            Db.query(db => db.update(RecurringSeriesEntityTable).set({ deletedAt, updatedAt: new Date() }).where(condition).returning());
+
+        const findLinksWhere = (condition: SQL | undefined) =>
+            Db.query(db => db.select().from(RecurringSeriesTransactionEntityTable).where(condition));
+
         return Effect.succeed({
             findCharges: (
                 defaultInstrumentId: number | null,
@@ -189,27 +195,18 @@ export class RecurringRepository extends Context.Service<RecurringRepository>()(
                         .returning()
                 ).pipe(Effect.map(([series]) => series)),
             setSeriesDeletedAt: (id: number, deletedAt: Date | null) =>
-                Db.query(db =>
-                    db
-                        .update(RecurringSeriesEntityTable)
-                        .set({ deletedAt, updatedAt: new Date() })
-                        .where(eq(RecurringSeriesEntityTable.id, id))
-                        .returning()
-                ).pipe(Effect.map(([series]) => series)),
-            findLinks: Db.query(db =>
-                db.select().from(RecurringSeriesTransactionEntityTable).where(isNull(RecurringSeriesTransactionEntityTable.deletedAt))
-            ),
+                updateSeriesDeletedAt(eq(RecurringSeriesEntityTable.id, id), deletedAt).pipe(Effect.map(([series]) => series)),
+            setSeriesDeletedAtByIds: (ids: readonly number[], deletedAt: Date | null) =>
+                isEmptyArray(ids)
+                    ? Effect.void
+                    : updateSeriesDeletedAt(inArray(RecurringSeriesEntityTable.id, [...ids]), deletedAt).pipe(Effect.asVoid),
+            findLinks: findLinksWhere(isNull(RecurringSeriesTransactionEntityTable.deletedAt)),
             findLinksByTransactionId: (transactionId: number) =>
-                Db.query(db =>
-                    db
-                        .select()
-                        .from(RecurringSeriesTransactionEntityTable)
-                        .where(
-                            and(
-                                eq(RecurringSeriesTransactionEntityTable.transactionId, transactionId),
-                                isNull(RecurringSeriesTransactionEntityTable.deletedAt)
-                            )
-                        )
+                findLinksWhere(
+                    and(
+                        eq(RecurringSeriesTransactionEntityTable.transactionId, transactionId),
+                        isNull(RecurringSeriesTransactionEntityTable.deletedAt)
+                    )
                 ),
             findSinkingFundSeriesIds: Db.query(db =>
                 db
@@ -221,29 +218,18 @@ export class RecurringRepository extends Context.Service<RecurringRepository>()(
                 db.selectDistinct({ seriesId: RecurringSeriesTransactionEntityTable.seriesId }).from(RecurringSeriesTransactionEntityTable)
             ).pipe(Effect.map(rows => new Set(rows.map(row => row.seriesId)))),
             findLinkByPair: (seriesId: number, transactionId: number) =>
-                Db.query(db =>
-                    db
-                        .select()
-                        .from(RecurringSeriesTransactionEntityTable)
-                        .where(
-                            and(
-                                eq(RecurringSeriesTransactionEntityTable.seriesId, seriesId),
-                                eq(RecurringSeriesTransactionEntityTable.transactionId, transactionId)
-                            )
-                        )
-                        .limit(1)
+                findLinksWhere(
+                    and(
+                        eq(RecurringSeriesTransactionEntityTable.seriesId, seriesId),
+                        eq(RecurringSeriesTransactionEntityTable.transactionId, transactionId)
+                    )
                 ).pipe(Effect.map(([link]) => link)),
             findLinksDeletedAt: (seriesId: number, deletedAt: Date) =>
-                Db.query(db =>
-                    db
-                        .select()
-                        .from(RecurringSeriesTransactionEntityTable)
-                        .where(
-                            and(
-                                eq(RecurringSeriesTransactionEntityTable.seriesId, seriesId),
-                                eq(RecurringSeriesTransactionEntityTable.deletedAt, deletedAt)
-                            )
-                        )
+                findLinksWhere(
+                    and(
+                        eq(RecurringSeriesTransactionEntityTable.seriesId, seriesId),
+                        eq(RecurringSeriesTransactionEntityTable.deletedAt, deletedAt)
+                    )
                 ),
             upsertAutoLinks: (inputs: readonly RecurringSeriesTransactionCreateEntityInterface[]) =>
                 isEmptyArray(inputs)

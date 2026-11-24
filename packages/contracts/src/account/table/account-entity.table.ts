@@ -64,6 +64,12 @@ export const AccountEntityTable = sqliteTable(
             .where(sql`${table.deletedAt} IS NULL AND ${table.iban} IS NOT NULL`),
         index('accounts_active_type_instrument_idx')
             .on(table.isActive, table.type, table.instrumentId)
-            .where(sql`${table.deletedAt} IS NULL`)
+            .where(sql`${table.deletedAt} IS NULL`),
+        index('accounts_external_source_id_idx')
+            .on(table.externalSource, table.externalId)
+            .where(sql`${table.deletedAt} IS NULL AND ${table.externalId} IS NOT NULL`),
+        index('accounts_integration_idx')
+            .on(table.integrationId)
+            .where(sql`${table.deletedAt} IS NULL AND ${table.integrationId} IS NOT NULL`)
     ]
 );

@@ -1,5 +1,5 @@
 import { useAtomValue } from '@effect/atom-react/Hooks';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -25,42 +25,56 @@ export const useKeypadInput = (config: UseKeypadInputConfig = {}): UseKeypadInpu
     const decimalPlaces = useAtomValue(decimalPlacesAtom);
     const maxDecimals = Math.max(decimalPlaces, 2);
     const [inputValue, setInputValue] = useState(() => formatNumericInput(initialValue));
+    const inputValueRef = useRef(inputValue);
+    const onChangeRef = useRef(onChange);
     const numericValue = Number.parseFloat(inputValue) || 0;
 
+    useEffect(() => {
+        onChangeRef.current = onChange;
+    }, [onChange]);
+
     const commit = (nextDisplayValue: string) => {
+        const previousNumericValue = Number.parseFloat(inputValueRef.current) || 0;
         const nextNumericValue = Number.parseFloat(nextDisplayValue) || 0;
 
+        inputValueRef.current = nextDisplayValue;
         setInputValue(nextDisplayValue);
 
-        if (nextNumericValue !== numericValue) {
-            onChange?.(nextNumericValue);
+        if (nextNumericValue !== previousNumericValue) {
+            onChangeRef.current?.(nextNumericValue);
         }
     };
 
     const handleDigit = (digit: string) => {
-        if (inputValue === '0') {
+        const currentInputValue = inputValueRef.current;
+
+        if (currentInputValue === '0') {
             commit(digit);
 
             return;
         }
 
-        const [, decimalPart] = inputValue.split('.');
+        const [, decimalPart] = currentInputValue.split('.');
 
         if (isDefined(decimalPart) && decimalPart.length >= maxDecimals) {
             return;
         }
 
-        commit(inputValue + digit);
+        commit(currentInputValue + digit);
     };
 
     const handleDecimal = () => {
-        if (!inputValue.includes('.')) {
-            commit(`${inputValue}.`);
+        const currentInputValue = inputValueRef.current;
+
+        if (!currentInputValue.includes('.')) {
+            commit(`${currentInputValue}.`);
         }
     };
 
     const handleBackspace = () => {
-        commit(inputValue.length <= 1 ? '0' : inputValue.slice(0, -1));
+        const currentInputValue = inputValueRef.current;
+
+        commit(currentInputValue.length <= 1 ? '0' : currentInputValue.slice(0, -1));
     };
 
     const setFromNumeric = (value: number) => {

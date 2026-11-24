@@ -1,4 +1,4 @@
-import { int, primaryKey, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { index, int, primaryKey, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 import { CURRENT_TIMESTAMP } from '../../@generic/constant/current-timestamp.constant';
 
@@ -13,5 +13,5 @@ export const SyncRecordEntityTable = sqliteTable(
         schemaVersion: int('schema_version', { mode: 'number' }).notNull().default(1),
         updatedAt: int('updated_at', { mode: 'timestamp' }).notNull().default(CURRENT_TIMESTAMP)
     },
-    table => [primaryKey({ columns: [table.syncZone, table.syncId] })]
+    table => [primaryKey({ columns: [table.syncZone, table.syncId] }), index('sync_record_sync_id_idx').on(table.syncId)]
 );

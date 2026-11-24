@@ -11,6 +11,8 @@ import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 import { File, Paths } from 'expo-file-system';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { EmbeddingProgressStore } from '../store/embedding-progress.store';
 
 import { EmbeddingDrainerService } from './embedding-drainer.service';
@@ -25,12 +27,20 @@ export class AiEmbeddingStatusService extends Context.Service<AiEmbeddingStatusS
         const legacyEmbeddingModelFilename = 'nomic-embed-text-v2-moe.Q8_0.gguf';
         const embeddingModelStorageKey = 'ai.embeddingModel';
         const embeddingIndexVersion = `${EMBEDDING_MODEL_FILENAME}:${EMBEDDING_DOCUMENT_FORMAT}`;
-        const storage = yield* Effect.acquireRelease(
-            Effect.sync(() => new Storage({ name: 'ai-embedding.sqlite' })),
-            embeddingStorage =>
-                Effect.sync(() => {
-                    embeddingStorage.closeSync();
-                })
+        let storageInstance: Storage | null = null;
+        const getStorage = (): Storage => {
+            if (!isDefined(storageInstance)) {
+                storageInstance = new Storage({ name: 'ai-embedding.sqlite' });
+            }
+
+            return storageInstance;
+        };
+
+        yield* Effect.addFinalizer(() =>
+            Effect.sync(() => {
+                storageInstance?.closeSync();
+                storageInstance = null;
+            })
         );
 
         const reset = Effect.all([
@@ -42,12 +52,12 @@ export class AiEmbeddingStatusService extends Context.Service<AiEmbeddingStatusS
 
         return {
             migrateModel: Effect.fn('AiEmbeddingStatusService.migrateModel')(function* () {
-                const storedModel = yield* Effect.promise(() => storage.getItem(embeddingModelStorageKey));
+                const storedModel = yield* Effect.promise(() => getStorage().getItem(embeddingModelStorageKey));
                 if (storedModel === embeddingIndexVersion) {
                     return;
                 }
                 yield* reset;
-                yield* Effect.promise(() => storage.setItem(embeddingModelStorageKey, embeddingIndexVersion));
+                yield* Effect.promise(() => getStorage().setItem(embeddingModelStorageKey, embeddingIndexVersion));
                 yield* Effect.sync(() => {
                     const legacyModel = new File(Paths.document, legacyEmbeddingModelFilename);
                     if (legacyModel.exists) {
@@ -55,7 +65,7 @@ export class AiEmbeddingStatusService extends Context.Service<AiEmbeddingStatusS
                     }
                 });
             }),
-            forgetModel: Effect.promise(() => storage.removeItem(embeddingModelStorageKey)),
+            forgetModel: Effect.promise(() => getStorage().removeItem(embeddingModelStorageKey)),
             rebuild: Effect.fn('AiEmbeddingStatusService.rebuild')(
                 function* () {
                     yield* embeddingDrainerService.pause();

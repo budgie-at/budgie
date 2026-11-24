@@ -45,9 +45,6 @@ export const DebtEventEntityTable = sqliteTable(
         uniqueIndex('debt_events_live_transaction_unq')
             .on(table.transactionId)
             .where(sql`${table.transactionId} IS NOT NULL AND ${table.deletedAt} IS NULL`),
-        index('debt_events_transaction_idx')
-            .on(table.transactionId)
-            .where(sql`${table.transactionId} IS NOT NULL AND ${table.deletedAt} IS NULL`),
         index('debt_events_transaction_entry_idx')
             .on(table.transactionEntryId)
             .where(sql`${table.transactionEntryId} IS NOT NULL AND ${table.deletedAt} IS NULL`),

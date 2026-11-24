@@ -1,6 +1,6 @@
 import { InstrumentEntityInterface, InstrumentTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { useState } from 'react';
+import { useDeferredValue, useState } from 'react';
 
 import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
@@ -29,10 +29,11 @@ interface Props {
 export const CurrencySelectorModalContent = ({ instrumentType, selectedInstrumentId, onCommit, isSearchAutoFocused }: Props) => {
     const { t } = useLingui();
     const [search, setSearch] = useState('');
+    const deferredSearch = useDeferredValue(search);
     const commit = useMorphingSheetCommit(onCommit);
     const { instruments, isLoading } = useGetInstrumentsByTypeQuery(instrumentType);
 
-    const query = search.trim();
+    const query = deferredSearch.trim();
     const isCrypto = instrumentType === InstrumentTypeEnum.CRYPTO;
     const title = isCrypto ? t`Crypto` : t`Currency`;
     const emptyHint = isCrypto ? t`Check the spelling or try a ticker like BTC.` : t`Check the spelling or try a code like EUR.`;

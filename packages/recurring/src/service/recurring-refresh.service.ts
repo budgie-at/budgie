@@ -17,7 +17,7 @@ import * as Layer from 'effect/Layer';
 import * as Ref from 'effect/Ref';
 import * as Semaphore from 'effect/Semaphore';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { RECURRING_ACTIVE_CONFIDENCE } from '../constant/recurring-active-confidence.constant';
 import { RECURRING_AMOUNT_RATIO } from '../constant/recurring-amount-ratio.constant';
@@ -82,6 +82,17 @@ export class RecurringRefreshService extends Context.Service<RecurringRefreshSer
         };
 
         const pairKey = (seriesId: number, value: number): string => `${seriesId}:${value}`;
+
+        const groupBySeriesId = <T extends { readonly seriesId: number }>(items: readonly T[]): Map<number, T[]> => {
+            const grouped = new Map<number, T[]>();
+            for (const item of items) {
+                const group = grouped.get(item.seriesId) ?? [];
+                group.push(item);
+                grouped.set(item.seriesId, group);
+            }
+
+            return grouped;
+        };
 
         const occupiedCycles = (
             row: Pick<RecurringSeriesEntityInterface, 'id'> & RecurringScheduleInterface,
@@ -157,6 +168,9 @@ export class RecurringRefreshService extends Context.Service<RecurringRefreshSer
                     )
                     .map(row => row.id)
             );
+            if (droppedIds.size === 0) {
+                return;
+            }
             const deletedAt = yield* DateTime.nowAsDate;
             yield* recurringRepository.setLinksDeletedAt(
                 links
@@ -164,7 +178,7 @@ export class RecurringRefreshService extends Context.Service<RecurringRefreshSer
                     .map(link => link.id),
                 deletedAt
             );
-            yield* Effect.forEach(droppedIds, seriesId => recurringRepository.setSeriesDeletedAt(seriesId, deletedAt), { discard: true });
+            yield* recurringRepository.setSeriesDeletedAtByIds([...droppedIds], deletedAt);
         });
 
         const observedFacts = (series: RecurringSeriesInterface, now: Date) => ({
@@ -301,14 +315,14 @@ export class RecurringRefreshService extends Context.Service<RecurringRefreshSer
             });
 
             const linkInputs: RecurringSeriesTransactionCreateEntityInterface[] = [];
+            const liveLinksBySeriesId = groupBySeriesId(liveLinks);
             const correctedScheduleIds = new Set(
                 rows
                     .filter(
                         row =>
                             isUserOwned(row) &&
-                            liveLinks.some(
-                                link =>
-                                    link.seriesId === row.id && nearestCycleDate(row, link.cycleDate).deviationDays > cadenceWindowDays(row)
+                            (liveLinksBySeriesId.get(row.id) ?? []).some(
+                                link => nearestCycleDate(row, link.cycleDate).deviationDays > cadenceWindowDays(row)
                             )
                     )
                     .map(row => row.id)
@@ -332,7 +346,7 @@ export class RecurringRefreshService extends Context.Service<RecurringRefreshSer
                 const isAdopted = isDefined(matchedRow) && !overlapIndexes.has(index) && !everLinkedSeriesIds.has(matchedRow.id);
                 const stored = yield* store(series, matchedRow, resolveAdoption(isAdopted, keyedIndexes.has(index)), now);
                 storedIds.add(stored.id);
-                const occupied = occupiedCycles(stored, liveLinks);
+                const occupied = occupiedCycles(stored, liveLinksBySeriesId.get(stored.id) ?? []);
                 for (const event of series.events) {
                     const date = startOfDay(event.timestamp);
                     const cycle = nearestCycleDate(stored, date);
@@ -361,19 +375,22 @@ export class RecurringRefreshService extends Context.Service<RecurringRefreshSer
             rows: readonly RecurringSeriesRowInterface[],
             links: readonly RecurringSeriesTransactionEntityInterface[],
             linkedCharges: ReadonlyMap<string, RecurringChargeInterface>
-        ): RecurringMatchSeriesInterface[] =>
-            rows
+        ): RecurringMatchSeriesInterface[] => {
+            const linksBySeriesId = groupBySeriesId(links);
+
+            return rows
                 .filter(
                     row =>
-                        row.source === RecurringSeriesSourceEnum.MANUAL || links.some(link => link.seriesId === row.id && !link.isExcluded)
+                        row.source === RecurringSeriesSourceEnum.MANUAL ||
+                        (linksBySeriesId.get(row.id) ?? []).some(link => !link.isExcluded)
                 )
                 .map(row => {
-                    const rowLinks = links.filter(link => link.seriesId === row.id);
-
-                    const amounts = rowLinks
-                        .filter(link => !link.isExcluded)
+                    const rowLinks = linksBySeriesId.get(row.id) ?? [];
+                    const liveRowLinks = rowLinks.filter(link => !link.isExcluded);
+                    const liveCharges = liveRowLinks
                         .map(link => linkedCharges.get(chargeKey(row.kind, link.transactionId)))
-                        .filter(isDefined)
+                        .filter(isDefined);
+                    const amounts = [...liveCharges]
                         .sort((first, second) => second.operatedAt.getTime() - first.operatedAt.getTime())
                         .slice(0, VARIABLE_CHARGE_COUNT)
                         .map(charge => charge.nativeAmount);
@@ -381,17 +398,12 @@ export class RecurringRefreshService extends Context.Service<RecurringRefreshSer
                     return {
                         isVariable: amounts.length > 1 && Math.max(...amounts) > Math.min(...amounts) * RECURRING_AMOUNT_RATIO,
                         series: row,
-                        linkedIdentities: new Set(
-                            rowLinks
-                                .filter(link => !link.isExcluded)
-                                .map(link => linkedCharges.get(chargeKey(row.kind, link.transactionId)))
-                                .filter(isDefined)
-                                .map(charge => identity(charge))
-                        ),
+                        linkedIdentities: new Set(liveCharges.map(charge => identity(charge))),
                         occupiedCycles: occupiedCycles(row, rowLinks),
                         excludedTransactionIds: new Set(rowLinks.filter(link => link.isExcluded).map(link => link.transactionId))
                     };
                 });
+        };
 
         const matchInTransaction = Effect.fnUntraced(function* (now: Date, defaultInstrumentId: number | null, language: LanguageEnum) {
             const since = subDays(now, MATCH_WINDOW_DAYS);
@@ -414,19 +426,22 @@ export class RecurringRefreshService extends Context.Service<RecurringRefreshSer
                 }))
             );
             const chargeById = new Map(candidates.map(charge => [charge.transactionId, charge]));
+            const matchesBySeriesId = groupBySeriesId(matches);
             for (const row of rows) {
-                const own = matches.filter(match => match.seriesId === row.id);
-                const lastSeen = Math.max(
-                    row.lastSeenAt.getTime(),
-                    ...own.map(match => chargeById.get(match.transactionId)?.operatedAt.getTime() ?? 0)
-                );
-                const merchantKey = own.find(match => isDefined(match.merchantKey))?.merchantKey;
-                const isSeenLater = row.source === RecurringSeriesSourceEnum.DETECTED && lastSeen > row.lastSeenAt.getTime();
-                if (isSeenLater || isDefined(merchantKey)) {
-                    yield* recurringRepository.updateSeries(row.id, {
-                        ...(isSeenLater && { lastSeenAt: DateTime.toDateUtc(DateTime.makeUnsafe(lastSeen)) }),
-                        ...(isDefined(merchantKey) && { merchantKey })
-                    });
+                const own = matchesBySeriesId.get(row.id) ?? [];
+                if (isNotEmptyArray(own)) {
+                    const lastSeen = Math.max(
+                        row.lastSeenAt.getTime(),
+                        ...own.map(match => chargeById.get(match.transactionId)?.operatedAt.getTime() ?? 0)
+                    );
+                    const merchantKey = own.find(match => isDefined(match.merchantKey))?.merchantKey;
+                    const isSeenLater = row.source === RecurringSeriesSourceEnum.DETECTED && lastSeen > row.lastSeenAt.getTime();
+                    if (isSeenLater || isDefined(merchantKey)) {
+                        yield* recurringRepository.updateSeries(row.id, {
+                            ...(isSeenLater && { lastSeenAt: DateTime.toDateUtc(DateTime.makeUnsafe(lastSeen)) }),
+                            ...(isDefined(merchantKey) && { merchantKey })
+                        });
+                    }
                 }
             }
         });

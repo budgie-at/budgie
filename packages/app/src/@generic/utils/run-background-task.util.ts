@@ -1,13 +1,13 @@
 import * as Effect from 'effect/Effect';
 import * as BackgroundTask from 'expo-background-task';
 
-import { appRuntime } from '../runtime/app.runtime';
-
-import type * as ManagedRuntime from 'effect/ManagedRuntime';
+import type { AppServices } from '../runtime/app.runtime';
 
 export const runBackgroundTask = <E>(
-    program: Effect.Effect<BackgroundTask.BackgroundTaskResult, E, ManagedRuntime.ManagedRuntime.Services<typeof appRuntime>>
+    loadProgram: () => Effect.Effect<BackgroundTask.BackgroundTaskResult, E, AppServices>
 ): Promise<BackgroundTask.BackgroundTaskResult> =>
-    appRuntime.runPromise(
-        Effect.catchCause(program, cause => Effect.as(Effect.logError(cause), BackgroundTask.BackgroundTaskResult.Failed))
+    import('../runtime/app.runtime').then(({ appRuntime }) =>
+        appRuntime.runPromise(
+            Effect.catchCause(loadProgram(), cause => Effect.as(Effect.logError(cause), BackgroundTask.BackgroundTaskResult.Failed))
+        )
     );

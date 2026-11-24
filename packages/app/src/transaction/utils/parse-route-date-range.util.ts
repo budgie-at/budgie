@@ -1,4 +1,7 @@
-import { endOfDay, isMatch, parse, startOfDay } from 'date-fns';
+import { endOfDay } from 'date-fns/endOfDay';
+import { isMatch } from 'date-fns/isMatch';
+import { parse } from 'date-fns/parse';
+import { startOfDay } from 'date-fns/startOfDay';
 
 import { isDefined } from '@rnw-community/shared';
 
