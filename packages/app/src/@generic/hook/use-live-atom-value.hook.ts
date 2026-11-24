@@ -3,7 +3,7 @@ import * as Predicate from 'effect/Predicate';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import { useEffectEvent, useLayoutEffect, useState } from 'react';
 
-import { emptyFn, isDefined } from '@rnw-community/shared';
+import { emptyFn } from '@rnw-community/shared';
 
 import { useRevealGateTrack } from '../context/reveal-gate.context';
 
@@ -90,39 +90,27 @@ const areLiveResultsEqual = <A, E>(previous: AsyncResult.AsyncResult<A, E>, next
     }
 
     if (AsyncResult.isSuccess(previous) && AsyncResult.isSuccess(next)) {
-        return next.waiting || areStructurallyEqual(previous.value, next.value);
+        return areStructurallyEqual(previous.value, next.value);
     }
 
     if (AsyncResult.isFailure(previous) && AsyncResult.isFailure(next)) {
-        return next.waiting || Object.is(previous.cause, next.cause);
+        return Object.is(previous.cause, next.cause);
     }
 
     return false;
 };
 
-const createLiveResultSelector = <A, E>() => {
-    let settled: AsyncResult.AsyncResult<A, E> | null = null;
-
-    return (next: AsyncResult.AsyncResult<A, E>): AsyncResult.AsyncResult<A, E> => {
-        if (AsyncResult.isInitial(next)) {
-            return isDefined(settled) ? settled : next;
-        }
-
-        if (isDefined(settled) && areLiveResultsEqual(settled, next)) {
-            return settled;
-        }
-
-        settled = next;
-
-        return next;
-    };
-};
-
 export const useLiveAtomValue = <A, E>(atom: Atom.Atom<AsyncResult.AsyncResult<A, E>>): AsyncResult.AsyncResult<A, E> => {
-    const [selectResult] = useState(() => createLiveResultSelector<A, E>());
-    const liveResult = useAtomValue(atom, selectResult);
+    const result = useAtomValue(atom);
+    const [settledResult, setSettledResult] = useState(result);
     const trackPendingRead = useRevealGateTrack();
     const trackRead = useEffectEvent(() => trackPendingRead());
+
+    if (!AsyncResult.isInitial(result) && !areLiveResultsEqual(settledResult, result)) {
+        setSettledResult(result);
+    }
+
+    const liveResult = AsyncResult.isInitial(result) || areLiveResultsEqual(settledResult, result) ? settledResult : result;
     const isPending = AsyncResult.isInitial(liveResult);
 
     useLayoutEffect(() => (isPending ? trackRead() : emptyFn), [isPending]);

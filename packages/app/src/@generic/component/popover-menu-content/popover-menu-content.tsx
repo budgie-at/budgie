@@ -63,10 +63,12 @@ export const PopoverMenuContent = ({
     });
     const animatedMenuStyle = [menuStyle, { transformOrigin: menuTransformOrigin }, measuringStyle];
 
+    const handleClose = () => void onClose();
+
     return (
-        <Modal transparent visible={isVisible} animationType="none" onRequestClose={onClose} onDismiss={handleDismiss}>
+        <Modal transparent visible={isVisible} animationType="none" onRequestClose={handleClose} onDismiss={handleDismiss}>
             <View className="flex-1" accessibilityViewIsModal>
-                <Pressable onPress={onClose} style={StyleSheet.absoluteFill} accessibilityLabel={t`Close menu`}>
+                <Pressable onPress={handleClose} style={StyleSheet.absoluteFill} accessibilityLabel={t`Close menu`}>
                     <Animated.View className="absolute inset-0 bg-black" style={backdropStyle} />
                 </Pressable>
 
