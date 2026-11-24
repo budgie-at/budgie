@@ -9,6 +9,8 @@ import { isNotEmptyString } from '@rnw-community/shared';
 import { Button } from '../../../@generic/component/button/button';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { cn } from '../../../@generic/utils/cn.util';
+import { toNativeCallError } from '../../../@generic/utils/to-native-call-error.util';
+import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { isLikelyMonoToken } from '../../type-guard/is-likely-mono-token.type-guard';
 
 interface Props {
@@ -20,12 +22,12 @@ interface Props {
 export const PasteTokenButton = ({ onPaste, testID, className }: Props) => {
     const { t } = useLingui();
 
-    const { run } = useSingleFlight();
+    const { isLoading, run } = useSingleFlight();
 
     const handlePress = () =>
         run(
             Effect.gen(function* () {
-                const clipboardContent = yield* Effect.promise(() => getStringAsync());
+                const clipboardContent = yield* Effect.tryPromise({ try: () => getStringAsync(), catch: toNativeCallError });
 
                 if (!isNotEmptyString(clipboardContent)) {
                     Toast.show({ type: 'info', text1: t`Clipboard is empty` });
@@ -42,7 +44,7 @@ export const PasteTokenButton = ({ onPaste, testID, className }: Props) => {
                 }
 
                 onPaste(trimmedToken);
-            })
+            }).pipe(toastOnFailure(t`Could not read clipboard`))
         );
 
     return (
@@ -51,6 +53,7 @@ export const PasteTokenButton = ({ onPaste, testID, className }: Props) => {
             leftIcon={UserIconNameEnum.ClipboardPaste}
             size="sm"
             variant="secondary"
+            isLoading={isLoading}
             onPress={handlePress}
             testID={testID}
         />

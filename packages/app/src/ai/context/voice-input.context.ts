@@ -2,16 +2,15 @@ import { createContext, use } from 'react';
 
 import { emptyFn } from '@rnw-community/shared';
 
-interface VoiceInputContextInterface {
-    isOpen: boolean;
-    open: () => void;
-    close: () => void;
-}
+import type { VoiceInputActionsContextInterface } from '../interface/voice-input-actions-context.interface';
 
-export const VoiceInputContext = createContext<VoiceInputContextInterface>({
-    isOpen: false,
+export const VoiceInputOpenContext = createContext(false);
+
+export const VoiceInputActionsContext = createContext<VoiceInputActionsContextInterface>({
     open: emptyFn,
     close: emptyFn
 });
 
-export const useVoiceInputContext = () => use(VoiceInputContext);
+export const useVoiceInputOpen = () => use(VoiceInputOpenContext);
+
+export const useVoiceInputActions = () => use(VoiceInputActionsContext);

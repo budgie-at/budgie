@@ -2,22 +2,21 @@ import { createContext, use } from 'react';
 
 import { emptyFn } from '@rnw-community/shared';
 
-import { CreateActionInterface } from '../interface/create-action.interface';
+import type { CreateActionActionsContextInterface } from '../interface/create-action-actions-context.interface';
+import type { CreateActionInterface } from '../interface/create-action.interface';
 
-interface CreateActionContextInterface {
-    createAction: CreateActionInterface | null;
-    setCreateAction: (action: CreateActionInterface | null) => void;
-    isMenuOpen: boolean;
-    openMenu: () => void;
-    setIsMenuOpen: (isOpen: boolean) => void;
-}
+export const CreateActionContext = createContext<CreateActionInterface | null>(null);
 
-export const CreateActionContext = createContext<CreateActionContextInterface>({
-    createAction: null,
+export const CreateMenuOpenContext = createContext(false);
+
+export const CreateActionActionsContext = createContext<CreateActionActionsContextInterface>({
     setCreateAction: emptyFn,
-    isMenuOpen: false,
     openMenu: emptyFn,
     setIsMenuOpen: emptyFn
 });
 
-export const useCreateActionContext = () => use(CreateActionContext);
+export const useCreateActionValue = () => use(CreateActionContext);
+
+export const useCreateMenuOpen = () => use(CreateMenuOpenContext);
+
+export const useCreateActionActions = () => use(CreateActionActionsContext);

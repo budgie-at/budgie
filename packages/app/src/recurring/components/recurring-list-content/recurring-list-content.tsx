@@ -2,9 +2,8 @@ import { useState } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { isDefined } from '@rnw-community/shared';
-
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
+import { SearchablePageErrorState } from '../../../@generic/component/searchable-page-error-state/searchable-page-error-state';
 import { StaticChromeLegendList } from '../../../@generic/component/static-chrome-legend-list/static-chrome-legend-list';
 import {
     FLOATING_TAB_BAR_HEIGHT,
@@ -38,9 +37,8 @@ interface Props {
 
 export const RecurringListContent = ({ header }: Props) => {
     const { bottom } = useSafeAreaInsets();
-    const { now, series } = useRecurringSeriesList();
+    const { now, series, isLoading, isFailure, retry } = useRecurringSeriesList();
     const [expandedSections, setExpandedSections] = useState<readonly RecurringSectionEnum[]>([]);
-    const isLoading = !isDefined(series);
     const loadedSeries = series ?? EMPTY_SERIES;
     const items = buildRecurringListItems(loadedSeries, expandedSections, now);
     const stickyHeaderIndices = items.flatMap((item, index) => (item.type === RecurringListItemKindEnum.HEADER ? [index] : []));
@@ -48,7 +46,9 @@ export const RecurringListContent = ({ header }: Props) => {
     const contentContainerStyle = {
         paddingBottom: FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + Math.max(bottom, FLOATING_TAB_BAR_MIN_BOTTOM_INSET)
     };
-    const emptyState = (
+    const emptyState = isFailure ? (
+        <SearchablePageErrorState onRetry={retry} />
+    ) : (
         <LoadingContent isLoading={isLoading}>
             <RecurringListEmptyState />
         </LoadingContent>
@@ -83,9 +83,11 @@ export const RecurringListContent = ({ header }: Props) => {
                     ListHeaderComponent={
                         <View>
                             {header}
-                            <LoadingContent isLoading={isLoading}>
-                                <RecurringSummaryCard summary={summary} now={now} />
-                            </LoadingContent>
+                            {isFailure ? null : (
+                                <LoadingContent isLoading={isLoading}>
+                                    <RecurringSummaryCard summary={summary} now={now} />
+                                </LoadingContent>
+                            )}
                         </View>
                     }
                     ListEmptyComponent={emptyState}

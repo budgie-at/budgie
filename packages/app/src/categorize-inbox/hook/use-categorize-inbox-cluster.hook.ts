@@ -14,15 +14,20 @@ export const useCategorizeInboxCluster = (clusterKey: string): CategorizeInboxCl
     const { items, isLoading } = useCategorizeInboxContext();
 
     const liveCluster = items.filter(isCategorizeInboxCluster).find(candidate => candidate.key === clusterKey) ?? null;
-    const [shownCluster, setShownCluster] = useState(liveCluster);
+    const [shownClusterState, setShownClusterState] = useState({ key: clusterKey, cluster: liveCluster });
 
+    if (shownClusterState.key !== clusterKey) {
+        setShownClusterState({ key: clusterKey, cluster: liveCluster });
+    }
+
+    const shownCluster = shownClusterState.key === clusterKey ? shownClusterState.cluster : liveCluster;
     const liveTransactionIds = new Set(liveCluster?.rows.map(row => row.transactionId));
     const isStale = isDefined(shownCluster)
         ? !shownCluster.rows.every(row => liveTransactionIds.has(row.transactionId))
         : !isDefined(liveCluster);
 
-    if (!isStale && isDefined(liveCluster) && liveCluster !== shownCluster) {
-        setShownCluster(liveCluster);
+    if (shownClusterState.key === clusterKey && !isStale && isDefined(liveCluster) && liveCluster !== shownCluster) {
+        setShownClusterState({ key: clusterKey, cluster: liveCluster });
     }
 
     useEffect(() => {

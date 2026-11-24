@@ -12,8 +12,9 @@ interface Props {
 }
 
 export const StatisticsTagsActivityContent = ({ filters }: Props) => {
-    const { incomeByTag, expenseByTag, isLoading } = useGetStatisticsByTagQuery(filters);
-    const { income, expense } = useGetTotalIncomeAndExpensesQuery(filters);
+    const { incomeByTag, expenseByTag, isLoading: isTagsLoading } = useGetStatisticsByTagQuery(filters);
+    const { income, expense, isLoading: isTotalsLoading } = useGetTotalIncomeAndExpensesQuery(filters);
+    const isLoading = isTagsLoading || isTotalsLoading;
 
     return (
         <LoadingContent isLoading={isLoading}>

@@ -12,6 +12,7 @@ import { PillButton } from '../../../@generic/component/pill-button/pill-button'
 import { NetworkTypeEnum } from '../../../@generic/enum/network-type.enum';
 import { useFormatGigabytes } from '../../../@generic/hook/use-format-gigabytes.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
+import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useAiDownloadPreflight } from '../../../ai/hook/use-ai-download-preflight.hook';
 import { AiModelDownloadService } from '../../../ai/service/ai-model-download.service';
 import { updateSettingsMutation } from '../../../settings/mutation/update-settings.mutation';
@@ -46,6 +47,7 @@ export const OnboardingAi = () => {
                             : Effect.void
                     ),
                     Effect.andThen(completion),
+                    toastOnFailure(t`Could not save settings`),
                     Effect.ensuring(Effect.sync(() => void setIsSaving(false)))
                 )
             )

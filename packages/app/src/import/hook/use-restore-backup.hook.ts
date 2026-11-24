@@ -11,6 +11,7 @@ import { useProcessingHaptic } from '../../@generic/hook/use-processing-haptic.h
 import { useSingleFlight } from '../../@generic/hook/use-single-flight.hook';
 import { useVibration } from '../../@generic/hook/use-vibration.hook';
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
+import { toNativeCallError } from '../../@generic/utils/to-native-call-error.util';
 import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
 import { DatabaseImportService } from '../service/database-import.service';
 
@@ -43,12 +44,14 @@ export const useRestoreBackup = () => {
     const handleSelectAndConfirm = () =>
         run(
             Effect.gen(function* () {
-                const result = yield* Effect.promise(() =>
-                    DocumentPicker.getDocumentAsync({
-                        type: ['application/x-sqlite3', 'application/zip', 'application/octet-stream', '*/*'],
-                        copyToCacheDirectory: true
-                    })
-                );
+                const result = yield* Effect.tryPromise({
+                    try: () =>
+                        DocumentPicker.getDocumentAsync({
+                            type: ['application/x-sqlite3', 'application/zip', 'application/octet-stream', '*/*'],
+                            copyToCacheDirectory: true
+                        }),
+                    catch: toNativeCallError
+                });
                 const { uri } = result.assets?.at(0) ?? {};
 
                 if (result.canceled || !isNotEmptyString(uri)) {

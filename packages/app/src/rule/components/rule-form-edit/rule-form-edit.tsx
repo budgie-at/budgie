@@ -1,3 +1,5 @@
+import { Redirect } from 'expo-router';
+
 import { isDefined } from '@rnw-community/shared';
 
 import { LoadingScreen } from '../../../@generic/component/loading-screen/loading-screen';
@@ -15,8 +17,12 @@ interface Props {
 export const RuleFormEdit = ({ ruleId, onSuccess, onCancel }: Props) => {
     const { rule, isLoading } = useGetRuleByIdQuery(ruleId);
 
-    if (isLoading || !isDefined(rule)) {
+    if (isLoading) {
         return <LoadingScreen />;
+    }
+
+    if (!isDefined(rule)) {
+        return <Redirect href="/" />;
     }
 
     return <RuleFormEditContent rule={rule} onSuccess={onSuccess} onCancel={onCancel} />;

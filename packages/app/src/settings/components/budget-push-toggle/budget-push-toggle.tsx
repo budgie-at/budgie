@@ -18,7 +18,7 @@ const handleOpenSettings = () => void Linking.openSettings();
 export const BudgetPushToggle = () => {
     const { t } = useLingui();
     const isBudgetPushEnabled = useSetting('isBudgetPushEnabled');
-    const { run } = useSingleFlight();
+    const { run, isLoading } = useSingleFlight();
 
     const persist = (next: boolean) =>
         updateSettingsMutation({ isBudgetPushEnabled: next }).pipe(toastOnFailure(t`Could not update notifications`));
@@ -59,6 +59,7 @@ export const BudgetPushToggle = () => {
                 <SettingSwitch
                     value={isBudgetPushEnabled}
                     onValueChange={handleChange}
+                    disabled={isLoading}
                     accessibilityLabel={t`Budget alerts`}
                     testID={SettingsPageSelector.BudgetPushSwitch}
                     stateOnTestID={SettingsPageSelector.BudgetPushSwitchStateOn}

@@ -2,7 +2,7 @@ import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { View } from 'react-native';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { SelectorModalDescription } from '../../../@generic/component/selector-modal-description/selector-modal-description';
 import { SelectorModalSearchHeader } from '../../../@generic/component/selector-modal-search-header/selector-modal-search-header';
@@ -31,10 +31,11 @@ export const CategoryPickerPanel = (props: Props) => {
     const { t } = useLingui();
     const [search, setSearch] = useState('');
     const listStyle = useMorphingSheetListHeight(MORPHING_SHEET_SELECTOR_HEIGHT_RATIO);
-    const { categories, isLoading } = useSearchCategoriesQuery(search, true, syncZone);
+    const { categories, isLoading, isSearchPending } = useSearchCategoriesQuery(search, true, syncZone);
 
     const selectedCategoryIds = isDefined(initialCategoryId) ? [initialCategoryId] : [];
     const data = prepareSelectorGridData(categories, excludeCategoryIds);
+    const isListLoading = isLoading || (isSearchPending && !isNotEmptyArray(data));
     const query = search.trim();
 
     const handleCreatePress = () => {
@@ -64,7 +65,7 @@ export const CategoryPickerPanel = (props: Props) => {
                     <CategorySelectContent
                         listEmptyComponent={listEmptyComponent}
                         data={data}
-                        isLoading={isLoading}
+                        isLoading={isListLoading}
                         variant={variant}
                         selectedCategoryIds={selectedCategoryIds}
                         onSelect={onSelect}

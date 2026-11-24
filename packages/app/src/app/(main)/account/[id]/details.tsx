@@ -39,7 +39,7 @@ export default function AccountDetails() {
     const id = Number(useLocalSearchParams<IdParamInterface>().id);
 
     const { account, isLoading } = useGetAccountByIdQuery(id);
-    const { balance } = useAccountBalanceQuery(id);
+    const { balance, isLoading: isBalanceLoading } = useAccountBalanceQuery(id);
     const debtProgressSummary = useDebtAccountProgressSummaryQuery(id);
     const isStaticHeader = useIsStaticAccountDetailsHeader();
 
@@ -107,7 +107,7 @@ export default function AccountDetails() {
 
     return (
         <AccountDetailsMenuControls account={account}>
-            <RevealGate isLoading={false}>
+            <RevealGate isLoading={isBalanceLoading}>
                 <ScreenChromeThemeProvider config={ACCOUNT_DETAILS_SCREEN_CHROME_CONFIG}>
                     <ScreenChromeFrame>
                         <View className="flex-1">

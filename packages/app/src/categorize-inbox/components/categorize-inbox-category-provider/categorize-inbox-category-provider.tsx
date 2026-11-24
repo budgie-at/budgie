@@ -1,7 +1,9 @@
 import { CategorizeInboxLabelKindEnum, CategorizeInboxService } from '@budgie/categorization';
+import { logAndContinue } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
+import * as Cause from 'effect/Cause';
 import * as Effect from 'effect/Effect';
 
 import { isDefined } from '@rnw-community/shared';
@@ -44,14 +46,20 @@ export const CategorizeInboxCategoryProvider = ({ params, children }: Props) => 
         assignment: Pick<CategorizeInboxAssignmentInterface, 'displayTitle' | 'rows'>,
         onPicked: (tagIds: number[] | null) => void
     ): void => {
-        void appRuntime.runPromise(
-            Effect.flatMap(CategorizeInboxService, categorizeInboxService =>
-                categorizeInboxService.suggestFollowUpTagIds(assignment.rows, defaultInstrumentId)
-            ).pipe(
-                Effect.flatMap(suggestedTagIds =>
-                    Effect.sync(() => {
-                        openTagsSelector({ suggestedTagIds, description: assignment.displayTitle }, onPicked);
-                    })
+        appRuntime.runFork(
+            logAndContinue(
+                Effect.flatMap(CategorizeInboxService, categorizeInboxService =>
+                    categorizeInboxService.suggestFollowUpTagIds(assignment.rows, defaultInstrumentId)
+                ).pipe(
+                    Effect.catchCauseIf(
+                        cause => !Cause.hasInterruptsOnly(cause),
+                        cause => Effect.logError(cause).pipe(Effect.as<number[]>([]))
+                    ),
+                    Effect.flatMap(suggestedTagIds =>
+                        Effect.sync(() => {
+                            openTagsSelector({ suggestedTagIds, description: assignment.displayTitle }, onPicked);
+                        })
+                    )
                 )
             )
         );

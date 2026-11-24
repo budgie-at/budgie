@@ -2,6 +2,8 @@ import { AccountEntityTable, AccountRepository, AccountTypeEnum, InstrumentEntit
 import * as Effect from 'effect/Effect';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { databaseQueryAtom } from '../../@generic/utils/database-query-atom.util';
 import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
@@ -31,10 +33,16 @@ export const useSearchAccountsGroupedQuery = (search = '', withActive = true) =>
         accounts: filteredData,
         total: AsyncResult.getOrElse(countResult, () => []).at(0)?.count ?? 0,
         isLoading: AsyncResult.isInitial(result),
-        accountsGrouped: filteredData.reduce<AccountGroups>((acc, curr) => {
-            acc[curr.type] = [...(acc[curr.type] ?? []), curr];
+        accountsGrouped: filteredData.reduce<AccountGroups>((groups, account) => {
+            const bucket = groups[account.type];
 
-            return acc;
+            if (isDefined(bucket)) {
+                bucket.push(account);
+            } else {
+                groups[account.type] = [account];
+            }
+
+            return groups;
         }, {})
     };
 };

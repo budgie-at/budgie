@@ -11,6 +11,7 @@ import { GroupedListRow } from '../../../@generic/component/grouped-list-row/gro
 import { useProcessingHaptic } from '../../../@generic/hook/use-processing-haptic.hook';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
+import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { AiSubsystemCardStateEnum } from '../../enum/ai-subsystem-card-state.enum';
 import { useLongPressHold } from '../../hook/use-long-press-hold.hook';
 import { AiSubsystemStatusSnapshotInterface } from '../../interface/ai-subsystem-status-snapshot.interface';
@@ -44,9 +45,10 @@ export const AiSubsystemStatusCardLayout = (props: Props) => {
             onRebuild.pipe(
                 Effect.tap(() => Effect.sync(() => void hapticNotification(NotificationFeedbackType.Success))),
                 Effect.catch(error =>
-                    Effect.sync(() => void hapticNotification(NotificationFeedbackType.Error)).pipe(
-                        Effect.andThen(Effect.logError(rebuildLogKey, { errorMessage: getErrorMessage(error) }))
-                    )
+                    Effect.sync(() => {
+                        hapticNotification(NotificationFeedbackType.Error);
+                        showErrorToast(t`Could not rebuild`, getErrorMessage(error));
+                    }).pipe(Effect.andThen(Effect.logError(rebuildLogKey, { errorMessage: getErrorMessage(error) })))
                 )
             )
         );

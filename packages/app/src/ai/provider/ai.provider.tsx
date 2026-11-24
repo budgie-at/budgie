@@ -1,3 +1,4 @@
+import { logAndContinue } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import * as Effect from 'effect/Effect';
 import { ReactNode, useEffect } from 'react';
@@ -22,7 +23,9 @@ export const AiProvider = ({ children }: Props) => {
 
     useEffect(() => {
         appRuntime.runFork(
-            Effect.flatMap(AiModelDownloadService, aiModelDownloadService => aiModelDownloadService.setWifiOnly(isAiWifiOnly))
+            logAndContinue(
+                Effect.flatMap(AiModelDownloadService, aiModelDownloadService => aiModelDownloadService.setWifiOnly(isAiWifiOnly))
+            )
         );
     }, [isAiWifiOnly]);
 
@@ -31,16 +34,12 @@ export const AiProvider = ({ children }: Props) => {
             return;
         }
 
-        appRuntime.runFork(
-            Effect.flatMap(AiCoordinatorService, coordinator => coordinator.restart()).pipe(Effect.tapCause(Effect.logError))
-        );
+        appRuntime.runFork(logAndContinue(Effect.flatMap(AiCoordinatorService, coordinator => coordinator.restart())));
     }, [isSplashScreenHidden, isAiEnabled, isAiVoiceInputEnabled, isAiSuggestionsEnabled, isAiTranslationsEnabled]);
 
     useEffect(
         () => () => {
-            appRuntime.runFork(
-                Effect.flatMap(AiCoordinatorService, coordinator => coordinator.stop()).pipe(Effect.tapCause(Effect.logError))
-            );
+            appRuntime.runFork(logAndContinue(Effect.flatMap(AiCoordinatorService, coordinator => coordinator.stop())));
         },
         []
     );

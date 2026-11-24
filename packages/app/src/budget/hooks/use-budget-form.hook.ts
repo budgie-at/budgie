@@ -6,6 +6,7 @@ import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
 import { ImpactFeedbackStyle } from 'expo-haptics';
 import { router } from 'expo-router';
+import { useState } from 'react';
 import * as ReactHookForm from 'react-hook-form';
 
 import { isDefined, isEmptyArray, isPositiveNumber } from '@rnw-community/shared';
@@ -119,6 +120,15 @@ const areBudgetFormValuesEqual = (left: BudgetFormValues, right: BudgetFormValue
     left.instrumentId === right.instrumentId &&
     areBudgetCategoryLimitsEqual(left.categoryLimits, right.categoryLimits);
 
+const isBudgetFormSynced = (
+    form: ReactHookForm.UseFormReturn<BudgetFormValues>,
+    formValues: BudgetFormValues,
+    isWatchedSynced: boolean
+): boolean =>
+    isWatchedSynced ||
+    !isEmptyArray(Object.keys(form.getValues(void 0, { dirtyFields: true }))) ||
+    areBudgetFormValuesEqual(form.getValues(), formValues);
+
 // eslint-disable-next-line max-lines-per-function, max-statements -- Form orchestration hook with multiple hooks and handlers owns seeding, cadence rescaling, delete and submit
 export const useBudgetForm = ({ defaultInstrumentId, editingId, templateKind = null }: UseBudgetFormOptionsInterface) => {
     const { t } = useLingui();
@@ -149,6 +159,11 @@ export const useBudgetForm = ({ defaultInstrumentId, editingId, templateKind = n
 
     const formValues = resolveFormValues();
 
+    const isDataLoading =
+        (isEditing && (isBudgetLoading || (isDefined(budget) && isCategoryLimitsLoading))) ||
+        (!isEditing && hasAsyncTemplate && !isTemplateReady);
+    const [hasFormSynced, setHasFormSynced] = useState(!isDataLoading);
+
     const form = ReactHookForm.useForm<BudgetFormValues>({
         mode: 'onChange',
         resolver: standardSchemaResolver(Schema.toStandardSchemaV1(BudgetFormSchema)),
@@ -159,15 +174,18 @@ export const useBudgetForm = ({ defaultInstrumentId, editingId, templateKind = n
             keepErrors: true
         }
     });
-    const isFormSynced = ReactHookForm.useWatch({
+    const isWatchedSynced = ReactHookForm.useWatch({
         control: form.control,
-        compute: values => !(isEditing || hasAsyncTemplate) || areBudgetFormValuesEqual(values, formValues)
+        disabled: hasFormSynced,
+        compute: values => !isDataLoading && areBudgetFormValuesEqual(values, formValues)
     });
-    const isFormSyncing =
-        (isEditing || hasAsyncTemplate) &&
-        !form.formState.isDirty &&
-        isEmptyArray(Object.keys(form.getValues(void 0, { dirtyFields: true }))) &&
-        !isFormSynced;
+    const isSynced = hasFormSynced || (!isDataLoading && isBudgetFormSynced(form, formValues, isWatchedSynced));
+
+    if (isDataLoading && hasFormSynced) {
+        setHasFormSynced(false);
+    } else if (!hasFormSynced && isSynced) {
+        setHasFormSynced(true);
+    }
 
     const handlePeriodChange = (period: BudgetPeriodEnum) => {
         const anchor = defaultPeriodAnchorDate(period, today);
@@ -260,9 +278,6 @@ export const useBudgetForm = ({ defaultInstrumentId, editingId, templateKind = n
         isUnavailable: isEditing && !isBudgetLoading && (!isDefined(budget) || budget.id !== editingId || isError || isCategoryLimitsError),
         isError: isError || isCategoryLimitsError,
         isSubmitting,
-        isLoading:
-            (isEditing && (isBudgetLoading || (isDefined(budget) && isCategoryLimitsLoading))) ||
-            (!isEditing && hasAsyncTemplate && !isTemplateReady) ||
-            isFormSyncing
+        isLoading: isDataLoading || !isSynced
     };
 };

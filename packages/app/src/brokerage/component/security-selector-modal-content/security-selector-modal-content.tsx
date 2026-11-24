@@ -30,15 +30,16 @@ export const SecuritySelectorModalContent = ({ selectedSymbol, onCommit }: Props
     const [search, setSearch] = useState('');
     const listStyle = useMorphingSheetListHeight(MORPHING_SHEET_SELECTOR_HEIGHT_RATIO);
     const commit = useMorphingSheetCommit(onCommit);
-    const { listings, isLoading } = useSecuritySearchQuery(search);
+    const { listings, isLoading, isSearchPending } = useSecuritySearchQuery(search);
 
     const query = search.trim();
+    const isEmptyLoading = isLoading || isSearchPending;
     const sections = [{ title: null, data: listings }];
     const renderItem = (listing: YahooListingInterface) => (
         <SecurityListingRow listing={listing} isSelected={listing.symbol === selectedSymbol} onSelect={commit} highlight={query} />
     );
     const emptyState = isNotEmptyString(query) ? (
-        <LoadingContent isLoading={isLoading}>
+        <LoadingContent isLoading={isEmptyLoading}>
             <SelectorSearchEmptyState query={query} hint={t`Check the spelling or try a ticker like AAPL.`} />
         </LoadingContent>
     ) : (

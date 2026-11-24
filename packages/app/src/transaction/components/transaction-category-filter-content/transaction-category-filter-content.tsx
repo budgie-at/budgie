@@ -1,6 +1,8 @@
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 
+import { isNotEmptyArray } from '@rnw-community/shared';
+
 import { FilterSheetApply } from '../../../@generic/component/filter-sheet/filter-sheet-apply/filter-sheet-apply';
 import { FilterSheetBulkToggle } from '../../../@generic/component/filter-sheet/filter-sheet-bulk-toggle/filter-sheet-bulk-toggle';
 import { CategorySelectContent } from '../../../category/components/category-select-content/category-select-content';
@@ -21,11 +23,12 @@ export const TransactionCategoryFilterContent = ({ value, onCommit }: Props) => 
     const { t } = useLingui();
     const { localValue, search, setSearch, selectedCount, handleDeselectAll, handleSelect, handleSelectAll, handleApply } =
         useFilterSheetSelection(value, onCommit);
-    const { categories, isLoading } = useSearchCategoriesQuery(search, true);
+    const { categories, isLoading, isSearchPending } = useSearchCategoriesQuery(search, true);
 
     const selectedCategoryIds = localValue ?? [];
     const categoryIds = (categories ?? []).map(category => category.id);
     const data = prepareTransactionFilterGridData(categories, selectedCategoryIds);
+    const isListLoading = isLoading || (isSearchPending && !isNotEmptyArray(data));
 
     const handleSelectAllCategories = () => void handleSelectAll(categoryIds);
 
@@ -60,7 +63,7 @@ export const TransactionCategoryFilterContent = ({ value, onCommit }: Props) => 
                 data={data}
                 variant="cta"
                 selectedCategoryIds={selectedCategoryIds}
-                isLoading={isLoading}
+                isLoading={isListLoading}
                 onSelect={handleSelect}
                 cardTestID={TransactionFiltersSelector.CategoryOption}
             />

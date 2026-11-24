@@ -25,7 +25,7 @@ export default function CreateTransferTransactionPage() {
 
     return (
         <CreateTransactionScreen title={t`New Transfer`} config={config}>
-            {handleSubmit => <TransferQuickForm variant="default" onSubmit={handleSubmit} />}
+            {(handleSubmit, isSubmitting) => <TransferQuickForm variant="default" isSubmitting={isSubmitting} onSubmit={handleSubmit} />}
         </CreateTransactionScreen>
     );
 }

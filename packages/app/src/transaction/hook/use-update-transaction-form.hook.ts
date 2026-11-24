@@ -40,7 +40,7 @@ export const useUpdateTransactionForm = ({
 }: UseTransactionFormConfig) => {
     const { t } = useLingui();
     const deleteTransaction = useDeleteTransaction();
-    const { run } = useSingleFlight();
+    const { run, isLoading } = useSingleFlight();
     const [hapticNotification] = useVibration();
 
     const form = useForm({
@@ -94,6 +94,7 @@ export const useUpdateTransactionForm = ({
 
     return {
         form,
+        isSubmitting: isLoading,
         handleDelete,
         handleSubmit: form.handleSubmit(handleSubmit)
     };

@@ -10,18 +10,18 @@ import type { ReactNode } from 'react';
 interface Props {
     readonly title: string;
     readonly config: CreateTransactionFormConfigInterface;
-    readonly children: (onSubmit: () => Promise<void>) => ReactNode;
+    readonly children: (onSubmit: () => Promise<void>, isSubmitting: boolean) => ReactNode;
 }
 
 export const CreateTransactionScreen = ({ title, config, children }: Props) => {
-    const { form, handleSubmit } = useCreateTransactionForm(config);
+    const { form, handleSubmit, isSubmitting } = useCreateTransactionForm(config);
 
     const handleGoBack = () => void goBackOrReplace('/');
 
     return (
         <FormProvider {...form}>
             <TransactionFormScreen title={title} onGoBack={handleGoBack}>
-                {children(handleSubmit)}
+                {children(handleSubmit, isSubmitting)}
             </TransactionFormScreen>
         </FormProvider>
     );

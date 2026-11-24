@@ -4,7 +4,7 @@ import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as Fiber from 'effect/Fiber';
 import * as Atom from 'effect/reactivity/Atom';
-import { useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -50,15 +50,18 @@ export const useStt = (): UseSttReturn => {
 
     const [status, setStatus] = useState<SttStatus>('idle');
     const [baseTranscription, setBaseTranscription] = useState('');
+    const statusRef = useRef<SttStatus>('idle');
     const startFiberRef = useRef<Fiber.Fiber<unknown, unknown> | null>(null);
     const { acquireSttResidency, releaseSttResidency } = useSttResidency();
 
+    useLayoutEffect(() => {
+        statusRef.current = status;
+    }, [status]);
+
     const startStream = () =>
         Effect.gen(function* () {
-            const previousStartFiber = startFiberRef.current;
-
-            if (isDefined(previousStartFiber)) {
-                yield* Fiber.interrupt(previousStartFiber);
+            if (isDefined(startFiberRef.current)) {
+                yield* Fiber.interrupt(startFiberRef.current);
             }
 
             startFiberRef.current = yield* Effect.fiber;
@@ -78,33 +81,23 @@ export const useStt = (): UseSttReturn => {
                 return false;
             }
 
+            statusRef.current = 'streaming';
             setStatus('streaming');
 
             return true;
-        }).pipe(
-            Effect.ensuring(
-                Effect.sync(() => {
-                    startFiberRef.current = null;
-                })
-            )
-        );
+        }).pipe(Effect.ensuring(Effect.sync(() => void (startFiberRef.current = null))));
 
     const insertAudio = (samples: Float32Array) => {
-        if (status !== 'streaming') {
+        if (statusRef.current !== 'streaming') {
             return;
         }
 
         appRuntime.runFork(Effect.map(SttService, sttService => void sttService.streamInsert(samples)));
     };
 
-    const committedTranscription = sttSnapshot.committedTranscription.startsWith(baseTranscription)
-        ? sttSnapshot.committedTranscription.slice(baseTranscription.length)
-        : sttSnapshot.committedTranscription;
-    const transcription = filterTranscriptionTokens(committedTranscription);
-    const partialTranscription = filterTranscriptionTokens(sttSnapshot.nonCommittedTranscription);
-
     const stopStream = () =>
         Effect.suspend(() => {
+            statusRef.current = 'processing';
             setStatus('processing');
 
             return Effect.flatMap(SttService, sttService => sttService.stopStream(true)).pipe(
@@ -113,6 +106,9 @@ export const useStt = (): UseSttReturn => {
                 Effect.ensuring(
                     Effect.sync(() => {
                         releaseSttResidency();
+                        if (statusRef.current === 'processing') {
+                            statusRef.current = 'idle';
+                        }
                         setStatus(currentStatus => (currentStatus === 'processing' ? 'idle' : currentStatus));
                     })
                 )
@@ -124,15 +120,20 @@ export const useStt = (): UseSttReturn => {
             appRuntime.runFork(Fiber.interrupt(startFiberRef.current));
         }
 
+        statusRef.current = 'idle';
         setStatus('idle');
         appRuntime.runFork(Effect.ignore(Effect.flatMap(SttService, sttService => sttService.stopStream(false))));
         releaseSttResidency();
     };
 
+    const committedTranscription = sttSnapshot.committedTranscription.startsWith(baseTranscription)
+        ? sttSnapshot.committedTranscription.slice(baseTranscription.length)
+        : sttSnapshot.committedTranscription;
+
     return {
         status,
-        transcription,
-        partialTranscription,
+        transcription: filterTranscriptionTokens(committedTranscription),
+        partialTranscription: filterTranscriptionTokens(sttSnapshot.nonCommittedTranscription),
         isReady: sttSnapshot.status === AiSubsystemStatusEnum.READY,
         downloadProgress: sttSnapshot.downloadProgress,
         startStream,

@@ -17,7 +17,7 @@ const databaseMigrationAtom = appAtomRuntime
             const databaseMigrationService = yield* DatabaseMigrationService;
 
             performance.mark('budgie:runtime-ready');
-            yield* databaseMigrationService.migrate();
+            yield* databaseMigrationService.migrate().pipe(Effect.tapCause(Effect.logError));
             performance.mark('budgie:migrations-done');
             yield* (yield* DatabaseMaintenanceService).compact().pipe(Effect.catchCause(Effect.logError));
         })

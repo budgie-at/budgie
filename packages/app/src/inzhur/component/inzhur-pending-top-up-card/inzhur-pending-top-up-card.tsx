@@ -9,6 +9,7 @@ import { ListRowDetail } from '../../../@generic/component/list-row-detail/list-
 import { ListRow } from '../../../@generic/component/list-row/list-row';
 import { NeutralIconTile } from '../../../@generic/component/neutral-icon-tile/neutral-icon-tile';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
+import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useFormatInzhurPendingTopUp } from '../../hook/use-format-inzhur-pending-top-up.hook';
 import { InzhurSelector } from '../../selector/inzhur.selector';
 import { InzhurPendingTopUpService } from '../../service/inzhur-pending-top-up.service';
@@ -23,7 +24,7 @@ const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 
 export const InzhurPendingTopUpCard = ({ topUp }: Props) => {
     const { t } = useLingui();
-    const { run } = useSingleFlight();
+    const { isLoading, run } = useSingleFlight();
     const formatPendingTopUp = useFormatInzhurPendingTopUp();
     const { transactionId, externalId } = topUp;
     const { summary, prompt } = formatPendingTopUp(topUp);
@@ -31,7 +32,11 @@ export const InzhurPendingTopUpCard = ({ topUp }: Props) => {
 
     const handleEnterPurchase = () => void router.push({ pathname: '/inzhur/purchase', params: { topUpId: String(transactionId) } });
     const handleDismiss = () =>
-        void run(Effect.flatMap(InzhurPendingTopUpService, inzhurPendingTopUpService => inzhurPendingTopUpService.dismiss(externalId)));
+        void run(
+            Effect.flatMap(InzhurPendingTopUpService, inzhurPendingTopUpService => inzhurPendingTopUpService.dismiss(externalId)).pipe(
+                toastOnFailure(t`Could not dismiss top-up`)
+            )
+        );
 
     return (
         <View
@@ -58,6 +63,7 @@ export const InzhurPendingTopUpCard = ({ topUp }: Props) => {
                     size="sm"
                     variant="ghost"
                     content={t`Dismiss`}
+                    isLoading={isLoading}
                     onPress={handleDismiss}
                     testID={InzhurSelector.PendingTopUpDismissButton(transactionId)}
                 />

@@ -12,7 +12,7 @@ import { RulesPageSelector } from '../selector/rules-page.selector';
 
 export const useRulesListPageActions = () => {
     const { t } = useLingui();
-    const { rules } = useGetAllRulesQuery();
+    const { rules, isFailure, retry } = useGetAllRulesQuery();
     const openRuleForm = useOpenModal('/rule-form');
 
     const handleDeleteRule = (id: number) =>
@@ -44,5 +44,5 @@ export const useRulesListPageActions = () => {
         testID: RulesPageSelector.CreateButton
     });
 
-    return { rules, handleDeleteRule, handleOpenRule, handleToggleRule };
+    return { rules, isFailure, retry, handleDeleteRule, handleOpenRule, handleToggleRule };
 };

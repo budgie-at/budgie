@@ -10,5 +10,5 @@ export const useCachedBalanceQuery = <E>(atom: Atom.Atom<AsyncResult.AsyncResult
     const result = useLiveAtomValue(atom);
     const balance = useCachedMicroUnitQuery(AsyncResult.getOrElse(result, () => []).at(0)?.balance);
 
-    return { balance };
+    return { balance, isLoading: AsyncResult.isInitial(result) };
 };

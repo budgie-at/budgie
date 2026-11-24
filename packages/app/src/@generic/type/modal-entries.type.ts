@@ -4,6 +4,7 @@ import type { ModalRoute } from './modal-route.type';
 
 export type ModalEntries<TRoutes extends ModalRoute = ModalRoute> = {
     [TRoute in TRoutes]?: {
+        readonly id: number;
         readonly params: ModalParams<TRoute> | null;
         readonly onResult: (result: ModalResult<TRoute> | null) => void;
     } | null;

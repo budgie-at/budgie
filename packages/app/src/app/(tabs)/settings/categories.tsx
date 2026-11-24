@@ -42,9 +42,10 @@ export default function Categories() {
 
     const handleClearSearch = () => void setSearch('');
     const handleCreateFromSearch = (defaultTitle: string) => void openCategoryForm({ defaultTitle });
+    const usageById = isDefined(usage) ? new Map(usage.map(entry => [entry.id, entry] as const)) : null;
 
     const renderCard = (category: CategoryEntityInterface, index: number, isLast: boolean) => {
-        const categoryUsage = isDefined(usage) ? (usage.find(entry => entry.id === category.id) ?? UNUSED) : void 0;
+        const categoryUsage = isDefined(usageById) ? (usageById.get(category.id) ?? UNUSED) : void 0;
 
         return (
             <CategoryCard

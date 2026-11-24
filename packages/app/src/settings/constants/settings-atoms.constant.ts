@@ -32,6 +32,8 @@ export const isSettingsLoadingAtom = Atom.make(
         AsyncResult.isInitial(get(defaultAccountResultAtom))
 );
 
+export const isSettingsFailedAtom = Atom.make(get => AsyncResult.isFailure(get(settingsResultAtom)));
+
 export const settingsAtom = Atom.map(settingsResultAtom, result => AsyncResult.getOrElse(result, () => null) ?? DEFAULT_SETTINGS).pipe(
     Atom.withEquality(Equal.equals)
 );

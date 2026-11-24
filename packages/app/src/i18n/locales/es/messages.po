@@ -2451,6 +2451,10 @@ msgstr "Binance no está disponible en tu región, por lo que esta cuenta no se 
 msgid "Binance P2P orders are unavailable: the API key is missing P2P read permission."
 msgstr "Las órdenes P2P de Binance no están disponibles: la clave de API no tiene permiso de lectura P2P."
 
+#: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
+msgid "Biometric authentication failed"
+msgstr "Autenticación biométrica fallida"
+
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx
 msgid "Biometric data never leaves this phone"
 msgstr "Los datos biométricos nunca salen de este teléfono"
@@ -3541,6 +3545,10 @@ msgstr "No se pudo convertir en reembolso"
 msgid "Could not convert to transfers"
 msgstr "No se pudieron convertir en transferencias"
 
+#: src/sync/component/enable-banking-copy-value-row/enable-banking-copy-value-row.tsx
+msgid "Could not copy value"
+msgstr "No se pudo copiar el valor"
+
 #: src/export/hook/use-backup-actions.hook.ts
 msgid "Could not create a backup"
 msgstr "No se pudo crear la copia"
@@ -3627,6 +3635,10 @@ msgstr "No se pudo eliminar la transacción."
 msgid "Could not disconnect"
 msgstr "No se pudo desconectar"
 
+#: src/inzhur/component/inzhur-pending-top-up-card/inzhur-pending-top-up-card.tsx
+msgid "Could not dismiss top-up"
+msgstr "No se pudo descartar el ingreso"
+
 #: src/auth/components/forgot-pin-recovery-options/forgot-pin-recovery-options.tsx
 msgid "Could not erase the data"
 msgstr "No se pudieron borrar los datos"
@@ -3708,6 +3720,10 @@ msgstr "No se pudo abrir tu navegador. Inténtalo de nuevo."
 msgid "Could not reach the server. Check your connection; sync will retry automatically."
 msgstr "No se pudo conectar con el servidor. Comprueba tu conexión; la sincronización se reintentará automáticamente."
 
+#: src/sync/component/paste-token-button/paste-token-button.tsx
+msgid "Could not read clipboard"
+msgstr "No se pudo leer el portapapeles"
+
 #: src/app/(main)/import-csv.tsx
 msgid "Could not read CSV file"
 msgstr "No se pudo leer el archivo CSV"
@@ -3723,6 +3739,10 @@ msgstr "No se pudo leer el archivo seleccionado."
 #: src/app/(tabs)/settings/apple-pay-capture.tsx
 msgid "Could not read Wallet captures"
 msgstr "No se pudieron leer las capturas de Wallet"
+
+#: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx
+msgid "Could not rebuild"
+msgstr "No se pudo reconstruir"
 
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx
 msgid "Could not rebuild balances"
@@ -3772,6 +3792,14 @@ msgstr "No se pudo restaurar desde iCloud"
 msgid "Could not restore recurring payment."
 msgstr "No se pudo restaurar el pago recurrente."
 
+#: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
+msgid "Could not save accounts"
+msgstr "No se pudieron guardar las cuentas"
+
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "Could not save balances"
+msgstr "No se pudieron guardar los saldos"
+
 #: src/budget/components/budget-limit-changes-sheet/budget-limit-changes-sheet.tsx
 #: src/budget/hooks/use-budget-form.hook.ts
 msgid "Could not save budget"
@@ -3793,6 +3821,10 @@ msgstr "No se pudo guardar el fondo"
 msgid "Could not save recurring payment."
 msgstr "No se pudo guardar el pago recurrente."
 
+#: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
+msgid "Could not save settings"
+msgstr "No se pudo guardar la configuración"
+
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Could not save tag"
 msgstr "No se pudo guardar la etiqueta"
@@ -3812,6 +3844,14 @@ msgstr "No se pudo guardar la compra"
 #: src/brokerage/component/security-trade-form/security-trade-form.tsx
 msgid "Could not save the trade"
 msgstr "No se pudo guardar la operación"
+
+#: src/ai/hook/use-voice-review.hook.ts
+msgid "Could not save transactions"
+msgstr "No se pudieron guardar las transacciones"
+
+#: src/receipt/components/receipt-launch-handler/receipt-launch-handler.tsx
+msgid "Could not scan receipt"
+msgstr "No se pudo escanear el recibo"
 
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "Could not seal the file"
@@ -11087,6 +11127,7 @@ msgid "Try again"
 msgstr "Inténtalo de nuevo"
 
 #: src/@generic/component/database-restore-screen/database-restore-screen.tsx
+#: src/@generic/component/error-boundary-fallback/error-boundary-fallback.tsx
 #: src/ai/component/voice-input-error/voice-input-error.tsx
 msgid "Try Again"
 msgstr "Intentar de nuevo"

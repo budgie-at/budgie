@@ -1,14 +1,31 @@
 import { useFocusEffect } from 'expo-router';
+import { useCallback, useEffect, useRef } from 'react';
 
-import { useCreateActionContext } from '../context/create-action.context';
+import { isDefined } from '@rnw-community/shared';
+
+import { useCreateActionActions } from '../context/create-action.context';
 import { CreateActionInterface } from '../interface/create-action.interface';
 
 export const useCreateAction = (action: CreateActionInterface): void => {
-    const { setCreateAction } = useCreateActionContext();
+    const { setCreateAction } = useCreateActionActions();
+    const { icon, label, variant, testID, onPress } = action;
+    const onPressRef = useRef(onPress);
 
-    useFocusEffect(() => {
-        setCreateAction(action);
+    useEffect(() => {
+        onPressRef.current = onPress;
+    }, [onPress]);
 
-        return () => void setCreateAction(null);
-    });
+    useFocusEffect(
+        useCallback(() => {
+            setCreateAction({
+                icon,
+                label,
+                variant,
+                ...(isDefined(testID) && { testID }),
+                onPress: () => void onPressRef.current()
+            });
+
+            return () => void setCreateAction(null);
+        }, [icon, label, setCreateAction, testID, variant])
+    );
 };

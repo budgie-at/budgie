@@ -2,6 +2,8 @@ import { TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { EntitySearchableList } from '../../../@generic/component/entity-searchable-list/entity-searchable-list';
 import { GroupedListSectionTitle } from '../../../@generic/component/grouped-list-section-title/grouped-list-section-title';
 import { SearchablePage } from '../../../@generic/component/searchable-page/searchable-page';
@@ -35,16 +37,10 @@ export default function Tags() {
 
     const handleClearSearch = () => void setSearch('');
     const handleCreateFromSearch = (defaultTitle: string) => void openTagForm({ defaultTitle });
+    const usageById = isDefined(usage) ? new Map(usage.map(entry => [entry.id, entry] as const)) : null;
 
     const renderCard = (tag: TagEntityInterface, index: number, isLast: boolean) => (
-        <TagCard
-            key={tag.id}
-            onOpen={handleOpenTag}
-            tag={tag}
-            usage={usage?.find(entry => entry.id === tag.id)}
-            isFirst={index === 0}
-            isLast={isLast}
-        />
+        <TagCard key={tag.id} onOpen={handleOpenTag} tag={tag} usage={usageById?.get(tag.id)} isFirst={index === 0} isLast={isLast} />
     );
 
     return (

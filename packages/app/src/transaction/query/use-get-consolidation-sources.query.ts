@@ -67,6 +67,6 @@ export const useGetConsolidationSourcesQuery = (transactionId: number) => {
         consolidationType: data?.consolidationType ?? null,
         retry,
         hasError: AsyncResult.isFailure(result),
-        isLoading: result.waiting
+        isLoading: AsyncResult.isInitial(result) || (result.waiting && !AsyncResult.isSuccess(result))
     };
 };

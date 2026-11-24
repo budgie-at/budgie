@@ -2451,6 +2451,10 @@ msgstr "Binance ist in deiner Region nicht verfügbar, daher kann dieses Konto n
 msgid "Binance P2P orders are unavailable: the API key is missing P2P read permission."
 msgstr "Binance-P2P-Orders sind nicht verfügbar: dem API-Schlüssel fehlt die P2P-Leseberechtigung."
 
+#: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
+msgid "Biometric authentication failed"
+msgstr "Biometrische Authentifizierung fehlgeschlagen"
+
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx
 msgid "Biometric data never leaves this phone"
 msgstr "Biometrische Daten verlassen dieses Telefon nie"
@@ -3541,6 +3545,10 @@ msgstr "Konnte nicht in Rückerstattung umwandeln"
 msgid "Could not convert to transfers"
 msgstr "Umwandlung in Überweisungen fehlgeschlagen"
 
+#: src/sync/component/enable-banking-copy-value-row/enable-banking-copy-value-row.tsx
+msgid "Could not copy value"
+msgstr "Wert konnte nicht kopiert werden"
+
 #: src/export/hook/use-backup-actions.hook.ts
 msgid "Could not create a backup"
 msgstr "Backup konnte nicht erstellt werden"
@@ -3627,6 +3635,10 @@ msgstr "Transaktion konnte nicht gelöscht werden."
 msgid "Could not disconnect"
 msgstr "Trennen nicht möglich"
 
+#: src/inzhur/component/inzhur-pending-top-up-card/inzhur-pending-top-up-card.tsx
+msgid "Could not dismiss top-up"
+msgstr "Einzahlung konnte nicht ausgeblendet werden"
+
 #: src/auth/components/forgot-pin-recovery-options/forgot-pin-recovery-options.tsx
 msgid "Could not erase the data"
 msgstr "Die Daten konnten nicht gelöscht werden"
@@ -3708,6 +3720,10 @@ msgstr "Dein Browser konnte nicht geöffnet werden. Versuche es erneut."
 msgid "Could not reach the server. Check your connection; sync will retry automatically."
 msgstr "Der Server ist nicht erreichbar. Prüfe deine Verbindung; die Synchronisierung versucht es automatisch erneut."
 
+#: src/sync/component/paste-token-button/paste-token-button.tsx
+msgid "Could not read clipboard"
+msgstr "Zwischenablage konnte nicht gelesen werden"
+
 #: src/app/(main)/import-csv.tsx
 msgid "Could not read CSV file"
 msgstr "CSV-Datei konnte nicht gelesen werden"
@@ -3723,6 +3739,10 @@ msgstr "Die ausgewählte Datei konnte nicht gelesen werden."
 #: src/app/(tabs)/settings/apple-pay-capture.tsx
 msgid "Could not read Wallet captures"
 msgstr "Wallet-Erfassungen konnten nicht gelesen werden"
+
+#: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx
+msgid "Could not rebuild"
+msgstr "Neuaufbau nicht möglich"
 
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx
 msgid "Could not rebuild balances"
@@ -3772,6 +3792,14 @@ msgstr "Wiederherstellen aus iCloud fehlgeschlagen"
 msgid "Could not restore recurring payment."
 msgstr "Wiederkehrende Zahlung konnte nicht wiederhergestellt werden."
 
+#: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
+msgid "Could not save accounts"
+msgstr "Konten konnten nicht gespeichert werden"
+
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "Could not save balances"
+msgstr "Salden konnten nicht gespeichert werden"
+
 #: src/budget/components/budget-limit-changes-sheet/budget-limit-changes-sheet.tsx
 #: src/budget/hooks/use-budget-form.hook.ts
 msgid "Could not save budget"
@@ -3793,6 +3821,10 @@ msgstr "Fonds konnte nicht gespeichert werden"
 msgid "Could not save recurring payment."
 msgstr "Wiederkehrende Zahlung konnte nicht gespeichert werden."
 
+#: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
+msgid "Could not save settings"
+msgstr "Einstellungen konnten nicht gespeichert werden"
+
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Could not save tag"
 msgstr "Tag konnte nicht gespeichert werden"
@@ -3812,6 +3844,14 @@ msgstr "Der Kauf konnte nicht gespeichert werden"
 #: src/brokerage/component/security-trade-form/security-trade-form.tsx
 msgid "Could not save the trade"
 msgstr "Die Transaktion konnte nicht gespeichert werden"
+
+#: src/ai/hook/use-voice-review.hook.ts
+msgid "Could not save transactions"
+msgstr "Transaktionen konnten nicht gespeichert werden"
+
+#: src/receipt/components/receipt-launch-handler/receipt-launch-handler.tsx
+msgid "Could not scan receipt"
+msgstr "Beleg konnte nicht gescannt werden"
 
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "Could not seal the file"
@@ -11087,6 +11127,7 @@ msgid "Try again"
 msgstr "Erneut versuchen"
 
 #: src/@generic/component/database-restore-screen/database-restore-screen.tsx
+#: src/@generic/component/error-boundary-fallback/error-boundary-fallback.tsx
 #: src/ai/component/voice-input-error/voice-input-error.tsx
 msgid "Try Again"
 msgstr "Erneut versuchen"

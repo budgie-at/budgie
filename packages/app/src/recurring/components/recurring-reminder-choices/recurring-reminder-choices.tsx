@@ -24,7 +24,7 @@ interface Props {
 
 export const RecurringReminderChoices = ({ seriesId, reminderDaysBefore }: Props) => {
     const { t } = useLingui();
-    const { run } = useSingleFlight();
+    const { run, isLoading } = useSingleFlight();
     const { refresh } = useNotificationPermission();
     const segments = buildRecurringReminderSegments(RecurringDetailSelector.ReminderChoice);
 
@@ -55,5 +55,12 @@ export const RecurringReminderChoices = ({ seriesId, reminderDaysBefore }: Props
         );
     };
 
-    return <SegmentedControl segments={segments} value={getRecurringReminderChoice(reminderDaysBefore)} onChange={handleChange} />;
+    return (
+        <SegmentedControl
+            segments={segments}
+            value={getRecurringReminderChoice(reminderDaysBefore)}
+            onChange={handleChange}
+            disabled={isLoading}
+        />
+    );
 };

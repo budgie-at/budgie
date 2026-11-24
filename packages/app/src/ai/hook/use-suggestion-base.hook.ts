@@ -1,5 +1,6 @@
 import { SuggestionInternalStatus, SuggestionStatus, UseSuggestionReturnInterface } from '@budgie/ai';
 import { useAtomMount, useAtomValue } from '@effect/atom-react/Hooks';
+import * as Cause from 'effect/Cause';
 import * as Effect from 'effect/Effect';
 import { useEffect, useEffectEvent, useState } from 'react';
 
@@ -13,7 +14,6 @@ import { EMBEDDING_COMPLETENESS_THRESHOLD } from '../constant/embedding-complete
 import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 
 import type { AppServices } from '../../@generic/runtime/app.runtime';
-import type * as Cause from 'effect/Cause';
 
 interface UseSuggestionBaseParams<T> {
     readonly enabled: boolean;
@@ -56,17 +56,30 @@ export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSug
 
         const fiber = appRuntime.runFork(
             Effect.sync(() => {
-                setResult({ key: requestKey, status: 'loading', suggestions: [] });
+                setResult(previous => ({
+                    key: requestKey,
+                    status: 'loading',
+                    suggestions: previous.key === requestKey ? previous.suggestions : []
+                }));
             }).pipe(
                 Effect.andThen(startFetchSuggestions()),
-                Effect.match({
-                    onSuccess: suggestions => {
+                Effect.tap(suggestions =>
+                    Effect.sync(() => {
                         setResult({ key: requestKey, status: 'success', suggestions });
-                    },
-                    onFailure: () => {
-                        setResult({ key: requestKey, status: 'error', suggestions: [] });
-                    }
-                })
+                    })
+                ),
+                Effect.asVoid,
+                Effect.catchCause(cause =>
+                    Cause.hasInterruptsOnly(cause)
+                        ? Effect.void
+                        : Effect.logError(cause).pipe(
+                              Effect.andThen(
+                                  Effect.sync(() => {
+                                      setResult({ key: requestKey, status: 'error', suggestions: [] });
+                                  })
+                              )
+                          )
+                )
             )
         );
 
@@ -76,7 +89,7 @@ export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSug
     }, [isReady, requestKey, refreshVersion, isEmbeddingIncomplete]);
 
     const currentResult: SuggestionResultInterface<T> =
-        result.key === requestKey ? result : { key: requestKey, status: 'idle', suggestions: [] };
+        isReady && result.key === requestKey ? result : { key: requestKey, status: 'idle', suggestions: [] };
 
     const isInitializing = enabled && !isReady && currentResult.status === 'idle';
     const status: SuggestionStatus = isInitializing ? 'initializing' : currentResult.status;

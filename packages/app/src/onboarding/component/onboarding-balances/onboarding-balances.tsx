@@ -11,6 +11,7 @@ import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/sha
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { PillButton } from '../../../@generic/component/pill-button/pill-button';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
+import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { MANUAL_BALANCE_ACCOUNT_TYPES } from '../../../account/constant/manual-balance-account-types.constant';
 import { useSearchAccountsSortedQuery } from '../../../account/query/use-search-accounts-sorted.query';
 import { ONBOARDING_ACCOUNT_OPTIONS } from '../../constant/onboarding-account-options.constant';
@@ -58,6 +59,7 @@ export const OnboardingBalances = () => {
             logAndContinue(
                 Effect.flatMap(OnboardingService, onboardingService => onboardingService.saveBalances(enteredBalances)).pipe(
                     Effect.andThen(Effect.sync(() => void goToStep(OnboardingStepEnum.AI))),
+                    toastOnFailure(t`Could not save balances`),
                     Effect.ensuring(Effect.sync(() => void setIsSaving(false)))
                 )
             )
