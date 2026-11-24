@@ -9,7 +9,6 @@ import { useCreateActionContext } from '../../@generic/context/create-action.con
 import { TabBarBackdropContext } from '../../@generic/context/tab-bar-backdrop.context';
 import { TabBarClearanceContext } from '../../@generic/context/tab-bar-clearance.context';
 import { TabBarBackdropEnum } from '../../@generic/enum/tab-bar-backdrop.enum';
-import { renderFrozenTabSlot } from '../../@generic/utils/render-frozen-tab-slot.util';
 import { useVoiceInputContext } from '../../ai/context/voice-input.context';
 import { useIsOnboardingActive, useIsOnboardingPending } from '../../onboarding/hook/use-is-onboarding-active.hook';
 import { CreateTransactionMenu } from '../../transaction/components/create-transaction-menu/create-transaction-menu';
@@ -47,7 +46,7 @@ export default function TabsLayout() {
             <Tabs importantForAccessibility={tabsAccessibility}>
                 <TabBarClearanceContext value={TAB_BAR_CLEARANCE}>
                     <TabBarBackdropContext value={setTabBarBackdrop}>
-                        <TabSlot renderFn={renderFrozenTabSlot} />
+                        <TabSlot />
                     </TabBarBackdropContext>
                 </TabBarClearanceContext>
 
