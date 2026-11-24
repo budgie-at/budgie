@@ -3254,7 +3254,7 @@ msgstr "Close"
 msgid "Close Deposit"
 msgstr "Close Deposit"
 
-#: src/@generic/component/popover-menu/popover-menu.tsx
+#: src/@generic/component/popover-menu-content/popover-menu-content.tsx
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 msgid "Close menu"
 msgstr "Close menu"

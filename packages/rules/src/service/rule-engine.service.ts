@@ -77,12 +77,22 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
                     }
                 }
 
+                const changedTransactionIds = new Set<number>();
+
                 for (const [categoryId, transactionIds] of transactionIdsByCategory) {
-                    yield* transactionRuleRepository.setCategoryByTransactionIds(transactionIds, categoryId);
+                    const categorizedIds = yield* transactionRuleRepository.setCategoryByTransactionIds(transactionIds, categoryId);
+
+                    for (const transactionId of categorizedIds) {
+                        changedTransactionIds.add(transactionId);
+                    }
                 }
 
                 for (const [tagId, transactionIds] of transactionIdsByTag) {
-                    yield* transactionTagsRepository.addTagByTransactionIds(transactionIds, tagId, TagSourceEnum.RULE);
+                    const taggedIds = yield* transactionTagsRepository.addTagByTransactionIds(transactionIds, tagId, TagSourceEnum.RULE);
+
+                    for (const transactionId of taggedIds) {
+                        changedTransactionIds.add(transactionId);
+                    }
                 }
 
                 for (const [transactionId, accountIds] of transferAccountIdsByTransaction) {
@@ -93,10 +103,9 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
                     }
                 }
 
-                yield* transactionRepository.touchUpdatedByIds(
-                    matches.map(match => match.transactionId),
-                    TransactionUpdatedByEnum.RULE
-                );
+                if (changedTransactionIds.size > 0) {
+                    yield* transactionRepository.touchUpdatedByIds([...changedTransactionIds], TransactionUpdatedByEnum.RULE);
+                }
             },
             effect => Db.transaction(effect)
         );

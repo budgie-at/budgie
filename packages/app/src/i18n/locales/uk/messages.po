@@ -3253,7 +3253,7 @@ msgstr "Закрити"
 msgid "Close Deposit"
 msgstr "Закрити депозит"
 
-#: src/@generic/component/popover-menu/popover-menu.tsx
+#: src/@generic/component/popover-menu-content/popover-menu-content.tsx
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 msgid "Close menu"
 msgstr "Закрити меню"

@@ -37,8 +37,11 @@ export const counterpartyKey = (charge: RecurringChargeInterface): string =>
         ? charge.counterpartyIban.replaceAll(/\s/gu, '').toUpperCase()
         : normalizeRecurringDescription(description(charge));
 
-export const identity = (charge: RecurringChargeInterface): string =>
-    isNotEmptyString(counterpartyKey(charge)) ? `${charge.kind}|${charge.instrumentId}|${counterpartyKey(charge)}` : '';
+export const identity = (charge: RecurringChargeInterface): string => {
+    const key = counterpartyKey(charge);
+
+    return isNotEmptyString(key) ? `${charge.kind}|${charge.instrumentId}|${key}` : '';
+};
 
 export const legacyLabel = (charge: RecurringChargeInterface): string =>
     cleanDescriptionTokens(
@@ -57,10 +60,12 @@ const toEvents = (charges: readonly RecurringChargeInterface[]): RecurringSeries
     const events: RecurringSeriesEventInterface[] = [];
     const seen = new Set<string>();
     for (const charge of [...charges].sort((first, second) => first.operatedAt.getTime() - second.operatedAt.getTime())) {
-        if (!seen.has(duplicateKey(charge))) {
-            seen.add(duplicateKey(charge));
+        const timestamp = startOfDay(charge.operatedAt).getTime();
+        const key = `${charge.accountId}|${timestamp}|${charge.nativeAmount}`;
+        if (!seen.has(key)) {
+            seen.add(key);
             events.push({
-                timestamp: startOfDay(charge.operatedAt).getTime(),
+                timestamp,
                 nativeAmount: charge.nativeAmount,
                 defaultAmount: charge.defaultAmount,
                 transactionId: charge.transactionId
@@ -71,8 +76,26 @@ const toEvents = (charges: readonly RecurringChargeInterface[]): RecurringSeries
     return events;
 };
 
-const isStableAmount = (events: readonly RecurringSeriesEventInterface[]): boolean =>
-    Math.max(...events.map(event => event.nativeAmount)) <= Math.min(...events.map(event => event.nativeAmount)) * RECURRING_AMOUNT_RATIO;
+const isStableAmount = (events: readonly RecurringSeriesEventInterface[]): boolean => {
+    if (!isNotEmptyArray(events)) {
+        return true;
+    }
+
+    let minAmount = events[0].nativeAmount;
+    let maxAmount = events[0].nativeAmount;
+
+    for (let index = 1; index < events.length; index += 1) {
+        const amount = events[index].nativeAmount;
+        if (amount < minAmount) {
+            minAmount = amount;
+        }
+        if (amount > maxAmount) {
+            maxAmount = amount;
+        }
+    }
+
+    return maxAmount <= minAmount * RECURRING_AMOUNT_RATIO;
+};
 
 const buildSeries = (
     charges: readonly RecurringChargeInterface[],
@@ -145,6 +168,19 @@ const amountClusters = (charges: readonly RecurringChargeInterface[]): Recurring
     return clusters;
 };
 
+const filterUnclaimedCharges = (
+    charges: readonly RecurringChargeInterface[],
+    claimedIds: ReadonlySet<number>
+): readonly RecurringChargeInterface[] => {
+    if (claimedIds.size === 0) {
+        return charges;
+    }
+
+    const claimedKeys = new Set(charges.filter(charge => claimedIds.has(charge.transactionId)).map(duplicateKey));
+
+    return charges.filter(charge => !claimedKeys.has(duplicateKey(charge)));
+};
+
 const detectMerchantSeries = (
     charges: readonly RecurringChargeInterface[],
     context: Omit<RecurringStreamContextInterface, 'isVariable'>
@@ -171,8 +207,7 @@ const detectMerchantSeries = (
             );
         }
     }
-    const claimedKeys = new Set(charges.filter(charge => claimedIds.has(charge.transactionId)).map(duplicateKey));
-    const unclaimed = charges.filter(charge => !claimedKeys.has(duplicateKey(charge)));
+    const unclaimed = filterUnclaimedCharges(charges, claimedIds);
     const variableStream =
         isNotEmptyArray(unclaimed) && !isStableAmount(context.merchantEvents)
             ? fitRecurringStream(toEvents(unclaimed), { ...context, isVariable: true })
@@ -202,21 +237,27 @@ const hasLaterSibling = (
 
 export const detectRecurringSeries = (charges: readonly RecurringChargeInterface[]): RecurringSeriesInterface[] => {
     const groups = groupRecurringPayees(charges.filter(charge => isNotEmptyString(identity(charge))));
+    const preparedGroups = groups.map(group => ({ group, merchantEvents: toEvents(group) }));
     const families = new Map<string, Set<readonly RecurringChargeInterface[]>>();
-    for (const group of groups) {
-        for (const charge of group) {
-            families.set(familyKey(charge), (families.get(familyKey(charge)) ?? new Set()).add(group));
+
+    if (preparedGroups.some(({ merchantEvents }) => merchantEvents.length === 2)) {
+        for (const { group } of preparedGroups) {
+            for (const charge of group) {
+                const key = familyKey(charge);
+                const family = families.get(key) ?? new Set();
+                family.add(group);
+                families.set(key, family);
+            }
         }
     }
-    const detected = groups.flatMap(group => {
-        const merchantEvents = toEvents(group);
 
-        return detectMerchantSeries(group, {
+    const detected = preparedGroups.flatMap(({ group, merchantEvents }) =>
+        detectMerchantSeries(group, {
             merchantEvents,
             hasIban: group.every(charge => isNotEmptyString(charge.counterpartyIban)),
             isIsolatedPair: merchantEvents.length === 2 && !hasLaterSibling(group, families)
-        });
-    });
+        })
+    );
 
     return continueRecurringSeries(detected);
 };

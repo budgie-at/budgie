@@ -3253,7 +3253,7 @@ msgstr "Cerrar"
 msgid "Close Deposit"
 msgstr "Cerrar depósito"
 
-#: src/@generic/component/popover-menu/popover-menu.tsx
+#: src/@generic/component/popover-menu-content/popover-menu-content.tsx
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 msgid "Close menu"
 msgstr "Cerrar menú"
