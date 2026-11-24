@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.193.1](https://github.com/budgie-at/budgie/compare/v6.193.0...v6.193.1) (2026-11-24)
+
+### Performance Improvements
+
+* accelerate mobile app across SQL, startup, services, and UI ([086a782](https://github.com/budgie-at/budgie/commit/086a7827a0f90335fe1dda4e653f5e033c64e032))
+
+
 # [6.193.0](https://github.com/budgie-at/budgie/compare/v6.192.2...v6.193.0) (2026-11-21)
 
 ### Features

@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.193.1](https://github.com/budgie-at/budgie/compare/v6.193.0...v6.193.1) (2026-11-24)
+
+### Bug Fixes
+
+* **app:** fix popover close handler, live atom state, tab slot, and list rendering ([2663021](https://github.com/budgie-at/budgie/commit/26630218e4c661de6d27f25ed66ac95277fe24d8))
+* sync i18n catalogs, avoid no-op rule touches, and trim recurring allocations ([6c6fb15](https://github.com/budgie-at/budgie/commit/6c6fb154d470ce92a94f5f8f1abca9f0b353307a))
+
+### Performance Improvements
+
+* accelerate mobile app across SQL, startup, services, and UI ([086a782](https://github.com/budgie-at/budgie/commit/086a7827a0f90335fe1dda4e653f5e033c64e032))
+
+
 # [6.193.0](https://github.com/budgie-at/budgie/compare/v6.192.2...v6.193.0) (2026-11-21)
 
 ### Features
