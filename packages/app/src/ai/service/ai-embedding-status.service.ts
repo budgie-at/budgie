@@ -5,14 +5,12 @@ import {
     MerchantEmbeddingRepository,
     TransactionEmbeddingRepository
 } from '@budgie/categorization';
-import { Storage } from '@op-engineering/op-sqlite';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 import { File, Paths } from 'expo-file-system';
 
-import { isDefined } from '@rnw-community/shared';
-
+import { makeLazyStorage } from '../../@generic/utils/make-lazy-storage.util';
 import { EmbeddingProgressStore } from '../store/embedding-progress.store';
 
 import { EmbeddingDrainerService } from './embedding-drainer.service';
@@ -27,21 +25,7 @@ export class AiEmbeddingStatusService extends Context.Service<AiEmbeddingStatusS
         const legacyEmbeddingModelFilename = 'nomic-embed-text-v2-moe.Q8_0.gguf';
         const embeddingModelStorageKey = 'ai.embeddingModel';
         const embeddingIndexVersion = `${EMBEDDING_MODEL_FILENAME}:${EMBEDDING_DOCUMENT_FORMAT}`;
-        let storageInstance: Storage | null = null;
-        const getStorage = (): Storage => {
-            if (!isDefined(storageInstance)) {
-                storageInstance = new Storage({ name: 'ai-embedding.sqlite' });
-            }
-
-            return storageInstance;
-        };
-
-        yield* Effect.addFinalizer(() =>
-            Effect.sync(() => {
-                storageInstance?.closeSync();
-                storageInstance = null;
-            })
-        );
+        const getStorage = yield* makeLazyStorage('ai-embedding.sqlite');
 
         const reset = Effect.all([
             merchantEmbeddingRepository.truncate,

@@ -1,4 +1,4 @@
-import { and, count, countDistinct, eq, getTableColumns, inArray, isNotNull, isNull, like, max, or, sql } from 'drizzle-orm';
+import { and, asc, count, countDistinct, eq, getTableColumns, inArray, isNotNull, isNull, like, max, or, sql } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -185,7 +185,7 @@ export class CategoryRepository extends Context.Service<CategoryRepository>()('@
                         .leftJoin(DefaultCategoryTranslationEntityTable, buildCategoryTranslationJoinCondition(language))
                         .leftJoin(entryCounts, eq(CategoryEntityTable.id, entryCounts.categoryId))
                         .where(searchFilter)
-                        .orderBy(sql`COALESCE(${entryCounts.entryCount}, 0) DESC`);
+                        .orderBy(sql`COALESCE(${entryCounts.entryCount}, 0) DESC`, asc(CategoryEntityTable.id));
                 });
             },
             count: (includeDefault: boolean) =>
@@ -196,6 +196,8 @@ export class CategoryRepository extends Context.Service<CategoryRepository>()('@
                 ),
             findById: (id: number, language: LanguageEnum) =>
                 Db.query(db => buildLocalizedCategoryBaseQuery(db, language).where(eq(CategoryEntityTable.id, id)).limit(1)),
+            findByIdsLocalized: (ids: readonly number[], language: LanguageEnum) =>
+                Db.query(db => buildLocalizedCategoryBaseQuery(db, language).where(inArray(CategoryEntityTable.id, ids))),
             findAllNonSystem: Db.query(db =>
                 db.query.CategoryEntityTable.findMany({
                     where: { isSystemCategory: false }

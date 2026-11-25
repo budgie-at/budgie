@@ -9,6 +9,7 @@ import { StickySectionHeaderBackdrop } from '../sticky-section-header-backdrop/s
 import type { ScreenChromeStickyHeaderSourceInterface } from '../../interface/screen-chrome-sticky-header-source.interface';
 
 const EMPTY_INDICES: readonly number[] = [];
+const MOUNTED_POSITION_OFFSETS = [-2, -1, 0, 1, 2] as const;
 
 interface Props {
     readonly source: ScreenChromeStickyHeaderSourceInterface | null;
@@ -42,7 +43,9 @@ export const ScreenChromeStickyHeaderOverlay = ({ source }: Props) => {
     const indices = source?.indices ?? EMPTY_INDICES;
     const horizontalInset = source?.horizontalInset ?? 0;
     const clampedActiveIndex = Math.min(activeIndex, indices.length - 1);
-    const visiblePositions = [clampedActiveIndex, clampedActiveIndex + 1].filter(position => position >= 0 && position < indices.length);
+    const visiblePositions = MOUNTED_POSITION_OFFSETS.map(offset => clampedActiveIndex + offset).filter(
+        position => position >= 0 && position < indices.length
+    );
 
     return (
         <Animated.View
