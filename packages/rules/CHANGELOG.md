@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.193.2](https://github.com/budgie-at/budgie/compare/v6.193.1...v6.193.2) (2026-11-25)
+
+### Bug Fixes
+
+* undo regressions from the mobile performance pass ([#2284](https://github.com/budgie-at/budgie/issues/2284)) ([616664d](https://github.com/budgie-at/budgie/commit/616664d446bd75fa6b93b75135d68fda96f85808))
+
+
 ## [6.193.1](https://github.com/budgie-at/budgie/compare/v6.193.0...v6.193.1) (2026-11-24)
 
 ### Bug Fixes
