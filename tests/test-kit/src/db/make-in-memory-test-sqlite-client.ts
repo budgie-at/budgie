@@ -1,3 +1,6 @@
+import { copyFileSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
 
 import * as Effect from 'effect/Effect';
@@ -9,6 +12,8 @@ import * as Stream from 'effect/Stream';
 
 import { getErrorMessage, isArray, isBoolean, isDefined, isNotEmptyArray, isNumber, isString } from '@rnw-community/shared';
 
+import type { BaselineSnapshotInterface } from './interface/baseline-snapshot.interface';
+import type { DatabaseHandleInterface } from './interface/database-handle.interface';
 import type * as Reactivity from 'effect/reactivity/Reactivity';
 import type * as Scope from 'effect/Scope';
 import type { Connection } from 'effect/sql/SqlConnection';
@@ -16,21 +21,66 @@ import type { SQLInputValue, StatementSync } from 'node:sqlite';
 
 const BUSY_TIMEOUT_MS = 5_000;
 const SINGLE_PERMIT = 1;
+const SIDECAR_SUFFIXES = ['', '-wal', '-shm', '-journal'] as const;
 
+let copySequence = 0;
+
+const closedDatabases = new WeakSet<DatabaseSync>();
 const databaseSyncByClient = new WeakMap<Client.SqlClient, DatabaseSync>();
-const resetByClient = new WeakMap<Client.SqlClient, (snapshot: Uint8Array) => void>();
+const resetByClient = new WeakMap<Client.SqlClient, (snapshot: BaselineSnapshotInterface) => void>();
 
-const openInMemoryDatabase = (snapshot?: Uint8Array): DatabaseSync => {
-    const database = new DatabaseSync(':memory:');
-
-    if (isDefined(snapshot)) {
-        database.deserialize(snapshot);
-    }
-
+const configureDatabase = (database: DatabaseSync): void => {
     database.exec('PRAGMA foreign_keys = ON');
     database.exec(`PRAGMA busy_timeout = ${BUSY_TIMEOUT_MS}`);
+};
 
-    return database;
+const openDatabaseHandle = (snapshot?: BaselineSnapshotInterface): DatabaseHandleInterface => {
+    if (!isDefined(snapshot)) {
+        const database = new DatabaseSync(':memory:');
+
+        configureDatabase(database);
+
+        return { database, filePath: null };
+    }
+
+    if (isDefined(snapshot.buffer)) {
+        const database = new DatabaseSync(':memory:');
+
+        database.deserialize(snapshot.buffer);
+        configureDatabase(database);
+
+        return { database, filePath: null };
+    }
+
+    copySequence += 1;
+
+    const filePath = join(tmpdir(), `budgie-test-db-${process.pid}-${copySequence}.sqlite`);
+
+    copyFileSync(snapshot.path, filePath);
+
+    const database = new DatabaseSync(filePath);
+
+    database.exec('PRAGMA journal_mode = MEMORY');
+    database.exec('PRAGMA synchronous = OFF');
+    database.exec('PRAGMA temp_store = MEMORY');
+    configureDatabase(database);
+
+    return { database, filePath };
+};
+
+const closeDatabaseHandle = (handle: DatabaseHandleInterface): void => {
+    if (closedDatabases.has(handle.database)) {
+        return;
+    }
+
+    closedDatabases.add(handle.database);
+    handle.database.close();
+
+    if (isDefined(handle.filePath)) {
+        for (const suffix of SIDECAR_SUFFIXES) {
+            rmSync(`${handle.filePath}${suffix}`, { force: true });
+        }
+    }
 };
 
 const hasErrcode = (cause: unknown): cause is Error & { readonly errcode: number; readonly code?: string } =>
@@ -78,7 +128,7 @@ const toSqliteError = (cause: unknown, operation: string): SqlError.SqlError =>
 
 export const getInMemoryDatabaseSync = (client: Client.SqlClient): DatabaseSync | undefined => databaseSyncByClient.get(client);
 
-export const resetInMemoryTestSqliteClient = (client: Client.SqlClient, snapshot: Uint8Array): void => {
+export const resetInMemoryTestSqliteClient = (client: Client.SqlClient, snapshot: BaselineSnapshotInterface): void => {
     const reset = resetByClient.get(client);
 
     if (isDefined(reset)) {
@@ -87,16 +137,14 @@ export const resetInMemoryTestSqliteClient = (client: Client.SqlClient, snapshot
 };
 
 export const makeInMemoryTestSqliteClient = (
-    snapshot?: Uint8Array
+    snapshot?: BaselineSnapshotInterface
 ): Effect.Effect<Client.SqlClient, SqlError.SqlError, Scope.Scope | Reactivity.Reactivity> =>
     Effect.gen(function* () {
-        let currentDatabase = yield* Effect.acquireRelease(
-            Effect.sync(() => openInMemoryDatabase(snapshot)),
+        let currentHandle = yield* Effect.acquireRelease(
+            Effect.sync(() => openDatabaseHandle(snapshot)),
             () =>
                 Effect.sync(() => {
-                    if (currentDatabase.isOpen) {
-                        currentDatabase.close();
-                    }
+                    closeDatabaseHandle(currentHandle);
                 })
         );
 
@@ -110,7 +158,7 @@ export const makeInMemoryTestSqliteClient = (
 
             return yield* Effect.try({
                 try: () => {
-                    const statement = currentDatabase.prepare(sql);
+                    const statement = currentHandle.database.prepare(sql);
 
                     if (safeIntegers) {
                         statement.setReadBigInts(true);
@@ -173,7 +221,7 @@ export const makeInMemoryTestSqliteClient = (
         const acquirers = Client.makeSqliteAcquirers({
             connection: Effect.succeed(connection),
             semaphore: Semaphore.makeUnsafe(SINGLE_PERMIT),
-            isTransaction: () => currentDatabase.isTransaction
+            isTransaction: () => currentHandle.database.isTransaction
         });
 
         const client = yield* Client.make({
@@ -185,17 +233,14 @@ export const makeInMemoryTestSqliteClient = (
             spanAttributes: [['db.system', 'sqlite']]
         });
 
-        databaseSyncByClient.set(client, currentDatabase);
+        databaseSyncByClient.set(client, currentHandle.database);
         resetByClient.set(client, nextSnapshot => {
-            const nextDatabase = openInMemoryDatabase(nextSnapshot);
-            const previousDatabase = currentDatabase;
+            const nextHandle = openDatabaseHandle(nextSnapshot);
+            const previousHandle = currentHandle;
 
-            currentDatabase = nextDatabase;
-            databaseSyncByClient.set(client, nextDatabase);
-
-            if (previousDatabase.isOpen) {
-                previousDatabase.close();
-            }
+            currentHandle = nextHandle;
+            databaseSyncByClient.set(client, nextHandle.database);
+            closeDatabaseHandle(previousHandle);
         });
 
         return client;

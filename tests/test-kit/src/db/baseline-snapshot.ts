@@ -1,49 +1,84 @@
-import { mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, renameSync, rmSync, statSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
+import { DatabaseSync } from 'node:sqlite';
 
 import { DatabaseMigrationService } from '@app/@generic/drizzle/service/database-migration.service';
 import { Db } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 import * as Reactivity from 'effect/reactivity/Reactivity';
 
-import { isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { getInMemoryDatabaseSync, makeInMemoryTestSqliteClient } from './make-in-memory-test-sqlite-client';
 import { makeTestDatabase } from './make-test-database';
 
+import type { BaselineSnapshotInterface } from './interface/baseline-snapshot.interface';
+
 const BASELINE_SNAPSHOT_FILENAME = 'budgie-test-baseline.sqlite';
 
-let baselineSnapshotCache: Uint8Array | null = null;
+let baselineSnapshotCache: BaselineSnapshotInterface | null = null;
+
+const supportsInMemoryDeserialize = (): boolean => typeof DatabaseSync.prototype.deserialize === 'function';
 
 const getBaselineSnapshotPath = () => join(tmpdir(), BASELINE_SNAPSHOT_FILENAME);
 
-const readPersistedBaselineSnapshot = (snapshotPath: string) =>
+const readPersistedBuffer = (snapshotPath: string) =>
     Effect.try({
         try: () => readFileSync(snapshotPath),
         catch: () => null
     }).pipe(Effect.orElseSucceed(() => null));
 
-const writePersistedBaselineSnapshot = (snapshotPath: string, snapshot: Uint8Array) => {
+const readPersistedSize = (snapshotPath: string) =>
+    Effect.try({
+        try: () => statSync(snapshotPath).size,
+        catch: () => null
+    }).pipe(Effect.orElseSucceed(() => null));
+
+const readPersistedBaselineSnapshot = (snapshotPath: string): Effect.Effect<BaselineSnapshotInterface | null> =>
+    Effect.gen(function* () {
+        if (supportsInMemoryDeserialize()) {
+            const buffer = yield* readPersistedBuffer(snapshotPath);
+
+            if (isDefined(buffer) && isPositiveNumber(buffer.byteLength)) {
+                return { path: snapshotPath, buffer };
+            }
+
+            return null;
+        }
+
+        const size = yield* readPersistedSize(snapshotPath);
+
+        if (isDefined(size) && isPositiveNumber(size)) {
+            return { path: snapshotPath, buffer: null };
+        }
+
+        return null;
+    });
+
+const writeBaselineSnapshotFile = (databaseSync: DatabaseSync, snapshotPath: string) => {
     const tempPath = `${snapshotPath}.${process.pid}.${Date.now()}.tmp`;
 
     return Effect.try({
         try: () => {
             mkdirSync(dirname(snapshotPath), { recursive: true });
-            writeFileSync(tempPath, snapshot);
+            databaseSync.exec(`VACUUM INTO '${tempPath.replaceAll("'", "''")}'`);
             renameSync(tempPath, snapshotPath);
         },
-        catch: () => null
+        catch: cause => getErrorMessage(cause)
     }).pipe(
-        Effect.catch(() =>
+        Effect.catch(message =>
             Effect.sync(() => {
                 rmSync(tempPath, { force: true });
-            })
+            }).pipe(
+                Effect.andThen(readPersistedSize(snapshotPath)),
+                Effect.flatMap(size => (isDefined(size) && isPositiveNumber(size) ? Effect.void : Effect.die(new Error(message))))
+            )
         )
     );
 };
 
-export const getBaselineSnapshot: Effect.Effect<Uint8Array> = Effect.gen(function* () {
+export const getBaselineSnapshot: Effect.Effect<BaselineSnapshotInterface> = Effect.gen(function* () {
     if (isDefined(baselineSnapshotCache)) {
         return baselineSnapshotCache;
     }
@@ -51,13 +86,13 @@ export const getBaselineSnapshot: Effect.Effect<Uint8Array> = Effect.gen(functio
     const snapshotPath = getBaselineSnapshotPath();
     const persistedSnapshot = yield* readPersistedBaselineSnapshot(snapshotPath);
 
-    if (isDefined(persistedSnapshot) && isPositiveNumber(persistedSnapshot.byteLength)) {
+    if (isDefined(persistedSnapshot)) {
         baselineSnapshotCache = persistedSnapshot;
 
         return persistedSnapshot;
     }
 
-    const snapshot = yield* Effect.scoped(
+    yield* Effect.scoped(
         Effect.gen(function* () {
             const client = yield* makeInMemoryTestSqliteClient();
             const database = yield* makeTestDatabase(client);
@@ -71,11 +106,26 @@ export const getBaselineSnapshot: Effect.Effect<Uint8Array> = Effect.gen(functio
                 return yield* Effect.die(new Error('Expected in-memory DatabaseSync instance'));
             }
 
-            return databaseSync.serialize();
+            yield* writeBaselineSnapshotFile(databaseSync, snapshotPath);
         }).pipe(Effect.provide(Reactivity.layer), Effect.orDie)
     );
 
-    yield* writePersistedBaselineSnapshot(snapshotPath, snapshot);
+    if (supportsInMemoryDeserialize()) {
+        const buffer = yield* readPersistedBuffer(snapshotPath);
+
+        if (!isDefined(buffer) || !isPositiveNumber(buffer.byteLength)) {
+            return yield* Effect.die(new Error(`Expected baseline snapshot at ${snapshotPath}`));
+        }
+
+        const snapshot: BaselineSnapshotInterface = { path: snapshotPath, buffer };
+
+        baselineSnapshotCache = snapshot;
+
+        return snapshot;
+    }
+
+    const snapshot: BaselineSnapshotInterface = { path: snapshotPath, buffer: null };
+
     baselineSnapshotCache = snapshot;
 
     return snapshot;
