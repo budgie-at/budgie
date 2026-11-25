@@ -4,7 +4,8 @@ import {
     Db,
     TransactionEntityTable,
     TransactionEntryEntityTable,
-    TransactionTypeEnum
+    TransactionTypeEnum,
+    TransactionUpdatedByEnum
 } from '@budgie/contracts';
 import { and, eq, inArray, ne, sql } from 'drizzle-orm';
 import * as Context from 'effect/Context';
@@ -64,7 +65,19 @@ export class TransactionRuleRepository extends Context.Service<TransactionRuleRe
                             )
                         )
                         .returning({ transactionId: TransactionEntryEntityTable.transactionId })
-                ).pipe(Effect.map(changedEntries => [...new Set(changedEntries.map(entry => entry.transactionId))]))
+                ).pipe(Effect.map(changedEntries => [...new Set(changedEntries.map(entry => entry.transactionId))])),
+            stampUpdatedByRule: (transactionIds: number[]) =>
+                Db.query(db =>
+                    db
+                        .update(TransactionEntityTable)
+                        .set({ updatedBy: TransactionUpdatedByEnum.RULE })
+                        .where(
+                            and(
+                                inArray(TransactionEntityTable.id, transactionIds),
+                                sql`${TransactionEntityTable.updatedBy} IS NOT ${TransactionUpdatedByEnum.RULE}`
+                            )
+                        )
+                )
         };
     })
 }) {

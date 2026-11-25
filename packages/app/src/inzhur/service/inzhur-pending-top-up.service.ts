@@ -2,7 +2,6 @@ import { logAndContinue } from '@budgie/contracts';
 import { InzhurManualPurchaseService } from '@budgie/sync';
 import { i18n } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
-import { Storage } from '@op-engineering/op-sqlite';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -14,6 +13,7 @@ import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 import { appAtomRegistry } from '../../@generic/constant/app-atom-registry.constant';
 import { NativeCallError } from '../../@generic/error/native-call.error';
 import { isNotificationPermissionGranted } from '../../@generic/utils/is-notification-permission-granted.util';
+import { makeLazyStorage } from '../../@generic/utils/make-lazy-storage.util';
 import { postLocalNotification } from '../../@generic/utils/post-local-notification.util';
 import { BUDGET_ALERT_CHANNEL_ID } from '../../budget/constant/budget-alert-channel-id.constant';
 import { inzhurDismissedTopUpsAtom } from '../constant/inzhur-dismissed-top-ups-atom.constant';
@@ -25,17 +25,11 @@ export class InzhurPendingTopUpService extends Context.Service<InzhurPendingTopU
         const dismissedKey = '@budgie:inzhur-dismissed-top-ups';
         const notifiedKey = '@budgie:inzhur-notified-top-ups';
         const ExternalIdsSchema = Schema.String.pipe(Schema.Array, Schema.fromJsonString);
-        const storage = yield* Effect.acquireRelease(
-            Effect.sync(() => new Storage({ name: 'inzhur-pending-top-ups.sqlite' })),
-            topUpStorage =>
-                Effect.sync(() => {
-                    topUpStorage.closeSync();
-                })
-        );
+        const getStorage = yield* makeLazyStorage('inzhur-pending-top-ups.sqlite');
 
         const readIds = Effect.fnUntraced(function* (key: string) {
             const stored = yield* Effect.tryPromise({
-                try: () => storage.getItem(key),
+                try: () => getStorage().getItem(key),
                 catch: cause => NativeCallError.make({ cause })
             });
 
@@ -50,7 +44,7 @@ export class InzhurPendingTopUpService extends Context.Service<InzhurPendingTopU
             const stored = yield* Schema.encodeEffect(ExternalIdsSchema)(ids).pipe(Effect.orDie);
 
             yield* Effect.tryPromise({
-                try: () => storage.setItem(key, stored),
+                try: () => getStorage().setItem(key, stored),
                 catch: cause => NativeCallError.make({ cause })
             });
         });

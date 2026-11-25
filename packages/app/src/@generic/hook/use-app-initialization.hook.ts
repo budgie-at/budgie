@@ -142,8 +142,11 @@ const scheduleAppServicesInitialization = Effect.sleep(STARTUP_SERVICE_DELAY_MS)
 );
 
 const hideSplashScreen = Effect.sleep(SPLASH_HIDE_DELAY_MS).pipe(
-    Effect.andThen(Effect.promise(() => SplashScreen.hideAsync())),
-    Effect.ensuring(Effect.sync(() => void appAtomRegistry.set(splashScreenHiddenAtom, true)))
+    Effect.andThen(
+        Effect.promise(() => SplashScreen.hideAsync()).pipe(
+            Effect.ensuring(Effect.sync(() => void appAtomRegistry.set(splashScreenHiddenAtom, true)))
+        )
+    )
 );
 
 const startup = Effect.all([logAndContinue(scheduleAppServicesInitialization), logAndContinue(hideSplashScreen)], {

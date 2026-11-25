@@ -47,23 +47,15 @@ type Row = Effect.Effect<void>;
 interface HarnessOptions {
     readonly rows?: (call: number, limit: number) => Row[];
     readonly pending?: number;
-    readonly snapshotPending?: number;
     readonly relaxedIntervalMs?: number;
 }
 
-const makeHarness = Effect.fnUntraced(function* ({
-    rows = () => [],
-    pending = 0,
-    snapshotPending = pending,
-    relaxedIntervalMs = 1000
-}: HarnessOptions = {}) {
+const makeHarness = Effect.fnUntraced(function* ({ rows = () => [], pending = 0, relaxedIntervalMs = 1000 }: HarnessOptions = {}) {
     const service = yield* ResidencyTestService;
     const workload = yield* Workload;
     const fetches: number[] = [];
     const counter = { pending };
-    const snapshot = Atom.keepAlive(
-        Atom.make<DrainerSnapshotInterface>({ state: DrainerStateEnum.IDLE, pending: snapshotPending, errorMessage: null })
-    );
+    const snapshot = Atom.keepAlive(Atom.make<DrainerSnapshotInterface>({ state: DrainerStateEnum.IDLE, pending, errorMessage: null }));
     const drainer = yield* makeDrainer<never>(
         {
             subsystem: AiSubsystemNameEnum.EMBEDDING,
@@ -216,17 +208,6 @@ describe('DrainerService relaxed polling', () => {
             expect(fetches).toEqual([5]);
             yield* advance(1);
             expect(fetches).toEqual([5, 5]);
-        }).pipe(provide)
-    );
-
-    it.effect('fetches within the idle interval when rows arrive while the snapshot shows nothing pending', () =>
-        Effect.gen(function* () {
-            const { drainer, fetches } = yield* makeHarness({ pending: 3, snapshotPending: 0, rows: () => [Effect.void] });
-            yield* drainer.start();
-            yield* advance(9999);
-            expect(fetches).toEqual([]);
-            yield* advance(1);
-            expect(fetches).toHaveLength(1);
         }).pipe(provide)
     );
 

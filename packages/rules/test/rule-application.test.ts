@@ -187,7 +187,7 @@ layer(TestLayer)('rules engine', it => {
         })
     );
 
-    it.effect('stamps updatedBy RULE when the category is already set', () =>
+    it.effect('stamps updatedBy RULE without moving updatedAt when the category is already set', () =>
         Effect.gen(function* () {
             const ruleEngineService = yield* RuleEngineService;
             const { source, expense } = yield* seedExpenseWithTarget;
@@ -196,11 +196,13 @@ layer(TestLayer)('rules engine', it => {
                 .update(TransactionEntryEntityTable)
                 .set({ categoryId: category.id, categorySource: CategorySourceEnum.RULE })
                 .where(eq(TransactionEntryEntityTable.transactionId, expense.id));
+            const updatedAt = new Date('2026-06-02T12:00:00.000Z');
+            yield* testDb.update(TransactionEntityTable).set({ updatedAt }).where(eq(TransactionEntityTable.id, expense.id));
             yield* createActionRule({ ...emptyAction, type: RuleActionTypeEnum.SET_CATEGORY, categoryId: category.id });
 
             yield* ruleEngineService.applyRulesToTransactions([expense.id], [buildInput(source.id)]);
 
-            expect((yield* readTransaction(expense.id)).updatedBy).toBe(TransactionUpdatedByEnum.RULE);
+            expect(yield* readTransaction(expense.id)).toMatchObject({ updatedAt, updatedBy: TransactionUpdatedByEnum.RULE });
         })
     );
 
