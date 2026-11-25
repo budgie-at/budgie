@@ -40,12 +40,12 @@
         "!dist/**/*.tsbuildinfo"
     ],
     "scripts": {
-        "build": "rm -rf ./dist && bob build",
+        "build": "rm -rf ./dist ./node_modules/.cache/tsbuildinfo.json && bob build",
         "clear": "rm -rf coverage && rm -rf dist && rm -f *.tsbuildinfo",
-        "lint": "oxlint --type-aware src",
+        "lint": "effect-tsgo --tsrs-lint oxlint --type-aware --threads=4 src",
         "test": "vitest run",
-        "ts": "node ../../scripts/typecheck.cjs --noEmit -p tsconfig.json && node ../../scripts/typecheck.cjs --noEmit -p tsconfig.build.json",
-        "ts:native": "node ../../scripts/typecheck.cjs --native --noEmit -p tsconfig.json && node ../../scripts/typecheck.cjs --native --noEmit -p tsconfig.build.json"
+        "ts": "node ../../scripts/typecheck.cjs --noEmit -p tsconfig.json -p tsconfig.build.json",
+        "ts:native": "node ../../scripts/typecheck.cjs --native --noEmit -p tsconfig.json -p tsconfig.build.json"
     },
     "dependencies": {
         "@rnw-community/shared": "^3.0.5",

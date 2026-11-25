@@ -17,6 +17,7 @@ const nextConfig: NextConfig = {
         memoryBasedWorkersCount: true,
         preloadEntriesOnStart: false,
         swcPlugins: [['@lingui/swc-plugin', {}]],
+        turbopackSeedCacheFromWorktree: true,
         useTypeScriptCli: false
     },
     async redirects() {

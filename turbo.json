@@ -7,15 +7,39 @@
             "outputs": ["dist/**", "build/**"]
         },
         "ts": {
-            "dependsOn": ["^ts", "^build"],
+            "dependsOn": ["^build"],
             "outputs": []
         },
         "@budgie/categorization#ts": {
-            "dependsOn": ["^ts", "^build", "build"],
+            "dependsOn": ["^build", "build"],
             "outputs": []
         },
         "@budgie/rules#ts": {
-            "dependsOn": ["^ts", "^build", "build"],
+            "dependsOn": ["^build", "build"],
+            "outputs": []
+        },
+        "ts:native": {
+            "dependsOn": ["^build"],
+            "outputs": ["node_modules/.cache/typecheck-native-*.json"]
+        },
+        "@budgie-at/sync-tests#ts": {
+            "dependsOn": ["^build"],
+            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**"],
+            "outputs": []
+        },
+        "@budgie-at/consolidation-tests#ts": {
+            "dependsOn": ["^build"],
+            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**"],
+            "outputs": []
+        },
+        "@budgie-at/budget-tests#ts": {
+            "dependsOn": ["^build"],
+            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**"],
+            "outputs": []
+        },
+        "@budgie-at/test-kit#ts": {
+            "dependsOn": ["^build"],
+            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**"],
             "outputs": []
         },
         "clear": {
@@ -35,36 +59,76 @@
             "outputs": ["dist/**", ".next/**", "node_modules/.cache/tsbuildinfo.json"]
         },
         "test": {
-            "dependsOn": ["^build", "build"]
+            "dependsOn": ["^build"]
         },
-        "//#cpd": {
-            "outputs": ["report/jscpd/**"]
+        "@budgie/categorization#test": {
+            "dependsOn": ["^build", "build"],
+            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**"]
         },
-        "//#deadcode": {
+        "@budgie/rules#test": {
+            "dependsOn": ["^build", "build"],
+            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**"]
+        },
+        "@budgie/cloud-sync#test": {
+            "dependsOn": ["^build"],
+            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**"]
+        },
+        "@budgie/import-export#test": {
+            "dependsOn": ["^build"],
+            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**"]
+        },
+        "@budgie/ledger#test": {
+            "dependsOn": ["^build"],
+            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**"]
+        },
+        "@budgie/market#test": {
+            "dependsOn": ["^build"],
+            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**"]
+        },
+        "@budgie/recurring#test": {
+            "dependsOn": ["^build"],
+            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**"]
+        },
+        "@budgie-at/sync-tests#test": {
+            "dependsOn": ["^build"],
+            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**"]
+        },
+        "@budgie-at/consolidation-tests#test": {
+            "dependsOn": ["^build"],
+            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**"]
+        },
+        "@budgie-at/budget-tests#test": {
+            "dependsOn": ["^build"],
+            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**"]
+        },
+        "lint": {
+            "dependsOn": ["^build"],
+            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/.oxlintrc.json", "$TURBO_ROOT$/lint-rules/**"],
             "outputs": []
         },
-        "ts:native": {
-            "dependsOn": ["^ts:native", "^build"],
-            "outputs": ["node_modules/.cache/typecheck-native-*.json"]
-        },
-        "@budgie-at/sync-tests#ts": {
-            "dependsOn": ["^ts", "^build"],
-            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**"],
+        "//#lint:rules": {
+            "inputs": ["lint-rules/**", ".oxlintrc.json", "package.json"],
             "outputs": []
         },
-        "@budgie-at/consolidation-tests#ts": {
-            "dependsOn": ["^ts", "^build"],
-            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**"],
-            "outputs": []
-        },
-        "@budgie-at/budget-tests#ts": {
-            "dependsOn": ["^ts", "^build"],
-            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**"],
-            "outputs": []
-        },
-        "@budgie-at/test-kit#ts": {
-            "dependsOn": ["^ts", "^build"],
-            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**"],
+        "//#deadcode:run": {
+            "inputs": [
+                "knip.json",
+                "package.json",
+                "pnpm-workspace.yaml",
+                "tsconfig*.json",
+                "packages/**",
+                "tests/**",
+                "e2e/**",
+                "scripts/**",
+                "lint-rules/**",
+                "!**/.next/**",
+                "!**/.turbo/**",
+                "!**/.expo/**",
+                "!**/dist/**",
+                "!**/node_modules/**",
+                "!**/coverage/**",
+                "!**/report/**"
+            ],
             "outputs": []
         }
     },

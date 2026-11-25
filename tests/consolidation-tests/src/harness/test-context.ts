@@ -32,6 +32,18 @@ export const testQueryService = new TestQueryService(testDb);
 
 export const testSeedService = new TestSeedService(testDb);
 
+const defaultClock = Clock.Clock.defaultValue();
+
+const instantSleepClock: Clock.Clock = {
+    currentTimeNanos: defaultClock.currentTimeNanos,
+    currentTimeNanosUnsafe: () => defaultClock.currentTimeNanosUnsafe(),
+    monotonicTimeNanos: defaultClock.monotonicTimeNanos,
+    monotonicTimeNanosUnsafe: () => defaultClock.monotonicTimeNanosUnsafe(),
+    currentTimeMillis: defaultClock.currentTimeMillis,
+    currentTimeMillisUnsafe: () => defaultClock.currentTimeMillisUnsafe(),
+    sleep: () => Effect.void
+};
+
 export const TestLayer = Layer.mergeAll(
     ConsolidationCoordinatorService.layer,
     ConsolidationExecutorService.layer,
@@ -59,7 +71,7 @@ export const TestLayer = Layer.mergeAll(
     ),
     Layer.provideMerge(Layer.succeed(LedgerWorkload, LedgerWorkload.of({ runForeground: effect => effect }))),
     Layer.provideMerge(makeTestPlatformLayer(testDb)),
-    Layer.provideMerge(Layer.succeed(Clock.Clock, Clock.Clock.defaultValue()))
+    Layer.provideMerge(Layer.succeed(Clock.Clock, instantSleepClock))
 );
 
 export const rebuildStoredBalances = Effect.flatMap(AccountBalanceIncrementalService, accountBalanceIncrementalService =>

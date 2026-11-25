@@ -1,5 +1,10 @@
 import * as Effect from 'effect/Effect';
 
+import { isDefined } from '@rnw-community/shared';
+
+import { getBaselineSnapshot } from './baseline-snapshot';
+import { getInMemoryDatabaseSync, resetInMemoryTestSqliteClient } from './make-in-memory-test-sqlite-client';
+
 import type { DB } from '@budgie/contracts';
 
 type Client = DB['$client'];
@@ -29,6 +34,18 @@ export const snapshotTestDb = (client: Client) =>
 export const resetTestDb = (database: DB) =>
     Effect.gen(function* () {
         const client = database.$client;
+        const databaseSync = getInMemoryDatabaseSync(client);
+
+        if (isDefined(databaseSync)) {
+            const snapshot = yield* getBaselineSnapshot;
+
+            yield* Effect.sync(() => {
+                resetInMemoryTestSqliteClient(client, snapshot);
+            });
+
+            return;
+        }
+
         const tables = yield* client.unsafe<{ readonly name: string }>(
             `SELECT name FROM main.sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%'`
         );

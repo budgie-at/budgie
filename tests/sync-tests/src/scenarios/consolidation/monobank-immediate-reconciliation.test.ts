@@ -55,9 +55,9 @@ describe('consolidation/monobank-immediate-reconciliation', () => {
             ).pipe(
                 Effect.tap(() =>
                     Effect.gen(function* () {
-                        expect(yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)).toEqual(
-                            []
-                        );
+                        expect(
+                            yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)
+                        ).toHaveLength(1);
                     })
                 ),
                 Effect.ensuring(Deferred.succeed(releaseRateLimitWait, undefined))

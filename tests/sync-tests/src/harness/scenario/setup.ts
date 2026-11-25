@@ -1,10 +1,10 @@
 import { appAtomRegistry } from '@app/@generic/constant/app-atom-registry.constant';
 import { assertStoredBalancesMatchLedger, resetTestDb } from '@budgie-at/test-kit';
 import * as Effect from 'effect/Effect';
-import { Agent, getGlobalDispatcher, setGlobalDispatcher } from 'undici';
-import { expect, vi, afterAll, afterEach, beforeAll, beforeEach } from 'vitest';
+import { getResponse, RequestHandler } from 'msw';
+import { afterAll, afterEach, beforeAll, beforeEach, expect, vi } from 'vitest';
 
-import { emptyFn, isDefined } from '@rnw-community/shared';
+import { emptyFn, getErrorMessage, isDefined } from '@rnw-community/shared';
 
 vi.mock('@app/@generic/drizzle/service/database-connection.service', async () => {
     const { FakeDatabaseConnectionService } = await import('../fake/fake-database-connection.service');
@@ -94,19 +94,95 @@ import { expoConstantsStub } from '../native/native-module.stub';
 import { walletCaptureNativeStub } from '../wallet-capture/wallet-capture-app-intents.stub';
 
 import { mockServer } from './mock-server';
+import { sleepMode } from './sleep-mode';
 import { backupDatabasePath, testDb } from './test-db';
+import { liveStatements } from './test-runtime';
 
+const ABORTED = Symbol('aborted');
+const originalFetch = globalThis.fetch;
 const unhandledRequests: string[] = [];
+
+const toRequest = (input: Parameters<typeof fetch>[0], init?: Parameters<typeof fetch>[1]): Request => {
+    if (input instanceof Request) {
+        return isDefined(init) ? new Request(input, init) : input;
+    }
+
+    return new Request(input, init);
+};
+
+const getAbortError = (signal: AbortSignal): Error =>
+    signal.reason instanceof Error ? signal.reason : new DOMException('The operation was aborted.', 'AbortError');
+
+const waitForAbort = (signal: AbortSignal): Effect.Effect<typeof ABORTED> =>
+    Effect.callback<typeof ABORTED>(resume => {
+        if (signal.aborted) {
+            resume(Effect.succeed(ABORTED));
+
+            return;
+        }
+
+        const onAbort = () => {
+            resume(Effect.succeed(ABORTED));
+        };
+
+        signal.addEventListener('abort', onAbort, { once: true });
+
+        return Effect.sync(() => void signal.removeEventListener('abort', onAbort));
+    });
+
+const resolveMockRequest = (input: Parameters<typeof fetch>[0], init?: Parameters<typeof fetch>[1]): Promise<Response> => {
+    const request = toRequest(input, init);
+
+    if (request.signal.aborted) {
+        return Promise.reject(getAbortError(request.signal));
+    }
+
+    const handlers = mockServer.listHandlers().filter((handler): handler is RequestHandler => handler instanceof RequestHandler);
+
+    return Effect.runPromise(
+        Effect.race(
+            Effect.promise(() =>
+                getResponse(handlers, request).then(
+                    response => ({ ok: true as const, response }),
+                    (cause: unknown) => ({ ok: false as const, cause })
+                )
+            ),
+            waitForAbort(request.signal)
+        )
+    ).then(result => {
+        if (result === ABORTED) {
+            throw getAbortError(request.signal);
+        }
+
+        if (!result.ok) {
+            throw result.cause instanceof Error ? result.cause : new TypeError(getErrorMessage(result.cause));
+        }
+
+        const { response } = result;
+
+        if (!isDefined(response)) {
+            unhandledRequests.push(`${request.method} ${request.url}`);
+
+            throw new TypeError(`Unhandled mocked request: ${request.method} ${request.url}`);
+        }
+
+        if (response.type === 'error') {
+            throw new TypeError('Failed to fetch');
+        }
+
+        return response;
+    });
+};
 
 beforeAll(() => {
     appAtomRegistry.reset();
-    mockServer.events.on('request:unhandled', ({ request }) => {
-        unhandledRequests.push(`${request.method} ${request.url}`);
-    });
-    mockServer.listen({ onUnhandledFrame: 'error' });
+    globalThis.fetch = resolveMockRequest;
 });
 
 beforeEach(() => {
+    appAtomRegistry.reset();
+    sleepMode.isRateLimitInstant = true;
+    liveStatements.length = 0;
     unhandledRequests.length = 0;
     walletCaptureNativeStub.reset();
     testSigner.reset();
@@ -120,13 +196,11 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+    vi.useRealTimers();
     mockServer.resetHandlers();
-    const previousDispatcher = getGlobalDispatcher();
-    setGlobalDispatcher(new Agent());
 
     return Effect.runPromise(
-        Effect.promise(() => previousDispatcher.destroy()).pipe(
-            Effect.andThen(assertStoredBalancesMatchLedger(testDb)),
+        assertStoredBalancesMatchLedger(testDb).pipe(
             Effect.andThen(
                 Effect.sync(() => {
                     expect(unhandledRequests).toEqual([]);
@@ -137,5 +211,5 @@ afterEach(() => {
 });
 
 afterAll(() => {
-    mockServer.close();
+    globalThis.fetch = originalFetch;
 });

@@ -4,6 +4,7 @@
     "private": true,
     "type": "module",
     "scripts": {
+        "lint": "effect-tsgo --tsrs-lint oxlint --type-aware --threads=4 src",
         "test": "vitest run",
         "test:watch": "vitest",
         "ts": "node ../../scripts/typecheck.cjs --noEmit -p tsconfig.json",
@@ -29,7 +30,6 @@
         "@rnw-community/shared": "^3.0.5",
         "drizzle-orm": "1.0.0-rc.4",
         "msw": "^3.0.3",
-        "undici": "7.29.0",
         "vitest": "5.1.0"
     },
     "devDependencies": {
