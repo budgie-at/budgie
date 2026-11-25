@@ -11,7 +11,6 @@ import {
 import { CategoryRepository, InstrumentRepository, LanguageEnum, SettingsRepository, convertFromMicroUnits } from '@budgie/contracts';
 import { i18n } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
-import { Storage } from '@op-engineering/op-sqlite';
 import * as EffectArray from 'effect/Array';
 import * as Context from 'effect/Context';
 import * as DateTime from 'effect/DateTime';
@@ -24,6 +23,7 @@ import * as TaskManager from 'expo-task-manager';
 
 import { isDefined, isEmptyArray, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
+import { makeLazyStorage } from '../../@generic/utils/make-lazy-storage.util';
 import { postLocalNotification } from '../../@generic/utils/post-local-notification.util';
 import { DEFAULT_DECIMAL_PLACES } from '../../i18n/constant/default-decimal-places.constant';
 import { formatSymbolAmount } from '../../i18n/utils/format-symbol-amount.util';
@@ -61,21 +61,7 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
         const backgroundTaskMinimumIntervalMinutes = 15;
         const storageKeyPrefix = '@budgie:budget-alerts-fired';
         const firedTriggersSchema = Schema.String.pipe(Schema.Array, Schema.fromJsonString);
-        let storageInstance: Storage | null = null;
-        const getStorage = (): Storage => {
-            if (!isDefined(storageInstance)) {
-                storageInstance = new Storage({ name: 'budget-alerts.sqlite' });
-            }
-
-            return storageInstance;
-        };
-
-        yield* Effect.addFinalizer(() =>
-            Effect.sync(() => {
-                storageInstance?.closeSync();
-                storageInstance = null;
-            })
-        );
+        const getStorage = yield* makeLazyStorage('budget-alerts.sqlite');
 
         const buildStorageKey = (budgetId: number, periodStartMs: number): string => `${storageKeyPrefix}:${budgetId}:${periodStartMs}`;
 

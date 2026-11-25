@@ -2,7 +2,6 @@ import { logAndContinue } from '@budgie/contracts';
 import { InzhurSetupService } from '@budgie/sync';
 import { i18n } from '@lingui/core';
 import { msg, plural } from '@lingui/core/macro';
-import { Storage } from '@op-engineering/op-sqlite';
 import * as Context from 'effect/Context';
 import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
@@ -12,6 +11,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { NativeCallError } from '../../@generic/error/native-call.error';
 import { isNotificationPermissionGranted } from '../../@generic/utils/is-notification-permission-granted.util';
+import { makeLazyStorage } from '../../@generic/utils/make-lazy-storage.util';
 import { postLocalNotification } from '../../@generic/utils/post-local-notification.util';
 import { BUDGET_ALERT_CHANNEL_ID } from '../../budget/constant/budget-alert-channel-id.constant';
 
@@ -21,21 +21,7 @@ export class InzhurStatementReminderService extends Context.Service<InzhurStatem
         make: Effect.gen(function* () {
             const inzhurSetupService = yield* InzhurSetupService;
             const storageKey = '@budgie:inzhur-statement-reminder';
-            let storageInstance: Storage | null = null;
-            const getStorage = (): Storage => {
-                if (!isDefined(storageInstance)) {
-                    storageInstance = new Storage({ name: 'inzhur-statement-reminder.sqlite' });
-                }
-
-                return storageInstance;
-            };
-
-            yield* Effect.addFinalizer(() =>
-                Effect.sync(() => {
-                    storageInstance?.closeSync();
-                    storageInstance = null;
-                })
-            );
+            const getStorage = yield* makeLazyStorage('inzhur-statement-reminder.sqlite');
 
             const remind = Effect.fn('InzhurStatementReminderService.remind')(function* () {
                 const now = yield* DateTime.nowAsDate;

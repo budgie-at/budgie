@@ -67,32 +67,20 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
 
                     const transferAccountIds = match.matchingRules.flatMap(rule =>
                         rule.actions
-                            .filter(action => action.type === RuleActionTypeEnum.CONVERT_TO_TRANSFER && isDefined(action.accountId))
+                            .filter(action => action.type === RuleActionTypeEnum.CONVERT_TO_TRANSFER)
                             .map(action => action.accountId)
                             .filter(isDefined)
                     );
 
-                    if (isNotEmptyArray(transferAccountIds)) {
-                        transferAccountIdsByTransaction.set(match.transactionId, transferAccountIds);
-                    }
+                    transferAccountIdsByTransaction.set(match.transactionId, transferAccountIds);
                 }
 
-                const changedTransactionIds = new Set<number>();
-
                 for (const [categoryId, transactionIds] of transactionIdsByCategory) {
-                    const categorizedIds = yield* transactionRuleRepository.setCategoryByTransactionIds(transactionIds, categoryId);
-
-                    for (const transactionId of categorizedIds) {
-                        changedTransactionIds.add(transactionId);
-                    }
+                    yield* transactionRuleRepository.setCategoryByTransactionIds(transactionIds, categoryId);
                 }
 
                 for (const [tagId, transactionIds] of transactionIdsByTag) {
-                    const taggedIds = yield* transactionTagsRepository.addTagByTransactionIds(transactionIds, tagId, TagSourceEnum.RULE);
-
-                    for (const transactionId of taggedIds) {
-                        changedTransactionIds.add(transactionId);
-                    }
+                    yield* transactionTagsRepository.addTagByTransactionIds(transactionIds, tagId, TagSourceEnum.RULE);
                 }
 
                 for (const [transactionId, accountIds] of transferAccountIdsByTransaction) {
@@ -103,9 +91,10 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
                     }
                 }
 
-                if (changedTransactionIds.size > 0) {
-                    yield* transactionRepository.touchUpdatedByIds([...changedTransactionIds], TransactionUpdatedByEnum.RULE);
-                }
+                yield* transactionRepository.touchUpdatedByIds(
+                    matches.map(match => match.transactionId),
+                    TransactionUpdatedByEnum.RULE
+                );
             },
             effect => Db.transaction(effect)
         );

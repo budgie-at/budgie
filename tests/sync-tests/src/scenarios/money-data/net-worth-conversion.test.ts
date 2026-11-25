@@ -3,6 +3,7 @@ import {
     AccountTypeEnum,
     CurrencyEnum,
     ExchangeRateEntityTable,
+    InstrumentDailyMarketPriceEntityTable,
     PRECISION,
     SettingsEntityTable
 } from '@budgie/contracts';
@@ -108,6 +109,40 @@ describe('net worth currency conversion', () => {
             yield* expectCryptoTotals(euro.id, LIVE_CRYPTO_TOTAL);
             expect(conversion?.amount).toBe(LIVE_CRYPTO_TOTAL);
             expect(conversion?.exchangeRate).toBe(BITCOIN_EURO_RATE);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('values a crypto account held in the default currency 1:1 without a stored rate', () =>
+        Effect.gen(function* () {
+            const accountBalanceRepository = yield* AccountBalanceRepository;
+            const euro = yield* requireInstrument(CurrencyEnum.EUR);
+            const account = yield* seed.account({ instrumentId: euro.id, type: AccountTypeEnum.CRYPTO });
+            yield* seedLedgerBalance(account.id, 5 * PRECISION);
+
+            const [row] = yield* accountBalanceRepository.getHomeAccountRows(euro.id);
+
+            yield* expectCryptoTotals(euro.id, 5 * PRECISION);
+            expect([row.convertedBalance, row.isValued]).toStrictEqual([5 * PRECISION, true]);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('picks the lowest quote instrument when one day has two quotes', () =>
+        Effect.gen(function* () {
+            const { bitcoin, euro } = yield* seedBitcoinCryptoAccount(PRECISION);
+            const lowQuote = yield* seed.instrument({ code: 'XQL', name: 'Low quote' });
+            const highQuote = yield* seed.instrument({ code: 'XQH', name: 'High quote' });
+            const dailyPrice = { instrumentId: bitcoin.id, priceDate: '2026-06-01', source: 'test' };
+
+            yield* testDb.insert(ExchangeRateEntityTable).values([
+                { source: 'test', baseInstrumentId: lowQuote.id, quoteInstrumentId: euro.id, rate: 2 },
+                { source: 'test', baseInstrumentId: highQuote.id, quoteInstrumentId: euro.id, rate: 3 }
+            ]);
+            yield* testDb.insert(InstrumentDailyMarketPriceEntityTable).values([
+                { ...dailyPrice, quoteInstrumentId: highQuote.id, price: 100 },
+                { ...dailyPrice, quoteInstrumentId: lowQuote.id, price: 100 }
+            ]);
+
+            yield* expectCryptoTotals(euro.id, 200 * PRECISION);
         }).pipe(Effect.provide(TestLayer))
     );
 });

@@ -9,7 +9,7 @@ import * as Layer from 'effect/Layer';
 import * as Schema from 'effect/Schema';
 import * as Semaphore from 'effect/Semaphore';
 
-import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { appAtomRegistry } from '../../@generic/constant/app-atom-registry.constant';
 import { NativeCallError } from '../../@generic/error/native-call.error';
@@ -25,25 +25,17 @@ export class InzhurPendingTopUpService extends Context.Service<InzhurPendingTopU
         const dismissedKey = '@budgie:inzhur-dismissed-top-ups';
         const notifiedKey = '@budgie:inzhur-notified-top-ups';
         const ExternalIdsSchema = Schema.String.pipe(Schema.Array, Schema.fromJsonString);
-        let storageInstance: Storage | null = null;
-        const getStorage = (): Storage => {
-            if (!isDefined(storageInstance)) {
-                storageInstance = new Storage({ name: 'inzhur-pending-top-ups.sqlite' });
-            }
-
-            return storageInstance;
-        };
-
-        yield* Effect.addFinalizer(() =>
-            Effect.sync(() => {
-                storageInstance?.closeSync();
-                storageInstance = null;
-            })
+        const storage = yield* Effect.acquireRelease(
+            Effect.sync(() => new Storage({ name: 'inzhur-pending-top-ups.sqlite' })),
+            topUpStorage =>
+                Effect.sync(() => {
+                    topUpStorage.closeSync();
+                })
         );
 
         const readIds = Effect.fnUntraced(function* (key: string) {
             const stored = yield* Effect.tryPromise({
-                try: () => getStorage().getItem(key),
+                try: () => storage.getItem(key),
                 catch: cause => NativeCallError.make({ cause })
             });
 
@@ -58,23 +50,15 @@ export class InzhurPendingTopUpService extends Context.Service<InzhurPendingTopU
             const stored = yield* Schema.encodeEffect(ExternalIdsSchema)(ids).pipe(Effect.orDie);
 
             yield* Effect.tryPromise({
-                try: () => getStorage().setItem(key, stored),
+                try: () => storage.setItem(key, stored),
                 catch: cause => NativeCallError.make({ cause })
             });
         });
 
-        let isDismissedLoaded = false;
+        const findDismissed = readIds(dismissedKey);
+        const initialDismissed = yield* findDismissed.pipe(Effect.orElseSucceed((): readonly string[] => []));
 
-        const findDismissed = Effect.fnUntraced(function* () {
-            const dismissed = yield* readIds(dismissedKey);
-
-            if (!isDismissedLoaded) {
-                isDismissedLoaded = true;
-                appAtomRegistry.set(inzhurDismissedTopUpsAtom, dismissed);
-            }
-
-            return dismissed;
-        });
+        appAtomRegistry.set(inzhurDismissedTopUpsAtom, initialDismissed);
 
         const remind = Effect.fn('InzhurPendingTopUpService.remind')(
             function* () {
@@ -84,7 +68,7 @@ export class InzhurPendingTopUpService extends Context.Service<InzhurPendingTopU
                     return;
                 }
 
-                const dismissed = yield* findDismissed();
+                const dismissed = yield* findDismissed;
                 const notified = yield* readIds(notifiedKey);
                 const unnotifiedTopUps = pendingTopUps.filter(
                     topUp => !dismissed.includes(topUp.externalId) && !notified.includes(topUp.externalId)
@@ -129,7 +113,7 @@ export class InzhurPendingTopUpService extends Context.Service<InzhurPendingTopU
             remind,
             dismiss: Effect.fn('InzhurPendingTopUpService.dismiss')(
                 function* (topUpExternalId: string) {
-                    const dismissed = yield* findDismissed();
+                    const dismissed = yield* findDismissed;
 
                     if (dismissed.includes(topUpExternalId)) {
                         return;
