@@ -28,7 +28,7 @@ describe('monobank/retry-policy', () => {
                 })
             );
 
-            const transactions = yield* new MonobankClient('test-token').getTransactions(
+            const transactions = yield* new MonobankClient('test-token', 1).getTransactions(
                 'mono-card',
                 Math.floor(Date.now() / 1000) - STATEMENT_WINDOW_SECONDS
             );
@@ -50,7 +50,7 @@ describe('monobank/retry-policy', () => {
             );
 
             const exit = yield* Effect.exit(
-                new MonobankClient('test-token').getTransactions('mono-card', Math.floor(Date.now() / 1000) - STATEMENT_WINDOW_SECONDS)
+                new MonobankClient('test-token', 1).getTransactions('mono-card', Math.floor(Date.now() / 1000) - STATEMENT_WINDOW_SECONDS)
             );
 
             expect(Exit.isFailure(exit)).toBe(true);

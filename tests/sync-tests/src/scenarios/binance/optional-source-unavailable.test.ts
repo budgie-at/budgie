@@ -1,5 +1,5 @@
 import { BinanceSyncService } from '@budgie/sync';
-import { describe, expect, it } from '@effect/vitest';
+import { expect, layer } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
 import {
@@ -73,7 +73,7 @@ const setupUsdtDepositScenario = Effect.gen(function* () {
     return fixture;
 });
 
-describe('binance/optional-source-unavailable', () => {
+layer(TestLayer)('binance/optional-source-unavailable', it => {
     for (const endpoint of OPTIONAL_ENDPOINTS) {
         it.effect.each(PRODUCT_ERRORS)(`skips ${endpoint} for the run on $label and syncs the rest`, ({ respond }) =>
             Effect.gen(function* () {
@@ -84,7 +84,7 @@ describe('binance/optional-source-unavailable', () => {
                 yield* binanceSyncService.sync();
 
                 expect((yield* fetchBinanceTransactions).map(transaction => transaction.externalId)).toStrictEqual(['dep-survives']);
-            }).pipe(Effect.provide(TestLayer))
+            })
         );
     }
 
@@ -97,7 +97,7 @@ describe('binance/optional-source-unavailable', () => {
             yield* binanceSyncService.sync();
 
             yield* expectSyncFailedAndDisabled(sync.id, 0);
-        }).pipe(Effect.provide(TestLayer))
+        })
     );
 
     it.effect.each(BACKFILLED_SOURCES)('imports old $key history in a later run once the skipped product works', source =>
@@ -116,6 +116,6 @@ describe('binance/optional-source-unavailable', () => {
             yield* resyncBinance(sync.id);
 
             expect(yield* fetchBinanceTransactions).toHaveLength(1);
-        }).pipe(Effect.provide(TestLayer))
+        })
     );
 });

@@ -1,5 +1,8 @@
 import * as Effect from 'effect/Effect';
 
+import { getBaselineSnapshot } from './baseline-snapshot';
+import { resetInMemoryTestSqliteClient } from './make-in-memory-test-sqlite-client';
+
 import type { DB } from '@budgie/contracts';
 
 type Client = DB['$client'];
@@ -29,6 +32,11 @@ export const snapshotTestDb = (client: Client) =>
 export const resetTestDb = (database: DB) =>
     Effect.gen(function* () {
         const client = database.$client;
+
+        if (yield* resetInMemoryTestSqliteClient(client, getBaselineSnapshot)) {
+            return;
+        }
+
         const tables = yield* client.unsafe<{ readonly name: string }>(
             `SELECT name FROM main.sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%'`
         );

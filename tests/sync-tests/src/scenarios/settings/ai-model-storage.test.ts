@@ -14,7 +14,7 @@ import * as Exit from 'effect/Exit';
 import * as Fiber from 'effect/Fiber';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import * as AtomRegistry from 'effect/reactivity/AtomRegistry';
-import { beforeEach, vi } from 'vitest';
+import { afterEach, beforeEach, vi } from 'vitest';
 
 import { emptyFn, isDefined } from '@rnw-community/shared';
 
@@ -57,6 +57,10 @@ beforeEach(() => {
     for (const snapshot of [chatModelSnapshotAtom, embeddingModelSnapshotAtom]) {
         patchAtom(snapshot, { status: AiSubsystemStatusEnum.IDLE });
     }
+});
+
+afterEach(() => {
+    expoFileSystemStub.File.mockReset();
 });
 
 const makeStorage = Effect.gen(function* () {

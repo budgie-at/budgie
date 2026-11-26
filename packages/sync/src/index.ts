@@ -22,6 +22,7 @@ export { MonobankConnectionResultEnum } from './monobank/enum/monobank-connectio
 export { MONOBANK_AUTH_URL } from './monobank/constant/monobank-auth-url.constant';
 export { MONOBANK_MAX_PERIOD_SECONDS } from './monobank/constant/monobank-max-period-seconds.constant';
 export { MONOBANK_RATE_LIMIT_MS } from './monobank/constant/monobank-rate-limit-ms.constant';
+export { MonobankRetryBaseDelayMs } from './monobank/constant/monobank-retry-base-delay-ms.constant';
 
 export { PrivatbankFileClient } from './privatbank/client/privatbank-file.client';
 export { privatbankAccountMapper } from './privatbank/mapper/privatbank-account.mapper';

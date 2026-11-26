@@ -26,7 +26,6 @@ import type { SyncProviderClientInterface } from '../../core/interface/sync-prov
 import type { ClientInfo } from '@liaugust/monobank-sdk';
 
 export class MonobankClient implements SyncProviderClientInterface {
-    private static readonly RETRY_BASE_DELAY_MS = 300;
     private static readonly RETRY_MAX_ATTEMPTS = 4;
     private static readonly RETRY_MAX_DELAY_MS = 2_000;
 
@@ -66,10 +65,10 @@ export class MonobankClient implements SyncProviderClientInterface {
         return this.cachedClientInfo;
     });
 
-    constructor(token: string) {
+    constructor(token: string, retryBaseDelayMs: number) {
         this.personalClient = new MonobankPersonalClient({
             retry: {
-                baseDelayMs: MonobankClient.RETRY_BASE_DELAY_MS,
+                baseDelayMs: retryBaseDelayMs,
                 maxAttempts: MonobankClient.RETRY_MAX_ATTEMPTS,
                 maxDelayMs: MonobankClient.RETRY_MAX_DELAY_MS,
                 retryableStatusCodes: SYNC_RETRY_STATUS_CODES

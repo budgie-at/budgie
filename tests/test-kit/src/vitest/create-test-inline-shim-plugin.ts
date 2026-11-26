@@ -1,10 +1,17 @@
 import { readFileSync } from 'node:fs';
+import { availableParallelism } from 'node:os';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import type { TestInlineShimPluginInterface } from './interface/test-inline-shim-plugin.interface';
 
 const VIRTUAL_PREFIX = '\0virtual:';
+
+const SCENARIO_LOCAL_MIN_WORKERS = 4;
+
+const SCENARIO_LOCAL_MAX_WORKERS = 8;
+
+const SCENARIO_CI_MAX_WORKERS = 2;
 
 const VIRTUAL_SHIMS: Record<string, string> = {
     'expo-secure-store': `export const getItem = () => null;`,
@@ -181,3 +188,8 @@ export const createTestVitestConfig = (rootDir: string, setupFile: string) => {
         }
     };
 };
+
+export const scenarioMaxWorkers =
+    process.env['CI'] === 'true'
+        ? SCENARIO_CI_MAX_WORKERS
+        : Math.min(SCENARIO_LOCAL_MAX_WORKERS, Math.max(SCENARIO_LOCAL_MIN_WORKERS, Math.floor(availableParallelism() / 2)));
