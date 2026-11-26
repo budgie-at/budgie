@@ -43,9 +43,9 @@ describe('consolidation/monobank-immediate-reconciliation', () => {
                             Object.assign(Object.create(clock), {
                                 sleep: (duration: Duration.Duration) =>
                                     Duration.toMillis(duration) === MONOBANK_RATE_LIMIT_MS
-                                        ? Effect.andThen(
-                                              Deferred.succeed(rateLimitWaitEntered, undefined),
-                                              Deferred.await(releaseRateLimitWait)
+                                        ? Deferred.succeed(rateLimitWaitEntered, undefined).pipe(
+                                              Effect.andThen(Deferred.await(releaseRateLimitWait)),
+                                              Effect.andThen(clock.sleep(duration))
                                           )
                                         : clock.sleep(duration)
                             })

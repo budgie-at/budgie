@@ -19,7 +19,8 @@ export default defineConfig({
                     ...sharedTestOptions,
                     name: 'fast',
                     isolate: false,
-                    include: testFiles.filter(filePath => !usesModuleMocks(filePath))
+                    include: ['test/**/*.test.ts'],
+                    exclude: testFiles.filter(usesModuleMocks)
                 }
             }
         ]
