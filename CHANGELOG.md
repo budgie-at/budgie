@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.193.3](https://github.com/budgie-at/budgie/compare/v6.193.2...v6.193.3) (2026-11-26)
+
+### Performance Improvements
+
+* speed up tests, typecheck, lint, deadcode, and dev workflows ([#2287](https://github.com/budgie-at/budgie/issues/2287)) ([59ed9fe](https://github.com/budgie-at/budgie/commit/59ed9fe19fdf3c29d125db154f99817e01415f4d))
+
+
 ## [6.193.2](https://github.com/budgie-at/budgie/compare/v6.193.1...v6.193.2) (2026-11-25)
 
 ### Bug Fixes
