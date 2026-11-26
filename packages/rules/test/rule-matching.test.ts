@@ -371,6 +371,12 @@ layer(TestLayer)('RuleMatcherService SQL and fallback parity', it => {
                     conditionMatchType: RuleConditionMatchTypeEnum.ALL,
                     conditions: buildDbConditions([[RuleConditionFieldEnum.TITLE, RuleConditionOperatorEnum.NOT_CONTAINS, 'coffee', null]])
                 });
+                const nulValueContainsCount = yield* ruleMatcherService.countMatchingTransactions({
+                    conditionMatchType: RuleConditionMatchTypeEnum.ALL,
+                    conditions: buildDbConditions([
+                        [RuleConditionFieldEnum.TITLE, RuleConditionOperatorEnum.CONTAINS, 'shop\u0000coffee', null]
+                    ])
+                });
                 const zeroAmountCount = yield* ruleMatcherService.countMatchingTransactions({
                     conditionMatchType: RuleConditionMatchTypeEnum.ALL,
                     conditions: buildDbConditions([[RuleConditionFieldEnum.AMOUNT, RuleConditionOperatorEnum.EQUALS, '0', null]])
@@ -393,6 +399,7 @@ layer(TestLayer)('RuleMatcherService SQL and fallback parity', it => {
                 expect(regexCount).toBe(1);
                 expect(nulContainsCount).toBe(1);
                 expect(nulNotContainsCount).toBe(1);
+                expect(nulValueContainsCount).toBe(1);
                 expect(zeroAmountCount).toBe(0);
                 expect(commentFallbackMatch).toBe(true);
                 expect(orderedMcc).toBe('5411');

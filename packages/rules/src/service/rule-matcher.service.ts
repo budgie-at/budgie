@@ -78,7 +78,9 @@ export class RuleMatcherService extends Context.Service<RuleMatcherService>()('@
 
         const hasNonAscii = (value: string): boolean => {
             for (let index = 0; index < value.length; index += 1) {
-                if (value.charCodeAt(index) > MAX_ASCII_CHAR_CODE) {
+                const charCode = value.charCodeAt(index);
+
+                if (charCode === 0 || charCode > MAX_ASCII_CHAR_CODE) {
                     return true;
                 }
             }
@@ -489,14 +491,16 @@ export class RuleMatcherService extends Context.Service<RuleMatcherService>()('@
             nonAsciiCandidateWhere: SQL | null,
             rule: Pick<RuleCreateInputInterface, 'conditions' | 'conditionMatchType'>
         ) {
+            const emptyIds: number[] = [];
+
             if (!isDefined(nonAsciiCandidateWhere)) {
-                return { candidateIds: [] as number[], matchedIds: [] as number[] };
+                return { candidateIds: emptyIds, matchedIds: emptyIds };
             }
 
             const candidateIds = yield* transactionRuleRepository.findIdsByRuleConditions(nonAsciiCandidateWhere);
 
             if (!isNotEmptyArray(candidateIds)) {
-                return { candidateIds: [] as number[], matchedIds: [] as number[] };
+                return { candidateIds: emptyIds, matchedIds: emptyIds };
             }
 
             const matchedIds = yield* filterWithFallbackConditions(candidateIds, rule);
