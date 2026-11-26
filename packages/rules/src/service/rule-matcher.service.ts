@@ -1,5 +1,6 @@
 import {
     transactionFilters,
+    Db,
     MccCategoryEntityTable,
     RuleConditionFieldEnum,
     RuleConditionMatchTypeEnum,
@@ -62,14 +63,18 @@ export class RuleMatcherService extends Context.Service<RuleMatcherService>()('@
         const MCC_CODE_SQL = sql`(SELECT ${MccCategoryEntityTable.mcc} FROM ${TransactionEntryEntityTable} INNER JOIN ${MccCategoryEntityTable} ON ${MccCategoryEntityTable.id} = ${TransactionEntryEntityTable.mccCategoryId} WHERE ${LEDGER_ENTRY_MATCH_SQL} ORDER BY CASE WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.FEE} THEN 1 ELSE 0 END, ${TransactionEntryEntityTable.sequence} ASC, ${TransactionEntryEntityTable.id} ASC LIMIT 1)`;
         const AMOUNT_MICRO_SQL = sql`COALESCE((SELECT SUM(${TransactionEntryEntityTable.amount}) FROM ${TransactionEntryEntityTable} WHERE ${LEDGER_ENTRY_MATCH_SQL} AND ${TransactionEntryEntityTable.type} = CASE ${TransactionEntityTable.type} WHEN ${TransactionTypeEnum.EXPENSE} THEN ${TransactionEntryTypeEnum.CREDIT} WHEN ${TransactionTypeEnum.TRANSFER} THEN ${TransactionEntryTypeEnum.CREDIT} WHEN ${TransactionTypeEnum.INCOME} THEN ${TransactionEntryTypeEnum.DEBIT} ELSE NULL END), 0)`;
 
+        const UNICODE_ASCII_FOLD_LATIN_I_DOT = '\u0130';
+        const UNICODE_ASCII_FOLD_LONG_S = '\u017F';
+        const UNICODE_ASCII_FOLD_KELVIN = '\u212A';
+
         const isFreeTextField = (field: RuleConditionFieldEnum): boolean =>
-            field === RuleConditionFieldEnum.TITLE || field === RuleConditionFieldEnum.COMMENT || field === RuleConditionFieldEnum.MCC_CODE;
+            field === RuleConditionFieldEnum.TITLE || field === RuleConditionFieldEnum.COMMENT;
 
         const isAsciiOrNullSql = (column: Column | SQL): SQL =>
-            sql`(${column} IS NULL OR LENGTH(CAST(${column} AS BLOB)) = LENGTH(CAST(${column} AS TEXT)))`;
+            sql`(${column} IS NULL OR (INSTR(${column}, ${UNICODE_ASCII_FOLD_LATIN_I_DOT}) = 0 AND INSTR(${column}, ${UNICODE_ASCII_FOLD_LONG_S}) = 0 AND INSTR(${column}, ${UNICODE_ASCII_FOLD_KELVIN}) = 0))`;
 
         const isNonAsciiSql = (column: Column | SQL): SQL =>
-            sql`(${column} IS NOT NULL AND LENGTH(CAST(${column} AS BLOB)) != LENGTH(CAST(${column} AS TEXT)))`;
+            sql`(${column} IS NOT NULL AND (INSTR(${column}, ${UNICODE_ASCII_FOLD_LATIN_I_DOT}) > 0 OR INSTR(${column}, ${UNICODE_ASCII_FOLD_LONG_S}) > 0 OR INSTR(${column}, ${UNICODE_ASCII_FOLD_KELVIN}) > 0))`;
 
         const hasNonAscii = (value: string): boolean => {
             for (let index = 0; index < value.length; index += 1) {
@@ -551,41 +556,43 @@ export class RuleMatcherService extends Context.Service<RuleMatcherService>()('@
             return yield* scanMatchingIds(rule);
         });
 
-        const countMatchingTransactions = Effect.fn('RuleMatcherService.countMatchingTransactions')(function* (
-            params: Pick<RuleCreateInputInterface, 'conditions' | 'conditionMatchType'>
-        ) {
-            const { conditions, conditionMatchType } = params;
+        const countMatchingTransactions = Effect.fn('RuleMatcherService.countMatchingTransactions')(
+            function* (params: Pick<RuleCreateInputInterface, 'conditions' | 'conditionMatchType'>) {
+                const { conditions, conditionMatchType } = params;
 
-            if (!isNotEmptyArray(conditions)) {
-                return 0;
-            }
+                if (!isNotEmptyArray(conditions)) {
+                    return 0;
+                }
 
-            const plan = buildRuleConditionsWhere(conditions, conditionMatchType);
-            const asciiWhere = buildAsciiWhere(plan.sqlWhere, plan.allAsciiWhere);
+                const plan = buildRuleConditionsWhere(conditions, conditionMatchType);
+                const asciiWhere = buildAsciiWhere(plan.sqlWhere, plan.allAsciiWhere);
 
-            if (!isNotEmptyArray(plan.fallbackConditions) && isDefined(asciiWhere)) {
-                const asciiCount = yield* transactionRuleRepository.countByRuleConditions(asciiWhere);
-                const { matchedIds: nonAsciiMatchedIds } = yield* findNonAsciiMatches(plan.nonAsciiCandidateWhere, params);
+                if (!isNotEmptyArray(plan.fallbackConditions) && isDefined(asciiWhere)) {
+                    const asciiCount = yield* transactionRuleRepository.countByRuleConditions(asciiWhere);
+                    const { matchedIds: nonAsciiMatchedIds } = yield* findNonAsciiMatches(plan.nonAsciiCandidateWhere, params);
 
-                return asciiCount + nonAsciiMatchedIds.length;
-            }
+                    return asciiCount + nonAsciiMatchedIds.length;
+                }
 
-            const matchingIds = yield* findMatchingIdsFromPlan(params, plan);
+                const matchingIds = yield* findMatchingIdsFromPlan(params, plan);
 
-            return matchingIds.length;
-        });
+                return matchingIds.length;
+            },
+            effect => Db.transaction(effect)
+        );
 
-        const collectMatchingTransactionIds = Effect.fn('RuleMatcherService.collectMatchingTransactionIds')(function* (
-            rule: RuleWithRelationsEntityInterface
-        ) {
-            if (!isNotEmptyArray(rule.conditions)) {
-                return [];
-            }
+        const collectMatchingTransactionIds = Effect.fn('RuleMatcherService.collectMatchingTransactionIds')(
+            function* (rule: RuleWithRelationsEntityInterface) {
+                if (!isNotEmptyArray(rule.conditions)) {
+                    return [];
+                }
 
-            const plan = buildRuleConditionsWhere(rule.conditions, rule.conditionMatchType);
+                const plan = buildRuleConditionsWhere(rule.conditions, rule.conditionMatchType);
 
-            return yield* findMatchingIdsFromPlan(rule, plan);
-        });
+                return yield* findMatchingIdsFromPlan(rule, plan);
+            },
+            effect => Db.transaction(effect)
+        );
 
         return {
             countMatchingTransactions,

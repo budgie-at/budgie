@@ -441,4 +441,98 @@ layer(TestLayer)('rules engine', it => {
             }
         })
     );
+
+    it.effect('normalizes single-entry float drift to microunits before and after persistence and skips tombstoned-entry rows by id', () =>
+        Effect.gen(function* () {
+            const ruleEngineService = yield* RuleEngineService;
+            const ruleMatcherService = yield* RuleMatcherService;
+            const ruleService = yield* RuleService;
+            const account = yield* testSeedService.account();
+            const [category] = yield* testDb.select().from(CategoryEntityTable);
+            const tag = yield* testSeedService.tag('zero-amount');
+            const fractionalPrincipal = 0.3 - 0.1;
+
+            yield* ruleService.create({
+                enabled: true,
+                conditionMatchType: RuleConditionMatchTypeEnum.ALL,
+                conditions: [
+                    {
+                        field: RuleConditionFieldEnum.AMOUNT,
+                        operator: RuleConditionOperatorEnum.EQUALS,
+                        value: '0.20',
+                        secondaryValue: null
+                    }
+                ],
+                actions: [{ ...emptyAction, type: RuleActionTypeEnum.SET_CATEGORY, categoryId: category.id }]
+            });
+            yield* ruleService.create({
+                enabled: true,
+                conditionMatchType: RuleConditionMatchTypeEnum.ALL,
+                conditions: [
+                    {
+                        field: RuleConditionFieldEnum.AMOUNT,
+                        operator: RuleConditionOperatorEnum.EQUALS,
+                        value: '0',
+                        secondaryValue: null
+                    }
+                ],
+                actions: [{ ...emptyAction, type: RuleActionTypeEnum.ADD_TAG, tagId: tag.id }]
+            });
+
+            const { transactionInputs } = yield* ruleEngineService.prepareCreateInputsForRules([
+                {
+                    ...buildInput(account.id),
+                    amount: 0.3,
+                    entries: [
+                        {
+                            accountId: account.id,
+                            categoryId: null,
+                            mccCategoryId: null,
+                            type: TransactionEntryTypeEnum.CREDIT,
+                            amount: fractionalPrincipal
+                        },
+                        { accountId: account.id, categoryId: null, mccCategoryId: null, type: TransactionEntryTypeEnum.FEE, amount: 0.1 }
+                    ]
+                }
+            ]);
+            const persisted = yield* testSeedService.manualExpense({
+                accountId: account.id,
+                amount: 200_000,
+                operatedAt: new Date('2026-06-02T12:00:00.000Z'),
+                title: 'FRACTIONAL'
+            });
+            const orphan = yield* testSeedService.manualExpense({
+                accountId: account.id,
+                amount: 10_000_000,
+                operatedAt: new Date('2026-06-02T12:05:00.000Z'),
+                title: 'ORPHAN_BY_ID'
+            });
+            yield* testDb
+                .update(TransactionEntryEntityTable)
+                .set({ deletedAt: new Date('2026-06-02T12:06:00.000Z') })
+                .where(eq(TransactionEntryEntityTable.transactionId, orphan.id));
+
+            yield* ruleEngineService.applyRulesToTransactionIds([orphan.id]);
+            const orphanTags = yield* testDb
+                .select()
+                .from(TransactionTagsEntityTable)
+                .where(eq(TransactionTagsEntityTable.transactionId, orphan.id));
+            const persistedCount = yield* ruleMatcherService.countMatchingTransactions({
+                conditionMatchType: RuleConditionMatchTypeEnum.ALL,
+                conditions: [
+                    {
+                        field: RuleConditionFieldEnum.AMOUNT,
+                        operator: RuleConditionOperatorEnum.EQUALS,
+                        value: '0.20',
+                        secondaryValue: null
+                    }
+                ]
+            });
+
+            expect(transactionInputs[0].entries[0].categoryId).toBe(category.id);
+            expect(persisted.id).toBeGreaterThan(0);
+            expect(persistedCount).toBe(1);
+            expect(orphanTags).toEqual([]);
+        })
+    );
 });

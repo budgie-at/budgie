@@ -404,6 +404,8 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
                 if (convertedTransactionIds.size > 0) {
                     yield* transactionRuleRepository.stampUpdatedByRule([...convertedTransactionIds]);
                 }
+
+                yield* transactionRuleRepository.stampUnauthoredUpdatedByRule(batchIds);
             },
             effect => Db.transaction(effect)
         );

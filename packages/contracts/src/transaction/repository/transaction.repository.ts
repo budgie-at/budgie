@@ -343,7 +343,7 @@ export class TransactionRepository extends Context.Service<TransactionRepository
                     )
                 );
 
-                return batches.flat();
+                return batches.flat().filter(transaction => isNotEmptyArray(transaction.entries));
             }),
 
             getAllAfter: (cursorId: number | null, limit: number) =>
