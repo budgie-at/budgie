@@ -39,6 +39,7 @@ export class TransactionRepository extends Context.Service<TransactionRepository
         const ENTRIES_WITH_MCC_CATEGORY_RELATIONS = {
             [TransactionAssociationEnum.ENTRIES]: {
                 where: transactionFilters.ledgerEntryFilter,
+                orderBy: { sequence: 'asc', id: 'asc' },
                 with: { [TransactionEntryAssociationEnum.MCC_CATEGORY]: true }
             }
         } as const;
@@ -323,7 +324,7 @@ export class TransactionRepository extends Context.Service<TransactionRepository
                 );
             }),
 
-            findByIdsWithEntries: Effect.fn('TransactionRepository.findByIdsWithEntries')(function* (ids: readonly number[]) {
+            findVisibleByIdsWithEntries: Effect.fn('TransactionRepository.findVisibleByIdsWithEntries')(function* (ids: readonly number[]) {
                 if (!isNotEmptyArray(ids)) {
                     return [];
                 }

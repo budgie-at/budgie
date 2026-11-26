@@ -1,10 +1,13 @@
 import {
     AccountRepository,
     CategorySourceEnum,
+    Db,
     ExternalSourceEnum,
     InstrumentRepository,
     TransactionEntryTypeEnum,
+    TransactionRepository,
     TransactionTypeEnum,
+    TransactionUpdatedByEnum,
     convertFromMicroUnits,
     convertToMicroUnits
 } from '@budgie/contracts';
@@ -30,6 +33,7 @@ export class WalletCaptureTransactionService extends Context.Service<WalletCaptu
         make: Effect.gen(function* () {
             const accountRepository = yield* AccountRepository;
             const instrumentRepository = yield* InstrumentRepository;
+            const transactionRepository = yield* TransactionRepository;
             const entryBaseValuationService = yield* EntryBaseValuationService;
             const ruleEngineService = yield* RuleEngineService;
             const transactionService = yield* TransactionService;
@@ -151,10 +155,17 @@ export class WalletCaptureTransactionService extends Context.Service<WalletCaptu
                 }),
                 applyRulesToExistingCaptureTransaction: Effect.fn('WalletCaptureTransactionService.applyRulesToExistingCaptureTransaction')(
                     function* (record: WalletCaptureRecordInterface, transactionId: number) {
+                        const existing = yield* transactionRepository.getByIdRaw(transactionId);
+
+                        if (!isDefined(existing) || isDefined(existing.deletedAt) || existing.updatedBy === TransactionUpdatedByEnum.USER) {
+                            return;
+                        }
+
                         const transactionInput = yield* buildCaptureTransactionInput(record);
 
                         yield* ruleEngineService.applyRulesToTransactions([transactionId], [transactionInput]);
-                    }
+                    },
+                    effect => Db.transaction(effect)
                 )
             };
         })
@@ -164,6 +175,7 @@ export class WalletCaptureTransactionService extends Context.Service<WalletCaptu
         Layer.provide([
             AccountRepository.layer,
             InstrumentRepository.layer,
+            TransactionRepository.layer,
             EntryBaseValuationService.layer,
             RuleEngineService.layer,
             TransactionService.layer

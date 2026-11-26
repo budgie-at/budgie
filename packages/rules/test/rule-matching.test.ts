@@ -13,7 +13,7 @@ import {
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
-import { RuleMatcherService, RuleService, isValidRulePattern } from '@budgie/rules';
+import { RuleMatcherService, RuleService, isValidRulePattern, resolveRuleMccCode } from '@budgie/rules';
 import { expect, layer } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
@@ -320,5 +320,65 @@ layer(TestLayer)('RuleMatcherService SQL and fallback parity', it => {
             expect(regexCount).toBe(1);
             expect(oversizedCount).toBe(0);
         })
+    );
+
+    it.effect(
+        'keeps SQL and JS parity for non-ASCII titles against ASCII rules, MCC tie-breaks, empty titles, and tombstoned entries',
+        () =>
+            Effect.gen(function* () {
+                const ruleMatcherService = yield* RuleMatcherService;
+                const account = yield* testSeedService.account({ type: AccountTypeEnum.BANK });
+                const kelvinExpense = yield* testSeedService.manualExpense({
+                    accountId: account.id,
+                    amount: 10 * PRECISION,
+                    operatedAt: new Date('2026-06-02T12:00:00.000Z'),
+                    title: '\u212Aiosk'
+                });
+                const tombstonedExpense = yield* testSeedService.manualExpense({
+                    accountId: account.id,
+                    amount: 10 * PRECISION,
+                    operatedAt: new Date('2026-06-02T12:05:00.000Z'),
+                    title: 'ORPHAN'
+                });
+                yield* testDb
+                    .update(TransactionEntryEntityTable)
+                    .set({ deletedAt: new Date('2026-06-02T12:06:00.000Z') })
+                    .where(eq(TransactionEntryEntityTable.transactionId, tombstonedExpense.id));
+
+                const equalsCount = yield* ruleMatcherService.countMatchingTransactions({
+                    conditionMatchType: RuleConditionMatchTypeEnum.ALL,
+                    conditions: buildDbConditions([[RuleConditionFieldEnum.TITLE, RuleConditionOperatorEnum.EQUALS, 'kiosk', null]])
+                });
+                const notEqualsCount = yield* ruleMatcherService.countMatchingTransactions({
+                    conditionMatchType: RuleConditionMatchTypeEnum.ALL,
+                    conditions: buildDbConditions([[RuleConditionFieldEnum.TITLE, RuleConditionOperatorEnum.NOT_EQUALS, 'kiosk', null]])
+                });
+                const regexCount = yield* ruleMatcherService.countMatchingTransactions({
+                    conditionMatchType: RuleConditionMatchTypeEnum.ALL,
+                    conditions: buildDbConditions([[RuleConditionFieldEnum.TITLE, RuleConditionOperatorEnum.MATCHES_REGEX, 'k.*k', null]])
+                });
+                const zeroAmountCount = yield* ruleMatcherService.countMatchingTransactions({
+                    conditionMatchType: RuleConditionMatchTypeEnum.ALL,
+                    conditions: buildDbConditions([[RuleConditionFieldEnum.AMOUNT, RuleConditionOperatorEnum.EQUALS, '0', null]])
+                });
+                const commentFallbackMatch = ruleMatcherService.evaluateRule(
+                    buildRule(RuleConditionMatchTypeEnum.ALL, [
+                        [RuleConditionFieldEnum.TITLE, RuleConditionOperatorEnum.CONTAINS, 'gym', null]
+                    ]),
+                    { ...transactionInput, title: '', comment: 'Monthly gym' }
+                );
+                const orderedMcc = resolveRuleMccCode([
+                    { type: TransactionEntryTypeEnum.CREDIT, mccCode: '5812', sequence: 0, id: 20 },
+                    { type: TransactionEntryTypeEnum.CREDIT, mccCode: '5411', sequence: 0, id: 10 }
+                ]);
+
+                expect(kelvinExpense.id).toBeGreaterThan(0);
+                expect(equalsCount).toBe(1);
+                expect(notEqualsCount).toBe(0);
+                expect(regexCount).toBe(1);
+                expect(zeroAmountCount).toBe(0);
+                expect(commentFallbackMatch).toBe(true);
+                expect(orderedMcc).toBe('5411');
+            })
     );
 });

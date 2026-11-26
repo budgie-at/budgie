@@ -43,6 +43,7 @@ import { TransferCreationService } from './transfer-creation.service';
 
 import type { ConvertToTransferParamsInterface } from '../interface/convert-to-transfer-params.interface';
 import type { StartDepositInputInterface } from '../interface/start-deposit-input.interface';
+import type { TransferConversionComputeInputInterface } from '../interface/transfer-conversion-compute-input.interface';
 import type { TransactionEntryEntityInterface } from '@budgie/contracts';
 import type { EntryBaseValuationInterface } from '@budgie/market';
 
@@ -143,14 +144,7 @@ export class TransactionTransferService extends Context.Service<TransactionTrans
             fromAccount,
             toAccount,
             counterAmount
-        }: {
-            readonly direction: 'expense' | 'income';
-            readonly params: ConvertToTransferParamsInterface;
-            readonly transaction: NonNullable<Effect.Success<ReturnType<typeof transactionRepository.getByIdWithEntries>>>;
-            readonly fromAccount: { readonly id: number; readonly instrumentId: number };
-            readonly toAccount: { readonly id: number; readonly instrumentId: number };
-            readonly counterAmount: number | null;
-        }) {
+        }: TransferConversionComputeInputInterface) {
             const [transactionEntry] = getTransactionCategoryEntries(transaction.entries);
             const hasCustomRate = isPositiveNumber(params.customExchangeRate) && params.customExchangeRate !== 1;
             const isExpense = direction === 'expense';
@@ -364,74 +358,74 @@ export class TransactionTransferService extends Context.Service<TransactionTrans
             });
         });
 
-        const convertToTransferAccount = Effect.fn('TransactionTransferService.convertToTransferAccount')(function* (
-            transactionId: number,
-            targetAccountId: number
-        ) {
-            const transaction = yield* transactionRepository.getByIdWithEntries(transactionId);
+        const convertToTransferAccount = Effect.fn('TransactionTransferService.convertToTransferAccount')(
+            function* (transactionId: number, targetAccountId: number) {
+                const transaction = yield* transactionRepository.getByIdWithEntries(transactionId);
 
-            if (
-                !isDefined(transaction) ||
-                isDefined(transaction.deletedAt) ||
-                isDefined(transaction.consolidationType) ||
-                isDefined(transaction.consolidationParentTransactionId)
-            ) {
-                return false;
-            }
+                if (
+                    !isDefined(transaction) ||
+                    isDefined(transaction.deletedAt) ||
+                    isDefined(transaction.consolidationType) ||
+                    isDefined(transaction.consolidationParentTransactionId)
+                ) {
+                    return false;
+                }
 
-            const isExpense = transaction.type === TransactionTypeEnum.EXPENSE;
-            const sourceAccountId = isExpense ? transaction.fromAccountId : transaction.toAccountId;
-            const isConvertible =
-                (isExpense || transaction.type === TransactionTypeEnum.INCOME) &&
-                isDefined(sourceAccountId) &&
-                sourceAccountId !== targetAccountId &&
-                getTransactionCategoryEntries(transaction.entries).length === 1;
+                const isExpense = transaction.type === TransactionTypeEnum.EXPENSE;
+                const sourceAccountId = isExpense ? transaction.fromAccountId : transaction.toAccountId;
+                const isConvertible =
+                    (isExpense || transaction.type === TransactionTypeEnum.INCOME) &&
+                    isDefined(sourceAccountId) &&
+                    sourceAccountId !== targetAccountId &&
+                    getTransactionCategoryEntries(transaction.entries).length === 1;
 
-            if (!isConvertible) {
-                return false;
-            }
+                if (!isConvertible) {
+                    return false;
+                }
 
-            const fromAccountId = isExpense ? sourceAccountId : targetAccountId;
-            const toAccountId = isExpense ? targetAccountId : sourceAccountId;
-            const [fromAccount, toAccount, debtEvent] = yield* Effect.all(
-                [
-                    accountRepository.findById(fromAccountId),
-                    accountRepository.findById(toAccountId),
-                    debtEventRepository.findByTransactionId(transactionId)
-                ],
-                { concurrency: 'unbounded' }
-            );
+                const fromAccountId = isExpense ? sourceAccountId : targetAccountId;
+                const toAccountId = isExpense ? targetAccountId : sourceAccountId;
+                const [fromAccount, toAccount, debtEvent] = yield* Effect.all(
+                    [
+                        accountRepository.findById(fromAccountId),
+                        accountRepository.findById(toAccountId),
+                        debtEventRepository.findByTransactionId(transactionId)
+                    ],
+                    { concurrency: 'unbounded' }
+                );
 
-            if (
-                !isDefined(fromAccount) ||
-                fromAccount.type === AccountTypeEnum.DEBT ||
-                !isDefined(toAccount) ||
-                toAccount.type === AccountTypeEnum.DEBT ||
-                isDefined(debtEvent)
-            ) {
-                return false;
-            }
+                if (
+                    !isDefined(fromAccount) ||
+                    fromAccount.type === AccountTypeEnum.DEBT ||
+                    !isDefined(toAccount) ||
+                    toAccount.type === AccountTypeEnum.DEBT ||
+                    isDefined(debtEvent)
+                ) {
+                    return false;
+                }
 
-            const direction = isExpense ? 'expense' : 'income';
-            const params: ConvertToTransferParamsInterface = {
-                id: transactionId,
-                accountId: targetAccountId,
-                customExchangeRate: 0,
-                feeEntries: []
-            };
-            const conversion = yield* computeTransferConversion({
-                direction,
-                params,
-                transaction,
-                fromAccount,
-                toAccount,
-                counterAmount: null
-            });
+                const direction = isExpense ? 'expense' : 'income';
+                const params: ConvertToTransferParamsInterface = {
+                    id: transactionId,
+                    accountId: targetAccountId,
+                    customExchangeRate: 0,
+                    feeEntries: []
+                };
+                const conversion = yield* computeTransferConversion({
+                    direction,
+                    params,
+                    transaction,
+                    fromAccount,
+                    toAccount,
+                    counterAmount: null
+                });
 
-            yield* persistTransferConversion(params, direction, conversion, null);
+                yield* persistTransferConversion(params, direction, conversion, null);
 
-            return true;
-        });
+                return true;
+            },
+            effect => Db.transaction(effect)
+        );
 
         return {
             convertToTransferAccount,

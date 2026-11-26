@@ -32,14 +32,17 @@ export class RuleApplicationDrainerService extends Context.Service<RuleApplicati
 
             const hasPendingWork = (): boolean => isNotEmptyArray(pendingTransactionBatches) || isNotEmptyArray(pendingRuleApplications);
 
-            const runUntilSettled = <A, E>(effect: Effect.Effect<A, E, Db>): Effect.Effect<A, E> =>
-                workload
-                    .run(effect)
-                    .pipe(
-                        Effect.catchCauseIf(Cause.hasInterruptsOnly, () =>
-                            Effect.andThen(workload.awaitBackgroundAllowed, runUntilSettled(effect))
-                        )
-                    );
+            const runUntilSettled = <A, E>(effect: Effect.Effect<A, E, Db>, cancelLatch: Latch.Latch): Effect.Effect<A, E> =>
+                workload.run(effect).pipe(
+                    Effect.catchCauseIf(Cause.hasInterruptsOnly, () =>
+                        cancelLatch.isOpen()
+                            ? Effect.interrupt
+                            : Effect.andThen(
+                                  Effect.raceFirst(workload.awaitBackgroundAllowed, cancelLatch.await),
+                                  Effect.suspend(() => (cancelLatch.isOpen() ? Effect.interrupt : runUntilSettled(effect, cancelLatch)))
+                              )
+                    )
+                );
 
             const takePendingTransactionBatch = (): PendingTransactionBatchInterface | null => {
                 if (!isNotEmptyArray(pendingTransactionBatches)) {
@@ -65,7 +68,9 @@ export class RuleApplicationDrainerService extends Context.Service<RuleApplicati
                 return { transactionIds, transactionInputs };
             };
 
-            const processPendingTransactionBatch = Effect.fn('RuleApplicationDrainerService.processPendingTransactionBatch')(function* () {
+            const processPendingTransactionBatch = Effect.fn('RuleApplicationDrainerService.processPendingTransactionBatch')(function* (
+                cancelLatch: Latch.Latch
+            ) {
                 const batch = takePendingTransactionBatch();
 
                 if (!isDefined(batch)) {
@@ -74,7 +79,7 @@ export class RuleApplicationDrainerService extends Context.Service<RuleApplicati
 
                 const { transactionIds, transactionInputs } = batch;
 
-                yield* runUntilSettled(ruleEngineService.applyRulesToTransactions(transactionIds, transactionInputs)).pipe(
+                yield* runUntilSettled(ruleEngineService.applyRulesToTransactions(transactionIds, transactionInputs), cancelLatch).pipe(
                     Effect.tapCause(cause =>
                         Effect.logError('processPendingTransactionBatch:throw', {
                             queuedTransactionCount: transactionIds.length,
@@ -87,7 +92,9 @@ export class RuleApplicationDrainerService extends Context.Service<RuleApplicati
                 yield* YIELD_TO_UI;
             });
 
-            const processPendingRuleBatch = Effect.fn('RuleApplicationDrainerService.processPendingRuleBatch')(function* () {
+            const processPendingRuleBatch = Effect.fn('RuleApplicationDrainerService.processPendingRuleBatch')(function* (
+                cancelLatch: Latch.Latch
+            ) {
                 const pending = pendingRuleApplications.shift();
 
                 if (!isDefined(pending)) {
@@ -96,7 +103,7 @@ export class RuleApplicationDrainerService extends Context.Service<RuleApplicati
 
                 const { ruleId, onSettled } = pending;
 
-                yield* runUntilSettled(ruleEngineService.applyRuleToMatchingTransactions(ruleId)).pipe(
+                yield* runUntilSettled(ruleEngineService.applyRuleToMatchingTransactions(ruleId), cancelLatch).pipe(
                     Effect.matchCause({
                         onSuccess: result => {
                             onSettled?.(result, null);
@@ -109,20 +116,20 @@ export class RuleApplicationDrainerService extends Context.Service<RuleApplicati
                 yield* YIELD_TO_UI;
             });
 
-            const drainLoop = Effect.fnUntraced(function* () {
+            const drainLoop = Effect.fnUntraced(function* (cancelLatch: Latch.Latch) {
                 yield* Effect.sleep(drainDelayMs);
                 yield* waitForIdle;
 
                 while (hasPendingWork()) {
-                    yield* processPendingTransactionBatch();
-                    yield* processPendingRuleBatch();
+                    yield* processPendingTransactionBatch(cancelLatch);
+                    yield* processPendingRuleBatch(cancelLatch);
                 }
             });
 
             const drain = Effect.fn('RuleApplicationDrainerService.drain')(function* () {
                 const cancelLatch = yield* Ref.get(cancelLatchRef);
 
-                yield* Effect.raceFirst(drainLoop(), cancelLatch.await);
+                yield* Effect.raceFirst(drainLoop(cancelLatch), cancelLatch.await);
             });
 
             const scheduleDrain = Effect.fn('RuleApplicationDrainerService.scheduleDrain')(function* () {
@@ -165,6 +172,10 @@ export class RuleApplicationDrainerService extends Context.Service<RuleApplicati
                     pendingTransactionBatches.splice(0);
                     yield* previousLatch.open;
                     yield* workload.cancelScheduled(drainKey);
+
+                    if (hasPendingWork()) {
+                        yield* scheduleDrain();
+                    }
                 })
             };
         })

@@ -1,4 +1,5 @@
 import {
+    transactionFilters,
     MccCategoryEntityTable,
     RuleConditionFieldEnum,
     RuleConditionMatchTypeEnum,
@@ -12,7 +13,7 @@ import {
     convertFromMicroUnits,
     convertToMicroUnits
 } from '@budgie/contracts';
-import { SQL, and, or, sql } from 'drizzle-orm';
+import { SQL, and, eq, or, sql } from 'drizzle-orm';
 import * as Arr from 'effect/Array';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -26,7 +27,6 @@ import { compileRule } from '../utils/compile-rule.util';
 import { convertTransactionForRuleEvaluation } from '../utils/convert-transaction-for-rule-evaluation.util';
 import { doConditionsRequireEntries } from '../utils/do-conditions-require-entries.util';
 import { isValidRulePattern } from '../utils/is-valid-rule-pattern.util';
-import { matchesRule } from '../utils/matches-rule.util';
 import { parseRuleNumber } from '../utils/parse-rule-number.util';
 import { prepareLightweightRuleSnapshot } from '../utils/prepare-lightweight-rule-snapshot.util';
 import { prepareRuleEvaluationSnapshot } from '../utils/prepare-rule-evaluation-snapshot.util';
@@ -34,6 +34,7 @@ import { prepareRuleEvaluationSnapshot } from '../utils/prepare-rule-evaluation-
 import type { LightweightRuleTransactionInterface } from '../interface/lightweight-rule-transaction.interface';
 import type { RuleConditionInputInterface } from '../interface/rule-condition-input.interface';
 import type { RuleEvaluationInputInterface } from '../interface/rule-evaluation-input.interface';
+import type { RuleEvaluationSnapshotInterface } from '../interface/rule-evaluation-snapshot.interface';
 import type { SnapshotPredicateType } from '../type/snapshot-predicate.type';
 import type {
     RuleCreateInputInterface,
@@ -54,8 +55,21 @@ export class RuleMatcherService extends Context.Service<RuleMatcherService>()('@
 
         const EFFECTIVE_TITLE_SQL = sql`CASE WHEN ${TransactionEntityTable.title} != '' THEN ${TransactionEntityTable.title} ELSE ${TransactionEntityTable.comment} END`;
         const ACCOUNT_ID_SQL = sql`COALESCE(${TransactionEntityTable.fromAccountId}, ${TransactionEntityTable.toAccountId})`;
-        const MCC_CODE_SQL = sql`(SELECT ${MccCategoryEntityTable.mcc} FROM ${TransactionEntryEntityTable} INNER JOIN ${MccCategoryEntityTable} ON ${MccCategoryEntityTable.id} = ${TransactionEntryEntityTable.mccCategoryId} WHERE ${TransactionEntryEntityTable.transactionId} = ${TransactionEntityTable.id} AND ${TransactionEntryEntityTable.originalTransactionId} IS NULL AND ${TransactionEntryEntityTable.deletedAt} IS NULL ORDER BY CASE WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.FEE} THEN 1 ELSE 0 END, ${TransactionEntryEntityTable.sequence} ASC, ${TransactionEntryEntityTable.id} ASC LIMIT 1)`;
-        const AMOUNT_MICRO_SQL = sql`CASE ${TransactionEntityTable.type} WHEN ${TransactionTypeEnum.EXPENSE} THEN COALESCE((SELECT SUM(${TransactionEntryEntityTable.amount}) FROM ${TransactionEntryEntityTable} WHERE ${TransactionEntryEntityTable.transactionId} = ${TransactionEntityTable.id} AND ${TransactionEntryEntityTable.originalTransactionId} IS NULL AND ${TransactionEntryEntityTable.deletedAt} IS NULL AND ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.CREDIT}), 0) WHEN ${TransactionTypeEnum.TRANSFER} THEN COALESCE((SELECT SUM(${TransactionEntryEntityTable.amount}) FROM ${TransactionEntryEntityTable} WHERE ${TransactionEntryEntityTable.transactionId} = ${TransactionEntityTable.id} AND ${TransactionEntryEntityTable.originalTransactionId} IS NULL AND ${TransactionEntryEntityTable.deletedAt} IS NULL AND ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.CREDIT}), 0) WHEN ${TransactionTypeEnum.INCOME} THEN COALESCE((SELECT SUM(${TransactionEntryEntityTable.amount}) FROM ${TransactionEntryEntityTable} WHERE ${TransactionEntryEntityTable.transactionId} = ${TransactionEntityTable.id} AND ${TransactionEntryEntityTable.originalTransactionId} IS NULL AND ${TransactionEntryEntityTable.deletedAt} IS NULL AND ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT}), 0) ELSE 0 END`;
+        const LEDGER_ENTRY_MATCH_SQL = and(
+            eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id),
+            transactionFilters.buildLedgerEntryCondition()
+        );
+        const MCC_CODE_SQL = sql`(SELECT ${MccCategoryEntityTable.mcc} FROM ${TransactionEntryEntityTable} INNER JOIN ${MccCategoryEntityTable} ON ${MccCategoryEntityTable.id} = ${TransactionEntryEntityTable.mccCategoryId} WHERE ${LEDGER_ENTRY_MATCH_SQL} ORDER BY CASE WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.FEE} THEN 1 ELSE 0 END, ${TransactionEntryEntityTable.sequence} ASC, ${TransactionEntryEntityTable.id} ASC LIMIT 1)`;
+        const AMOUNT_MICRO_SQL = sql`COALESCE((SELECT SUM(${TransactionEntryEntityTable.amount}) FROM ${TransactionEntryEntityTable} WHERE ${LEDGER_ENTRY_MATCH_SQL} AND ${TransactionEntryEntityTable.type} = CASE ${TransactionEntityTable.type} WHEN ${TransactionTypeEnum.EXPENSE} THEN ${TransactionEntryTypeEnum.CREDIT} WHEN ${TransactionTypeEnum.TRANSFER} THEN ${TransactionEntryTypeEnum.CREDIT} WHEN ${TransactionTypeEnum.INCOME} THEN ${TransactionEntryTypeEnum.DEBIT} ELSE NULL END), 0)`;
+
+        const isFreeTextField = (field: RuleConditionFieldEnum): boolean =>
+            field === RuleConditionFieldEnum.TITLE || field === RuleConditionFieldEnum.COMMENT || field === RuleConditionFieldEnum.MCC_CODE;
+
+        const isAsciiOrNullSql = (column: Column | SQL): SQL =>
+            sql`(${column} IS NULL OR LENGTH(CAST(${column} AS BLOB)) = LENGTH(CAST(${column} AS TEXT)))`;
+
+        const isNonAsciiSql = (column: Column | SQL): SQL =>
+            sql`(${column} IS NOT NULL AND LENGTH(CAST(${column} AS BLOB)) != LENGTH(CAST(${column} AS TEXT)))`;
 
         const hasNonAscii = (value: string): boolean => {
             for (let index = 0; index < value.length; index += 1) {
@@ -73,35 +87,25 @@ export class RuleMatcherService extends Context.Service<RuleMatcherService>()('@
             return convertFromMicroUnits(microUnits) === value ? microUnits : null;
         };
 
-        const filterLightweightMatchingIds = (
-            rows: readonly LightweightRuleTransactionInterface[],
+        const toTransactionSnapshot = (
+            transaction: TransactionWithEntriesMccCategoryEntityInterface
+        ): RuleEvaluationSnapshotInterface | null =>
+            isNotEmptyArray(transaction.entries) ? prepareRuleEvaluationSnapshot(convertTransactionForRuleEvaluation(transaction)) : null;
+
+        const filterMatchingIdsBySnapshot = <T extends { readonly id: number }>(
+            items: readonly T[],
+            toSnapshot: (item: T) => RuleEvaluationSnapshotInterface | null,
             matchesPredicate: SnapshotPredicateType,
             excludedIds?: ReadonlySet<number>
         ): number[] => {
             const matchedIds: number[] = [];
 
-            for (const row of rows) {
-                if ((!isDefined(excludedIds) || !excludedIds.has(row.id)) && matchesPredicate(prepareLightweightRuleSnapshot(row))) {
-                    matchedIds.push(row.id);
-                }
-            }
+            for (const item of items) {
+                if (!isDefined(excludedIds) || !excludedIds.has(item.id)) {
+                    const snapshot = toSnapshot(item);
 
-            return matchedIds;
-        };
-
-        const filterMatchingIdsWithPredicate = (
-            transactions: TransactionWithEntriesMccCategoryEntityInterface[],
-            matchesPredicate: SnapshotPredicateType,
-            excludedIds?: ReadonlySet<number>
-        ): number[] => {
-            const matchedIds: number[] = [];
-
-            for (const transaction of transactions) {
-                if (!isDefined(excludedIds) || !excludedIds.has(transaction.id)) {
-                    const snapshot = prepareRuleEvaluationSnapshot(convertTransactionForRuleEvaluation(transaction));
-
-                    if (matchesPredicate(snapshot)) {
-                        matchedIds.push(transaction.id);
+                    if (isDefined(snapshot) && matchesPredicate(snapshot)) {
+                        matchedIds.push(item.id);
                     }
                 }
             }
@@ -117,11 +121,11 @@ export class RuleMatcherService extends Context.Service<RuleMatcherService>()('@
             const needsEntries = doConditionsRequireEntries(fallbackRule.conditions);
             const matchingIdBatches = yield* Effect.forEach(Arr.chunksOf(candidateIds, RULE_SET_BATCH_SIZE), batchIds =>
                 needsEntries
-                    ? Effect.map(transactionRepository.findByIdsWithEntries(batchIds), transactions =>
-                          filterMatchingIdsWithPredicate(transactions, matchesPredicate)
+                    ? Effect.map(transactionRepository.findVisibleByIdsWithEntries(batchIds), transactions =>
+                          filterMatchingIdsBySnapshot(transactions, toTransactionSnapshot, matchesPredicate)
                       )
                     : Effect.map(transactionRuleRepository.findLightweightByIds(batchIds), rows =>
-                          filterLightweightMatchingIds(rows, matchesPredicate)
+                          filterMatchingIdsBySnapshot(rows, prepareLightweightRuleSnapshot, matchesPredicate)
                       )
             );
 
@@ -151,7 +155,7 @@ export class RuleMatcherService extends Context.Service<RuleMatcherService>()('@
                         break;
                     }
 
-                    matchingIds.push(...filterMatchingIdsWithPredicate(transactions, matchesPredicate, excludedIds));
+                    matchingIds.push(...filterMatchingIdsBySnapshot(transactions, toTransactionSnapshot, matchesPredicate, excludedIds));
                     hasMore = transactions.length >= RULE_SET_BATCH_SIZE;
                     cursorId = transactions.at(-1)?.id ?? null;
                 } else {
@@ -162,7 +166,7 @@ export class RuleMatcherService extends Context.Service<RuleMatcherService>()('@
                         break;
                     }
 
-                    matchingIds.push(...filterLightweightMatchingIds(rows, matchesPredicate, excludedIds));
+                    matchingIds.push(...filterMatchingIdsBySnapshot(rows, prepareLightweightRuleSnapshot, matchesPredicate, excludedIds));
                     hasMore = rows.length >= RULE_SET_BATCH_SIZE;
                     cursorId = rows.at(-1)?.id ?? null;
                 }
@@ -201,33 +205,37 @@ export class RuleMatcherService extends Context.Service<RuleMatcherService>()('@
             return isNotEmptyArray(tokens) && hasOnlySqlSafeTokens ? tokens : null;
         };
 
-        const buildRegexSqlPlan = (column: Column | SQL, value: string) => {
+        const buildRegexSqlPlan = (column: Column | SQL, field: RuleConditionFieldEnum, value: string) => {
             if (!isValidRulePattern(value)) {
-                return { exactSql: NEVER_MATCH_SQL, prefilterSql: null };
+                return { exactSql: NEVER_MATCH_SQL, prefilterSql: null, needsAsciiGuard: false };
             }
 
             if (hasNonAscii(value)) {
-                return { exactSql: null, prefilterSql: null };
+                return { exactSql: null, prefilterSql: null, needsAsciiGuard: false };
             }
+
+            const needsAsciiGuard = isFreeTextField(field);
 
             if (!UNSUPPORTED_SQL_REGEX_TOKEN_PATTERN.test(value)) {
                 return {
                     exactSql: sql`CAST(${column} AS TEXT) LIKE ${`%${escapeSqlLikeValue(value)}%`} ESCAPE '\\'`,
-                    prefilterSql: null
+                    prefilterSql: null,
+                    needsAsciiGuard
                 };
             }
 
             const tokens = getFlexibleRegexTokens(value);
 
             if (!isDefined(tokens)) {
-                return { exactSql: null, prefilterSql: null };
+                return { exactSql: null, prefilterSql: null, needsAsciiGuard: false };
             }
 
             const pattern = `%${tokens.map(token => escapeSqlLikeValue(token)).join('%')}%`;
 
             return {
                 exactSql: null,
-                prefilterSql: sql`CAST(${column} AS TEXT) LIKE ${pattern} ESCAPE '\\'`
+                prefilterSql: sql`CAST(${column} AS TEXT) LIKE ${pattern} ESCAPE '\\'`,
+                needsAsciiGuard
             };
         };
 
@@ -367,107 +375,180 @@ export class RuleMatcherService extends Context.Service<RuleMatcherService>()('@
             const column = getColumnForField(condition.field);
 
             if (!isDefined(column)) {
-                return { exactSql: null, prefilterSql: null };
+                return { exactSql: null, prefilterSql: null, needsAsciiGuard: false };
             }
+
+            const needsAsciiGuard = isFreeTextField(condition.field);
 
             switch (condition.operator) {
                 case RuleConditionOperatorEnum.CONTAINS:
                     if (condition.field === RuleConditionFieldEnum.AMOUNT || hasNonAscii(condition.value)) {
-                        return { exactSql: null, prefilterSql: null };
+                        return { exactSql: null, prefilterSql: null, needsAsciiGuard: false };
                     }
 
                     return {
                         exactSql: sql`CAST(${column} AS TEXT) LIKE ${`%${escapeSqlLikeValue(condition.value)}%`} ESCAPE '\\'`,
-                        prefilterSql: null
+                        prefilterSql: null,
+                        needsAsciiGuard
                     };
                 case RuleConditionOperatorEnum.NOT_CONTAINS:
                     if (condition.field === RuleConditionFieldEnum.AMOUNT || hasNonAscii(condition.value)) {
-                        return { exactSql: null, prefilterSql: null };
+                        return { exactSql: null, prefilterSql: null, needsAsciiGuard: false };
                     }
 
                     return {
                         exactSql: sql`CAST(${column} AS TEXT) NOT LIKE ${`%${escapeSqlLikeValue(condition.value)}%`} ESCAPE '\\'`,
-                        prefilterSql: null
+                        prefilterSql: null,
+                        needsAsciiGuard
                     };
-                case RuleConditionOperatorEnum.EQUALS:
-                    return { exactSql: buildEqualityOperatorSql(column, condition.field, condition.value, true), prefilterSql: null };
-                case RuleConditionOperatorEnum.NOT_EQUALS:
-                    return { exactSql: buildEqualityOperatorSql(column, condition.field, condition.value, false), prefilterSql: null };
+                case RuleConditionOperatorEnum.EQUALS: {
+                    const exactSql = buildEqualityOperatorSql(column, condition.field, condition.value, true);
+
+                    return { exactSql, prefilterSql: null, needsAsciiGuard: needsAsciiGuard && isDefined(exactSql) };
+                }
+                case RuleConditionOperatorEnum.NOT_EQUALS: {
+                    const exactSql = buildEqualityOperatorSql(column, condition.field, condition.value, false);
+
+                    return { exactSql, prefilterSql: null, needsAsciiGuard: needsAsciiGuard && isDefined(exactSql) };
+                }
                 case RuleConditionOperatorEnum.GREATER_THAN:
                 case RuleConditionOperatorEnum.LESS_THAN:
                 case RuleConditionOperatorEnum.BETWEEN:
                     return {
                         exactSql: buildNumericOperatorSql(column, condition),
-                        prefilterSql: null
+                        prefilterSql: null,
+                        needsAsciiGuard: false
                     };
-                case RuleConditionOperatorEnum.IN:
-                    return { exactSql: buildInOperatorSql(column, condition.field, condition.value), prefilterSql: null };
+                case RuleConditionOperatorEnum.IN: {
+                    const exactSql = buildInOperatorSql(column, condition.field, condition.value);
+
+                    return { exactSql, prefilterSql: null, needsAsciiGuard: needsAsciiGuard && isDefined(exactSql) };
+                }
                 case RuleConditionOperatorEnum.MATCHES_REGEX:
                     if (condition.field === RuleConditionFieldEnum.AMOUNT) {
-                        return { exactSql: null, prefilterSql: null };
+                        return { exactSql: null, prefilterSql: null, needsAsciiGuard: false };
                     }
 
-                    return buildRegexSqlPlan(column, condition.value);
+                    return buildRegexSqlPlan(column, condition.field, condition.value);
                 default:
-                    return { exactSql: null, prefilterSql: null };
+                    return { exactSql: null, prefilterSql: null, needsAsciiGuard: false };
             }
         };
 
         const buildRuleConditionsWhere = (conditions: RuleConditionInputInterface[], conditionMatchType: RuleConditionMatchTypeEnum) => {
             const isAll = conditionMatchType === RuleConditionMatchTypeEnum.ALL;
             const sqlConditions: SQL[] = [];
+            const nonTextExactSqlConditions: SQL[] = [];
             const fallbackConditions: RuleConditionInputInterface[] = [];
+            const asciiGuardedColumns = new Map<RuleConditionFieldEnum, Column | SQL>();
 
             for (const condition of conditions) {
-                const { exactSql, prefilterSql } = buildRuleConditionSqlPlan(condition);
+                const { exactSql, prefilterSql, needsAsciiGuard } = buildRuleConditionSqlPlan(condition);
 
                 if (isDefined(exactSql)) {
                     sqlConditions.push(exactSql);
+                    if (!needsAsciiGuard) {
+                        nonTextExactSqlConditions.push(exactSql);
+                    }
                 } else {
                     if (isAll && isDefined(prefilterSql)) {
                         sqlConditions.push(prefilterSql);
                     }
                     fallbackConditions.push(condition);
                 }
+
+                if (needsAsciiGuard && (isDefined(exactSql) || (isAll && isDefined(prefilterSql)))) {
+                    const column = getColumnForField(condition.field);
+
+                    if (isDefined(column)) {
+                        asciiGuardedColumns.set(condition.field, column);
+                    }
+                }
             }
 
             const combiner = isAll ? and : or;
             const sqlWhere = isNotEmptyArray(sqlConditions) ? (combiner(...sqlConditions) ?? null) : null;
+            const guardedColumns = [...asciiGuardedColumns.values()];
+            const allAsciiWhere = isNotEmptyArray(guardedColumns) ? (and(...guardedColumns.map(isAsciiOrNullSql)) ?? null) : null;
+            const anyNonAsciiWhere = isNotEmptyArray(guardedColumns) ? (or(...guardedColumns.map(isNonAsciiSql)) ?? null) : null;
+            let nonAsciiCandidateWhere: SQL | null = anyNonAsciiWhere;
 
-            return { sqlWhere, fallbackConditions };
+            if (isDefined(anyNonAsciiWhere) && isAll && isNotEmptyArray(nonTextExactSqlConditions)) {
+                nonAsciiCandidateWhere = and(anyNonAsciiWhere, ...nonTextExactSqlConditions) ?? anyNonAsciiWhere;
+            }
+
+            return { sqlWhere, fallbackConditions, allAsciiWhere, nonAsciiCandidateWhere };
+        };
+
+        const findNonAsciiMatches = Effect.fnUntraced(function* (
+            nonAsciiCandidateWhere: SQL | null,
+            rule: Pick<RuleCreateInputInterface, 'conditions' | 'conditionMatchType'>
+        ) {
+            if (!isDefined(nonAsciiCandidateWhere)) {
+                return { candidateIds: [] as number[], matchedIds: [] as number[] };
+            }
+
+            const candidateIds = yield* transactionRuleRepository.findIdsByRuleConditions(nonAsciiCandidateWhere);
+
+            if (!isNotEmptyArray(candidateIds)) {
+                return { candidateIds: [] as number[], matchedIds: [] as number[] };
+            }
+
+            const matchedIds = yield* filterWithFallbackConditions(candidateIds, rule);
+
+            return { candidateIds, matchedIds };
+        });
+
+        const buildAsciiWhere = (sqlWhere: SQL | null, allAsciiWhere: SQL | null): SQL | null => {
+            if (!isDefined(sqlWhere)) {
+                return null;
+            }
+
+            return isDefined(allAsciiWhere) ? (and(allAsciiWhere, sqlWhere) ?? sqlWhere) : sqlWhere;
         };
 
         const findMatchingIdsFromPlan = Effect.fnUntraced(function* (
-            conditions: RuleConditionInputInterface[],
-            conditionMatchType: RuleConditionMatchTypeEnum,
-            sqlWhere: SQL | null,
-            fallbackConditions: RuleConditionInputInterface[]
+            rule: Pick<RuleCreateInputInterface, 'conditions' | 'conditionMatchType'>,
+            plan: ReturnType<typeof buildRuleConditionsWhere>
         ) {
-            if (!isNotEmptyArray(fallbackConditions) && isDefined(sqlWhere)) {
-                return yield* transactionRuleRepository.findIdsByRuleConditions(sqlWhere);
+            const { sqlWhere, fallbackConditions, allAsciiWhere, nonAsciiCandidateWhere } = plan;
+            const asciiWhere = buildAsciiWhere(sqlWhere, allAsciiWhere);
+
+            if (!isNotEmptyArray(fallbackConditions) && isDefined(asciiWhere)) {
+                const asciiMatchedIds = yield* transactionRuleRepository.findIdsByRuleConditions(asciiWhere);
+                const { matchedIds: nonAsciiMatchedIds } = yield* findNonAsciiMatches(nonAsciiCandidateWhere, rule);
+
+                return [...asciiMatchedIds, ...nonAsciiMatchedIds];
             }
 
-            if (isDefined(sqlWhere) && conditionMatchType === RuleConditionMatchTypeEnum.ALL) {
-                const candidateIds = yield* transactionRuleRepository.findIdsByRuleConditions(sqlWhere);
+            if (isDefined(asciiWhere) && rule.conditionMatchType === RuleConditionMatchTypeEnum.ALL) {
+                const asciiCandidateIds = yield* transactionRuleRepository.findIdsByRuleConditions(asciiWhere);
+                const asciiMatchedIds = isNotEmptyArray(asciiCandidateIds)
+                    ? yield* filterWithFallbackConditions(asciiCandidateIds, {
+                          conditions: fallbackConditions,
+                          conditionMatchType: rule.conditionMatchType
+                      })
+                    : [];
+                const { matchedIds: nonAsciiMatchedIds } = yield* findNonAsciiMatches(nonAsciiCandidateWhere, rule);
 
-                if (!isNotEmptyArray(candidateIds)) {
-                    return [];
-                }
-
-                return yield* filterWithFallbackConditions(candidateIds, { conditions: fallbackConditions, conditionMatchType });
+                return [...asciiMatchedIds, ...nonAsciiMatchedIds];
             }
 
-            if (isDefined(sqlWhere) && conditionMatchType === RuleConditionMatchTypeEnum.ANY) {
-                const sqlMatchedIds = yield* transactionRuleRepository.findIdsByRuleConditions(sqlWhere);
+            if (isDefined(asciiWhere) && rule.conditionMatchType === RuleConditionMatchTypeEnum.ANY) {
+                const asciiMatchedIds = yield* transactionRuleRepository.findIdsByRuleConditions(asciiWhere);
+                const { candidateIds: nonAsciiCandidateIds, matchedIds: nonAsciiMatchedIds } = yield* findNonAsciiMatches(
+                    nonAsciiCandidateWhere,
+                    rule
+                );
                 const fallbackMatchedIds = yield* scanMatchingIds(
-                    { conditions: fallbackConditions, conditionMatchType },
-                    new Set(sqlMatchedIds)
+                    { conditions: fallbackConditions, conditionMatchType: rule.conditionMatchType },
+                    new Set([...asciiMatchedIds, ...nonAsciiCandidateIds])
                 );
 
-                return [...sqlMatchedIds, ...fallbackMatchedIds];
+                return [...asciiMatchedIds, ...nonAsciiMatchedIds, ...fallbackMatchedIds];
             }
 
-            return yield* scanMatchingIds({ conditions, conditionMatchType });
+            return yield* scanMatchingIds(rule);
         });
 
         const countMatchingTransactions = Effect.fn('RuleMatcherService.countMatchingTransactions')(function* (
@@ -479,13 +560,17 @@ export class RuleMatcherService extends Context.Service<RuleMatcherService>()('@
                 return 0;
             }
 
-            const { sqlWhere, fallbackConditions } = buildRuleConditionsWhere(conditions, conditionMatchType);
+            const plan = buildRuleConditionsWhere(conditions, conditionMatchType);
+            const asciiWhere = buildAsciiWhere(plan.sqlWhere, plan.allAsciiWhere);
 
-            if (!isNotEmptyArray(fallbackConditions) && isDefined(sqlWhere)) {
-                return yield* transactionRuleRepository.countByRuleConditions(sqlWhere);
+            if (!isNotEmptyArray(plan.fallbackConditions) && isDefined(asciiWhere)) {
+                const asciiCount = yield* transactionRuleRepository.countByRuleConditions(asciiWhere);
+                const { matchedIds: nonAsciiMatchedIds } = yield* findNonAsciiMatches(plan.nonAsciiCandidateWhere, params);
+
+                return asciiCount + nonAsciiMatchedIds.length;
             }
 
-            const matchingIds = yield* findMatchingIdsFromPlan(conditions, conditionMatchType, sqlWhere, fallbackConditions);
+            const matchingIds = yield* findMatchingIdsFromPlan(params, plan);
 
             return matchingIds.length;
         });
@@ -497,15 +582,16 @@ export class RuleMatcherService extends Context.Service<RuleMatcherService>()('@
                 return [];
             }
 
-            const { sqlWhere, fallbackConditions } = buildRuleConditionsWhere(rule.conditions, rule.conditionMatchType);
+            const plan = buildRuleConditionsWhere(rule.conditions, rule.conditionMatchType);
 
-            return yield* findMatchingIdsFromPlan(rule.conditions, rule.conditionMatchType, sqlWhere, fallbackConditions);
+            return yield* findMatchingIdsFromPlan(rule, plan);
         });
 
         return {
             countMatchingTransactions,
             collectMatchingTransactionIds,
-            evaluateRule: (rule: RuleWithRelationsEntityInterface, input: RuleEvaluationInputInterface) => matchesRule(rule, input)
+            evaluateRule: (rule: RuleWithRelationsEntityInterface, input: RuleEvaluationInputInterface) =>
+                compileRule(rule)(prepareRuleEvaluationSnapshot(input))
         };
     })
 }) {

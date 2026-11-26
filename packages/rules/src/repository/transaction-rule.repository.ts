@@ -7,7 +7,7 @@ import {
     TransactionTypeEnum,
     TransactionUpdatedByEnum
 } from '@budgie/contracts';
-import { and, desc, inArray, lt, ne, sql } from 'drizzle-orm';
+import { and, desc, eq, inArray, isNull, lt, ne, sql } from 'drizzle-orm';
 import * as Arr from 'effect/Array';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -31,12 +31,37 @@ export class TransactionRuleRepository extends Context.Service<TransactionRuleRe
             externalSource: TransactionEntityTable.externalSource
         };
 
+        const HAS_LIVE_LEDGER_ENTRY_SQL = sql`EXISTS (SELECT 1 FROM ${TransactionEntryEntityTable} WHERE ${and(
+            eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id),
+            transactionFilters.buildLedgerEntryCondition()
+        )})`;
+
         const buildVisibleNonAdjustmentWhere = (...extra: readonly SQL[]): SQL | undefined =>
             and(
                 transactionFilters.buildVisibleTransactionCondition(),
                 ne(TransactionEntityTable.type, TransactionTypeEnum.ADJUSTMENT),
+                HAS_LIVE_LEDGER_ENTRY_SQL,
                 ...extra
             );
+
+        const stampUpdatedByRuleWhere = Effect.fnUntraced(function* (transactionIds: number[], extraCondition: SQL) {
+            if (!isNotEmptyArray(transactionIds)) {
+                return;
+            }
+
+            yield* Db.query(db =>
+                db
+                    .update(TransactionEntityTable)
+                    .set({ updatedBy: TransactionUpdatedByEnum.RULE })
+                    .where(
+                        and(
+                            inArray(TransactionEntityTable.id, transactionIds),
+                            transactionFilters.buildVisibleTransactionCondition(),
+                            extraCondition
+                        )
+                    )
+            );
+        });
 
         return {
             countByRuleConditions: (where: SQL) =>
@@ -112,22 +137,15 @@ export class TransactionRuleRepository extends Context.Service<TransactionRuleRe
                 return [...new Set(changedEntries.map(entry => entry.transactionId))];
             }),
             stampUpdatedByRule: Effect.fn('TransactionRuleRepository.stampUpdatedByRule')(function* (transactionIds: number[]) {
-                if (!isNotEmptyArray(transactionIds)) {
-                    return;
-                }
-
-                yield* Db.query(db =>
-                    db
-                        .update(TransactionEntityTable)
-                        .set({ updatedBy: TransactionUpdatedByEnum.RULE })
-                        .where(
-                            and(
-                                inArray(TransactionEntityTable.id, transactionIds),
-                                transactionFilters.buildVisibleTransactionCondition(),
-                                sql`${TransactionEntityTable.updatedBy} IS NOT ${TransactionUpdatedByEnum.RULE}`
-                            )
-                        )
+                yield* stampUpdatedByRuleWhere(
+                    transactionIds,
+                    sql`${TransactionEntityTable.updatedBy} IS NOT ${TransactionUpdatedByEnum.RULE}`
                 );
+            }),
+            stampUnauthoredUpdatedByRule: Effect.fn('TransactionRuleRepository.stampUnauthoredUpdatedByRule')(function* (
+                transactionIds: number[]
+            ) {
+                yield* stampUpdatedByRuleWhere(transactionIds, isNull(TransactionEntityTable.updatedBy));
             })
         };
     })

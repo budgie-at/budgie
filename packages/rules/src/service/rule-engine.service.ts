@@ -1,4 +1,5 @@
 import {
+    transactionFilters,
     CategorySourceEnum,
     Db,
     MccCategoryRepository,
@@ -8,7 +9,6 @@ import {
     TransactionEntryTypeEnum,
     TransactionRepository,
     TransactionTagsRepository,
-    TransactionTypeEnum,
     TransactionUpdatedByEnum,
     YIELD_TO_UI
 } from '@budgie/contracts';
@@ -56,9 +56,6 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
 
         const isActiveRule = (rule: RuleWithRelationsEntityInterface): boolean =>
             isNotEmptyArray(rule.conditions) && isNotEmptyArray(rule.actions);
-
-        const isCategorizableTransactionType = (type: TransactionTypeEnum): boolean =>
-            type === TransactionTypeEnum.EXPENSE || type === TransactionTypeEnum.INCOME;
 
         const hasConvertToTransferAction = (actions: RuleActionEntityInterface[]): boolean =>
             actions.some(action => action.type === RuleActionTypeEnum.CONVERT_TO_TRANSFER);
@@ -110,17 +107,10 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
                 const changedTransactionIds = new Set<number>();
 
                 for (const [categoryId, transactionIds] of transactionIdsByCategory) {
-                    const categorizableIds =
-                        convertedTransactionIds.size > 0
-                            ? transactionIds.filter(transactionId => !convertedTransactionIds.has(transactionId))
-                            : transactionIds;
+                    const categorizedIds = yield* transactionRuleRepository.setCategoryByTransactionIds(transactionIds, categoryId);
 
-                    if (isNotEmptyArray(categorizableIds)) {
-                        const categorizedIds = yield* transactionRuleRepository.setCategoryByTransactionIds(categorizableIds, categoryId);
-
-                        for (const transactionId of categorizedIds) {
-                            changedTransactionIds.add(transactionId);
-                        }
+                    for (const transactionId of categorizedIds) {
+                        changedTransactionIds.add(transactionId);
                     }
                 }
 
@@ -135,7 +125,12 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
                 if (changedTransactionIds.size > 0) {
                     yield* transactionRepository.touchUpdatedByIds([...changedTransactionIds], TransactionUpdatedByEnum.RULE);
                 }
-                yield* transactionRuleRepository.stampUpdatedByRule(matches.map(match => match.transactionId));
+
+                if (convertedTransactionIds.size > 0) {
+                    yield* transactionRuleRepository.stampUpdatedByRule([...convertedTransactionIds]);
+                }
+
+                yield* transactionRuleRepository.stampUnauthoredUpdatedByRule(matches.map(match => match.transactionId));
             },
             effect => Db.transaction(effect)
         );
@@ -272,7 +267,7 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
             const needsEntries = allowedRules.some(rule => doConditionsRequireEntries(rule.conditions));
 
             if (needsEntries) {
-                const transactions = yield* transactionRepository.findByIdsWithEntries(transactionIds);
+                const transactions = yield* transactionRepository.findVisibleByIdsWithEntries(transactionIds);
 
                 yield* applyMatches(
                     transactions.map(transaction => ({
@@ -310,7 +305,7 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
             const ruleTagIds = [...new Set([...(input.ruleTagIds ?? []), ...ruleActionOutcomes.tagIds])].filter(
                 tagId => !input.tagIds.includes(tagId)
             );
-            const canCategorize = isCategorizableTransactionType(input.type);
+            const canCategorize = transactionFilters.isCategorizableTransactionType(input.type);
             const hasCategoryAction =
                 canCategorize && isDefined(categoryId) && input.entries.some(entry => entry.type !== TransactionEntryTypeEnum.FEE);
             const hasTagAction = ruleTagIds.some(tagId => !(input.ruleTagIds ?? []).includes(tagId));
@@ -391,14 +386,9 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
                 ].filter(isDefined);
 
                 const convertedTransactionIds = yield* convertTransactionBatchToTransfer(batchIds, actions);
-                const categorizableIds =
-                    convertedTransactionIds.size > 0
-                        ? batchIds.filter(transactionId => !convertedTransactionIds.has(transactionId))
-                        : batchIds;
-                const categorizedIds =
-                    isDefined(categoryAction?.categoryId) && isNotEmptyArray(categorizableIds)
-                        ? yield* transactionRuleRepository.setCategoryByTransactionIds(categorizableIds, categoryAction.categoryId)
-                        : [];
+                const categorizedIds = isDefined(categoryAction?.categoryId)
+                    ? yield* transactionRuleRepository.setCategoryByTransactionIds(batchIds, categoryAction.categoryId)
+                    : [];
                 const taggedIds: number[] = [];
 
                 for (const tagId of tagIds) {
@@ -411,7 +401,9 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
                     yield* transactionRepository.touchUpdatedByIds(changedIds, TransactionUpdatedByEnum.RULE);
                 }
 
-                yield* transactionRuleRepository.stampUpdatedByRule(batchIds);
+                if (convertedTransactionIds.size > 0) {
+                    yield* transactionRuleRepository.stampUpdatedByRule([...convertedTransactionIds]);
+                }
             },
             effect => Db.transaction(effect)
         );

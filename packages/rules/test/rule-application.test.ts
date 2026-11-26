@@ -15,7 +15,7 @@ import {
     TransactionTypeEnum,
     TransactionUpdatedByEnum
 } from '@budgie/contracts';
-import { RuleEngineService, RuleRepository, RuleService } from '@budgie/rules';
+import { RuleEngineService, RuleMatcherService, RuleRepository, RuleService, doesRuleMatchTransaction } from '@budgie/rules';
 import { expect, layer } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
@@ -71,7 +71,7 @@ const buildInput = (accountId: number): TransactionCreateInputInterface => ({
     updatedBy: null,
     amount: 10,
     tagIds: [],
-    entries: [{ accountId, categoryId: null, mccCategoryId: null, type: TransactionEntryTypeEnum.CREDIT, amount: 10_000_000 }]
+    entries: [{ accountId, categoryId: null, mccCategoryId: null, type: TransactionEntryTypeEnum.CREDIT, amount: 10 }]
 });
 
 const emptyAction = { categoryId: null, tagId: null, accountId: null };
@@ -194,11 +194,11 @@ layer(TestLayer)('rules engine', it => {
             const ruleEngineService = yield* RuleEngineService;
             const { source, expense } = yield* seedExpenseWithTarget;
             const [category] = yield* testDb.select().from(CategoryEntityTable);
+            const updatedAt = new Date('2026-06-02T12:00:00.000Z');
             yield* testDb
                 .update(TransactionEntryEntityTable)
                 .set({ categoryId: category.id, categorySource: CategorySourceEnum.RULE })
                 .where(eq(TransactionEntryEntityTable.transactionId, expense.id));
-            const updatedAt = new Date('2026-06-02T12:00:00.000Z');
             yield* testDb.update(TransactionEntityTable).set({ updatedAt }).where(eq(TransactionEntityTable.id, expense.id));
             yield* createActionRule({ ...emptyAction, type: RuleActionTypeEnum.SET_CATEGORY, categoryId: category.id });
 
@@ -355,6 +355,90 @@ layer(TestLayer)('rules engine', it => {
             expect(childAfter.type).toBe(TransactionTypeEnum.EXPENSE);
             expect(childAfter.updatedBy).toBeNull();
             expect(childTags).toEqual([]);
+        })
+    );
+
+    it.effect('preserves USER authorship on no-op matches in both stored and input rule application paths', () =>
+        Effect.gen(function* () {
+            const ruleEngineService = yield* RuleEngineService;
+            const [category] = yield* testDb.select().from(CategoryEntityTable);
+            const { source, expense } = yield* seedExpenseWithTarget;
+            const rule = yield* createActionRule({ ...emptyAction, type: RuleActionTypeEnum.SET_CATEGORY, categoryId: category.id });
+            const updatedAt = new Date('2026-06-03T12:00:00.000Z');
+            yield* testDb
+                .update(TransactionEntityTable)
+                .set({ updatedAt, updatedBy: TransactionUpdatedByEnum.USER })
+                .where(eq(TransactionEntityTable.id, expense.id));
+            yield* testDb
+                .update(TransactionEntryEntityTable)
+                .set({ categoryId: category.id, categorySource: CategorySourceEnum.USER })
+                .where(eq(TransactionEntryEntityTable.transactionId, expense.id));
+
+            yield* ruleEngineService.applyRuleToMatchingTransactions(rule.id);
+            expect(yield* readTransaction(expense.id)).toMatchObject({ updatedAt, updatedBy: TransactionUpdatedByEnum.USER });
+
+            yield* ruleEngineService.applyRulesToTransactions([expense.id], [buildInput(source.id)]);
+            expect(yield* readTransaction(expense.id)).toMatchObject({ updatedAt, updatedBy: TransactionUpdatedByEnum.USER });
+        })
+    );
+
+    it.effect('evaluates principal amount excluding fees identically across import, UI, evaluateRule, and SQL matching', () =>
+        Effect.gen(function* () {
+            const ruleEngineService = yield* RuleEngineService;
+            const ruleMatcherService = yield* RuleMatcherService;
+            const ruleRepository = yield* RuleRepository;
+            const ruleService = yield* RuleService;
+            const account = yield* testSeedService.account();
+            const [category] = yield* testDb.select().from(CategoryEntityTable);
+            const feeExpenseInput = {
+                ...buildInput(account.id),
+                amount: 102,
+                entries: [
+                    { accountId: account.id, categoryId: null, mccCategoryId: null, type: TransactionEntryTypeEnum.CREDIT, amount: 100 },
+                    { accountId: account.id, categoryId: null, mccCategoryId: null, type: TransactionEntryTypeEnum.FEE, amount: 2 }
+                ]
+            };
+            const createdPrincipalRule = yield* ruleService.create({
+                enabled: true,
+                conditionMatchType: RuleConditionMatchTypeEnum.ALL,
+                conditions: [
+                    {
+                        field: RuleConditionFieldEnum.AMOUNT,
+                        operator: RuleConditionOperatorEnum.EQUALS,
+                        value: '100',
+                        secondaryValue: null
+                    }
+                ],
+                actions: [{ ...emptyAction, type: RuleActionTypeEnum.SET_CATEGORY, categoryId: category.id }]
+            });
+            const createdGrossRule = yield* ruleService.create({
+                enabled: true,
+                conditionMatchType: RuleConditionMatchTypeEnum.ALL,
+                conditions: [
+                    {
+                        field: RuleConditionFieldEnum.AMOUNT,
+                        operator: RuleConditionOperatorEnum.EQUALS,
+                        value: '102',
+                        secondaryValue: null
+                    }
+                ],
+                actions: [{ ...emptyAction, type: RuleActionTypeEnum.SET_CATEGORY, categoryId: category.id }]
+            });
+            const principalRule = yield* ruleRepository.findByIdWithRelations(createdPrincipalRule.id);
+            const grossRule = yield* ruleRepository.findByIdWithRelations(createdGrossRule.id);
+            const evalInput = { ...feeExpenseInput, entries: feeExpenseInput.entries.map(entry => ({ ...entry, mccCode: null })) };
+            const suggestData = { title: 'SPAR MARKET', comment: '', mccCode: null, categoryId: null, tagIds: [] };
+            const { transactionInputs } = yield* ruleEngineService.prepareCreateInputsForRules([feeExpenseInput]);
+
+            expect(transactionInputs[0].entries[0].categoryId).toBe(category.id);
+            expect(principalRule).toBeDefined();
+            expect(grossRule).toBeDefined();
+            if (principalRule !== undefined && grossRule !== undefined) {
+                expect(ruleMatcherService.evaluateRule(principalRule, evalInput)).toBe(true);
+                expect(ruleMatcherService.evaluateRule(grossRule, evalInput)).toBe(false);
+                expect(doesRuleMatchTransaction(principalRule, evalInput, suggestData)).toBe(true);
+                expect(doesRuleMatchTransaction(grossRule, evalInput, suggestData)).toBe(false);
+            }
         })
     );
 });
