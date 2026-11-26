@@ -33,6 +33,8 @@ import type { HomeHoldingSectionInterface } from '../interface/home-holding-sect
 import type { HomeHoldingInterface } from '../interface/home-holding.interface';
 import type { HomeSectionInterface } from '../interface/home-section.interface';
 
+const sortIds = (ids: readonly number[]): number[] => [...new Set(ids)].sort((left, right) => left - right);
+
 const getCashKey = (providerCashAccountIds: readonly (readonly [number, readonly number[]])[]): string =>
     providerCashAccountIds.map(([integrationId, cashAccountIds]) => `${integrationId}:${cashAccountIds.join('-')}`).join();
 
@@ -48,14 +50,25 @@ const homePortfolioEntriesAtom = databaseQueryFamily(
         ]
     ) =>
         Effect.all({
-            positions: Effect.forEach(instrumentIds, instrumentId =>
-                repository
-                    .findInstrumentPositionEntries(instrumentId, baseInstrumentId)
-                    .pipe(Effect.map(entries => [instrumentId, entries] as const))
-            ),
-            cashReturns: Effect.forEach(providerCashAccountIds, ([integrationId, cashAccountIds]) =>
-                repository.findCashReturn(cashAccountIds, baseInstrumentId).pipe(Effect.map(amount => [integrationId, amount] as const))
-            ),
+            positions: repository
+                .findInstrumentPositionEntriesByInstrumentIds(instrumentIds, baseInstrumentId)
+                .pipe(Effect.map(entriesByInstrumentId => [...entriesByInstrumentId.entries()])),
+            cashReturns: repository
+                .findCashReturnsByAccountIds(
+                    sortIds(providerCashAccountIds.flatMap(([, cashAccountIds]) => cashAccountIds)),
+                    baseInstrumentId
+                )
+                .pipe(
+                    Effect.map(cashReturnByAccountId =>
+                        providerCashAccountIds.map(
+                            ([integrationId, cashAccountIds]) =>
+                                [
+                                    integrationId,
+                                    cashAccountIds.reduce((sum, accountId) => sum + (cashReturnByAccountId.get(accountId) ?? 0), 0)
+                                ] as const
+                        )
+                    )
+                ),
             cashKey: Effect.succeed(getCashKey(providerCashAccountIds)),
             baseInstrumentId: Effect.succeed(baseInstrumentId)
         })
@@ -67,18 +80,28 @@ const homeDailyChangesAtom = databaseQueryFamily(
     [InstrumentDailyMarketPriceEntityTable],
     InstrumentDailyMarketPriceRepository,
     (repository, pairs: readonly (readonly [number, number])[]) =>
-        Effect.forEach(pairs, ([instrumentId, quoteInstrumentId]) =>
-            repository
-                .findRecent(instrumentId, quoteInstrumentId, 2)
-                .pipe(
-                    Effect.map(
-                        prices =>
-                            [
-                                getDailyChangeKey([instrumentId, quoteInstrumentId]),
-                                { change: getMarketDailyChange(prices.at(0), prices.at(1)), priceDate: prices.at(0)?.priceDate ?? null }
-                            ] as const
-                    )
-                )
+        repository.findRecentForPairs(pairs, 2).pipe(
+            Effect.map(rows => {
+                const pricesByPairKey = new Map<string, typeof rows>();
+
+                for (const row of rows) {
+                    const pairKey = getDailyChangeKey([row.instrumentId, row.quoteInstrumentId]);
+                    const existing = pricesByPairKey.get(pairKey) ?? [];
+
+                    existing.push(row);
+                    pricesByPairKey.set(pairKey, existing);
+                }
+
+                return pairs.map(pair => {
+                    const pairKey = getDailyChangeKey(pair);
+                    const prices = pricesByPairKey.get(pairKey) ?? [];
+
+                    return [
+                        pairKey,
+                        { change: getMarketDailyChange(prices.at(0), prices.at(1)), priceDate: prices.at(0)?.priceDate ?? null }
+                    ] as const;
+                });
+            })
         )
 );
 
@@ -122,8 +145,6 @@ const toHoldingSection = (section: AccountTypeSectionInterface): HomeHoldingSect
     returnHoldings: [...section.data.filter(isHomeHolding), ...section.hiddenHoldings],
     cashProviders: section.type === AccountTypeEnum.STOCKS ? section.holdingProviders : []
 });
-
-const sortIds = (ids: readonly number[]): number[] => [...new Set(ids)].sort((left, right) => left - right);
 
 export const useHomeHoldingReturnsQuery = (sections: readonly HomeSectionInterface[]): HomeHoldingReturnsInterface => {
     const defaultInstrumentId = useAtomValue(defaultInstrumentIdAtom);

@@ -22,7 +22,7 @@ import Constants from 'expo-constants';
 import { File, Paths } from 'expo-file-system';
 import { Platform } from 'react-native';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
 
 import { appAtomRegistry } from '../../@generic/constant/app-atom-registry.constant';
 import { DatabaseRekeyService } from '../../@generic/drizzle/service/database-rekey.service';
@@ -57,6 +57,19 @@ export class CloudBackupService extends Context.Service<CloudBackupService>()('@
         const LastChangedRowsSchema = Schema.NonEmptyArray(
             Schema.Struct({ lastChangedAt: Schema.NullOr(Schema.Finite), rowCount: Schema.Finite })
         );
+        const buildTableLastChangedSql = (tableName: string, columns: readonly string[]): string => {
+            if (isEmptyArray(columns)) {
+                return String.raw`SELECT NULL AS lastChangedAt, COUNT(*) AS rowCount FROM ${tableName}`;
+            }
+
+            if (columns.length === 1) {
+                return String.raw`SELECT MAX(${columns[0]}) AS lastChangedAt, COUNT(*) AS rowCount FROM ${tableName}`;
+            }
+
+            const maxExpressions = columns.map(column => String.raw`COALESCE(MAX(${column}), -1)`).join(', ');
+
+            return String.raw`SELECT NULLIF(MAX(${maxExpressions}), -1) AS lastChangedAt, COUNT(*) AS rowCount FROM ${tableName}`;
+        };
         const lastChangedAtSql = String.raw`SELECT MAX(lastChangedAt) AS lastChangedAt, SUM(rowCount) AS rowCount FROM (${Object.values(
             schema
         )
@@ -64,10 +77,10 @@ export class CloudBackupService extends Context.Service<CloudBackupService>()('@
             .flatMap(config =>
                 userDataTableNames.has(config.name)
                     ? [
-                          String.raw`SELECT NULL AS lastChangedAt, COUNT(*) AS rowCount FROM ${config.name}`,
-                          ...config.columns
-                              .filter(column => timestampColumnNames.has(column.name))
-                              .map(column => String.raw`SELECT MAX(${column.name}) AS lastChangedAt, 0 AS rowCount FROM ${config.name}`)
+                          buildTableLastChangedSql(
+                              config.name,
+                              config.columns.map(column => column.name).filter(name => timestampColumnNames.has(name))
+                          )
                       ]
                     : []
             )

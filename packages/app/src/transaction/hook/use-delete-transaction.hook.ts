@@ -1,7 +1,9 @@
-import { Db } from '@budgie/contracts';
+import { Db, TransactionRepository } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { ImpactFeedbackStyle } from 'expo-haptics';
+
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { useVibration } from '../../@generic/hook/use-vibration.hook';
 import { BROKERAGE_FUNDING_TITLE } from '../../brokerage/constant/brokerage-funding-title.constant';
@@ -28,10 +30,29 @@ export const useDeleteTransaction = () => {
                 Effect.sync(() => void hapticImpact(ImpactFeedbackStyle.Heavy)).pipe(
                     Effect.andThen(
                         Db.transaction(
-                            transactionService.deleteById(transactionId).pipe(
-                                Effect.andThen(BrokerageService),
-                                Effect.flatMap(brokerageService => brokerageService.reconcileFunding(t(BROKERAGE_FUNDING_TITLE)))
-                            )
+                            Effect.gen(function* () {
+                                const transactionRepository = yield* TransactionRepository;
+                                const [transaction] = yield* transactionRepository.findByIdsWithRefundConsolidationHistory([transactionId]);
+                                const accountIds = isDefined(transaction)
+                                    ? [
+                                          ...new Set(
+                                              [
+                                                  transaction.fromAccountId,
+                                                  transaction.toAccountId,
+                                                  ...transaction.entries.map(entry => entry.accountId)
+                                              ].filter(isDefined)
+                                          )
+                                      ]
+                                    : [];
+
+                                yield* transactionService.deleteById(transactionId);
+
+                                if (isNotEmptyArray(accountIds)) {
+                                    const brokerageService = yield* BrokerageService;
+
+                                    yield* brokerageService.reconcileFunding(t(BROKERAGE_FUNDING_TITLE), accountIds);
+                                }
+                            })
                         )
                     )
                 )

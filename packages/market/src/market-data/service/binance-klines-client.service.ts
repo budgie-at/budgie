@@ -25,6 +25,7 @@ export class BinanceKlinesClient extends Context.Service<BinanceKlinesClient>()(
         const pageDays = 1000;
         const dayMs = 86_400_000;
         const fetchTimeoutMs = 10_000;
+        const fetchConcurrency = 3;
         const invalidSymbolCode = -1121;
         const klinesSchema = Schema.Array(Schema.TupleWithRest(Schema.Tuple([Schema.Finite, Schema.FiniteFromString]), [Schema.Unknown]));
         const errorBodySchema = Schema.Struct({ code: Schema.Finite });
@@ -36,36 +37,41 @@ export class BinanceKlinesClient extends Context.Service<BinanceKlinesClient>()(
                 .filter(([, aliasedCode]) => aliasedCode === instrumentCode)
                 .map(([legacyCode]) => legacyCode);
 
-        const fetchPage = Effect.fnUntraced(function* (symbol: string, startTime: number, endTime: number) {
-            const response = yield* httpClient
-                .get(klinesUrl, { urlParams: { symbol, interval: '1d', startTime, endTime, limit: pageDays } })
-                .pipe(Effect.timeout(fetchTimeoutMs));
+        const fetchPage = (symbol: string, startTime: number, endTime: number) =>
+            Effect.gen(function* () {
+                const response = yield* httpClient.get(klinesUrl, {
+                    urlParams: { symbol, interval: '1d', startTime, endTime, limit: pageDays }
+                });
 
-            if (response.status === 400) {
-                const body = yield* HttpClientResponse.schemaBodyJson(errorBodySchema)(response);
+                if (response.status === 400) {
+                    const body = yield* HttpClientResponse.schemaBodyJson(errorBodySchema)(response);
 
-                if (body.code === invalidSymbolCode) {
-                    return yield* BinanceKlinesInvalidSymbolError.make({ symbol });
+                    if (body.code === invalidSymbolCode) {
+                        return yield* BinanceKlinesInvalidSymbolError.make({ symbol });
+                    }
                 }
-            }
 
-            const okResponse = yield* HttpClientResponse.filterStatusOk(response);
+                const okResponse = yield* HttpClientResponse.filterStatusOk(response);
 
-            return yield* HttpClientResponse.schemaBodyJson(klinesSchema)(okResponse);
-        });
+                return yield* HttpClientResponse.schemaBodyJson(klinesSchema)(okResponse);
+            }).pipe(Effect.timeout(fetchTimeoutMs));
 
         const fetchSymbol = Effect.fnUntraced(function* (symbol: string, fromDate: string, toDate: string) {
             const fromMs = toDayStartMs(fromDate);
             const toMs = toDayStartMs(toDate);
             const pageStarts = Arr.makeBy(Math.floor((toMs - fromMs) / (pageDays * dayMs)) + 1, index => fromMs + index * pageDays * dayMs);
-            const pages = yield* Effect.forEach(pageStarts, startTime =>
-                fetchPage(symbol, startTime, Math.min(startTime + (pageDays - 1) * dayMs, toMs)).pipe(
-                    Effect.retry({
-                        times: 3,
-                        schedule: Schedule.exponential('500 millis'),
-                        while: error => !Predicate.isTagged(error, 'BinanceKlinesInvalidSymbolError')
-                    })
-                )
+            const pages = yield* Effect.forEach(
+                pageStarts,
+                startTime =>
+                    fetchPage(symbol, startTime, Math.min(startTime + (pageDays - 1) * dayMs, toMs)).pipe(
+                        Effect.retry({
+                            times: 3,
+                            schedule: Schedule.exponential('500 millis'),
+                            while: error =>
+                                !Predicate.isTagged(error, 'BinanceKlinesInvalidSymbolError') && HttpClient.isTransientError(error)
+                        })
+                    ),
+                { concurrency: fetchConcurrency }
             );
 
             return pages
@@ -83,7 +89,9 @@ export class BinanceKlinesClient extends Context.Service<BinanceKlinesClient>()(
                 toDate: string
             ) {
                 const symbols = [instrumentCode, ...legacyCodesOf(instrumentCode)].map(code => `${code}${quoteCode}`);
-                const fetched = (yield* Effect.forEach(symbols, symbol => fetchSymbolOrNull(symbol, fromDate, toDate))).filter(isDefined);
+                const fetched = (yield* Effect.forEach(symbols, symbol => fetchSymbolOrNull(symbol, fromDate, toDate), {
+                    concurrency: fetchConcurrency
+                })).filter(isDefined);
 
                 if (!isNotEmptyArray(fetched)) {
                     return yield* BinanceKlinesInvalidSymbolError.make({ symbol: symbols.join(',') });

@@ -23,6 +23,7 @@ import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 import * as Order from 'effect/Order';
+import * as Ref from 'effect/Ref';
 import * as Schema from 'effect/Schema';
 
 import { getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
@@ -69,7 +70,12 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
             const yahooMarketDataService = yield* YahooMarketDataService;
             const dataWindowDays = 365;
             const frankfurterApiUrl = 'https://api.frankfurter.dev/v2';
+            const frankfurterCurrenciesTtlMs = 24 * 60 * 60 * 1000;
             const maxFiatRateGapDays = 7;
+            const frankfurterCurrenciesCache = yield* Ref.make<{
+                readonly codes: ReadonlySet<string>;
+                readonly expiresAtMs: number;
+            } | null>(null);
             const frankfurterCurrenciesResponseSchema = Schema.Array(Schema.Struct({ iso_code: Schema.String }));
             const frankfurterRatesResponseSchema = Schema.Array(
                 Schema.Struct({
@@ -78,10 +84,8 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                     rate: Schema.Finite
                 })
             );
-            const coinGeckoCoinsApiUrl = 'https://api.coingecko.com/api/v3/coins';
             const fetchTimeoutMs = 10_000;
             const maxAttempts = MARKET_DATA_JOB_MAX_ATTEMPTS;
-            const inzhurSource = 'inzhur.reit';
             const rateDateFormat = 'yyyy-MM-dd';
             const staleLockMs = MARKET_DATA_JOB_STALE_LOCK_MS;
             const coinGeckoTimedValueSchema = Schema.Tuple([Schema.Finite, Schema.Finite]);
@@ -152,13 +156,7 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                     return null;
                 }
 
-                return {
-                    instrumentId,
-                    quoteInstrumentId,
-                    fromDate,
-                    toDate,
-                    priority: 10
-                };
+                return { instrumentId, quoteInstrumentId, fromDate, toDate, priority: 10 };
             });
 
             const fetchHistoricalPrices = Effect.fn('HistoricalMarketDataService.fetchHistoricalPrices')(function* (
@@ -177,7 +175,7 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                 }
 
                 const data = yield* fetchJson(
-                    `${coinGeckoCoinsApiUrl}/${encodeURIComponent(instrument.providerInstrumentId)}/market_chart/range`,
+                    `https://api.coingecko.com/api/v3/coins/${encodeURIComponent(instrument.providerInstrumentId)}/market_chart/range`,
                     coinGeckoMarketChartResponseSchema,
                     fetchTimeoutMs,
                     {
@@ -188,7 +186,7 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                 );
 
                 if (!isNotEmptyArray(data.prices)) {
-                    return yield* Effect.die(new Error('Market data prices missing'));
+                    return [];
                 }
 
                 const marketCapByDate = buildTimedValueMap(data.market_caps);
@@ -225,17 +223,18 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
                 }
 
                 const sampledAt = yield* DateTime.nowAsDate;
-                const price: InstrumentDailyMarketPriceCreateEntityInterface = {
-                    instrumentId: job.instrumentId,
-                    quoteInstrumentId: job.quoteInstrumentId,
-                    priceDate: format(sampledAt, rateDateFormat),
-                    price: fundPrice.price,
-                    marketCap: null,
-                    volume: null,
-                    source: inzhurSource
-                };
 
-                return [price];
+                return [
+                    {
+                        instrumentId: job.instrumentId,
+                        quoteInstrumentId: job.quoteInstrumentId,
+                        priceDate: format(sampledAt, rateDateFormat),
+                        price: fundPrice.price,
+                        marketCap: null,
+                        volume: null,
+                        source: 'inzhur.reit'
+                    }
+                ] satisfies InstrumentDailyMarketPriceCreateEntityInterface[];
             });
 
             const fetchPrices = (instrument: InstrumentEntityInterface, job: InstrumentMarketDataJobEntityInterface) => {
@@ -340,8 +339,17 @@ export class HistoricalMarketDataService extends Context.Service<HistoricalMarke
             ) {
                 const heldFiatInstruments = yield* getHeldFiatInstruments();
                 const instruments = heldFiatInstruments?.instruments ?? [];
-                const currencies = yield* fetchJson(`${frankfurterApiUrl}/currencies`, frankfurterCurrenciesResponseSchema, fetchTimeoutMs);
-                const supportedCodes = new Set(currencies.map(currency => currency.iso_code));
+                const now = yield* Clock.currentTimeMillis;
+                const cached = yield* Ref.get(frankfurterCurrenciesCache);
+                const supportedCodes =
+                    isDefined(cached) && now < cached.expiresAtMs
+                        ? cached.codes
+                        : yield* fetchJson(`${frankfurterApiUrl}/currencies`, frankfurterCurrenciesResponseSchema, fetchTimeoutMs).pipe(
+                              Effect.map(currencies => new Set(currencies.map(currency => currency.iso_code))),
+                              Effect.tap(codes =>
+                                  Ref.set(frankfurterCurrenciesCache, { codes, expiresAtMs: now + frankfurterCurrenciesTtlMs })
+                              )
+                          );
                 const supportedInstruments = instruments.filter(instrument => supportedCodes.has(instrument.code));
                 const instrumentIdByCode = new Map(supportedInstruments.map(instrument => [instrument.code, instrument.id]));
                 const rates = isNotEmptyArray(supportedInstruments)

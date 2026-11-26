@@ -5,13 +5,14 @@ import {
     Db,
     ExternalSourceEnum,
     InstrumentRepository,
+    SyncEntityTable,
     SyncModeEnum,
     SyncRepository,
     SyncStatusEnum,
     UserIconNameEnum
 } from '@budgie/contracts';
 import { AccountArchiveService } from '@budgie/ledger';
-import { sql } from 'drizzle-orm';
+import { and, inArray, isNull, sql } from 'drizzle-orm';
 import * as Clock from 'effect/Clock';
 import * as Context from 'effect/Context';
 import * as DateTime from 'effect/DateTime';
@@ -21,7 +22,7 @@ import * as Layer from 'effect/Layer';
 import * as Predicate from 'effect/Predicate';
 import * as Schema from 'effect/Schema';
 
-import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
 import { SyncConsentExpiredError } from '../../core/error/sync-consent-expired.error';
@@ -204,15 +205,20 @@ export class EnableBankingSyncService extends Context.Service<EnableBankingSyncS
             yield* Db.transaction(
                 Effect.gen(function* () {
                     yield* syncIntegrationTokenService.updateIntegrationToken(integrationId, token);
-                    for (const account of linkedAccounts) {
-                        const sync = yield* syncRepository.getByAccountId(account.id);
-                        if (isDefined(sync)) {
-                            yield* syncRepository.update(sync.id, {
-                                forwardSyncedAt: null,
-                                status: SyncStatusEnum.IDLE,
-                                lastErrorCode: null
-                            });
-                        }
+
+                    const linkedAccountIds = linkedAccounts.map(account => account.id);
+
+                    if (isNotEmptyArray(linkedAccountIds)) {
+                        yield* Db.query(db =>
+                            db
+                                .update(SyncEntityTable)
+                                .set({
+                                    forwardSyncedAt: null,
+                                    status: SyncStatusEnum.IDLE,
+                                    lastErrorCode: null
+                                })
+                                .where(and(inArray(SyncEntityTable.accountId, linkedAccountIds), isNull(SyncEntityTable.deletedAt)))
+                        );
                     }
                 })
             );
@@ -226,24 +232,27 @@ export class EnableBankingSyncService extends Context.Service<EnableBankingSyncS
                     .filter(isDefined)
                     .filter(integrationId => integrationId !== excludedIntegrationId)
             );
-            const applicationIds: string[] = [];
-            for (const integrationId of integrationIds) {
-                const integration = yield* bankIntegrationRepository.findById(integrationId);
-                const credentials = isDefined(integration)
-                    ? yield* clientService.decodeCredentials(integration.token).pipe(Effect.orElseSucceed(() => null))
-                    : null;
-                if (isDefined(credentials)) {
-                    applicationIds.push(credentials.applicationId);
-                }
+
+            if (!isPositiveNumber(integrationIds.size)) {
+                return [];
             }
 
-            return applicationIds;
+            const integrations = (yield* bankIntegrationRepository.findActive).filter(integration => integrationIds.has(integration.id));
+            const credentialsList = yield* Effect.forEach(integrations, integration =>
+                clientService.decodeCredentials(integration.token).pipe(Effect.orElseSucceed(() => null))
+            );
+
+            return credentialsList.filter(isDefined).map(credentials => credentials.applicationId);
         });
 
-        const labelIntegrationAndRequestSync = Effect.fnUntraced(function* (token: string) {
+        const labelIntegration = Effect.fnUntraced(function* (token: string) {
             const credentials = yield* clientService.decodeCredentials(token);
             const integration = yield* syncIntegrationTokenService.getOrCreateIntegration(provider, token);
             yield* syncIntegrationTokenService.fillIntegrationLabel(integration.id, credentials.aspspName);
+        });
+
+        const labelIntegrationAndRequestSync = Effect.fnUntraced(function* (token: string) {
+            yield* labelIntegration(token);
             yield* pollingSyncService.requestSync();
         });
 
@@ -349,14 +358,23 @@ export class EnableBankingSyncService extends Context.Service<EnableBankingSyncS
             ) {
                 const unconnectableIds = yield* findUnconnectableExternalIds(accounts);
                 const selectedAccounts = accounts.filter(account => externalIds.includes(account.id) && !unconnectableIds.has(account.id));
-                for (const selectedAccount of selectedAccounts) {
-                    const account = yield* pollingSyncService.getOrCreateSyncAccount(selectedAccount);
-                    yield* createOrUpdateSync(account.id, token, historyDepth);
+
+                if (!isNotEmptyArray(selectedAccounts)) {
+                    return 0;
                 }
 
-                if (isNotEmptyArray(selectedAccounts)) {
-                    yield* labelIntegrationAndRequestSync(token);
-                }
+                yield* Db.transaction(
+                    Effect.gen(function* () {
+                        for (const selectedAccount of selectedAccounts) {
+                            const account = yield* pollingSyncService.getOrCreateSyncAccount(selectedAccount);
+                            yield* createOrUpdateSync(account.id, token, historyDepth);
+                        }
+
+                        yield* labelIntegration(token);
+                    })
+                );
+
+                yield* pollingSyncService.requestSync();
 
                 return selectedAccounts.length;
             }),
@@ -390,13 +408,17 @@ export class EnableBankingSyncService extends Context.Service<EnableBankingSyncS
                     yield* syncRequestSigner.deleteKey(credentials.applicationId);
                 }
 
-                for (const account of yield* accountRepository.findByIntegrationId(integrationId)) {
-                    if (!(yield* accountContinuation.release(account))) {
-                        yield* accountArchiveService.archiveById(account.id);
-                        yield* syncRepository.setEnabled(account.id, false);
-                    }
-                }
-                yield* bankIntegrationRepository.deleteById(integrationId);
+                yield* Db.transaction(
+                    Effect.gen(function* () {
+                        for (const account of yield* accountRepository.findByIntegrationId(integrationId)) {
+                            if (!(yield* accountContinuation.release(account))) {
+                                yield* accountArchiveService.archiveById(account.id);
+                                yield* syncRepository.setEnabled(account.id, false);
+                            }
+                        }
+                        yield* bankIntegrationRepository.deleteById(integrationId);
+                    })
+                );
 
                 return isSessionRevoked;
             })

@@ -3,9 +3,11 @@ import { addDays } from 'date-fns/addDays';
 import { format } from 'date-fns/format';
 import { parseISO } from 'date-fns/parseISO';
 import { subDays } from 'date-fns/subDays';
+import * as Cache from 'effect/Cache';
 import * as Context from 'effect/Context';
 import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
+import * as Exit from 'effect/Exit';
 import * as HttpClient from 'effect/http/HttpClient';
 import * as HttpClientResponse from 'effect/http/HttpClientResponse';
 import * as Layer from 'effect/Layer';
@@ -27,9 +29,12 @@ export class YahooMarketDataService extends Context.Service<YahooMarketDataServi
     make: Effect.gen(function* () {
         const instrumentRepository = yield* InstrumentRepository;
         const exchangeRateRepository = yield* ExchangeRateRepository;
-        const client = (yield* HttpClient.HttpClient).pipe(
-            HttpClient.filterStatus(status => status === 404 || (status >= 200 && status < 300))
-        );
+        const baseClient = yield* HttpClient.HttpClient;
+        const okClient = baseClient.pipe(HttpClient.filterStatusOk);
+        const chartClient = baseClient.pipe(HttpClient.filterStatus(status => status === 404 || (status >= 200 && status < 300)));
+        const requestTimeoutMs = 10_000;
+        const quoteCacheCapacity = 100;
+        const quoteCacheTtl = '60 seconds';
         const listingSchema = Schema.Struct({
             symbol: Schema.String,
             quoteType: Schema.String,
@@ -49,17 +54,23 @@ export class YahooMarketDataService extends Context.Service<YahooMarketDataServi
             })
         });
         const request = <S extends Schema.ConstraintDecoder<unknown>>(
+            httpClient: HttpClient.HttpClient,
             path: string,
             schema: S,
             urlParams: Record<string, string | number>
         ) =>
-            Effect.flatMap(
-                client.get(`https://query1.finance.yahoo.com/${path}`, { urlParams, headers: { 'User-Agent': 'Budgie/1.0' } }),
-                HttpClientResponse.schemaBodyJson(schema)
-            ).pipe(Effect.retry({ times: 2, schedule: Schedule.exponential(300) }), Effect.timeout(10000));
+            httpClient.get(`https://query1.finance.yahoo.com/${path}`, { urlParams, headers: { 'User-Agent': 'Budgie/1.0' } }).pipe(
+                Effect.flatMap(HttpClientResponse.schemaBodyJson(schema)),
+                Effect.timeout(requestTimeoutMs),
+                Effect.retry({
+                    times: 2,
+                    schedule: Schedule.exponential(300),
+                    while: HttpClient.isTransientError
+                })
+            );
         const minorUnitCurrencies: Partial<Record<string, string>> = { GBp: 'GBP', GBX: 'GBP', ZAc: 'ZAR', ILA: 'ILS' };
         const chart = Effect.fn('YahooMarketDataService.chart')(function* (symbol: string, from: Date, to: Date) {
-            const response = yield* request(`v8/finance/chart/${encodeURIComponent(symbol)}`, chartSchema, {
+            const response = yield* request(chartClient, `v8/finance/chart/${encodeURIComponent(symbol)}`, chartSchema, {
                 period1: Math.floor(from.getTime() / 1000),
                 period2: Math.floor(to.getTime() / 1000),
                 interval: '1d'
@@ -91,6 +102,18 @@ export class YahooMarketDataService extends Context.Service<YahooMarketDataServi
 
             return yield* chart(symbol, subDays(now, 7), now);
         });
+        const quoteCache = yield* Cache.makeWith(
+            Effect.fnUntraced(function* (symbol: string) {
+                const data = yield* recentChart(symbol);
+                const price = data?.meta.regularMarketPrice ?? data?.indicators.quote.at(0)?.close.findLast(isPositiveNumber);
+
+                return isDefined(data) && isPositiveNumber(price) ? { currency: data.meta.currency, price } : null;
+            }),
+            {
+                capacity: quoteCacheCapacity,
+                timeToLive: exit => (Exit.isSuccess(exit) ? quoteCacheTtl : '0 millis')
+            }
+        );
 
         return {
             chart,
@@ -122,14 +145,9 @@ export class YahooMarketDataService extends Context.Service<YahooMarketDataServi
                         : [];
                 });
             }),
-            quote: Effect.fn('YahooMarketDataService.quote')(function* (symbol: string) {
-                const data = yield* recentChart(symbol);
-                const price = data?.meta.regularMarketPrice ?? data?.indicators.quote.at(0)?.close.findLast(isPositiveNumber);
-
-                return isDefined(data) && isPositiveNumber(price) ? { currency: data.meta.currency, price } : null;
-            }),
+            quote: (symbol: string) => Cache.get(quoteCache, symbol),
             search: Effect.fn('YahooMarketDataService.search')(function* (query: string) {
-                const response = yield* request('v1/finance/search', Schema.Struct({ quotes: Schema.Array(listingSchema) }), {
+                const response = yield* request(okClient, 'v1/finance/search', Schema.Struct({ quotes: Schema.Array(listingSchema) }), {
                     ...Object.fromEntries([['q', query]]),
                     quotesCount: 10,
                     newsCount: 0

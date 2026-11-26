@@ -1,23 +1,36 @@
 import {
+    AccountEntityTable,
     BudgetCategoryLimitEntityTable,
     BudgetEntityTable,
     BudgetPeriodCategorySnapshotEntityTable,
     BudgetPeriodSnapshotEntityTable,
     BudgetSinkingFundEntityTable,
+    CategoryEntityTable,
+    DebtEventEntityTable,
+    DefaultCategoryTranslationEntityTable,
     ExchangeRateEntityTable,
-    SyncRecordEntityTable,
-    SyncOutboxEntityTable,
     HistoricalExchangeRateEntityTable,
     InstrumentDailyMarketPriceEntityTable,
+    InstrumentEntityTable,
     RecurringSeriesEntityTable,
     RecurringSeriesTransactionEntityTable,
-    SettingsEntityTable
+    SettingsEntityTable,
+    SyncOutboxEntityTable,
+    SyncRecordEntityTable,
+    TransactionEntityTable,
+    TransactionEntryEntityTable,
+    TransactionTagsEntityTable
 } from '@budgie/contracts';
 
-import { TRANSACTION_LIST_TABLES } from '../../transaction/constant/transaction-list-tables.constant';
-
 export const BUDGET_PROJECTION_TABLES = [
-    ...TRANSACTION_LIST_TABLES,
+    TransactionEntityTable,
+    TransactionEntryEntityTable,
+    TransactionTagsEntityTable,
+    AccountEntityTable,
+    InstrumentEntityTable,
+    CategoryEntityTable,
+    DefaultCategoryTranslationEntityTable,
+    DebtEventEntityTable,
     SyncRecordEntityTable,
     SyncOutboxEntityTable,
     BudgetEntityTable,

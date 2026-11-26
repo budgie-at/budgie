@@ -15,6 +15,7 @@ const RECURRING_SMART_MIGRATION = '20261105192451_recurring_smart_series';
 
 const PRE_MIGRATION_SCHEMA: Readonly<Record<string, readonly string[]>> = {
     '20261105193657_cloud_sync_identity': [
+        'DROP INDEX IF EXISTS transactions_sync_id_idx',
         'DROP TABLE sync_apply_state',
         'DROP TABLE sync_outbox',
         'DROP TABLE sync_pending',

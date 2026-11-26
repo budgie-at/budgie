@@ -2,8 +2,10 @@ import { CurrencyEnum, InstrumentRepository, TransactionEntryBaseValuationReposi
 import { format } from 'date-fns/format';
 import { parseISO } from 'date-fns/parseISO';
 import { subDays } from 'date-fns/subDays';
+import * as Cache from 'effect/Cache';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
+import * as Exit from 'effect/Exit';
 import * as Layer from 'effect/Layer';
 
 import { isDefined } from '@rnw-community/shared';
@@ -31,6 +33,19 @@ export class KlinesHistoryService extends Context.Service<KlinesHistoryService>(
         const transactionEntryBaseValuationRepository = yield* TransactionEntryBaseValuationRepository;
         const source = 'binance.vision';
         const klinesJobPriority = 1;
+        const euroOpensCacheCapacity = 64;
+        const euroOpensCacheTtl = '10 minutes';
+        const euroOpensCache = yield* Cache.makeWith(
+            (windowKey: string) => {
+                const [fromDate = '', toDate = ''] = windowKey.split(':');
+
+                return binanceKlinesClient.fetchEuroDailyOpens(fromDate, toDate);
+            },
+            {
+                capacity: euroOpensCacheCapacity,
+                timeToLive: exit => (Exit.isSuccess(exit) ? euroOpensCacheTtl : '0 millis')
+            }
+        );
 
         return {
             findUsdtInstrument: instrumentRepository.findByCode(USDT_INSTRUMENT_CODE),
@@ -67,9 +82,14 @@ export class KlinesHistoryService extends Context.Service<KlinesHistoryService>(
                 instrument: InstrumentEntityInterface,
                 job: InstrumentMarketDataJobEntityInterface
             ) {
-                const opens = yield* binanceKlinesClient
-                    .fetchInstrumentDailyOpens(instrument.code, job.fromDate, job.toDate)
-                    .pipe(Effect.catchTag('BinanceKlinesInvalidSymbolError', () => Effect.succeed(null)));
+                const euro = yield* instrumentRepository.findByCode(CurrencyEnum.EUR);
+                const fetchInstrumentOpens = Effect.catchTag(
+                    binanceKlinesClient.fetchInstrumentDailyOpens(instrument.code, job.fromDate, job.toDate),
+                    'BinanceKlinesInvalidSymbolError',
+                    () => Effect.succeed(null)
+                );
+                const fetchEuroOpens = isDefined(euro) ? Cache.get(euroOpensCache, `${job.fromDate}:${job.toDate}`) : Effect.succeed([]);
+                const [opens, euroOpens] = yield* Effect.all([fetchInstrumentOpens, fetchEuroOpens], { concurrency: 2 });
 
                 if (!isDefined(opens)) {
                     const unsupported: MarketDataJobResultInterface = { prices: [], rates: [], unsupportedInstruments: [instrument] };
@@ -77,8 +97,6 @@ export class KlinesHistoryService extends Context.Service<KlinesHistoryService>(
                     return unsupported;
                 }
 
-                const euro = yield* instrumentRepository.findByCode(CurrencyEnum.EUR);
-                const euroOpens = isDefined(euro) ? yield* binanceKlinesClient.fetchEuroDailyOpens(job.fromDate, job.toDate) : [];
                 const toPrice = (instrumentId: number, open: (typeof opens)[number]): InstrumentDailyMarketPriceCreateEntityInterface => ({
                     instrumentId,
                     quoteInstrumentId: job.quoteInstrumentId,

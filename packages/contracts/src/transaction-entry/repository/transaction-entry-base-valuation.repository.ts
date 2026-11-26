@@ -1,10 +1,11 @@
-import { and, asc, between, count, eq, gt, gte, lte, inArray, isNotNull, isNull, not, or, sql } from 'drizzle-orm';
+import { and, asc, between, count, eq, gt, gte, inArray, isNotNull, isNull, lte, not, or, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
+import * as Arr from 'effect/Array';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isEmptyArray } from '@rnw-community/shared';
 
 import { Db } from '../../@generic/service/db.service';
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
@@ -101,8 +102,21 @@ export class TransactionEntryBaseValuationRepository extends Context.Service<Tra
                         .orderBy(asc(sql`id`))
                         .limit(limit)
                 );
-            const updateBucketEntries = (rateDate: string, sourceInstrumentId: number, assignment: SQL, condition: SQL) =>
-                Db.mutation(
+            const SECONDS_PER_DAY = 86_400;
+            const buildUpdateCaseSql = (
+                chunk: readonly EntryBaseValuationUpdateInterface[],
+                pickValue: (update: EntryBaseValuationUpdateInterface) => number | null
+            ) =>
+                sql.join(
+                    chunk.map(update => sql`WHEN ${update.id} THEN ${pickValue(update)}`),
+                    sql` `
+                );
+            const updateBucketEntries = (rateDate: string, sourceInstrumentId: number, assignment: SQL, condition: SQL) => {
+                const [year, month, day] = rateDate.split('-').map(Number);
+                const startEpoch = Math.floor(Date.UTC(year, month - 1, day) / 1000);
+                const endEpoch = startEpoch + SECONDS_PER_DAY;
+
+                return Db.mutation(
                     { type: 'update', tables: ['transaction_entries'] },
                     Db.query(db =>
                         db.run(sql`
@@ -114,7 +128,10 @@ export class TransactionEntryBaseValuationRepository extends Context.Service<Tra
                             INNER JOIN transactions t ON t.id = te.transaction_id
                             LEFT JOIN transactions original_t ON original_t.id = te.original_transaction_id
                             INNER JOIN accounts a ON a.id = te.account_id
-                            WHERE date(COALESCE(original_t.operated_at, t.operated_at), 'unixepoch') = ${rateDate}
+                            WHERE (
+                                (te.original_transaction_id IS NULL AND t.operated_at >= ${startEpoch} AND t.operated_at < ${endEpoch})
+                                OR (te.original_transaction_id IS NOT NULL AND original_t.operated_at >= ${startEpoch} AND original_t.operated_at < ${endEpoch})
+                            )
                               AND a.instrument_id = ${sourceInstrumentId}
                               AND te.deleted_at IS NULL
                               AND t.deleted_at IS NULL
@@ -125,6 +142,7 @@ export class TransactionEntryBaseValuationRepository extends Context.Service<Tra
                     `)
                     )
                 );
+            };
 
             return {
                 rebaseSecurityTradeCosts: (baseInstrumentId: number) =>
@@ -196,9 +214,16 @@ export class TransactionEntryBaseValuationRepository extends Context.Service<Tra
                 findMarketPricedEntriesBySyncIds: (transactionSyncIds: readonly string[], afterId: number, limit: number) =>
                     findMarketPricedEntries(live => inArray(live.transactionSyncId, [...transactionSyncIds]), afterId, limit),
                 findMarketPricedInstrumentIds: Db.query(db =>
-                    selectLiveEntries(db, live => ({ instrumentId: live.instrumentId }), buildMarketPricedCondition).groupBy(
-                        sql`instrument_id`
-                    )
+                    db
+                        .selectDistinct({ instrumentId: AccountEntityTable.instrumentId })
+                        .from(AccountEntityTable)
+                        .where(
+                            and(
+                                isNull(AccountEntityTable.deletedAt),
+                                buildMarketPricedPredicate(AccountEntityTable.type, AccountEntityTable.instrumentId),
+                                sql`EXISTS (SELECT 1 FROM transaction_entries te INNER JOIN transactions t ON t.id = te.transaction_id WHERE te.account_id = ${AccountEntityTable.id} AND te.deleted_at IS NULL AND t.deleted_at IS NULL)`
+                            )
+                        )
                 ).pipe(Effect.map(rows => rows.map(row => row.instrumentId))),
                 findOldestMarketPricedEntryDate: (instrumentId: number) =>
                     Db.query(db =>
@@ -221,19 +246,24 @@ export class TransactionEntryBaseValuationRepository extends Context.Service<Tra
                             )
                     ).pipe(Effect.map(rows => rows.map(row => row.id))),
                 updateEntryBaseValuations: (updates: readonly EntryBaseValuationUpdateInterface[]) =>
-                    Db.mutation(
-                        { type: 'update', tables: ['transaction_entries'] },
-                        Effect.forEach(
-                            updates,
-                            update =>
-                                Db.query(db =>
-                                    db.run(
-                                        sql`UPDATE transaction_entries SET base_instrument_id = ${update.baseInstrumentId}, base_exchange_rate = ${update.baseExchangeRate}, base_amount = ${update.baseAmount} WHERE id = ${update.id}`
-                                    )
-                                ),
-                            { discard: true }
-                        )
-                    ),
+                    isEmptyArray(updates)
+                        ? Effect.void
+                        : Db.mutation(
+                              { type: 'update', tables: ['transaction_entries'] },
+                              Effect.forEach(
+                                  Arr.chunksOf(updates, 200),
+                                  chunk =>
+                                      Db.query(db =>
+                                          db.run(
+                                              sql`UPDATE transaction_entries SET base_instrument_id = CASE id ${buildUpdateCaseSql(chunk, update => update.baseInstrumentId)} END, base_exchange_rate = CASE id ${buildUpdateCaseSql(chunk, update => update.baseExchangeRate)} END, base_amount = CASE id ${buildUpdateCaseSql(chunk, update => update.baseAmount)} END WHERE id IN (${sql.join(
+                                                  chunk.map(update => sql`${update.id}`),
+                                                  sql`, `
+                                              )})`
+                                          )
+                                      ),
+                                  { discard: true }
+                              )
+                          ),
                 updateBaseValuationBucket: (input: BaseValuationBucketUpdateInterface) =>
                     updateBucketEntries(
                         input.rateDate,

@@ -37,6 +37,7 @@ import m0033 from './20261117202013_brokerage_funding_marker/migration.sql';
 import m0034 from './20261121093343_refund_auto_pair_disabled/migration.sql';
 import m0035 from './20261121093354_refund_auto_pair_outbox_triggers/migration.sql';
 import m0036 from './20261124142946_perf_indexes/migration.sql';
+import m0037 from './20261124215108_perf_indexes_2/migration.sql';
 
   export default {
     migrations: {
@@ -76,7 +77,8 @@ import m0036 from './20261124142946_perf_indexes/migration.sql';
 "20261117202013_brokerage_funding_marker": m0033,
 "20261121093343_refund_auto_pair_disabled": m0034,
 "20261121093354_refund_auto_pair_outbox_triggers": m0035,
-"20261124142946_perf_indexes": m0036
+"20261124142946_perf_indexes": m0036,
+"20261124215108_perf_indexes_2": m0037
 }
   }
   

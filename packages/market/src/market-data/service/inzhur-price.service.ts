@@ -47,14 +47,16 @@ export class InzhurPriceService extends Context.Service<InzhurPriceService>()('@
 
         const fetchPrices = yield* Effect.cachedWithTTL(
             Effect.gen(function* () {
-                const client = (yield* HttpClient.HttpClient).pipe(
-                    HttpClient.filterStatusOk,
-                    HttpClient.transformResponse(Effect.timeout(fetchTimeoutMs)),
-                    HttpClient.retryTransient({ retryOn: 'errors-only', times: 2, schedule: Schedule.exponential(500) })
+                const client = (yield* HttpClient.HttpClient).pipe(HttpClient.filterStatusOk);
+                const html = yield* client.get(pageUrl).pipe(
+                    Effect.flatMap(response => response.text),
+                    Effect.timeout(fetchTimeoutMs),
+                    Effect.retry({
+                        times: 2,
+                        schedule: Schedule.exponential(500),
+                        while: HttpClient.isTransientError
+                    })
                 );
-                const response = yield* client.get(pageUrl);
-
-                const html = yield* response.text;
 
                 return yield* parsePrices(html);
             }).pipe(Effect.withSpan('InzhurPriceService.fetchPrices')),

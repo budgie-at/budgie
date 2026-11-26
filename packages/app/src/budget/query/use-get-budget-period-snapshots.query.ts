@@ -1,6 +1,9 @@
 import { BudgetPeriodSnapshotRepository } from '@budgie/budget';
 import { BudgetPeriodCategorySnapshotEntityTable, BudgetPeriodSnapshotEntityTable } from '@budgie/contracts';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
+import * as Atom from 'effect/reactivity/Atom';
+
+import { isPositiveNumber } from '@rnw-community/shared';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
@@ -15,6 +18,8 @@ interface UseGetBudgetPeriodSnapshotsResult {
 const HISTORY_CLOSED_PERIOD_COUNT = 5;
 const EMPTY_SNAPSHOTS: readonly BudgetPeriodSnapshotWithCategoriesEntityInterface[] = [];
 
+const emptyBudgetPeriodSnapshotsAtom = Atom.make(AsyncResult.success(EMPTY_SNAPSHOTS));
+
 const budgetPeriodSnapshotsAtom = databaseQueryFamily(
     [BudgetPeriodSnapshotEntityTable, BudgetPeriodCategorySnapshotEntityTable],
     BudgetPeriodSnapshotRepository,
@@ -22,7 +27,12 @@ const budgetPeriodSnapshotsAtom = databaseQueryFamily(
 );
 
 export const useGetBudgetPeriodSnapshotsQuery = (budgetId: number): UseGetBudgetPeriodSnapshotsResult => {
-    const result = useLiveAtomValue(budgetPeriodSnapshotsAtom(budgetId));
+    const shouldQuery = isPositiveNumber(budgetId);
+    const result = useLiveAtomValue(shouldQuery ? budgetPeriodSnapshotsAtom(budgetId) : emptyBudgetPeriodSnapshotsAtom);
+
+    if (!shouldQuery) {
+        return { snapshots: EMPTY_SNAPSHOTS, isLoading: false };
+    }
 
     if (AsyncResult.isInitial(result)) {
         return { snapshots: EMPTY_SNAPSHOTS, isLoading: true };

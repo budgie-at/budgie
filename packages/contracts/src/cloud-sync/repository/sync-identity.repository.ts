@@ -1,4 +1,5 @@
 import { asc, isNull, sql } from 'drizzle-orm';
+import * as Arr from 'effect/Array';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -125,14 +126,22 @@ export class SyncIdentityRepository extends Context.Service<SyncIdentityReposito
                     Db.mutation(
                         { type: 'update', tables: [table.name] },
                         Effect.forEach(
-                            assignments,
-                            ({ rowid, syncId }) =>
-                                Db.query(db =>
-                                    db.$client.unsafe(`UPDATE ${table.name} SET sync_id = ? WHERE rowid = ? AND sync_id IS NULL`, [
-                                        syncId,
-                                        rowid
-                                    ])
-                                ),
+                            Arr.chunksOf(assignments, 200),
+                            chunk => {
+                                const caseBranches = chunk.map(() => 'WHEN ? THEN ?').join(' ');
+                                const rowidPlaceholders = chunk.map(() => '?').join(', ');
+                                const params = [
+                                    ...chunk.flatMap(({ rowid, syncId }) => [rowid, syncId]),
+                                    ...chunk.map(({ rowid }) => rowid)
+                                ];
+
+                                return Db.query(db =>
+                                    db.$client.unsafe(
+                                        `UPDATE ${table.name} SET sync_id = CASE rowid ${caseBranches} END WHERE rowid IN (${rowidPlaceholders}) AND sync_id IS NULL`,
+                                        params
+                                    )
+                                );
+                            },
                             { discard: true }
                         )
                     )

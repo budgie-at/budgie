@@ -43,6 +43,7 @@ export const buildTransferPairRankedCandidateBaseSql = scopedSql`
                     expense_tx.external_id as expenseTransactionExternalId,
                     expense_tx.operated_at as expenseOperatedAt,
                     expense_account.title as expenseAccountTitle,
+                    expense_account.iban as expenseAccountIban,
                     expense_account.sync_zone as expenseAccountSyncZone,
                     expense_account.type as expenseAccountType,
                     expense_account.instrument_id as expenseInstrumentId,
@@ -108,6 +109,7 @@ export const buildTransferPairRankedCandidateBaseSql = scopedSql`
                     income_tx.external_id as incomeTransactionExternalId,
                     income_tx.operated_at as incomeOperatedAt,
                     income_account.title as incomeAccountTitle,
+                    income_account.iban as incomeAccountIban,
                     income_account.sync_zone as incomeAccountSyncZone,
                     income_account.type as incomeAccountType,
                     income_account.instrument_id as incomeInstrumentId,
@@ -161,15 +163,11 @@ export const buildTransferPairRankedCandidateBaseSql = scopedSql`
                     CASE
                         WHEN expense_entries.expenseEntryToIban IS NOT NULL
                             AND expense_entries.expenseEntryToIban != ''
-                            AND expense_entries.expenseEntryToIban = (
-                                SELECT iban FROM accounts WHERE id = income_entries.incomeAccountId AND deleted_at IS NULL
-                            )
+                            AND expense_entries.expenseEntryToIban = income_entries.incomeAccountIban
                         THEN 1
                         WHEN income_entries.incomeEntryToIban IS NOT NULL
                             AND income_entries.incomeEntryToIban != ''
-                            AND income_entries.incomeEntryToIban = (
-                                SELECT iban FROM accounts WHERE id = expense_entries.expenseAccountId AND deleted_at IS NULL
-                            )
+                            AND income_entries.incomeEntryToIban = expense_entries.expenseAccountIban
                         THEN 1
                         ELSE 0
                     END as ibanMatch,

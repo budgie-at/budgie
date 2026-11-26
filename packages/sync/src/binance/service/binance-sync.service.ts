@@ -1,4 +1,4 @@
-import { AccountRepository, SyncModeEnum, SyncRepository } from '@budgie/contracts';
+import { AccountRepository, Db, SyncModeEnum, SyncRepository } from '@budgie/contracts';
 import { AccountBalanceIncrementalService } from '@budgie/ledger';
 import { getUnixTime } from 'date-fns/getUnixTime';
 import { min } from 'date-fns/min';
@@ -484,11 +484,8 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                 run.tokenRuns.size > 0 && [...run.tokenRuns.values()].every(tokenRun => tokenRun.sourcesSynced && tokenRun.transfersSynced),
             isRunDeferred,
             isRetryableError: error =>
-                !(
-                    Schema.is(SyncUnauthorizedError)(error) ||
-                    Schema.is(SyncInvalidResponseError)(error) ||
-                    Schema.is(SyncRegionUnavailableError)(error) ||
-                    Schema.is(SyncDeferredError)(error)
+                ![SyncUnauthorizedError, SyncInvalidResponseError, SyncRegionUnavailableError, SyncDeferredError].some(schema =>
+                    Schema.is(schema)(error)
                 ),
             isCredentialWideError: error => Schema.is(SyncUnauthorizedError)(error),
             shouldKeepSyncsEnabledAfterError: error =>
@@ -535,12 +532,17 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                     (yield* client.getAccounts()).filter(exchangeAccount => externalIds.includes(exchangeAccount.id))
                 );
                 const accountUid = yield* client.getAccountUid();
-                const integration = yield* binanceAccountService.resolveSetupIntegration(token, accountUid);
 
-                for (const resolvableAccount of resolvableAccounts) {
-                    const account = yield* binanceAccountService.setupAccount(resolvableAccount, integration.id);
-                    yield* createOrUpdateSync(account.id, token);
-                }
+                yield* Db.transaction(
+                    Effect.gen(function* () {
+                        const integration = yield* binanceAccountService.resolveSetupIntegration(token, accountUid);
+
+                        for (const resolvableAccount of resolvableAccounts) {
+                            const account = yield* binanceAccountService.setupAccount(resolvableAccount, integration.id);
+                            yield* createOrUpdateSync(account.id, token);
+                        }
+                    })
+                );
 
                 if (isNotEmptyArray(resolvableAccounts)) {
                     yield* pollingSyncService.requestSync();

@@ -40,7 +40,7 @@ export default function AccountDetails() {
 
     const { account, isLoading } = useGetAccountByIdQuery(id);
     const { balance } = useAccountBalanceQuery(id);
-    const debtProgressSummary = useDebtAccountProgressSummaryQuery(id);
+    const debtProgressSummary = useDebtAccountProgressSummaryQuery(account?.type === AccountTypeEnum.DEBT ? id : null);
     const isStaticHeader = useIsStaticAccountDetailsHeader();
 
     if (!isDefined(account)) {

@@ -27,7 +27,6 @@ import { categoryUsageAtom } from '@app/category/query/use-categories-with-usage
 import { categoryByIdAtom } from '@app/category/query/use-get-category-by-id.query';
 import { nonSystemCategoriesAtom } from '@app/category/query/use-non-system-categories.query';
 import { searchCategoriesAtom } from '@app/category/query/use-search-categories.query';
-import { exchangeRatesUpdatedAtAtom } from '@app/exchange-rate/query/use-exchange-rates-updated-at.query';
 import { rateByBaseAndQuoteIdsAtom } from '@app/exchange-rate/query/use-get-rates-by-base-and-quote-ids.query';
 import { installmentPlanScheduleAtom } from '@app/installment-plan/query/use-installment-plan-schedule.query';
 import { instrumentByIdAtom } from '@app/instrument/query/use-get-instrument-by-id.query';
@@ -37,7 +36,6 @@ import { recentMarketPricesAtom } from '@app/market-data/query/use-instrument-ma
 import { instrumentPositionEntriesAtom } from '@app/market-data/query/use-instrument-positions.query';
 import { allMccCategoriesAtom } from '@app/mcc-category/query/use-get-all-mcc-categories.query';
 import { mccCategoryByIdAtom } from '@app/mcc-category/query/use-get-mcc-category-by-id.query';
-import { accountCountAtom as onboardingAccountCountAtom } from '@app/onboarding/hook/use-is-onboarding-active.hook';
 import { recurringCalendarAtom } from '@app/recurring/hook/use-recurring-calendar.hook';
 import { enabledRulesAtom } from '@app/rule/constant/enabled-rules-atom.constant';
 import { allRulesAtom } from '@app/rule/query/use-get-all-rules.query';
@@ -211,7 +209,6 @@ const liveAtoms = ({
     nonSystemCategories: nonSystemCategoriesAtom([EN, PERSONAL_SYNC_ZONE]),
     searchCategories: searchCategoriesAtom(['', true, EN, PERSONAL_SYNC_ZONE]),
     categoryUsage: categoryUsageAtom,
-    exchangeRatesUpdatedAt: exchangeRatesUpdatedAtAtom,
     rateByBaseAndQuoteIds: rateByBaseAndQuoteIdsAtom([BASE_INSTRUMENT_ID, 2]),
     installmentPlanSchedule: installmentPlanScheduleAtom(installmentAccount.id),
     instrumentById: instrumentByIdAtom(BASE_INSTRUMENT_ID),
@@ -222,7 +219,6 @@ const liveAtoms = ({
     recentMarketPrices: recentMarketPricesAtom([BASE_INSTRUMENT_ID, 2]),
     allMccCategories: allMccCategoriesAtom,
     mccCategoryById: mccCategoryByIdAtom(1),
-    onboardingAccountCount: onboardingAccountCountAtom,
     enabledRules: enabledRulesAtom,
     allRules: allRulesAtom(EN),
     ruleById: ruleByIdAtom(1),

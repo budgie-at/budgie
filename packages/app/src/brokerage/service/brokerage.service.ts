@@ -222,8 +222,28 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
             fundingTitle: string,
             accountIds?: readonly number[]
         ) {
+            if (isDefined(accountIds) && isEmptyArray(accountIds)) {
+                return;
+            }
+
+            const accountIdSet = isDefined(accountIds) ? new Set(accountIds) : null;
+            const candidateIntegrationIds = isDefined(accountIdSet)
+                ? new Set(
+                      (yield* accountRepository.findByIds([...accountIdSet]))
+                          .filter(account => account.type === AccountTypeEnum.STOCKS)
+                          .map(account => account.integrationId)
+                          .filter(isDefined)
+                  )
+                : null;
+
+            if (isDefined(candidateIntegrationIds) && !isPositiveNumber(candidateIntegrationIds.size)) {
+                return;
+            }
+
             const integrations = (yield* bankIntegrationRepository.findActive).filter(
-                integration => integration.provider === ExternalSourceEnum.MANUAL
+                integration =>
+                    integration.provider === ExternalSourceEnum.MANUAL &&
+                    (!isDefined(candidateIntegrationIds) || candidateIntegrationIds.has(integration.id))
             );
 
             if (isEmptyArray(integrations)) {
@@ -231,7 +251,6 @@ export class BrokerageService extends Context.Service<BrokerageService>()('@budg
             }
 
             const accounts = yield* Effect.forEach(integrations, integration => accountRepository.findByIntegrationId(integration.id));
-            const accountIdSet = isDefined(accountIds) ? new Set(accountIds) : null;
             const cashAccounts = accounts
                 .flat()
                 .filter(account => isBrokerageCashAccount(account) && (!isDefined(accountIdSet) || accountIdSet.has(account.id)));

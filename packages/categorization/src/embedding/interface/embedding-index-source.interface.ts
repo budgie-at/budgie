@@ -7,5 +7,5 @@ export interface EmbeddingIndexSourceInterface<TContext extends EmbeddingPending
     readonly countPending: Effect.Effect<number, DbError, Db>;
     readonly buildPrompt: (context: TContext) => string;
     readonly upsert: (context: TContext, embedding: Uint8Array, dimensions: number) => Effect.Effect<number | null, DbError, Db>;
-    readonly replaceTags: (embeddingId: number, tagIds: number[]) => Effect.Effect<void, DbError, Db>;
+    readonly replaceTags: (entries: readonly (readonly [number, readonly number[]])[]) => Effect.Effect<void, DbError, Db>;
 }

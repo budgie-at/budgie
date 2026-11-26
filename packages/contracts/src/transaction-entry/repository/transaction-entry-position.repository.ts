@@ -3,6 +3,8 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
+import { isEmptyArray } from '@rnw-community/shared';
+
 import { PRECISION } from '../../@generic/constant/precision.constant';
 import { transactionFilters } from '../../@generic/repository/base-transaction-filter.repository';
 import { Db } from '../../@generic/service/db.service';
@@ -15,6 +17,7 @@ import { TransactionEntryTypeEnum } from '../enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../table/transaction-entry-entity.table';
 
 import type { InstrumentPositionEntryRowInterface } from '../interface/instrument-position-entry-row.interface';
+import type { SQL } from 'drizzle-orm';
 
 export class TransactionEntryPositionRepository extends Context.Service<TransactionEntryPositionRepository>()(
     '@budgie/contracts/TransactionEntryPositionRepository',
@@ -26,87 +29,134 @@ export class TransactionEntryPositionRepository extends Context.Service<Transact
                 TransactionEntryTypeEnum.FEE
             ] as const;
 
+            const findCashReturnsByAccountIds = (accountIds: readonly number[], baseInstrumentId: number) =>
+                isEmptyArray(accountIds)
+                    ? Effect.succeed(new Map<number, number>())
+                    : Db.query(db =>
+                          db
+                              .select({
+                                  accountId: AccountEntityTable.id,
+                                  amount: sql<number>`COALESCE(SUM(CASE WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT} THEN ${TransactionEntryEntityTable.baseAmount} ELSE -${TransactionEntryEntityTable.baseAmount} END), 0) * 1.0 / ${PRECISION}`
+                              })
+                              .from(TransactionEntryEntityTable)
+                              .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+                              .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
+                              .where(
+                                  and(
+                                      inArray(AccountEntityTable.id, [...accountIds]),
+                                      eq(TransactionEntryEntityTable.baseInstrumentId, baseInstrumentId),
+                                      inArray(TransactionEntityTable.type, [TransactionTypeEnum.INCOME, TransactionTypeEnum.EXPENSE]),
+                                      transactionFilters.buildLedgerEntryCondition(),
+                                      isNull(AccountEntityTable.deletedAt),
+                                      isNull(TransactionEntityTable.deletedAt)
+                                  )
+                              )
+                              .groupBy(AccountEntityTable.id)
+                      ).pipe(Effect.map(rows => new Map(rows.map(row => [row.accountId, row.amount] as const))));
+
+            const buildPositionEntryFields = (baseInstrumentId: number) => ({
+                type: TransactionEntryEntityTable.type,
+                isAdjustment: sql<boolean>`${TransactionEntityTable.type} = ${TransactionTypeEnum.ADJUSTMENT}`.mapWith(Boolean),
+                accountId: AccountEntityTable.id,
+                isActive: AccountEntityTable.isActive,
+                transferAccountId: sql<number | null>`(
+                    SELECT opposite.account_id FROM transaction_entries opposite
+                    INNER JOIN accounts destination ON destination.id = opposite.account_id
+                    WHERE ${TransactionEntityTable.type} = ${TransactionTypeEnum.TRANSFER}
+                      AND ${TransactionEntryEntityTable.type} IN (${TransactionEntryTypeEnum.DEBIT}, ${TransactionEntryTypeEnum.CREDIT})
+                      AND opposite.transaction_id = ${TransactionEntryEntityTable.transactionId}
+                      AND opposite.type IN (${TransactionEntryTypeEnum.DEBIT}, ${TransactionEntryTypeEnum.CREDIT})
+                      AND opposite.type != ${TransactionEntryEntityTable.type}
+                      AND opposite.deleted_at IS NULL AND opposite.original_transaction_id IS NULL
+                      AND destination.deleted_at IS NULL
+                      AND ${isUnitAccountSql(sql`destination.type`, sql`destination.instrument_id`)}
+                      AND destination.instrument_id = ${AccountEntityTable.instrumentId}
+                    LIMIT 1
+                )`,
+                amount: TransactionEntryEntityTable.amount,
+                feeBaseAmount: sql<
+                    number | null
+                >`(SELECT SUM(fee.base_amount) FROM transaction_entries fee INNER JOIN accounts fee_account ON fee_account.id = fee.account_id WHERE fee.transaction_id = ${TransactionEntryEntityTable.transactionId} AND fee.type = ${TransactionEntryTypeEnum.FEE} AND fee.base_instrument_id = ${baseInstrumentId} AND fee.deleted_at IS NULL AND fee.original_transaction_id IS NULL AND fee_account.instrument_id != ${AccountEntityTable.instrumentId})`,
+                baseAmount: sql<InstrumentPositionEntryRowInterface['baseAmount']>`
+                    CASE
+                        WHEN ${TransactionEntityTable.type} = ${TransactionTypeEnum.ADJUSTMENT}
+                        THEN CASE WHEN ${inArray(AccountEntityTable.type, CRYPTO_ACCOUNT_TYPES)} THEN NULL ELSE 0 END
+                        WHEN ${TransactionEntryEntityTable.baseInstrumentId} = ${baseInstrumentId}
+                         AND ${TransactionEntityTable.type} != ${TransactionTypeEnum.ADJUSTMENT}
+                        THEN ${TransactionEntryEntityTable.baseAmount}
+                        ELSE NULL
+                    END
+                `
+            });
+
+            const buildPositionEntriesWhere = (instrumentCondition: SQL) =>
+                and(
+                    isUnitAccountSql(),
+                    instrumentCondition,
+                    isNull(AccountEntityTable.deletedAt),
+                    isNull(TransactionEntityTable.deletedAt),
+                    isNull(TransactionEntryEntityTable.deletedAt),
+                    inArray(TransactionEntryEntityTable.type, POSITION_ENTRY_TYPES),
+                    transactionFilters.buildRefundAwareLedgerEntryCondition()
+                );
+
             return {
                 findCashReturn: (accountIds: readonly number[], baseInstrumentId: number) =>
-                    Db.query(db =>
-                        db
-                            .select({
-                                amount: sql<number>`COALESCE(SUM(CASE WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT} THEN ${TransactionEntryEntityTable.baseAmount} ELSE -${TransactionEntryEntityTable.baseAmount} END), 0) * 1.0 / ${PRECISION}`
-                            })
-                            .from(TransactionEntryEntityTable)
-                            .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
-                            .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
-                            .where(
-                                and(
-                                    inArray(AccountEntityTable.id, accountIds),
-                                    eq(TransactionEntryEntityTable.baseInstrumentId, baseInstrumentId),
-                                    inArray(TransactionEntityTable.type, [TransactionTypeEnum.INCOME, TransactionTypeEnum.EXPENSE]),
-                                    transactionFilters.buildLedgerEntryCondition(),
-                                    isNull(AccountEntityTable.deletedAt),
-                                    isNull(TransactionEntityTable.deletedAt)
-                                )
-                            )
-                    ).pipe(Effect.map(([row]) => row.amount)),
+                    findCashReturnsByAccountIds(accountIds, baseInstrumentId).pipe(
+                        Effect.map(returnsByAccountId => [...returnsByAccountId.values()].reduce((sum, amount) => sum + amount, 0))
+                    ),
+
+                findCashReturnsByAccountIds,
 
                 findInstrumentPositionEntries: (instrumentId: number, baseInstrumentId: number) =>
                     Db.query(db =>
                         db
-                            .select({
-                                type: TransactionEntryEntityTable.type,
-                                isAdjustment: sql<boolean>`${TransactionEntityTable.type} = ${TransactionTypeEnum.ADJUSTMENT}`.mapWith(
-                                    Boolean
-                                ),
-                                accountId: AccountEntityTable.id,
-                                isActive: AccountEntityTable.isActive,
-                                transferAccountId: sql<number | null>`(
-                                    SELECT opposite.account_id FROM transaction_entries opposite
-                                    INNER JOIN accounts destination ON destination.id = opposite.account_id
-                                    WHERE ${TransactionEntityTable.type} = ${TransactionTypeEnum.TRANSFER}
-                                      AND ${TransactionEntryEntityTable.type} IN (${TransactionEntryTypeEnum.DEBIT}, ${TransactionEntryTypeEnum.CREDIT})
-                                      AND opposite.transaction_id = ${TransactionEntryEntityTable.transactionId}
-                                      AND opposite.type IN (${TransactionEntryTypeEnum.DEBIT}, ${TransactionEntryTypeEnum.CREDIT})
-                                      AND opposite.type != ${TransactionEntryEntityTable.type}
-                                      AND opposite.deleted_at IS NULL AND opposite.original_transaction_id IS NULL
-                                      AND destination.deleted_at IS NULL
-                                      AND ${isUnitAccountSql(sql`destination.type`, sql`destination.instrument_id`)}
-                                      AND destination.instrument_id = ${instrumentId}
-                                    LIMIT 1
-                                )`,
-                                amount: TransactionEntryEntityTable.amount,
-                                feeBaseAmount: sql<
-                                    number | null
-                                >`(SELECT SUM(fee.base_amount) FROM transaction_entries fee INNER JOIN accounts fee_account ON fee_account.id = fee.account_id WHERE fee.transaction_id = ${TransactionEntryEntityTable.transactionId} AND fee.type = ${TransactionEntryTypeEnum.FEE} AND fee.base_instrument_id = ${baseInstrumentId} AND fee.deleted_at IS NULL AND fee.original_transaction_id IS NULL AND fee_account.instrument_id != ${instrumentId})`,
-                                baseAmount: sql<InstrumentPositionEntryRowInterface['baseAmount']>`
-                        CASE
-                            WHEN ${TransactionEntityTable.type} = ${TransactionTypeEnum.ADJUSTMENT}
-                            THEN CASE WHEN ${inArray(AccountEntityTable.type, CRYPTO_ACCOUNT_TYPES)} THEN NULL ELSE 0 END
-                            WHEN ${TransactionEntryEntityTable.baseInstrumentId} = ${baseInstrumentId}
-                             AND ${TransactionEntityTable.type} != ${TransactionTypeEnum.ADJUSTMENT}
-                            THEN ${TransactionEntryEntityTable.baseAmount}
-                            ELSE NULL
-                        END
-                    `
-                            })
+                            .select(buildPositionEntryFields(baseInstrumentId))
                             .from(TransactionEntryEntityTable)
                             .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
                             .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
-                            .where(
-                                and(
-                                    isUnitAccountSql(),
-                                    eq(AccountEntityTable.instrumentId, instrumentId),
-                                    isNull(AccountEntityTable.deletedAt),
-                                    isNull(TransactionEntityTable.deletedAt),
-                                    isNull(TransactionEntryEntityTable.deletedAt),
-                                    inArray(TransactionEntryEntityTable.type, POSITION_ENTRY_TYPES),
-                                    transactionFilters.buildRefundAwareLedgerEntryCondition()
-                                )
-                            )
+                            .where(buildPositionEntriesWhere(eq(AccountEntityTable.instrumentId, instrumentId)))
                             .orderBy(
                                 asc(TransactionEntityTable.operatedAt),
                                 asc(TransactionEntityTable.id),
                                 asc(TransactionEntryEntityTable.id)
                             )
-                    )
+                    ),
+
+                findInstrumentPositionEntriesByInstrumentIds: (instrumentIds: readonly number[], baseInstrumentId: number) =>
+                    isEmptyArray(instrumentIds)
+                        ? Effect.succeed(new Map<number, InstrumentPositionEntryRowInterface[]>())
+                        : Db.query(db =>
+                              db
+                                  .select({
+                                      instrumentId: AccountEntityTable.instrumentId,
+                                      ...buildPositionEntryFields(baseInstrumentId)
+                                  })
+                                  .from(TransactionEntryEntityTable)
+                                  .innerJoin(
+                                      TransactionEntityTable,
+                                      eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id)
+                                  )
+                                  .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
+                                  .where(buildPositionEntriesWhere(inArray(AccountEntityTable.instrumentId, [...instrumentIds])))
+                                  .orderBy(
+                                      asc(TransactionEntityTable.operatedAt),
+                                      asc(TransactionEntityTable.id),
+                                      asc(TransactionEntryEntityTable.id)
+                                  )
+                          ).pipe(
+                              Effect.map(rows => {
+                                  const grouped = new Map<number, InstrumentPositionEntryRowInterface[]>(
+                                      instrumentIds.map(instrumentId => [instrumentId, []])
+                                  );
+
+                                  for (const { instrumentId, ...entry } of rows) {
+                                      grouped.get(instrumentId)?.push(entry);
+                                  }
+
+                                  return grouped;
+                              })
+                          )
             };
         })
     }

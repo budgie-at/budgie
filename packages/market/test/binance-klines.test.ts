@@ -94,8 +94,8 @@ describe('Binance klines client', () => {
         }).pipe(provideClient(() => invalidSymbol))
     );
 
-    it.effect('retries 429 and 451 responses', () => {
-        const statuses = [429, 451, 200];
+    it.effect('retries transient 429 and 503 responses', () => {
+        const statuses = [429, 503, 200];
         let calls = 0;
 
         return Effect.gen(function* () {
@@ -117,16 +117,23 @@ describe('Binance klines client', () => {
         );
     });
 
-    it.effect('gives up on repeated 451 without reporting an invalid symbol', () =>
-        Effect.gen(function* () {
+    it.effect('does not retry 451 without reporting an invalid symbol', () => {
+        let calls = 0;
+
+        return Effect.gen(function* () {
             const client = yield* BinanceKlinesClient;
-            const fiber = yield* Effect.forkChild(client.fetchInstrumentDailyOpens('BTC', '2024-01-01', '2024-01-01').pipe(Effect.flip));
+            const error = yield* Effect.flip(client.fetchInstrumentDailyOpens('BTC', '2024-01-01', '2024-01-01'));
 
-            yield* TestClock.adjust('10 seconds');
+            expect(Predicate.isTagged(error, 'BinanceKlinesInvalidSymbolError')).toBe(false);
+            expect(calls).toBe(1);
+        }).pipe(
+            provideClient(() => {
+                calls += 1;
 
-            expect(Predicate.isTagged(yield* Fiber.join(fiber), 'BinanceKlinesInvalidSymbolError')).toBe(false);
-        }).pipe(provideClient(() => ({ status: 451, body: {} })))
-    );
+                return { status: 451, body: {} };
+            })
+        );
+    });
 });
 
 const KlinesLayer = (respond: (url: URL) => { readonly status: number; readonly body: unknown }) =>

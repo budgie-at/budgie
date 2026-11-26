@@ -36,6 +36,36 @@ const selectStaleIds = <TUpsert>(config: EmbeddingQueryConfigInterface<TUpsert>,
             )
     );
 
+const replaceEmbeddingTags = Effect.fn('EmbeddingRepository.replaceTags')(function* <TUpsert>(
+    config: EmbeddingQueryConfigInterface<TUpsert>,
+    entries: readonly (readonly [number, readonly number[]])[]
+) {
+    if (isEmptyArray(entries)) {
+        return;
+    }
+
+    const tagIdsByEmbeddingId = new Map(entries);
+    const embeddingIds = [...tagIdsByEmbeddingId.keys()];
+
+    yield* Db.query(db => db.delete(config.tagTable).where(inArray(config.foreignKeyColumn, embeddingIds)));
+
+    const tagRows = [...tagIdsByEmbeddingId.entries()].flatMap(([embeddingId, tagIds]) =>
+        [...new Set(tagIds)].map(tagId => config.createTagRow(embeddingId, tagId))
+    );
+
+    if (!isNotEmptyArray(tagRows)) {
+        return;
+    }
+
+    const tagInsertChunkSize = 400;
+
+    for (let start = 0; start < tagRows.length; start += tagInsertChunkSize) {
+        const chunk = tagRows.slice(start, start + tagInsertChunkSize);
+
+        yield* Db.query(db => db.insert(config.tagTable).values(chunk));
+    }
+});
+
 export const makeEmbeddingRepository = <TUpsert extends { readonly dimensions: number; readonly embedding: Uint8Array }>(
     config: EmbeddingQueryConfigInterface<TUpsert>
 ) => ({
@@ -83,13 +113,7 @@ export const makeEmbeddingRepository = <TUpsert extends { readonly dimensions: n
 
         return row.id;
     }),
-    replaceTags: Effect.fn('EmbeddingRepository.replaceTags')(function* (embeddingId: number, tagIds: number[]) {
-        yield* Db.query(db => db.delete(config.tagTable).where(eq(config.foreignKeyColumn, embeddingId)));
-
-        if (isNotEmptyArray(tagIds)) {
-            yield* Db.query(db => db.insert(config.tagTable).values(tagIds.map(tagId => config.createTagRow(embeddingId, tagId))));
-        }
-    }),
+    replaceTags: (entries: readonly (readonly [number, readonly number[]])[]) => replaceEmbeddingTags(config, entries),
     deleteStaleCategories: Effect.fn('EmbeddingRepository.deleteStaleCategories')(function* (
         transactionId: number,
         previousCategoryIds: number[]

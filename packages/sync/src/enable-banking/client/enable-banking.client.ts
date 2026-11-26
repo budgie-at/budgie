@@ -38,6 +38,7 @@ export class EnableBankingClient extends BaseSyncProviderClient {
     ]);
 
     private static readonly DEFAULT_RETRY_AFTER_MS = 5 * 60 * 1000;
+    private static readonly MAX_BOOKED_TRANSACTIONS_PAGES = 200;
     private static readonly MILLISECONDS_PER_SECOND = 1000;
     private static readonly SERVER_ERROR_STATUS = 500;
 
@@ -92,25 +93,26 @@ export class EnableBankingClient extends BaseSyncProviderClient {
 
         return Effect.gen({ self: this }, function* () {
             const transactions: EnableBankingTransactionApiInterface[] = [];
+            const seenContinuationKeys = new Set<string>();
             let continuationKey: string | null = null;
+            let pageCount = 0;
 
             do {
-                const parameters: string[] = [
-                    'transaction_status=BOOK',
-                    ...(query.isLongest ? ['strategy=longest'] : []),
-                    ...(isDefined(query.dateFrom) ? [`date_from=${query.dateFrom}`] : []),
-                    ...(isDefined(continuationKey) ? [`continuation_key=${encodeURIComponent(continuationKey)}`] : [])
-                ];
-                const page: typeof EnableBankingTransactionPageApiSchema.Type = yield* this.fetchSanitized(
-                    EnableBankingTransactionPageApiSchema,
-                    `/accounts/${encodeURIComponent(accountUid)}/transactions?${parameters.join('&')}`
-                );
-                transactions.push(...page.transactions);
-
-                if (isNotEmptyString(page.continuation_key) && page.continuation_key === continuationKey) {
-                    return yield* SyncInvalidResponseError.make({ provider, message: 'Enable Banking repeated a transactions page' });
+                if (pageCount >= EnableBankingClient.MAX_BOOKED_TRANSACTIONS_PAGES) {
+                    return yield* SyncInvalidResponseError.make({
+                        provider,
+                        message: 'Enable Banking exceeded the maximum transactions page limit'
+                    });
                 }
-                continuationKey = isNotEmptyString(page.continuation_key) ? page.continuation_key : null;
+
+                const page: typeof EnableBankingTransactionPageApiSchema.Type = yield* this.fetchBookedTransactionsPage(
+                    accountUid,
+                    query,
+                    continuationKey
+                );
+                pageCount += 1;
+                transactions.push(...page.transactions);
+                continuationKey = yield* this.advanceContinuationKey(seenContinuationKeys, page.continuation_key);
             } while (isDefined(continuationKey));
 
             return transactions;
@@ -160,6 +162,36 @@ export class EnableBankingClient extends BaseSyncProviderClient {
         }
 
         return SyncInvalidResponseError.make({ provider, message: 'Enable Banking rejected the request', apiCode });
+    }
+
+    private fetchBookedTransactionsPage(accountUid: string, query: EnableBankingTransactionQueryInterface, continuationKey: string | null) {
+        const parameters: string[] = [
+            'transaction_status=BOOK',
+            ...(query.isLongest ? ['strategy=longest'] : []),
+            ...(isDefined(query.dateFrom) ? [`date_from=${query.dateFrom}`] : []),
+            ...(isDefined(continuationKey) ? [`continuation_key=${encodeURIComponent(continuationKey)}`] : [])
+        ];
+
+        return this.fetchSanitized(
+            EnableBankingTransactionPageApiSchema,
+            `/accounts/${encodeURIComponent(accountUid)}/transactions?${parameters.join('&')}`
+        );
+    }
+
+    private advanceContinuationKey(seenContinuationKeys: Set<string>, nextKey: string | null | undefined) {
+        if (!isNotEmptyString(nextKey)) {
+            return Effect.succeed(null);
+        }
+
+        if (seenContinuationKeys.has(nextKey)) {
+            return Effect.fail(
+                SyncInvalidResponseError.make({ provider: this.provider, message: 'Enable Banking repeated a transactions page' })
+            );
+        }
+
+        seenContinuationKeys.add(nextKey);
+
+        return Effect.succeed(nextKey);
     }
 
     private fetchSanitized<S extends Schema.ConstraintDecoder<unknown>>(

@@ -1,10 +1,11 @@
 import { ConsolidationCandidateRepository, ConsolidationCoordinatorService } from '@budgie/consolidation';
+import { Db } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 import * as Semaphore from 'effect/Semaphore';
 
-import { isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { LedgerWorkload } from '../../@generic/port/ledger-workload.port';
 import { TransferConsolidationBankFlow } from '../../@generic/port/transfer-consolidation-bank-flow.port';
@@ -40,25 +41,33 @@ export class TransferConsolidationService extends Context.Service<TransferConsol
 
             const convertHouseholdTransfers = Effect.fnUntraced(function* (scope: ConsolidationScanScopeInterface | null) {
                 const candidates = yield* consolidationCandidateRepository.findHouseholdManualAccountTransferCandidates(scope);
-                let converted = 0;
 
-                for (const candidate of candidates) {
-                    const isConverted = yield* transactionTransferService
-                        .convertToTransferAccount(candidate.transactionId, candidate.targetAccountId)
-                        .pipe(
-                            Effect.catchTags({
-                                AccountNotFoundError: () => Effect.succeed(false),
-                                DebtTransferNotAllowedError: () => Effect.succeed(false),
-                                DepositNegativeBalanceError: () => Effect.succeed(false)
-                            })
-                        );
-
-                    if (isConverted) {
-                        converted += 1;
-                    }
+                if (!isNotEmptyArray(candidates)) {
+                    return 0;
                 }
 
-                return converted;
+                return yield* Db.transaction(
+                    Effect.gen(function* () {
+                        let converted = 0;
+
+                        for (const candidate of candidates) {
+                            const affectedAccountIds = yield* transactionTransferService
+                                .convertToTransferAccountWithoutBalanceSync(candidate.transactionId, candidate.targetAccountId)
+                                .pipe(
+                                    Effect.catchTags({
+                                        AccountNotFoundError: () => Effect.succeed(null),
+                                        DebtTransferNotAllowedError: () => Effect.succeed(null)
+                                    })
+                                );
+
+                            if (isDefined(affectedAccountIds)) {
+                                converted += 1;
+                            }
+                        }
+
+                        return converted;
+                    })
+                );
             });
 
             return {

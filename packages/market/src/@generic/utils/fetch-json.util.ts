@@ -11,12 +11,15 @@ export const fetchJson = Effect.fn('fetchJson')(function* <S extends Schema.Cons
     timeoutMs: number,
     urlParams: Record<string, string | number> = {}
 ) {
-    const client = (yield* HttpClient.HttpClient).pipe(
-        HttpClient.filterStatusOk,
-        HttpClient.transformResponse(Effect.timeout(timeoutMs)),
-        HttpClient.retryTransient({ retryOn: 'errors-only', times: 1, schedule: Schedule.exponential(300) })
-    );
-    const response = yield* client.get(url, { urlParams });
+    const client = (yield* HttpClient.HttpClient).pipe(HttpClient.filterStatusOk);
 
-    return yield* HttpClientResponse.schemaBodyJson(schema)(response);
+    return yield* client.get(url, { urlParams }).pipe(
+        Effect.flatMap(HttpClientResponse.schemaBodyJson(schema)),
+        Effect.timeout(timeoutMs),
+        Effect.retry({
+            times: 1,
+            schedule: Schedule.exponential(300),
+            while: HttpClient.isTransientError
+        })
+    );
 });

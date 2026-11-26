@@ -38,11 +38,9 @@ export class RuleService extends Context.Service<RuleService>()('@budgie/rules/R
                 .filter(action => action.type === RuleActionTypeEnum.CONVERT_TO_TRANSFER)
                 .map(action => action.accountId)
                 .filter(isDefined);
-            const accounts = yield* Effect.forEach(accountIds, accountId => accountRepository.findById(accountId), {
-                concurrency: 'unbounded'
-            });
+            const accounts = yield* accountRepository.findByIds(accountIds);
 
-            yield* assertTransferAccountsAreNotDebt(accounts.filter(isDefined));
+            yield* assertTransferAccountsAreNotDebt(accounts);
         });
 
         const create = Effect.fn('RuleService.create')(

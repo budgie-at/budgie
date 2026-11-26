@@ -16,4 +16,5 @@ export interface RateLookupsInterface {
         targetInstrumentId: number
     ) => Effect.Effect<{ readonly rate: number } | undefined, DbError, Db>;
     readonly findInstrumentByCode: (code: string) => Effect.Effect<InstrumentEntityInterface | undefined, DbError, Db>;
+    readonly findInstrumentById: (id: number) => Effect.Effect<InstrumentEntityInterface | undefined, DbError, Db>;
 }

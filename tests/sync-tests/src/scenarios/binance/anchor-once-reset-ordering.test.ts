@@ -50,13 +50,14 @@ describe('binance/anchor-once-reset-ordering', () => {
                 buildBinance.balance({ asset: 'ETH', free: '2' })
             ]);
 
-            const upsertSpy = vi.spyOn(accountBalanceRepository, 'upsert');
+            const bulkUpsertSpy = vi.spyOn(accountBalanceRepository, 'bulkUpsert');
 
             yield* binanceSyncService.sync();
 
-            expect(upsertSpy).toHaveBeenCalledTimes(2);
+            expect(bulkUpsertSpy).toHaveBeenCalledTimes(1);
+            expect(bulkUpsertSpy.mock.calls[0]?.[0]).toHaveLength(2);
 
-            upsertSpy.mockRestore();
+            bulkUpsertSpy.mockRestore();
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -76,13 +77,13 @@ describe('binance/anchor-once-reset-ordering', () => {
             resetBinanceSyncForResync();
             binanceStub.spotBalances([buildBinance.balance({ asset: 'BTC', free: '5' })]);
 
-            const upsertSpy = vi.spyOn(accountBalanceRepository, 'upsert');
+            const bulkUpsertSpy = vi.spyOn(accountBalanceRepository, 'bulkUpsert');
             yield* binanceSyncService.sync();
 
-            expect(upsertSpy).toHaveBeenCalled();
+            expect(bulkUpsertSpy).toHaveBeenCalledTimes(1);
             expect(yield* fetchCachedBalanceAmount(account.id)).toBe(5 * PRECISION);
 
-            upsertSpy.mockRestore();
+            bulkUpsertSpy.mockRestore();
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -122,14 +123,14 @@ describe('binance/anchor-once-reset-ordering', () => {
             const binanceSyncService = yield* BinanceSyncService;
 
             const { sync } = yield* setupBinanceFixture({ asset: 'BTC', mode: SyncModeEnum.BACKWARD });
-            const upsertSpy = vi.spyOn(accountBalanceRepository, 'upsert');
+            const bulkUpsertSpy = vi.spyOn(accountBalanceRepository, 'bulkUpsert');
 
             yield* binanceSyncService.sync(Date.now() - 1);
 
-            expect(upsertSpy).not.toHaveBeenCalled();
+            expect(bulkUpsertSpy).not.toHaveBeenCalled();
             expect(yield* fetchCachedBalanceAmount(sync.accountId)).toBeUndefined();
 
-            upsertSpy.mockRestore();
+            bulkUpsertSpy.mockRestore();
         }).pipe(Effect.provide(TestLayer))
     );
 });

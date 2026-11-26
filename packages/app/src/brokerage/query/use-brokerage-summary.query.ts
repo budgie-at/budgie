@@ -2,6 +2,7 @@ import { InstrumentTypeEnum } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
+import * as Atom from 'effect/reactivity/Atom';
 
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
@@ -17,6 +18,8 @@ import type { HomeAccountBalanceInterface } from '../../account/interface/home-a
 import type { BrokerageHoldingInterface } from '../interface/brokerage-holding.interface';
 import type { AccountWithSyncEntityInterface } from '@budgie/contracts';
 
+const zeroBrokerageCashReturnAtom = Atom.make(AsyncResult.success(0));
+
 export const useBrokerageSummaryQuery = (
     accounts: readonly AccountWithSyncEntityInterface[],
     balancesByAccountId: ReadonlyMap<number, HomeAccountBalanceInterface>
@@ -25,24 +28,31 @@ export const useBrokerageSummaryQuery = (
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const securities = accounts.filter(account => isListedSecurityType(account.instrument.type));
     const cashAccounts = accounts.filter(account => account.instrument.type === InstrumentTypeEnum.FIAT);
+    const instrumentIds = [...new Set(securities.map(account => account.instrumentId))].sort((left, right) => left - right);
+    const cashAccountIds = [...new Set(cashAccounts.map(account => account.id))].sort((left, right) => left - right);
     const positions = useInstrumentPositionsQuery(
-        securities.map(account => account.instrumentId),
+        instrumentIds,
         defaultInstrument.id,
         securities.map(account => account.id)
     );
+    const positionByInstrumentId = new Map(
+        instrumentIds.map((instrumentId, index) => [instrumentId, positions.at(index) ?? null] as const)
+    );
     const cashReturn = AsyncResult.getOrElse(
-        useLiveAtomValue(brokerageCashReturnAtom([cashAccounts.map(account => account.id), defaultInstrument.id])),
+        useLiveAtomValue(
+            isNotEmptyArray(cashAccountIds) ? brokerageCashReturnAtom([cashAccountIds, defaultInstrument.id]) : zeroBrokerageCashReturnAtom
+        ),
         () => 0
     );
 
     const getValue = (account: Pick<AccountWithSyncEntityInterface, 'id'>) => balancesByAccountId.get(account.id)?.convertedBalance ?? 0;
     const cash = cashAccounts.reduce((total, account) => total + getValue(account), 0);
     const { gain, percent, positionReturns } = calculatePortfolioReturn(
-        securities.map((account, index) => ({
+        securities.map(account => ({
             value: getValue(account),
             balance: balancesByAccountId.get(account.id)?.balance ?? 0,
             isValued: balancesByAccountId.get(account.id)?.isValued === true,
-            position: positions.at(index) ?? null
+            position: positionByInstrumentId.get(account.instrumentId) ?? null
         })),
         cash,
         cashReturn

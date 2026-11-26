@@ -13,5 +13,10 @@ export const SyncRecordEntityTable = sqliteTable(
         schemaVersion: int('schema_version', { mode: 'number' }).notNull().default(1),
         updatedAt: int('updated_at', { mode: 'timestamp' }).notNull().default(CURRENT_TIMESTAMP)
     },
-    table => [primaryKey({ columns: [table.syncZone, table.syncId] }), index('sync_record_sync_id_idx').on(table.syncId)]
+    table => [
+        primaryKey({ columns: [table.syncZone, table.syncId] }),
+        index('sync_record_sync_id_idx').on(table.syncId),
+        index('sync_record_type_idx').on(table.recordType),
+        index('sync_record_updated_at_idx').on(table.updatedAt)
+    ]
 );

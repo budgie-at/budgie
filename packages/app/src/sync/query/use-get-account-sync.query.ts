@@ -1,13 +1,8 @@
-import { SyncEntityTable, SyncRepository } from '@budgie/contracts';
 import * as Option from 'effect/Option';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
-import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
-
-const accountSyncAtom = databaseQueryFamily([SyncEntityTable], SyncRepository, (repository, accountId: number) =>
-    repository.getByAccountId(accountId)
-);
+import { accountSyncAtom } from '../hook/use-account-sync.hook';
 
 export const useGetAccountSync = (accountId: number) => {
     const result = useLiveAtomValue(accountSyncAtom(accountId));

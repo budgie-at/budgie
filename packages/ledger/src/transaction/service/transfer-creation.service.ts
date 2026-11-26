@@ -19,7 +19,7 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { AccountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { assertTransferAccountsAreNotDebt } from '../utils/assert-transfer-accounts-are-not-debt.util';
@@ -83,30 +83,7 @@ export class TransferCreationService extends Context.Service<TransferCreationSer
         });
 
         // eslint-disable-next-line @typescript-eslint/max-params -- Transfer persistence keeps positional arguments instead of a single-consumer param-bag interface
-        const persistTransfer = Effect.fnUntraced(function* (
-            transaction: TransactionEntityInterface,
-            input: TransactionCreateInputInterface,
-            primaryEntries: readonly TransactionEntryCreateEntityInterface[],
-            fromEntry: TransactionEntryCreateInputInterface,
-            toEntry: TransactionEntryCreateInputInterface,
-            additionalEntryValuations: Map<TransactionEntryCreateInputInterface, EntryBaseValuationInterface>
-        ) {
-            yield* transactionEntryRepository.bulkCreate([
-                ...primaryEntries,
-                ...buildAdditionalTransferEntries({
-                    entries: input.entries,
-                    fromEntry,
-                    toEntry,
-                    transactionId: transaction.id,
-                    valuations: additionalEntryValuations
-                })
-            ]);
-
-            yield* transactionTagsRepository.bulkCreate(transactionMapTagIdsToCreateEntities(input, transaction.id));
-        });
-
-        // eslint-disable-next-line @typescript-eslint/max-params -- Transfer persistence keeps positional arguments instead of a single-consumer param-bag interface
-        const persistPrimaryTransfer = Effect.fnUntraced(function* (
+        const buildPrimaryTransferEntries = Effect.fnUntraced(function* (
             transaction: TransactionEntityInterface,
             input: TransactionCreateInputInterface,
             fromEntry: TransactionEntryCreateInputInterface,
@@ -125,7 +102,7 @@ export class TransferCreationService extends Context.Service<TransferCreationSer
                 { concurrency: 'unbounded' }
             );
 
-            const primaryEntries = [
+            return [
                 buildPrimaryTransferEntry(
                     transaction.id,
                     fromEntry,
@@ -133,10 +110,15 @@ export class TransferCreationService extends Context.Service<TransferCreationSer
                     fromAmountInMicroUnits,
                     fromValuation
                 ),
-                buildPrimaryTransferEntry(transaction.id, toEntry, TransactionEntryTypeEnum.DEBIT, toAmountInMicroUnits, toValuation)
+                buildPrimaryTransferEntry(transaction.id, toEntry, TransactionEntryTypeEnum.DEBIT, toAmountInMicroUnits, toValuation),
+                ...buildAdditionalTransferEntries({
+                    entries: input.entries,
+                    fromEntry,
+                    toEntry,
+                    transactionId: transaction.id,
+                    valuations: additionalEntryValuations
+                })
             ];
-
-            yield* persistTransfer(transaction, input, primaryEntries, fromEntry, toEntry, additionalEntryValuations);
         });
 
         const findPrimaryEntries = Effect.fnUntraced(function* (
@@ -158,30 +140,6 @@ export class TransferCreationService extends Context.Service<TransferCreationSer
             }
 
             return { fromEntry, toEntry };
-        });
-
-        const persistSyncedTransfer = Effect.fnUntraced(function* (
-            input: TransactionCreateInputInterface,
-            entryValuations: Map<TransactionEntryCreateInputInterface, EntryBaseValuationInterface>,
-            syncId: string | null
-        ) {
-            const { fromEntry, toEntry } = yield* findPrimaryEntries(input.entries, input.fromAccountId, input.toAccountId);
-            const transaction = yield* transactionRepository.create({
-                ...input,
-                exchangeRate: 1,
-                ...(isDefined(syncId) && { syncId })
-            });
-            yield* persistPrimaryTransfer(
-                transaction,
-                input,
-                fromEntry,
-                toEntry,
-                convertToMicroUnits(fromEntry.amount),
-                convertToMicroUnits(toEntry.amount),
-                entryValuations
-            );
-
-            return transaction;
         });
 
         const findAccountByIdOrFail = Effect.fnUntraced(function* (id: number) {
@@ -216,19 +174,47 @@ export class TransferCreationService extends Context.Service<TransferCreationSer
         return {
             createSyncedTransfers: Effect.fn('TransferCreationService.createSyncedTransfers')(
                 function* (inputs: TransactionCreateInputInterface[]) {
+                    if (!isNotEmptyArray(inputs)) {
+                        return [];
+                    }
+
                     if (inputs.some(input => input.exchangeRate !== 1)) {
                         return yield* Effect.die(new Error('Synced transfer exchange rate must be equal to 1'));
                     }
 
+                    const primaryLegs = yield* Effect.forEach(inputs, input =>
+                        findPrimaryEntries(input.entries, input.fromAccountId, input.toAccountId)
+                    );
                     const syncIds = yield* resolveBankTransactionSyncIds(inputs, accountRepository, transactionRepository);
                     const entryValuations = yield* entryBaseValuationService.valueTransactionsEntries(inputs);
-                    const transactions: TransactionEntityInterface[] = [];
-                    for (const [index, input] of inputs.entries()) {
-                        const syncId = syncIds[index];
-                        const syncedTransfer = yield* persistSyncedTransfer(input, entryValuations[index], syncId);
-                        transactions.push(syncedTransfer);
-                    }
+                    const transactions = yield* transactionRepository.bulkCreate(
+                        inputs.map((input, index) => {
+                            const syncId = syncIds[index];
 
+                            return {
+                                ...input,
+                                exchangeRate: 1,
+                                ...(isDefined(syncId) && { syncId })
+                            };
+                        })
+                    );
+                    const batchEntries = (yield* Effect.forEach(transactions, (transaction, index) =>
+                        buildPrimaryTransferEntries(
+                            transaction,
+                            inputs[index],
+                            primaryLegs[index].fromEntry,
+                            primaryLegs[index].toEntry,
+                            convertToMicroUnits(primaryLegs[index].fromEntry.amount),
+                            convertToMicroUnits(primaryLegs[index].toEntry.amount),
+                            entryValuations[index]
+                        )
+                    )).flat();
+                    const batchTags = transactions.flatMap((transaction, index) =>
+                        transactionMapTagIdsToCreateEntities(inputs[index], transaction.id)
+                    );
+
+                    yield* transactionEntryRepository.bulkCreate(batchEntries);
+                    yield* transactionTagsRepository.bulkCreate(batchTags);
                     yield* accountBalanceIncrementalService.updateBalancesByAccountIds(getEntryAccountIds(inputs));
 
                     return transactions;
@@ -257,8 +243,17 @@ export class TransferCreationService extends Context.Service<TransferCreationSer
                         externalId: null,
                         externalSource: null
                     });
+                    const entries = yield* buildPrimaryTransferEntries(
+                        transaction,
+                        input,
+                        fromEntry,
+                        toEntry,
+                        fromAmountInMicroUnits,
+                        toAmount
+                    );
 
-                    yield* persistPrimaryTransfer(transaction, input, fromEntry, toEntry, fromAmountInMicroUnits, toAmount);
+                    yield* transactionEntryRepository.bulkCreate(entries);
+                    yield* transactionTagsRepository.bulkCreate(transactionMapTagIdsToCreateEntities(input, transaction.id));
                     yield* accountBalanceIncrementalService.updateBalancesByAccountIds(getEntryAccountIds([input]));
 
                     return transaction;

@@ -9,7 +9,9 @@ import * as Clock from 'effect/Clock';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Option from 'effect/Option';
+import * as Ref from 'effect/Ref';
 import * as Schema from 'effect/Schema';
+import * as Semaphore from 'effect/Semaphore';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
@@ -134,6 +136,9 @@ const SIGNATURE_RECV_WINDOW_MS = 60000;
 const MILLISECONDS_PER_SECOND = 1000;
 const MILLISECONDS_PER_DAY = 86_400_000;
 const MAX_TRANSACTIONS_PER_WINDOW = 500;
+const MAX_PAGES = 200;
+const READ_ENDPOINT_CONCURRENCY = 3;
+const SPOT_BALANCE_CACHE_TTL_MS = 30_000;
 const FIAT_ROWS_PER_PAGE = 500;
 const TRADE_SYMBOL_CONCURRENCY = 4;
 const FIAT_DEPOSIT_TRANSACTION_TYPE = 0;
@@ -197,23 +202,31 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     private static readonly decodeCredentials = Schema.decodeUnknownOption(Schema.fromJsonString(BinanceCredentialsSchema));
 
     readonly getAccounts = Effect.fn('BinanceSignedClient.getAccounts')(function* (this: BinanceSignedClient) {
-        const spotBalances = yield* this.signedRequest(BinanceAssetBalanceListApiSchema, SPOT_BALANCE_ENDPOINT, 'POST');
-        const balanceByAsset = this.buildSpotBalanceMap(spotBalances);
-        const earnPositions = yield* this.collectPages(current =>
-            this.fetchEarnPage(BinanceEarnPositionListApiSchema, EARN_POSITION_ENDPOINT, { current, size: EARN_PAGE_SIZE })
+        const [spotBalances, earnPositions, lockedEarnPositions, fundingBalances] = yield* Effect.all(
+            [
+                this.fetchSpotBalances(),
+                this.collectPages(current =>
+                    this.fetchEarnPage(BinanceEarnPositionListApiSchema, EARN_POSITION_ENDPOINT, { current, size: EARN_PAGE_SIZE })
+                ),
+                this.collectPages(current =>
+                    this.fetchEarnPage(BinanceLockedEarnPositionListApiSchema, LOCKED_EARN_POSITION_ENDPOINT, {
+                        current,
+                        size: EARN_PAGE_SIZE
+                    })
+                ),
+                this.signedRequest(BinanceAssetBalanceListApiSchema, FUNDING_BALANCE_ENDPOINT, 'POST')
+            ],
+            { concurrency: READ_ENDPOINT_CONCURRENCY }
         );
+        const balanceByAsset = this.buildSpotBalanceMap(spotBalances);
+
         for (const position of earnPositions) {
             this.foldEarnPositionAmount(balanceByAsset, position.asset, position.totalAmount);
         }
 
-        const lockedEarnPositions = yield* this.collectPages(current =>
-            this.fetchEarnPage(BinanceLockedEarnPositionListApiSchema, LOCKED_EARN_POSITION_ENDPOINT, { current, size: EARN_PAGE_SIZE })
-        );
         for (const position of lockedEarnPositions) {
             this.foldEarnPositionAmount(balanceByAsset, position.asset, position.amount);
         }
-
-        const fundingBalances = yield* this.signedRequest(BinanceAssetBalanceListApiSchema, FUNDING_BALANCE_ENDPOINT, 'POST');
 
         return [
             ...this.buildSpotAccounts(balanceByAsset),
@@ -347,6 +360,12 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     private readonly limitedHistoryFloorTimeMs = subMonths(new Date(), BinanceSignedClient.LIMITED_HISTORY_MONTHS).getTime();
     private readonly capitalPendingFloorTimeMs = subDays(new Date(), BinanceSignedClient.CAPITAL_PENDING_MAX_AGE_DAYS).getTime();
     private serverTimeOffsetMs: number | null = null;
+    private readonly timestampSemaphore = Semaphore.makeUnsafe(1);
+    private readonly spotBalancesCache = Ref.makeUnsafe<{
+        readonly balances: readonly BinanceAssetBalanceApiInterface[];
+        readonly expiresAtMs: number;
+    } | null>(null);
+
     private runEndTimeMs: number | undefined;
     private exchangeSymbols: readonly BinanceTradeSymbolInterface[] | undefined;
 
@@ -434,8 +453,13 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         startTimeMs: number,
         endTimeMs: number
     ) {
-        const deposits = yield* this.fetchCapitalHistory(this.depositSource, wallet, startTimeMs, endTimeMs);
-        const withdrawals = yield* this.fetchCapitalHistory(this.withdrawalSource, wallet, startTimeMs, endTimeMs);
+        const [deposits, withdrawals] = yield* Effect.all(
+            [
+                this.fetchCapitalHistory(this.depositSource, wallet, startTimeMs, endTimeMs),
+                this.fetchCapitalHistory(this.withdrawalSource, wallet, startTimeMs, endTimeMs)
+            ],
+            { concurrency: READ_ENDPOINT_CONCURRENCY }
+        );
 
         return this.emptySources({
             deposits: deposits.filter(deposit =>
@@ -456,9 +480,14 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         startTimeMs: number,
         endTimeMs: number
     ) {
-        const fiatDeposits = yield* this.fetchFiatOrders(FIAT_DEPOSIT_TRANSACTION_TYPE, startTimeMs, endTimeMs);
-        const fiatWithdrawals = yield* this.fetchFiatOrders(FIAT_WITHDRAW_TRANSACTION_TYPE, startTimeMs, endTimeMs);
-        const fiatPayments = yield* this.fetchFiatPayments(startTimeMs, endTimeMs);
+        const [fiatDeposits, fiatWithdrawals, fiatPayments] = yield* Effect.all(
+            [
+                this.fetchFiatOrders(FIAT_DEPOSIT_TRANSACTION_TYPE, startTimeMs, endTimeMs),
+                this.fetchFiatOrders(FIAT_WITHDRAW_TRANSACTION_TYPE, startTimeMs, endTimeMs),
+                this.fetchFiatPayments(startTimeMs, endTimeMs)
+            ],
+            { concurrency: READ_ENDPOINT_CONCURRENCY }
+        );
 
         return this.emptySources({ fiatDeposits, fiatWithdrawals, fiatPayments });
     });
@@ -512,18 +541,22 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     });
 
     private readonly resolveTimestamp = Effect.fn('BinanceSignedClient.resolveTimestamp')(function* (this: BinanceSignedClient) {
-        if (!isDefined(this.serverTimeOffsetMs)) {
-            const serverTime = yield* this.fetchJson(BinanceServerTimeApiSchema, SERVER_TIME_ENDPOINT).pipe(Effect.option);
-            const now = yield* Clock.currentTimeMillis;
+        return yield* this.timestampSemaphore.withPermit(
+            Effect.gen({ self: this }, function* () {
+                if (!isDefined(this.serverTimeOffsetMs)) {
+                    const serverTime = yield* this.fetchJson(BinanceServerTimeApiSchema, SERVER_TIME_ENDPOINT).pipe(Effect.option);
+                    const now = yield* Clock.currentTimeMillis;
 
-            if (Option.isNone(serverTime)) {
-                return now;
-            }
+                    if (Option.isNone(serverTime)) {
+                        return now;
+                    }
 
-            this.serverTimeOffsetMs = serverTime.value.serverTime - now;
-        }
+                    this.serverTimeOffsetMs = serverTime.value.serverTime - now;
+                }
 
-        return (yield* Clock.currentTimeMillis) + this.serverTimeOffsetMs;
+                return (yield* Clock.currentTimeMillis) + this.serverTimeOffsetMs;
+            })
+        );
     });
 
     private readonly resolveSourceWindow = Effect.fn('BinanceSignedClient.resolveSourceWindow')(function* (
@@ -575,7 +608,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         let result = yield* fetchPage(page);
         const rows = [...result.rows];
 
-        while (result.hasMore) {
+        while (result.hasMore && page < MAX_PAGES) {
             page += 1;
             result = yield* fetchPage(page);
             rows.push(...result.rows);
@@ -810,9 +843,26 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         });
     }
 
+    private fetchSpotBalances() {
+        return Effect.gen({ self: this }, function* () {
+            const now = yield* Clock.currentTimeMillis;
+            const cached = yield* Ref.get(this.spotBalancesCache);
+
+            if (isDefined(cached) && now < cached.expiresAtMs) {
+                return cached.balances;
+            }
+
+            const balances = yield* this.signedRequest(BinanceAssetBalanceListApiSchema, SPOT_BALANCE_ENDPOINT, 'POST');
+
+            yield* Ref.set(this.spotBalancesCache, { balances, expiresAtMs: now + SPOT_BALANCE_CACHE_TTL_MS });
+
+            return balances;
+        });
+    }
+
     private deriveTradeSymbols(eligibleSoldOffBaseAssets: readonly string[]) {
         return Effect.gen({ self: this }, function* () {
-            const balances = yield* this.signedRequest(BinanceAssetBalanceListApiSchema, SPOT_BALANCE_ENDPOINT, 'POST');
+            const balances = yield* this.fetchSpotBalances();
             this.noteTouchedAssets(this.collectTouchedAssets(balances));
             const exchangeSymbols = yield* this.resolveExchangeSymbols();
 
@@ -820,25 +870,36 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         });
     }
 
+    private fetchSymbolTradePage(symbol: BinanceTradeSymbolInterface, startTimeMs: number, fromId: number | null) {
+        return this.signedRequest(BinanceTradeListApiSchema, MY_TRADES_ENDPOINT, 'GET', {
+            symbol: symbol.symbol,
+            ...(isDefined(fromId) ? { fromId } : { startTime: startTimeMs }),
+            limit: TRADES_PER_SYMBOL_LIMIT
+        }).pipe(
+            Effect.catchTag('SyncInvalidResponseError', error =>
+                Number(error.apiCode) === BINANCE_INVALID_SYMBOL_CODE ? Effect.succeed([]) : Effect.fail(error)
+            )
+        );
+    }
+
+    private resolveNextTradeFromId(trades: readonly { readonly id: number }[], fromId: number | null, pageCount: number): number | null {
+        const lastTrade = trades.at(-1);
+        const isCursorAdvancing = isDefined(lastTrade) && (!isDefined(fromId) || lastTrade.id >= fromId);
+
+        return trades.length === TRADES_PER_SYMBOL_LIMIT && isCursorAdvancing && pageCount < MAX_PAGES ? lastTrade.id + 1 : null;
+    }
+
     private fetchSymbolTrades(symbol: BinanceTradeSymbolInterface, startTimeMs: number, endTimeMs: number, initialFromId: number | null) {
         return Effect.gen({ self: this }, function* () {
             const transfers: BinanceTransferInterface[] = [];
             let fromId = initialFromId;
             let lastWindowTradeId: number | null = null;
+            let pageCount = 0;
 
             do {
-                const trades = yield* this.signedRequest(BinanceTradeListApiSchema, MY_TRADES_ENDPOINT, 'GET', {
-                    symbol: symbol.symbol,
-                    ...(isDefined(fromId) ? { fromId } : { startTime: startTimeMs }),
-                    limit: TRADES_PER_SYMBOL_LIMIT
-                }).pipe(
-                    Effect.catchTag('SyncInvalidResponseError', error =>
-                        Number(error.apiCode) === BINANCE_INVALID_SYMBOL_CODE ? Effect.succeed([]) : Effect.fail(error)
-                    )
-                );
-                const lastTrade = trades.at(-1);
+                const trades = yield* this.fetchSymbolTradePage(symbol, startTimeMs, fromId);
+                pageCount += 1;
                 const windowTrades = trades.filter(trade => trade.time >= startTimeMs && trade.time <= endTimeMs);
-                const lastWindowTrade = windowTrades.at(-1);
 
                 transfers.push(
                     ...windowTrades
@@ -852,8 +913,8 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
                         )
                         .filter(isDefined)
                 );
-                lastWindowTradeId = lastWindowTrade?.id ?? lastWindowTradeId;
-                fromId = trades.length === TRADES_PER_SYMBOL_LIMIT && isDefined(lastTrade) ? lastTrade.id + 1 : null;
+                lastWindowTradeId = windowTrades.at(-1)?.id ?? lastWindowTradeId;
+                fromId = this.resolveNextTradeFromId(trades, fromId, pageCount);
             } while (isDefined(fromId));
 
             return { symbol: symbol.symbol, transfers, lastWindowTradeId };
@@ -971,10 +1032,13 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         return this.cached(
             this.c2cOrderCache,
             `${startTimeMs}-${endTimeMs}`,
-            Effect.forEach([C2C_BUY_TRADE_TYPE, C2C_SELL_TRADE_TYPE], tradeType =>
-                this.walkPagedWindows(C2C_MAX_PERIOD_MS, startTimeMs, endTimeMs, (page, windowStartMs, windowEndMs) =>
-                    this.fetchC2cOrderPage(tradeType, windowStartMs, windowEndMs, page)
-                )
+            Effect.forEach(
+                [C2C_BUY_TRADE_TYPE, C2C_SELL_TRADE_TYPE],
+                tradeType =>
+                    this.walkPagedWindows(C2C_MAX_PERIOD_MS, startTimeMs, endTimeMs, (page, windowStartMs, windowEndMs) =>
+                        this.fetchC2cOrderPage(tradeType, windowStartMs, windowEndMs, page)
+                    ),
+                { concurrency: READ_ENDPOINT_CONCURRENCY }
             ).pipe(Effect.map(ordersByType => ordersByType.flat()))
         );
     }
@@ -986,16 +1050,19 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             return Effect.succeed<BinanceTransferInterface[]>([]);
         }
 
-        return Effect.forEach(UNIVERSAL_TRANSFER_TYPES, type =>
-            this.collectPages(current =>
-                this.fetchEarnPage(BinanceUniversalTransferListApiSchema, UNIVERSAL_TRANSFER_ENDPOINT, {
-                    type,
-                    startTime: availableStartTimeMs,
-                    endTime: windowEndMs,
-                    current,
-                    size: EARN_PAGE_SIZE
-                })
-            )
+        return Effect.forEach(
+            UNIVERSAL_TRANSFER_TYPES,
+            type =>
+                this.collectPages(current =>
+                    this.fetchEarnPage(BinanceUniversalTransferListApiSchema, UNIVERSAL_TRANSFER_ENDPOINT, {
+                        type,
+                        startTime: availableStartTimeMs,
+                        endTime: windowEndMs,
+                        current,
+                        size: EARN_PAGE_SIZE
+                    })
+                ),
+            { concurrency: READ_ENDPOINT_CONCURRENCY }
         ).pipe(
             Effect.map(transfersByType =>
                 transfersByType

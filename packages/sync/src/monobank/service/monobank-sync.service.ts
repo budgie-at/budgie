@@ -458,18 +458,23 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
             ) {
                 const client = yield* loadClient(token);
                 const bankAccounts = yield* fetchBankAccountsAndJars(client);
-
-                for (const externalId of externalIds) {
-                    const bankAccount = bankAccounts.find(account => account.id === externalId);
-                    if (isDefined(bankAccount)) {
-                        const account = yield* pollingSyncService.getOrCreateSyncAccount(bankAccount);
-                        yield* createOrUpdateSync(account.id, token, historyDepth, getOwnBalance(bankAccount));
-                    }
-                }
-
-                const integration = yield* syncIntegrationTokenService.getOrCreateIntegration(provider, token);
                 const clientName = yield* client.getClientName();
-                yield* syncIntegrationTokenService.fillIntegrationLabel(integration.id, clientName);
+
+                yield* Db.transaction(
+                    Effect.gen(function* () {
+                        for (const externalId of externalIds) {
+                            const bankAccount = bankAccounts.find(account => account.id === externalId);
+                            if (isDefined(bankAccount)) {
+                                const account = yield* pollingSyncService.getOrCreateSyncAccount(bankAccount);
+                                yield* createOrUpdateSync(account.id, token, historyDepth, getOwnBalance(bankAccount));
+                            }
+                        }
+
+                        const integration = yield* syncIntegrationTokenService.getOrCreateIntegration(provider, token);
+                        yield* syncIntegrationTokenService.fillIntegrationLabel(integration.id, clientName);
+                    })
+                );
+
                 yield* pollingSyncService.requestSync();
             }),
             fetchSetupBalance: Effect.fn('MonobankSyncService.fetchSetupBalance')(function* (accountId: number) {

@@ -1,9 +1,11 @@
 import {
     BudgetSinkingFundEntityTable,
-    ExchangeRateEntityTable,
-    HistoricalExchangeRateEntityTable,
     CategoryEntityTable,
     DefaultCategoryTranslationEntityTable,
+    ExchangeRateEntityTable,
+    HistoricalExchangeRateEntityTable,
+    InstrumentDailyMarketPriceEntityTable,
+    InstrumentEntityTable,
     RecurringSeriesEntityTable,
     SettingsEntityTable
 } from '@budgie/contracts';
@@ -24,6 +26,8 @@ const budgetFundSuggestionsAtom = databaseQueryFamily(
         BudgetSinkingFundEntityTable,
         ExchangeRateEntityTable,
         HistoricalExchangeRateEntityTable,
+        InstrumentEntityTable,
+        InstrumentDailyMarketPriceEntityTable,
         CategoryEntityTable,
         DefaultCategoryTranslationEntityTable,
         SettingsEntityTable

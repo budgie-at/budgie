@@ -1,4 +1,3 @@
-import * as Cause from 'effect/Cause';
 import * as Effect from 'effect/Effect';
 import * as HttpClient from 'effect/http/HttpClient';
 import * as HttpClientRequest from 'effect/http/HttpClientRequest';
@@ -51,6 +50,7 @@ export abstract class BaseSyncProviderClient {
                     })
                 ),
                 HttpClient.filterStatusOk,
+                HttpClient.timeout(SYNC_TIMEOUT_MS),
                 HttpClient.retry({
                     times: this.retryMethods.includes(method) ? BaseSyncProviderClient.RETRY_LIMIT : 0,
                     schedule: Schedule.exponential(BaseSyncProviderClient.RETRY_BASE_DELAY),
@@ -62,23 +62,26 @@ export abstract class BaseSyncProviderClient {
 
             return yield* client.execute(isDefined(body) ? HttpClientRequest.bodyJsonUnsafe(request, body) : request);
         },
-        Effect.timeout(SYNC_TIMEOUT_MS),
         effect => effect.pipe(Effect.catch(error => this.toSyncError(error)))
     );
 
     private readonly toSyncError = Effect.fn('BaseSyncProviderClient.toSyncError')(function* (
         this: BaseSyncProviderClient,
-        error: HttpClientError.HttpClientError | Cause.TimeoutError
+        error: HttpClientError.HttpClientError
     ) {
         const { provider } = this;
 
-        if (Cause.isTimeoutError(error) || !isDefined(error.response)) {
+        if (!isDefined(error.response)) {
             return yield* SyncNetworkError.make({ provider, message: 'Network error' });
         }
 
         const { response } = error;
         const apiErrorOption = yield* HttpClientResponse.schemaBodyJson(BaseSyncProviderClient.ApiErrorSchema)(response).pipe(
-            Effect.option
+            Effect.option,
+            Effect.timeoutOrElse({
+                duration: SYNC_TIMEOUT_MS,
+                orElse: () => Effect.fail(SyncNetworkError.make({ provider, message: 'Network error' }))
+            })
         );
         const apiError = Option.getOrUndefined(apiErrorOption);
         const message = apiError?.msg ?? apiError?.message ?? `HTTP ${response.status}`;
@@ -97,10 +100,11 @@ export abstract class BaseSyncProviderClient {
         body: unknown = null
     ) {
         return this.execute(endpoint, method, body).pipe(
-            Effect.flatMap(HttpClientResponse.schemaBodyJson(schema)),
+            Effect.flatMap(response => HttpClientResponse.schemaBodyJson(schema)(response).pipe(Effect.timeout(SYNC_TIMEOUT_MS))),
             Effect.catchTags({
                 SchemaError: error => Effect.fail(SyncInvalidResponseError.make({ provider: this.provider, message: error.message })),
-                HttpClientError: () => Effect.fail(SyncNetworkError.make({ provider: this.provider, message: 'Network error' }))
+                HttpClientError: () => Effect.fail(SyncNetworkError.make({ provider: this.provider, message: 'Network error' })),
+                TimeoutError: () => Effect.fail(SyncNetworkError.make({ provider: this.provider, message: 'Network error' }))
             })
         );
     }

@@ -1,4 +1,4 @@
-import { AccountEntityTable, SyncEntityTable, SyncRepository } from '@budgie/contracts';
+import { AccountEntityTable, BankIntegrationEntityTable, SyncEntityTable, SyncRepository } from '@budgie/contracts';
 import { resolveInitialSyncProgress } from '@budgie/sync';
 import * as Effect from 'effect/Effect';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
@@ -9,7 +9,7 @@ import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { databaseQueryAtom } from '../../@generic/utils/database-query-atom.util';
 
 const isImportingHistoryAtom = databaseQueryAtom(
-    [SyncEntityTable, AccountEntityTable],
+    [SyncEntityTable, AccountEntityTable, BankIntegrationEntityTable],
     Effect.flatMap(SyncRepository, syncRepository => syncRepository.getAllPendingBackwardSyncs).pipe(
         Effect.map(syncs => isDefined(resolveInitialSyncProgress(syncs)))
     )

@@ -96,15 +96,15 @@ export class EmbeddingIndexService extends Context.Service<EmbeddingIndexService
                     return isEmptyArray(batch)
                         ? Effect.void
                         : Db.transaction(
-                              Effect.forEach(batch, ([embeddingId, context]) => source.replaceTags(embeddingId, context.tagIds), {
-                                  discard: true
-                              }).pipe(
-                                  Effect.andThen(
-                                      transactionEmbeddingRepository.clearNeedsEmbedding(
-                                          batch.flatMap(([, context]) => context.transactionIds)
+                              source
+                                  .replaceTags(batch.map(([embeddingId, context]) => [embeddingId, context.tagIds] as const))
+                                  .pipe(
+                                      Effect.andThen(
+                                          transactionEmbeddingRepository.clearNeedsEmbedding(
+                                              batch.flatMap(([, context]) => context.transactionIds)
+                                          )
                                       )
                                   )
-                              )
                           );
                 })
             };
@@ -123,7 +123,7 @@ export class EmbeddingIndexService extends Context.Service<EmbeddingIndexService
                     embedding,
                     dimensions
                 }),
-            replaceTags: (embeddingId, tagIds) => merchantEmbeddingRepository.replaceTags(embeddingId, tagIds)
+            replaceTags: entries => merchantEmbeddingRepository.replaceTags(entries)
         });
 
         return {
@@ -147,7 +147,7 @@ export class EmbeddingIndexService extends Context.Service<EmbeddingIndexService
                 buildPrompt: context => buildCommentContext(context.comment),
                 upsert: (context, embedding, dimensions) =>
                     commentEmbeddingRepository.upsert({ comment: context.comment, categoryId: context.categoryId, embedding, dimensions }),
-                replaceTags: (embeddingId, tagIds) => commentEmbeddingRepository.replaceTags(embeddingId, tagIds)
+                replaceTags: entries => commentEmbeddingRepository.replaceTags(entries)
             }),
             clearStaleFlags: transactionEmbeddingRepository.clearStaleFlags,
             learnCorrection: Effect.fn('EmbeddingIndexService.learnCorrection')(

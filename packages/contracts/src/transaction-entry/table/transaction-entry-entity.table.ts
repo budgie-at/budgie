@@ -100,6 +100,9 @@ export const TransactionEntryEntityTable = sqliteTable(
             .where(sql`${table.deletedAt} IS NULL AND ${table.quotedInstrumentId} IS NOT NULL AND ${table.quotedAmount} IS NOT NULL`),
         index('transaction_entries_refund_tx_idx')
             .on(table.transactionId, table.type, table.amount)
-            .where(sql`${table.deletedAt} IS NULL AND ${table.originalTransactionId} IS NOT NULL`)
+            .where(sql`${table.deletedAt} IS NULL AND ${table.originalTransactionId} IS NOT NULL`),
+        index('transaction_entries_mcc_category_idx')
+            .on(table.mccCategoryId)
+            .where(sql`${table.mccCategoryId} IS NOT NULL AND ${table.deletedAt} IS NULL`)
     ]
 );

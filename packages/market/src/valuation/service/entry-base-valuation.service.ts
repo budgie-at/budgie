@@ -91,7 +91,8 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
             findForDateOrBefore: historicalExchangeRateRepository.findForDateOrBefore,
             findEarliest: historicalExchangeRateRepository.findEarliest,
             findLatest: exchangeRateRepository.findByBaseAndQuoteIds,
-            findInstrumentByCode: instrumentRepository.findByCode
+            findInstrumentByCode: instrumentRepository.findByCode,
+            findInstrumentById: instrumentRepository.findById
         };
 
         const memoize = <Key, Value, Requirements>(lookup: (key: Key) => Effect.Effect<Value, DbError, Requirements>) =>
@@ -118,6 +119,7 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
                 exchangeRateRepository.findByBaseAndQuoteIds(baseInstrumentId, quoteInstrumentId)
             );
             const instruments = yield* memoize((code: string) => instrumentRepository.findByCode(code));
+            const instrumentsById = yield* memoize((id: number) => instrumentRepository.findById(id));
 
             const lookups: RateLookupsInterface = {
                 findForDateOrBefore: (sourceInstrumentId, targetInstrumentId, rateDate) =>
@@ -130,7 +132,8 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
                 findEarliest: (sourceInstrumentId, targetInstrumentId) =>
                     Cache.get(earliest, [sourceInstrumentId, targetInstrumentId] as const),
                 findLatest: (baseInstrumentId, quoteInstrumentId) => Cache.get(latest, [baseInstrumentId, quoteInstrumentId] as const),
-                findInstrumentByCode: code => Cache.get(instruments, code)
+                findInstrumentByCode: code => Cache.get(instruments, code),
+                findInstrumentById: id => Cache.get(instrumentsById, id)
             };
 
             return lookups;
@@ -224,7 +227,7 @@ export class EntryBaseValuationService extends Context.Service<EntryBaseValuatio
                 return 1;
             }
 
-            const source = yield* instrumentRepository.findById(sourceInstrumentId);
+            const source = yield* lookups.findInstrumentById(sourceInstrumentId);
             const quoteInstrumentId = source?.quoteInstrumentId;
 
             if (!isDefined(quoteInstrumentId) || quoteInstrumentId === sourceInstrumentId) {

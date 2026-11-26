@@ -1,7 +1,9 @@
-import { YIELD_TO_UI, SyncRecordRepository, SyncResetRepository } from '@budgie/contracts';
+import { Db, YIELD_TO_UI, SyncRecordRepository, SyncResetRepository } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
+
+import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { SyncApplyService } from '../../apply/service/sync-apply.service';
 import { SYNC_RECORD_DEFINITIONS } from '../../mapping/constant/sync-record-definitions.constant';
@@ -22,19 +24,23 @@ export class SyncRestoreReconciliationService extends Context.Service<SyncRestor
             const deletionChunkSize = 500;
 
             return {
-                prepare: Effect.fn('SyncRestoreReconciliationService.prepare')(function* (isClearingPendingWork: boolean) {
-                    if (isClearingPendingWork) {
-                        yield* resetRepository.clearPendingWork();
-                    }
+                prepare: Effect.fn('SyncRestoreReconciliationService.prepare')(
+                    function* (isClearingPendingWork: boolean) {
+                        if (isClearingPendingWork) {
+                            yield* resetRepository.clearPendingWork();
+                        }
 
-                    yield* recordRepository.invalidateAll;
-                }),
+                        yield* recordRepository.invalidateAll;
+                    },
+                    effect => Db.transaction(effect)
+                ),
                 complete: Effect.fn('SyncRestoreReconciliationService.complete')(function* (
                     syncZone: string,
                     zoneInventory: ReadonlySet<string>
                 ) {
                     const unconfirmed = (yield* recordRepository.findUnconfirmed).filter(record => record.syncZone === syncZone);
                     const deletions: SyncIncomingDeletionInterface[] = [];
+                    const nonDataRemovals: (readonly [string, string])[] = [];
                     const results: SyncApplyResultInterface[] = [];
 
                     for (const { syncZone: zone, syncId, recordType } of unconfirmed) {
@@ -42,9 +48,15 @@ export class SyncRestoreReconciliationService extends Context.Service<SyncRestor
                             if (dataRecordTypes.has(recordType)) {
                                 deletions.push({ recordType, recordName: syncId, zone });
                             } else {
-                                yield* recordRepository.remove(zone, syncId);
+                                nonDataRemovals.push([zone, syncId] as const);
                             }
                         }
+                    }
+
+                    if (isNotEmptyArray(nonDataRemovals)) {
+                        yield* Db.transaction(
+                            Effect.forEach(nonDataRemovals, ([zone, syncId]) => recordRepository.remove(zone, syncId), { discard: true })
+                        );
                     }
 
                     for (let start = 0; start < deletions.length; start += deletionChunkSize) {
@@ -57,7 +69,7 @@ export class SyncRestoreReconciliationService extends Context.Service<SyncRestor
                         yield* YIELD_TO_UI;
                     }
 
-                    yield* outboxRepository.enqueueUnrecorded(syncZone);
+                    yield* Db.transaction(outboxRepository.enqueueUnrecorded(syncZone));
 
                     return results;
                 })

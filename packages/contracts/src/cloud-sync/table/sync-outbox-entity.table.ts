@@ -1,4 +1,4 @@
-import { int, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core';
+import { index, int, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core';
 
 import { CURRENT_TIMESTAMP } from '../../@generic/constant/current-timestamp.constant';
 import { convertEnumToDrizzleEnum } from '../../@generic/utils/convert-enum-to-drizzle-enum.util';
@@ -19,5 +19,8 @@ export const SyncOutboxEntityTable = sqliteTable(
         syncRevision: int('sync_revision', { mode: 'number' }).notNull().default(1),
         createdAt: int('created_at', { mode: 'timestamp' }).notNull().default(CURRENT_TIMESTAMP)
     },
-    table => [uniqueIndex('sync_outbox_record_unq').on(table.syncZone, table.syncId)]
+    table => [
+        uniqueIndex('sync_outbox_record_unq').on(table.syncZone, table.syncId),
+        index('sync_outbox_zone_id_idx').on(table.syncZone, table.id)
+    ]
 );

@@ -1,7 +1,10 @@
 import { categorizeInboxEngineService, selectAcceptableAssignments } from '@budgie/categorization';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
+import * as Atom from 'effect/reactivity/Atom';
 import { useReducer } from 'react';
+
+import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { useToday } from '../../@generic/hook/use-today.hook';
@@ -18,6 +21,8 @@ import type { CategorizeInboxRowInterface, LabelEvidenceRowInterface } from '@bu
 import type { TransactionFilterInterface } from '@budgie/contracts';
 
 const EMPTY_INBOX: [CategorizeInboxRowInterface[], LabelEvidenceRowInterface[]] = [[], []];
+
+const emptyCashWithdrawalTransactionIdsAtom = Atom.make(AsyncResult.success([]));
 
 const keepPresentTransactionIds = (transactionIds: Set<number>, rows: CategorizeInboxRowInterface[]): Set<number> => {
     const presentTransactionIds = new Set(rows.map(row => row.transactionId));
@@ -70,14 +75,16 @@ export const useCategorizeInbox = (
     const defaultInstrumentId = useAtomValue(defaultInstrumentIdAtom);
     const inboxResult = AsyncResult.all([useLiveAtomValue(rowsAtom(filters)), useLiveAtomValue(evidenceAtom)]);
     const [rows, evidence] = AsyncResult.getOrElse(inboxResult, () => EMPTY_INBOX);
-    const cashWithdrawalResult = useLiveAtomValue(atmCashWithdrawalTransactionIdsAtom([...new Set(rows.map(row => row.transactionId))]));
+    const transactionIds = [...new Set(rows.map(row => row.transactionId))].sort((left, right) => left - right);
+    const cashWithdrawalResult = useLiveAtomValue(
+        isNotEmptyArray(transactionIds) ? atmCashWithdrawalTransactionIdsAtom(transactionIds) : emptyCashWithdrawalTransactionIdsAtom
+    );
     const [state, dispatch] = useReducer(reducer, {
         session: { placements: new Map(), clustersByKey: new Map(), peakRowCount: 0 },
         rows,
         hidden: new Set<number>(),
         excluded: new Set<number>()
     });
-    const { session } = state;
 
     const visibility: CategorizeInboxVisibilityInterface = {
         excludedTransactionIds: state.excluded,
@@ -94,11 +101,11 @@ export const useCategorizeInbox = (
             categorizeInboxEngineService.buildContext(evidence, defaultInstrumentId, labelKind),
             now
         ),
-        session,
+        state.session,
         state.hidden,
         defaultInstrumentId
     );
-    const peakRowCount = Math.max(session.peakRowCount, new Set(rows.map(row => row.transactionId)).size);
+    const peakRowCount = Math.max(state.session.peakRowCount, transactionIds.length);
 
     if (state.rows !== rows) {
         dispatch({ type: CategorizeInboxActionTypeEnum.ROWS_CHANGED, rows });
@@ -106,7 +113,9 @@ export const useCategorizeInbox = (
 
     if (
         !AsyncResult.isInitial(inboxResult) &&
-        (placements !== session.placements || clustersByKey !== session.clustersByKey || peakRowCount !== session.peakRowCount)
+        (placements !== state.session.placements ||
+            clustersByKey !== state.session.clustersByKey ||
+            peakRowCount !== state.session.peakRowCount)
     ) {
         dispatch({ type: CategorizeInboxActionTypeEnum.SESSION_SYNCED, session: { placements, clustersByKey, peakRowCount } });
     }

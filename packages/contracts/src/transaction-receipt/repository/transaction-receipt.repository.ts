@@ -1,4 +1,4 @@
-import { and, between, count, desc, eq, inArray, isNotNull, isNull, notExists, notInArray, or, sql } from 'drizzle-orm';
+import { and, between, count, desc, eq, inArray, isNotNull, isNull, notExists, or, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -152,11 +152,11 @@ export class TransactionReceiptRepository extends Context.Service<TransactionRec
                                         and(eq(operationInstrument.code, currency), eq(TransactionEntryEntityTable.operationAmount, total)),
                                         and(eq(InstrumentEntityTable.code, currency), eq(TransactionEntryEntityTable.amount, total))
                                     ),
-                                    notInArray(
-                                        TransactionEntityTable.id,
+                                    notExists(
                                         db
-                                            .select({ transactionId: TransactionReceiptEntityTable.transactionId })
+                                            .select({ one: sql`1` })
                                             .from(TransactionReceiptEntityTable)
+                                            .where(eq(TransactionReceiptEntityTable.transactionId, TransactionEntityTable.id))
                                     )
                                 )
                             )
