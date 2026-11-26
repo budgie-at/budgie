@@ -1,15 +1,13 @@
 import { RuleConditionFieldEnum, RuleConditionOperatorEnum } from '@budgie/contracts';
-import * as Result from 'effect/Result';
 
-import { isDefined, isNotEmptyString, isNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString, isNumber } from '@rnw-community/shared';
 
-import { RuleConditionInputInterface } from '../interface/rule-condition-input.interface';
-import { RuleEvaluationInputInterface } from '../interface/rule-evaluation-input.interface';
+import { compileRuleRegex } from './compile-rule-regex.util';
+import { parseRuleNumber } from './parse-rule-number.util';
+import { resolveRuleMccCode } from './resolve-rule-mcc-code.util';
 
-const MAX_REGEX_LENGTH = 200;
-const NESTED_QUANTIFIER_PATTERN = /([+*}])\)?[+*{]/u;
-
-const hasNestedQuantifiers = (pattern: string): boolean => NESTED_QUANTIFIER_PATTERN.test(pattern);
+import type { RuleConditionInputInterface } from '../interface/rule-condition-input.interface';
+import type { RuleEvaluationInputInterface } from '../interface/rule-evaluation-input.interface';
 
 const getConditionFieldValue = (field: RuleConditionFieldEnum, input: RuleEvaluationInputInterface): string | number | null => {
     switch (field) {
@@ -22,7 +20,7 @@ const getConditionFieldValue = (field: RuleConditionFieldEnum, input: RuleEvalua
         case RuleConditionFieldEnum.ACCOUNT_ID:
             return input.fromAccountId ?? input.toAccountId;
         case RuleConditionFieldEnum.MCC_CODE:
-            return input.entries[0]?.mccCode ?? null;
+            return resolveRuleMccCode(input.entries);
         case RuleConditionFieldEnum.TRANSACTION_TYPE:
             return input.type;
         case RuleConditionFieldEnum.EXTERNAL_SOURCE:
@@ -30,6 +28,33 @@ const getConditionFieldValue = (field: RuleConditionFieldEnum, input: RuleEvalua
         default:
             return null;
     }
+};
+
+const matchNumericEquality = (fieldValue: number, conditionValue: string, isEquals: boolean): boolean => {
+    const parsedNumber = parseRuleNumber(conditionValue);
+
+    if (!isDefined(parsedNumber)) {
+        return !isEquals;
+    }
+
+    return isEquals ? fieldValue === parsedNumber : fieldValue !== parsedNumber;
+};
+
+const matchInOperator = (fieldValue: string | number, conditionValue: string): boolean => {
+    const inValues = conditionValue
+        .split(',')
+        .map(item => item.trim().toLowerCase())
+        .filter(isNotEmptyString);
+
+    if (!isNotEmptyArray(inValues)) {
+        return false;
+    }
+
+    if (isNumber(fieldValue)) {
+        return inValues.some(item => parseRuleNumber(item) === fieldValue);
+    }
+
+    return inValues.includes(fieldValue.toLowerCase());
 };
 
 export const matchOperator = (
@@ -44,10 +69,14 @@ export const matchOperator = (
 
     switch (operator) {
         case RuleConditionOperatorEnum.EQUALS:
-            return String(fieldValue).toLowerCase() === conditionValue.toLowerCase();
+            return isNumber(fieldValue)
+                ? matchNumericEquality(fieldValue, conditionValue, true)
+                : fieldValue.toLowerCase() === conditionValue.toLowerCase();
 
         case RuleConditionOperatorEnum.NOT_EQUALS:
-            return String(fieldValue).toLowerCase() !== conditionValue.toLowerCase();
+            return isNumber(fieldValue)
+                ? matchNumericEquality(fieldValue, conditionValue, false)
+                : fieldValue.toLowerCase() !== conditionValue.toLowerCase();
 
         case RuleConditionOperatorEnum.CONTAINS:
             return String(fieldValue).toLowerCase().includes(conditionValue.toLowerCase());
@@ -55,37 +84,33 @@ export const matchOperator = (
         case RuleConditionOperatorEnum.NOT_CONTAINS:
             return !String(fieldValue).toLowerCase().includes(conditionValue.toLowerCase());
 
-        case RuleConditionOperatorEnum.MATCHES_REGEX:
-            if (conditionValue.length > MAX_REGEX_LENGTH || hasNestedQuantifiers(conditionValue)) {
-                return false;
-            }
+        case RuleConditionOperatorEnum.MATCHES_REGEX: {
+            const regex = compileRuleRegex(conditionValue);
 
-            return Result.getOrElse(
-                Result.map(
-                    Result.try(() => new RegExp(conditionValue, 'iu')),
-                    regex => regex.test(String(fieldValue))
-                ),
-                () => false
-            );
-
-        case RuleConditionOperatorEnum.GREATER_THAN:
-            return isNumber(fieldValue) && fieldValue > Number(conditionValue);
-
-        case RuleConditionOperatorEnum.LESS_THAN:
-            return isNumber(fieldValue) && fieldValue < Number(conditionValue);
-
-        case RuleConditionOperatorEnum.BETWEEN:
-            if (!isNumber(fieldValue) || !isNotEmptyString(secondaryValue)) {
-                return false;
-            }
-
-            return fieldValue >= Number(conditionValue) && fieldValue <= Number(secondaryValue);
-
-        case RuleConditionOperatorEnum.IN: {
-            const inValues = conditionValue.split(',').map(item => item.trim().toLowerCase());
-
-            return inValues.includes(String(fieldValue).toLowerCase());
+            return isDefined(regex) && regex.test(String(fieldValue));
         }
+
+        case RuleConditionOperatorEnum.GREATER_THAN: {
+            const threshold = parseRuleNumber(conditionValue);
+
+            return isNumber(fieldValue) && isDefined(threshold) && fieldValue > threshold;
+        }
+
+        case RuleConditionOperatorEnum.LESS_THAN: {
+            const threshold = parseRuleNumber(conditionValue);
+
+            return isNumber(fieldValue) && isDefined(threshold) && fieldValue < threshold;
+        }
+
+        case RuleConditionOperatorEnum.BETWEEN: {
+            const minValue = parseRuleNumber(conditionValue);
+            const maxValue = parseRuleNumber(secondaryValue);
+
+            return isNumber(fieldValue) && isDefined(minValue) && isDefined(maxValue) && fieldValue >= minValue && fieldValue <= maxValue;
+        }
+
+        case RuleConditionOperatorEnum.IN:
+            return matchInOperator(fieldValue, conditionValue);
 
         default:
             return false;

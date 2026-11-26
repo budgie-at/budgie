@@ -17,7 +17,7 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { INZHUR_BANK_DESCRIPTION_PATTERNS } from '../constant/inzhur-bank-description-patterns.constant';
 import { INZHUR_BANK_FLOW_TITLES } from '../constant/inzhur-bank-flow-titles.constant';
@@ -124,9 +124,7 @@ export class InzhurBankFlowService extends Context.Service<InzhurBankFlowService
             transaction: TransactionWithEntriesEntityInterface,
             setup: InzhurSetupInterface
         ) {
-            const isConverted = yield* transactionTransferService
-                .convertToTransferAccount(transaction.id, setup.cashAccount.id)
-                .pipe(Effect.catchTag('DebtTransferNotAllowedError', Effect.die));
+            const isConverted = yield* transactionTransferService.convertToTransferAccount(transaction.id, setup.cashAccount.id);
 
             if (!isConverted) {
                 return null;
@@ -235,8 +233,14 @@ export class InzhurBankFlowService extends Context.Service<InzhurBankFlowService
             }
 
             if (isUnprocessed) {
-                yield* transactionRuleRepository.setCategoryByTransactionIds([transaction.id], INVESTMENTS_CATEGORY_ID);
-                yield* transactionRepository.touchUpdatedAt(transaction.id);
+                const categorizedIds = yield* transactionRuleRepository.setCategoryByTransactionIds(
+                    [transaction.id],
+                    INVESTMENTS_CATEGORY_ID
+                );
+
+                if (isNotEmptyArray(categorizedIds)) {
+                    yield* transactionRepository.touchUpdatedAt(transaction.id);
+                }
             }
 
             yield* tagDividend(transaction, fundAccountId);

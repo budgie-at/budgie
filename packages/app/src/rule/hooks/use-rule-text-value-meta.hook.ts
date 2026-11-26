@@ -1,4 +1,5 @@
 import { RuleConditionFieldEnum, RuleConditionOperatorEnum, RuleCreateInputInterface } from '@budgie/contracts';
+import { isValidRulePattern } from '@budgie/rules';
 import { useLingui } from '@lingui/react/macro';
 import { useFormContext, useWatch } from 'react-hook-form';
 
@@ -6,7 +7,6 @@ import { isNotEmptyString } from '@rnw-community/shared';
 
 import { RULE_CONDITION_FIELD } from '../constant/rule-condition-field.constant';
 import { RULE_CONDITION_OPERATOR } from '../constant/rule-condition-operator.constant';
-import { isValidRulePattern } from '../utils/is-valid-rule-pattern.util';
 
 import type { RuleTextValueMetaInterface } from '../interface/rule-text-value-meta.interface';
 

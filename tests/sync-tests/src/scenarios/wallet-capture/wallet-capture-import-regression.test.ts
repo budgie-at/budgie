@@ -33,6 +33,15 @@ const expectCreatedCapturePending = Effect.fnUntraced(function* (capture: Wallet
     expect((yield* walletCaptureFindEntry(transaction.id)).categorySource).toBe(CategorySourceEnum.USER);
 });
 
+const expectSettledCapture = Effect.fnUntraced(function* (
+    capture: WalletCaptureRecordInterface,
+    category: Effect.Success<ReturnType<typeof walletCaptureSeedInput>>['category']
+) {
+    expect(yield* testDb.select().from(TransactionEntityTable)).toHaveLength(1);
+    yield* walletCaptureExpectRuleApplied(capture, category);
+    expect(walletCaptureNativeStub.pendingCaptureIds()).toEqual([]);
+});
+
 const expectUnavailableCaptureDismissed = Effect.fnUntraced(function* (capture: WalletCaptureRecordInterface) {
     const walletCaptureImportService = yield* WalletCaptureImportService;
     walletCaptureNativeStub.seed([capture]);
@@ -61,9 +70,7 @@ describe('Wallet capture import regressions', () => {
 
             expect(yield* walletCaptureImportService.drain()).toEqual([]);
 
-            expect(yield* testDb.select().from(TransactionEntityTable)).toHaveLength(1);
-            yield* walletCaptureExpectRuleApplied(capture, category);
-            expect(walletCaptureNativeStub.pendingCaptureIds()).toEqual([]);
+            yield* expectSettledCapture(capture, category);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -112,9 +119,22 @@ describe('Wallet capture import regressions', () => {
 
             yield* walletCaptureImportService.forceImport(capture.captureId);
 
-            expect(yield* testDb.select().from(TransactionEntityTable)).toHaveLength(1);
-            yield* walletCaptureExpectRuleApplied(capture, input.category);
-            expect(walletCaptureNativeStub.pendingCaptureIds()).toEqual([]);
+            yield* expectSettledCapture(capture, input.category);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('applies SET_CATEGORY rules to an already-imported capture without requiring a transfer conversion rule', () =>
+        Effect.gen(function* () {
+            const walletCaptureImportService = yield* WalletCaptureImportService;
+            const input = yield* walletCaptureSeedInput(CAPTURE_ID);
+            const capture = walletCaptureBuild(CAPTURE_ID, { accountId: input.capture.accountId });
+
+            yield* walletCaptureSeedExistingTransaction(capture);
+            walletCaptureNativeStub.seed([capture]);
+
+            yield* walletCaptureImportService.drain();
+
+            yield* expectSettledCapture(capture, input.category);
         }).pipe(Effect.provide(TestLayer))
     );
 });

@@ -21,8 +21,13 @@ export const RuleConditionOperatorSelector = ({ index, testID }: Props) => {
     const validOperators = RULE_FIELD_OPERATORS[field];
     const label = t(RULE_CONDITION_OPERATOR[operator].label);
 
-    const handleSelect = (nextOperator: RuleConditionOperatorEnum) =>
-        void setValue(`conditions.${index}.operator`, nextOperator, { shouldDirty: true });
+    const handleSelect = (nextOperator: RuleConditionOperatorEnum) => {
+        setValue(`conditions.${index}.operator`, nextOperator, { shouldDirty: true });
+
+        if (nextOperator !== RuleConditionOperatorEnum.BETWEEN) {
+            setValue(`conditions.${index}.secondaryValue`, null, { shouldDirty: true });
+        }
+    };
     const handleOpen = () => void openOperatorSheet({ values: validOperators, selectedValue: operator, onSelect: handleSelect });
 
     return <RuleFormPickerPill label={label} accessibilityLabel={t`Comparison: ${label}`} onPress={handleOpen} testID={testID} />;

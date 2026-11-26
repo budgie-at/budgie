@@ -7,42 +7,83 @@ import {
     TransactionTypeEnum,
     TransactionUpdatedByEnum
 } from '@budgie/contracts';
-import { and, eq, inArray, ne, sql } from 'drizzle-orm';
+import { and, desc, inArray, lt, ne, sql } from 'drizzle-orm';
+import * as Arr from 'effect/Array';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
+
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+
+import { RULE_SET_BATCH_SIZE } from '../constant/batch-processing.constant';
 
 import type { SQL } from 'drizzle-orm';
 
 export class TransactionRuleRepository extends Context.Service<TransactionRuleRepository>()('@budgie/rules/TransactionRuleRepository', {
     make: Effect.sync(() => {
-        const buildRuleConditionsWhere = (where: SQL): SQL | undefined =>
+        const LIGHTWEIGHT_RULE_COLUMNS = {
+            id: TransactionEntityTable.id,
+            type: TransactionEntityTable.type,
+            title: TransactionEntityTable.title,
+            comment: TransactionEntityTable.comment,
+            fromAccountId: TransactionEntityTable.fromAccountId,
+            toAccountId: TransactionEntityTable.toAccountId,
+            externalSource: TransactionEntityTable.externalSource
+        };
+
+        const buildVisibleNonAdjustmentWhere = (...extra: readonly SQL[]): SQL | undefined =>
             and(
                 transactionFilters.buildVisibleTransactionCondition(),
-                transactionFilters.buildLedgerEntryCondition(),
                 ne(TransactionEntityTable.type, TransactionTypeEnum.ADJUSTMENT),
-                where
+                ...extra
             );
 
         return {
             countByRuleConditions: (where: SQL) =>
                 Db.query(db =>
                     db
-                        .select({ count: sql<number>`COUNT(DISTINCT ${TransactionEntityTable.id})` })
+                        .select({ count: sql<number>`COUNT(*)` })
                         .from(TransactionEntityTable)
-                        .innerJoin(TransactionEntryEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
-                        .where(buildRuleConditionsWhere(where))
+                        .where(buildVisibleNonAdjustmentWhere(where))
                 ).pipe(Effect.map(result => result[0]?.count ?? 0)),
             findIdsByRuleConditions: (where: SQL) =>
                 Db.query(db =>
-                    db
-                        .selectDistinct({ id: TransactionEntityTable.id })
-                        .from(TransactionEntityTable)
-                        .innerJoin(TransactionEntryEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
-                        .where(buildRuleConditionsWhere(where))
+                    db.select({ id: TransactionEntityTable.id }).from(TransactionEntityTable).where(buildVisibleNonAdjustmentWhere(where))
                 ).pipe(Effect.map(result => result.map(row => row.id))),
-            setCategoryByTransactionIds: (transactionIds: number[], categoryId: number) =>
+            findLightweightByIds: Effect.fn('TransactionRuleRepository.findLightweightByIds')(function* (ids: readonly number[]) {
+                if (!isNotEmptyArray(ids)) {
+                    return [];
+                }
+
+                const batches = yield* Effect.forEach(Arr.chunksOf(ids, RULE_SET_BATCH_SIZE), chunk =>
+                    Db.query(db =>
+                        db
+                            .select(LIGHTWEIGHT_RULE_COLUMNS)
+                            .from(TransactionEntityTable)
+                            .where(buildVisibleNonAdjustmentWhere(inArray(TransactionEntityTable.id, chunk)))
+                    )
+                );
+
+                return batches.flat();
+            }),
+            findLightweightForRuleMatchingAfter: (cursorId: number | null, limit: number) =>
                 Db.query(db =>
+                    db
+                        .select(LIGHTWEIGHT_RULE_COLUMNS)
+                        .from(TransactionEntityTable)
+                        .where(buildVisibleNonAdjustmentWhere(...(isDefined(cursorId) ? [lt(TransactionEntityTable.id, cursorId)] : [])))
+                        .orderBy(desc(TransactionEntityTable.id))
+                        .limit(limit)
+                ),
+            setCategoryByTransactionIds: Effect.fn('TransactionRuleRepository.setCategoryByTransactionIds')(function* (
+                transactionIds: number[],
+                categoryId: number
+            ) {
+                if (!isNotEmptyArray(transactionIds)) {
+                    return [];
+                }
+
+                const changedEntries = yield* Db.query(db =>
                     db
                         .update(TransactionEntryEntityTable)
                         .set({ categoryId, categorySource: CategorySourceEnum.RULE })
@@ -56,7 +97,8 @@ export class TransactionRuleRepository extends Context.Service<TransactionRuleRe
                                         .where(
                                             and(
                                                 inArray(TransactionEntityTable.id, transactionIds),
-                                                transactionFilters.buildVisibleTransactionCondition()
+                                                transactionFilters.buildVisibleTransactionCondition(),
+                                                transactionFilters.buildCategorizableTypeCondition(null)
                                             )
                                         )
                                 ),
@@ -65,19 +107,28 @@ export class TransactionRuleRepository extends Context.Service<TransactionRuleRe
                             )
                         )
                         .returning({ transactionId: TransactionEntryEntityTable.transactionId })
-                ).pipe(Effect.map(changedEntries => [...new Set(changedEntries.map(entry => entry.transactionId))])),
-            stampUpdatedByRule: (transactionIds: number[]) =>
-                Db.query(db =>
+                );
+
+                return [...new Set(changedEntries.map(entry => entry.transactionId))];
+            }),
+            stampUpdatedByRule: Effect.fn('TransactionRuleRepository.stampUpdatedByRule')(function* (transactionIds: number[]) {
+                if (!isNotEmptyArray(transactionIds)) {
+                    return;
+                }
+
+                yield* Db.query(db =>
                     db
                         .update(TransactionEntityTable)
                         .set({ updatedBy: TransactionUpdatedByEnum.RULE })
                         .where(
                             and(
                                 inArray(TransactionEntityTable.id, transactionIds),
+                                transactionFilters.buildVisibleTransactionCondition(),
                                 sql`${TransactionEntityTable.updatedBy} IS NOT ${TransactionUpdatedByEnum.RULE}`
                             )
                         )
-                )
+                );
+            })
         };
     })
 }) {

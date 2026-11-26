@@ -6,7 +6,9 @@ import {
     detectRuleChanges,
     doesRuleMatchTransaction,
     extractRuleActionOutcomes,
-    hasConflictWithRuleOutcomes
+    hasConflictWithRuleOutcomes,
+    resolveRuleMccCode,
+    selectSuggestConditions
 } from '@budgie/rules';
 import { useReducer } from 'react';
 import { useWatch } from 'react-hook-form';
@@ -76,11 +78,11 @@ export const useSuggestRuleDetection = ({ transaction, control }: UseSuggestRule
 
     const { categoryChanged, tagsChanged } = detectRuleChanges(categoryId, originalCategoryId, tagIds, originalTagIds);
 
-    const mccCategory = transaction.entries[0]?.mccCategory ?? null;
-    const mccCode = isDefined(mccCategory) ? mccCategory.mcc : null;
+    const mccCode = resolveRuleMccCode(transaction.entries);
+    const displayTitle = getTransactionDisplayTitle(transaction);
 
     const suggestRuleData: SuggestRuleDataInterface = {
-        title: getTransactionDisplayTitle(transaction),
+        title: displayTitle,
         comment: transaction.comment,
         mccCode,
         categoryId,
@@ -93,7 +95,8 @@ export const useSuggestRuleDetection = ({ transaction, control }: UseSuggestRule
         : enabledRules.filter(rule => doesRuleMatchTransaction(rule, transactionInput, suggestRuleData));
     const matchingRulesCount = matchingRules.length;
     const matchingRuleIds = matchingRules.map(rule => rule.id);
-    const hasChanges = categoryChanged || tagsChanged;
+    const hasSuggestConditions = isDefined(selectSuggestConditions(displayTitle, mccCode, transaction.comment));
+    const hasChanges = (categoryChanged || tagsChanged) && (matchingRulesCount === 1 || hasSuggestConditions);
 
     const ruleActionOutcomes = extractRuleActionOutcomes(matchingRules);
     const hasConflict = hasConflictWithRuleOutcomes({
@@ -104,7 +107,7 @@ export const useSuggestRuleDetection = ({ transaction, control }: UseSuggestRule
         tagsChanged
     });
 
-    const dismissKey = buildDismissKey(transaction.id, getTransactionDisplayTitle(transaction), transaction.comment, mccCode);
+    const dismissKey = buildDismissKey(transaction.id, displayTitle, transaction.comment, mccCode);
     const wasPreviouslyDismissed = dismissedSuggestions.has(dismissKey);
 
     const mode = isAdjustment

@@ -3,6 +3,7 @@ import {
     CategoryEntityTable,
     CategorySourceEnum,
     RuleActionTypeEnum,
+    RuleConditionEntityTable,
     RuleConditionFieldEnum,
     RuleConditionMatchTypeEnum,
     RuleConditionOperatorEnum,
@@ -14,10 +15,11 @@ import {
     TransactionTypeEnum,
     TransactionUpdatedByEnum
 } from '@budgie/contracts';
-import { RuleEngineService, RuleService } from '@budgie/rules';
+import { RuleEngineService, RuleRepository, RuleService } from '@budgie/rules';
 import { expect, layer } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
+import * as Exit from 'effect/Exit';
 
 import { testDb, TestLayer, testSeedService } from './context';
 
@@ -223,6 +225,136 @@ layer(TestLayer)('rules engine', it => {
 
             expect((yield* readTransaction(expense.id)).type).toBe(TransactionTypeEnum.TRANSFER);
             expect(entries.map(entry => entry.categoryId)).toStrictEqual([null, null]);
+        })
+    );
+
+    it.effect('never categorizes FEE entries or TRANSFER transactions in prepareCreateInputsForRules or stored application', () =>
+        Effect.gen(function* () {
+            const ruleEngineService = yield* RuleEngineService;
+            const { source, target } = yield* seedExpenseWithTarget;
+            const [category] = yield* testDb.select().from(CategoryEntityTable);
+            const rule = yield* createActionRule({ ...emptyAction, type: RuleActionTypeEnum.SET_CATEGORY, categoryId: category.id });
+
+            const { transactionInputs } = yield* ruleEngineService.prepareCreateInputsForRules([
+                {
+                    ...buildInput(source.id),
+                    entries: [
+                        { accountId: source.id, categoryId: null, mccCategoryId: null, type: TransactionEntryTypeEnum.CREDIT, amount: 10 },
+                        { accountId: source.id, categoryId: null, mccCategoryId: null, type: TransactionEntryTypeEnum.FEE, amount: 1 }
+                    ]
+                },
+                {
+                    ...buildInput(source.id),
+                    type: TransactionTypeEnum.TRANSFER,
+                    toAccountId: target.id,
+                    entries: [
+                        { accountId: source.id, categoryId: null, mccCategoryId: null, type: TransactionEntryTypeEnum.CREDIT, amount: 10 },
+                        { accountId: target.id, categoryId: null, mccCategoryId: null, type: TransactionEntryTypeEnum.DEBIT, amount: 10 }
+                    ]
+                }
+            ]);
+
+            expect(transactionInputs[0].entries.map(entry => entry.categoryId)).toStrictEqual([category.id, null]);
+            expect(transactionInputs[1].entries.map(entry => entry.categoryId)).toStrictEqual([null, null]);
+
+            const transfer = yield* testSeedService.directTransfer({
+                sourceAccountId: source.id,
+                targetAccountId: target.id,
+                sourceAmount: 10_000_000,
+                targetAmount: 10_000_000,
+                exchangeRate: 1,
+                operatedAt: new Date('2026-06-02T12:00:00.000Z'),
+                sourceEntryExchangeRate: 1,
+                toIban: null
+            });
+            yield* testSeedService.updateTransaction(transfer.id, { title: 'SPAR TRANSFER' });
+            yield* ruleEngineService.applyRuleToMatchingTransactions(rule.id);
+
+            const transferEntries = yield* testDb
+                .select()
+                .from(TransactionEntryEntityTable)
+                .where(eq(TransactionEntryEntityTable.transactionId, transfer.id));
+
+            expect(transferEntries.map(entry => entry.categoryId)).toStrictEqual([null, null]);
+        })
+    );
+
+    it.effect(
+        'skips actionless rules, stamps updatedBy RULE on applyRuleToMatchingTransactions transfer conversion, and ignores soft-deleted conditions',
+        () =>
+            Effect.gen(function* () {
+                const ruleEngineService = yield* RuleEngineService;
+                const ruleService = yield* RuleService;
+                const ruleRepository = yield* RuleRepository;
+                const { source, target, expense } = yield* seedExpenseWithTarget;
+                const emptyRule = yield* ruleService.create({
+                    enabled: true,
+                    conditionMatchType: RuleConditionMatchTypeEnum.ALL,
+                    conditions: [titleContains],
+                    actions: []
+                });
+
+                yield* ruleEngineService.applyRulesToTransactions([expense.id], [buildInput(source.id)]);
+                expect((yield* readTransaction(expense.id)).updatedBy).toBeNull();
+                expect(yield* ruleEngineService.applyRuleToMatchingTransactions(emptyRule.id)).toEqual({ applied: 0, failed: 0, total: 0 });
+
+                yield* testDb
+                    .update(RuleConditionEntityTable)
+                    .set({ deletedAt: new Date() })
+                    .where(eq(RuleConditionEntityTable.ruleId, emptyRule.id));
+                const reloaded = yield* ruleRepository.findByIdWithRelations(emptyRule.id);
+
+                expect(reloaded?.conditions).toEqual([]);
+
+                const convertRule = yield* createActionRule({
+                    ...emptyAction,
+                    type: RuleActionTypeEnum.CONVERT_TO_TRANSFER,
+                    accountId: target.id
+                });
+                const result = yield* ruleEngineService.applyRuleToMatchingTransactions(convertRule.id);
+
+                expect(result).toEqual({ applied: 1, failed: 0, total: 1 });
+                expect(yield* readTransaction(expense.id)).toMatchObject({
+                    type: TransactionTypeEnum.TRANSFER,
+                    updatedBy: TransactionUpdatedByEnum.RULE
+                });
+
+                yield* ruleService.archiveById(convertRule.id);
+                const missingExit = yield* Effect.exit(ruleService.updateById(convertRule.id, { enabled: false }));
+
+                expect(Exit.isFailure(missingExit)).toBe(true);
+            })
+    );
+
+    it.effect('never converts or tags a hidden consolidation child when applying rules by id or input', () =>
+        Effect.gen(function* () {
+            const ruleEngineService = yield* RuleEngineService;
+            const { source, target, expense: parent } = yield* seedExpenseWithTarget;
+            const tag = yield* testSeedService.tag('hidden-child');
+            const child = yield* testSeedService.manualExpense({
+                accountId: source.id,
+                amount: 10_000_000,
+                operatedAt: new Date('2026-06-02T12:05:00.000Z'),
+                title: 'SPAR MARKET'
+            });
+            yield* testDb
+                .update(TransactionEntityTable)
+                .set({ consolidationParentTransactionId: parent.id })
+                .where(eq(TransactionEntityTable.id, child.id));
+            yield* createActionRule({ ...emptyAction, type: RuleActionTypeEnum.CONVERT_TO_TRANSFER, accountId: target.id });
+            yield* createActionRule({ ...emptyAction, type: RuleActionTypeEnum.ADD_TAG, tagId: tag.id });
+
+            yield* ruleEngineService.applyRulesToTransactions([child.id], [buildInput(source.id)]);
+
+            const childAfter = yield* readTransaction(child.id);
+            const childTags = yield* testDb
+                .select()
+                .from(TransactionTagsEntityTable)
+                .where(eq(TransactionTagsEntityTable.transactionId, child.id));
+
+            expect(childAfter.type).toBe(TransactionTypeEnum.EXPENSE);
+            expect(childAfter.updatedBy).toBeNull();
+            expect(childTags).toEqual([]);
         })
     );
 });

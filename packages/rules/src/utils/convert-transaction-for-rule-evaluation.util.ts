@@ -6,6 +6,8 @@ import {
     convertFromMicroUnits
 } from '@budgie/contracts';
 
+import { isNotEmptyString } from '@rnw-community/shared';
+
 import type { RuleEvaluationInputInterface } from '../interface/rule-evaluation-input.interface';
 import type { TransactionWithEntriesMccCategoryEntityInterface } from '@budgie/contracts';
 
@@ -40,6 +42,7 @@ export const convertTransactionForRuleEvaluation = (
 
     return {
         ...transaction,
+        title: isNotEmptyString(transaction.title) ? transaction.title : transaction.comment,
         amount: convertFromMicroUnits(calculateAmountForRuleEvaluation(transaction)),
         tagIds: [],
         entries: entries.map(entry => ({

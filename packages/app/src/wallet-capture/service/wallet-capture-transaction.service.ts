@@ -107,14 +107,20 @@ export class WalletCaptureTransactionService extends Context.Service<WalletCaptu
                 ]
             });
 
-            const prepareCaptureForRules = Effect.fnUntraced(function* (record: WalletCaptureRecordInterface) {
+            const buildCaptureTransactionInput = Effect.fnUntraced(function* (record: WalletCaptureRecordInterface) {
                 const accountAmount = yield* resolveAccountAmount(record);
 
                 if (!isDefined(accountAmount)) {
                     return yield* Effect.die(new Error(`Wallet capture ${record.captureId} has no account amount`));
                 }
 
-                return yield* ruleEngineService.prepareCreateInputsForRules([mapCaptureToTransactionInput(record, accountAmount)]);
+                return mapCaptureToTransactionInput(record, accountAmount);
+            });
+
+            const prepareCaptureForRules = Effect.fnUntraced(function* (record: WalletCaptureRecordInterface) {
+                const transactionInput = yield* buildCaptureTransactionInput(record);
+
+                return yield* ruleEngineService.prepareCreateInputsForRules([transactionInput]);
             });
 
             const applyPostCreateRules = Effect.fnUntraced(function* (
@@ -145,9 +151,9 @@ export class WalletCaptureTransactionService extends Context.Service<WalletCaptu
                 }),
                 applyRulesToExistingCaptureTransaction: Effect.fn('WalletCaptureTransactionService.applyRulesToExistingCaptureTransaction')(
                     function* (record: WalletCaptureRecordInterface, transactionId: number) {
-                        const { transactionInputs, postCreateIndexes } = yield* prepareCaptureForRules(record);
+                        const transactionInput = yield* buildCaptureTransactionInput(record);
 
-                        yield* applyPostCreateRules(transactionInputs, postCreateIndexes, transactionId);
+                        yield* ruleEngineService.applyRulesToTransactions([transactionId], [transactionInput]);
                     }
                 )
             };

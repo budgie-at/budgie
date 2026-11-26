@@ -166,4 +166,25 @@ describe('rule/rule-application-drainer', () => {
             expect(onSettled).toHaveBeenCalledTimes(1);
         }).pipe(Effect.provide(TestClockLayer))
     );
+
+    it.effect('terminates a cancelled drain cleanly without running stale batches when background resumes', () =>
+        Effect.gen(function* () {
+            const ruleApplicationDrainerService = yield* RuleApplicationDrainerService;
+            const { appliedRulesToTransactions, releaseImportWork } = yield* queueDrainBehindUserWork;
+
+            yield* ruleApplicationDrainerService.cancelPending();
+            yield* releaseImportWork();
+            yield* advanceScheduledDrain(drainDelayMs);
+            yield* inWorkload(Effect.void);
+            yield* advanceScheduledDrain(drainDelayMs);
+
+            expect(appliedRulesToTransactions).not.toHaveBeenCalled();
+
+            yield* ruleApplicationDrainerService.enqueueTransactions([99], [buildTransactionInput()]);
+            yield* advanceScheduledDrain(drainDelayMs);
+
+            expect(appliedRulesToTransactions).toHaveBeenCalledTimes(1);
+            expect(appliedRulesToTransactions).toHaveBeenCalledWith([99], [buildTransactionInput()]);
+        }).pipe(Effect.provide(TestClockLayer))
+    );
 });

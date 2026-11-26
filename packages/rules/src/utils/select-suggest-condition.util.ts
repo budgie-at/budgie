@@ -49,20 +49,26 @@ const cleanMerchantTitle = (title: string): string => {
     return cleaned;
 };
 
-const GENERIC_TITLE_PATTERNS = ['POS PURCHASE', 'POS', 'PURCHASE', 'PAYMENT', 'WITHDRAWAL', 'TRANSFER', 'DEBIT', 'CREDIT', 'ATM'];
+const GENERIC_SINGLE_WORDS = new Set(['POS', 'PURCHASE', 'PAYMENT', 'WITHDRAWAL', 'TRANSFER', 'DEBIT', 'CREDIT', 'ATM']);
+const GENERIC_PHRASE_PATTERN = /(?:^|\s)POS\s+PURCHASE(?:\s|$)/u;
 
 const MINIMUM_UNIQUE_WORDS = 3;
 const MINIMUM_TITLE_LENGTH = 3;
 
 const isGenericTitle = (title: string): boolean => {
     const upper = title.toUpperCase().trim();
+    const words = upper.split(/\s+/u).filter(isNotEmptyString);
 
-    if (GENERIC_TITLE_PATTERNS.includes(upper)) {
+    if (words.length === 1 && GENERIC_SINGLE_WORDS.has(words[0])) {
         return true;
     }
 
-    const uniqueWords = new Set(upper.split(/\s+/u).filter(isNotEmptyString));
-    const containsGenericPattern = GENERIC_TITLE_PATTERNS.some(pattern => upper.includes(pattern));
+    if (upper === 'POS PURCHASE') {
+        return true;
+    }
+
+    const uniqueWords = new Set(words);
+    const containsGenericPattern = GENERIC_PHRASE_PATTERN.test(upper) || words.some(word => GENERIC_SINGLE_WORDS.has(word));
 
     return uniqueWords.size < MINIMUM_UNIQUE_WORDS && containsGenericPattern;
 };
@@ -74,10 +80,21 @@ const buildSymbolSeparatedTextConditions = (
     field: RuleConditionFieldEnum.TITLE | RuleConditionFieldEnum.COMMENT,
     value: string
 ): RuleConditionCreateInputInterface[] => {
-    const tokenValues = value
-        .split(TITLE_TOKEN_SEPARATOR_PATTERN)
-        .filter(token => token.length >= MINIMUM_TITLE_TOKEN_LENGTH)
-        .slice(0, MAXIMUM_TITLE_TOKEN_CONDITIONS);
+    const seenTokens = new Set<string>();
+    const tokenValues: string[] = [];
+
+    for (const token of value.split(TITLE_TOKEN_SEPARATOR_PATTERN)) {
+        const lowerToken = token.toLowerCase();
+
+        if (token.length >= MINIMUM_TITLE_TOKEN_LENGTH && !seenTokens.has(lowerToken)) {
+            seenTokens.add(lowerToken);
+            tokenValues.push(token);
+
+            if (tokenValues.length >= MAXIMUM_TITLE_TOKEN_CONDITIONS) {
+                break;
+            }
+        }
+    }
 
     if (!isNotEmptyArray(tokenValues)) {
         return [

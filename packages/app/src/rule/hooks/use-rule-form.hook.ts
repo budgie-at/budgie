@@ -115,8 +115,7 @@ export const useRuleForm = (options: UseRuleFormOptionsInterface = {}) => {
     });
 
     const confirmApplyToExisting = Effect.fn('useRuleForm.confirmApplyToExisting')(function* (values: RuleCreateInputInterface) {
-        const hasConditions = values.conditions.some(condition => isNotEmptyString(condition.value));
-        if (!hasConditions) {
+        if (!values.enabled || !values.conditions.some(condition => isNotEmptyString(condition.value))) {
             return false;
         }
 

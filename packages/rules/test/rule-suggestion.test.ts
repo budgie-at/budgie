@@ -1,5 +1,11 @@
-import { RuleActionTypeEnum } from '@budgie/contracts';
-import { RuleService, RuleSuggestionDuplicateError, buildCategoryTagActions, detectRuleChanges } from '@budgie/rules';
+import { RuleActionTypeEnum, RuleConditionFieldEnum, RuleConditionMatchTypeEnum, RuleConditionOperatorEnum } from '@budgie/contracts';
+import {
+    RuleService,
+    RuleSuggestionDuplicateError,
+    buildCategoryTagActions,
+    detectRuleChanges,
+    selectSuggestConditions
+} from '@budgie/rules';
 import { expect, layer } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
@@ -49,6 +55,80 @@ layer(TestLayer)('rule suggestion', it => {
             const updated = yield* ruleService.applySuggestedActions(second.id, null, [tag.id]);
 
             expect(updated.id).toBe(second.id);
+        })
+    );
+
+    it.effect('keeps real merchants containing generic substrings and deduplicates repeated symbol tokens', () =>
+        Effect.sync(() => {
+            expect(selectSuggestConditions('NOVA POSHTA', null)).toEqual([
+                {
+                    field: RuleConditionFieldEnum.TITLE,
+                    operator: RuleConditionOperatorEnum.CONTAINS,
+                    value: 'NOVA POSHTA',
+                    secondaryValue: null
+                }
+            ]);
+            expect(selectSuggestConditions('POST OFFICE', null)).toEqual([
+                {
+                    field: RuleConditionFieldEnum.TITLE,
+                    operator: RuleConditionOperatorEnum.CONTAINS,
+                    value: 'POST OFFICE',
+                    secondaryValue: null
+                }
+            ]);
+            expect(selectSuggestConditions('ATMOSPHERE CAFE', null)).toEqual([
+                {
+                    field: RuleConditionFieldEnum.TITLE,
+                    operator: RuleConditionOperatorEnum.CONTAINS,
+                    value: 'ATMOSPHERE CAFE',
+                    secondaryValue: null
+                }
+            ]);
+            expect(selectSuggestConditions('POS PURCHASE', null)).toBeNull();
+            expect(selectSuggestConditions('ATM WITHDRAWAL', null)).toBeNull();
+            expect(selectSuggestConditions('SPAR - spar / KYIV', null)).toEqual([
+                {
+                    field: RuleConditionFieldEnum.TITLE,
+                    operator: RuleConditionOperatorEnum.CONTAINS,
+                    value: 'SPAR',
+                    secondaryValue: null
+                },
+                {
+                    field: RuleConditionFieldEnum.TITLE,
+                    operator: RuleConditionOperatorEnum.CONTAINS,
+                    value: 'KYIV',
+                    secondaryValue: null
+                }
+            ]);
+        })
+    );
+
+    it.effect('detects duplicate suggestion against an existing single-condition ANY rule', () =>
+        Effect.gen(function* () {
+            const ruleService = yield* RuleService;
+            const tag = yield* testSeedService.tag('delivery');
+            const existing = yield* ruleService.create({
+                enabled: true,
+                conditionMatchType: RuleConditionMatchTypeEnum.ANY,
+                conditions: [
+                    {
+                        field: RuleConditionFieldEnum.TITLE,
+                        operator: RuleConditionOperatorEnum.CONTAINS,
+                        value: 'nova poshta',
+                        secondaryValue: 'stale-secondary'
+                    }
+                ],
+                actions: [{ type: RuleActionTypeEnum.ADD_TAG, categoryId: null, tagId: tag.id, accountId: null }]
+            });
+
+            const duplicateRuleId = yield* ruleService
+                .createFromSuggestion({ title: 'NOVA POSHTA', comment: '', mccCode: null, categoryId: null, tagIds: [tag.id] })
+                .pipe(
+                    Effect.flip,
+                    Effect.map(error => (Schema.is(RuleSuggestionDuplicateError)(error) ? error.ruleId : null))
+                );
+
+            expect(duplicateRuleId).toBe(existing.id);
         })
     );
 });

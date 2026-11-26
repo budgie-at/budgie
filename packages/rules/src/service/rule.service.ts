@@ -1,4 +1,4 @@
-import { AccountRepository, Db, RuleActionTypeEnum, RuleConditionMatchTypeEnum } from '@budgie/contracts';
+import { AccountRepository, Db, RuleActionTypeEnum, RuleConditionMatchTypeEnum, RuleConditionOperatorEnum } from '@budgie/contracts';
 import { assertTransferAccountsAreNotDebt } from '@budgie/ledger';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -75,16 +75,15 @@ export class RuleService extends Context.Service<RuleService>()('@budgie/rules/R
                 ...(isDefined(input.conditionMatchType) && { conditionMatchType: input.conditionMatchType })
             };
 
-            if (isNotEmptyArray(Object.keys(ruleFieldUpdate))) {
-                return yield* ruleRepository.updateById(id, ruleFieldUpdate);
-            }
+            const rule = isNotEmptyArray(Object.keys(ruleFieldUpdate))
+                ? yield* ruleRepository.updateById(id, ruleFieldUpdate)
+                : yield* ruleRepository.findById(id);
 
-            const existingRule = yield* ruleRepository.findByIdWithRelations(id);
-            if (!isDefined(existingRule)) {
+            if (!isDefined(rule)) {
                 return yield* Effect.die(new Error(`Rule ${id} not found`));
             }
 
-            return existingRule;
+            return rule;
         });
 
         const syncRuleConditions = Effect.fn('RuleService.syncRuleConditions')(function* (
@@ -127,8 +126,12 @@ export class RuleService extends Context.Service<RuleService>()('@budgie/rules/R
             effect => Db.transaction(effect)
         );
 
-        const serializeCondition = (condition: RuleConditionInputInterface) =>
-            `${condition.field}|${condition.operator}|${condition.value.toLowerCase()}|${condition.secondaryValue?.toLowerCase() ?? ''}`;
+        const serializeCondition = (condition: RuleConditionInputInterface) => {
+            const secondary =
+                condition.operator === RuleConditionOperatorEnum.BETWEEN ? (condition.secondaryValue?.trim().toLowerCase() ?? '') : '';
+
+            return `${condition.field}|${condition.operator}|${condition.value.trim().toLowerCase()}|${secondary}`;
+        };
 
         const serializeConditions = (conditions: readonly RuleConditionInputInterface[]) => conditions.map(serializeCondition).sort();
 
@@ -170,8 +173,8 @@ export class RuleService extends Context.Service<RuleService>()('@budgie/rules/R
             const existingRules = yield* ruleRepository.findAllWithConditions;
             const duplicateRule = existingRules.find(
                 rule =>
-                    rule.conditionMatchType === ruleInput.conditionMatchType &&
                     isNotEmptyArray(rule.conditions) &&
+                    (rule.conditions.length === 1 || rule.conditionMatchType === ruleInput.conditionMatchType) &&
                     areConditionsEqual(ruleInput.conditions, rule.conditions)
             );
 
