@@ -40,7 +40,7 @@
         "!dist/**/*.tsbuildinfo"
     ],
     "scripts": {
-        "build": "rm -rf ./dist ./node_modules/.cache/tsbuildinfo.json && bob build",
+        "build": "rm -rf ./dist && bob build",
         "clear": "rm -rf coverage && rm -rf dist && rm -f *.tsbuildinfo",
         "lint": "oxlint --type-aware src",
         "test": "vitest run",

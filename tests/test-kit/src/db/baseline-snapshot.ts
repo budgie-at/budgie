@@ -10,10 +10,11 @@ import * as Reactivity from 'effect/reactivity/Reactivity';
 
 import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { getInMemoryDatabaseSync, makeInMemoryTestSqliteClient } from './make-in-memory-test-sqlite-client';
+import { makeInMemoryTestSqliteClient } from './make-in-memory-test-sqlite-client';
 import { makeTestDatabase } from './make-test-database';
 
 import type { BaselineSnapshotInterface } from './interface/baseline-snapshot.interface';
+import type * as Client from 'effect/sql/SqlClient';
 
 const BASELINE_SNAPSHOT_FILENAME = 'budgie-test-baseline.sqlite';
 
@@ -56,23 +57,20 @@ const readPersistedBaselineSnapshot = (snapshotPath: string): Effect.Effect<Base
         return null;
     });
 
-const writeBaselineSnapshotFile = (databaseSync: DatabaseSync, snapshotPath: string) => {
+const writeBaselineSnapshotFile = (client: Client.SqlClient, snapshotPath: string) => {
     const tempPath = `${snapshotPath}.${process.pid}.${Date.now()}.tmp`;
 
-    return Effect.try({
-        try: () => {
-            mkdirSync(dirname(snapshotPath), { recursive: true });
-            databaseSync.exec(`VACUUM INTO '${tempPath.replaceAll("'", "''")}'`);
-            renameSync(tempPath, snapshotPath);
-        },
-        catch: cause => getErrorMessage(cause)
-    }).pipe(
-        Effect.catch(message =>
+    return Effect.try({ try: () => void mkdirSync(dirname(snapshotPath), { recursive: true }), catch: getErrorMessage }).pipe(
+        Effect.andThen(client.unsafe(`VACUUM INTO '${tempPath.replaceAll("'", "''")}'`)),
+        Effect.andThen(Effect.try({ try: () => void renameSync(tempPath, snapshotPath), catch: getErrorMessage })),
+        Effect.catch(cause =>
             Effect.sync(() => {
                 rmSync(tempPath, { force: true });
             }).pipe(
                 Effect.andThen(readPersistedSize(snapshotPath)),
-                Effect.flatMap(size => (isDefined(size) && isPositiveNumber(size) ? Effect.void : Effect.die(new Error(message))))
+                Effect.flatMap(size =>
+                    isDefined(size) && isPositiveNumber(size) ? Effect.void : Effect.die(new Error(getErrorMessage(cause)))
+                )
             )
         )
     );
@@ -100,33 +98,17 @@ export const getBaselineSnapshot: Effect.Effect<BaselineSnapshotInterface> = Eff
 
             yield* migrationService.migrate().pipe(Effect.provideService(Db, database));
 
-            const databaseSync = getInMemoryDatabaseSync(client);
-
-            if (!isDefined(databaseSync)) {
-                return yield* Effect.die(new Error('Expected in-memory DatabaseSync instance'));
-            }
-
-            yield* writeBaselineSnapshotFile(databaseSync, snapshotPath);
+            yield* writeBaselineSnapshotFile(client, snapshotPath);
         }).pipe(Effect.provide(Reactivity.layer), Effect.orDie)
     );
 
-    if (supportsInMemoryDeserialize()) {
-        const buffer = yield* readPersistedBuffer(snapshotPath);
+    const writtenSnapshot = yield* readPersistedBaselineSnapshot(snapshotPath);
 
-        if (!isDefined(buffer) || !isPositiveNumber(buffer.byteLength)) {
-            return yield* Effect.die(new Error(`Expected baseline snapshot at ${snapshotPath}`));
-        }
-
-        const snapshot: BaselineSnapshotInterface = { path: snapshotPath, buffer };
-
-        baselineSnapshotCache = snapshot;
-
-        return snapshot;
+    if (!isDefined(writtenSnapshot)) {
+        return yield* Effect.die(new Error(`Expected baseline snapshot at ${snapshotPath}`));
     }
 
-    const snapshot: BaselineSnapshotInterface = { path: snapshotPath, buffer: null };
+    baselineSnapshotCache = writtenSnapshot;
 
-    baselineSnapshotCache = snapshot;
-
-    return snapshot;
+    return writtenSnapshot;
 });

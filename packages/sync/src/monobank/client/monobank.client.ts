@@ -55,7 +55,7 @@ export class MonobankClient implements SyncProviderClientInterface {
     });
 
     private readonly personalClient: MonobankPersonalClient;
-    private cachedClientInfo: ClientInfo | null = null;
+    private cachedClientInfo: ClientInfo | undefined;
 
     private readonly fetchClientInfo = Effect.fn('MonobankClient.fetchClientInfo')(function* (this: MonobankClient) {
         if (!isDefined(this.cachedClientInfo)) {

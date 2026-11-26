@@ -8,7 +8,6 @@
     "scripts": {
         "build": "turbo run build",
         "build:force": "turbo run build --force",
-        "build:watch": "pnpm --filter '@budgie/*' --parallel build:watch",
         "clear": "turbo run clear",
         "cpd": "jscpd . --pattern \"**/*.{ts,tsx}\"",
         "deadcode": "knip",

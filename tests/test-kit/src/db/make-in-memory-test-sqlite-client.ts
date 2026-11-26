@@ -25,8 +25,6 @@ const SIDECAR_SUFFIXES = ['', '-wal', '-shm', '-journal'] as const;
 
 let copySequence = 0;
 
-const closedDatabases = new WeakSet<DatabaseSync>();
-const databaseSyncByClient = new WeakMap<Client.SqlClient, DatabaseSync>();
 const resetByClient = new WeakMap<Client.SqlClient, (snapshot: BaselineSnapshotInterface) => void>();
 
 const configureDatabase = (database: DatabaseSync): void => {
@@ -69,11 +67,6 @@ const openDatabaseHandle = (snapshot?: BaselineSnapshotInterface): DatabaseHandl
 };
 
 const closeDatabaseHandle = (handle: DatabaseHandleInterface): void => {
-    if (closedDatabases.has(handle.database)) {
-        return;
-    }
-
-    closedDatabases.add(handle.database);
     handle.database.close();
 
     if (isDefined(handle.filePath)) {
@@ -113,15 +106,21 @@ const toSqliteError = (cause: unknown, operation: string): SqlError.SqlError =>
         })
     });
 
-export const getInMemoryDatabaseSync = (client: Client.SqlClient): DatabaseSync | undefined => databaseSyncByClient.get(client);
+export const resetInMemoryTestSqliteClient = (
+    client: Client.SqlClient,
+    getSnapshot: Effect.Effect<BaselineSnapshotInterface>
+): Effect.Effect<boolean> =>
+    Effect.gen(function* () {
+        const reset = resetByClient.get(client);
 
-export const resetInMemoryTestSqliteClient = (client: Client.SqlClient, snapshot: BaselineSnapshotInterface): void => {
-    const reset = resetByClient.get(client);
+        if (!isDefined(reset)) {
+            return false;
+        }
 
-    if (isDefined(reset)) {
-        reset(snapshot);
-    }
-};
+        reset(yield* getSnapshot);
+
+        return true;
+    });
 
 export const makeInMemoryTestSqliteClient = (
     snapshot?: BaselineSnapshotInterface
@@ -220,13 +219,11 @@ export const makeInMemoryTestSqliteClient = (
             spanAttributes: [['db.system', 'sqlite']]
         });
 
-        databaseSyncByClient.set(client, currentHandle.database);
         resetByClient.set(client, nextSnapshot => {
             const nextHandle = openDatabaseHandle(nextSnapshot);
             const previousHandle = currentHandle;
 
             currentHandle = nextHandle;
-            databaseSyncByClient.set(client, nextHandle.database);
             closeDatabaseHandle(previousHandle);
         });
 

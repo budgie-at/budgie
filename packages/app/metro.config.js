@@ -1,15 +1,9 @@
-const path = require('node:path');
 const { getDefaultConfig } = require('expo/metro-config');
 const { withUniwindConfig } = require('uniwind/metro');
 
-const workspaceRoot = path.resolve(__dirname, '../..');
+/** @type {import('expo/metro-config').MetroConfig} */
 const config = getDefaultConfig(__dirname);
 
-config.watchFolders = (config.watchFolders ?? []).filter(folder => {
-    const relative = path.relative(workspaceRoot, folder);
-
-    return relative !== 'packages/landing' && !relative.startsWith(`tests${path.sep}`) && relative !== 'tests';
-});
 config.resolver.sourceExts.push('sql');
 const defaultResolveRequest = config.resolver.resolveRequest;
 config.resolver.resolveRequest = (context, moduleName, platform) =>
