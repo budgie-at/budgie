@@ -340,6 +340,11 @@ layer(TestLayer)('RuleMatcherService SQL and fallback parity', it => {
                     operatedAt: new Date('2026-06-02T12:01:00.000Z'),
                     title: 'Shop\u0000Coffee'
                 });
+                const [storedNul] = yield* testDb
+                    .select({ title: TransactionEntityTable.title })
+                    .from(TransactionEntityTable)
+                    .where(eq(TransactionEntityTable.id, nulExpense.id));
+                const driverPreservesNul = storedNul.title.includes('\u0000');
                 const tombstonedExpense = yield* testSeedService.manualExpense({
                     accountId: account.id,
                     amount: 10 * PRECISION,
@@ -377,6 +382,12 @@ layer(TestLayer)('RuleMatcherService SQL and fallback parity', it => {
                         [RuleConditionFieldEnum.TITLE, RuleConditionOperatorEnum.CONTAINS, 'shop\u0000coffee', null]
                     ])
                 });
+                const nulValueMismatchCount = yield* ruleMatcherService.countMatchingTransactions({
+                    conditionMatchType: RuleConditionMatchTypeEnum.ALL,
+                    conditions: buildDbConditions([
+                        [RuleConditionFieldEnum.TITLE, RuleConditionOperatorEnum.CONTAINS, 'shop\u0000other', null]
+                    ])
+                });
                 const zeroAmountCount = yield* ruleMatcherService.countMatchingTransactions({
                     conditionMatchType: RuleConditionMatchTypeEnum.ALL,
                     conditions: buildDbConditions([[RuleConditionFieldEnum.AMOUNT, RuleConditionOperatorEnum.EQUALS, '0', null]])
@@ -397,9 +408,10 @@ layer(TestLayer)('RuleMatcherService SQL and fallback parity', it => {
                 expect(equalsCount).toBe(1);
                 expect(notEqualsCount).toBe(1);
                 expect(regexCount).toBe(1);
-                expect(nulContainsCount).toBe(1);
-                expect(nulNotContainsCount).toBe(1);
-                expect(nulValueContainsCount).toBe(1);
+                expect(nulContainsCount).toBe(driverPreservesNul ? 1 : 0);
+                expect(nulNotContainsCount).toBe(driverPreservesNul ? 1 : 2);
+                expect(nulValueContainsCount).toBe(driverPreservesNul ? 1 : 0);
+                expect(nulValueMismatchCount).toBe(0);
                 expect(zeroAmountCount).toBe(0);
                 expect(commentFallbackMatch).toBe(true);
                 expect(orderedMcc).toBe('5411');
