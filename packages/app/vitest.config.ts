@@ -13,14 +13,21 @@ export default defineConfig({
     test: {
         maxWorkers: 4,
         projects: [
-            { test: { ...sharedTestOptions, name: 'isolated', isolate: true, include: testFiles.filter(usesModuleMocks) } },
+            {
+                test: {
+                    ...sharedTestOptions,
+                    name: 'isolated',
+                    isolate: true,
+                    include: ['test/**/*.test.ts'],
+                    exclude: testFiles.filter(filePath => !usesModuleMocks(filePath))
+                }
+            },
             {
                 test: {
                     ...sharedTestOptions,
                     name: 'fast',
                     isolate: false,
-                    include: ['test/**/*.test.ts'],
-                    exclude: testFiles.filter(usesModuleMocks)
+                    include: testFiles.filter(filePath => !usesModuleMocks(filePath))
                 }
             }
         ]
