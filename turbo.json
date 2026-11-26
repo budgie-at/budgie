@@ -42,7 +42,8 @@
             "outputs": ["dist/**", ".next/**", "node_modules/.cache/tsbuildinfo.json"]
         },
         "test": {
-            "dependsOn": ["^build"]
+            "dependsOn": ["^build"],
+            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**", "$TURBO_ROOT$/packages/app/drizzle/**"]
         },
         "@budgie/categorization#test": {
             "dependsOn": ["^build", "build"],
@@ -51,40 +52,7 @@
         "@budgie/rules#test": {
             "dependsOn": ["^build", "build"],
             "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**", "$TURBO_ROOT$/packages/app/drizzle/**"]
-        },
-        "@budgie/cloud-sync#test": {
-            "dependsOn": ["^build"],
-            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**", "$TURBO_ROOT$/packages/app/drizzle/**"]
-        },
-        "@budgie/import-export#test": {
-            "dependsOn": ["^build"],
-            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**", "$TURBO_ROOT$/packages/app/drizzle/**"]
-        },
-        "@budgie/ledger#test": {
-            "dependsOn": ["^build"],
-            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**", "$TURBO_ROOT$/packages/app/drizzle/**"]
-        },
-        "@budgie/market#test": {
-            "dependsOn": ["^build"],
-            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**", "$TURBO_ROOT$/packages/app/drizzle/**"]
-        },
-        "@budgie/recurring#test": {
-            "dependsOn": ["^build"],
-            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**", "$TURBO_ROOT$/packages/app/drizzle/**"]
-        },
-        "@budgie-at/sync-tests#test": {
-            "dependsOn": ["^build"],
-            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**", "$TURBO_ROOT$/packages/app/drizzle/**"]
-        },
-        "@budgie-at/consolidation-tests#test": {
-            "dependsOn": ["^build"],
-            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**", "$TURBO_ROOT$/packages/app/drizzle/**"]
-        },
-        "@budgie-at/budget-tests#test": {
-            "dependsOn": ["^build"],
-            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**", "$TURBO_ROOT$/packages/app/drizzle/**"]
         }
-
     },
     "agentGuidance": false
 }
