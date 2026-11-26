@@ -1,12 +1,13 @@
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import * as Predicate from 'effect/Predicate';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
-import * as Atom from 'effect/reactivity/Atom';
-import { useEffectEvent, useLayoutEffect, useMemo, useState } from 'react';
+import { useEffectEvent, useLayoutEffect, useState } from 'react';
 
-import { emptyFn, isDefined } from '@rnw-community/shared';
+import { emptyFn } from '@rnw-community/shared';
 
 import { useRevealGateTrack } from '../context/reveal-gate.context';
+
+import type * as Atom from 'effect/reactivity/Atom';
 
 const areMapsEqual = (
     left: Map<unknown, unknown>,
@@ -103,41 +104,8 @@ const areLiveResultsEqual = <A, E>(previous: AsyncResult.AsyncResult<A, E>, next
     return false;
 };
 
-const liveResultAtoms = new WeakMap<object, Atom.Atom<AsyncResult.AsyncResult<unknown, unknown>>>();
-
-const getSharedLiveAtom = <A, E>(atom: Atom.Atom<AsyncResult.AsyncResult<A, E>>): Atom.Atom<AsyncResult.AsyncResult<unknown, unknown>> => {
-    const existing = liveResultAtoms.get(atom);
-
-    if (isDefined(existing)) {
-        return existing;
-    }
-
-    const derived: Atom.Atom<AsyncResult.AsyncResult<unknown, unknown>> = Atom.withEquality(
-        Atom.map(atom, result => result),
-        areLiveResultsEqual
-    );
-
-    liveResultAtoms.set(atom, derived);
-
-    return derived;
-};
-
-export const toLiveAtom = <A, E>(atom: Atom.Atom<AsyncResult.AsyncResult<A, E>>): Atom.Atom<AsyncResult.AsyncResult<A, E>> => {
-    const shared = getSharedLiveAtom(atom);
-
-    return Atom.readable(
-        get => {
-            get(shared);
-
-            return get.once(atom);
-        },
-        refresh => void refresh(atom)
-    ).pipe(Atom.setIdleTTL(0));
-};
-
 export const useLiveAtomValue = <A, E>(atom: Atom.Atom<AsyncResult.AsyncResult<A, E>>): AsyncResult.AsyncResult<A, E> => {
-    const liveAtom = useMemo(() => toLiveAtom(atom), [atom]);
-    const result = useAtomValue(liveAtom);
+    const result = useAtomValue(atom);
     const [settledResult, setSettledResult] = useState(result);
     const trackPendingRead = useRevealGateTrack();
     const trackRead = useEffectEvent(() => trackPendingRead());
