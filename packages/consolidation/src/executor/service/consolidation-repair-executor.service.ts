@@ -168,10 +168,9 @@ export class ConsolidationRepairExecutorService extends Context.Service<Consolid
                 const isFeeGroup = candidate.confidenceBucket === 'AUTO_REFUND_REJECTED_PAYMENT_FEE_TITLE';
 
                 if (isFeeGroup) {
-                    const feePool = RemainingFeeRefundPool.fromAmounts(liveFeeAmounts, absorbedFeeAmounts);
-                    const sortedOpenRefunds = [...openRefunds].sort((left, right) => right.entry.amount - left.entry.amount);
-
-                    return sortedOpenRefunds.every(({ entry }) => feePool.consume(entry.amount));
+                    return RemainingFeeRefundPool.fromAmounts(liveFeeAmounts, absorbedFeeAmounts).consumeAll(
+                        openRefunds.map(({ entry }) => entry.amount)
+                    );
                 }
 
                 const refundTotal = openRefunds.reduce((total, { entry }) => total + entry.amount, 0);

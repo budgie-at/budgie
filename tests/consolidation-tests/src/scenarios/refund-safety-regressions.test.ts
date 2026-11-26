@@ -460,4 +460,62 @@ layer(TestLayer)('consolidation/refund-safety-regressions', it => {
             expect((yield* runConsolidation()).consolidated).toBe(0);
         })
     );
+
+    it.effect('accepts exact-slot and remaining-aggregate fee refunds together regardless of replay order', () =>
+        Effect.gen(function* () {
+            const account = yield* testSeedService.account({ externalId: 'fee-order-card' });
+            const expense = yield* seedTitledTransaction({
+                accountId: account.id,
+                externalId: 'fee-order-expense',
+                operatedAt: shiftedDate(0),
+                amount: POOL_EXPENSE_AMOUNT,
+                title: 'FeeOrderMerchant',
+                isRefund: false
+            });
+
+            const sevenFeeAmount = convertToMicroUnits(7);
+
+            for (const [index, amount] of [
+                MULTI_FEE_FIRST_AMOUNT,
+                MULTI_FEE_SECOND_AMOUNT,
+                convertToMicroUnits(4),
+                sevenFeeAmount
+            ].entries()) {
+                yield* testSeedService.feeEntry(expense.id, `fee-order-${index}`, { accountId: account.id, amount });
+            }
+
+            const refundTwo = yield* seedTitledTransaction({
+                accountId: account.id,
+                externalId: 'fee-order-refund-2',
+                operatedAt: shiftedDate(1),
+                amount: MULTI_FEE_FIRST_AMOUNT,
+                title: REJECTED_PAYMENT_FEE_TITLE,
+                isRefund: true
+            });
+            const refundSevenFirst = yield* seedTitledTransaction({
+                accountId: account.id,
+                externalId: 'fee-order-refund-7a',
+                operatedAt: shiftedDate(2),
+                amount: sevenFeeAmount,
+                title: REJECTED_PAYMENT_FEE_TITLE,
+                isRefund: true
+            });
+            const refundSevenAggregate = yield* seedTitledTransaction({
+                accountId: account.id,
+                externalId: 'fee-order-refund-7b',
+                operatedAt: shiftedDate(3),
+                amount: sevenFeeAmount,
+                title: REJECTED_PAYMENT_FEE_TITLE,
+                isRefund: true
+            });
+
+            yield* rebuildStoredBalances;
+
+            expect((yield* runConsolidation()).consolidated).toBe(1);
+            yield* expectConsolidationParent(refundTwo.id, expense.id);
+            yield* expectConsolidationParent(refundSevenFirst.id, expense.id);
+            yield* expectConsolidationParent(refundSevenAggregate.id, expense.id);
+            expect((yield* runConsolidation()).consolidated).toBe(0);
+        })
+    );
 });

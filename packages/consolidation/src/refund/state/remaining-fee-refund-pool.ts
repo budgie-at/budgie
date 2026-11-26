@@ -1,4 +1,4 @@
-import { isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { isEmptyArray, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 export class RemainingFeeRefundPool {
     private readonly remainingSlots: number[];
@@ -13,8 +13,16 @@ export class RemainingFeeRefundPool {
             RemainingFeeRefundPool.sum(this.remainingSlots) - RemainingFeeRefundPool.sum(positiveAbsorbedAmounts)
         );
 
+        const unmatchedAbsorbedAmounts: number[] = [];
+
         for (const absorbedAmount of positiveAbsorbedAmounts) {
-            this.removeMatchedSlot(absorbedAmount);
+            if (!this.removeExactSlot(absorbedAmount)) {
+                unmatchedAbsorbedAmounts.push(absorbedAmount);
+            }
+        }
+
+        for (const absorbedAmount of unmatchedAbsorbedAmounts) {
+            this.removeAggregateSlots(absorbedAmount);
         }
     }
 
@@ -36,18 +44,51 @@ export class RemainingFeeRefundPool {
             return false;
         }
 
-        this.removeMatchedSlot(amount);
+        if (!this.removeExactSlot(amount)) {
+            this.removeAggregateSlots(amount);
+        }
+
         this.remainingTotal = Math.max(0, this.remainingTotal - amount);
 
         return true;
     }
 
-    private removeMatchedSlot(amount: number): void {
+    consumeAll(amounts: readonly number[]): boolean {
+        const unmatchedAmounts: number[] = [];
+
+        for (const amount of amounts) {
+            if (!isPositiveNumber(amount) || amount > this.remainingTotal) {
+                return false;
+            }
+
+            if (this.removeExactSlot(amount)) {
+                this.remainingTotal = Math.max(0, this.remainingTotal - amount);
+            } else {
+                unmatchedAmounts.push(amount);
+            }
+        }
+
+        if (isEmptyArray(unmatchedAmounts)) {
+            return true;
+        }
+
+        return unmatchedAmounts.length === 1 && this.consume(unmatchedAmounts[0]);
+    }
+
+    private removeExactSlot(amount: number): boolean {
         const slotIndex = this.remainingSlots.indexOf(amount);
 
-        if (slotIndex >= 0) {
-            this.remainingSlots.splice(slotIndex, 1);
-        } else if (isNotEmptyArray(this.remainingSlots) && RemainingFeeRefundPool.sum(this.remainingSlots) === amount) {
+        if (slotIndex < 0) {
+            return false;
+        }
+
+        this.remainingSlots.splice(slotIndex, 1);
+
+        return true;
+    }
+
+    private removeAggregateSlots(amount: number): void {
+        if (isNotEmptyArray(this.remainingSlots) && RemainingFeeRefundPool.sum(this.remainingSlots) === amount) {
             this.remainingSlots.length = 0;
         }
     }
