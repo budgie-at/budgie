@@ -12,6 +12,8 @@ export interface RefundEdgeRowInterface {
     readonly expenseAbsorbedFeeAmount: number;
     readonly expenseOriginalMinorAmount: number;
     readonly feeAmount: number;
+    readonly feeAmountsCsv: string;
+    readonly absorbedFeeAmountsCsv: string;
     readonly isExpenseClosed: number;
     readonly isPrivatbankOriginalMatch: number;
     readonly refundTransactionId: number;

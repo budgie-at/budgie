@@ -16,6 +16,7 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isEmptyArray, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
+import { RemainingFeeRefundPool } from '../../refund/state/remaining-fee-refund-pool';
 import { computeRefundCapacityUsage } from '../../refund/utils/compute-refund-capacity-usage.util';
 import { isPrivatbankClosedByAbsorbedRefunds } from '../../refund/utils/is-privatbank-closed-by-absorbed-refunds.util';
 import { IBAN_BRIDGE_CHAIN_FX_TOLERANCE } from '../../shared/constant/iban-bridge-chain-fx-tolerance.constant';
@@ -157,26 +158,29 @@ export class ConsolidationRepairExecutorService extends Context.Service<Consolid
                     return false;
                 }
 
-                const { feeAmount, absorbedFeeTotal, absorbedPrincipalTotal } = computeRefundCapacityUsage({
+                const { liveFeeAmounts, absorbedFeeAmounts, absorbedPrincipalTotal } = computeRefundCapacityUsage({
                     expenseEntries: expense.entries,
                     expenseAccountId: candidate.accountId,
                     absorbedEntries,
                     absorbedSourceById,
                     incomingTitle: ''
                 });
-                const refundTotal = openRefunds.reduce((total, { entry }) => total + entry.amount, 0);
                 const isFeeGroup = candidate.confidenceBucket === 'AUTO_REFUND_REJECTED_PAYMENT_FEE_TITLE';
 
-                if (
-                    !isFeeGroup &&
-                    openRefunds.some(({ entry, source }) => isPrivatbankSameOriginalAmount(source, entry, expenseSource, creditEntry))
-                ) {
+                if (isFeeGroup) {
+                    const feePool = RemainingFeeRefundPool.fromAmounts(liveFeeAmounts, absorbedFeeAmounts);
+                    const sortedOpenRefunds = [...openRefunds].sort((left, right) => right.entry.amount - left.entry.amount);
+
+                    return sortedOpenRefunds.every(({ entry }) => feePool.consume(entry.amount));
+                }
+
+                const refundTotal = openRefunds.reduce((total, { entry }) => total + entry.amount, 0);
+
+                if (openRefunds.some(({ entry, source }) => isPrivatbankSameOriginalAmount(source, entry, expenseSource, creditEntry))) {
                     return openRefunds.length === 1 && absorbedPrincipalTotal === 0;
                 }
 
-                return isFeeGroup
-                    ? absorbedFeeTotal + refundTotal <= feeAmount
-                    : absorbedPrincipalTotal + refundTotal <= creditEntry.amount;
+                return absorbedPrincipalTotal + refundTotal <= creditEntry.amount;
             });
 
             const hasChainReclaimConsistentLedger = (

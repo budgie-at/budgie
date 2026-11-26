@@ -412,4 +412,52 @@ layer(TestLayer)('consolidation/refund-safety-regressions', it => {
             yield* expectConsolidationParent(principalFirstCase.feeRefund.id, principalFirstCase.expense.id);
         })
     );
+
+    it.effect('matches multi-fee auto refunds 1-for-1 against remaining fee slots across same and later runs', () =>
+        Effect.gen(function* () {
+            const account = yield* testSeedService.account({ externalId: 'fee-slot-multiset-card' });
+            const expense = yield* seedTitledTransaction({
+                accountId: account.id,
+                externalId: 'fee-slot-multiset-expense',
+                operatedAt: shiftedDate(0),
+                amount: POOL_EXPENSE_AMOUNT,
+                title: 'FeeSlotMerchant',
+                isRefund: false
+            });
+
+            yield* testSeedService.feeEntry(expense.id, 'fee-slot-two', { accountId: account.id, amount: MULTI_FEE_FIRST_AMOUNT });
+            yield* testSeedService.feeEntry(expense.id, 'fee-slot-three', { accountId: account.id, amount: MULTI_FEE_SECOND_AMOUNT });
+
+            const seedFeeCredit = (externalId: string, dayOffset: number, amount: number) =>
+                seedTitledTransaction({
+                    accountId: account.id,
+                    externalId,
+                    operatedAt: shiftedDate(dayOffset),
+                    amount,
+                    title: REJECTED_PAYMENT_FEE_TITLE,
+                    isRefund: true
+                });
+
+            const firstTwoRefund = yield* seedFeeCredit('fee-slot-two-refund-a', 1, MULTI_FEE_FIRST_AMOUNT);
+            const duplicateTwoRefund = yield* seedFeeCredit('fee-slot-two-refund-b', 2, MULTI_FEE_FIRST_AMOUNT);
+
+            yield* rebuildStoredBalances;
+
+            expect((yield* runConsolidation()).consolidated).toBe(1);
+            yield* expectConsolidationParent(firstTwoRefund.id, expense.id);
+            yield* expectUnpaired(duplicateTwoRefund.id);
+
+            const threeRefund = yield* seedFeeCredit('fee-slot-three-refund', 3, MULTI_FEE_SECOND_AMOUNT);
+            const lateTwoRefund = yield* seedFeeCredit('fee-slot-two-refund-c', 4, MULTI_FEE_FIRST_AMOUNT);
+
+            yield* rebuildStoredBalances;
+
+            expect((yield* runConsolidation()).consolidated).toBe(1);
+            yield* expectConsolidationParent(threeRefund.id, expense.id);
+            yield* expectUnpaired(duplicateTwoRefund.id);
+            yield* expectUnpaired(lateTwoRefund.id);
+
+            expect((yield* runConsolidation()).consolidated).toBe(0);
+        })
+    );
 });

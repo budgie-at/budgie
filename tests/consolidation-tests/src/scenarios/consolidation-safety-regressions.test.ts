@@ -9,12 +9,13 @@ import {
     TransactionEntryEntityTable,
     TransactionEntryRepository,
     TransactionEntryTypeEnum,
+    TransactionTypeEnum,
     TransactionUpdatedByEnum,
     convertToMicroUnits
 } from '@budgie/contracts';
 import { TransferConsolidationService } from '@budgie/ledger';
 import { expect, layer } from '@effect/vitest';
-import { and, eq, isNull } from 'drizzle-orm';
+import { and, eq, inArray, isNull } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 import { vi } from 'vitest';
 
@@ -43,6 +44,8 @@ import { seedManualExpenseDuplicateAccounts, seedManualExpenseDuplicatePairs } f
 import {
     P2P_BANK_AMOUNT,
     P2P_OPERATED_AT,
+    P2P_SPLIT_BANK_EXTRA_AMOUNT,
+    P2P_SPLIT_BANK_PRIMARY_AMOUNT,
     seedP2pAccount,
     seedP2pBankBuyExpense,
     seedP2pBuyIncome,
@@ -375,6 +378,61 @@ layer(TestLayer)('consolidation/consolidation-safety-regressions', it => {
             }
 
             yield* rebuildStoredBalances;
+        })
+    );
+
+    it.effect('repairs and re-consolidates a mispaired P2P canonical in one pass when no visible expenses or incomes exist', () =>
+        Effect.gen(function* () {
+            const transferConsolidationService = yield* TransferConsolidationService;
+            const bankAccount = yield* testSeedService.bankSyncAccount('P2P Single-Pass Repair Bank', ExternalSourceEnum.MONOBANK, null);
+            const usdt = yield* seedP2pUsdt;
+            const binanceAccount = yield* seedP2pAccount(AccountTypeEnum.CRYPTO_SYNC, usdt.id);
+
+            yield* seedP2pExchangeRate(bankAccount.instrumentId, usdt.id, 1 / 41);
+
+            const matchingBankExpense = yield* testSeedService.bankPairExpense(
+                { externalId: 'p2p-single-pass-matching-bank', operatedAt: P2P_OPERATED_AT },
+                { accountId: bankAccount.id, amount: P2P_SPLIT_BANK_PRIMARY_AMOUNT }
+            );
+            const extraBankExpense = yield* testSeedService.bankPairExpense(
+                { externalId: 'p2p-single-pass-extra-bank', operatedAt: new Date(P2P_OPERATED_AT.getTime() + 10_000) },
+                { accountId: bankAccount.id, amount: P2P_SPLIT_BANK_EXTRA_AMOUNT }
+            );
+            const p2pIncome = yield* seedP2pBuyIncome(binanceAccount.id, null);
+
+            expect((yield* runConsolidation()).consolidated).toBe(1);
+
+            const initialCanonicalId = yield* fetchSingleCanonicalId(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER);
+            const visibleLegRows = yield* testDb
+                .select({ id: TransactionEntityTable.id })
+                .from(TransactionEntityTable)
+                .where(
+                    and(
+                        isNull(TransactionEntityTable.deletedAt),
+                        isNull(TransactionEntityTable.consolidationParentTransactionId),
+                        inArray(TransactionEntityTable.type, [TransactionTypeEnum.EXPENSE, TransactionTypeEnum.INCOME])
+                    )
+                );
+
+            expect(visibleLegRows).toStrictEqual([]);
+
+            yield* testDb
+                .update(TransactionEntryEntityTable)
+                .set({
+                    quotedInstrumentId: bankAccount.instrumentId,
+                    quotedAmount: P2P_SPLIT_BANK_PRIMARY_AMOUNT,
+                    quotedUnitPrice: convertToMicroUnits(20)
+                })
+                .where(eq(TransactionEntryEntityTable.originalTransactionId, p2pIncome.id));
+
+            yield* transferConsolidationService.consolidate(null);
+
+            const repairedCanonicalId = yield* fetchSingleCanonicalId(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER);
+
+            expect(repairedCanonicalId).not.toBe(initialCanonicalId);
+            yield* expectConsolidationParent(matchingBankExpense.id, repairedCanonicalId);
+            yield* expectConsolidationParent(p2pIncome.id, repairedCanonicalId);
+            expect((yield* testQueryService.fetchTransactionById(extraBankExpense.id)).consolidationParentTransactionId).toBeNull();
         })
     );
 });

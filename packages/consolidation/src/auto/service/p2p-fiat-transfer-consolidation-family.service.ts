@@ -4,7 +4,7 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { ConsolidationExecutorService } from '../../executor/service/consolidation-executor.service';
 import { ConsolidationRepairExecutorService } from '../../executor/service/consolidation-repair-executor.service';
@@ -257,6 +257,12 @@ export class P2pFiatTransferConsolidationFamilyService extends Context.Service<P
                         if (candidateIndex + 1 < repairCandidates.length) {
                             yield* YIELD_TO_UI;
                         }
+                    }
+
+                    if (isPositiveNumber(repairedCount)) {
+                        const capabilities = yield* ConsolidationCandidateRepository.RunCapabilities;
+
+                        capabilities?.markChanged();
                     }
 
                     return { repairedCount, releasedTransactionIds };

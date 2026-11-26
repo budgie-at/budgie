@@ -1,5 +1,6 @@
 import { isDefined } from '@rnw-community/shared';
 
+import { RemainingFeeRefundPool } from '../../refund/state/remaining-fee-refund-pool';
 import { isAutoRefundConfidenceBucket } from '../type-guard/is-auto-refund-confidence-bucket.type-guard';
 
 import type { RefundEdgeRowInterface } from '../interface/refund-edge-row.interface';
@@ -153,6 +154,13 @@ class RefundEdgeMetrics {
     }
 
     isCovering(edge: RefundEdgeRowInterface): boolean {
+        if (this.isFeeBucket(edge)) {
+            return (
+                this.getShortfall(edge) >= 0 &&
+                RemainingFeeRefundPool.fromCsv(edge.feeAmountsCsv, edge.absorbedFeeAmountsCsv).canConsume(edge.refundAmount)
+            );
+        }
+
         return this.getShortfall(edge) >= 0;
     }
 

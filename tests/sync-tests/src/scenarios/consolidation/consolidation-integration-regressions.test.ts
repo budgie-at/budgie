@@ -17,7 +17,7 @@ import {
     TransactionTransferService,
     TransferConsolidationService
 } from '@budgie/ledger';
-import { TransferConsolidationDrainerService } from '@budgie/sync';
+import { TransferConsolidationDrainerService, TransferConsolidationWorkload } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import { and, eq, isNotNull, isNull } from 'drizzle-orm';
 import * as Deferred from 'effect/Deferred';
@@ -29,6 +29,7 @@ import { vi } from 'vitest';
 import {
     RealDrainerTestClockLayer,
     TestLayer,
+    Workload,
     advanceScheduledDrain,
     assertStoredBalancesMatchLedger,
     fetchAccountBalance,
@@ -298,6 +299,77 @@ describe('consolidation/consolidation-integration-regressions', () => {
                 }),
                 Effect.sync(() => {
                     consolidateSpy.mockRestore();
+                })
+            );
+        }).pipe(Effect.provide(RealDrainerTestClockLayer))
+    );
+
+    it.effect('keeps the drainer unblocked when an enqueue fiber is interrupted before scheduling completes', () =>
+        Effect.gen(function* () {
+            const workload = yield* Workload;
+            const transferConsolidationService = yield* TransferConsolidationService;
+            const enteredSchedule = yield* Deferred.make<void>();
+            const allowScheduleCompletion = yield* Deferred.make<void>();
+            const spy = vi
+                .spyOn(transferConsolidationService, 'consolidate')
+                .mockReturnValue(Effect.succeed({ consolidated: 0, found: 0 }));
+            const interruptedScope = {
+                operatedAtFrom: new Date('2026-08-01T00:00:00.000Z'),
+                operatedAtTo: new Date('2026-08-02T00:00:00.000Z'),
+                transactionIds: [301]
+            };
+            const followUpScope = {
+                operatedAtFrom: new Date('2026-08-03T00:00:00.000Z'),
+                operatedAtTo: new Date('2026-08-04T00:00:00.000Z'),
+                transactionIds: [302]
+            };
+            let shouldPauseNextSchedule = true;
+            const customDrainer = yield* TransferConsolidationDrainerService.make.pipe(
+                Effect.provideService(
+                    TransferConsolidationWorkload,
+                    TransferConsolidationWorkload.of({
+                        run: effect => workload.run(effect),
+                        schedule: (key, effect, options) => {
+                            if (!shouldPauseNextSchedule) {
+                                return workload.schedule(key, effect, options);
+                            }
+
+                            shouldPauseNextSchedule = false;
+
+                            return Deferred.succeed(enteredSchedule, undefined).pipe(
+                                Effect.andThen(Deferred.await(allowScheduleCompletion)),
+                                Effect.andThen(workload.schedule(key, effect, options))
+                            );
+                        },
+                        cancelScheduled: key => workload.cancelScheduled(key),
+                        awaitForegroundIdle: workload.awaitForegroundIdle,
+                        awaitIdle: Effect.void
+                    })
+                )
+            );
+
+            yield* Effect.ensuring(
+                Effect.gen(function* () {
+                    const enqueueFiber = yield* Effect.forkChild(customDrainer.enqueue(interruptedScope));
+                    yield* Deferred.await(enteredSchedule);
+
+                    const interruptFiber = yield* Fiber.interrupt(enqueueFiber).pipe(Effect.forkChild);
+                    yield* Effect.yieldNow;
+                    yield* Deferred.succeed(allowScheduleCompletion, undefined);
+                    yield* Fiber.join(interruptFiber);
+
+                    yield* customDrainer.enqueue(followUpScope);
+                    yield* advanceScheduledDrain(1500);
+
+                    expect(spy).toHaveBeenCalledTimes(1);
+                    expect(spy).toHaveBeenCalledWith({
+                        operatedAtFrom: interruptedScope.operatedAtFrom,
+                        operatedAtTo: followUpScope.operatedAtTo,
+                        transactionIds: [301, 302]
+                    });
+                }),
+                Effect.sync(() => {
+                    spy.mockRestore();
                 })
             );
         }).pipe(Effect.provide(RealDrainerTestClockLayer))

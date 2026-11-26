@@ -115,28 +115,22 @@ const wrapNormalizedTitleLayersSql = (cteName: string, autoNormSql: string, inne
     return `${cteName} AS MATERIALIZED (SELECT *, ${buildDigitSuffixBaseTitleSql('autoNormTitle')} AS autoSuffixBaseTitle FROM (SELECT *, ${autoNormSql} AS autoNormTitle${buildOptionalReviewColSql(includeReview, buildStripCommaSuffixSql('reviewNormTitle'), 'reviewMerchantNormTitle')} FROM (${pass3Sql}) LIMIT -1))`;
 };
 
+const EXPENSE_LIVE_FEE_WHERE_SQL = `expense_fee_entry.transaction_id = expense_tx.id AND expense_fee_entry.account_id = expense_entry.account_id AND expense_fee_entry.deleted_at IS NULL AND expense_fee_entry.original_transaction_id IS NULL AND expense_fee_entry.type = '${TransactionEntryTypeEnum.FEE}' AND expense_fee_entry.amount > 0`;
+const EXPENSE_ABSORBED_FEE_WHERE_SQL = `absorbed_fee_entry.transaction_id = expense_tx.id AND absorbed_fee_entry.deleted_at IS NULL AND absorbed_fee_entry.original_transaction_id IS NOT NULL AND absorbed_fee_entry.type = '${TransactionEntryTypeEnum.DEBIT}' AND ${buildPrefixLikeSql('UPPER(TRIM(absorbed_fee_tx.title))', REFUND_TITLE_PREFIXES.rejectedPaymentFee)}`;
+
+const buildExpenseFeeSubquerySql = (aggregateSql: string): string =>
+    `SELECT ${aggregateSql} FROM transaction_entries expense_fee_entry INDEXED BY transaction_entries_live_transaction_account_amount_idx WHERE ${EXPENSE_LIVE_FEE_WHERE_SQL}`;
+
+const buildAbsorbedFeeSubquerySql = (aggregateSql: string): string =>
+    `SELECT ${aggregateSql} FROM transaction_entries absorbed_fee_entry INDEXED BY transaction_entries_refund_tx_idx INNER JOIN transactions absorbed_fee_tx ON absorbed_fee_tx.id = absorbed_fee_entry.original_transaction_id WHERE ${EXPENSE_ABSORBED_FEE_WHERE_SQL}`;
+
 const buildExpenseMetricsSql = (): string => `
-    CASE WHEN income_bounds.hasRejectedFee = 0 AND expense_tx.consolidation_type IS NULL THEN 0 ELSE COALESCE((
-        SELECT SUM(expense_fee_entry.amount) FROM transaction_entries expense_fee_entry INDEXED BY transaction_entries_live_transaction_account_amount_idx
-        WHERE expense_fee_entry.transaction_id = expense_tx.id AND expense_fee_entry.account_id = expense_entry.account_id AND expense_fee_entry.deleted_at IS NULL
-            AND expense_fee_entry.original_transaction_id IS NULL AND expense_fee_entry.type = '${TransactionEntryTypeEnum.FEE}' AND expense_fee_entry.amount > 0
-    ), 0) END AS feeAmount,
-    CASE WHEN expense_tx.consolidation_type IS NULL THEN 0 ELSE COALESCE((
-        SELECT SUM(absorbed_entry.amount) FROM transaction_entries absorbed_entry INDEXED BY transaction_entries_refund_tx_idx
-        WHERE absorbed_entry.transaction_id = expense_tx.id AND absorbed_entry.deleted_at IS NULL AND absorbed_entry.original_transaction_id IS NOT NULL AND absorbed_entry.type = '${TransactionEntryTypeEnum.DEBIT}'
-    ), 0) END AS absorbedAmount,
-    CASE WHEN expense_tx.consolidation_type IS NULL THEN 0 ELSE COALESCE((
-        SELECT SUM(absorbed_fee_entry.amount) FROM transaction_entries absorbed_fee_entry INDEXED BY transaction_entries_refund_tx_idx
-        INNER JOIN transactions absorbed_fee_tx ON absorbed_fee_tx.id = absorbed_fee_entry.original_transaction_id
-        WHERE absorbed_fee_entry.transaction_id = expense_tx.id AND absorbed_fee_entry.deleted_at IS NULL AND absorbed_fee_entry.original_transaction_id IS NOT NULL AND absorbed_fee_entry.type = '${TransactionEntryTypeEnum.DEBIT}'
-            AND ${buildPrefixLikeSql('UPPER(TRIM(absorbed_fee_tx.title))', REFUND_TITLE_PREFIXES.rejectedPaymentFee)}
-    ), 0) END AS absorbedFeeAmount,
-    expense_tx.consolidation_type IS NOT NULL AND EXISTS (
-        SELECT 1 FROM transaction_entries closing_entry INDEXED BY transaction_entries_refund_tx_idx
-        INNER JOIN transactions closing_tx ON closing_tx.id = closing_entry.original_transaction_id
-        WHERE closing_entry.transaction_id = expense_tx.id AND closing_entry.deleted_at IS NULL AND closing_entry.original_transaction_id IS NOT NULL AND closing_entry.type = '${TransactionEntryTypeEnum.DEBIT}'
-            AND ${buildPrivatbankSameOriginalAmountSql(buildPrivatbankRawEntryColumns('closing_entry', 'closing_tx'), buildPrivatbankRawEntryColumns('expense_entry', 'expense_tx'))}
-    ) AS isClosed`;
+    CASE WHEN income_bounds.hasRejectedFee = 0 AND expense_tx.consolidation_type IS NULL THEN 0 ELSE COALESCE((${buildExpenseFeeSubquerySql('SUM(expense_fee_entry.amount)')}), 0) END AS feeAmount,
+    CASE WHEN income_bounds.hasRejectedFee = 0 THEN '' ELSE COALESCE((${buildExpenseFeeSubquerySql('GROUP_CONCAT(expense_fee_entry.amount)')}), '') END AS feeAmountsCsv,
+    CASE WHEN expense_tx.consolidation_type IS NULL THEN 0 ELSE COALESCE((SELECT SUM(absorbed_entry.amount) FROM transaction_entries absorbed_entry INDEXED BY transaction_entries_refund_tx_idx WHERE absorbed_entry.transaction_id = expense_tx.id AND absorbed_entry.deleted_at IS NULL AND absorbed_entry.original_transaction_id IS NOT NULL AND absorbed_entry.type = '${TransactionEntryTypeEnum.DEBIT}'), 0) END AS absorbedAmount,
+    CASE WHEN expense_tx.consolidation_type IS NULL THEN 0 ELSE COALESCE((${buildAbsorbedFeeSubquerySql('SUM(absorbed_fee_entry.amount)')}), 0) END AS absorbedFeeAmount,
+    CASE WHEN income_bounds.hasRejectedFee = 0 OR expense_tx.consolidation_type IS NULL THEN '' ELSE COALESCE((${buildAbsorbedFeeSubquerySql('GROUP_CONCAT(absorbed_fee_entry.amount)')}), '') END AS absorbedFeeAmountsCsv,
+    expense_tx.consolidation_type IS NOT NULL AND EXISTS (SELECT 1 FROM transaction_entries closing_entry INDEXED BY transaction_entries_refund_tx_idx INNER JOIN transactions closing_tx ON closing_tx.id = closing_entry.original_transaction_id WHERE closing_entry.transaction_id = expense_tx.id AND closing_entry.deleted_at IS NULL AND closing_entry.original_transaction_id IS NOT NULL AND closing_entry.type = '${TransactionEntryTypeEnum.DEBIT}' AND ${buildPrivatbankSameOriginalAmountSql(buildPrivatbankRawEntryColumns('closing_entry', 'closing_tx'), buildPrivatbankRawEntryColumns('expense_entry', 'expense_tx'))}) AS isClosed`;
 
 const buildExpenseEntriesSql = (scope: ConsolidationScanScopeInterface | null, includeReview: boolean): string => {
     const expenseKeyColumn = includeReview ? 'expense_account.instrument_id' : 'expense_entry.account_id';
@@ -215,7 +209,8 @@ const buildRefundBranchSql = (
     return `SELECT exp.expenseTxId AS expenseTransactionId, exp.syncId AS expenseSyncId, exp.operatedAt AS expenseOperatedAt,
         exp.autoNormTitle AS expenseAutoNormTitle, inc.autoNormTitle AS refundAutoNormTitle, exp.accountId AS accountId,
         exp.amount AS expenseAmount, exp.absorbedAmount AS expenseAbsorbedAmount, exp.absorbedFeeAmount AS expenseAbsorbedFeeAmount,
-        exp.feeAmount AS feeAmount, exp.originalMinorAmount AS expenseOriginalMinorAmount, exp.isClosed AS isExpenseClosed,
+        exp.feeAmount AS feeAmount, exp.feeAmountsCsv AS feeAmountsCsv, exp.absorbedFeeAmountsCsv AS absorbedFeeAmountsCsv,
+        exp.originalMinorAmount AS expenseOriginalMinorAmount, exp.isClosed AS isExpenseClosed,
         ${PRIVATBANK_SAME_ORIGINAL_AMOUNT_SQL} AS isPrivatbankOriginalMatch, inc.txId AS refundTransactionId, inc.syncId AS refundSyncId,
         inc.operatedAt AS refundOperatedAt, inc.isAutoPairDisabled AS isRefundAutoPairDisabled, inc.hasTags AS refundHasTags,
         inc.baseAmount AS refundBaseAmount, inc.amount AS refundAmount, inc.originalMinorAmount AS refundOriginalMinorAmount, '${confidenceBucket}' AS confidenceBucket
