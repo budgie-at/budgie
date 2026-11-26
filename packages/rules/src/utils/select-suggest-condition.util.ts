@@ -50,27 +50,14 @@ const cleanMerchantTitle = (title: string): string => {
 };
 
 const GENERIC_SINGLE_WORDS = new Set(['POS', 'PURCHASE', 'PAYMENT', 'WITHDRAWAL', 'TRANSFER', 'DEBIT', 'CREDIT', 'ATM']);
-const GENERIC_PHRASE_PATTERN = /(?:^|\s)POS\s+PURCHASE(?:\s|$)/u;
 
 const MINIMUM_UNIQUE_WORDS = 3;
 const MINIMUM_TITLE_LENGTH = 3;
 
 const isGenericTitle = (title: string): boolean => {
-    const upper = title.toUpperCase().trim();
-    const words = upper.split(/\s+/u).filter(isNotEmptyString);
+    const words = title.toUpperCase().trim().split(/\s+/u).filter(isNotEmptyString);
 
-    if (words.length === 1 && GENERIC_SINGLE_WORDS.has(words[0])) {
-        return true;
-    }
-
-    if (upper === 'POS PURCHASE') {
-        return true;
-    }
-
-    const uniqueWords = new Set(words);
-    const containsGenericPattern = GENERIC_PHRASE_PATTERN.test(upper) || words.some(word => GENERIC_SINGLE_WORDS.has(word));
-
-    return uniqueWords.size < MINIMUM_UNIQUE_WORDS && containsGenericPattern;
+    return new Set(words).size < MINIMUM_UNIQUE_WORDS && words.some(word => GENERIC_SINGLE_WORDS.has(word));
 };
 
 const isCleanedTextUsable = (cleaned: string): boolean =>
