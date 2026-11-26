@@ -1,4 +1,9 @@
-import { TransactionConsolidationTypeEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import {
+    TransactionConsolidationTypeEnum,
+    TransactionEntryKindEnum,
+    TransactionEntryTypeEnum,
+    TransactionTypeEnum
+} from '@budgie/contracts';
 
 import { CANONICAL_CENT_TOLERANCE_AMOUNT } from '../../../shared/constant/canonical-cent-tolerance.constant';
 import { TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS } from '../../../shared/constant/transfer-pair-fast-time-window.constant';
@@ -15,6 +20,7 @@ const buildCanonicalLegSql = (
                     ${alias}.transaction_id = ${transactionAlias}.id
                     AND ${alias}.deleted_at IS NULL
                     AND ${alias}.original_transaction_id IS NULL
+                    AND ${alias}.kind = '${TransactionEntryKindEnum.PRIMARY}'
                     AND ${alias}.type = '${entryType}'
                     AND ${alias}.account_id = ${transactionAlias}.${accountColumn}`;
 
@@ -27,6 +33,8 @@ const buildMovedLegSql = (
                 INNER JOIN transaction_entries ${alias}_entry ON
                     ${alias}_entry.transaction_id = pair_tx.id
                     AND ${alias}_entry.deleted_at IS NULL
+                    AND ${alias}_entry.original_transaction_id IS NOT NULL
+                    AND ${alias}_entry.kind = '${TransactionEntryKindEnum.PRIMARY}'
                     AND ${alias}_entry.type = '${entryType}'
                     AND ${alias}_entry.account_id = pair_tx.${accountColumn}
                 INNER JOIN transactions ${alias}_tx ON
@@ -53,6 +61,12 @@ export const IBAN_BRIDGE_DUPLICATE_PAIR_CANDIDATES_SQL = scopedSql`
                     target_tx.id as targetIncomeTransactionId,
                     ABS(pair_tx.operated_at - bridge_tx.operated_at) as timeDiff
                 FROM transactions pair_tx
+                INNER JOIN accounts source_account ON
+                    source_account.id = pair_tx.from_account_id
+                    AND source_account.deleted_at IS NULL
+                INNER JOIN accounts target_account ON
+                    target_account.id = pair_tx.to_account_id
+                    AND target_account.deleted_at IS NULL
                 ${buildCanonicalLegSql('pair_source_entry', 'pair_tx', TransactionEntryTypeEnum.CREDIT, 'from_account_id')}
                 ${buildCanonicalLegSql('pair_target_entry', 'pair_tx', TransactionEntryTypeEnum.DEBIT, 'to_account_id')}
                 ${buildMovedLegSql('source', TransactionTypeEnum.EXPENSE, TransactionEntryTypeEnum.CREDIT, 'from_account_id')}
@@ -77,7 +91,12 @@ export const IBAN_BRIDGE_DUPLICATE_PAIR_CANDIDATES_SQL = scopedSql`
                     AND pair_tx.updated_by IS NULL
                     AND pair_tx.consolidation_type = '${TransactionConsolidationTypeEnum.TRANSFER_PAIR}'
                     ${operatedAtScopeSql('pair_tx.operated_at')}
-                    AND (SELECT COUNT(*) FROM transactions pair_child WHERE pair_child.consolidation_parent_transaction_id = pair_tx.id) = 2
+                    AND (
+                        SELECT COUNT(*)
+                        FROM transactions pair_child
+                        WHERE pair_child.consolidation_parent_transaction_id = pair_tx.id
+                            AND pair_child.deleted_at IS NULL
+                    ) = 2
                     AND ${buildNoClaimedLegSql('from_account_id')}
                     AND ${buildNoClaimedLegSql('to_account_id')}
             ),

@@ -4,7 +4,7 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { ConsolidationExecutorService } from '../../executor/service/consolidation-executor.service';
 import { ConsolidationRepairExecutorService } from '../../executor/service/consolidation-repair-executor.service';
@@ -72,43 +72,6 @@ export class P2pFiatTransferConsolidationFamilyService extends Context.Service<P
                 );
             };
 
-            const getNextExpenseIndex = (
-                rows: P2pFiatAtomicCandidateInterface[],
-                currentRows: P2pFiatAtomicCandidateInterface[]
-            ): number => {
-                const lastRow = currentRows.at(-1);
-
-                return isDefined(lastRow) ? rows.indexOf(lastRow) + 1 : 0;
-            };
-
-            const collectExpenseCombinations = (
-                rows: P2pFiatAtomicCandidateInterface[],
-                currentRows: P2pFiatAtomicCandidateInterface[],
-                combinations: P2pFiatAtomicCandidateInterface[][],
-                maximumAcceptedBankAmount: number
-            ): void => {
-                if (isNotEmptyArray(currentRows)) {
-                    combinations.push([...currentRows]);
-                }
-
-                if (currentRows.length === maxBankExpenseCount) {
-                    return;
-                }
-
-                const startIndex = getNextExpenseIndex(rows, currentRows);
-                const currentAmount = currentRows.reduce((total, row) => total + row.expenseEntryAmount, 0);
-
-                for (let rowIndex = startIndex; rowIndex < rows.length; rowIndex += 1) {
-                    const row = rows.at(rowIndex);
-
-                    if (isDefined(row) && currentAmount + row.expenseEntryAmount <= maximumAcceptedBankAmount) {
-                        currentRows.push(row);
-                        collectExpenseCombinations(rows, currentRows, combinations, maximumAcceptedBankAmount);
-                        currentRows.pop();
-                    }
-                }
-            };
-
             const buildExpenseCombinations = (rows: P2pFiatAtomicCandidateInterface[]): P2pFiatAtomicCandidateInterface[][] => {
                 if (!isNotEmptyArray(rows)) {
                     return [];
@@ -120,8 +83,29 @@ export class P2pFiatTransferConsolidationFamilyService extends Context.Service<P
                     (representativeRow.expectedExchangeRate * (1 - TRANSFER_PAIR_P2P_FIAT_RATE_TOLERANCE));
                 const eligibleRows = rows.filter(row => row.expenseEntryAmount <= maximumAcceptedBankAmount);
                 const combinations: P2pFiatAtomicCandidateInterface[][] = [];
+                const currentRows: P2pFiatAtomicCandidateInterface[] = [];
 
-                collectExpenseCombinations(eligibleRows, [], combinations, maximumAcceptedBankAmount);
+                const collectExpenseCombinations = (startIndex: number, currentAmount: number): void => {
+                    if (isNotEmptyArray(currentRows)) {
+                        combinations.push([...currentRows]);
+                    }
+
+                    if (currentRows.length === maxBankExpenseCount) {
+                        return;
+                    }
+
+                    for (let rowIndex = startIndex; rowIndex < eligibleRows.length; rowIndex += 1) {
+                        const row = eligibleRows.at(rowIndex);
+
+                        if (isDefined(row) && currentAmount + row.expenseEntryAmount <= maximumAcceptedBankAmount) {
+                            currentRows.push(row);
+                            collectExpenseCombinations(rowIndex + 1, currentAmount + row.expenseEntryAmount);
+                            currentRows.pop();
+                        }
+                    }
+                };
+
+                collectExpenseCombinations(0, 0);
 
                 return combinations;
             };
@@ -235,11 +219,6 @@ export class P2pFiatTransferConsolidationFamilyService extends Context.Service<P
             ) {
                 const authoritativeRows = yield* consolidationCandidateRepository.findP2pFiatAuthoritativeCandidates(scope);
                 const authoritativeCandidates = selectCandidates(buildAuthoritativeCandidates(authoritativeRows));
-
-                if (isNotEmptyArray(authoritativeCandidates)) {
-                    return authoritativeCandidates;
-                }
-
                 const reservedTransactionIds = new Set(
                     authoritativeRows.flatMap(row => [row.expenseTransactionId, row.incomeTransactionId])
                 );
@@ -247,9 +226,9 @@ export class P2pFiatTransferConsolidationFamilyService extends Context.Service<P
                 const unreservedRows = rows.filter(
                     row => !reservedTransactionIds.has(row.expenseTransactionId) && !reservedTransactionIds.has(row.incomeTransactionId)
                 );
-                const candidates = [...buildBuyCandidates(unreservedRows), ...buildSellCandidates(unreservedRows)];
+                const atomicCandidates = selectCandidates([...buildBuyCandidates(unreservedRows), ...buildSellCandidates(unreservedRows)]);
 
-                return selectCandidates(candidates);
+                return [...authoritativeCandidates, ...atomicCandidates];
             });
 
             return makeConsolidationFamilyStrategy<P2pFiatTransferCandidateInterface>({
@@ -262,11 +241,31 @@ export class P2pFiatTransferConsolidationFamilyService extends Context.Service<P
                     const repairCandidates = yield* consolidationCandidateRepository.findP2pFiatAuthoritativeRepairCandidates(
                         context.scope
                     );
+                    let repairedCount = 0;
+                    const releasedTransactionIds: number[] = [];
 
-                    for (const candidate of repairCandidates) {
-                        yield* consolidationRepairExecutorService.repairP2pFiatCanonical(candidate.canonicalTransactionId);
-                        yield* YIELD_TO_UI;
+                    for (const [candidateIndex, candidate] of repairCandidates.entries()) {
+                        const childIds = isDefined(context.scope)
+                            ? yield* consolidationCandidateRepository.findConsolidationChildIds([candidate.canonicalTransactionId])
+                            : [];
+
+                        if (yield* consolidationRepairExecutorService.repairP2pFiatCanonical(candidate.canonicalTransactionId)) {
+                            repairedCount += 1;
+                            releasedTransactionIds.push(...childIds);
+                        }
+
+                        if (candidateIndex + 1 < repairCandidates.length) {
+                            yield* YIELD_TO_UI;
+                        }
                     }
+
+                    if (isPositiveNumber(repairedCount)) {
+                        const capabilities = yield* ConsolidationCandidateRepository.RunCapabilities;
+
+                        capabilities?.markSourcesReleased();
+                    }
+
+                    return { repairedCount, releasedTransactionIds };
                 }),
                 shouldRepeatAfterSuccessfulPass: true
             });

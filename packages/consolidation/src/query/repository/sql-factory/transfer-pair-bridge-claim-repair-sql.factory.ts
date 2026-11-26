@@ -1,62 +1,18 @@
-import { TransactionConsolidationTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import {
+    TransactionConsolidationTypeEnum,
+    TransactionEntryKindEnum,
+    TransactionEntryTypeEnum,
+    TransactionTypeEnum
+} from '@budgie/contracts';
 
 import { TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS } from '../../../shared/constant/transfer-pair-fast-time-window.constant';
 import { TRANSFER_PAIR_IMPLIED_RATE_TOLERANCE } from '../../../shared/constant/transfer-pair-implied-rate-tolerance.constant';
 import { buildBridgeClaimTitleConditionSql } from '../../../shared/utils/build-bridge-claim-title-condition-sql.util';
 
-const BRIDGE_CLAIM_REPAIR_CANDIDATES_BASE_SQL = `
-            WITH latest_exchange_rates AS (
-                SELECT
-                    base_instrument_id,
-                    quote_instrument_id,
-                    rate * 1.0 as rate,
-                    ROW_NUMBER() OVER (
-                        PARTITION BY base_instrument_id, quote_instrument_id
-                        ORDER BY created_at DESC
-                    ) as exchangeRateRank
-                FROM exchange_rates
-                WHERE deleted_at IS NULL
-                    AND rate > 0
-            ),
-            direct_exchange_rates AS (
-                SELECT base_instrument_id, quote_instrument_id, rate, 0 as direction
-                FROM latest_exchange_rates
-                WHERE exchangeRateRank = 1
-                UNION ALL
-                SELECT quote_instrument_id as base_instrument_id, base_instrument_id as quote_instrument_id, 1.0 / rate as rate, 1 as direction
-                FROM latest_exchange_rates
-                WHERE exchangeRateRank = 1
-            ),
-            base_triangulated_rates AS (
-                SELECT
-                    first_leg.base_instrument_id as base_instrument_id,
-                    second_leg.quote_instrument_id as quote_instrument_id,
-                    first_leg.rate * second_leg.rate as rate,
-                    2 as direction
-                FROM direct_exchange_rates first_leg
-                INNER JOIN direct_exchange_rates second_leg
-                    ON first_leg.quote_instrument_id = second_leg.base_instrument_id
-                WHERE first_leg.quote_instrument_id = (SELECT default_instrument_id FROM settings LIMIT 1)
-                    AND first_leg.base_instrument_id != second_leg.quote_instrument_id
-            ),
-            available_exchange_rates AS (
-                SELECT base_instrument_id, quote_instrument_id, rate FROM (
-                    SELECT
-                        base_instrument_id,
-                        quote_instrument_id,
-                        rate,
-                        ROW_NUMBER() OVER (
-                            PARTITION BY base_instrument_id, quote_instrument_id
-                            ORDER BY direction
-                        ) as directionRank
-                    FROM (
-                        SELECT base_instrument_id, quote_instrument_id, rate, direction FROM direct_exchange_rates
-                        UNION ALL
-                        SELECT base_instrument_id, quote_instrument_id, rate, direction FROM base_triangulated_rates
-                    )
-                )
-                WHERE directionRank = 1
-            ),
+import { TRANSFER_PAIR_AVAILABLE_EXCHANGE_RATES_SQL } from './transfer-pair-available-exchange-rates-sql.factory';
+
+export const BRIDGE_CLAIM_REPAIR_CANDIDATES_SQL = `
+            WITH ${TRANSFER_PAIR_AVAILABLE_EXCHANGE_RATES_SQL}
             ranked_candidates AS (
                 SELECT
                     *,
@@ -75,11 +31,15 @@ const BRIDGE_CLAIM_REPAIR_CANDIDATES_BASE_SQL = `
                         fx_expense.id as interbankExpenseTransactionId,
                         ABS(claimed_income.operated_at - fx_expense.operated_at) as timeDiff
                     FROM transactions canonical
+                    LEFT JOIN accounts canonical_from_account ON
+                        canonical_from_account.id = canonical.from_account_id
+                        AND canonical_from_account.deleted_at IS NULL
                     INNER JOIN transaction_entries claimed_income_entry ON
                         claimed_income_entry.transaction_id = canonical.id
                         AND claimed_income_entry.deleted_at IS NULL
                         AND claimed_income_entry.original_transaction_id IS NOT NULL
-                        AND claimed_income_entry.type = 'DEBIT'
+                        AND claimed_income_entry.kind = '${TransactionEntryKindEnum.PRIMARY}'
+                        AND claimed_income_entry.type = '${TransactionEntryTypeEnum.DEBIT}'
                         AND claimed_income_entry.amount > 0
                     INNER JOIN transactions claimed_income ON
                         claimed_income.id = claimed_income_entry.original_transaction_id
@@ -99,7 +59,8 @@ const BRIDGE_CLAIM_REPAIR_CANDIDATES_BASE_SQL = `
                         fx_expense_entry.transaction_id = fx_expense.id
                         AND fx_expense_entry.deleted_at IS NULL
                         AND fx_expense_entry.original_transaction_id IS NULL
-                        AND fx_expense_entry.type = 'CREDIT'
+                        AND fx_expense_entry.kind = '${TransactionEntryKindEnum.PRIMARY}'
+                        AND fx_expense_entry.type = '${TransactionEntryTypeEnum.CREDIT}'
                         AND fx_expense_entry.exchange_rate > 0
                         AND fx_expense_entry.amount > 0
                     INNER JOIN accounts fx_expense_account ON
@@ -107,39 +68,24 @@ const BRIDGE_CLAIM_REPAIR_CANDIDATES_BASE_SQL = `
                         AND fx_expense_account.deleted_at IS NULL
                         AND fx_expense_account.is_active = 1
                     INNER JOIN instruments fx_instrument ON fx_instrument.id = fx_expense_account.instrument_id
+                    INNER JOIN available_exchange_rates aer ON
+                        aer.base_instrument_id = fx_instrument.id
+                        AND aer.quote_instrument_id = income_instrument.id
                     WHERE canonical.type = '${TransactionTypeEnum.TRANSFER}'
                         AND canonical.consolidation_type = '${TransactionConsolidationTypeEnum.TRANSFER_PAIR}'
                         AND canonical.deleted_at IS NULL
                         AND canonical.consolidation_parent_transaction_id IS NULL
+                        AND canonical.updated_by IS NULL
                         AND fx_instrument.id != income_instrument.id
                         AND (
                             (
                                 claimed_income_entry.to_iban IS NOT NULL
                                 AND claimed_income_entry.to_iban != ''
-                                AND claimed_income_entry.to_iban != COALESCE(
-                                    (SELECT iban FROM accounts WHERE id = canonical.from_account_id AND deleted_at IS NULL),
-                                    ''
-                                )
+                                AND claimed_income_entry.to_iban != COALESCE(canonical_from_account.iban, '')
                             )
                             OR ${buildBridgeClaimTitleConditionSql('claimed_income.title', 'income_instrument.code')}
                         )
-                        AND (
-                            SELECT rate FROM available_exchange_rates
-                            WHERE base_instrument_id = fx_instrument.id AND quote_instrument_id = income_instrument.id
-                            LIMIT 1
-                        ) IS NOT NULL
-                        AND ABS(
-                            claimed_income_entry.amount * 1.0 / fx_expense_entry.amount
-                            - (
-                                SELECT rate FROM available_exchange_rates
-                                WHERE base_instrument_id = fx_instrument.id AND quote_instrument_id = income_instrument.id
-                                LIMIT 1
-                            )
-                        ) / (
-                            SELECT rate FROM available_exchange_rates
-                            WHERE base_instrument_id = fx_instrument.id AND quote_instrument_id = income_instrument.id
-                            LIMIT 1
-                        ) <= ${TRANSFER_PAIR_IMPLIED_RATE_TOLERANCE}
+                        AND ABS(claimed_income_entry.amount * 1.0 / fx_expense_entry.amount - aer.rate) / aer.rate <= ${TRANSFER_PAIR_IMPLIED_RATE_TOLERANCE}
                 )
             )
             SELECT
@@ -150,5 +96,3 @@ const BRIDGE_CLAIM_REPAIR_CANDIDATES_BASE_SQL = `
             WHERE canonicalRank = 1
                 AND interbankExpenseRank = 1
 `;
-
-export const BRIDGE_CLAIM_REPAIR_CANDIDATES_SQL = BRIDGE_CLAIM_REPAIR_CANDIDATES_BASE_SQL;

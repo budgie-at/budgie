@@ -11,7 +11,8 @@ export const buildPrivatbankSameOriginalAmountSql = (
     expense: PrivatbankRefundEntrySqlColumnsInterface
 ): string => `${refund.externalSource} = '${ExternalSourceEnum.PRIVATBANK}'
     AND ${expense.externalSource} = '${ExternalSourceEnum.PRIVATBANK}'
-    AND ${refund.exchangeRate} != 1 AND ${expense.exchangeRate} != 1
+    AND ${refund.exchangeRate} > 0 AND ${refund.exchangeRate} != 1
+    AND ${expense.exchangeRate} > 0 AND ${expense.exchangeRate} != 1
     AND (${refund.operationInstrumentId} IS NULL OR ${expense.operationInstrumentId} IS NULL
         OR ${refund.operationInstrumentId} = ${expense.operationInstrumentId})
     AND ABS(${refund.exchangeRate} / ${expense.exchangeRate} - 1) <= ${REFUND_ORIGINAL_CURRENCY_RATE_TOLERANCE}

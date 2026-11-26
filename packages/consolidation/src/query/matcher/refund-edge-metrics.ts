@@ -1,3 +1,5 @@
+import { isDefined } from '@rnw-community/shared';
+
 import { isAutoRefundConfidenceBucket } from '../type-guard/is-auto-refund-confidence-bucket.type-guard';
 
 import type { RefundEdgeRowInterface } from '../interface/refund-edge-row.interface';
@@ -5,12 +7,13 @@ import type { RefundReviewCandidateInterface } from '@budgie/contracts';
 
 class RefundEdgeMetrics {
     private static readonly feeBucket = 'AUTO_REFUND_REJECTED_PAYMENT_FEE_TITLE';
+    private static readonly decorateSortThreshold = 4;
     private static readonly bucketPriority: Record<RefundReviewCandidateInterface['confidenceBucket'], number> = {
         AUTO_REFUND_EXACT_TITLE: 1,
         AUTO_REFUND_LOCALIZED_REFUND_TITLE: 2,
         AUTO_REFUND_REJECTED_PAYMENT_PRINCIPAL_TITLE: 3,
-        AUTO_REFUND_REJECTED_PAYMENT_FEE_TITLE: 4,
-        AUTO_REFUND_PRIVATBANK_ORIGINAL_AMOUNT: 5,
+        AUTO_REFUND_PRIVATBANK_ORIGINAL_AMOUNT: 4,
+        AUTO_REFUND_REJECTED_PAYMENT_FEE_TITLE: 5,
         REVIEW_REFUND_PREFIX_TITLE_MCC: 6
     };
 
@@ -24,13 +27,19 @@ class RefundEdgeMetrics {
         this.compareText(left.expenseSyncId, right.expenseSyncId) ||
         left.expenseTransactionId - right.expenseTransactionId;
 
-    readonly compareRefundRank = (left: RefundEdgeRowInterface, right: RefundEdgeRowInterface): number =>
-        Number(this.getShortfall(left) !== 0) - Number(this.getShortfall(right) !== 0) ||
-        Number(!this.isCovering(left)) - Number(!this.isCovering(right)) ||
-        this.compareBuckets(left, right) ||
-        Math.abs(this.getShortfall(left)) - Math.abs(this.getShortfall(right)) ||
-        this.getTimeDiff(left) - this.getTimeDiff(right) ||
-        this.compareExpenses(left, right);
+    readonly compareRefundRank = (left: RefundEdgeRowInterface, right: RefundEdgeRowInterface): number => {
+        const leftShortfall = this.getShortfall(left);
+        const rightShortfall = this.getShortfall(right);
+
+        return (
+            Number(leftShortfall !== 0) - Number(rightShortfall !== 0) ||
+            Number(leftShortfall < 0) - Number(rightShortfall < 0) ||
+            this.compareBuckets(left, right) ||
+            Math.abs(leftShortfall) - Math.abs(rightShortfall) ||
+            this.getTimeDiff(left) - this.getTimeDiff(right) ||
+            this.compareExpenses(left, right)
+        );
+    };
 
     readonly compareExpenseRank = (left: RefundEdgeRowInterface, right: RefundEdgeRowInterface): number =>
         Number(this.getShortfall(left) !== 0) - Number(this.getShortfall(right) !== 0) ||
@@ -40,6 +49,50 @@ class RefundEdgeMetrics {
 
     readonly isAuto = (edge: RefundEdgeRowInterface): boolean => isAutoRefundConfidenceBucket(edge.confidenceBucket);
 
+    pushGroupedEdge(groups: Map<number, RefundEdgeRowInterface[]>, key: number, edge: RefundEdgeRowInterface): void {
+        const group = groups.get(key);
+
+        if (isDefined(group)) {
+            group.push(edge);
+        } else {
+            groups.set(key, [edge]);
+        }
+    }
+
+    sortRefundEdges(edges: RefundEdgeRowInterface[]): RefundEdgeRowInterface[] {
+        if (edges.length <= RefundEdgeMetrics.decorateSortThreshold) {
+            return edges.sort(this.compareRefundRank);
+        }
+
+        return edges
+            .map(edge => {
+                const shortfall = this.getShortfall(edge);
+
+                return {
+                    edge,
+                    isNonExact: Number(shortfall !== 0),
+                    isNonCovering: Number(shortfall < 0),
+                    bucketPriority: RefundEdgeMetrics.bucketPriority[edge.confidenceBucket],
+                    absShortfall: Math.abs(shortfall),
+                    timeDiff: edge.refundOperatedAt - edge.expenseOperatedAt
+                };
+            })
+            .sort(
+                (left, right) =>
+                    left.isNonExact - right.isNonExact ||
+                    left.isNonCovering - right.isNonCovering ||
+                    left.bucketPriority - right.bucketPriority ||
+                    left.absShortfall - right.absShortfall ||
+                    left.timeDiff - right.timeDiff ||
+                    this.compareExpenses(left.edge, right.edge)
+            )
+            .map(entry => entry.edge);
+    }
+
+    compareBuckets(left: RefundEdgeRowInterface, right: RefundEdgeRowInterface): number {
+        return RefundEdgeMetrics.bucketPriority[left.confidenceBucket] - RefundEdgeMetrics.bucketPriority[right.confidenceBucket];
+    }
+
     isFeeBucket(edge: RefundEdgeRowInterface): boolean {
         return edge.confidenceBucket === RefundEdgeMetrics.feeBucket;
     }
@@ -48,24 +101,28 @@ class RefundEdgeMetrics {
         return edge.isPrivatbankOriginalMatch === 1 && !this.isFeeBucket(edge);
     }
 
+    getAbsorbedFeeAmount(edge: RefundEdgeRowInterface): number {
+        return Math.min(edge.expenseAbsorbedFeeAmount, edge.feeAmount);
+    }
+
+    getAbsorbedPrincipalAmount(edge: RefundEdgeRowInterface): number {
+        return edge.expenseAbsorbedAmount - this.getAbsorbedFeeAmount(edge);
+    }
+
     getCapacity(edge: RefundEdgeRowInterface): number {
         if (edge.isExpenseClosed === 1) {
             return 0;
         }
 
         if (this.isOriginalAmountReversal(edge)) {
-            return edge.expenseAbsorbedAmount === 0 ? edge.expenseOriginalMinorAmount : 0;
+            return this.getAbsorbedPrincipalAmount(edge) === 0 ? edge.expenseOriginalMinorAmount : 0;
         }
 
-        return Math.min(this.getBucketCeiling(edge), this.getOutflow(edge) - edge.expenseAbsorbedAmount);
-    }
+        if (this.isFeeBucket(edge)) {
+            return Math.max(0, edge.feeAmount - this.getAbsorbedFeeAmount(edge));
+        }
 
-    getOutflow(edge: RefundEdgeRowInterface): number {
-        return edge.expenseAmount + (edge.feeAmount ?? 0);
-    }
-
-    getBucketCeiling(edge: RefundEdgeRowInterface): number {
-        return this.isFeeBucket(edge) ? (edge.feeAmount ?? 0) : edge.expenseAmount;
+        return Math.max(0, edge.expenseAmount - this.getAbsorbedPrincipalAmount(edge));
     }
 
     getMeasure(edge: RefundEdgeRowInterface): number {
@@ -73,13 +130,25 @@ class RefundEdgeMetrics {
     }
 
     getShortfall(edge: RefundEdgeRowInterface): number {
+        if (
+            edge.isExpenseClosed === 0 &&
+            edge.isPrivatbankOriginalMatch !== 1 &&
+            edge.confidenceBucket !== RefundEdgeMetrics.feeBucket &&
+            edge.expenseAbsorbedAmount === 0 &&
+            edge.expenseAbsorbedFeeAmount === 0 &&
+            edge.expenseAmount >= 0
+        ) {
+            return edge.expenseAmount - edge.refundAmount;
+        }
+
         return this.getCapacity(edge) - this.getMeasure(edge);
     }
 
     isManuallySelectable(edge: RefundEdgeRowInterface): boolean {
         return (
-            edge.refundAmount <= edge.expenseAmount - edge.expenseAbsorbedAmount ||
-            (edge.expenseAbsorbedAmount === 0 && edge.isPrivatbankOriginalMatch === 1)
+            edge.isExpenseClosed === 0 &&
+            (edge.refundAmount <= edge.expenseAmount - edge.expenseAbsorbedAmount ||
+                (edge.expenseAbsorbedAmount === 0 && edge.isPrivatbankOriginalMatch === 1))
         );
     }
 
@@ -91,12 +160,15 @@ class RefundEdgeMetrics {
         return edge.refundOperatedAt - edge.expenseOperatedAt;
     }
 
-    private compareBuckets(left: RefundEdgeRowInterface, right: RefundEdgeRowInterface): number {
-        return RefundEdgeMetrics.bucketPriority[left.confidenceBucket] - RefundEdgeMetrics.bucketPriority[right.confidenceBucket];
-    }
-
     private compareText(left: string | null, right: string | null): number {
-        return Number((left ?? '') > (right ?? '')) - Number((left ?? '') < (right ?? ''));
+        const leftText = left ?? '';
+        const rightText = right ?? '';
+
+        if (leftText === rightText) {
+            return 0;
+        }
+
+        return leftText > rightText ? 1 : -1;
     }
 }
 

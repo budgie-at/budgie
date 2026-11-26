@@ -1,6 +1,6 @@
 import { ExternalSourceEnum, PRECISION } from '@budgie/contracts';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { REFUND_ORIGINAL_CURRENCY_RATE_TOLERANCE } from '../constant/refund-original-currency-rate-tolerance.constant';
 
@@ -17,6 +17,8 @@ export const isPrivatbankSameOriginalAmount = (
 ): boolean =>
     refundSource === ExternalSourceEnum.PRIVATBANK &&
     expenseSource === ExternalSourceEnum.PRIVATBANK &&
+    isPositiveNumber(refundEntry.exchangeRate) &&
+    isPositiveNumber(expenseEntry.exchangeRate) &&
     refundEntry.exchangeRate !== 1 &&
     expenseEntry.exchangeRate !== 1 &&
     (!isDefined(refundEntry.operationInstrumentId) ||

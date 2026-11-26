@@ -3,15 +3,15 @@ import type { RefundReviewCandidateInterface } from '@budgie/contracts';
 export interface RefundEdgeRowInterface {
     readonly accountId: number;
     readonly confidenceBucket: RefundReviewCandidateInterface['confidenceBucket'];
-    readonly matchType: RefundReviewCandidateInterface['matchType'];
     readonly expenseTransactionId: number;
     readonly expenseSyncId: string | null;
     readonly expenseOperatedAt: number;
     readonly expenseAutoNormTitle: string;
     readonly expenseAmount: number;
     readonly expenseAbsorbedAmount: number;
+    readonly expenseAbsorbedFeeAmount: number;
     readonly expenseOriginalMinorAmount: number;
-    readonly feeAmount: number | null;
+    readonly feeAmount: number;
     readonly isExpenseClosed: number;
     readonly isPrivatbankOriginalMatch: number;
     readonly refundTransactionId: number;

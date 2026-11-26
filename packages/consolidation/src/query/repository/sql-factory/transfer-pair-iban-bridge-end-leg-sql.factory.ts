@@ -1,4 +1,9 @@
-import { TransactionConsolidationTypeEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import {
+    TransactionConsolidationTypeEnum,
+    TransactionEntryKindEnum,
+    TransactionEntryTypeEnum,
+    TransactionTypeEnum
+} from '@budgie/contracts';
 
 import { CANONICAL_CENT_TOLERANCE_AMOUNT } from '../../../shared/constant/canonical-cent-tolerance.constant';
 import { TRANSFER_MCC_GROUP_ID } from '../../../shared/constant/transfer-mcc-group-id.constant';
@@ -28,8 +33,11 @@ export const IBAN_BRIDGE_END_LEG_CANDIDATES_SQL = scopedSql`
                     (
                         SELECT bridge_account.iban
                         FROM transaction_entries bridge_entry
-                        INNER JOIN accounts bridge_account ON bridge_account.id = bridge_entry.account_id
+                        INNER JOIN accounts bridge_account
+                            ON bridge_account.id = bridge_entry.account_id
+                            AND bridge_account.deleted_at IS NULL
                         WHERE ${BRIDGE_ENTRY_CONDITION_SQL}
+                        ORDER BY bridge_entry.original_transaction_id
                         LIMIT 1
                     ) as bridgeIban,
                     (
@@ -42,21 +50,28 @@ export const IBAN_BRIDGE_END_LEG_CANDIDATES_SQL = scopedSql`
                     invented_entry.transaction_id = canonical_tx.id
                     AND invented_entry.deleted_at IS NULL
                     AND invented_entry.original_transaction_id IS NULL
+                    AND invented_entry.kind = '${TransactionEntryKindEnum.PRIMARY}'
                     AND invented_entry.amount > 0
                     AND (
                         (invented_entry.type = '${TransactionEntryTypeEnum.CREDIT}' AND invented_entry.account_id = canonical_tx.from_account_id)
                         OR (invented_entry.type = '${TransactionEntryTypeEnum.DEBIT}' AND invented_entry.account_id = canonical_tx.to_account_id)
                     )
+                INNER JOIN accounts invented_account ON
+                    invented_account.id = invented_entry.account_id
+                    AND invented_account.deleted_at IS NULL
+                    AND invented_account.is_active = 1
                 INNER JOIN accounts counterpart_account ON
                     counterpart_account.id = CASE invented_entry.type
                         WHEN '${TransactionEntryTypeEnum.CREDIT}' THEN canonical_tx.to_account_id
                         ELSE canonical_tx.from_account_id
                     END
+                    AND counterpart_account.deleted_at IS NULL
                 WHERE canonical_tx.type = '${TransactionTypeEnum.TRANSFER}'
                     AND canonical_tx.deleted_at IS NULL
                     AND canonical_tx.consolidation_parent_transaction_id IS NULL
                     AND canonical_tx.updated_by IS NULL
                     AND canonical_tx.consolidation_type = '${TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER}'
+                    ${operatedAtScopeSql('canonical_tx.operated_at', TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS)}
                     AND EXISTS (SELECT 1 FROM transaction_entries bridge_entry WHERE ${BRIDGE_ENTRY_CONDITION_SQL})
                     AND NOT EXISTS (
                         SELECT 1
@@ -78,11 +93,17 @@ export const IBAN_BRIDGE_END_LEG_CANDIDATES_SQL = scopedSql`
                 INNER JOIN transaction_entries end_leg_entry ON
                     end_leg_entry.account_id = invented_legs.accountId
                     AND end_leg_entry.type = invented_legs.entryType
+                    AND end_leg_entry.kind = '${TransactionEntryKindEnum.PRIMARY}'
                     AND end_leg_entry.deleted_at IS NULL
                     AND end_leg_entry.original_transaction_id IS NULL
-                    AND ABS(end_leg_entry.amount - invented_legs.amount) <= ${CANONICAL_CENT_TOLERANCE_AMOUNT}
+                    AND end_leg_entry.amount BETWEEN invented_legs.amount - ${CANONICAL_CENT_TOLERANCE_AMOUNT}
+                        AND invented_legs.amount + ${CANONICAL_CENT_TOLERANCE_AMOUNT}
                     AND (
-                        end_leg_entry.to_iban IN (invented_legs.bridgeIban, invented_legs.counterpartIban)
+                        (
+                            end_leg_entry.to_iban IS NOT NULL
+                            AND end_leg_entry.to_iban != ''
+                            AND end_leg_entry.to_iban IN (invented_legs.bridgeIban, invented_legs.counterpartIban)
+                        )
                         OR (end_leg_entry.type = '${TransactionEntryTypeEnum.DEBIT}' AND COALESCE(end_leg_entry.to_iban, '') = '')
                     )
                 INNER JOIN transactions end_leg_tx ON

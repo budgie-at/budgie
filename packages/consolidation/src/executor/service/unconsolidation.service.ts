@@ -29,6 +29,7 @@ export class UnconsolidationService extends Context.Service<UnconsolidationServi
         const transactionTagsRepository = yield* TransactionTagsRepository;
         const mccCategoryRepository = yield* MccCategoryRepository;
         const settingsRepository = yield* SettingsRepository;
+        const debtEventRepository = yield* DebtEventRepository;
 
         const restoreSyncedCategory = Effect.fnUntraced(function* (entry: Pick<TransactionEntryEntityInterface, 'id' | 'mccCategoryId'>) {
             const mccCategory = isDefined(entry.mccCategoryId) ? yield* mccCategoryRepository.findById(entry.mccCategoryId) : null;
@@ -42,7 +43,11 @@ export class UnconsolidationService extends Context.Service<UnconsolidationServi
                     : { categoryId: null, categorySource: CategorySourceEnum.USER }
             );
         });
-        const debtEventRepository = yield* DebtEventRepository;
+
+        const isActiveCanonical = (canonical: TransactionEntityInterface): boolean =>
+            isDefined(canonical.consolidationType) &&
+            !isDefined(canonical.deletedAt) &&
+            !isDefined(canonical.consolidationParentTransactionId);
 
         const isPreExistingCanonical = (transaction: TransactionEntityInterface): boolean =>
             transaction.consolidationType === TransactionConsolidationTypeEnum.REFUND ||
@@ -107,30 +112,37 @@ export class UnconsolidationService extends Context.Service<UnconsolidationServi
             }
         });
 
-        const unconsolidateById = Effect.fn('UnconsolidationService.unconsolidateById')(function* (transactionId: number) {
-            const canonical = yield* transactionRepository.getByIdRaw(transactionId);
-
-            if (!isDefined(canonical?.consolidationType)) {
-                return;
-            }
-
+        const unconsolidateCanonical = Effect.fnUntraced(function* (canonical: TransactionEntityInterface) {
             if (canonical.consolidationType === TransactionConsolidationTypeEnum.MANUAL_EXPENSE_DUPLICATE) {
-                yield* restoreManualExpenseDuplicateUserData(transactionId);
+                yield* restoreManualExpenseDuplicateUserData(canonical.id);
             }
 
-            yield* transactionEntryRepository.moveBackToOriginalTransactions(transactionId);
-            yield* transactionConsolidationRepository.clearConsolidationParent(transactionId);
+            yield* transactionEntryRepository.moveBackToOriginalTransactions(canonical.id);
+            yield* transactionConsolidationRepository.clearConsolidationParent(canonical.id);
 
             if (isPreExistingCanonical(canonical)) {
-                yield* transactionConsolidationRepository.setConsolidationType(transactionId, null);
+                yield* transactionConsolidationRepository.setConsolidationType(canonical.id, null);
 
                 return;
             }
 
-            yield* transactionTagsRepository.deleteByTransactionId(transactionId);
-            yield* transactionEntryRepository.deleteLedgerByTransactionId(transactionId);
-            yield* transactionRepository.deleteById(transactionId);
+            yield* transactionTagsRepository.deleteByTransactionId(canonical.id);
+            yield* transactionEntryRepository.deleteLedgerByTransactionId(canonical.id);
+            yield* transactionRepository.deleteById(canonical.id);
         });
+
+        const unconsolidateById = Effect.fn('UnconsolidationService.unconsolidateById')(
+            function* (transactionId: number) {
+                const canonical = yield* transactionRepository.getByIdRaw(transactionId);
+
+                if (!isDefined(canonical) || !isActiveCanonical(canonical)) {
+                    return;
+                }
+
+                yield* unconsolidateCanonical(canonical);
+            },
+            effect => Db.transaction(effect)
+        );
 
         return {
             unconsolidateById,
@@ -138,11 +150,15 @@ export class UnconsolidationService extends Context.Service<UnconsolidationServi
                 function* (transactionId: number) {
                     const canonical = yield* transactionRepository.getByIdRaw(transactionId);
 
-                    if (canonical?.consolidationType === TransactionConsolidationTypeEnum.REFUND) {
-                        yield* transactionConsolidationRepository.disableRefundAutoPairingForChildren(transactionId);
+                    if (!isDefined(canonical) || !isActiveCanonical(canonical)) {
+                        return;
                     }
 
-                    yield* unconsolidateById(transactionId);
+                    if (canonical.consolidationType === TransactionConsolidationTypeEnum.REFUND) {
+                        yield* transactionConsolidationRepository.disableRefundAutoPairingForChildren(canonical.id);
+                    }
+
+                    yield* unconsolidateCanonical(canonical);
                 },
                 effect => Db.transaction(effect)
             )

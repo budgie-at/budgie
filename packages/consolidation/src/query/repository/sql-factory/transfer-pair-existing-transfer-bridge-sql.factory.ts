@@ -1,28 +1,22 @@
-import { TransactionTypeEnum } from '@budgie/contracts';
+import {
+    TransactionConsolidationTypeEnum,
+    TransactionEntryKindEnum,
+    TransactionEntryTypeEnum,
+    TransactionTypeEnum
+} from '@budgie/contracts';
 
+import { IBAN_BRIDGE_CHAIN_FX_TOLERANCE } from '../../../shared/constant/iban-bridge-chain-fx-tolerance.constant';
+import { TRANSFER_MCC_GROUP_ID } from '../../../shared/constant/transfer-mcc-group-id.constant';
 import { TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS } from '../../../shared/constant/transfer-pair-fast-time-window.constant';
+import { TRANSFER_PAIR_IMPLIED_RATE_TOLERANCE } from '../../../shared/constant/transfer-pair-implied-rate-tolerance.constant';
 import { operatedAtScopeSql } from '../../utils/operated-at-scope-sql.util';
 import { scopedSql } from '../../utils/scoped-sql.util';
 
+import { TRANSFER_PAIR_AVAILABLE_EXCHANGE_RATES_SQL } from './transfer-pair-available-exchange-rates-sql.factory';
+
 export const EXISTING_TRANSFER_BRIDGE_CANDIDATES_SQL = scopedSql`
-            SELECT
-                'AUTO_EXISTING_TRANSFER_BRIDGE' as confidenceBucket,
-                sourceExpenseTransactionId,
-                sourceExpenseTransactionTitle,
-                sourceExpenseEntryToIban,
-                bridgeIncomeTransactionId,
-                bridgeIncomeTransactionTitle,
-                existingTransferId,
-                existingTransferTitle,
-                operatedAt,
-                sourceAccountId,
-                bridgeAccountId,
-                targetAccountId,
-                sourceAmount,
-                targetAmount,
-                sourceAmount * 1.0 / targetAmount as exchangeRate,
-                timeDiff
-            FROM (
+            WITH ${TRANSFER_PAIR_AVAILABLE_EXCHANGE_RATES_SQL}
+            ranked_candidates AS (
                 SELECT
                     source_expense_tx.id as sourceExpenseTransactionId,
                     source_expense_tx.title as sourceExpenseTransactionTitle,
@@ -80,11 +74,16 @@ export const EXISTING_TRANSFER_BRIDGE_CANDIDATES_SQL = scopedSql`
                     existing_bridge_entry.transaction_id = existing_transfer.id
                     AND existing_bridge_entry.deleted_at IS NULL
                     AND existing_bridge_entry.original_transaction_id IS NULL
+                    AND existing_bridge_entry.type = '${TransactionEntryTypeEnum.CREDIT}'
+                    AND existing_bridge_entry.kind = '${TransactionEntryKindEnum.PRIMARY}'
+                    AND existing_bridge_entry.amount > 0
                     AND existing_bridge_entry.account_id = bridge_account.id
                 INNER JOIN transaction_entries existing_target_entry ON
                     existing_target_entry.transaction_id = existing_transfer.id
                     AND existing_target_entry.deleted_at IS NULL
                     AND existing_target_entry.original_transaction_id IS NULL
+                    AND existing_target_entry.type = '${TransactionEntryTypeEnum.DEBIT}'
+                    AND existing_target_entry.kind = '${TransactionEntryKindEnum.PRIMARY}'
                     AND existing_target_entry.account_id = existing_transfer.to_account_id
                     AND existing_target_entry.amount = existing_bridge_entry.amount
                 INNER JOIN accounts target_account ON
@@ -95,6 +94,8 @@ export const EXISTING_TRANSFER_BRIDGE_CANDIDATES_SQL = scopedSql`
                 INNER JOIN transaction_entries bridge_income_entry ON
                     bridge_income_entry.deleted_at IS NULL
                     AND bridge_income_entry.original_transaction_id IS NULL
+                    AND bridge_income_entry.type = '${TransactionEntryTypeEnum.DEBIT}'
+                    AND bridge_income_entry.kind = '${TransactionEntryKindEnum.PRIMARY}'
                     AND bridge_income_entry.account_id = bridge_account.id
                     AND bridge_income_entry.amount = existing_bridge_entry.amount
                     AND bridge_income_entry.exchange_rate > 0
@@ -110,6 +111,7 @@ export const EXISTING_TRANSFER_BRIDGE_CANDIDATES_SQL = scopedSql`
                     source_expense_tx.type = '${TransactionTypeEnum.EXPENSE}'
                     AND source_expense_tx.deleted_at IS NULL
                     AND source_expense_tx.consolidation_parent_transaction_id IS NULL
+                    AND source_expense_tx.consolidation_type IS NOT '${TransactionConsolidationTypeEnum.REFUND}'
                     AND source_expense_tx.operated_at BETWEEN bridge_income_tx.operated_at - ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
                         AND bridge_income_tx.operated_at + ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
                     ${operatedAtScopeSql('source_expense_tx.operated_at')}
@@ -117,6 +119,8 @@ export const EXISTING_TRANSFER_BRIDGE_CANDIDATES_SQL = scopedSql`
                     source_expense_entry.transaction_id = source_expense_tx.id
                     AND source_expense_entry.deleted_at IS NULL
                     AND source_expense_entry.original_transaction_id IS NULL
+                    AND source_expense_entry.type = '${TransactionEntryTypeEnum.CREDIT}'
+                    AND source_expense_entry.kind = '${TransactionEntryKindEnum.PRIMARY}'
                     AND source_expense_entry.amount > 0
                     AND source_expense_entry.exchange_rate > 0
                 INNER JOIN accounts source_account ON
@@ -124,6 +128,11 @@ export const EXISTING_TRANSFER_BRIDGE_CANDIDATES_SQL = scopedSql`
                     AND source_account.deleted_at IS NULL
                     AND source_account.is_active = 1
                     AND source_account.instrument_id != bridge_account.instrument_id
+                LEFT JOIN mcc_categories expense_mcc ON expense_mcc.id = source_expense_entry.mcc_category_id
+                LEFT JOIN mcc_categories bridge_income_mcc ON bridge_income_mcc.id = bridge_income_entry.mcc_category_id
+                LEFT JOIN available_exchange_rates aer ON
+                    aer.base_instrument_id = source_account.instrument_id
+                    AND aer.quote_instrument_id = bridge_account.instrument_id
                 WHERE existing_transfer.type = '${TransactionTypeEnum.TRANSFER}'
                     AND existing_transfer.deleted_at IS NULL
                     AND existing_transfer.consolidation_parent_transaction_id IS NULL
@@ -133,7 +142,42 @@ export const EXISTING_TRANSFER_BRIDGE_CANDIDATES_SQL = scopedSql`
                     AND source_account.id != bridge_account.id
                     AND bridge_account.id != target_account.id
                     AND source_account.id != target_account.id
+                    AND (expense_mcc.mcc_group_id IS NULL OR expense_mcc.mcc_group_id = ${TRANSFER_MCC_GROUP_ID})
+                    AND (bridge_income_mcc.mcc_group_id IS NULL OR bridge_income_mcc.mcc_group_id = ${TRANSFER_MCC_GROUP_ID})
+                    AND (
+                        (
+                            bridge_income_entry.to_iban IS NOT NULL
+                            AND bridge_income_entry.to_iban != ''
+                            AND bridge_income_entry.to_iban = source_account.iban
+                            AND (
+                                ABS(source_expense_entry.amount - (bridge_income_entry.amount * 1.0 / bridge_income_entry.exchange_rate)) / source_expense_entry.amount <= ${IBAN_BRIDGE_CHAIN_FX_TOLERANCE}
+                                OR ABS(bridge_income_entry.amount - (source_expense_entry.amount * 1.0 / source_expense_entry.exchange_rate)) / bridge_income_entry.amount <= ${IBAN_BRIDGE_CHAIN_FX_TOLERANCE}
+                            )
+                        )
+                        OR (
+                            aer.rate IS NOT NULL
+                            AND ABS((bridge_income_entry.amount * 1.0 / source_expense_entry.amount) - aer.rate) / aer.rate <= ${TRANSFER_PAIR_IMPLIED_RATE_TOLERANCE}
+                        )
+                    )
             )
+            SELECT
+                'AUTO_EXISTING_TRANSFER_BRIDGE' as confidenceBucket,
+                sourceExpenseTransactionId,
+                sourceExpenseTransactionTitle,
+                sourceExpenseEntryToIban,
+                bridgeIncomeTransactionId,
+                bridgeIncomeTransactionTitle,
+                existingTransferId,
+                existingTransferTitle,
+                operatedAt,
+                sourceAccountId,
+                bridgeAccountId,
+                targetAccountId,
+                sourceAmount,
+                targetAmount,
+                sourceAmount * 1.0 / targetAmount as exchangeRate,
+                timeDiff
+            FROM ranked_candidates
             WHERE sourceExpenseRank = 1
                 AND bridgeIncomeRank = 1
                 AND existingTransferRank = 1

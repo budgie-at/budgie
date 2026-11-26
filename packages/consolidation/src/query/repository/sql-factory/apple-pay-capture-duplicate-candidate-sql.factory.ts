@@ -6,17 +6,17 @@ import {
     TransactionTypeEnum
 } from '@budgie/contracts';
 
-import { buildConsolidationScanScopeSql } from '../../utils/build-consolidation-scan-scope-sql.util';
-
-import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
+import { operatedAtScopeSql } from '../../utils/operated-at-scope-sql.util';
+import { scopedSql } from '../../utils/scoped-sql.util';
 
 const APPLE_PAY_CAPTURE_TIME_WINDOW_SECONDS = 2 * 24 * 60 * 60;
+const APPLE_PAY_CAPTURE_BANK_SCOPE_PADDING_SECONDS = APPLE_PAY_CAPTURE_TIME_WINDOW_SECONDS * 2;
 const APPLE_PAY_CAPTURE_APPROXIMATE_TIME_WINDOW_SECONDS = 3 * 60 * 60;
 const APPLE_PAY_CAPTURE_APPROXIMATE_AMOUNT_PERCENT = 1;
 const APPLE_PAY_CAPTURE_FOREIGN_CURRENCY_AMOUNT_PERCENT = 3;
 const PERCENT_DIVISOR = 100;
 
-const APPLE_PAY_CAPTURE_DUPLICATE_PAIRS_SQL = `
+export const APPLE_PAY_CAPTURE_DUPLICATE_CANDIDATES_SQL = scopedSql`
     WITH captures AS MATERIALIZED (
         SELECT
             capture_tx.id AS captureTransactionId,
@@ -32,12 +32,14 @@ const APPLE_PAY_CAPTURE_DUPLICATE_PAIRS_SQL = `
             AND capture_entry.original_transaction_id IS NULL
             AND capture_entry.kind = '${TransactionEntryKindEnum.PRIMARY}'
             AND capture_entry.type = '${TransactionEntryTypeEnum.CREDIT}'
+            AND capture_entry.amount > 0
         WHERE capture_tx.external_source IN ('${ExternalSourceEnum.APPLE_PAY_AUTOMATION}', '${ExternalSourceEnum.RECEIPT}')
             AND capture_tx.type = '${TransactionTypeEnum.EXPENSE}'
             AND capture_tx.deleted_at IS NULL
             AND capture_tx.consolidation_parent_transaction_id IS NULL
             AND (capture_tx.consolidation_type IS NULL
                 OR capture_tx.consolidation_type = '${TransactionConsolidationTypeEnum.MANUAL_EXPENSE_DUPLICATE}')
+            ${operatedAtScopeSql('capture_tx.operated_at', APPLE_PAY_CAPTURE_TIME_WINDOW_SECONDS)}
             AND NOT EXISTS (
                 SELECT 1
                 FROM transaction_entries capture_split_entry
@@ -79,12 +81,14 @@ const APPLE_PAY_CAPTURE_DUPLICATE_PAIRS_SQL = `
         INNER JOIN transactions bank_tx INDEXED BY transactions_visible_type_operated_idx
             ON bank_tx.type = '${TransactionTypeEnum.EXPENSE}'
             AND bank_tx.operated_at BETWEEN capture_bounds.operatedAtFrom AND capture_bounds.operatedAtTo
+            ${operatedAtScopeSql('bank_tx.operated_at', APPLE_PAY_CAPTURE_BANK_SCOPE_PADDING_SECONDS)}
         INNER JOIN transaction_entries bank_entry
             ON bank_entry.transaction_id = bank_tx.id
             AND bank_entry.deleted_at IS NULL
             AND bank_entry.original_transaction_id IS NULL
             AND bank_entry.kind = '${TransactionEntryKindEnum.PRIMARY}'
             AND bank_entry.type = '${TransactionEntryTypeEnum.CREDIT}'
+            AND bank_entry.amount > 0
         WHERE bank_tx.deleted_at IS NULL
             AND bank_tx.consolidation_parent_transaction_id IS NULL
             AND (bank_tx.consolidation_type IS NULL OR (
@@ -92,6 +96,7 @@ const APPLE_PAY_CAPTURE_DUPLICATE_PAIRS_SQL = `
                 AND NOT EXISTS (
                     SELECT 1 FROM transactions source
                     WHERE source.consolidation_parent_transaction_id = bank_tx.id
+                        AND source.deleted_at IS NULL
                         AND (source.external_source IS NULL OR source.external_source NOT IN (
                             '${ExternalSourceEnum.APPLE_PAY_AUTOMATION}', '${ExternalSourceEnum.RECEIPT}'
                         ))
@@ -131,6 +136,8 @@ const APPLE_PAY_CAPTURE_DUPLICATE_PAIRS_SQL = `
         INNER JOIN bank_charges bank
             ON bank.accountId = capture.accountId
             AND bank.bankTransactionId != capture.captureTransactionId
+            AND bank.operatedAt BETWEEN capture.operatedAt - ${APPLE_PAY_CAPTURE_TIME_WINDOW_SECONDS}
+                AND capture.operatedAt + ${APPLE_PAY_CAPTURE_TIME_WINDOW_SECONDS}
             AND (capture.externalSource != '${ExternalSourceEnum.RECEIPT}' OR (
                 bank.externalSource != '${ExternalSourceEnum.RECEIPT}'
                 AND NOT EXISTS (
@@ -140,15 +147,19 @@ const APPLE_PAY_CAPTURE_DUPLICATE_PAIRS_SQL = `
             ))
             AND NOT EXISTS (
                 SELECT 1 FROM transactions source
-                WHERE source.external_source = capture.externalSource
-                    AND (source.consolidation_parent_transaction_id = bank.bankTransactionId OR
-                        source.consolidation_parent_transaction_id IN (
-                            SELECT child.id FROM transactions child
-                            WHERE child.consolidation_parent_transaction_id = bank.bankTransactionId
-                        )
-                    )
+                WHERE source.consolidation_parent_transaction_id = bank.bankTransactionId
+                    AND source.deleted_at IS NULL
+                    AND source.external_source = capture.externalSource
             )
-            AND ABS(capture.operatedAt - bank.operatedAt) <= ${APPLE_PAY_CAPTURE_TIME_WINDOW_SECONDS}
+            AND NOT EXISTS (
+                SELECT 1 FROM transactions child
+                INNER JOIN transactions source
+                    ON source.consolidation_parent_transaction_id = child.id
+                    AND source.deleted_at IS NULL
+                    AND source.external_source = capture.externalSource
+                WHERE child.consolidation_parent_transaction_id = bank.bankTransactionId
+                    AND child.deleted_at IS NULL
+            )
             AND (
                 capture.amount = bank.amount
                 OR (
@@ -180,10 +191,6 @@ const APPLE_PAY_CAPTURE_DUPLICATE_PAIRS_SQL = `
     FROM ranked_pairs
     WHERE bankRank = 1
         AND captureRank = 1
-`;
-
-export const APPLE_PAY_CAPTURE_DUPLICATE_CANDIDATES_SQL = (scope: ConsolidationScanScopeInterface | null): string => `
-    ${APPLE_PAY_CAPTURE_DUPLICATE_PAIRS_SQL}
-        ${buildConsolidationScanScopeSql(scope, 'bankOperatedAt')}
+        ${operatedAtScopeSql('bankOperatedAt')}
     ORDER BY bankOperatedAt, bankTransactionId
 `;

@@ -29,9 +29,21 @@ export const buildTransferPairCandidatesSql = (scope: ConsolidationScanScopeInte
 };
 
 export const TRANSFER_PAIR_MANUAL_REVIEW_COUNT_SQL = `
-            SELECT COUNT(*) AS count
-            FROM (${buildTransferPairRankedCandidateSql(null)})
-            WHERE expenseRank = 1
-                AND incomeRank = 1
-                AND confidenceBucket = 'REVIEW_CROSS_CURRENCY_OPERATION'
+            SELECT CASE
+                WHEN EXISTS (
+                    SELECT 1
+                    FROM transaction_entries
+                    WHERE deleted_at IS NULL
+                        AND original_transaction_id IS NULL
+                        AND exchange_rate != 1
+                )
+                THEN (
+                    SELECT COUNT(*)
+                    FROM (${buildTransferPairRankedCandidateSql(null)})
+                    WHERE expenseRank = 1
+                        AND incomeRank = 1
+                        AND confidenceBucket = 'REVIEW_CROSS_CURRENCY_OPERATION'
+                )
+                ELSE 0
+            END AS count
         `;

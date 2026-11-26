@@ -1,4 +1,11 @@
-import { AccountTypeEnum, ExternalSourceEnum, TransactionConsolidationTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import {
+    AccountTypeEnum,
+    ExternalSourceEnum,
+    TransactionConsolidationTypeEnum,
+    TransactionEntryKindEnum,
+    TransactionEntryTypeEnum,
+    TransactionTypeEnum
+} from '@budgie/contracts';
 
 import { ARCHIVED_SOURCE_EXPENSE_DUPLICATE_BUCKET } from '../../../shared/constant/archived-source-expense-duplicate-bucket.constant';
 import { TRANSFER_MCC_GROUP_ID } from '../../../shared/constant/transfer-mcc-group-id.constant';
@@ -30,11 +37,13 @@ export const EXISTING_TRANSFER_INCOME_DUPLICATE_CANDIDATES_SQL = scopedSql`
                     CASE WHEN source_account.instrument_id != target_account.instrument_id THEN source_entry.amount * 1.0 / income_entry.amount ELSE 1 END as exchangeRate,
                     0 as amountDelta,
                     ABS(income_tx.operated_at - existing_transfer.operated_at) as timeDiff
-                FROM transactions existing_transfer INDEXED BY transactions_visible_type_to_operated_idx
+                FROM transactions existing_transfer INDEXED BY transactions_visible_type_operated_idx
                 INNER JOIN transaction_entries source_entry INDEXED BY transaction_entries_live_transaction_account_amount_idx ON
                     source_entry.transaction_id = existing_transfer.id
                     AND source_entry.deleted_at IS NULL
                     AND source_entry.original_transaction_id IS NULL
+                    AND source_entry.type = '${TransactionEntryTypeEnum.CREDIT}'
+                    AND source_entry.kind = '${TransactionEntryKindEnum.PRIMARY}'
                     AND source_entry.account_id = existing_transfer.from_account_id
                 INNER JOIN accounts source_account ON
                     source_account.id = source_entry.account_id
@@ -44,6 +53,9 @@ export const EXISTING_TRANSFER_INCOME_DUPLICATE_CANDIDATES_SQL = scopedSql`
                     target_entry.transaction_id = existing_transfer.id
                     AND target_entry.deleted_at IS NULL
                     AND target_entry.original_transaction_id IS NULL
+                    AND target_entry.type = '${TransactionEntryTypeEnum.DEBIT}'
+                    AND target_entry.kind = '${TransactionEntryKindEnum.PRIMARY}'
+                    AND target_entry.amount > 0
                     AND target_entry.account_id = existing_transfer.to_account_id
                 INNER JOIN accounts target_account ON
                     target_account.id = target_entry.account_id
@@ -60,6 +72,9 @@ export const EXISTING_TRANSFER_INCOME_DUPLICATE_CANDIDATES_SQL = scopedSql`
                     income_entry.transaction_id = income_tx.id
                     AND income_entry.deleted_at IS NULL
                     AND income_entry.original_transaction_id IS NULL
+                    AND income_entry.type = '${TransactionEntryTypeEnum.DEBIT}'
+                    AND income_entry.kind = '${TransactionEntryKindEnum.PRIMARY}'
+                    AND income_entry.amount > 0
                     AND income_entry.account_id = target_account.id
                     AND income_entry.amount = target_entry.amount
                 LEFT JOIN mcc_categories income_mcc ON income_mcc.id = income_entry.mcc_category_id
@@ -93,11 +108,13 @@ export const EXISTING_TRANSFER_INCOME_DUPLICATE_CANDIDATES_SQL = scopedSql`
                     CASE WHEN source_account.instrument_id != income_account.instrument_id THEN source_entry.amount * 1.0 / income_entry.amount ELSE 1 END as exchangeRate,
                     0 as amountDelta,
                     ABS(income_tx.operated_at - existing_transfer.operated_at) as timeDiff
-                FROM transactions existing_transfer INDEXED BY transactions_visible_type_to_operated_idx
+                FROM transactions existing_transfer INDEXED BY transactions_visible_type_operated_idx
                 INNER JOIN transaction_entries source_entry INDEXED BY transaction_entries_live_transaction_account_amount_idx ON
                     source_entry.transaction_id = existing_transfer.id
                     AND source_entry.deleted_at IS NULL
                     AND source_entry.original_transaction_id IS NULL
+                    AND source_entry.type = '${TransactionEntryTypeEnum.CREDIT}'
+                    AND source_entry.kind = '${TransactionEntryKindEnum.PRIMARY}'
                     AND source_entry.account_id = existing_transfer.from_account_id
                 INNER JOIN accounts source_account ON
                     source_account.id = source_entry.account_id
@@ -107,6 +124,9 @@ export const EXISTING_TRANSFER_INCOME_DUPLICATE_CANDIDATES_SQL = scopedSql`
                     target_entry.transaction_id = existing_transfer.id
                     AND target_entry.deleted_at IS NULL
                     AND target_entry.original_transaction_id IS NULL
+                    AND target_entry.type = '${TransactionEntryTypeEnum.DEBIT}'
+                    AND target_entry.kind = '${TransactionEntryKindEnum.PRIMARY}'
+                    AND target_entry.amount > 0
                     AND target_entry.account_id = existing_transfer.to_account_id
                 INNER JOIN accounts target_account ON
                     target_account.id = target_entry.account_id
@@ -123,6 +143,9 @@ export const EXISTING_TRANSFER_INCOME_DUPLICATE_CANDIDATES_SQL = scopedSql`
                     income_entry.transaction_id = income_tx.id
                     AND income_entry.deleted_at IS NULL
                     AND income_entry.original_transaction_id IS NULL
+                    AND income_entry.type = '${TransactionEntryTypeEnum.DEBIT}'
+                    AND income_entry.kind = '${TransactionEntryKindEnum.PRIMARY}'
+                    AND income_entry.amount > 0
                     AND income_entry.amount = target_entry.amount
                 INNER JOIN accounts income_account ON
                     income_account.id = income_entry.account_id
@@ -141,6 +164,7 @@ export const EXISTING_TRANSFER_INCOME_DUPLICATE_CANDIDATES_SQL = scopedSql`
                     )
                     AND existing_transfer.from_account_id IS NOT NULL
                     AND existing_transfer.to_account_id IS NOT NULL
+                    ${operatedAtScopeSql('existing_transfer.operated_at')}
                     AND source_account.id != target_account.id
                     AND income_account.id != target_account.id
                     AND income_mcc.mcc_group_id = ${TRANSFER_MCC_GROUP_ID}
@@ -164,11 +188,14 @@ export const EXISTING_TRANSFER_INCOME_DUPLICATE_CANDIDATES_SQL = scopedSql`
                     source_entry.amount * 1.0 / income_entry.amount as exchangeRate,
                     ABS(income_entry.amount - target_entry.amount) as amountDelta,
                     ABS(income_tx.operated_at - existing_transfer.operated_at) as timeDiff
-                FROM transactions existing_transfer INDEXED BY transactions_visible_type_to_operated_idx
+                FROM transactions existing_transfer INDEXED BY transactions_visible_type_operated_idx
                 INNER JOIN transaction_entries source_entry INDEXED BY transaction_entries_live_transaction_account_amount_idx ON
                     source_entry.transaction_id = existing_transfer.id
                     AND source_entry.deleted_at IS NULL
                     AND source_entry.original_transaction_id IS NULL
+                    AND source_entry.type = '${TransactionEntryTypeEnum.CREDIT}'
+                    AND source_entry.kind = '${TransactionEntryKindEnum.PRIMARY}'
+                    AND source_entry.amount > 0
                     AND source_entry.account_id = existing_transfer.from_account_id
                 INNER JOIN accounts source_account ON
                     source_account.id = source_entry.account_id
@@ -178,6 +205,9 @@ export const EXISTING_TRANSFER_INCOME_DUPLICATE_CANDIDATES_SQL = scopedSql`
                     target_entry.transaction_id = existing_transfer.id
                     AND target_entry.deleted_at IS NULL
                     AND target_entry.original_transaction_id IS NULL
+                    AND target_entry.type = '${TransactionEntryTypeEnum.DEBIT}'
+                    AND target_entry.kind = '${TransactionEntryKindEnum.PRIMARY}'
+                    AND target_entry.amount > 0
                     AND target_entry.account_id = existing_transfer.to_account_id
                 INNER JOIN accounts target_account ON
                     target_account.id = target_entry.account_id
@@ -195,6 +225,8 @@ export const EXISTING_TRANSFER_INCOME_DUPLICATE_CANDIDATES_SQL = scopedSql`
                     income_entry.transaction_id = income_tx.id
                     AND income_entry.deleted_at IS NULL
                     AND income_entry.original_transaction_id IS NULL
+                    AND income_entry.type = '${TransactionEntryTypeEnum.DEBIT}'
+                    AND income_entry.kind = '${TransactionEntryKindEnum.PRIMARY}'
                     AND income_entry.amount > 0
                     AND ABS(income_entry.amount - target_entry.amount) <= ${APPROXIMATE_TARGET_AMOUNT_MAX_DELTA}
                     AND ABS(income_entry.amount - ROUND(source_entry.amount / existing_transfer.exchange_rate)) <= ${APPROXIMATE_TARGET_AMOUNT_MAX_DELTA}

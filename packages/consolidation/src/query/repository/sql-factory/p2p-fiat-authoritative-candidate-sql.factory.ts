@@ -1,4 +1,11 @@
-import { AccountTypeEnum, PRECISION, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import {
+    AccountTypeEnum,
+    PRECISION,
+    TransactionConsolidationTypeEnum,
+    TransactionEntryKindEnum,
+    TransactionEntryTypeEnum,
+    TransactionTypeEnum
+} from '@budgie/contracts';
 
 import { P2P_FIAT_BANK_ACCOUNT_TYPE_SQL } from '../../../shared/constant/p2p-fiat-bank-account-type-sql.constant';
 import {
@@ -11,7 +18,7 @@ import { operatedAtScopeSql } from '../../utils/operated-at-scope-sql.util';
 import { scopedSql } from '../../utils/scoped-sql.util';
 
 export const buildP2pFiatAuthoritativeCandidateSql = scopedSql`
-    WITH p2p_entries AS (
+    WITH p2p_entries AS MATERIALIZED (
         SELECT
             p2p_transaction.id AS transactionId,
             p2p_transaction.type AS transactionType,
@@ -29,8 +36,10 @@ export const buildP2pFiatAuthoritativeCandidateSql = scopedSql`
         FROM transaction_entries p2p_entry
         INNER JOIN transactions p2p_transaction
             ON p2p_transaction.id = p2p_entry.transaction_id
+            AND p2p_transaction.type IN ('${TransactionTypeEnum.EXPENSE}', '${TransactionTypeEnum.INCOME}')
             AND p2p_transaction.deleted_at IS NULL
             AND p2p_transaction.consolidation_parent_transaction_id IS NULL
+            AND p2p_transaction.external_id LIKE '%${P2P_ORDER_EXTERNAL_ID_MARKER}%'
         INNER JOIN accounts p2p_account
             ON p2p_account.id = p2p_entry.account_id
             AND p2p_account.type = '${AccountTypeEnum.CRYPTO_SYNC}'
@@ -39,11 +48,22 @@ export const buildP2pFiatAuthoritativeCandidateSql = scopedSql`
         INNER JOIN instruments p2p_instrument ON p2p_instrument.id = p2p_account.instrument_id
         WHERE p2p_entry.deleted_at IS NULL
             AND p2p_entry.original_transaction_id IS NULL
-            AND p2p_transaction.external_id LIKE '%${P2P_ORDER_EXTERNAL_ID_MARKER}%'
+            AND p2p_entry.kind = '${TransactionEntryKindEnum.PRIMARY}'
+            AND p2p_entry.amount > 0
+            AND (
+                (p2p_transaction.type = '${TransactionTypeEnum.INCOME}' AND p2p_entry.type = '${TransactionEntryTypeEnum.DEBIT}')
+                OR (p2p_transaction.type = '${TransactionTypeEnum.EXPENSE}' AND p2p_entry.type = '${TransactionEntryTypeEnum.CREDIT}')
+            )
             AND p2p_entry.quoted_instrument_id IS NOT NULL
             AND p2p_entry.quoted_amount > 0
             AND p2p_entry.quoted_unit_price > 0
             ${operatedAtScopeSql('p2p_transaction.operated_at')}
+    ),
+    p2p_bounds AS (
+        SELECT
+            MIN(operatedAt) - ${TRANSFER_PAIR_P2P_FIAT_TIME_WINDOW_SECONDS} AS operatedAtFrom,
+            MAX(operatedAt) + ${TRANSFER_PAIR_P2P_FIAT_TIME_WINDOW_SECONDS} AS operatedAtTo
+        FROM p2p_entries
     ),
     bank_entries AS (
         SELECT
@@ -58,20 +78,31 @@ export const buildP2pFiatAuthoritativeCandidateSql = scopedSql`
             bank_account.type AS accountType,
             bank_account.instrument_id AS instrumentId,
             bank_instrument.code AS currency
-        FROM transaction_entries bank_entry
+        FROM p2p_bounds
         INNER JOIN transactions bank_transaction
-            ON bank_transaction.id = bank_entry.transaction_id
+            ON bank_transaction.type IN ('${TransactionTypeEnum.EXPENSE}', '${TransactionTypeEnum.INCOME}')
             AND bank_transaction.deleted_at IS NULL
             AND bank_transaction.consolidation_parent_transaction_id IS NULL
+            AND bank_transaction.consolidation_type IS NOT '${TransactionConsolidationTypeEnum.REFUND}'
+            AND bank_transaction.operated_at BETWEEN p2p_bounds.operatedAtFrom AND p2p_bounds.operatedAtTo
+            ${operatedAtScopeSql('bank_transaction.operated_at')}
+        INNER JOIN transaction_entries bank_entry
+            ON bank_entry.transaction_id = bank_transaction.id
+            AND bank_entry.deleted_at IS NULL
+            AND bank_entry.original_transaction_id IS NULL
+            AND bank_entry.kind = '${TransactionEntryKindEnum.PRIMARY}'
+            AND bank_entry.amount > 0
+            AND (
+                (bank_transaction.type = '${TransactionTypeEnum.EXPENSE}' AND bank_entry.type = '${TransactionEntryTypeEnum.CREDIT}')
+                OR (bank_transaction.type = '${TransactionTypeEnum.INCOME}' AND bank_entry.type = '${TransactionEntryTypeEnum.DEBIT}')
+            )
         INNER JOIN accounts bank_account
             ON bank_account.id = bank_entry.account_id
             AND bank_account.type IN (${P2P_FIAT_BANK_ACCOUNT_TYPE_SQL})
+            AND bank_account.instrument_id IN (SELECT quotedInstrumentId FROM p2p_entries)
             AND bank_account.deleted_at IS NULL
             AND bank_account.is_active = 1
         INNER JOIN instruments bank_instrument ON bank_instrument.id = bank_account.instrument_id
-        WHERE bank_entry.deleted_at IS NULL
-            AND bank_entry.original_transaction_id IS NULL
-            ${operatedAtScopeSql('bank_transaction.operated_at')}
     ),
     authoritative_pairs AS (
         SELECT
@@ -102,7 +133,8 @@ export const buildP2pFiatAuthoritativeCandidateSql = scopedSql`
             AND p2p.entryType = '${TransactionEntryTypeEnum.DEBIT}'
             AND bank.entryType = '${TransactionEntryTypeEnum.CREDIT}'
             AND bank.instrumentId = p2p.quotedInstrumentId
-            AND ABS(p2p.operatedAt - bank.operatedAt) <= ${TRANSFER_PAIR_P2P_FIAT_TIME_WINDOW_SECONDS}
+            AND bank.operatedAt BETWEEN p2p.operatedAt - ${TRANSFER_PAIR_P2P_FIAT_TIME_WINDOW_SECONDS}
+                AND p2p.operatedAt + ${TRANSFER_PAIR_P2P_FIAT_TIME_WINDOW_SECONDS}
             AND bank.amount >= p2p.quotedAmount
             AND bank.amount - p2p.quotedAmount <= ${TRANSFER_PAIR_P2P_FIAT_AUTHORITATIVE_MAX_DELTA}
             AND (bank.amount - p2p.quotedAmount) * 1.0 / p2p.quotedAmount <= ${TRANSFER_PAIR_P2P_FIAT_AUTHORITATIVE_MAX_DELTA_RATIO}
@@ -135,7 +167,8 @@ export const buildP2pFiatAuthoritativeCandidateSql = scopedSql`
             AND p2p.entryType = '${TransactionEntryTypeEnum.CREDIT}'
             AND bank.entryType = '${TransactionEntryTypeEnum.DEBIT}'
             AND bank.instrumentId = p2p.quotedInstrumentId
-            AND ABS(p2p.operatedAt - bank.operatedAt) <= ${TRANSFER_PAIR_P2P_FIAT_TIME_WINDOW_SECONDS}
+            AND bank.operatedAt BETWEEN p2p.operatedAt - ${TRANSFER_PAIR_P2P_FIAT_TIME_WINDOW_SECONDS}
+                AND p2p.operatedAt + ${TRANSFER_PAIR_P2P_FIAT_TIME_WINDOW_SECONDS}
             AND p2p.quotedAmount >= bank.amount
             AND p2p.quotedAmount - bank.amount <= ${TRANSFER_PAIR_P2P_FIAT_AUTHORITATIVE_MAX_DELTA}
             AND (p2p.quotedAmount - bank.amount) * 1.0 / p2p.quotedAmount <= ${TRANSFER_PAIR_P2P_FIAT_AUTHORITATIVE_MAX_DELTA_RATIO}

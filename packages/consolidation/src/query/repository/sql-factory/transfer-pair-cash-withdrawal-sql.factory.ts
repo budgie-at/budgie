@@ -3,9 +3,13 @@ import {
     ATM_CASH_WITHDRAWAL_TITLE_PREFIXES,
     CategorySourceEnum,
     ExternalSourceEnum,
+    TransactionConsolidationTypeEnum,
+    TransactionEntryKindEnum,
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
+
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { buildPrefixLikeSql } from '../../../shared/utils/build-prefix-like-sql.util';
 import { buildConsolidationScanScopeSql } from '../../utils/build-consolidation-scan-scope-sql.util';
@@ -14,6 +18,7 @@ import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 
 const ERSTE_ATM_WITHDRAWAL_TITLE_GLOB = 'AUTOMAT [0-9]* K[0-9]* *';
 const ERSTE_ATM_TERMINAL_TOKENS_SQL = `substr(expense_tx.title, 9)`;
+const ERSTE_ATM_CARD_PREFIX_SQL = `substr(${ERSTE_ATM_TERMINAL_TOKENS_SQL}, instr(${ERSTE_ATM_TERMINAL_TOKENS_SQL}, ' ') + 1, 1)`;
 const ERSTE_ATM_CARD_TOKENS_SQL = `substr(${ERSTE_ATM_TERMINAL_TOKENS_SQL}, instr(${ERSTE_ATM_TERMINAL_TOKENS_SQL}, ' ') + 2)`;
 
 const ATM_TITLE_PREFIX_SQL = buildPrefixLikeSql(
@@ -25,6 +30,18 @@ const ATM_TITLE_PREFIX_SQL = buildPrefixLikeSql(
 );
 
 const buildFirstTokenSql = (tokensSql: string): string => `substr(${tokensSql}, 1, instr(${tokensSql}, ' ') - 1)`;
+
+const buildTransactionIdsConditionSql = (transactionIds?: readonly number[]): string => {
+    if (!isDefined(transactionIds)) {
+        return '';
+    }
+
+    if (!isNotEmptyArray(transactionIds)) {
+        return 'AND 0 = 1';
+    }
+
+    return `AND expense_tx.id IN (${transactionIds.join(',')})`;
+};
 
 const buildCandidatesSql = (scope: ConsolidationScanScopeInterface | null, conditionSql: string): string => `
             WITH active_cash_accounts AS (
@@ -61,6 +78,7 @@ const buildCandidatesSql = (scope: ConsolidationScanScopeInterface | null, condi
                 AND expense_tx.type = '${TransactionTypeEnum.EXPENSE}'
                 AND expense_tx.deleted_at IS NULL
                 AND expense_tx.consolidation_parent_transaction_id IS NULL
+                AND expense_tx.consolidation_type IS NOT '${TransactionConsolidationTypeEnum.REFUND}'
             INNER JOIN accounts source_account ON
                 source_account.id = expense_entry.account_id
                 AND source_account.deleted_at IS NULL
@@ -73,7 +91,9 @@ const buildCandidatesSql = (scope: ConsolidationScanScopeInterface | null, condi
             INNER JOIN active_cash_accounts target_cash_account ON
                 target_cash_account.instrument_id = source_account.instrument_id
             WHERE expense_entry.deleted_at IS NULL
+                AND expense_entry.kind = '${TransactionEntryKindEnum.PRIMARY}'
                 AND expense_entry.type = '${TransactionEntryTypeEnum.CREDIT}'
+                AND expense_entry.amount > 0
                 AND expense_entry.original_transaction_id IS NULL
                 AND (
                     expense_mcc.mcc = '${ATM_CASH_WITHDRAWAL_MCC}'
@@ -85,7 +105,10 @@ const buildCandidatesSql = (scope: ConsolidationScanScopeInterface | null, condi
                         expense_entry.mcc_category_id IS NULL
                         AND expense_tx.external_source = '${ExternalSourceEnum.ERSTE}'
                         AND expense_tx.title GLOB '${ERSTE_ATM_WITHDRAWAL_TITLE_GLOB}'
+                        AND length(${buildFirstTokenSql(ERSTE_ATM_TERMINAL_TOKENS_SQL)}) > 0
                         AND ${buildFirstTokenSql(ERSTE_ATM_TERMINAL_TOKENS_SQL)} NOT GLOB '*[^0-9]*'
+                        AND ${ERSTE_ATM_CARD_PREFIX_SQL} = 'K'
+                        AND length(${buildFirstTokenSql(ERSTE_ATM_CARD_TOKENS_SQL)}) > 0
                         AND ${buildFirstTokenSql(ERSTE_ATM_CARD_TOKENS_SQL)} NOT GLOB '*[^0-9]*'
                     )
                 )
@@ -93,7 +116,10 @@ const buildCandidatesSql = (scope: ConsolidationScanScopeInterface | null, condi
                 ${buildConsolidationScanScopeSql(scope, 'expense_tx.operated_at')}
         `;
 
-export const buildAtmCashWithdrawalCandidatesSql = (scope: ConsolidationScanScopeInterface | null): string => buildCandidatesSql(scope, '');
+export const buildAtmCashWithdrawalCandidatesSql = (
+    scope: ConsolidationScanScopeInterface | null,
+    transactionIds?: readonly number[]
+): string => buildCandidatesSql(scope, buildTransactionIdsConditionSql(transactionIds));
 
 export const buildAutoAtmCashWithdrawalCandidatesSql = (scope: ConsolidationScanScopeInterface | null): string =>
     buildCandidatesSql(

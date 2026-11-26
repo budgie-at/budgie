@@ -2,6 +2,7 @@ import {
     AccountTypeEnum,
     ExternalSourceEnum,
     TransactionConsolidationTypeEnum,
+    TransactionEntryKindEnum,
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
@@ -12,23 +13,31 @@ import {
     TRANSFER_PAIR_INTERBANK_HINTED_FEE_MAX_AMOUNT_DELTA,
     TRANSFER_PAIR_INTERBANK_HINTED_FEE_MAX_AMOUNT_DELTA_RATIO
 } from '../../../shared/constant/transfer-pair-hinted-fee.constant';
+import { operatedAtScopeSql } from '../../utils/operated-at-scope-sql.util';
+import { scopedSql } from '../../utils/scoped-sql.util';
 
 const LEGACY_CSV_DUPLICATE_TIME_WINDOW_SECONDS = 2 * 60 * 60 + 5 * 60;
 const ARCHIVED_SOURCE_EXPENSE_DUPLICATE_TIME_WINDOW_SECONDS = 7 * 60 * 60;
 
-const LEGACY_CSV_EXISTING_TRANSFER_LEGS_SQL = `FROM transactions existing_transfer INDEXED BY transactions_visible_type_to_operated_idx
+const LEGACY_CSV_EXISTING_TRANSFER_LEGS_SQL = `FROM transactions existing_transfer INDEXED BY transactions_visible_type_operated_idx
                 INNER JOIN transaction_entries source_entry ON
-                    source_entry.transaction_id = existing_transfer.id AND source_entry.original_transaction_id IS NULL AND source_entry.account_id = existing_transfer.from_account_id
+                    source_entry.transaction_id = existing_transfer.id AND source_entry.original_transaction_id IS NULL
+                    AND source_entry.account_id = existing_transfer.from_account_id
+                    AND source_entry.type = '${TransactionEntryTypeEnum.CREDIT}' AND source_entry.kind = '${TransactionEntryKindEnum.PRIMARY}'
+                    AND source_entry.amount > 0
                 INNER JOIN accounts source_account ON source_account.id = source_entry.account_id
                 INNER JOIN transaction_entries target_entry INDEXED BY transaction_entries_live_transaction_account_amount_idx ON
                     target_entry.transaction_id = existing_transfer.id AND target_entry.deleted_at IS NULL
                     AND target_entry.original_transaction_id IS NULL AND target_entry.account_id = existing_transfer.to_account_id
+                    AND target_entry.type = '${TransactionEntryTypeEnum.DEBIT}' AND target_entry.kind = '${TransactionEntryKindEnum.PRIMARY}'
+                    AND target_entry.amount > 0
                 INNER JOIN accounts target_account ON target_account.id = target_entry.account_id AND target_account.deleted_at IS NULL`;
 
-const LEGACY_CSV_EXISTING_TRANSFER_CONDITIONS_SQL = `existing_transfer.type = '${TransactionTypeEnum.TRANSFER}' AND existing_transfer.external_source = '${ExternalSourceEnum.CSV}' AND existing_transfer.deleted_at IS NULL
+const LEGACY_CSV_EXISTING_TRANSFER_CONDITIONS_SQL = scopedSql`existing_transfer.type = '${TransactionTypeEnum.TRANSFER}' AND existing_transfer.external_source = '${ExternalSourceEnum.CSV}' AND existing_transfer.deleted_at IS NULL
                     AND existing_transfer.consolidation_parent_transaction_id IS NULL
                     AND (existing_transfer.consolidation_type IS NULL OR existing_transfer.consolidation_type = '${TransactionConsolidationTypeEnum.TRANSFER_PAIR}')
                     AND existing_transfer.from_account_id IS NOT NULL AND existing_transfer.to_account_id IS NOT NULL
+                    ${operatedAtScopeSql('existing_transfer.operated_at')}
                     AND (source_entry.deleted_at IS NOT NULL OR source_account.deleted_at IS NOT NULL OR source_account.is_active = 0)
                     AND source_account.id != target_account.id`;
 
@@ -37,7 +46,7 @@ const LEGACY_CSV_EXPENSE_COMPARABLE_AMOUNT_SQL = `CASE expense_account.instrumen
                     WHEN target_account.instrument_id THEN target_entry.amount
                 END`;
 
-export const EXISTING_TRANSFER_LEGACY_CSV_DUPLICATE_CANDIDATES_SQL = `SELECT 'AUTO_EXISTING_TRANSFER_CSV_INACTIVE_TARGET_INCOME_DUPLICATE' as confidenceBucket, existing_transfer.id as existingTransferId,
+export const EXISTING_TRANSFER_LEGACY_CSV_DUPLICATE_CANDIDATES_SQL = scopedSql`SELECT 'AUTO_EXISTING_TRANSFER_CSV_INACTIVE_TARGET_INCOME_DUPLICATE' as confidenceBucket, existing_transfer.id as existingTransferId,
                     existing_transfer.title as existingTransferTitle, income_tx.id as duplicateTransactionId, income_tx.title as duplicateTransactionTitle,
                     source_account.id as sourceAccountId, source_account.title as sourceAccountTitle, income_account.id as targetAccountId,
                     income_account.title as targetAccountTitle, target_entry.id as existingTransferTargetEntryId, source_entry.amount as sourceAmount,
@@ -52,7 +61,9 @@ export const EXISTING_TRANSFER_LEGACY_CSV_DUPLICATE_CANDIDATES_SQL = `SELECT 'AU
                         AND existing_transfer.operated_at + ${LEGACY_CSV_DUPLICATE_TIME_WINDOW_SECONDS}
                 INNER JOIN transaction_entries income_entry INDEXED BY transaction_entries_live_transaction_account_amount_idx ON
                     income_entry.transaction_id = income_tx.id AND income_entry.deleted_at IS NULL
-                    AND income_entry.original_transaction_id IS NULL AND income_entry.amount = target_entry.amount
+                    AND income_entry.original_transaction_id IS NULL AND income_entry.type = '${TransactionEntryTypeEnum.DEBIT}'
+                    AND income_entry.kind = '${TransactionEntryKindEnum.PRIMARY}' AND income_entry.amount > 0
+                    AND income_entry.amount = target_entry.amount
                 INNER JOIN accounts income_account ON
                     income_account.id = income_entry.account_id AND income_account.deleted_at IS NULL
                     AND income_account.type = '${AccountTypeEnum.BANK_SYNC}' AND income_account.is_active = 1
@@ -79,6 +90,7 @@ export const EXISTING_TRANSFER_LEGACY_CSV_DUPLICATE_CANDIDATES_SQL = `SELECT 'AU
                 INNER JOIN transaction_entries expense_entry INDEXED BY transaction_entries_live_transaction_account_amount_idx ON
                     expense_entry.transaction_id = expense_tx.id AND expense_entry.deleted_at IS NULL
                     AND expense_entry.original_transaction_id IS NULL AND expense_entry.type = '${TransactionEntryTypeEnum.CREDIT}'
+                    AND expense_entry.kind = '${TransactionEntryKindEnum.PRIMARY}' AND expense_entry.amount > 0
                 INNER JOIN accounts expense_account ON
                     expense_account.id = expense_entry.account_id AND expense_account.deleted_at IS NULL
                     AND expense_account.type = '${AccountTypeEnum.BANK_SYNC}' AND expense_account.is_active = 1
@@ -107,6 +119,7 @@ export const EXISTING_TRANSFER_LEGACY_CSV_DUPLICATE_CANDIDATES_SQL = `SELECT 'AU
                 INNER JOIN transaction_entries expense_entry INDEXED BY transaction_entries_live_transaction_account_amount_idx ON
                     expense_entry.transaction_id = expense_tx.id AND expense_entry.deleted_at IS NULL
                     AND expense_entry.original_transaction_id IS NULL AND expense_entry.type = '${TransactionEntryTypeEnum.CREDIT}'
+                    AND expense_entry.kind = '${TransactionEntryKindEnum.PRIMARY}' AND expense_entry.amount > 0
                     AND expense_entry.amount = source_entry.amount
                 INNER JOIN accounts expense_account ON
                     expense_account.id = expense_entry.account_id AND expense_account.deleted_at IS NULL

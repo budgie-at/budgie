@@ -67,11 +67,21 @@ export class TransferConsolidationService extends Context.Service<TransferConsol
                 ) {
                     yield* bankFlow.prepare(scope);
 
-                    const coordinated = yield* consolidationCoordinatorService.consolidate(scope);
-                    const converted = yield* convertHouseholdTransfers(scope);
-                    const result = { found: coordinated.found + converted, consolidated: coordinated.consolidated + converted };
+                    const result = yield* Effect.onError(
+                        Effect.gen(function* () {
+                            const coordinated = yield* consolidationCoordinatorService.consolidate(scope);
+                            const converted = yield* convertHouseholdTransfers(scope);
 
-                    yield* updateBalancesAfterConsolidation(result.consolidated);
+                            yield* updateBalancesAfterConsolidation(coordinated.consolidated);
+
+                            return {
+                                found: coordinated.found + converted,
+                                consolidated: coordinated.consolidated + converted
+                            };
+                        }),
+                        () => Effect.ignoreCause(accountBalanceIncrementalService.updateAllBalances(true))
+                    );
+
                     yield* installmentPlanService.attachDueParts();
                     yield* transactionDebtSettlementService.repairDebtPaymentCategories();
                     yield* bankFlow.repair(scope);

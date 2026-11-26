@@ -100,6 +100,14 @@ export const TransactionEntryEntityTable = sqliteTable(
             .where(sql`${table.deletedAt} IS NULL AND ${table.quotedInstrumentId} IS NOT NULL AND ${table.quotedAmount} IS NOT NULL`),
         index('transaction_entries_refund_tx_idx')
             .on(table.transactionId, table.type, table.amount)
-            .where(sql`${table.deletedAt} IS NULL AND ${table.originalTransactionId} IS NOT NULL`)
+            .where(sql`${table.deletedAt} IS NULL AND ${table.originalTransactionId} IS NOT NULL`),
+        index('transaction_entries_live_to_iban_idx')
+            .on(table.toIban, table.transactionId)
+            .where(
+                sql`${table.deletedAt} IS NULL AND ${table.originalTransactionId} IS NULL AND ${table.toIban} IS NOT NULL AND ${table.toIban} != ''`
+            ),
+        index('transaction_entries_live_non_unit_rate_idx')
+            .on(table.transactionId)
+            .where(sql`${table.deletedAt} IS NULL AND ${table.originalTransactionId} IS NULL AND ${table.exchangeRate} != 1`)
     ]
 );

@@ -1,5 +1,6 @@
 /* eslint-disable max-lines -- File owns the account-balance ledger and valuation SQL pipeline that must stay together */
-import { type SQL, type SQLWrapper, and, asc, eq, inArray, isNull, lte, not, notInArray, sql } from 'drizzle-orm';
+import { type SQL, type SQLWrapper, and, asc, eq, inArray, isNull, not, notInArray, sql } from 'drizzle-orm';
+import { alias } from 'drizzle-orm/sqlite-core';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -289,11 +290,13 @@ export class AccountBalanceRepository extends Context.Service<AccountBalanceRepo
                 })
             );
         }),
-        getMinimumLedgerBalanceFrom: (accountId: number, operatedFrom: Date) =>
-            Db.query(db =>
+        getMinimumLedgerBalanceFrom: (accountId: number, operatedFrom: Date) => {
+            const operatedFromSeconds = Math.floor(operatedFrom.getTime() / 1000);
+
+            return Db.query(db =>
                 db.get<{ balance: number }>(sql`
                     WITH entries AS (
-                        SELECT ${TransactionEntityTable.operatedAt} AS operated_at,
+                        SELECT COALESCE(original_tx.operated_at, ${TransactionEntityTable.operatedAt}) AS operated_at,
                             ${TransactionEntityTable.id} AS transaction_id,
                             ${TransactionEntryEntityTable.id} AS entry_id,
                             CASE WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT}
@@ -302,6 +305,7 @@ export class AccountBalanceRepository extends Context.Service<AccountBalanceRepo
                                 THEN -${TransactionEntryEntityTable.amount} ELSE 0 END AS amount
                         FROM ${TransactionEntryEntityTable}
                         INNER JOIN ${TransactionEntityTable} ON ${TransactionEntityTable.id} = ${TransactionEntryEntityTable.transactionId}
+                        LEFT JOIN ${TransactionEntityTable} original_tx ON original_tx.id = ${TransactionEntryEntityTable.originalTransactionId}
                         WHERE ${and(
                             eq(TransactionEntryEntityTable.accountId, accountId),
                             isNull(TransactionEntryEntityTable.deletedAt),
@@ -314,12 +318,13 @@ export class AccountBalanceRepository extends Context.Service<AccountBalanceRepo
                         FROM entries
                     )
                     SELECT MIN(balance) AS balance FROM (
-                        SELECT COALESCE(SUM(amount), 0) AS balance FROM entries WHERE operated_at <= ${Math.floor(operatedFrom.getTime() / 1000)}
+                        SELECT COALESCE(SUM(amount), 0) AS balance FROM entries WHERE operated_at <= ${operatedFromSeconds}
                         UNION ALL
-                        SELECT balance FROM balances WHERE operated_at > ${Math.floor(operatedFrom.getTime() / 1000)}
+                        SELECT balance FROM balances WHERE operated_at > ${operatedFromSeconds}
                     )
                 `)
-            ).pipe(Effect.map(row => row.balance)),
+            ).pipe(Effect.map(row => row.balance));
+        },
         getLedgerMovements: (accountId: number) =>
             Db.query(db =>
                 db
@@ -342,22 +347,26 @@ export class AccountBalanceRepository extends Context.Service<AccountBalanceRepo
                     .groupBy(TransactionEntityTable.id)
                     .orderBy(asc(TransactionEntityTable.operatedAt), asc(TransactionEntityTable.id))
             ),
-        getLedgerBalanceUntil: (accountId: number, operatedUntil: Date) =>
-            Db.query(db =>
+        getLedgerBalanceUntil: (accountId: number, operatedUntil: Date) => {
+            const originalTransaction = alias(TransactionEntityTable, 'original_tx');
+
+            return Db.query(db =>
                 db
                     .select({ balance: sql<number>`COALESCE(${getTransactionsSumSql()}, 0)`.mapWith(Number) })
                     .from(TransactionEntryEntityTable)
                     .innerJoin(TransactionEntityTable, eq(TransactionEntityTable.id, TransactionEntryEntityTable.transactionId))
+                    .leftJoin(originalTransaction, eq(originalTransaction.id, TransactionEntryEntityTable.originalTransactionId))
                     .where(
                         and(
                             eq(TransactionEntryEntityTable.accountId, accountId),
                             isNull(TransactionEntryEntityTable.deletedAt),
-                            lte(TransactionEntityTable.operatedAt, operatedUntil),
+                            sql`COALESCE(${originalTransaction.operatedAt}, ${TransactionEntityTable.operatedAt}) <= ${Math.floor(operatedUntil.getTime() / 1000)}`,
                             transactionFilters.buildVisibleTransactionCondition(),
                             transactionFilters.buildRefundAwareLedgerEntryCondition()
                         )
                     )
-            ).pipe(Effect.map(([row]) => row.balance)),
+            ).pipe(Effect.map(([row]) => row.balance));
+        },
         bulkUpsert,
         upsert: (balance: Pick<AccountBalanceCreateEntityInterface, 'accountId' | 'amount'>) => bulkUpsert([balance]),
         getByAccountIds: (accountIds: number[]) =>

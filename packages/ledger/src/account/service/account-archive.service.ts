@@ -48,8 +48,49 @@ export class AccountArchiveService extends Context.Service<AccountArchiveService
         const unconsolidateActiveAutoByAccountId = Effect.fn('AccountArchiveService.unconsolidateActiveAutoByAccountId')(function* (
             id: number
         ) {
-            const autoConsolidations = yield* transactionConsolidationRepository.findActiveAutoConsolidatedByAccountIds([id]);
-            yield* unconsolidateAll(autoConsolidations);
+            const seenIds = new Set<number>();
+            const restoredTransactionIds = new Set<number>();
+            const affectedAccountIds = new Set<number>();
+            let canonicals = yield* transactionConsolidationRepository.findActiveAutoConsolidatedByAccountIds([id]);
+
+            while (isNotEmptyArray(canonicals)) {
+                const canonicalIds = canonicals.map(canonical => canonical.id);
+                const consolidated = yield* transactionRepository.findByIdsWithRefundConsolidationHistory(canonicalIds);
+                const debtAttachments = yield* debtEventRepository.findAttachmentsByTransactionIds(canonicalIds);
+
+                for (const attachment of debtAttachments) {
+                    affectedAccountIds.add(attachment.debtAccountId);
+                }
+
+                for (const transaction of consolidated) {
+                    if (isDefined(transaction.fromAccountId)) {
+                        affectedAccountIds.add(transaction.fromAccountId);
+                    }
+                    if (isDefined(transaction.toAccountId)) {
+                        affectedAccountIds.add(transaction.toAccountId);
+                    }
+                    for (const entry of transaction.entries) {
+                        affectedAccountIds.add(entry.accountId);
+                        if (entry.accountId !== id && isDefined(entry.originalTransactionId)) {
+                            restoredTransactionIds.add(entry.originalTransactionId);
+                        }
+                    }
+                }
+
+                for (const canonical of canonicals) {
+                    seenIds.add(canonical.id);
+                }
+
+                yield* unconsolidateAll(canonicals);
+                canonicals = (yield* transactionConsolidationRepository.findActiveAutoConsolidatedByAccountIds([id])).filter(
+                    canonical => !seenIds.has(canonical.id)
+                );
+            }
+
+            return {
+                restoredTransactionIds: [...restoredTransactionIds],
+                affectedAccountIds: [...affectedAccountIds]
+            };
         });
 
         const archiveAccountRows = Effect.fnUntraced(function* (id: number) {
@@ -65,27 +106,20 @@ export class AccountArchiveService extends Context.Service<AccountArchiveService
         });
 
         const archiveByIdInTransaction = Effect.fn('AccountArchiveService.archiveByIdInTransaction')(function* (id: number) {
-            yield* unconsolidateActiveAutoByAccountId(id);
+            const { affectedAccountIds } = yield* unconsolidateActiveAutoByAccountId(id);
             yield* archiveAccountRows(id);
+            yield* accountBalanceIncrementalService.updateBalancesByAccountIds(affectedAccountIds);
         });
 
         const markExternalByIdInTransaction = Effect.fnUntraced(function* (id: number) {
-            const canonicals = yield* transactionConsolidationRepository.findActiveAutoConsolidatedByAccountIds([id]);
-            const consolidated = yield* transactionRepository.findByIdsWithRefundConsolidationHistory(
-                canonicals.map(canonical => canonical.id)
-            );
-            const restoredTransactionIds = consolidated
-                .flatMap(transaction => transaction.entries)
-                .filter(entry => entry.accountId !== id)
-                .map(entry => entry.originalTransactionId)
-                .filter(isDefined);
+            const { restoredTransactionIds, affectedAccountIds } = yield* unconsolidateActiveAutoByAccountId(id);
 
-            yield* unconsolidateAll(canonicals);
             yield* accountRepository.updateById(id, { isExternal: true });
 
             const convertedTransactionIds = yield* accountTransferConversionService.convertAccountTransfers(id, null);
 
             yield* archiveAccountRows(id);
+            yield* accountBalanceIncrementalService.updateBalancesByAccountIds(affectedAccountIds);
 
             return [...new Set([...restoredTransactionIds, ...convertedTransactionIds])];
         });

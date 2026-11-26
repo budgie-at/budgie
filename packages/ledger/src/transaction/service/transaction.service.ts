@@ -3,6 +3,7 @@ import {
     Db,
     DebtEventRepository,
     ExternalSourceEnum,
+    TransactionConsolidationTypeEnum,
     type TransactionCreateEntityInterface,
     type TransactionCreateInputInterface,
     type TransactionEntryEntityInterface,
@@ -128,14 +129,57 @@ export class TransactionService extends Context.Service<TransactionService>()('@
             effect => Db.transaction(effect)
         );
 
+        const collectConsolidationAccountIds = Effect.fnUntraced(function* (id: number) {
+            const [canonical] = yield* transactionRepository.findByIdsWithRefundConsolidationHistory([id]);
+
+            if (!isDefined(canonical)) {
+                return [];
+            }
+
+            const transactionIds = [...new Set([id, ...canonical.entries.map(entry => entry.originalTransactionId).filter(isDefined)])];
+            const [debtEvent, debtAttachments] = yield* Effect.all([
+                debtEventRepository.findByTransactionId(id),
+                debtEventRepository.findAttachmentsByTransactionIds(transactionIds)
+            ]);
+
+            return [
+                ...new Set(
+                    [
+                        canonical.fromAccountId,
+                        canonical.toAccountId,
+                        ...canonical.entries.map(entry => entry.accountId),
+                        debtEvent?.debtAccountId,
+                        ...debtAttachments.map(attachment => attachment.debtAccountId)
+                    ].filter(isDefined)
+                )
+            ];
+        });
+
+        const updateBalancesForUnconsolidation = Effect.fnUntraced(function* (accountIds: number[]) {
+            if (isNotEmptyArray(accountIds)) {
+                yield* accountBalanceIncrementalService.updateBalancesByAccountIds(accountIds);
+
+                return;
+            }
+
+            yield* accountBalanceIncrementalService.updateAllBalances(true);
+        });
+
         const deleteTransaction = Effect.fn('TransactionService.deleteTransaction')(function* (id: number, shouldKeepTombstone: boolean) {
             if (yield* transactionRepository.isForeignTransferLeg(id)) {
                 return;
             }
             const transaction = yield* transactionRepository.getByIdWithEntries(id);
             if (isDefined(transaction?.consolidationType)) {
-                yield* unconsolidationService.unconsolidateById(id);
-                yield* accountBalanceIncrementalService.updateAllBalances(true);
+                const affectedAccountIds = yield* collectConsolidationAccountIds(id);
+
+                if (transaction.consolidationType === TransactionConsolidationTypeEnum.REFUND) {
+                    yield* unconsolidationService.revertByUser(id);
+                } else {
+                    yield* unconsolidationService.unconsolidateById(id);
+                }
+
+                yield* updateBalancesForUnconsolidation(affectedAccountIds);
 
                 return;
             }
@@ -194,15 +238,19 @@ export class TransactionService extends Context.Service<TransactionService>()('@
             purgeById: (id: number) => Db.transaction(deleteTransaction(id, false)),
             unconsolidateById: Effect.fn('TransactionService.unconsolidateById')(
                 function* (id: number) {
+                    const affectedAccountIds = yield* collectConsolidationAccountIds(id);
+
                     yield* unconsolidationService.unconsolidateById(id);
-                    yield* accountBalanceIncrementalService.updateAllBalances(true);
+                    yield* updateBalancesForUnconsolidation(affectedAccountIds);
                 },
                 effect => Db.transaction(effect)
             ),
             revertConsolidationByUser: Effect.fn('TransactionService.revertConsolidationByUser')(
                 function* (id: number) {
+                    const affectedAccountIds = yield* collectConsolidationAccountIds(id);
+
                     yield* unconsolidationService.revertByUser(id);
-                    yield* accountBalanceIncrementalService.updateAllBalances(true);
+                    yield* updateBalancesForUnconsolidation(affectedAccountIds);
                 },
                 effect => Db.transaction(effect)
             ),

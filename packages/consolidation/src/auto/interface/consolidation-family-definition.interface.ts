@@ -1,3 +1,4 @@
+import type { ConsolidationFamilyPrepareResultInterface } from './consolidation-family-prepare-result.interface';
 import type { ConsolidationFamilyRunContextInterface } from './consolidation-family-run-context.interface';
 import type { ConsolidationScanScopeInterface, Db, DbError } from '@budgie/contracts';
 import type * as Effect from 'effect/Effect';
@@ -7,6 +8,8 @@ export interface ConsolidationFamilyDefinitionInterface<Candidate> {
     readonly consolidateCandidate: (candidate: Candidate) => Effect.Effect<boolean, DbError, Db>;
     readonly getSourceTransactionIds: (candidate: Candidate) => number[];
     readonly getScopeTransactionIds?: (candidate: Candidate) => number[];
-    readonly prepareProcess?: (context: ConsolidationFamilyRunContextInterface) => Effect.Effect<void, DbError, Db>;
+    readonly prepareProcess?: (
+        context: ConsolidationFamilyRunContextInterface
+    ) => Effect.Effect<ConsolidationFamilyPrepareResultInterface, DbError, Db>;
     readonly shouldRepeatAfterSuccessfulPass?: boolean;
 }

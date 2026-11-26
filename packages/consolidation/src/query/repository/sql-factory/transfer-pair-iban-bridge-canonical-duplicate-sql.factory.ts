@@ -1,4 +1,10 @@
-import { CategorySourceEnum, ExternalSourceEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import {
+    CategorySourceEnum,
+    ExternalSourceEnum,
+    TransactionEntryKindEnum,
+    TransactionEntryTypeEnum,
+    TransactionTypeEnum
+} from '@budgie/contracts';
 
 import { IBAN_BRIDGE_CONSOLIDATION_TYPES_SQL } from '../../../shared/constant/iban-bridge-consolidation-types-sql.constant';
 import { TRANSFER_MCC_GROUP_ID } from '../../../shared/constant/transfer-mcc-group-id.constant';
@@ -6,6 +12,26 @@ import { TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS } from '../../../shared/constant
 import { buildCalibratedTransferExclusionSql } from '../../utils/build-calibrated-transfer-exclusion-sql.util';
 import { operatedAtScopeSql } from '../../utils/operated-at-scope-sql.util';
 import { scopedSql } from '../../utils/scoped-sql.util';
+
+const buildMatchingOriginalLegSql = (candidateTxAlias: string, candidateEntryAlias: string): string => `EXISTS (
+                        SELECT 1
+                        FROM transaction_entries original_entry
+                        INNER JOIN transactions original_tx ON
+                            original_tx.id = original_entry.original_transaction_id
+                            AND original_tx.deleted_at IS NULL
+                            AND original_tx.updated_by IS NULL
+                            AND original_tx.consolidation_parent_transaction_id = canonical_tx.id
+                            AND original_tx.type = ${candidateTxAlias}.type
+                            AND original_tx.external_source = '${ExternalSourceEnum.MONOBANK}'
+                            AND original_tx.external_id = ${candidateTxAlias}.external_id
+                        WHERE original_entry.transaction_id = canonical_tx.id
+                            AND original_entry.deleted_at IS NULL
+                            AND original_entry.original_transaction_id IS NOT NULL
+                            AND original_entry.kind = '${TransactionEntryKindEnum.PRIMARY}'
+                            AND original_entry.account_id = ${candidateEntryAlias}.account_id
+                            AND original_entry.type = ${candidateEntryAlias}.type
+                            AND original_entry.amount = ${candidateEntryAlias}.amount
+                    )`;
 
 export const IBAN_BRIDGE_CANONICAL_DUPLICATE_CANDIDATES_SQL = scopedSql`
             WITH candidate_rows AS (
@@ -85,6 +111,9 @@ export const IBAN_BRIDGE_CANONICAL_DUPLICATE_CANDIDATES_SQL = scopedSql`
                 INNER JOIN transactions source_expense_tx ON
                     source_expense_entry.transaction_id = source_expense_tx.id
                     AND source_expense_tx.type = '${TransactionTypeEnum.EXPENSE}'
+                    AND source_expense_tx.external_source = '${ExternalSourceEnum.MONOBANK}'
+                    AND source_expense_tx.external_id IS NOT NULL
+                    AND source_expense_tx.external_id != ''
                     AND source_expense_tx.deleted_at IS NULL
                     AND source_expense_tx.consolidation_parent_transaction_id IS NULL
                 INNER JOIN accounts source_account ON
@@ -96,9 +125,14 @@ export const IBAN_BRIDGE_CANONICAL_DUPLICATE_CANDIDATES_SQL = scopedSql`
                 INNER JOIN accounts target_account ON
                     target_account.deleted_at IS NULL
                     AND target_account.is_active = 1
+                    AND target_account.iban IS NOT NULL
+                    AND target_account.iban != ''
                     AND target_account.id != source_account.id
                 INNER JOIN transactions target_income_tx ON
                     target_income_tx.type = '${TransactionTypeEnum.INCOME}'
+                    AND target_income_tx.external_source = '${ExternalSourceEnum.MONOBANK}'
+                    AND target_income_tx.external_id IS NOT NULL
+                    AND target_income_tx.external_id != ''
                     AND target_income_tx.deleted_at IS NULL
                     AND target_income_tx.consolidation_parent_transaction_id IS NULL
                     AND target_income_tx.operated_at BETWEEN source_expense_tx.operated_at - ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
@@ -108,6 +142,7 @@ export const IBAN_BRIDGE_CANONICAL_DUPLICATE_CANDIDATES_SQL = scopedSql`
                     target_income_entry.transaction_id = target_income_tx.id
                     AND target_income_entry.deleted_at IS NULL
                     AND target_income_entry.original_transaction_id IS NULL
+                    AND target_income_entry.kind = '${TransactionEntryKindEnum.PRIMARY}'
                     AND target_income_entry.account_id = target_account.id
                     AND target_income_entry.amount > 0
                     AND target_income_entry.exchange_rate > 0
@@ -125,6 +160,7 @@ export const IBAN_BRIDGE_CANONICAL_DUPLICATE_CANDIDATES_SQL = scopedSql`
                 LEFT JOIN mcc_categories target_income_mcc ON target_income_mcc.id = target_income_entry.mcc_category_id
                 WHERE source_expense_entry.deleted_at IS NULL
                     AND source_expense_entry.original_transaction_id IS NULL
+                    AND source_expense_entry.kind = '${TransactionEntryKindEnum.PRIMARY}'
                     AND source_expense_entry.exchange_rate > 0
                     AND source_expense_entry.amount > 0
                     ${operatedAtScopeSql('source_expense_tx.operated_at')}
@@ -140,37 +176,16 @@ export const IBAN_BRIDGE_CANONICAL_DUPLICATE_CANDIDATES_SQL = scopedSql`
                     )
                     AND (source_expense_mcc.mcc_group_id IS NULL OR source_expense_mcc.mcc_group_id = ${TRANSFER_MCC_GROUP_ID})
                     AND (target_income_mcc.mcc_group_id IS NULL OR target_income_mcc.mcc_group_id = ${TRANSFER_MCC_GROUP_ID})
-                    AND NOT EXISTS (
-                        SELECT 1
-                        FROM transaction_entries candidate_entry
-                        INNER JOIN transactions candidate_tx ON candidate_tx.id = candidate_entry.transaction_id
-                        WHERE candidate_entry.id IN (source_expense_entry.id, target_income_entry.id)
-                            AND NOT EXISTS (
-                                SELECT 1
-                                FROM transaction_entries original_entry
-                                INNER JOIN transactions original_tx ON original_tx.id = original_entry.original_transaction_id
-                                    AND original_tx.deleted_at IS NULL
-                                    AND original_tx.updated_by IS NULL
-                                    AND original_tx.consolidation_parent_transaction_id = canonical_tx.id
-                                    AND original_tx.type = candidate_tx.type
-                                    AND original_tx.external_source = candidate_tx.external_source
-                                    AND original_tx.external_source = '${ExternalSourceEnum.MONOBANK}'
-                                    AND original_tx.external_id = candidate_tx.external_id
-                                WHERE original_entry.transaction_id = canonical_tx.id
-                                    AND original_entry.deleted_at IS NULL
-                                    AND original_entry.account_id = candidate_entry.account_id
-                                    AND original_entry.type = candidate_entry.type
-                                    AND original_entry.amount = candidate_entry.amount
-                                    AND original_tx.external_id IS NOT NULL
-                                    AND original_tx.external_id != ''
-                            )
-                    )
+                    AND ${buildMatchingOriginalLegSql('source_expense_tx', 'source_expense_entry')}
+                    AND ${buildMatchingOriginalLegSql('target_income_tx', 'target_income_entry')}
                     AND EXISTS (
                         SELECT 1
                         FROM transaction_entries canonical_source_entry
                         WHERE canonical_source_entry.transaction_id = canonical_tx.id
                             AND canonical_source_entry.deleted_at IS NULL
                             AND canonical_source_entry.original_transaction_id IS NULL
+                            AND canonical_source_entry.kind = '${TransactionEntryKindEnum.PRIMARY}'
+                            AND canonical_source_entry.type = '${TransactionEntryTypeEnum.CREDIT}'
                             AND canonical_source_entry.account_id = source_account.id
                             AND canonical_source_entry.amount = source_expense_entry.amount
                     )
@@ -180,6 +195,8 @@ export const IBAN_BRIDGE_CANONICAL_DUPLICATE_CANDIDATES_SQL = scopedSql`
                         WHERE canonical_target_entry.transaction_id = canonical_tx.id
                             AND canonical_target_entry.deleted_at IS NULL
                             AND canonical_target_entry.original_transaction_id IS NULL
+                            AND canonical_target_entry.kind = '${TransactionEntryKindEnum.PRIMARY}'
+                            AND canonical_target_entry.type = '${TransactionEntryTypeEnum.DEBIT}'
                             AND canonical_target_entry.account_id = target_account.id
                             AND canonical_target_entry.amount = target_income_entry.amount
                     )
@@ -190,6 +207,7 @@ export const IBAN_BRIDGE_CANONICAL_DUPLICATE_CANDIDATES_SQL = scopedSql`
                     ROW_NUMBER() OVER (
                         PARTITION BY expenseTransactionId
                         ORDER BY
+                            directTargetMatch DESC,
                             timeDiff,
                             existingCanonicalTransferId,
                             incomeTransactionId
@@ -197,6 +215,7 @@ export const IBAN_BRIDGE_CANONICAL_DUPLICATE_CANDIDATES_SQL = scopedSql`
                     ROW_NUMBER() OVER (
                         PARTITION BY incomeTransactionId
                         ORDER BY
+                            directTargetMatch DESC,
                             timeDiff,
                             existingCanonicalTransferId,
                             expenseTransactionId
