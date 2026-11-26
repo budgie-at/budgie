@@ -15,8 +15,6 @@ const transferConsolidationWorkloadLayer = Layer.effect(
 
         return TransferConsolidationWorkload.of({
             run: effect => workload.run(Effect.tap(effect, () => logAndContinue(inzhurPendingTopUpService.remind()))),
-            schedule: workload.schedule,
-            cancelScheduled: workload.cancelScheduled,
             awaitForegroundIdle: workload.awaitForegroundIdle,
             awaitIdle: waitForIdle
         });

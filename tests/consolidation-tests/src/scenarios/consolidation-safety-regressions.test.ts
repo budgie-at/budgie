@@ -52,10 +52,12 @@ import {
     seedP2pExchangeRate,
     seedP2pUsdt
 } from '../harness/p2p-fiat-transfer-fixture';
+import { REJECTED_PAYMENT_PRINCIPAL_TITLE } from '../harness/rejected-payment-fixture';
 import { runConsolidation } from '../harness/run-consolidation';
 import { rebuildStoredBalances, testDb, testQueryService, testSeedService, TestLayer, unconsolidateById } from '../harness/test-context';
 
 const DAY_MILLISECONDS = 24 * 60 * 60 * 1000;
+const MINUTE_MILLISECONDS = 60_000;
 const ATM_WITHDRAWAL_AMOUNT = convertToMicroUnits(500);
 const ATM_FIRST_FEE_AMOUNT = convertToMicroUnits(10);
 const ATM_SECOND_FEE_AMOUNT = convertToMicroUnits(25);
@@ -66,6 +68,9 @@ const DUAL_REPAIR_SECOND_FEE_AMOUNT = convertToMicroUnits(200);
 const COFFEE_EXPENSE_AMOUNT = convertToMicroUnits(5);
 const P2P_ASSET_AMOUNT = convertToMicroUnits(1_000);
 const P2P_UNIT_PRICE = convertToMicroUnits(41);
+const P2P_REJECTED_BANK_AMOUNT = convertToMicroUnits(1_000);
+const P2P_REJECTED_USDT_AMOUNT = convertToMicroUnits(25);
+const P2P_REJECTED_UAH_TO_USDT_RATE = 1 / 40;
 const P2P_OUT_OF_SCOPE_OFFSET_DAYS = 20;
 const P2P_SCOPE_PADDING_MS = 120_000;
 const MANUAL_DUPLICATE_PAIR_INDEXES = [0, 1, 2] as const;
@@ -433,6 +438,69 @@ layer(TestLayer)('consolidation/consolidation-safety-regressions', it => {
             yield* expectConsolidationParent(matchingBankExpense.id, repairedCanonicalId);
             yield* expectConsolidationParent(p2pIncome.id, repairedCanonicalId);
             expect((yield* testQueryService.fetchTransactionById(extraBankExpense.id)).consolidationParentTransactionId).toBeNull();
+        })
+    );
+
+    it.effect('excludes a rejected-payment bank expense from atomic P2P matching so the retry leg pairs with Binance', () =>
+        Effect.gen(function* () {
+            const transferConsolidationService = yield* TransferConsolidationService;
+            const bankAccount = yield* testSeedService.bankSyncAccount('P2P Rejected Retry Bank', ExternalSourceEnum.PRIVATBANK, null);
+            const usdt = yield* seedP2pUsdt;
+            const binanceAccount = yield* seedP2pAccount(AccountTypeEnum.CRYPTO_SYNC, usdt.id);
+
+            yield* seedP2pExchangeRate(bankAccount.instrumentId, usdt.id, P2P_REJECTED_UAH_TO_USDT_RATE);
+
+            const rejectedBankExpense = yield* testSeedService.bankPairExpense(
+                { externalId: 'p2p-rejected-bank-expense', operatedAt: P2P_OPERATED_AT },
+                { accountId: bankAccount.id, amount: P2P_REJECTED_BANK_AMOUNT }
+            );
+            const rejectedRefundIncome = yield* testSeedService.bankPairIncome(
+                {
+                    externalId: 'p2p-rejected-bank-refund',
+                    operatedAt: new Date(P2P_OPERATED_AT.getTime() + 5 * MINUTE_MILLISECONDS)
+                },
+                { accountId: bankAccount.id, amount: P2P_REJECTED_BANK_AMOUNT }
+            );
+            const retryBankExpense = yield* testSeedService.bankPairExpense(
+                {
+                    externalId: 'p2p-retry-bank-expense',
+                    operatedAt: new Date(P2P_OPERATED_AT.getTime() + 10 * MINUTE_MILLISECONDS)
+                },
+                { accountId: bankAccount.id, amount: P2P_REJECTED_BANK_AMOUNT }
+            );
+            const p2pBuyIncome = yield* testSeedService.bankPairIncome(
+                {
+                    externalId: 'binance:c2c:rejected-retry-order',
+                    operatedAt: new Date(P2P_OPERATED_AT.getTime() + MINUTE_MILLISECONDS)
+                },
+                { accountId: binanceAccount.id, amount: P2P_REJECTED_USDT_AMOUNT }
+            );
+
+            yield* testSeedService.updateTransaction(rejectedBankExpense.id, {
+                externalSource: ExternalSourceEnum.PRIVATBANK
+            });
+            yield* testSeedService.updateTransaction(rejectedRefundIncome.id, {
+                externalSource: ExternalSourceEnum.PRIVATBANK,
+                title: REJECTED_PAYMENT_PRINCIPAL_TITLE
+            });
+            yield* testSeedService.updateTransaction(retryBankExpense.id, {
+                externalSource: ExternalSourceEnum.PRIVATBANK
+            });
+            yield* testSeedService.updateTransaction(p2pBuyIncome.id, {
+                externalSource: ExternalSourceEnum.BINANCE,
+                title: 'Binance P2P buy USDT'
+            });
+
+            yield* transferConsolidationService.consolidate(null);
+
+            const p2pCanonicalId = yield* fetchSingleCanonicalId(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER);
+
+            yield* expectConsolidationParent(retryBankExpense.id, p2pCanonicalId);
+            yield* expectConsolidationParent(p2pBuyIncome.id, p2pCanonicalId);
+            yield* expectConsolidationParent(rejectedRefundIncome.id, rejectedBankExpense.id);
+            expect((yield* testQueryService.fetchTransactionById(rejectedBankExpense.id)).consolidationType).toBe(
+                TransactionConsolidationTypeEnum.REFUND
+            );
         })
     );
 });

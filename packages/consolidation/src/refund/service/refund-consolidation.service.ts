@@ -109,14 +109,6 @@ export class RefundConsolidationService extends Context.Service<RefundConsolidat
                     incomingTitle: refundIncomeTransaction.title
                 });
 
-                if (isRejectedFeeTitle && isPositiveNumber(feeAmount)) {
-                    if (refundIncomeEntry.amount + absorbedFeeTotal > feeAmount) {
-                        return yield* RefundExceedsExpenseError.make();
-                    }
-
-                    return;
-                }
-
                 const isPrivatbankFullRefund =
                     absorbedPrincipalTotal === 0 &&
                     !isRejectedFeeTitle &&
@@ -126,8 +118,12 @@ export class RefundConsolidationService extends Context.Service<RefundConsolidat
                         expenseTransaction.externalSource ?? null,
                         expenseEntry
                     );
+                const fitsFeePool =
+                    isRejectedFeeTitle && isPositiveNumber(feeAmount) && refundIncomeEntry.amount + absorbedFeeTotal <= feeAmount;
+                const fitsPrincipalPool =
+                    refundIncomeEntry.amount + absorbedPrincipalTotal <= expenseEntry.amount || isPrivatbankFullRefund;
 
-                if (refundIncomeEntry.amount + absorbedPrincipalTotal > expenseEntry.amount && !isPrivatbankFullRefund) {
+                if (!fitsFeePool && !fitsPrincipalPool) {
                     return yield* RefundExceedsExpenseError.make();
                 }
             });

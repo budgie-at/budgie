@@ -1,5 +1,3 @@
-import { REFUND_TIME_WINDOW_SECONDS, REFUND_TITLE_PREFIXES, TransactionTypeEnum } from '@budgie/contracts';
-
 import { TRANSFER_MCC_GROUP_ID } from '../../../shared/constant/transfer-mcc-group-id.constant';
 import { TRANSFER_PAIR_CROSS_CURRENCY_BANK_RATE_TIME_WINDOW_SECONDS } from '../../../shared/constant/transfer-pair-cross-currency-bank-rate-time-window.constant';
 import { TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS } from '../../../shared/constant/transfer-pair-fast-time-window.constant';
@@ -9,7 +7,7 @@ import {
 } from '../../../shared/constant/transfer-pair-hinted-fee.constant';
 import { TRANSFER_PAIR_IMPLIED_RATE_TOLERANCE } from '../../../shared/constant/transfer-pair-implied-rate-tolerance.constant';
 import { buildBridgeClaimTitleConditionSql } from '../../../shared/utils/build-bridge-claim-title-condition-sql.util';
-import { buildPrefixLikeSql } from '../../../shared/utils/build-prefix-like-sql.util';
+import { buildNotRejectedPaymentRefundSql } from '../../utils/build-not-rejected-payment-refund-sql.util';
 
 const TRANSFER_PAIR_BOOKING_DAY_IMPLIED_RATE_TOLERANCE = 0.1;
 const INTERBANK_HINTED_FEE_CANDIDATE_SQL = `interbankHintedFeeAmountMatch = 1 AND isCrossZonePair = 0 AND timeDiff <= ${TRANSFER_PAIR_INTERBANK_HINTED_FEE_TIME_WINDOW_SECONDS}`;
@@ -85,24 +83,7 @@ export const TRANSFER_PAIR_RANKED_CANDIDATE_RANK_SQL = `            scored_pairs
                         AND expectedExchangeRate IS NOT NULL
                     )
                 )
-                    AND NOT EXISTS (
-                        SELECT 1
-                        FROM transactions rejected_payment_refund_tx INDEXED BY transactions_visible_type_to_operated_idx
-                        INNER JOIN transaction_entries rejected_payment_refund_entry INDEXED BY transaction_entries_live_transaction_account_amount_idx ON
-                            rejected_payment_refund_entry.transaction_id = rejected_payment_refund_tx.id
-                            AND rejected_payment_refund_entry.deleted_at IS NULL
-                            AND rejected_payment_refund_entry.original_transaction_id IS NULL
-                            AND rejected_payment_refund_entry.account_id = scored_pairs_base.expenseAccountId
-                            AND rejected_payment_refund_entry.amount = scored_pairs_base.expenseEntryAmount
-                        WHERE rejected_payment_refund_tx.type = '${TransactionTypeEnum.INCOME}'
-                            AND rejected_payment_refund_tx.deleted_at IS NULL
-                            AND rejected_payment_refund_tx.consolidation_parent_transaction_id IS NULL
-                            AND rejected_payment_refund_tx.to_account_id IS NOT NULL
-                            AND rejected_payment_refund_tx.to_account_id = scored_pairs_base.expenseAccountId
-                            AND rejected_payment_refund_tx.operated_at BETWEEN scored_pairs_base.expenseOperatedAt
-                                AND scored_pairs_base.expenseOperatedAt + ${REFUND_TIME_WINDOW_SECONDS}
-                            AND ${buildPrefixLikeSql('rejected_payment_refund_tx.title', REFUND_TITLE_PREFIXES.rejectedPaymentPrincipal)}
-                    )
+                    AND ${buildNotRejectedPaymentRefundSql('scored_pairs_base.expenseAccountId', 'scored_pairs_base.expenseEntryAmount', 'scored_pairs_base.expenseOperatedAt')}
             ),
             implied_rate_counted_pairs AS (
                 SELECT

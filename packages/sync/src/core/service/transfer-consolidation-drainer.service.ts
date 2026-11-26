@@ -5,7 +5,11 @@ import * as Context from 'effect/Context';
 import * as Duration from 'effect/Duration';
 import * as Effect from 'effect/Effect';
 import * as Exit from 'effect/Exit';
+import * as Fiber from 'effect/Fiber';
+import * as FiberHandle from 'effect/FiberHandle';
+import * as Latch from 'effect/Latch';
 import * as Layer from 'effect/Layer';
+import * as Option from 'effect/Option';
 import * as Ref from 'effect/Ref';
 
 import { isDefined } from '@rnw-community/shared';
@@ -20,161 +24,82 @@ export class TransferConsolidationDrainerService extends Context.Service<Transfe
         make: Effect.gen(function* () {
             const workload = yield* TransferConsolidationWorkload;
             const transferConsolidationService = yield* TransferConsolidationService;
-            const scheduleKey = 'transfer-consolidation-drain';
             const drainDelay = Duration.seconds(1.5);
-            const drainerState = yield* Ref.make<{
-                readonly isScheduled: boolean;
-                readonly scheduledRunId: number;
-                readonly hasPending: boolean;
-                readonly scope: ConsolidationScanScopeInterface | null;
-                readonly cancelledGeneration: number;
-            }>({
-                isScheduled: false,
-                scheduledRunId: 0,
-                hasPending: false,
-                scope: null,
-                cancelledGeneration: 0
-            });
+            const pendingScope = yield* Ref.make<Option.Option<ConsolidationScanScopeInterface | null>>(Option.none());
+            const hasWork = yield* Latch.make(false);
+            const activeRun = yield* FiberHandle.make();
 
             const mergePendingScope = (
-                hasPending: boolean,
-                currentScope: ConsolidationScanScopeInterface | null,
+                current: Option.Option<ConsolidationScanScopeInterface | null>,
                 nextScope: ConsolidationScanScopeInterface | null
             ): ConsolidationScanScopeInterface | null => {
-                if (!hasPending) {
+                if (Option.isNone(current)) {
                     return nextScope;
                 }
 
-                if (!isDefined(currentScope) || !isDefined(nextScope)) {
+                if (!isDefined(current.value) || !isDefined(nextScope)) {
                     return null;
                 }
 
-                return mergeConsolidationScopes(currentScope, nextScope);
+                return mergeConsolidationScopes(current.value, nextScope);
             };
 
-            const enterIteration = Effect.map(Ref.get(drainerState), state => state.hasPending);
-
-            const takePendingRun = Ref.modify(drainerState, state =>
-                state.hasPending
-                    ? ([
-                          { scope: state.scope, generation: state.cancelledGeneration },
-                          { ...state, hasPending: false, scope: null }
-                      ] as const)
-                    : ([null, state] as const)
-            );
-
-            const resolvePostExitSchedule = (expectedRunId: number) =>
-                Ref.modify(drainerState, state => {
-                    if (state.scheduledRunId !== expectedRunId) {
-                        return [null, state] as const;
-                    }
-
-                    if (state.hasPending) {
-                        const nextRunId = state.scheduledRunId + 1;
-
-                        return [nextRunId, { ...state, isScheduled: true, scheduledRunId: nextRunId }] as const;
-                    }
-
-                    return [null, { ...state, isScheduled: false }] as const;
-                });
-
-            const schedulePostExit = (
-                expectedRunId: number,
-                scheduleRun: (nextRunId: number) => Effect.Effect<void>
-            ): Effect.Effect<void> =>
+            const enqueueScope = (scope: ConsolidationScanScopeInterface | null) =>
                 Effect.uninterruptible(
-                    Effect.flatMap(resolvePostExitSchedule(expectedRunId), nextRunId =>
-                        isDefined(nextRunId) ? workload.schedule(scheduleKey, scheduleRun(nextRunId), { replace: true }) : Effect.void
-                    )
+                    Ref.update(pendingScope, current => Option.some(mergePendingScope(current, scope))).pipe(Effect.andThen(hasWork.open))
                 );
 
-            const drain: (runId: number) => Effect.Effect<void> = Effect.fn('TransferConsolidationDrainerService.drain')(function* (
-                runId: number
-            ) {
-                yield* Effect.ensuring(
-                    Effect.gen(function* () {
-                        while (yield* enterIteration) {
-                            yield* Effect.sleep(drainDelay);
-                            yield* workload.awaitForegroundIdle;
-                            yield* workload.awaitIdle;
+            const drain = Effect.fn('TransferConsolidationDrainerService.drain')(function* () {
+                yield* Effect.sleep(drainDelay);
+                yield* workload.awaitForegroundIdle;
+                yield* workload.awaitIdle;
 
-                            const pendingRun = yield* takePendingRun;
-                            if (!isDefined(pendingRun)) {
-                                return;
-                            }
+                const scopeOption = yield* Ref.getAndSet(pendingScope, Option.none());
+                if (Option.isNone(scopeOption)) {
+                    return;
+                }
 
-                            yield* Effect.yieldNow;
-                            const exit = yield* Effect.exit(workload.run(transferConsolidationService.consolidate(pendingRun.scope)));
+                yield* Effect.yieldNow;
+                const exit = yield* Effect.exit(workload.run(transferConsolidationService.consolidate(scopeOption.value)));
 
-                            if (Exit.isFailure(exit)) {
-                                if (Cause.hasInterruptsOnly(exit.cause)) {
-                                    yield* Ref.modify(
-                                        drainerState,
-                                        state =>
-                                            [
-                                                null,
-                                                state.cancelledGeneration === pendingRun.generation
-                                                    ? {
-                                                          ...state,
-                                                          hasPending: true,
-                                                          scope: mergePendingScope(state.hasPending, state.scope, pendingRun.scope)
-                                                      }
-                                                    : state
-                                            ] as const
-                                    );
-                                } else {
-                                    yield* Effect.logError(exit.cause);
-                                }
-                            }
+                if (Exit.isFailure(exit)) {
+                    if (Cause.hasInterruptsOnly(exit.cause)) {
+                        yield* enqueueScope(scopeOption.value);
+                    } else {
+                        yield* Effect.logError(exit.cause);
+                    }
+                }
 
-                            yield* Effect.yieldNow;
-                        }
-                    }),
-                    schedulePostExit(runId, drain)
-                );
+                yield* Effect.yieldNow;
             });
+
+            yield* Effect.gen(function* () {
+                yield* hasWork.await;
+                yield* hasWork.close;
+
+                const initialPending = yield* Ref.get(pendingScope);
+                if (Option.isNone(initialPending)) {
+                    return;
+                }
+
+                const cycleFiber = yield* FiberHandle.run(activeRun, drain());
+                yield* Fiber.await(cycleFiber);
+
+                const remainingPending = yield* Ref.get(pendingScope);
+                if (Option.isSome(remainingPending)) {
+                    yield* hasWork.open;
+                }
+            }).pipe(Effect.forever, Effect.forkScoped);
 
             return {
                 enqueue: Effect.fn('TransferConsolidationDrainerService.enqueue')(function* (
                     scope: ConsolidationScanScopeInterface | null = null
                 ) {
-                    yield* Effect.uninterruptible(
-                        Effect.flatMap(
-                            Ref.modify(drainerState, state => {
-                                const mergedScope = mergePendingScope(state.hasPending, state.scope, scope);
-
-                                if (state.isScheduled) {
-                                    return [null, { ...state, hasPending: true, scope: mergedScope }] as const;
-                                }
-
-                                const runId = state.scheduledRunId + 1;
-
-                                return [
-                                    runId,
-                                    { ...state, isScheduled: true, scheduledRunId: runId, hasPending: true, scope: mergedScope }
-                                ] as const;
-                            }),
-                            nextRunId =>
-                                isDefined(nextRunId) ? workload.schedule(scheduleKey, drain(nextRunId), { replace: true }) : Effect.void
-                        )
-                    );
+                    yield* enqueueScope(scope);
                 }),
                 cancelPending: Effect.fn('TransferConsolidationDrainerService.cancelPending')(function* () {
-                    const cancelledRunId = yield* Ref.modify(
-                        drainerState,
-                        state =>
-                            [
-                                state.scheduledRunId,
-                                {
-                                    ...state,
-                                    hasPending: false,
-                                    scope: null,
-                                    cancelledGeneration: state.cancelledGeneration + 1
-                                }
-                            ] as const
-                    );
-
-                    yield* Effect.ensuring(workload.cancelScheduled(scheduleKey), schedulePostExit(cancelledRunId, drain));
+                    yield* Ref.set(pendingScope, Option.none());
+                    yield* FiberHandle.clear(activeRun);
                 })
             };
         })

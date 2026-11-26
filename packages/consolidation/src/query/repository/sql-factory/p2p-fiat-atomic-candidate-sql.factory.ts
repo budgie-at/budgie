@@ -14,6 +14,7 @@ import {
     TRANSFER_PAIR_P2P_FIAT_TIME_WINDOW_SECONDS
 } from '../../../shared/constant/transfer-pair-p2p-fiat.constant';
 import { buildPrefixLikeSql } from '../../../shared/utils/build-prefix-like-sql.util';
+import { buildNotRejectedPaymentRefundSql } from '../../utils/build-not-rejected-payment-refund-sql.util';
 import { operatedAtScopeSql } from '../../utils/operated-at-scope-sql.util';
 import { scopedSql } from '../../utils/scoped-sql.util';
 
@@ -105,6 +106,10 @@ export const buildP2pFiatAtomicCandidateSql = scopedSql`
         WHERE NOT (
             bank_transaction.type = '${TransactionTypeEnum.INCOME}'
             AND ${buildPrefixLikeSql('bank_transaction.title', [...REFUND_TITLE_PREFIXES.rejectedPaymentPrincipal, ...REFUND_TITLE_PREFIXES.rejectedPaymentFee])}
+        )
+        AND (
+            bank_transaction.type != '${TransactionTypeEnum.EXPENSE}'
+            OR ${buildNotRejectedPaymentRefundSql('bank_entry.account_id', 'bank_entry.amount', 'bank_transaction.operated_at')}
         )
     ),
     ${TRANSFER_PAIR_AVAILABLE_EXCHANGE_RATES_SQL}

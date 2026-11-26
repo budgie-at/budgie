@@ -518,4 +518,43 @@ layer(TestLayer)('consolidation/refund-safety-regressions', it => {
             expect((yield* runConsolidation()).consolidated).toBe(0);
         })
     );
+
+    it.effect('falls through to principal capacity in manual convertToRefund when a fee-titled income exceeds the fee pool', () =>
+        Effect.gen(function* () {
+            const refundConsolidationService = yield* RefundConsolidationService;
+            const account = yield* testSeedService.account({ externalId: 'manual-fee-fallthrough-card' });
+            const expense = yield* seedTitledTransaction({
+                accountId: account.id,
+                externalId: 'manual-fee-fallthrough-expense',
+                operatedAt: shiftedDate(0),
+                amount: POOL_EXPENSE_AMOUNT,
+                title: 'FeeFallthroughMerchant',
+                isRefund: false
+            });
+
+            yield* testSeedService.feeEntry(expense.id, 'manual-fee-fallthrough-fee', {
+                accountId: account.id,
+                amount: MULTI_FEE_FIRST_AMOUNT
+            });
+
+            const oversizedFeeTitledIncome = yield* seedTitledTransaction({
+                accountId: account.id,
+                externalId: 'manual-fee-fallthrough-income',
+                operatedAt: shiftedDate(1),
+                amount: convertToMicroUnits(5),
+                title: REJECTED_PAYMENT_FEE_TITLE,
+                isRefund: true
+            });
+
+            yield* rebuildStoredBalances;
+
+            expect(
+                yield* refundConsolidationService.convertToRefund({
+                    refundIncomeTransactionId: oversizedFeeTitledIncome.id,
+                    expenseTransactionId: expense.id
+                })
+            ).toBe(expense.id);
+            yield* expectConsolidationParent(oversizedFeeTitledIncome.id, expense.id);
+        })
+    );
 });
