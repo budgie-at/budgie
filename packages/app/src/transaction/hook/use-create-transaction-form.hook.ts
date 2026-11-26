@@ -36,7 +36,7 @@ export const useCreateTransactionForm = ({
     operatedAt
 }: CreateTransactionFormConfigInterface) => {
     const { t } = useLingui();
-    const { run } = useSingleFlight();
+    const { run, isLoading } = useSingleFlight();
     const [hapticNotification] = useVibration();
 
     const form = useForm({
@@ -93,6 +93,7 @@ export const useCreateTransactionForm = ({
 
     return {
         form,
+        isSubmitting: isLoading,
         handleSubmit: wrappedHandleSubmit
     };
 };

@@ -2,17 +2,15 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { EnableBankingSyncService } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
-import { Text } from 'react-native';
 import Toast from 'react-native-toast-message';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
-import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useExplainEnableBankingError } from '../../hook/use-explain-enable-banking-error.hook';
 import { EnableBankingConnectionService } from '../../service/enable-banking-connection.service';
+import { EnableBankingActionRow } from '../enable-banking-action-row/enable-banking-action-row';
 import { EnableBankingConnectionCardSelector } from '../enable-banking-connection-card/enable-banking-connection-card.selector';
 
 interface Props {
@@ -22,7 +20,7 @@ interface Props {
 export const EnableBankingChooseKeyRow = ({ applicationId }: Props) => {
     const { t } = useLingui();
     const explainError = useExplainEnableBankingError();
-    const { run } = useSingleFlight();
+    const { run, isLoading } = useSingleFlight();
 
     const handlePress = () =>
         run(
@@ -41,10 +39,11 @@ export const EnableBankingChooseKeyRow = ({ applicationId }: Props) => {
         );
 
     return (
-        <GroupedListRow
-            left={<GroupedListIcon icon={UserIconNameEnum.KeyRound} />}
-            title={<Text className="text-primary text-[17px] font-semibold">{t`Choose key file again`}</Text>}
+        <EnableBankingActionRow
+            icon={UserIconNameEnum.KeyRound}
+            title={t`Choose key file again`}
             subtitle={t`The key is missing or was rejected.`}
+            isLoading={isLoading}
             onPress={handlePress}
             testID={EnableBankingConnectionCardSelector.ChooseKey}
         />

@@ -1,7 +1,7 @@
 import { logAndContinue } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 import * as Fiber from 'effect/Fiber';
-import { useEffect, useRef } from 'react';
+import { useEffect, useEffectEvent, useRef } from 'react';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -21,12 +21,16 @@ interface UseSttResidencyReturn {
 }
 
 export const useSttResidency = (): UseSttResidencyReturn => {
-    const acquireFiberRef = useRef<Fiber.Fiber<boolean> | null>(null);
+    const acquireFiberRef = useRef<Fiber.Fiber<void> | null>(null);
 
     const acquireSttResidency = () =>
         Effect.suspend(() => {
             acquireFiberRef.current ??= appRuntime.runFork(
-                Effect.flatMap(AiModelResidencyService, aiModelResidencyService => aiModelResidencyService.acquire(AiSubsystemNameEnum.STT))
+                logAndContinue(
+                    Effect.flatMap(AiModelResidencyService, aiModelResidencyService =>
+                        aiModelResidencyService.acquire(AiSubsystemNameEnum.STT)
+                    ).pipe(Effect.asVoid)
+                )
             );
 
             return Fiber.join(acquireFiberRef.current).pipe(
@@ -36,19 +40,31 @@ export const useSttResidency = (): UseSttResidencyReturn => {
 
     const releaseSttResidency = (): void => {
         if (isDefined(acquireFiberRef.current)) {
+            const acquireFiber = acquireFiberRef.current;
             acquireFiberRef.current = null;
+            acquireFiber.interruptUnsafe();
             appRuntime.runFork(
-                Effect.flatMap(AiModelResidencyService, aiModelResidencyService =>
-                    aiModelResidencyService.releaseNow(AiSubsystemNameEnum.STT)
+                logAndContinue(
+                    Effect.flatMap(AiModelResidencyService, aiModelResidencyService =>
+                        aiModelResidencyService.releaseNow(AiSubsystemNameEnum.STT)
+                    )
                 )
             );
         }
     };
 
-    useEffect(() => {
-        appRuntime.runFork(logAndContinue(acquireSttResidency()));
+    const handleAcquire = useEffectEvent(() => acquireSttResidency());
+    const handleRelease = useEffectEvent(() => {
+        releaseSttResidency();
+    });
 
-        return releaseSttResidency;
+    useEffect(() => {
+        const fiber = appRuntime.runFork(logAndContinue(handleAcquire()));
+
+        return () => {
+            fiber.interruptUnsafe();
+            handleRelease();
+        };
     }, []);
 
     return { acquireSttResidency, releaseSttResidency };

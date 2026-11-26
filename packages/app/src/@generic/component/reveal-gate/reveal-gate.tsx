@@ -1,6 +1,8 @@
 import { useLayoutEffect, useRef, useState } from 'react';
 import Animated, { useAnimatedStyle, useSharedValue, withDelay, withTiming } from 'react-native-reanimated';
 
+import { emptyFn } from '@rnw-community/shared';
+
 import { EASE_OUT } from '../../constant/motion.constant';
 import { RevealGateContext } from '../../context/reveal-gate.context';
 
@@ -22,11 +24,18 @@ export const RevealGate = ({ isLoading, children }: Props) => {
     const [settledReads, setSettledReads] = useState(0);
 
     const track = () => {
+        if (isRevealedRef.current) {
+            return emptyFn;
+        }
+
         pendingReadsRef.current += 1;
 
         return () => {
             pendingReadsRef.current -= 1;
-            setSettledReads(count => count + 1);
+
+            if (!isRevealedRef.current && pendingReadsRef.current === 0) {
+                setSettledReads(count => count + 1);
+            }
         };
     };
 

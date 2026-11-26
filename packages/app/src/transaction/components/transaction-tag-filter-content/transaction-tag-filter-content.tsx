@@ -1,6 +1,8 @@
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 
+import { isNotEmptyArray } from '@rnw-community/shared';
+
 import { FilterSheetApply } from '../../../@generic/component/filter-sheet/filter-sheet-apply/filter-sheet-apply';
 import { FilterSheetBulkToggle } from '../../../@generic/component/filter-sheet/filter-sheet-bulk-toggle/filter-sheet-bulk-toggle';
 import { sortSelectedFirst } from '../../../@generic/utils/sort-selected-first.util';
@@ -21,11 +23,12 @@ export const TransactionTagFilterContent = ({ value, onCommit }: Props) => {
     const { t } = useLingui();
     const { localValue, search, setSearch, selectedCount, handleDeselectAll, handleSelect, handleSelectAll, handleApply } =
         useFilterSheetSelection(value, onCommit);
-    const { tags, isLoading } = useSearchTagsQuery(search);
+    const { tags, isLoading, isSearchPending } = useSearchTagsQuery(search);
 
     const selectedTagIds = localValue ?? [];
     const tagIds = (tags ?? []).map(tag => tag.id);
     const data = sortSelectedFirst(tags ?? [], selectedTagIds);
+    const isListLoading = isLoading || (isSearchPending && !isNotEmptyArray(data));
 
     const handleSelectAllTags = () => void handleSelectAll(tagIds);
 
@@ -56,7 +59,7 @@ export const TransactionTagFilterContent = ({ value, onCommit }: Props) => {
                 />
             }
         >
-            <TagsSelectContent data={data} selectedTagIds={selectedTagIds} isLoading={isLoading} onSelect={handleSelect} />
+            <TagsSelectContent data={data} selectedTagIds={selectedTagIds} isLoading={isListLoading} onSelect={handleSelect} />
         </TransactionFilterSelectionSheet>
     );
 };

@@ -22,9 +22,9 @@ import { ReceiptScannerModule } from '../../../../modules/receipt-scanner';
 import { CircularActionButton } from '../../../@generic/component/circular-action-button/circular-action-button';
 import { EASE_OUT, MOTION_FAST_DURATION, SPRING_SETTLE } from '../../../@generic/constant/motion.constant';
 import { splashScreenHiddenAtom } from '../../../@generic/constant/splash-screen-hidden-atom.constant';
-import { useCreateActionContext } from '../../../@generic/context/create-action.context';
+import { useCreateActionValue } from '../../../@generic/context/create-action.context';
 import { aiSystemStatusAtom } from '../../../ai/constant/ai-system-status-atom.constant';
-import { useVoiceInputContext } from '../../../ai/context/voice-input.context';
+import { useVoiceInputActions } from '../../../ai/context/voice-input.context';
 import { AiSystemStateEnum } from '../../../ai/enum/ai-system-state.enum';
 import { ReceiptSourceMenu } from '../../../receipt/components/receipt-source-menu/receipt-source-menu';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
@@ -55,8 +55,8 @@ interface Props {
 // eslint-disable-next-line max-lines-per-function, max-statements
 export const CreateTransactionMenu = ({ isOpen, onClose, triggerRef, accountId, accountType }: Props) => {
     const { t } = useLingui();
-    const { createAction } = useCreateActionContext();
-    const { open: openVoiceInput } = useVoiceInputContext();
+    const createAction = useCreateActionValue();
+    const { open: openVoiceInput } = useVoiceInputActions();
     const { fontScale } = useWindowDimensions();
     const firstTileRef = useRef<View>(null);
     const shouldRestoreFocusRef = useRef(false);

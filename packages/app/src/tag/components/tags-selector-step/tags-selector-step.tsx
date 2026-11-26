@@ -1,7 +1,7 @@
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
-import { isNotEmptyString } from '@rnw-community/shared';
+import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { SelectorModalDescription } from '../../../@generic/component/selector-modal-description/selector-modal-description';
 import { SelectorModalSearchHeader } from '../../../@generic/component/selector-modal-search-header/selector-modal-search-header';
@@ -33,14 +33,22 @@ interface Props {
     readonly onCommit: (tagIds: number[]) => void;
 }
 
-export const TagsSelectorStep = (props: Props) => {
-    const { params, selection, search, dispatch, onSearchChange, onCreate, onCommit } = props;
+export const TagsSelectorStep = ({
+    params,
+    selection: { selected, primaryTagId },
+    search,
+    dispatch,
+    onSearchChange,
+    onCreate,
+    onCommit
+}: Props) => {
     const { excludeTagIds = [], title, description, singleSelect = false, enablePrimarySelection = false } = params;
-    const { selected, primaryTagId } = selection;
     const { t } = useLingui();
     const listStyle = useMorphingSheetListHeight(MORPHING_SHEET_SELECTOR_HEIGHT_RATIO);
     const commit = useMorphingSheetCommit(onCommit);
-    const { tags, isLoading } = useSearchTagsQuery(search);
+    const { tags, isLoading, isSearchPending } = useSearchTagsQuery(search);
+    const filteredTags = (tags ?? []).filter(tag => !excludeTagIds.includes(tag.id));
+    const isListLoading = isLoading || (isSearchPending && !isNotEmptyArray(filteredTags));
 
     const query = search.trim();
     const count = selected.length;
@@ -91,10 +99,10 @@ export const TagsSelectorStep = (props: Props) => {
                     <TagsSelectContent
                         header={<TagCreateRow onPress={onCreate} />}
                         listEmptyComponent={listEmptyComponent}
-                        data={(tags ?? []).filter(tag => !excludeTagIds.includes(tag.id))}
+                        data={filteredTags}
                         selectedTagIds={selected}
                         primaryTagId={primaryTagId}
-                        isLoading={isLoading}
+                        isLoading={isListLoading}
                         onSelect={handleSelectTag}
                         {...(enablePrimarySelection && { onPrimarySelect: handlePrimarySelect })}
                     />

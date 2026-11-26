@@ -20,6 +20,8 @@ import { aggregateRunwayDrivers } from '../utils/aggregate-runway-drivers.util';
 import { computeRunway } from '../utils/compute-runway.util';
 import { fillRunwaySeriesMonths } from '../utils/fill-runway-series-months.util';
 
+import { liquidBalanceAtom } from './use-liquid-balance.query';
+
 import type { UseRunwayQueryParams } from '../interface/use-runway-query-params.interface';
 import type { LanguageEnum } from '@budgie/contracts';
 
@@ -52,6 +54,7 @@ export const useRunwayQuery = (params: UseRunwayQueryParams) => {
     const language = useSetting('language');
     const isCryptoIncluded = useSetting('isRunwayCryptoIncluded');
     const defaultInstrumentId = useAtomValue(defaultInstrumentIdAtom);
+    const liquidResult = useLiveAtomValue(liquidBalanceAtom([defaultInstrumentId, isCryptoIncluded]));
     const seriesResult = useLiveAtomValue(runwaySeriesAtom([defaultInstrumentId, isCryptoIncluded]));
     const driverResult = useLiveAtomValue(runwayDriverSeriesAtom([defaultInstrumentId, dimension, language, isCryptoIncluded]));
     const categoryDriverResult = useLiveAtomValue(
@@ -82,6 +85,11 @@ export const useRunwayQuery = (params: UseRunwayQueryParams) => {
         isAllIn,
         referenceDate: today
     });
+    const isLoading =
+        AsyncResult.isInitial(liquidResult) ||
+        AsyncResult.isInitial(seriesResult) ||
+        AsyncResult.isInitial(driverResult) ||
+        AsyncResult.isInitial(categoryDriverResult);
 
-    return { computation, drivers: breakdown.drivers, series: seriesRows };
+    return { computation, drivers: breakdown.drivers, series: seriesRows, isLoading };
 };

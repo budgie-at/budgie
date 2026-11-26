@@ -1,16 +1,15 @@
-import { logAndContinue } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { useState } from 'react';
 import Animated from 'react-native-reanimated';
 
-import { getErrorMessage, isDefined } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { SelectorModalSearchHeader } from '../../../@generic/component/selector-modal-search-header/selector-modal-search-header';
 import { SheetSurface } from '../../../@generic/component/sheet-surface/sheet-surface';
 import { MOTION_FADE_IN } from '../../../@generic/constant/motion.constant';
 import { useSurfaceSettled } from '../../../@generic/context/surface-settled.context';
-import { appRuntime } from '../../../@generic/runtime/app.runtime';
+import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { AccountSelectorModalSelector } from '../../../app/account-selector-modal.selector';
 import { useSearchAccountsSortedQuery } from '../../query/use-search-accounts-sorted.query';
@@ -32,10 +31,11 @@ export const AccountSelectorSheetContent = ({ params, onSelect, onBack, classNam
     const { t } = useLingui();
     const [search, setSearch] = useState('');
     const isSettled = useSurfaceSettled();
+    const { run, isLoading: isCreating } = useSingleFlight();
 
     const { createAction } = params;
 
-    const { accounts } = useSearchAccountsSortedQuery(search, {
+    const { accounts, isLoading, isSearchPending } = useSearchAccountsSortedQuery(search, {
         debtType: params.debtType,
         excludeAccountId: params.excludeAccountId,
         excludeTypes: params.excludeAccountTypes,
@@ -43,18 +43,17 @@ export const AccountSelectorSheetContent = ({ params, onSelect, onBack, classNam
         onlyActive: params.onlyActive ?? true
     });
     const selectableAccounts = accounts.filter(account => isSelectableAccount(account, params.initialAccountId, params.syncZone));
+    const isListLoading = isLoading || (isSearchPending && !isNotEmptyArray(selectableAccounts));
 
     const handleCreateAction = () => {
         if (!isDefined(createAction)) {
             return;
         }
 
-        appRuntime.runFork(
-            logAndContinue(
-                Effect.tryPromise({ try: () => createAction.onCreate(), catch: getErrorMessage }).pipe(
-                    Effect.tap(createdAccountId => Effect.sync(() => void onSelect(createdAccountId))),
-                    toastOnFailure(createAction.errorMessage)
-                )
+        void run(
+            Effect.tryPromise({ try: () => createAction.onCreate(), catch: getErrorMessage }).pipe(
+                Effect.tap(createdAccountId => Effect.sync(() => void onSelect(createdAccountId))),
+                toastOnFailure(createAction.errorMessage)
             )
         );
     };
@@ -63,6 +62,7 @@ export const AccountSelectorSheetContent = ({ params, onSelect, onBack, classNam
               title: createAction.title,
               subtitle: createAction.subtitle,
               errorMessage: createAction.errorMessage,
+              isDisabled: isCreating,
               onCreate: handleCreateAction
           }
         : void 0;
@@ -85,6 +85,7 @@ export const AccountSelectorSheetContent = ({ params, onSelect, onBack, classNam
                         data={selectableAccounts}
                         initialAccountId={params.initialAccountId ?? null}
                         search={search}
+                        isLoading={isListLoading}
                         onSelect={onSelect}
                         emptyStateDescription={params.emptyStateDescription}
                         showDebtTotal={params.showDebtTotal ?? false}

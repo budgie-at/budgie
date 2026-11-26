@@ -30,7 +30,7 @@ export const UpdateTransferTransaction = ({ transaction, openFeeOnMount }: Updat
 
     const transactionInput = convertTransactionToInput(transaction);
 
-    const { form, handleSubmit, handleDelete } = useUpdateTransactionForm({
+    const { form, handleSubmit, handleDelete, isSubmitting } = useUpdateTransactionForm({
         transaction: transactionInput,
         persistedTitle: transactionInput.title,
         schema: TransferTransactionCreateInputSchema,
@@ -52,6 +52,7 @@ export const UpdateTransferTransaction = ({ transaction, openFeeOnMount }: Updat
                     ref={formRef}
                     variant="default"
                     initialDestinationAmount={initialDestinationAmount}
+                    isSubmitting={isSubmitting}
                     onSubmit={handleSubmit}
                     isNewTransaction={false}
                     {...(isConsolidated && { onConsolidationPress: () => void openConsolidationSource({ transactionId: transaction.id }) })}

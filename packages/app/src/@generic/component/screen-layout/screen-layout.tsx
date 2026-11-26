@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import { View } from 'react-native';
 
 import { cn } from '../../utils/cn.util';
+import { ErrorBoundary } from '../error-boundary/error-boundary';
 import { ScreenPerformanceMark } from '../screen-performance-mark/screen-performance-mark';
 
 import type { NativeStackNavigationOptions } from 'expo-router';
@@ -19,7 +20,7 @@ export const ScreenLayout = ({ route, options, children }: Props) => {
     return (
         <View className={className}>
             <ScreenPerformanceMark routeName={route.name} />
-            {children}
+            <ErrorBoundary resetKey={route.name}>{children}</ErrorBoundary>
         </View>
     );
 };

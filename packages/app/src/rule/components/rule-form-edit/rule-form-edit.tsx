@@ -1,3 +1,5 @@
+import { useEffect, useEffectEvent } from 'react';
+
 import { isDefined } from '@rnw-community/shared';
 
 import { LoadingScreen } from '../../../@generic/component/loading-screen/loading-screen';
@@ -14,6 +16,15 @@ interface Props {
 
 export const RuleFormEdit = ({ ruleId, onSuccess, onCancel }: Props) => {
     const { rule, isLoading } = useGetRuleByIdQuery(ruleId);
+    const handleMissingRule = useEffectEvent(() => {
+        onCancel();
+    });
+
+    useEffect(() => {
+        if (!isLoading && !isDefined(rule)) {
+            handleMissingRule();
+        }
+    }, [isLoading, rule]);
 
     if (isLoading || !isDefined(rule)) {
         return <LoadingScreen />;

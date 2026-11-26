@@ -4,7 +4,7 @@ import { NotificationFeedbackType } from 'expo-haptics';
 import { useState } from 'react';
 import { KeyboardController } from 'react-native-keyboard-controller';
 
-import { isPositiveNumber } from '@rnw-community/shared';
+import { getErrorMessage, isPositiveNumber } from '@rnw-community/shared';
 
 import { useVibration } from '../../@generic/hook/use-vibration.hook';
 import { appRuntime } from '../../@generic/runtime/app.runtime';
@@ -64,14 +64,14 @@ export const useSplitEntriesEditor = (config: SplitEntriesEditorConfigInterface)
 
         appRuntime.runFork(
             logAndContinue(
-                Effect.promise(() => KeyboardController.dismiss()).pipe(
+                Effect.tryPromise({ try: () => KeyboardController.dismiss(), catch: getErrorMessage }).pipe(
                     Effect.andThen(
                         Effect.sync(() => {
                             onEntriesChange(previous => [...previous, newEntry]);
                             setAutoFocusId(newEntry.localId);
-                            setIsAddingEntry(false);
                         })
-                    )
+                    ),
+                    Effect.ensuring(Effect.sync(() => void setIsAddingEntry(false)))
                 )
             )
         );

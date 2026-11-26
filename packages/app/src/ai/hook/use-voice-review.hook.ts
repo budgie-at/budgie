@@ -1,3 +1,4 @@
+import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { NotificationFeedbackType } from 'expo-haptics';
 import { useReducer, useState } from 'react';
@@ -5,6 +6,7 @@ import { useReducer, useState } from 'react';
 import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { useVibration } from '../../@generic/hook/use-vibration.hook';
+import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
 import { VoiceReviewActionTypeEnum } from '../enum/voice-review-action-type.enum';
 import { UseVoiceReviewReturnInterface } from '../interface/use-voice-review-return.interface';
 import { VoiceReviewActionInterface } from '../interface/voice-review-action.interface';
@@ -26,6 +28,7 @@ const reducer = (state: VoiceReviewRowInterface[], action: VoiceReviewActionInte
 };
 
 export const useVoiceReview = (initialRows: VoiceReviewRowInterface[]): UseVoiceReviewReturnInterface => {
+    const { t } = useLingui();
     const [rows, dispatch] = useReducer(reducer, initialRows);
     const [isSaving, setIsSaving] = useState(false);
     const [hapticNotification] = useVibration();
@@ -52,6 +55,7 @@ export const useVoiceReview = (initialRows: VoiceReviewRowInterface[]): UseVoice
                 )
             ),
             Effect.tap(() => Effect.sync(() => void hapticNotification(NotificationFeedbackType.Success))),
+            toastOnFailure(t`Could not save transactions`),
             Effect.tapCause(Effect.logError),
             Effect.catchCause(() =>
                 Effect.sync(() => {

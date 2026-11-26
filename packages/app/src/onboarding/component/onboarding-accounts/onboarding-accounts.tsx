@@ -10,6 +10,7 @@ import { isPositiveNumber } from '@rnw-community/shared';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { PillButton } from '../../../@generic/component/pill-button/pill-button';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
+import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useSearchAccountsSortedQuery } from '../../../account/query/use-search-accounts-sorted.query';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { ONBOARDING_ACCOUNT_OPTIONS } from '../../constant/onboarding-account-options.constant';
@@ -74,6 +75,7 @@ export const OnboardingAccounts = () => {
             logAndContinue(
                 Effect.flatMap(OnboardingService, onboardingService => onboardingService.provisionAccounts(newOptions)).pipe(
                     Effect.andThen(Effect.sync(() => void goToStep(OnboardingStepEnum.BALANCES))),
+                    toastOnFailure(t`Could not save accounts`),
                     Effect.ensuring(Effect.sync(() => void setIsSaving(false)))
                 )
             )

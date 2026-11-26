@@ -1,3 +1,4 @@
+import { logAndContinue } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 import * as Atom from 'effect/reactivity/Atom';
 
@@ -14,11 +15,16 @@ export const aiModelResidencyAtom = Atom.family((subsystem: AiSubsystemNameEnum 
             return null;
         }
 
-        appRuntime.runFork(Effect.flatMap(AiModelResidencyService, aiModelResidencyService => aiModelResidencyService.acquire(subsystem)));
+        const acquireFiber = appRuntime.runFork(
+            logAndContinue(Effect.flatMap(AiModelResidencyService, aiModelResidencyService => aiModelResidencyService.acquire(subsystem)))
+        );
 
         context.addFinalizer(() => {
+            acquireFiber.interruptUnsafe();
             appRuntime.runFork(
-                Effect.flatMap(AiModelResidencyService, aiModelResidencyService => aiModelResidencyService.release(subsystem))
+                logAndContinue(
+                    Effect.flatMap(AiModelResidencyService, aiModelResidencyService => aiModelResidencyService.release(subsystem))
+                )
             );
         });
 

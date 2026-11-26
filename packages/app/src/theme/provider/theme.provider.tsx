@@ -1,4 +1,4 @@
-import { ThemeEnum } from '@budgie/contracts';
+import { ThemeEnum, logAndContinue } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 import { DarkTheme, DefaultTheme, ThemeProvider as NavigationThemeProvider } from 'expo-router';
 import * as SystemUI from 'expo-system-ui';
@@ -7,6 +7,7 @@ import { Appearance, StatusBar, View } from 'react-native';
 import { Uniwind, useResolveClassNames, useUniwind } from 'uniwind';
 
 import { appRuntime } from '../../@generic/runtime/app.runtime';
+import { toNativeCallError } from '../../@generic/utils/to-native-call-error.util';
 import { useSetting } from '../../settings/hook/use-setting.hook';
 import { ColorSchemaEnum } from '../enum/color-schema.enum';
 
@@ -39,7 +40,9 @@ export const ThemeProvider = ({ children }: Props) => {
     }, [uniwindTheme, nativeColorScheme]);
 
     useLayoutEffect(() => {
-        appRuntime.runFork(Effect.promise(() => SystemUI.setBackgroundColorAsync(background)));
+        appRuntime.runFork(
+            logAndContinue(Effect.tryPromise({ try: () => SystemUI.setBackgroundColorAsync(background), catch: toNativeCallError }))
+        );
     }, [background]);
 
     return (

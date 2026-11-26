@@ -62,6 +62,7 @@ export const SwipeableRuleCard = (props: Props) => {
     const [status, setStatus] = useState<CardStatus>('idle');
     const [hapticNotification, hapticImpact] = useVibration();
     const fiberRef = useRef<Fiber.Fiber<void> | null>(null);
+    const isInFlightRef = useRef(false);
 
     const translateX = useSharedValue(0);
     const opacity = useSharedValue(0);
@@ -74,6 +75,8 @@ export const SwipeableRuleCard = (props: Props) => {
     useEffect(
         () => () => {
             fiberRef.current?.interruptUnsafe();
+            fiberRef.current = null;
+            isInFlightRef.current = false;
         },
         []
     );
@@ -134,6 +137,12 @@ export const SwipeableRuleCard = (props: Props) => {
     }));
 
     const handleYesButtonPress = () => {
+        if (isInFlightRef.current) {
+            return;
+        }
+
+        isInFlightRef.current = true;
+        fiberRef.current?.interruptUnsafe();
         fiberRef.current = appRuntime.runFork(
             Effect.gen(function* () {
                 setStatus('creating');
@@ -160,6 +169,12 @@ export const SwipeableRuleCard = (props: Props) => {
                               yield* Effect.sleep(ERROR_AUTO_DISMISS_MS);
                               onDismiss();
                           })
+                ),
+                Effect.ensuring(
+                    Effect.sync(() => {
+                        isInFlightRef.current = false;
+                        fiberRef.current = null;
+                    })
                 )
             )
         );

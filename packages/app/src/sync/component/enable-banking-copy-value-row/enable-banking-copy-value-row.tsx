@@ -7,6 +7,8 @@ import Toast from 'react-native-toast-message';
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
+import { toNativeCallError } from '../../../@generic/utils/to-native-call-error.util';
+import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 
 interface Props {
     readonly label: string;
@@ -21,12 +23,13 @@ export const EnableBankingCopyValueRow = ({ label, value }: Props) => {
 
     const handlePress = () => {
         void run(
-            Effect.promise(() => setStringAsync(value)).pipe(
+            Effect.tryPromise({ try: () => setStringAsync(value), catch: toNativeCallError }).pipe(
                 Effect.andThen(
                     Effect.sync(() => {
                         Toast.show({ type: 'success', text1: t`Copied`, text2: label });
                     })
-                )
+                ),
+                toastOnFailure(t`Could not copy value`)
             )
         );
     };

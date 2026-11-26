@@ -24,10 +24,16 @@ export const useDebtSettlementTransactionActions = ({
     const openAccountSelector = useOpenModal('/account-selector');
     const transactionDebtEvent = transaction.debtEvents.at(0);
     const transactionDebtSettlementAccount = transactionDebtEvent?.[DebtEventAssociationEnum.DEBT_ACCOUNT] ?? null;
-    const [localDebtSettlementAccount, setLocalDebtSettlementAccount] = useState<DebtSettlementAccountInterface | null>(
-        transactionDebtSettlementAccount
-    );
-    const hasDebtSettlement = isDefined(localDebtSettlementAccount);
+    const externalDebtAccountId = transactionDebtEvent?.debtAccountId ?? null;
+    const [override, setOverride] = useState<{
+        readonly transactionId: number;
+        readonly externalDebtAccountId: number | null;
+        readonly account: DebtSettlementAccountInterface | null;
+    } | null>(null);
+    const isOverrideActive =
+        isDefined(override) && override.transactionId === transaction.id && override.externalDebtAccountId === externalDebtAccountId;
+    const debtSettlementAccount = isOverrideActive ? override.account : transactionDebtSettlementAccount;
+    const hasDebtSettlement = isDefined(debtSettlementAccount);
 
     const attachDebtSettlement = (debtAccountId: number) =>
         Effect.gen(function* () {
@@ -37,7 +43,7 @@ export const useDebtSettlementTransactionActions = ({
 
             yield* transactionDebtSettlementService.attach({ transactionId, debtAccountId });
 
-            setLocalDebtSettlementAccount(debtAccount);
+            setOverride({ transactionId: transaction.id, externalDebtAccountId, account: debtAccount });
         });
 
     const handleOpenDebtSettlement = () => {
@@ -69,7 +75,9 @@ export const useDebtSettlementTransactionActions = ({
                 Effect.flatMap(TransactionDebtSettlementService, transactionDebtSettlementService =>
                     transactionDebtSettlementService.detach(transactionId)
                 ).pipe(
-                    Effect.tap(() => Effect.sync(() => void setLocalDebtSettlementAccount(null))),
+                    Effect.tap(() =>
+                        Effect.sync(() => void setOverride({ transactionId: transaction.id, externalDebtAccountId, account: null }))
+                    ),
                     toastOnFailure(t`Could not update transaction.`)
                 )
             )
@@ -79,6 +87,6 @@ export const useDebtSettlementTransactionActions = ({
         handleOpenDebtSettlement,
         handleDetachDebtSettlement,
         hasDebtSettlement,
-        debtSettlementAccount: localDebtSettlementAccount
+        debtSettlementAccount
     };
 };

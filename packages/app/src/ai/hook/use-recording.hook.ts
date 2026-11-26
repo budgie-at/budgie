@@ -8,7 +8,7 @@ import {
     calculateRMS
 } from '@budgie/ai';
 import * as Effect from 'effect/Effect';
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useEffectEvent, useLayoutEffect, useRef, useState } from 'react';
 import { AudioRecorder } from 'react-native-audio-api';
 
 import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
@@ -45,6 +45,7 @@ export const useRecording = (callbacks: RecordingCallbacks = {}): UseRecordingRe
     const recorderRef = useRef<AudioRecorder | null>(null);
     const silenceTimeoutRef = useRef<Fiber.Fiber<void> | null>(null);
     const recorderInitTimeoutRef = useRef<Fiber.Fiber<void> | null>(null);
+    const recorderStartFiberRef = useRef<Fiber.Fiber<void> | null>(null);
     const sessionIdRef = useRef(0);
     const callbacksRef = useRef(callbacks);
 
@@ -60,26 +61,44 @@ export const useRecording = (callbacks: RecordingCallbacks = {}): UseRecordingRe
         silenceTimeoutRef.current = null;
         recorderInitTimeoutRef.current?.interruptUnsafe();
         recorderInitTimeoutRef.current = null;
+        recorderStartFiberRef.current?.interruptUnsafe();
+        recorderStartFiberRef.current = null;
+    };
+
+    const stopRecorderInstance = (recorder: AudioRecorder) => {
+        appRuntime.runFork(
+            Effect.tryPromise({ try: () => recorder.stop(), catch: getErrorMessage }).pipe(
+                Effect.catch(error => Effect.logError('recorder:stop', { errorMessage: error }))
+            )
+        );
     };
 
     const stopRecorder = () => {
         const recorder = recorderRef.current;
         recorderRef.current = null;
         if (isDefined(recorder)) {
-            appRuntime.runFork(
-                Effect.tryPromise({ try: () => recorder.stop(), catch: getErrorMessage }).pipe(
-                    Effect.catch(error => Effect.logError('recorder:stop', { errorMessage: error }))
-                )
-            );
+            stopRecorderInstance(recorder);
         }
     };
 
     const cleanup = () => {
+        sessionIdRef.current += 1;
         clearTimeouts();
         stopRecorder();
         setStatus('idle');
         setAudioLevel(0);
     };
+
+    const handleUnmount = useEffectEvent(() => {
+        cleanup();
+    });
+
+    useEffect(
+        () => () => {
+            handleUnmount();
+        },
+        []
+    );
 
     const resetSilenceTimeout = (sessionId: number) => {
         silenceTimeoutRef.current?.interruptUnsafe();
@@ -152,8 +171,16 @@ export const useRecording = (callbacks: RecordingCallbacks = {}): UseRecordingRe
                     handleAudioBuffer(samples, sessionId);
                 }
             });
-            appRuntime.runFork(
+            recorderStartFiberRef.current = appRuntime.runFork(
                 Effect.tryPromise({ try: () => recorder.start(), catch: getErrorMessage }).pipe(
+                    Effect.tap(() =>
+                        Effect.sync(() => {
+                            if (sessionId !== sessionIdRef.current) {
+                                stopRecorderInstance(recorder);
+                            }
+                        })
+                    ),
+                    Effect.asVoid,
                     Effect.catch(error =>
                         Effect.gen(function* () {
                             yield* Effect.logError('recorder:start', { errorMessage: error });

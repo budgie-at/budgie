@@ -118,31 +118,33 @@ const handleSafeAreaChange: SafeAreaListenerProps['onChange'] = ({ insets }) => 
 
 const handleAppStateChange = (isActive: boolean): void => {
     appRuntime.runFork(
-        Effect.gen(function* () {
-            const workload = yield* Workload;
+        logAndContinue(
+            Effect.gen(function* () {
+                const workload = yield* Workload;
 
-            if (!isActive) {
-                yield* workload.interruptBackground;
+                if (!isActive) {
+                    yield* workload.interruptBackground;
 
-                return;
-            }
+                    return;
+                }
 
-            const appDataSyncService = yield* AppDataSyncService;
-            const historicalMarketDataDrainerService = yield* HistoricalMarketDataDrainerService;
-            const budgetPeriodCloseService = yield* BudgetPeriodCloseService;
+                const appDataSyncService = yield* AppDataSyncService;
+                const historicalMarketDataDrainerService = yield* HistoricalMarketDataDrainerService;
+                const budgetPeriodCloseService = yield* BudgetPeriodCloseService;
 
-            yield* logAndContinue(
-                workload.run(
-                    Effect.gen(function* () {
-                        if (yield* appDataSyncService.sync()) {
-                            yield* historicalMarketDataDrainerService.enqueueActiveAccounts().pipe(logAndContinue, Effect.forkDetach);
-                        }
-                    })
-                )
-            );
-            const now = yield* DateTime.nowAsDate;
-            yield* logAndContinue(workload.run(budgetPeriodCloseService.closeDuePeriods(now)));
-        })
+                yield* logAndContinue(
+                    workload.run(
+                        Effect.gen(function* () {
+                            if (yield* appDataSyncService.sync()) {
+                                yield* historicalMarketDataDrainerService.enqueueActiveAccounts().pipe(logAndContinue, Effect.forkDetach);
+                            }
+                        })
+                    )
+                );
+                const now = yield* DateTime.nowAsDate;
+                yield* logAndContinue(workload.run(budgetPeriodCloseService.closeDuePeriods(now)));
+            })
+        )
     );
 };
 
@@ -154,7 +156,10 @@ export const RootLayoutContent = () => {
     useAppInitialization(databaseMigrationStatus === DatabaseMigrationStatusEnum.MIGRATED);
     useAppState(handleAppStateChange);
 
-    if (databaseMigrationStatus === DatabaseMigrationStatusEnum.UNOPENABLE) {
+    if (
+        databaseMigrationStatus === DatabaseMigrationStatusEnum.UNOPENABLE ||
+        databaseMigrationStatus === DatabaseMigrationStatusEnum.FAILED
+    ) {
         return (
             <SafeAreaProvider initialMetrics={initialWindowMetrics}>
                 <LinguiProvider i18n={DATABASE_RESTORE_I18N}>

@@ -54,7 +54,8 @@ export const OnboardingSeal = () => {
         appRuntime.runFork(
             logAndContinue(
                 Effect.flatMap(AuthService, authService => authService.authenticateWithBiometrics()).pipe(
-                    Effect.tap(isAuthenticated => Effect.sync(() => void setIsBiometricEnabled(isAuthenticated)))
+                    Effect.tap(isAuthenticated => Effect.sync(() => void setIsBiometricEnabled(isAuthenticated))),
+                    toastOnFailure(t`Biometric authentication failed`)
                 )
             )
         );

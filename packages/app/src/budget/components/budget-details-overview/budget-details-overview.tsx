@@ -30,7 +30,9 @@ export const BudgetDetailsOverview = (props: Props) => {
     const displayStatus = resolveBudgetDisplayStatus(projection, budget.limitSource);
     const allocationBlock =
         budget.limitSource === BudgetLimitSourceEnum.FIXED ? null : (
-            <BudgetAllocationBlock projection={projection} budget={budget} currencySymbol={currencySymbol} />
+            <LoadingContent isLoading={isLoading}>
+                <BudgetAllocationBlock projection={projection} budget={budget} currencySymbol={currencySymbol} />
+            </LoadingContent>
         );
 
     return (

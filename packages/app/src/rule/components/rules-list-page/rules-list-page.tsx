@@ -5,6 +5,7 @@ import { Text } from 'react-native';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
+import { SearchablePageErrorState } from '../../../@generic/component/searchable-page-error-state/searchable-page-error-state';
 import { SearchablePageList } from '../../../@generic/component/searchable-page-list/searchable-page-list';
 import { SearchablePage } from '../../../@generic/component/searchable-page/searchable-page';
 import { useRulesListPageActions } from '../../hooks/use-rules-list-page-actions.hook';
@@ -24,17 +25,25 @@ interface Props {
 
 const RULES_LIST_SIZING: LegendListSizingInterface<RuleWithActionsRelationsEntityInterface> = { estimatedItemSize: 72, gap: 0 };
 
+const NO_RULES: RuleWithActionsRelationsEntityInterface[] = [];
+
 export const RulesListPage = ({ matchingRuleIds = [], onGoBack }: Props) => {
     const { t } = useLingui();
     const [search, setSearch] = useState('');
-    const { rules, handleDeleteRule, handleOpenRule, handleToggleRule } = useRulesListPageActions();
+    const { rules, isFailure, retry, handleDeleteRule, handleOpenRule, handleToggleRule } = useRulesListPageActions();
     const isMatchingRulesFilterActive = isNotEmptyArray(matchingRuleIds);
     const visibleRules = isMatchingRulesFilterActive && isDefined(rules) ? rules.filter(rule => matchingRuleIds.includes(rule.id)) : rules;
     const overlappingRuleIds = getOverlappingRuleIds(rules ?? []);
     const searchedRules = searchRules(visibleRules, search);
+    const listData = isFailure ? NO_RULES : searchedRules;
     const deleteConfirmation = { title: t`Delete this rule?`, description: t`Payments it already changed stay as they are.` };
     const getDeleteConfirmation = () => deleteConfirmation;
     const handleClearSearch = () => void setSearch('');
+    const emptyState = isFailure ? (
+        <SearchablePageErrorState onRetry={retry} />
+    ) : (
+        <RuleEmptyState search={search} onClearSearch={handleClearSearch} />
+    );
 
     const renderCard = (rule: RuleWithActionsRelationsEntityInterface, index: number, isLast: boolean) => (
         <RuleListRow
@@ -58,8 +67,8 @@ export const RulesListPage = ({ matchingRuleIds = [], onGoBack }: Props) => {
             searchInputTestID={RulesPageSelector.SearchInput}
         >
             <SearchablePageList
-                data={searchedRules}
-                emptyState={<RuleEmptyState search={search} onClearSearch={handleClearSearch} />}
+                data={listData}
+                emptyState={emptyState}
                 onDelete={handleDeleteRule}
                 getDeleteConfirmation={getDeleteConfirmation}
                 renderCard={renderCard}

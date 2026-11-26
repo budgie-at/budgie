@@ -53,7 +53,7 @@ export const TransferQuickForm = (props: Props) => {
     const { t } = useLingui();
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const { control, setValue, getValues } = useFormContext<TransactionCreateInputInterface>();
-    const { isDirty } = useFormState({ control });
+    const { isDirty, isSubmitting: isFormSubmitting } = useFormState({ control });
     const { validateAndShake } = useQuickFormValidation();
     const { handleDatePress } = useQuickFormModals();
     const { fromAccountId, toAccountId, fromAccount, toAccount } = useTransferAccounts();
@@ -83,7 +83,7 @@ export const TransferQuickForm = (props: Props) => {
     const conversion = useCurrencyConversion(fromInstrumentId, toInstrumentId, sourceKeypad.numericValue);
     const activeKeypad = isEditingDestination ? destinationKeypad : sourceKeypad;
     const isConfirmDisabled = [
-        props.isSubmitting,
+        props.isSubmitting || isFormSubmitting,
         ![isNewTransaction, isDirty, isEditingDestination].some(Boolean),
         !isEditingDestination && ![!conversion.isPending, isPositiveNumber(conversion.destinationAmount)].every(Boolean),
         ![sourceKeypad.numericValue, activeKeypad.numericValue].every(isPositiveNumber)

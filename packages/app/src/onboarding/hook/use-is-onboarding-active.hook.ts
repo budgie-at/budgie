@@ -1,4 +1,5 @@
 import { AccountEntityTable, AccountRepository } from '@budgie/contracts';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import * as Effect from 'effect/Effect';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
@@ -6,6 +7,7 @@ import { isPositiveNumber } from '@rnw-community/shared';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { databaseQueryAtom } from '../../@generic/utils/database-query-atom.util';
+import { isSettingsFailedAtom } from '../../settings/constants/settings-atoms.constant';
 import { useSetting } from '../../settings/hook/use-setting.hook';
 
 export const accountCountAtom = databaseQueryAtom(
@@ -16,9 +18,10 @@ export const accountCountAtom = databaseQueryAtom(
 export const useIsOnboardingActive = (): boolean => {
     const isOnboardingCompleted = useSetting('isOnboardingCompleted');
     const onboardingStep = useSetting('onboardingStep');
+    const settingsFailed = useAtomValue(isSettingsFailedAtom);
     const result = useLiveAtomValue(accountCountAtom);
 
-    if (AsyncResult.isInitial(result) || isOnboardingCompleted) {
+    if (AsyncResult.isInitial(result) || AsyncResult.isFailure(result) || settingsFailed || isOnboardingCompleted) {
         return false;
     }
 

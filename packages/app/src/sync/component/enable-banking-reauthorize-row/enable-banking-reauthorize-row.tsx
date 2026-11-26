@@ -3,13 +3,12 @@ import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { Text } from 'react-native';
 
-import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
-import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useBankIntegration } from '../../context/bank-integration.context';
 import { useExplainEnableBankingError } from '../../hook/use-explain-enable-banking-error.hook';
 import { EnableBankingConnectionService } from '../../service/enable-banking-connection.service';
+import { EnableBankingActionRow } from '../enable-banking-action-row/enable-banking-action-row';
 import { EnableBankingConnectionCardSelector } from '../enable-banking-connection-card/enable-banking-connection-card.selector';
 
 interface Props {
@@ -20,7 +19,7 @@ export const EnableBankingReauthorizeRow = ({ subtitle }: Props) => {
     const { t } = useLingui();
     const { integration } = useBankIntegration();
     const explainError = useExplainEnableBankingError();
-    const { run } = useSingleFlight();
+    const { run, isLoading } = useSingleFlight();
 
     const handlePress = () =>
         run(
@@ -31,10 +30,11 @@ export const EnableBankingReauthorizeRow = ({ subtitle }: Props) => {
         );
 
     return (
-        <GroupedListRow
-            left={<GroupedListIcon icon={UserIconNameEnum.RefreshCw} />}
-            title={<Text className="text-primary text-[17px] font-semibold">{t`Authorize again`}</Text>}
+        <EnableBankingActionRow
+            icon={UserIconNameEnum.RefreshCw}
+            title={t`Authorize again`}
             subtitle={<Text className="text-secondary-foreground text-[13px] leading-[18px]">{subtitle}</Text>}
+            isLoading={isLoading}
             onPress={handlePress}
             testID={EnableBankingConnectionCardSelector.Reauthorize}
         />

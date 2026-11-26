@@ -13,6 +13,7 @@ export class ModalStore {
     private readonly entries: ModalEntries = {};
     private readonly listeners = new Map<ModalRoute, Set<() => void>>();
     private readonly openers: ModalOpeners = {};
+    private nextEntryId = 0;
 
     opener<TRoute extends ModalRoute>(route: TRoute): ModalOpener<TRoute> {
         const openers: ModalOpeners<TRoute> = this.openers;
@@ -25,14 +26,21 @@ export class ModalStore {
 
     open<TRoute extends ModalRoute>(route: TRoute, params?: ModalParams<TRoute>, onResult?: (result: ModalResult<TRoute> | null) => void) {
         const entries: ModalEntries<TRoute> = this.entries;
+        const previousEntry = entries[route];
 
-        entries[route] = { params: params ?? null, onResult: onResult ?? emptyFn };
+        entries[route] = null;
+        previousEntry?.onResult(null);
+
+        this.nextEntryId += 1;
+        entries[route] = { id: this.nextEntryId, params: params ?? null, onResult: onResult ?? emptyFn };
         this.notify(route);
         router.push(route);
     }
 
-    resolve<TRoute extends ModalRoute>(route: TRoute, result: ModalResult<TRoute> | null, skipBack = false) {
-        if (!isDefined(this.entries[route])) {
+    resolve<TRoute extends ModalRoute>(route: TRoute, result: ModalResult<TRoute> | null, skipBack = false, entryId?: number) {
+        const currentEntryId = this.entries[route]?.id;
+
+        if (isDefined(entryId) && currentEntryId !== entryId) {
             return;
         }
 
@@ -44,11 +52,15 @@ export class ModalStore {
             }
         }
 
-        this.settle(route, result);
+        this.settle(route, result, entryId);
     }
 
-    dismiss(route: ModalRoute) {
-        this.settle(route, null);
+    dismiss(route: ModalRoute, entryId?: number) {
+        this.settle(route, null, entryId);
+    }
+
+    getEntryId(route: ModalRoute): number | null {
+        return this.entries[route]?.id ?? null;
     }
 
     getParams<TRoute extends ModalRoute>(route: TRoute): ModalParams<TRoute> | null {
@@ -68,9 +80,14 @@ export class ModalStore {
         };
     }
 
-    private settle<TRoute extends ModalRoute>(route: TRoute, result: ModalResult<TRoute> | null) {
+    private settle<TRoute extends ModalRoute>(route: TRoute, result: ModalResult<TRoute> | null, entryId?: number) {
         const entries: ModalEntries<TRoute> = this.entries;
         const entry = entries[route];
+        const currentEntryId = entry?.id;
+
+        if (!isDefined(currentEntryId) || (isDefined(entryId) && currentEntryId !== entryId)) {
+            return;
+        }
 
         entries[route] = null;
         this.notify(route);

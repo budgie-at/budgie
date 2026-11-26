@@ -1,7 +1,7 @@
 import * as Effect from 'effect/Effect';
 import * as Schedule from 'effect/Schedule';
 import { ImpactFeedbackStyle, NotificationFeedbackType } from 'expo-haptics';
-import { useRef } from 'react';
+import { useEffect, useEffectEvent, useRef } from 'react';
 import { Easing, SharedValue, useAnimatedReaction, useSharedValue, withTiming } from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
 
@@ -52,6 +52,7 @@ export const useLongPressHold = ({ onPress, onLongPressComplete, disabled = fals
     };
 
     const startHapticInterval = () => {
+        stopHapticInterval();
         hapticIntervalRef.current = appRuntime.runFork(
             Effect.repeat(
                 Effect.sync(() => void hapticImpact(ImpactFeedbackStyle.Light)),
@@ -59,6 +60,17 @@ export const useLongPressHold = ({ onPress, onLongPressComplete, disabled = fals
             )
         );
     };
+
+    const handleUnmount = useEffectEvent(() => {
+        stopHapticInterval();
+    });
+
+    useEffect(
+        () => () => {
+            handleUnmount();
+        },
+        []
+    );
 
     const handleComplete = () => {
         if (completedRef.current) {

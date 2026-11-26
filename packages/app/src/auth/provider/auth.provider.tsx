@@ -5,7 +5,7 @@ import { ReactNode, useEffect, useState } from 'react';
 import { AppState, AppStateStatus } from 'react-native';
 
 import { appRuntime } from '../../@generic/runtime/app.runtime';
-import { isSettingsLoadingAtom } from '../../settings/constants/settings-atoms.constant';
+import { isSettingsFailedAtom, isSettingsLoadingAtom } from '../../settings/constants/settings-atoms.constant';
 import { useSetting } from '../../settings/hook/use-setting.hook';
 import { SiriCatalogService } from '../../siri/service/siri-catalog.service';
 import { AuthContext, AuthContextInterface } from '../context/auth.context';
@@ -19,12 +19,13 @@ interface Props {
 
 export const AuthProvider = ({ children }: Props) => {
     const settingsLoading = useAtomValue(isSettingsLoadingAtom);
+    const settingsFailed = useAtomValue(isSettingsFailedAtom);
     const { biometricKind, isSomeAvailable } = useBiometricAvailability();
     const isPinEnabled = useSetting('isPinEnabled');
 
     const [isUnlocked, setIsUnlocked] = useState(hasFreshSealUnlockGrant);
 
-    const effectiveIsUnlocked = isUnlocked || (!settingsLoading && !isPinEnabled);
+    const effectiveIsUnlocked = isUnlocked || (!settingsLoading && !settingsFailed && !isPinEnabled);
 
     useEffect(() => {
         appRuntime.runFork(logAndContinue(Effect.flatMap(AuthService, authService => authService.consumeSealUnlockGrant())));

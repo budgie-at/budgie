@@ -8,6 +8,7 @@ import {
     TagEntityTable
 } from '@budgie/contracts';
 import { RuleRepository } from '@budgie/rules';
+import { useAtomRefresh } from '@effect/atom-react/Hooks';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
@@ -32,7 +33,14 @@ export const allRulesAtom = databaseQueryFamily(
 
 export const useGetAllRulesQuery = () => {
     const language = useSetting('language');
-    const result = useLiveAtomValue(allRulesAtom(language));
+    const atom = allRulesAtom(language);
+    const result = useLiveAtomValue(atom);
+    const retry = useAtomRefresh(atom);
 
-    return { rules: AsyncResult.getOrElse(result, () => null), isLoading: AsyncResult.isInitial(result) };
+    return {
+        rules: AsyncResult.getOrElse(result, () => null),
+        isLoading: AsyncResult.isInitial(result),
+        isFailure: AsyncResult.isFailure(result),
+        retry
+    };
 };

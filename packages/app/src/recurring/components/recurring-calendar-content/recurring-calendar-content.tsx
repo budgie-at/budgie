@@ -8,6 +8,7 @@ import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/sha
 
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
+import { SearchablePageErrorState } from '../../../@generic/component/searchable-page-error-state/searchable-page-error-state';
 import { useToday } from '../../../@generic/hook/use-today.hook';
 import { getCachedDateTimeFormat } from '../../../@generic/utils/date/get-cached-date-time-format.util';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
@@ -50,10 +51,9 @@ export const RecurringCalendarContent = ({ header }: Props) => {
         displayMonth: now.getMonth(),
         displayYear: now.getFullYear()
     });
-    const data = useRecurringCalendar(displayYear, displayMonth);
+    const { data, isLoading, isFailure, retry } = useRecurringCalendar(displayYear, displayMonth);
     const displayedMonthName = formatFullMonth(new Date(displayYear, displayMonth, 1));
     const summaryTitle = t`${displayedMonthName} bills`;
-    const isLoading = !isDefined(data);
 
     const entriesByDay = data?.entriesByDay ?? EMPTY_ENTRIES_BY_DAY;
     const forecastedEntriesByDay = data?.forecastedEntriesByDay ?? EMPTY_ENTRIES_BY_DAY;
@@ -79,7 +79,7 @@ export const RecurringCalendarContent = ({ header }: Props) => {
         dispatch({ type: RecurringCalendarActionTypeEnum.MONTH_CHANGED, year, month });
     };
 
-    const hasEntries = isDefined(data) && (data.entriesByDay.size > 0 || data.forecastedEntriesByDay.size > 0);
+    const hasEntries = entriesByDay.size > 0 || forecastedEntriesByDay.size > 0;
 
     const formattedDayExpense = formatDigits(
         convertFromMicroUnits(selectedEntries.reduce((total, entry) => total + entry.latestAmount, 0)),
@@ -88,21 +88,12 @@ export const RecurringCalendarContent = ({ header }: Props) => {
     const hasDetectedPayments = isPositiveNumber(data?.committedMonthlyExpense);
     const selectedDayTotal = isNotEmptyArray(selectedEntries) ? formattedDayExpense : '';
     const formattedForecastedTotal = formatDigits(forecastedTotalAmount, defaultInstrument.symbol);
-    const displayedTotal = isDefined(data) ? totalAmount + forecastedTotalAmount : 0;
+    const displayedTotal = totalAmount + forecastedTotalAmount;
 
-    return (
-        <ScreenChromeScrollView
-            style={scrollStyle}
-            testID={RecurringCalendarSelector.Container}
-            contentContainerStyle={scrollContentStyle}
-            includeTopSafeArea={false}
-            contentInsetTop={12}
-            contentInsetMode="additive"
-            showsVerticalScrollIndicator={false}
-            keyboardShouldPersistTaps="handled"
-            keyboardDismissMode="on-drag"
-        >
-            {header}
+    const calendarContent = isFailure ? (
+        <SearchablePageErrorState onRetry={retry} />
+    ) : (
+        <>
             <RecurringCalendarSummary
                 title={summaryTitle}
                 isLoading={isLoading}
@@ -170,6 +161,23 @@ export const RecurringCalendarContent = ({ header }: Props) => {
                     </RecurringCalendarEmptyState>
                 ) : null}
             </LoadingContent>
+        </>
+    );
+
+    return (
+        <ScreenChromeScrollView
+            style={scrollStyle}
+            testID={RecurringCalendarSelector.Container}
+            contentContainerStyle={scrollContentStyle}
+            includeTopSafeArea={false}
+            contentInsetTop={12}
+            contentInsetMode="additive"
+            showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
+            keyboardDismissMode="on-drag"
+        >
+            {header}
+            {calendarContent}
             <MenuSpacer />
         </ScreenChromeScrollView>
     );

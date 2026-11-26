@@ -12,5 +12,9 @@ export const useCloudBackups = () => {
         status: AsyncResult.isFailure(result) ? CloudBackupListingStatusEnum.FAILED : CloudBackupListingStatusEnum.READY
     }));
 
-    return { ...listing, isLoading: AsyncResult.isInitial(result) || result.waiting, refresh };
+    return {
+        ...listing,
+        isLoading: AsyncResult.isInitial(result) || (result.waiting && !AsyncResult.isSuccess(result)),
+        refresh
+    };
 };

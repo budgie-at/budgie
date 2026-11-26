@@ -2,7 +2,7 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
-import { isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { Button } from '../button/button';
 import { Card } from '../card/card';
@@ -15,11 +15,14 @@ interface Props {
     readonly error: Error | null;
     readonly onReportBug: () => void;
     readonly onRestart: () => void;
+    readonly onRetry?: () => void;
 }
 
-export const ErrorBoundaryFallback = ({ error, onReportBug, onRestart }: Props) => {
+export const ErrorBoundaryFallback = ({ error, onReportBug, onRestart, onRetry }: Props) => {
     const { t } = useLingui();
     const errorMessage = error?.message ?? '';
+    const showErrorDetails = __DEV__ && isNotEmptyString(errorMessage);
+    const reportBugVariant = isDefined(onRetry) ? 'secondary' : 'cta';
     const safeEdges: Edge[] = ['top', 'bottom'];
 
     return (
@@ -39,14 +42,17 @@ export const ErrorBoundaryFallback = ({ error, onReportBug, onRestart }: Props) 
                     </View>
                 </View>
 
-                {isNotEmptyString(errorMessage) ? (
+                {showErrorDetails ? (
                     <Card variant="destructive" size="md">
                         <Text className="font-mono text-xs leading-5 text-destructive-foreground">{errorMessage}</Text>
                     </Card>
                 ) : null}
 
                 <View className="gap-y-lg">
-                    <Button variant="cta" leftIcon={UserIconNameEnum.Bug} content={t`Report a Bug`} onPress={onReportBug} />
+                    {isDefined(onRetry) ? (
+                        <Button variant="cta" leftIcon={UserIconNameEnum.RotateCw} content={t`Try Again`} onPress={onRetry} />
+                    ) : null}
+                    <Button variant={reportBugVariant} leftIcon={UserIconNameEnum.Bug} content={t`Report a Bug`} onPress={onReportBug} />
                     <Button variant="ghost" leftIcon={UserIconNameEnum.RefreshCw} content={t`Restart App`} onPress={onRestart} />
                 </View>
             </View>

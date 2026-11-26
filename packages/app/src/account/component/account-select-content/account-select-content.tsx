@@ -18,10 +18,12 @@ interface Props {
     readonly data: AccountWithInstrumentEntityInterface[];
     readonly initialAccountId: number | null;
     readonly search: string;
+    readonly isLoading?: boolean;
     readonly onSelect: (accountId: number) => void;
     readonly emptyStateDescription?: string;
     readonly showDebtTotal: boolean;
     readonly createAction?: Pick<AccountSelectorCreateActionInterface, 'title' | 'subtitle'> & {
+        readonly isDisabled?: boolean;
         readonly onCreate: () => void;
     };
 }
@@ -29,7 +31,7 @@ interface Props {
 const keyExtractor = (item: AccountWithInstrumentEntityInterface) => item.id.toString();
 
 export const AccountSelectContent = (props: Props) => {
-    const { data, initialAccountId, search, onSelect, emptyStateDescription, showDebtTotal, createAction } = props;
+    const { data, initialAccountId, search, isLoading = false, onSelect, emptyStateDescription, showDebtTotal, createAction } = props;
     const { t } = useLingui();
     const contentContainerStyle = useFormsheetListContentStyle();
 
@@ -55,9 +57,23 @@ export const AccountSelectContent = (props: Props) => {
             />
         </View>
     );
+    const isCreateActionDisabled = createAction?.isDisabled ?? false;
+    const createActionPointerEvents = isCreateActionDisabled ? 'none' : 'auto';
+    const createActionClassName = isCreateActionDisabled ? 'opacity-50' : void 0;
+    const createActionAccessibilityState = { disabled: isCreateActionDisabled, busy: isCreateActionDisabled };
     const listHeaderComponent =
         isNotEmptyString(search) || !createAction ? null : (
-            <AccountSelectorCreateActionCard title={createAction.title} subtitle={createAction.subtitle} onCreate={createAction.onCreate} />
+            <View
+                pointerEvents={createActionPointerEvents}
+                className={createActionClassName}
+                accessibilityState={createActionAccessibilityState}
+            >
+                <AccountSelectorCreateActionCard
+                    title={createAction.title}
+                    subtitle={createAction.subtitle}
+                    onCreate={createAction.onCreate}
+                />
+            </View>
         );
 
     const listOptions = {
@@ -68,6 +84,13 @@ export const AccountSelectContent = (props: Props) => {
     const selectedIndex = data.findIndex(account => account.id === initialAccountId);
 
     return (
-        <SelectorList data={data} keyExtractor={keyExtractor} renderItem={renderItem} options={listOptions} selectedIndex={selectedIndex} />
+        <SelectorList
+            isLoading={isLoading}
+            data={data}
+            keyExtractor={keyExtractor}
+            renderItem={renderItem}
+            options={listOptions}
+            selectedIndex={selectedIndex}
+        />
     );
 };

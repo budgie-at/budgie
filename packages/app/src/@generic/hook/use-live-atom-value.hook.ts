@@ -89,6 +89,10 @@ const areLiveResultsEqual = <A, E>(previous: AsyncResult.AsyncResult<A, E>, next
         return true;
     }
 
+    if (AsyncResult.isInitial(previous) && AsyncResult.isInitial(next)) {
+        return true;
+    }
+
     if (AsyncResult.isSuccess(previous) && AsyncResult.isSuccess(next)) {
         return areStructurallyEqual(previous.value, next.value);
     }
@@ -106,11 +110,13 @@ export const useLiveAtomValue = <A, E>(atom: Atom.Atom<AsyncResult.AsyncResult<A
     const trackPendingRead = useRevealGateTrack();
     const trackRead = useEffectEvent(() => trackPendingRead());
 
-    if (!AsyncResult.isInitial(result) && !areLiveResultsEqual(settledResult, result)) {
+    const isSameResult = AsyncResult.isInitial(result) || areLiveResultsEqual(settledResult, result);
+
+    if (!isSameResult) {
         setSettledResult(result);
     }
 
-    const liveResult = AsyncResult.isInitial(result) || areLiveResultsEqual(settledResult, result) ? settledResult : result;
+    const liveResult = isSameResult ? settledResult : result;
     const isPending = AsyncResult.isInitial(liveResult);
 
     useLayoutEffect(() => (isPending ? trackRead() : emptyFn), [isPending]);

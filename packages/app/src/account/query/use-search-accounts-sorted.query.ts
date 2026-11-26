@@ -1,5 +1,7 @@
 import { AccountBalanceEntityTable, AccountEntityTable, AccountRepository, InstrumentEntityTable } from '@budgie/contracts';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
+import { useDeferredValue } from 'react';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
@@ -14,11 +16,14 @@ export const searchAccountsSortedAtom = databaseQueryFamily(
 );
 
 export const useSearchAccountsSortedQuery = (search = '', filter?: AccountFilterInterface) => {
-    const result = useLiveAtomValue(searchAccountsSortedAtom([search, filter ?? {}]));
+    const deferredSearch = useDeferredValue(search);
+    const atom = searchAccountsSortedAtom([deferredSearch, filter ?? {}]);
+    const result = useLiveAtomValue(atom);
+    const currentResult = useAtomValue(atom);
 
-    if (AsyncResult.isInitial(result)) {
-        return { isLoading: true, accounts: [] };
-    }
-
-    return { isLoading: false, accounts: AsyncResult.getOrElse(result, () => []) };
+    return {
+        accounts: AsyncResult.getOrElse(result, () => []),
+        isLoading: AsyncResult.isInitial(result),
+        isSearchPending: search !== deferredSearch || AsyncResult.isInitial(currentResult)
+    };
 };

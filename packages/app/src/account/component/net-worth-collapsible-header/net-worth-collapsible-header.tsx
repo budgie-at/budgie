@@ -58,6 +58,7 @@ export const NetWorthCollapsibleHeader = (props: Props) => {
         </View>
     );
 
+    const showCollapsedRunwayPill = isRunwayPillEnabled && !isLoading;
     const collapsedContent = (
         <View className="self-stretch flex-row items-center justify-between gap-x-md pr-[12px] pl-[16px]" pointerEvents="box-none">
             <Text
@@ -67,15 +68,17 @@ export const NetWorthCollapsibleHeader = (props: Props) => {
             >
                 <Trans>Total Balance</Trans>
             </Text>
-            {isRunwayPillEnabled ? <RunwayPill /> : null}
-            <ProtectedText
-                maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
-                numberOfLines={1}
-                className="text-[17px] font-semibold tracking-tight tabular-nums text-primary"
-                testID={HomePageSelector.NetWorthValueCollapsed(formattedNetWorthValue)}
-            >
-                {formattedNetWorth}
-            </ProtectedText>
+            {showCollapsedRunwayPill ? <RunwayPill /> : null}
+            <LoadingContent isLoading={isLoading} {...loadingIndicatorProps}>
+                <ProtectedText
+                    maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
+                    numberOfLines={1}
+                    className="text-[17px] font-semibold tracking-tight tabular-nums text-primary"
+                    testID={HomePageSelector.NetWorthValueCollapsed(formattedNetWorthValue)}
+                >
+                    {formattedNetWorth}
+                </ProtectedText>
+            </LoadingContent>
         </View>
     );
 

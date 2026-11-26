@@ -34,7 +34,7 @@ export const useBankIntegrationAccountPreviewsQuery = (integrationId: number) =>
 
     return {
         previews: AsyncResult.getOrElse(result, () => []),
-        isLoading: AsyncResult.isInitial(result) || result.waiting,
+        isLoading: AsyncResult.isInitial(result) || (result.waiting && !AsyncResult.isSuccess(result)),
         isKeyRejected: Schema.is(SyncUnauthorizedError)(error),
         hasError: isDefined(error),
         refresh

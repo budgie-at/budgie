@@ -1,7 +1,7 @@
 import { BudgetService } from '@budgie/budget';
 import { Trans, useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { isDefined, isEmptyArray } from '@rnw-community/shared';
 
@@ -27,7 +27,7 @@ interface Props {
 
 export const BudgetLimitChangesSheet = ({ budget }: Props) => {
     const { t } = useLingui();
-    const { run } = useSingleFlight();
+    const { run, isLoading: isUpdatingAutoTune } = useSingleFlight();
     const { limitChanges, isLoading, isError } = useGetBudgetLimitChangesQuery(budget.id);
     const { instrument } = useGetInstrumentByIdQuery(budget.instrumentId);
     const currencySymbol = isDefined(instrument) ? instrument.symbol : '';
@@ -49,6 +49,10 @@ export const BudgetLimitChangesSheet = ({ budget }: Props) => {
         return <BudgetSheetState title={t`Limit changes`} isLoading={false} isError />;
     }
 
+    const autoTunePointerEvents = isUpdatingAutoTune ? 'none' : 'auto';
+    const autoTuneClassName = isUpdatingAutoTune ? 'opacity-50' : void 0;
+    const autoTuneAccessibilityState = { disabled: isUpdatingAutoTune, busy: isUpdatingAutoTune };
+
     return (
         <ScrollableSheetCard
             header={<FormsheetHeader size="md" title={t`Limit changes`} />}
@@ -66,11 +70,13 @@ export const BudgetLimitChangesSheet = ({ budget }: Props) => {
                         ))}
                     </GroupedListSection>
                 )}
-                <BudgetAutoTuneSwitchRow
-                    value={budget.isAutoTuneEnabled}
-                    onValueChange={handleAutoTuneChange}
-                    testID={BudgetSelector.LimitChangesAutoTuneSwitch}
-                />
+                <View pointerEvents={autoTunePointerEvents} className={autoTuneClassName} accessibilityState={autoTuneAccessibilityState}>
+                    <BudgetAutoTuneSwitchRow
+                        value={budget.isAutoTuneEnabled}
+                        onValueChange={handleAutoTuneChange}
+                        testID={BudgetSelector.LimitChangesAutoTuneSwitch}
+                    />
+                </View>
             </LoadingContent>
         </ScrollableSheetCard>
     );
