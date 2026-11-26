@@ -21,8 +21,8 @@
         "lint": "oxlint --type-aware src",
         "test": "vitest run",
         "test:watch": "vitest",
-        "ts": "node ../../scripts/typecheck.cjs --noEmit -p tsconfig.json -p tsconfig.test.json",
-        "ts:native": "node ../../scripts/typecheck.cjs --native --noEmit -p tsconfig.json -p tsconfig.test.json"
+        "ts": "node ../../scripts/typecheck.cjs --noEmit -p tsconfig.json && node ../../scripts/typecheck.cjs --noEmit -p tsconfig.test.json",
+        "ts:native": "node ../../scripts/typecheck.cjs --native --noEmit -p tsconfig.json && node ../../scripts/typecheck.cjs --native --noEmit -p tsconfig.test.json"
     },
     "dependencies": {
         "@budgie/ai": "workspace:^",

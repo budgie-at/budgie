@@ -35,33 +35,6 @@ const selectCompiler = (platform, architecture, forceNative = false) => {
     return undefined;
 };
 
-const parseCompilerArguments = compilerArguments => {
-    const projects = [];
-    const sharedArguments = [];
-
-    for (let index = 0; index < compilerArguments.length; index += 1) {
-        const argument = compilerArguments[index];
-
-        if (argument === '-p' || argument === '--project') {
-            const nextArgument = compilerArguments[index + 1];
-
-            if (nextArgument !== undefined) {
-                projects.push(nextArgument);
-                index += 1;
-            }
-        } else if (argument.startsWith('--project=')) {
-            projects.push(argument.slice('--project='.length));
-        } else {
-            sharedArguments.push(argument);
-        }
-    }
-
-    return { projects, sharedArguments };
-};
-
-const getBuildInfoPath = (compiler, project) =>
-    path.resolve('node_modules', '.cache', `typecheck-${compiler}-${path.basename(project, '.json')}.json`);
-
 const runTypecheck = () => {
     const forceNative = process.argv[2] === '--native';
     const compiler = selectCompiler(process.platform, process.arch, forceNative);
@@ -77,92 +50,46 @@ const runTypecheck = () => {
     }
 
     const compilerArguments = process.argv.slice(forceNative ? 3 : 2);
+    const projectIndex = compilerArguments.findIndex(argument => argument === '-p' || argument === '--project');
+    const project = projectIndex === -1 ? 'tsconfig.json' : (compilerArguments[projectIndex + 1] ?? 'tsconfig.json');
     const compilerDirectory = path.dirname(require.resolve(`${compiler === 'tsrs' ? 'tsrs' : '@typescript/native'}/package.json`));
-    const compilerBinary = path.join(compilerDirectory, 'bin', compiler === 'tsrs' ? 'tsrs' : 'tsc');
-    const { projects, sharedArguments } = parseCompilerArguments(compilerArguments);
-    const invocations =
-        projects.length <= 1
-            ? [[...compilerArguments, '--tsBuildInfoFile', getBuildInfoPath(compiler, projects[0] ?? 'tsconfig.json')]]
-            : projects.map(project => [...sharedArguments, '-p', project, '--tsBuildInfoFile', getBuildInfoPath(compiler, project)]);
-
+    const child = spawn(
+        process.execPath,
+        [
+            path.join(compilerDirectory, 'bin', compiler === 'tsrs' ? 'tsrs' : 'tsc'),
+            ...compilerArguments,
+            '--tsBuildInfoFile',
+            path.resolve('node_modules', '.cache', `typecheck-${compiler}-${path.basename(project, '.json')}.json`)
+        ],
+        { stdio: 'inherit' }
+    );
     const signals = process.platform === 'win32' ? ['SIGINT', 'SIGTERM', 'SIGBREAK'] : ['SIGINT', 'SIGTERM', 'SIGHUP', 'SIGQUIT'];
-    const children = [];
     const handlers = new Map();
-    let pendingCount = invocations.length;
-    let firstFailureCode = 0;
-    let firstSignal = null;
-
-    const cleanupSignalHandlers = () => {
-        for (const [forwardedSignal, handler] of handlers) {
-            process.off(forwardedSignal, handler);
-        }
-    };
-
-    const handleChildSettled = () => {
-        pendingCount -= 1;
-
-        if (pendingCount === 0) {
-            cleanupSignalHandlers();
-
-            if (firstSignal !== null) {
-                process.kill(process.pid, firstSignal);
-                return;
-            }
-
-            process.exitCode = firstFailureCode;
-        }
-    };
-
-    for (const args of invocations) {
-        const child = spawn(process.execPath, [compilerBinary, ...args], { stdio: 'inherit' });
-        let settled = false;
-
-        children.push(child);
-
-        child.on('error', error => {
-            if (settled) {
-                return;
-            }
-
-            settled = true;
-            process.stderr.write(`[typecheck] ${error.message}\n`);
-
-            if (firstFailureCode === 0) {
-                firstFailureCode = 1;
-            }
-
-            handleChildSettled();
-        });
-
-        child.on('exit', (code, signal) => {
-            if (settled) {
-                return;
-            }
-
-            settled = true;
-
-            if (signal !== null && firstSignal === null) {
-                firstSignal = signal;
-            } else if (code !== 0 && firstFailureCode === 0) {
-                firstFailureCode = code ?? 1;
-            }
-
-            handleChildSettled();
-        });
-    }
 
     for (const signal of signals) {
-        const handler = () => {
-            for (const child of children) {
-                if (child.exitCode === null && child.signalCode === null) {
-                    child.kill(signal);
-                }
-            }
-        };
+        const handler = () => child.kill(signal);
 
         handlers.set(signal, handler);
         process.on(signal, handler);
     }
+
+    child.on('error', error => {
+        process.stderr.write(`[typecheck] ${error.message}\n`);
+        process.exitCode = 1;
+    });
+
+    child.on('exit', (code, signal) => {
+        for (const [forwardedSignal, handler] of handlers) {
+            process.off(forwardedSignal, handler);
+        }
+
+        if (signal !== null) {
+            process.kill(process.pid, signal);
+            return;
+        }
+
+        process.exitCode = code ?? 1;
+    });
 };
 
 module.exports = { selectCompiler };

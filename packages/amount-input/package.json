@@ -44,8 +44,8 @@
         "clear": "rm -rf coverage && rm -rf dist && rm -f *.tsbuildinfo",
         "lint": "oxlint --type-aware src",
         "test": "vitest run",
-        "ts": "node ../../scripts/typecheck.cjs --noEmit -p tsconfig.json -p tsconfig.build.json",
-        "ts:native": "node ../../scripts/typecheck.cjs --native --noEmit -p tsconfig.json -p tsconfig.build.json"
+        "ts": "node ../../scripts/typecheck.cjs --noEmit -p tsconfig.json && node ../../scripts/typecheck.cjs --noEmit -p tsconfig.build.json",
+        "ts:native": "node ../../scripts/typecheck.cjs --native --noEmit -p tsconfig.json && node ../../scripts/typecheck.cjs --native --noEmit -p tsconfig.build.json"
     },
     "dependencies": {
         "@rnw-community/shared": "^3.0.5",
