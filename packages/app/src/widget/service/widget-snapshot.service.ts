@@ -1,20 +1,4 @@
-import {
-    AccountBalanceEntityTable,
-    AccountEntityTable,
-    BudgetCategoryLimitEntityTable,
-    BudgetEntityTable,
-    BudgetPeriodSnapshotEntityTable,
-    BudgetSinkingFundEntityTable,
-    DebtEventEntityTable,
-    ExchangeRateEntityTable,
-    HistoricalExchangeRateEntityTable,
-    InstrumentDailyMarketPriceEntityTable,
-    SettingsEntityTable,
-    SyncEntityTable,
-    TransactionEntityTable,
-    TransactionEntryEntityTable,
-    logAndContinue
-} from '@budgie/contracts';
+import { logAndContinue } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as FiberSet from 'effect/FiberSet';
@@ -91,22 +75,6 @@ export class WidgetSnapshotService extends Context.Service<WidgetSnapshotService
             accessibilityDetail: '',
             stats: []
         };
-        const watchedTables = [
-            AccountEntityTable,
-            AccountBalanceEntityTable,
-            TransactionEntityTable,
-            TransactionEntryEntityTable,
-            ExchangeRateEntityTable,
-            HistoricalExchangeRateEntityTable,
-            InstrumentDailyMarketPriceEntityTable,
-            BudgetEntityTable,
-            BudgetCategoryLimitEntityTable,
-            BudgetPeriodSnapshotEntityTable,
-            BudgetSinkingFundEntityTable,
-            DebtEventEntityTable,
-            SettingsEntityTable,
-            SyncEntityTable
-        ];
         const writeSemaphore = yield* Semaphore.make(1);
         const isLocked = yield* Ref.make(false);
         const publishedSnapshotKey = yield* Ref.make('');
@@ -191,7 +159,7 @@ export class WidgetSnapshotService extends Context.Service<WidgetSnapshotService
                     return;
                 }
 
-                runFork(databaseChangeService.watchTables(watchedTables).pipe(Stream.runForEach(() => debouncePublish())));
+                runFork(Stream.runForEach(databaseChangeService.changes, () => debouncePublish()));
                 yield* debouncePublish();
             }),
             unlock: (): void => {

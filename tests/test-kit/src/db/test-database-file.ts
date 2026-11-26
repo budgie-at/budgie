@@ -8,13 +8,9 @@ import { isDefined } from '@rnw-community/shared';
 
 const SIDECAR_SUFFIXES = ['-wal', '-shm', '-journal'];
 
-export const acquireTestDatabasePath = (sourceDatabasePath: string | null) =>
+export const acquireTestDatabasePath = (sourceDatabasePath: string) =>
     Effect.acquireRelease(
         Effect.gen(function* () {
-            if (!isDefined(sourceDatabasePath)) {
-                return { path: ':memory:', temporaryDirectoryPath: null };
-            }
-
             const existingSidecar = SIDECAR_SUFFIXES.find(suffix => existsSync(`${sourceDatabasePath}${suffix}`));
 
             if (isDefined(existingSidecar)) {
@@ -34,8 +30,6 @@ export const acquireTestDatabasePath = (sourceDatabasePath: string | null) =>
         }),
         ({ temporaryDirectoryPath }) =>
             Effect.sync(() => {
-                if (isDefined(temporaryDirectoryPath)) {
-                    rmSync(temporaryDirectoryPath, { recursive: true, force: true });
-                }
+                rmSync(temporaryDirectoryPath, { recursive: true, force: true });
             })
     ).pipe(Effect.map(({ path }) => path));

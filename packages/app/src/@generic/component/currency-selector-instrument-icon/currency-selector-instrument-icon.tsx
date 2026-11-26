@@ -33,9 +33,11 @@ interface Props {
 }
 
 export const CurrencySelectorInstrumentIcon = ({ code, symbol, type, size = 48 }: Props) => {
+    const style = { width: size, height: size } as const;
+
     if (type === InstrumentTypeEnum.CRYPTO) {
         return (
-            <Suspense fallback={null}>
+            <Suspense fallback={<View className="rounded-full bg-surface-disc" style={style} />}>
                 <LazyCryptoCurrencyIcon code={code} size={size} className="bg-surface-disc" />
             </Suspense>
         );
@@ -45,7 +47,6 @@ export const CurrencySelectorInstrumentIcon = ({ code, symbol, type, size = 48 }
         return <InstrumentMonogram code={symbol} size={size} />;
     }
 
-    const style = { width: size, height: size } as const;
     const flag = CIRCLE_FLAGS[code.slice(0, 2).toUpperCase()] ?? null;
 
     if (isDefined(flag)) {

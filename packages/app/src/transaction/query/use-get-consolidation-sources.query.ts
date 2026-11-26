@@ -1,5 +1,5 @@
 import { TransactionConsolidationRepository, TransactionEntryTypeEnum, TransactionViewRepository } from '@budgie/contracts';
-import { useAtomRefresh } from '@effect/atom-react/Hooks';
+import { useAtomRefresh, useAtomValue } from '@effect/atom-react/Hooks';
 import * as Effect from 'effect/Effect';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import * as Atom from 'effect/reactivity/Atom';
@@ -60,6 +60,7 @@ export const useGetConsolidationSourcesQuery = (transactionId: number) => {
     const atom = consolidationSourcesAtom([transactionId, language]);
     const retry = useAtomRefresh(atom);
     const result = useLiveAtomValue(atom);
+    const rawResult = useAtomValue(atom);
     const data = AsyncResult.isSuccess(result) ? result.value : null;
 
     return {
@@ -67,6 +68,6 @@ export const useGetConsolidationSourcesQuery = (transactionId: number) => {
         consolidationType: data?.consolidationType ?? null,
         retry,
         hasError: AsyncResult.isFailure(result),
-        isLoading: AsyncResult.isInitial(result) || (result.waiting && !AsyncResult.isSuccess(result))
+        isLoading: rawResult.waiting
     };
 };

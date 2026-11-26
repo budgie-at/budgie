@@ -6,6 +6,10 @@ import * as Layer from 'effect/Layer';
 import * as ManagedRuntime from 'effect/ManagedRuntime';
 import * as Reactivity from 'effect/reactivity/Reactivity';
 
+import { isDefined } from '@rnw-community/shared';
+
+import { getBaselineSnapshot } from './baseline-snapshot';
+import { makeInMemoryTestSqliteClient } from './make-in-memory-test-sqlite-client';
 import { makeTestDatabase } from './make-test-database';
 import { snapshotTestDb } from './reset-test-db';
 import { acquireTestDatabasePath } from './test-database-file';
@@ -14,6 +18,13 @@ export const makeTestDbLayer = (sourceDatabasePath: string | null) =>
     Layer.effect(
         Db,
         Effect.gen(function* () {
+            if (!isDefined(sourceDatabasePath)) {
+                const snapshot = yield* getBaselineSnapshot;
+                const client = yield* makeInMemoryTestSqliteClient(snapshot);
+
+                return yield* makeTestDatabase(client);
+            }
+
             const path = yield* acquireTestDatabasePath(sourceDatabasePath);
             const client = yield* SqliteClient.make({ filename: path, prepareCacheSize: 0 });
 

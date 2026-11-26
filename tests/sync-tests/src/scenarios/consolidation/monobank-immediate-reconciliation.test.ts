@@ -1,7 +1,9 @@
 import { AccountTypeEnum, TransactionConsolidationTypeEnum } from '@budgie/contracts';
+import { MONOBANK_RATE_LIMIT_MS } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Clock from 'effect/Clock';
 import * as Deferred from 'effect/Deferred';
+import * as Duration from 'effect/Duration';
 import * as Effect from 'effect/Effect';
 import * as Fiber from 'effect/Fiber';
 
@@ -39,8 +41,13 @@ describe('consolidation/monobank-immediate-reconciliation', () => {
                         Effect.provideService(
                             Clock.Clock,
                             Object.assign(Object.create(clock), {
-                                sleep: () =>
-                                    Effect.andThen(Deferred.succeed(rateLimitWaitEntered, undefined), Deferred.await(releaseRateLimitWait))
+                                sleep: (duration: Duration.Duration) =>
+                                    Duration.toMillis(duration) === MONOBANK_RATE_LIMIT_MS
+                                        ? Deferred.succeed(rateLimitWaitEntered, undefined).pipe(
+                                              Effect.andThen(Deferred.await(releaseRateLimitWait)),
+                                              Effect.andThen(clock.sleep(duration))
+                                          )
+                                        : clock.sleep(duration)
                             })
                         )
                     )
@@ -55,9 +62,9 @@ describe('consolidation/monobank-immediate-reconciliation', () => {
             ).pipe(
                 Effect.tap(() =>
                     Effect.gen(function* () {
-                        expect(yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)).toEqual(
-                            []
-                        );
+                        expect(
+                            yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)
+                        ).toHaveLength(1);
                     })
                 ),
                 Effect.ensuring(Deferred.succeed(releaseRateLimitWait, undefined))

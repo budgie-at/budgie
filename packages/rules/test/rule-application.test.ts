@@ -1,4 +1,5 @@
 import {
+    AccountTypeEnum,
     CategoryEntityTable,
     CategorySourceEnum,
     RuleActionTypeEnum,
@@ -6,10 +7,12 @@ import {
     RuleConditionMatchTypeEnum,
     RuleConditionOperatorEnum,
     TagSourceEnum,
+    TransactionEntityTable,
     TransactionEntryEntityTable,
     TransactionEntryTypeEnum,
     TransactionTagsEntityTable,
-    TransactionTypeEnum
+    TransactionTypeEnum,
+    TransactionUpdatedByEnum
 } from '@budgie/contracts';
 import { RuleEngineService, RuleService } from '@budgie/rules';
 import { expect, layer } from '@effect/vitest';
@@ -68,6 +71,38 @@ const buildInput = (accountId: number): TransactionCreateInputInterface => ({
     tagIds: [],
     entries: [{ accountId, categoryId: null, mccCategoryId: null, type: TransactionEntryTypeEnum.CREDIT, amount: 10_000_000 }]
 });
+
+const emptyAction = { categoryId: null, tagId: null, accountId: null };
+
+const createActionRule = (action: Parameters<RuleService['Service']['create']>[0]['actions'][number]) =>
+    Effect.flatMap(RuleService, ruleService =>
+        ruleService.create({
+            enabled: true,
+            conditionMatchType: RuleConditionMatchTypeEnum.ALL,
+            conditions: [titleContains],
+            actions: [action]
+        })
+    );
+
+const seedExpenseWithTarget = Effect.gen(function* () {
+    const source = yield* testSeedService.account({ type: AccountTypeEnum.BANK });
+    const target = yield* testSeedService.account({ type: AccountTypeEnum.BANK });
+    const expense = yield* testSeedService.manualExpense({
+        accountId: source.id,
+        amount: 10_000_000,
+        operatedAt: new Date('2026-06-02T12:00:00.000Z'),
+        title: 'SPAR MARKET'
+    });
+
+    return { source, target, expense };
+});
+
+const readTransaction = (transactionId: number) =>
+    testDb
+        .select()
+        .from(TransactionEntityTable)
+        .where(eq(TransactionEntityTable.id, transactionId))
+        .pipe(Effect.map(([transaction]) => transaction));
 
 layer(TestLayer)('rules engine', it => {
     it.effect('applies the first SET_CATEGORY and every ADD_TAG to new transaction inputs with the RULE source', () =>
@@ -134,6 +169,60 @@ layer(TestLayer)('rules engine', it => {
             ]);
 
             expect(transactionInputs[0].ruleTagIds).toEqual([tag.id]);
+        })
+    );
+
+    it.effect('stamps updatedBy RULE on a convert-only match', () =>
+        Effect.gen(function* () {
+            const ruleEngineService = yield* RuleEngineService;
+            const { source, target, expense } = yield* seedExpenseWithTarget;
+            yield* createActionRule({ ...emptyAction, type: RuleActionTypeEnum.CONVERT_TO_TRANSFER, accountId: target.id });
+
+            yield* ruleEngineService.applyRulesToTransactions([expense.id], [buildInput(source.id)]);
+
+            expect(yield* readTransaction(expense.id)).toMatchObject({
+                type: TransactionTypeEnum.TRANSFER,
+                updatedBy: TransactionUpdatedByEnum.RULE
+            });
+        })
+    );
+
+    it.effect('stamps updatedBy RULE without moving updatedAt when the category is already set', () =>
+        Effect.gen(function* () {
+            const ruleEngineService = yield* RuleEngineService;
+            const { source, expense } = yield* seedExpenseWithTarget;
+            const [category] = yield* testDb.select().from(CategoryEntityTable);
+            yield* testDb
+                .update(TransactionEntryEntityTable)
+                .set({ categoryId: category.id, categorySource: CategorySourceEnum.RULE })
+                .where(eq(TransactionEntryEntityTable.transactionId, expense.id));
+            const updatedAt = new Date('2026-06-02T12:00:00.000Z');
+            yield* testDb.update(TransactionEntityTable).set({ updatedAt }).where(eq(TransactionEntityTable.id, expense.id));
+            yield* createActionRule({ ...emptyAction, type: RuleActionTypeEnum.SET_CATEGORY, categoryId: category.id });
+
+            yield* ruleEngineService.applyRulesToTransactions([expense.id], [buildInput(source.id)]);
+
+            expect(yield* readTransaction(expense.id)).toMatchObject({ updatedAt, updatedBy: TransactionUpdatedByEnum.RULE });
+        })
+    );
+
+    it.effect('leaves the transfer uncategorised when a convert rule precedes a category rule', () =>
+        Effect.gen(function* () {
+            const ruleEngineService = yield* RuleEngineService;
+            const { source, target, expense } = yield* seedExpenseWithTarget;
+            const [category] = yield* testDb.select().from(CategoryEntityTable);
+            yield* createActionRule({ ...emptyAction, type: RuleActionTypeEnum.CONVERT_TO_TRANSFER, accountId: target.id });
+            yield* createActionRule({ ...emptyAction, type: RuleActionTypeEnum.SET_CATEGORY, categoryId: category.id });
+
+            yield* ruleEngineService.applyRulesToTransactions([expense.id], [buildInput(source.id)]);
+
+            const entries = yield* testDb
+                .select()
+                .from(TransactionEntryEntityTable)
+                .where(eq(TransactionEntryEntityTable.transactionId, expense.id));
+
+            expect((yield* readTransaction(expense.id)).type).toBe(TransactionTypeEnum.TRANSFER);
+            expect(entries.map(entry => entry.categoryId)).toStrictEqual([null, null]);
         })
     );
 });

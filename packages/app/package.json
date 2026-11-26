@@ -1,6 +1,6 @@
 {
     "name": "@budgie-at/app",
-    "version": "6.193.1",
+    "version": "6.193.3",
     "private": true,
     "scripts": {
         "android": "expo run:android",
@@ -8,7 +8,7 @@
         "bundle:analyze": "EXPO_ATLAS=1 expo export --platform ios --output-dir dist/atlas && expo-atlas .expo/atlas.jsonl",
         "clear": "rimraf dist node_modules/.cache .turbo .expo",
         "db:generate": "drizzle-kit generate",
-        "eas-build-post-install": "cd ../.. && pnpm build",
+        "eas-build-post-install": "cd ../.. && pnpm exec turbo run build --filter='@budgie/*'",
         "generate:icons": "node --experimental-strip-types scripts/generate-icons-constant.ts",
         "i18n:compile": "lingui compile --strict --typescript",
         "i18n:extract": "lingui extract --overwrite --clean",
@@ -18,7 +18,8 @@
         "lint": "oxlint --type-aware src",
         "prebuild": "expo prebuild --clean",
         "prebuild:dev": "EXPO_PUBLIC_AI_DISABLE=true APP_VARIANT=development expo prebuild --clean",
-        "start": "expo start --dev-client -c",
+        "start": "expo start --dev-client",
+        "start:clear": "expo start --dev-client -c",
         "store:notes": "node --experimental-strip-types scripts/generate-store-release-notes.ts",
         "test": "vitest run",
         "ts": "node ../../scripts/typecheck.cjs --noEmit -p tsconfig.json",

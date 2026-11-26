@@ -1,8 +1,7 @@
+import { YIELD_TO_UI } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 
 import { isDefined } from '@rnw-community/shared';
-
-import { CONSOLIDATION_YIELD } from '../../shared/constant/consolidation-yield.constant';
 
 import type { ConsolidationFamilyDefinitionInterface } from '../interface/consolidation-family-definition.interface';
 import type { ConsolidationFamilyRunContextInterface } from '../interface/consolidation-family-run-context.interface';
@@ -27,12 +26,12 @@ export const makeConsolidationFamilyStrategy = <Candidate>(definition: Consolida
 
     const buildRunnableCandidates = Effect.fnUntraced(function* (context: ConsolidationFamilyRunContextInterface) {
         const candidates = yield* definition.findCandidates(context.scope);
-        yield* CONSOLIDATION_YIELD;
+        yield* YIELD_TO_UI;
         const scopeTransactionIds = isDefined(context.scope) ? new Set(context.scope.transactionIds) : null;
         const runnableCandidates = candidates.filter(candidate =>
             isCandidateRunnable(candidate, context.blockedSourceTransactionIds, scopeTransactionIds)
         );
-        yield* CONSOLIDATION_YIELD;
+        yield* YIELD_TO_UI;
 
         return runnableCandidates;
     });
@@ -41,7 +40,7 @@ export const makeConsolidationFamilyStrategy = <Candidate>(definition: Consolida
         const processedCandidateCount = candidateIndex + 1;
 
         if (processedCandidateCount < candidateCount && processedCandidateCount % yieldEveryCandidates === 0) {
-            yield* CONSOLIDATION_YIELD;
+            yield* YIELD_TO_UI;
         }
     });
 
@@ -76,7 +75,7 @@ export const makeConsolidationFamilyStrategy = <Candidate>(definition: Consolida
         const consolidated = yield* processCandidateList(candidates);
 
         context.onProgress?.(found);
-        yield* CONSOLIDATION_YIELD;
+        yield* YIELD_TO_UI;
 
         return { consolidated, found };
     });

@@ -1,28 +1,18 @@
 {
     "ignore": [
         ".agents/**",
-        ".claude/**",
-        ".codex/**",
-        "packages/landing/**",
-        "packages/app/babel.config.js",
-        "packages/app/lingui.config.js",
         "packages/app/fingerprint.config.js",
         "scripts/after-install.cjs",
         "tests/app-tests/scripts/prepare-date-sensitive-fixtures.js",
         "packages/sync/babel.config.js",
         "packages/amount-input/babel.config.bob.js",
         "tsconfig.json",
-        "packages/contracts/src/**/*.enum.ts",
-        "packages/app/scripts/bench-budget-spent.ts",
         "packages/app/scripts/generate-social-posts.mjs",
         "packages/app/scripts/social-posts/**/*.mjs",
-        "packages/app/scripts/generate-icons-constant.ts",
-        "packages/app/scripts/bench-util.ts"
+        "packages/landing/**"
     ],
     "ignoreDependencies": [
         "husky",
-        "@lingui/cli",
-        "@lingui/format-po",
         "@expo/fingerprint",
         "react-compiler-runtime",
         "@oxlint/migrate",
@@ -30,11 +20,7 @@
         "babel-plugin-react-compiler",
         "eas-build-cache-provider",
         "@types/react-dom",
-        "rimraf",
         "emojibase-data"
-    ],
-    "ignoreBinaries": [
-        "build"
     ],
     "workspaces": {
         "tests/sync-tests": {

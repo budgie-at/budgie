@@ -7,16 +7,23 @@
             "outputs": ["dist/**", "build/**"]
         },
         "ts": {
-            "dependsOn": ["^ts", "^build"],
+            "dependsOn": ["^build"],
+            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**", "$TURBO_ROOT$/packages/app/drizzle/**"],
             "outputs": []
         },
         "@budgie/categorization#ts": {
-            "dependsOn": ["^ts", "^build", "build"],
+            "dependsOn": ["^build", "build"],
+            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**", "$TURBO_ROOT$/packages/app/drizzle/**"],
             "outputs": []
         },
         "@budgie/rules#ts": {
-            "dependsOn": ["^ts", "^build", "build"],
+            "dependsOn": ["^build", "build"],
+            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**", "$TURBO_ROOT$/packages/app/drizzle/**"],
             "outputs": []
+        },
+        "ts:native": {
+            "dependsOn": ["^build"],
+            "outputs": ["node_modules/.cache/typecheck-native-*.json"]
         },
         "clear": {
             "outputs": []
@@ -35,37 +42,16 @@
             "outputs": ["dist/**", ".next/**", "node_modules/.cache/tsbuildinfo.json"]
         },
         "test": {
-            "dependsOn": ["^build", "build"]
+            "dependsOn": ["^build"],
+            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**", "$TURBO_ROOT$/packages/app/drizzle/**"]
         },
-        "//#cpd": {
-            "outputs": ["report/jscpd/**"]
+        "@budgie/categorization#test": {
+            "dependsOn": ["^build", "build"],
+            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**", "$TURBO_ROOT$/packages/app/drizzle/**"]
         },
-        "//#deadcode": {
-            "outputs": []
-        },
-        "ts:native": {
-            "dependsOn": ["^ts:native", "^build"],
-            "outputs": ["node_modules/.cache/typecheck-native-*.json"]
-        },
-        "@budgie-at/sync-tests#ts": {
-            "dependsOn": ["^ts", "^build"],
-            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**"],
-            "outputs": []
-        },
-        "@budgie-at/consolidation-tests#ts": {
-            "dependsOn": ["^ts", "^build"],
-            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**"],
-            "outputs": []
-        },
-        "@budgie-at/budget-tests#ts": {
-            "dependsOn": ["^ts", "^build"],
-            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**"],
-            "outputs": []
-        },
-        "@budgie-at/test-kit#ts": {
-            "dependsOn": ["^ts", "^build"],
-            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**"],
-            "outputs": []
+        "@budgie/rules#test": {
+            "dependsOn": ["^build", "build"],
+            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**", "$TURBO_ROOT$/packages/app/drizzle/**"]
         }
     },
     "agentGuidance": false

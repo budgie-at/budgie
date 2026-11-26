@@ -1,5 +1,7 @@
 name: Deploy production
 env:
+  TURBO_TEAM: vitalyiegorov
+  TURBO_TOKEN: ${{ secrets.VERCEL_TOKEN }}
   EXPO_APPLE_TEAM_TYPE: INDIVIDUAL
   EXPO_APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
   GH_TOKEN: ${{ secrets.PUSH_TO_PROTECTED_TOKEN }}
