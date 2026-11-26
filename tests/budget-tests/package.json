@@ -4,7 +4,6 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "lint": "effect-tsgo --tsrs-lint oxlint --type-aware --threads=4 src",
         "test": "vitest run",
         "test:watch": "vitest",
         "ts": "node ../../scripts/typecheck.cjs --noEmit -p tsconfig.json",

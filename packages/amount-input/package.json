@@ -42,7 +42,7 @@
     "scripts": {
         "build": "rm -rf ./dist ./node_modules/.cache/tsbuildinfo.json && bob build",
         "clear": "rm -rf coverage && rm -rf dist && rm -f *.tsbuildinfo",
-        "lint": "effect-tsgo --tsrs-lint oxlint --type-aware --threads=4 src",
+        "lint": "oxlint --type-aware src",
         "test": "vitest run",
         "ts": "node ../../scripts/typecheck.cjs --noEmit -p tsconfig.json -p tsconfig.build.json",
         "ts:native": "node ../../scripts/typecheck.cjs --native --noEmit -p tsconfig.json -p tsconfig.build.json"

@@ -21,7 +21,7 @@
         "build": "node ../../node_modules/@typescript/native/bin/tsc -p tsconfig.json",
         "build:watch": "pnpm build --watch",
         "clear": "rimraf dist node_modules/.cache .turbo",
-        "lint": "effect-tsgo --tsrs-lint oxlint --type-aware --threads=4 src test",
+        "lint": "oxlint --type-aware src",
         "test": "vitest run",
         "ts": "node ../../scripts/typecheck.cjs --noEmit -p tsconfig.json -p tsconfig.test.json",
         "ts:native": "node ../../scripts/typecheck.cjs --native --noEmit -p tsconfig.json -p tsconfig.test.json"

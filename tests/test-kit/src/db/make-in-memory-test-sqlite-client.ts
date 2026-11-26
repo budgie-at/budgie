@@ -95,7 +95,7 @@ const toSqliteCause = (cause: unknown): unknown => {
 };
 
 const isSqliteParam = (value: unknown): value is SQLInputValue =>
-    value === null || isNumber(value) || typeof value === 'bigint' || isString(value) || value instanceof Uint8Array;
+    value === null || isNumber(value) || typeof value === 'bigint' || isString(value) || ArrayBuffer.isView(value);
 
 const toSqliteParams = (params: ReadonlyArray<unknown>): ReadonlyArray<SQLInputValue> => {
     if (!params.every(isSqliteParam)) {
