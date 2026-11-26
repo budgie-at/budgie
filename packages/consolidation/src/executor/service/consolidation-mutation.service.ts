@@ -167,23 +167,47 @@ export class ConsolidationMutationService extends Context.Service<ConsolidationM
                 return canonicalTransaction;
             });
 
+            const buildFeeEntryKey = (entry: Pick<TransactionEntryEntityInterface, 'accountId' | 'amount'>): string =>
+                `${entry.accountId}:${entry.amount}`;
+
             const createMissingTransferFeeEntries = Effect.fn('ConsolidationMutationService.createMissingTransferFeeEntries')(function* (
                 targetEntries: readonly TransactionEntryEntityInterface[],
                 sourceTransactions: readonly TransactionWithEntriesEntityInterface[],
                 canonicalTransactionId: number,
                 candidateAccountIds?: readonly number[]
             ) {
-                const existingFeeAccountIds = new Set(targetEntries.filter(isFeeEntry).map(entry => entry.accountId));
-                const accountIds = (candidateAccountIds ?? collectDistinctAccountIds(sourceTransactions)).filter(
-                    accountId => !existingFeeAccountIds.has(accountId)
-                );
-                const feeEntries = findFeeEntries(accountIds, sourceTransactions);
+                const existingFeeCounts = new Map<string, number>();
 
-                if (isEmptyArray(feeEntries)) {
+                for (const entry of targetEntries) {
+                    if (!isDefined(entry.originalTransactionId) && isFeeEntry(entry)) {
+                        const feeKey = buildFeeEntryKey(entry);
+
+                        existingFeeCounts.set(feeKey, (existingFeeCounts.get(feeKey) ?? 0) + 1);
+                    }
+                }
+
+                const candidateFeeEntries = findFeeEntries(
+                    candidateAccountIds ?? collectDistinctAccountIds(sourceTransactions),
+                    sourceTransactions
+                );
+                const missingFeeEntries: TransactionEntryEntityInterface[] = [];
+
+                for (const feeEntry of candidateFeeEntries) {
+                    const feeKey = buildFeeEntryKey(feeEntry);
+                    const remainingExistingCount = existingFeeCounts.get(feeKey) ?? 0;
+
+                    if (isPositiveNumber(remainingExistingCount)) {
+                        existingFeeCounts.set(feeKey, remainingExistingCount - 1);
+                    } else {
+                        missingFeeEntries.push(feeEntry);
+                    }
+                }
+
+                if (isEmptyArray(missingFeeEntries)) {
                     return;
                 }
 
-                yield* createCanonicalFeeEntries(feeEntries, canonicalTransactionId);
+                yield* createCanonicalFeeEntries(missingFeeEntries, canonicalTransactionId);
             });
 
             const moveSourcesToCanonical = Effect.fn('ConsolidationMutationService.moveSourcesToCanonical')(function* (

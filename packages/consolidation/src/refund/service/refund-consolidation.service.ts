@@ -23,6 +23,7 @@ import { RefundAlreadyConsolidatedError } from '../error/refund-already-consolid
 import { RefundExceedsExpenseError } from '../error/refund-exceeds-expense.error';
 import { RefundNotFromIncomeError } from '../error/refund-not-from-income.error';
 import { RefundTransactionNotFoundError } from '../error/refund-transaction-not-found.error';
+import { computeRefundCapacityUsage } from '../utils/compute-refund-capacity-usage.util';
 import { isPrivatbankClosedByAbsorbedRefunds } from '../utils/is-privatbank-closed-by-absorbed-refunds.util';
 
 import type { ConvertToRefundParamsInterface } from '../interface/convert-to-refund-params.interface';
@@ -85,29 +86,40 @@ export class RefundConsolidationService extends Context.Service<RefundConsolidat
                 expenseEntry: TransactionEntryEntityInterface
             ) {
                 const absorbedEntries = getAbsorbedRefundEntries(expenseTransaction.entries);
+                const absorbedSourceIds = absorbedEntries.map(entry => entry.originalTransactionId).filter(isDefined);
+                const absorbedSources = isNotEmptyArray(absorbedSourceIds) ? yield* transactionRepository.findByIds(absorbedSourceIds) : [];
+                const absorbedSourcesById = new Map(absorbedSources.map(source => [source.id, source]));
 
-                if (isNotEmptyArray(absorbedEntries)) {
-                    const absorbedSourcesById = new Map(
-                        (yield* transactionRepository.findByIds(
-                            absorbedEntries.map(entry => entry.originalTransactionId).filter(isDefined)
-                        )).map(source => [source.id, source])
-                    );
-
-                    if (
-                        isPrivatbankClosedByAbsorbedRefunds(
-                            absorbedEntries,
-                            absorbedSourcesById,
-                            expenseTransaction.externalSource ?? null,
-                            expenseEntry
-                        )
-                    ) {
-                        return yield* RefundExceedsExpenseError.make();
-                    }
+                if (
+                    isPrivatbankClosedByAbsorbedRefunds(
+                        absorbedEntries,
+                        absorbedSourcesById,
+                        expenseTransaction.externalSource ?? null,
+                        expenseEntry
+                    )
+                ) {
+                    return yield* RefundExceedsExpenseError.make();
                 }
 
-                const existingRefundAmount = absorbedEntries.reduce((total, entry) => total + entry.amount, 0);
+                const { feeAmount, absorbedFeeTotal, absorbedPrincipalTotal, isRejectedFeeTitle } = computeRefundCapacityUsage({
+                    expenseEntries: expenseTransaction.entries,
+                    expenseAccountId: expenseEntry.accountId,
+                    absorbedEntries,
+                    absorbedSourceById: absorbedSourcesById,
+                    incomingTitle: refundIncomeTransaction.title
+                });
+
+                if (isRejectedFeeTitle && isPositiveNumber(feeAmount)) {
+                    if (refundIncomeEntry.amount + absorbedFeeTotal > feeAmount) {
+                        return yield* RefundExceedsExpenseError.make();
+                    }
+
+                    return;
+                }
+
                 const isPrivatbankFullRefund =
-                    existingRefundAmount === 0 &&
+                    absorbedPrincipalTotal === 0 &&
+                    !isRejectedFeeTitle &&
                     isPrivatbankSameOriginalAmount(
                         refundIncomeTransaction.externalSource ?? null,
                         refundIncomeEntry,
@@ -115,7 +127,7 @@ export class RefundConsolidationService extends Context.Service<RefundConsolidat
                         expenseEntry
                     );
 
-                if (refundIncomeEntry.amount + existingRefundAmount > expenseEntry.amount && !isPrivatbankFullRefund) {
+                if (refundIncomeEntry.amount + absorbedPrincipalTotal > expenseEntry.amount && !isPrivatbankFullRefund) {
                     return yield* RefundExceedsExpenseError.make();
                 }
             });

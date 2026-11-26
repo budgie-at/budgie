@@ -22,16 +22,20 @@ import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 const TITLE_DIGIT_SUFFIX_MIN_LENGTH = 6;
 const EXTRA_UPPER_CANCEL_PREFIX = 'СКАСУВАННЯ.';
 
-const AUTO_TITLE_PREFIXES: readonly string[] = [...REFUND_TITLE_PREFIXES.auto, EXTRA_UPPER_CANCEL_PREFIX].sort(
-    (left, right) => right.length - left.length
-);
+const sortPrefixesLongestFirst = (prefixes: readonly string[]): readonly string[] =>
+    [...prefixes, EXTRA_UPPER_CANCEL_PREFIX].sort((left, right) => right.length - left.length);
 
-const REVIEW_TITLE_PREFIXES: readonly string[] = [...REFUND_TITLE_PREFIXES.review, EXTRA_UPPER_CANCEL_PREFIX].sort(
-    (left, right) => right.length - left.length
-);
+const AUTO_TITLE_PREFIXES = sortPrefixesLongestFirst(REFUND_TITLE_PREFIXES.auto);
+const REVIEW_TITLE_PREFIXES = sortPrefixesLongestFirst(REFUND_TITLE_PREFIXES.review);
 
 const buildStripPrefixesSql = (column: string, prefixes: readonly string[]): string =>
     `CASE ${prefixes.map(prefix => `WHEN SUBSTR(${column}, 1, ${prefix.length}) = '${prefix}' THEN TRIM(SUBSTR(${column}, ${prefix.length + 1}))`).join(' ')} ELSE ${column} END`;
+
+const buildConditionalStripSql = (previousColumn: string, priorColumn: string, prefixes: readonly string[]): string =>
+    `CASE WHEN ${previousColumn} != ${priorColumn} THEN ${buildStripPrefixesSql(previousColumn, prefixes)} ELSE ${previousColumn} END`;
+
+const buildOptionalReviewColSql = (includeReview: boolean, expressionSql: string, alias: string): string =>
+    includeReview ? `, ${expressionSql} AS ${alias}` : '';
 
 const buildStripCommaSuffixSql = (column: string): string =>
     `TRIM(CASE WHEN INSTR(${column}, ',') > 0 THEN SUBSTR(${column}, 1, INSTR(${column}, ',') - 1) ELSE ${column} END)`;
@@ -76,7 +80,9 @@ const REJECTED_PRINCIPAL_COND_SQL = '(inc.isRejectedPrincipal = 1 AND inc.amount
 const PRIVATBANK_CATEGORY_REFUND_PREFIX_SQL = buildPrefixLikeSql('rawNormTitle', REFUND_TITLE_PREFIXES.privatbankCategoryRefund);
 const PRIVATBANK_ORIGINAL_COND_SQL = `(inc.isPrivatbankRefund = 1 AND ${PRIVATBANK_SAME_ORIGINAL_AMOUNT_SQL})`;
 const REJECTED_FEE_PREFIX_SQL = buildPrefixLikeSql('rawNormTitle', REFUND_TITLE_PREFIXES.rejectedPaymentFee);
-const REJECTED_FEE_COND_SQL = '(inc.isRejectedFee = 1 AND exp.feeAmount > 0 AND inc.amount = exp.feeAmount)';
+const INDIVIDUAL_FEE_MATCH_EXISTS_SQL = `EXISTS (SELECT 1 FROM transaction_entries expense_fee_entry INDEXED BY transaction_entries_live_transaction_account_amount_idx WHERE expense_fee_entry.transaction_id = exp.expenseTxId AND expense_fee_entry.account_id = exp.accountId AND expense_fee_entry.deleted_at IS NULL AND expense_fee_entry.original_transaction_id IS NULL AND expense_fee_entry.type = '${TransactionEntryTypeEnum.FEE}' AND expense_fee_entry.amount = inc.amount)`;
+const REJECTED_FEE_AMOUNT_MATCH_SQL = `(exp.feeAmount = inc.amount OR ${INDIVIDUAL_FEE_MATCH_EXISTS_SQL})`;
+const REJECTED_FEE_COND_SQL = `(inc.isRejectedFee = 1 AND exp.feeAmount > 0 AND ${REJECTED_FEE_AMOUNT_MATCH_SQL})`;
 const REVIEW_MCC_MATCH_SQL = '(inc.mccCategoryId = exp.mccCategoryId OR (inc.mccCategoryId IS NULL AND exp.mccCategoryId IS NULL))';
 
 const NOT_ANY_AUTO_FOR_REVIEW_SQL = `NOT (inc.accountId = exp.accountId AND (inc.operatedAt - exp.operatedAt) <= ${REFUND_TIME_WINDOW_SECONDS} AND (COALESCE(${LOCALIZED_TITLE_COND_SQL}, 0) = 1 OR COALESCE(${REJECTED_PRINCIPAL_COND_SQL}, 0) = 1 OR COALESCE(${PRIVATBANK_ORIGINAL_COND_SQL}, 0) = 1 OR COALESCE(${REJECTED_FEE_COND_SQL}, 0) = 1))`;
@@ -102,13 +108,11 @@ const buildIncomeBoundsCtesSql = (includeReview: boolean): string => {
 const EXPENSE_FLAGS_CTE_SQL = `expense_flags AS MATERIALIZED (SELECT COALESCE(MAX(CASE WHEN autoSuffixBaseTitle IS NOT NULL THEN 1 ELSE 0 END), 0) AS hasExpSuffix FROM expense_entries)`;
 
 const wrapNormalizedTitleLayersSql = (cteName: string, autoNormSql: string, innerSelectSql: string, includeReview: boolean): string => {
-    const reviewNormSql = includeReview ? `, ${buildStripPrefixesSql('rawNormTitle', REVIEW_TITLE_PREFIXES)} AS reviewNormTitle` : '';
-    const reviewMerchantSql = includeReview ? `, ${buildStripCommaSuffixSql('reviewNormTitle')} AS reviewMerchantNormTitle` : '';
+    const pass1Sql = `SELECT *, ${buildStripPrefixesSql('rawNormTitle', AUTO_TITLE_PREFIXES)} AS autoPrefixPass1${buildOptionalReviewColSql(includeReview, buildStripPrefixesSql('rawNormTitle', REVIEW_TITLE_PREFIXES), 'reviewPrefixPass1')} FROM (${innerSelectSql} LIMIT -1) LIMIT -1`;
+    const pass2Sql = `SELECT *, ${buildConditionalStripSql('autoPrefixPass1', 'rawNormTitle', AUTO_TITLE_PREFIXES)} AS autoPrefixPass2${buildOptionalReviewColSql(includeReview, buildConditionalStripSql('reviewPrefixPass1', 'rawNormTitle', REVIEW_TITLE_PREFIXES), 'reviewPrefixPass2')} FROM (${pass1Sql}) LIMIT -1`;
+    const pass3Sql = `SELECT *, ${buildConditionalStripSql('autoPrefixPass2', 'autoPrefixPass1', AUTO_TITLE_PREFIXES)} AS autoPrefixStripped${buildOptionalReviewColSql(includeReview, buildConditionalStripSql('reviewPrefixPass2', 'reviewPrefixPass1', REVIEW_TITLE_PREFIXES), 'reviewNormTitle')} FROM (${pass2Sql}) LIMIT -1`;
 
-    return `${cteName} AS MATERIALIZED (
-        SELECT *, ${buildDigitSuffixBaseTitleSql('autoNormTitle')} AS autoSuffixBaseTitle
-        FROM (SELECT *, ${autoNormSql} AS autoNormTitle${reviewMerchantSql} FROM (SELECT *, ${buildStripPrefixesSql('rawNormTitle', AUTO_TITLE_PREFIXES)} AS autoPrefixStripped${reviewNormSql} FROM (${innerSelectSql})))
-    )`;
+    return `${cteName} AS MATERIALIZED (SELECT *, ${buildDigitSuffixBaseTitleSql('autoNormTitle')} AS autoSuffixBaseTitle FROM (SELECT *, ${autoNormSql} AS autoNormTitle${buildOptionalReviewColSql(includeReview, buildStripCommaSuffixSql('reviewNormTitle'), 'reviewMerchantNormTitle')} FROM (${pass3Sql}) LIMIT -1))`;
 };
 
 const buildExpenseMetricsSql = (): string => `
@@ -257,8 +261,8 @@ const AUTO_BRANCH_SPECS: readonly (readonly [string, string, string, (readonly [
     ],
     [
         'AUTO_REFUND_REJECTED_PAYMENT_FEE_TITLE',
-        'exp.accountId = inc.accountId AND exp.feeAmount = inc.amount',
-        `inc.isRejectedFee = 1 AND exp.feeAmount > 0 AND ${AUTO_WINDOW_SQL} ${buildExcludeCondsSql([EXACT_TITLE_COND_SQL, LOCALIZED_TITLE_COND_SQL, REJECTED_PRINCIPAL_COND_SQL, PRIVATBANK_ORIGINAL_COND_SQL])}`,
+        'exp.accountId = inc.accountId',
+        `inc.isRejectedFee = 1 AND exp.feeAmount > 0 AND ${REJECTED_FEE_AMOUNT_MATCH_SQL} AND ${AUTO_WINDOW_SQL} ${buildExcludeCondsSql([EXACT_TITLE_COND_SQL, LOCALIZED_TITLE_COND_SQL, REJECTED_PRINCIPAL_COND_SQL, PRIVATBANK_ORIGINAL_COND_SQL])}`,
         ['income_bounds', 'hasRejectedFee']
     ]
 ];

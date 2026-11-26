@@ -1,7 +1,7 @@
 import { CategorySourceEnum, TransactionConsolidationTypeEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 
 export const MISSING_TRANSFER_FEE_ENTRIES_SQL = `
-    WITH ranked_missing_fees AS (
+    WITH ranked_moved_fees AS (
         SELECT
             moved_entry.transaction_id AS transactionId,
             moved_entry.account_id AS accountId,
@@ -14,7 +14,7 @@ export const MISSING_TRANSFER_FEE_ENTRIES_SQL = `
             moved_entry.base_exchange_rate AS baseExchangeRate,
             moved_entry.base_amount AS baseAmount,
             ROW_NUMBER() OVER (
-                PARTITION BY canonical.id, moved_entry.account_id
+                PARTITION BY canonical.id, moved_entry.account_id, moved_entry.amount
                 ORDER BY moved_entry.id
             ) AS feeRank
         FROM transactions canonical
@@ -43,26 +43,36 @@ export const MISSING_TRANSFER_FEE_ENTRIES_SQL = `
                 '${TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL}',
                 '${TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER}'
             )
-            AND NOT EXISTS (
-                SELECT 1 FROM transaction_entries live_fee
-                WHERE live_fee.transaction_id = canonical.id
-                    AND live_fee.account_id = moved_entry.account_id
-                    AND live_fee.original_transaction_id IS NULL
-                    AND live_fee.deleted_at IS NULL
-                    AND live_fee.type = '${TransactionEntryTypeEnum.FEE}'
-            )
+    ),
+    live_fee_counts AS (
+        SELECT
+            live_fee.transaction_id AS transactionId,
+            live_fee.account_id AS accountId,
+            live_fee.amount AS amount,
+            COUNT(*) AS liveCount
+        FROM transaction_entries live_fee
+        WHERE live_fee.original_transaction_id IS NULL
+            AND live_fee.deleted_at IS NULL
+            AND (live_fee.type = '${TransactionEntryTypeEnum.FEE}' OR live_fee.category_source = '${CategorySourceEnum.FEE}')
+            AND live_fee.amount > 0
+            AND live_fee.transaction_id IN (SELECT DISTINCT transactionId FROM ranked_moved_fees)
+        GROUP BY live_fee.transaction_id, live_fee.account_id, live_fee.amount
     )
     SELECT
-        transactionId,
-        accountId,
-        categoryId,
-        categorySource,
-        mccCategoryId,
-        amount,
-        exchangeRate,
-        baseInstrumentId,
-        baseExchangeRate,
-        baseAmount
-    FROM ranked_missing_fees
-    WHERE feeRank = 1
+        moved.transactionId AS transactionId,
+        moved.accountId AS accountId,
+        moved.categoryId AS categoryId,
+        moved.categorySource AS categorySource,
+        moved.mccCategoryId AS mccCategoryId,
+        moved.amount AS amount,
+        moved.exchangeRate AS exchangeRate,
+        moved.baseInstrumentId AS baseInstrumentId,
+        moved.baseExchangeRate AS baseExchangeRate,
+        moved.baseAmount AS baseAmount
+    FROM ranked_moved_fees moved
+    LEFT JOIN live_fee_counts live ON
+        live.transactionId = moved.transactionId
+        AND live.accountId = moved.accountId
+        AND live.amount = moved.amount
+    WHERE moved.feeRank > COALESCE(live.liveCount, 0)
 `;

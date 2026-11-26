@@ -20,8 +20,10 @@ import {
 import { TransferConsolidationDrainerService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import { and, eq, isNotNull, isNull } from 'drizzle-orm';
+import * as Deferred from 'effect/Deferred';
 import * as Effect from 'effect/Effect';
 import * as Exit from 'effect/Exit';
+import * as Fiber from 'effect/Fiber';
 import { vi } from 'vitest';
 
 import {
@@ -243,6 +245,61 @@ describe('consolidation/consolidation-integration-regressions', () => {
             yield* advanceScheduledDrain(3000);
 
             expect(consolidateSpy).not.toHaveBeenCalled();
+        }).pipe(Effect.provide(RealDrainerTestClockLayer))
+    );
+
+    it.effect('re-schedules work enqueued while cancelPending is interrupting an active drain', () =>
+        Effect.gen(function* () {
+            const drainer = yield* TransferConsolidationDrainerService;
+            const transferConsolidationService = yield* TransferConsolidationService;
+            const firstDrainGate = yield* Deferred.make<void>();
+            const interruptObserved = yield* Deferred.make<void>();
+            const releaseInterrupt = yield* Deferred.make<void>();
+            const consolidateSpy = vi
+                .spyOn(transferConsolidationService, 'consolidate')
+                .mockImplementationOnce(() =>
+                    Effect.onInterrupt(Effect.as(Deferred.await(firstDrainGate), { consolidated: 0, found: 0 }), () =>
+                        Effect.andThen(Deferred.succeed(interruptObserved, undefined), Deferred.await(releaseInterrupt))
+                    )
+                )
+                .mockReturnValue(Effect.succeed({ consolidated: 0, found: 0 }));
+            const scopeAlpha = {
+                operatedAtFrom: new Date('2026-07-01T00:00:00.000Z'),
+                operatedAtTo: new Date('2026-07-02T00:00:00.000Z'),
+                transactionIds: [201]
+            };
+            const scopeBeta = {
+                operatedAtFrom: new Date('2026-07-03T00:00:00.000Z'),
+                operatedAtTo: new Date('2026-07-04T00:00:00.000Z'),
+                transactionIds: [202]
+            };
+
+            yield* Effect.ensuring(
+                Effect.gen(function* () {
+                    yield* drainer.enqueue(scopeAlpha);
+                    yield* advanceScheduledDrain(1500);
+                    expect(consolidateSpy).toHaveBeenCalledTimes(1);
+                    expect(consolidateSpy).toHaveBeenCalledWith(scopeAlpha);
+
+                    const cancelFiber = yield* Effect.forkChild(drainer.cancelPending());
+                    yield* Deferred.await(interruptObserved);
+
+                    yield* drainer.enqueue(scopeBeta);
+                    yield* Deferred.succeed(releaseInterrupt, undefined);
+                    yield* Fiber.join(cancelFiber);
+
+                    yield* advanceScheduledDrain(0);
+                    expect(consolidateSpy).toHaveBeenCalledTimes(1);
+
+                    yield* advanceScheduledDrain(1500);
+
+                    expect(consolidateSpy).toHaveBeenCalledTimes(2);
+                    expect(consolidateSpy).toHaveBeenLastCalledWith(scopeBeta);
+                }),
+                Effect.sync(() => {
+                    consolidateSpy.mockRestore();
+                })
+            );
         }).pipe(Effect.provide(RealDrainerTestClockLayer))
     );
 

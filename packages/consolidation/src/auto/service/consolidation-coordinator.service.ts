@@ -399,8 +399,8 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
                             blockedSourceTransactionIds.add(sourceTransactionId);
                         }
 
-                        if (isPositiveNumber(familyResult.consolidated)) {
-                            capabilities?.markTransfersCreated();
+                        if (isPositiveNumber(familyResult.consolidated) || isNotEmptyArray(familyResult.releasedTransactionIds)) {
+                            capabilities?.markChanged();
                         }
 
                         activeScope = yield* expandActiveScope(activeScope, activeScopeTransactionIds, familyResult);

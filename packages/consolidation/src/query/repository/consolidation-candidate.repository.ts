@@ -1,11 +1,4 @@
-import {
-    AccountTypeEnum,
-    Db,
-    ExternalSourceEnum,
-    HOUSEHOLD_SYNC_ZONE,
-    TransactionConsolidationTypeEnum,
-    TransactionTypeEnum
-} from '@budgie/contracts';
+import { AccountTypeEnum, Db, ExternalSourceEnum, TransactionConsolidationTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -76,7 +69,6 @@ export class ConsolidationCandidateRepository extends Context.Service<Consolidat
                     EXISTS (SELECT 1 FROM accounts WHERE deleted_at IS NULL AND is_active = 1 AND type = '${AccountTypeEnum.CASH}') AS hasActiveCashAccounts,
                     EXISTS (SELECT 1 FROM transactions WHERE deleted_at IS NULL AND consolidation_parent_transaction_id IS NULL AND type = '${TransactionTypeEnum.EXPENSE}' AND external_source IN ('${ExternalSourceEnum.APPLE_PAY_AUTOMATION}', '${ExternalSourceEnum.RECEIPT}')) AS hasApplePayOrReceipt,
                     EXISTS (SELECT 1 FROM transactions WHERE deleted_at IS NULL AND consolidation_parent_transaction_id IS NULL AND type IN ('${TransactionTypeEnum.EXPENSE}', '${TransactionTypeEnum.INCOME}') AND (external_source IS NULL OR external_source IN ('${ExternalSourceEnum.MANUAL}', '${ExternalSourceEnum.CSV}', '${ExternalSourceEnum.RECEIPT}'))) AS hasManualExpenses,
-                    EXISTS (SELECT 1 FROM accounts WHERE deleted_at IS NULL AND is_active = 1 AND iban IS NOT NULL AND iban != '' AND sync_zone = '${HOUSEHOLD_SYNC_ZONE}' AND integration_id IS NULL AND (external_source IS NULL OR external_source = '')) AS hasHouseholdManualAccounts,
                     (SELECT COUNT(*) FROM (SELECT 1 FROM accounts WHERE deleted_at IS NULL AND is_active = 1 LIMIT 2)) >= 2 AS hasMultipleActiveAccounts
             `;
 
@@ -114,16 +106,7 @@ export class ConsolidationCandidateRepository extends Context.Service<Consolidat
                           ).pipe(Effect.map(rows => rows.map(row => row.id)))
                         : Effect.succeed([]),
                 findHouseholdManualAccountTransferCandidates: (scope: ConsolidationScanScopeInterface | null) =>
-                    findGated<HouseholdManualAccountTransferCandidateInterface>(
-                        capabilities =>
-                            capabilities.hasHouseholdManualAccounts && (capabilities.hasVisibleExpenses || capabilities.hasVisibleIncomes),
-                        () => buildHouseholdManualAccountTransferCandidatesSql(scope)
-                    ),
-                findAtmCashWithdrawalCandidates: (scope: ConsolidationScanScopeInterface | null) =>
-                    findGated<AtmCashWithdrawalCandidateInterface>(
-                        capabilities => capabilities.hasActiveCashAccounts && capabilities.hasVisibleExpenses,
-                        () => buildAtmCashWithdrawalCandidatesSql(scope)
-                    ),
+                    find<HouseholdManualAccountTransferCandidateInterface>(buildHouseholdManualAccountTransferCandidatesSql(scope)),
                 findAtmCashWithdrawalCandidatesByIds: (transactionIds: readonly number[]) =>
                     isNotEmptyArray(transactionIds)
                         ? find<AtmCashWithdrawalCandidateInterface>(buildAtmCashWithdrawalCandidatesSql(null, transactionIds))

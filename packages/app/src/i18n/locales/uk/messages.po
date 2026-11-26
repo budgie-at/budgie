@@ -3377,6 +3377,10 @@ msgid "Consent valid until"
 msgstr "Згода діє до"
 
 #: ../ledger/src/transaction/service/transaction-transfer.service.ts
+msgid "Consolidated transactions cannot be converted to transfers"
+msgstr "Консолідовані транзакції не можна перетворити на перекази"
+
+#: ../ledger/src/transaction/service/transaction-transfer.service.ts
 msgid "Consolidated transactions cannot start a deposit"
 msgstr "Неможливо відкрити депозит із консолідованих транзакцій"
 

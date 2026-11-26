@@ -19,4 +19,5 @@ export { UnconsolidationService } from './executor/service/unconsolidation.servi
 export type { ConsolidationPreviewInterface } from './auto/interface/consolidation-preview.interface';
 export type { ConsolidationProgressSnapshotInterface } from './auto/interface/consolidation-progress-snapshot.interface';
 export type { ConsolidationResultInterface } from './auto/interface/consolidation-result.interface';
+export type { UnconsolidateNestedResultInterface } from './executor/interface/unconsolidate-nested-result.interface';
 export type { ConvertToRefundParamsInterface } from './refund/interface/convert-to-refund-params.interface';

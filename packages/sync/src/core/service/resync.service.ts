@@ -1,5 +1,5 @@
 import { UnconsolidationService } from '@budgie/consolidation';
-import { Db, ExternalSourceEnum, SyncRepository, TransactionConsolidationRepository, TransactionRepository } from '@budgie/contracts';
+import { Db, ExternalSourceEnum, SyncRepository, TransactionConsolidationRepository } from '@budgie/contracts';
 import { AccountBalanceIncrementalService, TransactionService } from '@budgie/ledger';
 import * as Context from 'effect/Context';
 import * as DateTime from 'effect/DateTime';
@@ -19,53 +19,20 @@ export class ResyncService extends Context.Service<ResyncService>()('@budgie/syn
     make: Effect.gen(function* () {
         const syncRepository = yield* SyncRepository;
         const transactionConsolidationRepository = yield* TransactionConsolidationRepository;
-        const transactionRepository = yield* TransactionRepository;
         const unconsolidationService = yield* UnconsolidationService;
         const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
         const transactionService = yield* TransactionService;
         const monobankSyncService = yield* MonobankSyncService;
         const syncProviderRegistryService = yield* SyncProviderRegistryService;
         const millisecondsPerDay = 24 * 60 * 60 * 1000;
-        const yieldEveryRows = 5;
 
         const unconsolidateCanonicals = Effect.fnUntraced(function* <E>(
-            fetchCanonicals: Effect.Effect<Array<Pick<TransactionEntityInterface, 'id'>>, E, Db>
+            fetchCanonicals: Effect.Effect<readonly Pick<TransactionEntityInterface, 'id'>[], E, Db>
         ) {
-            const seenIds = new Set<number>();
-            const affectedAccountIds = new Set<number>();
-            let canonicals = yield* fetchCanonicals;
+            const { affectedAccountIds } = yield* unconsolidationService.unconsolidateAllNested(fetchCanonicals);
 
-            while (isNotEmptyArray(canonicals)) {
-                const loadedCanonicals = yield* transactionRepository.findByIdsWithRefundConsolidationHistory(
-                    canonicals.map(canonical => canonical.id)
-                );
-
-                for (const canonical of loadedCanonicals) {
-                    if (isDefined(canonical.fromAccountId)) {
-                        affectedAccountIds.add(canonical.fromAccountId);
-                    }
-                    if (isDefined(canonical.toAccountId)) {
-                        affectedAccountIds.add(canonical.toAccountId);
-                    }
-                    for (const entry of canonical.entries) {
-                        affectedAccountIds.add(entry.accountId);
-                    }
-                }
-
-                for (const [index, canonical] of canonicals.entries()) {
-                    seenIds.add(canonical.id);
-                    yield* Db.transaction(unconsolidationService.unconsolidateById(canonical.id));
-
-                    if ((index + 1) % yieldEveryRows === 0 && index + 1 < canonicals.length) {
-                        yield* Effect.yieldNow;
-                    }
-                }
-
-                canonicals = (yield* fetchCanonicals).filter(canonical => !seenIds.has(canonical.id));
-            }
-
-            if (affectedAccountIds.size > 0) {
-                yield* accountBalanceIncrementalService.updateBalancesByAccountIds([...affectedAccountIds]);
+            if (isNotEmptyArray(affectedAccountIds)) {
+                yield* accountBalanceIncrementalService.updateBalancesByAccountIds(affectedAccountIds);
             }
         });
 
@@ -118,7 +85,6 @@ export class ResyncService extends Context.Service<ResyncService>()('@budgie/syn
         Layer.provide([
             SyncRepository.layer,
             TransactionConsolidationRepository.layer,
-            TransactionRepository.layer,
             UnconsolidationService.layer,
             AccountBalanceIncrementalService.layer,
             TransactionService.layer,

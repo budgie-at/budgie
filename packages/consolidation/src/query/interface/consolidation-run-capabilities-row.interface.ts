@@ -8,6 +8,5 @@ export interface ConsolidationRunCapabilitiesRowInterface {
     readonly hasActiveCashAccounts: number;
     readonly hasApplePayOrReceipt: number;
     readonly hasManualExpenses: number;
-    readonly hasHouseholdManualAccounts: number;
     readonly hasMultipleActiveAccounts: number;
 }

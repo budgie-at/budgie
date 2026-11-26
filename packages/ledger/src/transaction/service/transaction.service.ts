@@ -129,32 +129,6 @@ export class TransactionService extends Context.Service<TransactionService>()('@
             effect => Db.transaction(effect)
         );
 
-        const collectConsolidationAccountIds = Effect.fnUntraced(function* (id: number) {
-            const [canonical] = yield* transactionRepository.findByIdsWithRefundConsolidationHistory([id]);
-
-            if (!isDefined(canonical)) {
-                return [];
-            }
-
-            const transactionIds = [...new Set([id, ...canonical.entries.map(entry => entry.originalTransactionId).filter(isDefined)])];
-            const [debtEvent, debtAttachments] = yield* Effect.all([
-                debtEventRepository.findByTransactionId(id),
-                debtEventRepository.findAttachmentsByTransactionIds(transactionIds)
-            ]);
-
-            return [
-                ...new Set(
-                    [
-                        canonical.fromAccountId,
-                        canonical.toAccountId,
-                        ...canonical.entries.map(entry => entry.accountId),
-                        debtEvent?.debtAccountId,
-                        ...debtAttachments.map(attachment => attachment.debtAccountId)
-                    ].filter(isDefined)
-                )
-            ];
-        });
-
         const updateBalancesForUnconsolidation = Effect.fnUntraced(function* (accountIds: number[]) {
             if (isNotEmptyArray(accountIds)) {
                 yield* accountBalanceIncrementalService.updateBalancesByAccountIds(accountIds);
@@ -171,7 +145,7 @@ export class TransactionService extends Context.Service<TransactionService>()('@
             }
             const transaction = yield* transactionRepository.getByIdWithEntries(id);
             if (isDefined(transaction?.consolidationType)) {
-                const affectedAccountIds = yield* collectConsolidationAccountIds(id);
+                const affectedAccountIds = yield* unconsolidationService.collectAffectedAccountIds([id]);
 
                 if (transaction.consolidationType === TransactionConsolidationTypeEnum.REFUND) {
                     yield* unconsolidationService.revertByUser(id);
@@ -238,7 +212,7 @@ export class TransactionService extends Context.Service<TransactionService>()('@
             purgeById: (id: number) => Db.transaction(deleteTransaction(id, false)),
             unconsolidateById: Effect.fn('TransactionService.unconsolidateById')(
                 function* (id: number) {
-                    const affectedAccountIds = yield* collectConsolidationAccountIds(id);
+                    const affectedAccountIds = yield* unconsolidationService.collectAffectedAccountIds([id]);
 
                     yield* unconsolidationService.unconsolidateById(id);
                     yield* updateBalancesForUnconsolidation(affectedAccountIds);
@@ -247,7 +221,7 @@ export class TransactionService extends Context.Service<TransactionService>()('@
             ),
             revertConsolidationByUser: Effect.fn('TransactionService.revertConsolidationByUser')(
                 function* (id: number) {
-                    const affectedAccountIds = yield* collectConsolidationAccountIds(id);
+                    const affectedAccountIds = yield* unconsolidationService.collectAffectedAccountIds([id]);
 
                     yield* unconsolidationService.revertByUser(id);
                     yield* updateBalancesForUnconsolidation(affectedAccountIds);

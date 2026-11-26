@@ -118,7 +118,7 @@ export class TransactionTransferService extends Context.Service<TransactionTrans
         const getTransferConversionTransaction = Effect.fnUntraced(function* (
             id: number,
             direction: 'expense' | 'income',
-            consolidatedErrorMessage: string = 'Consolidated transactions cannot be converted to transfers'
+            consolidatedErrorMessage: string
         ) {
             const transaction = yield* transactionRepository.getByIdWithEntries(id);
 
@@ -149,7 +149,11 @@ export class TransactionTransferService extends Context.Service<TransactionTrans
             params: ConvertToTransferParamsInterface,
             counterAmount: number | null
         ) {
-            const transaction = yield* getTransferConversionTransaction(params.id, direction);
+            const transaction = yield* getTransferConversionTransaction(
+                params.id,
+                direction,
+                t`Consolidated transactions cannot be converted to transfers`
+            );
             const [transactionEntry] = getTransactionCategoryEntries(transaction.entries);
             const hasCustomRate = isPositiveNumber(params.customExchangeRate) && params.customExchangeRate !== 1;
             const isExpense = direction === 'expense';

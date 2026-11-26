@@ -7,6 +7,7 @@ import {
     TransactionConsolidationTypeEnum,
     TransactionEntityTable,
     TransactionEntryEntityTable,
+    TransactionEntryRepository,
     TransactionEntryTypeEnum,
     TransactionUpdatedByEnum,
     convertToMicroUnits
@@ -15,6 +16,9 @@ import { TransferConsolidationService } from '@budgie/ledger';
 import { expect, layer } from '@effect/vitest';
 import { and, eq, isNull } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
+import { vi } from 'vitest';
+
+import { isDefined } from '@rnw-community/shared';
 
 import { CHAIN_RECLAIM_STALE_RATE_MULTIPLIER, seedNestedChainReclaimFixture } from '../harness/chain-reclaim-fixture';
 import {
@@ -29,6 +33,7 @@ import {
     IBAN_BRIDGE_TARGET_IBAN,
     IBAN_BRIDGE_UAH_AMOUNT,
     IBAN_BRIDGE_UAH_TO_EUR_RATE,
+    seedIbanBridgeDuplicatePairFixture,
     seedIbanBridgeIncomeLeg,
     seedIbanBridgeLegs,
     seedIbanBridgeSourceExpense,
@@ -53,6 +58,8 @@ const ATM_FIRST_FEE_AMOUNT = convertToMicroUnits(10);
 const ATM_SECOND_FEE_AMOUNT = convertToMicroUnits(25);
 const TRANSFER_AMOUNT = convertToMicroUnits(3_000);
 const TRANSFER_FEE_AMOUNT = convertToMicroUnits(90);
+const DUAL_REPAIR_FIRST_FEE_AMOUNT = convertToMicroUnits(100);
+const DUAL_REPAIR_SECOND_FEE_AMOUNT = convertToMicroUnits(200);
 const COFFEE_EXPENSE_AMOUNT = convertToMicroUnits(5);
 const P2P_ASSET_AMOUNT = convertToMicroUnits(1_000);
 const P2P_UNIT_PRICE = convertToMicroUnits(41);
@@ -67,6 +74,18 @@ const fetchLiveFeeAmounts = (transactionId: number) =>
             .map(entry => entry.amount)
             .sort((left, right) => left - right)
     );
+
+const deleteLiveFeeEntries = (canonicalId: number, amount?: number) =>
+    testDb
+        .delete(TransactionEntryEntityTable)
+        .where(
+            and(
+                eq(TransactionEntryEntityTable.transactionId, canonicalId),
+                eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.FEE),
+                isNull(TransactionEntryEntityTable.originalTransactionId),
+                ...(isDefined(amount) ? [eq(TransactionEntryEntityTable.amount, amount)] : [])
+            )
+        );
 
 layer(TestLayer)('consolidation/consolidation-safety-regressions', it => {
     it.effect('treats unconsolidating a nested child canonical as a no-op without triggering FK double-counting', () =>
@@ -151,15 +170,7 @@ layer(TestLayer)('consolidation/consolidation-safety-regressions', it => {
 
             const canonicalId = yield* fetchSingleCanonicalId(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
 
-            yield* testDb
-                .delete(TransactionEntryEntityTable)
-                .where(
-                    and(
-                        eq(TransactionEntryEntityTable.transactionId, canonicalId),
-                        eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.FEE),
-                        isNull(TransactionEntryEntityTable.originalTransactionId)
-                    )
-                );
+            yield* deleteLiveFeeEntries(canonicalId);
             yield* testDb
                 .update(TransactionEntityTable)
                 .set({ updatedBy: TransactionUpdatedByEnum.USER })
@@ -297,6 +308,73 @@ layer(TestLayer)('consolidation/consolidation-safety-regressions', it => {
             yield* expectConsolidationParent(inScopeP2pIncome.id, canonicalId);
             expect((yield* testQueryService.fetchTransactionById(outOfScopeBankExpense.id)).consolidationParentTransactionId).toBeNull();
             expect((yield* testQueryService.fetchTransactionById(outOfScopeP2pIncome.id)).consolidationParentTransactionId).toBeNull();
+        })
+    );
+
+    it.effect('rolls back duplicate-pair unconsolidation when end-leg claim fails inside the chunked coordinator', () =>
+        Effect.gen(function* () {
+            const transferConsolidationService = yield* TransferConsolidationService;
+            const transactionEntryRepository = yield* TransactionEntryRepository;
+            const { accountIds, duplicatePair, sourceExpense, targetIncome } = yield* seedIbanBridgeDuplicatePairFixture();
+
+            yield* rebuildStoredBalances;
+
+            const balancesBeforeConsolidation = yield* fetchLedgerBalances(accountIds);
+            const eligibilitySpy = vi.spyOn(transactionEntryRepository, 'hasMovedSourceEntries').mockReturnValueOnce(Effect.succeed(true));
+
+            yield* Effect.ensuring(
+                Effect.gen(function* () {
+                    yield* transferConsolidationService.consolidate(null);
+
+                    expect(eligibilitySpy).toHaveBeenCalledTimes(1);
+                }),
+                Effect.sync(() => {
+                    eligibilitySpy.mockRestore();
+                })
+            );
+
+            expect(yield* testQueryService.findTransactionById(duplicatePair.id)).toMatchObject({
+                consolidationType: TransactionConsolidationTypeEnum.TRANSFER_PAIR,
+                deletedAt: null
+            });
+            yield* expectConsolidationParent(sourceExpense.id, duplicatePair.id);
+            yield* expectConsolidationParent(targetIncome.id, duplicatePair.id);
+            expect(yield* fetchLedgerBalances(accountIds)).toEqual(balancesBeforeConsolidation);
+        })
+    );
+
+    it.effect('repairs both missing transfer fees and restores a single missing fee without duplicating the remaining one', () =>
+        Effect.gen(function* () {
+            const consolidationCoordinatorService = yield* ConsolidationCoordinatorService;
+            const transferMcc = yield* testQueryService.findMccByCode('4829');
+            const { expense, fromAccount, toAccount } = yield* testSeedService.amountTransferPair(TRANSFER_AMOUNT, transferMcc.id);
+
+            yield* testSeedService.feeEntry(expense.id, 'dual-repair-fee-one', {
+                accountId: fromAccount.id,
+                amount: DUAL_REPAIR_FIRST_FEE_AMOUNT
+            });
+            yield* testSeedService.feeEntry(expense.id, 'dual-repair-fee-two', {
+                accountId: fromAccount.id,
+                amount: DUAL_REPAIR_SECOND_FEE_AMOUNT
+            });
+
+            const accountIds = [fromAccount.id, toAccount.id];
+            const balancesBeforeConsolidation = yield* fetchLedgerBalances(accountIds);
+
+            yield* runConsolidation();
+
+            const canonicalId = yield* fetchSingleCanonicalId(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
+
+            for (const deletionAmount of [undefined, DUAL_REPAIR_SECOND_FEE_AMOUNT]) {
+                yield* deleteLiveFeeEntries(canonicalId, deletionAmount);
+
+                expect(yield* consolidationCoordinatorService.repairMissingTransferFees()).toBe(1);
+                expect(yield* fetchLiveFeeAmounts(canonicalId)).toEqual([DUAL_REPAIR_FIRST_FEE_AMOUNT, DUAL_REPAIR_SECOND_FEE_AMOUNT]);
+                expect(yield* fetchLedgerBalances(accountIds)).toEqual(balancesBeforeConsolidation);
+                expect(yield* consolidationCoordinatorService.repairMissingTransferFees()).toBe(0);
+            }
+
+            yield* rebuildStoredBalances;
         })
     );
 });

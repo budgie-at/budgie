@@ -100,14 +100,7 @@ export class ConsolidationEligibilityService extends Context.Service<Consolidati
             return {
                 areCandidatesStillEligible,
                 findEligibleSourceTransactions,
-                findEligibleExistingTransferConsolidation,
-                isExistingTransferConsolidationStillEligible: Effect.fn(
-                    'ConsolidationEligibilityService.isExistingTransferConsolidationStillEligible'
-                )(function* (sourceTransactionIds: number[], existingTransferId: number) {
-                    const eligible = yield* findEligibleExistingTransferConsolidation(sourceTransactionIds, existingTransferId);
-
-                    return isDefined(eligible);
-                })
+                findEligibleExistingTransferConsolidation
             };
         })
     }
