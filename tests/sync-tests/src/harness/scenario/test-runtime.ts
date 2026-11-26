@@ -51,7 +51,7 @@ const withInstantRateLimit = (clock: Clock.Clock): Clock.Clock => {
 const platformLayer = Layer.mergeAll(
     makeTestPlatformLayer(testDb),
     Layer.succeed(BinanceRateLimitMs, 0),
-    Layer.succeed(MonobankRetryBaseDelayMs, 0),
+    Layer.succeed(MonobankRetryBaseDelayMs, 1),
     testSyncRequestSignerLayer
 );
 

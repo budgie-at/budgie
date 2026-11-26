@@ -2,7 +2,7 @@ import { MonobankApiError, MonobankPersonalClient, MonobankResponseValidationErr
 import { getUnixTime } from 'date-fns/getUnixTime';
 import * as Effect from 'effect/Effect';
 
-import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import {
     HTTP_STATUS_BAD_REQUEST,
@@ -17,7 +17,6 @@ import { SyncInvalidResponseError } from '../../core/error/sync-invalid-response
 import { SyncNetworkError } from '../../core/error/sync-network.error';
 import { SyncRateLimitedError } from '../../core/error/sync-rate-limited.error';
 import { SyncUnauthorizedError } from '../../core/error/sync-unauthorized.error';
-import { MonobankRetryBaseDelayMs } from '../constant/monobank-retry-base-delay-ms.constant';
 import { monobankAccountMapper } from '../mapper/monobank-account.mapper';
 import { monobankJarMapper } from '../mapper/monobank-jar.mapper';
 import { monobankTransactionMapper } from '../mapper/monobank-transaction.mapper';
@@ -27,7 +26,6 @@ import type { SyncProviderClientInterface } from '../../core/interface/sync-prov
 import type { ClientInfo } from '@liaugust/monobank-sdk';
 
 export class MonobankClient implements SyncProviderClientInterface {
-    private static readonly MIN_RETRY_DELAY_MS = 0.0001;
     private static readonly RETRY_MAX_ATTEMPTS = 4;
     private static readonly RETRY_MAX_DELAY_MS = 2_000;
 
@@ -49,68 +47,39 @@ export class MonobankClient implements SyncProviderClientInterface {
         from: number,
         to?: number
     ) {
-        const statements = yield* this.request((client, signal) =>
-            client.statements.get({ account: accountId, from, to: to ?? getUnixTime(new Date()) }, { signal })
+        const statements = yield* this.request(signal =>
+            this.personalClient.statements.get({ account: accountId, from, to: to ?? getUnixTime(new Date()) }, { signal })
         );
 
         return statements.map(statement => monobankTransactionMapper(statement, accountId));
     });
 
-    private readonly token: string;
-    private readonly configuredRetryBaseDelayMs: number | null;
-    private personalClientCache: { readonly delayMs: number; readonly client: MonobankPersonalClient } | null = null;
+    private readonly personalClient: MonobankPersonalClient;
     private cachedClientInfo: ClientInfo | null = null;
 
     private readonly fetchClientInfo = Effect.fn('MonobankClient.fetchClientInfo')(function* (this: MonobankClient) {
         if (!isDefined(this.cachedClientInfo)) {
-            this.cachedClientInfo = yield* this.request((client, signal) => client.client.getInfo({ signal }));
+            this.cachedClientInfo = yield* this.request(signal => this.personalClient.client.getInfo({ signal }));
         }
 
         return this.cachedClientInfo;
     });
 
-    constructor(token: string, retryBaseDelayMs?: number) {
-        this.token = token;
-        this.configuredRetryBaseDelayMs = isDefined(retryBaseDelayMs) ? retryBaseDelayMs : null;
-    }
-
-    private resolvePersonalClient(): Effect.Effect<MonobankPersonalClient> {
-        return Effect.gen({ self: this }, function* () {
-            const configuredDelayMs = isDefined(this.configuredRetryBaseDelayMs)
-                ? this.configuredRetryBaseDelayMs
-                : yield* MonobankRetryBaseDelayMs;
-
-            if (isDefined(this.personalClientCache) && this.personalClientCache.delayMs === configuredDelayMs) {
-                return this.personalClientCache.client;
-            }
-
-            const retryBaseDelayMs = isPositiveNumber(configuredDelayMs) ? configuredDelayMs : MonobankClient.MIN_RETRY_DELAY_MS;
-            const retryMaxDelayMs = isPositiveNumber(configuredDelayMs)
-                ? Math.max(MonobankClient.RETRY_MAX_DELAY_MS, configuredDelayMs)
-                : MonobankClient.MIN_RETRY_DELAY_MS;
-            const client = new MonobankPersonalClient({
-                retry: {
-                    baseDelayMs: retryBaseDelayMs,
-                    maxAttempts: MonobankClient.RETRY_MAX_ATTEMPTS,
-                    maxDelayMs: retryMaxDelayMs,
-                    retryableStatusCodes: SYNC_RETRY_STATUS_CODES
-                },
-                timeoutMs: SYNC_TIMEOUT_MS,
-                token: this.token
-            });
-
-            this.personalClientCache = { delayMs: configuredDelayMs, client };
-
-            return client;
+    constructor(token: string, retryBaseDelayMs: number) {
+        this.personalClient = new MonobankPersonalClient({
+            retry: {
+                baseDelayMs: retryBaseDelayMs,
+                maxAttempts: MonobankClient.RETRY_MAX_ATTEMPTS,
+                maxDelayMs: MonobankClient.RETRY_MAX_DELAY_MS,
+                retryableStatusCodes: SYNC_RETRY_STATUS_CODES
+            },
+            timeoutMs: SYNC_TIMEOUT_MS,
+            token
         });
     }
 
-    private request<A>(run: (client: MonobankPersonalClient, signal: AbortSignal) => Promise<A>): Effect.Effect<A, SyncError> {
-        return Effect.gen({ self: this }, function* () {
-            const client = yield* this.resolvePersonalClient();
-
-            return yield* Effect.tryPromise({ try: signal => run(client, signal), catch: error => this.toSyncError(error) });
-        });
+    private request<A>(run: (signal: AbortSignal) => Promise<A>): Effect.Effect<A, SyncError> {
+        return Effect.tryPromise({ try: run, catch: error => this.toSyncError(error) });
     }
 
     private toSyncError(error: unknown): SyncError {

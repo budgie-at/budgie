@@ -24,22 +24,22 @@
         },
         "@budgie-at/sync-tests#ts": {
             "dependsOn": ["^build"],
-            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**"],
+            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**", "$TURBO_ROOT$/packages/app/drizzle/**"],
             "outputs": []
         },
         "@budgie-at/consolidation-tests#ts": {
             "dependsOn": ["^build"],
-            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**"],
+            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**", "$TURBO_ROOT$/packages/app/drizzle/**"],
             "outputs": []
         },
         "@budgie-at/budget-tests#ts": {
             "dependsOn": ["^build"],
-            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**"],
+            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**", "$TURBO_ROOT$/packages/app/drizzle/**"],
             "outputs": []
         },
         "@budgie-at/test-kit#ts": {
             "dependsOn": ["^build"],
-            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**"],
+            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**", "$TURBO_ROOT$/packages/app/drizzle/**"],
             "outputs": []
         },
         "clear": {
@@ -63,74 +63,45 @@
         },
         "@budgie/categorization#test": {
             "dependsOn": ["^build", "build"],
-            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**"]
+            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**", "$TURBO_ROOT$/packages/app/drizzle/**"]
         },
         "@budgie/rules#test": {
             "dependsOn": ["^build", "build"],
-            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**"]
+            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**", "$TURBO_ROOT$/packages/app/drizzle/**"]
         },
         "@budgie/cloud-sync#test": {
             "dependsOn": ["^build"],
-            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**"]
+            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**", "$TURBO_ROOT$/packages/app/drizzle/**"]
         },
         "@budgie/import-export#test": {
             "dependsOn": ["^build"],
-            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**"]
+            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**", "$TURBO_ROOT$/packages/app/drizzle/**"]
         },
         "@budgie/ledger#test": {
             "dependsOn": ["^build"],
-            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**"]
+            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**", "$TURBO_ROOT$/packages/app/drizzle/**"]
         },
         "@budgie/market#test": {
             "dependsOn": ["^build"],
-            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**"]
+            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**", "$TURBO_ROOT$/packages/app/drizzle/**"]
         },
         "@budgie/recurring#test": {
             "dependsOn": ["^build"],
-            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**"]
+            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**", "$TURBO_ROOT$/packages/app/drizzle/**"]
         },
         "@budgie-at/sync-tests#test": {
             "dependsOn": ["^build"],
-            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**"]
+            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**", "$TURBO_ROOT$/packages/app/drizzle/**"]
         },
         "@budgie-at/consolidation-tests#test": {
             "dependsOn": ["^build"],
-            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**"]
+            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**", "$TURBO_ROOT$/packages/app/drizzle/**"]
         },
         "@budgie-at/budget-tests#test": {
             "dependsOn": ["^build"],
-            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**"]
-        },
-        "lint": {
-            "dependsOn": ["^build"],
-            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/.oxlintrc.json", "$TURBO_ROOT$/lint-rules/**"],
-            "outputs": []
-        },
-        "//#lint:rules": {
-            "inputs": ["lint-rules/**", ".oxlintrc.json", "package.json"],
-            "outputs": []
-        },
-        "//#deadcode:run": {
-            "inputs": [
-                "knip.json",
-                "package.json",
-                "pnpm-workspace.yaml",
-                "tsconfig*.json",
-                "packages/**",
-                "tests/**",
-                "e2e/**",
-                "scripts/**",
-                "lint-rules/**",
-                "!**/.next/**",
-                "!**/.turbo/**",
-                "!**/.expo/**",
-                "!**/dist/**",
-                "!**/node_modules/**",
-                "!**/coverage/**",
-                "!**/report/**"
-            ],
-            "outputs": []
+            "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/app/src/**", "$TURBO_ROOT$/packages/app/drizzle/**"]
         }
+
     },
     "agentGuidance": false
 }

@@ -10,7 +10,7 @@ import * as SqlError from 'effect/sql/SqlError';
 import * as Statement from 'effect/sql/Statement';
 import * as Stream from 'effect/Stream';
 
-import { getErrorMessage, isArray, isBoolean, isDefined, isNotEmptyArray, isNumber, isString } from '@rnw-community/shared';
+import { getErrorMessage, isArray, isDefined, isNotEmptyArray, isNumber, isString } from '@rnw-community/shared';
 
 import type { BaselineSnapshotInterface } from './interface/baseline-snapshot.interface';
 import type { DatabaseHandleInterface } from './interface/database-handle.interface';
@@ -94,28 +94,15 @@ const toSqliteCause = (cause: unknown): unknown => {
     return Object.assign(new Error(cause.message, { cause }), { code: cause.code, errno: cause.errcode });
 };
 
-const toSqliteParam = (value: unknown): SQLInputValue => {
-    if (!isDefined(value)) {
-        return null;
+const isSqliteParam = (value: unknown): value is SQLInputValue =>
+    value === null || isNumber(value) || typeof value === 'bigint' || isString(value) || value instanceof Uint8Array;
+
+const toSqliteParams = (params: ReadonlyArray<unknown>): ReadonlyArray<SQLInputValue> => {
+    if (!params.every(isSqliteParam)) {
+        throw new TypeError('Unsupported SQLite parameter type');
     }
 
-    if (isBoolean(value)) {
-        return value ? 1 : 0;
-    }
-
-    if (isNumber(value) || typeof value === 'bigint' || isString(value)) {
-        return value;
-    }
-
-    if (value instanceof Uint8Array || value instanceof DataView) {
-        return value;
-    }
-
-    if (value instanceof Date) {
-        return value.toISOString();
-    }
-
-    return String(value);
+    return params;
 };
 
 const toSqliteError = (cause: unknown, operation: string): SqlError.SqlError =>
@@ -164,7 +151,7 @@ export const makeInMemoryTestSqliteClient = (
                         statement.setReadBigInts(true);
                     }
 
-                    return onPrepared(statement, params.map(toSqliteParam));
+                    return onPrepared(statement, toSqliteParams(params));
                 },
                 catch: cause => toSqliteError(cause, operation)
             });

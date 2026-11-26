@@ -1,7 +1,4 @@
 {
-    "ignoreWorkspaces": [
-        "packages/landing"
-    ],
     "ignore": [
         ".agents/**",
         "packages/app/fingerprint.config.js",
@@ -11,11 +8,11 @@
         "packages/amount-input/babel.config.bob.js",
         "tsconfig.json",
         "packages/app/scripts/generate-social-posts.mjs",
-        "packages/app/scripts/social-posts/**/*.mjs"
+        "packages/app/scripts/social-posts/**/*.mjs",
+        "packages/landing/**"
     ],
     "ignoreDependencies": [
         "husky",
-        "@lingui/cli",
         "@expo/fingerprint",
         "react-compiler-runtime",
         "@oxlint/migrate",
