@@ -71,10 +71,10 @@ export class RuleMatcherService extends Context.Service<RuleMatcherService>()('@
             field === RuleConditionFieldEnum.TITLE || field === RuleConditionFieldEnum.COMMENT;
 
         const isAsciiOrNullSql = (column: Column | SQL): SQL =>
-            sql`(${column} IS NULL OR (INSTR(${column}, ${UNICODE_ASCII_FOLD_LATIN_I_DOT}) = 0 AND INSTR(${column}, ${UNICODE_ASCII_FOLD_LONG_S}) = 0 AND INSTR(${column}, ${UNICODE_ASCII_FOLD_KELVIN}) = 0))`;
+            sql`(${column} IS NULL OR (INSTR(${column}, CHAR(0)) = 0 AND INSTR(${column}, ${UNICODE_ASCII_FOLD_LATIN_I_DOT}) = 0 AND INSTR(${column}, ${UNICODE_ASCII_FOLD_LONG_S}) = 0 AND INSTR(${column}, ${UNICODE_ASCII_FOLD_KELVIN}) = 0))`;
 
         const isNonAsciiSql = (column: Column | SQL): SQL =>
-            sql`(${column} IS NOT NULL AND (INSTR(${column}, ${UNICODE_ASCII_FOLD_LATIN_I_DOT}) > 0 OR INSTR(${column}, ${UNICODE_ASCII_FOLD_LONG_S}) > 0 OR INSTR(${column}, ${UNICODE_ASCII_FOLD_KELVIN}) > 0))`;
+            sql`(${column} IS NOT NULL AND (INSTR(${column}, CHAR(0)) > 0 OR INSTR(${column}, ${UNICODE_ASCII_FOLD_LATIN_I_DOT}) > 0 OR INSTR(${column}, ${UNICODE_ASCII_FOLD_LONG_S}) > 0 OR INSTR(${column}, ${UNICODE_ASCII_FOLD_KELVIN}) > 0))`;
 
         const hasNonAscii = (value: string): boolean => {
             for (let index = 0; index < value.length; index += 1) {

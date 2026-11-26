@@ -334,6 +334,12 @@ layer(TestLayer)('RuleMatcherService SQL and fallback parity', it => {
                     operatedAt: new Date('2026-06-02T12:00:00.000Z'),
                     title: '\u212Aiosk'
                 });
+                const nulExpense = yield* testSeedService.manualExpense({
+                    accountId: account.id,
+                    amount: 10 * PRECISION,
+                    operatedAt: new Date('2026-06-02T12:01:00.000Z'),
+                    title: 'Shop\u0000Coffee'
+                });
                 const tombstonedExpense = yield* testSeedService.manualExpense({
                     accountId: account.id,
                     amount: 10 * PRECISION,
@@ -357,6 +363,14 @@ layer(TestLayer)('RuleMatcherService SQL and fallback parity', it => {
                     conditionMatchType: RuleConditionMatchTypeEnum.ALL,
                     conditions: buildDbConditions([[RuleConditionFieldEnum.TITLE, RuleConditionOperatorEnum.MATCHES_REGEX, 'k.*k', null]])
                 });
+                const nulContainsCount = yield* ruleMatcherService.countMatchingTransactions({
+                    conditionMatchType: RuleConditionMatchTypeEnum.ALL,
+                    conditions: buildDbConditions([[RuleConditionFieldEnum.TITLE, RuleConditionOperatorEnum.CONTAINS, 'coffee', null]])
+                });
+                const nulNotContainsCount = yield* ruleMatcherService.countMatchingTransactions({
+                    conditionMatchType: RuleConditionMatchTypeEnum.ALL,
+                    conditions: buildDbConditions([[RuleConditionFieldEnum.TITLE, RuleConditionOperatorEnum.NOT_CONTAINS, 'coffee', null]])
+                });
                 const zeroAmountCount = yield* ruleMatcherService.countMatchingTransactions({
                     conditionMatchType: RuleConditionMatchTypeEnum.ALL,
                     conditions: buildDbConditions([[RuleConditionFieldEnum.AMOUNT, RuleConditionOperatorEnum.EQUALS, '0', null]])
@@ -373,9 +387,12 @@ layer(TestLayer)('RuleMatcherService SQL and fallback parity', it => {
                 ]);
 
                 expect(kelvinExpense.id).toBeGreaterThan(0);
+                expect(nulExpense.id).toBeGreaterThan(0);
                 expect(equalsCount).toBe(1);
-                expect(notEqualsCount).toBe(0);
+                expect(notEqualsCount).toBe(1);
                 expect(regexCount).toBe(1);
+                expect(nulContainsCount).toBe(1);
+                expect(nulNotContainsCount).toBe(1);
                 expect(zeroAmountCount).toBe(0);
                 expect(commentFallbackMatch).toBe(true);
                 expect(orderedMcc).toBe('5411');
