@@ -98,6 +98,10 @@ describe('ModalStore', () => {
             expect(secondResult).toHaveBeenCalledWith(42);
             expect(modalStore.getEntryId('/category-selector')).toBeNull();
             expect(modalStore.getParams('/category-selector')).toBeNull();
+
+            modalStore.resolve('/category-selector', null, true, secondEntryId ?? void 0);
+
+            expect(secondResult).toHaveBeenCalledTimes(1);
         })
     );
 });

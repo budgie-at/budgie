@@ -1,4 +1,4 @@
-import { Redirect } from 'expo-router';
+import { useEffect, useEffectEvent } from 'react';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -16,13 +16,18 @@ interface Props {
 
 export const RuleFormEdit = ({ ruleId, onSuccess, onCancel }: Props) => {
     const { rule, isLoading } = useGetRuleByIdQuery(ruleId);
+    const handleMissingRule = useEffectEvent(() => {
+        onCancel();
+    });
 
-    if (isLoading) {
+    useEffect(() => {
+        if (!isLoading && !isDefined(rule)) {
+            handleMissingRule();
+        }
+    }, [isLoading, rule]);
+
+    if (isLoading || !isDefined(rule)) {
         return <LoadingScreen />;
-    }
-
-    if (!isDefined(rule)) {
-        return <Redirect href="/" />;
     }
 
     return <RuleFormEditContent rule={rule} onSuccess={onSuccess} onCancel={onCancel} />;

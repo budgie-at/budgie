@@ -40,7 +40,7 @@ export class ModalStore {
     resolve<TRoute extends ModalRoute>(route: TRoute, result: ModalResult<TRoute> | null, skipBack = false, entryId?: number) {
         const currentEntryId = this.entries[route]?.id;
 
-        if (!isDefined(currentEntryId) || (isDefined(entryId) && currentEntryId !== entryId)) {
+        if (isDefined(entryId) && currentEntryId !== entryId) {
             return;
         }
 
