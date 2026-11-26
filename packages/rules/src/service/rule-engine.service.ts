@@ -67,14 +67,12 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
 
                     const transferAccountIds = match.matchingRules.flatMap(rule =>
                         rule.actions
-                            .filter(action => action.type === RuleActionTypeEnum.CONVERT_TO_TRANSFER && isDefined(action.accountId))
+                            .filter(action => action.type === RuleActionTypeEnum.CONVERT_TO_TRANSFER)
                             .map(action => action.accountId)
                             .filter(isDefined)
                     );
 
-                    if (isNotEmptyArray(transferAccountIds)) {
-                        transferAccountIdsByTransaction.set(match.transactionId, transferAccountIds);
-                    }
+                    transferAccountIdsByTransaction.set(match.transactionId, transferAccountIds);
                 }
 
                 const changedTransactionIds = new Set<number>();
@@ -103,9 +101,8 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
                     }
                 }
 
-                if (changedTransactionIds.size > 0) {
-                    yield* transactionRepository.touchUpdatedByIds([...changedTransactionIds], TransactionUpdatedByEnum.RULE);
-                }
+                yield* transactionRepository.touchUpdatedByIds([...changedTransactionIds], TransactionUpdatedByEnum.RULE);
+                yield* transactionRuleRepository.stampUpdatedByRule(matches.map(match => match.transactionId));
             },
             effect => Db.transaction(effect)
         );

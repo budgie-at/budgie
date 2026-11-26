@@ -58,6 +58,7 @@ import { resolveSyncProgressUpdate } from '../../core/utils/resolve-sync-progres
 import { MonobankClient } from '../client/monobank.client';
 import { MONOBANK_MAX_PERIOD_SECONDS } from '../constant/monobank-max-period-seconds.constant';
 import { MONOBANK_RATE_LIMIT_MS } from '../constant/monobank-rate-limit-ms.constant';
+import { MonobankRetryBaseDelayMs } from '../constant/monobank-retry-base-delay-ms.constant';
 import { MonobankConnectionResultEnum } from '../enum/monobank-connection-result.enum';
 
 import type { SyncAccountInterface } from '../../core/interface/sync-account.interface';
@@ -308,9 +309,11 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
             };
         });
 
+        const retryBaseDelayMs = yield* MonobankRetryBaseDelayMs;
+
         const loadedClientCache = yield* Cache.makeWith(
             (token: string) => {
-                const client = new MonobankClient(token);
+                const client = new MonobankClient(token, retryBaseDelayMs);
 
                 return Effect.as(client.getAccounts, client);
             },
@@ -341,7 +344,7 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
                     return { transactions: [], nextTo: now, nextFrom: now, completed: true };
                 }
 
-                const client = new MonobankClient(token);
+                const client = new MonobankClient(token, retryBaseDelayMs);
                 const result =
                     sync.mode === SyncModeEnum.FORWARD
                         ? yield* syncTransactionsForward(client, account.externalId, sync.forwardSyncFromAt ?? now)

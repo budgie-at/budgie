@@ -1,4 +1,4 @@
-import { TransactionConsolidationTypeEnum, TransferPairAutoConfidenceBucketEnum } from '@budgie/contracts';
+import { TransactionConsolidationTypeEnum, TransferPairAutoConfidenceBucketEnum, YIELD_TO_UI } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -11,7 +11,6 @@ import { ConsolidationRepairExecutorService } from '../../executor/service/conso
 import { buildIbanBridgeChainCanonicalInput } from '../../executor/utils/build-iban-bridge-chain-canonical-input.util';
 import { ConsolidationCandidateRepository } from '../../query/repository/consolidation-candidate.repository';
 import { RefundPairRepository } from '../../query/repository/refund-pair.repository';
-import { CONSOLIDATION_YIELD } from '../../shared/constant/consolidation-yield.constant';
 import { makeConsolidationFamilyStrategy } from '../utils/make-consolidation-family-strategy.util';
 
 import { P2pFiatTransferConsolidationFamilyService } from './p2p-fiat-transfer-consolidation-family.service';
@@ -293,13 +292,13 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
                 'ConsolidationCoordinatorService.findExistingTransferIncomeDuplicateRepairCandidates'
             )(function* () {
                 const existingTransferBridgeCandidates = yield* consolidationCandidateRepository.findExistingTransferBridgeCandidates(null);
-                yield* CONSOLIDATION_YIELD;
+                yield* YIELD_TO_UI;
                 const existingTransferChainReclaimCandidates =
                     yield* consolidationCandidateRepository.findExistingTransferChainReclaimCandidates(null);
-                yield* CONSOLIDATION_YIELD;
+                yield* YIELD_TO_UI;
                 const rawExistingTransferIncomeDuplicateCandidates =
                     yield* consolidationCandidateRepository.findExistingTransferIncomeDuplicateCandidates(null);
-                yield* CONSOLIDATION_YIELD;
+                yield* YIELD_TO_UI;
 
                 const blockedSourceTransactionIds = new Set([
                     ...existingTransferBridgeCandidates.flatMap(getExistingTransferBridgeSourceTransactionIds),
@@ -310,7 +309,7 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
                         !blockedSourceTransactionIds.has(candidate.existingTransferId) &&
                         !blockedSourceTransactionIds.has(candidate.duplicateTransactionId)
                 );
-                yield* CONSOLIDATION_YIELD;
+                yield* YIELD_TO_UI;
 
                 return existingTransferIncomeDuplicateCandidates;
             });
@@ -329,7 +328,7 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
             const findBridgeClaimedRepairCandidates = Effect.fn('ConsolidationCoordinatorService.findBridgeClaimedRepairCandidates')(
                 function* () {
                     const candidates = yield* consolidationCandidateRepository.findBridgeClaimedRepairCandidates;
-                    yield* CONSOLIDATION_YIELD;
+                    yield* YIELD_TO_UI;
 
                     return candidates;
                 }
@@ -408,7 +407,7 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
                         ],
                         { concurrency: 'unbounded' }
                     );
-                    yield* CONSOLIDATION_YIELD;
+                    yield* YIELD_TO_UI;
 
                     return manualReviewCandidateCount + refundReviewCandidates.length;
                 }),

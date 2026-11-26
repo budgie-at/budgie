@@ -11,10 +11,7 @@ import * as PubSub from 'effect/PubSub';
 import * as Reactivity from 'effect/reactivity/Reactivity';
 import * as Stream from 'effect/Stream';
 
-import { emptyFn } from '@rnw-community/shared';
-
 import type { DbMutationInterface } from '@budgie/contracts';
-import type { SQLiteTable } from 'drizzle-orm/sqlite-core';
 
 export class DatabaseChangeService extends Context.Service<DatabaseChangeService>()('@budgie/app/DatabaseChangeService', {
     make: Effect.gen(function* () {
@@ -64,14 +61,6 @@ export class DatabaseChangeService extends Context.Service<DatabaseChangeService
 
         return {
             changes: Stream.fromPubSub(changes),
-            watchTables: (tables: ReadonlyArray<SQLiteTable>): Stream.Stream<void> => {
-                const watched = new Set(tables.map(table => getTableName(table)));
-
-                return Stream.fromPubSub(changes).pipe(
-                    Stream.filter(changed => changed.some(tableName => watched.has(tableName))),
-                    Stream.map(emptyFn)
-                );
-            },
             record: (mutation: DbMutationInterface) =>
                 Effect.sync(() => {
                     mutation.tables.forEach(tableName => {

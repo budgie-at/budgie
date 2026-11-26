@@ -78,7 +78,7 @@ const getMarketPriceExchangeRateSql = (defaultInstrumentId: number | SQL, instru
                 FROM ${InstrumentDailyMarketPriceEntityTable}
                 WHERE ${InstrumentDailyMarketPriceEntityTable.instrumentId} = ${instrumentIdRef}
                   AND ${InstrumentDailyMarketPriceEntityTable.deletedAt} IS NULL
-                ORDER BY ${InstrumentDailyMarketPriceEntityTable.priceDate} DESC
+                ORDER BY ${InstrumentDailyMarketPriceEntityTable.priceDate} DESC, ${InstrumentDailyMarketPriceEntityTable.quoteInstrumentId} ASC
                 LIMIT 1
             ) AS latest
         )

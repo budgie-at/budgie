@@ -463,7 +463,13 @@ export class AccountBalanceRepository extends Context.Service<AccountBalanceRepo
                             isNull(BankIntegrationEntityTable.deletedAt)
                         )
                     )
-                    .where(and(isNull(AccountEntityTable.deletedAt), not(buildDuplicateOfOwnAccountSql())));
+                    .where(and(isNull(AccountEntityTable.deletedAt), not(buildDuplicateOfOwnAccountSql())))
+                    .orderBy(
+                        asc(AccountEntityTable.isActive),
+                        asc(AccountEntityTable.type),
+                        asc(AccountEntityTable.instrumentId),
+                        asc(AccountEntityTable.id)
+                    );
             }),
         getLatestUpdatedAt: Db.query(db =>
             db

@@ -1,4 +1,6 @@
-import { createTestVitestConfig } from '@budgie-at/test-kit/vitest';
-import { defineConfig } from 'vitest/config';
+import { createTestVitestConfig, scenarioMaxWorkers } from '@budgie-at/test-kit/vitest';
+import { defineConfig, mergeConfig } from 'vitest/config';
 
-export default defineConfig(createTestVitestConfig(__dirname, 'src/harness/setup.ts'));
+export default defineConfig(
+    mergeConfig(createTestVitestConfig(__dirname, 'src/harness/setup.ts'), { test: { maxWorkers: scenarioMaxWorkers } })
+);

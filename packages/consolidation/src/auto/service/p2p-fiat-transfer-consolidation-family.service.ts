@@ -1,4 +1,4 @@
-import { AccountTypeEnum } from '@budgie/contracts';
+import { AccountTypeEnum, YIELD_TO_UI } from '@budgie/contracts';
 import * as Arr from 'effect/Array';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -9,7 +9,6 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 import { ConsolidationExecutorService } from '../../executor/service/consolidation-executor.service';
 import { ConsolidationRepairExecutorService } from '../../executor/service/consolidation-repair-executor.service';
 import { ConsolidationCandidateRepository } from '../../query/repository/consolidation-candidate.repository';
-import { CONSOLIDATION_YIELD } from '../../shared/constant/consolidation-yield.constant';
 import { TRANSFER_PAIR_P2P_FIAT_RATE_TOLERANCE } from '../../shared/constant/transfer-pair-p2p-fiat.constant';
 import { P2pFiatDirectionEnum } from '../enum/p2p-fiat-direction.enum';
 import { makeConsolidationFamilyStrategy } from '../utils/make-consolidation-family-strategy.util';
@@ -266,7 +265,7 @@ export class P2pFiatTransferConsolidationFamilyService extends Context.Service<P
 
                     for (const candidate of repairCandidates) {
                         yield* consolidationRepairExecutorService.repairP2pFiatCanonical(candidate.canonicalTransactionId);
-                        yield* CONSOLIDATION_YIELD;
+                        yield* YIELD_TO_UI;
                     }
                 }),
                 shouldRepeatAfterSuccessfulPass: true

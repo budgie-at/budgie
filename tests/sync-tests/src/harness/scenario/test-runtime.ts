@@ -2,7 +2,7 @@ import { DatabaseChangeService } from '@app/@generic/drizzle/service/database-ch
 import { appServicesLayer, appServicesWithoutDrainerLayer } from '@app/@generic/runtime/app-services.layer';
 import { makeTestDatabase, makeTestPlatformLayer } from '@budgie-at/test-kit';
 import { Db } from '@budgie/contracts';
-import { BinanceRateLimitMs, MONOBANK_RATE_LIMIT_MS } from '@budgie/sync';
+import { BinanceRateLimitMs, MONOBANK_RATE_LIMIT_MS, MonobankRetryBaseDelayMs } from '@budgie/sync';
 import * as Clock from 'effect/Clock';
 import * as Duration from 'effect/Duration';
 import * as Effect from 'effect/Effect';
@@ -48,7 +48,12 @@ const withInstantRateLimit = (clock: Clock.Clock): Clock.Clock => {
     };
 };
 
-const platformLayer = Layer.mergeAll(makeTestPlatformLayer(testDb), Layer.succeed(BinanceRateLimitMs, 0), testSyncRequestSignerLayer);
+const platformLayer = Layer.mergeAll(
+    makeTestPlatformLayer(testDb),
+    Layer.succeed(BinanceRateLimitMs, 0),
+    Layer.succeed(MonobankRetryBaseDelayMs, 1),
+    testSyncRequestSignerLayer
+);
 
 const servicesLayer = appServicesWithoutDrainerLayer.pipe(
     Layer.provideMerge(Layer.merge(fakeTransferConsolidationDrainerLayer, platformLayer))

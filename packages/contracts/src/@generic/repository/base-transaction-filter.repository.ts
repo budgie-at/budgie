@@ -1,4 +1,4 @@
-import { SQL, and, eq, exists, gte, inArray, isNotNull, isNull, lte, ne, notExists, or, sql } from 'drizzle-orm';
+import { SQL, and, eq, gte, inArray, isNotNull, isNull, lte, ne, or, sql } from 'drizzle-orm';
 import { QueryBuilder } from 'drizzle-orm/sqlite-core';
 
 import { isDefined, isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
@@ -163,12 +163,7 @@ class BaseTransactionFilterRepository {
     }
 
     buildUntaggedCondition() {
-        return notExists(
-            this.queryBuilder
-                .select({ one: sql`1` })
-                .from(TransactionTagsEntityTable)
-                .where(eq(TransactionTagsEntityTable.transactionId, TransactionEntityTable.id))
-        );
+        return sql`NOT EXISTS (SELECT 1 FROM ${TransactionTagsEntityTable} WHERE ${eq(TransactionTagsEntityTable.transactionId, TransactionEntityTable.id)})`;
     }
 
     private buildCategoryCondition(categoryIds: number[]) {
@@ -213,19 +208,14 @@ class BaseTransactionFilterRepository {
             return undefined;
         }
 
-        return exists(
-            this.queryBuilder
-                .select({ one: sql`1` })
-                .from(TransactionEntryEntityTable)
-                .where(
-                    and(
-                        eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id),
-                        this.buildPrimaryLedgerEntryCondition(),
-                        inArray(TransactionEntryEntityTable.type, [TransactionEntryTypeEnum.CREDIT, TransactionEntryTypeEnum.DEBIT]),
-                        ...amountParts
-                    )
-                )
+        const entryCondition = and(
+            eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id),
+            this.buildPrimaryLedgerEntryCondition(),
+            inArray(TransactionEntryEntityTable.type, [TransactionEntryTypeEnum.CREDIT, TransactionEntryTypeEnum.DEBIT]),
+            ...amountParts
         );
+
+        return sql`EXISTS (SELECT 1 FROM ${TransactionEntryEntityTable} WHERE ${entryCondition})`;
     }
 
     private buildUncategorizedCondition() {

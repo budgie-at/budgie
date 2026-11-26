@@ -6,7 +6,7 @@ import {
     TransactionEntryEntityTable
 } from '@budgie/contracts';
 import { AtmCashMoveService, BinanceSyncService } from '@budgie/sync';
-import { describe, expect, it } from '@effect/vitest';
+import { expect, layer } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
@@ -79,7 +79,7 @@ const pendingAnchorAfterFirstSync = (stubHistory: typeof stubDeposit, ageMs: num
         return (yield* fetchSyncById(sync.id)).binanceCapitalPendingFromAt;
     });
 
-describe('binance/capital-status', () => {
+layer(TestLayer)('binance/capital-status', it => {
     it.effect.each([
         { label: 'pending deposit', stubHistory: stubDeposit, statuses: [0], counts: [0] },
         { label: 'rejected deposit', stubHistory: stubDeposit, statuses: [2], counts: [0] },
@@ -99,7 +99,7 @@ describe('binance/capital-status', () => {
     ])('imports a $label only when it is final-success', ({ stubHistory, statuses, counts }) =>
         Effect.gen(function* () {
             expect(yield* importedCountsAfterEachStatus(stubHistory, HOUR_MS / 2, statuses)).toEqual(counts);
-        }).pipe(Effect.provide(TestLayer))
+        })
     );
 
     it.effect.each([
@@ -108,7 +108,7 @@ describe('binance/capital-status', () => {
     ])('imports a pending $label exactly once after it completes beyond the forward overlap', ({ stubHistory, pending, completed }) =>
         Effect.gen(function* () {
             expect(yield* importedCountsAfterEachStatus(stubHistory, 3 * DAY_MS, [pending, completed, completed])).toEqual([0, 1, 1]);
-        }).pipe(Effect.provide(TestLayer))
+        })
     );
 
     it.effect.each([
@@ -120,13 +120,13 @@ describe('binance/capital-status', () => {
     ])('removes a previously imported row that Binance now reports as a $label', ({ stubHistory, imported, failed }) =>
         Effect.gen(function* () {
             expect(yield* importedCountsAfterEachStatus(stubHistory, HOUR_MS / 2, [imported, failed])).toEqual([1, 0]);
-        }).pipe(Effect.provide(TestLayer))
+        })
     );
 
     it.effect('re-imports a removed rejected deposit when Binance later reports it completed', () =>
         Effect.gen(function* () {
             expect(yield* importedCountsAfterEachStatus(stubDeposit, HOUR_MS / 2, [1, 2, 1])).toEqual([1, 0, 1]);
-        }).pipe(Effect.provide(TestLayer))
+        })
     );
 
     it.effect.each([
@@ -135,7 +135,7 @@ describe('binance/capital-status', () => {
     ])('keeps a previously imported $label when Binance later omits its status', ({ stubHistory, imported }) =>
         Effect.gen(function* () {
             expect(yield* importedCountsAfterEachStatus(stubHistory, HOUR_MS / 2, [imported, undefined])).toEqual([1, 1]);
-        }).pipe(Effect.provide(TestLayer))
+        })
     );
 
     it.effect.each([
@@ -148,7 +148,7 @@ describe('binance/capital-status', () => {
             const pendingFrom = yield* pendingAnchorAfterFirstSync(stubHistory, ageDays * DAY_MS);
 
             expect(pendingFrom instanceof Date).toBe(isAnchored);
-        }).pipe(Effect.provide(TestLayer))
+        })
     );
 
     it.effect('removes the ledger money of a consolidated withdrawal that Binance now reports as rejected', () =>
@@ -177,6 +177,6 @@ describe('binance/capital-status', () => {
             expect(yield* fetchBinanceTransactions).toHaveLength(0);
             expect(yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)).toHaveLength(0);
             expect((yield* accountBalanceRepository.getLedgerBalances([cashAccount.id])).get(cashAccount.id) ?? 0).toBe(0);
-        }).pipe(Effect.provide(TestLayer))
+        })
     );
 });

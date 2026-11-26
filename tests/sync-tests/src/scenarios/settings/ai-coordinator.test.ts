@@ -24,7 +24,8 @@ import * as Layer from 'effect/Layer';
 import * as Queue from 'effect/Queue';
 import * as Semaphore from 'effect/Semaphore';
 import * as TestClock from 'effect/testing/TestClock';
-import { beforeEach, vi } from 'vitest';
+import { Platform } from 'react-native';
+import { afterEach, beforeEach, vi } from 'vitest';
 
 import { emptyFn, isDefined } from '@rnw-community/shared';
 
@@ -34,15 +35,15 @@ import { appStateStub, llamaStub } from '../../harness/native/native-module.stub
 import type { AiFeatureSettingsInterface } from '@app/ai/interface/ai-feature-settings.interface';
 
 const native = { context: { stopCompletion: vi.fn(() => void 0), release: vi.fn(() => Promise.resolve()) } };
-
-vi.mock('react-native', async importOriginal => ({
-    ...(await importOriginal<object>()),
-    AppState: (await import('../../harness/native/native-module.stub')).appStateStub,
-    Platform: { OS: 'android' }
-}));
+const originalPlatformOs = Platform.OS;
 
 beforeEach(() => {
+    Object.assign(Platform, { OS: 'android' });
     llamaStub.initLlama.mockResolvedValue(native.context);
+});
+
+afterEach(() => {
+    Object.assign(Platform, { OS: originalPlatformOs });
 });
 
 const provideTestServices = <A, E, R>(effect: Effect.Effect<A, E, R>) =>

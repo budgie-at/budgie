@@ -3,6 +3,7 @@ import { BinanceSyncService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 import * as Schedule from 'effect/Schedule';
+import { http } from 'msw';
 
 import {
     BINANCE_TEST_TOKEN,
@@ -32,13 +33,10 @@ describe('binance/setup-sync', () => {
             yield* stubSelectedBtcAccount();
 
             const requestedPaths: string[] = [];
-            const recordRequestedPath = ({ request }: { readonly request: Request }) => {
-                requestedPaths.push(new URL(request.url).pathname);
-            };
-            mockServer.events.on('request:start', recordRequestedPath);
-
-            yield* Effect.addFinalizer(() =>
-                Effect.sync(() => void mockServer.events.removeListener('request:start', recordRequestedPath))
+            mockServer.use(
+                http.all('*', ({ request }) => {
+                    requestedPaths.push(new URL(request.url).pathname);
+                })
             );
 
             yield* binanceSyncService.setupAccountSyncBatch(BINANCE_TEST_TOKEN, ['SPOT:BTC']);
