@@ -1,0 +1,1 @@
+export const YIELD_CHART_TICKS_HEIGHT = 16;

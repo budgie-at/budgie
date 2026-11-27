@@ -3,36 +3,49 @@ import { expect, it } from '@effect/vitest';
 import { buildYieldAxis } from '../src/yield/utils/build-yield-axis.util';
 
 it.each([
-    [612, 0, { step: 500, top: 1000, bottom: 0, gridlines: [0, 500, 1000] }],
-    [38, 0, { step: 20, top: 40, bottom: 0, gridlines: [0, 20, 40] }],
-    [50, 0, { step: 25, top: 50, bottom: 0, gridlines: [0, 25, 50] }],
-    [100, -12, { step: 100, top: 100, bottom: -100, gridlines: [-100, 0, 100] }],
-    [0, 0, { step: 1, top: 1, bottom: 0, gridlines: [0, 1] }]
-])('steps (%d, %d) at a nice value with zero on a gridline', (max, min, expected) => {
-    expect(buildYieldAxis(max, min)).toEqual(expected);
+    [1_200, 1_250, 250],
+    [430, 450, 150],
+    [484, 500, 100],
+    [500, 600, 200],
+    [530, 600, 200],
+    [11_000, 12_000, 4_000],
+    [21_000, 25_000, 5_000],
+    [4_800_000, 5_000_000, 1_000_000],
+    [0.4, 0.45, 0.15],
+    [100, 120, 40]
+])('fits a peak of %d with a top of %d on a step of %d', (peak, top, step) => {
+    expect(buildYieldAxis(peak, 0)).toMatchObject({ top, step });
 });
 
-it('survives tiny values without gridline drift', () => {
-    const axis = buildYieldAxis(0.0003, 0);
-
-    expect(axis.step).toBeCloseTo(0.0002, 12);
-    expect(axis.top).toBeCloseTo(0.0004, 12);
-    expect(axis.gridlines).toHaveLength(3);
+it('never puts the top tick below the peak', () => {
+    [1, 7, 9, 99, 100, 774, 1_289, 2_501, 12_110].forEach(peak => {
+        expect(buildYieldAxis(peak, 0).top).toBeGreaterThanOrEqual(peak);
+    });
 });
 
-it('handles huge values', () => {
-    expect(buildYieldAxis(1e12, 0)).toEqual({ step: 5e11, top: 1e12, bottom: 0, gridlines: [0, 5e11, 1e12] });
+it('keeps three to five intervals between zero and the top', () => {
+    [1, 7, 9, 99, 774, 1_289, 2_501, 12_110, 88_000].forEach(peak => {
+        const { top, step } = buildYieldAxis(peak, 0);
+
+        expect(Math.round(top / step)).toBeGreaterThanOrEqual(3);
+        expect(Math.round(top / step)).toBeLessThanOrEqual(5);
+    });
 });
 
-it('extends below zero when tax exceeds earned', () => {
-    expect(buildYieldAxis(10, -50)).toEqual({ step: 50, top: 50, bottom: -50, gridlines: [-50, 0, 50] });
+it('keeps the peak at least 2% under the top', () => {
+    [1, 7, 99, 100, 484, 500, 774, 1_289, 12_110].forEach(peak => {
+        expect(peak).toBeLessThanOrEqual(buildYieldAxis(peak, 0).top / 1.02 + 1e-9);
+    });
+});
+
+it('reaches below zero exactly as deep as the tax', () => {
+    expect(buildYieldAxis(100, 30).bottom).toBe(-30);
 });
 
 it.each([
+    [0, 0],
     [Number.NaN, 0],
-    [10, Number.NaN],
-    [Number.POSITIVE_INFINITY, 0],
-    [0, Number.NEGATIVE_INFINITY]
-])('falls back to the empty axis for (%d, %d)', (max, min) => {
-    expect(buildYieldAxis(max, min)).toEqual({ step: 1, top: 1, bottom: 0, gridlines: [0, 1] });
+    [Number.POSITIVE_INFINITY, 0]
+])('falls back to a unit axis for (%d, %d)', (max, depth) => {
+    expect(buildYieldAxis(max, depth)).toEqual({ top: 1, bottom: -depth, step: 0.5 });
 });

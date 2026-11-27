@@ -9,6 +9,6 @@ import type { YieldQueryKeyInterface } from '@budgie/market';
 export const yieldPayoutsFamily = databaseQueryFamily(
     TRANSACTION_LIST_TABLES,
     YieldService,
-    (service, [key, isUnassignedOnly, language, limit]: readonly [YieldQueryKeyInterface, boolean, LanguageEnum, number]) =>
+    (service, [key, isUnassignedOnly, language, limit]: readonly [YieldQueryKeyInterface, boolean, LanguageEnum, number | null]) =>
         service.findPayouts(key, isUnassignedOnly, language, limit)
 );

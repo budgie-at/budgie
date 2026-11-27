@@ -1,0 +1,1 @@
+export const YIELD_AXIS_LABEL_HEIGHT = 14;

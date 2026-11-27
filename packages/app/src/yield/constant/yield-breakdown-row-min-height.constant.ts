@@ -1,0 +1,1 @@
+export const YIELD_BREAKDOWN_ROW_MIN_HEIGHT = 62;

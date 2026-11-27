@@ -4,4 +4,5 @@ export interface YieldBarRectInterface {
     readonly width: number;
     readonly height: number;
     readonly radius: number;
+    readonly isInProgress: boolean;
 }

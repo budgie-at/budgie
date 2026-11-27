@@ -5,6 +5,7 @@ import { format } from 'date-fns/format';
 import { parseISO } from 'date-fns/parseISO';
 import * as Effect from 'effect/Effect';
 
+import { YieldGroupEnum } from '../src/yield/enum/yield-group.enum';
 import { YieldRangeEnum } from '../src/yield/enum/yield-range.enum';
 import { YieldUnavailableReasonEnum } from '../src/yield/enum/yield-unavailable-reason.enum';
 
@@ -291,6 +292,17 @@ describe('YieldService annual yield', () => {
             );
 
             expect(summary.annualYield.isEstimated).toBe(true);
+        })
+    );
+
+    it.effect('scopes the annual yield to the filtered group', () =>
+        Effect.gen(function* () {
+            const world = mergeWorlds(ethStakingWorld, lumpyDepositWorld(null));
+            const all = yield* summarize(world);
+            const interestOnly = yield* summarize(world, { group: YieldGroupEnum.INTEREST });
+
+            expect(interestOnly.annualYield.rate).toBeCloseTo(LUMPY_RATE, 6);
+            expect(interestOnly.annualYield.rate).not.toBeCloseTo(all.annualYield.rate ?? 0, 3);
         })
     );
 });

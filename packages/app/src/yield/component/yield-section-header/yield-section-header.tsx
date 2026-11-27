@@ -9,6 +9,7 @@ import type { MessageDescriptor } from '@lingui/core';
 
 interface Props {
     readonly section: YieldListSectionEnum;
+    readonly hasTax: boolean;
 }
 
 const SECTION_TITLE: Readonly<Record<YieldListSectionEnum, MessageDescriptor>> = {
@@ -18,16 +19,29 @@ const SECTION_TITLE: Readonly<Record<YieldListSectionEnum, MessageDescriptor>> =
     [YieldListSectionEnum.PAYOUTS]: msg`Payouts`
 };
 
-export const YieldSectionHeader = ({ section }: Props) => {
+export const YieldSectionHeader = ({ section, hasTax }: Props) => {
     const { t } = useLingui();
 
     return (
-        <View className="gap-y-xxs bg-surface px-3xl pt-3xl pb-sm" testID={PassiveIncomeSelector.Section(section)}>
-            <Text accessibilityRole="header" className="text-xs font-semibold uppercase text-secondary-foreground">
-                {t(SECTION_TITLE[section])}
-            </Text>
+        <View className="gap-y-xxs px-3xl pt-[24px] pb-[8px]" testID={PassiveIncomeSelector.Section(section)}>
+            <View className="flex-row items-baseline justify-between gap-x-sm">
+                <Text accessibilityRole="header" className="text-[17px] font-semibold text-primary">
+                    {t(SECTION_TITLE[section])}
+                    {section === YieldListSectionEnum.PAYOUTS && hasTax ? (
+                        <Text className="text-[13px] font-normal text-secondary-foreground">
+                            {' · '}
+                            <Trans>before tax</Trans>
+                        </Text>
+                    ) : null}
+                </Text>
+                {section === YieldListSectionEnum.ACTIVE ? (
+                    <Text numberOfLines={1} className="shrink text-[13px] text-secondary-foreground">
+                        <Trans>Earned in range</Trans>
+                    </Text>
+                ) : null}
+            </View>
             {section === YieldListSectionEnum.UNASSIGNED ? (
-                <Text className="text-xs text-secondary-foreground">
+                <Text className="text-[13px] leading-[18px] text-secondary-foreground">
                     <Trans>Payouts we couldn’t match to a deposit or exchange asset</Trans>
                 </Text>
             ) : null}

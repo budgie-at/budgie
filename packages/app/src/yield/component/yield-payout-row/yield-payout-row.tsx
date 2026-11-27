@@ -1,35 +1,15 @@
-import { TransactionTypeEnum } from '@budgie/contracts';
-import { router } from 'expo-router';
-import { View } from 'react-native';
+import { YieldPayoutRowContent } from '../yield-payout-row-content/yield-payout-row-content';
+import { YieldRowSurface } from '../yield-row-surface/yield-row-surface';
 
-import { emptyFn } from '@rnw-community/shared';
+import type { TransactionListRowPositionEnum } from '../../../transaction/enum/transaction-list-row-position.enum';
+import type { YieldPayoutRowPropsInterface } from '../../interface/yield-payout-row-props.interface';
 
-import { TransactionCard } from '../../../transaction/components/transaction-card/transaction-card';
-import { getTransactionHref } from '../../../transaction/utils/get-transaction-href.util';
-import { YIELD_SOURCE_FOCUS } from '../../constant/yield-source-focus.constant';
-import { PassiveIncomeSelector } from '../../selector/passive-income.selector';
-
-import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
-
-interface Props {
-    readonly transaction: TransactionWithRelationsEntityInterface;
-    readonly isUnassigned: boolean;
+interface Props extends YieldPayoutRowPropsInterface {
+    readonly rowPosition: TransactionListRowPositionEnum;
 }
 
-export const YieldPayoutRow = ({ transaction, isUnassigned }: Props) => {
-    const handlePress = (pressed: TransactionWithRelationsEntityInterface) => {
-        if (isUnassigned && pressed.type === TransactionTypeEnum.INCOME) {
-            router.push({ pathname: '/transactions/[id]/income', params: { id: String(pressed.id), focus: YIELD_SOURCE_FOCUS } });
-
-            return;
-        }
-
-        router.push(getTransactionHref(pressed));
-    };
-
-    return (
-        <View testID={PassiveIncomeSelector.Payout(transaction.id)}>
-            <TransactionCard transaction={transaction} onPress={handlePress} onLongPress={emptyFn} />
-        </View>
-    );
-};
+export const YieldPayoutRow = ({ rowPosition, ...content }: Props) => (
+    <YieldRowSurface position={rowPosition}>
+        <YieldPayoutRowContent {...content} />
+    </YieldRowSurface>
+);

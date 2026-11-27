@@ -68,12 +68,6 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
         const createOnly = { enqueueExistingConsolidation: false, updateExistingAmounts: false };
         const updateExisting = { enqueueExistingConsolidation: false, updateExistingAmounts: true };
         const consolidateExisting = { enqueueExistingConsolidation: true, updateExistingAmounts: false };
-        const newHistorySources = new Set([
-            BinanceHistorySourceEnum.LOCKED_EARN,
-            BinanceHistorySourceEnum.ETH_STAKING,
-            BinanceHistorySourceEnum.DIVIDEND,
-            BinanceHistorySourceEnum.DUST
-        ]);
         const decodeCredentials = Schema.decodeUnknownEffect(Schema.fromJsonString(BinanceCredentialsSchema));
         const headOverlapSeconds = forwardOverlapHours * 60 * 60;
         const freshRunState = (deadlineAtMs: number, startedAtMs: number): BinanceRunStateInterface => ({
@@ -134,7 +128,18 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
         const getRunSignedClient = (token: string): BinanceSignedClient => getTokenRun(token).signedClient;
 
         const deferIfWalkDeferred = (token: string, source: BinanceHistorySourceEnum) =>
-            Effect.suspend(() => (isDefined(getRunSignedClient(token).getDeferredFrontierMs(source)) ? markRunDeferred : Effect.void));
+            Effect.suspend(() => {
+                const client = getRunSignedClient(token);
+                const isWalkDeferred = isDefined(client.getDeferredFrontierMs(source));
+
+                if (isWalkDeferred && client.hasSourceFailure()) {
+                    run = { ...run, providerSourceFailed: true };
+
+                    return Effect.void;
+                }
+
+                return isWalkDeferred ? markRunDeferred : Effect.void;
+            });
 
         const fetchExchangeAccounts = Effect.fnUntraced(function* (token: string) {
             const cachedExchangeAccounts = getTokenRun(token).exchangeAccounts;
@@ -261,9 +266,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             const integration = yield* databaseLock.withPermit(syncIntegrationTokenService.getOrCreateIntegration(provider, token));
             const progress = yield* databaseLock.withPermit(binanceHistoryProgressService.find(integration.id, source));
             const lookbackSeconds = getUnixTime(HISTORY_STARTED_AT);
-            const isBackfillPending = isDefined(progress)
-                ? Math.floor(progress.tailAt / 1000) > lookbackSeconds
-                : isFiat || newHistorySources.has(source) || sync.mode === SyncModeEnum.BACKWARD || !isDefined(sync.forwardSyncedAt);
+            const isBackfillPending = !isDefined(progress) || Math.floor(progress.tailAt / 1000) > lookbackSeconds;
 
             const client = getRunSignedClient(token);
 
@@ -279,7 +282,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             let committedCount = 0;
             if (isDefined(progress)) {
                 committedCount += yield* fetchRange(resolveHeadStartSeconds(progress.headAt), null);
-                if (isRunDeferred() || client.isSourceSkipped(source)) {
+                if (isRunDeferred() || client.isSourceSkipped(source) || isDefined(client.getDeferredFrontierMs(source))) {
                     return committedCount;
                 }
                 yield* databaseLock.withPermit(

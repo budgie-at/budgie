@@ -1,32 +1,37 @@
+import { isPositiveNumber } from '@rnw-community/shared';
+
 import type { YieldAxisInterface } from '../interface/yield-axis.interface';
 
-const NICE_STEPS = [1, 2, 2.5, 5, 10] as const;
-const DECIMAL_BASE = 10;
-const GRIDLINE_SPANS = 2;
-const EMPTY_AXIS: YieldAxisInterface = { step: 1, top: 1, bottom: 0, gridlines: [0, 1] };
+const EMPTY_TOP = 1;
+const EMPTY_STEP = 0.5;
+const STEP_FACTORS = [1, 1.5, 2, 2.5, 3, 4, 5] as const;
+const MIN_INTERVALS = 3;
+const MAX_INTERVALS = 5;
+const EPSILON = 1e-9;
+const PRECISION = 12;
+const HEADROOM = 1.02;
 
-export const buildYieldAxis = (maxValue: number, minValue: number): YieldAxisInterface => {
-    if (!Number.isFinite(maxValue) || !Number.isFinite(minValue)) {
-        return EMPTY_AXIS;
+export const buildYieldAxis = (maxValue: number, depthBelowZero: number): YieldAxisInterface => {
+    const peak = Math.max(maxValue, 0);
+
+    if (!Number.isFinite(peak) || !isPositiveNumber(peak)) {
+        return { top: EMPTY_TOP, bottom: -depthBelowZero, step: EMPTY_STEP };
     }
 
-    const top = Math.max(maxValue, 0);
-    const bottom = Math.min(minValue, 0);
-    const rawStep = (top - bottom) / GRIDLINE_SPANS;
+    const exponent = Math.floor(Math.log10(peak));
+    const fits = [exponent - 1, exponent, exponent + 1].flatMap(power =>
+        STEP_FACTORS.flatMap(factor => {
+            const step = Number((factor * 10 ** power).toPrecision(PRECISION));
+            const intervals = Math.ceil((peak * HEADROOM) / step - EPSILON);
 
-    if (rawStep <= 0) {
-        return EMPTY_AXIS;
-    }
+            return intervals >= MIN_INTERVALS && intervals <= MAX_INTERVALS
+                ? [{ step, top: Number((step * intervals).toPrecision(PRECISION)) }]
+                : [];
+        })
+    );
+    const best = fits.reduce((tightest, fit) =>
+        fit.top < tightest.top || (fit.top === tightest.top && fit.step > tightest.step) ? fit : tightest
+    );
 
-    const magnitude = DECIMAL_BASE ** Math.floor(Math.log10(rawStep));
-    const step = (NICE_STEPS.find(nice => nice >= rawStep / magnitude) ?? DECIMAL_BASE) * magnitude;
-    const topSteps = Math.ceil(top / step);
-    const bottomSteps = Math.floor(bottom / step);
-
-    return {
-        step,
-        top: topSteps * step,
-        bottom: bottomSteps * step,
-        gridlines: Array.from({ length: topSteps - bottomSteps + 1 }, (_, index) => (bottomSteps + index) * step)
-    };
+    return { top: best.top, bottom: -depthBelowZero, step: best.step };
 };

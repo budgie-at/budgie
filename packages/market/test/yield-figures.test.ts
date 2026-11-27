@@ -1,6 +1,7 @@
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
+import { YieldGroupEnum } from '../src/yield/enum/yield-group.enum';
 import { YieldPositionSectionEnum } from '../src/yield/enum/yield-position-section.enum';
 
 import {
@@ -62,6 +63,24 @@ describe('YieldService figures', () => {
 
             expect(summary.runRate?.value).toBeCloseTo(10.4 * 2000 * ETH_RATE + 120, 6);
             expect(summary.runRate?.isEstimated).toBe(false);
+        })
+    );
+
+    it.effect('keeps the run rate at or below the unfiltered figure under every kind filter and hides it for distributions', () =>
+        Effect.gen(function* () {
+            const world = mergeWorlds(ethStakingWorld, ratedDeposit(null));
+            const unfiltered = yield* summarize(world);
+            const staking = yield* summarize(world, { group: YieldGroupEnum.STAKING_EARN });
+            const interestOnly = yield* summarize(world, { group: YieldGroupEnum.INTEREST });
+            const distributions = yield* summarize(world, { group: YieldGroupEnum.DISTRIBUTIONS });
+
+            expect(unfiltered.runRate?.value).toBeGreaterThan(0);
+
+            [staking, interestOnly].forEach(summary => {
+                expect(summary.runRate?.value ?? 0).toBeLessThanOrEqual(unfiltered.runRate?.value ?? 0);
+            });
+            expect(staking.runRate?.value).toBeCloseTo(10.4 * 2000 * ETH_RATE, 6);
+            expect(distributions.runRate).toBeNull();
         })
     );
 

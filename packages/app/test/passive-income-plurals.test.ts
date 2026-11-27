@@ -8,7 +8,6 @@ import { messages as frMessages } from '../src/i18n/locales/fr/messages';
 import { messages as ukMessages } from '../src/i18n/locales/uk/messages';
 
 const SENTENCE_ID = 'passive-income.hero.sentence';
-const PAYOUTS_ID = 'passive-income.payouts.summary';
 const SO_FAR_ID = 'passive-income.chart.so-far';
 
 const catalogs: readonly (readonly [string, Messages])[] = [
@@ -27,8 +26,6 @@ const sentenceValues = (count: number, trend = 'other') => ({
     trend,
     change: '12%'
 });
-
-const payoutValues = (count: number) => ({ count, amount: '$12', lastPayout: 'Nov 2026' });
 
 const translate = (locale: string, catalog: Messages, id: string, values: Record<string, unknown>) => {
     const i18n = setupI18n({ locale, messages: { [locale]: catalog } });
@@ -59,30 +56,6 @@ describe('passive income plural catalogs', () => {
         [25, 'у 25 активах']
     ])('uk holding plural for %d', (count, phrase) => {
         expect(translate('uk', ukMessages, SENTENCE_ID, sentenceValues(count))).toContain(phrase);
-    });
-
-    it.each([
-        [1, '1 виплата'],
-        [3, '3 виплати'],
-        [5, '5 виплат'],
-        [21, '21 виплата']
-    ])('uk payouts plural for %d', (count, phrase) => {
-        expect(translate('uk', ukMessages, PAYOUTS_ID, payoutValues(count))).toContain(phrase);
-    });
-
-    it.each([
-        ['de', 1, '1 Auszahlung '],
-        ['de', 2, '2 Auszahlungen'],
-        ['es', 1, '1 pago '],
-        ['es', 2, '2 pagos'],
-        ['es', 1_000_000, 'pagos'],
-        ['fr', 0, '0 versement '],
-        ['fr', 2, '2 versements'],
-        ['fr', 1_000_000, 'versements']
-    ])('%s payouts plural for %d', (locale, count, phrase) => {
-        const catalog = Object.fromEntries(catalogs)[locale];
-
-        expect(translate(locale, catalog, PAYOUTS_ID, payoutValues(count))).toContain(phrase);
     });
 
     it.each(catalogs)('%s holdings message renders every plural category', (locale, catalog) => {

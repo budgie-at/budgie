@@ -213,7 +213,8 @@ describe('market-data/brokerage-trades', () => {
                 amount: 6,
                 costBasis: 603,
                 averageCost: 100.5,
-                realizedProfitLoss: 98
+                realizedProfitLoss: 98,
+                hasEstimatedCostBasis: false
             });
             yield* brokerageService.sell(
                 securityId,

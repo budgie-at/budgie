@@ -9,4 +9,5 @@ export interface InstrumentPositionEntryRowInterface {
     readonly amount: number;
     readonly feeBaseAmount?: number | null;
     readonly baseAmount: number | null;
+    readonly isEstimated?: boolean;
 }

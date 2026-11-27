@@ -6,6 +6,8 @@ import { isDefined } from '@rnw-community/shared';
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { yieldSummaryFamily } from '../constant/yield-summary-family-atom.constant';
 import { YieldChartModeEnum } from '../enum/yield-chart-mode.enum';
+import { isYieldQueryKeyEqual } from '../utils/is-yield-query-key-equal.util';
+import { isYieldSummaryCompact } from '../utils/is-yield-summary-compact.util';
 
 import { useYieldDateLabels } from './use-yield-date-labels.hook';
 
@@ -16,22 +18,20 @@ export const useYieldScreenState = (screenKey: YieldScreenKeyInterface): YieldSc
     const [mode, setModeState] = useState(YieldChartModeEnum.BARS);
     const [selection, setSelection] = useState<number | null>(null);
     const [touchedTarget, setTouchedTarget] = useState<string | null>(null);
-    const summary = AsyncResult.getOrElse(useLiveAtomValue(yieldSummaryFamily(screenKey.key)), () => null);
+    const rawSummary = AsyncResult.getOrElse(useLiveAtomValue(yieldSummaryFamily(screenKey.key)), () => null);
+    const summary = isDefined(rawSummary) && isYieldQueryKeyEqual(rawSummary.key, screenKey.key) ? rawSummary : null;
     const { formatRangeCaption } = useYieldDateLabels();
 
     const { focusDay, period } = screenKey;
-    const linkTarget = [focusDay, period?.fromDay, period?.toDay].join('|');
+    const linkTarget = [focusDay, period?.fromDay, period?.toDay, screenKey.scopeId].join('|');
     const isTouched = touchedTarget === linkTarget;
 
     const selectIndex = (index: number | null) => {
         setTouchedTarget(linkTarget);
         setSelection(index);
     };
-    const cancelScrub = () => {
-        selectIndex(null);
-    };
     const setMode = (nextMode: YieldChartModeEnum) => {
-        cancelScrub();
+        selectIndex(null);
         setModeState(nextMode);
     };
 
@@ -39,11 +39,20 @@ export const useYieldScreenState = (screenKey: YieldScreenKeyInterface): YieldSc
         ? (summary?.buckets.findIndex(bucket => bucket.start <= focusDay && focusDay <= bucket.end) ?? -1)
         : -1;
     const untouchedIndex = focusIndex >= 0 ? focusIndex : null;
-
-    const rangeCaption = isDefined(summary) ? formatRangeCaption(screenKey.key.range, summary.windowStart) : '';
+    const interactiveIndex = isTouched ? selection : untouchedIndex;
 
     return {
-        screen: { screenKey, mode, rangeCaption, isPeriodCaption: !isTouched && isDefined(period), setMode },
-        selection: { selectedIndex: isTouched ? selection : untouchedIndex, selectIndex, cancelScrub }
+        screen: {
+            screenKey,
+            mode,
+            rangeCaption: isDefined(summary) ? formatRangeCaption(screenKey.key.range, summary.windowStart) : '',
+            isPeriodCaption: !isTouched && isDefined(period),
+            setMode
+        },
+        selection: {
+            selectedIndex: isYieldSummaryCompact(summary) ? null : interactiveIndex,
+            selectIndex,
+            cancelScrub: () => void selectIndex(null)
+        }
     };
 };
