@@ -3378,6 +3378,10 @@ msgid "Consent valid until"
 msgstr "Consent valid until"
 
 #: ../ledger/src/transaction/service/transaction-transfer.service.ts
+msgid "Consolidated transactions cannot be converted to transfers"
+msgstr "Consolidated transactions cannot be converted to transfers"
+
+#: ../ledger/src/transaction/service/transaction-transfer.service.ts
 msgid "Consolidated transactions cannot start a deposit"
 msgstr "Consolidated transactions cannot start a deposit"
 

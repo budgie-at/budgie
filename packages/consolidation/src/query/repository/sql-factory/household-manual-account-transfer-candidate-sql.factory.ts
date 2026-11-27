@@ -1,4 +1,4 @@
-import { HOUSEHOLD_SYNC_ZONE, TransactionTypeEnum } from '@budgie/contracts';
+import { HOUSEHOLD_SYNC_ZONE, TransactionEntryKindEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 
 import { buildConsolidationScanScopeSql } from '../../utils/build-consolidation-scan-scope-sql.util';
 
@@ -8,9 +8,14 @@ export const buildHouseholdManualAccountTransferCandidatesSql = (scope: Consolid
     SELECT entry.transaction_id AS transactionId, target.id AS targetAccountId
     FROM transaction_entries entry
     INNER JOIN transactions source ON source.id = entry.transaction_id
+    INNER JOIN accounts source_account ON source_account.id = entry.account_id AND source_account.deleted_at IS NULL
     INNER JOIN accounts target ON target.iban = entry.to_iban
     WHERE entry.deleted_at IS NULL
         AND entry.original_transaction_id IS NULL
+        AND entry.kind = '${TransactionEntryKindEnum.PRIMARY}'
+        AND entry.amount > 0
+        AND entry.type = CASE source.type WHEN '${TransactionTypeEnum.EXPENSE}' THEN '${TransactionEntryTypeEnum.CREDIT}' ELSE '${TransactionEntryTypeEnum.DEBIT}' END
+        AND entry.to_iban IS NOT NULL
         AND entry.to_iban != ''
         AND source.deleted_at IS NULL
         AND source.consolidation_parent_transaction_id IS NULL

@@ -115,6 +115,16 @@ export const TransactionEntityTable = sqliteTable(
             .where(sql`${table.needsEmbedding} = 1 AND ${table.deletedAt} IS NULL AND ${table.title} = '' AND ${table.comment} != ''`),
         index('transactions_pending_embedding_idx')
             .on(table.id)
-            .where(sql`${table.needsEmbedding} = 1 AND ${table.deletedAt} IS NULL`)
+            .where(sql`${table.needsEmbedding} = 1 AND ${table.deletedAt} IS NULL`),
+        index('transactions_visible_consolidation_type_operated_idx')
+            .on(table.consolidationType, table.operatedAt)
+            .where(
+                sql`${table.deletedAt} IS NULL AND ${table.consolidationParentTransactionId} IS NULL AND ${table.consolidationType} IS NOT NULL`
+            ),
+        index('transactions_visible_external_source_type_operated_idx')
+            .on(table.externalSource, table.type, table.operatedAt)
+            .where(
+                sql`${table.deletedAt} IS NULL AND ${table.consolidationParentTransactionId} IS NULL AND ${table.externalSource} IS NOT NULL`
+            )
     ]
 );

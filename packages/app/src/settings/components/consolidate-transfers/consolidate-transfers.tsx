@@ -1,5 +1,6 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { TransferConsolidationService } from '@budgie/ledger';
+import { TransferConsolidationDrainerService } from '@budgie/sync';
 import { msg, plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
@@ -38,9 +39,16 @@ export const ConsolidateTransfers = () => {
 
     const handleConsolidate = () =>
         run(
-            Effect.flatMap(TransferConsolidationService, transferConsolidationService =>
-                transferConsolidationService.consolidate(null)
-            ).pipe(Effect.map(({ consolidated, found }) => void showConsolidationSuccessToast(consolidated, found, t)))
+            Effect.gen(function* () {
+                const transferConsolidationDrainerService = yield* TransferConsolidationDrainerService;
+                const transferConsolidationService = yield* TransferConsolidationService;
+
+                yield* transferConsolidationDrainerService.cancelPending();
+
+                const { consolidated, found } = yield* transferConsolidationService.consolidate(null);
+
+                showConsolidationSuccessToast(consolidated, found, t);
+            })
         );
 
     const handlePress = () => void handleConsolidate();

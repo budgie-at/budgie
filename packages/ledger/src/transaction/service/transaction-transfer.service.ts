@@ -116,11 +116,19 @@ export class TransactionTransferService extends Context.Service<TransactionTrans
             );
         };
 
-        const getTransferConversionTransaction = Effect.fnUntraced(function* (id: number, direction: 'expense' | 'income') {
+        const getTransferConversionTransaction = Effect.fnUntraced(function* (
+            id: number,
+            direction: 'expense' | 'income',
+            consolidatedErrorMessage: string
+        ) {
             const transaction = yield* transactionRepository.getByIdWithEntries(id);
 
             if (!isDefined(transaction)) {
                 return yield* Effect.die(new Error(t`Transaction not found`));
+            }
+
+            if (isDefined(transaction.consolidationType) || isDefined(transaction.consolidationParentTransactionId)) {
+                return yield* Effect.die(new Error(consolidatedErrorMessage));
             }
 
             const errorMessage = TRANSFER_CONVERSION_ERROR_MESSAGE[direction];
@@ -185,7 +193,11 @@ export class TransactionTransferService extends Context.Service<TransactionTrans
             params: ConvertToTransferParamsInterface,
             counterAmount: number | null
         ) {
-            const transaction = yield* getTransferConversionTransaction(params.id, direction);
+            const transaction = yield* getTransferConversionTransaction(
+                params.id,
+                direction,
+                t`Consolidated transactions cannot be converted to transfers`
+            );
             const isExpense = direction === 'expense';
             const fromAccountId = isExpense ? yield* requireTransferAccountId(transaction.fromAccountId, 'source') : params.accountId;
             const toAccountId = isExpense ? params.accountId : yield* requireTransferAccountId(transaction.toAccountId, 'destination');
@@ -261,7 +273,7 @@ export class TransactionTransferService extends Context.Service<TransactionTrans
                 if (isDefined(debtAccountId)) {
                     yield* debtEventRepository.deleteByTransactionId(params.id);
                 }
-                yield* transactionEntryRepository.deleteByTransactionId(params.id);
+                yield* transactionEntryRepository.deleteLedgerByTransactionId(params.id);
                 const isExpense = direction === 'expense';
 
                 yield* transactionEntryRepository.bulkCreate([
@@ -456,11 +468,11 @@ export class TransactionTransferService extends Context.Service<TransactionTrans
             startDepositFromExpense: Effect.fn('TransactionTransferService.startDepositFromExpense')(
                 function* (transactionId: number, input: StartDepositInputInterface) {
                     const { receivingAmount, ...depositInput } = input;
-                    const transaction = yield* getTransferConversionTransaction(transactionId, 'expense');
-
-                    if (isDefined(transaction.consolidationType) || isDefined(transaction.consolidationParentTransactionId)) {
-                        return yield* Effect.die(new Error(t`Consolidated transactions cannot start a deposit`));
-                    }
+                    const transaction = yield* getTransferConversionTransaction(
+                        transactionId,
+                        'expense',
+                        t`Consolidated transactions cannot start a deposit`
+                    );
 
                     const receivingMicroUnits = convertToMicroUnits(receivingAmount);
 

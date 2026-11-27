@@ -1,4 +1,4 @@
-import { TransactionTypeEnum } from '@budgie/contracts';
+import { TransactionEntryKindEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 
 import { CANONICAL_CENT_TOLERANCE_AMOUNT } from '../../../shared/constant/canonical-cent-tolerance.constant';
 import { IBAN_BRIDGE_CHAIN_FX_TOLERANCE } from '../../../shared/constant/iban-bridge-chain-fx-tolerance.constant';
@@ -43,9 +43,12 @@ export const IBAN_BRIDGE_TRANSFER_CANDIDATES_SQL = scopedSql`
                     income_entry.transaction_id = income_tx.id
                     AND income_entry.deleted_at IS NULL
                     AND income_entry.original_transaction_id IS NULL
+                    AND income_entry.type = '${TransactionEntryTypeEnum.DEBIT}'
+                    AND income_entry.kind = '${TransactionEntryKindEnum.PRIMARY}'
                     AND income_entry.account_id = expense_entry.account_id
                     AND income_entry.amount = expense_entry.amount
                     AND income_entry.exchange_rate > 0
+                    AND ROUND(income_entry.amount / income_entry.exchange_rate) > 0
                 INNER JOIN accounts source_account ON
                     source_account.iban = income_entry.to_iban
                     AND source_account.deleted_at IS NULL
@@ -58,6 +61,8 @@ export const IBAN_BRIDGE_TRANSFER_CANDIDATES_SQL = scopedSql`
                 LEFT JOIN mcc_categories income_mcc ON income_mcc.id = income_entry.mcc_category_id
                 WHERE expense_entry.deleted_at IS NULL
                     AND expense_entry.original_transaction_id IS NULL
+                    AND expense_entry.type = '${TransactionEntryTypeEnum.CREDIT}'
+                    AND expense_entry.kind = '${TransactionEntryKindEnum.PRIMARY}'
                     AND expense_entry.exchange_rate > 0
                     AND expense_entry.amount > 0
                     ${operatedAtScopeSql('expense_tx.operated_at')}
@@ -72,6 +77,87 @@ export const IBAN_BRIDGE_TRANSFER_CANDIDATES_SQL = scopedSql`
                         expense_mcc.mcc_group_id = ${TRANSFER_MCC_GROUP_ID}
                         OR income_mcc.mcc_group_id = ${TRANSFER_MCC_GROUP_ID}
                     )
+                    AND (expense_mcc.mcc_group_id IS NULL OR expense_mcc.mcc_group_id = ${TRANSFER_MCC_GROUP_ID})
+                    AND (income_mcc.mcc_group_id IS NULL OR income_mcc.mcc_group_id = ${TRANSFER_MCC_GROUP_ID})
+            ),
+            filtered_candidates AS (
+                SELECT *
+                FROM bridge_candidates
+                WHERE NOT EXISTS (
+                    SELECT 1
+                    FROM transactions direct_tx
+                    WHERE direct_tx.type = '${TransactionTypeEnum.TRANSFER}'
+                        AND direct_tx.deleted_at IS NULL
+                        AND direct_tx.consolidation_parent_transaction_id IS NULL
+                        AND direct_tx.from_account_id = bridge_candidates.sourceAccountId
+                        AND direct_tx.to_account_id = bridge_candidates.targetAccountId
+                        AND direct_tx.operated_at BETWEEN bridge_candidates.operatedAt - ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
+                            AND bridge_candidates.operatedAt + ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
+                        AND EXISTS (
+                            SELECT 1
+                            FROM transaction_entries direct_source_entry
+                            WHERE direct_source_entry.transaction_id = direct_tx.id
+                                AND direct_source_entry.deleted_at IS NULL
+                                AND direct_source_entry.original_transaction_id IS NULL
+                                AND direct_source_entry.type = '${TransactionEntryTypeEnum.CREDIT}'
+                                AND direct_source_entry.kind = '${TransactionEntryKindEnum.PRIMARY}'
+                                AND direct_source_entry.account_id = bridge_candidates.sourceAccountId
+                                AND direct_source_entry.amount > 0
+                                AND ABS(direct_source_entry.amount - bridge_candidates.sourceAmount) / direct_source_entry.amount <= ${IBAN_BRIDGE_CHAIN_FX_TOLERANCE}
+                        )
+                        AND EXISTS (
+                            SELECT 1
+                            FROM transaction_entries direct_target_entry
+                            WHERE direct_target_entry.transaction_id = direct_tx.id
+                                AND direct_target_entry.deleted_at IS NULL
+                                AND direct_target_entry.original_transaction_id IS NULL
+                                AND direct_target_entry.type = '${TransactionEntryTypeEnum.DEBIT}'
+                                AND direct_target_entry.kind = '${TransactionEntryKindEnum.PRIMARY}'
+                                AND direct_target_entry.account_id = bridge_candidates.targetAccountId
+                                AND direct_target_entry.amount = bridge_candidates.bridgeAmount
+                        )
+                )
+                AND NOT EXISTS (
+                    SELECT 1
+                    FROM transactions existing_canonical_tx
+                    WHERE existing_canonical_tx.type = '${TransactionTypeEnum.TRANSFER}'
+                        AND existing_canonical_tx.deleted_at IS NULL
+                        AND existing_canonical_tx.consolidation_parent_transaction_id IS NULL
+                        AND existing_canonical_tx.consolidation_type IS NOT NULL
+                        AND existing_canonical_tx.from_account_id = bridge_candidates.sourceAccountId
+                        AND existing_canonical_tx.to_account_id = bridge_candidates.targetAccountId
+                        AND existing_canonical_tx.operated_at BETWEEN bridge_candidates.operatedAt - ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
+                            AND bridge_candidates.operatedAt + ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
+                        AND EXISTS (
+                            SELECT 1
+                            FROM transaction_entries existing_canonical_target_entry
+                            WHERE existing_canonical_target_entry.transaction_id = existing_canonical_tx.id
+                                AND existing_canonical_target_entry.deleted_at IS NULL
+                                AND existing_canonical_target_entry.original_transaction_id IS NULL
+                                AND existing_canonical_target_entry.type = '${TransactionEntryTypeEnum.DEBIT}'
+                                AND existing_canonical_target_entry.kind = '${TransactionEntryKindEnum.PRIMARY}'
+                                AND existing_canonical_target_entry.account_id = bridge_candidates.targetAccountId
+                                AND existing_canonical_target_entry.amount = bridge_candidates.bridgeAmount
+                        )
+                        AND EXISTS (
+                            SELECT 1
+                            FROM transaction_entries existing_canonical_source_entry
+                            WHERE existing_canonical_source_entry.transaction_id = existing_canonical_tx.id
+                                AND existing_canonical_source_entry.deleted_at IS NULL
+                                AND existing_canonical_source_entry.original_transaction_id IS NULL
+                                AND existing_canonical_source_entry.type = '${TransactionEntryTypeEnum.CREDIT}'
+                                AND existing_canonical_source_entry.kind = '${TransactionEntryKindEnum.PRIMARY}'
+                                AND existing_canonical_source_entry.account_id = bridge_candidates.sourceAccountId
+                                AND ABS(existing_canonical_source_entry.amount - bridge_candidates.sourceAmount) <= ${CANONICAL_CENT_TOLERANCE_AMOUNT}
+                        )
+                )
+            ),
+            ranked_candidates AS (
+                SELECT
+                    *,
+                    ROW_NUMBER() OVER (PARTITION BY expenseTransactionId ORDER BY timeDiff, incomeTransactionId) as expenseRank,
+                    ROW_NUMBER() OVER (PARTITION BY incomeTransactionId ORDER BY timeDiff, expenseTransactionId) as incomeRank
+                FROM filtered_candidates
             )
             SELECT
                 'AUTO_IBAN_BRIDGE_TRANSFER' as confidenceBucket,
@@ -88,67 +174,7 @@ export const IBAN_BRIDGE_TRANSFER_CANDIDATES_SQL = scopedSql`
                 targetAccountId,
                 sourceAmount * 1.0 / bridgeAmount as exchangeRate,
                 timeDiff
-            FROM bridge_candidates
-            WHERE NOT EXISTS (
-                SELECT 1
-                FROM transactions direct_tx
-                WHERE direct_tx.type = '${TransactionTypeEnum.TRANSFER}'
-                    AND direct_tx.deleted_at IS NULL
-                    AND direct_tx.consolidation_parent_transaction_id IS NULL
-                    AND direct_tx.from_account_id = bridge_candidates.sourceAccountId
-                    AND direct_tx.to_account_id = bridge_candidates.targetAccountId
-                    AND direct_tx.operated_at BETWEEN bridge_candidates.operatedAt - ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
-                        AND bridge_candidates.operatedAt + ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
-                    ${operatedAtScopeSql('direct_tx.operated_at')}
-                    AND EXISTS (
-                        SELECT 1
-                        FROM transaction_entries direct_source_entry
-                        WHERE direct_source_entry.transaction_id = direct_tx.id
-                            AND direct_source_entry.deleted_at IS NULL
-                            AND direct_source_entry.original_transaction_id IS NULL
-                            AND direct_source_entry.account_id = bridge_candidates.sourceAccountId
-                            AND direct_source_entry.amount > 0
-                            AND ABS(direct_source_entry.amount - bridge_candidates.sourceAmount) / direct_source_entry.amount <= ${IBAN_BRIDGE_CHAIN_FX_TOLERANCE}
-                    )
-                    AND EXISTS (
-                        SELECT 1
-                        FROM transaction_entries direct_target_entry
-                        WHERE direct_target_entry.transaction_id = direct_tx.id
-                            AND direct_target_entry.deleted_at IS NULL
-                            AND direct_target_entry.original_transaction_id IS NULL
-                            AND direct_target_entry.account_id = bridge_candidates.targetAccountId
-                            AND direct_target_entry.amount = bridge_candidates.bridgeAmount
-                    )
-            )
-            AND NOT EXISTS (
-                SELECT 1
-                FROM transactions existing_canonical_tx
-                WHERE existing_canonical_tx.type = '${TransactionTypeEnum.TRANSFER}'
-                    AND existing_canonical_tx.deleted_at IS NULL
-                    AND existing_canonical_tx.consolidation_parent_transaction_id IS NULL
-                    AND existing_canonical_tx.consolidation_type IS NOT NULL
-                    AND existing_canonical_tx.from_account_id = bridge_candidates.sourceAccountId
-                    AND existing_canonical_tx.to_account_id = bridge_candidates.targetAccountId
-                    AND existing_canonical_tx.operated_at BETWEEN bridge_candidates.operatedAt - ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
-                        AND bridge_candidates.operatedAt + ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
-                    ${operatedAtScopeSql('existing_canonical_tx.operated_at')}
-                    AND EXISTS (
-                        SELECT 1
-                        FROM transaction_entries existing_canonical_target_entry
-                        WHERE existing_canonical_target_entry.transaction_id = existing_canonical_tx.id
-                            AND existing_canonical_target_entry.deleted_at IS NULL
-                            AND existing_canonical_target_entry.original_transaction_id IS NULL
-                            AND existing_canonical_target_entry.account_id = bridge_candidates.targetAccountId
-                            AND existing_canonical_target_entry.amount = bridge_candidates.bridgeAmount
-                    )
-                    AND EXISTS (
-                        SELECT 1
-                        FROM transaction_entries existing_canonical_source_entry
-                        WHERE existing_canonical_source_entry.transaction_id = existing_canonical_tx.id
-                            AND existing_canonical_source_entry.deleted_at IS NULL
-                            AND existing_canonical_source_entry.original_transaction_id IS NULL
-                            AND existing_canonical_source_entry.account_id = bridge_candidates.sourceAccountId
-                            AND ABS(existing_canonical_source_entry.amount - bridge_candidates.sourceAmount) <= ${CANONICAL_CENT_TOLERANCE_AMOUNT}
-                    )
-            )
+            FROM ranked_candidates
+            WHERE expenseRank = 1
+                AND incomeRank = 1
 `;

@@ -3,6 +3,8 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
+import { isDefined, isEmptyArray, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+
 import { ConsolidationExecutorService } from '../../executor/service/consolidation-executor.service';
 import { ConsolidationMutationService } from '../../executor/service/consolidation-mutation.service';
 import { ConsolidationRepairExecutorService } from '../../executor/service/consolidation-repair-executor.service';
@@ -14,6 +16,7 @@ import { makeConsolidationFamilyStrategy } from '../utils/make-consolidation-fam
 import { P2pFiatTransferConsolidationFamilyService } from './p2p-fiat-transfer-consolidation-family.service';
 
 import type { FeeEntrySourceInterface } from '../../query/interface/fee-entry-source.interface';
+import type { ConsolidationFamilyRunResultInterface } from '../interface/consolidation-family-run-result.interface';
 import type { ConsolidationFamilyStrategyInterface } from '../interface/consolidation-family-strategy.interface';
 import type { ConsolidationResultInterface } from '../interface/consolidation-result.interface';
 import type {
@@ -332,45 +335,87 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
                 }
             );
 
-            const findAtmCashWithdrawalCandidates = Effect.fn('ConsolidationCoordinatorService.findAtmCashWithdrawalCandidates')(function* (
-                transactionIds: readonly number[]
-            ) {
-                const candidates = yield* consolidationCandidateRepository.findAtmCashWithdrawalCandidates(null);
-                const transactionIdSet = new Set(transactionIds);
+            const findAtmCashWithdrawalCandidates = (transactionIds: readonly number[]) =>
+                isEmptyArray(transactionIds)
+                    ? Effect.succeed([])
+                    : consolidationCandidateRepository.findAtmCashWithdrawalCandidatesByIds(transactionIds);
 
-                return candidates.filter(candidate => transactionIdSet.has(candidate.transactionId));
+            const expandActiveScope = Effect.fnUntraced(function* (
+                activeScope: ConsolidationScanScopeInterface | null,
+                activeScopeTransactionIds: Set<number> | null,
+                familyResult: ConsolidationFamilyRunResultInterface
+            ) {
+                if (!isDefined(activeScope) || !isDefined(activeScopeTransactionIds)) {
+                    return activeScope;
+                }
+
+                const sizeBefore = activeScopeTransactionIds.size;
+
+                for (const releasedTransactionId of familyResult.releasedTransactionIds) {
+                    activeScopeTransactionIds.add(releasedTransactionId);
+                }
+
+                if (isPositiveNumber(familyResult.consolidated) && isNotEmptyArray(familyResult.blockedSourceTransactionIds)) {
+                    for (const sourceTransactionId of familyResult.blockedSourceTransactionIds) {
+                        activeScopeTransactionIds.add(sourceTransactionId);
+                    }
+
+                    const parentIds = yield* consolidationCandidateRepository.findConsolidationParentIds(
+                        familyResult.blockedSourceTransactionIds
+                    );
+
+                    for (const parentId of parentIds) {
+                        activeScopeTransactionIds.add(parentId);
+                    }
+                }
+
+                return activeScopeTransactionIds.size > sizeBefore
+                    ? { ...activeScope, transactionIds: [...activeScopeTransactionIds] }
+                    : activeScope;
             });
 
             const consolidate = Effect.fn('ConsolidationCoordinatorService.consolidate')(function* (
                 scope: ConsolidationScanScopeInterface | null = null,
                 onProgress?: (processedCandidateGroupCount: number) => void
             ) {
-                const blockedSourceTransactionIds = new Set<number>();
-                let consolidated = 0;
-                let found = 0;
+                const capabilities = yield* consolidationCandidateRepository.loadRunCapabilities;
 
-                for (const family of families) {
-                    const processedCandidateGroupCount = found;
-                    const familyResult = yield* family.process({
-                        blockedSourceTransactionIds: new Set(blockedSourceTransactionIds),
-                        onProgress: processedCount => onProgress?.(processedCandidateGroupCount + processedCount),
-                        scope
-                    });
+                return yield* Effect.gen(function* () {
+                    const blockedSourceTransactionIds = new Set<number>();
+                    const activeScopeTransactionIds = isDefined(scope) ? new Set(scope.transactionIds) : null;
+                    let activeScope = scope;
+                    let consolidated = 0;
+                    let found = 0;
 
-                    for (const sourceTransactionId of familyResult.blockedSourceTransactionIds) {
-                        blockedSourceTransactionIds.add(sourceTransactionId);
+                    for (const family of families) {
+                        const processedCandidateGroupCount = found;
+                        const familyResult = yield* family.process({
+                            blockedSourceTransactionIds: new Set(blockedSourceTransactionIds),
+                            onProgress: processedCount => onProgress?.(processedCandidateGroupCount + processedCount),
+                            scope: activeScope
+                        });
+
+                        for (const sourceTransactionId of familyResult.blockedSourceTransactionIds) {
+                            blockedSourceTransactionIds.add(sourceTransactionId);
+                        }
+
+                        if (isPositiveNumber(familyResult.consolidated) || isNotEmptyArray(familyResult.releasedTransactionIds)) {
+                            capabilities?.markChanged();
+                        }
+
+                        activeScope = yield* expandActiveScope(activeScope, activeScopeTransactionIds, familyResult);
+
+                        consolidated += familyResult.consolidated;
+                        found += familyResult.found;
                     }
 
-                    consolidated += familyResult.consolidated;
-                    found += familyResult.found;
-                }
+                    const restoredFeeCanonicalCount = yield* repairMissingTransferFees();
 
-                const restoredFeeCanonicalCount = yield* repairMissingTransferFees();
-
-                return {
-                    found: found + restoredFeeCanonicalCount,
-                    consolidated: consolidated + restoredFeeCanonicalCount
-                } satisfies ConsolidationResultInterface;
+                    return {
+                        found: found + restoredFeeCanonicalCount,
+                        consolidated: consolidated + restoredFeeCanonicalCount
+                    } satisfies ConsolidationResultInterface;
+                }).pipe(Effect.provideService(ConsolidationCandidateRepository.RunCapabilities, capabilities));
             });
 
             return {
@@ -378,20 +423,27 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
                 countAutoCandidates: Effect.fn('ConsolidationCoordinatorService.countAutoCandidates')(function* (
                     scope: ConsolidationScanScopeInterface | null = null
                 ) {
-                    const blockedSourceTransactionIds = new Set<number>();
-                    let found = 0;
+                    const capabilities = yield* consolidationCandidateRepository.loadRunCapabilities;
 
-                    for (const family of families) {
-                        const preview = yield* family.preview({ blockedSourceTransactionIds: new Set(blockedSourceTransactionIds), scope });
+                    return yield* Effect.gen(function* () {
+                        const blockedSourceTransactionIds = new Set<number>();
+                        let found = 0;
 
-                        for (const sourceTransactionId of preview.blockedSourceTransactionIds) {
-                            blockedSourceTransactionIds.add(sourceTransactionId);
+                        for (const family of families) {
+                            const preview = yield* family.preview({
+                                blockedSourceTransactionIds: new Set(blockedSourceTransactionIds),
+                                scope
+                            });
+
+                            for (const sourceTransactionId of preview.blockedSourceTransactionIds) {
+                                blockedSourceTransactionIds.add(sourceTransactionId);
+                            }
+
+                            found += preview.found;
                         }
 
-                        found += preview.found;
-                    }
-
-                    return found;
+                        return found;
+                    }).pipe(Effect.provideService(ConsolidationCandidateRepository.RunCapabilities, capabilities));
                 }),
                 countManualReviewCandidates: Effect.fn('ConsolidationCoordinatorService.countManualReviewCandidates')(function* () {
                     const [manualReviewCandidateCount, refundReviewCandidates] = yield* Effect.all(

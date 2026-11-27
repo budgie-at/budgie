@@ -1,4 +1,4 @@
-import { TransactionTypeEnum } from '@budgie/contracts';
+import { TransactionEntryKindEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 
 import { IBAN_BRIDGE_CHAIN_FX_TOLERANCE } from '../../../shared/constant/iban-bridge-chain-fx-tolerance.constant';
 import { TRANSFER_MCC_GROUP_ID } from '../../../shared/constant/transfer-mcc-group-id.constant';
@@ -121,6 +121,8 @@ export const IBAN_BRIDGE_CHAIN_TRANSFER_CANDIDATES_SQL = scopedSql`
                     bridge_income_entry.transaction_id = bridge_income_tx.id
                     AND bridge_income_entry.deleted_at IS NULL
                     AND bridge_income_entry.original_transaction_id IS NULL
+                    AND bridge_income_entry.type = '${TransactionEntryTypeEnum.DEBIT}'
+                    AND bridge_income_entry.kind = '${TransactionEntryKindEnum.PRIMARY}'
                     AND bridge_income_entry.exchange_rate > 0
                     AND bridge_income_entry.amount > 0
                     AND bridge_income_entry.to_iban = source_account.iban
@@ -139,6 +141,8 @@ export const IBAN_BRIDGE_CHAIN_TRANSFER_CANDIDATES_SQL = scopedSql`
                     bridge_expense_entry.transaction_id = bridge_expense_tx.id
                     AND bridge_expense_entry.deleted_at IS NULL
                     AND bridge_expense_entry.original_transaction_id IS NULL
+                    AND bridge_expense_entry.type = '${TransactionEntryTypeEnum.CREDIT}'
+                    AND bridge_expense_entry.kind = '${TransactionEntryKindEnum.PRIMARY}'
                     AND bridge_expense_entry.account_id = bridge_account.id
                     AND bridge_expense_entry.amount = bridge_income_entry.amount
                     AND bridge_expense_entry.exchange_rate > 0
@@ -155,6 +159,8 @@ export const IBAN_BRIDGE_CHAIN_TRANSFER_CANDIDATES_SQL = scopedSql`
                     target_income_entry.transaction_id = target_income_tx.id
                     AND target_income_entry.deleted_at IS NULL
                     AND target_income_entry.original_transaction_id IS NULL
+                    AND target_income_entry.type = '${TransactionEntryTypeEnum.DEBIT}'
+                    AND target_income_entry.kind = '${TransactionEntryKindEnum.PRIMARY}'
                     AND target_income_entry.amount = bridge_expense_entry.amount
                     AND target_income_entry.exchange_rate > 0
                 INNER JOIN accounts target_account ON
@@ -169,6 +175,8 @@ export const IBAN_BRIDGE_CHAIN_TRANSFER_CANDIDATES_SQL = scopedSql`
                 LEFT JOIN mcc_categories target_income_mcc ON target_income_mcc.id = target_income_entry.mcc_category_id
                 WHERE source_expense_entry.deleted_at IS NULL
                     AND source_expense_entry.original_transaction_id IS NULL
+                    AND source_expense_entry.type = '${TransactionEntryTypeEnum.CREDIT}'
+                    AND source_expense_entry.kind = '${TransactionEntryKindEnum.PRIMARY}'
                     AND source_expense_entry.exchange_rate > 0
                     AND source_expense_entry.amount > 0
                     ${operatedAtScopeSql('source_expense_tx.operated_at')}

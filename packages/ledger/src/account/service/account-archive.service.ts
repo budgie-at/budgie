@@ -18,7 +18,6 @@ import * as Layer from 'effect/Layer';
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { LedgerWorkload } from '../../@generic/port/ledger-workload.port';
-import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
 
 import { AccountBalanceIncrementalService } from './account-balance-incremental.service';
 import { AccountTransferConversionService } from './account-transfer-conversion.service';
@@ -36,21 +35,12 @@ export class AccountArchiveService extends Context.Service<AccountArchiveService
         const accountTransferConversionService = yield* AccountTransferConversionService;
         const unconsolidationService = yield* UnconsolidationService;
         const ledgerWorkload = yield* LedgerWorkload;
-        const unconsolidationBatchSize = 25;
 
-        const unconsolidateAll = (canonicals: { readonly id: number }[]) =>
-            processInputWithBatches(canonicals, unconsolidationBatchSize, batch =>
-                Effect.forEach(batch, canonical => Db.transaction(unconsolidationService.unconsolidateById(canonical.id)), {
-                    discard: true
-                }).pipe(Effect.as(null))
+        const unconsolidateActiveAutoByAccountId = (id: number) =>
+            unconsolidationService.unconsolidateAllNested(
+                transactionConsolidationRepository.findActiveAutoConsolidatedByAccountIds([id]),
+                id
             );
-
-        const unconsolidateActiveAutoByAccountId = Effect.fn('AccountArchiveService.unconsolidateActiveAutoByAccountId')(function* (
-            id: number
-        ) {
-            const autoConsolidations = yield* transactionConsolidationRepository.findActiveAutoConsolidatedByAccountIds([id]);
-            yield* unconsolidateAll(autoConsolidations);
-        });
 
         const archiveAccountRows = Effect.fnUntraced(function* (id: number) {
             yield* accountRepository.archiveById(id);
@@ -65,27 +55,20 @@ export class AccountArchiveService extends Context.Service<AccountArchiveService
         });
 
         const archiveByIdInTransaction = Effect.fn('AccountArchiveService.archiveByIdInTransaction')(function* (id: number) {
-            yield* unconsolidateActiveAutoByAccountId(id);
+            const { affectedAccountIds } = yield* unconsolidateActiveAutoByAccountId(id);
             yield* archiveAccountRows(id);
+            yield* accountBalanceIncrementalService.updateBalancesByAccountIds(affectedAccountIds);
         });
 
         const markExternalByIdInTransaction = Effect.fnUntraced(function* (id: number) {
-            const canonicals = yield* transactionConsolidationRepository.findActiveAutoConsolidatedByAccountIds([id]);
-            const consolidated = yield* transactionRepository.findByIdsWithRefundConsolidationHistory(
-                canonicals.map(canonical => canonical.id)
-            );
-            const restoredTransactionIds = consolidated
-                .flatMap(transaction => transaction.entries)
-                .filter(entry => entry.accountId !== id)
-                .map(entry => entry.originalTransactionId)
-                .filter(isDefined);
+            const { restoredTransactionIds, affectedAccountIds } = yield* unconsolidateActiveAutoByAccountId(id);
 
-            yield* unconsolidateAll(canonicals);
             yield* accountRepository.updateById(id, { isExternal: true });
 
             const convertedTransactionIds = yield* accountTransferConversionService.convertAccountTransfers(id, null);
 
             yield* archiveAccountRows(id);
+            yield* accountBalanceIncrementalService.updateBalancesByAccountIds(affectedAccountIds);
 
             return [...new Set([...restoredTransactionIds, ...convertedTransactionIds])];
         });

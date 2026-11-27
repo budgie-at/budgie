@@ -7,9 +7,10 @@ import {
 } from '../../../shared/constant/transfer-pair-hinted-fee.constant';
 import { TRANSFER_PAIR_IMPLIED_RATE_TOLERANCE } from '../../../shared/constant/transfer-pair-implied-rate-tolerance.constant';
 import { buildBridgeClaimTitleConditionSql } from '../../../shared/utils/build-bridge-claim-title-condition-sql.util';
+import { buildNotRejectedPaymentRefundSql } from '../../utils/build-not-rejected-payment-refund-sql.util';
 
 const TRANSFER_PAIR_BOOKING_DAY_IMPLIED_RATE_TOLERANCE = 0.1;
-const INTERBANK_HINTED_FEE_CANDIDATE_SQL = `interbankHintedFeeAmountMatch = 1 AND timeDiff <= ${TRANSFER_PAIR_INTERBANK_HINTED_FEE_TIME_WINDOW_SECONDS}`;
+const INTERBANK_HINTED_FEE_CANDIDATE_SQL = `interbankHintedFeeAmountMatch = 1 AND isCrossZonePair = 0 AND timeDiff <= ${TRANSFER_PAIR_INTERBANK_HINTED_FEE_TIME_WINDOW_SECONDS}`;
 
 export const TRANSFER_PAIR_RANKED_CANDIDATE_RANK_SQL = `            scored_pairs AS (
                 SELECT
@@ -34,10 +35,7 @@ export const TRANSFER_PAIR_RANKED_CANDIDATE_RANK_SQL = `            scored_pairs
                     CASE
                         WHEN incomeEntryToIban IS NOT NULL
                             AND incomeEntryToIban != ''
-                            AND incomeEntryToIban != COALESCE(
-                                (SELECT iban FROM accounts WHERE id = expenseAccountId AND deleted_at IS NULL),
-                                ''
-                            )
+                            AND incomeEntryToIban != COALESCE(expenseAccountIban, '')
                         THEN 1
                         WHEN ${buildBridgeClaimTitleConditionSql('incomeTransactionTitle', 'incomeCurrency')} THEN 1
                         ELSE 0
@@ -49,6 +47,7 @@ export const TRANSFER_PAIR_RANKED_CANDIDATE_RANK_SQL = `            scored_pairs
                     SUM(
                         CASE
                             WHEN bankRateAmountMatch = 1
+                                AND isCrossZonePair = 0
                                 AND hasTransferMcc = 1
                                 AND sameBank = 0
                                 AND timeDiff <= ${TRANSFER_PAIR_CROSS_CURRENCY_BANK_RATE_TIME_WINDOW_SECONDS}
@@ -59,6 +58,7 @@ export const TRANSFER_PAIR_RANKED_CANDIDATE_RANK_SQL = `            scored_pairs
                     SUM(
                         CASE
                             WHEN bankRateAmountMatch = 1
+                                AND isCrossZonePair = 0
                                 AND hasTransferMcc = 1
                                 AND sameBank = 0
                                 AND timeDiff <= ${TRANSFER_PAIR_CROSS_CURRENCY_BANK_RATE_TIME_WINDOW_SECONDS}
@@ -67,6 +67,23 @@ export const TRANSFER_PAIR_RANKED_CANDIDATE_RANK_SQL = `            scored_pairs
                         END
                     ) OVER (PARTITION BY incomeTransactionId) as bankRateIncomeCandidateCount
                 FROM scored_pairs_base
+                WHERE (
+                    ibanMatch = 1
+                    OR sameCurrencyAmountMatch = 1
+                    OR operationAmountMatch = 1
+                    OR bankRateAmountMatch = 1
+                    OR hintedFeeAmountMatch = 1
+                    OR interbankHintedFeeAmountMatch = 1
+                    OR (sameBank = 1 AND sameCurrency = 0)
+                    OR (
+                        expenseInstrumentId != incomeInstrumentId
+                        AND expenseExternalSource IS NOT NULL
+                        AND expenseExternalSource != ''
+                        AND expenseExternalSource = incomeExternalSource
+                        AND expectedExchangeRate IS NOT NULL
+                    )
+                )
+                    AND ${buildNotRejectedPaymentRefundSql('scored_pairs_base.expenseAccountId', 'scored_pairs_base.expenseEntryAmount', 'scored_pairs_base.expenseOperatedAt')}
             ),
             implied_rate_counted_pairs AS (
                 SELECT

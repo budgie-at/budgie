@@ -11,10 +11,14 @@ import {
 } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
+import * as Exit from 'effect/Exit';
 import * as Layer from 'effect/Layer';
 
-import { isDefined, isEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isEmptyArray, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
+import { RemainingFeeRefundPool } from '../../refund/state/remaining-fee-refund-pool';
+import { computeRefundCapacityUsage } from '../../refund/utils/compute-refund-capacity-usage.util';
+import { isPrivatbankClosedByAbsorbedRefunds } from '../../refund/utils/is-privatbank-closed-by-absorbed-refunds.util';
 import { IBAN_BRIDGE_CHAIN_FX_TOLERANCE } from '../../shared/constant/iban-bridge-chain-fx-tolerance.constant';
 import { isPrivatbankSameOriginalAmount } from '../../shared/utils/is-privatbank-same-original-amount.util';
 import { buildIbanBridgeChainCanonicalInput } from '../utils/build-iban-bridge-chain-canonical-input.util';
@@ -26,7 +30,6 @@ import { UnconsolidationService } from './unconsolidation.service';
 import type { IbanBridgeDuplicatePairCandidateInterface } from '../../query/interface/iban-bridge-duplicate-pair-candidate.interface';
 import type { IbanBridgeEndLegCandidateInterface } from '../../query/interface/iban-bridge-end-leg-candidate.interface';
 import type { ManualExpenseDuplicateCandidateInterface } from '../../query/interface/manual-expense-duplicate-candidate.interface';
-import type { CanonicalTransferInputInterface } from '../interface/canonical-transfer-input.interface';
 import type {
     BridgeClaimRepairCandidateInterface,
     ExistingTransferChainReclaimCandidateInterface,
@@ -34,6 +37,7 @@ import type {
     IbanBridgeCanonicalDuplicateCandidateInterface,
     IbanBridgeCanonicalSupersessionCandidateInterface,
     RefundCandidateInterface,
+    TransactionEntityInterface,
     TransactionEntryEntityInterface,
     TransactionWithEntriesEntityInterface
 } from '@budgie/contracts';
@@ -51,49 +55,88 @@ export class ConsolidationRepairExecutorService extends Context.Service<Consolid
             const transactionReceiptRepository = yield* TransactionReceiptRepository;
             const millisecondsInSecond = 1000;
 
-            const sumAmounts = (entries: readonly TransactionEntryEntityInterface[]): number =>
-                entries.reduce((total, entry) => total + entry.amount, 0);
+            const findById = (transactions: readonly TransactionWithEntriesEntityInterface[] | null | undefined, id: number) =>
+                transactions?.find(transaction => transaction.id === id);
 
-            const findLiveEntry = (transaction: TransactionWithEntriesEntityInterface, type: TransactionEntryTypeEnum, accountId: number) =>
-                transaction.entries.find(
-                    entry => entry.type === type && entry.accountId === accountId && !isDefined(entry.originalTransactionId)
-                );
+            const isLiveEditableRoot = (transaction: TransactionEntityInterface): boolean =>
+                !isDefined(transaction.updatedBy) &&
+                !isDefined(transaction.deletedAt) &&
+                !isDefined(transaction.consolidationParentTransactionId);
+
+            const isLiveEditableOfType = <T extends TransactionEntityInterface>(
+                transaction: T | undefined,
+                consolidationType: TransactionConsolidationTypeEnum
+            ): transaction is T =>
+                isDefined(transaction) && transaction.consolidationType === consolidationType && isLiveEditableRoot(transaction);
+
+            const isUntouchedIbanBridgeCanonical = (transaction: TransactionEntityInterface | undefined): boolean =>
+                isDefined(transaction) &&
+                transaction.type === TransactionTypeEnum.TRANSFER &&
+                isLiveEditableRoot(transaction) &&
+                (transaction.consolidationType === TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER ||
+                    transaction.consolidationType === TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER);
+
+            const isLiveAccountEntry = (
+                entry: TransactionEntryEntityInterface,
+                type: TransactionEntryTypeEnum,
+                accountId: number
+            ): boolean => entry.type === type && entry.accountId === accountId && !isDefined(entry.originalTransactionId);
 
             const isOpenRefundIncome = (refund: TransactionWithEntriesEntityInterface): boolean =>
                 refund.type === TransactionTypeEnum.INCOME &&
+                !isDefined(refund.deletedAt) &&
                 !isDefined(refund.consolidationType) &&
                 !isDefined(refund.consolidationParentTransactionId) &&
                 !refund.refundAutoPairDisabled;
 
+            const isWithinChainFxTolerance = (actualRate: number, expectedRate: number): boolean =>
+                isPositiveNumber(expectedRate) && Math.abs(actualRate - expectedRate) / expectedRate <= IBAN_BRIDGE_CHAIN_FX_TOLERANCE;
+
+            const isCaptureManualSource = (externalSource: ExternalSourceEnum | null): boolean =>
+                externalSource === ExternalSourceEnum.APPLE_PAY_AUTOMATION || externalSource === ExternalSourceEnum.RECEIPT;
+
             const hasFreshRefundCapacity = Effect.fnUntraced(function* (candidate: RefundCandidateInterface) {
+                const uniqueRefundIds = [...new Set(candidate.refundIncomeTransactionIds)];
+
+                if (
+                    isEmptyArray(uniqueRefundIds) ||
+                    uniqueRefundIds.length !== candidate.refundIncomeTransactionIds.length ||
+                    uniqueRefundIds.includes(candidate.expenseTransactionId)
+                ) {
+                    return false;
+                }
+
                 const transactions = yield* transactionRepository.findByIdsWithRefundConsolidationHistory([
                     candidate.expenseTransactionId,
-                    ...candidate.refundIncomeTransactionIds
+                    ...uniqueRefundIds
                 ]);
-                const expense = transactions.find(transaction => transaction.id === candidate.expenseTransactionId);
-                const refunds = transactions.filter(transaction => candidate.refundIncomeTransactionIds.includes(transaction.id));
-                const openRefunds = refunds.filter(isOpenRefundIncome).flatMap(refund => {
-                    const [entry, ...siblingEntries] = refund.entries;
-                    const isSoleLiveDebit =
-                        isDefined(entry) &&
-                        isEmptyArray(siblingEntries) &&
-                        entry.type === TransactionEntryTypeEnum.DEBIT &&
-                        entry.accountId === candidate.accountId &&
-                        !isDefined(entry.originalTransactionId) &&
-                        isPositiveNumber(entry.amount);
+                const expense = findById(transactions, candidate.expenseTransactionId);
+                const openRefunds = transactions
+                    .filter(transaction => uniqueRefundIds.includes(transaction.id) && isOpenRefundIncome(transaction))
+                    .flatMap(refund => {
+                        const [entry, ...siblingEntries] = refund.entries;
+                        const isSoleLiveDebit =
+                            isDefined(entry) &&
+                            isEmptyArray(siblingEntries) &&
+                            entry.type === TransactionEntryTypeEnum.DEBIT &&
+                            entry.accountId === candidate.accountId &&
+                            !isDefined(entry.originalTransactionId) &&
+                            isPositiveNumber(entry.amount);
 
-                    return isSoleLiveDebit ? [{ entry, source: refund.externalSource ?? null }] : [];
-                });
-                const creditEntry = isDefined(expense)
-                    ? findLiveEntry(expense, TransactionEntryTypeEnum.CREDIT, candidate.accountId)
-                    : null;
+                        return isSoleLiveDebit ? [{ entry, source: refund.externalSource ?? null }] : [];
+                    });
+                const creditEntry = expense?.entries.find(entry =>
+                    isLiveAccountEntry(entry, TransactionEntryTypeEnum.CREDIT, candidate.accountId)
+                );
 
                 if (
                     !isDefined(expense) ||
                     !isDefined(creditEntry) ||
+                    isDefined(expense.deletedAt) ||
+                    isDefined(expense.consolidationParentTransactionId) ||
                     expense.type !== TransactionTypeEnum.EXPENSE ||
                     (isDefined(expense.consolidationType) && expense.consolidationType !== TransactionConsolidationTypeEnum.REFUND) ||
-                    openRefunds.length !== candidate.refundIncomeTransactionIds.length
+                    openRefunds.length !== uniqueRefundIds.length
                 ) {
                     return false;
                 }
@@ -101,72 +144,48 @@ export class ConsolidationRepairExecutorService extends Context.Service<Consolid
                 const absorbedEntries = expense.entries.filter(
                     entry => entry.type === TransactionEntryTypeEnum.DEBIT && isDefined(entry.originalTransactionId)
                 );
-                const absorbedSources = new Map(
-                    (yield* transactionRepository.findByIds(
-                        absorbedEntries.map(entry => entry.originalTransactionId).filter(isDefined)
-                    )).map(source => [source.id, source.externalSource ?? null])
+                const absorbedSourceById = new Map(
+                    (isNotEmptyArray(absorbedEntries)
+                        ? yield* transactionRepository.findByIds(
+                              absorbedEntries.map(entry => entry.originalTransactionId).filter(isDefined)
+                          )
+                        : []
+                    ).map(source => [source.id, source])
                 );
                 const expenseSource = expense.externalSource ?? null;
-                const absorbedTotal = sumAmounts(absorbedEntries);
-                const refundTotal = sumAmounts(openRefunds.map(({ entry }) => entry));
-                const feeAmount = findLiveEntry(expense, TransactionEntryTypeEnum.FEE, candidate.accountId)?.amount ?? 0;
 
-                if (
-                    absorbedEntries.some(entry =>
-                        isPrivatbankSameOriginalAmount(
-                            absorbedSources.get(entry.originalTransactionId ?? 0) ?? null,
-                            entry,
-                            expenseSource,
-                            creditEntry
-                        )
-                    )
-                ) {
+                if (isPrivatbankClosedByAbsorbedRefunds(absorbedEntries, absorbedSourceById, expenseSource, creditEntry)) {
                     return false;
                 }
 
+                const { liveFeeAmounts, absorbedFeeAmounts, absorbedPrincipalTotal } = computeRefundCapacityUsage({
+                    expenseEntries: expense.entries,
+                    expenseAccountId: candidate.accountId,
+                    absorbedEntries,
+                    absorbedSourceById,
+                    incomingTitle: ''
+                });
                 const isFeeGroup = candidate.confidenceBucket === 'AUTO_REFUND_REJECTED_PAYMENT_FEE_TITLE';
 
-                if (
-                    !isFeeGroup &&
-                    openRefunds.some(({ entry, source }) => isPrivatbankSameOriginalAmount(source, entry, expenseSource, creditEntry))
-                ) {
-                    return openRefunds.length === 1 && absorbedTotal === 0;
+                if (isFeeGroup) {
+                    return RemainingFeeRefundPool.fromAmounts(liveFeeAmounts, absorbedFeeAmounts).consumeAll(
+                        openRefunds.map(({ entry }) => entry.amount)
+                    );
                 }
 
-                const isWithinBucketCeiling = isFeeGroup
-                    ? refundTotal <= feeAmount
-                    : openRefunds.every(({ entry }) => entry.amount <= creditEntry.amount);
+                const refundTotal = openRefunds.reduce((total, { entry }) => total + entry.amount, 0);
 
-                return isWithinBucketCeiling && absorbedTotal + refundTotal <= creditEntry.amount + feeAmount;
+                if (openRefunds.some(({ entry, source }) => isPrivatbankSameOriginalAmount(source, entry, expenseSource, creditEntry))) {
+                    return openRefunds.length === 1 && absorbedPrincipalTotal === 0;
+                }
+
+                return absorbedPrincipalTotal + refundTotal <= creditEntry.amount;
             });
-
-            const isUntouchedIbanBridgeCanonical = (transaction: TransactionWithEntriesEntityInterface): boolean => {
-                const isIbanBridgeConsolidation =
-                    transaction.consolidationType === TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER ||
-                    transaction.consolidationType === TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER;
-
-                return transaction.type === TransactionTypeEnum.TRANSFER && !isDefined(transaction.updatedBy) && isIbanBridgeConsolidation;
-            };
-
-            const isWithinChainFxTolerance = (actualRate: number, expectedRate: number): boolean => {
-                if (!isPositiveNumber(expectedRate)) {
-                    return false;
-                }
-
-                return Math.abs(actualRate - expectedRate) / expectedRate <= IBAN_BRIDGE_CHAIN_FX_TOLERANCE;
-            };
 
             const hasChainReclaimConsistentLedger = (
                 candidate: ExistingTransferChainReclaimCandidateInterface,
                 existingTransfer: TransactionWithEntriesEntityInterface
             ): boolean => {
-                if (
-                    existingTransfer.fromAccountId !== candidate.sourceAccountId ||
-                    existingTransfer.toAccountId !== candidate.targetAccountId
-                ) {
-                    return false;
-                }
-
                 const sourceEntry = existingTransfer.entries.find(
                     entry => entry.accountId === candidate.sourceAccountId && entry.type === TransactionEntryTypeEnum.CREDIT
                 );
@@ -174,11 +193,11 @@ export class ConsolidationRepairExecutorService extends Context.Service<Consolid
                     entry => entry.accountId === candidate.targetAccountId && entry.type === TransactionEntryTypeEnum.DEBIT
                 );
 
-                if (!isDefined(sourceEntry) || !isDefined(targetEntry)) {
-                    return false;
-                }
-
                 return (
+                    existingTransfer.fromAccountId === candidate.sourceAccountId &&
+                    existingTransfer.toAccountId === candidate.targetAccountId &&
+                    isDefined(sourceEntry) &&
+                    isDefined(targetEntry) &&
                     sourceEntry.amount === candidate.sourceAmount &&
                     targetEntry.amount === candidate.targetAmount &&
                     targetEntry.exchangeRate === 1 &&
@@ -188,52 +207,8 @@ export class ConsolidationRepairExecutorService extends Context.Service<Consolid
                 );
             };
 
-            const buildIncomeDuplicateCanonicalInput = (
-                candidate: ExistingTransferIncomeDuplicateCandidateInterface,
-                existingTransfer: TransactionWithEntriesEntityInterface
-            ): CanonicalTransferInputInterface => ({
-                title: isNotEmptyString(existingTransfer.title) ? existingTransfer.title : (candidate.duplicateTransactionTitle ?? ''),
-                operatedAt: Math.floor(existingTransfer.operatedAt.getTime() / millisecondsInSecond),
-                fromAccountId: candidate.sourceAccountId,
-                toAccountId: candidate.targetAccountId,
-                fromAmount: candidate.sourceAmount,
-                toAmount: candidate.amount,
-                exchangeRate: candidate.exchangeRate,
-                consolidationType: TransactionConsolidationTypeEnum.TRANSFER_PAIR,
-                fromEntryExchangeRate: candidate.exchangeRate,
-                toEntryExchangeRate: 1,
-                fromEntryToIban: existingTransfer.entries.find(entry => entry.accountId === candidate.sourceAccountId)?.toIban ?? null
-            });
-
-            const findEligibleExistingTransfer = Effect.fnUntraced(function* (sourceTransactionIds: number[], existingTransferId: number) {
-                if (
-                    !(yield* consolidationEligibilityService.isExistingTransferConsolidationStillEligible(
-                        sourceTransactionIds,
-                        existingTransferId
-                    ))
-                ) {
-                    return null;
-                }
-
-                const existingTransfers = yield* transactionRepository.findByIds([existingTransferId]);
-
-                return existingTransfers.at(0) ?? null;
-            });
-
-            const isClaimableIbanBridgeCanonical = Effect.fnUntraced(function* (canonicalTransactionId: number) {
-                const canonical = yield* transactionRepository.getByIdRaw(canonicalTransactionId);
-
-                return (
-                    isDefined(canonical) &&
-                    canonical.consolidationType === TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER &&
-                    !isDefined(canonical.updatedBy) &&
-                    !isDefined(canonical.consolidationParentTransactionId) &&
-                    !isDefined(canonical.deletedAt)
-                );
-            });
-
             const claimIbanBridgeEndLegs = Effect.fnUntraced(function* (
-                canonicalTransactionId: number,
+                canonical: TransactionWithEntriesEntityInterface,
                 endLegTransactionIds: number[],
                 accountIds: number[]
             ) {
@@ -243,60 +218,86 @@ export class ConsolidationRepairExecutorService extends Context.Service<Consolid
                     return false;
                 }
 
-                yield* consolidationMutationService.createTransferPairFeeEntries(accountIds, endLegs, canonicalTransactionId);
-                yield* consolidationMutationService.moveSourcesToCanonical(endLegTransactionIds, canonicalTransactionId);
+                yield* consolidationMutationService.createMissingTransferFeeEntries(canonical.entries, endLegs, canonical.id, accountIds);
+                yield* consolidationMutationService.moveSourcesToCanonical(endLegTransactionIds, canonical.id);
+
+                return true;
+            });
+
+            const runSavepointSql = (sql: string) => Db.query(db => db.$client.unsafe(sql));
+
+            const runIbanBridgeDuplicatePairClaim = Effect.fnUntraced(function* (
+                candidate: IbanBridgeDuplicatePairCandidateInterface,
+                pair: TransactionWithEntriesEntityInterface,
+                bridge: TransactionWithEntriesEntityInterface
+            ) {
+                yield* unconsolidationService.unconsolidateById(candidate.pairTransactionId);
+
+                const claimed = yield* claimIbanBridgeEndLegs(
+                    bridge,
+                    [candidate.sourceExpenseTransactionId, candidate.targetIncomeTransactionId],
+                    [pair.fromAccountId, pair.toAccountId].filter(isDefined)
+                );
+
+                if (!claimed) {
+                    yield* runSavepointSql('ROLLBACK TO SAVEPOINT iban_bridge_duplicate_pair');
+
+                    return false;
+                }
 
                 return true;
             });
 
             return {
-                consolidateIbanBridgeEndLeg: Effect.fnUntraced(
+                consolidateIbanBridgeEndLeg: Effect.fn('ConsolidationRepairExecutorService.consolidateIbanBridgeEndLeg')(
                     function* (candidate: IbanBridgeEndLegCandidateInterface) {
-                        if (!(yield* isClaimableIbanBridgeCanonical(candidate.canonicalTransactionId))) {
+                        const canonical = yield* transactionRepository.getByIdWithEntries(candidate.canonicalTransactionId);
+
+                        if (!isLiveEditableOfType(canonical, TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER)) {
                             return false;
                         }
 
-                        return yield* claimIbanBridgeEndLegs(
-                            candidate.canonicalTransactionId,
-                            [candidate.endLegTransactionId],
-                            [candidate.accountId]
-                        );
+                        return yield* claimIbanBridgeEndLegs(canonical, [candidate.endLegTransactionId], [candidate.accountId]);
                     },
                     effect => Db.transaction(effect)
                 ),
-                consolidateIbanBridgeDuplicatePair: Effect.fnUntraced(
+                consolidateIbanBridgeDuplicatePair: Effect.fn('ConsolidationRepairExecutorService.consolidateIbanBridgeDuplicatePair')(
                     function* (candidate: IbanBridgeDuplicatePairCandidateInterface) {
-                        const pair = yield* transactionRepository.getByIdRaw(candidate.pairTransactionId);
+                        if (candidate.pairTransactionId === candidate.bridgeTransactionId) {
+                            return false;
+                        }
+
+                        const transactions = yield* transactionRepository.findByIds([
+                            candidate.pairTransactionId,
+                            candidate.bridgeTransactionId
+                        ]);
+                        const pair = findById(transactions, candidate.pairTransactionId);
+                        const bridge = findById(transactions, candidate.bridgeTransactionId);
 
                         if (
-                            pair?.consolidationType !== TransactionConsolidationTypeEnum.TRANSFER_PAIR ||
-                            isDefined(pair.updatedBy) ||
-                            isDefined(pair.consolidationParentTransactionId) ||
-                            isDefined(pair.deletedAt) ||
-                            !(yield* isClaimableIbanBridgeCanonical(candidate.bridgeTransactionId))
+                            !isLiveEditableOfType(pair, TransactionConsolidationTypeEnum.TRANSFER_PAIR) ||
+                            !isLiveEditableOfType(bridge, TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER)
                         ) {
                             return false;
                         }
 
-                        yield* unconsolidationService.unconsolidateById(candidate.pairTransactionId);
-
-                        return yield* claimIbanBridgeEndLegs(
-                            candidate.bridgeTransactionId,
-                            [candidate.sourceExpenseTransactionId, candidate.targetIncomeTransactionId],
-                            [pair.fromAccountId, pair.toAccountId].filter(isDefined)
+                        return yield* Effect.acquireUseRelease(
+                            runSavepointSql('SAVEPOINT iban_bridge_duplicate_pair'),
+                            () => runIbanBridgeDuplicatePairClaim(candidate, pair, bridge),
+                            (_, exit) =>
+                                (Exit.isFailure(exit)
+                                    ? Effect.ignore(runSavepointSql('ROLLBACK TO SAVEPOINT iban_bridge_duplicate_pair'))
+                                    : Effect.void
+                                ).pipe(Effect.andThen(Effect.ignore(runSavepointSql('RELEASE SAVEPOINT iban_bridge_duplicate_pair'))))
                         );
                     },
                     effect => Db.transaction(effect)
                 ),
-                repairP2pFiatCanonical: Effect.fnUntraced(
+                repairP2pFiatCanonical: Effect.fn('ConsolidationRepairExecutorService.repairP2pFiatCanonical')(
                     function* (canonicalTransactionId: number) {
                         const canonical = yield* transactionRepository.getByIdRaw(canonicalTransactionId);
 
-                        if (
-                            !isDefined(canonical) ||
-                            canonical.consolidationType !== TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER ||
-                            isDefined(canonical.updatedBy)
-                        ) {
+                        if (!isLiveEditableOfType(canonical, TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER)) {
                             return false;
                         }
 
@@ -306,17 +307,22 @@ export class ConsolidationRepairExecutorService extends Context.Service<Consolid
                     },
                     effect => Db.transaction(effect)
                 ),
-                unconsolidateBridgeClaimedTransferPair: Effect.fnUntraced(
+                unconsolidateBridgeClaimedTransferPair: Effect.fn(
+                    'ConsolidationRepairExecutorService.unconsolidateBridgeClaimedTransferPair'
+                )(
                     function* (candidate: BridgeClaimRepairCandidateInterface) {
-                        const canonical = yield* transactionRepository.getByIdRaw(candidate.canonicalTransferId);
-                        const claimedIncome = yield* transactionRepository.getByIdRaw(candidate.claimedIncomeTransactionId);
-                        const interbankExpense = yield* transactionRepository.getByIdRaw(candidate.interbankExpenseTransactionId);
+                        const transactions = yield* transactionRepository.findByIds([
+                            candidate.canonicalTransferId,
+                            candidate.claimedIncomeTransactionId,
+                            candidate.interbankExpenseTransactionId
+                        ]);
+                        const canonical = findById(transactions, candidate.canonicalTransferId);
+                        const claimedIncome = findById(transactions, candidate.claimedIncomeTransactionId);
+                        const interbankExpense = findById(transactions, candidate.interbankExpenseTransactionId);
 
                         if (
-                            !isDefined(canonical) ||
-                            canonical.consolidationType !== TransactionConsolidationTypeEnum.TRANSFER_PAIR ||
-                            !isDefined(claimedIncome) ||
-                            claimedIncome.consolidationParentTransactionId !== candidate.canonicalTransferId ||
+                            !isLiveEditableOfType(canonical, TransactionConsolidationTypeEnum.TRANSFER_PAIR) ||
+                            claimedIncome?.consolidationParentTransactionId !== candidate.canonicalTransferId ||
                             !isDefined(interbankExpense) ||
                             isDefined(interbankExpense.deletedAt) ||
                             isDefined(interbankExpense.consolidationParentTransactionId)
@@ -330,11 +336,22 @@ export class ConsolidationRepairExecutorService extends Context.Service<Consolid
                     },
                     effect => Db.transaction(effect)
                 ),
-                consolidateIbanBridgeCanonicalDuplicate: Effect.fnUntraced(
+                consolidateIbanBridgeCanonicalDuplicate: Effect.fn(
+                    'ConsolidationRepairExecutorService.consolidateIbanBridgeCanonicalDuplicate'
+                )(
                     function* (candidate: IbanBridgeCanonicalDuplicateCandidateInterface) {
                         const sourceTransactionIds = [candidate.expenseTransactionId, candidate.incomeTransactionId];
 
-                        if (!(yield* consolidationEligibilityService.areCandidatesStillEligible(sourceTransactionIds))) {
+                        if (sourceTransactionIds.includes(candidate.existingCanonicalTransferId)) {
+                            return false;
+                        }
+
+                        const existingCanonical = yield* transactionRepository.getByIdRaw(candidate.existingCanonicalTransferId);
+
+                        if (
+                            !isUntouchedIbanBridgeCanonical(existingCanonical) ||
+                            !(yield* consolidationEligibilityService.areCandidatesStillEligible(sourceTransactionIds))
+                        ) {
                             return false;
                         }
 
@@ -347,21 +364,32 @@ export class ConsolidationRepairExecutorService extends Context.Service<Consolid
                     },
                     effect => Db.transaction(effect)
                 ),
-                consolidateIbanBridgeCanonicalSupersession: Effect.fnUntraced(
+                consolidateIbanBridgeCanonicalSupersession: Effect.fn(
+                    'ConsolidationRepairExecutorService.consolidateIbanBridgeCanonicalSupersession'
+                )(
                     function* (candidate: IbanBridgeCanonicalSupersessionCandidateInterface) {
-                        const canonicalIdsOwningMovedEntries = [
-                            candidate.supersededCanonicalTransactionId,
-                            candidate.canonicalTransactionId
-                        ];
+                        const canonicalIds = [candidate.supersededCanonicalTransactionId, candidate.canonicalTransactionId];
                         const transactions = yield* consolidationEligibilityService.findEligibleSourceTransactions(
-                            canonicalIdsOwningMovedEntries,
-                            canonicalIdsOwningMovedEntries
+                            canonicalIds,
+                            canonicalIds
                         );
+                        const supersededCanonical = findById(transactions, candidate.supersededCanonicalTransactionId);
+                        const survivingCanonical = findById(transactions, candidate.canonicalTransactionId);
 
-                        if (!isDefined(transactions) || !transactions.every(transaction => isUntouchedIbanBridgeCanonical(transaction))) {
+                        if (
+                            !isDefined(supersededCanonical) ||
+                            !isDefined(survivingCanonical) ||
+                            !isUntouchedIbanBridgeCanonical(supersededCanonical) ||
+                            !isUntouchedIbanBridgeCanonical(survivingCanonical)
+                        ) {
                             return false;
                         }
 
+                        yield* consolidationMutationService.createMissingTransferFeeEntries(
+                            survivingCanonical.entries,
+                            [supersededCanonical],
+                            survivingCanonical.id
+                        );
                         yield* consolidationMutationService.moveSourcesToCanonical(
                             [candidate.supersededCanonicalTransactionId],
                             candidate.canonicalTransactionId
@@ -371,32 +399,38 @@ export class ConsolidationRepairExecutorService extends Context.Service<Consolid
                     },
                     effect => Db.transaction(effect)
                 ),
-                consolidateExistingTransferChainReclaim: Effect.fnUntraced(
+                consolidateExistingTransferChainReclaim: Effect.fn(
+                    'ConsolidationRepairExecutorService.consolidateExistingTransferChainReclaim'
+                )(
                     function* (candidate: ExistingTransferChainReclaimCandidateInterface) {
-                        const bridgeSourceTransactionIds = [candidate.bridgeIncomeTransactionId, candidate.bridgeExpenseTransactionId];
-                        const existingTransfer = yield* findEligibleExistingTransfer(
-                            bridgeSourceTransactionIds,
+                        const bridgeSourceIds = [candidate.bridgeIncomeTransactionId, candidate.bridgeExpenseTransactionId];
+                        const eligible = yield* consolidationEligibilityService.findEligibleExistingTransferConsolidation(
+                            bridgeSourceIds,
                             candidate.existingTransferId
                         );
 
-                        if (!isDefined(existingTransfer)) {
+                        if (!isDefined(eligible)) {
                             return false;
                         }
 
+                        const { existingTransfer, sourceTransactions: bridgeSources } = eligible;
+
                         if (hasChainReclaimConsistentLedger(candidate, existingTransfer)) {
+                            yield* consolidationMutationService.createMissingTransferFeeEntries(
+                                existingTransfer.entries,
+                                bridgeSources,
+                                candidate.existingTransferId
+                            );
                             yield* transactionConsolidationRepository.setConsolidationType(
                                 candidate.existingTransferId,
                                 TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER
                             );
-                            yield* consolidationMutationService.moveSourcesToCanonical(
-                                bridgeSourceTransactionIds,
-                                candidate.existingTransferId
-                            );
+                            yield* consolidationMutationService.moveSourcesToCanonical(bridgeSourceIds, candidate.existingTransferId);
 
                             return true;
                         }
 
-                        const canonicalTransaction = yield* consolidationMutationService.createCanonicalTransfer(
+                        yield* consolidationMutationService.createCanonicalTransferWithFeesAndMove(
                             buildIbanBridgeChainCanonicalInput({
                                 title: existingTransfer.title,
                                 operatedAt: candidate.operatedAt,
@@ -407,37 +441,48 @@ export class ConsolidationRepairExecutorService extends Context.Service<Consolid
                                 exchangeRate: candidate.exchangeRate,
                                 fromEntryToIban: candidate.targetAccountIban
                             }),
-                            [candidate.bridgeIncomeTransactionId, candidate.bridgeExpenseTransactionId, candidate.existingTransferId]
-                        );
-
-                        yield* consolidationMutationService.moveSourcesToCanonical(
-                            [candidate.bridgeIncomeTransactionId, candidate.bridgeExpenseTransactionId, candidate.existingTransferId],
-                            canonicalTransaction.id
+                            [...bridgeSourceIds, candidate.existingTransferId],
+                            [...bridgeSources, existingTransfer]
                         );
 
                         return true;
                     },
                     effect => Db.transaction(effect)
                 ),
-                consolidateExistingTransferIncomeDuplicate: Effect.fnUntraced(
+                consolidateExistingTransferIncomeDuplicate: Effect.fn(
+                    'ConsolidationRepairExecutorService.consolidateExistingTransferIncomeDuplicate'
+                )(
                     function* (candidate: ExistingTransferIncomeDuplicateCandidateInterface) {
-                        const existingTransfer = yield* findEligibleExistingTransfer(
+                        const eligible = yield* consolidationEligibilityService.findEligibleExistingTransferConsolidation(
                             [candidate.duplicateTransactionId],
                             candidate.existingTransferId
                         );
 
-                        if (!isDefined(existingTransfer)) {
+                        if (!isDefined(eligible)) {
                             return false;
                         }
 
-                        const canonicalTransaction = yield* consolidationMutationService.createCanonicalTransfer(
-                            buildIncomeDuplicateCanonicalInput(candidate, existingTransfer),
-                            [candidate.existingTransferId, candidate.duplicateTransactionId]
-                        );
+                        const { existingTransfer, sourceTransactions: duplicateSources } = eligible;
 
-                        yield* consolidationMutationService.moveSourcesToCanonical(
+                        yield* consolidationMutationService.createCanonicalTransferWithFeesAndMove(
+                            {
+                                title: isNotEmptyString(existingTransfer.title)
+                                    ? existingTransfer.title
+                                    : (candidate.duplicateTransactionTitle ?? ''),
+                                operatedAt: Math.floor(existingTransfer.operatedAt.getTime() / millisecondsInSecond),
+                                fromAccountId: candidate.sourceAccountId,
+                                toAccountId: candidate.targetAccountId,
+                                fromAmount: candidate.sourceAmount,
+                                toAmount: candidate.amount,
+                                exchangeRate: candidate.exchangeRate,
+                                consolidationType: TransactionConsolidationTypeEnum.TRANSFER_PAIR,
+                                fromEntryExchangeRate: candidate.exchangeRate,
+                                toEntryExchangeRate: 1,
+                                fromEntryToIban:
+                                    existingTransfer.entries.find(entry => entry.accountId === candidate.sourceAccountId)?.toIban ?? null
+                            },
                             [candidate.existingTransferId, candidate.duplicateTransactionId],
-                            canonicalTransaction.id
+                            [existingTransfer, ...duplicateSources]
                         );
 
                         return true;
@@ -446,24 +491,21 @@ export class ConsolidationRepairExecutorService extends Context.Service<Consolid
                 ),
                 consolidateManualExpenseDuplicate: Effect.fn('ConsolidationRepairExecutorService.consolidateManualExpenseDuplicate')(
                     function* (candidate: ManualExpenseDuplicateCandidateInterface) {
-                        const transactions = yield* consolidationEligibilityService.findEligibleSourceTransactions(
-                            [candidate.syncedTransactionId, candidate.manualTransactionId],
-                            [candidate.syncedTransactionId, candidate.manualTransactionId]
-                        );
-                        const syncedTransaction = transactions?.find(transaction => transaction.id === candidate.syncedTransactionId);
-                        const manualTransaction = transactions?.find(transaction => transaction.id === candidate.manualTransactionId);
+                        const pairIds = [candidate.syncedTransactionId, candidate.manualTransactionId];
+                        const transactions = yield* consolidationEligibilityService.findEligibleSourceTransactions(pairIds, pairIds);
+                        const syncedTransaction = findById(transactions, candidate.syncedTransactionId);
+                        const manualTransaction = findById(transactions, candidate.manualTransactionId);
+                        const isManualDuplicateMergeAllowed = (consolidationType: TransactionConsolidationTypeEnum | null): boolean =>
+                            !isDefined(consolidationType) ||
+                            (consolidationType === TransactionConsolidationTypeEnum.MANUAL_EXPENSE_DUPLICATE &&
+                                isDefined(manualTransaction) &&
+                                isCaptureManualSource(manualTransaction.externalSource));
 
                         if (
                             !isDefined(syncedTransaction) ||
                             !isDefined(manualTransaction) ||
-                            (isDefined(syncedTransaction.consolidationType) &&
-                                (syncedTransaction.consolidationType !== TransactionConsolidationTypeEnum.MANUAL_EXPENSE_DUPLICATE ||
-                                    (manualTransaction.externalSource !== ExternalSourceEnum.APPLE_PAY_AUTOMATION &&
-                                        manualTransaction.externalSource !== ExternalSourceEnum.RECEIPT))) ||
-                            (isDefined(manualTransaction.consolidationType) &&
-                                (manualTransaction.consolidationType !== TransactionConsolidationTypeEnum.MANUAL_EXPENSE_DUPLICATE ||
-                                    (manualTransaction.externalSource !== ExternalSourceEnum.RECEIPT &&
-                                        manualTransaction.externalSource !== ExternalSourceEnum.APPLE_PAY_AUTOMATION)))
+                            !isManualDuplicateMergeAllowed(syncedTransaction.consolidationType) ||
+                            !isManualDuplicateMergeAllowed(manualTransaction.consolidationType)
                         ) {
                             return false;
                         }
@@ -490,14 +532,7 @@ export class ConsolidationRepairExecutorService extends Context.Service<Consolid
                 ),
                 consolidateRefund: Effect.fn('ConsolidationRepairExecutorService.consolidateRefund')(
                     function* (candidate: RefundCandidateInterface) {
-                        const sourceTransactionIds = [candidate.expenseTransactionId, ...candidate.refundIncomeTransactionIds];
-
-                        if (
-                            !(yield* consolidationEligibilityService.areCandidatesStillEligible(sourceTransactionIds, [
-                                candidate.expenseTransactionId
-                            ])) ||
-                            !(yield* hasFreshRefundCapacity(candidate))
-                        ) {
+                        if (!(yield* hasFreshRefundCapacity(candidate))) {
                             return false;
                         }
 

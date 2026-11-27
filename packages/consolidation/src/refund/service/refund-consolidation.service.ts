@@ -1,5 +1,7 @@
 import {
+    AccountRepository,
     Db,
+    DebtEventRepository,
     TransactionConsolidationTypeEnum,
     TransactionEntryRepository,
     TransactionEntryTypeEnum,
@@ -12,7 +14,7 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isEmptyArray, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { RefundPairRepository } from '../../query/repository/refund-pair.repository';
 import { consolidationCopySourceTransactionTags } from '../../shared/utils/consolidation-copy-source-transaction-tags.util';
@@ -21,6 +23,8 @@ import { RefundAlreadyConsolidatedError } from '../error/refund-already-consolid
 import { RefundExceedsExpenseError } from '../error/refund-exceeds-expense.error';
 import { RefundNotFromIncomeError } from '../error/refund-not-from-income.error';
 import { RefundTransactionNotFoundError } from '../error/refund-transaction-not-found.error';
+import { computeRefundCapacityUsage } from '../utils/compute-refund-capacity-usage.util';
+import { isPrivatbankClosedByAbsorbedRefunds } from '../utils/is-privatbank-closed-by-absorbed-refunds.util';
 
 import type { ConvertToRefundParamsInterface } from '../interface/convert-to-refund-params.interface';
 import type { LanguageEnum, TransactionEntryEntityInterface, TransactionWithEntriesEntityInterface } from '@budgie/contracts';
@@ -34,6 +38,8 @@ export class RefundConsolidationService extends Context.Service<RefundConsolidat
             const transactionConsolidationRepository = yield* TransactionConsolidationRepository;
             const transactionEntryRepository = yield* TransactionEntryRepository;
             const transactionTagsRepository = yield* TransactionTagsRepository;
+            const accountRepository = yield* AccountRepository;
+            const debtEventRepository = yield* DebtEventRepository;
 
             const isAlreadyConsolidated = (
                 refundIncomeTransaction: TransactionWithEntriesEntityInterface,
@@ -41,8 +47,10 @@ export class RefundConsolidationService extends Context.Service<RefundConsolidat
             ): boolean =>
                 (isDefined(expenseTransaction.consolidationType) &&
                     expenseTransaction.consolidationType !== TransactionConsolidationTypeEnum.REFUND) ||
+                isDefined(expenseTransaction.consolidationParentTransactionId) ||
                 isDefined(refundIncomeTransaction.consolidationType) ||
-                isDefined(refundIncomeTransaction.consolidationParentTransactionId);
+                isDefined(refundIncomeTransaction.consolidationParentTransactionId) ||
+                refundIncomeTransaction.entries.some(entry => isDefined(entry.originalTransactionId));
 
             const findEntryByType = (
                 entries: TransactionEntryEntityInterface[],
@@ -50,32 +58,80 @@ export class RefundConsolidationService extends Context.Service<RefundConsolidat
             ): TransactionEntryEntityInterface | null =>
                 entries.find(entry => entry.type === type && !isDefined(entry.originalTransactionId)) ?? null;
 
-            const getExistingRefundAmount = (entries: TransactionEntryEntityInterface[]): number =>
-                entries
-                    .filter(entry => isDefined(entry.originalTransactionId) && entry.type === TransactionEntryTypeEnum.DEBIT)
-                    .reduce((total, entry) => total + entry.amount, 0);
+            const getAbsorbedRefundEntries = (entries: TransactionEntryEntityInterface[]): TransactionEntryEntityInterface[] =>
+                entries.filter(entry => isDefined(entry.originalTransactionId) && entry.type === TransactionEntryTypeEnum.DEBIT);
 
-            const isPrivatbankForeignCurrencyFullRefund = (
+            const validateMatchingCurrency = Effect.fnUntraced(function* (expenseAccountId: number, refundAccountId: number) {
+                if (expenseAccountId === refundAccountId) {
+                    return;
+                }
+
+                const accounts = yield* accountRepository.findByIds([expenseAccountId, refundAccountId]);
+                const expenseAccount = accounts.find(account => account.id === expenseAccountId);
+                const refundAccount = accounts.find(account => account.id === refundAccountId);
+
+                if (!isDefined(expenseAccount) || !isDefined(refundAccount)) {
+                    return yield* RefundTransactionNotFoundError.make();
+                }
+
+                if (expenseAccount.instrumentId !== refundAccount.instrumentId) {
+                    return yield* RefundNotFromIncomeError.make();
+                }
+            });
+
+            const validateRefundCapacity = Effect.fnUntraced(function* (
                 refundIncomeTransaction: TransactionWithEntriesEntityInterface,
                 expenseTransaction: TransactionWithEntriesEntityInterface,
                 refundIncomeEntry: TransactionEntryEntityInterface,
                 expenseEntry: TransactionEntryEntityInterface
-            ): boolean =>
-                getExistingRefundAmount(expenseTransaction.entries) === 0 &&
-                isPrivatbankSameOriginalAmount(
-                    refundIncomeTransaction.externalSource ?? null,
-                    refundIncomeEntry,
-                    expenseTransaction.externalSource ?? null,
-                    expenseEntry
-                );
+            ) {
+                const absorbedEntries = getAbsorbedRefundEntries(expenseTransaction.entries);
+                const absorbedSourceIds = absorbedEntries.map(entry => entry.originalTransactionId).filter(isDefined);
+                const absorbedSources = isNotEmptyArray(absorbedSourceIds) ? yield* transactionRepository.findByIds(absorbedSourceIds) : [];
+                const absorbedSourcesById = new Map(absorbedSources.map(source => [source.id, source]));
+
+                if (
+                    isPrivatbankClosedByAbsorbedRefunds(
+                        absorbedEntries,
+                        absorbedSourcesById,
+                        expenseTransaction.externalSource ?? null,
+                        expenseEntry
+                    )
+                ) {
+                    return yield* RefundExceedsExpenseError.make();
+                }
+
+                const { feeAmount, absorbedFeeTotal, absorbedPrincipalTotal, isRejectedFeeTitle } = computeRefundCapacityUsage({
+                    expenseEntries: expenseTransaction.entries,
+                    expenseAccountId: expenseEntry.accountId,
+                    absorbedEntries,
+                    absorbedSourceById: absorbedSourcesById,
+                    incomingTitle: refundIncomeTransaction.title
+                });
+
+                const isPrivatbankFullRefund =
+                    absorbedPrincipalTotal === 0 &&
+                    !isRejectedFeeTitle &&
+                    isPrivatbankSameOriginalAmount(
+                        refundIncomeTransaction.externalSource ?? null,
+                        refundIncomeEntry,
+                        expenseTransaction.externalSource ?? null,
+                        expenseEntry
+                    );
+                const fitsFeePool =
+                    isRejectedFeeTitle && isPositiveNumber(feeAmount) && refundIncomeEntry.amount + absorbedFeeTotal <= feeAmount;
+                const fitsPrincipalPool =
+                    refundIncomeEntry.amount + absorbedPrincipalTotal <= expenseEntry.amount || isPrivatbankFullRefund;
+
+                if (!fitsFeePool && !fitsPrincipalPool) {
+                    return yield* RefundExceedsExpenseError.make();
+                }
+            });
 
             const validateRefundIncomePair = Effect.fnUntraced(function* (
                 refundIncomeTransaction: TransactionWithEntriesEntityInterface,
                 expenseTransaction: TransactionWithEntriesEntityInterface
             ) {
-                const expenseEntry = findEntryByType(expenseTransaction.entries, TransactionEntryTypeEnum.CREDIT);
-                const refundIncomeEntry = findEntryByType(refundIncomeTransaction.entries, TransactionEntryTypeEnum.DEBIT);
-
                 if (
                     refundIncomeTransaction.type !== TransactionTypeEnum.INCOME ||
                     expenseTransaction.type !== TransactionTypeEnum.EXPENSE
@@ -87,20 +143,29 @@ export class RefundConsolidationService extends Context.Service<RefundConsolidat
                     return yield* RefundAlreadyConsolidatedError.make();
                 }
 
+                const activeDebtEvent = yield* debtEventRepository.findByTransactionId(refundIncomeTransaction.id);
+
+                if (isDefined(activeDebtEvent)) {
+                    return yield* RefundAlreadyConsolidatedError.make();
+                }
+
+                const expenseEntry = findEntryByType(expenseTransaction.entries, TransactionEntryTypeEnum.CREDIT);
+                const [refundIncomeEntry, ...siblingRefundEntries] = refundIncomeTransaction.entries;
+
                 if (!isDefined(expenseEntry) || !isDefined(refundIncomeEntry)) {
                     return yield* RefundTransactionNotFoundError.make();
                 }
 
-                const existingRefundAmount = getExistingRefundAmount(expenseTransaction.entries);
-
                 if (
-                    refundIncomeEntry.amount + existingRefundAmount > expenseEntry.amount &&
-                    !isPrivatbankForeignCurrencyFullRefund(refundIncomeTransaction, expenseTransaction, refundIncomeEntry, expenseEntry)
+                    !isEmptyArray(siblingRefundEntries) ||
+                    refundIncomeEntry.type !== TransactionEntryTypeEnum.DEBIT ||
+                    !isPositiveNumber(refundIncomeEntry.amount)
                 ) {
-                    return yield* RefundExceedsExpenseError.make();
+                    return yield* RefundNotFromIncomeError.make();
                 }
 
-                return yield* Effect.void;
+                yield* validateMatchingCurrency(expenseEntry.accountId, refundIncomeEntry.accountId);
+                yield* validateRefundCapacity(refundIncomeTransaction, expenseTransaction, refundIncomeEntry, expenseEntry);
             });
 
             return {
@@ -122,7 +187,12 @@ export class RefundConsolidationService extends Context.Service<RefundConsolidat
                         );
                         const expenseTransaction = transactions.find(transaction => transaction.id === params.expenseTransactionId);
 
-                        if (!isDefined(refundIncomeTransaction) || !isDefined(expenseTransaction)) {
+                        if (
+                            !isDefined(refundIncomeTransaction) ||
+                            !isDefined(expenseTransaction) ||
+                            isDefined(refundIncomeTransaction.deletedAt) ||
+                            isDefined(expenseTransaction.deletedAt)
+                        ) {
                             return yield* RefundTransactionNotFoundError.make();
                         }
 
@@ -159,7 +229,9 @@ export class RefundConsolidationService extends Context.Service<RefundConsolidat
             TransactionRepository.layer,
             TransactionConsolidationRepository.layer,
             TransactionEntryRepository.layer,
-            TransactionTagsRepository.layer
+            TransactionTagsRepository.layer,
+            AccountRepository.layer,
+            DebtEventRepository.layer
         ])
     );
 }

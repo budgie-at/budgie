@@ -3,7 +3,7 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { ConsolidationEligibilityService } from './consolidation-eligibility.service';
 import { ConsolidationMutationService } from './consolidation-mutation.service';
@@ -40,7 +40,8 @@ export class ConsolidationExecutorService extends Context.Service<ConsolidationE
 
                     const canonicalTransaction = yield* consolidationMutationService.createCanonicalTransfer(
                         consolidationPlan.canonicalInput,
-                        consolidationPlan.sourceTransactionIds
+                        consolidationPlan.sourceTransactionIds,
+                        sourceTransactions
                     );
 
                     yield* createFeeEntries(sourceTransactions, canonicalTransaction.id);
@@ -57,11 +58,7 @@ export class ConsolidationExecutorService extends Context.Service<ConsolidationE
             return {
                 consolidateTransfer: (consolidationPlan: ConsolidationPlanInterface) =>
                     consolidateWithFeeEntries(consolidationPlan, (sourceTransactions, canonicalTransactionId) =>
-                        consolidationMutationService.createTransferPairFeeEntries(
-                            [consolidationPlan.canonicalInput.fromAccountId, consolidationPlan.canonicalInput.toAccountId],
-                            sourceTransactions,
-                            canonicalTransactionId
-                        )
+                        consolidationMutationService.createMissingTransferFeeEntries([], sourceTransactions, canonicalTransactionId)
                     ),
                 consolidateAtmCashWithdrawal: (
                     candidate: AtmCashWithdrawalCandidateInterface,
@@ -70,8 +67,12 @@ export class ConsolidationExecutorService extends Context.Service<ConsolidationE
                     consolidateWithFeeEntries(consolidationPlan, (sourceTransactions, canonicalTransactionId) =>
                         consolidationMutationService.createAtmCashWithdrawalFeeEntry(candidate, sourceTransactions, canonicalTransactionId)
                     ),
-                consolidateP2pFiatTransfer: (candidate: P2pFiatTransferCandidateInterface) =>
-                    consolidateWithFeeEntries(
+                consolidateP2pFiatTransfer: (candidate: P2pFiatTransferCandidateInterface) => {
+                    if (!isPositiveNumber(candidate.toAmount)) {
+                        return Effect.succeed(false);
+                    }
+
+                    return consolidateWithFeeEntries(
                         {
                             sourceTransactionIds: [...candidate.sourceTransactionIds],
                             allowedMovedSourceTransactionIds: [],
@@ -95,7 +96,8 @@ export class ConsolidationExecutorService extends Context.Service<ConsolidationE
                                 sourceTransactions,
                                 canonicalTransactionId
                             )
-                    )
+                    );
+                }
             };
         })
     }

@@ -1,4 +1,9 @@
-import { TransactionConsolidationTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import {
+    TransactionConsolidationTypeEnum,
+    TransactionEntryKindEnum,
+    TransactionEntryTypeEnum,
+    TransactionTypeEnum
+} from '@budgie/contracts';
 
 import { IBAN_BRIDGE_CHAIN_FX_TOLERANCE } from '../../../shared/constant/iban-bridge-chain-fx-tolerance.constant';
 import { TRANSFER_MCC_GROUP_ID } from '../../../shared/constant/transfer-mcc-group-id.constant';
@@ -92,12 +97,16 @@ export const EXISTING_TRANSFER_CHAIN_RECLAIM_CANDIDATES_SQL = scopedSql`
                     existing_source_entry.transaction_id = existing_transfer.id
                     AND existing_source_entry.deleted_at IS NULL
                     AND existing_source_entry.original_transaction_id IS NULL
+                    AND existing_source_entry.type = '${TransactionEntryTypeEnum.CREDIT}'
+                    AND existing_source_entry.kind = '${TransactionEntryKindEnum.PRIMARY}'
                     AND existing_source_entry.account_id = source_account.id
                     AND existing_source_entry.amount > 0
                 INNER JOIN transaction_entries existing_target_entry ON
                     existing_target_entry.transaction_id = existing_transfer.id
                     AND existing_target_entry.deleted_at IS NULL
                     AND existing_target_entry.original_transaction_id IS NULL
+                    AND existing_target_entry.type = '${TransactionEntryTypeEnum.DEBIT}'
+                    AND existing_target_entry.kind = '${TransactionEntryKindEnum.PRIMARY}'
                     AND existing_target_entry.account_id = target_account.id
                     AND existing_target_entry.amount > 0
                 INNER JOIN transactions bridge_income_tx ON
@@ -111,6 +120,8 @@ export const EXISTING_TRANSFER_CHAIN_RECLAIM_CANDIDATES_SQL = scopedSql`
                     bridge_income_entry.transaction_id = bridge_income_tx.id
                     AND bridge_income_entry.deleted_at IS NULL
                     AND bridge_income_entry.original_transaction_id IS NULL
+                    AND bridge_income_entry.type = '${TransactionEntryTypeEnum.DEBIT}'
+                    AND bridge_income_entry.kind = '${TransactionEntryKindEnum.PRIMARY}'
                     AND bridge_income_entry.exchange_rate > 0
                     AND bridge_income_entry.amount = existing_target_entry.amount
                     AND bridge_income_entry.to_iban = source_account.iban
@@ -132,6 +143,8 @@ export const EXISTING_TRANSFER_CHAIN_RECLAIM_CANDIDATES_SQL = scopedSql`
                     bridge_expense_entry.transaction_id = bridge_expense_tx.id
                     AND bridge_expense_entry.deleted_at IS NULL
                     AND bridge_expense_entry.original_transaction_id IS NULL
+                    AND bridge_expense_entry.type = '${TransactionEntryTypeEnum.CREDIT}'
+                    AND bridge_expense_entry.kind = '${TransactionEntryKindEnum.PRIMARY}'
                     AND bridge_expense_entry.account_id = bridge_account.id
                     AND bridge_expense_entry.amount = bridge_income_entry.amount
                     AND bridge_expense_entry.exchange_rate > 0
@@ -141,6 +154,7 @@ export const EXISTING_TRANSFER_CHAIN_RECLAIM_CANDIDATES_SQL = scopedSql`
                 WHERE existing_transfer.type = '${TransactionTypeEnum.TRANSFER}'
                     AND existing_transfer.deleted_at IS NULL
                     AND existing_transfer.consolidation_parent_transaction_id IS NULL
+                    AND existing_transfer.updated_by IS NULL
                     AND existing_transfer.consolidation_type = '${TransactionConsolidationTypeEnum.TRANSFER_PAIR}'
                     ${operatedAtScopeSql('existing_transfer.operated_at')}
                     AND source_account.id != target_account.id

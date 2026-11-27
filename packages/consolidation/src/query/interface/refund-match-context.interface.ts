@@ -7,7 +7,7 @@ export interface RefundMatchContextInterface {
     readonly autoRefundEdgeLists: readonly (readonly RefundEdgeRowInterface[])[];
     readonly refundEdgeListById: ReadonlyMap<number, readonly RefundEdgeRowInterface[]>;
     readonly expenseEdgeLists: ReadonlyMap<number, readonly RefundEdgeRowInterface[]>;
-    readonly expenseRanks: ReadonlyMap<RefundEdgeRowInterface, number>;
+    readonly bestExpenseEdgeByExpenseId: ReadonlyMap<number, RefundEdgeRowInterface>;
     readonly ledger: RefundMatchLedger;
     readonly window: RefundMatchWindowInterface | null;
 }

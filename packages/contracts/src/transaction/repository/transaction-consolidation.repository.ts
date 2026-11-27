@@ -1,4 +1,4 @@
-import { and, eq, gte, inArray, isNotNull, isNull, or } from 'drizzle-orm';
+import { and, eq, exists, gte, inArray, isNotNull, isNull, or } from 'drizzle-orm';
 import { QueryBuilder, alias } from 'drizzle-orm/sqlite-core';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -20,6 +20,24 @@ export class TransactionConsolidationRepository extends Context.Service<Transact
     {
         make: Effect.sync(() => {
             const queryBuilder = new QueryBuilder();
+            const buildAccountMatchCondition = (accountIds: number[]) => {
+                const movedSourceCanonicalIds = queryBuilder
+                    .select({ transactionId: TransactionEntryEntityTable.transactionId })
+                    .from(TransactionEntryEntityTable)
+                    .where(
+                        and(
+                            inArray(TransactionEntryEntityTable.accountId, accountIds),
+                            isNotNull(TransactionEntryEntityTable.originalTransactionId),
+                            isNull(TransactionEntryEntityTable.deletedAt)
+                        )
+                    );
+
+                return or(
+                    inArray(TransactionEntityTable.fromAccountId, accountIds),
+                    inArray(TransactionEntityTable.toAccountId, accountIds),
+                    inArray(TransactionEntityTable.id, movedSourceCanonicalIds)
+                );
+            };
 
             return {
                 findConsolidationParentsByIds: Effect.fn('TransactionConsolidationRepository.findConsolidationParentsByIds')(function* (
@@ -50,17 +68,6 @@ export class TransactionConsolidationRepository extends Context.Service<Transact
                         return [];
                     }
 
-                    const movedSourceCanonicalIds = queryBuilder
-                        .select({ transactionId: TransactionEntryEntityTable.transactionId })
-                        .from(TransactionEntryEntityTable)
-                        .where(
-                            and(
-                                inArray(TransactionEntryEntityTable.accountId, accountIds),
-                                isNotNull(TransactionEntryEntityTable.originalTransactionId),
-                                isNull(TransactionEntryEntityTable.deletedAt)
-                            )
-                        );
-
                     return yield* Db.query(db =>
                         db
                             .select({ id: TransactionEntityTable.id })
@@ -69,11 +76,7 @@ export class TransactionConsolidationRepository extends Context.Service<Transact
                                 and(
                                     isNotNull(TransactionEntityTable.consolidationType),
                                     transactionFilters.buildVisibleTransactionCondition(),
-                                    or(
-                                        inArray(TransactionEntityTable.fromAccountId, accountIds),
-                                        inArray(TransactionEntityTable.toAccountId, accountIds),
-                                        inArray(TransactionEntityTable.id, movedSourceCanonicalIds)
-                                    )
+                                    buildAccountMatchCondition(accountIds)
                                 )
                             )
                     );
@@ -85,25 +88,38 @@ export class TransactionConsolidationRepository extends Context.Service<Transact
                     if (isEmptyArray(accountIds)) {
                         return [];
                     }
+
                     const sourceTransaction = alias(TransactionEntityTable, 'source_tx');
 
                     return yield* Db.query(db =>
                         db
-                            .selectDistinct({ id: TransactionEntityTable.id })
+                            .select({ id: TransactionEntityTable.id })
                             .from(TransactionEntityTable)
-                            .innerJoin(
-                                TransactionEntryEntityTable,
-                                eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id)
-                            )
-                            .innerJoin(sourceTransaction, eq(sourceTransaction.id, TransactionEntryEntityTable.originalTransactionId))
                             .where(
                                 and(
                                     isNotNull(TransactionEntityTable.consolidationType),
                                     transactionFilters.buildVisibleTransactionCondition(),
-                                    inArray(TransactionEntryEntityTable.accountId, accountIds),
-                                    isNotNull(TransactionEntryEntityTable.originalTransactionId),
-                                    isNull(TransactionEntryEntityTable.deletedAt),
-                                    gte(sourceTransaction.operatedAt, since)
+                                    buildAccountMatchCondition(accountIds),
+                                    or(
+                                        gte(TransactionEntityTable.operatedAt, since),
+                                        exists(
+                                            db
+                                                .select({ id: TransactionEntryEntityTable.id })
+                                                .from(TransactionEntryEntityTable)
+                                                .innerJoin(
+                                                    sourceTransaction,
+                                                    eq(sourceTransaction.id, TransactionEntryEntityTable.originalTransactionId)
+                                                )
+                                                .where(
+                                                    and(
+                                                        eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id),
+                                                        isNotNull(TransactionEntryEntityTable.originalTransactionId),
+                                                        isNull(TransactionEntryEntityTable.deletedAt),
+                                                        gte(sourceTransaction.operatedAt, since)
+                                                    )
+                                                )
+                                        )
+                                    )
                                 )
                             )
                     );

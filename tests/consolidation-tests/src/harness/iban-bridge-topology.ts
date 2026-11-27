@@ -161,6 +161,38 @@ export const expectBridgeLedgerAmounts = (canonicalId: number, sourceAccountId: 
 
 export const fetchBridgeCanonicalId = fetchSingleCanonicalId(TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER);
 
+export const seedIbanBridgeDuplicatePairFixture = Effect.fnUntraced(function* () {
+    const topology = yield* seedIbanBridgeTopology;
+    const accountIds: [number, number, number] = [topology.sourceAccount.id, topology.bridgeAccount.id, topology.targetAccount.id];
+
+    yield* seedIbanBridgeLegs(topology.bridgeAccount.id, topology.transferMccId);
+    yield* runConsolidation();
+
+    const canonicalId = yield* fetchBridgeCanonicalId;
+    const sourceExpense = yield* seedIbanBridgeSourceExpense(
+        topology.sourceAccount.id,
+        topology.transferMccId,
+        topology.bridgeAccount.iban
+    );
+    const targetIncome = yield* seedIbanBridgeTargetIncome(topology.targetAccount.id, topology.transferMccId);
+    const duplicatePair = yield* testSeedService.directTransfer({
+        consolidationType: TransactionConsolidationTypeEnum.TRANSFER_PAIR,
+        exchangeRate: IBAN_BRIDGE_UAH_TO_EUR_RATE,
+        operatedAt: new Date(IBAN_BRIDGE_OPERATED_AT.getTime() + 1000),
+        sourceAccountId: topology.sourceAccount.id,
+        sourceAmount: IBAN_BRIDGE_EUR_AMOUNT,
+        sourceEntryExchangeRate: IBAN_BRIDGE_UAH_TO_EUR_RATE,
+        targetAccountId: topology.targetAccount.id,
+        targetAmount: IBAN_BRIDGE_UAH_AMOUNT,
+        toIban: topology.bridgeAccount.iban
+    });
+
+    yield* parentConsolidationSource(sourceExpense.id, duplicatePair.id);
+    yield* parentConsolidationSource(targetIncome.id, duplicatePair.id);
+
+    return { ...topology, accountIds, canonicalId, duplicatePair, sourceExpense, targetIncome };
+});
+
 export const countCanonicalDuplicateCandidates = Effect.fnUntraced(function* () {
     const consolidationCandidateRepository = yield* ConsolidationCandidateRepository;
 

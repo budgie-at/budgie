@@ -3377,6 +3377,10 @@ msgid "Consent valid until"
 msgstr "Einwilligung gültig bis"
 
 #: ../ledger/src/transaction/service/transaction-transfer.service.ts
+msgid "Consolidated transactions cannot be converted to transfers"
+msgstr "Konsolidierte Transaktionen können nicht in Überweisungen umgewandelt werden"
+
+#: ../ledger/src/transaction/service/transaction-transfer.service.ts
 msgid "Consolidated transactions cannot start a deposit"
 msgstr "Aus konsolidierten Transaktionen kann keine Einlage eröffnet werden"
 

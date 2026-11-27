@@ -170,7 +170,7 @@ export class TransactionRepository extends Context.Service<TransactionRepository
                                 .where(
                                     and(
                                         inArray(TransactionEntityTable.syncId, syncIds.slice(start, start + 500)),
-                                        isNull(TransactionEntityTable.deletedAt)
+                                        transactionFilters.buildVisibleTransactionCondition()
                                     )
                                 )
                         ))

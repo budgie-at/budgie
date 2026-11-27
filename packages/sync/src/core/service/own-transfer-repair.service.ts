@@ -116,6 +116,26 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
             }
         };
 
+        const getOperatedAtRange = (items: readonly TransactionWithEntriesEntityInterface[]) => {
+            let minTime = items[0].operatedAt.getTime();
+            let maxTime = minTime;
+
+            for (const item of items) {
+                const time = item.operatedAt.getTime();
+                if (time < minTime) {
+                    minTime = time;
+                }
+                if (time > maxTime) {
+                    maxTime = time;
+                }
+            }
+
+            return {
+                operatedAtFrom: DateTime.toDateUtc(DateTime.makeUnsafe(minTime)),
+                operatedAtTo: DateTime.toDateUtc(DateTime.makeUnsafe(maxTime))
+            };
+        };
+
         const pairUntrackedTransfers = Effect.fnUntraced(function* (
             scope: ConsolidationScanScopeInterface | null,
             accountsById: ReadonlyMap<number, Pick<AccountEntityInterface, 'id' | 'instrumentId'>>
@@ -273,12 +293,7 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
                 const competingUntrackedTransfers = isEmptyArray(eligibleOpposites)
                     ? []
                     : (yield* repository.findUntrackedTransfers({
-                          operatedAtFrom: DateTime.toDateUtc(
-                              DateTime.makeUnsafe(Math.min(...eligibleOpposites.map(transaction => transaction.operatedAt.getTime())))
-                          ),
-                          operatedAtTo: DateTime.toDateUtc(
-                              DateTime.makeUnsafe(Math.max(...eligibleOpposites.map(transaction => transaction.operatedAt.getTime())))
-                          ),
+                          ...getOperatedAtRange(eligibleOpposites),
                           transactionIds: []
                       })).filter(isSingleEntry);
                 const untrackedOpposites = (yield* findPlausibleOpposites(competingUntrackedTransfers)).links;
@@ -405,7 +420,10 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
                                     : target;
                                 const changed = isDefined(counterpart)
                                     ? yield* pair(transaction, counterpart)
-                                    : isDefined(destination) && (yield* transfers.convertToTransferAccount(transaction.id, destination.id));
+                                    : isDefined(destination) &&
+                                      (yield* transfers
+                                          .convertToTransferAccount(transaction.id, destination.id)
+                                          .pipe(Effect.catchTag('DepositNegativeBalanceError', () => Effect.succeed(false))));
 
                                 if (changed) {
                                     consumed.add(transaction.id);

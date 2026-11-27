@@ -14,14 +14,28 @@ export const buildConsolidationScopeFromTransactions = (
         return null;
     }
 
-    const transactionIds = [...new Set(transactions.map(transaction => transaction.id))];
-    const operatedAtTimes = transactions.map(transaction => transaction.operatedAt.getTime());
-    const operatedAtFrom = new Date(Math.min(...operatedAtTimes) - PADDING_MS);
-    const operatedAtTo = new Date(Math.max(...operatedAtTimes) + PADDING_MS);
+    const [firstTransaction] = transactions;
+    const transactionIdSet = new Set<number>();
+    let minOperatedAtMs = firstTransaction.operatedAt.getTime();
+    let maxOperatedAtMs = minOperatedAtMs;
+
+    for (const transaction of transactions) {
+        transactionIdSet.add(transaction.id);
+
+        const operatedAtMs = transaction.operatedAt.getTime();
+
+        if (operatedAtMs < minOperatedAtMs) {
+            minOperatedAtMs = operatedAtMs;
+        }
+
+        if (operatedAtMs > maxOperatedAtMs) {
+            maxOperatedAtMs = operatedAtMs;
+        }
+    }
 
     return {
-        operatedAtFrom,
-        operatedAtTo,
-        transactionIds
+        operatedAtFrom: new Date(minOperatedAtMs - PADDING_MS),
+        operatedAtTo: new Date(maxOperatedAtMs + PADDING_MS),
+        transactionIds: [...transactionIdSet]
     };
 };

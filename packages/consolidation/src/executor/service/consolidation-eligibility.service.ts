@@ -3,7 +3,9 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
+
+import type { TransactionWithEntriesEntityInterface } from '@budgie/contracts';
 
 export class ConsolidationEligibilityService extends Context.Service<ConsolidationEligibilityService>()(
     '@budgie/consolidation/ConsolidationEligibilityService',
@@ -12,10 +14,19 @@ export class ConsolidationEligibilityService extends Context.Service<Consolidati
             const transactionRepository = yield* TransactionRepository;
             const transactionEntryRepository = yield* TransactionEntryRepository;
 
+            const isEligibleLiveSource = (transaction: TransactionWithEntriesEntityInterface): boolean =>
+                !isDefined(transaction.consolidationParentTransactionId) &&
+                !isDefined(transaction.deletedAt) &&
+                isNotEmptyArray(transaction.entries);
+
             const findEligibleSourceTransactions = Effect.fn('ConsolidationEligibilityService.findEligibleSourceTransactions')(function* (
                 sourceTransactionIds: number[],
                 allowedMovedSourceTransactionIds: number[] = []
             ) {
+                if (isEmptyArray(sourceTransactionIds)) {
+                    return null;
+                }
+
                 const fresh = yield* transactionRepository.findByIds(sourceTransactionIds);
 
                 if (fresh.length !== sourceTransactionIds.length) {
@@ -30,15 +41,48 @@ export class ConsolidationEligibilityService extends Context.Service<Consolidati
                     return null;
                 }
 
-                if (
-                    fresh.every(
-                        transaction => !isDefined(transaction.consolidationParentTransactionId) && !isDefined(transaction.deletedAt)
-                    )
-                ) {
+                if (fresh.every(isEligibleLiveSource)) {
                     return fresh;
                 }
 
                 return null;
+            });
+
+            const findEligibleExistingTransferConsolidation = Effect.fn(
+                'ConsolidationEligibilityService.findEligibleExistingTransferConsolidation'
+            )(function* (sourceTransactionIds: number[], existingTransferId: number) {
+                if (isEmptyArray(sourceTransactionIds)) {
+                    return null;
+                }
+
+                const uniqueIds = [...new Set([...sourceTransactionIds, existingTransferId])];
+
+                if (uniqueIds.length !== sourceTransactionIds.length + 1) {
+                    return null;
+                }
+
+                const allTransactions = yield* transactionRepository.findByIds(uniqueIds);
+
+                if (
+                    allTransactions.length !== uniqueIds.length ||
+                    (yield* transactionEntryRepository.hasMovedSourceEntries(sourceTransactionIds))
+                ) {
+                    return null;
+                }
+
+                const existingTransfer = allTransactions.find(transaction => transaction.id === existingTransferId);
+                const sourceTransactions = allTransactions.filter(transaction => transaction.id !== existingTransferId);
+
+                if (
+                    !isDefined(existingTransfer) ||
+                    isDefined(existingTransfer.updatedBy) ||
+                    !isEligibleLiveSource(existingTransfer) ||
+                    !sourceTransactions.every(isEligibleLiveSource)
+                ) {
+                    return null;
+                }
+
+                return { existingTransfer, sourceTransactions };
             });
 
             const areCandidatesStillEligible = Effect.fn('ConsolidationEligibilityService.areCandidatesStillEligible')(function* (
@@ -56,21 +100,7 @@ export class ConsolidationEligibilityService extends Context.Service<Consolidati
             return {
                 areCandidatesStillEligible,
                 findEligibleSourceTransactions,
-                isExistingTransferConsolidationStillEligible: Effect.fn(
-                    'ConsolidationEligibilityService.isExistingTransferConsolidationStillEligible'
-                )(function* (sourceTransactionIds: number[], existingTransferId: number) {
-                    if (!(yield* areCandidatesStillEligible(sourceTransactionIds))) {
-                        return false;
-                    }
-
-                    const transaction = yield* transactionRepository.getByIdRaw(existingTransferId);
-
-                    return (
-                        isDefined(transaction) &&
-                        !isDefined(transaction.consolidationParentTransactionId) &&
-                        !isDefined(transaction.deletedAt)
-                    );
-                })
+                findEligibleExistingTransferConsolidation
             };
         })
     }
