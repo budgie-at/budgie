@@ -5,6 +5,8 @@ import * as Context from 'effect/Context';
 import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
+import * as Ref from 'effect/Ref';
+import * as Semaphore from 'effect/Semaphore';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -17,7 +19,9 @@ import type { MigrationMeta } from 'drizzle-orm/migrator';
 import type * as SqlClient from 'effect/sql/SqlClient';
 
 export class DatabaseMigrationService extends Context.Service<DatabaseMigrationService>()('@budgie/app/DatabaseMigrationService', {
-    make: Effect.sync(() => {
+    make: Effect.gen(function* () {
+        const migrationSemaphore = yield* Semaphore.make(1);
+        const isMigrated = yield* Ref.make(false);
         const migrations: Readonly<Record<string, () => string[]>> = bundledMigrations.migrations;
         const localMigrations: MigrationMeta[] = Object.keys(migrations)
             .sort()
@@ -61,10 +65,19 @@ export class DatabaseMigrationService extends Context.Service<DatabaseMigrationS
 
         return {
             migrate: Effect.fn('DatabaseMigrationService.migrate')(function* () {
-                const db = yield* Db;
+                yield* migrationSemaphore.withPermit(
+                    Effect.gen(function* () {
+                        if (yield* Ref.get(isMigrated)) {
+                            return;
+                        }
 
-                yield* recordBaselineOnLatestLegacyDatabase(db.$client);
-                yield* migrate(localMigrations, db.$primary._.session);
+                        const db = yield* Db;
+
+                        yield* recordBaselineOnLatestLegacyDatabase(db.$client);
+                        yield* migrate(localMigrations, db.$primary._.session);
+                        yield* Ref.set(isMigrated, true);
+                    })
+                );
             })
         };
     })

@@ -7,8 +7,6 @@ import * as Ref from 'effect/Ref';
 import * as Schema from 'effect/Schema';
 import * as Semaphore from 'effect/Semaphore';
 import * as Stream from 'effect/Stream';
-import * as BackgroundTask from 'expo-background-task';
-import * as TaskManager from 'expo-task-manager';
 import { Platform } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
@@ -16,7 +14,6 @@ import { isDefined } from '@rnw-community/shared';
 import { DatabaseChangeService } from '../../@generic/drizzle/service/database-change.service';
 import { Workload } from '../../@generic/service/workload.service';
 import { SiriCatalogService } from '../../siri/service/siri-catalog.service';
-import { WIDGET_SNAPSHOT_TASK } from '../constant/widget-snapshot-task.constant';
 import BudgetWidget from '../widget/budget.widget';
 import NetWorthWidget from '../widget/net-worth.widget';
 import QuickAddWidget from '../widget/quick-add.widget';
@@ -34,7 +31,6 @@ export class WidgetSnapshotService extends Context.Service<WidgetSnapshotService
         const databaseChangeService = yield* DatabaseChangeService;
         const widgetSnapshotBuilderService = yield* WidgetSnapshotBuilderService;
         const siriCatalogService = yield* SiriCatalogService;
-        const backgroundTaskMinimumIntervalMinutes = 60;
         const publishDebounceMs = 2_000;
         const publishKey = 'widget-snapshot-publish';
         const budgetUrl = 'budgie://budget';
@@ -133,15 +129,6 @@ export class WidgetSnapshotService extends Context.Service<WidgetSnapshotService
         });
 
         return {
-            registerBackgroundTask: Effect.fn('WidgetSnapshotService.registerBackgroundTask')(function* () {
-                if (Platform.OS !== 'ios' || (yield* Effect.promise(() => TaskManager.isTaskRegisteredAsync(WIDGET_SNAPSHOT_TASK)))) {
-                    return;
-                }
-
-                yield* Effect.promise(() =>
-                    BackgroundTask.registerTaskAsync(WIDGET_SNAPSHOT_TASK, { minimumInterval: backgroundTaskMinimumIntervalMinutes })
-                );
-            }),
             publish,
             mask: Effect.fn('WidgetSnapshotService.mask')(function* () {
                 yield* Ref.set(isLocked, true);
