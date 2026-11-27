@@ -16,6 +16,9 @@ export { detectRuleChanges } from './utils/detect-rule-changes.util';
 export { doesRuleMatchTransaction } from './utils/does-rule-match-transaction.util';
 export { extractRuleActionOutcomes } from './utils/extract-rule-action-outcomes.util';
 export { hasConflictWithRuleOutcomes } from './utils/has-conflict-with-rule-outcomes.util';
+export { isValidRulePattern } from './utils/is-valid-rule-pattern.util';
+export { parseRuleNumber } from './utils/parse-rule-number.util';
+export { resolveRuleMccCode } from './utils/resolve-rule-mcc-code.util';
 export { selectSuggestConditions } from './utils/select-suggest-condition.util';
 
 export type { ApplyRuleResultInterface } from './interface/apply-rule-result.interface';

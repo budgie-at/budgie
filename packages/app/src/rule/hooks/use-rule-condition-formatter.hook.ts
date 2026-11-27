@@ -44,17 +44,18 @@ export const useRuleConditionFormatter = () => {
     const { t, i18n } = useLingui();
     const { accounts } = useSearchAccountsSortedQuery();
     const { mccCategories } = useGetAllMccCategoriesQuery();
+    const accountTitleById = new Map(accounts.map(({ id, title }) => [String(id), title]));
+    const mccDescriptionByCode = new Map(mccCategories.map(({ mcc, shortDescription }) => [mcc, shortDescription]));
 
     const translateParts = (parts: readonly string[], translateOne: (part: string) => string) =>
         isNotEmptyString(parts[0]) ? parts.map(translateOne).join(', ') : EMPTY_VALUE;
 
-    const formatMcc = (parts: readonly string[]) =>
-        translateParts(parts, part => mccCategories.find(({ mcc }) => mcc === part)?.shortDescription ?? part);
+    const formatMcc = (parts: readonly string[]) => translateParts(parts, part => mccDescriptionByCode.get(part) ?? part);
 
     const formatAccount = (parts: readonly string[]) =>
         parts.length > 1
             ? t({ message: plural(parts.length, { one: '# account', other: '# accounts' }) })
-            : (accounts.find(({ id }) => String(id) === parts[0])?.title ?? EMPTY_VALUE);
+            : (accountTitleById.get(parts[0] ?? '') ?? EMPTY_VALUE);
 
     const [openQuote, closeQuote] = isEnumValue(i18n.locale, LanguageEnum) ? QUOTES[i18n.locale] : QUOTES[LanguageEnum.EN];
 

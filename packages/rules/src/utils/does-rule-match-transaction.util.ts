@@ -1,43 +1,31 @@
-import { RuleConditionFieldEnum } from '@budgie/contracts';
-
 import { isDefined } from '@rnw-community/shared';
 
-import { evaluateRuleCondition, matchOperator } from './evaluate-rule-condition.util';
-import { matchesRule } from './matches-rule.util';
+import { compileRule } from './compile-rule.util';
+import { prepareRuleEvaluationSnapshot } from './prepare-rule-evaluation-snapshot.util';
 
 import type { RuleEvaluationInputInterface } from '../interface/rule-evaluation-input.interface';
+import type { RuleEvaluationSnapshotInterface } from '../interface/rule-evaluation-snapshot.interface';
 import type { SuggestRuleDataInterface } from '../interface/suggest-rule-data.interface';
 import type { RuleWithRelationsEntityInterface } from '@budgie/contracts';
-
-const getSuggestRuleFieldValue = (
-    field: RuleConditionFieldEnum,
-    data: Pick<SuggestRuleDataInterface, 'title' | 'comment' | 'mccCode'>
-): string | null => {
-    switch (field) {
-        case RuleConditionFieldEnum.TITLE:
-            return data.title;
-        case RuleConditionFieldEnum.COMMENT:
-            return data.comment;
-        case RuleConditionFieldEnum.MCC_CODE:
-            return data.mccCode;
-        case RuleConditionFieldEnum.AMOUNT:
-        case RuleConditionFieldEnum.ACCOUNT_ID:
-        case RuleConditionFieldEnum.TRANSACTION_TYPE:
-        case RuleConditionFieldEnum.EXTERNAL_SOURCE:
-        default:
-            return null;
-    }
-};
 
 export const doesRuleMatchTransaction = (
     rule: RuleWithRelationsEntityInterface,
     transactionInput: RuleEvaluationInputInterface,
     suggestRuleData: SuggestRuleDataInterface
-): boolean =>
-    matchesRule(rule, transactionInput, condition => {
-        const suggestValue = getSuggestRuleFieldValue(condition.field, suggestRuleData);
+): boolean => {
+    const baseSnapshot = prepareRuleEvaluationSnapshot(transactionInput);
+    const rawTitle = suggestRuleData.title;
+    const rawComment = suggestRuleData.comment;
+    const rawMccCode = suggestRuleData.mccCode ?? baseSnapshot.rawMccCode;
+    const snapshot: RuleEvaluationSnapshotInterface = {
+        ...baseSnapshot,
+        rawTitle,
+        lowerTitle: rawTitle.toLowerCase(),
+        rawComment,
+        lowerComment: rawComment.toLowerCase(),
+        rawMccCode,
+        lowerMccCode: isDefined(rawMccCode) ? rawMccCode.toLowerCase() : null
+    };
 
-        return isDefined(suggestValue)
-            ? matchOperator(condition.operator, suggestValue, condition.value, condition.secondaryValue)
-            : evaluateRuleCondition(condition, transactionInput);
-    });
+    return compileRule(rule)(snapshot);
+};

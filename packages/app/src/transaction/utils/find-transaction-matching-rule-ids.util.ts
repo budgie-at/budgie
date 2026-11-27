@@ -1,5 +1,5 @@
 import { TransactionTypeEnum } from '@budgie/contracts';
-import { doesRuleMatchTransaction } from '@budgie/rules';
+import { doesRuleMatchTransaction, resolveRuleMccCode } from '@budgie/rules';
 
 import { convertTransactionToInput } from './convert-transaction-to-input.util';
 import { getTransactionDisplayTitle } from './get-transaction-display-title.util';
@@ -19,7 +19,7 @@ export const findTransactionMatchingRuleIds = (
     const suggestRuleData = {
         title: getTransactionDisplayTitle(transaction),
         comment: transaction.comment,
-        mccCode: firstEntry?.mccCategory?.mcc ?? null,
+        mccCode: resolveRuleMccCode(transaction.entries),
         categoryId: firstEntry?.categoryId ?? null,
         tagIds: transaction.transactionTags.map(({ tagId }) => tagId)
     };

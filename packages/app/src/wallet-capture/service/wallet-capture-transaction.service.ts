@@ -1,10 +1,13 @@
 import {
     AccountRepository,
     CategorySourceEnum,
+    Db,
     ExternalSourceEnum,
     InstrumentRepository,
     TransactionEntryTypeEnum,
+    TransactionRepository,
     TransactionTypeEnum,
+    TransactionUpdatedByEnum,
     convertFromMicroUnits,
     convertToMicroUnits
 } from '@budgie/contracts';
@@ -30,6 +33,7 @@ export class WalletCaptureTransactionService extends Context.Service<WalletCaptu
         make: Effect.gen(function* () {
             const accountRepository = yield* AccountRepository;
             const instrumentRepository = yield* InstrumentRepository;
+            const transactionRepository = yield* TransactionRepository;
             const entryBaseValuationService = yield* EntryBaseValuationService;
             const ruleEngineService = yield* RuleEngineService;
             const transactionService = yield* TransactionService;
@@ -107,14 +111,20 @@ export class WalletCaptureTransactionService extends Context.Service<WalletCaptu
                 ]
             });
 
-            const prepareCaptureForRules = Effect.fnUntraced(function* (record: WalletCaptureRecordInterface) {
+            const buildCaptureTransactionInput = Effect.fnUntraced(function* (record: WalletCaptureRecordInterface) {
                 const accountAmount = yield* resolveAccountAmount(record);
 
                 if (!isDefined(accountAmount)) {
                     return yield* Effect.die(new Error(`Wallet capture ${record.captureId} has no account amount`));
                 }
 
-                return yield* ruleEngineService.prepareCreateInputsForRules([mapCaptureToTransactionInput(record, accountAmount)]);
+                return mapCaptureToTransactionInput(record, accountAmount);
+            });
+
+            const prepareCaptureForRules = Effect.fnUntraced(function* (record: WalletCaptureRecordInterface) {
+                const transactionInput = yield* buildCaptureTransactionInput(record);
+
+                return yield* ruleEngineService.prepareCreateInputsForRules([transactionInput]);
             });
 
             const applyPostCreateRules = Effect.fnUntraced(function* (
@@ -145,10 +155,17 @@ export class WalletCaptureTransactionService extends Context.Service<WalletCaptu
                 }),
                 applyRulesToExistingCaptureTransaction: Effect.fn('WalletCaptureTransactionService.applyRulesToExistingCaptureTransaction')(
                     function* (record: WalletCaptureRecordInterface, transactionId: number) {
-                        const { transactionInputs, postCreateIndexes } = yield* prepareCaptureForRules(record);
+                        const existing = yield* transactionRepository.getByIdRaw(transactionId);
 
-                        yield* applyPostCreateRules(transactionInputs, postCreateIndexes, transactionId);
-                    }
+                        if (!isDefined(existing) || isDefined(existing.deletedAt) || existing.updatedBy === TransactionUpdatedByEnum.USER) {
+                            return;
+                        }
+
+                        const transactionInput = yield* buildCaptureTransactionInput(record);
+
+                        yield* ruleEngineService.applyRulesToTransactions([transactionId], [transactionInput]);
+                    },
+                    effect => Db.transaction(effect)
                 )
             };
         })
@@ -158,6 +175,7 @@ export class WalletCaptureTransactionService extends Context.Service<WalletCaptu
         Layer.provide([
             AccountRepository.layer,
             InstrumentRepository.layer,
+            TransactionRepository.layer,
             EntryBaseValuationService.layer,
             RuleEngineService.layer,
             TransactionService.layer

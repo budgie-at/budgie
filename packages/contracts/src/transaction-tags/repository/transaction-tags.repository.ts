@@ -5,6 +5,7 @@ import * as Layer from 'effect/Layer';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
+import { transactionFilters } from '../../@generic/repository/base-transaction-filter.repository';
 import { Db } from '../../@generic/service/db.service';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { TRANSACTION_TAGS_PREFER_USER_SOURCE_CONFLICT } from '../constant/transaction-tags-prefer-user-source-conflict.constant';
@@ -49,7 +50,14 @@ export class TransactionTagsRepository extends Context.Service<TransactionTagsRe
                 return [];
             }
 
-            const rows = yield* Db.query(db => insertTransactionTag(db, tagId, inArray(TransactionEntityTable.id, transactionIds), source));
+            const rows = yield* Db.query(db =>
+                insertTransactionTag(
+                    db,
+                    tagId,
+                    and(inArray(TransactionEntityTable.id, transactionIds), transactionFilters.buildVisibleTransactionCondition()),
+                    source
+                )
+            );
 
             return rows.map(row => row.transactionId);
         }),

@@ -1,6 +1,13 @@
 import { WalletCaptureReviewReasonEnum } from '@app/wallet-capture/enum/wallet-capture-review-reason.enum';
 import { WalletCaptureImportService } from '@app/wallet-capture/service/wallet-capture-import.service';
-import { AccountEntityTable, CategorySourceEnum, ExternalSourceEnum, TransactionEntityTable } from '@budgie/contracts';
+import {
+    AccountEntityTable,
+    CategorySourceEnum,
+    ExternalSourceEnum,
+    TransactionEntityTable,
+    TransactionEntryEntityTable,
+    TransactionUpdatedByEnum
+} from '@budgie/contracts';
 import { RuleEngineService } from '@budgie/rules';
 import { describe, expect, it, vi } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
@@ -33,6 +40,15 @@ const expectCreatedCapturePending = Effect.fnUntraced(function* (capture: Wallet
     expect((yield* walletCaptureFindEntry(transaction.id)).categorySource).toBe(CategorySourceEnum.USER);
 });
 
+const expectSettledCapture = Effect.fnUntraced(function* (
+    capture: WalletCaptureRecordInterface,
+    category: Effect.Success<ReturnType<typeof walletCaptureSeedInput>>['category']
+) {
+    expect(yield* testDb.select().from(TransactionEntityTable)).toHaveLength(1);
+    yield* walletCaptureExpectRuleApplied(capture, category);
+    expect(walletCaptureNativeStub.pendingCaptureIds()).toEqual([]);
+});
+
 const expectUnavailableCaptureDismissed = Effect.fnUntraced(function* (capture: WalletCaptureRecordInterface) {
     const walletCaptureImportService = yield* WalletCaptureImportService;
     walletCaptureNativeStub.seed([capture]);
@@ -61,9 +77,7 @@ describe('Wallet capture import regressions', () => {
 
             expect(yield* walletCaptureImportService.drain()).toEqual([]);
 
-            expect(yield* testDb.select().from(TransactionEntityTable)).toHaveLength(1);
-            yield* walletCaptureExpectRuleApplied(capture, category);
-            expect(walletCaptureNativeStub.pendingCaptureIds()).toEqual([]);
+            yield* expectSettledCapture(capture, category);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -112,9 +126,48 @@ describe('Wallet capture import regressions', () => {
 
             yield* walletCaptureImportService.forceImport(capture.captureId);
 
-            expect(yield* testDb.select().from(TransactionEntityTable)).toHaveLength(1);
-            yield* walletCaptureExpectRuleApplied(capture, input.category);
+            yield* expectSettledCapture(capture, input.category);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('applies SET_CATEGORY rules to an already-imported capture without requiring a transfer conversion rule', () =>
+        Effect.gen(function* () {
+            const walletCaptureImportService = yield* WalletCaptureImportService;
+            const input = yield* walletCaptureSeedInput(CAPTURE_ID);
+            const capture = walletCaptureBuild(CAPTURE_ID, { accountId: input.capture.accountId });
+
+            yield* walletCaptureSeedExistingTransaction(capture);
+            walletCaptureNativeStub.seed([capture]);
+
+            yield* walletCaptureImportService.drain();
+
+            yield* expectSettledCapture(capture, input.category);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('acknowledges an unacknowledged capture without overwriting a user category edit', () =>
+        Effect.gen(function* () {
+            const walletCaptureImportService = yield* WalletCaptureImportService;
+            const input = yield* walletCaptureSeedInput(CAPTURE_ID);
+            const userCategory = yield* seed.category('User override');
+            const capture = walletCaptureBuild(CAPTURE_ID, { accountId: input.capture.accountId });
+
+            yield* walletCaptureSeedExistingTransaction(capture);
+            const existing = yield* walletCaptureFindTransaction(capture.captureId);
+            yield* testDb
+                .update(TransactionEntryEntityTable)
+                .set({ categoryId: userCategory.id, categorySource: CategorySourceEnum.USER })
+                .where(eq(TransactionEntryEntityTable.transactionId, existing.id));
+            yield* testDb
+                .update(TransactionEntityTable)
+                .set({ updatedBy: TransactionUpdatedByEnum.USER })
+                .where(eq(TransactionEntityTable.id, existing.id));
+            walletCaptureNativeStub.seed([capture]);
+
+            yield* walletCaptureImportService.drain();
+
             expect(walletCaptureNativeStub.pendingCaptureIds()).toEqual([]);
+            expect((yield* walletCaptureFindEntry(existing.id)).categoryId).toBe(userCategory.id);
         }).pipe(Effect.provide(TestLayer))
     );
 });

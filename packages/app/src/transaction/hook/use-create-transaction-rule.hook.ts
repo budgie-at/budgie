@@ -1,5 +1,6 @@
+import { RuleConditionFieldEnum, RuleConditionOperatorEnum } from '@budgie/contracts';
 import { getTransactionCategoryEntries } from '@budgie/ledger';
-import { selectSuggestConditions } from '@budgie/rules';
+import { resolveRuleMccCode, selectSuggestConditions } from '@budgie/rules';
 
 import { useOpenModal } from '../../@generic/hook/use-open-modal/use-open-modal.hook';
 
@@ -10,10 +11,18 @@ export const useCreateTransactionRule = (transaction: TransactionWithRelationsEn
 
     return () => {
         const categoryEntry = getTransactionCategoryEntries(transaction.entries).at(0);
+        const mccCode = resolveRuleMccCode(transaction.entries);
 
         openRuleForm({
             prefillData: {
-                conditions: selectSuggestConditions(transaction.title, categoryEntry?.mccCategory?.mcc ?? null, transaction.comment) ?? [],
+                conditions: selectSuggestConditions(transaction.title, mccCode, transaction.comment) ?? [
+                    {
+                        field: RuleConditionFieldEnum.TITLE,
+                        operator: RuleConditionOperatorEnum.CONTAINS,
+                        value: '',
+                        secondaryValue: null
+                    }
+                ],
                 categoryId: categoryEntry?.categoryId ?? null,
                 tagIds: transaction.transactionTags.map(({ tagId }) => tagId)
             }
