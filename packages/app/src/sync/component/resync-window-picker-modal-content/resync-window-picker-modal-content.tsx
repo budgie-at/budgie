@@ -1,3 +1,4 @@
+import { logAndContinue } from '@budgie/contracts';
 import { ResyncService } from '@budgie/sync';
 import { MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
@@ -17,6 +18,7 @@ import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
 import { RESYNC_WINDOW_OPTIONS } from '../../constant/resync-window-options.constant';
+import { BackgroundSyncSessionService } from '../../service/background-sync-session.service';
 import { ResyncWindowOptionRow } from '../resync-window-option-row/resync-window-option-row';
 
 const WINDOW_SUCCESS_MESSAGES: Record<string, MessageDescriptor> = {
@@ -45,6 +47,9 @@ export const ResyncWindowPickerModalContent = ({ accountId }: Props) => {
     const resync = (sinceDays: number | null) => {
         void run(
             Effect.flatMap(ResyncService, resyncService => resyncService.resync({ accountId, sinceDays })).pipe(
+                Effect.tap(() =>
+                    Effect.flatMap(BackgroundSyncSessionService, sessionService => sessionService.ensureActive(true)).pipe(logAndContinue)
+                ),
                 Effect.tap(() =>
                     Effect.sync(
                         () =>

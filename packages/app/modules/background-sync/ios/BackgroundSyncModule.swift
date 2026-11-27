@@ -5,20 +5,47 @@ import UIKit
 public final class BackgroundSyncModule: Module {
   private var identifier: String?
   private var task: BGTask?
+  private var graceTaskIdentifier: UIBackgroundTaskIdentifier = .invalid
   private var isDismissed = false
+  private var title = ""
+  private var subtitle = ""
   private let progress = Progress(totalUnitCount: 1)
 
   public func definition() -> ModuleDefinition {
     Name("BackgroundSync")
 
-    AsyncFunction("update") { (title: String, subtitle: String, completed: Int, total: Int) in
-      self.progress.totalUnitCount = Int64(max(total, completed, 1))
-      self.progress.completedUnitCount = Int64(completed)
+    Events("onExpire")
+
+    AsyncFunction("update") { (title: String, subtitle: String, completed: Int, total: Int, forceRestart: Bool) -> Bool in
+      self.title = title
+      self.subtitle = subtitle
+
+      if total > 0 {
+        self.progress.totalUnitCount = Int64(total)
+        self.progress.completedUnitCount = Int64(min(max(completed, 0), max(total - 1, 0)))
+      } else {
+        self.progress.totalUnitCount = Int64(max(completed + 1, 1))
+        self.progress.completedUnitCount = Int64(max(completed, 0))
+      }
+
       self.applyProgress()
 
-      if self.identifier == nil, !self.isDismissed, UIApplication.shared.applicationState == .active {
-        self.submit(title: title, subtitle: subtitle)
+      if forceRestart && UIApplication.shared.applicationState == .active {
+        self.isDismissed = false
       }
+
+      if self.identifier == nil && !self.isDismissed && UIApplication.shared.applicationState == .active {
+        let submitted = self.submit(title: title, subtitle: subtitle)
+        if !submitted {
+          self.beginGraceTask()
+        }
+      }
+
+      return self.hasActiveSession
+    }.runOnQueue(.main)
+
+    AsyncFunction("isActive") { () -> Bool in
+      return self.hasActiveSession
     }.runOnQueue(.main)
 
     AsyncFunction("stop") {
@@ -29,12 +56,17 @@ public final class BackgroundSyncModule: Module {
       self.task = nil
       self.identifier = nil
       self.isDismissed = false
+      self.endGraceTask()
     }.runOnQueue(.main)
   }
 
-  private func submit(title: String, subtitle: String) {
+  private var hasActiveSession: Bool {
+    return identifier != nil || graceTaskIdentifier != .invalid
+  }
+
+  private func submit(title: String, subtitle: String) -> Bool {
     guard #available(iOS 26.0, *), let bundleIdentifier = Bundle.main.bundleIdentifier else {
-      return
+      return false
     }
 
     let identifier = "\(bundleIdentifier).sync.\(UUID().uuidString)"
@@ -44,6 +76,7 @@ public final class BackgroundSyncModule: Module {
         return
       }
 
+      self.endGraceTask()
       self.task = task
       task.expirationHandler = { [weak self, weak task] in
         DispatchQueue.main.async {
@@ -55,15 +88,26 @@ public final class BackgroundSyncModule: Module {
           self.task = nil
           self.identifier = nil
           self.isDismissed = true
+          self.sendEvent("onExpire")
         }
       }
       self.applyProgress()
     }
-    let request = BGContinuedProcessingTaskRequest(identifier: identifier, title: title, subtitle: subtitle)
-    request.strategy = .fail
 
-    if isRegistered, (try? BGTaskScheduler.shared.submit(request)) != nil {
-      self.identifier = identifier
+    guard isRegistered else {
+      return false
+    }
+
+    let request = BGContinuedProcessingTaskRequest(identifier: identifier, title: title, subtitle: subtitle)
+    request.strategy = .queue
+
+    self.identifier = identifier
+    do {
+      try BGTaskScheduler.shared.submit(request)
+      return true
+    } catch {
+      self.identifier = nil
+      return false
     }
   }
 
@@ -74,5 +118,33 @@ public final class BackgroundSyncModule: Module {
 
     task.progress.totalUnitCount = progress.totalUnitCount
     task.progress.completedUnitCount = progress.completedUnitCount
+    task.updateTitle(title, subtitle: subtitle)
+  }
+
+  private func beginGraceTask() {
+    if graceTaskIdentifier != .invalid {
+      return
+    }
+
+    graceTaskIdentifier = UIApplication.shared.beginBackgroundTask(withName: "BackgroundSync") { [weak self] in
+      DispatchQueue.main.async {
+        guard let self, self.graceTaskIdentifier != .invalid else {
+          return
+        }
+
+        self.endGraceTask()
+        self.isDismissed = true
+        self.sendEvent("onExpire")
+      }
+    }
+  }
+
+  private func endGraceTask() {
+    if graceTaskIdentifier == .invalid {
+      return
+    }
+
+    UIApplication.shared.endBackgroundTask(graceTaskIdentifier)
+    graceTaskIdentifier = .invalid
   }
 }

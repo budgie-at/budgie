@@ -18,8 +18,6 @@ import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 import * as Option from 'effect/Option';
 import * as Schema from 'effect/Schema';
-import * as BackgroundTask from 'expo-background-task';
-import * as TaskManager from 'expo-task-manager';
 
 import { isDefined, isEmptyArray, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
@@ -30,7 +28,6 @@ import { formatSymbolAmount } from '../../i18n/utils/format-symbol-amount.util';
 import { languageToLocale } from '../../i18n/utils/language-to-locale.util';
 import { BUDGET_ALERT_CHANNEL_ID } from '../constant/budget-alert-channel-id.constant';
 import { BUDGET_PERIOD_THIS_LABEL } from '../constant/budget-period-this-label.constant';
-import { BudgetBackgroundTaskNameEnum } from '../enum/budget-background-task-name.enum';
 import { resolveBudgetWindow } from '../utils/resolve-budget-window.util';
 
 import { BudgetProjectionService } from './budget-projection.service';
@@ -58,7 +55,6 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
             id: BUDGET_ALERT_CHANNEL_ID,
             name: i18n._(msg`Budget alerts`)
         });
-        const backgroundTaskMinimumIntervalMinutes = 15;
         const storageKeyPrefix = '@budgie:budget-alerts-fired';
         const firedTriggersSchema = Schema.String.pipe(Schema.Array, Schema.fromJsonString);
         const getStorage = yield* makeLazyStorage('budget-alerts.sqlite');
@@ -293,25 +289,6 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
                         { discard: true }
                     );
                 }
-            }),
-            registerBackgroundTask: Effect.fn('BudgetAlertMonitorService.registerBackgroundTask')(function* () {
-                const options = yield* Effect.promise(() =>
-                    TaskManager.getTaskOptionsAsync<BackgroundTask.BackgroundTaskOptions | null>(BudgetBackgroundTaskNameEnum.ALERT_MONITOR)
-                );
-
-                if (options?.minimumInterval === backgroundTaskMinimumIntervalMinutes) {
-                    return;
-                }
-
-                if (isDefined(options)) {
-                    yield* Effect.promise(() => BackgroundTask.unregisterTaskAsync(BudgetBackgroundTaskNameEnum.ALERT_MONITOR));
-                }
-
-                yield* Effect.promise(() =>
-                    BackgroundTask.registerTaskAsync(BudgetBackgroundTaskNameEnum.ALERT_MONITOR, {
-                        minimumInterval: backgroundTaskMinimumIntervalMinutes
-                    })
-                );
             })
         };
     })

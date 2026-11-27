@@ -163,6 +163,7 @@ import { DatabaseMaintenanceService } from '../drizzle/service/database-maintena
 import { DatabaseMigrationService } from '../drizzle/service/database-migration.service';
 import { DatabaseRekeyService } from '../drizzle/service/database-rekey.service';
 import { AppResetService } from '../service/app-reset.service';
+import { BackgroundTaskCoordinatorService } from '../service/background-task-coordinator.service';
 import { NetworkService } from '../service/network.service';
 import { Workload } from '../service/workload.service';
 const ledgerWorkloadLayer = Layer.effect(
@@ -196,6 +197,7 @@ export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     Workload.layer,
     DatabaseLifecycleService.layer,
     DatabaseMigrationService.layer,
+    BackgroundTaskCoordinatorService.layer,
     DatabaseMaintenanceService.layer,
     DatabaseRekeyService.layer,
     SiriCatalogService.layer,

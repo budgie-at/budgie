@@ -1,3 +1,4 @@
+import { logAndContinue } from '@budgie/contracts';
 import { resolveSyncErrorCode } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
@@ -13,6 +14,7 @@ import { goBackOrReplace } from '../../@generic/utils/go-back-or-replace.util';
 import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
 import { useOnboardingRedirect } from '../../onboarding/hook/use-onboarding-redirect.hook';
 import { SYNC_ERROR_LABEL } from '../constant/sync-error-label.constant';
+import { BackgroundSyncSessionService } from '../service/background-sync-session.service';
 
 import { useAccountSelection } from './use-account-selection.hook';
 
@@ -48,6 +50,9 @@ export const useSyncAccountSetupFlow = <Identifier extends AppServices, Shape>(
             Effect.gen(function* () {
                 const syncService = yield* service;
                 yield* setupSync(syncService, [...accountSelection.selectedAccounts]);
+                yield* Effect.flatMap(BackgroundSyncSessionService, sessionService => sessionService.ensureActive(true)).pipe(
+                    logAndContinue
+                );
                 hapticNotification(NotificationFeedbackType.Success);
                 router.dismissTo(exitHref);
             }).pipe(Effect.mapError(explainError), toastOnFailure(t`Could not set up sync`))

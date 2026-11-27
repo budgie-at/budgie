@@ -45,6 +45,7 @@ import { I18nProvider } from '../i18n/provider/i18n.provider';
 import { HistoricalMarketDataDrainerService } from '../market-data/service/historical-market-data-drainer.service';
 import { ReceiptLaunchHandler } from '../receipt/components/receipt-launch-handler/receipt-launch-handler';
 import { AppDataSyncService } from '../sync/service/app-data-sync.service';
+import { BackgroundSyncSessionService } from '../sync/service/background-sync-session.service';
 import { ThemeProvider } from '../theme/provider/theme.provider';
 
 const MODAL_OPTIONS: NativeStackNavigationOptions = { presentation: 'modal', headerShown: false };
@@ -122,7 +123,11 @@ const handleAppStateChange = (isActive: boolean): void => {
             const workload = yield* Workload;
 
             if (!isActive) {
-                yield* workload.interruptBackground;
+                const backgroundSyncSessionService = yield* BackgroundSyncSessionService;
+
+                if (!(yield* backgroundSyncSessionService.isActive)) {
+                    yield* workload.interruptBackground;
+                }
 
                 return;
             }
