@@ -32,27 +32,37 @@ import { inertDbLayer } from './fixture/inert-db-layer';
 
 import type { SyncEntityInterface } from '@budgie/contracts';
 
-const { tagModule, backgroundTaskMocks, taskManagerMocks, scheduleStore } = vi.hoisted(() => ({
-    tagModule: async (name: string) => {
-        const Context = await import('effect/Context');
-        const LayerModule = await import('effect/Layer');
+const { tagModule, backgroundTaskMocks, taskManagerMocks, backgroundSyncMocks, platformState, scheduleStore } = vi.hoisted(() => {
+    const platform: { OS: 'ios' | 'android'; constants: Record<string, never> } = { OS: 'ios', constants: {} };
 
-        return Object.assign(Context.Service<object>(`test/${name}`), { layer: LayerModule.empty });
-    },
-    backgroundTaskMocks: {
-        BackgroundTaskResult: { Success: 1, Failed: 2 },
-        registerTaskAsync: vi.fn(() => Promise.resolve(undefined)),
-        unregisterTaskAsync: vi.fn((_taskName: string) => Promise.resolve(undefined))
-    },
-    taskManagerMocks: {
-        isTaskRegisteredAsync: vi.fn((_name: string) => Promise.resolve(false)),
-        getTaskOptionsAsync: vi.fn((_name: string) => Promise.resolve<{ minimumInterval?: number } | null>(null))
-    },
-    scheduleStore: new Map<string, string>()
-}));
+    return {
+        tagModule: async (name: string) => {
+            const Context = await import('effect/Context');
+            const LayerModule = await import('effect/Layer');
+
+            return Object.assign(Context.Service<object>(`test/${name}`), { layer: LayerModule.empty });
+        },
+        backgroundTaskMocks: {
+            BackgroundTaskResult: { Success: 1, Failed: 2 },
+            registerTaskAsync: vi.fn(() => Promise.resolve(undefined)),
+            unregisterTaskAsync: vi.fn((_taskName: string) => Promise.resolve(undefined))
+        },
+        taskManagerMocks: {
+            isTaskRegisteredAsync: vi.fn((_name: string) => Promise.resolve(false)),
+            getTaskOptionsAsync: vi.fn((_name: string) => Promise.resolve<{ minimumInterval?: number } | null>(null))
+        },
+        backgroundSyncMocks: {
+            acquireTimerKeepAlive: vi.fn(() => Promise.resolve(undefined)),
+            releaseTimerKeepAlive: vi.fn(() => Promise.resolve(undefined))
+        },
+        platformState: platform,
+        scheduleStore: new Map<string, string>()
+    };
+});
 
 vi.mock('@lingui/core/macro', () => ({ msg: (message: unknown) => message, t: (parts: TemplateStringsArray) => parts.join('') }));
-vi.mock('react-native', () => ({ Platform: { OS: 'ios', constants: {} } }));
+vi.mock('react-native', () => ({ Platform: platformState }));
+vi.mock('../modules/background-sync', () => ({ BackgroundSyncModule: backgroundSyncMocks }));
 vi.mock('expo-background-task', () => backgroundTaskMocks);
 vi.mock('expo-task-manager', () => taskManagerMocks);
 vi.mock('../src/@generic/utils/make-lazy-storage.util', async () => {
@@ -168,8 +178,11 @@ const makeCoordinatorLayer = (state: CallRecordInterface) => {
 describe('BackgroundTaskCoordinatorService', () => {
     beforeEach(() => {
         scheduleStore.clear();
+        platformState.OS = 'ios';
         backgroundTaskMocks.registerTaskAsync.mockClear();
         backgroundTaskMocks.unregisterTaskAsync.mockClear();
+        backgroundSyncMocks.acquireTimerKeepAlive.mockClear();
+        backgroundSyncMocks.releaseTimerKeepAlive.mockClear();
         taskManagerMocks.isTaskRegisteredAsync.mockReset();
         taskManagerMocks.isTaskRegisteredAsync.mockImplementation(() => Promise.resolve(false));
         taskManagerMocks.getTaskOptionsAsync.mockReset();
@@ -317,6 +330,22 @@ describe('BackgroundTaskCoordinatorService', () => {
                 expect(state.calls).toContain('widgetSnapshot');
                 expect(state.calls).toContain('accountBalance');
             }).pipe(Effect.provide(layer));
+        })
+    );
+
+    it.effect('acquires and releases Android timer keep-alive around coordinator run only on Android', () =>
+        Effect.gen(function* () {
+            const state = createState();
+            const layer = makeCoordinatorLayer(state);
+
+            yield* Effect.flatMap(BackgroundTaskCoordinatorService, service => service.run()).pipe(Effect.provide(layer));
+            expect(backgroundSyncMocks.acquireTimerKeepAlive).not.toHaveBeenCalled();
+            expect(backgroundSyncMocks.releaseTimerKeepAlive).not.toHaveBeenCalled();
+
+            platformState.OS = 'android';
+            yield* Effect.flatMap(BackgroundTaskCoordinatorService, service => service.run()).pipe(Effect.provide(layer));
+            expect(backgroundSyncMocks.acquireTimerKeepAlive).toHaveBeenCalledTimes(1);
+            expect(backgroundSyncMocks.releaseTimerKeepAlive).toHaveBeenCalledTimes(1);
         })
     );
 });

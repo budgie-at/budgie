@@ -134,7 +134,10 @@ export class BackgroundSyncSessionService extends Context.Service<BackgroundSync
                                 forceRestart
                             )
                         );
-                        yield* Ref.set(activeRef, isActive);
+                        const wasActive = yield* Ref.getAndSet(activeRef, isActive);
+                        if (wasActive && !isActive) {
+                            yield* interruptIfBackground;
+                        }
 
                         return isActive;
                     })

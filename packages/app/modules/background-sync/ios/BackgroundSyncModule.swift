@@ -54,6 +54,10 @@ public final class BackgroundSyncModule: Module {
       self.isDismissed = false
       self.endGraceTask()
     }.runOnQueue(.main)
+
+    AsyncFunction("acquireTimerKeepAlive") {}
+
+    AsyncFunction("releaseTimerKeepAlive") {}
   }
 
   private var hasActiveSession: Bool {

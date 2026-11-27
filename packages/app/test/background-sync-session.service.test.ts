@@ -239,4 +239,22 @@ describe('BackgroundSyncSessionService', () => {
             expectNativeSessionRestarted();
         }).pipe(Effect.provide(makeTestLayer()))
     );
+
+    it.effect('interrupts background workload when native update flips active from true to false before onExpire', () =>
+        Effect.gen(function* () {
+            state.pendingSyncs = [buildPendingSync()];
+            const session = yield* BackgroundSyncSessionService;
+
+            yield* session.ensureActive(true);
+            expect(yield* session.isActive).toBe(true);
+
+            nativeState.appState.currentState = 'background';
+            nativeState.backgroundSyncModule.update.mockResolvedValueOnce(false);
+            const active = yield* session.ensureActive(false);
+
+            expect(active).toBe(false);
+            expect(yield* session.isActive).toBe(false);
+            expect(state.interruptBackgroundCalls).toBe(1);
+        }).pipe(Effect.provide(makeTestLayer()))
+    );
 });

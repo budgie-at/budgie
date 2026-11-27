@@ -35,18 +35,14 @@ class BackgroundSyncForegroundService : Service() {
 
     ServiceCompat.startForeground(this, NOTIFICATION_ID, notification, foregroundServiceType)
 
-    if (token != BackgroundSyncSessionBridge.sessionToken.get()) {
+    if (token == 0L || token != BackgroundSyncSessionBridge.sessionToken.get()) {
       if (!BackgroundSyncSessionBridge.isRunning.get()) {
         stopForegroundAndSelf(expired = false, token = token, startId = startId)
       }
       return START_NOT_STICKY
     }
 
-    if (
-      intent?.action == ACTION_STOP ||
-        BackgroundSyncSessionBridge.pendingStop.getAndSet(false) ||
-        !BackgroundSyncSessionBridge.isRunning.get()
-    ) {
+    if (!BackgroundSyncSessionBridge.isRunning.get()) {
       stopForegroundAndSelf(expired = false, token = token, startId = startId)
       return START_NOT_STICKY
     }
@@ -66,11 +62,7 @@ class BackgroundSyncForegroundService : Service() {
   }
 
   override fun onDestroy() {
-    if (activeToken != 0L && BackgroundSyncSessionBridge.sessionToken.get() == activeToken) {
-      BackgroundSyncSessionBridge.isRunning.set(false)
-      BackgroundSyncSessionBridge.isForegroundStarted.set(false)
-      BackgroundSyncSessionBridge.pendingStop.set(false)
-    }
+    BackgroundSyncSessionBridge.notifyExpired(activeToken)
     super.onDestroy()
   }
 
@@ -79,6 +71,8 @@ class BackgroundSyncForegroundService : Service() {
       BackgroundSyncSessionBridge.notifyExpired(token)
     } else if (token != 0L && BackgroundSyncSessionBridge.sessionToken.get() == token) {
       BackgroundSyncSessionBridge.isRunning.set(false)
+      BackgroundSyncSessionBridge.isForegroundStarted.set(false)
+      BackgroundSyncSessionBridge.onSessionEnded?.invoke()
     }
 
     ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
@@ -93,8 +87,6 @@ class BackgroundSyncForegroundService : Service() {
     const val CHANNEL_ID = "budgie-background-sync"
     private const val CHANNEL_NAME = "Background sync"
     const val NOTIFICATION_ID = 48219
-    const val ACTION_START_OR_UPDATE = "at.budgie.backgroundsync.ACTION_START_OR_UPDATE"
-    const val ACTION_STOP = "at.budgie.backgroundsync.ACTION_STOP"
     const val EXTRA_SESSION_TOKEN = "sessionToken"
     const val EXTRA_TITLE = "title"
     const val EXTRA_SUBTITLE = "subtitle"

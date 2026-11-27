@@ -17,6 +17,7 @@ import { Platform } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { BackgroundSyncModule } from '../../../modules/background-sync';
 import { BudgetAlertMonitorService } from '../../budget/service/budget-alert-monitor.service';
 import { CloudBackupService } from '../../cloud-backup/service/cloud-backup.service';
 import { ExchangeRateBackgroundService } from '../../exchange-rate/service/exchange-rate-background.service';
@@ -149,6 +150,19 @@ export class BackgroundTaskCoordinatorService extends Context.Service<Background
                 return monobankOk && binanceOk && enableBankingOk;
             });
 
+            const withAndroidTimerKeepAlive = <A, E, R>(effect: Effect.Effect<A, E, R>): Effect.Effect<A, E, R> => {
+                const nativeModule = BackgroundSyncModule;
+                if (Platform.OS !== 'android' || !isDefined(nativeModule)) {
+                    return effect;
+                }
+
+                return Effect.acquireUseRelease(
+                    Effect.promise(() => nativeModule.acquireTimerKeepAlive()).pipe(logAndContinue),
+                    () => effect,
+                    () => Effect.promise(() => nativeModule.releaseTimerKeepAlive()).pipe(logAndContinue)
+                );
+            };
+
             return {
                 register: Effect.fn('BackgroundTaskCoordinatorService.register')(function* () {
                     let hadLegacyTasks = false;
@@ -177,42 +191,48 @@ export class BackgroundTaskCoordinatorService extends Context.Service<Background
                     );
                 }),
                 run: Effect.fn('BackgroundTaskCoordinatorService.run')(function* () {
-                    yield* databaseMigrationService.migrate();
+                    return yield* withAndroidTimerKeepAlive(
+                        Effect.gen(function* () {
+                            yield* databaseMigrationService.migrate();
 
-                    const isBankSyncSuccess = yield* runBankSyncs();
+                            const isBankSyncSuccess = yield* runBankSyncs();
 
-                    const now = yield* DateTime.nowAsDate;
-                    yield* logAndContinue(budgetPeriodCloseService.closeDuePeriods(now));
-                    yield* logAndContinue(budgetAlertMonitorService.run());
+                            const now = yield* DateTime.nowAsDate;
+                            yield* logAndContinue(budgetPeriodCloseService.closeDuePeriods(now));
+                            yield* logAndContinue(budgetAlertMonitorService.run());
 
-                    yield* runIfDue(
-                        'transferConsolidationAt',
-                        transferConsolidationIntervalMs,
-                        workload.run(transferConsolidationService.consolidate(null))
+                            yield* runIfDue(
+                                'transferConsolidationAt',
+                                transferConsolidationIntervalMs,
+                                workload.run(transferConsolidationService.consolidate(null))
+                            );
+                            yield* runIfDue('exchangeRateAt', exchangeRateIntervalMs, workload.run(exchangeRateBackgroundService.sync));
+
+                            if (Platform.OS === 'ios') {
+                                yield* runIfDue(
+                                    'widgetSnapshotAt',
+                                    widgetSnapshotIntervalMs,
+                                    Effect.andThen(widgetSnapshotService.publish(), logAndContinue(siriCatalogService.publish()))
+                                );
+                            }
+
+                            yield* Effect.serviceOption(CloudBackupService).pipe(
+                                Effect.flatMap(option =>
+                                    Option.isSome(option) ? workload.run(option.value.backup(cloudBackupIntervalMs)) : Effect.void
+                                ),
+                                logAndContinue
+                            );
+                            yield* runIfDue(
+                                'accountBalanceAt',
+                                accountBalanceIntervalMs,
+                                workload.run(accountBalanceIncrementalService.updateAllBalances(false))
+                            );
+
+                            return isBankSyncSuccess
+                                ? BackgroundTask.BackgroundTaskResult.Success
+                                : BackgroundTask.BackgroundTaskResult.Failed;
+                        })
                     );
-                    yield* runIfDue('exchangeRateAt', exchangeRateIntervalMs, workload.run(exchangeRateBackgroundService.sync));
-
-                    if (Platform.OS === 'ios') {
-                        yield* runIfDue(
-                            'widgetSnapshotAt',
-                            widgetSnapshotIntervalMs,
-                            Effect.andThen(widgetSnapshotService.publish(), logAndContinue(siriCatalogService.publish()))
-                        );
-                    }
-
-                    yield* Effect.serviceOption(CloudBackupService).pipe(
-                        Effect.flatMap(option =>
-                            Option.isSome(option) ? workload.run(option.value.backup(cloudBackupIntervalMs)) : Effect.void
-                        ),
-                        logAndContinue
-                    );
-                    yield* runIfDue(
-                        'accountBalanceAt',
-                        accountBalanceIntervalMs,
-                        workload.run(accountBalanceIncrementalService.updateAllBalances(false))
-                    );
-
-                    return isBankSyncSuccess ? BackgroundTask.BackgroundTaskResult.Success : BackgroundTask.BackgroundTaskResult.Failed;
                 })
             };
         })
