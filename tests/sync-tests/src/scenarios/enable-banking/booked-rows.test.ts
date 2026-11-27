@@ -278,7 +278,7 @@ describe('enable-banking/booked-rows', () => {
 
     it.effect('uses the parsed merchant when the structured counterparty repeats the raw remittance', () =>
         Effect.gen(function* () {
-            yield* seedWithRows([cardRow({ creditor: { name: CARD_TEXT } })]);
+            yield* seedWithRows([cardRow({ creditor: { name: ` ${CARD_TEXT} ` } })]);
 
             const [transaction] = yield* syncOnce;
 

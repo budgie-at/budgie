@@ -171,7 +171,7 @@ class EnableBankingMapper {
         const remittance = (transaction.remittance_information ?? []).join(' ').trim();
 
         const cardMerchant = extractEnableBankingCardMerchant(remittance);
-        const counterpartyName = name === remittance ? cardMerchant : name;
+        const counterpartyName = name?.trim() === remittance ? cardMerchant : name;
 
         return {
             description: [counterpartyName, cardMerchant, remittance].find(isNotEmptyString) ?? '',
