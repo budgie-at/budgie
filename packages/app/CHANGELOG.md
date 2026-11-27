@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.193.6](https://github.com/budgie-at/budgie/compare/v6.193.5...v6.193.6) (2026-11-27)
+
+### Bug Fixes
+
+* **app:** keep background bank sync running and consolidate OS background tasks ([#2290](https://github.com/budgie-at/budgie/issues/2290)) ([1d357d1](https://github.com/budgie-at/budgie/commit/1d357d1facd8b78836962fc122595e58b6c7e088))
+
+
 ## [6.193.5](https://github.com/budgie-at/budgie/compare/v6.193.4...v6.193.5) (2026-11-27)
 
 ### Bug Fixes
