@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.193.7](https://github.com/budgie-at/budgie/compare/v6.193.6...v6.193.7) (2026-11-27)
+
+### Bug Fixes
+
+* **sync:** show Erste card merchants instead of raw POS text in lists ([#2291](https://github.com/budgie-at/budgie/issues/2291)) ([f54235c](https://github.com/budgie-at/budgie/commit/f54235c11bdec4fd76bbe3f4abb1069d77f5ada4))
+
+
 ## [6.193.6](https://github.com/budgie-at/budgie/compare/v6.193.5...v6.193.6) (2026-11-27)
 
 ### Bug Fixes
