@@ -1,14 +1,22 @@
+import { RuleConditionMatchTypeEnum, RuleConditionOperatorEnum } from '@budgie/contracts';
+
 import type { RuleAssociationEnum, RuleWithActionsRelationsEntityInterface } from '@budgie/contracts';
 
-const getTriggerKey = (rule: Pick<RuleWithActionsRelationsEntityInterface, 'conditionMatchType' | RuleAssociationEnum.CONDITIONS>) =>
-    [
-        rule.conditionMatchType,
+const getTriggerKey = (rule: Pick<RuleWithActionsRelationsEntityInterface, 'conditionMatchType' | RuleAssociationEnum.CONDITIONS>) => {
+    const effectiveMatchType = rule.conditions.length === 1 ? RuleConditionMatchTypeEnum.ALL : rule.conditionMatchType;
+
+    return [
+        effectiveMatchType,
         ...rule.conditions
-            .map(condition =>
-                [condition.field, condition.operator, condition.value.trim().toLowerCase(), condition.secondaryValue ?? ''].join(':')
-            )
+            .map(condition => {
+                const secondary =
+                    condition.operator === RuleConditionOperatorEnum.BETWEEN ? (condition.secondaryValue?.trim().toLowerCase() ?? '') : '';
+
+                return [condition.field, condition.operator, condition.value.trim().toLowerCase(), secondary].join(':');
+            })
             .sort((left, right) => left.localeCompare(right))
     ].join('|');
+};
 
 export const getOverlappingRuleIds = (
     rules: readonly Pick<

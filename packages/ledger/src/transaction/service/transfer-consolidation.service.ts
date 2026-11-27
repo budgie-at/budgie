@@ -47,8 +47,6 @@ export class TransferConsolidationService extends Context.Service<TransferConsol
                         .convertToTransferAccount(candidate.transactionId, candidate.targetAccountId)
                         .pipe(
                             Effect.catchTags({
-                                AccountNotFoundError: () => Effect.succeed(false),
-                                DebtTransferNotAllowedError: () => Effect.succeed(false),
                                 DepositNegativeBalanceError: () => Effect.succeed(false)
                             })
                         );

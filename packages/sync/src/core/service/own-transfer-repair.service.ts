@@ -421,13 +421,9 @@ export class OwnTransferRepairService extends Context.Service<OwnTransferRepairS
                                 const changed = isDefined(counterpart)
                                     ? yield* pair(transaction, counterpart)
                                     : isDefined(destination) &&
-                                      (yield* transfers.convertToTransferAccount(transaction.id, destination.id).pipe(
-                                          Effect.catchTags({
-                                              AccountNotFoundError: () => Effect.succeed(false),
-                                              DebtTransferNotAllowedError: () => Effect.succeed(false),
-                                              DepositNegativeBalanceError: () => Effect.succeed(false)
-                                          })
-                                      ));
+                                      (yield* transfers
+                                          .convertToTransferAccount(transaction.id, destination.id)
+                                          .pipe(Effect.catchTag('DepositNegativeBalanceError', () => Effect.succeed(false))));
 
                                 if (changed) {
                                     consumed.add(transaction.id);

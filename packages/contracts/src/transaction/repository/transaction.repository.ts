@@ -1,3 +1,4 @@
+import * as Arr from 'effect/Array';
 import * as DateTime from 'effect/DateTime';
 
 import { SyncRecordTypeEnum } from '../../cloud-sync/enum/sync-record-type.enum';
@@ -38,6 +39,7 @@ export class TransactionRepository extends Context.Service<TransactionRepository
         const ENTRIES_WITH_MCC_CATEGORY_RELATIONS = {
             [TransactionAssociationEnum.ENTRIES]: {
                 where: transactionFilters.ledgerEntryFilter,
+                orderBy: { sequence: 'asc', id: 'asc' },
                 with: { [TransactionEntryAssociationEnum.MCC_CATEGORY]: true }
             }
         } as const;
@@ -322,17 +324,26 @@ export class TransactionRepository extends Context.Service<TransactionRepository
                 );
             }),
 
-            findByIdsWithEntries: Effect.fn('TransactionRepository.findByIdsWithEntries')(function* (ids: number[]) {
+            findVisibleByIdsWithEntries: Effect.fn('TransactionRepository.findVisibleByIdsWithEntries')(function* (ids: readonly number[]) {
                 if (!isNotEmptyArray(ids)) {
                     return [];
                 }
 
-                return yield* Db.query(db =>
-                    db.query.TransactionEntityTable.findMany({
-                        where: { id: { in: ids } },
-                        with: ENTRIES_WITH_MCC_CATEGORY_RELATIONS
-                    })
+                const batches = yield* Effect.forEach(Arr.chunksOf(ids, 500), chunk =>
+                    Db.query(db =>
+                        db.query.TransactionEntityTable.findMany({
+                            where: {
+                                id: { in: chunk },
+                                deletedAt: { isNull: true },
+                                consolidationParentTransactionId: { isNull: true },
+                                type: { ne: TransactionTypeEnum.ADJUSTMENT }
+                            },
+                            with: ENTRIES_WITH_MCC_CATEGORY_RELATIONS
+                        })
+                    )
                 );
+
+                return batches.flat().filter(transaction => isNotEmptyArray(transaction.entries));
             }),
 
             getAllAfter: (cursorId: number | null, limit: number) =>
@@ -597,14 +608,18 @@ export class TransactionRepository extends Context.Service<TransactionRepository
 
             deleteById: (id: number) => Db.query(db => db.delete(TransactionEntityTable).where(eq(TransactionEntityTable.id, id))),
 
-            findAllWithMccCategoryOffset: (limit: number, offset: number) =>
+            findVisibleForRuleMatchingAfter: (cursorId: number | null, limit: number) =>
                 Db.query(db =>
                     db.query.TransactionEntityTable.findMany({
                         with: ENTRIES_WITH_MCC_CATEGORY_RELATIONS,
                         orderBy: (transaction, { desc }) => [desc(transaction.id)],
                         limit,
-                        offset,
-                        where: { deletedAt: { isNull: true } }
+                        where: {
+                            deletedAt: { isNull: true },
+                            consolidationParentTransactionId: { isNull: true },
+                            type: { ne: TransactionTypeEnum.ADJUSTMENT },
+                            ...(isDefined(cursorId) && { id: { lt: cursorId } })
+                        }
                     })
                 ),
 

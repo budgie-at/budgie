@@ -28,7 +28,16 @@ export const RuleActionTypeSelector = ({ index, testID }: Props) => {
             .filter(type => EXCLUSIVE_ACTION_TYPES.has(type))
     );
 
-    const handleSelect = (nextType: RuleActionTypeEnum) => void setValue(`actions.${index}.type`, nextType, { shouldDirty: true });
+    const handleSelect = (nextType: RuleActionTypeEnum) => {
+        if (nextType === actionType) {
+            return;
+        }
+
+        setValue(`actions.${index}.type`, nextType, { shouldDirty: true });
+        setValue(`actions.${index}.categoryId`, null, { shouldDirty: true });
+        setValue(`actions.${index}.tagId`, null, { shouldDirty: true });
+        setValue(`actions.${index}.accountId`, null, { shouldDirty: true });
+    };
     const handleOpen = () =>
         void openActionSheet({
             values: ACTION_TYPE_VALUES,

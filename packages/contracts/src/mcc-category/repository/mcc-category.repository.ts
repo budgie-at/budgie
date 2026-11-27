@@ -1,6 +1,10 @@
+import { inArray } from 'drizzle-orm';
+import * as Arr from 'effect/Array';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
+
+import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { Db } from '../../@generic/service/db.service';
 import { MccCategoryCreateEntityInterface } from '../entity/mcc-category-create-entity.interface';
@@ -20,7 +24,29 @@ export class MccCategoryRepository extends Context.Service<MccCategoryRepository
             }),
             truncate: Db.query(db => db.delete(MccCategoryEntityTable)),
             findAll: Db.query(db => db.query.MccCategoryEntityTable.findMany()),
-            findById: (id: number) => Db.query(db => db.query.MccCategoryEntityTable.findFirst({ where: { id } }))
+            findById: (id: number) => Db.query(db => db.query.MccCategoryEntityTable.findFirst({ where: { id } })),
+            findMccCodesByIds: Effect.fn('MccCategoryRepository.findMccCodesByIds')(function* (ids: readonly number[]) {
+                const codeMap = new Map<number, string>();
+
+                if (!isNotEmptyArray(ids)) {
+                    return codeMap;
+                }
+
+                for (const chunk of Arr.chunksOf(ids, 500)) {
+                    const rows = yield* Db.query(db =>
+                        db
+                            .select({ id: MccCategoryEntityTable.id, mcc: MccCategoryEntityTable.mcc })
+                            .from(MccCategoryEntityTable)
+                            .where(inArray(MccCategoryEntityTable.id, chunk))
+                    );
+
+                    for (const row of rows) {
+                        codeMap.set(row.id, row.mcc);
+                    }
+                }
+
+                return codeMap;
+            })
         };
     })
 }) {

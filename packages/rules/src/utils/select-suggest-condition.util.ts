@@ -49,22 +49,15 @@ const cleanMerchantTitle = (title: string): string => {
     return cleaned;
 };
 
-const GENERIC_TITLE_PATTERNS = ['POS PURCHASE', 'POS', 'PURCHASE', 'PAYMENT', 'WITHDRAWAL', 'TRANSFER', 'DEBIT', 'CREDIT', 'ATM'];
+const GENERIC_SINGLE_WORDS = new Set(['POS', 'PURCHASE', 'PAYMENT', 'WITHDRAWAL', 'TRANSFER', 'DEBIT', 'CREDIT', 'ATM']);
 
 const MINIMUM_UNIQUE_WORDS = 3;
 const MINIMUM_TITLE_LENGTH = 3;
 
 const isGenericTitle = (title: string): boolean => {
-    const upper = title.toUpperCase().trim();
+    const words = title.toUpperCase().trim().split(/\s+/u).filter(isNotEmptyString);
 
-    if (GENERIC_TITLE_PATTERNS.includes(upper)) {
-        return true;
-    }
-
-    const uniqueWords = new Set(upper.split(/\s+/u).filter(isNotEmptyString));
-    const containsGenericPattern = GENERIC_TITLE_PATTERNS.some(pattern => upper.includes(pattern));
-
-    return uniqueWords.size < MINIMUM_UNIQUE_WORDS && containsGenericPattern;
+    return new Set(words).size < MINIMUM_UNIQUE_WORDS && words.some(word => GENERIC_SINGLE_WORDS.has(word));
 };
 
 const isCleanedTextUsable = (cleaned: string): boolean =>
@@ -74,10 +67,21 @@ const buildSymbolSeparatedTextConditions = (
     field: RuleConditionFieldEnum.TITLE | RuleConditionFieldEnum.COMMENT,
     value: string
 ): RuleConditionCreateInputInterface[] => {
-    const tokenValues = value
-        .split(TITLE_TOKEN_SEPARATOR_PATTERN)
-        .filter(token => token.length >= MINIMUM_TITLE_TOKEN_LENGTH)
-        .slice(0, MAXIMUM_TITLE_TOKEN_CONDITIONS);
+    const seenTokens = new Set<string>();
+    const tokenValues: string[] = [];
+
+    for (const token of value.split(TITLE_TOKEN_SEPARATOR_PATTERN)) {
+        const lowerToken = token.toLowerCase();
+
+        if (token.length >= MINIMUM_TITLE_TOKEN_LENGTH && !seenTokens.has(lowerToken)) {
+            seenTokens.add(lowerToken);
+            tokenValues.push(token);
+
+            if (tokenValues.length >= MAXIMUM_TITLE_TOKEN_CONDITIONS) {
+                break;
+            }
+        }
+    }
 
     if (!isNotEmptyArray(tokenValues)) {
         return [

@@ -1,54 +1,31 @@
-import {
-    TransactionAssociationEnum,
-    TransactionEntryAssociationEnum,
-    TransactionEntryTypeEnum,
-    TransactionTypeEnum,
-    convertFromMicroUnits
-} from '@budgie/contracts';
+import { TransactionAssociationEnum, TransactionEntryAssociationEnum, convertFromMicroUnits } from '@budgie/contracts';
+
+import { isNotEmptyString } from '@rnw-community/shared';
+
+import { calculateRuleEvaluationAmount } from './calculate-rule-evaluation-amount.util';
 
 import type { RuleEvaluationInputInterface } from '../interface/rule-evaluation-input.interface';
 import type { TransactionWithEntriesMccCategoryEntityInterface } from '@budgie/contracts';
 
-const sumEntryAmountsOfType = (
-    entries: TransactionWithEntriesMccCategoryEntityInterface['entries'],
-    type: TransactionEntryTypeEnum
-): number => entries.filter(entry => entry.type === type).reduce((sum, entry) => sum + entry.amount, 0);
-
-const calculateAmountForRuleEvaluation = (transaction: TransactionWithEntriesMccCategoryEntityInterface): number => {
-    const entries = transaction[TransactionAssociationEnum.ENTRIES];
-
-    switch (transaction.type) {
-        case TransactionTypeEnum.EXPENSE:
-        case TransactionTypeEnum.TRANSFER:
-            return sumEntryAmountsOfType(entries, TransactionEntryTypeEnum.CREDIT);
-        case TransactionTypeEnum.INCOME:
-            return sumEntryAmountsOfType(entries, TransactionEntryTypeEnum.DEBIT);
-        case TransactionTypeEnum.ADJUSTMENT:
-            return entries.some(entry => entry.type === TransactionEntryTypeEnum.DEBIT)
-                ? sumEntryAmountsOfType(entries, TransactionEntryTypeEnum.DEBIT)
-                : sumEntryAmountsOfType(entries, TransactionEntryTypeEnum.CREDIT);
-        case TransactionTypeEnum.DEBT:
-        default:
-            return 0;
-    }
-};
-
 export const convertTransactionForRuleEvaluation = (
     transaction: TransactionWithEntriesMccCategoryEntityInterface
 ): RuleEvaluationInputInterface => {
-    const entries = transaction[TransactionAssociationEnum.ENTRIES];
+    const entries = transaction[TransactionAssociationEnum.ENTRIES].map(entry => ({
+        id: entry.id,
+        sequence: entry.sequence,
+        type: entry.type,
+        categoryId: entry.categoryId,
+        accountId: entry.accountId,
+        amount: convertFromMicroUnits(entry.amount),
+        mccCategoryId: entry[TransactionEntryAssociationEnum.MCC_CATEGORY]?.id ?? null,
+        mccCode: entry[TransactionEntryAssociationEnum.MCC_CATEGORY]?.mcc ?? null
+    }));
 
     return {
         ...transaction,
-        amount: convertFromMicroUnits(calculateAmountForRuleEvaluation(transaction)),
+        title: isNotEmptyString(transaction.title) ? transaction.title : transaction.comment,
+        amount: calculateRuleEvaluationAmount(transaction.type, entries, 0),
         tagIds: [],
-        entries: entries.map(entry => ({
-            type: entry.type,
-            categoryId: entry.categoryId,
-            accountId: entry.accountId,
-            amount: convertFromMicroUnits(entry.amount),
-            mccCategoryId: entry[TransactionEntryAssociationEnum.MCC_CATEGORY]?.id ?? null,
-            mccCode: entry[TransactionEntryAssociationEnum.MCC_CATEGORY]?.mcc ?? null
-        }))
+        entries
     };
 };

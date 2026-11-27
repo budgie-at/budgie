@@ -155,6 +155,10 @@ class BaseTransactionFilterRepository {
         );
     }
 
+    isCategorizableTransactionType(type: TransactionTypeEnum): boolean {
+        return BaseTransactionFilterRepository.CATEGORIZABLE_TYPES.includes(type);
+    }
+
     buildCategorizableTypeCondition(types: TransactionTypeEnum[] | null) {
         return inArray(
             TransactionEntityTable.type,
