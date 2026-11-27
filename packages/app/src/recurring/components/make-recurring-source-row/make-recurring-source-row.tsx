@@ -6,7 +6,7 @@ import { isDefined } from '@rnw-community/shared';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useGetTransactionByIdQuery } from '../../../transaction/query/use-get-transaction-by-id.query';
-import { getTransactionDisplayTitle } from '../../../transaction/utils/get-transaction-display-title.util';
+import { getEnableBankingTransactionDisplayTitle } from '../../../transaction/utils/get-enable-banking-transaction-display-title.util';
 import { getTransactionInfoPrimaryEntry } from '../../../transaction/utils/get-transaction-info-primary-entry.util';
 import { getTransactionPrimaryAmount } from '../../../transaction/utils/get-transaction-primary-amount.util';
 import { RecurringMerchantTile } from '../recurring-merchant-tile/recurring-merchant-tile';
@@ -27,7 +27,7 @@ export const MakeRecurringSourceRow = ({ transactionId }: Props) => {
         return null;
     }
 
-    const title = getTransactionDisplayTitle(transaction);
+    const title = getEnableBankingTransactionDisplayTitle(transaction);
     const amountInMicroUnits = getTransactionPrimaryAmount(transaction);
     const amount = protectAmount(Math.abs(convertFromMicroUnits(amountInMicroUnits)), primaryEntry.account.instrument.symbol);
     const subtitle = `${formatMonthAndDayAndOptionalYear(transaction.operatedAt)} · ${primaryEntry.account.title}`;

@@ -6,7 +6,7 @@ import { cn } from '../../../@generic/utils/cn.util';
 import { useProtectedInstrumentAmountLabel } from '../../hook/use-protected-instrument-amount-label.hook';
 import { useGetTransactionByIdQuery } from '../../query/use-get-transaction-by-id.query';
 import { formatTransactionInfoAmount } from '../../utils/format-transaction-info-amount.util';
-import { getTransactionDisplayTitle } from '../../utils/get-transaction-display-title.util';
+import { getEnableBankingTransactionDisplayTitle } from '../../utils/get-enable-banking-transaction-display-title.util';
 
 interface Props {
     readonly transactionId: number;
@@ -36,7 +36,7 @@ export const TransactionPickerContext = ({ transactionId, label, labelClassName 
                 {amountLabel}
             </Text>
             <Text dynamicTypeRamp="caption1" maxFontSizeMultiplier={1.3} className="text-[13px] font-semibold text-primary">
-                {getTransactionDisplayTitle(transaction)}
+                {getEnableBankingTransactionDisplayTitle(transaction)}
             </Text>
         </View>
     );

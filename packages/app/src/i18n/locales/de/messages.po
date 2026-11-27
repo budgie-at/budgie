@@ -7932,7 +7932,7 @@ msgid "Original purchase"
 msgstr "Ursprünglicher Kauf"
 
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
-#: src/transaction/components/consolidation-source-row/consolidation-source-row.tsx
+#: src/transaction/utils/get-consolidation-source-title.util.ts
 msgid "Original transaction"
 msgstr "Ursprüngliche Transaktion"
 

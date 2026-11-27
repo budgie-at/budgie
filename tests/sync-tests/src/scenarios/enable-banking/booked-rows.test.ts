@@ -222,11 +222,33 @@ describe('enable-banking/booked-rows', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
+    it.effect('extracts a card merchant from a remittance with a day, month and time', () =>
+        Effect.gen(function* () {
+            const remittance = 'POS    42,10 AT K1  26.11. 16:07    SYNTHETIC SHOP\nWIEN 1030 040';
+            yield* seedWithRows([
+                cardRow({
+                    entry_reference: 'timed-card',
+                    remittance_information: [remittance]
+                })
+            ]);
+
+            const [transaction] = yield* syncOnce;
+
+            expect(transaction).toMatchObject({
+                title: 'SYNTHETIC SHOP WIEN 1030 040',
+                comment: remittance,
+                externalId: `${HASH}:timed-card`
+            });
+        }).pipe(Effect.provide(TestLayer))
+    );
+
     it.effect('keeps the raw title when the text does not parse or the merchant is empty', () =>
         Effect.gen(function* () {
             yield* seedWithRows([
                 cardRow({ entry_reference: 'unparsed', remittance_information: ['POS 12,50 SYNTHETIC CAFE'] }),
                 cardRow({ entry_reference: 'no-merchant', remittance_information: ['POS 12,50 AT K1 03.11.2026   '] }),
+                cardRow({ entry_reference: 'time-only', remittance_information: ['POS 12,50 AT K1 03.11. 16:07'] }),
+                cardRow({ entry_reference: 'dated-time-only', remittance_information: ['POS 12,50 AT K1 03.11.2026 16:07'] }),
                 cardRow({ entry_reference: 'transfer', remittance_information: ['Synthetic rent'] })
             ]);
 
@@ -236,6 +258,8 @@ describe('enable-banking/booked-rows', () => {
                 expect.arrayContaining([
                     [`${HASH}:unparsed`, 'POS 12,50 SYNTHETIC CAFE'],
                     [`${HASH}:no-merchant`, 'POS 12,50 AT K1 03.11.2026'],
+                    [`${HASH}:time-only`, 'POS 12,50 AT K1 03.11. 16:07'],
+                    [`${HASH}:dated-time-only`, 'POS 12,50 AT K1 03.11.2026 16:07'],
                     [`${HASH}:transfer`, 'Synthetic rent']
                 ])
             );
@@ -249,6 +273,16 @@ describe('enable-banking/booked-rows', () => {
             const [transaction] = yield* syncOnce;
 
             expect(transaction).toMatchObject({ title: 'Synthetic Merchant Ltd', comment: CARD_TEXT });
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('uses the parsed merchant when the structured counterparty repeats the raw remittance', () =>
+        Effect.gen(function* () {
+            yield* seedWithRows([cardRow({ creditor: { name: ` ${CARD_TEXT} ` } })]);
+
+            const [transaction] = yield* syncOnce;
+
+            expect(transaction.title).toBe('SYNTHETIC CAFE');
         }).pipe(Effect.provide(TestLayer))
     );
 

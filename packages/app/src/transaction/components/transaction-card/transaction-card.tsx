@@ -11,7 +11,7 @@ import { isNotEmptyString } from '@rnw-community/shared';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { PopoverMenuAnchor } from '../../../@generic/component/popover-menu/popover-menu';
 import { TransactionListRowPositionEnum } from '../../enum/transaction-list-row-position.enum';
-import { getTransactionDisplayTitle } from '../../utils/get-transaction-display-title.util';
+import { getEnableBankingTransactionDisplayTitle } from '../../utils/get-enable-banking-transaction-display-title.util';
 import { TransactionCardContent } from '../transaction-card-content/transaction-card-content';
 import { TransactionRowSurface } from '../transaction-row-surface/transaction-row-surface';
 
@@ -30,7 +30,7 @@ export const TransactionCard = ({ transaction, position, accountId = null, onPre
 
     const isAdjustment = isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction);
 
-    const title = getTransactionDisplayTitle(transaction);
+    const title = getEnableBankingTransactionDisplayTitle(transaction);
     let rowTestID: string = TransactionCardSelector.Card(transaction.id);
 
     if (isAdjustment) {

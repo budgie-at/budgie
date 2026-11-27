@@ -11,7 +11,7 @@ import { useRevertConsolidation } from '../../hook/use-revert-consolidation.hook
 import { useTransactionInfoHandoff } from '../../hook/use-transaction-info-handoff.hook';
 import { useGetConsolidationSourcesQuery } from '../../query/use-get-consolidation-sources.query';
 import { formatTransactionInfoAmount } from '../../utils/format-transaction-info-amount.util';
-import { getTransactionDisplayTitle } from '../../utils/get-transaction-display-title.util';
+import { getEnableBankingTransactionDisplayTitle } from '../../utils/get-enable-banking-transaction-display-title.util';
 import { getTransactionHref } from '../../utils/get-transaction-href.util';
 import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
 import { RefundTransactionInfoHero } from '../refund-transaction-info-hero/refund-transaction-info-hero';
@@ -40,7 +40,7 @@ export const RefundTransactionInfoContent = ({ transaction, parentTransaction }:
     const { sources, isLoading } = useGetConsolidationSourcesQuery(parentTransaction.id);
     const source = sources.find(row => row.sourceTransactionId === transaction.id);
     const original = formatTransactionInfoAmount(parentTransaction, formatAmount);
-    const merchant = getTransactionDisplayTitle(parentTransaction);
+    const merchant = getEnableBankingTransactionDisplayTitle(parentTransaction);
     const title = t`Refund from ${merchant}`;
     const handleOpenPurchase = () => void router.push(getTransactionHref(parentTransaction));
 
