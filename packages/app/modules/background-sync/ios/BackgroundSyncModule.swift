@@ -35,16 +35,12 @@ public final class BackgroundSyncModule: Module {
       }
 
       if self.identifier == nil && !self.isDismissed && UIApplication.shared.applicationState == .active {
-        let submitted = self.submit(title: title, subtitle: subtitle)
-        if !submitted {
+        _ = self.submit(title: title, subtitle: subtitle)
+        if self.task == nil {
           self.beginGraceTask()
         }
       }
 
-      return self.hasActiveSession
-    }.runOnQueue(.main)
-
-    AsyncFunction("isActive") { () -> Bool in
       return self.hasActiveSession
     }.runOnQueue(.main)
 
@@ -127,13 +123,17 @@ public final class BackgroundSyncModule: Module {
     }
 
     graceTaskIdentifier = UIApplication.shared.beginBackgroundTask(withName: "BackgroundSync") { [weak self] in
-      DispatchQueue.main.async {
-        guard let self, self.graceTaskIdentifier != .invalid else {
-          return
-        }
+      guard let self, self.graceTaskIdentifier != .invalid else {
+        return
+      }
 
-        self.endGraceTask()
-        self.isDismissed = true
+      if let identifier = self.identifier, self.task == nil {
+        BGTaskScheduler.shared.cancel(taskRequestWithIdentifier: identifier)
+        self.identifier = nil
+      }
+      self.endGraceTask()
+      self.isDismissed = true
+      DispatchQueue.main.async {
         self.sendEvent("onExpire")
       }
     }

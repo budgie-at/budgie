@@ -155,8 +155,12 @@ export class BackgroundSyncSessionService extends Context.Service<BackgroundSync
                 isActive: Ref.get(activeRef),
                 start: Effect.fn('BackgroundSyncSessionService.start')(function* () {
                     const nativeModule = BackgroundSyncModule;
+                    if (!isDefined(nativeModule)) {
+                        return;
+                    }
+
                     const alreadyStarted = yield* Ref.getAndSet(startedRef, true);
-                    if (alreadyStarted || !isDefined(nativeModule)) {
+                    if (alreadyStarted) {
                         return;
                     }
 

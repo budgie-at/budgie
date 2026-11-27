@@ -1,4 +1,5 @@
 import { BudgetPeriodCloseService } from '@budgie/budget';
+import { ExternalSourceEnum, SyncRepository } from '@budgie/contracts';
 import { AccountBalanceIncrementalService, TransferConsolidationService } from '@budgie/ledger';
 import { RecurringRefreshService } from '@budgie/recurring';
 import { BinanceSyncService, EnableBankingSyncService, MonobankSyncService } from '@budgie/sync';
@@ -26,10 +27,12 @@ import { SiriCatalogService } from '../src/siri/service/siri-catalog.service';
 import { BackgroundSyncSessionService } from '../src/sync/service/background-sync-session.service';
 import { WidgetSnapshotService } from '../src/widget/service/widget-snapshot.service';
 
-import { resetStorage } from './fixture/expo-file-system-fake';
+import { buildPendingSync } from './fixture/build-pending-sync';
 import { inertDbLayer } from './fixture/inert-db-layer';
 
-const { tagModule, backgroundTaskMocks, taskManagerMocks } = vi.hoisted(() => ({
+import type { SyncEntityInterface } from '@budgie/contracts';
+
+const { tagModule, backgroundTaskMocks, taskManagerMocks, scheduleStore } = vi.hoisted(() => ({
     tagModule: async (name: string) => {
         const Context = await import('effect/Context');
         const LayerModule = await import('effect/Layer');
@@ -44,14 +47,29 @@ const { tagModule, backgroundTaskMocks, taskManagerMocks } = vi.hoisted(() => ({
     taskManagerMocks: {
         isTaskRegisteredAsync: vi.fn((_name: string) => Promise.resolve(false)),
         getTaskOptionsAsync: vi.fn((_name: string) => Promise.resolve<{ minimumInterval?: number } | null>(null))
-    }
+    },
+    scheduleStore: new Map<string, string>()
 }));
 
 vi.mock('@lingui/core/macro', () => ({ msg: (message: unknown) => message, t: (parts: TemplateStringsArray) => parts.join('') }));
-vi.mock('expo-file-system', () => import('./fixture/expo-file-system-fake'));
 vi.mock('react-native', () => ({ Platform: { OS: 'ios', constants: {} } }));
 vi.mock('expo-background-task', () => backgroundTaskMocks);
 vi.mock('expo-task-manager', () => taskManagerMocks);
+vi.mock('../src/@generic/utils/make-lazy-storage.util', async () => {
+    const EffectModule = await import('effect/Effect');
+
+    return {
+        makeLazyStorage: () =>
+            EffectModule.succeed(() => ({
+                getItem: (key: string) => Promise.resolve(scheduleStore.get(key)),
+                setItem: (key: string, value: string) => {
+                    scheduleStore.set(key, value);
+
+                    return Promise.resolve();
+                }
+            }))
+    };
+});
 vi.mock('../src/@generic/drizzle/service/database-migration.service', async () => ({
     DatabaseMigrationService: await tagModule('DatabaseMigrationService')
 }));
@@ -82,13 +100,15 @@ interface CallRecordInterface {
     readonly monobankDeadlines: Array<{ readonly startedAtMs: number; readonly deadlineAtMs: number }>;
     readonly cloudBackupMinAges: number[];
     syncSessionActive: boolean;
+    pendingBackwardSyncs: SyncEntityInterface[];
 }
 
 const createState = (): CallRecordInterface => ({
     calls: [],
     monobankDeadlines: [],
     cloudBackupMinAges: [],
-    syncSessionActive: false
+    syncSessionActive: false,
+    pendingBackwardSyncs: []
 });
 
 const expectNotCalled = (state: CallRecordInterface, jobs: readonly string[]) => {
@@ -102,6 +122,7 @@ const makeCoordinatorLayer = (state: CallRecordInterface) => {
 
     const stubDependencies = Layer.mergeAll(
         Layer.mock(DatabaseMigrationService)({ migrate: () => record('migrate') }),
+        Layer.mock(SyncRepository)({ getAllPendingBackwardSyncs: Effect.sync(() => state.pendingBackwardSyncs) }),
         Layer.mock(BackgroundSyncSessionService)({ isActive: Effect.sync(() => state.syncSessionActive) }),
         Layer.mock(MonobankSyncService)({
             sync: deadlineAtMs =>
@@ -146,7 +167,7 @@ const makeCoordinatorLayer = (state: CallRecordInterface) => {
 
 describe('BackgroundTaskCoordinatorService', () => {
     beforeEach(() => {
-        resetStorage();
+        scheduleStore.clear();
         backgroundTaskMocks.registerTaskAsync.mockClear();
         backgroundTaskMocks.unregisterTaskAsync.mockClear();
         taskManagerMocks.isTaskRegisteredAsync.mockReset();
@@ -226,25 +247,27 @@ describe('BackgroundTaskCoordinatorService', () => {
             })
     );
 
-    it.effect('skips bank syncs when BackgroundSyncSessionService is active', () =>
+    it.effect('skips only providers with active backward syncs when BackgroundSyncSessionService is active', () =>
         Effect.gen(function* () {
             const state = createState();
             state.syncSessionActive = true;
+            state.pendingBackwardSyncs = [buildPendingSync({ provider: ExternalSourceEnum.MONOBANK })];
             const layer = makeCoordinatorLayer(state);
 
             const result = yield* Effect.flatMap(BackgroundTaskCoordinatorService, service => service.run()).pipe(Effect.provide(layer));
 
             expect(result).toBe(backgroundTaskMocks.BackgroundTaskResult.Success);
             expect(state.calls).not.toContain('monobank');
-            expect(state.calls).not.toContain('binance');
-            expect(state.calls).not.toContain('enableBanking');
-            expect(state.calls).not.toContain('recurringRefresh');
+            expect(state.calls).toContain('binance');
+            expect(state.calls).toContain('enableBanking');
+            expect(state.calls).toContain('recurringRefresh');
+            expect(state.calls).toContain('recurringReminder');
             expect(state.calls).toContain('migrate');
             expect(state.calls).toContain('budgetAlertMonitor');
         })
     );
 
-    it.effect('respects per-job cadences across consecutive wakes', () =>
+    it.effect('respects per-job cadences across consecutive wakes and recovers from backward clock jumps', () =>
         Effect.gen(function* () {
             const state = createState();
             const layer = makeCoordinatorLayer(state);
@@ -269,26 +292,29 @@ describe('BackgroundTaskCoordinatorService', () => {
                 yield* TestClock.adjust('15 minutes');
                 yield* runWake;
                 expect(state.calls).toContain('budgetAlertMonitor');
-                expectNotCalled(state, ['transferConsolidation', 'exchangeRate', 'widgetSnapshot', 'cloudBackup', 'accountBalance']);
+                expect(state.calls).toContain('cloudBackup');
+                expectNotCalled(state, ['transferConsolidation', 'exchangeRate', 'widgetSnapshot', 'accountBalance']);
 
                 yield* TestClock.adjust('15 minutes');
                 yield* runWake;
                 expect(state.calls).toContain('transferConsolidation');
-                expectNotCalled(state, ['exchangeRate', 'widgetSnapshot', 'cloudBackup', 'accountBalance']);
+                expectNotCalled(state, ['exchangeRate', 'widgetSnapshot', 'accountBalance']);
 
                 yield* TestClock.adjust('30 minutes');
                 yield* runWake;
                 expect(state.calls).toContain('exchangeRate');
                 expect(state.calls).toContain('widgetSnapshot');
-                expectNotCalled(state, ['cloudBackup', 'accountBalance']);
+                expectNotCalled(state, ['accountBalance']);
 
-                yield* TestClock.adjust('23 hours');
+                yield* TestClock.adjust('7 days');
                 yield* runWake;
-                expect(state.calls).toContain('cloudBackup');
-                expect(state.calls).not.toContain('accountBalance');
+                expect(state.calls).toContain('accountBalance');
 
-                yield* TestClock.adjust('6 days');
+                yield* TestClock.setTime(900_000_000_000);
                 yield* runWake;
+                expect(state.calls).toContain('transferConsolidation');
+                expect(state.calls).toContain('exchangeRate');
+                expect(state.calls).toContain('widgetSnapshot');
                 expect(state.calls).toContain('accountBalance');
             }).pipe(Effect.provide(layer));
         })

@@ -1,18 +1,17 @@
 import { BudgetPeriodCloseService } from '@budgie/budget';
-import { logAndContinue } from '@budgie/contracts';
+import { ExternalSourceEnum, SyncRepository, logAndContinue } from '@budgie/contracts';
 import { AccountBalanceIncrementalService, TransferConsolidationService } from '@budgie/ledger';
 import { RecurringRefreshService } from '@budgie/recurring';
 import { BinanceSyncService, EnableBankingSyncService, MonobankSyncService } from '@budgie/sync';
 import { millisecondsInDay, millisecondsInHour, millisecondsInMinute } from 'date-fns/constants';
+import * as Cause from 'effect/Cause';
 import * as Clock from 'effect/Clock';
 import * as Context from 'effect/Context';
 import * as DateTime from 'effect/DateTime';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 import * as Option from 'effect/Option';
-import * as Schema from 'effect/Schema';
 import * as BackgroundTask from 'expo-background-task';
-import { File, Paths } from 'expo-file-system';
 import * as TaskManager from 'expo-task-manager';
 import { Platform } from 'react-native';
 
@@ -27,6 +26,8 @@ import { BackgroundSyncSessionService } from '../../sync/service/background-sync
 import { WidgetSnapshotService } from '../../widget/service/widget-snapshot.service';
 import { APP_BACKGROUND_TASK } from '../constant/app-background-task.constant';
 import { DatabaseMigrationService } from '../drizzle/service/database-migration.service';
+import { NativeCallError } from '../error/native-call.error';
+import { makeLazyStorage } from '../utils/make-lazy-storage.util';
 
 import { Workload } from './workload.service';
 
@@ -39,6 +40,7 @@ export class BackgroundTaskCoordinatorService extends Context.Service<Background
         make: Effect.gen(function* () {
             const databaseMigrationService = yield* DatabaseMigrationService;
             const workload = yield* Workload;
+            const syncRepository = yield* SyncRepository;
             const backgroundSyncSessionService = yield* BackgroundSyncSessionService;
             const monobankSyncService = yield* MonobankSyncService;
             const binanceSyncService = yield* BinanceSyncService;
@@ -52,6 +54,8 @@ export class BackgroundTaskCoordinatorService extends Context.Service<Background
             const exchangeRateBackgroundService = yield* ExchangeRateBackgroundService;
             const widgetSnapshotService = yield* WidgetSnapshotService;
             const siriCatalogService = yield* SiriCatalogService;
+
+            const getScheduleStorage = yield* makeLazyStorage('background-task-schedule.sqlite');
 
             const minimumIntervalMinutes = 15;
             const monobankBudgetMs = 130_000;
@@ -73,74 +77,42 @@ export class BackgroundTaskCoordinatorService extends Context.Service<Background
                 'widget-snapshot-task'
             ] as const;
 
-            const ScheduleSchema = Schema.fromJsonString(
-                Schema.Struct({
-                    transferConsolidationAt: Schema.NullOr(Schema.Finite),
-                    exchangeRateAt: Schema.NullOr(Schema.Finite),
-                    widgetSnapshotAt: Schema.NullOr(Schema.Finite),
-                    cloudBackupAt: Schema.NullOr(Schema.Finite),
-                    accountBalanceAt: Schema.NullOr(Schema.Finite)
-                })
-            );
-            const emptySchedule: typeof ScheduleSchema.Type = {
-                transferConsolidationAt: null,
-                exchangeRateAt: null,
-                widgetSnapshotAt: null,
-                cloudBackupAt: null,
-                accountBalanceAt: null
-            };
-            const scheduleFile = () => new File(Paths.document, 'background-task-schedule.json');
-            const temporaryFile = () => new File(Paths.document, 'background-task-schedule.json.tmp');
+            const readLastRunAt = (key: string) =>
+                Effect.tryPromise({
+                    try: () => getScheduleStorage().getItem(key),
+                    catch: cause => NativeCallError.make({ cause })
+                }).pipe(
+                    Effect.map(raw => {
+                        if (!isDefined(raw)) {
+                            return null;
+                        }
+                        const parsed = Number(raw);
 
-            const readSchedule = Effect.sync((): typeof ScheduleSchema.Type => {
-                const committedFile = scheduleFile();
-                const recoveryFile = temporaryFile();
+                        return Number.isFinite(parsed) ? parsed : null;
+                    })
+                );
 
-                if (committedFile.exists) {
-                    const committed = Schema.decodeOption(ScheduleSchema)(committedFile.textSync());
-                    if (Option.isSome(committed)) {
-                        return committed.value;
-                    }
-                }
-
-                if (recoveryFile.exists) {
-                    const recovered = Schema.decodeOption(ScheduleSchema)(recoveryFile.textSync());
-                    if (Option.isSome(recovered)) {
-                        recoveryFile.moveSync(committedFile, { overwrite: true });
-
-                        return recovered.value;
-                    }
-                }
-
-                return emptySchedule;
-            });
-
-            const writeSchedule = Effect.fnUntraced(function* (schedule: typeof ScheduleSchema.Type) {
-                const encoded = yield* Schema.encodeEffect(ScheduleSchema)(schedule).pipe(Effect.orDie);
-
-                yield* Effect.sync(() => {
-                    const pendingFile = temporaryFile();
-                    pendingFile.create({ overwrite: true });
-                    pendingFile.writeSync(encoded);
-                    pendingFile.moveSync(scheduleFile(), { overwrite: true });
+            const writeLastRunAt = (key: string, nowMs: number) =>
+                Effect.tryPromise({
+                    try: () => getScheduleStorage().setItem(key, String(nowMs)),
+                    catch: cause => NativeCallError.make({ cause })
                 });
-            });
-
-            const markJobRan = (key: keyof typeof ScheduleSchema.Type, nowMs: number) =>
-                Effect.flatMap(readSchedule, schedule => writeSchedule({ ...schedule, [key]: nowMs }));
 
             const isDue = (lastRunAt: number | null, nowMs: number, intervalMs: number): boolean =>
-                !isDefined(lastRunAt) || nowMs - lastRunAt >= intervalMs;
+                !isDefined(lastRunAt) || nowMs < lastRunAt || nowMs - lastRunAt >= intervalMs;
 
-            const runIfDue = <E, R>(key: keyof typeof ScheduleSchema.Type, intervalMs: number, effect: Effect.Effect<unknown, E, R>) =>
-                Effect.gen(function* () {
-                    const [schedule, nowMs] = yield* Effect.all([readSchedule, Clock.currentTimeMillis]);
-                    if (!isDue(schedule[key], nowMs, intervalMs)) {
-                        return;
-                    }
+            const runIfDue = <E, R>(key: string, intervalMs: number, effect: Effect.Effect<unknown, E, R>) =>
+                logAndContinue(
+                    Effect.gen(function* () {
+                        const [lastRunAt, nowMs] = yield* Effect.all([readLastRunAt(key), Clock.currentTimeMillis]);
+                        if (!isDue(lastRunAt, nowMs, intervalMs)) {
+                            return;
+                        }
 
-                    yield* logAndContinue(effect.pipe(Effect.tap(() => markJobRan(key, nowMs))));
-                });
+                        yield* effect;
+                        yield* writeLastRunAt(key, nowMs);
+                    })
+                );
 
             const runProviderSync = <E>(
                 runSync: (deadlineAtMs: number) => Effect.Effect<boolean, E, Db | HttpClient.HttpClient | Workload>,
@@ -148,17 +120,27 @@ export class BackgroundTaskCoordinatorService extends Context.Service<Background
             ) =>
                 workload
                     .run(Effect.flatMap(Clock.currentTimeMillis, startedAtMs => runSync(startedAtMs + budgetMs)))
-                    .pipe(Effect.catchCause(cause => Effect.as(Effect.logError(cause), false)));
+                    .pipe(
+                        Effect.catchCause(cause =>
+                            Cause.hasInterruptsOnly(cause) ? Effect.interrupt : Effect.as(Effect.logError(cause), false)
+                        )
+                    );
 
             const runBankSyncs = Effect.fnUntraced(function* () {
                 const isSyncSessionActive = yield* backgroundSyncSessionService.isActive;
-                if (isSyncSessionActive) {
-                    return true;
-                }
+                const activeBackwardProviders = isSyncSessionActive
+                    ? new Set((yield* syncRepository.getAllPendingBackwardSyncs).map(sync => sync.provider))
+                    : new Set<ExternalSourceEnum>();
 
-                const monobankOk = yield* runProviderSync(deadline => monobankSyncService.sync(deadline), monobankBudgetMs);
-                const binanceOk = yield* runProviderSync(deadline => binanceSyncService.sync(deadline), providerSyncBudgetMs);
-                const enableBankingOk = yield* runProviderSync(deadline => enableBankingSyncService.sync(deadline), providerSyncBudgetMs);
+                const monobankOk = activeBackwardProviders.has(ExternalSourceEnum.MONOBANK)
+                    ? true
+                    : yield* runProviderSync(deadline => monobankSyncService.sync(deadline), monobankBudgetMs);
+                const binanceOk = activeBackwardProviders.has(ExternalSourceEnum.BINANCE)
+                    ? true
+                    : yield* runProviderSync(deadline => binanceSyncService.sync(deadline), providerSyncBudgetMs);
+                const enableBankingOk = activeBackwardProviders.has(ExternalSourceEnum.ENABLE_BANKING)
+                    ? true
+                    : yield* runProviderSync(deadline => enableBankingSyncService.sync(deadline), providerSyncBudgetMs);
                 const now = yield* DateTime.nowAsDate;
                 yield* logAndContinue(
                     workload.run(recurringRefreshService.matchRecent(now).pipe(Effect.andThen(recurringReminderService.reschedule(now))))
@@ -218,12 +200,11 @@ export class BackgroundTaskCoordinatorService extends Context.Service<Background
                         );
                     }
 
-                    yield* runIfDue(
-                        'cloudBackupAt',
-                        cloudBackupIntervalMs,
-                        Effect.flatMap(Effect.serviceOption(CloudBackupService), option =>
+                    yield* Effect.serviceOption(CloudBackupService).pipe(
+                        Effect.flatMap(option =>
                             Option.isSome(option) ? workload.run(option.value.backup(cloudBackupIntervalMs)) : Effect.void
-                        )
+                        ),
+                        logAndContinue
                     );
                     yield* runIfDue(
                         'accountBalanceAt',
@@ -241,6 +222,7 @@ export class BackgroundTaskCoordinatorService extends Context.Service<Background
         Layer.provide([
             DatabaseMigrationService.layer,
             Workload.layer,
+            SyncRepository.layer,
             BackgroundSyncSessionService.layer,
             MonobankSyncService.layer,
             BinanceSyncService.layer,

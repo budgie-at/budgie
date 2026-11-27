@@ -1,4 +1,4 @@
-import { ExternalSourceEnum, SyncModeEnum, SyncRepository, SyncStatusEnum } from '@budgie/contracts';
+import { SyncRepository } from '@budgie/contracts';
 import { beforeEach, describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 import * as FetchHttpClient from 'effect/http/FetchHttpClient';
@@ -10,6 +10,7 @@ import { vi } from 'vitest';
 import { Workload } from '../src/@generic/service/workload.service';
 import { BackgroundSyncSessionService } from '../src/sync/service/background-sync-session.service';
 
+import { buildPendingSync } from './fixture/build-pending-sync';
 import { inertDbLayer } from './fixture/inert-db-layer';
 
 import type { SyncEntityInterface } from '@budgie/contracts';
@@ -38,7 +39,6 @@ const nativeState = vi.hoisted(() => {
                 Promise.resolve(true)
             ),
             stop: vi.fn(() => Promise.resolve(undefined)),
-            isActive: vi.fn(() => Promise.resolve(false)),
             addListener: vi.fn((event: string, listener: () => void) => {
                 if (event === 'onExpire') {
                     expireListeners.add(listener);
@@ -62,39 +62,6 @@ const state = {
     pendingSyncs: [] as SyncEntityInterface[],
     interruptBackgroundCalls: 0
 };
-
-const baseSyncDate = new Date('2026-06-01T00:00:00.000Z');
-
-const buildPendingSync = (overrides: Partial<SyncEntityInterface> = {}): SyncEntityInterface => ({
-    id: 1,
-    accountId: 10,
-    provider: ExternalSourceEnum.MONOBANK,
-    enabled: true,
-    mode: SyncModeEnum.BACKWARD,
-    status: SyncStatusEnum.IDLE,
-    createdAt: baseSyncDate,
-    updatedAt: baseSyncDate,
-    deletedAt: null,
-    backwardSyncedAt: null,
-    backwardSyncFromAt: baseSyncDate,
-    backwardSyncLimitAt: null,
-    backwardBatchAt: null,
-    forwardSyncedAt: baseSyncDate,
-    forwardSyncFromAt: baseSyncDate,
-    transactionCount: 0,
-    errorCount: 0,
-    setupBalance: null,
-    balanceAdjustmentTransactionId: null,
-    reconciledAt: null,
-    reconciledBalance: null,
-    reconciliationTransactionId: null,
-    lastError: null,
-    lastErrorCode: null,
-    lastWarning: null,
-    binanceTradeCursor: null,
-    binanceCapitalPendingFromAt: null,
-    ...overrides
-});
 
 const expectNativeSessionRestarted = () => {
     expect(nativeState.backgroundSyncModule.update).toHaveBeenCalledWith(

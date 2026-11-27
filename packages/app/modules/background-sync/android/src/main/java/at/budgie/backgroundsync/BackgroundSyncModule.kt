@@ -53,8 +53,10 @@ class BackgroundSyncModule : Module() {
       }
 
       if (!isDismissed && isForeground) {
+        val token = BackgroundSyncSessionBridge.sessionToken.incrementAndGet()
         val intent = Intent(context, BackgroundSyncForegroundService::class.java).apply {
           action = BackgroundSyncForegroundService.ACTION_START_OR_UPDATE
+          putExtra(BackgroundSyncForegroundService.EXTRA_SESSION_TOKEN, token)
           putExtra(BackgroundSyncForegroundService.EXTRA_TITLE, title)
           putExtra(BackgroundSyncForegroundService.EXTRA_SUBTITLE, subtitle)
           putExtra(BackgroundSyncForegroundService.EXTRA_COMPLETED, completed)
@@ -64,10 +66,13 @@ class BackgroundSyncModule : Module() {
         return@AsyncFunction try {
           BackgroundSyncSessionBridge.pendingStop.set(false)
           BackgroundSyncSessionBridge.isForegroundStarted.set(false)
-          ContextCompat.startForegroundService(context, intent)
           BackgroundSyncSessionBridge.isRunning.set(true)
+          ContextCompat.startForegroundService(context, intent)
           true
         } catch (_: Exception) {
+          if (BackgroundSyncSessionBridge.sessionToken.get() == token) {
+            BackgroundSyncSessionBridge.isRunning.set(false)
+          }
           false
         }
       }
@@ -75,12 +80,9 @@ class BackgroundSyncModule : Module() {
       false
     }
 
-    AsyncFunction("isActive") {
-      BackgroundSyncSessionBridge.isRunning.get()
-    }
-
     AsyncFunction("stop") {
       isDismissed = false
+      BackgroundSyncSessionBridge.sessionToken.incrementAndGet()
       if (BackgroundSyncSessionBridge.isRunning.getAndSet(false)) {
         if (BackgroundSyncSessionBridge.isForegroundStarted.get()) {
           context.stopService(Intent(context, BackgroundSyncForegroundService::class.java))
