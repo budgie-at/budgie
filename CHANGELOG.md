@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.193.4](https://github.com/budgie-at/budgie/compare/v6.193.3...v6.193.4) (2026-11-27)
+
+### Bug Fixes
+
+* **rules:** address Round 1 council findings for parity, safety, and concurrency ([c3c5871](https://github.com/budgie-at/budgie/commit/c3c58710e3ca250ecaf957691e42823cd03fff9c))
+* **rules:** address Round 2 council findings for snapshot isolation, microunits, and Unicode pushdown ([8742f1d](https://github.com/budgie-at/budgie/commit/8742f1d4ba08450e57e3600a1ecefaa0908793bb))
+* **rules:** route embedded NUL text values to JS matcher ([1a531a6](https://github.com/budgie-at/budgie/commit/1a531a6765701709a5a868ed359ec0274fa912ed))
+* **rules:** route NUL rule values to JS matcher and remove type assertions ([7ec88ee](https://github.com/budgie-at/budgie/commit/7ec88ee379910a7fcaa225cad4ca7ccc07b28b99))
+
+### Performance Improvements
+
+* accelerate rules engine and fix matching and application bugs ([a3f6e91](https://github.com/budgie-at/budgie/commit/a3f6e9154323512dc72b389a556223b91c4046c4))
+
+
 ## [6.193.3](https://github.com/budgie-at/budgie/compare/v6.193.2...v6.193.3) (2026-11-26)
 
 ### Performance Improvements

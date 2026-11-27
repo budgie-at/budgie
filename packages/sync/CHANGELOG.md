@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.193.4](https://github.com/budgie-at/budgie/compare/v6.193.3...v6.193.4) (2026-11-27)
+
+### Performance Improvements
+
+* accelerate rules engine and fix matching and application bugs ([a3f6e91](https://github.com/budgie-at/budgie/commit/a3f6e9154323512dc72b389a556223b91c4046c4))
+
+
 ## [6.193.3](https://github.com/budgie-at/budgie/compare/v6.193.2...v6.193.3) (2026-11-26)
 
 ### Performance Improvements
