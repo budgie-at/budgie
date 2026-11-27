@@ -2,7 +2,7 @@ import { RecurringSeriesKindEnum, TransactionTypeEnum, convertFromMicroUnits } f
 
 import { isDefined } from '@rnw-community/shared';
 
-import { getTransactionDisplayTitle } from '../../transaction/utils/get-transaction-display-title.util';
+import { getEnableBankingTransactionDisplayTitle } from '../../transaction/utils/get-enable-banking-transaction-display-title.util';
 import { getTransactionInfoPrimaryEntry } from '../../transaction/utils/get-transaction-info-primary-entry.util';
 import { getTransactionPrimaryAmount } from '../../transaction/utils/get-transaction-primary-amount.util';
 
@@ -17,9 +17,10 @@ export const buildRecurringFormValuesFromTransaction = (
 ): RecurringSeriesFormValues => {
     const defaults = buildDefaultRecurringFormValues(defaultInstrumentId, transaction.operatedAt);
     const primaryEntry = getTransactionInfoPrimaryEntry(transaction);
+    const title = getEnableBankingTransactionDisplayTitle(transaction);
 
     if (!isDefined(primaryEntry)) {
-        return { ...defaults, title: getTransactionDisplayTitle(transaction) };
+        return { ...defaults, title };
     }
 
     const amountInMicroUnits = getTransactionPrimaryAmount(transaction);
@@ -27,7 +28,7 @@ export const buildRecurringFormValuesFromTransaction = (
     return {
         ...defaults,
         kind: transaction.type === TransactionTypeEnum.INCOME ? RecurringSeriesKindEnum.INCOME : RecurringSeriesKindEnum.EXPENSE,
-        title: getTransactionDisplayTitle(transaction),
+        title,
         amount: Math.abs(convertFromMicroUnits(amountInMicroUnits)),
         instrumentId: primaryEntry.account.instrument.id,
         categoryId: primaryEntry.categoryId,

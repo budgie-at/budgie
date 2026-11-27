@@ -61,6 +61,7 @@ export type { BinanceDividendApiInterface } from './binance/interface/binance-di
 export type { BinanceDustLogApiInterface } from './binance/interface/binance-dust-api.schema';
 
 export { EnableBankingSyncService } from './enable-banking/service/enable-banking-sync.service';
+export { extractEnableBankingCardMerchant } from './enable-banking/utils/extract-enable-banking-card-merchant.util';
 export { EnableBankingCallbackError } from './enable-banking/error/enable-banking-callback.error';
 export { EnableBankingCallbackFailureEnum } from './enable-banking/enum/enable-banking-callback-failure.enum';
 export { EnableBankingErrorCodeEnum } from './enable-banking/enum/enable-banking-error-code.enum';

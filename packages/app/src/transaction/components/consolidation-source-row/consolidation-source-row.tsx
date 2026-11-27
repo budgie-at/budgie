@@ -5,6 +5,7 @@ import { isNotEmptyString } from '@rnw-community/shared';
 
 import { TransactionListRowPositionEnum } from '../../enum/transaction-list-row-position.enum';
 import { getConsolidationSourceDisplayType } from '../../utils/get-consolidation-source-display-type.util';
+import { getEnableBankingTransactionDisplayTitle } from '../../utils/get-enable-banking-transaction-display-title.util';
 import { TransactionPickerRow } from '../transaction-picker-row/transaction-picker-row';
 
 import type { TransactionPickerItemInterface } from '../../interface/transaction-picker-item.interface';
@@ -17,15 +18,13 @@ interface Props {
 }
 
 const getSourceTitle = (source: ConsolidationSourceRowInterface): string => {
-    if (isNotEmptyString(source.sourceTitle)) {
-        return source.sourceTitle;
-    }
+    const title = getEnableBankingTransactionDisplayTitle({
+        title: source.sourceTitle,
+        comment: source.sourceComment,
+        externalSource: source.sourceExternalSource
+    });
 
-    if (isNotEmptyString(source.sourceComment)) {
-        return source.sourceComment;
-    }
-
-    return t`Original transaction`;
+    return isNotEmptyString(title) ? title : t`Original transaction`;
 };
 
 const mapSourceToPickerItem = (

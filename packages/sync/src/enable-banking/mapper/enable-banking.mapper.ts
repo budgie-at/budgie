@@ -8,6 +8,7 @@ import { SyncAccountTypeEnum } from '../../core/enum/sync-account-type.enum';
 import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
 import { SyncTransactionTypeEnum } from '../../core/enum/sync-transaction-type.enum';
 import { generateStableExternalIdHash } from '../../core/utils/generate-stable-external-id-hash.util';
+import { extractEnableBankingCardMerchant } from '../utils/extract-enable-banking-card-merchant.util';
 
 import type { SyncAccountInterface } from '../../core/interface/sync-account.interface';
 import type { SyncBalanceSnapshotInterface } from '../../core/interface/sync-balance-snapshot.interface';
@@ -27,7 +28,6 @@ class EnableBankingMapper {
     private static readonly MILLISECONDS_PER_SECOND = 1000;
     private static readonly NOON_OFFSET_MS = 12 * 60 * 60 * 1000;
     private static readonly MCC_PATTERN = /^\d+$/u;
-    private static readonly CARD_PAYMENT_PATTERN = /^POS\s+\d[\d.,]*\s+[A-Z]{2}\s+K\d\s+\d{2}[./-]\d{2}[./-]\d{2,4}\s+(\S.*)$/u;
     private static readonly NUMERIC_CODE_BY_CURRENCY = new Map(
         Object.entries(CURRENCY_CODE_BY_NUMERIC_CODE).map(([numericCode, currencyCode]) => [currencyCode, Number(numericCode)])
     );
@@ -170,18 +170,15 @@ class EnableBankingMapper {
         const iban = (isIncome ? transaction.debtor_account : transaction.creditor_account)?.iban;
         const remittance = (transaction.remittance_information ?? []).join(' ').trim();
 
+        const cardMerchant = extractEnableBankingCardMerchant(remittance);
+        const counterpartyName = name === remittance ? cardMerchant : name;
+
         return {
-            description: [name, this.extractCardMerchant(remittance), remittance].find(isNotEmptyString) ?? '',
+            description: [counterpartyName, cardMerchant, remittance].find(isNotEmptyString) ?? '',
             ...(isNotEmptyString(iban) && { counterIban: iban }),
             ...(isNotEmptyString(name) && { counterName: name }),
             ...(isNotEmptyString(remittance) && { comment: remittance })
         };
-    }
-
-    private extractCardMerchant(remittance: string): string | null {
-        const merchant = EnableBankingMapper.CARD_PAYMENT_PATTERN.exec(remittance)?.[1]?.replaceAll(/\s+/gu, ' ').trim();
-
-        return isNotEmptyString(merchant) ? merchant : null;
     }
 
     private mapTransaction(
