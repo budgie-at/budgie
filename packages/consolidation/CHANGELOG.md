@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.193.5](https://github.com/budgie-at/budgie/compare/v6.193.4...v6.193.5) (2026-11-27)
+
+### Bug Fixes
+
+* address council review findings for consolidation rollback, drainer, and fee matching ([2bbe21b](https://github.com/budgie-at/budgie/commit/2bbe21b83ba1fe6df7eb398a978d058e6e2c9662))
+* **consolidation:** match exact fee slots before aggregate fee refunds ([70c8906](https://github.com/budgie-at/budgie/commit/70c8906d25a91d500620fd7922cb8b1e3b3ce0db))
+* harden drainer interruption, fee-slot refund pool, and P2P repair capabilities ([21ff0b5](https://github.com/budgie-at/budgie/commit/21ff0b5d9f495abaa37d63e3f33d37b735a304e2))
+* restore P2P rejected-payment guard, simplify drainer with Effect primitives, and align manual refund capacity ([b09f08c](https://github.com/budgie-at/budgie/commit/b09f08cda571a36fbe012b74b1eda6675915eae7))
+
+### Performance Improvements
+
+* accelerate consolidation queries and fix money-safety bugs ([80cd378](https://github.com/budgie-at/budgie/commit/80cd37841af48ecd8fea6533d5b32f6ddcbb6fee))
+
+
 ## [6.193.4](https://github.com/budgie-at/budgie/compare/v6.193.3...v6.193.4) (2026-11-27)
 
 **Note:** Version bump only for package @budgie/consolidation

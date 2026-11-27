@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.193.5](https://github.com/budgie-at/budgie/compare/v6.193.4...v6.193.5) (2026-11-27)
+
+### Performance Improvements
+
+* accelerate consolidation queries and fix money-safety bugs ([80cd378](https://github.com/budgie-at/budgie/commit/80cd37841af48ecd8fea6533d5b32f6ddcbb6fee))
+
+
 ## [6.193.4](https://github.com/budgie-at/budgie/compare/v6.193.3...v6.193.4) (2026-11-27)
 
 ### Bug Fixes
