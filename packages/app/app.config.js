@@ -12,6 +12,7 @@ const IS_LOGGING_DISABLED = process.env.EXPO_PUBLIC_LOGGING_DISABLE === 'true';
 const IS_PROFILING_ENABLED = process.env.EXPO_PUBLIC_PROFILING_ENABLE === 'true';
 const IS_LOGGING_ENABLED = (IS_DEV || IS_PROFILING_ENABLED) && !IS_LOGGING_DISABLED;
 
+const MICROPHONE_USAGE = 'Allow $(PRODUCT_NAME) to use the microphone to record voice notes.';
 const CAMERA_USAGE = 'Allow $(PRODUCT_NAME) to use the camera to scan receipts. Receipts are read on this device and never uploaded.';
 
 const getUniqueIdentifier = isAndroid => {
@@ -133,8 +134,15 @@ const getExpoConfig = ({ config }) => ({
     },
     android: {
         blockedPermissions: [
+            'android.permission.ACCESS_WIFI_STATE',
+            'android.permission.CAMERA',
+            'android.permission.DETECT_SCREEN_CAPTURE',
+            'android.permission.READ_EXTERNAL_STORAGE',
             'android.permission.READ_MEDIA_IMAGES',
             'android.permission.READ_MEDIA_VIDEO',
+            'android.permission.SYSTEM_ALERT_WINDOW',
+            'android.permission.WRITE_CONTACTS',
+            'android.permission.WRITE_EXTERNAL_STORAGE',
             'com.google.android.gms.permission.AD_ID'
         ],
         adaptiveIcon: {
@@ -209,6 +217,7 @@ const getExpoConfig = ({ config }) => ({
         ],
         'expo-app-intents',
         './plugins/with-optional-hardware-features',
+        ['./plugins/with-unused-ios-permissions-removed', { keepDevLauncherNetworkAccess: IS_DEV }],
         ...(!IS_E2E ? ['./plugins/with-icloud-share-acceptance'] : []),
         [
             'expo-widgets',
@@ -288,9 +297,9 @@ const getExpoConfig = ({ config }) => ({
                   [
                       'react-native-audio-api',
                       {
-                          iosBackgroundMode: true,
-                          iosMicrophonePermission: 'This app requires access to the microphone to record audio.',
-                          androidPermissions: ['android.permission.MODIFY_AUDIO_SETTINGS'],
+                          iosBackgroundMode: false,
+                          iosMicrophonePermission: MICROPHONE_USAGE,
+                          androidPermissions: [],
                           androidForegroundService: false
                       }
                   ]
@@ -341,7 +350,7 @@ const getExpoConfig = ({ config }) => ({
                 photosPermission:
                     'Allow $(PRODUCT_NAME) to read receipts you pick from your photo library. Receipts are read on this device and never uploaded.',
                 cameraPermission: CAMERA_USAGE,
-                microphonePermission: false
+                microphonePermission: MICROPHONE_USAGE
             }
         ]
     ],
