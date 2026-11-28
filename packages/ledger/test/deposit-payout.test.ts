@@ -7,6 +7,7 @@ import {
     Db,
     ExternalSourceEnum,
     HistoricalExchangeRateEntityTable,
+    TransactionEntryRepository,
     TransactionRepository,
     TransactionTypeEnum,
     YieldKindEnum,
@@ -98,6 +99,38 @@ const seedPayout = (accountId: number, amount: number, title: string) =>
         })
     );
 
+const seedTransfer = (sourceAccountId: number, targetAccountId: number, amount: number, operatedAt: Date) =>
+    Effect.flatMap(seed, testSeedService =>
+        testSeedService.directTransfer({
+            exchangeRate: 1,
+            operatedAt,
+            sourceAccountId,
+            sourceAmount: convertToMicroUnits(amount),
+            sourceEntryExchangeRate: 1,
+            targetAccountId,
+            targetAmount: convertToMicroUnits(amount),
+            toIban: null
+        })
+    );
+
+const seedCrossCurrencyDeposit = (receivedAmount: number) =>
+    Effect.gen(function* () {
+        const integration = yield* (yield* seed).bankIntegration();
+        const euro = yield* seedEuro;
+        const hryvniaCard = yield* seedCard('Hryvnia card', 1, integration.id);
+        const euroCard = yield* seedCard('Euro card', euro.id, integration.id);
+        const { deposit, opening } = yield* seedDeposit({
+            title: 'VIS',
+            source: hryvniaCard,
+            instrumentId: euro.id,
+            integrationId: integration.id,
+            sourceAmount: 104_040,
+            receivedAmount
+        });
+
+        return { hryvniaCard, euroCard, deposit, opening };
+    });
+
 const seedSameCurrency = Effect.gen(function* () {
     const integration = yield* (yield* seed).bankIntegration();
     const euro = yield* seedEuro;
@@ -119,6 +152,9 @@ const seedSameCurrencyDeposit = Effect.gen(function* () {
 });
 
 const reconcile = Effect.flatMap(DepositPayoutService, service => service.reconcile(null));
+
+const closeDepositTo = (depositAccountId: number, destinationAccountId: number, amountReceived: number) =>
+    Effect.flatMap(DepositPayoutService, service => service.closeDepositTo(depositAccountId, destinationAccountId, amountReceived));
 
 const ledgerBalanceOf = (accountId: number) =>
     Effect.flatMap(AccountBalanceRepository, repository => repository.getLedgerBalances([accountId])).pipe(
@@ -144,6 +180,13 @@ const expectClosed = (accountId: number) =>
         yield* assertStoredBalancesMatchLedger(yield* Db);
     });
 
+const expectStillIncome = (transactionId: number, depositAccountId: number) =>
+    Effect.gen(function* () {
+        expect((yield* transactionOf(transactionId))?.type).toBe(TransactionTypeEnum.INCOME);
+        expect(yield* ledgerBalanceOf(depositAccountId)).toBe(convertToMicroUnits(1000));
+        expect(yield* isActive(depositAccountId)).toBe(true);
+    });
+
 const interestOf = (accountId: number) =>
     Effect.map(historyOf(accountId), transactions =>
         transactions
@@ -154,18 +197,7 @@ const interestOf = (accountId: number) =>
 describe('deposit payout', () => {
     it.effect('links a titled payout, corrects the estimated cross-currency opening and closes the deposit', () =>
         Effect.gen(function* () {
-            const integration = yield* (yield* seed).bankIntegration();
-            const euro = yield* seedEuro;
-            const hryvniaCard = yield* seedCard('Hryvnia card', 1, integration.id);
-            const euroCard = yield* seedCard('Euro card', euro.id, integration.id);
-            const { deposit, opening } = yield* seedDeposit({
-                title: 'VIS',
-                source: hryvniaCard,
-                instrumentId: euro.id,
-                integrationId: integration.id,
-                sourceAmount: 104_040,
-                receivedAmount: 2004.62
-            });
+            const { hryvniaCard, euroCard, deposit, opening } = yield* seedCrossCurrencyDeposit(2004.62);
             const payout = yield* seedPayout(euroCard.id, 2000.39, PAYOUT_TITLE);
 
             yield* reconcile;
@@ -192,7 +224,42 @@ describe('deposit payout', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('links an untitled payout at maturity by amount and books the excess as interest', () =>
+    it.effect('keeps the cross-currency opening when the payout exceeds it and books the excess as interest', () =>
+        Effect.gen(function* () {
+            const { euroCard, deposit, opening } = yield* seedCrossCurrencyDeposit(2000.5);
+
+            yield* seedPayout(euroCard.id, 2001.25, PAYOUT_TITLE);
+            yield* reconcile;
+
+            expect((yield* transactionOf(opening.id))?.entries.find(entry => entry.accountId === deposit.id)?.amount).toBe(
+                convertToMicroUnits(2000.5)
+            );
+            expect(yield* interestOf(deposit.id)).toEqual([convertToMicroUnits(0.75)]);
+            yield* expectClosed(deposit.id);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('uses the exact deposit-currency amount of a payout landing on another currency account', () =>
+        Effect.gen(function* () {
+            const { integration, euro, card, input } = yield* seedSameCurrency;
+            const hryvniaCard = yield* seedCard('Hryvnia card', 1, integration.id);
+            const { deposit } = yield* seedDeposit({ ...input, source: card, instrumentId: euro.id, title: 'Deposit' });
+            const payout = yield* seedPayout(hryvniaCard.id, 50_000, PAYOUT_TITLE);
+            const [entry] = (yield* transactionOf(payout.id))?.entries ?? [];
+
+            yield* (yield* TransactionEntryRepository).updateById(entry.id, {
+                operationInstrumentId: euro.id,
+                operationAmount: convertToMicroUnits(1010)
+            });
+            yield* reconcile;
+
+            expect((yield* transactionOf(payout.id))?.type).toBe(TransactionTypeEnum.TRANSFER);
+            expect(yield* interestOf(deposit.id)).toEqual([convertToMicroUnits(10)]);
+            yield* expectClosed(deposit.id);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('leaves an untitled payout as income', () =>
         Effect.gen(function* () {
             const { card, deposit } = yield* seedSameCurrencyDeposit;
 
@@ -201,9 +268,21 @@ describe('deposit payout', () => {
 
             yield* reconcile;
 
-            expect((yield* transactionOf(payout.id))?.type).toBe(TransactionTypeEnum.TRANSFER);
-            expect(yield* interestOf(deposit.id)).toEqual([convertToMicroUnits(12.5)]);
-            yield* expectClosed(deposit.id);
+            yield* expectStillIncome(payout.id, deposit.id);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('leaves a titled payout from another bank integration as income', () =>
+        Effect.gen(function* () {
+            const { euro, input } = yield* seedSameCurrency;
+            const { deposit } = yield* seedDeposit({ ...input, title: 'Deposit' });
+            const otherIntegration = yield* (yield* seed).bankIntegration({ token: 'other-bank' });
+            const otherCard = yield* seedCard('Other euro card', euro.id, otherIntegration.id);
+            const payout = yield* seedPayout(otherCard.id, 1010, PAYOUT_TITLE);
+
+            yield* reconcile;
+
+            yield* expectStillIncome(payout.id, deposit.id);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -214,9 +293,7 @@ describe('deposit payout', () => {
 
             yield* reconcile;
 
-            expect((yield* transactionOf(salary.id))?.type).toBe(TransactionTypeEnum.INCOME);
-            expect(yield* ledgerBalanceOf(deposit.id)).toBe(convertToMicroUnits(1000));
-            expect(yield* isActive(deposit.id)).toBe(true);
+            yield* expectStillIncome(salary.id, deposit.id);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -283,9 +360,9 @@ describe('deposit payout', () => {
     it.effect('adopts a synced payout when the deposit is closed by hand instead of creating a second transfer', () =>
         Effect.gen(function* () {
             const { card, deposit } = yield* seedSameCurrencyDeposit;
-            const payout = yield* seedPayout(card.id, 1010, 'Monobank');
+            const payout = yield* seedPayout(card.id, 1010, PAYOUT_TITLE);
 
-            yield* Effect.flatMap(DepositPayoutService, service => service.closeDepositTo(deposit.id, card.id, 1008));
+            yield* closeDepositTo(deposit.id, card.id, 1008);
 
             expect((yield* transactionOf(payout.id))?.type).toBe(TransactionTypeEnum.TRANSFER);
             expect((yield* historyOf(card.id)).filter(transaction => transaction.toAccountId === card.id).length).toBe(1);
@@ -294,6 +371,38 @@ describe('deposit payout', () => {
             expect(yield* ledgerBalanceOf(card.id)).toBe(convertToMicroUnits(10));
             expect(yield* isActive(deposit.id)).toBe(false);
             yield* assertStoredBalancesMatchLedger(yield* Db);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('ignores a manual close of a deposit the payout already settled', () =>
+        Effect.gen(function* () {
+            const { card, deposit } = yield* seedSameCurrencyDeposit;
+
+            yield* seedPayout(card.id, 1010, PAYOUT_TITLE);
+            yield* reconcile;
+            const transactionCount = (yield* historyOf(deposit.id)).length;
+
+            yield* closeDepositTo(deposit.id, card.id, 1000);
+
+            expect((yield* historyOf(deposit.id)).length).toBe(transactionCount);
+            yield* expectClosed(deposit.id);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('books no interest for an overdrawn account whose outflow is not a bank deposit payout', () =>
+        Effect.gen(function* () {
+            const testSeedService = yield* seed;
+            const { euro, card } = yield* seedSameCurrency;
+            const account = yield* testSeedService.account({ type: AccountTypeEnum.BANK, title: 'Savings', instrumentId: euro.id });
+            yield* seedTransfer(card.id, account.id, 1000, OPENED_AT);
+            const withdrawal = yield* seedTransfer(account.id, card.id, 1005, PAID_AT);
+
+            yield* testSeedService.updateTransaction(withdrawal.id, { externalSource: ExternalSourceEnum.MONOBANK });
+            yield* (yield* AccountBalanceIncrementalService).updateBalancesByAccountIds([card.id, account.id]);
+            yield* reconcile;
+
+            expect(yield* interestOf(account.id)).toEqual([]);
+            expect(yield* ledgerBalanceOf(account.id)).toBe(-convertToMicroUnits(5));
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -315,16 +424,7 @@ describe('deposit payout', () => {
                     [deposit.id, card.id]
                 ],
                 ([sourceAccountId, targetAccountId], index) =>
-                    testSeedService.directTransfer({
-                        exchangeRate: 1,
-                        operatedAt: new Date(OPENED_AT.getTime() - (2 - index) * 86_400_000),
-                        sourceAccountId,
-                        sourceAmount: convertToMicroUnits(812),
-                        sourceEntryExchangeRate: 1,
-                        targetAccountId,
-                        targetAmount: convertToMicroUnits(812),
-                        toIban: null
-                    }),
+                    seedTransfer(sourceAccountId, targetAccountId, 812, new Date(OPENED_AT.getTime() - (2 - index) * 86_400_000)),
                 { discard: true }
             );
             yield* Effect.forEach(
@@ -332,22 +432,13 @@ describe('deposit payout', () => {
                 ([principal, payout], index) =>
                     Effect.gen(function* () {
                         const openedAt = new Date(OPENED_AT.getTime() + index * 30 * 86_400_000);
-                        const transfer = (sourceAccountId: number, targetAccountId: number, amount: number, operatedAt: Date) =>
-                            testSeedService.directTransfer({
-                                exchangeRate: 1,
-                                operatedAt,
-                                sourceAccountId,
-                                sourceAmount: convertToMicroUnits(amount),
-                                sourceEntryExchangeRate: 1,
-                                targetAccountId,
-                                targetAmount: convertToMicroUnits(amount),
-                                toIban: null
-                            });
+                        yield* seedTransfer(card.id, deposit.id, principal, openedAt);
+                        const paid = yield* seedTransfer(deposit.id, card.id, payout, new Date(openedAt.getTime() + 86_400_000));
 
-                        yield* transfer(card.id, deposit.id, principal, openedAt);
-                        const paid = yield* transfer(deposit.id, card.id, payout, new Date(openedAt.getTime() + 86_400_000));
-
-                        yield* testSeedService.updateTransaction(paid.id, { externalSource: ExternalSourceEnum.MONOBANK });
+                        yield* testSeedService.updateTransaction(paid.id, {
+                            externalSource: ExternalSourceEnum.MONOBANK,
+                            title: PAYOUT_TITLE
+                        });
                     }),
                 { discard: true }
             );

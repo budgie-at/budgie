@@ -3,6 +3,7 @@ import {
     AccountBalanceRepository,
     AccountRepository,
     AccountTypeEnum,
+    BANK_FEE_CATEGORY_ID,
     Db,
     HistoricalExchangeRateEntityTable,
     TransactionRepository,
@@ -153,12 +154,17 @@ describe('deposit close', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('records a shortfall as an adjustment', () =>
+    it.effect('records a shortfall as a bank fee', () =>
         Effect.gen(function* () {
             const { deposit, destination } = yield* seedDeposit({ interestRate: 10, principalDaysAgo: 90 });
 
             yield* close(deposit.id, destination.id, PRINCIPAL - 100);
 
+            const fees = (yield* (yield* TransactionRepository).findByAccountIdsWithEntries([deposit.id])).filter(
+                transaction => transaction.type === TransactionTypeEnum.EXPENSE
+            );
+
+            expect(fees).toMatchObject([{ entries: [{ categoryId: BANK_FEE_CATEGORY_ID, amount: convertToMicroUnits(100) }] }]);
             expect(yield* ledgerBalanceOf(destination.id)).toBe(convertToMicroUnits(PRINCIPAL - 100));
             yield* assertStoredBalancesMatchLedger(yield* Db);
         }).pipe(Effect.provide(TestLayer))

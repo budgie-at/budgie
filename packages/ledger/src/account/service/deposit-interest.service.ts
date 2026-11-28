@@ -118,12 +118,12 @@ export class DepositInterestService extends Context.Service<DepositInterestServi
             });
         });
 
-        const recordDelta = Effect.fnUntraced(function* (depositAccountId: number, delta: number, isInterest: boolean, operatedAt: Date) {
+        const recordDelta = Effect.fnUntraced(function* (depositAccountId: number, delta: number, isMovement: boolean, operatedAt: Date) {
             if (delta === 0) {
                 return;
             }
 
-            if (isInterest) {
+            if (isMovement) {
                 yield* createDepositMovement(depositAccountId, delta, operatedAt);
             } else {
                 yield* balanceAdjustmentService.create(depositAccountId, delta, operatedAt);
@@ -153,17 +153,8 @@ export class DepositInterestService extends Context.Service<DepositInterestServi
 
         return {
             estimateInterest,
-            recordPayoutDelta: Effect.fn('DepositInterestService.recordPayoutDelta')(
-                function* (depositAccountId: number, delta: number, operatedAt: Date) {
-                    if (delta === 0) {
-                        return;
-                    }
-
-                    yield* createDepositMovement(depositAccountId, delta, operatedAt);
-                    yield* accountBalanceIncrementalService.updateBalancesByAccountIds([depositAccountId]);
-                },
-                effect => Db.transaction(effect)
-            ),
+            recordPayoutDelta: (depositAccountId: number, delta: number, operatedAt: Date) =>
+                Db.transaction(recordDelta(depositAccountId, delta, true, operatedAt)),
             recordGrowth: Effect.fn('DepositInterestService.recordGrowth')(
                 function* (depositAccountId: number, newBalance: number) {
                     const { deposit, timeline } = yield* readTerm(depositAccountId);
@@ -185,11 +176,9 @@ export class DepositInterestService extends Context.Service<DepositInterestServi
                     }
 
                     const ledgerBalance = yield* readLedgerBalance(depositAccountId);
-                    const delta = convertToMicroUnits(amountReceived) - ledgerBalance;
-
                     const now = yield* DateTime.nowAsDate;
 
-                    yield* recordDelta(depositAccountId, delta, isPositiveNumber(delta), now);
+                    yield* recordDelta(depositAccountId, convertToMicroUnits(amountReceived) - ledgerBalance, true, now);
                 },
                 effect => Db.transaction(effect)
             ),

@@ -5,7 +5,6 @@ import {
     BANK_EXTERNAL_SOURCES,
     CategorySourceEnum,
     Db,
-    LanguageEnum,
     PRECISION,
     SettingsRepository,
     TransactionEntryRepository,
@@ -18,7 +17,6 @@ import {
     convertToMicroUnits
 } from '@budgie/contracts';
 import { EntryBaseValuationService, ExchangeRatesService } from '@budgie/market';
-import { differenceInDays } from 'date-fns/differenceInDays';
 import { min } from 'date-fns/min';
 import * as Arr from 'effect/Array';
 import * as Context from 'effect/Context';
@@ -34,6 +32,7 @@ import { buildTransferEntries } from '../../transaction/utils/build-transfer-ent
 import { createTransactionInput } from '../../transaction/utils/create-transaction-input.util';
 import { getTransactionCategoryEntries } from '../../transaction/utils/get-transaction-category-entries.util';
 import { DepositNegativeBalanceError } from '../error/deposit-negative-balance.error';
+import { isDepositPayoutTitle } from '../utils/is-deposit-payout-title.util';
 
 import { AccountBalanceIncrementalService } from './account-balance-incremental.service';
 import { AccountService } from './account.service';
@@ -67,27 +66,6 @@ export class DepositPayoutService extends Context.Service<DepositPayoutService>(
         const entryBaseValuationService = yield* EntryBaseValuationService;
         const amountTolerance = 0.03;
         const plausibleInterestRatio = 0.25;
-        const maturityWindowDays = 7;
-        const payoutPhrases: Record<LanguageEnum, readonly string[]> = {
-            [LanguageEnum.EN]: ['deposit payout', 'deposit maturity', 'deposit repayment', 'deposit closing'],
-            [LanguageEnum.FR]: ['remboursement de dépôt', 'échéance de dépôt', 'versement de dépôt', 'clôture de dépôt'],
-            [LanguageEnum.UK]: ['виплата депозиту', 'повернення депозиту', 'виплата вкладу', 'повернення вкладу', 'закриття депозиту'],
-            [LanguageEnum.DE]: ['festgeld auszahlung', 'auszahlung festgeld', 'festgeld fälligkeit', 'festgeld auflösung'],
-            [LanguageEnum.ES]: ['pago de depósito', 'vencimiento de depósito', 'reembolso de depósito', 'cierre de depósito']
-        };
-
-        const normalize = (value: string) =>
-            value
-                .toLowerCase()
-                .normalize('NFD')
-                .replaceAll(/\p{M}/gu, '')
-                .replaceAll(/[^\p{L}\p{N}]+/gu, ' ')
-                .trim();
-
-        const normalizedPhrases = Object.values(payoutPhrases).flat().map(normalize);
-
-        const isPayoutTitle = (title: string) => normalizedPhrases.some(phrase => ` ${normalize(title)} `.includes(` ${phrase} `));
-
         const isManual = (account: Pick<AccountEntityInterface, 'externalId' | 'externalSource'>) =>
             !isDefined(account.externalId) && !isDefined(account.externalSource);
 
@@ -150,7 +128,7 @@ export class DepositPayoutService extends Context.Service<DepositPayoutService>(
             )).flatMap(transaction => {
                 const entry = findPayoutEntry(transaction);
 
-                return isDefined(entry) ? [{ transaction, entry }] : [];
+                return isDefined(entry) && isDepositPayoutTitle(transaction.title) ? [{ transaction, entry }] : [];
             });
 
             if (isEmptyArray(transactions)) {
@@ -169,12 +147,24 @@ export class DepositPayoutService extends Context.Service<DepositPayoutService>(
             });
         });
 
+        const findExactDepositAmount = (payout: DepositPayoutCandidateInterface, deposit: DepositPayoutTargetInterface) => {
+            if (payout.account.instrumentId === deposit.account.instrumentId) {
+                return payout.entry.amount;
+            }
+
+            return payout.entry.operationInstrumentId === deposit.account.instrumentId && isPositiveNumber(payout.entry.operationAmount)
+                ? payout.entry.operationAmount
+                : null;
+        };
+
         const convertToDepositAmount = Effect.fnUntraced(function* (
             payout: DepositPayoutCandidateInterface,
             deposit: DepositPayoutTargetInterface
         ) {
-            if (payout.account.instrumentId === deposit.account.instrumentId) {
-                return payout.entry.amount;
+            const exactAmount = findExactDepositAmount(payout, deposit);
+
+            if (isDefined(exactAmount)) {
+                return exactAmount;
             }
 
             const rate = yield* entryBaseValuationService.resolveHistoricalBaseExchangeRateOrNull(
@@ -200,24 +190,12 @@ export class DepositPayoutService extends Context.Service<DepositPayoutService>(
             return !isDefined(runnerUp) || runnerUp.distance > best.distance ? best : null;
         };
 
-        const matchDeposit = Effect.fnUntraced(function* (
-            payout: DepositPayoutCandidateInterface,
-            deposit: DepositPayoutTargetInterface,
-            isTitled: boolean
-        ) {
+        const matchDeposit = Effect.fnUntraced(function* (payout: DepositPayoutCandidateInterface, deposit: DepositPayoutTargetInterface) {
             const { operatedAt } = payout.transaction;
-
-            if (deposit.account.id === payout.account.id || deposit.firstPrincipalAt >= operatedAt) {
-                return null;
-            }
-
             const isSameIntegration =
                 isDefined(deposit.account.integrationId) && deposit.account.integrationId === payout.account.integrationId;
-            const isAtMaturity =
-                isDefined(deposit.account.deadline) &&
-                Math.abs(differenceInDays(operatedAt, deposit.account.deadline)) <= maturityWindowDays;
 
-            if (!isTitled && !(isSameIntegration && isAtMaturity)) {
+            if (deposit.account.id === payout.account.id || deposit.firstPrincipalAt >= operatedAt || !isSameIntegration) {
                 return null;
             }
 
@@ -229,17 +207,14 @@ export class DepositPayoutService extends Context.Service<DepositPayoutService>(
 
             const interest = yield* depositInterestService.estimateInterest(deposit.account.id, operatedAt);
             const expected = deposit.balance + interest;
-            const unknownInterest = isTitled && !isPositiveNumber(interest) ? deposit.balance * plausibleInterestRatio : 0;
-            const lowerBound = isTitled ? 0 : expected * (1 - amountTolerance);
-            const upperBound = (expected + unknownInterest) * (1 + amountTolerance);
-            const isSameCurrency = deposit.account.instrumentId === payout.account.instrumentId;
+            const unknownInterest = isPositiveNumber(interest) ? 0 : deposit.balance * plausibleInterestRatio;
 
-            return amount > lowerBound && amount <= upperBound
+            return isPositiveNumber(amount) && amount <= (expected + unknownInterest) * (1 + amountTolerance)
                 ? ({
                       deposit,
                       payout,
                       amount,
-                      rank: (isSameIntegration ? 0 : 2) + (isSameCurrency ? 0 : 1),
+                      rank: deposit.account.instrumentId === payout.account.instrumentId ? 0 : 1,
                       distance: Math.abs(amount - expected) / expected
                   } satisfies DepositPayoutMatchInterface)
                 : null;
@@ -266,7 +241,8 @@ export class DepositPayoutService extends Context.Service<DepositPayoutService>(
                 opening.type !== TransactionTypeEnum.TRANSFER ||
                 !isDefined(receiving) ||
                 !isDefined(source) ||
-                receiving.amount !== deposit.balance
+                receiving.amount !== deposit.balance ||
+                amount >= receiving.amount
             ) {
                 return;
             }
@@ -313,7 +289,7 @@ export class DepositPayoutService extends Context.Service<DepositPayoutService>(
             function* ({ deposit, payout, amount }: DepositPayoutMatchInterface, isFullClose: boolean) {
                 const depositAccountId = deposit.account.id;
                 const { operatedAt } = payout.transaction;
-                const isSameCurrency = payout.account.instrumentId === deposit.account.instrumentId;
+                const isExact = isDefined(findExactDepositAmount(payout, deposit));
 
                 if (!isFullClose) {
                     yield* transactionTransferService.convertIncomeFromAccount(payout.transaction.id, depositAccountId, amount);
@@ -321,14 +297,12 @@ export class DepositPayoutService extends Context.Service<DepositPayoutService>(
                     return;
                 }
 
-                if (isSameCurrency) {
+                if (isExact) {
                     yield* correctCrossCurrencyOpening(deposit, amount, operatedAt);
                 }
 
                 const balance = yield* readBalance(depositAccountId);
-                const delta = isSameCurrency
-                    ? amount - balance
-                    : yield* depositInterestService.estimateInterest(depositAccountId, operatedAt);
+                const delta = isExact ? amount - balance : yield* depositInterestService.estimateInterest(depositAccountId, operatedAt);
 
                 yield* depositInterestService.recordPayoutDelta(depositAccountId, delta, operatedAt);
                 yield* transactionTransferService.convertIncomeFromAccount(payout.transaction.id, depositAccountId, balance + delta);
@@ -341,20 +315,16 @@ export class DepositPayoutService extends Context.Service<DepositPayoutService>(
             let deposits = isDefined(scope) && isEmptyArray(scope.transactionIds) ? [] : yield* findOpenDeposits();
 
             if (isEmptyArray(deposits)) {
-                return 0;
+                return;
             }
 
             const payouts = yield* findPayouts(
                 min(deposits.map(({ firstPrincipalAt }) => firstPrincipalAt)),
                 scope?.transactionIds ?? null
             );
-            let linked = 0;
 
             for (const payout of payouts) {
-                const isTitled = isPayoutTitle(payout.transaction.title);
-                const match = pickClosest(
-                    (yield* Effect.forEach(deposits, deposit => matchDeposit(payout, deposit, isTitled))).filter(isDefined)
-                );
+                const match = pickClosest((yield* Effect.forEach(deposits, deposit => matchDeposit(payout, deposit))).filter(isDefined));
                 const isSettled =
                     isDefined(match) &&
                     (yield* settle(match, match.amount >= match.deposit.balance * (1 - amountTolerance)).pipe(
@@ -363,13 +333,17 @@ export class DepositPayoutService extends Context.Service<DepositPayoutService>(
                     ));
 
                 if (isSettled) {
-                    linked += 1;
                     deposits = yield* findOpenDeposits();
                 }
             }
-
-            return linked;
         });
+
+        const isBankPayoutTransfer = (account: AccountEntityInterface, transaction: TransactionWithEntriesEntityInterface) =>
+            transaction.type === TransactionTypeEnum.TRANSFER &&
+            transaction.fromAccountId === account.id &&
+            isDefined(transaction.externalSource) &&
+            BANK_EXTERNAL_SOURCES.includes(transaction.externalSource) &&
+            isDepositPayoutTitle(transaction.title);
 
         const findOverdrawnPayoutInterest = (
             account: AccountEntityInterface,
@@ -377,7 +351,6 @@ export class DepositPayoutService extends Context.Service<DepositPayoutService>(
         ) => {
             const deficits: DepositPayoutDeficitInterface[] = [];
             let running = 0;
-            let inflow = 0;
 
             for (const transaction of transactions) {
                 const delta = transaction.entries
@@ -387,17 +360,18 @@ export class DepositPayoutService extends Context.Service<DepositPayoutService>(
                     .reduce((sum, entry) => sum + signedAmount(entry), 0);
 
                 running += delta;
-                inflow += Math.max(0, delta);
 
-                if (running < 0 && transaction.type === TransactionTypeEnum.TRANSFER && transaction.fromAccountId === account.id) {
+                if (running < 0) {
+                    if (!isBankPayoutTransfer(account, transaction) || -running > -delta * amountTolerance) {
+                        return [];
+                    }
+
                     deficits.push({ amount: -running, operatedAt: transaction.operatedAt });
                     running = 0;
                 }
             }
 
-            const total = deficits.reduce((sum, deficit) => sum + deficit.amount, 0);
-
-            return running === 0 && isPositiveNumber(total) && total <= inflow * plausibleInterestRatio ? deficits : [];
+            return running === 0 ? deficits : [];
         };
 
         const isPayoutOnlyAccount = (account: AccountEntityInterface, transactions: readonly TransactionWithEntriesEntityInterface[]) =>
@@ -414,11 +388,10 @@ export class DepositPayoutService extends Context.Service<DepositPayoutService>(
             })).filter(isManual);
 
             if (isEmptyArray(accounts)) {
-                return 0;
+                return;
             }
 
             const balances = yield* accountBalanceRepository.getLedgerBalances(accounts.map(({ id }) => id));
-            let repaired = 0;
 
             for (const account of accounts.filter(({ id }) => (balances.get(id) ?? 0) < 0)) {
                 const transactions = yield* transactionRepository.findByAccountIdsWithEntries([account.id]);
@@ -432,11 +405,8 @@ export class DepositPayoutService extends Context.Service<DepositPayoutService>(
                             { discard: true }
                         )
                     );
-                    repaired += 1;
                 }
             }
-
-            return repaired;
         });
 
         const findAdoptablePayout = Effect.fnUntraced(function* (
@@ -518,13 +488,17 @@ export class DepositPayoutService extends Context.Service<DepositPayoutService>(
 
         return {
             reconcile: Effect.fn('DepositPayoutService.reconcile')(function* (scope: ConsolidationScanScopeInterface | null) {
-                const linked = yield* linkPayouts(scope);
-                const repaired = yield* splitOverdrawnPayouts();
-
-                return linked + repaired;
+                yield* linkPayouts(scope);
+                yield* splitOverdrawnPayouts();
             }),
             closeDepositTo: Effect.fn('DepositPayoutService.closeDepositTo')(
                 function* (depositAccountId: number, destinationAccountId: number, amountReceived: number) {
+                    const depositAccount = yield* accountRepository.findById(depositAccountId);
+
+                    if (depositAccount?.isActive === false) {
+                        return;
+                    }
+
                     const adoptable = Number.isFinite(amountReceived)
                         ? yield* findAdoptablePayout(depositAccountId, destinationAccountId, convertToMicroUnits(amountReceived))
                         : null;

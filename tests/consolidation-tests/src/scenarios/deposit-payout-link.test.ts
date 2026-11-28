@@ -1,5 +1,6 @@
 import {
     AccountBalanceRepository,
+    AccountRepository,
     AccountTypeEnum,
     ExternalSourceEnum,
     PRECISION,
@@ -21,6 +22,14 @@ layer(TestLayer)('consolidation/deposit-payout-link', it => {
         Effect.gen(function* () {
             const card = yield* testSeedService.bankSyncAccount('Monobank Black •4321', ExternalSourceEnum.MONOBANK, null);
             const deposit = yield* testSeedService.account({ type: AccountTypeEnum.DEPOSIT, title: 'Term deposit' });
+            const integration = yield* testSeedService.bankIntegration();
+
+            yield* Effect.forEach(
+                [card.id, deposit.id],
+                accountId =>
+                    Effect.flatMap(AccountRepository, repository => repository.updateById(accountId, { integrationId: integration.id })),
+                { discard: true }
+            );
 
             yield* testSeedService.directTransfer({
                 exchangeRate: 1,

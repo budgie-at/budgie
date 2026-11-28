@@ -1,4 +1,5 @@
 import { BANK_EXTERNAL_SOURCES, LanguageEnum, TransactionRepository, TransactionYieldRepository, YieldKindEnum } from '@budgie/contracts';
+import { isDepositPayoutTitle } from '@budgie/ledger';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -48,7 +49,11 @@ export class BankInterestDetectorService extends Context.Service<BankInterestDet
                         BANK_EXTERNAL_SOURCES,
                         likePatterns,
                         scope?.transactionIds ?? null
-                    )).filter(candidate => keywordPattern.test([candidate.title, candidate.comment].filter(isDefined).join(' ')));
+                    )).filter(
+                        candidate =>
+                            keywordPattern.test([candidate.title, candidate.comment].filter(isDefined).join(' ')) &&
+                            !isDepositPayoutTitle(candidate.title)
+                    );
 
                     for (const candidate of candidates) {
                         yield* transactionRepository.updateById(candidate.id, {

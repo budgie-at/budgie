@@ -3,6 +3,7 @@ import {
     AccountBalanceRepository,
     AccountRepository,
     Db,
+    TransactionEntryRepository,
     TransactionReceiptRepository,
     TransactionRepository,
     TransactionTagsRepository,
@@ -40,6 +41,7 @@ export const TestLayer = Layer.mergeAll(
     TransactionReceiptRepository.layer,
     AccountRepository.layer,
     TransactionRepository.layer,
+    TransactionEntryRepository.layer,
     ReceiptMatchService.layer,
     YieldRepository.layer
 ).pipe(
