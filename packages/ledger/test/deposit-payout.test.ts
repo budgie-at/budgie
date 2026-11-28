@@ -317,6 +317,17 @@ describe('deposit payout', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
+    it.effect('links a payout titled in another supported language', () =>
+        Effect.gen(function* () {
+            const { card, deposit } = yield* seedSameCurrencyDeposit;
+            const payout = yield* seedPayout(card.id, 1010, 'Festgeldauszahlung 12 Monate');
+
+            yield* reconcile;
+
+            yield* expectSettled(payout.id, deposit.id, 10);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
     it.effect('leaves an untitled income matching only by amount as income away from maturity', () =>
         Effect.gen(function* () {
             const { card, deposit } = yield* seedSameCurrencyDeposit;
