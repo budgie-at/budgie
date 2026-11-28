@@ -216,7 +216,7 @@ const getExpoConfig = ({ config }) => ({
         ],
         'expo-app-intents',
         './plugins/with-optional-hardware-features',
-        ['./plugins/with-unused-ios-permissions-removed', { keepDevLauncherNetworkAccess: IS_DEV }],
+        './plugins/with-background-fetch-removed',
         ...(!IS_E2E ? ['./plugins/with-icloud-share-acceptance'] : []),
         [
             'expo-widgets',

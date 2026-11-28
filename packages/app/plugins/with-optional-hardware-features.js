@@ -1,6 +1,6 @@
 const { withAndroidManifest } = require('expo/config-plugins');
 
-const OPTIONAL_FEATURES = ['android.hardware.screen.portrait'];
+const OPTIONAL_FEATURES = ['android.hardware.screen.portrait', 'android.hardware.microphone'];
 
 module.exports = config =>
     withAndroidManifest(config, mod => {
