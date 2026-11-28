@@ -290,13 +290,8 @@ const getExpoConfig = ({ config }) => ({
                       {
                           iosBackgroundMode: true,
                           iosMicrophonePermission: 'This app requires access to the microphone to record audio.',
-                          androidPermissions: [
-                              'android.permission.MODIFY_AUDIO_SETTINGS',
-                              'android.permission.FOREGROUND_SERVICE',
-                              'android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK'
-                          ],
-                          androidForegroundService: true,
-                          androidFSTypes: ['mediaPlayback']
+                          androidPermissions: ['android.permission.MODIFY_AUDIO_SETTINGS'],
+                          androidForegroundService: false
                       }
                   ]
               ]
