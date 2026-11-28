@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.194.0](https://github.com/budgie-at/budgie/compare/v6.193.7...v6.194.0) (2026-11-28)
+
+### Features
+
+* **ledger:** link synced deposit payouts to manual deposits ([#2294](https://github.com/budgie-at/budgie/issues/2294)) ([9036b4f](https://github.com/budgie-at/budgie/commit/9036b4f3b8bd06148355e941e9cf313806ca0977)), closes [#2293](https://github.com/budgie-at/budgie/issues/2293)
+
+
 ## [6.193.5](https://github.com/budgie-at/budgie/compare/v6.193.4...v6.193.5) (2026-11-27)
 
 ### Performance Improvements

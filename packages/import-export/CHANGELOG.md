@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.194.0](https://github.com/budgie-at/budgie/compare/v6.193.7...v6.194.0) (2026-11-28)
+
+**Note:** Version bump only for package @budgie/import-export
+
+
+
+
+
 ## [6.193.5](https://github.com/budgie-at/budgie/compare/v6.193.4...v6.193.5) (2026-11-27)
 
 **Note:** Version bump only for package @budgie/import-export
