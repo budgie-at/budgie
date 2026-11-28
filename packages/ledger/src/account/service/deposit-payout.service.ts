@@ -190,12 +190,13 @@ export class DepositPayoutService extends Context.Service<DepositPayoutService>(
             return !isDefined(runnerUp) || runnerUp.distance > best.distance ? best : null;
         };
 
+        const isSameBank = (payout: DepositPayoutCandidateInterface, deposit: DepositPayoutTargetInterface) =>
+            !isDefined(deposit.account.integrationId) || deposit.account.integrationId === payout.account.integrationId;
+
         const matchDeposit = Effect.fnUntraced(function* (payout: DepositPayoutCandidateInterface, deposit: DepositPayoutTargetInterface) {
             const { operatedAt } = payout.transaction;
-            const isSameIntegration =
-                isDefined(deposit.account.integrationId) && deposit.account.integrationId === payout.account.integrationId;
 
-            if (deposit.account.id === payout.account.id || deposit.firstPrincipalAt >= operatedAt || !isSameIntegration) {
+            if (deposit.account.id === payout.account.id || deposit.firstPrincipalAt >= operatedAt || !isSameBank(payout, deposit)) {
                 return null;
             }
 
@@ -421,7 +422,10 @@ export class DepositPayoutService extends Context.Service<DepositPayoutService>(
             }
 
             const payouts = (yield* findPayouts(deposit.firstPrincipalAt, null)).filter(
-                ({ account, transaction }) => account.id === destinationAccountId && transaction.operatedAt > deposit.firstPrincipalAt
+                payout =>
+                    payout.account.id === destinationAccountId &&
+                    payout.transaction.operatedAt > deposit.firstPrincipalAt &&
+                    isSameBank(payout, deposit)
             );
             const matches = yield* Effect.forEach(
                 payouts,

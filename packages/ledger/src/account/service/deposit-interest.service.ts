@@ -178,7 +178,9 @@ export class DepositInterestService extends Context.Service<DepositInterestServi
                     const ledgerBalance = yield* readLedgerBalance(depositAccountId);
                     const now = yield* DateTime.nowAsDate;
 
-                    yield* recordDelta(depositAccountId, convertToMicroUnits(amountReceived) - ledgerBalance, true, now);
+                    const delta = convertToMicroUnits(amountReceived) - ledgerBalance;
+
+                    yield* recordDelta(depositAccountId, delta, isPositiveNumber(delta), now);
                 },
                 effect => Db.transaction(effect)
             ),

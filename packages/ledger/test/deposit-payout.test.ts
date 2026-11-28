@@ -194,6 +194,13 @@ const interestOf = (accountId: number) =>
             .map(transaction => transaction.entries[0].amount)
     );
 
+const expectSettled = (payoutId: number, depositId: number, interest: number) =>
+    Effect.gen(function* () {
+        expect((yield* transactionOf(payoutId))?.type).toBe(TransactionTypeEnum.TRANSFER);
+        expect(yield* interestOf(depositId)).toEqual([convertToMicroUnits(interest)]);
+        yield* expectClosed(depositId);
+    });
+
 describe('deposit payout', () => {
     it.effect('links a titled payout, corrects the estimated cross-currency opening and closes the deposit', () =>
         Effect.gen(function* () {
@@ -253,9 +260,7 @@ describe('deposit payout', () => {
             });
             yield* reconcile;
 
-            expect((yield* transactionOf(payout.id))?.type).toBe(TransactionTypeEnum.TRANSFER);
-            expect(yield* interestOf(deposit.id)).toEqual([convertToMicroUnits(10)]);
-            yield* expectClosed(deposit.id);
+            yield* expectSettled(payout.id, deposit.id, 10);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -283,6 +288,19 @@ describe('deposit payout', () => {
             yield* reconcile;
 
             yield* expectStillIncome(payout.id, deposit.id);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('links a titled payout to a deposit without a bank integration', () =>
+        Effect.gen(function* () {
+            const { card, deposit } = yield* seedSameCurrencyDeposit;
+
+            yield* (yield* AccountRepository).updateById(deposit.id, { integrationId: null });
+            const payout = yield* seedPayout(card.id, 1010, PAYOUT_TITLE);
+
+            yield* reconcile;
+
+            yield* expectSettled(payout.id, deposit.id, 10);
         }).pipe(Effect.provide(TestLayer))
     );
 
