@@ -211,7 +211,7 @@ export class DepositPayoutService extends Context.Service<DepositPayoutService>(
             const unknownInterest = isPositiveNumber(interest) ? 0 : deposit.balance * plausibleInterestRatio;
             const lowerBound = isDefined(findExactDepositAmount(payout, deposit)) ? 0 : deposit.balance * (1 - amountTolerance);
 
-            return amount > lowerBound && amount <= (expected + unknownInterest) * (1 + amountTolerance)
+            return isPositiveNumber(amount) && amount >= lowerBound && amount <= (expected + unknownInterest) * (1 + amountTolerance)
                 ? ({
                       deposit,
                       payout,
