@@ -672,6 +672,21 @@ export class TransactionRepository extends Context.Service<TransactionRepository
                     { operatedAt: 'asc', id: 'asc' }
                 ),
 
+            findIncomesBySourcesSince: (
+                externalSources: readonly ExternalSourceEnum[],
+                since: Date,
+                transactionIds: readonly number[] | null
+            ) =>
+                findVisibleWithLedgerEntries(
+                    {
+                        type: TransactionTypeEnum.INCOME,
+                        operatedAt: { gte: since },
+                        externalSource: { in: [...externalSources] },
+                        ...(isDefined(transactionIds) && { id: { in: [...transactionIds] } })
+                    },
+                    { operatedAt: 'asc', id: 'asc' }
+                ),
+
             findTransfersFromAccountByExternalIdPrefix: (accountId: number, externalIdPrefix: string) =>
                 findVisibleWithLedgerEntries({
                     type: TransactionTypeEnum.TRANSFER,

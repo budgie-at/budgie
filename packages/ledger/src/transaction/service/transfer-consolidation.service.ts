@@ -9,6 +9,7 @@ import { isPositiveNumber } from '@rnw-community/shared';
 import { LedgerWorkload } from '../../@generic/port/ledger-workload.port';
 import { TransferConsolidationBankFlow } from '../../@generic/port/transfer-consolidation-bank-flow.port';
 import { AccountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
+import { DepositPayoutService } from '../../account/service/deposit-payout.service';
 import { InstallmentPlanService } from '../../installment/service/installment-plan.service';
 
 import { TransactionDebtSettlementService } from './transaction-debt-settlement.service';
@@ -28,6 +29,7 @@ export class TransferConsolidationService extends Context.Service<TransferConsol
             const transactionDebtSettlementService = yield* TransactionDebtSettlementService;
             const consolidationCandidateRepository = yield* ConsolidationCandidateRepository;
             const transactionTransferService = yield* TransactionTransferService;
+            const depositPayoutService = yield* DepositPayoutService;
             const exclusive = yield* Semaphore.make(1);
 
             const runExclusive = <A, E, R>(effect: Effect.Effect<A, E, R>) => exclusive.withPermit(ledgerWorkload.runForeground(effect));
@@ -80,6 +82,7 @@ export class TransferConsolidationService extends Context.Service<TransferConsol
                         () => Effect.ignoreCause(accountBalanceIncrementalService.updateAllBalances(true))
                     );
 
+                    yield* depositPayoutService.reconcile(scope);
                     yield* installmentPlanService.attachDueParts();
                     yield* transactionDebtSettlementService.repairDebtPaymentCategories();
                     yield* bankFlow.repair(scope);
@@ -106,7 +109,8 @@ export class TransferConsolidationService extends Context.Service<TransferConsol
             AccountBalanceIncrementalService.layer,
             InstallmentPlanService.layer,
             TransactionDebtSettlementService.layer,
-            TransactionTransferService.layer
+            TransactionTransferService.layer,
+            DepositPayoutService.layer
         ])
     );
 }

@@ -2,6 +2,7 @@ import {
     AccountBalanceRepository,
     AccountNotFoundError,
     AccountRepository,
+    BANK_FEE_CATEGORY_ID,
     CategorySourceEnum,
     Db,
     INVESTMENTS_CATEGORY_ID,
@@ -83,31 +84,33 @@ export class DepositInterestService extends Context.Service<DepositInterestServi
             return accrual + accrue(balance, rate, accruedUntil, to);
         };
 
-        const createInterest = Effect.fnUntraced(function* (depositAccountId: number, amount: number, operatedAt: Date) {
+        const createDepositMovement = Effect.fnUntraced(function* (depositAccountId: number, delta: number, operatedAt: Date) {
+            const isInterest = isPositiveNumber(delta);
+            const amount = Math.abs(delta);
             const valuation = yield* entryBaseValuationService.valueMicroUnitEntry({ accountId: depositAccountId, amount, operatedAt });
             const transaction = yield* transactionRepository.create({
-                type: TransactionTypeEnum.INCOME,
+                type: isInterest ? TransactionTypeEnum.INCOME : TransactionTypeEnum.EXPENSE,
                 title: '',
                 comment: '',
                 externalId: null,
                 externalSource: null,
                 operatedAt,
                 exchangeRate: valuation.baseExchangeRate ?? 1,
-                fromAccountId: null,
-                toAccountId: depositAccountId,
+                fromAccountId: isInterest ? null : depositAccountId,
+                toAccountId: isInterest ? depositAccountId : null,
                 updatedBy: null,
-                yieldKind: YieldKindEnum.INTEREST,
-                yieldSourceAccountId: depositAccountId
+                yieldKind: isInterest ? YieldKindEnum.INTEREST : null,
+                yieldSourceAccountId: isInterest ? depositAccountId : null
             });
 
             yield* transactionEntryRepository.create({
                 accountId: depositAccountId,
                 transactionId: transaction.id,
-                categoryId: INVESTMENTS_CATEGORY_ID,
+                categoryId: isInterest ? INVESTMENTS_CATEGORY_ID : BANK_FEE_CATEGORY_ID,
                 categorySource: CategorySourceEnum.RULE,
                 mccCategoryId: null,
                 amount,
-                type: TransactionEntryTypeEnum.DEBIT,
+                type: isInterest ? TransactionEntryTypeEnum.DEBIT : TransactionEntryTypeEnum.CREDIT,
                 exchangeRate: valuation.baseExchangeRate ?? 1,
                 baseInstrumentId: valuation.baseInstrumentId,
                 baseExchangeRate: valuation.baseExchangeRate,
@@ -115,13 +118,13 @@ export class DepositInterestService extends Context.Service<DepositInterestServi
             });
         });
 
-        const recordDelta = Effect.fnUntraced(function* (depositAccountId: number, delta: number, isInterest: boolean, operatedAt: Date) {
+        const recordDelta = Effect.fnUntraced(function* (depositAccountId: number, delta: number, isMovement: boolean, operatedAt: Date) {
             if (delta === 0) {
                 return;
             }
 
-            if (isInterest) {
-                yield* createInterest(depositAccountId, delta, operatedAt);
+            if (isMovement) {
+                yield* createDepositMovement(depositAccountId, delta, operatedAt);
             } else {
                 yield* balanceAdjustmentService.create(depositAccountId, delta, operatedAt);
             }
@@ -136,7 +139,31 @@ export class DepositInterestService extends Context.Service<DepositInterestServi
             return { deposit, timeline, termStart: timeline.firstPrincipalAt ?? deposit.createdAt };
         });
 
+        const accrueTerm = Effect.fnUntraced(function* (
+            depositAccountId: number,
+            { deposit, timeline, termStart }: Effect.Success<ReturnType<typeof readTerm>>,
+            until: Date
+        ) {
+            const accrualStart = max([termStart, timeline.lastInterestAt ?? termStart]);
+            const accrualEnd = isDefined(deposit.deadline) ? min([until, deposit.deadline]) : until;
+            const movements = yield* yieldRepository.findPositionMovements([depositAccountId]);
+
+            return (
+                Math.round(accrueOverMovements(movements, deposit.interestRate ?? 0, accrualStart, accrualEnd) / centInMicroUnits) *
+                centInMicroUnits
+            );
+        });
+
+        const estimateInterest = Effect.fn('DepositInterestService.estimateInterest')(function* (depositAccountId: number, until: Date) {
+            const term = yield* readTerm(depositAccountId);
+
+            return yield* accrueTerm(depositAccountId, term, until);
+        });
+
         return {
+            estimateInterest,
+            recordPayoutDelta: (depositAccountId: number, delta: number, operatedAt: Date) =>
+                Db.transaction(recordDelta(depositAccountId, delta, true, operatedAt)),
             recordGrowth: Effect.fn('DepositInterestService.recordGrowth')(
                 function* (depositAccountId: number, newBalance: number) {
                     const { deposit, timeline } = yield* readTerm(depositAccountId);
@@ -158,23 +185,20 @@ export class DepositInterestService extends Context.Service<DepositInterestServi
                     }
 
                     const ledgerBalance = yield* readLedgerBalance(depositAccountId);
-                    const delta = convertToMicroUnits(amountReceived) - ledgerBalance;
-
                     const now = yield* DateTime.nowAsDate;
+
+                    const delta = convertToMicroUnits(amountReceived) - ledgerBalance;
 
                     yield* recordDelta(depositAccountId, delta, isPositiveNumber(delta), now);
                 },
                 effect => Db.transaction(effect)
             ),
             getClosePrefill: Effect.fn('DepositInterestService.getClosePrefill')(function* (depositAccountId: number) {
-                const { deposit, timeline, termStart } = yield* readTerm(depositAccountId);
+                const term = yield* readTerm(depositAccountId);
+                const { termStart } = term;
                 const ledgerBalance = yield* readLedgerBalance(depositAccountId);
                 const now = yield* DateTime.nowAsDate;
-                const accrualStart = max([termStart, timeline.lastInterestAt ?? termStart]);
-                const accrualEnd = isDefined(deposit.deadline) ? min([now, deposit.deadline]) : now;
-                const movements = yield* yieldRepository.findPositionMovements([depositAccountId]);
-                const accrual = accrueOverMovements(movements, deposit.interestRate ?? 0, accrualStart, accrualEnd);
-                const expected = ledgerBalance + Math.round(accrual / centInMicroUnits) * centInMicroUnits;
+                const expected = ledgerBalance + (yield* accrueTerm(depositAccountId, term, now));
                 const unassignedInterestIds = yield* transactionYieldRepository.findUnassignedInterestIds(depositAccountId, termStart);
                 const hasUnassignedInterest = isNotEmptyArray(unassignedInterestIds);
 

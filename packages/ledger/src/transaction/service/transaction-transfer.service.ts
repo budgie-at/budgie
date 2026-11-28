@@ -1,18 +1,15 @@
 import {
-    AccountBalanceRepository,
     AccountRepository,
     AccountTypeEnum,
     CategorySourceEnum,
     Db,
     DebtEventRepository,
-    SettingsRepository,
     TransactionEntryCreateEntityInterface,
     TransactionEntryKindEnum,
     TransactionEntryRepository,
     TransactionEntryTypeEnum,
     TransactionRepository,
     TransactionTypeEnum,
-    convertFromMicroUnits,
     convertToMicroUnits
 } from '@budgie/contracts';
 import { EntryBaseValuationService, ExchangeRatesService } from '@budgie/market';
@@ -24,22 +21,16 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { DepositNegativeBalanceError } from '../../account/error/deposit-negative-balance.error';
 import { DepositReceivingAmountMismatchError } from '../../account/error/deposit-receiving-amount-mismatch.error';
 import { AccountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { AccountService } from '../../account/service/account.service';
-import { DepositInterestService } from '../../account/service/deposit-interest.service';
 import { TRANSFER_CONVERSION_ERROR_MESSAGE } from '../constant/transfer-conversion-error-message.constant';
 import { BuildTransferEntryCreateEntityInputInterface } from '../interface/build-transfer-entry-create-entity-input.interface';
 import { TransferConversionResultInterface } from '../interface/transfer-conversion-result.interface';
 import { assertTransferAccountsAreNotDebt } from '../utils/assert-transfer-accounts-are-not-debt.util';
-import { buildTransferEntries } from '../utils/build-transfer-entries.util';
-import { createTransactionInput } from '../utils/create-transaction-input.util';
 import { getTransactionCategoryEntries } from '../utils/get-transaction-category-entries.util';
 import { getTransactionFeeEntries } from '../utils/get-transaction-fee-entries.util';
 import { transactionMapEntryInputToCreateEntity } from '../utils/transaction-map-entry-input-to-create-entity.util';
-
-import { TransferCreationService } from './transfer-creation.service';
 
 import type { ConvertToTransferParamsInterface } from '../interface/convert-to-transfer-params.interface';
 import type { StartDepositInputInterface } from '../interface/start-deposit-input.interface';
@@ -49,18 +40,14 @@ import type { EntryBaseValuationInterface } from '@budgie/market';
 
 export class TransactionTransferService extends Context.Service<TransactionTransferService>()('@budgie/ledger/TransactionTransferService', {
     make: Effect.gen(function* () {
-        const accountBalanceRepository = yield* AccountBalanceRepository;
         const accountRepository = yield* AccountRepository;
         const debtEventRepository = yield* DebtEventRepository;
-        const settingsRepository = yield* SettingsRepository;
         const transactionEntryRepository = yield* TransactionEntryRepository;
         const transactionRepository = yield* TransactionRepository;
         const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
         const accountService = yield* AccountService;
-        const depositInterestService = yield* DepositInterestService;
         const exchangeRatesService = yield* ExchangeRatesService;
         const entryBaseValuationService = yield* EntryBaseValuationService;
-        const transferCreationService = yield* TransferCreationService;
 
         const buildFeeEntryCreateEntity = (
             transactionId: number,
@@ -322,54 +309,6 @@ export class TransactionTransferService extends Context.Service<TransactionTrans
             effect => Db.transaction(effect)
         );
 
-        const resolveDepositCloseExchangeRate = Effect.fnUntraced(function* (
-            fromInstrumentId: number,
-            toInstrumentId: number,
-            amountInMicroUnits: number
-        ) {
-            if (fromInstrumentId === toInstrumentId) {
-                return 1;
-            }
-
-            const conversion = yield* exchangeRatesService.convertStrict(fromInstrumentId, toInstrumentId, amountInMicroUnits);
-
-            if (!isDefined(conversion) || !isPositiveNumber(conversion.amount)) {
-                return yield* Effect.die(new Error('No exchange rate available to close this deposit into the selected account'));
-            }
-
-            return amountInMicroUnits / conversion.amount;
-        });
-
-        const buildDepositCloseTransferInput = Effect.fnUntraced(function* (
-            depositAccountId: number,
-            destinationAccountId: number,
-            amountInMicroUnits: number
-        ) {
-            const [depositAccount, destinationAccount] = yield* Effect.all(
-                [accountService.findByIdOrFail(depositAccountId), accountService.findByIdOrFail(destinationAccountId)],
-                { concurrency: 'unbounded' }
-            );
-            const exchangeRate = yield* resolveDepositCloseExchangeRate(
-                depositAccount.instrumentId,
-                destinationAccount.instrumentId,
-                amountInMicroUnits
-            );
-            const amount = convertFromMicroUnits(amountInMicroUnits);
-
-            return createTransactionInput({
-                type: TransactionTypeEnum.TRANSFER,
-                fromAccountId: depositAccountId,
-                toAccountId: destinationAccountId,
-                amount,
-                exchangeRate,
-                entries: buildTransferEntries({
-                    fromAccountId: depositAccountId,
-                    toAccountId: destinationAccountId,
-                    amount
-                })
-            });
-        });
-
         const convertToTransferAccount = Effect.fn('TransactionTransferService.convertToTransferAccount')(
             function* (transactionId: number, targetAccountId: number) {
                 const transaction = yield* transactionRepository.getByIdWithEntries(transactionId);
@@ -509,52 +448,30 @@ export class TransactionTransferService extends Context.Service<TransactionTrans
                 },
                 effect => Db.transaction(effect)
             ),
-            closeDepositTo: Effect.fn('TransactionTransferService.closeDepositTo')(
-                function* (depositAccountId: number, destinationAccountId: number, amountReceived: number) {
-                    yield* depositInterestService.recordCloseDelta(depositAccountId, amountReceived);
-
-                    const depositBalanceRows = yield* accountBalanceRepository.getByAccountId(depositAccountId);
-                    const depositBalanceMicroUnits = depositBalanceRows.at(0)?.balance ?? 0;
-
-                    if (depositBalanceMicroUnits < 0) {
-                        return yield* DepositNegativeBalanceError.make();
-                    }
-
-                    if (isPositiveNumber(depositBalanceMicroUnits)) {
-                        const transferInput = yield* buildDepositCloseTransferInput(
-                            depositAccountId,
-                            destinationAccountId,
-                            depositBalanceMicroUnits
-                        );
-                        yield* transferCreationService.createInternalTransfer(transferInput);
-                    }
-
-                    yield* accountRepository.updateById(depositAccountId, { isActive: false });
-
-                    const settings = yield* settingsRepository.getSettings();
-                    if (settings.defaultAccountId === depositAccountId) {
-                        yield* settingsRepository.update({ defaultAccountId: null });
-                    }
-                },
-                effect => Db.transaction(effect)
-            )
+            convertIncomeFromAccount: Effect.fn('TransactionTransferService.convertIncomeFromAccount')(function* (
+                transactionId: number,
+                sourceAccountId: number,
+                sourceAmount: number
+            ) {
+                return yield* convertToTransfer(
+                    { id: transactionId, accountId: sourceAccountId, customExchangeRate: 0, feeEntries: [] },
+                    'income',
+                    sourceAmount
+                );
+            })
         };
     })
 }) {
     static readonly layer = Layer.effect(TransactionTransferService, TransactionTransferService.make).pipe(
         Layer.provide([
-            AccountBalanceRepository.layer,
             AccountRepository.layer,
             DebtEventRepository.layer,
-            SettingsRepository.layer,
             TransactionEntryRepository.layer,
             TransactionRepository.layer,
             AccountBalanceIncrementalService.layer,
             AccountService.layer,
-            DepositInterestService.layer,
             ExchangeRatesService.layer,
-            EntryBaseValuationService.layer,
-            TransferCreationService.layer
+            EntryBaseValuationService.layer
         ])
     );
 }
