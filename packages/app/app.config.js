@@ -136,7 +136,6 @@ const getExpoConfig = ({ config }) => ({
         blockedPermissions: [
             'android.permission.ACCESS_WIFI_STATE',
             'android.permission.CAMERA',
-            'android.permission.DETECT_SCREEN_CAPTURE',
             'android.permission.READ_EXTERNAL_STORAGE',
             'android.permission.READ_MEDIA_IMAGES',
             'android.permission.READ_MEDIA_VIDEO',
