@@ -13,6 +13,7 @@ export { BalanceAdjustmentService } from './account/service/balance-adjustment.s
 export { DepositCloseAmountInvalidError } from './account/error/deposit-close-amount-invalid.error';
 export type { DepositClosePrefillInterface } from './account/interface/deposit-close-prefill.interface';
 export { DepositInterestService } from './account/service/deposit-interest.service';
+export { DepositPayoutService } from './account/service/deposit-payout.service';
 export { AccountTransferConversionService } from './account/service/account-transfer-conversion.service';
 export { DebtAccountService } from './account/service/debt-account.service';
 

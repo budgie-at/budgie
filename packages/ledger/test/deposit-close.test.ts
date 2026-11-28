@@ -18,7 +18,7 @@ import * as TestClock from 'effect/testing/TestClock';
 
 import { AccountBalanceIncrementalService } from '../src/account/service/account-balance-incremental.service';
 import { DepositInterestService } from '../src/account/service/deposit-interest.service';
-import { TransactionTransferService } from '../src/transaction/service/transaction-transfer.service';
+import { DepositPayoutService } from '../src/account/service/deposit-payout.service';
 
 import { seed, TestLayer } from './ledger-test-layer';
 
@@ -87,7 +87,7 @@ const ledgerBalanceOf = (accountId: number) =>
 
 const close = (depositAccountId: number, destinationAccountId: number, amountReceived: number) =>
     setNow.pipe(
-        Effect.andThen(TransactionTransferService),
+        Effect.andThen(DepositPayoutService),
         Effect.flatMap(service => service.closeDepositTo(depositAccountId, destinationAccountId, amountReceived))
     );
 

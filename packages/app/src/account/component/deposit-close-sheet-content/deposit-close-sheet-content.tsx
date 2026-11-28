@@ -1,5 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { TransactionTransferService } from '@budgie/ledger';
+import { DepositPayoutService } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { useState } from 'react';
@@ -43,7 +43,7 @@ export const DepositCloseSheetContent = ({ depositAccountId, destinationAccountI
 
     const handleClose = () => {
         void run(
-            Effect.flatMap(TransactionTransferService, service =>
+            Effect.flatMap(DepositPayoutService, service =>
                 service.closeDepositTo(depositAccountId, destinationAccountId, amountReceived)
             ).pipe(Effect.andThen(Effect.sync(() => void dismissAllOrReplace('/'))), toastOnFailure(t`Could not close deposit`))
         );

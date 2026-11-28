@@ -1,4 +1,4 @@
-import { ExternalSourceEnum, LanguageEnum, TransactionRepository, TransactionYieldRepository, YieldKindEnum } from '@budgie/contracts';
+import { BANK_EXTERNAL_SOURCES, LanguageEnum, TransactionRepository, TransactionYieldRepository, YieldKindEnum } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -13,17 +13,6 @@ export class BankInterestDetectorService extends Context.Service<BankInterestDet
         make: Effect.gen(function* () {
             const transactionRepository = yield* TransactionRepository;
             const transactionYieldRepository = yield* TransactionYieldRepository;
-            const nonBankSources = new Set([
-                ExternalSourceEnum.MANUAL,
-                ExternalSourceEnum.APPLE_PAY_AUTOMATION,
-                ExternalSourceEnum.CSV,
-                ExternalSourceEnum.RECEIPT,
-                ExternalSourceEnum.COINBASE,
-                ExternalSourceEnum.BINANCE,
-                ExternalSourceEnum.INZHUR,
-                ExternalSourceEnum.BROKERAGE_FUNDING
-            ]);
-            const bankSources = Object.values(ExternalSourceEnum).filter(source => !nonBankSources.has(source));
             const interestKeywords: Record<LanguageEnum, readonly string[]> = {
                 [LanguageEnum.EN]: ['interest'],
                 [LanguageEnum.UK]: ['відсот', 'процент'],
@@ -56,7 +45,7 @@ export class BankInterestDetectorService extends Context.Service<BankInterestDet
                     }
 
                     const candidates = (yield* transactionYieldRepository.findInterestCandidates(
-                        bankSources,
+                        BANK_EXTERNAL_SOURCES,
                         likePatterns,
                         scope?.transactionIds ?? null
                     )).filter(candidate => keywordPattern.test([candidate.title, candidate.comment].filter(isDefined).join(' ')));
