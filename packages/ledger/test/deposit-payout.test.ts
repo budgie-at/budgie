@@ -264,6 +264,19 @@ describe('deposit payout', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
+    it.effect('leaves a smaller titled payout in another currency without an exact amount as income', () =>
+        Effect.gen(function* () {
+            const { integration, input } = yield* seedSameCurrency;
+            const hryvniaCard = yield* seedCard('Hryvnia card', 1, integration.id);
+            const { deposit } = yield* seedDeposit({ ...input, title: 'Deposit' });
+            const payout = yield* seedPayout(hryvniaCard.id, 10_000, PAYOUT_TITLE);
+
+            yield* reconcile;
+
+            yield* expectStillIncome(payout.id, deposit.id);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
     it.effect('leaves an untitled payout as income', () =>
         Effect.gen(function* () {
             const { card, deposit } = yield* seedSameCurrencyDeposit;
