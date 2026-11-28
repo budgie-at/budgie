@@ -155,15 +155,12 @@ const seedPayoutBeforeTopUp = Effect.gen(function* () {
     const { card, deposit } = yield* seedSameCurrencyDeposit;
     const payout = yield* seedPayout(card.id, 1020, PAYOUT_TITLE);
 
-    yield* (yield* seed).directTransfer({
-        exchangeRate: 1,
+    yield* (yield* seed).manualExpense({
+        accountId: deposit.id,
+        amount: convertToMicroUnits(20),
         operatedAt: new Date(PAID_AT.getTime() + 86_400_000),
-        sourceAccountId: card.id,
-        sourceAmount: convertToMicroUnits(20),
-        sourceEntryExchangeRate: 1,
-        targetAccountId: deposit.id,
-        targetAmount: convertToMicroUnits(20),
-        toIban: null
+        title: 'Bonus',
+        type: TransactionTypeEnum.INCOME
     });
     yield* (yield* AccountBalanceIncrementalService).updateBalancesByAccountIds([card.id, deposit.id]);
 

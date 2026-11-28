@@ -13,6 +13,7 @@ import {
     TransactionTypeEnum,
     TransactionYieldRepository,
     YieldKindEnum,
+    YieldRepository,
     convertFromMicroUnits,
     convertToMicroUnits
 } from '@budgie/contracts';
@@ -57,6 +58,7 @@ export class DepositPayoutService extends Context.Service<DepositPayoutService>(
         const transactionRepository = yield* TransactionRepository;
         const transactionEntryRepository = yield* TransactionEntryRepository;
         const transactionYieldRepository = yield* TransactionYieldRepository;
+        const yieldRepository = yield* YieldRepository;
         const accountService = yield* AccountService;
         const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
         const depositInterestService = yield* DepositInterestService;
@@ -104,14 +106,27 @@ export class DepositPayoutService extends Context.Service<DepositPayoutService>(
             }
 
             const balances = yield* accountBalanceRepository.getLedgerBalances(accounts.map(({ id }) => id));
+            const lastMovementAt = new Map(
+                (yield* yieldRepository.findPositionMovements(accounts.map(({ id }) => id))).map(({ accountId, operatedAt }) => [
+                    accountId,
+                    operatedAt
+                ])
+            );
             const deposits = yield* Effect.forEach(
                 accounts,
                 Effect.fnUntraced(function* (account) {
                     const balance = balances.get(account.id) ?? 0;
-                    const { firstPrincipalAt, lastBalanceEventAt } = yield* transactionYieldRepository.findDepositYieldTimeline(account.id);
+                    const { firstPrincipalAt } = yield* transactionYieldRepository.findDepositYieldTimeline(account.id);
 
                     return isPositiveNumber(balance) && isDefined(firstPrincipalAt)
-                        ? [{ account, balance, firstPrincipalAt, lastBalanceEventAt } satisfies DepositPayoutTargetInterface]
+                        ? [
+                              {
+                                  account,
+                                  balance,
+                                  firstPrincipalAt,
+                                  lastMovementAt: lastMovementAt.get(account.id) ?? null
+                              } satisfies DepositPayoutTargetInterface
+                          ]
                         : [];
                 })
             );
@@ -193,7 +208,7 @@ export class DepositPayoutService extends Context.Service<DepositPayoutService>(
             !isDefined(deposit.account.integrationId) || deposit.account.integrationId === payout.account.integrationId;
 
         const isBalanceFinalAt = (deposit: DepositPayoutTargetInterface, operatedAt: Date) =>
-            !isDefined(deposit.lastBalanceEventAt) || deposit.lastBalanceEventAt <= operatedAt;
+            !isDefined(deposit.lastMovementAt) || deposit.lastMovementAt <= operatedAt;
 
         const matchDeposit = Effect.fnUntraced(function* (payout: DepositPayoutCandidateInterface, deposit: DepositPayoutTargetInterface) {
             const { operatedAt } = payout.transaction;
@@ -547,6 +562,7 @@ export class DepositPayoutService extends Context.Service<DepositPayoutService>(
             TransactionRepository.layer,
             TransactionEntryRepository.layer,
             TransactionYieldRepository.layer,
+            YieldRepository.layer,
             AccountService.layer,
             AccountBalanceIncrementalService.layer,
             DepositInterestService.layer,
