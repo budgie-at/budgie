@@ -42,12 +42,28 @@ const depositPayoutPhrases: Record<LanguageEnum, readonly string[]> = {
     ]
 };
 
-const nonPayoutStems: Record<LanguageEnum, readonly string[]> = {
-    [LanguageEnum.EN]: ['interest', 'guarantee', 'security deposit'],
-    [LanguageEnum.FR]: ['interet', 'garantie'],
-    [LanguageEnum.UK]: ['відсот', 'процент', 'застав', 'оренд'],
-    [LanguageEnum.DE]: ['zins', 'kaution'],
-    [LanguageEnum.ES]: ['interes', 'garantia', 'fianza']
+const interestStems: Record<LanguageEnum, readonly string[]> = {
+    [LanguageEnum.EN]: ['interest'],
+    [LanguageEnum.FR]: ['interet'],
+    [LanguageEnum.UK]: ['відсот', 'процент'],
+    [LanguageEnum.DE]: ['zins'],
+    [LanguageEnum.ES]: ['interes']
+};
+
+const principalStems: Record<LanguageEnum, readonly string[]> = {
+    [LanguageEnum.EN]: ['principal'],
+    [LanguageEnum.FR]: ['capital'],
+    [LanguageEnum.UK]: ['тіло', 'основн'],
+    [LanguageEnum.DE]: ['kapital'],
+    [LanguageEnum.ES]: ['capital']
+};
+
+const guaranteeStems: Record<LanguageEnum, readonly string[]> = {
+    [LanguageEnum.EN]: ['guarantee', 'security deposit'],
+    [LanguageEnum.FR]: ['garantie'],
+    [LanguageEnum.UK]: ['застав', 'оренд'],
+    [LanguageEnum.DE]: ['kaution'],
+    [LanguageEnum.ES]: ['garantia', 'fianza']
 };
 
 const normalize = (value: string) =>
@@ -58,15 +74,24 @@ const normalize = (value: string) =>
         .replaceAll(/[^\p{L}\p{N}]+/gu, ' ')
         .trim();
 
-const normalizedPhrases = Object.values(depositPayoutPhrases).flat().map(normalize);
+const normalizeAll = (table: Record<LanguageEnum, readonly string[]>) => Object.values(table).flat().map(normalize);
 
-const normalizedNonPayoutStems = Object.values(nonPayoutStems).flat().map(normalize);
+const normalizedPhrases = normalizeAll(depositPayoutPhrases);
+
+const normalizedInterestStems = normalizeAll(interestStems);
+
+const normalizedPrincipalStems = normalizeAll(principalStems);
+
+const normalizedGuaranteeStems = normalizeAll(guaranteeStems);
+
+const containsAny = (title: string, stems: readonly string[]) => stems.some(stem => title.includes(stem));
 
 export const isDepositPayoutTitle = (title: string) => {
     const normalizedTitle = ` ${normalize(title)} `;
 
     return (
         normalizedPhrases.some(phrase => normalizedTitle.includes(` ${phrase} `)) &&
-        !normalizedNonPayoutStems.some(stem => normalizedTitle.includes(stem))
+        !containsAny(normalizedTitle, normalizedGuaranteeStems) &&
+        (!containsAny(normalizedTitle, normalizedInterestStems) || containsAny(normalizedTitle, normalizedPrincipalStems))
     );
 };

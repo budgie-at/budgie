@@ -15,7 +15,10 @@ describe('isDepositPayoutTitle', () => {
         'Vencimiento plazo fijo',
         'Cancelación de plazo fijo 12 meses',
         'Remboursement du compte à terme',
-        'Cancelación de depósito'
+        'Cancelación de depósito',
+        'Deposit payout principal and interest',
+        'Виплата депозиту: тіло та відсотки',
+        'Festgeldauszahlung Kapital und Zinsen'
     ])('recognises the deposit payout "%s"', title => {
         expect(isDepositPayoutTitle(title)).toBe(true);
     });

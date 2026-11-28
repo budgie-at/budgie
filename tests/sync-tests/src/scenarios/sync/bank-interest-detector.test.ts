@@ -73,6 +73,19 @@ const detectScoped = (scope: ConsolidationScanScopeInterface | null) =>
 const detect = detectScoped(null);
 
 describe('sync/bank-interest-detector', () => {
+    it.effect('tags interest-only deposit maturity wording and leaves combined principal payouts to the payout matcher', () =>
+        Effect.gen(function* () {
+            const { bank } = yield* seedBankWithPositions(1);
+            const interestOnly = yield* seedIncome(bank.id, 'maturity-interest', 'Interest on deposit maturity');
+            const combined = yield* seedIncome(bank.id, 'maturity-payout', 'Deposit maturity principal and interest');
+
+            yield* detect;
+
+            expect((yield* readTag(interestOnly.id)).yieldKind).toBe(YieldKindEnum.INTEREST);
+            expect((yield* readTag(combined.id)).yieldKind).toBeNull();
+        }).pipe(Effect.provide(TestLayer))
+    );
+
     it.effect('tags bank interest with the single same-integration deposit and the Investments category', () =>
         Effect.gen(function* () {
             const { bank, positions } = yield* seedBankWithPositions(1);

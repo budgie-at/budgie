@@ -151,6 +151,25 @@ const seedSameCurrencyDeposit = Effect.gen(function* () {
     return { card, deposit };
 });
 
+const seedPayoutBeforeTopUp = Effect.gen(function* () {
+    const { card, deposit } = yield* seedSameCurrencyDeposit;
+    const payout = yield* seedPayout(card.id, 1020, PAYOUT_TITLE);
+
+    yield* (yield* seed).directTransfer({
+        exchangeRate: 1,
+        operatedAt: new Date(PAID_AT.getTime() + 86_400_000),
+        sourceAccountId: card.id,
+        sourceAmount: convertToMicroUnits(20),
+        sourceEntryExchangeRate: 1,
+        targetAccountId: deposit.id,
+        targetAmount: convertToMicroUnits(20),
+        toIban: null
+    });
+    yield* (yield* AccountBalanceIncrementalService).updateBalancesByAccountIds([card.id, deposit.id]);
+
+    return { card, deposit, payout };
+});
+
 const reconcile = Effect.flatMap(DepositPayoutService, service => service.reconcile(null));
 
 const closeDepositTo = (depositAccountId: number, destinationAccountId: number, amountReceived: number) =>
@@ -317,6 +336,17 @@ describe('deposit payout', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
+    it.effect('links a combined principal and interest payout', () =>
+        Effect.gen(function* () {
+            const { card, deposit } = yield* seedSameCurrencyDeposit;
+            const payout = yield* seedPayout(card.id, 1010, 'Deposit maturity principal and interest');
+
+            yield* reconcile;
+
+            yield* expectSettled(payout.id, deposit.id, 10);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
     it.effect('links a payout titled in another supported language', () =>
         Effect.gen(function* () {
             const { card, deposit } = yield* seedSameCurrencyDeposit;
@@ -379,25 +409,25 @@ describe('deposit payout', () => {
 
     it.effect('leaves a delayed payout as income when the deposit was topped up after it', () =>
         Effect.gen(function* () {
-            const { card, deposit } = yield* seedSameCurrencyDeposit;
-            const payout = yield* seedPayout(card.id, 1020, PAYOUT_TITLE);
+            const { deposit, payout } = yield* seedPayoutBeforeTopUp;
 
-            yield* (yield* seed).directTransfer({
-                exchangeRate: 1,
-                operatedAt: new Date(PAID_AT.getTime() + 86_400_000),
-                sourceAccountId: card.id,
-                sourceAmount: convertToMicroUnits(20),
-                sourceEntryExchangeRate: 1,
-                targetAccountId: deposit.id,
-                targetAmount: convertToMicroUnits(20),
-                toIban: null
-            });
-            yield* (yield* AccountBalanceIncrementalService).updateBalancesByAccountIds([card.id, deposit.id]);
             yield* reconcile;
 
             expect((yield* transactionOf(payout.id))?.type).toBe(TransactionTypeEnum.INCOME);
             expect(yield* ledgerBalanceOf(deposit.id)).toBe(convertToMicroUnits(1020));
             expect(yield* isActive(deposit.id)).toBe(true);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('does not adopt a payout dated before a later top-up when the deposit is closed by hand', () =>
+        Effect.gen(function* () {
+            const { card, deposit, payout } = yield* seedPayoutBeforeTopUp;
+
+            yield* closeDepositTo(deposit.id, card.id, 1020);
+
+            expect((yield* transactionOf(payout.id))?.type).toBe(TransactionTypeEnum.INCOME);
+            expect(yield* ledgerBalanceOf(deposit.id)).toBe(0);
+            yield* assertStoredBalancesMatchLedger(yield* Db);
         }).pipe(Effect.provide(TestLayer))
     );
 
