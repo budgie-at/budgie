@@ -49,7 +49,7 @@ function simlockTarget(platform: 'ios' | 'android', device: string, sessionPrefi
             bundleId: BUNDLE_ID,
             // E2E_APP_PATH: set by mobile-ci's e2e job (and by the local runner scripts).
             appPath: process.env.E2E_APP_PATH ?? env('BUDGIE_APP_PATH'),
-            permissions: platform === 'ios' ? { contacts: 'grant', microphone: 'grant' } : { contacts: 'grant' }
+            ...(platform === 'ios' && { permissions: { contacts: 'grant', microphone: 'grant' } })
         }
     };
 }

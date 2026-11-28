@@ -12,7 +12,7 @@ export const BUNDLE_ID =
 
 const ANDROID_CONTAINER = `/data/data/${BUNDLE_ID}`;
 const ANDROID_FILES = `${ANDROID_CONTAINER}/files`;
-const ANDROID_PERMISSIONS = ['READ_CONTACTS', 'WRITE_CONTACTS', 'POST_NOTIFICATIONS'];
+const ANDROID_PERMISSIONS = ['READ_CONTACTS', 'POST_NOTIFICATIONS'];
 
 export const documentsOf = (container: string): string => (container === ANDROID_CONTAINER ? ANDROID_FILES : `${container}/Documents`);
 
