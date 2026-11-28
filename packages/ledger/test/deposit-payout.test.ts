@@ -192,9 +192,11 @@ describe('deposit payout', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('links an untitled payout by amount and books the excess as interest', () =>
+    it.effect('links an untitled payout at maturity by amount and books the excess as interest', () =>
         Effect.gen(function* () {
             const { card, deposit } = yield* seedSameCurrencyDeposit;
+
+            yield* (yield* AccountRepository).updateById(deposit.id, { deadline: PAID_AT });
             const payout = yield* seedPayout(card.id, 1012.5, 'Monobank');
 
             yield* reconcile;
@@ -202,6 +204,19 @@ describe('deposit payout', () => {
             expect((yield* transactionOf(payout.id))?.type).toBe(TransactionTypeEnum.TRANSFER);
             expect(yield* interestOf(deposit.id)).toEqual([convertToMicroUnits(12.5)]);
             yield* expectClosed(deposit.id);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('leaves an untitled income matching only by amount as income away from maturity', () =>
+        Effect.gen(function* () {
+            const { card, deposit } = yield* seedSameCurrencyDeposit;
+            const salary = yield* seedPayout(card.id, 1000, 'Salary');
+
+            yield* reconcile;
+
+            expect((yield* transactionOf(salary.id))?.type).toBe(TransactionTypeEnum.INCOME);
+            expect(yield* ledgerBalanceOf(deposit.id)).toBe(convertToMicroUnits(1000));
+            expect(yield* isActive(deposit.id)).toBe(true);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -242,7 +257,7 @@ describe('deposit payout', () => {
             const far = yield* seedDeposit({ ...input, title: 'Far' });
             const close = yield* seedDeposit({ ...input, title: 'Close', sourceAmount: 1020, receivedAmount: 1020 });
 
-            yield* seedPayout(card.id, 1019, 'Monobank');
+            yield* seedPayout(card.id, 1019, PAYOUT_TITLE);
             yield* reconcile;
 
             expect(yield* ledgerBalanceOf(close.deposit.id)).toBe(0);
@@ -294,6 +309,24 @@ describe('deposit payout', () => {
             ];
 
             yield* (yield* AccountRepository).updateById(deposit.id, { integrationId: integration.id });
+            yield* Effect.forEach(
+                [
+                    [card.id, deposit.id],
+                    [deposit.id, card.id]
+                ],
+                ([sourceAccountId, targetAccountId], index) =>
+                    testSeedService.directTransfer({
+                        exchangeRate: 1,
+                        operatedAt: new Date(OPENED_AT.getTime() - (2 - index) * 86_400_000),
+                        sourceAccountId,
+                        sourceAmount: convertToMicroUnits(812),
+                        sourceEntryExchangeRate: 1,
+                        targetAccountId,
+                        targetAmount: convertToMicroUnits(812),
+                        toIban: null
+                    }),
+                { discard: true }
+            );
             yield* Effect.forEach(
                 legs,
                 ([principal, payout], index) =>

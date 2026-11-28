@@ -18,6 +18,7 @@ import {
     convertToMicroUnits
 } from '@budgie/contracts';
 import { EntryBaseValuationService, ExchangeRatesService } from '@budgie/market';
+import { differenceInDays } from 'date-fns/differenceInDays';
 import { min } from 'date-fns/min';
 import * as Arr from 'effect/Array';
 import * as Context from 'effect/Context';
@@ -66,6 +67,7 @@ export class DepositPayoutService extends Context.Service<DepositPayoutService>(
         const entryBaseValuationService = yield* EntryBaseValuationService;
         const amountTolerance = 0.03;
         const plausibleInterestRatio = 0.25;
+        const maturityWindowDays = 7;
         const payoutPhrases: Record<LanguageEnum, readonly string[]> = {
             [LanguageEnum.EN]: ['deposit payout', 'deposit maturity', 'deposit repayment', 'deposit closing'],
             [LanguageEnum.FR]: ['remboursement de dépôt', 'échéance de dépôt', 'versement de dépôt', 'clôture de dépôt'],
@@ -88,9 +90,6 @@ export class DepositPayoutService extends Context.Service<DepositPayoutService>(
 
         const isManual = (account: Pick<AccountEntityInterface, 'externalId' | 'externalSource'>) =>
             !isDefined(account.externalId) && !isDefined(account.externalSource);
-
-        const isBankSourced = (transaction: Pick<TransactionWithEntriesEntityInterface, 'externalSource'>) =>
-            BANK_EXTERNAL_SOURCES.some(source => source === transaction.externalSource);
 
         const findPayoutEntry = (transaction: TransactionWithEntriesEntityInterface) => {
             const entries = getTransactionCategoryEntries(transaction.entries);
@@ -212,6 +211,16 @@ export class DepositPayoutService extends Context.Service<DepositPayoutService>(
                 return null;
             }
 
+            const isSameIntegration =
+                isDefined(deposit.account.integrationId) && deposit.account.integrationId === payout.account.integrationId;
+            const isAtMaturity =
+                isDefined(deposit.account.deadline) &&
+                Math.abs(differenceInDays(operatedAt, deposit.account.deadline)) <= maturityWindowDays;
+
+            if (!isTitled && !(isSameIntegration && isAtMaturity)) {
+                return null;
+            }
+
             const amount = yield* convertToDepositAmount(payout, deposit);
 
             if (!isDefined(amount)) {
@@ -223,8 +232,6 @@ export class DepositPayoutService extends Context.Service<DepositPayoutService>(
             const unknownInterest = isTitled && !isPositiveNumber(interest) ? deposit.balance * plausibleInterestRatio : 0;
             const lowerBound = isTitled ? 0 : expected * (1 - amountTolerance);
             const upperBound = (expected + unknownInterest) * (1 + amountTolerance);
-            const isSameIntegration =
-                isDefined(deposit.account.integrationId) && deposit.account.integrationId === payout.account.integrationId;
             const isSameCurrency = deposit.account.instrumentId === payout.account.instrumentId;
 
             return amount > lowerBound && amount <= upperBound
@@ -374,7 +381,9 @@ export class DepositPayoutService extends Context.Service<DepositPayoutService>(
 
             for (const transaction of transactions) {
                 const delta = transaction.entries
-                    .filter(entry => entry.accountId === account.id)
+                    .filter(
+                        entry => entry.accountId === account.id && !isDefined(entry.originalTransactionId) && !isDefined(entry.deletedAt)
+                    )
                     .reduce((sum, entry) => sum + signedAmount(entry), 0);
 
                 running += delta;
@@ -395,8 +404,7 @@ export class DepositPayoutService extends Context.Service<DepositPayoutService>(
             account.type === AccountTypeEnum.DEPOSIT ||
             transactions.every(
                 transaction =>
-                    (transaction.type === TransactionTypeEnum.TRANSFER &&
-                        (transaction.toAccountId === account.id || isBankSourced(transaction))) ||
+                    transaction.type === TransactionTypeEnum.TRANSFER ||
                     (transaction.type === TransactionTypeEnum.INCOME && transaction.yieldKind === YieldKindEnum.INTEREST)
             );
 
