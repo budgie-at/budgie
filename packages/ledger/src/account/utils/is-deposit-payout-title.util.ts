@@ -9,6 +9,9 @@ const depositPayoutPhrases: Record<LanguageEnum, readonly string[]> = {
         'remboursement dépôt à terme',
         'échéance compte à terme',
         'remboursement compte à terme',
+        'remboursement du compte à terme',
+        'remboursement du dépôt à terme',
+        'échéance du compte à terme',
         'clôture compte à terme'
     ],
     [LanguageEnum.UK]: ['виплата депозиту', 'виплата вкладу', 'закриття депозиту', 'закриття вкладу', 'завершення депозиту'],
@@ -34,8 +37,17 @@ const depositPayoutPhrases: Record<LanguageEnum, readonly string[]> = {
         'vencimiento plazo fijo',
         'vencimiento de plazo fijo',
         'cancelación plazo fijo',
+        'cancelación de plazo fijo',
         'liquidación plazo fijo'
     ]
+};
+
+const nonPayoutStems: Record<LanguageEnum, readonly string[]> = {
+    [LanguageEnum.EN]: ['interest', 'guarantee', 'security deposit'],
+    [LanguageEnum.FR]: ['interet', 'garantie'],
+    [LanguageEnum.UK]: ['відсот', 'процент', 'застав', 'оренд'],
+    [LanguageEnum.DE]: ['zins', 'kaution'],
+    [LanguageEnum.ES]: ['interes', 'garantia', 'fianza']
 };
 
 const normalize = (value: string) =>
@@ -48,8 +60,13 @@ const normalize = (value: string) =>
 
 const normalizedPhrases = Object.values(depositPayoutPhrases).flat().map(normalize);
 
+const normalizedNonPayoutStems = Object.values(nonPayoutStems).flat().map(normalize);
+
 export const isDepositPayoutTitle = (title: string) => {
     const normalizedTitle = ` ${normalize(title)} `;
 
-    return normalizedPhrases.some(phrase => normalizedTitle.includes(` ${phrase} `));
+    return (
+        normalizedPhrases.some(phrase => normalizedTitle.includes(` ${phrase} `)) &&
+        !normalizedNonPayoutStems.some(stem => normalizedTitle.includes(stem))
+    );
 };

@@ -13,6 +13,8 @@ describe('isDepositPayoutTitle', () => {
         'Festgeldauszahlung',
         'Rückzahlung Festgeld 12 Monate',
         'Vencimiento plazo fijo',
+        'Cancelación de plazo fijo 12 meses',
+        'Remboursement du compte à terme',
         'Cancelación de depósito'
     ])('recognises the deposit payout "%s"', title => {
         expect(isDepositPayoutTitle(title)).toBe(true);
@@ -26,7 +28,11 @@ describe('isDepositPayoutTitle', () => {
         'Devolución fianza',
         'Повернення депозиту за оренду',
         'Виплата відсотків за депозитом',
-        'Zinsen Festgeld'
+        'Zinsen Festgeld',
+        'Matured deposit interest',
+        'Cancelación de depósito en garantía',
+        'Festgeldauszahlung Zinsgutschrift',
+        'Interest on deposit maturity'
     ])('ignores the unrelated income "%s"', title => {
         expect(isDepositPayoutTitle(title)).toBe(false);
     });

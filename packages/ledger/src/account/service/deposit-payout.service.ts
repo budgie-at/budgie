@@ -65,7 +65,6 @@ export class DepositPayoutService extends Context.Service<DepositPayoutService>(
         const exchangeRatesService = yield* ExchangeRatesService;
         const entryBaseValuationService = yield* EntryBaseValuationService;
         const amountTolerance = 0.03;
-        const plausibleInterestRatio = 0.25;
         const isManual = (account: Pick<AccountEntityInterface, 'externalId' | 'externalSource'>) =>
             !isDefined(account.externalId) && !isDefined(account.externalSource);
 
@@ -109,10 +108,10 @@ export class DepositPayoutService extends Context.Service<DepositPayoutService>(
                 accounts,
                 Effect.fnUntraced(function* (account) {
                     const balance = balances.get(account.id) ?? 0;
-                    const { firstPrincipalAt } = yield* transactionYieldRepository.findDepositYieldTimeline(account.id);
+                    const { firstPrincipalAt, lastBalanceEventAt } = yield* transactionYieldRepository.findDepositYieldTimeline(account.id);
 
                     return isPositiveNumber(balance) && isDefined(firstPrincipalAt)
-                        ? [{ account, balance, firstPrincipalAt } satisfies DepositPayoutTargetInterface]
+                        ? [{ account, balance, firstPrincipalAt, lastBalanceEventAt } satisfies DepositPayoutTargetInterface]
                         : [];
                 })
             );
@@ -196,7 +195,12 @@ export class DepositPayoutService extends Context.Service<DepositPayoutService>(
         const matchDeposit = Effect.fnUntraced(function* (payout: DepositPayoutCandidateInterface, deposit: DepositPayoutTargetInterface) {
             const { operatedAt } = payout.transaction;
 
-            if (deposit.account.id === payout.account.id || deposit.firstPrincipalAt >= operatedAt || !isSameBank(payout, deposit)) {
+            if (
+                deposit.account.id === payout.account.id ||
+                deposit.firstPrincipalAt >= operatedAt ||
+                (isDefined(deposit.lastBalanceEventAt) && deposit.lastBalanceEventAt > operatedAt) ||
+                !isSameBank(payout, deposit)
+            ) {
                 return null;
             }
 
@@ -208,15 +212,14 @@ export class DepositPayoutService extends Context.Service<DepositPayoutService>(
 
             const interest = yield* depositInterestService.estimateInterest(deposit.account.id, operatedAt);
             const expected = deposit.balance + interest;
-            const unknownInterest = isPositiveNumber(interest) ? 0 : deposit.balance * plausibleInterestRatio;
 
-            return amount >= deposit.balance * (1 - amountTolerance) && amount <= (expected + unknownInterest) * (1 + amountTolerance)
+            return amount >= deposit.balance * (1 - amountTolerance) && amount <= expected * (1 + amountTolerance)
                 ? ({
                       deposit,
                       payout,
                       amount,
                       rank: deposit.account.instrumentId === payout.account.instrumentId ? 0 : 1,
-                      distance: Math.abs(amount - expected)
+                      distance: (Math.abs(amount - expected) * payout.entry.amount) / amount
                   } satisfies DepositPayoutMatchInterface)
                 : null;
         });
