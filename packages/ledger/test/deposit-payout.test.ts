@@ -355,18 +355,37 @@ describe('deposit payout', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('treats a smaller titled payout as a partial withdrawal and keeps the deposit open', () =>
+    it.effect('leaves an interest-only titled credit as income and keeps the principal', () =>
         Effect.gen(function* () {
             const { card, deposit } = yield* seedSameCurrencyDeposit;
-            const payout = yield* seedPayout(card.id, 300, PAYOUT_TITLE);
+            const payout = yield* seedPayout(card.id, 10, 'Interest on deposit maturity');
 
             yield* reconcile;
 
-            expect((yield* transactionOf(payout.id))?.type).toBe(TransactionTypeEnum.TRANSFER);
-            expect(yield* interestOf(deposit.id)).toEqual([]);
-            expect(yield* ledgerBalanceOf(deposit.id)).toBe(convertToMicroUnits(700));
-            expect(yield* isActive(deposit.id)).toBe(true);
-            yield* assertStoredBalancesMatchLedger(yield* Db);
+            yield* expectStillIncome(payout.id, deposit.id);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('leaves a delayed payout as income when the deposit was topped up after it', () =>
+        Effect.gen(function* () {
+            const { card, deposit } = yield* seedSameCurrencyDeposit;
+            const payout = yield* seedPayout(card.id, 1050, PAYOUT_TITLE);
+
+            yield* (yield* seed).directTransfer({
+                exchangeRate: 1,
+                operatedAt: new Date(PAID_AT.getTime() + 86_400_000),
+                sourceAccountId: card.id,
+                sourceAmount: convertToMicroUnits(1000),
+                sourceEntryExchangeRate: 1,
+                targetAccountId: deposit.id,
+                targetAmount: convertToMicroUnits(1000),
+                toIban: null
+            });
+            yield* (yield* AccountBalanceIncrementalService).updateBalancesByAccountIds([card.id, deposit.id]);
+            yield* reconcile;
+
+            expect((yield* transactionOf(payout.id))?.type).toBe(TransactionTypeEnum.INCOME);
+            expect(yield* ledgerBalanceOf(deposit.id)).toBe(convertToMicroUnits(2000));
         }).pipe(Effect.provide(TestLayer))
     );
 

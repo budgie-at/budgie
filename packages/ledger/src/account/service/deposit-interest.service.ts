@@ -139,8 +139,11 @@ export class DepositInterestService extends Context.Service<DepositInterestServi
             return { deposit, timeline, termStart: timeline.firstPrincipalAt ?? deposit.createdAt };
         });
 
-        const estimateInterest = Effect.fn('DepositInterestService.estimateInterest')(function* (depositAccountId: number, until: Date) {
-            const { deposit, timeline, termStart } = yield* readTerm(depositAccountId);
+        const accrueTerm = Effect.fnUntraced(function* (
+            depositAccountId: number,
+            { deposit, timeline, termStart }: Effect.Success<ReturnType<typeof readTerm>>,
+            until: Date
+        ) {
             const accrualStart = max([termStart, timeline.lastInterestAt ?? termStart]);
             const accrualEnd = isDefined(deposit.deadline) ? min([until, deposit.deadline]) : until;
             const movements = yield* yieldRepository.findPositionMovements([depositAccountId]);
@@ -149,6 +152,12 @@ export class DepositInterestService extends Context.Service<DepositInterestServi
                 Math.round(accrueOverMovements(movements, deposit.interestRate ?? 0, accrualStart, accrualEnd) / centInMicroUnits) *
                 centInMicroUnits
             );
+        });
+
+        const estimateInterest = Effect.fn('DepositInterestService.estimateInterest')(function* (depositAccountId: number, until: Date) {
+            const term = yield* readTerm(depositAccountId);
+
+            return yield* accrueTerm(depositAccountId, term, until);
         });
 
         return {
@@ -185,10 +194,11 @@ export class DepositInterestService extends Context.Service<DepositInterestServi
                 effect => Db.transaction(effect)
             ),
             getClosePrefill: Effect.fn('DepositInterestService.getClosePrefill')(function* (depositAccountId: number) {
-                const { termStart } = yield* readTerm(depositAccountId);
+                const term = yield* readTerm(depositAccountId);
+                const { termStart } = term;
                 const ledgerBalance = yield* readLedgerBalance(depositAccountId);
                 const now = yield* DateTime.nowAsDate;
-                const expected = ledgerBalance + (yield* estimateInterest(depositAccountId, now));
+                const expected = ledgerBalance + (yield* accrueTerm(depositAccountId, term, now));
                 const unassignedInterestIds = yield* transactionYieldRepository.findUnassignedInterestIds(depositAccountId, termStart);
                 const hasUnassignedInterest = isNotEmptyArray(unassignedInterestIds);
 

@@ -209,15 +209,14 @@ export class DepositPayoutService extends Context.Service<DepositPayoutService>(
             const interest = yield* depositInterestService.estimateInterest(deposit.account.id, operatedAt);
             const expected = deposit.balance + interest;
             const unknownInterest = isPositiveNumber(interest) ? 0 : deposit.balance * plausibleInterestRatio;
-            const lowerBound = isDefined(findExactDepositAmount(payout, deposit)) ? 0 : deposit.balance * (1 - amountTolerance);
 
-            return isPositiveNumber(amount) && amount >= lowerBound && amount <= (expected + unknownInterest) * (1 + amountTolerance)
+            return amount >= deposit.balance * (1 - amountTolerance) && amount <= (expected + unknownInterest) * (1 + amountTolerance)
                 ? ({
                       deposit,
                       payout,
                       amount,
                       rank: deposit.account.instrumentId === payout.account.instrumentId ? 0 : 1,
-                      distance: Math.abs(amount - expected) / expected
+                      distance: Math.abs(amount - expected)
                   } satisfies DepositPayoutMatchInterface)
                 : null;
         });
@@ -288,16 +287,10 @@ export class DepositPayoutService extends Context.Service<DepositPayoutService>(
         });
 
         const settle = Effect.fnUntraced(
-            function* ({ deposit, payout, amount }: DepositPayoutMatchInterface, isFullClose: boolean) {
+            function* ({ deposit, payout, amount }: DepositPayoutMatchInterface) {
                 const depositAccountId = deposit.account.id;
                 const { operatedAt } = payout.transaction;
                 const isExact = isDefined(findExactDepositAmount(payout, deposit));
-
-                if (!isFullClose) {
-                    yield* transactionTransferService.convertIncomeFromAccount(payout.transaction.id, depositAccountId, amount);
-
-                    return;
-                }
 
                 if (isExact) {
                     yield* correctCrossCurrencyOpening(deposit, amount, operatedAt);
@@ -329,7 +322,7 @@ export class DepositPayoutService extends Context.Service<DepositPayoutService>(
                 const match = pickClosest((yield* Effect.forEach(deposits, deposit => matchDeposit(payout, deposit))).filter(isDefined));
                 const isSettled =
                     isDefined(match) &&
-                    (yield* settle(match, match.amount >= match.deposit.balance * (1 - amountTolerance)).pipe(
+                    (yield* settle(match).pipe(
                         Effect.as(true),
                         Effect.catchTag('DepositNegativeBalanceError', () => Effect.succeed(false))
                     ));
@@ -509,7 +502,7 @@ export class DepositPayoutService extends Context.Service<DepositPayoutService>(
                         : null;
 
                     if (isDefined(adoptable)) {
-                        yield* settle(adoptable, true);
+                        yield* settle(adoptable);
 
                         return;
                     }
